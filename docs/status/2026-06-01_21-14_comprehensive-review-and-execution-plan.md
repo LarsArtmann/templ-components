@@ -173,25 +173,25 @@ The closest things to "problems":
 
 ### Architecture & Type Safety
 
-1. **`ButtonProps.Type` is raw `string`** — should be typed enum (`ButtonType` exists for visual variants, need `HTMLButtonType` for submit/reset/button)
+1. ~~**`ButtonProps.Type` is raw `string`** — should be typed enum (`ButtonType` exists for visual variants, need `HTMLButtonType` for submit/reset/button)~~ done — display/button go.go ButtonHTMLType
 2. **`ProgressBarProps.Color` is raw `string`** — could be typed with presets
 3. **`StatusBadge(status string)` accepts any string** — could accept typed values
 4. **7 lookup maps use `map[string]string`** — should use typed enum keys (`map[BadgeSize]string`)
 5. **Mixed receivers on `PaginationProps`** — `normalize()` is pointer, `pageURL()` is value (cosmetic but inconsistent)
-6. **`examples/demo/` has 0% coverage** — acceptable for a demo, but worth noting
+6. ~~**`examples/demo/` has 0% coverage** — acceptable for a demo, but worth noting~~ done (docs-health pass 2026-09-08)
 
 ### Potential Library Improvements
 
-7. **`go-error-family` coupling** — only used by `errorpage/`, all consumers pull it in. Could be an optional sub-module or interface-based decoupling.
-8. **`"Go back"` duplicated** in error constructors (lines 154 and 170 of `handler.go`) — extract to constant like existing `msgGoHome`
-9. **`errorpage/handler.go` at 375 lines** — split constructors to separate file
-10. **No `ComponentProps` value receiver** — only `*BaseProps` satisfies, document or provide alternative
+7. ~~**`go-error-family` coupling** — only used by `errorpage/`, all consumers pull it in. Could be an optional sub-module or interface-based decoupling.~~ done — errorpage/go.mod
+8. ~~**`"Go back"` duplicated** in error constructors (lines 154 and 170 of `handler.go`) — extract to constant like existing `msgGoHome`~~ done — errorpage/constructors.go msgGoBack
+9. ~~**`errorpage/handler.go` at 375 lines** — split constructors to separate file~~ done — errorpage/constructors.go
+10. ~~**No `ComponentProps` value receiver** — only `*BaseProps` satisfies, document or provide alternative~~ done — AGENTS.md recvcheck note
 
 ### Testing Philosophy
 
-11. **No keyboard interaction tests** — this is the biggest a11y gap
-12. **forms/ aria tests missing** — `a11y_test.go` only tests dark mode classes
-13. **`htmlEscape` not directly tested** — security-relevant function
+11. ~~**No keyboard interaction tests** — this is the biggest a11y gap~~ done — display/dropdown test.go
+12. ~~**forms/ aria tests missing** — `a11y_test.go` only tests dark mode classes~~ done — forms/radio regression test.go
+13. ~~**`htmlEscape` not directly tested** — security-relevant function~~ **Won't implement — superseded html.EscapeString stdlib.**
 
 ---
 
@@ -201,51 +201,51 @@ The closest things to "problems":
 
 | # | Task                                                                               | Impact          | Effort | Rationale                         |
 | - | ---------------------------------------------------------------------------------- | --------------- | ------ | --------------------------------- |
-| 1 | Test `DefaultRadioProps()`, `DefaultRadioGroupProps()`, `DefaultInputGroupProps()` | Coverage        | 10min  | Three 0% functions, trivial tests |
-| 2 | Fix `dropdownItemLink` coverage (44.7% → 80%+)                                     | Coverage        | 15min  | Only function <50% outside demo   |
-| 3 | Extract `"Go back"` to constant in `errorpage/handler.go`                          | Cleanliness     | 5min   | Duplicated string                 |
-| 4 | Split `errorpage/handler.go` → `handler.go` + `constructors.go`                    | Maintainability | 10min  | Only file >300 lines              |
-| 5 | Typed enum keys for 7 lookup maps (`map[BadgeSize]string`)                         | Type safety     | 20min  | Eliminates `string()` casts       |
+| ~~1~~ | ~~Test `DefaultRadioProps()`, `DefaultRadioGroupProps()`, `DefaultInputGroupProps()`~~ done — forms/coverage test.go | ~~Coverage~~ | ~~10min~~ | ~~Three 0% functions, trivial tests~~ |
+| ~~2~~ | ~~Fix `dropdownItemLink` coverage (44.7% → 80%+)~~ done — display/dropdown test.go | ~~Coverage~~ | ~~15min~~ | ~~Only function <50% outside demo~~ |
+| ~~3~~ | ~~Extract `"Go back"` to constant in `errorpage/handler.go`~~ done — errorpage/constructors.go msgGoBack | ~~Cleanliness~~ | ~~5min~~ | ~~Duplicated string~~ |
+| ~~4~~ | ~~Split `errorpage/handler.go` → `handler.go` + `constructors.go`~~ done — errorpage/constructors.go | ~~Maintainability~~ | ~~10min~~ | ~~Only file >300 lines~~ |
+| ~~5~~ | ~~Typed enum keys for 7 lookup maps (`map[BadgeSize]string`)~~ done — display/badge.templ map[BadgeSize]string | ~~Type safety~~ | ~~20min~~ | ~~Eliminates `string()` casts~~ |
 | 6 | Test Toggle disabled state + aria-checked                                          | A11y/Coverage   | 15min  | New feature untested              |
-| 7 | Test Radio disabled option + DefaultRadioProps                                     | A11y/Coverage   | 15min  | Missing edge cases                |
-| 8 | Test FileInput disabled + DefaultFileInputProps                                    | Coverage        | 10min  | Missing edge cases                |
+| ~~7~~ | ~~Test Radio disabled option + DefaultRadioProps~~ done — forms/coverage test.go | ~~A11y/Coverage~~ | ~~15min~~ | ~~Missing edge cases~~ |
+| ~~8~~ | ~~Test FileInput disabled + DefaultFileInputProps~~ done — forms/coverage test.go | ~~Coverage~~ | ~~10min~~ | ~~Missing edge cases~~ |
 
 ### Tier 2: High Impact, Medium Effort (1-2 hours each)
 
 | #  | Task                                                                                | Impact       | Effort | Rationale                                |
 | -- | ----------------------------------------------------------------------------------- | ------------ | ------ | ---------------------------------------- |
-| 9  | Add `HTMLButtonType` enum for `ButtonProps.Type`                                    | Type safety  | 30min  | Currently raw string, accepts anything   |
-| 10 | Add `htmlEscape()` direct unit tests                                                | Security     | 30min  | XSS-relevant function at 50% coverage    |
-| 11 | Add forms/ `aria-*` attribute tests (aria-checked, role="radiogroup", aria-invalid) | A11y         | 1hr    | forms/ a11y_test.go only tests dark mode |
-| 12 | BDD tests for `forms/` package                                                      | Quality      | 1.5hr  | Behavioral test coverage                 |
-| 13 | BDD tests for `navigation/` package                                                 | Quality      | 1hr    | Behavioral test coverage                 |
-| 14 | Add CI coverage threshold (e.g., 60% minimum)                                       | Quality gate | 15min  | Prevent regression                       |
+| ~~9~~  | ~~Add `HTMLButtonType` enum for `ButtonProps.Type`~~ done — display/button go.go ButtonHTMLType | ~~Type safety~~ | ~~30min~~ | ~~Currently raw string, accepts anything~~ |
+| ~~10~~ | ~~Add `htmlEscape()` direct unit tests~~ **Won't implement — superseded html.EscapeString stdlib.** | ~~Security~~ | ~~30min~~ | ~~XSS-relevant function at 50% coverage~~ |
+| ~~11~~ | ~~Add forms/ `aria-*` attribute tests (aria-checked, role="radiogroup", aria-invalid)~~ done — forms/radio regression test.go | ~~A11y~~ | ~~1hr~~ | ~~forms/ a11y_test.go only tests dark mode~~ |
+| ~~12~~ | ~~BDD tests for `forms/` package~~ done — forms/bdd test.go | ~~Quality~~ | ~~1.5hr~~ | ~~Behavioral test coverage~~ |
+| ~~13~~ | ~~BDD tests for `navigation/` package~~ done — navigation/bdd test.go | ~~Quality~~ | ~~1hr~~ | ~~Behavioral test coverage~~ |
+| ~~14~~ | ~~Add CI coverage threshold (e.g., 60% minimum)~~ done — .github/workflows/ci.yaml | ~~Quality gate~~ | ~~15min~~ | ~~Prevent regression~~ |
 
 ### Tier 3: Medium Impact, Medium Effort (2-4 hours each)
 
 | #  | Task                                                                 | Impact      | Effort | Rationale                          |
 | -- | -------------------------------------------------------------------- | ----------- | ------ | ---------------------------------- |
-| 15 | BDD tests for `display/` package                                     | Quality     | 2hr    | Largest package by component count |
-| 16 | BDD tests for `feedback/` package                                    | Quality     | 1.5hr  | Behavioral test coverage           |
-| 17 | Keyboard navigation tests (Modal Escape, Dropdown Escape, Tab order) | A11y        | 3hr    | Biggest a11y gap                   |
+| ~~15~~ | ~~BDD tests for `display/` package~~ done — display/bdd test.go | ~~Quality~~ | ~~2hr~~ | ~~Largest package by component count~~ |
+| ~~16~~ | ~~BDD tests for `feedback/` package~~ done — feedback/bdd test.go | ~~Quality~~ | ~~1.5hr~~ | ~~Behavioral test coverage~~ |
+| ~~17~~ | ~~Keyboard navigation tests (Modal Escape, Dropdown Escape, Tab order)~~ done — display/dropdown test.go | ~~A11y~~ | ~~3hr~~ | ~~Biggest a11y gap~~ |
 | 18 | `ProgressBarProps.Color` typed enum with presets                     | Type safety | 1hr    | Currently raw string               |
 
 ### Tier 4: High Impact, High Effort (New Features)
 
 | #  | Task                                             | Impact  | Effort | Rationale                                     |
 | -- | ------------------------------------------------ | ------- | ------ | --------------------------------------------- |
-| 19 | **Drawer component** (slide-out panel)           | Feature | 4hr    | Common UI pattern, Modal-like architecture    |
-| 20 | **Form wrapper** (form-level validation, submit) | Feature | 6hr    | High-value for consumers, ties forms together |
-| 21 | **DatePicker component**                         | Feature | 8hr    | Complex, requires date handling library       |
-| 22 | **Combobox component**                           | Feature | 6hr    | Complex, requires search + keyboard nav       |
+| ~~19~~ | ~~**Drawer component** (slide-out panel)~~ done — display/drawer.templ | ~~Feature~~ | ~~4hr~~ | ~~Common UI pattern, Modal-like architecture~~ |
+| ~~20~~ | ~~**Form wrapper** (form-level validation, submit)~~ done — forms/form.templ | ~~Feature~~ | ~~6hr~~ | ~~High-value for consumers, ties forms together~~ |
+| ~~21~~ | ~~**DatePicker component**~~ done — forms/date picker.templ | ~~Feature~~ | ~~8hr~~ | ~~Complex, requires date handling library~~ |
+| ~~22~~ | ~~**Combobox component**~~ done — forms/combobox.templ | ~~Feature~~ | ~~6hr~~ | ~~Complex, requires search + keyboard nav~~ |
 
 ### Tier 5: Infrastructure & Release
 
 | #  | Task                                              | Impact      | Effort | Rationale                                  |
 | -- | ------------------------------------------------- | ----------- | ------ | ------------------------------------------ |
-| 23 | Documentation site (auto-generated API docs)      | Adoption    | 4hr    | Helps consumers discover components        |
-| 24 | Remove deprecated `AlertType`/`ToastType` aliases | API cleanup | 30min  | Clean public API for v0.2.0                |
-| 25 | Cut v0.2.0 release tag                            | Milestone   | 1hr    | First public version with breaking changes |
+| ~~23~~ | ~~Documentation site (auto-generated API docs)~~ done — website/ | ~~Adoption~~ | ~~4hr~~ | ~~Helps consumers discover components~~ |
+| ~~24~~ | ~~Remove deprecated `AlertType`/`ToastType` aliases~~ done — removed aliases feedback | ~~API cleanup~~ | ~~30min~~ | ~~Clean public API for v0.2.0~~ |
+| ~~25~~ | ~~Cut v0.2.0 release tag~~ done — CHANGELOG 0.2.0 | ~~Milestone~~ | ~~1hr~~ | ~~First public version with breaking changes~~ |
 
 ---
 
@@ -255,9 +255,9 @@ The closest things to "problems":
 
 Currently `errorpage/handler.go` imports `go-error-family` directly. This means every consumer of `templ-components` pulls in `go-error-family` even if they never use error pages. Options:
 
-1. **Keep as-is** — only 3 deps total, go-error-family is lightweight, tight coupling is acceptable
-2. **Interface-based decoupling** — define `ErrorClassifier` interface in errorpage, let consumers optionally pass go-error-family adapter
-3. **Sub-module split** — `errorpage/` becomes its own Go module with its own `go.mod`
+1. ~~**Keep as-is** — only 3 deps total, go-error-family is lightweight, tight coupling is acceptable~~ **Won't implement — not taken.**
+2. ~~**Interface-based decoupling** — define `ErrorClassifier` interface in errorpage, let consumers optionally pass go-error-family adapter~~ **Won't implement — not taken.**
+3. ~~**Sub-module split** — `errorpage/` becomes its own Go module with its own `go.mod`~~ **Won't implement — chosen ADR-0034 sub-module split.**
 
 The tradeoff: options 2 and 3 add complexity and indirection for a dependency that's small and same-author. But it violates the "no framework deps" principle stated in our architecture docs. **What's your preference?**
 

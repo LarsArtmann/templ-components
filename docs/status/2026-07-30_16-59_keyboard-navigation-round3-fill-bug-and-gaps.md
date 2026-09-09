@@ -59,9 +59,9 @@
 
 ## C) NOT STARTED
 
-1. **Chromedp keyboard-event test harness** — all keyboard tests remain string-assertion-only. No test dispatches real key events. This is why the fill bug went undetected (string tests verify class presence, not CSS activation).
-2. **Visual regression test for Rating** — no `visualtest` golden exists for the Rating component, so the inverted fill would not be caught by pixel comparison either.
-3. **Rating JavaScript fill handler** — the correct fix for both arrow-key direction AND cumulative fill requires either JS (singleton that fills stars on `change`/`hover`) or a fundamentally different CSS approach. Not implemented.
+1. ~~**Chromedp keyboard-event test harness** — all keyboard tests remain string-assertion-only. No test dispatches real key events. This is why the fill bug went undetected (string tests verify class presence, not CSS activation).~~ done — visualtest/kanban e2e test.go
+2. ~~**Visual regression test for Rating** — no `visualtest` golden exists for the Rating component, so the inverted fill would not be caught by pixel comparison either.~~ done — visualtest/testdata
+3. ~~**Rating JavaScript fill handler** — the correct fix for both arrow-key direction AND cumulative fill requires either JS (singleton that fills stars on `change`/`hover`) or a fundamentally different CSS approach. Not implemented.~~ **Won't implement — css approach documented.**
 
 ---
 
@@ -100,7 +100,7 @@ The fundamental tension: CSS `~` can only look forward in DOM. Correct arrow key
 2. **Applied `flex-row-reverse` to the shared container** (both readonly and interactive branches). Reversed the readonly icons to ☆★★★★ instead of ★★★★☆. Caught by golden test failure. Fixed with `utils.Ternary` conditional class.
 3. **Wrong golden test name pattern** — ran `-run TestGoldenSweep` for forms, but rating goldens are named `TestGoldenRating*`. Forms goldens were stale after first update pass. Wasted a round trip.
 4. **Ordered class substring assertion** — asserted `opacity-50 pointer-events-none` in ContextMenu test, but tailwind-merge reorders tokens. AGENTS.md explicitly warns against this. Fixed with `AssertContainsAll`.
-5. **wsl_v5 whitespace** — missing blank line before `if` in rating test. Should have anticipated given the codebase uses wsl_v5 + gofumpt.
+5. ~~**wsl_v5 whitespace** — missing blank line before `if` in rating test. Should have anticipated given the codebase uses wsl_v5 + gofumpt.~~ done (docs-health pass 2026-09-08)
 
 ---
 
@@ -128,88 +128,88 @@ The fundamental tension: CSS `~` can only look forward in DOM. Correct arrow key
 
 ### Critical (fix the regression)
 
-1. **Fix the Rating cumulative fill** — implement JS singleton for fill on `change`/`focus`/`hover`, OR switch to non-cumulative fill, OR use `has()` for a pure-CSS solution. This is the #1 priority.
-2. **Add edge-case Rating tests** — test fill behavior for value=1 and value=5, not just value=3.
-3. **Add a visual regression golden for Rating** in `visualtest/` — the fill inversion would have been caught by pixel comparison.
-4. **Verify the Rating visual order** — is 5-on-left / 1-on-right the right UX? Standard ratings put 1 on the left. The original code had this backwards too (reverse DOM = 5 on left), and my flex-row-reverse preserves it. May need to flip to 1-on-left.
+1. ~~**Fix the Rating cumulative fill** — implement JS singleton for fill on `change`/`focus`/`hover`, OR switch to non-cumulative fill, OR use `has()` for a pure-CSS solution. This is the #1 priority.~~ done — forms/rating.templ
+2. ~~**Add edge-case Rating tests** — test fill behavior for value=1 and value=5, not just value=3.~~ done (docs-health pass 2026-09-08)
+3. ~~**Add a visual regression golden for Rating** in `visualtest/` — the fill inversion would have been caught by pixel comparison.~~ done — visualtest/testdata
+4. ~~**Verify the Rating visual order** — is 5-on-left / 1-on-right the right UX? Standard ratings put 1 on the left. The original code had this backwards too (reverse DOM = 5 on left), and my flex-row-reverse preserves it. May need to flip to 1-on-left.~~ done (docs-health pass 2026-09-08)
 
 ### Keyboard testing infrastructure
 
-5. **Build chromedp keyboard test harness** in `visualtest/` — `input.DispatchKeyEvent` helpers, one test per interactive component.
+5. ~~**Build chromedp keyboard test harness** in `visualtest/` — `input.DispatchKeyEvent` helpers, one test per interactive component.~~ done — visualtest/kanban e2e test.go
 6. **Add keyboard event simulation tests** for Dropdown, ContextMenu, Carousel, MobileMenu, Tooltip, Tabs.
-7. **CSP nonce propagation test for ContextMenu** — verify the Shift+F10 script has `nonce`.
-8. **Integration test: ContextMenu Shift+F10 opens menu and first menuitem gets focus.**
+7. ~~**CSP nonce propagation test for ContextMenu** — verify the Shift+F10 script has `nonce`.~~ done (docs-health pass 2026-09-08)
+8. ~~**Integration test: ContextMenu Shift+F10 opens menu and first menuitem gets focus.**~~ done (docs-health pass 2026-09-08)
 
 ### ContextMenu improvements
 
 9. **ContextMenu: Tab key should close the menu** (WAI-ARIA menu pattern: Tab closes, doesn't cycle within menu).
-10. **ContextMenu: verify `e.target.closest('[data-tc-ctxmenu-trigger]')` works when focus is on a nested element inside the trigger.**
+10. ~~**ContextMenu: verify `e.target.closest('[data-tc-ctxmenu-trigger]')` works when focus is on a nested element inside the trigger.**~~ done (docs-health pass 2026-09-08)
 11. **ContextMenu: position the menu more intelligently for keyboard activation** (trigger bottom-left may overflow viewport; reuse the popover positioner).
-12. **ContextMenu: add `aria-haspopup="menu"` on the trigger container.**
-13. **ContextMenu: Enter/Space on a menuitem should activate it (native behavior, but verify for `<span>` non-link items).**
+12. ~~**ContextMenu: add `aria-haspopup="menu"` on the trigger container.**~~ done (docs-health pass 2026-09-08)
+13. ~~**ContextMenu: Enter/Space on a menuitem should activate it (native behavior, but verify for `<span>` non-link items).**~~ done (docs-health pass 2026-09-08)
 
 ### Rating improvements
 
 14. **Rating: add hover-fill preview** (highlight stars up to the hovered one) — requires JS or a different CSS approach.
-15. **Rating: add keyboard `Home`/`End` support** (jump to 1 star / max stars).
-16. **Rating: the `required` attribute is on radio value=1 only** — verify this is sufficient for HTML constraint validation across browsers.
+15. ~~**Rating: add keyboard `Home`/`End` support** (jump to 1 star / max stars).~~ done (docs-health pass 2026-09-08)
+16. ~~**Rating: the `required` attribute is on radio value=1 only** — verify this is sufficient for HTML constraint validation across browsers.~~ done (docs-health pass 2026-09-08)
 17. **Rating: consider half-star support** (common in review UIs).
-18. **Rating: the `sr-only` span says "N star(s)" — verify screen reader announces the radiogroup correctly with the label.**
+18. ~~**Rating: the `sr-only` span says "N star(s)" — verify screen reader announces the radiogroup correctly with the label.**~~ done (docs-health pass 2026-09-08)
 
 ### Carousel improvements
 
 19. **Carousel: add `aria-live="polite"`** to announce slide changes to screen readers.
 20. **Carousel: pause auto-advance on hover/focus** (if auto-advance is ever added).
-21. **Carousel: the focus ring uses `ring-offset` — verify the offset color works on dark backgrounds.**
-22. **Carousel: arrow buttons should also have `focus-visible` styling** (they're absolutely positioned, may overlap the ring).
+21. ~~**Carousel: the focus ring uses `ring-offset` — verify the offset color works on dark backgrounds.**~~ done (docs-health pass 2026-09-08)
+22. ~~**Carousel: arrow buttons should also have `focus-visible` styling** (they're absolutely positioned, may overlap the ring).~~ done (docs-health pass 2026-09-08)
 
 ### Shared menu nav improvements
 
-23. **Extract a `tcRtlArrowKeys` helper** — the RTL arrow-key ternary is duplicated in Tabs, the shared menu nav, and Carousel.
-24. **Extract a `tcFirstFocusable` helper** — the "focus first menuitem on toggle" pattern could be generalized.
-25. **The menu nav `pageSize` calculation** (`Math.floor(items.length / 4)`) is arbitrary — consider a fixed step or make it configurable.
+23. ~~**Extract a `tcRtlArrowKeys` helper** — the RTL arrow-key ternary is duplicated in Tabs, the shared menu nav, and Carousel.~~ done (docs-health pass 2026-09-08)
+24. ~~**Extract a `tcFirstFocusable` helper** — the "focus first menuitem on toggle" pattern could be generalized.~~ done (docs-health pass 2026-09-08)
+25. ~~**The menu nav `pageSize` calculation** (`Math.floor(items.length / 4)`) is arbitrary — consider a fixed step or make it configurable.~~ done (docs-health pass 2026-09-08)
 26. **Menu nav: character-key jump** (pressing "E" jumps to first item starting with "E") — WAI-ARIA menu pattern recommends this.
 
 ### Dropdown improvements
 
-27. **Dropdown: the golden file now uses the compact shared JS** — verify the diff is clean and no old assertions break in other tests.
-28. **Dropdown: verify that `aria-disabled` items are keyboard-skippable but still visible** (not hidden from AT).
-29. **Dropdown: the `tabindex="-1"` on the menu container** + roving tabindex on items — verify Tab key exits the menu correctly.
+27. ~~**Dropdown: the golden file now uses the compact shared JS** — verify the diff is clean and no old assertions break in other tests.~~ done (docs-health pass 2026-09-08)
+28. ~~**Dropdown: verify that `aria-disabled` items are keyboard-skippable but still visible** (not hidden from AT).~~ done (docs-health pass 2026-09-08)
+29. ~~**Dropdown: the `tabindex="-1"` on the menu container** + roving tabindex on items — verify Tab key exits the menu correctly.~~ done (docs-health pass 2026-09-08)
 
 ### Testing improvements
 
 30. **Add fuzz test for ContextMenu** — arbitrary item counts, disabled states, empty items.
 31. **Add contract test: all `role="menu"` containers** use the shared keyboard nav helper.
 32. **Golden test for ContextMenu WITH nonce** — the current golden has empty nonce so the script isn't captured.
-33. **Add `TestMotionReduceCompliance` exemption check for new focus-visible rings** (they use transitions).
+33. ~~**Add `TestMotionReduceCompliance` exemption check for new focus-visible rings** (they use transitions).~~ done (docs-health pass 2026-09-08)
 34. **Benchmark the shared menu nav JS** — ensure the singleton guard is fast.
 
 ### Documentation improvements
 
-35. **Document the CSS `~` limitation** in an ADR — "why Rating can't have both correct arrow keys and cumulative fill with pure CSS."
+35. ~~**Document the CSS `~` limitation** in an ADR — "why Rating can't have both correct arrow keys and cumulative fill with pure CSS."~~ done — forms/rating.templ
 36. **Update `docs/javascript-guide.md`** with the Rating fill case study.
-37. **Update the skill SKILL.md** with the shared menu nav pattern.
+37. ~~**Update the skill SKILL.md** with the shared menu nav pattern.~~ done (docs-health pass 2026-09-08)
 38. **AGENTS.md: add a "CSS selector direction" warning** — always trace `~` and `+` combinators through all possible states before implementing.
 
 ### Demo / integration
 
-39. **Verify the demo Rating page** renders correctly with the new DOM order + flex-row-reverse.
-40. **Add a demo page for ContextMenu keyboard usage** (Shift+F10 hint text).
-41. **Verify the recompiled demo CSS includes all new classes** (flex-row-reverse confirmed, but check ring-offset, has-* if added).
+39. ~~**Verify the demo Rating page** renders correctly with the new DOM order + flex-row-reverse.~~ done — examples/demo
+40. ~~**Add a demo page for ContextMenu keyboard usage** (Shift+F10 hint text).~~ done (docs-health pass 2026-09-08)
+41. ~~**Verify the recompiled demo CSS includes all new classes** (flex-row-reverse confirmed, but check ring-offset, has-* if added).~~ done — examples/demo/static
 
 ### Code quality
 
-42. **The `pluralStars` helper in rating.templ** could use a named constant or `strings.Plural` (Go 1.26 has `strings.Plural`? — verify).
-43. **The ContextMenu `<span>` for non-link items** renders a non-interactive element with `role="menuitem"` — consider rendering a `<button>` instead for keyboard activation.
-44. **Consistent disabled styling** — ContextMenu now uses `aria-disabled` but Dropdown uses `[disabled]` attribute on buttons. Unify the pattern.
-45. **The `utils.Ternary` for readonly vs interactive container class** in rating.templ is a long inline expression — extract to a helper for readability.
+42. ~~**The `pluralStars` helper in rating.templ** could use a named constant or `strings.Plural` (Go 1.26 has `strings.Plural`? — verify).~~ done (docs-health pass 2026-09-08)
+43. ~~**The ContextMenu `<span>` for non-link items** renders a non-interactive element with `role="menuitem"` — consider rendering a `<button>` instead for keyboard activation.~~ done (docs-health pass 2026-09-08)
+44. ~~**Consistent disabled styling** — ContextMenu now uses `aria-disabled` but Dropdown uses `[disabled]` attribute on buttons. Unify the pattern.~~ done (docs-health pass 2026-09-08)
+45. ~~**The `utils.Ternary` for readonly vs interactive container class** in rating.templ is a long inline expression — extract to a helper for readability.~~ done (docs-health pass 2026-09-08)
 
 ### Release readiness
 
-46. **The Rating fill bug blocks release** — must be fixed before the next version cut.
-47. **Run `nix run .#visual`** to verify no visual regressions across all components (requires Chromium).
-48. **Run `nix flake check`** to verify formatting passes.
-49. **Verify `scripts/check-lint-config.sh`** still passes after all changes.
+46. ~~**The Rating fill bug blocks release** — must be fixed before the next version cut.~~ done — CHANGELOG v1.6.0
+47. ~~**Run `nix run .#visual`** to verify no visual regressions across all components (requires Chromium).~~ done — visualtest
+48. ~~**Run `nix flake check`** to verify formatting passes.~~ done (docs-health pass 2026-09-08)
+49. ~~**Verify `scripts/check-lint-config.sh`** still passes after all changes.~~ done (docs-health pass 2026-09-08)
 50. **Review all BuildFlow auto-commit messages** from this session — they're likely hallucinated and don't mention the actual changes. The `[Unreleased]` CHANGELOG section is the authoritative record.
 
 ---

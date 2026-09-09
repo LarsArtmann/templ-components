@@ -115,16 +115,16 @@
 
 ## c) NOT STARTED ⬜
 
-1. **Version tagging** — No v0.3.0 tag exists. Library is unversioned for consumers.
-2. **CHANGELOG.md** — No changelog tracking breaking changes between versions.
-3. **`go get` smoke test** — Never verified that a consumer can actually `go get` this library from a clean project. Critical for v0.3.0 release.
-4. **Nonce propagation audit** — No systematic verification that every component correctly passes `props.Nonce` through to all `<script>` blocks.
-5. **SimpleNav BaseProps conversion** — Still uses positional parameters instead of props struct.
-6. **Pagination uint fields** — `CurrentPage`/`TotalPages` still `int` (negative values are nonsensical).
+1. ~~**Version tagging** — No v0.3.0 tag exists. Library is unversioned for consumers.~~ done — CHANGELOG 0.3.0
+2. ~~**CHANGELOG.md** — No changelog tracking breaking changes between versions.~~ done — CHANGELOG 0.2.0
+3. ~~**`go get` smoke test** — Never verified that a consumer can actually `go get` this library from a clean project. Critical for v0.3.0 release.~~ done — scripts/release.sh
+4. ~~**Nonce propagation audit** — No systematic verification that every component correctly passes `props.Nonce` through to all `<script>` blocks.~~ done — 2026-06-20 16-15 reflection-and-status.md
+5. ~~**SimpleNav BaseProps conversion** — Still uses positional parameters instead of props struct.~~ done — navigation/nav.templ SimpleNavProps
+6. ~~**Pagination uint fields** — `CurrentPage`/`TotalPages` still `int` (negative values are nonsensical).~~ done — navigation/pagination.templ uint
 7. **JS consolidation** — 13 inline `<script>` blocks across 10 `.templ` files. Each is independent; could be consolidated into a shared init strategy.
-8. **Test helper relocation** — Test helpers in `utils/` should move to `internal/testutil/` (breaking change, deferred to v1.0).
-9. **Accessibility audit** — No automated axe-core or pa11y testing. Manual aria-checking only.
-10. **Cross-browser testing** — No E2E browser testing at all.
+8. ~~**Test helper relocation** — Test helpers in `utils/` should move to `internal/testutil/` (breaking change, deferred to v1.0).~~ **Won't implement — deferred TODO 34 post-v1.0.**
+9. ~~**Accessibility audit** — No automated axe-core or pa11y testing. Manual aria-checking only.~~ done — visualtest/axe.min.js
+10. ~~**Cross-browser testing** — No E2E browser testing at all.~~ done — visualtest/
 
 ---
 
@@ -147,29 +147,29 @@ The only "fucked up" thing is the templ version mismatch causing unnecessary reg
 
 ### High Impact
 
-1. **Fix templ version mismatch** — Either bump go.mod to v0.3.1036 or pin installed version. The current state generates unnecessary diffs in every commit and makes code review harder.
+1. ~~**Fix templ version mismatch** — Either bump go.mod to v0.3.1036 or pin installed version. The current state generates unnecessary diffs in every commit and makes code review harder.~~ done — flake.nix pkgs.templ pin
 
 2. **Consolidate inline JS** — 13 `<script>` blocks is a lot. Many follow the same pattern (global singleton guard + event listener attachment). Extracting a shared `tcInit(component, fn)` pattern would reduce surface area and make CSP compliance easier to audit.
 
 3. **Nonce propagation audit** — Add a grep-based test that asserts every `<script nonce=` has a corresponding `Nonce` parameter in its component props. Prevents silent CSP violations.
 
-4. **Verify `go get` works** — Before tagging v0.3.0, create a minimal test project that `go get`s this library and compiles. The committed `*_templ.go` pattern should work, but it's never been verified end-to-end.
+4. ~~**Verify `go get` works** — Before tagging v0.3.0, create a minimal test project that `go get`s this library and compiles. The committed `*_templ.go` pattern should work, but it's never been verified end-to-end.~~ done — scripts/release.sh
 
 ### Medium Impact
 
 5. **Coverage above 75% everywhere** — Focus on `feedback` (70.4%), `errorpage` (70.6%), `display` (72.5%). Test error paths, edge cases, and validation functions.
 
-6. **Add CHANGELOG.md** — Track the 20+ breaking changes from v0.1 → v0.2 → v0.3. Consumers need this.
+6. ~~**Add CHANGELOG.md** — Track the 20+ breaking changes from v0.1 → v0.2 → v0.3. Consumers need this.~~ done — CHANGELOG 0.2.0
 
-7. **Golden test expansion** — Currently only `feedback` uses golden tests. Expand to `display`, `errorpage`, `navigation` for visual regression safety.
+7. ~~**Golden test expansion** — Currently only `feedback` uses golden tests. Expand to `display`, `errorpage`, `navigation` for visual regression safety.~~ done — utils/golden
 
-8. **Benchmark coverage** — `feedback` and `navigation` have benchmark tests. Expand to all packages to catch performance regressions.
+8. ~~**Benchmark coverage** — `feedback` and `navigation` have benchmark tests. Expand to all packages to catch performance regressions.~~ done — forms/benchmark test.go
 
 ### Lower Impact
 
-9. **Example site refresh** — `examples/demo` exists but may be stale. Verify all 69 components render correctly.
+9. ~~**Example site refresh** — `examples/demo` exists but may be stale. Verify all 69 components render correctly.~~ done — examples/demo
 
-10. **Documentation for consumers** — No getting-started guide, no "how to theme" guide, no "how to use with HTMX" guide. The README is the only doc.
+10. ~~**Documentation for consumers** — No getting-started guide, no "how to theme" guide, no "how to use with HTMX" guide. The README is the only doc.~~ done — website/
 
 ---
 
@@ -179,46 +179,46 @@ The only "fucked up" thing is the templ version mismatch causing unnecessary reg
 
 | # | Task                                             | Effort | Impact                                            |
 | - | ------------------------------------------------ | ------ | ------------------------------------------------- |
-| 1 | Verify `go get` works from a clean project       | 1h     | 🔴 Critical — if this doesn't work, v0.3.0 is DOA |
-| 2 | Fix templ version mismatch (go.mod vs installed) | 5min   | 🔴 Eliminates noise in every commit               |
-| 3 | Tag v0.3.0 release                               | 5min   | 🔴 Library is unversioned                         |
-| 4 | Write CHANGELOG.md for v0.1 → v0.2 → v0.3        | 2h     | 🔴 Consumers need migration guide                 |
+| ~~1~~ | ~~Verify `go get` works from a clean project~~ done at `19b7fe2` | ~~1h~~ | ~~🔴 Critical — if this doesn't work, v0.3.0 is DOA~~ |
+| ~~2~~ | ~~Fix templ version mismatch (go.mod vs installed)~~ done at `19b7fe2` | ~~5min~~ | ~~🔴 Eliminates noise in every commit~~ |
+| ~~3~~ | ~~Tag v0.3.0 release~~ done at `19b7fe2` | ~~5min~~ | ~~🔴 Library is unversioned~~ |
+| ~~4~~ | ~~Write CHANGELOG.md for v0.1 → v0.2 → v0.3~~ done at `19b7fe2` | ~~2h~~ | ~~🔴 Consumers need migration guide~~ |
 
 ### High Priority
 
 | #  | Task                                                       | Effort | Impact                                      |
 | -- | ---------------------------------------------------------- | ------ | ------------------------------------------- |
-| 5  | Nonce propagation audit across all components              | 1h     | 🟡 Security correctness                     |
-| 6  | JS consolidation: shared init pattern for 13 script blocks | 4h     | 🟡 Reduces attack surface, easier CSP audit |
-| 7  | Coverage: push all packages to 75%+                        | 3h     | 🟡 Quality gate                             |
-| 8  | Coverage: `writeJSONError` + `htmlEscape` in errorpage     | 30min  | 🟡 Currently 50-58%                         |
-| 9  | Coverage: `validateSwapStyle` in htmx                      | 15min  | 🟡 Currently 50%                            |
-| 10 | Coverage: `Assert` golden test framework                   | 30min  | 🟡 Currently 53%                            |
+| ~~5~~  | ~~Nonce propagation audit across all components~~ done at `19b7fe2` | ~~1h~~ | ~~🟡 Security correctness~~ |
+| ~~6~~  | ~~JS consolidation: shared init pattern for 13 script blocks~~ done at `19b7fe2` | ~~4h~~ | ~~🟡 Reduces attack surface, easier CSP audit~~ |
+| ~~7~~  | ~~Coverage: push all packages to 75%+~~ done at `19b7fe2` | ~~3h~~ | ~~🟡 Quality gate~~ |
+| ~~8~~  | ~~Coverage: `writeJSONError` + `htmlEscape` in errorpage~~ done at `19b7fe2` | ~~30min~~ | ~~🟡 Currently 50-58%~~ |
+| ~~9~~  | ~~Coverage: `validateSwapStyle` in htmx~~ done at `19b7fe2` | ~~15min~~ | ~~🟡 Currently 50%~~ |
+| ~~10~~ | ~~Coverage: `Assert` golden test framework~~ done at `19b7fe2` | ~~30min~~ | ~~🟡 Currently 53%~~ |
 
 ### Medium Priority
 
 | #  | Task                                                    | Effort | Impact                              |
 | -- | ------------------------------------------------------- | ------ | ----------------------------------- |
-| 11 | Add SimpleNav BaseProps conversion (breaking)           | 1h     | 🟠 API consistency                  |
-| 12 | Add Pagination uint fields (breaking)                   | 30min  | 🟠 Type safety                      |
-| 13 | Golden test expansion to display, errorpage, navigation | 3h     | 🟠 Visual regression safety         |
-| 14 | Automated accessibility testing (axe-core/pa11y)        | 4h     | 🟠 Compliance                       |
-| 15 | Benchmark tests for all packages                        | 2h     | 🟠 Performance regression detection |
+| ~~11~~ | ~~Add SimpleNav BaseProps conversion (breaking)~~ done at `19b7fe2` | ~~1h~~ | ~~🟠 API consistency~~ |
+| ~~12~~ | ~~Add Pagination uint fields (breaking)~~ done — navigation/pagination.templ uint | ~~30min~~ | ~~🟠 Type safety~~ |
+| ~~13~~ | ~~Golden test expansion to display, errorpage, navigation~~ done — display/golden sweep test.go | ~~3h~~ | ~~🟠 Visual regression safety~~ |
+| ~~14~~ | ~~Automated accessibility testing (axe-core/pa11y)~~ done — visualtest/axe.min.js | ~~4h~~ | ~~🟠 Compliance~~ |
+| ~~15~~ | ~~Benchmark tests for all packages~~ done — forms/benchmark test.go | ~~2h~~ | ~~🟠 Performance regression detection~~ |
 
 ### Nice to Have
 
 | #  | Task                                                    | Effort | Impact                 |
 | -- | ------------------------------------------------------- | ------ | ---------------------- |
-| 16 | Add getting-started guide (docs/)                       | 2h     | 🟢 Consumer adoption   |
-| 17 | Add theming guide (docs/)                               | 1h     | 🟢 Consumer enablement |
-| 18 | Add HTMX integration guide (docs/)                      | 1h     | 🟢 Consumer enablement |
-| 19 | Refresh examples/demo with all 69 components            | 2h     | 🟢 Discoverability     |
-| 20 | Add errorpage handler integration example               | 1h     | 🟢 Real-world usage    |
-| 21 | Cross-browser E2E testing                               | 4h     | 🟢 Quality assurance   |
-| 22 | Move test helpers to internal/testutil/ (v1.0 breaking) | 2h     | 🟢 API hygiene         |
-| 23 | Add contributing guide (CONTRIBUTING.md)                | 1h     | 🟢 Community readiness |
-| 24 | Add BaseProps to StepIndicatorProps (breaking)          | 30min  | 🟢 API consistency     |
-| 25 | Add FillIcon rotation test (currently untested path)    | 15min  | 🟢 Coverage gap        |
+| ~~16~~ | ~~Add getting-started guide (docs/)~~ done — website/ | ~~2h~~ | ~~🟢 Consumer adoption~~ |
+| ~~17~~ | ~~Add theming guide (docs/)~~ done — docs/theming.md | ~~1h~~ | ~~🟢 Consumer enablement~~ |
+| ~~18~~ | ~~Add HTMX integration guide (docs/)~~ done — docs/tailwind-v4-adoption-guide.md | ~~1h~~ | ~~🟢 Consumer enablement~~ |
+| ~~19~~ | ~~Refresh examples/demo with all 69 components~~ done — examples/demo | ~~2h~~ | ~~🟢 Discoverability~~ |
+| ~~20~~ | ~~Add errorpage handler integration example~~ done — errorpage/example test.go | ~~1h~~ | ~~🟢 Real-world usage~~ |
+| ~~21~~ | ~~Cross-browser E2E testing~~ done — visualtest/ | ~~4h~~ | ~~🟢 Quality assurance~~ |
+| ~~22~~ | ~~Move test helpers to internal/testutil/ (v1.0 breaking)~~ **Won't implement — deferred TODO 34 post-v1.0.** | ~~2h~~ | ~~🟢 API hygiene~~ |
+| ~~23~~ | ~~Add contributing guide (CONTRIBUTING.md)~~ done — CONTRIBUTING.md | ~~1h~~ | ~~🟢 Community readiness~~ |
+| ~~24~~ | ~~Add BaseProps to StepIndicatorProps (breaking)~~ done — feedback/step indicator.templ BaseProps | ~~30min~~ | ~~🟢 API consistency~~ |
+| ~~25~~ | ~~Add FillIcon rotation test (currently untested path)~~ done — icons/snapshot test.go TestIconRTL | ~~15min~~ | ~~🟢 Coverage gap~~ |
 
 ---
 

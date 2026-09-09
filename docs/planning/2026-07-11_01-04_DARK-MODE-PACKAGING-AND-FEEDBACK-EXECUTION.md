@@ -60,8 +60,8 @@ A real consumer (cqrs-htmx/adminui) adopted 10 library components, deleted 1,475
 | M09 | Fix CardPaddingNone wrapping div                        | 20%  | Low-Med  | 30min  | —       |
 | M10 | Document prefers-color-scheme consumer implications     | 20%  | Medium   | 30min  | M03     |
 | M11 | Correct feedback: DefaultGridProps() exists             | 20%  | Low      | 15min  | —       |
-| M12 | Update AGENTS.md with all changes                       | 20%  | Low      | 30min  | M01-M11 |
-| M13 | Full verification: build + test + lint + golden         | 20%  | Critical | 30min  | M01-M12 |
+| ~~M12~~ | ~~Update AGENTS.md with all changes~~ done — AGENTS.md | ~~20%~~ | ~~Low~~ | ~~30min~~ | ~~M01-M11~~ |
+| ~~M13~~ | ~~Full verification: build + test + lint + golden~~ done (docs-health pass 2026-09-08) | ~~20%~~ | ~~Critical~~ | ~~30min~~ | ~~M01-M12~~ |
 
 ---
 
@@ -69,58 +69,58 @@ A real consumer (cqrs-htmx/adminui) adopted 10 library components, deleted 1,475
 
 | ID  | Parent | Task                                                                                   | Est   | Deps    |
 | --- | ------ | -------------------------------------------------------------------------------------- | ----- | ------- |
-| F01 | M01    | Read theme.css, confirm `color-scheme` + `@custom-variant` locations                   | 5min  | —       |
-| F02 | M01    | Fix `color-scheme: light` → `color-scheme: light dark` on `:root`                      | 2min  | F01     |
-| F03 | M01    | Restructure theme.css: move `@custom-variant dark` to clearly commented opt-in section | 10min | F01     |
-| F04 | M01    | Add inline comment on `@custom-variant`: toggle-only, remove for OS-following          | 2min  | F03     |
-| F05 | M01    | Verify theme.css CSS validity                                                          | 5min  | F02,F04 |
-| F06 | M02    | Read adoption guide Quick start section for insertion point                            | 5min  | —       |
-| F07 | M02    | Write "Setting Class on components" subsection with struct literal example             | 10min | F06     |
-| F08 | M02    | Cross-link from FAQ to new subsection                                                  | 3min  | F07     |
-| F09 | M03    | Read current dark mode strategies section + FAQ                                        | 5min  | —       |
-| F10 | M03    | Write Path 1 (OS-following) with code example                                          | 10min | F09     |
-| F11 | M03    | Write Path 2 (Toggle) with code example                                                | 10min | F10     |
-| F12 | M03    | Write Path 3 (CSS-variable design system) with `@theme` example                        | 10min | F11     |
-| F13 | M03    | Add comparison table of three paths                                                    | 5min  | F12     |
-| F14 | M03    | Clean up FAQ redundant dark mode answer                                                | 5min  | F13     |
-| F15 | M04    | Read current "Theming without touching component code" section                         | 5min  | —       |
-| F16 | M04    | Write new top-level "Theming" section with `@theme` pattern                            | 10min | F15     |
-| F17 | M04    | Add `--color-white: var(--surface)` worked example                                     | 10min | F16     |
-| F18 | M04    | Refactor old "Theming without touching" into new section                               | 10min | F17     |
-| F19 | M05    | Read current `@source` documentation                                                   | 5min  | —       |
-| F20 | M05    | Add Go module cache `@source` path subsection                                          | 10min | F19     |
-| F21 | M05    | Add troubleshooting: "If components render unstyled, check @source"                    | 5min  | F20     |
-| F22 | M05    | Add `go list -m -f '{{.Dir}}'` tip                                                     | 5min  | F20     |
-| F23 | M06    | Read ThemeScript + ThemeToggle godoc                                                   | 5min  | —       |
-| F24 | M06    | Add godoc: "Only needed for toggle strategy; OS-following needs no JS"                 | 10min | F23     |
-| F25 | M07    | Read grid.templ + grid_templ.go fully                                                  | 5min  | —       |
-| F26 | M07    | Add `MinColWidth string` field to `GridProps`                                          | 5min  | F25     |
-| F27 | M07    | Add `GridColsAutoFit GridCols = "auto-fit"` constant                                   | 3min  | F26     |
-| F28 | M07    | Implement auto-fit grid template logic in `gridClass()`                                | 10min | F27     |
-| F29 | M07    | Add `GridColsAutoFitIsValid` to enum validation                                        | 5min  | F28     |
-| F30 | M07    | Update `gridColsLookup` map / conditional logic                                        | 5min  | F28     |
-| F31 | M07    | Write tests for auto-fit / min-width grid variants                                     | 10min | F30     |
-| F32 | M07    | Run `templ generate` for grid                                                          | 3min  | F31     |
-| F33 | M08    | Read card.templ + card_templ.go fully                                                  | 5min  | —       |
-| F34 | M08    | Add `Header templ.Component` field to `CardProps`                                      | 5min  | F33     |
-| F35 | M08    | Add conditional rendering: Header slot replaces hardcoded `<h3>`                       | 10min | F34     |
-| F36 | M08    | Run `templ generate` for card                                                          | 3min  | F35     |
-| F37 | M08    | Write test for Header slot rendering                                                   | 10min | F36     |
-| F38 | M09    | Read CardPaddingNone rendering logic in card.templ                                     | 5min  | —       |
-| F39 | M09    | Add conditional: skip wrapping `<div>` when `Padding == CardPaddingNone`               | 10min | F38     |
-| F40 | M09    | Run `templ generate` for card                                                          | 3min  | F39     |
-| F41 | M09    | Write test: CardPaddingNone renders children without wrapper                           | 10min | F40     |
-| F42 | M09    | Run golden file update if snapshots changed                                            | 5min  | F41     |
-| F43 | M10    | Read dark-mode-research.md for reference content                                       | 5min  | —       |
-| F44 | M10    | Write prefers-color-scheme implications subsection                                     | 10min | F43     |
-| F45 | M11    | Verify `DefaultGridProps()` exists at grid.templ:106                                   | 3min  | —       |
-| F46 | M11    | Add DefaultProps note in adoption guide                                                | 5min  | F45     |
-| F47 | M12    | Update AGENTS.md with all changes                                                      | 15min | M01-M11 |
-| F48 | M13    | Full build: `templ generate ./... && go build ./...`                                   | 5min  | M01-M12 |
-| F49 | M13    | Full test: `go test ./...`                                                             | 10min | F48     |
-| F50 | M13    | Lint: `golangci-lint run ./...`                                                        | 10min | F49     |
-| F51 | M13    | Dark mode compliance: `go test ./utils/... -run TestDarkMode`                          | 5min  | F49     |
-| F52 | M13    | CSP nonce tests: `go test ./integration/...`                                           | 5min  | F49     |
+| ~~F01~~ | ~~M01~~ done (docs-health pass 2026-09-08) | ~~Read theme.css, confirm `color-scheme` + `@custom-variant` locations~~ | ~~5min~~ | ~~—~~ |
+| ~~F02~~ | ~~M01~~ done — CHANGELOG v0.9.1 | ~~Fix `color-scheme: light` → `color-scheme: light dark` on `:root`~~ | ~~2min~~ | ~~F01~~ |
+| ~~F03~~ | ~~M01~~ done — templates | ~~Restructure theme.css: move `@custom-variant dark` to clearly commented opt-in section~~ | ~~10min~~ | ~~F01~~ |
+| ~~F04~~ | ~~M01~~ done — templates | ~~Add inline comment on `@custom-variant`: toggle-only, remove for OS-following~~ | ~~2min~~ | ~~F03~~ |
+| ~~F05~~ | ~~M01~~ done (docs-health pass 2026-09-08) | ~~Verify theme.css CSS validity~~ | ~~5min~~ | ~~F02,F04~~ |
+| ~~F06~~ | ~~M02~~ done (docs-health pass 2026-09-08) | ~~Read adoption guide Quick start section for insertion point~~ | ~~5min~~ | ~~—~~ |
+| ~~F07~~ | ~~M02~~ done — docs/tailwind-v4-adoption-guide.md | ~~Write "Setting Class on components" subsection with struct literal example~~ | ~~10min~~ | ~~F06~~ |
+| ~~F08~~ | ~~M02~~ done — docs/tailwind-v4-adoption-guide.md | ~~Cross-link from FAQ to new subsection~~ | ~~3min~~ | ~~F07~~ |
+| ~~F09~~ | ~~M03~~ done — docs/tailwind-v4-adoption-guide.md | ~~Read current dark mode strategies section + FAQ~~ | ~~5min~~ | ~~—~~ |
+| ~~F10~~ | ~~M03~~ done — docs/tailwind-v4-adoption-guide.md | ~~Write Path 1 (OS-following) with code example~~ | ~~10min~~ | ~~F09~~ |
+| ~~F11~~ | ~~M03~~ done — docs/tailwind-v4-adoption-guide.md | ~~Write Path 2 (Toggle) with code example~~ | ~~10min~~ | ~~F10~~ |
+| ~~F12~~ | ~~M03~~ done — docs/tailwind-v4-adoption-guide.md | ~~Write Path 3 (CSS-variable design system) with `@theme` example~~ | ~~10min~~ | ~~F11~~ |
+| ~~F13~~ | ~~M03~~ done — docs/tailwind-v4-adoption-guide.md | ~~Add comparison table of three paths~~ | ~~5min~~ | ~~F12~~ |
+| ~~F14~~ | ~~M03~~ done — docs/tailwind-v4-adoption-guide.md | ~~Clean up FAQ redundant dark mode answer~~ | ~~5min~~ | ~~F13~~ |
+| ~~F15~~ | ~~M04~~ done (docs-health pass 2026-09-08) | ~~Read current "Theming without touching component code" section~~ | ~~5min~~ | ~~—~~ |
+| ~~F16~~ | ~~M04~~ done — docs/tailwind-v4-adoption-guide.md | ~~Write new top-level "Theming" section with `@theme` pattern~~ | ~~10min~~ | ~~F15~~ |
+| ~~F17~~ | ~~M04~~ done — docs/tailwind-v4-adoption-guide.md | ~~Add `--color-white: var(--surface)` worked example~~ | ~~10min~~ | ~~F16~~ |
+| ~~F18~~ | ~~M04~~ done — docs/tailwind-v4-adoption-guide.md | ~~Refactor old "Theming without touching" into new section~~ | ~~10min~~ | ~~F17~~ |
+| ~~F19~~ | ~~M05~~ done (docs-health pass 2026-09-08) | ~~Read current `@source` documentation~~ | ~~5min~~ | ~~—~~ |
+| ~~F20~~ | ~~M05~~ done — docs/tailwind-v4-adoption-guide.md | ~~Add Go module cache `@source` path subsection~~ | ~~10min~~ | ~~F19~~ |
+| ~~F21~~ | ~~M05~~ done — docs/tailwind-v4-adoption-guide.md | ~~Add troubleshooting: "If components render unstyled, check @source"~~ | ~~5min~~ | ~~F20~~ |
+| ~~F22~~ | ~~M05~~ done — docs/tailwind-v4-adoption-guide.md | ~~Add `go list -m -f '{{.Dir}}'` tip~~ | ~~5min~~ | ~~F20~~ |
+| ~~F23~~ | ~~M06~~ done (docs-health pass 2026-09-08) | ~~Read ThemeScript + ThemeToggle godoc~~ | ~~5min~~ | ~~—~~ |
+| ~~F24~~ | ~~M06~~ done — layout/theme.templ | ~~Add godoc: "Only needed for toggle strategy; OS-following needs no JS"~~ | ~~10min~~ | ~~F23~~ |
+| ~~F25~~ | ~~M07~~ done (docs-health pass 2026-09-08) | ~~Read grid.templ + grid_templ.go fully~~ | ~~5min~~ | ~~—~~ |
+| ~~F26~~ | ~~M07~~ done — display/grid.templ | ~~Add `MinColWidth string` field to `GridProps`~~ | ~~5min~~ | ~~F25~~ |
+| ~~F27~~ | ~~M07~~ done — display/grid.templ | ~~Add `GridColsAutoFit GridCols = "auto-fit"` constant~~ | ~~3min~~ | ~~F26~~ |
+| ~~F28~~ | ~~M07~~ done — display/grid.templ | ~~Implement auto-fit grid template logic in `gridClass()`~~ | ~~10min~~ | ~~F27~~ |
+| ~~F29~~ | ~~M07~~ done — display/grid.templ | ~~Add `GridColsAutoFitIsValid` to enum validation~~ | ~~5min~~ | ~~F28~~ |
+| ~~F30~~ | ~~M07~~ done — display/grid.templ | ~~Update `gridColsLookup` map / conditional logic~~ | ~~5min~~ | ~~F28~~ |
+| ~~F31~~ | ~~M07~~ done — display/grid.templ | ~~Write tests for auto-fit / min-width grid variants~~ | ~~10min~~ | ~~F30~~ |
+| ~~F32~~ | ~~M07~~ done (docs-health pass 2026-09-08) | ~~Run `templ generate` for grid~~ | ~~3min~~ | ~~F31~~ |
+| ~~F33~~ | ~~M08~~ done (docs-health pass 2026-09-08) | ~~Read card.templ + card_templ.go fully~~ | ~~5min~~ | ~~—~~ |
+| ~~F34~~ | ~~M08~~ done — display/card.templ | ~~Add `Header templ.Component` field to `CardProps`~~ | ~~5min~~ | ~~F33~~ |
+| ~~F35~~ | ~~M08~~ done — display/card.templ | ~~Add conditional rendering: Header slot replaces hardcoded `<h3>`~~ | ~~10min~~ | ~~F34~~ |
+| ~~F36~~ | ~~M08~~ done (docs-health pass 2026-09-08) | ~~Run `templ generate` for card~~ | ~~3min~~ | ~~F35~~ |
+| ~~F37~~ | ~~M08~~ done — display/card test.go | ~~Write test for Header slot rendering~~ | ~~10min~~ | ~~F36~~ |
+| ~~F38~~ | ~~M09~~ done (docs-health pass 2026-09-08) | ~~Read CardPaddingNone rendering logic in card.templ~~ | ~~5min~~ | ~~—~~ |
+| ~~F39~~ | ~~M09~~ done — display/card.templ | ~~Add conditional: skip wrapping `<div>` when `Padding == CardPaddingNone`~~ | ~~10min~~ | ~~F38~~ |
+| ~~F40~~ | ~~M09~~ done (docs-health pass 2026-09-08) | ~~Run `templ generate` for card~~ | ~~3min~~ | ~~F39~~ |
+| ~~F41~~ | ~~M09~~ done — display/card test.go | ~~Write test: CardPaddingNone renders children without wrapper~~ | ~~10min~~ | ~~F40~~ |
+| ~~F42~~ | ~~M09~~ done (docs-health pass 2026-09-08) | ~~Run golden file update if snapshots changed~~ | ~~5min~~ | ~~F41~~ |
+| ~~F43~~ | ~~M10~~ done (docs-health pass 2026-09-08) | ~~Read dark-mode-research.md for reference content~~ | ~~5min~~ | ~~—~~ |
+| ~~F44~~ | ~~M10~~ done — docs/tailwind-v4-adoption-guide.md | ~~Write prefers-color-scheme implications subsection~~ | ~~10min~~ | ~~F43~~ |
+| ~~F45~~ | ~~M11~~ done — display/grid.templ | ~~Verify `DefaultGridProps()` exists at grid.templ:106~~ | ~~3min~~ | ~~—~~ |
+| ~~F46~~ | ~~M11~~ done — docs/tailwind-v4-adoption-guide.md | ~~Add DefaultProps note in adoption guide~~ | ~~5min~~ | ~~F45~~ |
+| ~~F47~~ | ~~M12~~ done — AGENTS.md | ~~Update AGENTS.md with all changes~~ | ~~15min~~ | ~~M01-M11~~ |
+| ~~F48~~ | ~~M13~~ done (docs-health pass 2026-09-08) | ~~Full build: `templ generate ./... && go build ./...`~~ | ~~5min~~ | ~~M01-M12~~ |
+| ~~F49~~ | ~~M13~~ done (docs-health pass 2026-09-08) | ~~Full test: `go test ./...`~~ | ~~10min~~ | ~~F48~~ |
+| ~~F50~~ | ~~M13~~ done (docs-health pass 2026-09-08) | ~~Lint: `golangci-lint run ./...`~~ | ~~10min~~ | ~~F49~~ |
+| ~~F51~~ | ~~M13~~ done (docs-health pass 2026-09-08) | ~~Dark mode compliance: `go test ./utils/... -run TestDarkMode`~~ | ~~5min~~ | ~~F49~~ |
+| ~~F52~~ | ~~M13~~ done (docs-health pass 2026-09-08) | ~~CSP nonce tests: `go test ./integration/...`~~ | ~~5min~~ | ~~F49~~ |
 
 ---
 

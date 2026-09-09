@@ -101,16 +101,16 @@ that prior sessions were annotated for.
 
 ## C) NOT STARTED
 
-1. **TODO_LIST #110 (broken v1.8.0 tag)** — not addressed. Requires user decision
-   (force-move tag vs cut corrective release). Escalated but no decision made.
-2. **`nix run .#verify`** — the full verify cycle was never run as a single command.
-   Individual components (build, test, lint) were verified separately.
-3. **`nix run .#visual`** — visual regression suite never run this session.
-4. **Pre-commit hook integration test** — the hook was edited but never exercised
-   with a real commit (daemon committed everything).
-5. **Edge-case testing of `check-version-sync.sh`** — only drift injection was tested.
-   The anti-Verschlimmbesserung checklist explicitly asked about empty `[Unreleased]`,
-   multi-line extraction, and non-semver edge cases. None were tested.
+1. ~~**TODO_LIST #110 (broken v1.8.0 tag)** — not addressed. Requires user decision~~ done — CHANGELOG v1.8.1
+   ~~(force-move tag vs cut corrective release). Escalated but no decision made.~~
+2. ~~**`nix run .#verify`** — the full verify cycle was never run as a single command.~~ done — 08-36 report item17
+   ~~Individual components (build, test, lint) were verified separately.~~
+3. ~~**`nix run .#visual`** — visual regression suite never run this session.~~ done — 08-36 report item18
+4. ~~**Pre-commit hook integration test** — the hook was edited but never exercised~~ done — docs/planning/archived/2026-08-09 07-13
+   ~~with a real commit (daemon committed everything).~~
+5. ~~**Edge-case testing of `check-version-sync.sh`** — only drift injection was tested.~~ done — docs/status/archived/2026-08-09 07-10
+   ~~The anti-Verschlimmbesserung checklist explicitly asked about empty `[Unreleased]`,~~
+   ~~multi-line extraction, and non-semver edge cases. None were tested.~~
 
 ---
 
@@ -181,20 +181,20 @@ multiple variants), but I asserted verification without doing the check.
 
 ### Process Improvements
 
-1. **Stop skipping visual tests.** This is the #1 recurring failure mode across
-   9 annotated reports. The solution: add `nix run .#visual` to the pre-commit
-   hook's BuildFlow budget, or make it a mandatory post-commit verification step.
-2. **Archive planning/status docs immediately after execution.** Both the plan
-   and the prior status report should have been archived in the same commit that
-   completed the work. Leaving them active creates docs drift — the exact problem
-   this session was supposed to prevent.
-3. **Don't leave empty table sections in TODO_LIST.md.** If all items are done,
-   remove the section or note "No open items."
-4. **Test edge cases for new guard scripts.** The anti-Verschlimmbesserung checklist
-   exists for a reason. It asked about edge cases. I ignored it and only tested
-   the happy path + one drift injection.
-5. **Run the full verify suite as a single command** (`nix run .#verify`) to
-   catch integration issues that individual `go test` / `golangci-lint` runs miss.
+1. ~~**Stop skipping visual tests.** This is the #1 recurring failure mode across~~ done — .github/workflows/ci.yaml
+   ~~9 annotated reports. The solution: add `nix run .#visual` to the pre-commit~~
+   ~~hook's BuildFlow budget, or make it a mandatory post-commit verification step.~~
+2. ~~**Archive planning/status docs immediately after execution.** Both the plan~~ done (docs-health pass 2026-09-08)
+   ~~and the prior status report should have been archived in the same commit that~~
+   ~~completed the work. Leaving them active creates docs drift — the exact problem~~
+   ~~this session was supposed to prevent.~~
+3. ~~**Don't leave empty table sections in TODO_LIST.md.** If all items are done,~~ done (docs-health pass 2026-09-08)
+   ~~remove the section or note "No open items."~~
+4. ~~**Test edge cases for new guard scripts.** The anti-Verschlimmbesserung checklist~~ done — 08-36 report item2
+   ~~exists for a reason. It asked about edge cases. I ignored it and only tested~~
+   ~~the happy path + one drift injection.~~
+5. ~~**Run the full verify suite as a single command** (`nix run .#verify`) to~~ done — 08-36 report item17
+   ~~catch integration issues that individual `go test` / `golangci-lint` runs miss.~~
 
 ### Technical Improvements
 
@@ -202,9 +202,9 @@ multiple variants), but I asserted verification without doing the check.
    Both walk a directory tree and count files matching a suffix. Could extract a
    shared `countFiles(root, pattern, excludePattern)` helper. Low priority — the
    duplication is 20 lines.
-7. **`check-version-sync.sh` doesn't handle pre-release versions** (e.g., `1.9.0-rc1`).
-   The regex `[0-9][0-9.]*` stops at the hyphen. This is fine for now (no pre-release
-   convention in this repo) but should be documented.
+7. ~~**`check-version-sync.sh` doesn't handle pre-release versions** (e.g., `1.9.0-rc1`).~~ **Won't implement — known limitation accepted.**
+   ~~The regex `[0-9][0-9.]*` stops at the hyphen. This is fine for now (no pre-release~~
+   ~~convention in this repo) but should be documented.~~
 8. **Actionlint in CI may need shellcheck.** The `actionlint` tool recommends
    shellcheck for full coverage of `run:` blocks. Not installed in the CI step.
 
@@ -214,43 +214,43 @@ multiple variants), but I asserted verification without doing the check.
 
 ### Critical (blocks release correctness)
 
-1. **Resolve TODO #110: broken v1.8.0 tag** — force-move tag or cut v1.8.1 via `scripts/release.sh`
-2. **Run `nix run .#visual`** to verify no visual regressions from this session's code changes
-3. **Run `nix run .#verify`** as a single-command full verification
-4. **Archive the planning doc** (`docs/planning/2026-08-09_07-13_*.md` → `archived/`)
-5. **Archive the prior status report** (`docs/status/2026-08-09_07-10_*.md` → `archived/`)
-6. **Fix the empty TODO_LIST Open section** — remove it or note "No open items"
-7. **Test `check-version-sync.sh` edge cases**: empty `[Unreleased]` body, pre-release semver, missing FEATURES.md `**Version:**` line
+1. ~~**Resolve TODO #110: broken v1.8.0 tag** — force-move tag or cut v1.8.1 via `scripts/release.sh`~~ done — CHANGELOG v1.8.1
+2. ~~**Run `nix run .#visual`** to verify no visual regressions from this session's code changes~~ done — 08-36 report item18
+3. ~~**Run `nix run .#verify`** as a single-command full verification~~ done — 08-36 report item17
+4. ~~**Archive the planning doc** (`docs/planning/2026-08-09_07-13_*.md` → `archived/`)~~ done — docs/planning/archived/2026-08-09 07-13
+5. ~~**Archive the prior status report** (`docs/status/2026-08-09_07-10_*.md` → `archived/`)~~ done — docs/status/archived/2026-08-09 07-10
+6. ~~**Fix the empty TODO_LIST Open section** — remove it or note "No open items"~~ done — 08-36 report item16
+7. ~~**Test `check-version-sync.sh` edge cases**: empty `[Unreleased]` body, pre-release semver, missing FEATURES.md `**Version:**` line~~ done — 08-36 report item2
 8. **Verify the pre-commit hook works** — make a small change, try to commit, confirm Guard 3 runs
 
 ### High Value (prevents future drift)
 
-9. **Add M6c: negative test for `TestNoOrderedTailwindSubstringsInTests`** — inject a violation, assert it's caught
-10. **Add `nix run .#visual` to the post-commit verification** or make it a mandatory CI gate on `.templ` changes
+9. ~~**Add M6c: negative test for `TestNoOrderedTailwindSubstringsInTests`** — inject a violation, assert it's caught~~ done — utils/ordered substring test.go
+10. ~~**Add `nix run .#visual` to the post-commit verification** or make it a mandatory CI gate on `.templ` changes~~ done — .github/workflows/ci.yaml
 11. **Add `shellcheck` alongside `actionlint`** in CI for full `run:` block coverage
 12. **Extend `check-version-sync.sh` to check `website/src/data/sections.ts`** version badge if it has one
 13. **Add a `scripts/check-docs-archived.sh` guard** — fails if `docs/status/` or `docs/planning/` has files older than 7 days that aren't archived
-14. **Add CHANGELOG `[Unreleased]` linter** — fails if `[Unreleased]` is missing `### Added` or `### Fixed` section when there are unreleased commits
+14. ~~**Add CHANGELOG `[Unreleased]` linter** — fails if `[Unreleased]` is missing `### Added` or `### Fixed` section when there are unreleased commits~~ done — scripts/check-changelog-guard.sh
 
 ### Medium Value (quality of life)
 
-15. **Push the 5 commits to origin** — they're verified but only local
+15. ~~**Push the 5 commits to origin** — they're verified but only local~~ done — 08-36 report item19
 16. **Add `FuzzBuildPolylinePath`** — the third geometry builder, currently unfuzzed
-17. **Visual test: ContextMenu open state** (dropped M6d)
-18. **Visual test: Badge variants — pill, dot, success, error** (dropped M6e)
-19. **Visual test: BarChart** — has golden dir but verify it covers new Tooltip/ValueLabel props
+17. ~~**Visual test: ContextMenu open state** (dropped M6d)~~ done — visualtest/testdata/contextmenu
+18. ~~**Visual test: Badge variants — pill, dot, success, error** (dropped M6e)~~ done — visualtest/testdata/badge
+19. ~~**Visual test: BarChart** — has golden dir but verify it covers new Tooltip/ValueLabel props~~ done — visualtest/testdata/barchart
 20. **Visual test: SidebarNav** — new collapsible sections + header slot have no golden
-21. **Visual test: Heatmap `ShowValues`** — tracked in ROADMAP
+21. ~~**Visual test: Heatmap `ShowValues`** — tracked in ROADMAP~~ done — visualtest/testdata/heatmap
 22. **RTL visual test for charts** — tracked in ROADMAP
 23. **Unit tests for `computeChartRenderData()`** — tracked in ROADMAP chart ecosystem
-24. **ADR for `computeChartRenderData` pattern** — TODO_LIST (quality)
+24. ~~**ADR for `computeChartRenderData` pattern** — TODO_LIST (quality)~~ done — docs/adr/0010-sub-template-extraction-pattern.md
 25. **Sparkline `EmptyMessage` field** — ROADMAP chart ecosystem
-26. **Heatmap `ColorVar` default** — TODO_LIST (quality)
+26. ~~**Heatmap `ColorVar` default** — TODO_LIST (quality)~~ done — display/heatmap.go
 27. **Sparkline chart type** (mini area chart variant) — ROADMAP
 28. **Radial/Gauge chart type** — ROADMAP
 29. **Treemap chart type** — ROADMAP
 30. **Candlestick chart type** — ROADMAP
-31. **Compound component pattern for overlays (Trigger/Content/Close)** — TODO_LIST #39 (v2.0)
+31. ~~**Compound component pattern for overlays (Trigger/Content/Close)** — TODO_LIST #39 (v2.0)~~ **Won't implement — TODO 39 deferred v2.0.**
 
 ### Lower Priority (debt cleanup)
 
@@ -260,18 +260,18 @@ multiple variants), but I asserted verification without doing the check.
 35. **`templ.guide` listing submission (#29)** — blocked on upstream
 36. **`go-structure-linter` findings** — TODO_LIST (quality)
 37. **`gomod-check` findings** — TODO_LIST (quality)
-38. **Pre-push hook** — ROADMAP
+38. ~~**Pre-push hook** — ROADMAP~~ done — scripts/ci-repro.sh
 39. **`nix run .#release` automation** — ROADMAP
 40. **`.github/workflows/release.yaml`** — ROADMAP
-41. **`release verify` flake target** — ROADMAP
-42. **Visual testing infrastructure improvements (7 items)** — ROADMAP
+41. ~~**`release verify` flake target** — ROADMAP~~ done — scripts/release.sh
+42. ~~**Visual testing infrastructure improvements (7 items)** — ROADMAP~~ done — visualtest/testdata
 43. **`Validate() error` methods on remaining props structs (#33)** — Deferred v1.0
 44. **Move test helpers to `internal/testutil/` (#34)** — Deferred v1.0
-45. **Flip defaults: self-host HTMX + semantic tokens (#35)** — Deferred v2.0
-46. **Remove `AlertType`/`ToastType` aliases (#38)** — Deferred v2.0
-47. **Add `@container` support to remaining components** — ROADMAP
+45. ~~**Flip defaults: self-host HTMX + semantic tokens (#35)** — Deferred v2.0~~ done — docs/adr/0022-v2-default-flip-migration.md
+46. ~~**Remove `AlertType`/`ToastType` aliases (#38)** — Deferred v2.0~~ done — docs/adr/0022-v2-default-flip-migration.md
+47. ~~**Add `@container` support to remaining components** — ROADMAP~~ **Won't implement — evaluated rejected ADR-0018.**
 48. **Datastar expand/collapse pattern** — ROADMAP
-49. **CSP nonce propagation audit for HTMX partials** — verify nonces survive OOB swaps
+49. ~~**CSP nonce propagation audit for HTMX partials** — verify nonces survive OOB swaps~~ done — csp nonce integration test
 50. **Consumer integration test** — a minimal external project that `go get`s the library and renders a component, caught in CI
 
 ---

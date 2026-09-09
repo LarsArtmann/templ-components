@@ -17,7 +17,7 @@
 | 5 | **`AGENTS.md` corrected** — removed false claim "BuildFlow also auto-detects and sets it"; replaced with accurate shellHook documentation + "run from nix develop" guidance                                                 | Diff reviewed                                                      |
 | 6 | **`CHANGELOG.md` `[Unreleased] > Fixed` entry added**                                                                                                                                                                       | Drift-guard tests pass                                             |
 | 7 | **`nix flake check` passes** — format validation clean                                                                                                                                                                      | `all checks passed!`                                               |
-| 8 | **Drift-guard tests pass** — `TestVersionMatchesChangelog`, `TestVersionMatchesFeatures`, `TestDocsCountDrift`, `TestSkillComponentCount`                                                                                   | All `PASS`                                                         |
+| ~~8~~ | ~~**Drift-guard tests pass** — `TestVersionMatchesChangelog`, `TestVersionMatchesFeatures`, `TestDocsCountDrift`, `TestSkillComponentCount`~~ done at `5175e90` | ~~All `PASS`~~ |
 
 ---
 
@@ -99,18 +99,18 @@ A generated file had an uncommitted change (json v2 → v1 regeneration) that I 
 ### Critical (must do before considering this fix complete)
 
 1. **Run `buildflow -s test-coverage` to verify the fix actually works** — or discover it doesn't
-2. **Create `.envrc` with `export GOEXPERIMENT=jsonv2`** — direnv-based, works for all tools
+2. ~~**Create `.envrc` with `export GOEXPERIMENT=jsonv2`** — direnv-based, works for all tools~~ done — .envrc
 3. **If BuildFlow doesn't work even with `.envrc`**, investigate `.buildflow.yml` env support
-4. **Commit the stale `navigation/breadcrumbs_templ.go` regeneration** (json v2 → v1)
+4. ~~**Commit the stale `navigation/breadcrumbs_templ.go` regeneration** (json v2 → v1)~~ done — navigation/breadcrumbs templ.go
 5. **Investigate the 3 uncommitted doc files** (`FEATURES.md`, `ROADMAP.md`, `TODO_LIST.md`) — are these correct changes that should be committed, or stale?
 
 ### High Priority
 
 6. **Fix BuildFlow auto-commit messages** (`larsartmann/buildflow`) — inject real diff summaries instead of hallucinated prose
 7. **Add `buildflow -s test-coverage` as a CI step** — so the BuildFlow path is tested, not just raw `go test`
-8. **Audit all AGENTS.md claims about tool auto-detection** — "BuildFlow also auto-detects" was false; what else is?
-9. **Add a drift test: `*_templ.go` files must match their `.templ` sources** — would catch the breadcrumbs stale-generated-file issue automatically
-10. **Investigate why `breadcrumbs_templ.go` was committed stale** — did someone edit the generated file directly, or was `templ generate` run with the wrong version?
+8. ~~**Audit all AGENTS.md claims about tool auto-detection** — "BuildFlow also auto-detects" was false; what else is?~~ done — AGENTS.md
+9. ~~**Add a drift test: `*_templ.go` files must match their `.templ` sources** — would catch the breadcrumbs stale-generated-file issue automatically~~ done — utils/templ sync test.go
+10. ~~**Investigate why `breadcrumbs_templ.go` was committed stale** — did someone edit the generated file directly, or was `templ generate` run with the wrong version?~~ done — utils/templ sync test.go
 
 ### Coverage Improvements (72.3% → target 80%+)
 
@@ -121,9 +121,9 @@ A generated file had an uncommitted change (json v2 → v1 regeneration) that I 
 
 ### Environment & Tooling
 
-15. **Check if direnv (`direnv allow`) is available on the system** — if not, `.envrc` won't work
-16. **Add `GOEXPERIMENT=jsonv2` to CI workflow env** — already done in `.github/workflows/ci.yaml` (verified), but document it
-17. **Consider a `scripts/dev-shell.sh` wrapper** — for users without nix/direnv
+15. ~~**Check if direnv (`direnv allow`) is available on the system** — if not, `.envrc` won't work~~ done — .envrc
+16. ~~**Add `GOEXPERIMENT=jsonv2` to CI workflow env** — already done in `.github/workflows/ci.yaml` (verified), but document it~~ done — .github/workflows/ci.yaml
+17. ~~**Consider a `scripts/dev-shell.sh` wrapper** — for users without nix/direnv~~ **Won't implement — envrc instead.**
 18. **Document the GOEXPERIMENT requirement in README.md** — consumers need this too
 19. **Check if `go 1.27` is available** — json v2 becomes stable, no experiment flag needed
 20. **Add a `make`/nix target that runs BuildFlow in the correct env** — `nix run .#buildflow`?
@@ -133,11 +133,11 @@ A generated file had an uncommitted change (json v2 → v1 regeneration) that I 
 21. **Update `docs/adr/` with an ADR for the json v2 adoption** — why, when, what breaks
 22. **Add a troubleshooting section for "build constraints exclude all Go files"** — this exact error will confuse consumers
 23. **Update `CONTRIBUTING.md` with the GOEXPERIMENT requirement** — new contributors will hit this
-24. **Fix the auto-committed commit messages** via `git notes` (non-destructive annotation)
+24. ~~**Fix the auto-committed commit messages** via `git notes` (non-destructive annotation)~~ **Won't implement — history immutable.**
 
 ### Testing Infrastructure
 
-25. **Add a smoke test that runs `templ generate` and asserts zero diff** — catches stale generated files
+25. ~~**Add a smoke test that runs `templ generate` and asserts zero diff** — catches stale generated files~~ done — scripts/check-templ-sync.sh
 26. **Add a test that `go build ./...` works without GOEXPERIMENT for packages that DON'T use json v2** — graceful degradation
 27. **Add integration test: BuildFlow runs end-to-end in CI** — `buildflow verify` step
 28. **Fuzz test for `encoding/json/v2` migration** — ensure no panics on edge-case JSON
@@ -146,7 +146,7 @@ A generated file had an uncommitted change (json v2 → v1 regeneration) that I 
 
 29. **Audit all `encoding/json/v2` usage** — is it only `errorpage`? If so, consider if the experiment flag is worth the friction
 30. **Check if `breadcrumbs.templ` should migrate to json v2** or stay on v1 — consistency decision
-31. **Review the `.golangci.yml` uncommitted change** — removes `godoclint`, `ireturn`, `testableexamples` (aligns with AGENTS.md decisions); should be committed
+31. ~~**Review the `.golangci.yml` uncommitted change** — removes `godoclint`, `ireturn`, `testableexamples` (aligns with AGENTS.md decisions); should be committed~~ done — .golangci.yml
 32. **Run `golangci-lint` to verify zero findings** — after the `.golangci.yml` changes
 
 ### Process
@@ -154,8 +154,8 @@ A generated file had an uncommitted change (json v2 → v1 regeneration) that I 
 33. **Establish a "verification protocol"** — after any fix, run the ACTUAL failing command, not a proxy
 34. **Add "check git status for unexpected changes" to the workflow** — I missed breadcrumbs_templ.go drift
 35. **Create a pre-push hook that runs `buildflow verify`** — catches env issues before they reach CI
-36. **Document the BuildFlow invocation pattern** — `nix develop -c buildflow ...` vs bare `buildflow`
-37. **Review all prior status reports' "auto-commit daemon" complaints** — pattern-match for a systemic BuildFlow fix
+36. ~~**Document the BuildFlow invocation pattern** — `nix develop -c buildflow ...` vs bare `buildflow`~~ done — AGENTS.md
+37. ~~**Review all prior status reports' "auto-commit daemon" complaints** — pattern-match for a systemic BuildFlow fix~~ done — AGENTS.md
 
 ### Polish
 
@@ -173,7 +173,7 @@ A generated file had an uncommitted change (json v2 → v1 regeneration) that I 
 46. **Create a `Makefile`-equivalent in `flake.nix`** — `nix run .#buildflow` that wraps buildflow with correct env
 47. **Add GOEXPERIMENT to `go.toolchain` directives** — if Go supports it in `go.mod`
 48. **Review whether `encoding/json/v2` is worth the cost** — 1 package uses it; 5 packages fail without the flag; the entire dev experience depends on an experiment flag
-49. **Document the decision: keep json v2 or revert to v1** — ADR with tradeoffs
+49. ~~**Document the decision: keep json v2 or revert to v1** — ADR with tradeoffs~~ **Won't implement — kept jsonv2.**
 50. **Celebrate that the root cause was found in <5 minutes** — the fix took longer than the diagnosis
 
 ---

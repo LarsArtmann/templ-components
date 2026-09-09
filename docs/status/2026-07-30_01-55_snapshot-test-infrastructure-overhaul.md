@@ -119,15 +119,15 @@ The repo has ~30+ `snapshot_test.go` files using `utils.AssertContains`. Many of
 
 ## C) NOT STARTED
 
-1. **Visual test infrastructure improvements** — No changes to `visualtest` package at all
-2. **Visual test coverage expansion** — Zero new visual tests
-3. **Fixing the 2 failing visual tests** (`modal/open_light`, `drawer/right_light`)
-4. **Dark-mode golden variants** — Only 1 dark golden exists (`display/dark_golden_test.go`). No systematic dark-mode golden coverage.
-5. **RTL golden variants** — Zero RTL golden files exist
-6. **Contract test for golden coverage** — No test asserting "every component has at least one golden test"
-7. **Migration of existing golden tests** — Old `golden_test.go` / `golden_new_test.go` files still use the old `golden.Assert` pattern individually. Could be refactored to `AssertSnapshots` for consistency.
-8. **`layout` package golden tests** — Not started
-9. **`htmx` package golden tests** — Not started
+1. ~~**Visual test infrastructure improvements** — No changes to `visualtest` package at all~~ done — visualtest/testdata
+2. ~~**Visual test coverage expansion** — Zero new visual tests~~ done — visualtest/testdata
+3. ~~**Fixing the 2 failing visual tests** (`modal/open_light`, `drawer/right_light`)~~ done — visualtest/testdata
+4. ~~**Dark-mode golden variants** — Only 1 dark golden exists (`display/dark_golden_test.go`). No systematic dark-mode golden coverage.~~ done — visualtest/testdata
+5. ~~**RTL golden variants** — Zero RTL golden files exist~~ done — visualtest/testdata
+6. ~~**Contract test for golden coverage** — No test asserting "every component has at least one golden test"~~ done — visualtest/testdata
+7. ~~**Migration of existing golden tests** — Old `golden_test.go` / `golden_new_test.go` files still use the old `golden.Assert` pattern individually. Could be refactored to `AssertSnapshots` for consistency.~~ done (docs-health pass 2026-09-08)
+8. ~~**`layout` package golden tests** — Not started~~ done — display/golden sweep layout test.go
+9. ~~**`htmx` package golden tests** — Not started~~ done — htmx/golden sweep test.go
 10. **`recipes` package golden tests** — Not started
 11. **Visual test helper improvements** — No `AssertScreenshotSnapshots` table-driven equivalent was created for visual tests
 
@@ -169,17 +169,17 @@ Only ran `golangci-lint` on `internal/golden/...`. Did NOT lint the new `golden_
 
 ### Architecture & Strategy
 
-1. **The three-tier testing strategy needs formalization.** The tiers (golden → substring → visual) are documented in AGENTS.md but there's no enforcement. A contract test should assert every component has at least a golden test.
+1. ~~**The three-tier testing strategy needs formalization.** The tiers (golden → substring → visual) are documented in AGENTS.md but there's no enforcement. A contract test should assert every component has at least a golden test.~~ done — AGENTS.md
 
-2. **Dark-mode golden testing is undersolved.** Golden tests render light-mode HTML. Dark-mode classes (`dark:bg-gray-900`) are IN the output, but we're not testing that they're correct for each component variant. The existing `dark_golden_test.go` only covers Badge, Button, Card. A systematic approach would render each component and assert dark-mode class compliance via golden.
+2. ~~**Dark-mode golden testing is undersolved.** Golden tests render light-mode HTML. Dark-mode classes (`dark:bg-gray-900`) are IN the output, but we're not testing that they're correct for each component variant. The existing `dark_golden_test.go` only covers Badge, Button, Card. A systematic approach would render each component and assert dark-mode class compliance via golden.~~ done — visualtest/testdata
 
-3. **The `layout` and `htmx` packages are testing deserts.** `layout` has 10 components with 1 golden test. `htmx` has 8 components with 0 golden tests. These are foundational packages.
+3. ~~**The `layout` and `htmx` packages are testing deserts.** `layout` has 10 components with 1 golden test. `htmx` has 8 components with 0 golden tests. These are foundational packages.~~ done — htmx/golden sweep test.go
 
-4. **Substring tests and golden tests overlap.** Many components have BOTH a `snapshot_test.go` (substring) AND now a `golden_sweep_test.go`. The substring tests are less comprehensive but faster to understand. Need a policy: golden as the primary, substring for targeted invariants only.
+4. ~~**Substring tests and golden tests overlap.** Many components have BOTH a `snapshot_test.go` (substring) AND now a `golden_sweep_test.go`. The substring tests are less comprehensive but faster to understand. Need a policy: golden as the primary, substring for targeted invariants only.~~ done — AGENTS.md
 
 5. **Visual regression tests need the same table-driven treatment.** `visualtest.AssertScreenshot` has no batch equivalent. Adding 76 components × (light + dark) = 152 screenshots individually is impractical.
 
-6. **The 2 failing visual tests are a liability.** `modal/open_light` and `drawer/right_light` have `.fail/` artifacts committed. Failing tests erode trust in the test suite. Either fix them or mark them as known-failures with `t.Skip`.
+6. ~~**The 2 failing visual tests are a liability.** `modal/open_light` and `drawer/right_light` have `.fail/` artifacts committed. Failing tests erode trust in the test suite. Either fix them or mark them as known-failures with `t.Skip`.~~ done — visualtest/visual test.go
 
 ### Framework
 
@@ -187,7 +187,7 @@ Only ran `golangci-lint` on `internal/golden/...`. Did NOT lint the new `golden_
 
 8. **No `-update` dry-run mode.** Running `-update` silently overwrites. A `--diff` mode that shows what WOULD change without writing would be safer for CI.
 
-9. **No golden file count drift guard.** A test asserting "golden file count >= N" would catch accidentally deleted golden files.
+9. ~~**No golden file count drift guard.** A test asserting "golden file count >= N" would catch accidentally deleted golden files.~~ done — visualtest/coverage test.go
 
 10. **Normalization could be extensible.** Currently hardcoded (classes + IDs). If components start using timestamps or nonces in output, we'd need another regex. A `normalizers []func(string) string` chain would be more future-proof.
 
@@ -197,7 +197,7 @@ Only ran `golangci-lint` on `internal/golden/...`. Did NOT lint the new `golden_
 
 12. **No benchmark for the normalization pipeline.** The LCS diff is O(n*m) — fine for small golden files but could be slow on very large ones. No measurement was done.
 
-13. **The `boolPtr` function in `golden_coverage_test.go` was removed** (it was flagged as unused by gopls). This is correct but means the file's line count changed — if any tooling counts test lines, it'll be off.
+13. ~~**The `boolPtr` function in `golden_coverage_test.go` was removed** (it was flagged as unused by gopls). This is correct but means the file's line count changed — if any tooling counts test lines, it'll be off.~~ done — internal/golden/golden coverage test.go
 
 ---
 
@@ -205,39 +205,39 @@ Only ran `golangci-lint` on `internal/golden/...`. Did NOT lint the new `golden_
 
 ### High Priority (Framework & Coverage Gaps)
 
-1. Run `golangci-lint` on all new `golden_sweep_test.go` files and fix findings
-2. Fix the pre-existing `.golangci.yml` regression (ireturn/godoclint/testableexamples re-enabled)
-3. Add golden tests for `htmx` package (8 components, 0 golden tests)
-4. Add golden tests for `layout` package (AppShell, Split, Stack, Container, Base, Minimal, ThemeToggle)
+1. ~~Run `golangci-lint` on all new `golden_sweep_test.go` files and fix findings~~ done (docs-health pass 2026-09-08)
+2. ~~Fix the pre-existing `.golangci.yml` regression (ireturn/godoclint/testableexamples re-enabled)~~ done — .golangci.yml
+3. ~~Add golden tests for `htmx` package (8 components, 0 golden tests)~~ done — htmx/golden sweep test.go
+4. ~~Add golden tests for `layout` package (AppShell, Split, Stack, Container, Base, Minimal, ThemeToggle)~~ done — display/golden sweep layout test.go
 5. Add golden tests for `recipes` package (Dashboard, SettingsLayout, LoginCard)
-6. Add golden tests for remaining `display` components (SimpleCard, StatusBadge, SimpleEmptyState)
-7. Add golden tests for remaining `forms` components (Label, FieldError, FormFieldWrapper, Radio standalone)
+6. ~~Add golden tests for remaining `display` components (SimpleCard, StatusBadge, SimpleEmptyState)~~ done — display/golden sweep test.go
+7. ~~Add golden tests for remaining `forms` components (Label, FieldError, FormFieldWrapper, Radio standalone)~~ done — forms/golden sweep test.go
 8. Create a contract test: "every exported component function has at least one golden test"
-9. Fix the 2 failing visual tests (`modal/open_light`, `drawer/right_light`)
-10. Investigate and clean up `.fail/` artifacts in `visualtest/testdata/`
+9. ~~Fix the 2 failing visual tests (`modal/open_light`, `drawer/right_light`)~~ done — visualtest/visual test.go
+10. ~~Investigate and clean up `.fail/` artifacts in `visualtest/testdata/`~~ done — visualtest/visual test.go
 
 ### Medium Priority (Visual Regression Expansion)
 
-11. Create `AssertScreenshotSnapshots` table-driven helper for visual tests
-12. Add visual tests for `feedback` components (Spinner, ProgressBar, Skeleton, StepIndicator)
-13. Add visual tests for `forms` components (Checkbox, Toggle, RadioGroup, Combobox, Textarea)
-14. Add visual tests for `navigation` components (Pagination, Breadcrumbs, SidebarNav)
-15. Add visual tests for `layout` components (AppShell, Container, Split, Stack)
-16. Add dark-mode visual variants for Popover and ContextMenu (currently light-only)
-17. Add RTL visual variants for more components (currently only Button + Card)
-18. Add RTL + dark combo visual tests (currently zero)
-19. Add responsive viewport visual tests for Nav (hamburger collapse), Grid, Table
-20. Add interaction-state visual tests for Tab switching, Accordion expand/collapse
+11. ~~Create `AssertScreenshotSnapshots` table-driven helper for visual tests~~ done — visualtest/visual test.go
+12. ~~Add visual tests for `feedback` components (Spinner, ProgressBar, Skeleton, StepIndicator)~~ done — visualtest/visual test.go
+13. ~~Add visual tests for `forms` components (Checkbox, Toggle, RadioGroup, Combobox, Textarea)~~ done — visualtest/visual test.go
+14. ~~Add visual tests for `navigation` components (Pagination, Breadcrumbs, SidebarNav)~~ done — visualtest/visual test.go
+15. ~~Add visual tests for `layout` components (AppShell, Container, Split, Stack)~~ done — visualtest/visual test.go
+16. ~~Add dark-mode visual variants for Popover and ContextMenu (currently light-only)~~ done — visualtest/visual test.go
+17. ~~Add RTL visual variants for more components (currently only Button + Card)~~ done — visualtest/visual test.go
+18. ~~Add RTL + dark combo visual tests (currently zero)~~ done — visualtest/visual test.go
+19. ~~Add responsive viewport visual tests for Nav (hamburger collapse), Grid, Table~~ done — visualtest/visual test.go
+20. ~~Add interaction-state visual tests for Tab switching, Accordion expand/collapse~~ done — visualtest/visual test.go
 
 ### Medium Priority (Golden Improvements)
 
-21. Migrate existing `golden_test.go` / `golden_new_test.go` to `AssertSnapshots` pattern
-22. Add dark-mode golden variants systematically (render each component, golden the dark output)
+21. ~~Migrate existing `golden_test.go` / `golden_new_test.go` to `AssertSnapshots` pattern~~ done (docs-health pass 2026-09-08)
+22. ~~Add dark-mode golden variants systematically (render each component, golden the dark output)~~ done (docs-health pass 2026-09-08)
 23. Add golden tests for component edge cases (empty props, nil children, error states)
 24. Add golden tests for all enum variants (BadgeType × BadgeSize matrix, AlertType × Dismissible, etc.)
-25. Add golden tests for container-aware variants (`ContainerAware: true`)
+25. ~~Add golden tests for container-aware variants (`ContainerAware: true`)~~ done — display/golden sweep layout test.go
 26. Normalize nonces in golden output (currently `nonce=""` — if components start embedding actual nonces)
-27. Add a golden file count drift guard test
+27. ~~Add a golden file count drift guard test~~ done — visualtest/coverage test.go
 28. Consider HTML normalization (attribute ordering, whitespace normalization) beyond just CSS classes
 29. Add `--dry-run` mode to `-update` flag that shows diffs without writing
 30. Document the normalization pipeline in `docs/`
@@ -245,25 +245,25 @@ Only ran `golangci-lint` on `internal/golden/...`. Did NOT lint the new `golden_
 ### Lower Priority (Cleanup & Polish)
 
 31. Audit substring tests (`snapshot_test.go` files) for redundancy with new golden tests
-32. Remove redundant substring tests where golden coverage is strictly more comprehensive
-33. Keep substring tests only for targeted invariant checks (aria attributes, specific structural assertions)
-34. Add a `TESTING.md` doc explaining the three-tier strategy with examples
+32. ~~Remove redundant substring tests where golden coverage is strictly more comprehensive~~ **Won't implement — policy documented.**
+33. ~~Keep substring tests only for targeted invariant checks (aria attributes, specific structural assertions)~~ done — AGENTS.md
+34. ~~Add a `TESTING.md` doc explaining the three-tier strategy with examples~~ done — docs/testing-guide.md
 35. Benchmark the normalization + diff pipeline on the largest golden file
 36. Consider using `htmlparse`/`golang.org/x/net/html` for structural normalization instead of regex
 37. Add fuzz test for `normalizeIDs` (random ID-like strings should not crash)
 38. Add fuzz test for `normalizeClasses` (malformed class attributes)
 39. Add fuzz test for `diff` (arbitrary strings should not crash)
 40. Add fuzz test for `AssertSnapshots` (empty names, duplicate names)
-41. Add a test that renders every component with `Default*Props()` and asserts no panic
-42. Add a test that renders every component with zero-value props and asserts no panic
-43. Add golden tests for `htmx` interaction states (HTMX loading, error, retry)
+41. ~~Add a test that renders every component with `Default*Props()` and asserts no panic~~ done (docs-health pass 2026-09-08)
+42. ~~Add a test that renders every component with zero-value props and asserts no panic~~ done (docs-health pass 2026-09-08)
+43. ~~Add golden tests for `htmx` interaction states (HTMX loading, error, retry)~~ done (docs-health pass 2026-09-08)
 44. Add golden tests for `errorpage` handler JSON mode
 45. Add golden tests for `errorpage` `WriteError`/`WriteErrorPage` wrappers
 46. Consider snapshot testing for generated CSS (detect unintended style changes)
-47. Add visual test for Carousel slide navigation (arrow click state)
-48. Add visual test for Tooltip positioning (all 4 positions)
-49. Add visual test for Dropdown open state (all positions)
-50. Add visual test for Table with sortable headers (ascending/descending indicators)
+47. ~~Add visual test for Carousel slide navigation (arrow click state)~~ done — visualtest/visual test.go
+48. ~~Add visual test for Tooltip positioning (all 4 positions)~~ done — visualtest/visual test.go
+49. ~~Add visual test for Dropdown open state (all positions)~~ done — visualtest/visual test.go
+50. ~~Add visual test for Table with sortable headers (ascending/descending indicators)~~ done — visualtest/visual test.go
 
 ---
 

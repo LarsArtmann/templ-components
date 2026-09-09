@@ -219,65 +219,65 @@ CI enforces 70% coverage. I added ~400 lines of new code (recipes, Validate, CLI
 
 ### Critical (likely broken — fix before push)
 
-1. **Verify Popover/Dropdown visual positioning in a real browser.** Open the demo, click a Popover trigger, confirm the panel appears next to the trigger not at viewport top-left. If broken, choose: Anchor Positioning, JS positioning, or revert.
-2. **Fix Tooltip a11y regression.** Either restore minimal `aria-describedby` propagation JS, or emit `aria-describedby` directly on a known focusable element inside the wrapper.
-3. **Fix `HTMXSrc` + `HTMXResponseTargets` interaction.** When `HTMXSrc != ""`, default `HTMXResponseTargets` to false (or auto-suppress the CDN extension tag).
-4. **Fix `tc add` to copy dependency `.go` files** (or warn that the output won't compile standalone).
-5. **Manually smoke-test all 5 migrated overlay components** in light + dark + RTL in the demo.
+1. ~~**Verify Popover/Dropdown visual positioning in a real browser.** Open the demo, click a Popover trigger, confirm the panel appears next to the trigger not at viewport top-left. If broken, choose: Anchor Positioning, JS positioning, or revert.~~ done — visualtest
+2. ~~**Fix Tooltip a11y regression.** Either restore minimal `aria-describedby` propagation JS, or emit `aria-describedby` directly on a known focusable element inside the wrapper.~~ done — display/shared.go
+3. ~~**Fix `HTMXSrc` + `HTMXResponseTargets` interaction.** When `HTMXSrc != ""`, default `HTMXResponseTargets` to false (or auto-suppress the CDN extension tag).~~ done — CHANGELOG v1.2.0
+4. ~~**Fix `tc add` to copy dependency `.go` files** (or warn that the output won't compile standalone).~~ done — cmd/tc/main.go
+5. ~~**Manually smoke-test all 5 migrated overlay components** in light + dark + RTL in the demo.~~ done — visualtest/testdata
 
 ### High (shipped incomplete — close the loop)
 
-6. Wire `/recipes/dashboard`, `/recipes/settings`, `/recipes/login` routes into `examples/demo/`.
-7. Update AGENTS.md "Residual singleton JS" summary line (11 → ~8 handlers).
-8. Update `TODO_LIST.md` — mark #31, #41, #62 as resolved; add new TODOs for deferred work.
-9. Update `ROADMAP.md` to reflect what shipped vs deferred.
-10. Update `docs/DOMAIN_LANGUAGE.md` with new terms (ContainerAware, recipes, semantic tokens, presets, HTMXSrc).
-11. Verify the 3 theme presets actually compile with `tailwindcss` (especially `glass.css`'s `@utility` block).
-12. Add dark-golden variants for migrated components (`popover_bottom_dark.golden`, etc.).
-13. Update `skill/SKILL.md` + `website/src/data/sections.ts` component counts (drift-guard is fragile).
-14. Add `BenchmarkValidate` and `BenchmarkDashboard` etc.
+6. ~~Wire `/recipes/dashboard`, `/recipes/settings`, `/recipes/login` routes into `examples/demo/`.~~ done — examples/demo
+7. ~~Update AGENTS.md "Residual singleton JS" summary line (11 → ~8 handlers).~~ done — AGENTS.md
+8. ~~Update `TODO_LIST.md` — mark #31, #41, #62 as resolved; add new TODOs for deferred work.~~ done — TODO LIST.md
+9. ~~Update `ROADMAP.md` to reflect what shipped vs deferred.~~ done — ROADMAP.md
+10. ~~Update `docs/DOMAIN_LANGUAGE.md` with new terms (ContainerAware, recipes, semantic tokens, presets, HTMXSrc).~~ done — docs/DOMAIN LANGUAGE.md
+11. ~~Verify the 3 theme presets actually compile with `tailwindcss` (especially `glass.css`'s `@utility` block).~~ done — scripts/release.sh
+12. ~~Add dark-golden variants for migrated components (`popover_bottom_dark.golden`, etc.).~~ done — visualtest/testdata
+13. ~~Update `skill/SKILL.md` + `website/src/data/sections.ts` component counts (drift-guard is fragile).~~ done — utils/docs count test.go
+14. ~~Add `BenchmarkValidate` and `BenchmarkDashboard` etc.~~ done — errorpage/benchmark test.go
 15. Call `Validate()` from the `errorpage` handler (opt-in via `ErrorHandlerConfig.Validate: true`).
 
 ### Medium (skipped plan items)
 
-16. Execute Phase 4.1.2–4.1.5 — move test helpers to `internal/testutil/` with re-export shims. Update 70+ test imports.
-17. Execute Phase 4.4.2 — update AGENTS.md "Release Script" section (TODO #65).
-18. Execute Phase 4.4.3 — update AGENTS.md "Release Convention" section (TODO #66).
+16. ~~Execute Phase 4.1.2–4.1.5 — move test helpers to `internal/testutil/` with re-export shims. Update 70+ test imports.~~ done (docs-health pass 2026-09-08)
+17. ~~Execute Phase 4.4.2 — update AGENTS.md "Release Script" section (TODO #65).~~ **Won't implement — dropped todo rebuild.**
+18. ~~Execute Phase 4.4.3 — update AGENTS.md "Release Convention" section (TODO #66).~~ **Won't implement — dropped todo rebuild.**
 19. Execute Phase 4.4.4 — switch treefmt `gofmt` → `gofumpt` in `flake.nix` (TODO #67). Run `nix fmt`.
-20. Add entrance animations for Popover/Dropdown/ContextMenu via `@starting-style` + `allow-discrete` in `templates/custom.css` (the plan's Verschlimmbessern Guards explicitly required this; I reused the existing `[popover]::backdrop` rule only).
-21. Add negative CSP assertions — verify Popover/Tooltip/HoverCard emit zero `<script>` tags (currently the test just skips them).
-22. Update `DefaultPageProps` godoc to mention `HTMXSrc` alongside `HTMXVersion`/`CSSPath`.
-23. Document the `cmd/tc/_sources/` naming convention in AGENTS.md (leading underscore = templ-generate skip).
-24. Rename `cmd/tc/_sources/` to `cmd/tc/embedded_sources/` (self-documenting) — or keep `_sources` but add a README.
-25. Add a `tc add --list-deps <component>` flag that shows the dependency `.go` files the consumer also needs.
+20. ~~Add entrance animations for Popover/Dropdown/ContextMenu via `@starting-style` + `allow-discrete` in `templates/custom.css` (the plan's Verschlimmbessern Guards explicitly required this; I reused the existing `[popover]::backdrop` rule only).~~ done — templates/custom.css
+21. ~~Add negative CSP assertions — verify Popover/Tooltip/HoverCard emit zero `<script>` tags (currently the test just skips them).~~ done — integration/csp nonce test.go
+22. ~~Update `DefaultPageProps` godoc to mention `HTMXSrc` alongside `HTMXVersion`/`CSSPath`.~~ done — layout/base.templ
+23. ~~Document the `cmd/tc/_sources/` naming convention in AGENTS.md (leading underscore = templ-generate skip).~~ done — AGENTS.md
+24. ~~Rename `cmd/tc/_sources/` to `cmd/tc/embedded_sources/` (self-documenting) — or keep `_sources` but add a README.~~ **Won't implement — documented not renamed.**
+25. ~~Add a `tc add --list-deps <component>` flag that shows the dependency `.go` files the consumer also needs.~~ done — cmd/tc/main.go
 
 ### Low (polish)
 
-26. Shorten the 5 commit messages (retroactive — amend if not pushed, which is the case).
-27. Add `recipes` to the demo's Tailwind `@source` scanning path (if not already covered by `../../**/*.templ`).
-28. Add a container-aware variant to `display.Grid` golden (`grid_container_responsive.golden`).
+26. ~~Shorten the 5 commit messages (retroactive — amend if not pushed, which is the case).~~ **Won't implement — history immutable.**
+27. ~~Add `recipes` to the demo's Tailwind `@source` scanning path (if not already covered by `../../**/*.templ`).~~ done — examples/demo
+28. ~~Add a container-aware variant to `display.Grid` golden (`grid_container_responsive.golden`).~~ done — visualtest/testdata
 29. Add `TestRecipesA11y` — landmarks, heading order in Dashboard/SettingsLayout/LoginCard.
 30. Add a `Validate()` call to the demo's error handler to show the pattern.
-31. Document the `tc` CLI in README.md (currently only `docs/cli.md`).
-32. Add a `tc version` command.
+31. ~~Document the `tc` CLI in README.md (currently only `docs/cli.md`).~~ **Won't implement — already exists.**
+32. ~~Add a `tc version` command.~~ **Won't implement — already exists.**
 33. Add a `tc add --all` flag (copies every component — for full-fork consumers).
 34. Add `goreleaser` config for the `tc` binary (cross-compile + archive).
 35. Add a Nix flake output for `tc` (`nix run .#tc`).
-36. Run `go test -coverprofile=coverage.out` and verify the 70% CI threshold still passes.
-37. Add `Validate()` benchmarks to `errorpage/benchmark_test.go`.
-38. Add `dashboardContent`/`settingsMain`/`loginBody` sub-template tests (currently only the public API is tested).
-39. Add a `recipes.AuthLayout` (split + form + OAuth slots) — the pattern is established.
+36. ~~Run `go test -coverprofile=coverage.out` and verify the 70% CI threshold still passes.~~ done — nix coverage app
+37. ~~Add `Validate()` benchmarks to `errorpage/benchmark_test.go`.~~ done — errorpage/benchmark test.go
+38. ~~Add `dashboardContent`/`settingsMain`/`loginBody` sub-template tests (currently only the public API is tested).~~ done — recipes/recipes test.go
+39. ~~Add a `recipes.AuthLayout` (split + form + OAuth slots) — the pattern is established.~~ done — recipes/auth layout.templ
 40. Add a `recipes.EmptyState` (Card + EmptyState + action slot) — common dashboard pattern.
-41. Migrate `examples/demo/forms_section.templ` to also show `Layout: FormLayoutGrid` (the demo only shows Stack + Inline).
-42. Add a `forms.FormProps.Validate` method (mirrors `ErrorPageProps.Validate`).
+41. ~~Migrate `examples/demo/forms_section.templ` to also show `Layout: FormLayoutGrid` (the demo only shows Stack + Inline).~~ done — examples/demo
+42. ~~Add a `forms.FormProps.Validate` method (mirrors `ErrorPageProps.Validate`).~~ **Won't implement — todo33 validate policy.**
 43. Add `navigation.Footer.ContainerAware` (footer columns collapse by container width).
-44. Document the "Component-level Class override" headless alternative in `docs/theming.md` (ADR-0021 option C).
+44. ~~Document the "Component-level Class override" headless alternative in `docs/theming.md` (ADR-0021 option C).~~ done (docs-health pass 2026-09-08)
 45. Add `recipes.DashboardProps.MobileHeaderActions` slot (common pattern: mobile shows fewer actions).
-46. Update `docs/icons-only-adoption.md` to mention that the `tc` CLI can extract a single icon's `.templ`.
-47. Add `htmx.SwapStyleIsValid` (currently `SwapStyle` has no `IsValid` — drift from convention).
-48. Add `layout.ContainerWidthIsValid` (same drift).
+46. ~~Update `docs/icons-only-adoption.md` to mention that the `tc` CLI can extract a single icon's `.templ`.~~ done (docs-health pass 2026-09-08)
+47. ~~Add `htmx.SwapStyleIsValid` (currently `SwapStyle` has no `IsValid` — drift from convention).~~ done (docs-health pass 2026-09-08)
+48. ~~Add `layout.ContainerWidthIsValid` (same drift).~~ done — layout/container test.go
 49. Add `layout.SidebarWidthIsValid` test for `SidebarWidthAuto` (currently only SM/MD/LG tested).
-50. Run `nix fmt` + `nix flake check` — never run this session.
+50. ~~Run `nix fmt` + `nix flake check` — never run this session.~~ done — status 2026-07-27 21-16
 
 ---
 

@@ -141,26 +141,26 @@
 | -- | --------------------------------------------------------------------- | ------ |
 | 31 | Add Lighthouse CI to website workflow                                 | 20 min |
 | 32 | Add HTML validation as a blocking step (not `continue-on-error`)      | 10 min |
-| 33 | Add link checking (broken link scanner) to website CI                 | 15 min |
-| 34 | Add spell check to docs                                               | 10 min |
+| ~~33~~ | ~~Add link checking (broken link scanner) to website CI~~ done — lychee | ~~15 min~~ |
+| ~~34~~ | ~~Add spell check to docs~~ done — .codespellrc | ~~10 min~~ |
 | 35 | Verify 70% coverage threshold passes in CI                            | 5 min  |
-| 36 | Add integration test that renders the demo binary and checks HTTP 200 | 15 min |
-| 37 | Add visual regression testing for demo (screenshot comparison)        | 1 hour |
+| ~~36~~ | ~~Add integration test that renders the demo binary and checks HTTP 200~~ done — visualtest/demo smoke test.go | ~~15 min~~ |
+| ~~37~~ | ~~Add visual regression testing for demo (screenshot comparison)~~ done — visualtest | ~~1 hour~~ |
 | 38 | Add bundle size monitoring to website                                 | 15 min |
 | 39 | Add CSP headers to Firebase hosting config for the demo page          | 10 min |
-| 40 | Add cache-control headers for static assets                           | 5 min  |
+| ~~40~~ | ~~Add cache-control headers for static assets~~ done — cache-control headers | ~~5 min~~ |
 
 ### Future features
 
 | #  | Task                                                                     | Est.    |
 | -- | ------------------------------------------------------------------------ | ------- |
-| 41 | Deploy demo as a Go server (not static HTML) for full HTMX interactivity | 2 hours |
+| ~~41~~ | ~~Deploy demo as a Go server (not static HTML) for full HTMX interactivity~~ done — Cloud Run live server | ~~2 hours~~ |
 | 42 | Add interactive playground (live edit templ code, see result)            | 1 day   |
 | 43 | Add theme customizer (pick colors, see all components update)            | 4 hours |
 | 44 | Add versioned docs (v0.x, v1.x)                                          | 4 hours |
 | 45 | Add i18n support to docs                                                 | 1 day   |
 | 46 | Add analytics (privacy-friendly: Plausible or Fathom)                    | 15 min  |
-| 47 | Add newsletter signup for release notifications                          | 30 min  |
+| ~~47~~ | ~~Add newsletter signup for release notifications~~ done — website/src/components/Newsletter.astro | ~~30 min~~ |
 | 48 | Add "Sponsors" section to README and website                             | 15 min  |
 | 49 | Create a `CONTRIBUTING.md` guide for adding new components               | 30 min  |
 | 50 | Add Discord/Slack community link                                         | 10 min  |

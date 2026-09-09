@@ -16,7 +16,7 @@
 | 4 | **`icons.IconRTL` test coverage** — shipped public API was at 0%                         | `icons/snapshot_test.go` — 3 sub-tests covering regular icon, spinner variant, and all 100 path icons. Icons package coverage: **47.1% → 75.9%**                                                                                                                                                                      |
 | 5 | **`utils.AssertContainsAll` test coverage** — last 0% function in utils                  | `utils/utils_test.go` — 3 sub-tests (all present, single, zero args)                                                                                                                                                                                                                                                  |
 | 6 | **Documentation sync** — CHANGELOG, FEATURES, README, TODO_LIST, SKILL.md                | Version bumped 0.13.0 → 0.14.0, component count 83→84, enum count 33→34, generated files 62→63, Popover moved PLANNED→DONE in TODO_LIST                                                                                                                                                                               |
-| 7 | **Full verify passes**                                                                   | `nix run .#verify` — generate + build + all tests + lint, 0 issues                                                                                                                                                                                                                                                    |
+| ~~7~~ | ~~**Full verify passes**~~ done at `20329a1` | ~~`nix run .#verify` — generate + build + all tests + lint, 0 issues~~ |
 
 ---
 
@@ -70,81 +70,81 @@
 
 1. **Write Popover BDD test** — `display/bdd_test.go`, user-visible behavior spec
 2. **Write `ExamplePopover`** — godoc example compiles + renders
-3. **Add Popover to CSP nonce integration test** — `integration/csp_nonce_test.go`
-4. **Add Popover to `examples/demo`** — wire into demo binary
-5. **Write Popover snapshot composition test** — broader than golden
-6. **Commit all changes** — user hasn't asked yet
+3. ~~**Add Popover to CSP nonce integration test** — `integration/csp_nonce_test.go`~~ **Won't implement — popover zero-JS v0.20.0.**
+4. ~~**Add Popover to `examples/demo`** — wire into demo binary~~ done — display demo.templ
+5. ~~**Write Popover snapshot composition test** — broader than golden~~ done — visualtest overlay goldens
+6. ~~**Commit all changes** — user hasn't asked yet~~ done — v0.14.0
 
 ### High value — new components
 
-7. **`DataTable`** (#44) — high-level sortable/filtering/pagination wrapper around `Table` + `TableHeader` + `Pagination`. #2 most requested.
-8. **`FilterDropdown`** (#45) — purpose-built for HTMX filter bars
-9. **`Slider`** (#46) — ARIA slider pattern
-10. **`HoverCard`** (#51) — like Popover but hover-triggered (can compose from Popover)
+7. ~~**`DataTable`** (#44) — high-level sortable/filtering/pagination wrapper around `Table` + `TableHeader` + `Pagination`. #2 most requested.~~ done — v0.17.0
+8. ~~**`FilterDropdown`** (#45) — purpose-built for HTMX filter bars~~ done — v0.17.0
+9. ~~**`Slider`** (#46) — ARIA slider pattern~~ done — v0.17.0
+10. ~~**`HoverCard`** (#51) — like Popover but hover-triggered (can compose from Popover)~~ done — v0.17.0
 
 ### High value — testing & quality
 
 11. **BDD tests for all Popover-adjacent components** — Dropdown, Tooltip, Modal, Drawer all lack BDD specs despite the checklist requiring them
-12. **Reassess the 80% coverage target** (TODO #12) — the 72-76% numbers are in generated templ error branches, not real logic. Write a targeted analysis rather than blindly adding tests.
-13. **Add dark golden test variants for Popover** — `popover_dark.golden`
+12. ~~**Reassess the 80% coverage target** (TODO #12) — the 72-76% numbers are in generated templ error branches, not real logic. Write a targeted analysis rather than blindly adding tests.~~ done — reassessed v0.17.0 retro
+13. ~~**Add dark golden test variants for Popover** — `popover_dark.golden`~~ done — visualtest overlay goldens
 14. **Fuzz test for `PopoverPosition` validation** — match the `FuzzInputType`/`FuzzButtonHTMLType` pattern
 15. **Benchmark for Popover render** — match the benchmark suite pattern in other packages
 
 ### Medium value — polish & DX
 
 16. **Popover `Trigger` slot** — currently `TriggerText string`; a `templ.Component` trigger slot would allow icon-only triggers
-17. **Popover `Open` prop** — server-controlled open state (like Modal's `Open` field) for HTMX-driven popovers
+17. ~~**Popover `Open` prop** — server-controlled open state (like Modal's `Open` field) for HTMX-driven popovers~~ **Won't implement — superseded ADR-0017 native popover.**
 18. **Popover `DismissButton`** — explicit close button inside the panel
 19. **Popover arrow/pointer** — visual arrow pointing to trigger (like Tooltip has)
 20. **Recipe doc: Popover + filter form** — `docs/recipes/popover-filter-panel.md`
 
 ### Documentation
 
-21. **SKILL.md: add Popover to the authoring playbook examples**
-22. **SKILL.md: update component count in the process section**
-23. **Add Popover to `docs/adr/` — decision: why Popover uses `role="dialog"` not `role="tooltip"`**
+21. ~~**SKILL.md: add Popover to the authoring playbook examples**~~ done — skill/SKILL.md
+22. ~~**SKILL.md: update component count in the process section**~~ done — TestDocsCountDrift
+23. ~~**Add Popover to `docs/adr/` — decision: why Popover uses `role="dialog"` not `role="tooltip"`**~~ **Won't implement — superseded ADR-0017.**
 24. **CONTRIBUTING.md: mention Popover in the component list**
 
 ### v1.0 track (deferred, from TODO_LIST)
 
-25. **`Validate() error` on props structs** (#33)
+25. ~~**`Validate() error` on props structs** (#33)~~ **Won't implement — only ErrorPageProps v1.0.0.**
 26. **Move test helpers to `internal/testutil/`** (#34)
-27. **Self-host htmx as default** (#35, ADR 0007)
-28. **Semantic token layer `bg-tc-primary`** (#36, ADR 0008)
-29. **Remove deprecated aliases** (#38)
+27. ~~**Self-host htmx as default** (#35, ADR 0007)~~ done — ADR-0022 v2.0
+28. ~~**Semantic token layer `bg-tc-primary`** (#36, ADR 0008)~~ done — templ-components-theme.css
+29. ~~**Remove deprecated aliases** (#38)~~ done — removed v2.0 ADR-0022
 
 ### v2.0 track (deferred)
 
-30. **Compound component pattern** for overlays (#39)
-31. **Native `<dialog>` element** (#40)
-32. **Headless/unstyled variants** (#41)
-33. **CLI tool `templ-components add <component>`** (#42)
+30. ~~**Compound component pattern** for overlays (#39)~~ **Won't implement — deferred ADR-0023.**
+31. ~~**Native `<dialog>` element** (#40)~~ done — ADR-0014 v0.18.0
+32. ~~**Headless/unstyled variants** (#41)~~ **Won't implement — deferred ADR-0021.**
+33. ~~**CLI tool `templ-components add <component>`** (#42)~~ done — cmd/tc
 
 ### Remaining new components from TODO
 
-34. **`Rating`** (#47)
-35. **`TagsInput`** (#48)
-36. **`ContextMenu`** (#49)
-37. **`Carousel`** (#50)
-38. **`Calendar`** (#52)
+34. ~~**`Rating`** (#47)~~ done — v0.17.0
+35. ~~**`TagsInput`** (#48)~~ done — v0.17.0
+36. ~~**`ContextMenu`** (#49)~~ done — v0.17.0
+37. ~~**`Carousel`** (#50)~~ done — v0.17.0
+38. ~~**`Calendar`** (#52)~~ done — v0.17.0
 
 ### Infrastructure (blocked)
 
-39. **Visual regression testing** (#13) — Playwright screenshot diff
-40. **Demo site deployment** (#27)
+39. ~~**Visual regression testing** (#13) — Playwright screenshot diff~~ done — visualtest/
+40. ~~**Demo site deployment** (#27)~~ done — Cloud Run demo
 41. **`awesome-templ` PR** (#28)
 42. **`templ.guide` listing** (#29)
-43. **SSH tag signing config** (#30)
+43. ~~**SSH tag signing config** (#30)~~ done — v0.18.0 signed tag
 
 ### Code quality
 
 44. **icons package still at 75.9%** — the uncovered remainder is `strokeIconRTL` (68.3%) and `iconPaths()` panic path. Could add a targeted test for the stray `|` separator panic.
-45. **`internal/golden.Assert` at 0%** — the golden comparison function itself is untested in the package it's defined in (tested via callers).
+45. ~~**`internal/golden.Assert` at 0%** — the golden comparison function itself is untested in the package it's defined in (tested via callers).~~ done — CHANGELOG v0.10.0 golden 81.8%
 46. **Add `Popover` to `integration/composition_test.go`** — cross-package composition proof
 47. **RTL test for Popover** — verify logical properties mirror correctly (no `left-`/`right-` except centering)
-48. **Motion-reduce check for Popover** — the panel doesn't have transitions yet, but if added, must include `motion-reduce:*`
-49. **`goconst` audit** — Popover JS string literals could be extracted to constants
-50. **AGENTS.md `skill/` reference** — the `skill/SKILL.md` path in git status suggests the skill may be vendored in-repo; verify this is intentional vs. a symlink to `~/.config/crush/skills/`
+48. ~~**Motion-reduce check for Popover** — the panel doesn't have transitions yet, but if added, must include `motion-reduce:*`~~ done — templates/custom.css @starting-style
+49. ~~**`goconst` audit** — Popover JS string literals could be extracted to constants~~ done — display/shared.go constants
+50. ~~**AGENTS.md `skill/` reference** — the `skill/SKILL.md` path in git status suggests the skill may be vendored in-repo; verify this is intentional vs. a symlink to `~/.config/crush/skills/`~~ done — skill/ vendored
 
 ---
 

@@ -18,13 +18,13 @@
 | 5  | **Added `TestGolangciDisabledLinters` prevention test** (`utils/lint_config_test.go`)                 | Asserts the 3 linters are absent from `.golangci.yml` enable list + no `ireturn:` block remains. This is the prevention test the prior 21-16 session's d.4/e.4 demanded but never wrote. The regression can no longer recur a 5th time without CI catching it.                   |
 | 6  | **Verified `flake.nix` shellHook claims are true**                                                    | devShell `shellHook` exports `GOEXPERIMENT=jsonv2` (line 42). `GOWORK=off` is in the `visual` app (line 144) — **not** the devShell — so TODO #70 is genuinely still open (correctly kept in TODO_LIST).                                                                         |
 | 7  | **TODO_LIST verified superb**                                                                         | All 9 open items (#70-78 + blocked #28-29 + deferred #35/38/39/33/34/67) checked against code — all genuinely open. Zero completed items. Zero "Previously Completed" sections.                                                                                                  |
-| 8  | **ROADMAP + FEATURES cross-file consistency verified**                                                | No split brains. No PLANNED+DONE overlap. No TODO item duplicating ROADMAP. FEATURES "Planned" section accurate (tokens/self-host DONE, Validate PARTIAL, aliases DEFERRED).                                                                                                     |
-| 9  | **CHANGELOG `[Unreleased]` made TRUE**                                                                | The `.golangci.yml` Fixed entry previously claimed "exits 0" while the file produced exit 1. Enhanced the entry to record the prevention test so the claim is now backed by an automated guard.                                                                                  |
-| 10 | **README version badge fixed**                                                                        | Stale `v0.18.0` → `v1.2.0`. (Drift the prior brutal self-review flagged but nobody fixed.)                                                                                                                                                                                       |
-| 11 | **DOMAIN_LANGUAGE: 2 gaps closed**                                                                    | (a) Added 6 visual-testing terms (`Visual Regression`, `Golden (PNG)`, `chromedp`, `pixelmatch`, `AssertScreenshot`, `.fail/` artifacts) — was 0 terms. (b) Corrected ContainerAware entry (listed 7 components, now all 8 + notes `Grid.ContainerResponsive`).                  |
-| 12 | **SKILL.md: all 8 container-aware components now note `ContainerAware`**                              | Was 2 of 8 (Grid, SkeletonCardGrid). Added Card, Nav, Split, Form, Pagination, DefinitionGrid.                                                                                                                                                                                   |
-| 13 | **Annotated all 5 `2026-07-27*` reports** with `## Resolution (2026-07-27, later session)` appendices | 21-16 also inline-corrected its stale "lint gate repaired" opening claim (fresh-open test). Each appendix has an item-by-item table citing DONE/OPEN status. Container-query + visual-testing reports note where work shipped (CHANGELOG `[Unreleased]`) + forward items routed. |
-| 14 | **Full quality gate green**                                                                           | `go build ./...` ✓ · `go test ./...` 16/16 ✓ · `golangci-lint run` exit 0 / 0 issues ✓ · `nix flake check` (treefmt) ✓ · drift tests (`TestDocsCountDrift`/`TestVersionMatches*`/`TestSkillComponentCount`/`TestGolangciDisabledLinters`) ✓                                      |
+| ~~8~~  | ~~**ROADMAP + FEATURES cross-file consistency verified**~~ done at `83e0573` | ~~No split brains. No PLANNED+DONE overlap. No TODO item duplicating ROADMAP. FEATURES "Planned" section accurate (tokens/self-host DONE, Validate PARTIAL, aliases DEFERRED).~~ |
+| ~~9~~  | ~~**CHANGELOG `[Unreleased]` made TRUE**~~ done at `83e0573` | ~~The `.golangci.yml` Fixed entry previously claimed "exits 0" while the file produced exit 1. Enhanced the entry to record the prevention test so the claim is now backed by an automated guard.~~ |
+| ~~10~~ | ~~**README version badge fixed**~~ done at `83e0573` | ~~Stale `v0.18.0` → `v1.2.0`. (Drift the prior brutal self-review flagged but nobody fixed.)~~ |
+| ~~11~~ | ~~**DOMAIN_LANGUAGE: 2 gaps closed**~~ done at `83e0573` | ~~(a) Added 6 visual-testing terms (`Visual Regression`, `Golden (PNG)`, `chromedp`, `pixelmatch`, `AssertScreenshot`, `.fail/` artifacts) — was 0 terms. (b) Corrected ContainerAware entry (listed 7 components, now all 8 + notes `Grid.ContainerResponsive`).~~ |
+| ~~12~~ | ~~**SKILL.md: all 8 container-aware components now note `ContainerAware`**~~ done at `83e0573` | ~~Was 2 of 8 (Grid, SkeletonCardGrid). Added Card, Nav, Split, Form, Pagination, DefinitionGrid.~~ |
+| ~~13~~ | ~~**Annotated all 5 `2026-07-27*` reports** with `## Resolution (2026-07-27, later session)` appendices~~ done at `83e0573` | ~~21-16 also inline-corrected its stale "lint gate repaired" opening claim (fresh-open test). Each appendix has an item-by-item table citing DONE/OPEN status. Container-query + visual-testing reports note where work shipped (CHANGELOG `[Unreleased]`) + forward items routed.~~ |
+| ~~14~~ | ~~**Full quality gate green**~~ done at `83e0573` | ~~`go build ./...` ✓ · `go test ./...` 16/16 ✓ · `golangci-lint run` exit 0 / 0 issues ✓ · `nix flake check` (treefmt) ✓ · drift tests (`TestDocsCountDrift`/`TestVersionMatches*`/`TestSkillComponentCount`/`TestGolangciDisabledLinters`) ✓~~ |
 
 ---
 
@@ -119,17 +119,17 @@ I read that lesson. I then repeated the mistake. I rationalized: "today is 2026-
 
 ### Critical — root causes + verification gaps from this session
 
-1. **Investigate WHY the `.golangci.yml` disabled linters keep getting re-added** — is it the daemon? BuildFlow? A cached flake input? The guard test catches it now, but the mystery process is still running. Root-cause it.
-2. **Fix `navigation/breadcrumbs_templ.go` drift** — `templ generate` from source (imports json v2, source imports json v1). One command. Flagged 2 sessions.
-3. **Add `TestTemplGeneratedInSync` drift test** — assert every `*_templ.go` matches its `.templ` source (buildflow report f.9). Prevents the breadcrumbs class of drift.
-4. **Read `docs/visual-testing.md` and verify accuracy** — 2 sessions have flagged this, neither opened it.
+1. ~~**Investigate WHY the `.golangci.yml` disabled linters keep getting re-added** — is it the daemon? BuildFlow? A cached flake input? The guard test catches it now, but the mystery process is still running. Root-cause it.~~ done — status 2026-07-30 22-19
+2. ~~**Fix `navigation/breadcrumbs_templ.go` drift** — `templ generate` from source (imports json v2, source imports json v1). One command. Flagged 2 sessions.~~ done — navigation/breadcrumbs templ.go
+3. ~~**Add `TestTemplGeneratedInSync` drift test** — assert every `*_templ.go` matches its `.templ` source (buildflow report f.9). Prevents the breadcrumbs class of drift.~~ done — utils/templ sync test.go
+4. ~~**Read `docs/visual-testing.md` and verify accuracy** — 2 sessions have flagged this, neither opened it.~~ done — status 2026-07-28 15-29
 5. **Add `CHANGELOG` entry for the README version-badge fix** — I fixed the badge but didn't log it.
-6. **Create `.envrc` with `export GOEXPERIMENT=jsonv2`** — root-cause fix for the buildflow band-aid (buildflow report P1).
+6. ~~**Create `.envrc` with `export GOEXPERIMENT=jsonv2`** — root-cause fix for the buildflow band-aid (buildflow report P1).~~ done — .envrc
 
 ### High — HARVEST items I should have routed to ROADMAP
 
-7. **Add "Visual test coverage expansion" as a ROADMAP direction** — currently 4/15 packages; target all high-risk components.
-8. **Add "Container-aware default flip" details to ROADMAP v2.0** — make `ContainerAware` default for Grid/Card/Split post-v1.0.
+7. ~~**Add "Visual test coverage expansion" as a ROADMAP direction** — currently 4/15 packages; target all high-risk components.~~ done — ROADMAP.md
+8. ~~**Add "Container-aware default flip" details to ROADMAP v2.0** — make `ContainerAware` default for Grid/Card/Split post-v1.0.~~ done — docs/adr/0022-v2-default-flip-migration.md
 9. **Add `Container.ContainerAware` candidate to ROADMAP** (container report f.11).
 10. **Add `Breadcrumbs.ContainerAware` candidate to ROADMAP** (f.12).
 11. **Add `EmptyState.ContainerAware` candidate to ROADMAP** (f.13).
@@ -137,29 +137,29 @@ I read that lesson. I then repeated the mistake. I rationalized: "today is 2026-
 13. **Add `Footer.ContainerAware` candidate to ROADMAP** (f.15).
 14. **Add "Centralize container-aware wrapper sub-template" to ROADMAP** — 8 components hand-write the same `@container` wrapper (container report e.3).
 15. **Add `StateHover` fix (target first interactive child) to TODO** — visual report e.6.
-16. **Add `MaxMismatch` calibration experiment to TODO** — visual report e.4.
-17. **Add `Viewport*` presets to TODO** — visual report e.9.
-18. **Add `InteractionState.String()` to TODO** — visual report e.8.
+16. ~~**Add `MaxMismatch` calibration experiment to TODO** — visual report e.4.~~ done — visualtest/visual test.go
+17. ~~**Add `Viewport*` presets to TODO** — visual report e.9.~~ done — visualtest/render.go
+18. ~~**Add `InteractionState.String()` to TODO** — visual report e.8.~~ done — visualtest/render.go
 19. **Add `Options.Dark/RTL` → `*bool` tri-state to TODO** — visual report e.7.
 
 ### High — open items already in TODO_LIST (verified this session)
 
-20. **Set `GOWORK=off` in `flake.nix` devShell `shellHook`** (TODO #70) — verified still genuinely open (only in `visual` app, not devShell). Risk: may break visualtest dev workflow — investigate first.
-21. **Investigate GitHub Dependabot alert** (TODO #71).
-22. **Add demo CSS rebuild to `scripts/release.sh`** (TODO #72) — verified no css step.
-23. **Convert assertion tests to golden files** (TODO #73).
-24. **`utils.TestContainerQueryCompliance` scanner** (TODO #74) — verified not exists.
-25. **Visual regression tests for Modal/Drawer/Dropdown/Input/Select** (TODO #75).
-26. **Share one Chromium process across visual tests** (TODO #76).
-27. **First RTL visual test** (TODO #77) — verified 0 RTL tests.
+20. ~~**Set `GOWORK=off` in `flake.nix` devShell `shellHook`** (TODO #70) — verified still genuinely open (only in `visual` app, not devShell). Risk: may break visualtest dev workflow — investigate first.~~ done — .envrc
+21. ~~**Investigate GitHub Dependabot alert** (TODO #71).~~ done — status 2026-07-28 09-23
+22. ~~**Add demo CSS rebuild to `scripts/release.sh`** (TODO #72) — verified no css step.~~ done — scripts/release.sh
+23. ~~**Convert assertion tests to golden files** (TODO #73).~~ done — navigation/golden test.go
+24. ~~**`utils.TestContainerQueryCompliance` scanner** (TODO #74) — verified not exists.~~ done — utils/container query compliance test.go
+25. ~~**Visual regression tests for Modal/Drawer/Dropdown/Input/Select** (TODO #75).~~ done — visualtest/testdata
+26. ~~**Share one Chromium process across visual tests** (TODO #76).~~ done — visualtest/harness.go
+27. ~~**First RTL visual test** (TODO #77) — verified 0 RTL tests.~~ done — visualtest/testdata
 28. **Lint test: Tailwind lookup maps must live in `.templ` files** (TODO #78).
 
 ### Medium — living-doc gaps still open
 
-29. **Add visual-testing + container-queries mentions to README** — 0 feature mentions (badge fixed; visibility still 0).
-30. **Verify every DOMAIN_LANGUAGE term against code symbols** — glossary "Entities"/"Value Objects" may have stale entries.
-31. **Verify `website/` docs beyond `sections.ts`** mention ContainerAware + visual testing.
-32. **Check every internal markdown link resolves** (skill checklist item, not run).
+29. ~~**Add visual-testing + container-queries mentions to README** — 0 feature mentions (badge fixed; visibility still 0).~~ done — README.md
+30. ~~**Verify every DOMAIN_LANGUAGE term against code symbols** — glossary "Entities"/"Value Objects" may have stale entries.~~ done — status 2026-07-28 15-29
+31. ~~**Verify `website/` docs beyond `sections.ts`** mention ContainerAware + visual testing.~~ done — status 2026-07-28 15-29
+32. ~~**Check every internal markdown link resolves** (skill checklist item, not run).~~ done — status 2026-07-28 15-29
 
 ### Medium — BuildFlow / process (systemic)
 
@@ -172,21 +172,21 @@ I read that lesson. I then repeated the mistake. I rationalized: "today is 2026-
 
 37. **Cross-reference ADR-0017 revision in `docs/research/popover-api.md`** (prior session B3).
 38. **Add ADR-0016 to an ADR index** if one exists.
-39. **Document `cmd/tc/_sources/` naming convention** in AGENTS.md.
-40. **Add `htmx.SwapStyleIsValid`** — `SwapStyleIsValid` exists but convention drift (prior #47).
-41. **Add `layout.ContainerWidthIsValid` test** (prior #48) — `ContainerWidthIsValid` exists.
-42. **Write consumer migration note for `SkeletonCardGrid` API change** (container report f.10).
-43. **Add dark-mode variant for EVERY component with semantic colors** (visual report f.18).
-44. **Add a visual coverage metric test** — "% of components with ≥1 golden" (visual report f.39).
-45. **Add CSS-staleness detection** — fail if `app.css` mtime < newest `.templ` mtime (visual report f.42).
+39. ~~**Document `cmd/tc/_sources/` naming convention** in AGENTS.md.~~ done — AGENTS.md
+40. ~~**Add `htmx.SwapStyleIsValid`** — `SwapStyleIsValid` exists but convention drift (prior #47).~~ **Won't implement — already exists.**
+41. ~~**Add `layout.ContainerWidthIsValid` test** (prior #48) — `ContainerWidthIsValid` exists.~~ **Won't implement — already exists.**
+42. ~~**Write consumer migration note for `SkeletonCardGrid` API change** (container report f.10).~~ done — docs/migration/skeletoncardgrid-api-change.md
+43. ~~**Add dark-mode variant for EVERY component with semantic colors** (visual report f.18).~~ done — visualtest/testdata
+44. ~~**Add a visual coverage metric test** — "% of components with ≥1 golden" (visual report f.39).~~ done — visualtest/coverage test.go
+45. ~~**Add CSS-staleness detection** — fail if `app.css` mtime < newest `.templ` mtime (visual report f.42).~~ done — TestCSSFreshness
 
 ### v2.0 prep
 
-46. **Design the default-flip migration** — self-host HTMX + semantic tokens + ContainerAware become default.
-47. **Write a migration guide** for the v2.0 default flip.
-48. **Plan `AlertType`/`ToastType` alias removal** (TODO #38).
-49. **Consider renaming `Grid.ContainerResponsive` → `Grid.ContainerAware`** for consistency (container report f.41).
-50. **Investigate container query units (`cqi`, `cqw`)** for fluid typography (container report f.22).
+46. ~~**Design the default-flip migration** — self-host HTMX + semantic tokens + ContainerAware become default.~~ done — docs/adr/0022-v2-default-flip-migration.md
+47. ~~**Write a migration guide** for the v2.0 default flip.~~ done — docs/migration/v1-to-v2.md
+48. ~~**Plan `AlertType`/`ToastType` alias removal** (TODO #38).~~ done — docs/migration/v1-to-v2.md
+49. ~~**Consider renaming `Grid.ContainerResponsive` → `Grid.ContainerAware`** for consistency (container report f.41).~~ done — display/grid.templ
+50. ~~**Investigate container query units (`cqi`, `cqw`)** for fluid typography (container report f.22).~~ done — examples/demo
 
 ---
 

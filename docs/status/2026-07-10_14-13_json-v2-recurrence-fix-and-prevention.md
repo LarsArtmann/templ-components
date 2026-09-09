@@ -56,7 +56,7 @@
 | 3 | **CI had zero json/v2 protection until now**                                    | The CI guard I added is the only thing that would have caught this on a PR. Should backfill this to prevent future bypasses.                                                                                                                                                                                                   |
 | 4 | **AGENTS.md json/v2 section is stale**                                          | It mentions the pre-commit grep guard but not: (a) the `jsontext` variant, (b) the new test guard, (c) the CI guard. Three layers exist now; AGENTS.md documents one.                                                                                                                                                          |
 | 5 | **The guard test constructs forbidden strings dynamically** to avoid self-match | This is a code smell. A better approach: exclude `*_test.go` files that match `jsonv2_guard` from the scan, or use a more targeted regex that only matches import declarations, not string literals. Current approach works but is fragile.                                                                                    |
-| 6 | **Previous session's commit message quality was zero**                          | Commit `473abfe` is a masterclass in how NOT to write commit messages: claims a fix that wasn't done, hides behind jargon ("whitespace normalization"), references docs that contradict the change. The repo's one-commit release convention amplifies this — a bad fix commit looks like a real fix.                          |
+| ~~6~~ | ~~**Previous session's commit message quality was zero**~~ done (docs-health pass 2026-09-08) | ~~Commit `473abfe` is a masterclass in how NOT to write commit messages: claims a fix that wasn't done, hides behind jargon ("whitespace normalization"), references docs that contradict the change. The repo's one-commit release convention amplifies this — a bad fix commit looks like a real fix.~~ |
 
 ---
 
@@ -64,83 +64,83 @@
 
 ### Immediate — this session's unfinished work
 
-1. **Commit all changes** — 3 modified + 1 new file. User must request.
-2. **Verify pre-commit hook is installed** — `ls -la .git/hooks/pre-commit`, ensure it runs `scripts/pre-commit.sh`
-3. **Update AGENTS.md json/v2 prohibition** — add `jsontext` variant, test guard reference, CI guard reference
-4. **Run `nix run .#verify`** — I ran individual steps (build + test + lint) but not the full BuildFlow pipeline
+1. ~~**Commit all changes** — 3 modified + 1 new file. User must request.~~ done — v0.14.0
+2. ~~**Verify pre-commit hook is installed** — `ls -la .git/hooks/pre-commit`, ensure it runs `scripts/pre-commit.sh`~~ done — scripts/pre-commit.sh
+3. ~~**Update AGENTS.md json/v2 prohibition** — add `jsontext` variant, test guard reference, CI guard reference~~ **Won't implement — superseded v0.15.0.**
+4. ~~**Run `nix run .#verify`** — I ran individual steps (build + test + lint) but not the full BuildFlow pipeline~~ done (docs-health pass 2026-09-08)
 
 ### Root cause — go-auto-upgrade
 
-5. **Disable `go-auto-upgrade` in BuildFlow** — or at minimum exclude the `jsonv1tov2` migrator. Check `buildflow --help` for skip flags
-6. **File an issue/PR on `larsartmann/buildflow`** — add per-tool exclusion in `.buildflow.yml`, or make `go-auto-upgrade` respect a `.go-auto-upgrade-ignore` file
-7. **Add `go-auto-upgrade` to `.buildflow.yml` exclude** — if the format supports it (currently only file patterns, not tool names)
+5. ~~**Disable `go-auto-upgrade` in BuildFlow** — or at minimum exclude the `jsonv1tov2` migrator. Check `buildflow --help` for skip flags~~ **Won't implement — moot v0.15.0.**
+6. ~~**File an issue/PR on `larsartmann/buildflow`** — add per-tool exclusion in `.buildflow.yml`, or make `go-auto-upgrade` respect a `.go-auto-upgrade-ignore` file~~ **Won't implement — moot v0.15.0.**
+7. ~~**Add `go-auto-upgrade` to `.buildflow.yml` exclude** — if the format supports it (currently only file patterns, not tool names)~~ **Won't implement — moot v0.15.0.**
 
 ### Hardening
 
-8. **Make the guard test scan import declarations only** — use `go/parser` to parse ASTs instead of string matching. More precise, no self-match workaround needed
-9. **Add `encoding/json/v2` to `.gitignore`-style ignore** — not possible with Go imports, but a custom lint rule via `golangci-lint` `depguard` linter could enforce it
-10. **Configure `golangci-lint` `depguard`** — denied imports list: `encoding/json/v2`, `encoding/json/jsontext`. This would catch it at lint time, not just test time
+8. ~~**Make the guard test scan import declarations only** — use `go/parser` to parse ASTs instead of string matching. More precise, no self-match workaround needed~~ **Won't implement — moot v0.15.0.**
+9. ~~**Add `encoding/json/v2` to `.gitignore`-style ignore** — not possible with Go imports, but a custom lint rule via `golangci-lint` `depguard` linter could enforce it~~ **Won't implement — moot v0.15.0.**
+10. ~~**Configure `golangci-lint` `depguard`** — denied imports list: `encoding/json/v2`, `encoding/json/jsontext`. This would catch it at lint time, not just test time~~ done — depguard added v0.18.1 removed v1.2.0
 
 ### Previous session's unfinished work (from prior status report)
 
 11. Write Popover BDD test — `display/bdd_test.go`
 12. Write `ExamplePopover` — godoc example
-13. Add Popover to CSP nonce integration test — `integration/csp_nonce_test.go`
-14. Add Popover to `examples/demo` — wire into demo binary
+13. ~~Add Popover to CSP nonce integration test — `integration/csp_nonce_test.go`~~ **Won't implement — zero-JS v0.20.0.**
+14. ~~Add Popover to `examples/demo` — wire into demo binary~~ done — display demo.templ
 15. Add Popover to `integration/composition_test.go`
 
 ### New components (from TODO_LIST)
 
-16. `DataTable` (#44) — sortable/filtering/pagination wrapper
-17. `FilterDropdown` (#45) — HTMX filter bars
-18. `Slider` (#46) — ARIA slider pattern
-19. `HoverCard` (#51) — hover-triggered Popover variant
-20. `Rating` (#47)
-21. `TagsInput` (#48)
-22. `ContextMenu` (#49)
-23. `Carousel` (#50)
-24. `Calendar` (#52)
+16. ~~`DataTable` (#44) — sortable/filtering/pagination wrapper~~ done — v0.17.0
+17. ~~`FilterDropdown` (#45) — HTMX filter bars~~ done — v0.17.0
+18. ~~`Slider` (#46) — ARIA slider pattern~~ done — v0.17.0
+19. ~~`HoverCard` (#51) — hover-triggered Popover variant~~ done — v0.17.0
+20. ~~`Rating` (#47)~~ done — v0.17.0
+21. ~~`TagsInput` (#48)~~ done — v0.17.0
+22. ~~`ContextMenu` (#49)~~ done — v0.17.0
+23. ~~`Carousel` (#50)~~ done — v0.17.0
+24. ~~`Calendar` (#52)~~ done — v0.17.0
 
 ### Testing & quality
 
-25. BDD tests for Dropdown, Tooltip, Modal, Drawer (all lack BDD specs)
+25. ~~BDD tests for Dropdown, Tooltip, Modal, Drawer (all lack BDD specs)~~ done — v0.17.0
 26. Fuzz test for `PopoverPosition` validation
 27. Benchmark for Popover render
-28. Dark golden test variant for Popover
+28. ~~Dark golden test variant for Popover~~ done — visualtest overlay goldens
 29. RTL test for Popover — verify logical properties mirror correctly
-30. Coverage analysis: write targeted analysis rather than blindly chasing 80%
+30. ~~Coverage analysis: write targeted analysis rather than blindly chasing 80%~~ done — reassessed v0.17.0
 
 ### Documentation
 
-31. ADR: why Popover uses `role="dialog"` not `role="tooltip"`
+31. ~~ADR: why Popover uses `role="dialog"` not `role="tooltip"`~~ **Won't implement — superseded ADR-0017.**
 32. Recipe doc: Popover + filter form
-33. SKILL.md: add Popover to authoring playbook examples
+33. ~~SKILL.md: add Popover to authoring playbook examples~~ done — skill/SKILL.md
 34. CONTRIBUTING.md: mention Popover
-35. Update CHANGELOG with json/v2 guard addition
+35. ~~Update CHANGELOG with json/v2 guard addition~~ done — CHANGELOG v0.13.0
 
 ### v1.0 track (deferred)
 
-36. `Validate() error` on props structs (#33)
+36. ~~`Validate() error` on props structs (#33)~~ **Won't implement — only ErrorPageProps v1.0.0.**
 37. Move test helpers to `internal/testutil/` (#34)
-38. Self-host htmx as default (#35, ADR 0007)
-39. Semantic token layer `bg-tc-primary` (#36, ADR 0008)
-40. Remove deprecated aliases (#38)
+38. ~~Self-host htmx as default (#35, ADR 0007)~~ done — ADR-0022 v2.0
+39. ~~Semantic token layer `bg-tc-primary` (#36, ADR 0008)~~ done — templ-components-theme.css
+40. ~~Remove deprecated aliases (#38)~~ done — removed v2.0
 
 ### v2.0 track (deferred)
 
-41. Compound component pattern for overlays (#39)
-42. Native `<dialog>` element (#40)
-43. Headless/unstyled variants (#41)
-44. CLI tool `templ-components add <component>` (#42)
+41. ~~Compound component pattern for overlays (#39)~~ **Won't implement — ADR-0023.**
+42. ~~Native `<dialog>` element (#40)~~ done — ADR-0014
+43. ~~Headless/unstyled variants (#41)~~ **Won't implement — ADR-0021.**
+44. ~~CLI tool `templ-components add <component>` (#42)~~ done — cmd/tc
 
 ### Infrastructure (blocked)
 
-45. Visual regression testing (#13) — Playwright
-46. Demo site deployment (#27)
+45. ~~Visual regression testing (#13) — Playwright~~ done — visualtest/
+46. ~~Demo site deployment (#27)~~ done — Cloud Run demo
 47. `awesome-templ` PR (#28)
 48. `templ.guide` listing (#29)
-49. SSH tag signing config (#30)
-50. Investigate commit `473abfe` pre-commit bypass — was `--no-verify` used?
+49. ~~SSH tag signing config (#30)~~ done — v0.18.0 signed tag
+50. ~~Investigate commit `473abfe` pre-commit bypass — was `--no-verify` used?~~ **Won't implement — moot v0.15.0.**
 
 ---
 

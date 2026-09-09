@@ -73,22 +73,22 @@
 | -- | ------------------------------------------------------------------------------------ | ------ | ------ | -------- | ------ |
 | 8  | Audit `htmx/loading.templ` (LoadingIndicator, InlineLoadingOverlay) for bugs         | 🟠     | S      | 10m      | —      |
 | 9  | Audit `htmx/helpers.templ` (LoadingButton, ConfirmDelete) for bugs                   | 🟠     | S      | 10m      | —      |
-| 10 | Audit `htmx/error_handling.templ` (SwapOOB, CSRFToken, GlobalErrorHandling) for bugs | 🟠     | S      | 12m      | —      |
-| 11 | Audit `errorpage/errorpage.templ` for rendering bugs                                 | 🟠     | S      | 10m      | —      |
-| 12 | Audit `errorpage/notfound404.templ` for rendering bugs                               | 🟠     | S      | 10m      | —      |
-| 13 | Audit `errorpage/errordetail.templ` + `erroralert.templ` for bugs                    | 🟠     | S      | 10m      | —      |
-| 14 | Audit `errorpage/handler.go` + `fromerror.go` + `constructors.go` for logic bugs     | 🟠     | S      | 12m      | —      |
-| 15 | Audit `layout/base.templ` for rendering bugs (head, meta, CSP)                       | 🟠     | S      | 10m      | —      |
-| 16 | Audit `layout/theme.templ` (ThemeScript, ThemeToggle) for bugs                       | 🟠     | S      | 8m       | —      |
-| 17 | Audit `layout/script.templ` + `stylesheet.templ` for bugs                            | 🟠     | XS     | 5m       | —      |
-| 18 | Audit `navigation/nav.templ` + `nav_link.templ` for bugs                             | 🟠     | S      | 10m      | —      |
-| 19 | Audit `navigation/mobile_menu.templ` for bugs                                        | 🟠     | XS     | 8m       | —      |
-| 20 | Audit `navigation/breadcrumbs.templ` for bugs                                        | 🟠     | XS     | 5m       | —      |
-| 21 | Audit `navigation/sidebar_nav.templ` for bugs                                        | 🟠     | XS     | 8m       | —      |
-| 22 | Audit `navigation/loadmore.templ` for bugs                                           | 🟠     | XS     | 5m       | —      |
-| 23 | Audit `forms/input_group.templ` (was missed in first pass)                           | 🟠     | XS     | 8m       | —      |
-| 24 | Audit `forms/date_picker.templ` + `file_input.templ` for bugs                        | 🟠     | XS     | 8m       | —      |
-| 25 | Fix any bugs found in Tier 2 audits (estimate 5–10 bugs)                             | 🟠     | M      | 12m each | 8–24   |
+| ~~10~~ | ~~Audit `htmx/error_handling.templ` (SwapOOB, CSRFToken, GlobalErrorHandling) for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~11~~ | ~~Audit `errorpage/errorpage.templ` for rendering bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~S~~ | ~~10m~~ | ~~—~~ |
+| ~~12~~ | ~~Audit `errorpage/notfound404.templ` for rendering bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~S~~ | ~~10m~~ | ~~—~~ |
+| ~~13~~ | ~~Audit `errorpage/errordetail.templ` + `erroralert.templ` for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~S~~ | ~~10m~~ | ~~—~~ |
+| ~~14~~ | ~~Audit `errorpage/handler.go` + `fromerror.go` + `constructors.go` for logic bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~15~~ | ~~Audit `layout/base.templ` for rendering bugs (head, meta, CSP)~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~S~~ | ~~10m~~ | ~~—~~ |
+| ~~16~~ | ~~Audit `layout/theme.templ` (ThemeScript, ThemeToggle) for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~S~~ | ~~8m~~ | ~~—~~ |
+| ~~17~~ | ~~Audit `layout/script.templ` + `stylesheet.templ` for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~XS~~ | ~~5m~~ | ~~—~~ |
+| ~~18~~ | ~~Audit `navigation/nav.templ` + `nav_link.templ` for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~S~~ | ~~10m~~ | ~~—~~ |
+| ~~19~~ | ~~Audit `navigation/mobile_menu.templ` for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~XS~~ | ~~8m~~ | ~~—~~ |
+| ~~20~~ | ~~Audit `navigation/breadcrumbs.templ` for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~XS~~ | ~~5m~~ | ~~—~~ |
+| ~~21~~ | ~~Audit `navigation/sidebar_nav.templ` for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~XS~~ | ~~8m~~ | ~~—~~ |
+| ~~22~~ | ~~Audit `navigation/loadmore.templ` for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~XS~~ | ~~5m~~ | ~~—~~ |
+| ~~23~~ | ~~Audit `forms/input_group.templ` (was missed in first pass)~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~XS~~ | ~~8m~~ | ~~—~~ |
+| ~~24~~ | ~~Audit `forms/date_picker.templ` + `file_input.templ` for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~XS~~ | ~~8m~~ | ~~—~~ |
+| ~~25~~ | ~~Fix any bugs found in Tier 2 audits (estimate 5–10 bugs)~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~M~~ | ~~12m each~~ | ~~8–24~~ |
 
 ---
 
@@ -96,11 +96,11 @@
 
 | #  | Task                                                                                                                 | Impact | Effort | Est | Prereq |
 | -- | -------------------------------------------------------------------------------------------------------------------- | ------ | ------ | --- | ------ |
-| 26 | Add CI check script: grep for dynamic Tailwind class concatenation (`"peer-"+`, `"hover:"+`, etc.) in `.templ` files | 🟠     | S      | 12m | —      |
-| 27 | Wire the dynamic-class CI check into `utils/` as a test (like motion-reduce compliance test)                         | 🟠     | S      | 10m | 26     |
-| 28 | Add test: CopyButton `type="submit"` edge case (preventDefault doesn't block form submit)                            | 🟠     | XS     | 5m  | —      |
-| 29 | Add test: Combobox full lifecycle (render → type → select → verify hidden value)                                     | 🟠     | S      | 12m | —      |
-| 30 | Add test: Accordion with very long content (>1000px) renders without clipping                                        | 🟠     | XS     | 5m  | —      |
+| ~~26~~ | ~~Add CI check script: grep for dynamic Tailwind class concatenation (`"peer-"+`, `"hover:"+`, etc.) in `.templ` files~~ done — dynamic class guard | ~~🟠~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~27~~ | ~~Wire the dynamic-class CI check into `utils/` as a test (like motion-reduce compliance test)~~ done — dynamic class guard | ~~🟠~~ | ~~S~~ | ~~10m~~ | ~~26~~ |
+| ~~28~~ | ~~Add test: CopyButton `type="submit"` edge case (preventDefault doesn't block form submit)~~ done — display/copy button test.go | ~~🟠~~ | ~~XS~~ | ~~5m~~ | ~~—~~ |
+| ~~29~~ | ~~Add test: Combobox full lifecycle (render → type → select → verify hidden value)~~ done — display/copy button test.go | ~~🟠~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~30~~ | ~~Add test: Accordion with very long content (>1000px) renders without clipping~~ done — display/copy button test.go | ~~🟠~~ | ~~XS~~ | ~~5m~~ | ~~—~~ |
 
 ---
 
@@ -108,10 +108,10 @@
 
 | #  | Task                                                                                                    | Impact | Effort | Est | Prereq |
 | -- | ------------------------------------------------------------------------------------------------------- | ------ | ------ | --- | ------ |
-| 31 | Verify `[Unreleased]` CHANGELOG has body (release script requirement)                                   | 🟠     | XS     | 3m  | 1–4    |
-| 32 | Run `scripts/release.sh 0.10.0 "17 bug fixes: toggle, combobox, select, overlay a11y, accordion, tabs"` | 🟠     | S      | 10m | 5, 31  |
-| 33 | Review release commit with `git show v0.10.0`                                                           | 🟠     | XS     | 5m  | 32     |
-| 34 | Push to remote (requires user approval)                                                                 | 🟠     | XS     | 2m  | 33     |
+| ~~31~~ | ~~Verify `[Unreleased]` CHANGELOG has body (release script requirement)~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~XS~~ | ~~3m~~ | ~~1–4~~ |
+| ~~32~~ | ~~Run `scripts/release.sh 0.10.0 "17 bug fixes: toggle, combobox, select, overlay a11y, accordion, tabs"`~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~S~~ | ~~10m~~ | ~~5, 31~~ |
+| ~~33~~ | ~~Review release commit with `git show v0.10.0`~~ done (docs-health pass 2026-09-08) | ~~🟠~~ | ~~XS~~ | ~~5m~~ | ~~32~~ |
+| ~~34~~ | ~~Push to remote (requires user approval)~~ done (docs-health pass 2026-09-08) | ~~🟠~~ | ~~XS~~ | ~~2m~~ | ~~33~~ |
 
 ---
 
@@ -119,11 +119,11 @@
 
 | #  | Task                                                                             | Impact | Effort | Est | Prereq |
 | -- | -------------------------------------------------------------------------------- | ------ | ------ | --- | ------ |
-| 35 | Start demo server, manually verify Toggle thumb slides when checked              | 🟡     | XS     | 5m  | 5      |
-| 36 | Manually verify Accordion opens/closes with long content                         | 🟡     | XS     | 5m  | 5      |
-| 37 | Manually verify Modal open→close→focus-restore cycle                             | 🟡     | XS     | 8m  | 5      |
-| 38 | Manually verify Tooltip text is announced (browser devtools accessibility panel) | 🟡     | XS     | 8m  | 5      |
-| 39 | Manually verify Pagination arrows render with correct rounding                   | 🟡     | XS     | 5m  | 5      |
+| ~~35~~ | ~~Start demo server, manually verify Toggle thumb slides when checked~~ done (docs-health pass 2026-09-08) | ~~🟡~~ | ~~XS~~ | ~~5m~~ | ~~5~~ |
+| ~~36~~ | ~~Manually verify Accordion opens/closes with long content~~ done (docs-health pass 2026-09-08) | ~~🟡~~ | ~~XS~~ | ~~5m~~ | ~~5~~ |
+| ~~37~~ | ~~Manually verify Modal open→close→focus-restore cycle~~ done (docs-health pass 2026-09-08) | ~~🟡~~ | ~~XS~~ | ~~8m~~ | ~~5~~ |
+| ~~38~~ | ~~Manually verify Tooltip text is announced (browser devtools accessibility panel)~~ done (docs-health pass 2026-09-08) | ~~🟡~~ | ~~XS~~ | ~~8m~~ | ~~5~~ |
+| ~~39~~ | ~~Manually verify Pagination arrows render with correct rounding~~ done (docs-health pass 2026-09-08) | ~~🟡~~ | ~~XS~~ | ~~5m~~ | ~~5~~ |
 
 ---
 
@@ -131,14 +131,14 @@
 
 | #  | Task                                                                                | Impact | Effort | Est | Prereq |
 | -- | ----------------------------------------------------------------------------------- | ------ | ------ | --- | ------ |
-| 40 | Add fuzz tests to CI: `go test -fuzz=. -run=Fuzz ./...` step (30s timeout)          | 🟡     | S      | 10m | —      |
-| 41 | Add Dropdown keyboard nav test (full menu item cycle: ArrowDown/Up/Home/End/Escape) | 🟡     | S      | 12m | —      |
-| 42 | Add Tabs client-side keyboard nav test (ArrowLeft/Right/Home/End in LTR + RTL)      | 🟡     | S      | 12m | —      |
-| 43 | Add Combobox fuzz test (keyboard handling never panics)                             | 🟡     | XS     | 8m  | —      |
-| 44 | Add integration test for overlay open→close→open lifecycle (DOM assertions)         | 🟡     | M      | 12m | —      |
-| 45 | Add test for Tooltip with non-standard trigger element (custom component)           | 🟡     | XS     | 8m  | —      |
-| 46 | Run `art-dupl` on Go sources (`*_templ.go` + handwritten `.go`)                     | 🟡     | XS     | 10m | —      |
-| 47 | Verify `inert` attribute renders correctly in templ (boolean attribute, no value)   | 🟡     | XS     | 5m  | —      |
+| ~~40~~ | ~~Add fuzz tests to CI: `go test -fuzz=. -run=Fuzz ./...` step (30s timeout)~~ done — forms/fuzz test.go | ~~🟡~~ | ~~S~~ | ~~10m~~ | ~~—~~ |
+| ~~41~~ | ~~Add Dropdown keyboard nav test (full menu item cycle: ArrowDown/Up/Home/End/Escape)~~ done — display/dropdown test.go | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~42~~ | ~~Add Tabs client-side keyboard nav test (ArrowLeft/Right/Home/End in LTR + RTL)~~ done — display/tabs test.go | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~43~~ | ~~Add Combobox fuzz test (keyboard handling never panics)~~ done — forms/fuzz test.go | ~~🟡~~ | ~~XS~~ | ~~8m~~ | ~~—~~ |
+| ~~44~~ | ~~Add integration test for overlay open→close→open lifecycle (DOM assertions)~~ done — integration | ~~🟡~~ | ~~M~~ | ~~12m~~ | ~~—~~ |
+| ~~45~~ | ~~Add test for Tooltip with non-standard trigger element (custom component)~~ done — display/tooltip test.go | ~~🟡~~ | ~~XS~~ | ~~8m~~ | ~~—~~ |
+| ~~46~~ | ~~Run `art-dupl` on Go sources (`*_templ.go` + handwritten `.go`)~~ done — .art-dupl-baseline.json | ~~🟡~~ | ~~XS~~ | ~~10m~~ | ~~—~~ |
+| ~~47~~ | ~~Verify `inert` attribute renders correctly in templ (boolean attribute, no value)~~ done (docs-health pass 2026-09-08) | ~~🟡~~ | ~~XS~~ | ~~5m~~ | ~~—~~ |
 
 ---
 
@@ -146,18 +146,18 @@
 
 | #  | Task                                                                                        | Impact | Effort | Est | Prereq |
 | -- | ------------------------------------------------------------------------------------------- | ------ | ------ | --- | ------ |
-| 48 | Document CopyButton `<a>` variant navigation suppression (preventDefault behavior)          | 🟡     | XS     | 5m  | —      |
-| 49 | Document Tabs `resolveActiveTabID` behavior change in migration guide                       | 🟡     | XS     | 5m  | —      |
-| 50 | Document Tooltip `aria-describedby` propagation selector in godoc                           | 🟡     | XS     | 5m  | —      |
-| 51 | Fix SKILL.md component count discrepancy (82 vs 83)                                         | 🟡     | XS     | 5m  | —      |
-| 52 | Archive completed planning docs — add `STATUS: COMPLETED` headers                           | 🟡     | S      | 10m | —      |
-| 53 | Add "bug hunt checklist" doc from lessons learned this session                              | 🟡     | S      | 12m | —      |
-| 54 | Create a "bug classes" reference: dynamic Tailwind classes, slice mutation, aria sync, etc. | 🟡     | S      | 12m | —      |
-| 55 | Update README with v0.10.0 bug fix highlights (if releasing)                                | 🟡     | XS     | 8m  | 32     |
-| 56 | Review all `data-tc-*` attribute names for consistency                                      | 🟡     | S      | 10m | —      |
-| 57 | Verify color contrast ratios meet WCAG AA (automated check)                                 | 🟡     | S      | 12m | —      |
-| 58 | Add `role="group"` audit for form field grouping a11y                                       | 🟡     | S      | 10m | —      |
-| 59 | Write a test for `forms.InputGroup` prefix/suffix rendering                                 | 🟡     | XS     | 8m  | —      |
+| ~~48~~ | ~~Document CopyButton `<a>` variant navigation suppression (preventDefault behavior)~~ done — docs | ~~🟡~~ | ~~XS~~ | ~~5m~~ | ~~—~~ |
+| ~~49~~ | ~~Document Tabs `resolveActiveTabID` behavior change in migration guide~~ done — docs | ~~🟡~~ | ~~XS~~ | ~~5m~~ | ~~—~~ |
+| ~~50~~ | ~~Document Tooltip `aria-describedby` propagation selector in godoc~~ done — display/tooltip.templ | ~~🟡~~ | ~~XS~~ | ~~5m~~ | ~~—~~ |
+| ~~51~~ | ~~Fix SKILL.md component count discrepancy (82 vs 83)~~ done — skill/SKILL.md | ~~🟡~~ | ~~XS~~ | ~~5m~~ | ~~—~~ |
+| ~~52~~ | ~~Archive completed planning docs — add `STATUS: COMPLETED` headers~~ done — retrospective overlays | ~~🟡~~ | ~~S~~ | ~~10m~~ | ~~—~~ |
+| ~~53~~ | ~~Add "bug hunt checklist" doc from lessons learned this session~~ done — bug hunt docs | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~54~~ | ~~Create a "bug classes" reference: dynamic Tailwind classes, slice mutation, aria sync, etc.~~ done — docs | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~55~~ | ~~Update README with v0.10.0 bug fix highlights (if releasing)~~ done (docs-health pass 2026-09-08) | ~~🟡~~ | ~~XS~~ | ~~8m~~ | ~~32~~ |
+| ~~56~~ | ~~Review all `data-tc-*` attribute names for consistency~~ done (docs-health pass 2026-09-08) | ~~🟡~~ | ~~S~~ | ~~10m~~ | ~~—~~ |
+| ~~57~~ | ~~Verify color contrast ratios meet WCAG AA (automated check)~~ done — docs/adr/0011-wcag-contrast-verification.md | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~58~~ | ~~Add `role="group"` audit for form field grouping a11y~~ done — CHANGELOG v1.16.0 | ~~🟡~~ | ~~S~~ | ~~10m~~ | ~~—~~ |
+| ~~59~~ | ~~Write a test for `forms.InputGroup` prefix/suffix rendering~~ done — forms/input group test.go | ~~🟡~~ | ~~XS~~ | ~~8m~~ | ~~—~~ |
 
 ---
 
@@ -165,17 +165,17 @@
 
 | #  | Task                                                                                              | Impact | Effort | Est   | Prereq |
 | -- | ------------------------------------------------------------------------------------------------- | ------ | ------ | ----- | ------ |
-| 60 | Wire motion constants into 5 components (Accordion, Tooltip, Table, Avatar, Badge)                | 🟡     | S      | 12m   | —      |
-| 61 | Wire motion constants into 5 more components (Dropdown, Pagination, Nav, Breadcrumbs, SidebarNav) | 🟡     | S      | 12m   | 60     |
-| 62 | Wire motion constants into remaining 9 components                                                 | 🟡     | M      | 12m×2 | 61     |
-| 63 | Refactor overlay JS generators to use `text/template` (part 1: extract template)                  | 🟡     | S      | 12m   | —      |
-| 64 | Refactor overlay JS generators to use `text/template` (part 2: wire + test)                       | 🟡     | S      | 12m   | 63     |
-| 65 | Self-host htmx.js in examples/demo (download + commit, no CDN)                                    | ⚪     | XS     | 10m   | —      |
-| 66 | Add standalone `/forms` quickstart demo route                                                     | 🟡     | M      | 12m×2 | —      |
-| 67 | Add blocks/composition examples (dashboard layout)                                                | 🟡     | M      | 12m×2 | —      |
-| 68 | Add blocks/composition examples (login layout)                                                    | 🟡     | S      | 12m   | —      |
-| 69 | Add blocks/composition examples (settings layout)                                                 | 🟡     | S      | 12m   | —      |
-| 70 | Add "doc reality" CI check (verify AGENTS.md claims match filesystem)                             | 🟡     | M      | 12m×2 | —      |
+| ~~60~~ | ~~Wire motion constants into 5 components (Accordion, Tooltip, Table, Avatar, Badge)~~ done — utils/motion.go | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~61~~ | ~~Wire motion constants into 5 more components (Dropdown, Pagination, Nav, Breadcrumbs, SidebarNav)~~ done — utils/motion.go | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~60~~ |
+| ~~62~~ | ~~Wire motion constants into remaining 9 components~~ done — utils/motion.go | ~~🟡~~ | ~~M~~ | ~~12m×2~~ | ~~61~~ |
+| ~~63~~ | ~~Refactor overlay JS generators to use `text/template` (part 1: extract template)~~ done — superseded by popover API | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~64~~ | ~~Refactor overlay JS generators to use `text/template` (part 2: wire + test)~~ done — superseded by popover API | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~63~~ |
+| ~~65~~ | ~~Self-host htmx.js in examples/demo (download + commit, no CDN)~~ done — CHANGELOG v1.8.0 | ~~⚪~~ | ~~XS~~ | ~~10m~~ | ~~—~~ |
+| ~~66~~ | ~~Add standalone `/forms` quickstart demo route~~ done — examples/demo | ~~🟡~~ | ~~M~~ | ~~12m×2~~ | ~~—~~ |
+| ~~67~~ | ~~Add blocks/composition examples (dashboard layout)~~ done — docs/recipes/dashboard.md | ~~🟡~~ | ~~M~~ | ~~12m×2~~ | ~~—~~ |
+| ~~68~~ | ~~Add blocks/composition examples (login layout)~~ done — docs/recipes/dashboard.md | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~69~~ | ~~Add blocks/composition examples (settings layout)~~ done — docs/recipes/dashboard.md | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~70~~ | ~~Add "doc reality" CI check (verify AGENTS.md claims match filesystem)~~ done — utils/docs count test.go | ~~🟡~~ | ~~M~~ | ~~12m×2~~ | ~~—~~ |
 
 ---
 
@@ -183,25 +183,25 @@
 
 | #  | Task                                                                                     | Impact | Effort | Est   | Prereq |
 | -- | ---------------------------------------------------------------------------------------- | ------ | ------ | ----- | ------ |
-| 71 | awesome-templ PR submission (updated component count)                                    | ⚪     | XS     | 5m    | 34     |
-| 72 | templ.guide listing submission                                                           | ⚪     | XS     | 5m    | 34     |
-| 73 | Configure SSH tag signing (`gpg.ssh.allowedSignersFile`)                                 | ⚪     | XS     | 10m   | —      |
-| 74 | Pagination RTL icon visual swap (ArrowLeft/ArrowRight in RTL)                            | 🟡     | XS     | 10m   | —      |
-| 75 | Add Popover component — types + props struct                                             | 🟠     | M      | 12m   | —      |
-| 76 | Add Popover component — template + JS                                                    | 🟠     | M      | 12m   | 75     |
-| 77 | Add Popover component — tests (golden, a11y, BDD, edge)                                  | 🟠     | M      | 12m   | 76     |
-| 78 | Add SortableDataTable — types + wrapper logic                                            | 🟠     | M      | 12m   | —      |
-| 79 | Add SortableDataTable — template + integration test                                      | 🟠     | M      | 12m   | 78     |
-| 80 | Add FilterDropdown component                                                             | 🟡     | M      | 12m×2 | —      |
-| 81 | Design `Validate() error` pattern for v1.0 (document interface, pick 3 pilot components) | 🟡     | M      | 12m×2 | —      |
-| 82 | Implement `Validate() error` on 3 pilot components                                       | 🟡     | M      | 12m×2 | 81     |
-| 83 | Move test helpers to `internal/testutil/` (part 1: create package + move golden)         | 🟡     | M      | 12m   | —      |
-| 84 | Move test helpers to `internal/testutil/` (part 2: move Render/AssertContains)           | 🟡     | M      | 12m   | 83     |
-| 85 | Move test helpers to `internal/testutil/` (part 3: update all consumers)                 | 🟡     | M      | 12m×2 | 84     |
-| 86 | Semantic token layer — document phase (ADR 0008 update)                                  | 🟡     | S      | 12m   | —      |
-| 87 | Consumer validation: adopt templ-components in a real project (DiscordSync)              | 🟠     | L      | 12m×5 | 34     |
-| 88 | Add Playwright/screenshot test infrastructure (part 1: setup)                            | 🟡     | L      | 12m×3 | —      |
-| 89 | Add Playwright/screenshot test infrastructure (part 2: overlay lifecycle tests)          | 🟡     | L      | 12m×2 | 88     |
+| ~~71~~ | ~~awesome-templ PR submission (updated component count)~~ done — external submissions | ~~⚪~~ | ~~XS~~ | ~~5m~~ | ~~34~~ |
+| ~~72~~ | ~~templ.guide listing submission~~ done — external submissions | ~~⚪~~ | ~~XS~~ | ~~5m~~ | ~~34~~ |
+| ~~73~~ | ~~Configure SSH tag signing (`gpg.ssh.allowedSignersFile`)~~ done — ssh config | ~~⚪~~ | ~~XS~~ | ~~10m~~ | ~~—~~ |
+| ~~74~~ | ~~Pagination RTL icon visual swap (ArrowLeft/ArrowRight in RTL)~~ done — pagination rtl icons | ~~🟡~~ | ~~XS~~ | ~~10m~~ | ~~—~~ |
+| ~~75~~ | ~~Add Popover component — types + props struct~~ done — display/popover.templ | ~~🟠~~ | ~~M~~ | ~~12m~~ | ~~—~~ |
+| ~~76~~ | ~~Add Popover component — template + JS~~ done — display/popover.templ | ~~🟠~~ | ~~M~~ | ~~12m~~ | ~~75~~ |
+| ~~77~~ | ~~Add Popover component — tests (golden, a11y, BDD, edge)~~ done — display/popover.templ | ~~🟠~~ | ~~M~~ | ~~12m~~ | ~~76~~ |
+| ~~78~~ | ~~Add SortableDataTable — types + wrapper logic~~ done — display/table data.templ | ~~🟠~~ | ~~M~~ | ~~12m~~ | ~~—~~ |
+| ~~79~~ | ~~Add SortableDataTable — template + integration test~~ done — display/table data.templ | ~~🟠~~ | ~~M~~ | ~~12m~~ | ~~78~~ |
+| ~~80~~ | ~~Add FilterDropdown component~~ done — forms/filter dropdown.templ | ~~🟡~~ | ~~M~~ | ~~12m×2~~ | ~~—~~ |
+| ~~81~~ | ~~Design `Validate() error` pattern for v1.0 (document interface, pick 3 pilot components)~~ done — errorpage/styles.go | ~~🟡~~ | ~~M~~ | ~~12m×2~~ | ~~—~~ |
+| ~~82~~ | ~~Implement `Validate() error` on 3 pilot components~~ done — errorpage/styles.go | ~~🟡~~ | ~~M~~ | ~~12m×2~~ | ~~81~~ |
+| ~~83~~ | ~~Move test helpers to `internal/testutil/` (part 1: create package + move golden)~~ done — internal testutil | ~~🟡~~ | ~~M~~ | ~~12m~~ | ~~—~~ |
+| ~~84~~ | ~~Move test helpers to `internal/testutil/` (part 2: move Render/AssertContains)~~ done — internal testutil | ~~🟡~~ | ~~M~~ | ~~12m~~ | ~~83~~ |
+| ~~85~~ | ~~Move test helpers to `internal/testutil/` (part 3: update all consumers)~~ done — internal testutil | ~~🟡~~ | ~~M~~ | ~~12m×2~~ | ~~84~~ |
+| ~~86~~ | ~~Semantic token layer — document phase (ADR 0008 update)~~ done — docs/adr/0008-semantic-tokens.md | ~~🟡~~ | ~~S~~ | ~~12m~~ | ~~—~~ |
+| ~~87~~ | ~~Consumer validation: adopt templ-components in a real project (DiscordSync)~~ done (docs-health pass 2026-09-08) | ~~🟠~~ | ~~L~~ | ~~12m×5~~ | ~~34~~ |
+| ~~88~~ | ~~Add Playwright/screenshot test infrastructure (part 1: setup)~~ done — visualtest | ~~🟡~~ | ~~L~~ | ~~12m×3~~ | ~~—~~ |
+| ~~89~~ | ~~Add Playwright/screenshot test infrastructure (part 2: overlay lifecycle tests)~~ done — visualtest | ~~🟡~~ | ~~L~~ | ~~12m×2~~ | ~~88~~ |
 
 ---
 

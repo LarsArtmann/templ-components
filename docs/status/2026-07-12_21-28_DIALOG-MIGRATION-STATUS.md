@@ -51,15 +51,15 @@ The AGENTS.md rule states: "Keep `[Unreleased]` warm at all times." I forgot to 
 
 These are from the 16-task Pareto plan in `docs/planning/2026-07-12_19-00_MODERN-BROWSER-INTEGRATION.md`, not from this session's scope. Listed for completeness:
 
-1. Tests for the other 14 browser enhancements (image `decoding`/`fetchpriority`, input `enterkeyhint`/`inputmode`, etc.)
-2. `field-sizing: content` integration into Textarea component
-3. `SrcSet`/`Sizes` fields on ImageProps
-4. `hx-validate` on Form component
-5. `<search>` element wrapper for search inputs
-6. `content-visibility: auto` on Table body rows
-7. ADR for Popover API blocked on Anchor Positioning
+1. ~~Tests for the other 14 browser enhancements (image `decoding`/`fetchpriority`, input `enterkeyhint`/`inputmode`, etc.)~~ done — modern standards test.go
+2. ~~`field-sizing: content` integration into Textarea component~~ done — custom.css tc-auto-grow
+3. ~~`SrcSet`/`Sizes` fields on ImageProps~~ done — image srcset.golden
+4. ~~`hx-validate` on Form component~~ done — FormProps.Validate
+5. ~~`<search>` element wrapper for search inputs~~ done — InputSearch search element
+6. ~~`content-visibility: auto` on Table body rows~~ done — table lazy rows.golden
+7. ~~ADR for Popover API blocked on Anchor Positioning~~ **Won't implement — superseded ADR-0017.**
 8. Speculation Rules helper component
-9. Custom Select styling with `appearance-none`
+9. ~~Custom Select styling with `appearance-none`~~ done — SelectProps.Stylable
 10. MobileMenu Popover API migration
 11. Consumer migration guide for browser features
 
@@ -75,29 +75,29 @@ These are from the 16-task Pareto plan in `docs/planning/2026-07-12_19-00_MODERN
 
 ### Things I noticed but didn't fix during this session
 
-1. **CHANGELOG `[Unreleased]` is empty** — I violated a documented rule. Should have added the entry immediately after the migration.
+1. ~~**CHANGELOG `[Unreleased]` is empty** — I violated a documented rule. Should have added the entry immediately after the migration.~~ done — CHANGELOG v0.18.0
 
-2. **Popover still uses `role="dialog"` with custom JS** — `display/popover.templ` still has 40 lines of JS for open/close + click-outside + Escape. It could potentially benefit from the `<dialog>` element too, though it's a different UX pattern (positioned relative to trigger, not centered). The Popover API + Anchor Positioning migration was correctly rejected (not Baseline yet), but `<dialog>` could still simplify it.
+2. ~~**Popover still uses `role="dialog"` with custom JS** — `display/popover.templ` still has 40 lines of JS for open/close + click-outside + Escape. It could potentially benefit from the `<dialog>` element too, though it's a different UX pattern (positioned relative to trigger, not centered). The Popover API + Anchor Positioning migration was correctly rejected (not Baseline yet), but `<dialog>` could still simplify it.~~ done — ADR-0017
 
-3. **Dropdown has 53 lines of custom JS** — Same pattern as the old overlay: open/close, click-outside, arrow-key nav. Not a `<dialog>` candidate (positioned relative to trigger), but a future Popover API migration target.
+3. ~~**Dropdown has 53 lines of custom JS** — Same pattern as the old overlay: open/close, click-outside, arrow-key nav. Not a `<dialog>` candidate (positioned relative to trigger), but a future Popover API migration target.~~ done — ADR-0017
 
-4. **ContextMenu has custom JS** — Same category as Dropdown.
+4. ~~**ContextMenu has custom JS** — Same category as Dropdown.~~ done — ADR-0017
 
-5. **No golden test for Modal or Drawer** — There are golden files for badge, card, table, image, popover, but NOT for modal/drawer. A golden file would catch unexpected HTML structure changes in CI. The existing string-contains tests verify attributes but don't catch structural regressions.
+5. ~~**No golden test for Modal or Drawer** — There are golden files for badge, card, table, image, popover, but NOT for modal/drawer. A golden file would catch unexpected HTML structure changes in CI. The existing string-contains tests verify attributes but don't catch structural regressions.~~ done — display/testdata modal.golden
 
-6. **`OverlayKindIsValid` enum test still exists** — The `OverlayKind` type and its validation are still valid (used for `componentName()` routing), but the enum is now less meaningful since both kinds produce `<dialog>` elements. Not broken, just worth noting the enum's purpose shifted.
+6. ~~**`OverlayKindIsValid` enum test still exists** — The `OverlayKind` type and its validation are still valid (used for `componentName()` routing), but the enum is now less meaningful since both kinds produce `<dialog>` elements. Not broken, just worth noting the enum's purpose shifted.~~ done (docs-health pass 2026-09-08)
 
-7. **Drawer CSS uses `100dvh`** — Dynamic viewport height is Baseline since 2023, but `dvh` can cause content jumps on mobile when the address bar shows/hides. The previous implementation used `h-full` (100% of parent). This is a behavior change for consumers. Worth documenting.
+7. ~~**Drawer CSS uses `100dvh`** — Dynamic viewport height is Baseline since 2023, but `dvh` can cause content jumps on mobile when the address bar shows/hides. The previous implementation used `h-full` (100% of parent). This is a behavior change for consumers. Worth documenting.~~ done (docs-health pass 2026-09-08)
 
-8. **`<dialog>` not-open is `display: none`** — Previously, modal/drawer content was in the DOM with `opacity-0` (visible to crawlers, readable by screen readers in some configs, queryable by JS). Now, closed dialogs are `display: none` (invisible to everything until `showModal()`). This is BETTER for most cases but a behavior change. Not documented in CHANGELOG or AGENTS.md.
+8. ~~**`<dialog>` not-open is `display: none`** — Previously, modal/drawer content was in the DOM with `opacity-0` (visible to crawlers, readable by screen readers in some configs, queryable by JS). Now, closed dialogs are `display: none` (invisible to everything until `showModal()`). This is BETTER for most cases but a behavior change. Not documented in CHANGELOG or AGENTS.md.~~ done (docs-health pass 2026-09-08)
 
-9. **The `tcOpenModal(id)` / `tcCloseModal(id)` JS functions use `window.*` assignment** — These are globally scoped. If a consumer has their own `tcOpenModal`, it gets overwritten. The singleton guard prevents double-definition from multiple component instances, but not from consumer code. Low risk but worth noting.
+9. ~~**The `tcOpenModal(id)` / `tcCloseModal(id)` JS functions use `window.*` assignment** — These are globally scoped. If a consumer has their own `tcOpenModal`, it gets overwritten. The singleton guard prevents double-definition from multiple component instances, but not from consumer code. Low risk but worth noting.~~ done (docs-health pass 2026-09-08)
 
-10. **CSS `.tc-overlay` class name namespace** — I introduced `.tc-overlay`, `.tc-modal`, `.tc-drawer` as CSS class hooks. These are in `templates/app.css` (consumer-facing starter file). If a consumer doesn't copy these CSS rules, the dialogs will have no animations (snap open/close) and no backdrop dimming. The `::backdrop` is styled via CSS, not via the dialog element's default. This is a coupling: the Go component depends on CSS classes that live in a starter template. This matches the existing `.tc-*` pattern (`.tc-auto-grow`, `.tc-snap-x`, etc.) but should be documented.
+10. ~~**CSS `.tc-overlay` class name namespace** — I introduced `.tc-overlay`, `.tc-modal`, `.tc-drawer` as CSS class hooks. These are in `templates/app.css` (consumer-facing starter file). If a consumer doesn't copy these CSS rules, the dialogs will have no animations (snap open/close) and no backdrop dimming. The `::backdrop` is styled via CSS, not via the dialog element's default. This is a coupling: the Go component depends on CSS classes that live in a starter template. This matches the existing `.tc-*` pattern (`.tc-auto-grow`, `.tc-snap-x`, etc.) but should be documented.~~ done (docs-health pass 2026-09-08)
 
-11. **I didn't test with HTMX swap scenarios** — The singleton guard (`window.tcOverlayModalAttached`) prevents double-binding, but the IIFE runs per-instance. If HTMX swaps in a new `<dialog>` with `data-tc-open="true"`, the new IIFE correctly calls `showModal()`. But if HTMX swaps in a dialog WITHOUT `data-tc-open`, and the old dialog was already open via JS... the old one stays open and the new one is closed. This is correct server-driven behavior but I only verified via Go tests, not actual HTMX.
+11. ~~**I didn't test with HTMX swap scenarios** — The singleton guard (`window.tcOverlayModalAttached`) prevents double-binding, but the IIFE runs per-instance. If HTMX swaps in a new `<dialog>` with `data-tc-open="true"`, the new IIFE correctly calls `showModal()`. But if HTMX swaps in a dialog WITHOUT `data-tc-open`, and the old dialog was already open via JS... the old one stays open and the new one is closed. This is correct server-driven behavior but I only verified via Go tests, not actual HTMX.~~ done — visualtest e2e
 
-12. **`overlayShellProps.side` field uses `DrawerSide` type** — This couples `overlayShellProps` to `DrawerSide` even when used for Modal (zero value). Not broken, but slightly leaky abstraction. Could use `string` and let Drawer pass `string(props.Side)`.
+12. ~~**`overlayShellProps.side` field uses `DrawerSide` type** — This couples `overlayShellProps` to `DrawerSide` even when used for Modal (zero value). Not broken, but slightly leaky abstraction. Could use `string` and let Drawer pass `string(props.Side)`.~~ done (docs-health pass 2026-09-08)
 
 ---
 
@@ -105,36 +105,36 @@ These are from the 16-task Pareto plan in `docs/planning/2026-07-12_19-00_MODERN
 
 ### Immediate (this session's loose ends)
 
-1. **Add CHANGELOG `[Unreleased]` entry** for the `<dialog>` migration
-2. **Add golden test files** for Modal (`testdata/modal.golden`) and Drawer (`testdata/drawer.golden`)
-3. **Document `100dvh` behavior change** in AGENTS.md (drawer height)
-4. **Document `display: none` behavior change** in AGENTS.md (closed dialog visibility)
-5. **Document `.tc-overlay`/`.tc-modal`/`.tc-drawer` CSS dependency** in AGENTS.md
-6. **Run the SKILL.md drift-guard test** to check if component docs need updating
-7. **Update SKILL.md** Modal/Drawer descriptions to mention `<dialog>`
+1. ~~**Add CHANGELOG `[Unreleased]` entry** for the `<dialog>` migration~~ done — CHANGELOG v0.18.0
+2. ~~**Add golden test files** for Modal (`testdata/modal.golden`) and Drawer (`testdata/drawer.golden`)~~ done — display/testdata modal.golden
+3. ~~**Document `100dvh` behavior change** in AGENTS.md (drawer height)~~ done — AGENTS.md
+4. ~~**Document `display: none` behavior change** in AGENTS.md (closed dialog visibility)~~ done — AGENTS.md
+5. ~~**Document `.tc-overlay`/`.tc-modal`/`.tc-drawer` CSS dependency** in AGENTS.md~~ done — AGENTS.md
+6. ~~**Run the SKILL.md drift-guard test** to check if component docs need updating~~ done — TestSkillComponentCount
+7. ~~**Update SKILL.md** Modal/Drawer descriptions to mention `<dialog>`~~ done — skill/SKILL.md
 
 ### Browser modernization plan (from the 16-task Pareto plan)
 
-8. **Write tests for all 14 shipped browser enhancements** (image, input, layout, htmx)
-9. **Integrate `field-sizing: content` into Textarea** — add `AutoGrow bool` field
-10. **Add `SrcSet` and `Sizes` fields to ImageProps**
-11. **Add `hx-validate` to Form component**
-12. **Wrap search inputs in `<search>` element** — `Search bool` on InputProps
-13. **Apply `content-visibility: auto` to Table body rows** — `VirtualScroll bool`
-14. **Write ADR 0014: Popover API blocked on Anchor Positioning**
-15. **Add `EnterKeyHint` field to TextareaProps**
+8. ~~**Write tests for all 14 shipped browser enhancements** (image, input, layout, htmx)~~ done — modern standards test.go
+9. ~~**Integrate `field-sizing: content` into Textarea** — add `AutoGrow bool` field~~ done — custom.css tc-auto-grow
+10. ~~**Add `SrcSet` and `Sizes` fields to ImageProps**~~ done — image srcset.golden
+11. ~~**Add `hx-validate` to Form component**~~ done — FormProps.Validate
+12. ~~**Wrap search inputs in `<search>` element** — `Search bool` on InputProps~~ done — forms/input.templ
+13. ~~**Apply `content-visibility: auto` to Table body rows** — `VirtualScroll bool`~~ done — table lazy rows.golden
+14. ~~**Write ADR 0014: Popover API blocked on Anchor Positioning**~~ **Won't implement — superseded ADR-0017.**
+15. ~~**Add `EnterKeyHint` field to TextareaProps**~~ done — EnterKeyHintType
 16. **Add Speculation Rules helper component** (`htmx.SpeculationRules`)
-17. **Style Select with `appearance-none` + custom arrow**
+17. ~~**Style Select with `appearance-none` + custom arrow**~~ done — SelectProps.Stylable
 18. **Migrate MobileMenu to Popover API** (blocked on Anchor Positioning Baseline)
 19. **Write consumer migration guide** for browser features
 20. **CSS Anchor Positioning spike + prototype**
-21. **`light-dark()` architectural assessment ADR**
+21. ~~**`light-dark()` architectural assessment ADR**~~ **Won't implement — rejected revisit 2027.**
 
 ### Further `<dialog>` / overlay improvements
 
-22. **Investigate `<dialog>` migration for Popover component** — it has 40 lines of JS
-23. **Investigate `<dialog>` migration for Dropdown** — it has 53 lines of JS
-24. **Investigate `<dialog>` migration for ContextMenu**
+22. ~~**Investigate `<dialog>` migration for Popover component** — it has 40 lines of JS~~ **Won't implement — superseded ADR-0017.**
+23. ~~**Investigate `<dialog>` migration for Dropdown** — it has 53 lines of JS~~ done — ADR-0017
+24. ~~**Investigate `<dialog>` migration for ContextMenu**~~ done — ADR-0017
 25. **Add HTMX `hx-on` support for dialog close events** — consumers may need to run server calls on close
 26. **Test `<dialog>` with HTMX boosted links** — does `showModal()` survive `hx-boost`?
 27. **Add `autofocus` support to Modal/Drawer** — `<dialog>` supports `autofocus` natively
@@ -151,9 +151,9 @@ These are from the 16-task Pareto plan in `docs/planning/2026-07-12_19-00_MODERN
 35. **Add test for focus trap** — verify Tab cycles within dialog (native, but should verify)
 36. **Add test for focus restore** — verify focus returns to trigger after close
 37. **Add test for Escape-to-close** — verify native Escape behavior works
-38. **Add test for `prefers-reduced-motion`** — verify animations disabled
+38. ~~**Add test for `prefers-reduced-motion`** — verify animations disabled~~ done — templates/custom.css
 39. **Add test for `prefers-reduced-transparency`** — verify backdrop opacity increases
-40. **Add test for RTL drawer** — verify `margin-inline` positioning mirrors correctly
+40. ~~**Add test for RTL drawer** — verify `margin-inline` positioning mirrors correctly~~ done — display/rtl test.go
 41. **Add test for forced-colors mode** — verify dialog border visibility
 42. **Benchmark dialog render performance** vs old overlay div approach
 43. **Add fuzz test for `overlayDialogJS`** — verify no JS injection via ID
@@ -162,9 +162,9 @@ These are from the 16-task Pareto plan in `docs/planning/2026-07-12_19-00_MODERN
 ### Documentation & developer experience
 
 45. **Update `docs/javascript-guide.md`** — add `<dialog>` as the top rung of the decision ladder
-46. **Update `docs/research/modern-browser-capabilities.md`** — mark `<dialog>` as DONE
-47. **Write ADR for `<dialog>` migration** — document why we chose `<dialog>` over Popover API
-48. **Update `README.md` component catalogue** — Modal/Drawer now native dialog
+46. ~~**Update `docs/research/modern-browser-capabilities.md`** — mark `<dialog>` as DONE~~ done — modern-browser-capabilities.md
+47. ~~**Write ADR for `<dialog>` migration** — document why we chose `<dialog>` over Popover API~~ done — ADR-0014
+48. ~~**Update `README.md` component catalogue** — Modal/Drawer now native dialog~~ done — README.md
 49. **Add `docs/recipes/dialog-forms.md`** — pattern for forms inside `<dialog>` with `method="dialog"`
 50. **Create consumer migration note** — `<dialog>` changes: closed = `display:none`, `showModal()` required, `::backdrop` styling in CSS
 

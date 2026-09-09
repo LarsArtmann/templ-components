@@ -133,10 +133,10 @@ The SKILL.md now has a consumer-facing component catalogue (76 components across
 
 ## Recommendations for templ-components
 
-1. **Document the `forms` vs `filterForm` distinction.** `forms.Form` is for vertical data-entry forms. Horizontal HTMX filter bars are a different pattern. Either document this or add `forms.InlineForm`.
+1. ~~**Document the `forms` vs `filterForm` distinction.** `forms.Form` is for vertical data-entry forms. Horizontal HTMX filter bars are a different pattern. Either document this or add `forms.InlineForm`.~~ done — docs/recipes/horizontal-filter-bar.md
 
-2. **Reconsider `display.Table`'s `Rows` abstraction.** Consumer templates need `for _, item := range items { <tr>...</tr> }` with custom cells. The `Rows []TableRow` type forces an intermediate conversion. Consider a `display.TableSlots` variant where children render `<tr>` directly (like DiscordSync's `listTableWithHeader`).
+2. ~~**Reconsider `display.Table`'s `Rows` abstraction.** Consumer templates need `for _, item := range items { <tr>...</tr> }` with custom cells. The `Rows []TableRow` type forces an intermediate conversion. Consider a `display.TableSlots` variant where children render `<tr>` directly (like DiscordSync's `listTableWithHeader`).~~ done — display/grid.templ
 
-3. **Add a "Which components does this project use?" cross-reference.** Consumers should be able to quickly audit which library components they've adopted vs hand-rolled. A grep-able table in the consumer's AGENTS.md would help.
+3. ~~**Add a "Which components does this project use?" cross-reference.** Consumers should be able to quickly audit which library components they've adopted vs hand-rolled. A grep-able table in the consumer's AGENTS.md would help.~~ done — docs/recipes/custom-table-rows.md
 
-4. **The component catalogue in SKILL.md is great but 76 entries is a lot to scan.** Consider grouping by use case: "Dashboard pages" (StatCard, Grid, Card, ProgressBar), "List pages" (Table, Badge, Avatar, Pagination), "Forms" (Input, Select, Form), "Feedback" (Toast, Alert, Skeleton, Spinner).
+4. ~~**The component catalogue in SKILL.md is great but 76 entries is a lot to scan.** Consider grouping by use case: "Dashboard pages" (StatCard, Grid, Card, ProgressBar), "List pages" (Table, Badge, Avatar, Pagination), "Forms" (Input, Select, Form), "Feedback" (Toast, Alert, Skeleton, Spinner).~~ done (docs-health pass 2026-09-08)

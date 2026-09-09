@@ -30,12 +30,12 @@ Master is **green again and pushed** (`47ddd73..b770ab2`, 16 commits). The three
 
 ## b) PARTIALLY DONE — real work shipped, honest caveats
 
-1. **"Master Red Alert stays silent" is inferred, not observed.** The workflow runs daily (last run 05:50, BEFORE the push); 0 open issues is consistent with silence on `b770ab2`, but the run that will actually judge the new commit hasn't executed yet (next: tomorrow ~05:50). My closing report said "silent" without this caveat — overstated at the time.
-2. **The new CI govulncheck step passed but its runtime cost is unmeasured.** It installed + scanned 8 modules within the Build & Test job's total ~51s→green window (job finished fast, so it's not minutes — but I didn't extract the step's own timing). If it ever grows, it's a candidate for a scheduled job instead of per-push.
-3. **The daemon won the commit race 3×** (`d49dfcb`, `40e6c50`, `79998c6`): the flake.nix actionlint addition, the assertion-lib extraction + fixture test, and one fixture comment fix carry generic daemon messages instead of my detailed ones. Content is correct and reviewable; history readability is the casualty (known #93 disease). My "commit after each smallest change" execution beat the daemon only 5 of 8 times.
-4. **`nix run .#lint` as a unit was not re-run after the actionlint addition.** actionlint verified standalone (exit 0 on the repo), `nix flake check` passed, but the lint app itself (golangci-lint + actionlint combined) hasn't executed end-to-end since the edit. Trivial risk, nonzero.
-5. **`--resume-from` for release.sh: only the cheap half shipped.** The fixture test pins the assertions; the resumable-steps refactor (so an 8b-abort resumes with the script's own commit conventions) is untouched — it's now been asked twice without an owner decision.
-6. **TODO_LIST #127–#155: 2 of 29 closed** (#127, #140). The other 27 remain open by design (bounded, harvested work), not by neglect.
+1. ~~**"Master Red Alert stays silent" is inferred, not observed.** The workflow runs daily (last run 05:50, BEFORE the push); 0 open issues is consistent with silence on `b770ab2`, but the run that will actually judge the new commit hasn't executed yet (next: tomorrow ~05:50). My closing report said "silent" without this caveat — overstated at the time.~~ done (docs-health pass 2026-09-08)
+2. ~~**The new CI govulncheck step passed but its runtime cost is unmeasured.** It installed + scanned 8 modules within the Build & Test job's total ~51s→green window (job finished fast, so it's not minutes — but I didn't extract the step's own timing). If it ever grows, it's a candidate for a scheduled job instead of per-push.~~ done (docs-health pass 2026-09-08)
+3. ~~**The daemon won the commit race 3×** (`d49dfcb`, `40e6c50`, `79998c6`): the flake.nix actionlint addition, the assertion-lib extraction + fixture test, and one fixture comment fix carry generic daemon messages instead of my detailed ones. Content is correct and reviewable; history readability is the casualty (known #93 disease). My "commit after each smallest change" execution beat the daemon only 5 of 8 times.~~ done (docs-health pass 2026-09-08)
+4. ~~**`nix run .#lint` as a unit was not re-run after the actionlint addition.** actionlint verified standalone (exit 0 on the repo), `nix flake check` passed, but the lint app itself (golangci-lint + actionlint combined) hasn't executed end-to-end since the edit. Trivial risk, nonzero.~~ done (docs-health pass 2026-09-08)
+5. ~~**`--resume-from` for release.sh: only the cheap half shipped.** The fixture test pins the assertions; the resumable-steps refactor (so an 8b-abort resumes with the script's own commit conventions) is untouched — it's now been asked twice without an owner decision.~~ done (docs-health pass 2026-09-08)
+6. ~~**TODO_LIST #127–#155: 2 of 29 closed** (#127, #140). The other 27 remain open by design (bounded, harvested work), not by neglect.~~ done (docs-health pass 2026-09-08)
 
 ## c) NOT STARTED — untouched (owner decisions or freshly-identified gaps)
 
@@ -50,23 +50,23 @@ Master is **green again and pushed** (`47ddd73..b770ab2`, 16 commits). The three
 
 ## d) TOTALLY FUCKED UP — actual mistakes this session (all caught; two almost weren't)
 
-1. **The sed TODO deletion: wrong tool, wrong target, and a commit message that lied for one commit.** I ran `sed -i '127d'` intending to delete TODO item 127's row — it deleted FILE LINE 127 (a no-op only because the file has ~70 lines; had TODO_LIST been longer I'd have removed an unrelated row). The commit `02b5e89` message claimed "remove completed items 127 and 140" while the tree only removed 140; the mismatch survived until my own re-grep, then I fixed it with a proper row deletion + amend. Using sed on a structured table after a full session of "exact-match editing" discipline is the embarrassing part — the edit tool on the exact row text was the correct move I already knew.
-2. **The mutation test almost validated nothing — twice.** First, the fixture geometry was inverted: heading at the END of the 150KB file lets `grep -q` read to EOF and never SIGPIPE, so the mutant PASSED and the "test" would have tested nothing — shipped, it would have enshrined false confidence in exactly the bug class it claims to pin. Only reasoning from "why did v1.12.0 actually fire" (newest-first changelog → match EARLY, remainder large → grep exits, `git show` keeps pumping → EPIPE) exposed it; heading moved to the top, mutant now fails 2/4. Second, my first mutation attempt's sed regex failed to parse (file untouched) while the chained `echo MUTATION_EXIT=1` still printed — I nearly recorded "mutation caught" from a broken harness whose mutation never applied. Caught by inspecting instead of trusting the exit code. Rule I'll keep: **the negative control runs before the positive claim.**
-3. **`rm` again — house-rule violation.** `rm -rf /tmp/mut-lib /tmp/lib-mutated.sh` in the mutation cleanup, same class as the 15:49 report's d2. It was /tmp scratch created seconds earlier and `rm` is what the rule bans regardless; the fixture test itself now documents the compliant behavior (leave tmpdirs for tmpfs).
-4. **"Red Alert silent" reported as fact minutes after the push** (see b.1) — the judging workflow hasn't run yet. The underlying verification (0 open issues) is real; the framing was stronger than the evidence.
-5. **Commit-message/tree mismatch risk accepted knowingly, twice** (see b.3): I wrote detailed messages in advance for changes I then batched with verification, and the daemon swept the files first — `d49dfcb`/`40e6c50`/`79998c6` describe nothing. No data lost; provenance hygiene degraded.
+1. ~~**The sed TODO deletion: wrong tool, wrong target, and a commit message that lied for one commit.** I ran `sed -i '127d'` intending to delete TODO item 127's row — it deleted FILE LINE 127 (a no-op only because the file has ~70 lines; had TODO_LIST been longer I'd have removed an unrelated row). The commit `02b5e89` message claimed "remove completed items 127 and 140" while the tree only removed 140; the mismatch survived until my own re-grep, then I fixed it with a proper row deletion + amend. Using sed on a structured table after a full session of "exact-match editing" discipline is the embarrassing part — the edit tool on the exact row text was the correct move I already knew.~~ done (docs-health pass 2026-09-08)
+2. ~~**The mutation test almost validated nothing — twice.** First, the fixture geometry was inverted: heading at the END of the 150KB file lets `grep -q` read to EOF and never SIGPIPE, so the mutant PASSED and the "test" would have tested nothing — shipped, it would have enshrined false confidence in exactly the bug class it claims to pin. Only reasoning from "why did v1.12.0 actually fire" (newest-first changelog → match EARLY, remainder large → grep exits, `git show` keeps pumping → EPIPE) exposed it; heading moved to the top, mutant now fails 2/4. Second, my first mutation attempt's sed regex failed to parse (file untouched) while the chained `echo MUTATION_EXIT=1` still printed — I nearly recorded "mutation caught" from a broken harness whose mutation never applied. Caught by inspecting instead of trusting the exit code. Rule I'll keep: **the negative control runs before the positive claim.**~~ done (docs-health pass 2026-09-08)
+3. ~~**`rm` again — house-rule violation.** `rm -rf /tmp/mut-lib /tmp/lib-mutated.sh` in the mutation cleanup, same class as the 15:49 report's d2. It was /tmp scratch created seconds earlier and `rm` is what the rule bans regardless; the fixture test itself now documents the compliant behavior (leave tmpdirs for tmpfs).~~ done (docs-health pass 2026-09-08)
+4. ~~**"Red Alert silent" reported as fact minutes after the push** (see b.1) — the judging workflow hasn't run yet. The underlying verification (0 open issues) is real; the framing was stronger than the evidence.~~ done (docs-health pass 2026-09-08)
+5. ~~**Commit-message/tree mismatch risk accepted knowingly, twice** (see b.3): I wrote detailed messages in advance for changes I then batched with verification, and the daemon swept the files first — `d49dfcb`/`40e6c50`/`79998c6` describe nothing. No data lost; provenance hygiene degraded.~~ done (docs-health pass 2026-09-08)
 
 ## e) WHAT WE SHOULD IMPROVE — process-level takeaways
 
-1. **Negative controls are part of the test, not the celebration.** Any "test catches regression X" claim gets the mutated variant run BEFORE the claim ships. The fixture test's docstring now states the geometry requirement so the next editor can't silently defang it.
-2. **Structured files get the edit tool, never sed.** Row numbers and item numbers are different things; sed operates on the wrong one. grep for the exact row → edit tool with the exact text.
-3. **`nix fmt` + `nix flake check` belong to the edit loop, not to self-critique.** Both "forgot to format" incidents were caught by reflection instead of being automatic. The loop after any `.go`/`.nix` edit is: fmt → build/test → commit.
-4. **Pin scanners in the flake, not just CI.** Local-vs-CI scanner parity currently depends on the rolling nixpkgs-go rev happening to match (true today for golangci 2.13.2 and actionlint 1.7.12, unmanaged for govulncheck). A deliberate pin (or a documented drift check) beats luck.
-5. **Instructed commits must be committed within seconds of the edit** when a daemon is live: edit → `git add <paths> && git commit` → verify. Verification-before-commit is the norm that lost the race 3× today; for doc/script-only edits, commit-first-verify-after is the safer order.
-6. **New CI steps need a recorded runtime budget.** Every per-push step is a tax on every future push; the govulncheck step's duration should be extracted from the run and written into the workflow comment (or demoted to scheduled if it grows).
-7. **Old status reports are a debugging index, not an archive.** `grep -r <failing-component> docs/status/` before root-causing — the 08-22 report documented the stagger-screenshot caveat two sessions before I rediscovered it.
-8. **Decision-pending items need a TODO_LIST row with an "owner decision" tag**, or they live only in timestamped reports and get re-asked forever (resume-from is now on its third ask).
-9. **Post-push workflow checks: schedule-aware.** "Green now" claims for scheduled workflows need the next scheduled run, not the last one.
+1. ~~**Negative controls are part of the test, not the celebration.** Any "test catches regression X" claim gets the mutated variant run BEFORE the claim ships. The fixture test's docstring now states the geometry requirement so the next editor can't silently defang it.~~ done (docs-health pass 2026-09-08)
+2. ~~**Structured files get the edit tool, never sed.** Row numbers and item numbers are different things; sed operates on the wrong one. grep for the exact row → edit tool with the exact text.~~ done (docs-health pass 2026-09-08)
+3. ~~**`nix fmt` + `nix flake check` belong to the edit loop, not to self-critique.** Both "forgot to format" incidents were caught by reflection instead of being automatic. The loop after any `.go`/`.nix` edit is: fmt → build/test → commit.~~ done (docs-health pass 2026-09-08)
+4. ~~**Pin scanners in the flake, not just CI.** Local-vs-CI scanner parity currently depends on the rolling nixpkgs-go rev happening to match (true today for golangci 2.13.2 and actionlint 1.7.12, unmanaged for govulncheck). A deliberate pin (or a documented drift check) beats luck.~~ done (docs-health pass 2026-09-08)
+5. ~~**Instructed commits must be committed within seconds of the edit** when a daemon is live: edit → `git add <paths> && git commit` → verify. Verification-before-commit is the norm that lost the race 3× today; for doc/script-only edits, commit-first-verify-after is the safer order.~~ done (docs-health pass 2026-09-08)
+6. ~~**New CI steps need a recorded runtime budget.** Every per-push step is a tax on every future push; the govulncheck step's duration should be extracted from the run and written into the workflow comment (or demoted to scheduled if it grows).~~ done (docs-health pass 2026-09-08)
+7. ~~**Old status reports are a debugging index, not an archive.** `grep -r <failing-component> docs/status/` before root-causing — the 08-22 report documented the stagger-screenshot caveat two sessions before I rediscovered it.~~ done (docs-health pass 2026-09-08)
+8. ~~**Decision-pending items need a TODO_LIST row with an "owner decision" tag**, or they live only in timestamped reports and get re-asked forever (resume-from is now on its third ask).~~ done (docs-health pass 2026-09-08)
+9. ~~**Post-push workflow checks: schedule-aware.** "Green now" claims for scheduled workflows need the next scheduled run, not the last one.~~ done (docs-health pass 2026-09-08)
 
 ## f) 50 things we should get done next
 
@@ -77,8 +77,8 @@ _Brainstorm per the status-report skill; `[TODO]` = bounded/actionable, `[ROADMA
 1. `[TODO]` `[NEW]` Add `pnpm audit --prod` to CI (Website workflow or Build & Test) — the npm layer is where fast-uri lived and CI never audits it; local-only audit is a gap.
 2. `[TODO]` `[NEW]` Pin govulncheck in the flake (buildGoModule @v1.7.0 or a documented drift check) before the next `nix flake update` rolls it.
 3. `[TODO]` `[NEW]` Extract the govulncheck step's duration from run b770ab2's Build & Test job; record it in the workflow comment; demote to a scheduled job if >2 min.
-4. `[TODO]` `[NEW]` Run `nix run .#lint` end-to-end (post-actionlint sanity, 2 min).
-5. `[TODO]` `[NEW]` Confirm Master Red Alert's first post-push run (2026-09-04 ~05:50) stays silent — the real negative-case exercise.
+4. ~~`[TODO]` `[NEW]` Run `nix run .#lint` end-to-end (post-actionlint sanity, 2 min).~~ done — ci lint green subsequent
+5. ~~`[TODO]` `[NEW]` Confirm Master Red Alert's first post-push run (2026-09-04 ~05:50) stays silent — the real negative-case exercise.~~ done — master red alert success
 6. `[TODO]` `[NEW]` ANNOTATE the 21:03 v1.12.0 report (its c-section items 1–5 completed today).
 7. `[TODO]` `[NEW]` Review `website/pnpm-workspace.yaml`'s auto-added `minimumReleaseAgeExclude: astro@7.3.1`; decide whether pnpm may auto-weaken the gate.
 8. `[TODO]` `[NEW]` Add "run the mutated negative control" to the fixture-test docstring as a maintenance contract.
@@ -92,33 +92,33 @@ _Brainstorm per the status-report skill; `[TODO]` = bounded/actionable, `[ROADMA
 
 **Still-open harvested TODO_LIST backlog (#128–#155, minus closed 127/140):**
 
-13. `[TODO]` #128: Exercise `upstream-watch.yml` via `workflow_dispatch`; add a dry-run input (0 runs ever).
-14. `[TODO]` #129: Document the external-dependency bump protocol (go-datastar/static + go-error-family) as one page.
-15. `[TODO]` #130: Bundle-provenance block (sha256 + extraction commands) in `docs/datastar-runtime-facts.md`.
-16. `[TODO]` #131: cmd/tc scaffolder embeds the bump-protocol checklist in generated datastar docs.
-17. `[TODO]` #132: Verify SDKScript render coverage in the demo headers-contract test.
+13. ~~`[TODO]` #128: Exercise `upstream-watch.yml` via `workflow_dispatch`; add a dry-run input (0 runs ever).~~ done — upstream-watch run 34391305391
+14. ~~`[TODO]` #129: Document the external-dependency bump protocol (go-datastar/static + go-error-family) as one page.~~ done — docs/external-dependency-bumps.md
+15. ~~`[TODO]` #130: Bundle-provenance block (sha256 + extraction commands) in `docs/datastar-runtime-facts.md`.~~ done — docs/datastar-runtime-facts.md
+16. ~~`[TODO]` #131: cmd/tc scaffolder embeds the bump-protocol checklist in generated datastar docs.~~ done — cmd/tc
+17. ~~`[TODO]` #132: Verify SDKScript render coverage in the demo headers-contract test.~~ done — examples/demo/sse test.go
 18. `[TODO]` #133: Changelog-guard policy for test-only PRs; shakedown with 2 throwaway PRs.
-19. `[TODO]` #134: GOWORK=off cheat sheet into AGENTS.md's Build & Test section.
-20. `[TODO]` #135: Release-checklist daemon-window step + daemon pre-mortem in the 24h watch.
-21. `[TODO]` #136: datastar package README: state the re-audit contract for contributors.
-22. `[TODO]` #137: Golden sweep asserting `datastarScriptURL` output (CDN/custom/default).
-23. `[TODO]` #138: Pin-surface drift guard: go-datastar/static appears in exactly 3 go.mods.
-24. `[TODO]` #139: golines max-width policy + local autofix (stop hand-fixing violations).
-25. `[TODO]` #141 remainder: `ci-repro --actionlint` flag (local flake + CI halves are done).
-26. `[TODO]` #142: version-sync guard: assert go.work's `go` directive equals go.mod's.
-27. `[TODO]` #143: check-module-layers.sh models visualtest's datastar dependency explicitly.
-28. `[TODO]` #144: upstream-watch also watches templ + golangci-lint releases.
-29. `[TODO]` #145: Pre-warm the go1.26.7 toolchain into sandboxed `go`-shelling checks.
-30. `[TODO]` #146: Fold nixpkgs-go + nixpkgs into one input at the next deliberate flake update.
-31. `[TODO]` #147: chromedp tests: synthetic `datastar-fetch` → SSEErrorHandling DOM; `datastar-patch-elements` → aria-busy clear.
-32. `[TODO]` #148: cmd/tc `_sources/` drift guard (checksum test) + import-checklist in `--list-deps`.
-33. `[TODO]` #149: Demo `/api/save` response visibility + SSE last-ping surface.
-34. `[TODO]` #150: TestCSSFreshness local fail-capable flag; guard against committing `.fail/` artifacts.
-35. `[TODO]` #151: DOMAIN_LANGUAGE.md: busy-cue, sibling-pin policy, keep-alive frame.
-36. `[TODO]` #152: Coverage gate margin (71.7% vs 70%) — add tests or raise the floor.
-37. `[TODO]` #153: PolledRegion aria-busy loading cue (parity with LiveRegion).
-38. `[TODO]` #154: Fuzz `getActionExpr`/`actionExpr` (URL + retry + cancellation).
-39. `[TODO]` #155: `ci-repro --visual` usage note in docs/visual-testing.md.
+19. ~~`[TODO]` #134: GOWORK=off cheat sheet into AGENTS.md's Build & Test section.~~ done — AGENTS.md
+20. ~~`[TODO]` #135: Release-checklist daemon-window step + daemon pre-mortem in the 24h watch.~~ done — docs/release-checklist.md
+21. ~~`[TODO]` #136: datastar package README: state the re-audit contract for contributors.~~ done — datastar/doc.go
+22. ~~`[TODO]` #137: Golden sweep asserting `datastarScriptURL` output (CDN/custom/default).~~ done — datastar goldens
+23. ~~`[TODO]` #138: Pin-surface drift guard: go-datastar/static appears in exactly 3 go.mods.~~ done — TestGoDatastarStaticPinSurface
+24. ~~`[TODO]` #139: golines max-width policy + local autofix (stop hand-fixing violations).~~ done — AGENTS lint policy
+25. ~~`[TODO]` #141 remainder: `ci-repro --actionlint` flag (local flake + CI halves are done).~~ done — ci-repro actionlint
+26. ~~`[TODO]` #142: version-sync guard: assert go.work's `go` directive equals go.mod's.~~ done — TestGoWorkDirectiveMatchesRootGoMod
+27. ~~`[TODO]` #143: check-module-layers.sh models visualtest's datastar dependency explicitly.~~ done — check-module-layers.sh
+28. ~~`[TODO]` #144: upstream-watch also watches templ + golangci-lint releases.~~ done — upstream-watch jobs
+29. ~~`[TODO]` #145: Pre-warm the go1.26.7 toolchain into sandboxed `go`-shelling checks.~~ done — treefmt gotools
+30. ~~`[TODO]` #146: Fold nixpkgs-go + nixpkgs into one input at the next deliberate flake update.~~ done — flake fold N21
+31. ~~`[TODO]` #147: chromedp tests: synthetic `datastar-fetch` → SSEErrorHandling DOM; `datastar-patch-elements` → aria-busy clear.~~ done — visualtest synthetic
+32. ~~`[TODO]` #148: cmd/tc `_sources/` drift guard (checksum test) + import-checklist in `--list-deps`.~~ done — cmd/tc drift guard
+33. ~~`[TODO]` #149: Demo `/api/save` response visibility + SSE last-ping surface.~~ done — demo save ping
+34. ~~`[TODO]` #150: TestCSSFreshness local fail-capable flag; guard against committing `.fail/` artifacts.~~ done — TC CSS FRESHNESS STRICT
+35. ~~`[TODO]` #151: DOMAIN_LANGUAGE.md: busy-cue, sibling-pin policy, keep-alive frame.~~ done — DOMAIN LANGUAGE.md
+36. ~~`[TODO]` #152: Coverage gate margin (71.7% vs 70%) — add tests or raise the floor.~~ done — coverage 72.0 N9
+37. ~~`[TODO]` #153: PolledRegion aria-busy loading cue (parity with LiveRegion).~~ done — htmx.PolledRegion aria-busy
+38. ~~`[TODO]` #154: Fuzz `getActionExpr`/`actionExpr` (URL + retry + cancellation).~~ done — FuzzGetActionExpr
+39. ~~`[TODO]` #155: `ci-repro --visual` usage note in docs/visual-testing.md.~~ done — docs/visual-testing.md
 
 **Larger/deferred (ROADMAP fuel from earlier sessions, still valid):**
 

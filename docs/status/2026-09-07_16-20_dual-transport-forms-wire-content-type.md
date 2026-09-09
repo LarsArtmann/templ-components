@@ -38,64 +38,64 @@ already named `Form` as the survey candidate.
 
 ## a) FULLY DONE
 
-1. **`wire.Action.ContentType` typed enum** (`utils/wire/wire.go`):
-   `ContentTypeUnspecified`/`ContentTypeJSON`/`ContentTypeForm` +
-   `ContentTypeIsValid`. `ContentTypeForm` renders
-   `{contentType: 'form'}` in the Datastar expression; JSON (the runtime
-   default) and unknown values render no option (graceful degradation). htmx
-   dialect ignores the field entirely.
-2. **Wire tests** (`utils/wire/wire_test.go`): `TestContentTypeIsValid`, five
-   new `TestActionAttributes` cases (form option, JSON omission, unknown
-   fallback, htmx-ignores), a render test proving the expression survives
-   templ's attribute writer, and `FuzzAction` extended with a contentType
-   dimension.
-3. **Wire invariant pack** (`utils/wire/invariants_test.go`): the empty-URL
-   exhaustive loop and URL-referenced loop gained the ContentType dimension;
-   new `TestContentTypeHTMXInert` pins that the option never leaks into the
-   htmx dialect.
-4. **`forms.FormProps.Wire *wire.Action`** (`forms/form.templ`) with
-   `formWireAttributes` helper: copies the action (never mutates the
-   consumer's — pinned by `TestFormWireDoesNotMutateAction`), defaults
-   unspecified `Event` → `submit` and unspecified `ContentType` → form
-   encoding. `Action`/`Method` stay as the no-JS fallback; CSRF hidden input
-   travels in both dialects; `Wire.Target` renders htmx-only; empty
-   `Wire.URL` stays inert.
-5. **Form tests + goldens**: `forms/form_wire_test.go` (10 table cases + CSRF
-   travel + defaults + no-mutation) and 4 new goldens
-   (`form_wired_htmx`, `form_wired_datastar`, `form_wired_empty_url_inert`,
-   plus the existing `form_basic`).
-6. **Runtime contract pinned**: `datastar/bundle_guard_test.go` gained the
-   tokens `contentType`, `FetchFormNotFound`, `FetchInvalidContentType` — a
-   future pin bump that renames them fails CI.
-7. **Facts doc**: new "NEW (2026-09-07)" block in
-   `docs/datastar-runtime-facts.md` covering all bullets above, plus an
-   honestly-scoped modifier-machinery note (tokens verified, exact key
-   spelling NOT decoded from the minified parser — flagged for re-audit
-   before adoption).
-8. **Demo**: "Dual-transport form" section in `examples/demo/wire_demo.templ`
-   (both dialects side by side in the default view, single dialect under
-   `?transport=`), `wireDemoForm`/`wireFormResult` fragments, and the
-   `/api/wire/form` endpoint in `examples/demo/main.go` — one
-   `ParseForm`-driven `wire.Handler` endpoint serving both transports.
-9. **Demo tests**: `TestWireFormEndpointServesBothTransports` (Datastar caller
-   gets response-header targeting, htmx caller does not, missing-email error
-   verdict) and `TestWireDemoFormRendersBothDialects` (attribute spelling on
-   the page).
-10. **Docs**: `docs/transport-wiring.md` (new "Dual-transport forms" section
-    with a parity table, revised form-parity paragraph, ContentType rows in
-    the zero-value and dialect-mapping tables), `README.md` (wire section +
-    counts), `FEATURES.md` (Form row + wire API table + scope note),
-    `skill/SKILL.md` (Form row, wire table, scope note — symlinked install
-    flows through), `CHANGELOG.md` `[Unreleased]` (Added + Fixed).
-11. **IsValid drift-guard counts bumped 56 → 57** (README ×2, website
-    `sections.ts`).
-12. **Pre-existing post-release go.sum staleness fixed** (the documented
-    v1.12+ "post-propagation tidy" lesson): `datastar` failed `GOWORK=off`
-    module testing at session start; swept `go mod tidy` (GOWORK=off) across
-    **utils, icons, errorpage, charts/echarts, datastar, htmx** — all were
-    stale. CHANGELOG Fixed entry added.
-13. **Demo CSS recompiled** (`nix run .#css`) after the `.templ` edits;
-    `TestCSSFreshness` passes.
+1. ~~**`wire.Action.ContentType` typed enum** (`utils/wire/wire.go`):~~ done at `126201b`
+   ~~`ContentTypeUnspecified`/`ContentTypeJSON`/`ContentTypeForm` +~~
+   ~~`ContentTypeIsValid`. `ContentTypeForm` renders~~
+   ~~`{contentType: 'form'}` in the Datastar expression; JSON (the runtime~~
+   ~~default) and unknown values render no option (graceful degradation). htmx~~
+   ~~dialect ignores the field entirely.~~
+2. ~~**Wire tests** (`utils/wire/wire_test.go`): `TestContentTypeIsValid`, five~~ done at `126201b`
+   ~~new `TestActionAttributes` cases (form option, JSON omission, unknown~~
+   ~~fallback, htmx-ignores), a render test proving the expression survives~~
+   ~~templ's attribute writer, and `FuzzAction` extended with a contentType~~
+   ~~dimension.~~
+3. ~~**Wire invariant pack** (`utils/wire/invariants_test.go`): the empty-URL~~ done at `126201b`
+   ~~exhaustive loop and URL-referenced loop gained the ContentType dimension;~~
+   ~~new `TestContentTypeHTMXInert` pins that the option never leaks into the~~
+   ~~htmx dialect.~~
+4. ~~**`forms.FormProps.Wire *wire.Action`** (`forms/form.templ`) with~~ done at `126201b`
+   ~~`formWireAttributes` helper: copies the action (never mutates the~~
+   ~~consumer's — pinned by `TestFormWireDoesNotMutateAction`), defaults~~
+   ~~unspecified `Event` → `submit` and unspecified `ContentType` → form~~
+   ~~encoding. `Action`/`Method` stay as the no-JS fallback; CSRF hidden input~~
+   ~~travels in both dialects; `Wire.Target` renders htmx-only; empty~~
+   ~~`Wire.URL` stays inert.~~
+5. ~~**Form tests + goldens**: `forms/form_wire_test.go` (10 table cases + CSRF~~ done at `126201b`
+   ~~travel + defaults + no-mutation) and 4 new goldens~~
+   ~~(`form_wired_htmx`, `form_wired_datastar`, `form_wired_empty_url_inert`,~~
+   ~~plus the existing `form_basic`).~~
+6. ~~**Runtime contract pinned**: `datastar/bundle_guard_test.go` gained the~~ done at `126201b`
+   ~~tokens `contentType`, `FetchFormNotFound`, `FetchInvalidContentType` — a~~
+   ~~future pin bump that renames them fails CI.~~
+7. ~~**Facts doc**: new "NEW (2026-09-07)" block in~~ done at `126201b`
+   ~~`docs/datastar-runtime-facts.md` covering all bullets above, plus an~~
+   ~~honestly-scoped modifier-machinery note (tokens verified, exact key~~
+   ~~spelling NOT decoded from the minified parser — flagged for re-audit~~
+   ~~before adoption).~~
+8. ~~**Demo**: "Dual-transport form" section in `examples/demo/wire_demo.templ`~~ done at `126201b`
+   ~~(both dialects side by side in the default view, single dialect under~~
+   ~~`?transport=`), `wireDemoForm`/`wireFormResult` fragments, and the~~
+   ~~`/api/wire/form` endpoint in `examples/demo/main.go` — one~~
+   ~~`ParseForm`-driven `wire.Handler` endpoint serving both transports.~~
+9. ~~**Demo tests**: `TestWireFormEndpointServesBothTransports` (Datastar caller~~ done at `126201b`
+   ~~gets response-header targeting, htmx caller does not, missing-email error~~
+   ~~verdict) and `TestWireDemoFormRendersBothDialects` (attribute spelling on~~
+   ~~the page).~~
+10. ~~**Docs**: `docs/transport-wiring.md` (new "Dual-transport forms" section~~ done at `126201b`
+    ~~with a parity table, revised form-parity paragraph, ContentType rows in~~
+    ~~the zero-value and dialect-mapping tables), `README.md` (wire section +~~
+    ~~counts), `FEATURES.md` (Form row + wire API table + scope note),~~
+    ~~`skill/SKILL.md` (Form row, wire table, scope note — symlinked install~~
+    ~~flows through), `CHANGELOG.md` `[Unreleased]` (Added + Fixed).~~
+11. ~~**IsValid drift-guard counts bumped 56 → 57** (README ×2, website~~ done at `126201b`
+    ~~`sections.ts`).~~
+12. ~~**Pre-existing post-release go.sum staleness fixed** (the documented~~ done at `126201b`
+    ~~v1.12+ "post-propagation tidy" lesson): `datastar` failed `GOWORK=off`~~
+    ~~module testing at session start; swept `go mod tidy` (GOWORK=off) across~~
+    ~~**utils, icons, errorpage, charts/echarts, datastar, htmx** — all were~~
+    ~~stale. CHANGELOG Fixed entry added.~~
+13. ~~**Demo CSS recompiled** (`nix run .#css`) after the `.templ` edits;~~ done at `126201b`
+    ~~`TestCSSFreshness` passes.~~
 
 **Verification state at report time:** `nix run .#build` green (117 templ
 files regenerated); root `go test ./...` **0 failures**; all 6 sub-modules
@@ -105,90 +105,90 @@ green under `GOWORK=off`; `nix run .#lint` **0 issues in every module**;
 
 ## b) PARTIALLY DONE
 
-1. **End-to-end browser proof.** The wire contract's browser-level proof
-   (`visualtest/wire_e2e_test.go` drives real Chromium and clicks both
-   transport buttons) was **not extended to submit the new form**. Current
-   evidence: bundle tokens prove the machinery exists, string tests prove we
-   emit the right expression, endpoint tests prove the server accepts the
-   body — but nothing executes our exact emitted expression
-   (`@post('/api/wire/form', {contentType: 'form'})`) in a real browser. This
-   is the same evidence gap the SSE audit once had (docs were right, the
-   shipped integration was inert) — in our case the risk is a subtle
-   expression/option misspelling the runtime would silently reject.
-2. **Verification breadth.** Ran build/test/lint/CSS/flake-check separately
-   (equivalent coverage) but never the canonical single done-check
-   `nix run .#verify`; **skipped the `visualtest` compile check** (step 3 of
-   the documented complete local test form) — `visualtest` depends on the
-   demo + wire APIs and its go.sum may share the post-release staleness I
-   fixed elsewhere.
-3. **Wire-adoption bookkeeping.** `docs/transport-wiring.md`/`FEATURES.md`/
-   `SKILL.md` updated, but `docs/wire-gates-d1-d2-d3.md` (the D3 process doc
-   that records each adopted `Wire` case: LoadMore T11, validation demo T12…)
-   has **no entry for the Form adoption**, and **TODO_LIST.md #153 is still
-   open** although its named candidate is now shipped.
-4. **Validation story.** Documented the validation parity (htmx
-   `hx-validate` opt-in vs Datastar automatic gate) and tested
-   `Validate:true + Wire` coexistence — but the demo only echoes values; the
-   **field-error re-render round-trip** (server re-renders the form fragment
-   with `Input.Error` + `ValidationSummary` via `wire.Handler`) exists as
-   components but not as a demo/recipe, and `Form` exposes no `NoValidate`
-   opt-out for the Datastar default-on validation.
+1. ~~**End-to-end browser proof.** The wire contract's browser-level proof~~ done — wire form e2e T01
+   ~~(`visualtest/wire_e2e_test.go` drives real Chromium and clicks both~~
+   ~~transport buttons) was **not extended to submit the new form**. Current~~
+   ~~evidence: bundle tokens prove the machinery exists, string tests prove we~~
+   ~~emit the right expression, endpoint tests prove the server accepts the~~
+   ~~body — but nothing executes our exact emitted expression~~
+   ~~(`@post('/api/wire/form', {contentType: 'form'})`) in a real browser. This~~
+   ~~is the same evidence gap the SSE audit once had (docs were right, the~~
+   ~~shipped integration was inert) — in our case the risk is a subtle~~
+   ~~expression/option misspelling the runtime would silently reject.~~
+2. ~~**Verification breadth.** Ran build/test/lint/CSS/flake-check separately~~ done — visualtest tidy T05
+   ~~(equivalent coverage) but never the canonical single done-check~~
+   ~~`nix run .#verify`; **skipped the `visualtest` compile check** (step 3 of~~
+   ~~the documented complete local test form) — `visualtest` depends on the~~
+   ~~demo + wire APIs and its go.sum may share the post-release staleness I~~
+   ~~fixed elsewhere.~~
+3. ~~**Wire-adoption bookkeeping.** `docs/transport-wiring.md`/`FEATURES.md`/~~ done — todo153 closed T04
+   ~~`SKILL.md` updated, but `docs/wire-gates-d1-d2-d3.md` (the D3 process doc~~
+   ~~that records each adopted `Wire` case: LoadMore T11, validation demo T12…)~~
+   ~~has **no entry for the Form adoption**, and **TODO_LIST.md #153 is still~~
+   ~~open** although its named candidate is now shipped.~~
+4. ~~**Validation story.** Documented the validation parity (htmx~~ done — roundtrip T02
+   ~~`hx-validate` opt-in vs Datastar automatic gate) and tested~~
+   ~~`Validate:true + Wire` coexistence — but the demo only echoes values; the~~
+   ~~**field-error re-render round-trip** (server re-renders the form fragment~~
+   ~~with `Input.Error` + `ValidationSummary` via `wire.Handler`) exists as~~
+   ~~components but not as a demo/recipe, and `Form` exposes no `NoValidate`~~
+   ~~opt-out for the Datastar default-on validation.~~
 
 ## c) NOT STARTED (deliberately deferred, scoped next steps)
 
-1. `FilterDropdown.Wire` / new `FilterInput` — per-field auto-submit value
-   transport needs a wrapper-form or signal-binding design decision.
-2. `docs/recipes/server-side-validation.md` — the validation round-trip
-   recipe.
-3. ADR for extending the wire common subset with `ContentType` (ADR-0036
-   predates it).
-4. Datastar `selector` fetch-option adoption (facts doc marks it
-   deliberately unadopted).
-5. Typed debounce/trigger API (ADR-sized per the scope rule).
-6. Release cut for `[Unreleased]` (v1.13.3 candidate).
+1. ~~`FilterDropdown.Wire` / new `FilterInput` — per-field auto-submit value~~ done — FilterDropdown Wire
+   ~~transport needs a wrapper-form or signal-binding design decision.~~
+2. ~~`docs/recipes/server-side-validation.md` — the validation round-trip~~ done — docs/recipes/server-side-validation.md
+   ~~recipe.~~
+3. ~~ADR for extending the wire common subset with `ContentType` (ADR-0036~~ done — ADR-0038
+   ~~predates it).~~
+4. ~~Datastar `selector` fetch-option adoption (facts doc marks it~~ done — wire.Action.Selector
+   ~~deliberately unadopted).~~
+5. ~~Typed debounce/trigger API (ADR-sized per the scope rule).~~ done — wire.Action.DebounceMS
+6. ~~Release cut for `[Unreleased]` (v1.13.3 candidate).~~ done — v1.13.3 cut
 
 ## d) TOTALLY FUCKED UP (nothing shipped broken; self-caught stumbles)
 
-1. **templ import collision** — added `"github.com/a-h/templ"` to
-   `form.templ`'s import block; the generator auto-injects its own `templ`
-   alias → duplicate declaration, build broke. Fixed by dropping the explicit
-   import. Not yet documented as a gotcha in AGENTS.md.
-2. **Sloppy sed on README** — a two-expression sed mangled line 269
-   (`**Type-safe.** …` became `XX …`). Caught immediately, repaired with a
-   proper edit; final line verified consistent (58 enums / 57 IsValid).
-3. **Wrong first test expectation** — expected `@post` from a Method-less
-   `formWireAttributes` call; wire's documented zero-value is GET. Fixed the
-   test (correct call: the component must not reinterpret another type's
-   zero value) and hardened the field docs.
-4. **Almost shipped an unverified runtime claim** — the first facts-doc draft
-   asserted the exact `.debounce.Nms` modifier spelling; bundle re-verification
-   could not decode the minified key parser, so the claim was softened to
-   "machinery verified, spelling unverified — re-audit before adopting".
-5. **Stale-LSP noise** — `form.templ` showed phantom `ContentType undefined`
-   diagnostics for the whole session (cross-module templ LSP lag); trusted
-   builds over diagnostics per the AGENTS.md lesson. No damage.
+1. ~~**templ import collision** — added `"github.com/a-h/templ"` to~~ done (docs-health pass 2026-09-08)
+   ~~`form.templ`'s import block; the generator auto-injects its own `templ`~~
+   ~~alias → duplicate declaration, build broke. Fixed by dropping the explicit~~
+   ~~import. Not yet documented as a gotcha in AGENTS.md.~~
+2. ~~**Sloppy sed on README** — a two-expression sed mangled line 269~~ done (docs-health pass 2026-09-08)
+   ~~(`**Type-safe.** …` became `XX …`). Caught immediately, repaired with a~~
+   ~~proper edit; final line verified consistent (58 enums / 57 IsValid).~~
+3. ~~**Wrong first test expectation** — expected `@post` from a Method-less~~ done (docs-health pass 2026-09-08)
+   ~~`formWireAttributes` call; wire's documented zero-value is GET. Fixed the~~
+   ~~test (correct call: the component must not reinterpret another type's~~
+   ~~zero value) and hardened the field docs.~~
+4. ~~**Almost shipped an unverified runtime claim** — the first facts-doc draft~~ done (docs-health pass 2026-09-08)
+   ~~asserted the exact `.debounce.Nms` modifier spelling; bundle re-verification~~
+   ~~could not decode the minified key parser, so the claim was softened to~~
+   ~~"machinery verified, spelling unverified — re-audit before adopting".~~
+5. ~~**Stale-LSP noise** — `form.templ` showed phantom `ContentType undefined`~~ done (docs-health pass 2026-09-08)
+   ~~diagnostics for the whole session (cross-module templ LSP lag); trusted~~
+   ~~builds over diagnostics per the AGENTS.md lesson. No damage.~~
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Always finish the complete verification form** — the visualtest step was
-   in the docs and was skipped. The documented loop exists precisely because
-   root-mode testing is incomplete.
-2. **Browser-proof counterparty integrations at feature time, not later** —
-   the repo's own hardest-won principle (SSE audit). The form submit should
-   get its e2e click before the next release.
-3. **Bookkeeping in the same commit as the feature**: TODO #153 close,
-   wire-gates D3 entry, DOMAIN_LANGUAGE term. All three are drift-prone when
-   deferred.
-4. **Doc-count coupling is fragile** — adding one `IsValid` method touched
-   README ×2 + website `sections.ts`. A single-source constant (or generated
-   badge) would remove the class.
-5. **`.templ` import rules are undocumented** — the auto-injected `templ`
-   alias collision cost a build cycle; one AGENTS.md line prevents the next
-   occurrence.
-6. **Post-release tidy sweep is still manual and still bites** — 5 sub-modules
-   - visualtest were stale 2 days after v1.13.2. The release script's
-     post-propagation step should be a CI job (e.g. daily `go list -m` probe +
-     auto-PR) instead of a memory-dependent lesson.
+1. ~~**Always finish the complete verification form** — the visualtest step was~~ done (docs-health pass 2026-09-08)
+   ~~in the docs and was skipped. The documented loop exists precisely because~~
+   ~~root-mode testing is incomplete.~~
+2. ~~**Browser-proof counterparty integrations at feature time, not later** —~~ done (docs-health pass 2026-09-08)
+   ~~the repo's own hardest-won principle (SSE audit). The form submit should~~
+   ~~get its e2e click before the next release.~~
+3. ~~**Bookkeeping in the same commit as the feature**: TODO #153 close,~~ done — bookkeeping T04
+   ~~wire-gates D3 entry, DOMAIN_LANGUAGE term. All three are drift-prone when~~
+   ~~deferred.~~
+4. ~~**Doc-count coupling is fragile** — adding one `IsValid` method touched~~ done — count single sourcing
+   ~~README ×2 + website `sections.ts`. A single-source constant (or generated~~
+   ~~badge) would remove the class.~~
+5. ~~**`.templ` import rules are undocumented** — the auto-injected `templ`~~ done — AGENTS templ import gotcha
+   ~~alias collision cost a build cycle; one AGENTS.md line prevents the next~~
+   ~~occurrence.~~
+6. ~~**Post-release tidy sweep is still manual and still bites** — 5 sub-modules~~ done — tidy-probe.yml
+   ~~- visualtest were stale 2 days after v1.13.2. The release script's~~
+     ~~post-propagation step should be a CI job (e.g. daily `go list -m` probe +~~
+     ~~auto-PR) instead of a memory-dependent lesson.~~
 
 ## f) NEXT — up to 50 things, rough priority order
 
@@ -257,13 +257,13 @@ green under `GOWORK=off`; `nix run .#lint` **0 issues in every module**;
 
 ## g) Questions for the owner (cannot be figured out from the repo)
 
-1. **ADR or no ADR?** Should the `ContentType` common-subset extension get its
-   own ADR (e.g. ADR-0038) amending ADR-0036's scope, or is the
-   transport-wiring.md scope note + gates-doc entry sufficient record?
-2. **e2e before release?** Is a real-Chromium form-submit proof
-   (`wire_e2e_test.go` extension) a release blocker for v1.13.3 in your risk
-   model, or is bundle-token + string-contract pinning acceptable until the
-   next release?
-3. **Next forms priority:** `FilterInput`/auto-submit filters, the
-   server-side validation round-trip recipe, or validation-parity polish
-   (`NoValidate` etc.) — which does the consumer base want first?
+1. ~~**ADR or no ADR?** Should the `ContentType` common-subset extension get its~~ **Won't implement — ADR-0038 written.**
+   ~~own ADR (e.g. ADR-0038) amending ADR-0036's scope, or is the~~
+   ~~transport-wiring.md scope note + gates-doc entry sufficient record?~~
+2. ~~**e2e before release?** Is a real-Chromium form-submit proof~~ **Won't implement — e2e shipped T01.**
+   ~~(`wire_e2e_test.go` extension) a release blocker for v1.13.3 in your risk~~
+   ~~model, or is bundle-token + string-contract pinning acceptable until the~~
+   ~~next release?~~
+3. ~~**Next forms priority:** `FilterInput`/auto-submit filters, the~~ **Won't implement — FilterInput shipped.**
+   ~~server-side validation round-trip recipe, or validation-parity polish~~
+   ~~(`NoValidate` etc.) — which does the consumer base want first?~~

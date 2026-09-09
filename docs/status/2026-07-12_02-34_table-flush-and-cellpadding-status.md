@@ -90,19 +90,19 @@ Nothing in this session. All 7 commits are clean, BuildFlow passed on every comm
 
 ### Process improvements
 
-1. **First-pass was incomplete.** The initial implementation (session 1) shipped the feature + unit/golden tests but missed: integration test, coverage tests, FEATURES.md, SKILL.md, demo, RTL test. The self-review (session 2) caught all of these. **Lesson:** always run a self-review checklist before declaring done — the per-component testing checklist in SKILL.md exists for this reason and wasn't followed.
+1. ~~**First-pass was incomplete.** The initial implementation (session 1) shipped the feature + unit/golden tests but missed: integration test, coverage tests, FEATURES.md, SKILL.md, demo, RTL test. The self-review (session 2) caught all of these. **Lesson:** always run a self-review checklist before declaring done — the per-component testing checklist in SKILL.md exists for this reason and wasn't followed.~~ done (docs-health pass 2026-09-08)
 
-2. **The wrapper div bypasses `utils.Class()`.** The `tableWrapperClass()` result is used directly in the template (`class={ tableWrapperClass(props.Flush) }`) instead of going through `utils.Class()`. This was necessary to preserve class ordering for existing tests, but it means consumer `props.Class` is NOT applied to the wrapper div — only to the `<table>` element inside. This is the pre-existing behavior (the old code also hardcoded the wrapper div class), so it's not a regression, but it's an inconsistency worth noting.
+2. ~~**The wrapper div bypasses `utils.Class()`.** The `tableWrapperClass()` result is used directly in the template (`class={ tableWrapperClass(props.Flush) }`) instead of going through `utils.Class()`. This was necessary to preserve class ordering for existing tests, but it means consumer `props.Class` is NOT applied to the wrapper div — only to the `<table>` element inside. This is the pre-existing behavior (the old code also hardcoded the wrapper div class), so it's not a regression, but it's an inconsistency worth noting.~~ done (docs-health pass 2026-09-08)
 
-3. **Golden files are brittle to class reordering.** The golden file for the existing sortable table test (`table_sortable_headers.golden`) was not affected because we didn't change the non-flush path's classes, but any future `utils.Class()` change could reorder classes and break golden tests. The CSS normalization in `internal/golden` handles this partially.
+3. ~~**Golden files are brittle to class reordering.** The golden file for the existing sortable table test (`table_sortable_headers.golden`) was not affected because we didn't change the non-flush path's classes, but any future `utils.Class()` change could reorder classes and break golden tests. The CSS normalization in `internal/golden` handles this partially.~~ done (docs-health pass 2026-09-08)
 
 ### Code improvements
 
-4. **`TableCellPadding` is a separate type from `CardPadding`.** Both control vertical density but have different value sets. This is correct (they're different domains), but a future `DensityLevel` shared enum could unify them if more components need it.
+4. ~~**`TableCellPadding` is a separate type from `CardPadding`.** Both control vertical density but have different value sets. This is correct (they're different domains), but a future `DensityLevel` shared enum could unify them if more components need it.~~ done (docs-health pass 2026-09-08)
 
-5. **The `Flush` name could be `FlushToParent`** for clarity, but `Flush` matches CSS terminology (`flush` = no gap/border) and is concise. No change needed.
+5. ~~**The `Flush` name could be `FlushToParent`** for clarity, but `Flush` matches CSS terminology (`flush` = no gap/border) and is concise. No change needed.~~ done (docs-health pass 2026-09-08)
 
-6. **No `Compact` shorthand.** The feedback report suggested a `Compact` option. We implemented `CellPadding: TableCellPaddingCompact` instead, which is more flexible (allows future density levels). This is the right call — a boolean `Compact` would preclude a future `TableCellPaddingDense` or `TableCellPaddingSpacious`.
+6. ~~**No `Compact` shorthand.** The feedback report suggested a `Compact` option. We implemented `CellPadding: TableCellPaddingCompact` instead, which is more flexible (allows future density levels). This is the right call — a boolean `Compact` would preclude a future `TableCellPaddingDense` or `TableCellPaddingSpacious`.~~ **Won't implement — rejected CellPadding enum chosen.**
 
 ---
 
@@ -112,10 +112,10 @@ Nothing in this session. All 7 commits are clean, BuildFlow passed on every comm
 
 | # | Task                                                                            | Impact | Effort |
 | - | ------------------------------------------------------------------------------- | ------ | ------ |
-| 1 | Cut v0.16.0 release with Flush + CellPadding                                    | High   | Low    |
-| 2 | Update README.md Table section with Flush/CellPadding                           | Medium | Low    |
+| ~~1~~ | ~~Cut v0.16.0 release with Flush + CellPadding~~ done — v0.16.0 | ~~High~~ | ~~Low~~ |
+| ~~2~~ | ~~Update README.md Table section with Flush/CellPadding~~ done — README.md | ~~Medium~~ | ~~Low~~ |
 | 3 | Remove the CSS workaround in cqrs-htmx adminui and adopt `Flush: true`          | High   | Low    |
-| 4 | Add a `docs/recipes/table-in-card.md` recipe showing the full dashboard pattern | Medium | Low    |
+| ~~4~~ | ~~Add a `docs/recipes/table-in-card.md` recipe showing the full dashboard pattern~~ done — docs/recipes/table-in-card.md | ~~Medium~~ | ~~Low~~ |
 
 ### Table component improvements
 
@@ -124,10 +124,10 @@ Nothing in this session. All 7 commits are clean, BuildFlow passed on every comm
 | 5  | Add `TableSize` enum (sm/md/lg) controlling font-size + cell-padding as a unified control                | Medium | Medium |
 | 6  | Add `StickyHeader bool` — `sticky top-0` on `<thead>` for long tables                                    | Medium | Low    |
 | 7  | Add `ColumnAlign []TextAlign` — per-column text alignment (start/center/end)                             | Medium | Medium |
-| 8  | Add `EmptyState templ.Component` slot — renders when `Rows` is empty (currently renders empty `<tbody>`) | High   | Low    |
+| ~~8~~  | ~~Add `EmptyState templ.Component` slot — renders when `Rows` is empty (currently renders empty `<tbody>`)~~ done — DataTable EmptyState slot | ~~High~~ | ~~Low~~ |
 | 9  | Add `Loading bool` — renders skeleton rows placeholder                                                   | Medium | Medium |
 | 10 | Add `Selectable bool` + `Row.Selected` — checkbox column for bulk actions                                | High   | High   |
-| 11 | `DataTable` wrapper (PLANNED in FEATURES.md) — sorting + filtering + pagination in one component         | High   | High   |
+| ~~11~~ | ~~`DataTable` wrapper (PLANNED in FEATURES.md) — sorting + filtering + pagination in one component~~ done — v0.17.0 | ~~High~~ | ~~High~~ |
 | 12 | Add `FooterRow templ.Component` — `<tfoot>` support for totals/summaries                                 | Medium | Low    |
 | 13 | Add `StickyFirstColumn bool` — `sticky start-0` for row label columns                                    | Low    | Medium |
 | 14 | Add `ZebraOdd bool` — control which row index gets striping (currently hardcoded to odd)                 | Low    | Low    |
@@ -147,17 +147,17 @@ Nothing in this session. All 7 commits are clean, BuildFlow passed on every comm
 | -- | ------------------------------------------------------------------------------------------ | ------ | ------ |
 | 19 | Add fuzz test for `TableCellPadding` — verify no panic on arbitrary string input           | Low    | Low    |
 | 20 | Add benchmark for `tableWrapperClass` + `tableCellPaddingClass`                            | Low    | Low    |
-| 21 | Add a11y test for Table — verify `aria-label` propagation, `scope="col"` presence          | Medium | Low    |
-| 22 | Add dark-mode compliance test for Table — verify all `border-gray-*` have `dark:` variants | Medium | Low    |
-| 23 | Add snapshot test for Table-in-Card composition (not just integration assertion)           | Low    | Low    |
+| ~~21~~ | ~~Add a11y test for Table — verify `aria-label` propagation, `scope="col"` presence~~ done — display/a11y test.go | ~~Medium~~ | ~~Low~~ |
+| ~~22~~ | ~~Add dark-mode compliance test for Table — verify all `border-gray-*` have `dark:` variants~~ done — TestDarkModeCompliance | ~~Medium~~ | ~~Low~~ |
+| ~~23~~ | ~~Add snapshot test for Table-in-Card composition (not just integration assertion)~~ done — display/composition test.go | ~~Low~~ | ~~Low~~ |
 | 24 | Test Table with `Flush=true` + `Bordered=true` interaction (both borders on table element) | Low    | Low    |
 
 ### Documentation improvements
 
 | #  | Task                                                                                | Impact | Effort |
 | -- | ----------------------------------------------------------------------------------- | ------ | ------ |
-| 25 | Add ADR for the Flush pattern (component opts out of its own border when nested)    | Low    | Low    |
-| 26 | Update `docs/recipes/horizontal-filter-bar.md` to mention compact table for results | Low    | Low    |
+| ~~25~~ | ~~Add ADR for the Flush pattern (component opts out of its own border when nested)~~ done — docs/adr/0012-flush-prop-for-nested-borders.md | ~~Low~~ | ~~Low~~ |
+| ~~26~~ | ~~Update `docs/recipes/horizontal-filter-bar.md` to mention compact table for results~~ done — recipes/horizontal-filter-bar.md | ~~Low~~ | ~~Low~~ |
 | 27 | Add Flush pattern to CONTRIBUTING.md conventions section                            | Low    | Low    |
 | 28 | Document the wrapper-div-not-using-utils.Class decision in table.templ comment      | Low    | Low    |
 
@@ -186,10 +186,10 @@ Nothing in this session. All 7 commits are clean, BuildFlow passed on every comm
 
 | #  | Task                                                                                                                  | Impact | Effort |
 | -- | --------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 40 | Add visual regression testing (Playwright/screenshot diff) — golden files catch HTML changes but not visual rendering | High   | High   |
-| 41 | Add `docs/recipes/dashboard-table.md` with sorting + pagination + compact + flush all together                        | Medium | Low    |
+| ~~40~~ | ~~Add visual regression testing (Playwright/screenshot diff) — golden files catch HTML changes but not visual rendering~~ done — visualtest/ | ~~High~~ | ~~High~~ |
+| ~~41~~ | ~~Add `docs/recipes/dashboard-table.md` with sorting + pagination + compact + flush all together~~ done — recipes/dashboard.md | ~~Medium~~ | ~~Low~~ |
 | 42 | Create interactive Storybook-like demo page with all Table options toggleable                                         | Medium | High   |
-| 43 | Add CSP test for Table with clickable rows — verify nonce on the row-href script                                      | Low    | Low    |
+| ~~43~~ | ~~Add CSP test for Table with clickable rows — verify nonce on the row-href script~~ done — display/table row href test.go | ~~Low~~ | ~~Low~~ |
 | 44 | Add `utils.AssertCount` test helper — `strings.Count` assertions are inline and repeated                              | Low    | Low    |
 
 ### Consumer feedback items
@@ -199,7 +199,7 @@ Nothing in this session. All 7 commits are clean, BuildFlow passed on every comm
 | 45 | Collect feedback from cqrs-htmx on whether Compact padding is compact enough (py-2 vs py-1.5) | Medium | Low    |
 | 46 | Ask if consumers want a `TableVariant` enum (simple/bordered/flush) instead of separate bools | Low    | Low    |
 | 47 | Survey: do consumers nest other components inside Card(CardPaddingNone) that need Flush?      | Medium | Low    |
-| 48 | Document the consumer CSS workaround removal path in the CHANGELOG release notes              | Low    | Low    |
+| ~~48~~ | ~~Document the consumer CSS workaround removal path in the CHANGELOG release notes~~ done — CHANGELOG v0.16.0 | ~~Low~~ | ~~Low~~ |
 | 49 | Add migration guide: "From CSS workaround to Flush prop"                                      | Low    | Low    |
 | 50 | Review all cqrs-htmx adminui table templates (5 reported) for Flush adoption                  | Medium | Low    |
 

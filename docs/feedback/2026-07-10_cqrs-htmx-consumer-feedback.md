@@ -225,12 +225,12 @@ A `go doc`-style generated API reference (pkg.go.dev works for this) would speed
 
 ## Recommendations for the library (prioritized)
 
-1. **Document the `BaseProps.Class` struct literal gotcha** — 5-minute fix, saves every new consumer a compile error
-2. **Document the Go module cache `@source` path** — saves 30 minutes of CSS-not-applying debugging
-3. **Add `GridColsAutoFit` or `MinColWidth` to GridProps** — common dashboard pattern, currently requires `Class` escape hatch
-4. **Consider CSS-variable-based surface tokens** instead of hardcoded `bg-white` — eliminates the fragile `.bg-white` bridge workaround
+1. ~~**Document the `BaseProps.Class` struct literal gotcha** — 5-minute fix, saves every new consumer a compile error~~ done — docs/recipes/theme-bridge.md
+2. ~~**Document the Go module cache `@source` path** — saves 30 minutes of CSS-not-applying debugging~~ done — docs/recipes/vendored-tailwind-scanning.md
+3. ~~**Add `GridColsAutoFit` or `MinColWidth` to GridProps** — common dashboard pattern, currently requires `Class` escape hatch~~ done — docs/recipes/grid-blowout-minmax.md
+4. ~~**Consider CSS-variable-based surface tokens** instead of hardcoded `bg-white` — eliminates the fragile `.bg-white` bridge workaround~~ done — docs/recipes/vendored-tailwind-scanning.md
 5. **Add `TitleClass`/`HeaderClass` or `Header templ.Component` slot to Card** — unlocks custom card headers without full Body-slot replacement
-6. **Document dark mode strategy implications for `prefers-color-scheme` consumers** — set expectations about partial dark mode support
+6. ~~**Document dark mode strategy implications for `prefers-color-scheme` consumers** — set expectations about partial dark mode support~~ done — docs/dark-mode-research.md
 
 ---
 

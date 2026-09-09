@@ -191,7 +191,7 @@ Above plus the supporting ecosystem: aligned-label forms, comprehensive tests, t
 | F17.1 | Audit which primitives would benefit from container-query default (Split, AppShell sidebar)                                | M17    | 15min  |
 | F17.2 | Decision doc + recommendation (likely: keep viewport-default, opt-in container-query)                                      | M17    | 15min  |
 | F17.3 | If approved, implement in follow-up (out of scope for this plan)                                                           | M17    | 15min  |
-| F18.1 | Write `docs/research/css-subgrid.md` (current Baseline status, what it unlocks for Card/DefinitionList)                    | M18    | 12min  |
+| ~~F18.1~~ | ~~Write `docs/research/css-subgrid.md` (current Baseline status, what it unlocks for Card/DefinitionList)~~ done — docs/research/css-subgrid.md | ~~M18~~ | ~~12min~~ |
 
 **Fine-grain totals:** 75 subtasks, ~13h 15min (matches medium grain — no effort inflation).
 

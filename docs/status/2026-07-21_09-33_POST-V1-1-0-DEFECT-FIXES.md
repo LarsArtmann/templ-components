@@ -334,76 +334,76 @@ lines. The repo convention is 5-15 lines. I over-narrated again.
 
 ### Critical (blocking a usable release)
 
-1. **Push the 5 tags + cut v1.1.1** (or retag v0.20.0). The fix is on master
-   but unreachable via `go get @v1.1.0`.
-2. **Verify the D1 fix in a real browser.** Run `go run ./examples/demo`,
-   open `/`, click a Popover/Dropdown trigger, confirm the panel appears
-   next to the trigger. Report back.
-3. **Fix .golangci.yml** — move `godoclint`, `ireturn`, `testableexamples`
-   to `disable` so `golangci-lint run` passes clean (currently 71 findings).
+1. ~~**Push the 5 tags + cut v1.1.1** (or retag v0.20.0). The fix is on master~~ done — CHANGELOG v1.2.0
+   ~~but unreachable via `go get @v1.1.0`.~~
+2. ~~**Verify the D1 fix in a real browser.** Run `go run ./examples/demo`,~~ done — visualtest
+   ~~open `/`, click a Popover/Dropdown trigger, confirm the panel appears~~
+   ~~next to the trigger. Report back.~~
+3. ~~**Fix .golangci.yml** — move `godoclint`, `ireturn`, `testableexamples`~~ done — utils/lint config test.go
+   ~~to `disable` so `golangci-lint run` passes clean (currently 71 findings).~~
 
 ### High (close the loop on this session's work)
 
 4. Update `docs/research/popover-api.md` to cross-reference the ADR-0017
    revision (B3).
-5. Annotate the prior status report
-   (`2026-07-21_07-38_*.md`) with a resolution note pointing to this report.
-6. Add dark golden variant `popover_bottom_dark.golden` (C3).
-7. Add `dropdown_with_positioner.golden` snapshot (E5).
-8. Add a Playwright smoke test for popover positioning (E1) — even one test
-   is worth 100 SSR assertions for overlay components.
+5. ~~Annotate the prior status report~~ done — docs/status/2026-07-21 07-38 PLATFORM-FIRST-ROADMAP-EXECUTION.md
+   ~~(`2026-07-21_07-38_*.md`) with a resolution note pointing to this report.~~
+6. ~~Add dark golden variant `popover_bottom_dark.golden` (C3).~~ done — visualtest/testdata
+7. ~~Add `dropdown_with_positioner.golden` snapshot (E5).~~ done — visualtest/testdata
+8. ~~Add a Playwright smoke test for popover positioning (E1) — even one test~~ **Won't implement — superseded by chromedp.**
+   ~~is worth 100 SSR assertions for overlay components.~~
 9. Add edge-flipping to the popover positioner (B1) — when the preferred
    position clips, flip to the opposite side.
-10. Cut v1.1.1 patch release with the `[Unreleased]` changelog entries.
+10. ~~Cut v1.1.1 patch release with the `[Unreleased]` changelog entries.~~ **Won't implement — folded into v1.2.0.**
 
 ### Medium (polish + prior backlog)
 
-11. Document `cmd/tc/_sources/` naming convention in AGENTS.md (C5).
+11. ~~Document `cmd/tc/_sources/` naming convention in AGENTS.md (C5).~~ done — AGENTS.md
 12. Run `lsp_restart` after `templ generate` to clear stale typecheck cache (C6).
-13. Execute Phase 4.1.2–4.1.5 — move test helpers to `internal/testutil/` (C1).
+13. ~~Execute Phase 4.1.2–4.1.5 — move test helpers to `internal/testutil/` (C1).~~ done (docs-health pass 2026-09-08)
 14. Execute Phase 4.4.2 — update AGENTS.md "Release Script" section (TODO #65, C2).
 15. Execute Phase 4.4.3 — update AGENTS.md "Release Convention" section (TODO #66, C2).
-16. Execute Phase 4.4.4 — switch treefmt `gofmt` → `gofumpt` in flake.nix (TODO #67, C2).
+16. ~~Execute Phase 4.4.4 — switch treefmt `gofmt` → `gofumpt` in flake.nix (TODO #67, C2).~~ done (docs-health pass 2026-09-08)
 17. Add `recipes` benchmarks to `recipes/benchmark_test.go`.
-18. Add `BenchmarkValidate` to `errorpage/benchmark_test.go`.
+18. ~~Add `BenchmarkValidate` to `errorpage/benchmark_test.go`.~~ done — errorpage/benchmark test.go
 19. Add `TestRecipesA11y` — landmark + heading order checks.
-20. Add `tc version` command.
-21. Add `tc add --list-deps <component>` flag.
-22. Add negative CSP assertions for Popover/Dropdown (verify nonce present on
-    the new positioner script — currently covered by the generic nonce tripwire).
-23. Verify the 3 theme presets compile with `tailwindcss` CLI (especially
-    `glass.css`'s `@utility` block — never verified in a real CSS build).
-24. Add `recipes` to the demo's Tailwind `@source` scanning path (verify
-    `../../**/*.templ` already covers it).
-25. Run `go test -coverprofile=coverage.out` and verify the 70% CI threshold.
+20. ~~Add `tc version` command.~~ done — cmd/tc/main.go
+21. ~~Add `tc add --list-deps <component>` flag.~~ done — cmd/tc/main.go
+22. ~~Add negative CSP assertions for Popover/Dropdown (verify nonce present on~~ done — integration/csp nonce test.go
+    ~~the new positioner script — currently covered by the generic nonce tripwire).~~
+23. ~~Verify the 3 theme presets compile with `tailwindcss` CLI (especially~~ done — scripts/release.sh
+    ~~`glass.css`'s `@utility` block — never verified in a real CSS build).~~
+24. ~~Add `recipes` to the demo's Tailwind `@source` scanning path (verify~~ done — examples/demo
+    ~~`../../**/*.templ` already covers it).~~
+25. ~~Run `go test -coverprofile=coverage.out` and verify the 70% CI threshold.~~ done — nix coverage app
 
 ### Low (nice-to-have)
 
-26. Add `PopoverPositionIsValid` golden coverage (switch-based, no map).
-27. Rename `cmd/tc/_sources/` to `cmd/tc/embedded_sources/` (self-documenting).
+26. ~~Add `PopoverPositionIsValid` golden coverage (switch-based, no map).~~ done — display/enums go.go
+27. ~~Rename `cmd/tc/_sources/` to `cmd/tc/embedded_sources/` (self-documenting).~~ **Won't implement — documented not renamed.**
 28. Add a `tc add --all` flag (copies every component).
 29. Add `goreleaser` config for the `tc` binary.
 30. Add a Nix flake output for `tc` (`nix run .#tc`).
-31. Add `recipes.AuthLayout` (split + form + OAuth slots).
+31. ~~Add `recipes.AuthLayout` (split + form + OAuth slots).~~ done — recipes/auth layout.templ
 32. Add `recipes.EmptyState` (Card + EmptyState + action slot).
 33. Add `forms.FormProps.Validate` method (mirrors `ErrorPageProps.Validate`).
-34. Add `navigation.Footer.ContainerAware`.
-35. Document the "Component-level Class override" headless alternative in
-    `docs/theming.md` (ADR-0021 option C).
+34. ~~Add `navigation.Footer.ContainerAware`.~~ **Won't implement — already exists.**
+35. ~~Document the "Component-level Class override" headless alternative in~~ **Won't implement — already exists.**
+    ~~`docs/theming.md` (ADR-0021 option C).~~
 36. Add `htmx.SwapStyleIsValid`.
 37. Add `layout.ContainerWidthIsValid`.
 38. Add `layout.SidebarWidthIsValid` test for `SidebarWidthAuto`.
-39. Add `recipes.DashboardProps.MobileHeaderActions` slot.
-40. Migrate demo forms_section to show `Layout: FormLayoutGrid`.
+39. ~~Add `recipes.DashboardProps.MobileHeaderActions` slot.~~ done (docs-health pass 2026-09-08)
+40. ~~Migrate demo forms_section to show `Layout: FormLayoutGrid`.~~ done — examples/demo
 41. Add `Validate()` call to demo error handler.
 42. Document `tc` CLI in README.md.
-43. Update `docs/icons-only-adoption.md` to mention `tc` CLI extraction.
-44. Run `nix flake check` (never run this session beyond `nix fmt`).
-45. Add `dashboardContent`/`settingsMain`/`loginBody` sub-template tests.
-46. Shorten the 3 new commit messages (retroactive amend if not pushed —
-    they're not pushed).
+43. ~~Update `docs/icons-only-adoption.md` to mention `tc` CLI extraction.~~ done (docs-health pass 2026-09-08)
+44. ~~Run `nix flake check` (never run this session beyond `nix fmt`).~~ done — status 2026-07-27 21-16
+45. ~~Add `dashboardContent`/`settingsMain`/`loginBody` sub-template tests.~~ done — recipes/recipes test.go
+46. ~~Shorten the 3 new commit messages (retroactive amend if not pushed —~~ **Won't implement — history immutable.**
+    ~~they're not pushed).~~
 47. Add a `tc init --recipe <name>` flag (scaffold from a recipe).
-48. Add container-aware variant to `display.Grid` golden.
+48. ~~Add container-aware variant to `display.Grid` golden.~~ done — visualtest/testdata
 49. Add `PopoverPosition` fuzz test (verify no panic on arbitrary input).
 50. Add a "how to verify overlay fixes without a browser" doc (SSR + JS unit).
 

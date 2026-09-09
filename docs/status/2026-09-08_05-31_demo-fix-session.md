@@ -60,11 +60,11 @@
 ## c) NOT STARTED
 
 1. Committing the fix work with proper messages (daemon already committed it with garbage messages — cleanup decision needed from user, see questions).
-2. `docs-health` HARVEST of the audit's 50-item list into `TODO_LIST.md`/`ROADMAP.md` (both reports' f-sections pending harvest).
-3. Interactive-state, mobile (375px), RTL, and `?transport=` variant captures (now one command each).
-4. Page-level visual goldens for the recipe/demo pages (would have caught the dashboard collapse; new capability idea).
-5. `FormLayoutInline` component-level width contract (demo workaround only).
-6. Release cut (`scripts/release.sh`) carrying these fixes — CHANGELOG `[Unreleased]` is warm and release-ready content-wise.
+2. ~~`docs-health` HARVEST of the audit's 50-item list into `TODO_LIST.md`/`ROADMAP.md` (both reports' f-sections pending harvest).~~ done — harvested 07-35
+3. ~~Interactive-state, mobile (375px), RTL, and `?transport=` variant captures (now one command each).~~ done — captures N6 N7 N8
+4. ~~Page-level visual goldens for the recipe/demo pages (would have caught the dashboard collapse; new capability idea).~~ done — route goldens N11
+5. ~~`FormLayoutInline` component-level width contract (demo workaround only).~~ done — refuted N13
+6. ~~Release cut (`scripts/release.sh`) carrying these fixes — CHANGELOG `[Unreleased]` is warm and release-ready content-wise.~~ done — v1.15.0 cut
 
 ## d) TOTALLY FUCKED UP
 
@@ -72,48 +72,48 @@ Nothing newly broken this session — all original CRITICAL/HIGH findings are fi
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Commit before the daemon does.** Any session editing this repo should commit logical units immediately; the daemon's 60s heuristic sweep turns uncommitted work into unreadable history. (Repeat offender — second session in a row.)
-2. **Verify claims before writing them.** The "golden updated" changelog line was written from assumption. Rule: every changelog sentence about tests/goldens must name the file that exists.
-3. **Check the embed chain when changing assets.** `custom.css → app.css → go:embed binary` means any CSS fix needs both recompiles AND a binary restart before visual verification means anything.
-4. **Prefer Go helpers over template-level branching** for conditional classes (templ `if` at statement level is content, not code — it silently renders assignments as text).
-5. **Run the full test tree of a touched component** after contract changes — the AppShell contract was encoded in three separate sub-tests; fixing one at a time was the slow path.
-6. **Page-level goldens** (recipes/demo routes) as a new visualtest tier would convert "demo looks broken" audits into automatic CI failures.
+1. ~~**Commit before the daemon does.** Any session editing this repo should commit logical units immediately; the daemon's 60s heuristic sweep turns uncommitted work into unreadable history. (Repeat offender — second session in a row.)~~ done (docs-health pass 2026-09-08)
+2. ~~**Verify claims before writing them.** The "golden updated" changelog line was written from assumption. Rule: every changelog sentence about tests/goldens must name the file that exists.~~ done (docs-health pass 2026-09-08)
+3. ~~**Check the embed chain when changing assets.** `custom.css → app.css → go:embed binary` means any CSS fix needs both recompiles AND a binary restart before visual verification means anything.~~ done (docs-health pass 2026-09-08)
+4. ~~**Prefer Go helpers over template-level branching** for conditional classes (templ `if` at statement level is content, not code — it silently renders assignments as text).~~ done (docs-health pass 2026-09-08)
+5. ~~**Run the full test tree of a touched component** after contract changes — the AppShell contract was encoded in three separate sub-tests; fixing one at a time was the slow path.~~ done (docs-health pass 2026-09-08)
+6. ~~**Page-level goldens** (recipes/demo routes) as a new visualtest tier would convert "demo looks broken" audits into automatic CI failures.~~ done (docs-health pass 2026-09-08)
 
 ## f) NEXT (updated top items — the audit's 50-item list still stands under it)
 
 **P0 — close this session**
 
 1. Commit/record decision for the daemon-swept fix history (see question 1): leave as-is with CHANGELOG as record, or prepare a `git replace`-free summary commit documenting the span.
-2. Re-capture `/recipes/dashboard` + index in **dark** mode to complete mode verification of the fixes.
-3. Browser-capture LoadingButton **during** a request (both rest and request states in one golden).
-4. Run `nix run .#visual` once more at HEAD to confirm the final commit state (last green run predates only test-file edits).
-5. HARVEST both status reports' f-lists into `TODO_LIST.md` (P0/P1) and `ROADMAP.md` (P2+) via docs-health.
+2. ~~Re-capture `/recipes/dashboard` + index in **dark** mode to complete mode verification of the fixes.~~ done — dark recaptures 07-35
+3. ~~Browser-capture LoadingButton **during** a request (both rest and request states in one golden).~~ done — loadingbutton e2e 07-35
+4. ~~Run `nix run .#visual` once more at HEAD to confirm the final commit state (last green run predates only test-file edits).~~ done — visual green 07-35
+5. ~~HARVEST both status reports' f-lists into `TODO_LIST.md` (P0/P1) and `ROADMAP.md` (P2+) via docs-health.~~ done — harvested 07-35
 
 **P1 — carry-over from the audit (unchanged priorities)**
-6. Interactive overlay captures (Modal/Drawer/Dropdown/Popover/Tooltip/ContextMenu open states).
-7. Mobile viewport sweep (375px) — MobileMenu, ContainerAware collapse.
-8. RTL sweep (`dir="rtl"`) across Nav/Split/Carousel/Drawer/Dropdown.
-9. `?transport=htmx` / `?transport=datastar` index captures.
+6. ~~Interactive overlay captures (Modal/Drawer/Dropdown/Popover/Tooltip/ContextMenu open states).~~ done — overlay captures N8
+7. ~~Mobile viewport sweep (375px) — MobileMenu, ContainerAware collapse.~~ done — mobile sweep N6
+8. ~~RTL sweep (`dir="rtl"`) across Nav/Split/Carousel/Drawer/Dropdown.~~ done — rtl sweep N7
+9. ~~`?transport=htmx` / `?transport=datastar` index captures.~~ done — transport shots
 10. Resolve the ProgressBar 45% fill-color suspicion against goldens (still open from the audit).
-11. Component-level `FormLayoutInline` width contract design + fix.
-12. Page-level visual goldens for the 7 demo routes (new tier; would have caught the dashboard collapse).
+11. ~~Component-level `FormLayoutInline` width contract design + fix.~~ done — refuted N13
+12. ~~Page-level visual goldens for the 7 demo routes (new tier; would have caught the dashboard collapse).~~ done — route goldens N11
 13. Golden-coverage sweep: every demo section ≥1 visual golden (LoadingButton now covered by unit tests but still has no visual golden; AppShell likewise).
-14. Demo copy drift-guard test (user-visible numbers sourced from single constants — the "116" class of bug).
-15. Prerender (`-prerender`) vs live-server HTML sync check (TODO #154).
+14. ~~Demo copy drift-guard test (user-visible numbers sourced from single constants — the "116" class of bug).~~ done — hero counts guard
+15. ~~Prerender (`-prerender`) vs live-server HTML sync check (TODO #154).~~ done — prerender diff N16
 
 **P2 — release & CI**
-16. Cut the next release (`scripts/release.sh`) — `[Unreleased]` is warm with user-facing fixes; version bump per convention.
-17. Post-propagation tidy sweep after tags (v1.12.0 lesson).
-18. CI smoke job: build demo → serve → `nix run .#shots` → assert captures exist (rot detection between releases).
-19. Add `nix run .#shots` usage to CONTRIBUTING.md/demo docs.
-20. Axe-core a11y scan of all demo routes; keyboard-only pass.
+16. ~~Cut the next release (`scripts/release.sh`) — `[Unreleased]` is warm with user-facing fixes; version bump per convention.~~ done — v1.15.0 cut
+17. ~~Post-propagation tidy sweep after tags (v1.12.0 lesson).~~ done — sweeps routine
+18. ~~CI smoke job: build demo → serve → `nix run .#shots` → assert captures exist (rot detection between releases).~~ done — demo smoke N5
+19. ~~Add `nix run .#shots` usage to CONTRIBUTING.md/demo docs.~~ done — shots documented #174
+20. ~~Axe-core a11y scan of all demo routes; keyboard-only pass.~~ done — axe N2
 
 **P3 — component hygiene surfaced by the fixes**
-21. Consider emitting `--tc-sidebar-w` only when Sidebar exists (currently harmless-but-set on no-sidebar shells).
-22. `SidebarWidthAuto` + `w-64` SidebarNav interaction doc (the SM/MD mismatch class of bug).
-23. Heatmap: consider a `TestHeatmapDefaultRendersColor` guard that parses the compiled CSS for the var definitions (prevents "var deleted again" regressions).
-24. Sweep other components for undefined CSS-variable references (same class as `--ds-brand-rgb`) — e.g. grep `var(--` in generated output against definitions in shipped CSS.
-25. Document `tc-btn-loading` as public-ish API or remove it deliberately (currently kept for hx-indicator targeting).
+21. ~~Consider emitting `--tc-sidebar-w` only when Sidebar exists (currently harmless-but-set on no-sidebar shells).~~ done — sidebar var #171
+22. ~~`SidebarWidthAuto` + `w-64` SidebarNav interaction doc (the SM/MD mismatch class of bug).~~ done — sidebarwidthauto doc #171
+23. ~~Heatmap: consider a `TestHeatmapDefaultRendersColor` guard that parses the compiled CSS for the var definitions (prevents "var deleted again" regressions).~~ done — heatmap var guard #169
+24. ~~Sweep other components for undefined CSS-variable references (same class as `--ds-brand-rgb`) — e.g. grep `var(--` in generated output against definitions in shipped CSS.~~ done — css var sweep #169
+25. ~~Document `tc-btn-loading` as public-ish API or remove it deliberately (currently kept for hx-indicator targeting).~~ done — tc btn doc #170
 
 **P4 — the audit's longer list (still valid, abridged)**
 26–50. The remaining items from `2026-09-08_04-30_demo-visual-audit-7-pages-light-dark.md` §f stand unchanged (offline fonts check, prerender sync, errorpage family goldens, theme-override demo toggle, index page size/perf, CSP negative test, icon gallery keyboard operability, multi-viewport golden matrix, scheduled demo smoke, etc.).
@@ -121,8 +121,8 @@ Nothing newly broken this session — all original CRITICAL/HIGH findings are fi
 ## g) Questions I cannot figure out myself
 
 1. **Fix history**: the daemon already committed the whole fix set as ~12 heuristic auto-commits on master. Leave it (CHANGELOG + this report are the record), or do you want a follow-up "docs: summarize the demo-fix commit span" commit referencing the range — or do you prefer handling daemon commits your own way (I won't rewrite history either way)?
-2. **Heatmap default color**: I chose violet-600/violet-500 per your "blue-600 is boring" steer. Keep violet as the shipped default, or do you want a different brand hue (it's now a two-variable CSS override — trivially retunable)?
-3. **Release**: should the next session cut the release carrying these user-facing fixes (`scripts/release.sh` — AppShell collapse fix + Heatmap default fix are consumer-visible), or keep them accumulating in `[Unreleased]`?
+2. ~~**Heatmap default color**: I chose violet-600/violet-500 per your "blue-600 is boring" steer. Keep violet as the shipped default, or do you want a different brand hue (it's now a two-variable CSS override — trivially retunable)?~~ **Won't implement — violet per user steer.**
+3. ~~**Release**: should the next session cut the release carrying these user-facing fixes (`scripts/release.sh` — AppShell collapse fix + Heatmap default fix are consumer-visible), or keep them accumulating in `[Unreleased]`?~~ **Won't implement — answered v1.15.0 cut.**
 
 ---
 

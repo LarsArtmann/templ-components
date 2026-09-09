@@ -131,20 +131,20 @@
 
 ### Honest mistakes from this session
 
-1. **HTMX delegation regression** (`bbab95c` → fixed in `bbab95c` wait no, introduced in `1e0def2`, fixed in `bbab95c`)
-   - I wrote `querySelectorAll('[data-tc-close]').forEach(addEventListener)` — per-element binding that breaks when HTMX swaps content into the modal/drawer after render
-   - Should have followed the existing `utils.DismissScript()` pattern which correctly uses event delegation
-   - **Fixed**, but I shipped a regression that would have broken HTMX-powered modals in production
+1. ~~**HTMX delegation regression** (`bbab95c` → fixed in `bbab95c` wait no, introduced in `1e0def2`, fixed in `bbab95c`)~~ done at `bbab95c`
+   ~~- I wrote `querySelectorAll('[data-tc-close]').forEach(addEventListener)` — per-element binding that breaks when HTMX swaps content into the modal/drawer after render~~
+   ~~- Should have followed the existing `utils.DismissScript()` pattern which correctly uses event delegation~~
+   ~~- **Fixed**, but I shipped a regression that would have broken HTMX-powered modals in production~~
 
-2. **Toast icon split brain** (pre-existing, fixed in `afa62b1`)
-   - Server-rendered toasts showed `XCircle` for errors; client-side `tcShowToast()` showed `ExclamationTriangle`
-   - This was a pre-existing bug I uncovered during self-review — not mine, but it was in the codebase the whole time
+2. ~~**Toast icon split brain** (pre-existing, fixed in `afa62b1`)~~ done at `afa62b1`
+   ~~- Server-rendered toasts showed `XCircle` for errors; client-side `tcShowToast()` showed `ExclamationTriangle`~~
+   ~~- This was a pre-existing bug I uncovered during self-review — not mine, but it was in the codebase the whole time~~
 
-3. **Wrote tests with wrong type names** — `icons.User` (doesn't exist, it's `Users`), `HrefPrefix` (doesn't exist, it's `BaseURL`), `TableRow{Cells: []string{}}` (Cells is `[]TableCell`). Wasted 4 iterations on compilation errors because I didn't read source types first.
+3. ~~**Wrote tests with wrong type names** — `icons.User` (doesn't exist, it's `Users`), `HrefPrefix` (doesn't exist, it's `BaseURL`), `TableRow{Cells: []string{}}` (Cells is `[]TableCell`). Wasted 4 iterations on compilation errors because I didn't read source types first.~~ done (docs-health pass 2026-09-08)
 
-4. **Previous report lied about "P3-7: Forms tests — completed"** — I didn't actually write any forms tests. I skipped it because forms was already at 73.2% (above threshold). The table implied work was done.
+4. ~~**Previous report lied about "P3-7: Forms tests — completed"** — I didn't actually write any forms tests. I skipped it because forms was already at 73.2% (above threshold). The table implied work was done.~~ done (docs-health pass 2026-09-08)
 
-5. **Misleading coverage delta** — Listed navigation as `72.7% → 72.6%` and marked it "completed". That's a decrease. Should have said "coverage stayed flat despite new tests".
+5. ~~**Misleading coverage delta** — Listed navigation as `72.7% → 72.6%` and marked it "completed". That's a decrease. Should have said "coverage stayed flat despite new tests".~~ done (docs-health pass 2026-09-08)
 
 ---
 
@@ -152,25 +152,25 @@
 
 ### Architecture
 
-1. **Type model: ComponentProps is structurally sound but under-leveraged.** The `GetBaseProps()`/`SetBaseProps()` interface exists for generic composition but no code actually uses it generically. Could enable a `WithClass(props, extraClass)` helper or a `WrapComponent` pattern.
+1. ~~**Type model: ComponentProps is structurally sound but under-leveraged.** The `GetBaseProps()`/`SetBaseProps()` interface exists for generic composition but no code actually uses it generically. Could enable a `WithClass(props, extraClass)` helper or a `WrapComponent` pattern.~~ done — internal/contract
 2. **MapEnum helper exists but isn't used in production.** 7 sites do manual `if v, ok := m[key]; ok { return v } return fallback`. Not wrong, but inconsistent with the helper.
-3. **No `Validate() error` on props structs.** Validation happens at render time via panics or silent fallbacks. Pre-render validation would catch errors earlier.
-4. **encoding/json v1** — `how-to-golang` bans it in favor of v2, but json/v2 is behind `GOEXPERIMENT=jsonv2` in Go 1.26.3. Can't use in a publishable library until Go 1.27.
+3. ~~**No `Validate() error` on props structs.** Validation happens at render time via panics or silent fallbacks. Pre-render validation would catch errors earlier.~~ done — errorpage/styles.go Validate()
+4. ~~**encoding/json v1** — `how-to-golang` bans it in favor of v2, but json/v2 is behind `GOEXPERIMENT=jsonv2` in Go 1.26.3. Can't use in a publishable library until Go 1.27.~~ done — docs/adr/0013-jsonv2-auto-formatter-guard.md
 
 ### Testing
 
 5. **Coverage plateau at ~74%.** Getting past 80% requires testing generated `*_templ.go` render functions more aggressively — table-driven tests with every prop combination.
-6. **No accessibility automation.** axe-core or pa11y would catch ARIA issues that manual review misses.
-7. **No integration tests.** All tests are unit-level render-and-assert. No test verifies that components work together in a real HTML document.
+6. ~~**No accessibility automation.** axe-core or pa11y would catch ARIA issues that manual review misses.~~ done — visualtest/axe.min.js
+7. ~~**No integration tests.** All tests are unit-level render-and-assert. No test verifies that components work together in a real HTML document.~~ done — integration/
 
 ### Developer Experience
 
-8. **`templ generate` must be run after every `.templ` change.** The generated `*_templ.go` files are committed. Forgetting to regenerate = broken build. A git hook or CI check could verify generated files are up-to-date.
-9. **No playground/demo site.** The `examples/demo` package exists but has 0% test coverage and isn't deployed.
+8. ~~**`templ generate` must be run after every `.templ` change.** The generated `*_templ.go` files are committed. Forgetting to regenerate = broken build. A git hook or CI check could verify generated files are up-to-date.~~ done — .github/workflows/ci.yaml tracked * check
+9. ~~**No playground/demo site.** The `examples/demo` package exists but has 0% test coverage and isn't deployed.~~ done — 2026-07-14 03-08 cloud-run-demo-live.md
 
 ### Process
 
-10. **Self-review caught 6 issues I introduced.** I should review my own changes more carefully before committing, especially around HTMX compatibility and CSP patterns.
+10. ~~**Self-review caught 6 issues I introduced.** I should review my own changes more carefully before committing, especially around HTMX compatibility and CSP patterns.~~ done (docs-health pass 2026-09-08)
 
 ---
 
@@ -180,31 +180,31 @@ Sorted by impact/effort ratio (highest first):
 
 | #  | Task                                           | Impact  | Effort  | Notes                                                          |
 | -- | ---------------------------------------------- | ------- | ------- | -------------------------------------------------------------- |
-| 1  | **Tag v0.3.0**                                 | HIGH    | TRIVIAL | All features done, just needs `git tag` + push                 |
+| ~~1~~  | ~~**Tag v0.3.0**~~ done — CHANGELOG 0.3.0 | ~~HIGH~~ | ~~TRIVIAL~~ | ~~All features done, just needs `git tag` + push~~ |
 | 2  | **Submit to awesome-templ**                    | HIGH    | LOW     | Discoverability — one PR                                       |
-| 3  | **Remove 4 ID validation panics**              | HIGH    | MED     | Convert to fallback (generate ID) or error component rendering |
-| 4  | **Remove SwapOOB panic**                       | MED     | LOW     | Same pattern as #3                                             |
-| 5  | **Add Date Picker component**                  | HIGH    | MED     | Common need, native HTML `<input type="date">` wrapper         |
-| 6  | **Write integration tests**                    | MED     | MED     | Test component composition in real HTML document               |
+| ~~3~~  | ~~**Remove 4 ID validation panics**~~ done — utils/validate.go EnsureID | ~~HIGH~~ | ~~MED~~ | ~~Convert to fallback (generate ID) or error component rendering~~ |
+| ~~4~~  | ~~**Remove SwapOOB panic**~~ done — htmx/loading.templ nil guard | ~~MED~~ | ~~LOW~~ | ~~Same pattern as #3~~ |
+| ~~5~~  | ~~**Add Date Picker component**~~ done — forms/date picker.templ | ~~HIGH~~ | ~~MED~~ | ~~Common need, native HTML `<input type="date">` wrapper~~ |
+| ~~6~~  | ~~**Write integration tests**~~ done — integration/ | ~~MED~~ | ~~MED~~ | ~~Test component composition in real HTML document~~ |
 | 7  | **Get coverage to 80%**                        | MED     | HIGH    | Focus on errorpage (71.2%) and display (72.5%) first           |
-| 8  | **Add Combobox/Autocomplete**                  | MED     | HIGH    | Complex — needs JS for filtering                               |
-| 9  | **Deploy demo site**                           | MED     | MED     | GitHub Pages from `examples/demo`                              |
-| 10 | **Extract shared delegation boilerplate**      | LOW     | LOW     | 6 sites with `window.tc*Attached` guard                        |
-| 11 | **Add `Validate() error` to props structs**    | MED     | MED     | Catch errors before render                                     |
-| 12 | **Move test helpers to `internal/testutil/`**  | LOW     | LOW     | Breaking — defer to v1.0                                       |
+| ~~8~~  | ~~**Add Combobox/Autocomplete**~~ done — forms/combobox.templ | ~~MED~~ | ~~HIGH~~ | ~~Complex — needs JS for filtering~~ |
+| ~~9~~  | ~~**Deploy demo site**~~ done — 2026-07-14 03-08 cloud-run-demo-live.md | ~~MED~~ | ~~MED~~ | ~~GitHub Pages from `examples/demo`~~ |
+| ~~10~~ | ~~**Extract shared delegation boilerplate**~~ **Won't implement — superseded by native browser APIs ADR-0014/0017/0027.** | ~~LOW~~ | ~~LOW~~ | ~~6 sites with `window.tc*Attached` guard~~ |
+| ~~11~~ | ~~**Add `Validate() error` to props structs**~~ done — errorpage/styles.go Validate() | ~~MED~~ | ~~MED~~ | ~~Catch errors before render~~ |
+| ~~12~~ | ~~**Move test helpers to `internal/testutil/`**~~ **Won't implement — deferred TODO 34 post-v1.0.** | ~~LOW~~ | ~~LOW~~ | ~~Breaking — defer to v1.0~~ |
 | 13 | **Add property-based tests**                   | LOW     | MED     | gopter for invariant verification                              |
-| 14 | **Add axe-core/pa11y accessibility CI**        | MED     | MED     | Automated a11y regression detection                            |
-| 15 | **Plan v1.0 API freeze**                       | HIGH    | LOW     | Define scope, cut features, set date                           |
-| 16 | **Documentation site**                         | MED     | HIGH    | pkgsite or doc2go generation                                   |
-| 17 | **Cross-link ecosystem in README**             | LOW     | TRIVIAL | GOTH stack story                                               |
+| ~~14~~ | ~~**Add axe-core/pa11y accessibility CI**~~ done — visualtest/axe.min.js | ~~MED~~ | ~~MED~~ | ~~Automated a11y regression detection~~ |
+| ~~15~~ | ~~**Plan v1.0 API freeze**~~ done — CHANGELOG 1.0.0 | ~~HIGH~~ | ~~LOW~~ | ~~Define scope, cut features, set date~~ |
+| ~~16~~ | ~~**Documentation site**~~ done — website/ | ~~MED~~ | ~~HIGH~~ | ~~pkgsite or doc2go generation~~ |
+| ~~17~~ | ~~**Cross-link ecosystem in README**~~ done — README.md GOTH section | ~~LOW~~ | ~~TRIVIAL~~ | ~~GOTH stack story~~ |
 | 18 | **Open PR on templ.guide**                     | MED     | LOW     | Get listed in official templ docs                              |
-| 19 | **Verify `go get` from clean project**         | HIGH    | LOW     | Critical for consumers                                         |
-| 20 | **Consistent nonce propagation audit**         | MED     | LOW     | Systematic check across all components                         |
-| 21 | **Convert remaining snapshot tests to golden** | LOW     | LOW     | Pattern exists, just needs adoption                            |
-| 22 | **Add goreleaser**                             | LOW     | MED     | Automated releases on tag                                      |
-| 23 | **Consider `go:generate stringer` for enums**  | LOW     | LOW     | Type-safe string representation                                |
-| 24 | **Modularize into Go workspace**               | LOW     | HIGH    | 10-module go.work — big refactor                               |
-| 25 | **Badge info=indigo vs Feedback info=blue**    | TRIVIAL | TRIVIAL | Minor color consistency decision                               |
+| ~~19~~ | ~~**Verify `go get` from clean project**~~ done — scripts/release.sh | ~~HIGH~~ | ~~LOW~~ | ~~Critical for consumers~~ |
+| ~~20~~ | ~~**Consistent nonce propagation audit**~~ done — 2026-06-20 16-15 reflection-and-status.md | ~~MED~~ | ~~LOW~~ | ~~Systematic check across all components~~ |
+| ~~21~~ | ~~**Convert remaining snapshot tests to golden**~~ done — utils/golden | ~~LOW~~ | ~~LOW~~ | ~~Pattern exists, just needs adoption~~ |
+| ~~22~~ | ~~**Add goreleaser**~~ done — .goreleaser.yml | ~~LOW~~ | ~~MED~~ | ~~Automated releases on tag~~ |
+| ~~23~~ | ~~**Consider `go:generate stringer` for enums**~~ **Won't implement — cut per 2026-06-20 plan.** | ~~LOW~~ | ~~LOW~~ | ~~Type-safe string representation~~ |
+| ~~24~~ | ~~**Modularize into Go workspace**~~ done — docs/adr/0034-targeted-module-split.md | ~~LOW~~ | ~~HIGH~~ | ~~10-module go.work — big refactor~~ |
+| ~~25~~ | ~~**Badge info=indigo vs Feedback info=blue**~~ done — display/badge.templ info unified blue | ~~TRIVIAL~~ | ~~TRIVIAL~~ | ~~Minor color consistency decision~~ |
 
 ---
 

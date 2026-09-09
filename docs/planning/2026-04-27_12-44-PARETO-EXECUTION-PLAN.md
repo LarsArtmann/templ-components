@@ -48,28 +48,28 @@ _Fix architectural issues, add missing components, add tests, CI/CD._
 
 | #     | Task                                                                   | Est.  | Impact    | Rationale                                                |
 | ----- | ---------------------------------------------------------------------- | ----- | --------- | -------------------------------------------------------- |
-| P3.1  | Add `BaseProps` + `Class()` + `MergeAttrs()` to `utils`                | 60min | Very High | Enables consistent class overriding and attr composition |
-| P3.2  | Apply `BaseProps` pattern to all 60+ existing components               | 90min | Very High | Every component gets ID, Class, Attrs override           |
-| P3.3  | Extract all inline JS to `templ-components.js` + `Script()` components | 90min | Very High | CSP compliance, cacheable JS, smaller HTML               |
-| P3.4  | Add `Modal` component                                                  | 45min | Very High | Used in every project, currently missing                 |
-| P3.5  | Add `Table` component with sortable headers                            | 60min | Very High | `standard-bug-tracking-schema` has rich tables           |
-| P3.6  | Add `Pagination` component                                             | 30min | High      | Required for tables                                      |
-| P3.7  | Add `Tabs` component                                                   | 30min | High      | Common UI pattern                                        |
-| P3.8  | Add `Accordion` / `Collapsible` component                              | 30min | Medium    | Common pattern                                           |
-| P3.9  | Add `Tooltip` component                                                | 30min | Medium    | Hover explanations                                       |
-| P3.10 | Add `Dropdown` / `ActionMenu` component                                | 45min | High      | Action menus                                             |
-| P3.11 | Add comprehensive tests for all Go helpers                             | 90min | Very High | Production readiness                                     |
-| P3.12 | Set up GitHub Actions CI/CD                                            | 45min | High      | Prevents regressions                                     |
-| P3.13 | Add `.gitignore` policy for `_templ.go` files                          | 10min | Medium    | Clean git state                                          |
-| P3.14 | Create component gallery / Storybook-equivalent docs                   | 75min | Medium    | Adoption                                                 |
-| P3.15 | Add CLI tool scaffolding (`cmd/templ-components`)                      | 60min | Medium    | Developer experience                                     |
+| ~~P3.1~~  | ~~Add `BaseProps` + `Class()` + `MergeAttrs()` to `utils`~~ done — utils/utils.go | ~~60min~~ | ~~Very High~~ | ~~Enables consistent class overriding and attr composition~~ |
+| ~~P3.2~~  | ~~Apply `BaseProps` pattern to all 60+ existing components~~ done — AGENTS.md | ~~90min~~ | ~~Very High~~ | ~~Every component gets ID, Class, Attrs override~~ |
+| ~~P3.3~~  | ~~Extract all inline JS to `templ-components.js` + `Script()` components~~ **Won't implement — superseded csp nonce inline.** | ~~90min~~ | ~~Very High~~ | ~~CSP compliance, cacheable JS, smaller HTML~~ |
+| ~~P3.4~~  | ~~Add `Modal` component~~ done — display/modal.templ | ~~45min~~ | ~~Very High~~ | ~~Used in every project, currently missing~~ |
+| ~~P3.5~~  | ~~Add `Table` component with sortable headers~~ done — display/table.templ | ~~60min~~ | ~~Very High~~ | ~~`standard-bug-tracking-schema` has rich tables~~ |
+| ~~P3.6~~  | ~~Add `Pagination` component~~ done — navigation/pagination.templ | ~~30min~~ | ~~High~~ | ~~Required for tables~~ |
+| ~~P3.7~~  | ~~Add `Tabs` component~~ done — display/tabs.templ | ~~30min~~ | ~~High~~ | ~~Common UI pattern~~ |
+| ~~P3.8~~  | ~~Add `Accordion` / `Collapsible` component~~ done — display/accordion.templ | ~~30min~~ | ~~Medium~~ | ~~Common pattern~~ |
+| ~~P3.9~~  | ~~Add `Tooltip` component~~ done — display/tooltip.templ | ~~30min~~ | ~~Medium~~ | ~~Hover explanations~~ |
+| ~~P3.10~~ | ~~Add `Dropdown` / `ActionMenu` component~~ done — display/dropdown.templ | ~~45min~~ | ~~High~~ | ~~Action menus~~ |
+| ~~P3.11~~ | ~~Add comprehensive tests for all Go helpers~~ done — forms/helpers test.go | ~~90min~~ | ~~Very High~~ | ~~Production readiness~~ |
+| ~~P3.12~~ | ~~Set up GitHub Actions CI/CD~~ done — .github/workflows | ~~45min~~ | ~~High~~ | ~~Prevents regressions~~ |
+| ~~P3.13~~ | ~~Add `.gitignore` policy for `_templ.go` files~~ **Won't implement — adr-0003 commits generated.** | ~~10min~~ | ~~Medium~~ | ~~Clean git state~~ |
+| ~~P3.14~~ | ~~Create component gallery / Storybook-equivalent docs~~ done — website | ~~75min~~ | ~~Medium~~ | ~~Adoption~~ |
+| ~~P3.15~~ | ~~Add CLI tool scaffolding (`cmd/templ-components`)~~ done — cmd/tc | ~~60min~~ | ~~Medium~~ | ~~Developer experience~~ |
 | P3.16 | Migrate `CreditReformBilanzampel` form helpers to library              | 90min | High      | Proves library works across projects                     |
-| P3.17 | Evaluate `templui` adoption vs own library continuation                | 60min | Very High | Strategic decision                                       |
-| P3.18 | Add project-specific patterns from `standard-bug-tracking-schema`      | 90min | Medium    | Command palette, chart wrappers, auth layouts            |
-| P3.19 | Add `AuthLayout` component (centered, glass morphism)                  | 45min | Medium    | Used in auth flows                                       |
-| P3.20 | Add `FileUpload` / `Dropzone` component                                | 45min | Low       | Not frequently used but nice to have                     |
-| P3.21 | Add `DatePicker` / `Calendar` component                                | 60min | Low       | Not frequently used                                      |
-| P3.22 | Add `Avatar` component                                                 | 15min | Low       | User profile images                                      |
+| ~~P3.17~~ | ~~Evaluate `templui` adoption vs own library continuation~~ done — docs/research/ui-library-design-research.md | ~~60min~~ | ~~Very High~~ | ~~Strategic decision~~ |
+| ~~P3.18~~ | ~~Add project-specific patterns from `standard-bug-tracking-schema`~~ done — charts | ~~90min~~ | ~~Medium~~ | ~~Command palette, chart wrappers, auth layouts~~ |
+| ~~P3.19~~ | ~~Add `AuthLayout` component (centered, glass morphism)~~ done — recipes/auth layout.templ | ~~45min~~ | ~~Medium~~ | ~~Used in auth flows~~ |
+| ~~P3.20~~ | ~~Add `FileUpload` / `Dropzone` component~~ done — forms/file input.templ | ~~45min~~ | ~~Low~~ | ~~Not frequently used but nice to have~~ |
+| ~~P3.21~~ | ~~Add `DatePicker` / `Calendar` component~~ done — forms/date picker.templ | ~~60min~~ | ~~Low~~ | ~~Not frequently used~~ |
+| ~~P3.22~~ | ~~Add `Avatar` component~~ done — display/avatar.templ | ~~15min~~ | ~~Low~~ | ~~User profile images~~ |
 
 ---
 

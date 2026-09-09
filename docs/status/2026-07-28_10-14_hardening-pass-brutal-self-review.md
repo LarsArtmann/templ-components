@@ -19,11 +19,11 @@ prior session's self-review (`docs/status/2026-07-28_09-23_...`).
 | 9  | `TestPreCommitHookInstallsGuard` — asserts `check-lint-config.sh` before BuildFlow                  | passes                                                                   |
 | 11 | Container-query exemptions verified — pruned 3 dead, documented 4 active with reasons               | `TestContainerQueryCompliance` passes                                    |
 | 12 | Pagination golden snapshot (T14 proof-of-concept)                                                   | `pagination.golden` committed + passes                                   |
-| 13 | Breadcrumbs golden snapshot (with JSON-LD)                                                          | `breadcrumbs.golden` committed + passes                                  |
-| 15 | Alert success + info golden snapshots (completes 4-type coverage)                                   | `alert_success.golden`, `alert_info.golden` committed                    |
-| 16 | Input basic + error golden snapshots                                                                | `input_basic.golden`, `input_error.golden` committed                     |
-| 28 | `skill/SKILL.md` — repo-wide guard-test table + visual harness section                              | synced to global skill                                                   |
-| 30 | ROADMAP cross-references ADR-0022 (default-flip) + ADR-0023 (compound overlay)                      | linked with status updates                                               |
+| ~~13~~ | ~~Breadcrumbs golden snapshot (with JSON-LD)~~ done at `a5e0b0b` | ~~`breadcrumbs.golden` committed + passes~~ |
+| ~~15~~ | ~~Alert success + info golden snapshots (completes 4-type coverage)~~ done at `a5e0b0b` | ~~`alert_success.golden`, `alert_info.golden` committed~~ |
+| ~~16~~ | ~~Input basic + error golden snapshots~~ done at `a5e0b0b` | ~~`input_basic.golden`, `input_error.golden` committed~~ |
+| ~~28~~ | ~~`skill/SKILL.md` — repo-wide guard-test table + visual harness section~~ done at `a5e0b0b` | ~~synced to global skill~~ |
+| ~~30~~ | ~~ROADMAP cross-references ADR-0022 (default-flip) + ADR-0023 (compound overlay)~~ done at `a5e0b0b` | ~~linked with status updates~~ |
 | 32 | `docs/visual-testing.md` — shared Chromium architecture, overlay testing, fixed stale Options table | updated                                                                  |
 
 ### Two critical bugs found & fixed (NOT on the original list)
@@ -177,76 +177,76 @@ The prior session's report flagged d.6: "The `.envrc` removal from `.gitignore` 
 
 ### Prevention Guards (harden what we built)
 
-9. **Add a CI step that runs `nix run .#visual`** — visual tests only run locally today; CI doesn't catch visual regressions.
-10. **Make `TestCSSFreshness` recompile CSS automatically in CI** instead of just failing — or document the exact `nix run .#css` command in the error.
+9. ~~**Add a CI step that runs `nix run .#visual`** — visual tests only run locally today; CI doesn't catch visual regressions.~~ done — .github/workflows/ci.yaml
+10. ~~**Make `TestCSSFreshness` recompile CSS automatically in CI** instead of just failing — or document the exact `nix run .#css` command in the error.~~ done — TestCSSFreshness
 11. **Add `TestNoDaemonAuthoredCommits`** — fails CI if the last N commits are authored by the daemon pattern. (Controversial but would force the issue.)
 12. **Guard `.gitignore` against BuildFlow re-appending `*_templ.go`** — the documented BuildFlow gotcha. Add a test.
 
 ### Test Coverage (visual)
 
-13. **Add visual test for dark-mode Input** (`input/error_dark`, `input/disabled_dark`) — item 10, which I completely skipped.
-14. **Add visual test for Combobox** — most complex form component, zero visual coverage.
-15. **Add visual test for Tabs** — structural variant, zero visual coverage.
-16. **Add visual test for Table** — sortable headers, clickable rows.
-17. **Add visual test for Accordion** — `<details>`/`<summary>`.
-18. **Add visual test for Tooltip** — pure CSS hover.
-19. **Add visual test for Carousel** — scroll-snap.
-20. **Add visual test for CopyButton** — clipboard JS.
-21. **Add visual test for Badge variants** — only 2 of 8 tested.
-22. **Add visual test for ProgressBar** — zero coverage.
-23. **Add visual test for Spinner** — zero coverage.
-24. **Add visual test for Skeleton** — zero coverage.
-25. **Add visual test for Modal/Drawer open state** — they have `Open=true`; use `FullViewport`.
+13. ~~**Add visual test for dark-mode Input** (`input/error_dark`, `input/disabled_dark`) — item 10, which I completely skipped.~~ done — visualtest/testdata
+14. ~~**Add visual test for Combobox** — most complex form component, zero visual coverage.~~ done — visualtest/testdata
+15. ~~**Add visual test for Tabs** — structural variant, zero visual coverage.~~ done — visualtest/testdata
+16. ~~**Add visual test for Table** — sortable headers, clickable rows.~~ done — visualtest/testdata
+17. ~~**Add visual test for Accordion** — `<details>`/`<summary>`.~~ done — visualtest/testdata
+18. ~~**Add visual test for Tooltip** — pure CSS hover.~~ done — visualtest/testdata
+19. ~~**Add visual test for Carousel** — scroll-snap.~~ done — visualtest/testdata
+20. ~~**Add visual test for CopyButton** — clipboard JS.~~ done — visualtest/testdata
+21. ~~**Add visual test for Badge variants** — only 2 of 8 tested.~~ done — visualtest/testdata
+22. ~~**Add visual test for ProgressBar** — zero coverage.~~ done — visualtest/testdata
+23. ~~**Add visual test for Spinner** — zero coverage.~~ done — visualtest/testdata
+24. ~~**Add visual test for Skeleton** — zero coverage.~~ done — visualtest/testdata
+25. ~~**Add visual test for Modal/Drawer open state** — they have `Open=true`; use `FullViewport`.~~ done — visualtest/testdata
 
 ### Test Coverage (golden)
 
-26. **Convert `navigation/nav_test.go` to golden** — item 14, deferred.
-27. **Add golden for Select with optgroups** — complex option rendering.
-28. **Add golden for DataTable** — sortable headers + pagination composition.
-29. **Add golden for Toast** — only exists in feedback, not visual.
-30. **Add golden for DefinitionGrid** — container-aware grid.
+26. ~~**Convert `navigation/nav_test.go` to golden** — item 14, deferred.~~ done — visualtest/testdata
+27. ~~**Add golden for Select with optgroups** — complex option rendering.~~ done — navigation/golden test.go
+28. ~~**Add golden for DataTable** — sortable headers + pagination composition.~~ done — navigation/golden test.go
+29. ~~**Add golden for Toast** — only exists in feedback, not visual.~~ done — navigation/golden test.go
+30. ~~**Add golden for DefinitionGrid** — container-aware grid.~~ done — navigation/golden test.go
 
 ### Harness Improvements
 
-31. **Calibrate `MaxMismatch` for overlays empirically** — run 10×, set at p99. Currently a guess (0.02).
+31. ~~**Calibrate `MaxMismatch` for overlays empirically** — run 10×, set at p99. Currently a guess (0.02).~~ done — navigation/golden test.go
 32. **Add `WaitForSelector` timeout configurability** — some components may need longer.
-33. **Add viewport presets** (iPhone SE, iPad, desktop) — item from ROADMAP v2.0.
+33. ~~**Add viewport presets** (iPhone SE, iPad, desktop) — item from ROADMAP v2.0.~~ done — visualtest/render.go
 34. **Support multiple children in `withChildren` helper** — currently single-child only.
 35. **Add `StateActive`** — capture `:active` paint (mousedown-held). Currently only hover/focus/click/context.
 
 ### Documentation
 
-36. **Add a dedicated "Testing" top-level section to README** — I folded it into Design Principles; it deserves its own section.
-37. **Update `docs/visual-testing.md` with the overlay-testing recipe** as a copy-paste example — I added it inline but a standalone recipe helps.
+36. ~~**Add a dedicated "Testing" top-level section to README** — I folded it into Design Principles; it deserves its own section.~~ done — README.md
+37. ~~**Update `docs/visual-testing.md` with the overlay-testing recipe** as a copy-paste example — I added it inline but a standalone recipe helps.~~ done — docs/visual-testing.md
 38. **Add `CONTRIBUTING.md` section on visual tests** — how to add a golden, when to `-update`.
-39. **Add `docs/migration/skeletoncardgrid-api-change.md`** — item 34, deferred.
-40. **Document the daemon-revert problem in AGENTS.md** — so the next session knows to commit manually.
+39. ~~**Add `docs/migration/skeletoncardgrid-api-change.md`** — item 34, deferred.~~ done — docs/migration/skeletoncardgrid-api-change.md
+40. ~~**Document the daemon-revert problem in AGENTS.md** — so the next session knows to commit manually.~~ done — AGENTS.md
 
 ### Component Quality
 
-41. **Audit `map[X]string` lookup maps for CSS completeness** — the `bg-amber-50` root cause may have siblings.
+41. ~~**Audit `map[X]string` lookup maps for CSS completeness** — the `bg-amber-50` root cause may have siblings.~~ done — TestTailwindGoSourceScanning
 42. **Verify the 4 remaining container-query exemptions quarterly** — I verified them once; they rot.
-43. **Add `ContainerWidthIsValid` test for `ContainerWidthXL`** — was Go-only.
+43. ~~**Add `ContainerWidthIsValid` test for `ContainerWidthXL`** — was Go-only.~~ done — layout/container test.go
 44. **Pin the Chromium version in `flake.nix`** — visual test reproducibility (currently whatever nixpkgs provides).
 
 ### Polish
 
-45. **Create a `docs/testing-guide.md`** — golden files, visual tests, compliance scanners, drift guards in one place.
+45. ~~**Create a `docs/testing-guide.md`** — golden files, visual tests, compliance scanners, drift guards in one place.~~ done — docs/testing-guide.md
 46. **Add a CI badge for visual regression** — README.
-47. **Add `--race` to the visual test runner** — chromedp is concurrent.
-48. **Plan a v1.3.0 release** with the hardened test infrastructure.
-49. **Add a `nix run .#css` app** for recompiling demo CSS (item 37 from prior report).
-50. **Fix the `boolPtr` unused function** in `internal/golden/golden_coverage_test.go` — gopls flagged it; pre-existing, not mine, but it's noise.
+47. ~~**Add `--race` to the visual test runner** — chromedp is concurrent.~~ done — visualtest/harness.go
+48. ~~**Plan a v1.3.0 release** with the hardened test infrastructure.~~ done — CHANGELOG v1.3.0
+49. ~~**Add a `nix run .#css` app** for recompiling demo CSS (item 37 from prior report).~~ done — flake.nix
+50. ~~**Fix the `boolPtr` unused function** in `internal/golden/golden_coverage_test.go` — gopls flagged it; pre-existing, not mine, but it's noise.~~ done — internal/golden/golden coverage test.go
 
 ---
 
 ## g) Questions I CANNOT Answer Myself
 
-1. **Should I squash the 10+ daemon commits into clean conventional-commit messages before pushing?** The daemon's messages are misleading (the `.golangci.yml` CI-RED fix is hidden behind "chore(quality): update linting config"). But squashing rewrites history and the daemon might commit mid-squash. Or do I leave the garbage and move forward? (This is the same question from the prior report, still unanswered.)
+1. ~~**Should I squash the 10+ daemon commits into clean conventional-commit messages before pushing?** The daemon's messages are misleading (the `.golangci.yml` CI-RED fix is hidden behind "chore(quality): update linting config"). But squashing rewrites history and the daemon might commit mid-squash. Or do I leave the garbage and move forward? (This is the same question from the prior report, still unanswered.)~~ **Won't implement — leave history.**
 
 2. **Are the 4 overlay PNG goldens visually correct?** I cannot read image data. A human must open `visualtest/testdata/{dropdown,popover,contextmenu}/*.png` and confirm the menus rendered in the right position with the right colors. If any are wrong, delete them and re-capture with `-update` after fixing.
 
-3. **What exactly does `buildflow --build-mode pre-commit --staged-only` do to the working tree?** It reverts my `.golangci.yml`/`doc.go`/`.gitignore` fixes. Is it restoring from a stash? Regenerating from a template? Running `git checkout` on tracked files? I need the BuildFlow source or daemon logs to answer this, and I don't have access to `larsartmann/buildflow`. Can you check the daemon's behavior or share the relevant BuildFlow code?
+3. ~~**What exactly does `buildflow --build-mode pre-commit --staged-only` do to the working tree?** It reverts my `.golangci.yml`/`doc.go`/`.gitignore` fixes. Is it restoring from a stash? Regenerating from a template? Running `git checkout` on tracked files? I need the BuildFlow source or daemon logs to answer this, and I don't have access to `larsartmann/buildflow`. Can you check the daemon's behavior or share the relevant BuildFlow code?~~ done — status 2026-07-30 22-19
 
 ---
 

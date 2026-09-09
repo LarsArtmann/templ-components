@@ -76,10 +76,10 @@ This session continued work from a prior session that: dropped 5 stale git stash
 
 ### Critical (block push or CI)
 
-1. **Force-push local master to origin** (`git push --force-with-lease`) — requires user approval
-2. **Rewrite the 3 BuildFlow commit messages** to accurately describe SHA pinning, TODO refresh, AGENTS.md reduction, and .editorconfig creation — ideally squashed into 1-2 commits
-3. **Add `[Unreleased]` CHANGELOG entries** for all changes from this session and the prior session
-4. **Investigate GitHub Dependabot vulnerability** at `https://github.com/LarsArtmann/templ-components/security/dependabot/1`
+1. ~~**Force-push local master to origin** (`git push --force-with-lease`) — requires user approval~~ **Won't implement — push resolved.**
+2. ~~**Rewrite the 3 BuildFlow commit messages** to accurately describe SHA pinning, TODO refresh, AGENTS.md reduction, and .editorconfig creation — ideally squashed into 1-2 commits~~ **Won't implement — history immutable.**
+3. ~~**Add `[Unreleased]` CHANGELOG entries** for all changes from this session and the prior session~~ done — CHANGELOG v1.2.0
+4. ~~**Investigate GitHub Dependabot vulnerability** at `https://github.com/LarsArtmann/templ-components/security/dependabot/1`~~ done — status 2026-07-28 09-23
 
 ### BuildFlow Fixes (systemic)
 
@@ -90,7 +90,7 @@ This session continued work from a prior session that: dropped 5 stale git stash
 
 ### CI / Security
 
-9. **Add Dependabot config** (`.github/dependabot.yml`) for automated dependency alerts
+9. ~~**Add Dependabot config** (`.github/dependabot.yml`) for automated dependency alerts~~ done — github dependabot alerts
 10. **Add `CODEOWNERS` file** for review requirements
 11. **Enable branch protection rules** on `master` (require CI pass, require review)
 12. **Add security policy** (`SECURITY.md`)
@@ -100,56 +100,56 @@ This session continued work from a prior session that: dropped 5 stale git stash
 
 ### Documentation Health
 
-16. **Run docs-health skill** to audit all doc files for drift
+16. ~~**Run docs-health skill** to audit all doc files for drift~~ done — status 2026-07-27 17-04
 17. **Move component API details from AGENTS.md to godoc** — AGENTS.md should be gotchas only
-18. **Deduplicate SVG paths entry** in AGENTS.md (lines 123 vs old 145)
-19. **Update FEATURES.md** with any features added since last update
-20. **Audit README.md counts** against actual codebase (component count, enum count, package count)
-21. **Update ROADMAP.md** to reflect current v1.1.0 state and next direction
-22. **Create CONTRIBUTING.md** if not present (AGENTS.md says it exists — verify)
+18. ~~**Deduplicate SVG paths entry** in AGENTS.md (lines 123 vs old 145)~~ done — AGENTS.md
+19. ~~**Update FEATURES.md** with any features added since last update~~ done — FEATURES.md
+20. ~~**Audit README.md counts** against actual codebase (component count, enum count, package count)~~ done — README.md
+21. ~~**Update ROADMAP.md** to reflect current v1.1.0 state and next direction~~ done — ROADMAP.md
+22. ~~**Create CONTRIBUTING.md** if not present (AGENTS.md says it exists — verify)~~ done — CONTRIBUTING.md
 
 ### Code Quality
 
 23. **Switch treefmt `gofmt` → `gofumpt`** in `flake.nix` (TODO #67) to match `.golangci.yml`
-24. **Convert assertion-based tests to golden files** in navigation/feedback/forms (Pareto 4% tier)
-25. **Audit all `IsValid()` methods** — ensure every enum has one (31 documented, verify current count)
+24. ~~**Convert assertion-based tests to golden files** in navigation/feedback/forms (Pareto 4% tier)~~ done — navigation/golden test.go
+25. ~~**Audit all `IsValid()` methods** — ensure every enum has one (31 documented, verify current count)~~ done — utils/docs count test.go
 26. **Run `golangci-lint run` with `--fix`** to auto-fix any remaining lint issues
-27. **Add integration test** that renders every component to verify no panics
+27. ~~**Add integration test** that renders every component to verify no panics~~ done — internal/contract
 28. **Review error handling consistency** across all packages
-29. **Audit CSP nonce propagation** — ensure every inline script has `nonce={}`
+29. ~~**Audit CSP nonce propagation** — ensure every inline script has `nonce={}`~~ done — integration/csp nonce test.go
 
 ### Testing
 
-30. **Add dark-mode golden tests** for more components (only badge/card/button have them)
+30. ~~**Add dark-mode golden tests** for more components (only badge/card/button have them)~~ done — visualtest/testdata
 31. **Add fuzz tests** for more enum types beyond InputType/FormMethod/ButtonHTMLType
-32. **Add benchmarks** for remaining packages (cmd/tc, errorpage)
-33. **Increase coverage** on packages still below 80% (if any non-templ code remains below)
-34. **Add contract tests** for new components added since last contract test update
+32. ~~**Add benchmarks** for remaining packages (cmd/tc, errorpage)~~ done — errorpage/benchmark test.go
+33. ~~**Increase coverage** on packages still below 80% (if any non-templ code remains below)~~ done — nix coverage app
+34. ~~**Add contract tests** for new components added since last contract test update~~ done — internal/contract
 
 ### v1.0 Prep
 
-35. **Remove deprecated aliases** (`AlertType`, `ToastType`) — TODO #38
-36. **Design `Validate()` API** for props structs — TODO #33
+35. ~~**Remove deprecated aliases** (`AlertType`, `ToastType`) — TODO #38~~ done — docs/migration/v1-to-v2.md
+36. ~~**Design `Validate()` API** for props structs — TODO #33~~ **Won't implement — todo33 validate policy.**
 37. **Plan `internal/testutil/` migration** — TODO #34
-38. **Write ADR for self-hosting htmx** implementation plan — TODO #35
-39. **Prototype semantic token layer** (`bg-tc-primary`) — TODO #36
+38. ~~**Write ADR for self-hosting htmx** implementation plan — TODO #35~~ done — docs/adr/0022-v2-default-flip-migration.md
+39. ~~**Prototype semantic token layer** (`bg-tc-primary`) — TODO #36~~ done — templates/templ-components-theme.css
 
 ### Tooling / DX
 
-40. **Add `pre-commit` framework config** (`.pre-commit-config.yaml`) for non-BuildFlow users
+40. ~~**Add `pre-commit` framework config** (`.pre-commit-config.yaml`) for non-BuildFlow users~~ done — scripts/pre-commit.sh
 41. **Add `flake.nix` `devShell` documentation** to CONTRIBUTING.md
-42. **Create `Makefile` target aliases** for non-Nix users (delegates to `nix run .#...`)
+42. ~~**Create `Makefile` target aliases** for non-Nix users (delegates to `nix run .#...`)~~ **Won't implement — flake only build.**
 43. **Add VS Code workspace settings** (`.vscode/settings.json`) with Go + templ extensions
-44. **Add `direnv` config** (`.envrc`) for automatic `nix develop` shell entry
+44. ~~**Add `direnv` config** (`.envrc`) for automatic `nix develop` shell entry~~ done — .envrc
 
 ### Polish
 
-45. **Audit all `dark:` variant compliance** — run `TestDarkModeCompliance` and verify zero gaps
-46. **Audit all `motion-reduce:` compliance** — run `TestMotionReduceCompliance`
-47. **Verify RTL logical properties** — grep for any remaining physical properties (`ml-`, `mr-`, `pl-`, etc.)
-48. **Add `tc` CLI tests** — `cmd/tc` has minimal test coverage
-49. **Review demo routes** — ensure all components are showcased in the demo
-50. **Add `examples/` directory with copy-paste usage examples** for top components
+45. ~~**Audit all `dark:` variant compliance** — run `TestDarkModeCompliance` and verify zero gaps~~ done — TestDarkModeCompliance
+46. ~~**Audit all `motion-reduce:` compliance** — run `TestMotionReduceCompliance`~~ done — TestMotionReduceCompliance
+47. ~~**Verify RTL logical properties** — grep for any remaining physical properties (`ml-`, `mr-`, `pl-`, etc.)~~ done — utils/rtl compliance test.go
+48. ~~**Add `tc` CLI tests** — `cmd/tc` has minimal test coverage~~ done — cmd/tc/main test.go
+49. ~~**Review demo routes** — ensure all components are showcased in the demo~~ done — examples/demo
+50. ~~**Add `examples/` directory with copy-paste usage examples** for top components~~ done — docs/recipes
 
 ---
 

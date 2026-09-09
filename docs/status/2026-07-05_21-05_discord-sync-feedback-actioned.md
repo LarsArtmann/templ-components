@@ -133,13 +133,13 @@ No reverts, no failed approaches, no broken builds. Every edit landed on the fir
 
 ### Process improvements (observed this session)
 
-1. ✅ **Pre-existing test failure fixed** — `TestFormatRelativeTimeBoundaries/59_seconds_ago` now expects "just now" (matching the formatter's sub-minute behavior). All 13/13 packages green.
+1. ~~✅ **Pre-existing test failure fixed** — `TestFormatRelativeTimeBoundaries/59_seconds_ago` now expects "just now" (matching the formatter's sub-minute behavior). All 13/13 packages green.~~ done — display/coverage extra test.go
 
-2. ⬠ **LSP diagnostics were stale** after `templ generate` — intermittent issue, not consistently reproducible. Templ LSP has improved since.
+2. ~~⬠ **LSP diagnostics were stale** after `templ generate` — intermittent issue, not consistently reproducible. Templ LSP has improved since.~~ **Won't implement — transient tooling issue moot.**
 
-3. ✅ **Untracked status docs committed** — All `docs/status/` files are now tracked in git.
+3. ~~✅ **Untracked status docs committed** — All `docs/status/` files are now tracked in git.~~ done — docs/status/2026-07-05 21-05 discord-sync-feedback-actioned.md
 
-4. ⬜ **SKILL.md component count is manually maintained** — Still hand-edited. A drift-guard test could automate this but hasn't been prioritized.
+4. ~~⬜ **SKILL.md component count is manually maintained** — Still hand-edited. A drift-guard test could automate this but hasn't been prioritized.~~ done — utils/skill count test.go
 
 ---
 
@@ -147,46 +147,46 @@ No reverts, no failed approaches, no broken builds. Every edit landed on the fir
 
 ### Immediate (blocks CI)
 
-1. **Fix `TestFormatRelativeTimeBoundaries/59_seconds_ago` failure.** Either change the formatter to return "59 seconds ago" for sub-minute values, or fix the test expectation. This is on `master` and blocks `go test ./...`.
-2. **Commit or gitignore the 3 untracked `docs/status/` files.** They're polluting `git status`.
-3. **Commit this session's work.** 5 modified files + 1 new recipe doc are uncommitted.
+1. ~~**Fix `TestFormatRelativeTimeBoundaries/59_seconds_ago` failure.** Either change the formatter to return "59 seconds ago" for sub-minute values, or fix the test expectation. This is on `master` and blocks `go test ./...`.~~ done — display/coverage extra test.go
+2. ~~**Commit or gitignore the 3 untracked `docs/status/` files.** They're polluting `git status`.~~ done — docs/status/2026-07-05 21-05 discord-sync-feedback-actioned.md
+3. ~~**Commit this session's work.** 5 modified files + 1 new recipe doc are uncommitted.~~ done — docs/status/2026-07-05 21-05 discord-sync-feedback-actioned.md
 
 ### Short-term (next session)
 
 4. **Add `Body` slot to `feedback.SkeletonCardGrid`** — same pattern as Card.Body and Table.Body, allows custom skeleton layouts.
-5. **Automate SKILL.md component count** — drift-guard test that counts `templ [A-Z]` definitions and asserts against the SKILL.md number.
-6. **Adopt `display.Grid` in the demo app** — the feedback noted DiscordSync hand-rolls grids. The demo app should showcase `Grid` prominently so consumers discover it.
+5. ~~**Automate SKILL.md component count** — drift-guard test that counts `templ [A-Z]` definitions and asserts against the SKILL.md number.~~ done — utils/skill count test.go
+6. ~~**Adopt `display.Grid` in the demo app** — the feedback noted DiscordSync hand-rolls grids. The demo app should showcase `Grid` prominently so consumers discover it.~~ done — examples/demo/display demo.templ
 7. **Add `display.Table.Body` to the demo app** — show the custom-row pattern so consumers see it in action.
-8. **Review whether `forms.Form` should accept a `Layout` enum** (`FormLayoutVertical` / `FormLayoutInline`) instead of relying on `props.Class` override. The feedback showed this is a real friction point. Maybe the recipe doc is enough, maybe not.
-9. **Add a `docs/recipes/custom-table-rows.md`** recipe showing the `Table.Body` pattern with a real-world example (e.g., a message list with avatars and timestamps).
-10. **Audit all 83 components for `Body` slot opportunities** — Card and Table have it. Are there other components where a struct-based composition slot would help? (StatCard, SimpleCard, EmptyState, Modal?)
+8. ~~**Review whether `forms.Form` should accept a `Layout` enum** (`FormLayoutVertical` / `FormLayoutInline`) instead of relying on `props.Class` override. The feedback showed this is a real friction point. Maybe the recipe doc is enough, maybe not.~~ done — forms/form.templ
+9. ~~**Add a `docs/recipes/custom-table-rows.md`** recipe showing the `Table.Body` pattern with a real-world example (e.g., a message list with avatars and timestamps).~~ done — docs/recipes/custom-table-rows.md
+10. ~~**Audit all 83 components for `Body` slot opportunities** — Card and Table have it. Are there other components where a struct-based composition slot would help? (StatCard, SimpleCard, EmptyState, Modal?)~~ done — display/card.templ
 
 ### Documentation & discoverability
 
 11. **Rewrite README component catalogue** to use the same "by use case" grouping now in SKILL.md. The README is the first thing consumers see.
-12. **Add a "Quick decision: Table vs custom HTML" guide** — when to use `Table`, `Table.Body`, or raw HTML. The feedback showed consumers build custom helpers when `Table`'s `Rows` type is too rigid.
-13. **Create a `docs/recipes/` index page** that groups recipes by consumer problem (not by feature).
+12. ~~**Add a "Quick decision: Table vs custom HTML" guide** — when to use `Table`, `Table.Body`, or raw HTML. The feedback showed consumers build custom helpers when `Table`'s `Rows` type is too rigid.~~ done — docs/recipes/custom-table-rows.md
+13. ~~**Create a `docs/recipes/` index page** that groups recipes by consumer problem (not by feature).~~ done — docs/recipes/recipe-index.md
 14. **Add cross-links between recipe docs** — the filter-bar recipe should link to the error-feedback recipe (HTMX auto-submit can fail).
 
 ### Testing & quality
 
-15. **Add a BDD test for `Table.Body`** — the existing tests are unit-level. A BDD test ("Given a table with Body set, When rendered, Then custom rows appear inside tbody") would document the behavior for consumers.
-16. **Add snapshot/golden test for `Table.Body`** — verify the full HTML structure when Body is set vs unset.
-17. **Test that `Table.Body` with `nil` component doesn't crash** — edge case: what if a consumer passes a `templ.Component` that's nil from a failed `templ.Raw()`?
+15. ~~**Add a BDD test for `Table.Body`** — the existing tests are unit-level. A BDD test ("Given a table with Body set, When rendered, Then custom rows appear inside tbody") would document the behavior for consumers.~~ done — display/table test.go
+16. ~~**Add snapshot/golden test for `Table.Body`** — verify the full HTML structure when Body is set vs unset.~~ done — display/golden sweep test.go
+17. ~~**Test that `Table.Body` with `nil` component doesn't crash** — edge case: what if a consumer passes a `templ.Component` that's nil from a failed `templ.Raw()`?~~ done — display/table test.go
 
 ### Architecture & API
 
-18. **Consider a `display.TableHeader` slot** — currently headers are `[]string`. What if a consumer needs an icon in the header, or a sortable indicator? A `Header templ.Component` slot would allow this.
-19. **Audit the `forms` package for horizontal-layout support** — is there enough demand for a `forms.InlineForm` or `forms.FormLayout` enum? Check DiscordSync + cqrs-htmx for usage patterns.
+18. ~~**Consider a `display.TableHeader` slot** — currently headers are `[]string`. What if a consumer needs an icon in the header, or a sortable indicator? A `Header templ.Component` slot would allow this.~~ done — display/table.templ
+19. ~~**Audit the `forms` package for horizontal-layout support** — is there enough demand for a `forms.InlineForm` or `forms.FormLayout` enum? Check DiscordSync + cqrs-htmx for usage patterns.~~ done — forms/form.templ
 20. **Consider extracting a shared `slotPattern` convention doc** — Card.Body, Table.Body, and future slot-based fields all follow the same pattern. Document it once.
-21. **Review `TableRow` / `TableCell` types** — are they still needed now that `Body` exists? Could they be deprecated in favor of pure templ? Or do they earn their keep for simple data tables?
+21. ~~**Review `TableRow` / `TableCell` types** — are they still needed now that `Body` exists? Could they be deprecated in favor of pure templ? Or do they earn their keep for simple data tables?~~ done — display/table data.templ
 
 ### Polish
 
-22. **Add `Body` field to `SimpleCard`** — it already delegates to `Card`, but a direct `Body` field would be more ergonomic for consumers using `SimpleCard`.
+22. ~~**Add `Body` field to `SimpleCard`** — it already delegates to `Card`, but a direct `Body` field would be more ergonomic for consumers using `SimpleCard`.~~ done — display/coverage boost2 test.go
 23. **Update the demo app's Table example** to show both `Rows` and `Body` usage side by side.
-24. **Add `display.Table` to the demo app's "component matrix"** if one exists, showing all options (Striped, Hover, Bordered, Caption, Body).
-25. **Review the feedback doc itself** — mark items as resolved/unresolved and file a response. The feedback is valuable; closing the loop with the consumer builds trust.
+24. ~~**Add `display.Table` to the demo app's "component matrix"** if one exists, showing all options (Striped, Hover, Bordered, Caption, Body).~~ done — examples/demo/display demo.templ
+25. ~~**Review the feedback doc itself** — mark items as resolved/unresolved and file a response. The feedback is valuable; closing the loop with the consumer builds trust.~~ done — docs/feedback/2026-07-05 DiscordSync session2 ui-review.md
 
 ---
 

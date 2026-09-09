@@ -15,23 +15,23 @@
 
 ## a) FULLY DONE
 
-1. **Repo state verified** at session start: clean at `df46918`, ~12 heuristic daemon commits hold the fix span (as documented).
-2. **Demo binary rebuilt** (`nix develop -c go build -o /tmp/tc-demo-bin ./examples/demo`), stale server on :8901 killed, fresh server started and health-checked (`{"status":"ok"}`).
-3. **Dark-mode re-captures** (fix-session P0 #2): `/recipes/dashboard` + `/` via `nix run .#shots` → `/tmp/tc-shots-final/` (4 PNGs, light+dark). Visually verified: dashboard two-column grid holds (AppShell nil-sidebar fix intact), violet chart line, clean dark palette; index mega-page renders fully dark — all sections present, violet heatmap cells visible, no broken regions.
-4. **LoadingButton during-request verification** (fix-session P0 #3) — delivered as a **durable browser guard** instead of a one-off PNG: `visualtest/loading_button_e2e_test.go` (new, ~150 lines, follows the `wire_e2e_test.go` pattern: `layout.Base` page + httptest server + 600ms slow endpoint). Asserts the full contract in real Chromium: spinner gated at rest (opacity 0) → click → `.htmx-request` on button + spinner opacity > 0.99 + default text `display: none` mid-flight → after response class removed and spinner re-gated. **PASS (1.0s).** visualtest `go mod tidy` → zero go.mod/go.sum drift; gofmt/vet clean.
-5. **HARVEST** (fix-session P0 #5) via docs-health skill (SKILL.md + harvest-guide loaded first): both reports' f-lists extracted, every item verified against the tree before routing — dropped the 9 already-shipped P0s; confirmed open gaps in-tree (heatmap has `light.png` only, no `appshell/` testdata at all, CONTRIBUTING.md exists, 105 golden PNGs match ROADMAP claims). Routed 20 bounded items into `TODO_LIST.md` #158–177 + 9 bigger ideas into a new ROADMAP subsection. Fixed-on-sight drift: ROADMAP "106 icons" → **102** (now verified from source: 101 path icons + Spinner).
-6. **Final verification at HEAD** (fix-session P0 #4): `nix run .#visual` **green (21.4s)** — all 105 goldens + wire e2e + the new LoadingButton e2e; `nix flake check` **passed** (treefmt).
-7. Todo hygiene: the stale 8-task list (all already done) was marked completed first thing; session tracked in 6 fresh todos, all closed.
+1. ~~**Repo state verified** at session start: clean at `df46918`, ~12 heuristic daemon commits hold the fix span (as documented).~~ done at `3c6ff5b`
+2. ~~**Demo binary rebuilt** (`nix develop -c go build -o /tmp/tc-demo-bin ./examples/demo`), stale server on :8901 killed, fresh server started and health-checked (`{"status":"ok"}`).~~ done at `3c6ff5b`
+3. ~~**Dark-mode re-captures** (fix-session P0 #2): `/recipes/dashboard` + `/` via `nix run .#shots` → `/tmp/tc-shots-final/` (4 PNGs, light+dark). Visually verified: dashboard two-column grid holds (AppShell nil-sidebar fix intact), violet chart line, clean dark palette; index mega-page renders fully dark — all sections present, violet heatmap cells visible, no broken regions.~~ done at `3c6ff5b`
+4. ~~**LoadingButton during-request verification** (fix-session P0 #3) — delivered as a **durable browser guard** instead of a one-off PNG: `visualtest/loading_button_e2e_test.go` (new, ~150 lines, follows the `wire_e2e_test.go` pattern: `layout.Base` page + httptest server + 600ms slow endpoint). Asserts the full contract in real Chromium: spinner gated at rest (opacity 0) → click → `.htmx-request` on button + spinner opacity > 0.99 + default text `display: none` mid-flight → after response class removed and spinner re-gated. **PASS (1.0s).** visualtest `go mod tidy` → zero go.mod/go.sum drift; gofmt/vet clean.~~ done at `3c6ff5b`
+5. ~~**HARVEST** (fix-session P0 #5) via docs-health skill (SKILL.md + harvest-guide loaded first): both reports' f-lists extracted, every item verified against the tree before routing — dropped the 9 already-shipped P0s; confirmed open gaps in-tree (heatmap has `light.png` only, no `appshell/` testdata at all, CONTRIBUTING.md exists, 105 golden PNGs match ROADMAP claims). Routed 20 bounded items into `TODO_LIST.md` #158–177 + 9 bigger ideas into a new ROADMAP subsection. Fixed-on-sight drift: ROADMAP "106 icons" → **102** (now verified from source: 101 path icons + Spinner).~~ done at `3c6ff5b`
+6. ~~**Final verification at HEAD** (fix-session P0 #4): `nix run .#visual` **green (21.4s)** — all 105 goldens + wire e2e + the new LoadingButton e2e; `nix flake check` **passed** (treefmt).~~ done at `3c6ff5b`
+7. ~~Todo hygiene: the stale 8-task list (all already done) was marked completed first thing; session tracked in 6 fresh todos, all closed.~~ done at `3c6ff5b`
 
 ## b) PARTIALLY DONE
 
 1. **LoadingButton visual golden:** the audit asked for rest + `.htmx-request` _pixel_ goldens; shipped the e2e state-gate guard instead (stronger contract, no flaky golden). The golden itself is routed as TODO #164 — deliberately open, not forgotten.
-2. **Heatmap dark-mode coverage:** verified only at page level (index dark capture shows violet cells); no isolated `heatmap/dark.png` golden — routed in TODO #169.
-3. **§g questions:** re-posed in the session summary, still unanswered — see g).
+2. ~~**Heatmap dark-mode coverage:** verified only at page level (index dark capture shows violet cells); no isolated `heatmap/dark.png` golden — routed in TODO #169.~~ done — heatmap dark golden #169
+3. ~~**§g questions:** re-posed in the session summary, still unanswered — see g).~~ done (docs-health pass 2026-09-08)
 
 ## c) NOT STARTED
 
-1. **Release cut** — blocked on user answer (§g q3); `[Unreleased]` is warm with consumer-visible fixes (AppShell collapse, Heatmap default color, LoadingButton gating).
+1. ~~**Release cut** — blocked on user answer (§g q3); `[Unreleased]` is warm with consumer-visible fixes (AppShell collapse, Heatmap default color, LoadingButton gating).~~ **Won't implement — answered v1.15.0 cut.**
 2. The 20 harvested TODO items (#158–177) and 9 ROADMAP ideas — harvested and prioritized this session, execution is future work.
 
 ## d) TOTALLY FUCKED UP
@@ -40,67 +40,67 @@ Nothing destructive this session. Two honest misses, both caught in self-critiqu
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Harvest discipline:** "decision-shaped" items still need a home (ROADMAP "decide X" rows are legal). f31 slipping proves my routing rubric has a hole for tiny decisions.
-2. **Session-end teardown:** kill background servers/shells when captures finish; /tmp evidence is volatile — decide retention policy once (f-item #8).
-3. **Verify-then-edit ordering:** the ROADMAP icon count went in on trust and was verified after. Cheap greps before edits, always.
-4. **CI-load-tolerant e2e timing:** 600ms windows are fine locally; widen to 1000ms for free robustness.
-5. **Section-wise capture mode for mega-pages:** the 28k-px index forces lossy downscale for review; a per-section capture flag would make evidence reviewable at full fidelity.
-6. **Pre-existing diagnostics noticed (not mine, unfixed):** `heroWireLine` unused in `examples/demo/main.go:156`; `writestring` warnings in `demo/main.go:51-59`; `unusedparams` in `visualtest/wire_forms_pack_e2e_test.go` (4 sites); QF1003 tagged-switch hints in `collapsible_section.templ`/`animated_icon.templ`. Fix-on-sight candidates for the next session touching those files.
+1. ~~**Harvest discipline:** "decision-shaped" items still need a home (ROADMAP "decide X" rows are legal). f31 slipping proves my routing rubric has a hole for tiny decisions.~~ done (docs-health pass 2026-09-08)
+2. ~~**Session-end teardown:** kill background servers/shells when captures finish; /tmp evidence is volatile — decide retention policy once (f-item #8).~~ done (docs-health pass 2026-09-08)
+3. ~~**Verify-then-edit ordering:** the ROADMAP icon count went in on trust and was verified after. Cheap greps before edits, always.~~ done (docs-health pass 2026-09-08)
+4. ~~**CI-load-tolerant e2e timing:** 600ms windows are fine locally; widen to 1000ms for free robustness.~~ done (docs-health pass 2026-09-08)
+5. ~~**Section-wise capture mode for mega-pages:** the 28k-px index forces lossy downscale for review; a per-section capture flag would make evidence reviewable at full fidelity.~~ done (docs-health pass 2026-09-08)
+6. ~~**Pre-existing diagnostics noticed (not mine, unfixed):** `heroWireLine` unused in `examples/demo/main.go:156`; `writestring` warnings in `demo/main.go:51-59`; `unusedparams` in `visualtest/wire_forms_pack_e2e_test.go` (4 sites); QF1003 tagged-switch hints in `collapsible_section.templ`/`animated_icon.templ`. Fix-on-sight candidates for the next session touching those files.~~ done — demo diagnostics fixed
 
 ## f) NEXT — up to 50 things to get done next
 
 **P0 — decisions unblocking the cycle**
 
 1. Answer §g: daemon-history record (q1), violet keep (q2), release cut (q3).
-2. If release approved: `scripts/release.sh <ver> "<summary>"` — verify-before-strip, tag all 7 modules, `check-release-tags.sh`, manual push after review.
-3. Post-propagation `GOWORK=off go mod tidy` sweep in all 7 modules + visualtest after tags hit the proxy (v1.12.0 lesson); confirm master CI + Website green.
+2. ~~If release approved: `scripts/release.sh <ver> "<summary>"` — verify-before-strip, tag all 7 modules, `check-release-tags.sh`, manual push after review.~~ **Won't implement — answered by cuts.**
+3. ~~Post-propagation `GOWORK=off go mod tidy` sweep in all 7 modules + visualtest after tags hit the proxy (v1.12.0 lesson); confirm master CI + Website green.~~ done — sweeps routine
 
 **P1 — highest-value bounded work (harvested as TODO #158–177)**
-4. #163 page-level visual goldens for the 7 demo routes (would have caught the dashboard collapse).
-5. #169 CSS-var integrity: pin `--ds-brand-rgb` via compiled-CSS parse test; heatmap `dark.png` golden; repo sweep for undefined `var(--…)` in rendered HTML.
+4. ~~#163 page-level visual goldens for the 7 demo routes (would have caught the dashboard collapse).~~ done — route goldens N11
+5. ~~#169 CSS-var integrity: pin `--ds-brand-rgb` via compiled-CSS parse test; heatmap `dark.png` golden; repo sweep for undefined `var(--…)` in rendered HTML.~~ done — css var guards #169
 6. #164 golden-coverage sweep — AppShell + LoadingButton pixel goldens first.
-7. #165 demo copy drift-guard (user-visible numbers from single constants).
+7. ~~#165 demo copy drift-guard (user-visible numbers from single constants).~~ done — hero counts guard
 8. **Audit f31 (un-routed miss):** persist the triage screenshot set (trimmed gallery in `docs/`) or document /tmp-only retention — owner call.
-9. #166 `FormLayoutInline` width contract: design + fix + guard test.
-10. #158 overlay open-state captures: Modal, Drawer, Tooltip, Combobox, Carousel.
-11. #159 mobile 375px sweep (MobileMenu, ContainerAware, form stacking, table overflow).
-12. #160 RTL sweep on Nav/Split/Carousel/Drawer/Dropdown.
-13. #161 `?transport=htmx|datastar` index captures.
-14. #168 demo click-through E2E set (LoadMore→EndOfList, ConfirmDelete, wire form, busy, upload).
-15. #167 prerender vs live-server HTML diff for the 7 routes (sync #154).
+9. ~~#166 `FormLayoutInline` width contract: design + fix + guard test.~~ done — refuted N13
+10. ~~#158 overlay open-state captures: Modal, Drawer, Tooltip, Combobox, Carousel.~~ done — overlay captures N8
+11. ~~#159 mobile 375px sweep (MobileMenu, ContainerAware, form stacking, table overflow).~~ done — mobile sweep N6
+12. ~~#160 RTL sweep on Nav/Split/Carousel/Drawer/Dropdown.~~ done — rtl sweep N7
+13. ~~#161 `?transport=htmx|datastar` index captures.~~ done — transport shots
+14. ~~#168 demo click-through E2E set (LoadMore→EndOfList, ConfirmDelete, wire form, busy, upload).~~ done — demo flows N3
+15. ~~#167 prerender vs live-server HTML diff for the 7 routes (sync #154).~~ done — prerender diff N16
 16. #162 ProgressBar 45% fill-color suspicion.
-17. #173 CI demo smoke: build → serve → `nix run .#shots` → assert captures + zero 500s in log.
-18. #170 `tc-btn-loading` document-or-remove.
-19. #171 AppShell polish (`--tc-sidebar-w` only with sidebar; SidebarWidthAuto×w-64 doc; DOM-measure SM overflow).
-20. #172 AppShell docs (empty-slot contract + min-h-dvh Class override).
-21. #174 `nix run .#shots` into CONTRIBUTING.md / docs/visual-testing.md.
-22. #175 a11y: axe-core via chromedp injection (zero-Node) + keyboard-only traversal.
-23. #176 DateRange block-vs-inline docs + two-adjacent golden.
-24. #177 ErrorPage family matrix goldens.
+17. ~~#173 CI demo smoke: build → serve → `nix run .#shots` → assert captures + zero 500s in log.~~ done — demo smoke N5
+18. ~~#170 `tc-btn-loading` document-or-remove.~~ done — tc btn doc #170
+19. ~~#171 AppShell polish (`--tc-sidebar-w` only with sidebar; SidebarWidthAuto×w-64 doc; DOM-measure SM overflow).~~ done — appshell polish #171
+20. ~~#172 AppShell docs (empty-slot contract + min-h-dvh Class override).~~ done — appshell docs #172
+21. ~~#174 `nix run .#shots` into CONTRIBUTING.md / docs/visual-testing.md.~~ done — shots documented #174
+22. ~~#175 a11y: axe-core via chromedp injection (zero-Node) + keyboard-only traversal.~~ done — axe N2
+23. ~~#176 DateRange block-vs-inline docs + two-adjacent golden.~~ done — DateRange N14
+24. ~~#177 ErrorPage family matrix goldens.~~ done — errorpage goldens N15
 
 **P2 — hardening surfaced by this session**
 25. Widen LoadingButton e2e sleep 600ms → 1000ms (CI-load tolerance).
 26. `#shots` section-mode flag (`-section <anchor>`) for full-fidelity mega-page review.
-27. Fix pre-existing demo diagnostics: `heroWireLine` dead code, `writestring` warnings (main.go:51-59).
-28. Fix `unusedparams` in `visualtest/wire_forms_pack_e2e_test.go` (4 sites) next touch.
+27. ~~Fix pre-existing demo diagnostics: `heroWireLine` dead code, `writestring` warnings (main.go:51-59).~~ done — heroWireLine removed M9
+28. ~~Fix `unusedparams` in `visualtest/wire_forms_pack_e2e_test.go` (4 sites) next touch.~~ done — visualtest lint zero N4
 29. Recount-verify icon/component counts in one canonical drift test (extend `TestSkillComponentCount` to fail-capable).
-30. Re-check `nix run .#css` byte-stability after the next daemon commit touching `static/app.css` (#125 recurrence watch).
+30. ~~Re-check `nix run .#css` byte-stability after the next daemon commit touching `static/app.css` (#125 recurrence watch).~~ done — css freshness green
 
 **P3 — standing backlog surfaced by the harvest (see TODO_LIST for citations)**
-31. #128 upstream-watch `workflow_dispatch` + dry-run input.
-32. #129 external-dependency bump protocol doc.
-33. #133 changelog-guard policy for test-only PRs.
-34. #135 release-checklist daemon-regression window step.
-35. #139 golines max-width policy.
-36. #141 actionlint into `nix run .#lint`.
-37. #142 go.work vs go.mod version-sync guard.
-38. #147 chromedp synthetic datastar lifecycle tests.
-39. #148 cmd/tc `_sources/` drift guard.
-40. #149 `/api/save` invisible response → toast or drop.
-41. #150 TestCSSFreshness fail-capable local flag.
-42. #151 DOMAIN_LANGUAGE.md additions.
-43. #152 coverage margin (71.7% vs 70% floor).
-44. #153 PolledRegion aria-busy parity.
+31. ~~#128 upstream-watch `workflow_dispatch` + dry-run input.~~ done — upstream-watch run 34391305391
+32. ~~#129 external-dependency bump protocol doc.~~ done — docs/external-dependency-bumps.md
+33. ~~#133 changelog-guard policy for test-only PRs.~~ **Won't implement — decided N19.**
+34. ~~#135 release-checklist daemon-regression window step.~~ done — release-checklist daemon steps
+35. ~~#139 golines max-width policy.~~ done — AGENTS lint policy
+36. ~~#141 actionlint into `nix run .#lint`.~~ done — flake.nix actionlint
+37. ~~#142 go.work vs go.mod version-sync guard.~~ done — TestGoWorkDirective
+38. ~~#147 chromedp synthetic datastar lifecycle tests.~~ done — visualtest synthetic
+39. ~~#148 cmd/tc `_sources/` drift guard.~~ done — cmd/tc sync guard
+40. ~~#149 `/api/save` invisible response → toast or drop.~~ done — demo save result
+41. ~~#150 TestCSSFreshness fail-capable local flag.~~ done — TC CSS FRESHNESS STRICT
+42. ~~#151 DOMAIN_LANGUAGE.md additions.~~ done — DOMAIN LANGUAGE.md
+43. ~~#152 coverage margin (71.7% vs 70% floor).~~ done — coverage 72.0 N9
+44. ~~#153 PolledRegion aria-busy parity.~~ done — htmx.PolledRegion
 45. #80 human-eyeball agent-generated overlay PNGs (blocked on you).
 46. ROADMAP ideas: scheduled demo smoke, theme-override toggle, index perf, CSP negative test, print/PDF, icon-gallery keyboard, offline fonts, multi-viewport matrix, audit-session convention.
 47. #34 testutil migration sprint (blocks package refactors).
@@ -110,9 +110,9 @@ Nothing destructive this session. Two honest misses, both caught in self-critiqu
 
 ## g) Questions I cannot figure out myself
 
-1. **Release:** cut the next version now (`scripts/release.sh`; AppShell collapse + Heatmap default-color + LoadingButton gating are consumer-visible and `[Unreleased]` is warm), or keep accumulating? (Carried from 05:31 §g3.)
+1. ~~**Release:** cut the next version now (`scripts/release.sh`; AppShell collapse + Heatmap default-color + LoadingButton gating are consumer-visible and `[Unreleased]` is warm), or keep accumulating? (Carried from 05:31 §g3.)~~ **Won't implement — answered v1.15.0 cut.**
 2. **Daemon-swept fix history:** ~13 heuristic `chore:` commits now hold the whole demo-fix span including this session's e2e guard. Leave as-is (CHANGELOG + reports as the record — my default), or do you want a summary commit documenting the range?
-3. **Heatmap violet:** keep violet-600/violet-500 as the shipped default (your "blue-600 is boring" steer; now a 2-variable CSS override), or pick a different brand hue?
+3. ~~**Heatmap violet:** keep violet-600/violet-500 as the shipped default (your "blue-600 is boring" steer; now a 2-variable CSS override), or pick a different brand hue?~~ **Won't implement — violet shipped.**
 
 ---
 

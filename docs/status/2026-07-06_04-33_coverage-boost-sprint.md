@@ -175,36 +175,36 @@ Tests: 152 new test functions, all passing
 
 ### Mistakes and process failures
 
-1. **Multiple compilation rounds due to not reading source before writing tests.** I wrote
-   tests with wrong field names (`Name` on AvatarProps → should be `Initials`, `Trigger` on
-   DropdownProps → should be `Label`, `Children` on TooltipProps → doesn't exist, `TabsUnderline`
-   → should be `TabsDefault`, `BadgeSecondary` → doesn't exist, `Icon` field is `templ.Component`
-   not `icons.Name`, `Prefix`/`Suffix` on InputGroupProps → should be `LeftAddon`/`RightAddon`,
-   `Title`/`FieldID` on ValidationError → doesn't exist). This wasted ~15 tool calls on fix
-   cycles that could have been avoided by reading the `.templ` source files FIRST.
+1. ~~**Multiple compilation rounds due to not reading source before writing tests.** I wrote~~ done (docs-health pass 2026-09-08)
+   ~~tests with wrong field names (`Name` on AvatarProps → should be `Initials`, `Trigger` on~~
+   ~~DropdownProps → should be `Label`, `Children` on TooltipProps → doesn't exist, `TabsUnderline`~~
+   ~~→ should be `TabsDefault`, `BadgeSecondary` → doesn't exist, `Icon` field is `templ.Component`~~
+   ~~not `icons.Name`, `Prefix`/`Suffix` on InputGroupProps → should be `LeftAddon`/`RightAddon`,~~
+   ~~`Title`/`FieldID` on ValidationError → doesn't exist). This wasted ~15 tool calls on fix~~
+   ~~cycles that could have been avoided by reading the `.templ` source files FIRST.~~
 
-2. **HTML entity escaping not anticipated.** Multiple tests failed because templ escapes
-   apostrophes (`'` → `&#39;`) and uses `&hellip;` instead of `...`. I should have known
-   this from the templ library context.
+2. ~~**HTML entity escaping not anticipated.** Multiple tests failed because templ escapes~~ done (docs-health pass 2026-09-08)
+   ~~apostrophes (`'` → `&#39;`) and uses `&hellip;` instead of `...`. I should have known~~
+   ~~this from the templ library context.~~
 
-3. **HTMXVersion zero-value disables injection.** Tests for `TestBaseWithHTMXSRI` and
-   `TestBaseWithHTMXCustomCDN` failed because I set `HTMXUseSRI: true` or `HTMXCDN` without
-   setting `HTMXVersion` — which defaults to `""` (disabled) when not using `DefaultPageProps()`.
-   Should have used `DefaultPageProps()` as the base.
+3. ~~**HTMXVersion zero-value disables injection.** Tests for `TestBaseWithHTMXSRI` and~~ done (docs-health pass 2026-09-08)
+   ~~`TestBaseWithHTMXCustomCDN` failed because I set `HTMXUseSRI: true` or `HTMXCDN` without~~
+   ~~setting `HTMXVersion` — which defaults to `""` (disabled) when not using `DefaultPageProps()`.~~
+   ~~Should have used `DefaultPageProps()` as the base.~~
 
-4. **Duplicate test function names.** At least 8 name collisions with existing tests across
-   packages (TestToggleDisabled, TestCheckboxDisabled, TestNavLinkActive, TestNavLinkExternal,
-   TestPaginationEllipsis, TestFooterRender, TestMobileNavLinkActive, TestErrorHandlerJSON,
-   TestErrorHandlerHTMLShell, TestWriteError). Each required a rename cycle. Should have
-   grep'd existing test names before writing.
+4. ~~**Duplicate test function names.** At least 8 name collisions with existing tests across~~ done (docs-health pass 2026-09-08)
+   ~~packages (TestToggleDisabled, TestCheckboxDisabled, TestNavLinkActive, TestNavLinkExternal,~~
+   ~~TestPaginationEllipsis, TestFooterRender, TestMobileNavLinkActive, TestErrorHandlerJSON,~~
+   ~~TestErrorHandlerHTMLShell, TestWriteError). Each required a rename cycle. Should have~~
+   ~~grep'd existing test names before writing.~~
 
-5. **ErrorHandler nil-error behavior not understood.** Tests expected 500 status but
-   `FromError(nil)` returns `FamilyTransient` → 503. Should have read `FromError` before
-   writing status assertions.
+5. ~~**ErrorHandler nil-error behavior not understood.** Tests expected 500 status but~~ done (docs-health pass 2026-09-08)
+   ~~`FromError(nil)` returns `FamilyTransient` → 503. Should have read `FromError` before~~
+   ~~writing status assertions.~~
 
-6. **`errorpage/constructors.go` pre-existing goconst lint issue** was noticed but not fixed.
-   The string `"Something went wrong"` appears 3 times. This is not my code but it's the
-   only remaining lint issue in the whole project. One-line fix.
+6. ~~**`errorpage/constructors.go` pre-existing goconst lint issue** was noticed but not fixed.~~ done — errorpage/notfound404 types.go
+   ~~The string `"Something went wrong"` appears 3 times. This is not my code but it's the~~
+   ~~only remaining lint issue in the whole project. One-line fix.~~
 
 ---
 
@@ -212,30 +212,30 @@ Tests: 152 new test functions, all passing
 
 ### Process improvements
 
-1. **Read source files before writing tests.** Every compilation error was caused by guessing
-   field names instead of reading the `.templ` file. The pattern should be: `view file.templ`
-   → `grep type definitions` → write test. Not: write test → fix → fix → fix.
+1. ~~**Read source files before writing tests.** Every compilation error was caused by guessing~~ done (docs-health pass 2026-09-08)
+   ~~field names instead of reading the `.templ` file. The pattern should be: `view file.templ`~~
+   ~~→ `grep type definitions` → write test. Not: write test → fix → fix → fix.~~
 
-2. **Grep existing test names before writing.** `grep '^func Test' package/*_test.go` takes
-   1 second and prevents all name collisions.
+2. ~~**Grep existing test names before writing.** `grep '^func Test' package/*_test.go` takes~~ done (docs-health pass 2026-09-08)
+   ~~1 second and prevents all name collisions.~~
 
-3. **Understand component behavior before asserting on output.** The ErrorHandler nil-error
-   → 503 and templ HTML-escaping issues were both predictable from reading the source.
+3. ~~**Understand component behavior before asserting on output.** The ErrorHandler nil-error~~ done (docs-health pass 2026-09-08)
+   ~~→ 503 and templ HTML-escaping issues were both predictable from reading the source.~~
 
-4. **Use Default\*Props() as the starting point.** Several test failures were because zero-value
-   structs have different behavior than defaulted structs (HTMXVersion especially).
+4. ~~**Use Default\*Props() as the starting point.** Several test failures were because zero-value~~ done (docs-health pass 2026-09-08)
+   ~~structs have different behavior than defaulted structs (HTMXVersion especially).~~
 
 ### Coverage strategy improvements
 
-5. **The 75% target was unrealistic for `_templ.go` files.** Generated templ render functions
-   have ~70-75% coverage ceiling because the last 25-30% is error handling from
-   `templ.JoinStringErrs`, buffer write errors, and component.Render error returns — all
-   essentially unreachable without mocking. Realistic target: 73-75% for packages heavy in
-   templ-generated code.
+5. ~~**The 75% target was unrealistic for `_templ.go` files.** Generated templ render functions~~ done (docs-health pass 2026-09-08)
+   ~~have ~70-75% coverage ceiling because the last 25-30% is error handling from~~
+   ~~`templ.JoinStringErrs`, buffer write errors, and component.Render error returns — all~~
+   ~~essentially unreachable without mocking. Realistic target: 73-75% for packages heavy in~~
+   ~~templ-generated code.~~
 
-6. **Consider testing unexported helpers directly.** Many low-coverage functions are private
-   helpers (`normalizeSelectOptions`, `comboboxDisplayLabel`, `stepCircle`). Since tests are
-   in the same package, these can be called directly for targeted coverage.
+6. ~~**Consider testing unexported helpers directly.** Many low-coverage functions are private~~ done (docs-health pass 2026-09-08)
+   ~~helpers (`normalizeSelectOptions`, `comboboxDisplayLabel`, `stepCircle`). Since tests are~~
+   ~~in the same package, these can be called directly for targeted coverage.~~
 
 ---
 
@@ -243,43 +243,43 @@ Tests: 152 new test functions, all passing
 
 ### High impact (would move coverage 2-5%)
 
-1. Fix pre-existing `goconst` lint issue in `errorpage/constructors.go` (1-line fix)
-2. Test `htmx` package: GlobalErrorHandling, ConfirmDelete, SwapOOB, CSRFToken branches
-3. Test `internal/golden` package: `-update` flag codepath, CSS normalization edge cases
+1. ~~Fix pre-existing `goconst` lint issue in `errorpage/constructors.go` (1-line fix)~~ done — errorpage/notfound404 types.go
+2. ~~Test `htmx` package: GlobalErrorHandling, ConfirmDelete, SwapOOB, CSRFToken branches~~ done — htmx/coverage boost test.go
+3. ~~Test `internal/golden` package: `-update` flag codepath, CSS normalization edge cases~~ done — utils/golden/golden coverage test.go
 4. Target `display` package sub-50% functions: `statCardInner` (65.9%), `statCardFigures` (69.2%)
-5. Target `forms/input_templ.go:Input` (67.1%) — the lowest-coverage form component
+5. ~~Target `forms/input_templ.go:Input` (67.1%) — the lowest-coverage form component~~ done — forms/coverage boost3 test.go
 
 ### Medium impact (mechanical, would move coverage 1-2%)
 
-6. Motion-reduce sweep: wire `transitionFast`/`transitionNormal`/`transitionColors` into 19 components
-7. `display/ListNote` (51.9%) — needs more edge case tests (Shown=0, Total=0, Shown>Total)
-8. `display/gridContainerClass` (66.7%) — container-responsive + unknown cols fallback
-9. `feedback/skeletonBody` (66.7%) — unknown variant default already tested, remaining is nil-check
-10. `navigation/navLinkAnchor` (69.4%) — needs BaseProps propagation tests
-11. `navigation/simpleBrand` (66.7%) — needs custom brand text + href tests
-12. `navigation/breadcrumbSeparator` (66.7%) — custom separator rendering
+6. ~~Motion-reduce sweep: wire `transitionFast`/`transitionNormal`/`transitionColors` into 19 components~~ done — utils/motion.go
+7. ~~`display/ListNote` (51.9%) — needs more edge case tests (Shown=0, Total=0, Shown>Total)~~ done — display/list note test.go
+8. ~~`display/gridContainerClass` (66.7%) — container-responsive + unknown cols fallback~~ done — display/coverage boost2 test.go
+9. ~~`feedback/skeletonBody` (66.7%) — unknown variant default already tested, remaining is nil-check~~ done — feedback/coverage boost3 test.go
+10. ~~`navigation/navLinkAnchor` (69.4%) — needs BaseProps propagation tests~~ done — navigation/nav link test.go
+11. ~~`navigation/simpleBrand` (66.7%) — needs custom brand text + href tests~~ done — navigation/coverage test.go
+12. ~~`navigation/breadcrumbSeparator` (66.7%) — custom separator rendering~~ done — navigation/coverage boost3 test.go
 
 ### New components (each 2-6 hrs, from deferred backlog)
 
-13. **Popover** — most requested, similar to Tooltip but click-triggered
-14. **DataTable** — Table + sorting + pagination + search
-15. **Slider** — range input with styled track
-16. **Calendar** — date picker with month view
-17. **Rating** — star rating component
-18. **TagsInput** — multi-value input with chips
+13. ~~**Popover** — most requested, similar to Tooltip but click-triggered~~ done — display/popover.templ
+14. ~~**DataTable** — Table + sorting + pagination + search~~ done — display/table data.templ
+15. ~~**Slider** — range input with styled track~~ done — forms/slider.templ
+16. ~~**Calendar** — date picker with month view~~ done — forms/calendar.templ
+17. ~~**Rating** — star rating component~~ done — forms/rating.templ
+18. ~~**TagsInput** — multi-value input with chips~~ done — forms/tags input.templ
 
 ### Documentation & infrastructure
 
-19. Update CHANGELOG with test coverage improvements
+19. ~~Update CHANGELOG with test coverage improvements~~ done — CHANGELOG.md
 20. Update AGENTS.md with coverage strategy note (75% ceiling for templ-generated code)
-21. Write CONTRIBUTING.md section on "how to write coverage tests" (read source → grep names → use Default\*Props)
+21. ~~Write CONTRIBUTING.md section on "how to write coverage tests" (read source → grep names → use Default\*Props)~~ done — README.md
 22. Add coverage badge to README.md
 
 ### v1.0 preparation
 
 23. `Validate() error` methods on all props structs
-24. Remove deprecated aliases (AlertType, ToastType) — breaking change for v1.0
-25. Semantic token layer (ADR 0008 — 256 color references to consolidate)
+24. ~~Remove deprecated aliases (AlertType, ToastType) — breaking change for v1.0~~ done — feedback/enums go.go
+25. ~~Semantic token layer (ADR 0008 — 256 color references to consolidate)~~ done — templates/templ-components-theme.css
 
 ---
 

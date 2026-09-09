@@ -20,10 +20,10 @@
 | 5  | **TODO_LIST pruned + harvested**                     | Removed stale blocked-but-done #13 ("Visual regression testing — requires Playwright/Node" — actually shipped via chromedp, no Node). Harvested 5 forward items (#74-78) from the 2 new reports: container-query compliance test, visual tests for high-risk components, shared-Chromium perf fix, first RTL visual test, lookup-map-in-`.templ` lint test. |
 | 6  | **ROADMAP updated**                                  | Added **Testing & QA** pillar (was entirely missing). Added **Container queries** pillar. Added 2 shipped rows (container-query expansion, visual regression framework). Updated v2.0 "Default flip" direction to include ContainerAware opt-out.                                                                                                           |
 | 7  | **FEATURES.md updated**                              | Added `ContainerAware` to 7 component rows (Card, Nav, Split, Form, Pagination, DefinitionGrid, SkeletonCardGrid). Added 4 missing layout primitives (AppShell, Container, Split, Stack). Updated SkeletonCardGrid row to new `SkeletonCardGridProps` API. Updated Cross-Cutting "Test Coverage" + "Responsive" sections.                                   |
-| 8  | **`.golangci.yml` lint gate repaired**               | The 3 linters documented as "do NOT re-enable" (`ireturn`, `godoclint`, `testableexamples`) had re-entered the `enable:` list (regression of the v0.19.0 fix), causing exit 1 with 71 findings. Removed all 3 + dead `ireturn:` settings block. **`golangci-lint run` now exits 0, 0 issues.**                                                              |
-| 9  | **Full quality gate run**                            | `go build ./...` ✓ · `go test ./...` 16/16 ✓ · `golangci-lint run` exit 0 ✓ · drift tests (`TestDocsCountDrift`/`TestVersionMatches*`/`TestSkillComponentCount`) ✓ · `nix flake check` ✓                                                                                                                                                                    |
-| 10 | **Cross-file consistency verified**                  | No split brains (TODO #13 removed; no PLANNED+DONE overlap). ContainerAware count consistent (8 in code, 8 in FEATURES, 8 in DOMAIN_LANGUAGE). Markdown links resolve (5 false-positives are Go generics in code spans, not links).                                                                                                                         |
-| 11 | **Older `2026-07-2*` reports verified intact**       | Prior session's `## Resolution (2026-07-27)` appendices survived the daemon's reformatting. 3 new reports correctly left unannotated (fresh — harvested forward, nothing yet to resolve backward).                                                                                                                                                          |
+| ~~8~~  | ~~**`.golangci.yml` lint gate repaired**~~ done at `5175e90` | ~~The 3 linters documented as "do NOT re-enable" (`ireturn`, `godoclint`, `testableexamples`) had re-entered the `enable:` list (regression of the v0.19.0 fix), causing exit 1 with 71 findings. Removed all 3 + dead `ireturn:` settings block. **`golangci-lint run` now exits 0, 0 issues.**~~ |
+| ~~9~~  | ~~**Full quality gate run**~~ done at `5175e90` | ~~`go build ./...` ✓ · `go test ./...` 16/16 ✓ · `golangci-lint run` exit 0 ✓ · drift tests (`TestDocsCountDrift`/`TestVersionMatches*`/`TestSkillComponentCount`) ✓ · `nix flake check` ✓~~ |
+| ~~10~~ | ~~**Cross-file consistency verified**~~ done at `5175e90` | ~~No split brains (TODO #13 removed; no PLANNED+DONE overlap). ContainerAware count consistent (8 in code, 8 in FEATURES, 8 in DOMAIN_LANGUAGE). Markdown links resolve (5 false-positives are Go generics in code spans, not links).~~ |
+| ~~11~~ | ~~**Older `2026-07-2*` reports verified intact**~~ done at `5175e90` | ~~Prior session's `## Resolution (2026-07-27)` appendices survived the daemon's reformatting. 3 new reports correctly left unannotated (fresh — harvested forward, nothing yet to resolve backward).~~ |
 
 ---
 
@@ -116,73 +116,73 @@
 
 ### Critical — prevention tests + verification gaps from this session
 
-1. **Add `TestGolangciDisabledLinters`** — assert `ireturn`/`godoclint`/`testableexamples` are NOT in `.golangci.yml` enable list. Prevents the third recurrence of this regression.
-2. **Clear the false "43 vs 54 enum" finding** — there is no discrepancy (43 is correct excluding test files). If I had published this in a written report, correct it. (Not published in a file — only in conversation — so this is a process note.)
-3. **Add `ContainerAware` per-component docs to `skill/SKILL.md`** — 8 components have the flag, 0 are documented per-row (report e.9).
-4. **Add visual-testing vocabulary to `docs/DOMAIN_LANGUAGE.md`** — `visualtest`, `Golden`, `Visual Regression`, `chromedp`, `pixelmatch`, `AssertScreenshot` (0 terms today).
-5. **Add visual testing + container queries to `README.md`** — consumer-facing features with 0 mentions today.
-6. **Read + verify `docs/visual-testing.md`** accuracy against the shipped harness (never opened this session).
-7. **Verify `website/` docs** mention ContainerAware + visual testing (drift test only checks sections.ts count).
+1. ~~**Add `TestGolangciDisabledLinters`** — assert `ireturn`/`godoclint`/`testableexamples` are NOT in `.golangci.yml` enable list. Prevents the third recurrence of this regression.~~ done — utils/lint config test.go
+2. ~~**Clear the false "43 vs 54 enum" finding** — there is no discrepancy (43 is correct excluding test files). If I had published this in a written report, correct it. (Not published in a file — only in conversation — so this is a process note.)~~ **Won't implement — no discrepancy.**
+3. ~~**Add `ContainerAware` per-component docs to `skill/SKILL.md`** — 8 components have the flag, 0 are documented per-row (report e.9).~~ done — skill/SKILL.md
+4. ~~**Add visual-testing vocabulary to `docs/DOMAIN_LANGUAGE.md`** — `visualtest`, `Golden`, `Visual Regression`, `chromedp`, `pixelmatch`, `AssertScreenshot` (0 terms today).~~ done — docs/DOMAIN LANGUAGE.md
+5. ~~**Add visual testing + container queries to `README.md`** — consumer-facing features with 0 mentions today.~~ done — README.md
+6. ~~**Read + verify `docs/visual-testing.md`** accuracy against the shipped harness (never opened this session).~~ done — status 2026-07-28 15-29
+7. ~~**Verify `website/` docs** mention ContainerAware + visual testing (drift test only checks sections.ts count).~~ done — status 2026-07-28 15-29
 
 ### High — harvested from the 2 new reports (already in TODO_LIST as #74-78)
 
-8. **`utils.TestContainerQueryCompliance`** scanner (TODO #74) — viewport breakpoints without ContainerAware flag.
-9. **Visual regression tests for Modal/Drawer/Dropdown/Input/Select** (TODO #75) — highest-risk components, 0 coverage.
-10. **Share one Chromium process across visual tests** (TODO #76) — 1s startup × N tests scales poorly.
-11. **Add the first RTL visual test** (TODO #77) — `Options.RTL` exists, 0 users.
-12. **Lint test: Tailwind-class lookup maps must live in `.templ` files** (TODO #78) — prevents silently-missing CSS.
+8. ~~**`utils.TestContainerQueryCompliance`** scanner (TODO #74) — viewport breakpoints without ContainerAware flag.~~ done — utils/container query compliance test.go
+9. ~~**Visual regression tests for Modal/Drawer/Dropdown/Input/Select** (TODO #75) — highest-risk components, 0 coverage.~~ done — visualtest/testdata
+10. ~~**Share one Chromium process across visual tests** (TODO #76) — 1s startup × N tests scales poorly.~~ done — visualtest/harness.go
+11. ~~**Add the first RTL visual test** (TODO #77) — `Options.RTL` exists, 0 users.~~ done — visualtest/testdata
+12. ~~**Lint test: Tailwind-class lookup maps must live in `.templ` files** (TODO #78) — prevents silently-missing CSS.~~ **Won't implement — solved via css scanning.**
 
 ### Medium — open items from prior sessions (still in TODO_LIST)
 
-13. **Set `GOWORK=off` in `flake.nix` devShell `shellHook`** (TODO #70) — breaks `go generate` across sessions.
-14. **Investigate GitHub Dependabot alert** (TODO #71) — reported across 2+ sessions.
-15. **Add demo CSS rebuild to `scripts/release.sh`** (TODO #72) — or document Docker handles it.
-16. **Convert assertion-based tests to golden files** (TODO #73) — navigation, feedback, forms.
+13. ~~**Set `GOWORK=off` in `flake.nix` devShell `shellHook`** (TODO #70) — breaks `go generate` across sessions.~~ done — .envrc
+14. ~~**Investigate GitHub Dependabot alert** (TODO #71) — reported across 2+ sessions.~~ done — status 2026-07-28 09-23
+15. ~~**Add demo CSS rebuild to `scripts/release.sh`** (TODO #72) — or document Docker handles it.~~ done — scripts/release.sh
+16. ~~**Convert assertion-based tests to golden files** (TODO #73) — navigation, feedback, forms.~~ done — navigation/golden test.go
 
 ### Medium — HARVEST items I routed too conservatively
 
-17. **Add "Visual test coverage expansion" as a ROADMAP direction** — currently 4/15 packages covered; target all high-risk components. Explicit direction, not buried in a report.
-18. **Add "Container-aware default flip" details to ROADMAP v2.0** — the container-query report (g.1) raises making `ContainerAware` default for Grid/Card post-v1.0. Currently only mentioned generically.
+17. ~~**Add "Visual test coverage expansion" as a ROADMAP direction** — currently 4/15 packages covered; target all high-risk components. Explicit direction, not buried in a report.~~ done — ROADMAP.md
+18. ~~**Add "Container-aware default flip" details to ROADMAP v2.0** — the container-query report (g.1) raises making `ContainerAware` default for Grid/Card post-v1.0. Currently only mentioned generically.~~ done — docs/adr/0022-v2-default-flip-migration.md
 19. **Add `Container.ContainerAware`** (container-query report f.11) — padding adapts to container, candidate M17.
 20. **Add `Breadcrumbs.ContainerAware`** (f.12) — `md:space-x-3` → `@md:space-x-3`.
 21. **Add `EmptyState.ContainerAware`** (f.13) — `sm:py-16` → `@sm:py-16`.
 22. **Add `NotFound404.ContainerAware`** (f.14) — grid `sm:`/`lg:` → `@sm:`/`@lg:`.
 23. **Add `Footer.ContainerAware`** (f.15) — multi-column grid `md:grid-cols-4` → `@md:`.
-24. **Calibrate `MaxMismatch` with a deliberate-breakage experiment** (visual report e.4/P1#19) — 0.1% default is unvalidated.
+24. ~~**Calibrate `MaxMismatch` with a deliberate-breakage experiment** (visual report e.4/P1#19) — 0.1% default is unvalidated.~~ done — visualtest/visual test.go
 25. **Fix `StateHover` to target first interactive child, not wrapper center** (visual report e.6/P0#6).
-26. **Add `ViewportMobile`/`ViewportTablet`/`ViewportDesktop` presets** (visual report e.9/P2#20).
+26. ~~**Add `ViewportMobile`/`ViewportTablet`/`ViewportDesktop` presets** (visual report e.9/P2#20).~~ done — visualtest/render.go
 27. **Change `Options.Dark`/`RTL` from `bool` to `*bool` (tri-state)** (visual report e.7/P2#22) — can't turn Dark off once on.
-28. **Add `String()` to `InteractionState`** (visual report e.8/P2#21) — error messages show numeric values.
-29. **Add a `/container-queries` demo route** with a resizable container (container report f.4/e.8).
-30. **Add `tailwindcss` recompile to the pre-commit hook** (container report e.5) — prevents stale CSS.
+28. ~~**Add `String()` to `InteractionState`** (visual report e.8/P2#21) — error messages show numeric values.~~ done — visualtest/render.go
+29. ~~**Add a `/container-queries` demo route** with a resizable container (container report f.4/e.8).~~ done — examples/demo
+30. ~~**Add `tailwindcss` recompile to the pre-commit hook** (container report e.5) — prevents stale CSS.~~ done — scripts/pre-commit.sh
 
 ### Low — documentation polish
 
 31. **Cross-reference ADR-0017 revision in `docs/research/popover-api.md`** (prior session B3).
 32. **Add ADR-0016 to an ADR index** if one exists (prior session flagged).
-33. **Document `cmd/tc/_sources/` naming convention** in AGENTS.md (prior session flagged).
+33. ~~**Document `cmd/tc/_sources/` naming convention** in AGENTS.md (prior session flagged).~~ done — AGENTS.md
 34. **Update `docs/icons-only-adoption.md`** to mention `tc` CLI extraction.
-35. **Add `htmx.SwapStyleIsValid`** — drift from convention (prior session #47).
-36. **Add `layout.ContainerWidthIsValid` test** (prior session #48).
-37. **Write a consumer migration note for the `SkeletonCardGrid` API change** (container report f.10/c.5).
-38. **Add dark-mode variant for EVERY component with semantic colors** (visual report f.18).
-39. **Add a visual coverage metric test** (visual report f.39) — "% of components with ≥1 golden."
-40. **Add CSS-staleness detection** (visual report f.42) — fail if `app.css` mtime < newest `.templ` mtime.
+35. ~~**Add `htmx.SwapStyleIsValid`** — drift from convention (prior session #47).~~ done — htmx/enums test.go
+36. ~~**Add `layout.ContainerWidthIsValid` test** (prior session #48).~~ done — layout/container test.go
+37. ~~**Write a consumer migration note for the `SkeletonCardGrid` API change** (container report f.10/c.5).~~ done — docs/migration/skeletoncardgrid-api-change.md
+38. ~~**Add dark-mode variant for EVERY component with semantic colors** (visual report f.18).~~ done — visualtest/testdata
+39. ~~**Add a visual coverage metric test** (visual report f.39) — "% of components with ≥1 golden."~~ done — visualtest/coverage test.go
+40. ~~**Add CSS-staleness detection** (visual report f.42) — fail if `app.css` mtime < newest `.templ` mtime.~~ done — TestCSSFreshness
 
 ### v2.0 prep
 
-41. **Design the default-flip migration** — self-host HTMX + semantic tokens + ContainerAware become default.
-42. **Write a migration guide** for the v2.0 default flip.
-43. **Plan `AlertType`/`ToastType` alias removal** (TODO #38).
-44. **Consider renaming `Grid.ContainerResponsive` → `Grid.ContainerAware`** for consistency (container report f.41).
-45. **Investigate container query units (`cqi`, `cqw`)** for fluid typography (container report f.22).
+41. ~~**Design the default-flip migration** — self-host HTMX + semantic tokens + ContainerAware become default.~~ done — docs/adr/0022-v2-default-flip-migration.md
+42. ~~**Write a migration guide** for the v2.0 default flip.~~ done — docs/migration/v1-to-v2.md
+43. ~~**Plan `AlertType`/`ToastType` alias removal** (TODO #38).~~ done — docs/migration/v1-to-v2.md
+44. ~~**Consider renaming `Grid.ContainerResponsive` → `Grid.ContainerAware`** for consistency (container report f.41).~~ done — display/grid.templ
+45. ~~**Investigate container query units (`cqi`, `cqw`)** for fluid typography (container report f.22).~~ done — examples/demo
 
 ### Architecture
 
 46. **Write a shared `containerAwareWrapper` sub-template** — 8 components hand-write the same wrapper (container report e.3).
 47. **Centralize the container-aware dual-lookup-map pattern** to reduce boilerplate.
 48. **Add a test that renders each container-aware component inside a fixed-width wrapper** and asserts the `@container` wrapper (container report f.26).
-49. **Add golden file tests for container-aware variants** of all 5 new components (container report f.27).
+49. ~~**Add golden file tests for container-aware variants** of all 5 new components (container report f.27).~~ done — display/golden sweep layout test.go
 50. **Consider a `Container` wrapper component** that just emits `<div class="@container">` for consumer convenience (container report f.24).
 
 ---

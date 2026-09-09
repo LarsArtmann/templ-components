@@ -73,11 +73,11 @@ After deleting `*_templ.go` and regenerating, the lint cache was cleared, causin
 
 ## c) NOT STARTED
 
-1. **Demo showcase page** — No new demo route showing container-aware components in action (e.g., a Split inside a resizable container, a Pagination inside a card footer). The existing demo already shows `Grid.ContainerResponsive`.
-2. **Container query compliance test** — No automated test that scans all `.templ` files for `sm:`/`md:`/`lg:` classes without a corresponding `@sm:`/`@md:`/`@lg:` container variant (similar to the dark mode compliance test). Would prevent future components from missing the container variant.
+1. ~~**Demo showcase page** — No new demo route showing container-aware components in action (e.g., a Split inside a resizable container, a Pagination inside a card footer). The existing demo already shows `Grid.ContainerResponsive`.~~ done — examples/demo
+2. ~~**Container query compliance test** — No automated test that scans all `.templ` files for `sm:`/`md:`/`lg:` classes without a corresponding `@sm:`/`@md:`/`@lg:` container variant (similar to the dark mode compliance test). Would prevent future components from missing the container variant.~~ done — utils/container query compliance test.go
 3. **`Container.ContainerAware`** — The `layout.Container` component itself doesn't have container-awareness (it only does `px-4 sm:px-6 lg:px-8` padding). Listed as candidate M17 in the grid layout planning doc.
 4. **Visual regression baselines** — The `visualtest/` package exists but no golden images were captured for the new container-aware variants.
-5. **Consumer migration guide** — The `SkeletonCardGrid(count int)` → `SkeletonCardGridProps{Count: N}` is a breaking API change. No migration doc was written (acceptable pre-v1.0, but should be noted in release notes).
+5. ~~**Consumer migration guide** — The `SkeletonCardGrid(count int)` → `SkeletonCardGridProps{Count: N}` is a breaking API change. No migration doc was written (acceptable pre-v1.0, but should be noted in release notes).~~ done — docs/migration/skeletoncardgrid-api-change.md
 
 ---
 
@@ -103,21 +103,21 @@ The auto-commit daemon committed my changes under messages like "feat(visualtest
 
 ### Architecture
 
-1. **Lookup-map-in-`.templ` rule should be a lint test.** Write a test that finds `map[X]string` variables containing Tailwind class strings in `.go` files (not `_templ.go`) and fails if they contain responsive breakpoint patterns (`sm:`, `md:`, `lg:`, `@sm:`, etc.). This would have caught the Split issue at compile time.
-2. **Container query compliance test.** Similar to `TestDarkModeCompliance` and `TestMotionReduceCompliance` — scan all `.templ` files for viewport breakpoints (`sm:`, `md:`, `lg:`) on structural layout classes (grid, flex, hidden, col-span) and warn if there's no corresponding `ContainerAware` flag. Won't catch everything, but surfaces the gap.
+1. ~~**Lookup-map-in-`.templ` rule should be a lint test.** Write a test that finds `map[X]string` variables containing Tailwind class strings in `.go` files (not `_templ.go`) and fails if they contain responsive breakpoint patterns (`sm:`, `md:`, `lg:`, `@sm:`, etc.). This would have caught the Split issue at compile time.~~ **Won't implement — solved via css scanning.**
+2. ~~**Container query compliance test.** Similar to `TestDarkModeCompliance` and `TestMotionReduceCompliance` — scan all `.templ` files for viewport breakpoints (`sm:`, `md:`, `lg:`) on structural layout classes (grid, flex, hidden, col-span) and warn if there's no corresponding `ContainerAware` flag. Won't catch everything, but surfaces the gap.~~ done — utils/container query compliance test.go
 3. **Centralize the container-aware pattern.** Right now each component hand-writes the `if props.ContainerAware { <div class="@container">… } else { … }` wrapper + dual lookup map. Consider a shared helper or sub-template that reduces the boilerplate. ADR-0010 (sub-template extraction) says don't extract for single callers — but this is now 8 callers.
 4. **Tailwind bracket-syntax scanner gap.** `grid-cols-[auto_minmax(0,1fr)]` is invisible to Tailwind v4's scanner when in a Go string literal. The workaround is to use `@source` with explicit safelist or put the class in a `.templ` file as a complete literal. The `FormLayoutGrid` class needs this treatment.
 
 ### Process
 
-5. **CSS recompile is a manual step.** After changing `.templ` files, the developer must run `tailwindcss -i examples/demo/demo.css -o examples/demo/static/app.css`. This is documented in AGENTS.md but not enforced. The pre-commit hook (`scripts/pre-commit.sh`) runs `templ generate` + `go build` + `go test` but NOT `tailwindcss`. Adding it would prevent stale CSS from being committed.
+5. ~~**CSS recompile is a manual step.** After changing `.templ` files, the developer must run `tailwindcss -i examples/demo/demo.css -o examples/demo/static/app.css`. This is documented in AGENTS.md but not enforced. The pre-commit hook (`scripts/pre-commit.sh`) runs `templ generate` + `go build` + `go test` but NOT `tailwindcss`. Adding it would prevent stale CSS from being committed.~~ done — scripts/release.sh
 6. **Auto-commit daemon destroys commit message quality.** My container query work was committed as "feat(visualtest): add visual regression testing infrastructure". This makes the git history useless for understanding what changed and why. Consider configuring the daemon to generate better messages or disabling it during active development sessions.
-7. **`go.work` version drift.** The go.work file was pinned to `1.26.4` while the installed Go is `1.26.5` and go-error-family requires `1.26.5`. This blocked all builds until manually fixed. Consider adding a CI check or pre-commit hook that verifies `go.work` matches the installed Go version.
+7. ~~**`go.work` version drift.** The go.work file was pinned to `1.26.4` while the installed Go is `1.26.5` and go-error-family requires `1.26.5`. This blocked all builds until manually fixed. Consider adding a CI check or pre-commit hook that verifies `go.work` matches the installed Go version.~~ done (docs-health pass 2026-09-08)
 
 ### Documentation
 
-8. **No container query demo page.** The demo app should have a dedicated `/container-queries` route that shows all 8 components side-by-side in a resizable container, demonstrating how they adapt. This is the single best way to communicate the value of the feature to consumers.
-9. **The skill/SKILL.md component table doesn't mention `ContainerAware` flags.** Each component row should note if it has a container-aware variant.
+8. ~~**No container query demo page.** The demo app should have a dedicated `/container-queries` route that shows all 8 components side-by-side in a resizable container, demonstrating how they adapt. This is the single best way to communicate the value of the feature to consumers.~~ done — examples/demo
+9. ~~**The skill/SKILL.md component table doesn't mention `ContainerAware` flags.** Each component row should note if it has a container-aware variant.~~ done — skill/SKILL.md
 10. **The recipe doc could use a visual diagram.** A D2 or mermaid diagram showing "viewport breakpoint → container breakpoint" mapping would help consumers understand when to use which.
 
 ---
@@ -127,15 +127,15 @@ The auto-commit daemon committed my changes under messages like "feat(visualtest
 ### High impact, low effort (do first)
 
 1. ✅ ~~Add ContainerAware to Split, Form, Pagination, DefinitionGrid, SkeletonCardGrid~~ — DONE
-2. Add container query compliance test (`utils.TestContainerQueryCompliance`)
-3. Add `tailwindcss` recompile to the pre-commit hook
-4. Add a `/container-queries` demo route with a resizable container
+2. ~~Add container query compliance test (`utils.TestContainerQueryCompliance`)~~ done — utils/container query compliance test.go
+3. ~~Add `tailwindcss` recompile to the pre-commit hook~~ done — scripts/pre-commit.sh
+4. ~~Add a `/container-queries` demo route with a resizable container~~ done — examples/demo
 5. Write a test that verifies all lookup maps with Tailwind classes live in `.templ` files (not `.go`)
-6. Capture visual regression baselines for all 8 container-aware components
-7. Add `ContainerAware` mention to each component row in skill/SKILL.md tables
-8. Add FormLayoutGrid's `sm:grid-cols-[auto...]` to a Tailwind safelist or `.templ` literal so it compiles
-9. Verify the committed `examples/demo/static/app.css` matches the freshly compiled output (diff check)
-10. Write a consumer migration note for the `SkeletonCardGrid` API change
+6. ~~Capture visual regression baselines for all 8 container-aware components~~ done — display/golden sweep layout test.go
+7. ~~Add `ContainerAware` mention to each component row in skill/SKILL.md tables~~ done — skill/SKILL.md
+8. ~~Add FormLayoutGrid's `sm:grid-cols-[auto...]` to a Tailwind safelist or `.templ` literal so it compiles~~ done — TestTailwindGoSourceScanning
+9. ~~Verify the committed `examples/demo/static/app.css` matches the freshly compiled output (diff check)~~ done — TestCSSFreshness
+10. ~~Write a consumer migration note for the `SkeletonCardGrid` API change~~ done — docs/migration/skeletoncardgrid-api-change.md
 
 ### Medium impact, medium effort
 
@@ -145,58 +145,58 @@ The auto-commit daemon committed my changes under messages like "feat(visualtest
 14. Add `NotFound404.ContainerAware` (grid `sm:grid-cols-2 lg:grid-cols-3` → `@sm:`/`@lg:`)
 15. Add `Footer.ContainerAware` (multi-column grid `md:grid-cols-4` → `@md:grid-cols-4`)
 16. Investigate `AppShell.ContainerAware` — the sidebar `hidden lg:block` pattern could be container-driven
-17. Add `AppShell` container query test (was candidate F8.4 in the grid layout plan)
+17. ~~Add `AppShell` container query test (was candidate F8.4 in the grid layout plan)~~ done — utils/container query compliance test.go
 18. Write a shared `containerAwareWrapper` sub-template to reduce the 8× boilerplate
-19. Add container query size reference table to the main README (currently only in recipe doc)
-20. Add a container query decision flowchart to the recipe doc (when to use `@container` vs `@media`)
+19. ~~Add container query size reference table to the main README (currently only in recipe doc)~~ done — docs/container-query-strategy.md
+20. ~~Add a container query decision flowchart to the recipe doc (when to use `@container` vs `@media`)~~ done — docs/container-query-strategy.md
 
 ### Architecture improvements
 
-21. Consider making `ContainerAware` the DEFAULT for components that are commonly placed in constrained containers (Card body, Split, Grid) — flip the opt-in to opt-out post-v1.0
-22. Investigate container query units (`cqi`, `cqw`) for fluid typography in headings/cards
+21. ~~Consider making `ContainerAware` the DEFAULT for components that are commonly placed in constrained containers (Card body, Split, Grid) — flip the opt-in to opt-out post-v1.0~~ done — docs/adr/0022-v2-default-flip-migration.md
+22. ~~Investigate container query units (`cqi`, `cqw`) for fluid typography in headings/cards~~ done — examples/demo
 23. Add `container-name` support for nested containers (e.g., AppShell sidebar → Nav inside sidebar)
 24. Consider a `Container` wrapper component that just emits `<div class="@container">` for consumer convenience
-25. Document the "content-shaped thresholds" principle from the container query research — breakpoints should be justified by content fit, not device widths
+25. ~~Document the "content-shaped thresholds" principle from the container query research — breakpoints should be justified by content fit, not device widths~~ done — docs/container-query-strategy.md
 
 ### Testing
 
 26. Add a test that renders each container-aware component inside a fixed-width `<div style="width: 300px">` wrapper and asserts the `@container` wrapper is present
-27. Add golden file tests for container-aware variants of all 5 new components
+27. ~~Add golden file tests for container-aware variants of all 5 new components~~ done — display/golden sweep layout test.go
 28. Add a fuzz test for `SkeletonCardGridProps.Count` (negative, zero, large values)
 29. Add a test that verifies `utils.Lookup` fallback behavior for unknown enum values in container-aware maps
 30. Benchmark container-aware vs viewport rendering (should be identical — no runtime cost)
 
 ### Documentation
 
-31. Update FEATURES.md to list `ContainerAware` as a feature on all 8 components
-32. Update the consumer guide in skill/SKILL.md with a "Container-aware components" section
+31. ~~Update FEATURES.md to list `ContainerAware` as a feature on all 8 components~~ done — FEATURES.md
+32. ~~Update the consumer guide in skill/SKILL.md with a "Container-aware components" section~~ done — skill/SKILL.md
 33. Write a blog post / docs page: "Why container queries matter for component libraries"
-34. Add container query examples to the demo app's existing component showcase pages
-35. Create a side-by-side visual comparison: viewport vs container behavior at the same screen width
+34. ~~Add container query examples to the demo app's existing component showcase pages~~ done — examples/demo
+35. ~~Create a side-by-side visual comparison: viewport vs container behavior at the same screen width~~ done — examples/demo
 
 ### CSS / Tailwind
 
-36. Audit all `.templ` files for bracket-syntax arbitrary values (`[...]`) that Tailwind can't scan from Go strings
-37. Consider using `@source inline("...")` safelist for problematic bracket-syntax classes
+36. ~~Audit all `.templ` files for bracket-syntax arbitrary values (`[...]`) that Tailwind can't scan from Go strings~~ done — TestTailwindGoSourceScanning
+37. ~~Consider using `@source inline("...")` safelist for problematic bracket-syntax classes~~ **Won't implement — solved via css scanning.**
 38. Add container query variants for `@2xl:`, `@3xl:`, `@4xl:` if any component needs them
 39. Verify `prefers-reduced-motion` doesn't interact badly with container query transitions
 40. Audit the demo CSS for unused container query classes (tree-shaking verification)
 
 ### Code quality
 
-41. Consider renaming `Grid.ContainerResponsive` → `Grid.ContainerAware` for consistency (breaking change, defer to v1.0)
+41. ~~Consider renaming `Grid.ContainerResponsive` → `Grid.ContainerAware` for consistency (breaking change, defer to v1.0)~~ done — display/grid.templ
 42. Add godoc cross-references between container-aware components ("See also: Split.ContainerAware")
 43. Consider a `ContainerAwareProps` interface for components that support the flag
-44. Add `IsValid()` method for `ContainerAware bool`? (No — bools don't need validation, but document the contract)
+44. ~~Add `IsValid()` method for `ContainerAware bool`? (No — bools don't need validation, but document the contract)~~ **Won't implement — bools need no validation.**
 45. Audit the `splitAsideSpan` function — it's a simple ternary that could be inlined
 
 ### Release
 
-46. Bump version (CHANGELOG, `utils/version.go`, FEATURES.md) — the three drift-guard files
-47. Tag the release with container query extension summary
-48. Write release notes highlighting the 5 new container-aware components
+46. ~~Bump version (CHANGELOG, `utils/version.go`, FEATURES.md) — the three drift-guard files~~ done — CHANGELOG v1.3.0
+47. ~~Tag the release with container query extension summary~~ done — CHANGELOG v1.3.0
+48. ~~Write release notes highlighting the 5 new container-aware components~~ done — CHANGELOG v1.3.0
 49. Update the website docs (if the website repo mirrors this repo's docs)
-50. Announce the container query expansion in the README's "What's new" section
+50. ~~Announce the container query expansion in the README's "What's new" section~~ done — README.md
 
 ---
 

@@ -87,9 +87,9 @@ Both follow the existing pattern: `nonce={ props.Nonce }`, global singleton flag
 
 **High Priority — Discoverability (3/3):**
 
-1. ✅ Forms flagship — prominent README placement + demo + SKILL catalogue
-2. ✅ Component catalog — demo showcases all 82 components, SKILL.md has complete catalogue
-3. ✅ Cursor pagination docs — recipe + `navigation.LoadMore` component
+1. ~~✅ Forms flagship — prominent README placement + demo + SKILL catalogue~~ done — README.md
+2. ~~✅ Component catalog — demo showcases all 82 components, SKILL.md has complete catalogue~~ done — skill/SKILL.md
+3. ~~✅ Cursor pagination docs — recipe + `navigation.LoadMore` component~~ done — docs/recipes/cursor-pagination.md
 
 **Medium Priority — New Components (6/6):** 4. ✅ `display.CopyButton` 5. ✅ `display.RelativeTime` 6. ✅ `navigation.LoadMore` 7. ✅ `display.CountBadge` 8. ✅ `display.DefinitionGrid` 9. ✅ `display.Image`
 
@@ -132,10 +132,10 @@ Nothing from the Consumer Feedback Backlog remains unstarted — all 11 items ar
 
 | # | Issue                                                                                                                                | Status (2026-07-06)                                     |
 | - | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
-| 1 | **`relative_time.templ` uses custom `formatInt()` helper** — unnecessary; `strconv.Itoa` would be cleaner. Shared with `CountBadge`. | ✅ Fixed — `strconv.Itoa` adopted                       |
-| 2 | **`formatRelativeTime` has no tests for edge cases** — boundary logic untested.                                                      | ✅ Fixed — boundary tests added (8 cases)               |
-| 3 | **`LoadMore` button has hardcoded default `id="tc-load-more"`** — ID collision risk.                                                 | ✅ Fixed — uses `utils.EnsureID("load-more", props.ID)` |
-| 4 | **`go.mod` was silently bumped from `go-error-family v0.5.1` to `v0.6.0`** during build.                                             | ✅ Monitored — no recurrence reported                   |
+| ~~1~~ | ~~**`relative_time.templ` uses custom `formatInt()` helper** — unnecessary; `strconv.Itoa` would be cleaner. Shared with `CountBadge`.~~ done — display/relative time.templ | ~~✅ Fixed — `strconv.Itoa` adopted~~ |
+| ~~2~~ | ~~**`formatRelativeTime` has no tests for edge cases** — boundary logic untested.~~ done — display/coverage extra test.go | ~~✅ Fixed — boundary tests added (8 cases)~~ |
+| ~~3~~ | ~~**`LoadMore` button has hardcoded default `id="tc-load-more"`** — ID collision risk.~~ done — navigation/loadmore.templ | ~~✅ Fixed — uses `utils.EnsureID("load-more", props.ID)`~~ |
+| ~~4~~ | ~~**`go.mod` was silently bumped from `go-error-family v0.5.1` to `v0.6.0`** during build.~~ done (docs-health pass 2026-09-08) | ~~✅ Monitored — no recurrence reported~~ |
 
 ---
 
@@ -143,22 +143,22 @@ Nothing from the Consumer Feedback Backlog remains unstarted — all 11 items ar
 
 ### Architecture & Design
 
-1. ✅ **`formatInt` → `strconv.Itoa`** — Fixed.
-2. ✅ **`LoadMore` ID generation** — Fixed. Uses `utils.EnsureID("load-more", props.ID)`.
-3. ✅ **`RelativeTime` auto-refresh JS** — Shipped. `AutoRefresh` defaults to `true` with `Intl.RelativeTimeFormat` singleton script.
-4. ✅ **CopyButton graceful degradation** — Fixed. `execCommand('copy')` fallback for non-secure contexts.
-5. ⬜ **Image fallback `srcset` handling** — Still only swaps `src`, not `srcset`. Documented in godoc.
+1. ~~✅ **`formatInt` → `strconv.Itoa`** — Fixed.~~ done — display/relative time.templ
+2. ~~✅ **`LoadMore` ID generation** — Fixed. Uses `utils.EnsureID("load-more", props.ID)`.~~ done — navigation/loadmore.templ
+3. ~~✅ **`RelativeTime` auto-refresh JS** — Shipped. `AutoRefresh` defaults to `true` with `Intl.RelativeTimeFormat` singleton script.~~ done — display/relative time.templ
+4. ~~✅ **CopyButton graceful degradation** — Fixed. `execCommand('copy')` fallback for non-secure contexts.~~ done — display/copy button.templ
+5. ~~⬜ **Image fallback `srcset` handling** — Still only swaps `src`, not `srcset`. Documented in godoc.~~ done — display/image.templ
 
 ### Testing
 
-6. ✅ **`formatRelativeTime` boundary tests** — Done (8 cases).
-7. ✅ **CopyButton `formatInt` test** — Moot (helper deleted, `strconv.Itoa` used).
-8. ✅ **Integration tests** — 7 composition integration tests added (CopyButton+Card, CountBadge overflow, Image+fallback, etc.).
+6. ~~✅ **`formatRelativeTime` boundary tests** — Done (8 cases).~~ done — display/coverage extra test.go
+7. ~~✅ **CopyButton `formatInt` test** — Moot (helper deleted, `strconv.Itoa` used).~~ **Won't implement — moot helper deleted.**
+8. ~~✅ **Integration tests** — 7 composition integration tests added (CopyButton+Card, CountBadge overflow, Image+fallback, etc.).~~ done — integration/composition test.go
 
 ### Documentation
 
-9. ✅ **SKILL.md Part 2** — Done. Full rewrite with CopyButton/Image/CountBadge patterns + RTL/motion/container-query conventions.
-10. ✅ **Cursor pagination runnable example** — Recipe doc written + demo integration.
+9. ~~✅ **SKILL.md Part 2** — Done. Full rewrite with CopyButton/Image/CountBadge patterns + RTL/motion/container-query conventions.~~ done — skill/SKILL.md
+10. ~~✅ **Cursor pagination runnable example** — Recipe doc written + demo integration.~~ done — docs/recipes/cursor-pagination.md
 
 ---
 
@@ -168,24 +168,24 @@ Nothing from the Consumer Feedback Backlog remains unstarted — all 11 items ar
 
 | # | Task                                                                       | Impact                          | Effort | Status (2026-07-06) |
 | - | -------------------------------------------------------------------------- | ------------------------------- | ------ | ------------------- |
-| 1 | Fix `LoadMore` to use `utils.EnsureID()`                                   | Prevents ID collision bug       | 5 min  | ✅ Done             |
-| 2 | Replace `formatInt` with `strconv.Itoa`                                    | Removes unnecessary custom code | 10 min | ✅ Done             |
-| 3 | Add `formatRelativeTime` boundary unit tests                               | Covers untested time logic      | 15 min | ✅ Done             |
-| 4 | CopyButton: add `document.execCommand` fallback                            | Improves browser compatibility  | 15 min | ✅ Done             |
-| 5 | Integration tests: CopyButton+Card, CountBadge+Button, DefinitionGrid+Grid | Composition coverage            | 20 min | ✅ Done             |
+| ~~1~~ | ~~Fix `LoadMore` to use `utils.EnsureID()`~~ done — navigation/loadmore.templ | ~~Prevents ID collision bug~~ | ~~5 min~~ | ~~✅ Done~~ |
+| ~~2~~ | ~~Replace `formatInt` with `strconv.Itoa`~~ done — display/relative time.templ | ~~Removes unnecessary custom code~~ | ~~10 min~~ | ~~✅ Done~~ |
+| ~~3~~ | ~~Add `formatRelativeTime` boundary unit tests~~ done — display/coverage extra test.go | ~~Covers untested time logic~~ | ~~15 min~~ | ~~✅ Done~~ |
+| ~~4~~ | ~~CopyButton: add `document.execCommand` fallback~~ done — display/copy button.templ | ~~Improves browser compatibility~~ | ~~15 min~~ | ~~✅ Done~~ |
+| ~~5~~ | ~~Integration tests: CopyButton+Card, CountBadge+Button, DefinitionGrid+Grid~~ done — integration/composition test.go | ~~Composition coverage~~ | ~~20 min~~ | ~~✅ Done~~ |
 
 ### Medium Impact (P1)
 
 | #  | Task                                                           | Impact                 | Effort | Status (2026-07-06)                              |
 | -- | -------------------------------------------------------------- | ---------------------- | ------ | ------------------------------------------------ |
-| 6  | SKILL.md Part 2: document CopyButton/Image/CountBadge patterns | Maintainer guidance    | 20 min | ✅ Done                                          |
-| 7  | Demo: anchor-linked table of contents at top                   | Demo navigability      | 15 min | ⬜ Not done                                      |
-| 8  | Demo: standalone `/forms` quickstart route                     | Forms discoverability  | 30 min | ⬜ Not done                                      |
-| 9  | Add runnable cursor pagination example to demo                 | Recipe concreteness    | 20 min | ✅ Done (recipe + demo)                          |
-| 10 | CopyButton: add `aria-live` for "Copied!" announcement         | Screen reader feedback | 10 min | ✅ Done (`role="status"` + `aria-live="polite"`) |
-| 11 | Image: document `srcset` limitation in godoc                   | Prevent confusion      | 5 min  | ✅ Done                                          |
-| 12 | StatCard HTMX: golden test for `hx-get` variant                | Snapshot coverage      | 10 min | ✅ Done                                          |
-| 13 | Card.Body: golden test for Body slot variant                   | Snapshot coverage      | 10 min | ✅ Done                                          |
+| ~~6~~  | ~~SKILL.md Part 2: document CopyButton/Image/CountBadge patterns~~ done — skill/SKILL.md | ~~Maintainer guidance~~ | ~~20 min~~ | ~~✅ Done~~ |
+| ~~7~~  | ~~Demo: anchor-linked table of contents at top~~ done — examples/demo/demo.templ | ~~Demo navigability~~ | ~~15 min~~ | ~~⬜ Not done~~ |
+| ~~8~~  | ~~Demo: standalone `/forms` quickstart route~~ done — examples/demo/forms demo.templ | ~~Forms discoverability~~ | ~~30 min~~ | ~~⬜ Not done~~ |
+| ~~9~~  | ~~Add runnable cursor pagination example to demo~~ done — docs/recipes/cursor-pagination.md | ~~Recipe concreteness~~ | ~~20 min~~ | ~~✅ Done (recipe + demo)~~ |
+| ~~10~~ | ~~CopyButton: add `aria-live` for "Copied!" announcement~~ done — display/copy button.templ | ~~Screen reader feedback~~ | ~~10 min~~ | ~~✅ Done (`role="status"` + `aria-live="polite"`)~~ |
+| ~~11~~ | ~~Image: document `srcset` limitation in godoc~~ done — display/image.templ | ~~Prevent confusion~~ | ~~5 min~~ | ~~✅ Done~~ |
+| ~~12~~ | ~~StatCard HTMX: golden test for `hx-get` variant~~ done — display/testdata | ~~Snapshot coverage~~ | ~~10 min~~ | ~~✅ Done~~ |
+| ~~13~~ | ~~Card.Body: golden test for Body slot variant~~ done — display/testdata | ~~Snapshot coverage~~ | ~~10 min~~ | ~~✅ Done~~ |
 
 ### v1.0 Preparation (P2)
 
@@ -194,20 +194,20 @@ Nothing from the Consumer Feedback Backlog remains unstarted — all 11 items ar
 | 14 | Design `Validate() error` pattern for all props structs     | v1.0 API freeze      | 2-4h   | ⬜ Not started                                       |
 | 15 | Plan `internal/testutil/` migration (70 test files)         | v1.0 breaking change | 3-4h   | ⬜ Not started                                       |
 | 16 | Self-host htmx: download + commit `htmx.min.js` to examples | v1.0 readiness       | 15 min | ⬜ Not started (ADR 0007 deferred)                   |
-| 17 | Remove deprecated aliases (`AlertType`, `ToastType`)        | v1.0 cleanup         | 30 min | ⬜ Not started (kept as aliases for backward compat) |
+| ~~17~~ | ~~Remove deprecated aliases (`AlertType`, `ToastType`)~~ done — feedback/enums go.go | ~~v1.0 cleanup~~ | ~~30 min~~ | ~~⬜ Not started (kept as aliases for backward compat)~~ |
 
 ### Polish (P3)
 
 | #  | Task                                                                   | Impact                  | Effort | Status (2026-07-06)                                |
 | -- | ---------------------------------------------------------------------- | ----------------------- | ------ | -------------------------------------------------- |
-| 18 | RelativeTime: optional JS auto-refresh (opt-in via `AutoRefresh bool`) | Dynamic UX              | 30 min | ✅ Done (defaults to `true`)                       |
-| 19 | CountBadge: `Max` default test (verify 99 overflow)                    | Edge case coverage      | 5 min  | ✅ Done                                            |
-| 20 | DefinitionGrid: test with `DetailComponent` slot                       | Component slot coverage | 10 min | ✅ Done                                            |
-| 21 | CopyButton: test nonce propagation on script tag                       | CSP safety verification | 5 min  | ✅ Done (CSP nonce-presence test)                  |
-| 22 | LoadMore: test `containsChar` helper                                   | Private helper coverage | 5 min  | ✅ Moot — `containsChar` deleted, `net/url` used   |
-| 23 | Add `CopyButton.Href` variant (link button that also copies)           | Consumer use case       | 15 min | ⬜ Not started                                     |
-| 24 | Add `Image.Rounded` bool for quick rounded corners                     | Common use case         | 10 min | ⬜ Not started                                     |
-| 25 | Benchmark tests for new components                                     | Performance baseline    | 20 min | ✅ Done (display, feedback, navigation benchmarks) |
+| ~~18~~ | ~~RelativeTime: optional JS auto-refresh (opt-in via `AutoRefresh bool`)~~ done — display/relative time.templ | ~~Dynamic UX~~ | ~~30 min~~ | ~~✅ Done (defaults to `true`)~~ |
+| ~~19~~ | ~~CountBadge: `Max` default test (verify 99 overflow)~~ done — display/coverage extra test.go | ~~Edge case coverage~~ | ~~5 min~~ | ~~✅ Done~~ |
+| ~~20~~ | ~~DefinitionGrid: test with `DetailComponent` slot~~ done — display/coverage boost2 test.go | ~~Component slot coverage~~ | ~~10 min~~ | ~~✅ Done~~ |
+| ~~21~~ | ~~CopyButton: test nonce propagation on script tag~~ done — integration/csp nonce test.go | ~~CSP safety verification~~ | ~~5 min~~ | ~~✅ Done (CSP nonce-presence test)~~ |
+| ~~22~~ | ~~LoadMore: test `containsChar` helper~~ **Won't implement — moot helper deleted.** | ~~Private helper coverage~~ | ~~5 min~~ | ~~✅ Moot — `containsChar` deleted, `net/url` used~~ |
+| ~~23~~ | ~~Add `CopyButton.Href` variant (link button that also copies)~~ done — display/copy button.templ | ~~Consumer use case~~ | ~~15 min~~ | ~~⬜ Not started~~ |
+| ~~24~~ | ~~Add `Image.Rounded` bool for quick rounded corners~~ done — display/image.templ | ~~Common use case~~ | ~~10 min~~ | ~~⬜ Not started~~ |
+| ~~25~~ | ~~Benchmark tests for new components~~ done — display/benchmark test.go | ~~Performance baseline~~ | ~~20 min~~ | ~~✅ Done (display, feedback, navigation benchmarks)~~ |
 
 **Scorecard:** 16 of 25 complete (64%).
 

@@ -45,25 +45,25 @@ Sort: importance/impact/effort/customer-value. `Tier` = Pareto bucket. `Trace` =
 
 | ID  | Task                                                                                                                                                 | Tier | Impact   | Effort           | Customer value                       | Depends | Trace                                  |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | -------- | ---------------- | ------------------------------------ | ------- | -------------------------------------- |
-| T1  | Ship & CI green: `ci-repro.sh --lint --css`, push master, watch CI, fix fallout                                                                      | 1%   | Critical | 70min            | Critical — value ships here          | —       | f9, f4, f48(1st pass)                  |
-| T2  | Browser-proof pack: chromedp E2E (both demo buttons) + visualtest wire-section capture                                                               | 4%   | High     | 95min            | High — behavior proven               | T1      | f3, f17                                |
-| T3  | Contract-hardening pack: wired-Button goldens, `-race`, CSS byte-stability, `nix flake check`                                                        | 4%   | High     | 75min            | Medium                               | —       | f5, f6, f36, f37                       |
-| T4  | `wire.Handler` middleware: auto-branch Datastar/htmx headers; refactor demo endpoint onto it                                                         | 20%  | High     | 55min            | High — kills #1 footgun              | T1      | f8                                     |
-| T5  | Invariant pack: benchmarks, Target fuzz, cross-dialect + nil-URL property tests, CSP invariant test                                                  | 20%  | Medium   | 60min            | Medium                               | —       | f13, f27, f26, f40, f28                |
-| T6  | Docs adoption pack: README, SKILL.md, website guide, ADR-0035 annotate, `doc.go`, DOMAIN_LANGUAGE, modularization note, ADR-0036 fresh-eyes verify   | 20%  | High     | 90min            | High — adoption surface              | T1      | f19, f20, f18, f10, f12, f21, f35, f48 |
-| T7  | Decision gates D1 (WC ratify) / D2 (Transport loud-fail) / D3 (rollout breadth): memos + recorded outcomes                                           | 20%  | Critical | 45min            | Critical — unblocks T11–T13, T18–T19 | —       | f1, f11, f42                           |
-| T8  | Demo transport toggle (query-param/segmented switch between dialects, both variants tested)                                                          | 20%  | Medium   | 40min            | Medium — sells the pitch             | T4      | f29                                    |
-| T9  | Release: checklist read, `release.sh` 1.13.0, tag-guard, push tags, proxy wait, tidy sweep, post-CI                                                  | 20%  | Critical | 100min           | Critical — `go get`-able             | T1, T3  | f24, f25                               |
-| T10 | Count normalization: single source for enum/IsValid counts; fix stale AGENTS claims; FEATURES utils row                                              | 80%  | Medium   | 45min            | Low                                  | —       | f22, f23, f44, f45                     |
-| T11 | `navigation.LoadMore` gains `Wire` (transport-switchable pagination) + goldens                                                                       | 80%  | Medium   | 40min            | Medium                               | D3      | f14                                    |
-| T12 | forms wired server-validation example (demo endpoint via `wire.Handler`)                                                                             | 80%  | Medium   | 40min            | Medium                               | D3, T4  | f16                                    |
-| T13 | `htmx.ConfirmDelete`: ADR-0035-freeze check → decision → implement outcome (datastar twin or stays)                                                  | 80%  | Medium   | 40min            | Medium                               | D3      | f15                                    |
-| T14 | Research pack: aria-busy asymmetry, datastar upstream watch, interval/intersect triggers, form-submit parity                                         | 80%  | Medium   | 55min            | Medium                               | —       | f34, f30, f32, f33                     |
-| T15 | Migration recipe doc (htmx-only page → dual-transport) + misc docs (testing notes, demo help, website API ref, contribution checklist, hero snippet) | 80%  | Medium   | 50min            | Medium                               | T4      | f31, f41, f43, f46, f47, f49           |
-| T16 | HARVEST: route this plan + status report into TODO_LIST.md/ROADMAP.md; daemon-boundary note commit                                                   | 80%  | High     | 30min            | Medium — plan stays alive            | —       | f2, f38, f50                           |
-| T17 | WC module phase 1 (GATED on D1=yes): superseding ADR, scaffold, light-DOM host API, nonce-safe registration, goldens, CSP test                       | 80%  | High     | 75min            | High (if ratified)                   | D1      | f7                                     |
-| T18 | WC module phase 2 (GATED on D1=yes): demo page, E2E upgrade/interop, docs+FEATURES+CHANGELOG, release-tag wiring                                     | 80%  | High     | 50min            | High (if ratified)                   | D1, T17 | f7                                     |
-| T19 | Keep-green standing rule: every task ends build+tests+lint green; modules loop re-run after each pack                                                | all  | Critical | (built into all) | Critical                             | —       | f39                                    |
+| ~~T1~~  | ~~Ship & CI green: `ci-repro.sh --lint --css`, push master, watch CI, fix fallout~~ done — CHANGELOG v1.13.0 | ~~1%~~ | ~~Critical~~ | ~~70min~~ | ~~Critical — value ships here~~ | ~~—~~ | ~~f9, f4, f48(1st pass)~~ |
+| ~~T2~~  | ~~Browser-proof pack: chromedp E2E (both demo buttons) + visualtest wire-section capture~~ done — visualtest/wire e2e test.go | ~~4%~~ | ~~High~~ | ~~95min~~ | ~~High — behavior proven~~ | ~~T1~~ | ~~f3, f17~~ |
+| ~~T3~~  | ~~Contract-hardening pack: wired-Button goldens, `-race`, CSS byte-stability, `nix flake check`~~ done — invariants race css flake | ~~4%~~ | ~~High~~ | ~~75min~~ | ~~Medium~~ | ~~—~~ | ~~f5, f6, f36, f37~~ |
+| ~~T4~~  | ~~`wire.Handler` middleware: auto-branch Datastar/htmx headers; refactor demo endpoint onto it~~ done — utils/wire/handler.go | ~~20%~~ | ~~High~~ | ~~55min~~ | ~~High — kills #1 footgun~~ | ~~T1~~ | ~~f8~~ |
+| ~~T5~~  | ~~Invariant pack: benchmarks, Target fuzz, cross-dialect + nil-URL property tests, CSP invariant test~~ done — utils/wire/invariants test.go FuzzAction | ~~20%~~ | ~~Medium~~ | ~~60min~~ | ~~Medium~~ | ~~—~~ | ~~f13, f27, f26, f40, f28~~ |
+| ~~T6~~  | ~~Docs adoption pack: README, SKILL.md, website guide, ADR-0035 annotate, `doc.go`, DOMAIN_LANGUAGE, modularization note, ADR-0036 fresh-eyes verify~~ done — transport-wiring DOMAIN LANGUAGE doc.go | ~~20%~~ | ~~High~~ | ~~90min~~ | ~~High — adoption surface~~ | ~~T1~~ | ~~f19, f20, f18, f10, f12, f21, f35, f48~~ |
+| ~~T7~~  | ~~Decision gates D1 (WC ratify) / D2 (Transport loud-fail) / D3 (rollout breadth): memos + recorded outcomes~~ done — docs/wire-gates-d1-d2-d3.md | ~~20%~~ | ~~Critical~~ | ~~45min~~ | ~~Critical — unblocks T11–T13, T18–T19~~ | ~~—~~ | ~~f1, f11, f42~~ |
+| ~~T8~~  | ~~Demo transport toggle (query-param/segmented switch between dialects, both variants tested)~~ done — demo transport toggle | ~~20%~~ | ~~Medium~~ | ~~40min~~ | ~~Medium — sells the pitch~~ | ~~T4~~ | ~~f29~~ |
+| ~~T9~~  | ~~Release: checklist read, `release.sh` 1.13.0, tag-guard, push tags, proxy wait, tidy sweep, post-CI~~ done — CHANGELOG v1.13.0 | ~~20%~~ | ~~Critical~~ | ~~100min~~ | ~~Critical — `go get`-able~~ | ~~T1, T3~~ | ~~f24, f25~~ |
+| ~~T10~~ | ~~Count normalization: single source for enum/IsValid counts; fix stale AGENTS claims; FEATURES utils row~~ done — CHANGELOG v1.13.0 | ~~80%~~ | ~~Medium~~ | ~~45min~~ | ~~Low~~ | ~~—~~ | ~~f22, f23, f44, f45~~ |
+| ~~T11~~ | ~~`navigation.LoadMore` gains `Wire` (transport-switchable pagination) + goldens~~ done — navigation/loadmore.templ Wire | ~~80%~~ | ~~Medium~~ | ~~40min~~ | ~~Medium~~ | ~~D3~~ | ~~f14~~ |
+| ~~T12~~ | ~~forms wired server-validation example (demo endpoint via `wire.Handler`)~~ done — visualtest/wire form e2e test.go | ~~80%~~ | ~~Medium~~ | ~~40min~~ | ~~Medium~~ | ~~D3, T4~~ | ~~f16~~ |
+| ~~T13~~ | ~~`htmx.ConfirmDelete`: ADR-0035-freeze check → decision → implement outcome (datastar twin or stays)~~ **Won't implement — ConfirmDelete stays htmx only per D3.** | ~~80%~~ | ~~Medium~~ | ~~40min~~ | ~~Medium~~ | ~~D3~~ | ~~f15~~ |
+| ~~T14~~ | ~~Research pack: aria-busy asymmetry, datastar upstream watch, interval/intersect triggers, form-submit parity~~ done — docs/datastar-runtime-facts.md | ~~80%~~ | ~~Medium~~ | ~~55min~~ | ~~Medium~~ | ~~—~~ | ~~f34, f30, f32, f33~~ |
+| ~~T15~~ | ~~Migration recipe doc (htmx-only page → dual-transport) + misc docs (testing notes, demo help, website API ref, contribution checklist, hero snippet)~~ done — docs/recipes/transport-migration.md | ~~80%~~ | ~~Medium~~ | ~~50min~~ | ~~Medium~~ | ~~T4~~ | ~~f31, f41, f43, f46, f47, f49~~ |
+| ~~T16~~ | ~~HARVEST: route this plan + status report into TODO_LIST.md/ROADMAP.md; daemon-boundary note commit~~ done — TODO LIST harvest | ~~80%~~ | ~~High~~ | ~~30min~~ | ~~Medium — plan stays alive~~ | ~~—~~ | ~~f2, f38, f50~~ |
+| ~~T17~~ | ~~WC module phase 1 (GATED on D1=yes): superseding ADR, scaffold, light-DOM host API, nonce-safe registration, goldens, CSP test~~ **Won't implement — D1 not ratified ADR-0037 Proposed.** | ~~80%~~ | ~~High~~ | ~~75min~~ | ~~High (if ratified)~~ | ~~D1~~ | ~~f7~~ |
+| ~~T18~~ | ~~WC module phase 2 (GATED on D1=yes): demo page, E2E upgrade/interop, docs+FEATURES+CHANGELOG, release-tag wiring~~ **Won't implement — D1 not ratified.** | ~~80%~~ | ~~High~~ | ~~50min~~ | ~~High (if ratified)~~ | ~~D1, T17~~ | ~~f7~~ |
+| ~~T19~~ | ~~Keep-green standing rule: every task ends build+tests+lint green; modules loop re-run after each pack~~ done (docs-health pass 2026-09-08) | ~~all~~ | ~~Critical~~ | ~~(built into all)~~ | ~~Critical~~ | ~~—~~ | ~~f39~~ |
 
 Coverage check: all 50 status-report items traced (f1–f50) ✓ — f39 is the standing verification rule applied to every task.
 
@@ -141,9 +141,9 @@ Sort follows macro order. `M` = parent macro task.
 | 12.1 | Demo endpoint: input server-validation via `wire.Handler`                                         | T12 | endpoint works                   |
 | 12.2 | `forms.Input` demo block wired with `EventChange`                                                 | T12 | renders                          |
 | 12.3 | Test both dialects                                                                                | T12 | pass                             |
-| 13.1 | ADR-0035-freeze check for ConfirmDelete datastar twin                                             | T13 | decision note                    |
-| 13.2 | Implement outcome (twin via wire or documented htmx-only)                                         | T13 | builds                           |
-| 13.3 | Tests                                                                                             | T13 | pass                             |
+| ~~13.1~~ | ~~ADR-0035-freeze check for ConfirmDelete datastar twin~~ done — T13 decision note | ~~T13~~ | ~~decision note~~ |
+| ~~13.2~~ | ~~Implement outcome (twin via wire or documented htmx-only)~~ done — T13 htmx only documented | ~~T13~~ | ~~builds~~ |
+| ~~13.3~~ | ~~Tests~~ done — T13 tests | ~~T13~~ | ~~pass~~ |
 | 14.1 | Research htmx vs datastar busy/indicator signaling                                                | T14 | findings noted                   |
 | 14.2 | Write aria-busy finding into transport-wiring.md; helper-or-docs decision                         | T14 | doc updated                      |
 | 14.3 | Check upstream-watch issue + proxy `@latest` for go-datastar/static                               | T14 | drift status known               |
@@ -157,7 +157,7 @@ Sort follows macro order. `M` = parent macro task.
 | 16.1 | docs-health HARVEST: plan → TODO_LIST.md (actionable) / ROADMAP.md (ideas)                        | T16 | harvest complete                 |
 | 16.2 | Annotate stale TODO_LIST entries against current state                                            | T16 | annotated                        |
 | 16.3 | Daemon-boundary note commit (feature story preserved, no rewrite)                                 | T16 | committed                        |
-| 17.1 | Draft superseding ADR (light-DOM only, opt-in module)                                             | T17 | draft ready for D1               |
+| ~~17.1~~ | ~~Draft superseding ADR (light-DOM only, opt-in module)~~ done — ADR-0037 draft committed Proposed | ~~T17~~ | ~~draft ready for D1~~ |
 | 17.2 | Scaffold `wc` module (go.mod, doc.go, DAG + replaces)                                             | T17 | builds in workspace              |
 | 17.3 | Light-DOM host API (`Define`/`Host`)                                                              | T17 | renders                          |
 | 17.4 | Nonce-safe registration-script emitter (singleton guard)                                          | T17 | nonce test passes                |
@@ -167,7 +167,7 @@ Sort follows macro order. `M` = parent macro task.
 | 18.2 | E2E: element upgrades; htmx + datastar inside light DOM                                           | T18 | pass                             |
 | 18.3 | Docs + FEATURES + CHANGELOG `[Unreleased]`                                                        | T18 | guards green                     |
 | 18.4 | Release wiring: module in tag lockstep + version-sync guard                                       | T18 | check script passes              |
-| 19.1 | Standing: after EVERY pack — build + per-module tests + lint loop                                 | T19 | green each time                  |
+| ~~19.1~~ | ~~Standing: after EVERY pack — build + per-module tests + lint loop~~ done — standing rule followed | ~~T19~~ | ~~green each time~~ |
 
 ---
 
@@ -256,13 +256,13 @@ Sequencing rule: P1 before everything. P2 and P3 items are parallelizable after 
 
 ## 6. Verschlimmbesser Guardrails (what NOT to do)
 
-1. Do **not** widen the wire contract beyond the documented common subset (ADR-0036 scope) while executing T4/T5.
-2. Do **not** touch the `datastar` module surface (ADR-0035 freeze intact — wire lives in utils by design).
-3. Do **not** add Shadow DOM anywhere, ever (ADR-0033).
-4. Do **not** push without T1's local repro green; do **not** cut T9 without T2/T3/T5 evidence.
-5. Do **not** rewrite the daemon's 6 heuristic commits (history rewrite risk > story value — T16.3 documents instead).
-6. Do **not** hand-edit generated `*_templ.go` or golden files; regenerate + `-update` only.
-7. Every task ends: build + per-module tests + lint green, or it is not done (T19 standing rule).
+1. ~~Do **not** widen the wire contract beyond the documented common subset (ADR-0036 scope) while executing T4/T5.~~ done (docs-health pass 2026-09-08)
+2. ~~Do **not** touch the `datastar` module surface (ADR-0035 freeze intact — wire lives in utils by design).~~ done (docs-health pass 2026-09-08)
+3. ~~Do **not** add Shadow DOM anywhere, ever (ADR-0033).~~ done (docs-health pass 2026-09-08)
+4. ~~Do **not** push without T1's local repro green; do **not** cut T9 without T2/T3/T5 evidence.~~ done (docs-health pass 2026-09-08)
+5. ~~Do **not** rewrite the daemon's 6 heuristic commits (history rewrite risk > story value — T16.3 documents instead).~~ done (docs-health pass 2026-09-08)
+6. ~~Do **not** hand-edit generated `*_templ.go` or golden files; regenerate + `-update` only.~~ done (docs-health pass 2026-09-08)
+7. ~~Every task ends: build + per-module tests + lint green, or it is not done (T19 standing rule).~~ done (docs-health pass 2026-09-08)
 
 ---
 

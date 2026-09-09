@@ -41,22 +41,22 @@
 
 ### Priority 1: Ship v0.2 (Tasks 1-6) — COMPLETE
 
-1. ✅ Added `-race` to CI test step
-2. ✅ Split `feedback/progress.templ` → `progressbar.templ` + `step_indicator.templ`
-3. ✅ Raised CI coverage threshold from 60% → 70%
-4. ✅ Wrote CHANGELOG.md for v0.2.0
-5. ✅ Tagged v0.2.0 release
-6. ✅ Verified `go get` works (locally validated)
+1. ~~✅ Added `-race` to CI test step~~ done at `145398e`
+2. ~~✅ Split `feedback/progress.templ` → `progressbar.templ` + `step_indicator.templ`~~ done at `145398e`
+3. ~~✅ Raised CI coverage threshold from 60% → 70%~~ done at `145398e`
+4. ~~✅ Wrote CHANGELOG.md for v0.2.0~~ done at `145398e`
+5. ~~✅ Tagged v0.2.0 release~~ done at `145398e`
+6. ~~✅ Verified `go get` works (locally validated)~~ done at `145398e`
 
 ### Priority 2: High-Value Features (Tasks 7-13) — COMPLETE
 
-7. ✅ **Drawer component** — `display/drawer.templ`: accessible side panel with left/right slide, focus trap, Escape key, backdrop click, configurable size (SM/MD/LG/XL/Full). Follows Modal pattern.
-8. ✅ **ValidationSummary** — `forms/validation.templ`: accessible error summary with icon, error count, linked field errors, `role="alert"`.
-9. ✅ **25 new Heroicons** — 98 path icons + 1 Spinner = 99 total. Added: ArchiveBox, ArrowPath, Bars3, Beaker, Bolt, BugAnt, Calculator, Camera, Cube, FaceSmile, Fire, FolderOpen, Gift, HandThumbUp, Hashtag, NoSymbol, PuzzlePiece, RocketLaunch, Server, Signal, Squares2x2, AcademicCap, ArrowDownOnSquare, ArrowUpOnSquare, BellSlash.
-10. ✅ **Spinner BaseProps conversion** — Breaking change: `Spinner(size, colorClass)` → `Spinner(SpinnerProps)` with BaseProps (ID, Class, AriaLabel, Attrs), Size, Color fields. `DefaultSpinnerProps()` constructor added.
-11. ✅ **Display coverage filled to 72.5%** — coverage tests for Badge (href), Button (icon, aria, attrs), Dropdown (button items, disabled, external, icons), Modal (sizes, closed, attrs), Tooltip (positions, ID), Avatar (fallback SVG, shapes), EmptyState (icon+description, action attrs), Tabs (client-side), Table (bordered, caption), Drawer.
-12. ✅ **Forms coverage filled to 73.5%** — coverage tests for DefaultRadioProps/DefaultRadioGroupProps, Input (readonly, maxlength, aria-label, no-label), Checkbox (value, required, disabled, aria-label, error, no-label), Form (aria-label, nil content, class, attrs), FileInput (required, disabled, aria-label, error, help-text), Radio (no-ID, checked, disabled, aria-label, no-label), RadioGroup (required, help-text, no-label), Toggle (disabled, aria-label, no-label), InputGroup (right-addon, both-addons), FormFieldWrapper (empty, no-error, with-error, with-help), ValidationSummary.
-13. ✅ **Golden file testing** — `internal/golden` package with `Assert(t, name, got)` that normalizes CSS class ordering before comparison. 8 golden snapshot tests for feedback package. Supports `-update` flag.
+7. ~~✅ **Drawer component** — `display/drawer.templ`: accessible side panel with left/right slide, focus trap, Escape key, backdrop click, configurable size (SM/MD/LG/XL/Full). Follows Modal pattern.~~ done at `145398e`
+8. ~~✅ **ValidationSummary** — `forms/validation.templ`: accessible error summary with icon, error count, linked field errors, `role="alert"`.~~ done at `145398e`
+9. ~~✅ **25 new Heroicons** — 98 path icons + 1 Spinner = 99 total. Added: ArchiveBox, ArrowPath, Bars3, Beaker, Bolt, BugAnt, Calculator, Camera, Cube, FaceSmile, Fire, FolderOpen, Gift, HandThumbUp, Hashtag, NoSymbol, PuzzlePiece, RocketLaunch, Server, Signal, Squares2x2, AcademicCap, ArrowDownOnSquare, ArrowUpOnSquare, BellSlash.~~ done at `145398e`
+10. ~~✅ **Spinner BaseProps conversion** — Breaking change: `Spinner(size, colorClass)` → `Spinner(SpinnerProps)` with BaseProps (ID, Class, AriaLabel, Attrs), Size, Color fields. `DefaultSpinnerProps()` constructor added.~~ done at `145398e`
+11. ~~✅ **Display coverage filled to 72.5%** — coverage tests for Badge (href), Button (icon, aria, attrs), Dropdown (button items, disabled, external, icons), Modal (sizes, closed, attrs), Tooltip (positions, ID), Avatar (fallback SVG, shapes), EmptyState (icon+description, action attrs), Tabs (client-side), Table (bordered, caption), Drawer.~~ done at `145398e`
+12. ~~✅ **Forms coverage filled to 73.5%** — coverage tests for DefaultRadioProps/DefaultRadioGroupProps, Input (readonly, maxlength, aria-label, no-label), Checkbox (value, required, disabled, aria-label, error, no-label), Form (aria-label, nil content, class, attrs), FileInput (required, disabled, aria-label, error, help-text), Radio (no-ID, checked, disabled, aria-label, no-label), RadioGroup (required, help-text, no-label), Toggle (disabled, aria-label, no-label), InputGroup (right-addon, both-addons), FormFieldWrapper (empty, no-error, with-error, with-help), ValidationSummary.~~ done at `145398e`
+13. ~~✅ **Golden file testing** — `internal/golden` package with `Assert(t, name, got)` that normalizes CSS class ordering before comparison. 8 golden snapshot tests for feedback package. Supports `-update` flag.~~ done at `145398e`
 
 ### Architecture Improvements — DONE THIS SESSION
 
@@ -175,25 +175,25 @@
 
 ### Architecture
 
-1. **Drawer/Modal shared base** — Extract `dialogHeader` sub-template, shared close handler, shared size lookup. ~80 lines of duplicate code.
+1. ~~**Drawer/Modal shared base** — Extract `dialogHeader` sub-template, shared close handler, shared size lookup. ~80 lines of duplicate code.~~ done — display/shared.templ overlayShell
 2. **NavLink `currentPath` parameter** — Should be part of `NavLinkProps`, not a separate positional arg. Design smell acknowledged.
-3. **Icon system go:generate** — Auto-generate `icon_names.go` and `icon_paths.go` from Heroicons SVG files. Eliminates manual sync.
-4. **Props validation framework** — `Validate() error` methods on props structs. Currently using panics in render paths.
-5. **ComponentProps interface** — Exists but nothing consumes it. Either use it for generic wrappers or remove it to reduce API surface.
-6. **`internal/golden` in every package** — Currently only feedback uses it. Mechanical expansion needed.
+3. ~~**Icon system go:generate** — Auto-generate `icon_names.go` and `icon_paths.go` from Heroicons SVG files. Eliminates manual sync.~~ **Won't implement — superseded iconPathData derived names.**
+4. ~~**Props validation framework** — `Validate() error` methods on props structs. Currently using panics in render paths.~~ done — CHANGELOG IsValid methods
+5. ~~**ComponentProps interface** — Exists but nothing consumes it. Either use it for generic wrappers or remove it to reduce API surface.~~ done — internal/contract
+6. ~~**`internal/golden` in every package** — Currently only feedback uses it. Mechanical expansion needed.~~ done — utils/golden
 
 ### Testing
 
-7. **Assert individual CSS classes, not concatenated strings** — tailwind-merge reorders unpredictably.
+7. ~~**Assert individual CSS classes, not concatenated strings** — tailwind-merge reorders unpredictably.~~ **Won't implement — AssertContainsClass removed dead code.**
 8. **CI coverage regression check** — Alert if any package drops below threshold, not just total.
-9. **Benchmark test coverage** — Only display, feedback, navigation have benchmarks. Forms, htmx, errorpage don't.
-10. **Edge case test coverage** — feedback, errorpage, htmx, icons, layout packages are missing `coverage_test.go` files.
+9. ~~**Benchmark test coverage** — Only display, feedback, navigation have benchmarks. Forms, htmx, errorpage don't.~~ done — forms/benchmark test.go
+10. ~~**Edge case test coverage** — feedback, errorpage, htmx, icons, layout packages are missing `coverage_test.go` files.~~ done — errorpage/coverage boost test.go
 
 ### Process
 
 11. **Pre-commit hook shouldn't auto-commit** — It should fail if `templ generate` or formatting changes files, forcing the author to include those changes in their own commit.
-12. **Documentation freshness** — CI should validate that CONTEXT.md and AGENTS.md icon counts match actual code.
-13. **v0.3.0 tag** — All Priority 2 work is done but not tagged. Decide if it's v0.3.0 or merged into v0.2.x.
+12. ~~**Documentation freshness** — CI should validate that CONTEXT.md and AGENTS.md icon counts match actual code.~~ done — .github/workflows/ci.yaml
+13. ~~**v0.3.0 tag** — All Priority 2 work is done but not tagged. Decide if it's v0.3.0 or merged into v0.2.x.~~ done — CHANGELOG 0.3.0
 
 ---
 
@@ -215,19 +215,19 @@ Sorted by **impact × effort** (highest first):
 | 10 | Extract Drawer/Modal shared close handler                                  | Architecture   | 1hr    | Refactor       |
 | 11 | Add `Validate() error` to Modal/Drawer/Accordion/Dropdown props            | Architecture   | 2hr    | Robustness     |
 | 12 | Move NavLink `currentPath` into NavLinkProps                               | Breaking       | 1hr    | API cleanup    |
-| 13 | Add Date Picker component                                                  | Feature        | 3hr    | Feature        |
-| 14 | Add Combobox/Autocomplete component                                        | Feature        | 4hr    | Feature        |
+| ~~13~~ | ~~Add Date Picker component~~ done — forms/date picker.templ | ~~Feature~~ | ~~3hr~~ | ~~Feature~~ |
+| ~~14~~ | ~~Add Combobox/Autocomplete component~~ done — forms/combobox.templ | ~~Feature~~ | ~~4hr~~ | ~~Feature~~ |
 | 15 | Consolidate inline JS into shared init strategy                            | Architecture   | 3hr    | JS quality     |
-| 16 | Add benchmark tests for forms package                                      | Testing        | 45min  | Testing        |
+| ~~16~~ | ~~Add benchmark tests for forms package~~ done — forms/benchmark test.go | ~~Testing~~ | ~~45min~~ | ~~Testing~~ |
 | 17 | CI coverage regression check per-package                                   | Infrastructure | 30min  | Infrastructure |
-| 18 | SimpleNav BaseProps conversion                                             | Breaking       | 1hr    | API cleanup    |
-| 19 | Add BaseProps to StepIndicatorProps                                        | Breaking       | 30min  | API cleanup    |
-| 20 | Verify `go get` from clean remote project                                  | Release        | 15min  | Release        |
+| ~~18~~ | ~~SimpleNav BaseProps conversion~~ done — navigation/nav.templ SimpleNavProps | ~~Breaking~~ | ~~1hr~~ | ~~API cleanup~~ |
+| ~~19~~ | ~~Add BaseProps to StepIndicatorProps~~ done — feedback/step indicator.templ BaseProps | ~~Breaking~~ | ~~30min~~ | ~~API cleanup~~ |
+| ~~20~~ | ~~Verify `go get` from clean remote project~~ done — scripts/release.sh consumer-clean tags | ~~Release~~ | ~~15min~~ | ~~Release~~ |
 | 21 | Submit to awesome-templ                                                    | Discovery      | 15min  | Marketing      |
 | 22 | Open PR on templ.guide                                                     | Discovery      | 15min  | Marketing      |
-| 23 | Set up goreleaser                                                          | Infrastructure | 1hr    | Infrastructure |
-| 24 | Plan v1.0 API freeze scope                                                 | Planning       | 1hr    | Planning       |
-| 25 | Documentation site generation                                              | Documentation  | 4hr+   | Docs           |
+| ~~23~~ | ~~Set up goreleaser~~ done — .goreleaser.yml | ~~Infrastructure~~ | ~~1hr~~ | ~~Infrastructure~~ |
+| ~~24~~ | ~~Plan v1.0 API freeze scope~~ done — CHANGELOG 1.0.0 | ~~Planning~~ | ~~1hr~~ | ~~Planning~~ |
+| ~~25~~ | ~~Documentation site generation~~ done — website/ | ~~Documentation~~ | ~~4hr+~~ | ~~Docs~~ |
 
 ---
 
@@ -250,18 +250,18 @@ Here's my dilemma:
 
 | #  | Hash      | Message                                                                                            |
 | -- | --------- | -------------------------------------------------------------------------------------------------- |
-| 1  | `22c8d8c` | feat(v0.2): split progress.templ, raise coverage to 72%, prepare release                           |
-| 2  | `6a2bf9d` | fix: track all \*\_templ.go generated files for Go module proxy                                    |
-| 3  | `02b586e` | feat: add Drawer component, ValidationSummary, 25 new icons (98 total)                             |
-| 4  | `db65092` | refactor!: convert Spinner from positional args to SpinnerProps struct                             |
-| 5  | `70feec3` | feat(testing): add golden file comparison with CSS class normalization                             |
-| 6  | `52c4668` | docs: update AGENTS.md, CHANGELOG.md, TODO_LIST.md for session 4                                   |
-| 7  | `ba4303a` | chore: regenerate all \*\_templ.go files with goimports formatting                                 |
-| 8  | `8237a1d` | chore: normalize import formatting across all \*\_templ.go files                                   |
-| 9  | `481e427` | docs: fix stale CONTEXT.md references                                                              |
-| 10 | `50e90d5` | refactor: extract shared utils.ValidateID, deduplicate ID validation                               |
-| 11 | `a683af6` | test: cover DefaultSpinnerProps, DefaultInputGroupProps, DefaultValidationSummaryProps, ValidateID |
-| 12 | (pending) | fix: Spinner test assertion for non-deterministic class ordering                                   |
+| ~~1~~  | ~~`22c8d8c`~~ done at `22c8d8c` | ~~feat(v0.2): split progress.templ, raise coverage to 72%, prepare release~~ |
+| ~~2~~  | ~~`6a2bf9d`~~ done at `6a2bf9d` | ~~fix: track all \*\_templ.go generated files for Go module proxy~~ |
+| ~~3~~  | ~~`02b586e`~~ done at `02b586e` | ~~feat: add Drawer component, ValidationSummary, 25 new icons (98 total)~~ |
+| ~~4~~  | ~~`db65092`~~ done at `db65092` | ~~refactor!: convert Spinner from positional args to SpinnerProps struct~~ |
+| ~~5~~  | ~~`70feec3`~~ done at `70feec3` | ~~feat(testing): add golden file comparison with CSS class normalization~~ |
+| ~~6~~  | ~~`52c4668`~~ done at `52c4668` | ~~docs: update AGENTS.md, CHANGELOG.md, TODO_LIST.md for session 4~~ |
+| ~~7~~  | ~~`ba4303a`~~ done at `ba4303a` | ~~chore: regenerate all \*\_templ.go files with goimports formatting~~ |
+| ~~8~~  | ~~`8237a1d`~~ done at `8237a1d` | ~~chore: normalize import formatting across all \*\_templ.go files~~ |
+| ~~9~~  | ~~`481e427`~~ done at `481e427` | ~~docs: fix stale CONTEXT.md references~~ |
+| ~~10~~ | ~~`50e90d5`~~ done at `50e90d5` | ~~refactor: extract shared utils.ValidateID, deduplicate ID validation~~ |
+| ~~11~~ | ~~`a683af6`~~ done at `a683af6` | ~~test: cover DefaultSpinnerProps, DefaultInputGroupProps, DefaultValidationSummaryProps, ValidateID~~ |
+| ~~12~~ | ~~(pending)~~ done — CHANGELOG visual thresholds | ~~fix: Spinner test assertion for non-deterministic class ordering~~ |
 
 ---
 

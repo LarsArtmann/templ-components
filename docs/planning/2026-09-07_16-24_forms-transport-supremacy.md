@@ -65,37 +65,37 @@ Sorted by importance → impact → customer value (effort shown for scheduling)
 
 | ID  | Task (30–100min)                                                                                                                          | Impact       | Effort | Customer value                                | Depends | Source              |
 | --- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------ | --------------------------------------------- | ------- | ------------------- |
-| T01 | E2E: dual-transport form submit in real Chromium (Datastar bundle + htmx)                                                                 | **Critical** | 90m    | Proof the headline feature works in a browser | —       | report #1           |
-| T02 | E2E: validation round-trip (invalid submit → field errors visible) + demo `/api/wire/form` invalid branch + error fragment + tests/golden | **Critical** | 60m    | The #1 forms use case, proven                 | T01     | report #9,#10       |
-| T03 | Recipe `docs/recipes/server-side-validation.md` (both transports, 422 pattern)                                                            | High         | 45m    | Copy-pasteable pattern                        | T02     | report #9           |
-| T04 | Bookkeeping: TODO #153 close, wire-gates D3 Form entry, DOMAIN_LANGUAGE terms, AGENTS.md templ-import gotcha                              | High         | 30m    | Prevents drift; unblocks trust audit          | —       | report #3,#4,#8,#33 |
-| T05 | Verification hygiene: visualtest compile+tidy, canonical `nix run .#verify`, prerender freshness, wire PNG check                          | High         | 45m    | The session's stated verification gaps        | —       | report #2,#5,#6,#7  |
-| T06 | **Release v1.13.3**: verify matrix → `scripts/release.sh` → re-add replaces + post-release tidy sweep → CI green                          | **Critical** | 90m    | Value ships                                   | T01–T05 | report #42          |
+| ~~T01~~ | ~~E2E: dual-transport form submit in real Chromium (Datastar bundle + htmx)~~ done — visualtest/wire form e2e test.go | ~~**Critical**~~ | ~~90m~~ | ~~Proof the headline feature works in a browser~~ | ~~—~~ | ~~report #1~~ |
+| ~~T02~~ | ~~E2E: validation round-trip (invalid submit → field errors visible) + demo `/api/wire/form` invalid branch + error fragment + tests/golden~~ done — form validation errors golden | ~~**Critical**~~ | ~~60m~~ | ~~The #1 forms use case, proven~~ | ~~T01~~ | ~~report #9,#10~~ |
+| ~~T03~~ | ~~Recipe `docs/recipes/server-side-validation.md` (both transports, 422 pattern)~~ done — docs/recipes/server-side-validation.md | ~~High~~ | ~~45m~~ | ~~Copy-pasteable pattern~~ | ~~T02~~ | ~~report #9~~ |
+| ~~T04~~ | ~~Bookkeeping: TODO #153 close, wire-gates D3 Form entry, DOMAIN_LANGUAGE terms, AGENTS.md templ-import gotcha~~ done — wire-gates D3 TODO 153 closed | ~~High~~ | ~~30m~~ | ~~Prevents drift; unblocks trust audit~~ | ~~—~~ | ~~report #3,#4,#8,#33~~ |
+| ~~T05~~ | ~~Verification hygiene: visualtest compile+tidy, canonical `nix run .#verify`, prerender freshness, wire PNG check~~ done — nix run verify canonical | ~~High~~ | ~~45m~~ | ~~The session's stated verification gaps~~ | ~~—~~ | ~~report #2,#5,#6,#7~~ |
+| ~~T06~~ | ~~**Release v1.13.3**: verify matrix → `scripts/release.sh` → re-add replaces + post-release tidy sweep → CI green~~ done — CHANGELOG v1.13.3 | ~~**Critical**~~ | ~~90m~~ | ~~Value ships~~ | ~~T01–T05~~ | ~~report #42~~ |
 
 ### Phase 1 — P1: Forms Pattern Pack (20%→80%; ≈9.5h)
 
 | ID  | Task                                                                                                                 | Impact              | Effort | Value                                   | Depends |
 | --- | -------------------------------------------------------------------------------------------------------------------- | ------------------- | ------ | --------------------------------------- | ------- |
-| T07 | `FormProps.NoValidate` + tests + golden + docs                                                                       | Medium-High         | 45m    | Validation opt-out symmetry             | T06     |
-| T08 | Decode Datastar modifier spelling (unminified upstream) → facts doc                                                  | High (unblocks T09) | 45m    | Verified fact replaces softened claim   | —       |
-| T09 | `forms.FilterInput` — debounced dual-transport search (full matrix: golden/a11y/BDD/edge/example/contract/demo/docs) | High                | 100m   | Search/filter = top-2 forms pattern     | T08     |
-| T10 | `FilterDropdown.Wire` — tradeoff note + implementation + tests/goldens                                               | Medium-High         | 90m    | Transport parity for existing component | T08     |
-| T11 | Busy-state recipe + demo (LoadingButton vs datastar.Indicator on wired submits)                                      | Medium              | 45m    | Perceived perf on submits               | T06     |
-| T12 | File-upload recipe + demo (multipart + FileInput + wire)                                                             | Medium              | 60m    | Uploads work under both runtimes        | T06     |
-| T13 | GET search-form recipe + demo (query-param parity)                                                                   | Medium              | 30m    | Cheap, frequent pattern                 | T06     |
-| T14 | Hardening: integration composition, `ExampleForm_wire`, fuzz `formWireAttributes`, `Validate+Wire` Datastar golden   | Medium              | 60m    | Surface durability                      | T06     |
-| T15 | a11y/BDD: Form-wire BDD specs, aria-live verdict pin                                                                 | Medium              | 45m    | Repo's "done" bar                       | T02     |
-| T16 | Docs polish batch (SKILL quick-start, datastar-integration link, javascript-guide note, README blurb)                | Medium              | 45m    | Adoption/discoverability                | T06     |
+| ~~T07~~ | ~~`FormProps.NoValidate` + tests + golden + docs~~ done — FormProps NoValidate | ~~Medium-High~~ | ~~45m~~ | ~~Validation opt-out symmetry~~ | ~~T06~~ |
+| ~~T08~~ | ~~Decode Datastar modifier spelling (unminified upstream) → facts doc~~ done — datastar modifier decoded facts | ~~High (unblocks T09)~~ | ~~45m~~ | ~~Verified fact replaces softened claim~~ | ~~—~~ |
+| ~~T09~~ | ~~`forms.FilterInput` — debounced dual-transport search (full matrix: golden/a11y/BDD/edge/example/contract/demo/docs)~~ done — forms/filter input.templ | ~~High~~ | ~~100m~~ | ~~Search/filter = top-2 forms pattern~~ | ~~T08~~ |
+| ~~T10~~ | ~~`FilterDropdown.Wire` — tradeoff note + implementation + tests/goldens~~ done — FilterDropdownProps Wire | ~~Medium-High~~ | ~~90m~~ | ~~Transport parity for existing component~~ | ~~T08~~ |
+| ~~T11~~ | ~~Busy-state recipe + demo (LoadingButton vs datastar.Indicator on wired submits)~~ done — transport-wiring busy state | ~~Medium~~ | ~~45m~~ | ~~Perceived perf on submits~~ | ~~T06~~ |
+| ~~T12~~ | ~~File-upload recipe + demo (multipart + FileInput + wire)~~ done — docs/recipes/file-upload.md | ~~Medium~~ | ~~60m~~ | ~~Uploads work under both runtimes~~ | ~~T06~~ |
+| ~~T13~~ | ~~GET search-form recipe + demo (query-param parity)~~ done — GET search wire forms pack e2e | ~~Medium~~ | ~~30m~~ | ~~Cheap, frequent pattern~~ | ~~T06~~ |
+| ~~T14~~ | ~~Hardening: integration composition, `ExampleForm_wire`, fuzz `formWireAttributes`, `Validate+Wire` Datastar golden~~ done — ExampleForm wire fuzz goldens | ~~Medium~~ | ~~60m~~ | ~~Surface durability~~ | ~~T06~~ |
+| ~~T15~~ | ~~a11y/BDD: Form-wire BDD specs, aria-live verdict pin~~ done — Form wire BDD aria live | ~~Medium~~ | ~~45m~~ | ~~Repo's "done" bar~~ | ~~T02~~ |
+| ~~T16~~ | ~~Docs polish batch (SKILL quick-start, datastar-integration link, javascript-guide note, README blurb)~~ done — SKILL quickstart README | ~~Medium~~ | ~~45m~~ | ~~Adoption/discoverability~~ | ~~T06~~ |
 
 ### Phase 2 — P2: Long Tail → 100% (other 20%; ≈10h)
 
 | ID  | Task                                                                                                                                                    | Impact  | Effort | Value                                                           | Depends |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------ | --------------------------------------------------------------- | ------- |
-| T17 | ADR: ContentType common-subset extension (ADR-0038 or 0036 addendum)                                                                                    | Medium  | 45m    | Decision record for contract change already shipped             | T06     |
-| T18 | Datastar `selector` fetch option adoption in `wire.Action` (+ update `TestTargetNeverRenderedForDatastar`!)                                             | Medium  | 90m    | Client-side targeting for Datastar (deliberate contract change) | T17     |
-| T19 | Wire benchmark: form-expression path                                                                                                                    | Low     | 30m    | Perf guard                                                      | T06     |
-| T20 | Website: api-reference.mdx wire check + sections.ts label semantics fix                                                                                 | Low-Med | 45m    | Docs truth                                                      | T06     |
-| T21 | Single-source IsValid/enums counts (kill README×2+sections.ts coupling)                                                                                 | Medium  | 60m    | Removes recurring drift class                                   | T06     |
+| ~~T17~~ | ~~ADR: ContentType common-subset extension (ADR-0038 or 0036 addendum)~~ done — docs/adr/0038-common-subset-extensions.md | ~~Medium~~ | ~~45m~~ | ~~Decision record for contract change already shipped~~ | ~~T06~~ |
+| ~~T18~~ | ~~Datastar `selector` fetch option adoption in `wire.Action` (+ update `TestTargetNeverRenderedForDatastar`!)~~ done — wire Action Selector | ~~Medium~~ | ~~90m~~ | ~~Client-side targeting for Datastar (deliberate contract change)~~ | ~~T17~~ |
+| ~~T19~~ | ~~Wire benchmark: form-expression path~~ done — BenchmarkActionAttributes | ~~Low~~ | ~~30m~~ | ~~Perf guard~~ | ~~T06~~ |
+| ~~T20~~ | ~~Website: api-reference.mdx wire check + sections.ts label semantics fix~~ done — website api reference | ~~Low-Med~~ | ~~45m~~ | ~~Docs truth~~ | ~~T06~~ |
+| ~~T21~~ | ~~Single-source IsValid/enums counts (kill README×2+sections.ts coupling)~~ done — TestDocsCountDrift single source | ~~Medium~~ | ~~60m~~ | ~~Removes recurring drift class~~ | ~~T06~~ |
 | T22 | CI: post-propagation tidy probe workflow (+ actionlint, ci-repro wiring)                                                                                | Medium  | 60m    | Automates the v1.11/12/13 lesson                                | T06     |
 | T23 | Consumer survey: grep consumer AGENTS.md adoption tables → gaps into TODO_LIST                                                                          | Medium  | 30m    | Demand-driven roadmap                                           | —       |
 | T24 | Dirty-form unsaved-changes guard (singleton JS, CSP-safe, full matrix)                                                                                  | Medium  | 90m    | Classic forms gap, high user pain                               | T06     |
@@ -189,7 +189,7 @@ Sorted by importance → impact → customer value (effort shown for scheduling)
 | M18.2 | `wire.Action.Selector` render + unit tests both dialects                       | 12m | M18.1          |
 | M18.3 | Update invariants: `TestTargetNeverRenderedForDatastar` semantics + facts doc  | 12m | M18.2          |
 | M18.4 | Docs: dialect mapping + scope notes + demo                                     | 10m | M18.3          |
-| M19.1 | Benchmark: form-expression path (sibling of `BenchmarkActionAttributes`)       | 10m | M06.4          |
+| ~~M19.1~~ | ~~Benchmark: form-expression path (sibling of `BenchmarkActionAttributes`)~~ done — T19 | ~~10m~~ | ~~M06.4~~ |
 | M20.1 | Website api-reference.mdx: verify wire API table vs new field                  | 10m | M06.4          |
 | M20.2 | sections.ts: fix "typed string enums" label-vs-IsValid-count mismatch          | 10m | M20.1          |
 | M21.1 | Count single-sourcing: design (test-generated constant vs codegen)             | 10m | M06.4          |

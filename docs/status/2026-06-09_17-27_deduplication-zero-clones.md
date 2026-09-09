@@ -125,25 +125,25 @@ Nothing. Zero regressions this session. All 1040 tests pass, 0 lint issues, 0 cl
 ### Critical Quality Improvements
 
 1. **JS consolidation** — 10 inline `<script>` blocks across 7 `.templ` files. Each has its own singleton guard. Should extract to a shared `tc-init.js` module pattern.
-2. **Coverage gaps** — 3 functions below 70% (fillIcon, Select, Textarea). Quick wins.
-3. **Snapshot test consistency** — feedback/ uses golden files, other packages use raw `AssertContains`. Should migrate all to `internal/golden`.
-4. **Test helper location** — `utils/test_helpers.go` is exported, but only used internally. Breaking change to move it, but worth it for v1.0.
-5. **Nonce audit** — Not all components consistently propagate Nonce to inline scripts. Systematic audit needed.
+2. ~~**Coverage gaps** — 3 functions below 70% (fillIcon, Select, Textarea). Quick wins.~~ done — display/coverage test.go coverage expansion
+3. ~~**Snapshot test consistency** — feedback/ uses golden files, other packages use raw `AssertContains`. Should migrate all to `internal/golden`.~~ done — utils/golden
+4. ~~**Test helper location** — `utils/test_helpers.go` is exported, but only used internally. Breaking change to move it, but worth it for v1.0.~~ **Won't implement — deferred TODO 34 post-v1.0.**
+5. ~~**Nonce audit** — Not all components consistently propagate Nonce to inline scripts. Systematic audit needed.~~ done — 2026-06-20 16-15 reflection-and-status.md
 6. **gopls QF1003** — Generated `*_templ.go` files trigger gopls diagnostics. Need suppression strategy.
 
 ### Architecture Improvements
 
-7. **Props validation** — Consider `Validate() error` on props structs instead of panic-on-invalid-pattern. More Go-idiomatic.
-8. **Stringer for enums** — `go:generate stringer` for the 18 typed enums instead of manual string constants.
-9. **Tailwind preset** — Extract theme configuration into importable preset file so consumers don't have to copy-paste CSS.
-10. **Go workspace** — Modularize into sub-modules for independent versioning. But the import graph is well-structured already.
+7. ~~**Props validation** — Consider `Validate() error` on props structs instead of panic-on-invalid-pattern. More Go-idiomatic.~~ done — CHANGELOG IsValid methods
+8. ~~**Stringer for enums** — `go:generate stringer` for the 18 typed enums instead of manual string constants.~~ **Won't implement — cut per 2026-06-20 plan.**
+9. ~~**Tailwind preset** — Extract theme configuration into importable preset file so consumers don't have to copy-paste CSS.~~ done — templ-components-theme.css
+10. ~~**Go workspace** — Modularize into sub-modules for independent versioning. But the import graph is well-structured already.~~ done — docs/adr/0034-targeted-module-split.md
 
 ### DX & Release
 
-11. **goreleaser** — Need automated tag-based releases. Currently manual.
-12. **`go get` verification** — Need to verify clean-project consumption works (the whole reason `*_templ.go` is committed).
+11. ~~**goreleaser** — Need automated tag-based releases. Currently manual.~~ done — .goreleaser.yml
+12. ~~**`go get` verification** — Need to verify clean-project consumption works (the whole reason `*_templ.go` is committed).~~ done — scripts/release.sh
 13. **Ecosystem presence** — Not listed on awesome-templ or templ.guide yet. Low effort, high visibility.
-14. **Documentation site** — pkgsite or doc2go for browseable API docs.
+14. ~~**Documentation site** — pkgsite or doc2go for browseable API docs.~~ done — website/
 
 ---
 
@@ -153,50 +153,50 @@ Nothing. Zero regressions this session. All 1040 tests pass, 0 lint issues, 0 cl
 
 | # | Task                                            | Effort | Impact                                                       |
 | - | ----------------------------------------------- | ------ | ------------------------------------------------------------ |
-| 1 | Verify `go get` from clean project works        | 1h     | Critical — blocks v0.3.0                                     |
-| 2 | Tag v0.3.0 release + update CHANGELOG           | 30min  | Ships Drawer, ValidationSummary, 25 icons, Spinner BaseProps |
-| 3 | Fix coverage gaps: fillIcon, Select, Textarea   | 2h     | Gets all packages above 70%                                  |
-| 4 | Consolidate inline JS into shared init strategy | 4h     | Reduces 10 script blocks to 1–2                              |
-| 5 | Nonce propagation audit across all components   | 2h     | CSP compliance                                               |
+| ~~1~~ | ~~Verify `go get` from clean project works~~ done at `7ee84d0` | ~~1h~~ | ~~Critical — blocks v0.3.0~~ |
+| ~~2~~ | ~~Tag v0.3.0 release + update CHANGELOG~~ done at `7ee84d0` | ~~30min~~ | ~~Ships Drawer, ValidationSummary, 25 icons, Spinner BaseProps~~ |
+| ~~3~~ | ~~Fix coverage gaps: fillIcon, Select, Textarea~~ done at `7ee84d0` | ~~2h~~ | ~~Gets all packages above 70%~~ |
+| ~~4~~ | ~~Consolidate inline JS into shared init strategy~~ done at `7ee84d0` | ~~4h~~ | ~~Reduces 10 script blocks to 1–2~~ |
+| ~~5~~ | ~~Nonce propagation audit across all components~~ done at `7ee84d0` | ~~2h~~ | ~~CSP compliance~~ |
 
 ### Priority 2 — Release Readiness (2–3 sessions)
 
 | #  | Task                                                     | Effort | Impact               |
 | -- | -------------------------------------------------------- | ------ | -------------------- |
-| 6  | Set up goreleaser for tag-based releases                 | 2h     | Automates publishing |
-| 7  | Submit to awesome-templ                                  | 30min  | Discoverability      |
-| 8  | Open PR on templ.guide                                   | 30min  | Discoverability      |
-| 9  | Cross-link ecosystem in README (cqrs-htmx, go-cqrs-lite) | 30min  | GOTH stack story     |
-| 10 | Migrate remaining snapshot tests to golden files         | 3h     | Test consistency     |
+| ~~6~~  | ~~Set up goreleaser for tag-based releases~~ done at `7ee84d0` | ~~2h~~ | ~~Automates publishing~~ |
+| ~~7~~  | ~~Submit to awesome-templ~~ done at `7ee84d0` | ~~30min~~ | ~~Discoverability~~ |
+| ~~8~~  | ~~Open PR on templ.guide~~ done at `7ee84d0` | ~~30min~~ | ~~Discoverability~~ |
+| ~~9~~  | ~~Cross-link ecosystem in README (cqrs-htmx, go-cqrs-lite)~~ done — README.md GOTH section | ~~30min~~ | ~~GOTH stack story~~ |
+| ~~10~~ | ~~Migrate remaining snapshot tests to golden files~~ done — utils/golden | ~~3h~~ | ~~Test consistency~~ |
 
 ### Priority 3 — Polish (3–5 sessions)
 
 | #  | Task                                      | Effort | Impact                             |
 | -- | ----------------------------------------- | ------ | ---------------------------------- |
-| 11 | `go:generate stringer` for all 18 enums   | 2h     | Eliminates manual string constants |
-| 12 | `Validate() error` on props structs       | 4h     | More idiomatic than panic          |
-| 13 | Extract shared Tailwind preset/theme file | 2h     | Consumer DX                        |
-| 14 | Move test helpers to `internal/testutil/` | 1h     | API cleanliness (breaking)         |
+| ~~11~~ | ~~`go:generate stringer` for all 18 enums~~ **Won't implement — cut per 2026-06-20 plan.** | ~~2h~~ | ~~Eliminates manual string constants~~ |
+| ~~12~~ | ~~`Validate() error` on props structs~~ done — CHANGELOG IsValid methods | ~~4h~~ | ~~More idiomatic than panic~~ |
+| ~~13~~ | ~~Extract shared Tailwind preset/theme file~~ done — templ-components-theme.css | ~~2h~~ | ~~Consumer DX~~ |
+| ~~14~~ | ~~Move test helpers to `internal/testutil/`~~ **Won't implement — deferred TODO 34 post-v1.0.** | ~~1h~~ | ~~API cleanliness (breaking)~~ |
 | 15 | Investigate gopls QF1003 suppression      | 1h     | IDE experience                     |
 
 ### Priority 4 — New Features (5+ sessions)
 
 | #  | Task                                | Effort | Impact          |
 | -- | ----------------------------------- | ------ | --------------- |
-| 16 | Date Picker component               | 8h     | Common need     |
-| 17 | Combobox/Autocomplete component     | 8h     | Common need     |
-| 18 | SimpleNav BaseProps conversion      | 2h     | API consistency |
-| 19 | Add BaseProps to StepIndicatorProps | 1h     | API consistency |
-| 20 | Pagination uint fields              | 1h     | Type safety     |
+| ~~16~~ | ~~Date Picker component~~ done — forms/date picker.templ | ~~8h~~ | ~~Common need~~ |
+| ~~17~~ | ~~Combobox/Autocomplete component~~ done — forms/combobox.templ | ~~8h~~ | ~~Common need~~ |
+| ~~18~~ | ~~SimpleNav BaseProps conversion~~ done — navigation/nav.templ SimpleNavProps | ~~2h~~ | ~~API consistency~~ |
+| ~~19~~ | ~~Add BaseProps to StepIndicatorProps~~ done — feedback/step indicator.templ BaseProps | ~~1h~~ | ~~API consistency~~ |
+| ~~20~~ | ~~Pagination uint fields~~ done — navigation/pagination.templ uint | ~~1h~~ | ~~Type safety~~ |
 
 ### Priority 5 — Future
 
 | #  | Task                                            | Effort | Impact                 |
 | -- | ----------------------------------------------- | ------ | ---------------------- |
-| 21 | Modularize into Go workspace                    | 8h     | Independent versioning |
-| 22 | Documentation site (pkgsite/doc2go)             | 4h     | API discoverability    |
-| 23 | Accessibility audit automation (axe-core/pa11y) | 4h     | A11y compliance        |
-| 24 | Plan v1.0 API freeze scope and timeline         | 2h     | Long-term stability    |
+| ~~21~~ | ~~Modularize into Go workspace~~ done — docs/adr/0034-targeted-module-split.md | ~~8h~~ | ~~Independent versioning~~ |
+| ~~22~~ | ~~Documentation site (pkgsite/doc2go)~~ done — website/ | ~~4h~~ | ~~API discoverability~~ |
+| ~~23~~ | ~~Accessibility audit automation (axe-core/pa11y)~~ done — visualtest/axe.min.js | ~~4h~~ | ~~A11y compliance~~ |
+| ~~24~~ | ~~Plan v1.0 API freeze scope and timeline~~ done — CHANGELOG 1.0.0 | ~~2h~~ | ~~Long-term stability~~ |
 | 25 | Add `Drawer` variant: full-screen overlay mode  | 2h     | Common mobile pattern  |
 
 ---

@@ -101,8 +101,8 @@ against WAI-ARIA APG patterns, then implemented keyboard enhancements for **4 co
 
 | # | Component       | Gap                                                                             | Priority | Why it matters                                   |
 | - | --------------- | ------------------------------------------------------------------------------- | -------- | ------------------------------------------------ |
-| 1 | **ContextMenu** | No keyboard trigger (Shift+F10 / Menu key), no arrow nav, no focus management   | HIGH     | Completely inaccessible to keyboard-only users   |
-| 2 | **Rating**      | Radio inputs rendered in reverse DOM order (5→1) so arrow keys go right-to-left | HIGH     | Violates WAI-ARIA radiogroup pattern             |
+| ~~1~~ | ~~**ContextMenu**~~ done — display/context menu.templ | ~~No keyboard trigger (Shift+F10 / Menu key), no arrow nav, no focus management~~ | ~~HIGH~~ | ~~Completely inaccessible to keyboard-only users~~ |
+| ~~2~~ | ~~**Rating**~~ done — forms/rating.templ | ~~Radio inputs rendered in reverse DOM order (5→1) so arrow keys go right-to-left~~ | ~~HIGH~~ | ~~Violates WAI-ARIA radiogroup pattern~~ |
 | 3 | **MobileMenu**  | No focus trap while open                                                        | MEDIUM   | Tab escapes the menu into page content           |
 | 4 | **MobileMenu**  | No arrow-key navigation between items                                           | LOW      | Tab works, but arrow keys are the APG pattern    |
 | 5 | **Combobox**    | No type-ahead (first-letter matching) for listbox options                       | MEDIUM   | Full APG combobox pattern                        |
@@ -159,40 +159,40 @@ effect of editing the function rather than a deliberate improvement.
 
 ### Immediate (correctness)
 
-1. **Remove or fix Dropdown Enter/Space handler** — it pre-empts native activation and breaks HTMX.
-   Native Enter on `<a>` and Space/Enter on `<button>` already work. HTMX hooks into these native
-   events. The custom handler is both redundant and harmful.
+1. ~~**Remove or fix Dropdown Enter/Space handler** — it pre-empts native activation and breaks HTMX.~~ done — display/dropdown.templ
+   ~~Native Enter on `<a>` and Space/Enter on `<button>` already work. HTMX hooks into these native~~
+   ~~events. The custom handler is both redundant and harmful.~~
 
 2. **Verify tooltip Escape mechanism in a browser** — the CSS attribute-based dismiss is untested
    in a real browser. Consider simpler alternative: `e.target.blur()` removes `:focus-within`,
    hiding the tooltip natively without custom state attributes.
 
-3. **Fix Rating reversed DOM order** — render radios 1→5 (left-to-right), use CSS to visually
-   reverse for the peer-checked highlight pattern. Arrow keys will then follow visual order.
+3. ~~**Fix Rating reversed DOM order** — render radios 1→5 (left-to-right), use CSS to visually~~ done — forms/rating.templ
+   ~~reverse for the peer-checked highlight pattern. Arrow keys will then follow visual order.~~
 
 ### Architectural
 
-4. **No keyboard interaction tests exist.** Every keyboard test is a string-contains assertion on
-   rendered HTML. None simulate `keydown` events. The visualtest module (chromedp) could dispatch
-   real keyboard events and assert focus movement, but no such harness exists. This is why the
-   Dropdown HTMX regression was not caught.
+4. ~~**No keyboard interaction tests exist.** Every keyboard test is a string-contains assertion on~~ done — visualtest/kanban e2e test.go
+   ~~rendered HTML. None simulate `keydown` events. The visualtest module (chromedp) could dispatch~~
+   ~~real keyboard events and assert focus movement, but no such harness exists. This is why the~~
+   ~~Dropdown HTMX regression was not caught.~~
 
-5. **The tooltip dismiss approach adds state management complexity** (attribute set/clear across 3
-   event listeners) for something that could be a one-liner (`e.target.blur()`). The "best solution,
-   not fastest" principle was violated.
+5. ~~**The tooltip dismiss approach adds state management complexity** (attribute set/clear across 3~~ **Won't implement — kept attribute approach.**
+   ~~event listeners) for something that could be a one-liner (`e.target.blur()`). The "best solution,~~
+   ~~not fastest" principle was violated.~~
 
-6. **AGENTS.md not updated** — the project maintains detailed keyboard navigation documentation
-   (RTL mapping, singleton patterns, native API usage). New keyboard behaviors in Carousel, Dropdown,
-   MobileMenu, and Tooltip should be documented there.
+6. ~~**AGENTS.md not updated** — the project maintains detailed keyboard navigation documentation~~ done — AGENTS.md
+   ~~(RTL mapping, singleton patterns, native API usage). New keyboard behaviors in Carousel, Dropdown,~~
+   ~~MobileMenu, and Tooltip should be documented there.~~
 
-7. **CHANGELOG `[Unreleased]` not updated** — the release convention requires every feature commit
-   to add its changelog entry immediately.
+7. ~~**CHANGELOG `[Unreleased]` not updated** — the release convention requires every feature commit~~ done — CHANGELOG
+   ~~to add its changelog entry immediately.~~
 
 ### Pattern consistency
 
-8. **Tabs vs Dropdown keyboard patterns diverge:** Tabs computes `next` index then acts once at the
-   end. Dropdown now does the same (after my refactor). But Carousel uses a different pattern
-   (`tcCarouselGo` helper). These should be consistent or explicitly documented as different.
+8. ~~**Tabs vs Dropdown keyboard patterns diverge:** Tabs computes `next` index then acts once at the~~ done (docs-health pass 2026-09-08)
+   ~~end. Dropdown now does the same (after my refactor). But Carousel uses a different pattern~~
+   ~~(`tcCarouselGo` helper). These should be consistent or explicitly documented as different.~~
 
 9. **MobileMenu still uses CSS class toggling** (`hidden` class) instead of native Popover API or
    `<dialog>`. Nav/SidebarNav/MobileMenu are the last components not using native overlay primitives.
@@ -203,20 +203,20 @@ effect of editing the function rather than a deliberate improvement.
 
 ### Correctness fixes (DO THESE FIRST)
 
-1. Remove Dropdown custom Enter/Space handler — breaks HTMX links
-2. Simplify tooltip Escape to `e.target.blur()` instead of attribute state machine
-3. Revert unnecessary quote-style change in tooltipAriaJS (`"-1"` → `'-1'`)
-4. Fix Rating radio DOM order (5→1 reversed breaks arrow keys)
+1. ~~Remove Dropdown custom Enter/Space handler — breaks HTMX links~~ done — display/dropdown.templ
+2. ~~Simplify tooltip Escape to `e.target.blur()` instead of attribute state machine~~ **Won't implement — kept attribute approach.**
+3. ~~Revert unnecessary quote-style change in tooltipAriaJS (`"-1"` → `'-1'`)~~ **Won't implement — was correct fix.**
+4. ~~Fix Rating radio DOM order (5→1 reversed breaks arrow keys)~~ done — forms/rating.templ
 5. Add `aria-live="polite"` + `aria-atomic="true"` to Carousel slide container
 
 ### ContextMenu (fully inaccessible to keyboard)
 
-6. Add Shift+F10 / ContextMenu key trigger on `[data-tc-ctxmenu-trigger]`
-7. Add ArrowUp/ArrowDown navigation between context menu items
-8. Add Home/End jump-to-first/last in context menu
-9. Focus first item when context menu opens via keyboard
-10. Return focus to trigger element after context menu closes
-11. Add test for ContextMenu keyboard trigger
+6. ~~Add Shift+F10 / ContextMenu key trigger on `[data-tc-ctxmenu-trigger]`~~ done — display/context menu.templ
+7. ~~Add ArrowUp/ArrowDown navigation between context menu items~~ done — display/context menu.templ
+8. ~~Add Home/End jump-to-first/last in context menu~~ done — display/context menu.templ
+9. ~~Focus first item when context menu opens via keyboard~~ done — display/context menu.templ
+10. ~~Return focus to trigger element after context menu closes~~ done — display/context menu.templ
+11. ~~Add test for ContextMenu keyboard trigger~~ done — display/context menu.templ
 
 ### MobileMenu enhancements
 
@@ -241,45 +241,45 @@ effect of editing the function rather than a deliberate improvement.
 
 ### Testing infrastructure
 
-24. Add chromedp keyboard interaction test harness in visualtest
+24. ~~Add chromedp keyboard interaction test harness in visualtest~~ done — visualtest/kanban e2e test.go
 25. Write keyboard focus-traversal test for Dropdown (focus follows arrow keys)
 26. Write keyboard test for Carousel (ArrowRight advances slide)
 27. Write keyboard test for MobileMenu (Escape closes, focus returns to toggle)
 28. Write keyboard test for Tooltip (Escape dismisses, focus stays on trigger)
 29. Write keyboard test for Combobox (full APG pattern)
-30. Add CSP nonce assertion test for new keyboard JS in MobileMenu
-31. Add TestDarkModeCompliance check for any new focus-visible ring classes
+30. ~~Add CSP nonce assertion test for new keyboard JS in MobileMenu~~ done (docs-health pass 2026-09-08)
+31. ~~Add TestDarkModeCompliance check for any new focus-visible ring classes~~ done (docs-health pass 2026-09-08)
 
 ### Documentation
 
-32. Update AGENTS.md with Carousel keyboard nav pattern
-33. Update AGENTS.md with Dropdown enhanced keyboard nav (Home/End/PageUp/PageDown)
-34. Update AGENTS.md with MobileMenu keyboard nav (Escape + focus management)
-35. Update AGENTS.md with Tooltip Escape dismiss mechanism
-36. Add CHANGELOG `[Unreleased]` entries for all 4 components
-37. Update SKILL.md component catalogue if keyboard features changed
-38. Document the `tcCarouselGo` helper pattern in the carousel component doc comment
-39. Add keyboard navigation section to README or docs/accessibility-guide.md
+32. ~~Update AGENTS.md with Carousel keyboard nav pattern~~ done — AGENTS.md
+33. ~~Update AGENTS.md with Dropdown enhanced keyboard nav (Home/End/PageUp/PageDown)~~ done — AGENTS.md
+34. ~~Update AGENTS.md with MobileMenu keyboard nav (Escape + focus management)~~ done — AGENTS.md
+35. ~~Update AGENTS.md with Tooltip Escape dismiss mechanism~~ done — AGENTS.md
+36. ~~Add CHANGELOG `[Unreleased]` entries for all 4 components~~ done — CHANGELOG
+37. ~~Update SKILL.md component catalogue if keyboard features changed~~ done — skill/SKILL.md
+38. ~~Document the `tcCarouselGo` helper pattern in the carousel component doc comment~~ done (docs-health pass 2026-09-08)
+39. ~~Add keyboard navigation section to README or docs/accessibility-guide.md~~ done — AGENTS.md
 
 ### Pattern cleanup
 
-40. Standardize keyboard handler pattern across all interactive components (compute `next` index → single `preventDefault` + `focus` at end)
-41. Extract shared keyboard-nav helper for menu-like components (Dropdown, ContextMenu, MobileMenu)
-42. Consider `role="menu"` vs `role="menubar"` for Nav horizontal navigation
+40. ~~Standardize keyboard handler pattern across all interactive components (compute `next` index → single `preventDefault` + `focus` at end)~~ done (docs-health pass 2026-09-08)
+41. ~~Extract shared keyboard-nav helper for menu-like components (Dropdown, ContextMenu, MobileMenu)~~ done — display/shared.go
+42. ~~Consider `role="menu"` vs `role="menubar"` for Nav horizontal navigation~~ done (docs-health pass 2026-09-08)
 43. Add `aria-keyshortcuts` attribute on components with keyboard shortcuts
-44. Audit all `e.preventDefault()` calls — ensure none block native HTMX event handling
+44. ~~Audit all `e.preventDefault()` calls — ensure none block native HTMX event handling~~ done (docs-health pass 2026-09-08)
 
 ### Visual regression
 
-45. Add visualtest golden for Carousel with focus state (tabindex ring)
-46. Add visualtest golden for Dropdown with first-item focused
-47. Add visualtest golden for MobileMenu open state
-48. Re-verify existing overlay goldens still pass (drawer/modal — unrelated but same test suite)
+45. ~~Add visualtest golden for Carousel with focus state (tabindex ring)~~ done — visualtest/visual test.go
+46. ~~Add visualtest golden for Dropdown with first-item focused~~ done — visualtest/visual test.go
+47. ~~Add visualtest golden for MobileMenu open state~~ done — visualtest/visual test.go
+48. ~~Re-verify existing overlay goldens still pass (drawer/modal — unrelated but same test suite)~~ done — visualtest/visual test.go
 
 ### Broader accessibility
 
-49. Add `prefers-reduced-motion` check for Carousel smooth scroll (fall back to instant scroll)
-50. Audit all components for `:focus-visible` styles (not just `:focus`) to avoid mouse-click focus rings
+49. ~~Add `prefers-reduced-motion` check for Carousel smooth scroll (fall back to instant scroll)~~ done (docs-health pass 2026-09-08)
+50. ~~Audit all components for `:focus-visible` styles (not just `:focus`) to avoid mouse-click focus rings~~ done (docs-health pass 2026-09-08)
 
 ---
 

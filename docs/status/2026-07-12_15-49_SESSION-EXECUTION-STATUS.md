@@ -123,32 +123,32 @@ These were in the plan but were not attempted:
 
 | #   | Task                                                     | Why Not Started                              |
 | --- | -------------------------------------------------------- | -------------------------------------------- |
-| 5a  | Coverage: errorpage handler edge paths                   | errorpage already at 100%                    |
+| ~~5a~~  | ~~Coverage: errorpage handler edge paths~~ done (docs-health pass 2026-09-08) | ~~errorpage already at 100%~~ |
 | 5b  | Coverage: feedback StepIndicator + LoadingOverlay        | Skipped — lower priority than new components |
 | 5c  | Coverage: forms Combobox + RadioGroup rendering          | Skipped                                      |
 | 5d  | Coverage: navigation SidebarNav + Breadcrumbs JSON-LD    | Skipped                                      |
-| T9  | Blocks/composition examples (dashboard, login, settings) | Deferred tier                                |
-| T10 | `Validate() error` on props structs                      | v1.0 prerequisite                            |
+| ~~T9~~  | ~~Blocks/composition examples (dashboard, login, settings)~~ done — recipes/dashboard login settings | ~~Deferred tier~~ |
+| ~~T10~~ | ~~`Validate() error` on props structs~~ **Won't implement — only ErrorPageProps v1.0.0.** | ~~v1.0 prerequisite~~ |
 | T11 | Move test helpers to `internal/testutil/`                | v1.0 prerequisite                            |
-| T12 | Self-host htmx as default (ADR 0007)                     | v1.0 breaking change                         |
-| T13 | Semantic token layer `bg-tc-primary` (ADR 0008)          | v1.0 theming                                 |
-| T14 | Remove deprecated aliases                                | v1.0 cleanup                                 |
-| T15 | Compound component pattern (Trigger/Content/Close)       | v2.0                                         |
-| T16 | Native `<dialog>` for Modal/Drawer                       | v2.0                                         |
-| T17 | Headless/unstyled variants                               | v2.0                                         |
-| T18 | CLI tool (`templ-components add <component>`)            | v2.0                                         |
-| T19 | Demo/showcase site                                       | Blocked                                      |
+| ~~T12~~ | ~~Self-host htmx as default (ADR 0007)~~ done — ADR-0022 v2.0 | ~~v1.0 breaking change~~ |
+| ~~T13~~ | ~~Semantic token layer `bg-tc-primary` (ADR 0008)~~ done — templ-components-theme.css | ~~v1.0 theming~~ |
+| ~~T14~~ | ~~Remove deprecated aliases~~ done — removed v1.0-v2.0 | ~~v1.0 cleanup~~ |
+| ~~T15~~ | ~~Compound component pattern (Trigger/Content/Close)~~ **Won't implement — ADR-0023.** | ~~v2.0~~ |
+| ~~T16~~ | ~~Native `<dialog>` for Modal/Drawer~~ done — ADR-0014 | ~~v2.0~~ |
+| ~~T17~~ | ~~Headless/unstyled variants~~ **Won't implement — ADR-0021.** | ~~v2.0~~ |
+| ~~T18~~ | ~~CLI tool (`templ-components add <component>`)~~ done — cmd/tc | ~~v2.0~~ |
+| ~~T19~~ | ~~Demo/showcase site~~ done — Cloud Run demo | ~~Blocked~~ |
 | T20 | `awesome-templ` PR                                       | Blocked                                      |
 | T21 | `templ.guide` listing                                    | Blocked                                      |
-| T22 | SSH tag signing config                                   | Blocked                                      |
-| T23 | Visual regression testing (Playwright)                   | Blocked                                      |
-| T24 | Slider component                                         | **DONE** (moved up from Tier 4)              |
-| T25 | Rating component                                         | **DONE** (moved up from Tier 4)              |
-| T26 | TagsInput component                                      | Not started                                  |
-| T27 | ContextMenu component                                    | Not started                                  |
-| T28 | Carousel component                                       | Not started                                  |
-| T29 | HoverCard component                                      | Not started                                  |
-| T30 | Calendar component                                       | Not started                                  |
+| ~~T22~~ | ~~SSH tag signing config~~ done — v0.18.0 signed tag | ~~Blocked~~ |
+| ~~T23~~ | ~~Visual regression testing (Playwright)~~ done — visualtest/ | ~~Blocked~~ |
+| ~~T24~~ | ~~Slider component~~ done at `0cc5393` | ~~**DONE** (moved up from Tier 4)~~ |
+| ~~T25~~ | ~~Rating component~~ done at `0cc5393` | ~~**DONE** (moved up from Tier 4)~~ |
+| ~~T26~~ | ~~TagsInput component~~ done — v0.17.0 | ~~Not started~~ |
+| ~~T27~~ | ~~ContextMenu component~~ done — v0.17.0 | ~~Not started~~ |
+| ~~T28~~ | ~~Carousel component~~ done — v0.17.0 | ~~Not started~~ |
+| ~~T29~~ | ~~HoverCard component~~ done — v0.17.0 | ~~Not started~~ |
+| ~~T30~~ | ~~Calendar component~~ done — v0.17.0 | ~~Not started~~ |
 
 ---
 
@@ -192,27 +192,27 @@ The AGENTS.md warns: "BuildFlow pre-commit `templ-generate` step re-appends `*_t
 
 ### Process improvements
 
-1. **Follow the SKILL.md testing checklist for every new component.** The checklist exists for a reason — golden, a11y, BDD, edge, example, snapshot, coverage. We skipped ALL of them for 4 components. This is the #1 process failure.
+1. ~~**Follow the SKILL.md testing checklist for every new component.** The checklist exists for a reason — golden, a11y, BDD, edge, example, snapshot, coverage. We skipped ALL of them for 4 components. This is the #1 process failure.~~ done (docs-health pass 2026-09-08)
 
-2. **Update AGENTS.md in the same commit as the component.** AGENTS.md drift is the most common doc-rot pattern. It should be part of the definition of done.
+2. ~~**Update AGENTS.md in the same commit as the component.** AGENTS.md drift is the most common doc-rot pattern. It should be part of the definition of done.~~ done (docs-health pass 2026-09-08)
 
-3. **Don't optimize for commit count.** We shipped 4 components in 3 commits but each component is only 60-80% done. Better to ship 2 fully-tested components than 4 half-tested ones.
+3. ~~**Don't optimize for commit count.** We shipped 4 components in 3 commits but each component is only 60-80% done. Better to ship 2 fully-tested components than 4 half-tested ones.~~ done (docs-health pass 2026-09-08)
 
-4. **Run the full verify suite BEFORE declaring done.** We ran `go test` and `golangci-lint`, but never checked coverage deltas, golden file existence, or integration test coverage for new components.
+4. ~~**Run the full verify suite BEFORE declaring done.** We ran `go test` and `golangci-lint`, but never checked coverage deltas, golden file existence, or integration test coverage for new components.~~ done (docs-health pass 2026-09-08)
 
-5. **Coverage push should have been attempted.** It was Tier 3 in the plan but got deprioritized in favor of Tier 4 new components. The Pareto principle says coverage push (4%/64%) outranks new components (20%/80%).
+5. ~~**Coverage push should have been attempted.** It was Tier 3 in the plan but got deprioritized in favor of Tier 4 new components. The Pareto principle says coverage push (4%/64%) outranks new components (20%/80%).~~ **Won't implement — 80% abandoned.**
 
 ### Code quality improvements
 
-6. **DataTable empty-rows fallback renders an empty table.** When `Rows` is empty and no `EmptyState` is set, it falls through to render a table with headers but no body rows. This may be intentional (consumer sees the structure) but should be documented.
+6. ~~**DataTable empty-rows fallback renders an empty table.** When `Rows` is empty and no `EmptyState` is set, it falls through to render a table with headers but no body rows. This may be intentional (consumer sees the structure) but should be documented.~~ done (docs-health pass 2026-09-08)
 
-7. **FilterDropdown coverage is 63.6%** — the `HxSwap` conditional branch and the `HxInclude`/`HxIndicator` conditionals are tested but the template rendering path for groups/disabled options is not.
+7. ~~**FilterDropdown coverage is 63.6%** — the `HxSwap` conditional branch and the `HxInclude`/`HxIndicator` conditionals are tested but the template rendering path for groups/disabled options is not.~~ done — forms/coverage boost* test.go
 
-8. **Rating interactive mode renders stars in reverse order** (high to low) for CSS `peer-checked` to work (since `~` selector only matches subsequent siblings). This is correct but non-obvious — should be commented.
+8. ~~**Rating interactive mode renders stars in reverse order** (high to low) for CSS `peer-checked` to work (since `~` selector only matches subsequent siblings). This is correct but non-obvious — should be commented.~~ done (docs-health pass 2026-09-08)
 
-9. **Rating has `peer-checked:text-amber-400 dark:peer-checked:text-amber-400`** — both light and dark are amber-400. This is intentional (amber-400 is visible on both backgrounds) but the dark mode compliance test flagged it until we added the explicit `dark:` variant.
+9. ~~**Rating has `peer-checked:text-amber-400 dark:peer-checked:text-amber-400`** — both light and dark are amber-400. This is intentional (amber-400 is visible on both backgrounds) but the dark mode compliance test flagged it until we added the explicit `dark:` variant.~~ done (docs-health pass 2026-09-08)
 
-10. **Slider uses native `accent-blue-600 dark:accent-blue-400`** — this is the modern CSS approach and works in all current browsers, but older browsers (pre-2022) don't support `accent-color`. Acceptable tradeoff for a 2026 library.
+10. ~~**Slider uses native `accent-blue-600 dark:accent-blue-400`** — this is the modern CSS approach and works in all current browsers, but older browsers (pre-2022) don't support `accent-color`. Acceptable tradeoff for a 2026 library.~~ done (docs-health pass 2026-09-08)
 
 11. **Breadcrumb `CurrentPath` uses exact string match** (`href == currentPath`). It doesn't handle trailing slashes, query params, or path prefixes. NavLink has the same limitation. This is consistent but could confuse consumers who expect `/users/` to match `/users`.
 
@@ -224,60 +224,60 @@ The AGENTS.md warns: "BuildFlow pre-commit `templ-generate` step re-appends `*_t
 
 ### Critical (test debt from this session)
 
-1. **Golden tests for DataTable** — `display/testdata/datatable_basic.golden`, `datatable_sorted.golden`, `datatable_empty.golden`
-2. **Golden tests for FilterDropdown** — `forms/testdata/filter_dropdown_basic.golden`, `filter_dropdown_with_value.golden`
-3. **Golden tests for Slider** — `forms/testdata/slider_basic.golden`, `slider_with_value.golden`
-4. **Golden tests for Rating** — `forms/testdata/rating_interactive.golden`, `rating_readonly.golden`
-5. **A11y tests for DataTable** — assert `aria-sort` on sortable columns, `role="table"` semantics
-6. **A11y tests for Rating** — assert `role="radiogroup"`, `aria-checked`, sr-only "3 out of 5" text
-7. **A11y tests for Slider** — assert `aria-valuenow`, `aria-valuemin`, `aria-valuemax`
-8. **A11y tests for FilterDropdown** — assert `aria-label` propagation, label-input association
+1. ~~**Golden tests for DataTable** — `display/testdata/datatable_basic.golden`, `datatable_sorted.golden`, `datatable_empty.golden`~~ done — v0.17.0
+2. ~~**Golden tests for FilterDropdown** — `forms/testdata/filter_dropdown_basic.golden`, `filter_dropdown_with_value.golden`~~ done — v0.17.0
+3. ~~**Golden tests for Slider** — `forms/testdata/slider_basic.golden`, `slider_with_value.golden`~~ done — v0.17.0
+4. ~~**Golden tests for Rating** — `forms/testdata/rating_interactive.golden`, `rating_readonly.golden`~~ done — v0.17.0
+5. ~~**A11y tests for DataTable** — assert `aria-sort` on sortable columns, `role="table"` semantics~~ done — display/datatable a11y test.go
+6. ~~**A11y tests for Rating** — assert `role="radiogroup"`, `aria-checked`, sr-only "3 out of 5" text~~ done — forms/new components a11y test.go
+7. ~~**A11y tests for Slider** — assert `aria-valuenow`, `aria-valuemin`, `aria-valuemax`~~ done — forms/new components a11y test.go
+8. ~~**A11y tests for FilterDropdown** — assert `aria-label` propagation, label-input association~~ done — forms/new components a11y test.go
 9. **BDD test for DataTable** — "user clicks sortable column → sees sort indicator change"
-10. **BDD test for Rating** — "user selects 4 stars → 4th radio is checked"
-11. **BDD test for FilterDropdown** — "user changes filter → hx-get fires"
-12. **Edge case tests for DataTable** — empty columns, nil rows, negative sort direction
-13. **Edge case tests for Rating** — Max=0, Value > Max, negative Value
-14. **Edge case tests for Slider** — Min > Max, Step=0, Value outside range
-15. **Edge case tests for FilterDropdown** — empty options, all disabled options
-16. **Example tests for FilterDropdown, Slider, Rating** (DataTable has one)
-17. **Snapshot tests for all 4 new components**
-18. **Coverage tests for DataTable** — `dataTableSortURL` edge cases, `dataTableTypedHeaders` with no SortBaseURL
-19. **Coverage tests for FilterDropdown** — template rendering with groups, disabled options
-20. **Coverage tests for Rating** — `pluralStars`, `ratingStarLabelClass`, read-only with Max=0
-21. **Coverage tests for Slider** — `sliderInputClass`, error rendering path
+10. ~~**BDD test for Rating** — "user selects 4 stars → 4th radio is checked"~~ done — forms/new components bdd test.go
+11. ~~**BDD test for FilterDropdown** — "user changes filter → hx-get fires"~~ done — forms/new components bdd test.go
+12. ~~**Edge case tests for DataTable** — empty columns, nil rows, negative sort direction~~ done — display/datatable edge test.go
+13. ~~**Edge case tests for Rating** — Max=0, Value > Max, negative Value~~ done — forms/rating test.go
+14. ~~**Edge case tests for Slider** — Min > Max, Step=0, Value outside range~~ done — forms/slider test.go
+15. ~~**Edge case tests for FilterDropdown** — empty options, all disabled options~~ done — forms/filter dropdown test.go
+16. ~~**Example tests for FilterDropdown, Slider, Rating** (DataTable has one)~~ done — forms/new components example test.go
+17. ~~**Snapshot tests for all 4 new components**~~ done — forms/new components snapshot test.go
+18. ~~**Coverage tests for DataTable** — `dataTableSortURL` edge cases, `dataTableTypedHeaders` with no SortBaseURL~~ done — display/datatable coverage test.go
+19. ~~**Coverage tests for FilterDropdown** — template rendering with groups, disabled options~~ done — forms/coverage boost* test.go
+20. ~~**Coverage tests for Rating** — `pluralStars`, `ratingStarLabelClass`, read-only with Max=0~~ done — forms/coverage boost* test.go
+21. ~~**Coverage tests for Slider** — `sliderInputClass`, error rendering path~~ done — forms/coverage boost* test.go
 
 ### Documentation debt
 
-22. **Update AGENTS.md** — display 26→27, forms 16→19, generated 64→69, add DataTable/FilterDropdown/Slider/Rating to conventions list
-23. **Update SKILL.md component catalogue** — display 26→27, forms 16→19, add DataTable/FilterDropdown/Slider/Rating rows with signatures
-24. **Update README.md** — add new components to the component catalogue section
-25. **Update contract test comments** — `// display (23)` → `(25)`, `// forms (13)` → `(16)`
+22. ~~**Update AGENTS.md** — display 26→27, forms 16→19, generated 64→69, add DataTable/FilterDropdown/Slider/Rating to conventions list~~ done — AGENTS.md
+23. ~~**Update SKILL.md component catalogue** — display 26→27, forms 16→19, add DataTable/FilterDropdown/Slider/Rating rows with signatures~~ done — skill/SKILL.md
+24. ~~**Update README.md** — add new components to the component catalogue section~~ done — README.md
+25. ~~**Update contract test comments** — `// display (23)` → `(25)`, `// forms (13)` → `(16)`~~ done — TestDocsCountDrift
 26. **Add DataTable to integration test** — `integration/composition_test.go` should render DataTable in a cross-package composition
 
 ### Coverage push (Tier 3 task from plan)
 
-27. **Coverage: feedback StepIndicator** — vertical orientation, edge case with 0 steps
-28. **Coverage: feedback LoadingOverlay** — full-screen overlay rendering
-29. **Coverage: forms Combobox** — filtering, keyboard nav, disabled state
-30. **Coverage: navigation SidebarNav** — JSON-LD, current path detection
-31. **Coverage: navigation Breadcrumbs** — JSON-LD with BaseURL, custom separator
-32. **Coverage: htmx GlobalErrorHandling** — retry counter, error history, announcer
+27. ~~**Coverage: feedback StepIndicator** — vertical orientation, edge case with 0 steps~~ done — coverage boost* test.go
+28. ~~**Coverage: feedback LoadingOverlay** — full-screen overlay rendering~~ done — coverage boost* test.go
+29. ~~**Coverage: forms Combobox** — filtering, keyboard nav, disabled state~~ done — coverage boost* test.go
+30. ~~**Coverage: navigation SidebarNav** — JSON-LD, current path detection~~ done — coverage boost* test.go
+31. ~~**Coverage: navigation Breadcrumbs** — JSON-LD with BaseURL, custom separator~~ done — coverage boost* test.go
+32. ~~**Coverage: htmx GlobalErrorHandling** — retry counter, error history, announcer~~ done — coverage boost* test.go
 
 ### New components (Tier 4 remaining)
 
-33. **TagsInput component** — multi-value tag input with add/remove, keyboard accessible
-34. **HoverCard component** — hover-triggered floating panel (like Tooltip but with rich content)
-35. **ContextMenu component** — right-click menu with keyboard navigation
-36. **Carousel component** — image/content carousel with prev/next, autoplay, keyboard accessible
-37. **Calendar component** — full calendar grid with date selection, month navigation
+33. ~~**TagsInput component** — multi-value tag input with add/remove, keyboard accessible~~ done — v0.17.0
+34. ~~**HoverCard component** — hover-triggered floating panel (like Tooltip but with rich content)~~ done — v0.17.0
+35. ~~**ContextMenu component** — right-click menu with keyboard navigation~~ done — v0.17.0
+36. ~~**Carousel component** — image/content carousel with prev/next, autoplay, keyboard accessible~~ done — v0.17.0
+37. ~~**Calendar component** — full calendar grid with date selection, month navigation~~ done — v0.17.0
 
 ### Polish and hardening
 
-38. **Demo: add DataTable, FilterDropdown, Slider, Rating to the main demo page** (`demo.templ`) — currently only on `/forms`
+38. ~~**Demo: add DataTable, FilterDropdown, Slider, Rating to the main demo page** (`demo.templ`) — currently only on `/forms`~~ done — examples/demo
 39. **Recipe: DataTable with server-side sort** — `docs/recipes/datatable-server-sort.md`
-40. **Recipe: HTMX filter bar with FilterDropdown** — `docs/recipes/htmx-filter-bar.md` (currently just a stub)
-41. **Integration test: CSP nonce on all new components** — `integration/csp_nonce_test.go` should render FilterDropdown (has no nonce currently, but verify)
-42. **Fuzz test: RatingSize, Slider Min/Max** — verify no panics on arbitrary input
+40. ~~**Recipe: HTMX filter bar with FilterDropdown** — `docs/recipes/htmx-filter-bar.md` (currently just a stub)~~ done — recipes/horizontal-filter-bar.md
+41. ~~**Integration test: CSP nonce on all new components** — `integration/csp_nonce_test.go` should render FilterDropdown (has no nonce currently, but verify)~~ **Won't implement — moot no inline script.**
+42. ~~**Fuzz test: RatingSize, Slider Min/Max** — verify no panics on arbitrary input~~ done — forms/fuzz test.go
 43. **Benchmark: DataTable sort URL generation** — ensure no allocation regression
 44. **Breadcrumbs: handle trailing slash** — `/users/` should match `/users`
 45. **HTMX retry: handle compound triggers** — `change delay:500ms` should fire `change`, not `change delay:500ms`
@@ -285,7 +285,7 @@ The AGENTS.md warns: "BuildFlow pre-commit `templ-generate` step re-appends `*_t
 47. **FilterDropdown: add `Groups` support** — like `SelectProps.Groups` for optgroup rendering
 48. **Rating: add half-star support** — common pattern in e-commerce ratings
 49. **Slider: add `ShowTicks` option** — display tick marks for discrete values
-50. **Bump version to 0.17.0** — cut a release with all new components + bug fixes
+50. ~~**Bump version to 0.17.0** — cut a release with all new components + bug fixes~~ done — v0.17.0
 
 ---
 

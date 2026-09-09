@@ -132,16 +132,16 @@ github.com/larsartmann/templ-components/
 **This was the single biggest execution problem.** BuildFlow's pre-commit hook and background
 process repeatedly:
 
-1. **Switched branches mid-session** — at least 8 times, BuildFlow switched from
-   `modularize/strategic-split` to `master` without warning. Commits landed on the wrong branch.
-   Had to cherry-pick, reset, and recreate the branch multiple times.
-2. **Deleted the modularize branch entirely** — twice. Had to recreate from reflog.
-3. **Created untracked files** (`errorpage/notfound404*.go`, `forms/aria.go`, `forms/ids.go`)
-   that caused build failures (duplicate declarations). These came from BuildFlow's
-   `govalid-generate` or similar tooling running in the background.
-4. **Reverted .gitignore changes** — the `go.work` un-ignore kept getting overridden.
-5. **Stole file modifications** — applied formatting changes to files I was editing, causing
-   race conditions where my edits were silently reverted.
+1. ~~**Switched branches mid-session** — at least 8 times, BuildFlow switched from~~ done (docs-health pass 2026-09-08)
+   ~~`modularize/strategic-split` to `master` without warning. Commits landed on the wrong branch.~~
+   ~~Had to cherry-pick, reset, and recreate the branch multiple times.~~
+2. ~~**Deleted the modularize branch entirely** — twice. Had to recreate from reflog.~~ done (docs-health pass 2026-09-08)
+3. ~~**Created untracked files** (`errorpage/notfound404*.go`, `forms/aria.go`, `forms/ids.go`)~~ done (docs-health pass 2026-09-08)
+   ~~that caused build failures (duplicate declarations). These came from BuildFlow's~~
+   ~~`govalid-generate` or similar tooling running in the background.~~
+4. ~~**Reverted .gitignore changes** — the `go.work` un-ignore kept getting overridden.~~ done (docs-health pass 2026-09-08)
+5. ~~**Stole file modifications** — applied formatting changes to files I was editing, causing~~ done (docs-health pass 2026-09-08)
+   ~~race conditions where my edits were silently reverted.~~
 
 **Root cause:** BuildFlow runs as a background process that operates on whatever branch is
 checked out, and its auto-fixes commit to `master` if that's where HEAD happens to be.
@@ -161,19 +161,19 @@ the consumer experience before claiming success.
 
 ## E) WHAT WE SHOULD IMPROVE 🔄
 
-1. **BuildFlow needs feature-branch awareness** — it should never switch branches or commit to
-   `master` when a feature branch is checked out. File an issue at `larsartmann/buildflow`.
-2. **Test consumer experience during modularization** — not just `go build ./...`, but simulate
-   a consumer: `go get github.com/larsartmann/templ-components/icons@latest` from a clean module.
-3. **Add a `make dry-release` target** — run the release script in dry-run mode to verify
-   placeholder→version replacement + tag creation without actually tagging.
-4. **Reduce module count if co-change is too high** — git analysis showed 80%+ of commits touch
-   5+ packages. If this pattern holds, the strategic split (6 modules) may still be too many.
-   Monitor after 3 months of usage.
-5. **Consider merging utils INTO svg** — svg tests depend on utils test helpers. With only 2
-   functions in svg, it may not justify its own go.mod. Re-evaluate at v0.8.0.
-6. **flake.nix should be multi-module aware** — the `verify` app should iterate over all modules,
-   not just run `go build ./...` at root (which only covers the root module via go.work).
+1. ~~**BuildFlow needs feature-branch awareness** — it should never switch branches or commit to~~ done — .buildflow.yml
+   ~~`master` when a feature branch is checked out. File an issue at `larsartmann/buildflow`.~~
+2. ~~**Test consumer experience during modularization** — not just `go build ./...`, but simulate~~ **Won't implement — branch abandoned never actioned.**
+   ~~a consumer: `go get github.com/larsartmann/templ-components/icons@latest` from a clean module.~~
+3. ~~**Add a `make dry-release` target** — run the release script in dry-run mode to verify~~ done — utils/release script test.go
+   ~~placeholder→version replacement + tag creation without actually tagging.~~
+4. ~~**Reduce module count if co-change is too high** — git analysis showed 80%+ of commits touch~~ **Won't implement — co change too high split abandoned.**
+   ~~5+ packages. If this pattern holds, the strategic split (6 modules) may still be too many.~~
+   ~~Monitor after 3 months of usage.~~
+5. ~~**Consider merging utils INTO svg** — svg tests depend on utils test helpers. With only 2~~ **Won't implement — resolved svg stayed internal.**
+   ~~functions in svg, it may not justify its own go.mod. Re-evaluate at v0.8.0.~~
+6. ~~**flake.nix should be multi-module aware** — the `verify` app should iterate over all modules,~~ done — skill/SKILL.md
+   ~~not just run `go build ./...` at root (which only covers the root module via go.work).~~
 
 ---
 
@@ -186,46 +186,46 @@ the consumer experience before claiming success.
 
 | # | Task                                             | Status (2026-07-06)                      |
 | - | ------------------------------------------------ | ---------------------------------------- |
-| 1 | **Merge `modularize/strategic-split` to master** | ❌ Abandoned                             |
-| 2 | **Cut v0.7.0 release using per-module tags**     | ✅ v0.7.0 released as single-module      |
-| 3 | **Verify consumer experience from clean repo**   | ✅ Standard single-module `go get` works |
-| 4 | **Run CI on the branch**                         | ❌ Moot                                  |
+| ~~1~~ | ~~**Merge `modularize/strategic-split` to master**~~ done — docs/status/2026-08-10 04-22 multi-module-workspace-split.md | ~~❌ Abandoned~~ |
+| ~~2~~ | ~~**Cut v0.7.0 release using per-module tags**~~ done — CHANGELOG.md | ~~✅ v0.7.0 released as single-module~~ |
+| ~~3~~ | ~~**Verify consumer experience from clean repo**~~ done — README.md | ~~✅ Standard single-module `go get` works~~ |
+| ~~4~~ | ~~**Run CI on the branch**~~ **Won't implement — branch abandoned.** | ~~❌ Moot~~ |
 
 ### Tier 2 — Should Do After Merge — ❌ ALL MOOT (except #10)
 
 | #  | Task                                                                  | Status (2026-07-06)                                                  |
 | -- | --------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| 5  | **Update README.md** for multi-module                                 | ❌ Moot — single-module correct                                      |
-| 6  | **Update CONTRIBUTING.md** for multi-module                           | ❌ Moot                                                              |
-| 7  | **Update icons-only-adoption.md**                                     | ✅ Done (different framing)                                          |
-| 8  | **Add `make dry-release`**                                            | ⬜ Not done                                                          |
-| 9  | **Update flake.nix `verify` app** for multi-module                    | ❌ Moot                                                              |
-| 10 | **File BuildFlow issue** — branch-switching + go.work gitignore fight | ✅ Resolved — BuildFlow no longer switches branches; go.work removed |
-| 11 | **Clean up stashes**                                                  | ⬠ Likely resolved                                                    |
+| ~~5~~  | ~~**Update README.md** for multi-module~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot — single-module correct~~ |
+| ~~6~~  | ~~**Update CONTRIBUTING.md** for multi-module~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot~~ |
+| ~~7~~  | ~~**Update icons-only-adoption.md**~~ done — docs/icons-only-adoption.md | ~~✅ Done (different framing)~~ |
+| ~~8~~  | ~~**Add `make dry-release`**~~ done — utils/release script test.go | ~~⬜ Not done~~ |
+| ~~9~~  | ~~**Update flake.nix `verify` app** for multi-module~~ done — skill/SKILL.md | ~~❌ Moot~~ |
+| ~~10~~ | ~~**File BuildFlow issue** — branch-switching + go.work gitignore fight~~ done — .buildflow.yml | ~~✅ Resolved — BuildFlow no longer switches branches; go.work removed~~ |
+| ~~11~~ | ~~**Clean up stashes**~~ done (docs-health pass 2026-09-08) | ~~⬠ Likely resolved~~ |
 
 ### Tier 3 — Improve Quality — ❌ MOSTLY MOOT
 
 | #  | Task                                               | Status (2026-07-06)                                        |
 | -- | -------------------------------------------------- | ---------------------------------------------------------- |
-| 12 | **Add workspace sync CI check**                    | ❌ Moot                                                    |
-| 13 | **Add replace-directive audit script**             | ❌ Moot                                                    |
-| 14 | **Per-module go.sum audit**                        | ❌ Moot                                                    |
-| 15 | **Add version-drift CI check**                     | ❌ Moot                                                    |
-| 16 | **Document the release workflow** for multi-module | ❌ Moot                                                    |
-| 17 | **Evaluate: should `htmx` be extracted?**          | ⬜ Deferred — may revisit post-v1.0                        |
-| 18 | **Evaluate: merge svg + utils?**                   | ✅ Resolved — svg stays as `internal/svg` in single module |
+| ~~12~~ | ~~**Add workspace sync CI check**~~ done — scripts/check-module-sync.sh | ~~❌ Moot~~ |
+| ~~13~~ | ~~**Add replace-directive audit script**~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot~~ |
+| ~~14~~ | ~~**Per-module go.sum audit**~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot~~ |
+| ~~15~~ | ~~**Add version-drift CI check**~~ done — scripts/check-version-sync.sh | ~~❌ Moot~~ |
+| ~~16~~ | ~~**Document the release workflow** for multi-module~~ done — docs/release-checklist.md | ~~❌ Moot~~ |
+| ~~17~~ | ~~**Evaluate: should `htmx` be extracted?**~~ done — htmx/go.mod | ~~⬜ Deferred — may revisit post-v1.0~~ |
+| ~~18~~ | ~~**Evaluate: merge svg + utils?**~~ **Won't implement — resolved svg stayed internal.** | ~~✅ Resolved — svg stays as `internal/svg` in single module~~ |
 
 ### Tier 4 — Polish & Long-term
 
 | #  | Task                                                                                                     | Status (2026-07-06)                               |
 | -- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| 19 | **Add per-module coverage reporting**                                                                    | ❌ Moot                                           |
-| 20 | **Update `docs/diagrams/internal-dependencies.d2`** — reflect new multi-module DAG                       | ❌ Moot — diagram is for single module            |
-| 21 | **Consider go.work.sum in .gitignore vs committed**                                                      | ❌ Moot — no go.work                              |
-| 22 | **Add `go work vendor` support**                                                                         | ❌ Moot                                           |
-| 23 | **Stale doc cleanup** — ~30 docs/status/_.md and docs/planning/_.md files still reference `internal/svg` | ✅ Resolved — `internal/svg` is correct on master |
-| 24 | **Monitor co-change after 3 months**                                                                     | ⬜ Ongoing                                        |
-| 25 | **Consider independent versioning for icons**                                                            | ⬜ Deferred — may revisit post-v1.0               |
+| ~~19~~ | ~~**Add per-module coverage reporting**~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot~~ |
+| ~~20~~ | ~~**Update `docs/diagrams/internal-dependencies.d2`** — reflect new multi-module DAG~~ done — docs/diagrams/internal-dependencies.d2 | ~~❌ Moot — diagram is for single module~~ |
+| ~~21~~ | ~~**Consider go.work.sum in .gitignore vs committed**~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot — no go.work~~ |
+| ~~22~~ | ~~**Add `go work vendor` support**~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot~~ |
+| ~~23~~ | ~~**Stale doc cleanup** — ~30 docs/status/_.md and docs/planning/_.md files still reference `internal/svg`~~ **Won't implement — made moot by branch abandonment.** | ~~✅ Resolved — `internal/svg` is correct on master~~ |
+| ~~24~~ | ~~**Monitor co-change after 3 months**~~ **Won't implement — superseded by 2026-08 multimodule split.** | ~~⬜ Ongoing~~ |
+| ~~25~~ | ~~**Consider independent versioning for icons**~~ done — icons/go.mod | ~~⬜ Deferred — may revisit post-v1.0~~ |
 
 ---
 

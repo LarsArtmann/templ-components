@@ -16,20 +16,20 @@
 
 | Task  | What was fixed                                                               | Package   |
 | ----- | ---------------------------------------------------------------------------- | --------- |
-| P-074 | Tooltip auto-generates ID via EnsureID; aria-describedby always present      | display   |
-| P-043 | FormMethod doc comment explains hx-put/hx-delete/hx-patch via Attrs          | forms     |
-| P-091 | Removed buttonVariantDefault/badgeStyleDefault duplicate constants           | display   |
-| P-092 | Drawer inline style → Tailwind classes (inset-y-0 left-0/right-0)            | display   |
-| P-036 | WriteErrorPage derives status from FamilyStatusCode when statusCode is 0     | errorpage |
-| P-037 | renderToBuffer/renderShellToBuffer render to bytes.Buffer before WriteHeader | errorpage |
-| P-038 | FromError extracts Title from errors implementing ErrorTitle()               | errorpage |
-| P-041 | Split 354-line handler.go into fromerror.go + constructors.go + handler.go   | errorpage |
-| P-049 | FormFieldWrapper 5 positional params → FormFieldProps struct                 | forms     |
-| P-047 | HTMXVersion typed string const (HTMXVersion2_0_10) replacing bare string     | layout    |
-| P-048 | ThemeColor/DarkThemeColor hex validation with fallback to defaults           | layout    |
-| P-105 | ExtractCauseChain handles errors.Join siblings (Unwrap() []error, Go 1.20+)  | errorpage |
-| P-073 | Tooltip touch fallback (click toggle) + Escape-to-dismiss via singleton JS   | display   |
-| P-050 | ConfirmDelete/SwapOOB converted from positional params to Props structs      | htmx      |
+| ~~P-074~~ | ~~Tooltip auto-generates ID via EnsureID; aria-describedby always present~~ done at `cb9db68` | ~~display~~ |
+| ~~P-043~~ | ~~FormMethod doc comment explains hx-put/hx-delete/hx-patch via Attrs~~ done at `cb9db68` | ~~forms~~ |
+| ~~P-091~~ | ~~Removed buttonVariantDefault/badgeStyleDefault duplicate constants~~ done at `cb9db68` | ~~display~~ |
+| ~~P-092~~ | ~~Drawer inline style → Tailwind classes (inset-y-0 left-0/right-0)~~ done at `cb9db68` | ~~display~~ |
+| ~~P-036~~ | ~~WriteErrorPage derives status from FamilyStatusCode when statusCode is 0~~ done at `cb9db68` | ~~errorpage~~ |
+| ~~P-037~~ | ~~renderToBuffer/renderShellToBuffer render to bytes.Buffer before WriteHeader~~ done at `cb9db68` | ~~errorpage~~ |
+| ~~P-038~~ | ~~FromError extracts Title from errors implementing ErrorTitle()~~ done at `cb9db68` | ~~errorpage~~ |
+| ~~P-041~~ | ~~Split 354-line handler.go into fromerror.go + constructors.go + handler.go~~ done at `cb9db68` | ~~errorpage~~ |
+| ~~P-049~~ | ~~FormFieldWrapper 5 positional params → FormFieldProps struct~~ done at `cb9db68` | ~~forms~~ |
+| ~~P-047~~ | ~~HTMXVersion typed string const (HTMXVersion2_0_10) replacing bare string~~ done at `cb9db68` | ~~layout~~ |
+| ~~P-048~~ | ~~ThemeColor/DarkThemeColor hex validation with fallback to defaults~~ done at `cb9db68` | ~~layout~~ |
+| ~~P-105~~ | ~~ExtractCauseChain handles errors.Join siblings (Unwrap() []error, Go 1.20+)~~ done at `cb9db68` | ~~errorpage~~ |
+| ~~P-073~~ | ~~Tooltip touch fallback (click toggle) + Escape-to-dismiss via singleton JS~~ done at `cb9db68` | ~~display~~ |
+| ~~P-050~~ | ~~ConfirmDelete/SwapOOB converted from positional params to Props structs~~ done at `cb9db68` | ~~htmx~~ |
 
 ### Also done (bonus, not in original plan)
 
@@ -67,7 +67,7 @@ All remaining tasks are Tier 3 (Medium) or Tier 4 (Polish) — no remaining Crit
 
 | Task  | Description                                                   | Effort |
 | ----- | ------------------------------------------------------------- | ------ |
-| P-039 | contextTable: use dl or add caption/th+scope                  | S      |
+| ~~P-039~~ | ~~contextTable: use dl or add caption/th+scope~~ done — errorpage/shared.templ caption | ~~S~~ |
 | P-042 | StatusBadge: typed status alias with constants                | S      |
 | P-045 | paginationArrow roundedSide: typed enum                       | S      |
 | P-046 | DropdownItem: deprecate Href fallback, require Kind (partial) | S      |
@@ -77,7 +77,7 @@ All remaining tasks are Tier 3 (Medium) or Tier 4 (Polish) — no remaining Crit
 | P-054 | diagnosticSection (5 params) → props struct                   | S      |
 | P-056 | Move DismissScript out of utils (foundation leaks DOM/JS)     | S      |
 | P-064 | errorpage familyStyleMap: builder to dedup 6 entries          | M      |
-| P-076 | Icon accessible variant (role=img + title)                    | M      |
+| ~~P-076~~ | ~~Icon accessible variant (role=img + title)~~ done — icons/custom icon.templ role=img | ~~M~~ |
 | P-080 | utils Class(): per-shard mutex or result cache                | L      |
 | P-111 | IconPathJS: accept strokeWidth arg (hardcoded 1.5)            | XS     |
 | P-113 | layout: consolidate 7 overlapping test files into 2           | M      |
@@ -95,9 +95,9 @@ All remaining tasks are Tier 3 (Medium) or Tier 4 (Polish) — no remaining Crit
 
 **What I could have done better this phase:**
 
-1. **Lint issues introduced:** The `contextcheck` and `nestif` linters flagged the new `ExtractCauseChain` and `renderToBuffer` code. Fixed immediately but should have anticipated them during implementation.
-2. **The `nestif` fix** required extracting `appendJoinSiblings` and `causeItemFromError` helpers — this is actually better code, but it should have been the initial implementation, not a lint-driven refactor.
-3. **The `multiedit` on handler.go** failed for one of two edits (file modified between view and edit). Had to re-read and retry. Should have used `view` immediately before `edit` on a file that was recently written.
+1. ~~**Lint issues introduced:** The `contextcheck` and `nestif` linters flagged the new `ExtractCauseChain` and `renderToBuffer` code. Fixed immediately but should have anticipated them during implementation.~~ done (docs-health pass 2026-09-08)
+2. ~~**The `nestif` fix** required extracting `appendJoinSiblings` and `causeItemFromError` helpers — this is actually better code, but it should have been the initial implementation, not a lint-driven refactor.~~ done (docs-health pass 2026-09-08)
+3. ~~**The `multiedit` on handler.go** failed for one of two edits (file modified between view and edit). Had to re-read and retry. Should have used `view` immediately before `edit` on a file that was recently written.~~ done (docs-health pass 2026-09-08)
 
 ---
 
@@ -127,9 +127,9 @@ All remaining tasks are Tier 3 (Medium) or Tier 4 (Polish) — no remaining Crit
 
 ### A11y
 
-9. **Icon a11y:** Every icon hardcodes `aria-hidden="true"` with no API for meaningful icons (role="img" + title). Icons used as sole button content are invisible to AT.
+9. ~~**Icon a11y:** Every icon hardcodes `aria-hidden="true"` with no API for meaningful icons (role="img" + title). Icons used as sole button content are invisible to AT.~~ done — icons/custom icon.templ
 
-10. **contextTable:** Uses bare `<table>/<td>` without `<dl>`, `<caption>`, or `<th scope>` — screen readers mis-announce definition data as table rows.
+10. ~~**contextTable:** Uses bare `<table>/<td>` without `<dl>`, `<caption>`, or `<th scope>` — screen readers mis-announce definition data as table rows.~~ done — errorpage/shared.templ caption
 
 ### Performance
 
@@ -150,8 +150,8 @@ Sorted by impact × inverse effort (highest value first):
 | 5  | P-042 StatusBadge typed alias                           | S      | S      | Magic string map is only validation; typed alias adds compile-time safety |
 | 6  | P-045 paginationArrow roundedSide typed enum            | XS     | XS     | "l"/"r" literals → typed enum; 5-minute fix                               |
 | 7  | P-046 DropdownItem deprecate Href fallback              | M      | S      | Dual discrimination drops href silently; Kind should be required          |
-| 8  | P-039 contextTable → dl                                 | S      | S      | Screen readers mis-announce definition data as table                      |
-| 9  | P-076 Icon accessible variant (role=img + title)        | L      | M      | Icons as sole button content invisible to AT                              |
+| ~~8~~  | ~~P-039 contextTable → dl~~ done — errorpage/shared.templ caption | ~~S~~ | ~~S~~ | ~~Screen readers mis-announce definition data as table~~ |
+| ~~9~~  | ~~P-076 Icon accessible variant (role=img + title)~~ done — icons/custom icon.templ | ~~L~~ | ~~M~~ | ~~Icons as sole button content invisible to AT~~ |
 | 10 | P-122 SidebarNavItem embed BaseProps                    | XS     | XS     | Missing Class/ID/Attrs/AriaLabel support                                  |
 | 11 | P-111 IconPathJS accept strokeWidth arg                 | XS     | XS     | Hardcoded 1.5; 5-minute fix                                               |
 | 12 | P-119 paginationRange current>total test case           | XS     | XS     | Edge case with no test coverage                                           |
@@ -163,10 +163,10 @@ Sorted by impact × inverse effort (highest value first):
 | 18 | P-113 layout consolidate 7 test files → 2               | M      | M      | Massive duplication; rename "coverage_boost" anti-pattern                 |
 | 19 | P-080 utils Class() per-shard mutex                     | M      | L      | Real contention bottleneck under concurrent SSR                           |
 | 20 | P-100 InputGroupPaddingClass: audit usage               | XS     | XS     | Verify it's wired correctly or delete                                     |
-| 21 | P-103 Remove unreachable props.Timestamp=="" branch     | XS     | XS     | Already done — verify and close                                           |
-| 22 | P-096 pageURL preserve fragment across re-encode        | XS     | XS     | Already done — verify and close                                           |
-| 23 | P-112 example_test // Output directives                 | S      | S      | Already done for forms + errorpage — audit remaining packages             |
-| 24 | P-047 HTMXVersion typed const set                       | M      | S      | Already done — add more version constants as htmx releases                |
+| ~~21~~ | ~~P-103 Remove unreachable props.Timestamp=="" branch~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~XS~~ | ~~XS~~ | ~~Already done — verify and close~~ |
+| ~~22~~ | ~~P-096 pageURL preserve fragment across re-encode~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~XS~~ | ~~XS~~ | ~~Already done — verify and close~~ |
+| ~~23~~ | ~~P-112 example_test // Output directives~~ done — forms/example test.go | ~~S~~ | ~~S~~ | ~~Already done for forms + errorpage — audit remaining packages~~ |
+| ~~24~~ | ~~P-047 HTMXVersion typed const set~~ done — layout/sri.go | ~~M~~ | ~~S~~ | ~~Already done — add more version constants as htmx releases~~ |
 | 25 | P-048 ThemeColor hex validation                         | S      | S      | Already done — consider named color support (e.g. "indigo-600")           |
 
 ---

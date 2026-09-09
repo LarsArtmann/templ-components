@@ -47,25 +47,25 @@ Executed ~30 TODO items from `TODO_LIST.md`. 10 code changes implemented, 20+ it
 
 ### Implemented This Session
 
-1. **Theme color constants** — `layout.DefaultThemeColor` (#4f46e5) and `layout.DefaultDarkThemeColor` (#1e1b4b) replace inline magic hex values in `DefaultPageProps()`.
+1. ~~**Theme color constants** — `layout.DefaultThemeColor` (#4f46e5) and `layout.DefaultDarkThemeColor` (#1e1b4b) replace inline magic hex values in `DefaultPageProps()`.~~ done at `2f9ca3d`
 
-2. **SelectOption Disabled+Selected validation** — `normalizeSelectOptions()` in `forms/select.templ` clears `Selected` when `Disabled` is true. Prevents contradictory option rendering.
+2. ~~**SelectOption Disabled+Selected validation** — `normalizeSelectOptions()` in `forms/select.templ` clears `Selected` when `Disabled` is true. Prevents contradictory option rendering.~~ done at `2f9ca3d`
 
-3. **SVG pipe separator validation** — `icons.iconPaths()` panics on empty path segments from stray `|` separators. Prevents silent malformed SVG output.
+3. ~~**SVG pipe separator validation** — `icons.iconPaths()` panics on empty path segments from stray `|` separators. Prevents silent malformed SVG output.~~ done at `2f9ca3d`
 
-4. **Auto-generate `allIconNames()`** — `icons/icon_names.go` now derives all icon names from `iconPathData` map + Spinner. Eliminates manual list maintenance. New tests: `TestAllIconNamesCoversIconPathData`, `TestIconPathsNoEmptySegments`, `TestIconPathDataNoPipeInSVGPaths`, `TestIconPathJSProducesValidHTML`, `TestIconPathsPanicsOnUnknown`.
+4. ~~**Auto-generate `allIconNames()`** — `icons/icon_names.go` now derives all icon names from `iconPathData` map + Spinner. Eliminates manual list maintenance. New tests: `TestAllIconNamesCoversIconPathData`, `TestIconPathsNoEmptySegments`, `TestIconPathDataNoPipeInSVGPaths`, `TestIconPathJSProducesValidHTML`, `TestIconPathsPanicsOnUnknown`.~~ done at `2f9ca3d`
 
-5. **Icon stroke-width option** — `icons.IconWithStrokeWidth(name, class, strokeWidth)` renders icons with custom stroke-width. Default `Icon` still uses 1.5. `strokeIcon` sub-template accepts `float64`.
+5. ~~**Icon stroke-width option** — `icons.IconWithStrokeWidth(name, class, strokeWidth)` renders icons with custom stroke-width. Default `Icon` still uses 1.5. `strokeIcon` sub-template accepts `float64`.~~ done at `2f9ca3d`
 
-6. **SimpleCard composes through Card** — `display.SimpleCard` now delegates to `Card(CardProps{...})` internally instead of duplicating `cardShellClass`. No empty header/footer divs rendered.
+6. ~~**SimpleCard composes through Card** — `display.SimpleCard` now delegates to `Card(CardProps{...})` internally instead of duplicating `cardShellClass`. No empty header/footer divs rendered.~~ done at `2f9ca3d`
 
-7. **Breadcrumb separator customization + JSON-LD** — `BreadcrumbsProps.Separator` field for custom separator text. `BreadcrumbsProps.JSONLD` field enables schema.org JSON-LD structured data via `breadcrumbJSONLD()` function. Uses `templ.Raw(fmt.Sprintf(...))` to inject JSON-LD script (templ's `<script>` blocks don't evaluate Go expressions).
+7. ~~**Breadcrumb separator customization + JSON-LD** — `BreadcrumbsProps.Separator` field for custom separator text. `BreadcrumbsProps.JSONLD` field enables schema.org JSON-LD structured data via `breadcrumbJSONLD()` function. Uses `templ.Raw(fmt.Sprintf(...))` to inject JSON-LD script (templ's `<script>` blocks don't evaluate Go expressions).~~ done at `2f9ca3d`
 
-8. **Pagination `rel=prev/next` + ellipsis** — Previous/Next arrow links now include `rel="prev"` and `rel="next"` for SEO. When the visible range is truncated (TotalPages > MaxVisible), shows first page + ellipsis + visible window + ellipsis + last page.
+8. ~~**Pagination `rel=prev/next` + ellipsis** — Previous/Next arrow links now include `rel="prev"` and `rel="next"` for SEO. When the visible range is truncated (TotalPages > MaxVisible), shows first page + ellipsis + visible window + ellipsis + last page.~~ done at `2f9ca3d`
 
-9. **Configurable error handling** — `htmx.GlobalErrorHandling(cfg ErrorHandlingConfig)` replaces `GlobalErrorHandling(nonce string)`. Configurable `MaxErrorHistory`, `MaxRetries`, `RetryDelayMS` via struct. Includes `tc-error-announcer` div with `aria-live="polite"` for screen reader announcements. **Breaking change.**
+9. ~~**Configurable error handling** — `htmx.GlobalErrorHandling(cfg ErrorHandlingConfig)` replaces `GlobalErrorHandling(nonce string)`. Configurable `MaxErrorHistory`, `MaxRetries`, `RetryDelayMS` via struct. Includes `tc-error-announcer` div with `aria-live="polite"` for screen reader announcements. **Breaking change.**~~ done at `2f9ca3d`
 
-10. **DropdownItemKind enum** — `display.DropdownItemKind` type with `DropdownItemLink` and `DropdownItemButton` constants. `IsLink()` method provides backward compatibility (falls back to Href-based discrimination when Kind is empty).
+10. ~~**DropdownItemKind enum** — `display.DropdownItemKind` type with `DropdownItemLink` and `DropdownItemButton` constants. `IsLink()` method provides backward compatibility (falls back to Href-based discrimination when Kind is empty).~~ done at `2f9ca3d`
 
 ---
 
@@ -160,31 +160,31 @@ Sorted by **impact × ease** (Pareto — high impact, low effort first):
 
 | #  | Task                                                | Impact | Effort | Package                 |
 | -- | --------------------------------------------------- | ------ | ------ | ----------------------- |
-| 1  | Add Breadcrumb JSON-LD render test                  | High   | S      | navigation              |
-| 2  | Verify demo app HTMX enable (`HTMXVersion` default) | Medium | S      | examples/demo           |
-| 3  | Update README.md for v0.2 API changes               | High   | M      | root                    |
-| 4  | Add DefaultLoadingOverlayProps test                 | Low    | S      | feedback                |
-| 5  | Add DefaultBreadcrumbsProps test                    | Low    | S      | navigation              |
-| 6  | Add Nav empty `Links` test                          | Low    | S      | navigation              |
-| 7  | Add CSRFToken empty string test                     | Low    | S      | htmx                    |
-| 8  | Tag v0.2.0 release + CHANGELOG final                | High   | S      | root                    |
-| 9  | Improve icons coverage (56.5% → 70%+)               | Medium | M      | icons                   |
-| 10 | Write ADR for filled vs stroke icon convention      | Medium | S      | docs/adr                |
-| 11 | Write ADR for JS attachment patterns                | Medium | S      | docs/adr                |
-| 12 | Add ADR for FeedbackType unification                | Medium | S      | docs/adr                |
-| 13 | Badge click/href support                            | Medium | M      | display                 |
-| 14 | ProgressBar indeterminate state                     | Medium | M      | feedback                |
-| 15 | Step indicator vertical variant                     | Medium | M      | feedback                |
-| 16 | Client-side JS tab switching                        | Medium | M      | display                 |
-| 17 | Tabs keyboard navigation (arrow keys)               | Medium | M      | display                 |
+| ~~1~~  | ~~Add Breadcrumb JSON-LD render test~~ done — navigation/regression test.go TestBreadcrumbJSONLD | ~~High~~ | ~~S~~ | ~~navigation~~ |
+| ~~2~~  | ~~Verify demo app HTMX enable (`HTMXVersion` default)~~ done — examples/demo/htmx demo.templ | ~~Medium~~ | ~~S~~ | ~~examples/demo~~ |
+| ~~3~~  | ~~Update README.md for v0.2 API changes~~ done — README.md | ~~High~~ | ~~M~~ | ~~root~~ |
+| ~~4~~  | ~~Add DefaultLoadingOverlayProps test~~ done — feedback/edge cases test.go | ~~Low~~ | ~~S~~ | ~~feedback~~ |
+| ~~5~~  | ~~Add DefaultBreadcrumbsProps test~~ done — navigation/nav link test.go | ~~Low~~ | ~~S~~ | ~~navigation~~ |
+| ~~6~~  | ~~Add Nav empty `Links` test~~ done — navigation/bdd test.go TestNavEmptyLinks | ~~Low~~ | ~~S~~ | ~~navigation~~ |
+| ~~7~~  | ~~Add CSRFToken empty string test~~ done — htmx/bdd test.go TestCSRFTokenEmptyString | ~~Low~~ | ~~S~~ | ~~htmx~~ |
+| ~~8~~  | ~~Tag v0.2.0 release + CHANGELOG final~~ done — CHANGELOG 0.2.0 | ~~High~~ | ~~S~~ | ~~root~~ |
+| ~~9~~  | ~~Improve icons coverage (56.5% → 70%+)~~ done — CHANGELOG icons 75.9% | ~~Medium~~ | ~~M~~ | ~~icons~~ |
+| ~~10~~ | ~~Write ADR for filled vs stroke icon convention~~ done — docs/adr/0004-filled-vs-stroke-icon-convention.md | ~~Medium~~ | ~~S~~ | ~~docs/adr~~ |
+| ~~11~~ | ~~Write ADR for JS attachment patterns~~ done — docs/adr/0005-js-attachment-patterns.md | ~~Medium~~ | ~~S~~ | ~~docs/adr~~ |
+| ~~12~~ | ~~Add ADR for FeedbackType unification~~ done — docs/adr/0006-feedback-type-unification.md | ~~Medium~~ | ~~S~~ | ~~docs/adr~~ |
+| ~~13~~ | ~~Badge click/href support~~ done — display/badge.templ Href | ~~Medium~~ | ~~M~~ | ~~display~~ |
+| ~~14~~ | ~~ProgressBar indeterminate state~~ done — feedback/progressbar.templ Indeterminate | ~~Medium~~ | ~~M~~ | ~~feedback~~ |
+| ~~15~~ | ~~Step indicator vertical variant~~ done — feedback/step indicator.templ StepVertical | ~~Medium~~ | ~~M~~ | ~~feedback~~ |
+| ~~16~~ | ~~Client-side JS tab switching~~ done — display/tabs.templ client-side JS | ~~Medium~~ | ~~M~~ | ~~display~~ |
+| ~~17~~ | ~~Tabs keyboard navigation (arrow keys)~~ done — display/tabs.templ arrow keys | ~~Medium~~ | ~~M~~ | ~~display~~ |
 | 18 | Consolidate inline JS into shared init              | High   | L      | layout/display/feedback |
-| 19 | Add Form component (inputs + validation)            | High   | L      | forms                   |
-| 20 | Skeleton component variants                         | Medium | L      | display                 |
-| 21 | Add Dialog/Drawer component variants                | High   | L      | display                 |
-| 22 | Add Combobox/Autocomplete component                 | High   | XL     | forms                   |
-| 23 | Add Date Picker component                           | High   | XL     | forms                   |
-| 24 | Golden file test infrastructure                     | High   | L      | testing                 |
-| 25 | Accessibility audit automation (axe-core)           | High   | L      | CI                      |
+| ~~19~~ | ~~Add Form component (inputs + validation)~~ done — forms/form.templ | ~~High~~ | ~~L~~ | ~~forms~~ |
+| ~~20~~ | ~~Skeleton component variants~~ done — feedback testdata skeleton goldens | ~~Medium~~ | ~~L~~ | ~~display~~ |
+| ~~21~~ | ~~Add Dialog/Drawer component variants~~ done — display/drawer.templ | ~~High~~ | ~~L~~ | ~~display~~ |
+| ~~22~~ | ~~Add Combobox/Autocomplete component~~ done — forms/combobox.templ | ~~High~~ | ~~XL~~ | ~~forms~~ |
+| ~~23~~ | ~~Add Date Picker component~~ done — forms/date picker.templ | ~~High~~ | ~~XL~~ | ~~forms~~ |
+| ~~24~~ | ~~Golden file test infrastructure~~ done — display/testdata golden files | ~~High~~ | ~~L~~ | ~~testing~~ |
+| ~~25~~ | ~~Accessibility audit automation (axe-core)~~ done — visualtest/axe.min.js | ~~High~~ | ~~L~~ | ~~CI~~ |
 
 ---
 
@@ -194,9 +194,9 @@ Sorted by **impact × ease** (Pareto — high impact, low effort first):
 
 The signature changed from `GlobalErrorHandling(nonce string)` to `GlobalErrorHandling(cfg ErrorHandlingConfig)`. This is a breaking change for anyone using the library. Options:
 
-1. **Just break it** — we're pre-v1.0, breaking changes are expected
-2. **Add a backward-compat wrapper** — `GlobalErrorHandlingWithNonce(nonce string)` that wraps the config
-3. **Keep old signature + add new one** — deprecate old, add `GlobalErrorHandlingConfig(cfg)`
+1. ~~**Just break it** — we're pre-v1.0, breaking changes are expected~~ **Won't implement — chosen breaking change kept.**
+2. ~~**Add a backward-compat wrapper** — `GlobalErrorHandlingWithNonce(nonce string)` that wraps the config~~ **Won't implement — not taken.**
+3. ~~**Keep old signature + add new one** — deprecate old, add `GlobalErrorHandlingConfig(cfg)`~~ **Won't implement — not taken.**
 
 Since the library hasn't tagged v0.2.0 yet (current consumers would be on v0.1.x API), I recommend option 1 — tag v0.2.0 with all breaking changes documented in CHANGELOG.
 

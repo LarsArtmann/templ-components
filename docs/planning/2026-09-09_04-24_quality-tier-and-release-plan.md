@@ -7,11 +7,11 @@
 
 ## Sources (ALL TODOs consolidated)
 
-1. **`TODO_LIST.md` open section** (post-cleanup, 21 actionable rows): #128, #133, #146, #147, #152, #158, #159, #160, #162*, #163, #166, #167, #168, #173, #175, #176, #177, #179, #180, #186, #188, #189. (*#162 needs a human — grouped into the owner eyeball pack.)
-2. **TODO_LIST blocked section** (listed, never scheduled): #28, #29, #80, #93, #107, #108, #123, #124, #125, #126, #190 (Q1), #191 (Q2), #192 (Q3).
-3. **TODO_LIST deferred section** (candidates, stay deferred unless promoted): #33, #34, #119-note, #120, #150, #154, #155, #156, #157, #178, #39.
-4. **Status report 2026-09-09 04:20 §f** items — all map to TODO IDs above or to the eyeball pack; the only NEW micro-items (FEATURES.md coarse-pointer line; warm CHANGELOG for M3/M5 gated on #133) are folded into N18/N19 below.
-5. **Shipped and excluded:** kanban M1–M7/M9 (touch fix, harvest, goldens, guard+announcement, fuzz+bench, docs, coarse-pointer guard, demo polish) — CHANGELOG `[Unreleased]`.
+1. ~~**`TODO_LIST.md` open section** (post-cleanup, 21 actionable rows): #128, #133, #146, #147, #152, #158, #159, #160, #162*, #163, #166, #167, #168, #173, #175, #176, #177, #179, #180, #186, #188, #189. (*#162 needs a human — grouped into the owner eyeball pack.)~~ done (docs-health pass 2026-09-08)
+2. ~~**TODO_LIST blocked section** (listed, never scheduled): #28, #29, #80, #93, #107, #108, #123, #124, #125, #126, #190 (Q1), #191 (Q2), #192 (Q3).~~ done (docs-health pass 2026-09-08)
+3. ~~**TODO_LIST deferred section** (candidates, stay deferred unless promoted): #33, #34, #119-note, #120, #150, #154, #155, #156, #157, #178, #39.~~ done (docs-health pass 2026-09-08)
+4. ~~**Status report 2026-09-09 04:20 §f** items — all map to TODO IDs above or to the eyeball pack; the only NEW micro-items (FEATURES.md coarse-pointer line; warm CHANGELOG for M3/M5 gated on #133) are folded into N18/N19 below.~~ done (docs-health pass 2026-09-08)
+5. ~~**Shipped and excluded:** kanban M1–M7/M9 (touch fix, harvest, goldens, guard+announcement, fuzz+bench, docs, coarse-pointer guard, demo polish) — CHANGELOG `[Unreleased]`.~~ done (docs-health pass 2026-09-08)
 
 ---
 
@@ -45,27 +45,27 @@ Coverage margin (#152), Minimal head-content (#179, real consumer demand from #1
 
 | #  | ID     | Task                                                                                                        | Tier | Impact | Effort | Customer value                                                                                     |
 |----|--------|-------------------------------------------------------------------------------------------------------------|------|--------|--------|----------------------------------------------------------------------------------------------------|
-| 1  | N1     | **[GATED by Q3/#192]** Release v1.16.0: freeze, full verify matrix, `scripts/release.sh`, lockstep tags, proxy verification | 1%  | HIGH   | 60m    | KanbanBoard + touch fix + guards reach every consumer via the module proxy                          |
-| 2  | N2     | axe-core harness via chromedp (zero-npm: vendored/embedded axe source) + first sweep over demo routes + fix findings + zero-critical guard | 4%  | HIGH   | 90m    | Automated WCAG trust signal for all 121 components                                                  |
-| 3  | N3     | Demo click-through e2e: kanban move, LoadMore→EndOfList, ConfirmDelete removal, busy 800ms, upload echo | 4%  | HIGH   | 90m    | Browser-proven headline flows; locks the composition patterns consumers copy                        |
-| 4  | N4     | visualtest lint triage: bucket the 68 findings, fix mechanical, formal serial-e2e waiver/lint-matrix decision | 20% | MED    | 60m    | Repo trust; lint parity across modules                                                             |
-| 5  | N5     | CI demo smoke job: build → serve → shots → assert captures + zero 500s in server log                        | 20% | MED    | 90m    | CI catches demo breakage before consumers see it                                                    |
-| 6  | N6     | 375px sweep: MobileMenu, AppShell collapse, form stacking, table overflow, kanban                          | 20% | MED    | 60m    | Mobile correctness across the catalogue                                                             |
-| 7  | N7     | RTL browser sweep: Nav, Split, Carousel, Drawer, Dropdown, kanban under `dir="rtl"`                        | 20% | MED    | 60m    | RTL correctness proven at pixel level, not just scanner level                                       |
-| 8  | N8     | Overlay open-state captures: Modal, Drawer, Tooltip, Combobox, Carousel (`State:Click` + `FullViewport`)   | 20% | MED    | 45m    | First-ever visual proof of top-layer rendering                                                      |
-| 9  | N9     | Coverage margin: lift/hold 70% floor with ≥2pt headroom                                                    | tail| MED    | 45m    | CI stability against coverage drift                                                                 |
-| 10 | N10    | `layout.Minimal` head-content support (NoIndex/Canonical/hreflang/JSON-LD parity with Base)                | tail| MED    | 60m    | Unblocks the #156 `nsfw-classifier` adoption reason                                                 |
-| 11 | N11    | Page-level route goldens for the 7 demo routes (new visual tier)                                           | tail| MED    | 60m    | Would have caught the dashboard collapse class                                                      |
-| 12 | N12    | chromedp synthetics: `datastar-fetch` → SSEErrorHandling DOM; patch → aria-busy clear                      | tail| MED    | 45m    | Datastar JS paths browser-proven, not string-pinned                                                 |
-| 13 | N13    | `FormLayoutInline` width contract: docs + component fix/guard                                              | tail| MED    | 30m    | Form layout correctness for inline patterns                                                         |
-| 14 | N14    | DateRange block-vs-inline docs + two-adjacent-ranges golden                                                | tail| LOW    | 30m    | Docs honesty                                                                                        |
-| 15 | N15    | ErrorPage family matrix goldens (5 families; only 2 exist)                                                 | tail| LOW    | 30m    | Visual completeness for the error surface                                                           |
-| 16 | N16    | Prerender (`-prerender`) vs live-server HTML diff, 7 routes                                                | tail| LOW    | 30m    | Prerender honesty (#154 follow-up)                                                                  |
-| 17 | N17    | upstream-watch `workflow_dispatch` dry-run: trigger + confirm green on GitHub                              | tail| LOW    | 30m    | Dependency-drift automation finally observed green                                                  |
-| 18 | N18    | Docs mini-pack: SSE-fragment innerHTML-no-scripts fact (#180) + FEATURES.md coarse-pointer line + count check | tail| LOW    | 30m    | Discoverability; closes the session-report b-items                                                  |
-| 19 | N19    | **[semi-gated: owner policy]** Changelog policy for test-only diffs (#133): decide, implement guard, warm M3/M5 entries, 2 throwaway-PR shakedown | tail| MED  | 30m    | Deterministic changelog home for test-tier work                                                     |
+| ~~1~~  | ~~N1~~ done — CHANGELOG v1.16.0 | ~~**[GATED by Q3/#192]** Release v1.16.0: freeze, full verify matrix, `scripts/release.sh`, lockstep tags, proxy verification~~ | ~~1%~~ | ~~HIGH~~ | ~~60m~~ | ~~KanbanBoard + touch fix + guards reach every consumer via the module proxy~~ |
+| ~~2~~  | ~~N2~~ done — visualtest/axe sweep test.go | ~~axe-core harness via chromedp (zero-npm: vendored/embedded axe source) + first sweep over demo routes + fix findings + zero-critical guard~~ | ~~4%~~ | ~~HIGH~~ | ~~90m~~ | ~~Automated WCAG trust signal for all 121 components~~ |
+| ~~3~~  | ~~N3~~ done — visualtest/demo flows e2e test.go | ~~Demo click-through e2e: kanban move, LoadMore→EndOfList, ConfirmDelete removal, busy 800ms, upload echo~~ | ~~4%~~ | ~~HIGH~~ | ~~90m~~ | ~~Browser-proven headline flows; locks the composition patterns consumers copy~~ |
+| ~~4~~  | ~~N4~~ done — status 2026-09-09 23-21 N4 | ~~visualtest lint triage: bucket the 68 findings, fix mechanical, formal serial-e2e waiver/lint-matrix decision~~ | ~~20%~~ | ~~MED~~ | ~~60m~~ | ~~Repo trust; lint parity across modules~~ |
+| ~~5~~  | ~~N5~~ done — visualtest/demo smoke test.go | ~~CI demo smoke job: build → serve → shots → assert captures + zero 500s in server log~~ | ~~20%~~ | ~~MED~~ | ~~90m~~ | ~~CI catches demo breakage before consumers see it~~ |
+| ~~6~~  | ~~N6~~ done — visualtest/demo mobile e2e test.go | ~~375px sweep: MobileMenu, AppShell collapse, form stacking, table overflow, kanban~~ | ~~20%~~ | ~~MED~~ | ~~60m~~ | ~~Mobile correctness across the catalogue~~ |
+| ~~7~~  | ~~N7~~ done — visualtest/demo rtl e2e test.go | ~~RTL browser sweep: Nav, Split, Carousel, Drawer, Dropdown, kanban under `dir="rtl"`~~ | ~~20%~~ | ~~MED~~ | ~~60m~~ | ~~RTL correctness proven at pixel level, not just scanner level~~ |
+| ~~8~~  | ~~N8~~ done — overlay captures verified existing | ~~Overlay open-state captures: Modal, Drawer, Tooltip, Combobox, Carousel (`State:Click` + `FullViewport`)~~ | ~~20%~~ | ~~MED~~ | ~~45m~~ | ~~First-ever visual proof of top-layer rendering~~ |
+| ~~9~~  | ~~N9~~ done — coverage 72.0 headroom | ~~Coverage margin: lift/hold 70% floor with ≥2pt headroom~~ | ~~tail~~ | ~~MED~~ | ~~45m~~ | ~~CI stability against coverage drift~~ |
+| ~~10~~ | ~~N10~~ done — layout Minimal SEO SEOMeta | ~~`layout.Minimal` head-content support (NoIndex/Canonical/hreflang/JSON-LD parity with Base)~~ | ~~tail~~ | ~~MED~~ | ~~60m~~ | ~~Unblocks the #156 `nsfw-classifier` adoption reason~~ |
+| ~~11~~ | ~~N11~~ done — route goldens 8 captures | ~~Page-level route goldens for the 7 demo routes (new visual tier)~~ | ~~tail~~ | ~~MED~~ | ~~60m~~ | ~~Would have caught the dashboard collapse class~~ |
+| ~~12~~ | ~~N12~~ done — visualtest/datastar synthetics e2e test.go | ~~chromedp synthetics: `datastar-fetch` → SSEErrorHandling DOM; patch → aria-busy clear~~ | ~~tail~~ | ~~MED~~ | ~~45m~~ | ~~Datastar JS paths browser-proven, not string-pinned~~ |
+| ~~13~~ | ~~N13~~ done — TestFormLayoutInlineWidthContract | ~~`FormLayoutInline` width contract: docs + component fix/guard~~ | ~~tail~~ | ~~MED~~ | ~~30m~~ | ~~Form layout correctness for inline patterns~~ |
+| ~~14~~ | ~~N14~~ done — TestGoldenDateRangeAdjacent | ~~DateRange block-vs-inline docs + two-adjacent-ranges golden~~ | ~~tail~~ | ~~LOW~~ | ~~30m~~ | ~~Docs honesty~~ |
+| ~~15~~ | ~~N15~~ done — ErrorPage family matrix goldens | ~~ErrorPage family matrix goldens (5 families; only 2 exist)~~ | ~~tail~~ | ~~LOW~~ | ~~30m~~ | ~~Visual completeness for the error surface~~ |
+| ~~16~~ | ~~N16~~ done — prerender diff test bf8a276 | ~~Prerender (`-prerender`) vs live-server HTML diff, 7 routes~~ | ~~tail~~ | ~~LOW~~ | ~~30m~~ | ~~Prerender honesty (#154 follow-up)~~ |
+| ~~17~~ | ~~N17~~ done — upstream watch dry run success | ~~upstream-watch `workflow_dispatch` dry-run: trigger + confirm green on GitHub~~ | ~~tail~~ | ~~LOW~~ | ~~30m~~ | ~~Dependency-drift automation finally observed green~~ |
+| ~~18~~ | ~~N18~~ done — datastar facts FEATURES line | ~~Docs mini-pack: SSE-fragment innerHTML-no-scripts fact (#180) + FEATURES.md coarse-pointer line + count check~~ | ~~tail~~ | ~~LOW~~ | ~~30m~~ | ~~Discoverability; closes the session-report b-items~~ |
+| ~~19~~ | ~~N19~~ done — scripts/check-changelog-guard.sh | ~~**[semi-gated: owner policy]** Changelog policy for test-only diffs (#133): decide, implement guard, warm M3/M5 entries, 2 throwaway-PR shakedown~~ | ~~tail~~ | ~~MED~~ | ~~30m~~ | ~~Deterministic changelog home for test-tier work~~ |
 | 20 | N20    | Demo niceties: file-backed kanban state, Dashboard-recipe kanban section (#189)                            | tail| LOW    | 45m    | Demo depth; kanban survives server restarts                                                         |
-| 21 | N21    | Fold `nixpkgs-go` + `nixpkgs` inputs at a deliberate flake update (#146)                                   | tail| LOW    | 30m    | Simpler flake; templ-pin zero-diff invariant must survive                                           |
+| ~~21~~ | ~~N21~~ done — flake fold 3659d00 | ~~Fold `nixpkgs-go` + `nixpkgs` inputs at a deliberate flake update (#146)~~ | ~~tail~~ | ~~LOW~~ | ~~30m~~ | ~~Simpler flake; templ-pin zero-diff invariant must survive~~ |
 
 **Not scheduled (owner-gated / external / human-only):** Q1 touch-drag (#190), Q2 kanban props scope (#191), Q3 release timing (#192 — gates N1), human-eyeball pack (#80 overlays + 16 newer PNGs, #150 wire goldens, #162 progressbar half, 3 kanban board PNGs), BuildFlow family #93/#107/#108/#124/#125/#126 (other repo), #123 branch protection (owner), #28/#29 listings (upstream), deferred #33/#34/#39/#119-note/#120/#154/#155/#156(survey consumed by N10)/#157/#178.
 
@@ -146,7 +146,7 @@ Coverage margin (#152), Minimal head-content (#179, real consumer demand from #1
 | f13.2| Component-level fix or loud docs + guard test per #166's decision                                                        | 12 | M |
 | f14.1| DateRange block-vs-inline semantics docs                                                                                 | 10 | L |
 | f14.2| Two-adjacent-ranges golden + capture                                                                                     | 12 | L |
-| f15.1| ErrorPage family matrix golden sweep (rejection/conflict/transient/corruption/infrastructure)                            | 12 | L |
+| ~~f15.1~~| ~~ErrorPage family matrix golden sweep (rejection/conflict/transient/corruption/infrastructure)~~ done — N15 | ~~12~~ | ~~L~~ |
 | f16.1| Run `-prerender`, serve live, diff HTML per route                                                                        | 12 | L |
 | f16.2| Document acceptable deltas + guard the rest                                                                              | 10 | L |
 | f17.1| Trigger `upstream-watch.yml` `workflow_dispatch` (dry-run on) via gh                                                      | 10 | L |

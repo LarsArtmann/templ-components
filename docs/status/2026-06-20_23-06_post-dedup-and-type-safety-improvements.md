@@ -71,11 +71,11 @@ Empty — the 8 commits from this session haven't been logged yet.
 
 ## c) NOT STARTED ⬜
 
-1. **`flake.nix`** — Global AGENTS.md mandates Nix flake for all LarsArtmann projects. No flake, no justfile, no Makefile. Build commands are raw shell strings.
-2. **Golden test migration** — Replace coverage-padding tests with snapshot tests that verify full rendered output. Infrastructure exists (`internal/golden`) but is underused.
-3. **ROADMAP.md** — Does not exist. Long-term direction undocumented.
-4. **Generator version alignment** — Installed templ v0.3.1036 vs go.mod v0.3.1020 causes import-grouping churn. Either pin or upgrade go.mod.
-5. **Test helper extraction** — `utils/test_helpers.go` should move to `internal/testutil/` (deferred as breaking change for v1.0).
+1. ~~**`flake.nix`** — Global AGENTS.md mandates Nix flake for all LarsArtmann projects. No flake, no justfile, no Makefile. Build commands are raw shell strings.~~ done — flake.nix
+2. ~~**Golden test migration** — Replace coverage-padding tests with snapshot tests that verify full rendered output. Infrastructure exists (`internal/golden`) but is underused.~~ done — utils/golden
+3. ~~**ROADMAP.md** — Does not exist. Long-term direction undocumented.~~ done — ROADMAP.md
+4. ~~**Generator version alignment** — Installed templ v0.3.1036 vs go.mod v0.3.1020 causes import-grouping churn. Either pin or upgrade go.mod.~~ done — flake.nix pkgs.templ v0.3.1020
+5. ~~**Test helper extraction** — `utils/test_helpers.go` should move to `internal/testutil/` (deferred as breaking change for v1.0).~~ **Won't implement — deferred TODO 34 post-v1.0.**
 
 ---
 
@@ -117,51 +117,51 @@ Sorted by impact (high) × effort (low = quick win).
 
 | # | Task                                                                                | Impact   | Effort |
 | - | ----------------------------------------------------------------------------------- | -------- | ------ |
-| 1 | Update CHANGELOG `[Unreleased]` with this session's 8 commits                       | High     | 10 min |
+| ~~1~~ | ~~Update CHANGELOG `[Unreleased]` with this session's 8 commits~~ done — CHANGELOG 0.5.0 | ~~High~~ | ~~10 min~~ |
 | 2 | Configure BuildFlow to skip `go-mod-ignore-check` or add `.buildflow.toml` override | Critical | 15 min |
-| 3 | Update AGENTS.md with BuildFlow `*_templ.go` regression note + CI guard             | High     | 10 min |
-| 4 | Pin templ generator version OR upgrade go.mod to v0.3.1036                          | High     | 10 min |
+| ~~3~~ | ~~Update AGENTS.md with BuildFlow `*_templ.go` regression note + CI guard~~ done — AGENTS.md BuildFlow gotcha | ~~High~~ | ~~10 min~~ |
+| ~~4~~ | ~~Pin templ generator version OR upgrade go.mod to v0.3.1036~~ done — flake.nix pkgs.templ pin | ~~High~~ | ~~10 min~~ |
 
 ### Type Safety & Architecture
 
 | # | Task                                                                              | Impact | Effort |
 | - | --------------------------------------------------------------------------------- | ------ | ------ |
-| 5 | Audit remaining `map[string]string` lookups for typed-key conversion              | Medium | 30 min |
-| 6 | Extract overlay JS generation to a templ template or embedded `.js` file          | Medium | 1 hr   |
+| ~~5~~ | ~~Audit remaining `map[string]string` lookups for typed-key conversion~~ done — display/badge.templ typed lookups | ~~Medium~~ | ~~30 min~~ |
+| ~~6~~ | ~~Extract overlay JS generation to a templ template or embedded `.js` file~~ **Won't implement — superseded by native dialog ADR-0014.** | ~~Medium~~ | ~~1 hr~~ |
 | 7 | Consolidate `feedbackStyleMap` + `familyStyleMap` — they encode the same 4 styles | Medium | 45 min |
 
 ### Test Quality (replace coverage-padding)
 
 | #  | Task                                                                  | Impact | Effort |
 | -- | --------------------------------------------------------------------- | ------ | ------ |
-| 8  | Replace `display/coverage_boost_test.go` with golden tests            | High   | 2 hr   |
-| 9  | Replace `feedback/coverage_boost_test.go` with golden tests           | High   | 1.5 hr |
-| 10 | Replace `forms/coverage_boost_test.go` with golden tests              | High   | 2 hr   |
-| 11 | Replace `navigation/coverage_boost_test.go` with golden tests         | High   | 1.5 hr |
-| 12 | Replace `errorpage/coverage_boost_test.go` with golden tests          | Medium | 1 hr   |
-| 13 | Add golden tests for overlay JS output (Modal/Drawer open/close/trap) | Medium | 1 hr   |
+| ~~8~~  | ~~Replace `display/coverage_boost_test.go` with golden tests~~ done — display/golden sweep test.go | ~~High~~ | ~~2 hr~~ |
+| ~~9~~  | ~~Replace `feedback/coverage_boost_test.go` with golden tests~~ done — feedback/golden sweep test.go | ~~High~~ | ~~1.5 hr~~ |
+| ~~10~~ | ~~Replace `forms/coverage_boost_test.go` with golden tests~~ done — forms/golden sweep test.go | ~~High~~ | ~~2 hr~~ |
+| ~~11~~ | ~~Replace `navigation/coverage_boost_test.go` with golden tests~~ done — navigation/golden sweep test.go | ~~High~~ | ~~1.5 hr~~ |
+| ~~12~~ | ~~Replace `errorpage/coverage_boost_test.go` with golden tests~~ done — errorpage/golden sweep test.go | ~~Medium~~ | ~~1 hr~~ |
+| ~~13~~ | ~~Add golden tests for overlay JS output (Modal/Drawer open/close/trap)~~ done — visualtest/ | ~~Medium~~ | ~~1 hr~~ |
 | 14 | Raise coverage to 80% across all packages                             | High   | 3 hr   |
 
 ### Infrastructure
 
 | #  | Task                                                         | Impact | Effort |
 | -- | ------------------------------------------------------------ | ------ | ------ |
-| 15 | Create `flake.nix` with devShell (templ, golangci-lint, go)  | High   | 1 hr   |
-| 16 | Create `ROADMAP.md` with v1.0 milestone definition           | Medium | 30 min |
-| 17 | Add `govulncheck` to CI (how-to-golang security requirement) | Medium | 20 min |
+| ~~15~~ | ~~Create `flake.nix` with devShell (templ, golangci-lint, go)~~ done — flake.nix | ~~High~~ | ~~1 hr~~ |
+| ~~16~~ | ~~Create `ROADMAP.md` with v1.0 milestone definition~~ done — ROADMAP.md | ~~Medium~~ | ~~30 min~~ |
+| ~~17~~ | ~~Add `govulncheck` to CI (how-to-golang security requirement)~~ done — .github/workflows/ci.yaml govulncheck | ~~Medium~~ | ~~20 min~~ |
 | 18 | Add `gosec` to CI (how-to-golang security requirement)       | Medium | 20 min |
 
 ### Polish
 
 | #  | Task                                                                    | Impact | Effort |
 | -- | ----------------------------------------------------------------------- | ------ | ------ |
-| 19 | Document the `FeedbackType` unification in an ADR (0007)                | Low    | 20 min |
+| ~~19~~ | ~~Document the `FeedbackType` unification in an ADR (0007)~~ done — docs/adr/0006-feedback-type-unification.md | ~~Low~~ | ~~20 min~~ |
 | 20 | Add property-based tests for `utils.Lookup` and `utils.Class`           | Medium | 1 hr   |
 | 21 | Extract `dismissScript()` to a shared JS file (currently inline string) | Low    | 30 min |
-| 22 | Add benchmarks for `utils.Class()` (tailwind-merge-go under mutex)      | Low    | 30 min |
-| 23 | Document overlay JS architecture in an ADR (0008)                       | Low    | 30 min |
-| 24 | Add `go mod tidy` check to pre-commit (prevent phantom deps)            | Low    | 10 min |
-| 25 | Remove deprecated `AlertType` alias (v1.0 breaking change)              | Low    | 15 min |
+| ~~22~~ | ~~Add benchmarks for `utils.Class()` (tailwind-merge-go under mutex)~~ done — utils/benchmark test.go | ~~Low~~ | ~~30 min~~ |
+| ~~23~~ | ~~Document overlay JS architecture in an ADR (0008)~~ done — docs/adr/0023-compound-overlay-component-api.md | ~~Low~~ | ~~30 min~~ |
+| ~~24~~ | ~~Add `go mod tidy` check to pre-commit (prevent phantom deps)~~ done — .github/workflows/tidy-probe.yml | ~~Low~~ | ~~10 min~~ |
+| ~~25~~ | ~~Remove deprecated `AlertType` alias (v1.0 breaking change)~~ done — removed aliases feedback | ~~Low~~ | ~~15 min~~ |
 
 ---
 

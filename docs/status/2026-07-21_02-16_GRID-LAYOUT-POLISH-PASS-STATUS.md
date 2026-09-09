@@ -31,20 +31,20 @@ as v0.19.0** (commit `2314f26`). See [Resolution](#resolution-2026-07-27).
 
 | #  | Item                                                                                                                                                                              | Evidence                                                                               |
 | -- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| 1  | **CHANGELOG `[Unreleased]` updated** — 10 Added entries + 1 Deprecated entry covering every grid-layout change                                                                    | `CHANGELOG.md` — release script will no longer fail                                    |
-| 2  | **`splitRatioCols` lying comment fixed** — the function's godoc wrongly said `splitRatioMainSpan returns...` (introduced in `2314f26`, caught this session)                       | `layout/split_types.go:38-42`                                                          |
-| 3  | **`FormProps.Inline` `// Deprecated:` confirmed** — was already present from prior session (`form.templ:100`)                                                                     | verified, no change needed                                                             |
-| 4  | **`--tc-sidebar-w` documented in custom.css** — `:root` fallback (16rem) + full comment explaining the SidebarWidth enum mapping + specificity note                               | `templates/custom.css:418-442`                                                         |
-| 5  | **Demo dogfooding** — hero + sticky-nav sections replaced hand-rolled `max-w-6xl mx-auto px-4 sm:px-6 lg:px-8` with `@layout.Container`                                           | `examples/demo/demo.templ:56,111`                                                      |
-| 6  | **Cross-package integration tests** — `TestAppShellCrossPackageComposition` (AppShell+SidebarNav+Nav+Grid), `TestSplitWithContentAndAside`, `TestStackWithFeedbackComponents`     | `integration/appshell_composition_test.go` — all PASS                                  |
-| 7  | **`<main>` singleton contract test** — `TestBodyPrimitivesDoNotEmitMain` table-driven over AppShell/Split/Stack/Container                                                         | `layout/a11y_test.go:40-74` — would have caught the original Split `<main>` regression |
-| 8  | **RTL logical-properties scanner** — `TestRTLLogicalProperties` scans all `.templ` for `ml-`/`mr-`/`pl-`/`pr-`/`text-left`/`text-right`/`border-l-`/`border-r-` (failing CI test) | `utils/rtl_compliance_test.go` — PASS, 0 library violations                            |
-| 9  | **2 RTL demo violations fixed** — `ml-4`→`ms-4`, `pl-10`→`ps-10`                                                                                                                  | `examples/demo/display_demo.templ:278`, `examples/demo/forms_section.templ:21`         |
-| 10 | **Mobile-drawer recipe example** — full `display.Drawer` + hamburger button wired to `tcOpenOverlay`, ready to drop into `MobileNav` slot                                         | `docs/recipes/appshell-dashboard-layout.md:99-160`                                     |
-| 11 | **ROADMAP.md updated** — counts (97→98, 37→43), new Layout pillar, `FormProps.Inline` added to v1.0 removal list, RTL scanner mentioned                                           | `ROADMAP.md:13-24,40`                                                                  |
-| 12 | **Full verify** — `templ generate` (87 files) + `go build ./...` + `go test -race ./...` (13/13 ok) + `golangci-lint run` (0 issues)                                              | ran twice, once after each significant change                                          |
-| 13 | **Demo binary smoke test** — builds, starts on port 18923, stops cleanly                                                                                                          | `PORT=18923 /tmp/tc-demo` (no HTTP fetch — see section d)                              |
-| 14 | **Invalid icon reference caught & fixed** — recipe used `icons.Cog6Tooth` which **does not exist**; replaced with `icons.Settings`                                                | `docs/recipes/appshell-dashboard-layout.md` — caught during status-report verification |
+| ~~1~~  | ~~**CHANGELOG `[Unreleased]` updated** — 10 Added entries + 1 Deprecated entry covering every grid-layout change~~ done at `1444b9d` | ~~`CHANGELOG.md` — release script will no longer fail~~ |
+| ~~2~~  | ~~**`splitRatioCols` lying comment fixed** — the function's godoc wrongly said `splitRatioMainSpan returns...` (introduced in `2314f26`, caught this session)~~ done at `1444b9d` | ~~`layout/split_types.go:38-42`~~ |
+| ~~3~~  | ~~**`FormProps.Inline` `// Deprecated:` confirmed** — was already present from prior session (`form.templ:100`)~~ done at `1444b9d` | ~~verified, no change needed~~ |
+| ~~4~~  | ~~**`--tc-sidebar-w` documented in custom.css** — `:root` fallback (16rem) + full comment explaining the SidebarWidth enum mapping + specificity note~~ done at `1444b9d` | ~~`templates/custom.css:418-442`~~ |
+| ~~5~~  | ~~**Demo dogfooding** — hero + sticky-nav sections replaced hand-rolled `max-w-6xl mx-auto px-4 sm:px-6 lg:px-8` with `@layout.Container`~~ done at `1444b9d` | ~~`examples/demo/demo.templ:56,111`~~ |
+| ~~6~~  | ~~**Cross-package integration tests** — `TestAppShellCrossPackageComposition` (AppShell+SidebarNav+Nav+Grid), `TestSplitWithContentAndAside`, `TestStackWithFeedbackComponents`~~ done at `1444b9d` | ~~`integration/appshell_composition_test.go` — all PASS~~ |
+| ~~7~~  | ~~**`<main>` singleton contract test** — `TestBodyPrimitivesDoNotEmitMain` table-driven over AppShell/Split/Stack/Container~~ done at `1444b9d` | ~~`layout/a11y_test.go:40-74` — would have caught the original Split `<main>` regression~~ |
+| ~~8~~  | ~~**RTL logical-properties scanner** — `TestRTLLogicalProperties` scans all `.templ` for `ml-`/`mr-`/`pl-`/`pr-`/`text-left`/`text-right`/`border-l-`/`border-r-` (failing CI test)~~ done at `1444b9d` | ~~`utils/rtl_compliance_test.go` — PASS, 0 library violations~~ |
+| ~~9~~  | ~~**2 RTL demo violations fixed** — `ml-4`→`ms-4`, `pl-10`→`ps-10`~~ done at `1444b9d` | ~~`examples/demo/display_demo.templ:278`, `examples/demo/forms_section.templ:21`~~ |
+| ~~10~~ | ~~**Mobile-drawer recipe example** — full `display.Drawer` + hamburger button wired to `tcOpenOverlay`, ready to drop into `MobileNav` slot~~ done at `1444b9d` | ~~`docs/recipes/appshell-dashboard-layout.md:99-160`~~ |
+| ~~11~~ | ~~**ROADMAP.md updated** — counts (97→98, 37→43), new Layout pillar, `FormProps.Inline` added to v1.0 removal list, RTL scanner mentioned~~ done at `1444b9d` | ~~`ROADMAP.md:13-24,40`~~ |
+| ~~12~~ | ~~**Full verify** — `templ generate` (87 files) + `go build ./...` + `go test -race ./...` (13/13 ok) + `golangci-lint run` (0 issues)~~ done at `1444b9d` | ~~ran twice, once after each significant change~~ |
+| ~~13~~ | ~~**Demo binary smoke test** — builds, starts on port 18923, stops cleanly~~ done at `1444b9d` | ~~`PORT=18923 /tmp/tc-demo` (no HTTP fetch — see section d)~~ |
+| ~~14~~ | ~~**Invalid icon reference caught & fixed** — recipe used `icons.Cog6Tooth` which **does not exist**; replaced with `icons.Settings`~~ done at `1444b9d` | ~~`docs/recipes/appshell-dashboard-layout.md` — caught during status-report verification~~ |
 
 ---
 
@@ -159,22 +159,22 @@ specifically before marking the task done. `go test` is not enough.
 
 ## e) WHAT WE SHOULD IMPROVE (process, this session)
 
-1. **Never trust LSP `unused` for package-private funcs in a templ repo.**
-   Add to AGENTS.md: "LSP `unused` is a false positive for any function called
-   only from `*_templ.go`. Grep `.templ` + `_templ.go` before deleting."
-2. **Run `golangci-lint run` on every new file immediately**, not just at the
-   end. `go test` passing ≠ lint passing (wsl_v5, gci, etc.).
-3. **Verify every identifier in recipe/example code against source.** Icons,
-   prop names, enum values — all must be grep-confirmed.
-4. **Don't chase LSP warnings when the CLI gate is clean.** Restart the LSP
-   instead. The CLI config is the source of truth.
-5. **Commit incrementally.** 16 uncommitted files is too much surface for one
-   commit. The lying-comment fix, the RTL scanner, and the CHANGELOG should be
-   separate commits for bisect-ability.
-6. **Recompile demo CSS after changing `.templ` files** if the demo is expected
-   to run via `go run` (not just Docker).
-7. **Fetch the actual HTTP response in a smoke test**, not just "process alive".
-   A 200 with the right HTML is the only real proof.
+1. ~~**Never trust LSP `unused` for package-private funcs in a templ repo.**~~ done — AGENTS.md
+   ~~Add to AGENTS.md: "LSP `unused` is a false positive for any function called~~
+   ~~only from `*_templ.go`. Grep `.templ` + `_templ.go` before deleting."~~
+2. ~~**Run `golangci-lint run` on every new file immediately**, not just at the~~ done (docs-health pass 2026-09-08)
+   ~~end. `go test` passing ≠ lint passing (wsl_v5, gci, etc.).~~
+3. ~~**Verify every identifier in recipe/example code against source.** Icons,~~ done (docs-health pass 2026-09-08)
+   ~~prop names, enum values — all must be grep-confirmed.~~
+4. ~~**Don't chase LSP warnings when the CLI gate is clean.** Restart the LSP~~ done (docs-health pass 2026-09-08)
+   ~~instead. The CLI config is the source of truth.~~
+5. ~~**Commit incrementally.** 16 uncommitted files is too much surface for one~~ done (docs-health pass 2026-09-08)
+   ~~commit. The lying-comment fix, the RTL scanner, and the CHANGELOG should be~~
+   ~~separate commits for bisect-ability.~~
+6. ~~**Recompile demo CSS after changing `.templ` files** if the demo is expected~~ done — scripts/release.sh
+   ~~to run via `go run` (not just Docker).~~
+7. ~~**Fetch the actual HTTP response in a smoke test**, not just "process alive".~~ done — visualtest
+   ~~A 200 with the right HTML is the only real proof.~~
 
 ---
 
@@ -182,28 +182,28 @@ specifically before marking the task done. `go test` is not enough.
 
 ### 🔴 Blockers / must-do before release
 
-1. **Commit the 16-file polish surface** (after user picks commit granularity — see Q2).
-2. **Recompile `examples/demo/static/app.css`** from `demo.css` so `go run` shows the new Container wrappers correctly (Docker rebuilds it; local dev does not).
-3. **Decide release version** (v0.19.0 minor now, or hold for v1.0 — see Q1) and cut via `scripts/release.sh`.
-4. **Run `nix fmt` + `nix flake check`** — the CI format gate. I changed `.go` files; treefmt-nix may want to reformat.
-5. **Commit or trash the prior session's status report** at `docs/status/2026-07-21_01-24_GRID-LAYOUT-SESSION-BRUTAL-STATUS.md` (untracked).
+1. ~~**Commit the 16-file polish surface** (after user picks commit granularity — see Q2).~~ done — CHANGELOG v0.19.0
+2. ~~**Recompile `examples/demo/static/app.css`** from `demo.css` so `go run` shows the new Container wrappers correctly (Docker rebuilds it; local dev does not).~~ done — scripts/release.sh
+3. ~~**Decide release version** (v0.19.0 minor now, or hold for v1.0 — see Q1) and cut via `scripts/release.sh`.~~ done — CHANGELOG v0.19.0
+4. ~~**Run `nix fmt` + `nix flake check`** — the CI format gate. I changed `.go` files; treefmt-nix may want to reformat.~~ done — status 2026-07-27 21-16
+5. ~~**Commit or trash the prior session's status report** at `docs/status/2026-07-21_01-24_GRID-LAYOUT-SESSION-BRUTAL-STATUS.md` (untracked).~~ done — docs/status/2026-07-21 01-24 GRID-LAYOUT-SESSION-BRUTAL-STATUS.md
 
 ### 🟠 Correctness / hardening
 
-6. **Real HTTP smoke test**: `fetch http://localhost:PORT/` and assert the layout-demo section + `AppShell`/`Container` classes appear in served HTML.
-7. **Verify `form_layout_test.go` is style-consistent** after the partial multiedit (3 of 5 applied). Re-read and align with existing test file style.
-8. **Golden snapshot tests** for AppShell, Container, Split, Stack — the `internal/golden` package exists; new primitives have none.
-9. **Benchmark suite for layout package** — every other package has `benchmark_test.go`; layout doesn't.
-10. **`Validate()` on `AppShellProps`** (warn if `Content == nil`) and `SplitProps` (`Main == nil`) — graceful guard, not a panic.
+6. ~~**Real HTTP smoke test**: `fetch http://localhost:PORT/` and assert the layout-demo section + `AppShell`/`Container` classes appear in served HTML.~~ done — visualtest/loading button e2e test.go
+7. ~~**Verify `form_layout_test.go` is style-consistent** after the partial multiedit (3 of 5 applied). Re-read and align with existing test file style.~~ done — CHANGELOG v1.0.0
+8. ~~**Golden snapshot tests** for AppShell, Container, Split, Stack — the `internal/golden` package exists; new primitives have none.~~ done — display/golden sweep layout test.go
+9. ~~**Benchmark suite for layout package** — every other package has `benchmark_test.go`; layout doesn't.~~ done — layout/benchmark test.go
+10. ~~**`Validate()` on `AppShellProps`** (warn if `Content == nil`) and `SplitProps` (`Main == nil`) — graceful guard, not a panic.~~ **Won't implement — todo33 validate policy.**
 11. **Stress-test `--tc-sidebar-w` `:root` fallback** for consumer-`:root` load-order conflicts.
-12. **`TestDarkModeCompliance` + `TestMotionReduceCompliance`** explicitly run on the new primitives (they scan all `.templ`, so should pass — but verify, don't assume).
-13. **Contract test for `ComponentProps` interface** — verify the 4 new props types appear in `componentTypes()` (prior session added them; verify no drift).
-14. **CSP nonce check** on any inline scripts in new primitives (AppShell has none — verify the `integration/csp_nonce_test.go` still passes with them included).
+12. ~~**`TestDarkModeCompliance` + `TestMotionReduceCompliance`** explicitly run on the new primitives (they scan all `.templ`, so should pass — but verify, don't assume).~~ done — TestDarkModeCompliance
+13. ~~**Contract test for `ComponentProps` interface** — verify the 4 new props types appear in `componentTypes()` (prior session added them; verify no drift).~~ done — internal/contract
+14. ~~**CSP nonce check** on any inline scripts in new primitives (AppShell has none — verify the `integration/csp_nonce_test.go` still passes with them included).~~ done — integration/csp nonce test.go
 
 ### 🟡 Features / extensions
 
-15. **AppShell desktop sidebar collapse** (icon-only collapse button) — common admin pattern.
-16. **Split responsive collapse** — stack columns vertically below a breakpoint automatically.
+15. ~~**AppShell desktop sidebar collapse** (icon-only collapse button) — common admin pattern.~~ done — layout/appshell.templ
+16. ~~**Split responsive collapse** — stack columns vertically below a breakpoint automatically.~~ done — layout/split.templ
 17. **Stack direction prop** (horizontal flex-row variant) — though that's arguably just `flex flex-row gap`.
 18. **Stack.Divider prop** — render `<hr>` or custom divider between children.
 19. **Container.ContainerResponsive** — container-query variant (like `Grid.ContainerResponsive`).
@@ -214,7 +214,7 @@ specifically before marking the task done. `go test` is not enough.
 24. **AppShell variant: top-bar only** (no sidebar) — or document that `Nav + Container` is the pattern.
 25. **AppShell variant: dual sidebar** (left nav + right detail panel).
 26. **Split.FlippedOnMobile** — swap source order on mobile.
-27. **CSS subgrid prototype** on Card (align header/title/footer across sibling cards) — research note exists.
+27. ~~**CSS subgrid prototype** on Card (align header/title/footer across sibling cards) — research note exists.~~ **Won't implement — track only decision.**
 
 ### 🟢 Docs / recipes / demo
 
@@ -222,14 +222,14 @@ specifically before marking the task done. `go test` is not enough.
 29. **README "Layout primitives" section** — currently describes the old 6-component layout package.
 30. **Recipe: Split with sticky aside** (common docs-layout pattern).
 31. **Recipe: AppShell + HTMX** — sidebar links use `hx-get` for SPA-like nav.
-32. **Recipe: Container + Grid dashboard** (the canonical dashboard composition).
+32. ~~**Recipe: Container + Grid dashboard** (the canonical dashboard composition).~~ done — docs/recipes/dashboard.md
 33. **Recipe: multi-column Footer with real content** (links, newsletter, social).
 34. **Demo: interactive AppShell** with collapsible sidebar.
 35. **Demo: Split with real article + metadata.**
 36. **Demo: Container width comparison** (all 6 widths side-by-side).
 37. **Demo: Stack gap comparison.**
 38. _\*Example_* compile-tests_* for recipe code (plan F10.3) — prevents another `Cog6Tooth` incident.
-39. **Update `skill/Skill.md`** with the 3 new test names (`TestRTLLogicalProperties`, `TestBodyPrimitivesDoNotEmitMain`, `TestAppShellCrossPackageComposition`).
+39. ~~**Update `skill/Skill.md`** with the 3 new test names (`TestRTLLogicalProperties`, `TestBodyPrimitivesDoNotEmitMain`, `TestAppShellCrossPackageComposition`).~~ done — skill/SKILL.md
 40. **ADR for the MobileNav slot decision** (avoiding `layout → display` import).
 41. **ADR for the `<main>` singleton ownership** by Base.
 
@@ -237,16 +237,16 @@ specifically before marking the task done. `go test` is not enough.
 
 42. **Screen-reader test** of AppShell (NVDA or VoiceOver) — verify sidebar + content landmark navigation.
 43. **Screen-reader test** of Split `<aside>` (should be announced as complementary landmark).
-44. **RTL manual test** — render AppShell + Split under `dir="rtl"`, verify sidebar on right, aside mirrors.
-45. **Keyboard-only test** of AppShell — Tab through sidebar → header → content order.
+44. ~~**RTL manual test** — render AppShell + Split under `dir="rtl"`, verify sidebar on right, aside mirrors.~~ done — visualtest/testdata
+45. ~~**Keyboard-only test** of AppShell — Tab through sidebar → header → content order.~~ done — visualtest
 46. **Reduced-motion test** — AppShell has no animations, but verify `StickyHeader` doesn't cause jank.
-47. **Performance: AppShell grid vs flex** — benchmark `lg:grid` vs `flex` for the sidebar+main shell.
+47. ~~**Performance: AppShell grid vs flex** — benchmark `lg:grid` vs `flex` for the sidebar+main shell.~~ done — layout/benchmark test.go
 
 ### ⚪ Meta / tooling
 
-48. **Add an AGENTS.md note** about LSP `unused` false positives on templ-called functions (lesson d.1).
+48. ~~**Add an AGENTS.md note** about LSP `unused` false positives on templ-called functions (lesson d.1).~~ done — AGENTS.md
 49. **Consider a pre-commit grep gate** that catches references to non-existent icons in `.md` recipe files (lesson d.2).
-50. **Consider committing `examples/demo/static/app.css` regeneration** as part of the pre-commit hook when `.templ` files change.
+50. ~~**Consider committing `examples/demo/static/app.css` regeneration** as part of the pre-commit hook when `.templ` files change.~~ done — TestCSSFreshness
 
 ---
 

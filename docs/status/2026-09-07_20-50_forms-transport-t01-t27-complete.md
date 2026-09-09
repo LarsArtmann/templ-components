@@ -191,14 +191,14 @@ test ✓ lint ✓ (0 issues each) — CI should be green.
     (`b5ab5ac`, `89c0369`), requiring a `git revert` (v1.13.3) and leaving
     daemon-authored blemish commits in the released history. Known hazard
     (v1.10.0 note in release.sh) — I proceeded anyway without a mitigation.
-51. **Disk pressure ignored**: `/mnt/buildcache` hit 100% mid-session
-    (killing a verify) after I'd already seen 95%→cleaned→refilled; I only
-    cleaned reactively. The final state is 98% full again (6 GB free) —
-    the next session inherits this landmine.
-52. **Stale-LSP diagnostics kept costing attention** — the known
-    `forms/form.templ` ContentType noise (builds pass) still appeared in
-    nearly every tool result; I eventually ignored it correctly, but it
-    should have been silenced/triaged in minute one.
+51. ~~**Disk pressure ignored**: `/mnt/buildcache` hit 100% mid-session~~ done (docs-health pass 2026-09-08)
+    ~~(killing a verify) after I'd already seen 95%→cleaned→refilled; I only~~
+    ~~cleaned reactively. The final state is 98% full again (6 GB free) —~~
+    ~~the next session inherits this landmine.~~
+52. ~~**Stale-LSP diagnostics kept costing attention** — the known~~ done (docs-health pass 2026-09-08)
+    ~~`forms/form.templ` ContentType noise (builds pass) still appeared in~~
+    ~~nearly every tool result; I eventually ignored it correctly, but it~~
+    ~~should have been silenced/triaged in minute one.~~
 
 ## e) WHAT WE SHOULD IMPROVE
 
@@ -206,13 +206,13 @@ test ✓ lint ✓ (0 issues each) — CI should be green.
     per-module test/lint clean, (b) `GOEXPERIMENT`/govulncheck available
     (fail fast outside `nix develop`), (c) disk headroom on GOCACHE.
     Everything that aborted this session would have been caught in <60s.
-54. **Run `golangci-lint` + the touched packages' full tests IMMEDIATELY
-    after every file edit batch** — never let the release script be the
-    first gate. (The root cause of both v1.14.0 aborts.)
-55. **Ban ad-hoc python patches for code files**: this session proved the
-    edit tool is faster AND safer; the heredoc failures were all self-
-    inflicted escaping bugs. Consider a rule: python only for pure-docs
-    table edits.
+54. ~~**Run `golangci-lint` + the touched packages' full tests IMMEDIATELY~~ done (docs-health pass 2026-09-08)
+    ~~after every file edit batch** — never let the release script be the~~
+    ~~first gate. (The root cause of both v1.14.0 aborts.)~~
+55. ~~**Ban ad-hoc python patches for code files**: this session proved the~~ done — AGENTS heredoc ban
+    ~~edit tool is faster AND safer; the heredoc failures were all self-~~
+    ~~inflicted escaping bugs. Consider a rule: python only for pure-docs~~
+    ~~table edits.~~
 56. **Daemon mitigation during releases**: SIGSTOP the watcher (or a
     `BUILDFLOW_PAUSE` sentinel file if BuildFlow supports one) before any
     release cut, resume after. The race cost two history blemishes.
@@ -223,60 +223,60 @@ test ✓ lint ✓ (0 issues each) — CI should be green.
     workflow now automates detection, but a documented "expected red
     window" note in the release checklist would stop future sessions from
     re-diagnosing it.
-59. **New wired components should get an e2e task in the SAME plan** as
-    the component (not deferred): the anti-verschlimmbesserung rules say
-    no API surface without its lens — the browser lens is part of that
-    for wire surfaces.
-60. **Session-level AGENTS.md updates**: I learned 3 durable things this
-    session (govulncheck+dev-shell requirement for release.sh,
-    env-consistency after cache cleans, promoted-field struct-literal
-    gotcha) and did not write them into AGENTS.md — flagging here so the
-    next session persists them.
+59. ~~**New wired components should get an e2e task in the SAME plan** as~~ done — AGENTS e2e same plan
+    ~~the component (not deferred): the anti-verschlimmbesserung rules say~~
+    ~~no API surface without its lens — the browser lens is part of that~~
+    ~~for wire surfaces.~~
+60. ~~**Session-level AGENTS.md updates**: I learned 3 durable things this~~ done — AGENTS session learnings
+    ~~session (govulncheck+dev-shell requirement for release.sh,~~
+    ~~env-consistency after cache cleans, promoted-field struct-literal~~
+    ~~gotcha) and did not write them into AGENTS.md — flagging here so the~~
+    ~~next session persists them.~~
 
 ## f) Up to 50 things to do next (prioritized)
 
 **Trust & coverage debt (highest value)**
 
-1. Browser e2e for FilterInput (both dialects: typing → debounced request →
-   region swap) — extends `wire_form_e2e_test.go`.
-2. Browser e2e for FilterDropdown.Wire (select change → swap).
-3. Browser e2e for the wizard (step 0 invalid → error; valid → advance;
-   complete) — proves the StepIndicator round-trip.
-4. Browser e2e for the upload card (set input files via chromedp, submit,
-   assert result fragment).
-5. Browser e2e for the GET search card (fields → query param → region).
-6. Browser e2e for DirtyGuard (dirty form → beforeunload event fires;
-   submit → flag cleared; swapped-in form starts clean).
-7. Visual PNG goldens for the six new wire cards (light+dark), update the
-   README/ROADMAP goldens count (guard enforces).
-8. Enter-key e2e on FilterInput (documented degradation → assert no crash
-   - full-page GET path works).
+1. ~~Browser e2e for FilterInput (both dialects: typing → debounced request →~~ done — pack e2e and goldens
+   ~~region swap) — extends `wire_form_e2e_test.go`.~~
+2. ~~Browser e2e for FilterDropdown.Wire (select change → swap).~~ done — pack e2e and goldens
+3. ~~Browser e2e for the wizard (step 0 invalid → error; valid → advance;~~ done — pack e2e and goldens
+   ~~complete) — proves the StepIndicator round-trip.~~
+4. ~~Browser e2e for the upload card (set input files via chromedp, submit,~~ done — pack e2e and goldens
+   ~~assert result fragment).~~
+5. ~~Browser e2e for the GET search card (fields → query param → region).~~ done — pack e2e and goldens
+6. ~~Browser e2e for DirtyGuard (dirty form → beforeunload event fires;~~ done — pack e2e and goldens
+   ~~submit → flag cleared; swapped-in form starts clean).~~
+7. ~~Visual PNG goldens for the six new wire cards (light+dark), update the~~ done — pack e2e and goldens
+   ~~README/ROADMAP goldens count (guard enforces).~~
+8. ~~Enter-key e2e on FilterInput (documented degradation → assert no crash~~ done — pack e2e and goldens
+   ~~- full-page GET path works).~~
 9. Cross-check T08's decoded modifier semantics against upstream unminified
    source (close the plan's literal M08.1).
 10. Record the wire benchmark numbers in docs (or a benchstat baseline
     file) so regressions are visible.
 
 **Watch CI (now unblocked)**
-11. Confirm master CI + Website + Tidy Probe workflows are green after the
-go.sum refresh commit (first real exercise of tidy-probe).
+11. ~~Confirm master CI + Website + Tidy Probe workflows are green after the~~ done — ci green 09-08
+~~go.sum refresh commit (first real exercise of tidy-probe).~~
 12. Run `scripts/ci-repro.sh --tidy --lint` now that tags propagate —
 should pass end-to-end for the first time this cycle.
 
 **Docs debt from this session**
-13. Wire-gates D3 entries for FilterInput, FilterDropdown.Wire, DirtyGuard.
-14. DOMAIN_LANGUAGE.md: DebounceMS, Selector, Enctype, DirtyGuard, wizard
-step ownership.
-15. Cross-link FilterInput from `docs/recipes/horizontal-filter-bar.md`.
-16. AGENTS.md session learnings: govulncheck/dev-shell release requirement,
-env-consistency-after-cache-clean, promoted-field literal gotcha,
-python-heredoc warning.
-17. Prerender freshness check for the six new demo sections.
-18. `nix flake check` + actionlint over all four workflows.
+13. ~~Wire-gates D3 entries for FilterInput, FilterDropdown.Wire, DirtyGuard.~~ done — wire gates d3 pack
+14. ~~DOMAIN_LANGUAGE.md: DebounceMS, Selector, Enctype, DirtyGuard, wizard~~ done — DOMAIN LANGUAGE 7 terms
+~~step ownership.~~
+15. ~~Cross-link FilterInput from `docs/recipes/horizontal-filter-bar.md`.~~ done — filter bar crosslink
+16. ~~AGENTS.md session learnings: govulncheck/dev-shell release requirement,~~ done — AGENTS session learnings
+~~env-consistency-after-cache-clean, promoted-field literal gotcha,~~
+~~python-heredoc warning.~~
+17. ~~Prerender freshness check for the six new demo sections.~~ done — prerender exercised
+18. ~~`nix flake check` + actionlint over all four workflows.~~ done — flake actionlint
 
 **Backlog candidates already justified (TODO_LIST)**
 19. TODO #156a: AppShell theming (CSS vars) + breakpoint prop + SSE-bar
 slot — wins the cqrs-htmx adoption.
-20. TODO #156b: `Minimal` head-content support — wins nsfw-classifier.
+20. ~~TODO #156b: `Minimal` head-content support — wins nsfw-classifier.~~ done — Minimal SEO N10
 21. TODO #157: Calendar month-nav as a Wire candidate (design first).
 22. TODO #155: SimpleNav links as next transport-symmetric Wire candidate.
 23. FilterDropdown DebounceMS parity (change events rarely need it —
@@ -318,9 +318,9 @@ gate so pre-push red windows shrink to zero.
 **Bugs/observations noted but not acted on**
 39. `FilterInput` unwired form still renders `method="GET"` with no
 `action` (submits to current URL) — confirm intended, document.
-40. `wireWizardStepResult` outer-region wrapper renders a duplicate id in
-the both-transport view (each region div wraps its own step — verify
-no duplicate-DOM-id test gap).
+40. ~~`wireWizardStepResult` outer-region wrapper renders a duplicate id in~~ done — duplicate id fixed 09-08
+~~the both-transport view (each region div wraps its own step — verify~~
+~~no duplicate-DOM-id test gap).~~
 41. `Wire.Target`+`DebounceMS` requires explicit Event under htmx — the
 silent-drop is documented but a render-time fallback (default to
 `input`) might be friendlier; needs an ADR-level decision, not a patch.
@@ -338,8 +338,8 @@ but never shows the import — cosmetic snippet completeness.
 `/wire/forms` subpage with the transport selector preserved.
 47. The e2e `wireFormSettleWait = 250ms` sleep is a documented smell —
 htmx `afterSettle` event waiting would be deterministic.
-48. `visualtest` module `go.mod` sibling pins now refreshed — verify the
-visual job's `go mod tidy` CI step stays clean (it aborted pre-push).
+48. ~~`visualtest` module `go.mod` sibling pins now refreshed — verify the~~ done — visualtest pins ok
+~~visual job's `go mod tidy` CI step stays clean (it aborted pre-push).~~
 49. Consider tagging `website/` separately (it has its own flake) if
 release cadence keeps doubling.
 50. After 2–3 consumers adopt FilterInput/DirtyGuard: revisit ADR-0038's

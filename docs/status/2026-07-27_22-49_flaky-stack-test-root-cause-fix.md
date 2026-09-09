@@ -62,8 +62,8 @@ This is the **exact gotcha already documented in AGENTS.md**:
 | 2 | Proved `utils.Class` is thread-safe | 3M varied concurrent calls, 0 corruption     |
 | 3 | Proved `Stack` component is correct | isolated render always emits `flex flex-col` |
 | 4 | Fixed the broken assertion          | `AssertContainsAll` with independent tokens  |
-| 5 | Verified fix kills the flake        | 0/40 under `-race`                           |
-| 6 | No regression elsewhere             | full `go test ./...` green                   |
+| ~~5~~ | ~~Verified fix kills the flake~~ done at `83e0573` | ~~0/40 under `-race`~~ |
+| ~~6~~ | ~~No regression elsewhere~~ done at `83e0573` | ~~full `go test ./...` green~~ |
 
 ---
 

@@ -71,22 +71,22 @@ Nothing destructive. No reverts, no force-pushes, no data loss. But two serious 
 
 ### A. Immediate (this session's loose ends)
 
-1. **Run `nix run .#verify` now** to actually close the verification gate. This is non-negotiable — see §d.1.
-2. **Run `go test -cover ./...`** (or `nix run .#coverage`) and replace the "≈72%" in FEATURES.md with the real figure.
-3. **Annotate the two 07-28 reports** (§d.2) — at minimum a one-line "Update: daemon committed as `ef037f5`" appendix.
-4. **Open `README.md`** and verify (a) component/icon/enum counts, (b) whether visual testing + container queries are mentioned, (c) whether the version badge is current. Multiple reports disagree on its state.
-5. **Verify the 9 un-checked harvested TODO items** (#84–92 except the ~4 I checked) by grepping code — some may already be done.
+1. ~~**Run `nix run .#verify` now** to actually close the verification gate. This is non-negotiable — see §d.1.~~ done — status 2026-07-28 15-29
+2. ~~**Run `go test -cover ./...`** (or `nix run .#coverage`) and replace the "≈72%" in FEATURES.md with the real figure.~~ done — status 2026-07-28 15-29
+3. ~~**Annotate the two 07-28 reports** (§d.2) — at minimum a one-line "Update: daemon committed as `ef037f5`" appendix.~~ done — status 2026-07-28 15-29
+4. ~~**Open `README.md`** and verify (a) component/icon/enum counts, (b) whether visual testing + container queries are mentioned, (c) whether the version badge is current. Multiple reports disagree on its state.~~ done — status 2026-07-28 15-29
+5. ~~**Verify the 9 un-checked harvested TODO items** (#84–92 except the ~4 I checked) by grepping code — some may already be done.~~ done — status 2026-07-28 15-29
 
 ### B. Structural (prevent recurrence)
 
-6. **Add a session-end checklist item: "Did you run `nix run .#verify`?"** This has failed 7 sessions in a row. A checklist won't fix it alone, but making the failure visible in the report (this section) forces acknowledgment.
-7. **Add `TestNixVerifyGate` or a CI step** that runs the full verify suite — so "I ran a subset" is caught. (The drift-guard tests catch doc drift, but nothing catches "agent ran 3 of 16 packages and declared done.")
+6. ~~**Add a session-end checklist item: "Did you run `nix run .#verify`?"** This has failed 7 sessions in a row. A checklist won't fix it alone, but making the failure visible in the report (this section) forces acknowledgment.~~ done (docs-health pass 2026-09-08)
+7. ~~**Add `TestNixVerifyGate` or a CI step** that runs the full verify suite — so "I ran a subset" is caught. (The drift-guard tests catch doc drift, but nothing catches "agent ran 3 of 16 packages and declared done.")~~ done (docs-health pass 2026-09-08)
 8. **Reconsider the "never commit without explicit ask" rule vs. the daemon-attribution problem.** The daemon commits under hallucinated messages regardless. If I don't commit, my work is misattributed. If I do, I violate the rule. This tension needs resolution — either (a) a "commit your own work with real messages" exception for docs work, or (b) accept daemon misattribution as the cost of the rule.
 
 ### C. Deeper
 
-9. **The docs-health skill's HARVEST step worked well but I under-trusted it.** I read the reports via sub-agent summary rather than first-hand. For routing decisions (is this item done? is this item already in TODO?), first-hand reading catches nuances that summaries lose. The sub-agent is good for "what's in this file" but weaker for "is this specific claim still true against current code."
-10. **The two-score health report (Accuracy / Fitness) was skipped.** The skill mandates it with shown math. I gave informal numbers. This makes the health claim un-auditable — exactly what the skill exists to prevent.
+9. ~~**The docs-health skill's HARVEST step worked well but I under-trusted it.** I read the reports via sub-agent summary rather than first-hand. For routing decisions (is this item done? is this item already in TODO?), first-hand reading catches nuances that summaries lose. The sub-agent is good for "what's in this file" but weaker for "is this specific claim still true against current code."~~ done (docs-health pass 2026-09-08)
+10. ~~**The two-score health report (Accuracy / Fitness) was skipped.** The skill mandates it with shown math. I gave informal numbers. This makes the health claim un-auditable — exactly what the skill exists to prevent.~~ done — status 2026-07-28 15-29
 
 ---
 
@@ -96,77 +96,77 @@ Ordered roughly by impact × ease.
 
 ### Verification (close this session's gaps)
 
-1. Run `nix run .#verify` — the canonical done-check. **Highest priority.**
-2. Run `go test -cover ./...` and fix the "≈72%" in FEATURES.md with the real number.
-3. Run `golangci-lint run ./...` and confirm 0 findings after the `.golangci.yml` fix.
-4. Run `go test -race ./...` — never run this session; thread-safety bugs (e.g. shared Chromium context) unverified.
+1. ~~Run `nix run .#verify` — the canonical done-check. **Highest priority.**~~ done — status 2026-07-28 15-29
+2. ~~Run `go test -cover ./...` and fix the "≈72%" in FEATURES.md with the real number.~~ done — status 2026-07-28 15-29
+3. ~~Run `golangci-lint run ./...` and confirm 0 findings after the `.golangci.yml` fix.~~ done — status 2026-07-28 15-29
+4. ~~Run `go test -race ./...` — never run this session; thread-safety bugs (e.g. shared Chromium context) unverified.~~ done — status 2026-07-28 15-29
 
 ### Docs verification (the files I didn't open)
 
-5. Open `README.md`; verify counts (98/102/43), version badge, visual-testing + container-query mentions.
-6. Add "derive README counts from code" test (`TestReadmeCountDrift`) — flagged in 2+ reports, still not done.
-7. Open `docs/DOMAIN_LANGUAGE.md`; verify the 6 visual-testing terms + ContainerAware entry are accurate.
-8. Open `SKILL.md`; verify component count + container-aware component list against code.
-9. Open `docs/visual-testing.md`; verify API names, option names, golden count match `visualtest/` source.
-10. Audit `website/src/` for container-query + visual-testing mentions (deferred 3+ sessions).
+5. ~~Open `README.md`; verify counts (98/102/43), version badge, visual-testing + container-query mentions.~~ done — status 2026-07-28 15-29
+6. ~~Add "derive README counts from code" test (`TestReadmeCountDrift`) — flagged in 2+ reports, still not done.~~ done — status 2026-07-28 15-29
+7. ~~Open `docs/DOMAIN_LANGUAGE.md`; verify the 6 visual-testing terms + ContainerAware entry are accurate.~~ done — status 2026-07-28 15-29
+8. ~~Open `SKILL.md`; verify component count + container-aware component list against code.~~ done — status 2026-07-28 15-29
+9. ~~Open `docs/visual-testing.md`; verify API names, option names, golden count match `visualtest/` source.~~ done — status 2026-07-28 15-29
+10. ~~Audit `website/src/` for container-query + visual-testing mentions (deferred 3+ sessions).~~ done — status 2026-07-28 15-29
 
 ### Annotation cleanup (update-old-docs loose ends)
 
-11. Annotate `2026-07-28_10-14_hardening-pass-brutal-self-review.md` — "0 commits" claim is stale (daemon committed `ef037f5`).
-12. Annotate `2026-07-28_09-23_pareto-plan-execution-brutal-self-review.md` — same stale "0 commits" claim.
-13. Re-examine `docs/planning/2026-07-22_13-46_pareto-improvement-plan.html` — open items #9–12 may not be captured in TODO.
-14. Re-examine `docs/reviews/2026-07-22_13-46_brutal-self-review.html` — "derive README counts" item still open.
+11. ~~Annotate `2026-07-28_10-14_hardening-pass-brutal-self-review.md` — "0 commits" claim is stale (daemon committed `ef037f5`).~~ done — status 2026-07-28 15-29
+12. ~~Annotate `2026-07-28_09-23_pareto-plan-execution-brutal-self-review.md` — same stale "0 commits" claim.~~ done — status 2026-07-28 15-29
+13. ~~Re-examine `docs/planning/2026-07-22_13-46_pareto-improvement-plan.html` — open items #9–12 may not be captured in TODO.~~ done — status 2026-07-28 15-29
+14. ~~Re-examine `docs/reviews/2026-07-22_13-46_brutal-self-review.html` — "derive README counts" item still open.~~ done — status 2026-07-28 15-29
 
 ### TODO item verification (confirm the 13 harvested items are genuinely open)
 
 15. Verify #86 (popover edge-flipping) — grep `display/shared.go` for existing flip logic.
-16. Verify #87 (`recipes.AuthLayout`) — grep `recipes/` for existing AuthLayout.
-17. Verify #88 (`nix run .#css`) — check `flake.nix` for existing css app.
-18. Verify #89 (`tc version`) — check `cmd/tc/` for existing version command.
-19. Verify #90 (SkeletonCardGrid migration doc) — check `docs/migration/`.
-20. Verify #91 (testing guide) — check for `docs/testing-guide.md`.
-21. Verify #92 (`boolPtr` unused) — grep `internal/golden/golden_coverage_test.go`.
-22. Route any dropped items from the HTML reports (#9–12 above) to TODO if still open.
+16. ~~Verify #87 (`recipes.AuthLayout`) — grep `recipes/` for existing AuthLayout.~~ done — status 2026-07-28 15-29
+17. ~~Verify #88 (`nix run .#css`) — check `flake.nix` for existing css app.~~ done — flake.nix
+18. ~~Verify #89 (`tc version`) — check `cmd/tc/` for existing version command.~~ done — cmd/tc/main.go
+19. ~~Verify #90 (SkeletonCardGrid migration doc) — check `docs/migration/`.~~ done — docs/migration/skeletoncardgrid-api-change.md
+20. ~~Verify #91 (testing guide) — check for `docs/testing-guide.md`.~~ done — docs/testing-guide.md
+21. ~~Verify #92 (`boolPtr` unused) — grep `internal/golden/golden_coverage_test.go`.~~ done — internal/golden/golden coverage test.go
+22. ~~Route any dropped items from the HTML reports (#9–12 above) to TODO if still open.~~ done — TODO LIST.md
 
 ### Test infrastructure
 
-23. Finish golden-file conversion for remaining assertion tests (TODO #73) — `htmx` package + per-component edge cases.
-24. Add `TestNoOrderedTailwindSubstringsInTests` drift-guard (TODO #81) — the flaky-stack class of bug.
-25. Grep `*_test.go` repo-wide for `Contains("X Y")` patterns on Tailwind tokens (TODO #81).
-26. Expand visual goldens to Combobox, Tabs, Table, Accordion (TODO #79) — highest regression risk.
+23. ~~Finish golden-file conversion for remaining assertion tests (TODO #73) — `htmx` package + per-component edge cases.~~ done — navigation/golden test.go
+24. ~~Add `TestNoOrderedTailwindSubstringsInTests` drift-guard (TODO #81) — the flaky-stack class of bug.~~ done — utils/ordered substring test.go
+25. ~~Grep `*_test.go` repo-wide for `Contains("X Y")` patterns on Tailwind tokens (TODO #81).~~ done — utils/ordered substring test.go
+26. ~~Expand visual goldens to Combobox, Tabs, Table, Accordion (TODO #79) — highest regression risk.~~ done — visualtest/testdata
 27. Human-eyeball the 4 AI-generated overlay PNGs (TODO #80).
-28. Calibrate `MaxMismatch` for overlays empirically (TODO #82).
+28. ~~Calibrate `MaxMismatch` for overlays empirically (TODO #82).~~ done — visualtest/visual test.go
 29. Fix `StateHover` to target first interactive child (TODO #83).
 30. Pin Chromium version in `flake.nix` (TODO #85).
-31. Visualtest API: `*bool` tri-state + viewport presets + `State.String()` (TODO #84).
+31. ~~Visualtest API: `*bool` tri-state + viewport presets + `State.String()` (TODO #84).~~ done — visualtest/render.go
 
 ### Components & tooling
 
 32. Add popover edge-flipping to `popoverPositionJS` (TODO #86).
-33. Add `recipes.AuthLayout` + `recipes.EmptyState` (TODO #87).
-34. Add `nix run .#css` app (TODO #88).
-35. Add `tc version` + `tc add --list-deps` (TODO #89).
-36. Write `docs/migration/skeletoncardgrid-api-change.md` (TODO #90).
-37. Write `docs/testing-guide.md` + README "Testing" section (TODO #91).
-38. Fix unused `boolPtr` in `internal/golden/golden_coverage_test.go` (TODO #92).
+33. ~~Add `recipes.AuthLayout` + `recipes.EmptyState` (TODO #87).~~ done — recipes/auth layout.templ
+34. ~~Add `nix run .#css` app (TODO #88).~~ done — flake.nix
+35. ~~Add `tc version` + `tc add --list-deps` (TODO #89).~~ done — cmd/tc/main.go
+36. ~~Write `docs/migration/skeletoncardgrid-api-change.md` (TODO #90).~~ done — docs/migration/skeletoncardgrid-api-change.md
+37. ~~Write `docs/testing-guide.md` + README "Testing" section (TODO #91).~~ done — docs/testing-guide.md
+38. ~~Fix unused `boolPtr` in `internal/golden/golden_coverage_test.go` (TODO #92).~~ done — internal/golden/golden coverage test.go
 
 ### Process / prevention
 
 39. Resolve the "never commit" vs "daemon misattribution" tension — decide on a docs-work commit exception or accept the cost.
-40. Add a CI step that runs `nix run .#verify` (not just `go test ./...`).
+40. ~~Add a CI step that runs `nix run .#verify` (not just `go test ./...`).~~ done — .github/workflows/ci.yaml
 41. Add a CI step/matrix entry for `go test -race -count=N` nightly (flakes only show under repetition).
 42. Fix BuildFlow daemon commit messages (TODO #93 — separate repo `larsartmann/buildflow`).
 43. Add lint verification to BuildFlow pre-commit (separate repo).
 
 ### v2.0 preparation
 
-44. Draft v2.0 default-flip migration guide from ADR-0022 (deprecation timeline, opt-in → warning → default).
-45. Plan `AlertType`/`ToastType` alias removal sequence (TODO #38).
+44. ~~Draft v2.0 default-flip migration guide from ADR-0022 (deprecation timeline, opt-in → warning → default).~~ done — docs/migration/v1-to-v2.md
+45. ~~Plan `AlertType`/`ToastType` alias removal sequence (TODO #38).~~ done — docs/migration/v1-to-v2.md
 46. Execute compound overlay API from ADR-0023 (TODO #39 — v2.0 design).
 
 ### Lower priority
 
-47. Rename `Grid.ContainerResponsive` → `Grid.ContainerAware` (breaking — defer to v2.0).
+47. ~~Rename `Grid.ContainerResponsive` → `Grid.ContainerAware` (breaking — defer to v2.0).~~ done — display/grid.templ
 48. Add `Container.ContainerAware`, `Breadcrumbs.ContainerAware`, `Footer.ContainerAware` candidates (ROADMAP).
 49. Write shared `containerAwareWrapper` sub-template (8 components hand-write it).
 50. Spike: can tailwind-merge-go run deterministically? (sort output / disable LRU — would make ordered assertions safe again).

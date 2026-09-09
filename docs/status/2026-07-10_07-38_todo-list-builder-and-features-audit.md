@@ -205,21 +205,21 @@ I read files in batches of 5 (parallel tool calls) and built the TODO_LIST.md at
 
 ### Process
 
-1. **Always run `go build ./...` after committing with BuildFlow active.** BuildFlow's pre-commit hook can modify files and leave them uncommitted. I committed my docs, BuildFlow ran its hooks, and the working tree was left with broken uncommitted changes. If I had built after committing, I would have caught this immediately.
+1. ~~**Always run `go build ./...` after committing with BuildFlow active.** BuildFlow's pre-commit hook can modify files and leave them uncommitted. I committed my docs, BuildFlow ran its hooks, and the working tree was left with broken uncommitted changes. If I had built after committing, I would have caught this immediately.~~ done (docs-health pass 2026-09-08)
 
-2. **Check `git status` AFTER commit, not just before.** The pre-commit hook can stage changes. My pre-commit `git status` was clean (only my 2 files), but post-commit the tree had 3 additional modified files from BuildFlow.
+2. ~~**Check `git status` AFTER commit, not just before.** The pre-commit hook can stage changes. My pre-commit `git status` was clean (only my 2 files), but post-commit the tree had 3 additional modified files from BuildFlow.~~ done (docs-health pass 2026-09-08)
 
-3. **Follow the skill's prescribed incremental process.** The `todo-list-builder` skill explicitly says to read files one at a time and upsert after each. I batched for efficiency. While the result was equivalent, the incremental approach would have caught the BuildFlow corruption earlier (the build would have been verified between reads).
+3. ~~**Follow the skill's prescribed incremental process.** The `todo-list-builder` skill explicitly says to read files one at a time and upsert after each. I batched for efficiency. While the result was equivalent, the incremental approach would have caught the BuildFlow corruption earlier (the build would have been verified between reads).~~ done (docs-health pass 2026-09-08)
 
-4. **Verify `git diff` after `git show HEAD --stat`.** I trusted `git diff HEAD~1` to show my commit's changes, but it included uncommitted working-tree changes. `git show HEAD --stat` is the reliable way to see what's actually IN a commit.
+4. ~~**Verify `git diff` after `git show HEAD --stat`.** I trusted `git diff HEAD~1` to show my commit's changes, but it included uncommitted working-tree changes. `git show HEAD --stat` is the reliable way to see what's actually IN a commit.~~ done (docs-health pass 2026-09-08)
 
 ### Content
 
-5. **TODO_LIST.md should have a "Files Read" audit trail.** The skill says to document which files were read. I have the list in my session memory but didn't include it in the file. A "Sources" section at the bottom listing all 42 files would make the TODO list self-documenting.
+5. ~~**TODO_LIST.md should have a "Files Read" audit trail.** The skill says to document which files were read. I have the list in my session memory but didn't include it in the file. A "Sources" section at the bottom listing all 42 files would make the TODO list self-documenting.~~ **Won't implement — superseded TODO LIST rewrites.**
 
-6. **FEATURES.md component count is still wrong.** Layout says 5 but should be 6 (added Stylesheet to the table but not the count). Total says 83 but should be 84. This is the same class of error I was fixing — I introduced a new one while fixing others.
+6. ~~**FEATURES.md component count is still wrong.** Layout says 5 but should be 6 (added Stylesheet to the table but not the count). Total says 83 but should be 84. This is the same class of error I was fixing — I introduced a new one while fixing others.~~ done — CHANGELOG.md
 
-7. **TODO_LIST.md doesn't capture items from pre-July docs.** There are ~30 older `.md` files (April–June). The user scoped to `2026-07-0*`, but a truly comprehensive TODO list would include those too.
+7. ~~**TODO_LIST.md doesn't capture items from pre-July docs.** There are ~30 older `.md` files (April–June). The user scoped to `2026-07-0*`, but a truly comprehensive TODO list would include those too.~~ done — docs-health full passes
 
 ---
 
@@ -229,66 +229,66 @@ I read files in batches of 5 (parallel tool calls) and built the TODO_LIST.md at
 
 | # | Task                                                                                                                | Effort |
 | - | ------------------------------------------------------------------------------------------------------------------- | ------ |
-| 1 | Fix broken build: either complete the `utils.RawJS`/`RawScript` refactoring OR revert the 3 uncommitted toast files | 10m    |
-| 2 | Run `go build ./... && go test ./...` to verify all 14 packages pass                                                | 5m     |
-| 3 | Run `git status` to verify working tree is clean                                                                    | 1m     |
+| ~~1~~ | ~~Fix broken build: either complete the `utils.RawJS`/`RawScript` refactoring OR revert the 3 uncommitted toast files~~ done — CHANGELOG.md | ~~10m~~ |
+| ~~2~~ | ~~Run `go build ./... && go test ./...` to verify all 14 packages pass~~ done — CHANGELOG.md | ~~5m~~ |
+| ~~3~~ | ~~Run `git status` to verify working tree is clean~~ done — CHANGELOG.md | ~~1m~~ |
 
 ### P0 — Real bugs from TODO_LIST.md
 
 | #  | Task                                                                                                            | Effort |
 | -- | --------------------------------------------------------------------------------------------------------------- | ------ |
-| 4  | Add sr-only "Loading…" text to `InlineLoadingOverlay` (parity with LoadingIndicator)                            | 5m     |
-| 5  | Fix `SanitizeID` mismatch in ValidationSummary — links don't match actual field IDs                             | 15m    |
-| 6  | Fix `FromError` to return `FamilyCorruption` (→500) for unknown errors instead of `FamilyInfrastructure` (→503) | 10m    |
-| 7  | Add `BaseProps` to `Footer` component (API consistency)                                                         | 15m    |
-| 8  | Add `<main>` landmark to ErrorPage and NotFound404 (WCAG 2.4.1)                                                 | 10m    |
-| 9  | Add `CSRFTokenName` field to FormProps (framework compatibility)                                                | 10m    |
-| 10 | Verify `grid-rows-[0fr]` produces correct CSS in compiled Tailwind v4                                           | 10m    |
+| ~~4~~  | ~~Add sr-only "Loading…" text to `InlineLoadingOverlay` (parity with LoadingIndicator)~~ done — CHANGELOG.md | ~~5m~~ |
+| ~~5~~  | ~~Fix `SanitizeID` mismatch in ValidationSummary — links don't match actual field IDs~~ done — CHANGELOG.md | ~~15m~~ |
+| ~~6~~  | ~~Fix `FromError` to return `FamilyCorruption` (→500) for unknown errors instead of `FamilyInfrastructure` (→503)~~ done — CHANGELOG.md | ~~10m~~ |
+| ~~7~~  | ~~Add `BaseProps` to `Footer` component (API consistency)~~ done — CHANGELOG.md | ~~15m~~ |
+| ~~8~~  | ~~Add `<main>` landmark to ErrorPage and NotFound404 (WCAG 2.4.1)~~ done — CHANGELOG.md | ~~10m~~ |
+| ~~9~~  | ~~Add `CSRFTokenName` field to FormProps (framework compatibility)~~ done — CHANGELOG.md | ~~10m~~ |
+| ~~10~~ | ~~Verify `grid-rows-[0fr]` produces correct CSS in compiled Tailwind v4~~ done — CHANGELOG.md | ~~10m~~ |
 
 ### P1 — Testing gaps
 
 | #  | Task                                                             | Effort |
 | -- | ---------------------------------------------------------------- | ------ |
-| 11 | Add regression tests for 18 untested Round-2 bug fixes           | 2h     |
-| 12 | Add `role="status"` assertion to InlineLoadingOverlay tests      | 5m     |
-| 13 | Add dark golden test variants (render with `.dark` parent)       | 30m    |
-| 14 | Add toast JS-created toast golden test                           | 30m    |
-| 15 | Boost coverage to 80%+ on errorpage, feedback, forms, navigation | 4h     |
+| ~~11~~ | ~~Add regression tests for 18 untested Round-2 bug fixes~~ done — coverage boost* test.go | ~~2h~~ |
+| ~~12~~ | ~~Add `role="status"` assertion to InlineLoadingOverlay tests~~ done — CHANGELOG.md | ~~5m~~ |
+| ~~13~~ | ~~Add dark golden test variants (render with `.dark` parent)~~ done — display/dark golden test.go | ~~30m~~ |
+| ~~14~~ | ~~Add toast JS-created toast golden test~~ done — feedback goldens | ~~30m~~ |
+| ~~15~~ | ~~Boost coverage to 80%+ on errorpage, feedback, forms, navigation~~ **Won't implement — 80% target abandoned.** | ~~4h~~ |
 
 ### P2 — CI / Pre-commit hardening
 
 | #  | Task                                                   | Effort |
 | -- | ------------------------------------------------------ | ------ |
-| 16 | Add `encoding/json/v2` grep guard to pre-commit hook   | 5m     |
-| 17 | Change pre-commit lint from hardcoded paths to `./...` | 5m     |
-| 18 | Document `encoding/json/v2` prohibition in AGENTS.md   | 10m    |
+| ~~16~~ | ~~Add `encoding/json/v2` grep guard to pre-commit hook~~ **Won't implement — superseded jsonv2 adopted v0.15.0.** | ~~5m~~ |
+| ~~17~~ | ~~Change pre-commit lint from hardcoded paths to `./...`~~ done — CHANGELOG.md | ~~5m~~ |
+| ~~18~~ | ~~Document `encoding/json/v2` prohibition in AGENTS.md~~ **Won't implement — superseded jsonv2 adopted v0.15.0.** | ~~10m~~ |
 
 ### P2 — Documentation accuracy
 
 | #  | Task                                                               | Effort |
 | -- | ------------------------------------------------------------------ | ------ |
-| 19 | Fix AGENTS.md lint path typo: `./svg/...` → `./internal/svg/...`   | 1m     |
-| 20 | Add "untagged" note to CHANGELOG `[0.9.1]` section                 | 5m     |
-| 21 | Update ROADMAP.md with dark mode compliance milestone              | 5m     |
-| 22 | Create `docs/migration/v0.9-to-v0.10.md` migration guide           | 15m    |
-| 23 | Update FEATURES.md with CSS automation entry (app.css + BuildFlow) | 10m    |
-| 24 | Fix FEATURES.md layout component count: 5 → 6, total 83 → 84       | 2m     |
-| 25 | Rename AGENTS.md "Post-v0.9.0 Conventions" section                 | 5m     |
-| 26 | Fix AGENTS.md generated file count: "61" → "62"                    | 1m     |
+| ~~19~~ | ~~Fix AGENTS.md lint path typo: `./svg/...` → `./internal/svg/...`~~ done — CHANGELOG.md | ~~1m~~ |
+| ~~20~~ | ~~Add "untagged" note to CHANGELOG `[0.9.1]` section~~ done — CHANGELOG.md | ~~5m~~ |
+| ~~21~~ | ~~Update ROADMAP.md with dark mode compliance milestone~~ done — ADR-0011 | ~~5m~~ |
+| ~~22~~ | ~~Create `docs/migration/v0.9-to-v0.10.md` migration guide~~ done — docs/migration/v0.9-to-v0.10.md | ~~15m~~ |
+| ~~23~~ | ~~Update FEATURES.md with CSS automation entry (app.css + BuildFlow)~~ done — CHANGELOG.md | ~~10m~~ |
+| ~~24~~ | ~~Fix FEATURES.md layout component count: 5 → 6, total 83 → 84~~ done — CHANGELOG.md | ~~2m~~ |
+| ~~25~~ | ~~Rename AGENTS.md "Post-v0.9.0 Conventions" section~~ done — CHANGELOG.md | ~~5m~~ |
+| ~~26~~ | ~~Fix AGENTS.md generated file count: "61" → "62"~~ done — CHANGELOG.md | ~~1m~~ |
 
 ### P2 — Code quality
 
 | #  | Task                                                      | Effort |
 | -- | --------------------------------------------------------- | ------ |
-| 27 | Wire shared motion constants into remaining 19 components | 90m    |
-| 28 | Rename `FamilyFromErrorFamily` → `FromErrorFamily`        | 5m     |
-| 29 | Consolidate CHANGELOG "Round 1"/"Round 2" headings        | 5m     |
+| ~~27~~ | ~~Wire shared motion constants into remaining 19 components~~ done — CHANGELOG.md | ~~90m~~ |
+| ~~28~~ | ~~Rename `FamilyFromErrorFamily` → `FromErrorFamily`~~ done — removed v1.0.0 | ~~5m~~ |
+| ~~29~~ | ~~Consolidate CHANGELOG "Round 1"/"Round 2" headings~~ done — CHANGELOG.md | ~~5m~~ |
 
 ### P3 — Community & polish
 
 | #  | Task                                                            | Effort |
 | -- | --------------------------------------------------------------- | ------ |
-| 30 | Submit awesome-templ PR (updated component count)               | 5m     |
+| ~~30~~ | ~~Submit awesome-templ PR (updated component count)~~ done — cmd/tc | ~~5m~~ |
 | 31 | Submit templ.guide listing                                      | 5m     |
 | 32 | Configure SSH tag signing                                       | 10m    |
 | 33 | Create blocks/composition examples (dashboard, login, settings) | 3h     |
@@ -311,14 +311,14 @@ I read files in batches of 5 (parallel tool calls) and built the TODO_LIST.md at
 | #  | Task                                             | Effort |
 | -- | ------------------------------------------------ | ------ |
 | 42 | Add `Popover` component (most requested)         | 4h     |
-| 43 | Add `DataTable` (sorting, filtering, pagination) | 6h+    |
-| 44 | Add `FilterDropdown`                             | 2h     |
-| 45 | Add `Slider` (ARIA slider pattern)               | 2h     |
-| 46 | Add `Rating` (star rating, keyboard)             | 1h     |
-| 47 | Add `TagsInput`                                  | 2h     |
-| 48 | Add `ContextMenu` (right-click menu)             | 2h     |
-| 49 | Add `HoverCard`                                  | 2h     |
-| 50 | Add `Calendar` (full calendar grid)              | 4h     |
+| ~~43~~ | ~~Add `DataTable` (sorting, filtering, pagination)~~ done — v0.17.0 | ~~6h+~~ |
+| ~~44~~ | ~~Add `FilterDropdown`~~ done — v0.17.0 | ~~2h~~ |
+| ~~45~~ | ~~Add `Slider` (ARIA slider pattern)~~ done — v0.17.0 | ~~2h~~ |
+| ~~46~~ | ~~Add `Rating` (star rating, keyboard)~~ done — v0.17.0 | ~~1h~~ |
+| ~~47~~ | ~~Add `TagsInput`~~ done — v0.17.0 | ~~2h~~ |
+| ~~48~~ | ~~Add `ContextMenu` (right-click menu)~~ done — v0.17.0 | ~~2h~~ |
+| ~~49~~ | ~~Add `HoverCard`~~ done — v0.17.0 | ~~2h~~ |
+| ~~50~~ | ~~Add `Calendar` (full calendar grid)~~ done — v0.17.0 | ~~4h~~ |
 
 ---
 

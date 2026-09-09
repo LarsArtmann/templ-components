@@ -43,47 +43,47 @@
 
 | # | Component / Feature                                  | Files                                        | Tests                                             |
 | - | ---------------------------------------------------- | -------------------------------------------- | ------------------------------------------------- |
-| 1 | `display.Grid` + `GridCols` enum (1–6)               | `display/grid.templ`, `grid_templ.go`        | golden, BDD, a11y, example, integration, coverage |
-| 2 | `StatCardProps.Href` — renders `<a>` wrapper         | `display/card.templ`, `card_templ.go`        | golden, BDD, a11y, integration, coverage          |
-| 3 | `SimpleNavProps.RightItems` — forwarded to Nav       | `navigation/nav.templ`, `nav_templ.go`       | coverage, BDD                                     |
-| 4 | `layout.Script(nonce, src, attrs)` — CSP-safe helper | `layout/script.templ`, `script_templ.go`     | golden, BDD, a11y, example, snapshot              |
-| 5 | `feedback.SkeletonCardGrid(count)` — loading grid    | `feedback/loading.templ`, `loading_templ.go` | golden, BDD, a11y, example, snapshot              |
+| ~~1~~ | ~~`display.Grid` + `GridCols` enum (1–6)~~ done at `985019a` | ~~`display/grid.templ`, `grid_templ.go`~~ | ~~golden, BDD, a11y, example, integration, coverage~~ |
+| ~~2~~ | ~~`StatCardProps.Href` — renders `<a>` wrapper~~ done at `985019a` | ~~`display/card.templ`, `card_templ.go`~~ | ~~golden, BDD, a11y, integration, coverage~~ |
+| ~~3~~ | ~~`SimpleNavProps.RightItems` — forwarded to Nav~~ done at `985019a` | ~~`navigation/nav.templ`, `nav_templ.go`~~ | ~~coverage, BDD~~ |
+| ~~4~~ | ~~`layout.Script(nonce, src, attrs)` — CSP-safe helper~~ done at `985019a` | ~~`layout/script.templ`, `script_templ.go`~~ | ~~golden, BDD, a11y, example, snapshot~~ |
+| ~~5~~ | ~~`feedback.SkeletonCardGrid(count)` — loading grid~~ done at `985019a` | ~~`feedback/loading.templ`, `loading_templ.go`~~ | ~~golden, BDD, a11y, example, snapshot~~ |
 
 ### Recipes shipped (commit `985019a`)
 
 | # | Recipe                                               | Path                                                  |
 | - | ---------------------------------------------------- | ----------------------------------------------------- |
-| 6 | Play CDN → Tailwind v4 CSS-first (7-step migration)  | `docs/migration/play-cdn-to-tailwind-v4.md`           |
-| 7 | Server-rendered HTMX error feedback (3 render modes) | `docs/recipes/server-rendered-htmx-error-feedback.md` |
+| ~~6~~ | ~~Play CDN → Tailwind v4 CSS-first (7-step migration)~~ done at `985019a` | ~~`docs/migration/play-cdn-to-tailwind-v4.md`~~ |
+| ~~7~~ | ~~Server-rendered HTMX error feedback (3 render modes)~~ done at `985019a` | ~~`docs/recipes/server-rendered-htmx-error-feedback.md`~~ |
 
 ### Documentation (commits `985019a`, `79c926c`, `865967a`, `cea5a66`, `29fccf1`)
 
 | #  | What                                                                   | Files                            |
 | -- | ---------------------------------------------------------------------- | -------------------------------- |
-| 8  | PageProps auto-inject godoc (HTMXVersion, CSSPath suppression)         | `layout/base.templ`              |
-| 9  | README "Suppressing auto-injected `<head>` tags" subsection            | `README.md`                      |
-| 10 | AGENTS.md: 8 new convention entries, count 25→26                       | `AGENTS.md`                      |
-| 11 | TODO_LIST.md: session 6 header + Consumer Feedback Backlog (11 items)  | `TODO_LIST.md`                   |
-| 12 | FEATURES.md: Grid, Script, SkeletonCardGrid, GridCols enum             | `FEATURES.md`                    |
-| 13 | CONTEXT.md: updated metrics, package descriptions                      | `CONTEXT.md`                     |
-| 14 | CHANGELOG: comprehensive `[Unreleased]`                                | `CHANGELOG.md`                   |
-| 15 | README: component counts (73→76), examples (Grid, Href, RightItems)    | `README.md`                      |
-| 16 | Feedback appendices: resolution status on all 5 feedback files         | `docs/feedback/*.md`             |
-| 17 | SKILL.md rewritten to 10/10 — Part 1 Consumer Guide + Part 2 Authoring | `skill/SKILL.md`                 |
-| 18 | 3 status reports + 1 planning doc                                      | `docs/status/`, `docs/planning/` |
+| ~~8~~  | ~~PageProps auto-inject godoc (HTMXVersion, CSSPath suppression)~~ done at `358d0b0` | ~~`layout/base.templ`~~ |
+| ~~9~~  | ~~README "Suppressing auto-injected `<head>` tags" subsection~~ done at `358d0b0` | ~~`README.md`~~ |
+| ~~10~~ | ~~AGENTS.md: 8 new convention entries, count 25→26~~ done at `358d0b0` | ~~`AGENTS.md`~~ |
+| ~~11~~ | ~~TODO_LIST.md: session 6 header + Consumer Feedback Backlog (11 items)~~ done at `358d0b0` | ~~`TODO_LIST.md`~~ |
+| ~~12~~ | ~~FEATURES.md: Grid, Script, SkeletonCardGrid, GridCols enum~~ done at `358d0b0` | ~~`FEATURES.md`~~ |
+| ~~13~~ | ~~CONTEXT.md: updated metrics, package descriptions~~ done at `358d0b0` | ~~`CONTEXT.md`~~ |
+| ~~14~~ | ~~CHANGELOG: comprehensive `[Unreleased]`~~ done at `358d0b0` | ~~`CHANGELOG.md`~~ |
+| ~~15~~ | ~~README: component counts (73→76), examples (Grid, Href, RightItems)~~ done at `358d0b0` | ~~`README.md`~~ |
+| ~~16~~ | ~~Feedback appendices: resolution status on all 5 feedback files~~ done at `358d0b0` | ~~`docs/feedback/*.md`~~ |
+| ~~17~~ | ~~SKILL.md rewritten to 10/10 — Part 1 Consumer Guide + Part 2 Authoring~~ done at `358d0b0` | ~~`skill/SKILL.md`~~ |
+| ~~18~~ | ~~3 status reports + 1 planning doc~~ done at `358d0b0` | ~~`docs/status/`, `docs/planning/`~~ |
 
 ### Code fixes (commits `79c926c`, `29fccf1`)
 
 | #  | What                                                                                | Why                                             |
 | -- | ----------------------------------------------------------------------------------- | ----------------------------------------------- |
-| 19 | Fixed `GridCols4`/`GridCols5` responsive ladders (added intermediate md breakpoint) | Design flaw — jumped 2→final                    |
-| 20 | Modernized ProgressBar clamp to `max(0, min(100, v))`                               | templ minmax diagnostic                         |
-| 21 | Fixed stale `sidebar_nav.golden`                                                    | Pre-existing failure from templ cosmetic change |
-| 22 | Fixed 4 lint errors in `sri_net_test.go` (errcheck/noctx/paralleltest)              | Pre-existing                                    |
-| 23 | Removed `*_templ.go` from `.gitignore` line 32                                      | Root cause of BuildFlow gotcha                  |
-| 24 | Fixed README feedback count 12→13 (missed twice in self-reviews)                    | Cosmetic but embarrassing                       |
-| 25 | Fixed AGENTS.md BaseProps count 25→26                                               | Accuracy                                        |
-| 26 | Demo updated: StatCard section uses `display.Grid` + `StatCard.Href`                | `examples/demo/demo.templ`                      |
+| ~~19~~ | ~~Fixed `GridCols4`/`GridCols5` responsive ladders (added intermediate md breakpoint)~~ done at `79c926c` | ~~Design flaw — jumped 2→final~~ |
+| ~~20~~ | ~~Modernized ProgressBar clamp to `max(0, min(100, v))`~~ done at `358d0b0` | ~~templ minmax diagnostic~~ |
+| ~~21~~ | ~~Fixed stale `sidebar_nav.golden`~~ done at `358d0b0` | ~~Pre-existing failure from templ cosmetic change~~ |
+| ~~22~~ | ~~Fixed 4 lint errors in `sri_net_test.go` (errcheck/noctx/paralleltest)~~ done at `358d0b0` | ~~Pre-existing~~ |
+| ~~23~~ | ~~Removed `*_templ.go` from `.gitignore` line 32~~ done at `29fccf1` | ~~Root cause of BuildFlow gotcha~~ |
+| ~~24~~ | ~~Fixed README feedback count 12→13 (missed twice in self-reviews)~~ done at `29fccf1` | ~~Cosmetic but embarrassing~~ |
+| ~~25~~ | ~~Fixed AGENTS.md BaseProps count 25→26~~ done at `358d0b0` | ~~Accuracy~~ |
+| ~~26~~ | ~~Demo updated: StatCard section uses `display.Grid` + `StatCard.Href`~~ done at `358d0b0` | ~~`examples/demo/demo.templ`~~ |
 
 ### Test lens coverage
 
@@ -99,8 +99,8 @@
 
 | #  | What                                                                      |
 | -- | ------------------------------------------------------------------------- |
-| 27 | `GridProps` registered in `internal/contract/component_props_test.go`     |
-| 28 | `statCardInner` sub-template extracted (DRY for linked/unlinked StatCard) |
+| ~~27~~ | ~~`GridProps` registered in `internal/contract/component_props_test.go`~~ done at `358d0b0` |
+| ~~28~~ | ~~`statCardInner` sub-template extracted (DRY for linked/unlinked StatCard)~~ done at `358d0b0` |
 
 ---
 
@@ -118,12 +118,12 @@
 
 | # | What                             | Why                                                     | Status (2026-07-06)                              |
 | - | -------------------------------- | ------------------------------------------------------- | ------------------------------------------------ |
-| 1 | Implement CopyButton component   | DiscordSync feedback — in backlog                       | ✅ Done — shipped in session 7                   |
-| 2 | Implement RelativeTime component | DiscordSync feedback — in backlog                       | ✅ Done — shipped in session 7                   |
-| 3 | Implement cursor pagination      | DiscordSync feedback — in backlog                       | ✅ Done — `navigation.LoadMore` shipped          |
-| 4 | Forms discoverability overhaul   | SwettySwipper feedback — #1 gap, needs design decision  | ✅ Done — SKILL.md "by use case" table + recipes |
-| 5 | Component catalog demo site      | Multiple consumers — needs hosting decision             | ⬜ Not started                                   |
-| 6 | v0.7.0 release cut               | All `[Unreleased]` entries ready, release script tested | ✅ Done (v0.7.0 + v0.8.0 released)               |
+| ~~1~~ | ~~Implement CopyButton component~~ done — display/copy button.templ | ~~DiscordSync feedback — in backlog~~ | ~~✅ Done — shipped in session 7~~ |
+| ~~2~~ | ~~Implement RelativeTime component~~ done — display/relative time.templ | ~~DiscordSync feedback — in backlog~~ | ~~✅ Done — shipped in session 7~~ |
+| ~~3~~ | ~~Implement cursor pagination~~ done — navigation/loadmore.templ | ~~DiscordSync feedback — in backlog~~ | ~~✅ Done — `navigation.LoadMore` shipped~~ |
+| ~~4~~ | ~~Forms discoverability overhaul~~ done — skill/SKILL.md | ~~SwettySwipper feedback — #1 gap, needs design decision~~ | ~~✅ Done — SKILL.md "by use case" table + recipes~~ |
+| ~~5~~ | ~~Component catalog demo site~~ done — visualtest/demo.go | ~~Multiple consumers — needs hosting decision~~ | ~~⬜ Not started~~ |
+| ~~6~~ | ~~v0.7.0 release cut~~ done — CHANGELOG.md | ~~All `[Unreleased]` entries ready, release script tested~~ | ~~✅ Done (v0.7.0 + v0.8.0 released)~~ |
 
 ---
 
@@ -136,11 +136,11 @@ Nothing is broken. Verify passes, git is clean, all pushed.
 | # | What                                                                               | How fixed                                          |
 | - | ---------------------------------------------------------------------------------- | -------------------------------------------------- |
 | 1 | README feedback count "12" missed in 2 consecutive commits                         | Fixed in `29fccf1`                                 |
-| 2 | `layout.Script` shipped with assertion-only tests (violating the skill's own rule) | Fixed in `29fccf1` — added golden+BDD+a11y+example |
-| 3 | `.gitignore` root cause worked around with `git add -f` instead of fixed           | Fixed in `29fccf1` — removed line 32               |
-| 4 | SKILL.md forgotten entirely in first cleanup pass                                  | Fixed in `cea5a66` — full rewrite                  |
-| 5 | `GridCols5` shipped with bad responsive ladder (2→5 jump)                          | Fixed in `79c926c`                                 |
-| 6 | AGENTS.md not updated in first pass                                                | Fixed in `79c926c`                                 |
+| ~~2~~ | ~~`layout.Script` shipped with assertion-only tests (violating the skill's own rule)~~ done at `29fccf1` | ~~Fixed in `29fccf1` — added golden+BDD+a11y+example~~ |
+| ~~3~~ | ~~`.gitignore` root cause worked around with `git add -f` instead of fixed~~ done at `29fccf1` | ~~Fixed in `29fccf1` — removed line 32~~ |
+| ~~4~~ | ~~SKILL.md forgotten entirely in first cleanup pass~~ done at `cea5a66` | ~~Fixed in `cea5a66` — full rewrite~~ |
+| ~~5~~ | ~~`GridCols5` shipped with bad responsive ladder (2→5 jump)~~ done at `79c926c` | ~~Fixed in `79c926c`~~ |
+| ~~6~~ | ~~AGENTS.md not updated in first pass~~ done at `79c926c` | ~~Fixed in `79c926c`~~ |
 
 **Remaining risk:**
 
@@ -152,10 +152,10 @@ Nothing is broken. Verify passes, git is clean, all pushed.
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Cut v0.7.0** — `[Unreleased]` is comprehensive, all tests pass, 5 new features + 2 recipes. No reason to wait.
-2. **Monitor the `.gitignore` fix** — if BuildFlow re-adds `*_templ.go`, we need to fix it in BuildFlow itself (`larsartmann/buildflow`).
-3. **Forms discoverability** — SwettySwipper's #1 request. Needs a design decision: prominent README section? Separate forms demo page? Forms quickstart guide?
-4. **Component catalog** — auto-generated or manual, consumers need a single-page "what exists" reference.
+1. ~~**Cut v0.7.0** — `[Unreleased]` is comprehensive, all tests pass, 5 new features + 2 recipes. No reason to wait.~~ done — CHANGELOG.md
+2. ~~**Monitor the `.gitignore` fix** — if BuildFlow re-adds `*_templ.go`, we need to fix it in BuildFlow itself (`larsartmann/buildflow`).~~ done (docs-health pass 2026-09-08)
+3. ~~**Forms discoverability** — SwettySwipper's #1 request. Needs a design decision: prominent README section? Separate forms demo page? Forms quickstart guide?~~ done — README.md
+4. ~~**Component catalog** — auto-generated or manual, consumers need a single-page "what exists" reference.~~ done — visualtest/demo.go
 5. **Consumer adoption testing** — actually migrate a real project (browser-history or DiscordSync) to validate the recipes work end-to-end.
 
 ---
@@ -164,31 +164,31 @@ Nothing is broken. Verify passes, git is clean, all pushed.
 
 | #  | Task                                                                                               | Impact | Effort   | Status (2026-07-06)                                        |
 | -- | -------------------------------------------------------------------------------------------------- | ------ | -------- | ---------------------------------------------------------- |
-| 1  | Cut v0.7.0 release via `scripts/release.sh`                                                        | High   | 10m      | ✅ Done (v0.7.0 + v0.8.0)                                  |
-| 2  | Monitor `.gitignore` after next BuildFlow run — verify `*_templ.go` isn't re-added                 | High   | 2m       | ✅ Done — stable through v0.8.0                            |
-| 3  | Forms discoverability: add prominent forms section to README with quickstart example               | High   | 15m      | ✅ Done                                                    |
-| 4  | Forms demo page in `examples/demo/`                                                                | Med    | 20m      | ⬜ Not started                                             |
-| 5  | Implement `display.CopyButton` (clipboard API + "Copied!" feedback)                                | Med    | 15m      | ✅ Done                                                    |
-| 6  | Implement `display.RelativeTime(timestamp)`                                                        | Med    | 15m      | ✅ Done                                                    |
-| 7  | Implement cursor pagination pattern (document or `navigation.LoadMore`)                            | Med    | 20m      | ✅ Done                                                    |
+| ~~1~~  | ~~Cut v0.7.0 release via `scripts/release.sh`~~ done — CHANGELOG.md | ~~High~~ | ~~10m~~ | ~~✅ Done (v0.7.0 + v0.8.0)~~ |
+| ~~2~~  | ~~Monitor `.gitignore` after next BuildFlow run — verify `*_templ.go` isn't re-added~~ done — .gitignore | ~~High~~ | ~~2m~~ | ~~✅ Done — stable through v0.8.0~~ |
+| ~~3~~  | ~~Forms discoverability: add prominent forms section to README with quickstart example~~ done — README.md | ~~High~~ | ~~15m~~ | ~~✅ Done~~ |
+| ~~4~~  | ~~Forms demo page in `examples/demo/`~~ done — visualtest/demo.go | ~~Med~~ | ~~20m~~ | ~~⬜ Not started~~ |
+| ~~5~~  | ~~Implement `display.CopyButton` (clipboard API + "Copied!" feedback)~~ done — display/copy button.templ | ~~Med~~ | ~~15m~~ | ~~✅ Done~~ |
+| ~~6~~  | ~~Implement `display.RelativeTime(timestamp)`~~ done — display/relative time.templ | ~~Med~~ | ~~15m~~ | ~~✅ Done~~ |
+| ~~7~~  | ~~Implement cursor pagination pattern (document or `navigation.LoadMore`)~~ done — navigation/loadmore.templ | ~~Med~~ | ~~20m~~ | ~~✅ Done~~ |
 | 8  | Auto-generate component catalog from source (script that greps `templ [A-Z]`)                      | Med    | 30m      | ⬜ Not started                                             |
-| 9  | Count badge overlay on icon (DiscordSync)                                                          | Low    | 15m      | ✅ Done (`display.CountBadge`)                             |
-| 10 | `display.DefinitionGrid` wrapper (DiscordSync)                                                     | Low    | 10m      | ✅ Done                                                    |
-| 11 | `display.Image` with lazy loading + aspect ratio (SwettySwipper)                                   | Low    | 20m      | ✅ Done                                                    |
-| 12 | Consider self-hosting htmx as default (v1.0 breaking change decision)                              | High   | Decision | ✅ Done — ADR 0007 written, deferred to v1.0               |
-| 13 | Consider typed HTMX fields on StatCard vs Attrs workaround                                         | Med    | Decision | ✅ Done                                                    |
-| 14 | Consider `Card.Body` explicit slot (SEC feedback)                                                  | Low    | 15m      | ✅ Done                                                    |
-| 15 | StatCard golden with Href + Icon combined                                                          | Low    | 5m       | ✅ Done                                                    |
+| ~~9~~  | ~~Count badge overlay on icon (DiscordSync)~~ done — display/count badge.templ | ~~Low~~ | ~~15m~~ | ~~✅ Done (`display.CountBadge`)~~ |
+| ~~10~~ | ~~`display.DefinitionGrid` wrapper (DiscordSync)~~ done — display/definition grid.templ | ~~Low~~ | ~~10m~~ | ~~✅ Done~~ |
+| ~~11~~ | ~~`display.Image` with lazy loading + aspect ratio (SwettySwipper)~~ done — display/image.templ | ~~Low~~ | ~~20m~~ | ~~✅ Done~~ |
+| ~~12~~ | ~~Consider self-hosting htmx as default (v1.0 breaking change decision)~~ done — docs/adr/0007-self-host-htmx-default.md | ~~High~~ | ~~Decision~~ | ~~✅ Done — ADR 0007 written, deferred to v1.0~~ |
+| ~~13~~ | ~~Consider typed HTMX fields on StatCard vs Attrs workaround~~ done — display/card.templ | ~~Med~~ | ~~Decision~~ | ~~✅ Done~~ |
+| ~~14~~ | ~~Consider `Card.Body` explicit slot (SEC feedback)~~ done — display/card.templ | ~~Low~~ | ~~15m~~ | ~~✅ Done~~ |
+| ~~15~~ | ~~StatCard golden with Href + Icon combined~~ done — display/testdata | ~~Low~~ | ~~5m~~ | ~~✅ Done~~ |
 | 16 | Test Play CDN migration recipe end-to-end on browser-history                                       | Med    | 30m      | ⬜ Not started                                             |
 | 17 | Test HTMX error feedback recipe end-to-end on a real project                                       | Med    | 30m      | ⬜ Not started                                             |
-| 18 | Add `GridProps.Gap` typed enum (gap-2/4/6/8)                                                       | Low    | 10m      | ⬜ Not done                                                |
-| 19 | Consider `layout.Stylesheet(nonce, href, attrs)` companion to `Script`                             | Low    | 10m      | ✅ Done                                                    |
-| 20 | Audit component count 76 by actual grep across all packages                                        | Low    | 5m       | ✅ Done (82 components)                                    |
-| 21 | Add CI check that `*_templ.go` files are tracked (prevent future gotcha)                           | Med    | 15m      | ⬜ Not needed — .gitignore fixed                           |
-| 22 | Consider sortable `display.Table` (typed column definitions)                                       | Med    | 30m      | ✅ Done (`TableHeader` + `TypedHeaders` shipped in v0.8.0) |
-| 23 | `examples/demo/` add SkeletonCardGrid loading state showcase                                       | Low    | 5m       | ⬜ Not done                                                |
+| ~~18~~ | ~~Add `GridProps.Gap` typed enum (gap-2/4/6/8)~~ done — display/grid.templ | ~~Low~~ | ~~10m~~ | ~~⬜ Not done~~ |
+| ~~19~~ | ~~Consider `layout.Stylesheet(nonce, href, attrs)` companion to `Script`~~ done — layout/stylesheet.templ | ~~Low~~ | ~~10m~~ | ~~✅ Done~~ |
+| ~~20~~ | ~~Audit component count 76 by actual grep across all packages~~ done — utils/skill count test.go | ~~Low~~ | ~~5m~~ | ~~✅ Done (82 components)~~ |
+| ~~21~~ | ~~Add CI check that `*_templ.go` files are tracked (prevent future gotcha)~~ **Won't implement — root cause fixed.** | ~~Med~~ | ~~15m~~ | ~~⬜ Not needed — .gitignore fixed~~ |
+| ~~22~~ | ~~Consider sortable `display.Table` (typed column definitions)~~ done — display/table.templ | ~~Med~~ | ~~30m~~ | ~~✅ Done (`TableHeader` + `TypedHeaders` shipped in v0.8.0)~~ |
+| ~~23~~ | ~~`examples/demo/` add SkeletonCardGrid loading state showcase~~ done — visualtest/visual test.go | ~~Low~~ | ~~5m~~ | ~~⬜ Not done~~ |
 | 24 | Consumer project: actually adopt templ-components in DiscordSync to validate discoverability fixes | High   | 60m      | ⬜ Not started                                             |
-| 25 | v1.0 API freeze planning (move test helpers, Validate() error, freeze types)                       | High   | 60m      | ⬜ Not started                                             |
+| ~~25~~ | ~~v1.0 API freeze planning (move test helpers, Validate() error, freeze types)~~ done — docs/migration/v0.22-to-v1.0.md | ~~High~~ | ~~60m~~ | ~~⬜ Not started~~ |
 
 **Scorecard:** 14 of 25 complete (56%).
 

@@ -123,80 +123,80 @@ components had light-mode color classes without corresponding `dark:` variants.
 
 ## a) FULLY DONE
 
-1. **Palette consistency audit** — verified no `slate-*`/`zinc-*`/`neutral-*`/`stone-*` mixing anywhere
-2. **Neutral color audit** — all `text-gray-*`, `bg-white`, `bg-gray-*`, `border-gray-*`, `ring-gray-*` now have `dark:` variants
-3. **Semantic color audit** — all `bg-blue-600`/`bg-red-600`/`text-blue-600`/`text-red-600`/`text-green-500`/`text-amber-500`/`text-orange-500` now have `dark:` variants
-4. **Focus ring audit** — all `focus-visible:ring-gray-*` now have `dark:focus-visible:ring-*`
-5. **Demo page** — all spinner colors, icon labels, and addon icons fixed
-6. **Golden files updated** — 7 golden snapshots regenerated to match new output
-7. **Unit test updated** — `TestStepCircleClass` expected string updated
-8. **Build + test + lint** — all green
+1. ~~**Palette consistency audit** — verified no `slate-*`/`zinc-*`/`neutral-*`/`stone-*` mixing anywhere~~ done at `0695347`
+2. ~~**Neutral color audit** — all `text-gray-*`, `bg-white`, `bg-gray-*`, `border-gray-*`, `ring-gray-*` now have `dark:` variants~~ done at `0695347`
+3. ~~**Semantic color audit** — all `bg-blue-600`/`bg-red-600`/`text-blue-600`/`text-red-600`/`text-green-500`/`text-amber-500`/`text-orange-500` now have `dark:` variants~~ done at `0695347`
+4. ~~**Focus ring audit** — all `focus-visible:ring-gray-*` now have `dark:focus-visible:ring-*`~~ done at `0695347`
+5. ~~**Demo page** — all spinner colors, icon labels, and addon icons fixed~~ done at `0695347`
+6. ~~**Golden files updated** — 7 golden snapshots regenerated to match new output~~ done at `0695347`
+7. ~~**Unit test updated** — `TestStepCircleClass` expected string updated~~ done at `0695347`
+8. ~~**Build + test + lint** — all green~~ done at `0695347`
 
 ## b) PARTIALLY DONE
 
-1. **Toast JS string literal** — the `tcShowToast` JS function constructs toast HTML including class strings.
-   The dismiss button className was fixed, but the toast container/type colors in the JS are still
-   hardcoded (e.g., `style.border`, `style.bg`, `style.text` come from the Go `toastStyleMap` which
-   IS properly dark-mode aware). The JS path is fine for templ-rendered toasts but dynamically-created
-   toasts rely on the same Go map, so this is actually complete — just worth noting the dual path.
+1. ~~**Toast JS string literal** — the `tcShowToast` JS function constructs toast HTML including class strings.~~ done (docs-health pass 2026-09-08)
+   ~~The dismiss button className was fixed, but the toast container/type colors in the JS are still~~
+   ~~hardcoded (e.g., `style.border`, `style.bg`, `style.text` come from the Go `toastStyleMap` which~~
+   ~~IS properly dark-mode aware). The JS path is fine for templ-rendered toasts but dynamically-created~~
+   ~~toasts rely on the same Go map, so this is actually complete — just worth noting the dual path.~~
 
-2. **Doc comment examples** — 3 doc comments in `.templ` files still show `text-blue-600` without
-   `dark:text-blue-400` (in `htmx/loading.templ:15,28` and `feedback/loading.templ:59`). These are
-   godoc examples, not rendered code, but could mislead consumers copying them.
+2. ~~**Doc comment examples** — 3 doc comments in `.templ` files still show `text-blue-600` without~~ done — htmx/loading.templ
+   ~~`dark:text-blue-400` (in `htmx/loading.templ:15,28` and `feedback/loading.templ:59`). These are~~
+   ~~godoc examples, not rendered code, but could mislead consumers copying them.~~
 
 ## c) NOT STARTED
 
-1. **Automated dark mode test** — no test exists that renders every component in both light and dark
-   mode and asserts contrast/readability. The golden files capture HTML output but don't validate
-   that `dark:` classes are present.
-2. **Contrast ratio verification** — no WCAG contrast ratio checking was done. The `dark:` variants
-   use Tailwind's default palette (e.g., `dark:text-gray-400` on `dark:bg-gray-900`), which should
-   be fine, but was not verified programmatically.
-3. **Tailwind v4 content scanning verification** — did not verify that all `dark:` classes added
-   in Go string literals (e.g., `button_go.go`, `errorpage/styles.go`) are actually picked up by
-   Tailwind v4's content scanner. Since these are in `.go` files and Tailwind scans raw text, they
-   should be found, but no build-time CSS verification was done.
+1. ~~**Automated dark mode test** — no test exists that renders every component in both light and dark~~ done — utils/darkmode compliance test.go
+   ~~mode and asserts contrast/readability. The golden files capture HTML output but don't validate~~
+   ~~that `dark:` classes are present.~~
+2. ~~**Contrast ratio verification** — no WCAG contrast ratio checking was done. The `dark:` variants~~ done — docs/adr/0011-wcag-contrast-verification.md
+   ~~use Tailwind's default palette (e.g., `dark:text-gray-400` on `dark:bg-gray-900`), which should~~
+   ~~be fine, but was not verified programmatically.~~
+3. ~~**Tailwind v4 content scanning verification** — did not verify that all `dark:` classes added~~ done — utils/tailwind source test.go
+   ~~in Go string literals (e.g., `button_go.go`, `errorpage/styles.go`) are actually picked up by~~
+   ~~Tailwind v4's content scanner. Since these are in `.go` files and Tailwind scans raw text, they~~
+   ~~should be found, but no build-time CSS verification was done.~~
 
 ## d) TOTALLY FUCKED UP
 
-1. **`errorpage/handler.go` unrelated change** — The working tree had a pre-existing uncommitted
-   change to `errorpage/handler.go` (`encoding/json` → `encoding/json/v2`) that I did NOT make and
-   did NOT notice until reviewing the git diff. It's now mixed into my changes. I did not touch it
-   (correctly, per the "don't revert changes you didn't author" rule), but it will show up in any
-   commit. **This needs to be separated before committing.**
+1. ~~**`errorpage/handler.go` unrelated change** — The working tree had a pre-existing uncommitted~~ done — docs/adr/0013-jsonv2-auto-formatter-guard.md
+   ~~change to `errorpage/handler.go` (`encoding/json` → `encoding/json/v2`) that I did NOT make and~~
+   ~~did NOT notice until reviewing the git diff. It's now mixed into my changes. I did not touch it~~
+   ~~(correctly, per the "don't revert changes you didn't author" rule), but it will show up in any~~
+   ~~commit. **This needs to be separated before committing.**~~
 
-2. **Initial edit failures** — Two edits failed because I tried to edit files I hadn't read yet in
-   this conversation (`forms/input.templ` and `layout/base.templ`). The tool correctly blocked these.
-   I had to re-read the files and retry. Not a real fuck-up, but a workflow inefficiency.
+2. ~~**Initial edit failures** — Two edits failed because I tried to edit files I hadn't read yet in~~ done (docs-health pass 2026-09-08)
+   ~~this conversation (`forms/input.templ` and `layout/base.templ`). The tool correctly blocked these.~~
+   ~~I had to re-read the files and retry. Not a real fuck-up, but a workflow inefficiency.~~
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **No dark mode compliance test** — The repo has `utils.TestMotionReduceCompliance` that scans all
-   `.templ` files for missing `motion-reduce:` classes. We need an equivalent `TestDarkModeCompliance`
-   that scans for neutral color classes (`text-gray-*`, `bg-white`, `bg-gray-*`, `border-gray-*`)
-   without `dark:` variants. This would have caught all 30+ issues automatically.
+1. ~~**No dark mode compliance test** — The repo has `utils.TestMotionReduceCompliance` that scans all~~ done — utils/darkmode compliance test.go
+   ~~`.templ` files for missing `motion-reduce:` classes. We need an equivalent `TestDarkModeCompliance`~~
+   ~~that scans for neutral color classes (`text-gray-*`, `bg-white`, `bg-gray-*`, `border-gray-*`)~~
+   ~~without `dark:` variants. This would have caught all 30+ issues automatically.~~
 
-2. **Inconsistent dark: variant patterns** — Some components use `dark:bg-blue-500` (lighter shade),
-   others use `dark:bg-blue-600` (same shade). The convention should be documented: in dark mode,
-   primary colors should use the `-500` shade (slightly lighter than `-600` for better visibility
-   on dark backgrounds). This was done consistently in this fix, but the convention isn't written
-   down anywhere.
+2. ~~**Inconsistent dark: variant patterns** — Some components use `dark:bg-blue-500` (lighter shade),~~ done — docs/adr/0011-dark-mode-convention.md
+   ~~others use `dark:bg-blue-600` (same shade). The convention should be documented: in dark mode,~~
+   ~~primary colors should use the `-500` shade (slightly lighter than `-600` for better visibility~~
+   ~~on dark backgrounds). This was done consistently in this fix, but the convention isn't written~~
+   ~~down anywhere.~~
 
-3. **Doc comments don't show dark mode** — The godoc examples in `.templ` files show light-mode-only
-   color classes. Consumers copying these examples won't get dark mode support. All doc examples
-   should include `dark:` variants.
+3. ~~**Doc comments don't show dark mode** — The godoc examples in `.templ` files show light-mode-only~~ done — htmx/loading.templ
+   ~~color classes. Consumers copying these examples won't get dark mode support. All doc examples~~
+   ~~should include `dark:` variants.~~
 
-4. **Sidebar is a special case** — `SidebarNav` uses `bg-gray-900` as its base (permanently dark
-   sidebar), so its `hover:bg-gray-800` is intentional. This is the only component with this pattern.
-   It should be documented as an intentional exception.
+4. ~~**Sidebar is a special case** — `SidebarNav` uses `bg-gray-900` as its base (permanently dark~~ done — docs/adr/0011-dark-mode-convention.md
+   ~~sidebar), so its `hover:bg-gray-800` is intentional. This is the only component with this pattern.~~
+   ~~It should be documented as an intentional exception.~~
 
-5. **Toggle thumb stays white** — The toggle thumb is `bg-white` in both modes (intentional — the
-   track changes color instead). This is the only `bg-white` without a `dark:` variant. Should be
-   documented as intentional.
+5. ~~**Toggle thumb stays white** — The toggle thumb is `bg-white` in both modes (intentional — the~~ done — docs/adr/0011-dark-mode-convention.md
+   ~~track changes color instead). This is the only `bg-white` without a `dark:` variant. Should be~~
+   ~~documented as intentional.~~
 
-6. **`errorpage/styles.go` got reformatted** — The `golangci-lint --fix` reformatted the struct
-   literals from multi-field-per-line to one-field-per-line. This is cosmetically different from
-   the original style. Not wrong, but worth noting.
+6. ~~**`errorpage/styles.go` got reformatted** — The `golangci-lint --fix` reformatted the struct~~ done (docs-health pass 2026-09-08)
+   ~~literals from multi-field-per-line to one-field-per-line. This is cosmetically different from~~
+   ~~the original style. Not wrong, but worth noting.~~
 
 ## f) Up to 50 Things We Should Get Done Next
 

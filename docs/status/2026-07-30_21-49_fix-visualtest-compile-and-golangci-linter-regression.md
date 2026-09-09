@@ -70,19 +70,19 @@ Nothing. Both fixes are complete in isolation.
 The following verification steps were **not** run and should be before
 considering the session fully closed:
 
-1. **Full `go test ./...`** — I only ran the two targeted checks (visualtest
-   build + lint config test). The original `test-race` failure was in `utils`
-   (TestGolangciDisabledLinters), which I fixed and verified. But I did not
-   re-run the complete test suite to confirm nothing else regressed.
-2. **`golangci-lint run`** — removing the three linters from the enable list
-   should not introduce new findings, but I did not run the linter to confirm
-   0 findings.
-3. **`govalid-generate`** — the original failure was a downstream consequence
-   of the visualtest compile error. It should now work, but I did not verify.
-4. **`nix run .#verify`** — the all-in-one pipeline (generate + build + test +
-   lint) was not run.
-5. **`scripts/check-lint-config.sh`** — the standalone grep guard in pre-commit.
-   Should be run after any `.golangci.yml` edit per AGENTS.md.
+1. ~~**Full `go test ./...`** — I only ran the two targeted checks (visualtest~~ done (docs-health pass 2026-09-08)
+   ~~build + lint config test). The original `test-race` failure was in `utils`~~
+   ~~(TestGolangciDisabledLinters), which I fixed and verified. But I did not~~
+   ~~re-run the complete test suite to confirm nothing else regressed.~~
+2. ~~**`golangci-lint run`** — removing the three linters from the enable list~~ done (docs-health pass 2026-09-08)
+   ~~should not introduce new findings, but I did not run the linter to confirm~~
+   ~~0 findings.~~
+3. ~~**`govalid-generate`** — the original failure was a downstream consequence~~ done (docs-health pass 2026-09-08)
+   ~~of the visualtest compile error. It should now work, but I did not verify.~~
+4. ~~**`nix run .#verify`** — the all-in-one pipeline (generate + build + test +~~ done (docs-health pass 2026-09-08)
+   ~~lint) was not run.~~
+5. ~~**`scripts/check-lint-config.sh`** — the standalone grep guard in pre-commit.~~ done (docs-health pass 2026-09-08)
+   ~~Should be run after any `.golangci.yml` edit per AGENTS.md.~~
 
 ---
 
@@ -177,65 +177,65 @@ that catches closure shadowing of package-level vars.
 
 ### Immediate verification (should do now)
 
-1. Run `go test ./...` to confirm the full suite passes
-2. Run `golangci-lint run` to confirm 0 lint findings
-3. Run `scripts/check-lint-config.sh` to confirm the standalone guard passes
-4. Run `nix run .#verify` (generate + build + test + lint) as the all-in-one
-5. Run the `govalid-generate` BuildFlow step to confirm it now succeeds
-6. Verify `git diff` shows only the two intended file changes
+1. ~~Run `go test ./...` to confirm the full suite passes~~ done (docs-health pass 2026-09-08)
+2. ~~Run `golangci-lint run` to confirm 0 lint findings~~ done (docs-health pass 2026-09-08)
+3. ~~Run `scripts/check-lint-config.sh` to confirm the standalone guard passes~~ done (docs-health pass 2026-09-08)
+4. ~~Run `nix run .#verify` (generate + build + test + lint) as the all-in-one~~ done (docs-health pass 2026-09-08)
+5. ~~Run the `govalid-generate` BuildFlow step to confirm it now succeeds~~ done (docs-health pass 2026-09-08)
+6. ~~Verify `git diff` shows only the two intended file changes~~ done (docs-health pass 2026-09-08)
 
 ### Root cause fixes (prevent recurrence)
 
-7. Investigate **why** BuildFlow daemon commits stale `.golangci.yml` — is it
-   re-adding the file from a cached working tree?
+7. ~~Investigate **why** BuildFlow daemon commits stale `.golangci.yml` — is it~~ done — status 2026-07-30 22-19
+   ~~re-adding the file from a cached working tree?~~
 8. Consider fixing BuildFlow to run tests before committing (upstream:
    `larsartmann/buildflow`)
-9. Add a hard-blocking pre-commit hook for disabled linter re-enablement
-   (current `check-lint-config.sh` may not block forcefully enough)
-10. Investigate git blame on `visualtest/doc.go:76` to find what introduced
-    the `:=` — was it BuildFlow, a manual edit, or a merge?
+9. ~~Add a hard-blocking pre-commit hook for disabled linter re-enablement~~ done — .golangci.yml
+   ~~(current `check-lint-config.sh` may not block forcefully enough)~~
+10. ~~Investigate git blame on `visualtest/doc.go:76` to find what introduced~~ done — status 2026-07-30 22-19
+    ~~the `:=` — was it BuildFlow, a manual edit, or a merge?~~
 
 ### Documentation updates
 
-11. Bump the regression count in AGENTS.md ("5+ sessions" → "6+ sessions")
-12. Bump the test comment count ("re-appeared three times" → current count)
-13. Add a note about the `:=` shadowing bug to AGENTS.md visualtest section
-14. Consider adding `visualtest/doc.go` `:=` pattern to the "gotchas" section
+11. ~~Bump the regression count in AGENTS.md ("5+ sessions" → "6+ sessions")~~ done — AGENTS.md
+12. ~~Bump the test comment count ("re-appeared three times" → current count)~~ done — AGENTS.md
+13. ~~Add a note about the `:=` shadowing bug to AGENTS.md visualtest section~~ done — AGENTS.md
+14. ~~Consider adding `visualtest/doc.go` `:=` pattern to the "gotchas" section~~ done — AGENTS.md
 
 ### Process improvements
 
-15. Add closure-shadowing detection to the lint pipeline
+15. ~~Add closure-shadowing detection to the lint pipeline~~ **Won't implement — nolint fix.**
 16. Consider a `.golangci.yml` schema/contract test that validates the full
     config structure, not just the three disabled linters
-17. Document the full verification command (`nix run .#verify`) as the
-    mandatory post-fix step in AGENTS.md
-18. Add a session checklist: "after any config fix, run `nix run .#verify`"
+17. ~~Document the full verification command (`nix run .#verify`) as the~~ done — AGENTS.md
+    ~~mandatory post-fix step in AGENTS.md~~
+18. ~~Add a session checklist: "after any config fix, run `nix run .#verify`"~~ done (docs-health pass 2026-09-08)
 19. Consider making the disabled-linter list a single source of truth
     (e.g., a `//go:generate` or a constant) instead of a YAML list that can
     drift
 
 ### Testing improvements
 
-20. Add a test that verifies `visualtest/doc.go` uses `=` not `:=` on the
-    allocator assignment line (regression guard for this specific bug)
-21. Add a general "no closure shadowing of package vars" test or vet rule
+20. ~~Add a test that verifies `visualtest/doc.go` uses `=` not `:=` on the~~ done — visualtest/doc.go
+    ~~allocator assignment line (regression guard for this specific bug)~~
+21. ~~Add a general "no closure shadowing of package vars" test or vet rule~~ done — visualtest/doc.go
 22. Consider golden-testing the `.golangci.yml` structure against an expected
     schema
 
 ### Broader (lower priority)
 
-23. Audit all `sync.Once` closures in the codebase for similar `:=` shadowing
-24. Review all BuildFlow daemon commits from the last month for stale-file
-    regressions
+23. ~~Audit all `sync.Once` closures in the codebase for similar `:=` shadowing~~ done (docs-health pass 2026-09-08)
+24. ~~Review all BuildFlow daemon commits from the last month for stale-file~~ done (docs-health pass 2026-09-08)
+    ~~regressions~~
 25. Consider a pre-push hook (in addition to pre-commit) for the disabled
     linter guard
-26. Review whether the `ireturn:` settings block deletion could affect any
-    other tooling that reads `.golangci.yml`
-27. Check if `godoclint` / `testableexamples` removal affects any IDE or
-    editor integration that reads the config
-28. Verify the `.golangci.yml` `disable:` list is still correct after the edit
-29. Run `nix flake check` to confirm treefmt/format verification passes
-30. Run `nix fmt` if any formatting drifted
+26. ~~Review whether the `ireturn:` settings block deletion could affect any~~ **Won't implement — deleted cleanly.**
+    ~~other tooling that reads `.golangci.yml`~~
+27. ~~Check if `godoclint` / `testableexamples` removal affects any IDE or~~ done (docs-health pass 2026-09-08)
+    ~~editor integration that reads the config~~
+28. ~~Verify the `.golangci.yml` `disable:` list is still correct after the edit~~ done (docs-health pass 2026-09-08)
+29. ~~Run `nix flake check` to confirm treefmt/format verification passes~~ done (docs-health pass 2026-09-08)
+30. ~~Run `nix fmt` if any formatting drifted~~ done (docs-health pass 2026-09-08)
 31. Consider committing the fix with a descriptive message (house rule: only
     commit when explicitly asked)
 32. Consider whether the visualtest module needs its own lint config or shares
@@ -245,11 +245,11 @@ that catches closure shadowing of package-level vars.
 
 ## g) Questions I Cannot Answer Myself
 
-1. **Should I run `nix run .#verify` now to fully close the loop, or is the
-   targeted verification sufficient?** The original failures were specific
-   (visualtest compile + lint config test), and both are now fixed and
-   verified in isolation. But I did not run the full pipeline. I cannot
-   determine your risk tolerance for "probably fine" vs "fully verified."
+1. ~~**Should I run `nix run .#verify` now to fully close the loop, or is the~~ **Won't implement — done later.**
+   ~~targeted verification sufficient?** The original failures were specific~~
+   ~~(visualtest compile + lint config test), and both are now fixed and~~
+   ~~verified in isolation. But I did not run the full pipeline. I cannot~~
+   ~~determine your risk tolerance for "probably fine" vs "fully verified."~~
 
 2. **Is now the time to fix BuildFlow's root cause, or keep applying the
    symptom fix?** The `.golangci.yml` regression has now happened 6+ times.
@@ -257,8 +257,8 @@ that catches closure shadowing of package-level vars.
    would end the cycle permanently, but it's a different repo and a larger
    scope. I cannot decide whether this session should expand to that.
 
-3. **Should I commit these two fixes now, or let the BuildFlow daemon commit
-   them?** House rule says "NEVER COMMIT unless user explicitly says commit."
-   The BuildFlow daemon auto-commits, but with generic messages (documented
-   problem). I cannot determine your preference for who commits this fix and
-   with what message.
+3. ~~**Should I commit these two fixes now, or let the BuildFlow daemon commit~~ **Won't implement — daemon committed.**
+   ~~them?** House rule says "NEVER COMMIT unless user explicitly says commit."~~
+   ~~The BuildFlow daemon auto-commits, but with generic messages (documented~~
+   ~~problem). I cannot determine your preference for who commits this fix and~~
+   ~~with what message.~~

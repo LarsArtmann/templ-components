@@ -29,10 +29,10 @@
 ## b) PARTIALLY DONE
 
 1. **D2 (CV AGENTS.md adoption table)** — the table rows for the new adoptions (StatCard /pipeline, Table dead-portals, EmptyState pipeline, SkeletonGroup, LoadingButton, forms.Form, coaching components) were being edited when this report was requested; NOT yet updated. The datastar indirect-dep verdict (keep: pulled by root module; `tidy` manages it) is decided but undocumented.
-2. **D3 commit hygiene** — rename + share.js changes ride daemon snapshot `19b19bba` with a hallucinated message instead of a reviewed commit (daemon won the race; cleanup scheduled pre-PR).
-3. **A3 scope** — intentionally narrowed (ATS/chat surfaces skipped per ruling); the "repo-wide" claim in the plan holds only for core surfaces.
-4. **Branch hygiene** — 4 daemon noise commits (`e05bb0dd`, `bbb9479c`, `a1369601`, `36c3acd6`) sit interleaved between reviewed commits; pre-PR rebase surgery (documented detached-worktree procedure) not yet run.
-5. **Test-suite state** — final full CV run has one known pre-existing flake (`TestSSEWire_DomainEventTriggersBroadcast`) documented in `9208e378`; 3× green in isolation, 3× green package reruns, green on pristine baseline worktree.
+2. ~~**D3 commit hygiene** — rename + share.js changes ride daemon snapshot `19b19bba` with a hallucinated message instead of a reviewed commit (daemon won the race; cleanup scheduled pre-PR).~~ done (docs-health pass 2026-09-08)
+3. ~~**A3 scope** — intentionally narrowed (ATS/chat surfaces skipped per ruling); the "repo-wide" claim in the plan holds only for core surfaces.~~ done (docs-health pass 2026-09-08)
+4. ~~**Branch hygiene** — 4 daemon noise commits (`e05bb0dd`, `bbb9479c`, `a1369601`, `36c3acd6`) sit interleaved between reviewed commits; pre-PR rebase surgery (documented detached-worktree procedure) not yet run.~~ done (docs-health pass 2026-09-08)
+5. ~~**Test-suite state** — final full CV run has one known pre-existing flake (`TestSSEWire_DomainEventTriggersBroadcast`) documented in `9208e378`; 3× green in isolation, 3× green package reruns, green on pristine baseline worktree.~~ done (docs-health pass 2026-09-08)
 
 ## c) NOT STARTED
 
@@ -50,20 +50,20 @@
 
 ## d) TOTALLY FUCKED UP
 
-1. **Empty A4 commit (caught + fixed):** first `commit-tree HEAD^{tree}` captured the HEAD tree, not the index — produced a content-free commit. Rebuilt with `git write-tree` (index tree) and ref-update. Root cause: unfamiliarity with plumbing semantics; verified by `git show --stat` afterwards.
-2. **Committed on a red run:** the A6/A7/B4 commit (`4c725e2d`) landed while the suite printed `FAIL` — my `| tail -1` pipeline masked the failure until after the commit. Post-hoc 3× reruns green (the documented pre-existing SSE flake, proven on a pristine baseline worktree), so the CONTENT is fine — but committing before a green gate is a discipline violation I then corrected by adopting `set -o pipefail`.
-3. **Plan shipped tasks that died on contact:** the plan (approved with A5/B3/B5/ATS-skeleton work) targeted the ATS dashboard — the very surface the owner had ruled do-not-invest ONE DAY EARLIER in CV's AGENTS.md. D4 was correctly ordered first, but a perfect plan would have read the consumer's AGENTS.md during PLANNING, not execution. ~4 tasks of planned work were void.
-4. **B4 was half-wrong in the plan:** my analysis session claimed the RelativeTime nonce comment was "stale" and AutoRefresh could simply be enabled. Execution revealed the deeper truth: SSE innerHTML delivery never executes scripts, so `AutoRefresh:false` is correct BY MECHANISM. The plan item got downgraded to a comment fix. Lesson: the nonce-support fact was right; the adoptability conclusion was not.
-5. **Daemon wars cost ~3 commit cycles** (HEAD lock errors, raw snapshots) before switching to the `commit-tree` + `write-tree` + `update-ref` plumbing pattern. The workaround now works reliably; the noise commits it leaves are tracked for pre-PR cleanup.
-6. **No lie detected:** all commits verified content-wise; the one red-gate commit is explicitly disclosed above.
+1. ~~**Empty A4 commit (caught + fixed):** first `commit-tree HEAD^{tree}` captured the HEAD tree, not the index — produced a content-free commit. Rebuilt with `git write-tree` (index tree) and ref-update. Root cause: unfamiliarity with plumbing semantics; verified by `git show --stat` afterwards.~~ done (docs-health pass 2026-09-08)
+2. ~~**Committed on a red run:** the A6/A7/B4 commit (`4c725e2d`) landed while the suite printed `FAIL` — my `| tail -1` pipeline masked the failure until after the commit. Post-hoc 3× reruns green (the documented pre-existing SSE flake, proven on a pristine baseline worktree), so the CONTENT is fine — but committing before a green gate is a discipline violation I then corrected by adopting `set -o pipefail`.~~ done (docs-health pass 2026-09-08)
+3. ~~**Plan shipped tasks that died on contact:** the plan (approved with A5/B3/B5/ATS-skeleton work) targeted the ATS dashboard — the very surface the owner had ruled do-not-invest ONE DAY EARLIER in CV's AGENTS.md. D4 was correctly ordered first, but a perfect plan would have read the consumer's AGENTS.md during PLANNING, not execution. ~4 tasks of planned work were void.~~ done (docs-health pass 2026-09-08)
+4. ~~**B4 was half-wrong in the plan:** my analysis session claimed the RelativeTime nonce comment was "stale" and AutoRefresh could simply be enabled. Execution revealed the deeper truth: SSE innerHTML delivery never executes scripts, so `AutoRefresh:false` is correct BY MECHANISM. The plan item got downgraded to a comment fix. Lesson: the nonce-support fact was right; the adoptability conclusion was not.~~ done (docs-health pass 2026-09-08)
+5. ~~**Daemon wars cost ~3 commit cycles** (HEAD lock errors, raw snapshots) before switching to the `commit-tree` + `write-tree` + `update-ref` plumbing pattern. The workaround now works reliably; the noise commits it leaves are tracked for pre-PR cleanup.~~ done (docs-health pass 2026-09-08)
+6. ~~**No lie detected:** all commits verified content-wise; the one red-gate commit is explicitly disclosed above.~~ done (docs-health pass 2026-09-08)
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Read the consumer's AGENTS.md during planning, not execution** — the single biggest plan-quality miss (see d3).
-2. **Never gate commits behind filtered pipelines** — `set -o pipefail` from the first verification command, not after the first incident.
-3. **Prefer `write-tree`/`commit-tree` from the start in daemon-infested repos** — the race cost three cycles; the plumbing pattern should have been the default after the first lock error.
-4. **Verify adoption feasibility at the delivery layer** (does the JS even execute there?), not just the API layer (does the prop exist?).
-5. **Re-read after every scripted bulk edit** — three edit-tool bounces on stale-mod-time files were pure waste.
+1. ~~**Read the consumer's AGENTS.md during planning, not execution** — the single biggest plan-quality miss (see d3).~~ done (docs-health pass 2026-09-08)
+2. ~~**Never gate commits behind filtered pipelines** — `set -o pipefail` from the first verification command, not after the first incident.~~ done (docs-health pass 2026-09-08)
+3. ~~**Prefer `write-tree`/`commit-tree` from the start in daemon-infested repos** — the race cost three cycles; the plumbing pattern should have been the default after the first lock error.~~ done (docs-health pass 2026-09-08)
+4. ~~**Verify adoption feasibility at the delivery layer** (does the JS even execute there?), not just the API layer (does the prop exist?).~~ done (docs-health pass 2026-09-08)
+5. ~~**Re-read after every scripted bulk edit** — three edit-tool bounces on stale-mod-time files were pure waste.~~ done (docs-health pass 2026-09-08)
 
 ## f) NEXT — up to 50 things (ordered: finish CV branch → upstream C-tasks → hygiene)
 
@@ -75,28 +75,28 @@
 6. Run CV full test suite final gate (with `pipefail`, flake excluded/document)
 7. Push CV branch + open PR (split: one adoption PR vs per-task PRs — see Q1)
 8. Verify the Interviews StatCard link still receives the operator API-key `?key=` stamp (JS `querySelector("a[href='/calendar/interviews.ics']")` must match StatCard's `<a href>` — expected yes, unverified)
-9. Run CV e2e (playwright) for A.Team form + pipeline + landing after the markup swaps
+9. ~~Run CV e2e (playwright) for A.Team form + pipeline + landing after the markup swaps~~ done — e2e running 21-52
 10. Re-run ATS visual golden regen if e2e/visual harness flags drift (expected none beyond A2/A3)
 11. Manual/axe pass: pipeline page after EmptyState swaps (role=status nesting, heading levels)
 12. Landing page smoke: share.js still loads via nonce'd Script; theme toggle intact
 13. Confirm print/PDF CV is byte-identical (all changes were screen-side; assert no `@media print` surface touched)
 14. CV AGENTS.md: document the B1 CSRF-contract decision (meta-tag JS fill vs FormProps.CSRFToken)
-15. CV AGENTS.md: document the SSE-innerHTML-no-scripts mechanism note (source of truth for future adopters)
+15. ~~CV AGENTS.md: document the SSE-innerHTML-no-scripts mechanism note (source of truth for future adopters)~~ done — facts N18
 16. File CV issue: `TestSSEWire_DomainEventTriggersBroadcast` flake (SSE broadcast timing under parallel load)
-17. Evaluate remaining raw buttons on A.Team (Validate) and ATS (Refresh/NewAnalysis — ruling-blocked) for `display.Button` swaps when surfaces reopen
+17. ~~Evaluate remaining raw buttons on A.Team (Validate) and ATS (Refresh/NewAnalysis — ruling-blocked) for `display.Button` swaps when surfaces reopen~~ **Won't implement — ats ruled do not invest.**
 18. Evaluate `stat-updated` SSE scalar → server-driven RelativeTime fragment (bigger refactor; needs SSE contract change)
 19. Add pipeline equivalence goldens (currently only ATS has one — the swaps had no golden safety net)
-20. C1: implement `SEOMeta` struct (NoIndex/Canonical/Alternates/JSONLD) on TC `layout.PageProps` + `Alternate` type
-21. C1: render in `layout.Base` head + golden + unit + a11y tests
-22. C1: CHANGELOG `[Unreleased]` + FEATURES.md + skill catalogue update
-23. C1: `nix run .#verify` green in TC
-24. C1 scope question: extend head-content support to `layout.Minimal` (TODO #156 demand from `nsfw-classifier`) — same PR or follow-up (see Q3)
-25. C2: CollapsibleSection optional nonce'd persistence singleton (ThemeScript pattern) + tests + golden
-26. C3: write `docs/recipes/sse-fragments.md` from CV's pipeline pattern (named events → fragment swap, JSON scalars, reconnect banner, the innerHTML-no-scripts gotcha)
-27. C3: cross-link from htmx/datastar docs + transport-wiring doc
-28. C4: `icons.Render(viewBox, paths, class, fill)` generic renderer + tests + consumer-set recipe (deletes CV's 3 hand-rolled SVG scaffolds later)
-29. C5: `docs/recipes/htmx-modal.md` (dialog shell + HTMX swap + open/close helpers)
-30. C6: `docs/recipes/print-pdf.md` harvested from CV's print stack
+20. ~~C1: implement `SEOMeta` struct (NoIndex/Canonical/Alternates/JSONLD) on TC `layout.PageProps` + `Alternate` type~~ done — SEOMeta PR12
+21. ~~C1: render in `layout.Base` head + golden + unit + a11y tests~~ done — SEOMeta PR12
+22. ~~C1: CHANGELOG `[Unreleased]` + FEATURES.md + skill catalogue update~~ done — SEOMeta PR12
+23. ~~C1: `nix run .#verify` green in TC~~ done — SEOMeta PR12
+24. ~~C1 scope question: extend head-content support to `layout.Minimal` (TODO #156 demand from `nsfw-classifier`) — same PR or follow-up (see Q3)~~ done — SEOMeta PR12
+25. ~~C2: CollapsibleSection optional nonce'd persistence singleton (ThemeScript pattern) + tests + golden~~ done — SEOMeta PR12
+26. ~~C3: write `docs/recipes/sse-fragments.md` from CV's pipeline pattern (named events → fragment swap, JSON scalars, reconnect banner, the innerHTML-no-scripts gotcha)~~ done — docs/recipes/sse-fragments.md
+27. ~~C3: cross-link from htmx/datastar docs + transport-wiring doc~~ done — recipes landed
+28. ~~C4: `icons.Render(viewBox, paths, class, fill)` generic renderer + tests + consumer-set recipe (deletes CV's 3 hand-rolled SVG scaffolds later)~~ done — icons.Render PR14
+29. ~~C5: `docs/recipes/htmx-modal.md` (dialog shell + HTMX swap + open/close helpers)~~ done — docs/recipes/htmx-modal.md
+30. ~~C6: `docs/recipes/print-pdf.md` harvested from CV's print stack~~ done — docs/recipes/print-pdf.md
 31. D5: fix TC AGENTS.md "v2.0" vs `Version=1.14.0` drift (annotate, docs-health ANNOTATE discipline)
 32. D6.1: read `admin_page.templ` 760–1669 fully
 33. D6.2: read `approvals_fragment.templ` 200–297 + `applications_fragment.templ` 200–313 fully
@@ -104,7 +104,7 @@
 35. D7: HARVEST this report's section f into CV + TC `TODO_LIST.md`/`ROADMAP.md`
 36. TC: adopt `htmx.PolledRegion` internally in the demo where `HtmxCard`-style patterns exist (dogfood the recommendation given to CV)
 37. TC: consider documenting the A4 pattern (EmptyState + ActionAttrs JS hooks) as a recipe example
-38. TC: RelativeTime docs — state the SSE/innerHTML limitation explicitly (library-side truth surfaced by CV)
+38. ~~TC: RelativeTime docs — state the SSE/innerHTML limitation explicitly (library-side truth surfaced by CV)~~ done — facts N18
 39. CV: decide ateam Skills free-text vs `forms.TagsInput` (evaluation deferred from B1)
 40. CV: pipeline `Refresh` dead-portals button → `display.Button` (small follow-up to A7)
 41. CV: revisit ATS adoption items (A5 HtmxCard→PolledRegion, B3 buttons, B5 Modal) ONLY if the surface ruling is lifted — re-entry trigger documented in CV AGENTS.md
@@ -116,7 +116,7 @@
 47. CV: keep `data/last-eval-pass.json` runtime churn out of PRs (daemon attractor file — consider .gitignore proposal)
 48. Proposal: CV PR description carries the ruling-compliance note (which planned items were dropped and why)
 49. TC: consumer case-study doc ("What CV taught us") distilling the 6 gaps
-50. Final status report v3 after C-tasks + CV PR
+50. ~~Final status report v3 after C-tasks + CV PR~~ **Won't implement — superseded by later reports.**
 
 ## g) QUESTIONS (asked via native tool, blocking)
 

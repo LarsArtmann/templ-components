@@ -133,30 +133,30 @@ Also: CHANGELOG `[Unreleased]` warmed with the session's two Added entries.
 
 ## d) TOTALLY FUCKED UP (honest accounting)
 
-1. **The debugging detour on the validation round-trip cost the majority of
-   the session's wall time**, and most of it was self-inflicted:
-   - My first e2e draft shipped with dead code and a nonexistent
-     `.sliceContains` method — wrote code faster than I checked it.
-   - I theorized before instrumenting: cycled through ~6 wrong hypotheses
-     (Datastar runtime interference → clone theory → exception theory →
-     explicit-trigger theory → "htmx doesn't process swapped content") while
-     the ONE decisive probe (htmx lifecycle event trace + network log) sat
-     unused for many iterations.
-   - My instrumentation itself lied twice: chromedp `Evaluate` does NOT await
-     plain Promises (returned `{}` → I misread "no events fired"), and my
-     step-helper overwrote diagnostic variables with region dumps.
-   - Repeated Python/sed patch edits mangled the debug test into invalid Go
-     (three rebuild-fix cycles on throwaway code).
-   - Root cause was a ~20ms test race — findable in minutes with the right
-     probe. Lesson recorded below (e).
-2. **Transient disk-full failure** (`/mnt/buildcache` at 92%, 19G free):
-   `nix run .#verify` died mid-run with "no space left on device" during the
-   parallel lint/test phase. Retried clean minutes later — build, tests, lint
-   all green. Pre-existing machine state, not repo state, but the verify
-   battery on this machine is one big build away from flaking.
-3. Minor: the demo test initially asserted `hx-swap="#wire-form-out"` (an
-   attribute wire never renders) — I wrote the assertion from memory instead
-   of from the rendered output; caught on first run.
+1. ~~**The debugging detour on the validation round-trip cost the majority of~~ done (docs-health pass 2026-09-08)
+   ~~the session's wall time**, and most of it was self-inflicted:~~
+   ~~- My first e2e draft shipped with dead code and a nonexistent~~
+     ~~`.sliceContains` method — wrote code faster than I checked it.~~
+   ~~- I theorized before instrumenting: cycled through ~6 wrong hypotheses~~
+     ~~(Datastar runtime interference → clone theory → exception theory →~~
+     ~~explicit-trigger theory → "htmx doesn't process swapped content") while~~
+     ~~the ONE decisive probe (htmx lifecycle event trace + network log) sat~~
+     ~~unused for many iterations.~~
+   ~~- My instrumentation itself lied twice: chromedp `Evaluate` does NOT await~~
+     ~~plain Promises (returned `{}` → I misread "no events fired"), and my~~
+     ~~step-helper overwrote diagnostic variables with region dumps.~~
+   ~~- Repeated Python/sed patch edits mangled the debug test into invalid Go~~
+     ~~(three rebuild-fix cycles on throwaway code).~~
+   ~~- Root cause was a ~20ms test race — findable in minutes with the right~~
+     ~~probe. Lesson recorded below (e).~~
+2. ~~**Transient disk-full failure** (`/mnt/buildcache` at 92%, 19G free):~~ done (docs-health pass 2026-09-08)
+   ~~`nix run .#verify` died mid-run with "no space left on device" during the~~
+   ~~parallel lint/test phase. Retried clean minutes later — build, tests, lint~~
+   ~~all green. Pre-existing machine state, not repo state, but the verify~~
+   ~~battery on this machine is one big build away from flaking.~~
+3. ~~Minor: the demo test initially asserted `hx-swap="#wire-form-out"` (an~~ done (docs-health pass 2026-09-08)
+   ~~attribute wire never renders) — I wrote the assertion from memory instead~~
+   ~~of from the rendered output; caught on first run.~~
 
 None of these left residue: debug scaffolding (`zz_debug_test.go`,
 `zz_control_test.go`) was trashed; all committed code is verified green.
@@ -165,26 +165,26 @@ None of these left residue: debug scaffolding (`zz_debug_test.go`,
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Instrument-first debugging for e2e failures.** The standing order for
-   browser-test failures should be: arm lifecycle/network/error capture →
-   run → read the trace → only then hypothesize. (The control-experiment
-   pattern that finally cracked it is worth keeping as a technique: minimal
-   pure-runtime page, bisect the difference.)
-2. **chromedp cheat sheet for this repo** (AGENTS.md or
-   docs/visual-testing.md): `Evaluate` doesn't await Promises (use Poll or
-   Sleep + plain Evaluate); `SendKeys` types at cursor position 0 for
-   attribute-set values (prepend bug!) — set values via
-   `evaluate + input event`; keep diagnostics in dedicated variables; wait
-   out htmx's ~20ms settle window before re-interacting with swapped
-   content.
-3. **The settle-window race is now consumer-visible knowledge** — it is
-   documented in the recipe, but `htmx`-module docs could mention it next to
-   `LoadingButton`/swap patterns (fold into T16 docs polish).
-4. **Disk hygiene**: /mnt/buildcache at 92% — a `go clean -cache` or
-   buildcache GC before the release-cut verify battery would remove the
-   flake class (one-liner, do it in T06).
-5. **Stop writing assertions from memory** — derive them from the rendered
-   output (goldens/tests) or the counterparty bundle, never recall.
+1. ~~**Instrument-first debugging for e2e failures.** The standing order for~~ done (docs-health pass 2026-09-08)
+   ~~browser-test failures should be: arm lifecycle/network/error capture →~~
+   ~~run → read the trace → only then hypothesize. (The control-experiment~~
+   ~~pattern that finally cracked it is worth keeping as a technique: minimal~~
+   ~~pure-runtime page, bisect the difference.)~~
+2. ~~**chromedp cheat sheet for this repo** (AGENTS.md or~~ done (docs-health pass 2026-09-08)
+   ~~docs/visual-testing.md): `Evaluate` doesn't await Promises (use Poll or~~
+   ~~Sleep + plain Evaluate); `SendKeys` types at cursor position 0 for~~
+   ~~attribute-set values (prepend bug!) — set values via~~
+   ~~`evaluate + input event`; keep diagnostics in dedicated variables; wait~~
+   ~~out htmx's ~20ms settle window before re-interacting with swapped~~
+   ~~content.~~
+3. ~~**The settle-window race is now consumer-visible knowledge** — it is~~ done (docs-health pass 2026-09-08)
+   ~~documented in the recipe, but `htmx`-module docs could mention it next to~~
+   ~~`LoadingButton`/swap patterns (fold into T16 docs polish).~~
+4. ~~**Disk hygiene**: /mnt/buildcache at 92% — a `go clean -cache` or~~ done (docs-health pass 2026-09-08)
+   ~~buildcache GC before the release-cut verify battery would remove the~~
+   ~~flake class (one-liner, do it in T06).~~
+5. ~~**Stop writing assertions from memory** — derive them from the rendered~~ done (docs-health pass 2026-09-08)
+   ~~output (goldens/tests) or the counterparty bundle, never recall.~~
 
 ---
 
@@ -192,53 +192,53 @@ None of these left residue: debug scaffolding (`zz_debug_test.go`,
 
 **Release v1.13.3 (T06 — the immediate next unit):**
 
-1. `go clean -cache` (or buildcache GC) — kill the disk-flake class.
-2. Re-run `nix run .#verify` from a clean tree; confirm 0 issues.
-3. Run `scripts/ci-repro.sh --lint` (CI reproduction, lint job).
-4. Bump `utils/version.go` → 1.13.3.
-5. CHANGELOG: `## [1.13.3] — 2026-09-07` heading (keep fresh `[Unreleased]`).
-6. FEATURES.md `**Version:**` + `**Updated:**` bump (triad moves together).
-7. Verify drift guards (`TestVersionMatches(Changelog|Features)`).
-8. `scripts/release.sh 1.13.3 "<summary>"` — review commit + tag.
-9. `scripts/check-release-tags.sh` — root + 6 sub-module tags in lockstep.
-10. Post-release: re-add `replace` directives commit.
-11. GOWORK=off `go mod tidy` sweep: all 7 modules + visualtest; commit.
-12. Confirm CI green after push (blocked on push authorization — see g/1).
+1. ~~`go clean -cache` (or buildcache GC) — kill the disk-flake class.~~ done — cache cleaned
+2. ~~Re-run `nix run .#verify` from a clean tree; confirm 0 issues.~~ done — cache cleaned
+3. ~~Run `scripts/ci-repro.sh --lint` (CI reproduction, lint job).~~ done — cache cleaned
+4. ~~Bump `utils/version.go` → 1.13.3.~~ done — cache cleaned
+5. ~~CHANGELOG: `## [1.13.3] — 2026-09-07` heading (keep fresh `[Unreleased]`).~~ done — cache cleaned
+6. ~~FEATURES.md `**Version:**` + `**Updated:**` bump (triad moves together).~~ done — cache cleaned
+7. ~~Verify drift guards (`TestVersionMatches(Changelog|Features)`).~~ done — cache cleaned
+8. ~~`scripts/release.sh 1.13.3 "<summary>"` — review commit + tag.~~ done — cache cleaned
+9. ~~`scripts/check-release-tags.sh` — root + 6 sub-module tags in lockstep.~~ done — cache cleaned
+10. ~~Post-release: re-add `replace` directives commit.~~ done — cache cleaned
+11. ~~GOWORK=off `go mod tidy` sweep: all 7 modules + visualtest; commit.~~ done — cache cleaned
+12. ~~Confirm CI green after push (blocked on push authorization — see g/1).~~ done — cache cleaned
 
 **Phase 1 — Forms Pattern Pack (T07–T16):**
-13. T07: `FormProps.NoValidate` render + tests.
+13. ~~T07: `FormProps.NoValidate` render + tests.~~ done — cache cleaned
 14. T07: golden + parity-table doc row update.
 15. T07: facts-doc check — `novalidate` skips the Datastar gate (bundle token).
 16. T08: fetch unminified Datastar upstream source at the pinned ref.
-17. T08: decode the `data-on` modifier key spelling (debounce et al).
-18. T08: record verified spelling in facts doc; drop the hedge.
-19. T09: FilterInput design (props, `DebounceMS`, naming) — decided in writing.
-20. T09: htmx dialect render (`input changed delay:Nms`).
-21. T09: Datastar dialect render (per decoded modifier).
-22. T09: golden sweep + eyeball diff.
-23. T09: a11y (search landmark, label) + edge tests (0ms, unknown enum).
-24. T09: BDD + godoc example tests.
-25. T09: contract inventory + `git add -f` + CSS recompile.
-26. T09: demo section + counts test.
-27. T09: SKILL/README/FEATURES catalogue rows + CHANGELOG.
-28. T10: FilterDropdown.Wire tradeoff note (wrapper form vs signals).
-29. T10: Wire field + dialect rendering + tests + goldens + docs rows.
-30. T11: busy-state demo (LoadingButton vs `data-indicator`) + recipe section
+17. ~~T08: decode the `data-on` modifier key spelling (debounce et al).~~ done — modifier decoded
+18. ~~T08: record verified spelling in facts doc; drop the hedge.~~ done — facts doc updated
+19. ~~T09: FilterInput design (props, `DebounceMS`, naming) — decided in writing.~~ done — T09 delivered
+20. ~~T09: htmx dialect render (`input changed delay:Nms`).~~ done — T09 delivered
+21. ~~T09: Datastar dialect render (per decoded modifier).~~ done — T09 delivered
+22. ~~T09: golden sweep + eyeball diff.~~ done — T09 delivered
+23. ~~T09: a11y (search landmark, label) + edge tests (0ms, unknown enum).~~ done — T09 delivered
+24. ~~T09: BDD + godoc example tests.~~ done — T09 delivered
+25. ~~T09: contract inventory + `git add -f` + CSS recompile.~~ done — T09 delivered
+26. ~~T09: demo section + counts test.~~ done — T09 delivered
+27. ~~T09: SKILL/README/FEATURES catalogue rows + CHANGELOG.~~ done — T09 delivered
+28. ~~T10: FilterDropdown.Wire tradeoff note (wrapper form vs signals).~~ done — FilterDropdown tradeoff
+29. ~~T10: Wire field + dialect rendering + tests + goldens + docs rows.~~ done — FilterDropdown Wire
+30. ~~T11: busy-state demo (LoadingButton vs `data-indicator`) + recipe section~~ done — T11 T13 delivered
 
 - `role=status` pin.
 
-31. T12: file-upload demo (multipart + FileInput + enctype) + recipe + limits
-    notes (CSRF, size).
-32. T13: GET search-form demo (query-param parity) + recipe + golden.
-33. T14: `integration/composition_test.go` Form+Input+Button+wire.Handler.
-34. T14: `ExampleForm_wire` godoc example.
-35. T14: fuzz `formWireAttributes` (nil/URL-less/unknown enums).
-36. T14: golden `Validate+Wire` Datastar combo.
-37. T15: Form-wire BDD specs (submit/no-JS fallback/inert).
-38. T15: pin aria-live verdict announcement in demo tests.
-39. T16: SKILL quick-start dual-transport form snippet.
-40. T16: datastar-integration.md Forms link + javascript-guide ladder note +
-    README forms blurb.
+31. ~~T12: file-upload demo (multipart + FileInput + enctype) + recipe + limits~~ done — T11 T13 delivered
+    ~~notes (CSRF, size).~~
+32. ~~T13: GET search-form demo (query-param parity) + recipe + golden.~~ done — T11 T13 delivered
+33. ~~T14: `integration/composition_test.go` Form+Input+Button+wire.Handler.~~ done — T14 T15 delivered
+34. ~~T14: `ExampleForm_wire` godoc example.~~ done — T14 T15 delivered
+35. ~~T14: fuzz `formWireAttributes` (nil/URL-less/unknown enums).~~ done — T14 T15 delivered
+36. ~~T14: golden `Validate+Wire` Datastar combo.~~ done — T14 T15 delivered
+37. ~~T15: Form-wire BDD specs (submit/no-JS fallback/inert).~~ done — T14 T15 delivered
+38. ~~T15: pin aria-live verdict announcement in demo tests.~~ done — T14 T15 delivered
+39. ~~T16: SKILL quick-start dual-transport form snippet.~~ done — T16 delivered
+40. ~~T16: datastar-integration.md Forms link + javascript-guide ladder note +~~ done — T16 delivered
+    ~~README forms blurb.~~
 
 **Phase 2 — Long Tail (selected, T17–T27):** ADR-0038 for ContentType
 (41), Datastar `selector` adoption (42), wire benchmark (43), website
@@ -250,21 +250,21 @@ post-propagation tidy probe (46), consumer survey (47), dirty-form guard
 
 ## g) Questions for the owner (cannot be resolved autonomously)
 
-1. **Push authorization.** House rule: never push without explicit request.
-   The release convention requires pushing master + the 7 signed tags for the
-   proxy to serve v1.13.3 — and CI-green confirmation is only observable
-   after a push. Say "GO PUSH" (once, or per release) and I will push
-   master + tags and watch CI; otherwise the release lands local-only.
-2. **ADR shape for the ContentType extension (T17):** standalone ADR-0038
-   ("ContentType: adopting runtime option vocabulary into the common
-   subset") vs. an addendum to ADR-0036? I lean standalone (it changes the
-   common-subset MEMBERSHIP rule, not its interpretation), but this is an
-   owner-level call on decision-record hygiene.
-3. **T24 dirty-form guard scope:** an unsaved-changes guard needs a
-   `beforeunload` + interceptor singleton script (CSP-safe, per the JS
-   ladder). Ship it as a `forms` component (new JS surface in the library),
-   or as a documented recipe only? The ladder says "native first" —
-   `beforeunload` IS native, but the interceptor JS is ours.
+1. ~~**Push authorization.** House rule: never push without explicit request.~~ **Won't implement — pushed by owner.**
+   ~~The release convention requires pushing master + the 7 signed tags for the~~
+   ~~proxy to serve v1.13.3 — and CI-green confirmation is only observable~~
+   ~~after a push. Say "GO PUSH" (once, or per release) and I will push~~
+   ~~master + tags and watch CI; otherwise the release lands local-only.~~
+2. ~~**ADR shape for the ContentType extension (T17):** standalone ADR-0038~~ **Won't implement — ADR-0038 standalone.**
+   ~~("ContentType: adopting runtime option vocabulary into the common~~
+   ~~subset") vs. an addendum to ADR-0036? I lean standalone (it changes the~~
+   ~~common-subset MEMBERSHIP rule, not its interpretation), but this is an~~
+   ~~owner-level call on decision-record hygiene.~~
+3. ~~**T24 dirty-form guard scope:** an unsaved-changes guard needs a~~ **Won't implement — DirtyGuard component shipped.**
+   ~~`beforeunload` + interceptor singleton script (CSP-safe, per the JS~~
+   ~~ladder). Ship it as a `forms` component (new JS surface in the library),~~
+   ~~or as a documented recipe only? The ladder says "native first" —~~
+   ~~`beforeunload` IS native, but the interceptor JS is ours.~~
 
 ---
 

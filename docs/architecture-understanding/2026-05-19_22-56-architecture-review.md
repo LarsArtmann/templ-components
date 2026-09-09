@@ -148,4 +148,4 @@ Every package uses a 3-file pattern:
 2. **Consolidate inline JS** — Single shared init strategy, eliminate global guards
 3. **Add `ComponentProps` interface** — Enable generic component handling
 4. **Fix demo to use the library** — Currently uses raw HTML instead of layout.Base
-5. **Consolidate test files** — Reduce 37 test files to ~15, eliminate 60%+ duplication
+5. ~~**Consolidate test files** — Reduce 37 test files to ~15, eliminate 60%+ duplication~~ **Won't implement — not adopted 3-file pattern.**

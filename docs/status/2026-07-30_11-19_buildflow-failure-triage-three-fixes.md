@@ -138,11 +138,11 @@ Nothing catastrophic. No data loss, no broken state, no irreversible damage.
    tests exist. The 60s budget is insufficient for `go test -race` but the
    `TestGolangciDisabledLinters` test alone takes <1s — a "fast-guard" tier could run.
 
-2. **Add a pre-commit guard for variable shadowing** in `visualtest/doc.go`.
-   A simple grep for `:=` on the `sharedAllocCtx` line would prevent the 2nd reintroduction.
+2. ~~**Add a pre-commit guard for variable shadowing** in `visualtest/doc.go`.~~ done — visualtest/doc.go
+   ~~A simple grep for `:=` on the `sharedAllocCtx` line would prevent the 2nd reintroduction.~~
 
-3. **Migrate breadcrumbs.templ to `encoding/json/v2`** to match the project standard.
-   Low risk — only uses `json.Marshal`.
+3. ~~**Migrate breadcrumbs.templ to `encoding/json/v2`** to match the project standard.~~ **Won't implement — breadcrumbs v1 intentional.**
+   ~~Low risk — only uses `json.Marshal`.~~
 
 4. **Run `nix run .#verify`** instead of ad-hoc go commands. The flake ensures
    `GOEXPERIMENT=jsonv2` is set, which affects code generation behavior.
@@ -154,9 +154,9 @@ Nothing catastrophic. No data loss, no broken state, no irreversible damage.
    This means a generated file with EXTRA imports (like the json v2 drift) would only
    be caught if those imports are also in the source. Consider bidirectional checking.
 
-6. The `encoding/json` vs `encoding/json/v2` drift will recur as long as the project
-   has mixed usage. A project-wide grep guard (like `TestGolangciDisabledLinters`)
-   could enforce v2-only in `.templ` files.
+6. ~~The `encoding/json` vs `encoding/json/v2` drift will recur as long as the project~~ **Won't implement — superseded by v1 decision.**
+   ~~has mixed usage. A project-wide grep guard (like `TestGolangciDisabledLinters`)~~
+   ~~could enforce v2-only in `.templ` files.~~
 
 ---
 
@@ -165,8 +165,8 @@ Nothing catastrophic. No data loss, no broken state, no irreversible damage.
 ### High Priority — Prevent Recurring Regressions
 
 1. Fix BuildFlow daemon to run fast-guard tests before committing
-2. Add grep-based pre-commit guard for `sharedAllocCtx, allocCancel :=` in visualtest/doc.go
-3. Update AGENTS.md regression counter: ".golangci.yml regression count: 5 → 6"
+2. ~~Add grep-based pre-commit guard for `sharedAllocCtx, allocCancel :=` in visualtest/doc.go~~ done — visualtest/doc.go
+3. ~~Update AGENTS.md regression counter: ".golangci.yml regression count: 5 → 6"~~ done — AGENTS.md
 4. Migrate `navigation/breadcrumbs.templ` from `encoding/json` to `encoding/json/v2`
 5. Run `nix run .#verify` to confirm flake-level verification passes
 6. Run `go test -race ./...` to confirm the `test-race` BuildFlow step passes
@@ -180,40 +180,40 @@ Nothing catastrophic. No data loss, no broken state, no irreversible damage.
 11. Add `git blame` check to the triage workflow — identify which commit introduced each regression
 12. Consider a `.gitattributes` merge strategy for `.golangci.yml` to prevent silent overwrites
 13. Add a visualtest-specific compile guard to CI (currently only govalid-generate catches it)
-14. Document the doc.go `:=` bug pattern in AGENTS.md visualtest section
+14. ~~Document the doc.go `:=` bug pattern in AGENTS.md visualtest section~~ done — AGENTS.md
 15. Review ALL commits from `102d69f` onward for other latent regressions
 16. Check if `visualtest/go.mod` was inadvertently modified by `go test` during this session
 17. Add `go test -race` to the pre-commit hook (or a fast subset)
-18. Consider committing `.golangci.yml` with a checksum guard file
+18. ~~Consider committing `.golangci.yml` with a checksum guard file~~ **Won't implement — guard exists.**
 19. Run the full visual regression suite (`nix run .#visual`) to confirm no visual regressions
 20. Review the `011d396` commit (TitleTag feature) for correctness — it landed during this session
 
 ### Feature / Component Work
 
-21. Review `Card.TitleTag` and `EmptyState.TitleTag` from commit `011d396` for accessibility
-22. Add golden tests for the new TitleTag variants
-23. Update FEATURES.md if TitleTag is a new user-facing feature
-24. Add CHANGELOG entry for TitleTag under `[Unreleased]`
-25. Verify TitleTag works with all heading levels (h1-h6)
-26. Check TitleTag interaction with container-aware Card
+21. ~~Review `Card.TitleTag` and `EmptyState.TitleTag` from commit `011d396` for accessibility~~ done (docs-health pass 2026-09-08)
+22. ~~Add golden tests for the new TitleTag variants~~ done (docs-health pass 2026-09-08)
+23. ~~Update FEATURES.md if TitleTag is a new user-facing feature~~ done (docs-health pass 2026-09-08)
+24. ~~Add CHANGELOG entry for TitleTag under `[Unreleased]`~~ done (docs-health pass 2026-09-08)
+25. ~~Verify TitleTag works with all heading levels (h1-h6)~~ done (docs-health pass 2026-09-08)
+26. ~~Check TitleTag interaction with container-aware Card~~ done (docs-health pass 2026-09-08)
 
 ### Testing Improvements
 
-27. Add property-based tests for breadcrumb JSON-LD generation
-28. Add edge case tests for breadcrumbs with special characters in URLs
-29. Add visual regression tests for breadcrumbs dark mode
-30. Add contract tests for the new TitleTag field
-31. Increase golden test coverage to target >90%
+27. ~~Add property-based tests for breadcrumb JSON-LD generation~~ done (docs-health pass 2026-09-08)
+28. ~~Add edge case tests for breadcrumbs with special characters in URLs~~ done (docs-health pass 2026-09-08)
+29. ~~Add visual regression tests for breadcrumbs dark mode~~ done (docs-health pass 2026-09-08)
+30. ~~Add contract tests for the new TitleTag field~~ done (docs-health pass 2026-09-08)
+31. ~~Increase golden test coverage to target >90%~~ done — visualtest/coverage test.go
 32. Add race condition tests for visualtest allocator lifecycle
 33. Add fuzz tests for `.golangci.yml` parsing (TestGolangciDisabledLinters)
 
 ### Documentation
 
-34. Update AGENTS.md with this session's findings (6th regression, doc.go reintroduction)
+34. ~~Update AGENTS.md with this session's findings (6th regression, doc.go reintroduction)~~ done — AGENTS.md
 35. Document the `encoding/json` v1/v2 split decision in an ADR
 36. Update `docs/visual-testing.md` with the `:=` shadowing gotcha
-37. Add a "known recurring regressions" section to AGENTS.md with prevention checklist
-38. Update TODO_LIST.md with the BuildFlow daemon fix task
+37. ~~Add a "known recurring regressions" section to AGENTS.md with prevention checklist~~ done — AGENTS.md
+38. ~~Update TODO_LIST.md with the BuildFlow daemon fix task~~ done — TODO LIST.md
 39. Review and update all status reports from 2026-07-28 onward for accuracy
 40. Create a runbook for "BuildFlow test-race failed" common failures
 
@@ -224,9 +224,9 @@ Nothing catastrophic. No data loss, no broken state, no irreversible damage.
 43. Review the `encoding/json/v2` migration completeness across all packages
 44. Run `nix flake check` to verify flake-level integrity
 45. Audit all pre-commit hooks for coverage gaps
-46. Consider adding `gocritic`'s shadowcheck if available
-47. Review import ordering consistency across all `_templ.go` files
-48. Check if the `cmd/tc/_sources/navigation/breadcrumbs.templ` copy also needs json v2 migration
+46. ~~Consider adding `gocritic`'s shadowcheck if available~~ done (docs-health pass 2026-09-08)
+47. ~~Review import ordering consistency across all `_templ.go` files~~ done (docs-health pass 2026-09-08)
+48. ~~Check if the `cmd/tc/_sources/navigation/breadcrumbs.templ` copy also needs json v2 migration~~ done (docs-health pass 2026-09-08)
 49. Audit the `.gitignore` BuildFlow `*_templ.go` interaction (documented gotcha)
 50. Review whether `govalid-generate` should be in the pre-commit hook vs CI-only
 
@@ -234,14 +234,14 @@ Nothing catastrophic. No data loss, no broken state, no irreversible damage.
 
 ## g) Questions (Cannot Determine Myself)
 
-1. **Should `breadcrumbs.templ` be migrated to `encoding/json/v2`?** The source uses v1
-   while the project standard is v2. I synced the generated file to match v1, but the
-   long-term fix depends on whether you want breadcrumbs to join the v2 migration or
-   stay on v1 for backward compatibility.
+1. ~~**Should `breadcrumbs.templ` be migrated to `encoding/json/v2`?** The source uses v1~~ **Won't implement — breadcrumbs v1 intentional.**
+   ~~while the project standard is v2. I synced the generated file to match v1, but the~~
+   ~~long-term fix depends on whether you want breadcrumbs to join the v2 migration or~~
+   ~~stay on v1 for backward compatibility.~~
 
-2. **Is commit `011d396` (TitleTag feature) expected?** It appeared during this session
-   as a new HEAD commit. I did not create it — was it from another session or manual work?
-   Should I review it?
+2. ~~**Is commit `011d396` (TitleTag feature) expected?** It appeared during this session~~ **Won't implement — shipped and documented.**
+   ~~as a new HEAD commit. I did not create it — was it from another session or manual work?~~
+   ~~Should I review it?~~
 
 3. **Should I fix BuildFlow itself (`larsartmann/buildflow`) to address the root cause?**
    The `.golangci.yml` regression will keep recurring until the daemon either runs tests

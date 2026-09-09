@@ -25,11 +25,11 @@ go-auto-upgrade, go-structure-linter, golangci-lint-config-verify, nix-build, es
 | 5  | **`.golangci.yml` schema-valid again.** Removed invalid `exhaustruct_v5.exclude` block (dead config: no `exec.Cmd{` literals exist anywhere). `config verify` passes; `check-lint-config.sh` + `TestGolangciDisabledLinters` pass.                                                            | `golangci-lint config verify` exit 0                             |
 | 6  | **samber/lo adoption formally rejected** (BuildFlow's go-auto-upgrade keeps suggesting `lo.Map`/`lo.Filter`). Dependency budget is closed by policy; some flagged files are generated `*_templ.go`. Documented in AGENTS.md Code Conventions.                                                 | AGENTS.md bullet; no new deps                                    |
 | 7  | **codespell 184 → 0.** `.codespellrc` with every ignore word verified as a false positive (camelCase fragments from `htmx.min.js`, icon names, lockfile hashes, hyphenated house style). Verified under BuildFlow's exact CLI flags. One real typo fixed (`STARTTED` → `STARTED`).            | codespell run: 0 findings                                        |
-| 8  | **markdown-lint 23,847 → 0.** `.markdownlint.json` disables MD013 (line-length 80) — the sole finding class in this long-line/tables-heavy repo. Full docs-tree scan: no other findings.                                                                                                      | markdownlint-cli scan: NO FINDINGS                               |
-| 9  | **lychee dead links fixed.** 4 URLs replaced (web.dev popover/container-query articles, Tailwind container-queries page) with **fetch-verified live** MDN/Tailwind targets. `lychee.toml` excludes private-repo 404 false positives.                                                          | URLs fetched 200 before writing                                  |
-| 10 | **nix-build + eslint-fix structurally resolved** via `.buildflow.yml` `skip_steps` with rationale. nix-build builds every flake system's checks (guaranteed cross-platform mismatch); eslint-fix has no root config by design (TODO #108). Dry-run confirms: "skipped via skip_steps config". | `buildflow --dry-run` output                                     |
-| 11 | **CHANGELOG `[Unreleased]` warmed**; TODO_LIST #108 annotated with the mitigation; AGENTS.md gotchas added (skip_steps, binary tracking).                                                                                                                                                     | CHANGELOG.md                                                     |
-| 12 | **Full verification:** `nix run .#verify` → "All checks passed" (generate + build + test + lint, all modules). Per-module `GOWORK=off` test matrix 7/7 PASS. Root lint (errorpage, cmd): 0 issues. `nix flake check`: all checks passed.                                                      | outputs captured in session                                      |
+| ~~8~~  | ~~**markdown-lint 23,847 → 0.** `.markdownlint.json` disables MD013 (line-length 80) — the sole finding class in this long-line/tables-heavy repo. Full docs-tree scan: no other findings.~~ done at `755128a` | ~~markdownlint-cli scan: NO FINDINGS~~ |
+| ~~9~~  | ~~**lychee dead links fixed.** 4 URLs replaced (web.dev popover/container-query articles, Tailwind container-queries page) with **fetch-verified live** MDN/Tailwind targets. `lychee.toml` excludes private-repo 404 false positives.~~ done at `755128a` | ~~URLs fetched 200 before writing~~ |
+| ~~10~~ | ~~**nix-build + eslint-fix structurally resolved** via `.buildflow.yml` `skip_steps` with rationale. nix-build builds every flake system's checks (guaranteed cross-platform mismatch); eslint-fix has no root config by design (TODO #108). Dry-run confirms: "skipped via skip_steps config".~~ done at `755128a` | ~~`buildflow --dry-run` output~~ |
+| ~~11~~ | ~~**CHANGELOG `[Unreleased]` warmed**; TODO_LIST #108 annotated with the mitigation; AGENTS.md gotchas added (skip_steps, binary tracking).~~ done at `755128a` | ~~CHANGELOG.md~~ |
+| ~~12~~ | ~~**Full verification:** `nix run .#verify` → "All checks passed" (generate + build + test + lint, all modules). Per-module `GOWORK=off` test matrix 7/7 PASS. Root lint (errorpage, cmd): 0 issues. `nix flake check`: all checks passed.~~ done at `755128a` | ~~outputs captured in session~~ |
 
 ## b) PARTIALLY DONE
 
@@ -45,91 +45,91 @@ go-auto-upgrade, go-structure-linter, golangci-lint-config-verify, nix-build, es
 
 ## c) NOT STARTED
 
-1. Pushing master (**10 commits ahead**, daemon-committed, all gates green locally)
+1. ~~Pushing master (**10 commits ahead**, daemon-committed, all gates green locally)~~ **Won't implement — daemon pushed.**
 2. Full BuildFlow pipeline re-run (end-to-end exit-0 proof)
 3. BuildFlow binary refresh (preflight warns: binary built at `a3168a2`, HEAD is ahead)
 4. README installation section (structure-linter info finding)
 5. CI wiring for the new config gates (codespell / markdownlint / lychee / erraudit) — currently local-advisory only
 6. Guard tests protecting the new config files from silent deletion (the `.golangci.yml` regression precedent: drift guards exist for lint config, but NOT for `.codespellrc`, `.markdownlint.json`, `lychee.toml`, or the AGENTS.md line budget)
-7. visualtest lint-debt sweep + adding visualtest to a lint gate
+7. ~~visualtest lint-debt sweep + adding visualtest to a lint gate~~ done — visualtest lint zero N4
 8. erraudit CLI-vs-BuildFlow divergence investigation (local `erraudit` CLI finds **0** findings; BuildFlow's found **33** — different rules/versions; parity matters for any future CI gate)
-9. Daemon-regression watch re-checks this session: `nix run .#css` byte-stability and `website/package.json` TS pin — **never ran them**
+9. ~~Daemon-regression watch re-checks this session: `nix run .#css` byte-stability and `website/package.json` TS pin — **never ran them**~~ done — pre cut checks routine
 10. `backup/reword-css` + `backup/pre-reword2` refs: keep or delete
 11. docs/release-checklist.md: its "commit with --no-verify for JS/TS changes" advice is now obsolete (eslint-fix is skipped) — checklist not updated
 12. Upstream buildflow work (TODOs #93/#107/#124/#125/#126) — untouched, as planned
 
 ## d) TOTALLY FUCKED UP
 
-1. **The flake.nix `builtins.currentSystem` regression (worst of the session).**
-   I changed `systems` to `[ builtins.currentSystem ]` to dodge the platform mismatch —
-   without checking that Nix 2.34 **removed `builtins.currentSystem` from pure eval**.
-   Result: the broken expression poisoned the `systems` option, which made **every flake
-   output unevaluatable** — `nix run .#build`, `.#verify`, everything failed. Worse:
-   - the auto-commit daemon **committed the broken flake** (`6836d79`) before my revert ran, so local master's tip was broken-for-everyone for a window;
-   - my first "verification" piped to `tail` and read `tail`'s exit code → **false green**;
-   - my `git restore` then restored to the daemon-committed broken HEAD — a no-op I briefly
-     believed was a fix.
-     Caught only when the final `nix run .#verify` failed. Fixed: flake reverted to
-     `import inputs.systems` (verified correct at tip), actual failure mode guarded by
-     `skip_steps`. **Lesson encoded: a flake edit must be gated immediately by a foreground
-     `nix flake check` with PIPESTATUS — nothing else in the repo evaluates it for you.**
-2. **Banned-command violation:** I ran `git checkout -- flake.nix` (inside a `||` fallback,
-   stderr silenced) — global house rule says **never** `git checkout`, use `git restore`.
-   Double fault: the redirect hid whether it ran, and it contributed to the no-op-restore
-   confusion in (1).
-3. **False failure report: charts/echarts "FAIL".** My verification script used log path
-   `/tmp/t-charts/echarts.log` — slash in the module name made the redirect fail and the
-   subshell report failure for a passing module. I reported the false FAIL before auditing
-   my own harness. (Re-ran properly: PASS.)
-4. **Declared "done" too early on erraudit.** After reaching 0/0/0 I refactored
-   `rejectErrorPage`/`captureTasks` into shots/main.go and reintroduced 3 findings
-   (erraudit's heuristic wants the variable _name_ in the format string — extraction changed
-   what it flags). Caught in the final sweep, but the detector should have been re-run
-   immediately after each code move, not once at the end.
-5. **Trusted the "re-indented to match file's style" note on a multiedit.** The edit silently
-   dropped a tab (`})` landed at column 1 in handler.go) — survived two build passes, caught
-   only by gci/golines much later. The rule is: View-verify the edited region immediately
-   when the tool reports whitespace adaptation. I didn't.
+1. ~~**The flake.nix `builtins.currentSystem` regression (worst of the session).**~~ done (docs-health pass 2026-09-08)
+   ~~I changed `systems` to `[ builtins.currentSystem ]` to dodge the platform mismatch —~~
+   ~~without checking that Nix 2.34 **removed `builtins.currentSystem` from pure eval**.~~
+   ~~Result: the broken expression poisoned the `systems` option, which made **every flake~~
+   ~~output unevaluatable** — `nix run .#build`, `.#verify`, everything failed. Worse:~~
+   ~~- the auto-commit daemon **committed the broken flake** (`6836d79`) before my revert ran, so local master's tip was broken-for-everyone for a window;~~
+   ~~- my first "verification" piped to `tail` and read `tail`'s exit code → **false green**;~~
+   ~~- my `git restore` then restored to the daemon-committed broken HEAD — a no-op I briefly~~
+     ~~believed was a fix.~~
+     ~~Caught only when the final `nix run .#verify` failed. Fixed: flake reverted to~~
+     ~~`import inputs.systems` (verified correct at tip), actual failure mode guarded by~~
+     ~~`skip_steps`. **Lesson encoded: a flake edit must be gated immediately by a foreground~~
+     ~~`nix flake check` with PIPESTATUS — nothing else in the repo evaluates it for you.**~~
+2. ~~**Banned-command violation:** I ran `git checkout -- flake.nix` (inside a `||` fallback,~~ done (docs-health pass 2026-09-08)
+   ~~stderr silenced) — global house rule says **never** `git checkout`, use `git restore`.~~
+   ~~Double fault: the redirect hid whether it ran, and it contributed to the no-op-restore~~
+   ~~confusion in (1).~~
+3. ~~**False failure report: charts/echarts "FAIL".** My verification script used log path~~ done (docs-health pass 2026-09-08)
+   ~~`/tmp/t-charts/echarts.log` — slash in the module name made the redirect fail and the~~
+   ~~subshell report failure for a passing module. I reported the false FAIL before auditing~~
+   ~~my own harness. (Re-ran properly: PASS.)~~
+4. ~~**Declared "done" too early on erraudit.** After reaching 0/0/0 I refactored~~ done (docs-health pass 2026-09-08)
+   ~~`rejectErrorPage`/`captureTasks` into shots/main.go and reintroduced 3 findings~~
+   ~~(erraudit's heuristic wants the variable _name_ in the format string — extraction changed~~
+   ~~what it flags). Caught in the final sweep, but the detector should have been re-run~~
+   ~~immediately after each code move, not once at the end.~~
+5. ~~**Trusted the "re-indented to match file's style" note on a multiedit.** The edit silently~~ done (docs-health pass 2026-09-08)
+   ~~dropped a tab (`})` landed at column 1 in handler.go) — survived two build passes, caught~~
+   ~~only by gci/golines much later. The rule is: View-verify the edited region immediately~~
+   ~~when the tool reports whitespace adaptation. I didn't.~~
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Exit codes through pipes are lies.** Three separate near-misses this session came from
-   `cmd | tail; echo $?` measuring the wrong process. Adopt `PIPESTATUS`/set -o pipefail
-   reflexively (this is literally an existing AGENTS.md lesson — I repeated it anyway).
-2. **Detector re-runs are per-change, not per-session.** Any refactor of error paths needs
-   its detector (erraudit, lint, buildflow step) re-run before the next edit.
-3. **Erraudit decision table is now non-obvious and worth codifying** (learned empirically):
-   - `_ = f()` → flagged by erraudit (buildflow);
-   - plain `f()` → accepted by erraudit; rejected by golangci `errcheck`/`gosec` G104
-     (needs `//nolint:errcheck,gosec // reason`) where the module is lint-gated;
-   - context_loss rule wants the in-scope variable's **name** literally in the format string —
-     extracting error construction into helpers changes which call sites get flagged.
-     None of this is written down; the `go-error-modernization` skill only documents the
-     errors.As/Is rules.
-4. **erraudit gate parity.** Direct CLI finds nothing; BuildFlow's finds 33. If we ever gate
-   CI on erraudit we must first pin which invocation is canonical.
-5. **`nix run .#verify` is not the complete test form** (workspace `go test ./...` runs root
-   packages only — per AGENTS.md's own caution). My "all green" needed the separate
-   `GOWORK=off` per-module loop. Verify should loop modules.
-6. **New config files are unguarded.** `.codespellrc`, `.markdownlint.json`, `lychee.toml`
-   can silently vanish (the `.golangci.yml` regression happened 5 times) — no guard test, no
-   CI enforcement.
-7. **Daemon interaction discipline.** The daemon committed a broken flake mid-session and
-   commits drift the tree under you. After any edit burst: `git log --oneline -3` +
-   `git status` before reasoning about "current" state. (Known behavior; the session still
-   tripped on it once.)
-8. **Skip_steps is a documented decision, not a suppression.** Both skips carry rationale +
-   coverage-preservation notes in `.buildflow.yml`; keep that standard for future skips.
+1. ~~**Exit codes through pipes are lies.** Three separate near-misses this session came from~~ done (docs-health pass 2026-09-08)
+   ~~`cmd | tail; echo $?` measuring the wrong process. Adopt `PIPESTATUS`/set -o pipefail~~
+   ~~reflexively (this is literally an existing AGENTS.md lesson — I repeated it anyway).~~
+2. ~~**Detector re-runs are per-change, not per-session.** Any refactor of error paths needs~~ done (docs-health pass 2026-09-08)
+   ~~its detector (erraudit, lint, buildflow step) re-run before the next edit.~~
+3. ~~**Erraudit decision table is now non-obvious and worth codifying** (learned empirically):~~ done (docs-health pass 2026-09-08)
+   ~~- `_ = f()` → flagged by erraudit (buildflow);~~
+   ~~- plain `f()` → accepted by erraudit; rejected by golangci `errcheck`/`gosec` G104~~
+     ~~(needs `//nolint:errcheck,gosec // reason`) where the module is lint-gated;~~
+   ~~- context_loss rule wants the in-scope variable's **name** literally in the format string —~~
+     ~~extracting error construction into helpers changes which call sites get flagged.~~
+     ~~None of this is written down; the `go-error-modernization` skill only documents the~~
+     ~~errors.As/Is rules.~~
+4. ~~**erraudit gate parity.** Direct CLI finds nothing; BuildFlow's finds 33. If we ever gate~~ done (docs-health pass 2026-09-08)
+   ~~CI on erraudit we must first pin which invocation is canonical.~~
+5. ~~**`nix run .#verify` is not the complete test form** (workspace `go test ./...` runs root~~ done (docs-health pass 2026-09-08)
+   ~~packages only — per AGENTS.md's own caution). My "all green" needed the separate~~
+   ~~`GOWORK=off` per-module loop. Verify should loop modules.~~
+6. ~~**New config files are unguarded.** `.codespellrc`, `.markdownlint.json`, `lychee.toml`~~ done (docs-health pass 2026-09-08)
+   ~~can silently vanish (the `.golangci.yml` regression happened 5 times) — no guard test, no~~
+   ~~CI enforcement.~~
+7. ~~**Daemon interaction discipline.** The daemon committed a broken flake mid-session and~~ done (docs-health pass 2026-09-08)
+   ~~commits drift the tree under you. After any edit burst: `git log --oneline -3` +~~
+   ~~`git status` before reasoning about "current" state. (Known behavior; the session still~~
+   ~~tripped on it once.)~~
+8. ~~**Skip_steps is a documented decision, not a suppression.** Both skips carry rationale +~~ done (docs-health pass 2026-09-08)
+   ~~coverage-preservation notes in `.buildflow.yml`; keep that standard for future skips.~~
 
 ## f) NEXT — up to 50 things to get done (impact-sorted; brainstorm, not commitment)
 
 **Immediate ops**
 
-1. Review + push master (10 commits ahead; all local gates green)
-2. Reword the 10 generic daemon commit messages into semantic messages before push (history is unpushed — safe now, impossible later)
+1. ~~Review + push master (10 commits ahead; all local gates green)~~ **Won't implement — daemon pushed.**
+2. ~~Reword the 10 generic daemon commit messages into semantic messages before push (history is unpushed — safe now, impossible later)~~ **Won't implement — daemon pushed.**
 3. Re-run the full `buildflow` pipeline; confirm exit 0 end-to-end
 4. Refresh the stale BuildFlow binary (preflight: built at `a3168a2`)
-5. Re-run the daemon-regression watch checks I skipped: `nix run .#css` byte-stability + `website/package.json` TS 6.x pin
+5. ~~Re-run the daemon-regression watch checks I skipped: `nix run .#css` byte-stability + `website/package.json` TS 6.x pin~~ done — pre cut checks 16-19
 6. Decide fate of `backup/reword-css` / `backup/pre-reword2` refs
 7. Update `docs/release-checklist.md`: the "commit with --no-verify for JS/TS" advice is obsolete post-skip_steps
 
@@ -154,11 +154,11 @@ go-auto-upgrade, go-structure-linter, golangci-lint-config-verify, nix-build, es
 21. Test `writeBody` actually logs on write failure (slog capture test)
 22. Test prerender error messages contain `outPath`/`outputDir` (the fix this session is behavior)
 23. Test `rejectErrorPage` (HTTP ≥400 refusal) in shots — the tool has no tests at all
-24. visualtest: clear the wrapcheck backlog (~20, all in e2e tests) or nolint with reasons
-25. visualtest: mnd magic numbers → named constants (widths 1280/900, timeout 120s, quality 92, file modes)
-26. visualtest: forbidigo exclusion for `tools/` (a CLI tool that prints is the point)
-27. visualtest: `resolveOptions` cyclop 13>12 and the `harness.go:449` err113 (pre-existing)
-28. visualtest: decide whether to add it to a lint gate at all (it isn't today)
+24. ~~visualtest: clear the wrapcheck backlog (~20, all in e2e tests) or nolint with reasons~~ done — visualtest lint zero N4
+25. ~~visualtest: mnd magic numbers → named constants (widths 1280/900, timeout 120s, quality 92, file modes)~~ done — visualtest lint zero N4
+26. ~~visualtest: forbidigo exclusion for `tools/` (a CLI tool that prints is the point)~~ done — visualtest lint zero N4
+27. ~~visualtest: `resolveOptions` cyclop 13>12 and the `harness.go:449` err113 (pre-existing)~~ done — visualtest lint zero N4
+28. ~~visualtest: decide whether to add it to a lint gate at all (it isn't today)~~ done — visualtest waiver N4
 
 **Docs & hygiene**
 29. README installation section (structure-linter info finding)
@@ -166,7 +166,7 @@ go-auto-upgrade, go-structure-linter, golangci-lint-config-verify, nix-build, es
 31. Verify the 4 replaced links from CI (lychee job) once, then forget them
 32. AGENTS.md headroom policy: 367/377 — decide what routes to docs/ vs stays inline
 33. Annotate older open status reports (docs-health ANNOTATE) with today's resolutions
-34. Harvest this report's (f) list into TODO_LIST/ROADMAP (docs-health HARVEST)
+34. ~~Harvest this report's (f) list into TODO_LIST/ROADMAP (docs-health HARVEST)~~ done (docs-health pass 2026-09-08)
 35. Document the Nix 2.34 `builtins.currentSystem` pure-eval removal as a gotcha (it will bite the next person who tries this fix)
 
 **Upstream buildflow (unblocks permanent fixes)**
@@ -192,10 +192,10 @@ go-auto-upgrade, go-structure-linter, golangci-lint-config-verify, nix-build, es
 
 ## g) QUESTIONS I CANNOT FIGURE OUT MYSELF
 
-1. **Push strategy for the 10 daemon-message commits:** push as-is, or should I first reword
-   them into semantic messages? (History is unpushed, so a reword is a plain local rebase —
-   no force-push needed — but it rewrites the daemon's commits, which per past sessions you
-   sometimes prefer to keep as raw snapshots.)
+1. ~~**Push strategy for the 10 daemon-message commits:** push as-is, or should I first reword~~ **Won't implement — resolved daemon pushed.**
+   ~~them into semantic messages? (History is unpushed, so a reword is a plain local rebase —~~
+   ~~no force-push needed — but it rewrites the daemon's commits, which per past sessions you~~
+   ~~sometimes prefer to keep as raw snapshots.)~~
 2. **Does your Mac (aarch64-darwin) workflow rely on `nix flake check` building the darwin
    checks locally?** With BuildFlow's nix-build skipped, the darwin `format`/`treefmt` checks
    are verified nowhere unless your Mac runs them — if the Mac never runs `nix flake check`,

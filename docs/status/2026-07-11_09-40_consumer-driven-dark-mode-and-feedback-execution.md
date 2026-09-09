@@ -118,20 +118,20 @@
 
 ### Process
 
-1. **Parallel session coordination** — The json/v2 regression happened because a parallel session edited a file without checking recent commits. Consider a pre-edit `git log -1 -- <file>` check in the workflow.
-2. **CHANGELOG discipline** — I added features without updating CHANGELOG on the same commit. The AGENTS.md rule says `[Unreleased]` must be warm at all times. I only caught this in self-review.
-3. **Test combined flag states** — The `ContainerResponsive` + `GridColsAutoFit` bug would have been caught by a combinatorial test. Add flag-combination tests for all components with multiple boolean fields.
-4. **Golden tests for every new feature** — I initially forgot golden tests for the new Grid/Card features. Should be part of the definition of done.
+1. ~~**Parallel session coordination** — The json/v2 regression happened because a parallel session edited a file without checking recent commits. Consider a pre-edit `git log -1 -- <file>` check in the workflow.~~ done (docs-health pass 2026-09-08)
+2. ~~**CHANGELOG discipline** — I added features without updating CHANGELOG on the same commit. The AGENTS.md rule says `[Unreleased]` must be warm at all times. I only caught this in self-review.~~ done (docs-health pass 2026-09-08)
+3. ~~**Test combined flag states** — The `ContainerResponsive` + `GridColsAutoFit` bug would have been caught by a combinatorial test. Add flag-combination tests for all components with multiple boolean fields.~~ done (docs-health pass 2026-09-08)
+4. ~~**Golden tests for every new feature** — I initially forgot golden tests for the new Grid/Card features. Should be part of the definition of done.~~ done (docs-health pass 2026-09-08)
 
 ### Architecture
 
-5. **`encoding/json/v2` keeps recurring** — This is the 4th time it's been introduced and had to be removed. The guard test (`utils/jsonv2_guard_test.go`) catches it at test time, but the build breaks before tests run. Consider a build-tag-based guard or a `go.mod` replace directive that makes the import fail at resolve time.
-6. **`gridContainerClass` falls back silently for unknown values** — `GridColsAutoFit` isn't in the container lookup map, so `gridContainerClass(GridColsAutoFit)` returns the default. This is graceful degradation, but for a value that SHOULD never be passed to that function, it's a silent logic bug. The `else if` fix prevents it, but the function's API is misleading.
+5. ~~**`encoding/json/v2` keeps recurring** — This is the 4th time it's been introduced and had to be removed. The guard test (`utils/jsonv2_guard_test.go`) catches it at test time, but the build breaks before tests run. Consider a build-tag-based guard or a `go.mod` replace directive that makes the import fail at resolve time.~~ **Won't implement — superseded v0.15.0 adoption.**
+6. ~~**`gridContainerClass` falls back silently for unknown values** — `GridColsAutoFit` isn't in the container lookup map, so `gridContainerClass(GridColsAutoFit)` returns the default. This is graceful degradation, but for a value that SHOULD never be passed to that function, it's a silent logic bug. The `else if` fix prevents it, but the function's API is misleading.~~ **Won't implement — superseded v0.15.0 precedence.**
 
 ### Documentation
 
-7. **Adoption guide is getting long** — 380+ lines. Consider splitting into a quick-start guide and a reference guide.
-8. **Dark mode documentation is spread across 4 files** — `dark-mode-research.md`, `tailwind-v4-adoption-guide.md`, `adr/0011-dark-mode-convention.md`, `templ-components-theme.css`. A single "Dark Mode" index page that links to all of them would help.
+7. ~~**Adoption guide is getting long** — 380+ lines. Consider splitting into a quick-start guide and a reference guide.~~ done (docs-health pass 2026-09-08)
+8. ~~**Dark mode documentation is spread across 4 files** — `dark-mode-research.md`, `tailwind-v4-adoption-guide.md`, `adr/0011-dark-mode-convention.md`, `templ-components-theme.css`. A single "Dark Mode" index page that links to all of them would help.~~ done — docs/theming.md
 
 ---
 
@@ -141,8 +141,8 @@
 
 | # | Task                                                                      | Impact | Effort |
 | - | ------------------------------------------------------------------------- | ------ | ------ |
-| 1 | Cut v0.15.0 release (11 CHANGELOG entries waiting)                        | High   | 10min  |
-| 2 | Add build-time json/v2 guard (build tag or go.mod replace)                | High   | 30min  |
+| ~~1~~ | ~~Cut v0.15.0 release (11 CHANGELOG entries waiting)~~ done — v0.15.0 | ~~High~~ | ~~10min~~ |
+| ~~2~~ | ~~Add build-time json/v2 guard (build tag or go.mod replace)~~ **Won't implement — superseded v0.15.0.** | ~~High~~ | ~~30min~~ |
 | 3 | Add combinatorial flag tests for all components with 2+ bool fields       | High   | 60min  |
 | 4 | Audit all components for `ContainerResponsive`-style silent fallback bugs | Medium | 30min  |
 
@@ -150,8 +150,8 @@
 
 | #  | Task                                                            | Impact | Effort |
 | -- | --------------------------------------------------------------- | ------ | ------ |
-| 5  | Add `DefaultGridProps` doc example showing `MinColWidth` usage  | Low    | 5min   |
-| 6  | Add `Card.Header` usage example in godoc                        | Low    | 5min   |
+| ~~5~~  | ~~Add `DefaultGridProps` doc example showing `MinColWidth` usage~~ done — display/grid.templ godoc | ~~Low~~ | ~~5min~~ |
+| ~~6~~  | ~~Add `Card.Header` usage example in godoc~~ done — CHANGELOG v0.15.0 | ~~Low~~ | ~~5min~~ |
 | 7  | Consider `Card.TitleElement` field (h1/h2/h3/h4 selection)      | Medium | 30min  |
 | 8  | Add `GridColsAutoFit` to the demo binary                        | Low    | 10min  |
 | 9  | Add `Card.Header` to the demo binary                            | Low    | 10min  |
@@ -161,13 +161,13 @@
 
 | #  | Task                                                                      | Impact | Effort |
 | -- | ------------------------------------------------------------------------- | ------ | ------ |
-| 11 | Create `docs/dark-mode-index.md` linking all dark mode docs               | Medium | 15min  |
+| ~~11~~ | ~~Create `docs/dark-mode-index.md` linking all dark mode docs~~ **Won't implement — superseded docs/theming.md.** | ~~Medium~~ | ~~15min~~ |
 | 12 | Split adoption guide into quick-start + reference                         | Medium | 60min  |
 | 13 | Add "Migration from v0.14 to v0.15" guide                                 | Low    | 15min  |
 | 14 | Document all `DefaultXxxProps()` constructors in one table                | Low    | 20min  |
-| 15 | Add consumer guide section: "Choosing a dark mode strategy" decision tree | Low    | 15min  |
-| 16 | Audit godoc across all packages for completeness                          | Medium | 60min  |
-| 17 | Add `CHANGELOG.md` entry for the `@source` GOMODCACHE docs                | Low    | 2min   |
+| ~~15~~ | ~~Add consumer guide section: "Choosing a dark mode strategy" decision tree~~ done — docs/theming.md | ~~Low~~ | ~~15min~~ |
+| ~~16~~ | ~~Audit godoc across all packages for completeness~~ done — 2026-07-18 code review | ~~Medium~~ | ~~60min~~ |
+| ~~17~~ | ~~Add `CHANGELOG.md` entry for the `@source` GOMODCACHE docs~~ done — CHANGELOG v0.11.0 | ~~Low~~ | ~~2min~~ |
 
 ### Testing
 
@@ -186,56 +186,56 @@
 
 | #  | Task                                                                                                             | Impact | Effort |
 | -- | ---------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 26 | Consider typed `MinColWidth` type (e.g., `GridMinWidth string` with `IsValid()`)                                 | Low    | 15min  |
-| 27 | Consider `CardPaddingNone` as a separate code path (not a padding enum value)                                    | Low    | 20min  |
+| ~~26~~ | ~~Consider typed `MinColWidth` type (e.g., `GridMinWidth string` with `IsValid()`)~~ done — GridProps.MinColWidth v0.15.0 | ~~Low~~ | ~~15min~~ |
+| ~~27~~ | ~~Consider `CardPaddingNone` as a separate code path (not a padding enum value)~~ **Won't implement — kept enum value.** | ~~Low~~ | ~~20min~~ |
 | 28 | Audit all enum lookups for silent-fallback-on-unknown behavior                                                   | Medium | 30min  |
-| 29 | Consider a `GridMode` enum (`GridModeFixed` / `GridModeAutoFit` / `GridModeContainer`) instead of separate bools | Medium | 45min  |
+| ~~29~~ | ~~Consider a `GridMode` enum (`GridModeFixed` / `GridModeAutoFit` / `GridModeContainer`) instead of separate bools~~ **Won't implement — not adopted bools kept.** | ~~Medium~~ | ~~45min~~ |
 
 ### Maintenance / Cleanup
 
 | #  | Task                                                                      | Impact | Effort |
 | -- | ------------------------------------------------------------------------- | ------ | ------ |
-| 30 | Remove the stale LSP diagnostic for `handler.go` (restart gopls)          | Low    | 1min   |
-| 31 | Check `.gitignore` for BuildFlow `*_templ.go` re-append after each commit | Low    | 1min   |
-| 32 | Audit all `*_templ.go` files are committed (none hidden by gitignore)     | Low    | 5min   |
-| 33 | Run `go mod tidy` to clean up any unused dependencies                     | Low    | 5min   |
-| 34 | Update `docs/planning/` plan to mark completed items                      | Low    | 10min  |
-| 35 | Clean up `docs/status/` — archive old status reports                      | Low    | 10min  |
+| ~~30~~ | ~~Remove the stale LSP diagnostic for `handler.go` (restart gopls)~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~1min~~ |
+| ~~31~~ | ~~Check `.gitignore` for BuildFlow `*_templ.go` re-append after each commit~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~1min~~ |
+| ~~32~~ | ~~Audit all `*_templ.go` files are committed (none hidden by gitignore)~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~5min~~ |
+| ~~33~~ | ~~Run `go mod tidy` to clean up any unused dependencies~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~5min~~ |
+| ~~34~~ | ~~Update `docs/planning/` plan to mark completed items~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~10min~~ |
+| ~~35~~ | ~~Clean up `docs/status/` — archive old status reports~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~10min~~ |
 
 ### Consumer Experience
 
 | #  | Task                                                              | Impact | Effort |
 | -- | ----------------------------------------------------------------- | ------ | ------ |
-| 36 | Create a "Quick start" guide (5-line getting started)             | High   | 15min  |
-| 37 | Add a "Common patterns" cookbook section                          | Medium | 45min  |
-| 38 | Document the `icons.IconPathData` icons-only adoption path        | Medium | 20min  |
+| ~~36~~ | ~~Create a "Quick start" guide (5-line getting started)~~ done — README quick start | ~~High~~ | ~~15min~~ |
+| ~~37~~ | ~~Add a "Common patterns" cookbook section~~ done — docs/recipes/ | ~~Medium~~ | ~~45min~~ |
+| ~~38~~ | ~~Document the `icons.IconPathData` icons-only adoption path~~ done — docs/icons-only-adoption.md | ~~Medium~~ | ~~20min~~ |
 | 39 | Add an interactive demo page for dark mode toggle vs OS-following | Low    | 30min  |
-| 40 | Create a "Theming cheat sheet" (1-page reference)                 | Medium | 20min  |
+| ~~40~~ | ~~Create a "Theming cheat sheet" (1-page reference)~~ done — docs/theming.md | ~~Medium~~ | ~~20min~~ |
 
 ### Error Page Package
 
 | #  | Task                                                                              | Impact | Effort |
 | -- | --------------------------------------------------------------------------------- | ------ | ------ |
-| 41 | Add integration test for `writeJSONError` with json v1                            | Medium | 15min  |
-| 42 | Consider using `encoding/json` `Marshal` instead of `Encoder` for error responses | Low    | 10min  |
-| 43 | Add test verifying JSON error response shape matches HTMX expectations            | Medium | 20min  |
+| ~~41~~ | ~~Add integration test for `writeJSONError` with json v1~~ **Won't implement — moot v0.15.0.** | ~~Medium~~ | ~~15min~~ |
+| ~~42~~ | ~~Consider using `encoding/json` `Marshal` instead of `Encoder` for error responses~~ **Won't implement — moot v0.15.0.** | ~~Low~~ | ~~10min~~ |
+| ~~43~~ | ~~Add test verifying JSON error response shape matches HTMX expectations~~ done — errorpage tests | ~~Medium~~ | ~~20min~~ |
 
 ### Feedback Response
 
 | #  | Task                                                                      | Impact | Effort |
 | -- | ------------------------------------------------------------------------- | ------ | ------ |
 | 44 | Respond to cqrs-htmx feedback with the `@theme` palette override solution | Medium | 10min  |
-| 45 | Update the feedback file with "addressed" annotations                     | Low    | 10min  |
+| ~~45~~ | ~~Update the feedback file with "addressed" annotations~~ done — auto-updated overlays | ~~Low~~ | ~~10min~~ |
 | 46 | Consider a "Consumer Adoption Log" documenting who adopted what and when  | Low    | 15min  |
 
 ### Research / Investigation
 
 | #  | Task                                                                                     | Impact | Effort |
 | -- | ---------------------------------------------------------------------------------------- | ------ | ------ |
-| 47 | Investigate Tailwind v4 `@source` with Go import paths (feature request?)                | Low    | 30min  |
-| 48 | Research `light-dark()` browser support timeline for adoption readiness                  | Low    | 15min  |
+| ~~47~~ | ~~Investigate Tailwind v4 `@source` with Go import paths (feature request?)~~ done — recipes/vendored-tailwind-scanning.md | ~~Low~~ | ~~30min~~ |
+| ~~48~~ | ~~Research `light-dark()` browser support timeline for adoption readiness~~ **Won't implement — rejected revisit 2027.** | ~~Low~~ | ~~15min~~ |
 | 49 | Investigate whether `@theme inline` would simplify the theme.css file                    | Low    | 20min  |
-| 50 | Research whether other Go templ UI libraries have solved the dark mode packaging problem | Low    | 20min  |
+| ~~50~~ | ~~Research whether other Go templ UI libraries have solved the dark mode packaging problem~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~20min~~ |
 
 ---
 

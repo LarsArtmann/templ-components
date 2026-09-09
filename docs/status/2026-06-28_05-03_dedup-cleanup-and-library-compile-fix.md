@@ -31,25 +31,25 @@
 
 ### This session's work (4 commits, all pushed)
 
-1. **`fix:` commit missing generated `*_templ.go` files and repair `.gitignore`** (`3ce1a31`)
-   - **CRITICAL:** `.gitignore` had a redundant `*_templ.go` entry at line 30 that overrode the `!*_templ.go` unignore at line 2. Result: 4 generated files (DefinitionList, ListNote, SidebarNav, PageHeader) were **never committed** — the library did not compile for consumers who `go get` the package.
-   - Removed the redundant line; committed the 3 pristine missing generated files (PageHeader's was committed in the refactor commit since its `.templ` changed).
-   - The CI step "Verify all `*_templ.go` files are tracked" would have caught this — it was red.
+1. ~~**`fix:` commit missing generated `*_templ.go` files and repair `.gitignore`** (`3ce1a31`)~~ done at `3ce1a31`
+   ~~- **CRITICAL:** `.gitignore` had a redundant `*_templ.go` entry at line 30 that overrode the `!*_templ.go` unignore at line 2. Result: 4 generated files (DefinitionList, ListNote, SidebarNav, PageHeader) were **never committed** — the library did not compile for consumers who `go get` the package.~~
+   ~~- Removed the redundant line; committed the 3 pristine missing generated files (PageHeader's was committed in the refactor commit since its `.templ` changed).~~
+   ~~- The CI step "Verify all `*_templ.go` files are tracked" would have caught this — it was red.~~
 
-2. **`refactor:` deduplicate templ components without harming architecture** (`cb9776a`)
-   - Templ clone groups: **19 → 17** (at threshold 4).
-   - Extractions (each targets duplication that would drift, no forced abstractions):
-     - **`navLinkAnchor`** shared sub-template + `mobileNavLinkClass` helper. NavLink and MobileNavLink now share the anchor body; consumer classes merge via `utils.Class()` (the documented convention). This fixed a latent regression where MobileNavLink's old `templ.KV` chain didn't resolve Tailwind overrides.
-     - **`emptyStateAction`** merge: one helper renders anchor-or-button based on `href`, replacing the former link/button pair.
-     - **`mutedTextClass`** constant in `display/shared.go` for the standard secondary-text pattern, used by Card/PageHeader/EmptyState subtitles. Follows the existing `cardShellClass`/`inactivePageLinkClass` pattern.
-     - **`paginationPageItem` / `paginationEllipsisItem`** sub-templates remove repeated `<li>`-wrapped call sites.
-   - Fixed a brittle test that asserted an ordered class substring (`"block border-l-4"`) — broke under `utils.Class` reordering. Now uses `utils.AssertContainsAll`.
+2. ~~**`refactor:` deduplicate templ components without harming architecture** (`cb9776a`)~~ done at `cb9776a`
+   ~~- Templ clone groups: **19 → 17** (at threshold 4).~~
+   ~~- Extractions (each targets duplication that would drift, no forced abstractions):~~
+     ~~- **`navLinkAnchor`** shared sub-template + `mobileNavLinkClass` helper. NavLink and MobileNavLink now share the anchor body; consumer classes merge via `utils.Class()` (the documented convention). This fixed a latent regression where MobileNavLink's old `templ.KV` chain didn't resolve Tailwind overrides.~~
+     ~~- **`emptyStateAction`** merge: one helper renders anchor-or-button based on `href`, replacing the former link/button pair.~~
+     ~~- **`mutedTextClass`** constant in `display/shared.go` for the standard secondary-text pattern, used by Card/PageHeader/EmptyState subtitles. Follows the existing `cardShellClass`/`inactivePageLinkClass` pattern.~~
+     ~~- **`paginationPageItem` / `paginationEllipsisItem`** sub-templates remove repeated `<li>`-wrapped call sites.~~
+   ~~- Fixed a brittle test that asserted an ordered class substring (`"block border-l-4"`) — broke under `utils.Class` reordering. Now uses `utils.AssertContainsAll`.~~
 
-3. **`style:` normalize templ formatting across components** (`f0ce6dc`)
-   - `templ fmt` over all `.templ` sources — 10 files normalized (multi-line templ blocks, indentation). Pure whitespace.
+3. ~~**`style:` normalize templ formatting across components** (`f0ce6dc`)~~ done at `f0ce6dc`
+   ~~- `templ fmt` over all `.templ` sources — 10 files normalized (multi-line templ blocks, indentation). Pure whitespace.~~
 
-4. **`docs:` record dedup conventions and BuildFlow gitignore gotcha** (`68b98e4`)
-   - AGENTS.md updated with new sub-template/constant names, the order-independent class-assertion rule, and the BuildFlow gotcha.
+4. ~~**`docs:` record dedup conventions and BuildFlow gitignore gotcha** (`68b98e4`)~~ done at `68b98e4`
+   ~~- AGENTS.md updated with new sub-template/constant names, the order-independent class-assertion rule, and the BuildFlow gotcha.~~
 
 ### Pre-existing (carried in)
 
@@ -67,29 +67,29 @@
 ## b) PARTIALLY DONE 🟡
 
 1. **`EmptyStateProps` action API** — `ActionText`/`ActionHref`/`ActionAttrs` are three flat string fields where PageHeader uses a `templ.Component` slot. The merged `emptyStateAction` helper papered over this, but the props shape is still inconsistent with the slot-based components. Not changed because it's a **public API break** for a library.
-2. **Golden test adoption** — golden files exist for display (4), feedback (7), navigation (1). The remaining 60+ assertion-based snapshot tests work fine; converting them is low-value busywork (per TODO_LIST.md analysis).
-3. **Tailwind preset/theme config** — pattern documented in `docs/tailwind-v4-adoption-guide.md`; standalone preset file deferred until multiple consumers exist.
-4. **`Validate() error` on props structs** — deferred to v1.0; current philosophy is silent fallback. Needs a design decision (replace vs supplement the fallback pattern).
+2. ~~**Golden test adoption** — golden files exist for display (4), feedback (7), navigation (1). The remaining 60+ assertion-based snapshot tests work fine; converting them is low-value busywork (per TODO_LIST.md analysis).~~ done — 2026-07-30 01-55 snapshot-test-infrastructure-overhaul.md
+3. ~~**Tailwind preset/theme config** — pattern documented in `docs/tailwind-v4-adoption-guide.md`; standalone preset file deferred until multiple consumers exist.~~ **Won't implement — deferred until multiple consumers.**
+4. ~~**`Validate() error` on props structs** — deferred to v1.0; current philosophy is silent fallback. Needs a design decision (replace vs supplement the fallback pattern).~~ done — errorpage/styles.go Validate()
 
 ---
 
 ## c) NOT STARTED ⬜
 
-1. **Tag v0.5.0** — `utils.Version` is `"0.5.0"` but no git tag exists and CHANGELOG `[Unreleased]` is empty. The drift-guard test (`TestVersionMatchesChangelog`) would fail if CHANGELOG were updated.
-2. **CHANGELOG for v0.5.0** — post-v0.4.0 work (ButtonHTMLType, typed HTMXVersion, tooltip touch fallback, ConfirmDelete/SwapOOB props conversion, this session's dedup) is unmentioned.
+1. ~~**Tag v0.5.0** — `utils.Version` is `"0.5.0"` but no git tag exists and CHANGELOG `[Unreleased]` is empty. The drift-guard test (`TestVersionMatchesChangelog`) would fail if CHANGELOG were updated.~~ done — CHANGELOG 0.5.0
+2. ~~**CHANGELOG for v0.5.0** — post-v0.4.0 work (ButtonHTMLType, typed HTMXVersion, tooltip touch fallback, ConfirmDelete/SwapOOB props conversion, this session's dedup) is unmentioned.~~ done — CHANGELOG 0.5.0
 3. **Submit to awesome-templ** — entry text is ready; needs manual PR.
 4. **Submit to templ.guide** — needs manual submission to `a-h/templ`.
-5. **`.buildflow.yml`** — auto-created by BuildFlow with defaults, untracked. Decide: commit or gitignore.
-6. **Pre-existing flaky test:** `internal/golden` `TestAssertMatchesGoldenFile` / `TestAssertRejectsMismatch` — they share a `testdata/` dir and race under `-count=1` full-suite runs. Passes in isolation. Not my change, but a real test-isolation bug.
+5. ~~**`.buildflow.yml`** — auto-created by BuildFlow with defaults, untracked. Decide: commit or gitignore.~~ done — .buildflow.yml committed
+6. ~~**Pre-existing flaky test:** `internal/golden` `TestAssertMatchesGoldenFile` / `TestAssertRejectsMismatch` — they share a `testdata/` dir and race under `-count=1` full-suite runs. Passes in isolation. Not my change, but a real test-isolation bug.~~ done — utils/golden t.TempDir
 
 ---
 
 ## d) TOTALLY FUCKED UP 💥 (things I broke and fixed)
 
-1. **First `navLinkAnchor` refactor bypassed `utils.Class()`.** I used Go string concatenation to build the class list to dodge a brittle test that asserted `"block border-l-4"` as an ordered substring. This violated the documented convention AND regressed user-class override behavior (Tailwind conflicts wouldn't resolve). **Fixed** in the second pass: restored `utils.Class(baseClass, props.Class)` and switched the test to `AssertContainsAll`.
-2. **Over-engineered `mutedParagraph` as a sub-template.** A `<p>` tag wrapper was overkill for a shared class string. **Fixed** by replacing it with a `mutedTextClass` constant (matching the existing `cardShellClass` pattern) and deleting `display/text.templ`.
-3. **Committed the `templ fmt` normalization of 10 files.** This is arguably scope creep — I ran `templ fmt` during investigation and folded the result into a commit. It's net-positive (formatter-clean tree) but I should have called it out as a separate decision. It's done and harmless.
-4. **Almost missed the `.gitignore` bug entirely.** My first pass "fixed" `.gitignore` but I didn't notice that BuildFlow's pre-commit `templ-generate` step **re-appends `*_templ.go` to `.gitignore` on every commit**. The line kept coming back. I eventually confirmed: plain `templ generate` does NOT add it; BuildFlow's step does. It's now harmless (all files tracked, gitignore can't untrack), but it's a BuildFlow bug worth fixing upstream.
+1. ~~**First `navLinkAnchor` refactor bypassed `utils.Class()`.** I used Go string concatenation to build the class list to dodge a brittle test that asserted `"block border-l-4"` as an ordered substring. This violated the documented convention AND regressed user-class override behavior (Tailwind conflicts wouldn't resolve). **Fixed** in the second pass: restored `utils.Class(baseClass, props.Class)` and switched the test to `AssertContainsAll`.~~ done (docs-health pass 2026-09-08)
+2. ~~**Over-engineered `mutedParagraph` as a sub-template.** A `<p>` tag wrapper was overkill for a shared class string. **Fixed** by replacing it with a `mutedTextClass` constant (matching the existing `cardShellClass` pattern) and deleting `display/text.templ`.~~ done (docs-health pass 2026-09-08)
+3. ~~**Committed the `templ fmt` normalization of 10 files.** This is arguably scope creep — I ran `templ fmt` during investigation and folded the result into a commit. It's net-positive (formatter-clean tree) but I should have called it out as a separate decision. It's done and harmless.~~ done (docs-health pass 2026-09-08)
+4. ~~**Almost missed the `.gitignore` bug entirely.** My first pass "fixed" `.gitignore` but I didn't notice that BuildFlow's pre-commit `templ-generate` step **re-appends `*_templ.go` to `.gitignore` on every commit**. The line kept coming back. I eventually confirmed: plain `templ generate` does NOT add it; BuildFlow's step does. It's now harmless (all files tracked, gitignore can't untrack), but it's a BuildFlow bug worth fixing upstream.~~ done (docs-health pass 2026-09-08)
 
 ---
 
@@ -98,19 +98,19 @@
 ### Architecture / Type Model
 
 1. **Unify action/render slots.** `EmptyStateProps` uses flat strings (`ActionText`/`ActionHref`/`ActionAttrs`); `PageHeaderProps` uses `templ.Component` slots. Pick one — slots are more composable. This is a v1.0 breaking change candidate.
-2. **`feedback/alert` ↔ `errorpage/erroralert` dismiss-button clone** (14 lines). Blocked by the documented "no feedback dep for errorpage" constraint. Options: (a) extract a tiny `internal/dismiss` package with the button markup, (b) accept the clone with a rationale comment. Current state: accepted, undocumented.
-3. **The `Drawer`/`Modal` 42-line clone** is correctly left alone — same shape, different intent; `overlayShell` already centralizes the real logic. Should add a one-line rationale comment so the next reader knows.
+2. ~~**`feedback/alert` ↔ `errorpage/erroralert` dismiss-button clone** (14 lines). Blocked by the documented "no feedback dep for errorpage" constraint. Options: (a) extract a tiny `internal/dismiss` package with the button markup, (b) accept the clone with a rationale comment. Current state: accepted, undocumented.~~ **Won't implement — accepted clone rationale ADR-0009.**
+3. ~~**The `Drawer`/`Modal` 42-line clone** is correctly left alone — same shape, different intent; `overlayShell` already centralizes the real logic. Should add a one-line rationale comment so the next reader knows.~~ done — display/shared.templ rationale
 
 ### Process
 
 4. **BuildFlow should not manage `.gitignore` for `*_templ.go`.** It re-appends the line every commit. Fix in BuildFlow itself (it's `larsartmann/buildflow`).
-5. **`internal/golden` test isolation** — tests should use `t.TempDir()`, not a shared `testdata/` they create/destroy.
-6. **`utils.AssertContainsAll` exists but isn't used for class checks.** Document the "use AssertContainsAll for multi-token class assertions" rule more loudly (it's now in AGENTS.md but could be a lint or test-helper).
+5. ~~**`internal/golden` test isolation** — tests should use `t.TempDir()`, not a shared `testdata/` they create/destroy.~~ done — utils/golden t.TempDir
+6. ~~**`utils.AssertContainsAll` exists but isn't used for class checks.** Document the "use AssertContainsAll for multi-token class assertions" rule more loudly (it's now in AGENTS.md but could be a lint or test-helper).~~ done — AGENTS.md AssertContainsAll rule
 
 ### Library hygiene
 
-7. **CHANGELOG is empty for v0.5.0.** Multiple features shipped without changelog entries. Add a pre-release checklist item.
-8. **`.buildflow.yml`** is untracked. Either commit it (so CI/other contributors get the same config) or add to `.gitignore`.
+7. ~~**CHANGELOG is empty for v0.5.0.** Multiple features shipped without changelog entries. Add a pre-release checklist item.~~ done — CHANGELOG 0.5.0
+8. ~~**`.buildflow.yml`** is untracked. Either commit it (so CI/other contributors get the same config) or add to `.gitignore`.~~ done — .buildflow.yml
 
 ---
 
@@ -118,31 +118,31 @@
 
 | #  | Task                                                                             | Impact | Work    |
 | -- | -------------------------------------------------------------------------------- | ------ | ------- |
-| 1  | **Tag v0.5.0 + write CHANGELOG entry** (library is unreleased)                   | Crit   | Trivial |
+| ~~1~~  | ~~**Tag v0.5.0 + write CHANGELOG entry** (library is unreleased)~~ done — CHANGELOG 0.5.0 | ~~Crit~~ | ~~Trivial~~ |
 | 2  | Fix BuildFlow re-adding `*_templ.go` to `.gitignore` (upstream fix)              | High   | Low     |
-| 3  | Fix `internal/golden` test isolation (use `t.TempDir()`)                         | Med    | Low     |
-| 4  | Decide on `.buildflow.yml`: commit or gitignore                                  | Low    | Trivial |
-| 5  | Add rationale comments to accepted clones (Modal/Drawer, alert/erroralert)       | Low    | Trivial |
+| ~~3~~  | ~~Fix `internal/golden` test isolation (use `t.TempDir()`)~~ done — utils/golden t.TempDir | ~~Med~~ | ~~Low~~ |
+| ~~4~~  | ~~Decide on `.buildflow.yml`: commit or gitignore~~ done — .buildflow.yml committed | ~~Low~~ | ~~Trivial~~ |
+| ~~5~~  | ~~Add rationale comments to accepted clones (Modal/Drawer, alert/erroralert)~~ done — docs/adr/0009-accepted-clones.md | ~~Low~~ | ~~Trivial~~ |
 | 6  | Submit awesome-templ PR (entry text ready)                                       | Med    | Low     |
 | 7  | Submit templ.guide listing (manual)                                              | Med    | Low     |
-| 8  | Audit remaining templ clone groups at t=8+ for any drift-prone extractions       | Med    | Low     |
+| ~~8~~  | ~~Audit remaining templ clone groups at t=8+ for any drift-prone extractions~~ done — 2026-07-06 06-24 dedup-extraction-sprint.md | ~~Med~~ | ~~Low~~ |
 | 9  | Add `EmptyStateProps.Action templ.Component` slot (breaking — v0.6 candidate)    | High   | Med     |
-| 10 | Extract shared dismiss-button markup to `internal/dismiss` (unblock alert clone) | Med    | Med     |
-| 11 | Run `art-dupl` on Go sources at t=15 (currently only templ was scanned)          | Med    | Low     |
-| 12 | Add `Validate() error` design spike for v1.0                                     | High   | High    |
-| 13 | Move test helpers to `internal/testutil/` (v1.0 breaking)                        | Med    | Med     |
-| 14 | Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)                | Low    | Trivial |
-| 15 | Add integration test for `go get` from clean project (CI already does this)      | Low    | Low     |
+| ~~10~~ | ~~Extract shared dismiss-button markup to `internal/dismiss` (unblock alert clone)~~ **Won't implement — accepted per ADR-0009.** | ~~Med~~ | ~~Med~~ |
+| ~~11~~ | ~~Run `art-dupl` on Go sources at t=15 (currently only templ was scanned)~~ done — .art-dupl-baseline.json | ~~Med~~ | ~~Low~~ |
+| ~~12~~ | ~~Add `Validate() error` design spike for v1.0~~ done — errorpage/styles.go Validate() | ~~High~~ | ~~High~~ |
+| ~~13~~ | ~~Move test helpers to `internal/testutil/` (v1.0 breaking)~~ **Won't implement — deferred TODO 34 post-v1.0.** | ~~Med~~ | ~~Med~~ |
+| ~~14~~ | ~~Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)~~ done — removed aliases feedback | ~~Low~~ | ~~Trivial~~ |
+| ~~15~~ | ~~Add integration test for `go get` from clean project (CI already does this)~~ done — .github/workflows/ci.yaml module isolation | ~~Low~~ | ~~Low~~ |
 | 16 | Consider typed `ComponentName`/`IconName` branded types for stronger safety      | Med    | Med     |
 | 17 | Document the "slot vs flat strings" decision in an ADR                           | Med    | Low     |
-| 18 | Add file-size enforcement (BuildFlow has `file-size-check` at 350 lines)         | Low    | Trivial |
-| 19 | Audit `examples/demo` for staleness against current API                          | Low    | Low     |
+| ~~18~~ | ~~Add file-size enforcement (BuildFlow has `file-size-check` at 350 lines)~~ done — .buildflow.yml max file size 350 | ~~Low~~ | ~~Trivial~~ |
+| ~~19~~ | ~~Audit `examples/demo` for staleness against current API~~ done — 2026-08-17 14-26 demo-page-superb-audit-and-overhaul.md | ~~Low~~ | ~~Low~~ |
 | 20 | Add a CONTRIBUTING note about the BuildFlow gitignore gotcha                     | Low    | Trivial |
-| 21 | Consider `internal/svg` → public `svg` (consumers ask for raw paths)             | Low    | Med     |
-| 22 | Add cross-package composition tests (Card+Badge+Table realistic layout)          | Low    | Low     |
+| ~~21~~ | ~~Consider `internal/svg` → public `svg` (consumers ask for raw paths)~~ done — utils/svg | ~~Low~~ | ~~Med~~ |
+| ~~22~~ | ~~Add cross-package composition tests (Card+Badge+Table realistic layout)~~ done — integration/ | ~~Low~~ | ~~Low~~ |
 | 23 | Write ADR for the "silent fallback over panic" validation philosophy             | Med    | Low     |
-| 24 | Evaluate `go-error-family` v0.6+ for new error families                          | Low    | Low     |
-| 25 | Plan v0.6.0 scope (action slots, more composition tests, svg publicity)          | Med    | Med     |
+| ~~24~~ | ~~Evaluate `go-error-family` v0.6+ for new error families~~ done — errorpage/go.mod v0.10.0 | ~~Low~~ | ~~Low~~ |
+| ~~25~~ | ~~Plan v0.6.0 scope (action slots, more composition tests, svg publicity)~~ done — CHANGELOG 0.6.0 | ~~Med~~ | ~~Med~~ |
 
 ---
 

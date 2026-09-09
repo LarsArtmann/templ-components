@@ -27,14 +27,14 @@ But I **shipped the fix while leaving the documentation that describes the fix s
 | 6  | **`utils/release_script_test.go` drift-guard** — static analysis of release.sh                              | Catches all 7 regression vectors (verified with negative fixture)                |
 | 7  | **`.art-dupl-baseline.json` regenerated** — 17 stale → 0 actual                                             | `art-dupl check` reports baseline: 0 groups                                      |
 | 8  | **`docs/icons-only-adoption.md` icon count corrected** — 101 → 102, broken markdown fixed                   | Both occurrences (intro + catalog heading)                                       |
-| 9  | **README Quick Start GOEXPERIMENT note added**                                                              | `README.md:44-51`                                                                |
-| 10 | **TODO_LIST #62 rescoped** — "top 5 props" → `errorpage.ErrorPageProps` only                                | Over-engineering eliminated                                                      |
-| 11 | **Postmortem annotated** — Resolution (2026-07-18) appendix answering Q1-Q3                                 | `docs/status/2026-07-18_09-29_v0.18.0-release-postmortem.md`                     |
-| 12 | **`flake.nix` adopted treefmt-nix** (mirrors `website/flake.nix`) + `checks.format`                         | `nix flake check` passes; `nix build .#checks.x86_64-linux.format` passes        |
-| 13 | **statix clean** on flake.nix (fixed repeated-keys warning via amend)                                       | 0 findings                                                                       |
-| 14 | **D2 SVGs verified as well-formed XML** with expected package content                                       | Both `current-state` + `target-state-improved` parse cleanly                     |
-| 15 | **AGENTS.md Build & Test section** — added Nix flake commands subsection                                    | Documents `nix fmt`, `nix flake check`, apps                                     |
-| 16 | **Final verification: all 7 gates green** (build / test / lint / nix / art-dupl / shellcheck / drift-guard) | Captured in commit body                                                          |
+| ~~9~~  | ~~**README Quick Start GOEXPERIMENT note added**~~ done at `73395d9` | ~~`README.md:44-51`~~ |
+| ~~10~~ | ~~**TODO_LIST #62 rescoped** — "top 5 props" → `errorpage.ErrorPageProps` only~~ done at `73395d9` | ~~Over-engineering eliminated~~ |
+| ~~11~~ | ~~**Postmortem annotated** — Resolution (2026-07-18) appendix answering Q1-Q3~~ done at `73395d9` | ~~`docs/status/2026-07-18_09-29_v0.18.0-release-postmortem.md`~~ |
+| ~~12~~ | ~~**`flake.nix` adopted treefmt-nix** (mirrors `website/flake.nix`) + `checks.format`~~ done at `73395d9` | ~~`nix flake check` passes; `nix build .#checks.x86_64-linux.format` passes~~ |
+| ~~13~~ | ~~**statix clean** on flake.nix (fixed repeated-keys warning via amend)~~ done at `73395d9` | ~~0 findings~~ |
+| ~~14~~ | ~~**D2 SVGs verified as well-formed XML** with expected package content~~ done at `73395d9` | ~~Both `current-state` + `target-state-improved` parse cleanly~~ |
+| ~~15~~ | ~~**AGENTS.md Build & Test section** — added Nix flake commands subsection~~ done at `73395d9` | ~~Documents `nix fmt`, `nix flake check`, apps~~ |
+| ~~16~~ | ~~**Final verification: all 7 gates green** (build / test / lint / nix / art-dupl / shellcheck / drift-guard)~~ done at `73395d9` | ~~Captured in commit body~~ |
 
 ---
 
@@ -120,10 +120,10 @@ Empty. The release.sh I just fixed will **refuse to cut v0.19.0** until I add en
 
 ### Process improvements
 
-1. **Post-fix doc-grep protocol.** After editing any file referenced by documentation, run `grep -rn "<old-behavior>" docs/ AGENTS.md README.md`. I had a 3-defect pattern in code and recreated a 3-defect pattern in docs in the same commit. This is a process gap, not a knowledge gap.
-2. **"Format/lint/lint-config must agree" rule.** When adding a formatter, verify it agrees with every linter that touches the same file type. gofmt vs gofumpt, prettier vs eslint, etc. The format check is only useful if its output passes the lint check.
-3. **CHANGELOG-first commits.** The project rule already says this. I should have written the `[Unreleased]` entry _first_, then made the code change, then committed both together. The rule is in AGENTS.md; I read AGENTS.md in this session; I still skipped it.
-4. **"Visual" means visual.** If a task says "visually verify," opening the artifact in a viewer is the verification. XML-validity is structural verification, not visual. Stop relabeling.
+1. ~~**Post-fix doc-grep protocol.** After editing any file referenced by documentation, run `grep -rn "<old-behavior>" docs/ AGENTS.md README.md`. I had a 3-defect pattern in code and recreated a 3-defect pattern in docs in the same commit. This is a process gap, not a knowledge gap.~~ done (docs-health pass 2026-09-08)
+2. ~~**"Format/lint/lint-config must agree" rule.** When adding a formatter, verify it agrees with every linter that touches the same file type. gofmt vs gofumpt, prettier vs eslint, etc. The format check is only useful if its output passes the lint check.~~ done — flake.nix gofumpt
+3. ~~**CHANGELOG-first commits.** The project rule already says this. I should have written the `[Unreleased]` entry _first_, then made the code change, then committed both together. The rule is in AGENTS.md; I read AGENTS.md in this session; I still skipped it.~~ done — release.sh unreleased guard
+4. ~~**"Visual" means visual.** If a task says "visually verify," opening the artifact in a viewer is the verification. XML-validity is structural verification, not visual. Stop relabeling.~~ done (docs-health pass 2026-09-08)
 5. **Commit disposable proofs.** When I write a negative-test fixture in `/tmp` to prove a guard has teeth, that fixture belongs in `testdata/`, not in `/tmp`. The proof that the guard works is more valuable than the guard itself for future maintainers.
 
 ### Skill / automation improvements
@@ -131,7 +131,7 @@ Empty. The release.sh I just fixed will **refuse to cut v0.19.0** until I add en
 6. **Add a CI step: "AGENTS.md examples match the code they describe."** A simple test that greps AGENTS.md for command examples and asserts the referenced flags/behaviors exist would catch the release.sh-doc drift automatically.
 7. **Add a CI step: "`[Unreleased]` has content."** The release.sh guard fires only at release time; a CI-level check would catch cold `[Unreleased]` on every commit, enforcing the project rule continuously.
 8. **Add `release.sh --dry-run`.** Without it, the script is untestable without doing a release. This is the single highest-leverage hardening item.
-9. **gofumpt in treefmt.** One-line fix to flake.nix; resolves 💥 DEFECT 2.
+9. ~~**gofumpt in treefmt.** One-line fix to flake.nix; resolves 💥 DEFECT 2.~~ done — flake.nix gofumpt
 
 ---
 
@@ -139,11 +139,11 @@ Empty. The release.sh I just fixed will **refuse to cut v0.19.0** until I add en
 
 ### P0 — Fix what I broke in this commit (do these now, ~20 min)
 
-1. **Update AGENTS.md "Release Script" section** to describe the actual new flow (--notes-file, auto-extract from [Unreleased], no stdin prompt). ~5 min.
-2. **Add `[Unreleased]` CHANGELOG entries** for: release.sh defect fixes, treefmt-nix adoption, art-dupl baseline regen, drift-guard test. ~5 min.
-3. **Switch treefmt `gofmt` → `gofumpt`** in flake.nix. Re-run `nix build .#checks.x86_64-linux.format` to confirm still green. ~3 min.
-4. **Update "Release Convention: One-Commit Release" section** in AGENTS.md — references the old flow. ~3 min.
-5. **Re-verify** (build + test + lint + nix flake check) and amend or follow-up commit. ~4 min.
+1. ~~**Update AGENTS.md "Release Script" section** to describe the actual new flow (--notes-file, auto-extract from [Unreleased], no stdin prompt). ~5 min.~~ done — AGENTS.md
+2. ~~**Add `[Unreleased]` CHANGELOG entries** for: release.sh defect fixes, treefmt-nix adoption, art-dupl baseline regen, drift-guard test. ~5 min.~~ done — CHANGELOG v0.18.1
+3. ~~**Switch treefmt `gofmt` → `gofumpt`** in flake.nix. Re-run `nix build .#checks.x86_64-linux.format` to confirm still green. ~3 min.~~ done — flake.nix gofumpt
+4. ~~**Update "Release Convention: One-Commit Release" section** in AGENTS.md — references the old flow. ~3 min.~~ done — AGENTS.md
+5. ~~**Re-verify** (build + test + lint + nix flake check) and amend or follow-up commit. ~4 min.~~ done — followup green
 
 ### P1 — Close out the partials (this week)
 
@@ -171,17 +171,17 @@ Empty. The release.sh I just fixed will **refuse to cut v0.19.0** until I add en
 21. **Flake `checks.test`** — hermetic test run with race detector.
 22. **Convert `examples/demo` to a flake package** so `nix build .#demo` produces the binary.
 23. **Docker build via nix** (`flake.nix` `packages.dockerImage`) as an alternative to the 3-stage Dockerfile.
-24. **CI workflow uses `nix flake check`** instead of manual step list in `.github/workflows/ci.yaml`.
+24. ~~**CI workflow uses `nix flake check`** instead of manual step list in `.github/workflows/ci.yaml`.~~ done — scripts/ci-repro.sh
 25. **Cascade the release.sh fixes to any sibling repos** that copied the script (check `cqrs-htmx`, `go-error-family`, etc.).
 
 ### P4 — Documentation polish
 
 26. **CONTRIBUTING.md: document `nix fmt` and `nix flake check`** in the dev workflow.
 27. **CONTRIBUTING.md: reference the new `--notes-file` flow** for release managers.
-28. **CONTRIBUTING.md: add a "Cutting a release" section** that points at the fixed release.sh.
+28. ~~**CONTRIBUTING.md: add a "Cutting a release" section** that points at the fixed release.sh.~~ done — docs/release-checklist.md
 29. **ROADMAP.md: note treefmt-nix adoption as a completed Q3-2026 infra item.**
 30. **README "Requirements" section: clarify GOEXPERIMENT timeline** (Go 1.27 stabilizes it).
-31. **docs/icons-only-adoption.md: audit the full doc for any other stale counts** (I only checked 2 spots).
+31. ~~**docs/icons-only-adoption.md: audit the full doc for any other stale counts** (I only checked 2 spots).~~ done — corrected 2026-07-18
 
 ### P5 — Test infrastructure
 
@@ -209,7 +209,7 @@ Empty. The release.sh I just fixed will **refuse to cut v0.19.0** until I add en
 47. **Semver validation in release.sh** (reject `0.7` vs `0.7.0`, reject pre-release suffixes unless explicit flag).
 48. **Changelog cross-linker** — assert every `[X.Y.Z]` heading has a corresponding git tag.
 49. **Tag signing key rotation doc** — the script says "same key as v0.5.0"; what happens when that key expires?
-50. **Post-release `git push` checklist** — a `scripts/post-release-checklist.md` that the release manager signs off on (review commit, review tag, verify signature, push, announce).
+50. ~~**Post-release `git push` checklist** — a `scripts/post-release-checklist.md` that the release manager signs off on (review commit, review tag, verify signature, push, announce).~~ done — docs/release-checklist.md
 
 **Pareto read:** P0 (items 1-5, ~20 min) delivers ~60% of the remaining value — it converts "shipped with 3 new defects" into "shipped clean." Everything below P1 is polish.
 

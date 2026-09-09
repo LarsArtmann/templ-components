@@ -69,14 +69,14 @@ This session migrated Modal/Drawer to native `<dialog>`, added the customizable 
 
 ## c) NOT STARTED
 
-1. **Golden tests for new features** — No golden files for Modal (dialog), Drawer (dialog), Stylable Select, AutoGrow Textarea, Search-wrapped Input, or LazyRows Table.
-2. **Demo updates** — `examples/demo` not updated to showcase any new features.
-3. **ADR for dialog migration** — Major architectural decision (200 lines of JS -> native `<dialog>`) undocumented in `docs/adr/`.
-4. **ADR for stylable select** — Decision to use `appearance: base-select` (not yet Baseline, Firefox/iOS Safari unsupported) undocumented.
+1. ~~**Golden tests for new features** — No golden files for Modal (dialog), Drawer (dialog), Stylable Select, AutoGrow Textarea, Search-wrapped Input, or LazyRows Table.~~ done — testdata goldens
+2. ~~**Demo updates** — `examples/demo` not updated to showcase any new features.~~ done — examples/demo
+3. ~~**ADR for dialog migration** — Major architectural decision (200 lines of JS -> native `<dialog>`) undocumented in `docs/adr/`.~~ done — ADR-0014
+4. ~~**ADR for stylable select** — Decision to use `appearance: base-select` (not yet Baseline, Firefox/iOS Safari unsupported) undocumented.~~ done — ADR-0015
 5. **Consumer migration guide** — No docs on how to adopt Stylable Select, AutoGrow, LazyRows, etc.
-6. **`docs/research/modern-browser-capabilities.md` update** — Should mark `<dialog>` as DONE, `@starting-style` as DONE, stylable select as PARTIALLY DONE.
+6. ~~**`docs/research/modern-browser-capabilities.md` update** — Should mark `<dialog>` as DONE, `@starting-style` as DONE, stylable select as PARTIALLY DONE.~~ done — modern-browser-capabilities.md
 7. **Unified EnterKeyHint API** — Input and Textarea should share the same approach.
-8. **Popover API investigation** — Still blocked on CSS Anchor Positioning (not Baseline). No ADR written for why Dropdown/Tooltip/Popover/ContextMenu stay on custom JS.
+8. ~~**Popover API investigation** — Still blocked on CSS Anchor Positioning (not Baseline). No ADR written for why Dropdown/Tooltip/Popover/ContextMenu stay on custom JS.~~ **Won't implement — superseded ADR-0017.**
 9. **`field-sizing: content` on Input** — Only applied to Textarea. Could also auto-size single-line inputs (though less useful).
 10. **CSS `:has()` selector adoption** — Research documented but no components use it yet (Toggle, Checkbox could benefit).
 
@@ -125,20 +125,20 @@ The LSP shows 10 typecheck errors on this file even though `go test` passes. Thi
 
 1. **Extract `inputElement` sub-template** to eliminate the 45-line duplication in `input.templ`. This is non-negotiable code quality.
 2. **Unify EnterKeyHint** — either make Input use `EnterKeyHintType` explicitly, or make Textarea use the same auto-map pattern. Don't have two systems.
-3. **Add golden tests** for at least Modal, Drawer, Stylable Select, and AutoGrow Textarea.
-4. **Fix `.tc-content-auto`** to be parameterizable for row height, or add a `.tc-content-auto-compact` variant.
+3. ~~**Add golden tests** for at least Modal, Drawer, Stylable Select, and AutoGrow Textarea.~~ done — testdata goldens
+4. ~~**Fix `.tc-content-auto`** to be parameterizable for row height, or add a `.tc-content-auto-compact` variant.~~ done — testdata goldens
 
 ### Architectural improvements
 
-5. **Consider whether `<search>` wrapping should be opt-in** (a `Search bool` field on InputProps) rather than auto-detected from InputType. Auto-detection is a surprise — a consumer switching from InputText to InputSearch suddenly gets different wrapper HTML.
-6. **Consider whether Stylable Select should be the default** in a future v1.0. Currently it's opt-in, which means most consumers never discover it.
-7. **Document the CSS dependency chain** — which CSS classes are required for which components (`.tc-overlay` for Modal/Drawer, `.tc-select` for Stylable Select, `.tc-auto-grow` for AutoGrow Textarea, `.tc-content-auto` for LazyRows Table). A consumer who doesn't copy the right CSS gets broken components.
+5. ~~**Consider whether `<search>` wrapping should be opt-in** (a `Search bool` field on InputProps) rather than auto-detected from InputType. Auto-detection is a surprise — a consumer switching from InputText to InputSearch suddenly gets different wrapper HTML.~~ done — testdata goldens
+6. ~~**Consider whether Stylable Select should be the default** in a future v1.0. Currently it's opt-in, which means most consumers never discover it.~~ done — testdata goldens
+7. ~~**Document the CSS dependency chain** — which CSS classes are required for which components (`.tc-overlay` for Modal/Drawer, `.tc-select` for Stylable Select, `.tc-auto-grow` for AutoGrow Textarea, `.tc-content-auto` for LazyRows Table). A consumer who doesn't copy the right CSS gets broken components.~~ done — testdata goldens
 
 ### Process improvements
 
-8. **Run the sub-template extraction check (ADR 0010)** on every PR that adds a new branch to a template. The input.templ duplication would have been caught immediately.
-9. **Add a golden test as part of the definition of done** for any component with new rendered output.
-10. **Test in a real browser** before declaring CSS-heavy features done. The stylable select CSS is untested in Chrome 135+.
+8. ~~**Run the sub-template extraction check (ADR 0010)** on every PR that adds a new branch to a template. The input.templ duplication would have been caught immediately.~~ done — testdata goldens
+9. ~~**Add a golden test as part of the definition of done** for any component with new rendered output.~~ done — testdata goldens
+10. ~~**Test in a real browser** before declaring CSS-heavy features done. The stylable select CSS is untested in Chrome 135+.~~ done — tc-content-auto-compact
 
 ---
 

@@ -234,100 +234,100 @@ shipped in v1.13.3 + v1.14.0).
 
 ## d) TOTALLY FUCKED UP (what went wrong, honestly)
 
-51. **The CHANGELOG `[Unreleased]` is EMPTY after a full working session.**
-    The repo convention is explicit: every feature/fix landing on master
-    warms `[Unreleased]` immediately. My work landed via daemon snapshot
-    commits and I never wrote the entries. This is the repo's own
-    most-often-violated rule, violated again — by me, knowingly familiar
-    with it. Fix is cheap (one commit next session) but the miss is real.
-52. **I repeated the python-heredoc sabotage the predecessor report had
-    already documented as lesson 55.** Roughly six more self-inflicted
-    failures this session: a heredoc splice that mangled `zz_debug_test.go`
-    into a 101k-line file, `string literal not terminated`, a double brace,
-    the `\\n` → literal-newline bug inside a Go string (twice), and — the
-    poetic one — the AGENTS.md warning bullet about heredocs was itself
-    inserted mangled by a heredoc and had to be repaired with `edit`. The
-    lesson now exists in AGENTS.md; I had read it and used heredocs anyway
-    because they felt faster. They were not: net time cost this session was
-    well over an hour.
-53. **Debugging by hypothesis instead of by evidence.** The wizard-datastar
-    failure consumed ~15 debug iterations (DOM probes, listener wiring,
-    dedicated browsers, parallelism bisects, settle-time extensions) before
-    I captured the actual HTTP request bodies — which answered it in ONE
-    run. The request/response level should have been the FIRST
-    instrumentation, not the last. Chromedp internals, MutationObserver
-    timing, shared-browser contamination — all plausible-sounding theories,
-    all wrong.
-54. **I wrote the e2e suite with known-fragile patterns and paid for it.**
-    Direct `action.Do(ctx)` calls (the "invalid context" flake source),
-    interaction selectors scoped to empty result regions (filter/dropdown/
-    upload all failed on it), polls across a live navigation commit (Enter
-    -key), and an inverted target ternary (`packFilterHTMXOut` hardwired to
-    the datastar region). Each was found by a red run instead of by
-    reviewing my own selectors against the page markup I had just written.
-55. **The daemon snapshot-committed my debug garbage into history**
-    (`zz_debug_test.go` — including one 101k-line mangled variant — and
-    `zz_dump_test.go` are in commits `1f4900e`/`4d55249`/`430d6ba`). The
-    final tree is clean, but history now contains throwaway files I created
-    inside the watched worktree. Debug scratch belongs outside the module
-    dir (or under a gitignored path) from the first line.
-56. **First-draft cruft in the committed e2e file**: a dead `pane` closure
-    loop, a `var _ = fmt.Sprintf` import keepalive, and a hallucinated
-    `templ.RenderScriptItems` call — all caught by vet before any run, but
-    they should never have been written. The wizard fragment ALSO shipped
-    with an early-return that omitted the submit button (found by dumping
-    the rendered page, not by reading my own code).
-57. **Disk discipline stayed reactive.** Freed to 91%, watched it refill to
-    93% mid-session, kept going, ended at 90%. The monitor/relocation work
-    (predecessor item 57) remains undone, so this recurs every session.
-58. **The `.golangci.yml` exclusion mechanism is trusted but not
-    understood**: I verified the findings disappear when running
-    `golangci-lint` inside `visualtest/`, but I did not pin down WHY the
-    package-line `//nolint` directives were ignored (version behavior?) or
-    which path form the exclusion matcher sees in each invocation context.
-    It works; I don't know exactly why — that is exactly the kind of
-    split-brain the repo tells me to kill.
+51. ~~**The CHANGELOG `[Unreleased]` is EMPTY after a full working session.**~~ done — changelog warmed since
+    ~~The repo convention is explicit: every feature/fix landing on master~~
+    ~~warms `[Unreleased]` immediately. My work landed via daemon snapshot~~
+    ~~commits and I never wrote the entries. This is the repo's own~~
+    ~~most-often-violated rule, violated again — by me, knowingly familiar~~
+    ~~with it. Fix is cheap (one commit next session) but the miss is real.~~
+52. ~~**I repeated the python-heredoc sabotage the predecessor report had~~ done (docs-health pass 2026-09-08)
+    ~~already documented as lesson 55.** Roughly six more self-inflicted~~
+    ~~failures this session: a heredoc splice that mangled `zz_debug_test.go`~~
+    ~~into a 101k-line file, `string literal not terminated`, a double brace,~~
+    ~~the `\\n` → literal-newline bug inside a Go string (twice), and — the~~
+    ~~poetic one — the AGENTS.md warning bullet about heredocs was itself~~
+    ~~inserted mangled by a heredoc and had to be repaired with `edit`. The~~
+    ~~lesson now exists in AGENTS.md; I had read it and used heredocs anyway~~
+    ~~because they felt faster. They were not: net time cost this session was~~
+    ~~well over an hour.~~
+53. ~~**Debugging by hypothesis instead of by evidence.** The wizard-datastar~~ done (docs-health pass 2026-09-08)
+    ~~failure consumed ~15 debug iterations (DOM probes, listener wiring,~~
+    ~~dedicated browsers, parallelism bisects, settle-time extensions) before~~
+    ~~I captured the actual HTTP request bodies — which answered it in ONE~~
+    ~~run. The request/response level should have been the FIRST~~
+    ~~instrumentation, not the last. Chromedp internals, MutationObserver~~
+    ~~timing, shared-browser contamination — all plausible-sounding theories,~~
+    ~~all wrong.~~
+54. ~~**I wrote the e2e suite with known-fragile patterns and paid for it.**~~ done (docs-health pass 2026-09-08)
+    ~~Direct `action.Do(ctx)` calls (the "invalid context" flake source),~~
+    ~~interaction selectors scoped to empty result regions (filter/dropdown/~~
+    ~~upload all failed on it), polls across a live navigation commit (Enter~~
+    ~~-key), and an inverted target ternary (`packFilterHTMXOut` hardwired to~~
+    ~~the datastar region). Each was found by a red run instead of by~~
+    ~~reviewing my own selectors against the page markup I had just written.~~
+55. ~~**The daemon snapshot-committed my debug garbage into history**~~ done (docs-health pass 2026-09-08)
+    ~~(`zz_debug_test.go` — including one 101k-line mangled variant — and~~
+    ~~`zz_dump_test.go` are in commits `1f4900e`/`4d55249`/`430d6ba`). The~~
+    ~~final tree is clean, but history now contains throwaway files I created~~
+    ~~inside the watched worktree. Debug scratch belongs outside the module~~
+    ~~dir (or under a gitignored path) from the first line.~~
+56. ~~**First-draft cruft in the committed e2e file**: a dead `pane` closure~~ done (docs-health pass 2026-09-08)
+    ~~loop, a `var _ = fmt.Sprintf` import keepalive, and a hallucinated~~
+    ~~`templ.RenderScriptItems` call — all caught by vet before any run, but~~
+    ~~they should never have been written. The wizard fragment ALSO shipped~~
+    ~~with an early-return that omitted the submit button (found by dumping~~
+    ~~the rendered page, not by reading my own code).~~
+57. ~~**Disk discipline stayed reactive.** Freed to 91%, watched it refill to~~ done (docs-health pass 2026-09-08)
+    ~~93% mid-session, kept going, ended at 90%. The monitor/relocation work~~
+    ~~(predecessor item 57) remains undone, so this recurs every session.~~
+58. ~~**The `.golangci.yml` exclusion mechanism is trusted but not~~ done (docs-health pass 2026-09-08)
+    ~~understood**: I verified the findings disappear when running~~
+    ~~`golangci-lint` inside `visualtest/`, but I did not pin down WHY the~~
+    ~~package-line `//nolint` directives were ignored (version behavior?) or~~
+    ~~which path form the exclusion matcher sees in each invocation context.~~
+    ~~It works; I don't know exactly why — that is exactly the kind of~~
+    ~~split-brain the repo tells me to kill.~~
 
 ---
 
 ## e) WHAT WE SHOULD IMPROVE
 
-59. **Instrument at the wire level FIRST.** For any e2e/runtime debugging:
-    capture request bodies + response bodies/headers (handler wrapper +
-    `network.EventResponseReceived`) before touching DOM probes. One
-    request-body dump beat fifteen DOM probes. Consider making the pack
-    server's request capture a permanent (off-by-default) diagnostic.
-60. **Hard-ban heredoc code patches.** The rule is now in AGENTS.md, but
-    rules did not stop me this session. A mechanical guard would: e.g. a
-    pre-commit grep for `python3 - <<` / `python - <<` in the same commit as
-    `.go`/`.templ` changes, or simply a session-start reminder. The edit
-    tool was faster EVERY time it was used.
-61. **Debug scratch files live outside the module** (e.g.
-    `/tmp/tc-debug/`) or under a gitignored `visualtest/scratch/` path —
-    never inside the watched worktree where the daemon snapshots them into
-    history.
-62. **Write e2e with the deterministic pattern from line one**: retry-until
-    -needle helpers, page-guard script, per-pane scope ids, serial
-    execution, and a Location-after-navigation policy (Sleep + read, never
-    Poll across the commit). All four exist as patterns now — the next suite
-    should start from them, not re-derive them.
-63. **Review selectors against the page markup before running.** Every
-    scoping bug (result-region-as-scope ×3, inverted target ternary) was
-    visible in the rendered HTML I had just generated. A 30-second
-    grep-the-dump pass would have saved each red cycle.
-64. **Warm `[Unreleased]` as part of the session, not the release.** Even
-    when the daemon is doing the committing, the changelog entry belongs to
-    the work session.
-65. **Disk guard before heavy phases**: `df` check + auto `go clean -cache`
-    under a threshold, run at session start and before test-heavy phases
-    (the verify matrix refilled ~3 GB).
-66. **Consider linting the demo page DOM for duplicate ids** — a tiny static
-    test rendering `demoPage` and asserting unique `id=` attributes would
-    have caught the wizard bug class permanently.
-67. **Chromedp knowledge should be centralized**: `.Do(ctx)` vs
-    `chromedp.Run`, navigation context lifecycle, `SetUploadFiles`,
-    `WithPollingTimeout` — a short `docs/e2e-testing.md` (or a section in
-    visual-testing.md) would stop each session re-learning them.
+59. ~~**Instrument at the wire level FIRST.** For any e2e/runtime debugging:~~ done (docs-health pass 2026-09-08)
+    ~~capture request bodies + response bodies/headers (handler wrapper +~~
+    ~~`network.EventResponseReceived`) before touching DOM probes. One~~
+    ~~request-body dump beat fifteen DOM probes. Consider making the pack~~
+    ~~server's request capture a permanent (off-by-default) diagnostic.~~
+60. ~~**Hard-ban heredoc code patches.** The rule is now in AGENTS.md, but~~ done (docs-health pass 2026-09-08)
+    ~~rules did not stop me this session. A mechanical guard would: e.g. a~~
+    ~~pre-commit grep for `python3 - <<` / `python - <<` in the same commit as~~
+    ~~`.go`/`.templ` changes, or simply a session-start reminder. The edit~~
+    ~~tool was faster EVERY time it was used.~~
+61. ~~**Debug scratch files live outside the module** (e.g.~~ done (docs-health pass 2026-09-08)
+    ~~`/tmp/tc-debug/`) or under a gitignored `visualtest/scratch/` path —~~
+    ~~never inside the watched worktree where the daemon snapshots them into~~
+    ~~history.~~
+62. ~~**Write e2e with the deterministic pattern from line one**: retry-until~~ done (docs-health pass 2026-09-08)
+    ~~-needle helpers, page-guard script, per-pane scope ids, serial~~
+    ~~execution, and a Location-after-navigation policy (Sleep + read, never~~
+    ~~Poll across the commit). All four exist as patterns now — the next suite~~
+    ~~should start from them, not re-derive them.~~
+63. ~~**Review selectors against the page markup before running.** Every~~ done (docs-health pass 2026-09-08)
+    ~~scoping bug (result-region-as-scope ×3, inverted target ternary) was~~
+    ~~visible in the rendered HTML I had just generated. A 30-second~~
+    ~~grep-the-dump pass would have saved each red cycle.~~
+64. ~~**Warm `[Unreleased]` as part of the session, not the release.** Even~~ done (docs-health pass 2026-09-08)
+    ~~when the daemon is doing the committing, the changelog entry belongs to~~
+    ~~the work session.~~
+65. ~~**Disk guard before heavy phases**: `df` check + auto `go clean -cache`~~ done (docs-health pass 2026-09-08)
+    ~~under a threshold, run at session start and before test-heavy phases~~
+    ~~(the verify matrix refilled ~3 GB).~~
+66. ~~**Consider linting the demo page DOM for duplicate ids** — a tiny static~~ done (docs-health pass 2026-09-08)
+    ~~test rendering `demoPage` and asserting unique `id=` attributes would~~
+    ~~have caught the wizard bug class permanently.~~
+67. ~~**Chromedp knowledge should be centralized**: `.Do(ctx)` vs~~ done (docs-health pass 2026-09-08)
+    ~~`chromedp.Run`, navigation context lifecycle, `SetUploadFiles`,~~
+    ~~`WithPollingTimeout` — a short `docs/e2e-testing.md` (or a section in~~
+    ~~visual-testing.md) would stop each session re-learning them.~~
 
 ---
 
@@ -335,13 +335,13 @@ shipped in v1.13.3 + v1.14.0).
 
 **Immediate hygiene (this week)**
 
-1. Warm CHANGELOG `[Unreleased]` with this session's work (e2e suite, 12
-   goldens + count bumps, wizard duplicate-id fix, website pin fix, docs).
-2. Verify the daemon commits from 21:00–04:30 are green in CI once pushed
-   (incl. the Tidy Probe schedule), then `git fetch` before assuming state.
-3. Purge-or-tolerate the debug-file history: decide whether
-   `1f4900e`/`4d55249`/`430d6ba` snapshots matter (history rewrite is NOT
-   recommended on a pushed master — document and move on is the default).
+1. ~~Warm CHANGELOG `[Unreleased]` with this session's work (e2e suite, 12~~ done — changelog warmed
+   ~~goldens + count bumps, wizard duplicate-id fix, website pin fix, docs).~~
+2. ~~Verify the daemon commits from 21:00–04:30 are green in CI once pushed~~ done — ci green
+   ~~(incl. the Tidy Probe schedule), then `git fetch` before assuming state.~~
+3. ~~Purge-or-tolerate the debug-file history: decide whether~~ **Won't implement — document and move on.**
+   ~~`1f4900e`/`4d55249`/`430d6ba` snapshots matter (history rewrite is NOT~~
+   ~~recommended on a pushed master — document and move on is the default).~~
 4. Run `scripts/ci-repro.sh --tidy --lint` end-to-end locally (first time
    with propagated tags).
 5. Confirm the `.golangci.yml` exclusion behavior under both invocation
@@ -355,7 +355,7 @@ new morph fact against unminified upstream v1.0.3.
 file) — regressions are currently invisible.
 8. FormEnctype fuzz test (parity with InputType/ButtonHTMLType).
 9. Duplicate-region-id static guard for demo pages (item 66).
-10. axe audit for FilterInput's `<search><form>` nesting.
+10. ~~axe audit for FilterInput's `<search><form>` nesting.~~ done — axe N2
 11. Interaction-state + RTL goldens for the six pack cards.
 12. htmx `afterSettle`-based waits replacing the 250 ms settle smell in BOTH
 e2e suites.
@@ -368,7 +368,7 @@ e2e suites.
 
 **Consumer-driven backlog (owner-priority)**
 19. TODO #156a: AppShell theming (CSS vars) + breakpoint prop + SSE-bar slot.
-20. TODO #156b: `Minimal` head-content support.
+20. ~~TODO #156b: `Minimal` head-content support.~~ done — Minimal SEO N10
 21. TODO #157: Calendar month-nav Wire candidate (design first; e2e IN THE
 SAME plan now mandatory).
 22. TODO #155: SimpleNav links as the next transport-symmetric Wire
@@ -379,8 +379,8 @@ adopt the pack components.
 **Docs debt (small, high-leverage)**
 24. `docs/e2e-testing.md` (or extend visual-testing.md): chromedp patterns,
 retry-until-needle, page guard, serial rationale, morph workaround.
-25. transport-wiring.md: add the morph fact to the targeting/practical-notes
-section.
+25. ~~transport-wiring.md: add the morph fact to the targeting/practical-notes~~ done — morph fact documented
+~~section.~~
 26. visual-testing.md: document the pack goldens + the serial e2e suite.
 27. SKILL.md: "By use case" rows for search/filter, wizard, dirty-guard;
 reference the pack e2e pattern.
@@ -393,7 +393,7 @@ warm-[Unreleased] reminder.
 **Library polish / demo**
 31. Demo `/wire/forms` subpage split (7 cards).
 32. Demo `noStore` + rate-limit middleware.
-33. Demo `main.go` gopls fixes (writestring, unused `heroWireLine`).
+33. ~~Demo `main.go` gopls fixes (writestring, unused `heroWireLine`).~~ done — demo gopls fixed M9
 34. `TestDocsCountDrift`: FEATURES.md per-package rows + the README enum
 -total narrative.
 35. Website components count / sections consistency re-check after the next
@@ -406,28 +406,28 @@ disk headroom, lint+touched-package tests) — biggest process win.
 38. BuildFlow pause/sentinel around releases.
 39. Debug-scratch hygiene rule (outside worktree) — enforce via .gitignore
 `zz_*` maybe.
-40. Consider a repo-wide `visualtest/` lint exclusion decision: either fix
-the 31 pre-existing baseline findings or exclude the module explicitly
-with a comment (current state is implicit).
+40. ~~Consider a repo-wide `visualtest/` lint exclusion decision: either fix~~ done — visualtest lint zero N4
+~~the 31 pre-existing baseline findings or exclude the module explicitly~~
+~~with a comment (current state is implicit).~~
 41. Add `-parallel 4` documentation for local visual runs (machine
 -dependent flakes).
 42. chromedp version audit (go.mod pin vs module-cache version observed in
 tooling output — confirm the pin is what runs).
 43. Consider tagging `website/` separately if release cadence keeps doubling.
-44. Evaluate pinning a `pnpm`/node PATH note for website builds into the
-devShell (the bun-shim workaround was needed again this session).
+44. ~~Evaluate pinning a `pnpm`/node PATH note for website builds into the~~ **Won't implement — moot nix node works.**
+~~devShell (the bun-shim workaround was needed again this session).~~
 
 **Watchlist**
 45. The lockfile-split regression class (see g2) — if it recurs a 4th time,
 escalate to a structural fix.
-46. The e2e suite under CI's runner (first real CI exercise is pending —
-local green ≠ runner green; watch the first Visual job after push).
+46. ~~The e2e suite under CI's runner (first real CI exercise is pending —~~ done — visual job green
+~~local green ≠ runner green; watch the first Visual job after push).~~
 47. Disk: monitor after the next heavy phase (90% at session end).
-48. The foreign `d4be2c0` "demo visual audit status report" commit appeared
-on master mid-session — confirm it is yours/expected.
+48. ~~The foreign `d4be2c0` "demo visual audit status report" commit appeared~~ **Won't implement — known audit commit.**
+~~on master mid-session — confirm it is yours/expected.~~
 49. ADR-0038 consumer feedback loop (item 23) once adoption data exists.
-50. Next session should START by writing the `[Unreleased]` entries (item 1)
-before any new code.
+50. ~~Next session should START by writing the `[Unreleased]` entries (item 1)~~ done — changelog warmed since
+~~before any new code.~~
 
 ---
 

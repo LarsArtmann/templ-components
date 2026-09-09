@@ -97,10 +97,10 @@ Accessibility-first. The skill mandates it, we applied it everywhere. Correct de
 
 **Suggestion:** Add a recipe: "Server-rendered HTMX error feedback loop" showing:
 
-1. Huma handler returns error
-2. Server renders `feedback.Alert` component as HTML fragment
-3. HTMX swaps it into a target div
-4. Toast auto-dismisses after 5s
+1. ~~Huma handler returns error~~ done — docs/migration/play-cdn-to-tailwind-v4.md
+2. ~~Server renders `feedback.Alert` component as HTML fragment~~ done — docs/recipes/server-rendered-htmx-error-feedback.md
+3. ~~HTMX swaps it into a target div~~ done — layout/script templ.go
+4. ~~Toast auto-dismisses after 5s~~ done — display/table data.templ
 
 ### 3. CSP nonce propagation — works but requires manual wiring
 

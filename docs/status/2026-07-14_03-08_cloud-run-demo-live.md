@@ -133,12 +133,12 @@ expansion, CI/CD, docs audit), (2) Cloud Run deployment of the demo.
 | 19 | Add broken link checker to website CI                           | 15 min |
 | 20 | Add CSP headers to Cloud Run demo responses                     | 10 min |
 | 21 | Rename `forms_demo.templ` → `forms_standalone.templ`            | 5 min  |
-| 22 | Delete unused `prerender.go` or document it as alternative      | 5 min  |
+| ~~22~~ | ~~Delete unused `prerender.go` or document it as alternative~~ **Won't implement — kept as fallback.** | ~~5 min~~ |
 | 23 | Add reading time + last-updated to doc pages                    | 15 min |
-| 24 | Add table of contents to long doc pages                         | 15 min |
-| 25 | Add prev/next nav to doc pages                                  | 10 min |
+| ~~24~~ | ~~Add table of contents to long doc pages~~ done — starlight defaults | ~~15 min~~ |
+| ~~25~~ | ~~Add prev/next nav to doc pages~~ done — starlight defaults | ~~10 min~~ |
 | 26 | Add search to demo page (filter by component name)              | 30 min |
-| 27 | Add dark mode toggle to demo (not just system)                  | 10 min |
+| ~~27~~ | ~~Add dark mode toggle to demo (not just system)~~ done (docs-health pass 2026-09-08) | ~~10 min~~ |
 | 28 | Add browser support matrix to docs                              | 15 min |
 | 29 | Write migration guide from templUI                              | 30 min |
 | 30 | Add "Copy to clipboard" on all code blocks                      | 15 min |
@@ -154,14 +154,14 @@ expansion, CI/CD, docs audit), (2) Cloud Run deployment of the demo.
 | 35 | Theme customizer (pick colors, see all components)       | 4 hours |
 | 36 | Versioned docs (v0.x, v1.x)                              | 4 hours |
 | 37 | Add analytics (Plausible/Fathom)                         | 15 min  |
-| 38 | Newsletter signup                                        | 30 min  |
+| ~~38~~ | ~~Newsletter signup~~ done — website/src/components/Newsletter.astro | ~~30 min~~ |
 | 39 | Sponsors section                                         | 15 min  |
-| 40 | Contributing guide for new components                    | 30 min  |
+| ~~40~~ | ~~Contributing guide for new components~~ done (docs-health pass 2026-09-08) | ~~30 min~~ |
 | 41 | Community link (Discord/Slack)                           | 10 min  |
-| 42 | Visual regression testing for demo                       | 1 hour  |
+| ~~42~~ | ~~Visual regression testing for demo~~ done — visualtest | ~~1 hour~~ |
 | 43 | Bundle size monitoring                                   | 15 min  |
-| 44 | Cache-control headers for Cloud Run responses            | 10 min  |
-| 45 | Add `Cache-Control: public, max-age=300` to demo HTML    | 5 min   |
+| ~~44~~ | ~~Cache-control headers for Cloud Run responses~~ done — cache-control headers | ~~10 min~~ |
+| ~~45~~ | ~~Add `Cache-Control: public, max-age=300` to demo HTML~~ done — cache-control headers | ~~5 min~~ |
 | 46 | Add ETag support to demo server                          | 15 min  |
 | 47 | Multi-region Cloud Run (us + eu)                         | 30 min  |
 | 48 | Cloud Run service-level logging to BigQuery              | 20 min  |

@@ -17,27 +17,27 @@
 | 3  | Ran `go test -race ./...`                                                            | All 16 packages clean under race detector.                                                                                                      |
 | 4  | Fixed invented "≈72%" in FEATURES.md                                                 | Replaced with "72.3% total statement coverage across library packages" + `nix run .#coverage` citation + CI threshold mention.                  |
 | 5  | Verified README.md counts + features                                                 | 98 components ✓, 102 icons ✓, 43 enums ✓, 15 packages ✓, 3 deps ✓, 31 goldens ✓. **Fixed stale test counts (890→1070, 1650→1240).**             |
-| 6  | Verified docs/DOMAIN_LANGUAGE.md                                                     | **Fixed stale State enum** — listed only `StateHover`/`StateFocus`; code has `StateRest`/`StateHover`/`StateFocus`/`StateClick`/`StateContext`. |
-| 7  | Verified SKILL.md (templ-components skill)                                           | Component count + container-aware component list accurate. `TestSkillComponentCount` guards the count.                                          |
-| 8  | Verified docs/visual-testing.md                                                      | All 8 `Options` fields documented; all 5 `InteractionState` values listed; golden count (31) matches `find` output.                             |
-| 9  | Checked website/src/ for container-query + visual-testing mentions                   | `@container` present in compiled CSS (`global.out.css`); no prose gap (library README is the canonical source).                                 |
-| 10 | Verified TODO #86 (popover edge-flipping)                                            | `display/shared.go` has viewport clamping but NO flip logic. Genuinely open.                                                                    |
-| 11 | Verified TODO #87 (`recipes.AuthLayout`)                                             | `recipes/` has Dashboard/SettingsLayout/LoginCard only. No AuthLayout/EmptyState. Genuinely open.                                               |
-| 12 | Verified TODO #88 (`nix run .#css`)                                                  | `flake.nix` has no `css` app. Genuinely open.                                                                                                   |
-| 13 | Verified TODO #89 (`tc version`)                                                     | `cmd/tc/main.go` has `init`/`ls`/`add` only. No `version` command. Genuinely open.                                                              |
-| 14 | Verified TODO #90 (SkeletonCardGrid migration doc)                                   | `docs/migration/` has 6 files; none for SkeletonCardGrid. Genuinely open.                                                                       |
-| 15 | Verified TODO #91 (testing guide)                                                    | `docs/testing-guide.md` does not exist. Genuinely open.                                                                                         |
-| 16 | Verified TODO #92 (`boolPtr` unused)                                                 | `internal/golden/golden_coverage_test.go:132` defines `boolPtr`, zero callers. Genuinely open.                                                  |
-| 17 | Annotated `docs/status/2026-07-28_09-23_pareto-plan-execution-brutal-self-review.md` | Inline-corrected stale "27 goldens / 74 components = 36.5%" → 31/98/31.6%; full §f item-by-item routing table (50 items); Q1-Q3 resolutions.    |
-| 18 | Annotated `docs/status/2026-07-28_10-14_hardening-pass-brutal-self-review.md`        | Inline correction for vacuously-true "31 goldens green" claim + full §f routing table (50 items) + Q1-Q3 resolutions.                           |
-| 19 | Re-examined `docs/planning/2026-07-22_13-46_pareto-improvement-plan.html`            | Existing 2026-07-27 Resolution covers all items; survivors routed to TODO #73. No annotation needed.                                            |
-| 20 | Re-examined `docs/reviews/2026-07-22_13-46_brutal-self-review.html`                  | Existing 2026-07-27 Resolution complete. No annotation needed.                                                                                  |
-| 21 | Cross-check: PLANNED in TODO_LIST vs FULLY_FUNCTIONAL in FEATURES.md                 | 1 PLANNED (showcase site), consistent with ROADMAP. No split brain.                                                                             |
-| 22 | Cross-check: CHANGELOG `[Unreleased]` vs TODO open items (split-brain)               | 0 collisions — no completed item is in both.                                                                                                    |
-| 23 | Cross-check: deferred TODO items vs ROADMAP (duplicates)                             | Deferred items (#35/#38/#39/#33/#34) properly cross-referenced via "See TODO #N" in ROADMAP. No duplication.                                    |
-| 24 | Markdown link audit across README, FEATURES, TODO_LIST                               | All real links resolve. 3 false positives were Go generic signatures in code-spans (`[T any](bool, a, b T)`).                                   |
-| 25 | File reference audit (scripts, paths, commands in AGENTS.md)                         | All referenced files exist; all commands (`templ`, `golangci-lint`, `nix`, `go`) on PATH.                                                       |
-| 26 | Printed formal two-score Documentation Health Report with shown math                 | Accuracy 9.75/10, Fitness 10/10. First audit at this depth — no baseline.                                                                       |
+| ~~6~~  | ~~Verified docs/DOMAIN_LANGUAGE.md~~ done at `e03b90f` | ~~**Fixed stale State enum** — listed only `StateHover`/`StateFocus`; code has `StateRest`/`StateHover`/`StateFocus`/`StateClick`/`StateContext`.~~ |
+| ~~7~~  | ~~Verified SKILL.md (templ-components skill)~~ done at `e03b90f` | ~~Component count + container-aware component list accurate. `TestSkillComponentCount` guards the count.~~ |
+| ~~8~~  | ~~Verified docs/visual-testing.md~~ done at `e03b90f` | ~~All 8 `Options` fields documented; all 5 `InteractionState` values listed; golden count (31) matches `find` output.~~ |
+| ~~9~~  | ~~Checked website/src/ for container-query + visual-testing mentions~~ done at `e03b90f` | ~~`@container` present in compiled CSS (`global.out.css`); no prose gap (library README is the canonical source).~~ |
+| ~~10~~ | ~~Verified TODO #86 (popover edge-flipping)~~ done at `e03b90f` | ~~`display/shared.go` has viewport clamping but NO flip logic. Genuinely open.~~ |
+| ~~11~~ | ~~Verified TODO #87 (`recipes.AuthLayout`)~~ done at `e03b90f` | ~~`recipes/` has Dashboard/SettingsLayout/LoginCard only. No AuthLayout/EmptyState. Genuinely open.~~ |
+| ~~12~~ | ~~Verified TODO #88 (`nix run .#css`)~~ done at `e03b90f` | ~~`flake.nix` has no `css` app. Genuinely open.~~ |
+| ~~13~~ | ~~Verified TODO #89 (`tc version`)~~ done at `e03b90f` | ~~`cmd/tc/main.go` has `init`/`ls`/`add` only. No `version` command. Genuinely open.~~ |
+| ~~14~~ | ~~Verified TODO #90 (SkeletonCardGrid migration doc)~~ done at `e03b90f` | ~~`docs/migration/` has 6 files; none for SkeletonCardGrid. Genuinely open.~~ |
+| ~~15~~ | ~~Verified TODO #91 (testing guide)~~ done at `e03b90f` | ~~`docs/testing-guide.md` does not exist. Genuinely open.~~ |
+| ~~16~~ | ~~Verified TODO #92 (`boolPtr` unused)~~ done at `e03b90f` | ~~`internal/golden/golden_coverage_test.go:132` defines `boolPtr`, zero callers. Genuinely open.~~ |
+| ~~17~~ | ~~Annotated `docs/status/2026-07-28_09-23_pareto-plan-execution-brutal-self-review.md`~~ done at `e03b90f` | ~~Inline-corrected stale "27 goldens / 74 components = 36.5%" → 31/98/31.6%; full §f item-by-item routing table (50 items); Q1-Q3 resolutions.~~ |
+| ~~18~~ | ~~Annotated `docs/status/2026-07-28_10-14_hardening-pass-brutal-self-review.md`~~ done at `e03b90f` | ~~Inline correction for vacuously-true "31 goldens green" claim + full §f routing table (50 items) + Q1-Q3 resolutions.~~ |
+| ~~19~~ | ~~Re-examined `docs/planning/2026-07-22_13-46_pareto-improvement-plan.html`~~ done at `e03b90f` | ~~Existing 2026-07-27 Resolution covers all items; survivors routed to TODO #73. No annotation needed.~~ |
+| ~~20~~ | ~~Re-examined `docs/reviews/2026-07-22_13-46_brutal-self-review.html`~~ done at `e03b90f` | ~~Existing 2026-07-27 Resolution complete. No annotation needed.~~ |
+| ~~21~~ | ~~Cross-check: PLANNED in TODO_LIST vs FULLY_FUNCTIONAL in FEATURES.md~~ done at `e03b90f` | ~~1 PLANNED (showcase site), consistent with ROADMAP. No split brain.~~ |
+| ~~22~~ | ~~Cross-check: CHANGELOG `[Unreleased]` vs TODO open items (split-brain)~~ done at `e03b90f` | ~~0 collisions — no completed item is in both.~~ |
+| ~~23~~ | ~~Cross-check: deferred TODO items vs ROADMAP (duplicates)~~ done at `e03b90f` | ~~Deferred items (#35/#38/#39/#33/#34) properly cross-referenced via "See TODO #N" in ROADMAP. No duplication.~~ |
+| ~~24~~ | ~~Markdown link audit across README, FEATURES, TODO_LIST~~ done at `e03b90f` | ~~All real links resolve. 3 false positives were Go generic signatures in code-spans (`[T any](bool, a, b T)`).~~ |
+| ~~25~~ | ~~File reference audit (scripts, paths, commands in AGENTS.md)~~ done at `e03b90f` | ~~All referenced files exist; all commands (`templ`, `golangci-lint`, `nix`, `go`) on PATH.~~ |
+| ~~26~~ | ~~Printed formal two-score Documentation Health Report with shown math~~ done at `e03b90f` | ~~Accuracy 9.75/10, Fitness 10/10. First audit at this depth — no baseline.~~ |
 
 ---
 
@@ -136,7 +136,7 @@ I ran `nix run .#visual` once (found the 2 failures), tracked them as TODO #94, 
 
 ### Critical (fix what this session exposed)
 
-1. **Fix 2 latent visual test failures** (TODO #94) — `drawer/right_light` (100% blank), `modal/open_light` (9.86%). Investigate `<dialog Open=true>` + `showModal()`.
+1. ~~**Fix 2 latent visual test failures** (TODO #94) — `drawer/right_light` (100% blank), `modal/open_light` (9.86%). Investigate `<dialog Open=true>` + `showModal()`.~~ done — visualtest/visual test.go
 2. **Add Chromium to `.#verify` runtimeInputs** so visualtest tests actually run, not skip. (§e.B.5)
 3. **Add `TestReadmeCountDrift`** — derive counts from code, fail on drift. (§e.A.2)
 4. **Fix `TestVisualCoverage.countComponents` undercount** (74→98). (§e.A.3)
@@ -145,57 +145,57 @@ I ran `nix run .#visual` once (found the 2 failures), tracked them as TODO #94, 
 ### Prevention guards
 
 6. **Make `.#verify` set `CHROMEDP_CHROME_PATH`** or document that `.#verify && .#visual` is the full gate.
-7. **Lower CI coverage threshold to 65%** or add per-package floors. (§e.B.8)
+7. ~~**Lower CI coverage threshold to 65%** or add per-package floors. (§e.B.8)~~ done (docs-health pass 2026-09-08)
 8. **Add a local pre-commit guard that the daemon CANNOT bypass** — `.gitattributes` filter or git hook at a path the daemon doesn't touch.
 9. **Add `TestGitignoreDoesNotIgnoreTrackedEnvrc`** — the `.envrc` split-brain (tracked + ignored) recurred in the 10:14 session.
-10. **Add `TestNoOrderedTailwindSubstringsInTests`** drift-guard (TODO #81) — the flaky-stack class of bug.
+10. ~~**Add `TestNoOrderedTailwindSubstringsInTests`** drift-guard (TODO #81) — the flaky-stack class of bug.~~ done — utils/ordered substring test.go
 
 ### Visual test coverage expansion (TODO #79, #80, #82-85)
 
 11. **Human-eyeball the 4 AI-generated overlay goldens** (TODO #80) — dropdown light/dark, popover, contextmenu. AI cannot read PNGs.
-12. **Add visual test for Combobox** — most complex form component, zero visual coverage.
-13. **Add visual test for Tabs** — structural variant, zero visual coverage.
-14. **Add visual test for Table** — sortable headers, clickable rows.
-15. **Add visual test for Accordion** — `<details>`/`<summary>`.
-16. **Add visual test for Tooltip** — pure CSS hover.
-17. **Add visual test for Carousel** — scroll-snap.
-18. **Add visual test for CopyButton** — clipboard JS.
-19. **Add visual test for Badge variants** — only 2 of 8 tested.
-20. **Add visual test for ProgressBar** — zero coverage.
-21. **Add visual test for Spinner** — zero coverage.
-22. **Add visual test for Skeleton** — zero coverage.
-23. **Add visual test for Modal/Drawer open state** (after TODO #94 fix).
+12. ~~**Add visual test for Combobox** — most complex form component, zero visual coverage.~~ done — visualtest/visual test.go
+13. ~~**Add visual test for Tabs** — structural variant, zero visual coverage.~~ done — visualtest/visual test.go
+14. ~~**Add visual test for Table** — sortable headers, clickable rows.~~ done — visualtest/visual test.go
+15. ~~**Add visual test for Accordion** — `<details>`/`<summary>`.~~ done — visualtest/visual test.go
+16. ~~**Add visual test for Tooltip** — pure CSS hover.~~ done — visualtest/visual test.go
+17. ~~**Add visual test for Carousel** — scroll-snap.~~ done — visualtest/visual test.go
+18. ~~**Add visual test for CopyButton** — clipboard JS.~~ done — visualtest/visual test.go
+19. ~~**Add visual test for Badge variants** — only 2 of 8 tested.~~ done — visualtest/visual test.go
+20. ~~**Add visual test for ProgressBar** — zero coverage.~~ done — visualtest/visual test.go
+21. ~~**Add visual test for Spinner** — zero coverage.~~ done — visualtest/visual test.go
+22. ~~**Add visual test for Skeleton** — zero coverage.~~ done — visualtest/visual test.go
+23. ~~**Add visual test for Modal/Drawer open state** (after TODO #94 fix).~~ done — visualtest/visual test.go
 24. **Calibrate `MaxMismatch` for overlays empirically** (TODO #82) — run 10×, set at p99.
 25. **Fix `StateHover` to target first interactive child** (TODO #83).
-26. **Visualtest API: tri-state `*bool` + viewport presets + `State.String()`** (TODO #84).
+26. ~~**Visualtest API: tri-state `*bool` + viewport presets + `State.String()`** (TODO #84).~~ done — visualtest/render.go
 27. **Pin Chromium version in `flake.nix`** (TODO #85).
 
 ### Golden file conversion (TODO #73)
 
-28. **Convert `htmx` package assertion tests to golden files.**
-29. **Convert remaining `navigation` edge-case tests to golden.**
-30. **Convert `forms` per-component edge cases to golden.**
-31. **Add golden for Select with optgroups.**
-32. **Add golden for DataTable** — sortable headers + pagination.
-33. **Add golden for Toast** — only in feedback, not visual.
-34. **Add golden for DefinitionGrid** — container-aware grid.
+28. ~~**Convert `htmx` package assertion tests to golden files.**~~ done — navigation/golden test.go
+29. ~~**Convert remaining `navigation` edge-case tests to golden.**~~ done — navigation/golden test.go
+30. ~~**Convert `forms` per-component edge cases to golden.**~~ done — navigation/golden test.go
+31. ~~**Add golden for Select with optgroups.**~~ done — forms/golden sweep test.go
+32. ~~**Add golden for DataTable** — sortable headers + pagination.~~ done — display/golden sweep test.go
+33. ~~**Add golden for Toast** — only in feedback, not visual.~~ done — feedback/golden sweep test.go
+34. ~~**Add golden for DefinitionGrid** — container-aware grid.~~ done — display/golden sweep test.go
 
 ### Components & recipes (TODO #86-87)
 
 35. **Add popover edge-flipping to `popoverPositionJS`** (TODO #86) — mirror ContextMenu clamping.
-36. **Add `recipes.AuthLayout`** (TODO #87) — centered card + side-panel split.
+36. ~~**Add `recipes.AuthLayout`** (TODO #87) — centered card + side-panel split.~~ done — recipes/auth layout.templ
 37. **Add `recipes.EmptyState`** (TODO #87) — icon+title+action composition.
 
 ### Tooling (TODO #88-89, #92)
 
-38. **Add `nix run .#css` app** (TODO #88) — recompiles demo CSS via `tailwindcss --minify`.
-39. **Add `tc version` + `tc add --list-deps`** (TODO #89) — CLI enhancements.
-40. **Fix unused `boolPtr` in `internal/golden/golden_coverage_test.go`** (TODO #92) — dead helper.
+38. ~~**Add `nix run .#css` app** (TODO #88) — recompiles demo CSS via `tailwindcss --minify`.~~ done — flake.nix
+39. ~~**Add `tc version` + `tc add --list-deps`** (TODO #89) — CLI enhancements.~~ done — cmd/tc/main.go
+40. ~~**Fix unused `boolPtr` in `internal/golden/golden_coverage_test.go`** (TODO #92) — dead helper.~~ done — internal/golden/golden coverage test.go
 
 ### Documentation (TODO #90-91)
 
-41. **Write `docs/migration/skeletoncardgrid-api-change.md`** (TODO #90).
-42. **Add "Testing" section to README + write `docs/testing-guide.md`** (TODO #91).
+41. ~~**Write `docs/migration/skeletoncardgrid-api-change.md`** (TODO #90).~~ done — docs/migration/skeletoncardgrid-api-change.md
+42. ~~**Add "Testing" section to README + write `docs/testing-guide.md`** (TODO #91).~~ done — docs/testing-guide.md
 43. **Audit `CONTRIBUTING.md`** for stale claims — never opened this session.
 44. **Audit `docs/adr/` cross-references** — 24 ADR files, only 6 checked.
 45. **Add visual regression CI badge to README.**
@@ -204,12 +204,12 @@ I ran `nix run .#visual` once (found the 2 failures), tracked them as TODO #94, 
 
 46. **Fix BuildFlow daemon commit messages** (TODO #93) — separate repo `larsartmann/buildflow`.
 47. **Investigate daemon-revert mechanism** — `git reflog`, daemon logs. What command re-introduces stale `.golangci.yml`?
-48. **Add `golangci-lint run` to BuildFlow pre-commit** — separate repo.
+48. ~~**Add `golangci-lint run` to BuildFlow pre-commit** — separate repo.~~ done (docs-health pass 2026-09-08)
 
 ### v2.0 preparation
 
-49. **Draft v2.0 default-flip migration guide** from ADR-0022 (deprecation timeline).
-50. **Plan `AlertType`/`ToastType` alias removal** (TODO #38) — v2.0 sequence.
+49. ~~**Draft v2.0 default-flip migration guide** from ADR-0022 (deprecation timeline).~~ done — docs/migration/v1-to-v2.md
+50. ~~**Plan `AlertType`/`ToastType` alias removal** (TODO #38) — v2.0 sequence.~~ done — docs/migration/v1-to-v2.md
 
 ---
 

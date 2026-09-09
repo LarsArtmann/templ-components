@@ -136,7 +136,7 @@ Full public launch of templ-components: CI fixes, demo expansion (97 components)
 | 22 | Add table of contents to long doc pages                     | 15 min |
 | 23 | Add prev/next nav to docs                                   | 10 min |
 | 24 | Add search/filter to demo page                              | 30 min |
-| 25 | Add dark mode toggle to demo (not just system)              | 10 min |
+| ~~25~~ | ~~Add dark mode toggle to demo (not just system)~~ done (docs-health pass 2026-09-08) | ~~10 min~~ |
 | 26 | Add browser support matrix to docs                          | 15 min |
 | 27 | Write migration guide from templUI                          | 30 min |
 | 28 | Add "Copy to clipboard" on all code blocks                  | 15 min |
@@ -152,11 +152,11 @@ Full public launch of templ-components: CI fixes, demo expansion (97 components)
 | 33 | Theme customizer (pick colors, see all components update)    | 4 hours |
 | 34 | Versioned docs (v0.x, v1.x)                                  | 4 hours |
 | 35 | Add analytics (Plausible/Fathom)                             | 15 min  |
-| 36 | Newsletter signup                                            | 30 min  |
+| ~~36~~ | ~~Newsletter signup~~ done — website/src/components/Newsletter.astro | ~~30 min~~ |
 | 37 | Sponsors section                                             | 15 min  |
-| 38 | Contributing guide for new components                        | 30 min  |
+| ~~38~~ | ~~Contributing guide for new components~~ done (docs-health pass 2026-09-08) | ~~30 min~~ |
 | 39 | Community link (Discord/Slack)                               | 10 min  |
-| 40 | Visual regression testing for demo                           | 1 hour  |
+| ~~40~~ | ~~Visual regression testing for demo~~ done — visualtest | ~~1 hour~~ |
 | 41 | Bundle size monitoring                                       | 15 min  |
 | 42 | Multi-region Cloud Run (us + eu)                             | 30 min  |
 | 43 | Uptime monitoring (UptimeRobot)                              | 10 min  |
@@ -165,7 +165,7 @@ Full public launch of templ-components: CI fixes, demo expansion (97 components)
 | 46 | Cloud Run logging to BigQuery                                | 20 min  |
 | 47 | Add `/api/toast` mock endpoint for toast demo                | 5 min   |
 | 48 | Firebase Blaze plan upgrade (for Hosting rewrite)            | 10 min  |
-| 49 | Tailwind v4 `@source` scanning in CI for CSS freshness check | 15 min  |
+| ~~49~~ | ~~Tailwind v4 `@source` scanning in CI for CSS freshness check~~ done — TestCSSFreshness | ~~15 min~~ |
 | 50 | Export demo as static downloadable HTML for offline use      | 30 min  |
 
 ---

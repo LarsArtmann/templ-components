@@ -150,25 +150,25 @@
 
 ### Critical
 
-1. **CI should run with `-race`** — we caught the Class() race manually; CI should catch these automatically
-2. **Coverage threshold should be 70%** (currently 60%) — 7/10 packages already exceed this
+1. ~~**CI should run with `-race`** — we caught the Class() race manually; CI should catch these automatically~~ done — .github/workflows/ci.yaml -race
+2. ~~**Coverage threshold should be 70%** (currently 60%) — 7/10 packages already exceed this~~ done — .github/workflows/ci.yaml 70% threshold
 
 ### High Impact
 
-3. **Form validation component** — a `FormValidation` helper that renders error summaries + field-level errors would be the most requested feature for form-heavy apps
-4. **Dialog/Drawer component** — Modal exists but has no Drawer (side panel) variant; this is a top-requested UI pattern
-5. **Icon coverage to 100+** — 75 is good but power users need more; target 100 for v0.2, 150+ for v1.0
+3. ~~**Form validation component** — a `FormValidation` helper that renders error summaries + field-level errors would be the most requested feature for form-heavy apps~~ done — forms/validation.templ
+4. ~~**Dialog/Drawer component** — Modal exists but has no Drawer (side panel) variant; this is a top-requested UI pattern~~ done — display/drawer.templ
+5. ~~**Icon coverage to 100+** — 75 is good but power users need more; target 100 for v0.2, 150+ for v1.0~~ done — icons 102 icons
 
 ### Architecture
 
-6. **Break `feedback/progress.templ` into separate files** — it now contains ProgressBar AND StepIndicator in one file; these should be separate (`feedback/progressbar.templ`, `feedback/step_indicator.templ`)
+6. ~~**Break `feedback/progress.templ` into separate files** — it now contains ProgressBar AND StepIndicator in one file; these should be separate (`feedback/progressbar.templ`, `feedback/step_indicator.templ`)~~ done — feedback/progressbar.templ
 7. **Consolidate JS scripts** — 10 inline script blocks across 7 files; a shared `tc-init.js` approach would reduce duplication
-8. **Spinner needs BaseProps** — `Spinner(size, colorClass)` positional args is the last component without props struct
+8. ~~**Spinner needs BaseProps** — `Spinner(size, colorClass)` positional args is the last component without props struct~~ done — feedback/loading.templ SpinnerProps
 
 ### Process
 
 9. **Pre-commit should run `-race`** — the Class() race slipped through because pre-commit only runs `go test`
-10. **Generated file count should be in CI** — if someone accidentally adds `*_templ.go` to `.gitignore`, CI should catch it
+10. ~~**Generated file count should be in CI** — if someone accidentally adds `*_templ.go` to `.gitignore`, CI should catch it~~ done — .github/workflows/ci.yaml tracked *
 
 ---
 
@@ -178,24 +178,24 @@
 
 | # | Task                                                                              | Impact                            | Effort |
 | - | --------------------------------------------------------------------------------- | --------------------------------- | ------ |
-| 1 | Add `-race` to CI test step                                                       | Prevents data races in production | 5 min  |
-| 2 | Split `feedback/progress.templ` into `progressbar.templ` + `step_indicator.templ` | Code organization                 | 15 min |
-| 3 | Raise CI coverage threshold to 70%                                                | Quality gate                      | 5 min  |
-| 4 | Write CHANGELOG.md for v0.2.0                                                     | Release requirement               | 30 min |
-| 5 | Tag v0.2.0 release                                                                | Ship it                           | 5 min  |
-| 6 | Verify `go get` from clean project                                                | Release validation                | 10 min |
+| ~~1~~ | ~~Add `-race` to CI test step~~ done — .github/workflows/ci.yaml -race | ~~Prevents data races in production~~ | ~~5 min~~ |
+| ~~2~~ | ~~Split `feedback/progress.templ` into `progressbar.templ` + `step_indicator.templ`~~ done — feedback/progressbar.templ | ~~Code organization~~ | ~~15 min~~ |
+| ~~3~~ | ~~Raise CI coverage threshold to 70%~~ done — .github/workflows/ci.yaml 70% | ~~Quality gate~~ | ~~5 min~~ |
+| ~~4~~ | ~~Write CHANGELOG.md for v0.2.0~~ done — CHANGELOG 0.2.0 | ~~Release requirement~~ | ~~30 min~~ |
+| ~~5~~ | ~~Tag v0.2.0 release~~ done — CHANGELOG 0.2.0 | ~~Ship it~~ | ~~5 min~~ |
+| ~~6~~ | ~~Verify `go get` from clean project~~ done — 2026-06-08 05-09 session-4-comprehensive-review.md | ~~Release validation~~ | ~~10 min~~ |
 
 ### Priority 2: High-Value Features (9 items)
 
 | #  | Task                                                  | Impact                          | Effort  |
 | -- | ----------------------------------------------------- | ------------------------------- | ------- |
-| 7  | Dialog/Drawer component (side panel variant of Modal) | Missing key UI pattern          | 2-3 hrs |
-| 8  | FormValidation helper (error summary + field errors)  | Forms are incomplete without it | 2 hrs   |
-| 9  | Add 25+ more Heroicons (target: 100 total)            | Better icon coverage            | 1 hr    |
-| 10 | Spinner BaseProps conversion (`SpinnerProps` struct)  | Last positional-arg component   | 1 hr    |
-| 11 | Fill display coverage to 70%+ (currently 66.1%)       | Quality                         | 1 hr    |
-| 12 | Fill forms coverage to 70%+ (currently 66.8%)         | Quality                         | 1 hr    |
-| 13 | Golden file test comparison for snapshot tests        | Test maintainability            | 2 hrs   |
+| ~~7~~  | ~~Dialog/Drawer component (side panel variant of Modal)~~ done — display/drawer.templ | ~~Missing key UI pattern~~ | ~~2-3 hrs~~ |
+| ~~8~~  | ~~FormValidation helper (error summary + field errors)~~ done — forms/validation.templ | ~~Forms are incomplete without it~~ | ~~2 hrs~~ |
+| ~~9~~  | ~~Add 25+ more Heroicons (target: 100 total)~~ done — icons 99 icons | ~~Better icon coverage~~ | ~~1 hr~~ |
+| ~~10~~ | ~~Spinner BaseProps conversion (`SpinnerProps` struct)~~ done — feedback/loading.templ SpinnerProps | ~~Last positional-arg component~~ | ~~1 hr~~ |
+| ~~11~~ | ~~Fill display coverage to 70%+ (currently 66.1%)~~ done — 2026-06-08 05-09 session-4-comprehensive-review.md | ~~Quality~~ | ~~1 hr~~ |
+| ~~12~~ | ~~Fill forms coverage to 70%+ (currently 66.8%)~~ done — 2026-06-08 05-09 session-4-comprehensive-review.md | ~~Quality~~ | ~~1 hr~~ |
+| ~~13~~ | ~~Golden file test comparison for snapshot tests~~ done — internal/golden | ~~Test maintainability~~ | ~~2 hrs~~ |
 | 14 | Submit to awesome-templ                               | Discoverability                 | 30 min  |
 | 15 | Open PR on templ.guide                                | Discoverability                 | 30 min  |
 
@@ -204,20 +204,20 @@
 | #  | Task                                            | Impact             | Effort |
 | -- | ----------------------------------------------- | ------------------ | ------ |
 | 16 | Consolidate inline JS into shared init strategy | Maintainability    | 3 hrs  |
-| 17 | Add `Validate() error` methods on props structs | Robustness         | 2 hrs  |
-| 18 | Set up goreleaser for tag-based releases        | Release automation | 1 hr   |
+| ~~17~~ | ~~Add `Validate() error` methods on props structs~~ done — CHANGELOG IsValid methods | ~~Robustness~~ | ~~2 hrs~~ |
+| ~~18~~ | ~~Set up goreleaser for tag-based releases~~ done — .goreleaser.yml | ~~Release automation~~ | ~~1 hr~~ |
 | 19 | Pre-commit hook runs with `-race`               | Catch races early  | 5 min  |
-| 20 | Cross-package circular import guard test        | Safety net         | 30 min |
-| 21 | Nonce propagation audit across all components   | CSP compliance     | 1 hr   |
+| ~~20~~ | ~~Cross-package circular import guard test~~ **Won't implement — moot go forbids import cycles.** | ~~Safety net~~ | ~~30 min~~ |
+| ~~21~~ | ~~Nonce propagation audit across all components~~ done — 2026-06-20 16-15 reflection-and-status.md | ~~CSP compliance~~ | ~~1 hr~~ |
 
 ### Priority 4: Future (4 items)
 
 | #  | Task                                            | Impact               | Effort |
 | -- | ----------------------------------------------- | -------------------- | ------ |
-| 22 | Date Picker component                           | Missing form control | 4+ hrs |
-| 23 | Combobox/Autocomplete component                 | Missing form control | 4+ hrs |
-| 24 | Go workspace modularization (10-module go.work) | Package isolation    | 4 hrs  |
-| 25 | Accessibility audit automation (axe-core/pa11y) | Compliance           | 3 hrs  |
+| ~~22~~ | ~~Date Picker component~~ done — forms/date picker.templ | ~~Missing form control~~ | ~~4+ hrs~~ |
+| ~~23~~ | ~~Combobox/Autocomplete component~~ done — forms/combobox.templ | ~~Missing form control~~ | ~~4+ hrs~~ |
+| ~~24~~ | ~~Go workspace modularization (10-module go.work)~~ done — docs/adr/0034-targeted-module-split.md | ~~Package isolation~~ | ~~4 hrs~~ |
+| ~~25~~ | ~~Accessibility audit automation (axe-core/pa11y)~~ done — visualtest/axe.min.js | ~~Compliance~~ | ~~3 hrs~~ |
 
 ---
 
@@ -235,9 +235,9 @@ The existing `Modal` component (`display/modal.templ`) has:
 
 A "Drawer" is functionally a Modal that slides in from the side. Options:
 
-1. **Modal variant:** Add `ModalVariant` enum (`ModalDialog`/`ModalDrawer`) + `ModalSide` field (left/right). Reuse all the focus trap and a11y logic. Drawer just changes CSS positioning.
+1. ~~**Modal variant:** Add `ModalVariant` enum (`ModalDialog`/`ModalDrawer`) + `ModalSide` field (left/right). Reuse all the focus trap and a11y logic. Drawer just changes CSS positioning.~~ **Won't implement — rejected separate Drawer shipped.**
 
-2. **Separate component:** New `Drawer(DrawerProps)` in display/. Cleaner API but duplicates focus trap logic.
+2. ~~**Separate component:** New `Drawer(DrawerProps)` in display/. Cleaner API but duplicates focus trap logic.~~ **Won't implement — chosen Drawer shipped display/drawer.templ.**
 
 I'd recommend option 1 (variant) because the focus management, keyboard handling, and overlay behavior are identical — only CSS differs. But this is a **breaking API decision** that affects consumers, so I need your call.
 

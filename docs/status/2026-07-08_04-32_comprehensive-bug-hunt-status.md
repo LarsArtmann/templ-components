@@ -154,9 +154,9 @@ These were identified by the audit agents but I chose to skip them — some are 
 3. ~~**forms.ValidationSummary SanitizeID mismatch**~~ — **✅ FIXED (2026-07-10):** Links now use raw `err.Field` instead of `SanitizeID()`.
 4. **navigation mobile menu double-prefix** — `EnsureID("mobile-menu", props.ID)` returns `"tc-mobile-menu-<hex>"`, then template prepends `"tc-mobile-menu-"` again → `"tc-mobile-menu-tc-mobile-menu-<hex>"`. Functionally consistent (ID matches aria-controls) but cosmetically wrong.
 5. **navigation mobile menu script duplicated per Nav instance** — Each Nav renders a full `<script>` block. The singleton guard prevents double-binding, but the markup is emitted N times.
-6. **navigation breadcrumbs no CurrentPath auto-detection** — Unlike NavLink/SidebarNav, Breadcrumbs requires manual `Active: true` flag. API inconsistency.
+6. ~~**navigation breadcrumbs no CurrentPath auto-detection** — Unlike NavLink/SidebarNav, Breadcrumbs requires manual `Active: true` flag. API inconsistency.~~ done — navigation/breadcrumbs.templ
 7. **layout stale aria-checked after htmx swap** — ThemeToggle singleton guard prevents re-init after htmx swap. Newly swapped buttons get hardcoded `aria-checked="false"`.
-8. **htmx retry `.click()` may not replay non-click triggers** — If the original request used `hx-trigger="change"`, `.click()` won't replay it. Should use `htmx.trigger()`.
+8. ~~**htmx retry `.click()` may not replay non-click triggers** — If the original request used `hx-trigger="change"`, `.click()` won't replay it. Should use `htmx.trigger()`.~~ done — htmx/retry.go
 9. ~~**errorpage no `<main>` landmark in standalone pages**~~ — **✅ FIXED (2026-07-10):** Both ErrorPage and NotFound404 now use `<main>` instead of `<div role="region">`.
 10. **forms.RadioGroup error ARIA not on individual inputs** — `aria-invalid`/`aria-describedby` only on `<fieldset>`, not on individual radio `<input>` elements. Screen readers don't announce invalid state when tabbing through radios.
 
@@ -175,13 +175,13 @@ These were identified by the audit agents but I chose to skip them — some are 
 
 Nothing is irrevocably broken. But here's what I did poorly:
 
-1. **CopyButton preventDefault — unresolved behavior change.** I added `e.preventDefault()` to the CopyButton click handler so `<a>` variants copy-only and never navigate. The previous session flagged this as needing consumer intent review. **I never resolved it.** If consumers expect copy+navigate behavior, this is a regression. The question is still open: should a CopyButton link `<a href="...">` navigate after copying, or copy-only?
+1. ~~**CopyButton preventDefault — unresolved behavior change.** I added `e.preventDefault()` to the CopyButton click handler so `<a>` variants copy-only and never navigate. The previous session flagged this as needing consumer intent review. **I never resolved it.** If consumers expect copy+navigate behavior, this is a regression. The question is still open: should a CopyButton link `<a href="...">` navigate after copying, or copy-only?~~ **Won't implement — copy only behavior shipped.**
 
 2. ~~**grid-rows-[0fr] CSS never verified.**~~ **✅ VERIFIED (2026-07-10):** Tailwind v4.3.1 confirmed to generate `grid-template-rows: 0fr` / `1fr` correctly.
 
-3. **No browser testing at all.** 47 bug fixes, many involving JavaScript behavior (overlay aria sync, dropdown RTL, theme toggle multi-instance, accordion animation, copy button, tooltip). Zero browser verification. All fixes are "should work" based on code reading, not "confirmed working."
+3. ~~**No browser testing at all.** 47 bug fixes, many involving JavaScript behavior (overlay aria sync, dropdown RTL, theme toggle multi-instance, accordion animation, copy button, tooltip). Zero browser verification. All fixes are "should work" based on code reading, not "confirmed working."~~ done — visualtest/harness.go
 
-4. **Golden files blindly updated.** When golden tests failed after my changes (role="region" addition, sidebar aria-label), I ran `-update` without carefully reviewing whether the new output was actually correct. The golden files now encode my changes as the source of truth — if my changes were wrong, the golden files lock in the error.
+4. ~~**Golden files blindly updated.** When golden tests failed after my changes (role="region" addition, sidebar aria-label), I ran `-update` without carefully reviewing whether the new output was actually correct. The golden files now encode my changes as the source of truth — if my changes were wrong, the golden files lock in the error.~~ done (docs-health pass 2026-09-08)
 
 5. ~~**CHANGELOG "Round 1" / "Round 2" headings.**~~ **✅ FIXED (2026-07-10):** Consolidated into clean sections.
 
@@ -191,18 +191,18 @@ Nothing is irrevocably broken. But here's what I did poorly:
 
 ### Process improvements
 
-1. **Test immediately after each fix, not after a batch.** I fixed 5-10 bugs per package before writing any tests. When I did write tests, I discovered the templ Render API returns only `error` (not `(value, error)`), requiring a rewrite. Testing each fix individually catches API mismatches earlier.
-2. **Never blindly `-update` golden files.** Always review the diff. The golden file is the assertion — if you change it without understanding the diff, you're deleting the test's value.
-3. **Verify CSS output for arbitrary Tailwind values.** `grid-rows-[0fr]` is an uncommon pattern. A 30-second check of compiled CSS would confirm it works.
-4. **Resolve open questions before committing.** The CopyButton preventDefault question was flagged in the prior session. I committed the code without resolving it, creating an unresolved behavior change on master.
-5. **Consolidate changelog sections.** "Round 1" and "Round 2" are internal concepts. The changelog is a consumer-facing document.
+1. ~~**Test immediately after each fix, not after a batch.** I fixed 5-10 bugs per package before writing any tests. When I did write tests, I discovered the templ Render API returns only `error` (not `(value, error)`), requiring a rewrite. Testing each fix individually catches API mismatches earlier.~~ done (docs-health pass 2026-09-08)
+2. ~~**Never blindly `-update` golden files.** Always review the diff. The golden file is the assertion — if you change it without understanding the diff, you're deleting the test's value.~~ done (docs-health pass 2026-09-08)
+3. ~~**Verify CSS output for arbitrary Tailwind values.** `grid-rows-[0fr]` is an uncommon pattern. A 30-second check of compiled CSS would confirm it works.~~ done (docs-health pass 2026-09-08)
+4. ~~**Resolve open questions before committing.** The CopyButton preventDefault question was flagged in the prior session. I committed the code without resolving it, creating an unresolved behavior change on master.~~ done (docs-health pass 2026-09-08)
+5. ~~**Consolidate changelog sections.** "Round 1" and "Round 2" are internal concepts. The changelog is a consumer-facing document.~~ done (docs-health pass 2026-09-08)
 
 ### Code quality improvements
 
-6. **Preventive CI check for dynamic Tailwind concatenation.** A grep-based test that fails when it finds `" +` inside a Tailwind class context would prevent the entire bug class.
-7. **Test the JS behavior, not just the rendered HTML.** Most fixes involve JavaScript that executes in the browser. The test suite only verifies server-rendered HTML. Consider jsdom or playwright for critical JS paths.
-8. **InlineLoadingOverlay inconsistent with LoadingIndicator.** LoadingIndicator has sr-only text; InlineLoadingOverlay does not. Both are status regions.
-9. **Footer doesn't accept BaseProps.** Every other component does. This is an API inconsistency that prevents consumers from setting Class/ID/Attrs on the footer.
+6. ~~**Preventive CI check for dynamic Tailwind concatenation.** A grep-based test that fails when it finds `" +` inside a Tailwind class context would prevent the entire bug class.~~ done — utils/tailwind source test.go
+7. ~~**Test the JS behavior, not just the rendered HTML.** Most fixes involve JavaScript that executes in the browser. The test suite only verifies server-rendered HTML. Consider jsdom or playwright for critical JS paths.~~ done — visualtest/demo flows e2e test.go
+8. ~~**InlineLoadingOverlay inconsistent with LoadingIndicator.** LoadingIndicator has sr-only text; InlineLoadingOverlay does not. Both are status regions.~~ done — htmx/loading.templ
+9. ~~**Footer doesn't accept BaseProps.** Every other component does. This is an API inconsistency that prevents consumers from setting Class/ID/Attrs on the footer.~~ done — navigation/footer multicol test.go
 
 ---
 

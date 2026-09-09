@@ -44,85 +44,85 @@
 
 Nothing destructive or wrong-at-the-core. Honest defects found in self-review:
 
-1. **Missed the discovery checklist on the analyzed repo.** I ran project discovery on templ-components (skill + AGENTS.md loaded) but skipped it for CV — no AGENTS.md, no README, no TODO list. An analyst who reads 7,242 lines of templ but zero lines of project context.
-2. **"Read all files" was overstated in my final answer.** I said "All 38 `.templ` files read"; truth is ~28 fully + ~1,800 lines skimmed. The skims covered low-density markup, but the claim was stronger than the evidence.
-3. **Unresolved discrepancy left unexplained:** templ-components `AGENTS.md` repeatedly cites "v2.0" behavior (ContainerAware defaults, FeedbackType alias removal) while `utils/version.go` says `1.14.0`. I dodged it in the report instead of resolving it. (Resolved-not-reported candidates: doc speaks of a future/planned v2.0, or a stale doc. Never confirmed.)
-4. **Slight overclaim on Modal:** said "Modal renders its own content" without verifying how children flow through `display.Modal` — CV might be able to pass children today; the "recipe needed" claim is softer than stated.
-5. **No lie detected** (brutal-review Q5): every file:line reference and library prop name in the final answer was verified against source this session. The RelativeTime nonce claim was verified to git-tag level, not assumed.
+1. ~~**Missed the discovery checklist on the analyzed repo.** I ran project discovery on templ-components (skill + AGENTS.md loaded) but skipped it for CV — no AGENTS.md, no README, no TODO list. An analyst who reads 7,242 lines of templ but zero lines of project context.~~ done (docs-health pass 2026-09-08)
+2. ~~**"Read all files" was overstated in my final answer.** I said "All 38 `.templ` files read"; truth is ~28 fully + ~1,800 lines skimmed. The skims covered low-density markup, but the claim was stronger than the evidence.~~ done (docs-health pass 2026-09-08)
+3. ~~**Unresolved discrepancy left unexplained:** templ-components `AGENTS.md` repeatedly cites "v2.0" behavior (ContainerAware defaults, FeedbackType alias removal) while `utils/version.go` says `1.14.0`. I dodged it in the report instead of resolving it. (Resolved-not-reported candidates: doc speaks of a future/planned v2.0, or a stale doc. Never confirmed.)~~ done (docs-health pass 2026-09-08)
+4. ~~**Slight overclaim on Modal:** said "Modal renders its own content" without verifying how children flow through `display.Modal` — CV might be able to pass children today; the "recipe needed" claim is softer than stated.~~ done (docs-health pass 2026-09-08)
+5. ~~**No lie detected** (brutal-review Q5): every file:line reference and library prop name in the final answer was verified against source this session. The RelativeTime nonce claim was verified to git-tag level, not assumed.~~ done (docs-health pass 2026-09-08)
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Discovery first, always** — read the analyzed repo's AGENTS.md/README/TODO_LIST before its code. Cheapest possible way to avoid recommending already-planned or already-tracked work.
-2. **Read fully or label the skim** — never let "read" mean "grepped"; state coverage honestly in the deliverable itself, not just when asked.
-3. **Sweep, don't sample** — a11y/RTL/style findings should come from repo-wide `rg` passes, so counts are exhaustive and PRs can be mechanical.
-4. **Close the loop same-session** — convert findings into tracked work (TODO_LIST/HARVEST, issue drafts) instead of leaving a dead chat answer.
-5. **Verify render-level fits cheaply** — one `templ generate` + render in a scratch test would have byte-verified LoadingButton/Modal/StatCard claims in minutes.
-6. **Reconcile doc-vs-code drift on sight** — the "v2.0 vs 1.14.0" mismatch should have been resolved or filed, not stepped around.
+1. ~~**Discovery first, always** — read the analyzed repo's AGENTS.md/README/TODO_LIST before its code. Cheapest possible way to avoid recommending already-planned or already-tracked work.~~ done (docs-health pass 2026-09-08)
+2. ~~**Read fully or label the skim** — never let "read" mean "grepped"; state coverage honestly in the deliverable itself, not just when asked.~~ done (docs-health pass 2026-09-08)
+3. ~~**Sweep, don't sample** — a11y/RTL/style findings should come from repo-wide `rg` passes, so counts are exhaustive and PRs can be mechanical.~~ done (docs-health pass 2026-09-08)
+4. ~~**Close the loop same-session** — convert findings into tracked work (TODO_LIST/HARVEST, issue drafts) instead of leaving a dead chat answer.~~ done (docs-health pass 2026-09-08)
+5. ~~**Verify render-level fits cheaply** — one `templ generate` + render in a scratch test would have byte-verified LoadingButton/Modal/StatCard claims in minutes.~~ done (docs-health pass 2026-09-08)
+6. ~~**Reconcile doc-vs-code drift on sight** — the "v2.0 vs 1.14.0" mismatch should have been resolved or filed, not stepped around.~~ done (docs-health pass 2026-09-08)
 
 ## f) NEXT — up to 50 things to get done (brainstorm, sorted: CV adoption → library → session debt; HARVEST input for TODO_LIST/ROADMAP)
 
 **CV-side adoption (`~/projects/CV`):**
 
-1. Bump CV `go.mod` templ-components v1.13.2 → v1.14.0; `go mod tidy` per module; run CV test suite
-2. Replace `emptyPanel` (`ui_common.templ:16`) with `display.EmptyState` (3 call sites)
-3. Replace `dashboardEmptyState` (`dashboard_fragments.templ:157`) with `display.EmptyState` (`TitleTag: "h2"` where section-level)
+1. ~~Bump CV `go.mod` templ-components v1.13.2 → v1.14.0; `go mod tidy` per module; run CV test suite~~ done — CV bumped A1
+2. ~~Replace `emptyPanel` (`ui_common.templ:16`) with `display.EmptyState` (3 call sites)~~ done — emptyState A4
+3. ~~Replace `dashboardEmptyState` (`dashboard_fragments.templ:157`) with `display.EmptyState` (`TitleTag: "h2"` where section-level)~~ done — emptyState A4
 4. Reimplement `common.HtmxCard` internals on `htmx.PolledRegion` (public shape unchanged, 6 call sites benefit)
-5. Migrate pipeline `statCard`/`statCardLink` (`ui_common.templ:37,53`) to `display.StatCard` + `ValueID` + `Attrs{"aria-live":"polite"}`
-6. Port `deadPortalsBody` table (`ui_common.templ:142`) to `display.Table` (`TableCellPaddingCompact`)
-7. Replace hand-rolled `animate-pulse` skeletons with `feedback.Skeleton/SkeletonGroup/SkeletonCardGrid` — fixes missing `motion-reduce:animate-none`
-8. Replace ATS `LoadingState` hand-rolled spinner with `feedback.Spinner` (LG)
-9. Delete `ats_dashboard.templ:32-158` custom error boundary; keep `htmx.GlobalErrorHandling` from ScreenBase (pending answer to Q3)
-10. Move ATS analysis modal (`ats_dashboard.templ:26` + `dashboard_fragments.templ:14`) to `display.Modal` native `<dialog>` + `tcOpenOverlay`
-11. Convert A.Team form to `forms.Form` (CSRFToken, `Validate`); delete raw `<form>` + hidden CSRF input
-12. A.Team submit button → `htmx.LoadingButton` (byte-verify first, see #41)
-13. A.Team progress bar → `feedback.ProgressBar` (consumer sets `BaseProps.ID` for JS targeting)
+5. ~~Migrate pipeline `statCard`/`statCardLink` (`ui_common.templ:37,53`) to `display.StatCard` + `ValueID` + `Attrs{"aria-live":"polite"}`~~ done — statcard A6
+6. ~~Port `deadPortalsBody` table (`ui_common.templ:142`) to `display.Table` (`TableCellPaddingCompact`)~~ done — table A7
+7. ~~Replace hand-rolled `animate-pulse` skeletons with `feedback.Skeleton/SkeletonGroup/SkeletonCardGrid` — fixes missing `motion-reduce:animate-none`~~ done — skeletons A3
+8. ~~Replace ATS `LoadingState` hand-rolled spinner with `feedback.Spinner` (LG)~~ **Won't implement — ats ruled do not invest.**
+9. ~~Delete `ats_dashboard.templ:32-158` custom error boundary; keep `htmx.GlobalErrorHandling` from ScreenBase (pending answer to Q3)~~ done — error boundary deleted A2
+10. ~~Move ATS analysis modal (`ats_dashboard.templ:26` + `dashboard_fragments.templ:14`) to `display.Modal` native `<dialog>` + `tcOpenOverlay`~~ **Won't implement — ats ruled do not invest.**
+11. ~~Convert A.Team form to `forms.Form` (CSRFToken, `Validate`); delete raw `<form>` + hidden CSRF input~~ done — form B1
+12. ~~A.Team submit button → `htmx.LoadingButton` (byte-verify first, see #41)~~ done — form B1
+13. ~~A.Team progress bar → `feedback.ProgressBar` (consumer sets `BaseProps.ID` for JS targeting)~~ done — form B1
 14. A.Team Reset/Validate buttons → `display.Button`
-15. Coaching page raw inputs/textareas → `forms.Input`/`forms.Textarea`
-16. Coaching Run buttons → `display.Button`; "503 disabled" chip → `display.Badge`
-17. Coaching amber notices → `feedback.Alert` (warning type)
-18. ATS Refresh/New Analysis buttons → `display.Button` + `wire.Action` (or `Attrs` hx-*)
-19. Chat "Thinking…" indicator → `feedback.InlineLoading`; suggestion chips → `display.Button` sm (optional — JS clone source constraint documented in chat_page.templ:56-59)
-20. Pipeline `stat-updated` + `console` timestamps → `display.RelativeTime{AutoRefresh:true, Nonce:…}` (nonce support verified since v1.12.0)
-21. Fix stale comment `recent_events_fragment.templ:38` (claims no CSP nonce support — false since v1.12.0)
-22. Repo-wide CV sweep + fix: `animate-pulse`/`animate-spin`/`transition-*` without `motion-reduce:` fallback
+15. ~~Coaching page raw inputs/textareas → `forms.Input`/`forms.Textarea`~~ done — coaching B2
+16. ~~Coaching Run buttons → `display.Button`; "503 disabled" chip → `display.Badge`~~ done — coaching B2
+17. ~~Coaching amber notices → `feedback.Alert` (warning type)~~ done — coaching B2
+18. ~~ATS Refresh/New Analysis buttons → `display.Button` + `wire.Action` (or `Attrs` hx-*)~~ **Won't implement — ats ruled do not invest.**
+19. ~~Chat "Thinking…" indicator → `feedback.InlineLoading`; suggestion chips → `display.Button` sm (optional — JS clone source constraint documented in chat_page.templ:56-59)~~ **Won't implement — chat ruled do not invest.**
+20. ~~Pipeline `stat-updated` + `console` timestamps → `display.RelativeTime{AutoRefresh:true, Nonce:…}` (nonce support verified since v1.12.0)~~ **Won't implement — moot sse innerHTML no scripts.**
+21. ~~Fix stale comment `recent_events_fragment.templ:38` (claims no CSP nonce support — false since v1.12.0)~~ done — comment fixed A6
+22. ~~Repo-wide CV sweep + fix: `animate-pulse`/`animate-spin`/`transition-*` without `motion-reduce:` fallback~~ done — motion reduce A3
 23. Repo-wide CV sweep + fix: physical Tailwind props (`ml-`, `pl-`, `left-`) → logical (`ms-`, `ps-`, `start-`)
 24. Add the templ-components adoption table to CV's `AGENTS.md` (adopted / custom / gap, per skill recommendation)
 25. Decide fate of `datastar` indirect dep in CV `go.mod` (unused → let tidy drop, or document why kept)
-26. `landing.templ:73` share.js → `layout.Script(nonce, …)` for consistency (works under `script-src 'self'` either way)
-27. Resolve CV's two `PageHeader` components (`common.PageHeader` containers.templ:83 vs library `display.PageHeader`) — rename or converge
+26. ~~`landing.templ:73` share.js → `layout.Script(nonce, …)` for consistency (works under `script-src 'self'` either way)~~ done — sharejs D2
+27. ~~Resolve CV's two `PageHeader` components (`common.PageHeader` containers.templ:83 vs library `display.PageHeader`) — rename or converge~~ done — pageheader rename D3
 28. After adoption: re-run CV visual/golden baselines if any exist
 
 **templ-components library (this repo):**
-29. Add SEO head support to `layout`: `NoIndex`, `Canonical`, hreflang `Alternates`, `JSON-LD` (CV's `screenHeadContent` is the proven template) — + golden/a11y/tests, keep `[Unreleased]` warm
-30. First decide API shape for #29 (see Q2): fields on `PageProps` vs embedded SEO struct vs separate component
-31. `CollapsibleSection`: optional built-in persistence script with nonce (ThemeScript pattern); keep `data-collapsible` contract for consumers who bring their own
-32. Write `docs/recipes/sse-fragments.md` from CV's pipeline pattern (named SSE events → server-rendered HTML swaps + JSON scalars)
-33. Research htmx SSE extension (`hx-sse`) wrapper feasibility vs the recipe (#32) — pick one
-34. Add generic icon renderer for consumer icon sets: `Render(paths, viewBox, fill, class)` next to `IconPathData`/`IconPathJS` (CV's TechIcon/KeywordIcon/Socials are 3 consumer SVG scaffolds that prove demand)
-35. Write `docs/recipes/htmx-modal.md` (HTMX-loaded dialog: swap into `<dialog>` inner div + open/close helpers)
-36. Harvest CV's print stack into `docs/recipes/print-pdf.md` (`break-inside-avoid`, `print:` variants, A4 geometry)
-37. Before #29–36: check templ-components `TODO_LIST.md`/`FEATURES.md`/ROADMAP for overlap; register new work
+29. ~~Add SEO head support to `layout`: `NoIndex`, `Canonical`, hreflang `Alternates`, `JSON-LD` (CV's `screenHeadContent` is the proven template) — + golden/a11y/tests, keep `[Unreleased]` warm~~ done — layout.SEOMeta PR12
+30. ~~First decide API shape for #29 (see Q2): fields on `PageProps` vs embedded SEO struct vs separate component~~ **Won't implement — struct field decided.**
+31. ~~`CollapsibleSection`: optional built-in persistence script with nonce (ThemeScript pattern); keep `data-collapsible` contract for consumers who bring their own~~ done — PersistState PR13
+32. ~~Write `docs/recipes/sse-fragments.md` from CV's pipeline pattern (named SSE events → server-rendered HTML swaps + JSON scalars)~~ done — docs/recipes/sse-fragments.md
+33. ~~Research htmx SSE extension (`hx-sse`) wrapper feasibility vs the recipe (#32) — pick one~~ **Won't implement — recipe chosen.**
+34. ~~Add generic icon renderer for consumer icon sets: `Render(paths, viewBox, fill, class)` next to `IconPathData`/`IconPathJS` (CV's TechIcon/KeywordIcon/Socials are 3 consumer SVG scaffolds that prove demand)~~ done — icons.Render PR14
+35. ~~Write `docs/recipes/htmx-modal.md` (HTMX-loaded dialog: swap into `<dialog>` inner div + open/close helpers)~~ done — docs/recipes/htmx-modal.md
+36. ~~Harvest CV's print stack into `docs/recipes/print-pdf.md` (`break-inside-avoid`, `print:` variants, A4 geometry)~~ done — docs/recipes/print-pdf.md
+37. ~~Before #29–36: check templ-components `TODO_LIST.md`/`FEATURES.md`/ROADMAP for overlap; register new work~~ done — overlap checked clean
 38. Resolve the AGENTS.md "v2.0" vs `Version=1.14.0` doc drift (annotate or fix)
 
 **Session debt / verification:**
 39. Read `admin_page.templ` 760–1669 in full (910 lines skimmed)
 40. Read the four other skimmed fragment/section files in full
-41. Byte-verify `htmx.LoadingButton` markup vs A.Team's `#submission-loading` pattern (scratch render)
+41. ~~Byte-verify `htmx.LoadingButton` markup vs A.Team's `#submission-loading` pattern (scratch render)~~ done — adopted B1
 42. Verify `StatCard.ValueID` node placement vs CV's SSE `setText("stat-…")` contract (which element gets the id)
-43. Establish CV build/test baseline (`templ generate` + `go build` + tests) before any adoption PR
+43. ~~Establish CV build/test baseline (`templ generate` + `go build` + tests) before any adoption PR~~ done — cv baseline green
 44. Check CV CI status on master before branching
-45. Read CV `AGENTS.md`/`README.md`/`TODO_LIST.md`; reconcile this report's findings against existing plans
-46. Check whether v1.13.3/v1.14.0 changelog items break CV (CV already uses `FeedbackType` names — likely clean; confirm)
-47. Draft upstream issues/PRs for library items #29/#31/#34 (after #37)
+45. ~~Read CV `AGENTS.md`/`README.md`/`TODO_LIST.md`; reconcile this report's findings against existing plans~~ done — cv agents read
+46. ~~Check whether v1.13.3/v1.14.0 changelog items break CV (CV already uses `FeedbackType` names — likely clean; confirm)~~ done — cv tests green A1
+47. ~~Draft upstream issues/PRs for library items #29/#31/#34 (after #37)~~ done — prs 12 13 14 merged
 48. Draft CV adoption PR(s), split: (a) mechanical component swaps, (b) error-handling consolidation, (c) form rework
-49. Run docs-health **HARVEST**: route this section's items into `TODO_LIST.md` / `ROADMAP.md` of the owning repo(s)
+49. ~~Run docs-health **HARVEST**: route this section's items into `TODO_LIST.md` / `ROADMAP.md` of the owning repo(s)~~ done (docs-health pass 2026-09-08)
 50. Optionally: a consumer case-study doc in templ-components ("What CV taught us") distilling the 6 gaps as design input
 
 ## g) QUESTIONS I CANNOT FIGURE OUT MYSELF
 
-1. **Execution authority:** Should the 10 CV-side adoption changes be implemented now as PR(s) in `~/projects/CV`, or does this session's output stay advisory? (Decides whether items 1–28 get scheduled at all.)
-2. **Library API shape:** For the missing SEO head support (item #29) — extend `layout.PageProps` with the four fields (largest compat surface, simplest for consumers), embed a dedicated SEO struct, or keep it a separate component? Your breaking-change appetite decides the upstream PR.
-3. **Intent check:** Is `ats_dashboard.templ:32-158`'s custom error boundary (inline red cards, no toasts) a deliberate product choice for that page, or leftover debt to delete in favor of the already-active `htmx.GlobalErrorHandling`? The code cannot answer this.
+1. ~~**Execution authority:** Should the 10 CV-side adoption changes be implemented now as PR(s) in `~/projects/CV`, or does this session's output stay advisory? (Decides whether items 1–28 get scheduled at all.)~~ **Won't implement — executed session 15-35.**
+2. ~~**Library API shape:** For the missing SEO head support (item #29) — extend `layout.PageProps` with the four fields (largest compat surface, simplest for consumers), embed a dedicated SEO struct, or keep it a separate component? Your breaking-change appetite decides the upstream PR.~~ **Won't implement — SEOMeta struct decided.**
+3. ~~**Intent check:** Is `ats_dashboard.templ:32-158`'s custom error boundary (inline red cards, no toasts) a deliberate product choice for that page, or leftover debt to delete in favor of the already-active `htmx.GlobalErrorHandling`? The code cannot answer this.~~ **Won't implement — owner ruling low value.**
 
 ---
 

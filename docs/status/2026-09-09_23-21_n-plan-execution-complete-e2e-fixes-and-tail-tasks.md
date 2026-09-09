@@ -13,101 +13,101 @@ synthetics + all component goldens) · `cmd/tc` sources sync PASS · docs count 
 
 ## a) FULLY DONE
 
-1. **N3 — Demo click-through e2e suite is green.** All 5 flows pass in ~14s
-   (LoadMore→EndOfList, ConfirmDelete, LoadingButton busy gate, multipart upload echo,
-   kanban move on both htmx and Datastar boards). Fixes that got it there: boolean
-   predicates polled into `string` (always errored → infinite retry) now poll into `bool`;
-   `demoClickUntil` wraps predicates in `Boolean(...)`; ConfirmDelete polls for the row's
-   REPLACEMENT (the old predicate could never be true); native `confirm()` is stubbed
-   (CDP trace proved the accept command is never sent on a dialog-paused target); every
-   flow tab is bounded at 120s (`newFlowTab`) so wedges fail instead of hanging the binary.
-2. **Real library bug fixed — tooltip JS TypeError.** The shared tooltip singleton called
-   `e.target.closest(...)` unguarded in `keydown`/`mouseenter`/`focusin` document
-   listeners; a `mouseenter` fired on `document` (every pointer entry into the window on
-   any page with a tooltip) threw a console TypeError. All three handlers now route
-   through a target guard. Goldens updated; CHANGELOG `[Unreleased]` Fixed entry added.
-3. **N4 — visualtest lint triage: 65 findings → 0.** Real fixes: `resolveOptions`
-   cyclomatic split (`mergeViewportOptions`), shared `e2ePageServer` helper replacing two
-   duplicated server fixtures, static base error for the wait-expression timeout,
-   blank-assign for best-effort artifact cleanup, golines via `golangci-lint fmt`.
-   Policy fix: one module-wide `visualtest/` waiver for `contextcheck`/`paralleltest`/
-   `wrapcheck` (serial-shared-browser design) replacing three per-file waivers; five stale
-   per-file `nolint` comments removed. tools/shots CLI brought to the same zero bar
-   (named constants, 0750/0600 permissions, `Fprintf(os.Stdout, ...)`).
-4. **N5 — CI demo smoke.** `visualtest/demo_smoke_test.go`: all 7 demo routes must render
-   their unique `<title>` with zero 500s in the server log. Runs inside the existing
-   Visual Regression CI job (the flake's `.#visual` app already puts `go` on PATH, so the
-   demo-server harness works in CI without workflow changes). Commit `b8bad6d`.
-5. **N6 — 375px mobile sweep + real defect fixed.** Two new tests (no-horizontal-overflow
-   across 4 routes; kanban reachable by internal panning). They caught a real defect:
-   KanbanBoard's `w-72 shrink-0` columns propagate ~1200px min-content through grid items
-   without `min-w-0`, widening the whole document by 875px on a phone. Fixed with
-   `min-w-0` on the board root (library) and the demo board wrappers (the actual grid
-   items); goldens updated; demo CSS recompiled; CHANGELOG Fixed entry. Commit `da2b3c8`.
-6. **N7 — RTL browser sweep.** `dir="rtl"` on all 4 demo routes: no overflow; kanban move
-   buttons still resolve, submit, and land cards in the expected column on both
-   transports. Commit `6990fbb` (+ `4cf5007` golines).
-7. **N8 — Overlay open-state captures verified complete.** The plan was stale: Modal,
-   Drawer, Tooltip, Combobox, Carousel, Dropdown, Popover, ContextMenu open-state captures
-   already existed. Verified by execution: 11 tests PASS, 0 SKIP.
-8. **N9 — Coverage margin.** recipes 60.3% → 63.6% via `coverage_matrix_test.go`
-   (maximal/minimal slot permutations, BaseProps propagation) and
-   `TestRenderErrorPropagation` (failing writer + cancelled context exercise the generated
-   error branches). Library total 72.0% (71.98% exact) vs the 70% CI floor = the target
-   2pt headroom. Commit `0e396ff`.
-9. **N10 — `layout.Minimal` SEO support (#179).** New `SEO SEOMeta` field on MinimalProps;
-   the four head tags (noindex/canonical/hreflang/JSON-LD) are emitted by a new shared
-   `seoHeadTags` sub-template also adopted by Base, so the two shells cannot drift.
-   Zero value emits nothing (Minimal stays dependency-free). Parity test asserts identical
-   tag sets across Base and Minimal. Commit `48f22e6`.
-10. **N11 — Page-level route goldens (#163).** Restored the 182-line suite from the
-    `feat/layout-seo-meta` prototype with the missing `GOEXPERIMENT=jsonv2` build env,
-    checked type assertion, `NewRequestWithContext` health probe, gosec/wsl/nolint
-    compliance. 8 route captures (7 full-page + index above-the-fold), **0.0000%
-    run-to-run drift**; two goldens re-cut for legitimate v1.16 content drift (component
-    counter 118→120, Kanban TOC entry — diff PNG inspected before re-cutting).
-11. **N12 — Datastar JS synthetics (#147).** Three chromedp tests synthesize the runtime's
-    document-level `datastar-fetch` CustomEvent: HTTP-error toast with status code,
-    retries-failed announcement, LiveRegion `aria-busy` clearing on first patch. No SSE
-    endpoint needed. Commit `afd0d43`.
-12. **N13 — FormLayoutInline width contract (#166).** Browser ground truth: fields render
-    content-sized (218px inputs in a 780px form, same row) — the feared full-width
-    breakage does not exist. Pinned by `TestFormLayoutInlineWidthContract` (fails if a
-    wrapper gains `w-full` or fields stop sharing a row) and stated loudly in the enum
-    docs. Commit `aa4ebe2`.
-13. **N14 — DateRange docs + adjacent golden (#176).** Component doc now states the
-    INLINE `<time>` semantics; `TestGoldenDateRangeAdjacent` pins the exact two-adjacent-
-    ranges output. Commit `4afebef`.
-14. **N15 — ErrorPage family matrix goldens (#177).** All five go-error-family values
-    pinned through ErrorAlert plus the missing infrastructure family through ErrorDetail.
-    Commit `9c2256a`.
-15. **N16 — Prerender honesty (#167).** `examples/demo/prerender_diff_test.go`: prerender
-    output vs `newMux()` live responses on all 7 routes are byte-identical after
-    normalizing exactly two by-design differences (live stylesheet link; fresh EnsureID
-    tokens). Commit `bf8a276`.
-16. **N17 — upstream-watch dry-run (#128).** Triggered via `gh workflow run -f
-    dry-run=true`; run 34391305391 completed **success** in 10s with real pin-extraction
-    and proxy/jq parsing in the log.
-17. **N18 — Docs mini-pack (#180).** innerHTML-no-scripts runtime fact appended to
-    `docs/datastar-runtime-facts.md`; KanbanBoard FEATURES line now states touch-visible
-    move buttons; stale visual-golden counts 117→125 (README + ROADMAP) caught by
-    `TestDocsCountDrift`. Commit `3e162ae`.
-18. **N19 — Changelog policy (#133).** Policy decided and codified in
-    `scripts/check-changelog-guard.sh` (library code requires CHANGELOG; test-only/
-    docs/examples/cmd/website exempt), CI job rewired to call it, shaken down locally
-    against 4 representative file lists (all behaved as specified). Commit `2f8d8bf`.
-19. **N21 — Flake input fold (#146).** `nixpkgs-go` folded into `nixpkgs` — both had
-    locked the identical rev, so the split insulated nothing. Zero drift proven: templ
-    regenerates clean (v0.3.1020 pin intact), Go stays 1.26.7 (GO-2026 fixes), `nix flake
-    check` passes. Commit `3659d00`.
-20. **Final battery.** `nix run .#verify` green (21 packages); per-module loop green
-    (utils/icons/errorpage/charts/echarts/datastar/htmx); full visual suite green
-    (59.7s); `cmd/tc` `_sources` re-synced for the form.templ/base.templ doc edits (the
-    sync guard caught them — working as designed); TODO_LIST pruned of 17 shipped rows +
-    #188 (v1.16.0 shipped) with #133 narrowed to its real-PR verification. Commit
-    `64fd128`.
-21. **Hygiene.** Killed 3 orphaned `tc-demo` + 13 orphaned `tc-demo-route` leaked server
-    processes from timed-out runs; 3 scratch probes removed after diagnosis.
+1. ~~**N3 — Demo click-through e2e suite is green.** All 5 flows pass in ~14s~~ done at `69880f6`
+   ~~(LoadMore→EndOfList, ConfirmDelete, LoadingButton busy gate, multipart upload echo,~~
+   ~~kanban move on both htmx and Datastar boards). Fixes that got it there: boolean~~
+   ~~predicates polled into `string` (always errored → infinite retry) now poll into `bool`;~~
+   ~~`demoClickUntil` wraps predicates in `Boolean(...)`; ConfirmDelete polls for the row's~~
+   ~~REPLACEMENT (the old predicate could never be true); native `confirm()` is stubbed~~
+   ~~(CDP trace proved the accept command is never sent on a dialog-paused target); every~~
+   ~~flow tab is bounded at 120s (`newFlowTab`) so wedges fail instead of hanging the binary.~~
+2. ~~**Real library bug fixed — tooltip JS TypeError.** The shared tooltip singleton called~~ done at `69880f6`
+   ~~`e.target.closest(...)` unguarded in `keydown`/`mouseenter`/`focusin` document~~
+   ~~listeners; a `mouseenter` fired on `document` (every pointer entry into the window on~~
+   ~~any page with a tooltip) threw a console TypeError. All three handlers now route~~
+   ~~through a target guard. Goldens updated; CHANGELOG `[Unreleased]` Fixed entry added.~~
+3. ~~**N4 — visualtest lint triage: 65 findings → 0.** Real fixes: `resolveOptions`~~ done at `69880f6`
+   ~~cyclomatic split (`mergeViewportOptions`), shared `e2ePageServer` helper replacing two~~
+   ~~duplicated server fixtures, static base error for the wait-expression timeout,~~
+   ~~blank-assign for best-effort artifact cleanup, golines via `golangci-lint fmt`.~~
+   ~~Policy fix: one module-wide `visualtest/` waiver for `contextcheck`/`paralleltest`/~~
+   ~~`wrapcheck` (serial-shared-browser design) replacing three per-file waivers; five stale~~
+   ~~per-file `nolint` comments removed. tools/shots CLI brought to the same zero bar~~
+   ~~(named constants, 0750/0600 permissions, `Fprintf(os.Stdout, ...)`).~~
+4. ~~**N5 — CI demo smoke.** `visualtest/demo_smoke_test.go`: all 7 demo routes must render~~ done at `69880f6`
+   ~~their unique `<title>` with zero 500s in the server log. Runs inside the existing~~
+   ~~Visual Regression CI job (the flake's `.#visual` app already puts `go` on PATH, so the~~
+   ~~demo-server harness works in CI without workflow changes). Commit `b8bad6d`.~~
+5. ~~**N6 — 375px mobile sweep + real defect fixed.** Two new tests (no-horizontal-overflow~~ done at `69880f6`
+   ~~across 4 routes; kanban reachable by internal panning). They caught a real defect:~~
+   ~~KanbanBoard's `w-72 shrink-0` columns propagate ~1200px min-content through grid items~~
+   ~~without `min-w-0`, widening the whole document by 875px on a phone. Fixed with~~
+   ~~`min-w-0` on the board root (library) and the demo board wrappers (the actual grid~~
+   ~~items); goldens updated; demo CSS recompiled; CHANGELOG Fixed entry. Commit `da2b3c8`.~~
+6. ~~**N7 — RTL browser sweep.** `dir="rtl"` on all 4 demo routes: no overflow; kanban move~~ done at `69880f6`
+   ~~buttons still resolve, submit, and land cards in the expected column on both~~
+   ~~transports. Commit `6990fbb` (+ `4cf5007` golines).~~
+7. ~~**N8 — Overlay open-state captures verified complete.** The plan was stale: Modal,~~ done at `69880f6`
+   ~~Drawer, Tooltip, Combobox, Carousel, Dropdown, Popover, ContextMenu open-state captures~~
+   ~~already existed. Verified by execution: 11 tests PASS, 0 SKIP.~~
+8. ~~**N9 — Coverage margin.** recipes 60.3% → 63.6% via `coverage_matrix_test.go`~~ done at `69880f6`
+   ~~(maximal/minimal slot permutations, BaseProps propagation) and~~
+   ~~`TestRenderErrorPropagation` (failing writer + cancelled context exercise the generated~~
+   ~~error branches). Library total 72.0% (71.98% exact) vs the 70% CI floor = the target~~
+   ~~2pt headroom. Commit `0e396ff`.~~
+9. ~~**N10 — `layout.Minimal` SEO support (#179).** New `SEO SEOMeta` field on MinimalProps;~~ done at `69880f6`
+   ~~the four head tags (noindex/canonical/hreflang/JSON-LD) are emitted by a new shared~~
+   ~~`seoHeadTags` sub-template also adopted by Base, so the two shells cannot drift.~~
+   ~~Zero value emits nothing (Minimal stays dependency-free). Parity test asserts identical~~
+   ~~tag sets across Base and Minimal. Commit `48f22e6`.~~
+10. ~~**N11 — Page-level route goldens (#163).** Restored the 182-line suite from the~~ done at `69880f6`
+    ~~`feat/layout-seo-meta` prototype with the missing `GOEXPERIMENT=jsonv2` build env,~~
+    ~~checked type assertion, `NewRequestWithContext` health probe, gosec/wsl/nolint~~
+    ~~compliance. 8 route captures (7 full-page + index above-the-fold), **0.0000%~~
+    ~~run-to-run drift**; two goldens re-cut for legitimate v1.16 content drift (component~~
+    ~~counter 118→120, Kanban TOC entry — diff PNG inspected before re-cutting).~~
+11. ~~**N12 — Datastar JS synthetics (#147).** Three chromedp tests synthesize the runtime's~~ done at `69880f6`
+    ~~document-level `datastar-fetch` CustomEvent: HTTP-error toast with status code,~~
+    ~~retries-failed announcement, LiveRegion `aria-busy` clearing on first patch. No SSE~~
+    ~~endpoint needed. Commit `afd0d43`.~~
+12. ~~**N13 — FormLayoutInline width contract (#166).** Browser ground truth: fields render~~ done at `69880f6`
+    ~~content-sized (218px inputs in a 780px form, same row) — the feared full-width~~
+    ~~breakage does not exist. Pinned by `TestFormLayoutInlineWidthContract` (fails if a~~
+    ~~wrapper gains `w-full` or fields stop sharing a row) and stated loudly in the enum~~
+    ~~docs. Commit `aa4ebe2`.~~
+13. ~~**N14 — DateRange docs + adjacent golden (#176).** Component doc now states the~~ done at `69880f6`
+    ~~INLINE `<time>` semantics; `TestGoldenDateRangeAdjacent` pins the exact two-adjacent-~~
+    ~~ranges output. Commit `4afebef`.~~
+14. ~~**N15 — ErrorPage family matrix goldens (#177).** All five go-error-family values~~ done at `69880f6`
+    ~~pinned through ErrorAlert plus the missing infrastructure family through ErrorDetail.~~
+    ~~Commit `9c2256a`.~~
+15. ~~**N16 — Prerender honesty (#167).** `examples/demo/prerender_diff_test.go`: prerender~~ done at `69880f6`
+    ~~output vs `newMux()` live responses on all 7 routes are byte-identical after~~
+    ~~normalizing exactly two by-design differences (live stylesheet link; fresh EnsureID~~
+    ~~tokens). Commit `bf8a276`.~~
+16. ~~**N17 — upstream-watch dry-run (#128).** Triggered via `gh workflow run -f~~ done at `69880f6`
+    ~~dry-run=true`; run 34391305391 completed **success** in 10s with real pin-extraction~~
+    ~~and proxy/jq parsing in the log.~~
+17. ~~**N18 — Docs mini-pack (#180).** innerHTML-no-scripts runtime fact appended to~~ done at `69880f6`
+    ~~`docs/datastar-runtime-facts.md`; KanbanBoard FEATURES line now states touch-visible~~
+    ~~move buttons; stale visual-golden counts 117→125 (README + ROADMAP) caught by~~
+    ~~`TestDocsCountDrift`. Commit `3e162ae`.~~
+18. ~~**N19 — Changelog policy (#133).** Policy decided and codified in~~ done at `69880f6`
+    ~~`scripts/check-changelog-guard.sh` (library code requires CHANGELOG; test-only/~~
+    ~~docs/examples/cmd/website exempt), CI job rewired to call it, shaken down locally~~
+    ~~against 4 representative file lists (all behaved as specified). Commit `2f8d8bf`.~~
+19. ~~**N21 — Flake input fold (#146).** `nixpkgs-go` folded into `nixpkgs` — both had~~ done at `69880f6`
+    ~~locked the identical rev, so the split insulated nothing. Zero drift proven: templ~~
+    ~~regenerates clean (v0.3.1020 pin intact), Go stays 1.26.7 (GO-2026 fixes), `nix flake~~
+    ~~check` passes. Commit `3659d00`.~~
+20. ~~**Final battery.** `nix run .#verify` green (21 packages); per-module loop green~~ done at `69880f6`
+    ~~(utils/icons/errorpage/charts/echarts/datastar/htmx); full visual suite green~~
+    ~~(59.7s); `cmd/tc` `_sources` re-synced for the form.templ/base.templ doc edits (the~~
+    ~~sync guard caught them — working as designed); TODO_LIST pruned of 17 shipped rows +~~
+    ~~#188 (v1.16.0 shipped) with #133 narrowed to its real-PR verification. Commit~~
+    ~~`64fd128`.~~
+21. ~~**Hygiene.** Killed 3 orphaned `tc-demo` + 13 orphaned `tc-demo-route` leaked server~~ done at `69880f6`
+    ~~processes from timed-out runs; 3 scratch probes removed after diagnosis.~~
 
 ## b) PARTIALLY DONE
 
@@ -121,8 +121,8 @@ synthetics + all component goldens) · `cmd/tc` sources sync PASS · docs count 
 3. **Coverage headroom precision.** Displayed 72.0% but exact value is 71.98% — the 2pt
    headroom holds at CI's one-decimal granularity, with ~0.02pt to spare in exact math.
    recipes is still the weakest package at 63.6%. Effort to widen: M.
-4. **N8.** Counted as done, but it was VERIFICATION of existing coverage, not new work —
-   the plan file was stale on this point. Lesson recorded in (e).
+4. ~~**N8.** Counted as done, but it was VERIFICATION of existing coverage, not new work —~~ done (docs-health pass 2026-09-08)
+   ~~the plan file was stale on this point. Lesson recorded in (e).~~
 5. **AGENTS.md chromedp guidance.** The existing note "moved to goroutine with
    page.HandleJavaScriptDialog(true).Do(ctx)" documents a pattern this session PROVED
    never works (the accept command is never sent on a paused target; the working pattern
@@ -143,63 +143,63 @@ synthetics + all component goldens) · `cmd/tc` sources sync PASS · docs count 
 
 ## d) TOTALLY FUCKED UP
 
-1. **The previous session shipped a broken e2e suite and declared it 60% done.** The
-   ConfirmDelete "fix" (goroutine + `page.HandleJavaScriptDialog(true).Do(ctx)`) NEVER
-   worked — this session's CDP trace proved the accept command is never sent once the
-   renderer pauses on the dialog. The LoadMore flow polled boolean predicates into
-   `string` (guaranteed unmarshal error → infinite retry), and the ConfirmDelete predicate
-   checked `#item-123` for its own replacement text AFTER the swap removes that element —
-   it could never be true. `go vet` passing was treated as "60% done". Severity: the
-   suite hung the go-test binary for its full 10-minute budget twice. Mitigation: all
-   fixed and green, but the pattern (declare done without running) is the root cause.
-2. **Two 10-minute binary timeouts burned before instrumenting.** The first hang should
-   have triggered a CDP-trace probe immediately; instead one full re-run (10 min) was
-   spent before the scratch probe cracked it in 1.4s. Root cause of the hesitation:
-   trusting that "fixed last session" meant verified.
-3. **My own scratch probe contained the same bool-into-string bug** as the suite it was
-   diagnosing — the mirror failure delayed the ConfirmDelete diagnosis by one round.
-4. **Daemon races fragmented history all session.** Seven+ `chore: auto-commit` snapshots
-   landed mid-work (e.g. `5d7c513`, `6352db3`, `29b5a88`, `37ac64e`, `2f1002d`,
-   `fc28003`); one summary commit became a no-op (nothing staged — daemon swept first);
-   one amend lost a race against the daemon. Net effect: meaningful changes are all in,
-   but the narrative lives partly in heuristic-message commits.
-5. **Lint-after-commit violations (twice).** The RTL sweep landed with an `intrange`
-   finding; the golines finding landed in a second commit. The repo rule is
-   lint-per-file-at-authoring; both were avoidable.
-6. **Shell flails:** a literal-garbage `rm` invocation, a `/dev/null` sed target, wrong
-   grep regexes, and one `git -C ..` from the wrong CWD each cost a round trip. None
-   caused damage; all were noise.
-7. **Not fucked up, but embarrassing:** the N11 restore briefly wrote goldens via failed
-   `git show > file` redirects into a nonexistent directory (8 "MISSING" messages) before
-   `mkdir -p` — the commit itself ended up correct.
+1. ~~**The previous session shipped a broken e2e suite and declared it 60% done.** The~~ done (docs-health pass 2026-09-08)
+   ~~ConfirmDelete "fix" (goroutine + `page.HandleJavaScriptDialog(true).Do(ctx)`) NEVER~~
+   ~~worked — this session's CDP trace proved the accept command is never sent once the~~
+   ~~renderer pauses on the dialog. The LoadMore flow polled boolean predicates into~~
+   ~~`string` (guaranteed unmarshal error → infinite retry), and the ConfirmDelete predicate~~
+   ~~checked `#item-123` for its own replacement text AFTER the swap removes that element —~~
+   ~~it could never be true. `go vet` passing was treated as "60% done". Severity: the~~
+   ~~suite hung the go-test binary for its full 10-minute budget twice. Mitigation: all~~
+   ~~fixed and green, but the pattern (declare done without running) is the root cause.~~
+2. ~~**Two 10-minute binary timeouts burned before instrumenting.** The first hang should~~ done (docs-health pass 2026-09-08)
+   ~~have triggered a CDP-trace probe immediately; instead one full re-run (10 min) was~~
+   ~~spent before the scratch probe cracked it in 1.4s. Root cause of the hesitation:~~
+   ~~trusting that "fixed last session" meant verified.~~
+3. ~~**My own scratch probe contained the same bool-into-string bug** as the suite it was~~ done (docs-health pass 2026-09-08)
+   ~~diagnosing — the mirror failure delayed the ConfirmDelete diagnosis by one round.~~
+4. ~~**Daemon races fragmented history all session.** Seven+ `chore: auto-commit` snapshots~~ done (docs-health pass 2026-09-08)
+   ~~landed mid-work (e.g. `5d7c513`, `6352db3`, `29b5a88`, `37ac64e`, `2f1002d`,~~
+   ~~`fc28003`); one summary commit became a no-op (nothing staged — daemon swept first);~~
+   ~~one amend lost a race against the daemon. Net effect: meaningful changes are all in,~~
+   ~~but the narrative lives partly in heuristic-message commits.~~
+5. ~~**Lint-after-commit violations (twice).** The RTL sweep landed with an `intrange`~~ done (docs-health pass 2026-09-08)
+   ~~finding; the golines finding landed in a second commit. The repo rule is~~
+   ~~lint-per-file-at-authoring; both were avoidable.~~
+6. ~~**Shell flails:** a literal-garbage `rm` invocation, a `/dev/null` sed target, wrong~~ done (docs-health pass 2026-09-08)
+   ~~grep regexes, and one `git -C ..` from the wrong CWD each cost a round trip. None~~
+   ~~caused damage; all were noise.~~
+7. ~~**Not fucked up, but embarrassing:** the N11 restore briefly wrote goldens via failed~~ done (docs-health pass 2026-09-08)
+   ~~`git show > file` redirects into a nonexistent directory (8 "MISSING" messages) before~~
+   ~~`mkdir -p` — the commit itself ended up correct.~~
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Run every test at authoring time.** The suite was declared functional twice without
-   a single execution. Rule going forward: a test does not exist until it has RUN green
-   (or failed for the expected reason).
-2. **Commit inside the daemon's 60-second window.** Batched commits lost races repeatedly.
-   Green → commit immediately, message included.
-3. **Lint at authoring time** (repo rule, violated twice this session): run
-   `golangci-lint run` on the touched module before `git commit`, not after.
-4. **Probe-first for hangs.** Any chromedp action exceeding ~30s should trigger a
-   WithDebugf probe, not a re-run. The probe cracked in 1.4s what two 10-minute runs
-   did not.
-5. **Shared chromedp poll helpers.** Add `pollBool(ctx, expr)` / `pollText(ctx, expr)` to
-   the visualtest harness; the bool-into-string mistake then cannot be written.
-6. **Centralize the chromedp trap list.** AGENTS.md's dialog note is factually wrong
-   (post-trace) and the Poll/unmarshal trap isn't recorded. One AGENTS.md section update
-   prevents every future session from re-learning these.
-7. **Check plan claims against reality before executing.** N8 was already done; 20 minutes
-   of planning would have been wasted without a quick `ls testdata` + test run.
-8. **Exact-coverage tooling.** The awk one-liner for exact totals should be a flake app
-   (`.#coverage-exact`) so precision never depends on shell improvisation.
-9. **Daemon posture.** Consider committing detailed messages IMMEDIATELY on green even
-   for small units (done mostly), and treat every daemon snapshot near delicate
-   operations as suspect (worked this session; keep it).
-10. **Scratch files.** The diagnose-then-delete pattern worked, but probes should carry a
-    `-run TestScratch` prefix convention from the start so they can never run in a full
-    sweep by accident.
+1. ~~**Run every test at authoring time.** The suite was declared functional twice without~~ done (docs-health pass 2026-09-08)
+   ~~a single execution. Rule going forward: a test does not exist until it has RUN green~~
+   ~~(or failed for the expected reason).~~
+2. ~~**Commit inside the daemon's 60-second window.** Batched commits lost races repeatedly.~~ done (docs-health pass 2026-09-08)
+   ~~Green → commit immediately, message included.~~
+3. ~~**Lint at authoring time** (repo rule, violated twice this session): run~~ done (docs-health pass 2026-09-08)
+   ~~`golangci-lint run` on the touched module before `git commit`, not after.~~
+4. ~~**Probe-first for hangs.** Any chromedp action exceeding ~30s should trigger a~~ done (docs-health pass 2026-09-08)
+   ~~WithDebugf probe, not a re-run. The probe cracked in 1.4s what two 10-minute runs~~
+   ~~did not.~~
+5. ~~**Shared chromedp poll helpers.** Add `pollBool(ctx, expr)` / `pollText(ctx, expr)` to~~ done (docs-health pass 2026-09-08)
+   ~~the visualtest harness; the bool-into-string mistake then cannot be written.~~
+6. ~~**Centralize the chromedp trap list.** AGENTS.md's dialog note is factually wrong~~ done (docs-health pass 2026-09-08)
+   ~~(post-trace) and the Poll/unmarshal trap isn't recorded. One AGENTS.md section update~~
+   ~~prevents every future session from re-learning these.~~
+7. ~~**Check plan claims against reality before executing.** N8 was already done; 20 minutes~~ done (docs-health pass 2026-09-08)
+   ~~of planning would have been wasted without a quick `ls testdata` + test run.~~
+8. ~~**Exact-coverage tooling.** The awk one-liner for exact totals should be a flake app~~ done (docs-health pass 2026-09-08)
+   ~~(`.#coverage-exact`) so precision never depends on shell improvisation.~~
+9. ~~**Daemon posture.** Consider committing detailed messages IMMEDIATELY on green even~~ done (docs-health pass 2026-09-08)
+   ~~for small units (done mostly), and treat every daemon snapshot near delicate~~
+   ~~operations as suspect (worked this session; keep it).~~
+10. ~~**Scratch files.** The diagnose-then-delete pattern worked, but probes should carry a~~ done (docs-health pass 2026-09-08)
+    ~~`-run TestScratch` prefix convention from the start so they can never run in a full~~
+    ~~sweep by accident.~~
 
 ## f) NEXT 50 (ranked; feeds docs-health HARVEST)
 

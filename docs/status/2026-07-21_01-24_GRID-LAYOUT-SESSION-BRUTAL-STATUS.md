@@ -11,23 +11,23 @@ clean, all tests pass. But the session has real gaps (see below).
 
 | #  | Task                                                                           | Evidence                                                        |
 | -- | ------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| 1  | `layout.Container` — typed max-width wrapper (SM/MD/LG/XL/Full/Prose)          | `container_types.go` + `container.templ` + 11 tests pass        |
-| 2  | `layout.AppShell` — sidebar+header+main grid shell with `minmax(0,1fr)` guard  | `appshell_types.go` + `appshell.templ` + 14 tests pass          |
-| 3  | `layout.Split` — 2-col content+aside with RTL logical positioning              | `split_types.go` + `split.templ` + 13 tests pass                |
-| 4  | `layout.Stack` — vertical rhythm with typed Gap enum                           | `stack_types.go` + `stack.templ` + 7 tests pass                 |
-| 5  | `navigation.Footer` multi-column grid (backward compatible)                    | `nav.templ` extended; 8 new tests pass; legacy callers unbroken |
-| 6  | `forms.Form` `Layout` enum (Stack/Inline/Grid); legacy `Inline` bool preserved | `form.templ` extended; 9 new tests; Layout wins over Inline     |
-| 7  | ADR-0016 codifying "grid = 2D, flex = 1D" rule                                 | `docs/adr/0016-grid-first-for-2d-layouts.md`                    |
-| 8  | Recipe: AppShell dashboard layout                                              | `docs/recipes/appshell-dashboard-layout.md`                     |
-| 9  | Recipe: `minmax(0,1fr)` grid-blowout footgun                                   | `docs/recipes/grid-blowout-minmax.md`                           |
-| 10 | Flex-usage audit appendix (48/48 keep, 0 migrate)                              | ADR-0016 appendix                                               |
-| 11 | CSS subgrid research note                                                      | `docs/research/css-subgrid.md`                                  |
-| 12 | Demo wiring — new `examples/demo/layout_demo.templ` showcasing all primitives  | builds, vet clean                                               |
-| 13 | Catalogue drift fixed (94→98 components, 82→87 generated, 37→43 enums)         | `TestDocsCountDrift` passes                                     |
-| 14 | Contract test extended (4 new props structs satisfy `ComponentProps`)          | `TestAllComponentPropsSatisfyInterface` passes                  |
-| 15 | `golangci-lint run ./...` → **0 issues**                                       | verified before commit                                          |
-| 16 | `go build ./... && go test ./...` → **all green**                              | verified before commit                                          |
-| 17 | BuildFlow pre-commit passed (after first retry — see "TOTALLY FUCKED UP")      | commit `2314f26` landed                                         |
+| ~~1~~  | ~~`layout.Container` — typed max-width wrapper (SM/MD/LG/XL/Full/Prose)~~ done at `1444b9d` | ~~`container_types.go` + `container.templ` + 11 tests pass~~ |
+| ~~2~~  | ~~`layout.AppShell` — sidebar+header+main grid shell with `minmax(0,1fr)` guard~~ done at `1444b9d` | ~~`appshell_types.go` + `appshell.templ` + 14 tests pass~~ |
+| ~~3~~  | ~~`layout.Split` — 2-col content+aside with RTL logical positioning~~ done at `1444b9d` | ~~`split_types.go` + `split.templ` + 13 tests pass~~ |
+| ~~4~~  | ~~`layout.Stack` — vertical rhythm with typed Gap enum~~ done at `1444b9d` | ~~`stack_types.go` + `stack.templ` + 7 tests pass~~ |
+| ~~5~~  | ~~`navigation.Footer` multi-column grid (backward compatible)~~ done at `1444b9d` | ~~`nav.templ` extended; 8 new tests pass; legacy callers unbroken~~ |
+| ~~6~~  | ~~`forms.Form` `Layout` enum (Stack/Inline/Grid); legacy `Inline` bool preserved~~ done at `1444b9d` | ~~`form.templ` extended; 9 new tests; Layout wins over Inline~~ |
+| ~~7~~  | ~~ADR-0016 codifying "grid = 2D, flex = 1D" rule~~ done at `1444b9d` | ~~`docs/adr/0016-grid-first-for-2d-layouts.md`~~ |
+| ~~8~~  | ~~Recipe: AppShell dashboard layout~~ done at `1444b9d` | ~~`docs/recipes/appshell-dashboard-layout.md`~~ |
+| ~~9~~  | ~~Recipe: `minmax(0,1fr)` grid-blowout footgun~~ done at `1444b9d` | ~~`docs/recipes/grid-blowout-minmax.md`~~ |
+| ~~10~~ | ~~Flex-usage audit appendix (48/48 keep, 0 migrate)~~ done at `1444b9d` | ~~ADR-0016 appendix~~ |
+| ~~11~~ | ~~CSS subgrid research note~~ done at `1444b9d` | ~~`docs/research/css-subgrid.md`~~ |
+| ~~12~~ | ~~Demo wiring — new `examples/demo/layout_demo.templ` showcasing all primitives~~ done at `1444b9d` | ~~builds, vet clean~~ |
+| ~~13~~ | ~~Catalogue drift fixed (94→98 components, 82→87 generated, 37→43 enums)~~ done at `1444b9d` | ~~`TestDocsCountDrift` passes~~ |
+| ~~14~~ | ~~Contract test extended (4 new props structs satisfy `ComponentProps`)~~ done at `1444b9d` | ~~`TestAllComponentPropsSatisfyInterface` passes~~ |
+| ~~15~~ | ~~`golangci-lint run ./...` → **0 issues**~~ done at `1444b9d` | ~~verified before commit~~ |
+| ~~16~~ | ~~`go build ./... && go test ./...` → **all green**~~ done at `1444b9d` | ~~verified before commit~~ |
+| ~~17~~ | ~~BuildFlow pre-commit passed (after first retry — see "TOTALLY FUCKED UP")~~ done at `2314f26` | ~~commit `2314f26` landed~~ |
 
 ---
 
@@ -35,10 +35,10 @@ clean, all tests pass. But the session has real gaps (see below).
 
 | #  | Task                                  | What's missing                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | -- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| P1 | **M8 — dark-mode + RTL + a11y tests** | Only the _existing_ dark-mode/motion-reduce scanners were run (they passed trivially because Container/Stack emit no colors). The plan's **F8.2 — `utils.TestRTLLogicalProperties` scanner** was NOT written. The plan's **F8.4 — container-query test for Split** was NOT written. RTL coverage is asserted indirectly via `AsidePositionStart/End` source-order tests in `split_test.go`, but there's no project-wide physical-property scanner to prevent future regressions. |
-| P2 | **M12 — demo wiring**                 | Only `demoContent`'s main `<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">` was replaced with `@layout.Container(...)`. The hero (`demo.templ:53`) and sticky-nav (`demo.templ:108`) still have the same hardcoded `max-w-6xl mx-auto px-4 sm:px-6 lg:px-8` snippet — three hand-rolled duplications remain.                                                                                                                                                           |
-| P3 | **M10 — AppShell recipe**             | The "Mobile navigation" section says "pass a `display.Drawer` to `MobileNav`" but gives **no example code** for it. A reader has to figure out the trigger/dialog wiring themselves.                                                                                                                                                                                                                                                                                             |
-| P4 | **Contract test coverage**            | The 4 new props structs were added to `TestAllComponentPropsSatisfyInterface`, but there's **no integration test composing AppShell + SidebarNav + Nav + Container + Grid** to prove they actually fit together at runtime (no import cycle, types align).                                                                                                                                                                                                                       |
+| ~~P1~~ | ~~**M8 — dark-mode + RTL + a11y tests**~~ done — utils/rtl compliance test.go | ~~Only the _existing_ dark-mode/motion-reduce scanners were run (they passed trivially because Container/Stack emit no colors). The plan's **F8.2 — `utils.TestRTLLogicalProperties` scanner** was NOT written. The plan's **F8.4 — container-query test for Split** was NOT written. RTL coverage is asserted indirectly via `AsidePositionStart/End` source-order tests in `split_test.go`, but there's no project-wide physical-property scanner to prevent future regressions.~~ |
+| ~~P2~~ | ~~**M12 — demo wiring**~~ done — examples/demo/demo.templ | ~~Only `demoContent`'s main `<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">` was replaced with `@layout.Container(...)`. The hero (`demo.templ:53`) and sticky-nav (`demo.templ:108`) still have the same hardcoded `max-w-6xl mx-auto px-4 sm:px-6 lg:px-8` snippet — three hand-rolled duplications remain.~~ |
+| ~~P3~~ | ~~**M10 — AppShell recipe**~~ done — docs/recipes/appshell-dashboard-layout.md | ~~The "Mobile navigation" section says "pass a `display.Drawer` to `MobileNav`" but gives **no example code** for it. A reader has to figure out the trigger/dialog wiring themselves.~~ |
+| ~~P4~~ | ~~**Contract test coverage**~~ done — integration/appshell composition test.go | ~~The 4 new props structs were added to `TestAllComponentPropsSatisfyInterface`, but there's **no integration test composing AppShell + SidebarNav + Nav + Container + Grid** to prove they actually fit together at runtime (no import cycle, types align).~~ |
 
 ---
 
@@ -46,13 +46,13 @@ clean, all tests pass. But the session has real gaps (see below).
 
 | #  | Task                                                                     | Impact                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | -- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| N1 | **CHANGELOG.md `[Unreleased]` update**                                   | **HARD MISS.** AGENTS.md: "Every feature/fix commit that lands on master must add its changelog entry to the `[Unreleased]` section immediately — not deferred to release time." The release script `scripts/release.sh` will **fail** at next release because `[Unreleased]` has no entry for the 4 new components + 2 component extensions. Verified: `[Unreleased]` currently only has the unrelated `horizontal-filter-bar.md` entry. |
-| N2 | **ROADMAP.md update**                                                    | No mention of the new layout primitives or the "grid-first for 2D" direction. The plan explicitly said to update ROADMAP.                                                                                                                                                                                                                                                                                                                 |
+| ~~N1~~ | ~~**CHANGELOG.md `[Unreleased]` update**~~ done — CHANGELOG v0.19.0 | ~~**HARD MISS.** AGENTS.md: "Every feature/fix commit that lands on master must add its changelog entry to the `[Unreleased]` section immediately — not deferred to release time." The release script `scripts/release.sh` will **fail** at next release because `[Unreleased]` has no entry for the 4 new components + 2 component extensions. Verified: `[Unreleased]` currently only has the unrelated `horizontal-filter-bar.md` entry.~~ |
+| ~~N2~~ | ~~**ROADMAP.md update**~~ done — ROADMAP.md | ~~No mention of the new layout primitives or the "grid-first for 2D" direction. The plan explicitly said to update ROADMAP.~~ |
 | N3 | **F10.3 — compile-test the recipe example**                              | The plan called for extracting the AppShell recipe example into a `_test.go` `Example_*` func to compile-test it. Skipped. Recipe typos would not be caught at CI.                                                                                                                                                                                                                                                                        |
 | N4 | **F9.3 — add ADR-0016 to ADR index**                                     | Did not check whether an ADR index file exists or whether ADR-0016 needs to be registered there.                                                                                                                                                                                                                                                                                                                                          |
 | N5 | **Demo binary smoke test**                                               | `go build ./examples/demo/...` passes, but the binary was **never executed** (`./result/bin/demo` or `go run ./examples/demo`). No `curl /health` or visual check. The new `layout_demo.templ` could render broken HTML and we wouldn't know.                                                                                                                                                                                             |
 | N6 | **`go test -race ./...`**                                                | Per the plan's verification checklist. New components have no shared state, so likely fine — but unverified.                                                                                                                                                                                                                                                                                                                              |
-| N7 | **CSS variable `--tc-sidebar-w` registration in `templates/custom.css`** | AppShell sets the var inline via `style=`, so it works without custom.css. But the godoc + recipe imply it lives there. Consumer reading the docs would expect to find it. Either add a default to custom.css OR clarify the godoc.                                                                                                                                                                                                       |
+| ~~N7~~ | ~~**CSS variable `--tc-sidebar-w` registration in `templates/custom.css`**~~ done — templates/custom.css | ~~AppShell sets the var inline via `style=`, so it works without custom.css. But the godoc + recipe imply it lives there. Consumer reading the docs would expect to find it. Either add a default to custom.css OR clarify the godoc.~~ |
 
 ---
 
@@ -115,20 +115,20 @@ asserting "exactly one `<main>` per rendered Base tree" in future.
 
 ### Process
 
-1. **Always run `golangci-lint run --fix` before staging**, not just `run`.
-2. **Always update `CHANGELOG.md [Unreleased]` in the same commit** as the feature — not "later". AGENTS.md says so; I didn't.
-3. **Smoke-test the demo binary**, not just build it. `go run ./examples/demo &` + `curl localhost:PORT/health` would have caught any rendering regression.
-4. **When a plan calls for a scanner (F8.2, F8.4), actually write it.** Skipping scanners because "the existing ones pass" defeats the point of the plan.
-5. **Re-read recipes before committing** — they're public-facing artifacts, not scratch pads.
+1. ~~**Always run `golangci-lint run --fix` before staging**, not just `run`.~~ done (docs-health pass 2026-09-08)
+2. ~~**Always update `CHANGELOG.md [Unreleased]` in the same commit** as the feature — not "later". AGENTS.md says so; I didn't.~~ done (docs-health pass 2026-09-08)
+3. ~~**Smoke-test the demo binary**, not just build it. `go run ./examples/demo &` + `curl localhost:PORT/health` would have caught any rendering regression.~~ done — visualtest
+4. ~~**When a plan calls for a scanner (F8.2, F8.4), actually write it.** Skipping scanners because "the existing ones pass" defeats the point of the plan.~~ done (docs-health pass 2026-09-08)
+5. ~~**Re-read recipes before committing** — they're public-facing artifacts, not scratch pads.~~ done (docs-health pass 2026-09-08)
 
 ### Technical debt introduced
 
-6. **AppShell demo claims `Container: false` works** but the demo binary was never run to verify the sidebar+main layout actually renders correctly at `<lg` and `>=lg`.
-7. **The `--tc-sidebar-w` CSS variable is undocumented in `templates/custom.css`** — it's set inline by Go code but a consumer reading custom.css wouldn't know it exists.
-8. **No integration test for AppShell + SidebarNav composition** — the import graph _should_ allow it (`layout ← utils`, `navigation ← utils,icons`) but no test proves they compose at the templ level.
-9. **The `Form.Inline` deprecation is silent.** No `// Deprecated:` Go doc comment, no lint warning. Consumers won't know to migrate. The plan said "soft deprecation" but soft ≠ silent.
+6. ~~**AppShell demo claims `Container: false` works** but the demo binary was never run to verify the sidebar+main layout actually renders correctly at `<lg` and `>=lg`.~~ done — visualtest
+7. ~~**The `--tc-sidebar-w` CSS variable is undocumented in `templates/custom.css`** — it's set inline by Go code but a consumer reading custom.css wouldn't know it exists.~~ done — templates/custom.css
+8. ~~**No integration test for AppShell + SidebarNav composition** — the import graph _should_ allow it (`layout ← utils`, `navigation ← utils,icons`) but no test proves they compose at the templ level.~~ done — integration/appshell composition test.go
+9. ~~**The `Form.Inline` deprecation is silent.** No `// Deprecated:` Go doc comment, no lint warning. Consumers won't know to migrate. The plan said "soft deprecation" but soft ≠ silent.~~ done — CHANGELOG v1.0.0
 10. **Stack's `min-w-0` story is unclear.** AppShell uses `min-w-0` on its content column (correct). Split uses `min-w-0` on both columns (correct). Container does NOT use `min-w-0` — but Container is often placed _inside_ a grid column (e.g. AppShell wraps Content in Container). If a consumer uses Container standalone inside their own grid, they may forget `min-w-0`. The godoc doesn't warn.
-11. **The Flex audit in ADR-0016 is hand-counted** ("~12", "~8", etc.). The numbers don't sum to 48. A real scanner (the one I skipped in F8.2) would produce exact counts and stay current.
+11. ~~**The Flex audit in ADR-0016 is hand-counted** ("~12", "~8", etc.). The numbers don't sum to 48. A real scanner (the one I skipped in F8.2) would produce exact counts and stay current.~~ done (docs-health pass 2026-09-08)
 
 ---
 
@@ -138,65 +138,65 @@ Sorted by **impact × urgency** (high first).
 
 ### Critical (release blockers — must do before next release tag)
 
-1. **Update `CHANGELOG.md [Unreleased]`** with entries for: AppShell, Container, Split, Stack, Footer multi-col, Form Layout enum, ADR-0016, two recipes, subgrid research note. Without this, `scripts/release.sh` will fail.
-2. **Verify `[Unreleased]` body is non-empty** by running the release script in `--dry-run` mode (if supported) or reading the script's check logic.
-3. **Decide on version bump target:** v0.19.0 (minor — new features) vs v0.18.2 (patch — but that's wrong for new public API). Recommend v0.19.0.
+1. ~~**Update `CHANGELOG.md [Unreleased]`** with entries for: AppShell, Container, Split, Stack, Footer multi-col, Form Layout enum, ADR-0016, two recipes, subgrid research note. Without this, `scripts/release.sh` will fail.~~ done — CHANGELOG v0.19.0
+2. ~~**Verify `[Unreleased]` body is non-empty** by running the release script in `--dry-run` mode (if supported) or reading the script's check logic.~~ done — CHANGELOG v0.19.0
+3. ~~**Decide on version bump target:** v0.19.0 (minor — new features) vs v0.18.2 (patch — but that's wrong for new public API). Recommend v0.19.0.~~ **Won't implement — v0.19.0 cut.**
 
 ### High priority (correctness + completeness)
 
-4. **Run the demo binary and visually verify** the new `layout_demo.templ` section renders correctly. `nix run .#build && ./result/bin/demo` then visit each section.
-5. **Write `utils.TestRTLLogicalProperties`** scanner (F8.2). Scans all `.templ` files for physical `ml-`/`mr-`/`left-`/`right-`/`text-left`/`border-l-`/`border-r-` without logical equivalents. Project-wide RTL safety net.
+4. ~~**Run the demo binary and visually verify** the new `layout_demo.templ` section renders correctly. `nix run .#build && ./result/bin/demo` then visit each section.~~ done — visualtest
+5. ~~**Write `utils.TestRTLLogicalProperties`** scanner (F8.2). Scans all `.templ` files for physical `ml-`/`mr-`/`left-`/`right-`/`text-left`/`border-l-`/`border-r-` without logical equivalents. Project-wide RTL safety net.~~ done — utils/rtl compliance test.go
 6. **Add `Example_*` test** that compile-tests the AppShell recipe example (F10.3). Catches recipe drift.
 7. **Add `Example_*` test** that compile-tests the minmax blowout recipe example.
-8. **Write integration test** composing `layout.AppShell` + `navigation.SidebarNav` + `navigation.Nav` + `layout.Container` + `display.Grid` to prove cross-package composition works.
-9. **Add `// Deprecated:` Go doc comment** to `FormProps.Inline` so IDEs surface the deprecation.
-10. **Add a mobile-drawer example** to the AppShell recipe (P3). Show a `display.Drawer` wired to a `MobileMenuToggle` in the header, passed to AppShell's `MobileNav` slot.
-11. **Replace hero and sticky-nav `max-w-6xl mx-auto px-4 sm:px-6 lg:px-8`** in `demo.templ:53` and `:108` with `@layout.Container(...)` (P2).
-12. **Document `--tc-sidebar-w` in `templates/custom.css`** as a comment so consumers know they can override globally (N7).
+8. ~~**Write integration test** composing `layout.AppShell` + `navigation.SidebarNav` + `navigation.Nav` + `layout.Container` + `display.Grid` to prove cross-package composition works.~~ done — integration/appshell composition test.go
+9. ~~**Add `// Deprecated:` Go doc comment** to `FormProps.Inline` so IDEs surface the deprecation.~~ done — forms/form.templ
+10. ~~**Add a mobile-drawer example** to the AppShell recipe (P3). Show a `display.Drawer` wired to a `MobileMenuToggle` in the header, passed to AppShell's `MobileNav` slot.~~ done — docs/recipes/appshell-dashboard-layout.md
+11. ~~**Replace hero and sticky-nav `max-w-6xl mx-auto px-4 sm:px-6 lg:px-8`** in `demo.templ:53` and `:108` with `@layout.Container(...)` (P2).~~ done — examples/demo/demo.templ
+12. ~~**Document `--tc-sidebar-w` in `templates/custom.css`** as a comment so consumers know they can override globally (N7).~~ done — templates/custom.css
 
 ### Medium priority (polish + robustness)
 
-13. **Add a `TestExactlyOneMainPerBase` contract test** asserting that `layout.Base(...)` renders exactly one `<main>` (would have caught D4).
+13. ~~**Add a `TestExactlyOneMainPerBase` contract test** asserting that `layout.Base(...)` renders exactly one `<main>` (would have caught D4).~~ done — layout/a11y test.go
 14. **Add `min-w-0` warning to Container godoc** ("when placing Container inside a grid column, ensure the column has `min-w-0` to prevent grid blowout").
-15. **Run `go test -race ./...`** to verify no race conditions in new components (N6).
+15. ~~**Run `go test -race ./...`** to verify no race conditions in new components (N6).~~ done — status 2026-07-21 02-16
 16. **Reconcile the Flex audit counts** in ADR-0016 — either run a real scanner or hand-count precisely.
-17. **Update `ROADMAP.md`** to mention grid-first direction + new layout primitives.
+17. ~~**Update `ROADMAP.md`** to mention grid-first direction + new layout primitives.~~ done — ROADMAP.md
 18. **Update `docs/SUPERB-FOR-PERSONAL-USE.md`** if it mentions component counts or layout capabilities.
-19. **Add `Split` 3-column variant** (main + 2 asides) if a consumer asks. YAGNI for now.
-20. **Add `Stack` direction enum** (vertical/horizontal) if a consumer asks. Currently vertical-only by design.
+19. ~~**Add `Split` 3-column variant** (main + 2 asides) if a consumer asks. YAGNI for now.~~ **Won't implement — yagni.**
+20. ~~**Add `Stack` direction enum** (vertical/horizontal) if a consumer asks. Currently vertical-only by design.~~ **Won't implement — yagni.**
 21. **Add `Container.Width: ContainerWidthContent`** that emits no `max-w-*` (just padding) for consumers who want Container's padding without width constraint. Currently `ContainerWidthFull` does `max-w-full` which is close but not identical.
-22. **Wire `AppShell` mobile drawer as an opt-in helper** (`AppShellProps.MobileDrawer templ.Component`) that auto-wires a Drawer if set. Keeps zero deps in `layout` by accepting the slot, not the type.
+22. ~~**Wire `AppShell` mobile drawer as an opt-in helper** (`AppShellProps.MobileDrawer templ.Component`) that auto-wires a Drawer if set. Keeps zero deps in `layout` by accepting the slot, not the type.~~ **Won't implement — slot pattern kept q2.**
 23. **Add `FormLayoutGap` field** so consumers can tune the gap of `FormLayoutGrid` (currently hardcoded `gap-x-4 gap-y-3`).
 24. **Add `Footer.Class` per-column override** so consumers can style individual footer columns (e.g. highlight a "New" badge column).
-25. **Write a benchmark** for AppShell rendering (the plan mentioned benchmark suites in 7 packages; layout has none).
+25. ~~**Write a benchmark** for AppShell rendering (the plan mentioned benchmark suites in 7 packages; layout has none).~~ done — layout/benchmark test.go
 
 ### Lower priority (nice to have)
 
-26. **Add a `data-testid` convention** to the new primitives for consumer test suites.
-27. **Add an `AppShell.SkipLink` opt-out** for consumers who already provide their own skip link via `Base` (currently AppShell relies on Base's skip link — correct, but inflexible).
-28. **Document the `--tc-sidebar-w` override pattern** in the AppShell recipe.
+26. ~~**Add a `data-testid` convention** to the new primitives for consumer test suites.~~ done — utils.BaseProps.Attrs
+27. ~~**Add an `AppShell.SkipLink` opt-out** for consumers who already provide their own skip link via `Base` (currently AppShell relies on Base's skip link — correct, but inflexible).~~ done — layout/base.templ
+28. ~~**Document the `--tc-sidebar-w` override pattern** in the AppShell recipe.~~ done — templates/custom.css
 29. **Add a "When NOT to use Container" section** to a recipe (for edge-to-edge layouts).
 30. **Add `FormLayoutLabelPosition` enum** (Top/Left) — currently the plan's M7 had this but I rolled it into M5's Grid layout. May want the explicit enum for control.
 31. **Verify `Split` source-order semantics** with a screen reader (the RTL test asserts source order but doesn't verify SR announcements).
 32. **Add `Stack.Divider` slot** for optional separators between items.
 33. **Add `Container.As` field** (div/section/article) for semantic flexibility.
-34. **Write a recipe for settings forms** using `FormLayoutGrid` (currently only the AppShell and minmax recipes exist).
+34. ~~**Write a recipe for settings forms** using `FormLayoutGrid` (currently only the AppShell and minmax recipes exist).~~ done — recipes/settings layout.templ
 35. **Migrate `errorpage/notfound404.templ` quick-links grid** to use `display.Grid` or `layout.Grid` for consistency (currently hand-rolled `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`).
 36. **Audit all `examples/demo/*.templ` files** for hand-rolled grids that should use the new primitives.
 37. **Add `navigation.Footer` to the AppShell demo** to show the full app shell + footer composition.
-38. **Consider extracting `tcGoBackAttached`-style JS** if AppShell ever needs JS (currently none — keep it that way).
+38. ~~**Consider extracting `tcGoBackAttached`-style JS** if AppShell ever needs JS (currently none — keep it that way).~~ done (docs-health pass 2026-09-08)
 39. **Add a `Layout.Fluid` variant** of Container that's width-constrained but allows horizontal overflow (for code blocks, tables).
 40. **Document `AppShell` z-index strategy** (header is `z-40`, native `<dialog>` is top-layer so no conflict; spell this out in godoc).
 41. **Add a "Theming" section** to ADR-0016 explaining how the `--tc-sidebar-w` var fits with the existing `--color-blue-600` theming model.
 42. **Add `FormLayoutStack` gap tuning** (currently hardcoded `space-y-6`). Field `StackGap FormLayoutStackGap`?
-43. **Write a "Migration guide"** for consumers moving from `Form.Inline: true` to `Form.Layout: FormLayoutGrid`.
-44. **Add a contract test** asserting `navigation.Footer(FooterProps{})` (zero-value) renders the legacy single-row layout — protects backward compat against future refactors.
+43. ~~**Write a "Migration guide"** for consumers moving from `Form.Inline: true` to `Form.Layout: FormLayoutGrid`.~~ done — docs/migration/v0.22-to-v1.0.md
+44. ~~**Add a contract test** asserting `navigation.Footer(FooterProps{})` (zero-value) renders the legacy single-row layout — protects backward compat against future refactors.~~ done — navigation/footer multicol test.go
 45. **Add `display.Grid` ↔ `layout.Stack`** decision tree to ADR-0016 (currently implicit).
 46. **Consider promoting `layout.Stack` to be the implementation behind `space-y-*`** in Card body, EmptyState, etc. — would unify vertical rhythm but is a large refactor.
 47. **Add a `Split.MinAsideWidth` field** for cases where the aside needs a minimum width (currently 1 column unit, no explicit min).
 48. **Add `Container.Fluid` bool** as a shortcut for `Width: ContainerWidthFull, Pad: false`.
 49. **Add a "Grid primer" doc** for contributors new to CSS grid — link from ADR-0016.
-50. **Plan v0.19.0 release** with these primitives once the CHANGELOG `[Unreleased]` is warm.
+50. ~~**Plan v0.19.0 release** with these primitives once the CHANGELOG `[Unreleased]` is warm.~~ done — CHANGELOG v0.19.0
 
 ---
 

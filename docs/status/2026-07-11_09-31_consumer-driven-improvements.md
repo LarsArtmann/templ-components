@@ -121,57 +121,57 @@ These are improvements surfaced by the consumer analysis but NOT yet implemented
 
 ### Architecture / Design improvements
 
-1. **Theme system is the #1 adoption blocker.** SwettySwipperWeb reimplements 250+ lines because the library hardcodes standard Tailwind color names. The theme-bridge doc helps, but a deeper solution would be a `theme-bridge.css` file or a `@theme` preset that consumers can `@import` directly, rather than copy-pasting from docs.
+1. ~~**Theme system is the #1 adoption blocker.** SwettySwipperWeb reimplements 250+ lines because the library hardcodes standard Tailwind color names. The theme-bridge doc helps, but a deeper solution would be a `theme-bridge.css` file or a `@theme` preset that consumers can `@import` directly, rather than copy-pasting from docs.~~ done — templ-components-theme.css
 
-2. **`forms.Form` doesn't support HTMX filter-bar patterns well.** The `Inline` mode exists but doesn't have HTMX attribute helpers. DiscordSync's filter form pattern (GET form, `hx-trigger="change from:find select"`, `hx-target`, `hx-select`, `hx-swap`, `hx-push-url`) is repeated across 7 pages. A `FilterBarProps` or an HTMX-aware Form variant would eliminate this.
+2. ~~**`forms.Form` doesn't support HTMX filter-bar patterns well.** The `Inline` mode exists but doesn't have HTMX attribute helpers. DiscordSync's filter form pattern (GET form, `hx-trigger="change from:find select"`, `hx-target`, `hx-select`, `hx-swap`, `hx-push-url`) is repeated across 7 pages. A `FilterBarProps` or an HTMX-aware Form variant would eliminate this.~~ done — forms/filter input.templ
 
 3. **Table needs a `Selectable` / checkbox-column pattern.** Both consumers have checkbox-in-table patterns (SwettySwipperWeb tournament selection, DiscordSync batch operations). The library Table doesn't support row selection natively.
 
-4. **No `DataTable` higher-level component.** Both consumers repeat the pattern: empty state → table/grid → pagination/load-more → end-of-list. A composite `DataTable` that orchestrates these four sub-components would eliminate massive duplication.
+4. ~~**No `DataTable` higher-level component.** Both consumers repeat the pattern: empty state → table/grid → pagination/load-more → end-of-list. A composite `DataTable` that orchestrates these four sub-components would eliminate massive duplication.~~ done — v0.17.0
 
-5. **TrendDirection now has 4 values but StatCard is the only consumer.** Consider whether other components (Card subtitle, Badge change indicator) should also support trend indicators.
+5. ~~**TrendDirection now has 4 values but StatCard is the only consumer.** Consider whether other components (Card subtitle, Badge change indicator) should also support trend indicators.~~ done (docs-health pass 2026-09-08)
 
 ### Code quality improvements
 
 6. **The clickable-row JS is in `display/shared.go` but the table component doesn't have a test for the JS content itself** (only that the script tag exists with nonce). The CopyButton and Tooltip have similar coverage gaps. Consider a shared JS-content assertion helper.
 
-7. **EndOfList has no golden test.** Other navigation components (LoadMore, SidebarNav) have `.golden` files. EndOfList should have one for visual regression.
+7. ~~**EndOfList has no golden test.** Other navigation components (LoadMore, SidebarNav) have `.golden` files. EndOfList should have one for visual regression.~~ done — navigation golden sweep
 
 8. **EndOfList has no example test (`ExampleEndOfList`).** The per-component testing checklist requires it.
 
 9. **EndOfList has no BDD test.** The per-component testing checklist requires it.
 
-10. **EndOfList has no a11y test.** Should verify `role="status"` is present.
+10. ~~**EndOfList has no a11y test.** Should verify `role="status"` is present.~~ done — navigation/end of list test.go
 
 11. **No benchmark test for EndOfList.** Other navigation components have benchmarks.
 
-12. **Select Groups has no golden test.** The optgroup rendering should have a golden snapshot.
+12. ~~**Select Groups has no golden test.** The optgroup rendering should have a golden snapshot.~~ done — forms/golden sweep test.go
 
 13. **Select Groups has no example test.** Should have `ExampleSelectWithGroups`.
 
 14. **TableRow.Href has no golden test.** Clickable row rendering should have a golden snapshot.
 
-15. **TableRow.Href has no a11y test** verifying `role="link"` and `tabindex="0"` on the row element specifically (the current test checks `utils.AssertContains` but not a parsed DOM assertion).
+15. ~~**TableRow.Href has no a11y test** verifying `role="link"` and `tabindex="0"` on the row element specifically (the current test checks `utils.AssertContains` but not a parsed DOM assertion).~~ done — display/table row href test.go
 
 ### Documentation improvements
 
-16. **README.md component catalogue not updated.** The README has a component count and table that should reflect the new components/features.
+16. ~~**README.md component catalogue not updated.** The README has a component count and table that should reflect the new components/features.~~ done — TestDocsCountDrift
 
-17. **FEATURES.md not updated.** Should list the new features with status.
+17. ~~**FEATURES.md not updated.** Should list the new features with status.~~ done — TestDocsCountDrift
 
 18. **No godoc example for EndOfList** (`ExampleEndOfList` function).
 
 19. **No godoc example for Select with Groups** (`ExampleSelectWithGroups`).
 
-20. **The theme-bridge doc doesn't have a runnable example** — just CSS snippets. A `docs/recipes/theme-bridge-example/` directory with a complete working consumer CSS file would be more convincing.
+20. ~~**The theme-bridge doc doesn't have a runnable example** — just CSS snippets. A `docs/recipes/theme-bridge-example/` directory with a complete working consumer CSS file would be more convincing.~~ done — templ-components-theme.css
 
 ### Testing gaps
 
-21. **Dark mode compliance test doesn't cover EndOfList** — `utils.TestDarkModeCompliance` scans source files, but EndOfList uses `text-gray-500 dark:text-gray-400` which should pass. Verify it does.
+21. ~~**Dark mode compliance test doesn't cover EndOfList** — `utils.TestDarkModeCompliance` scans source files, but EndOfList uses `text-gray-500 dark:text-gray-400` which should pass. Verify it does.~~ done — utils grep guards
 
-22. **Motion-reduce compliance test doesn't cover EndOfList** — EndOfList has no transitions/animations so this is a non-issue, but verify the test doesn't flag it.
+22. ~~**Motion-reduce compliance test doesn't cover EndOfList** — EndOfList has no transitions/animations so this is a non-issue, but verify the test doesn't flag it.~~ done — utils grep guards
 
-23. **RTL compliance test doesn't cover EndOfList** — verify no physical properties are used.
+23. ~~**RTL compliance test doesn't cover EndOfList** — verify no physical properties are used.~~ done — utils grep guards
 
 24. **Fuzz test for TrendDirection** — verify `normalizeTrend` never panics on arbitrary string input. (It already can't panic since it's a map lookup, but a fuzz test documents this guarantee.)
 
@@ -181,62 +181,62 @@ These are improvements surfaced by the consumer analysis but NOT yet implemented
 
 ### High priority (unblocks consumer adoption)
 
-1. Add golden test for `EndOfList` (`.golden` file)
+1. ~~Add golden test for `EndOfList` (`.golden` file)~~ done — navigation golden sweep
 2. Add BDD test for `EndOfList`
-3. Add a11y test for `EndOfList` (role="status")
+3. ~~Add a11y test for `EndOfList` (role="status")~~ done — navigation/end of list test.go
 4. Add example test (`ExampleEndOfList`) for godoc
-5. Add golden test for `Select` with Groups
+5. ~~Add golden test for `Select` with Groups~~ done — forms/golden sweep test.go
 6. Add example test (`ExampleSelectWithGroups`) for godoc
 7. Add golden test for `Table` with clickable rows
-8. Add a11y test for clickable rows (verify role/tabindex on `<tr>`)
+8. ~~Add a11y test for clickable rows (verify role/tabindex on `<tr>`)~~ done — display/table row href test.go
 9. Add example test (`ExampleTableWithHrefRows`) for godoc
-10. Update README.md component catalogue with new features
-11. Update FEATURES.md with new components and status
+10. ~~Update README.md component catalogue with new features~~ done — TestDocsCountDrift
+11. ~~Update FEATURES.md with new components and status~~ done — TestDocsCountDrift
 
 ### Medium priority (improves library quality)
 
 12. Add benchmark test for `EndOfList`
-13. Add benchmark test for `Select` with Groups
+13. ~~Add benchmark test for `Select` with Groups~~ done — forms/benchmark test.go
 14. Add Fuzz test for `TrendDirection` (`FuzzTrendDirection`)
-15. Add snapshot test for `EndOfList` (composition with LoadMore + Pagination)
-16. Create a `theme-bridge.css` starter file consumers can `@import` (not just documentation)
-17. Add `FilterBarProps` or HTMX-aware Form variant for filter-bar patterns
+15. ~~Add snapshot test for `EndOfList` (composition with LoadMore + Pagination)~~ done — navigation golden sweep
+16. ~~Create a `theme-bridge.css` starter file consumers can `@import` (not just documentation)~~ done — templ-components-theme.css
+17. ~~Add `FilterBarProps` or HTMX-aware Form variant for filter-bar patterns~~ done — forms/filter input.templ
 18. Add `TableSelectable` pattern (checkbox column + select-all header)
-19. Consider `DataTable` composite component (empty state + table + pagination + end-of-list)
-20. Add edge-case test for EndOfList with empty Message + empty Class
-21. Add edge-case test for Select Groups with empty group (no options)
-22. Add edge-case test for Select Groups with all-disabled options
-23. Add edge-case test for Table Row.Href with special characters in URL
-24. Add test verifying clickable row script is singleton (only injected once when multiple tables have href rows)
-25. Add test verifying clickable row script survives HTMX re-render (`htmx:afterSettle` handler)
+19. ~~Consider `DataTable` composite component (empty state + table + pagination + end-of-list)~~ done — v0.17.0
+20. ~~Add edge-case test for EndOfList with empty Message + empty Class~~ done — edge cases test.go suites
+21. ~~Add edge-case test for Select Groups with empty group (no options)~~ done — edge cases test.go suites
+22. ~~Add edge-case test for Select Groups with all-disabled options~~ done — edge cases test.go suites
+23. ~~Add edge-case test for Table Row.Href with special characters in URL~~ done — edge cases test.go suites
+24. ~~Add test verifying clickable row script is singleton (only injected once when multiple tables have href rows)~~ done — edge cases test.go suites
+25. ~~Add test verifying clickable row script survives HTMX re-render (`htmx:afterSettle` handler)~~ done — edge cases test.go suites
 
 ### Lower priority (polish)
 
-26. Add `EndOfList` to the `navigation/doc.go` package documentation
+26. ~~Add `EndOfList` to the `navigation/doc.go` package documentation~~ done — edge cases test.go suites
 27. Add `EndOfList` to the demo binary (`examples/demo`)
 28. Add `Select Groups` to the demo binary
 29. Add `Table Row.Href` to the demo binary
 30. Add `TrendWarn` to the demo binary (StatCard with warn trend)
-31. Consider adding `TrendWarn` variant to other components that use TrendDirection
+31. ~~Consider adding `TrendWarn` variant to other components that use TrendDirection~~ done (docs-health pass 2026-09-08)
 32. Add a `docs/adr/` for the clickable-row JS singleton pattern decision
 33. Add a `docs/adr/` for the Select Groups API design decision
-34. Consider whether `EndOfList` should have an `Icon` field (some apps use a checkmark or stop icon)
-35. Consider whether `EndOfList` should support a `templ.Component` slot for custom content
-36. Consider `LoadMore` + `EndOfList` composition helper
-37. Add test for `tableHasRowHref` with nil rows
-38. Add test for `tableHasRowHref` with empty rows
-39. Add test for `tableHasRowHref` with all-href rows
-40. Add test for Select Groups with single group
-41. Add test for Select Groups with Groups + Options both set (Options should be ignored)
-42. Add test for Select Groups preserving Selected across normalization
-43. Consider adding `data-tc-row-href` to the CSP nonce test as a data attribute check
+34. ~~Consider whether `EndOfList` should have an `Icon` field (some apps use a checkmark or stop icon)~~ done (docs-health pass 2026-09-08)
+35. ~~Consider whether `EndOfList` should support a `templ.Component` slot for custom content~~ done (docs-health pass 2026-09-08)
+36. ~~Consider `LoadMore` + `EndOfList` composition helper~~ done (docs-health pass 2026-09-08)
+37. ~~Add test for `tableHasRowHref` with nil rows~~ done — edge cases test.go suites
+38. ~~Add test for `tableHasRowHref` with empty rows~~ done — edge cases test.go suites
+39. ~~Add test for `tableHasRowHref` with all-href rows~~ done — edge cases test.go suites
+40. ~~Add test for Select Groups with single group~~ done — edge cases test.go suites
+41. ~~Add test for Select Groups with Groups + Options both set (Options should be ignored)~~ done — edge cases test.go suites
+42. ~~Add test for Select Groups preserving Selected across normalization~~ done — edge cases test.go suites
+43. ~~Consider adding `data-tc-row-href` to the CSP nonce test as a data attribute check~~ done (docs-health pass 2026-09-08)
 44. Consider documenting the clickable-row JS API in SKILL.md Part 2
-45. Add test for TrendWarn rendering (amber class, arrow-right icon, sr-only text)
-46. Add test for TrendWarn with empty Change string (should not render trend section)
-47. Add snapshot test for StatCard with all 4 trend variants
-48. Update `CONTRIBUTING.md` component count
-49. Consider adding `SelectGroup` to the forms contract inventory (it's a type, not a Props struct, but worth documenting)
-50. Run `scripts/release.sh` to cut v0.15.0 with all these improvements
+45. ~~Add test for TrendWarn rendering (amber class, arrow-right icon, sr-only text)~~ done — display/card test.go
+46. ~~Add test for TrendWarn with empty Change string (should not render trend section)~~ done — display/card test.go
+47. ~~Add snapshot test for StatCard with all 4 trend variants~~ done — stat card goldens
+48. ~~Update `CONTRIBUTING.md` component count~~ done — TestDocsCountDrift
+49. ~~Consider adding `SelectGroup` to the forms contract inventory (it's a type, not a Props struct, but worth documenting)~~ done (docs-health pass 2026-09-08)
+50. ~~Run `scripts/release.sh` to cut v0.15.0 with all these improvements~~ done — v0.15.0
 
 ---
 

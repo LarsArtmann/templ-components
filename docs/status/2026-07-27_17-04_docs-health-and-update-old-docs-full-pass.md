@@ -18,10 +18,10 @@
 | 5  | **Fixed FEATURES.md "Planned" section** — the biggest split brain                                                       | Semantic tokens: ⚪ PLANNED → ✅ DONE (shipped v0.22.0). Self-host HTMX: ⚪ PLANNED → ✅ DONE. Validate(): PLANNED → 🟡 PARTIAL. "Modern Web Standards (Unreleased)" → "(all shipped)". Enum count 34→43, component count 88→98.             |
 | 6  | **Annotated all 6 status reports** with inline corrections + resolution appendices                                      | `2026-07-23_v1.2.0-release-cut.md`: inline-corrected "NOT pushed" → PUSHED. `2026-07-21_07-38_*.md`: inline-corrected "probably visually broken" → FIXED in v1.2.0. Each has a `## Resolution (2026-07-27)` table citing commits/TODO items. |
 | 7  | **Annotated both planning docs** with execution-status appendices                                                       | Grid-layout plan: "fully executed, shipped as v0.19.0". Platform-first roadmap: 5-phase resolution table (Phases 1-4 DONE, Phase 5 partial).                                                                                                 |
-| 8  | **Annotated both HTML dashboards** with resolution `<section>` blocks                                                   | `brutal-self-review.html`: README counts fix confirmed. `pareto-improvement-plan.html`: top 6 items resolved. No inline styles; no CSP violations; no banner between title and content.                                                      |
-| 9  | **CHANGELOG.md verified warm**                                                                                          | `[Unreleased]` has 2 entries (FromErrorFamily type-safety fix + rename-safety test). Append-only — no changes needed.                                                                                                                        |
-| 10 | **Drift-guard tests PASS**                                                                                              | `TestDocsCountDrift`, `TestVersionMatchesChangelog`, `TestVersionMatchesFeatures`, `TestSkillComponentCount` (98/98) — all green.                                                                                                            |
-| 11 | **Loaded both skills** (`update-old-docs` + `docs-health`) before any work                                              | Read full SKILL.md for each. Followed per-file classification (ANNOTATE/SKIP/LEAVE ALONE), "so what?" test, fresh-open test, HARVEST process, VERIFY process.                                                                                |
+| ~~8~~  | ~~**Annotated both HTML dashboards** with resolution `<section>` blocks~~ done at `f4fd54b` | ~~`brutal-self-review.html`: README counts fix confirmed. `pareto-improvement-plan.html`: top 6 items resolved. No inline styles; no CSP violations; no banner between title and content.~~ |
+| ~~9~~  | ~~**CHANGELOG.md verified warm**~~ done at `f4fd54b` | ~~`[Unreleased]` has 2 entries (FromErrorFamily type-safety fix + rename-safety test). Append-only — no changes needed.~~ |
+| ~~10~~ | ~~**Drift-guard tests PASS**~~ done at `f4fd54b` | ~~`TestDocsCountDrift`, `TestVersionMatchesChangelog`, `TestVersionMatchesFeatures`, `TestSkillComponentCount` (98/98) — all green.~~ |
+| ~~11~~ | ~~**Loaded both skills** (`update-old-docs` + `docs-health`) before any work~~ done at `f4fd54b` | ~~Read full SKILL.md for each. Followed per-file classification (ANNOTATE/SKIP/LEAVE ALONE), "so what?" test, fresh-open test, HARVEST process, VERIFY process.~~ |
 
 ---
 
@@ -100,16 +100,16 @@
 
 ### Critical (correctness + verification gaps from this session)
 
-1. **Run `nix run .#verify`** (or `golangci-lint run ./...` + `go test ./...`) on the final working tree to actually prove the doc edits didn't break anything.
-2. **Re-read all 10 annotated files** after the concurrent-process reformatting to confirm no annotation was damaged.
-3. **Print the formal Documentation Health Report** with accuracy/fitness scores and per-doc severity table (I skipped this).
+1. ~~**Run `nix run .#verify`** (or `golangci-lint run ./...` + `go test ./...`) on the final working tree to actually prove the doc edits didn't break anything.~~ done — status 2026-07-28 15-29
+2. ~~**Re-read all 10 annotated files** after the concurrent-process reformatting to confirm no annotation was damaged.~~ done — status 2026-07-27 21-16
+3. ~~**Print the formal Documentation Health Report** with accuracy/fitness scores and per-doc severity table (I skipped this).~~ done — status 2026-07-28 15-29
 
 ### High (open items harvested into TODO_LIST)
 
-4. **Set `GOWORK=off` in `flake.nix` devShell `shellHook`** (TODO #70) — breaks `go generate ./...` and pre-commit across sessions.
-5. **Investigate GitHub Dependabot alert** (TODO #71) — reported across 2+ sessions, never investigated.
-6. **Add demo CSS rebuild to `scripts/release.sh`** (TODO #72) — or document that Docker handles it.
-7. **Convert navigation assertion tests to golden files** (TODO #73) — start with the highest-value package.
+4. ~~**Set `GOWORK=off` in `flake.nix` devShell `shellHook`** (TODO #70) — breaks `go generate ./...` and pre-commit across sessions.~~ done — .envrc
+5. ~~**Investigate GitHub Dependabot alert** (TODO #71) — reported across 2+ sessions, never investigated.~~ done — status 2026-07-28 09-23
+6. ~~**Add demo CSS rebuild to `scripts/release.sh`** (TODO #72) — or document that Docker handles it.~~ done — scripts/release.sh
+7. ~~**Convert navigation assertion tests to golden files** (TODO #73) — start with the highest-value package.~~ done — navigation/golden test.go
 
 ### BuildFlow fixes (systemic, cross-repo)
 
@@ -121,13 +121,13 @@
 
 11. **Derive README component/enum counts from code** — hardcoded counts rot silently. A `TestReadmeCountDrift` test would catch it.
 12. **Add a "Planned section drift" test** — FEATURES.md "Planned" section contradicted ROADMAP for multiple releases. A test asserting no DONE item appears in "Planned" would prevent this.
-13. **Audit AGENTS.md for the GOWORK gotcha** — add a one-line note about parent `go.work` interference.
-14. **Update AGENTS.md** with any new patterns from the concurrent visualtest work (if it introduced new conventions).
+13. ~~**Audit AGENTS.md for the GOWORK gotcha** — add a one-line note about parent `go.work` interference.~~ done — AGENTS.md
+14. ~~**Update AGENTS.md** with any new patterns from the concurrent visualtest work (if it introduced new conventions).~~ done — AGENTS.md
 
 ### Documentation polish
 
-15. **Verify `docs/DOMAIN_LANGUAGE.md`** terms against actual code symbols — I read it exists but didn't cross-check every term.
-16. **Check `docs/recipes/` links** resolve — recipes were added across sessions; verify no broken links.
+15. ~~**Verify `docs/DOMAIN_LANGUAGE.md`** terms against actual code symbols — I read it exists but didn't cross-check every term.~~ done — status 2026-07-28 15-29
+16. ~~**Check `docs/recipes/` links** resolve — recipes were added across sessions; verify no broken links.~~ done — status 2026-07-28 15-29
 17. **Add ADR-0016 to an ADR index** if one exists — prior session flagged this as missed.
 18. **Update `docs/research/popover-api.md`** to cross-reference ADR-0017 revision — prior session flagged this as B3 drift.
 
@@ -135,45 +135,45 @@
 
 19. **Add `TestReadmeCountDrift`** — assert README component count == FEATURES count == `TestSkillComponentCount` actual.
 20. **Add `TestPlannedSectionNotDone`** — assert no item in FEATURES.md "Planned" section has a corresponding DONE entry in ROADMAP.
-21. **Add a test that validates `.golangci.yml` disable list** — prevent the d417814 regression (prior session recommendation #15).
-22. **Convert feedback assertion tests to golden files** (TODO #73 continuation).
-23. **Convert forms assertion tests to golden files** (TODO #73 continuation).
+21. ~~**Add a test that validates `.golangci.yml` disable list** — prevent the d417814 regression (prior session recommendation #15).~~ done — utils/lint config test.go
+22. ~~**Convert feedback assertion tests to golden files** (TODO #73 continuation).~~ done — feedback/golden test.go
+23. ~~**Convert forms assertion tests to golden files** (TODO #73 continuation).~~ done — forms/golden test.go
 
 ### v2.0 prep
 
-24. **Design the default-flip migration** — self-host HTMX + semantic tokens become default. Both are opt-in now; consumers need a deprecation cycle.
-25. **Write a migration guide** for the v2.0 default flip.
-26. **Plan `AlertType`/`ToastType` alias removal** — last remaining deprecated aliases; TODO #38.
+24. ~~**Design the default-flip migration** — self-host HTMX + semantic tokens become default. Both are opt-in now; consumers need a deprecation cycle.~~ done — docs/adr/0022-v2-default-flip-migration.md
+25. ~~**Write a migration guide** for the v2.0 default flip.~~ done — docs/migration/v1-to-v2.md
+26. ~~**Plan `AlertType`/`ToastType` alias removal** — last remaining deprecated aliases; TODO #38.~~ done — docs/migration/v1-to-v2.md
 
 ### Code quality
 
-27. **Audit the concurrent visualtest module** — it appeared during this session; verify it builds cleanly and follows repo conventions.
-28. **Check if `go-error-family` v0.9.0 is safe** — `go.mod` was bumped during this session by the concurrent process; verify no API breaks.
+27. ~~**Audit the concurrent visualtest module** — it appeared during this session; verify it builds cleanly and follows repo conventions.~~ done — visualtest
+28. ~~**Check if `go-error-family` v0.9.0 is safe** — `go.mod` was bumped during this session by the concurrent process; verify no API breaks.~~ done — CHANGELOG
 29. **Run `nix fmt`** — treefmt may want to reformat files touched by the concurrent process.
 
 ### Polish
 
-30. **Add `navigation.SidebarNav` to README component list** — prior session flagged this as #42.
-31. **Add SidebarNav demo route** — prior session flagged this as #22.
-32. **Add SidebarNav golden test** — prior session flagged this as #24.
-33. **Document `cmd/tc/_sources/` naming convention** in AGENTS.md — prior session flagged this.
+30. ~~**Add `navigation.SidebarNav` to README component list** — prior session flagged this as #42.~~ done — README.md
+31. ~~**Add SidebarNav demo route** — prior session flagged this as #22.~~ done — examples/demo
+32. ~~**Add SidebarNav golden test** — prior session flagged this as #24.~~ done — navigation/golden test.go
+33. ~~**Document `cmd/tc/_sources/` naming convention** in AGENTS.md — prior session flagged this.~~ done — AGENTS.md
 34. **Update `docs/icons-only-adoption.md`** to mention `tc` CLI extraction.
-35. **Add `htmx.SwapStyleIsValid`** — drift from convention (prior session #47).
-36. **Add `layout.ContainerWidthIsValid` test** — prior session #48.
-37. **Add container-aware variant to `display.Grid` golden** — prior session #28.
-38. **Add `recipes.AuthLayout`** (split + form + OAuth slots) — prior session #31.
+35. ~~**Add `htmx.SwapStyleIsValid`** — drift from convention (prior session #47).~~ done — htmx/enums test.go
+36. ~~**Add `layout.ContainerWidthIsValid` test** — prior session #48.~~ done — layout/container test.go
+37. ~~**Add container-aware variant to `display.Grid` golden** — prior session #28.~~ done — visualtest/testdata
+38. ~~**Add `recipes.AuthLayout`** (split + form + OAuth slots) — prior session #31.~~ done — recipes/auth layout.templ
 39. **Add `recipes.EmptyState`** (Card + EmptyState + action slot) — prior session #32.
-40. **Add `tc version` command** — prior session #20.
-41. **Add `tc add --list-deps <component>` flag** — prior session #21.
+40. ~~**Add `tc version` command** — prior session #20.~~ done — cmd/tc/main.go
+41. ~~**Add `tc add --list-deps <component>` flag** — prior session #21.~~ done — cmd/tc/main.go
 42. **Add `goreleaser` config for the `tc` binary** — prior session #29.
 43. **Add a Nix flake output for `tc`** (`nix run .#tc`) — prior session #30.
-44. **Add Playwright smoke test for overlay components** — blocked on Node.js (TODO #13) but highest-value test gap.
+44. ~~**Add Playwright smoke test for overlay components** — blocked on Node.js (TODO #13) but highest-value test gap.~~ done — visualtest/testdata
 45. **Add `TestRecipesA11y`** — landmark + heading order checks for Dashboard/SettingsLayout/LoginCard.
-46. **Add `BenchmarkValidate`** to `errorpage/benchmark_test.go` — prior session #14.
+46. ~~**Add `BenchmarkValidate`** to `errorpage/benchmark_test.go` — prior session #14.~~ done — errorpage/benchmark test.go
 47. **Add recipes benchmarks** — `recipes/` has no benchmark file.
-48. **Stress-test `--tc-sidebar-w` `:root` fallback** for consumer CSS load-order conflicts.
-49. **Add edge-flipping to the popover positioner** — when preferred position clips, flip to opposite side (prior session B1).
-50. **Run `go test -coverprofile=coverage.out`** and verify the 70% CI threshold — never checked this session.
+48. ~~**Stress-test `--tc-sidebar-w` `:root` fallback** for consumer CSS load-order conflicts.~~ done (docs-health pass 2026-09-08)
+49. ~~**Add edge-flipping to the popover positioner** — when preferred position clips, flip to opposite side (prior session B1).~~ done (docs-health pass 2026-09-08)
+50. ~~**Run `go test -coverprofile=coverage.out`** and verify the 70% CI threshold — never checked this session.~~ done — flake.nix
 
 ---
 

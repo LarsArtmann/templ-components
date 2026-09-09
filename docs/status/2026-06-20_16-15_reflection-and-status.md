@@ -78,15 +78,15 @@
 
 ### Honest Self-Criticism
 
-1. **utils coverage regression (68.2%)** — I added `DismissScript`, `RenderAll`, `EnsureID` but only tested them from OTHER packages. Go's `-cover` only instruments tests IN the package under test. Should have written in-package tests from the start.
+1. ~~**utils coverage regression (68.2%)** — I added `DismissScript`, `RenderAll`, `EnsureID` but only tested them from OTHER packages. Go's `-cover` only instruments tests IN the package under test. Should have written in-package tests from the start.~~ done (docs-health pass 2026-09-08)
 
-2. **MapEnum was dead code for 14 of 15 call sites** — The helper existed but its signature `map[string]T where T~string` was too narrow. 14 sites duplicated the pattern because MapEnum couldn't handle struct values or typed keys. I should have caught this in the first self-review.
+2. ~~**MapEnum was dead code for 14 of 15 call sites** — The helper existed but its signature `map[string]T where T~string` was too narrow. 14 sites duplicated the pattern because MapEnum couldn't handle struct values or typed keys. I should have caught this in the first self-review.~~ done (docs-health pass 2026-09-08)
 
-3. **Committed generated files were stale** — The pre-commit hook's templ generator (v0.3.1036) produced different import grouping than what was committed. I needed to commit the regenerated output.
+3. ~~**Committed generated files were stale** — The pre-commit hook's templ generator (v0.3.1036) produced different import grouping than what was committed. I needed to commit the regenerated output.~~ done (docs-health pass 2026-09-08)
 
-4. **Combobox keyboard accessibility is incomplete** — No ArrowDown/Up navigation within listbox, no `aria-activedescendant` tracking. The current implementation handles basic filtering and click-to-select but doesn't meet the full WAI-ARIA combobox pattern.
+4. ~~**Combobox keyboard accessibility is incomplete** — No ArrowDown/Up navigation within listbox, no `aria-activedescendant` tracking. The current implementation handles basic filtering and click-to-select but doesn't meet the full WAI-ARIA combobox pattern.~~ done — forms/combobox.templ full keyboard nav
 
-5. **No Validate() error on props** — ErrorPageProps has 12 optional fields. `Message` is semantically required but nothing enforces it. Graceful fallbacks hide configuration errors.
+5. ~~**No Validate() error on props** — ErrorPageProps has 12 optional fields. `Message` is semantically required but nothing enforces it. Graceful fallbacks hide configuration errors.~~ done — errorpage/styles.go Validate()
 
 ---
 
@@ -94,21 +94,21 @@
 
 ### High Impact, Low Effort
 
-1. **Tag v0.3.0** — all features done, just needs `git tag`
+1. ~~**Tag v0.3.0** — all features done, just needs `git tag`~~ done — CHANGELOG 0.3.0
 2. **Submit to awesome-templ** — discoverability
-3. **Update FEATURES.md** — stale (says 42 icons, 6 form components)
+3. ~~**Update FEATURES.md** — stale (says 42 icons, 6 form components)~~ done — FEATURES.md
 
 ### Medium Impact, Medium Effort
 
-4. **Combobox keyboard nav** — ArrowDown/Up, Enter, Home/End, `aria-activedescendant`
+4. ~~**Combobox keyboard nav** — ArrowDown/Up, Enter, Home/End, `aria-activedescendant`~~ done — forms/combobox.templ ArrowDown/aria-activedescendant
 5. **Get coverage to 80%** — templ render functions have a ceiling around 75% due to boilerplate error handling
 6. **Property-based tests** — verify invariants across random prop combinations
 
 ### High Impact, High Effort
 
-7. **Deploy demo site** — GitHub Pages from examples/demo
-8. **Documentation site** — pkgsite or doc2go
-9. **Plan v1.0 API freeze** — define scope, set date
+7. ~~**Deploy demo site** — GitHub Pages from examples/demo~~ done — 2026-07-14 03-08 cloud-run-demo-live.md
+8. ~~**Documentation site** — pkgsite or doc2go~~ done — website/
+9. ~~**Plan v1.0 API freeze** — define scope, set date~~ done — CHANGELOG 1.0.0
 
 ---
 
