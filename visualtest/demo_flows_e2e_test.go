@@ -47,13 +47,23 @@ func kanbanColumnCardIDsExpr(boardID, columnID string) string {
 func kanbanClickUntilMove(ctx context.Context, t *testing.T, buttonSel, orderExpr, want string) {
 	t.Helper()
 
-	deadline := time.Now().Add(demoFlowTimeout)
+	demoClickUntil(ctx, t, buttonSel, orderExpr+"==="+strconv.Quote(want), demoFlowTimeout)
+}
+
+// demoClickUntil clicks a selector and polls a JS condition, retrying the
+// click on failure. HTMX outerHTML swaps invalidate chromedp's cached node
+// ids ("Could not find node with given id"), so every retry re-queries the
+// selector from scratch.
+func demoClickUntil(ctx context.Context, t *testing.T, buttonSel, conditionExpr string, timeout time.Duration) {
+	t.Helper()
+
+	deadline := time.Now().Add(timeout)
 
 	for time.Now().Before(deadline) {
 		if err := chromedp.Run(ctx, chromedp.Click(buttonSel, chromedp.ByQuery)); err == nil {
 			var got string
 
-			pollErr := chromedp.Run(ctx, chromedp.Poll(orderExpr+"==="+strconv.Quote(want), &got,
+			pollErr := chromedp.Run(ctx, chromedp.Poll(conditionExpr, &got,
 				chromedp.WithPollingTimeout(3*time.Second)))
 			if pollErr == nil {
 				return
@@ -63,7 +73,7 @@ func kanbanClickUntilMove(ctx context.Context, t *testing.T, buttonSel, orderExp
 		time.Sleep(300 * time.Millisecond)
 	}
 
-	t.Fatalf("visualtest[demo]: move never landed: %s did not become %q", orderExpr, want)
+	t.Fatalf("visualtest[demo]: condition never held after repeated clicks on %s: %s", buttonSel, conditionExpr)
 }
 
 func TestDemoLoadMoreReachesEndOfList(t *testing.T) {
@@ -76,24 +86,16 @@ func TestDemoLoadMoreReachesEndOfList(t *testing.T) {
 		t.Fatalf("visualtest[demo]: load index: %v", err)
 	}
 
+	// Each LoadMore click REPLACES the button (hx-swap="outerHTML"), so the
+	// selector must be re-resolved for every step — demoClickUntil handles
+	// the stale-node churn.
 	loadMore := "#demo-load-more button"
 
-	if err := chromedp.Run(ctx, chromedp.Click(loadMore, chromedp.ByQuery)); err != nil {
-		t.Fatalf("visualtest[demo]: first LoadMore click: %v", err)
-	}
-
-	if err := chromedp.Run(ctx, chromedp.Click(loadMore, chromedp.ByQuery)); err != nil {
-		t.Fatalf("visualtest[demo]: second LoadMore click: %v", err)
-	}
-
-	var body string
-	if err := chromedp.Run(ctx, chromedp.Poll(
+	demoClickUntil(ctx, t, loadMore,
+		`document.querySelectorAll('#demo-load-more .rounded-lg').length >= 4`, demoFlowTimeout)
+	demoClickUntil(ctx, t, loadMore,
 		`document.querySelector('#demo-load-more').innerText.indexOf(`+strconv.Quote(endOfListText)+`) >= 0`,
-		&body,
-		chromedp.WithPollingTimeout(demoFlowTimeout),
-	)); err != nil {
-		t.Fatalf("visualtest[demo]: EndOfList never appeared after exhausting LoadMore: %v", err)
-	}
+		demoFlowTimeout)
 
 	var itemCount int
 	if err := chromedp.Run(ctx, chromedp.Evaluate(
@@ -115,12 +117,14 @@ func TestDemoConfirmDeleteRemovesRow(t *testing.T) {
 	ctx, cancel := newTab(t)
 	defer cancel()
 
+	// Handle the native confirm() dialog OUT of band: a synchronous
+	// chromedp.Run inside the ListenTarget callback deadlocks the target's
+	// event loop (the 10-minute binary timeout class). Dispatch and return.
 	chromedp.ListenTarget(ctx, func(ev any) {
 		if _, ok := ev.(*page.EventJavascriptDialogOpening); ok {
-			dialogCtx, dialogCancel := context.WithTimeout(ctx, 2*time.Second)
-			defer dialogCancel()
-
-			_ = chromedp.Run(dialogCtx, page.HandleJavaScriptDialog(true))
+			go func() {
+				_ = page.HandleJavaScriptDialog(true).Do(ctx)
+			}()
 		}
 	})
 
