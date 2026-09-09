@@ -1,6 +1,6 @@
 # Features — templ-components
 
-**Updated:** 2026-09-08 | **Version:** 1.15.1
+**Updated:** 2026-09-09 | **Version:** 1.16.0
 
 A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v4](https://tailwindcss.com) for building server-rendered web applications.
 

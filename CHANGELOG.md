@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.16.0] — 2026-09-09
+
 ### Added
 
 - **`display.KanbanBoard` — dual-transport kanban board.** Horizontally
@@ -48,7 +50,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   drop whose dragged card lives on a different board no longer submits —
   `dragover` does not claim the drop and `drop` returns early (each wired
   board owns its cards). Every submitted move now also announces
-  "Moved \<card\> to \<column\>." into the board's live region once the
+  "Moved <card> to <column>." into the board's live region once the
   re-rendered board lands: a swap-agnostic poll detects the response whether
   the runtime replaces the board element (htmx `outerHTML`) or morphs it in
   place (Datastar outer patches keep the element connected). Proven under
