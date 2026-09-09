@@ -161,6 +161,14 @@ container, clear named behavior change):
 | `EmptyState`  | Minimal                      | Yes (card, drawer)          | Weak — icon/text size only | **Reject** — cosmetic only               |
 | `NotFound404` | Yes (hero numeral)           | No (always full page)       | N/A                        | **Reject** — never constrained           |
 | `Footer`      | Yes (columns)                | Rarely (usually full-width) | Column collapse            | **Defer** — rarely placed in a container |
+| `KanbanBoard` | Yes (horizontal scroll)      | No (the board IS the wide element) | None — column min-widths are the design | **Reject** (2026-09-09) — the scroll is the model |
+
+`KanbanBoard` (evaluated 2026-09-09, kanban follow-through plan): columns
+have deliberate min-widths and the board scrolls horizontally — that IS the
+responsive strategy, shared with the demo. Constraining the board would not
+rename any behavior (no breakpoint exists to flip), so it fails the
+ADR-0018 criteria. If a future "compact board" variant ever collapses
+columns behind a toggle, re-evaluate then.
 
 **Conclusion:** None of the five candidates meet all three ADR-0018 criteria convincingly.
 Adding `ContainerAware` to marginal candidates **dilutes the pattern** and adds props

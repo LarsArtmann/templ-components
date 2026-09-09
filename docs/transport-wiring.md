@@ -360,6 +360,24 @@ Facts worth knowing:
 - **Browser-proven**: `visualtest/kanban_e2e_test.go` clicks the keyboard
   buttons AND dispatches synthetic drag events under both real runtimes
   against one `wire.Handler` endpoint set.
+- **Multi-board pages are safe**: a drop whose dragged card lives on a
+  DIFFERENT board is ignored — `dragover` does not claim the drop and
+  `drop` returns early, so no request is ever submitted. Each wired board
+  owns its cards; cross-board moves are a consumer composition (two
+  boards, two handlers), not a component feature. Proven by
+  `TestKanbanE2ECrossBoardDropIgnored`.
+- **Screen-reader confirmation**: every submitted move announces
+  "Moving X to Y." immediately and "Moved X to Y." once the re-rendered
+  board lands. The completion uses a swap-agnostic poll (the re-rendered
+  live region arrives empty) so it works under htmx's outerHTML
+  replacement AND Datastar's in-place outer patches. Proven by
+  `TestKanbanE2EAnnouncesMove`.
+- **Touch devices**: the hover-revealed keyboard move buttons stay visible
+  under `pointer: coarse` (an intentionally unlayered CSS rule in
+  `templates/custom.css` beats Tailwind v4's utilities layer in the
+  cascade) — they are the touch and keyboard path. Native drag-and-drop
+  needs a pointer device; a polyfilled touch-drag story is a documented
+  non-goal (the dependency budget is closed).
 
 ## Practical notes (audited 2026-09-07)
 
