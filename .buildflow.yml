@@ -1,46 +1,11 @@
 # BuildFlow Configuration
 # See: https://github.com/larsartmann/buildflow
-
-# Build mode: full, fast, ci, dev, pre-commit
-build_mode: full
-
-# Concurrency
-max_concurrency: 4
-
-# File settings
-max_file_size: 350 # lines
-dupl_threshold: 30 # tokens
-
-# TODO pattern minimum severity: info, warning, error, critical
-# info = all patterns, warning = skip TODO/NOTE/OPTIMIZE, error = only FIXME/XXX/BUG, critical = BUG only
-todo_min_severity: info
-
-# Patterns to exclude from checks
-exclude:
-  - vendor
-  - .git
-  - node_modules
-  - .next
-  - dist
-  - "*.pb.go"
-  - "*.gen.go"
-
-# Auto-fix settings
-auto_fix: false
-
-# Steps that structurally cannot pass in this repo — skipped, not broken.
-# Revisit when larsartmann/buildflow gains the upstream fixes (TODO_LIST #108/#124 family).
-# - eslint-fix: runs ESLint 10 at the repo root, which has no eslint config by
-#   design (Go repo; website/ has none either) → exit 2. TODO_LIST #108.
-# - nix-build: builds the full `.#checks` tree for EVERY system the flake
-#   advertises (github:nix-systems/default = darwin + linux), so on any single
-#   machine the other platform's checks always fail with a platform mismatch.
-#   Coverage is preserved: `nix-flake-check` still evaluates everything and the
-#   linux format check is enforced in CI; real builds go through the flake apps.
+# nix-build builds the full `.#checks` tree for EVERY system the flake
+# advertises (github:nix-systems/default = darwin + linux), so on any single
+# machine the other platform's checks always fail with a platform mismatch.
+# Coverage is preserved: nix-flake-check still evaluates everything and the
+# linux format check is enforced in CI; real builds go through the flake apps.
+# (eslint-fix skip removed: BuildFlow now auto-defers eslint when the repo
+# has no eslint config, which is by design here.)
 skip_steps:
-  - eslint-fix
   - nix-build
-
-# Logging
-verbose: false
-log_level: info
