@@ -125,48 +125,48 @@ Full public launch of templ-components: CI fixes, demo expansion (97 components)
 
 ### Medium — Quality and robustness
 
-| #  | Task                                                        | Est.   |
-| -- | ----------------------------------------------------------- | ------ |
-| 16 | Add Lighthouse CI to website workflow                       | 20 min |
-| 17 | Make HTML validation a blocking CI step                     | 5 min  |
-| 18 | Add broken link checker                                     | 15 min |
-| 19 | Add CSP headers to Cloud Run responses                      | 10 min |
-| 20 | Rename `forms_demo.templ` → `forms_standalone.templ`        | 5 min  |
-| 21 | Delete or document `prerender.go` as alternative deployment | 5 min  |
-| 22 | Add table of contents to long doc pages                     | 15 min |
-| 23 | Add prev/next nav to docs                                   | 10 min |
-| 24 | Add search/filter to demo page                              | 30 min |
+| #      | Task                                                                                  | Est.       |
+| ------ | ------------------------------------------------------------------------------------- | ---------- |
+| 16     | Add Lighthouse CI to website workflow                                                 | 20 min     |
+| 17     | Make HTML validation a blocking CI step                                               | 5 min      |
+| 18     | Add broken link checker                                                               | 15 min     |
+| 19     | Add CSP headers to Cloud Run responses                                                | 10 min     |
+| 20     | Rename `forms_demo.templ` → `forms_standalone.templ`                                  | 5 min      |
+| 21     | Delete or document `prerender.go` as alternative deployment                           | 5 min      |
+| 22     | Add table of contents to long doc pages                                               | 15 min     |
+| 23     | Add prev/next nav to docs                                                             | 10 min     |
+| 24     | Add search/filter to demo page                                                        | 30 min     |
 | ~~25~~ | ~~Add dark mode toggle to demo (not just system)~~ done (docs-health pass 2026-09-08) | ~~10 min~~ |
-| 26 | Add browser support matrix to docs                          | 15 min |
-| 27 | Write migration guide from templUI                          | 30 min |
-| 28 | Add "Copy to clipboard" on all code blocks                  | 15 min |
-| 29 | Write announcement blog post                                | 30 min |
-| 30 | Add structured data to demo page                            | 10 min |
+| 26     | Add browser support matrix to docs                                                    | 15 min     |
+| 27     | Write migration guide from templUI                                                    | 30 min     |
+| 28     | Add "Copy to clipboard" on all code blocks                                            | 15 min     |
+| 29     | Write announcement blog post                                                          | 30 min     |
+| 30     | Add structured data to demo page                                                      | 10 min     |
 
 ### Future — Nice to have
 
-| #  | Task                                                         | Est.    |
-| -- | ------------------------------------------------------------ | ------- |
-| 31 | Add per-component documentation pages                        | 2 hours |
-| 32 | Interactive playground (edit templ, see result)              | 1 day   |
-| 33 | Theme customizer (pick colors, see all components update)    | 4 hours |
-| 34 | Versioned docs (v0.x, v1.x)                                  | 4 hours |
-| 35 | Add analytics (Plausible/Fathom)                             | 15 min  |
-| ~~36~~ | ~~Newsletter signup~~ done — website/src/components/Newsletter.astro | ~~30 min~~ |
-| 37 | Sponsors section                                             | 15 min  |
-| ~~38~~ | ~~Contributing guide for new components~~ done (docs-health pass 2026-09-08) | ~~30 min~~ |
-| 39 | Community link (Discord/Slack)                               | 10 min  |
-| ~~40~~ | ~~Visual regression testing for demo~~ done — visualtest | ~~1 hour~~ |
-| 41 | Bundle size monitoring                                       | 15 min  |
-| 42 | Multi-region Cloud Run (us + eu)                             | 30 min  |
-| 43 | Uptime monitoring (UptimeRobot)                              | 10 min  |
-| 44 | Demo page performance optimization (inline critical CSS)     | 1 hour  |
-| 45 | Add ETag support to demo server                              | 15 min  |
-| 46 | Cloud Run logging to BigQuery                                | 20 min  |
-| 47 | Add `/api/toast` mock endpoint for toast demo                | 5 min   |
-| 48 | Firebase Blaze plan upgrade (for Hosting rewrite)            | 10 min  |
+| #      | Task                                                                                     | Est.       |
+| ------ | ---------------------------------------------------------------------------------------- | ---------- |
+| 31     | Add per-component documentation pages                                                    | 2 hours    |
+| 32     | Interactive playground (edit templ, see result)                                          | 1 day      |
+| 33     | Theme customizer (pick colors, see all components update)                                | 4 hours    |
+| 34     | Versioned docs (v0.x, v1.x)                                                              | 4 hours    |
+| 35     | Add analytics (Plausible/Fathom)                                                         | 15 min     |
+| ~~36~~ | ~~Newsletter signup~~ done — website/src/components/Newsletter.astro                     | ~~30 min~~ |
+| 37     | Sponsors section                                                                         | 15 min     |
+| ~~38~~ | ~~Contributing guide for new components~~ done (docs-health pass 2026-09-08)             | ~~30 min~~ |
+| 39     | Community link (Discord/Slack)                                                           | 10 min     |
+| ~~40~~ | ~~Visual regression testing for demo~~ done — visualtest                                 | ~~1 hour~~ |
+| 41     | Bundle size monitoring                                                                   | 15 min     |
+| 42     | Multi-region Cloud Run (us + eu)                                                         | 30 min     |
+| 43     | Uptime monitoring (UptimeRobot)                                                          | 10 min     |
+| 44     | Demo page performance optimization (inline critical CSS)                                 | 1 hour     |
+| 45     | Add ETag support to demo server                                                          | 15 min     |
+| 46     | Cloud Run logging to BigQuery                                                            | 20 min     |
+| 47     | Add `/api/toast` mock endpoint for toast demo                                            | 5 min      |
+| 48     | Firebase Blaze plan upgrade (for Hosting rewrite)                                        | 10 min     |
 | ~~49~~ | ~~Tailwind v4 `@source` scanning in CI for CSS freshness check~~ done — TestCSSFreshness | ~~15 min~~ |
-| 50 | Export demo as static downloadable HTML for offline use      | 30 min  |
+| 50     | Export demo as static downloadable HTML for offline use                                  | 30 min     |
 
 ---
 

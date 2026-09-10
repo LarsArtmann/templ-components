@@ -39,30 +39,30 @@ templ-components for adminui's needs).
 
 ## b) PARTIALLY DONE ⚠️
 
-| # | Work item                       | What's done                                                                                                | What's missing                                                                                                                                                                                                                    |
-| - | ------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #     | Work item                                                                                       | What's done                                                                                                    | What's missing                                                                                                                                                                                                                        |
+| ----- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ~~1~~ | ~~**adminui icons-only adoption**~~ **Won't implement — overridden by adminui commit 8091422.** | ~~icon mapping table finalized, `IconPathData()` API built for this use case, dependency tested and verified~~ | ~~**OVERRIDDEN by commit `8091422`**: another agent chose self-contained inline Heroicons paths instead of a templ-components dependency. This is a valid design decision — I respect it and cleaned up my orphaned go.mod changes.~~ |
-| ~~2~~ | ~~**CSS-var portability layer**~~ **Won't implement — rejected ADR-001 no portability layer.** | ~~Color bridge CSS generated (1388 lines), ADR written, README documented~~ | ~~Long-term semantic class refactor (Option B in ADR) not started — this is a multi-day effort across 73 components~~ |
+| ~~2~~ | ~~**CSS-var portability layer**~~ **Won't implement — rejected ADR-001 no portability layer.**  | ~~Color bridge CSS generated (1388 lines), ADR written, README documented~~                                    | ~~Long-term semantic class refactor (Option B in ADR) not started — this is a multi-day effort across 73 components~~                                                                                                                 |
 
 ## c) NOT STARTED ⬜
 
-| # | Work item                                          | Why                                                    |
-| - | -------------------------------------------------- | ------------------------------------------------------ |
-| ~~1~~ | ~~Adopt tc `Badge` in adminui~~ **Won't implement — moot tailwind v4 decision.** | ~~Blocked by Tailwind coupling (adminui has no Tailwind)~~ |
-| ~~2~~ | ~~Adopt tc `Card`/`StatCard` in adminui~~ **Won't implement — moot tailwind v4 decision.** | ~~Blocked by Tailwind coupling~~ |
-| ~~3~~ | ~~Adopt tc `Table` in adminui~~ **Won't implement — moot tailwind v4 decision.** | ~~Blocked by Tailwind coupling~~ |
-| ~~4~~ | ~~Adopt tc `Input`/`Select`/`Form` in adminui~~ **Won't implement — moot tailwind v4 decision.** | ~~Blocked by Tailwind coupling~~ |
-| ~~5~~ | ~~Adopt tc `Toast`/`Spinner`/`EmptyState` in adminui~~ **Won't implement — moot tailwind v4 decision.** | ~~Blocked by Tailwind coupling~~ |
-| ~~6~~ | ~~Semantic class migration (Option B)~~ **Won't implement — rejected ADR-001.** | ~~Multi-day refactor of all 73 components~~ |
-| ~~7~~ | ~~Layout bridge CSS (flex/grid/padding in plain CSS)~~ **Won't implement — explicitly rejected too fragile.** | ~~Explicitly rejected in ADR as too fragile~~ |
+| #     | Work item                                                                                                     | Why                                                        |
+| ----- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| ~~1~~ | ~~Adopt tc `Badge` in adminui~~ **Won't implement — moot tailwind v4 decision.**                              | ~~Blocked by Tailwind coupling (adminui has no Tailwind)~~ |
+| ~~2~~ | ~~Adopt tc `Card`/`StatCard` in adminui~~ **Won't implement — moot tailwind v4 decision.**                    | ~~Blocked by Tailwind coupling~~                           |
+| ~~3~~ | ~~Adopt tc `Table` in adminui~~ **Won't implement — moot tailwind v4 decision.**                              | ~~Blocked by Tailwind coupling~~                           |
+| ~~4~~ | ~~Adopt tc `Input`/`Select`/`Form` in adminui~~ **Won't implement — moot tailwind v4 decision.**              | ~~Blocked by Tailwind coupling~~                           |
+| ~~5~~ | ~~Adopt tc `Toast`/`Spinner`/`EmptyState` in adminui~~ **Won't implement — moot tailwind v4 decision.**       | ~~Blocked by Tailwind coupling~~                           |
+| ~~6~~ | ~~Semantic class migration (Option B)~~ **Won't implement — rejected ADR-001.**                               | ~~Multi-day refactor of all 73 components~~                |
+| ~~7~~ | ~~Layout bridge CSS (flex/grid/padding in plain CSS)~~ **Won't implement — explicitly rejected too fragile.** | ~~Explicitly rejected in ADR as too fragile~~              |
 
 ## d) TOTALLY FUCKED UP 💥 → RECOVERED
 
-| # | What happened                                       | Impact                                                                                                                                                   | Resolution                                                                                                                                                                                      |
-| - | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ~~1~~ | ~~**adminui icons.go was overwritten**~~ done (docs-health pass 2026-09-08) | ~~My `write` to `icons.go` (delegating to templ-components) was overridden by commit `8091422` from another process that chose self-contained inline paths~~ | ~~Detected via `git diff HEAD` showing no diff. Read the other agent's implementation, judged it on merits (valid design choice), and cleaned up my orphaned go.mod/go.sum changes. No harm done.~~ |
-| ~~2~~ | ~~**go.sum polluted** with templ-components checksums~~ done (docs-health pass 2026-09-08) | ~~Minor: go.sum had 2 extra lines~~ | ~~Reverted via `git checkout HEAD -- adminui/go.sum`~~ |
-| ~~3~~ | ~~**Icon path rewrite error** (early in session)~~ done (docs-health pass 2026-09-08) | ~~I hand-wrote SVG paths instead of using official Heroicons data~~ | ~~Caught immediately, replaced with exact official paths from `gh api`~~ |
+| #     | What happened                                                                              | Impact                                                                                                                                                       | Resolution                                                                                                                                                                                          |
+| ----- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~1~~ | ~~**adminui icons.go was overwritten**~~ done (docs-health pass 2026-09-08)                | ~~My `write` to `icons.go` (delegating to templ-components) was overridden by commit `8091422` from another process that chose self-contained inline paths~~ | ~~Detected via `git diff HEAD` showing no diff. Read the other agent's implementation, judged it on merits (valid design choice), and cleaned up my orphaned go.mod/go.sum changes. No harm done.~~ |
+| ~~2~~ | ~~**go.sum polluted** with templ-components checksums~~ done (docs-health pass 2026-09-08) | ~~Minor: go.sum had 2 extra lines~~                                                                                                                          | ~~Reverted via `git checkout HEAD -- adminui/go.sum`~~                                                                                                                                              |
+| ~~3~~ | ~~**Icon path rewrite error** (early in session)~~ done (docs-health pass 2026-09-08)      | ~~I hand-wrote SVG paths instead of using official Heroicons data~~                                                                                          | ~~Caught immediately, replaced with exact official paths from `gh api`~~                                                                                                                            |
 
 ## e) WHAT WE SHOULD IMPROVE
 
@@ -84,33 +84,33 @@ templ-components for adminui's needs).
 > See `docs/adr-001-tailwind-v4-standard.md`. Items 4-18 from the original list
 > (semantic class migration, color bridge) are **REJECTED** and removed.
 
-| Priority | Task                                                                           | Impact    | Effort    |
-| -------- | ------------------------------------------------------------------------------ | --------- | --------- |
-| ~~1~~        | ~~Add PageHeader, DefinitionList, ListNote, SidebarNav to demo page~~ done at `de0fd95` | ~~High~~ | ~~30min~~ |
-| ~~2~~        | ~~Golden snapshot tests for all 4 new components~~ done at `de0fd95` | ~~Medium~~ | ~~45min~~ |
-| ~~3~~        | ~~**Migrate cqrs-htmx/adminui to Tailwind v4+** (Phase 1: wrap tokens in @theme)~~ done at `de0fd95` | ~~Very High~~ | ~~1hr~~ |
-| ~~4~~        | ~~adminui Phase 2: replace custom classes with tc components~~ done at `de0fd95` | ~~Very High~~ | ~~ongoing~~ |
-| ~~5~~        | ~~adminui Phase 3: delete 706-line admin.css~~ done at `de0fd95` | ~~High~~ | ~~when done~~ |
-| ~~6~~        | ~~Publish templ-components v0.4.0 with new components~~ done at `de0fd95` | ~~High~~ | ~~30min~~ |
-| ~~7~~        | ~~Add `BuildingOffice2`, `Key`, `ArrowRightOnRectangle` to icon catalog demo~~ done at `de0fd95` | ~~Low~~ | ~~15min~~ |
-| ~~8~~        | ~~Ensure all new components follow Tailwind v4+ best practices~~ **Won't implement — rejected ADR-001 tailwind v4 standard color bridge deleted.** | ~~Medium~~ | ~~30min~~ |
-| ~~9~~        | ~~Audit all components for consistent Tailwind class patterns~~ **Won't implement — superseded by docs/adr-001-tailwind-v4-standard.md.** | ~~Medium~~ | ~~1hr~~ |
-| ~~10~~       | ~~Add dark mode test coverage for new components~~ done at `de0fd95` | ~~Medium~~ | ~~45min~~ |
-| ~~11~~       | ~~Create migration template: custom CSS → Tailwind v4+~~ done at `de0fd95` | ~~High~~ | ~~45min~~ |
-| ~~12~~       | ~~Document recommended Tailwind CLI integration for Go projects~~ done at `de0fd95` | ~~Medium~~ | ~~30min~~ |
-| ~~13~~       | ~~Add flake.nix target for Tailwind CSS build~~ done at `de0fd95` | ~~Medium~~ | ~~30min~~ |
-| ~~14~~       | ~~Review all existing components for Tailwind v4 syntax upgrades~~ done at `de0fd95` | ~~Low~~ | ~~1hr~~ |
-| ~~15~~       | ~~Standardize motion-reduce patterns across new components~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~20min~~ |
-| ~~16~~       | ~~Add accessibility audit for new components (aria, keyboard nav)~~ done — navigation/a11y test.go | ~~Medium~~ | ~~1hr~~ |
-| ~~17~~       | ~~Write integration tests: components render correctly in full page~~ done — integration/ | ~~Medium~~ | ~~1hr~~ |
-| ~~18~~       | ~~Create "recommended stack" doc (templ + Tailwind v4 + HTMX + Go)~~ done — README.md | ~~Medium~~ | ~~45min~~ |
-| ~~19~~       | ~~Evaluate Tailwind v4 plugin for templ-specific class scanning~~ **Won't implement — v4 auto content detection moots it.** | ~~Low~~ | ~~Research~~ |
-| ~~20~~       | ~~Standardize button/link color variants across all components~~ done (docs-health pass 2026-09-08) | ~~Medium~~ | ~~45min~~ |
-| ~~21~~       | ~~Review focus-visible patterns for WCAG 2.2 compliance~~ done — docs/adr/0011-wcag-contrast-verification.md | ~~Medium~~ | ~~45min~~ |
-| ~~22~~       | ~~Add prefers-color-scheme fallback for users without JS~~ done — layout/theme.templ prefers-color-scheme | ~~Low~~ | ~~30min~~ |
-| ~~23~~       | ~~Create component playground / interactive docs~~ done — website/ | ~~Low~~ | ~~2hr~~ |
-| ~~24~~       | ~~Audit icon set for missing common admin icons~~ done — icons 102 icons | ~~Low~~ | ~~30min~~ |
-| ~~25~~       | ~~Write contributing guide with Tailwind v4+ conventions~~ done — CONTRIBUTING.md | ~~Medium~~ | ~~45min~~ |
+| Priority | Task                                                                                                                                               | Impact        | Effort        |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------- |
+| ~~1~~    | ~~Add PageHeader, DefinitionList, ListNote, SidebarNav to demo page~~ done at `de0fd95`                                                            | ~~High~~      | ~~30min~~     |
+| ~~2~~    | ~~Golden snapshot tests for all 4 new components~~ done at `de0fd95`                                                                               | ~~Medium~~    | ~~45min~~     |
+| ~~3~~    | ~~**Migrate cqrs-htmx/adminui to Tailwind v4+** (Phase 1: wrap tokens in @theme)~~ done at `de0fd95`                                               | ~~Very High~~ | ~~1hr~~       |
+| ~~4~~    | ~~adminui Phase 2: replace custom classes with tc components~~ done at `de0fd95`                                                                   | ~~Very High~~ | ~~ongoing~~   |
+| ~~5~~    | ~~adminui Phase 3: delete 706-line admin.css~~ done at `de0fd95`                                                                                   | ~~High~~      | ~~when done~~ |
+| ~~6~~    | ~~Publish templ-components v0.4.0 with new components~~ done at `de0fd95`                                                                          | ~~High~~      | ~~30min~~     |
+| ~~7~~    | ~~Add `BuildingOffice2`, `Key`, `ArrowRightOnRectangle` to icon catalog demo~~ done at `de0fd95`                                                   | ~~Low~~       | ~~15min~~     |
+| ~~8~~    | ~~Ensure all new components follow Tailwind v4+ best practices~~ **Won't implement — rejected ADR-001 tailwind v4 standard color bridge deleted.** | ~~Medium~~    | ~~30min~~     |
+| ~~9~~    | ~~Audit all components for consistent Tailwind class patterns~~ **Won't implement — superseded by docs/adr-001-tailwind-v4-standard.md.**          | ~~Medium~~    | ~~1hr~~       |
+| ~~10~~   | ~~Add dark mode test coverage for new components~~ done at `de0fd95`                                                                               | ~~Medium~~    | ~~45min~~     |
+| ~~11~~   | ~~Create migration template: custom CSS → Tailwind v4+~~ done at `de0fd95`                                                                         | ~~High~~      | ~~45min~~     |
+| ~~12~~   | ~~Document recommended Tailwind CLI integration for Go projects~~ done at `de0fd95`                                                                | ~~Medium~~    | ~~30min~~     |
+| ~~13~~   | ~~Add flake.nix target for Tailwind CSS build~~ done at `de0fd95`                                                                                  | ~~Medium~~    | ~~30min~~     |
+| ~~14~~   | ~~Review all existing components for Tailwind v4 syntax upgrades~~ done at `de0fd95`                                                               | ~~Low~~       | ~~1hr~~       |
+| ~~15~~   | ~~Standardize motion-reduce patterns across new components~~ done (docs-health pass 2026-09-08)                                                    | ~~Low~~       | ~~20min~~     |
+| ~~16~~   | ~~Add accessibility audit for new components (aria, keyboard nav)~~ done — navigation/a11y test.go                                                 | ~~Medium~~    | ~~1hr~~       |
+| ~~17~~   | ~~Write integration tests: components render correctly in full page~~ done — integration/                                                          | ~~Medium~~    | ~~1hr~~       |
+| ~~18~~   | ~~Create "recommended stack" doc (templ + Tailwind v4 + HTMX + Go)~~ done — README.md                                                              | ~~Medium~~    | ~~45min~~     |
+| ~~19~~   | ~~Evaluate Tailwind v4 plugin for templ-specific class scanning~~ **Won't implement — v4 auto content detection moots it.**                        | ~~Low~~       | ~~Research~~  |
+| ~~20~~   | ~~Standardize button/link color variants across all components~~ done (docs-health pass 2026-09-08)                                                | ~~Medium~~    | ~~45min~~     |
+| ~~21~~   | ~~Review focus-visible patterns for WCAG 2.2 compliance~~ done — docs/adr/0011-wcag-contrast-verification.md                                       | ~~Medium~~    | ~~45min~~     |
+| ~~22~~   | ~~Add prefers-color-scheme fallback for users without JS~~ done — layout/theme.templ prefers-color-scheme                                          | ~~Low~~       | ~~30min~~     |
+| ~~23~~   | ~~Create component playground / interactive docs~~ done — website/                                                                                 | ~~Low~~       | ~~2hr~~       |
+| ~~24~~   | ~~Audit icon set for missing common admin icons~~ done — icons 102 icons                                                                           | ~~Low~~       | ~~30min~~     |
+| ~~25~~   | ~~Write contributing guide with Tailwind v4+ conventions~~ done — CONTRIBUTING.md                                                                  | ~~Medium~~    | ~~45min~~     |
 
 ## g) ARCHITECTURE DECISION — RESOLVED
 

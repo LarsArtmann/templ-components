@@ -1,6 +1,6 @@
 # Status Report — 2026-09-10 01:59 CEST — Docs-Health Full Pass: Inline Annotation, Archiving, Living-Doc Sync
 
-**Session scope:** the user ordered a full docs-health run: "View ALL **/2026-0* files! Execute the
+**Session scope:** the user ordered a full docs-health run: "View ALL *_/2026-0_ files! Execute the
 docs-health SKILL! … TODO_LIST, CHANGELOG, AGENTS, README, ROADMAP, FEATURES must be all SUPERB!
 Archive FULLY done and UPDATED (inline strikethrough) .md files!" This report covers that pass only.
 Entry state: all 21 N-plan items complete, working tree clean at `69880f6`. Exit state: historical
@@ -22,13 +22,13 @@ one post-commit row fix. Working tree clean.
 
 ## a) FULLY DONE
 
-1. **Read ALL 193 active 2026-0* `.md` files.** 9 parallel classification agents (one batch
+1. __Read ALL 193 active 2026-0_ `.md` files._* 9 parallel classification agents (one batch
    rate-limited and was re-run) read every file fully and produced per-item verdicts with
    evidence rules: hash cited in text > report's own adding commit (`git log --diff-filter=A`)
    > verified-in-tree evidence > won't-implement with reason. False "done" markers were defined
-   as worse than open items; agents were forbidden from striking anything unverifiable.
+   > as worse than open items; agents were forbidden from striking anything unverifiable.
 2. **6,809 inline annotations applied across 169 files** (`cf9c7616`). Every numbered item that
-   could be resolved now carries `~~original text~~ done at `<hash>`` / `done — <evidence>` /
+   could be resolved now carries `~~original text~~ done at`<hash>`` / `done — <evidence>` /
    `done (docs-health pass …)` / `**Won't implement — <reason>**`, applied in place per the
    skill's ANNOTATE rules. Diff shape verified: 9,580 insertions = 9,580 deletions (no
    structural damage; line counts preserved per file).
@@ -146,7 +146,7 @@ one post-commit row fix. Working tree clean.
    read-only; the driver should consume their output verbatim from a scratch file the ORCHESTRATOR
    writes once (or a per-batch `--dry-run` harness), never re-typed by hand.
 2. **Extend the shipped annotate scripts** for (a) per-section prose numbering restarts, (b)
-   name-keyed table rows, (c) non-`## ` section prefix matching — then the driver shrinks to a
+   name-keyed table rows, (c) non-`##` section prefix matching — then the driver shrinks to a
    scheduler.
 3. **Archive eligibility as a checker script:** `docs-health-check <file>` = "every numbered
    item struck AND no unresolved forward-looking section" → print ARCHIVE/ANNOTATE/SKIP. Would
@@ -217,8 +217,8 @@ one post-commit row fix. Working tree clean.
 | 46 | Demo `?transport=` route goldens for both single-transport variants                                               | Low      | S      | Quality       |
 | 47 | Dedupe screenshot-quality constant between tools/shots and harness                                                | Low      | S      | Cleanup       |
 | 48 | Consider `t.Chdir`-free temp-dir cleanup verification for route goldens                                           | Low      | S      | Cleanup       |
-| 49 | `ci-repro.sh --lint`/docs: record the route-golden re-cut procedure (diff PNG inspection before `-update`)         | Low      | S      | Documentation |
-| 50 | Decide the status-report format default (.md vs .html) once, in the skill                                          | Low      | S      | Process       |
+| 49 | `ci-repro.sh --lint`/docs: record the route-golden re-cut procedure (diff PNG inspection before `-update`)        | Low      | S      | Documentation |
+| 50 | Decide the status-report format default (.md vs .html) once, in the skill                                         | Low      | S      | Process       |
 
 _Top-ten routing note: rows 9–18 already live in TODO_LIST as #193–#202 (harvested this
 session); rows 3–5 were already tracked (#192, #133, §g2). The rest are ROADMAP fuel unless
@@ -240,5 +240,5 @@ promoted._
 
 ---
 
-*Report written per the status-report skill; the user's explicit `.md` instruction overrides the
-skill's HTML default (6th consecutive override — flagged, not propagated into the skill).*
+_Report written per the status-report skill; the user's explicit `.md` instruction overrides the
+skill's HTML default (6th consecutive override — flagged, not propagated into the skill)._

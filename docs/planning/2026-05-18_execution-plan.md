@@ -54,71 +54,71 @@
 
 ### Phase 3: Accessibility
 
-| Step | Task                                                          | Files                         | Est. | Impact    |
-| ---- | ------------------------------------------------------------- | ----------------------------- | ---- | --------- |
-| ~~10~~   | ~~Add `aria-live="polite"` region to HTMX error handling output~~ done — htmx/error handling.templ | ~~`htmx/error_handling.templ`~~ | ~~5min~~ | ~~🟡 A11y~~ |
-| ~~11~~   | ~~Test: verify aria-live attribute in error handling output~~ done — htmx/error handling.templ | ~~`htmx/error_handling_test.go`~~ | ~~5min~~ | ~~🟢 Verify~~ |
+| Step   | Task                                                                                               | Files                             | Est.     | Impact        |
+| ------ | -------------------------------------------------------------------------------------------------- | --------------------------------- | -------- | ------------- |
+| ~~10~~ | ~~Add `aria-live="polite"` region to HTMX error handling output~~ done — htmx/error handling.templ | ~~`htmx/error_handling.templ`~~   | ~~5min~~ | ~~🟡 A11y~~   |
+| ~~11~~ | ~~Test: verify aria-live attribute in error handling output~~ done — htmx/error handling.templ     | ~~`htmx/error_handling_test.go`~~ | ~~5min~~ | ~~🟢 Verify~~ |
 
 ### Phase 4: Default Constructors (#57 completion)
 
-| Step | Task                                                                 | Files                     | Est. | Impact        |
-| ---- | -------------------------------------------------------------------- | ------------------------- | ---- | ------------- |
-| ~~12~~   | ~~Add defaults to `DefaultAccordionProps`: `Variant: AccordionDefault`~~ done — feedback/snapshot test.go | ~~`display/accordion.templ`~~ | ~~3min~~ | ~~🟡 Convention~~ |
-| ~~13~~   | ~~Add defaults to `DefaultStatCardProps`: `Trend: TrendNone`~~ done — display/card templ.go | ~~`display/card.templ`~~ | ~~3min~~ | ~~🟡 Convention~~ |
-| ~~14~~   | ~~Update TODO #57 → ✅~~ done — display/card templ.go | ~~`TODO_LIST.md`~~ | ~~1min~~ | ~~📝 Docs~~ |
+| Step   | Task                                                                                                      | Files                         | Est.     | Impact            |
+| ------ | --------------------------------------------------------------------------------------------------------- | ----------------------------- | -------- | ----------------- |
+| ~~12~~ | ~~Add defaults to `DefaultAccordionProps`: `Variant: AccordionDefault`~~ done — feedback/snapshot test.go | ~~`display/accordion.templ`~~ | ~~3min~~ | ~~🟡 Convention~~ |
+| ~~13~~ | ~~Add defaults to `DefaultStatCardProps`: `Trend: TrendNone`~~ done — display/card templ.go               | ~~`display/card.templ`~~      | ~~3min~~ | ~~🟡 Convention~~ |
+| ~~14~~ | ~~Update TODO #57 → ✅~~ done — display/card templ.go                                                     | ~~`TODO_LIST.md`~~            | ~~1min~~ | ~~📝 Docs~~       |
 
 ### Phase 5: Validation & Robustness
 
-| Step | Task                                               | Files                                               | Est. | Impact        |
-| ---- | -------------------------------------------------- | --------------------------------------------------- | ---- | ------------- |
-| ~~15~~   | ~~Add Table header/row cell count mismatch guard~~ done — display/table.templ | ~~`display/table.templ`~~ | ~~8min~~ | ~~🟡 Robustness~~ |
-| ~~16~~   | ~~Test: Table with mismatched lengths — verify guard~~ done — display/table.templ | ~~`display/table_test.go`~~ | ~~5min~~ | ~~🟢 Coverage~~ |
-| ~~17~~   | ~~Test: Modal+Dropdown empty ID panic verification~~ done — display/dropdown test.go | ~~`display/modal_test.go`, `display/dropdown_test.go`~~ | ~~8min~~ | ~~🟢 Coverage~~ |
+| Step   | Task                                                                                 | Files                                                   | Est.     | Impact            |
+| ------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------- | -------- | ----------------- |
+| ~~15~~ | ~~Add Table header/row cell count mismatch guard~~ done — display/table.templ        | ~~`display/table.templ`~~                               | ~~8min~~ | ~~🟡 Robustness~~ |
+| ~~16~~ | ~~Test: Table with mismatched lengths — verify guard~~ done — display/table.templ    | ~~`display/table_test.go`~~                             | ~~5min~~ | ~~🟢 Coverage~~   |
+| ~~17~~ | ~~Test: Modal+Dropdown empty ID panic verification~~ done — display/dropdown test.go | ~~`display/modal_test.go`, `display/dropdown_test.go`~~ | ~~8min~~ | ~~🟢 Coverage~~   |
 
 ### Phase 6: Display Coverage Push (66.0% → 70%+)
 
-| Step | Task                                          | Files                         | Est.  | Impact      |
-| ---- | --------------------------------------------- | ----------------------------- | ----- | ----------- |
-| ~~18~~   | ~~Tests for EmptyState action rendering + icon~~ done — display/dropdown test.go | ~~`display/empty_state_test.go`~~ | ~~10min~~ | ~~🟡 Coverage~~ |
-| ~~19~~   | ~~Tests for Tooltip position variants~~ done — display/dropdown test.go | ~~`display/tooltip_test.go`~~ | ~~8min~~ | ~~🟡 Coverage~~ |
-| ~~20~~   | ~~Tests for Accordion expand/collapse rendering~~ done — display/dropdown test.go | ~~`display/accordion_test.go`~~ | ~~10min~~ | ~~🟡 Coverage~~ |
+| Step   | Task                                                                              | Files                             | Est.      | Impact          |
+| ------ | --------------------------------------------------------------------------------- | --------------------------------- | --------- | --------------- |
+| ~~18~~ | ~~Tests for EmptyState action rendering + icon~~ done — display/dropdown test.go  | ~~`display/empty_state_test.go`~~ | ~~10min~~ | ~~🟡 Coverage~~ |
+| ~~19~~ | ~~Tests for Tooltip position variants~~ done — display/dropdown test.go           | ~~`display/tooltip_test.go`~~     | ~~8min~~  | ~~🟡 Coverage~~ |
+| ~~20~~ | ~~Tests for Accordion expand/collapse rendering~~ done — display/dropdown test.go | ~~`display/accordion_test.go`~~   | ~~10min~~ | ~~🟡 Coverage~~ |
 
 ### Phase 7: JS Unification (#23, #24 partial)
 
-| Step | Task                                                              | Files                                          | Est. | Impact    |
-| ---- | ----------------------------------------------------------------- | ---------------------------------------------- | ---- | --------- |
-| ~~21~~   | ~~Extract shared `feedbackIconMap` for alert+toast icon name lookup~~ done — display/dropdown test.go | ~~`feedback/styles.go`~~ | ~~5min~~ | ~~🟡 Dedup~~ |
-| ~~22~~   | ~~Refactor `alertIconName` + `toastIconName` to use shared map~~ done — feedback/styles.go | ~~`feedback/alert.templ`, `feedback/toast.templ`~~ | ~~8min~~ | ~~🟡 Dedup~~ |
-| ~~23~~   | ~~Test: shared feedback icon map~~ done — feedback/styles.go | ~~`feedback/styles_test.go`~~ | ~~3min~~ | ~~🟢 Verify~~ |
+| Step   | Task                                                                                                  | Files                                              | Est.     | Impact        |
+| ------ | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- | -------- | ------------- |
+| ~~21~~ | ~~Extract shared `feedbackIconMap` for alert+toast icon name lookup~~ done — display/dropdown test.go | ~~`feedback/styles.go`~~                           | ~~5min~~ | ~~🟡 Dedup~~  |
+| ~~22~~ | ~~Refactor `alertIconName` + `toastIconName` to use shared map~~ done — feedback/styles.go            | ~~`feedback/alert.templ`, `feedback/toast.templ`~~ | ~~8min~~ | ~~🟡 Dedup~~  |
+| ~~23~~ | ~~Test: shared feedback icon map~~ done — feedback/styles.go                                          | ~~`feedback/styles_test.go`~~                      | ~~3min~~ | ~~🟢 Verify~~ |
 
 ### Phase 8: Code Organization (#58, #59)
 
-| Step | Task                                      | Files                                          | Est. | Impact          |
-| ---- | ----------------------------------------- | ---------------------------------------------- | ---- | --------------- |
-| ~~24~~   | ~~Move test helpers to `internal/testutil/`~~ **Won't implement — deferred post v1.0.** | ~~`utils/test_helpers.go` → `internal/testutil/`~~ | ~~8min~~ | ~~🟢 Organization~~ |
-| ~~25~~   | ~~Update all test imports for testutil move~~ **Won't implement — deferred post v1.0.** | ~~All `*_test.go` files~~ | ~~5min~~ | ~~🟢 Fix imports~~ |
+| Step   | Task                                                                                    | Files                                              | Est.     | Impact              |
+| ------ | --------------------------------------------------------------------------------------- | -------------------------------------------------- | -------- | ------------------- |
+| ~~24~~ | ~~Move test helpers to `internal/testutil/`~~ **Won't implement — deferred post v1.0.** | ~~`utils/test_helpers.go` → `internal/testutil/`~~ | ~~8min~~ | ~~🟢 Organization~~ |
+| ~~25~~ | ~~Update all test imports for testutil move~~ **Won't implement — deferred post v1.0.** | ~~All `*_test.go` files~~                          | ~~5min~~ | ~~🟢 Fix imports~~  |
 
 ### Phase 9: Single-source Toast Icons (#25)
 
-| Step | Task                                                              | Files                    | Est.  | Impact    |
-| ---- | ----------------------------------------------------------------- | ------------------------ | ----- | --------- |
-| ~~26~~   | ~~Generate `tcToastIcons` JS from Go `iconPaths` map at render time~~ done — feedback/toast.templ | ~~`feedback/toast.templ`~~ | ~~10min~~ | ~~🟡 Dedup~~ |
-| ~~27~~   | ~~Test: verify toast JS icons match Go icon paths~~ done — feedback/toast regression test.go | ~~`feedback/toast_test.go`~~ | ~~5min~~ | ~~🟢 Verify~~ |
+| Step   | Task                                                                                              | Files                        | Est.      | Impact        |
+| ------ | ------------------------------------------------------------------------------------------------- | ---------------------------- | --------- | ------------- |
+| ~~26~~ | ~~Generate `tcToastIcons` JS from Go `iconPaths` map at render time~~ done — feedback/toast.templ | ~~`feedback/toast.templ`~~   | ~~10min~~ | ~~🟡 Dedup~~  |
+| ~~27~~ | ~~Test: verify toast JS icons match Go icon paths~~ done — feedback/toast regression test.go      | ~~`feedback/toast_test.go`~~ | ~~5min~~  | ~~🟢 Verify~~ |
 
 ### Phase 10: Documentation
 
-| Step | Task                                                   | Files                            | Est. | Impact  |
-| ---- | ------------------------------------------------------ | -------------------------------- | ---- | ------- |
-| ~~28~~   | ~~Document SimpleCard breaking change in migration guide~~ done — docs/migration/v0.1-to-v0.2.md | ~~`docs/migration/v0.1-to-v0.2.md`~~ | ~~3min~~ | ~~📝 Docs~~ |
-| ~~29~~   | ~~Document PageProps not embedding BaseProps (#72)~~ done — AGENTS.md | ~~`CONTEXT.md` or `README.md`~~ | ~~3min~~ | ~~📝 Docs~~ |
-| ~~30~~   | ~~Update AGENTS.md with new patterns~~ done — AGENTS.md | ~~`AGENTS.md`~~ | ~~3min~~ | ~~📝 Docs~~ |
+| Step   | Task                                                                                             | Files                                | Est.     | Impact      |
+| ------ | ------------------------------------------------------------------------------------------------ | ------------------------------------ | -------- | ----------- |
+| ~~28~~ | ~~Document SimpleCard breaking change in migration guide~~ done — docs/migration/v0.1-to-v0.2.md | ~~`docs/migration/v0.1-to-v0.2.md`~~ | ~~3min~~ | ~~📝 Docs~~ |
+| ~~29~~ | ~~Document PageProps not embedding BaseProps (#72)~~ done — AGENTS.md                            | ~~`CONTEXT.md` or `README.md`~~      | ~~3min~~ | ~~📝 Docs~~ |
+| ~~30~~ | ~~Update AGENTS.md with new patterns~~ done — AGENTS.md                                          | ~~`AGENTS.md`~~                      | ~~3min~~ | ~~📝 Docs~~ |
 
 ### Phase 11: DevOps
 
-| Step | Task                                               | Files             | Est. | Impact       |
-| ---- | -------------------------------------------------- | ----------------- | ---- | ------------ |
-| ~~31~~   | ~~Add `.goreleaser.yml` for release automation (#62)~~ done — .goreleaser.yml | ~~`.goreleaser.yml`~~ | ~~8min~~ | ~~🟢 DevOps~~ |
-| ~~32~~   | ~~Add `CONTRIBUTING.md`~~ done — CONTRIBUTING.md | ~~`CONTRIBUTING.md`~~ | ~~8min~~ | ~~🟢 Community~~ |
+| Step   | Task                                                                          | Files                 | Est.     | Impact           |
+| ------ | ----------------------------------------------------------------------------- | --------------------- | -------- | ---------------- |
+| ~~31~~ | ~~Add `.goreleaser.yml` for release automation (#62)~~ done — .goreleaser.yml | ~~`.goreleaser.yml`~~ | ~~8min~~ | ~~🟢 DevOps~~    |
+| ~~32~~ | ~~Add `CONTRIBUTING.md`~~ done — CONTRIBUTING.md                              | ~~`CONTRIBUTING.md`~~ | ~~8min~~ | ~~🟢 Community~~ |
 
 ---
 

@@ -3,7 +3,7 @@ package visualtest
 import (
 	"context"
 	_ "embed"
-	"encoding/json"
+	"encoding/json/v2"
 	"errors"
 	"fmt"
 	"time"

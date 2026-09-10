@@ -180,17 +180,17 @@ Above plus the supporting ecosystem: aligned-label forms, comprehensive tests, t
 
 ### Remaining 80% (M15–M18)
 
-| #     | Subtask                                                                                                                    | Parent | Effort |
-| ----- | -------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| F15.1 | Enumerate all 48 flex usages with classification (1D-keep / 2D-migrate / unclear) into a table                             | M15    | 15min  |
-| F15.2 | Migrate clear 2D cases (expected: ~2-3 spots — likely `Form.Inline` already covered by M5, demo hero grid already correct) | M15    | 15min  |
-| F15.3 | Document keep-decisions as appendix to ADR-0016 (prevents future "why is this flex not grid?" churn)                       | M15    | 15min  |
-| F15.4 | Run tests + lint after any migration                                                                                       | M15    | 10min  |
-| F16.1 | Add new primitives to website catalogue (when site is next rebuilt)                                                        | M16    | 15min  |
-| F16.2 | Add AppShell screenshot to homepage (when site is next rebuilt)                                                            | M16    | 15min  |
-| F17.1 | Audit which primitives would benefit from container-query default (Split, AppShell sidebar)                                | M17    | 15min  |
-| F17.2 | Decision doc + recommendation (likely: keep viewport-default, opt-in container-query)                                      | M17    | 15min  |
-| F17.3 | If approved, implement in follow-up (out of scope for this plan)                                                           | M17    | 15min  |
+| #         | Subtask                                                                                                                                         | Parent  | Effort    |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------- | --------- |
+| F15.1     | Enumerate all 48 flex usages with classification (1D-keep / 2D-migrate / unclear) into a table                                                  | M15     | 15min     |
+| F15.2     | Migrate clear 2D cases (expected: ~2-3 spots — likely `Form.Inline` already covered by M5, demo hero grid already correct)                      | M15     | 15min     |
+| F15.3     | Document keep-decisions as appendix to ADR-0016 (prevents future "why is this flex not grid?" churn)                                            | M15     | 15min     |
+| F15.4     | Run tests + lint after any migration                                                                                                            | M15     | 10min     |
+| F16.1     | Add new primitives to website catalogue (when site is next rebuilt)                                                                             | M16     | 15min     |
+| F16.2     | Add AppShell screenshot to homepage (when site is next rebuilt)                                                                                 | M16     | 15min     |
+| F17.1     | Audit which primitives would benefit from container-query default (Split, AppShell sidebar)                                                     | M17     | 15min     |
+| F17.2     | Decision doc + recommendation (likely: keep viewport-default, opt-in container-query)                                                           | M17     | 15min     |
+| F17.3     | If approved, implement in follow-up (out of scope for this plan)                                                                                | M17     | 15min     |
 | ~~F18.1~~ | ~~Write `docs/research/css-subgrid.md` (current Baseline status, what it unlocks for Card/DefinitionList)~~ done — docs/research/css-subgrid.md | ~~M18~~ | ~~12min~~ |
 
 **Fine-grain totals:** 75 subtasks, ~13h 15min (matches medium grain — no effort inflation).

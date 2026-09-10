@@ -25,16 +25,16 @@ session start at `e2125fc`, currently at `7bbdef1` (+23 unpushed commits, see c-
    ~~- Baseline ledger `visualtest/testdata/axe_baseline.json` (rule-level acceptance, `-1` budgets, justification comments) — node-count budgets proved flaky on live pages with polled regions.~~
    ~~- Sweep over 9 route passes (7 routes; index+forms light AND dark): **zero unaccepted critical/serious violations**.~~
    ~~- Real library defects found by the sweep and fixed (commit `fafce41` + daemon snapshots `6733356`..`7bbdef1`):~~
-     ~~- **Labeled form controls now always associate with their labels** — `fieldID(id,name)` derivation in Input, Textarea, Select, DatePicker, FileInput, Checkbox, Radio, RadioGroup options, Rating stars, Slider, TagsInput, Combobox (previously `for=""`/no association = axe critical `label`).~~
-     ~~- ProgressBar never renders unnamed (`aria-label` fallback chain AriaLabel→Label→"Progress").~~
-     ~~- BarChart + Heatmap `role="img"` wrappers get fallback names ("Bar chart"/"Heatmap").~~
-     ~~- Tabs: `aria-controls` only when a tab owns a panel (was: references to non-existent ids).~~
-     ~~- Calendar: invalid bare `role="grid"` → `role="group"`.~~
-     ~~- Carousel: scroll-snap track keyboard-focusable (`tabindex` + "Slides" label).~~
-     ~~- EChart: `role="img"` alongside `aria-label` (bare-div aria-label was prohibited).~~
-     ~~- StatCard trend: `text-green-600`→`-700`, `text-amber-600`→`-700` in light mode (3.2:1 → WCAG-pass).~~
-     ~~- Demo content: labels on raw controls, focusable code blocks, underlined in-text links.~~
-     ~~- `cmd/tc` embedded `_sources` re-synced for all drifted templates.~~
+   ~~- **Labeled form controls now always associate with their labels** — `fieldID(id,name)` derivation in Input, Textarea, Select, DatePicker, FileInput, Checkbox, Radio, RadioGroup options, Rating stars, Slider, TagsInput, Combobox (previously `for=""`/no association = axe critical `label`).~~
+   ~~- ProgressBar never renders unnamed (`aria-label` fallback chain AriaLabel→Label→"Progress").~~
+   ~~- BarChart + Heatmap `role="img"` wrappers get fallback names ("Bar chart"/"Heatmap").~~
+   ~~- Tabs: `aria-controls` only when a tab owns a panel (was: references to non-existent ids).~~
+   ~~- Calendar: invalid bare `role="grid"` → `role="group"`.~~
+   ~~- Carousel: scroll-snap track keyboard-focusable (`tabindex` + "Slides" label).~~
+   ~~- EChart: `role="img"` alongside `aria-label` (bare-div aria-label was prohibited).~~
+   ~~- StatCard trend: `text-green-600`→`-700`, `text-amber-600`→`-700` in light mode (3.2:1 → WCAG-pass).~~
+   ~~- Demo content: labels on raw controls, focusable code blocks, underlined in-text links.~~
+   ~~- `cmd/tc` embedded `_sources` re-synced for all drifted templates.~~
    ~~- Full `nix run .#verify` green after the batch; CHANGELOG `[Unreleased]` warm (Fixed/Changed/Added sections).~~
 
 ## b) PARTIALLY DONE
@@ -67,33 +67,33 @@ session start at `e2125fc`, currently at `7bbdef1` (+23 unpushed commits, see c-
 
 ## f) Top #25 things to get done next
 
-| # | Task | Why now |
-|---|------|---------|
-| ~~1~~ | ~~Re-run `TestDemo*` flows; commit N3~~ done — demo flows green | ~~Fixes are in, unverified (b-1)~~ |
-| 2 | Push local master (23+ commits); watch CI + Website | Release + a11y batch invisible to origin until then |
-| ~~3~~ | ~~N4: visualtest lint triage (wrapcheck/contextcheck/dupl pile)~~ done — visualtest lint zero N4 | ~~Module is the lint-red outlier~~ |
-| ~~4~~ | ~~N5: CI demo smoke job reusing `StartDemoServer`~~ done — demo smoke N5 | ~~CI can't see demo breakage today~~ |
-| ~~5~~ | ~~N6: 375px mobile sweep incl. kanban~~ done — mobile N6 | ~~Untested form factor #1~~ |
-| ~~6~~ | ~~N7: RTL browser sweep~~ done — rtl N7 | ~~Scanner-verified only~~ |
-| ~~7~~ | ~~N8: overlay open-state captures (Click + FullViewport)~~ done — overlay N8 | ~~Top-layer path never screenshot-verified~~ |
-| ~~8~~ | ~~N9: coverage margin (70% floor + 2pt)~~ done — coverage N9 | ~~CI stability~~ |
-| ~~9~~ | ~~N10: `layout.Minimal` head-content (NoIndex/Canonical/hreflang/JSON-LD)~~ done — Minimal SEO N10 | ~~Real consumer demand (#156 survey)~~ |
-| ~~10~~ | ~~N11: route goldens for the 7 demo pages~~ done — route goldens N11 | ~~Would have caught past route regressions~~ |
-| ~~11~~ | ~~N12: Datastar JS synthetics (SSEErrorHandling DOM, aria-busy clear)~~ done — synthetics N12 | ~~JS paths string-pinned only~~ |
-| ~~12~~ | ~~N13: FormLayoutInline width contract~~ done — refuted N13 | ~~#166~~ |
-| ~~13~~ | ~~N14: DateRange block-vs-inline docs + adjacent goldens~~ done — DateRange N14 | ~~#176~~ |
-| ~~14~~ | ~~N15: ErrorPage family goldens (5 families)~~ done — errorpage N15 | ~~#177~~ |
-| ~~15~~ | ~~N16: prerender vs live HTML diff~~ done — prerender diff N16 | ~~#167~~ |
-| ~~16~~ | ~~N17: upstream-watch `workflow_dispatch` dry-run~~ done — upstream watch N17 | ~~#128~~ |
-| ~~17~~ | ~~N18: docs mini-pack (SSE innerHTML-no-scripts, FEATURES coarse-pointer, counts)~~ done — docs minipack N18 | ~~#180 + freshness~~ |
-| ~~18~~ | ~~N19: changelog policy for test-only diffs~~ **Won't implement — decided N19.** | ~~#133 (owner policy)~~ |
-| 19 | N20: demo niceties (file-backed kanban, dashboard recipe section) | #189 |
-| ~~20~~ | ~~N21: fold `nixpkgs-go`+`nixpkgs` inputs, verify templ zero-diff~~ done — flake fold N21 | ~~#146~~ |
-| 21 | TODO_LIST: add palette-contrast owner row + skip-visibility guard idea | From e-4/e-1 |
-| 22 | 24h-watch items: pkg.go.dev shows 1.16.0; CI green on pushed tip; CSS byte-stability | Release follow-up |
-| ~~23~~ | ~~Update FEATURES.md/README counts if any catalogue surfaces drifted~~ done — TestDocsCountDrift | ~~Drift guards warn only~~ |
-| ~~24~~ | ~~Consider `visualtest` lint waivers formalization (file-level nolint matrix vs config)~~ done — visualtest waiver N4 | ~~Feeds N4~~ |
-| 25 | Plan next release (v1.17.0) once N3 lands — the a11y markup changes are consumer-facing | See g |
+| #      | Task                                                                                                                  | Why now                                             |
+| ------ | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| ~~1~~  | ~~Re-run `TestDemo*` flows; commit N3~~ done — demo flows green                                                       | ~~Fixes are in, unverified (b-1)~~                  |
+| 2      | Push local master (23+ commits); watch CI + Website                                                                   | Release + a11y batch invisible to origin until then |
+| ~~3~~  | ~~N4: visualtest lint triage (wrapcheck/contextcheck/dupl pile)~~ done — visualtest lint zero N4                      | ~~Module is the lint-red outlier~~                  |
+| ~~4~~  | ~~N5: CI demo smoke job reusing `StartDemoServer`~~ done — demo smoke N5                                              | ~~CI can't see demo breakage today~~                |
+| ~~5~~  | ~~N6: 375px mobile sweep incl. kanban~~ done — mobile N6                                                              | ~~Untested form factor #1~~                         |
+| ~~6~~  | ~~N7: RTL browser sweep~~ done — rtl N7                                                                               | ~~Scanner-verified only~~                           |
+| ~~7~~  | ~~N8: overlay open-state captures (Click + FullViewport)~~ done — overlay N8                                          | ~~Top-layer path never screenshot-verified~~        |
+| ~~8~~  | ~~N9: coverage margin (70% floor + 2pt)~~ done — coverage N9                                                          | ~~CI stability~~                                    |
+| ~~9~~  | ~~N10: `layout.Minimal` head-content (NoIndex/Canonical/hreflang/JSON-LD)~~ done — Minimal SEO N10                    | ~~Real consumer demand (#156 survey)~~              |
+| ~~10~~ | ~~N11: route goldens for the 7 demo pages~~ done — route goldens N11                                                  | ~~Would have caught past route regressions~~        |
+| ~~11~~ | ~~N12: Datastar JS synthetics (SSEErrorHandling DOM, aria-busy clear)~~ done — synthetics N12                         | ~~JS paths string-pinned only~~                     |
+| ~~12~~ | ~~N13: FormLayoutInline width contract~~ done — refuted N13                                                           | ~~#166~~                                            |
+| ~~13~~ | ~~N14: DateRange block-vs-inline docs + adjacent goldens~~ done — DateRange N14                                       | ~~#176~~                                            |
+| ~~14~~ | ~~N15: ErrorPage family goldens (5 families)~~ done — errorpage N15                                                   | ~~#177~~                                            |
+| ~~15~~ | ~~N16: prerender vs live HTML diff~~ done — prerender diff N16                                                        | ~~#167~~                                            |
+| ~~16~~ | ~~N17: upstream-watch `workflow_dispatch` dry-run~~ done — upstream watch N17                                         | ~~#128~~                                            |
+| ~~17~~ | ~~N18: docs mini-pack (SSE innerHTML-no-scripts, FEATURES coarse-pointer, counts)~~ done — docs minipack N18          | ~~#180 + freshness~~                                |
+| ~~18~~ | ~~N19: changelog policy for test-only diffs~~ **Won't implement — decided N19.**                                      | ~~#133 (owner policy)~~                             |
+| 19     | N20: demo niceties (file-backed kanban, dashboard recipe section)                                                     | #189                                                |
+| ~~20~~ | ~~N21: fold `nixpkgs-go`+`nixpkgs` inputs, verify templ zero-diff~~ done — flake fold N21                             | ~~#146~~                                            |
+| 21     | TODO_LIST: add palette-contrast owner row + skip-visibility guard idea                                                | From e-4/e-1                                        |
+| 22     | 24h-watch items: pkg.go.dev shows 1.16.0; CI green on pushed tip; CSS byte-stability                                  | Release follow-up                                   |
+| ~~23~~ | ~~Update FEATURES.md/README counts if any catalogue surfaces drifted~~ done — TestDocsCountDrift                      | ~~Drift guards warn only~~                          |
+| ~~24~~ | ~~Consider `visualtest` lint waivers formalization (file-level nolint matrix vs config)~~ done — visualtest waiver N4 | ~~Feeds N4~~                                        |
+| 25     | Plan next release (v1.17.0) once N3 lands — the a11y markup changes are consumer-facing                               | See g                                               |
 
 ## g) Top #1 question
 
@@ -101,4 +101,4 @@ session start at `e2125fc`, currently at `7bbdef1` (+23 unpushed commits, see c-
 
 ---
 
-*Point-in-time snapshot at 2026-09-09 16:19. HEAD `7bbdef1`, origin/master `33cb443`, 1 modified file (`visualtest/demo_flows_e2e_test.go`, N3 fixes awaiting re-run).*
+_Point-in-time snapshot at 2026-09-09 16:19. HEAD `7bbdef1`, origin/master `33cb443`, 1 modified file (`visualtest/demo_flows_e2e_test.go`, N3 fixes awaiting re-run)._

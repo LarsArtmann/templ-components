@@ -104,24 +104,24 @@ Documentation, investigation, and future preparation:
 
 Sorted by impact (desc), effort (asc), customer value (desc).
 
-| #  | Task                                                      | Tier | Impact   | Effort | Customer Value               | Deps  |
-| -- | --------------------------------------------------------- | ---- | -------- | ------ | ---------------------------- | ----- |
-| 1  | Write tests for all 14 shipped browser enhancements       | 1%   | Critical | 90min  | Prevents regression          | —     |
-| 2  | Integrate `field-sizing: content` into Textarea component | 1%   | High     | 30min  | Auto-growing textarea        | —     |
-| 3  | Add `SrcSet` and `Sizes` fields to ImageProps             | 1%   | High     | 45min  | Responsive images            | —     |
-| 4  | Update CHANGELOG, AGENTS.md, javascript-guide.md          | 1%   | High     | 60min  | Discoverability              | 1,2,3 |
-| 5  | Add `hx-validate` attribute to Form component             | 4%   | Medium   | 30min  | HTML5 validation before HTMX | —     |
-| 6  | Wrap search inputs in `<search>` element                  | 4%   | Medium   | 30min  | Semantic a11y landmark       | —     |
-| 7  | Apply `content-visibility: auto` to Table body rows       | 4%   | Medium   | 45min  | Perf on large tables         | —     |
-| 8  | Write ADR: Popover API blocked on Anchor Positioning      | 4%   | High     | 45min  | Prevents wasted effort       | —     |
-| 9  | Add `EnterKeyHint` field to TextareaProps                 | 20%  | Low      | 30min  | Chat app UX                  | —     |
-| 10 | Add Speculation Rules helper component                    | 20%  | Medium   | 60min  | Near-instant navigation      | —     |
-| 11 | Style Select with `appearance-none` + custom arrow        | 20%  | Medium   | 60min  | Visual consistency           | —     |
-| 12 | Migrate MobileMenu to Popover API                         | 20%  | Medium   | 90min  | Light dismiss, top-layer     | 8     |
-| 13 | Document HTMX attributes (hx-preserve, hx-boost, etc.)    | 20%  | Low      | 60min  | Consumer education           | —     |
-| 14 | Write consumer migration guide for browser features       | 20%  | Medium   | 60min  | Adoption                     | 4     |
-| ~~15~~ | ~~CSS Anchor Positioning spike + prototype~~ done — docs/research/popover-api.md | ~~20%~~ | ~~Low~~ | ~~90min~~ | ~~Future readiness~~ | ~~8~~ |
-| ~~16~~ | ~~`light-dark()` architectural assessment ADR~~ done — light dark adr | ~~20%~~ | ~~Low~~ | ~~45min~~ | ~~v2.0 planning~~ | ~~—~~ |
+| #      | Task                                                                             | Tier    | Impact   | Effort    | Customer Value               | Deps  |
+| ------ | -------------------------------------------------------------------------------- | ------- | -------- | --------- | ---------------------------- | ----- |
+| 1      | Write tests for all 14 shipped browser enhancements                              | 1%      | Critical | 90min     | Prevents regression          | —     |
+| 2      | Integrate `field-sizing: content` into Textarea component                        | 1%      | High     | 30min     | Auto-growing textarea        | —     |
+| 3      | Add `SrcSet` and `Sizes` fields to ImageProps                                    | 1%      | High     | 45min     | Responsive images            | —     |
+| 4      | Update CHANGELOG, AGENTS.md, javascript-guide.md                                 | 1%      | High     | 60min     | Discoverability              | 1,2,3 |
+| 5      | Add `hx-validate` attribute to Form component                                    | 4%      | Medium   | 30min     | HTML5 validation before HTMX | —     |
+| 6      | Wrap search inputs in `<search>` element                                         | 4%      | Medium   | 30min     | Semantic a11y landmark       | —     |
+| 7      | Apply `content-visibility: auto` to Table body rows                              | 4%      | Medium   | 45min     | Perf on large tables         | —     |
+| 8      | Write ADR: Popover API blocked on Anchor Positioning                             | 4%      | High     | 45min     | Prevents wasted effort       | —     |
+| 9      | Add `EnterKeyHint` field to TextareaProps                                        | 20%     | Low      | 30min     | Chat app UX                  | —     |
+| 10     | Add Speculation Rules helper component                                           | 20%     | Medium   | 60min     | Near-instant navigation      | —     |
+| 11     | Style Select with `appearance-none` + custom arrow                               | 20%     | Medium   | 60min     | Visual consistency           | —     |
+| 12     | Migrate MobileMenu to Popover API                                                | 20%     | Medium   | 90min     | Light dismiss, top-layer     | 8     |
+| 13     | Document HTMX attributes (hx-preserve, hx-boost, etc.)                           | 20%     | Low      | 60min     | Consumer education           | —     |
+| 14     | Write consumer migration guide for browser features                              | 20%     | Medium   | 60min     | Adoption                     | 4     |
+| ~~15~~ | ~~CSS Anchor Positioning spike + prototype~~ done — docs/research/popover-api.md | ~~20%~~ | ~~Low~~  | ~~90min~~ | ~~Future readiness~~         | ~~8~~ |
+| ~~16~~ | ~~`light-dark()` architectural assessment ADR~~ done — light dark adr            | ~~20%~~ | ~~Low~~  | ~~45min~~ | ~~v2.0 planning~~            | ~~—~~ |
 
 **Total estimated effort:** ~13.5 hours
 
@@ -131,94 +131,94 @@ Sorted by impact (desc), effort (asc), customer value (desc).
 
 ### Task 1: Tests for shipped enhancements (90 min → 8 subtasks)
 
-| #    | Subtask                                                               | Time |
-| ---- | --------------------------------------------------------------------- | ---- |
-| 1.1  | Test Image emits `decoding="async"`                                   | 5min |
-| 1.2  | Test Image emits `fetchpriority="high"` when Lazy=false               | 5min |
-| 1.3  | Test Image emits `fetchpriority="low"` when Lazy=true                 | 5min |
-| 1.4  | Test InputEmail emits `enterkeyhint="next"`                           | 5min |
-| 1.5  | Test InputSearch emits `enterkeyhint="search"`                        | 5min |
-| 1.6  | Test InputTel emits `inputmode="tel"`                                 | 5min |
-| ~~1.7~~  | ~~Test InputNumber emits `inputmode="decimal"`~~ done — forms/modern standards test.go | ~~5min~~ |
-| 1.8  | Test Base layout emits `<meta name="color-scheme">`                   | 5min |
-| 1.9  | Test Base layout emits `<link rel="preconnect">` when HTMXVersion set | 8min |
-| 1.10 | Test Base layout omits preconnect when HTMXVersion empty              | 5min |
-| 1.11 | Test htmxCDNOrigin extracts origin from default CDN                   | 5min |
-| 1.12 | Test htmxCDNOrigin returns "" for relative path                       | 5min |
-| 1.13 | Test ViewTransitions renders both script and style                    | 5min |
-| 1.14 | Test ViewTransitions Global=false omits script                        | 5min |
-| 1.15 | Test Accordion has zero `<script>` tags                               | 5min |
-| 1.16 | Test Carousel track has `snap-x snap-mandatory` classes               | 5min |
+| #       | Subtask                                                                                | Time     |
+| ------- | -------------------------------------------------------------------------------------- | -------- |
+| 1.1     | Test Image emits `decoding="async"`                                                    | 5min     |
+| 1.2     | Test Image emits `fetchpriority="high"` when Lazy=false                                | 5min     |
+| 1.3     | Test Image emits `fetchpriority="low"` when Lazy=true                                  | 5min     |
+| 1.4     | Test InputEmail emits `enterkeyhint="next"`                                            | 5min     |
+| 1.5     | Test InputSearch emits `enterkeyhint="search"`                                         | 5min     |
+| 1.6     | Test InputTel emits `inputmode="tel"`                                                  | 5min     |
+| ~~1.7~~ | ~~Test InputNumber emits `inputmode="decimal"`~~ done — forms/modern standards test.go | ~~5min~~ |
+| 1.8     | Test Base layout emits `<meta name="color-scheme">`                                    | 5min     |
+| 1.9     | Test Base layout emits `<link rel="preconnect">` when HTMXVersion set                  | 8min     |
+| 1.10    | Test Base layout omits preconnect when HTMXVersion empty                               | 5min     |
+| 1.11    | Test htmxCDNOrigin extracts origin from default CDN                                    | 5min     |
+| 1.12    | Test htmxCDNOrigin returns "" for relative path                                        | 5min     |
+| 1.13    | Test ViewTransitions renders both script and style                                     | 5min     |
+| 1.14    | Test ViewTransitions Global=false omits script                                         | 5min     |
+| 1.15    | Test Accordion has zero `<script>` tags                                                | 5min     |
+| 1.16    | Test Carousel track has `snap-x snap-mandatory` classes                                | 5min     |
 
 ### Task 2: Textarea auto-grow (30 min → 3 subtasks)
 
-| #   | Subtask                                                    | Time  |
-| --- | ---------------------------------------------------------- | ----- |
-| 2.1 | Add `AutoGrow bool` field to TextareaProps (default true)  | 10min |
-| 2.2 | Conditionally apply `tc-auto-grow` class in textarea.templ | 5min  |
+| #       | Subtask                                                                           | Time     |
+| ------- | --------------------------------------------------------------------------------- | -------- |
+| 2.1     | Add `AutoGrow bool` field to TextareaProps (default true)                         | 10min    |
+| 2.2     | Conditionally apply `tc-auto-grow` class in textarea.templ                        | 5min     |
 | ~~2.3~~ | ~~Write test: AutoGrow=true adds tc-auto-grow class~~ done — forms/golden test.go | ~~5min~~ |
 
 ### Task 3: Image SrcSet/Sizes (45 min → 5 subtasks)
 
-| #   | Subtask                                                     | Time  |
-| --- | ----------------------------------------------------------- | ----- |
-| 3.1 | Add `SrcSet string` and `Sizes string` fields to ImageProps | 10min |
-| 3.2 | Emit `srcset` attribute when SrcSet is non-empty            | 5min  |
-| 3.3 | Emit `sizes` attribute when Sizes is non-empty              | 5min  |
-| 3.4 | Update Image doc comment to document SrcSet/Sizes           | 5min  |
+| #       | Subtask                                                                      | Time      |
+| ------- | ---------------------------------------------------------------------------- | --------- |
+| 3.1     | Add `SrcSet string` and `Sizes string` fields to ImageProps                  | 10min     |
+| 3.2     | Emit `srcset` attribute when SrcSet is non-empty                             | 5min      |
+| 3.3     | Emit `sizes` attribute when Sizes is non-empty                               | 5min      |
+| 3.4     | Update Image doc comment to document SrcSet/Sizes                            | 5min      |
 | ~~3.5~~ | ~~Write tests for srcset/sizes rendering~~ done — display/golden new test.go | ~~10min~~ |
 
 ### Task 4: Documentation update (60 min → 6 subtasks)
 
-| #   | Subtask                                                       | Time  |
-| --- | ------------------------------------------------------------- | ----- |
-| ~~4.1~~ | ~~Add CHANGELOG [Unreleased] entry for all browser enhancements~~ done — CHANGELOG.md | ~~10min~~ |
-| 4.2 | Update AGENTS.md with enterkeyhint/inputmode convention       | 10min |
-| 4.3 | Update AGENTS.md with field-sizing/interpolate-size notes     | 10min |
-| 4.4 | Update AGENTS.md with preconnect/color-scheme meta notes      | 10min |
+| #       | Subtask                                                                                  | Time      |
+| ------- | ---------------------------------------------------------------------------------------- | --------- |
+| ~~4.1~~ | ~~Add CHANGELOG [Unreleased] entry for all browser enhancements~~ done — CHANGELOG.md    | ~~10min~~ |
+| 4.2     | Update AGENTS.md with enterkeyhint/inputmode convention                                  | 10min     |
+| 4.3     | Update AGENTS.md with field-sizing/interpolate-size notes                                | 10min     |
+| 4.4     | Update AGENTS.md with preconnect/color-scheme meta notes                                 | 10min     |
 | ~~4.5~~ | ~~Update javascript-guide.md with Popover API findings~~ done — docs/javascript-guide.md | ~~10min~~ |
-| ~~4.6~~ | ~~Update SKILL.md component count if changed~~ done (docs-health pass 2026-09-08) | ~~10min~~ |
+| ~~4.6~~ | ~~Update SKILL.md component count if changed~~ done (docs-health pass 2026-09-08)        | ~~10min~~ |
 
 ### Task 5: hx-validate on Form (30 min → 3 subtasks)
 
-| #   | Subtask                                         | Time  |
-| --- | ----------------------------------------------- | ----- |
-| 5.1 | Add `Validate bool` field to FormProps          | 10min |
-| 5.2 | Emit `hx-validate="true"` when Validate is true | 5min  |
+| #       | Subtask                                                            | Time      |
+| ------- | ------------------------------------------------------------------ | --------- |
+| 5.1     | Add `Validate bool` field to FormProps                             | 10min     |
+| 5.2     | Emit `hx-validate="true"` when Validate is true                    | 5min      |
 | ~~5.3~~ | ~~Write test for hx-validate rendering~~ done — forms/form test.go | ~~10min~~ |
 
 ### Task 6: `<search>` element (30 min → 3 subtasks)
 
-| #   | Subtask                                              | Time  |
-| --- | ---------------------------------------------------- | ----- |
-| 6.1 | Add `Search bool` field to InputProps                | 10min |
-| 6.2 | Wrap input in `<search>` element when Search is true | 10min |
+| #       | Subtask                                                                    | Time      |
+| ------- | -------------------------------------------------------------------------- | --------- |
+| 6.1     | Add `Search bool` field to InputProps                                      | 10min     |
+| 6.2     | Wrap input in `<search>` element when Search is true                       | 10min     |
 | ~~6.3~~ | ~~Write test for `<search>` element rendering~~ done — forms/input test.go | ~~10min~~ |
 
 ### Task 7: content-visibility on Table (45 min → 4 subtasks)
 
-| #   | Subtask                                                               | Time  |
-| --- | --------------------------------------------------------------------- | ----- |
-| 7.1 | Add `VirtualScroll bool` field to TableProps                          | 10min |
-| 7.2 | Apply `tc-content-auto` class to `<tbody>` when VirtualScroll is true | 10min |
-| 7.3 | Update Table doc comment                                              | 5min  |
+| #       | Subtask                                                                  | Time      |
+| ------- | ------------------------------------------------------------------------ | --------- |
+| 7.1     | Add `VirtualScroll bool` field to TableProps                             | 10min     |
+| 7.2     | Apply `tc-content-auto` class to `<tbody>` when VirtualScroll is true    | 10min     |
+| 7.3     | Update Table doc comment                                                 | 5min      |
 | ~~7.4~~ | ~~Write test for content-visibility class~~ done — display/table test.go | ~~10min~~ |
 
 ### Task 8: Popover API ADR (45 min → 4 subtasks)
 
-| #   | Subtask                                                         | Time  |
-| --- | --------------------------------------------------------------- | ----- |
-| 8.1 | Write ADR 0014: Popover API blocked on Anchor Positioning       | 12min |
-| 8.2 | Document the top-layer positioning constraint                   | 10min |
-| 8.3 | Document the migration path when anchor positioning is Baseline | 10min |
+| #       | Subtask                                                                   | Time     |
+| ------- | ------------------------------------------------------------------------- | -------- |
+| 8.1     | Write ADR 0014: Popover API blocked on Anchor Positioning                 | 12min    |
+| 8.2     | Document the top-layer positioning constraint                             | 10min    |
+| 8.3     | Document the migration path when anchor positioning is Baseline           | 10min    |
 | ~~8.4~~ | ~~Cross-reference from research docs~~ done (docs-health pass 2026-09-08) | ~~5min~~ |
 
 ### Task 9: EnterKeyHint on TextareaProps (30 min → 3 subtasks)
 
-| #   | Subtask                                          | Time  |
-| --- | ------------------------------------------------ | ----- |
-| 9.1 | Add `EnterKeyHint string` field to TextareaProps | 10min |
-| 9.2 | Emit `enterkeyhint` attribute when set           | 5min  |
+| #       | Subtask                                              | Time      |
+| ------- | ---------------------------------------------------- | --------- |
+| 9.1     | Add `EnterKeyHint string` field to TextareaProps     | 10min     |
+| 9.2     | Emit `enterkeyhint` attribute when set               | 5min      |
 | ~~9.3~~ | ~~Write test~~ done — forms/modern standards test.go | ~~10min~~ |
 
 ### Task 10: Speculation Rules component (60 min → 6 subtasks)
@@ -277,13 +277,13 @@ Sorted by impact (desc), effort (asc), customer value (desc).
 
 ### Task 15: Anchor Positioning spike (90 min → 6 subtasks)
 
-| #    | Subtask                                               | Time  |
-| ---- | ----------------------------------------------------- | ----- |
-| 15.1 | Create spike branch `spike/anchor-positioning`        | 5min  |
-| 15.2 | Prototype Dropdown with anchor-name + position-anchor | 12min |
-| 15.3 | Prototype Tooltip with position-area + flip-block     | 12min |
-| ~~15.4~~ | ~~Test in Chrome (has support since 125)~~ done (docs-health pass 2026-09-08) | ~~10min~~ |
-| ~~15.5~~ | ~~Document findings + remaining gaps~~ done — docs/research/popover-api.md | ~~12min~~ |
+| #        | Subtask                                                                                  | Time      |
+| -------- | ---------------------------------------------------------------------------------------- | --------- |
+| 15.1     | Create spike branch `spike/anchor-positioning`                                           | 5min      |
+| 15.2     | Prototype Dropdown with anchor-name + position-anchor                                    | 12min     |
+| 15.3     | Prototype Tooltip with position-area + flip-block                                        | 12min     |
+| ~~15.4~~ | ~~Test in Chrome (has support since 125)~~ done (docs-health pass 2026-09-08)            | ~~10min~~ |
+| ~~15.5~~ | ~~Document findings + remaining gaps~~ done — docs/research/popover-api.md               | ~~12min~~ |
 | ~~15.6~~ | ~~Write ADR with go/no-go recommendation~~ done — docs/adr/0017-popover-api-migration.md | ~~12min~~ |
 
 ### Task 16: light-dark() ADR (45 min → 4 subtasks)

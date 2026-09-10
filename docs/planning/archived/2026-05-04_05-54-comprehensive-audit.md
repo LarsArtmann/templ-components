@@ -4,34 +4,34 @@
 
 ### 1% → 51% Impact
 
-| # | Task                                                         | Impact                               | Effort |
-| - | ------------------------------------------------------------ | ------------------------------------ | ------ |
-| ~~1~~ | ~~Fix feedback split brain (unify alertStyleSet/toastStyleSet)~~ done — feedback/styles.go | ~~High — 60 lines, 2 modules deepened~~ | ~~30min~~ |
-| ~~2~~ | ~~Deepen icons (path-data map)~~ done — feedback/styles.go | ~~High — 100 lines removed, extensible~~ | ~~45min~~ |
-| ~~3~~ | ~~Add missing render tests (breadcrumbs, nav, mobile_menu)~~ done — feedback/styles.go | ~~High — 3 uncovered components~~ | ~~60min~~ |
+| #     | Task                                                                                       | Impact                                   | Effort    |
+| ----- | ------------------------------------------------------------------------------------------ | ---------------------------------------- | --------- |
+| ~~1~~ | ~~Fix feedback split brain (unify alertStyleSet/toastStyleSet)~~ done — feedback/styles.go | ~~High — 60 lines, 2 modules deepened~~  | ~~30min~~ |
+| ~~2~~ | ~~Deepen icons (path-data map)~~ done — feedback/styles.go                                 | ~~High — 100 lines removed, extensible~~ | ~~45min~~ |
+| ~~3~~ | ~~Add missing render tests (breadcrumbs, nav, mobile_menu)~~ done — feedback/styles.go     | ~~High — 3 uncovered components~~        | ~~60min~~ |
 
 ### 4% → 64% Impact
 
-| # | Task                       | Impact                           | Effort |
-| - | -------------------------- | -------------------------------- | ------ |
-| ~~4~~ | ~~Shared form error helper~~ done — feedback/styles.go | ~~Medium — 30 lines deduped~~ | ~~30min~~ |
-| ~~5~~ | ~~AvatarStatus enum~~ done — feedback/styles.go | ~~Medium — type safety~~ | ~~20min~~ |
-| ~~6~~ | ~~internal/svg tests~~ done — feedback/styles.go | ~~Medium — foundation coverage~~ | ~~15min~~ |
-| ~~7~~ | ~~a11y validation tests~~ done — feedback/styles.go | ~~Medium — accessibility guarantee~~ | ~~45min~~ |
-| ~~8~~ | ~~Golden file snapshot tests~~ done — feedback/styles.go | ~~Medium — test maintainability~~ | ~~60min~~ |
+| #     | Task                                                     | Impact                               | Effort    |
+| ----- | -------------------------------------------------------- | ------------------------------------ | --------- |
+| ~~4~~ | ~~Shared form error helper~~ done — feedback/styles.go   | ~~Medium — 30 lines deduped~~        | ~~30min~~ |
+| ~~5~~ | ~~AvatarStatus enum~~ done — feedback/styles.go          | ~~Medium — type safety~~             | ~~20min~~ |
+| ~~6~~ | ~~internal/svg tests~~ done — feedback/styles.go         | ~~Medium — foundation coverage~~     | ~~15min~~ |
+| ~~7~~ | ~~a11y validation tests~~ done — feedback/styles.go      | ~~Medium — accessibility guarantee~~ | ~~45min~~ |
+| ~~8~~ | ~~Golden file snapshot tests~~ done — feedback/styles.go | ~~Medium — test maintainability~~    | ~~60min~~ |
 
 ### 20% → 80% Impact
 
-| #  | Task                              | Impact | Effort |
-| -- | --------------------------------- | ------ | ------ |
-| ~~9~~  | ~~TrendDirection enum for StatCard~~ done — feedback/styles.go | ~~Low~~ | ~~15min~~ |
+| #      | Task                                                                             | Impact  | Effort    |
+| ------ | -------------------------------------------------------------------------------- | ------- | --------- |
+| ~~9~~  | ~~TrendDirection enum for StatCard~~ done — feedback/styles.go                   | ~~Low~~ | ~~15min~~ |
 | ~~10~~ | ~~HTMXSRI bool fix~~ **Won't implement — superseded self hosted htmx adr-0007.** | ~~Low~~ | ~~15min~~ |
-| ~~11~~ | ~~ProgressBar float precision~~ done — feedback/progressbar.templ | ~~Low~~ | ~~15min~~ |
-| ~~12~~ | ~~TableCell.Content templ.Component~~ done — display/table.templ | ~~Low~~ | ~~20min~~ |
-| ~~13~~ | ~~MapEnum direct test~~ done — utils/utils test.go | ~~Low~~ | ~~10min~~ |
-| ~~14~~ | ~~Default\*Props constructor tests~~ done — display/accordion test.go | ~~Low~~ | ~~20min~~ |
-| ~~15~~ | ~~Benchmarks for hot paths~~ done — display/benchmark test.go | ~~Low~~ | ~~30min~~ |
-| ~~16~~ | ~~CHANGELOG.md update~~ done — CHANGELOG.md | ~~Low~~ | ~~15min~~ |
+| ~~11~~ | ~~ProgressBar float precision~~ done — feedback/progressbar.templ                | ~~Low~~ | ~~15min~~ |
+| ~~12~~ | ~~TableCell.Content templ.Component~~ done — display/table.templ                 | ~~Low~~ | ~~20min~~ |
+| ~~13~~ | ~~MapEnum direct test~~ done — utils/utils test.go                               | ~~Low~~ | ~~10min~~ |
+| ~~14~~ | ~~Default\*Props constructor tests~~ done — display/accordion test.go            | ~~Low~~ | ~~20min~~ |
+| ~~15~~ | ~~Benchmarks for hot paths~~ done — display/benchmark test.go                    | ~~Low~~ | ~~30min~~ |
+| ~~16~~ | ~~CHANGELOG.md update~~ done — CHANGELOG.md                                      | ~~Low~~ | ~~15min~~ |
 
 ## Execution Order
 

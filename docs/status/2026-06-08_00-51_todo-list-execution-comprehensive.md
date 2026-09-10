@@ -158,33 +158,33 @@ Consider `go:generate stringer` for enums to eliminate manual string maps.
 
 Sorted by **impact × ease** (Pareto — high impact, low effort first):
 
-| #  | Task                                                | Impact | Effort | Package                 |
-| -- | --------------------------------------------------- | ------ | ------ | ----------------------- |
-| ~~1~~  | ~~Add Breadcrumb JSON-LD render test~~ done — navigation/regression test.go TestBreadcrumbJSONLD | ~~High~~ | ~~S~~ | ~~navigation~~ |
-| ~~2~~  | ~~Verify demo app HTMX enable (`HTMXVersion` default)~~ done — examples/demo/htmx demo.templ | ~~Medium~~ | ~~S~~ | ~~examples/demo~~ |
-| ~~3~~  | ~~Update README.md for v0.2 API changes~~ done — README.md | ~~High~~ | ~~M~~ | ~~root~~ |
-| ~~4~~  | ~~Add DefaultLoadingOverlayProps test~~ done — feedback/edge cases test.go | ~~Low~~ | ~~S~~ | ~~feedback~~ |
-| ~~5~~  | ~~Add DefaultBreadcrumbsProps test~~ done — navigation/nav link test.go | ~~Low~~ | ~~S~~ | ~~navigation~~ |
-| ~~6~~  | ~~Add Nav empty `Links` test~~ done — navigation/bdd test.go TestNavEmptyLinks | ~~Low~~ | ~~S~~ | ~~navigation~~ |
-| ~~7~~  | ~~Add CSRFToken empty string test~~ done — htmx/bdd test.go TestCSRFTokenEmptyString | ~~Low~~ | ~~S~~ | ~~htmx~~ |
-| ~~8~~  | ~~Tag v0.2.0 release + CHANGELOG final~~ done — CHANGELOG 0.2.0 | ~~High~~ | ~~S~~ | ~~root~~ |
-| ~~9~~  | ~~Improve icons coverage (56.5% → 70%+)~~ done — CHANGELOG icons 75.9% | ~~Medium~~ | ~~M~~ | ~~icons~~ |
-| ~~10~~ | ~~Write ADR for filled vs stroke icon convention~~ done — docs/adr/0004-filled-vs-stroke-icon-convention.md | ~~Medium~~ | ~~S~~ | ~~docs/adr~~ |
-| ~~11~~ | ~~Write ADR for JS attachment patterns~~ done — docs/adr/0005-js-attachment-patterns.md | ~~Medium~~ | ~~S~~ | ~~docs/adr~~ |
-| ~~12~~ | ~~Add ADR for FeedbackType unification~~ done — docs/adr/0006-feedback-type-unification.md | ~~Medium~~ | ~~S~~ | ~~docs/adr~~ |
-| ~~13~~ | ~~Badge click/href support~~ done — display/badge.templ Href | ~~Medium~~ | ~~M~~ | ~~display~~ |
-| ~~14~~ | ~~ProgressBar indeterminate state~~ done — feedback/progressbar.templ Indeterminate | ~~Medium~~ | ~~M~~ | ~~feedback~~ |
-| ~~15~~ | ~~Step indicator vertical variant~~ done — feedback/step indicator.templ StepVertical | ~~Medium~~ | ~~M~~ | ~~feedback~~ |
-| ~~16~~ | ~~Client-side JS tab switching~~ done — display/tabs.templ client-side JS | ~~Medium~~ | ~~M~~ | ~~display~~ |
-| ~~17~~ | ~~Tabs keyboard navigation (arrow keys)~~ done — display/tabs.templ arrow keys | ~~Medium~~ | ~~M~~ | ~~display~~ |
-| 18 | Consolidate inline JS into shared init              | High   | L      | layout/display/feedback |
-| ~~19~~ | ~~Add Form component (inputs + validation)~~ done — forms/form.templ | ~~High~~ | ~~L~~ | ~~forms~~ |
-| ~~20~~ | ~~Skeleton component variants~~ done — feedback testdata skeleton goldens | ~~Medium~~ | ~~L~~ | ~~display~~ |
-| ~~21~~ | ~~Add Dialog/Drawer component variants~~ done — display/drawer.templ | ~~High~~ | ~~L~~ | ~~display~~ |
-| ~~22~~ | ~~Add Combobox/Autocomplete component~~ done — forms/combobox.templ | ~~High~~ | ~~XL~~ | ~~forms~~ |
-| ~~23~~ | ~~Add Date Picker component~~ done — forms/date picker.templ | ~~High~~ | ~~XL~~ | ~~forms~~ |
-| ~~24~~ | ~~Golden file test infrastructure~~ done — display/testdata golden files | ~~High~~ | ~~L~~ | ~~testing~~ |
-| ~~25~~ | ~~Accessibility audit automation (axe-core)~~ done — visualtest/axe.min.js | ~~High~~ | ~~L~~ | ~~CI~~ |
+| #      | Task                                                                                                        | Impact     | Effort | Package                 |
+| ------ | ----------------------------------------------------------------------------------------------------------- | ---------- | ------ | ----------------------- |
+| ~~1~~  | ~~Add Breadcrumb JSON-LD render test~~ done — navigation/regression test.go TestBreadcrumbJSONLD            | ~~High~~   | ~~S~~  | ~~navigation~~          |
+| ~~2~~  | ~~Verify demo app HTMX enable (`HTMXVersion` default)~~ done — examples/demo/htmx demo.templ                | ~~Medium~~ | ~~S~~  | ~~examples/demo~~       |
+| ~~3~~  | ~~Update README.md for v0.2 API changes~~ done — README.md                                                  | ~~High~~   | ~~M~~  | ~~root~~                |
+| ~~4~~  | ~~Add DefaultLoadingOverlayProps test~~ done — feedback/edge cases test.go                                  | ~~Low~~    | ~~S~~  | ~~feedback~~            |
+| ~~5~~  | ~~Add DefaultBreadcrumbsProps test~~ done — navigation/nav link test.go                                     | ~~Low~~    | ~~S~~  | ~~navigation~~          |
+| ~~6~~  | ~~Add Nav empty `Links` test~~ done — navigation/bdd test.go TestNavEmptyLinks                              | ~~Low~~    | ~~S~~  | ~~navigation~~          |
+| ~~7~~  | ~~Add CSRFToken empty string test~~ done — htmx/bdd test.go TestCSRFTokenEmptyString                        | ~~Low~~    | ~~S~~  | ~~htmx~~                |
+| ~~8~~  | ~~Tag v0.2.0 release + CHANGELOG final~~ done — CHANGELOG 0.2.0                                             | ~~High~~   | ~~S~~  | ~~root~~                |
+| ~~9~~  | ~~Improve icons coverage (56.5% → 70%+)~~ done — CHANGELOG icons 75.9%                                      | ~~Medium~~ | ~~M~~  | ~~icons~~               |
+| ~~10~~ | ~~Write ADR for filled vs stroke icon convention~~ done — docs/adr/0004-filled-vs-stroke-icon-convention.md | ~~Medium~~ | ~~S~~  | ~~docs/adr~~            |
+| ~~11~~ | ~~Write ADR for JS attachment patterns~~ done — docs/adr/0005-js-attachment-patterns.md                     | ~~Medium~~ | ~~S~~  | ~~docs/adr~~            |
+| ~~12~~ | ~~Add ADR for FeedbackType unification~~ done — docs/adr/0006-feedback-type-unification.md                  | ~~Medium~~ | ~~S~~  | ~~docs/adr~~            |
+| ~~13~~ | ~~Badge click/href support~~ done — display/badge.templ Href                                                | ~~Medium~~ | ~~M~~  | ~~display~~             |
+| ~~14~~ | ~~ProgressBar indeterminate state~~ done — feedback/progressbar.templ Indeterminate                         | ~~Medium~~ | ~~M~~  | ~~feedback~~            |
+| ~~15~~ | ~~Step indicator vertical variant~~ done — feedback/step indicator.templ StepVertical                       | ~~Medium~~ | ~~M~~  | ~~feedback~~            |
+| ~~16~~ | ~~Client-side JS tab switching~~ done — display/tabs.templ client-side JS                                   | ~~Medium~~ | ~~M~~  | ~~display~~             |
+| ~~17~~ | ~~Tabs keyboard navigation (arrow keys)~~ done — display/tabs.templ arrow keys                              | ~~Medium~~ | ~~M~~  | ~~display~~             |
+| 18     | Consolidate inline JS into shared init                                                                      | High       | L      | layout/display/feedback |
+| ~~19~~ | ~~Add Form component (inputs + validation)~~ done — forms/form.templ                                        | ~~High~~   | ~~L~~  | ~~forms~~               |
+| ~~20~~ | ~~Skeleton component variants~~ done — feedback testdata skeleton goldens                                   | ~~Medium~~ | ~~L~~  | ~~display~~             |
+| ~~21~~ | ~~Add Dialog/Drawer component variants~~ done — display/drawer.templ                                        | ~~High~~   | ~~L~~  | ~~display~~             |
+| ~~22~~ | ~~Add Combobox/Autocomplete component~~ done — forms/combobox.templ                                         | ~~High~~   | ~~XL~~ | ~~forms~~               |
+| ~~23~~ | ~~Add Date Picker component~~ done — forms/date picker.templ                                                | ~~High~~   | ~~XL~~ | ~~forms~~               |
+| ~~24~~ | ~~Golden file test infrastructure~~ done — display/testdata golden files                                    | ~~High~~   | ~~L~~  | ~~testing~~             |
+| ~~25~~ | ~~Accessibility audit automation (axe-core)~~ done — visualtest/axe.min.js                                  | ~~High~~   | ~~L~~  | ~~CI~~                  |
 
 ---
 

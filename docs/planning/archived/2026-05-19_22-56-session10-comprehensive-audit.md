@@ -6,41 +6,41 @@
 
 ### 1% → 51% Impact (Do First)
 
-| #  | Task                                   | Effort | Impact                                |
-| -- | -------------------------------------- | ------ | ------------------------------------- |
-| ~~6~~  | ~~Remove/validate unknown icon names~~ done — icons/icon names.go | ~~15min~~ | ~~Eliminates silent visual bugs~~ |
-| ~~8~~  | ~~Delete deprecated `Exclamation` icon~~ done — icons/icon names.go | ~~10min~~ | ~~Removes dead code, fixes split brain~~ |
-| ~~20~~ | ~~Clamp ProgressBar percent to [0, 100]~~ done — feedback/coverage extra test.go | ~~5min~~ | ~~Prevents visual overflow~~ |
-| ~~19~~ | ~~Validate Pagination CurrentPage > 0~~ done — navigation/pagination.templ | ~~5min~~ | ~~Prevents broken pagination~~ |
-| ~~37~~ | ~~Remove unused `badgeTextLive` constant~~ done — removed from tree | ~~2min~~ | ~~Cleans linter warning~~ |
-| ~~38~~ | ~~Delete `TestPtr` in utils_test.go~~ done — removed from tree | ~~2min~~ | ~~Removes dead test~~ |
+| #      | Task                                                                                     | Effort    | Impact                                    |
+| ------ | ---------------------------------------------------------------------------------------- | --------- | ----------------------------------------- |
+| ~~6~~  | ~~Remove/validate unknown icon names~~ done — icons/icon names.go                        | ~~15min~~ | ~~Eliminates silent visual bugs~~         |
+| ~~8~~  | ~~Delete deprecated `Exclamation` icon~~ done — icons/icon names.go                      | ~~10min~~ | ~~Removes dead code, fixes split brain~~  |
+| ~~20~~ | ~~Clamp ProgressBar percent to [0, 100]~~ done — feedback/coverage extra test.go         | ~~5min~~  | ~~Prevents visual overflow~~              |
+| ~~19~~ | ~~Validate Pagination CurrentPage > 0~~ done — navigation/pagination.templ               | ~~5min~~  | ~~Prevents broken pagination~~            |
+| ~~37~~ | ~~Remove unused `badgeTextLive` constant~~ done — removed from tree                      | ~~2min~~  | ~~Cleans linter warning~~                 |
+| ~~38~~ | ~~Delete `TestPtr` in utils_test.go~~ done — removed from tree                           | ~~2min~~  | ~~Removes dead test~~                     |
 | ~~7~~  | ~~Fix IconPathJS stroke-width mismatch~~ **Won't implement — path only no stroke attr.** | ~~10min~~ | ~~Eliminates icon rendering split brain~~ |
 
 ### 4% → 64% Impact (Do Second)
 
-| #  | Task                                   | Effort | Impact                         |
-| -- | -------------------------------------- | ------ | ------------------------------ |
-| ~~9~~  | ~~Unify AlertType/ToastType~~ done — feedback/styles.go | ~~30min~~ | ~~Eliminates type duplication~~ |
-| ~~10~~ | ~~Merge alertStyleMap/toastStyleMap~~ done — feedback/styles.go | ~~20min~~ | ~~Reduces style map duplication~~ |
-| ~~27~~ | ~~Fix FillIcon variadic bool~~ done — utils/svg/svg templ.go | ~~10min~~ | ~~API quality improvement~~ |
-| ~~16~~ | ~~Add BaseProps to StepIndicatorProps~~ done — feedback/step indicator.templ | ~~15min~~ | ~~API consistency~~ |
-| ~~17~~ | ~~Convert LoadingOverlay to props struct~~ done — feedback/loading.templ | ~~20min~~ | ~~API consistency~~ |
-| ~~13~~ | ~~Use stable IDs in modal JS~~ done — display/shared templ.go | ~~20min~~ | ~~Robustness improvement~~ |
-| ~~5~~  | ~~Fix demo app to use layout.Base~~ done — examples/demo | ~~45min~~ | ~~Dogfooding, public-facing~~ |
-| ~~15~~ | ~~Use icon system in Breadcrumbs~~ done — navigation/breadcrumbs.templ | ~~15min~~ | ~~Eliminates raw SVG duplication~~ |
-| ~~44~~ | ~~Document htmx→feedback JS dependency~~ done — htmx/error handling.templ | ~~5min~~ | ~~Consumer documentation~~ |
+| #      | Task                                                                         | Effort    | Impact                             |
+| ------ | ---------------------------------------------------------------------------- | --------- | ---------------------------------- |
+| ~~9~~  | ~~Unify AlertType/ToastType~~ done — feedback/styles.go                      | ~~30min~~ | ~~Eliminates type duplication~~    |
+| ~~10~~ | ~~Merge alertStyleMap/toastStyleMap~~ done — feedback/styles.go              | ~~20min~~ | ~~Reduces style map duplication~~  |
+| ~~27~~ | ~~Fix FillIcon variadic bool~~ done — utils/svg/svg templ.go                 | ~~10min~~ | ~~API quality improvement~~        |
+| ~~16~~ | ~~Add BaseProps to StepIndicatorProps~~ done — feedback/step indicator.templ | ~~15min~~ | ~~API consistency~~                |
+| ~~17~~ | ~~Convert LoadingOverlay to props struct~~ done — feedback/loading.templ     | ~~20min~~ | ~~API consistency~~                |
+| ~~13~~ | ~~Use stable IDs in modal JS~~ done — display/shared templ.go                | ~~20min~~ | ~~Robustness improvement~~         |
+| ~~5~~  | ~~Fix demo app to use layout.Base~~ done — examples/demo                     | ~~45min~~ | ~~Dogfooding, public-facing~~      |
+| ~~15~~ | ~~Use icon system in Breadcrumbs~~ done — navigation/breadcrumbs.templ       | ~~15min~~ | ~~Eliminates raw SVG duplication~~ |
+| ~~44~~ | ~~Document htmx→feedback JS dependency~~ done — htmx/error handling.templ    | ~~5min~~  | ~~Consumer documentation~~         |
 
 ### 20% → 80% Impact (Do Third)
 
-| #  | Task                                           | Effort | Impact                      |
-| -- | ---------------------------------------------- | ------ | --------------------------- |
-| ~~11~~ | ~~Make SimpleCard compose through Card~~ **Won't implement — rejected current impl cleaner.** | ~~30min~~ | ~~Reduces shell duplication~~ |
-| ~~12~~ | ~~Add ComponentProps interface~~ done — internal/contract/component props test.go | ~~30min~~ | ~~Enables generic handling~~ |
-| ~~26~~ | ~~Replace DropdownItem empty-Href discrimination~~ done — display/dropdown.templ | ~~45min~~ | ~~Type safety~~ |
-| ~~28~~ | ~~Audit tailwind-merge-go thread safety~~ done — utils/utils.go | ~~30min~~ | ~~Performance (mutex removal)~~ |
-| ~~36~~ | ~~Consolidate test files~~ **Won't implement — post-v1.0 deferred.** | ~~120min~~ | ~~Reduces 37 → ~15 test files~~ |
-| ~~21~~ | ~~Consolidate inline JS into shared init~~ **Won't implement — tc init deferred.** | ~~90min~~ | ~~JS architecture overhaul~~ |
-| ~~33~~ | ~~Eliminate icon list split brain~~ done — icons/icon names.go | ~~30min~~ | ~~Maintenance burden~~ |
+| #      | Task                                                                                          | Effort     | Impact                          |
+| ------ | --------------------------------------------------------------------------------------------- | ---------- | ------------------------------- |
+| ~~11~~ | ~~Make SimpleCard compose through Card~~ **Won't implement — rejected current impl cleaner.** | ~~30min~~  | ~~Reduces shell duplication~~   |
+| ~~12~~ | ~~Add ComponentProps interface~~ done — internal/contract/component props test.go             | ~~30min~~  | ~~Enables generic handling~~    |
+| ~~26~~ | ~~Replace DropdownItem empty-Href discrimination~~ done — display/dropdown.templ              | ~~45min~~  | ~~Type safety~~                 |
+| ~~28~~ | ~~Audit tailwind-merge-go thread safety~~ done — utils/utils.go                               | ~~30min~~  | ~~Performance (mutex removal)~~ |
+| ~~36~~ | ~~Consolidate test files~~ **Won't implement — post-v1.0 deferred.**                          | ~~120min~~ | ~~Reduces 37 → ~15 test files~~ |
+| ~~21~~ | ~~Consolidate inline JS into shared init~~ **Won't implement — tc init deferred.**            | ~~90min~~  | ~~JS architecture overhaul~~    |
+| ~~33~~ | ~~Eliminate icon list split brain~~ done — icons/icon names.go                                | ~~30min~~  | ~~Maintenance burden~~          |
 
 ## Execution Order (Prioritized)
 

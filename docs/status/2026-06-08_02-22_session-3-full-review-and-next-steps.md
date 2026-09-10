@@ -176,48 +176,48 @@
 
 ### Priority 1: Ship v0.2 (6 items)
 
-| # | Task                                                                              | Impact                            | Effort |
-| - | --------------------------------------------------------------------------------- | --------------------------------- | ------ |
-| ~~1~~ | ~~Add `-race` to CI test step~~ done — .github/workflows/ci.yaml -race | ~~Prevents data races in production~~ | ~~5 min~~ |
-| ~~2~~ | ~~Split `feedback/progress.templ` into `progressbar.templ` + `step_indicator.templ`~~ done — feedback/progressbar.templ | ~~Code organization~~ | ~~15 min~~ |
-| ~~3~~ | ~~Raise CI coverage threshold to 70%~~ done — .github/workflows/ci.yaml 70% | ~~Quality gate~~ | ~~5 min~~ |
-| ~~4~~ | ~~Write CHANGELOG.md for v0.2.0~~ done — CHANGELOG 0.2.0 | ~~Release requirement~~ | ~~30 min~~ |
-| ~~5~~ | ~~Tag v0.2.0 release~~ done — CHANGELOG 0.2.0 | ~~Ship it~~ | ~~5 min~~ |
-| ~~6~~ | ~~Verify `go get` from clean project~~ done — 2026-06-08 05-09 session-4-comprehensive-review.md | ~~Release validation~~ | ~~10 min~~ |
+| #     | Task                                                                                                                    | Impact                                | Effort     |
+| ----- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ---------- |
+| ~~1~~ | ~~Add `-race` to CI test step~~ done — .github/workflows/ci.yaml -race                                                  | ~~Prevents data races in production~~ | ~~5 min~~  |
+| ~~2~~ | ~~Split `feedback/progress.templ` into `progressbar.templ` + `step_indicator.templ`~~ done — feedback/progressbar.templ | ~~Code organization~~                 | ~~15 min~~ |
+| ~~3~~ | ~~Raise CI coverage threshold to 70%~~ done — .github/workflows/ci.yaml 70%                                             | ~~Quality gate~~                      | ~~5 min~~  |
+| ~~4~~ | ~~Write CHANGELOG.md for v0.2.0~~ done — CHANGELOG 0.2.0                                                                | ~~Release requirement~~               | ~~30 min~~ |
+| ~~5~~ | ~~Tag v0.2.0 release~~ done — CHANGELOG 0.2.0                                                                           | ~~Ship it~~                           | ~~5 min~~  |
+| ~~6~~ | ~~Verify `go get` from clean project~~ done — 2026-06-08 05-09 session-4-comprehensive-review.md                        | ~~Release validation~~                | ~~10 min~~ |
 
 ### Priority 2: High-Value Features (9 items)
 
-| #  | Task                                                  | Impact                          | Effort  |
-| -- | ----------------------------------------------------- | ------------------------------- | ------- |
-| ~~7~~  | ~~Dialog/Drawer component (side panel variant of Modal)~~ done — display/drawer.templ | ~~Missing key UI pattern~~ | ~~2-3 hrs~~ |
-| ~~8~~  | ~~FormValidation helper (error summary + field errors)~~ done — forms/validation.templ | ~~Forms are incomplete without it~~ | ~~2 hrs~~ |
-| ~~9~~  | ~~Add 25+ more Heroicons (target: 100 total)~~ done — icons 99 icons | ~~Better icon coverage~~ | ~~1 hr~~ |
-| ~~10~~ | ~~Spinner BaseProps conversion (`SpinnerProps` struct)~~ done — feedback/loading.templ SpinnerProps | ~~Last positional-arg component~~ | ~~1 hr~~ |
-| ~~11~~ | ~~Fill display coverage to 70%+ (currently 66.1%)~~ done — 2026-06-08 05-09 session-4-comprehensive-review.md | ~~Quality~~ | ~~1 hr~~ |
-| ~~12~~ | ~~Fill forms coverage to 70%+ (currently 66.8%)~~ done — 2026-06-08 05-09 session-4-comprehensive-review.md | ~~Quality~~ | ~~1 hr~~ |
-| ~~13~~ | ~~Golden file test comparison for snapshot tests~~ done — internal/golden | ~~Test maintainability~~ | ~~2 hrs~~ |
-| 14 | Submit to awesome-templ                               | Discoverability                 | 30 min  |
-| 15 | Open PR on templ.guide                                | Discoverability                 | 30 min  |
+| #      | Task                                                                                                          | Impact                              | Effort      |
+| ------ | ------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------- |
+| ~~7~~  | ~~Dialog/Drawer component (side panel variant of Modal)~~ done — display/drawer.templ                         | ~~Missing key UI pattern~~          | ~~2-3 hrs~~ |
+| ~~8~~  | ~~FormValidation helper (error summary + field errors)~~ done — forms/validation.templ                        | ~~Forms are incomplete without it~~ | ~~2 hrs~~   |
+| ~~9~~  | ~~Add 25+ more Heroicons (target: 100 total)~~ done — icons 99 icons                                          | ~~Better icon coverage~~            | ~~1 hr~~    |
+| ~~10~~ | ~~Spinner BaseProps conversion (`SpinnerProps` struct)~~ done — feedback/loading.templ SpinnerProps           | ~~Last positional-arg component~~   | ~~1 hr~~    |
+| ~~11~~ | ~~Fill display coverage to 70%+ (currently 66.1%)~~ done — 2026-06-08 05-09 session-4-comprehensive-review.md | ~~Quality~~                         | ~~1 hr~~    |
+| ~~12~~ | ~~Fill forms coverage to 70%+ (currently 66.8%)~~ done — 2026-06-08 05-09 session-4-comprehensive-review.md   | ~~Quality~~                         | ~~1 hr~~    |
+| ~~13~~ | ~~Golden file test comparison for snapshot tests~~ done — internal/golden                                     | ~~Test maintainability~~            | ~~2 hrs~~   |
+| 14     | Submit to awesome-templ                                                                                       | Discoverability                     | 30 min      |
+| 15     | Open PR on templ.guide                                                                                        | Discoverability                     | 30 min      |
 
 ### Priority 3: Architecture (6 items)
 
-| #  | Task                                            | Impact             | Effort |
-| -- | ----------------------------------------------- | ------------------ | ------ |
-| 16 | Consolidate inline JS into shared init strategy | Maintainability    | 3 hrs  |
-| ~~17~~ | ~~Add `Validate() error` methods on props structs~~ done — CHANGELOG IsValid methods | ~~Robustness~~ | ~~2 hrs~~ |
-| ~~18~~ | ~~Set up goreleaser for tag-based releases~~ done — .goreleaser.yml | ~~Release automation~~ | ~~1 hr~~ |
-| 19 | Pre-commit hook runs with `-race`               | Catch races early  | 5 min  |
-| ~~20~~ | ~~Cross-package circular import guard test~~ **Won't implement — moot go forbids import cycles.** | ~~Safety net~~ | ~~30 min~~ |
-| ~~21~~ | ~~Nonce propagation audit across all components~~ done — 2026-06-20 16-15 reflection-and-status.md | ~~CSP compliance~~ | ~~1 hr~~ |
+| #      | Task                                                                                               | Impact                 | Effort     |
+| ------ | -------------------------------------------------------------------------------------------------- | ---------------------- | ---------- |
+| 16     | Consolidate inline JS into shared init strategy                                                    | Maintainability        | 3 hrs      |
+| ~~17~~ | ~~Add `Validate() error` methods on props structs~~ done — CHANGELOG IsValid methods               | ~~Robustness~~         | ~~2 hrs~~  |
+| ~~18~~ | ~~Set up goreleaser for tag-based releases~~ done — .goreleaser.yml                                | ~~Release automation~~ | ~~1 hr~~   |
+| 19     | Pre-commit hook runs with `-race`                                                                  | Catch races early      | 5 min      |
+| ~~20~~ | ~~Cross-package circular import guard test~~ **Won't implement — moot go forbids import cycles.**  | ~~Safety net~~         | ~~30 min~~ |
+| ~~21~~ | ~~Nonce propagation audit across all components~~ done — 2026-06-20 16-15 reflection-and-status.md | ~~CSP compliance~~     | ~~1 hr~~   |
 
 ### Priority 4: Future (4 items)
 
-| #  | Task                                            | Impact               | Effort |
-| -- | ----------------------------------------------- | -------------------- | ------ |
-| ~~22~~ | ~~Date Picker component~~ done — forms/date picker.templ | ~~Missing form control~~ | ~~4+ hrs~~ |
-| ~~23~~ | ~~Combobox/Autocomplete component~~ done — forms/combobox.templ | ~~Missing form control~~ | ~~4+ hrs~~ |
-| ~~24~~ | ~~Go workspace modularization (10-module go.work)~~ done — docs/adr/0034-targeted-module-split.md | ~~Package isolation~~ | ~~4 hrs~~ |
-| ~~25~~ | ~~Accessibility audit automation (axe-core/pa11y)~~ done — visualtest/axe.min.js | ~~Compliance~~ | ~~3 hrs~~ |
+| #      | Task                                                                                              | Impact                   | Effort     |
+| ------ | ------------------------------------------------------------------------------------------------- | ------------------------ | ---------- |
+| ~~22~~ | ~~Date Picker component~~ done — forms/date picker.templ                                          | ~~Missing form control~~ | ~~4+ hrs~~ |
+| ~~23~~ | ~~Combobox/Autocomplete component~~ done — forms/combobox.templ                                   | ~~Missing form control~~ | ~~4+ hrs~~ |
+| ~~24~~ | ~~Go workspace modularization (10-module go.work)~~ done — docs/adr/0034-targeted-module-split.md | ~~Package isolation~~    | ~~4 hrs~~  |
+| ~~25~~ | ~~Accessibility audit automation (axe-core/pa11y)~~ done — visualtest/axe.min.js                  | ~~Compliance~~           | ~~3 hrs~~  |
 
 ---
 

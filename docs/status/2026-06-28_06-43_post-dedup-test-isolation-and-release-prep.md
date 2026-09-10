@@ -39,9 +39,9 @@
 
 2. ~~**`docs:` accepted-clone rationale — resolves the "top question" from the last report**~~ done at `2b99664`
    ~~- Three accepted clone groups now carry explicit rationale in **doc comments** (not in-markup comments — see section d):~~
-     ~~- **`feedback.Alert` ↔ `errorpage.ErrorAlert`** dismiss-button (13 lines). Decision: **accept.** `errorpage` must not import `feedback`; the shared _logic_ (`utils.DismissScript()` JS) is already shared; only the _markup_ is duplicated; no shared markup package exists; the project's own "3+ times" threshold isn't met (2×); a package for 13 lines is premature generalization.~~
-     ~~- **`display.Modal` ↔ `display.Drawer`** panel body (~15 lines of scaffold). Decision: **accept.** The transition classes differ fundamentally (scale/opacity vs translate-x); sizing classes differ; `templ.KV` conditionals are inline; `overlayShell` already owns the shared a11y shell + JS.~~
-     ~~- **`errorpage.ErrorDetail` ↔ `errorpage.ErrorPage`** header scaffold (icon + badge + title + message). Decision: **accept.** Shared logic already extracted (`familyIcon`, `codeAndFamilyBadge`, `diagnosticSection`); the remaining layout differs by visual density (compact `h3` vs full-page `h1`).~~
+   ~~- **`feedback.Alert` ↔ `errorpage.ErrorAlert`** dismiss-button (13 lines). Decision: **accept.** `errorpage` must not import `feedback`; the shared _logic_ (`utils.DismissScript()` JS) is already shared; only the _markup_ is duplicated; no shared markup package exists; the project's own "3+ times" threshold isn't met (2×); a package for 13 lines is premature generalization.~~
+   ~~- **`display.Modal` ↔ `display.Drawer`** panel body (~15 lines of scaffold). Decision: **accept.** The transition classes differ fundamentally (scale/opacity vs translate-x); sizing classes differ; `templ.KV` conditionals are inline; `overlayShell` already owns the shared a11y shell + JS.~~
+   ~~- **`errorpage.ErrorDetail` ↔ `errorpage.ErrorPage`** header scaffold (icon + badge + title + message). Decision: **accept.** Shared logic already extracted (`familyIcon`, `codeAndFamilyBadge`, `diagnosticSection`); the remaining layout differs by visual density (compact `h3` vs full-page `h1`).~~
 
 3. ~~**`docs:` CHANGELOG `[Unreleased]` backfill — documents all 27 commits since v0.5.0**~~ done at `2b99664`
    ~~- Added: tooltip touch support + auto-ID, typed `HTMXVersion`, hex color validation, size constants, Toggle fields, `ConfirmDelete`/`SwapOOB` BaseProps, `ErrorHandlerConfig.Lang`.~~
@@ -126,33 +126,33 @@
 
 ## f) Top 25 things to do next (sorted by impact × 1/work)
 
-| #  | Task                                                                                    | Impact | Work    |
-| -- | --------------------------------------------------------------------------------------- | ------ | ------- |
-| ~~1~~  | ~~**Tag v0.6.0** (27 commits unreleased incl. CRITICAL compile fix; CHANGELOG ready)~~ done — CHANGELOG 0.6.0 | ~~Crit~~ | ~~Trivial~~ |
-| 2  | Document templ `//` comment whitespace gotcha in AGENTS.md                              | High   | Trivial |
-| ~~3~~  | ~~Create `ROADMAP.md` (referenced in AGENTS.md but missing)~~ done — ROADMAP.md | ~~Med~~ | ~~Trivial~~ |
-| ~~4~~  | ~~Update `TODO_LIST.md` (stale — last updated 2026-06-27)~~ done — TODO LIST.md | ~~Med~~ | ~~Trivial~~ |
-| 5  | Fix BuildFlow re-adding `*_templ.go` to `.gitignore` (upstream fix)                     | High   | Low     |
-| 6  | Submit awesome-templ PR (entry text ready)                                              | Med    | Low     |
-| 7  | Submit templ.guide listing (manual)                                                     | Med    | Low     |
-| ~~8~~  | ~~Write ADR for accepted-clone decisions (`docs/adr-002-accepted-clones.md`)~~ done — docs/adr/0009-accepted-clones.md | ~~Med~~ | ~~Low~~ |
-| ~~9~~  | ~~Update `FEATURES.md` with post-v0.5.0 features (tooltip touch, typed HTMXVersion, etc.)~~ done — FEATURES.md | ~~Med~~ | ~~Low~~ |
-| 10 | Add `EmptyStateProps.Action templ.Component` slot (breaking — v0.6)                     | High   | Med     |
-| 11 | Write ADR for "slot vs flat strings" decision                                           | Med    | Low     |
-| ~~12~~ | ~~Add `Validate() error` design spike for v1.0~~ done — errorpage/styles.go Validate() | ~~High~~ | ~~High~~ |
-| ~~13~~ | ~~Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)~~ done — removed aliases feedback | ~~Low~~ | ~~Trivial~~ |
-| ~~14~~ | ~~Move test helpers to `internal/testutil/` (v1.0 breaking)~~ **Won't implement — deferred TODO 34 post-v1.0.** | ~~Med~~ | ~~Med~~ |
-| 15 | Consider typed `IconName`/`ComponentName` branded types for stronger safety             | Med    | Med     |
-| ~~16~~ | ~~Add file-size enforcement (BuildFlow `max_file_size: 350` already set)~~ done — .buildflow.yml max file size | ~~Low~~ | ~~Trivial~~ |
-| ~~17~~ | ~~Audit `examples/demo` for staleness against current API~~ done — 2026-08-17 14-26 demo-page-superb-audit-and-overhaul.md | ~~Low~~ | ~~Low~~ |
-| 18 | Add CONTRIBUTING note about the BuildFlow gitignore gotcha                              | Low    | Trivial |
-| ~~19~~ | ~~Consider `internal/svg` → public `svg` (consumers ask for raw paths)~~ done — utils/svg | ~~Low~~ | ~~Med~~ |
-| ~~20~~ | ~~Add cross-package composition tests (Card+Badge+Table realistic layout)~~ done — integration/ | ~~Low~~ | ~~Low~~ |
-| 21 | Write ADR for the "silent fallback over panic" validation philosophy                    | Med    | Low     |
-| ~~22~~ | ~~Evaluate `go-error-family` v0.6+ for new error families~~ done — errorpage/go.mod v0.10.0 | ~~Low~~ | ~~Low~~ |
-| ~~23~~ | ~~Run `art-dupl` on Go sources at t=10 (currently clean at t=15)~~ done — .art-dupl-baseline.json | ~~Low~~ | ~~Trivial~~ |
-| ~~24~~ | ~~Add integration test for `go get` from clean project (CI already does this)~~ done — .github/workflows/ci.yaml module isolation | ~~Low~~ | ~~Low~~ |
-| ~~25~~ | ~~Plan v0.6.0 scope formally (action slots, composition tests, svg publicity)~~ done — CHANGELOG 0.6.0 | ~~Med~~ | ~~Med~~ |
+| #      | Task                                                                                                                              | Impact   | Work        |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------- |
+| ~~1~~  | ~~**Tag v0.6.0** (27 commits unreleased incl. CRITICAL compile fix; CHANGELOG ready)~~ done — CHANGELOG 0.6.0                     | ~~Crit~~ | ~~Trivial~~ |
+| 2      | Document templ `//` comment whitespace gotcha in AGENTS.md                                                                        | High     | Trivial     |
+| ~~3~~  | ~~Create `ROADMAP.md` (referenced in AGENTS.md but missing)~~ done — ROADMAP.md                                                   | ~~Med~~  | ~~Trivial~~ |
+| ~~4~~  | ~~Update `TODO_LIST.md` (stale — last updated 2026-06-27)~~ done — TODO LIST.md                                                   | ~~Med~~  | ~~Trivial~~ |
+| 5      | Fix BuildFlow re-adding `*_templ.go` to `.gitignore` (upstream fix)                                                               | High     | Low         |
+| 6      | Submit awesome-templ PR (entry text ready)                                                                                        | Med      | Low         |
+| 7      | Submit templ.guide listing (manual)                                                                                               | Med      | Low         |
+| ~~8~~  | ~~Write ADR for accepted-clone decisions (`docs/adr-002-accepted-clones.md`)~~ done — docs/adr/0009-accepted-clones.md            | ~~Med~~  | ~~Low~~     |
+| ~~9~~  | ~~Update `FEATURES.md` with post-v0.5.0 features (tooltip touch, typed HTMXVersion, etc.)~~ done — FEATURES.md                    | ~~Med~~  | ~~Low~~     |
+| 10     | Add `EmptyStateProps.Action templ.Component` slot (breaking — v0.6)                                                               | High     | Med         |
+| 11     | Write ADR for "slot vs flat strings" decision                                                                                     | Med      | Low         |
+| ~~12~~ | ~~Add `Validate() error` design spike for v1.0~~ done — errorpage/styles.go Validate()                                            | ~~High~~ | ~~High~~    |
+| ~~13~~ | ~~Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)~~ done — removed aliases feedback                             | ~~Low~~  | ~~Trivial~~ |
+| ~~14~~ | ~~Move test helpers to `internal/testutil/` (v1.0 breaking)~~ **Won't implement — deferred TODO 34 post-v1.0.**                   | ~~Med~~  | ~~Med~~     |
+| 15     | Consider typed `IconName`/`ComponentName` branded types for stronger safety                                                       | Med      | Med         |
+| ~~16~~ | ~~Add file-size enforcement (BuildFlow `max_file_size: 350` already set)~~ done — .buildflow.yml max file size                    | ~~Low~~  | ~~Trivial~~ |
+| ~~17~~ | ~~Audit `examples/demo` for staleness against current API~~ done — 2026-08-17 14-26 demo-page-superb-audit-and-overhaul.md        | ~~Low~~  | ~~Low~~     |
+| 18     | Add CONTRIBUTING note about the BuildFlow gitignore gotcha                                                                        | Low      | Trivial     |
+| ~~19~~ | ~~Consider `internal/svg` → public `svg` (consumers ask for raw paths)~~ done — utils/svg                                         | ~~Low~~  | ~~Med~~     |
+| ~~20~~ | ~~Add cross-package composition tests (Card+Badge+Table realistic layout)~~ done — integration/                                   | ~~Low~~  | ~~Low~~     |
+| 21     | Write ADR for the "silent fallback over panic" validation philosophy                                                              | Med      | Low         |
+| ~~22~~ | ~~Evaluate `go-error-family` v0.6+ for new error families~~ done — errorpage/go.mod v0.10.0                                       | ~~Low~~  | ~~Low~~     |
+| ~~23~~ | ~~Run `art-dupl` on Go sources at t=10 (currently clean at t=15)~~ done — .art-dupl-baseline.json                                 | ~~Low~~  | ~~Trivial~~ |
+| ~~24~~ | ~~Add integration test for `go get` from clean project (CI already does this)~~ done — .github/workflows/ci.yaml module isolation | ~~Low~~  | ~~Low~~     |
+| ~~25~~ | ~~Plan v0.6.0 scope formally (action slots, composition tests, svg publicity)~~ done — CHANGELOG 0.6.0                            | ~~Med~~  | ~~Med~~     |
 
 ---
 

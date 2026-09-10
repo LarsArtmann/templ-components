@@ -124,78 +124,78 @@ Each task broken into subtasks of max 15 minutes. 65 tasks total.
 
 ### Tier 1: The 1% (RTL Logical Properties) — Tasks 1–20
 
-| #  | Subtask                                                 | File(s)                                                                                                       | Time  |
-| -- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----- |
-| 1  | Migrate `ml-`→`ms-` in display/\*.templ                 | `display/dropdown.templ`, `display/tooltip.templ`, `display/card.templ`, `display/badge.templ`                | 10min |
-| 2  | Migrate `ml-`→`ms-` in forms/\*.templ                   | `forms/input.templ`, `forms/label.templ`, `forms/toggle.templ`, `forms/radio.templ`, `forms/validation.templ` | 10min |
-| 3  | Migrate `ml-`→`ms-` in feedback/\*.templ                | `feedback/alert.templ`, `feedback/step_indicator.templ`                                                       | 10min |
-| 4  | Migrate `ml-`→`ms-` in navigation + errorpage           | `navigation/nav.templ`, `navigation/pagination.templ`, `errorpage/*.templ`                                    | 10min |
-| 5  | Migrate `mr-`→`me-` everywhere                          | `display/dropdown.templ`, `display/tooltip.templ`, `display/badge.templ`, `forms/file_input.templ`            | 10min |
-| 6  | Migrate `pl-`→`ps-` in display + forms                  | `forms/input_group.templ`, `forms/combobox.templ`                                                             | 10min |
-| 7  | Migrate `pl-`→`ps-` in errorpage + navigation           | `errorpage/notfound404.templ`, `errorpage/erroralert.templ`, `navigation/nav_link.templ`                      | 10min |
-| 8  | Migrate `pl-`→`ps-` in feedback + validation            | `feedback/alert.templ`, `forms/validation.templ`                                                              | 10min |
-| 9  | Migrate `pr-`→`pe-` everywhere                          | `forms/input_group.templ`, `forms/combobox.templ`, `navigation/nav_link.templ`                                | 10min |
-| 10 | Migrate `left-`→`start-` in drawer.templ                | `display/drawer.templ`                                                                                        | 10min |
-| 11 | Migrate `right-`→`end-` in drawer.templ                 | `display/drawer.templ`                                                                                        | 10min |
-| 12 | Audit tooltip.templ physical positioning                | `display/tooltip.templ` (4 `left-` + 2 `right-` instances)                                                    | 15min |
-| 13 | Migrate safe `left-`/`right-` in other files            | `display/count_badge.templ`, `display/avatar.templ`, `feedback/toast.templ`                                   | 10min |
-| 14 | Migrate `text-left`→`text-start`                        | `display/table.templ`, `display/dropdown.templ`, `display/accordion.templ`, `errorpage/notfound404.templ`     | 10min |
-| 15 | Migrate `left-`/`right-` in forms (toggle, input_group) | `forms/toggle.templ`, `forms/input_group.templ`                                                               | 10min |
-| ~~16~~ | ~~Migrate `left-` in layout/base.templ~~ done — display/rtl test.go | ~~`layout/base.templ`~~ | ~~5min~~ |
-| ~~17~~ | ~~Migrate remaining `pl-`/`pr-` in examples/demo~~ done — display/rtl test.go | ~~`examples/demo/demo.templ`~~ | ~~10min~~ |
-| ~~18~~ | ~~Verify: build + test after RTL migration~~ done (docs-health pass 2026-09-08) | ~~Full `go build ./...`~~ | ~~10min~~ |
-| ~~19~~ | ~~Fix: any golden files that need updating~~ done (docs-health pass 2026-09-08) | ~~`testdata/*.golden` with `-update` flag~~ | ~~15min~~ |
-| ~~20~~ | ~~Verify: lint passes after RTL migration~~ done (docs-health pass 2026-09-08) | ~~`golangci-lint run`~~ | ~~10min~~ |
+| #      | Subtask                                                                         | File(s)                                                                                                       | Time      |
+| ------ | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------- |
+| 1      | Migrate `ml-`→`ms-` in display/\*.templ                                         | `display/dropdown.templ`, `display/tooltip.templ`, `display/card.templ`, `display/badge.templ`                | 10min     |
+| 2      | Migrate `ml-`→`ms-` in forms/\*.templ                                           | `forms/input.templ`, `forms/label.templ`, `forms/toggle.templ`, `forms/radio.templ`, `forms/validation.templ` | 10min     |
+| 3      | Migrate `ml-`→`ms-` in feedback/\*.templ                                        | `feedback/alert.templ`, `feedback/step_indicator.templ`                                                       | 10min     |
+| 4      | Migrate `ml-`→`ms-` in navigation + errorpage                                   | `navigation/nav.templ`, `navigation/pagination.templ`, `errorpage/*.templ`                                    | 10min     |
+| 5      | Migrate `mr-`→`me-` everywhere                                                  | `display/dropdown.templ`, `display/tooltip.templ`, `display/badge.templ`, `forms/file_input.templ`            | 10min     |
+| 6      | Migrate `pl-`→`ps-` in display + forms                                          | `forms/input_group.templ`, `forms/combobox.templ`                                                             | 10min     |
+| 7      | Migrate `pl-`→`ps-` in errorpage + navigation                                   | `errorpage/notfound404.templ`, `errorpage/erroralert.templ`, `navigation/nav_link.templ`                      | 10min     |
+| 8      | Migrate `pl-`→`ps-` in feedback + validation                                    | `feedback/alert.templ`, `forms/validation.templ`                                                              | 10min     |
+| 9      | Migrate `pr-`→`pe-` everywhere                                                  | `forms/input_group.templ`, `forms/combobox.templ`, `navigation/nav_link.templ`                                | 10min     |
+| 10     | Migrate `left-`→`start-` in drawer.templ                                        | `display/drawer.templ`                                                                                        | 10min     |
+| 11     | Migrate `right-`→`end-` in drawer.templ                                         | `display/drawer.templ`                                                                                        | 10min     |
+| 12     | Audit tooltip.templ physical positioning                                        | `display/tooltip.templ` (4 `left-` + 2 `right-` instances)                                                    | 15min     |
+| 13     | Migrate safe `left-`/`right-` in other files                                    | `display/count_badge.templ`, `display/avatar.templ`, `feedback/toast.templ`                                   | 10min     |
+| 14     | Migrate `text-left`→`text-start`                                                | `display/table.templ`, `display/dropdown.templ`, `display/accordion.templ`, `errorpage/notfound404.templ`     | 10min     |
+| 15     | Migrate `left-`/`right-` in forms (toggle, input_group)                         | `forms/toggle.templ`, `forms/input_group.templ`                                                               | 10min     |
+| ~~16~~ | ~~Migrate `left-` in layout/base.templ~~ done — display/rtl test.go             | ~~`layout/base.templ`~~                                                                                       | ~~5min~~  |
+| ~~17~~ | ~~Migrate remaining `pl-`/`pr-` in examples/demo~~ done — display/rtl test.go   | ~~`examples/demo/demo.templ`~~                                                                                | ~~10min~~ |
+| ~~18~~ | ~~Verify: build + test after RTL migration~~ done (docs-health pass 2026-09-08) | ~~Full `go build ./...`~~                                                                                     | ~~10min~~ |
+| ~~19~~ | ~~Fix: any golden files that need updating~~ done (docs-health pass 2026-09-08) | ~~`testdata/*.golden` with `-update` flag~~                                                                   | ~~15min~~ |
+| ~~20~~ | ~~Verify: lint passes after RTL migration~~ done (docs-health pass 2026-09-08)  | ~~`golangci-lint run`~~                                                                                       | ~~10min~~ |
 
 ### Tier 2: The 4% (Motion + Container Queries) — Tasks 21–35
 
-| #  | Subtask                                                       | File(s)                                                                                                                  | Time  |
-| -- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----- |
-| ~~21~~ | ~~Create motion class constants in shared.go~~ done — utils/motion.go | ~~`display/shared.go`~~ | ~~15min~~ |
-| ~~22~~ | ~~Document motion timing conventions in AGENTS.md~~ done — utils/motion.go | ~~`AGENTS.md`~~ | ~~10min~~ |
-| ~~23~~ | ~~Apply motion constants to overlay components (Modal, Drawer)~~ done — utils/motion.go | ~~`display/shared.go` (overlayPanelConfig)~~ | ~~10min~~ |
-| ~~24~~ | ~~Apply motion constants to Accordion~~ done — utils/motion.go | ~~`display/accordion.templ`~~ | ~~10min~~ |
-| ~~25~~ | ~~Apply motion constants to Tabs~~ done — utils/motion.go | ~~`display/tabs.templ`~~ | ~~10min~~ |
-| ~~26~~ | ~~Apply motion constants to remaining display components~~ done — utils/motion.go | ~~`display/card.templ`, `display/copy_button.templ`, `display/dropdown.templ`~~ | ~~10min~~ |
-| ~~27~~ | ~~Apply motion constants to feedback components~~ done — utils/motion.go | ~~`feedback/toast.templ`, `feedback/progressbar.templ`, `feedback/loading.templ`~~ | ~~10min~~ |
-| ~~28~~ | ~~Apply motion constants to navigation components~~ done — utils/motion.go | ~~`navigation/nav_link.templ`, `navigation/mobile_menu.templ`, `navigation/sidebar_nav.templ`, `navigation/loadmore.templ`~~ | ~~10min~~ |
-| ~~29~~ | ~~Grid: Add `ContainerResponsive bool` field to GridProps~~ done — display/grid.templ | ~~`display/grid.templ`~~ | ~~10min~~ |
-| ~~30~~ | ~~Grid: Add container-query-based column lookup map~~ done — display/grid.templ | ~~`display/grid.templ`~~ | ~~10min~~ |
-| ~~31~~ | ~~Grid: Add `@container` class to root when ContainerResponsive~~ done — display/grid.templ | ~~`display/grid.templ`~~ | ~~10min~~ |
-| ~~32~~ | ~~Grid: Update DefaultGridProps and godoc~~ done — display/grid.templ | ~~`display/grid.templ`~~ | ~~5min~~ |
-| ~~33~~ | ~~Grid: Add container query test case~~ done — display/grid.templ | ~~`display/grid_test.go` or new test file~~ | ~~15min~~ |
-| ~~34~~ | ~~Verify: build + test after motion + Grid changes~~ done (docs-health pass 2026-09-08) | ~~Full matrix~~ | ~~10min~~ |
-| ~~35~~ | ~~Fix: golden files for Grid if needed~~ done (docs-health pass 2026-09-08) | ~~`testdata/*.golden`~~ | ~~10min~~ |
+| #      | Subtask                                                                                     | File(s)                                                                                                                      | Time      |
+| ------ | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------- |
+| ~~21~~ | ~~Create motion class constants in shared.go~~ done — utils/motion.go                       | ~~`display/shared.go`~~                                                                                                      | ~~15min~~ |
+| ~~22~~ | ~~Document motion timing conventions in AGENTS.md~~ done — utils/motion.go                  | ~~`AGENTS.md`~~                                                                                                              | ~~10min~~ |
+| ~~23~~ | ~~Apply motion constants to overlay components (Modal, Drawer)~~ done — utils/motion.go     | ~~`display/shared.go` (overlayPanelConfig)~~                                                                                 | ~~10min~~ |
+| ~~24~~ | ~~Apply motion constants to Accordion~~ done — utils/motion.go                              | ~~`display/accordion.templ`~~                                                                                                | ~~10min~~ |
+| ~~25~~ | ~~Apply motion constants to Tabs~~ done — utils/motion.go                                   | ~~`display/tabs.templ`~~                                                                                                     | ~~10min~~ |
+| ~~26~~ | ~~Apply motion constants to remaining display components~~ done — utils/motion.go           | ~~`display/card.templ`, `display/copy_button.templ`, `display/dropdown.templ`~~                                              | ~~10min~~ |
+| ~~27~~ | ~~Apply motion constants to feedback components~~ done — utils/motion.go                    | ~~`feedback/toast.templ`, `feedback/progressbar.templ`, `feedback/loading.templ`~~                                           | ~~10min~~ |
+| ~~28~~ | ~~Apply motion constants to navigation components~~ done — utils/motion.go                  | ~~`navigation/nav_link.templ`, `navigation/mobile_menu.templ`, `navigation/sidebar_nav.templ`, `navigation/loadmore.templ`~~ | ~~10min~~ |
+| ~~29~~ | ~~Grid: Add `ContainerResponsive bool` field to GridProps~~ done — display/grid.templ       | ~~`display/grid.templ`~~                                                                                                     | ~~10min~~ |
+| ~~30~~ | ~~Grid: Add container-query-based column lookup map~~ done — display/grid.templ             | ~~`display/grid.templ`~~                                                                                                     | ~~10min~~ |
+| ~~31~~ | ~~Grid: Add `@container` class to root when ContainerResponsive~~ done — display/grid.templ | ~~`display/grid.templ`~~                                                                                                     | ~~10min~~ |
+| ~~32~~ | ~~Grid: Update DefaultGridProps and godoc~~ done — display/grid.templ                       | ~~`display/grid.templ`~~                                                                                                     | ~~5min~~  |
+| ~~33~~ | ~~Grid: Add container query test case~~ done — display/grid.templ                           | ~~`display/grid_test.go` or new test file~~                                                                                  | ~~15min~~ |
+| ~~34~~ | ~~Verify: build + test after motion + Grid changes~~ done (docs-health pass 2026-09-08)     | ~~Full matrix~~                                                                                                              | ~~10min~~ |
+| ~~35~~ | ~~Fix: golden files for Grid if needed~~ done (docs-health pass 2026-09-08)                 | ~~`testdata/*.golden`~~                                                                                                      | ~~10min~~ |
 
 ### Tier 3: The 20% (Tests + Docs + Verification) — Tasks 36–50
 
-| #  | Subtask                                                            | File(s)                                     | Time  |
-| -- | ------------------------------------------------------------------ | ------------------------------------------- | ----- |
-| ~~36~~ | ~~Create RTL test: render Card with dir="rtl" and verify classes~~ done — display/rtl test.go | ~~`display/rtl_test.go` (new)~~ | ~~15min~~ |
-| ~~37~~ | ~~Create RTL test: render Drawer with dir="rtl" and verify mirroring~~ done — display/rtl test.go | ~~`display/rtl_test.go`~~ | ~~10min~~ |
-| ~~38~~ | ~~Create RTL test: render Nav with dir="rtl"~~ done — display/rtl test.go | ~~`navigation/rtl_test.go` (new)~~ | ~~10min~~ |
-| ~~39~~ | ~~Audit motion-reduce in all 24 files with transitions~~ done — utils/motion compliance test.go | ~~Check each file for `motion-reduce:`~~ | ~~15min~~ |
-| ~~40~~ | ~~Fix any missing motion-reduce classes~~ done — utils/motion compliance test.go | ~~Files found in task 39~~ | ~~10min~~ |
-| ~~41~~ | ~~Update AGENTS.md: RTL convention section~~ done — AGENTS.md | ~~`AGENTS.md`~~ | ~~10min~~ |
-| ~~42~~ | ~~Update AGENTS.md: motion token convention section~~ done — AGENTS.md | ~~`AGENTS.md`~~ | ~~10min~~ |
-| ~~43~~ | ~~Update AGENTS.md: container query convention section~~ done — AGENTS.md | ~~`AGENTS.md`~~ | ~~10min~~ |
-| ~~44~~ | ~~Update CHANGELOG.md: add `[Unreleased]` entries~~ done — CHANGELOG.md | ~~`CHANGELOG.md`~~ | ~~15min~~ |
-| ~~45~~ | ~~Update SKILL.md: add new conventions to Part 2~~ done — skill/SKILL.md | ~~`skill/SKILL.md`~~ | ~~10min~~ |
-| ~~46~~ | ~~Register GridProps if changed in contract test~~ done (docs-health pass 2026-09-08) | ~~`internal/contract/component_props_test.go`~~ | ~~5min~~ |
-| ~~47~~ | ~~Full build: `templ generate && go build ./...`~~ done (docs-health pass 2026-09-08) | ~~All modules~~ | ~~10min~~ |
-| ~~48~~ | ~~Full test: `go test ./... -race -count=1`~~ done (docs-health pass 2026-09-08) | ~~All modules~~ | ~~15min~~ |
-| ~~49~~ | ~~Full lint: `golangci-lint run ./display/... ...`~~ done (docs-health pass 2026-09-08) | ~~All packages~~ | ~~10min~~ |
-| ~~50~~ | ~~GOWORK=off isolation test for all sub-modules~~ done (docs-health pass 2026-09-08) | ~~All sub-modules~~ | ~~10min~~ |
+| #      | Subtask                                                                                           | File(s)                                         | Time      |
+| ------ | ------------------------------------------------------------------------------------------------- | ----------------------------------------------- | --------- |
+| ~~36~~ | ~~Create RTL test: render Card with dir="rtl" and verify classes~~ done — display/rtl test.go     | ~~`display/rtl_test.go` (new)~~                 | ~~15min~~ |
+| ~~37~~ | ~~Create RTL test: render Drawer with dir="rtl" and verify mirroring~~ done — display/rtl test.go | ~~`display/rtl_test.go`~~                       | ~~10min~~ |
+| ~~38~~ | ~~Create RTL test: render Nav with dir="rtl"~~ done — display/rtl test.go                         | ~~`navigation/rtl_test.go` (new)~~              | ~~10min~~ |
+| ~~39~~ | ~~Audit motion-reduce in all 24 files with transitions~~ done — utils/motion compliance test.go   | ~~Check each file for `motion-reduce:`~~        | ~~15min~~ |
+| ~~40~~ | ~~Fix any missing motion-reduce classes~~ done — utils/motion compliance test.go                  | ~~Files found in task 39~~                      | ~~10min~~ |
+| ~~41~~ | ~~Update AGENTS.md: RTL convention section~~ done — AGENTS.md                                     | ~~`AGENTS.md`~~                                 | ~~10min~~ |
+| ~~42~~ | ~~Update AGENTS.md: motion token convention section~~ done — AGENTS.md                            | ~~`AGENTS.md`~~                                 | ~~10min~~ |
+| ~~43~~ | ~~Update AGENTS.md: container query convention section~~ done — AGENTS.md                         | ~~`AGENTS.md`~~                                 | ~~10min~~ |
+| ~~44~~ | ~~Update CHANGELOG.md: add `[Unreleased]` entries~~ done — CHANGELOG.md                           | ~~`CHANGELOG.md`~~                              | ~~15min~~ |
+| ~~45~~ | ~~Update SKILL.md: add new conventions to Part 2~~ done — skill/SKILL.md                          | ~~`skill/SKILL.md`~~                            | ~~10min~~ |
+| ~~46~~ | ~~Register GridProps if changed in contract test~~ done (docs-health pass 2026-09-08)             | ~~`internal/contract/component_props_test.go`~~ | ~~5min~~  |
+| ~~47~~ | ~~Full build: `templ generate && go build ./...`~~ done (docs-health pass 2026-09-08)             | ~~All modules~~                                 | ~~10min~~ |
+| ~~48~~ | ~~Full test: `go test ./... -race -count=1`~~ done (docs-health pass 2026-09-08)                  | ~~All modules~~                                 | ~~15min~~ |
+| ~~49~~ | ~~Full lint: `golangci-lint run ./display/... ...`~~ done (docs-health pass 2026-09-08)           | ~~All packages~~                                | ~~10min~~ |
+| ~~50~~ | ~~GOWORK=off isolation test for all sub-modules~~ done (docs-health pass 2026-09-08)              | ~~All sub-modules~~                             | ~~10min~~ |
 
 ### Final: Commit + Push — Tasks 51–55
 
-| #  | Subtask                                      | Time  |
-| -- | -------------------------------------------- | ----- |
-| ~~51~~ | ~~Review all changes with `git diff`~~ done (docs-health pass 2026-09-08) | ~~15min~~ |
-| ~~52~~ | ~~Stage all files (including new `*_templ.go`)~~ done (docs-health pass 2026-09-08) | ~~5min~~ |
-| ~~53~~ | ~~Write detailed commit message~~ done (docs-health pass 2026-09-08) | ~~10min~~ |
-| ~~54~~ | ~~Commit~~ done (docs-health pass 2026-09-08) | ~~5min~~ |
-| ~~55~~ | ~~Push to origin/master~~ done (docs-health pass 2026-09-08) | ~~5min~~ |
+| #      | Subtask                                                                             | Time      |
+| ------ | ----------------------------------------------------------------------------------- | --------- |
+| ~~51~~ | ~~Review all changes with `git diff`~~ done (docs-health pass 2026-09-08)           | ~~15min~~ |
+| ~~52~~ | ~~Stage all files (including new `*_templ.go`)~~ done (docs-health pass 2026-09-08) | ~~5min~~  |
+| ~~53~~ | ~~Write detailed commit message~~ done (docs-health pass 2026-09-08)                | ~~10min~~ |
+| ~~54~~ | ~~Commit~~ done (docs-health pass 2026-09-08)                                       | ~~5min~~  |
+| ~~55~~ | ~~Push to origin/master~~ done (docs-health pass 2026-09-08)                        | ~~5min~~  |
 
 **Total fine-grained tasks:** 55
 **Total estimated time:** ~9 hours

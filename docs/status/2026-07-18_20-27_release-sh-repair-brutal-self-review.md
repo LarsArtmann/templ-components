@@ -17,24 +17,24 @@ But I **shipped the fix while leaving the documentation that describes the fix s
 
 ## a) FULLY DONE ✅
 
-| #  | Item                                                                                                        | Evidence                                                                         |
-| -- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| 1  | **release.sh Defect 1 — duplicated summary in commit body**                                                 | `scripts/release.sh:192` — body built from `${RELEASE_NOTES}`, not summary       |
-| 2  | **release.sh Defect 2 — hardcoded `MiniMax-M3` attribution**                                                | `scripts/release.sh:196` — `${CRUSH_MODEL:-unknown}`                             |
-| 3  | **release.sh Defect 3 — hostile stdin read loop**                                                           | `scripts/release.sh:113-138` — auto-extract from `[Unreleased]` + `--notes-file` |
-| 4  | **shellcheck clean** on release.sh                                                                          | 0 warnings via `nix run nixpkgs#shellcheck`                                      |
-| 5  | **awk transformation tested with mock CHANGELOG** (extraction + move + empty + override)                    | `/tmp` mocks, all 4 cases passed before commit                                   |
-| 6  | **`utils/release_script_test.go` drift-guard** — static analysis of release.sh                              | Catches all 7 regression vectors (verified with negative fixture)                |
-| 7  | **`.art-dupl-baseline.json` regenerated** — 17 stale → 0 actual                                             | `art-dupl check` reports baseline: 0 groups                                      |
-| 8  | **`docs/icons-only-adoption.md` icon count corrected** — 101 → 102, broken markdown fixed                   | Both occurrences (intro + catalog heading)                                       |
-| ~~9~~  | ~~**README Quick Start GOEXPERIMENT note added**~~ done at `73395d9` | ~~`README.md:44-51`~~ |
-| ~~10~~ | ~~**TODO_LIST #62 rescoped** — "top 5 props" → `errorpage.ErrorPageProps` only~~ done at `73395d9` | ~~Over-engineering eliminated~~ |
-| ~~11~~ | ~~**Postmortem annotated** — Resolution (2026-07-18) appendix answering Q1-Q3~~ done at `73395d9` | ~~`docs/status/2026-07-18_09-29_v0.18.0-release-postmortem.md`~~ |
-| ~~12~~ | ~~**`flake.nix` adopted treefmt-nix** (mirrors `website/flake.nix`) + `checks.format`~~ done at `73395d9` | ~~`nix flake check` passes; `nix build .#checks.x86_64-linux.format` passes~~ |
-| ~~13~~ | ~~**statix clean** on flake.nix (fixed repeated-keys warning via amend)~~ done at `73395d9` | ~~0 findings~~ |
-| ~~14~~ | ~~**D2 SVGs verified as well-formed XML** with expected package content~~ done at `73395d9` | ~~Both `current-state` + `target-state-improved` parse cleanly~~ |
-| ~~15~~ | ~~**AGENTS.md Build & Test section** — added Nix flake commands subsection~~ done at `73395d9` | ~~Documents `nix fmt`, `nix flake check`, apps~~ |
-| ~~16~~ | ~~**Final verification: all 7 gates green** (build / test / lint / nix / art-dupl / shellcheck / drift-guard)~~ done at `73395d9` | ~~Captured in commit body~~ |
+| #      | Item                                                                                                                              | Evidence                                                                         |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| 1      | **release.sh Defect 1 — duplicated summary in commit body**                                                                       | `scripts/release.sh:192` — body built from `${RELEASE_NOTES}`, not summary       |
+| 2      | **release.sh Defect 2 — hardcoded `MiniMax-M3` attribution**                                                                      | `scripts/release.sh:196` — `${CRUSH_MODEL:-unknown}`                             |
+| 3      | **release.sh Defect 3 — hostile stdin read loop**                                                                                 | `scripts/release.sh:113-138` — auto-extract from `[Unreleased]` + `--notes-file` |
+| 4      | **shellcheck clean** on release.sh                                                                                                | 0 warnings via `nix run nixpkgs#shellcheck`                                      |
+| 5      | **awk transformation tested with mock CHANGELOG** (extraction + move + empty + override)                                          | `/tmp` mocks, all 4 cases passed before commit                                   |
+| 6      | **`utils/release_script_test.go` drift-guard** — static analysis of release.sh                                                    | Catches all 7 regression vectors (verified with negative fixture)                |
+| 7      | **`.art-dupl-baseline.json` regenerated** — 17 stale → 0 actual                                                                   | `art-dupl check` reports baseline: 0 groups                                      |
+| 8      | **`docs/icons-only-adoption.md` icon count corrected** — 101 → 102, broken markdown fixed                                         | Both occurrences (intro + catalog heading)                                       |
+| ~~9~~  | ~~**README Quick Start GOEXPERIMENT note added**~~ done at `73395d9`                                                              | ~~`README.md:44-51`~~                                                            |
+| ~~10~~ | ~~**TODO_LIST #62 rescoped** — "top 5 props" → `errorpage.ErrorPageProps` only~~ done at `73395d9`                                | ~~Over-engineering eliminated~~                                                  |
+| ~~11~~ | ~~**Postmortem annotated** — Resolution (2026-07-18) appendix answering Q1-Q3~~ done at `73395d9`                                 | ~~`docs/status/2026-07-18_09-29_v0.18.0-release-postmortem.md`~~                 |
+| ~~12~~ | ~~**`flake.nix` adopted treefmt-nix** (mirrors `website/flake.nix`) + `checks.format`~~ done at `73395d9`                         | ~~`nix flake check` passes; `nix build .#checks.x86_64-linux.format` passes~~    |
+| ~~13~~ | ~~**statix clean** on flake.nix (fixed repeated-keys warning via amend)~~ done at `73395d9`                                       | ~~0 findings~~                                                                   |
+| ~~14~~ | ~~**D2 SVGs verified as well-formed XML** with expected package content~~ done at `73395d9`                                       | ~~Both `current-state` + `target-state-improved` parse cleanly~~                 |
+| ~~15~~ | ~~**AGENTS.md Build & Test section** — added Nix flake commands subsection~~ done at `73395d9`                                    | ~~Documents `nix fmt`, `nix flake check`, apps~~                                 |
+| ~~16~~ | ~~**Final verification: all 7 gates green** (build / test / lint / nix / art-dupl / shellcheck / drift-guard)~~ done at `73395d9` | ~~Captured in commit body~~                                                      |
 
 ---
 

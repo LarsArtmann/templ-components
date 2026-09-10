@@ -187,8 +187,8 @@ green under `GOWORK=off`; `nix run .#lint` **0 issues in every module**;
    ~~occurrence.~~
 6. ~~**Post-release tidy sweep is still manual and still bites** — 5 sub-modules~~ done — tidy-probe.yml
    ~~- visualtest were stale 2 days after v1.13.2. The release script's~~
-     ~~post-propagation step should be a CI job (e.g. daily `go list -m` probe +~~
-     ~~auto-PR) instead of a memory-dependent lesson.~~
+   ~~post-propagation step should be a CI job (e.g. daily `go list -m` probe +~~
+   ~~auto-PR) instead of a memory-dependent lesson.~~
 
 ## f) NEXT — up to 50 things, rough priority order
 

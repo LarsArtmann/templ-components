@@ -56,14 +56,14 @@ This is the **exact gotcha already documented in AGENTS.md**:
 
 ## 2. FULLY DONE
 
-| # | Item                                | Evidence                                     |
-| - | ----------------------------------- | -------------------------------------------- |
-| 1 | Root-caused the flake               | captured `flex-col space-y-4 flex` output    |
-| 2 | Proved `utils.Class` is thread-safe | 3M varied concurrent calls, 0 corruption     |
-| 3 | Proved `Stack` component is correct | isolated render always emits `flex flex-col` |
-| 4 | Fixed the broken assertion          | `AssertContainsAll` with independent tokens  |
-| ~~5~~ | ~~Verified fix kills the flake~~ done at `83e0573` | ~~0/40 under `-race`~~ |
-| ~~6~~ | ~~No regression elsewhere~~ done at `83e0573` | ~~full `go test ./...` green~~ |
+| #     | Item                                               | Evidence                                     |
+| ----- | -------------------------------------------------- | -------------------------------------------- |
+| 1     | Root-caused the flake                              | captured `flex-col space-y-4 flex` output    |
+| 2     | Proved `utils.Class` is thread-safe                | 3M varied concurrent calls, 0 corruption     |
+| 3     | Proved `Stack` component is correct                | isolated render always emits `flex flex-col` |
+| 4     | Fixed the broken assertion                         | `AssertContainsAll` with independent tokens  |
+| ~~5~~ | ~~Verified fix kills the flake~~ done at `83e0573` | ~~0/40 under `-race`~~                       |
+| ~~6~~ | ~~No regression elsewhere~~ done at `83e0573`      | ~~full `go test ./...` green~~               |
 
 ---
 

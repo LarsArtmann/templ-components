@@ -10,50 +10,50 @@
 
 These 3 tasks unlock the most value. They fix the public-facing image, eliminate type duplication, and make the API consistent:
 
-| #  | Task                                                              | Why 51%                                                                                             |
-| -- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| ~~T1~~ | ~~Fix demo app to use `layout.Base` + Tailwind v4~~ done — examples/demo | ~~Only thing consumers see when they clone. Currently anti-advertisement.~~ |
-| ~~T2~~ | ~~Unify AlertType/ToastType + merge style maps~~ done — feedback/styles.go | ~~Eliminates the biggest type duplication in the codebase (2 identical enums + 2 near-identical maps)~~ |
-| ~~T3~~ | ~~Add BaseProps to StepIndicatorProps + LoadingOverlay props struct~~ done — feedback/styles.go | ~~API consistency — 2 components are the only outliers in their packages~~ |
+| #      | Task                                                                                            | Why 51%                                                                                                 |
+| ------ | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| ~~T1~~ | ~~Fix demo app to use `layout.Base` + Tailwind v4~~ done — examples/demo                        | ~~Only thing consumers see when they clone. Currently anti-advertisement.~~                             |
+| ~~T2~~ | ~~Unify AlertType/ToastType + merge style maps~~ done — feedback/styles.go                      | ~~Eliminates the biggest type duplication in the codebase (2 identical enums + 2 near-identical maps)~~ |
+| ~~T3~~ | ~~Add BaseProps to StepIndicatorProps + LoadingOverlay props struct~~ done — feedback/styles.go | ~~API consistency — 2 components are the only outliers in their packages~~                              |
 
 ### 4% → 64% Impact (High Leverage — DO SECOND)
 
-| #   | Task                                       | Why 64%                                           |
-| --- | ------------------------------------------ | ------------------------------------------------- |
-| ~~T4~~  | ~~Change FillIcon variadic bool → bool~~ done — utils/svg/svg templ.go | ~~API quality, eliminates anti-pattern~~ |
-| ~~T5~~  | ~~Fix ThemeToggle multi-instance bug~~ done — layout/theme.templ | ~~Silent failure with 2+ toggles~~ |
-| ~~T6~~  | ~~Use stable IDs in modal JS~~ done — display/shared templ.go | ~~Fragile CSS selector breaks with DOM changes~~ |
-| ~~T7~~  | ~~Use icon system in Breadcrumbs chevron~~ done — navigation/breadcrumbs.templ | ~~Eliminates raw SVG duplication~~ |
-| ~~T8~~  | ~~Fix Tooltip aria-describedby linkage~~ done — display/tooltip.templ | ~~Accessibility compliance~~ |
-| ~~T9~~  | ~~Replace BoolString with strconv.FormatBool~~ done — utils/utils.go | ~~Eliminates stdlib duplication~~ |
+| #       | Task                                                                              | Why 64%                                               |
+| ------- | --------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| ~~T4~~  | ~~Change FillIcon variadic bool → bool~~ done — utils/svg/svg templ.go            | ~~API quality, eliminates anti-pattern~~              |
+| ~~T5~~  | ~~Fix ThemeToggle multi-instance bug~~ done — layout/theme.templ                  | ~~Silent failure with 2+ toggles~~                    |
+| ~~T6~~  | ~~Use stable IDs in modal JS~~ done — display/shared templ.go                     | ~~Fragile CSS selector breaks with DOM changes~~      |
+| ~~T7~~  | ~~Use icon system in Breadcrumbs chevron~~ done — navigation/breadcrumbs.templ    | ~~Eliminates raw SVG duplication~~                    |
+| ~~T8~~  | ~~Fix Tooltip aria-describedby linkage~~ done — display/tooltip.templ             | ~~Accessibility compliance~~                          |
+| ~~T9~~  | ~~Replace BoolString with strconv.FormatBool~~ done — utils/utils.go              | ~~Eliminates stdlib duplication~~                     |
 | ~~T10~~ | ~~Add ComponentProps interface~~ done — internal/contract/component props test.go | ~~Enables generic handling for all 29 props structs~~ |
 
 ### 20% → 80% Impact (Broad Value — DO THIRD)
 
-| #   | Task                                                | Why 80%                                |
-| --- | --------------------------------------------------- | -------------------------------------- |
-| ~~T11~~ | ~~Make SimpleCard compose through Card~~ **Won't implement — rejected current impl cleaner.** | ~~Eliminates shell rendering duplication~~ |
-| ~~T12~~ | ~~Validate SwapOOB swapStyle~~ **Won't implement — minimal risk deferred.** | ~~Prevents silent HTMX failures~~ |
-| ~~T13~~ | ~~Validate SelectOption Disabled+Selected~~ done — forms/select.templ | ~~Impossible state prevention~~ |
-| ~~T14~~ | ~~Use net/url for pagination URLs~~ done — navigation/pagination.templ | ~~Correct URL construction~~ |
-| ~~T15~~ | ~~Replace splitSpace/splitClasses with strings.Fields~~ done — utils/utils test.go | ~~Cross-package dedup~~ |
-| ~~T16~~ | ~~Move BenchmarkHotPaths out of a11y_test.go~~ done — display/benchmark test.go | ~~Test file organization~~ |
-| ~~T17~~ | ~~Remove duplicate test data in navigation/~~ done — navigation/snapshot test.go | ~~Test dedup~~ |
-| ~~T18~~ | ~~Update CONTRIBUTING.md + docs~~ done — CONTRIBUTING.md | ~~Stale references~~ |
-| ~~T19~~ | ~~Document htmx→feedback JS coupling~~ done — htmx/error handling.templ | ~~Consumer documentation~~ |
-| ~~T20~~ | ~~Validate \~~ done — icons/icon paths.go | ~~separator in SVG paths~~ | ~~Icon system robustness~~ |
-| ~~T21~~ | ~~Document fill vs stroke convention~~ done — docs/adr/0004-filled-vs-stroke-icon-convention.md | ~~Icon system documentation~~ |
+| #       | Task                                                                                            | Why 80%                                    |
+| ------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| ~~T11~~ | ~~Make SimpleCard compose through Card~~ **Won't implement — rejected current impl cleaner.**   | ~~Eliminates shell rendering duplication~~ |
+| ~~T12~~ | ~~Validate SwapOOB swapStyle~~ **Won't implement — minimal risk deferred.**                     | ~~Prevents silent HTMX failures~~          |
+| ~~T13~~ | ~~Validate SelectOption Disabled+Selected~~ done — forms/select.templ                           | ~~Impossible state prevention~~            |
+| ~~T14~~ | ~~Use net/url for pagination URLs~~ done — navigation/pagination.templ                          | ~~Correct URL construction~~               |
+| ~~T15~~ | ~~Replace splitSpace/splitClasses with strings.Fields~~ done — utils/utils test.go              | ~~Cross-package dedup~~                    |
+| ~~T16~~ | ~~Move BenchmarkHotPaths out of a11y_test.go~~ done — display/benchmark test.go                 | ~~Test file organization~~                 |
+| ~~T17~~ | ~~Remove duplicate test data in navigation/~~ done — navigation/snapshot test.go                | ~~Test dedup~~                             |
+| ~~T18~~ | ~~Update CONTRIBUTING.md + docs~~ done — CONTRIBUTING.md                                        | ~~Stale references~~                       |
+| ~~T19~~ | ~~Document htmx→feedback JS coupling~~ done — htmx/error handling.templ                         | ~~Consumer documentation~~                 |
+| ~~T20~~ | ~~Validate \~~ done — icons/icon paths.go                                                       | ~~separator in SVG paths~~                 |
+| ~~T21~~ | ~~Document fill vs stroke convention~~ done — docs/adr/0004-filled-vs-stroke-icon-convention.md | ~~Icon system documentation~~              |
 
 ### Remaining (Polish — DO LAST)
 
-| #   | Task                                                                         |
-| --- | ---------------------------------------------------------------------------- |
+| #       | Task                                                                                                   |
+| ------- | ------------------------------------------------------------------------------------------------------ |
 | ~~T22~~ | ~~Audit tailwind-merge-go thread safety (requires reading external lib source)~~ done — utils/utils.go |
-| ~~T23~~ | ~~Replace DropdownItem empty-Href with typed variant~~ done — display/dropdown.templ |
-| ~~T24~~ | ~~Consolidate inline JS into shared init strategy~~ **Won't implement — tc init deferred.** |
-| ~~T25~~ | ~~Fix HTMX swap event listener re-attachment~~ done — display/shared templ.go |
-| ~~T26~~ | ~~Fix GlobalErrorHandling shared retry counter~~ done — htmx/error handling.templ |
-| ~~T27~~ | ~~Consolidate modal per-instance JS into single function~~ **Won't implement — tc init deferred.** |
+| ~~T23~~ | ~~Replace DropdownItem empty-Href with typed variant~~ done — display/dropdown.templ                   |
+| ~~T24~~ | ~~Consolidate inline JS into shared init strategy~~ **Won't implement — tc init deferred.**            |
+| ~~T25~~ | ~~Fix HTMX swap event listener re-attachment~~ done — display/shared templ.go                          |
+| ~~T26~~ | ~~Fix GlobalErrorHandling shared retry counter~~ done — htmx/error handling.templ                      |
+| ~~T27~~ | ~~Consolidate modal per-instance JS into single function~~ **Won't implement — tc init deferred.**     |
 
 ### Deferred (Post v1.0 — NOT IN SCOPE)
 
@@ -72,20 +72,20 @@ These 3 tasks unlock the most value. They fix the public-facing image, eliminate
 
 ## Coarse Plan (7-27 tasks, 30-100min each)
 
-| ID  | Task                                                                                 | Effort | Impact | Depends | Customer Value         |
-| --- | ------------------------------------------------------------------------------------ | ------ | ------ | ------- | ---------------------- |
-| ~~C1~~  | ~~Fix demo app: use layout.Base, Tailwind v4, HTMX~~ done — examples/demo | ~~45min~~ | ~~P0~~ | ~~—~~ | ~~HIGH: First impression~~ |
-| C2  | Unify AlertType/ToastType into shared type + merge style maps                        | 40min  | P1     | —       | HIGH: Type safety      |
-| ~~C3~~  | ~~Add BaseProps to StepIndicatorProps + LoadingOverlay props~~ done — feedback/step indicator.templ | ~~30min~~ | ~~P1~~ | ~~—~~ | ~~MED: API consistency~~ |
-| ~~C4~~  | ~~Fix FillIcon variadic, ThemeToggle multi-instance, modal stable IDs, Tooltip aria~~ done — utils/svg/svg templ.go | ~~45min~~ | ~~P1~~ | ~~—~~ | ~~MED: Bug fixes~~ |
-| ~~C5~~  | ~~Breadcrumbs icon, BoolString→stdlib, ComponentProps interface~~ done — internal/contract/component props test.go | ~~35min~~ | ~~P1~~ | ~~C2~~ | ~~MED: Consistency~~ |
-| ~~C6~~  | ~~SimpleCard composition, SwapOOB validation, SelectOption validation, pagination URLs~~ done — navigation/pagination.templ | ~~40min~~ | ~~P2~~ | ~~—~~ | ~~MED: Robustness~~ |
-| ~~C7~~  | ~~Test cleanup: splitClasses, BenchmarkHotPaths, test data dedup, SVG \~~ done — display/benchmark test.go | ~~validation~~ | ~~30min~~ | ~~P2~~ | ~~—~~ | ~~LOW: Maintenance~~ |
-| ~~C8~~  | ~~Docs: CONTRIBUTING.md, htmx→feedback coupling, fill vs stroke convention~~ done — CONTRIBUTING.md | ~~20min~~ | ~~P2~~ | ~~—~~ | ~~LOW: Documentation~~ |
-| ~~C9~~  | ~~Audit tailwind-merge-go thread safety + remove mutex if safe~~ done — utils/utils.go | ~~30min~~ | ~~P2~~ | ~~—~~ | ~~MED: Performance~~ |
-| ~~C10~~ | ~~DropdownItem typed variant~~ done — display/dropdown.templ | ~~45min~~ | ~~P2~~ | ~~C5~~ | ~~MED: Type safety~~ |
-| ~~C11~~ | ~~JS consolidation: shared init, HTMX re-attach, modal dedup, retry counter~~ **Won't implement — tc init deferred.** | ~~90min~~ | ~~P2~~ | ~~C8~~ | ~~HIGH: Architecture~~ |
-| ~~C12~~ | ~~Final verification: full rebuild + lint + test + coverage + AGENTS.md update~~ done — docs/status/2026-09-09 16-19 post-release-a11y-and-demo-e2e.md | ~~30min~~ | ~~P0~~ | ~~all~~ | ~~HIGH: Quality gate~~ |
+| ID      | Task                                                                                                                                                   | Effort         | Impact    | Depends | Customer Value             |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- | --------- | ------- | -------------------------- |
+| ~~C1~~  | ~~Fix demo app: use layout.Base, Tailwind v4, HTMX~~ done — examples/demo                                                                              | ~~45min~~      | ~~P0~~    | ~~—~~   | ~~HIGH: First impression~~ |
+| C2      | Unify AlertType/ToastType into shared type + merge style maps                                                                                          | 40min          | P1        | —       | HIGH: Type safety          |
+| ~~C3~~  | ~~Add BaseProps to StepIndicatorProps + LoadingOverlay props~~ done — feedback/step indicator.templ                                                    | ~~30min~~      | ~~P1~~    | ~~—~~   | ~~MED: API consistency~~   |
+| ~~C4~~  | ~~Fix FillIcon variadic, ThemeToggle multi-instance, modal stable IDs, Tooltip aria~~ done — utils/svg/svg templ.go                                    | ~~45min~~      | ~~P1~~    | ~~—~~   | ~~MED: Bug fixes~~         |
+| ~~C5~~  | ~~Breadcrumbs icon, BoolString→stdlib, ComponentProps interface~~ done — internal/contract/component props test.go                                     | ~~35min~~      | ~~P1~~    | ~~C2~~  | ~~MED: Consistency~~       |
+| ~~C6~~  | ~~SimpleCard composition, SwapOOB validation, SelectOption validation, pagination URLs~~ done — navigation/pagination.templ                            | ~~40min~~      | ~~P2~~    | ~~—~~   | ~~MED: Robustness~~        |
+| ~~C7~~  | ~~Test cleanup: splitClasses, BenchmarkHotPaths, test data dedup, SVG \~~ done — display/benchmark test.go                                             | ~~validation~~ | ~~30min~~ | ~~P2~~  | ~~—~~                      |
+| ~~C8~~  | ~~Docs: CONTRIBUTING.md, htmx→feedback coupling, fill vs stroke convention~~ done — CONTRIBUTING.md                                                    | ~~20min~~      | ~~P2~~    | ~~—~~   | ~~LOW: Documentation~~     |
+| ~~C9~~  | ~~Audit tailwind-merge-go thread safety + remove mutex if safe~~ done — utils/utils.go                                                                 | ~~30min~~      | ~~P2~~    | ~~—~~   | ~~MED: Performance~~       |
+| ~~C10~~ | ~~DropdownItem typed variant~~ done — display/dropdown.templ                                                                                           | ~~45min~~      | ~~P2~~    | ~~C5~~  | ~~MED: Type safety~~       |
+| ~~C11~~ | ~~JS consolidation: shared init, HTMX re-attach, modal dedup, retry counter~~ **Won't implement — tc init deferred.**                                  | ~~90min~~      | ~~P2~~    | ~~C8~~  | ~~HIGH: Architecture~~     |
+| ~~C12~~ | ~~Final verification: full rebuild + lint + test + coverage + AGENTS.md update~~ done — docs/status/2026-09-09 16-19 post-release-a11y-and-demo-e2e.md | ~~30min~~      | ~~P0~~    | ~~all~~ | ~~HIGH: Quality gate~~     |
 
 **Total: 12 tasks, ~480min estimated**
 
@@ -93,71 +93,71 @@ These 3 tasks unlock the most value. They fix the public-facing image, eliminate
 
 ## Fine Plan (50-125 tasks, max 15min each)
 
-| ID  | Task                                                                            | Effort | Parent |
-| --- | ------------------------------------------------------------------------------- | ------ | ------ |
-| ~~F1~~  | ~~Read current demo/main.go~~ done — examples/demo | ~~2min~~ | ~~C1~~ |
-| ~~F2~~  | ~~Rewrite demo to use layout.Base with DefaultPageProps~~ done — examples/demo | ~~10min~~ | ~~C1~~ |
-| ~~F3~~  | ~~Add HTMX + StatCard + Alert + Icons demos~~ done — examples/demo | ~~10min~~ | ~~C1~~ |
-| ~~F4~~  | ~~Test demo app builds~~ done — examples/demo | ~~3min~~ | ~~C1~~ |
-| ~~F5~~  | ~~Create FeedbackLevel type in feedback/styles.go (Success, Error, Warning, Info)~~ done — feedback/styles.go | ~~5min~~ | ~~C2~~ |
-| ~~F6~~  | ~~Replace AlertType with FeedbackLevel in alert.templ~~ done — feedback/styles.go | ~~5min~~ | ~~C2~~ |
-| ~~F7~~  | ~~Replace ToastType with FeedbackLevel in toast.templ~~ done — feedback/styles.go | ~~5min~~ | ~~C2~~ |
-| ~~F8~~  | ~~Merge alertStyleMap and toastStyleMap into shared feedbackStyleMap~~ done — feedback/styles.go | ~~5min~~ | ~~C2~~ |
-| ~~F9~~  | ~~Update all references (tests, FEATURES.md)~~ done — feedback/styles.go | ~~5min~~ | ~~C2~~ |
-| ~~F10~~ | ~~Verify feedback package builds + tests pass~~ done — feedback/styles.go | ~~3min~~ | ~~C2~~ |
-| ~~F11~~ | ~~Add BaseProps to StepIndicatorProps struct~~ done — feedback/step indicator.templ | ~~3min~~ | ~~C3~~ |
-| ~~F12~~ | ~~Update DefaultStepIndicatorProps~~ done — feedback/step indicator.templ | ~~2min~~ | ~~C3~~ |
-| ~~F13~~ | ~~Update StepIndicator template to propagate BaseProps~~ done — feedback/step indicator.templ | ~~5min~~ | ~~C3~~ |
-| ~~F14~~ | ~~Create LoadingOverlayProps struct with BaseProps~~ done — feedback/loading.templ | ~~5min~~ | ~~C3~~ |
-| ~~F15~~ | ~~Update LoadingOverlay template + all callers~~ done — feedback/loading.templ | ~~5min~~ | ~~C3~~ |
-| ~~F16~~ | ~~Verify feedback package builds + tests pass~~ done — feedback/loading.templ | ~~3min~~ | ~~C3~~ |
-| ~~F17~~ | ~~Change FillIcon `rotate ...bool` to `rotate bool` in svg.templ~~ done — utils/svg/svg templ.go | ~~3min~~ | ~~C4~~ |
-| ~~F18~~ | ~~Update all FillIcon call sites~~ done — utils/svg/svg templ.go | ~~5min~~ | ~~C4~~ |
-| ~~F19~~ | ~~Fix ThemeToggle: remove global guard, use per-element attachment~~ done — layout/theme.templ | ~~10min~~ | ~~C4~~ |
-| ~~F20~~ | ~~Fix modal JS: use props.ID+"-panel" instead of CSS selector~~ done — display/shared templ.go | ~~10min~~ | ~~C4~~ |
-| ~~F21~~ | ~~Fix Tooltip: add aria-describedby on trigger element~~ done — display/tooltip.templ | ~~10min~~ | ~~C4~~ |
-| ~~F22~~ | ~~Verify display + layout packages build + tests pass~~ done — CHANGELOG.md | ~~3min~~ | ~~C4~~ |
-| ~~F23~~ | ~~Replace Breadcrumbs hardcoded SVG with icons.ChevronRight~~ done — CHANGELOG.md | ~~5min~~ | ~~C5~~ |
-| ~~F24~~ | ~~Replace BoolString() body with strconv.FormatBool call~~ done — utils/utils.go | ~~3min~~ | ~~C5~~ |
-| ~~F25~~ | ~~Add ComponentProps interface to utils.BaseProps~~ done — internal/contract/component props test.go | ~~5min~~ | ~~C5~~ |
-| ~~F26~~ | ~~Add GetBaseProps() to all 29 props structs~~ done — internal/contract/component props test.go | ~~10min~~ | ~~C5~~ |
-| ~~F27~~ | ~~Verify utils + navigation build + tests pass~~ done — CHANGELOG.md | ~~3min~~ | ~~C5~~ |
-| ~~F28~~ | ~~Refactor SimpleCard to call Card internally~~ **Won't implement — rejected current impl cleaner.** | ~~10min~~ | ~~C6~~ |
-| ~~F29~~ | ~~Add swapStyle validation to SwapOOB~~ **Won't implement — minimal risk deferred.** | ~~5min~~ | ~~C6~~ |
-| ~~F30~~ | ~~Add Disabled+Selected validation to SelectOption~~ done — forms/select.templ | ~~5min~~ | ~~C6~~ |
-| ~~F31~~ | ~~Refactor pageURL to use net/url~~ done — navigation/pagination.templ | ~~10min~~ | ~~C6~~ |
-| ~~F32~~ | ~~Verify display + htmx + forms + navigation build + tests pass~~ done — CHANGELOG.md | ~~3min~~ | ~~C6~~ |
-| ~~F33~~ | ~~Replace splitClasses in icons/snapshot_test.go with strings.Fields~~ done — icons/snapshot test.go | ~~3min~~ | ~~C7~~ |
-| ~~F34~~ | ~~Replace splitSpace in utils/utils_test.go with strings.Fields~~ done — utils/utils test.go | ~~3min~~ | ~~C7~~ |
-| ~~F35~~ | ~~Move BenchmarkHotPaths from display/a11y_test.go to display/benchmark_test.go~~ done — display/benchmark test.go | ~~5min~~ | ~~C7~~ |
-| ~~F36~~ | ~~Extract shared testNavLinks in navigation/snapshot_test.go~~ done — navigation/snapshot test.go | ~~5min~~ | ~~C7~~ |
-| ~~F37~~ | ~~Add SVG path \~~ done — icons/icon paths.go | ~~separator validation test~~ | ~~5min~~ | ~~C7~~ |
-| ~~F38~~ | ~~Verify all test packages pass~~ done — CHANGELOG.md | ~~3min~~ | ~~C7~~ |
-| ~~F39~~ | ~~Update CONTRIBUTING.md: remove dropdownSafeID reference~~ done — CONTRIBUTING.md | ~~3min~~ | ~~C8~~ |
-| ~~F40~~ | ~~Add htmx→feedback JS coupling doc comment to GlobalErrorHandling~~ done — htmx/error handling.templ | ~~3min~~ | ~~C8~~ |
-| ~~F41~~ | ~~Add fill vs stroke convention comment to internal/svg/svg.templ~~ done — docs/adr/0004-filled-vs-stroke-icon-convention.md | ~~3min~~ | ~~C8~~ |
-| ~~F42~~ | ~~Audit tailwind-merge-go source for mutable state~~ done — utils/utils.go | ~~15min~~ | ~~C9~~ |
-| ~~F43~~ | ~~Remove mutex if safe, or add RWMutex if not~~ done — utils/utils.go | ~~5min~~ | ~~C9~~ |
-| ~~F44~~ | ~~Verify utils package tests pass~~ done — utils/utils.go | ~~3min~~ | ~~C9~~ |
-| ~~F45~~ | ~~Design DropdownItemKind enum (LinkItem, ButtonItem)~~ done — display/dropdown.templ | ~~5min~~ | ~~C10~~ |
-| ~~F46~~ | ~~Refactor DropdownItem to use typed variant~~ done — display/dropdown.templ | ~~10min~~ | ~~C10~~ |
-| ~~F47~~ | ~~Update dropdown template to match new types~~ done — display/dropdown.templ | ~~10min~~ | ~~C10~~ |
-| ~~F48~~ | ~~Update all DropdownItem test usages~~ done — display/dropdown test.go | ~~5min~~ | ~~C10~~ |
-| ~~F49~~ | ~~Verify display package builds + tests pass~~ done — display/dropdown test.go | ~~3min~~ | ~~C10~~ |
-| ~~F50~~ | ~~Extract shared tc-init.js pattern~~ **Won't implement — tc init deferred.** | ~~15min~~ | ~~C11~~ |
-| ~~F51~~ | ~~Refactor Accordion JS to use tc-init pattern~~ **Won't implement — tc init deferred.** | ~~10min~~ | ~~C11~~ |
-| ~~F52~~ | ~~Refactor Dropdown JS to use tc-init pattern~~ **Won't implement — tc init deferred.** | ~~10min~~ | ~~C11~~ |
-| ~~F53~~ | ~~Refactor Modal JS to use tc-init pattern~~ **Won't implement — tc init deferred.** | ~~10min~~ | ~~C11~~ |
-| ~~F54~~ | ~~Refactor Toast+Alert dismiss JS to use tc-init pattern~~ **Won't implement — tc init deferred.** | ~~10min~~ | ~~C11~~ |
-| ~~F55~~ | ~~Fix ThemeToggle to use tc-init pattern~~ **Won't implement — tc init deferred.** | ~~5min~~ | ~~C11~~ |
-| ~~F56~~ | ~~Fix MobileMenu to use tc-init pattern~~ **Won't implement — tc init deferred.** | ~~5min~~ | ~~C11~~ |
-| ~~F57~~ | ~~Fix GlobalErrorHandling retry counter (per-request)~~ done — htmx/error handling.templ | ~~10min~~ | ~~C11~~ |
-| ~~F58~~ | ~~Verify all packages build + all tests pass~~ done — CHANGELOG.md | ~~5min~~ | ~~C11~~ |
-| ~~F59~~ | ~~Full rebuild: templ generate + go build + go test + lint~~ done — docs/status/2026-09-09 16-19 post-release-a11y-and-demo-e2e.md | ~~10min~~ | ~~C12~~ |
-| ~~F60~~ | ~~Update AGENTS.md with all changes~~ done — AGENTS.md | ~~5min~~ | ~~C12~~ |
-| ~~F61~~ | ~~Update FEATURES.md with all changes~~ done — FEATURES.md | ~~5min~~ | ~~C12~~ |
-| ~~F62~~ | ~~Update TODO_LIST.md: mark completed items~~ done — TODO LIST.md | ~~5min~~ | ~~C12~~ |
-| ~~F63~~ | ~~Final git commit + push~~ done — CHANGELOG.md | ~~5min~~ | ~~C12~~ |
+| ID      | Task                                                                                                                               | Effort                        | Parent   |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | -------- |
+| ~~F1~~  | ~~Read current demo/main.go~~ done — examples/demo                                                                                 | ~~2min~~                      | ~~C1~~   |
+| ~~F2~~  | ~~Rewrite demo to use layout.Base with DefaultPageProps~~ done — examples/demo                                                     | ~~10min~~                     | ~~C1~~   |
+| ~~F3~~  | ~~Add HTMX + StatCard + Alert + Icons demos~~ done — examples/demo                                                                 | ~~10min~~                     | ~~C1~~   |
+| ~~F4~~  | ~~Test demo app builds~~ done — examples/demo                                                                                      | ~~3min~~                      | ~~C1~~   |
+| ~~F5~~  | ~~Create FeedbackLevel type in feedback/styles.go (Success, Error, Warning, Info)~~ done — feedback/styles.go                      | ~~5min~~                      | ~~C2~~   |
+| ~~F6~~  | ~~Replace AlertType with FeedbackLevel in alert.templ~~ done — feedback/styles.go                                                  | ~~5min~~                      | ~~C2~~   |
+| ~~F7~~  | ~~Replace ToastType with FeedbackLevel in toast.templ~~ done — feedback/styles.go                                                  | ~~5min~~                      | ~~C2~~   |
+| ~~F8~~  | ~~Merge alertStyleMap and toastStyleMap into shared feedbackStyleMap~~ done — feedback/styles.go                                   | ~~5min~~                      | ~~C2~~   |
+| ~~F9~~  | ~~Update all references (tests, FEATURES.md)~~ done — feedback/styles.go                                                           | ~~5min~~                      | ~~C2~~   |
+| ~~F10~~ | ~~Verify feedback package builds + tests pass~~ done — feedback/styles.go                                                          | ~~3min~~                      | ~~C2~~   |
+| ~~F11~~ | ~~Add BaseProps to StepIndicatorProps struct~~ done — feedback/step indicator.templ                                                | ~~3min~~                      | ~~C3~~   |
+| ~~F12~~ | ~~Update DefaultStepIndicatorProps~~ done — feedback/step indicator.templ                                                          | ~~2min~~                      | ~~C3~~   |
+| ~~F13~~ | ~~Update StepIndicator template to propagate BaseProps~~ done — feedback/step indicator.templ                                      | ~~5min~~                      | ~~C3~~   |
+| ~~F14~~ | ~~Create LoadingOverlayProps struct with BaseProps~~ done — feedback/loading.templ                                                 | ~~5min~~                      | ~~C3~~   |
+| ~~F15~~ | ~~Update LoadingOverlay template + all callers~~ done — feedback/loading.templ                                                     | ~~5min~~                      | ~~C3~~   |
+| ~~F16~~ | ~~Verify feedback package builds + tests pass~~ done — feedback/loading.templ                                                      | ~~3min~~                      | ~~C3~~   |
+| ~~F17~~ | ~~Change FillIcon `rotate ...bool` to `rotate bool` in svg.templ~~ done — utils/svg/svg templ.go                                   | ~~3min~~                      | ~~C4~~   |
+| ~~F18~~ | ~~Update all FillIcon call sites~~ done — utils/svg/svg templ.go                                                                   | ~~5min~~                      | ~~C4~~   |
+| ~~F19~~ | ~~Fix ThemeToggle: remove global guard, use per-element attachment~~ done — layout/theme.templ                                     | ~~10min~~                     | ~~C4~~   |
+| ~~F20~~ | ~~Fix modal JS: use props.ID+"-panel" instead of CSS selector~~ done — display/shared templ.go                                     | ~~10min~~                     | ~~C4~~   |
+| ~~F21~~ | ~~Fix Tooltip: add aria-describedby on trigger element~~ done — display/tooltip.templ                                              | ~~10min~~                     | ~~C4~~   |
+| ~~F22~~ | ~~Verify display + layout packages build + tests pass~~ done — CHANGELOG.md                                                        | ~~3min~~                      | ~~C4~~   |
+| ~~F23~~ | ~~Replace Breadcrumbs hardcoded SVG with icons.ChevronRight~~ done — CHANGELOG.md                                                  | ~~5min~~                      | ~~C5~~   |
+| ~~F24~~ | ~~Replace BoolString() body with strconv.FormatBool call~~ done — utils/utils.go                                                   | ~~3min~~                      | ~~C5~~   |
+| ~~F25~~ | ~~Add ComponentProps interface to utils.BaseProps~~ done — internal/contract/component props test.go                               | ~~5min~~                      | ~~C5~~   |
+| ~~F26~~ | ~~Add GetBaseProps() to all 29 props structs~~ done — internal/contract/component props test.go                                    | ~~10min~~                     | ~~C5~~   |
+| ~~F27~~ | ~~Verify utils + navigation build + tests pass~~ done — CHANGELOG.md                                                               | ~~3min~~                      | ~~C5~~   |
+| ~~F28~~ | ~~Refactor SimpleCard to call Card internally~~ **Won't implement — rejected current impl cleaner.**                               | ~~10min~~                     | ~~C6~~   |
+| ~~F29~~ | ~~Add swapStyle validation to SwapOOB~~ **Won't implement — minimal risk deferred.**                                               | ~~5min~~                      | ~~C6~~   |
+| ~~F30~~ | ~~Add Disabled+Selected validation to SelectOption~~ done — forms/select.templ                                                     | ~~5min~~                      | ~~C6~~   |
+| ~~F31~~ | ~~Refactor pageURL to use net/url~~ done — navigation/pagination.templ                                                             | ~~10min~~                     | ~~C6~~   |
+| ~~F32~~ | ~~Verify display + htmx + forms + navigation build + tests pass~~ done — CHANGELOG.md                                              | ~~3min~~                      | ~~C6~~   |
+| ~~F33~~ | ~~Replace splitClasses in icons/snapshot_test.go with strings.Fields~~ done — icons/snapshot test.go                               | ~~3min~~                      | ~~C7~~   |
+| ~~F34~~ | ~~Replace splitSpace in utils/utils_test.go with strings.Fields~~ done — utils/utils test.go                                       | ~~3min~~                      | ~~C7~~   |
+| ~~F35~~ | ~~Move BenchmarkHotPaths from display/a11y_test.go to display/benchmark_test.go~~ done — display/benchmark test.go                 | ~~5min~~                      | ~~C7~~   |
+| ~~F36~~ | ~~Extract shared testNavLinks in navigation/snapshot_test.go~~ done — navigation/snapshot test.go                                  | ~~5min~~                      | ~~C7~~   |
+| ~~F37~~ | ~~Add SVG path \~~ done — icons/icon paths.go                                                                                      | ~~separator validation test~~ | ~~5min~~ |
+| ~~F38~~ | ~~Verify all test packages pass~~ done — CHANGELOG.md                                                                              | ~~3min~~                      | ~~C7~~   |
+| ~~F39~~ | ~~Update CONTRIBUTING.md: remove dropdownSafeID reference~~ done — CONTRIBUTING.md                                                 | ~~3min~~                      | ~~C8~~   |
+| ~~F40~~ | ~~Add htmx→feedback JS coupling doc comment to GlobalErrorHandling~~ done — htmx/error handling.templ                              | ~~3min~~                      | ~~C8~~   |
+| ~~F41~~ | ~~Add fill vs stroke convention comment to internal/svg/svg.templ~~ done — docs/adr/0004-filled-vs-stroke-icon-convention.md       | ~~3min~~                      | ~~C8~~   |
+| ~~F42~~ | ~~Audit tailwind-merge-go source for mutable state~~ done — utils/utils.go                                                         | ~~15min~~                     | ~~C9~~   |
+| ~~F43~~ | ~~Remove mutex if safe, or add RWMutex if not~~ done — utils/utils.go                                                              | ~~5min~~                      | ~~C9~~   |
+| ~~F44~~ | ~~Verify utils package tests pass~~ done — utils/utils.go                                                                          | ~~3min~~                      | ~~C9~~   |
+| ~~F45~~ | ~~Design DropdownItemKind enum (LinkItem, ButtonItem)~~ done — display/dropdown.templ                                              | ~~5min~~                      | ~~C10~~  |
+| ~~F46~~ | ~~Refactor DropdownItem to use typed variant~~ done — display/dropdown.templ                                                       | ~~10min~~                     | ~~C10~~  |
+| ~~F47~~ | ~~Update dropdown template to match new types~~ done — display/dropdown.templ                                                      | ~~10min~~                     | ~~C10~~  |
+| ~~F48~~ | ~~Update all DropdownItem test usages~~ done — display/dropdown test.go                                                            | ~~5min~~                      | ~~C10~~  |
+| ~~F49~~ | ~~Verify display package builds + tests pass~~ done — display/dropdown test.go                                                     | ~~3min~~                      | ~~C10~~  |
+| ~~F50~~ | ~~Extract shared tc-init.js pattern~~ **Won't implement — tc init deferred.**                                                      | ~~15min~~                     | ~~C11~~  |
+| ~~F51~~ | ~~Refactor Accordion JS to use tc-init pattern~~ **Won't implement — tc init deferred.**                                           | ~~10min~~                     | ~~C11~~  |
+| ~~F52~~ | ~~Refactor Dropdown JS to use tc-init pattern~~ **Won't implement — tc init deferred.**                                            | ~~10min~~                     | ~~C11~~  |
+| ~~F53~~ | ~~Refactor Modal JS to use tc-init pattern~~ **Won't implement — tc init deferred.**                                               | ~~10min~~                     | ~~C11~~  |
+| ~~F54~~ | ~~Refactor Toast+Alert dismiss JS to use tc-init pattern~~ **Won't implement — tc init deferred.**                                 | ~~10min~~                     | ~~C11~~  |
+| ~~F55~~ | ~~Fix ThemeToggle to use tc-init pattern~~ **Won't implement — tc init deferred.**                                                 | ~~5min~~                      | ~~C11~~  |
+| ~~F56~~ | ~~Fix MobileMenu to use tc-init pattern~~ **Won't implement — tc init deferred.**                                                  | ~~5min~~                      | ~~C11~~  |
+| ~~F57~~ | ~~Fix GlobalErrorHandling retry counter (per-request)~~ done — htmx/error handling.templ                                           | ~~10min~~                     | ~~C11~~  |
+| ~~F58~~ | ~~Verify all packages build + all tests pass~~ done — CHANGELOG.md                                                                 | ~~5min~~                      | ~~C11~~  |
+| ~~F59~~ | ~~Full rebuild: templ generate + go build + go test + lint~~ done — docs/status/2026-09-09 16-19 post-release-a11y-and-demo-e2e.md | ~~10min~~                     | ~~C12~~  |
+| ~~F60~~ | ~~Update AGENTS.md with all changes~~ done — AGENTS.md                                                                             | ~~5min~~                      | ~~C12~~  |
+| ~~F61~~ | ~~Update FEATURES.md with all changes~~ done — FEATURES.md                                                                         | ~~5min~~                      | ~~C12~~  |
+| ~~F62~~ | ~~Update TODO_LIST.md: mark completed items~~ done — TODO LIST.md                                                                  | ~~5min~~                      | ~~C12~~  |
+| ~~F63~~ | ~~Final git commit + push~~ done — CHANGELOG.md                                                                                    | ~~5min~~                      | ~~C12~~  |
 
 **Total: 63 fine-grained tasks**
 

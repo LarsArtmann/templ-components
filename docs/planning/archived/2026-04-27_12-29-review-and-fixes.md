@@ -7,34 +7,34 @@
 
 ### Phase 1: Critical Fixes (P0)
 
-| # | Task                   | Status | Files Changed          |
-| - | ---------------------- | ------ | ---------------------- |
+| #     | Task                                         | Status | Files Changed              |
+| ----- | -------------------------------------------- | ------ | -------------------------- |
 | ~~1~~ | ~~Fix XSS in tcShowToast~~ done at `bf6028a` | ~~✅~~ | ~~`feedback/toast.templ`~~ |
-| ~~2~~ | ~~Add Spinner icon case~~ done at `bf6028a` | ~~✅~~ | ~~`icons/icon.templ`~~ |
+| ~~2~~ | ~~Add Spinner icon case~~ done at `bf6028a`  | ~~✅~~ | ~~`icons/icon.templ`~~     |
 
 ### Phase 2: High Priority (P1)
 
-| # | Task                            | Status | Files Changed                                                                                                                       |
-| - | ------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| ~~3~~ | ~~Reuse icons.Icon in empty_state~~ done at `bf6028a` | ~~✅~~ | ~~`display/empty_state.templ`~~ |
-| ~~4~~ | ~~Add SRI hashes to CDN scripts~~ done at `bf6028a` | ~~✅~~ | ~~`layout/base.templ`, `layout/sri.go`~~ |
-| ~~5~~ | ~~Add unit tests for Go helpers~~ done at `bf6028a` | ~~✅~~ | ~~`feedback/helpers_test.go`, `display/helpers_test.go`, `layout/sri_test.go`, `navigation/nav_link_test.go`, `forms/helpers_test.go`~~ |
+| #     | Task                                                  | Status | Files Changed                                                                                                                           |
+| ----- | ----------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~3~~ | ~~Reuse icons.Icon in empty_state~~ done at `bf6028a` | ~~✅~~ | ~~`display/empty_state.templ`~~                                                                                                         |
+| ~~4~~ | ~~Add SRI hashes to CDN scripts~~ done at `bf6028a`   | ~~✅~~ | ~~`layout/base.templ`, `layout/sri.go`~~                                                                                                |
+| ~~5~~ | ~~Add unit tests for Go helpers~~ done at `bf6028a`   | ~~✅~~ | ~~`feedback/helpers_test.go`, `display/helpers_test.go`, `layout/sri_test.go`, `navigation/nav_link_test.go`, `forms/helpers_test.go`~~ |
 
 ### Phase 3: Quality Improvements (P2)
 
-| # | Task                              | Status | Files Changed                           |
-| - | --------------------------------- | ------ | --------------------------------------- |
-| ~~6~~ | ~~Deduplicate NavLink class strings~~ done at `bf6028a` | ~~✅~~ | ~~`navigation/nav_link.templ`~~ |
-| ~~7~~ | ~~Fix FieldError ID sanitization~~ done at `bf6028a` | ~~✅~~ | ~~`forms/helpers.go`, `forms/label.templ`~~ |
-| ~~8~~ | ~~Modernize for loop to range 4~~ done at `bf6028a` | ~~✅~~ | ~~`feedback/loading.templ`~~ |
-| ~~9~~ | ~~Add MIT LICENSE file~~ done at `bf6028a` | ~~✅~~ | ~~`LICENSE`~~ |
+| #     | Task                                                    | Status | Files Changed                               |
+| ----- | ------------------------------------------------------- | ------ | ------------------------------------------- |
+| ~~6~~ | ~~Deduplicate NavLink class strings~~ done at `bf6028a` | ~~✅~~ | ~~`navigation/nav_link.templ`~~             |
+| ~~7~~ | ~~Fix FieldError ID sanitization~~ done at `bf6028a`    | ~~✅~~ | ~~`forms/helpers.go`, `forms/label.templ`~~ |
+| ~~8~~ | ~~Modernize for loop to range 4~~ done at `bf6028a`     | ~~✅~~ | ~~`feedback/loading.templ`~~                |
+| ~~9~~ | ~~Add MIT LICENSE file~~ done at `bf6028a`              | ~~✅~~ | ~~`LICENSE`~~                               |
 
 ### Phase 4: Polish (P3)
 
-| #  | Task                                  | Status | Files Changed                  |
-| -- | ------------------------------------- | ------ | ------------------------------ |
-| ~~10~~ | ~~Scope mobile menu JS to parent nav~~ done at `bf6028a` | ~~✅~~ | ~~`navigation/mobile_menu.templ`~~ |
-| ~~11~~ | ~~Extract toast styles to single source~~ done at `bf6028a` | ~~✅~~ | ~~`feedback/toast.templ`~~ |
+| #      | Task                                                        | Status | Files Changed                      |
+| ------ | ----------------------------------------------------------- | ------ | ---------------------------------- |
+| ~~10~~ | ~~Scope mobile menu JS to parent nav~~ done at `bf6028a`    | ~~✅~~ | ~~`navigation/mobile_menu.templ`~~ |
+| ~~11~~ | ~~Extract toast styles to single source~~ done at `bf6028a` | ~~✅~~ | ~~`feedback/toast.templ`~~         |
 
 ## Verification
 

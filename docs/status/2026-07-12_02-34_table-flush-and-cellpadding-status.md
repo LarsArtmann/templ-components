@@ -110,27 +110,27 @@ Nothing in this session. All 7 commits are clean, BuildFlow passed on every comm
 
 ### Immediate (this feature)
 
-| # | Task                                                                            | Impact | Effort |
-| - | ------------------------------------------------------------------------------- | ------ | ------ |
-| ~~1~~ | ~~Cut v0.16.0 release with Flush + CellPadding~~ done — v0.16.0 | ~~High~~ | ~~Low~~ |
-| ~~2~~ | ~~Update README.md Table section with Flush/CellPadding~~ done — README.md | ~~Medium~~ | ~~Low~~ |
-| 3 | Remove the CSS workaround in cqrs-htmx adminui and adopt `Flush: true`          | High   | Low    |
+| #     | Task                                                                                                                     | Impact     | Effort  |
+| ----- | ------------------------------------------------------------------------------------------------------------------------ | ---------- | ------- |
+| ~~1~~ | ~~Cut v0.16.0 release with Flush + CellPadding~~ done — v0.16.0                                                          | ~~High~~   | ~~Low~~ |
+| ~~2~~ | ~~Update README.md Table section with Flush/CellPadding~~ done — README.md                                               | ~~Medium~~ | ~~Low~~ |
+| 3     | Remove the CSS workaround in cqrs-htmx adminui and adopt `Flush: true`                                                   | High       | Low     |
 | ~~4~~ | ~~Add a `docs/recipes/table-in-card.md` recipe showing the full dashboard pattern~~ done — docs/recipes/table-in-card.md | ~~Medium~~ | ~~Low~~ |
 
 ### Table component improvements
 
-| #  | Task                                                                                                     | Impact | Effort |
-| -- | -------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 5  | Add `TableSize` enum (sm/md/lg) controlling font-size + cell-padding as a unified control                | Medium | Medium |
-| 6  | Add `StickyHeader bool` — `sticky top-0` on `<thead>` for long tables                                    | Medium | Low    |
-| 7  | Add `ColumnAlign []TextAlign` — per-column text alignment (start/center/end)                             | Medium | Medium |
-| ~~8~~  | ~~Add `EmptyState templ.Component` slot — renders when `Rows` is empty (currently renders empty `<tbody>`)~~ done — DataTable EmptyState slot | ~~High~~ | ~~Low~~ |
-| 9  | Add `Loading bool` — renders skeleton rows placeholder                                                   | Medium | Medium |
-| 10 | Add `Selectable bool` + `Row.Selected` — checkbox column for bulk actions                                | High   | High   |
-| ~~11~~ | ~~`DataTable` wrapper (PLANNED in FEATURES.md) — sorting + filtering + pagination in one component~~ done — v0.17.0 | ~~High~~ | ~~High~~ |
-| 12 | Add `FooterRow templ.Component` — `<tfoot>` support for totals/summaries                                 | Medium | Low    |
-| 13 | Add `StickyFirstColumn bool` — `sticky start-0` for row label columns                                    | Low    | Medium |
-| 14 | Add `ZebraOdd bool` — control which row index gets striping (currently hardcoded to odd)                 | Low    | Low    |
+| #      | Task                                                                                                                                          | Impact   | Effort   |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- |
+| 5      | Add `TableSize` enum (sm/md/lg) controlling font-size + cell-padding as a unified control                                                     | Medium   | Medium   |
+| 6      | Add `StickyHeader bool` — `sticky top-0` on `<thead>` for long tables                                                                         | Medium   | Low      |
+| 7      | Add `ColumnAlign []TextAlign` — per-column text alignment (start/center/end)                                                                  | Medium   | Medium   |
+| ~~8~~  | ~~Add `EmptyState templ.Component` slot — renders when `Rows` is empty (currently renders empty `<tbody>`)~~ done — DataTable EmptyState slot | ~~High~~ | ~~Low~~  |
+| 9      | Add `Loading bool` — renders skeleton rows placeholder                                                                                        | Medium   | Medium   |
+| 10     | Add `Selectable bool` + `Row.Selected` — checkbox column for bulk actions                                                                     | High     | High     |
+| ~~11~~ | ~~`DataTable` wrapper (PLANNED in FEATURES.md) — sorting + filtering + pagination in one component~~ done — v0.17.0                           | ~~High~~ | ~~High~~ |
+| 12     | Add `FooterRow templ.Component` — `<tfoot>` support for totals/summaries                                                                      | Medium   | Low      |
+| 13     | Add `StickyFirstColumn bool` — `sticky start-0` for row label columns                                                                         | Low      | Medium   |
+| 14     | Add `ZebraOdd bool` — control which row index gets striping (currently hardcoded to odd)                                                      | Low      | Low      |
 
 ### Cross-component improvements
 
@@ -143,23 +143,23 @@ Nothing in this session. All 7 commits are clean, BuildFlow passed on every comm
 
 ### Testing improvements
 
-| #  | Task                                                                                       | Impact | Effort |
-| -- | ------------------------------------------------------------------------------------------ | ------ | ------ |
-| 19 | Add fuzz test for `TableCellPadding` — verify no panic on arbitrary string input           | Low    | Low    |
-| 20 | Add benchmark for `tableWrapperClass` + `tableCellPaddingClass`                            | Low    | Low    |
-| ~~21~~ | ~~Add a11y test for Table — verify `aria-label` propagation, `scope="col"` presence~~ done — display/a11y test.go | ~~Medium~~ | ~~Low~~ |
+| #      | Task                                                                                                                         | Impact     | Effort  |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------- | ---------- | ------- |
+| 19     | Add fuzz test for `TableCellPadding` — verify no panic on arbitrary string input                                             | Low        | Low     |
+| 20     | Add benchmark for `tableWrapperClass` + `tableCellPaddingClass`                                                              | Low        | Low     |
+| ~~21~~ | ~~Add a11y test for Table — verify `aria-label` propagation, `scope="col"` presence~~ done — display/a11y test.go            | ~~Medium~~ | ~~Low~~ |
 | ~~22~~ | ~~Add dark-mode compliance test for Table — verify all `border-gray-*` have `dark:` variants~~ done — TestDarkModeCompliance | ~~Medium~~ | ~~Low~~ |
-| ~~23~~ | ~~Add snapshot test for Table-in-Card composition (not just integration assertion)~~ done — display/composition test.go | ~~Low~~ | ~~Low~~ |
-| 24 | Test Table with `Flush=true` + `Bordered=true` interaction (both borders on table element) | Low    | Low    |
+| ~~23~~ | ~~Add snapshot test for Table-in-Card composition (not just integration assertion)~~ done — display/composition test.go      | ~~Low~~    | ~~Low~~ |
+| 24     | Test Table with `Flush=true` + `Bordered=true` interaction (both borders on table element)                                   | Low        | Low     |
 
 ### Documentation improvements
 
-| #  | Task                                                                                | Impact | Effort |
-| -- | ----------------------------------------------------------------------------------- | ------ | ------ |
+| #      | Task                                                                                                                                       | Impact  | Effort  |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------ | ------- | ------- |
 | ~~25~~ | ~~Add ADR for the Flush pattern (component opts out of its own border when nested)~~ done — docs/adr/0012-flush-prop-for-nested-borders.md | ~~Low~~ | ~~Low~~ |
-| ~~26~~ | ~~Update `docs/recipes/horizontal-filter-bar.md` to mention compact table for results~~ done — recipes/horizontal-filter-bar.md | ~~Low~~ | ~~Low~~ |
-| 27 | Add Flush pattern to CONTRIBUTING.md conventions section                            | Low    | Low    |
-| 28 | Document the wrapper-div-not-using-utils.Class decision in table.templ comment      | Low    | Low    |
+| ~~26~~ | ~~Update `docs/recipes/horizontal-filter-bar.md` to mention compact table for results~~ done — recipes/horizontal-filter-bar.md            | ~~Low~~ | ~~Low~~ |
+| 27     | Add Flush pattern to CONTRIBUTING.md conventions section                                                                                   | Low     | Low     |
+| 28     | Document the wrapper-div-not-using-utils.Class decision in table.templ comment                                                             | Low     | Low     |
 
 ### Broader library improvements
 
@@ -184,24 +184,24 @@ Nothing in this session. All 7 commits are clean, BuildFlow passed on every comm
 
 ### Infrastructure
 
-| #  | Task                                                                                                                  | Impact | Effort |
-| -- | --------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| ~~40~~ | ~~Add visual regression testing (Playwright/screenshot diff) — golden files catch HTML changes but not visual rendering~~ done — visualtest/ | ~~High~~ | ~~High~~ |
-| ~~41~~ | ~~Add `docs/recipes/dashboard-table.md` with sorting + pagination + compact + flush all together~~ done — recipes/dashboard.md | ~~Medium~~ | ~~Low~~ |
-| 42 | Create interactive Storybook-like demo page with all Table options toggleable                                         | Medium | High   |
-| ~~43~~ | ~~Add CSP test for Table with clickable rows — verify nonce on the row-href script~~ done — display/table row href test.go | ~~Low~~ | ~~Low~~ |
-| 44 | Add `utils.AssertCount` test helper — `strings.Count` assertions are inline and repeated                              | Low    | Low    |
+| #      | Task                                                                                                                                         | Impact     | Effort   |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------- |
+| ~~40~~ | ~~Add visual regression testing (Playwright/screenshot diff) — golden files catch HTML changes but not visual rendering~~ done — visualtest/ | ~~High~~   | ~~High~~ |
+| ~~41~~ | ~~Add `docs/recipes/dashboard-table.md` with sorting + pagination + compact + flush all together~~ done — recipes/dashboard.md               | ~~Medium~~ | ~~Low~~  |
+| 42     | Create interactive Storybook-like demo page with all Table options toggleable                                                                | Medium     | High     |
+| ~~43~~ | ~~Add CSP test for Table with clickable rows — verify nonce on the row-href script~~ done — display/table row href test.go                   | ~~Low~~    | ~~Low~~  |
+| 44     | Add `utils.AssertCount` test helper — `strings.Count` assertions are inline and repeated                                                     | Low        | Low      |
 
 ### Consumer feedback items
 
-| #  | Task                                                                                          | Impact | Effort |
-| -- | --------------------------------------------------------------------------------------------- | ------ | ------ |
-| 45 | Collect feedback from cqrs-htmx on whether Compact padding is compact enough (py-2 vs py-1.5) | Medium | Low    |
-| 46 | Ask if consumers want a `TableVariant` enum (simple/bordered/flush) instead of separate bools | Low    | Low    |
-| 47 | Survey: do consumers nest other components inside Card(CardPaddingNone) that need Flush?      | Medium | Low    |
+| #      | Task                                                                                                          | Impact  | Effort  |
+| ------ | ------------------------------------------------------------------------------------------------------------- | ------- | ------- |
+| 45     | Collect feedback from cqrs-htmx on whether Compact padding is compact enough (py-2 vs py-1.5)                 | Medium  | Low     |
+| 46     | Ask if consumers want a `TableVariant` enum (simple/bordered/flush) instead of separate bools                 | Low     | Low     |
+| 47     | Survey: do consumers nest other components inside Card(CardPaddingNone) that need Flush?                      | Medium  | Low     |
 | ~~48~~ | ~~Document the consumer CSS workaround removal path in the CHANGELOG release notes~~ done — CHANGELOG v0.16.0 | ~~Low~~ | ~~Low~~ |
-| 49 | Add migration guide: "From CSS workaround to Flush prop"                                      | Low    | Low    |
-| 50 | Review all cqrs-htmx adminui table templates (5 reported) for Flush adoption                  | Medium | Low    |
+| 49     | Add migration guide: "From CSS workaround to Flush prop"                                                      | Low     | Low     |
+| 50     | Review all cqrs-htmx adminui table templates (5 reported) for Flush adoption                                  | Medium  | Low     |
 
 ---
 

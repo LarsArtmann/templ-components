@@ -16,14 +16,14 @@ library's biggest competitive gap (no per-component docs on the website — 112 
 
 **Evidence snapshot (2026-08-14):**
 
-| #  | Failure                                           | Where            | Root cause                                                                                                                                                                                                              |
-| -- | ------------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ~~F1~~ | ~~`TestGoldenCopyButton`, `TestGoldenCardBodySlot`~~ done (docs-health pass 2026-09-08) | ~~CI Build & Test~~ | ~~Commit `177d88e` changed fixtures `npm install` → `pnpm add` without regenerating goldens~~ |
-| ~~F2~~ | ~~CSS Freshness: "Committed CSS is stale"~~ done (docs-health pass 2026-09-08) | ~~CI CSS job~~ | ~~`examples/demo/static/app.css` not recompiled after class changes (`nix run .#css` fixes)~~ |
-| ~~F3~~ | ~~Actionlint SC2044~~ done (docs-health pass 2026-09-08) | ~~CI Lint job~~ | ~~`ci.yaml:85` — `for templ_file in $(find ...)` fragile loop~~ |
-| ~~F4~~ | ~~Website: "Unable to locate executable file: pnpm"~~ done (docs-health pass 2026-09-08) | ~~Website workflow~~ | ~~`setup-node` does not install pnpm; also `cache-dependency-path` points to npm `package-lock.json` that no longer exists after pnpm migration~~ |
-| ~~F5~~ | ~~Visual Regression exits 1 (~76s in)~~ done (docs-health pass 2026-09-08) | ~~CI Visual job~~ | ~~`nix run .#visual` fails inside `OUTPUT=$(...)` under `set -e` — output swallowed; first red run coincides with the CircularProgress feature (Aug 11) — likely PNG mismatches or missing snapshots; local repro running~~ |
-| ~~F6~~ | ~~(historic) "Verify no untracked changes"~~ done (docs-health pass 2026-09-08) | ~~2 older runs~~ | ~~BuildFlow daemon commits stale trees — external, TODO #93~~ |
+| #      | Failure                                                                                  | Where                | Root cause                                                                                                                                                                                                                  |
+| ------ | ---------------------------------------------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~F1~~ | ~~`TestGoldenCopyButton`, `TestGoldenCardBodySlot`~~ done (docs-health pass 2026-09-08)  | ~~CI Build & Test~~  | ~~Commit `177d88e` changed fixtures `npm install` → `pnpm add` without regenerating goldens~~                                                                                                                               |
+| ~~F2~~ | ~~CSS Freshness: "Committed CSS is stale"~~ done (docs-health pass 2026-09-08)           | ~~CI CSS job~~       | ~~`examples/demo/static/app.css` not recompiled after class changes (`nix run .#css` fixes)~~                                                                                                                               |
+| ~~F3~~ | ~~Actionlint SC2044~~ done (docs-health pass 2026-09-08)                                 | ~~CI Lint job~~      | ~~`ci.yaml:85` — `for templ_file in $(find ...)` fragile loop~~                                                                                                                                                             |
+| ~~F4~~ | ~~Website: "Unable to locate executable file: pnpm"~~ done (docs-health pass 2026-09-08) | ~~Website workflow~~ | ~~`setup-node` does not install pnpm; also `cache-dependency-path` points to npm `package-lock.json` that no longer exists after pnpm migration~~                                                                           |
+| ~~F5~~ | ~~Visual Regression exits 1 (~76s in)~~ done (docs-health pass 2026-09-08)               | ~~CI Visual job~~    | ~~`nix run .#visual` fails inside `OUTPUT=$(...)` under `set -e` — output swallowed; first red run coincides with the CircularProgress feature (Aug 11) — likely PNG mismatches or missing snapshots; local repro running~~ |
+| ~~F6~~ | ~~(historic) "Verify no untracked changes"~~ done (docs-health pass 2026-09-08)          | ~~2 older runs~~     | ~~BuildFlow daemon commits stale trees — external, TODO #93~~                                                                                                                                                               |
 
 ---
 
@@ -71,83 +71,83 @@ These convert the existing (excellent) library into something a stranger can ado
 
 ## Comprehensive plan (tasks 30–100 min, sorted by impact / effort / customer value)
 
-| ID  | Task                                                                                         | Tier    | Impact | Effort        | Customer value                      | Depends on       |
-| --- | -------------------------------------------------------------------------------------------- | ------- | ------ | ------------- | ----------------------------------- | ---------------- |
-| ~~M1~~  | ~~Make CI green: goldens + demo CSS recompile + verify locally~~ done — visualtest/testdata | ~~1%~~ | ~~10~~ | ~~45m~~ | ~~Trust in library~~ | ~~—~~ |
-| ~~M2~~  | ~~Fix workflow lint: `ci.yaml` SC2044 find-loop, `website.yml` pnpm install + lockfile path~~ done — .github/workflows/ci.yaml | ~~1%~~ | ~~9~~ | ~~30m~~ | ~~CI green, cache works~~ | ~~—~~ |
-| ~~M3~~  | ~~Visual regression triage: local repro, fix PNG mismatches/missing snapshots~~ done — visualtest/testdata | ~~1%~~ | ~~9~~ | ~~60m~~ | ~~Layout regression safety~~ | ~~M1 (green suite)~~ |
-| ~~M4~~  | ~~CI visual job output hygiene: `tee` output, don't swallow `nix run` stderr under `set -e`~~ done — .github/workflows/ci.yaml | ~~1%~~ | ~~6~~ | ~~30m~~ | ~~Debuggable CI~~ | ~~M3~~ |
-| ~~M5~~  | ~~GOEXPERIMENT=jsonv2 onboarding: README callout + website `installation.mdx` troubleshooting~~ done — README.md | ~~4%~~ | ~~7~~ | ~~30m~~ | ~~First-run success~~ | ~~—~~ |
-| ~~M6~~  | ~~Datastar scope ADR-0035 + website integration guide (minimal complement, revisit triggers)~~ done — docs/adr/0035-datastar-scope-freeze.md | ~~4%~~ | ~~7~~ | ~~45m~~ | ~~Clear adoption story~~ | ~~—~~ |
-| ~~M7~~  | ~~Ecosystem refresh: STANDOUT-IDEAS.md stats, TODO_LIST version drift, README GOTH cross-links~~ done — docs/STANDOUT-IDEAS.md | ~~4%~~ | ~~7~~ | ~~45m~~ | ~~Discoverability~~ | ~~—~~ |
-| M8  | Docs generator: component manifest (name/signature/one-liner/package) → MDX + sidebar wiring | 4%      | 10     | 100m          | The #1 competitive gap              | —                |
-| M9  | Website docs pages: `display` (38 components)                                                | 4%      | 10     | 100m          | " — "                               | M8               |
-| M10 | Website docs pages: `forms` (21 components)                                                  | 4%      | 9      | 100m          | " — "                               | M8               |
-| M11 | Website docs pages: `feedback` + `layout` + `navigation` (35 components)                     | 20%     | 8      | 100m          | " — "                               | M8               |
-| M12 | Website docs pages: `htmx` + `datastar` + `errorpage` + `icons` + `recipes`                  | 20%     | 7      | 90m           | " — "                               | M8               |
-| M13 | Docs copy-paste pattern: per-page runnable Go snippet + "Edit on GitHub"                     | 20%     | 7      | 60m           | shadcn-style DX                     | M9–M12           |
-| M14 | JS behavior test harness: chromedp key-dispatch helper in `visualtest` module                | 20%     | 8      | 90m           | Confidence in 17 JS singletons      | —                |
-| M15 | JS tests: Tabs + Carousel keyboard nav (RTL included)                                        | 20%     | 7      | 60m           | WAI-ARIA proof                      | M14              |
-| M16 | JS tests: Dropdown + ContextMenu shared menu nav                                             | 20%     | 7      | 60m           | " — "                               | M14              |
-| M17 | JS tests: Combobox + TagsInput                                                               | 20%     | 6      | 60m           | " — "                               | M14              |
-| M18 | JS singleton consolidation: shared attach-once helper, migrate display package               | 20%     | 6      | 90m           | Maintainability                     | M14              |
-| M19 | JS singleton consolidation: migrate forms/layout/navigation                                  | 20%     | 5      | 60m           | " — "                               | M18              |
-| ~~M20~~ | ~~Compound overlays v2.0 part 1: Modal Trigger/Content/Close (ADR-0023)~~ **Won't implement — TODO 39 deferred v2.0.** | ~~20%~~ | ~~7~~ | ~~100m~~ | ~~Flexibility for real apps~~ | ~~M1 (green CI)~~ |
-| ~~M21~~ | ~~Compound overlays v2.0 part 2: Drawer + back-compat deprecations~~ **Won't implement — TODO 39 deferred v2.0.** | ~~20%~~ | ~~7~~ | ~~100m~~ | ~~" — "~~ | ~~M20~~ |
-| M22 | Docs ↔ demo embed: iframe/live-link per component page (demo runs on Cloud Run)              | 20%     | 6      | 60m           | See it before you `go get`          | M9               |
-| M23 | Upstream listings: awesome-templ + templ.guide PRs (external review)                         | tail    | 8      | 30m           | Discoverability                     | M9               |
-| M24 | Human PNG eyeball checklist doc + handoff (TODO #80)                                         | tail    | 5      | 30m           | Visual QA honesty                   | M3               |
-| M25 | `internal/testutil/` migration phase 1: shared render/assert helpers (TODO #34)              | tail    | 4      | 60m           | Maintainability                     | —                |
-| M26 | `internal/testutil/` migration phases 2–3: golden + sweep helpers, 70+ files                 | tail    | 4      | 60m           | " — "                               | M25              |
-| M27 | `Validate()` assessment: audit props where invalid states are representable (TODO #33)       | tail    | 4      | 45m           | API honesty                         | —                |
-| ~~M28~~ | ~~Version sync audit (root 1.8.1 vs sub-modules 1.8.2 vs TODO_LIST 1.8.0) + v1.9.0 release~~ done — CHANGELOG v1.9.0 | ~~tail~~ | ~~6~~ | ~~60m~~ | ~~Release hygiene~~ | ~~M1–M4~~ |
-| M29 | BuildFlow external: honest commit messages + `.gitignore` re-append fix (TODO #93, own repo) | blocked | 9      | 100m          | Stops the red-master class of rot   | external         |
-| M30 | GOTH-stack example app epic (cqrs-htmx + templ-components + go-cqrs-lite, own repo)          | 20%     | 9      | multi-session | The single most convincing artifact | M9–M12           |
+| ID      | Task                                                                                                                                         | Tier     | Impact | Effort        | Customer value                      | Depends on           |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------ | ------------- | ----------------------------------- | -------------------- |
+| ~~M1~~  | ~~Make CI green: goldens + demo CSS recompile + verify locally~~ done — visualtest/testdata                                                  | ~~1%~~   | ~~10~~ | ~~45m~~       | ~~Trust in library~~                | ~~—~~                |
+| ~~M2~~  | ~~Fix workflow lint: `ci.yaml` SC2044 find-loop, `website.yml` pnpm install + lockfile path~~ done — .github/workflows/ci.yaml               | ~~1%~~   | ~~9~~  | ~~30m~~       | ~~CI green, cache works~~           | ~~—~~                |
+| ~~M3~~  | ~~Visual regression triage: local repro, fix PNG mismatches/missing snapshots~~ done — visualtest/testdata                                   | ~~1%~~   | ~~9~~  | ~~60m~~       | ~~Layout regression safety~~        | ~~M1 (green suite)~~ |
+| ~~M4~~  | ~~CI visual job output hygiene: `tee` output, don't swallow `nix run` stderr under `set -e`~~ done — .github/workflows/ci.yaml               | ~~1%~~   | ~~6~~  | ~~30m~~       | ~~Debuggable CI~~                   | ~~M3~~               |
+| ~~M5~~  | ~~GOEXPERIMENT=jsonv2 onboarding: README callout + website `installation.mdx` troubleshooting~~ done — README.md                             | ~~4%~~   | ~~7~~  | ~~30m~~       | ~~First-run success~~               | ~~—~~                |
+| ~~M6~~  | ~~Datastar scope ADR-0035 + website integration guide (minimal complement, revisit triggers)~~ done — docs/adr/0035-datastar-scope-freeze.md | ~~4%~~   | ~~7~~  | ~~45m~~       | ~~Clear adoption story~~            | ~~—~~                |
+| ~~M7~~  | ~~Ecosystem refresh: STANDOUT-IDEAS.md stats, TODO_LIST version drift, README GOTH cross-links~~ done — docs/STANDOUT-IDEAS.md               | ~~4%~~   | ~~7~~  | ~~45m~~       | ~~Discoverability~~                 | ~~—~~                |
+| M8      | Docs generator: component manifest (name/signature/one-liner/package) → MDX + sidebar wiring                                                 | 4%       | 10     | 100m          | The #1 competitive gap              | —                    |
+| M9      | Website docs pages: `display` (38 components)                                                                                                | 4%       | 10     | 100m          | " — "                               | M8                   |
+| M10     | Website docs pages: `forms` (21 components)                                                                                                  | 4%       | 9      | 100m          | " — "                               | M8                   |
+| M11     | Website docs pages: `feedback` + `layout` + `navigation` (35 components)                                                                     | 20%      | 8      | 100m          | " — "                               | M8                   |
+| M12     | Website docs pages: `htmx` + `datastar` + `errorpage` + `icons` + `recipes`                                                                  | 20%      | 7      | 90m           | " — "                               | M8                   |
+| M13     | Docs copy-paste pattern: per-page runnable Go snippet + "Edit on GitHub"                                                                     | 20%      | 7      | 60m           | shadcn-style DX                     | M9–M12               |
+| M14     | JS behavior test harness: chromedp key-dispatch helper in `visualtest` module                                                                | 20%      | 8      | 90m           | Confidence in 17 JS singletons      | —                    |
+| M15     | JS tests: Tabs + Carousel keyboard nav (RTL included)                                                                                        | 20%      | 7      | 60m           | WAI-ARIA proof                      | M14                  |
+| M16     | JS tests: Dropdown + ContextMenu shared menu nav                                                                                             | 20%      | 7      | 60m           | " — "                               | M14                  |
+| M17     | JS tests: Combobox + TagsInput                                                                                                               | 20%      | 6      | 60m           | " — "                               | M14                  |
+| M18     | JS singleton consolidation: shared attach-once helper, migrate display package                                                               | 20%      | 6      | 90m           | Maintainability                     | M14                  |
+| M19     | JS singleton consolidation: migrate forms/layout/navigation                                                                                  | 20%      | 5      | 60m           | " — "                               | M18                  |
+| ~~M20~~ | ~~Compound overlays v2.0 part 1: Modal Trigger/Content/Close (ADR-0023)~~ **Won't implement — TODO 39 deferred v2.0.**                       | ~~20%~~  | ~~7~~  | ~~100m~~      | ~~Flexibility for real apps~~       | ~~M1 (green CI)~~    |
+| ~~M21~~ | ~~Compound overlays v2.0 part 2: Drawer + back-compat deprecations~~ **Won't implement — TODO 39 deferred v2.0.**                            | ~~20%~~  | ~~7~~  | ~~100m~~      | ~~" — "~~                           | ~~M20~~              |
+| M22     | Docs ↔ demo embed: iframe/live-link per component page (demo runs on Cloud Run)                                                              | 20%      | 6      | 60m           | See it before you `go get`          | M9                   |
+| M23     | Upstream listings: awesome-templ + templ.guide PRs (external review)                                                                         | tail     | 8      | 30m           | Discoverability                     | M9                   |
+| M24     | Human PNG eyeball checklist doc + handoff (TODO #80)                                                                                         | tail     | 5      | 30m           | Visual QA honesty                   | M3                   |
+| M25     | `internal/testutil/` migration phase 1: shared render/assert helpers (TODO #34)                                                              | tail     | 4      | 60m           | Maintainability                     | —                    |
+| M26     | `internal/testutil/` migration phases 2–3: golden + sweep helpers, 70+ files                                                                 | tail     | 4      | 60m           | " — "                               | M25                  |
+| M27     | `Validate()` assessment: audit props where invalid states are representable (TODO #33)                                                       | tail     | 4      | 45m           | API honesty                         | —                    |
+| ~~M28~~ | ~~Version sync audit (root 1.8.1 vs sub-modules 1.8.2 vs TODO_LIST 1.8.0) + v1.9.0 release~~ done — CHANGELOG v1.9.0                         | ~~tail~~ | ~~6~~  | ~~60m~~       | ~~Release hygiene~~                 | ~~M1–M4~~            |
+| M29     | BuildFlow external: honest commit messages + `.gitignore` re-append fix (TODO #93, own repo)                                                 | blocked  | 9      | 100m          | Stops the red-master class of rot   | external             |
+| M30     | GOTH-stack example app epic (cqrs-htmx + templ-components + go-cqrs-lite, own repo)                                                          | 20%      | 9      | multi-session | The single most convincing artifact | M9–M12               |
 
 ## Fine-grained breakdown (all tasks ≤ 12 min, sorted by execution order)
 
 ### Phase 0 — local verification baseline
 
-| ID   | Micro-task                                                                       | Est | Verify                     |
-| ---- | -------------------------------------------------------------------------------- | --- | -------------------------- |
-| ~~G0.1~~ | ~~`GOEXPERIMENT=jsonv2 go test ./display/ -run TestGolden -update`~~ done — visualtest/testdata | ~~2m~~ | ~~2 failing tests now pass~~ |
-| ~~G0.2~~ | ~~Full suite: `GOEXPERIMENT=jsonv2 go test ./...`~~ done — 08-14 ci recovery report | ~~5m~~ | ~~zero FAIL~~ |
-| ~~G0.3~~ | ~~Per-module isolation sweep (GOWORK=off loop from AGENTS.md)~~ done — AGENTS.md | ~~8m~~ | ~~all 7 modules ok~~ |
-| ~~G0.4~~ | ~~`nix run .#css` recompile demo CSS, inspect diff for sanity~~ done — examples/demo/static/app.css | ~~8m~~ | ~~diff only expected classes~~ |
-| ~~G0.5~~ | ~~Commit goldens + CSS: `fix(demo,display): regenerate stale goldens and demo CSS`~~ done — 08-14 ci recovery report | ~~3m~~ | ~~clean tree~~ |
+| ID       | Micro-task                                                                                                           | Est    | Verify                         |
+| -------- | -------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------ |
+| ~~G0.1~~ | ~~`GOEXPERIMENT=jsonv2 go test ./display/ -run TestGolden -update`~~ done — visualtest/testdata                      | ~~2m~~ | ~~2 failing tests now pass~~   |
+| ~~G0.2~~ | ~~Full suite: `GOEXPERIMENT=jsonv2 go test ./...`~~ done — 08-14 ci recovery report                                  | ~~5m~~ | ~~zero FAIL~~                  |
+| ~~G0.3~~ | ~~Per-module isolation sweep (GOWORK=off loop from AGENTS.md)~~ done — AGENTS.md                                     | ~~8m~~ | ~~all 7 modules ok~~           |
+| ~~G0.4~~ | ~~`nix run .#css` recompile demo CSS, inspect diff for sanity~~ done — examples/demo/static/app.css                  | ~~8m~~ | ~~diff only expected classes~~ |
+| ~~G0.5~~ | ~~Commit goldens + CSS: `fix(demo,display): regenerate stale goldens and demo CSS`~~ done — 08-14 ci recovery report | ~~3m~~ | ~~clean tree~~                 |
 
 ### Phase 1 — workflow repairs (M2 + M4)
 
-| ID   | Micro-task                                                                                                                           | Est | Verify                                  |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------ | --- | --------------------------------------- |
-| ~~G1.1~~ | ~~`ci.yaml:85`: rewrite find-loop as `find ... -print0 \~~ done — .github/workflows/ci.yaml | ~~while IFS= read -r -d ''`~~ | ~~5m~~ | ~~local shellcheck/actionlint clean~~ |
-| G1.2 | `website.yml`: add `corepack enable` + `pnpm/action-setup` (or corepack-managed pnpm)                                                | 5m  | `pnpm --version` resolves in step log   |
-| G1.3 | `website.yml`: `cache-dependency-path: website/pnpm-lock.yaml`                                                                       | 1m  | no cache warning in CI                  |
-| ~~G1.4~~ | ~~`ci.yaml` visual job: `set +o pipefail`-safe capture — `nix run .#visual 2>&1 \~~ done — .github/workflows/ci.yaml | ~~tee /tmp/vis.log`; grep the log; preserve exit code~~ | ~~6m~~ | ~~failures show real output~~ |
-| ~~G1.5~~ | ~~Commit: `ci: fix actionlint SC2044, website pnpm bootstrap, visual output hygiene`~~ done — 08-14 ci recovery report | ~~2m~~ | ~~—~~ |
-| ~~G1.6~~ | ~~Push, `gh run watch` the CI + Website runs~~ done — 08-15 ci green report | ~~10m~~ | ~~both green or precise remaining failure~~ |
+| ID       | Micro-task                                                                                                             | Est                                                     | Verify                                      |
+| -------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------- |
+| ~~G1.1~~ | ~~`ci.yaml:85`: rewrite find-loop as `find ... -print0 \~~ done — .github/workflows/ci.yaml                            | ~~while IFS= read -r -d ''`~~                           | ~~5m~~                                      |
+| G1.2     | `website.yml`: add `corepack enable` + `pnpm/action-setup` (or corepack-managed pnpm)                                  | 5m                                                      | `pnpm --version` resolves in step log       |
+| G1.3     | `website.yml`: `cache-dependency-path: website/pnpm-lock.yaml`                                                         | 1m                                                      | no cache warning in CI                      |
+| ~~G1.4~~ | ~~`ci.yaml` visual job: `set +o pipefail`-safe capture — `nix run .#visual 2>&1 \~~ done — .github/workflows/ci.yaml   | ~~tee /tmp/vis.log`; grep the log; preserve exit code~~ | ~~6m~~                                      |
+| ~~G1.5~~ | ~~Commit: `ci: fix actionlint SC2044, website pnpm bootstrap, visual output hygiene`~~ done — 08-14 ci recovery report | ~~2m~~                                                  | ~~—~~                                       |
+| ~~G1.6~~ | ~~Push, `gh run watch` the CI + Website runs~~ done — 08-15 ci green report                                            | ~~10m~~                                                 | ~~both green or precise remaining failure~~ |
 
 ### Phase 2 — visual regression triage (M3)
 
-| ID   | Micro-task                                                                                              | Est | Verify                   |
-| ---- | ------------------------------------------------------------------------------------------------------- | --- | ------------------------ |
-| G2.1 | Read local `nix run .#visual` output (background job)                                                   | 2m  | failure list             |
-| G2.2 | Classify each failure: real regression vs missing/stale PNG                                             | 5m  | table of failures        |
-| ~~G2.3~~ | ~~Real regressions → fix component code; stale PNGs → `-update` regen~~ done — visualtest/testdata | ~~12m~~ | ~~visual suite passes~~ |
-| ~~G2.4~~ | ~~Commit + push, watch Visual job go green~~ done — 08-15 ci green report | ~~5m~~ | ~~CI Visual green~~ |
-| G2.5 | Write eyeball checklist for new/changed PNGs → `docs/visual-review-2026-08-14.md`, ping Lars (TODO #80) | 8m  | checklist links each PNG |
+| ID       | Micro-task                                                                                              | Est     | Verify                   |
+| -------- | ------------------------------------------------------------------------------------------------------- | ------- | ------------------------ |
+| G2.1     | Read local `nix run .#visual` output (background job)                                                   | 2m      | failure list             |
+| G2.2     | Classify each failure: real regression vs missing/stale PNG                                             | 5m      | table of failures        |
+| ~~G2.3~~ | ~~Real regressions → fix component code; stale PNGs → `-update` regen~~ done — visualtest/testdata      | ~~12m~~ | ~~visual suite passes~~  |
+| ~~G2.4~~ | ~~Commit + push, watch Visual job go green~~ done — 08-15 ci green report                               | ~~5m~~  | ~~CI Visual green~~      |
+| G2.5     | Write eyeball checklist for new/changed PNGs → `docs/visual-review-2026-08-14.md`, ping Lars (TODO #80) | 8m      | checklist links each PNG |
 
 ### Phase 3 — onboarding + decisions (M5, M6, M7)
 
-| ID   | Micro-task                                                                                                                                        | Est | Verify           |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------- | --- | ---------------- |
-| ~~G3.1~~ | ~~README: "Requirements" callout — `GOEXPERIMENT=jsonv2` until Go 1.27, exact error text shown otherwise~~ done — README.md | ~~6m~~ | ~~rendered README~~ |
-| ~~G3.2~~ | ~~`website/src/content/docs/getting-started/installation.mdx`: troubleshooting section with the same error~~ done — website installation.mdx | ~~6m~~ | ~~astro builds~~ |
+| ID       | Micro-task                                                                                                                                                                                          | Est     | Verify               |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------------------- |
+| ~~G3.1~~ | ~~README: "Requirements" callout — `GOEXPERIMENT=jsonv2` until Go 1.27, exact error text shown otherwise~~ done — README.md                                                                         | ~~6m~~  | ~~rendered README~~  |
+| ~~G3.2~~ | ~~`website/src/content/docs/getting-started/installation.mdx`: troubleshooting section with the same error~~ done — website installation.mdx                                                        | ~~6m~~  | ~~astro builds~~     |
 | ~~G3.3~~ | ~~ADR-0035: Datastar = minimal opt-in complement; scope frozen at runtime/LiveRegion/Indicator/SSEErrorHandling; parity only on demonstrated demand~~ done — docs/adr/0035-datastar-scope-freeze.md | ~~10m~~ | ~~ADR file + index~~ |
-| ~~G3.4~~ | ~~`docs/STANDOUT-IDEAS.md`: refresh stats (112 components, 106 icons, v1.8.x), mark Tier-1 items done (demo deployed, v1.0 shipped)~~ done — docs/STANDOUT-IDEAS.md | ~~6m~~ | ~~no stale claims~~ |
-| ~~G3.5~~ | ~~TODO_LIST.md: bump Updated/Version, close out completed items~~ done — TODO LIST.md | ~~3m~~ | ~~dates consistent~~ |
-| ~~G3.6~~ | ~~README: GOTH-stack ecosystem section cross-linking cqrs-htmx + go-cqrs-lite~~ done — README.md | ~~6m~~ | ~~links valid~~ |
-| ~~G3.7~~ | ~~Commit + push: `docs: onboarding callouts, ADR-0035 datastar scope, ecosystem refresh`~~ done — 08-15 ci green report | ~~2m~~ | ~~CI stays green~~ |
+| ~~G3.4~~ | ~~`docs/STANDOUT-IDEAS.md`: refresh stats (112 components, 106 icons, v1.8.x), mark Tier-1 items done (demo deployed, v1.0 shipped)~~ done — docs/STANDOUT-IDEAS.md                                 | ~~6m~~  | ~~no stale claims~~  |
+| ~~G3.5~~ | ~~TODO_LIST.md: bump Updated/Version, close out completed items~~ done — TODO LIST.md                                                                                                               | ~~3m~~  | ~~dates consistent~~ |
+| ~~G3.6~~ | ~~README: GOTH-stack ecosystem section cross-linking cqrs-htmx + go-cqrs-lite~~ done — README.md                                                                                                    | ~~6m~~  | ~~links valid~~      |
+| ~~G3.7~~ | ~~Commit + push: `docs: onboarding callouts, ADR-0035 datastar scope, ecosystem refresh`~~ done — 08-15 ci green report                                                                             | ~~2m~~  | ~~CI stays green~~   |
 
 ### Phase 4 — docs generator (M8)
 
@@ -193,12 +193,12 @@ These convert the existing (excellent) library into something a stranger can ado
 
 ### Phase 8 — compound overlays v2.0 (M20–M21, only after release decision)
 
-| ID   | Micro-task                                                                        | Est   | Verify      |
-| ---- | --------------------------------------------------------------------------------- | ----- | ----------- |
+| ID       | Micro-task                                                                                                                                   | Est     | Verify          |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------- | --------------- |
 | ~~G8.1~~ | ~~Design doc from ADR-0023: Modal.Trigger/Content/Close templ API + migration table~~ done — docs/adr/0023-compound-overlay-component-api.md | ~~12m~~ | ~~ADR updated~~ |
-| G8.2 | Implement Modal compound parts alongside monolithic (both work)                   | 12m×4 | tests       |
-| G8.3 | Drawer compound parts + shared overlay internals                                  | 12m×3 | tests       |
-| G8.4 | Deprecation notes + v2.0 migration guide page                                     | 8m    | docs build  |
+| G8.2     | Implement Modal compound parts alongside monolithic (both work)                                                                              | 12m×4   | tests           |
+| G8.3     | Drawer compound parts + shared overlay internals                                                                                             | 12m×3   | tests           |
+| G8.4     | Deprecation notes + v2.0 migration guide page                                                                                                | 8m      | docs build      |
 
 ### Phase 9 — long tail (M23–M30)
 

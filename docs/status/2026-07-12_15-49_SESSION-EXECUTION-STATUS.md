@@ -121,34 +121,34 @@ The plan called for coverage push on errorpage, feedback, forms, navigation. Cur
 
 These were in the plan but were not attempted:
 
-| #   | Task                                                     | Why Not Started                              |
-| --- | -------------------------------------------------------- | -------------------------------------------- |
-| ~~5a~~  | ~~Coverage: errorpage handler edge paths~~ done (docs-health pass 2026-09-08) | ~~errorpage already at 100%~~ |
-| 5b  | Coverage: feedback StepIndicator + LoadingOverlay        | Skipped — lower priority than new components |
-| 5c  | Coverage: forms Combobox + RadioGroup rendering          | Skipped                                      |
-| 5d  | Coverage: navigation SidebarNav + Breadcrumbs JSON-LD    | Skipped                                      |
-| ~~T9~~  | ~~Blocks/composition examples (dashboard, login, settings)~~ done — recipes/dashboard login settings | ~~Deferred tier~~ |
-| ~~T10~~ | ~~`Validate() error` on props structs~~ **Won't implement — only ErrorPageProps v1.0.0.** | ~~v1.0 prerequisite~~ |
-| T11 | Move test helpers to `internal/testutil/`                | v1.0 prerequisite                            |
-| ~~T12~~ | ~~Self-host htmx as default (ADR 0007)~~ done — ADR-0022 v2.0 | ~~v1.0 breaking change~~ |
-| ~~T13~~ | ~~Semantic token layer `bg-tc-primary` (ADR 0008)~~ done — templ-components-theme.css | ~~v1.0 theming~~ |
-| ~~T14~~ | ~~Remove deprecated aliases~~ done — removed v1.0-v2.0 | ~~v1.0 cleanup~~ |
-| ~~T15~~ | ~~Compound component pattern (Trigger/Content/Close)~~ **Won't implement — ADR-0023.** | ~~v2.0~~ |
-| ~~T16~~ | ~~Native `<dialog>` for Modal/Drawer~~ done — ADR-0014 | ~~v2.0~~ |
-| ~~T17~~ | ~~Headless/unstyled variants~~ **Won't implement — ADR-0021.** | ~~v2.0~~ |
-| ~~T18~~ | ~~CLI tool (`templ-components add <component>`)~~ done — cmd/tc | ~~v2.0~~ |
-| ~~T19~~ | ~~Demo/showcase site~~ done — Cloud Run demo | ~~Blocked~~ |
-| T20 | `awesome-templ` PR                                       | Blocked                                      |
-| T21 | `templ.guide` listing                                    | Blocked                                      |
-| ~~T22~~ | ~~SSH tag signing config~~ done — v0.18.0 signed tag | ~~Blocked~~ |
-| ~~T23~~ | ~~Visual regression testing (Playwright)~~ done — visualtest/ | ~~Blocked~~ |
-| ~~T24~~ | ~~Slider component~~ done at `0cc5393` | ~~**DONE** (moved up from Tier 4)~~ |
-| ~~T25~~ | ~~Rating component~~ done at `0cc5393` | ~~**DONE** (moved up from Tier 4)~~ |
-| ~~T26~~ | ~~TagsInput component~~ done — v0.17.0 | ~~Not started~~ |
-| ~~T27~~ | ~~ContextMenu component~~ done — v0.17.0 | ~~Not started~~ |
-| ~~T28~~ | ~~Carousel component~~ done — v0.17.0 | ~~Not started~~ |
-| ~~T29~~ | ~~HoverCard component~~ done — v0.17.0 | ~~Not started~~ |
-| ~~T30~~ | ~~Calendar component~~ done — v0.17.0 | ~~Not started~~ |
+| #       | Task                                                                                                 | Why Not Started                              |
+| ------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| ~~5a~~  | ~~Coverage: errorpage handler edge paths~~ done (docs-health pass 2026-09-08)                        | ~~errorpage already at 100%~~                |
+| 5b      | Coverage: feedback StepIndicator + LoadingOverlay                                                    | Skipped — lower priority than new components |
+| 5c      | Coverage: forms Combobox + RadioGroup rendering                                                      | Skipped                                      |
+| 5d      | Coverage: navigation SidebarNav + Breadcrumbs JSON-LD                                                | Skipped                                      |
+| ~~T9~~  | ~~Blocks/composition examples (dashboard, login, settings)~~ done — recipes/dashboard login settings | ~~Deferred tier~~                            |
+| ~~T10~~ | ~~`Validate() error` on props structs~~ **Won't implement — only ErrorPageProps v1.0.0.**            | ~~v1.0 prerequisite~~                        |
+| T11     | Move test helpers to `internal/testutil/`                                                            | v1.0 prerequisite                            |
+| ~~T12~~ | ~~Self-host htmx as default (ADR 0007)~~ done — ADR-0022 v2.0                                        | ~~v1.0 breaking change~~                     |
+| ~~T13~~ | ~~Semantic token layer `bg-tc-primary` (ADR 0008)~~ done — templ-components-theme.css                | ~~v1.0 theming~~                             |
+| ~~T14~~ | ~~Remove deprecated aliases~~ done — removed v1.0-v2.0                                               | ~~v1.0 cleanup~~                             |
+| ~~T15~~ | ~~Compound component pattern (Trigger/Content/Close)~~ **Won't implement — ADR-0023.**               | ~~v2.0~~                                     |
+| ~~T16~~ | ~~Native `<dialog>` for Modal/Drawer~~ done — ADR-0014                                               | ~~v2.0~~                                     |
+| ~~T17~~ | ~~Headless/unstyled variants~~ **Won't implement — ADR-0021.**                                       | ~~v2.0~~                                     |
+| ~~T18~~ | ~~CLI tool (`templ-components add <component>`)~~ done — cmd/tc                                      | ~~v2.0~~                                     |
+| ~~T19~~ | ~~Demo/showcase site~~ done — Cloud Run demo                                                         | ~~Blocked~~                                  |
+| T20     | `awesome-templ` PR                                                                                   | Blocked                                      |
+| T21     | `templ.guide` listing                                                                                | Blocked                                      |
+| ~~T22~~ | ~~SSH tag signing config~~ done — v0.18.0 signed tag                                                 | ~~Blocked~~                                  |
+| ~~T23~~ | ~~Visual regression testing (Playwright)~~ done — visualtest/                                        | ~~Blocked~~                                  |
+| ~~T24~~ | ~~Slider component~~ done at `0cc5393`                                                               | ~~**DONE** (moved up from Tier 4)~~          |
+| ~~T25~~ | ~~Rating component~~ done at `0cc5393`                                                               | ~~**DONE** (moved up from Tier 4)~~          |
+| ~~T26~~ | ~~TagsInput component~~ done — v0.17.0                                                               | ~~Not started~~                              |
+| ~~T27~~ | ~~ContextMenu component~~ done — v0.17.0                                                             | ~~Not started~~                              |
+| ~~T28~~ | ~~Carousel component~~ done — v0.17.0                                                                | ~~Not started~~                              |
+| ~~T29~~ | ~~HoverCard component~~ done — v0.17.0                                                               | ~~Not started~~                              |
+| ~~T30~~ | ~~Calendar component~~ done — v0.17.0                                                                | ~~Not started~~                              |
 
 ---
 

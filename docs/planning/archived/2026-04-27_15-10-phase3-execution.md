@@ -23,26 +23,26 @@
 
 ### Tier A: High Impact, Low Work (Do First)
 
-| #  | Task                                                                                                                 | Est.  | Impact               |
-| -- | -------------------------------------------------------------------------------------------------------------------- | ----- | -------------------- |
-| ~~A1~~ | ~~Apply BaseProps to Card, Alert, Toast, EmptyState, Input, Select, Textarea, NavLink, Nav~~ done — AGENTS.md | ~~45min~~ | ~~Consistent API~~ |
+| #      | Task                                                                                                                                                   | Est.      | Impact                   |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ------------------------ |
+| ~~A1~~ | ~~Apply BaseProps to Card, Alert, Toast, EmptyState, Input, Select, Textarea, NavLink, Nav~~ done — AGENTS.md                                          | ~~45min~~ | ~~Consistent API~~       |
 | ~~A2~~ | ~~Add rendering snapshot tests for Card, Alert, Toast, ThemeScript, ThemeToggle, GlobalErrorHandling, LoadingIndicator~~ done — display/golden test.go | ~~30min~~ | ~~Prevents regressions~~ |
-| ~~A3~~ | ~~Fix go-website-template `cookieConsent` and `posthogScript` to use nonce pattern from library~~ **Won't implement — consumer removed dependency.** | ~~15min~~ | ~~CSP completeness~~ |
+| ~~A3~~ | ~~Fix go-website-template `cookieConsent` and `posthogScript` to use nonce pattern from library~~ **Won't implement — consumer removed dependency.**   | ~~15min~~ | ~~CSP completeness~~     |
 
 ### Tier B: Medium Impact, Medium Work
 
-| #  | Task                                            | Est.  | Impact         |
-| -- | ----------------------------------------------- | ----- | -------------- |
-| ~~B1~~ | ~~Add Modal component (display/modal.templ)~~ done — display/modal.templ | ~~30min~~ | ~~Most requested~~ |
-| ~~B2~~ | ~~Extract inline JS to Script() component pattern~~ **Won't implement — superseded csp nonce inline.** | ~~60min~~ | ~~CSP hardening~~ |
+| #      | Task                                                                                                   | Est.      | Impact             |
+| ------ | ------------------------------------------------------------------------------------------------------ | --------- | ------------------ |
+| ~~B1~~ | ~~Add Modal component (display/modal.templ)~~ done — display/modal.templ                               | ~~30min~~ | ~~Most requested~~ |
+| ~~B2~~ | ~~Extract inline JS to Script() component pattern~~ **Won't implement — superseded csp nonce inline.** | ~~60min~~ | ~~CSP hardening~~  |
 
 ### Tier C: Lower Impact (Defer)
 
-| #  | Task                              | Est.  | Impact    |
-| -- | --------------------------------- | ----- | --------- |
-| ~~C1~~ | ~~Add Table + Pagination components~~ done — display/table.templ | ~~45min~~ | ~~Data apps~~ |
-| ~~C2~~ | ~~Add Tabs + Accordion~~ done — display/tabs.templ | ~~30min~~ | ~~Common UI~~ |
-| ~~C3~~ | ~~Component gallery / docs site~~ done — website | ~~90min~~ | ~~Adoption~~ |
+| #      | Task                                                                             | Est.      | Impact        |
+| ------ | -------------------------------------------------------------------------------- | --------- | ------------- |
+| ~~C1~~ | ~~Add Table + Pagination components~~ done — display/table.templ                 | ~~45min~~ | ~~Data apps~~ |
+| ~~C2~~ | ~~Add Tabs + Accordion~~ done — display/tabs.templ                               | ~~30min~~ | ~~Common UI~~ |
+| ~~C3~~ | ~~Component gallery / docs site~~ done — website                                 | ~~90min~~ | ~~Adoption~~  |
 | ~~C4~~ | ~~Evaluate templui adoption~~ done — docs/research/ui-library-design-research.md | ~~60min~~ | ~~Strategic~~ |
 
 ---

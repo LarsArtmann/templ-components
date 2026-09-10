@@ -41,16 +41,16 @@ This session closed all 9.
 
 ## a) FULLY DONE
 
-| # | Item                                     | Details                                                                                                                        | Commit    |
-| - | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------- |
-| ~~1~~ | ~~**CopyButton.Href tests**~~ done at `0ee5c19` | ~~Renders `<a>` when Href set, renders `<button>` when empty~~ | ~~`0ee5c19`~~ |
-| ~~2~~ | ~~**Image.Rounded tests**~~ done at `0ee5c19` | ~~rounded-full when true, rounded-md by default~~ | ~~`0ee5c19`~~ |
-| ~~3~~ | ~~**LoadMore.InfiniteScroll tests**~~ done at `0ee5c19` | ~~hx-trigger="revealed" when true, omitted by default~~ | ~~`0ee5c19`~~ |
-| ~~4~~ | ~~**GridGapIsValid in consolidated table**~~ done at `0ee5c19` | ~~Added to `TestIsValidEnums` in `enums_test.go` alongside all other enums~~ | ~~`0ee5c19`~~ |
-| ~~5~~ | ~~**Demo NotFound404 fix**~~ done at `0ee5c19` | ~~`ShowGoBack: false` — `history.back()` is nonsensical inside a demo showcase section~~ | ~~`0ee5c19`~~ |
-| ~~6~~ | ~~**AGENTS.md updated**~~ done at `33cb73e` | ~~7 new convention entries for all v0.9.0 features~~ | ~~`33cb73e`~~ |
-| ~~7~~ | ~~**SKILL.md updated**~~ done at `33cb73e` | ~~Catalogue rows updated for Grid (Gap), CopyButton (Href), Image (Rounded), LoadMore (InfiniteScroll), NotFound404 (LinksTitle)~~ | ~~`33cb73e`~~ |
-| ~~8~~ | ~~**FEATURES.md updated**~~ done at `33cb73e` | ~~CopyButton, Image, NotFound404, LoadMore rows updated with new capabilities~~ | ~~`33cb73e`~~ |
+| #     | Item                                                           | Details                                                                                                                            | Commit        |
+| ----- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| ~~1~~ | ~~**CopyButton.Href tests**~~ done at `0ee5c19`                | ~~Renders `<a>` when Href set, renders `<button>` when empty~~                                                                     | ~~`0ee5c19`~~ |
+| ~~2~~ | ~~**Image.Rounded tests**~~ done at `0ee5c19`                  | ~~rounded-full when true, rounded-md by default~~                                                                                  | ~~`0ee5c19`~~ |
+| ~~3~~ | ~~**LoadMore.InfiniteScroll tests**~~ done at `0ee5c19`        | ~~hx-trigger="revealed" when true, omitted by default~~                                                                            | ~~`0ee5c19`~~ |
+| ~~4~~ | ~~**GridGapIsValid in consolidated table**~~ done at `0ee5c19` | ~~Added to `TestIsValidEnums` in `enums_test.go` alongside all other enums~~                                                       | ~~`0ee5c19`~~ |
+| ~~5~~ | ~~**Demo NotFound404 fix**~~ done at `0ee5c19`                 | ~~`ShowGoBack: false` — `history.back()` is nonsensical inside a demo showcase section~~                                           | ~~`0ee5c19`~~ |
+| ~~6~~ | ~~**AGENTS.md updated**~~ done at `33cb73e`                    | ~~7 new convention entries for all v0.9.0 features~~                                                                               | ~~`33cb73e`~~ |
+| ~~7~~ | ~~**SKILL.md updated**~~ done at `33cb73e`                     | ~~Catalogue rows updated for Grid (Gap), CopyButton (Href), Image (Rounded), LoadMore (InfiniteScroll), NotFound404 (LinksTitle)~~ | ~~`33cb73e`~~ |
+| ~~8~~ | ~~**FEATURES.md updated**~~ done at `33cb73e`                  | ~~CopyButton, Image, NotFound404, LoadMore rows updated with new capabilities~~                                                    | ~~`33cb73e`~~ |
 
 ---
 
@@ -68,12 +68,12 @@ All items from the self-review are closed. Remaining open items are from prior s
 
 ## d) TOTALLY FUCKED UP
 
-| # | Issue                                                                           | What happened                                                                                                                                                                                       | Resolution                                                                      |
-| - | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| ~~1~~ | ~~**3 features shipped with zero test coverage**~~ done at `0ee5c19` | ~~CopyButton.Href, Image.Rounded, LoadMore.InfiniteScroll were implemented and released in v0.9.0 without any tests exercising the new code paths. The CHANGELOG documented them as shipped features.~~ | ~~✅ Fixed: all 3 now have dedicated BDD subtests verifying both the on/off paths~~ |
-| ~~2~~ | ~~**Demo NotFound404 called `history.back()` in a showcase context**~~ done at `0ee5c19` | ~~`DefaultNotFound404Props()` sets `ShowGoBack: true`. Clicking "Go back" inside the demo page navigates away — nonsensical for a showcase.~~ | ~~✅ Fixed: demo passes explicit `ShowGoBack: false`~~ |
-| ~~3~~ | ~~**GridGapIsValid existed in a separate file but not in the consolidated table**~~ done at `0ee5c19` | ~~The table-driven `TestIsValidEnums` in `enums_test.go` is the canonical home for all IsValid tests. GridGap had a separate file but was absent from the table — an inconsistency.~~ | ~~✅ Fixed: GridGap added to the table~~ |
-| ~~4~~ | ~~**AGENTS.md, SKILL.md, FEATURES.md all stale**~~ done at `33cb73e` | ~~The prior session bumped the version but didn't update the feature documentation. AGENTS.md had zero mention of any v0.9.0 feature.~~ | ~~✅ Fixed: all three updated~~ |
+| #     | Issue                                                                                                 | What happened                                                                                                                                                                                           | Resolution                                                                          |
+| ----- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| ~~1~~ | ~~**3 features shipped with zero test coverage**~~ done at `0ee5c19`                                  | ~~CopyButton.Href, Image.Rounded, LoadMore.InfiniteScroll were implemented and released in v0.9.0 without any tests exercising the new code paths. The CHANGELOG documented them as shipped features.~~ | ~~✅ Fixed: all 3 now have dedicated BDD subtests verifying both the on/off paths~~ |
+| ~~2~~ | ~~**Demo NotFound404 called `history.back()` in a showcase context**~~ done at `0ee5c19`              | ~~`DefaultNotFound404Props()` sets `ShowGoBack: true`. Clicking "Go back" inside the demo page navigates away — nonsensical for a showcase.~~                                                           | ~~✅ Fixed: demo passes explicit `ShowGoBack: false`~~                              |
+| ~~3~~ | ~~**GridGapIsValid existed in a separate file but not in the consolidated table**~~ done at `0ee5c19` | ~~The table-driven `TestIsValidEnums` in `enums_test.go` is the canonical home for all IsValid tests. GridGap had a separate file but was absent from the table — an inconsistency.~~                   | ~~✅ Fixed: GridGap added to the table~~                                            |
+| ~~4~~ | ~~**AGENTS.md, SKILL.md, FEATURES.md all stale**~~ done at `33cb73e`                                  | ~~The prior session bumped the version but didn't update the feature documentation. AGENTS.md had zero mention of any v0.9.0 feature.~~                                                                 | ~~✅ Fixed: all three updated~~                                                     |
 
 ---
 

@@ -151,53 +151,53 @@ Nothing. Zero regressions this session. All 1040 tests pass, 0 lint issues, 0 cl
 
 ### Priority 1 — Ship Quality (1–2 sessions)
 
-| # | Task                                            | Effort | Impact                                                       |
-| - | ----------------------------------------------- | ------ | ------------------------------------------------------------ |
-| ~~1~~ | ~~Verify `go get` from clean project works~~ done at `7ee84d0` | ~~1h~~ | ~~Critical — blocks v0.3.0~~ |
-| ~~2~~ | ~~Tag v0.3.0 release + update CHANGELOG~~ done at `7ee84d0` | ~~30min~~ | ~~Ships Drawer, ValidationSummary, 25 icons, Spinner BaseProps~~ |
-| ~~3~~ | ~~Fix coverage gaps: fillIcon, Select, Textarea~~ done at `7ee84d0` | ~~2h~~ | ~~Gets all packages above 70%~~ |
-| ~~4~~ | ~~Consolidate inline JS into shared init strategy~~ done at `7ee84d0` | ~~4h~~ | ~~Reduces 10 script blocks to 1–2~~ |
-| ~~5~~ | ~~Nonce propagation audit across all components~~ done at `7ee84d0` | ~~2h~~ | ~~CSP compliance~~ |
+| #     | Task                                                                  | Effort    | Impact                                                           |
+| ----- | --------------------------------------------------------------------- | --------- | ---------------------------------------------------------------- |
+| ~~1~~ | ~~Verify `go get` from clean project works~~ done at `7ee84d0`        | ~~1h~~    | ~~Critical — blocks v0.3.0~~                                     |
+| ~~2~~ | ~~Tag v0.3.0 release + update CHANGELOG~~ done at `7ee84d0`           | ~~30min~~ | ~~Ships Drawer, ValidationSummary, 25 icons, Spinner BaseProps~~ |
+| ~~3~~ | ~~Fix coverage gaps: fillIcon, Select, Textarea~~ done at `7ee84d0`   | ~~2h~~    | ~~Gets all packages above 70%~~                                  |
+| ~~4~~ | ~~Consolidate inline JS into shared init strategy~~ done at `7ee84d0` | ~~4h~~    | ~~Reduces 10 script blocks to 1–2~~                              |
+| ~~5~~ | ~~Nonce propagation audit across all components~~ done at `7ee84d0`   | ~~2h~~    | ~~CSP compliance~~                                               |
 
 ### Priority 2 — Release Readiness (2–3 sessions)
 
-| #  | Task                                                     | Effort | Impact               |
-| -- | -------------------------------------------------------- | ------ | -------------------- |
-| ~~6~~  | ~~Set up goreleaser for tag-based releases~~ done at `7ee84d0` | ~~2h~~ | ~~Automates publishing~~ |
-| ~~7~~  | ~~Submit to awesome-templ~~ done at `7ee84d0` | ~~30min~~ | ~~Discoverability~~ |
-| ~~8~~  | ~~Open PR on templ.guide~~ done at `7ee84d0` | ~~30min~~ | ~~Discoverability~~ |
-| ~~9~~  | ~~Cross-link ecosystem in README (cqrs-htmx, go-cqrs-lite)~~ done — README.md GOTH section | ~~30min~~ | ~~GOTH stack story~~ |
-| ~~10~~ | ~~Migrate remaining snapshot tests to golden files~~ done — utils/golden | ~~3h~~ | ~~Test consistency~~ |
+| #      | Task                                                                                       | Effort    | Impact                   |
+| ------ | ------------------------------------------------------------------------------------------ | --------- | ------------------------ |
+| ~~6~~  | ~~Set up goreleaser for tag-based releases~~ done at `7ee84d0`                             | ~~2h~~    | ~~Automates publishing~~ |
+| ~~7~~  | ~~Submit to awesome-templ~~ done at `7ee84d0`                                              | ~~30min~~ | ~~Discoverability~~      |
+| ~~8~~  | ~~Open PR on templ.guide~~ done at `7ee84d0`                                               | ~~30min~~ | ~~Discoverability~~      |
+| ~~9~~  | ~~Cross-link ecosystem in README (cqrs-htmx, go-cqrs-lite)~~ done — README.md GOTH section | ~~30min~~ | ~~GOTH stack story~~     |
+| ~~10~~ | ~~Migrate remaining snapshot tests to golden files~~ done — utils/golden                   | ~~3h~~    | ~~Test consistency~~     |
 
 ### Priority 3 — Polish (3–5 sessions)
 
-| #  | Task                                      | Effort | Impact                             |
-| -- | ----------------------------------------- | ------ | ---------------------------------- |
-| ~~11~~ | ~~`go:generate stringer` for all 18 enums~~ **Won't implement — cut per 2026-06-20 plan.** | ~~2h~~ | ~~Eliminates manual string constants~~ |
-| ~~12~~ | ~~`Validate() error` on props structs~~ done — CHANGELOG IsValid methods | ~~4h~~ | ~~More idiomatic than panic~~ |
-| ~~13~~ | ~~Extract shared Tailwind preset/theme file~~ done — templ-components-theme.css | ~~2h~~ | ~~Consumer DX~~ |
-| ~~14~~ | ~~Move test helpers to `internal/testutil/`~~ **Won't implement — deferred TODO 34 post-v1.0.** | ~~1h~~ | ~~API cleanliness (breaking)~~ |
-| 15 | Investigate gopls QF1003 suppression      | 1h     | IDE experience                     |
+| #      | Task                                                                                            | Effort | Impact                                 |
+| ------ | ----------------------------------------------------------------------------------------------- | ------ | -------------------------------------- |
+| ~~11~~ | ~~`go:generate stringer` for all 18 enums~~ **Won't implement — cut per 2026-06-20 plan.**      | ~~2h~~ | ~~Eliminates manual string constants~~ |
+| ~~12~~ | ~~`Validate() error` on props structs~~ done — CHANGELOG IsValid methods                        | ~~4h~~ | ~~More idiomatic than panic~~          |
+| ~~13~~ | ~~Extract shared Tailwind preset/theme file~~ done — templ-components-theme.css                 | ~~2h~~ | ~~Consumer DX~~                        |
+| ~~14~~ | ~~Move test helpers to `internal/testutil/`~~ **Won't implement — deferred TODO 34 post-v1.0.** | ~~1h~~ | ~~API cleanliness (breaking)~~         |
+| 15     | Investigate gopls QF1003 suppression                                                            | 1h     | IDE experience                         |
 
 ### Priority 4 — New Features (5+ sessions)
 
-| #  | Task                                | Effort | Impact          |
-| -- | ----------------------------------- | ------ | --------------- |
-| ~~16~~ | ~~Date Picker component~~ done — forms/date picker.templ | ~~8h~~ | ~~Common need~~ |
-| ~~17~~ | ~~Combobox/Autocomplete component~~ done — forms/combobox.templ | ~~8h~~ | ~~Common need~~ |
-| ~~18~~ | ~~SimpleNav BaseProps conversion~~ done — navigation/nav.templ SimpleNavProps | ~~2h~~ | ~~API consistency~~ |
+| #      | Task                                                                                   | Effort | Impact              |
+| ------ | -------------------------------------------------------------------------------------- | ------ | ------------------- |
+| ~~16~~ | ~~Date Picker component~~ done — forms/date picker.templ                               | ~~8h~~ | ~~Common need~~     |
+| ~~17~~ | ~~Combobox/Autocomplete component~~ done — forms/combobox.templ                        | ~~8h~~ | ~~Common need~~     |
+| ~~18~~ | ~~SimpleNav BaseProps conversion~~ done — navigation/nav.templ SimpleNavProps          | ~~2h~~ | ~~API consistency~~ |
 | ~~19~~ | ~~Add BaseProps to StepIndicatorProps~~ done — feedback/step indicator.templ BaseProps | ~~1h~~ | ~~API consistency~~ |
-| ~~20~~ | ~~Pagination uint fields~~ done — navigation/pagination.templ uint | ~~1h~~ | ~~Type safety~~ |
+| ~~20~~ | ~~Pagination uint fields~~ done — navigation/pagination.templ uint                     | ~~1h~~ | ~~Type safety~~     |
 
 ### Priority 5 — Future
 
-| #  | Task                                            | Effort | Impact                 |
-| -- | ----------------------------------------------- | ------ | ---------------------- |
-| ~~21~~ | ~~Modularize into Go workspace~~ done — docs/adr/0034-targeted-module-split.md | ~~8h~~ | ~~Independent versioning~~ |
-| ~~22~~ | ~~Documentation site (pkgsite/doc2go)~~ done — website/ | ~~4h~~ | ~~API discoverability~~ |
-| ~~23~~ | ~~Accessibility audit automation (axe-core/pa11y)~~ done — visualtest/axe.min.js | ~~4h~~ | ~~A11y compliance~~ |
-| ~~24~~ | ~~Plan v1.0 API freeze scope and timeline~~ done — CHANGELOG 1.0.0 | ~~2h~~ | ~~Long-term stability~~ |
-| 25 | Add `Drawer` variant: full-screen overlay mode  | 2h     | Common mobile pattern  |
+| #      | Task                                                                             | Effort | Impact                     |
+| ------ | -------------------------------------------------------------------------------- | ------ | -------------------------- |
+| ~~21~~ | ~~Modularize into Go workspace~~ done — docs/adr/0034-targeted-module-split.md   | ~~8h~~ | ~~Independent versioning~~ |
+| ~~22~~ | ~~Documentation site (pkgsite/doc2go)~~ done — website/                          | ~~4h~~ | ~~API discoverability~~    |
+| ~~23~~ | ~~Accessibility audit automation (axe-core/pa11y)~~ done — visualtest/axe.min.js | ~~4h~~ | ~~A11y compliance~~        |
+| ~~24~~ | ~~Plan v1.0 API freeze scope and timeline~~ done — CHANGELOG 1.0.0               | ~~2h~~ | ~~Long-term stability~~    |
+| 25     | Add `Drawer` variant: full-screen overlay mode                                   | 2h     | Common mobile pattern      |
 
 ---
 

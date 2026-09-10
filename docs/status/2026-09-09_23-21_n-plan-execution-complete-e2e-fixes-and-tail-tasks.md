@@ -85,8 +85,7 @@ synthetics + all component goldens) · `cmd/tc` sources sync PASS · docs count 
     ~~output vs `newMux()` live responses on all 7 routes are byte-identical after~~
     ~~normalizing exactly two by-design differences (live stylesheet link; fresh EnsureID~~
     ~~tokens). Commit `bf8a276`.~~
-16. ~~**N17 — upstream-watch dry-run (#128).** Triggered via `gh workflow run -f~~ done at `69880f6`
-    ~~dry-run=true`; run 34391305391 completed **success** in 10s with real pin-extraction~~
+16. ~~**N17 — upstream-watch dry-run (#128).** Triggered via `gh workflow run -f~~ done at`69880f6`~~dry-run=true`; run 34391305391 completed **success** in 10s with real pin-extraction~~
     ~~and proxy/jq parsing in the log.~~
 17. ~~**N18 — Docs mini-pack (#180).** innerHTML-no-scripts runtime fact appended to~~ done at `69880f6`
     ~~`docs/datastar-runtime-facts.md`; KanbanBoard FEATURES line now states touch-visible~~
@@ -203,58 +202,58 @@ synthetics + all component goldens) · `cmd/tc` sources sync PASS · docs count 
 
 ## f) NEXT 50 (ranked; feeds docs-health HARVEST)
 
-| #  | Task                                                                                                            | Impact    | Effort | Category      |
-| -- | --------------------------------------------------------------------------------------------------------------- | --------- | ------ | ------------- |
-| 1  | Cut v1.17.0 via release script (CHANGELOG warm: a11y batch, tooltip fix, kanban mobile fix, Minimal SEO)         | Critical  | S      | Release       |
-| 2  | Push/drain the 60 queued commits (or confirm daemon coverage is acceptable)                                     | Critical  | S      | Release       |
-| 3  | Real-PR shakedown of `check-changelog-guard.sh` (2 throwaway PRs: docs-only pass, component-without-changelog fail) | High      | S      | Quality       |
-| 4  | Correct AGENTS.md chromedp guidance: dialog-accept stall (confirm-stub works; goroutine accept never did)       | High      | S      | Documentation |
-| 5  | Add `pollBool`/`pollText` helpers to visualtest harness; migrate flow tests                                     | High      | S      | Quality       |
-| 6  | Route goldens: add dark variants for all 7 routes (only dashboard_dark exists)                                  | High      | M      | Quality       |
-| 7  | Route goldens: 375px mobile captures for the 4 swept routes                                                     | High      | M      | Quality       |
-| 8  | Route goldens: RTL captures (the sweep asserts overflow; pixels pin mirroring)                                  | High      | M      | Quality       |
-| 9  | Keyboard-only demo traversal (residue of #175: axe sweep covers DOM, not Tab-order UX)                          | High      | M      | Quality       |
-| 10 | Triage the 16 LSP warnings on display/kanban (unused funcs flagged — verify against real lint, delete or wire)  | Medium    | S      | Cleanup       |
-| 11 | Document or file upstream the stale-gopls kanban diagnostics (false "closing brace" error)                      | Low       | S      | Cleanup       |
-| 12 | Human-eyeball pack #80/#162 (overlay PNGs + progressbar 45% fill)                                               | Medium    | S      | Bug           |
-| 13 | Answer Q1/Q2, then execute N20 (file-backed kanban state, dashboard recipe section)                             | Medium    | L      | Feature       |
-| 14 | Kanban e2e: HTML5 drag-and-drop path (only click-move is browser-proven)                                        | Medium    | M      | Quality       |
-| 15 | Datastar synthetics: `retrying` event console path                                                              | Low       | S      | Quality       |
-| 16 | Datastar: mirror the no-scripts fact into package doc.go                                                        | Low       | S      | Documentation |
-| 17 | Upload e2e: Datastar-dialect upload (currently htmx-only)                                                       | Medium    | M      | Quality       |
-| 18 | LoadingButton e2e: assert label swap ("Saving…"), not just htmx-request class                                   | Low       | S      | Quality       |
-| 19 | Users route e2e: pagination click-through                                                                       | Medium    | S      | Quality       |
-| 20 | Wizard multi-step click-through in flows suite                                                                  | Medium    | M      | Quality       |
-| 21 | Coverage: lift recipes to 70%+ (settings/auth slot branches)                                                    | Medium    | M      | Quality       |
-| 22 | Flake app `.#coverage-exact` (weighted exact %, no awk)                                                         | Low       | S      | Quality       |
-| 23 | docs/visual-testing.md: document the route-golden tier + update command                                         | Medium    | S      | Documentation |
-| 24 | CONTRIBUTING: "adding an e2e test" checklist (bounds, poll patterns, no native dialogs)                         | Medium    | S      | Documentation |
-| 25 | Verify v1.16.0 pkg.go.dev propagation (24h-watch item from N1)                                                  | Medium    | S      | Release       |
-| 26 | CHANGELOG [Unreleased]: link issue numbers for the a11y batch rows                                              | Low       | S      | Documentation |
-| 27 | SKILL.md drift check: component/golden counts vs reality (TestSkillComponentCount logs drift)                   | Low       | S      | Documentation |
-| 28 | Website: sync new testing tiers into site content                                                               | Low       | M      | Documentation |
-| 29 | `ci-repro.sh --lint`: include the changelog-guard script in local parity                                        | Low       | S      | Quality       |
-| 30 | visualtest: `.fail/` stale subdirectory disk hygiene (pre-session dirs linger)                                  | Low       | S      | Cleanup       |
-| 31 | Consider `disable-dev-shm-usage` flag for CI Chromium stability                                                 | Low       | S      | Quality       |
-| 32 | Consider parallel route-golden capture (separate tabs; measure against 14s serial baseline)                     | Low       | M      | Quality       |
-| 33 | File BuildFlow issues upstream (#93/#124/#125/#126) if the repo accepts them                                    | Medium    | M      | Bug           |
-| 34 | Demo: MobileMenu/hamburger showcase (index nav is a wrap-nav; the component is underdemoed)                     | Low       | S      | Feature       |
-| 35 | shared page-builder options (dark/rtl/viewport) for e2e page fixtures                                           | Low       | S      | Quality       |
-| 36 | `datastar` package: string-level aria-busy unit test as CI-fast complement                                      | Low       | S      | Quality       |
-| 37 | Dedupe screenshot-quality constant between tools/shots and harness                                              | Low       | S      | Cleanup       |
-| 38 | Re-check website pins (typescript/html-validate) after next daemon sweep (recurring flip risk)                  | Medium    | S      | Bug           |
-| 39 | Prune `.fail/` artifacts from disk after green runs (t.Cleanup sweep)                                           | Low       | S      | Cleanup       |
-| 40 | Consider `-timeout 15m` on the flake visual app as a belt-and-suspenders bound                                  | Low       | S      | Quality       |
-| 41 | AGENTS.md: add "poll result type" to the chromedp trap list                                                     | Medium    | S      | Documentation |
-| 42 | Evaluate moving `firstCSV`/kanban helpers into a shared e2e helpers file (used by flows + RTL)                  | Low       | S      | Cleanup       |
-| 43 | Sweep for remaining `http.Get` without context in test fixtures (guard found one class; grep for others)         | Low       | S      | Quality       |
-| 44 | Add release-notes section to GitHub Release automation (N1 manual refill lesson)                                | Low       | S      | Release       |
-| 45 | Consider tagging visualtest module (it has go.mod but no tag; release script covers 7 modules)                  | Low       | S      | Release       |
-| 46 | Docs: record the route-golden re-cut procedure (diff PNG inspection before -update)                              | Low       | S      | Documentation |
-| 47 | Check whether `TestSkillComponentCount` should escalate from log to failure now counts stabilized               | Low       | S      | Quality       |
-| 48 | Demo `?transport=` page: add route golden for both single-transport variants (shots has them; goldens don't)     | Low       | S      | Quality       |
-| 49 | Consider `t.Chdir`-free temp-dir cleanup verification for route goldens (RemoveAll defer audited)               | Low       | S      | Cleanup       |
-| 50 | Harvest this list into TODO_LIST/ROADMAP via docs-health (the canonical next step for section f)                | High      | S      | Documentation |
+| #  | Task                                                                                                                | Impact   | Effort | Category      |
+| -- | ------------------------------------------------------------------------------------------------------------------- | -------- | ------ | ------------- |
+| 1  | Cut v1.17.0 via release script (CHANGELOG warm: a11y batch, tooltip fix, kanban mobile fix, Minimal SEO)            | Critical | S      | Release       |
+| 2  | Push/drain the 60 queued commits (or confirm daemon coverage is acceptable)                                         | Critical | S      | Release       |
+| 3  | Real-PR shakedown of `check-changelog-guard.sh` (2 throwaway PRs: docs-only pass, component-without-changelog fail) | High     | S      | Quality       |
+| 4  | Correct AGENTS.md chromedp guidance: dialog-accept stall (confirm-stub works; goroutine accept never did)           | High     | S      | Documentation |
+| 5  | Add `pollBool`/`pollText` helpers to visualtest harness; migrate flow tests                                         | High     | S      | Quality       |
+| 6  | Route goldens: add dark variants for all 7 routes (only dashboard_dark exists)                                      | High     | M      | Quality       |
+| 7  | Route goldens: 375px mobile captures for the 4 swept routes                                                         | High     | M      | Quality       |
+| 8  | Route goldens: RTL captures (the sweep asserts overflow; pixels pin mirroring)                                      | High     | M      | Quality       |
+| 9  | Keyboard-only demo traversal (residue of #175: axe sweep covers DOM, not Tab-order UX)                              | High     | M      | Quality       |
+| 10 | Triage the 16 LSP warnings on display/kanban (unused funcs flagged — verify against real lint, delete or wire)      | Medium   | S      | Cleanup       |
+| 11 | Document or file upstream the stale-gopls kanban diagnostics (false "closing brace" error)                          | Low      | S      | Cleanup       |
+| 12 | Human-eyeball pack #80/#162 (overlay PNGs + progressbar 45% fill)                                                   | Medium   | S      | Bug           |
+| 13 | Answer Q1/Q2, then execute N20 (file-backed kanban state, dashboard recipe section)                                 | Medium   | L      | Feature       |
+| 14 | Kanban e2e: HTML5 drag-and-drop path (only click-move is browser-proven)                                            | Medium   | M      | Quality       |
+| 15 | Datastar synthetics: `retrying` event console path                                                                  | Low      | S      | Quality       |
+| 16 | Datastar: mirror the no-scripts fact into package doc.go                                                            | Low      | S      | Documentation |
+| 17 | Upload e2e: Datastar-dialect upload (currently htmx-only)                                                           | Medium   | M      | Quality       |
+| 18 | LoadingButton e2e: assert label swap ("Saving…"), not just htmx-request class                                       | Low      | S      | Quality       |
+| 19 | Users route e2e: pagination click-through                                                                           | Medium   | S      | Quality       |
+| 20 | Wizard multi-step click-through in flows suite                                                                      | Medium   | M      | Quality       |
+| 21 | Coverage: lift recipes to 70%+ (settings/auth slot branches)                                                        | Medium   | M      | Quality       |
+| 22 | Flake app `.#coverage-exact` (weighted exact %, no awk)                                                             | Low      | S      | Quality       |
+| 23 | docs/visual-testing.md: document the route-golden tier + update command                                             | Medium   | S      | Documentation |
+| 24 | CONTRIBUTING: "adding an e2e test" checklist (bounds, poll patterns, no native dialogs)                             | Medium   | S      | Documentation |
+| 25 | Verify v1.16.0 pkg.go.dev propagation (24h-watch item from N1)                                                      | Medium   | S      | Release       |
+| 26 | CHANGELOG [Unreleased]: link issue numbers for the a11y batch rows                                                  | Low      | S      | Documentation |
+| 27 | SKILL.md drift check: component/golden counts vs reality (TestSkillComponentCount logs drift)                       | Low      | S      | Documentation |
+| 28 | Website: sync new testing tiers into site content                                                                   | Low      | M      | Documentation |
+| 29 | `ci-repro.sh --lint`: include the changelog-guard script in local parity                                            | Low      | S      | Quality       |
+| 30 | visualtest: `.fail/` stale subdirectory disk hygiene (pre-session dirs linger)                                      | Low      | S      | Cleanup       |
+| 31 | Consider `disable-dev-shm-usage` flag for CI Chromium stability                                                     | Low      | S      | Quality       |
+| 32 | Consider parallel route-golden capture (separate tabs; measure against 14s serial baseline)                         | Low      | M      | Quality       |
+| 33 | File BuildFlow issues upstream (#93/#124/#125/#126) if the repo accepts them                                        | Medium   | M      | Bug           |
+| 34 | Demo: MobileMenu/hamburger showcase (index nav is a wrap-nav; the component is underdemoed)                         | Low      | S      | Feature       |
+| 35 | shared page-builder options (dark/rtl/viewport) for e2e page fixtures                                               | Low      | S      | Quality       |
+| 36 | `datastar` package: string-level aria-busy unit test as CI-fast complement                                          | Low      | S      | Quality       |
+| 37 | Dedupe screenshot-quality constant between tools/shots and harness                                                  | Low      | S      | Cleanup       |
+| 38 | Re-check website pins (typescript/html-validate) after next daemon sweep (recurring flip risk)                      | Medium   | S      | Bug           |
+| 39 | Prune `.fail/` artifacts from disk after green runs (t.Cleanup sweep)                                               | Low      | S      | Cleanup       |
+| 40 | Consider `-timeout 15m` on the flake visual app as a belt-and-suspenders bound                                      | Low      | S      | Quality       |
+| 41 | AGENTS.md: add "poll result type" to the chromedp trap list                                                         | Medium   | S      | Documentation |
+| 42 | Evaluate moving `firstCSV`/kanban helpers into a shared e2e helpers file (used by flows + RTL)                      | Low      | S      | Cleanup       |
+| 43 | Sweep for remaining `http.Get` without context in test fixtures (guard found one class; grep for others)            | Low      | S      | Quality       |
+| 44 | Add release-notes section to GitHub Release automation (N1 manual refill lesson)                                    | Low      | S      | Release       |
+| 45 | Consider tagging visualtest module (it has go.mod but no tag; release script covers 7 modules)                      | Low      | S      | Release       |
+| 46 | Docs: record the route-golden re-cut procedure (diff PNG inspection before -update)                                 | Low      | S      | Documentation |
+| 47 | Check whether `TestSkillComponentCount` should escalate from log to failure now counts stabilized                   | Low      | S      | Quality       |
+| 48 | Demo `?transport=` page: add route golden for both single-transport variants (shots has them; goldens don't)        | Low      | S      | Quality       |
+| 49 | Consider `t.Chdir`-free temp-dir cleanup verification for route goldens (RemoveAll defer audited)                   | Low      | S      | Cleanup       |
+| 50 | Harvest this list into TODO_LIST/ROADMAP via docs-health (the canonical next step for section f)                    | High     | S      | Documentation |
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
 
@@ -274,6 +273,6 @@ synthetics + all component goldens) · `cmd/tc` sources sync PASS · docs count 
 
 ---
 
-*Report written per the status-report skill; the user's explicit `.md` instruction
+_Report written per the status-report skill; the user's explicit `.md` instruction
 overrides the skill's HTML default (5th consecutive override). Section (f) is the input
-for docs-health HARVEST.*
+for docs-health HARVEST._

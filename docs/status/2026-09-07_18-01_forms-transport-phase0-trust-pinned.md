@@ -136,19 +136,19 @@ Also: CHANGELOG `[Unreleased]` warmed with the session's two Added entries.
 1. ~~**The debugging detour on the validation round-trip cost the majority of~~ done (docs-health pass 2026-09-08)
    ~~the session's wall time**, and most of it was self-inflicted:~~
    ~~- My first e2e draft shipped with dead code and a nonexistent~~
-     ~~`.sliceContains` method — wrote code faster than I checked it.~~
+   ~~`.sliceContains` method — wrote code faster than I checked it.~~
    ~~- I theorized before instrumenting: cycled through ~6 wrong hypotheses~~
-     ~~(Datastar runtime interference → clone theory → exception theory →~~
-     ~~explicit-trigger theory → "htmx doesn't process swapped content") while~~
-     ~~the ONE decisive probe (htmx lifecycle event trace + network log) sat~~
-     ~~unused for many iterations.~~
+   ~~(Datastar runtime interference → clone theory → exception theory →~~
+   ~~explicit-trigger theory → "htmx doesn't process swapped content") while~~
+   ~~the ONE decisive probe (htmx lifecycle event trace + network log) sat~~
+   ~~unused for many iterations.~~
    ~~- My instrumentation itself lied twice: chromedp `Evaluate` does NOT await~~
-     ~~plain Promises (returned `{}` → I misread "no events fired"), and my~~
-     ~~step-helper overwrote diagnostic variables with region dumps.~~
+   ~~plain Promises (returned `{}` → I misread "no events fired"), and my~~
+   ~~step-helper overwrote diagnostic variables with region dumps.~~
    ~~- Repeated Python/sed patch edits mangled the debug test into invalid Go~~
-     ~~(three rebuild-fix cycles on throwaway code).~~
+   ~~(three rebuild-fix cycles on throwaway code).~~
    ~~- Root cause was a ~20ms test race — findable in minutes with the right~~
-     ~~probe. Lesson recorded below (e).~~
+   ~~probe. Lesson recorded below (e).~~
 2. ~~**Transient disk-full failure** (`/mnt/buildcache` at 92%, 19G free):~~ done (docs-health pass 2026-09-08)
    ~~`nix run .#verify` died mid-run with "no space left on device" during the~~
    ~~parallel lint/test phase. Retried clean minutes later — build, tests, lint~~

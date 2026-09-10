@@ -50,34 +50,34 @@ Why 51%: these are the only items where current behavior is _wrong_ (double erro
 
 ## Step 2 — Comprehensive Plan (30–100 min tasks, ALL todos, sorted by impact/effort/value)
 
-| #  | Task                                                                                 | Pareto | Repo | Est  | Contains (status-report item #s) | Depends on |
-| -- | ------------------------------------------------------------------------------------ | ------ | ---- | ---- | -------------------------------- | ---------- |
-| ~~A1~~ | ~~Bump CV to templ-components v1.14.0 + tidy + test sweep~~ done — CV 48e4f43 | ~~4%~~ | ~~CV~~ | ~~60m~~ | ~~1, 43, 44, 46~~ | ~~D8~~ |
-| ~~A2~~ | ~~ATS: delete custom error boundary, consolidate on GlobalErrorHandling~~ done — CV 25c40f04 | ~~**1%**~~ | ~~CV~~ | ~~60m~~ | ~~9, Q3~~ | ~~A1~~ |
-| ~~A3~~ | ~~Replace all hand-rolled skeletons/spinners; repo-wide motion-reduce fix~~ done — CV 9208e378 | ~~**1%**~~ | ~~CV~~ | ~~60m~~ | ~~7, 8, 22~~ | ~~A1~~ |
-| ~~A4~~ | ~~Replace 5–7 hand-rolled empty states with `display.EmptyState`~~ done — CV 09cbfc19 | ~~4%~~ | ~~CV~~ | ~~45m~~ | ~~2, 3~~ | ~~A1~~ |
-| ~~A5~~ | ~~`HtmxCard` internals → `htmx.PolledRegion` (6 call sites)~~ **Won't implement — owner ATS do not invest.** | ~~4%~~ | ~~CV~~ | ~~60m~~ | ~~4~~ | ~~A1~~ |
-| ~~A6~~ | ~~Pipeline `statCard`/`statCardLink` → `display.StatCard` (`ValueID`)~~ done — CV 4c725e2d | ~~4%~~ | ~~CV~~ | ~~45m~~ | ~~5, 42~~ | ~~A1~~ |
-| ~~A7~~ | ~~Dead-portals table → `display.Table`~~ done — CV 4c725e2d | ~~20%~~ | ~~CV~~ | ~~45m~~ | ~~6~~ | ~~A1~~ |
-| ~~B1~~ | ~~A.Team form → `forms.Form` + `htmx.LoadingButton` + `feedback.ProgressBar`~~ done — CV 26a25845 | ~~20%~~ | ~~CV~~ | ~~90m~~ | ~~11–14, 41~~ | ~~A1~~ |
-| ~~B2~~ | ~~Coaching page → `forms.Input/Textarea`, `display.Button`, `feedback.Alert`, `Badge`~~ done — CV 99c933e2 | ~~20%~~ | ~~CV~~ | ~~60m~~ | ~~15–17~~ | ~~A1~~ |
-| ~~B3~~ | ~~ATS Refresh/NewAnalysis/Search → `display.Button` + `wire.Action`~~ **Won't implement — owner ATS do not invest.** | ~~20%~~ | ~~CV~~ | ~~45m~~ | ~~18~~ | ~~A1~~ |
-| ~~B4~~ | ~~`RelativeTime` adoption (AutoRefresh+nonce) + stale-comment fix~~ done — CV 4c725e2d comment fix | ~~20%~~ | ~~CV~~ | ~~45m~~ | ~~20, 21~~ | ~~A1~~ |
-| ~~B5~~ | ~~ATS analysis modal → `display.Modal` native `<dialog>`~~ **Won't implement — owner ATS do not invest.** | ~~20%~~ | ~~CV~~ | ~~30m~~ | ~~10~~ | ~~A1~~ |
-| ~~C1~~ | ~~Upstream: `layout.SEOMeta` (NoIndex/Canonical/Alternates/JSONLD) + tests + changelog~~ done — layout SEOMeta | ~~20%~~ | ~~TC~~ | ~~100m~~ | ~~29, 30, Q2~~ | ~~D7~~ |
-| ~~C2~~ | ~~Upstream: CollapsibleSection optional nonce'd persistence script~~ done — CollapsibleSection PersistState | ~~100%~~ | ~~TC~~ | ~~60m~~ | ~~31~~ | ~~D7~~ |
-| ~~C3~~ | ~~Upstream: `docs/recipes/sse-fragments.md` from CV's pipeline pattern~~ done — docs/recipes/sse-fragments.md | ~~100%~~ | ~~TC~~ | ~~60m~~ | ~~32~~ | ~~D7~~ |
-| ~~C4~~ | ~~Upstream: generic icon renderer `Render(viewBox, paths, class, fill)`~~ done — icons/custom icon templ.go Render | ~~100%~~ | ~~TC~~ | ~~45m~~ | ~~34~~ | ~~D7~~ |
-| ~~C5~~ | ~~Upstream: `docs/recipes/htmx-modal.md`~~ done — docs/recipes/htmx-modal.md | ~~100%~~ | ~~TC~~ | ~~45m~~ | ~~35~~ | ~~D7~~ |
-| ~~C6~~ | ~~Upstream: `docs/recipes/print-pdf.md` harvested from CV~~ done — docs/recipes/print-pdf.md | ~~100%~~ | ~~TC~~ | ~~60m~~ | ~~36~~ | ~~D4~~ |
-| D1 | CV RTL/logical-property sweep                                                        | 100%   | CV   | 30m  | 23                               | —          |
-| D2 | CV AGENTS.md adoption table + datastar dep decision + share.js `layout.Script`       | 100%   | CV   | 30m  | 24, 25, 26                       | D4         |
-| ~~D3~~ | ~~Resolve CV's two `PageHeader`s (rename `common.PageHeader` or converge)~~ done — CV DashboardHero rename | ~~100%~~ | ~~CV~~ | ~~30m~~ | ~~27~~ | ~~—~~ |
-| ~~D4~~ | ~~Read CV AGENTS.md/README/TODO_LIST; reconcile findings~~ done — CV context reads | ~~100%~~ | ~~CV~~ | ~~30m~~ | ~~45~~ | ~~—~~ |
-| ~~D5~~ | ~~Fix templ-components AGENTS.md "v2.0" vs v1.14.0 drift~~ **Won't implement — superseded v2.0 actually shipped.** | ~~100%~~ | ~~TC~~ | ~~30m~~ | ~~38~~ | ~~—~~ |
-| D6 | Full reads of the 5 skimmed file regions (~1,800 lines)                              | 100%   | CV   | 45m  | 39, 40                           | —          |
-| ~~D7~~ | ~~Pre-flight overlap check (TODO_LIST/FEATURES) + HARVEST plan into TODO lists~~ done — TODO LIST harvest | ~~100%~~ | ~~both~~ | ~~30m~~ | ~~37, 49~~ | ~~—~~ |
-| ~~D8~~ | ~~CV baseline: build + test + CI status recorded~~ done — CV baseline recorded | ~~100%~~ | ~~CV~~ | ~~45m~~ | ~~43, 44~~ | ~~—~~ |
+| #      | Task                                                                                                                 | Pareto     | Repo     | Est      | Contains (status-report item #s) | Depends on |
+| ------ | -------------------------------------------------------------------------------------------------------------------- | ---------- | -------- | -------- | -------------------------------- | ---------- |
+| ~~A1~~ | ~~Bump CV to templ-components v1.14.0 + tidy + test sweep~~ done — CV 48e4f43                                        | ~~4%~~     | ~~CV~~   | ~~60m~~  | ~~1, 43, 44, 46~~                | ~~D8~~     |
+| ~~A2~~ | ~~ATS: delete custom error boundary, consolidate on GlobalErrorHandling~~ done — CV 25c40f04                         | ~~**1%**~~ | ~~CV~~   | ~~60m~~  | ~~9, Q3~~                        | ~~A1~~     |
+| ~~A3~~ | ~~Replace all hand-rolled skeletons/spinners; repo-wide motion-reduce fix~~ done — CV 9208e378                       | ~~**1%**~~ | ~~CV~~   | ~~60m~~  | ~~7, 8, 22~~                     | ~~A1~~     |
+| ~~A4~~ | ~~Replace 5–7 hand-rolled empty states with `display.EmptyState`~~ done — CV 09cbfc19                                | ~~4%~~     | ~~CV~~   | ~~45m~~  | ~~2, 3~~                         | ~~A1~~     |
+| ~~A5~~ | ~~`HtmxCard` internals → `htmx.PolledRegion` (6 call sites)~~ **Won't implement — owner ATS do not invest.**         | ~~4%~~     | ~~CV~~   | ~~60m~~  | ~~4~~                            | ~~A1~~     |
+| ~~A6~~ | ~~Pipeline `statCard`/`statCardLink` → `display.StatCard` (`ValueID`)~~ done — CV 4c725e2d                           | ~~4%~~     | ~~CV~~   | ~~45m~~  | ~~5, 42~~                        | ~~A1~~     |
+| ~~A7~~ | ~~Dead-portals table → `display.Table`~~ done — CV 4c725e2d                                                          | ~~20%~~    | ~~CV~~   | ~~45m~~  | ~~6~~                            | ~~A1~~     |
+| ~~B1~~ | ~~A.Team form → `forms.Form` + `htmx.LoadingButton` + `feedback.ProgressBar`~~ done — CV 26a25845                    | ~~20%~~    | ~~CV~~   | ~~90m~~  | ~~11–14, 41~~                    | ~~A1~~     |
+| ~~B2~~ | ~~Coaching page → `forms.Input/Textarea`, `display.Button`, `feedback.Alert`, `Badge`~~ done — CV 99c933e2           | ~~20%~~    | ~~CV~~   | ~~60m~~  | ~~15–17~~                        | ~~A1~~     |
+| ~~B3~~ | ~~ATS Refresh/NewAnalysis/Search → `display.Button` + `wire.Action`~~ **Won't implement — owner ATS do not invest.** | ~~20%~~    | ~~CV~~   | ~~45m~~  | ~~18~~                           | ~~A1~~     |
+| ~~B4~~ | ~~`RelativeTime` adoption (AutoRefresh+nonce) + stale-comment fix~~ done — CV 4c725e2d comment fix                   | ~~20%~~    | ~~CV~~   | ~~45m~~  | ~~20, 21~~                       | ~~A1~~     |
+| ~~B5~~ | ~~ATS analysis modal → `display.Modal` native `<dialog>`~~ **Won't implement — owner ATS do not invest.**            | ~~20%~~    | ~~CV~~   | ~~30m~~  | ~~10~~                           | ~~A1~~     |
+| ~~C1~~ | ~~Upstream: `layout.SEOMeta` (NoIndex/Canonical/Alternates/JSONLD) + tests + changelog~~ done — layout SEOMeta       | ~~20%~~    | ~~TC~~   | ~~100m~~ | ~~29, 30, Q2~~                   | ~~D7~~     |
+| ~~C2~~ | ~~Upstream: CollapsibleSection optional nonce'd persistence script~~ done — CollapsibleSection PersistState          | ~~100%~~   | ~~TC~~   | ~~60m~~  | ~~31~~                           | ~~D7~~     |
+| ~~C3~~ | ~~Upstream: `docs/recipes/sse-fragments.md` from CV's pipeline pattern~~ done — docs/recipes/sse-fragments.md        | ~~100%~~   | ~~TC~~   | ~~60m~~  | ~~32~~                           | ~~D7~~     |
+| ~~C4~~ | ~~Upstream: generic icon renderer `Render(viewBox, paths, class, fill)`~~ done — icons/custom icon templ.go Render   | ~~100%~~   | ~~TC~~   | ~~45m~~  | ~~34~~                           | ~~D7~~     |
+| ~~C5~~ | ~~Upstream: `docs/recipes/htmx-modal.md`~~ done — docs/recipes/htmx-modal.md                                         | ~~100%~~   | ~~TC~~   | ~~45m~~  | ~~35~~                           | ~~D7~~     |
+| ~~C6~~ | ~~Upstream: `docs/recipes/print-pdf.md` harvested from CV~~ done — docs/recipes/print-pdf.md                         | ~~100%~~   | ~~TC~~   | ~~60m~~  | ~~36~~                           | ~~D4~~     |
+| D1     | CV RTL/logical-property sweep                                                                                        | 100%       | CV       | 30m      | 23                               | —          |
+| D2     | CV AGENTS.md adoption table + datastar dep decision + share.js `layout.Script`                                       | 100%       | CV       | 30m      | 24, 25, 26                       | D4         |
+| ~~D3~~ | ~~Resolve CV's two `PageHeader`s (rename `common.PageHeader` or converge)~~ done — CV DashboardHero rename           | ~~100%~~   | ~~CV~~   | ~~30m~~  | ~~27~~                           | ~~—~~      |
+| ~~D4~~ | ~~Read CV AGENTS.md/README/TODO_LIST; reconcile findings~~ done — CV context reads                                   | ~~100%~~   | ~~CV~~   | ~~30m~~  | ~~45~~                           | ~~—~~      |
+| ~~D5~~ | ~~Fix templ-components AGENTS.md "v2.0" vs v1.14.0 drift~~ **Won't implement — superseded v2.0 actually shipped.**   | ~~100%~~   | ~~TC~~   | ~~30m~~  | ~~38~~                           | ~~—~~      |
+| D6     | Full reads of the 5 skimmed file regions (~1,800 lines)                                                              | 100%       | CV       | 45m      | 39, 40                           | —          |
+| ~~D7~~ | ~~Pre-flight overlap check (TODO_LIST/FEATURES) + HARVEST plan into TODO lists~~ done — TODO LIST harvest            | ~~100%~~   | ~~both~~ | ~~30m~~  | ~~37, 49~~                       | ~~—~~      |
+| ~~D8~~ | ~~CV baseline: build + test + CI status recorded~~ done — CV baseline recorded                                       | ~~100%~~   | ~~CV~~   | ~~45m~~  | ~~43, 44~~                       | ~~—~~      |
 
 **Totals:** 26 tasks, ≈ 23.4 h medium-granularity estimate.
 
@@ -87,176 +87,176 @@ Why 51%: these are the only items where current behavior is _wrong_ (double erro
 
 ### A1 — Bump to v1.14.0 (4%)
 
-| ID  | Task                                                               | Est |
-| --- | ------------------------------------------------------------------ | --- |
+| ID      | Task                                                                             | Est     |
+| ------- | -------------------------------------------------------------------------------- | ------- |
 | ~~F01~~ | ~~Read CV `go.mod`; bump 5 templ-components require lines to v1.14.0~~ done — A1 | ~~10m~~ |
-| ~~F02~~ | ~~`GOWORK=off go mod tidy` in affected modules; review go.sum diff~~ done — A1 | ~~12m~~ |
-| ~~F03~~ | ~~Grep CV for APIs renamed/removed per 1.13.3 + 1.14.0 changelogs~~ done — A1 | ~~10m~~ |
-| ~~F04~~ | ~~`templ generate` + `go build ./...` in CV~~ done — A1 | ~~10m~~ |
-| ~~F05~~ | ~~Run CV test suite; fix any fallout~~ done — A1 | ~~12m~~ |
-| ~~F06~~ | ~~Re-check CV CI on master; record green baseline~~ done — A1 | ~~10m~~ |
+| ~~F02~~ | ~~`GOWORK=off go mod tidy` in affected modules; review go.sum diff~~ done — A1   | ~~12m~~ |
+| ~~F03~~ | ~~Grep CV for APIs renamed/removed per 1.13.3 + 1.14.0 changelogs~~ done — A1    | ~~10m~~ |
+| ~~F04~~ | ~~`templ generate` + `go build ./...` in CV~~ done — A1                          | ~~10m~~ |
+| ~~F05~~ | ~~Run CV test suite; fix any fallout~~ done — A1                                 | ~~12m~~ |
+| ~~F06~~ | ~~Re-check CV CI on master; record green baseline~~ done — A1                    | ~~10m~~ |
 
 ### A2 — Error-boundary consolidation (1%)
 
-| ID  | Task                                                                       | Est |
-| --- | -------------------------------------------------------------------------- | --- |
-| ~~F07~~ | ~~Read `GlobalErrorHandling` config opts; pick ATS config (JSON mode?)~~ done — A2 | ~~10m~~ |
-| ~~F08~~ | ~~Surgically delete ONLY the error-boundary JS from `DashboardJavaScript`~~ done — A2 | ~~12m~~ |
-| ~~F09~~ | ~~Preserve the `htmx:configRequest` API-key header stamp (must survive)~~ done — A2 | ~~10m~~ |
-| ~~F10~~ | ~~Preserve modal-unhide + `data-dismiss-modal` listeners (must survive)~~ done — A2 | ~~10m~~ |
+| ID      | Task                                                                                     | Est     |
+| ------- | ---------------------------------------------------------------------------------------- | ------- |
+| ~~F07~~ | ~~Read `GlobalErrorHandling` config opts; pick ATS config (JSON mode?)~~ done — A2       | ~~10m~~ |
+| ~~F08~~ | ~~Surgically delete ONLY the error-boundary JS from `DashboardJavaScript`~~ done — A2    | ~~12m~~ |
+| ~~F09~~ | ~~Preserve the `htmx:configRequest` API-key header stamp (must survive)~~ done — A2      | ~~10m~~ |
+| ~~F10~~ | ~~Preserve modal-unhide + `data-dismiss-modal` listeners (must survive)~~ done — A2      | ~~10m~~ |
 | ~~F11~~ | ~~Verify single error path: force 500/404 from an endpoint, assert one toast~~ done — A2 | ~~12m~~ |
-| ~~F12~~ | ~~Update ATS tests/snapshots touching the removed script~~ done — A2 | ~~10m~~ |
+| ~~F12~~ | ~~Update ATS tests/snapshots touching the removed script~~ done — A2                     | ~~10m~~ |
 
 ### A3 — Skeletons + motion-reduce (1%)
 
-| ID  | Task                                                                        | Est          |
-| --- | --------------------------------------------------------------------------- | ------------ |
-| ~~F13~~ | ~~`rg 'animate-pulse~~ done — A3 | ~~animate-spin~~ |
-| ~~F14~~ | ~~`ScoresSkeleton` → `feedback.Skeleton`/`SkeletonGroup`~~ done — A3 | ~~12m~~ |
-| ~~F15~~ | ~~`QuickStatsSkeleton` → Skeleton variants~~ done — A3 | ~~10m~~ |
-| ~~F16~~ | ~~`RecentAnalysesSkeleton` → Skeleton variants~~ done — A3 | ~~10m~~ |
-| ~~F17~~ | ~~`CommonIssuesSkeleton` → `SkeletonCardGrid`~~ done — A3 | ~~10m~~ |
-| ~~F18~~ | ~~`listSkeleton` (ui_common) → `SkeletonGroup`~~ done — A3 | ~~10m~~ |
-| ~~F19~~ | ~~ATS `LoadingState` → `feedback.Spinner` (LG)~~ done — A3 | ~~10m~~ |
-| ~~F20~~ | ~~SSE dot + stray pulses → add `motion-reduce:animate-none` or component swap~~ done — A3 | ~~5m~~ |
-| ~~F21~~ | ~~Note any skeleton shape the library lacks → library-feedback note~~ done — A3 | ~~10m~~ |
+| ID      | Task                                                                                      | Est              |
+| ------- | ----------------------------------------------------------------------------------------- | ---------------- |
+| ~~F13~~ | ~~`rg 'animate-pulse~~ done — A3                                                          | ~~animate-spin~~ |
+| ~~F14~~ | ~~`ScoresSkeleton` → `feedback.Skeleton`/`SkeletonGroup`~~ done — A3                      | ~~12m~~          |
+| ~~F15~~ | ~~`QuickStatsSkeleton` → Skeleton variants~~ done — A3                                    | ~~10m~~          |
+| ~~F16~~ | ~~`RecentAnalysesSkeleton` → Skeleton variants~~ done — A3                                | ~~10m~~          |
+| ~~F17~~ | ~~`CommonIssuesSkeleton` → `SkeletonCardGrid`~~ done — A3                                 | ~~10m~~          |
+| ~~F18~~ | ~~`listSkeleton` (ui_common) → `SkeletonGroup`~~ done — A3                                | ~~10m~~          |
+| ~~F19~~ | ~~ATS `LoadingState` → `feedback.Spinner` (LG)~~ done — A3                                | ~~10m~~          |
+| ~~F20~~ | ~~SSE dot + stray pulses → add `motion-reduce:animate-none` or component swap~~ done — A3 | ~~5m~~           |
+| ~~F21~~ | ~~Note any skeleton shape the library lacks → library-feedback note~~ done — A3           | ~~10m~~          |
 
 ### A4 — Empty states (4%)
 
-| ID  | Task                                                                                              | Est |
-| --- | ------------------------------------------------------------------------------------------------- | --- |
+| ID      | Task                                                                                                            | Est     |
+| ------- | --------------------------------------------------------------------------------------------------------------- | ------- |
 | ~~F22~~ | ~~Map all call sites: `emptyPanel` ×3, `dashboardEmptyState` ×2, `filter-empty`, `interviews-empty`~~ done — A4 | ~~10m~~ |
-| ~~F23~~ | ~~`emptyPanel` → `display.EmptyState` (or thin wrapper)~~ done — A4 | ~~12m~~ |
-| ~~F24~~ | ~~`dashboardEmptyState` → `EmptyState` with `TitleTag: "h2"` where section-level~~ done — A4 | ~~10m~~ |
-| ~~F25~~ | ~~`filter-empty` → `EmptyState` + `ActionAttrs` wiring the Clear button~~ done — A4 | ~~12m~~ |
-| ~~F26~~ | ~~`interviews-empty` → `EmptyState`~~ done — A4 | ~~5m~~ |
-| ~~F27~~ | ~~Delete orphaned helpers; rerun fragment tests~~ done — A4 | ~~10m~~ |
+| ~~F23~~ | ~~`emptyPanel` → `display.EmptyState` (or thin wrapper)~~ done — A4                                             | ~~12m~~ |
+| ~~F24~~ | ~~`dashboardEmptyState` → `EmptyState` with `TitleTag: "h2"` where section-level~~ done — A4                    | ~~10m~~ |
+| ~~F25~~ | ~~`filter-empty` → `EmptyState` + `ActionAttrs` wiring the Clear button~~ done — A4                             | ~~12m~~ |
+| ~~F26~~ | ~~`interviews-empty` → `EmptyState`~~ done — A4                                                                 | ~~5m~~  |
+| ~~F27~~ | ~~Delete orphaned helpers; rerun fragment tests~~ done — A4                                                     | ~~10m~~ |
 
 ### A5 — PolledRegion (4%)
 
-| ID  | Task                                                                 | Est |
-| --- | -------------------------------------------------------------------- | --- |
-| ~~F28~~ | ~~Read `PolledRegion` props + goldens; confirm markup compatibility~~ **Won't implement — A5 ruling.** | ~~10m~~ |
+| ID      | Task                                                                                                      | Est     |
+| ------- | --------------------------------------------------------------------------------------------------------- | ------- |
+| ~~F28~~ | ~~Read `PolledRegion` props + goldens; confirm markup compatibility~~ **Won't implement — A5 ruling.**    | ~~10m~~ |
 | ~~F29~~ | ~~Reimplement `HtmxCard` guts on PolledRegion (public shape unchanged)~~ **Won't implement — A5 ruling.** | ~~12m~~ |
-| ~~F30~~ | ~~Migrate the 6 call-site trigger strings (`load, every 30s` etc.)~~ **Won't implement — A5 ruling.** | ~~10m~~ |
-| ~~F31~~ | ~~Regenerate + update goldens; eyeball diff~~ **Won't implement — A5 ruling.** | ~~12m~~ |
-| ~~F32~~ | ~~Verify aria-live announcements + skeleton-placeholder behavior~~ **Won't implement — A5 ruling.** | ~~10m~~ |
+| ~~F30~~ | ~~Migrate the 6 call-site trigger strings (`load, every 30s` etc.)~~ **Won't implement — A5 ruling.**     | ~~10m~~ |
+| ~~F31~~ | ~~Regenerate + update goldens; eyeball diff~~ **Won't implement — A5 ruling.**                            | ~~12m~~ |
+| ~~F32~~ | ~~Verify aria-live announcements + skeleton-placeholder behavior~~ **Won't implement — A5 ruling.**       | ~~10m~~ |
 
 ### A6 — StatCard (4%)
 
-| ID  | Task                                                                           | Est |
-| --- | ------------------------------------------------------------------------------ | --- |
+| ID      | Task                                                                                         | Est     |
+| ------- | -------------------------------------------------------------------------------------------- | ------- |
 | ~~F33~~ | ~~Compare `StatCard` markup vs CV `statCard` (ValueID node placement, aria-live)~~ done — A6 | ~~12m~~ |
-| ~~F34~~ | ~~`statCard` → `StatCard` + `ValueID` + `Attrs{"aria-live":"polite"}`~~ done — A6 | ~~12m~~ |
-| ~~F35~~ | ~~`statCardLink` → `StatCard` `Href` variant~~ done — A6 | ~~10m~~ |
-| ~~F36~~ | ~~Verify SSE `setText("stat-…")` targets still hit the right node~~ done — A6 | ~~10m~~ |
+| ~~F34~~ | ~~`statCard` → `StatCard` + `ValueID` + `Attrs{"aria-live":"polite"}`~~ done — A6            | ~~12m~~ |
+| ~~F35~~ | ~~`statCardLink` → `StatCard` `Href` variant~~ done — A6                                     | ~~10m~~ |
+| ~~F36~~ | ~~Verify SSE `setText("stat-…")` targets still hit the right node~~ done — A6                | ~~10m~~ |
 
 ### A7 — Table (20%)
 
-| ID  | Task                                                                   | Est |
-| --- | ---------------------------------------------------------------------- | --- |
-| ~~F37~~ | ~~`deadPortalsBody` → `display.Table` headers + row DTOs~~ done — A7 | ~~12m~~ |
+| ID      | Task                                                                                 | Est     |
+| ------- | ------------------------------------------------------------------------------------ | ------- |
+| ~~F37~~ | ~~`deadPortalsBody` → `display.Table` headers + row DTOs~~ done — A7                 | ~~12m~~ |
 | ~~F38~~ | ~~Map scanner/reason cells (typed `TableHeader` vs `Body` slot decision)~~ done — A7 | ~~12m~~ |
-| ~~F39~~ | ~~Golden update + visual check inside `CollapsibleSection`~~ done — A7 | ~~10m~~ |
+| ~~F39~~ | ~~Golden update + visual check inside `CollapsibleSection`~~ done — A7               | ~~10m~~ |
 
 ### B1 — A.Team form (20%)
 
-| ID  | Task                                                                             | Est |
-| --- | -------------------------------------------------------------------------------- | --- |
-| ~~F40~~ | ~~Raw `<form>` → `forms.FormProps` (Action, CSRFToken, `Attrs` hx-*)~~ done — B1 | ~~12m~~ |
-| ~~F41~~ | ~~Delete hidden CSRF input; verify nosurf middleware integration~~ done — B1 | ~~10m~~ |
-| ~~F42~~ | ~~Submit button → `htmx.LoadingButton`; scratch-render byte-compare vs current~~ done — B1 | ~~12m~~ |
+| ID      | Task                                                                                           | Est     |
+| ------- | ---------------------------------------------------------------------------------------------- | ------- |
+| ~~F40~~ | ~~Raw `<form>` → `forms.FormProps` (Action, CSRFToken, `Attrs` hx-*)~~ done — B1               | ~~12m~~ |
+| ~~F41~~ | ~~Delete hidden CSRF input; verify nosurf middleware integration~~ done — B1                   | ~~10m~~ |
+| ~~F42~~ | ~~Submit button → `htmx.LoadingButton`; scratch-render byte-compare vs current~~ done — B1     | ~~12m~~ |
 | ~~F43~~ | ~~Progress bar → `feedback.ProgressBar`; repoint JS to consumer-set `BaseProps.ID`~~ done — B1 | ~~12m~~ |
-| ~~F44~~ | ~~Reset/Validate buttons → `display.Button`~~ done — B1 | ~~10m~~ |
-| ~~F45~~ | ~~Hand-rolled `notes` textarea → `forms.Textarea`~~ done — B1 | ~~10m~~ |
-| ~~F46~~ | ~~Evaluate `forms.TagsInput` for keySkills vs comma free-text (MaxTags)~~ done — B1 | ~~12m~~ |
+| ~~F44~~ | ~~Reset/Validate buttons → `display.Button`~~ done — B1                                        | ~~10m~~ |
+| ~~F45~~ | ~~Hand-rolled `notes` textarea → `forms.Textarea`~~ done — B1                                  | ~~10m~~ |
+| ~~F46~~ | ~~Evaluate `forms.TagsInput` for keySkills vs comma free-text (MaxTags)~~ done — B1            | ~~12m~~ |
 
 ### B2 — Coaching page (20%)
 
-| ID  | Task                                                                          | Est |
-| --- | ----------------------------------------------------------------------------- | --- |
-| ~~F47~~ | ~~Raw inputs/textareas → `forms.Input`/`forms.Textarea` (preserve IDs for JS)~~ done — B2 | ~~10m~~ |
+| ID      | Task                                                                                        | Est     |
+| ------- | ------------------------------------------------------------------------------------------- | ------- |
+| ~~F47~~ | ~~Raw inputs/textareas → `forms.Input`/`forms.Textarea` (preserve IDs for JS)~~ done — B2   | ~~10m~~ |
 | ~~F48~~ | ~~Run buttons → `display.Button` (keep `data-endpoint`/`data-fields` via Attrs)~~ done — B2 | ~~10m~~ |
-| ~~F49~~ | ~~"503 disabled" chip → `display.Badge`~~ done — B2 | ~~5m~~ |
-| ~~F50~~ | ~~Amber notices → `feedback.Alert` (warning)~~ done — B2 | ~~10m~~ |
-| ~~F51~~ | ~~Status/result `<pre>` stays (unique); a11y pass on labels/live regions~~ done — B2 | ~~10m~~ |
+| ~~F49~~ | ~~"503 disabled" chip → `display.Badge`~~ done — B2                                         | ~~5m~~  |
+| ~~F50~~ | ~~Amber notices → `feedback.Alert` (warning)~~ done — B2                                    | ~~10m~~ |
+| ~~F51~~ | ~~Status/result `<pre>` stays (unique); a11y pass on labels/live regions~~ done — B2        | ~~10m~~ |
 
 ### B3 — ATS buttons (20%)
 
-| ID  | Task                                                                           | Est |
-| --- | ------------------------------------------------------------------------------ | --- |
-| ~~F52~~ | ~~`RefreshButton` → `display.Button` + hx-Attrs + indicator slot~~ **Won't implement — B3 ruling.** | ~~12m~~ |
-| ~~F53~~ | ~~`NewAnalysis` → `display.Button` + `wire.Action`~~ **Won't implement — B3 ruling.** | ~~10m~~ |
+| ID      | Task                                                                                                                | Est     |
+| ------- | ------------------------------------------------------------------------------------------------------------------- | ------- |
+| ~~F52~~ | ~~`RefreshButton` → `display.Button` + hx-Attrs + indicator slot~~ **Won't implement — B3 ruling.**                 | ~~12m~~ |
+| ~~F53~~ | ~~`NewAnalysis` → `display.Button` + `wire.Action`~~ **Won't implement — B3 ruling.**                               | ~~10m~~ |
 | ~~F54~~ | ~~`SearchFilter` → `forms.Input` (`InputSearch`) + Attrs + icon via `InputGroup`~~ **Won't implement — B3 ruling.** | ~~12m~~ |
 
 ### B4 — RelativeTime (20%)
 
-| ID  | Task                                                               | Est |
-| --- | ------------------------------------------------------------------ | --- |
-| ~~F55~~ | ~~Pipeline `stat-updated` → `RelativeTime{AutoRefresh:true, Nonce}`~~ done — B4 | ~~12m~~ |
+| ID      | Task                                                                             | Est     |
+| ------- | -------------------------------------------------------------------------------- | ------- |
+| ~~F55~~ | ~~Pipeline `stat-updated` → `RelativeTime{AutoRefresh:true, Nonce}`~~ done — B4  | ~~12m~~ |
 | ~~F56~~ | ~~Dead-portal first/last-seen strings → server-parsed `RelativeTime`~~ done — B4 | ~~12m~~ |
-| ~~F57~~ | ~~Fix stale comment `recent_events_fragment.templ:38`~~ done — B4 | ~~5m~~ |
-| ~~F58~~ | ~~`recentEventsFragment.relativeTime` → enable AutoRefresh + nonce~~ done — B4 | ~~10m~~ |
+| ~~F57~~ | ~~Fix stale comment `recent_events_fragment.templ:38`~~ done — B4                | ~~5m~~  |
+| ~~F58~~ | ~~`recentEventsFragment.relativeTime` → enable AutoRefresh + nonce~~ done — B4   | ~~10m~~ |
 
 ### B5 — Modal (20%)
 
-| ID  | Task                                                                  | Est |
-| --- | --------------------------------------------------------------------- | --- |
+| ID      | Task                                                                                                       | Est     |
+| ------- | ---------------------------------------------------------------------------------------------------------- | ------- |
 | ~~F59~~ | ~~ATS modal shell → `display.Modal{Open:false}` + inner HTMX target div~~ **Won't implement — B5 ruling.** | ~~12m~~ |
-| ~~F60~~ | ~~`data-dismiss-modal` → `tcCloseOverlay` + native backdrop/Escape~~ **Won't implement — B5 ruling.** | ~~12m~~ |
-| ~~F61~~ | ~~Verify focus trap + Escape restore (visualtest pattern or manual)~~ **Won't implement — B5 ruling.** | ~~12m~~ |
+| ~~F60~~ | ~~`data-dismiss-modal` → `tcCloseOverlay` + native backdrop/Escape~~ **Won't implement — B5 ruling.**      | ~~12m~~ |
+| ~~F61~~ | ~~Verify focus trap + Escape restore (visualtest pattern or manual)~~ **Won't implement — B5 ruling.**     | ~~12m~~ |
 
 ### C1 — layout.SEOMeta upstream (20%)
 
-| ID  | Task                                                                                                                                 | Est |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------ | --- |
+| ID      | Task                                                                                                                                               | Est     |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | ~~F62~~ | ~~Implement `type SEOMeta struct{NoIndex bool; Canonical string; Alternates []Alternate; JSONLD string}` as named field on `PageProps`~~ done — C1 | ~~12m~~ |
-| ~~F63~~ | ~~Render NoIndex + Canonical link in `layout.Base` head (empty = omitted)~~ done — C1 | ~~12m~~ |
-| ~~F64~~ | ~~`Alternate{Lang, URL}` + hreflang loop; absolute-URL validation note~~ done — C1 | ~~10m~~ |
-| ~~F65~~ | ~~JSONLD via `templ.Raw` with documented trust contract~~ done — C1 | ~~10m~~ |
-| ~~F66~~ | ~~Unit + golden + a11y tests; contract-inventory registration if required~~ done — C1 | ~~12m~~ |
-| ~~F67~~ | ~~CHANGELOG `[Unreleased]` + FEATURES.md updates (warm, same commit)~~ done — C1 | ~~10m~~ |
-| ~~F68~~ | ~~`nix run .#verify` green~~ done — C1 | ~~12m~~ |
-| ~~F69~~ | ~~Update skill catalogue (`skill/SKILL.md`) + docs recipe cross-link~~ done — C1 | ~~10m~~ |
+| ~~F63~~ | ~~Render NoIndex + Canonical link in `layout.Base` head (empty = omitted)~~ done — C1                                                              | ~~12m~~ |
+| ~~F64~~ | ~~`Alternate{Lang, URL}` + hreflang loop; absolute-URL validation note~~ done — C1                                                                 | ~~10m~~ |
+| ~~F65~~ | ~~JSONLD via `templ.Raw` with documented trust contract~~ done — C1                                                                                | ~~10m~~ |
+| ~~F66~~ | ~~Unit + golden + a11y tests; contract-inventory registration if required~~ done — C1                                                              | ~~12m~~ |
+| ~~F67~~ | ~~CHANGELOG `[Unreleased]` + FEATURES.md updates (warm, same commit)~~ done — C1                                                                   | ~~10m~~ |
+| ~~F68~~ | ~~`nix run .#verify` green~~ done — C1                                                                                                             | ~~12m~~ |
+| ~~F69~~ | ~~Update skill catalogue (`skill/SKILL.md`) + docs recipe cross-link~~ done — C1                                                                   | ~~10m~~ |
 
 ### C2 — CollapsibleSection persistence (100%)
 
-| ID  | Task                                                                    | Est |
-| --- | ----------------------------------------------------------------------- | --- |
-| ~~F70~~ | ~~Design nonce'd persistence singleton (ThemeScript pattern, idempotent)~~ done — C2 | ~~12m~~ |
+| ID      | Task                                                                                  | Est     |
+| ------- | ------------------------------------------------------------------------------------- | ------- |
+| ~~F70~~ | ~~Design nonce'd persistence singleton (ThemeScript pattern, idempotent)~~ done — C2  | ~~12m~~ |
 | ~~F71~~ | ~~Implement opt-in flag; keep `data-collapsible` consumer contract intact~~ done — C2 | ~~12m~~ |
-| ~~F72~~ | ~~Tests: HTMX-swap idempotence + nonce asserted (integration CSP test)~~ done — C2 | ~~12m~~ |
-| ~~F73~~ | ~~Golden + CHANGELOG `[Unreleased]`~~ done — C2 | ~~10m~~ |
+| ~~F72~~ | ~~Tests: HTMX-swap idempotence + nonce asserted (integration CSP test)~~ done — C2    | ~~12m~~ |
+| ~~F73~~ | ~~Golden + CHANGELOG `[Unreleased]`~~ done — C2                                       | ~~10m~~ |
 
 ### C3 — SSE recipe (100%)
 
-| ID  | Task                                                                          | Est |
-| --- | ----------------------------------------------------------------------------- | --- |
+| ID      | Task                                                                                        | Est     |
+| ------- | ------------------------------------------------------------------------------------------- | ------- |
 | ~~F74~~ | ~~Extract CV pipeline pattern: event→target map, JSON scalars, reconnect banner~~ done — C3 | ~~12m~~ |
-| ~~F75~~ | ~~Write `docs/recipes/sse-fragments.md`~~ done — C3 | ~~12m~~ |
-| ~~F76~~ | ~~Cross-link from htmx/datastar + `docs/transport-wiring.md`~~ done — C3 | ~~10m~~ |
+| ~~F75~~ | ~~Write `docs/recipes/sse-fragments.md`~~ done — C3                                         | ~~12m~~ |
+| ~~F76~~ | ~~Cross-link from htmx/datastar + `docs/transport-wiring.md`~~ done — C3                    | ~~10m~~ |
 
 ### C4 — Generic icon renderer (100%)
 
-| ID  | Task                                                                             | Est |
-| --- | -------------------------------------------------------------------------------- | --- |
+| ID      | Task                                                                                           | Est     |
+| ------- | ---------------------------------------------------------------------------------------------- | ------- |
 | ~~F77~~ | ~~API: `Render(viewBox string, paths []string, class, fill string)` (+ title/aria)~~ done — C4 | ~~12m~~ |
-| ~~F78~~ | ~~Implement next to `IconPathData`/`IconPathJS`; reuse `iconPaths()` validation~~ done — C4 | ~~10m~~ |
-| ~~F79~~ | ~~Tests + golden; document consumer icon-set extension in recipe/README~~ done — C4 | ~~12m~~ |
+| ~~F78~~ | ~~Implement next to `IconPathData`/`IconPathJS`; reuse `iconPaths()` validation~~ done — C4    | ~~10m~~ |
+| ~~F79~~ | ~~Tests + golden; document consumer icon-set extension in recipe/README~~ done — C4            | ~~12m~~ |
 
 ### C5 — HTMX modal recipe (100%)
 
-| ID  | Task                                                                          | Est |
-| --- | ----------------------------------------------------------------------------- | --- |
+| ID      | Task                                                                                        | Est     |
+| ------- | ------------------------------------------------------------------------------------------- | ------- |
 | ~~F80~~ | ~~Write `docs/recipes/htmx-modal.md` (shell + swap target + open/close helpers)~~ done — C5 | ~~12m~~ |
-| ~~F81~~ | ~~Verify recipe against Modal golden/integration tests~~ done — C5 | ~~10m~~ |
+| ~~F81~~ | ~~Verify recipe against Modal golden/integration tests~~ done — C5                          | ~~10m~~ |
 
 ### C6 — Print/PDF recipe (100%)
 
-| ID  | Task                                                                    | Est |
-| --- | ----------------------------------------------------------------------- | --- |
+| ID      | Task                                                                                  | Est     |
+| ------- | ------------------------------------------------------------------------------------- | ------- |
 | ~~F82~~ | ~~Harvest CV print patterns (`break-inside-avoid`, `print:`, A4 geometry)~~ done — C6 | ~~12m~~ |
-| ~~F83~~ | ~~Write `docs/recipes/print-pdf.md`; link `layout.Minimal`~~ done — C6 | ~~12m~~ |
+| ~~F83~~ | ~~Write `docs/recipes/print-pdf.md`; link `layout.Minimal`~~ done — C6                | ~~12m~~ |
 
 ### D1 — RTL sweep (100%)
 
@@ -267,28 +267,28 @@ Why 51%: these are the only items where current behavior is _wrong_ (double erro
 
 ### D2 — CV docs & deps (100%)
 
-| ID  | Task                                                            | Est |
-| --- | --------------------------------------------------------------- | --- |
-| F86 | Add adoption table (adopted/custom/gap) to CV `AGENTS.md`       | 12m |
-| F87 | datastar indirect dep: tidy + verify removal or document keeper | 10m |
+| ID      | Task                                                                       | Est    |
+| ------- | -------------------------------------------------------------------------- | ------ |
+| F86     | Add adoption table (adopted/custom/gap) to CV `AGENTS.md`                  | 12m    |
+| F87     | datastar indirect dep: tidy + verify removal or document keeper            | 10m    |
 | ~~F88~~ | ~~`landing.templ` share.js → `layout.Script(nonce, …)`~~ done — D2 sharejs | ~~5m~~ |
 
 ### D3 — PageHeader collision (100%)
 
-| ID  | Task                                                                                                     | Est |
-| --- | -------------------------------------------------------------------------------------------------------- | --- |
+| ID      | Task                                                                                                                   | Est     |
+| ------- | ---------------------------------------------------------------------------------------------------------------------- | ------- |
 | ~~F89~~ | ~~Rename `common.PageHeader` → `DashboardHero` (or converge on `display.PageHeader`); update 4+ call sites~~ done — D3 | ~~12m~~ |
 
 ### D4 — CV context reads (100%)
 
-| ID  | Task                                                                   | Est |
-| --- | ---------------------------------------------------------------------- | --- |
+| ID      | Task                                                                                 | Est     |
+| ------- | ------------------------------------------------------------------------------------ | ------- |
 | ~~F90~~ | ~~Read CV `AGENTS.md`, `README.md`, `TODO_LIST.md`; annotate plan deltas~~ done — D4 | ~~12m~~ |
 
 ### D5 — AGENTS.md drift (100%)
 
-| ID  | Task                                                                                                                | Est |
-| --- | ------------------------------------------------------------------------------------------------------------------- | --- |
+| ID      | Task                                                                                                                                       | Est     |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------- |
 | ~~F91~~ | ~~Resolve "v2.0" vs `Version=1.14.0` in templ-components AGENTS.md (annotate inline, docs-health ANNOTATE discipline)~~ done — D5 annotate | ~~12m~~ |
 
 ### D6 — Session debt reads (100%)
@@ -301,18 +301,18 @@ Why 51%: these are the only items where current behavior is _wrong_ (double erro
 
 ### D7 — HARVEST & pre-flight (100%)
 
-| ID  | Task                                                                      | Est |
-| --- | ------------------------------------------------------------------------- | --- |
+| ID      | Task                                                                                    | Est     |
+| ------- | --------------------------------------------------------------------------------------- | ------- |
 | ~~F95~~ | ~~docs-health HARVEST: route tiers into CV + TC `TODO_LIST.md`/`ROADMAP.md`~~ done — D7 | ~~12m~~ |
 | ~~F96~~ | ~~Overlap check TODO_LIST/FEATURES before any C-task; register planned work~~ done — D7 | ~~10m~~ |
 
 ### D8 — Baselines (100%)
 
-| ID  | Task                                                                                                                                  | Est |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------- | --- |
-| ~~F97~~ | ~~CV `templ generate` + `go build` + full test run; record baseline~~ done — D7 | ~~12m~~ |
-| ~~F98~~ | ~~CV CI status on master; note red/green in plan file~~ done — D7 | ~~5m~~ |
-| F99 | Chat page chips/`Thinking…`: evaluate `display.Button`/`InlineLoading` fit under the JS-template constraint (`chat_page.templ:56-59`) | 12m |
+| ID      | Task                                                                                                                                  | Est     |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| ~~F97~~ | ~~CV `templ generate` + `go build` + full test run; record baseline~~ done — D7                                                       | ~~12m~~ |
+| ~~F98~~ | ~~CV CI status on master; note red/green in plan file~~ done — D7                                                                     | ~~5m~~  |
+| F99     | Chat page chips/`Thinking…`: evaluate `display.Button`/`InlineLoading` fit under the JS-template constraint (`chat_page.templ:56-59`) | 12m     |
 
 **Totals:** 99 fine tasks, ≈ 16.3 h (excludes medium-level review/PR overhead covered in Step-2 estimates).
 

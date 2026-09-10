@@ -177,48 +177,48 @@ The only "fucked up" thing is the templ version mismatch causing unnecessary reg
 
 ### Critical (Block v0.3.0 Release)
 
-| # | Task                                             | Effort | Impact                                            |
-| - | ------------------------------------------------ | ------ | ------------------------------------------------- |
-| ~~1~~ | ~~Verify `go get` works from a clean project~~ done at `19b7fe2` | ~~1h~~ | ~~🔴 Critical — if this doesn't work, v0.3.0 is DOA~~ |
-| ~~2~~ | ~~Fix templ version mismatch (go.mod vs installed)~~ done at `19b7fe2` | ~~5min~~ | ~~🔴 Eliminates noise in every commit~~ |
-| ~~3~~ | ~~Tag v0.3.0 release~~ done at `19b7fe2` | ~~5min~~ | ~~🔴 Library is unversioned~~ |
-| ~~4~~ | ~~Write CHANGELOG.md for v0.1 → v0.2 → v0.3~~ done at `19b7fe2` | ~~2h~~ | ~~🔴 Consumers need migration guide~~ |
+| #     | Task                                                                   | Effort   | Impact                                                |
+| ----- | ---------------------------------------------------------------------- | -------- | ----------------------------------------------------- |
+| ~~1~~ | ~~Verify `go get` works from a clean project~~ done at `19b7fe2`       | ~~1h~~   | ~~🔴 Critical — if this doesn't work, v0.3.0 is DOA~~ |
+| ~~2~~ | ~~Fix templ version mismatch (go.mod vs installed)~~ done at `19b7fe2` | ~~5min~~ | ~~🔴 Eliminates noise in every commit~~               |
+| ~~3~~ | ~~Tag v0.3.0 release~~ done at `19b7fe2`                               | ~~5min~~ | ~~🔴 Library is unversioned~~                         |
+| ~~4~~ | ~~Write CHANGELOG.md for v0.1 → v0.2 → v0.3~~ done at `19b7fe2`        | ~~2h~~   | ~~🔴 Consumers need migration guide~~                 |
 
 ### High Priority
 
-| #  | Task                                                       | Effort | Impact                                      |
-| -- | ---------------------------------------------------------- | ------ | ------------------------------------------- |
-| ~~5~~  | ~~Nonce propagation audit across all components~~ done at `19b7fe2` | ~~1h~~ | ~~🟡 Security correctness~~ |
-| ~~6~~  | ~~JS consolidation: shared init pattern for 13 script blocks~~ done at `19b7fe2` | ~~4h~~ | ~~🟡 Reduces attack surface, easier CSP audit~~ |
-| ~~7~~  | ~~Coverage: push all packages to 75%+~~ done at `19b7fe2` | ~~3h~~ | ~~🟡 Quality gate~~ |
-| ~~8~~  | ~~Coverage: `writeJSONError` + `htmlEscape` in errorpage~~ done at `19b7fe2` | ~~30min~~ | ~~🟡 Currently 50-58%~~ |
-| ~~9~~  | ~~Coverage: `validateSwapStyle` in htmx~~ done at `19b7fe2` | ~~15min~~ | ~~🟡 Currently 50%~~ |
-| ~~10~~ | ~~Coverage: `Assert` golden test framework~~ done at `19b7fe2` | ~~30min~~ | ~~🟡 Currently 53%~~ |
+| #      | Task                                                                             | Effort    | Impact                                          |
+| ------ | -------------------------------------------------------------------------------- | --------- | ----------------------------------------------- |
+| ~~5~~  | ~~Nonce propagation audit across all components~~ done at `19b7fe2`              | ~~1h~~    | ~~🟡 Security correctness~~                     |
+| ~~6~~  | ~~JS consolidation: shared init pattern for 13 script blocks~~ done at `19b7fe2` | ~~4h~~    | ~~🟡 Reduces attack surface, easier CSP audit~~ |
+| ~~7~~  | ~~Coverage: push all packages to 75%+~~ done at `19b7fe2`                        | ~~3h~~    | ~~🟡 Quality gate~~                             |
+| ~~8~~  | ~~Coverage: `writeJSONError` + `htmlEscape` in errorpage~~ done at `19b7fe2`     | ~~30min~~ | ~~🟡 Currently 50-58%~~                         |
+| ~~9~~  | ~~Coverage: `validateSwapStyle` in htmx~~ done at `19b7fe2`                      | ~~15min~~ | ~~🟡 Currently 50%~~                            |
+| ~~10~~ | ~~Coverage: `Assert` golden test framework~~ done at `19b7fe2`                   | ~~30min~~ | ~~🟡 Currently 53%~~                            |
 
 ### Medium Priority
 
-| #  | Task                                                    | Effort | Impact                              |
-| -- | ------------------------------------------------------- | ------ | ----------------------------------- |
-| ~~11~~ | ~~Add SimpleNav BaseProps conversion (breaking)~~ done at `19b7fe2` | ~~1h~~ | ~~🟠 API consistency~~ |
-| ~~12~~ | ~~Add Pagination uint fields (breaking)~~ done — navigation/pagination.templ uint | ~~30min~~ | ~~🟠 Type safety~~ |
-| ~~13~~ | ~~Golden test expansion to display, errorpage, navigation~~ done — display/golden sweep test.go | ~~3h~~ | ~~🟠 Visual regression safety~~ |
-| ~~14~~ | ~~Automated accessibility testing (axe-core/pa11y)~~ done — visualtest/axe.min.js | ~~4h~~ | ~~🟠 Compliance~~ |
-| ~~15~~ | ~~Benchmark tests for all packages~~ done — forms/benchmark test.go | ~~2h~~ | ~~🟠 Performance regression detection~~ |
+| #      | Task                                                                                            | Effort    | Impact                                  |
+| ------ | ----------------------------------------------------------------------------------------------- | --------- | --------------------------------------- |
+| ~~11~~ | ~~Add SimpleNav BaseProps conversion (breaking)~~ done at `19b7fe2`                             | ~~1h~~    | ~~🟠 API consistency~~                  |
+| ~~12~~ | ~~Add Pagination uint fields (breaking)~~ done — navigation/pagination.templ uint               | ~~30min~~ | ~~🟠 Type safety~~                      |
+| ~~13~~ | ~~Golden test expansion to display, errorpage, navigation~~ done — display/golden sweep test.go | ~~3h~~    | ~~🟠 Visual regression safety~~         |
+| ~~14~~ | ~~Automated accessibility testing (axe-core/pa11y)~~ done — visualtest/axe.min.js               | ~~4h~~    | ~~🟠 Compliance~~                       |
+| ~~15~~ | ~~Benchmark tests for all packages~~ done — forms/benchmark test.go                             | ~~2h~~    | ~~🟠 Performance regression detection~~ |
 
 ### Nice to Have
 
-| #  | Task                                                    | Effort | Impact                 |
-| -- | ------------------------------------------------------- | ------ | ---------------------- |
-| ~~16~~ | ~~Add getting-started guide (docs/)~~ done — website/ | ~~2h~~ | ~~🟢 Consumer adoption~~ |
-| ~~17~~ | ~~Add theming guide (docs/)~~ done — docs/theming.md | ~~1h~~ | ~~🟢 Consumer enablement~~ |
-| ~~18~~ | ~~Add HTMX integration guide (docs/)~~ done — docs/tailwind-v4-adoption-guide.md | ~~1h~~ | ~~🟢 Consumer enablement~~ |
-| ~~19~~ | ~~Refresh examples/demo with all 69 components~~ done — examples/demo | ~~2h~~ | ~~🟢 Discoverability~~ |
-| ~~20~~ | ~~Add errorpage handler integration example~~ done — errorpage/example test.go | ~~1h~~ | ~~🟢 Real-world usage~~ |
-| ~~21~~ | ~~Cross-browser E2E testing~~ done — visualtest/ | ~~4h~~ | ~~🟢 Quality assurance~~ |
-| ~~22~~ | ~~Move test helpers to internal/testutil/ (v1.0 breaking)~~ **Won't implement — deferred TODO 34 post-v1.0.** | ~~2h~~ | ~~🟢 API hygiene~~ |
-| ~~23~~ | ~~Add contributing guide (CONTRIBUTING.md)~~ done — CONTRIBUTING.md | ~~1h~~ | ~~🟢 Community readiness~~ |
-| ~~24~~ | ~~Add BaseProps to StepIndicatorProps (breaking)~~ done — feedback/step indicator.templ BaseProps | ~~30min~~ | ~~🟢 API consistency~~ |
-| ~~25~~ | ~~Add FillIcon rotation test (currently untested path)~~ done — icons/snapshot test.go TestIconRTL | ~~15min~~ | ~~🟢 Coverage gap~~ |
+| #      | Task                                                                                                          | Effort    | Impact                     |
+| ------ | ------------------------------------------------------------------------------------------------------------- | --------- | -------------------------- |
+| ~~16~~ | ~~Add getting-started guide (docs/)~~ done — website/                                                         | ~~2h~~    | ~~🟢 Consumer adoption~~   |
+| ~~17~~ | ~~Add theming guide (docs/)~~ done — docs/theming.md                                                          | ~~1h~~    | ~~🟢 Consumer enablement~~ |
+| ~~18~~ | ~~Add HTMX integration guide (docs/)~~ done — docs/tailwind-v4-adoption-guide.md                              | ~~1h~~    | ~~🟢 Consumer enablement~~ |
+| ~~19~~ | ~~Refresh examples/demo with all 69 components~~ done — examples/demo                                         | ~~2h~~    | ~~🟢 Discoverability~~     |
+| ~~20~~ | ~~Add errorpage handler integration example~~ done — errorpage/example test.go                                | ~~1h~~    | ~~🟢 Real-world usage~~    |
+| ~~21~~ | ~~Cross-browser E2E testing~~ done — visualtest/                                                              | ~~4h~~    | ~~🟢 Quality assurance~~   |
+| ~~22~~ | ~~Move test helpers to internal/testutil/ (v1.0 breaking)~~ **Won't implement — deferred TODO 34 post-v1.0.** | ~~2h~~    | ~~🟢 API hygiene~~         |
+| ~~23~~ | ~~Add contributing guide (CONTRIBUTING.md)~~ done — CONTRIBUTING.md                                           | ~~1h~~    | ~~🟢 Community readiness~~ |
+| ~~24~~ | ~~Add BaseProps to StepIndicatorProps (breaking)~~ done — feedback/step indicator.templ BaseProps             | ~~30min~~ | ~~🟢 API consistency~~     |
+| ~~25~~ | ~~Add FillIcon rotation test (currently untested path)~~ done — icons/snapshot test.go TestIconRTL            | ~~15min~~ | ~~🟢 Coverage gap~~        |
 
 ---
 

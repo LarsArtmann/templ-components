@@ -167,33 +167,33 @@
 
 ## f) Top 25 Things to Get Done Next
 
-| #  | Priority | Task                                                                    | Effort | Impact                            |
-| -- | -------- | ----------------------------------------------------------------------- | ------ | --------------------------------- |
-| ~~1~~  | ~~**P0**~~ done — display/coverage extra test.go | ~~Fix the failing formatRelativeTime boundary test (wrong expectation)~~ | ~~2 min~~ | ~~Critical — test suite is RED~~ |
-| ~~2~~  | ~~**P0**~~ **Won't implement — resolved by branch abandonment.** | ~~Investigate & fix branch-switching instability (BuildFlow/watcher)~~ | ~~30 min~~ | ~~Critical — prevents reliable work~~ |
-| ~~3~~  | ~~**P1**~~ done — display/enums test.go | ~~Add remaining IsValid() methods (AvatarSize, BadgeType, GridCols, etc.)~~ | ~~20 min~~ | ~~High~~ |
-| ~~4~~  | ~~**P1**~~ done — display/shared.go | ~~OverlayKind typed enum for closeKind/componentName~~ | ~~15 min~~ | ~~High~~ |
-| ~~5~~  | ~~**P1**~~ done — display/copy button.templ | ~~CopyButton execCommand('copy') fallback~~ | ~~10 min~~ | ~~Medium~~ |
-| ~~6~~  | ~~**P1**~~ done — display/copy button.templ | ~~CopyButton aria-live="polite" for "Copied!"~~ | ~~5 min~~ | ~~Medium~~ |
-| ~~7~~  | ~~**P2**~~ done — integration/composition test.go | ~~Integration tests: CopyButton+Card, CountBadge+Button~~ | ~~12 min~~ | ~~Medium~~ |
-| ~~8~~  | ~~**P2**~~ done — integration/composition test.go | ~~Integration tests: DefinitionGrid+Grid, Image+fallback~~ | ~~10 min~~ | ~~Medium~~ |
-| ~~9~~  | ~~**P2**~~ done — display/testdata | ~~Golden test: StatCard HTMX hx-get variant~~ | ~~10 min~~ | ~~Low~~ |
-| ~~10~~ | ~~**P2**~~ done — display/testdata | ~~Golden test: Card.Body slot variant~~ | ~~10 min~~ | ~~Low~~ |
-| ~~11~~ | ~~**P2**~~ done — display/image.templ | ~~Document Image srcset limitation in godoc~~ | ~~5 min~~ | ~~Low~~ |
-| ~~12~~ | ~~**P2**~~ done — display/benchmark test.go | ~~Benchmark tests for CopyButton, CountBadge, Image, LoadMore~~ | ~~15 min~~ | ~~Low~~ |
-| ~~13~~ | ~~**P2**~~ done — FEATURES.md | ~~Remove stale Tooltip known issue from FEATURES.md (already fixed)~~ | ~~2 min~~ | ~~Low~~ |
-| ~~14~~ | ~~**P3**~~ done — skill/SKILL.md | ~~SKILL.md Part 2: document CopyButton/Image/CountBadge patterns~~ | ~~20 min~~ | ~~Medium~~ |
-| ~~15~~ | ~~**P3**~~ done — examples/demo/demo.templ | ~~Demo: anchor-linked table of contents~~ | ~~15 min~~ | ~~Medium~~ |
-| ~~16~~ | ~~**P3**~~ done — examples/demo/forms demo.templ | ~~Demo: standalone /forms quickstart route~~ | ~~30 min~~ | ~~Medium~~ |
-| ~~17~~ | ~~**P3**~~ done — examples/demo/navigation demo.templ | ~~Add runnable cursor pagination example to demo~~ | ~~20 min~~ | ~~Low~~ |
-| ~~18~~ | ~~**P3**~~ done — CHANGELOG.md | ~~Tag v0.7.0 release (many improvements since v0.6.1)~~ | ~~15 min~~ | ~~High~~ |
-| ~~19~~ | ~~**P3**~~ done — display/table.templ | ~~Sortable data table (consumer-requested feature)~~ | ~~2-4h~~ | ~~High~~ |
-| ~~20~~ | ~~**P3**~~ done — forms/filter dropdown.templ | ~~Filter dropdown component (consumer-requested)~~ | ~~1-2h~~ | ~~Medium~~ |
-| ~~21~~ | ~~**P4**~~ done — cmd/tc/main.go | ~~CLI tool: `templ-components add <component>` (shadcn-style)~~ | ~~4-8h~~ | ~~High~~ |
-| ~~22~~ | ~~**P4**~~ done — visualtest/demo.go | ~~Demo/showcase site (live rendered components)~~ | ~~4-8h~~ | ~~Critical for adoption~~ |
-| 23 | **P4**   | Form validation pipeline: `forms.Validate(input, rules)`                | 4-8h   | High                              |
-| ~~24~~ | ~~**P4**~~ **Won't implement — deferred adr 0021.** | ~~Headless/unstyled component variants~~ | ~~8-16h~~ | ~~Medium~~ |
-| ~~25~~ | ~~**P4**~~ done — recipes/dashboard.templ | ~~Real-world example app (CRUD admin panel with auth)~~ | ~~16-40h~~ | ~~Critical for ecosystem~~ |
+| #      | Priority                                                         | Task                                                                        | Effort     | Impact                                |
+| ------ | ---------------------------------------------------------------- | --------------------------------------------------------------------------- | ---------- | ------------------------------------- |
+| ~~1~~  | ~~**P0**~~ done — display/coverage extra test.go                 | ~~Fix the failing formatRelativeTime boundary test (wrong expectation)~~    | ~~2 min~~  | ~~Critical — test suite is RED~~      |
+| ~~2~~  | ~~**P0**~~ **Won't implement — resolved by branch abandonment.** | ~~Investigate & fix branch-switching instability (BuildFlow/watcher)~~      | ~~30 min~~ | ~~Critical — prevents reliable work~~ |
+| ~~3~~  | ~~**P1**~~ done — display/enums test.go                          | ~~Add remaining IsValid() methods (AvatarSize, BadgeType, GridCols, etc.)~~ | ~~20 min~~ | ~~High~~                              |
+| ~~4~~  | ~~**P1**~~ done — display/shared.go                              | ~~OverlayKind typed enum for closeKind/componentName~~                      | ~~15 min~~ | ~~High~~                              |
+| ~~5~~  | ~~**P1**~~ done — display/copy button.templ                      | ~~CopyButton execCommand('copy') fallback~~                                 | ~~10 min~~ | ~~Medium~~                            |
+| ~~6~~  | ~~**P1**~~ done — display/copy button.templ                      | ~~CopyButton aria-live="polite" for "Copied!"~~                             | ~~5 min~~  | ~~Medium~~                            |
+| ~~7~~  | ~~**P2**~~ done — integration/composition test.go                | ~~Integration tests: CopyButton+Card, CountBadge+Button~~                   | ~~12 min~~ | ~~Medium~~                            |
+| ~~8~~  | ~~**P2**~~ done — integration/composition test.go                | ~~Integration tests: DefinitionGrid+Grid, Image+fallback~~                  | ~~10 min~~ | ~~Medium~~                            |
+| ~~9~~  | ~~**P2**~~ done — display/testdata                               | ~~Golden test: StatCard HTMX hx-get variant~~                               | ~~10 min~~ | ~~Low~~                               |
+| ~~10~~ | ~~**P2**~~ done — display/testdata                               | ~~Golden test: Card.Body slot variant~~                                     | ~~10 min~~ | ~~Low~~                               |
+| ~~11~~ | ~~**P2**~~ done — display/image.templ                            | ~~Document Image srcset limitation in godoc~~                               | ~~5 min~~  | ~~Low~~                               |
+| ~~12~~ | ~~**P2**~~ done — display/benchmark test.go                      | ~~Benchmark tests for CopyButton, CountBadge, Image, LoadMore~~             | ~~15 min~~ | ~~Low~~                               |
+| ~~13~~ | ~~**P2**~~ done — FEATURES.md                                    | ~~Remove stale Tooltip known issue from FEATURES.md (already fixed)~~       | ~~2 min~~  | ~~Low~~                               |
+| ~~14~~ | ~~**P3**~~ done — skill/SKILL.md                                 | ~~SKILL.md Part 2: document CopyButton/Image/CountBadge patterns~~          | ~~20 min~~ | ~~Medium~~                            |
+| ~~15~~ | ~~**P3**~~ done — examples/demo/demo.templ                       | ~~Demo: anchor-linked table of contents~~                                   | ~~15 min~~ | ~~Medium~~                            |
+| ~~16~~ | ~~**P3**~~ done — examples/demo/forms demo.templ                 | ~~Demo: standalone /forms quickstart route~~                                | ~~30 min~~ | ~~Medium~~                            |
+| ~~17~~ | ~~**P3**~~ done — examples/demo/navigation demo.templ            | ~~Add runnable cursor pagination example to demo~~                          | ~~20 min~~ | ~~Low~~                               |
+| ~~18~~ | ~~**P3**~~ done — CHANGELOG.md                                   | ~~Tag v0.7.0 release (many improvements since v0.6.1)~~                     | ~~15 min~~ | ~~High~~                              |
+| ~~19~~ | ~~**P3**~~ done — display/table.templ                            | ~~Sortable data table (consumer-requested feature)~~                        | ~~2-4h~~   | ~~High~~                              |
+| ~~20~~ | ~~**P3**~~ done — forms/filter dropdown.templ                    | ~~Filter dropdown component (consumer-requested)~~                          | ~~1-2h~~   | ~~Medium~~                            |
+| ~~21~~ | ~~**P4**~~ done — cmd/tc/main.go                                 | ~~CLI tool: `templ-components add <component>` (shadcn-style)~~             | ~~4-8h~~   | ~~High~~                              |
+| ~~22~~ | ~~**P4**~~ done — visualtest/demo.go                             | ~~Demo/showcase site (live rendered components)~~                           | ~~4-8h~~   | ~~Critical for adoption~~             |
+| 23     | **P4**                                                           | Form validation pipeline: `forms.Validate(input, rules)`                    | 4-8h       | High                                  |
+| ~~24~~ | ~~**P4**~~ **Won't implement — deferred adr 0021.**              | ~~Headless/unstyled component variants~~                                    | ~~8-16h~~  | ~~Medium~~                            |
+| ~~25~~ | ~~**P4**~~ done — recipes/dashboard.templ                        | ~~Real-world example app (CRUD admin panel with auth)~~                     | ~~16-40h~~ | ~~Critical for ecosystem~~            |
 
 ---
 

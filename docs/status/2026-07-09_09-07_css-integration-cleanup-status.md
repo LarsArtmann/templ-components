@@ -49,18 +49,18 @@ All 3 repos are committed and pushed. Builds pass. Tests pass.
 
 ## a) FULLY DONE
 
-| #  | Task                                                                                                                   | Repo             | Verification                                    |
-| -- | ---------------------------------------------------------------------------------------------------------------------- | ---------------- | ----------------------------------------------- |
-| ~~1~~  | ~~**Deleted `cmd/tc-css/`** — over-engineered, broken under `-mod=vendor`, duplicated BuildFlow logic~~ done at `66f9558` | ~~templ-components~~ | ~~882 lines removed, zero references remain~~ |
-| ~~2~~  | ~~**Fixed build-breaking `encoding/json/v2` import** in `errorpage/handler.go` → reverted to `encoding/json`~~ done at `bec3d30` | ~~templ-components~~ | ~~`go build ./...` passes~~ |
-| ~~3~~  | ~~**Fixed `breadcrumbs_templ.go`** — same `encoding/json/v2` → `encoding/json` revert~~ done at `bec3d30` | ~~templ-components~~ | ~~`go build ./...` passes~~ |
-| ~~4~~  | ~~**Added `tailwindcss_4` to devShell** (templ-components + BuildFlow)~~ done at `66f9558` | ~~both~~ | ~~Binary available in `nix develop`~~ |
-| ~~5~~  | ~~**DiscordSync `styles.css` regenerated** — class-based dark mode (0→80 `.dark` selectors, 80→0 `prefers-color-scheme`)~~ done at `66f9558` | ~~DiscordSync~~ | ~~`grep -c "\.dark " styles.css` → 80~~ |
-| ~~6~~  | ~~**DiscordSync split-brain resolved** — reverted `generate-css` to `gen/main.go --css-only`~~ done at `66f9558` | ~~DiscordSync~~ | ~~`nix run .#generate-css` works~~ |
-| ~~7~~  | ~~**BuildFlow vendor/ false-positive fixed** — `skipDirs["vendor"]` changed to `true` + test added~~ done at `66f9558` | ~~BuildFlow~~ | ~~`TestFindTailwindEntryPointsSkipsVendor` passes~~ |
-| ~~8~~  | ~~**All docs cleaned** — README, adoption guide, migration guide, AGENTS.md across all repos~~ done at `66f9558` | ~~all 3~~ | ~~`grep -rnl "tc-css"` → zero results~~ |
-| ~~9~~  | ~~**CHANGELOG `[Unreleased]`** updated — documents app.css, BuildFlow provider, json/v2 fix~~ done at `66f9558` | ~~templ-components~~ | ~~Drift guard test passes~~ |
-| ~~10~~ | ~~**All repos committed and pushed**~~ done at `66f9558` | ~~all 3~~ | ~~`git status --short` clean~~ |
+| #      | Task                                                                                                                                         | Repo                 | Verification                                        |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | --------------------------------------------------- |
+| ~~1~~  | ~~**Deleted `cmd/tc-css/`** — over-engineered, broken under `-mod=vendor`, duplicated BuildFlow logic~~ done at `66f9558`                    | ~~templ-components~~ | ~~882 lines removed, zero references remain~~       |
+| ~~2~~  | ~~**Fixed build-breaking `encoding/json/v2` import** in `errorpage/handler.go` → reverted to `encoding/json`~~ done at `bec3d30`             | ~~templ-components~~ | ~~`go build ./...` passes~~                         |
+| ~~3~~  | ~~**Fixed `breadcrumbs_templ.go`** — same `encoding/json/v2` → `encoding/json` revert~~ done at `bec3d30`                                    | ~~templ-components~~ | ~~`go build ./...` passes~~                         |
+| ~~4~~  | ~~**Added `tailwindcss_4` to devShell** (templ-components + BuildFlow)~~ done at `66f9558`                                                   | ~~both~~             | ~~Binary available in `nix develop`~~               |
+| ~~5~~  | ~~**DiscordSync `styles.css` regenerated** — class-based dark mode (0→80 `.dark` selectors, 80→0 `prefers-color-scheme`)~~ done at `66f9558` | ~~DiscordSync~~      | ~~`grep -c "\.dark " styles.css` → 80~~             |
+| ~~6~~  | ~~**DiscordSync split-brain resolved** — reverted `generate-css` to `gen/main.go --css-only`~~ done at `66f9558`                             | ~~DiscordSync~~      | ~~`nix run .#generate-css` works~~                  |
+| ~~7~~  | ~~**BuildFlow vendor/ false-positive fixed** — `skipDirs["vendor"]` changed to `true` + test added~~ done at `66f9558`                       | ~~BuildFlow~~        | ~~`TestFindTailwindEntryPointsSkipsVendor` passes~~ |
+| ~~8~~  | ~~**All docs cleaned** — README, adoption guide, migration guide, AGENTS.md across all repos~~ done at `66f9558`                             | ~~all 3~~            | ~~`grep -rnl "tc-css"` → zero results~~             |
+| ~~9~~  | ~~**CHANGELOG `[Unreleased]`** updated — documents app.css, BuildFlow provider, json/v2 fix~~ done at `66f9558`                              | ~~templ-components~~ | ~~Drift guard test passes~~                         |
+| ~~10~~ | ~~**All repos committed and pushed**~~ done at `66f9558`                                                                                     | ~~all 3~~            | ~~`git status --short` clean~~                      |
 
 ---
 
@@ -86,11 +86,11 @@ All 3 repos are committed and pushed. Builds pass. Tests pass.
 
 ## d) TOTALLY FUCKED UP
 
-| # | What                                                                   | Impact                                                                                                                      | Root Cause                                                                                                                                      | Resolution                                                                              |
-| - | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| ~~1~~ | ~~**`encoding/json/v2` import in `errorpage/handler.go`**~~ done at `bec3d30` | ~~Build-breaking — entire `errorpage` package failed to compile outside `GOEXPERIMENT=jsonv2`. Pushed to master in `ad58171`.~~ | ~~Auto-formatter/LSP ran under `GOEXPERIMENT=jsonv2`, rewrote `encoding/json` → `encoding/json/v2`. Pre-commit hook doesn't run `go build ./...`.~~ | ~~**Fixed.** Reverted to `encoding/json`. Committed in `bec3d30`.~~ |
-| ~~2~~ | ~~**`tc-css` broken under `-mod=vendor`**~~ **Won't implement — tc css deleted deliberately.** | ~~Tool's primary value proposition didn't work. DiscordSync hit this failure immediately.~~ | ~~`go run github.com/larsartmann/templ-components/cmd/tc-css` can't find the package after vendoring — fundamental Go limitation.~~ | ~~**Fixed.** Deleted `tc-css` entirely. It was over-engineered for a one-time setup task.~~ |
-| ~~3~~ | ~~**DiscordSync `generate-css` migrated to `tc-css` before E2E testing**~~ done at `66f9558` | ~~`nix run .#generate-css` was broken.~~ | ~~Previous session migrated without testing.~~ | ~~**Fixed.** Reverted to `gen/main.go --css-only` which works correctly.~~ |
+| #     | What                                                                                           | Impact                                                                                                                          | Root Cause                                                                                                                                          | Resolution                                                                                  |
+| ----- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| ~~1~~ | ~~**`encoding/json/v2` import in `errorpage/handler.go`**~~ done at `bec3d30`                  | ~~Build-breaking — entire `errorpage` package failed to compile outside `GOEXPERIMENT=jsonv2`. Pushed to master in `ad58171`.~~ | ~~Auto-formatter/LSP ran under `GOEXPERIMENT=jsonv2`, rewrote `encoding/json` → `encoding/json/v2`. Pre-commit hook doesn't run `go build ./...`.~~ | ~~**Fixed.** Reverted to `encoding/json`. Committed in `bec3d30`.~~                         |
+| ~~2~~ | ~~**`tc-css` broken under `-mod=vendor`**~~ **Won't implement — tc css deleted deliberately.** | ~~Tool's primary value proposition didn't work. DiscordSync hit this failure immediately.~~                                     | ~~`go run github.com/larsartmann/templ-components/cmd/tc-css` can't find the package after vendoring — fundamental Go limitation.~~                 | ~~**Fixed.** Deleted `tc-css` entirely. It was over-engineered for a one-time setup task.~~ |
+| ~~3~~ | ~~**DiscordSync `generate-css` migrated to `tc-css` before E2E testing**~~ done at `66f9558`   | ~~`nix run .#generate-css` was broken.~~                                                                                        | ~~Previous session migrated without testing.~~                                                                                                      | ~~**Fixed.** Reverted to `gen/main.go --css-only` which works correctly.~~                  |
 
 ---
 
@@ -120,32 +120,32 @@ All 3 repos are committed and pushed. Builds pass. Tests pass.
 
 ### High Priority (P1)
 
-| # | Task                                                                                           | Impact                                        | Effort  |
-| - | ---------------------------------------------------------------------------------------------- | --------------------------------------------- | ------- |
-| 4 | ~~Update pre-commit lint to `golangci-lint run ./...`~~ **✅ DONE (2026-07-10)**               | ~~Lint gaps cause CI failures~~               | ~~10m~~ |
-| 5 | ~~Commit or stash BuildFlow's 12+ uncommitted files from other session~~ **✅ DONE (v0.11.0)** | ~~Unblock `nix develop` and `go test ./...`~~ | ~~15m~~ |
-| 6 | ~~Document `encoding/json/v2` prohibition in AGENTS.md~~ **✅ DONE (2026-07-10)**              | ~~Knowledge preservation~~                    | ~~10m~~ |
-| ~~7~~ | ~~Update FEATURES.md with app.css + BuildFlow tailwind-build provider~~ done — FEATURES.md | ~~Feature inventory~~ | ~~15m~~ |
-| ~~8~~ | ~~Document the `encoding/json/v2` auto-formatter gotcha as an ADR~~ done — docs/adr/0013-jsonv2-auto-formatter-guard.md | ~~Prevent recurrence~~ | ~~15m~~ |
+| #     | Task                                                                                                                    | Impact                                        | Effort  |
+| ----- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ------- |
+| 4     | ~~Update pre-commit lint to `golangci-lint run ./...`~~ **✅ DONE (2026-07-10)**                                        | ~~Lint gaps cause CI failures~~               | ~~10m~~ |
+| 5     | ~~Commit or stash BuildFlow's 12+ uncommitted files from other session~~ **✅ DONE (v0.11.0)**                          | ~~Unblock `nix develop` and `go test ./...`~~ | ~~15m~~ |
+| 6     | ~~Document `encoding/json/v2` prohibition in AGENTS.md~~ **✅ DONE (2026-07-10)**                                       | ~~Knowledge preservation~~                    | ~~10m~~ |
+| ~~7~~ | ~~Update FEATURES.md with app.css + BuildFlow tailwind-build provider~~ done — FEATURES.md                              | ~~Feature inventory~~                         | ~~15m~~ |
+| ~~8~~ | ~~Document the `encoding/json/v2` auto-formatter gotcha as an ADR~~ done — docs/adr/0013-jsonv2-auto-formatter-guard.md | ~~Prevent recurrence~~                        | ~~15m~~ |
 
 ### Medium Priority (P2)
 
-| #  | Task                                                                                     | Impact                | Effort |
-| -- | ---------------------------------------------------------------------------------------- | --------------------- | ------ |
-| 9  | Write ADR for tc-css deletion decision (why we built it, why we killed it)               | Decision record       | 15m    |
-| 10 | Add `tailwindcss_4` to DiscordSync devShell (if not already there)                       | DevEx                 | 5m     |
-| 11 | Integration test for BuildFlow `tailwind-build` provider against a real project          | Regression prevention | 1h     |
-| 12 | Add `go:build !goexperiment.jsonv2` or equivalent guard to prevent accidental v2 imports | Compile-time safety   | 30m    |
-| ~~13~~ | ~~Update ROADMAP.md with CSS automation milestone~~ done — ROADMAP.md | ~~Planning~~ | ~~10m~~ |
+| #      | Task                                                                                     | Impact                | Effort  |
+| ------ | ---------------------------------------------------------------------------------------- | --------------------- | ------- |
+| 9      | Write ADR for tc-css deletion decision (why we built it, why we killed it)               | Decision record       | 15m     |
+| 10     | Add `tailwindcss_4` to DiscordSync devShell (if not already there)                       | DevEx                 | 5m      |
+| 11     | Integration test for BuildFlow `tailwind-build` provider against a real project          | Regression prevention | 1h      |
+| 12     | Add `go:build !goexperiment.jsonv2` or equivalent guard to prevent accidental v2 imports | Compile-time safety   | 30m     |
+| ~~13~~ | ~~Update ROADMAP.md with CSS automation milestone~~ done — ROADMAP.md                    | ~~Planning~~          | ~~10m~~ |
 
 ### Polish (P3)
 
-| #  | Task                                                                 | Impact          | Effort |
-| -- | -------------------------------------------------------------------- | --------------- | ------ |
-| ~~14~~ | ~~Review all docs for consistency after tc-css deletion~~ done — docs/status/2026-07-27 17-04 docs-health-and-update-old-docs-full-pass.md | ~~Polish~~ | ~~20m~~ |
-| 15 | Add `templates/app.css` to the demo binary                           | Discoverability | 15m    |
-| 16 | Write blog post / announcement for BuildFlow tailwind-build provider | Marketing       | 30m    |
-| 17 | Consider adding `--watch` mode to BuildFlow tailwind-build provider  | DevEx           | 1h     |
+| #      | Task                                                                                                                                       | Impact          | Effort  |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------- | ------- |
+| ~~14~~ | ~~Review all docs for consistency after tc-css deletion~~ done — docs/status/2026-07-27 17-04 docs-health-and-update-old-docs-full-pass.md | ~~Polish~~      | ~~20m~~ |
+| 15     | Add `templates/app.css` to the demo binary                                                                                                 | Discoverability | 15m     |
+| 16     | Write blog post / announcement for BuildFlow tailwind-build provider                                                                       | Marketing       | 30m     |
+| 17     | Consider adding `--watch` mode to BuildFlow tailwind-build provider                                                                        | DevEx           | 1h      |
 
 ---
 

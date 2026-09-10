@@ -59,58 +59,58 @@
 
 _Brainstorm ranked by impact — HARVEST fuel for TODO_LIST/ROADMAP, not a commitment list. Impact: Critical/High/Medium/Low. Effort: S <30min, M 30min–2h, L >2h._
 
-| #  | Task                                                                                                                                     | Impact   | Effort | Category      |
-| -- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------ | ------------- |
-| 1  | Pin govulncheck v1.7.0 in flake.nix as a dedicated input (nixpkgs-go pattern) so the release gate is reproducible                        | Critical | S      | Quality       |
-| ~~2~~  | ~~Reconcile the shipped "pinned v1.7.0" claim with reality — amend docs/notes wording until #1 lands~~ done — cut used real v1.7.0 | ~~Critical~~ | ~~S~~ | ~~Documentation~~ |
-| ~~3~~  | ~~Merge PR #8 (LiveRegion nonce fix) once its CI is green~~ done — v1.13.1 merged PR8 | ~~High~~ | ~~S~~ | ~~Bug~~ |
-| ~~4~~  | ~~Cut v1.13.1 after PR #8 (first post-release patch; warms the release cadence)~~ done — v1.13.1 cut | ~~High~~ | ~~S~~ | ~~Release~~ |
-| 5  | Single-transaction release push: `git push --atomic origin master --follow-tags`; document in release-checklist Push section             | High     | S      | Quality       |
-| 6  | Extend CSS Freshness CI to diff all 5 distribution CSS artifacts, not just static/app.css                                                | High     | S      | Quality       |
-| 7  | Add step-0 environment gate to release.sh: go.work present, govulncheck version, signing agent, daemon idle                              | High     | S      | Quality       |
-| 8  | Build `release.sh --dry-run` (bump→verify→strip→assert on throwaway branch, roll back) so gates get exercised without a real cut         | High     | L      | Quality       |
-| 9  | Daemon pause mechanism for release windows (the runbook says "wait or pause it" but no pause exists)                                     | High     | M      | Quality       |
-| 10 | scripts/release-worktree.sh: create /tmp worktree + copy go.work + preflight in one command                                              | Medium   | S      | Quality       |
-| ~~11~~ | ~~Warm CHANGELOG `[Unreleased]` with the next feature/fix commit (it is empty post-release)~~ done — changelog rewarmed | ~~High~~ | ~~S~~ | ~~Documentation~~ |
-| ~~12~~ | ~~HARVEST this report's section f into TODO_LIST.md / ROADMAP.md (docs-health)~~ done — harvested | ~~Medium~~ | ~~S~~ | ~~Documentation~~ |
-| ~~13~~ | ~~Fix TODO_LIST duplicate numbering: two #150–154 sequences (datastar-era lines 54–58, wire-session lines 81–85)~~ done — todo renumber M2 | ~~Medium~~ | ~~S~~ | ~~Cleanup~~ |
-| ~~14~~ | ~~Bump go-datastar/static v0.4.0 → v0.5.0 with the full bundle re-audit protocol (TODO_LIST wire #151)~~ done — datastar pin v0.5.0 | ~~High~~ | ~~M~~ | ~~Feature~~ |
-| 15 | ADR: typed interval/intersect triggers in wire.Event (TODO_LIST wire #152)                                                               | Medium   | L      | Feature       |
-| ~~16~~ | ~~Survey next transport-symmetric Wire candidates (SimpleNav links, Form action) per the D3 rule (TODO_LIST wire #153)~~ done — form survey adopted | ~~Medium~~ | ~~M~~ | ~~Feature~~ |
-| ~~17~~ | ~~Sweep the codebase for components still hand-writing htmx/datastar attributes that should use wire (D3 symmetric rule)~~ done — wire adoption form filterdropdown | ~~Medium~~ | ~~M~~ | ~~Feature~~ |
-| ~~18~~ | ~~Route more demo endpoints through wire.Handler (round 2 of the adoption)~~ done — demo wire handler endpoints | ~~Medium~~ | ~~M~~ | ~~Feature~~ |
-| 19 | shellcheck scripts/ suite + add to CI Lint job (release.sh-class bugs found live twice this session)                                     | Medium   | S      | Quality       |
-| 20 | Fixture-test the step-6 awk CHANGELOG transform (only the 8b tree assertions are fixture-tested today)                                   | Medium   | M      | Quality       |
-| ~~21~~ | ~~Verify ci-repro.sh --vuln uses the same govulncheck the release gate requires (PATH-pinning mismatch class)~~ done — govulncheck path #21 open | ~~Medium~~ | ~~S~~ | ~~Quality~~ |
-| ~~22~~ | ~~Confirm the Website workflow deployed transport-wiring.mdx to the live site post-release~~ done — website build verified | ~~Medium~~ | ~~S~~ | ~~Documentation~~ |
-| 23 | Decide tag-CI behavior: `gh run list --branch v1.13.0` is empty — should tags trigger CI? If yes, add `on.push.tags`                     | Medium   | S      | Quality       |
-| ~~24~~ | ~~24h daemon watch: confirm no daemon push disturbs the release window on origin~~ done (docs-health pass 2026-09-08) | ~~Medium~~ | ~~S~~ | ~~Quality~~ |
-| 25 | Human-eyeball the wire visual goldens (agent-captured caveat, TODO_LIST wire #150)                                                       | Low      | S      | Quality       |
-| ~~26~~ | ~~Coverage gate margin: 71.7% vs 70% floor — add missing-coverage tests or re-pin (datastar block #152)~~ done — coverage 72.0 N9 | ~~Medium~~ | ~~M~~ | ~~Quality~~ |
-| ~~27~~ | ~~TestCSSFreshness fail-capable local flag + guard against committing `.fail/` artifacts (datastar block #150)~~ done — TC CSS FRESHNESS STRICT | ~~Medium~~ | ~~S~~ | ~~Quality~~ |
-| ~~28~~ | ~~Fuzz `getActionExpr`/`actionExpr` URL+retry+cancellation combos (datastar block #154)~~ done — FuzzGetActionExpr | ~~Medium~~ | ~~M~~ | ~~Quality~~ |
-| ~~29~~ | ~~DOMAIN_LANGUAGE: add busy-cue, sibling-pin policy, keep-alive frame terms (datastar block #151)~~ done — DOMAIN LANGUAGE.md | ~~Low~~ | ~~S~~ | ~~Documentation~~ |
-| ~~30~~ | ~~Standing layout test: tags keep sub-module go.mods replace-free while master root keeps exactly 7 replaces (catches layout drift)~~ done — test-release-assertions.sh | ~~Medium~~ | ~~S~~ | ~~Quality~~ |
-| 31 | wire.Handler HTTP-level benchmark (only `Attributes()` is benchmarked today)                                                             | Low      | S      | Quality       |
-| ~~32~~ | ~~Cross-link the transport-wiring guide from htmx and datastar package docs~~ done — transport docs crosslinked | ~~Low~~ | ~~S~~ | ~~Documentation~~ |
-| 33 | Make visualtest's untagged status explicit in check-release-tags.sh output                                                               | Low      | S      | Documentation |
-| 34 | Add post-push `git verify-tag` step to the release checklist                                                                             | Low      | S      | Quality       |
-| 35 | Document /tmp worktree mortality (reboot) + the recreate procedure (or fold into #10's script)                                           | Low      | S      | Documentation |
-| 36 | Document whether go.work.sum should be copied into release worktrees alongside go.work (mine worked without it — is that guaranteed?)    | Low      | S      | Documentation |
-| ~~37~~ | ~~Resolve handoff question #2 (concurrent-session ownership) — blocks PR #8/1.13.1 handling~~ **Won't implement — moot.** | ~~Medium~~ | ~~S~~ | ~~Process~~ |
-| 38 | Compiled-CSS provenance: record "last compiled at release X" so one-release-stale artifacts are visible (demo.out.css drifted unnoticed) | Low      | S      | Cleanup       |
-| 39 | Annotate the 2026-09-05_01-11 status report: T9 now done (docs-health ANNOTATE, non-destructive)                                         | Low      | S      | Documentation |
-| 40 | Include tooling hardening in the release summary line when the notes carry it (this cut's summary omitted it)                            | Low      | S      | Documentation |
-| 41 | Fold the 3-release streak of cut lessons into one consolidated runbook / the go-release skill                                            | Low      | M      | Documentation |
-| ~~42~~ | ~~Drift-guard the counts: assert 91 visual goldens / 91 HTML goldens like TestSkillComponentCount does for components~~ done — goldens drift guard | ~~Low~~ | ~~S~~ | ~~Quality~~ |
-| 43 | Upstream BuildFlow fix: hallucinated daemon commit messages (documented 5+ sessions, root cause known)                                   | Medium   | L      | Cleanup       |
-| 44 | Make the rule explicit: post-release chore commits (re-add, go.sum) do not warm [Unreleased] — write it in AGENTS.md                     | Low      | S      | Documentation |
-| ~~45~~ | ~~Apply the check-lint-config.sh guard pattern to release-script invariants (e.g. "no GOWORK=off in the govulncheck loop")~~ done — TestReleaseScriptInvariants | ~~Low~~ | ~~S~~ | ~~Quality~~ |
-| ~~46~~ | ~~Re-verify prerender.go stays in sync the next time the wire demo grows (TODO_LIST wire #154)~~ done — prerender diff test N16 | ~~Low~~ | ~~S~~ | ~~Quality~~ |
-| 47 | Add `ci-repro.sh --release-dry` running the dry-run mode (#8) locally before any push                                                    | Medium   | M      | Quality       |
-| ~~48~~ | ~~Sweep ROADMAP wire ideas for anything promoted by wire.Handler's adoption this release~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~S~~ | ~~Documentation~~ |
-| 49 | Track pkg.go.dev indexing of v1.13.0 + all 6 sub-modules within 24h                                                                      | Low      | S      | Documentation |
-| ~~50~~ | ~~Retire the /tmp/tc-bin govulncheck after #1 lands; update the runbook install instructions~~ **Won't implement — moot tmp volatile.** | ~~Low~~ | ~~S~~ | ~~Cleanup~~ |
+| #      | Task                                                                                                                                                                    | Impact       | Effort | Category          |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------ | ----------------- |
+| 1      | Pin govulncheck v1.7.0 in flake.nix as a dedicated input (nixpkgs-go pattern) so the release gate is reproducible                                                       | Critical     | S      | Quality           |
+| ~~2~~  | ~~Reconcile the shipped "pinned v1.7.0" claim with reality — amend docs/notes wording until #1 lands~~ done — cut used real v1.7.0                                      | ~~Critical~~ | ~~S~~  | ~~Documentation~~ |
+| ~~3~~  | ~~Merge PR #8 (LiveRegion nonce fix) once its CI is green~~ done — v1.13.1 merged PR8                                                                                   | ~~High~~     | ~~S~~  | ~~Bug~~           |
+| ~~4~~  | ~~Cut v1.13.1 after PR #8 (first post-release patch; warms the release cadence)~~ done — v1.13.1 cut                                                                    | ~~High~~     | ~~S~~  | ~~Release~~       |
+| 5      | Single-transaction release push: `git push --atomic origin master --follow-tags`; document in release-checklist Push section                                            | High         | S      | Quality           |
+| 6      | Extend CSS Freshness CI to diff all 5 distribution CSS artifacts, not just static/app.css                                                                               | High         | S      | Quality           |
+| 7      | Add step-0 environment gate to release.sh: go.work present, govulncheck version, signing agent, daemon idle                                                             | High         | S      | Quality           |
+| 8      | Build `release.sh --dry-run` (bump→verify→strip→assert on throwaway branch, roll back) so gates get exercised without a real cut                                        | High         | L      | Quality           |
+| 9      | Daemon pause mechanism for release windows (the runbook says "wait or pause it" but no pause exists)                                                                    | High         | M      | Quality           |
+| 10     | scripts/release-worktree.sh: create /tmp worktree + copy go.work + preflight in one command                                                                             | Medium       | S      | Quality           |
+| ~~11~~ | ~~Warm CHANGELOG `[Unreleased]` with the next feature/fix commit (it is empty post-release)~~ done — changelog rewarmed                                                 | ~~High~~     | ~~S~~  | ~~Documentation~~ |
+| ~~12~~ | ~~HARVEST this report's section f into TODO_LIST.md / ROADMAP.md (docs-health)~~ done — harvested                                                                       | ~~Medium~~   | ~~S~~  | ~~Documentation~~ |
+| ~~13~~ | ~~Fix TODO_LIST duplicate numbering: two #150–154 sequences (datastar-era lines 54–58, wire-session lines 81–85)~~ done — todo renumber M2                              | ~~Medium~~   | ~~S~~  | ~~Cleanup~~       |
+| ~~14~~ | ~~Bump go-datastar/static v0.4.0 → v0.5.0 with the full bundle re-audit protocol (TODO_LIST wire #151)~~ done — datastar pin v0.5.0                                     | ~~High~~     | ~~M~~  | ~~Feature~~       |
+| 15     | ADR: typed interval/intersect triggers in wire.Event (TODO_LIST wire #152)                                                                                              | Medium       | L      | Feature           |
+| ~~16~~ | ~~Survey next transport-symmetric Wire candidates (SimpleNav links, Form action) per the D3 rule (TODO_LIST wire #153)~~ done — form survey adopted                     | ~~Medium~~   | ~~M~~  | ~~Feature~~       |
+| ~~17~~ | ~~Sweep the codebase for components still hand-writing htmx/datastar attributes that should use wire (D3 symmetric rule)~~ done — wire adoption form filterdropdown     | ~~Medium~~   | ~~M~~  | ~~Feature~~       |
+| ~~18~~ | ~~Route more demo endpoints through wire.Handler (round 2 of the adoption)~~ done — demo wire handler endpoints                                                         | ~~Medium~~   | ~~M~~  | ~~Feature~~       |
+| 19     | shellcheck scripts/ suite + add to CI Lint job (release.sh-class bugs found live twice this session)                                                                    | Medium       | S      | Quality           |
+| 20     | Fixture-test the step-6 awk CHANGELOG transform (only the 8b tree assertions are fixture-tested today)                                                                  | Medium       | M      | Quality           |
+| ~~21~~ | ~~Verify ci-repro.sh --vuln uses the same govulncheck the release gate requires (PATH-pinning mismatch class)~~ done — govulncheck path #21 open                        | ~~Medium~~   | ~~S~~  | ~~Quality~~       |
+| ~~22~~ | ~~Confirm the Website workflow deployed transport-wiring.mdx to the live site post-release~~ done — website build verified                                              | ~~Medium~~   | ~~S~~  | ~~Documentation~~ |
+| 23     | Decide tag-CI behavior: `gh run list --branch v1.13.0` is empty — should tags trigger CI? If yes, add `on.push.tags`                                                    | Medium       | S      | Quality           |
+| ~~24~~ | ~~24h daemon watch: confirm no daemon push disturbs the release window on origin~~ done (docs-health pass 2026-09-08)                                                   | ~~Medium~~   | ~~S~~  | ~~Quality~~       |
+| 25     | Human-eyeball the wire visual goldens (agent-captured caveat, TODO_LIST wire #150)                                                                                      | Low          | S      | Quality           |
+| ~~26~~ | ~~Coverage gate margin: 71.7% vs 70% floor — add missing-coverage tests or re-pin (datastar block #152)~~ done — coverage 72.0 N9                                       | ~~Medium~~   | ~~M~~  | ~~Quality~~       |
+| ~~27~~ | ~~TestCSSFreshness fail-capable local flag + guard against committing `.fail/` artifacts (datastar block #150)~~ done — TC CSS FRESHNESS STRICT                         | ~~Medium~~   | ~~S~~  | ~~Quality~~       |
+| ~~28~~ | ~~Fuzz `getActionExpr`/`actionExpr` URL+retry+cancellation combos (datastar block #154)~~ done — FuzzGetActionExpr                                                      | ~~Medium~~   | ~~M~~  | ~~Quality~~       |
+| ~~29~~ | ~~DOMAIN_LANGUAGE: add busy-cue, sibling-pin policy, keep-alive frame terms (datastar block #151)~~ done — DOMAIN LANGUAGE.md                                           | ~~Low~~      | ~~S~~  | ~~Documentation~~ |
+| ~~30~~ | ~~Standing layout test: tags keep sub-module go.mods replace-free while master root keeps exactly 7 replaces (catches layout drift)~~ done — test-release-assertions.sh | ~~Medium~~   | ~~S~~  | ~~Quality~~       |
+| 31     | wire.Handler HTTP-level benchmark (only `Attributes()` is benchmarked today)                                                                                            | Low          | S      | Quality           |
+| ~~32~~ | ~~Cross-link the transport-wiring guide from htmx and datastar package docs~~ done — transport docs crosslinked                                                         | ~~Low~~      | ~~S~~  | ~~Documentation~~ |
+| 33     | Make visualtest's untagged status explicit in check-release-tags.sh output                                                                                              | Low          | S      | Documentation     |
+| 34     | Add post-push `git verify-tag` step to the release checklist                                                                                                            | Low          | S      | Quality           |
+| 35     | Document /tmp worktree mortality (reboot) + the recreate procedure (or fold into #10's script)                                                                          | Low          | S      | Documentation     |
+| 36     | Document whether go.work.sum should be copied into release worktrees alongside go.work (mine worked without it — is that guaranteed?)                                   | Low          | S      | Documentation     |
+| ~~37~~ | ~~Resolve handoff question #2 (concurrent-session ownership) — blocks PR #8/1.13.1 handling~~ **Won't implement — moot.**                                               | ~~Medium~~   | ~~S~~  | ~~Process~~       |
+| 38     | Compiled-CSS provenance: record "last compiled at release X" so one-release-stale artifacts are visible (demo.out.css drifted unnoticed)                                | Low          | S      | Cleanup           |
+| 39     | Annotate the 2026-09-05_01-11 status report: T9 now done (docs-health ANNOTATE, non-destructive)                                                                        | Low          | S      | Documentation     |
+| 40     | Include tooling hardening in the release summary line when the notes carry it (this cut's summary omitted it)                                                           | Low          | S      | Documentation     |
+| 41     | Fold the 3-release streak of cut lessons into one consolidated runbook / the go-release skill                                                                           | Low          | M      | Documentation     |
+| ~~42~~ | ~~Drift-guard the counts: assert 91 visual goldens / 91 HTML goldens like TestSkillComponentCount does for components~~ done — goldens drift guard                      | ~~Low~~      | ~~S~~  | ~~Quality~~       |
+| 43     | Upstream BuildFlow fix: hallucinated daemon commit messages (documented 5+ sessions, root cause known)                                                                  | Medium       | L      | Cleanup           |
+| 44     | Make the rule explicit: post-release chore commits (re-add, go.sum) do not warm [Unreleased] — write it in AGENTS.md                                                    | Low          | S      | Documentation     |
+| ~~45~~ | ~~Apply the check-lint-config.sh guard pattern to release-script invariants (e.g. "no GOWORK=off in the govulncheck loop")~~ done — TestReleaseScriptInvariants         | ~~Low~~      | ~~S~~  | ~~Quality~~       |
+| ~~46~~ | ~~Re-verify prerender.go stays in sync the next time the wire demo grows (TODO_LIST wire #154)~~ done — prerender diff test N16                                         | ~~Low~~      | ~~S~~  | ~~Quality~~       |
+| 47     | Add `ci-repro.sh --release-dry` running the dry-run mode (#8) locally before any push                                                                                   | Medium       | M      | Quality           |
+| ~~48~~ | ~~Sweep ROADMAP wire ideas for anything promoted by wire.Handler's adoption this release~~ done (docs-health pass 2026-09-08)                                           | ~~Low~~      | ~~S~~  | ~~Documentation~~ |
+| 49     | Track pkg.go.dev indexing of v1.13.0 + all 6 sub-modules within 24h                                                                                                     | Low          | S      | Documentation     |
+| ~~50~~ | ~~Retire the /tmp/tc-bin govulncheck after #1 lands; update the runbook install instructions~~ **Won't implement — moot tmp volatile.**                                 | ~~Low~~      | ~~S~~  | ~~Cleanup~~       |
 
 ## g) Three questions I cannot answer myself
 

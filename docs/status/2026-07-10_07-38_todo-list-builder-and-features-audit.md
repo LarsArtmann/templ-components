@@ -227,73 +227,73 @@ I read files in batches of 5 (parallel tool calls) and built the TODO_LIST.md at
 
 ### CRITICAL — Fix the broken build (do first)
 
-| # | Task                                                                                                                | Effort |
-| - | ------------------------------------------------------------------------------------------------------------------- | ------ |
+| #     | Task                                                                                                                                        | Effort  |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | ~~1~~ | ~~Fix broken build: either complete the `utils.RawJS`/`RawScript` refactoring OR revert the 3 uncommitted toast files~~ done — CHANGELOG.md | ~~10m~~ |
-| ~~2~~ | ~~Run `go build ./... && go test ./...` to verify all 14 packages pass~~ done — CHANGELOG.md | ~~5m~~ |
-| ~~3~~ | ~~Run `git status` to verify working tree is clean~~ done — CHANGELOG.md | ~~1m~~ |
+| ~~2~~ | ~~Run `go build ./... && go test ./...` to verify all 14 packages pass~~ done — CHANGELOG.md                                                | ~~5m~~  |
+| ~~3~~ | ~~Run `git status` to verify working tree is clean~~ done — CHANGELOG.md                                                                    | ~~1m~~  |
 
 ### P0 — Real bugs from TODO_LIST.md
 
-| #  | Task                                                                                                            | Effort |
-| -- | --------------------------------------------------------------------------------------------------------------- | ------ |
-| ~~4~~  | ~~Add sr-only "Loading…" text to `InlineLoadingOverlay` (parity with LoadingIndicator)~~ done — CHANGELOG.md | ~~5m~~ |
-| ~~5~~  | ~~Fix `SanitizeID` mismatch in ValidationSummary — links don't match actual field IDs~~ done — CHANGELOG.md | ~~15m~~ |
+| #      | Task                                                                                                                                    | Effort  |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| ~~4~~  | ~~Add sr-only "Loading…" text to `InlineLoadingOverlay` (parity with LoadingIndicator)~~ done — CHANGELOG.md                            | ~~5m~~  |
+| ~~5~~  | ~~Fix `SanitizeID` mismatch in ValidationSummary — links don't match actual field IDs~~ done — CHANGELOG.md                             | ~~15m~~ |
 | ~~6~~  | ~~Fix `FromError` to return `FamilyCorruption` (→500) for unknown errors instead of `FamilyInfrastructure` (→503)~~ done — CHANGELOG.md | ~~10m~~ |
-| ~~7~~  | ~~Add `BaseProps` to `Footer` component (API consistency)~~ done — CHANGELOG.md | ~~15m~~ |
-| ~~8~~  | ~~Add `<main>` landmark to ErrorPage and NotFound404 (WCAG 2.4.1)~~ done — CHANGELOG.md | ~~10m~~ |
-| ~~9~~  | ~~Add `CSRFTokenName` field to FormProps (framework compatibility)~~ done — CHANGELOG.md | ~~10m~~ |
-| ~~10~~ | ~~Verify `grid-rows-[0fr]` produces correct CSS in compiled Tailwind v4~~ done — CHANGELOG.md | ~~10m~~ |
+| ~~7~~  | ~~Add `BaseProps` to `Footer` component (API consistency)~~ done — CHANGELOG.md                                                         | ~~15m~~ |
+| ~~8~~  | ~~Add `<main>` landmark to ErrorPage and NotFound404 (WCAG 2.4.1)~~ done — CHANGELOG.md                                                 | ~~10m~~ |
+| ~~9~~  | ~~Add `CSRFTokenName` field to FormProps (framework compatibility)~~ done — CHANGELOG.md                                                | ~~10m~~ |
+| ~~10~~ | ~~Verify `grid-rows-[0fr]` produces correct CSS in compiled Tailwind v4~~ done — CHANGELOG.md                                           | ~~10m~~ |
 
 ### P1 — Testing gaps
 
-| #  | Task                                                             | Effort |
-| -- | ---------------------------------------------------------------- | ------ |
-| ~~11~~ | ~~Add regression tests for 18 untested Round-2 bug fixes~~ done — coverage boost* test.go | ~~2h~~ |
-| ~~12~~ | ~~Add `role="status"` assertion to InlineLoadingOverlay tests~~ done — CHANGELOG.md | ~~5m~~ |
-| ~~13~~ | ~~Add dark golden test variants (render with `.dark` parent)~~ done — display/dark golden test.go | ~~30m~~ |
-| ~~14~~ | ~~Add toast JS-created toast golden test~~ done — feedback goldens | ~~30m~~ |
-| ~~15~~ | ~~Boost coverage to 80%+ on errorpage, feedback, forms, navigation~~ **Won't implement — 80% target abandoned.** | ~~4h~~ |
+| #      | Task                                                                                                             | Effort  |
+| ------ | ---------------------------------------------------------------------------------------------------------------- | ------- |
+| ~~11~~ | ~~Add regression tests for 18 untested Round-2 bug fixes~~ done — coverage boost* test.go                        | ~~2h~~  |
+| ~~12~~ | ~~Add `role="status"` assertion to InlineLoadingOverlay tests~~ done — CHANGELOG.md                              | ~~5m~~  |
+| ~~13~~ | ~~Add dark golden test variants (render with `.dark` parent)~~ done — display/dark golden test.go                | ~~30m~~ |
+| ~~14~~ | ~~Add toast JS-created toast golden test~~ done — feedback goldens                                               | ~~30m~~ |
+| ~~15~~ | ~~Boost coverage to 80%+ on errorpage, feedback, forms, navigation~~ **Won't implement — 80% target abandoned.** | ~~4h~~  |
 
 ### P2 — CI / Pre-commit hardening
 
-| #  | Task                                                   | Effort |
-| -- | ------------------------------------------------------ | ------ |
-| ~~16~~ | ~~Add `encoding/json/v2` grep guard to pre-commit hook~~ **Won't implement — superseded jsonv2 adopted v0.15.0.** | ~~5m~~ |
-| ~~17~~ | ~~Change pre-commit lint from hardcoded paths to `./...`~~ done — CHANGELOG.md | ~~5m~~ |
+| #      | Task                                                                                                              | Effort  |
+| ------ | ----------------------------------------------------------------------------------------------------------------- | ------- |
+| ~~16~~ | ~~Add `encoding/json/v2` grep guard to pre-commit hook~~ **Won't implement — superseded jsonv2 adopted v0.15.0.** | ~~5m~~  |
+| ~~17~~ | ~~Change pre-commit lint from hardcoded paths to `./...`~~ done — CHANGELOG.md                                    | ~~5m~~  |
 | ~~18~~ | ~~Document `encoding/json/v2` prohibition in AGENTS.md~~ **Won't implement — superseded jsonv2 adopted v0.15.0.** | ~~10m~~ |
 
 ### P2 — Documentation accuracy
 
-| #  | Task                                                               | Effort |
-| -- | ------------------------------------------------------------------ | ------ |
-| ~~19~~ | ~~Fix AGENTS.md lint path typo: `./svg/...` → `./internal/svg/...`~~ done — CHANGELOG.md | ~~1m~~ |
-| ~~20~~ | ~~Add "untagged" note to CHANGELOG `[0.9.1]` section~~ done — CHANGELOG.md | ~~5m~~ |
-| ~~21~~ | ~~Update ROADMAP.md with dark mode compliance milestone~~ done — ADR-0011 | ~~5m~~ |
+| #      | Task                                                                                                | Effort  |
+| ------ | --------------------------------------------------------------------------------------------------- | ------- |
+| ~~19~~ | ~~Fix AGENTS.md lint path typo: `./svg/...` → `./internal/svg/...`~~ done — CHANGELOG.md            | ~~1m~~  |
+| ~~20~~ | ~~Add "untagged" note to CHANGELOG `[0.9.1]` section~~ done — CHANGELOG.md                          | ~~5m~~  |
+| ~~21~~ | ~~Update ROADMAP.md with dark mode compliance milestone~~ done — ADR-0011                           | ~~5m~~  |
 | ~~22~~ | ~~Create `docs/migration/v0.9-to-v0.10.md` migration guide~~ done — docs/migration/v0.9-to-v0.10.md | ~~15m~~ |
-| ~~23~~ | ~~Update FEATURES.md with CSS automation entry (app.css + BuildFlow)~~ done — CHANGELOG.md | ~~10m~~ |
-| ~~24~~ | ~~Fix FEATURES.md layout component count: 5 → 6, total 83 → 84~~ done — CHANGELOG.md | ~~2m~~ |
-| ~~25~~ | ~~Rename AGENTS.md "Post-v0.9.0 Conventions" section~~ done — CHANGELOG.md | ~~5m~~ |
-| ~~26~~ | ~~Fix AGENTS.md generated file count: "61" → "62"~~ done — CHANGELOG.md | ~~1m~~ |
+| ~~23~~ | ~~Update FEATURES.md with CSS automation entry (app.css + BuildFlow)~~ done — CHANGELOG.md          | ~~10m~~ |
+| ~~24~~ | ~~Fix FEATURES.md layout component count: 5 → 6, total 83 → 84~~ done — CHANGELOG.md                | ~~2m~~  |
+| ~~25~~ | ~~Rename AGENTS.md "Post-v0.9.0 Conventions" section~~ done — CHANGELOG.md                          | ~~5m~~  |
+| ~~26~~ | ~~Fix AGENTS.md generated file count: "61" → "62"~~ done — CHANGELOG.md                             | ~~1m~~  |
 
 ### P2 — Code quality
 
-| #  | Task                                                      | Effort |
-| -- | --------------------------------------------------------- | ------ |
+| #      | Task                                                                              | Effort  |
+| ------ | --------------------------------------------------------------------------------- | ------- |
 | ~~27~~ | ~~Wire shared motion constants into remaining 19 components~~ done — CHANGELOG.md | ~~90m~~ |
-| ~~28~~ | ~~Rename `FamilyFromErrorFamily` → `FromErrorFamily`~~ done — removed v1.0.0 | ~~5m~~ |
-| ~~29~~ | ~~Consolidate CHANGELOG "Round 1"/"Round 2" headings~~ done — CHANGELOG.md | ~~5m~~ |
+| ~~28~~ | ~~Rename `FamilyFromErrorFamily` → `FromErrorFamily`~~ done — removed v1.0.0      | ~~5m~~  |
+| ~~29~~ | ~~Consolidate CHANGELOG "Round 1"/"Round 2" headings~~ done — CHANGELOG.md        | ~~5m~~  |
 
 ### P3 — Community & polish
 
-| #  | Task                                                            | Effort |
-| -- | --------------------------------------------------------------- | ------ |
+| #      | Task                                                                | Effort |
+| ------ | ------------------------------------------------------------------- | ------ |
 | ~~30~~ | ~~Submit awesome-templ PR (updated component count)~~ done — cmd/tc | ~~5m~~ |
-| 31 | Submit templ.guide listing                                      | 5m     |
-| 32 | Configure SSH tag signing                                       | 10m    |
-| 33 | Create blocks/composition examples (dashboard, login, settings) | 3h     |
-| 34 | Add standalone `/forms` quickstart demo route                   | 30m    |
-| 35 | Build demo/showcase site (live rendered components)             | 8h+    |
+| 31     | Submit templ.guide listing                                          | 5m     |
+| 32     | Configure SSH tag signing                                           | 10m    |
+| 33     | Create blocks/composition examples (dashboard, login, settings)     | 3h     |
+| 34     | Add standalone `/forms` quickstart demo route                       | 30m    |
+| 35     | Build demo/showcase site (live rendered components)                 | 8h+    |
 
 ### v1.0 preparation
 
@@ -308,17 +308,17 @@ I read files in batches of 5 (parallel tool calls) and built the TODO_LIST.md at
 
 ### New components
 
-| #  | Task                                             | Effort |
-| -- | ------------------------------------------------ | ------ |
-| 42 | Add `Popover` component (most requested)         | 4h     |
+| #      | Task                                                                | Effort  |
+| ------ | ------------------------------------------------------------------- | ------- |
+| 42     | Add `Popover` component (most requested)                            | 4h      |
 | ~~43~~ | ~~Add `DataTable` (sorting, filtering, pagination)~~ done — v0.17.0 | ~~6h+~~ |
-| ~~44~~ | ~~Add `FilterDropdown`~~ done — v0.17.0 | ~~2h~~ |
-| ~~45~~ | ~~Add `Slider` (ARIA slider pattern)~~ done — v0.17.0 | ~~2h~~ |
-| ~~46~~ | ~~Add `Rating` (star rating, keyboard)~~ done — v0.17.0 | ~~1h~~ |
-| ~~47~~ | ~~Add `TagsInput`~~ done — v0.17.0 | ~~2h~~ |
-| ~~48~~ | ~~Add `ContextMenu` (right-click menu)~~ done — v0.17.0 | ~~2h~~ |
-| ~~49~~ | ~~Add `HoverCard`~~ done — v0.17.0 | ~~2h~~ |
-| ~~50~~ | ~~Add `Calendar` (full calendar grid)~~ done — v0.17.0 | ~~4h~~ |
+| ~~44~~ | ~~Add `FilterDropdown`~~ done — v0.17.0                             | ~~2h~~  |
+| ~~45~~ | ~~Add `Slider` (ARIA slider pattern)~~ done — v0.17.0               | ~~2h~~  |
+| ~~46~~ | ~~Add `Rating` (star rating, keyboard)~~ done — v0.17.0             | ~~1h~~  |
+| ~~47~~ | ~~Add `TagsInput`~~ done — v0.17.0                                  | ~~2h~~  |
+| ~~48~~ | ~~Add `ContextMenu` (right-click menu)~~ done — v0.17.0             | ~~2h~~  |
+| ~~49~~ | ~~Add `HoverCard`~~ done — v0.17.0                                  | ~~2h~~  |
+| ~~50~~ | ~~Add `Calendar` (full calendar grid)~~ done — v0.17.0              | ~~4h~~  |
 
 ---
 

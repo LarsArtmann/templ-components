@@ -40,7 +40,7 @@ for f in "${files[@]}"; do
 		;;
 	*.go)
 		case "$f" in
-		*_test.go) ;; # test-only diffs are exempt (#133)
+		*_test.go) ;;                                     # test-only diffs are exempt (#133)
 		examples/* | visualtest/* | cmd/* | website/*) ;; # non-library surfaces
 		*)
 			lib_code="$lib_code$f"$'\n'

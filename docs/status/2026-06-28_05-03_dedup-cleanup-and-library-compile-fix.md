@@ -39,10 +39,10 @@
 2. ~~**`refactor:` deduplicate templ components without harming architecture** (`cb9776a`)~~ done at `cb9776a`
    ~~- Templ clone groups: **19 → 17** (at threshold 4).~~
    ~~- Extractions (each targets duplication that would drift, no forced abstractions):~~
-     ~~- **`navLinkAnchor`** shared sub-template + `mobileNavLinkClass` helper. NavLink and MobileNavLink now share the anchor body; consumer classes merge via `utils.Class()` (the documented convention). This fixed a latent regression where MobileNavLink's old `templ.KV` chain didn't resolve Tailwind overrides.~~
-     ~~- **`emptyStateAction`** merge: one helper renders anchor-or-button based on `href`, replacing the former link/button pair.~~
-     ~~- **`mutedTextClass`** constant in `display/shared.go` for the standard secondary-text pattern, used by Card/PageHeader/EmptyState subtitles. Follows the existing `cardShellClass`/`inactivePageLinkClass` pattern.~~
-     ~~- **`paginationPageItem` / `paginationEllipsisItem`** sub-templates remove repeated `<li>`-wrapped call sites.~~
+   ~~- **`navLinkAnchor`** shared sub-template + `mobileNavLinkClass` helper. NavLink and MobileNavLink now share the anchor body; consumer classes merge via `utils.Class()` (the documented convention). This fixed a latent regression where MobileNavLink's old `templ.KV` chain didn't resolve Tailwind overrides.~~
+   ~~- **`emptyStateAction`** merge: one helper renders anchor-or-button based on `href`, replacing the former link/button pair.~~
+   ~~- **`mutedTextClass`** constant in `display/shared.go` for the standard secondary-text pattern, used by Card/PageHeader/EmptyState subtitles. Follows the existing `cardShellClass`/`inactivePageLinkClass` pattern.~~
+   ~~- **`paginationPageItem` / `paginationEllipsisItem`** sub-templates remove repeated `<li>`-wrapped call sites.~~
    ~~- Fixed a brittle test that asserted an ordered class substring (`"block border-l-4"`) — broke under `utils.Class` reordering. Now uses `utils.AssertContainsAll`.~~
 
 3. ~~**`style:` normalize templ formatting across components** (`f0ce6dc`)~~ done at `f0ce6dc`
@@ -116,33 +116,33 @@
 
 ## f) Top 25 things to do next (sorted by impact × 1/work)
 
-| #  | Task                                                                             | Impact | Work    |
-| -- | -------------------------------------------------------------------------------- | ------ | ------- |
-| ~~1~~  | ~~**Tag v0.5.0 + write CHANGELOG entry** (library is unreleased)~~ done — CHANGELOG 0.5.0 | ~~Crit~~ | ~~Trivial~~ |
-| 2  | Fix BuildFlow re-adding `*_templ.go` to `.gitignore` (upstream fix)              | High   | Low     |
-| ~~3~~  | ~~Fix `internal/golden` test isolation (use `t.TempDir()`)~~ done — utils/golden t.TempDir | ~~Med~~ | ~~Low~~ |
-| ~~4~~  | ~~Decide on `.buildflow.yml`: commit or gitignore~~ done — .buildflow.yml committed | ~~Low~~ | ~~Trivial~~ |
-| ~~5~~  | ~~Add rationale comments to accepted clones (Modal/Drawer, alert/erroralert)~~ done — docs/adr/0009-accepted-clones.md | ~~Low~~ | ~~Trivial~~ |
-| 6  | Submit awesome-templ PR (entry text ready)                                       | Med    | Low     |
-| 7  | Submit templ.guide listing (manual)                                              | Med    | Low     |
-| ~~8~~  | ~~Audit remaining templ clone groups at t=8+ for any drift-prone extractions~~ done — 2026-07-06 06-24 dedup-extraction-sprint.md | ~~Med~~ | ~~Low~~ |
-| 9  | Add `EmptyStateProps.Action templ.Component` slot (breaking — v0.6 candidate)    | High   | Med     |
-| ~~10~~ | ~~Extract shared dismiss-button markup to `internal/dismiss` (unblock alert clone)~~ **Won't implement — accepted per ADR-0009.** | ~~Med~~ | ~~Med~~ |
-| ~~11~~ | ~~Run `art-dupl` on Go sources at t=15 (currently only templ was scanned)~~ done — .art-dupl-baseline.json | ~~Med~~ | ~~Low~~ |
-| ~~12~~ | ~~Add `Validate() error` design spike for v1.0~~ done — errorpage/styles.go Validate() | ~~High~~ | ~~High~~ |
-| ~~13~~ | ~~Move test helpers to `internal/testutil/` (v1.0 breaking)~~ **Won't implement — deferred TODO 34 post-v1.0.** | ~~Med~~ | ~~Med~~ |
-| ~~14~~ | ~~Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)~~ done — removed aliases feedback | ~~Low~~ | ~~Trivial~~ |
-| ~~15~~ | ~~Add integration test for `go get` from clean project (CI already does this)~~ done — .github/workflows/ci.yaml module isolation | ~~Low~~ | ~~Low~~ |
-| 16 | Consider typed `ComponentName`/`IconName` branded types for stronger safety      | Med    | Med     |
-| 17 | Document the "slot vs flat strings" decision in an ADR                           | Med    | Low     |
-| ~~18~~ | ~~Add file-size enforcement (BuildFlow has `file-size-check` at 350 lines)~~ done — .buildflow.yml max file size 350 | ~~Low~~ | ~~Trivial~~ |
-| ~~19~~ | ~~Audit `examples/demo` for staleness against current API~~ done — 2026-08-17 14-26 demo-page-superb-audit-and-overhaul.md | ~~Low~~ | ~~Low~~ |
-| 20 | Add a CONTRIBUTING note about the BuildFlow gitignore gotcha                     | Low    | Trivial |
-| ~~21~~ | ~~Consider `internal/svg` → public `svg` (consumers ask for raw paths)~~ done — utils/svg | ~~Low~~ | ~~Med~~ |
-| ~~22~~ | ~~Add cross-package composition tests (Card+Badge+Table realistic layout)~~ done — integration/ | ~~Low~~ | ~~Low~~ |
-| 23 | Write ADR for the "silent fallback over panic" validation philosophy             | Med    | Low     |
-| ~~24~~ | ~~Evaluate `go-error-family` v0.6+ for new error families~~ done — errorpage/go.mod v0.10.0 | ~~Low~~ | ~~Low~~ |
-| ~~25~~ | ~~Plan v0.6.0 scope (action slots, more composition tests, svg publicity)~~ done — CHANGELOG 0.6.0 | ~~Med~~ | ~~Med~~ |
+| #      | Task                                                                                                                              | Impact   | Work        |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------- |
+| ~~1~~  | ~~**Tag v0.5.0 + write CHANGELOG entry** (library is unreleased)~~ done — CHANGELOG 0.5.0                                         | ~~Crit~~ | ~~Trivial~~ |
+| 2      | Fix BuildFlow re-adding `*_templ.go` to `.gitignore` (upstream fix)                                                               | High     | Low         |
+| ~~3~~  | ~~Fix `internal/golden` test isolation (use `t.TempDir()`)~~ done — utils/golden t.TempDir                                        | ~~Med~~  | ~~Low~~     |
+| ~~4~~  | ~~Decide on `.buildflow.yml`: commit or gitignore~~ done — .buildflow.yml committed                                               | ~~Low~~  | ~~Trivial~~ |
+| ~~5~~  | ~~Add rationale comments to accepted clones (Modal/Drawer, alert/erroralert)~~ done — docs/adr/0009-accepted-clones.md            | ~~Low~~  | ~~Trivial~~ |
+| 6      | Submit awesome-templ PR (entry text ready)                                                                                        | Med      | Low         |
+| 7      | Submit templ.guide listing (manual)                                                                                               | Med      | Low         |
+| ~~8~~  | ~~Audit remaining templ clone groups at t=8+ for any drift-prone extractions~~ done — 2026-07-06 06-24 dedup-extraction-sprint.md | ~~Med~~  | ~~Low~~     |
+| 9      | Add `EmptyStateProps.Action templ.Component` slot (breaking — v0.6 candidate)                                                     | High     | Med         |
+| ~~10~~ | ~~Extract shared dismiss-button markup to `internal/dismiss` (unblock alert clone)~~ **Won't implement — accepted per ADR-0009.** | ~~Med~~  | ~~Med~~     |
+| ~~11~~ | ~~Run `art-dupl` on Go sources at t=15 (currently only templ was scanned)~~ done — .art-dupl-baseline.json                        | ~~Med~~  | ~~Low~~     |
+| ~~12~~ | ~~Add `Validate() error` design spike for v1.0~~ done — errorpage/styles.go Validate()                                            | ~~High~~ | ~~High~~    |
+| ~~13~~ | ~~Move test helpers to `internal/testutil/` (v1.0 breaking)~~ **Won't implement — deferred TODO 34 post-v1.0.**                   | ~~Med~~  | ~~Med~~     |
+| ~~14~~ | ~~Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)~~ done — removed aliases feedback                             | ~~Low~~  | ~~Trivial~~ |
+| ~~15~~ | ~~Add integration test for `go get` from clean project (CI already does this)~~ done — .github/workflows/ci.yaml module isolation | ~~Low~~  | ~~Low~~     |
+| 16     | Consider typed `ComponentName`/`IconName` branded types for stronger safety                                                       | Med      | Med         |
+| 17     | Document the "slot vs flat strings" decision in an ADR                                                                            | Med      | Low         |
+| ~~18~~ | ~~Add file-size enforcement (BuildFlow has `file-size-check` at 350 lines)~~ done — .buildflow.yml max file size 350              | ~~Low~~  | ~~Trivial~~ |
+| ~~19~~ | ~~Audit `examples/demo` for staleness against current API~~ done — 2026-08-17 14-26 demo-page-superb-audit-and-overhaul.md        | ~~Low~~  | ~~Low~~     |
+| 20     | Add a CONTRIBUTING note about the BuildFlow gitignore gotcha                                                                      | Low      | Trivial     |
+| ~~21~~ | ~~Consider `internal/svg` → public `svg` (consumers ask for raw paths)~~ done — utils/svg                                         | ~~Low~~  | ~~Med~~     |
+| ~~22~~ | ~~Add cross-package composition tests (Card+Badge+Table realistic layout)~~ done — integration/                                   | ~~Low~~  | ~~Low~~     |
+| 23     | Write ADR for the "silent fallback over panic" validation philosophy                                                              | Med      | Low         |
+| ~~24~~ | ~~Evaluate `go-error-family` v0.6+ for new error families~~ done — errorpage/go.mod v0.10.0                                       | ~~Low~~  | ~~Low~~     |
+| ~~25~~ | ~~Plan v0.6.0 scope (action slots, more composition tests, svg publicity)~~ done — CHANGELOG 0.6.0                                | ~~Med~~  | ~~Med~~     |
 
 ---
 

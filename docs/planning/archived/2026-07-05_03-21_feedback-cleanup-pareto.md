@@ -91,49 +91,49 @@ graph TD
 
 ## Task Breakdown (30–100 min tasks)
 
-| #   | Task                                           | Lens | Impact | Effort | Deps |
-| --- | ---------------------------------------------- | ---- | ------ | ------ | ---- |
-| ~~T1~~  | ~~Fix GridCols5 responsive ladder + templ minmax~~ done — display/grid.templ | ~~1%~~ | ~~High~~ | ~~Low~~ | ~~—~~ |
-| ~~T2~~  | ~~Update AGENTS.md conventions~~ done — AGENTS.md | ~~1%~~ | ~~High~~ | ~~Med~~ | ~~—~~ |
-| ~~T3~~  | ~~Update TODO_LIST.md (session 6 record)~~ done — TODO LIST.md | ~~4%~~ | ~~Med~~ | ~~Low~~ | ~~—~~ |
-| ~~T4~~  | ~~Update FEATURES.md (new components/fields)~~ done — FEATURES.md | ~~4%~~ | ~~Med~~ | ~~Low~~ | ~~—~~ |
-| ~~T5~~  | ~~Golden tests: Grid (all GridCols variants)~~ done — display/testdata | ~~4%~~ | ~~High~~ | ~~Low~~ | ~~T1~~ |
-| ~~T6~~  | ~~Golden tests: Script + SkeletonCardGrid~~ done — feedback/golden test.go | ~~4%~~ | ~~Med~~ | ~~Low~~ | ~~—~~ |
-| ~~T7~~  | ~~BDD + a11y tests for new components~~ done — feedback/a11y test.go | ~~20%~~ | ~~Med~~ | ~~Med~~ | ~~T1~~ |
-| ~~T8~~  | ~~Example tests (godoc) for new components~~ done — feedback/example test.go | ~~20%~~ | ~~Low~~ | ~~Low~~ | ~~—~~ |
-| ~~T9~~  | ~~integration/composition_test.go + demo update~~ done — integration/composition test.go | ~~20%~~ | ~~Med~~ | ~~Low~~ | ~~—~~ |
-| ~~T10~~ | ~~SKILL.md update~~ done — skill/SKILL.md | ~~20%~~ | ~~Med~~ | ~~Low~~ | ~~T2~~ |
+| #       | Task                                                                                     | Lens    | Impact   | Effort  | Deps   |
+| ------- | ---------------------------------------------------------------------------------------- | ------- | -------- | ------- | ------ |
+| ~~T1~~  | ~~Fix GridCols5 responsive ladder + templ minmax~~ done — display/grid.templ             | ~~1%~~  | ~~High~~ | ~~Low~~ | ~~—~~  |
+| ~~T2~~  | ~~Update AGENTS.md conventions~~ done — AGENTS.md                                        | ~~1%~~  | ~~High~~ | ~~Med~~ | ~~—~~  |
+| ~~T3~~  | ~~Update TODO_LIST.md (session 6 record)~~ done — TODO LIST.md                           | ~~4%~~  | ~~Med~~  | ~~Low~~ | ~~—~~  |
+| ~~T4~~  | ~~Update FEATURES.md (new components/fields)~~ done — FEATURES.md                        | ~~4%~~  | ~~Med~~  | ~~Low~~ | ~~—~~  |
+| ~~T5~~  | ~~Golden tests: Grid (all GridCols variants)~~ done — display/testdata                   | ~~4%~~  | ~~High~~ | ~~Low~~ | ~~T1~~ |
+| ~~T6~~  | ~~Golden tests: Script + SkeletonCardGrid~~ done — feedback/golden test.go               | ~~4%~~  | ~~Med~~  | ~~Low~~ | ~~—~~  |
+| ~~T7~~  | ~~BDD + a11y tests for new components~~ done — feedback/a11y test.go                     | ~~20%~~ | ~~Med~~  | ~~Med~~ | ~~T1~~ |
+| ~~T8~~  | ~~Example tests (godoc) for new components~~ done — feedback/example test.go             | ~~20%~~ | ~~Low~~  | ~~Low~~ | ~~—~~  |
+| ~~T9~~  | ~~integration/composition_test.go + demo update~~ done — integration/composition test.go | ~~20%~~ | ~~Med~~  | ~~Low~~ | ~~—~~  |
+| ~~T10~~ | ~~SKILL.md update~~ done — skill/SKILL.md                                                | ~~20%~~ | ~~Med~~  | ~~Low~~ | ~~T2~~ |
 
 ---
 
 ## Micro-Task Breakdown (max 15 min each)
 
-| #   | Micro-Task                                                    | Parent | Est |
-| --- | ------------------------------------------------------------- | ------ | --- |
-| ~~M1~~  | ~~Fix GridCols5: `sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5`~~ done — display/grid.templ | ~~T1~~ | ~~2m~~ |
-| ~~M2~~  | ~~Fix GridCols4: `sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`~~ done — display/grid.templ | ~~T1~~ | ~~2m~~ |
-| ~~M3~~  | ~~Fix templ minmax in loading.templ:217~~ done — htmx/loading.templ | ~~T1~~ | ~~2m~~ |
-| ~~M4~~  | ~~Regen + verify after code fixes~~ done (docs-health pass 2026-09-08) | ~~T1~~ | ~~5m~~ |
-| ~~M5~~  | ~~AGENTS.md: add Grid/GridCols conventions~~ done — AGENTS.md | ~~T2~~ | ~~5m~~ |
-| ~~M6~~  | ~~AGENTS.md: add Script helper convention~~ done — AGENTS.md | ~~T2~~ | ~~3m~~ |
-| ~~M7~~  | ~~AGENTS.md: add SkeletonCardGrid convention~~ done — AGENTS.md | ~~T2~~ | ~~3m~~ |
-| ~~M8~~  | ~~AGENTS.md: add statCardInner sub-template note~~ done — AGENTS.md | ~~T2~~ | ~~2m~~ |
-| ~~M9~~  | ~~AGENTS.md: add SimpleNav.RightItems note~~ done — AGENTS.md | ~~T2~~ | ~~2m~~ |
-| ~~M10~~ | ~~AGENTS.md: update header metrics (components, tests, enums)~~ done — AGENTS.md | ~~T2~~ | ~~3m~~ |
-| ~~M11~~ | ~~TODO_LIST.md: add session 6 header + completed items~~ done — AGENTS.md | ~~T3~~ | ~~5m~~ |
-| ~~M12~~ | ~~FEATURES.md: add Grid, Script, SkeletonCardGrid entries~~ done — FEATURES.md | ~~T4~~ | ~~5m~~ |
-| ~~M13~~ | ~~Golden: create display/testdata/grid\_\*.golden (6 variants)~~ done — display/testdata | ~~T5~~ | ~~10m~~ |
-| ~~M14~~ | ~~Golden: create layout/testdata/script\*.golden~~ done — feedback/golden test.go | ~~T6~~ | ~~5m~~ |
-| ~~M15~~ | ~~Golden: create feedback/testdata/skeleton_card_grid\*.golden~~ done — feedback/golden test.go | ~~T6~~ | ~~5m~~ |
-| ~~M16~~ | ~~BDD: Grid responsive rendering test~~ done — feedback/bdd test.go | ~~T7~~ | ~~10m~~ |
-| ~~M17~~ | ~~BDD: StatCard.Href navigation test~~ done — feedback/bdd test.go | ~~T7~~ | ~~10m~~ |
-| ~~M18~~ | ~~a11y: Grid aria-label propagation test~~ done — feedback/a11y test.go | ~~T7~~ | ~~5m~~ |
-| ~~M19~~ | ~~a11y: Script nonce-always test~~ done — feedback/a11y test.go | ~~T7~~ | ~~5m~~ |
-| ~~M20~~ | ~~a11y: SkeletonCardGrid role=status + motion-reduce test~~ done — feedback/a11y test.go | ~~T7~~ | ~~5m~~ |
-| ~~M21~~ | ~~Example: ExampleGrid godoc~~ done — feedback/example test.go | ~~T8~~ | ~~5m~~ |
-| ~~M22~~ | ~~Example: ExampleScript godoc~~ done — feedback/example test.go | ~~T8~~ | ~~5m~~ |
-| ~~M23~~ | ~~Example: ExampleSkeletonCardGrid godoc~~ done — feedback/example test.go | ~~T8~~ | ~~5m~~ |
-| ~~M24~~ | ~~integration: Grid+Card composition test~~ done — integration/composition test.go | ~~T9~~ | ~~10m~~ |
-| ~~M25~~ | ~~demo: add Grid + StatCard.Href to demo.templ~~ done — examples/demo | ~~T9~~ | ~~10m~~ |
-| ~~M26~~ | ~~SKILL.md: GridCols in decision tree + Script pattern~~ done — skill/SKILL.md | ~~T10~~ | ~~10m~~ |
-| ~~M27~~ | ~~Final verify + commit + push~~ done (docs-health pass 2026-09-08) | ~~ALL~~ | ~~10m~~ |
+| #       | Micro-Task                                                                                      | Parent  | Est     |
+| ------- | ----------------------------------------------------------------------------------------------- | ------- | ------- |
+| ~~M1~~  | ~~Fix GridCols5: `sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5`~~ done — display/grid.templ     | ~~T1~~  | ~~2m~~  |
+| ~~M2~~  | ~~Fix GridCols4: `sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`~~ done — display/grid.templ     | ~~T1~~  | ~~2m~~  |
+| ~~M3~~  | ~~Fix templ minmax in loading.templ:217~~ done — htmx/loading.templ                             | ~~T1~~  | ~~2m~~  |
+| ~~M4~~  | ~~Regen + verify after code fixes~~ done (docs-health pass 2026-09-08)                          | ~~T1~~  | ~~5m~~  |
+| ~~M5~~  | ~~AGENTS.md: add Grid/GridCols conventions~~ done — AGENTS.md                                   | ~~T2~~  | ~~5m~~  |
+| ~~M6~~  | ~~AGENTS.md: add Script helper convention~~ done — AGENTS.md                                    | ~~T2~~  | ~~3m~~  |
+| ~~M7~~  | ~~AGENTS.md: add SkeletonCardGrid convention~~ done — AGENTS.md                                 | ~~T2~~  | ~~3m~~  |
+| ~~M8~~  | ~~AGENTS.md: add statCardInner sub-template note~~ done — AGENTS.md                             | ~~T2~~  | ~~2m~~  |
+| ~~M9~~  | ~~AGENTS.md: add SimpleNav.RightItems note~~ done — AGENTS.md                                   | ~~T2~~  | ~~2m~~  |
+| ~~M10~~ | ~~AGENTS.md: update header metrics (components, tests, enums)~~ done — AGENTS.md                | ~~T2~~  | ~~3m~~  |
+| ~~M11~~ | ~~TODO_LIST.md: add session 6 header + completed items~~ done — AGENTS.md                       | ~~T3~~  | ~~5m~~  |
+| ~~M12~~ | ~~FEATURES.md: add Grid, Script, SkeletonCardGrid entries~~ done — FEATURES.md                  | ~~T4~~  | ~~5m~~  |
+| ~~M13~~ | ~~Golden: create display/testdata/grid\_\*.golden (6 variants)~~ done — display/testdata        | ~~T5~~  | ~~10m~~ |
+| ~~M14~~ | ~~Golden: create layout/testdata/script\*.golden~~ done — feedback/golden test.go               | ~~T6~~  | ~~5m~~  |
+| ~~M15~~ | ~~Golden: create feedback/testdata/skeleton_card_grid\*.golden~~ done — feedback/golden test.go | ~~T6~~  | ~~5m~~  |
+| ~~M16~~ | ~~BDD: Grid responsive rendering test~~ done — feedback/bdd test.go                             | ~~T7~~  | ~~10m~~ |
+| ~~M17~~ | ~~BDD: StatCard.Href navigation test~~ done — feedback/bdd test.go                              | ~~T7~~  | ~~10m~~ |
+| ~~M18~~ | ~~a11y: Grid aria-label propagation test~~ done — feedback/a11y test.go                         | ~~T7~~  | ~~5m~~  |
+| ~~M19~~ | ~~a11y: Script nonce-always test~~ done — feedback/a11y test.go                                 | ~~T7~~  | ~~5m~~  |
+| ~~M20~~ | ~~a11y: SkeletonCardGrid role=status + motion-reduce test~~ done — feedback/a11y test.go        | ~~T7~~  | ~~5m~~  |
+| ~~M21~~ | ~~Example: ExampleGrid godoc~~ done — feedback/example test.go                                  | ~~T8~~  | ~~5m~~  |
+| ~~M22~~ | ~~Example: ExampleScript godoc~~ done — feedback/example test.go                                | ~~T8~~  | ~~5m~~  |
+| ~~M23~~ | ~~Example: ExampleSkeletonCardGrid godoc~~ done — feedback/example test.go                      | ~~T8~~  | ~~5m~~  |
+| ~~M24~~ | ~~integration: Grid+Card composition test~~ done — integration/composition test.go              | ~~T9~~  | ~~10m~~ |
+| ~~M25~~ | ~~demo: add Grid + StatCard.Href to demo.templ~~ done — examples/demo                           | ~~T9~~  | ~~10m~~ |
+| ~~M26~~ | ~~SKILL.md: GridCols in decision tree + Script pattern~~ done — skill/SKILL.md                  | ~~T10~~ | ~~10m~~ |
+| ~~M27~~ | ~~Final verify + commit + push~~ done (docs-health pass 2026-09-08)                             | ~~ALL~~ | ~~10m~~ |

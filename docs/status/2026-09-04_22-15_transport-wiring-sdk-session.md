@@ -72,58 +72,58 @@ Each item: what + evidence + scope.
 
 _(Brainstorm ranked roughly by impact; HARVEST should route TODO_LIST vs ROADMAP per docs-health. Impact/Effort/Category per the quality guide.)_
 
-| #  | Task                                                                                                            | Impact | Effort | Category      |
-| -- | --------------------------------------------------------------------------------------------------------------- | ------ | ------ | ------------- |
-| ~~1~~  | ~~Owner decision: ratify/reject superseding ADR-0033 (library-level light-DOM WC module) — unblocks or kills #7~~ done at `b50a123` | ~~High~~ | ~~S~~ | ~~Decision~~ |
-| ~~2~~  | ~~Harvest this list into TODO_LIST.md + ROADMAP.md (docs-health HARVEST)~~ done — harvested via plan | ~~High~~ | ~~S~~ | ~~Documentation~~ |
-| ~~3~~  | ~~Chromedp E2E: click both wire demo buttons, assert fragments land in both targets~~ done — visualtest/wire e2e test.go | ~~High~~ | ~~M~~ | ~~Quality~~ |
-| ~~4~~  | ~~Run `scripts/ci-repro.sh --lint --css` pre-push reproduction~~ done — ci-repro T1 | ~~High~~ | ~~M~~ | ~~Quality~~ |
-| ~~5~~  | ~~Golden snapshots for wired Button variants (htmx + datastar) in `display/testdata`~~ done — wire goldens | ~~High~~ | ~~S~~ | ~~Quality~~ |
-| ~~6~~  | ~~`go test -race` on utils/wire + display + examples/demo~~ done — race T3 | ~~High~~ | ~~S~~ | ~~Quality~~ |
-| ~~7~~  | ~~If #1 ratifies: scaffold `wc` module (light-DOM hosts, nonce-safe registration, zero templ-API coupling)~~ **Won't implement — D1 not ratified.** | ~~High~~ | ~~L~~ | ~~Feature~~ |
-| ~~8~~  | ~~`wire.Handler` server helper: stdlib middleware that auto-branches Datastar/htmx headers (encode demo pattern)~~ done — utils/wire/handler.go | ~~High~~ | ~~M~~ | ~~Feature~~ |
-| ~~9~~  | ~~Push `master` + watch CI (session ended local-only per house rule)~~ done — pushed 4d1308a | ~~High~~ | ~~S~~ | ~~Process~~ |
-| ~~10~~ | ~~ADR-0035 ANNOTATE: point superseded attribute-helper clause at ADR-0036~~ done — ADR-0035 annotated | ~~Medium~~ | ~~S~~ | ~~Documentation~~ |
-| ~~11~~ | ~~Decide unknown-`Transport` policy (fallback vs error path) — resolve g2, then pin with test~~ **Won't implement — decided D2 fallback.** | ~~Medium~~ | ~~S~~ | ~~Decision~~ |
-| ~~12~~ | ~~`wire` doc.go split per repo convention~~ done — wire doc.go | ~~Low~~ | ~~S~~ | ~~Cleanup~~ |
-| ~~13~~ | ~~Benchmarks: `Attributes()` htmx vs datastar paths~~ done — BenchmarkActionAttributes | ~~Low~~ | ~~S~~ | ~~Quality~~ |
-| ~~14~~ | ~~`navigation.LoadMore` gains `Wire` (transport-switchable pagination)~~ done — LoadMore Wire | ~~Medium~~ | ~~M~~ | ~~Feature~~ |
-| ~~15~~ | ~~`htmx.ConfirmDelete` refactor onto `wire` internals or gains datastar twin (needs ADR check vs ADR-0035 freeze)~~ **Won't implement — ConfirmDelete htmx only.** | ~~Medium~~ | ~~M~~ | ~~Feature~~ |
-| ~~16~~ | ~~`forms.Input`/`Select`/`Textarea` wired server-validation examples~~ done — forms wire demo | ~~Medium~~ | ~~M~~ | ~~Feature~~ |
-| ~~17~~ | ~~visualtest capture for the wire demo section~~ done — wire pack goldens | ~~Medium~~ | ~~S~~ | ~~Quality~~ |
-| ~~18~~ | ~~Website (Astro) guide page: transport wiring + link from sections.ts~~ done — guides/transport-wiring.mdx | ~~Medium~~ | ~~M~~ | ~~Documentation~~ |
-| ~~19~~ | ~~README feature section for `utils/wire` (beyond counts)~~ done — README wire section | ~~Medium~~ | ~~S~~ | ~~Documentation~~ |
-| ~~20~~ | ~~SKILL.md (repo playbook) wire section + ADR-first trigger note~~ done — SKILL.md wire block | ~~Medium~~ | ~~S~~ | ~~Documentation~~ |
-| ~~21~~ | ~~`docs/DOMAIN_LANGUAGE.md` entries: Transport, Action, Wiring, dialect~~ done — DOMAIN LANGUAGE | ~~Low~~ | ~~S~~ | ~~Documentation~~ |
-| ~~22~~ | ~~Normalize enum-count mentions across README/FEATURES/AGENTS to a single source~~ done — count normalization | ~~Medium~~ | ~~S~~ | ~~Cleanup~~ |
-| ~~23~~ | ~~Update stale AGENTS.md "31 enums have IsValid" claim (actual: 55)~~ done — IsValid 56 | ~~Low~~ | ~~S~~ | ~~Cleanup~~ |
-| ~~24~~ | ~~Cut next release (utils v1.13.0 + root, 8-module tag lockstep) via release.sh~~ done — v1.13.0 cut | ~~High~~ | ~~M~~ | ~~Release~~ |
-| ~~25~~ | ~~Post-release go.sum tidy sweep (v1.11/v1.12 lesson) after tags propagate~~ done — go.sum sweep 23a61ae | ~~High~~ | ~~S~~ | ~~Release~~ |
-| ~~26~~ | ~~Cross-dialect property test: same Action must reference URL in both rendered dialects~~ done — invariants both dialects | ~~Medium~~ | ~~S~~ | ~~Quality~~ |
-| ~~27~~ | ~~Fuzz `Target` selector input too (currently only transport/method/event/url fuzzed)~~ done — FuzzAction target | ~~Low~~ | ~~S~~ | ~~Quality~~ |
-| ~~28~~ | ~~CSP invariant test: assert wire renders never emit `<script>` (integration/csp_nonce_test.go companion)~~ done — invariants no script | ~~Medium~~ | ~~S~~ | ~~Quality~~ |
-| ~~29~~ | ~~Demo: transport-switch toggle (query param flips Buttons between dialects) to sell the SDK pitch~~ done — demo transport toggle | ~~Medium~~ | ~~M~~ | ~~Feature~~ |
-| ~~30~~ | ~~Check upstream-watch issue for go-datastar/static pin drift (v0.5.0 seen in cache during research)~~ done — datastar pin v0.5.0 | ~~Medium~~ | ~~S~~ | ~~Maintenance~~ |
-| ~~31~~ | ~~Migration recipe doc: converting an htmx-only page to dual-transport with wire~~ done — docs/recipes/transport-migration.md | ~~Medium~~ | ~~M~~ | ~~Documentation~~ |
-| ~~32~~ | ~~Evaluate `data-on-interval`/`data-on-intersect` support in pinned bundle before any Event-set expansion~~ done — researched T14 | ~~Medium~~ | ~~S~~ | ~~Research~~ |
-| ~~33~~ | ~~Wire Event coverage for form defaults (`EventSubmit` + `forms.Form` interplay doc)~~ done — researched T14 | ~~Low~~ | ~~S~~ | ~~Documentation~~ |
-| ~~34~~ | ~~Consider `aria-busy` helper for wired elements (htmx `hx-indicator` vs datastar indicator asymmetry doc first)~~ **Won't implement — docs not helper.** | ~~Medium~~ | ~~M~~ | ~~Feature~~ |
-| ~~35~~ | ~~`docs/modularization/README.md`: mention `utils/wire` in the module DAG description~~ done — modularization README | ~~Low~~ | ~~S~~ | ~~Documentation~~ |
-| ~~36~~ | ~~Demo CSS: run `nix run .#css` byte-stability + recompile if diff~~ done — nix run .#css | ~~Medium~~ | ~~S~~ | ~~Quality~~ |
-| ~~37~~ | ~~`nix flake check` after all session changes~~ done — nix flake check | ~~Medium~~ | ~~S~~ | ~~Quality~~ |
-| ~~38~~ | ~~Consolidate session's 6 daemon commits story: note feature boundary in a docs commit (no history rewrite)~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~S~~ | ~~Cleanup~~ |
-| ~~39~~ | ~~Errorpage/datastar/htmx module lint loop after any further changes (kept green this session; keep it that way)~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~S~~ | ~~Quality~~ |
-| ~~40~~ | ~~Property test: empty URL always renders nil across all enum combos (edge pin)~~ done — invariants empty url | ~~Low~~ | ~~S~~ | ~~Quality~~ |
-| ~~41~~ | ~~Docs: testing note about HTML-entity-encoded attribute assertions promoted to a shared golden/testing doc~~ done — testing notes T15 | ~~Low~~ | ~~S~~ | ~~Documentation~~ |
-| ~~42~~ | ~~Explore `hx-swap` opt-in field (`Swap string`) vs documented Attrs escape hatch — ADR note either way~~ **Won't implement — attrs escape hatch kept.** | ~~Low~~ | ~~S~~ | ~~Decision~~ |
-| ~~43~~ | ~~Add wire mention to `examples/demo` README/help if one exists~~ done — demo hero snippet | ~~Low~~ | ~~S~~ | ~~Documentation~~ |
-| ~~44~~ | ~~Pre-existing: AGENTS.md component-count table (display 42 vs skill 40) drift check~~ done — counts T10 | ~~Low~~ | ~~S~~ | ~~Cleanup~~ |
-| ~~45~~ | ~~Pre-existing: FEATURES.md utils row says "0 components" though utils ships DismissScript/EnsureID etc.~~ done — FEATURES T6 | ~~Low~~ | ~~S~~ | ~~Cleanup~~ |
-| ~~46~~ | ~~Review whether `wire` belongs in `internal/`-style docs sidebar of the website API reference~~ done — api-reference row | ~~Low~~ | ~~S~~ | ~~Documentation~~ |
-| ~~47~~ | ~~Consider committing a `wire` usage snippet to demo hero (visible SDK surface)~~ done — demo hero T15 | ~~Low~~ | ~~S~~ | ~~Feature~~ |
-| ~~48~~ | ~~Run docs-health VERIFY against ADR-0036 claims next session (fresh-eyes verification)~~ done — ADR-0036 verified | ~~Medium~~ | ~~S~~ | ~~Quality~~ |
-| ~~49~~ | ~~Add `wire` to the contribution guide's "adding a package" checklist if such exists~~ done — CONTRIBUTING T15 | ~~Low~~ | ~~S~~ | ~~Documentation~~ |
-| ~~50~~ | ~~Revisit ADR-0035 revisit-triggers after first external wire adoption data lands~~ done — ADR-0035 annotated | ~~Low~~ | ~~S~~ | ~~Decision~~ |
+| #      | Task                                                                                                                                                               | Impact     | Effort | Category          |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------ | ----------------- |
+| ~~1~~  | ~~Owner decision: ratify/reject superseding ADR-0033 (library-level light-DOM WC module) — unblocks or kills #7~~ done at `b50a123`                                | ~~High~~   | ~~S~~  | ~~Decision~~      |
+| ~~2~~  | ~~Harvest this list into TODO_LIST.md + ROADMAP.md (docs-health HARVEST)~~ done — harvested via plan                                                               | ~~High~~   | ~~S~~  | ~~Documentation~~ |
+| ~~3~~  | ~~Chromedp E2E: click both wire demo buttons, assert fragments land in both targets~~ done — visualtest/wire e2e test.go                                           | ~~High~~   | ~~M~~  | ~~Quality~~       |
+| ~~4~~  | ~~Run `scripts/ci-repro.sh --lint --css` pre-push reproduction~~ done — ci-repro T1                                                                                | ~~High~~   | ~~M~~  | ~~Quality~~       |
+| ~~5~~  | ~~Golden snapshots for wired Button variants (htmx + datastar) in `display/testdata`~~ done — wire goldens                                                         | ~~High~~   | ~~S~~  | ~~Quality~~       |
+| ~~6~~  | ~~`go test -race` on utils/wire + display + examples/demo~~ done — race T3                                                                                         | ~~High~~   | ~~S~~  | ~~Quality~~       |
+| ~~7~~  | ~~If #1 ratifies: scaffold `wc` module (light-DOM hosts, nonce-safe registration, zero templ-API coupling)~~ **Won't implement — D1 not ratified.**                | ~~High~~   | ~~L~~  | ~~Feature~~       |
+| ~~8~~  | ~~`wire.Handler` server helper: stdlib middleware that auto-branches Datastar/htmx headers (encode demo pattern)~~ done — utils/wire/handler.go                    | ~~High~~   | ~~M~~  | ~~Feature~~       |
+| ~~9~~  | ~~Push `master` + watch CI (session ended local-only per house rule)~~ done — pushed 4d1308a                                                                       | ~~High~~   | ~~S~~  | ~~Process~~       |
+| ~~10~~ | ~~ADR-0035 ANNOTATE: point superseded attribute-helper clause at ADR-0036~~ done — ADR-0035 annotated                                                              | ~~Medium~~ | ~~S~~  | ~~Documentation~~ |
+| ~~11~~ | ~~Decide unknown-`Transport` policy (fallback vs error path) — resolve g2, then pin with test~~ **Won't implement — decided D2 fallback.**                         | ~~Medium~~ | ~~S~~  | ~~Decision~~      |
+| ~~12~~ | ~~`wire` doc.go split per repo convention~~ done — wire doc.go                                                                                                     | ~~Low~~    | ~~S~~  | ~~Cleanup~~       |
+| ~~13~~ | ~~Benchmarks: `Attributes()` htmx vs datastar paths~~ done — BenchmarkActionAttributes                                                                             | ~~Low~~    | ~~S~~  | ~~Quality~~       |
+| ~~14~~ | ~~`navigation.LoadMore` gains `Wire` (transport-switchable pagination)~~ done — LoadMore Wire                                                                      | ~~Medium~~ | ~~M~~  | ~~Feature~~       |
+| ~~15~~ | ~~`htmx.ConfirmDelete` refactor onto `wire` internals or gains datastar twin (needs ADR check vs ADR-0035 freeze)~~ **Won't implement — ConfirmDelete htmx only.** | ~~Medium~~ | ~~M~~  | ~~Feature~~       |
+| ~~16~~ | ~~`forms.Input`/`Select`/`Textarea` wired server-validation examples~~ done — forms wire demo                                                                      | ~~Medium~~ | ~~M~~  | ~~Feature~~       |
+| ~~17~~ | ~~visualtest capture for the wire demo section~~ done — wire pack goldens                                                                                          | ~~Medium~~ | ~~S~~  | ~~Quality~~       |
+| ~~18~~ | ~~Website (Astro) guide page: transport wiring + link from sections.ts~~ done — guides/transport-wiring.mdx                                                        | ~~Medium~~ | ~~M~~  | ~~Documentation~~ |
+| ~~19~~ | ~~README feature section for `utils/wire` (beyond counts)~~ done — README wire section                                                                             | ~~Medium~~ | ~~S~~  | ~~Documentation~~ |
+| ~~20~~ | ~~SKILL.md (repo playbook) wire section + ADR-first trigger note~~ done — SKILL.md wire block                                                                      | ~~Medium~~ | ~~S~~  | ~~Documentation~~ |
+| ~~21~~ | ~~`docs/DOMAIN_LANGUAGE.md` entries: Transport, Action, Wiring, dialect~~ done — DOMAIN LANGUAGE                                                                   | ~~Low~~    | ~~S~~  | ~~Documentation~~ |
+| ~~22~~ | ~~Normalize enum-count mentions across README/FEATURES/AGENTS to a single source~~ done — count normalization                                                      | ~~Medium~~ | ~~S~~  | ~~Cleanup~~       |
+| ~~23~~ | ~~Update stale AGENTS.md "31 enums have IsValid" claim (actual: 55)~~ done — IsValid 56                                                                            | ~~Low~~    | ~~S~~  | ~~Cleanup~~       |
+| ~~24~~ | ~~Cut next release (utils v1.13.0 + root, 8-module tag lockstep) via release.sh~~ done — v1.13.0 cut                                                               | ~~High~~   | ~~M~~  | ~~Release~~       |
+| ~~25~~ | ~~Post-release go.sum tidy sweep (v1.11/v1.12 lesson) after tags propagate~~ done — go.sum sweep 23a61ae                                                           | ~~High~~   | ~~S~~  | ~~Release~~       |
+| ~~26~~ | ~~Cross-dialect property test: same Action must reference URL in both rendered dialects~~ done — invariants both dialects                                          | ~~Medium~~ | ~~S~~  | ~~Quality~~       |
+| ~~27~~ | ~~Fuzz `Target` selector input too (currently only transport/method/event/url fuzzed)~~ done — FuzzAction target                                                   | ~~Low~~    | ~~S~~  | ~~Quality~~       |
+| ~~28~~ | ~~CSP invariant test: assert wire renders never emit `<script>` (integration/csp_nonce_test.go companion)~~ done — invariants no script                            | ~~Medium~~ | ~~S~~  | ~~Quality~~       |
+| ~~29~~ | ~~Demo: transport-switch toggle (query param flips Buttons between dialects) to sell the SDK pitch~~ done — demo transport toggle                                  | ~~Medium~~ | ~~M~~  | ~~Feature~~       |
+| ~~30~~ | ~~Check upstream-watch issue for go-datastar/static pin drift (v0.5.0 seen in cache during research)~~ done — datastar pin v0.5.0                                  | ~~Medium~~ | ~~S~~  | ~~Maintenance~~   |
+| ~~31~~ | ~~Migration recipe doc: converting an htmx-only page to dual-transport with wire~~ done — docs/recipes/transport-migration.md                                      | ~~Medium~~ | ~~M~~  | ~~Documentation~~ |
+| ~~32~~ | ~~Evaluate `data-on-interval`/`data-on-intersect` support in pinned bundle before any Event-set expansion~~ done — researched T14                                  | ~~Medium~~ | ~~S~~  | ~~Research~~      |
+| ~~33~~ | ~~Wire Event coverage for form defaults (`EventSubmit` + `forms.Form` interplay doc)~~ done — researched T14                                                       | ~~Low~~    | ~~S~~  | ~~Documentation~~ |
+| ~~34~~ | ~~Consider `aria-busy` helper for wired elements (htmx `hx-indicator` vs datastar indicator asymmetry doc first)~~ **Won't implement — docs not helper.**          | ~~Medium~~ | ~~M~~  | ~~Feature~~       |
+| ~~35~~ | ~~`docs/modularization/README.md`: mention `utils/wire` in the module DAG description~~ done — modularization README                                               | ~~Low~~    | ~~S~~  | ~~Documentation~~ |
+| ~~36~~ | ~~Demo CSS: run `nix run .#css` byte-stability + recompile if diff~~ done — nix run .#css                                                                          | ~~Medium~~ | ~~S~~  | ~~Quality~~       |
+| ~~37~~ | ~~`nix flake check` after all session changes~~ done — nix flake check                                                                                             | ~~Medium~~ | ~~S~~  | ~~Quality~~       |
+| ~~38~~ | ~~Consolidate session's 6 daemon commits story: note feature boundary in a docs commit (no history rewrite)~~ done (docs-health pass 2026-09-08)                   | ~~Low~~    | ~~S~~  | ~~Cleanup~~       |
+| ~~39~~ | ~~Errorpage/datastar/htmx module lint loop after any further changes (kept green this session; keep it that way)~~ done (docs-health pass 2026-09-08)              | ~~Low~~    | ~~S~~  | ~~Quality~~       |
+| ~~40~~ | ~~Property test: empty URL always renders nil across all enum combos (edge pin)~~ done — invariants empty url                                                      | ~~Low~~    | ~~S~~  | ~~Quality~~       |
+| ~~41~~ | ~~Docs: testing note about HTML-entity-encoded attribute assertions promoted to a shared golden/testing doc~~ done — testing notes T15                             | ~~Low~~    | ~~S~~  | ~~Documentation~~ |
+| ~~42~~ | ~~Explore `hx-swap` opt-in field (`Swap string`) vs documented Attrs escape hatch — ADR note either way~~ **Won't implement — attrs escape hatch kept.**           | ~~Low~~    | ~~S~~  | ~~Decision~~      |
+| ~~43~~ | ~~Add wire mention to `examples/demo` README/help if one exists~~ done — demo hero snippet                                                                         | ~~Low~~    | ~~S~~  | ~~Documentation~~ |
+| ~~44~~ | ~~Pre-existing: AGENTS.md component-count table (display 42 vs skill 40) drift check~~ done — counts T10                                                           | ~~Low~~    | ~~S~~  | ~~Cleanup~~       |
+| ~~45~~ | ~~Pre-existing: FEATURES.md utils row says "0 components" though utils ships DismissScript/EnsureID etc.~~ done — FEATURES T6                                      | ~~Low~~    | ~~S~~  | ~~Cleanup~~       |
+| ~~46~~ | ~~Review whether `wire` belongs in `internal/`-style docs sidebar of the website API reference~~ done — api-reference row                                          | ~~Low~~    | ~~S~~  | ~~Documentation~~ |
+| ~~47~~ | ~~Consider committing a `wire` usage snippet to demo hero (visible SDK surface)~~ done — demo hero T15                                                             | ~~Low~~    | ~~S~~  | ~~Feature~~       |
+| ~~48~~ | ~~Run docs-health VERIFY against ADR-0036 claims next session (fresh-eyes verification)~~ done — ADR-0036 verified                                                 | ~~Medium~~ | ~~S~~  | ~~Quality~~       |
+| ~~49~~ | ~~Add `wire` to the contribution guide's "adding a package" checklist if such exists~~ done — CONTRIBUTING T15                                                     | ~~Low~~    | ~~S~~  | ~~Documentation~~ |
+| ~~50~~ | ~~Revisit ADR-0035 revisit-triggers after first external wire adoption data lands~~ done — ADR-0035 annotated                                                      | ~~Low~~    | ~~S~~  | ~~Decision~~      |
 
 ## g) Questions I cannot figure out myself
 

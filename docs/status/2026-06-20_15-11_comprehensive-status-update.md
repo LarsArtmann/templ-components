@@ -178,33 +178,33 @@
 
 Sorted by impact/effort ratio (highest first):
 
-| #  | Task                                           | Impact  | Effort  | Notes                                                          |
-| -- | ---------------------------------------------- | ------- | ------- | -------------------------------------------------------------- |
-| ~~1~~  | ~~**Tag v0.3.0**~~ done — CHANGELOG 0.3.0 | ~~HIGH~~ | ~~TRIVIAL~~ | ~~All features done, just needs `git tag` + push~~ |
-| 2  | **Submit to awesome-templ**                    | HIGH    | LOW     | Discoverability — one PR                                       |
-| ~~3~~  | ~~**Remove 4 ID validation panics**~~ done — utils/validate.go EnsureID | ~~HIGH~~ | ~~MED~~ | ~~Convert to fallback (generate ID) or error component rendering~~ |
-| ~~4~~  | ~~**Remove SwapOOB panic**~~ done — htmx/loading.templ nil guard | ~~MED~~ | ~~LOW~~ | ~~Same pattern as #3~~ |
-| ~~5~~  | ~~**Add Date Picker component**~~ done — forms/date picker.templ | ~~HIGH~~ | ~~MED~~ | ~~Common need, native HTML `<input type="date">` wrapper~~ |
-| ~~6~~  | ~~**Write integration tests**~~ done — integration/ | ~~MED~~ | ~~MED~~ | ~~Test component composition in real HTML document~~ |
-| 7  | **Get coverage to 80%**                        | MED     | HIGH    | Focus on errorpage (71.2%) and display (72.5%) first           |
-| ~~8~~  | ~~**Add Combobox/Autocomplete**~~ done — forms/combobox.templ | ~~MED~~ | ~~HIGH~~ | ~~Complex — needs JS for filtering~~ |
-| ~~9~~  | ~~**Deploy demo site**~~ done — 2026-07-14 03-08 cloud-run-demo-live.md | ~~MED~~ | ~~MED~~ | ~~GitHub Pages from `examples/demo`~~ |
-| ~~10~~ | ~~**Extract shared delegation boilerplate**~~ **Won't implement — superseded by native browser APIs ADR-0014/0017/0027.** | ~~LOW~~ | ~~LOW~~ | ~~6 sites with `window.tc*Attached` guard~~ |
-| ~~11~~ | ~~**Add `Validate() error` to props structs**~~ done — errorpage/styles.go Validate() | ~~MED~~ | ~~MED~~ | ~~Catch errors before render~~ |
-| ~~12~~ | ~~**Move test helpers to `internal/testutil/`**~~ **Won't implement — deferred TODO 34 post-v1.0.** | ~~LOW~~ | ~~LOW~~ | ~~Breaking — defer to v1.0~~ |
-| 13 | **Add property-based tests**                   | LOW     | MED     | gopter for invariant verification                              |
-| ~~14~~ | ~~**Add axe-core/pa11y accessibility CI**~~ done — visualtest/axe.min.js | ~~MED~~ | ~~MED~~ | ~~Automated a11y regression detection~~ |
-| ~~15~~ | ~~**Plan v1.0 API freeze**~~ done — CHANGELOG 1.0.0 | ~~HIGH~~ | ~~LOW~~ | ~~Define scope, cut features, set date~~ |
-| ~~16~~ | ~~**Documentation site**~~ done — website/ | ~~MED~~ | ~~HIGH~~ | ~~pkgsite or doc2go generation~~ |
-| ~~17~~ | ~~**Cross-link ecosystem in README**~~ done — README.md GOTH section | ~~LOW~~ | ~~TRIVIAL~~ | ~~GOTH stack story~~ |
-| 18 | **Open PR on templ.guide**                     | MED     | LOW     | Get listed in official templ docs                              |
-| ~~19~~ | ~~**Verify `go get` from clean project**~~ done — scripts/release.sh | ~~HIGH~~ | ~~LOW~~ | ~~Critical for consumers~~ |
-| ~~20~~ | ~~**Consistent nonce propagation audit**~~ done — 2026-06-20 16-15 reflection-and-status.md | ~~MED~~ | ~~LOW~~ | ~~Systematic check across all components~~ |
-| ~~21~~ | ~~**Convert remaining snapshot tests to golden**~~ done — utils/golden | ~~LOW~~ | ~~LOW~~ | ~~Pattern exists, just needs adoption~~ |
-| ~~22~~ | ~~**Add goreleaser**~~ done — .goreleaser.yml | ~~LOW~~ | ~~MED~~ | ~~Automated releases on tag~~ |
-| ~~23~~ | ~~**Consider `go:generate stringer` for enums**~~ **Won't implement — cut per 2026-06-20 plan.** | ~~LOW~~ | ~~LOW~~ | ~~Type-safe string representation~~ |
-| ~~24~~ | ~~**Modularize into Go workspace**~~ done — docs/adr/0034-targeted-module-split.md | ~~LOW~~ | ~~HIGH~~ | ~~10-module go.work — big refactor~~ |
-| ~~25~~ | ~~**Badge info=indigo vs Feedback info=blue**~~ done — display/badge.templ info unified blue | ~~TRIVIAL~~ | ~~TRIVIAL~~ | ~~Minor color consistency decision~~ |
+| #      | Task                                                                                                                      | Impact      | Effort      | Notes                                                              |
+| ------ | ------------------------------------------------------------------------------------------------------------------------- | ----------- | ----------- | ------------------------------------------------------------------ |
+| ~~1~~  | ~~**Tag v0.3.0**~~ done — CHANGELOG 0.3.0                                                                                 | ~~HIGH~~    | ~~TRIVIAL~~ | ~~All features done, just needs `git tag` + push~~                 |
+| 2      | **Submit to awesome-templ**                                                                                               | HIGH        | LOW         | Discoverability — one PR                                           |
+| ~~3~~  | ~~**Remove 4 ID validation panics**~~ done — utils/validate.go EnsureID                                                   | ~~HIGH~~    | ~~MED~~     | ~~Convert to fallback (generate ID) or error component rendering~~ |
+| ~~4~~  | ~~**Remove SwapOOB panic**~~ done — htmx/loading.templ nil guard                                                          | ~~MED~~     | ~~LOW~~     | ~~Same pattern as #3~~                                             |
+| ~~5~~  | ~~**Add Date Picker component**~~ done — forms/date picker.templ                                                          | ~~HIGH~~    | ~~MED~~     | ~~Common need, native HTML `<input type="date">` wrapper~~         |
+| ~~6~~  | ~~**Write integration tests**~~ done — integration/                                                                       | ~~MED~~     | ~~MED~~     | ~~Test component composition in real HTML document~~               |
+| 7      | **Get coverage to 80%**                                                                                                   | MED         | HIGH        | Focus on errorpage (71.2%) and display (72.5%) first               |
+| ~~8~~  | ~~**Add Combobox/Autocomplete**~~ done — forms/combobox.templ                                                             | ~~MED~~     | ~~HIGH~~    | ~~Complex — needs JS for filtering~~                               |
+| ~~9~~  | ~~**Deploy demo site**~~ done — 2026-07-14 03-08 cloud-run-demo-live.md                                                   | ~~MED~~     | ~~MED~~     | ~~GitHub Pages from `examples/demo`~~                              |
+| ~~10~~ | ~~**Extract shared delegation boilerplate**~~ **Won't implement — superseded by native browser APIs ADR-0014/0017/0027.** | ~~LOW~~     | ~~LOW~~     | ~~6 sites with `window.tc*Attached` guard~~                        |
+| ~~11~~ | ~~**Add `Validate() error` to props structs**~~ done — errorpage/styles.go Validate()                                     | ~~MED~~     | ~~MED~~     | ~~Catch errors before render~~                                     |
+| ~~12~~ | ~~**Move test helpers to `internal/testutil/`**~~ **Won't implement — deferred TODO 34 post-v1.0.**                       | ~~LOW~~     | ~~LOW~~     | ~~Breaking — defer to v1.0~~                                       |
+| 13     | **Add property-based tests**                                                                                              | LOW         | MED         | gopter for invariant verification                                  |
+| ~~14~~ | ~~**Add axe-core/pa11y accessibility CI**~~ done — visualtest/axe.min.js                                                  | ~~MED~~     | ~~MED~~     | ~~Automated a11y regression detection~~                            |
+| ~~15~~ | ~~**Plan v1.0 API freeze**~~ done — CHANGELOG 1.0.0                                                                       | ~~HIGH~~    | ~~LOW~~     | ~~Define scope, cut features, set date~~                           |
+| ~~16~~ | ~~**Documentation site**~~ done — website/                                                                                | ~~MED~~     | ~~HIGH~~    | ~~pkgsite or doc2go generation~~                                   |
+| ~~17~~ | ~~**Cross-link ecosystem in README**~~ done — README.md GOTH section                                                      | ~~LOW~~     | ~~TRIVIAL~~ | ~~GOTH stack story~~                                               |
+| 18     | **Open PR on templ.guide**                                                                                                | MED         | LOW         | Get listed in official templ docs                                  |
+| ~~19~~ | ~~**Verify `go get` from clean project**~~ done — scripts/release.sh                                                      | ~~HIGH~~    | ~~LOW~~     | ~~Critical for consumers~~                                         |
+| ~~20~~ | ~~**Consistent nonce propagation audit**~~ done — 2026-06-20 16-15 reflection-and-status.md                               | ~~MED~~     | ~~LOW~~     | ~~Systematic check across all components~~                         |
+| ~~21~~ | ~~**Convert remaining snapshot tests to golden**~~ done — utils/golden                                                    | ~~LOW~~     | ~~LOW~~     | ~~Pattern exists, just needs adoption~~                            |
+| ~~22~~ | ~~**Add goreleaser**~~ done — .goreleaser.yml                                                                             | ~~LOW~~     | ~~MED~~     | ~~Automated releases on tag~~                                      |
+| ~~23~~ | ~~**Consider `go:generate stringer` for enums**~~ **Won't implement — cut per 2026-06-20 plan.**                          | ~~LOW~~     | ~~LOW~~     | ~~Type-safe string representation~~                                |
+| ~~24~~ | ~~**Modularize into Go workspace**~~ done — docs/adr/0034-targeted-module-split.md                                        | ~~LOW~~     | ~~HIGH~~    | ~~10-module go.work — big refactor~~                               |
+| ~~25~~ | ~~**Badge info=indigo vs Feedback info=blue**~~ done — display/badge.templ info unified blue                              | ~~TRIVIAL~~ | ~~TRIVIAL~~ | ~~Minor color consistency decision~~                               |
 
 ---
 

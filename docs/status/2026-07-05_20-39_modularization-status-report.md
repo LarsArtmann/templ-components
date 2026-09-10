@@ -184,48 +184,48 @@ the consumer experience before claiming success.
 
 ### Tier 1 — Must Do Before Merge (blocks v0.7.0) — ❌ ALL MOOT
 
-| # | Task                                             | Status (2026-07-06)                      |
-| - | ------------------------------------------------ | ---------------------------------------- |
-| ~~1~~ | ~~**Merge `modularize/strategic-split` to master**~~ done — docs/status/2026-08-10 04-22 multi-module-workspace-split.md | ~~❌ Abandoned~~ |
-| ~~2~~ | ~~**Cut v0.7.0 release using per-module tags**~~ done — CHANGELOG.md | ~~✅ v0.7.0 released as single-module~~ |
-| ~~3~~ | ~~**Verify consumer experience from clean repo**~~ done — README.md | ~~✅ Standard single-module `go get` works~~ |
-| ~~4~~ | ~~**Run CI on the branch**~~ **Won't implement — branch abandoned.** | ~~❌ Moot~~ |
+| #     | Task                                                                                                                     | Status (2026-07-06)                          |
+| ----- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| ~~1~~ | ~~**Merge `modularize/strategic-split` to master**~~ done — docs/status/2026-08-10 04-22 multi-module-workspace-split.md | ~~❌ Abandoned~~                             |
+| ~~2~~ | ~~**Cut v0.7.0 release using per-module tags**~~ done — CHANGELOG.md                                                     | ~~✅ v0.7.0 released as single-module~~      |
+| ~~3~~ | ~~**Verify consumer experience from clean repo**~~ done — README.md                                                      | ~~✅ Standard single-module `go get` works~~ |
+| ~~4~~ | ~~**Run CI on the branch**~~ **Won't implement — branch abandoned.**                                                     | ~~❌ Moot~~                                  |
 
 ### Tier 2 — Should Do After Merge — ❌ ALL MOOT (except #10)
 
-| #  | Task                                                                  | Status (2026-07-06)                                                  |
-| -- | --------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| ~~5~~  | ~~**Update README.md** for multi-module~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot — single-module correct~~ |
-| ~~6~~  | ~~**Update CONTRIBUTING.md** for multi-module~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot~~ |
-| ~~7~~  | ~~**Update icons-only-adoption.md**~~ done — docs/icons-only-adoption.md | ~~✅ Done (different framing)~~ |
-| ~~8~~  | ~~**Add `make dry-release`**~~ done — utils/release script test.go | ~~⬜ Not done~~ |
-| ~~9~~  | ~~**Update flake.nix `verify` app** for multi-module~~ done — skill/SKILL.md | ~~❌ Moot~~ |
+| #      | Task                                                                                            | Status (2026-07-06)                                                      |
+| ------ | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| ~~5~~  | ~~**Update README.md** for multi-module~~ **Won't implement — branch abandoned moot.**          | ~~❌ Moot — single-module correct~~                                      |
+| ~~6~~  | ~~**Update CONTRIBUTING.md** for multi-module~~ **Won't implement — branch abandoned moot.**    | ~~❌ Moot~~                                                              |
+| ~~7~~  | ~~**Update icons-only-adoption.md**~~ done — docs/icons-only-adoption.md                        | ~~✅ Done (different framing)~~                                          |
+| ~~8~~  | ~~**Add `make dry-release`**~~ done — utils/release script test.go                              | ~~⬜ Not done~~                                                          |
+| ~~9~~  | ~~**Update flake.nix `verify` app** for multi-module~~ done — skill/SKILL.md                    | ~~❌ Moot~~                                                              |
 | ~~10~~ | ~~**File BuildFlow issue** — branch-switching + go.work gitignore fight~~ done — .buildflow.yml | ~~✅ Resolved — BuildFlow no longer switches branches; go.work removed~~ |
-| ~~11~~ | ~~**Clean up stashes**~~ done (docs-health pass 2026-09-08) | ~~⬠ Likely resolved~~ |
+| ~~11~~ | ~~**Clean up stashes**~~ done (docs-health pass 2026-09-08)                                     | ~~⬠ Likely resolved~~                                                    |
 
 ### Tier 3 — Improve Quality — ❌ MOSTLY MOOT
 
-| #  | Task                                               | Status (2026-07-06)                                        |
-| -- | -------------------------------------------------- | ---------------------------------------------------------- |
-| ~~12~~ | ~~**Add workspace sync CI check**~~ done — scripts/check-module-sync.sh | ~~❌ Moot~~ |
-| ~~13~~ | ~~**Add replace-directive audit script**~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot~~ |
-| ~~14~~ | ~~**Per-module go.sum audit**~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot~~ |
-| ~~15~~ | ~~**Add version-drift CI check**~~ done — scripts/check-version-sync.sh | ~~❌ Moot~~ |
-| ~~16~~ | ~~**Document the release workflow** for multi-module~~ done — docs/release-checklist.md | ~~❌ Moot~~ |
-| ~~17~~ | ~~**Evaluate: should `htmx` be extracted?**~~ done — htmx/go.mod | ~~⬜ Deferred — may revisit post-v1.0~~ |
+| #      | Task                                                                                     | Status (2026-07-06)                                            |
+| ------ | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| ~~12~~ | ~~**Add workspace sync CI check**~~ done — scripts/check-module-sync.sh                  | ~~❌ Moot~~                                                    |
+| ~~13~~ | ~~**Add replace-directive audit script**~~ **Won't implement — branch abandoned moot.**  | ~~❌ Moot~~                                                    |
+| ~~14~~ | ~~**Per-module go.sum audit**~~ **Won't implement — branch abandoned moot.**             | ~~❌ Moot~~                                                    |
+| ~~15~~ | ~~**Add version-drift CI check**~~ done — scripts/check-version-sync.sh                  | ~~❌ Moot~~                                                    |
+| ~~16~~ | ~~**Document the release workflow** for multi-module~~ done — docs/release-checklist.md  | ~~❌ Moot~~                                                    |
+| ~~17~~ | ~~**Evaluate: should `htmx` be extracted?**~~ done — htmx/go.mod                         | ~~⬜ Deferred — may revisit post-v1.0~~                        |
 | ~~18~~ | ~~**Evaluate: merge svg + utils?**~~ **Won't implement — resolved svg stayed internal.** | ~~✅ Resolved — svg stays as `internal/svg` in single module~~ |
 
 ### Tier 4 — Polish & Long-term
 
-| #  | Task                                                                                                     | Status (2026-07-06)                               |
-| -- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| ~~19~~ | ~~**Add per-module coverage reporting**~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot~~ |
-| ~~20~~ | ~~**Update `docs/diagrams/internal-dependencies.d2`** — reflect new multi-module DAG~~ done — docs/diagrams/internal-dependencies.d2 | ~~❌ Moot — diagram is for single module~~ |
-| ~~21~~ | ~~**Consider go.work.sum in .gitignore vs committed**~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot — no go.work~~ |
-| ~~22~~ | ~~**Add `go work vendor` support**~~ **Won't implement — branch abandoned moot.** | ~~❌ Moot~~ |
+| #      | Task                                                                                                                                                                | Status (2026-07-06)                                   |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| ~~19~~ | ~~**Add per-module coverage reporting**~~ **Won't implement — branch abandoned moot.**                                                                              | ~~❌ Moot~~                                           |
+| ~~20~~ | ~~**Update `docs/diagrams/internal-dependencies.d2`** — reflect new multi-module DAG~~ done — docs/diagrams/internal-dependencies.d2                                | ~~❌ Moot — diagram is for single module~~            |
+| ~~21~~ | ~~**Consider go.work.sum in .gitignore vs committed**~~ **Won't implement — branch abandoned moot.**                                                                | ~~❌ Moot — no go.work~~                              |
+| ~~22~~ | ~~**Add `go work vendor` support**~~ **Won't implement — branch abandoned moot.**                                                                                   | ~~❌ Moot~~                                           |
 | ~~23~~ | ~~**Stale doc cleanup** — ~30 docs/status/_.md and docs/planning/_.md files still reference `internal/svg`~~ **Won't implement — made moot by branch abandonment.** | ~~✅ Resolved — `internal/svg` is correct on master~~ |
-| ~~24~~ | ~~**Monitor co-change after 3 months**~~ **Won't implement — superseded by 2026-08 multimodule split.** | ~~⬜ Ongoing~~ |
-| ~~25~~ | ~~**Consider independent versioning for icons**~~ done — icons/go.mod | ~~⬜ Deferred — may revisit post-v1.0~~ |
+| ~~24~~ | ~~**Monitor co-change after 3 months**~~ **Won't implement — superseded by 2026-08 multimodule split.**                                                             | ~~⬜ Ongoing~~                                        |
+| ~~25~~ | ~~**Consider independent versioning for icons**~~ done — icons/go.mod                                                                                               | ~~⬜ Deferred — may revisit post-v1.0~~               |
 
 ---
 

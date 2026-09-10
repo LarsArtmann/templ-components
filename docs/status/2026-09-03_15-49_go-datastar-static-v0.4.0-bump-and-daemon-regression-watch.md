@@ -41,8 +41,8 @@ still dirty; the daemon will collect it.
    ~~- `static/datastar.js`: **sha256 `4df1f98a…` identical in both tags** (verified by hashing both blobs).~~
    ~~- `static/version.go`: unchanged (`Version = "1.0.2"`, `Bytes()` API intact).~~
    ~~- Sole delta: `static/go.mod` `go 1.26.5` → `go 1.26.7` (matches this repo's pins).~~
-     ~~⇒ Additive/zero-impact bump. No runtime-fact re-audit needed because the audited~~
-     ~~bytes did not change — the strongest possible re-audit result.~~
+   ~~⇒ Additive/zero-impact bump. No runtime-fact re-audit needed because the audited~~
+   ~~bytes did not change — the strongest possible re-audit result.~~
 4. ~~**Pin bumped everywhere it appears.** `datastar/go.mod` (direct, via~~ done at `3c2783d`
    ~~`go get @v0.4.0` + `go mod tidy`, GOWORK=off), root `go.mod` and~~
    ~~`visualtest/go.mod` (indirect `// indirect` requires, via per-module tidy).~~
@@ -118,19 +118,19 @@ still dirty; the daemon will collect it.
    ~~documented v1.9.0 regression class on master** — not this session's work, and~~
    ~~NOT reverted (never revert changes you didn't author without a decision):~~
    ~~- `website/package.json`: `typescript ^6.0.3` → `^7.0.2` — the exact flip~~
-     ~~that broke `astro check` during v1.9.0. Mitigating unknown: astro bumped to~~
-     ~~`^7.3.1` in the same commit, so the old crash may be fixed upstream (c1).~~
+   ~~that broke `astro check` during v1.9.0. Mitigating unknown: astro bumped to~~
+   ~~`^7.3.1` in the same commit, so the old crash may be fixed upstream (c1).~~
    ~~- `examples/demo/static/app.css`: **+4951 lines** un-minified rebuild — the~~
-     ~~known "daemon prettier-un-minified app.css → CSS Freshness CI failure" pattern.~~
+   ~~known "daemon prettier-un-minified app.css → CSS Freshness CI failure" pattern.~~
    ~~- Also swept in (benign, tool-driven): gofmt expansion of~~
-     ~~`visualtest/visual_test.go` struct literals, shfmt reformat of~~
-     ~~`scripts/ci-repro.sh`, markdown reflow across ~8 docs, a blank-line removal~~
-     ~~in `templates/custom.css`, out-CSS rebuilds — plus one genuinely GOOD~~
-     ~~alignment: `.golangci.yml` `run.go: 1.26.5` → `1.26.7` (stale from~~
-     ~~yesterday's toolchain bump).~~
+   ~~`visualtest/visual_test.go` struct literals, shfmt reformat of~~
+   ~~`scripts/ci-repro.sh`, markdown reflow across ~8 docs, a blank-line removal~~
+   ~~in `templates/custom.css`, out-CSS rebuilds — plus one genuinely GOOD~~
+   ~~alignment: `.golangci.yml` `run.go: 1.26.5` → `1.26.7` (stale from~~
+   ~~yesterday's toolchain bump).~~
    ~~- **Why this matters:** AGENTS.md's post-daemon-commit protocol exists for~~
-     ~~exactly this commit; CI (CSS Freshness, Website) is the tripwire and hasn't~~
-     ~~been checked yet (c2).~~
+   ~~exactly this commit; CI (CSS Freshness, Website) is the tripwire and hasn't~~
+   ~~been checked yet (c2).~~
 2. ~~**I violated the absolute NEVER-`rm` rule:** used `rm -rf~~ done (docs-health pass 2026-09-08)
    ~~/tmp/go-datastar-audit` for the audit clone. Zero data at risk (scratch dir~~
    ~~created seconds earlier), but the rule has no exceptions. Should have used~~

@@ -38,79 +38,79 @@
 
 ### Tier 2 — High (22/22 tasks, ALL done)
 
-| Task  | What was fixed                                                           | Package   |
-| ----- | ------------------------------------------------------------------------ | --------- |
-| P-020 | HTMX afterRequest clears data-tc-retry on success (stale counter)        | htmx      |
-| P-021 | HTMX responseError guards xhr null (was TypeError)                       | htmx      |
-| P-022 | HTMX empty nonce omitted (strict CSP silently disabled script)           | htmx      |
-| P-023 | HTMX LoadingButton htmx-hide-during-request class (both texts visible)   | htmx      |
-| P-024 | ThemeScript sets color-scheme (native controls match dark mode)          | layout    |
-| P-025 | ThemeToggle role=switch + aria-checked (no current state)                | layout    |
-| P-026 | Skip-link tabindex=-1 on main (focus didn't move in Safari/Chrome)       | layout    |
-| P-027 | Layout motion-reduce on scroll-smooth + transition-colors                | layout    |
-| P-028 | SRI falls back to default version (no silent integrity drop)             | layout    |
-| P-029 | 4 duplicate icon pairs aliased (Menu/Bars3, Refresh/ArrowPath, etc.)     | icons     |
-| P-030 | Spinner guard in iconPaths (was silently returning Question path)        | icons     |
-| P-031 | Test: every Name const has path coverage or is special                   | icons     |
-| P-032 | Panic moved to init() (was in render hot path)                           | icons     |
-| P-033 | errorpage Override nil contract (documented — kept current behavior)     | errorpage |
-| P-034 | Unknown errors map to Infrastructure (500) not Transient (503)           | errorpage |
-| P-035 | erroralert hover:bg-opacity-80 → hover:opacity-80 (Tailwind v4 fix)      | errorpage |
-| ~~P-040~~ | ~~renderWithShell wraps once, includes title in error~~ done at `8de2008` | ~~errorpage~~ |
-| ~~P-044~~ | ~~SwapStyle typed enum replaces bare string~~ done at `8de2008` | ~~htmx~~ |
-| ~~P-058~~ | ~~overlayScriptComponent HTML-escapes nonce (attribute boundary)~~ done at `8de2008` | ~~display~~ |
-| ~~P-059~~ | ~~htmx loading nil spinner guard (render panic)~~ done at `8de2008` | ~~htmx~~ |
-| ~~P-082~~ | ~~ModalSizeFull/DrawerFull deprecated aliases (ModalSize2XL/DrawerSize2XL)~~ done at `8de2008` | ~~display~~ |
-| P-077 | Button Disabled+Href renders aria-disabled/tabindex/pointer-events-none  | display   |
+| Task      | What was fixed                                                                                 | Package       |
+| --------- | ---------------------------------------------------------------------------------------------- | ------------- |
+| P-020     | HTMX afterRequest clears data-tc-retry on success (stale counter)                              | htmx          |
+| P-021     | HTMX responseError guards xhr null (was TypeError)                                             | htmx          |
+| P-022     | HTMX empty nonce omitted (strict CSP silently disabled script)                                 | htmx          |
+| P-023     | HTMX LoadingButton htmx-hide-during-request class (both texts visible)                         | htmx          |
+| P-024     | ThemeScript sets color-scheme (native controls match dark mode)                                | layout        |
+| P-025     | ThemeToggle role=switch + aria-checked (no current state)                                      | layout        |
+| P-026     | Skip-link tabindex=-1 on main (focus didn't move in Safari/Chrome)                             | layout        |
+| P-027     | Layout motion-reduce on scroll-smooth + transition-colors                                      | layout        |
+| P-028     | SRI falls back to default version (no silent integrity drop)                                   | layout        |
+| P-029     | 4 duplicate icon pairs aliased (Menu/Bars3, Refresh/ArrowPath, etc.)                           | icons         |
+| P-030     | Spinner guard in iconPaths (was silently returning Question path)                              | icons         |
+| P-031     | Test: every Name const has path coverage or is special                                         | icons         |
+| P-032     | Panic moved to init() (was in render hot path)                                                 | icons         |
+| P-033     | errorpage Override nil contract (documented — kept current behavior)                           | errorpage     |
+| P-034     | Unknown errors map to Infrastructure (500) not Transient (503)                                 | errorpage     |
+| P-035     | erroralert hover:bg-opacity-80 → hover:opacity-80 (Tailwind v4 fix)                            | errorpage     |
+| ~~P-040~~ | ~~renderWithShell wraps once, includes title in error~~ done at `8de2008`                      | ~~errorpage~~ |
+| ~~P-044~~ | ~~SwapStyle typed enum replaces bare string~~ done at `8de2008`                                | ~~htmx~~      |
+| ~~P-058~~ | ~~overlayScriptComponent HTML-escapes nonce (attribute boundary)~~ done at `8de2008`           | ~~display~~   |
+| ~~P-059~~ | ~~htmx loading nil spinner guard (render panic)~~ done at `8de2008`                            | ~~htmx~~      |
+| ~~P-082~~ | ~~ModalSizeFull/DrawerFull deprecated aliases (ModalSize2XL/DrawerSize2XL)~~ done at `8de2008` | ~~display~~   |
+| P-077     | Button Disabled+Href renders aria-disabled/tabindex/pointer-events-none                        | display       |
 
 ### Tier 3 — Medium (partially done, ~15 of 41)
 
-| Task  | What was fixed                                                         | Package    |
-| ----- | ---------------------------------------------------------------------- | ---------- |
-| ~~P-065~~ | ~~Breadcrumbs BaseURL for JSON-LD absolute URLs~~ done at `8de2008` | ~~navigation~~ |
-| P-067 | SimpleNav Sticky prop (was hardcoded true)                             | navigation |
-| P-068 | Skip MobileMenu when no links (was emitting empty div + script)        | navigation |
-| P-069 | IsActive helper shared by NavLink and SidebarNav                       | navigation |
-| P-070 | ToggleProps add Required/Error/HelpText + ErrorAttrs + motion-reduce   | forms      |
-| P-071 | ErrorAttrs emits aria-describedby when helpTextID set (id-less fields) | forms      |
-| P-072 | validation sanitizes err.Field before href                             | forms      |
-| ~~P-075~~ | ~~Avatar status dot renders in initials/fallback (was img-only)~~ done at `8de2008` | ~~display~~ |
-| P-078 | Empty Locale defaults to en (was lang="")                              | layout     |
-| P-079 | HTMXResponseTargets opt-out prop (was force-loaded)                    | layout     |
-| P-094 | sidebarItemActive dead '/' special-case removed (uses IsActive)        | navigation |
-| P-095 | navLinkClasses extract shared prefix const                             | navigation |
-| ~~P-098~~ | ~~textarea rows default 4 (matches DefaultTextareaProps)~~ done at `8de2008` | ~~forms~~ |
-| ~~P-099~~ | ~~comboboxInputClass const → func(hasError) for error-ring state~~ done at `8de2008` | ~~forms~~ |
-| P-123 | pagination normalize() consolidates all defaults                       | navigation |
+| Task      | What was fixed                                                                       | Package        |
+| --------- | ------------------------------------------------------------------------------------ | -------------- |
+| ~~P-065~~ | ~~Breadcrumbs BaseURL for JSON-LD absolute URLs~~ done at `8de2008`                  | ~~navigation~~ |
+| P-067     | SimpleNav Sticky prop (was hardcoded true)                                           | navigation     |
+| P-068     | Skip MobileMenu when no links (was emitting empty div + script)                      | navigation     |
+| P-069     | IsActive helper shared by NavLink and SidebarNav                                     | navigation     |
+| P-070     | ToggleProps add Required/Error/HelpText + ErrorAttrs + motion-reduce                 | forms          |
+| P-071     | ErrorAttrs emits aria-describedby when helpTextID set (id-less fields)               | forms          |
+| P-072     | validation sanitizes err.Field before href                                           | forms          |
+| ~~P-075~~ | ~~Avatar status dot renders in initials/fallback (was img-only)~~ done at `8de2008`  | ~~display~~    |
+| P-078     | Empty Locale defaults to en (was lang="")                                            | layout         |
+| P-079     | HTMXResponseTargets opt-out prop (was force-loaded)                                  | layout         |
+| P-094     | sidebarItemActive dead '/' special-case removed (uses IsActive)                      | navigation     |
+| P-095     | navLinkClasses extract shared prefix const                                           | navigation     |
+| ~~P-098~~ | ~~textarea rows default 4 (matches DefaultTextareaProps)~~ done at `8de2008`         | ~~forms~~      |
+| ~~P-099~~ | ~~comboboxInputClass const → func(hasError) for error-ring state~~ done at `8de2008` | ~~forms~~      |
+| P-123     | pagination normalize() consolidates all defaults                                     | navigation     |
 
 ### Tier 4 — Polish (partially done, ~20 of 41)
 
-| Task  | What was fixed                                                            | Package         |
-| ----- | ------------------------------------------------------------------------- | --------------- |
-| P-083 | feedback helpers_test: hand-rolled contains → strings.Contains            | feedback        |
-| P-084 | feedback: remove alertIconName/toastIconName pure-indirection wrappers    | feedback        |
-| P-085 | feedback: inline feedbackStyle in alert/toast; delete duplicate unpackers | feedback        |
-| P-086 | feedback: standardize data-dismiss (DismissScript handles role=status)    | feedback        |
-| P-087 | feedback: feedbackStyleDefault uses named-field struct literal            | feedback        |
-| P-088 | feedback: add explicit MD entries to spinner/progress lookup maps         | feedback        |
-| P-089 | display: remove dropdownItemLink dead variadic extraAttrs param           | display         |
-| P-090 | display: inline emptyStateIcon one-line wrapper                           | display         |
-| P-093 | display: tabs remove nested nav duplicate aria-label (kept on tablist)    | display         |
-| P-101 | forms: extract errorIDSuffix constant                                     | forms           |
-| P-102 | errorpage: errorResponse.Context typed as map[string]string (was any)     | errorpage       |
-| ~~P-104~~ | ~~errorpage: FromError calls errors.AsType once (was twice)~~ done at `8de2008` | ~~errorpage~~ |
-| P-106 | golden.go:38 nil-deref false positive — annotated (flag.Bool never nil)   | internal/golden |
-| P-107 | golden.Assert: path-traversal guard rejects names with / or ..            | internal/golden |
-| P-108 | golden tests: replace hand-rolled contains with strings.Contains          | internal/golden |
-| ~~P-110~~ | ~~icons: centralize Spinner-is-special rule (specialIcons map)~~ done at `8de2008` | ~~icons~~ |
-| P-115 | integration: render components inside layout.Base test                    | integration     |
-| P-116 | integration: add ThemeScript/ThemeToggle to CSPNonceConsistency           | integration     |
-| P-117 | navigation: MobileNavLink External test (security bug test)               | navigation      |
-| P-118 | navigation: two-Nav unique ID collision test                              | navigation      |
-| ~~P-055~~ | ~~utils: Ternary eager-evaluation caveat documented~~ done at `8de2008` | ~~utils~~ |
-| P-060 | utils: EnsureID atomic counter fallback (was predictable nanos)           | utils           |
-| P-061 | utils: ValidateID (kept — SanitizeID lives in forms by design)            | utils           |
-| P-062 | utils: version_test (kept — t.Skip is intentional for cwd portability)    | utils           |
+| Task      | What was fixed                                                                     | Package         |
+| --------- | ---------------------------------------------------------------------------------- | --------------- |
+| P-083     | feedback helpers_test: hand-rolled contains → strings.Contains                     | feedback        |
+| P-084     | feedback: remove alertIconName/toastIconName pure-indirection wrappers             | feedback        |
+| P-085     | feedback: inline feedbackStyle in alert/toast; delete duplicate unpackers          | feedback        |
+| P-086     | feedback: standardize data-dismiss (DismissScript handles role=status)             | feedback        |
+| P-087     | feedback: feedbackStyleDefault uses named-field struct literal                     | feedback        |
+| P-088     | feedback: add explicit MD entries to spinner/progress lookup maps                  | feedback        |
+| P-089     | display: remove dropdownItemLink dead variadic extraAttrs param                    | display         |
+| P-090     | display: inline emptyStateIcon one-line wrapper                                    | display         |
+| P-093     | display: tabs remove nested nav duplicate aria-label (kept on tablist)             | display         |
+| P-101     | forms: extract errorIDSuffix constant                                              | forms           |
+| P-102     | errorpage: errorResponse.Context typed as map[string]string (was any)              | errorpage       |
+| ~~P-104~~ | ~~errorpage: FromError calls errors.AsType once (was twice)~~ done at `8de2008`    | ~~errorpage~~   |
+| P-106     | golden.go:38 nil-deref false positive — annotated (flag.Bool never nil)            | internal/golden |
+| P-107     | golden.Assert: path-traversal guard rejects names with / or ..                     | internal/golden |
+| P-108     | golden tests: replace hand-rolled contains with strings.Contains                   | internal/golden |
+| ~~P-110~~ | ~~icons: centralize Spinner-is-special rule (specialIcons map)~~ done at `8de2008` | ~~icons~~       |
+| P-115     | integration: render components inside layout.Base test                             | integration     |
+| P-116     | integration: add ThemeScript/ThemeToggle to CSPNonceConsistency                    | integration     |
+| P-117     | navigation: MobileNavLink External test (security bug test)                        | navigation      |
+| P-118     | navigation: two-Nav unique ID collision test                                       | navigation      |
+| ~~P-055~~ | ~~utils: Ternary eager-evaluation caveat documented~~ done at `8de2008`            | ~~utils~~       |
+| P-060     | utils: EnsureID atomic counter fallback (was predictable nanos)                    | utils           |
+| P-061     | utils: ValidateID (kept — SanitizeID lives in forms by design)                     | utils           |
+| P-062     | utils: version_test (kept — t.Skip is intentional for cwd portability)             | utils           |
 
 ### Summary counts
 
@@ -137,48 +137,48 @@
 
 These tasks were identified in the plan but not yet implemented. All are Tier 3 (Medium) or Tier 4 (Polish) — no remaining Critical or High issues:
 
-| Task  | Description                                                      | Effort |
-| ----- | ---------------------------------------------------------------- | ------ |
-| ~~P-036~~ | ~~WriteErrorPage: derive status from props.Family~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~S~~ |
-| ~~P-037~~ | ~~renderWithShell: render to buffer before WriteHeader~~ done — errorpage/handler buffer test.go | ~~M~~ |
-| ~~P-038~~ | ~~FromError: add ErrorTitle() extraction + family default~~ done — errorpage/fromerror.go | ~~S~~ |
-| ~~P-039~~ | ~~contextTable: use dl or add caption/th+scope~~ done — errorpage/shared.templ caption | ~~S~~ |
-| ~~P-041~~ | ~~handler.go (354 lines): split into 3 files~~ done — errorpage/constructors.go | ~~S~~ |
-| P-042 | StatusBadge: typed status alias with constants                   | S      |
-| ~~P-043~~ | ~~FormMethod: add PUT/DELETE/PATCH or document Attrs path~~ done — forms/form.templ Attrs doc | ~~XS~~ |
-| P-045 | paginationArrow roundedSide: typed enum                          | S      |
-| P-046 | DropdownItem: deprecate Href fallback, require Kind              | S      |
-| ~~P-047~~ | ~~HTMXVersion: typed const set~~ done — layout/sri.go HTMXVersion2 0 10 | ~~S~~ |
-| ~~P-048~~ | ~~ThemeColor/DarkThemeColor: hex validation~~ done — layout/base.templ themeColor validation | ~~S~~ |
-| ~~P-049~~ | ~~Label/FormFieldWrapper: convert to Props structs~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~S~~ |
-| ~~P-050~~ | ~~htmx helpers: convert to Props structs with BaseProps~~ done — htmx ConfirmDeleteProps/SwapOOBProps | ~~M~~ |
-| P-051 | tabLink: pack active/inactive classes into struct                | S      |
-| P-052 | paginationArrow (7 params) → props struct                        | S      |
-| P-053 | activeSpanOrLink (5 positional params) → struct or split         | S      |
-| P-054 | diagnosticSection (5 positional args) → props struct             | S      |
-| P-056 | Move DismissScript out of utils (foundation leaks DOM/JS)        | S      |
-| ~~P-057~~ | ~~Hoist Combobox/Accordion/Dropdown global scripts (one-shot)~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~M~~ |
-| P-063 | errorpage: 4 fmt.Errorf → go-error-family constructors           | M      |
-| P-064 | errorpage familyStyleMap: builder to dedup 6 entries             | M      |
-| ~~P-073~~ | ~~Tooltip: Escape-to-dismiss + touch fallback~~ done — display/tooltip.templ | ~~M~~ |
-| ~~P-074~~ | ~~Tooltip: auto-gen ID via EnsureID; always aria-describedby~~ done — display/tooltip.templ | ~~S~~ |
-| ~~P-076~~ | ~~Icon accessible variant (role=img + title)~~ done — icons/custom icon.templ role=img | ~~M~~ |
-| P-080 | utils Class(): per-shard mutex or result cache                   | L      |
+| Task      | Description                                                                                                                  | Effort |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------- | ------ |
+| ~~P-036~~ | ~~WriteErrorPage: derive status from props.Family~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md                  | ~~S~~  |
+| ~~P-037~~ | ~~renderWithShell: render to buffer before WriteHeader~~ done — errorpage/handler buffer test.go                             | ~~M~~  |
+| ~~P-038~~ | ~~FromError: add ErrorTitle() extraction + family default~~ done — errorpage/fromerror.go                                    | ~~S~~  |
+| ~~P-039~~ | ~~contextTable: use dl or add caption/th+scope~~ done — errorpage/shared.templ caption                                       | ~~S~~  |
+| ~~P-041~~ | ~~handler.go (354 lines): split into 3 files~~ done — errorpage/constructors.go                                              | ~~S~~  |
+| P-042     | StatusBadge: typed status alias with constants                                                                               | S      |
+| ~~P-043~~ | ~~FormMethod: add PUT/DELETE/PATCH or document Attrs path~~ done — forms/form.templ Attrs doc                                | ~~XS~~ |
+| P-045     | paginationArrow roundedSide: typed enum                                                                                      | S      |
+| P-046     | DropdownItem: deprecate Href fallback, require Kind                                                                          | S      |
+| ~~P-047~~ | ~~HTMXVersion: typed const set~~ done — layout/sri.go HTMXVersion2 0 10                                                      | ~~S~~  |
+| ~~P-048~~ | ~~ThemeColor/DarkThemeColor: hex validation~~ done — layout/base.templ themeColor validation                                 | ~~S~~  |
+| ~~P-049~~ | ~~Label/FormFieldWrapper: convert to Props structs~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md                 | ~~S~~  |
+| ~~P-050~~ | ~~htmx helpers: convert to Props structs with BaseProps~~ done — htmx ConfirmDeleteProps/SwapOOBProps                        | ~~M~~  |
+| P-051     | tabLink: pack active/inactive classes into struct                                                                            | S      |
+| P-052     | paginationArrow (7 params) → props struct                                                                                    | S      |
+| P-053     | activeSpanOrLink (5 positional params) → struct or split                                                                     | S      |
+| P-054     | diagnosticSection (5 positional args) → props struct                                                                         | S      |
+| P-056     | Move DismissScript out of utils (foundation leaks DOM/JS)                                                                    | S      |
+| ~~P-057~~ | ~~Hoist Combobox/Accordion/Dropdown global scripts (one-shot)~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md      | ~~M~~  |
+| P-063     | errorpage: 4 fmt.Errorf → go-error-family constructors                                                                       | M      |
+| P-064     | errorpage familyStyleMap: builder to dedup 6 entries                                                                         | M      |
+| ~~P-073~~ | ~~Tooltip: Escape-to-dismiss + touch fallback~~ done — display/tooltip.templ                                                 | ~~M~~  |
+| ~~P-074~~ | ~~Tooltip: auto-gen ID via EnsureID; always aria-describedby~~ done — display/tooltip.templ                                  | ~~S~~  |
+| ~~P-076~~ | ~~Icon accessible variant (role=img + title)~~ done — icons/custom icon.templ role=img                                       | ~~M~~  |
+| P-080     | utils Class(): per-shard mutex or result cache                                                                               | L      |
 | ~~P-091~~ | ~~buttonVariantDefault/badgeStyleDefault use map fallback directly~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~XS~~ |
-| ~~P-092~~ | ~~drawer inline style → Tailwind classes~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~XS~~ |
-| ~~P-096~~ | ~~pageURL preserve fragment across re-encode~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~XS~~ |
-| P-100 | InputGroupPaddingClass: wire into InputGroup or delete           | S      |
-| ~~P-103~~ | ~~Remove unreachable props.Timestamp=="" branch~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~XS~~ |
-| ~~P-105~~ | ~~ExtractCauseChain: handle errors.Join siblings~~ done — errorpage/fromerror.go errors.Join | ~~S~~ |
-| P-109 | icons docs: reword "single source of truth" (per-style)          | XS     |
-| P-111 | IconPathJS: accept strokeWidth arg (hardcoded 1.5)               | XS     |
-| ~~P-112~~ | ~~example_test: add // Output directives or convert to Test\*~~ done — forms/example test.go Output | ~~S~~ |
-| P-113 | layout: consolidate 7 overlapping test files into 2              | M      |
-| P-114 | feedback: add toastJSStyles/toastJSIconPaths table tests         | S      |
-| P-119 | paginationRange: add current>total test case                     | XS     |
-| P-120 | DefinitionItem/TableCell: unify dual string+Component slot       | S      |
-| P-121 | errorpage: accept label strings via props for i18n               | M      |
-| P-122 | SidebarNavItem: embed BaseProps                                  | XS     |
+| ~~P-092~~ | ~~drawer inline style → Tailwind classes~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md                           | ~~XS~~ |
+| ~~P-096~~ | ~~pageURL preserve fragment across re-encode~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md                       | ~~XS~~ |
+| P-100     | InputGroupPaddingClass: wire into InputGroup or delete                                                                       | S      |
+| ~~P-103~~ | ~~Remove unreachable props.Timestamp=="" branch~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md                    | ~~XS~~ |
+| ~~P-105~~ | ~~ExtractCauseChain: handle errors.Join siblings~~ done — errorpage/fromerror.go errors.Join                                 | ~~S~~  |
+| P-109     | icons docs: reword "single source of truth" (per-style)                                                                      | XS     |
+| P-111     | IconPathJS: accept strokeWidth arg (hardcoded 1.5)                                                                           | XS     |
+| ~~P-112~~ | ~~example_test: add // Output directives or convert to Test\*~~ done — forms/example test.go Output                          | ~~S~~  |
+| P-113     | layout: consolidate 7 overlapping test files into 2                                                                          | M      |
+| P-114     | feedback: add toastJSStyles/toastJSIconPaths table tests                                                                     | S      |
+| P-119     | paginationRange: add current>total test case                                                                                 | XS     |
+| P-120     | DefinitionItem/TableCell: unify dual string+Component slot                                                                   | S      |
+| P-121     | errorpage: accept label strings via props for i18n                                                                           | M      |
+| P-122     | SidebarNavItem: embed BaseProps                                                                                              | XS     |
 
 ---
 
@@ -240,33 +240,33 @@ These tasks were identified in the plan but not yet implemented. All are Tier 3 
 
 Sorted by impact × inverse effort (highest value first):
 
-| #  | Task                                                      | Impact | Effort | Rationale                                                                 |
-| -- | --------------------------------------------------------- | ------ | ------ | ------------------------------------------------------------------------- |
-| ~~1~~  | ~~P-049 Label/FormFieldWrapper → Props structs~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~M~~ | ~~S~~ | ~~Used by every form component; positional params are a real footgun~~ |
-| ~~2~~  | ~~P-057 Hoist Combobox/Accordion/Dropdown scripts~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~M~~ | ~~M~~ | ~~Page weight reduction on multi-instance pages~~ |
-| ~~3~~  | ~~P-041 Split handler.go into 3 files~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~M~~ | ~~S~~ | ~~354 lines is hard to navigate; quick split improves maintainability~~ |
-| ~~4~~  | ~~P-037 renderWithShell render to buffer before WriteHeader~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~M~~ | ~~M~~ | ~~Templ error mid-stream = truncated HTML doc at wrong status; correctness~~ |
-| ~~5~~  | ~~P-043 FormMethod add PUT/DELETE/PATCH~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~S~~ | ~~XS~~ | ~~HTMX users need these verbs; currently silently downgrades to GET~~ |
-| ~~6~~  | ~~P-074 Tooltip auto-gen ID + aria-describedby~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~M~~ | ~~S~~ | ~~Tooltips invisible to AT without ID; EnsureID pattern already exists~~ |
-| ~~7~~  | ~~P-073 Tooltip Escape-to-dismiss + touch fallback~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~M~~ | ~~M~~ | ~~Tooltip content invisible on touch devices~~ |
-| ~~8~~  | ~~P-050 htmx helpers → Props structs~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~M~~ | ~~M~~ | ~~Brings htmx in line with rest of library; enables Class/ID/Attrs~~ |
-| 9  | P-046 DropdownItem deprecate Href fallback                | M      | S      | Dual discrimination drops href silently; Kind should be required          |
-| ~~10~~ | ~~P-036 WriteErrorPage derive status from Family~~ done — errorpage/statuscode test.go | ~~M~~ | ~~S~~ | ~~Status code + Family can disagree → wrong HTTP code~~ |
-| ~~11~~ | ~~P-038 FromError ErrorTitle extraction~~ done — errorpage/fromerror.go | ~~S~~ | ~~S~~ | ~~Every dynamically-derived error page is titleless~~ |
-| 12 | P-064 errorpage familyStyleMap builder                    | M      | M      | 6 near-identical 8-field entries → builder reduces drift                  |
-| 13 | P-063 errorpage fmt.Errorf → go-error-family              | M      | M      | branching-flow flagged; consistency with error family integration         |
-| 14 | P-042 StatusBadge typed alias                             | S      | S      | Magic string map is only validation; typed alias adds compile-time safety |
-| ~~15~~ | ~~P-047 HTMXVersion typed const set~~ done — layout/sri.go | ~~M~~ | ~~S~~ | ~~Typos silently drop SRI; typed const catches at compile time~~ |
-| ~~16~~ | ~~P-076 Icon accessible variant (role=img + title)~~ done — icons/custom icon.templ | ~~L~~ | ~~M~~ | ~~Icons as sole button content invisible to AT~~ |
-| ~~17~~ | ~~P-039 contextTable → dl~~ done — errorpage/shared.templ | ~~S~~ | ~~S~~ | ~~Screen readers mis-announce definition data as table~~ |
-| 18 | P-052 paginationArrow → props struct                      | XS     | S      | 7 positional params; highest param count in the package                   |
-| 18 | P-112 example_test // Output directives                   | S      | S      | Zero regression protection from Example functions today                   |
-| 20 | P-113 layout consolidate 7 test files → 2                 | M      | M      | Massive duplication; rename "coverage_boost" anti-pattern                 |
-| 21 | P-056 Move DismissScript out of utils                     | S      | S      | Foundation package leaks browser-specific DOM concerns                    |
-| ~~22~~ | ~~P-048 ThemeColor hex validation~~ done — layout/base.templ | ~~S~~ | ~~S~~ | ~~Garbage renders into meta tag unchanged~~ |
-| ~~23~~ | ~~P-105 ExtractCauseChain errors.Join~~ done — errorpage/fromerror.go | ~~XS~~ | ~~S~~ | ~~Go 1.20+ Join siblings silently ignored~~ |
-| 24 | P-114 toastJSStyles/toastJSIconPaths tests                | S      | S      | Non-trivial untested string builders                                      |
-| 25 | P-080 utils Class() per-shard mutex                       | M      | L      | Real contention bottleneck under concurrent SSR                           |
+| #      | Task                                                                                                                  | Impact | Effort | Rationale                                                                    |
+| ------ | --------------------------------------------------------------------------------------------------------------------- | ------ | ------ | ---------------------------------------------------------------------------- |
+| ~~1~~  | ~~P-049 Label/FormFieldWrapper → Props structs~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md              | ~~M~~  | ~~S~~  | ~~Used by every form component; positional params are a real footgun~~       |
+| ~~2~~  | ~~P-057 Hoist Combobox/Accordion/Dropdown scripts~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md           | ~~M~~  | ~~M~~  | ~~Page weight reduction on multi-instance pages~~                            |
+| ~~3~~  | ~~P-041 Split handler.go into 3 files~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md                       | ~~M~~  | ~~S~~  | ~~354 lines is hard to navigate; quick split improves maintainability~~      |
+| ~~4~~  | ~~P-037 renderWithShell render to buffer before WriteHeader~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md | ~~M~~  | ~~M~~  | ~~Templ error mid-stream = truncated HTML doc at wrong status; correctness~~ |
+| ~~5~~  | ~~P-043 FormMethod add PUT/DELETE/PATCH~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md                     | ~~S~~  | ~~XS~~ | ~~HTMX users need these verbs; currently silently downgrades to GET~~        |
+| ~~6~~  | ~~P-074 Tooltip auto-gen ID + aria-describedby~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md              | ~~M~~  | ~~S~~  | ~~Tooltips invisible to AT without ID; EnsureID pattern already exists~~     |
+| ~~7~~  | ~~P-073 Tooltip Escape-to-dismiss + touch fallback~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md          | ~~M~~  | ~~M~~  | ~~Tooltip content invisible on touch devices~~                               |
+| ~~8~~  | ~~P-050 htmx helpers → Props structs~~ done — 2026-06-28 04-05 phase-2-remediation-progress.md                        | ~~M~~  | ~~M~~  | ~~Brings htmx in line with rest of library; enables Class/ID/Attrs~~         |
+| 9      | P-046 DropdownItem deprecate Href fallback                                                                            | M      | S      | Dual discrimination drops href silently; Kind should be required             |
+| ~~10~~ | ~~P-036 WriteErrorPage derive status from Family~~ done — errorpage/statuscode test.go                                | ~~M~~  | ~~S~~  | ~~Status code + Family can disagree → wrong HTTP code~~                      |
+| ~~11~~ | ~~P-038 FromError ErrorTitle extraction~~ done — errorpage/fromerror.go                                               | ~~S~~  | ~~S~~  | ~~Every dynamically-derived error page is titleless~~                        |
+| 12     | P-064 errorpage familyStyleMap builder                                                                                | M      | M      | 6 near-identical 8-field entries → builder reduces drift                     |
+| 13     | P-063 errorpage fmt.Errorf → go-error-family                                                                          | M      | M      | branching-flow flagged; consistency with error family integration            |
+| 14     | P-042 StatusBadge typed alias                                                                                         | S      | S      | Magic string map is only validation; typed alias adds compile-time safety    |
+| ~~15~~ | ~~P-047 HTMXVersion typed const set~~ done — layout/sri.go                                                            | ~~M~~  | ~~S~~  | ~~Typos silently drop SRI; typed const catches at compile time~~             |
+| ~~16~~ | ~~P-076 Icon accessible variant (role=img + title)~~ done — icons/custom icon.templ                                   | ~~L~~  | ~~M~~  | ~~Icons as sole button content invisible to AT~~                             |
+| ~~17~~ | ~~P-039 contextTable → dl~~ done — errorpage/shared.templ                                                             | ~~S~~  | ~~S~~  | ~~Screen readers mis-announce definition data as table~~                     |
+| 18     | P-052 paginationArrow → props struct                                                                                  | XS     | S      | 7 positional params; highest param count in the package                      |
+| 18     | P-112 example_test // Output directives                                                                               | S      | S      | Zero regression protection from Example functions today                      |
+| 20     | P-113 layout consolidate 7 test files → 2                                                                             | M      | M      | Massive duplication; rename "coverage_boost" anti-pattern                    |
+| 21     | P-056 Move DismissScript out of utils                                                                                 | S      | S      | Foundation package leaks browser-specific DOM concerns                       |
+| ~~22~~ | ~~P-048 ThemeColor hex validation~~ done — layout/base.templ                                                          | ~~S~~  | ~~S~~  | ~~Garbage renders into meta tag unchanged~~                                  |
+| ~~23~~ | ~~P-105 ExtractCauseChain errors.Join~~ done — errorpage/fromerror.go                                                 | ~~XS~~ | ~~S~~  | ~~Go 1.20+ Join siblings silently ignored~~                                  |
+| 24     | P-114 toastJSStyles/toastJSIconPaths tests                                                                            | S      | S      | Non-trivial untested string builders                                         |
+| 25     | P-080 utils Class() per-shard mutex                                                                                   | M      | L      | Real contention bottleneck under concurrent SSR                              |
 
 ---
 

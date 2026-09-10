@@ -253,7 +253,7 @@ about the actual fixes (shadow bug, disabled linter removal, import sync). `git 
 
 3. ~~**Should the `visualtest/doc.go` allocator pattern be rewritten entirely?** The `sync.Once`~~ **Won't implement — nolint fix.**
    ~~- package-level vars + `=` (not `:=`) pattern is fragile — it's been broken 3 times. An~~
-     ~~alternative is a lazy-init struct (e.g., `type browserAllocator struct { once sync.Once;~~
+   ~~alternative is a lazy-init struct (e.g., `type browserAllocator struct { once sync.Once;~~
 ~~ctx context.Context; cancel context.CancelFunc; init func() (context.Context, context.CancelFunc) }`)~~
-     ~~which makes shadowing impossible. But this changes the package's public API (`ShutdownBrowser()`~~
-     ~~signature) and I don't know if external consumers depend on the current API shape.~~
+   ~~which makes shadowing impossible. But this changes the package's public API (`ShutdownBrowser()`~~
+   ~~signature) and I don't know if external consumers depend on the current API shape.~~

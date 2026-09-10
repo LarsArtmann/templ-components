@@ -63,45 +63,45 @@ Sorted by importance → impact → customer value (effort shown for scheduling)
 
 ### Phase 0 — P0: Trust & Ship (1% + 4%; ≈7h)
 
-| ID  | Task (30–100min)                                                                                                                          | Impact       | Effort | Customer value                                | Depends | Source              |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------ | --------------------------------------------- | ------- | ------------------- |
-| ~~T01~~ | ~~E2E: dual-transport form submit in real Chromium (Datastar bundle + htmx)~~ done — visualtest/wire form e2e test.go | ~~**Critical**~~ | ~~90m~~ | ~~Proof the headline feature works in a browser~~ | ~~—~~ | ~~report #1~~ |
-| ~~T02~~ | ~~E2E: validation round-trip (invalid submit → field errors visible) + demo `/api/wire/form` invalid branch + error fragment + tests/golden~~ done — form validation errors golden | ~~**Critical**~~ | ~~60m~~ | ~~The #1 forms use case, proven~~ | ~~T01~~ | ~~report #9,#10~~ |
-| ~~T03~~ | ~~Recipe `docs/recipes/server-side-validation.md` (both transports, 422 pattern)~~ done — docs/recipes/server-side-validation.md | ~~High~~ | ~~45m~~ | ~~Copy-pasteable pattern~~ | ~~T02~~ | ~~report #9~~ |
-| ~~T04~~ | ~~Bookkeeping: TODO #153 close, wire-gates D3 Form entry, DOMAIN_LANGUAGE terms, AGENTS.md templ-import gotcha~~ done — wire-gates D3 TODO 153 closed | ~~High~~ | ~~30m~~ | ~~Prevents drift; unblocks trust audit~~ | ~~—~~ | ~~report #3,#4,#8,#33~~ |
-| ~~T05~~ | ~~Verification hygiene: visualtest compile+tidy, canonical `nix run .#verify`, prerender freshness, wire PNG check~~ done — nix run verify canonical | ~~High~~ | ~~45m~~ | ~~The session's stated verification gaps~~ | ~~—~~ | ~~report #2,#5,#6,#7~~ |
-| ~~T06~~ | ~~**Release v1.13.3**: verify matrix → `scripts/release.sh` → re-add replaces + post-release tidy sweep → CI green~~ done — CHANGELOG v1.13.3 | ~~**Critical**~~ | ~~90m~~ | ~~Value ships~~ | ~~T01–T05~~ | ~~report #42~~ |
+| ID      | Task (30–100min)                                                                                                                                                                   | Impact           | Effort  | Customer value                                    | Depends     | Source                  |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ------- | ------------------------------------------------- | ----------- | ----------------------- |
+| ~~T01~~ | ~~E2E: dual-transport form submit in real Chromium (Datastar bundle + htmx)~~ done — visualtest/wire form e2e test.go                                                              | ~~**Critical**~~ | ~~90m~~ | ~~Proof the headline feature works in a browser~~ | ~~—~~       | ~~report #1~~           |
+| ~~T02~~ | ~~E2E: validation round-trip (invalid submit → field errors visible) + demo `/api/wire/form` invalid branch + error fragment + tests/golden~~ done — form validation errors golden | ~~**Critical**~~ | ~~60m~~ | ~~The #1 forms use case, proven~~                 | ~~T01~~     | ~~report #9,#10~~       |
+| ~~T03~~ | ~~Recipe `docs/recipes/server-side-validation.md` (both transports, 422 pattern)~~ done — docs/recipes/server-side-validation.md                                                   | ~~High~~         | ~~45m~~ | ~~Copy-pasteable pattern~~                        | ~~T02~~     | ~~report #9~~           |
+| ~~T04~~ | ~~Bookkeeping: TODO #153 close, wire-gates D3 Form entry, DOMAIN_LANGUAGE terms, AGENTS.md templ-import gotcha~~ done — wire-gates D3 TODO 153 closed                              | ~~High~~         | ~~30m~~ | ~~Prevents drift; unblocks trust audit~~          | ~~—~~       | ~~report #3,#4,#8,#33~~ |
+| ~~T05~~ | ~~Verification hygiene: visualtest compile+tidy, canonical `nix run .#verify`, prerender freshness, wire PNG check~~ done — nix run verify canonical                               | ~~High~~         | ~~45m~~ | ~~The session's stated verification gaps~~        | ~~—~~       | ~~report #2,#5,#6,#7~~  |
+| ~~T06~~ | ~~**Release v1.13.3**: verify matrix → `scripts/release.sh` → re-add replaces + post-release tidy sweep → CI green~~ done — CHANGELOG v1.13.3                                      | ~~**Critical**~~ | ~~90m~~ | ~~Value ships~~                                   | ~~T01–T05~~ | ~~report #42~~          |
 
 ### Phase 1 — P1: Forms Pattern Pack (20%→80%; ≈9.5h)
 
-| ID  | Task                                                                                                                 | Impact              | Effort | Value                                   | Depends |
-| --- | -------------------------------------------------------------------------------------------------------------------- | ------------------- | ------ | --------------------------------------- | ------- |
-| ~~T07~~ | ~~`FormProps.NoValidate` + tests + golden + docs~~ done — FormProps NoValidate | ~~Medium-High~~ | ~~45m~~ | ~~Validation opt-out symmetry~~ | ~~T06~~ |
-| ~~T08~~ | ~~Decode Datastar modifier spelling (unminified upstream) → facts doc~~ done — datastar modifier decoded facts | ~~High (unblocks T09)~~ | ~~45m~~ | ~~Verified fact replaces softened claim~~ | ~~—~~ |
-| ~~T09~~ | ~~`forms.FilterInput` — debounced dual-transport search (full matrix: golden/a11y/BDD/edge/example/contract/demo/docs)~~ done — forms/filter input.templ | ~~High~~ | ~~100m~~ | ~~Search/filter = top-2 forms pattern~~ | ~~T08~~ |
-| ~~T10~~ | ~~`FilterDropdown.Wire` — tradeoff note + implementation + tests/goldens~~ done — FilterDropdownProps Wire | ~~Medium-High~~ | ~~90m~~ | ~~Transport parity for existing component~~ | ~~T08~~ |
-| ~~T11~~ | ~~Busy-state recipe + demo (LoadingButton vs datastar.Indicator on wired submits)~~ done — transport-wiring busy state | ~~Medium~~ | ~~45m~~ | ~~Perceived perf on submits~~ | ~~T06~~ |
-| ~~T12~~ | ~~File-upload recipe + demo (multipart + FileInput + wire)~~ done — docs/recipes/file-upload.md | ~~Medium~~ | ~~60m~~ | ~~Uploads work under both runtimes~~ | ~~T06~~ |
-| ~~T13~~ | ~~GET search-form recipe + demo (query-param parity)~~ done — GET search wire forms pack e2e | ~~Medium~~ | ~~30m~~ | ~~Cheap, frequent pattern~~ | ~~T06~~ |
-| ~~T14~~ | ~~Hardening: integration composition, `ExampleForm_wire`, fuzz `formWireAttributes`, `Validate+Wire` Datastar golden~~ done — ExampleForm wire fuzz goldens | ~~Medium~~ | ~~60m~~ | ~~Surface durability~~ | ~~T06~~ |
-| ~~T15~~ | ~~a11y/BDD: Form-wire BDD specs, aria-live verdict pin~~ done — Form wire BDD aria live | ~~Medium~~ | ~~45m~~ | ~~Repo's "done" bar~~ | ~~T02~~ |
-| ~~T16~~ | ~~Docs polish batch (SKILL quick-start, datastar-integration link, javascript-guide note, README blurb)~~ done — SKILL quickstart README | ~~Medium~~ | ~~45m~~ | ~~Adoption/discoverability~~ | ~~T06~~ |
+| ID      | Task                                                                                                                                                        | Impact                  | Effort   | Value                                       | Depends |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | -------- | ------------------------------------------- | ------- |
+| ~~T07~~ | ~~`FormProps.NoValidate` + tests + golden + docs~~ done — FormProps NoValidate                                                                              | ~~Medium-High~~         | ~~45m~~  | ~~Validation opt-out symmetry~~             | ~~T06~~ |
+| ~~T08~~ | ~~Decode Datastar modifier spelling (unminified upstream) → facts doc~~ done — datastar modifier decoded facts                                              | ~~High (unblocks T09)~~ | ~~45m~~  | ~~Verified fact replaces softened claim~~   | ~~—~~   |
+| ~~T09~~ | ~~`forms.FilterInput` — debounced dual-transport search (full matrix: golden/a11y/BDD/edge/example/contract/demo/docs)~~ done — forms/filter input.templ    | ~~High~~                | ~~100m~~ | ~~Search/filter = top-2 forms pattern~~     | ~~T08~~ |
+| ~~T10~~ | ~~`FilterDropdown.Wire` — tradeoff note + implementation + tests/goldens~~ done — FilterDropdownProps Wire                                                  | ~~Medium-High~~         | ~~90m~~  | ~~Transport parity for existing component~~ | ~~T08~~ |
+| ~~T11~~ | ~~Busy-state recipe + demo (LoadingButton vs datastar.Indicator on wired submits)~~ done — transport-wiring busy state                                      | ~~Medium~~              | ~~45m~~  | ~~Perceived perf on submits~~               | ~~T06~~ |
+| ~~T12~~ | ~~File-upload recipe + demo (multipart + FileInput + wire)~~ done — docs/recipes/file-upload.md                                                             | ~~Medium~~              | ~~60m~~  | ~~Uploads work under both runtimes~~        | ~~T06~~ |
+| ~~T13~~ | ~~GET search-form recipe + demo (query-param parity)~~ done — GET search wire forms pack e2e                                                                | ~~Medium~~              | ~~30m~~  | ~~Cheap, frequent pattern~~                 | ~~T06~~ |
+| ~~T14~~ | ~~Hardening: integration composition, `ExampleForm_wire`, fuzz `formWireAttributes`, `Validate+Wire` Datastar golden~~ done — ExampleForm wire fuzz goldens | ~~Medium~~              | ~~60m~~  | ~~Surface durability~~                      | ~~T06~~ |
+| ~~T15~~ | ~~a11y/BDD: Form-wire BDD specs, aria-live verdict pin~~ done — Form wire BDD aria live                                                                     | ~~Medium~~              | ~~45m~~  | ~~Repo's "done" bar~~                       | ~~T02~~ |
+| ~~T16~~ | ~~Docs polish batch (SKILL quick-start, datastar-integration link, javascript-guide note, README blurb)~~ done — SKILL quickstart README                    | ~~Medium~~              | ~~45m~~  | ~~Adoption/discoverability~~                | ~~T06~~ |
 
 ### Phase 2 — P2: Long Tail → 100% (other 20%; ≈10h)
 
-| ID  | Task                                                                                                                                                    | Impact  | Effort | Value                                                           | Depends |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------ | --------------------------------------------------------------- | ------- |
-| ~~T17~~ | ~~ADR: ContentType common-subset extension (ADR-0038 or 0036 addendum)~~ done — docs/adr/0038-common-subset-extensions.md | ~~Medium~~ | ~~45m~~ | ~~Decision record for contract change already shipped~~ | ~~T06~~ |
-| ~~T18~~ | ~~Datastar `selector` fetch option adoption in `wire.Action` (+ update `TestTargetNeverRenderedForDatastar`!)~~ done — wire Action Selector | ~~Medium~~ | ~~90m~~ | ~~Client-side targeting for Datastar (deliberate contract change)~~ | ~~T17~~ |
-| ~~T19~~ | ~~Wire benchmark: form-expression path~~ done — BenchmarkActionAttributes | ~~Low~~ | ~~30m~~ | ~~Perf guard~~ | ~~T06~~ |
-| ~~T20~~ | ~~Website: api-reference.mdx wire check + sections.ts label semantics fix~~ done — website api reference | ~~Low-Med~~ | ~~45m~~ | ~~Docs truth~~ | ~~T06~~ |
-| ~~T21~~ | ~~Single-source IsValid/enums counts (kill README×2+sections.ts coupling)~~ done — TestDocsCountDrift single source | ~~Medium~~ | ~~60m~~ | ~~Removes recurring drift class~~ | ~~T06~~ |
-| T22 | CI: post-propagation tidy probe workflow (+ actionlint, ci-repro wiring)                                                                                | Medium  | 60m    | Automates the v1.11/12/13 lesson                                | T06     |
-| T23 | Consumer survey: grep consumer AGENTS.md adoption tables → gaps into TODO_LIST                                                                          | Medium  | 30m    | Demand-driven roadmap                                           | —       |
-| T24 | Dirty-form unsaved-changes guard (singleton JS, CSP-safe, full matrix)                                                                                  | Medium  | 90m    | Classic forms gap, high user pain                               | T06     |
-| T25 | Multi-step form / Stepper recipe (StepIndicator + fragments)                                                                                            | Medium  | 90m    | Wizard flows                                                    | T06     |
-| T26 | Long-tail audit batch: Combobox/TagsInput hidden-input round-trip, Enter-key audit, rate-limit + CSP notes, Button-vs-Form wiring docs, Calendar survey | Low-Med | 60m    | Closes the 50-item backlog remainder                            | T06     |
-| T27 | **Release v1.14.0** (Pattern Pack + long-tail shipped this cycle)                                                                                       | High    | 90m    | Value ships, again                                              | T07–T26 |
+| ID      | Task                                                                                                                                                    | Impact      | Effort  | Value                                                               | Depends |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------- | ------------------------------------------------------------------- | ------- |
+| ~~T17~~ | ~~ADR: ContentType common-subset extension (ADR-0038 or 0036 addendum)~~ done — docs/adr/0038-common-subset-extensions.md                               | ~~Medium~~  | ~~45m~~ | ~~Decision record for contract change already shipped~~             | ~~T06~~ |
+| ~~T18~~ | ~~Datastar `selector` fetch option adoption in `wire.Action` (+ update `TestTargetNeverRenderedForDatastar`!)~~ done — wire Action Selector             | ~~Medium~~  | ~~90m~~ | ~~Client-side targeting for Datastar (deliberate contract change)~~ | ~~T17~~ |
+| ~~T19~~ | ~~Wire benchmark: form-expression path~~ done — BenchmarkActionAttributes                                                                               | ~~Low~~     | ~~30m~~ | ~~Perf guard~~                                                      | ~~T06~~ |
+| ~~T20~~ | ~~Website: api-reference.mdx wire check + sections.ts label semantics fix~~ done — website api reference                                                | ~~Low-Med~~ | ~~45m~~ | ~~Docs truth~~                                                      | ~~T06~~ |
+| ~~T21~~ | ~~Single-source IsValid/enums counts (kill README×2+sections.ts coupling)~~ done — TestDocsCountDrift single source                                     | ~~Medium~~  | ~~60m~~ | ~~Removes recurring drift class~~                                   | ~~T06~~ |
+| T22     | CI: post-propagation tidy probe workflow (+ actionlint, ci-repro wiring)                                                                                | Medium      | 60m     | Automates the v1.11/12/13 lesson                                    | T06     |
+| T23     | Consumer survey: grep consumer AGENTS.md adoption tables → gaps into TODO_LIST                                                                          | Medium      | 30m     | Demand-driven roadmap                                               | —       |
+| T24     | Dirty-form unsaved-changes guard (singleton JS, CSP-safe, full matrix)                                                                                  | Medium      | 90m     | Classic forms gap, high user pain                                   | T06     |
+| T25     | Multi-step form / Stepper recipe (StepIndicator + fragments)                                                                                            | Medium      | 90m     | Wizard flows                                                        | T06     |
+| T26     | Long-tail audit batch: Combobox/TagsInput hidden-input round-trip, Enter-key audit, rate-limit + CSP notes, Button-vs-Form wiring docs, Calendar survey | Low-Med     | 60m     | Closes the 50-item backlog remainder                                | T06     |
+| T27     | **Release v1.14.0** (Pattern Pack + long-tail shipped this cycle)                                                                                       | High        | 90m     | Value ships, again                                                  | T07–T26 |
 
 ---
 
@@ -181,36 +181,36 @@ Sorted by importance → impact → customer value (effort shown for scheduling)
 
 ### Phase 2 — Long Tail (T17–T27)
 
-| ID    | Task                                                                           | Est | Dep            |
-| ----- | ------------------------------------------------------------------------------ | --- | -------------- |
-| M17.1 | Draft ADR: ContentType common-subset extension (context/decision/consequences) | 12m | M06.4          |
-| M17.2 | Link ADR from ADR-0036 index + transport-wiring.md                             | 6m  | M17.1          |
-| M18.1 | ADR section: adopting Datastar `selector` (contract change vs response-driven) | 12m | M17.2          |
-| M18.2 | `wire.Action.Selector` render + unit tests both dialects                       | 12m | M18.1          |
-| M18.3 | Update invariants: `TestTargetNeverRenderedForDatastar` semantics + facts doc  | 12m | M18.2          |
-| M18.4 | Docs: dialect mapping + scope notes + demo                                     | 10m | M18.3          |
-| ~~M19.1~~ | ~~Benchmark: form-expression path (sibling of `BenchmarkActionAttributes`)~~ done — T19 | ~~10m~~ | ~~M06.4~~ |
-| M20.1 | Website api-reference.mdx: verify wire API table vs new field                  | 10m | M06.4          |
-| M20.2 | sections.ts: fix "typed string enums" label-vs-IsValid-count mismatch          | 10m | M20.1          |
-| M21.1 | Count single-sourcing: design (test-generated constant vs codegen)             | 10m | M06.4          |
-| M21.2 | Implement + update README×2 + sections.ts to the single source                 | 12m | M21.1          |
-| M22.1 | CI workflow: post-propagation tidy probe (GOWORK=off tidy --diff check)        | 12m | M06.4          |
-| M22.2 | actionlint + ci-repro wiring for the new workflow                              | 10m | M22.1          |
-| M23.1 | Survey consumer repos' AGENTS.md adoption tables for forms gaps                | 10m | —              |
-| M23.2 | Summarize findings into TODO_LIST.md                                           | 10m | M23.1          |
-| M24.1 | Dirty-guard: props + singleton JS (beforeunload + interceptor)                 | 12m | M06.4          |
-| M24.2 | Dirty-guard: tests (CSP nonce, a11y, idempotence across swaps)                 | 12m | M24.1          |
-| M24.3 | Dirty-guard: docs + demo                                                       | 10m | M24.2          |
-| M25.1 | Stepper recipe doc (StepIndicator + per-step fragments, both transports)       | 12m | M06.4          |
-| M25.2 | Stepper demo composition                                                       | 12m | M25.1          |
-| M26.1 | Audit: Combobox/TagsInput hidden-input round-trip under form encoding          | 12m | M06.4          |
-| M26.2 | Audit: Enter-key behavior both runtimes; document findings                     | 10m | M26.1          |
-| M26.3 | Notes: rate-limit guidance + CSP `'unsafe-eval'` in forms guide                | 10m | M26.2          |
-| M26.4 | Docs: Button(type=submit)-vs-Form.Wire wiring guidance                         | 8m  | M26.2          |
-| M26.5 | Survey note: Calendar/DatePicker dual-transport (links today)                  | 8m  | M26.1          |
-| M27.1 | v1.14.0 pre-release verify matrix                                              | 12m | Phase 1+2 done |
-| M27.2 | Bump triad + `scripts/release.sh 1.14.0`                                       | 12m | M27.1          |
-| M27.3 | Post-release replaces + tidy sweep + CI green confirm                          | 12m | M27.2          |
+| ID        | Task                                                                                    | Est     | Dep            |
+| --------- | --------------------------------------------------------------------------------------- | ------- | -------------- |
+| M17.1     | Draft ADR: ContentType common-subset extension (context/decision/consequences)          | 12m     | M06.4          |
+| M17.2     | Link ADR from ADR-0036 index + transport-wiring.md                                      | 6m      | M17.1          |
+| M18.1     | ADR section: adopting Datastar `selector` (contract change vs response-driven)          | 12m     | M17.2          |
+| M18.2     | `wire.Action.Selector` render + unit tests both dialects                                | 12m     | M18.1          |
+| M18.3     | Update invariants: `TestTargetNeverRenderedForDatastar` semantics + facts doc           | 12m     | M18.2          |
+| M18.4     | Docs: dialect mapping + scope notes + demo                                              | 10m     | M18.3          |
+| ~~M19.1~~ | ~~Benchmark: form-expression path (sibling of `BenchmarkActionAttributes`)~~ done — T19 | ~~10m~~ | ~~M06.4~~      |
+| M20.1     | Website api-reference.mdx: verify wire API table vs new field                           | 10m     | M06.4          |
+| M20.2     | sections.ts: fix "typed string enums" label-vs-IsValid-count mismatch                   | 10m     | M20.1          |
+| M21.1     | Count single-sourcing: design (test-generated constant vs codegen)                      | 10m     | M06.4          |
+| M21.2     | Implement + update README×2 + sections.ts to the single source                          | 12m     | M21.1          |
+| M22.1     | CI workflow: post-propagation tidy probe (GOWORK=off tidy --diff check)                 | 12m     | M06.4          |
+| M22.2     | actionlint + ci-repro wiring for the new workflow                                       | 10m     | M22.1          |
+| M23.1     | Survey consumer repos' AGENTS.md adoption tables for forms gaps                         | 10m     | —              |
+| M23.2     | Summarize findings into TODO_LIST.md                                                    | 10m     | M23.1          |
+| M24.1     | Dirty-guard: props + singleton JS (beforeunload + interceptor)                          | 12m     | M06.4          |
+| M24.2     | Dirty-guard: tests (CSP nonce, a11y, idempotence across swaps)                          | 12m     | M24.1          |
+| M24.3     | Dirty-guard: docs + demo                                                                | 10m     | M24.2          |
+| M25.1     | Stepper recipe doc (StepIndicator + per-step fragments, both transports)                | 12m     | M06.4          |
+| M25.2     | Stepper demo composition                                                                | 12m     | M25.1          |
+| M26.1     | Audit: Combobox/TagsInput hidden-input round-trip under form encoding                   | 12m     | M06.4          |
+| M26.2     | Audit: Enter-key behavior both runtimes; document findings                              | 10m     | M26.1          |
+| M26.3     | Notes: rate-limit guidance + CSP `'unsafe-eval'` in forms guide                         | 10m     | M26.2          |
+| M26.4     | Docs: Button(type=submit)-vs-Form.Wire wiring guidance                                  | 8m      | M26.2          |
+| M26.5     | Survey note: Calendar/DatePicker dual-transport (links today)                           | 8m      | M26.1          |
+| M27.1     | v1.14.0 pre-release verify matrix                                                       | 12m     | Phase 1+2 done |
+| M27.2     | Bump triad + `scripts/release.sh 1.14.0`                                                | 12m     | M27.1          |
+| M27.3     | Post-release replaces + tidy sweep + CI green confirm                                   | 12m     | M27.2          |
 
 **Micro totals:** 89 tasks · ≈13.5h granular estimate (macro ≈26.5h with buffer/verify overhead — micro lists are the focused-work cores; the difference is regeneration, daemon-commit wrangling, review, and CI waits, budgeted at ~50%).
 

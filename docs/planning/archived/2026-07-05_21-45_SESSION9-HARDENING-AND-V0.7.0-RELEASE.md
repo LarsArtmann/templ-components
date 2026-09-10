@@ -59,35 +59,35 @@
 
 ## Execution Plan (27 tasks, ~30min each)
 
-| #   | Task                                                    | Impact | Effort | Package                  |
-| --- | ------------------------------------------------------- | ------ | ------ | ------------------------ |
-| ~~T1~~  | ~~Register NotFound404Props in contract test~~ done — internal/contract/component props test.go | ~~High~~ | ~~S~~ | ~~internal/contract~~ |
-| ~~T2~~  | ~~Add nonce-presence CSP assertion test~~ done — integration/csp nonce test.go | ~~High~~ | ~~S~~ | ~~integration~~ |
-| ~~T3~~  | ~~LoadMore: switch to net/url for cursor encoding~~ done — navigation/loadmore templ.go | ~~Med~~ | ~~S~~ | ~~navigation~~ |
-| ~~T4~~  | ~~Add 4 remaining IsValid methods~~ done — CHANGELOG v0.7.0 | ~~Med~~ | ~~S~~ | ~~display, forms, feedback~~ |
-| ~~T5~~  | ~~Add SimpleCard.Body slot~~ done — display/card.templ | ~~Low~~ | ~~S~~ | ~~display~~ |
-| ~~T6~~  | ~~Add godoc to deprecated aliases~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~S~~ | ~~feedback, display~~ |
-| ~~T7~~  | ~~Add RTL rendering assertion tests~~ done — display/rtl test.go | ~~High~~ | ~~S~~ | ~~display, navigation~~ |
-| ~~T8~~  | ~~Add TableHeader slot for sortable column defs~~ done — display/table.templ | ~~Med~~ | ~~M~~ | ~~display~~ |
-| ~~T9~~  | ~~Improve Combobox keyboard navigation~~ done — forms/combobox.templ | ~~High~~ | ~~M~~ | ~~forms~~ |
-| ~~T10~~ | ~~Add GridProps.Gap typed enum~~ done — CHANGELOG v0.9.0 | ~~Low~~ | ~~S~~ | ~~display~~ |
-| ~~T11~~ | ~~Add layout.Stylesheet helper~~ done — layout/stylesheet.templ | ~~Low~~ | ~~S~~ | ~~layout~~ |
-| ~~T12~~ | ~~Add recipe: custom-table-rows.md~~ done — docs/recipes/custom-table-rows.md | ~~Low~~ | ~~S~~ | ~~docs~~ |
-| ~~T13~~ | ~~Add recipe: custom-404-page.md~~ done — docs/recipes/custom-404-page.md | ~~Low~~ | ~~S~~ | ~~docs~~ |
-| ~~T14~~ | ~~Update errorpage/doc.go for NotFound404~~ done — errorpage/doc.go | ~~Low~~ | ~~S~~ | ~~errorpage~~ |
-| ~~T15~~ | ~~Delete orphaned demo binary~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~S~~ | ~~examples~~ |
-| ~~T16~~ | ~~Fix htmx coverage (<70%)~~ done — coverage boost test files | ~~Med~~ | ~~M~~ | ~~htmx~~ |
-| ~~T17~~ | ~~Fix display coverage (<70%)~~ done — coverage boost test files | ~~Med~~ | ~~M~~ | ~~display~~ |
-| ~~T18~~ | ~~Update AGENTS.md with RTL + container query conventions~~ done — AGENTS.md | ~~Med~~ | ~~S~~ | ~~root~~ |
-| ~~T19~~ | ~~Update CHANGELOG [Unreleased]~~ done — CHANGELOG v0.7.0 | ~~High~~ | ~~S~~ | ~~root~~ |
-| ~~T20~~ | ~~Update TODO_LIST.md~~ done — TODO LIST.md | ~~Med~~ | ~~S~~ | ~~root~~ |
-| ~~T21~~ | ~~Full verify: build + test + lint~~ done (docs-health pass 2026-09-08) | ~~High~~ | ~~S~~ | ~~all~~ |
-| ~~T22~~ | ~~Cut v0.7.0 release~~ done — CHANGELOG v0.7.0 | ~~High~~ | ~~S~~ | ~~root~~ |
-| ~~T23~~ | ~~Verify go get from clean repo~~ done (docs-health pass 2026-09-08) | ~~High~~ | ~~S~~ | ~~external~~ |
-| ~~T24~~ | ~~Update FEATURES.md with new items~~ done — FEATURES.md | ~~Med~~ | ~~S~~ | ~~root~~ |
-| ~~T25~~ | ~~Add SKILL.md updates for new components~~ done — skill/SKILL.md | ~~Low~~ | ~~S~~ | ~~skill~~ |
-| ~~T26~~ | ~~Final git push~~ done (docs-health pass 2026-09-08) | ~~High~~ | ~~S~~ | ~~root~~ |
-| ~~T27~~ | ~~Clean up git stashes~~ done (docs-health pass 2026-09-08) | ~~Low~~ | ~~S~~ | ~~root~~ |
+| #       | Task                                                                                            | Impact   | Effort | Package                      |
+| ------- | ----------------------------------------------------------------------------------------------- | -------- | ------ | ---------------------------- |
+| ~~T1~~  | ~~Register NotFound404Props in contract test~~ done — internal/contract/component props test.go | ~~High~~ | ~~S~~  | ~~internal/contract~~        |
+| ~~T2~~  | ~~Add nonce-presence CSP assertion test~~ done — integration/csp nonce test.go                  | ~~High~~ | ~~S~~  | ~~integration~~              |
+| ~~T3~~  | ~~LoadMore: switch to net/url for cursor encoding~~ done — navigation/loadmore templ.go         | ~~Med~~  | ~~S~~  | ~~navigation~~               |
+| ~~T4~~  | ~~Add 4 remaining IsValid methods~~ done — CHANGELOG v0.7.0                                     | ~~Med~~  | ~~S~~  | ~~display, forms, feedback~~ |
+| ~~T5~~  | ~~Add SimpleCard.Body slot~~ done — display/card.templ                                          | ~~Low~~  | ~~S~~  | ~~display~~                  |
+| ~~T6~~  | ~~Add godoc to deprecated aliases~~ done (docs-health pass 2026-09-08)                          | ~~Low~~  | ~~S~~  | ~~feedback, display~~        |
+| ~~T7~~  | ~~Add RTL rendering assertion tests~~ done — display/rtl test.go                                | ~~High~~ | ~~S~~  | ~~display, navigation~~      |
+| ~~T8~~  | ~~Add TableHeader slot for sortable column defs~~ done — display/table.templ                    | ~~Med~~  | ~~M~~  | ~~display~~                  |
+| ~~T9~~  | ~~Improve Combobox keyboard navigation~~ done — forms/combobox.templ                            | ~~High~~ | ~~M~~  | ~~forms~~                    |
+| ~~T10~~ | ~~Add GridProps.Gap typed enum~~ done — CHANGELOG v0.9.0                                        | ~~Low~~  | ~~S~~  | ~~display~~                  |
+| ~~T11~~ | ~~Add layout.Stylesheet helper~~ done — layout/stylesheet.templ                                 | ~~Low~~  | ~~S~~  | ~~layout~~                   |
+| ~~T12~~ | ~~Add recipe: custom-table-rows.md~~ done — docs/recipes/custom-table-rows.md                   | ~~Low~~  | ~~S~~  | ~~docs~~                     |
+| ~~T13~~ | ~~Add recipe: custom-404-page.md~~ done — docs/recipes/custom-404-page.md                       | ~~Low~~  | ~~S~~  | ~~docs~~                     |
+| ~~T14~~ | ~~Update errorpage/doc.go for NotFound404~~ done — errorpage/doc.go                             | ~~Low~~  | ~~S~~  | ~~errorpage~~                |
+| ~~T15~~ | ~~Delete orphaned demo binary~~ done (docs-health pass 2026-09-08)                              | ~~Low~~  | ~~S~~  | ~~examples~~                 |
+| ~~T16~~ | ~~Fix htmx coverage (<70%)~~ done — coverage boost test files                                   | ~~Med~~  | ~~M~~  | ~~htmx~~                     |
+| ~~T17~~ | ~~Fix display coverage (<70%)~~ done — coverage boost test files                                | ~~Med~~  | ~~M~~  | ~~display~~                  |
+| ~~T18~~ | ~~Update AGENTS.md with RTL + container query conventions~~ done — AGENTS.md                    | ~~Med~~  | ~~S~~  | ~~root~~                     |
+| ~~T19~~ | ~~Update CHANGELOG [Unreleased]~~ done — CHANGELOG v0.7.0                                       | ~~High~~ | ~~S~~  | ~~root~~                     |
+| ~~T20~~ | ~~Update TODO_LIST.md~~ done — TODO LIST.md                                                     | ~~Med~~  | ~~S~~  | ~~root~~                     |
+| ~~T21~~ | ~~Full verify: build + test + lint~~ done (docs-health pass 2026-09-08)                         | ~~High~~ | ~~S~~  | ~~all~~                      |
+| ~~T22~~ | ~~Cut v0.7.0 release~~ done — CHANGELOG v0.7.0                                                  | ~~High~~ | ~~S~~  | ~~root~~                     |
+| ~~T23~~ | ~~Verify go get from clean repo~~ done (docs-health pass 2026-09-08)                            | ~~High~~ | ~~S~~  | ~~external~~                 |
+| ~~T24~~ | ~~Update FEATURES.md with new items~~ done — FEATURES.md                                        | ~~Med~~  | ~~S~~  | ~~root~~                     |
+| ~~T25~~ | ~~Add SKILL.md updates for new components~~ done — skill/SKILL.md                               | ~~Low~~  | ~~S~~  | ~~skill~~                    |
+| ~~T26~~ | ~~Final git push~~ done (docs-health pass 2026-09-08)                                           | ~~High~~ | ~~S~~  | ~~root~~                     |
+| ~~T27~~ | ~~Clean up git stashes~~ done (docs-health pass 2026-09-08)                                     | ~~Low~~  | ~~S~~  | ~~root~~                     |
 
 ---
 
