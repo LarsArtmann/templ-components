@@ -1,0 +1,133 @@
+package pages
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/larsartmann/templ-components/website/internal/md"
+)
+
+// docsScripts are the defer-loaded scripts for docs pages: shared chrome plus
+// the code-copy behavior for highlighted blocks.
+var docsScripts = []string{
+	"/assets/js/docs.js",
+	"/assets/js/copy-code.js",
+	"/assets/js/theme-sync.js",
+	"/assets/js/header.js",
+	"/assets/js/animations.js",
+	"/assets/js/newsletter.js",
+}
+
+// DocsMeta builds the page metadata for a docs page. Social cards come from
+// the per-page OG images preserved from the Astro build (public/og).
+func DocsMeta(slug string, page md.Page) PageMeta {
+	return PageMeta{
+		Path:        slug,
+		Title:       fmt.Sprintf("%s — %s", page.Title, SiteName),
+		Description: page.Description,
+		OGImage:     fmt.Sprintf("%s/og/%s.png", SiteURL, slug),
+		Scripts:     docsScripts,
+	}
+}
+
+// EditLink returns the GitHub edit URL for a docs source file.
+func EditLink(slug string) string {
+	return GitHubURL + "/edit/master/website/content/docs/" + slug + ".md"
+}
+
+// DocsLayout renders one docs page: sticky sidebar, prose content, right
+// TOC, prev/next navigation, last-updated and edit link.
+templ DocsLayout(slug string, page md.Page, prev, next *DocRef, lastUpdated string, nonce string) {
+	@Page(DocsMeta(slug, page), nonce) {
+		<div class="mx-auto max-w-7xl px-6 pt-24 pb-16">
+			<div class="flex gap-10">
+				@docsSidebar(slug)
+				<article class="docs-content min-w-0 flex-1 max-w-3xl">
+					<h1 class="text-3xl font-bold text-text-primary tracking-tight mb-2">{ page.Title }</h1>
+					if page.Description != "" {
+						<p class="text-text-secondary mb-8">{ page.Description }</p>
+					}
+					@templ.Raw(page.HTML)
+					@docsFooterNav(slug, prev, next, lastUpdated)
+				</article>
+				@docsTOC(page)
+			</div>
+		</div>
+	}
+}
+
+templ docsSidebar(current string) {
+	<aside class="hidden lg:block w-56 shrink-0">
+		<nav class="sticky top-24 docs-nav" aria-label="Documentation navigation">
+			for _, group := range Sidebar() {
+				<div class="mb-6">
+					<div class="text-xs font-mono uppercase tracking-[0.2em] text-text-muted mb-2">{ group.Label }</div>
+					<ul class="space-y-1">
+						for _, doc := range group.Docs {
+							if doc.Slug == "" {
+								<li>
+									<a href={ templ.SafeURL(PkgGoDevURL) } target="_blank" rel="noopener noreferrer" class="docs-nav-link flex items-center gap-1.5">
+										{ doc.Title }
+										@icons.Icon(icons.ExternalLink, "h-3 w-3")
+									</a>
+								</li>
+								continue
+							}
+							if doc.Slug == current {
+								<li><a href={ "/" + doc.Slug } aria-current="page" class="docs-nav-link docs-nav-active">{ doc.Title }</a></li>
+							} else {
+								<li><a href={ "/" + doc.Slug } class="docs-nav-link">{ doc.Title }</a></li>
+							}
+						}
+					</ul>
+				</div>
+			}
+		</nav>
+	</aside>
+}
+
+templ docsTOC(page md.Page) {
+	if len(page.Headings) > 0 {
+		<aside class="hidden xl:block w-52 shrink-0">
+			<nav class="sticky top-24 docs-toc" aria-label="On this page">
+				<div class="text-xs font-mono uppercase tracking-[0.2em] text-text-muted mb-2">On this page</div>
+				<ul class="space-y-1.5">
+					for _, heading := range page.Headings {
+						if heading.Level == 2 {
+							<li><a href={ "#" + heading.ID } class="docs-toc-link">{ heading.Text }</a></li>
+						} else {
+							<li class="ps-3"><a href={ "#" + heading.ID } class="docs-toc-link text-xs">{ heading.Text }</a></li>
+						}
+					}
+				</ul>
+			</nav>
+		</aside>
+	}
+}
+
+templ docsFooterNav(current string, prev, next *DocRef, lastUpdated string) {
+	<div class="mt-12 pt-6 border-t border-border flex items-center justify-between gap-4 text-sm">
+		if prev != nil {
+			<a href={ "/" + prev.Slug } class="docs-nav-card flex flex-col items-start rounded-lg border border-border p-3 hover:border-border-hover transition-colors duration-150 no-underline min-w-0">
+				<span class="text-xs text-text-muted">Previous</span>
+				<span class="text-text-primary font-medium truncate">{ prev.Title }</span>
+			</a>
+		} else {
+			<span></span>
+		}
+		if next != nil {
+			<a href={ "/" + next.Slug } class="docs-nav-card flex flex-col items-end rounded-lg border border-border p-3 hover:border-border-hover transition-colors duration-150 no-underline min-w-0 text-end">
+				<span class="text-xs text-text-muted">Next</span>
+				<span class="text-text-primary font-medium truncate">{ next.Title }</span>
+			</a>
+		} else {
+			<span></span>
+		}
+	</div>
+	<div class="mt-6 flex items-center justify-between gap-4 text-xs text-text-muted">
+		<span>Last updated { lastUpdated }</span>
+		<a href={ templ.SafeURL(EditLink(current)) } target="_blank" rel="noopener noreferrer" class="hover:text-text-primary transition-colors duration-150 underline underline-offset-2">Edit this page</a>
+	</div>
+}
+
+var _ = strings.TrimSpace

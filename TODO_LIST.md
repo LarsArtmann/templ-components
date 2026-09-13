@@ -1,10 +1,10 @@
 # TODO List — templ-components
 
-**Updated:** 2026-09-09 | **Version:** 1.16.0
+**Updated:** 2026-09-13 | **Version:** 1.16.0
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources).
-> IDs are unique across ALL sections — next free ID: 193.
+> IDs are unique across ALL sections — next free ID: 212.
 
 ---
 
@@ -21,11 +21,11 @@
 | 123 | Branch protection + required checks on master                           | Needs repo-owner decision in GitHub settings; would have blocked the 9-day-red master window. (2026-08-22 report f11, 2026-08-31 report f33)                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | 124 | BuildFlow: stop re-appending `*_templ.go` to `.gitignore`               | Every pre-commit run re-adds the pattern, hiding NEW generated files from `git status` until `git add -f`. Same repo family as #93/#108 — fix lives in `larsartmann/buildflow`. (AGENTS.md BuildFlow gotcha; 2026-08-31 report f27)                                                                                                                                                                                                                                                                                                                                                   |
 | 125 | BuildFlow: stop tailwind-build/prettier from un-minifying committed CSS | Fourth documented recurrence (2026-09-08 15:35: daemon commit `cb4ac82` landed 4986 un-minified lines right after a green verify). Mitigated at commit time since 2026-09-08: `scripts/check-css-minified.sh` (Guard 6 in `.git/hooks/pre-commit` + `scripts/pre-commit.sh`) blocks any commit while `app.css` exceeds 5 lines — re-minify with `nix run .#css`. Root fix (provider flag) lives in `larsartmann/buildflow`. (docs/status/2026-09-03 report f26)                                                                                                                       |
-| 126 | BuildFlow: commit classifier for vetted artifacts                       | The daemon must not auto-commit `website/package.json` (has flipped the vetted TS pin twice; third occurrence 2026-09-08 in `c133896`, re-fixed for the `eb1f0fe` pattern) or `examples/demo/static/app.css` without the byte-stability/lockfile gate. Same-repo family as #93/#125. (docs/status/2026-09-03 report f35)                                                                                                                                                                                                                                                              |
-
-| 190 | KanbanBoard touch-drag story (long-press / pointer-events DnD polyfill) | **Owner decision Q1.** The CSS-only visibility fix shipped (plan M1); a real touch-drag story needs JS and possibly a polyfill — the dependency budget is deliberately closed (templ + tailwind-merge-go + go-error-family). (2026-09-09 report §g1) |
-| 191 | KanbanBoard feature-scope props: within-column keyboard reorder, per-column add-card wiring, WIP limits, card/column tone accents | **Owner decision Q2.** Which belong IN the component vs consumer composition? Each addition needs the full test ladder. (2026-09-09 report §g2) |
-| 192 | Release timing for v1.17.0 (a11y batch, tooltip TypeError fix, kanban phone-overflow fix, Minimal SEO, route goldens, synthetics) | **Owner decision.** v1.16.0 shipped 2026-09-09; `[Unreleased]` is warm and verified green — cut via release script (~15 min) or batch more. Supersedes the answered v1.16.0 instance. (2026-09-09 23:21 report §g1) |
+| 126 | BuildFlow: commit classifier for vetted artifacts                       | The daemon must not auto-commit `website/package.json` (has flipped the vetted TS pin twice; third occurrence 2026-09-08 in `c133896`, re-fixed for the `eb1f0fe` pattern) or `examples/demo/static/app.css` without the byte-stability/lockfile gate. Same-repo family as #93/#125. (docs/status/2026-09-03 report f35)                                                                                                                             |
+| 190 | KanbanBoard touch-drag story (long-press / pointer-events DnD polyfill) | **Owner decision Q1.** The CSS-only visibility fix shipped (plan M1); a real touch-drag story needs JS and possibly a polyfill — the dependency budget is deliberately closed (templ + tailwind-merge-go + go-error-family). (2026-09-09 report §g1)                                                                                                                                            |
+| 191 | KanbanBoard feature-scope props: within-column keyboard reorder, per-column add-card wiring, WIP limits, card/column tone accents | **Owner decision Q2.** Which belong IN the component vs consumer composition? Each addition needs the full test ladder. (2026-09-09 report §g2)                                                                                                                                                                                                                                               |
+| 192 | Release timing for v1.17.0 (a11y batch, tooltip TypeError fix, kanban phone-overflow fix, Minimal SEO, route goldens, synthetics) | **Owner decision.** v1.16.0 shipped 2026-09-09; `[Unreleased]` is warm and verified green — cut via release script (~15 min) or batch more. Supersedes the answered v1.16.0 instance. (2026-09-09 23:21 report §g1)                                                                                                                                                                           |
+| 211 | Fate of `templates/styles.css` + `templates/templ-components-theme.out.css` | **Owner decision.** Kept because release.sh treats them as distribution targets, but no in-repo consumer was found for either (2026-09-13 CSS audit, question g1). Decide: document the pre-compiled-CSS consumer path (#5 family) or delete them like the other ten artifacts. (docs/status/2026-09-13_10-17 §g1)                                                                              |
 
 ---
 
@@ -40,6 +40,14 @@ _2026-09-08 hardening session: 27 items closed (docs, guards, components, workfl
 | #   | Task                                                                                      | Why / source                                                                                                                                                                                                               |
 | --- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 162 | Human-eyeball `visualtest/testdata/progressbar/half_light.png` (45% fill-color suspicion) | Covered by the 2026-09-13 `scripts/vision-review-goldens.sh` flagged set — run it with an API key, then a human confirms the SUSPECT verdict against `feedback.ProgressBar` at Current=45, Total=100. (audit f15; fix f10) |
+| 203 | Baseline per-module `golangci-lint run`; drive findings to 0 or nolint-with-reason | Pre-existing findings surfaced 2026-09-13: `gocognit` ×4 (display/benchmark_test.go 26, utils css_var_integrity_test 28, darkmode_compliance_test 26, motion_compliance_test 30) + `golines` ×1 (compiled_css_inventory_test) + errorpage/visualtest gocognit (handler_test 28, harness_test 30) + an unused `goconst` nolint directive (feedback/styles.go:29). Until triaged, CI's "0 findings" claim is not literally true. (docs/status/2026-09-13_10-38 §e2) |
+| 204 | Extend minification guard to the two `templates/` CSS targets | `scripts/check-css-minified.sh` guards only `static/app.css`; the daemon un-minified committed artifacts before. Fold into `TestCompiledCSSInventory` (one place) or extend the script. (docs/status/2026-09-13_10-17 c5/f11) |
+| 205 | Single-source the compiled-CSS target list shared by release.sh + guard test | The 3-target list lives in bash AND Go; they can drift independently. Extract one shared source. (docs/status/2026-09-13_10-17 c6/f12) |
+| 206 | Disambiguate the two same-named `templ-components-theme.css` files | Root (`@theme`/dark-mode README example) vs templates/ (ADR-0008 semantic tokens) — different purposes, identical names; rename one (e.g. `theme-example.css`) or add cross-referencing header comments. (docs/status/2026-09-13_10-17 e4/f19) |
+| 207 | Add "committed artifact ⇒ named consumer" rule to CONTRIBUTING.md | The inventory guard enforces the set; the RULE should live in contributor docs, not just AGENTS.md. (docs/status/2026-09-13_10-17 e1/f20) |
+| 208 | Post-tag consumer compile smoke job in CI | Verify a fresh `go get` of the tagged version compiles (root + sub-modules) before the proxy caches it. (docs/status/2026-09-13_10-38 f2; review idea #15, Pareto #1) |
+| 209 | Hook-adoption guard: verify `core.hooksPath` is set | `.githooks/` is tracked and active in THIS clone; other clones get nothing until `scripts/setup-hooks.sh` runs and nothing checks it. Small `check-hooks-path.sh` guard. (docs/status/2026-09-13_10-38 §b4) |
+| 210 | `wire.DecodeForm` adoption: migrate forms Pattern Pack + demo handlers | One in-repo consumer (kanban) so far; forms-pack handlers and demo endpoints still hand-roll `ParseForm` chains. (docs/status/2026-09-13_10-38 §b5) |
 
 ---
 
@@ -71,17 +79,9 @@ _2026-09-08 hardening session: 27 items closed (docs, guards, components, workfl
 
 ---
 
-## Harvested 2026-09-08 — CV adoption execution (docs/planning/2026-09-08_07-52)
-
-| #                                                                                                                                                                                                                       | Task | Why / source |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | ------------ |
-| _2026-09-09: PR-review rows (old #157–#159) dropped — PRs #12/#13/#14 all MERGED 2026-09-08 (CHANGELOG). Survivors renumbered (#160→179, #161→180) to kill the ID collision with the open visual-sweep rows #158–#160._ |      |              |
-
----
-
 ## Harvested 2026-09-09 — kanban follow-through (docs/planning/2026-09-09_01-53)
 
-_2026-09-09 execution session shipped M1–M7 + M9 (rows #181–#185, #187 dropped — see CHANGELOG `[Unreleased]`). Remaining: #186 (M8) and #188/#189 (M15/M25). The successor plan is `docs/planning/2026-09-09_04-24_quality-tier-and-release-plan.md`; cross-references: M10→#168, M11→#175, M12→#159, M13→#160, M14→#158, M16→#173, M17→#163, M18→#152, M19→#147, M20→#166, M21→#176, M22→#177, M23→#167, M24→#128, M26→#157 (deferred)._
+_2026-09-09 execution session shipped M1–M7 + M9 (rows #181–#185, #187 dropped — see CHANGELOG `[Unreleased]`). Remaining: #189 (M25). The successor plan is `docs/planning/2026-09-09_04-24_quality-tier-and-release-plan.md`; cross-references: M10→#168, M11→#175, M12→#159, M13→#160, M14→#158, M16→#173, M17→#163, M18→#152, M19→#147, M20→#166, M21→#176, M22→#177, M23→#167, M24→#128, M26→#157 (deferred)._
 
 | #   | Task                                                                     | Why / source           |
 | --- | ------------------------------------------------------------------------ | ---------------------- |

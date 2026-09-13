@@ -136,6 +136,20 @@ and CI docs-health drift guard. See `CHANGELOG.md` for the full entry.
 | Route-golden variant matrix    | Dark / 375px-mobile / RTL captures for all demo routes, mirroring the component-golden matrix at page level. (2026-09-09 23:21 report f6-f8)          |
 | chromedp harness hardening     | Shared `pollBool`/`pollText` helpers, per-tab timeouts everywhere, and a chromedp trap list — see the 2026-09-09 N3 lessons in AGENTS.md. (report f5) |
 
+### Depth-testing ideas (harvested 2026-09-13 from the 100-idea review, docs/reviews/2026-09-13_08-51)
+
+| Direction                      | Description                                                                                                                                           |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| axe-core a11y gate             | axe-core in the visualtest harness; zero-violation gate per component, then per demo route (review ideas #41/#91).                                     |
+| HTML validation over goldens   | Run an HTML validator across all 242 goldens — string-normalized goldens can still hide malformed markup (idea #42).                                   |
+| Determinism gate               | Render twice, byte-compare raw output; catches map-iteration or time-dependent rendering (idea #45).                                                   |
+| Golden-orphan detector         | Fail when a golden file exists with no generating test (idea #54).                                                                                     |
+| Firefox visual lane            | Popover, `field-sizing`, and `appearance: base-select` diverge most in Firefox; a second-browser lane pins graceful degradation (idea #49).             |
+| forced-colors / contrast variants | Visual variants for `forced-colors`, `prefers-contrast`, and `prefers-reduced-motion` beyond the class-level checks (idea #53).                     |
+| Chart geometry property tests  | Property-based invariants (monotonic ticks, arc closure) for `chart_geometry.go` (idea #47).                                                           |
+| Wire fuzzing                   | Fuzz `wire.Action.Attributes` + `wire.DecodeForm` with adversarial inputs (idea #48).                                                                 |
+| Convention linter              | go/analysis linter: BaseProps embedding, IsValid pairing, typed lookup-map keys (idea #34).                                                            |
+
 ### General
 
 | Direction                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
