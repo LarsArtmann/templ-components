@@ -28,10 +28,13 @@ const propsIDContract = `id="tc-id-contract"`
 // dropping it silently breaks all three.
 //
 // The contract checked is "the id appears in the output", not "on the first
-// element" — sub-templates legitimately host the root elsewhere. Components
-// that cannot host an id by design (external-resource helpers, non-Props
-// signatures) are simply absent from the table; scope gaps are caught by
-// review, not by an exemption list that rots.
+// element" — sub-templates legitimately host the root elsewhere. Cases
+// whose zero-props render is empty by design (guarded output) provide
+// minimal data so the root actually renders. Deliberately absent:
+// layout.ThemeToggle (signature takes ariaLabel+nonce, no Props struct),
+// datastar.SDKScript + layout.Script + layout.Stylesheet (external resource
+// tags — no visual root to host an id), htmx.CSRFToken (hidden input with a
+// non-Props signature).
 func TestPropsIDRendersInOutput(t *testing.T) {
 	t.Parallel()
 
@@ -39,14 +42,25 @@ func TestPropsIDRendersInOutput(t *testing.T) {
 		name   string
 		render func() string
 	}{
-		{"datastar.SDKScript", renderPropsID(t, datastar.SDKScript)},
 		{"datastar.LiveRegion", renderPropsID(t, datastar.LiveRegion)},
 		{"datastar.Indicator", renderPropsID(t, datastar.Indicator)},
 
 		{"display.Badge", renderPropsID(t, display.Badge)},
 		{"display.Avatar", renderPropsID(t, display.Avatar)},
-		{"display.Eyebrow", renderPropsID(t, display.Eyebrow)},
-		{"display.Scrollback", renderPropsID(t, display.Scrollback)},
+		{"display.Eyebrow", func() string {
+			props := display.DefaultEyebrowProps()
+			props.Text = "Chapter 1"
+			props.BaseProps = utils.BaseProps{ID: "tc-id-contract"}
+
+			return utils.Render(t, display.Eyebrow(props))
+		}},
+		{"display.Scrollback", func() string {
+			props := display.DefaultScrollbackProps()
+			props.Lines = []display.ScrollbackLine{{Text: "boot"}}
+			props.BaseProps = utils.BaseProps{ID: "tc-id-contract"}
+
+			return utils.Render(t, display.Scrollback(props))
+		}},
 		{"display.Tooltip", renderPropsID(t, display.Tooltip)},
 		{"display.Accordion", renderPropsID(t, display.Accordion)},
 		{"display.Button", renderPropsID(t, display.Button)},
@@ -58,7 +72,12 @@ func TestPropsIDRendersInOutput(t *testing.T) {
 		{"display.Table", renderPropsID(t, display.Table)},
 		{"display.DataTable", renderPropsID(t, display.DataTable)},
 		{"display.PageHeader", renderPropsID(t, display.PageHeader)},
-		{"display.ListNote", renderPropsID(t, display.ListNote)},
+		{"display.ListNote", func() string {
+			props := display.ListNoteProps{Shown: 25, Total: 100}
+			props.BaseProps = utils.BaseProps{ID: "tc-id-contract"}
+
+			return utils.Render(t, display.ListNote(props))
+		}},
 		{"display.EmptyState", renderPropsID(t, display.EmptyState)},
 		{"display.DefinitionList", renderPropsID(t, display.DefinitionList)},
 		{"display.DefinitionGrid", renderPropsID(t, display.DefinitionGrid)},
@@ -68,11 +87,34 @@ func TestPropsIDRendersInOutput(t *testing.T) {
 		{"display.CopyButton", renderPropsID(t, display.CopyButton)},
 		{"display.RelativeTime", renderPropsID(t, display.RelativeTime)},
 		{"display.CountBadge", renderPropsID(t, display.CountBadge)},
-		{"display.Image", renderPropsID(t, display.Image)},
+		{"display.Image", func() string {
+			props := display.DefaultImageProps()
+			props.Src = "/x.png"
+			props.BaseProps = utils.BaseProps{ID: "tc-id-contract"}
+
+			return utils.Render(t, display.Image(props))
+		}},
 		{"display.HoverCard", renderPropsID(t, display.HoverCard)},
-		{"display.ContextMenu", renderPropsID(t, display.ContextMenu)},
-		{"display.Carousel", renderPropsID(t, display.Carousel)},
-		{"display.Sparkline", renderPropsID(t, display.Sparkline)},
+		{"display.ContextMenu", func() string {
+			props := display.DefaultContextMenuProps()
+			props.BaseProps = utils.BaseProps{ID: "tc-id-contract", Nonce: "n"}
+
+			return utils.Render(t, display.ContextMenu(props))
+		}},
+		{"display.Carousel", func() string {
+			props := display.DefaultCarouselProps()
+			props.Slides = []display.CarouselSlide{{Content: templ.Raw("<div>one</div>")}}
+			props.BaseProps = utils.BaseProps{ID: "tc-id-contract"}
+
+			return utils.Render(t, display.Carousel(props))
+		}},
+		{"display.Sparkline", func() string {
+			props := display.DefaultSparklineProps()
+			props.Values = []float64{1, 3, 2, 5}
+			props.BaseProps = utils.BaseProps{ID: "tc-id-contract"}
+
+			return utils.Render(t, display.Sparkline(props))
+		}},
 		{"display.BarChart", renderPropsID(t, display.BarChart)},
 		{"display.LineChart", renderPropsID(t, display.LineChart)},
 		{"display.PieChart", renderPropsID(t, display.PieChart)},
@@ -101,7 +143,12 @@ func TestPropsIDRendersInOutput(t *testing.T) {
 		{"forms.FileInput", renderPropsID(t, forms.FileInput)},
 		{"forms.Form", renderPropsID(t, forms.Form)},
 		{"forms.InputGroup", renderPropsID(t, forms.InputGroup)},
-		{"forms.ValidationSummary", renderPropsID(t, forms.ValidationSummary)},
+		{"forms.ValidationSummary", func() string {
+			props := forms.ValidationSummaryProps{Errors: []forms.ValidationError{{Field: "email", Message: "invalid"}}}
+			props.BaseProps = utils.BaseProps{ID: "tc-id-contract"}
+
+			return utils.Render(t, forms.ValidationSummary(props))
+		}},
 		{"forms.FilterDropdown", renderPropsID(t, forms.FilterDropdown)},
 		{"forms.FilterInput", renderPropsID(t, forms.FilterInput)},
 		{"forms.Slider", renderPropsID(t, forms.Slider)},
@@ -109,9 +156,6 @@ func TestPropsIDRendersInOutput(t *testing.T) {
 		{"forms.TagsInput", renderPropsID(t, forms.TagsInput)},
 		{"forms.Calendar", renderPropsID(t, forms.Calendar)},
 
-		{"layout.ThemeToggle", func() string {
-			return utils.Render(t, layout.ThemeToggle("toggle", ""))
-		}},
 		{"layout.AppShell", renderPropsID(t, layout.AppShell)},
 		{"layout.Container", renderPropsID(t, layout.Container)},
 		{"layout.Split", renderPropsID(t, layout.Split)},
@@ -125,7 +169,14 @@ func TestPropsIDRendersInOutput(t *testing.T) {
 
 			return utils.Render(t, navigation.NavLink(props, "/"))
 		}},
-		{"navigation.Pagination", renderPropsID(t, navigation.Pagination)},
+		{"navigation.Pagination", func() string {
+			props := navigation.DefaultPaginationProps()
+			props.CurrentPage = 1
+			props.TotalPages = 3
+			props.BaseProps = utils.BaseProps{ID: "tc-id-contract"}
+
+			return utils.Render(t, navigation.Pagination(props))
+		}},
 		{"navigation.Breadcrumbs", renderPropsID(t, navigation.Breadcrumbs)},
 		{"navigation.SidebarNav", renderPropsID(t, navigation.SidebarNav)},
 		{"navigation.LoadMore", renderPropsID(t, navigation.LoadMore)},
@@ -137,7 +188,13 @@ func TestPropsIDRendersInOutput(t *testing.T) {
 		{"errorpage.ErrorDetail", renderPropsID(t, errorpage.ErrorDetail)},
 		{"errorpage.ErrorAlert", renderPropsID(t, errorpage.ErrorAlert)},
 
-		{"echarts.EChart", renderPropsID(t, echarts.EChart)},
+		{"echarts.EChart", func() string {
+			props := echarts.DefaultEChartsProps()
+			props.Element = "<div id=\"chart\"></div>"
+			props.BaseProps = utils.BaseProps{ID: "tc-id-contract"}
+
+			return utils.Render(t, echarts.EChart(props))
+		}},
 	}
 
 	for _, tc := range table {
