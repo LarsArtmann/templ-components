@@ -5,11 +5,13 @@ on:
     branches: [master]
     paths:
       - website/**
+      - examples/demo/**
       - .github/workflows/website.yml
   pull_request:
     branches: [master]
     paths:
       - website/**
+      - examples/demo/**
       - .github/workflows/website.yml
   workflow_dispatch:
 
