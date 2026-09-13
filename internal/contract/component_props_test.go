@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/larsartmann/templ-components/charts/echarts"
 	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/errorpage"
@@ -131,6 +132,28 @@ func componentTypes() []any {
 		recipes.SettingsLayoutProps{},
 		recipes.LoginCardProps{},
 		recipes.AuthLayoutProps{},
+
+		// charts/echarts (2) — added 2026-09-13: the conventions linter
+		// (conventions_test.go) found these missing from the inventory.
+		echarts.EChartsProps{},
+		echarts.SDKScriptProps{},
+
+		// display additions (2026-09-13 conventions sweep)
+		display.AreaChartProps{},
+		display.BarChartProps{},
+		display.LineChartProps{},
+		display.PieChartProps{},
+		display.SparklineProps{},
+		display.HeatmapProps{},
+		display.ExternalLinkProps{},
+		display.CollapsibleSectionProps{},
+
+		// feedback/layout/navigation/htmx additions (2026-09-13)
+		feedback.SkeletonCardGridProps{},
+		layout.MinimalProps{},
+		navigation.FooterProps{},
+		htmx.PolledRegionProps{},
+		htmx.ViewTransitionsProps{},
 	}
 }
 
