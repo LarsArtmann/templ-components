@@ -627,6 +627,17 @@ func newMux() *http.ServeMux {
 		Mode:     wire.PatchModeOuter,
 	}, calendarHandler(wire.TransportDatastar)))
 
+	// Wired nav links: same fragment shape, its own regions so the sections
+	// never share ids (duplicate ids break both runtimes' targeting).
+	mux.Handle("GET /api/wire/nav-fragment", wire.Handler(wire.PatchTarget{
+		Selector: "#wire-nav-datastar-out",
+		Mode:     wire.PatchModeInner,
+	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
+		componentOr500(w, r, wireFragment(time.Now().Format("15:04:05")))
+	})))
+
 	// Kanban demo: the move endpoint a wired KanbanBoard expects. One handler
 	// shape serves both transports: decode with display.ParseKanbanMove,
 	// apply, re-render the board with the SAME id. htmx targets the board

@@ -11,6 +11,7 @@ import (
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/htmx"
+	"github.com/larsartmann/templ-components/navigation"
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
@@ -330,23 +331,30 @@ templ wireDemo(transport demoTransport) {
 		</p>
 		<div class="max-w-md space-y-3">
 			if transport == demoTransportBoth {
-				<div class="flex gap-4">
-					@navigation.NavLink(navigation.NavLinkProps{
-						Href: "/forms", Text: "Forms (htmx)",
-						Wire: &wire.Action{URL: "/api/wire/fragment", Target: "#wire-nav-htmx-out"}, //nolint:exhaustruct // URL+Target are the wiring surface
-					}, "/")
-					@navigation.NavLink(navigation.NavLinkProps{
-						Href: "/forms", Text: "Forms (Datastar)",
-						Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/wire/fragment"}, //nolint:exhaustruct // URL is the wiring surface
-					}, "/")
-				</div>
-				<div id="wire-nav-htmx-out" class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
+			<div class="flex gap-4">
+				@navigation.NavLink(navigation.NavLinkProps{
+					Href: "/forms", Text: "Forms (htmx)",
+					Wire: &wire.Action{URL: "/api/wire/nav-fragment", Target: "#wire-nav-htmx-out"}, //nolint:exhaustruct // URL+Target are the wiring surface
+				}, "/")
+				@navigation.NavLink(navigation.NavLinkProps{
+					Href: "/forms", Text: "Forms (Datastar)",
+					Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/wire/nav-fragment"}, //nolint:exhaustruct // URL is the wiring surface
+				}, "/")
+			</div>
+			<div id="wire-nav-htmx-out" class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
+			<div id="wire-nav-datastar-out" class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
+			} else if transport.wireTransport() == wire.TransportDatastar {
+				@navigation.NavLink(navigation.NavLinkProps{
+					Href: "/forms", Text: "Forms (Datastar)",
+					Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/wire/nav-fragment"}, //nolint:exhaustruct // URL is the wiring surface
+				}, "/")
+				<div id="wire-nav-datastar-out" class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
 			} else {
 				@navigation.NavLink(navigation.NavLinkProps{
-					Href: "/forms", Text: "Forms (" + transport.humanName() + ")",
-					Wire: &wire.Action{Transport: transport.wireTransport(), URL: "/api/wire/fragment", Target: transport.wireTarget()}, //nolint:exhaustruct // URL+Target are the wiring surface
+					Href: "/forms", Text: "Forms (htmx)",
+					Wire: &wire.Action{URL: "/api/wire/nav-fragment", Target: "#wire-nav-htmx-out"}, //nolint:exhaustruct // URL+Target are the wiring surface
 				}, "/")
-				<div id={ transport.outID() } class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
+				<div id="wire-nav-htmx-out" class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
 			}
 		</div>
 	</div>

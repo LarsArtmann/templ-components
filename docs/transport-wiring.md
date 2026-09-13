@@ -509,6 +509,11 @@ Facts worth knowing:
   serving Datastar need `script-src 'unsafe-eval'` (see
   `docs/datastar-runtime-facts.md`); htmx needs no eval. All library JS is
   nonce-carried and CSP-safe either way.
+- **Nav links**: `NavLinkProps.Wire` wires an individual nav link — the
+  anchor keeps its `href` as the no-JS fallback and patches a region instead
+  of navigating. The field rides `NavLinkProps`, so `Nav`, `SimpleNav`,
+  `MobileMenu`, and `MobileNavLink` all inherit it. Consumer `Attrs` spread
+  after the wire attributes and win on conflicts.
 - **Combobox / TagsInput round-trip**: both render hidden inputs inside the
   component (Combobox: one mirrored input; TagsInput: one per value), so
   form encoding carries their values under both runtimes; both re-render

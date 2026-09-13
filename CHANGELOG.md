@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`navigation.NavLinkProps.Wire` (#155).** NavLink-level transport wiring:
+  a wired nav link keeps its `href` (no-JS fallback) and carries the
+  `wire.Action`'s dialect attributes — htmx `hx-get` + `hx-target`, Datastar
+  `data-on:click` — patching a region instead of navigating. The field rides
+  `NavLinkProps`, so `Nav`, `SimpleNav`, `MobileMenu`, and `MobileNavLink`
+  inherit it; consumer `Attrs` spread after the wire attributes and win
+  conflicts. Wired demo card ("Wired nav links") + string/golden tests.
+
 - **Website: strict CSP header pinned by content-hash, synced to
   `firebase.json` at build time.** The site generator hashes every inline
   script body (nonce-independent) and emits a
