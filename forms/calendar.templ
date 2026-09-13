@@ -109,7 +109,13 @@ templ Calendar(props CalendarProps) {
 		prevYear, prevMonth := calendarPrevMonth(props.Year, props.Month)
 		nextYear, nextMonth := calendarNextMonth(props.Year, props.Month)
 	}}
-	<div class={ utils.Class("inline-block rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4", props.Class) } { props.Attrs... }>
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("inline-block rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4", props.Class) }
+		{ props.Attrs... }
+	>
 		<div class="flex items-center justify-between mb-4">
 			if props.HrefPrev != "" || props.MonthNav != nil {
 				<a
