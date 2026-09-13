@@ -1,0 +1,53 @@
+name: Release smoke
+
+# Consumer compile smoke (TODO #208 / Pareto M03): prove a pushed release tag
+# compiles for a fresh consumer BEFORE users hit it. Reproduces the consumer
+# experience exactly — throwaway module, `go get` from the module proxy, build
+# of every import path (root + all 6 sub-modules).
+#
+# Triggers:
+#   - push of v* tags: the release is already proxy-visible at this point, so
+#     a red job means "cut a patch now" (never retag — the proxy caches tags
+#     permanently; see docs/release-checklist.md).
+#   - workflow_dispatch: manual verification of any tag (input, defaults to
+#     the latest root tag).
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to verify (empty = latest v* tag)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  tag-compiles:
+    name: Tag compiles for consumers
+    runs-on: ubuntu-latest
+    env:
+      GOEXPERIMENT: jsonv2
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # git describe needs tags
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.26"
+      - name: Verify the tag compiles from the module proxy
+        run: scripts/check-tag-compiles.sh "${TAG:-}"
+        env:
+          TAG: ${{ inputs.tag }}
+      - name: Compiler output artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tag-compile-failure
+          path: |
+            *.log
+          if-no-files-found: ignore
+          include-hidden-files: true
