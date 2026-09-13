@@ -98,7 +98,7 @@ func run(out, repoRoot string, skipStars bool) error {
 		}
 	}
 
-	fmt.Fprintf(os.Stdout, "site: wrote %d page(s) to %s (components=%d icons=%d enums=%d modules=%d)\n",
+	fmt.Fprintf(os.Stdout, "site: wrote %d page(s) + sitemaps to %s (components=%d icons=%d enums=%d modules=%d)\n",
 		len(sitePages), out, stats.Components, stats.Icons, stats.Enums, stats.Modules)
 
 	return nil
@@ -194,4 +194,58 @@ func lastUpdated(repoRoot, slug string) string {
 	}
 
 	return strings.TrimSpace(string(out))
+}
+
+// sitemapEntry is one URL in the sitemap.
+type sitemapEntry struct {
+	loc     string
+	lastmod string
+}
+
+// writeSitemaps emits sitemap.xml (all pages, git lastmod where known) and
+// sitemap-index.xml (the URL robots.txt already references).
+func writeSitemaps(outDir, repoRoot string) error {
+	entries := []sitemapEntry{{loc: pages.SiteURL + "/"}}
+
+	for _, doc := range pages.AllDocs() {
+		entries = append(entries, sitemapEntry{
+			loc:     pages.SiteURL + "/" + doc.Slug,
+			lastmod: lastUpdated(repoRoot, doc.Slug),
+		})
+	}
+
+	var sb strings.Builder
+	sb.WriteString(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
+	sb.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">` + "\n")
+
+	for _, entry := range entries {
+		sb.WriteString("\t<url>\n\t\t<loc>" + entry.loc + "</loc>\n")
+
+		if entry.lastmod != "" {
+			sb.WriteString("\t\t<lastmod>" + entry.lastmod + "</lastmod>\n")
+		}
+
+		sb.WriteString("\t</url>\n")
+	}
+
+	sb.WriteString("</urlset>\n")
+
+	sitemapPath := filepath.Join(outDir, "sitemap.xml")
+	if err := os.WriteFile(sitemapPath, []byte(sb.String()), 0o644); err != nil {
+		return fmt.Errorf("write sitemap: %w", err)
+	}
+
+	index := `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<sitemap>
+		<loc>` + pages.SiteURL + `/sitemap.xml</loc>
+	</sitemap>
+</sitemapindex>
+`
+	indexPath := filepath.Join(outDir, "sitemap-index.xml")
+	if err := os.WriteFile(indexPath, []byte(index), 0o644); err != nil {
+		return fmt.Errorf("write sitemap index: %w", err)
+	}
+
+	return nil
 }

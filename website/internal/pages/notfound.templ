@@ -1,0 +1,35 @@
+package pages
+
+import (
+	"github.com/larsartmann/templ-components/errorpage"
+	"github.com/larsartmann/templ-components/icons"
+)
+
+// NotFoundMeta describes the 404 page.
+func NotFoundMeta() PageMeta {
+	return PageMeta{
+		Path:        "404",
+		Title:       "Page not found — " + SiteName,
+		Description: "The page you're looking for doesn't exist. Head back to the templ-components docs.",
+		Scripts:     []string{"/assets/js/theme-sync.js", "/assets/js/header.js", "/assets/js/animations.js", "/assets/js/newsletter.js"},
+	}
+}
+
+// NotFound renders the site 404 page around the library's NotFound404
+// component — the site eating its own error-page dogfood.
+templ NotFound(nonce string) {
+	@Page(NotFoundMeta(), nonce) {
+		@errorpage.NotFound404(siteNotFoundProps())
+	}
+}
+
+func siteNotFoundProps() errorpage.NotFound404Props {
+	props := errorpage.DefaultNotFound404Props()
+	props.Links = []errorpage.NotFoundLink{
+		{Text: "Documentation", Href: "/getting-started/installation", Icon: icons.Document},
+		{Text: "GitHub", Href: GitHubURL, Icon: icons.CodeBracket},
+		{Text: "Live Demo", Href: DemoURL, Icon: icons.ExternalLink},
+	}
+
+	return props
+}
