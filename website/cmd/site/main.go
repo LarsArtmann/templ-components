@@ -76,7 +76,7 @@ func run(cfg config) error {
 
 	renderer := build.NewRenderer(nonce)
 
-	docsPages, err := renderDocs(cfg.repoRoot, nonce)
+	docsPages, searchDocs, err := renderDocs(cfg.repoRoot, nonce)
 	if err != nil {
 		return err
 	}
@@ -105,6 +105,10 @@ func run(cfg config) error {
 
 	if err := writeSitemaps(cfg.outDir, cfg.repoRoot); err != nil {
 		return fmt.Errorf("sitemaps: %w", err)
+	}
+
+	if err := build.WriteSearchIndex(cfg.outDir, searchDocs); err != nil {
+		return fmt.Errorf("search index: %w", err)
 	}
 
 	if err := writeAssets(cfg.outDir); err != nil {
@@ -215,21 +219,23 @@ func fetchStars() int {
 }
 
 // renderDocs renders every registered docs page from content/docs, wiring
-// prev/next navigation and git last-updated dates.
-func renderDocs(repoRoot, nonce string) ([]build.Page, error) {
+// prev/next navigation and git last-updated dates, and collects the
+// client-side search index entries.
+func renderDocs(repoRoot, nonce string) ([]build.Page, []build.SearchDoc, error) {
 	all := pages.AllDocs()
 
 	out := make([]build.Page, 0, len(all))
+	searchDocs := make([]build.SearchDoc, 0, len(all))
 
 	for index, doc := range all {
 		source, err := os.ReadFile(filepath.Join(repoRoot, "website", "content", "docs", doc.Slug+".md"))
 		if err != nil {
-			return nil, fmt.Errorf("read docs %s: %w", doc.Slug, err)
+			return nil, nil, fmt.Errorf("read docs %s: %w", doc.Slug, err)
 		}
 
 		parsed, err := md.Parse(string(source))
 		if err != nil {
-			return nil, fmt.Errorf("parse docs %s: %w", doc.Slug, err)
+			return nil, nil, fmt.Errorf("parse docs %s: %w", doc.Slug, err)
 		}
 
 		var prev, next *pages.DocRef
@@ -244,6 +250,19 @@ func renderDocs(repoRoot, nonce string) ([]build.Page, error) {
 			next = &following
 		}
 
+		sections := make([]build.SearchSection, 0, len(parsed.Headings))
+		for _, heading := range parsed.Headings {
+			sections = append(sections, build.SearchSection{ID: heading.ID, Text: heading.Text})
+		}
+
+		searchDocs = append(searchDocs, build.SearchDoc{
+			URL:         "/" + doc.Slug,
+			Title:       parsed.Title,
+			Description: parsed.Description,
+			Sections:    sections,
+			Body:        build.PlainText(parsed.HTML),
+		})
+
 		out = append(out, build.Page{
 			Path: doc.Slug + ".html",
 
@@ -251,7 +270,7 @@ func renderDocs(repoRoot, nonce string) ([]build.Page, error) {
 		})
 	}
 
-	return out, nil
+	return out, searchDocs, nil
 }
 
 // lastUpdated asks git for the last commit date touching a docs source

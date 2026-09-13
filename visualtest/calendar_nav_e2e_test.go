@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 	"time"
 
@@ -106,9 +105,7 @@ func calendarNavServer(t *testing.T, dialect wire.Transport) *httptest.Server {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-		var body io.WriterTo = &calendarNavPage{dialect: dialect}
-
-		if _, err := body.WriteTo(w); err != nil {
+		if err := calendarNavPage(r.Context(), dialect).Render(r.Context(), w); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
@@ -134,36 +131,39 @@ func wiredCalendar(dialect wire.Transport, year, month int) templ.Component {
 	return forms.Calendar(props)
 }
 
-// calendarNavPage writes the shell: htmx inline via layout.Base (the default
-// self-host) plus the Datastar bundle when the dialect needs it.
-type calendarNavPage struct {
-	dialect wire.Transport
-}
-
-func (p *calendarNavPage) WriteTo(w io.Writer) (int64, error) {
-	var builder strings.Builder
-
-	if p.dialect == wire.TransportDatastar {
-		if err := datastar.SDKScript(datastar.SDKScriptProps{
-			BaseProps: utils.BaseProps{Nonce: "cal-e2e"},
-			Src:       "/datastar.js",
-		}).Render(context.Background(), &builder); err != nil {
-			return 0, err
+// calendarNavPage composes the shell via layout.Base (self-hosted htmx by
+// default) + the Datastar bundle when the dialect needs it, with the wired
+// calendar inside its patch region.
+func calendarNavPage(ctx context.Context, dialect wire.Transport) templ.Component {
+	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		if dialect == wire.TransportDatastar {
+			if err := datastar.SDKScript(datastar.SDKScriptProps{
+				BaseProps: utils.BaseProps{Nonce: "cal-e2e"},
+				Src:       "/datastar.js",
+			}).Render(ctx, w); err != nil {
+				return err
+			}
 		}
-	}
 
-	builder.WriteString(`<div id="cal-nav-region">`)
+		if _, err := io.WriteString(w, `<div id="cal-nav-region">`); err != nil {
+			return err
+		}
 
-	if err := wiredCalendar(p.dialect, 2026, 7).Render(context.Background(), &builder); err != nil {
-		return 0, err
-	}
+		if err := wiredCalendar(dialect, 2026, 7).Render(ctx, w); err != nil {
+			return err
+		}
 
-	builder.WriteString(`</div>`)
+		_, err := io.WriteString(w, `</div>`)
+
+		return err
+	})
 
 	pageProps := layout.DefaultPageProps()
 	pageProps.Title = "Calendar nav e2e"
 
-	n, err := io.WriteString(w, builder.String())
+	_ = ctx // shell uses its own render context via Base
 
-	return int64(n), err
+	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		return layout.Base(pageProps).Render(templ.WithChildren(ctx, body), w)
+	})
 }
