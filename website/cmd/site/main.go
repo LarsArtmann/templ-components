@@ -56,18 +56,19 @@ func run(out, repoRoot string, skipStars bool) error {
 	}
 
 	renderer := build.NewRenderer(nonce)
-	ctx := context.Background()
 
-	sitePages := []build.Page{
-		{Path: "index.html", Component: pages.Landing(stats, pages.StarsLabel(stars), nonce)},
-		{Path: "404.html", Component: pages.NotFound(nonce)},
-	}
-
-	docsPages, err := renderDocs(ctx, renderer, repoRoot, nonce)
+	docsPages, err := renderDocs(renderer, repoRoot, nonce)
 	if err != nil {
 		return err
 	}
 
+	ctx := context.Background()
+
+	sitePages := make([]build.Page, 0, 2+len(docsPages))
+	sitePages = append(sitePages,
+		build.Page{Path: "index.html", Component: pages.Landing(stats, pages.StarsLabel(stars), nonce)},
+		build.Page{Path: "404.html", Component: pages.NotFound(nonce)},
+	)
 	sitePages = append(sitePages, docsPages...)
 
 	if err := renderer.WritePages(ctx, out, sitePages); err != nil {
@@ -151,7 +152,7 @@ func fetchStars() int {
 
 // renderDocs renders every registered docs page from content/docs, wiring
 // prev/next navigation and git last-updated dates.
-func renderDocs(ctx context.Context, renderer *build.Renderer, repoRoot, nonce string) ([]build.Page, error) {
+func renderDocs(renderer *build.Renderer, repoRoot, nonce string) ([]build.Page, error) {
 	all := pages.AllDocs()
 
 	out := make([]build.Page, 0, len(all))
@@ -180,7 +181,8 @@ func renderDocs(ctx context.Context, renderer *build.Renderer, repoRoot, nonce s
 		}
 
 		out = append(out, build.Page{
-			Path:      doc.Slug + ".html",
+			Path: doc.Slug + ".html",
+
 			Component: pages.DocsLayout(doc.Slug, parsed, prev, next, lastUpdated(repoRoot, doc.Slug), nonce),
 		})
 	}
@@ -191,6 +193,7 @@ func renderDocs(ctx context.Context, renderer *build.Renderer, repoRoot, nonce s
 // lastUpdated asks git for the last commit date touching a docs source
 // (YYYY-MM-DD); empty when unavailable (shallow clones, non-git runs).
 func lastUpdated(repoRoot, slug string) string {
+	//nolint:gosec // repository-controlled path, never user input
 	cmd := exec.Command("git", "-C", repoRoot, "log", "-1", "--format=%cs", "--", "website/content/docs/"+slug+".md")
 
 	out, err := cmd.Output()
@@ -210,7 +213,7 @@ type sitemapEntry struct {
 // writeSitemaps emits sitemap.xml (all pages, git lastmod where known) and
 // sitemap-index.xml (the URL robots.txt already references).
 func writeSitemaps(outDir, repoRoot string) error {
-	entries := []sitemapEntry{{loc: pages.SiteURL + "/"}}
+	entries := []sitemapEntry{{loc: pages.SiteURL + "/", lastmod: ""}}
 
 	for _, doc := range pages.AllDocs() {
 		entries = append(entries, sitemapEntry{
@@ -236,6 +239,7 @@ func writeSitemaps(outDir, repoRoot string) error {
 	sb.WriteString("</urlset>\n")
 
 	sitemapPath := filepath.Join(outDir, "sitemap.xml")
+	//nolint:gosec // public site asset must be world-readable
 	if err := os.WriteFile(sitemapPath, []byte(sb.String()), 0o644); err != nil {
 		return fmt.Errorf("write sitemap: %w", err)
 	}
@@ -248,6 +252,7 @@ func writeSitemaps(outDir, repoRoot string) error {
 </sitemapindex>
 `
 	indexPath := filepath.Join(outDir, "sitemap-index.xml")
+	//nolint:gosec // public site asset must be world-readable
 	if err := os.WriteFile(indexPath, []byte(index), 0o644); err != nil {
 		return fmt.Errorf("write sitemap index: %w", err)
 	}

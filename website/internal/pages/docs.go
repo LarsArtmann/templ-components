@@ -16,6 +16,8 @@ type DocGroup struct {
 
 // pkgGoDevDoc is the sidebar entry that links off-site (mirrors the Astro
 // sidebar's "Full API on pkg.go.dev").
+//
+//nolint:gochecknoglobals // site information architecture table
 var pkgGoDevDoc = DocRef{Slug: "", Title: "Full API on pkg.go.dev"}
 
 // docSidebar mirrors the Astro Starlight sidebar configuration
@@ -61,6 +63,7 @@ var docSidebar = []DocGroup{
 // AllDocs returns the sidebar pages in reading order (used for prev/next).
 func AllDocs() []DocRef {
 	var all []DocRef
+
 	for _, group := range docSidebar {
 		for _, doc := range group.Docs {
 			if doc.Slug == "" {

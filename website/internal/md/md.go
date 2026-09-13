@@ -44,6 +44,8 @@ var (
 
 // templLexer highlights templ fences as Go (chroma has no dedicated templ
 // lexer; Go coloring covers keywords, strings, and struct literals well).
+//
+//nolint:unused // referenced only via the templLexerRegistration side effect
 type templLexer struct {
 	registry *chroma.LexerRegistry
 }
@@ -67,7 +69,12 @@ func (l templLexer) Tokenise(options *chroma.TokeniseOptions, source string) (ch
 		}
 	}
 
-	return goLexer.Tokenise(options, source)
+	iterator, err := goLexer.Tokenise(options, source)
+	if err != nil {
+		return nil, fmt.Errorf("tokenise templ as go: %w", err)
+	}
+
+	return iterator, nil
 }
 
 func (templLexer) AnalyseText(string) float32 {
@@ -78,9 +85,11 @@ func (l templLexer) SetAnalyser(func(string) float32) chroma.Lexer {
 	return l
 }
 
-func init() {
-	lexers.Register(templLexer{})
-}
+// templLexerRegistration registers the templ alias with chroma's global
+// lexer registry at package initialization.
+//
+//nolint:gochecknoglobals,exhaustruct_v5 // registry side effect; zero-value lexer is intentional
+var templLexerRegistration = lexers.Register(templLexer{})
 
 func newMarkdown() goldmark.Markdown {
 	return goldmark.New(
@@ -100,6 +109,7 @@ func newMarkdown() goldmark.Markdown {
 								w,
 								`<button type="button" class="code-copy" aria-label="Copy code to clipboard">Copy</button>`,
 							)
+
 							return
 						}
 
@@ -161,6 +171,7 @@ func collectHeadings(source []byte) []Heading {
 		}
 
 		idText := ""
+
 		if id, idOK := heading.AttributeString("id"); idOK {
 			if raw, isBytes := id.([]byte); isBytes {
 				idText = string(raw)

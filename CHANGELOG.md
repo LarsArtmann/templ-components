@@ -18,6 +18,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   true for GET too. Consumers writing their own wired handlers no longer
   hand-roll `ParseForm` + `PostForm.Get` chains.
 
+- **`layout.Minimal` gains optional `SEO` head tags** — robots noindex,
+  canonical, hreflang alternates, and JSON-LD, with identical semantics to
+  `PageProps.SEO`. Both shells now emit the tags through one shared
+  sub-template, so static/print documents (the Minimal use case) can opt
+  into structured data without giving up the zero-dependency default (the
+  zero value emits nothing). Unblocks the #156 adoption reason.
+- **axe-core accessibility sweep over the live demo routes** (`visualtest`):
+  the vendored axe-core 4.11.1 runtime (MPL-2.0) audits all 7 demo pages
+  (light + dark for index/forms) in real Chromium, with a positive-control
+  test proving the harness detects violations and a baseline ledger
+  (`visualtest/testdata/axe_baseline.json`) that fails CI on any new
+  critical/serious finding. Accepted palette-convention contrast debt is
+  documented in the baseline.
+- **Demo click-through e2e suite** (`visualtest/demo_flows_e2e_test.go`):
+  browser-level proof of five headline demo flows against the real demo
+  server — LoadMore through EndOfList, ConfirmDelete (native confirm
+  auto-accepted), LoadingButton busy gate, multipart upload echo, and kanban
+  move buttons on both htmx and Datastar boards. Every flow test bounds its
+  tab context (2 min) so a wedged renderer fails the test instead of hanging
+  the binary.
+- **Demo route smoke test** (`visualtest/demo_smoke_test.go`): all 7 demo
+  routes must render their unique page title with zero 500s in the server
+  log, so CI's existing Visual Regression job now fails when the demo a
+  consumer copies from is broken — previously nothing in CI exercised the
+  demo server at all.
+
 ### Changed
 
 - **Compiled-CSS resurrection loop closed.** The BuildFlow daemon re-added six
@@ -79,9 +105,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   label (or an invalid `for=""`) — a WCAG 1.3.1/4.1.2 failure that axe-core
   reports as a critical `label` violation. `FilterDropdown` additionally gains
   an accessible name fallback ("Filter") and `TagsInput` ("Add tag").
-
-### Changed
-
 - **Form controls with `role="progressbar"`/`role="img"` are never unnamed.**
   `feedback.ProgressBar` now emits an accessible name (AriaLabel → Label →
   "Progress"), and `display.BarChart`/`Heatmap` fall back to "Bar chart" /
@@ -112,34 +135,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `document` itself (every time the pointer enters the window on a page with
   a tooltip) threw a console `TypeError`. All three now route through a
   target guard.
-
-### Added
-
-- **`layout.Minimal` gains optional `SEO` head tags** — robots noindex,
-  canonical, hreflang alternates, and JSON-LD, with identical semantics to
-  `PageProps.SEO`. Both shells now emit the tags through one shared
-  sub-template, so static/print documents (the Minimal use case) can opt
-  into structured data without giving up the zero-dependency default (the
-  zero value emits nothing). Unblocks the #156 adoption reason.
-- **axe-core accessibility sweep over the live demo routes** (`visualtest`):
-  the vendored axe-core 4.11.1 runtime (MPL-2.0) audits all 7 demo pages
-  (light + dark for index/forms) in real Chromium, with a positive-control
-  test proving the harness detects violations and a baseline ledger
-  (`visualtest/testdata/axe_baseline.json`) that fails CI on any new
-  critical/serious finding. Accepted palette-convention contrast debt is
-  documented in the baseline.
-- **Demo click-through e2e suite** (`visualtest/demo_flows_e2e_test.go`):
-  browser-level proof of five headline demo flows against the real demo
-  server — LoadMore through EndOfList, ConfirmDelete (native confirm
-  auto-accepted), LoadingButton busy gate, multipart upload echo, and kanban
-  move buttons on both htmx and Datastar boards. Every flow test bounds its
-  tab context (2 min) so a wedged renderer fails the test instead of hanging
-  the binary.
-- **Demo route smoke test** (`visualtest/demo_smoke_test.go`): all 7 demo
-  routes must render their unique page title with zero 500s in the server
-  log, so CI's existing Visual Regression job now fails when the demo a
-  consumer copies from is broken — previously nothing in CI exercised the
-  demo server at all.
 
 ## [1.16.0] — 2026-09-09
 
