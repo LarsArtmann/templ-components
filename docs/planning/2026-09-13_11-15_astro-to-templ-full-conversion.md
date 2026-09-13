@@ -1,6 +1,6 @@
 # FULL Astro → templ Conversion — templ-components Website
 
-**Date:** 2026-09-13 11:15 · **Status:** APPROVED PLAN → EXECUTING · **Mandate:** "FULL Astro to templ conversion, while making it better!" · Prime directive: **VERSCHLIMMBESSERN verboten** — the new site must be a strict upgrade, never a regression.
+**Date:** 2026-09-13 11:15 · **Status:** P0–P2 COMPLETE (2026-09-13) — landing, docs, 404, sitemaps, CI, decommission all shipped; P3 remainder (Pagefind search, Go OG generator, flake `.#website` app, firebase.json CSP header flip once JSON-LD nonce is verified) tracked as follow-ups · **Mandate:** "FULL Astro to templ conversion, while making it better!" · Prime directive: **VERSCHLIMMBESSERN verboten** — the new site must be a strict upgrade, never a regression.
 
 ---
 
