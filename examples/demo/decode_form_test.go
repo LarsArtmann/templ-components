@@ -46,18 +46,18 @@ func TestDecodeFormEndpoints(t *testing.T) {
 			wantIn:     "tick=2",
 		},
 		{
-			name:       "demo-stats with garbage tick falls back to tick 1",
+			name:       "demo-stats with garbage tick restarts at 1",
 			method:     http.MethodGet,
 			path:       "/api/demo-stats?tick=not-a-number",
 			wantStatus: http.StatusOK,
-			wantIn:     "tick=2",
+			wantIn:     "tick=1",
 		},
 		{
 			name:       "users decodes status and sort",
 			method:     http.MethodGet,
 			path:       "/api/users?status=active&sort=name",
 			wantStatus: http.StatusOK,
-			wantIn:     "table",
+			wantIn:     "Alice",
 		},
 		{
 			name:       "wire wizard advances step 0 with valid email",
