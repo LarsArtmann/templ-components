@@ -72,3 +72,33 @@ func TestVersionMatchesFeatures(t *testing.T) {
 
 	t.Fatalf("no **Version:** marker found in FEATURES.md")
 }
+
+// TestVersionMatchesReadmeBadge ensures the hand-edited README version badge
+// stays in sync with utils.Version. The badge URL embeds the version as a
+// literal (img.shields.io cannot read Go files), so it needs its own drift
+// guard alongside the CHANGELOG and FEATURES checks.
+func TestVersionMatchesReadmeBadge(t *testing.T) {
+	t.Parallel()
+
+	data, err := os.ReadFile("../README.md")
+	if err != nil {
+		t.Fatalf("README.md not found: %v", err)
+	}
+
+	// Badge line looks like:
+	// [![Version](https://img.shields.io/badge/version-v1.16.0-blue?style=flat-square)]
+	const marker = "img.shields.io/badge/version-v"
+	for line := range strings.SplitSeq(string(data), "\n") {
+		if _, rest, ok := strings.Cut(line, marker); ok {
+			// rest starts with "v1.16.0-blue?style=..."
+			version := strings.TrimPrefix(rest[:strings.Index(rest, "-")], "v")
+			if version != Version {
+				t.Errorf("utils.Version = %q, but README.md badge shows %q", Version, version)
+			}
+
+			return
+		}
+	}
+
+	t.Fatalf("no version badge (marker %q) found in README.md", marker)
+}
