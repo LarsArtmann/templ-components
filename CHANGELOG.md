@@ -29,6 +29,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`tc doctor`** — one command diagnosing the top consumer traps: Tailwind
+  `@source` scanning of `.templ` files, the `GOEXPERIMENT=jsonv2` flag (env
+  or go.mod toolchain), templ pin vs the generator version, committed
+  `*_templ.go` (library repo), and `core.hooksPath` adoption. Pass/fail
+  table with fix hints, non-zero exit for CI.
+- **Published guarantees.** `docs/invariants.md` lists every
+  machine-checked consumer invariant (determinism, zero panics, class
+  override, CSP, dark/motion/RTL compliance, version-sync, tag compiles)
+  with its guard test; `docs/version-support.md` states the toolchain
+  floors and the bump procedure. Both ship as website guides
+  (Guarantees, Version Support).
+- **Zero-panic + Class-override pinning tests.**
+  `utils.TestZeroRuntimePanics` (panic( scanner over library sources with
+  a reasoned allowlist) and `internal/contract.TestClassOverrideWins`
+  (token-exact override assertions across 10 flagship families) turn the
+  two headline guarantees into CI gates.
+- **ADR-0039 drafted: v2 module-path migration timing** — recommendation:
+  migrate at the first breaking change; the runbook (module lines, tag
+  set, sync scripts, consumers) is pre-written. Owner decision pending.
 - **Convention linter v1** (`internal/contract/conventions_test.go`): an
   AST sweep that machine-checks the three hand-enforced component
   conventions — every `*Props` embeds `utils.BaseProps` (4 reasoned

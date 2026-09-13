@@ -41,6 +41,8 @@ var docSidebar = []DocGroup{
 			{Slug: "guides/transport-wiring", Title: "Transport Wiring"},
 			{Slug: "guides/accessibility", Title: "Accessibility"},
 			{Slug: "guides/csp-compliance", Title: "CSP Compliance"},
+			{Slug: "guides/invariants", Title: "Guarantees"},
+			{Slug: "guides/version-support", Title: "Version Support"},
 		},
 	},
 	{
