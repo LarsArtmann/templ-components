@@ -72,6 +72,7 @@ func sanitizeFuzzQuery(raw string) string {
 		if r < 0x20 || r == 0x7f || r == ' ' || r == '#' {
 			return -1
 		}
+
 		return r
 	}, raw)
 }
@@ -79,7 +80,7 @@ func sanitizeFuzzQuery(raw string) string {
 func newFuzzRequest(t *testing.T, target string) *http.Request {
 	t.Helper()
 
-	req, err := http.NewRequest(http.MethodGet, target, http.NoBody)
+	req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, target, http.NoBody)
 	if err != nil {
 		t.Fatalf("seed URL must be parseable after sanitize: %v", err)
 	}
