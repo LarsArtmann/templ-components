@@ -29,6 +29,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Post-release consumer compile smoke** (`scripts/check-tag-compiles.sh` +
+  the `Release smoke` CI workflow): a throwaway module `go get`s the pushed
+  tag from the module proxy and builds every import path (root + all 6
+  sub-modules), on every `v*` tag push and via manual dispatch — the
+  "tag missing `*_templ.go`" catastrophe is now caught by CI before
+  consumers, not by consumers. Verified end-to-end against the freshly
+  pushed v1.17.0 (all 11 paths green).
+
 - **`wire.DecodeForm[T]`** — server-side counterpart to form-encoded wire
   submissions. Decodes POST bodies and GET query parameters into any struct
   via `form:"name"` tags (string, int, int64, bool; HTML checkbox `"on"`

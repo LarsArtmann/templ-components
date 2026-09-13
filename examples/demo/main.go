@@ -104,6 +104,35 @@ const (
 const (
 	wireFormNameMissing = "Name is required."
 	wireFormEmailBad    = "Enter an email address with a domain."
+	wireWizardInvalid   = "Invalid submission."
+)
+
+// Demo endpoint request payloads — decoded by wire.DecodeForm, the
+// server-side counterpart of every wired form/query in this demo. Field names
+// must match the `name`/query attributes the components render.
+type (
+	loadMoreQuery struct {
+		Cursor string `form:"cursor"`
+	}
+	demoStatsQuery struct {
+		Tick int `form:"tick"`
+	}
+	usersFilterQuery struct {
+		Status string `form:"status"`
+		Sort   string `form:"sort"`
+	}
+	searchQuery struct {
+		Q string `form:"q"`
+	}
+	wireFormSubmission struct {
+		Name  string `form:"name"`
+		Email string `form:"email"`
+	}
+	wireWizardSubmission struct {
+		Step  int    `form:"step"`
+		Email string `form:"email"`
+		Name  string `form:"name"`
+	}
 )
 
 // parseDemoTransport resolves the ?transport= query value; anything unknown
@@ -198,7 +227,15 @@ func newMux() *http.ServeMux {
 	mux.HandleFunc("/api/items", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		noStore(w)
-		componentOr500(w, r, loadMoreResponse(r.URL.Query().Get("cursor")))
+
+		query, err := wire.DecodeForm[loadMoreQuery](r)
+		if err != nil {
+			http.Error(w, "invalid query", http.StatusBadRequest)
+
+			return
+		}
+
+		componentOr500(w, r, loadMoreResponse(query.Cursor))
 	})
 
 	mux.HandleFunc("/api/items/123", func(w http.ResponseWriter, r *http.Request) {
@@ -226,9 +263,11 @@ func newMux() *http.ServeMux {
 	// settles instead of hammering the server forever.
 	mux.HandleFunc("/api/demo-stats", func(w http.ResponseWriter, r *http.Request) {
 		tick := 1
-		if v, err := strconv.Atoi(r.URL.Query().Get("tick")); err == nil {
-			tick = v + 1
+
+		if query, err := wire.DecodeForm[demoStatsQuery](r); err == nil && query.Tick > 0 {
+			tick = query.Tick + 1
 		}
+
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		noStore(w)
 		componentOr500(w, r, polledStatsRegion(tick))
@@ -236,11 +275,16 @@ func newMux() *http.ServeMux {
 
 	// FilterDropdown demo: returns a filtered user fragment.
 	mux.HandleFunc("/api/users", func(w http.ResponseWriter, r *http.Request) {
-		status := r.URL.Query().Get("status")
-		sort := r.URL.Query().Get("sort")
+		query, err := wire.DecodeForm[usersFilterQuery](r)
+		if err != nil {
+			http.Error(w, "invalid query", http.StatusBadRequest)
+
+			return
+		}
+
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		noStore(w)
-		componentOr500(w, r, filteredUsersFragment(status, sort))
+		componentOr500(w, r, filteredUsersFragment(query.Status, query.Sort))
 	})
 
 	// Mock Datastar SSE endpoint — streams periodic updates in Datastar's
@@ -377,15 +421,16 @@ func newMux() *http.ServeMux {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		noStore(w)
 
-		if err := r.ParseForm(); err != nil {
+		submission, err := wire.DecodeForm[wireFormSubmission](r)
+		if err != nil {
 			http.Error(w, "invalid form body", http.StatusBadRequest)
 
 			return
 		}
 
 		st := wireFormState{
-			Name:  strings.TrimSpace(r.PostFormValue("name")),
-			Email: strings.TrimSpace(r.PostFormValue("email")),
+			Name:  strings.TrimSpace(submission.Name),
+			Email: strings.TrimSpace(submission.Email),
 		}
 		if st.Name == "" {
 			st.NameErr = wireFormNameMissing
@@ -481,7 +526,14 @@ func newMux() *http.ServeMux {
 			w.Header().Set(wire.HeaderDatastarMode, "inner")
 		}
 
-		componentOr500(w, r, wireSearchResult(dialect, strings.TrimSpace(r.URL.Query().Get("q"))))
+		query, err := wire.DecodeForm[searchQuery](r)
+		if err != nil {
+			http.Error(w, "invalid query", http.StatusBadRequest)
+
+			return
+		}
+
+		componentOr500(w, r, wireSearchResult(dialect, strings.TrimSpace(query.Q)))
 	})
 
 	// Multi-step wizard demo: the server owns the step machine. A step
@@ -499,20 +551,16 @@ func newMux() *http.ServeMux {
 			w.Header().Set(wire.HeaderDatastarMode, "inner")
 		}
 
-		if err := r.ParseForm(); err != nil {
-			componentOr500(w, r, wireWizardStepResult(dialect, 0, "Invalid submission."))
+		submission, err := wire.DecodeForm[wireWizardSubmission](r)
+		if err != nil {
+			componentOr500(w, r, wireWizardStepResult(dialect, 0, wireWizardInvalid))
 
 			return
 		}
 
-		step, stepErr := strconv.Atoi(r.PostFormValue("step"))
-		if stepErr != nil {
-			step = 0 // missing/garbage step field restarts the wizard
-		}
-
-		switch step {
+		switch submission.Step {
 		case 0:
-			email := strings.TrimSpace(r.PostFormValue("email"))
+			email := strings.TrimSpace(submission.Email)
 			if email == "" || !strings.Contains(email, "@") || !strings.Contains(email, ".") {
 				componentOr500(w, r, wireWizardStepResult(dialect, 0, wireFormEmailBad))
 
@@ -520,7 +568,7 @@ func newMux() *http.ServeMux {
 			}
 			componentOr500(w, r, wireWizardStepResult(dialect, 1, ""))
 		case 1:
-			if strings.TrimSpace(r.PostFormValue("name")) == "" {
+			if strings.TrimSpace(submission.Name) == "" {
 				componentOr500(w, r, wireWizardStepResult(dialect, 1, "Enter your name."))
 
 				return
@@ -538,7 +586,14 @@ func newMux() *http.ServeMux {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		noStore(w)
 
-		componentOr500(w, r, wireFilterResults(r.URL.Query().Get("q")))
+		query, err := wire.DecodeForm[searchQuery](r)
+		if err != nil {
+			http.Error(w, "invalid query", http.StatusBadRequest)
+
+			return
+		}
+
+		componentOr500(w, r, wireFilterResults(strings.TrimSpace(query.Q)))
 	})))
 
 	// Kanban demo: the move endpoint a wired KanbanBoard expects. One handler
