@@ -2,7 +2,6 @@ package display
 
 import (
 	"testing"
-	"time"
 
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
@@ -101,31 +100,7 @@ func TestCountBadgeMaxOverflow(t *testing.T) {
 	})
 }
 
-func TestFormatRelativeTimeBoundaries(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name string
-		from time.Time
-		want string
-	}{
-		{"just now (under 60s)", time.Now().Add(-59 * time.Second), "just now"},
-		{"1 minute ago", time.Now().Add(-60 * time.Second), "1 minute ago"},
-		{"59 minutes ago", time.Now().Add(-59 * time.Minute), "59 minutes ago"},
-		{"1 hour ago", time.Now().Add(-60 * time.Minute), "1 hour ago"},
-		{"23 hours ago", time.Now().Add(-23 * time.Hour), "23 hours ago"},
-		{"1 day ago", time.Now().Add(-24 * time.Hour), "1 day ago"},
-		{"6 days ago", time.Now().Add(-144 * time.Hour), "6 days ago"},
-		{"7 days ago (1 week)", time.Now().Add(-168 * time.Hour), "1 week ago"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			got := formatRelativeTime(tt.from, time.Now())
-			if got != tt.want {
-				t.Errorf("formatRelativeTime() = %q, want %q", got, tt.want)
-			}
-		})
-	}
-}
+// formatRelativeTime boundary coverage moved to
+// relative_time_boundary_test.go (M20/F089): the previous inline table used
+// time.Now() for BOTH the subject and the reference - a micro-race at every
+// bucket fencepost - and missed the future-symmetry + 30-day-fallback cases.
