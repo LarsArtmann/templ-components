@@ -1,0 +1,132 @@
+package pages
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+
+	"github.com/larsartmann/templ-components/website/internal/build"
+)
+
+// StarsLabel renders the GitHub-stars CTA text ("1,234 Stars", or the static
+// fallback when the build-time API lookup failed — same fail-soft behavior as
+// the Astro hero).
+func StarsLabel(stars int) string {
+	if stars <= 0 {
+		return "Star on GitHub"
+	}
+	return fmt.Sprintf("%s Stars", formatInt(stars))
+}
+
+// formatInt inserts thousands separators, matching the visual language of the
+// library's CountBadge.
+func formatInt(n int) string {
+	s := fmt.Sprintf("%d", n)
+	if len(s) <= 3 {
+		return s
+	}
+	var out []byte
+	for i, c := range []byte(s) {
+		if i > 0 && (len(s)-i)%3 == 0 {
+			out = append(out, ',')
+		}
+		out = append(out, c)
+	}
+	return string(out)
+}
+
+// Hero is the landing hero: pill, headline, CTAs, metric strip, and the
+// highlighted code window with copy button (ported from HeroSection.astro).
+// The metric numbers come from build.Stats — derived from the codebase at
+// build time, never hand-typed.
+templ Hero(stats build.Stats, starsText string) {
+	<section class="relative flex items-center justify-center overflow-hidden pt-36 pb-20">
+		<div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-accent/5 blur-[140px] rounded-full pointer-events-none"></div>
+		<div class="relative max-w-3xl xl:max-w-7xl mx-auto px-6 text-center">
+			<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-bg-card-solid text-xs font-mono text-text-secondary mb-8 backdrop-blur-sm">
+				<span class="relative flex w-2 h-2">
+					<span class="animate-pulse-dot absolute inline-flex w-full h-full rounded-full bg-accent"></span>
+					<span class="relative inline-flex rounded-full w-2 h-2 bg-accent"></span>
+				</span>
+				Server-rendered UI for Go
+			</div>
+
+			<h1 class="text-[clamp(2.75rem,8vw,4.5rem)] font-bold tracking-tighter leading-[1.05] mb-6 text-text-primary">
+				Build Go web apps<br/> without a <span class="text-accent">frontend framework</span>.
+			</h1>
+
+			<p class="text-[clamp(1.0625rem,2.5vw,1.25rem)] text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
+				{ fmt.Sprintf("%d server-rendered components for templ + HTMX + Tailwind CSS v4. Type-safe props, dark mode built-in, CSP-ready, zero Node.js.", stats.Components) }
+			</p>
+
+			<div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
+				@display.Button(display.ButtonProps{
+					Text:     "Get Started",
+					Href:     "/getting-started/installation",
+					Variant:  display.ButtonPrimary,
+					Size:     display.ButtonSizeLG,
+					Icon:     icons.Icon(icons.ArrowRight, "h-4 w-4"),
+					BaseProps: utils.BaseProps{
+						Class: "px-6 py-3 text-sm shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5",
+					},
+				})
+				@display.Button(display.ButtonProps{
+					Text:     "Live Demo",
+					Href:     DemoURL,
+					External: true,
+					Variant:  display.ButtonGhost,
+					Size:     display.ButtonSizeLG,
+					Icon:     icons.Icon(icons.Eye, "h-4 w-4"),
+					BaseProps: utils.BaseProps{
+						Class: "border border-border text-text-secondary hover:border-border-hover hover:text-text-primary hover:bg-transparent px-6 py-3.5 text-sm hover:-translate-y-0.5",
+					},
+				})
+				@display.Button(display.ButtonProps{
+					Text:     starsText,
+					Href:     GitHubURL,
+					External: true,
+					Variant:  display.ButtonGhost,
+					Size:     display.ButtonSizeLG,
+					Icon:     filledStarIcon("h-4 w-4"),
+					BaseProps: utils.BaseProps{
+						Class: "border border-border text-text-secondary hover:border-border-hover hover:text-text-primary hover:bg-transparent px-6 py-3.5 text-sm hover:-translate-y-0.5",
+					},
+				})
+			</div>
+
+			<div class="flex items-center justify-center gap-6 md:gap-10 mb-16 max-w-xl mx-auto">
+				@heroMetric(stats.Components, "Components")
+				<div class="w-px h-10 bg-border shrink-0"></div>
+				@heroMetric(stats.Icons, "SVG icons")
+				<div class="w-px h-10 bg-border shrink-0"></div>
+				@heroMetric(stats.Enums, "Typed enums")
+				<div class="w-px h-10 bg-border shrink-0"></div>
+				@heroMetric(stats.Modules, "Go modules")
+			</div>
+
+			<div class="relative max-w-xl mx-auto">
+				<div class="absolute -inset-4 bg-gradient-to-r from-accent/8 via-transparent to-accent/8 rounded-2xl pointer-events-none"></div>
+				<div class="relative rounded-xl border border-border bg-bg-code shadow-2xl overflow-hidden code-preview">
+					<div class="flex items-center gap-1.5 px-4 py-3 border-b border-border bg-bg-card-solid/50">
+						<span class="w-2.5 h-2.5 rounded-full bg-code-dot"></span>
+						<span class="w-2.5 h-2.5 rounded-full bg-code-dot"></span>
+						<span class="w-2.5 h-2.5 rounded-full bg-code-dot"></span>
+						<span class="ml-3 text-xs text-text-muted font-mono">page.templ</span>
+					</div>
+					<pre class="p-5 text-left text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative">@highlightTempl(heroCode)</pre>
+					<button class="absolute top-2 right-2 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" id="copy-btn" data-code={ heroCode } aria-label="Copy code to clipboard">Copy</button>
+				</div>
+			</div>
+		</div>
+	</section>
+}
+
+// heroMetric renders one number+label pair of the metric strip.
+templ heroMetric(value int, label string) {
+	<div class="text-center">
+		<div class="text-xl font-bold text-text-primary font-mono">{ fmt.Sprintf("%d", value) }</div>
+		<div class="text-xs text-text-muted mt-0.5">{ label }</div>
+	</div>
+}
