@@ -32,8 +32,8 @@ func TestCalendarMonthNavWire(t *testing.T) {
 
 		html := utils.Render(t, Calendar(props))
 		utils.AssertContainsAll(t, html,
-			`hx-get="/api/calendar?year=2026&month=6"`,
-			`hx-get="/api/calendar?year=2026&month=8"`,
+			`hx-get="/api/calendar?year=2026&amp;month=6"`,
+			`hx-get="/api/calendar?year=2026&amp;month=8"`,
 			`hx-target="#cal"`,
 			`aria-label="Previous month"`,
 			`aria-label="Next month"`,
@@ -52,8 +52,8 @@ func TestCalendarMonthNavWire(t *testing.T) {
 
 		html := utils.Render(t, Calendar(props))
 		utils.AssertContainsAll(t, html,
-			`data-on:click="@get('/api/calendar?year=2026&amp;month=6')"`,
-			`data-on:click="@get('/api/calendar?year=2026&amp;month=8')"`,
+			`data-on:click="@get(&#39;/api/calendar?year=2026&amp;month=6&#39;)"`,
+			`data-on:click="@get(&#39;/api/calendar?year=2026&amp;month=8&#39;)"`,
 		)
 	})
 
@@ -64,15 +64,15 @@ func TestCalendarMonthNavWire(t *testing.T) {
 		december.Month = time.December
 		december.MonthNav = &wire.Action{URL: "/c?y={year}&m={month}"} //nolint:exhaustruct // URL is the wiring surface
 
-		html := utils.Render(t, Calendar(december))
-		utils.AssertContains(t, html, `/c?y=2027&m=1`)
+	html := utils.Render(t, Calendar(december))
+	utils.AssertContains(t, html, `/c?y=2027&amp;m=1`)
 
-		january := props
-		january.Month = time.January
-		january.MonthNav = &wire.Action{URL: "/c?y={year}&m={month}"} //nolint:exhaustruct // URL is the wiring surface
+	january := props
+	january.Month = time.January
+	january.MonthNav = &wire.Action{URL: "/c?y={year}&m={month}"} //nolint:exhaustruct // URL is the wiring surface
 
-		html = utils.Render(t, Calendar(january))
-		utils.AssertContains(t, html, `/c?y=2025&m=12`)
+	html = utils.Render(t, Calendar(january))
+	utils.AssertContains(t, html, `/c?y=2025&amp;m=12`)
 	})
 
 	t.Run("consumer action is never mutated", func(t *testing.T) {

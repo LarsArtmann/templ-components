@@ -19,12 +19,13 @@ func NotFoundMeta() PageMeta {
 // component — the site eating its own error-page dogfood.
 templ NotFound(nonce string) {
 	@Page(NotFoundMeta(), nonce) {
-		@errorpage.NotFound404(siteNotFoundProps())
+		@errorpage.NotFound404(siteNotFoundProps(nonce))
 	}
 }
 
-func siteNotFoundProps() errorpage.NotFound404Props {
+func siteNotFoundProps(nonce string) errorpage.NotFound404Props {
 	props := errorpage.DefaultNotFound404Props()
+	props.BaseProps.Nonce = nonce
 	props.Links = []errorpage.NotFoundLink{
 		{Text: "Documentation", Href: "/getting-started/installation", Icon: icons.Document},
 		{Text: "GitHub", Href: GitHubURL, Icon: icons.CodeBracket},
