@@ -62,6 +62,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   log, so CI's existing Visual Regression job now fails when the demo a
   consumer copies from is broken — previously nothing in CI exercised the
   demo server at all.
+- **Compiled-CSS target list is single-sourced** in
+  `scripts/compiled-css-targets.txt`: `scripts/release.sh` (recompile),
+  `scripts/check-css-minified.sh` (minification), and
+  `utils.TestCompiledCSSInventory` (tracked-set + existence guards) all read
+  the same `<input> <output>` list — previously the list lived in bash AND Go
+  and could drift independently. The minification guard now covers ALL three
+  compiled targets (previously only `static/app.css`), and CONTRIBUTING.md
+  states the rule: a committed artifact needs a named consumer.
+- **Hook-adoption guard (Guard 0)**: `.githooks/pre-commit` now warns loudly
+  when `git config core.hooksPath` is unset or points elsewhere (a clone
+  running a stale `.git/hooks/` copy), with the one-line fix
+  (`scripts/setup-hooks.sh`). README's contributing section names the step.
 
 ### Changed
 
@@ -90,6 +102,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `TestDocsCountDrift` covers SKILL.md totals, per-package headings, and
   icons for real. A new `TestVersionMatchesReadmeBadge` closes the
   hand-edited version-badge drift gap.
+
+- **Lint baseline is now literally zero across all 8 linted modules.** The
+  seven pre-existing findings (gocognit ×5 in oversized test functions,
+  one `noctx` on `exec.Command`, one stale `nolint:goconst` directive) are
+  fixed by refactoring — table-driven constructors test, extracted scan
+  helpers, `exec.CommandContext` — so CI's "0 findings" claim is true again.
+
+- **The two same-named `templ-components-theme.css` files now cross-reference
+  each other in their headers.** The repo-root file (palette-override
+  `@theme` example) and the `templates/` file (ADR-0008 semantic-token
+  layer, release.sh compile input) are easy to confuse; each header now
+  states what it is, what it is NOT, and where the sibling lives.
 
 ### Removed
 
