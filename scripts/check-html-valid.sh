@@ -58,7 +58,14 @@ done
 #     (button|selectedcontent)   <select> (button + selectedcontent inside select)
 IGNORE_RE='Attribute "hx-[a-z-]+" not allowed|"data-\*" attribute names|"(popover|popovertarget|fetchpriority|enterkeyhint)" not allowed|Element "search" not allowed|Element "svg" not allowed as child of element "summary"|Element "style" not allowed as child of element "body"|CSS: Parse Error|"background-color": Invalid RGB function|Stray (start|end) tag "(button|selectedcontent)"'
 
-report="$(html5validator --root "$WORK" 2>/dev/null || true)"
+# Validator invocation: html5validator (nixpkgs local) or a direct vnu.jar
+# via VNU_JAR (CI downloads the jar — no pip/PEP-668 involved). Output
+# message format is identical (html5validator wraps the same checker).
+if [ -n "${VNU_JAR:-}" ]; then
+	report="$(java -jar "$VNU_JAR" $(find "$WORK" -name '*.html') 2>&1 || true)"
+else
+	report="$(html5validator --root "$WORK" 2>/dev/null || true)"
+fi
 filtered="$(printf '%s\n' "$report" | grep 'error:' | grep -vE "$IGNORE_RE" || true)"
 
 if [ -n "$filtered" ]; then

@@ -8,6 +8,24 @@ on:
     branches: [master, main]
 
 jobs:
+  # W3C HTML validation over the golden corpus (M17/F075): catches invalid
+  # markup that string-normalized goldens hide (found the Form action=""
+  # bug and the Toggle div-in-label violation). Ignore classes live in the
+  # script. Local run: nix shell nixpkgs#html5validator -c scripts/check-html-valid.sh
+  html-validation:
+    name: HTML validation (golden corpus)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Fetch Nu Html Checker
+        run: |
+          curl -fsSLo /tmp/vnu.jar "https://github.com/validator/validator/releases/latest/download/vnu.jar"
+          java -version
+      - name: Validate goldens
+        env:
+          VNU_JAR: /tmp/vnu.jar
+        run: scripts/check-html-valid.sh
+
   # Mechanical enforcement of the always-warm [Unreleased] rule: a PR that
   # touches library component code must also diff CHANGELOG.md (2026-08-31:
   # PR #5 shipped component changes with an empty [Unreleased]). Uses the PR

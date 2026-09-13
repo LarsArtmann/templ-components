@@ -14,6 +14,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   populated root carried `id` — an htmx empty→full re-render could not find its
   target), and `display.Carousel` (ID lived only in `data-tc-carousel`, now
   also rendered as `id`; BarChart/Heatmap roots now merge `props.Class` too).
+- **HTML validation gate over the golden corpus (M17/F075).** New
+  `scripts/check-html-valid.sh` (local: `nix shell nixpkgs#html5validator`;
+  CI: vnu.jar job in ci.yaml) validates all 246 goldens with the W3C Nu Html
+  Checker after wrapping fragments in a document scaffold. 14 documented
+  ignore classes (vnu snapshot staleness: Popover API, `<search>`,
+  customizable `<select>`; htmx/Datastar dialect attributes; CSS Color 4).
+  The first run found and fixed two real markup bugs:
+  `forms.Form` rendered `action=""` when no Action was set (invalid HTML —
+  the attribute is now omitted, matching browser no-action semantics), and
+  `forms.Toggle` nested `<div>` track/thumb inside `<label>` (labels permit
+  only phrasing content — now `<span>`s; rendering identical because the
+  label is a flex container).
 - **`navigation.NavLinkProps.Wire` (#155).** NavLink-level transport wiring:
   a wired nav link keeps its `href` (no-JS fallback) and carries the
   `wire.Action`'s dialect attributes — htmx `hx-get` + `hx-target`, Datastar
