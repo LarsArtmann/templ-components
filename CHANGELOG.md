@@ -8,6 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **CI hygiene pack (M19).** Per-package coverage floors
+  (`scripts/check-coverage-floors.sh` + `scripts/coverage-floors.txt`, wired
+  as a CI step — floors start at current−2 and ratchet up only); Renovate
+  config (`renovate.json5`: golang/actions/nix managers, automerge for
+  lock+digest only — the templ pin and the closed dependency budget always
+  need a human); the Visual Regression job gets its own 25-minute runner
+  timeout + 14-day failure-artifact retention; and the test flake policy
+  (`docs/testing/flake-policy.md`) with the `visualtest.RetryOnce` helper
+  (retry exactly once, log both attempts, two failures = real bug). Three
+  slices deferred with runbooks in TODO_LIST #213–#215 (wall-clock budget,
+  benchstat comments, mutation pilot).
+
 - **Convention check 4: consumer-set `BaseProps.ID` must render (`internal/contract.TestPropsIDRendersInOutput`).** Every Props-carrying component renders with a contract ID set; its presence in the output is asserted. The sweep (born from the Calendar ID bug) found and fixed FIVE more silent ID drops, all the same failure class — broken consumer CSS/ARIA/`hx-target` anchors:
   `display.ExternalLink` (anchor never carried `id`), `display.Sparkline` (svg),
   `display.BarChart` + `display.Heatmap` (neither the empty state nor the
