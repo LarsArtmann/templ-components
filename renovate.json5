@@ -1,0 +1,49 @@
+{
+  // Renovate bot config (M19/F081). Managers: Go modules, GitHub Actions,
+  // Nix flake inputs. Automerge is LOCKFILE/PIN updates only — version bumps
+  // of the three pinned runtime deps (templ, tailwind-merge-go,
+  // go-error-family) always open a PR: the templ pin especially is coupled
+  // to the committed *_templ.go invariant (AGENTS.md "templ Version Pin")
+  // and must never merge unattended.
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "rangeStrategy": "pin",
+  "automerge": false,
+  "packageRules": [
+    {
+      "description": "Lockfile maintenance + digest updates are low-risk: automerge on green CI",
+      "matchUpdateTypes": ["lockFileMaintenance", "digest", "pinDigest"],
+      "automerge": true,
+      "platformAutomerge": true
+    },
+    {
+      "description": "github-actions SHA pins: automerge patch-level action updates",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["patch", "digest"],
+      "automerge": true,
+      "platformAutomerge": true
+    },
+    {
+      "description": "templ is pinned to go.mod's generator version; major/minor need the regenerate + zero-diff check (docs/release-checklist + AGENTS.md)",
+      "matchPackageNames": ["github.com/a-h/templ"],
+      "automerge": false,
+      "labels": ["templ-pin"]
+    },
+    {
+      "description": "Runtime dependency budget is closed (ADR: templ + tailwind-merge-go + go-error-family); bumps are deliberate",
+      "matchPackageNames": [
+        "github.com/Oudwins/tailwind-merge-go",
+        "github.com/larsartmann/go-error-family",
+        "github.com/larsartmann/go-datastar/static"
+      ],
+      "automerge": false,
+      "labels": ["dependency-budget"]
+    },
+    {
+      "description": "nixpkgs inputs: the Go toolchain input is deliberately isolated (AGENTS.md Toolchain input split) — never automerge",
+      "matchManagers": ["nix"],
+      "automerge": false,
+      "labels": ["nix"]
+    }
+  ]
+}

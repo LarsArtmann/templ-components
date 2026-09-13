@@ -28,15 +28,17 @@ FLOORS="$(dirname "$0")/coverage-floors.txt"
 # Profile lines: "pkg/file.go:3.10,5.2 <numStmts> <count>"
 declare -A COVERED TOTAL
 while IFS=' ' read -r loc stmts count; do
+	[ -n "${count:-}" ] || continue # header or blank line
 	file="${loc%%:*}"
 	pkg="$(dirname "$file")"
+	pkg="${pkg#github.com/larsartmann/templ-components/}" # floors use short names
 	[ -n "${TOTAL[$pkg]:-}" ] || TOTAL[$pkg]=0
 	[ -n "${COVERED[$pkg]:-}" ] || COVERED[$pkg]=0
 	TOTAL[$pkg]=$((TOTAL[$pkg] + stmts))
 	if [ "$count" -gt 0 ]; then
 		COVERED[$pkg]=$((COVERED[$pkg] + stmts))
 	fi
-done < <(grep -v '^mode ' "$PROFILE")
+done < "$PROFILE"
 
 FAILED=0
 while read -r pkg floor; do
