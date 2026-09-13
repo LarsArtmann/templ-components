@@ -50,50 +50,39 @@ func kanbanCountLabel(count int) string {
 // KanbanMove is one decoded card move: the card (its consumer-supplied ID),
 // the target column ID, and the 0-based insertion position within that
 // column's cards (0 = top).
+// KanbanMove is one card move as submitted by a wired KanbanBoard. The form
+// tags carry the exact field names the board's hidden move form sends
+// (kanbanFieldCard/Column/Index); wire.DecodeForm fills them on the server.
 type KanbanMove struct {
-	Card   string
-	Column string
-	Index  int
+	Card   string `form:"card"`
+	Column string `form:"column"`
+	Index  int    `form:"index"`
 }
 
 // errKanbanMoveMissingFields reports a move whose card or column field was
 // empty — the two values the board can never omit when wired.
 var errKanbanMoveMissingFields = errors.New("kanban move: card and column are required")
 
-// errKanbanMoveBadIndex reports a move whose index field was neither a
-// non-negative integer nor empty.
+// errKanbanMoveBadIndex reports a move whose index field was negative.
 var errKanbanMoveBadIndex = errors.New("kanban move: index must be a non-negative integer")
 
 // ParseKanbanMove decodes a KanbanBoard move submission (form body or query
-// parameters) into a KanbanMove. A missing or non-numeric index defaults to
-// 0 (insert at top); a negative index is an error. Empty card or column
-// fields are an error — a wired board always sends both.
+// parameters) into a KanbanMove via wire.DecodeForm. A missing index defaults
+// to 0 (insert at top); a negative or non-numeric index is an error. Empty
+// card or column fields are an error — a wired board always sends both.
 func ParseKanbanMove(r *http.Request) (KanbanMove, error) {
-	if err := r.ParseForm(); err != nil {
+	move, err := wire.DecodeForm[KanbanMove](r)
+	if err != nil {
 		return KanbanMove{}, fmt.Errorf("parse kanban move form: %w", err)
-	}
-
-	move := KanbanMove{
-		Card:   r.PostForm.Get(kanbanFieldCard),
-		Column: r.PostForm.Get(kanbanFieldColumn),
-		Index:  0,
 	}
 
 	if move.Card == "" || move.Column == "" {
 		return KanbanMove{}, errKanbanMoveMissingFields
 	}
 
-	raw := r.PostForm.Get(kanbanFieldIndex)
-	if raw == "" {
-		return move, nil
+	if move.Index < 0 {
+		return KanbanMove{}, fmt.Errorf("%w: got %d", errKanbanMoveBadIndex, move.Index)
 	}
-
-	index, err := strconv.Atoi(raw)
-	if err != nil || index < 0 {
-		return KanbanMove{}, fmt.Errorf("%w: got %q", errKanbanMoveBadIndex, raw)
-	}
-
-	move.Index = index
 
 	return move, nil
 }
