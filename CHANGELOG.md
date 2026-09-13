@@ -8,6 +8,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Website: strict CSP header pinned by content-hash, synced to
+  `firebase.json` at build time.** The site generator hashes every inline
+  script body (nonce-independent) and emits a
+  `script-src 'self' 'sha256-…'` policy (plus `default-src 'self'`,
+  `style-src 'self'`, `object-src 'none'`, `frame-ancestors 'none'`, …).
+  Every build verifies the committed `firebase.json` header against the
+  rendered pages and fails with a fix instruction when they drift;
+  `go run ./cmd/site --update-csp` rewrites it. JSON-LD blocks are hashed
+  too (harmlessly — browsers exempt data blocks). Found-and-fixed along the
+  way: the 404 page rendered an inline script with an empty `nonce=""`.
+- **Website: header docs search, zero dependencies.** The build emits a
+  `search-index.json` (titles, heading anchors, plain-text bodies extracted
+  from the rendered markdown); a CSP-safe vanilla-JS combobox in the header
+  (also reachable inside the mobile menu) lazily fetches it and offers
+  keyboard-navigable, `role="listbox"` results with highlighted snippets and
+  per-section anchor links. Browser-proven via `visualtest/tools/siteshots`
+  (search smoke check: 8 hits for "component").
+- **Website module test suite** (previously zero tests): golden HTML for the
+  landing page (with/without stars), 404, and a docs layout; unit tests for
+  the stat counter (against a fixture repo), plain-text extraction, CSP
+  hash/sync/check, and the link checker; plus a full site-build integrity
+  test that renders the whole site into a temp dir and asserts page count,
+  zero broken internal links/anchors, script nonce policy, search-index
+  validity, and sitemap completeness.
+- **`visualtest/tools/siteshots`**: full-page screenshot tool for the
+  website's `dist/` — light/dark × desktop/mobile per route with the theme
+  pinned via localStorage (headless Chromium reports
+  `prefers-color-scheme: dark` by default), scroll-through so
+  IntersectionObserver reveals fire, and the search smoke check. Run with
+  `CHROMEDP_CHROME_PATH=… go run ./tools/siteshots` from `visualtest/`.
 - **`forms.Calendar` month navigation via `MonthNav *wire.Action`.** The
   prev/next arrows carry a `wire.Action` whose URL uses `{year}`/`{month}`
   placeholders; the component substitutes the target month per arrow
@@ -21,6 +51,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Website CI no longer skips demo deploys.** The Astro→templ rewrite of
+  `website.yml` dropped `examples/demo/**` from the push/PR path filters,
+  so the demo Docker/Cloud-Run redeploy only fired when `website/` itself
+  changed. The filter now covers both.
+- **Website: docs sidebar leaked a literal `continue` text node and a
+  broken `href="/"` pkg.go.dev link on every docs page.** templ v0.3.1020
+  does not support a bare `continue` inside a template loop — it emits the
+  word as text and falls through, so the `Slug == ""` branch re-rendered as
+  a second (wrong) entry. Restructured to an `if / else if / else` chain.
+- **Website: landing sections were invisible without JavaScript.** The
+  scroll-reveal CSS hid `[data-animate]` sections by default, so visitors
+  with JS disabled (or before the deferred script ran) got a blank page
+  below the hero. The hiding is now gated on an `html.js` class that the
+  deferred `animations.js` sets — content-first, reveal still works.
+- **Website: the site build depended on the working directory.** `assets/`
+  and `public/` were copied relative to CWD; they now resolve under
+  `--repo-root`, so tests and non-website CWDs build a complete dist.
+- **Website docs: stale facts.** API-reference per-package counts were
+  months old (e.g. `display` 30→43, `icons` 102→105; `datastar` and
+  `recipes` rows were missing entirely), and installation.md claimed a
+  "5-module workspace" (it is 7) with leftover pnpm phrasing.
 - **`forms.Calendar` dropped `props.ID` on its root element.** The root div
   only rendered `class`/`attrs`/`aria-label`, so a consumer-set ID silently
   vanished — making `hx-target="#my-id"` self-swap wiring impossible. Found

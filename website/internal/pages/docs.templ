@@ -72,9 +72,7 @@ templ docsSidebar(current string) {
 										@icons.Icon(icons.ExternalLink, "h-3 w-3")
 									</a>
 								</li>
-								continue
-							}
-							if doc.Slug == current {
+							} else if doc.Slug == current {
 								<li><a href={ "/" + doc.Slug } aria-current="page" class="docs-nav-link docs-nav-active">{ doc.Title }</a></li>
 							} else {
 								<li><a href={ "/" + doc.Slug } class="docs-nav-link">{ doc.Title }</a></li>
