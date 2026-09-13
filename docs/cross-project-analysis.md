@@ -141,6 +141,5 @@ future session.
 | ------------------------ | ------ | ---------------------------------------------------------- |
 | tc icons                 | 99     | **101**                                                    |
 | tc components            | 69     | **73** (+PageHeader, DefinitionList, ListNote, SidebarNav) |
-| tc new tests             | —      | **+34**                                                    |
 | tc test packages passing | 12     | 12                                                         |
 | tc lint issues           | 0      | 0                                                          |

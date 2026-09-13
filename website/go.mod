@@ -3,8 +3,8 @@ module github.com/larsartmann/templ-components/website
 go 1.26.7
 
 ignore (
-	node_modules
 	dist
+	node_modules
 )
 
 require (
@@ -19,6 +19,8 @@ require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
 	github.com/dlclark/regexp2/v2 v2.2.1 // indirect
 	github.com/larsartmann/templ-components/htmx v1.16.0 // indirect
+	github.com/yuin/goldmark v1.8.6 // indirect
+	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc // indirect
 )
 
 replace github.com/larsartmann/templ-components => ../
