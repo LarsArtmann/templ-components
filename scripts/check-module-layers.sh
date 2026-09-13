@@ -81,11 +81,19 @@ check_layer "errorpage" "utils" "icons" "errorpage"
 # Layer 4: visualtest — the consumer/test module. Explicitly modeled (it
 # previously passed only by skip): it may import every library module but is
 # imported by none. The allow-list is exhaustive on purpose — a new import
-# outside it (e.g. a stray cmd/ or examples/ dependency) fails here and forces
-# a conscious DAG decision.
+# outside it (e.g. a stray cmd/ dependency) fails here and forces a
+# conscious DAG decision.
+#
+# Decision 2026-09-13: "examples" is allowed. visualtest/demo.go builds and
+# runs the examples/demo binary as the live e2e server (local replace only,
+# never published); examples/demo is a root-module package on the same layer
+# as display/forms/... already listed, and imports nothing from visualtest
+# (verified — no cycle). First surfaced when the tracked .githooks/pre-commit
+# made manual commits run this guard again.
 check_layer "visualtest" \
 	"utils" "icons" "errorpage" "charts/echarts" "datastar" "htmx" \
 	"display" "feedback" "forms" "layout" "navigation" "recipes" \
+	"examples" \
 	"visualtest"
 
 if [[ $errors -gt 0 ]]; then

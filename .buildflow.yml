@@ -7,5 +7,10 @@
 # linux format check is enforced in CI; real builds go through the flake apps.
 # (eslint-fix skip removed: BuildFlow now auto-defers eslint when the repo
 # has no eslint config, which is by design here.)
+# pnpm-audit skipped: this repo root has no JavaScript — no pnpm-lock.yaml
+# exists to audit (website/ is a separate pnpm project BuildFlow does not
+# traverse from here). The tool hard-fails on the missing lockfile, which
+# blocked every manual pre-commit run (2026-09-13).
 skip_steps:
   - nix-build
+  - pnpm-audit

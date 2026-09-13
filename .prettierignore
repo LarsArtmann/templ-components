@@ -1,0 +1,8 @@
+# Compiled CSS artifacts are minified build output, not source.
+# Prettier must never reformat them — its multi-line rewrite is the TODO #125
+# un-minification mechanism (observed live 2026-09-13: prettier-format step
+# expanded examples/demo/static/app.css from 1 line back to 5059 mid-hook).
+examples/demo/static/app.css
+templates/styles.css
+templates/templ-components-theme.out.css
+website/src/styles/
