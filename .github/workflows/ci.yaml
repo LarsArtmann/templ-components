@@ -232,6 +232,9 @@ jobs:
             exit 1
           fi
 
+      - name: Per-package coverage floors
+        run: scripts/check-coverage-floors.sh coverage.out
+
       - name: Build examples
         run: go build ./examples/...
 
@@ -273,6 +276,10 @@ jobs:
   visual:
     name: Visual Regression
     runs-on: ubuntu-latest
+    # Own budget: nix eval + Chromium boot + pixel diffs; a wedged browser
+    # must die here instead of eating the default 6h job limit (the e2e
+    # lesson: bound every browser run).
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: cachix/install-nix-action@630ae543ea3a38a9a4166f03376c02c50f408342 # v31
@@ -302,6 +309,7 @@ jobs:
           name: visual-failures
           path: visualtest/testdata/.fail/
           if-no-files-found: ignore
+          retention-days: 14
           # .fail starts with a dot — v4's default excludes hidden files,
           # which silently produced an empty artifact.
           include-hidden-files: true
