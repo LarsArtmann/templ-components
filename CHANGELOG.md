@@ -29,6 +29,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Render-determinism + orphan-golden guards.**
+  `internal/contract.TestRenderDeterminism` renders 14 flagship variants
+  (lookup maps, chart geometry, tables, forms) twice and byte-compares —
+  map-iteration or clock leakage between renders now fails CI, not just a
+  golden file. `utils.TestNoOrphanGoldens` fails when a committed `.golden`
+  file is no longer referenced by any test (verbatim or prefix-concat
+  naming). `display.RelativeTimeProps` gains an optional `Now` field so
+  relative timestamps are testable against a pinned clock.
 - **Post-release consumer compile smoke** (`scripts/check-tag-compiles.sh` +
   the `Release smoke` CI workflow): a throwaway module `go get`s the pushed
   tag from the module proxy and builds every import path (root + all 6

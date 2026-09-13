@@ -28,7 +28,7 @@ func TestRenderDeterminism(t *testing.T) {
 	t.Parallel()
 
 	table := []struct {
-		name string
+		name   string
 		render func() string
 	}{
 		{"badge lookup map", func() string {
@@ -103,9 +103,12 @@ func TestRenderDeterminism(t *testing.T) {
 			}))
 		}},
 		{"pagination", func() string {
-			return utils.Render(t, navigation.Pagination(navigation.PaginationProps{ //nolint:exhaustruct // deliberately minimal
-				CurrentPage: 3, TotalPages: 9, BaseURL: "/page",
-			}))
+			return utils.Render(
+				t,
+				navigation.Pagination(navigation.PaginationProps{ //nolint:exhaustruct // deliberately minimal
+					CurrentPage: 3, TotalPages: 9, BaseURL: "/page",
+				}),
+			)
 		}},
 		{"breadcrumbs", func() string {
 			return utils.Render(t, navigation.Breadcrumbs(navigation.BreadcrumbsProps{
