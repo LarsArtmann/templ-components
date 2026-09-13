@@ -159,6 +159,34 @@ an error naming the field; unsupported kinds fail with
 ranges — stay with you. `display.ParseKanbanMove` is the in-repo example:
 decode first, then apply the board's own validation.
 
+A complete handler with error handling (the shape every demo endpoint uses):
+
+```go
+type Signup struct {
+    Name  string `form:"name"`
+    Email string `form:"email"`
+    MarketingOK bool `form:"marketing"` // checkbox: "on" => true
+}
+
+mux.Handle("POST /signup", wire.Handler(wire.PatchTarget{
+    Selector: "#signup-out",
+    Mode:     wire.PatchModeInner,
+}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    signup, err := wire.DecodeForm[Signup](r)
+    if err != nil {
+        http.Error(w, "invalid form body", http.StatusBadRequest)
+        return
+    }
+    // Domain validation on the decoded struct — trims, required fields,
+    // formats are yours; the decoder did the typing.
+    ...
+})))
+```
+
+The same call decodes GET query parameters (`wire.DecodeForm[Filter](r)` with
+`form:"q"` reads `?q=…`) — body values take precedence when both exist, per
+`http.Request.ParseForm` semantics.
+
 ## Busy, polling, and reveal signaling (research notes, 2026-09-04)
 
 How the two runtimes communicate "work in progress" — verified against the

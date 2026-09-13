@@ -69,6 +69,25 @@ const (
 	packUploadFileSize = 2048
 )
 
+// Pack endpoint request payloads — decoded by wire.DecodeForm (the same
+// decoder the library ships for consumers; the pack exercises it for real).
+type (
+	packQuery struct {
+		Q string `form:"q"`
+	}
+	packDropdownQuery struct {
+		Framework string `form:"framework"`
+	}
+	packWizardSubmission struct {
+		Step  int    `form:"step"`
+		Email string `form:"email"`
+		Name  string `form:"name"`
+	}
+	packDirtySubmission struct {
+		Project string `form:"project"`
+	}
+)
+
 // packE2EServer serves the forms pattern pack E2E page, the pinned Datastar
 // bundle, the compiled CSS, and the pack endpoints. Datastar callers get
 // response-header targeting via wire.Handler — the production server-side
@@ -114,9 +133,14 @@ func packE2EServer(t *testing.T) *httptest.Server {
 	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-		q := r.URL.Query().Get("q")
+		query, err := wire.DecodeForm[packQuery](r)
+		if err != nil {
+			http.Error(w, "invalid query", http.StatusBadRequest)
 
-		packWriteComponent(w, r, packFilterResults(q, int(filterHits.Add(1))))
+			return
+		}
+
+		packWriteComponent(w, r, packFilterResults(query.Q, int(filterHits.Add(1))))
 	})))
 
 	mux.Handle("GET /api/pack/dropdown", wire.Handler(wire.PatchTarget{
@@ -125,7 +149,14 @@ func packE2EServer(t *testing.T) *httptest.Server {
 	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-		packWriteComponent(w, r, packDropdownResult(r.URL.Query().Get("framework"), packTransportName(r)))
+		query, err := wire.DecodeForm[packDropdownQuery](r)
+		if err != nil {
+			http.Error(w, "invalid query", http.StatusBadRequest)
+
+			return
+		}
+
+		packWriteComponent(w, r, packDropdownResult(query.Framework, packTransportName(r)))
 	})))
 
 	mux.Handle("POST /api/pack/wizard", wire.Handler(wire.PatchTarget{
@@ -134,7 +165,8 @@ func packE2EServer(t *testing.T) *httptest.Server {
 	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-		if err := r.ParseForm(); err != nil {
+		submission, err := wire.DecodeForm[packWizardSubmission](r)
+		if err != nil {
 			http.Error(w, "invalid form body", http.StatusBadRequest)
 
 			return
@@ -142,10 +174,9 @@ func packE2EServer(t *testing.T) *httptest.Server {
 
 		dialect := packDialect(r)
 
-		step, _ := strconv.Atoi(r.PostFormValue("step"))
-		switch step {
+		switch submission.Step {
 		case 0:
-			email := strings.TrimSpace(r.PostFormValue("email"))
+			email := strings.TrimSpace(submission.Email)
 			if email == "" || !strings.Contains(email, "@") || !strings.Contains(email, ".") {
 				packWriteComponent(w, r, packWizardStep(dialect, 0, packWizardEmailBad))
 
@@ -154,7 +185,7 @@ func packE2EServer(t *testing.T) *httptest.Server {
 
 			packWriteComponent(w, r, packWizardStep(dialect, 1, ""))
 		case 1:
-			if strings.TrimSpace(r.PostFormValue("name")) == "" {
+			if strings.TrimSpace(submission.Name) == "" {
 				packWriteComponent(w, r, packWizardStep(dialect, 1, packWizardNameBad))
 
 				return
@@ -205,9 +236,14 @@ func packE2EServer(t *testing.T) *httptest.Server {
 	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-		q := r.URL.Query().Get("q")
+		query, err := wire.DecodeForm[packQuery](r)
+		if err != nil {
+			http.Error(w, "invalid query", http.StatusBadRequest)
 
-		packWriteComponent(w, r, packSearchResult(packDialect(r), q))
+			return
+		}
+
+		packWriteComponent(w, r, packSearchResult(packDialect(r), query.Q))
 	})))
 
 	mux.Handle("POST /api/pack/dirty", wire.Handler(wire.PatchTarget{
@@ -216,13 +252,14 @@ func packE2EServer(t *testing.T) *httptest.Server {
 	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-		if err := r.ParseForm(); err != nil {
+		submission, err := wire.DecodeForm[packDirtySubmission](r)
+		if err != nil {
 			http.Error(w, "invalid form body", http.StatusBadRequest)
 
 			return
 		}
 
-		packWriteComponent(w, r, packDirtyRoundTrip(strings.TrimSpace(r.PostFormValue("project"))))
+		packWriteComponent(w, r, packDirtyRoundTrip(strings.TrimSpace(submission.Project)))
 	})))
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
