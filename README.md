@@ -412,7 +412,14 @@ This library is part of the **GOTH stack** (Go + Templ + HTMX):
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, conventions, and workflow.
+Contributions are welcome. After cloning, activate the tracked pre-commit
+guards once:
+
+```bash
+scripts/setup-hooks.sh
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, conventions, and workflow.
 
 ---
 

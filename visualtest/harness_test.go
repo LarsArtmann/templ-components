@@ -30,6 +30,8 @@ func TestWaitAnimationsSettled(t *testing.T) {
 <div id="test" style="width:100px;height:100px;background:blue"></div>
 </body></html>`,
 			assert: func(t *testing.T, elapsed time.Duration) {
+				t.Helper()
+
 				// Waits through the registration window (~300ms) since no
 				// animations appear to confirm the element has no transition.
 				assertElapsedUnder(t, "no_animations", elapsed, 500*time.Millisecond,
@@ -44,6 +46,8 @@ func TestWaitAnimationsSettled(t *testing.T) {
 <style>@keyframes instant { to { opacity: 1; } }</style>
 </body></html>`,
 			assert: func(t *testing.T, elapsed time.Duration) {
+				t.Helper()
+
 				// May wait through the registration window if the short animation
 				// has already been cleaned up by the time getAnimations() runs.
 				assertElapsedUnder(t, "finished_animations", elapsed, 500*time.Millisecond,
@@ -58,6 +62,8 @@ func TestWaitAnimationsSettled(t *testing.T) {
 <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
 </body></html>`,
 			assert: func(t *testing.T, elapsed time.Duration) {
+				t.Helper()
+
 				// Infinite animations are filtered out — they never finish, so
 				// the helper must not block on them. Returns after the
 				// registration window.
@@ -73,6 +79,8 @@ func TestWaitAnimationsSettled(t *testing.T) {
 <style>@keyframes slide { to { transform: translateX(50px); } }</style>
 </body></html>`,
 			assert: func(t *testing.T, elapsed time.Duration) {
+				t.Helper()
+
 				// Finite animations are waited out. The 2s animation may have
 				// partially elapsed during navigation, so only bound away from
 				// the failure modes: returning at the registration window

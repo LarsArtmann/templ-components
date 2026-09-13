@@ -110,7 +110,7 @@ func TestPreBuiltConstructors(t *testing.T) {
 		name                string
 		props               ErrorPageProps
 		wantFamily          Family
-		wantCode            string
+		wantCode            Code
 		wantMessage         string
 		wantMessageNonEmpty bool
 		wantWayOutHref      string
@@ -119,14 +119,14 @@ func TestPreBuiltConstructors(t *testing.T) {
 			name:           "NotFound has correct family and code",
 			props:          NotFound(),
 			wantFamily:     FamilyRejection,
-			wantCode:       "page.not_found",
+			wantCode:   "page.not_found",
 			wantWayOutHref: "/",
 		},
 		{
 			name:       "Forbidden has rejection family",
 			props:      Forbidden(),
 			wantFamily: FamilyRejection,
-			wantCode:   "access.forbidden",
+			wantCode:   Code("access.forbidden"),
 		},
 		{
 			name:        "BadRequest has rejection family and custom message",
@@ -150,13 +150,13 @@ func TestPreBuiltConstructors(t *testing.T) {
 			name:       "ServiceUnavailable has transient family",
 			props:      ServiceUnavailable(),
 			wantFamily: FamilyTransient,
-			wantCode:   "service.unavailable",
+			wantCode:   Code("service.unavailable"),
 		},
 		{
 			name:       "InternalError has infrastructure family",
 			props:      InternalError(),
 			wantFamily: FamilyInfrastructure,
-			wantCode:   "internal.error",
+			wantCode:   Code("internal.error"),
 		},
 	}
 

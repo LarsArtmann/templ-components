@@ -57,6 +57,8 @@ func TestMotionReduceCompliance(t *testing.T) {
 // countMotionGapsInDir walks one package directory for .templ files and
 // reports motion-reduce gaps via t.Errorf, returning the violation count.
 func countMotionGapsInDir(t *testing.T, dir string, rules motionReduceRules) (int, error) {
+	t.Helper()
+
 	violations := 0
 
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
@@ -84,6 +86,8 @@ func countMotionGapsInDir(t *testing.T, dir string, rules motionReduceRules) (in
 // countMotionGapsInContent checks each line that has transition or animate
 // classes and reports the ones lacking a motion-reduce fallback.
 func countMotionGapsInContent(t *testing.T, path, content string, rules motionReduceRules) int {
+	t.Helper()
+
 	violations := 0
 
 	for line := range strings.SplitSeq(content, "\n") {

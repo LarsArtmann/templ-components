@@ -19,10 +19,17 @@ set -e
 # --- Pre-BuildFlow guards (fast, <100ms total) ---
 # These run BEFORE BuildFlow to catch regressions that BuildFlow's 60s budget
 # cannot cover (it doesn't run `go test ./...`).
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
+
+# Guard 0: hook-adoption check (non-fatal warn)
+#   This clone must run THE tracked hook, not a stale .git/hooks/ copy.
+if [ -x "$REPO_ROOT/scripts/check-hooks-path.sh" ]; then
+    "$REPO_ROOT/scripts/check-hooks-path.sh"
+fi
+
 # Guard 1: .golangci.yml disabled-linter check
 #   Prevents the recurring regression where ireturn/godoclint/testableexamples
 #   get silently re-added via stale working trees. Has occurred 5 times.
-REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
 if [ -x "$REPO_ROOT/scripts/check-lint-config.sh" ]; then
     "$REPO_ROOT/scripts/check-lint-config.sh"
 fi

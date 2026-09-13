@@ -179,6 +179,8 @@ func isDarkModeSweepable(path string) bool {
 
 // countLineGaps reports one t.Errorf per violating line and returns the count.
 func countLineGaps(t *testing.T, path, content string, colorRe *regexp.Regexp) int {
+	t.Helper()
+
 	gaps := 0
 
 	for line := range strings.SplitSeq(content, "\n") {
