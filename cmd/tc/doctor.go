@@ -116,12 +116,14 @@ func goModDeclaresJSONv2() bool {
 		return false
 	}
 
-	for _, line := range strings.Split(string(content), "\n") {
+	for line := range strings.SplitSeq(string(content), "\n") {
 		fields := strings.Fields(strings.TrimSpace(line))
+
 		if len(fields) == 2 && (fields[0] == "go" || fields[0] == "toolchain") {
 			version := strings.TrimPrefix(fields[1], "go")
 			major, minor, ok := parseGoVersion(version)
-			if ok && (major > 1 || (major == 1 && minor >= 27)) {
+
+			if ok && (major > 1 || (major == 1 && minor >= jsonv2StableMinor)) {
 				return true
 			}
 		}
@@ -132,7 +134,7 @@ func goModDeclaresJSONv2() bool {
 
 // parseGoVersion extracts major.minor from "1.26.7"-style strings.
 func parseGoVersion(version string) (int, int, bool) {
-	parts := strings.SplitN(version, ".", 3)
+	parts := strings.SplitN(version, ".", goVersionParts)
 	if len(parts) < 2 {
 		return 0, 0, false
 	}
@@ -154,8 +156,9 @@ func checkTemplVersionPinned() int {
 		return doctorCheck("go.mod readable (templ pin check)", false, "run inside a Go module")
 	}
 
-	for _, line := range strings.Split(string(content), "\n") {
+	for line := range strings.SplitSeq(string(content), "\n") {
 		fields := strings.Fields(strings.TrimSpace(line))
+
 		if len(fields) < 3 || fields[0] != "require" {
 			continue
 		}
@@ -181,6 +184,13 @@ func checkTemplVersionPinned() int {
 	)
 }
 
+const (
+	// goVersionParts bounds version parsing to major.minor.patch.
+	goVersionParts = 3
+	// jsonv2StableMinor is the Go minor where encoding/json/v2 needs no flag.
+	jsonv2StableMinor = 27
+)
+
 // templGeneratedWith is the generator version the library pins.
 const templGeneratedWith = "v0.3.1020"
 
@@ -189,20 +199,20 @@ func compareSemver(a, b string) int {
 	aParts, bParts := strings.Split(a, "."), strings.Split(b, ".")
 
 	for i := range max(len(aParts), len(bParts)) {
-		av, bv := 0, 0
+		aPart, bPart := 0, 0
 
 		if i < len(aParts) {
-			_, _ = fmt.Sscanf(aParts[i], "%d", &av)
+			_, _ = fmt.Sscanf(aParts[i], "%d", &aPart)
 		}
 
 		if i < len(bParts) {
-			_, _ = fmt.Sscanf(bParts[i], "%d", &bv)
+			_, _ = fmt.Sscanf(bParts[i], "%d", &bPart)
 		}
 
 		switch {
-		case av < bv:
+		case aPart < bPart:
 			return -1
-		case av > bv:
+		case aPart > bPart:
 			return 1
 		}
 	}
@@ -275,6 +285,7 @@ func checkHooksAdoption() int {
 func gitConfig(key string) string {
 	ctx := context.Background()
 
+	//nolint:gosec // key is a hardcoded literal from this file, never user input
 	out, err := exec.CommandContext(ctx, "git", "config", "--get", key).Output()
 	if err != nil {
 		return ""
