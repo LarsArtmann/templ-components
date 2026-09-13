@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // CalendarProps configures a month-view calendar for date selection.
@@ -23,6 +24,17 @@ type CalendarProps struct {
 	// HrefPrev/HrefNext are URLs for the prev/next month navigation links.
 	HrefPrev string
 	HrefNext string
+	// MonthNav, when set, wires the prev/next month links for partial-page
+	// updates in BOTH transport dialects (htmx hx-get or a Datastar
+	// @get binding) instead of full-page navigation. The URL carries the
+	// SAME {year}/{month} placeholders as HrefBase — the component clones
+	// the action per direction and substitutes the target month, so one
+	// action serves both arrows. A nil MonthNav keeps the href-only
+	// behavior; a set HrefPrev/HrefNext alongside renders as the no-JS
+	// fallback href.
+	//
+	//	MonthNav: &wire.Action{URL: "/api/calendar?year={year}&month={month}", Target: "#calendar"}
+	MonthNav *wire.Action
 	// MinDate/MaxDate disable days outside the range.
 	MinDate *time.Time
 	MaxDate *time.Time
@@ -94,19 +106,35 @@ templ Calendar(props CalendarProps) {
 			return props.SelectedDate.Year() == props.Year && props.SelectedDate.Month() == props.Month && props.SelectedDate.Day() == day
 		}
 		monthName := props.Month.String()
+		prevYear, prevMonth := calendarPrevMonth(props.Year, props.Month)
+		nextYear, nextMonth := calendarNextMonth(props.Year, props.Month)
 	}}
 	<div class={ utils.Class("inline-block rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4", props.Class) } { props.Attrs... }>
 		<div class="flex items-center justify-between mb-4">
-			if props.HrefPrev != "" {
-				<a href={ templ.SafeURL(props.HrefPrev) } class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Previous month">
+			if props.HrefPrev != "" || props.MonthNav != nil {
+				<a
+					if props.HrefPrev != "" {
+						href={ templ.SafeURL(props.HrefPrev) }
+					}
+					{ calendarMonthNavAction(props.MonthNav, prevYear, prevMonth)... }
+					class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+					aria-label="Previous month"
+				>
 					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path></svg>
 				</a>
 			} else {
 				<span class="w-7"></span>
 			}
 			<h3 class="text-sm font-semibold text-gray-900 dark:text-white">{ monthName } { fmt.Sprintf("%d", props.Year) }</h3>
-			if props.HrefNext != "" {
-				<a href={ templ.SafeURL(props.HrefNext) } class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Next month">
+			if props.HrefNext != "" || props.MonthNav != nil {
+				<a
+					if props.HrefNext != "" {
+						href={ templ.SafeURL(props.HrefNext) }
+					}
+					{ calendarMonthNavAction(props.MonthNav, nextYear, nextMonth)... }
+					class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+					aria-label="Next month"
+				>
 					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path></svg>
 				</a>
 			} else {
