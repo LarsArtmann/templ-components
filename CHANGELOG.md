@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.17.0] — 2026-09-13
+
 ### Changed
 
 - **Website: full Astro → templ conversion.** templcomponents.lars.software is
