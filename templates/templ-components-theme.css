@@ -1,5 +1,10 @@
 /*
- * templ-components semantic token layer — ADR-0008 implementation.
+ * templates/templ-components-theme.css — semantic-token LAYER (ADR-0008).
+ *
+ * NOT the same file as the repo-root templ-components-theme.css (the
+ * palette-override @theme example). This one aliases Tailwind palette colors
+ * to semantic names and is a release.sh compile input
+ * (templ-components-theme.out.css distribution artifact). See docs/theming.md.
  *
  * Import this file from your app.css to alias Tailwind palette colors to
  * semantic names (tc-primary, tc-danger, tc-success, etc.). Once imported,

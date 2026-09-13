@@ -1,4 +1,10 @@
-/* templ-components-theme.css
+/* templ-components-theme.css (repo root) — palette-override EXAMPLE.
+ *
+ * NOT the same file as templates/templ-components-theme.css (the ADR-0008
+ * semantic-token layer, compiled into a distribution artifact by
+ * scripts/release.sh). This root file is the copy-paste example for
+ * re-skinning standard Tailwind colors via @theme; the templates/ one
+ * aliases colors to semantic tc-* roles. See docs/theming.md for both.
  *
  * Optional theme configuration for templ-components.
  *

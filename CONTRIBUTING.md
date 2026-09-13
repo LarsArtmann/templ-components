@@ -112,6 +112,22 @@ updated `*_templ.go` files alongside the source change. See [`AGENTS.md`](AGENTS
 
 ---
 
+## Committed artifacts need a named consumer
+
+Every build artifact committed to the repo (compiled CSS, generated code,
+vendored runtimes) must have a **named consumer** — something in the repo (or a
+documented release process) that reads it. Artifacts nobody consumes are
+daemon-recompile churn bait: the BuildFlow tailwind-build daemon regenerates
+and re-commits them forever (ten dead `.out.css` files were deleted in the
+2026-09-13 audit for exactly this reason).
+
+The compiled-CSS distribution targets are single-sourced in
+[`scripts/compiled-css-targets.txt`](scripts/compiled-css-targets.txt) and
+guarded by `utils.TestCompiledCSSInventory` — adding a target there requires
+naming its consumer in the same change.
+
+---
+
 ## Release
 
 ```bash

@@ -96,6 +96,11 @@ check_layer "visualtest" \
 	"examples" \
 	"visualtest"
 
+# Layer 4: website — the consumer/site module (static-site generator for
+# templcomponents.lars.software; renders through the library's own
+# components; local replace only, never published).
+check_layer "website" \n	"utils" "icons" "errorpage" "charts/echarts" "datastar" "htmx" \n	"display" "feedback" "forms" "layout" "navigation" "recipes" \n	"website"
+
 if [[ $errors -gt 0 ]]; then
 	echo ""
 	echo "Module layer check: FAILED ($errors violation(s))"
@@ -103,4 +108,4 @@ if [[ $errors -gt 0 ]]; then
 	exit 1
 fi
 
-echo "Module layer check: OK (no upward dependencies in 6 sub-modules + visualtest consumer)"
+echo "Module layer check: OK (no upward dependencies in 6 sub-modules + visualtest/website consumers)"
