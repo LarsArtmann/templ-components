@@ -78,7 +78,10 @@ func TestNavLinkWire(t *testing.T) {
 		t.Parallel()
 
 		props := base
-		props.Wire = &wire.Action{URL: "/api/inbox-fragment", Target: "#content"} //nolint:exhaustruct // URL+Target are the wiring surface
+		props.Wire = &wire.Action{
+			URL:    "/api/inbox-fragment",
+			Target: "#content",
+		} //nolint:exhaustruct // URL+Target are the wiring surface
 
 		html := utils.Render(t, NavLink(props, "/inbox"))
 		utils.AssertContainsAll(t, html,
@@ -92,7 +95,10 @@ func TestNavLinkWire(t *testing.T) {
 		t.Parallel()
 
 		props := base
-		props.Wire = &wire.Action{URL: "/api/inbox-fragment", Target: "#content"} //nolint:exhaustruct // URL+Target are the wiring surface
+		props.Wire = &wire.Action{
+			URL:    "/api/inbox-fragment",
+			Target: "#content",
+		} //nolint:exhaustruct // URL+Target are the wiring surface
 
 		html := utils.Render(t, MobileNavLink(props, "/"))
 		utils.AssertContainsAll(t, html, `href="/inbox"`, `hx-get="/api/inbox-fragment"`)
@@ -119,12 +125,20 @@ func TestGoldenSweepNavLinkWire(t *testing.T) {
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "nav_link_wire_htmx", HTML: utils.Render(t, NavLink(NavLinkProps{
-			Href: "/inbox", Text: "Inbox",
-			Wire: &wire.Action{URL: "/api/inbox-fragment", Target: "#content"}, //nolint:exhaustruct // URL+Target are the wiring surface
+			Href: "/inbox",
+			Text: "Inbox",
+			Wire: &wire.Action{
+				URL:    "/api/inbox-fragment",
+				Target: "#content",
+			}, //nolint:exhaustruct // URL+Target are the wiring surface
 		}, "/"))},
 		{Name: "nav_link_wire_datastar", HTML: utils.Render(t, NavLink(NavLinkProps{
-			Href: "/inbox", Text: "Inbox",
-			Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/inbox-fragment"}, //nolint:exhaustruct // URL is the wiring surface
+			Href: "/inbox",
+			Text: "Inbox",
+			Wire: &wire.Action{
+				Transport: wire.TransportDatastar,
+				URL:       "/api/inbox-fragment",
+			}, //nolint:exhaustruct // URL is the wiring surface
 		}, "/"))},
 	})
 }
