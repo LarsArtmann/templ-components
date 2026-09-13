@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Convention check 4: consumer-set `BaseProps.ID` must render (`internal/contract.TestPropsIDRendersInOutput`).** Every Props-carrying component renders with a contract ID set; its presence in the output is asserted. The sweep (born from the Calendar ID bug) found and fixed FIVE more silent ID drops, all the same failure class — broken consumer CSS/ARIA/`hx-target` anchors:
+  `display.ExternalLink` (anchor never carried `id`), `display.Sparkline` (svg),
+  `display.BarChart` + `display.Heatmap` (neither the empty state nor the
+  populated root carried `id` — an htmx empty→full re-render could not find its
+  target), and `display.Carousel` (ID lived only in `data-tc-carousel`, now
+  also rendered as `id`; BarChart/Heatmap roots now merge `props.Class` too).
 - **`navigation.NavLinkProps.Wire` (#155).** NavLink-level transport wiring:
   a wired nav link keeps its `href` (no-JS fallback) and carries the
   `wire.Action`'s dialect attributes — htmx `hx-get` + `hx-target`, Datastar
