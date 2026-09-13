@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Depth-test pack (M20, 5 of 6 slices).** `display.RelativeTime` gets its
+  first real test coverage: a 26-case boundary table with an injected clock
+  (every fencepost 59s/60s…29d/30d, future-timestamp symmetry, absolute-date
+  fallback) replacing an older table that called `time.Now()` twice — a
+  micro-race at every bucket edge. `FuzzDecodeForm` (1.5M execs clean:
+  nested structs, weird tags, malformed encodings, huge values must never
+  panic the decoder), chart-geometry property tests (2k randomized domains:
+  monotonic evenly-spaced ticks, domain coverage, count bounds, pixel-box
+  containment), and golden-diff LCS edge cases (pure insert/delete,
+  multi-hunk, empty-vs-content). F093 (focus-preservation e2e) deferred to
+  the next session.
 - **CI hygiene pack (M19).** Per-package coverage floors
   (`scripts/check-coverage-floors.sh` + `scripts/coverage-floors.txt`, wired
   as a CI step — floors start at current−2 and ratchet up only); Renovate
