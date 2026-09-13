@@ -24,6 +24,7 @@ func TestCalendarMonthNavWire(t *testing.T) {
 	t.Run("htmx dialect renders hx-get with substituted month", func(t *testing.T) {
 		t.Parallel()
 
+		props := props          // per-subtest copy: parallel subtests must not share one struct
 		action := &wire.Action{ //nolint:exhaustruct // URL+Target are the wiring surface
 			URL:    "/api/calendar?year={year}&month={month}",
 			Target: "#cal",
@@ -46,6 +47,7 @@ func TestCalendarMonthNavWire(t *testing.T) {
 	t.Run("datastar dialect renders @get binding", func(t *testing.T) {
 		t.Parallel()
 
+		props := props
 		props.MonthNav = &wire.Action{ //nolint:exhaustruct // URL is the wiring surface
 			Transport: wire.TransportDatastar,
 			URL:       "/api/calendar?year={year}&month={month}",
@@ -61,6 +63,7 @@ func TestCalendarMonthNavWire(t *testing.T) {
 	t.Run("december and january wrap the year", func(t *testing.T) {
 		t.Parallel()
 
+		props := props
 		december := props
 		december.Month = time.December
 		december.MonthNav = &wire.Action{URL: "/c?y={year}&m={month}"} //nolint:exhaustruct // URL is the wiring surface
@@ -78,6 +81,8 @@ func TestCalendarMonthNavWire(t *testing.T) {
 
 	t.Run("consumer action is never mutated", func(t *testing.T) {
 		t.Parallel()
+
+		props := props
 
 		const template = "/api/calendar?year={year}&month={month}"
 
@@ -98,6 +103,7 @@ func TestCalendarMonthNavWire(t *testing.T) {
 	t.Run("href fallback renders alongside wire attributes", func(t *testing.T) {
 		t.Parallel()
 
+		props := props
 		props.HrefPrev = "/calendar?y=2026&m=6"
 		props.HrefNext = "/calendar?y=2026&m=8"
 		props.MonthNav = &wire.Action{
@@ -111,6 +117,7 @@ func TestCalendarMonthNavWire(t *testing.T) {
 	t.Run("nil MonthNav keeps href-only behavior", func(t *testing.T) {
 		t.Parallel()
 
+		props := props
 		props.MonthNav = nil
 		props.HrefPrev = "/calendar?y=2026&m=6"
 

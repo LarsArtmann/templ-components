@@ -58,6 +58,22 @@ func chromePath() string {
 	return "chromium"
 }
 
+// scrollRevealJS scrolls through the full document in steps (then returns to
+// the top) so IntersectionObserver-driven scroll reveals fire for every
+// section before the full-page capture.
+const scrollRevealJS = `(() => new Promise((resolve) => {
+	let y = 0;
+	const step = innerHeight * 0.8;
+	const max = document.body.scrollHeight;
+	const tick = () => {
+		y += step;
+		if (y >= max) { scrollTo(0, 0); setTimeout(resolve, 400); return; }
+		scrollTo(0, y);
+		setTimeout(tick, 120);
+	};
+	tick();
+}))()`
+
 func main() {
 	dist := flag.String("dist", "../website/dist", "website dist directory to serve")
 	out := flag.String("out", "/tmp/site-shots", "screenshot output directory")
