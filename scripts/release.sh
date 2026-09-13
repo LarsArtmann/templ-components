@@ -235,11 +235,13 @@ echo "Bumped utils.Version to $NEW_VERSION"
 #     proxy resolves these via directory-prefixed tags (utils/v2.0.0, etc.).
 #     The replace directives override these for local dev; at publish time the
 #     proxy uses the tagged version.
-#     visualtest/go.mod is bumped too (but is NOT in the 7b strip set): it is
-#     internal-only, pins its siblings at the released version, and carries
-#     local replace directives so GOWORK=off resolution works before the tags
-#     are pushed (v1.11.0 lesson: stale pins left master red for 9 days).
-for modfile in $MODFILES visualtest/go.mod; do
+#     visualtest/go.mod AND website/go.mod are bumped too (neither is in the
+#     7b strip set): they are internal-only consumers that pin siblings at
+#     the released version and carry local replace directives so GOWORK=off
+#     resolution works before the tags are pushed (v1.11.0 lesson: stale
+#     pins left master red for 9 days; v1.17.0 lesson: check-module-sync
+#     guards website/go.mod, so the bump loop MUST include it).
+for modfile in $MODFILES visualtest/go.mod website/go.mod; do
 	sed -i.bak -E \
 		"s|(github.com/larsartmann/templ-components/[a-z/]+) v[0-9]+\.[0-9]+\.[0-9]+|\1 v${NEW_VERSION}|g" \
 		"$modfile"
