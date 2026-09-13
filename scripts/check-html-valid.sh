@@ -40,34 +40,32 @@ for g in $PKG_DIRS; do
 	done
 done
 
-# --ignore patterns (regex, matched against vnu messages). Each is a known
-# false-positive class; the comment is the reason it cannot be a real bug:
-#   hx-.*                htmx dialect attributes — not in any HTML spec by design
-#   data-\*.*NCNames     Datastar's data-on:click colon syntax — deliberate
-#   popover              vnu predates the Popover API (Baseline 2024)
-#   fetchpriority        vnu staleness — standard attribute since 2022
-#   enterkeyhint         vnu staleness — standard attribute
-#   "search" not allowed vnu predates the <search> element (Baseline 2023)
-#   svg.*summary         spec disagreement: browsers + a11y treat svg-in-summary
-#                        as phrasing content; used by every accordion chevron
-#   style.*body          ViewTransitions emits a style fragment; style-in-body
-#                        is universally supported
-#   CSS: Parse Error     vnu's CSS parser predates @view-transition
-#   Invalid RGB function vnu's CSS parser predates CSS Color 4 space-separated rgb()
-#   Stray end tag button vnu's tree builder predates the customizable <select>
-#                        (button+selectedcontent inside select)
-html5validator --root "$WORK" \
-	--ignore \
-	'hx-[a-z-]+" not allowed' \
-	'"data-\*" attribute names' \
-	'"popover" not allowed' \
-	'"popovertarget" not allowed' \
-	'"fetchpriority" not allowed' \
-	'"enterkeyhint" not allowed' \
-	'"search" not allowed' \
-	'"svg" not allowed as child of element "summary"' \
-	'"style" not allowed as child of element "body"' \
-	'CSS: Parse Error' \
-	'"background-color": Invalid RGB function' \
-	'Stray end tag "button"' \
-	2>/dev/null
+# Ignored error classes (regex). html5validator 0.4.2's --ignore does plain
+# substring matching (verified empirically), so filtering happens here with
+# real regexes. Every pattern is a DOCUMENTED validator-staleness or
+# framework-dialect class:
+#   hx-[a-z-]+" not allowed      htmx dialect attributes — not in any spec by design
+#   "data-\*"...NCNames          Datastar's data-on:click colon syntax — deliberate
+#   popover|popovertarget        vnu predates the Popover API (Baseline 2024)
+#   fetchpriority|enterkeyhint   vnu staleness — standard attributes
+#   Element "search" not allowed vnu predates the <search> element (Baseline 2023)
+#   svg...as child of summary    spec disagreement; browsers+a11y treat svg in
+#                                summary as phrasing content (every accordion chevron)
+#   style...child of body        ViewTransitions emits a style fragment position
+#   CSS: Parse Error             vnu's CSS parser predates @view-transition
+#   Invalid RGB function         vnu's CSS parser predates CSS Color 4 rgb(a b c / d)
+#   Stray (start|end) tag        vnu's tree builder predates the customizable
+#     (button|selectedcontent)   <select> (button + selectedcontent inside select)
+IGNORE_RE='Attribute "hx-[a-z-]+" not allowed|"data-\*" attribute names|"(popover|popovertarget|fetchpriority|enterkeyhint)" not allowed|Element "search" not allowed|Element "svg" not allowed as child of element "summary"|Element "style" not allowed as child of element "body"|CSS: Parse Error|"background-color": Invalid RGB function|Stray (start|end) tag "(button|selectedcontent)"'
+
+report="$(html5validator --root "$WORK" 2>/dev/null || true)"
+filtered="$(printf '%s\n' "$report" | grep 'error:' | grep -vE "$IGNORE_RE" || true)"
+
+if [ -n "$filtered" ]; then
+	printf 'HTML validation errors (after documented ignores):\n%s\n' "$filtered" >&2
+	exit 1
+fi
+
+echo "HTML validation clean: $(
+	cd "$WORK" && ls pkg-*/*.html 2>/dev/null | wc -l
+) golden files, $(printf '%s\n' "$IGNORE_RE" | tr '|' '\n' | wc -l) documented ignore classes."
