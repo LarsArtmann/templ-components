@@ -158,13 +158,21 @@ func TestClassOverrideWins(t *testing.T) {
 
 			for _, want := range tc.wantPresent {
 				if !tokens[want] {
-					t.Errorf("consumer class %q missing from output — the Class-override-wins contract is broken:\n%s", want, html)
+					t.Errorf(
+						"consumer class %q missing from output — the Class-override-wins contract is broken:\n%s",
+						want,
+						html,
+					)
 				}
 			}
 
 			for _, absent := range tc.wantAbsent {
 				if tokens[absent] {
-					t.Errorf("default class %q survived a consumer override — tailwind-merge did not resolve the conflict:\n%s", absent, html)
+					t.Errorf(
+						"default class %q survived a consumer override — tailwind-merge did not resolve the conflict:\n%s",
+						absent,
+						html,
+					)
 				}
 			}
 		})
@@ -177,7 +185,7 @@ func TestClassOverrideWins(t *testing.T) {
 func classTokens(html string) map[string]bool {
 	tokens := map[string]bool{}
 
-	for _, attr := range strings.Split(html, `class="`) {
+	for attr := range strings.SplitSeq(html, `class="`) {
 		// Everything before the closing quote of this attribute.
 		value, _, found := strings.Cut(attr, `"`)
 		if !found {

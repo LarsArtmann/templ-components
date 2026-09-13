@@ -77,7 +77,10 @@ func TestPrerenderMatchesLiveServer(t *testing.T) {
 			got := normalizePrerender(string(live))
 
 			if got != want {
-				t.Errorf("prerender drift on %s: static snapshot differs from the live page beyond the by-design CSS link — re-cut with -prerender", route.path)
+				t.Errorf(
+					"prerender drift on %s: static snapshot differs from the live page beyond the by-design CSS link — re-cut with -prerender",
+					route.path,
+				)
 			}
 		})
 	}

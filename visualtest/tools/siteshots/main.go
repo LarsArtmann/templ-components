@@ -161,17 +161,28 @@ func screenshot(url, theme string, width, height int, target string) error {
 	tabCtx, tabCancel = context.WithTimeout(tabCtx, routeTimeout)
 	defer tabCancel()
 
+	// Pin the theme: headless Chromium reports prefers-color-scheme: dark by
+	// default, so the ThemeScript FOUC guard would put every capture in dark
+	// mode. Store the theme, reload (ThemeScript re-applies), then enforce the
+	// class as a belt-and-suspenders guarantee before the capture.
+	setTheme := fmt.Sprintf(
+		`(() => { localStorage.setItem('theme', %q);
+		document.documentElement.classList.toggle('dark', %q === 'dark'); })()`,
+		theme, theme,
+	)
+
 	actions := []chromedp.Action{
 		chromedp.EmulateViewport(int64(width), int64(height)),
 		chromedp.Navigate(url),
 		chromedp.WaitReady("body"),
+		chromedp.Sleep(300 * time.Millisecond),
+		chromedp.Evaluate(setTheme, nil),
+		chromedp.Reload(),
+		chromedp.WaitReady("body"),
 		chromedp.Sleep(settle),
-	}
-
-	if theme == "dark" {
-		actions = append(actions, chromedp.Evaluate(
-			"document.documentElement.classList.add('dark')", nil,
-		), chromedp.Sleep(settle))
+		chromedp.Evaluate(setTheme, nil),
+		chromedp.Evaluate(scrollRevealJS, nil),
+		chromedp.Sleep(settle),
 	}
 
 	var png []byte

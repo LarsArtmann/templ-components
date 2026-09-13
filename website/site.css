@@ -181,14 +181,16 @@ body {
   background-size: 28px 28px;
 }
 
-/* Scroll-reveal (IntersectionObserver adds .animate-fade-in) */
-[data-animate]:not(.animate-fade-in) {
+/* Scroll-reveal (animations.js adds .animate-fade-in). Hidden-by-default is
+   gated on html.js — set by the deferred script — so the sections render for
+   visitors without JavaScript instead of staying invisible forever. */
+html.js [data-animate]:not(.animate-fade-in) {
   opacity: 0;
   transform: translateY(16px);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-animate]:not(.animate-fade-in) {
+  html.js [data-animate]:not(.animate-fade-in) {
     opacity: 1;
     transform: none;
     transition: none;
