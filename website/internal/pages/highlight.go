@@ -34,7 +34,7 @@ func highlight(source, lang string) (templ.Component, error) {
 	lexer := lexerFor(lang)
 	if lexer == nil {
 		escaped := stdhtml.EscapeString(source)
-		return templ.FromHTMLString(`<pre class="chroma"><code>` + escaped + "</code></pre>")
+		return templ.Raw(`<pre class="chroma"><code>` + escaped + "</code></pre>"), nil
 	}
 	iterator, err := lexer.Tokenise(nil, source)
 	if err != nil {
@@ -47,7 +47,7 @@ func highlight(source, lang string) (templ.Component, error) {
 	if err := formatter.Format(&buf, styles.Get("github-dark"), iterator); err != nil {
 		return nil, fmt.Errorf("format %s snippet: %w", lang, err)
 	}
-	return templ.FromHTMLString(buf.String())
+	return templ.Raw(buf.String()), nil
 }
 
 // highlightTempl highlights a templ source snippet for the hero window.

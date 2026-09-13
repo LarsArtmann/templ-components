@@ -1,0 +1,38 @@
+package pages
+
+import (
+	"github.com/larsartmann/templ-components/website/internal/build"
+)
+
+// siteScripts are the defer-loaded behavior scripts shared by pages (all
+// same-origin, CSP 'self'; no inline handlers anywhere).
+var siteScripts = []string{
+	"/assets/js/theme-sync.js",
+	"/assets/js/header.js",
+	"/assets/js/animations.js",
+	"/assets/js/newsletter.js",
+}
+
+// LandingMeta describes the landing page for the shell.
+func LandingMeta() PageMeta {
+	return PageMeta{
+		Path:        "",
+		Title:       SiteTitle,
+		Description: SiteDescription,
+		OGImage:     SiteURL + "/og/home.png",
+		Scripts:     append([]string{"/assets/js/copy-code.js"}, siteScripts...),
+	}
+}
+
+// Landing composes the full landing page (order mirrors the Astro index):
+// Hero, FeatureGrid, HowItWorks, Comparison, UseCases, CTA.
+templ Landing(stats build.Stats, starsText string, nonce string) {
+	@Page(LandingMeta(), nonce) {
+		@Hero(stats, starsText)
+		@section("max-w-7xl", FeatureGrid(stats))
+		@section("max-w-7xl", HowItWorks())
+		@section("max-w-7xl", Comparison())
+		@section("max-w-7xl", UseCasesSection())
+		@section("max-w-4xl", CTA())
+	}
+}

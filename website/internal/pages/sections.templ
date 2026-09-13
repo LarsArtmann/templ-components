@@ -1,0 +1,193 @@
+package pages
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/icons"
+
+	"github.com/larsartmann/templ-components/website/internal/build"
+)
+
+// section wraps a landing section: vertical rhythm, scroll-reveal hook, and
+// optional width constraint (ported from Section.astro).
+templ section(width string, comp templ.Component) {
+	<section class="relative py-24" data-animate>
+		if width != "" {
+			<div class={ width + " mx-auto px-6" }>
+				@comp
+			</div>
+		} else {
+			@comp
+		}
+	</section>
+}
+
+// sectionHeader renders the eyebrow/title/subtitle block (ported from
+// SectionHeader.astro).
+templ sectionHeader(eyebrow, title, subtitle string) {
+	<div class="text-center mb-12">
+		if eyebrow != "" {
+			<div class="inline-block text-xs font-mono uppercase tracking-[0.2em] text-accent mb-3">{ eyebrow }</div>
+		}
+		<h2 class="text-[clamp(1.625rem,4vw,2.25rem)] font-bold text-text-primary tracking-tight mb-4">{ title }</h2>
+		if subtitle != "" {
+			<p class="text-base text-text-secondary max-w-2xl mx-auto">{ subtitle }</p>
+		}
+	</div>
+}
+
+// FeatureGrid renders the six feature cards (ported from FeatureGrid.astro;
+// icons come from the library's icons module — the hand-copied Icon.astro
+// paths are gone).
+templ FeatureGrid(stats build.Stats) {
+	<div>
+		@sectionHeader("Features", "Everything you need to ship.", fmt.Sprintf("%d components with type safety, accessibility, and dark mode baked in. No frontend framework required.", stats.Components))
+
+		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+			for _, feature := range Features {
+				<div class="group rounded-xl border bg-bg-card backdrop-blur-sm transition-all duration-200 p-8 border-border hover:border-border-accent">
+					<div class="w-11 h-11 rounded-lg bg-accent-dim border border-border-accent flex items-center justify-center text-accent mb-4 transition-colors duration-200 group-hover:bg-accent group-hover:text-white">
+						@icons.Icon(feature.Icon, "h-5 w-5")
+					</div>
+					<h3 class="font-semibold text-text-primary mb-2 text-base">{ feature.Title }</h3>
+					<p class="text-sm text-text-muted leading-relaxed">{ feature.Desc }</p>
+				</div>
+			}
+		</div>
+	</div>
+}
+
+// HowItWorks renders the four-step strip (ported from HowItWorksSection.astro).
+templ HowItWorks() {
+	<div>
+		@sectionHeader("How it works", "Four steps. No frontend framework.", "Import, render, generate, ship. The server renders HTML; HTMX enhances where needed.")
+
+		<div class="grid gap-3 lg:grid-cols-4 lg:gap-0 text-left relative">
+			for index, step := range Steps {
+				<div class={ stepClasses(step) }>
+					<div class="flex items-center gap-2.5 mb-3">
+						<div class={ stepBadgeClasses(step) }>{ step.Step }</div>
+						<h3 class="font-semibold text-text-primary text-sm">{ step.Title }</h3>
+					</div>
+					<p class="text-xs text-text-muted leading-relaxed mb-3">{ step.Desc }</p>
+					if step.Code != "" {
+						<code class="block bg-code-inline-bg/60 px-2.5 py-1.5 rounded text-[0.6875rem] text-accent/80 font-mono leading-relaxed">{ step.Code }</code>
+					}
+					if index < len(Steps)-1 {
+						<div class="hidden lg:flex absolute top-1/2 -right-2.5 -translate-y-1/2 w-5 h-5 items-center justify-center text-text-muted z-10 bg-bg-primary">
+							<svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 10 10" aria-hidden="true">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2 5h6m0 0L5.5 2.5M8 5L5.5 7.5"></path>
+							</svg>
+						</div>
+					}
+				</div>
+			}
+		</div>
+	</div>
+}
+
+func stepClasses(step Step) string {
+	base := "relative p-5 rounded-xl border border-border bg-bg-card backdrop-blur-sm lg:rounded-none lg:border-r-0 lg:first:rounded-l-xl lg:last:rounded-r-xl lg:last:border-r "
+	if step.StepColor == StepAmber {
+		return base + "lg:border-t-2 lg:border-t-amber/30"
+	}
+	return base + "lg:border-t-2 lg:border-t-accent/30"
+}
+
+func stepBadgeClasses(step Step) string {
+	if step.StepColor == StepAmber {
+		return "w-7 h-7 rounded-md flex items-center justify-center text-xs font-mono font-bold bg-amber/10 text-amber border border-amber/20"
+	}
+	return "w-7 h-7 rounded-md flex items-center justify-center text-xs font-mono font-bold bg-accent-dim text-accent border border-border-accent"
+}
+
+// Comparison renders the competitor matrix (ported from ComparisonSection.astro).
+templ Comparison() {
+	<div>
+		@sectionHeader("Comparison", "Why templ-components?", "Type safety, CSP compliance, and HTMX integration that alternatives don't offer.")
+
+		<div class="overflow-x-auto">
+			<table class="w-full border-collapse text-sm">
+				<thead>
+					<tr>
+						<th class="text-left py-3 px-4 font-medium text-text-muted text-xs uppercase tracking-wider border-b border-border"></th>
+						for index, col := range ComparisonColumns {
+							if index == len(ComparisonColumns)-1 {
+								<th class="py-3 px-4 font-semibold text-center border-b border-border text-accent">{ col }</th>
+							} else {
+								<th class="py-3 px-4 font-semibold text-center border-b border-border text-text-secondary">{ col }</th>
+							}
+						}
+					</tr>
+				</thead>
+				<tbody>
+					for _, row := range ComparisonMatrix {
+						<tr class="border-b border-border/50 hover:bg-bg-card/50 transition-colors">
+							<td class="py-3 px-4 text-text-secondary font-medium text-left">{ row.Feature }</td>
+							for valueIndex, value := range row.Values {
+								if valueIndex == len(row.Values)-1 {
+									<td class="py-3 px-4 text-center bg-accent-dim">@matrixCell(value)</td>
+								} else {
+									<td class="py-3 px-4 text-center">@matrixCell(value)</td>
+								}
+							}
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+}
+
+templ matrixCell(value MatrixCell) {
+	switch value {
+	case MatrixYes:
+		<span class="inline-flex items-center justify-center text-success">@icons.Icon(icons.Check, "h-4 w-4")</span>
+	case MatrixNo:
+		<span class="inline-flex items-center justify-center text-danger">@icons.Icon(icons.Close, "h-4 w-4")</span>
+	case MatrixPartial:
+		<span class="inline-flex items-center justify-center text-amber text-xs font-mono">~</span>
+	default:
+		<span class="font-mono text-text-secondary text-xs">{ string(value) }</span>
+	}
+}
+
+// UseCasesSection renders the three use-case cards (ported from
+// UseCasesSection.astro).
+templ UseCasesSection() {
+	<div>
+		@sectionHeader("Use Cases", "Built for real Go apps.", "Drop in components for admin panels, forms, and SaaS interfaces.")
+
+		<div class="grid gap-3 sm:grid-cols-3">
+			for _, useCase := range UseCases {
+				<div class="p-6 rounded-xl border border-border bg-bg-card backdrop-blur-sm text-center hover:border-border-hover transition-all duration-200 hover:-translate-y-0.5">
+					<div class="mx-auto mb-3 text-accent w-11 h-11 rounded-lg bg-accent-dim border border-border-accent flex items-center justify-center">
+						@icons.Icon(useCase.Icon, "h-5 w-5")
+					</div>
+					<h3 class="font-semibold text-text-primary text-sm mb-1">{ useCase.Title }</h3>
+					<p class="text-xs text-text-muted leading-relaxed">{ useCase.Desc }</p>
+				</div>
+			}
+		</div>
+	</div>
+}
+
+// CTA renders the closing call-to-action (ported from CTASection.astro; the
+// buttons are the library's display.Button component).
+templ CTA() {
+	<div>
+		@sectionHeader("Get Started", "Install in 30 seconds.", "go get, templ generate, ship. No Node.js required.")
+		<div class="text-center">
+			<div class="flex items-center justify-center gap-3 flex-wrap">
+				<a href="/getting-started/installation" class="px-7 py-3.5 bg-accent text-white font-semibold rounded-lg text-sm hover:bg-accent-hover transition-all duration-200 inline-flex items-center gap-2 border-none cursor-pointer shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5 no-underline">
+					Read the Docs
+					@icons.Icon(icons.ArrowRight, "h-4 w-4")
+				</a>
+				<a href="/api-reference" class="px-6 py-3.5 border border-border text-text-secondary font-medium rounded-lg text-sm hover:border-border-hover hover:text-text-primary transition-all duration-200 inline-flex items-center gap-2 no-underline hover:-translate-y-0.5">
+					API Reference
+					@icons.Icon(icons.ExternalLink, "h-4 w-4")
+				</a>
+			</div>
+		</div>
+	</div>
+}
