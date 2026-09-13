@@ -24,7 +24,11 @@ func readCompiledCSSTargets(t *testing.T) []string {
 
 	data, err := os.ReadFile(compiledCSSTargetsFile)
 	if err != nil {
-		t.Fatalf("read %s: %v — the inventory guard owns this fixture (fail loud, never skip)", compiledCSSTargetsFile, err)
+		t.Fatalf(
+			"read %s: %v — the inventory guard owns this fixture (fail loud, never skip)",
+			compiledCSSTargetsFile,
+			err,
+		)
 	}
 
 	var outputs []string
@@ -71,6 +75,7 @@ func TestCompiledCSSInventory(t *testing.T) {
 	targets := readCompiledCSSTargets(t)
 
 	var wantOut []string
+
 	for _, target := range targets {
 		if strings.HasSuffix(target, ".out.css") {
 			wantOut = append(wantOut, target)

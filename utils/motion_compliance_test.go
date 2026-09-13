@@ -43,6 +43,7 @@ func TestMotionReduceCompliance(t *testing.T) {
 	for _, dir := range dirs {
 		count, err := countMotionGapsInDir(t, filepath.Join(root, dir), rules)
 		violations += count
+
 		if err != nil {
 			t.Logf("walk error for %s: %v", dir, err)
 		}

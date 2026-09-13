@@ -137,6 +137,9 @@ future session.
 
 ## Metrics
 
+_Point-in-time snapshot from the 2026-06-27 analysis (101 icons, 73
+components); current counts are machine-guarded by `utils.TestDocsCountDrift`._
+
 | Metric                   | Before | After                                                      |
 | ------------------------ | ------ | ---------------------------------------------------------- |
 | tc icons                 | 99     | **101**                                                    |

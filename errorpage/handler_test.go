@@ -107,13 +107,13 @@ func TestPreBuiltConstructors(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name               string
-		props              ErrorPageProps
-		wantFamily         Family
-		wantCode           string
-		wantMessage        string
+		name                string
+		props               ErrorPageProps
+		wantFamily          Family
+		wantCode            string
+		wantMessage         string
 		wantMessageNonEmpty bool
-		wantWayOutHref     string
+		wantWayOutHref      string
 	}{
 		{
 			name:           "NotFound has correct family and code",
@@ -129,10 +129,10 @@ func TestPreBuiltConstructors(t *testing.T) {
 			wantCode:   "access.forbidden",
 		},
 		{
-			name:          "BadRequest has rejection family and custom message",
-			props:         BadRequest("Invalid email"),
-			wantFamily:    FamilyRejection,
-			wantMessage:   "Invalid email",
+			name:        "BadRequest has rejection family and custom message",
+			props:       BadRequest("Invalid email"),
+			wantFamily:  FamilyRejection,
+			wantMessage: "Invalid email",
 		},
 		{
 			name:                "BadRequest empty message gets default",
@@ -141,10 +141,10 @@ func TestPreBuiltConstructors(t *testing.T) {
 			wantMessageNonEmpty: true,
 		},
 		{
-			name:          "Conflict has conflict family",
-			props:         Conflict("Version mismatch"),
-			wantFamily:    FamilyConflict,
-			wantMessage:   "Version mismatch",
+			name:        "Conflict has conflict family",
+			props:       Conflict("Version mismatch"),
+			wantFamily:  FamilyConflict,
+			wantMessage: "Version mismatch",
 		},
 		{
 			name:       "ServiceUnavailable has transient family",
