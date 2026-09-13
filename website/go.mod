@@ -13,14 +13,14 @@ require (
 	github.com/larsartmann/templ-components v0.0.0-00010101000000-000000000000
 	github.com/larsartmann/templ-components/icons v1.16.0
 	github.com/larsartmann/templ-components/utils v1.16.0
+	github.com/yuin/goldmark v1.8.6
+	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
 )
 
 require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
 	github.com/dlclark/regexp2/v2 v2.2.1 // indirect
 	github.com/larsartmann/templ-components/htmx v1.16.0 // indirect
-	github.com/yuin/goldmark v1.8.6 // indirect
-	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc // indirect
 )
 
 replace github.com/larsartmann/templ-components => ../

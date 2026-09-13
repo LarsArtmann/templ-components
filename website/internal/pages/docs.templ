@@ -2,8 +2,8 @@ package pages
 
 import (
 	"fmt"
-	"strings"
 
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/website/internal/md"
 )
 
@@ -129,5 +129,3 @@ templ docsFooterNav(current string, prev, next *DocRef, lastUpdated string) {
 		<a href={ templ.SafeURL(EditLink(current)) } target="_blank" rel="noopener noreferrer" class="hover:text-text-primary transition-colors duration-150 underline underline-offset-2">Edit this page</a>
 	</div>
 }
-
-var _ = strings.TrimSpace

@@ -15,10 +15,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/larsartmann/templ-components/website/internal/build"
+	"github.com/larsartmann/templ-components/website/internal/md"
 	"github.com/larsartmann/templ-components/website/internal/pages"
 )
 
@@ -58,6 +61,14 @@ func run(out, repoRoot string, skipStars bool) error {
 	sitePages := []build.Page{
 		{Path: "index.html", Component: pages.Landing(stats, pages.StarsLabel(stars), nonce)},
 	}
+
+	docsPages, err := renderDocs(ctx, renderer, repoRoot, nonce)
+	if err != nil {
+		return err
+	}
+
+	sitePages = append(sitePages, docsPages...)
+
 	if err := renderer.WritePages(ctx, out, sitePages); err != nil {
 		return fmt.Errorf("write pages: %w", err)
 	}
@@ -131,4 +142,56 @@ func fetchStars() int {
 	}
 
 	return payload.StargazersCount
+}
+
+// renderDocs renders every registered docs page from content/docs, wiring
+// prev/next navigation and git last-updated dates.
+func renderDocs(ctx context.Context, renderer *build.Renderer, repoRoot, nonce string) ([]build.Page, error) {
+	all := pages.AllDocs()
+
+	out := make([]build.Page, 0, len(all))
+
+	for index, doc := range all {
+		source, err := os.ReadFile(filepath.Join(repoRoot, "website", "content", "docs", doc.Slug+".md"))
+		if err != nil {
+			return nil, fmt.Errorf("read docs %s: %w", doc.Slug, err)
+		}
+
+		parsed, err := md.Parse(string(source))
+		if err != nil {
+			return nil, fmt.Errorf("parse docs %s: %w", doc.Slug, err)
+		}
+
+		var prev, next *pages.DocRef
+
+		if index > 0 {
+			previous := all[index-1]
+			prev = &previous
+		}
+
+		if index < len(all)-1 {
+			following := all[index+1]
+			next = &following
+		}
+
+		out = append(out, build.Page{
+			Path:      doc.Slug + ".html",
+			Component: pages.DocsLayout(doc.Slug, parsed, prev, next, lastUpdated(repoRoot, doc.Slug), nonce),
+		})
+	}
+
+	return out, nil
+}
+
+// lastUpdated asks git for the last commit date touching a docs source
+// (YYYY-MM-DD); empty when unavailable (shallow clones, non-git runs).
+func lastUpdated(repoRoot, slug string) string {
+	cmd := exec.Command("git", "-C", repoRoot, "log", "-1", "--format=%cs", "--", "website/content/docs/"+slug+".md")
+
+	out, err := cmd.Output()
+	if err != nil {
+		return ""
+	}
+
+	return strings.TrimSpace(string(out))
 }

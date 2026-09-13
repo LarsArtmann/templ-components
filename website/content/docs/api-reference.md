@@ -1,0 +1,109 @@
+---
+title: API Reference
+description: Package-level overview and links to full godoc.
+---
+
+## Packages
+
+| Package      | Components | Purpose                                                                    |
+| ------------ | ---------- | -------------------------------------------------------------------------- |
+| `display`    | 30         | Cards, tables, modals, badges, buttons, avatars, carousel, tabs, accordion |
+| `feedback`   | 13         | Alerts, toasts, spinners, skeletons, progress bars                         |
+| `forms`      | 21         | Inputs, selects, toggles, combobox, slider, rating, tags input             |
+| `layout`     | 6          | Page shell, theme toggle, CSP-safe script/style tags                       |
+| `navigation` | 12         | Nav bars, pagination, breadcrumbs, sidebar, load-more                      |
+| `htmx`       | 8          | Loading, error handling, OOB swaps, View Transitions                       |
+| `icons`      | 102        | Heroicons v2 outline + Spinner                                             |
+| `errorpage`  | 4          | Error pages, 404, go-error-family integration                              |
+| `utils`      | —          | BaseProps, Class(), EnsureID, test helpers                                 |
+| `utils/wire` | —          | Transport-agnostic wiring contract: one `wire.Action`, both HTMX and Datastar — see the Transport Wiring guide |
+
+## Full Godoc
+
+Complete API documentation is available on [pkg.go.dev](https://pkg.go.dev/github.com/larsartmann/templ-components).
+
+## Key Types
+
+### BaseProps
+
+Every props struct embeds `utils.BaseProps`:
+
+```go
+type BaseProps struct {
+    ID        string
+    Class     string
+    Attrs     templ.Attributes
+    AriaLabel string
+    Nonce     string
+}
+```
+
+### wire.Action
+
+One typed wiring spec, rendered as htmx or Datastar attributes (see the
+Transport Wiring guide):
+
+```go
+type Action struct {
+    Transport   Transport    // "" (htmx default) | "htmx" | "datastar"
+    Method      Method       // "" (GET) | get | post | put | patch | delete
+    URL         string       // empty = inert (no wiring)
+    Event       Event        // dialect default when empty
+    Target      string       // htmx only (hx-target)
+    Selector    string       // datastar only ({selector: …} fetch option)
+    ContentType ContentType  // "" (json) | json | form (form encoding)
+    DebounceMS  int          // htmx delay:<n>ms / datastar __debounce.<n>ms
+}
+```
+
+### Override Props
+
+Some components expose additional typed class overrides so you can tweak their
+internal layout without replacing the whole component. For example, `CardProps`
+includes `TitleClass` and `HeaderClass`:
+
+```templ
+@display.Card(display.CardProps{
+    Title:       "Users",
+    TitleClass:  "text-indigo-600",
+    HeaderClass: "bg-gray-50 dark:bg-gray-900/50",
+}) {
+    <p>Card content</p>
+}
+```
+
+### Typed Enums
+
+58 typed string enums make invalid states unrepresentable. Each ships with an `IsValid()` method.
+
+```go
+type BadgeType string
+const (
+    BadgePrimary BadgeType = "primary"
+    BadgeNeutral BadgeType = "neutral"
+    BadgeSuccess BadgeType = "success"
+    BadgeWarning BadgeType = "warning"
+    BadgeError   BadgeType = "error"
+    BadgeInfo    BadgeType = "info"
+)
+```
+
+### Lookup Maps
+
+All style lookups use typed maps with `utils.Lookup()` fallback — no switches, no panics on unknown values.
+
+## Import Paths
+
+```go
+import (
+    "github.com/larsartmann/templ-components/display"
+    "github.com/larsartmann/templ-components/feedback"
+    "github.com/larsartmann/templ-components/forms"
+    "github.com/larsartmann/templ-components/layout"
+    "github.com/larsartmann/templ-components/navigation"
+    "github.com/larsartmann/templ-components/htmx"
+    "github.com/larsartmann/templ-components/icons"
+    "github.com/larsartmann/templ-components/errorpage"
+    "github.com/larsartmann/templ-components/utils"
+)
+```
