@@ -58,7 +58,7 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 			next := chromedp.Evaluate(`document.querySelector('a[aria-label="Next month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`, &done)
 			if err := chromedp.Run(ctx,
 				next,
-				chromedp.Poll(`document.querySelector('#cal-nav-region h3')?.textContent.includes('August')?'ok':''`, &done),
+				chromedp.Poll(`document.querySelector('#cal-nav h3')?.textContent.includes('August')?'ok':''`, &done),
 			); err != nil {
 				t.Fatalf("%s next-month click: %v", dialect, err)
 			}
@@ -66,7 +66,7 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 			prev := chromedp.Evaluate(`document.querySelector('a[aria-label="Previous month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`, &done)
 			if err := chromedp.Run(ctx,
 				prev,
-				chromedp.Poll(`document.querySelector('#cal-nav-region h3')?.textContent.includes('July')?'ok':''`, &done),
+				chromedp.Poll(`document.querySelector('#cal-nav h3')?.textContent.includes('July')?'ok':''`, &done),
 			); err != nil {
 				t.Fatalf("%s prev-month click: %v", dialect, err)
 			}
@@ -88,8 +88,8 @@ func calendarNavServer(t *testing.T, dialect wire.Transport) *httptest.Server {
 	})
 
 	mux.Handle("GET /api/calendar", wire.Handler(wire.PatchTarget{
-		Selector: "#cal-nav-region",
-		Mode:     wire.PatchModeInner,
+		Selector: "#cal-nav",
+		Mode:     wire.PatchModeOuter,
 	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
@@ -133,7 +133,7 @@ func wiredCalendar(dialect wire.Transport, year, month int) templ.Component {
 	props.MonthNav = &wire.Action{ //nolint:exhaustruct // URL+Target are the wiring surface
 		Transport: dialect,
 		URL:       "/api/calendar?year={year}&month={month}",
-		Target:    "#cal-nav-region",
+		Target:    "#cal-nav",
 	}
 
 	return forms.Calendar(props)
