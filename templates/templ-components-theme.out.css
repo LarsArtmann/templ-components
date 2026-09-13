@@ -1,2 +1,18 @@
 /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
-:root,:host{--color-tc-primary:var(--color-blue-600);--color-tc-primary-hover:var(--color-blue-700);--color-tc-danger:var(--color-red-600);--color-tc-danger-hover:var(--color-red-700);--color-tc-success:var(--color-green-600);--color-tc-warning:var(--color-amber-500);--color-tc-info:var(--color-blue-500);--color-blue-600:var(--color-tc-primary);--color-blue-700:var(--color-tc-primary-hover);--color-blue-500:var(--color-tc-info);--color-red-600:var(--color-tc-danger);--color-red-700:var(--color-tc-danger-hover);--color-green-600:var(--color-tc-success);--color-amber-500:var(--color-tc-warning)}
+:root,
+:host {
+  --color-tc-primary: var(--color-blue-600);
+  --color-tc-primary-hover: var(--color-blue-700);
+  --color-tc-danger: var(--color-red-600);
+  --color-tc-danger-hover: var(--color-red-700);
+  --color-tc-success: var(--color-green-600);
+  --color-tc-warning: var(--color-amber-500);
+  --color-tc-info: var(--color-blue-500);
+  --color-blue-600: var(--color-tc-primary);
+  --color-blue-700: var(--color-tc-primary-hover);
+  --color-blue-500: var(--color-tc-info);
+  --color-red-600: var(--color-tc-danger);
+  --color-red-700: var(--color-tc-danger-hover);
+  --color-green-600: var(--color-tc-success);
+  --color-amber-500: var(--color-tc-warning);
+}

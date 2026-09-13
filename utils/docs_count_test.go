@@ -226,6 +226,7 @@ func countIconNames(t *testing.T, root string) int {
 	}
 
 	entryRe := regexp.MustCompile(`(?m)^\t[A-Z][A-Za-z0-9]*:\s+"`)
+
 	return len(entryRe.FindAll(data, -1)) + 1
 }
 

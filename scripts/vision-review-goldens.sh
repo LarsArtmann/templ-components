@@ -37,44 +37,44 @@ VISION_MODEL=${VISION_MODEL:-}
 # --- The flagged set (TODO #80: overlays + datastar/eyebrow/scrollback +
 # statcard yellow/purple; TODO #150: wire; TODO #162: progressbar) ---
 FLAGGED=(
-    "dropdown/open_light.png" "dropdown/open_dark.png"
-    "popover/open_light.png"
-    "contextmenu/open_light.png"
-    "modal/open_light.png" "modal/open_dark.png"
-    "drawer/left_dark.png" "drawer/right_light.png"
-    "datastar/indicator_light.png" "datastar/indicator_dark.png"
-    "datastar/live_region_light.png" "datastar/live_region_dark.png"
-    "eyebrow/light.png" "eyebrow/dark.png"
-    "scrollback/light.png" "scrollback/dark.png"
-    "statcard/yellow_light.png" "statcard/purple_light.png"
-    "button/outline_success_light.png" "button/outline_info_light.png"
-    "progressbar/half_light.png"
-    "wire/dual_transport_light.png" "wire/dual_transport_dark.png"
+	"dropdown/open_light.png" "dropdown/open_dark.png"
+	"popover/open_light.png"
+	"contextmenu/open_light.png"
+	"modal/open_light.png" "modal/open_dark.png"
+	"drawer/left_dark.png" "drawer/right_light.png"
+	"datastar/indicator_light.png" "datastar/indicator_dark.png"
+	"datastar/live_region_light.png" "datastar/live_region_dark.png"
+	"eyebrow/light.png" "eyebrow/dark.png"
+	"scrollback/light.png" "scrollback/dark.png"
+	"statcard/yellow_light.png" "statcard/purple_light.png"
+	"button/outline_success_light.png" "button/outline_info_light.png"
+	"progressbar/half_light.png"
+	"wire/dual_transport_light.png" "wire/dual_transport_dark.png"
 )
 
 # --- Argument handling: --all or explicit globs replace the flagged set ---
 IMAGES=()
 for arg in "$@"; do
-    if [ "$arg" = "--all" ]; then
-        mapfile -t IMAGES < <(find "$TESTDATA" -name '*.png' -not -name '*.fail.png' | sort)
-        break
-    fi
-    IMAGES+=("$arg")
+	if [ "$arg" = "--all" ]; then
+		mapfile -t IMAGES < <(find "$TESTDATA" -name '*.png' -not -name '*.fail.png' | sort)
+		break
+	fi
+	IMAGES+=("$arg")
 done
 if [ ${#IMAGES[@]} -eq 0 ]; then
-    for rel in "${FLAGGED[@]}"; do
-        [ -f "$TESTDATA/$rel" ] && IMAGES+=("$TESTDATA/$rel")
-    done
+	for rel in "${FLAGGED[@]}"; do
+		[ -f "$TESTDATA/$rel" ] && IMAGES+=("$TESTDATA/$rel")
+	done
 fi
 if [ ${#IMAGES[@]} -eq 0 ]; then
-    echo "ERROR: no golden PNGs matched. What: the flagged list and globs resolved to nothing." >&2
-    echo "Fix: run from the repo root, or pass globs like 'modal/*.png', or --all." >&2
-    exit 1
+	echo "ERROR: no golden PNGs matched. What: the flagged list and globs resolved to nothing." >&2
+	echo "Fix: run from the repo root, or pass globs like 'modal/*.png', or --all." >&2
+	exit 1
 fi
 
 # --- Fail fast on missing credentials (What/Why/Fix, per repo error policy) ---
 if [ -z "${OPENAI_API_KEY:-}${ANTHROPIC_API_KEY:-}${GEMINI_API_KEY:-}${OPENROUTER_API_KEY:-}${XAI_API_KEY:-}" ]; then
-    cat >&2 <<EOF
+	cat >&2 <<EOF
 ERROR: no vision provider API key found.
 What: this script calls the vision-review-agent CLI, which needs a vision model.
 Why: none of OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY,
@@ -83,7 +83,7 @@ Fix:  export one of them (e.g. export OPENAI_API_KEY=sk-...) and re-run.
       Cost control: the default run reviews ${#IMAGES[@]} flagged goldens only;
       pass --all (125+) deliberately.
 EOF
-    exit 1
+	exit 1
 fi
 
 MODEL_ARGS=()
@@ -97,37 +97,37 @@ PROMPT='This PNG is a golden baseline screenshot of one server-rendered Go UI co
 REPORT="docs/reviews/vision-golden-review-$(date +%Y-%m-%d).md"
 mkdir -p docs/reviews
 
-echo "# Vision golden review — $(date +%Y-%m-%d)" > "$REPORT"
-echo "" >> "$REPORT"
-echo "Tool: vision-review-agent (first pass; human reviews SUSPECT findings)." >> "$REPORT"
-echo "Images: ${#IMAGES[@]}" >> "$REPORT"
-echo "" >> "$REPORT"
+echo "# Vision golden review — $(date +%Y-%m-%d)" >"$REPORT"
+echo "" >>"$REPORT"
+echo "Tool: vision-review-agent (first pass; human reviews SUSPECT findings)." >>"$REPORT"
+echo "Images: ${#IMAGES[@]}" >>"$REPORT"
+echo "" >>"$REPORT"
 
 suspect=0
 for img in "${IMAGES[@]}"; do
-    echo "==> $img"
-    output=$("${VISION_CMD[@]}" "${MODEL_ARGS[@]}" -prompt "$PROMPT" "$img" 2>&1)
-    {
-        echo "## $img"
-        echo ""
-        echo '```'
-        echo "$output"
-        echo '```'
-        echo ""
-    } >> "$REPORT"
-    if grep -q "SUSPECT" <<<"$output"; then
-        suspect=$((suspect + 1))
-        echo "    ^^ SUSPECT — needs human eyes"
-    fi
+	echo "==> $img"
+	output=$("${VISION_CMD[@]}" "${MODEL_ARGS[@]}" -prompt "$PROMPT" "$img" 2>&1)
+	{
+		echo "## $img"
+		echo ""
+		echo '```'
+		echo "$output"
+		echo '```'
+		echo ""
+	} >>"$REPORT"
+	if grep -q "SUSPECT" <<<"$output"; then
+		suspect=$((suspect + 1))
+		echo "    ^^ SUSPECT — needs human eyes"
+	fi
 done
 
 {
-    echo "---"
-    echo "Total: ${#IMAGES[@]} images, $suspect flagged SUSPECT."
-} >> "$REPORT"
+	echo "---"
+	echo "Total: ${#IMAGES[@]} images, $suspect flagged SUSPECT."
+} >>"$REPORT"
 
 echo ""
 echo "Report written: $REPORT ($suspect SUSPECT of ${#IMAGES[@]})"
 if [ "$suspect" -gt 0 ]; then
-    echo "Review the SUSPECT sections — a human confirms before any golden changes."
+	echo "Review the SUSPECT sections — a human confirms before any golden changes."
 fi

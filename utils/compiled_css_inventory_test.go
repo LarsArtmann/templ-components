@@ -66,7 +66,11 @@ func TestCompiledCSSInventory(t *testing.T) {
 	sort.Strings(wantOut)
 
 	if strings.Join(gotOut, ",") != strings.Join(wantOut, ",") {
-		t.Fatalf("committed .out.css set drifted.\n want: %v\n got:  %v\n\nIf you added a compiled artifact intentionally, add it to compiledCSSDistributionTargets AND give it an in-repo consumer or a release.sh compile line — artifacts nobody consumes are daemon-recompile churn bait.", wantOut, gotOut)
+		t.Fatalf(
+			"committed .out.css set drifted.\n want: %v\n got:  %v\n\nIf you added a compiled artifact intentionally, add it to compiledCSSDistributionTargets AND give it an in-repo consumer or a release.sh compile line — artifacts nobody consumes are daemon-recompile churn bait.",
+			wantOut,
+			gotOut,
+		)
 	}
 
 	for _, mustExist := range []string{
@@ -74,7 +78,11 @@ func TestCompiledCSSInventory(t *testing.T) {
 		filepath.Join(repoRoot, "examples", "demo", "static", "app.css"),
 	} {
 		if _, statErr := os.Stat(mustExist); statErr != nil {
-			t.Errorf("distribution target missing: %s (%v) — restore it or update compiledCSSDistributionTargets, scripts/release.sh, and AGENTS.md together", mustExist, statErr)
+			t.Errorf(
+				"distribution target missing: %s (%v) — restore it or update compiledCSSDistributionTargets, scripts/release.sh, and AGENTS.md together",
+				mustExist,
+				statErr,
+			)
 		}
 	}
 }
