@@ -37,6 +37,10 @@ func TestSiteBuildIntegrity(t *testing.T) {
 
 	rendered, assets := collectDist(t, outDir)
 
+	// assets/app.css is compiled by build.sh's Tailwind step, outside the Go
+	// SSG; declare it so stylesheet references validate in the test dist.
+	assets = append(assets, "assets/app.css")
+
 	wantPages := 2 + len(pages.AllDocs())
 	if len(rendered) != wantPages {
 		t.Fatalf("wrote %d HTML pages, want %d", len(rendered), wantPages)

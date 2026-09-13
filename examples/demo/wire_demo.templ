@@ -319,6 +319,31 @@ templ wireDemo(transport demoTransport) {
 			}
 		</div>
 	</div>
+
+	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Month navigation</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+			A <code>forms.Calendar</code> whose prev/next arrows carry a
+			<code>wire.Action</code> with <code>{year}</code>/<code>{month}</code>
+			placeholders — the component substitutes the navigation target per arrow.
+			The endpoint re-renders the whole calendar: under htmx the arrows self-swap
+			(<code>outerHTML settle:0s</code>, so a rapid second click can never land on an
+			unprocessed anchor); under Datastar the response headers pick the region.
+		</p>
+		<div class="max-w-md">
+			{{ calYear, calMonth := time.Now().Year(), time.Now().Month() }}
+			if transport == demoTransportBoth {
+				<div class="space-y-6">
+					<div>@wireCalendarDemo(wire.TransportHTMX, calYear, calMonth)</div>
+					<div>@wireCalendarDemo(wire.TransportDatastar, calYear, calMonth)</div>
+				</div>
+			} else if transport.wireTransport() == wire.TransportDatastar {
+				@wireCalendarDemo(wire.TransportDatastar, calYear, calMonth)
+			} else {
+				@wireCalendarDemo(wire.TransportHTMX, calYear, calMonth)
+			}
+		</div>
+	</div>
 }
 
 // wireWizardStep renders one wizard step: the indicator plus that step's
@@ -720,4 +745,27 @@ templ wireBusyDone(transport string) {
 // id inside the swapped region.
 templ wireWizardStepResult(dialect wire.Transport, step int, message string) {
 	@wireWizardStep(dialect, step, message)
+}
+
+// wireCalendarDemo renders the month-navigable Calendar in one dialect. The
+// arrows point at the dialect's endpoint with {year}/{month} placeholders;
+// the component substitutes the prev/next target month per arrow. The htmx
+// calendar targets its own id (outerHTML self-swap); the Datastar calendar
+// relies on wire.Handler's response-header targeting instead.
+templ wireCalendarDemo(dialect wire.Transport, year int, month time.Month) {
+	{{ id, url := "wire-cal-htmx", "/api/wire/calendar/htmx" }}
+	{{ target := "#wire-cal-htmx" }}
+	{{ if dialect == wire.TransportDatastar }}
+		{{ id, url, target = "wire-cal-ds", "/api/wire/calendar/datastar", "" }}
+	{{ end }}
+	@forms.Calendar(forms.CalendarProps{
+		BaseProps: utils.BaseProps{ID: id},
+		Year:      year,
+		Month:     month,
+		MonthNav: &wire.Action{ //nolint:exhaustruct // URL+Target are the wiring surface
+			Transport: dialect,
+			URL:       url + "?year={year}&month={month}",
+			Target:    target,
+		},
+	})
 }

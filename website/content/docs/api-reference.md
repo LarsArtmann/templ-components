@@ -7,14 +7,16 @@ description: Package-level overview and links to full godoc.
 
 | Package      | Components | Purpose                                                                    |
 | ------------ | ---------- | -------------------------------------------------------------------------- |
-| `display`    | 30         | Cards, tables, modals, badges, buttons, avatars, carousel, tabs, accordion |
-| `feedback`   | 13         | Alerts, toasts, spinners, skeletons, progress bars                         |
-| `forms`      | 21         | Inputs, selects, toggles, combobox, slider, rating, tags input             |
-| `layout`     | 6          | Page shell, theme toggle, CSP-safe script/style tags                       |
+| `display`    | 43         | Cards, tables, modals, badges, buttons, avatars, carousel, tabs, accordion |
+| `feedback`   | 14         | Alerts, toasts, spinners, skeletons, progress bars                         |
+| `forms`      | 23         | Inputs, selects, toggles, combobox, slider, rating, tags input             |
+| `layout`     | 10         | Page shell, theme toggle, CSP-safe script/style tags                       |
 | `navigation` | 12         | Nav bars, pagination, breadcrumbs, sidebar, load-more                      |
-| `htmx`       | 8          | Loading, error handling, OOB swaps, View Transitions                       |
-| `icons`      | 102        | Heroicons v2 outline + Spinner                                             |
+| `htmx`       | 9          | Loading, error handling, OOB swaps, View Transitions                       |
+| `datastar`   | 4          | Datastar runtime injection, SSE LiveRegion, loading Indicator              |
+| `icons`      | 105        | Heroicons v2 outline + Spinner                                             |
 | `errorpage`  | 4          | Error pages, 404, go-error-family integration                              |
+| `recipes`    | 4          | Screen-level compositions: Dashboard, SettingsLayout, LoginCard, AuthLayout |
 | `utils`      | —          | BaseProps, Class(), EnsureID, test helpers                                 |
 | `utils/wire` | —          | Transport-agnostic wiring contract: one `wire.Action`, both HTMX and Datastar — see the Transport Wiring guide |
 

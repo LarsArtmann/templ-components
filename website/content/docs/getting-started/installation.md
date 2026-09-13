@@ -21,7 +21,7 @@ go get github.com/larsartmann/templ-components@latest
 
 ### Individual modules (v2.0+)
 
-Since v2.0, the library is a 5-module workspace (see ADR-0034). You can adopt
+Since v2.0, the library is a 7-module workspace (see ADR-0034). You can adopt
 individual modules without pulling in the full UI library:
 
 ```bash
@@ -37,7 +37,7 @@ go get github.com/larsartmann/templ-components/charts/echarts@latest
 
 ## Tailwind CSS Setup
 
-Since this is a Go module (not an pnpm package), you need to vendor the dependency so Tailwind can scan the `.templ` source files for class names.
+Since this is a Go module, you need to vendor the dependency so Tailwind can scan the `.templ` source files for class names.
 
 ```bash
 go mod vendor

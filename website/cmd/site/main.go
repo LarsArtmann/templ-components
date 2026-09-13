@@ -111,7 +111,7 @@ func run(cfg config) error {
 		return fmt.Errorf("search index: %w", err)
 	}
 
-	if err := writeAssets(cfg.outDir); err != nil {
+	if err := writeAssets(cfg.outDir, cfg.repoRoot); err != nil {
 		return err
 	}
 
@@ -148,8 +148,10 @@ func syncCSP(cfg config, rendered []build.RenderedPage) error {
 }
 
 // writeAssets emits the generated chroma stylesheet and copies the static
-// asset trees (assets/, public/) into the dist directory.
-func writeAssets(out string) error {
+// asset trees (assets/, public/) into the dist directory. Source paths are
+// resolved under repoRoot so the build does not depend on the working
+// directory.
+func writeAssets(out, repoRoot string) error {
 	chromaCSS, err := build.ChromaCSS()
 	if err != nil {
 		return fmt.Errorf("chroma css: %w", err)
@@ -164,9 +166,11 @@ func writeAssets(out string) error {
 		return fmt.Errorf("write chroma css: %w", err)
 	}
 
+	websiteRoot := filepath.Join(repoRoot, "website")
+
 	for _, tree := range []struct{ src, dst string }{
-		{"assets", filepath.Join(out, "assets")},
-		{"public", out},
+		{filepath.Join(websiteRoot, "assets"), filepath.Join(out, "assets")},
+		{filepath.Join(websiteRoot, "public"), out},
 	} {
 		if _, err := os.Stat(tree.src); err == nil {
 			if err := build.CopyTree(tree.src, tree.dst); err != nil {
