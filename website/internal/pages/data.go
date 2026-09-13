@@ -20,17 +20,6 @@ const (
 	PkgGoDevURL     = "https://pkg.go.dev/github.com/larsartmann/templ-components"
 )
 
-// Stats are the library facts shown in the hero metric strip. They are
-// derived from the actual codebase at build time (see internal/build/stats.go)
-// so the site can never drift from reality the way the hand-typed Astro
-// numbers did ("94 components / 102 icons / 37 enums / 9 packages").
-type Stats struct {
-	Components int // templ components across the published library packages
-	Icons      int // SVG icons in the icons module
-	Enums      int // closed-set enums shipping an IsValid() method
-	Modules    int // published Go modules in the library workspace
-}
-
 // Feature is a landing-page feature card.
 type Feature struct {
 	Icon  icons.Name
