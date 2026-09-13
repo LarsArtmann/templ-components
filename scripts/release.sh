@@ -359,11 +359,18 @@ fi
 # Drift-guard: version files must agree with utils.Version (CHANGELOG heading
 # AND FEATURES.md version). The full suite ran above; this surfaces a targeted
 # message on mismatch. Rollback is handled by the EXIT trap (release_cleanup),
-# so no ad-hoc git restore is needed here.
-if ! (cd utils && go test ./... -run 'TestVersionMatches(Changelog|Features)' -count=1 >/dev/null 2>&1); then
+# so no ad-hoc git restore is needed here. The captured output distinguishes a
+# real version drift from an unrelated build failure (v1.17.0 attempt 5 failed
+# here with no visible cause; never gate blind).
+DRIFT_GUARD_LOG="$(mktemp)"
+if ! (cd utils && go test ./... -run 'TestVersionMatches(Changelog|Features)' -count=1 >"$DRIFT_GUARD_LOG" 2>&1); then
 	echo "Error: version drift-guard failed. utils.Version, CHANGELOG heading, and FEATURES.md version must all agree." >&2
+	echo "--- drift-guard test output ---" >&2
+	cat "$DRIFT_GUARD_LOG" >&2
+	echo "------------------------------" >&2
 	exit 1
 fi
+rm -f "$DRIFT_GUARD_LOG"
 
 # 7b. Strip replace directives (remove-at-release strategy).
 #     Runs AFTER verification: go1.26.5 workspace mode still resolves require
