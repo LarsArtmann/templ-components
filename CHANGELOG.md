@@ -29,6 +29,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Convention linter v1** (`internal/contract/conventions_test.go`): an
+  AST sweep that machine-checks the three hand-enforced component
+  conventions — every `*Props` embeds `utils.BaseProps` (4 reasoned
+  exemptions), every IsValid enum is tested in its own package, and
+  lookup maps never regress to bare `map[string]` keys — plus an
+  IsValid-count ratchet (floor 58) and a Props-inventory coverage check
+  that cross-checks the manual `componentTypes()` list against the AST.
+  First run found 16 declared Props types missing from the interface
+  inventory (all chart components, CollapsibleSection, ExternalLink,
+  Footer, Minimal, the htmx pair, echarts pair) — all added.
 - **Render-determinism + orphan-golden guards.**
   `internal/contract.TestRenderDeterminism` renders 14 flagship variants
   (lookup maps, chart geometry, tables, forms) twice and byte-compares —

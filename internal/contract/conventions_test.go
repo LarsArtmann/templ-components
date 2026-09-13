@@ -19,11 +19,17 @@ var conventionPackages = []string{
 	"feedback", "forms", "htmx", "icons", "layout", "navigation",
 }
 
+// ratchetPackages adds utils/wire to the sweep for the IsValid ratchet —
+// the wire package carries 5 of the 58 IsValid enums (Transport, Method,
+// Event, ContentType, PatchMode) but no component Props.
+var ratchetPackages = append([]string{"utils/wire"}, conventionPackages...)
+
 // propsEmbedExemptions lists Props types that deliberately do NOT embed
 // utils.BaseProps. Every entry needs a reason; the list must shrink, not grow.
 var propsEmbedExemptions = map[string]string{
-	"layout.PageProps":          "page shell predates BaseProps; carries its own ID/Class/Attr surface (documented in layout package)",
-	"forms.FormFieldProps":       "shared sub-template wrapper (label + control chrome), not a component; composed INTO real components",
+	"layout.PageProps":               "page shell predates BaseProps; carries its own ID/Class/Attr surface (documented in layout package)",
+	"layout.MinimalProps":            "zero-dependency static/print shell; deliberately attribute-free (the Minimal use case), same family as PageProps",
+	"forms.FormFieldProps":           "shared sub-template wrapper (label + control chrome), not a component; composed INTO real components",
 	"feedback.SkeletonCardGridProps": "skeleton grid primitive renders no root attributes of its own; revisit if it grows a consumer-facing surface",
 }
 
@@ -31,7 +37,7 @@ var propsEmbedExemptions = map[string]string{
 // *_templ.go files are INCLUDED deliberately: they restate the .templ type
 // declarations verbatim as valid Go, so the sweep covers what templ authors
 // write without needing a templ parser.
-func packageSources(t *testing.T, pkgDir string) *ast.Package {
+func packageSources(t *testing.T, pkgDir string) map[string]*ast.File {
 	t.Helper()
 
 	fset := token.NewFileSet()
@@ -41,7 +47,7 @@ func packageSources(t *testing.T, pkgDir string) *ast.Package {
 		t.Fatalf("read %s: %v — the convention linter owns its fixture (fail loud, never skip)", pkgDir, err)
 	}
 
-	pkg := &ast.Package{Name: filepath.Base(pkgDir), Files: map[string]*ast.File{}}
+	files := map[string]*ast.File{}
 
 	for _, entry := range entries {
 		name := entry.Name()
@@ -54,18 +60,18 @@ func packageSources(t *testing.T, pkgDir string) *ast.Package {
 			t.Fatalf("parse %s/%s: %v", pkgDir, name, parseErr)
 		}
 
-		pkg.Files[name] = file
+		files[name] = file
 	}
 
-	return pkg
+	return files
 }
 
 // declaredProps returns "<pkg>.<Name>" for every `type XProps struct` in the
 // package, paired with whether the struct embeds utils.BaseProps.
-func declaredProps(pkg *ast.Package, pkgPath string) map[string]bool {
+func declaredProps(files map[string]*ast.File, pkgPath string) map[string]bool {
 	props := map[string]bool{}
 
-	for _, file := range pkg.Files {
+	for _, file := range files {
 		ast.Inspect(file, func(node ast.Node) bool {
 			typeSpec, ok := node.(*ast.TypeSpec)
 			if !ok || !strings.HasSuffix(typeSpec.Name.Name, "Props") {
@@ -73,39 +79,41 @@ func declaredProps(pkg *ast.Package, pkgPath string) map[string]bool {
 			}
 
 			structType, isStruct := typeSpec.Type.(*ast.StructType)
-			if !isStruct {
-				return true
-			}
 
 			// Unexported *Props structs are internal sub-template plumbing, not
 			// the public component contract — out of scope.
-			if !typeSpec.Name.IsExported() {
-				return true
+			if isStruct && typeSpec.Name.IsExported() {
+				props[pkgPath+"."+typeSpec.Name.Name] = structEmbedsBaseProps(structType)
 			}
-
-			embedsBase := false
-
-			for _, field := range structType.Fields.List {
-				ident, isIdent := field.Type.(*ast.Ident)
-				if isIdent && ident.Name == "BaseProps" && len(field.Names) == 0 {
-					embedsBase = true
-				}
-
-				selector, isSelector := field.Type.(*ast.SelectorExpr)
-				if isSelector && len(field.Names) == 0 {
-					if x, ok := selector.X.(*ast.Ident); ok && x.Name == "utils" && selector.Sel.Name == "BaseProps" {
-						embedsBase = true
-					}
-				}
-			}
-
-			props[pkgPath+"."+typeSpec.Name.Name] = embedsBase
 
 			return true
 		})
 	}
 
 	return props
+}
+
+// structEmbedsBaseProps reports whether a struct embeds utils.BaseProps (as a
+// bare ident or the qualified utils.BaseProps selector).
+func structEmbedsBaseProps(structType *ast.StructType) bool {
+	for _, field := range structType.Fields.List {
+		if len(field.Names) != 0 {
+			continue // named field, not an embed
+		}
+
+		switch fieldType := field.Type.(type) {
+		case *ast.Ident:
+			if fieldType.Name == "BaseProps" {
+				return true
+			}
+		case *ast.SelectorExpr:
+			if x, ok := fieldType.X.(*ast.Ident); ok && x.Name == "utils" && fieldType.Sel.Name == "BaseProps" {
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 // TestPropsEmbedBaseProps is convention check 1: every *Props struct in the
@@ -138,6 +146,17 @@ func TestPropsEmbedBaseProps(t *testing.T) {
 	}
 }
 
+// propsInventoryExemptions lists declared Props types that are
+// deliberately NOT in componentTypes() because they do not embed BaseProps
+// (the interface inventory only carries embedders). Mirrors
+// propsEmbedExemptions plus any type the old interface test cannot take.
+var propsInventoryExemptions = map[string]bool{
+	"layout.PageProps":               true,
+	"forms.FormFieldProps":           true,
+	"feedback.SkeletonCardGridProps": true,
+	"layout.MinimalProps":            true,
+}
+
 // TestPropsInventoryCoversDeclarations cross-checks the manual componentTypes()
 // inventory against the AST: a Props type missing from the inventory is the
 // first step of a ghost system (the interface contract silently stops
@@ -153,23 +172,25 @@ func TestPropsInventoryCoversDeclarations(t *testing.T) {
 	for _, pkg := range conventionPackages {
 		sources := packageSources(t, filepath.Join("..", "..", pkg))
 
-		for prop := range declaredProps(sources, pkg) {
-			if !inventory[prop] {
-				t.Errorf(
-					"%s is declared but missing from componentTypes() in component_props_test.go — add it so the ComponentProps interface contract covers it",
-					prop,
-				)
+		for prop := range declaredProps(sources, filepath.Base(pkg)) {
+			if inventory[prop] || propsInventoryExemptions[prop] {
+				continue
 			}
+
+			t.Errorf(
+				"%s is declared but missing from componentTypes() in component_props_test.go — add it so the ComponentProps interface contract covers it",
+				prop,
+			)
 		}
 	}
 }
 
 // enumWithIsValid returns "<pkg>.<Type>" for every closed-set enum that has
 // an IsValid function (repo convention: `func XxxIsValid(v Xxx) bool`).
-func enumWithIsValid(pkg *ast.Package, pkgPath string) map[string]bool {
+func enumWithIsValid(files map[string]*ast.File, pkgPath string) map[string]bool {
 	enums := map[string]bool{}
 
-	for _, file := range pkg.Files {
+	for _, file := range files {
 		ast.Inspect(file, func(node ast.Node) bool {
 			funcDecl, ok := node.(*ast.FuncDecl)
 			if !ok || funcDecl.Recv != nil {
@@ -182,11 +203,9 @@ func enumWithIsValid(pkg *ast.Package, pkgPath string) map[string]bool {
 			}
 
 			enumName := strings.TrimSuffix(name, "IsValid")
-			if enumName == "" {
-				return true
+			if enumName != "" {
+				enums[pkgPath+"."+enumName] = true
 			}
-
-			enums[pkgPath+"."+enumName] = true
 
 			return true
 		})
@@ -205,13 +224,18 @@ func TestEnumIsValidRatchet(t *testing.T) {
 	const floor = 58 // README "with IsValid()" count, guarded by TestDocsCountDrift
 
 	count := 0
-	for _, pkg := range conventionPackages {
+
+	for _, pkg := range ratchetPackages {
 		sources := packageSources(t, filepath.Join("..", "..", pkg))
-		count += len(enumWithIsValid(sources, pkg))
+		count += len(enumWithIsValid(sources, filepath.Base(pkg)))
 	}
 
 	if count < floor {
-		t.Errorf("IsValid enum count = %d, floor = %d — an IsValid method was removed; removals are breaking changes (update README + this floor together, deliberately)", count, floor)
+		t.Errorf(
+			"IsValid enum count = %d, floor = %d — an IsValid method was removed; removals are breaking changes (update README + this floor together, deliberately)",
+			count,
+			floor,
+		)
 	}
 }
 
@@ -224,11 +248,13 @@ func TestIsValidMethodsAreTested(t *testing.T) {
 	for _, pkg := range conventionPackages {
 		pkgDir := filepath.Join("..", "..", pkg)
 		sources := packageSources(t, pkgDir)
+
 		if len(enumWithIsValid(sources, pkg)) == 0 {
 			continue
 		}
 
 		testReferences := packageTestReferences(t, pkgDir)
+
 		if !testReferences {
 			t.Errorf(
 				"%s declares IsValid methods but no test file references IsValid — the repo rule is IsValid + test in the same commit (AGENTS.md \"no IsValid without a test\")",
@@ -272,68 +298,112 @@ func TestLookupMapsUseTypedEnumKeys(t *testing.T) {
 	for _, pkg := range conventionPackages {
 		pkgDir := filepath.Join("..", "..", pkg)
 		sources := packageSources(t, pkgDir)
+		enumNames := packageTypeNames(sources)
 
-		enumNames := map[string]bool{}
-		for _, file := range sources.Files {
-			ast.Inspect(file, func(node ast.Node) bool {
-				if typeSpec, ok := node.(*ast.TypeSpec); ok {
-					enumNames[typeSpec.Name.Name] = true
-				}
-
-				return true
-			})
-		}
-
-		for _, file := range sources.Files {
-			ast.Inspect(file, func(node ast.Node) bool {
-				genDecl, ok := node.(*ast.GenDecl)
-				if !ok {
-					return true
-				}
-
-				for _, spec := range genDecl.Specs {
-					valueSpec, isValue := spec.(*ast.ValueSpec)
-					if !isValue || len(valueSpec.Names) == 0 || valueSpec.Values == nil {
-						continue
-					}
-
-					mapLit, isMap := valueSpec.Values[0].(*ast.CompositeLit)
-					if !isMap {
-						continue
-					}
-
-					mapType, isMapType := mapLit.Type.(*ast.MapType)
-					if !isMapType {
-						continue
-					}
-
-					keyIdent, keyIsIdent := mapType.Key.(*ast.Ident)
-					if !keyIsIdent || keyIdent.Name != "string" {
-						continue
-					}
-
-					for _, name := range valueSpec.Names {
-						for enumName := range enumNames {
-							if enumName == "string" {
-								continue
-							}
-
-							if strings.Contains(strings.ToLower(name.Name), strings.ToLower(enumName)) &&
-								strings.HasSuffix(strings.ToLower(name.Name), "map") {
-								t.Errorf(
-									"%s: %s is keyed by bare string while its name references the enum %s — use map[%s]… (typed enum keys, utils.Lookup for access)",
-									pkg,
-									name.Name,
-									enumName,
-									enumName,
-								)
-							}
-						}
-					}
-				}
-
-				return true
-			})
+		for _, file := range sources {
+			for _, flag := range stringKeyedMapsReferencingEnums(file, enumNames) {
+				t.Errorf(
+					"%s: %s is keyed by bare string while its name references the enum %s — use map[%s]… (typed enum keys, utils.Lookup for access)",
+					pkg,
+					flag.mapName,
+					flag.enumName,
+					flag.enumName,
+				)
+			}
 		}
 	}
+}
+
+// typedMapFlag names a lookup map keyed by bare string that references a
+// same-package enum type in its own name.
+type typedMapFlag struct {
+	mapName  string
+	enumName string
+}
+
+// packageTypeNames collects every declared type name of a package.
+func packageTypeNames(files map[string]*ast.File) map[string]bool {
+	names := map[string]bool{}
+
+	for _, file := range files {
+		ast.Inspect(file, func(node ast.Node) bool {
+			if typeSpec, ok := node.(*ast.TypeSpec); ok {
+				names[typeSpec.Name.Name] = true
+			}
+
+			return true
+		})
+	}
+
+	return names
+}
+
+// stringKeyedMapsReferencingEnums returns one flag per package-level map
+// composite whose key type is bare `string` and whose name both ends in
+// "map" and contains a declared enum type name.
+func stringKeyedMapsReferencingEnums(file *ast.File, enumNames map[string]bool) []typedMapFlag {
+	var flags []typedMapFlag
+
+	ast.Inspect(file, func(node ast.Node) bool {
+		genDecl, ok := node.(*ast.GenDecl)
+		if !ok {
+			return true
+		}
+
+		for _, spec := range genDecl.Specs {
+			valueSpec, isValue := spec.(*ast.ValueSpec)
+			if !isValue || valueSpec.Values == nil {
+				continue
+			}
+
+			if !mapHasKeyString(valueSpec.Values[0]) {
+				continue
+			}
+
+			flags = append(flags, namesReferencingEnums(valueSpec.Names, enumNames)...)
+		}
+
+		return true
+	})
+
+	return flags
+}
+
+// mapHasKeyString reports whether the expression is a map composite keyed
+// by the bare `string` type.
+func mapHasKeyString(expr ast.Expr) bool {
+	mapLit, isMap := expr.(*ast.CompositeLit)
+	if !isMap {
+		return false
+	}
+
+	mapType, isMapType := mapLit.Type.(*ast.MapType)
+	if !isMapType {
+		return false
+	}
+
+	keyIdent, keyIsIdent := mapType.Key.(*ast.Ident)
+
+	return keyIsIdent && keyIdent.Name == "string"
+}
+
+// namesReferencingEnums flags identifiers ending in "map" that contain a
+// declared enum type name.
+func namesReferencingEnums(names []*ast.Ident, enumNames map[string]bool) []typedMapFlag {
+	var flags []typedMapFlag
+
+	for _, name := range names {
+		lower := strings.ToLower(name.Name)
+		if !strings.HasSuffix(lower, "map") {
+			continue
+		}
+
+		for enumName := range enumNames {
+			if enumName != "string" && strings.Contains(lower, strings.ToLower(enumName)) {
+				flags = append(flags, typedMapFlag{mapName: name.Name, enumName: enumName})
+			}
+		}
+	}
+
+	return flags
 }

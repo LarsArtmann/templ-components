@@ -149,8 +149,6 @@ func componentTypes() []any {
 		display.CollapsibleSectionProps{},
 
 		// feedback/layout/navigation/htmx additions (2026-09-13)
-		feedback.SkeletonCardGridProps{},
-		layout.MinimalProps{},
 		navigation.FooterProps{},
 		htmx.PolledRegionProps{},
 		htmx.ViewTransitionsProps{},
