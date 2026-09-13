@@ -12,15 +12,15 @@
 
 ## a) FULLY DONE
 
-1. **Review of `c6df43c`** (`fix(errorpage): map FamilyOrchestration to 500 in the status map`). Verdict: correct but incomplete. The fix itself (explicit `familyStatusCodeMap[FamilyOrchestration] = 500` entry + end-to-end test asserting the map entry exists rather than relying on the unknown-family fallback) is exactly right.
-2. **Sibling bug fixed in `af2f565`:** `htmx.GlobalErrorHandling`'s JS `tcFamilyToastMap` was missing `'orchestration'` — it only produced an `'error'` toast by accident via the `|| 'error'` fallback. Same bug class, same family, different module. Now mapped explicitly (`htmx/error_handling.templ:68`).
-3. **Regression guard added:** `TestGlobalErrorHandlingFamilyToastMap` (`htmx/regression_test.go`) asserts all six families appear in the rendered JS output — the htmx map can no longer silently drift.
-4. **Stale doc corrected:** `errorpage/styles.go:197` said "five defined constants" while six exist (the count was never bumped when `FamilyOrchestration` was added).
-5. **CHANGELOG `[Unreleased]` warmed** per the repo rule ("must be warm at all times") — one entry covering both map gaps and the doc fix.
-6. **Goldens updated** (`htmx/testdata/global_error_handling*.golden`, 2 files) via `-update` flag after confirming the failure was exactly the expected diff.
-7. **Full verification:** workspace build, `go test ./...` (all modules via go.work), per-module `GOWORK=off` isolation tests for all 6 sub-modules, golangci-lint 0 findings on root/errorpage/htmx.
-8. **`.gitignore` BuildFlow gotcha checked** after commit (the hook re-appends `*_templ.go`, hiding new generated files) — no re-added line present; unignore pattern intact.
-9. **templ regeneration discipline:** final regen produced a 3-file-only diff (exactly the intended files), committed generated code alongside source per the library rule.
+1. ~~**Review of `c6df43c`** (`fix(errorpage): map FamilyOrchestration to 500 in the status map`). Verdict: correct but incomplete. The fix itself (explicit `familyStatusCodeMap[FamilyOrchestration] = 500` entry + end-to-end test asserting the map entry exists rather than relying on the unknown-family fallback) is exactly right.~~ done at `c6df43c`
+2. ~~**Sibling bug fixed in `af2f565`:** `htmx.GlobalErrorHandling`'s JS `tcFamilyToastMap` was missing `'orchestration'` — it only produced an `'error'` toast by accident via the `|| 'error'` fallback. Same bug class, same family, different module. Now mapped explicitly (`htmx/error_handling.templ:68`).~~ done at `af2f565`
+3. ~~**Regression guard added:** `TestGlobalErrorHandlingFamilyToastMap` (`htmx/regression_test.go`) asserts all six families appear in the rendered JS output — the htmx map can no longer silently drift.~~ done at `62642d7e`
+4. ~~**Stale doc corrected:** `errorpage/styles.go:197` said "five defined constants" while six exist (the count was never bumped when `FamilyOrchestration` was added).~~ done at `62642d7e`
+5. ~~**CHANGELOG `[Unreleased]` warmed** per the repo rule ("must be warm at all times") — one entry covering both map gaps and the doc fix.~~ done at `62642d7e`
+6. ~~**Goldens updated** (`htmx/testdata/global_error_handling*.golden`, 2 files) via `-update` flag after confirming the failure was exactly the expected diff.~~ done at `62642d7e`
+7. ~~**Full verification:** workspace build, `go test ./...` (all modules via go.work), per-module `GOWORK=off` isolation tests for all 6 sub-modules, golangci-lint 0 findings on root/errorpage/htmx.~~ done at `62642d7e`
+8. ~~**`.gitignore` BuildFlow gotcha checked** after commit (the hook re-appends `*_templ.go`, hiding new generated files) — no re-added line present; unignore pattern intact.~~ done at `62642d7e`
+9. ~~**templ regeneration discipline:** final regen produced a 3-file-only diff (exactly the intended files), committed generated code alongside source per the library rule.~~ done at `62642d7e`
 
 ## b) PARTIALLY DONE
 
@@ -67,7 +67,7 @@ Nothing catastrophic shipped. Honest list of session mistakes, all self-caught:
 8. Add `vulnix`/`go-licenses` to the devShell or exclude the steps (failures #3-4)
 9. Fix BuildFlow's golangci output parsing ("0 issues." ≠ warning finding)
 10. Fix BuildFlow's `.gitignore` re-append of `*_templ.go` (documented in AGENTS.md, lives in `larsartmann/buildflow`)
-11. Address `AGENTS.md` 384 > 377 lines error from go-structure-linter (excess: 7)
+11. ~~Address `AGENTS.md` 384 > 377 lines error from go-structure-linter (excess: 7)~~ done (AGENTS.md line budget respected)
 12. Resolve the gopls `stdversion` warnings (`jsontext.NewEncoder`/`json.MarshalEncode` "requires go1.27" under go1.26 + GOEXPERIMENT=jsonv2) — pre-existing, in `errorpage/handler.go` + tests
 13. Sweep remaining docs for 5-family prose (naming-review snapshot is historical; check living docs)
 14. Add orchestration-family golden/visual coverage for `ErrorPage` rendering (goldens exist for handler tests; confirm the family variant is swept)
@@ -78,7 +78,7 @@ Nothing catastrophic shipped. Honest list of session mistakes, all self-caught:
 19. Add the "fallback-masking" anti-pattern to AGENTS.md code conventions (assert map presence, not just output, when a fallback exists)
 20. Demote/handle BuildFlow's `go-mod-ignore-check` "mixed direct/indirect requires" warnings (11 findings across modules — replace-directive layout makes this expected?)
 21. Investigate why codespell/shellcheck/eslint resolve to "not found" inside `nix develop` subshells in the hook while other nix-resolved tools work
-22. Update the templ-components SKILL.md errorpage section if the six-family count is stated anywhere (drift-guard `TestSkillComponentCount` is informational only)
+22. ~~Update the templ-components SKILL.md errorpage section if the six-family count is stated anywhere (drift-guard `TestSkillComponentCount` is informational only)~~ done (skill/SKILL.md states 6 families/constructors)
 23. Add `FromError` orchestration Why/Fix default coverage if `DefaultWhy()`/`DefaultFix()` differ per family in go-error-family (currently only family propagation is tested end-to-end)
 24. Consider marking the branch ready + squash-merge vs rebase-merge decision at PR time (2 commits, one reviewing/fixing the other's blind spot — the pair reads well together, keep both)
 

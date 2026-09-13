@@ -20,7 +20,7 @@ import `go-datastar`. The progression:
    transitively pull `go-sse` + `go-error-family`.
 5. **User action:** Lars created `static/` as a dedicated Go module
    (`static/go.mod` with zero `require` directives) and tagged `static/v0.1.0`.
-6. **Execution:** Wired it into templ-components.
+6. ~~**Execution:** Wired it into templ-components.~~ done at `5b737f8f`
 
 ---
 
@@ -28,15 +28,15 @@ import `go-datastar`. The progression:
 
 | # | Task                                                                                              | Verification                                 |
 | - | ------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| 1 | Added `github.com/larsartmann/go-datastar/static v0.1.0` to `go.mod`                              | `go mod tidy` clean, zero transitive deps    |
-| 2 | `DatastarVersion1_0_2` derived from `static.Version`                                              | `datastar/version.go` — compile-time linkage |
-| 3 | Updated `doc.go` — recommends `go-datastar` (not upstream), documents self-hosting via `static`   | Build + test pass                            |
-| 4 | Updated `live_region.go` + `.templ` comments — go-datastar API examples                           | Regenerated, golden tests pass               |
-| 5 | Updated `docs/recipes/datastar-integration.md` — self-hosting section, backend handler, links     | All 3 edits applied                          |
-| 6 | Updated `docs/adr/0030` — consequences section reflects new dependency                            | 2 edits applied                              |
-| 7 | Fixed compilation bug in `doc.go` self-hosting example (`http.FileServerFS` → `http.HandlerFunc`) | Build passes                                 |
-| 8 | Regenerated all 107 `*_templ.go` files                                                            | `templ generate ./...` clean                 |
-| 9 | Ran full test + lint on `datastar/` package                                                       | All 20+ tests pass, 0 lint issues            |
+| ~~1~~ | ~~Added `github.com/larsartmann/go-datastar/static v0.1.0` to `go.mod`~~ done at `5b737f8f` | ~~`go mod tidy` clean, zero transitive deps~~ |
+| ~~2~~ | ~~`DatastarVersion1_0_2` derived from `static.Version`~~ done at `5b737f8f` | ~~`datastar/version.go` — compile-time linkage~~ |
+| ~~3~~ | ~~Updated `doc.go` — recommends `go-datastar` (not upstream), documents self-hosting via `static`~~ done at `5b737f8f` | ~~Build + test pass~~ |
+| ~~4~~ | ~~Updated `live_region.go` + `.templ` comments — go-datastar API examples~~ done at `5b737f8f` | ~~Regenerated, golden tests pass~~ |
+| ~~5~~ | ~~Updated `docs/recipes/datastar-integration.md` — self-hosting section, backend handler, links~~ done at `5b737f8f` | ~~All 3 edits applied~~ |
+| ~~6~~ | ~~Updated `docs/adr/0030` — consequences section reflects new dependency~~ done at `5b737f8f` | ~~2 edits applied~~ |
+| ~~7~~ | ~~Fixed compilation bug in `doc.go` self-hosting example (`http.FileServerFS` → `http.HandlerFunc`)~~ done at `5b737f8f` | ~~Build passes~~ |
+| ~~8~~ | ~~Regenerated all 107 `*_templ.go` files~~ done at `5b737f8f` | ~~`templ generate ./...` clean~~ |
+| ~~9~~ | ~~Ran full test + lint on `datastar/` package~~ done at `5b737f8f` | ~~All 20+ tests pass, 0 lint issues~~ |
 
 ### Dependency graph result
 
@@ -55,7 +55,7 @@ literally `module ... \n go 1.26.5` with nothing else.
 
 | # | Task                             | What's missing                                                                                                                                                                                                       |
 | - | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 | **AGENTS.md update**             | The import graph line (line 119) says `datastar → utils/cdn,utils` — needs `+ go-datastar/static`. The module structure table (line 17) describes datastar as "does NOT import SDK" — should mention the static dep. |
+| ~~1~~ | ~~**AGENTS.md update**~~ done — AGENTS.md module table + import graph cite go-datastar/static | ~~The import graph line (line 119) says `datastar → utils/cdn,utils` — needs `+ go-datastar/static`. The module structure table (line 17) describes datastar as "does NOT import SDK" — should mention the static dep.~~ |
 | 2 | **Research doc cleanup**         | `docs/research/datastar-integration-analysis.md` still references `starfederation/datastar-go` in 3 places (lines 194, 446, 480). These are historical analysis, not living docs, so lower priority.                 |
 | 3 | **Full test suite verification** | Only `datastar/` package verified. `layout/` tests fail due to **pre-existing** working-tree changes to `base.templ` (unrelated to this session). Other packages not re-run.                                         |
 
@@ -65,11 +65,11 @@ literally `module ... \n go 1.26.5` with nothing else.
 
 | # | Task                                                                                                                                                      |
 | - | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 | **CHANGELOG entry** for the `go-datastar/static` integration                                                                                              |
-| 2 | **Drift-guard test** — a test asserting `string(DatastarVersion1_0_2) == static.Version` to catch version desynchronization at CI time                    |
+| ~~1~~ | ~~**CHANGELOG entry** for the `go-datastar/static` integration~~ done — CHANGELOG.md go-datastar/static entry |
+| ~~2~~ | ~~**Drift-guard test** — a test asserting `string(DatastarVersion1_0_2) == static.Version` to catch version desynchronization at CI time~~ done — datastar/version_test.go exists (TestDatastarVersionMatchesStatic) |
 | 3 | **FEATURES.md** — check if datastar section mentions the SDK recommendation                                                                               |
-| 4 | **Demo** — no Datastar demo endpoint exists yet (Phase 3 per the research doc roadmap)                                                                    |
-| 5 | **Auto-update GitHub Action** — go-datastar/static should auto-bump on upstream Datastar releases (belongs in that repo, not this one)                    |
+| ~~4~~ | ~~**Demo** — no Datastar demo endpoint exists yet (Phase 3 per the research doc roadmap)~~ done — examples/demo/datastar_demo.templ + LiveRegion demo endpoints |
+| ~~5~~ | ~~**Auto-update GitHub Action** — go-datastar/static should auto-bump on upstream Datastar releases (belongs in that repo, not this one)~~ **Won't implement — belongs in go-datastar repo, not this one (per report).** |
 | 6 | **Pre-existing layout failures** — `layout/base.templ` working-tree changes cause "write inline htmx script" errors in tests (not caused by this session) |
 
 ---
@@ -138,10 +138,10 @@ real code. I should have mentally compiled it or written a scratch test.
 
 ### Immediate (this session's loose ends)
 
-1. Update `AGENTS.md` import graph line to include `go-datastar/static`
-2. Update `AGENTS.md` module structure table datastar description
-3. Add drift-guard test: `TestDatastarVersionMatchesStatic`
-4. Add CHANGELOG `[Unreleased]` entry
+1. ~~Update `AGENTS.md` import graph line to include `go-datastar/static`~~ done (AGENTS.md import graph cites go-datastar/static)
+2. ~~Update `AGENTS.md` module structure table datastar description~~ done (AGENTS.md module table)
+3. ~~Add drift-guard test: `TestDatastarVersionMatchesStatic`~~ done (datastar/version_test.go exists)
+4. ~~Add CHANGELOG `[Unreleased]` entry~~ done (CHANGELOG.md go-datastar/static entry)
 5. Check FEATURES.md datastar section for stale SDK references
 6. Run `go test ./...` (excluding pre-existing layout failures) to verify no regressions
 7. Verify `go.sum` has exactly 2 new lines (static module hash)
@@ -158,14 +158,14 @@ real code. I should have mentally compiled it or written a scratch test.
 12. **layout/base.templ test failures** — `TestBaseUserGetsCompleteHTMLPage` and friends fail with "write inline htmx script: %!w(<nil>)". The working tree has uncommitted changes to `layout/base.templ`, `layout/embed.go`, `layout/static/` that look like an in-progress HTMX embedding refactor. These need investigation.
 13. **`.github/workflows/ci.yaml` modified** in working tree — verify this doesn't conflict
 14. **`scripts/release.sh` modified** in working tree — verify
-15. **`cmd/tc/_sources/` files modified** — demo source templates changed
+15. ~~**`cmd/tc/_sources/` files modified** — demo source templates changed~~ done (cmd/tc/_sources no longer exists)
 16. **Multiple feedback/display test files modified** in working tree — unclear if intentional
 
 ### go-datastar/static improvements (belong in that repo)
 
-17. Add GitHub Action: auto-bump datastar.js on upstream release
-18. Add SRI hash computation (consumers who want integrity)
-19. Consider `ScriptHandler()` in static package (currently in parent go-datastar)
+17. ~~Add GitHub Action: auto-bump datastar.js on upstream release~~ **Won't implement — belongs in go-datastar/static repo (per report).**
+18. ~~Add SRI hash computation (consumers who want integrity)~~ **Won't implement — belongs in go-datastar/static repo (per report).**
+19. ~~Consider `ScriptHandler()` in static package (currently in parent go-datastar)~~ **Won't implement — belongs in go-datastar/static repo (per report).**
 
 ### Datastar package feature roadmap (from research doc)
 
@@ -173,7 +173,7 @@ real code. I should have mentally compiled it or written a scratch test.
 21. Datastar-native `TagsInput` (signal-driven)
 22. Datastar-native `MultiStepForm` (step state via signals)
 23. `LiveActivityFeed` — SSE-powered infinite scroll feed
-24. Demo endpoint: mock SSE stream for `LiveRegion` in `examples/demo`
+24. ~~Demo endpoint: mock SSE stream for `LiveRegion` in `examples/demo`~~ done (examples/demo/datastar_demo.templ LiveRegion demo endpoint)
 25. Typed `data-*` attribute builders (`OnClick`, `Text`, `Bind`, `Show`, `Signals`)
 
 ### Documentation
@@ -185,22 +185,22 @@ real code. I should have mentally compiled it or written a scratch test.
 
 ### Testing hardening
 
-30. Add contract test for `datastar.SDKScript` version/CDN/Src interactions
-31. Add fuzz test for `actionExpr` (URL injection vectors)
-32. Add CSP nonce integration test for `SDKScript`
+30. ~~Add contract test for `datastar.SDKScript` version/CDN/Src interactions~~ done (datastar/sdk_script_test.go (TestSDKScriptNonce, TestSDKScriptCDNWithNonce))
+31. ~~Add fuzz test for `actionExpr` (URL injection vectors)~~ done (FuzzActionExpr in datastar/fuzz_test.go)
+32. ~~Add CSP nonce integration test for `SDKScript`~~ done (TestSDKScriptCDNWithNonce in datastar/sdk_script_test.go)
 33. Benchmark `datastar.SDKScript` rendering
 
 ### Cross-cutting
 
 34. Verify `nix run .#verify` passes with the new dependency
 35. Run `nix fmt` to ensure go.sum/go.mod formatting
-36. Check Dockerfile build works with the new module
+36. ~~Check Dockerfile build works with the new module~~ done (examples/demo/Dockerfile copies all sub-module go.mods)
 37. Verify `visualtest` module still resolves (separate go.mod)
 38. Consider whether `charts/echarts` could benefit from the same static-module pattern for echarts.js
 
 ### Architectural considerations
 
-39. Should the `datastar` package become its own Go sub-module (like `charts/echarts`)? The `go-datastar/static` dep makes it slightly heavier than the other root packages.
+39. ~~Should the `datastar` package become its own Go sub-module (like `charts/echarts`)? The `go-datastar/static` dep makes it slightly heavier than the other root packages.~~ done (datastar/go.mod exists)
 40. Should `htmx` follow the same pattern — extract HTMX version pinning to a `go-htmx/static` module?
 41. Consider a shared `internal/cdn` test helper for version-pinned CDN packages
 42. Document the "CDN-first, static-optional" pattern as a reusable ADR

@@ -8,7 +8,7 @@
 
 ## a) FULLY DONE
 
-### 1. `TestCustomCSSUtilities` drift-guard scanner (`utils/custom_css_test.go`)
+### 1. ~~`TestCustomCSSUtilities` drift-guard scanner (`utils/custom_css_test.go`)~~ done at `7935138`
 
 The highest-priority gap from the previous session: the `.tc-fluid-*` CSS classes had no test guarding their existence. If someone deleted the CSS block, nothing would fail.
 
@@ -24,7 +24,7 @@ The highest-priority gap from the previous session: the `.tc-fluid-*` CSS classe
 
 **Commit:** `7935138` (auto-committed by BuildFlow daemon)
 
-### 2. ADR-0033 cross-reference in `docs/research/what-we-are-missing.md`
+### 2. ~~ADR-0033 cross-reference in `docs/research/what-we-are-missing.md`~~ done at `0d90f3e0`
 
 **What changed:** §2.4 "Declarative Shadow DOM" — replaced the old "Better suited for a scoped components opt-in mode in v2.0+" language with:
 
@@ -33,7 +33,7 @@ The highest-priority gap from the previous session: the `.tc-fluid-*` CSS classe
 - A blockquote noting the overturn: "This section previously said... That conclusion has been overturned."
 - Priority table row struck through: `~~Declarative Shadow DOM opt-in~~`
 
-### 3. `docs/DOMAIN_LANGUAGE.md` glossary entries
+### 3. ~~`docs/DOMAIN_LANGUAGE.md` glossary entries~~ done at `0d90f3e0`
 
 Added 3 rows to the "Platform terms" table:
 
@@ -43,7 +43,7 @@ Added 3 rows to the "Platform terms" table:
 | **Container Query Units** | CSS length units (`cqi`, `cqw`, `cqh`, `cqmin`, `cqmax`) resolving relative to nearest `@container` ancestor.  |
 | **Web Components**        | Custom Elements + Shadow DOM + HTML Templates. **Permanently rejected** (ADR-0033).                            |
 
-### 4. Strategy doc relocation (`docs/research/` → `docs/`)
+### 4. ~~Strategy doc relocation (`docs/research/` → `docs/`)~~ done at `0d90f3e0`
 
 The container-query leveraging strategy is a living reference, not point-in-time research. Moved via `git mv` (history preserved).
 
@@ -59,7 +59,7 @@ The container-query leveraging strategy is a living reference, not point-in-time
 - `../adr/` → `adr/` (3 links)
 - `../recipes/` → `recipes/` (3 links)
 
-### 5. Recipe cross-link (`docs/recipes/container-queries.md`)
+### 5. ~~Recipe cross-link (`docs/recipes/container-queries.md`)~~ done at `0d90f3e0`
 
 Added a prominent "See also" line immediately after the intro blockquote:
 
@@ -67,7 +67,7 @@ Added a prominent "See also" line immediately after the intro blockquote:
 
 Previously the strategy doc was only linked at the bottom of the recipe.
 
-### 6. SKILL.md updated (consumer guide + author guide + compliance table)
+### 6. ~~SKILL.md updated (consumer guide + author guide + compliance table)~~ done at `7334e2b`
 
 Three targeted updates to `~/.config/crush/skills/templ-components/SKILL.md` (and the repo's `skill/SKILL.md` mirror):
 
@@ -84,7 +84,7 @@ Added `TestCustomCSSUtilities` row to the compliance test catalog.
 
 **Commit:** `7334e2b` (auto-committed by BuildFlow daemon)
 
-### 7. CHANGELOG entry
+### 7. ~~CHANGELOG entry~~ done at `0d90f3e0`
 
 Added to `[Unreleased]` → Added:
 
@@ -193,7 +193,7 @@ I manually grepped `examples/demo/static/app.css` for `tc-fluid` and confirmed t
 
 ### Testing infrastructure
 
-16. **Add a golden test for the demo's fluid typography section** — `examples/demo` currently has `[no test files]`; add at least one snapshot test.
+16. ~~**Add a golden test for the demo's fluid typography section** — `examples/demo` currently has `[no test files]`; add at least one snapshot test.~~ done (examples/demo has test files (prerender_diff_test.go, demo_counts_test.go))
 17. **Extend visual test framework with `ContainerWidth` option** — allows rendering a component inside a fixed-width parent for container-query visual tests.
 18. **Add a visual golden for `.tc-fluid-h2` at two container widths** — assert the font size actually changes.
 19. **Add a fuzz test for `.tc-fluid-*` clamp formulas** — verify `clamp(min, expr, max)` never inverts (min > max) for the shipped constants.
@@ -203,7 +203,7 @@ I manually grepped `examples/demo/static/app.css` for `tc-fluid` and confirmed t
 
 21. **Add `docs/container-query-strategy.md` to FEATURES.md** — mention it as a design reference.
 22. **Update `docs/tailwind-v4-adoption-guide.md`** — mention `.tc-fluid-*` as part of the custom CSS layer.
-23. **Add fluid typography to FEATURES.md "Modern Web Standards" table** — currently lists container queries, not `cqi` units specifically.
+23. ~~**Add fluid typography to FEATURES.md "Modern Web Standards" table** — currently lists container queries, not `cqi` units specifically.~~ done (FEATURES.md documents cqi + .tc-fluid-*)
 24. **Add a `@container` + HTMX interaction note** — document that `cqi` recalculates when HTMX swaps content into a container.
 25. **Document `@container` + `@theme` interaction** — how fluid typography interacts with consumer theme overrides.
 
@@ -225,7 +225,7 @@ I manually grepped `examples/demo/static/app.css` for `tc-fluid` and confirmed t
 
 ### Code quality
 
-36. **Run `TestCustomCSSUtilities` with `-race`** — verify no concurrent map access in the scanner.
+36. ~~**Run `TestCustomCSSUtilities` with `-race`** — verify no concurrent map access in the scanner.~~ done (CI runs per-module go test -race (.github/workflows/ci.yaml))
 37. **Add benchmarks for the CSS scanner** — ensure it stays fast as the library grows.
 38. **Lint the `.tc-fluid-*` scale for consistency** — verify the cqi coefficients are monotonically decreasing (display: 5cqi, h1: 4cqi, h2: 3.5cqi, h3: 2.5cqi, h4: 2cqi, lead: 1.75cqi).
 39. **Consider a `tc-fluid-*` Go helper** — `utils.FluidClass(size string)` for type safety (may be over-engineering).

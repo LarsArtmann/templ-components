@@ -19,26 +19,26 @@
 
 ## a) FULLY DONE
 
-1. **CI workflow 100% GREEN** — run 31832806792 (commit `4c6416a`): Build & Test ✅, Visual Regression ✅, Lint ✅, CSS Freshness ✅. First fully green CI run since Aug 11 (8+ consecutive failures at session start).
-2. **Coverage gate cleared properly** — 68.3% → **71.7%** (gate: 70%) via real variant tests, not gate-lowering. New files: `display/coverage_boost4_test.go` (Card/StatCard/SectionHeading/PieChart/chartLegend/BarChart/Heatmap/CollapsibleSection/EmptyState variants), `navigation/coverage_boost4_test.go` (SidebarNav section grouping — `sidebarNavGroups` was 0% covered). Both golangci-lint clean, wsl_v5 compliant.
-3. **Visual regression cross-environment determinism SOLVED** — root cause chain fully diagnosed and fixed:
-   - Fonts (Inter/JetBrains Mono/Space Grotesk) never existed on dev machines or CI runners → silent host fallbacks.
-   - Attempt #1 (`makeFontsConf`) was **impure by design**: it injects `/etc/fonts/conf.d`, `/usr/share/fonts`, `~/.nix-profile/...` — CI-vs-local drift persisted identically (49 mismatches pre/post proven by failure-set diff).
-   - Fix: hand-written fonts.conf with ONLY nix store dirs (Inter + DejaVu Sans/Mono/Serif) + `/tmp` cachedir, exported as `FONTCONFIG_FILE` in the `#visual` flake app. `fc-match` diagnostics added to the app output. All 63 goldens regenerated in the pure env; clean rerun green; CI Visual Regression green.
-4. **Build Website job GREEN** (first since pnpm migration) — three stacked fixes: corepack-before-setup-node (`df13fd7`), pnpm 11 `allowBuilds` via `website/pnpm-workspace.yaml` (`package.json` "pnpm" field is dead in pnpm 11 — pnpm warns and ignores it), canvaskit-wasm direct dep (pnpm strict layout hid the transitive dep from astro-og-canvas prerender).
-5. **CSS Freshness permanently green** — the 73f21f0 recompile was produced by a non-flake tailwind (whole-line diff); `09bb943` recompiled via `nix run .#css` (flake-locked tailwindcss v4.3.3), verified idempotent.
-6. **Tier-4 quick wins (plan M5-M7) done** (`1ec5aae`): exact GOEXPERIMENT error text in README + `installation.mdx` troubleshooting section; **ADR-0035** Datastar scope freeze with revisit triggers; STANDOUT-IDEAS.md stats refreshed (116 components, 106 icons, v1.8, 1,300+ tests) with Tier-1 items marked done/open; GOTH-stack cross-links in README.
-7. **Debuggability repairs:** upload-artifact `include-hidden-files: true` (the `.fail` dir starts with a dot — v4 default silently produced EMPTY failure artifacts this whole time); fc-match diagnostics in visual app output.
-8. actionlint clean on all edited workflows; `nix flake check` green; full local `go build ./... && go test ./...` green before each push.
+1. ~~**CI workflow 100% GREEN** — run 31832806792 (commit `4c6416a`): Build & Test ✅, Visual Regression ✅, Lint ✅, CSS Freshness ✅. First fully green CI run since Aug 11 (8+ consecutive failures at session start).~~ done at `4c6416a`
+2. ~~**Coverage gate cleared properly** — 68.3% → **71.7%** (gate: 70%) via real variant tests, not gate-lowering. New files: `display/coverage_boost4_test.go` (Card/StatCard/SectionHeading/PieChart/chartLegend/BarChart/Heatmap/CollapsibleSection/EmptyState variants), `navigation/coverage_boost4_test.go` (SidebarNav section grouping — `sidebarNavGroups` was 0% covered). Both golangci-lint clean, wsl_v5 compliant.~~ done at `185b30fa`
+3. ~~**Visual regression cross-environment determinism SOLVED** — root cause chain fully diagnosed and fixed:~~ done at `185b30fa`
+   ~~- Fonts (Inter/JetBrains Mono/Space Grotesk) never existed on dev machines or CI runners → silent host fallbacks.~~
+   ~~- Attempt #1 (`makeFontsConf`) was **impure by design**: it injects `/etc/fonts/conf.d`, `/usr/share/fonts`, `~/.nix-profile/...` — CI-vs-local drift persisted identically (49 mismatches pre/post proven by failure-set diff).~~
+   ~~- Fix: hand-written fonts.conf with ONLY nix store dirs (Inter + DejaVu Sans/Mono/Serif) + `/tmp` cachedir, exported as `FONTCONFIG_FILE` in the `#visual` flake app. `fc-match` diagnostics added to the app output. All 63 goldens regenerated in the pure env; clean rerun green; CI Visual Regression green.~~
+4. ~~**Build Website job GREEN** (first since pnpm migration) — three stacked fixes: corepack-before-setup-node (`df13fd7`), pnpm 11 `allowBuilds` via `website/pnpm-workspace.yaml` (`package.json` "pnpm" field is dead in pnpm 11 — pnpm warns and ignores it), canvaskit-wasm direct dep (pnpm strict layout hid the transitive dep from astro-og-canvas prerender).~~ done at `df13fd7`
+5. ~~**CSS Freshness permanently green** — the 73f21f0 recompile was produced by a non-flake tailwind (whole-line diff); `09bb943` recompiled via `nix run .#css` (flake-locked tailwindcss v4.3.3), verified idempotent.~~ done at `73f21f0`, `09bb943`
+6. ~~**Tier-4 quick wins (plan M5-M7) done** (`1ec5aae`): exact GOEXPERIMENT error text in README + `installation.mdx` troubleshooting section; **ADR-0035** Datastar scope freeze with revisit triggers; STANDOUT-IDEAS.md stats refreshed (116 components, 106 icons, v1.8, 1,300+ tests) with Tier-1 items marked done/open; GOTH-stack cross-links in README.~~ done at `1ec5aae`
+7. ~~**Debuggability repairs:** upload-artifact `include-hidden-files: true` (the `.fail` dir starts with a dot — v4 default silently produced EMPTY failure artifacts this whole time); fc-match diagnostics in visual app output.~~ done at `185b30fa`
+8. ~~actionlint clean on all edited workflows; `nix flake check` green; full local `go build ./... && go test ./...` green before each push.~~ done at `185b30fa`
 
 ## b) PARTIALLY DONE
 
-1. **Website workflow** — Build ✅, **Deploy Website + Demo ❌ (last red job in the repo)**. Root cause NOW PINNED from the run log: Docker CSS stage fails with `[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: @parcel/watcher@2.5.1` — the identical pnpm 11 policy class fixed for the website in 09bb943, but the demo Dockerfile stage has no `allowBuilds` config. Expected fix: write a `pnpm-workspace.yaml` (or `pnpm config set`) inside the Docker CSS stage allowing `@parcel/watcher` (and likely `esbuild`/`sharp` for the dlx step). ~10 min + one CI round-trip.
+1. ~~**Website workflow** — Build ✅, **Deploy Website + Demo ❌ (last red job in the repo)**. Root cause NOW PINNED from the run log: Docker CSS stage fails with `[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: @parcel/watcher@2.5.1` — the identical pnpm 11 policy class fixed for the website in 09bb943, but the demo Dockerfile stage has no `allowBuilds` config. Expected fix: write a `pnpm-workspace.yaml` (or `pnpm config set`) inside the Docker CSS stage allowing `@parcel/watcher` (and likely `esbuild`/`sharp` for the dlx step). ~10 min + one CI round-trip.~~ done (printf allowBuilds @parcel/watcher in examples/demo/Dockerfile CSS stage)
 2. **Visual typography completeness** — deterministic, but Space Grotesk (headings) and JetBrains Mono are NOT in the pin: Space Grotesk isn't in nixpkgs at all; jetbrains-mono's derivation is broken upstream (gftools/nanoemoji dependency fails to build). Headings render as Inter, mono as DejaVu Sans Mono in all goldens. Deterministic but not the designed typography. (See question 2.)
 
 ## c) NOT STARTED
 
-1. **Release decision** — v1.8.3 patch (cherry-pick Card fix `9e25758`) vs roll into v1.9.0. Asked in the previous session's report; still unanswered. The v1.8.2 tag on the proxy ships the Card zero-width collapse.
+1. ~~**Release decision** — v1.8.3 patch (cherry-pick Card fix `9e25758`) vs roll into v1.9.0. Asked in the previous session's report; still unanswered. The v1.8.2 tag on the proxy ships the Card zero-width collapse.~~ done (CHANGELOG.md 1.9.0 2026-08-21 — release cut)
 2. Pareto plan M8-M13: docs generator (component manifest → MDX), website per-package docs pages, copy-paste pattern.
 3. Datastar website integration guide (ADR-0035 says the guide should state the scope explicitly).
 4. templ.guide listing (STANDOUT-IDEAS Tier-1 #2 — now the only open Tier-1 item).
@@ -55,19 +55,19 @@
 
 ## e) WHAT WE SHOULD IMPROVE (process, from this session's scars)
 
-1. **Pre-push CI rehearsal script**: `nix run .#css` + diff, actionlint, lint, build, test — the exact CI command sequence — in one script. Would have caught #d1 and #d2 instantly.
+1. ~~**Pre-push CI rehearsal script**: `nix run .#css` + diff, actionlint, lint, build, test — the exact CI command sequence — in one script. Would have caught #d1 and #d2 instantly.~~ done (scripts/verify-local.sh exists)
 2. **Read the nixpkgs source of any helper before trusting purity claims** (makeFontsConf, writeShellApplication env semantics). Cost: 2 CI cycles.
 3. **Diagnostics before fixes** for any cross-environment nondeterminism (fc-match echo cost ~2 lines and solved in one run what two blind fix attempts couldn't).
-4. **pnpm 11 knowledge is now load-bearing in 3 places** (website workflow, website workspace yaml, demo Dockerfile, deploy job's `pnpm add -g firebase-tools`) — centralize the allowBuilds story in AGENTS.md.
+4. ~~**pnpm 11 knowledge is now load-bearing in 3 places** (website workflow, website workspace yaml, demo Dockerfile, deploy job's `pnpm add -g firebase-tools`) — centralize the allowBuilds story in AGENTS.md.~~ done (AGENTS.md allowBuilds gotcha)
 5. BuildFlow daemon still commits without tests; the pre-commit hook is unusable locally (5 missing binaries). Every commit this session used `--no-verify` + manual verification — the safety net is honor-system.
-6. upload-artifact v4 hidden-file default belongs in AGENTS.md gotchas.
+6. ~~upload-artifact v4 hidden-file default belongs in AGENTS.md gotchas.~~ done (AGENTS.md upload-artifact hidden-files gotcha)
 7. `continue-on-error` on website's astro check / html-validate / pnpm audit silently downgrades those gates — revisit once fully green.
 
 ## f) NEXT — up to 50 things, roughly impact-ordered
 
-1. Fix Deploy Docker stage: allowBuilds for `@parcel/watcher` (+esbuild/sharp for dlx) in the CSS stage
+1. ~~Fix Deploy Docker stage: allowBuilds for `@parcel/watcher` (+esbuild/sharp for dlx) in the CSS stage~~ done (Dockerfile CSS stage printf pnpm-workspace.yaml allowBuilds)
 2. Watch a complete double-green CI + Website run end-to-end
-3. Answer v1.8.3-vs-v1.9.0 → cut release via `scripts/release.sh` (Card fix is on the proxy in v1.8.2 TODAY)
+3. ~~Answer v1.8.3-vs-v1.9.0 → cut release via `scripts/release.sh` (Card fix is on the proxy in v1.8.2 TODAY)~~ done (CHANGELOG.md 1.9.0 2026-08-21)
 4. templ.guide listing (verify criteria, then PR)
 5. M8: component manifest generator (name/signature/one-liner/package → MDX + sidebar)
 6. M9: website docs pages — display (40 components)
@@ -79,12 +79,12 @@
 12. Datastar HTMX-vs-Datastar decision page on website
 13. Vendor Space Grotesk font files in-repo for visual goldens (or nixpkgs package request)
 14. Track nixpkgs jetbrains-mono/gftools breakage; re-add when fixed
-15. Make fc-match output an ASSERTION (fail if sans-serif ≠ Inter) instead of an echo
-16. AGENTS.md: makeFontsConf impurity gotcha + "always `nix run .#css`" rule
-17. AGENTS.md: pnpm 11 allowBuilds dead-package.json-field gotcha
-18. AGENTS.md: upload-artifact hidden-files gotcha
-19. AGENTS.md: pure-fontconfig SOP for golden regeneration (docs/visual-testing.md too)
-20. Pre-push rehearsal script (scripts/verify-local.sh) mirroring CI exactly
+15. ~~Make fc-match output an ASSERTION (fail if sans-serif ≠ Inter) instead of an echo~~ done (flake.nix fc-match fail-fast assertion (abort if not Inter))
+16. ~~AGENTS.md: makeFontsConf impurity gotcha + "always `nix run .#css`" rule~~ done (AGENTS.md makeFontsConf impurity gotcha)
+17. ~~AGENTS.md: pnpm 11 allowBuilds dead-package.json-field gotcha~~ done (AGENTS.md pnpm 11 allowBuilds gotcha)
+18. ~~AGENTS.md: upload-artifact hidden-files gotcha~~ done (AGENTS.md upload-artifact hidden-files gotcha)
+19. ~~AGENTS.md: pure-fontconfig SOP for golden regeneration (docs/visual-testing.md too)~~ done (AGENTS.md pure-fontconfig SOP)
+20. ~~Pre-push rehearsal script (scripts/verify-local.sh) mirroring CI exactly~~ done (scripts/verify-local.sh exists)
 21. Add `nix flake check` as its own CI job (currently only treefmt locally)
 22. cmd/tc coverage is 49% — test or exclude from gate scope
 23. recipes coverage 60% — variant tests
@@ -96,11 +96,11 @@
 29. Remove continue-on-error from astro check once it passes clean
 30. Remove continue-on-error from html-validate once clean
 31. Review pnpm audit continue-on-error policy
-32. Deploy job `pnpm add -g firebase-tools` — preemptive allowBuilds check
+32. ~~Deploy job `pnpm add -g firebase-tools` — preemptive allowBuilds check~~ done (website.yml deploy uses npm install -g firebase-tools)
 33. GOTH stack: cross-link templ-components in cqrs-htmx README
 34. GOTH stack badge in all three READMEs
 35. Real-world example app (templ-components + cqrs-htmx + go-cqrs-lite CRUD admin) — STANDOUT Tier-2 #9
-36. `tc add <component>` CLI (shadcn-style) — cmd/tc scaffold exists
+36. ~~`tc add <component>` CLI (shadcn-style) — cmd/tc scaffold exists~~ done (cmd/tc/main.go has add command)
 37. STANDOUT-IDEAS Tier-2 triage session (what's done vs stale there)
 38. README comparison table: refresh templUI/goshipit versions (stale)
 39. website.yml + ci.yaml: share an action-pin revision table (renovate?)
@@ -111,9 +111,9 @@
 44. BuildFlow: add go test to pre-commit budget or stop auto-commit on red trees (buildflow repo change)
 45. BuildFlow: fix local pre-commit (5 missing binaries) so --no-verify is no longer routine
 46. BuildFlow: stop re-appending `*_templ.go` to .gitignore (documented AGENTS.md issue)
-47. Q3 sweep: `find . -name '.out.css'` BuildFlow litter cleanup
+47. ~~Q3 sweep: `find . -name '.out.css'` BuildFlow litter cleanup~~ done (demo.out.css and website global.out.css removed from tree)
 48. Docs: visual-testing.md — add "regenerate after Chromium pin bump" checklist item (already hinted in flake comment)
-49. CHANGELOG: seed `[Unreleased]` entries for this session's fixes (release convention requires warm Unreleased)
+49. ~~CHANGELOG: seed `[Unreleased]` entries for this session's fixes (release convention requires warm Unreleased)~~ done (CHANGELOG.md has warm Unreleased section)
 50. Consider a `docs/status` index or archive policy (reports accumulating)
 
 ## g) QUESTIONS (cannot be answered from the repo)

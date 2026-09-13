@@ -107,6 +107,7 @@ templ Page(m PageMeta, nonce string) {
 
 templ headExtras(m PageMeta) {
 	<link rel="manifest" href="/manifest.json"/>
+	<link rel="stylesheet" href="/assets/css/chroma.css"/>
 	for _, font := range preloadedFonts {
 		<link rel="preload" href={ font } as="font" type="font/woff2" crossorigin="anonymous"/>
 	}

@@ -1,0 +1,229 @@
+/* templ-components website — Tailwind v4 entry.
+   Design tokens ported from the Astro site's src/styles/global.css, adapted
+   to the library's `.dark`-class dark-mode convention (dark values now live
+   under `html.dark` instead of `:root.light`; localStorage keys are
+   compatible: "theme" = "light" | "dark"). */
+
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Class sources: the library's generated components + this site's own. */
+@source "./internal/pages/**/*_templ.go";
+@source "../display/**/*_templ.go";
+@source "../feedback/**/*_templ.go";
+@source "../forms/**/*_templ.go";
+@source "../layout/**/*_templ.go";
+@source "../navigation/**/*_templ.go";
+@source "../recipes/**/*_templ.go";
+@source "../icons/**/*_templ.go";
+@source "../errorpage/**/*_templ.go";
+@source "../htmx/**/*_templ.go";
+@source "../datastar/**/*_templ.go";
+@source "../templates/**/*.css";
+
+@theme {
+  /* Light theme (default; dark overrides below under .dark) */
+  --color-bg-primary: #fafaf9;
+  --color-bg-card: rgba(255, 255, 255, 0.6);
+  --color-bg-card-solid: #ffffff;
+  --color-bg-code: rgba(255, 255, 255, 0.9);
+  --color-bg-elevated: #f5f5f4;
+
+  --color-border: rgba(228, 228, 231, 0.8);
+  --color-border-hover: rgba(161, 161, 170, 0.5);
+  --color-border-accent: rgba(37, 99, 235, 0.25);
+
+  --color-text-primary: #1c1917;
+  --color-text-secondary: #57534e;
+  --color-text-muted: #78716c;
+
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-dim: rgba(37, 99, 235, 0.06);
+  --color-accent-light: #3b82f6;
+
+  --color-amber: #d97706;
+  --color-danger: #dc2626;
+  --color-danger-dim: rgba(220, 38, 38, 0.05);
+
+  --color-code-inline-bg: #f5f5f4;
+  --color-code-dot: #a8a29e;
+  --color-code-comment: #78716c;
+  --color-success: #16a34a;
+
+  --color-grid-dot: rgba(28, 25, 23, 0.03);
+
+  --font-sans: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, monospace;
+
+  --animate-fade-in: fade-in 0.6s ease both;
+  --animate-fade-in-up: fade-in-up 0.5s ease both;
+  --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(0.85);
+    }
+  }
+}
+
+/* Dark theme overrides (library `.dark` class convention) */
+.dark {
+  --color-bg-primary: #0a0908;
+  --color-bg-card: rgba(28, 25, 23, 0.4);
+  --color-bg-card-solid: #161413;
+  --color-bg-code: rgba(20, 18, 17, 0.9);
+  --color-bg-elevated: #1c1917;
+
+  --color-border: rgba(41, 37, 36, 0.5);
+  --color-border-hover: rgba(68, 62, 58, 0.8);
+  --color-border-accent: rgba(37, 99, 235, 0.3);
+
+  --color-text-primary: #f5f5f4;
+  --color-text-secondary: #a8a29e;
+  --color-text-muted: #78716c;
+
+  --color-accent-hover: #3b82f6;
+  --color-accent-dim: rgba(37, 99, 235, 0.08);
+  --color-accent-light: #60a5fa;
+
+  --color-amber: #fbbf24;
+  --color-danger: #f87171;
+  --color-danger-dim: rgba(248, 113, 113, 0.08);
+
+  --color-code-inline-bg: #1c1917;
+  --color-code-dot: #44403c;
+
+  --color-grid-dot: rgba(231, 229, 228, 0.025);
+}
+
+/* Self-hosted fonts (no third-party requests at runtime) */
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(/assets/fonts/space-grotesk-latin-400-normal.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(/assets/fonts/space-grotesk-latin-600-normal.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(/assets/fonts/space-grotesk-latin-700-normal.woff2) format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(/assets/fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(/assets/fonts/jetbrains-mono-latin-600-normal.woff2) format("woff2");
+}
+
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    var(--color-grid-dot) 1px,
+    transparent 0
+  );
+  background-size: 28px 28px;
+}
+
+/* Scroll-reveal (IntersectionObserver adds .animate-fade-in) */
+[data-animate]:not(.animate-fade-in) {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-animate]:not(.animate-fade-in) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-hover);
+}

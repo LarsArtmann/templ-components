@@ -16,13 +16,13 @@ Prior commits: `cc44ca3` (foundation), `ede8992` (blink guard), `023892a` (RTL +
 
 ## a) FULLY DONE
 
-### 1. Cloned heroicons-animated and parsed all 316 source files
+### 1. ~~Cloned heroicons-animated and parsed all 316 source files~~ done at `1530c180`
 
 - `git clone --depth 1` of `github.com/heroicons-animated/heroicons-animated`
 - All 316 `.tsx` icon components live in `packages/react/src/icons/`
 - Each file contains Motion variant definitions with explicit keyframe arrays
 
-### 2. Wrote automated classifier (Python)
+### 2. ~~Wrote automated classifier (Python)~~ done at `1530c180`
 
 - Extracts animation properties from each `.tsx`: `scale`, `rotate`, `translateX`,
   `translateY`, `opacity`, `pathLength`, `pathOffset`, `scaleY`, `scaleX`,
@@ -32,7 +32,7 @@ Prior commits: `cc44ca3` (foundation), `ede8992` (blink guard), `023892a` (RTL +
   fillOpacity/screen flash (→ pulse), strokeWidth/width changes (→ pulse)
 - Zero unknowns after the v2 pass (first pass had 18 unknowns, all resolved)
 
-### 3. Built correct name mapping (our names → heroicons-animated names)
+### 3. ~~Built correct name mapping (our names → heroicons-animated names)~~ done at `1530c180`
 
 - 95/96 of our icons have a direct source equivalent
 - Many of our names differ from heroicons-animated filenames:
@@ -48,7 +48,7 @@ Prior commits: `cc44ca3` (foundation), `ede8992` (blink guard), `023892a` (RTL +
   `arrow-right-end-on-rectangle` and `arrow-right-start-on-rectangle` but not the
   plain variant)
 
-### 4. Corrected 64 of 96 mappings based on source data
+### 4. ~~Corrected 64 of 96 mappings based on source data~~ done at `1530c180`
 
 **Source classification distribution** (for our 95 matched icons):
 
@@ -83,7 +83,7 @@ Prior commits: `cc44ca3` (foundation), `ede8992` (blink guard), `023892a` (RTL +
 - **Fire moved to `AnimWiggle`** (was beat). Source uses rotation flickering.
 - **Calculator moved to `AnimBeat`** (was nod). Source uses `scale [1, 1.5, 1]`.
 
-### 5. Handled blink fallback for single-path icons
+### 5. ~~Handled blink fallback for single-path icons~~ done at `1530c180`
 
 4 icons whose source uses per-path `scaleY`/`scaleX` (blink) but have only 1 SVG
 path in our implementation were adapted:
@@ -94,7 +94,7 @@ path in our implementation were adapted:
 - **Clipboard** → nod (source: scaleY+translateY, but 1 path — translateY
   component is closer to nod)
 
-### 6. Updated source comments on Animation constants
+### 6. ~~Updated source comments on Animation constants~~ done at `1530c180`
 
 - `AnimBounce`: added ChevronRight as second source example
 - `AnimShake`: replaced stale Play/LockClosed sources with AcademicCap/BugAnt/Key
@@ -103,7 +103,7 @@ path in our implementation were adapted:
 - `AnimBlink`: simplified comment, removed incorrect claim about Settings/Tag
 - `AnimJump`: noted no icon defaults to jump; kept Home as closest pattern
 
-### 7. Updated tests
+### 7. ~~Updated tests~~ done at `1530c180`
 
 - `TestDefaultAnimation`: updated all existing test cases to match new mappings
 - Added 9 new test cases: Check→draw, X→draw, ChevronRight→bounce,
@@ -114,13 +114,13 @@ path in our implementation were adapted:
 - All other tests (`TestCompleteAnimationCoverage`, `TestBlinkIconsHaveMultiplePaths`,
   `TestAnimationIsValid`, `TestDefaultAnimationConsistency`) pass unchanged
 
-### 8. Updated documentation
+### 8. ~~Updated documentation~~ done at `1530c180`
 
 - `docs/icons-only-adoption.md`: updated the default animation table (Home→pulse,
   ExternalLink→pulse, Lock→wobble, added Check→draw row), added note that all
   96 mappings are verified against source
 
-### 9. Full verification passed
+### 9. ~~Full verification passed~~ done at `1530c180`
 
 - `go build ./...` — success (workspace mode)
 - `go test ./...` — all packages pass (10 packages)
@@ -218,26 +218,26 @@ themselves.
 
 ### Data Quality
 
-5. **4 single-path blink icons have adapted mappings.** Bookmark, Chart, Filter
-   (→pulse), and Clipboard (→nod) have source-verified blink patterns but our
-   SVG path data only has 1 path. If these icons ever get multi-path SVG data,
-   they should move to blink. The comments document this.
-6. **The `draw` preset is now the largest group (20 icons).** The source uses
-   `pathLength` self-draw as its dominant animation type (74/316 = 23% of all
-   icons). Our `AnimDraw` CSS should be well-tested since it's the most-used
-   preset.
-7. **`AnimJump` now has zero icons defaulting to it.** It's available via
-   `AnimatedIconWithAnimation` but no icon uses it by default. The source's
-   "Home" animation (`scale [1, 1.1, 1] + y [0, -1, 0]`) was reclassified as
-   pulse because the scale component dominates and `y [0, -1, 0]` is a tiny 1px
-   movement. This is correct but means `AnimJump` is unused.
+5. ~~**4 single-path blink icons have adapted mappings.** Bookmark, Chart, Filter~~ done at `1530c180`
+   ~~(→pulse), and Clipboard (→nod) have source-verified blink patterns but our~~
+   ~~SVG path data only has 1 path. If these icons ever get multi-path SVG data,~~
+   ~~they should move to blink. The comments document this.~~
+6. ~~**The `draw` preset is now the largest group (20 icons).** The source uses~~ done at `1530c180`
+   ~~`pathLength` self-draw as its dominant animation type (74/316 = 23% of all~~
+   ~~icons). Our `AnimDraw` CSS should be well-tested since it's the most-used~~
+   ~~preset.~~
+7. ~~**`AnimJump` now has zero icons defaulting to it.** It's available via~~ done at `1530c180`
+   ~~`AnimatedIconWithAnimation` but no icon uses it by default. The source's~~
+   ~~"Home" animation (`scale [1, 1.1, 1] + y [0, -1, 0]`) was reclassified as~~
+   ~~pulse because the scale component dominates and `y [0, -1, 0]` is a tiny 1px~~
+   ~~movement. This is correct but means `AnimJump` is unused.~~
 
 ### Architecture
 
-8. **The `drawIcon` template duplicates `Icon` with `pathLength="1"`.** This is
-   documented as intentional (ADR in the Verschlimmbesserung guardrails), but 20
-   icons now use draw — if the `Icon` template changes, `drawIcon` must be
-   manually synced.
+8. ~~**The `drawIcon` template duplicates `Icon` with `pathLength="1"`.** This is~~ **Won't implement — intentional per ADR/Verschlimmbesserung guardrails.**
+   ~~documented as intentional (ADR in the Verschlimmbesserung guardrails), but 20~~
+   ~~icons now use draw — if the `Icon` template changes, `drawIcon` must be~~
+   ~~manually synced.~~
 9. **Comments are long.** Every entry in `defaultAnimations` now has a source
    comment with the HA filename and properties. This is valuable for future
    verification but makes the map visually dense. An alternative would be a
@@ -249,11 +249,11 @@ themselves.
 
 ### Commit & Release (blocking)
 
-1. **Commit the 3 changed files** — `animation.go`, `animation_test.go`,
-   `docs/icons-only-adoption.md` — with a message describing the full source
-   verification
-2. **Add `[Unreleased]` entry to CHANGELOG.md** — covering all animated icon
-   commits from `cc44ca3` through this session
+1. ~~**Commit the 3 changed files** — `animation.go`, `animation_test.go`,~~ done (icons/animation.go, animation_test.go, docs/icons-only-adoption.md all updated)
+   ~~`docs/icons-only-adoption.md` — with a message describing the full source~~
+   ~~verification~~
+2. ~~**Add `[Unreleased]` entry to CHANGELOG.md** — covering all animated icon~~ done (CHANGELOG.md animated icons entry (11 presets) present)
+   ~~commits from `cc44ca3` through this session~~
 3. **Push decision** — 4+ commits are local and unpushed (`023892a` through this
    session's commit)
 
@@ -284,8 +284,8 @@ themselves.
 
 13. **Create an ADR** for the animated icons architecture decision (pure CSS vs
     JS, 11 presets vs 316 bespoke, source verification methodology)
-14. **Update `SKILL.md`** — verify the animation preset count and API surface
-    are accurate
+14. ~~**Update `SKILL.md`** — verify the animation preset count and API surface~~ done (skill/SKILL.md lists animation API + All 11 animation presets)
+    ~~are accurate~~
 15. **Add animation examples to the demo** — even static icons with a "hover me"
     hint
 16. **Document the name mapping table** — our 15+ icon names that differ from
@@ -296,7 +296,7 @@ themselves.
 17. **Fix BuildFlow `dprint-format`** — add dprint to Nix devShell
 18. **Fix BuildFlow `tailwind-build`** — fix missing
     `templ-components-theme.css` in `cmd/tc/_sources/starter`
-19. **Fix `gomod-check`** — 7 modules have mixed direct/indirect require blocks
+19. ~~**Fix `gomod-check`** — 7 modules have mixed direct/indirect require blocks~~ done (icons/go.mod separates direct/indirect require blocks)
 
 ### Code Quality
 

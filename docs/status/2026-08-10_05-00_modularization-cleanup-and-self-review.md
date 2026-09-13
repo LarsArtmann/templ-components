@@ -21,24 +21,24 @@ The prior session executed a 5-module workspace split (root, utils, icons, error
 
 | #  | Item                                                                                                        | Evidence                                                                                                                                            |
 | -- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1  | **All stale `internal/svg` references updated** in active docs                                              | AGENTS.md, CONTEXT.md, skill/SKILL.md, docs/DOMAIN_LANGUAGE.md                                                                                      |
-| 2  | **All stale `internal/golden` references updated** in active docs                                           | README.md, FEATURES.md, ROADMAP.md, docs/testing-guide.md, docs/visual-testing.md, visualtest/doc.go, visualtest/golden.go, skill/SKILL.md          |
-| 3  | **All stale `internal/cdn` references updated**                                                             | No active references remained (prior session handled the move)                                                                                      |
-| 4  | **ADR-0020 updated** — status changed from "Proposed — deferred" to "Superseded by ADR-0034"                | `docs/adr/0020-per-package-modules-split.md:7-12`                                                                                                   |
-| 5  | **ADR-0034 written** — documents the actual executed 5-module split                                         | `docs/adr/0034-targeted-module-split.md` — DAG, boundaries, internal/ promotion, versioning, consequences                                           |
-| 6  | **Stale modularization docs deleted** via `git rm`                                                          | PROPOSAL.md, DEPENDENCY_GRAPH.md, EXECUTION_PLAN.md, ANALYSIS-2026-05-19.md removed                                                                 |
-| 7  | **Fresh `docs/modularization/README.md` written**                                                           | Explains what was done, why 5 modules, release process, contributor setup                                                                           |
-| 8  | **CHANGELOG.md `[Unreleased]` updated** with ADR-0034 entry                                                 | Describes the 5-module split, internal/ promotion, shared versioning                                                                                |
-| 9  | **ROADMAP.md updated** — testing row fixed, new "Module structure" row added                                | References ADR-0034                                                                                                                                 |
-| 10 | **`scripts/pre-commit.sh` rewritten** for per-module testing                                                | GOWORK=off (tests replace-directive path), per-module build+test+lint loop                                                                          |
-| 11 | **`scripts/release.sh` updated** for multi-module                                                           | Step 5b bumps require entries in all go.mod files; step 7 verifies all 5 modules; step 9 tags all 5 sub-module directories                          |
-| 12 | **`scripts/check-module-sync.sh` created**                                                                  | Verifies module paths match directories, replace directives use relative paths, sibling versions are consistent. <100ms.                            |
-| 13 | **`.github/workflows/ci.yaml` updated** — module-sync guard, fixed lint scope, fixed drift-guard invocation | `./errorpage/...` and `./icons/...` removed from root lint list (they're separate modules now); drift-guard tests invoked via `cd utils && go test` |
-| 14 | **`flake.nix` coverage app updated** for multi-module                                                       | Runs coverage per-module with per-module report                                                                                                     |
-| 15 | **All 5 modules build + test + lint clean** — workspace and standalone                                      | Verified with race detector: 11 root packages + 4 utils + 1 icons + 1 errorpage + 1 charts/echarts all pass                                         |
-| 16 | **All guard scripts pass** — module-sync, version-sync, lint-config                                         | `scripts/check-module-sync.sh` reports OK                                                                                                           |
-| 17 | **`go mod tidy` produces zero changes** across all 5 modules                                                | Verified                                                                                                                                            |
-| 18 | **`TestVersionMatches` and `TestDocsCountDrift` pass**                                                      | Drift guards verified from utils module directory                                                                                                   |
+| ~~1~~  | ~~**All stale `internal/svg` references updated** in active docs~~ done at `4ec2e7d2` | ~~AGENTS.md, CONTEXT.md, skill/SKILL.md, docs/DOMAIN_LANGUAGE.md~~ |
+| ~~2~~  | ~~**All stale `internal/golden` references updated** in active docs~~ done at `4ec2e7d2` | ~~README.md, FEATURES.md, ROADMAP.md, docs/testing-guide.md, docs/visual-testing.md, visualtest/doc.go, visualtest/golden.go, skill/SKILL.md~~ |
+| ~~3~~  | ~~**All stale `internal/cdn` references updated**~~ done at `4ec2e7d2` | ~~No active references remained (prior session handled the move)~~ |
+| ~~4~~  | ~~**ADR-0020 updated** — status changed from "Proposed — deferred" to "Superseded by ADR-0034"~~ done at `4ec2e7d2` | ~~`docs/adr/0020-per-package-modules-split.md:7-12`~~ |
+| ~~5~~  | ~~**ADR-0034 written** — documents the actual executed 5-module split~~ done at `4ec2e7d2` | ~~`docs/adr/0034-targeted-module-split.md` — DAG, boundaries, internal/ promotion, versioning, consequences~~ |
+| ~~6~~  | ~~**Stale modularization docs deleted** via `git rm`~~ done at `4ec2e7d2` | ~~PROPOSAL.md, DEPENDENCY_GRAPH.md, EXECUTION_PLAN.md, ANALYSIS-2026-05-19.md removed~~ |
+| ~~7~~  | ~~**Fresh `docs/modularization/README.md` written**~~ done at `4ec2e7d2` | ~~Explains what was done, why 5 modules, release process, contributor setup~~ |
+| ~~8~~  | ~~**CHANGELOG.md `[Unreleased]` updated** with ADR-0034 entry~~ done at `4ec2e7d2` | ~~Describes the 5-module split, internal/ promotion, shared versioning~~ |
+| ~~9~~  | ~~**ROADMAP.md updated** — testing row fixed, new "Module structure" row added~~ done at `4ec2e7d2` | ~~References ADR-0034~~ |
+| ~~10~~ | ~~**`scripts/pre-commit.sh` rewritten** for per-module testing~~ done at `4ec2e7d2` | ~~GOWORK=off (tests replace-directive path), per-module build+test+lint loop~~ |
+| ~~11~~ | ~~**`scripts/release.sh` updated** for multi-module~~ done at `4ec2e7d2` | ~~Step 5b bumps require entries in all go.mod files; step 7 verifies all 5 modules; step 9 tags all 5 sub-module directories~~ |
+| ~~12~~ | ~~**`scripts/check-module-sync.sh` created**~~ done at `4ec2e7d2` | ~~Verifies module paths match directories, replace directives use relative paths, sibling versions are consistent. <100ms.~~ |
+| ~~13~~ | ~~**`.github/workflows/ci.yaml` updated** — module-sync guard, fixed lint scope, fixed drift-guard invocation~~ done at `4ec2e7d2` | ~~`./errorpage/...` and `./icons/...` removed from root lint list (they're separate modules now); drift-guard tests invoked via `cd utils && go test`~~ |
+| ~~14~~ | ~~**`flake.nix` coverage app updated** for multi-module~~ done at `4ec2e7d2` | ~~Runs coverage per-module with per-module report~~ |
+| ~~15~~ | ~~**All 5 modules build + test + lint clean** — workspace and standalone~~ done at `4ec2e7d2` | ~~Verified with race detector: 11 root packages + 4 utils + 1 icons + 1 errorpage + 1 charts/echarts all pass~~ |
+| ~~16~~ | ~~**All guard scripts pass** — module-sync, version-sync, lint-config~~ done at `4ec2e7d2` | ~~`scripts/check-module-sync.sh` reports OK~~ |
+| ~~17~~ | ~~**`go mod tidy` produces zero changes** across all 5 modules~~ done at `4ec2e7d2` | ~~Verified~~ |
+| ~~18~~ | ~~**`TestVersionMatches` and `TestDocsCountDrift` pass**~~ done at `4ec2e7d2` | ~~Drift guards verified from utils module directory~~ |
 
 ---
 
@@ -46,10 +46,10 @@ The prior session executed a 5-module workspace split (root, utils, icons, error
 
 | # | Item                                          | What's done                                                                                                                                   | What's missing                                                                                                                                                                                                         |
 | - | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 | **AGENTS.md module documentation**            | Module table updated with `utils/svg`, `utils/cdn`, `utils/golden` sub-packages; import graph section updated; build commands section updated | **HEADING still says "Module Structure (single module)"** (line 3) and **DESCRIPTION still says "single Go module"** (line 5). The table was corrected but the intro text was not. This is a critical oversight.       |
-| 2 | **`check-module-sync.sh` wiring**             | Script created, tested, added to CI workflow                                                                                                  | **NOT added to `.git/hooks/pre-commit`**. The pre-commit hook has check-lint-config, check-templ-sync, check-version-sync but NOT check-module-sync. Module structure drift would not be caught at commit time.        |
-| 3 | **`scripts/release.sh` multi-module support** | Step 5b (bump require entries), step 7 (per-module verify), step 9 (multi-module tagging) all added                                           | **Completely untested.** The script requires a clean tree on master and can't be dry-run. The sed regex for bumping require versions (`github.com/larsartmann/templ-components/[a-z/]+`) may not match all edge cases. |
-| 4 | **skill/SKILL.md**                            | `internal/svg` → `utils/svg` references updated (3 occurrences)                                                                               | Build commands table still says `go build ./...` / `go test ./...` / `golangci-lint run` without mentioning per-module workflow. No mention of the 5-module workspace structure anywhere in the skill.                 |
+| ~~1~~ | ~~**AGENTS.md module documentation**~~ done — AGENTS.md Module Structure (7-module workspace) heading | ~~Module table updated with `utils/svg`, `utils/cdn`, `utils/golden` sub-packages; import graph section updated; build commands section updated~~ | ~~**HEADING still says "Module Structure (single module)"** (line 3) and **DESCRIPTION still says "single Go module"** (line 5). The table was corrected but the intro text was not. This is a critical oversight.~~ |
+| ~~2~~ | ~~**`check-module-sync.sh` wiring**~~ done — .githooks/pre-commit Guard 4 runs scripts/check-module-sync.sh | ~~Script created, tested, added to CI workflow~~ | ~~**NOT added to `.git/hooks/pre-commit`**. The pre-commit hook has check-lint-config, check-templ-sync, check-version-sync but NOT check-module-sync. Module structure drift would not be caught at commit time.~~ |
+| ~~3~~ | ~~**`scripts/release.sh` multi-module support**~~ done — utils/release_script_test.go + live release cuts exercised release.sh | ~~Step 5b (bump require entries), step 7 (per-module verify), step 9 (multi-module tagging) all added~~ | ~~**Completely untested.** The script requires a clean tree on master and can't be dry-run. The sed regex for bumping require versions (`github.com/larsartmann/templ-components/[a-z/]+`) may not match all edge cases.~~ |
+| ~~4~~ | ~~**skill/SKILL.md**~~ done — skill/SKILL.md Multi-module workspace (ADR-0034) section + per-module build table | ~~`internal/svg` → `utils/svg` references updated (3 occurrences)~~ | ~~Build commands table still says `go build ./...` / `go test ./...` / `golangci-lint run` without mentioning per-module workflow. No mention of the 5-module workspace structure anywhere in the skill.~~ |
 
 ---
 
@@ -57,16 +57,16 @@ The prior session executed a 5-module workspace split (root, utils, icons, error
 
 | #  | Item                                                                                | Impact                                                                                                                                                                                              |
 | -- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1  | **AGENTS.md heading fix** (line 3: "single module" → "5-module workspace")          | CRITICAL — the heading directly contradicts the table below it.                                                                                                                                     |
-| 2  | **AGENTS.md description fix** (line 5: "single Go module" → multi-module workspace) | CRITICAL — same contradiction.                                                                                                                                                                      |
-| 3  | **Wire `check-module-sync.sh` into `.git/hooks/pre-commit`**                        | Module structure drift (wrong paths, absolute replace directives, version mismatch) would not be caught at commit time, only in CI.                                                                 |
-| 4  | **Update `docs/icons-only-adoption.md`**                                            | Now that `icons` is a separate module, consumers can `go get github.com/larsartmann/templ-components/icons` independently. The doc should mention this.                                             |
-| 5  | **Write v2.0 migration guide** (`docs/migration/v1.x-to-v2.0.md`)                   | The `internal/*` → `utils/*` promotion and multi-module structure are breaking changes for anyone who imported internal packages (though Go's internal rule means no external consumer could have). |
+| ~~1~~  | ~~**AGENTS.md heading fix** (line 3: "single module" → "5-module workspace")~~ done — AGENTS.md heading now Module Structure (7-module workspace) | ~~CRITICAL — the heading directly contradicts the table below it.~~ |
+| ~~2~~  | ~~**AGENTS.md description fix** (line 5: "single Go module" → multi-module workspace)~~ done — AGENTS.md now 7-module Go workspace | ~~CRITICAL — same contradiction.~~ |
+| ~~3~~  | ~~**Wire `check-module-sync.sh` into `.git/hooks/pre-commit`**~~ done — .githooks/pre-commit Guard 4 wired (check-module-sync.sh) | ~~Module structure drift (wrong paths, absolute replace directives, version mismatch) would not be caught at commit time, only in CI.~~ |
+| ~~4~~  | ~~**Update `docs/icons-only-adoption.md`**~~ done — docs/icons-only-adoption.md standalone-module section with go get icons@latest | ~~Now that `icons` is a separate module, consumers can `go get github.com/larsartmann/templ-components/icons` independently. The doc should mention this.~~ |
+| ~~5~~  | ~~**Write v2.0 migration guide** (`docs/migration/v1.x-to-v2.0.md`)~~ done — docs/migration/v1-to-v2.md exists | ~~The `internal/*` → `utils/*` promotion and multi-module structure are breaking changes for anyone who imported internal packages (though Go's internal rule means no external consumer could have).~~ |
 | 6  | **Update website docs** (`website/src/`)                                            | Website content may reference single-module structure or `internal/` paths. Not verified.                                                                                                           |
-| 7  | **Test `scripts/release.sh` end-to-end**                                            | The multi-module tagging, require-bumping, and per-module verify logic is untested. Could fail at the next release.                                                                                 |
-| 8  | **DAG enforcement script** (`scripts/check-module-layers.sh`)                       | No automated guard prevents someone from adding an upward dependency (e.g., utils importing from display).                                                                                          |
-| 9  | **Race-enabled test in CI for sub-modules**                                         | CI only runs `GOWORK=off go test -count=1` for sub-modules (no `-race`). The release script runs `-race` but CI doesn't for sub-modules.                                                            |
-| 10 | **Dockerfile pipeline**                                                             | AGENTS.md describes a 3-stage Docker build but no Dockerfile exists. This is stale documentation that predates this session.                                                                        |
+| ~~7~~  | ~~**Test `scripts/release.sh` end-to-end**~~ done — utils/release_script_test.go + live cuts exercised release.sh | ~~The multi-module tagging, require-bumping, and per-module verify logic is untested. Could fail at the next release.~~ |
+| ~~8~~  | ~~**DAG enforcement script** (`scripts/check-module-layers.sh`)~~ done — scripts/check-module-layers.sh exists (pre-commit Guard 5 + ci.yaml) | ~~No automated guard prevents someone from adding an upward dependency (e.g., utils importing from display).~~ |
+| ~~9~~  | ~~**Race-enabled test in CI for sub-modules**~~ done — ci.yaml per-module GOWORK=off go test -race | ~~CI only runs `GOWORK=off go test -count=1` for sub-modules (no `-race`). The release script runs `-race` but CI doesn't for sub-modules.~~ |
+| ~~10~~ | ~~**Dockerfile pipeline**~~ done — examples/demo/Dockerfile exists (doc no longer stale) | ~~AGENTS.md describes a 3-stage Docker build but no Dockerfile exists. This is stale documentation that predates this session.~~ |
 
 ---
 
@@ -74,11 +74,11 @@ The prior session executed a 5-module workspace split (root, utils, icons, error
 
 | # | Item                                                            | What happened                                                                                                                                                                                                                                                                                                                                                                                                        | Severity                                                                                                                                                              |
 | - | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 | **AGENTS.md heading says "single module"**                      | I updated the module table, import graph, and build commands in AGENTS.md, but the **section heading** ("## Module Structure (single module)") and **first line** ("This repo is a **single Go module**") were left unchanged. This is a direct contradiction: the heading says single module, the table below it shows 5 modules. Anyone reading AGENTS.md top-to-bottom would be confused.                         | **CRITICAL** — AGENTS.md is the primary context file for every AI session. A contradictory module structure description will cause confusion in every future session. |
-| 2 | **`check-module-sync.sh` not wired into pre-commit**            | I created the script, added it to CI, tested it, and declared it done. But I forgot to wire it into `.git/hooks/pre-commit` (Guard 4). The existing guards (check-lint-config, check-templ-sync, check-version-sync) are all in the pre-commit hook, but check-module-sync is not. This means module structure drift is only caught in CI, not at commit time — the exact problem the other guards exist to prevent. | **HIGH** — the pattern in this repo is "catch drift at commit time with fast shell guards." Missing this guard breaks the pattern.                                    |
-| 3 | **Lint scope error in pre-commit.sh** (self-caught)             | When I rewrote `scripts/pre-commit.sh`, I included `./errorpage/...` and `./icons/...` in the root lint list — but those are now separate modules. `golangci-lint` reported an error (though it still exited 0). I caught this during the verification step and fixed it, but I should have known when writing the script.                                                                                           | **LOW** — self-caught and fixed before commit.                                                                                                                        |
-| 4 | **CI drift-guard invocation was broken** (self-caught)          | `go test ./utils/...` doesn't work with `GOWORK=off` when utils is a separate module. I caught this during verification and fixed it to `cd utils && go test ./...`, but this is a direct consequence of the module split that I should have anticipated.                                                                                                                                                            | **LOW** — self-caught and fixed.                                                                                                                                      |
-| 5 | **`check-module-sync.sh` version comparison bug** (self-caught) | My first version used a grep pattern that matched multiline content incorrectly, causing false positives. Fixed by matching only indented require lines (`^\s+github.com/...`).                                                                                                                                                                                                                                      | **LOW** — self-caught and fixed before moving on.                                                                                                                     |
+| ~~1~~ | ~~**AGENTS.md heading says "single module"**~~ done — AGENTS.md heading/description fixed to 7-module workspace | ~~I updated the module table, import graph, and build commands in AGENTS.md, but the **section heading** ("## Module Structure (single module)") and **first line** ("This repo is a **single Go module**") were left unchanged. This is a direct contradiction: the heading says single module, the table below it shows 5 modules. Anyone reading AGENTS.md top-to-bottom would be confused.~~ | ~~**CRITICAL** — AGENTS.md is the primary context file for every AI session. A contradictory module structure description will cause confusion in every future session.~~ |
+| ~~2~~ | ~~**`check-module-sync.sh` not wired into pre-commit**~~ done — .githooks/pre-commit Guard 4 wired | ~~I created the script, added it to CI, tested it, and declared it done. But I forgot to wire it into `.git/hooks/pre-commit` (Guard 4). The existing guards (check-lint-config, check-templ-sync, check-version-sync) are all in the pre-commit hook, but check-module-sync is not. This means module structure drift is only caught in CI, not at commit time — the exact problem the other guards exist to prevent.~~ | ~~**HIGH** — the pattern in this repo is "catch drift at commit time with fast shell guards." Missing this guard breaks the pattern.~~ |
+| ~~3~~ | ~~**Lint scope error in pre-commit.sh** (self-caught)~~ done at `4ec2e7d2` | ~~When I rewrote `scripts/pre-commit.sh`, I included `./errorpage/...` and `./icons/...` in the root lint list — but those are now separate modules. `golangci-lint` reported an error (though it still exited 0). I caught this during the verification step and fixed it, but I should have known when writing the script.~~ | ~~**LOW** — self-caught and fixed before commit.~~ |
+| ~~4~~ | ~~**CI drift-guard invocation was broken** (self-caught)~~ done at `4ec2e7d2` | ~~`go test ./utils/...` doesn't work with `GOWORK=off` when utils is a separate module. I caught this during verification and fixed it to `cd utils && go test ./...`, but this is a direct consequence of the module split that I should have anticipated.~~ | ~~**LOW** — self-caught and fixed.~~ |
+| ~~5~~ | ~~**`check-module-sync.sh` version comparison bug** (self-caught)~~ done at `4ec2e7d2` | ~~My first version used a grep pattern that matched multiline content incorrectly, causing false positives. Fixed by matching only indented require lines (`^\s+github.com/...`).~~ | ~~**LOW** — self-caught and fixed before moving on.~~ |
 
 ---
 
@@ -92,7 +92,7 @@ The prior session executed a 5-module workspace split (root, utils, icons, error
 
 4. **The release.sh changes are completely untested.** I wrote significant shell logic (sed for require version bumping, multi-module tag creation loop, per-module verify loop) but never executed any of it. The script can't be dry-run easily (it requires clean tree + master), but I could have at least tested the sed patterns independently.
 
-5. **The skill/SKILL.md doesn't mention multi-module at all.** The skill is the authoring playbook for this repo. It should tell contributors about the 5-module workspace, per-module testing, and the go.work pattern. Currently it has zero mention of multi-module structure.
+5. ~~**The skill/SKILL.md doesn't mention multi-module at all.** The skill is the authoring playbook for this repo. It should tell contributors about the 5-module workspace, per-module testing, and the go.work pattern. Currently it has zero mention of multi-module structure.~~ done (skill/SKILL.md documents multi-module workspace)
 
 ---
 
@@ -100,40 +100,40 @@ The prior session executed a 5-module workspace split (root, utils, icons, error
 
 ### Critical (fix now)
 
-1. **Fix AGENTS.md heading** — line 3: "## Module Structure (single module)" → "## Module Structure (5-module workspace)"; line 5: remove "single Go module" claim
-2. **Wire `check-module-sync.sh` into `.git/hooks/pre-commit`** as Guard 4
-3. **Update skill/SKILL.md** — add multi-module workspace section, update build commands table
+1. ~~**Fix AGENTS.md heading** — line 3: "## Module Structure (single module)" → "## Module Structure (5-module workspace)"; line 5: remove "single Go module" claim~~ done (AGENTS.md heading = Module Structure (7-module workspace))
+2. ~~**Wire `check-module-sync.sh` into `.git/hooks/pre-commit`** as Guard 4~~ done (.githooks/pre-commit Guard 4 = check-module-sync.sh)
+3. ~~**Update skill/SKILL.md** — add multi-module workspace section, update build commands table~~ done (skill/SKILL.md multi-module workspace section + updated build commands table)
 
 ### High priority (before v2.0 release)
 
-4. **Test `scripts/release.sh` end-to-end** — or at minimum, test the sed patterns for require version bumping
-5. **Add `-race` flag to CI sub-module isolation tests**
-6. **Write v2.0 migration guide** (`docs/migration/v1.x-to-v2.0.md`) — document the `internal/*` → `utils/*` change
-7. **Update `docs/icons-only-adoption.md`** — mention `go get .../icons` is now possible as a standalone module
+4. ~~**Test `scripts/release.sh` end-to-end** — or at minimum, test the sed patterns for require version bumping~~ done (utils/release_script_test.go + live v1.13.0+ release cuts)
+5. ~~**Add `-race` flag to CI sub-module isolation tests**~~ done (ci.yaml per-module race-enabled isolation tests)
+6. ~~**Write v2.0 migration guide** (`docs/migration/v1.x-to-v2.0.md`) — document the `internal/*` → `utils/*` change~~ done (docs/migration/v1-to-v2.md exists)
+7. ~~**Update `docs/icons-only-adoption.md`** — mention `go get .../icons` is now possible as a standalone module~~ done (docs/icons-only-adoption.md standalone-module go get section)
 8. **Verify website docs** (`website/src/`) don't reference `internal/` or single-module structure
-9. **Add DAG enforcement script** (`scripts/check-module-layers.sh`) — prevent upward dependencies
-10. **Add `check-module-sync.sh` to CI's pre-commit hook replication** — currently only in the lint job's guard sequence
+9. ~~**Add DAG enforcement script** (`scripts/check-module-layers.sh`) — prevent upward dependencies~~ done (scripts/check-module-layers.sh exists)
+10. ~~**Add `check-module-sync.sh` to CI's pre-commit hook replication** — currently only in the lint job's guard sequence~~ done (ci.yaml runs guard sequence incl. check-module-sync.sh)
 
 ### Medium priority (polish)
 
-11. **Remove stale Dockerfile section from AGENTS.md** — no Dockerfile exists, the 3-stage pipeline description is fiction
+11. ~~**Remove stale Dockerfile section from AGENTS.md** — no Dockerfile exists, the 3-stage pipeline description is fiction~~ done (examples/demo/Dockerfile exists; AGENTS.md Dockerfile section accurate)
 12. **Update AGENTS.md import graph** to show the full DAG with module boundaries (currently shows package-level edges, not module-level)
-13. **Update AGENTS.md lint command section** — the lint command listed in "Lint Command" section still lists `./icons/...` and `./errorpage/...` as root-module packages
-14. **Add contributor docs for go.work setup** — `docs/modularization/README.md` mentions it but the main README should too
+13. ~~**Update AGENTS.md lint command section** — the lint command listed in "Lint Command" section still lists `./icons/...` and `./errorpage/...` as root-module packages~~ done (AGENTS.md documents per-module linting)
+14. ~~**Add contributor docs for go.work setup** — `docs/modularization/README.md` mentions it but the main README should too~~ done (README.md documents GOWORK=off)
 15. **Consider a `go.work.tmpl` checked-in template** — since go.work is gitignored, contributors need guidance
 16. **Update `docs/tailwind-v4-adoption-guide.md`** if it references module structure
-17. **Update `docs/visual-testing.md`** — mention that visualtest is now one of 6 modules (5 library + visualtest)
+17. ~~**Update `docs/visual-testing.md`** — mention that visualtest is now one of 6 modules (5 library + visualtest)~~ done (docs/visual-testing.md Why a separate Go module section)
 18. **Verify `cmd/tc` CLI scaffolding works** with multi-module structure
 19. **Run `golangci-lint --new-from-rev=origin/master`** to verify only-clean diff
 20. **Benchmark per-module `go test` vs monolith** — measure the CI time impact
 
 ### Lower priority (nice to have)
 
-21. **Document module dependency DAG as a D2 diagram** in docs/
+21. ~~**Document module dependency DAG as a D2 diagram** in docs/~~ done (docs/diagrams/*.d2 architecture diagrams exist)
 22. **Add visual module structure section to README** with diagram
 23. **Consider extracting `utils/svg` as its own module** (zero deps, pure data)
-24. **Consider extracting `htmx` as its own module** (thin, depends only on utils)
-25. **Consider extracting `datastar` as its own module** (depends on utils/cdn + utils)
+24. ~~**Consider extracting `htmx` as its own module** (thin, depends only on utils)~~ done (htmx/go.mod exists (htmx extracted as module))
+25. ~~**Consider extracting `datastar` as its own module** (depends on utils/cdn + utils)~~ done (datastar/go.mod exists (datastar extracted as module))
 26. **Add CI job that tests `go get` from a clean module** (simulates external consumer)
 27. **Evaluate: should `utils/golden` be a separate test-helpers module?**
 28. **Evaluate: should `internal/contract` move to a dedicated test module?**
@@ -142,14 +142,14 @@ The prior session executed a 5-module workspace split (root, utils, icons, error
 31. **Evaluate: monorepo tagging vs independent semver** for sub-modules
 32. **Add a pre-commit guard that verifies `go.work` is NOT committed** (it's in .gitignore but a stray `git add -f` could break things)
 33. **Consider a `make work` or `nix run .#work` command** to regenerate go.work
-34. **Update FEATURES.md** to mention multi-module structure as a feature
+34. ~~**Update FEATURES.md** to mention multi-module structure as a feature~~ done (FEATURES.md documents the module split (ADR-0034))
 35. **Update README.md installation section** to show icons-only and errorpage-only `go get` patterns
-36. **Add a `CONTRIBUTING.md`** or update existing contributor docs for multi-module workflow
+36. ~~**Add a `CONTRIBUTING.md`** or update existing contributor docs for multi-module workflow~~ done (CONTRIBUTING.md documents multi-module workflow + sub-module tagging)
 37. **Verify `nix flake check` passes** with the new module structure
 38. **Verify `nix fmt` handles all 5 modules** (treefmt scope)
 39. **Consider adding `.golangci.yml` to each sub-module** (currently inherits root config via directory walk; may have edge cases)
-40. **Document the replace-directive lifecycle** — when to remove them (at publish time? after tagging?)
-41. **Add a version drift test across modules** — Go test that verifies all go.mod files reference the same shared version
+40. ~~**Document the replace-directive lifecycle** — when to remove them (at publish time? after tagging?)~~ done (docs/modularization/README.md documents replace-directive lifecycle)
+41. ~~**Add a version drift test across modules** — Go test that verifies all go.mod files reference the same shared version~~ done (utils/module_surface_test.go + scripts/check-version-sync.sh exist)
 42. **Party? 🎉** — only after AGENTS.md heading is fixed and v2.0 is tagged
 
 ---

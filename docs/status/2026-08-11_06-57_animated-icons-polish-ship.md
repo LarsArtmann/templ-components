@@ -110,12 +110,12 @@ Fetched and analyzed source files from
 
 ### Items explicitly deferred per the plan's Verschlimmbesserung Guardrails:
 
-1. **Visual regression tests** — hover animations can't be screenshot-tested (animation only plays on `:hover`)
-2. **New animation presets** (AnimTada, AnimPlay, etc.) — 11 is already comprehensive
-3. **drawIcon/strokeIcon dedup** — 15 lines of intentional separation
-4. **Full 102-icon source verification** — diminishing returns (5 key icons verified instead)
-5. **Demo page showcase** — hover interaction can't be meaningfully shown statically
-6. **Benchmark** — animation rendering is trivially fast
+1. ~~**Visual regression tests** — hover animations can't be screenshot-tested (animation only plays on `:hover`)~~ **Won't implement — hover animations cannot be screenshot-tested.**
+2. ~~**New animation presets** (AnimTada, AnimPlay, etc.) — 11 is already comprehensive~~ **Won't implement — 11 presets already comprehensive.**
+3. ~~**drawIcon/strokeIcon dedup** — 15 lines of intentional separation~~ **Won't implement — 15 lines of intentional separation.**
+4. ~~**Full 102-icon source verification** — diminishing returns (5 key icons verified instead)~~ done (done by next session: all 96 mappings source-verified (HA= comments in icons/animation.go))
+5. ~~**Demo page showcase** — hover interaction can't be meaningfully shown statically~~ **Won't implement — hover interaction cannot be meaningfully shown statically.**
+6. ~~**Benchmark** — animation rendering is trivially fast~~ **Won't implement — animation rendering is trivially fast.**
 
 ---
 
@@ -145,8 +145,8 @@ Fetched and analyzed source files from
 
 ### Code Quality Observations
 
-5. **`drawIcon` and `strokeIcon` are near-duplicates.** The plan explicitly decided not to dedup them ( Verschlimmbesserung guardrail), but the 15-line overlap is a maintenance risk. If either template changes, the other must be manually updated.
-6. **`resolveAnimation` is called in `AnimatedIconWithAnimation` but not in `AnimatedIconWithAnimationRTL`.** Wait — actually both call it. Let me re-check... Actually looking at the template, both the LTR and RTL variants call `resolveAnimation(name, anim)` in the else branch. This is correct. No issue.
+5. ~~**`drawIcon` and `strokeIcon` are near-duplicates.** The plan explicitly decided not to dedup them ( Verschlimmbesserung guardrail), but the 15-line overlap is a maintenance risk. If either template changes, the other must be manually updated.~~ **Won't implement — plan explicitly declined dedup (Verschlimmbesserung guardrail).**
+6. ~~**`resolveAnimation` is called in `AnimatedIconWithAnimation` but not in `AnimatedIconWithAnimationRTL`.** Wait — actually both call it. Let me re-check... Actually looking at the template, both the LTR and RTL variants call `resolveAnimation(name, anim)` in the else branch. This is correct. No issue.~~ **Won't implement — self-resolved in report: both variants call resolveAnimation.**
 7. **The `TestCompleteAnimationCoverage` test only checks `iconPathData` keys.** If an icon is added to `iconPathData` but not to `defaultAnimations`, it will fail. Good. But it doesn't check aliases — if a new alias is added without a canonical mapping, it would silently fall back to AnimPulse. Low risk since aliases are rare.
 
 ---
@@ -158,12 +158,12 @@ Fetched and analyzed source files from
 1. **Push to remote** — `git push` (user action)
 2. **Fix BuildFlow `dprint-format` failure** — add dprint to the Nix devShell or exclude the step
 3. **Fix BuildFlow `tailwind-build` failure** — the `cmd/tc/_sources/starter` template references a non-existent `templ-components-theme.css`; fix the starter template or exclude from pipeline
-4. **Fix `navigation/breadcrumbs.templ` LSP false-positive** — investigate whether the `encoding/json/v2` import can be resolved for the LSP (separate from build)
+4. ~~**Fix `navigation/breadcrumbs.templ` LSP false-positive** — investigate whether the `encoding/json/v2` import can be resolved for the LSP (separate from build)~~ done (gopls reports 0 errors; encoding/json/v2 import resolves (navigation/breadcrumbs.templ))
 
 ### Animated Icons Polish
 
 5. **Add HTML golden snapshot tests** for animated icons (T4 — deferred, low risk but adds regression protection)
-6. **Verify 10-20 more icon mappings** against heroicons-animated source (current: 13 verified out of 96)
+6. ~~**Verify 10-20 more icon mappings** against heroicons-animated source (current: 13 verified out of 96)~~ done (all 96 mappings source-verified (HA= comments in icons/animation.go))
 7. **Add a demo page section** for animated icons (deferred in plan — hover can't be shown statically, but a grid of icons with tooltips showing the animation name would be useful)
 8. **Consider `AnimFlip` preset** — several heroicons-animated icons use flip/3D rotation patterns not covered by the 11 presets
 9. **Add `AnimatedIcon` to the demo binary** (`examples/demo`) — it's not currently showcased
@@ -172,7 +172,7 @@ Fetched and analyzed source files from
 
 10. **Run `nix run .#visual`** — visual regression tests haven't been run this session; verify no visual regressions from the errorpage golden update
 11. **Audit all golden files for staleness** — the errorpage golden was stale from a prior session; others may be too. Run `go test ./... -update` and diff to check.
-12. **Fix `go.mod` direct/indirect require mixing** — BuildFlow's `gomod-check` flagged 7 modules with mixed require blocks (pre-existing)
+12. ~~**Fix `go.mod` direct/indirect require mixing** — BuildFlow's `gomod-check` flagged 7 modules with mixed require blocks (pre-existing)~~ done (icons/go.mod separates direct/indirect require blocks)
 13. **Add `## Installation` section to README.md** — flagged by go-structure-linter (pre-existing)
 14. **Move golden test files to `testdata/`** — flagged by go-structure-linter for `display/dark_golden_test.go`, `errorpage/notfound404_golden_test.go`, `utils/golden/golden.go` (pre-existing)
 15. **Run the full `nix run .#verify` pipeline** — we ran individual steps but not the combined verify app
@@ -192,11 +192,11 @@ Fetched and analyzed source files from
 
 ### Documentation
 
-26. **Update CHANGELOG.md** — add `[Unreleased]` entry for the animated icons feature
-27. **Update `docs/icons-only-adoption.md` default animation table** — it lists 12 icons but the table should reflect the corrected mappings (Moon, Sun, Trash changed)
+26. ~~**Update CHANGELOG.md** — add `[Unreleased]` entry for the animated icons feature~~ done (CHANGELOG.md animated icons entry (11 presets) in released section)
+27. ~~**Update `docs/icons-only-adoption.md` default animation table** — it lists 12 icons but the table should reflect the corrected mappings (Moon, Sun, Trash changed)~~ done (docs/icons-only-adoption.md Lock-to-Wobble, Check-to-Draw rows updated)
 28. **Add animation examples to the demo** — even static icons with a "hover me" hint
 29. **Create an ADR for the animated icons architecture decision** — pure CSS vs JS, 11 presets vs 316 bespoke
-30. **Update `SKILL.md`** — verify the animation preset count and API surface are accurate
+30. ~~**Update `SKILL.md`** — verify the animation preset count and API surface are accurate~~ done (skill/SKILL.md lists All 11 animation presets; API table accurate)
 
 ### Maintenance
 

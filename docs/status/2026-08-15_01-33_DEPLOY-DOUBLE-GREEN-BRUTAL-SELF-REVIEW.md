@@ -22,15 +22,15 @@
 
 ## a) FULLY DONE (this session, with evidence)
 
-1. **Root-caused and fixed the pnpm 11 `ERR_PNPM_IGNORED_BUILDS` failure in the Docker CSS stage.** Reproduced first in a `node:22-slim` container (exact CI image), verified the `allowBuilds: {"@parcel/watcher": true}` fix for BOTH `pnpm add` and `pnpm dlx` in the same container before touching the repo. Fix: inline `pnpm-workspace.yaml` via `printf` before `pnpm add` (commit `6170355`).
-2. **Found and fixed a SECOND latent deploy failure before it wasted a CI cycle: `pnpm add -g firebase-tools` preflight.** Reproduced on `node:24` with corepack pnpm@11.20.0 — fails with "configured global bin directory ... is not in PATH" even via corepack (GitHub runners never set `PNPM_HOME`). Switched the deploy step to `npm install -g firebase-tools` (verified: firebase 15.27.0), dropped the now-dead `corepack enable pnpm` step from the deploy job. actionlint clean.
-3. **Fixed the THIRD failure: Docker builder stage `go mod download` vs `replace` directives.** Root `go.mod` replaces all 6 sub-modules with local paths; only root manifests were copied. Fix: copy all 6 sub-module `go.mod` files before `go mod download` (commit `b068220`). This was latent since the 7-module split (ADR-0034), masked by earlier failures — classic whack-a-mole layer.
-4. **Full local verification this time:** complete 3-stage `docker build` locally (exit 0) + container smoke test (`/health` → `{"status":"ok"}`) BEFORE pushing `b068220`.
-5. **Watched both workflows go green and verified the LIVE deployments end-to-end**: Cloud Run URL healthy, templcomponents.web.app serving real content (fetch tool, not assumptions).
-6. **`scripts/verify-local.sh` added** — job-for-job local rehearsal of all 4 CI jobs (fast guards, lint, generate/tidy drift, vet, build, race tests + 70% coverage gate, per-module isolation, visualtest compile, docs drift, examples, CSS freshness, visual regression). Ran it end-to-end green (~6 min, 71.7% coverage).
-7. **Font guard hardened** (flake.nix `#visual`): the fc-match echo diagnostics are now a fail-fast assertion — all three CSS generics must resolve to Inter under the pinned fonts.conf, else the run aborts with a clear message before taking a single screenshot. Verified: all three resolve to `Inter.ttc`.
-8. **AGENTS.md "CI & Tooling Gotchas" section added** — pnpm 11 allowBuilds sites, why `pnpm add -g` must never run on runners, Dockerfile replace-directive requirement, pure-fontconfig SOP, upload-artifact hidden-files default.
-9. **Pushed the prior session's pending status report** (`185b30f` rode along with `6170355`).
+1. ~~**Root-caused and fixed the pnpm 11 `ERR_PNPM_IGNORED_BUILDS` failure in the Docker CSS stage.** Reproduced first in a `node:22-slim` container (exact CI image), verified the `allowBuilds: {"@parcel/watcher": true}` fix for BOTH `pnpm add` and `pnpm dlx` in the same container before touching the repo. Fix: inline `pnpm-workspace.yaml` via `printf` before `pnpm add` (commit `6170355`).~~ done at `6170355`
+2. ~~**Found and fixed a SECOND latent deploy failure before it wasted a CI cycle: `pnpm add -g firebase-tools` preflight.** Reproduced on `node:24` with corepack pnpm@11.20.0 — fails with "configured global bin directory ... is not in PATH" even via corepack (GitHub runners never set `PNPM_HOME`). Switched the deploy step to `npm install -g firebase-tools` (verified: firebase 15.27.0), dropped the now-dead `corepack enable pnpm` step from the deploy job. actionlint clean.~~ done at `1d306c62`
+3. ~~**Fixed the THIRD failure: Docker builder stage `go mod download` vs `replace` directives.** Root `go.mod` replaces all 6 sub-modules with local paths; only root manifests were copied. Fix: copy all 6 sub-module `go.mod` files before `go mod download` (commit `b068220`). This was latent since the 7-module split (ADR-0034), masked by earlier failures — classic whack-a-mole layer.~~ done at `b068220`
+4. ~~**Full local verification this time:** complete 3-stage `docker build` locally (exit 0) + container smoke test (`/health` → `{"status":"ok"}`) BEFORE pushing `b068220`.~~ done at `1d306c62`
+5. ~~**Watched both workflows go green and verified the LIVE deployments end-to-end**: Cloud Run URL healthy, templcomponents.web.app serving real content (fetch tool, not assumptions).~~ done at `1d306c62`
+6. ~~**`scripts/verify-local.sh` added** — job-for-job local rehearsal of all 4 CI jobs (fast guards, lint, generate/tidy drift, vet, build, race tests + 70% coverage gate, per-module isolation, visualtest compile, docs drift, examples, CSS freshness, visual regression). Ran it end-to-end green (~6 min, 71.7% coverage).~~ done at `5514f63`
+7. ~~**Font guard hardened** (flake.nix `#visual`): the fc-match echo diagnostics are now a fail-fast assertion — all three CSS generics must resolve to Inter under the pinned fonts.conf, else the run aborts with a clear message before taking a single screenshot. Verified: all three resolve to `Inter.ttc`.~~ done at `5514f63`
+8. ~~**AGENTS.md "CI & Tooling Gotchas" section added** — pnpm 11 allowBuilds sites, why `pnpm add -g` must never run on runners, Dockerfile replace-directive requirement, pure-fontconfig SOP, upload-artifact hidden-files default.~~ done at `b068220`
+9. ~~**Pushed the prior session's pending status report** (`185b30f` rode along with `6170355`).~~ done at `6170355`, `185b30f`
 
 ## b) PARTIALLY DONE
 
@@ -44,8 +44,8 @@
 2. M8 docs generator (per-package docs from source, M9–M12 website docs rollout).
 3. `cmd/tc` coverage lift (49%).
 4. `recipes` coverage lift (60%).
-5. CHANGELOG `[Unreleased]` seeding with this session's fixes (required warm before next release per one-commit release convention).
-6. TODO_LIST.md HARVEST from status reports (two reports now carry unhavested f-lists).
+5. ~~CHANGELOG `[Unreleased]` seeding with this session's fixes (required warm before next release per one-commit release convention).~~ done (CHANGELOG.md has warm Unreleased section)
+6. ~~TODO_LIST.md HARVEST from status reports (two reports now carry unhavested f-lists).~~ done (TODO_LIST.md harvested from docs/status reports)
 7. Vendoring real font files for visual goldens (decision pending, see g/2).
 
 ## d) TOTALLY FUCKED UP (honest mistake ledger)
@@ -70,9 +70,9 @@
 
 **Release & user-facing truth (highest impact)**
 
-1. [C] Decide v1.8.3 vs v1.9.0 and cut via `scripts/release.sh` — proxy's v1.8.2 ships the Card zero-width collapse bug (needs user answer, see g/1).
+1. ~~[C] Decide v1.8.3 vs v1.9.0 and cut via `scripts/release.sh` — proxy's v1.8.2 ships the Card zero-width collapse bug (needs user answer, see g/1).~~ done (CHANGELOG.md 1.9.0 2026-08-21 — decided and cut)
 2. [N] Fix stale homepage stats: 94→116 components, 102→106 icons, "4 Stars"/"94 Stars" badge, 37 enums claim — the live site undercounts the library (see e/1 above).
-3. [C] Seed CHANGELOG `[Unreleased]` with deploy/CI fixes so the next release is warm.
+3. ~~[C] Seed CHANGELOG `[Unreleased]` with deploy/CI fixes so the next release is warm.~~ done (CHANGELOG.md Unreleased warm)
 4. [C] Decide golden typography: accept Inter/DejaVu deterministic fallbacks or vendor real font files (g/2).
 
 **Pipeline hardening**
@@ -89,7 +89,7 @@
 **Docs & discoverability**
 14. [C] Submit templ.guide Showcase listing.
 15. [C] M8 docs generator; per-package website docs (M9–M12).
-16. [N] HARVEST this + prior status report f-lists into TODO_LIST.md (docs-health).
+16. ~~[N] HARVEST this + prior status report f-lists into TODO_LIST.md (docs-health).~~ done (TODO_LIST.md harvest sections cite docs/status f-lists)
 17. [N] Document the new font-guard assertion in `docs/visual-testing.md` (behavior changed this session).
 18. [N] AGENTS.md: add the "watch runs by --commit" + "full docker build before deploy-fix pushes" lessons to the gotchas section.
 19. [N] Add a "known-noise" note on the breadcrumbs.templ IDE false positives somewhere agents will see it before 'fixing' them (e/7).
@@ -100,7 +100,7 @@
 22. [C] Decide coverage gate policy: hold 70 / raise 73–75 / per-package floors (g/3).
 23. [N] Check whether `visualtest` module should count toward the coverage gate (currently outside it).
 24. [N] Add a test/lint check that the Dockerfile CSS stage's tailwind pin matches the flake's (locks e/1 shut).
-25. [N] Add `actionlint` to the flake devShell (verify-local currently treats it as optional).
+25. ~~[N] Add `actionlint` to the flake devShell (verify-local currently treats it as optional).~~ done (pkgs.actionlint in flake devShell)
 
 **Small debt noticed in passing**
 26. [N] Demo endpoints doc: `/api/load-more` and `/api/delete` mock endpoints — confirm they match current handlers after deploy changes (no behavior change expected; verify only).

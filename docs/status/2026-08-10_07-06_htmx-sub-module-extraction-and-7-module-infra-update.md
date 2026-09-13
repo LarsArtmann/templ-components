@@ -9,68 +9,68 @@
 
 ### a) FULLY DONE (verified passing)
 
-1. **htmx/ extracted as its own Go sub-module** (`htmx/go.mod`)
+1. ~~**htmx/ extracted as its own Go sub-module** (`htmx/go.mod`)~~ done at `34ad139a`
    - Module path: `github.com/larsartmann/templ-components/htmx`
    - Dependencies: `templ` + `utils` only (Layer 1 in DAG, same as icons/charts-echarts/datastar)
    - `replace github.com/larsartmann/templ-components/utils => ../utils`
    - `htmx/go.sum` generated (14 lines)
    - All htmx tests pass in isolation (`GOWORK=off go test -race`)
 
-2. **Test `feedback.Spinner` dependency eliminated** (circular dep fix)
+2. ~~**Test `feedback.Spinner` dependency eliminated** (circular dep fix)~~ done at `34ad139a`
    - Created `htmx/testhelpers_test.go` with `testSpinner(colorClasses)` helper
    - Updated 5 test files: `a11y_test.go`, `bdd_test.go`, `snapshot_test.go`, `coverage_boost3_test.go`, `golden_sweep_test.go`
    - All `feedback.Spinner(feedback.SpinnerProps{...})` calls → `testSpinner("...")`
    - Pattern matches datastar's approach (inline `templ.ComponentFunc`)
 
-3. **Golden files regenerated** (`htmx/testdata/`)
+3. ~~**Golden files regenerated** (`htmx/testdata/`)~~ done at `34ad139a`
    - `loading_indicator.golden`, `inline_loading_overlay.golden`, `loading_button.golden`
    - Spinners now render the test SVG instead of feedback.Spinner SVG
 
-4. **Root `go.mod` updated**
+4. ~~**Root `go.mod` updated**~~ done at `34ad139a`
    - Added `require github.com/larsartmann/templ-components/htmx v1.8.1`
    - Added `replace github.com/larsartmann/templ-components/htmx => ./htmx`
 
-5. **`go.work` updated** — `use ./htmx` added (8th line: root + 6 sub-modules + visualtest)
+5. ~~**`go.work` updated** — `use ./htmx` added (8th line: root + 6 sub-modules + visualtest)~~ done at `34ad139a`
 
-6. **`flake.nix` updated** (5 edits)
+6. ~~**`flake.nix` updated** (5 edits)~~ done at `34ad139a`
    - Comment: "5 modules" → "7 modules"
    - Lint app: htmx/datastar removed from root lint, added as per-module lint
    - Verify app: test loop, lint loop updated to include datastar + htmx
    - Coverage app: module loop updated
 
-7. **`scripts/pre-commit.sh` updated** (3 edits)
+7. ~~**`scripts/pre-commit.sh` updated** (3 edits)~~ done at `34ad139a`
    - Comment: "5 modules" → "7 modules"
    - Build/test loop: added datastar + htmx
    - Lint: root lint excludes htmx/datastar, sub-module loop includes them
 
-8. **`scripts/check-module-sync.sh` updated** (4 edits)
+8. ~~**`scripts/check-module-sync.sh` updated** (4 edits)~~ done at `34ad139a`
    - MODULE_PATHS: added htmx
    - Replace grep: added htmx/go.mod
    - Version check: added htmx/go.mod
    - Success message: "6 modules" → "7 modules"
 
-9. **`scripts/check-module-layers.sh` updated** (3 edits)
+9. ~~**`scripts/check-module-layers.sh` updated** (3 edits)~~ done at `34ad139a`
    - Header: "6-module" → "7-module", DAG comment includes htmx
    - Layer 1: added `check_layer "htmx" "utils" "htmx"`
    - Success: "5 sub-modules" → "6 sub-modules"
 
-10. **`.github/workflows/ci.yaml` updated** (4 edits)
+10. ~~**`.github/workflows/ci.yaml` updated** (4 edits)~~ done at `34ad139a`
     - Root lint: removed htmx from root package list
     - Per-module lint: added htmx
     - `go mod tidy` loop: added htmx
     - Isolation test loop: added htmx
 
-11. **`datastar/version_test.go` created** — drift-guard test
+11. ~~**`datastar/version_test.go` created** — drift-guard test~~ done at `34ad139a`
     - `TestDatastarVersionMatchesStatic`: asserts `DatastarVersion1_0_2 == static.Version`
     - Passes in datastar module isolation
 
-12. **Docs updated for 7-module structure:**
+12. ~~**Docs updated for 7-module structure:**~~ done at `34ad139a`
     - `docs/modularization/README.md` — DAG, module table, release tags, `go work use` command
     - `docs/adr/0034-targeted-module-split.md` — title, DAG diagram, module table, replace comment, release complexity, verification
     - `docs/migration/v1-to-v2.md` — quick summary table, section heading, body text
     - `CHANGELOG.md` — `[Unreleased]` entries for static integration, drift-guard, sub-module extraction
 
-13. **Full verification passed:**
+13. ~~**Full verification passed:**~~ done at `34ad139a`
     - Workspace build: `go build ./...` ✓
     - Workspace test: `go test ./... -count=1` ✓ (all root packages)
     - Per-module isolation (race): all 6 sub-modules ✓
@@ -82,7 +82,7 @@
 
 ### b) PARTIALLY DONE / HAS GAPS
 
-1. **`scripts/release.sh` — CRITICAL GAP: 5 locations still reference old 4-sub-module structure**
+1. ~~**`scripts/release.sh` — CRITICAL GAP: 5 locations still reference old 4-sub-module structure**~~ done (release.sh loops include datastar+htmx; TestReleaseScriptInvariants guards)
    - **Line 157** (rollback trap): `git restore` only covers `go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod` — missing `datastar/go.mod htmx/go.mod`
    - **Line 172** (version bump loop): `for modfile in go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod` — missing datastar + htmx
    - **Line 186** (replace removal loop): `for modfile in go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod` — missing datastar + htmx
@@ -106,11 +106,11 @@
    - Every new module requires updating all 12+ locations. This is the root cause of the release.sh gap above.
    - A `scripts/modules.sh` that exports `SUBMODULES="utils icons errorpage charts/echarts datastar htmx"` and is sourced by all other scripts would eliminate this permanently.
 
-2. **ADR-0035 for htmx extraction** — ADR-0034 was amended in-place to cover 7 modules, which is acceptable. A dedicated ADR-0035 was not created (decision: amend vs new was an open question).
+2. ~~**ADR-0035 for htmx extraction** — ADR-0034 was amended in-place to cover 7 modules, which is acceptable. A dedicated ADR-0035 was not created (decision: amend vs new was an open question).~~ **Won't implement — ADR-0034 amended in-place instead — acceptable per report.**
 
 3. **htmx doc.go package docs** — Not updated to mention it's now a separate module (if it even has a doc.go — was not checked this session).
 
-4. **Dockerfile** — Not checked whether it needs htmx/datastar module awareness for the multi-stage build.
+4. ~~**Dockerfile** — Not checked whether it needs htmx/datastar module awareness for the multi-stage build.~~ done (AGENTS.md Dockerfile copies all sub-module go.mod files)
 
 ---
 

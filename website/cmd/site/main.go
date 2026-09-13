@@ -14,6 +14,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/larsartmann/templ-components/website/internal/build"
@@ -56,6 +58,30 @@ func run(out, repoRoot string, skipStars bool) error {
 	if err := renderer.WritePages(ctx, out, pages); err != nil {
 		return err
 	}
+
+	chromaCSS, err := build.ChromaCSS()
+	if err != nil {
+		return err
+	}
+	chromaPath := filepath.Join(out, "assets", "css", "chroma.css")
+	if err := os.MkdirAll(filepath.Dir(chromaPath), 0o755); err != nil {
+		return err
+	}
+	if err := os.WriteFile(chromaPath, []byte(chromaCSS), 0o644); err != nil {
+		return err
+	}
+
+	for _, tree := range []struct{ src, dst string }{
+		{"assets", filepath.Join(out, "assets")},
+		{"public", out},
+	} {
+		if _, err := os.Stat(tree.src); err == nil {
+			if err := build.CopyTree(tree.src, tree.dst); err != nil {
+				return fmt.Errorf("copy %s: %w", tree.src, err)
+			}
+		}
+	}
+
 	fmt.Printf("site: wrote %d page(s) to %s (components=%d icons=%d enums=%d modules=%d)\n",
 		len(pages), out, stats.Components, stats.Icons, stats.Enums, stats.Modules)
 	return nil

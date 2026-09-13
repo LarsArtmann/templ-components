@@ -10,31 +10,31 @@
 
 ### Core implementation
 
-1. **`icons/animation.go`** — `Animation` typed enum with 10 presets (`AnimPulse`, `AnimBeat`, `AnimBounce`, `AnimWiggle`, `AnimSpin`, `AnimJump`, `AnimNod`, `AnimShake`, `AnimBlink`, `AnimSplit`). `IsValid()` method. `DefaultAnimation(name)` per-icon mapping. `AllAnimations()` sorted list. Consistency validation in tests ensures all mapped icons exist in `iconPathData` and all mapped animations are valid.
-2. **`icons/animated_icon.templ`** — `AnimatedIcon(name, class)` renders with the icon's default animation. `AnimatedIconWithAnimation(name, anim, class)` for explicit control. `AnimNone` renders plain `Icon()` without the wrapper span. Delegates to `@Icon()` internally (no SVG duplication).
-3. **`templates/custom.css`** — 10 `@keyframes` + hover/focus-within rules + `prefers-reduced-motion` override block. Uses modern individual transform properties (`scale`, `rotate`, `translate`) for smooth composition. Per-path animations (`AnimBlink`, `AnimSplit`) target `svg path:nth-child(N)`.
-4. **Generated file committed:** `icons/animated_icon_templ.go` generated and ready.
+1. ~~**`icons/animation.go`** — `Animation` typed enum with 10 presets (`AnimPulse`, `AnimBeat`, `AnimBounce`, `AnimWiggle`, `AnimSpin`, `AnimJump`, `AnimNod`, `AnimShake`, `AnimBlink`, `AnimSplit`). `IsValid()` method. `DefaultAnimation(name)` per-icon mapping. `AllAnimations()` sorted list. Consistency validation in tests ensures all mapped icons exist in `iconPathData` and all mapped animations are valid.~~ done at `b5298302`
+2. ~~**`icons/animated_icon.templ`** — `AnimatedIcon(name, class)` renders with the icon's default animation. `AnimatedIconWithAnimation(name, anim, class)` for explicit control. `AnimNone` renders plain `Icon()` without the wrapper span. Delegates to `@Icon()` internally (no SVG duplication).~~ done at `b5298302`
+3. ~~**`templates/custom.css`** — 10 `@keyframes` + hover/focus-within rules + `prefers-reduced-motion` override block. Uses modern individual transform properties (`scale`, `rotate`, `translate`) for smooth composition. Per-path animations (`AnimBlink`, `AnimSplit`) target `svg path:nth-child(N)`.~~ done at `b5298302`
+4. ~~**Generated file committed:** `icons/animated_icon_templ.go` generated and ready.~~ done at `b5298302`
 
 ### Tests
 
-5. **`icons/animation_test.go`** — `TestAnimationIsValid` (all 10 + AnimNone + bogus), `TestDefaultAnimation` (13 cases), `TestAllAnimations` (count + sort + no AnimNone), `TestDefaultAnimationConsistency` (all mapped icons are valid names + all animations are valid).
-6. **`icons/animated_icon_test.go`** — wrapper structure assertions, per-animation class checks (9 cases), AnimNone renders plain, Spinner defaults to plain, all path icons can animate (full sweep), per-path animation path-count guard (`TestPerPathAnimationsHaveCorrectPathCount`), valid HTML structure.
-7. **`icons/example_test.go`** — `ExampleAnimatedIcon`, `ExampleAnimatedIconWithAnimation`, `ExampleAnimation_IsValid`, `ExampleDefaultAnimation` (with `// Output:` assertions).
+5. ~~**`icons/animation_test.go`** — `TestAnimationIsValid` (all 10 + AnimNone + bogus), `TestDefaultAnimation` (13 cases), `TestAllAnimations` (count + sort + no AnimNone), `TestDefaultAnimationConsistency` (all mapped icons are valid names + all animations are valid).~~ done at `b5298302`
+6. ~~**`icons/animated_icon_test.go`** — wrapper structure assertions, per-animation class checks (9 cases), AnimNone renders plain, Spinner defaults to plain, all path icons can animate (full sweep), per-path animation path-count guard (`TestPerPathAnimationsHaveCorrectPathCount`), valid HTML structure.~~ done at `b5298302`
+7. ~~**`icons/example_test.go`** — `ExampleAnimatedIcon`, `ExampleAnimatedIconWithAnimation`, `ExampleAnimation_IsValid`, `ExampleDefaultAnimation` (with `// Output:` assertions).~~ done at `b5298302`
 
 ### Documentation
 
-8. **`icons/doc.go`** — package doc updated with Animated Icons section + usage examples.
-9. **`AGENTS.md`** — animated icons entry added with full technical detail.
-10. **SKILL.md** — icon function table updated with 4 new entries.
-11. **`CHANGELOG.md`** — `[Unreleased] > Added` entry.
-12. **`docs/icons-only-adoption.md`** — new "Animated icons" section with default-animation table + CSS dependency note.
+8. ~~**`icons/doc.go`** — package doc updated with Animated Icons section + usage examples.~~ done at `b5298302`
+9. ~~**`AGENTS.md`** — animated icons entry added with full technical detail.~~ done at `b5298302`
+10. ~~**SKILL.md** — icon function table updated with 4 new entries.~~ done at `b5298302`
+11. ~~**`CHANGELOG.md`** — `[Unreleased] > Added` entry.~~ done at `b5298302`
+12. ~~**`docs/icons-only-adoption.md`** — new "Animated icons" section with default-animation table + CSS dependency note.~~ done at `b5298302`
 
 ### Verification
 
-13. **Build:** `GOEXPERIMENT=jsonv2 go build ./...` — clean (root + all modules).
-14. **Tests:** `go test ./icons/... -count=1` — all pass (40+ test cases).
-15. **Lint:** `golangci-lint run ./...` (icons module standalone) — 0 issues.
-16. **Drift guards pass:** `TestCustomCSSUtilities`, `TestDarkModeCompliance`, `TestDarkModeSemanticColors`, `TestMotionReduceCompliance`, `TestSkillComponentCount`.
+13. ~~**Build:** `GOEXPERIMENT=jsonv2 go build ./...` — clean (root + all modules).~~ done at `b5298302`
+14. ~~**Tests:** `go test ./icons/... -count=1` — all pass (40+ test cases).~~ done at `b5298302`
+15. ~~**Lint:** `golangci-lint run ./...` (icons module standalone) — 0 issues.~~ done at `b5298302`
+16. ~~**Drift guards pass:** `TestCustomCSSUtilities`, `TestDarkModeCompliance`, `TestDarkModeSemanticColors`, `TestMotionReduceCompliance`, `TestSkillComponentCount`.~~ done at `b5298302`
 
 ---
 
@@ -55,9 +55,9 @@
 1. **Demo page integration.** No animated icons added to `examples/demo/`. Consumers visiting the demo wouldn't know the feature exists.
 2. **Visual regression tests.** No `visualtest` entries for animated icons. The hover-triggered nature makes this hard (chromedp would need to simulate hover), but at minimum a "renders correct wrapper structure" visual baseline would be valuable.
 3. **Golden snapshot tests.** No `golden_sweep_test.go` entry for `AnimatedIcon`. The render tests use substring assertions but don't lock the full HTML output.
-4. **CHANGELOG version bump / release.** Entry is in `[Unreleased]` but no release was cut.
-5. **`TestCustomCSSUtilities` extension to cover `icons` package** (see b4 above).
-6. **`.tc-anim-*` class guard test** — a test asserting that CSS classes referenced by the animated icon templates are defined in `custom.css`.
+4. ~~**CHANGELOG version bump / release.** Entry is in `[Unreleased]` but no release was cut.~~ done (released: CHANGELOG.md documents animated icons in released 1.8.4 section)
+5. ~~**`TestCustomCSSUtilities` extension to cover `icons` package** (see b4 above).~~ done (icons/custom_css_test.go asserts .tc-anim-* classes exist in templates/custom.css)
+6. ~~**`.tc-anim-*` class guard test** — a test asserting that CSS classes referenced by the animated icon templates are defined in `custom.css`.~~ done (icons/custom_css_test.go checks a rule per animation type)
 7. **BDD test** — `icons/bdd_test.go` doesn't cover animated icon behavior.
 8. **Benchmark** — no `BenchmarkAnimatedIcon` in `icons/benchmark_test.go`.
 9. **README.md update** — the main README doesn't mention animated icons.
@@ -76,19 +76,19 @@ One honest callout: **I initially put `Refresh` and `ArrowPath` in the `defaultA
 
 ### Architecture & API
 
-1. **`AnimSplit` is a dead preset.** No icon defaults to it. Either find/add a 2-path icon that warrants it, or remove it to avoid confusion. Right now it's an attractive nuisance — consumers will try it and get silent no-ops on most icons.
-2. **No runtime guard for per-path animations on wrong-path-count icons.** `AnimatedIconWithAnimation(Eye, AnimSplit, class)` silently does nothing. Options: (a) document the requirement loudly, (b) add a Go-side guard that falls back to a whole-SVG animation, (c) emit a `data-tc-anim-warning` attribute for debugging.
-3. **The `<span>` wrapper changes DOM structure.** `Icon()` renders a bare `<svg>`, but `AnimatedIcon()` renders `<span><svg></svg></span>`. This could break consumers who rely on the SVG being a direct child of a flex/grid container (the span introduces an extra nesting level). Consider: (a) documenting this, (b) using a `<g>` wrapper inside the SVG instead (but then hover wouldn't work the same way), (c) making the wrapper optional.
-4. **No `AnimatedIconRTL` variant.** `IconRTL` exists for directional icons, but there's no animated RTL equivalent. Consumers who need both animation AND RTL mirroring have to choose.
+1. ~~**`AnimSplit` is a dead preset.** No icon defaults to it. Either find/add a 2-path icon that warrants it, or remove it to avoid confusion. Right now it's an attractive nuisance — consumers will try it and get silent no-ops on most icons.~~ done (AnimSplit removed from icons/animation.go and custom.css)
+2. ~~**No runtime guard for per-path animations on wrong-path-count icons.** `AnimatedIconWithAnimation(Eye, AnimSplit, class)` silently does nothing. Options: (a) document the requirement loudly, (b) add a Go-side guard that falls back to a whole-SVG animation, (c) emit a `data-tc-anim-warning` attribute for debugging.~~ done (per-path anim on 1-path icon falls back to AnimPulse (TestAnimBlinkFallsBackOnSinglePathIcon))
+3. ~~**The `<span>` wrapper changes DOM structure.** `Icon()` renders a bare `<svg>`, but `AnimatedIcon()` renders `<span><svg></svg></span>`. This could break consumers who rely on the SVG being a direct child of a flex/grid container (the span introduces an extra nesting level). Consider: (a) documenting this, (b) using a `<g>` wrapper inside the SVG instead (but then hover wouldn't work the same way), (c) making the wrapper optional.~~ done (DOM Structure Caveat in icons/doc.go and docs/icons-only-adoption.md)
+4. ~~**No `AnimatedIconRTL` variant.** `IconRTL` exists for directional icons, but there's no animated RTL equivalent. Consumers who need both animation AND RTL mirroring have to choose.~~ done (AnimatedIconRTL exists: icons/animated_icon.templ)
 
 ### Coverage
 
-5. **Only 10 of 316 heroicons-animated animations implemented.** The source has unique animations per icon. We generalized to 10 categories, which is pragmatic, but many icons in the source have bespoke animations that don't map cleanly to any of our 10 presets (e.g., `archive-box-arrow-down` has a downward arrow slide, `finger-print` has a sweep effect).
+5. ~~**Only 10 of 316 heroicons-animated animations implemented.** The source has unique animations per icon. We generalized to 10 categories, which is pragmatic, but many icons in the source have bespoke animations that don't map cleanly to any of our 10 presets (e.g., `archive-box-arrow-down` has a downward arrow slide, `finger-print` has a sweep effect).~~ done (11 presets; all 96 mappings HA=-commented from source in icons/animation.go)
 6. **No way for consumers to register custom animations.** The 10 presets are hardcoded. A registry pattern (`RegisterAnimation(name, cssClass)`) would allow extensibility.
 
 ### Testing
 
-7. **No CSS existence guard for `.tc-anim-*` classes** (see c5/c6).
+7. ~~**No CSS existence guard for `.tc-anim-*` classes** (see c5/c6).~~ done (icons/custom_css_test.go guards .tc-anim-* classes)
 8. **No visual regression baseline.** Can't catch CSS regressions in the animation keyframes.
 9. **No golden snapshot.** Render output isn't locked.
 
@@ -104,25 +104,25 @@ One honest callout: **I initially put `Refresh` and `ArrowPath` in the `defaultA
 
 ### High priority (correctness & safety)
 
-1. Add `Refresh`/`ArrowPath` to `defaultAnimations` via their canonical name (`Refresh` is in `iconPathData`; `ArrowPath` is the alias — need to verify which is canonical)
-2. Remove `AnimSplit` preset OR find a 2-path icon to default it to (currently a dead feature)
-3. Extend `TestCustomCSSUtilities` to scan `icons/*.templ` for `tc-anim-*` classes and verify they exist in `custom.css`
-4. Add a Go-side guard in `AnimatedIconWithAnimation` that warns (via `data-tc-anim-needs-paths` attribute) when a per-path animation is used on a single-path icon
+1. ~~Add `Refresh`/`ArrowPath` to `defaultAnimations` via their canonical name (`Refresh` is in `iconPathData`; `ArrowPath` is the alias — need to verify which is canonical)~~ done (icons/animation.go Refresh: AnimSpin; ArrowPath alias resolves)
+2. ~~Remove `AnimSplit` preset OR find a 2-path icon to default it to (currently a dead feature)~~ done (AnimSplit removed from icons/animation.go and custom.css)
+3. ~~Extend `TestCustomCSSUtilities` to scan `icons/*.templ` for `tc-anim-*` classes and verify they exist in `custom.css`~~ done (icons/custom_css_test.go scans .tc-anim-* vs custom.css)
+4. ~~Add a Go-side guard in `AnimatedIconWithAnimation` that warns (via `data-tc-anim-needs-paths` attribute) when a per-path animation is used on a single-path icon~~ done (resolveAnimation falls back to AnimPulse on 1-path icons)
 5. Add golden snapshot test for `AnimatedIcon` output
-6. Verify `Refresh` IS in `iconPathData` (I think it is — it's `ArrowPath` that's the alias — need to recheck)
+6. ~~Verify `Refresh` IS in `iconPathData` (I think it is — it's `ArrowPath` that's the alias — need to recheck)~~ done (Refresh path data present: icons/icon_paths.go)
 7. Add `BenchmarkAnimatedIcon` to `icons/benchmark_test.go`
-8. Document the `<span>` wrapper caveat in `doc.go` and `docs/icons-only-adoption.md`
+8. ~~Document the `<span>` wrapper caveat in `doc.go` and `docs/icons-only-adoption.md`~~ done (span wrapper caveat documented: icons/doc.go)
 
 ### Medium priority (coverage & polish)
 
-9. Map more icons to thoughtful defaults (currently 35/102 explicitly mapped)
+9. ~~Map more icons to thoughtful defaults (currently 35/102 explicitly mapped)~~ done (96/96 explicit HA=-commented mappings in icons/animation.go)
 10. Add animated icons to the demo page (`examples/demo/`)
 11. Add a visual regression test for at least the wrapper structure
 12. Consider `@media (prefers-reduced-motion: no-preference)` refact or instead of the `!important` override block
-13. Add `AnimatedIconRTL` variant
+13. ~~Add `AnimatedIconRTL` variant~~ done (AnimatedIconRTL exists: icons/animated_icon.templ)
 14. Update `README.md` with animated icons mention
 15. Add BDD test for animated icon behavior in `icons/bdd_test.go`
-16. Verify the demo CSS gets recompiled (the AGENTS.md warns about stale `examples/demo/static/app.css` after adding CSS classes — need `nix run .#build` or Docker pipeline)
+16. ~~Verify the demo CSS gets recompiled (the AGENTS.md warns about stale `examples/demo/static/app.css` after adding CSS classes — need `nix run .#build` or Docker pipeline)~~ done (examples/demo/static/app.css contains .tc-anim-wobble/.tc-anim-draw)
 17. Consider a `RegisterAnimation(name Animation, cssClass string)` extensibility API
 18. Add per-path animation documentation explaining the 2-path requirement
 19. Consider a `tc-anim-duration` CSS custom property for consumer-configurable timing
@@ -132,11 +132,11 @@ One honest callout: **I initially put `Refresh` and `ArrowPath` in the `defaultA
 
 ### Lower priority (nice-to-have)
 
-23. Backfill more verified-from-source animation assignments (fetch each overlapping `.tsx` and confirm)
+23. ~~Backfill more verified-from-source animation assignments (fetch each overlapping `.tsx` and confirm)~~ done (all 96 mappings source-verified (HA= comments in icons/animation.go))
 24. Consider CSS `transition` for smoother hover-out on keyframe animations (currently they snap back)
 25. Add a `tc-anim-loop` variant for continuous (non-hover) animation
 26. Consider `prefers-reduced-data` for users on metered connections (icons are tiny, but principle)
-27. Add ARIA considerations — animated decorative icons should stay `aria-hidden`
+27. ~~Add ARIA considerations — animated decorative icons should stay `aria-hidden`~~ done (animated svg renders aria-hidden=true (icons/animated_icon.templ))
 28. Document interaction with Tailwind's `animate-*` utilities (potential conflicts)
 29. Consider a `tc-anim-delay` CSS custom property
 30. Add a test matrix: browser support for individual transform properties (Baseline 2024)
@@ -159,7 +159,7 @@ One honest callout: **I initially put `Refresh` and `ArrowPath` in the `defaultA
 47. Add tests for nested animated icons (icon inside an animated icon wrapper)
 48. Document the cubic-bezier values chosen for `AnimSpin` and `AnimSplit` (spring approximation)
 49. Consider standardizing all animation durations to a design-token scale
-50. Cut a release with the animated icons feature
+50. ~~Cut a release with the animated icons feature~~ done (released: CHANGELOG.md 1.8.4 Added section documents animated icons)
 
 ---
 

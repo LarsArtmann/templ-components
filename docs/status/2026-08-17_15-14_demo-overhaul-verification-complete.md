@@ -7,17 +7,17 @@
 
 ## a) FULLY DONE
 
-1. **Build verified.** `templ generate ./examples/demo/... && go build ./examples/demo/` → BUILD_OK. The 7 compile errors fixed last session were confirmed good.
-2. **Daemon edit reviewed (commit 7c2e3c2).** The BuildFlow daemon replaced my `if pages < 1` clamp in `usersTotalPages` with `max((total+pageSize-1)/pageSize, 1)`. Reviewed: behaviorally identical, arguably cleaner. **Kept.**
-3. **CSS recompiled** via `nix run .#css`. Surprise: the flake app minifies (old committed bundle was unminified) — file shrank 114601B → 90642B. I verified this was NOT a content regression: occurrence counts of `tc-modal`, `tc-fluid`, `@container`, `animate-spin`, `popover` identical old vs new. `TestCSSFreshness` in CI is now satisfied.
-4. **Drift-guard test caught a REAL bug:** `TestHeroCountsMatchFeatures` failed — FEATURES.md claims **106 icons**, `icons.AllIconNames()` returns **102** (ground truth verified: 101 in `iconPathData` + Spinner). Fixed 4 stale references in FEATURES.md (Totals line, module table, Icon row, section heading + "105 path icons" → 101). The drift-guard written last session paid for itself on its first run.
-5. **All tests pass** across all modules (`nix run .#test`), incl. the previously-failing demo package.
-6. **Lint clean:** 0 issues across all 7 modules (`nix run .#lint`).
-7. **Live probe: all 19 routes return 200** — `/`, `/users` (+sort/dir/page query variants), `/forms`, all 4 recipe pages, `/css/app.css`, `/health`, and all 6 API endpoints (`/api/items`, `/api/items/123`, `/api/save`, `/api/demo-stats?tick=0|3`, `/api/users` + filters).
-8. **Stale process killed.** PID 2760026 (from a prior session, bound :8091) was silently serving the OLD binary — my first probe run showed 404s for every new route and I nearly misdiagnosed it as missing handlers. `kill` builtin failed ("unsupported builtin" in mvdan/sh); used `/run/current-system/sw/bin/kill -9`. Free now.
-9. **`/users` added to `prerender.go`** (was a known gap — server-only page). Prerender run verified: writes 7 pages incl. `users/index.html`.
-10. **CHANGELOG `[Unreleased]` entry added** (repo rule violated by daemon commit 97e7bb0): demo overhaul summary + the FEATURES.md 106→102 correction.
-11. **`*_templ.go` tracked:** all 14 demo generated files in `git ls-files`; `.gitignore` `!*_templ.go` unignore intact.
+1. ~~**Build verified.** `templ generate ./examples/demo/... && go build ./examples/demo/` → BUILD_OK. The 7 compile errors fixed last session were confirmed good.~~ done at `15679eb4`
+2. ~~**Daemon edit reviewed (commit 7c2e3c2).** The BuildFlow daemon replaced my `if pages < 1` clamp in `usersTotalPages` with `max((total+pageSize-1)/pageSize, 1)`. Reviewed: behaviorally identical, arguably cleaner. **Kept.**~~ done at `15679eb4`
+3. ~~**CSS recompiled** via `nix run .#css`. Surprise: the flake app minifies (old committed bundle was unminified) — file shrank 114601B → 90642B. I verified this was NOT a content regression: occurrence counts of `tc-modal`, `tc-fluid`, `@container`, `animate-spin`, `popover` identical old vs new. `TestCSSFreshness` in CI is now satisfied.~~ done at `15679eb4`
+4. ~~**Drift-guard test caught a REAL bug:** `TestHeroCountsMatchFeatures` failed — FEATURES.md claims **106 icons**, `icons.AllIconNames()` returns **102** (ground truth verified: 101 in `iconPathData` + Spinner). Fixed 4 stale references in FEATURES.md (Totals line, module table, Icon row, section heading + "105 path icons" → 101). The drift-guard written last session paid for itself on its first run.~~ done at `15679eb4`
+5. ~~**All tests pass** across all modules (`nix run .#test`), incl. the previously-failing demo package.~~ done at `15679eb4`
+6. ~~**Lint clean:** 0 issues across all 7 modules (`nix run .#lint`).~~ done at `15679eb4`
+7. ~~**Live probe: all 19 routes return 200** — `/`, `/users` (+sort/dir/page query variants), `/forms`, all 4 recipe pages, `/css/app.css`, `/health`, and all 6 API endpoints (`/api/items`, `/api/items/123`, `/api/save`, `/api/demo-stats?tick=0|3`, `/api/users` + filters).~~ done at `15679eb4`
+8. ~~**Stale process killed.** PID 2760026 (from a prior session, bound :8091) was silently serving the OLD binary — my first probe run showed 404s for every new route and I nearly misdiagnosed it as missing handlers. `kill` builtin failed ("unsupported builtin" in mvdan/sh); used `/run/current-system/sw/bin/kill -9`. Free now.~~ done at `15679eb4`
+9. ~~**`/users` added to `prerender.go`** (was a known gap — server-only page). Prerender run verified: writes 7 pages incl. `users/index.html`.~~ done at `15679eb4`
+10. ~~**CHANGELOG `[Unreleased]` entry added** (repo rule violated by daemon commit 97e7bb0): demo overhaul summary + the FEATURES.md 106→102 correction.~~ done at `15679eb4`
+11. ~~**`*_templ.go` tracked:** all 14 demo generated files in `git ls-files`; `.gitignore` `!*_templ.go` unignore intact.~~ done at `15679eb4`
 
 ## b) PARTIALLY DONE
 
@@ -39,12 +39,12 @@
 
 ## e) WHAT WE SHOULD IMPROVE (structural)
 
-1. **FEATURES.md counts drift silently.** The icon count was wrong (106 vs 102) for unknown duration. The new demo test only guards the demo hero against FEATURES.md — it does NOT guard FEATURES.md against the actual icon package. A test in `icons/` asserting `len(AllIconNames())` matches FEATURES.md (or better: generating that line) would close the loop at the source.
-2. **Same for component counts:** `componentCount` const in demo.templ is still hand-maintained against FEATURES.md's "116 templ components". One end-to-end guard, but two hand-maintained numbers upstream.
+1. ~~**FEATURES.md counts drift silently.** The icon count was wrong (106 vs 102) for unknown duration. The new demo test only guards the demo hero against FEATURES.md — it does NOT guard FEATURES.md against the actual icon package. A test in `icons/` asserting `len(AllIconNames())` matches FEATURES.md (or better: generating that line) would close the loop at the source.~~ done (utils.TestDocsCountDrift guards icon counts vs FEATURES.md)
+2. ~~**Same for component counts:** `componentCount` const in demo.templ is still hand-maintained against FEATURES.md's "116 templ components". One end-to-end guard, but two hand-maintained numbers upstream.~~ done (utils.TestDocsCountDrift verifies component totals vs reality)
 3. **Stale-process hygiene:** prior session left :8080 occupied "never killed" (it was free by this session — someone killed it), this session inherited :8091. A convention (unique ports per session, or a check script) would prevent masked-binary bugs like d.1.
 4. **BuildFlow daemon commits unverified work with generic messages** (known T13 issue). This session's verification changes will likely be daemon-committed too. Fix lives in `larsartmann/buildflow`.
 5. **The flake `css` app and the committed CSS disagree on minification.** Either the app always minified and someone once committed unminified output, or the app changed. Decide one shape; a checksum/assert in CI (`TestCSSFreshness`?) would catch future divergence before it becomes archaeology.
-6. **`demo.out.css` ambiguity** — either delete it or make it the single source that `static/` copies from. Two files, byte-identical, no documented owner = split brain waiting to happen.
+6. ~~**`demo.out.css` ambiguity** — either delete it or make it the single source that `static/` copies from. Two files, byte-identical, no documented owner = split brain waiting to happen.~~ done (examples/demo/demo.out.css removed)
 
 ## f) NEXT: up to 50 things
 
@@ -52,15 +52,15 @@
 
 1. Commit the working-tree changes with a proper message (before daemon does).
 2. Kill or document the :8091 demo server.
-3. Decide fate of `examples/demo/demo.out.css` (delete or single-source).
-4. Verify `website/src/styles/global.out.css` recompile (daemon's 7c2e3c2) against website sources.
+3. ~~Decide fate of `examples/demo/demo.out.css` (delete or single-source).~~ done (examples/demo/demo.out.css deleted (no such file))
+4. ~~Verify `website/src/styles/global.out.css` recompile (daemon's 7c2e3c2) against website sources.~~ done (website/src/styles/global.out.css no longer exists)
 5. Add `[Unreleased]` entry note to `docs/status/2026-08-17_14-26...md` that its "verification pending" state is now resolved.
-6. Consider cutting v1.8.5 / v1.9.0: demo overhaul + CircularProgress/SectionHeading/DateRange + StatCard ValueID are sitting in `[Unreleased]`.
+6. ~~Consider cutting v1.8.5 / v1.9.0: demo overhaul + CircularProgress/SectionHeading/DateRange + StatCard ValueID are sitting in `[Unreleased]`.~~ done (CHANGELOG.md 1.9.0 cut 2026-08-21)
 
 **Drift-guard hardening**
-7. `icons` package test asserting `len(AllIconNames())` against FEATURES.md (close the loop at source).
+7. ~~`icons` package test asserting `len(AllIconNames())` against FEATURES.md (close the loop at source).~~ done (utils.TestDocsCountDrift asserts icon count vs docs)
 8. Generate FEATURES.md Totals line from code instead of hand-editing.
-9. Guard `componentCount` (demo) against a real count of components, not just FEATURES.md parity.
+9. ~~Guard `componentCount` (demo) against a real count of components, not just FEATURES.md parity.~~ done (utils.TestDocsCountDrift covers component counts vs reality)
 10. Extend `TestCSSFreshness` to also assert minification shape consistency.
 11. Guard `.gitignore` against BuildFlow re-appending `*_templ.go` (already known; a pre-commit grep exists — maybe move into treefmt).
 
@@ -70,13 +70,13 @@
 14. Confirm `/api/items` EndOfList terminator actually renders (probe returned 662B at cursor=2; check cursor beyond end).
 15. Dark-mode visual pass of new pages (`/users`, `/recipes/auth`) via `nix run .#visual` if pages are in scope.
 16. RTL pass (`dir=rtl` probe) of new pages.
-17. Add `/users` and `/recipes/auth` links to demo nav/TOC on the index page (verify they're reachable by clicking, not just URL).
-18. `demo.out.css` vs `static/app.css`: if kept, wire the flake app to emit both or neither.
+17. ~~Add `/users` and `/recipes/auth` links to demo nav/TOC on the index page (verify they're reachable by clicking, not just URL).~~ done (recipeLinkCard links to /users and /recipes/auth on demo index)
+18. ~~`demo.out.css` vs `static/app.css`: if kept, wire the flake app to emit both or neither.~~ done (demo.out.css deleted — nothing to wire)
 
 **Known carried-over questions/infra**
 19. Canonical docs URL for hero link (question below).
 20. Move demo mock handlers out of `main.go` into `handlers.go`?
-21. Revert decision on daemon's `usersTotalPages` edit — I decided KEEP; confirm.
+21. ~~Revert decision on daemon's `usersTotalPages` edit — I decided KEEP; confirm.~~ **Won't implement — revert rejected — daemon edit kept: behaviorally identical, cleaner.**
 22. BuildFlow generic-commit-message fix (upstream repo).
 23. BuildFlow pre-commit re-appending `*_templ.go` to `.gitignore` (upstream fix).
 24. BuildFlow 60s budget skipping `go test ./...` (upstream fix).

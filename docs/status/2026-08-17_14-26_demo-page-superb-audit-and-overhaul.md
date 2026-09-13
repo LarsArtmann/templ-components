@@ -11,51 +11,51 @@
 
 | #  | Finding                                                                                                                                                                                              | Severity |
 | -- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| 1  | Eager `PolledRegion` polled `/api/demo-stats` → **404 → error toast fired on every page load**                                                                                                       | Critical |
-| 2  | 5 demo'd endpoints didn't exist (`/api/items`, `/api/items/123`, `/api/users`, `/api/demo-stats`, `/users`); 2 working mocks (`/api/load-more`, `/api/delete`) were orphaned (referenced by nothing) | Critical |
-| 3  | Hero badge said **v0.17.0**; actual version **1.8.4**                                                                                                                                                | High     |
-| 4  | Hero claimed **107 components / 10 packages**; FEATURES.md canonical totals: **116 / 11**                                                                                                            | High     |
-| 5  | Sticky-nav TOC "Datastar" pointed at `#datastar-sdk-section`; real anchor was `datastar-sdk-script` — dead link in the primary nav                                                                   | High     |
-| 6  | "Layout" section not in TOC at all                                                                                                                                                                   | Medium   |
-| 7  | 4 pages unreachable by any link: `/forms`, `/recipes/dashboard`, `/recipes/settings`, `/recipes/login`                                                                                               | High     |
-| 8  | Shipped-but-never-demoed: `SectionHeading`, `DateRange`, `CircularProgress`, `LoadingOverlay`, `ViewTransitions`, `SSEErrorHandling`, `AuthLayout` — and the **entire `charts/echarts` module**      | High     |
-| 9  | `recipes.LoginCard` FormBody + AuthLayout demo content was a giant hand-rolled `templ.Raw` HTML string — the component library not using its own components                                          | Medium   |
+| ~~1~~  | ~~Eager `PolledRegion` polled `/api/demo-stats` → **404 → error toast fired on every page load**~~ done — examples/demo/main.go /api/demo-stats handler (settles after 3 ticks) | ~~Critical~~ |
+| ~~2~~  | ~~5 demo'd endpoints didn't exist (`/api/items`, `/api/items/123`, `/api/users`, `/api/demo-stats`, `/users`); 2 working mocks (`/api/load-more`, `/api/delete`) were orphaned (referenced by nothing)~~ done — main.go serves /api/items, /api/items/123, /api/users, /api/demo-stats, /users | ~~Critical~~ |
+| ~~3~~  | ~~Hero badge said **v0.17.0**; actual version **1.8.4**~~ done — hero renders utils.Version (demo.templ) | ~~High~~ |
+| ~~4~~  | ~~Hero claimed **107 components / 10 packages**; FEATURES.md canonical totals: **116 / 11**~~ done — componentCount const + TestHeroCountsMatchFeatures guard (demo_counts_test.go) | ~~High~~ |
+| ~~5~~  | ~~Sticky-nav TOC "Datastar" pointed at `#datastar-sdk-section`; real anchor was `datastar-sdk-script` — dead link in the primary nav~~ done — TOC Datastar anchor matches demoSection id | ~~High~~ |
+| ~~6~~  | ~~"Layout" section not in TOC at all~~ done — TOC entry Layout layout-primitives (demo.templ) | ~~Medium~~ |
+| ~~7~~  | ~~4 pages unreachable by any link: `/forms`, `/recipes/dashboard`, `/recipes/settings`, `/recipes/login`~~ done — recipeLinkCard links to /users, /forms, /recipes (demo.templ) | ~~High~~ |
+| ~~8~~  | ~~Shipped-but-never-demoed: `SectionHeading`, `DateRange`, `CircularProgress`, `LoadingOverlay`, `ViewTransitions`, `SSEErrorHandling`, `AuthLayout` — and the **entire `charts/echarts` module**~~ done — demos exist: SectionHeading/DateRange/CircularProgress/LoadingOverlay/ViewTransitions/SSEErrorHandling/AuthLayout/echarts | ~~High~~ |
+| ~~9~~  | ~~`recipes.LoginCard` FormBody + AuthLayout demo content was a giant hand-rolled `templ.Raw` HTML string — the component library not using its own components~~ done — recipes_demo.templ renders via forms.Form | ~~Medium~~ |
 | 10 | Nav demo links pointed at nonexistent `/about`, `/contact`                                                                                                                                           | Medium   |
 | 11 | Accordion item 3 said "active development (v0.x), API may change before v1.0" — false at v1.8.4; CollapsibleSection debug block hardcoded "v1.6.0"                                                   | Medium   |
-| 12 | `/users` StatCard href + DataTable `SortBaseURL` + Pagination `BaseURL` all targeted a 404 page                                                                                                      | High     |
-| 13 | No results target for the FilterDropdown demo (`#results` referenced, never existed in DOM)                                                                                                          | Medium   |
+| ~~12~~ | ~~`/users` StatCard href + DataTable `SortBaseURL` + Pagination `BaseURL` all targeted a 404 page~~ done — /users route served (main.go) | ~~High~~ |
+| ~~13~~ | ~~No results target for the FilterDropdown demo (`#results` referenced, never existed in DOM)~~ done — id=results target exists (forms_section.templ) | ~~Medium~~ |
 
 ---
 
 ## a) FULLY DONE
 
-1. **Full audit** — read every demo template + main.go; ran the server (port 8091) and probed 17 routes with a Go HTTP client (curl is banned); grep-verified component coverage vs FEATURES.md catalogue.
-2. **`main.go` rewritten backend**:
-   - `/api/items` (LoadMore pagination: batch → next button → EndOfList), `/api/items/123` (ConfirmDelete, live target `#item-123` in DOM), `/api/save` (600ms delay so LoadingButton state is visible), `/api/demo-stats` (self-replacing PolledRegion response that **settles after 3 ticks** instead of polling forever), `/api/users` (real filtered fragment via templ).
-   - New route `/users` — full server-driven page: DataTable sort (Name/email, asc/desc via `?sort=&dir=`), Pagination round-trips (`?page=`), Breadcrumbs, Card(flush). This is the flagship "here's the pattern the library is built for" page.
-   - New route `/recipes/auth` — the never-demoed `recipes.AuthLayout`.
-   - All fragment handlers render via templ (`componentOr500`) instead of string literals.
-3. **Hero fixed**: version now renders `utils.Version` dynamically (can never go stale); component count 107→**116**, packages 10→**11** (canonical FEATURES.md numbers); icon count computed from `icons.AllIconNames()` (self-maintaining).
-4. **Drift-guard test added** (`examples/demo/demo_counts_test.go`): `TestHeroCountsMatchFeatures` parses FEATURES.md Totals line and fails if the demo consts or icon count drift; also asserts the hero renders the live `utils.Version`.
-5. **TOC fixed**: broken Datastar anchor corrected; Layout + ECharts + Recipes entries added.
-6. **8 missing component demos added**: SectionHeading, DateRange (both variants incl. "Present"), CircularProgress (3 sizes/colors/label), LoadingOverlay (pinned-inside-a-frame variant via Class override, so it demos without hijacking the page), htmx.ViewTransitions, datastar.SSEErrorHandling, echarts.SDKScript + echarts.EChart (hand-authored RenderSnippet-equivalent strings — demo stays go-echarts-free, matching the adapter's zero-dep design), recipes.AuthLayout.
-7. **New "Recipes & Full Pages" section** on the home page: 6 link cards (Users, Forms, Dashboard, Settings, Login, Auth) — every demo page now reachable in ≤1 click.
-8. **Dogfooding fixes**: LoginCard FormBody now uses `forms.Form` + `forms.Input` + `display.Button` instead of raw HTML; Dashboard "Revenue trend" card now uses `display.LineChart` (was a hand-rolled flex-bar chart), "Recent activity" uses Avatar + RelativeTime (was "No recent activity"); `/forms` page wrapped in `forms.Form` (was a bare div with a submit button outside any form — invalid HTML); filter bar results targets (`#results`, `#user-results`) now exist.
-9. **Stale copy fixed**: accordion "v0.x" → dynamic version; debug block version/time dynamic; nav links → real pages; breadcrumbs → real hrefs.
-10. **prerender.go** updated with both new pages (`/users` is NOT in prerender — flagged below).
+1. ~~**Full audit** — read every demo template + main.go; ran the server (port 8091) and probed 17 routes with a Go HTTP client (curl is banned); grep-verified component coverage vs FEATURES.md catalogue.~~ done at `15679eb4`
+2. ~~**`main.go` rewritten backend**:~~ done at `15679eb4`
+   ~~- `/api/items` (LoadMore pagination: batch → next button → EndOfList), `/api/items/123` (ConfirmDelete, live target `#item-123` in DOM), `/api/save` (600ms delay so LoadingButton state is visible), `/api/demo-stats` (self-replacing PolledRegion response that **settles after 3 ticks** instead of polling forever), `/api/users` (real filtered fragment via templ).~~
+   ~~- New route `/users` — full server-driven page: DataTable sort (Name/email, asc/desc via `?sort=&dir=`), Pagination round-trips (`?page=`), Breadcrumbs, Card(flush). This is the flagship "here's the pattern the library is built for" page.~~
+   ~~- New route `/recipes/auth` — the never-demoed `recipes.AuthLayout`.~~
+   ~~- All fragment handlers render via templ (`componentOr500`) instead of string literals.~~
+3. ~~**Hero fixed**: version now renders `utils.Version` dynamically (can never go stale); component count 107→**116**, packages 10→**11** (canonical FEATURES.md numbers); icon count computed from `icons.AllIconNames()` (self-maintaining).~~ done at `15679eb4`
+4. ~~**Drift-guard test added** (`examples/demo/demo_counts_test.go`): `TestHeroCountsMatchFeatures` parses FEATURES.md Totals line and fails if the demo consts or icon count drift; also asserts the hero renders the live `utils.Version`.~~ done at `15679eb4`
+5. ~~**TOC fixed**: broken Datastar anchor corrected; Layout + ECharts + Recipes entries added.~~ done at `15679eb4`
+6. ~~**8 missing component demos added**: SectionHeading, DateRange (both variants incl. "Present"), CircularProgress (3 sizes/colors/label), LoadingOverlay (pinned-inside-a-frame variant via Class override, so it demos without hijacking the page), htmx.ViewTransitions, datastar.SSEErrorHandling, echarts.SDKScript + echarts.EChart (hand-authored RenderSnippet-equivalent strings — demo stays go-echarts-free, matching the adapter's zero-dep design), recipes.AuthLayout.~~ done at `15679eb4`
+7. ~~**New "Recipes & Full Pages" section** on the home page: 6 link cards (Users, Forms, Dashboard, Settings, Login, Auth) — every demo page now reachable in ≤1 click.~~ done at `15679eb4`
+8. ~~**Dogfooding fixes**: LoginCard FormBody now uses `forms.Form` + `forms.Input` + `display.Button` instead of raw HTML; Dashboard "Revenue trend" card now uses `display.LineChart` (was a hand-rolled flex-bar chart), "Recent activity" uses Avatar + RelativeTime (was "No recent activity"); `/forms` page wrapped in `forms.Form` (was a bare div with a submit button outside any form — invalid HTML); filter bar results targets (`#results`, `#user-results`) now exist.~~ done at `15679eb4`
+9. ~~**Stale copy fixed**: accordion "v0.x" → dynamic version; debug block version/time dynamic; nav links → real pages; breadcrumbs → real hrefs.~~ done at `15679eb4`
+10. ~~**prerender.go** updated with both new pages (`/users` is NOT in prerender — flagged below).~~ done at `15679eb4`
 
 ## b) PARTIALLY DONE
 
-1. **Final build verification NOT re-run.** The last executed `templ generate + go build` failed with 7 compile errors; I fixed all 7 (ViewTransitionsProps has no Nonce field → BaseProps; `icons.User` doesn't exist → UserCircle; ButtonProps has no Class field → BaseProps.Class; Pagination wants uint; users_demo.go/templ split to fix a redeclared-import issue) — but the session was interrupted **before re-running generate+build**. State: fixes applied, compilation unconfirmed. The BuildFlow daemon committed everything anyway (see d).
-2. **CSS recompilation not done.** New demo sections add Tailwind classes (`recipes-*` cards, CircularProgress, polled-region styles, ECharts container). The committed `static/app.css` is stale until `nix run .#css` (or full build) runs — this repo has `TestCSSFreshness` which **fails in CI** on stale CSS. The daemon's commit 7c2e3c2 regenerated `demo.out.css` but that is not the embedded `static/app.css`.
-3. **Full verification suite not run**: `nix run .#test` (includes my new drift-guard test), `nix run .#lint`, golden tests untouched-but-unproven, live re-probe of all routes (the old binary on :8091 still serves the pre-fix code).
+1. ~~**Final build verification NOT re-run.** The last executed `templ generate + go build` failed with 7 compile errors; I fixed all 7 (ViewTransitionsProps has no Nonce field → BaseProps; `icons.User` doesn't exist → UserCircle; ButtonProps has no Class field → BaseProps.Class; Pagination wants uint; users_demo.go/templ split to fix a redeclared-import issue) — but the session was interrupted **before re-running generate+build**. State: fixes applied, compilation unconfirmed. The BuildFlow daemon committed everything anyway (see d).~~ done (build confirmed OK in follow-up 2026-08-17_15-14 report)
+2. ~~**CSS recompilation not done.** New demo sections add Tailwind classes (`recipes-*` cards, CircularProgress, polled-region styles, ECharts container). The committed `static/app.css` is stale until `nix run .#css` (or full build) runs — this repo has `TestCSSFreshness` which **fails in CI** on stale CSS. The daemon's commit 7c2e3c2 regenerated `demo.out.css` but that is not the embedded `static/app.css`.~~ done (examples/demo/static/app.css recompiled (tailwindcss v4.3.3 header))
+3. ~~**Full verification suite not run**: `nix run .#test` (includes my new drift-guard test), `nix run .#lint`, golden tests untouched-but-unproven, live re-probe of all routes (the old binary on :8091 still serves the pre-fix code).~~ done (tests/lint/probe all pass per 2026-08-17_15-14 report)
 
 ## c) NOT STARTED
 
-1. `/users` page missing from `prerender.go` page list (only server-served).
+1. ~~`/users` page missing from `prerender.go` page list (only server-served).~~ done (users/index.html in examples/demo/prerender.go pages list)
 2. Visual/screenshot pass of the new sections (light+dark, mobile) — `nix run .#visual` not attempted.
-3. `demo.out.css` is a committed artifact that appears to be dead weight (static.go embeds `static/app.css`; nothing references `demo.out.css`) — not investigated, not removed.
-4. CHANGELOG `[Unreleased]` entry for the demo overhaul — **repo rule: every master commit keeps [Unreleased] warm; the daemon committed without one.**
+3. ~~`demo.out.css` is a committed artifact that appears to be dead weight (static.go embeds `static/app.css`; nothing references `demo.out.css`) — not investigated, not removed.~~ done (examples/demo/demo.out.css removed (file absent))
+4. ~~CHANGELOG `[Unreleased]` entry for the demo overhaul — **repo rule: every master commit keeps [Unreleased] warm; the daemon committed without one.**~~ done (CHANGELOG.md Unreleased demo overhaul entry)
 5. AGENTS.md demo section not updated with the new routes/pages.
 6. Icon-search and section-filter demo JS still use ad-hoc scripts — fine (nonce'd), but untested this session.
 7. Hero "Documentation" link → `https://templcomponents.lars.software` — never verified live this session.
@@ -70,9 +70,9 @@
 ## e) WHAT WE SHOULD IMPROVE (session learnings)
 
 1. **A demo is a test surface.** Every `hx-*`/`data-*` URL in demo templates should be probed by a test — a dead demo endpoint is a silent lie to every evaluator. The `TestHeroCountsMatchFeatures` pattern should extend to "every href/hx-get/hx-post in rendered demo pages resolves to a registered route" (one table-driven test, kills finding #2 permanently).
-2. **Never hardcode version/counts in a demo.** v0.17.0-at-v1.8.4 proves copy rot. Anything numeric should come from `utils.Version`/`AllIconNames()`/FEATURES.md or a guard test fails.
-3. **Dogfood or it didn't happen.** The library's own recipe demos containing raw HTML strings undermines the pitch. Every demo surface should render through the library.
-4. **Demos must settle.** Eager infinite polling hammering a 404 was the single worst bug — demo'd interactivity should terminate (my 3-tick settle pattern) or be user-armed.
+2. ~~**Never hardcode version/counts in a demo.** v0.17.0-at-v1.8.4 proves copy rot. Anything numeric should come from `utils.Version`/`AllIconNames()`/FEATURES.md or a guard test fails.~~ done (examples/demo/demo_counts_test.go TestHeroCountsMatchFeatures)
+3. ~~**Dogfood or it didn't happen.** The library's own recipe demos containing raw HTML strings undermines the pitch. Every demo surface should render through the library.~~ done (recipes demo renders via forms.Form/display components (recipes_demo.templ))
+4. ~~**Demos must settle.** Eager infinite polling hammering a 404 was the single worst bug — demo'd interactivity should terminate (my 3-tick settle pattern) or be user-armed.~~ done (/api/demo-stats settles after 3 ticks (main.go))
 5. **Daemon commits unverified work.** Known issue (AGENTS.md T13/T1 family). This session is another data point: 2,200+ lines of demo changes hit master without `go build`. Mitigation for next session: run verify _before_ the daemon's 60s window, or accept CI as the gate.
 6. **templ + `edit` tool friction**: surgical edits on indentation-sensitive templ blocks are error-prone; prefer `write` for restructured regions.
 
@@ -80,19 +80,19 @@
 
 **Verification (do these first):**
 
-1. `nix develop -c 'templ generate ./... && go build ./...'` — confirm my 7 error-fixes compile
-2. Review daemon's `users_demo.go` tweak in 7c2e3c2 (I didn't author it)
-3. `nix run .#css` — recompile `static/app.css` with the new classes
-4. `nix run .#test` — includes new `TestHeroCountsMatchFeatures` + `TestCSSFreshness`
-5. `nix run .#lint`
-6. Re-run live route probe (all 17 old paths + `/users` + `/recipes/auth` + new API endpoints)
+1. ~~`nix develop -c 'templ generate ./... && go build ./...'` — confirm my 7 error-fixes compile~~ done (build OK per 2026-08-17_15-14 report)
+2. ~~Review daemon's `users_demo.go` tweak in 7c2e3c2 (I didn't author it)~~ done (page-count clamp kept in users_demo.go)
+3. ~~`nix run .#css` — recompile `static/app.css` with the new classes~~ done (static/app.css recompiled via nix run .#css)
+4. ~~`nix run .#test` — includes new `TestHeroCountsMatchFeatures` + `TestCSSFreshness`~~ done (all module tests pass (15-14 report))
+5. ~~`nix run .#lint`~~ done (lint clean across 7 modules (15-14 report))
+6. ~~Re-run live route probe (all 17 old paths + `/users` + `/recipes/auth` + new API endpoints)~~ done (all 19 routes return 200 (15-14 report))
 7. `nix run .#verify` as the single done-check
-8. Add CHANGELOG `[Unreleased]` entry (demo overhaul + new routes)
-9. Kill the stale process squatting on :8080
-10. Check `.gitignore` for BuildFlow's re-appended `*_templ.go` line (documented gotcha; new files `users_demo_templ.go`, `echarts_demo_templ.go` must be tracked — verify with `git ls-files`)
+8. ~~Add CHANGELOG `[Unreleased]` entry (demo overhaul + new routes)~~ done (CHANGELOG.md Unreleased entry added)
+9. ~~Kill the stale process squatting on :8080~~ done (port 8080 free per 15-14 report)
+10. ~~Check `.gitignore` for BuildFlow's re-appended `*_templ.go` line (documented gotcha; new files `users_demo_templ.go`, `echarts_demo_templ.go` must be tracked — verify with `git ls-files`)~~ done (.gitignore !*_templ.go unignore intact)
 
 **Coverage gaps still open:**
-11. Add `/users` to `prerender.go`
+11. ~~Add `/users` to `prerender.go`~~ done (users/index.html in prerender.go pages list)
 12. Demo `forms.Select{Stylable: true}` (customizable `<select>` API — shipped, not shown)
 13. Demo `layout.Minimal` (static/PDF shell)
 14. Demo `layout.Script`/`Stylesheet` CSP helpers explicitly
@@ -121,11 +121,11 @@
 **Quality/infra:**
 36. Write the "every demo'd URL resolves" test (see e.1) — biggest ROI item on this list
 37. Extend drift-guard: demo section count vs `demoSection(` call count vs TOC entries (anchor existence test)
-38. Investigate/remove `demo.out.css` if dead
+38. ~~Investigate/remove `demo.out.css` if dead~~ done (examples/demo/demo.out.css removed)
 39. Add visual-test goldens for `/users` and `/recipes/auth`
 40. Dark-mode + mobile screenshot sweep of new sections
 41. Update AGENTS.md "Demo Infrastructure" with new routes/pages
-42. Update SKILL.md/README if they reference demo routes
+42. ~~Update SKILL.md/README if they reference demo routes~~ done (SKILL.md/README contain no demo-route references (nothing to update))
 43. Lighthouse/a11y pass (focus order on new pages, heading hierarchy — `/users` has h1→Card title hierarchy worth checking)
 44. Consider a `/api/error` 500 endpoint to _intentionally_ demo GlobalErrorHandling's toast (today it only fires on real bugs)
 45. Add `<noscript>` notice? (library is server-rendered-first; HTMX bits degrade — worth stating on the demo)

@@ -16,13 +16,13 @@ build a 1:1 port of all 316 originals.
 
 ### Bugs fixed
 
-1. **`Refresh`/`ArrowPath` had NO path data** (pre-existing bug — both rendered as
-   the Question mark fallback). Added correct heroicons v2 outline arrow-path SVG
-   data to `iconPathData` (`icons/icon_paths.go:31`). Now `Icon(Refresh, ...)` and
-   `Icon(ArrowPath, ...)` render the actual refresh icon.
-2. **`AnimSplit` dead code removed.** It was defined but zero icons used it (Trash
-   has only 1 combined path, not 2). Removed from: `animation.go` (constant +
-   `validAnimations` map), `custom.css` (`.tc-anim-split` rules), all tests.
+1. ~~**`Refresh`/`ArrowPath` had NO path data** (pre-existing bug — both rendered as~~ done at `cc44ca34`
+   ~~the Question mark fallback). Added correct heroicons v2 outline arrow-path SVG~~
+   ~~data to `iconPathData` (`icons/icon_paths.go:31`). Now `Icon(Refresh, ...)` and~~
+   ~~`Icon(ArrowPath, ...)` render the actual refresh icon.~~
+2. ~~**`AnimSplit` dead code removed.** It was defined but zero icons used it (Trash~~ done at `cc44ca34`
+   ~~has only 1 combined path, not 2). Removed from: `animation.go` (constant +~~
+   ~~`validAnimations` map), `custom.css` (`.tc-anim-split` rules), all tests.~~
 
 ### Animation types: 10 → 11
 
@@ -49,29 +49,29 @@ build a 1:1 port of all 316 originals.
 
 ### Tests rewritten
 
-8. **`TestCompleteAnimationCoverage`** — new test that iterates ALL icons in
-   `iconPathData` + checks `iconAliases` resolution, failing if any icon would
-   silently fall back to `AnimPulse`. This is the drift-guard against future
-   unmapped icons.
-9. **`TestBlinkIconsHaveMultiplePaths`** — verifies all icons mapped to
-   `AnimBlink` have 2+ path elements (replaces the old
-   `TestPerPathAnimationsHaveCorrectPathCount` which also checked the removed
-   `AnimSplit`).
-10. **Alias tests** — ArrowPath→spin, Bars3→nod, HandThumbUp→bounce, MapPin→bounce,
-    Close→pulse.
-11. **Draw-specific tests** — `TestAnimatedIconWithDrawRendersPathLength`,
-    `TestAnimatedIconBoltDefaultsToDraw`, verifying `pathLength="1"` in output.
-12. **Refresh tests** — `TestAnimatedIconRefreshDefaultsToSpin`.
-13. **Count updated** — `TestAllAnimations` expects 11 (was 10).
-14. All 38+ test cases pass, golangci-lint 0 issues, workspace build clean.
+8. ~~**`TestCompleteAnimationCoverage`** — new test that iterates ALL icons in~~ done at `cc44ca34`
+   ~~`iconPathData` + checks `iconAliases` resolution, failing if any icon would~~
+   ~~silently fall back to `AnimPulse`. This is the drift-guard against future~~
+   ~~unmapped icons.~~
+9. ~~**`TestBlinkIconsHaveMultiplePaths`** — verifies all icons mapped to~~ done at `cc44ca34`
+   ~~`AnimBlink` have 2+ path elements (replaces the old~~
+   ~~`TestPerPathAnimationsHaveCorrectPathCount` which also checked the removed~~
+   ~~`AnimSplit`).~~
+10. ~~**Alias tests** — ArrowPath→spin, Bars3→nod, HandThumbUp→bounce, MapPin→bounce,~~ done at `cc44ca34`
+    ~~Close→pulse.~~
+11. ~~**Draw-specific tests** — `TestAnimatedIconWithDrawRendersPathLength`,~~ done at `cc44ca34`
+    ~~`TestAnimatedIconBoltDefaultsToDraw`, verifying `pathLength="1"` in output.~~
+12. ~~**Refresh tests** — `TestAnimatedIconRefreshDefaultsToSpin`.~~ done at `cc44ca34`
+13. ~~**Count updated** — `TestAllAnimations` expects 11 (was 10).~~ done at `cc44ca34`
+14. ~~All 38+ test cases pass, golangci-lint 0 issues, workspace build clean.~~ done at `cc44ca34`
 
 ### Documentation
 
-15. CHANGELOG `[Unreleased]` updated: 11 presets, full list, alias mention.
-16. AGENTS.md animated icons bullet rewritten.
-17. SKILL.md table: "11 animation presets".
-18. `docs/icons-only-adoption.md`: table updated with Beaker/Bolt, preset list
-    updated to 11.
+15. ~~CHANGELOG `[Unreleased]` updated: 11 presets, full list, alias mention.~~ done at `cc44ca34`
+16. ~~AGENTS.md animated icons bullet rewritten.~~ done at `cc44ca34`
+17. ~~SKILL.md table: "11 animation presets".~~ done at `cc44ca34`
+18. ~~`docs/icons-only-adoption.md`: table updated with Beaker/Bolt, preset list~~ done at `cc44ca34`
+    ~~updated to 11.~~
 
 ---
 
@@ -104,21 +104,21 @@ build a 1:1 port of all 316 originals.
 22. **No visual regression tests.** The `visualtest/` module has zero references
     to `AnimatedIcon` or `tc-anim`.
 23. **No demo page.** `examples/demo/` has no animated icons showcase.
-24. **`examples/demo/static/app.css` is stale.** It does NOT contain the new
-    `.tc-anim-wobble` or `.tc-anim-draw` CSS (nor did it contain the old
-    `.tc-anim-split`). The demo CSS needs recompilation.
-25. **No `AnimatedIconRTL` variant.** The regular `Icon` has `IconRTL`; the
-    animated variant does not.
-26. **`TestCustomCSSUtilities` does NOT scan the `icons` module.** The `scanDirs`
-    slice in `utils/custom_css_test.go:31-35` lists display, feedback, forms,
-    navigation, errorpage, layout, htmx, datastar, recipes, charts/echarts,
-    examples/demo — but NOT `icons`. So deleting `.tc-anim-*` from `custom.css`
-    would not be caught by this test. The `.tc-anim-*` classes are used in
-    `icons/animated_icon_templ.go`, not in a `.templ` file in a scanned dir.
+24. ~~**`examples/demo/static/app.css` is stale.** It does NOT contain the new~~ done (examples/demo/static/app.css contains .tc-anim-wobble/.tc-anim-draw)
+    ~~`.tc-anim-wobble` or `.tc-anim-draw` CSS (nor did it contain the old~~
+    ~~`.tc-anim-split`). The demo CSS needs recompilation.~~
+25. ~~**No `AnimatedIconRTL` variant.** The regular `Icon` has `IconRTL`; the~~ done (AnimatedIconRTL exists: icons/animated_icon.templ)
+    ~~animated variant does not.~~
+26. ~~**`TestCustomCSSUtilities` does NOT scan the `icons` module.** The `scanDirs`~~ done (icons/custom_css_test.go guards .tc-anim-* classes vs custom.css)
+    ~~slice in `utils/custom_css_test.go:31-35` lists display, feedback, forms,~~
+    ~~navigation, errorpage, layout, htmx, datastar, recipes, charts/echarts,~~
+    ~~examples/demo — but NOT `icons`. So deleting `.tc-anim-*` from `custom.css`~~
+    ~~would not be caught by this test. The `.tc-anim-*` classes are used in~~
+    ~~`icons/animated_icon_templ.go`, not in a `.templ` file in a scanned dir.~~
 27. **No `data-tc-anim` attribute for runtime debugging.** When a consumer uses
     `AnimBlink` on a 1-path icon, it silently does nothing. No diagnostic signal.
-28. **FEATURES.md not updated.** No mention of animated icons in the feature
-    inventory.
+28. ~~**FEATURES.md not updated.** No mention of animated icons in the feature~~ done (FEATURES.md AnimatedIcon row + function rows)
+    ~~inventory.~~
 29. **No benchmark tests** for `AnimatedIcon` rendering.
 
 ---
@@ -143,16 +143,16 @@ not correctness issues.
 
 ### Architectural concerns
 
-30. **The `<span>` wrapper changes DOM structure.** `AnimatedIcon` wraps the SVG
-    in `<span class="tc-anim tc-anim-{type} inline-flex">`. This could break
-    flex/grid layouts or CSS sibling combinators (`+`, `~`) that expect the SVG
-    as a direct child. This is undocumented and untested.
+30. ~~**The `<span>` wrapper changes DOM structure.** `AnimatedIcon` wraps the SVG~~ done (DOM Structure Caveat documented: icons/doc.go)
+    ~~in `<span class="tc-anim tc-anim-{type} inline-flex">`. This could break~~
+    ~~flex/grid layouts or CSS sibling combinators (`+`, `~`) that expect the SVG~~
+    ~~as a direct child. This is undocumented and untested.~~
 
-31. **Per-path animations (`AnimBlink`) are fragile.** They target
-    `svg path:nth-child(1)` and `nth-child(2)`. This only works if the icon's
-    paths are in the right order AND there are exactly 2+. There are 5 multi-path
-    icons (Settings, Eye, Location/MapPin, Tag) but only Eye uses blink. The CSS
-    silently does nothing on 1-path icons — no guard, no warning.
+31. ~~**Per-path animations (`AnimBlink`) are fragile.** They target~~ done (per-path fallback guard + TestAnimBlinkFallsBackOnSinglePathIcon)
+    ~~`svg path:nth-child(1)` and `nth-child(2)`. This only works if the icon's~~
+    ~~paths are in the right order AND there are exactly 2+. There are 5 multi-path~~
+    ~~icons (Settings, Eye, Location/MapPin, Tag) but only Eye uses blink. The CSS~~
+    ~~silently does nothing on 1-path icons — no guard, no warning.~~
 
 32. **`AnimDraw` requires special rendering (`pathLength="1"`).** Every other
     animation works with the standard `Icon()` output. `AnimDraw` needs a separate
@@ -160,9 +160,9 @@ not correctness issues.
     produces structurally different SVG than `AnimatedIconWithAnimation(name, AnimPulse, class)`.
     Inconsistent.
 
-33. **"Semantic" mappings are subjective and could be wrong.** Sun→spin? Moon→nod?
-    Fire→beat? These are guesses, not verified against the source. The heroicons-animated
-    library may not even have these icons — we'd need to check all 316 source files.
+33. ~~**"Semantic" mappings are subjective and could be wrong.** Sun→spin? Moon→nod?~~ done (all 96 mappings source-verified with HA= comments in icons/animation.go)
+    ~~Fire→beat? These are guesses, not verified against the source. The heroicons-animated~~
+    ~~library may not even have these icons — we'd need to check all 316 source files.~~
 
 34. **No dark-mode-specific styling.** The `@keyframes` use `scale`, `rotate`,
     `translate`, `opacity`, `stroke-dashoffset` — these are color-independent, so
@@ -177,13 +177,13 @@ not correctness issues.
 ### Testing gaps
 
 36. **No test verifies the `<span>` wrapper doesn't break common layouts.**
-37. **No test verifies `AnimBlink` is a no-op on 1-path icons** (just that it
-    works on 2-path icons).
+37. ~~**No test verifies `AnimBlink` is a no-op on 1-path icons** (just that it~~ done (TestAnimBlinkFallsBackOnSinglePathIcon exists: icons/animated_icon_test.go)
+    ~~works on 2-path icons).~~
 38. **No test verifies the `@keyframes` in `custom.css` actually produce visible
     animations** — only that the CSS classes exist and the HTML structure is
     correct.
-39. **No test catches stale demo CSS** — `examples/demo/static/app.css` could be
-    wildly out of date and nothing fails.
+39. ~~**No test catches stale demo CSS** — `examples/demo/static/app.css` could be~~ done (utils/css_freshness_test.go guards examples/demo/static/app.css freshness)
+    ~~wildly out of date and nothing fails.~~
 
 ---
 
@@ -191,29 +191,29 @@ not correctness issues.
 
 ### P0 — Correctness & safety
 
-40. **Add `icons` to `TestCustomCSSUtilities` scan dirs** (or add a separate
-    test in the icons module that asserts `.tc-anim-*` classes exist in
-    `custom.css`). Currently the CSS-to-templ drift guard has a blind spot.
-41. **Recompile `examples/demo/static/app.css`** — it's stale, missing all
-    `.tc-anim-*` classes. Run `nix run .#build` or the Dockerfile pipeline.
+40. ~~**Add `icons` to `TestCustomCSSUtilities` scan dirs** (or add a separate~~ done (icons/custom_css_test.go asserts .tc-anim-* classes in custom.css)
+    ~~test in the icons module that asserts `.tc-anim-*` classes exist in~~
+    ~~`custom.css`). Currently the CSS-to-templ drift guard has a blind spot.~~
+41. ~~**Recompile `examples/demo/static/app.css`** — it's stale, missing all~~ done (app.css recompiled: .tc-anim-wobble/.tc-anim-draw present)
+    ~~`.tc-anim-*` classes. Run `nix run .#build` or the Dockerfile pipeline.~~
 42. **Add golden snapshot tests** for `AnimatedIcon` output — create
     `icons/animated_icon_golden_test.go` with the `golden_sweep_test.go` pattern.
-43. **Add `AnimatedIconRTL` variant** — mirror the `IconRTL` pattern for
-    directional icons that also need animation.
+43. ~~**Add `AnimatedIconRTL` variant** — mirror the `IconRTL` pattern for~~ done (AnimatedIconRTL exists: icons/animated_icon.templ)
+    ~~directional icons that also need animation.~~
 
 ### P1 — Coverage & quality
 
-44. **Verify more icon mappings against heroicons-animated source.** Fetch more
-    `.tsx` source files for icons we guessed at (Lock, Unlock, Trash, Cog6Tooth,
-    MagnifyingGlass, Play, ChevronDown, etc.). Only 11/316 sources were checked.
+44. ~~**Verify more icon mappings against heroicons-animated source.** Fetch more~~ done (96/96 mappings source-verified (HA= comments in icons/animation.go))
+    ~~`.tsx` source files for icons we guessed at (Lock, Unlock, Trash, Cog6Tooth,~~
+    ~~MagnifyingGlass, Play, ChevronDown, etc.). Only 11/316 sources were checked.~~
 45. **Add visual regression tests** for at least the verified animations (Heart,
     Bell, Settings, Eye, Beaker, Bolt) — catch layout shifts and color regressions.
 46. **Add demo page** showing all 11 animation types with before/after hover states.
-47. **Update FEATURES.md** with animated icons in the feature inventory.
-48. **Document the `<span>` wrapper caveat** — consumers need to know the DOM
-    structure changes when using `AnimatedIcon` vs `Icon`.
-49. **Consider a runtime guard for per-path animations on wrong-path-count icons** —
-    emit `data-tc-anim-warning` or fall back to a whole-SVG animation.
+47. ~~**Update FEATURES.md** with animated icons in the feature inventory.~~ done (FEATURES.md animated icon rows)
+48. ~~**Document the `<span>` wrapper caveat** — consumers need to know the DOM~~ done (span caveat documented: icons/doc.go)
+    ~~structure changes when using `AnimatedIcon` vs `Icon`.~~
+49. ~~**Consider a runtime guard for per-path animations on wrong-path-count icons** —~~ done (per-path anim on 1-path icon falls back to AnimPulse)
+    ~~emit `data-tc-anim-warning` or fall back to a whole-SVG animation.~~
 50. **Add benchmark** for `AnimatedIcon` rendering (other icon tests have benchmarks).
 51. **Deduplicate `drawIcon` and `strokeIcon`** — parameterize the path rendering
     to avoid drift.
@@ -226,8 +226,8 @@ not correctness issues.
     prefix/suffix, not full HTML validity.
 55. **Consider `play` animation** — heroicons-animated's Play icon has a unique
     shake pattern that might warrant its own preset vs. the generic `AnimShake`.
-56. **Map `Sun` and `Moon` correctly** — Sun→spin and Moon→nod are guesses. The
-    original may have different animations (Sun could pulse/glow, Moon could fade).
+56. ~~**Map `Sun` and `Moon` correctly** — Sun→spin and Moon→nod are guesses. The~~ done (icons/animation.go Sun: AnimPulse HA=sun; Moon: AnimWiggle HA=moon)
+    ~~original may have different animations (Sun could pulse/glow, Moon could fade).~~
 57. **Run `nix flake check`** to verify formatting compliance across all changed
     files.
 58. **Run the full `nix run .#verify` pipeline** (generate + build + test + lint)

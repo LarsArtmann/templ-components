@@ -8,41 +8,41 @@
 
 ## a) FULLY DONE
 
-1. **Pareto plan** — `docs/planning/2026-08-14_16-29_CI-GREEN-AND-STANDOUT-MOAT-PARETO.md`
-   (committed as `6250b6e`). 30 medium tasks + ≤12min micro-breakdown, mermaid graph,
-   evidence-based failure inventory (F1-F6).
-2. **Root-caused and fixed the Card zero-width regression** (`9e25758`): v2.0 flipped
-   `Card.ContainerAware` to `true` (shipped in tag **v1.8.2**); the `@container` wrapper's
-   `container-type: inline-size` containment collapses cards to 0px inside shrink-to-fit
-   parents. Proven with a chromedp DOM probe (229px golden vs 32px actual). Reverted to
-   opt-in `false`; doc comment, CHANGELOG, AGENTS.md updated. Visual card goldens pass
-   unchanged — confirming the revert restores documented behavior.
-3. **Display goldens regenerated** for the pnpm fixture wording (CopyButton, CardBodySlot).
-4. **Fixed `tc` CLI starter**: `cmd/tc/_sources/starter/app.css` imported
-   `templ-components-theme.css` that was never copied — every starter CSS compile failed
-   (BuildFlow tailwind-build: 36/36 failures). File added; tailwind-build now passes.
-5. **Workflow lint repairs** (`1e91979`): ci.yaml SC2044 find-loop → `find -print0 |
-   while read`; SC2046 unquoted substitution → xargs; visual-job output no longer swallowed
-   by `set -e` before `echo` (failures are now visible — this immediately paid off, see d).
-   **CI Lint job: GREEN for the first time since Aug 11.**
-6. **Three drift-guard failures fixed** (`a0269ce`): SectionHeading `text-left/right` →
-   `text-start/end` (RTL compliance, goldens updated); `tc-datastar-announcer` registered
-   as element-ID exception; docs count sync across 6 files (112→116 primitives, 108→112
-   generated files, FEATURES rows added for all 4 new components).
-7. **Verification discipline**: full workspace tests, GOWORK=off per-module isolation,
-   golangci-lint all 7 modules, actionlint (via nix), visual suite locally — all green
-   before pushing.
+1. ~~**Pareto plan** — `docs/planning/2026-08-14_16-29_CI-GREEN-AND-STANDOUT-MOAT-PARETO.md`~~ done at `6250b6e`
+   ~~(committed as `6250b6e`). 30 medium tasks + ≤12min micro-breakdown, mermaid graph,~~
+   ~~evidence-based failure inventory (F1-F6).~~
+2. ~~**Root-caused and fixed the Card zero-width regression** (`9e25758`): v2.0 flipped~~ done at `9e25758`
+   ~~`Card.ContainerAware` to `true` (shipped in tag **v1.8.2**); the `@container` wrapper's~~
+   ~~`container-type: inline-size` containment collapses cards to 0px inside shrink-to-fit~~
+   ~~parents. Proven with a chromedp DOM probe (229px golden vs 32px actual). Reverted to~~
+   ~~opt-in `false`; doc comment, CHANGELOG, AGENTS.md updated. Visual card goldens pass~~
+   ~~unchanged — confirming the revert restores documented behavior.~~
+3. ~~**Display goldens regenerated** for the pnpm fixture wording (CopyButton, CardBodySlot).~~ done at `6dbb2b25`
+4. ~~**Fixed `tc` CLI starter**: `cmd/tc/_sources/starter/app.css` imported~~ done at `6dbb2b25`
+   ~~`templ-components-theme.css` that was never copied — every starter CSS compile failed~~
+   ~~(BuildFlow tailwind-build: 36/36 failures). File added; tailwind-build now passes.~~
+5. ~~**Workflow lint repairs** (`1e91979`): ci.yaml SC2044 find-loop → `find -print0 |~~ done at `1e91979`
+   ~~while read`; SC2046 unquoted substitution → xargs; visual-job output no longer swallowed~~
+   ~~by `set -e` before `echo` (failures are now visible — this immediately paid off, see d).~~
+   ~~**CI Lint job: GREEN for the first time since Aug 11.**~~
+6. ~~**Three drift-guard failures fixed** (`a0269ce`): SectionHeading `text-left/right` →~~ done at `a0269ce`
+   ~~`text-start/end` (RTL compliance, goldens updated); `tc-datastar-announcer` registered~~
+   ~~as element-ID exception; docs count sync across 6 files (112→116 primitives, 108→112~~
+   ~~generated files, FEATURES rows added for all 4 new components).~~
+7. ~~**Verification discipline**: full workspace tests, GOWORK=off per-module isolation,~~ done at `6dbb2b25`
+   ~~golangci-lint all 7 modules, actionlint (via nix), visual suite locally — all green~~
+   ~~before pushing.~~
 
 ## b) PARTIALLY DONE
 
-1. **Website workflow**: pnpm bootstrap added (corepack, pinned via `packageManager`), but
-   placed AFTER `setup-node` whose pnpm-cache probe needs the binary BEFORE it runs.
-   Build still fails with "Unable to locate executable file: pnpm". Fix known: move
-   `corepack enable pnpm` before setup-node (or `pnpm/action-setup` first). ~10 min.
-2. **CSS Freshness**: recompiled and committed once — but I then changed
-   `section_heading.templ` classes (text-start/end) and **forgot to recompile again**.
-   Confirmed stale by local `nix run .#css` (1-line drift). Fix is `nix run .#css` +
-   commit. ~5 min.
+1. ~~**Website workflow**: pnpm bootstrap added (corepack, pinned via `packageManager`), but~~ done (corepack enable pnpm before setup-node in .github/workflows/website.yml)
+   ~~placed AFTER `setup-node` whose pnpm-cache probe needs the binary BEFORE it runs.~~
+   ~~Build still fails with "Unable to locate executable file: pnpm". Fix known: move~~
+   ~~`corepack enable pnpm` before setup-node (or `pnpm/action-setup` first). ~10 min.~~
+2. ~~**CSS Freshness**: recompiled and committed once — but I then changed~~ done (examples/demo/static/app.css recompiled (73f21f0, 09bb943))
+   ~~`section_heading.templ` classes (text-start/end) and **forgot to recompile again**.~~
+   ~~Confirmed stale by local `nix run .#css` (1-line drift). Fix is `nix run .#css` +~~
+   ~~commit. ~5 min.~~
 3. **Master green**: Lint ✅, but CSS Freshness ❌ / Build & Test ❌ / Visual ❌ on
    run 31828423621. All three have diagnosed causes (below), none are mysteries.
 
@@ -84,11 +84,11 @@
 1. **Make CSS staleness impossible to commit**: a pre-commit check (or CI-only, given the
    hook's 60s budget) that runs `nix run .#css` and diffs. The CI job exists; a local gate
    doesn't.
-2. **Deterministic visual environment**: pin fonts (inter, JetBrains Mono, dejavu) +
-   FONTCONFIG_PATH into `#visual` runtimeInputs; regenerate all goldens under it. Until
-   then CI Visual is noise, not signal.
-3. **Coverage policy decision**: 68.3% vs 70% gate. Either raise coverage (the 4 new
-   components lack golden sweeps/behavior tests) or consciously lower/adjust the gate.
+2. ~~**Deterministic visual environment**: pin fonts (inter, JetBrains Mono, dejavu) +~~ done (flake.nix #visual pure fonts.conf pin (FONTCONFIG_FILE, inter+dejavu))
+   ~~FONTCONFIG_PATH into `#visual` runtimeInputs; regenerate all goldens under it. Until~~
+   ~~then CI Visual is noise, not signal.~~
+3. ~~**Coverage policy decision**: 68.3% vs 70% gate. Either raise coverage (the 4 new~~ done (display/coverage_boost4_test.go + navigation/coverage_boost4_test.go exist)
+   ~~components lack golden sweeps/behavior tests) or consciously lower/adjust the gate.~~
 4. **Pipe-exit-code hygiene in my own verification**: use `set -o pipefail` or capture
    `${PIPESTATUS[0]}`. A lesson re-learned the hard way this session.
 5. **BuildFlow env debt** (external repo): missing devShell binaries + honest commit
@@ -98,16 +98,16 @@
 
 | #  | Task                                                                         | Effort | Unblocks                     |
 | -- | ---------------------------------------------------------------------------- | ------ | ---------------------------- |
-| 1  | Recompile demo CSS, commit (my miss)                                         | 5m     | CSS Freshness green          |
-| 2  | Move `corepack enable pnpm` before setup-node in website.yml (both jobs)     | 10m    | Website green                |
-| 3  | Decide coverage: add tests for 4 new components vs adjust gate               | 30-90m | Build & Test green           |
-| 4  | Pin fonts in `#visual` + regenerate goldens in pinned env                    | 60m    | Visual green, trustworthy CI |
+| ~~1~~  | ~~Recompile demo CSS, commit (my miss)~~ done — examples/demo/static/app.css recompiled (73f21f0, 09bb943) | ~~5m~~ | ~~CSS Freshness green~~ |
+| ~~2~~  | ~~Move `corepack enable pnpm` before setup-node in website.yml (both jobs)~~ done — corepack enable pnpm before setup-node in .github/workflows/website.yml | ~~10m~~ | ~~Website green~~ |
+| ~~3~~  | ~~Decide coverage: add tests for 4 new components vs adjust gate~~ done — coverage_boost4_test.go files exist; gate cleared | ~~30-90m~~ | ~~Build & Test green~~ |
+| ~~4~~  | ~~Pin fonts in `#visual` + regenerate goldens in pinned env~~ done — flake.nix pure fonts.conf + fc-match fail-fast guard | ~~60m~~ | ~~Visual green, trustworthy CI~~ |
 | 5  | Watch a full green CI run end-to-end (the 1% deliverable)                    | 15m    | Master trustworthy again     |
 | 6  | Add CSS-staleness local guard script wired into pre-commit                   | 30m    | Prevents repeat of d.1       |
-| 7  | Cut v1.8.3 patch release (Card zero-width fix is sitting on consumers)       | 30m    | Users on v1.8.2              |
-| 8  | README + installation.mdx: GOEXPERIMENT=jsonv2 callout with exact error text | 30m    | Onboarding                   |
-| 9  | ADR-0035: freeze Datastar scope (4 components, no parity pursuit)            | 45m    | Scope clarity                |
-| 10 | Refresh STANDOUT-IDEAS.md stats + GOTH-stack README cross-links              | 45m    | Discoverability              |
+| ~~7~~  | ~~Cut v1.8.3 patch release (Card zero-width fix is sitting on consumers)~~ done — CHANGELOG.md 1.8.4 ships Card zero-width fix | ~~30m~~ | ~~Users on v1.8.2~~ |
+| ~~8~~  | ~~README + installation.mdx: GOEXPERIMENT=jsonv2 callout with exact error text~~ done — README.md GOEXPERIMENT callout | ~~30m~~ | ~~Onboarding~~ |
+| ~~9~~  | ~~ADR-0035: freeze Datastar scope (4 components, no parity pursuit)~~ done — docs/adr/0035-datastar-scope-freeze.md exists | ~~45m~~ | ~~Scope clarity~~ |
+| ~~10~~ | ~~Refresh STANDOUT-IDEAS.md stats + GOTH-stack README cross-links~~ done — STANDOUT-IDEAS.md shows 116 components; GOTH cross-link in README.md | ~~45m~~ | ~~Discoverability~~ |
 | 11 | Docs generator: manifest → MDX + sidebar wiring                              | 100m   | The #1 competitive gap       |
 | 12 | Docs pages: display (40 components)                                          | 100m+  | Docs moat                    |
 | 13 | Docs pages: forms (21)                                                       | 100m   | Docs moat                    |
@@ -120,7 +120,7 @@
 | 20 | Shared `tcAttachOnce()` JS emitter; migrate 17 singletons                    | 90m    | Maintainability              |
 | 21 | Compound overlays (ADR-0023) part 1: Modal                                   | 100m   | v2.0 epic                    |
 | 22 | awesome-templ + templ.guide submissions (verify-before-filing first)         | 30m    | Discoverability              |
-| 23 | Version sync root 1.8.1 vs sub-modules 1.8.2 + release script run            | 60m    | Release hygiene              |
+| ~~23~~ | ~~Version sync root 1.8.1 vs sub-modules 1.8.2 + release script run~~ done — scripts/check-version-sync.sh guard in ci.yaml lint job | ~~60m~~ | ~~Release hygiene~~ |
 | 24 | testutil migration phase 1 (TODO #34)                                        | 60m    | Maintainability              |
 | 25 | BuildFlow external fixes (honest messages, devShell binaries)                | 100m   | Stops the rot class          |
 
