@@ -51,6 +51,32 @@ tc add dropdown --out ./src/components
 produce the `_templ.go` file, then import your local copy instead of the
 library package.
 
+### `tc doctor`
+
+Diagnoses the top consumer-integration traps in one command — every check
+prints pass/fail with a fix hint, and the exit code is non-zero on failure
+(so CI can gate on it):
+
+- **Tailwind `@source` scans `.templ` files** — the #1 integration trap:
+  the `@source` path resolves relative to the CSS file, not the CWD, so a
+  wrong path silently compiles a stylesheet with zero component classes.
+- **`GOEXPERIMENT=jsonv2`** — the library needs it until Go 1.27 (or set
+  via the go.mod toolchain directive).
+- **templ version pin** — a generator older than the one the library
+  generates with (v0.3.1020) emits incompatible `*_templ.go` runtime calls.
+- **Committed `*_templ.go`** (library repo only) — a `.templ` source
+  without its generated file ships uncompilable code through the proxy.
+- **`core.hooksPath` adoption** (library repo only) — the tracked
+  `.githooks/` guards are inactive until `scripts/setup-hooks.sh` runs.
+
+```bash
+tc doctor
+# tc doctor — templ-components environment check
+#   [pass] GOEXPERIMENT=jsonv2 (env)
+#   ...
+# result: all checks passed.
+```
+
 ## Why use this?
 
 The library is designed to cover the common cases with sensible defaults.
