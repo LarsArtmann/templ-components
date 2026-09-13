@@ -214,7 +214,7 @@ REPLACE_BACKUP_DIR="$(mktemp -d)"
 release_cleanup() {
 	if [ "$RELEASE_COMMITTED" = "0" ]; then
 		echo "Release aborted; rolling back version files, go.mod files, CHANGELOG, FEATURES..." >&2
-		git restore utils/version.go $MODFILES visualtest/go.mod CHANGELOG.md FEATURES.md 2>/dev/null || true
+		git restore utils/version.go $MODFILES visualtest/go.mod CHANGELOG.md FEATURES.md README.md 2>/dev/null || true
 	fi
 	rm -rf "$REPLACE_BACKUP_DIR"
 }
@@ -274,6 +274,18 @@ else
 	echo "Warning: FEATURES.md not found; skipped its version bump." >&2
 fi
 
+# 6c. Bump the README version badge.
+#     utils.TestVersionMatchesReadmeBadge (added 2026-09-13) guards the
+#     shields.io badge against hand-edit drift; the release script must own
+#     the bump too or the guard fails the release verify.
+if [ -f README.md ]; then
+	sed -i.bak -E "s#(img\.shields\.io/badge/version-v)[0-9]+\.[0-9]+\.[0-9]+#\1${NEW_VERSION}#" README.md
+	rm -f README.md.bak
+	echo "Bumped README version badge to $NEW_VERSION."
+else
+	echo "Warning: README.md not found; skipped the badge bump." >&2
+fi
+
 # 7. Run full verify (all modules — replaces still in place; see ordering note).
 echo "Running full verify (templ generate + CSS compile + per-module build/test/lint)..."
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
@@ -287,7 +299,7 @@ templ generate ./...
 # (shared with check-css-minified.sh and utils.TestCompiledCSSInventory).
 if command -v tailwindcss &>/dev/null; then
 	while read -r CSS_INPUT CSS_OUTPUT; do
-		case "$CSS_OUTPUT" in ""|\#*) continue ;; esac
+		case "$CSS_OUTPUT" in "" | \#*) continue ;; esac
 		tailwindcss -i "$CSS_INPUT" -o "$CSS_OUTPUT" --minify
 	done < <(grep -vE '^\s*(#|$)' "$(dirname "$0")/compiled-css-targets.txt")
 else
