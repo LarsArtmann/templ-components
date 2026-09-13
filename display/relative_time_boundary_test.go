@@ -20,9 +20,6 @@ func TestFormatRelativeTimeBoundaries(t *testing.T) {
 		name  string
 		delta time.Duration
 		want  string
-		// wantFuture overrides want for the mirrored future case (only the
-		// absolute-date fallback differs: a future date prints itself).
-		wantFuture string
 	}{
 		{"zero distance", 0, "just now"},
 		{"one second", 1 * time.Second, "just now"},
@@ -47,8 +44,15 @@ func TestFormatRelativeTimeBoundaries(t *testing.T) {
 		{"13 days", 13 * 24 * time.Hour, "1 week ago"},
 		{"14 days", 14 * 24 * time.Hour, "2 weeks ago"},
 		{"29 days", 29 * 24 * time.Hour, "4 weeks ago"},
-		{"30 days", 30 * 24 * time.Hour, "Aug 14, 2026", "Oct 13, 2026"}, // absolute fallback
-		{"60 days", 60 * 24 * time.Hour, "Jul 15, 2026", "Nov 12, 2026"},
+		{"30 days", 30 * 24 * time.Hour, "Aug 14, 2026"}, // absolute fallback
+		{"60 days", 60 * 24 * time.Hour, "Jul 15, 2026"},
+	}
+
+	// Only the absolute-date fallback differs between directions: a future
+	// date prints itself, not the mirrored past date.
+	futureOverrides := map[string]string{
+		"30 days": "Oct 13, 2026",
+		"60 days": "Nov 12, 2026",
 	}
 
 	for _, tt := range tests {
@@ -62,14 +66,13 @@ func TestFormatRelativeTimeBoundaries(t *testing.T) {
 		})
 
 		// Future timestamps mirror: distance is absolute, wording stays
-		// "... ago" by design (the title attribute carries the absolute time);
-		// only the date-fallback bucket prints its own (future) date.
+		// "... ago" by design (the title attribute carries the absolute time).
 		t.Run(tt.name+" future", func(t *testing.T) {
 			t.Parallel()
 
-			want := tt.wantFuture
-			if want == "" {
-				want = tt.want
+			want := tt.want
+			if override, ok := futureOverrides[tt.name]; ok {
+				want = override
 			}
 
 			got := formatRelativeTime(now.Add(tt.delta), now)
