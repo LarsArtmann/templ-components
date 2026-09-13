@@ -14,12 +14,14 @@ import (
 // target month. It never mutates the consumer's action (copy semantics —
 // the kanban lesson: components must not rewrite consumer-supplied specs).
 //
-// htmx additionally gets hx-swap="outerHTML": the endpoint re-renders the
-// WHOLE calendar, and outer-HTML self-replacement is the library's proven
-// re-binding pattern (kanban, LoadMore) — an innerHTML swap of a region that
-// CONTAINS the triggers leaves the swapped-in anchors unprocessed by htmx
-// (verified 2026-09-13 in a real browser). Point Target at the calendar's
-// own id.
+// htmx additionally gets hx-swap="outerHTML settle:0s": the endpoint
+// re-renders the WHOLE calendar, and outer-HTML self-replacement is the
+// library's proven re-binding pattern (kanban, LoadMore). settle:0s makes
+// htmx process the swapped-in anchors in the same JS task as the swap —
+// with the default 20ms settle delay the new arrows stay inert for that
+// window, and month arrows are exactly the kind of control users click in
+// quick bursts (e2e-verified 2026-09-13: a click inside the window silently
+// no-ops). Point Target at the calendar's own id.
 func calendarMonthNavAction(base *wire.Action, year int, month time.Month) templ.Attributes {
 	if base == nil || base.URL == "" {
 		return nil
@@ -31,11 +33,14 @@ func calendarMonthNavAction(base *wire.Action, year int, month time.Month) templ
 
 	attrs := nav.Attributes()
 	if attrs != nil && nav.Transport != wire.TransportDatastar {
-		attrs["hx-swap"] = "outerHTML"
+		attrs["hx-swap"] = calendarMonthNavSwap
 	}
 
 	return attrs
 }
+
+// calendarMonthNavSwap self-replaces the calendar and settles synchronously.
+const calendarMonthNavSwap = "outerHTML settle:0s"
 
 // calendarPrevMonth returns the year/month before the given one
 // (December wraps to the previous year).

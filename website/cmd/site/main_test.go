@@ -18,6 +18,8 @@ var scriptTagRe = regexp.MustCompile(`(?s)<script\b([^>]*)>`)
 // the deployment invariants: page count, internal links, script nonces, the
 // search index, and the sitemap.
 func TestSiteBuildIntegrity(t *testing.T) {
+	t.Parallel()
+
 	outDir := t.TempDir()
 	repoRoot := "../../.."
 
@@ -79,7 +81,7 @@ func collectDist(t *testing.T, outDir string) ([]build.RenderedPage, []string) {
 			return nil
 		}
 
-		data, err := os.ReadFile(path) //nolint:gosec // trusted test-only dist read
+		data, err := os.ReadFile(path)
 		if err != nil {
 			return err
 		}

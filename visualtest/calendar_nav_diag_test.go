@@ -42,12 +42,32 @@ func TestCalendarNavDiag(t *testing.T) {
 
 	var done, h3 string
 
+	// Instrument the htmx lifecycle around the first swap.
+	if err := chromedp.Run(ctx, chromedp.Evaluate(`(function(){
+		window.__evts = [];
+		['htmx:afterSwap','htmx:afterSettle','htmx:load','htmx:beforeSwap','htmx:oobAfterSwap','htmx:swapError','htmx:sendError'].forEach(function(n){
+			document.addEventListener(n, function(e){ window.__evts.push(n + '@' + (e.target.id || e.target.tagName)); }, true);
+		});
+		return '';
+	}())`, &done)); err != nil {
+		t.Fatalf("instrument: %v", err)
+	}
+
 	if err := chromedp.Run(ctx,
 		chromedp.Evaluate(`document.querySelector('a[aria-label="Next month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`, &done),
 		chromedp.Poll(`document.querySelector('#cal-nav h3')?.textContent.includes('August')?'ok':''`, &done),
 	); err != nil {
 		t.Fatalf("next click: %v", err)
 	}
+
+	if err := chromedp.Run(ctx,
+		chromedp.Sleep(1*time.Second),
+		chromedp.Evaluate(`window.__evts.join(';')`, &done),
+	); err != nil {
+		t.Fatalf("evts read: %v", err)
+	}
+
+	t.Logf("htmx events after first swap: %q", done)
 
 	if err := chromedp.Run(ctx, chromedp.Evaluate(`document.querySelector('#cal-nav h3')?.textContent`, &h3)); err != nil {
 		t.Fatalf("h3 read: %v", err)

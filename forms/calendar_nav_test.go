@@ -35,6 +35,7 @@ func TestCalendarMonthNavWire(t *testing.T) {
 			`hx-get="/api/calendar?year=2026&amp;month=6"`,
 			`hx-get="/api/calendar?year=2026&amp;month=8"`,
 			`hx-target="#cal"`,
+			`hx-swap="outerHTML settle:0s"`,
 			`aria-label="Previous month"`,
 			`aria-label="Next month"`,
 		)

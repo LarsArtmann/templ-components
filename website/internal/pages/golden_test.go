@@ -39,6 +39,8 @@ func render(t *testing.T, component templ.Component) string {
 }
 
 func TestGoldenSweepPages(t *testing.T) {
+	t.Parallel()
+
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "landing", HTML: render(t, Landing(goldenStats, StarsLabel(1024), goldenNonce))},
 		{Name: "landing-no-stars", HTML: render(t, Landing(goldenStats, StarsLabel(0), goldenNonce))},
