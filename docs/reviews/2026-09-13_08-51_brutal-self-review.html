@@ -1,0 +1,1390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Title</title>
+    <style>
+      /* =========================================================================
+         BAUHAUS DARK — Dashboard template
+         Design language: form follows function. Primary colors on graphite.
+         Zero external dependencies: system fonts, no CDN, no build step.
+         Token architecture: see references/bauhaus-tokens.md
+         ========================================================================= */
+
+      :root {
+        /* --- Primitive palette (Bauhaus Dark) --- */
+        --color-graphite: #0e0e10;
+        --color-graphite-2: #18181d;
+        --color-graphite-3: #16161a;
+        --color-bone: #f4f4f0;
+        --color-red: #ff6b6b;
+        --color-blue: #6eb5ff;
+        --color-yellow: #f4d35e;
+        --color-amber: #ffb347;
+        --color-hairline: rgba(244, 244, 240, 0.12);
+        --color-hairline-strong: rgba(244, 244, 240, 0.25);
+
+        /* --- Semantic layer (shared vocabulary with editorial template) --- */
+        --surface: var(--color-graphite);
+        --surface-raised: var(--color-graphite-2);
+        --surface-sunken: var(--color-graphite-3);
+        --text: var(--color-bone);
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: var(--color-hairline);
+        --border-strong: var(--color-hairline-strong);
+        --accent: var(--color-amber);
+        --problem: var(--color-red);
+        --solution: var(--color-blue);
+        --warning: var(--color-yellow);
+
+        /* --- Backward-compatible aliases (do not break consumer skills) --- */
+        --bg: var(--surface);
+        --bg-elevated: var(--surface-raised);
+        --bg-sunken: var(--surface-sunken);
+        --bg-card: var(--surface-raised);
+        --bg-code: var(--surface-sunken);
+        --ink: var(--text);
+        --ink-secondary: var(--text-muted);
+        --ink-muted: var(--text-faint);
+        --rose: var(--problem);
+        --rose-glow: color-mix(in srgb, var(--problem) 15%, transparent);
+        --emerald: var(--solution);
+        --emerald-glow: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber-glow: color-mix(in srgb, var(--warning) 15%, transparent);
+        --coral: var(--problem);
+        --coral-light: color-mix(in srgb, var(--problem) 15%, transparent);
+        --teal: var(--solution);
+        --teal-light: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber-light: color-mix(in srgb, var(--warning) 20%, transparent);
+
+        /* --- Shape --- */
+        --radius: 0px; /* Bauhaus default: sharp corners */
+        --radius-sm: 0px;
+
+        /* --- Type stacks (system only — zero external fonts) --- */
+        --font-heading:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-body:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-mono:
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      /* Sticky-header offset for anchor jumps */
+      section[id],
+      [id] {
+        scroll-margin-top: 60px;
+      }
+
+      body {
+        background: var(--surface);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 15px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* --- Accessibility: keyboard focus --- */
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      a:focus-visible {
+        outline-offset: -1px;
+      }
+
+      /* --- Full-bleed top bar --- */
+      .top-bar {
+        background: var(--text);
+        color: var(--surface);
+        padding: 0.6rem 2rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* --- Layout: optional sticky sidebar TOC --- */
+      .layout {
+        display: flex;
+        gap: 2.5rem;
+        padding: 2rem;
+      }
+      .sidebar {
+        width: 220px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 1rem;
+        align-self: flex-start;
+        height: calc(100vh - 2rem);
+        overflow-y: auto;
+        display: none;
+      }
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .sidebar .label {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .sidebar a {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 0.45rem 0.75rem;
+        border-left: 2px solid transparent;
+        transition: all 0.15s ease;
+        line-height: 1.4;
+        font-weight: 500;
+      }
+      .sidebar a:hover,
+      .sidebar a.active {
+        color: var(--accent);
+        border-left-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+      }
+      .main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* --- Headings --- */
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      h1 {
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        line-height: 1.1;
+        margin: 0 0 0.6rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+        margin: 2.5rem 0 1rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+      }
+      h2 .num {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      h3 {
+        font-size: 1.1rem;
+        margin: 0 0 0.4rem;
+        font-weight: 700;
+      }
+      h4 {
+        font-size: 0.98rem;
+        margin: 0 0 0.3rem;
+        font-weight: 700;
+      }
+      p {
+        margin: 0 0 1rem;
+      }
+
+      /* --- Hero --- */
+      .hero {
+        padding: 1.5rem 0 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .hero-badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--surface);
+        background: var(--accent);
+        padding: 0.3rem 0.7rem;
+        margin-bottom: 0.9rem;
+      }
+      .hero-subtitle {
+        font-size: 1.05rem;
+        color: var(--text-muted);
+        max-width: 70ch;
+        margin: 0;
+      }
+
+      /* Bauhaus signature: geometric shape cluster (optional) */
+      .hero-shapes {
+        position: relative;
+        height: 80px;
+        margin-bottom: 1rem;
+      }
+      .hero-shapes .circle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 56px;
+        height: 56px;
+        background: var(--problem);
+        border-radius: 50%;
+      }
+      .hero-shapes .square {
+        position: absolute;
+        top: 24px;
+        left: 72px;
+        width: 48px;
+        height: 48px;
+        background: var(--solution);
+      }
+      .hero-shapes .tri {
+        position: absolute;
+        top: 8px;
+        left: 140px;
+        width: 0;
+        height: 0;
+        border-left: 28px solid transparent;
+        border-right: 28px solid transparent;
+        border-bottom: 48px solid var(--warning);
+      }
+
+      /* --- General cards --- */
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .card-problem {
+        border-left-color: var(--problem);
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
+      }
+      .card-solution {
+        border-left-color: var(--solution);
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
+      }
+      .card-warning {
+        border-left-color: var(--warning);
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
+      }
+
+      /* --- Issue cards --- */
+      .issue {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .issue-critical {
+        border-left-color: var(--problem);
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
+      }
+      .issue-important {
+        border-left-color: var(--warning);
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
+      }
+      .issue-nice {
+        border-left-color: var(--solution);
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
+      }
+      .issue h3 {
+        margin-bottom: 0.3rem;
+      }
+      .issue .where {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--text-faint);
+        margin: 0.2rem 0 0.6rem;
+      }
+      .issue p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* --- Severity badges (used inside issue cards) --- */
+      .severity {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.55rem;
+        margin-bottom: 0.6rem;
+        color: var(--surface);
+      }
+      .severity-critical {
+        background: var(--problem);
+      }
+      .severity-important {
+        background: var(--warning);
+      }
+      .severity-nice {
+        background: var(--solution);
+      }
+
+      /* --- Inline badges (used in tables) --- */
+      .badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.18rem 0.5rem;
+        border: 1px solid var(--border-strong);
+        color: var(--text-muted);
+      }
+      .badge-critical {
+        color: var(--problem);
+        border-color: var(--problem);
+      }
+      .badge-high {
+        color: var(--warning);
+        border-color: var(--warning);
+      }
+      .badge-medium {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .badge-low {
+        color: var(--text-muted);
+      }
+      .badge-fixed {
+        color: var(--solution);
+        border-color: var(--solution);
+      }
+
+      /* --- Callouts (used inside issues or standalone) --- */
+      .callout {
+        margin: 0.8rem 0 0;
+        padding: 0.7rem 0.9rem;
+        border-left: 3px solid var(--border-strong);
+        background: color-mix(in srgb, var(--text) 5%, transparent);
+        font-size: 0.9rem;
+      }
+      .callout strong {
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
+      .callout-solution {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 10%, transparent);
+      }
+      .callout-warning {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 10%, transparent);
+      }
+
+      /* --- Stat cards / scorecards (aliased vocabulary) --- */
+      .stat-grid,
+      .scorecard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.75rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .stat-card,
+      .score-card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1rem;
+        position: relative;
+      }
+      .stat-card::before,
+      .score-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--border-strong);
+      }
+      .stat-bad,
+      .score-bad {
+        /* default top bar already set */
+      }
+      .stat-bad::before,
+      .score-bad::before {
+        background: var(--problem);
+      }
+      .stat-good::before,
+      .score-good::before {
+        background: var(--solution);
+      }
+      .stat-warn::before,
+      .score-warn::before {
+        background: var(--warning);
+      }
+      .stat-value,
+      .score {
+        font-family: var(--font-heading);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        color: var(--text);
+      }
+      .stat-bad .stat-value,
+      .score-bad .score {
+        color: var(--problem);
+      }
+      .stat-good .stat-value,
+      .score-good .score {
+        color: var(--solution);
+      }
+      .stat-warn .stat-value,
+      .score-warn .score {
+        color: var(--warning);
+      }
+      .stat-label,
+      .score-card .label {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-faint);
+        margin-top: 0.5rem;
+      }
+
+      /* --- Strengths list --- */
+      .strengths {
+        display: grid;
+        gap: 0.5rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .strength {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.8rem;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .strength .check {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        color: var(--solution);
+        font-size: 1.1rem;
+        line-height: 1.4;
+      }
+      .strength .text strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+      .strength .text span {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* --- Tables --- */
+      .table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.9rem;
+      }
+      th {
+        text-align: left;
+        padding: 0.6rem 0.9rem;
+        background: var(--surface-raised);
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border-strong);
+      }
+      td {
+        padding: 0.6rem 0.9rem;
+        border-bottom: 1px solid var(--border);
+      }
+      tr:hover td {
+        background: var(--surface-raised);
+      }
+
+      /* --- Before/After comparison --- */
+      .compare-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin: 1rem 0 0.5rem;
+      }
+      .compare-before,
+      .compare-after {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0.4rem 0.7rem;
+        color: var(--surface);
+      }
+      .compare-before {
+        background: var(--problem);
+      }
+      .compare-after {
+        background: var(--solution);
+      }
+      .compare-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .compare-row pre {
+        margin: 0;
+      }
+
+      /* --- Code blocks + syntax highlighting --- */
+      pre {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.65;
+        overflow-x: auto;
+      }
+      code {
+        font-family: var(--font-mono);
+      }
+      p code,
+      li code,
+      td code {
+        font-size: 0.88em;
+        background: var(--surface-sunken);
+        padding: 0.1rem 0.35rem;
+      }
+      .tok-keyword {
+        color: var(--accent);
+      } /* func, type, struct, if, return */
+      .tok-type {
+        color: var(--warning);
+      } /* int, string, bool, error */
+      .tok-string {
+        color: var(--solution);
+      } /* "quoted strings" */
+      .tok-comment {
+        color: var(--text-faint);
+        font-style: italic;
+      }
+      .tok-func {
+        color: #74a9ff;
+      } /* function names */
+      .tok-number {
+        color: var(--accent);
+      } /* 42, 3.14 */
+      .tok-generic {
+        color: var(--problem);
+      } /* T, ID in generics */
+      .tok-builtin {
+        color: #4dd9ff;
+      } /* make, len, append */
+      .tok-punct {
+        color: var(--text-muted);
+      } /* { } ( ) ; = : */
+      .tok-attr {
+        color: var(--accent);
+      } /* Nix attribute names */
+
+      /* --- Dependency tree / ASCII diagrams --- */
+      .dep-tree {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.7;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .dep-tree .root {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .dep-tree .ok {
+        color: var(--solution);
+      }
+      .dep-tree .unwanted {
+        color: var(--problem);
+      }
+
+      /* --- Inline node-and-arrow diagrams --- */
+      .diagram {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+      }
+      .node {
+        display: inline-block;
+        padding: 0.35rem 0.7rem;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: var(--surface-sunken);
+        border: 1px solid var(--border-strong);
+      }
+      .node-core {
+        background: var(--accent);
+        color: var(--surface);
+        border-color: var(--accent);
+      }
+      .node-problem {
+        background: var(--problem);
+        color: var(--surface);
+        border-color: var(--problem);
+      }
+      .node-good {
+        background: var(--solution);
+        color: var(--surface);
+        border-color: var(--solution);
+      }
+      .arrow {
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Grids (responsive) --- */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      /* --- Inline TOC (alternative to sidebar) --- */
+      .toc {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        padding: 1rem 1.3rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .toc h3 {
+        margin-bottom: 0.5rem;
+      }
+      .toc ul {
+        list-style: none;
+        padding: 0;
+      }
+      .toc li {
+        margin: 0.25rem 0;
+      }
+      .toc a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+      .toc a:hover {
+        color: var(--accent);
+      }
+
+      /* --- Migration / numbered steps --- */
+      .migration-step {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+        padding: 1rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+      }
+      .migration-num {
+        font-family: var(--font-mono);
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .migration-content h4 {
+        margin-bottom: 0.2rem;
+      }
+      .migration-content p {
+        margin-bottom: 0;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      /* --- Footer --- */
+      .footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.8rem;
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Responsive --- */
+      @media (min-width: 1024px) {
+        .sidebar {
+          display: block;
+        }
+      }
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+          padding: 1rem;
+        }
+        .top-bar {
+          padding: 0.6rem 1rem;
+          flex-wrap: wrap;
+          gap: 0.3rem;
+        }
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .compare-header,
+        .compare-row {
+          grid-template-columns: 1fr;
+        }
+        .stat-grid,
+        .scorecard {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .migration-step {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <span>100 IMPROVEMENT IDEAS</span>
+      <span>2026-09-13</span>
+      <span>templ-components v1.16.0</span>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#selfreview">Self-Review</a>
+          <a href="#ghosts">Ghost Systems</a>
+          <a href="#ideas">The 100 Ideas</a>
+          <a href="#cat-a">A. Policy</a>
+          <a href="#cat-b">B. Release</a>
+          <a href="#cat-c">C. CI</a>
+          <a href="#cat-d">D. Testing</a>
+          <a href="#cat-e">E. Architecture</a>
+          <a href="#cat-f">F. Components</a>
+          <a href="#cat-g">G. A11y / UX</a>
+          <a href="#cat-h">H. Docs</a>
+          <a href="#plan">Pareto Plan</a>
+          <a href="#strengths">Strengths</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <div class="hero">
+          <div class="hero-shapes">
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="hero-badge">Brutal Self-Review</div>
+          <h1>100 Ideas: What We Could Improve</h1>
+          <p class="hero-subtitle">
+            Policy, process, tooling, testing, architecture, components, accessibility, and
+            community: one hundred grounded improvement ideas for templ-components, plus the
+            honest self-review that produced them.
+          </p>
+        </div>
+
+        <nav class="toc">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#summary">Summary</a></li>
+            <li><a href="#selfreview">Self-Review Answers</a></li>
+            <li><a href="#ghosts">Ghost Systems and Split Brains</a></li>
+            <li><a href="#ideas">The 100 Ideas (A-H)</a></li>
+            <li><a href="#plan">Top-10 Pareto Plan</a></li>
+            <li><a href="#strengths">Strengths to Preserve</a></li>
+          </ul>
+        </nav>
+
+        <h2 id="summary"><span class="num">00</span>Summary</h2>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">100</div>
+            <div class="stat-label">Ideas (14 policy, 86 dev)</div>
+          </div>
+          <div class="stat-card stat-bad">
+            <div class="stat-value">6</div>
+            <div class="stat-label">Ghost systems / split brains</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">4</div>
+            <div class="stat-label">Zero-code governance gaps</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">23</div>
+            <div class="stat-label">Quick wins under 1 hour</div>
+          </div>
+        </div>
+
+        <div class="card card-problem">
+          <h4>The core verdict</h4>
+          <p>
+            Engineering quality is world-class; governance and meta-process are the weak flank.
+            The same BuildFlow-daemon failure class has 6 open blockers and 5+ documented
+            regressions, master ran red for 9 days once with no branch protection to catch it,
+            and facts that live in 5 documents by hand (component and golden counts) have
+            already drifted. The library outran its own bookkeeping.
+          </p>
+        </div>
+        <div class="card card-solution">
+          <h4>The core move</h4>
+          <p>
+            Convert tribal knowledge into machine-checked single sources: generated counts,
+            tracked git hooks, a post-tag consumer-compile smoke test, and one dedicated
+            upstream BuildFlow sprint. Then spend the freed attention on depth testing
+            (axe-core, HTML validation, mutation testing) rather than more breadth.
+          </p>
+        </div>
+
+        <h2 id="selfreview"><span class="num">01</span>Self-Review Answers</h2>
+
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Forgot</span>
+          <h3>1. What did we forget?</h3>
+          <div class="where">governance surface</div>
+          <p>
+            No SECURITY.md, no CODEOWNERS, no issue templates, no branch protection (TODO #123).
+            We shipped a "v2 behavior set" (v1.8.2 default flips) on a v1 module path and never
+            wrote down when the /v2 path migration happens. And there is a 15&nbsp;MB compiled
+            demo binary sitting untracked in the repo root (<code>./demo</code>, built 2026-09-09),
+            the exact incident class AGENTS.md documents for <code>visualtest/shots</code>.
+          </p>
+        </div>
+
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Stupid</span>
+          <h3>2. What is stupid that we do anyway?</h3>
+          <div class="where">buildflow daemon · manual counts</div>
+          <p>
+            We fight the BuildFlow daemon with per-repo guards (check-lint-config.sh,
+            check-css-minified.sh, TestGolangciDisabledLinters) instead of fixing the daemon.
+            Six blockers (#93, #107, #108, #124, #125, #126) all live in one other repo.
+            Also: component and golden counts are hand-maintained in README, FEATURES, ROADMAP,
+            AGENTS, and SKILL, which guarantees drift.
+          </p>
+        </div>
+
+        <div class="issue issue-important">
+          <span class="severity severity-important">Drift</span>
+          <h3>3. and 5. What could be better? Did the docs lie?</h3>
+          <div class="where">docs counts</div>
+          <p>
+            Yes, in small verifiable ways: ROADMAP claims <strong>175</strong> HTML golden
+            baselines; disk holds <strong>242</strong> <code>.golden</code> files. AGENTS.md says
+            "102 golden files" from an older era. The visual-golden count (125) is correct.
+            Individually trivial; as a pattern it means every prose number is suspect.
+          </p>
+          <div class="callout callout-solution">
+            <strong>Fix</strong>
+            Generate counts from the tree into one JSON and template everywhere else (idea #32).
+          </div>
+        </div>
+
+        <div class="issue issue-important">
+          <span class="severity severity-important">Ghosts</span>
+          <h3>7. Ghost systems?</h3>
+          <div class="where">guards that guard nothing</div>
+          <p>
+            <code>TestSkillComponentCount</code> is an informational guard that never fails: a
+            ghost guard consuming CI time while protecting nothing. Either gate it or delete it
+            (idea #33). Orphaned golden files (no test referencing them) are a structural ghost
+            risk as the suite grows (idea #54).
+          </p>
+        </div>
+
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Scope</span>
+          <h3>8. Scope creep trap?</h3>
+          <div class="where">121 components and growing</div>
+          <p>
+            Mild but real. We have an excellent mechanism for rejecting categories formally
+            (ADR-0021 headless, ADR-0033 Web Components, container-query strategy doc) and we
+            should use it more, plus run a deprecation sweep: post-ADR-0017, do Popover and
+            Dropdown both earn their keep? (idea #82).
+          </p>
+        </div>
+
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Split brains</span>
+          <h3>10. Split brains found?</h3>
+          <div class="where">see section 02</div>
+          <p>
+            Six, all small: prose counts in five docs, two pre-commit entry paths, hand-edited
+            README version badge vs <code>utils.Version</code>, three theme-preset CSS files
+            hand-written, per-component typed request parsers vs a generic decoder, and the
+            untracked root binary. Full list below.
+          </p>
+        </div>
+
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Tests</span>
+          <h3>11. How are we doing on tests?</h3>
+          <div class="where">breadth excellent, depth next</div>
+          <p>
+            Breadth is elite: 242 HTML goldens, 125 pixel goldens, dual-transport browser e2e,
+            fuzz, benchmarks, six compliance scanners, drift guards. The depth gaps: no axe-core
+            a11y audit in the browser harness, no HTML validation, no mutation testing to prove
+            the tests bite, no determinism gate, Chromium-only visual coverage. Category D is
+            fourteen ideas on exactly this.
+          </p>
+        </div>
+
+        <h2 id="ghosts"><span class="num">02</span>Ghost Systems and Split Brains</h2>
+        <table>
+          <thead>
+            <tr><th>#</th><th>What</th><th>Where</th><th>Verdict</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>G1</td>
+              <td>Guard that can never fail (skill-count drift test is informational only)</td>
+              <td>utils/lint_config_test.go family</td>
+              <td><span class="badge badge-critical">Gate or delete</span></td>
+            </tr>
+            <tr>
+              <td>G2</td>
+              <td>Counts hand-copied across 5 docs; ROADMAP says 175 goldens, disk has 242</td>
+              <td>README · FEATURES · ROADMAP · AGENTS · SKILL</td>
+              <td><span class="badge badge-critical">Single-source</span></td>
+            </tr>
+            <tr>
+              <td>G3</td>
+              <td>Two pre-commit paths: untracked .git/hooks vs scripts/pre-commit.sh (+ BuildFlow's own)</td>
+              <td>.git/hooks/pre-commit</td>
+              <td><span class="badge badge-high">core.hooksPath</span></td>
+            </tr>
+            <tr>
+              <td>G4</td>
+              <td>README version badge hand-edited while utils.Version is canonical</td>
+              <td>README.md:5</td>
+              <td><span class="badge badge-high">Drift-guard it</span></td>
+            </tr>
+            <tr>
+              <td>G5</td>
+              <td>15 MB compiled demo binary parked untracked in repo root (shots-binary incident class)</td>
+              <td>./demo (not in git)</td>
+              <td><span class="badge badge-low">Trash + gitignore</span></td>
+            </tr>
+            <tr>
+              <td>G6</td>
+              <td>Per-component request parsers (ParseKanbanMove) instead of a shared wire.DecodeForm[T]</td>
+              <td>display/kanban.go</td>
+              <td><span class="badge badge-low">Generalize</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2 id="ideas"><span class="num">03</span>The 100 Ideas</h2>
+        <p>
+          Tier column: <strong>QW</strong> quick win (&le;1h) · <strong>PROJ</strong> project
+          (days) · <strong>POL</strong> policy decision · <strong>DEC</strong> owner decision
+          required. TODO numbers reference TODO_LIST.md IDs.
+        </p>
+
+        <h3 id="cat-a">A. Policy and Governance (1-14)</h3>
+        <div class="card card-warning">
+          <p>
+            The library is production-grade but governs itself like a private experiment.
+            Four gaps cost nothing to close and change how external eyes read the project.
+          </p>
+        </div>
+        <table>
+          <tbody>
+            <tr><td>1</td><td><strong>Branch protection + required checks on master</strong>: would have blocked the documented 9-day-red window (TODO #123, two reports).</td><td>POL</td></tr>
+            <tr><td>2</td><td><strong>Add SECURITY.md</strong>: vulnerability reporting policy + GitHub private security advisories; repo has none.</td><td>QW</td></tr>
+            <tr><td>3</td><td><strong>Add CODEOWNERS</strong>: review routing before external contributors arrive.</td><td>QW</td></tr>
+            <tr><td>4</td><td><strong>Issue templates</strong>: bug / component-request / ADR-first feature form embedding the D1-D2-D3 wire-gates checklist.</td><td>QW</td></tr>
+            <tr><td>5</td><td><strong>Enable GitHub Discussions</strong> as Q&A channel; keeps issues actionable.</td><td>QW</td></tr>
+            <tr><td>6</td><td><strong>Publish the dependency-budget policy</strong>: the closed budget (templ + tailwind-merge-go + go-error-family) is tribal knowledge; make it a public page so PRs adding deps can be closed fast.</td><td>QW</td></tr>
+            <tr><td>7</td><td><strong>Browser-support policy</strong>: the repo leans on Baseline 2023/24 features (Popover API, field-sizing, base-select) but never states the supported floor.</td><td>POL</td></tr>
+            <tr><td>8</td><td><strong>Accessibility conformance target</strong>: commit to WCAG 2.2 AA in writing + website statement; a11y is practiced everywhere but promised nowhere.</td><td>POL</td></tr>
+            <tr><td>9</td><td><strong>Deprecation policy</strong>: document how long aliases live (v1.0 removed 4 aliases; write the rule consumers can plan around).</td><td>QW</td></tr>
+            <tr><td>10</td><td><strong>AI-golden review policy</strong>: #80/#150/#162 recur because "human eyeball PNGs" is a TODO, not a gate; make it a release-checklist item with a list.</td><td>POL</td></tr>
+            <tr><td>11</td><td><strong>Encode release-checklist into preflight</strong>: docs/release-checklist.md maps incidents to steps; verify every step runs automatically in release.sh preflight.</td><td>PROJ</td></tr>
+            <tr><td>12</td><td><strong>Docs-sync SLA</strong>: policy that living docs update in the same PR as code; extend the version drift-guard philosophy to counts.</td><td>POL</td></tr>
+            <tr><td>13</td><td><strong>v2 module-path ADR</strong>: shipping v2 behavior on a v1 path; Go requires /v2 at the next major. Decide timing before it is forced (go-release skill covers this migration).</td><td>DEC</td></tr>
+            <tr><td>14</td><td><strong>THIRD_PARTY_NOTICES</strong>: Heroicons (MIT), embedded HTMX 2.0.10, Datastar bundle licenses should ship beside LICENSE.</td><td>QW</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="cat-b">B. Release and Versioning (15-24)</h3>
+        <table>
+          <tbody>
+            <tr><td>15</td><td><strong>Post-tag consumer compile smoke</strong>: CI job that creates a temp module and <code>go get</code>s the fresh tag; the missing-*_templ.go catastrophe is otherwise only caught by consumers.</td><td>PROJ</td></tr>
+            <tr><td>16</td><td><strong>Automate README version badge</strong> or drift-guard it against utils.Version (G4).</td><td>QW</td></tr>
+            <tr><td>17</td><td><strong>tc release-check command</strong>: wrap check-release-tags.sh + tag-completeness into one local command.</td><td>QW</td></tr>
+            <tr><td>18</td><td><strong>Scheduled supply-chain scan</strong>: weekly govulncheck run + osv-scanner for Actions/pnpm/nix surfaces the Go scanner misses.</td><td>QW</td></tr>
+            <tr><td>19</td><td><strong>Proxy freshness ping</strong>: post-release script verifies proxy.golang.org serves the tag (daemon has raced tags before).</td><td>QW</td></tr>
+            <tr><td>20</td><td><strong>Cut v1.17.0</strong>: [Unreleased] is warm and green (TODO #192).</td><td>DEC</td></tr>
+            <tr><td>21</td><td><strong>GitHub Release body from CHANGELOG section</strong> instead of manual duplication.</td><td>QW</td></tr>
+            <tr><td>22</td><td><strong>Tag signature verification job</strong>: CI verifies SSH-signed tags; the daemon once pushed tags unasked.</td><td>PROJ</td></tr>
+            <tr><td>23</td><td><strong>Retraction runbook</strong>: never-retag policy exists; add scripts/retract.sh for the bad day.</td><td>QW</td></tr>
+            <tr><td>24</td><td><strong>Shared-versioning FAQ</strong>: why 7 modules tag in lockstep (ADR-0034) as a consumer-facing doc.</td><td>QW</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="cat-c">C. CI, Automation, Tooling (25-40)</h3>
+        <table>
+          <tbody>
+            <tr><td>25</td><td><strong>Track git hooks in-repo</strong> via core.hooksPath=.githooks; fresh clones currently get no guards (G3).</td><td>QW</td></tr>
+            <tr><td>26</td><td><strong>One pre-commit entry point</strong>: dedupe .git/hooks/pre-commit vs scripts/pre-commit.sh.</td><td>QW</td></tr>
+            <tr><td>27</td><td><strong>Dedicated e2e CI job</strong>: wire_forms_pack, kanban, demo_flows deserve isolation + own timeout from visual regression.</td><td>PROJ</td></tr>
+            <tr><td>28</td><td><strong>Flake policy</strong>: retry-once + auto-issue for visual flakes; overlay calibration proved 0% is achievable.</td><td>POL</td></tr>
+            <tr><td>29</td><td><strong>Mutation testing</strong> (gremlins) on utils + rotating package: prove golden tests bite; string tests can pass beside dead code.</td><td>PROJ</td></tr>
+            <tr><td>30</td><td><strong>Coverage floor with ratchet</strong>: artifact exists, threshold does not.</td><td>POL</td></tr>
+            <tr><td>31</td><td><strong>PR benchstat gate</strong> for the 7 benchmark suites; catches Class() lock contention and render-alloc regressions.</td><td>PROJ</td></tr>
+            <tr><td>32</td><td><strong>Generated counts</strong>: emit docs/counts.json from the tree; template README/FEATURES/ROADMAP/AGENTS/SKILL from it (G2, 175 vs 242 drift).</td><td>PROJ</td></tr>
+            <tr><td>33</td><td><strong>Gate or delete TestSkillComponentCount</strong> (G1).</td><td>QW</td></tr>
+            <tr><td>34</td><td><strong>Custom convention linter</strong> (go/analysis): props must embed BaseProps, enums need IsValid, lookup maps need typed keys. Three manual conventions made mechanical.</td><td>PROJ</td></tr>
+            <tr><td>35</td><td><strong>nix run .#e2e</strong> flake app for the chromedp suite (parity with #visual).</td><td>QW</td></tr>
+            <tr><td>36</td><td><strong>Cache templ generate in CI</strong> keyed on .templ hashes; 122 files regenerate every run.</td><td>QW</td></tr>
+            <tr><td>37</td><td><strong>CI wall-clock budget</strong>: publish job durations; lint+build+css+visual+e2e grew organically.</td><td>POL</td></tr>
+            <tr><td>38</td><td><strong>Renovate</strong> for Actions pins + flake.lock (automerge locks, human review for real bumps).</td><td>QW</td></tr>
+            <tr><td>39</td><td><strong>tc doctor</strong>: checks Tailwind @source config, GOEXPERIMENT=jsonv2, templ pin, committed *_templ.go: the top consumer traps in one command.</td><td>PROJ</td></tr>
+            <tr><td>40</td><td><strong>BuildFlow upstream sprint</strong>: #93/#107/#108/#124/#125/#126 are one repo away; schedule the fix week instead of guard #7.</td><td>PROJ</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="cat-d">D. Testing and Quality (41-56)</h3>
+        <div class="card card-solution">
+          <p>
+            The strategic bet: breadth is saturated. Every idea here deepens proof rather than
+            adding test kinds.
+          </p>
+        </div>
+        <table>
+          <tbody>
+            <tr><td>41</td><td><strong>axe-core in visualtest harness</strong>: chromedp is already there; zero-violation gate per component page. The demo is the showroom.</td><td>PROJ</td></tr>
+            <tr><td>42</td><td><strong>HTML validation</strong> of all golden outputs (local validator.w3c.nu); catches invalid nesting string tests miss.</td><td>PROJ</td></tr>
+            <tr><td>43</td><td><strong>Keyboard-only sweep</strong>: one e2e driving every interactive component mouse-free; per-component coverage exists, the sweep finds gaps.</td><td>PROJ</td></tr>
+            <tr><td>44</td><td><strong>aria-live announcement tests</strong>: assert announced content for toasts, InlineLoadingOverlay, GlobalErrorHandling, not just attribute presence.</td><td>PROJ</td></tr>
+            <tr><td>45</td><td><strong>Determinism gate</strong>: render each component twice, byte-compare raw output (goldens normalize EnsureID; consumers do not).</td><td>QW</td></tr>
+            <tr><td>46</td><td><strong>Clock injection for RelativeTime</strong>: freeze time to test boundaries ("just now" vs "59s" vs "1m").</td><td>QW</td></tr>
+            <tr><td>47</td><td><strong>Property-based tests for chart_geometry</strong>: ticks monotonic, within domain, count bounds (ScalePoints, ComputeNiceTicks).</td><td>PROJ</td></tr>
+            <tr><td>48</td><td><strong>Fuzz wire.Action.Attributes</strong>: adversarial URLs/methods on the XSS-adjacent surface; only happy paths tested today.</td><td>QW</td></tr>
+            <tr><td>49</td><td><strong>Firefox visual lane</strong>: popover/field-sizing/base-select are exactly where Firefox differs; currently documented, not proven.</td><td>PROJ</td></tr>
+            <tr><td>50</td><td><strong>10k-row stress test</strong> for LazyRows on/off: back the 100+-row recommendation with numbers.</td><td>PROJ</td></tr>
+            <tr><td>51</td><td><strong>Focus-preservation tests</strong> after HTMX swaps (SwapOOB, LoadMore self-replace).</td><td>PROJ</td></tr>
+            <tr><td>52</td><td><strong>Arabic + long-string full-page e2e</strong>: logical properties are scanner-enforced; overflow is not.</td><td>PROJ</td></tr>
+            <tr><td>53</td><td><strong>forced-colors / prefers-contrast / reduced-motion visual variants</strong>: media-dependent CSS currently untested visually.</td><td>PROJ</td></tr>
+            <tr><td>54</td><td><strong>Golden orphan detection</strong>: fail on .golden files no test references (ghost-file rot).</td><td>QW</td></tr>
+            <tr><td>55</td><td><strong>Unit-test the test harness</strong>: utils/golden LCS diff has real edge cases on huge files.</td><td>QW</td></tr>
+            <tr><td>56</td><td><strong>Race-detector demo-server job</strong> under e2e load; handlers share state.</td><td>PROJ</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="cat-e">E. Architecture and API (57-72)</h3>
+        <table>
+          <tbody>
+            <tr><td>57</td><td><strong>Ship the compound overlay pattern</strong> (Trigger/Content/Close): ADR-0023 is written; Modal/Drawer props keep accreting instead.</td><td>PROJ</td></tr>
+            <tr><td>58</td><td><strong>Validate() where states are representable</strong> (TODO #33): PieChart negative values, ProgressBar Total&le;0.</td><td>PROJ</td></tr>
+            <tr><td>59</td><td><strong>internal/testutil migration</strong> (TODO #34): 70+ files, mechanical, shrinks the public surface.</td><td>PROJ</td></tr>
+            <tr><td>60</td><td><strong>Typed interval/intersect triggers in wire.Event</strong> (TODO #178): the last big transport-symmetric gap; needs its trigger-language ADR.</td><td>DEC</td></tr>
+            <tr><td>61</td><td><strong>Wire-ify Calendar month nav (#157) and SimpleNav links (#155)</strong>: next D3-rule candidates.</td><td>PROJ</td></tr>
+            <tr><td>62</td><td><strong>AppShell theming</strong>: CSS-var surface (--sidebar-bg) + mobile-breakpoint prop; cqrs-htmx keeps a custom AppShell for exactly these.</td><td>PROJ</td></tr>
+            <tr><td>63</td><td><strong>layout.Minimal head-content support</strong>: nsfw-classifier maintains a custom Base for exactly this (#156b).</td><td>PROJ</td></tr>
+            <tr><td>64</td><td><strong>DataTable server contract</strong>: formalize sort/filter/paginate request-response shape the way Table.TypedHeaders did for sort links.</td><td>PROJ</td></tr>
+            <tr><td>65</td><td><strong>URL state helpers</strong>: encode ActiveTabID / open sections / overlay state into query params; deep-linking recipe.</td><td>PROJ</td></tr>
+            <tr><td>66</td><td><strong>wire.DecodeForm[T]()</strong>: generalize ParseKanbanMove (G6).</td><td>PROJ</td></tr>
+            <tr><td>67</td><td><strong>Streaming partials cookbook</strong>: templ streaming + OOB ordering + early-error patterns, with demo route.</td><td>PROJ</td></tr>
+            <tr><td>68</td><td><strong>Unify tier-1 chart props</strong>: shared ChartProps base; geometry helpers already shared, props are not.</td><td>PROJ</td></tr>
+            <tr><td>69</td><td><strong>Icon sync pipeline</strong>: script to diff against Heroicons upstream (102 icons hand-curated) + keyword metadata for search.</td><td>PROJ</td></tr>
+            <tr><td>70</td><td><strong>Single-source design tokens</strong>: generate the 3 theme presets from one JSON; hand-written CSS is 3 drift sites.</td><td>PROJ</td></tr>
+            <tr><td>71</td><td><strong>Measure utils.Class contention</strong>: the mutex is documented as required, numbers do not exist; benchmark parallel render.</td><td>QW</td></tr>
+            <tr><td>72</td><td><strong>Props-surface lint</strong>: forbid exported fields on Props structs outside the convention; keeps the API intentional.</td><td>PROJ</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="cat-f">F. Components and Features (73-82)</h3>
+        <div class="card card-warning">
+          <p>
+            Each candidate must pass the existing bar: both-transport where relevant, full test
+            ladder, dark mode, RTL, motion-reduce, CSP. Demand-check first (D3 rule).
+          </p>
+        </div>
+        <table>
+          <tbody>
+            <tr><td>73</td><td><strong>Command palette (Cmd+K)</strong>: the one nav pattern missing; native popover + input fits the CSP/a11y model.</td><td>PROJ</td></tr>
+            <tr><td>74</td><td><strong>MultiSelect</strong>: Combobox + TagsInput merged (token chips); top forms gap.</td><td>PROJ</td></tr>
+            <tr><td>75</td><td><strong>DateRangePicker</strong>: Calendar exists; typed Range struct is the natural next step.</td><td>PROJ</td></tr>
+            <tr><td>76</td><td><strong>FileDrop zone</strong>: drag-drop + multipart + progress + Wire; upload e2e already exists, no surface component does.</td><td>PROJ</td></tr>
+            <tr><td>77</td><td><strong>Toast positions and stacking</strong> (top/bottom/start/end + queue policy).</td><td>PROJ</td></tr>
+            <tr><td>78</td><td><strong>TreeView</strong> (ARIA tree pattern) for file-like navigation.</td><td>PROJ</td></tr>
+            <tr><td>79</td><td><strong>Density/size sweep</strong>: Table compact exists; add consistent size variants to data-dense components.</td><td>PROJ</td></tr>
+            <tr><td>80</td><td><strong>Print stylesheet pack</strong> (.tc-print-*): server-rendered reports get printed.</td><td>PROJ</td></tr>
+            <tr><td>81</td><td><strong>Formally reject media components</strong>: audio/video players stay out; write the ADR (scope guard, ADR-0033 precedent).</td><td>POL</td></tr>
+            <tr><td>82</td><td><strong>Deprecation sweep</strong>: audit low-value/duplicated surface (Popover vs Dropdown post-ADR-0017); YAGNI pass.</td><td>DEC</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="cat-g">G. Accessibility and UX (83-92)</h3>
+        <table>
+          <tbody>
+            <tr><td>83</td><td><strong>Touch-target audit</strong>: 44x44px on icon-only buttons/inputs across mobile viewports.</td><td>PROJ</td></tr>
+            <tr><td>84</td><td><strong>forced-colors support</strong>: Windows High Contrast; zero coverage today.</td><td>PROJ</td></tr>
+            <tr><td>85</td><td><strong>prefers-contrast: more</strong> variants for borders and text.</td><td>PROJ</td></tr>
+            <tr><td>86</td><td><strong>Focus-visible consistency audit</strong>: one ring spec across 121 components.</td><td>PROJ</td></tr>
+            <tr><td>87</td><td><strong>aria-live politeness policy</strong>: assertive vs polite defaults documented + applied to toasts.</td><td>POL</td></tr>
+            <tr><td>88</td><td><strong>Skip-to-content component</strong> wired into AppShell.</td><td>QW</td></tr>
+            <tr><td>89</td><td><strong>Zoom reflow test</strong> (WCAG 1.4.10): 200%/400% viewports in visualtest presets.</td><td>PROJ</td></tr>
+            <tr><td>90</td><td><strong>Swap-announcement recipe</strong>: polite live region wrapper for HTMX region swaps.</td><td>PROJ</td></tr>
+            <tr><td>91</td><td><strong>axe on every demo route</strong>: the demo is the showroom; keep it violation-free in CI.</td><td>PROJ</td></tr>
+            <tr><td>92</td><td><strong>a11y statement page</strong> on the website once #8 fixes the target level.</td><td>QW</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="cat-h">H. Docs, Community, Adoption (93-100)</h3>
+        <table>
+          <tbody>
+            <tr><td>93</td><td><strong>pkg.go.dev examples for top-20 components</strong>: godoc shows bare signatures for many; website has the guides, godoc is the first touch.</td><td>PROJ</td></tr>
+            <tr><td>94</td><td><strong>Versioned docs website</strong>: v1/v2 migration guides exist; add version switcher + latest alias.</td><td>PROJ</td></tr>
+            <tr><td>95</td><td><strong>Component playground</strong>: pick component, edit props, see live HTML; converts evaluators better than static routes.</td><td>PROJ</td></tr>
+            <tr><td>96</td><td><strong>docs/reviews index</strong>: 20+ HTML reports are unfindable today.</td><td>QW</td></tr>
+            <tr><td>97</td><td><strong>Public roadmap page</strong>: trimmed ROADMAP.md on the website.</td><td>QW</td></tr>
+            <tr><td>98</td><td><strong>Adoption case studies</strong>: the 22-repo survey (#156) is gold; publish anonymized patterns.</td><td>PROJ</td></tr>
+            <tr><td>99</td><td><strong>Write the two blog posts</strong>: the SSE-inert audit writeup (ROADMAP lists it) and Tailwind v4 dark-mode research; a moat-quality repo deserves readers.</td><td>PROJ</td></tr>
+            <tr><td>100</td><td><strong>Screenshots in the README component table</strong>: static table today; one image per flagship component sells in 5 seconds.</td><td>PROJ</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="plan"><span class="num">04</span>Top-10 Pareto Plan</h2>
+        <p>Highest impact per unit of work, ordered:</p>
+        <div class="migration-step">
+          <div class="migration-num">1</div>
+          <div class="migration-content">
+            <h4>Branch protection + required checks (#1, TODO #123)</h4>
+            <p>Zero code. Closes the 9-day-red-window class permanently.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">2</div>
+          <div class="migration-content">
+            <h4>Post-tag consumer compile smoke in CI (#15)</h4>
+            <p>Guards the single catastrophic failure mode: a tag missing *_templ.go.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">3</div>
+          <div class="migration-content">
+            <h4>BuildFlow upstream sprint (#40)</h4>
+            <p>Six blockers, one repo; kills the recurring daemon-regression class at the root instead of guard #7.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">4</div>
+          <div class="migration-content">
+            <h4>Generated counts + gate-or-delete the ghost guard (#32, #33)</h4>
+            <p>Ends the five-doc count split brain and makes every prose number trustworthy.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">5</div>
+          <div class="migration-content">
+            <h4>Tracked hooks via core.hooksPath + one entry point (#25, #26)</h4>
+            <p>Fresh clones get the guards; removes the hook split brain.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">6</div>
+          <div class="migration-content">
+            <h4>Community surface in one hour (#2-#5)</h4>
+            <p>SECURITY.md, CODEOWNERS, issue templates, Discussions.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">7</div>
+          <div class="migration-content">
+            <h4>Cut v1.17.0 (#20, TODO #192)</h4>
+            <p>[Unreleased] is warm and verified green; shipping is a feature of its own.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">8</div>
+          <div class="migration-content">
+            <h4>v2 module-path ADR (#13)</h4>
+            <p>Decide the timing now, in calm conditions, not when the next breaking change forces it.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">9</div>
+          <div class="migration-content">
+            <h4>axe-core in the visualtest harness (#41, #91)</h4>
+            <p>A11y is the moat; prove it mechanically on every component and demo route.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">10</div>
+          <div class="migration-content">
+            <h4>Determinism + orphan-golden guards (#45, #54)</h4>
+            <p>Two cheap tests that harden the entire golden backbone.</p>
+          </div>
+        </div>
+
+        <h2 id="strengths">Strengths to Preserve</h2>
+        <div class="strengths">
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Incident-driven hardening</strong>
+              <span>Every guard maps to a real incident (release-checklist doc). Keep that discipline while fixing causes upstream.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Dual-transport wire design</strong>
+              <span>One spec, two dialects, browser-proven. This is genuinely differentiated; guard it with the D3 rule.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Platform-first components</strong>
+              <span>dialog, popover, details, scroll-snap, container queries: less JS than any peer library. The rejection ADRs (0021, 0033) are as valuable as the adoptions.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Compliance scanners as tests</strong>
+              <span>Dark mode, RTL, motion-reduce, coarse-pointer, container queries: conventions enforced by CI, not review vigilance.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Documented honesty</strong>
+              <span>26 status reports, annotated and archived; runtime facts docs pinned by contract tests. Rare and worth protecting.</span>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          Generated 2026-09-13 &middot; templ-components v1.16.0 &middot; Claims verified
+          against source where noted (golden counts, file presence, CI workflow, TODO IDs)
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        var nav = document.querySelector("[data-nav]");
+        if (!nav) return;
+        var links = nav.querySelectorAll('a[href^="#"]');
+        var ids = Array.from(links).map(function (l) {
+          return l.getAttribute("href").slice(1);
+        });
+        var sections = ids
+          .map(function (id) {
+            return document.getElementById(id);
+          })
+          .filter(Boolean);
+        if (!sections.length) return;
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                links.forEach(function (link) {
+                  link.classList.toggle(
+                    "active",
+                    link.getAttribute("href") === "#" + entry.target.id,
+                  );
+                });
+              }
+            });
+          },
+          { rootMargin: "-80px 0px -60% 0px", threshold: 0 },
+        );
+        sections.forEach(function (s) {
+          observer.observe(s);
+        });
+      })();
+    </script>
+  </body>
+</html>
