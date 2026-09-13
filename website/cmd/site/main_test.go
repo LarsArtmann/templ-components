@@ -19,7 +19,7 @@ var scriptTagRe = regexp.MustCompile(`(?s)<script\b([^>]*)>`)
 // search index, and the sitemap.
 func TestSiteBuildIntegrity(t *testing.T) {
 	outDir := t.TempDir()
-	repoRoot := "../.."
+	repoRoot := "../../.."
 
 	cfg := config{
 		outDir:       outDir,
@@ -96,7 +96,9 @@ func collectDist(t *testing.T, outDir string) ([]build.RenderedPage, []string) {
 }
 
 // assertScriptNonces enforces the site's script policy: every <script> is
-// either external same-origin (src=) or carries a non-empty nonce.
+// either external same-origin (src=) or carries a non-empty nonce. JSON-LD
+// blocks are exempt — data blocks are never executed (CSP3 exempts them from
+// script-src) and the hash-based CSP header covers them anyway.
 func assertScriptNonces(t *testing.T, rendered []build.RenderedPage) {
 	t.Helper()
 
@@ -104,7 +106,7 @@ func assertScriptNonces(t *testing.T, rendered []build.RenderedPage) {
 		for _, match := range scriptTagRe.FindAllStringSubmatch(page.HTML, -1) {
 			attrs := strings.ToLower(match[1])
 
-			if strings.Contains(attrs, "src=") {
+			if strings.Contains(attrs, "src=") || strings.Contains(attrs, "application/ld+json") {
 				continue
 			}
 

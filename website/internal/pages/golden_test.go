@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
-
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/golden"
 	"github.com/larsartmann/templ-components/website/internal/build"
@@ -44,6 +43,12 @@ func TestGoldenSweepPages(t *testing.T) {
 		{Name: "landing", HTML: render(t, Landing(goldenStats, StarsLabel(1024), goldenNonce))},
 		{Name: "landing-no-stars", HTML: render(t, Landing(goldenStats, StarsLabel(0), goldenNonce))},
 		{Name: "notfound", HTML: render(t, NotFound(goldenNonce))},
-		{Name: "docs-layout", HTML: render(t, DocsLayout("getting-started/installation", goldenDocsPage, nil, nil, "2026-09-13", goldenNonce))},
+		{
+			Name: "docs-layout",
+			HTML: render(
+				t,
+				DocsLayout("getting-started/installation", goldenDocsPage, nil, nil, "2026-09-13", goldenNonce),
+			),
+		},
 	})
 }

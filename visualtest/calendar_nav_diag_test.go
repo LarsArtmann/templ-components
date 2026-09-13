@@ -26,7 +26,7 @@ func TestCalendarNavDiag(t *testing.T) {
 	var consoleBuf []string
 
 	chromedp.ListenTarget(ctx, func(ev interface{}) {
-		if e, ok := ev.(*runtime.ConsoleAPICalledEvent); ok {
+		if e, ok := ev.(*runtime.EventConsoleAPICalled); ok {
 			consoleBuf = append(consoleBuf, fmt.Sprintf("%v %v", e.Type, e.Args))
 		}
 	})
@@ -66,16 +66,19 @@ func TestCalendarNavDiag(t *testing.T) {
 
 	t.Logf("h3 after raw prev click (no process): %q", h3)
 
-	// Manual htmx.process then prev click again.
+	// Probe: duplicate IDs, version, then manual htmx.process + prev click.
+	var probe string
 	if err := chromedp.Run(ctx,
-		chromedp.Evaluate(`htmx.process(document.getElementById('cal-nav'))&&''`, &done),
-		chromedp.Evaluate(`document.querySelector('a[aria-label="Previous month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`, &done),
+		chromedp.Evaluate(`[document.querySelectorAll('#cal-nav').length, window.htmx && htmx.version].join('|')`, &probe),
+		chromedp.Evaluate(`(htmx.process(document.getElementById('cal-nav')), '')`, &done),
+		chromedp.Evaluate(`(document.querySelector('a[aria-label="Previous month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})), '')`, &done),
 		chromedp.Sleep(2*time.Second),
 		chromedp.Evaluate(`document.querySelector('#cal-nav h3')?.textContent`, &h3),
 	); err != nil {
 		t.Fatalf("processed prev: %v", err)
 	}
 
+	t.Logf("probe (dupCalNav|htmxVersion): %q", probe)
 	t.Logf("h3 after htmx.process + prev click: %q", h3)
 	t.Logf("console: %v", consoleBuf)
 }
