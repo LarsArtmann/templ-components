@@ -85,7 +85,6 @@ func collectComponentVarRefs(defs map[string]bool) (map[string][]string, error) 
 				return nil
 			}
 
-			//nolint:gosec // fixed repo-relative test paths walked from a constant list; no untrusted input
 			content, err := os.ReadFile(path)
 			if err != nil {
 				return fmt.Errorf("read %s: %w", path, err)

@@ -52,7 +52,7 @@ func TestNoOrderedTailwindSubstringsInTests(t *testing.T) {
 				return nil
 			}
 
-			data, readErr := os.ReadFile(path) //nolint:gosec // test scans source files
+			data, readErr := os.ReadFile(path)
 			if readErr != nil {
 				return fmt.Errorf("read file: %w", readErr)
 			}

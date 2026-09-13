@@ -34,11 +34,11 @@ var demoRouteBase = sync.OnceValue(func() string {
 		return fmt.Sprintf("TMPDIR-FAILED: %v", err)
 	}
 
-	defer os.RemoveAll(binDir) //nolint:errcheck // best-effort cleanup of the temp dir
+	defer os.RemoveAll(binDir)
 
 	bin := filepath.Join(binDir, "tc-demo-route")
 
-	build := exec.CommandContext( //nolint:gosec // test fixture: fixed package path, locally built binary
+	build := exec.CommandContext(
 		context.Background(),
 		"go",
 		"build",
@@ -69,7 +69,7 @@ var demoRouteBase = sync.OnceValue(func() string {
 	port := addr.Port
 	_ = listener.Close()
 
-	server := exec.Command(bin) //nolint:gosec // test fixture: locally built binary at a fixed path
+	server := exec.Command(bin)
 
 	server.Env = append(os.Environ(), fmt.Sprintf("PORT=%d", port))
 

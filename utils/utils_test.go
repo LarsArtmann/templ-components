@@ -384,6 +384,6 @@ func testComponent(content string) templ.Component {
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 		_, err := io.WriteString(w, "<div>"+content+"</div>")
 
-		return err //nolint:wrapcheck // test helper, direct passthrough
+		return err
 	})
 }

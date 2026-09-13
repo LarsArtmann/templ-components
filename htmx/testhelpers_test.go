@@ -18,6 +18,6 @@ func testSpinner(colorClasses string) templ.Component {
 
 		_, err := io.WriteString(w, svg)
 
-		return err //nolint:wrapcheck // test helper
+		return err
 	})
 }

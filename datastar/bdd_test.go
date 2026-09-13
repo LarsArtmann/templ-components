@@ -141,7 +141,7 @@ func TestIndicatorUserSeesLoadingFeedback(t *testing.T) {
 		customSpinner := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 			_, err := io.WriteString(w, `<div class="my-custom-spinner"></div>`)
 
-			return err //nolint:wrapcheck // test helper, direct passthrough
+			return err
 		})
 
 		output := utils.Render(t, Indicator(IndicatorProps{

@@ -178,7 +178,7 @@ func TestFormFullCoverage(t *testing.T) {
 	t.Parallel()
 	t.Run("POST with CSRF", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Form(FormProps{ //nolint:gosec // G101 false positive on test CSRF token
+		output := utils.Render(t, Form(FormProps{
 			BaseProps: utils.BaseProps{
 				ID:        "form-1",
 				AriaLabel: "Contact form",

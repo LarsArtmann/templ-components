@@ -184,7 +184,7 @@ func countIsValidMethods(t *testing.T, root string) int {
 		if !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") {
 			return nil
 		}
-		//nolint:gosec // test reads known package files
+
 		data, err := os.ReadFile(path)
 		if err != nil {
 			return fmt.Errorf("read %s: %w", path, err)

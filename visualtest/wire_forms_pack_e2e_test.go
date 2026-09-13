@@ -175,7 +175,7 @@ func packE2EServer(t *testing.T) *httptest.Server {
 		const maxBytes int64 = 8 << 20
 
 		r.Body = http.MaxBytesReader(w, r.Body, maxBytes)
-		if err := r.ParseMultipartForm(maxBytes); err != nil { //nolint:gosec // bounded by MaxBytesReader above
+		if err := r.ParseMultipartForm(maxBytes); err != nil {
 			http.Error(w, "invalid multipart body", http.StatusBadRequest)
 
 			return

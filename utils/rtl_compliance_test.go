@@ -43,7 +43,7 @@ func TestRTLLogicalProperties(t *testing.T) {
 				return nil
 			}
 
-			data, readErr := os.ReadFile(path) //nolint:gosec // test scans templ files
+			data, readErr := os.ReadFile(path)
 			if readErr != nil {
 				return fmt.Errorf("read file: %w", readErr)
 			}

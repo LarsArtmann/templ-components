@@ -49,7 +49,7 @@ func TestCoarsePointerCompliance(t *testing.T) {
 				return fmt.Errorf("relative path for %s: %w", path, relErr)
 			}
 
-			data, readErr := os.ReadFile(path) //nolint:gosec // test scans templ files
+			data, readErr := os.ReadFile(path)
 			if readErr != nil {
 				return fmt.Errorf("read file: %w", readErr)
 			}
