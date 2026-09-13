@@ -20,6 +20,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **Compiled-CSS resurrection loop closed.** The BuildFlow daemon re-added six
+  deleted `.out.css` artifacts within hours of the cleanup (`504856b8` after
+  `43f1522f`) — `utils.TestCompiledCSSInventory` caught it immediately.
+  `.gitignore` now ignores `*.out.css` repo-wide except the one tracked
+  distribution artifact, so daemon rebuilds can no longer re-stage zombie
+  artifacts.
+
 - **Pre-commit hooks are now tracked** in `.githooks/pre-commit` (fast guards
   + BuildFlow), activated per clone via `scripts/setup-hooks.sh`
   (`git config core.hooksPath .githooks`). Previously the hook lived only in
