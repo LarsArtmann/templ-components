@@ -106,7 +106,7 @@ color convention (`-500` shade in dark mode, `-600` in light).
 
 ## Theme presets
 
-Three starter presets ship in `templates/presets/`:
+Four starter presets ship in `templates/presets/`:
 
 | Preset    | File                            | Style                                  |
 | --------- | ------------------------------- | -------------------------------------- |

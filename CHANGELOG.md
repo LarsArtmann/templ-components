@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Removed
+
+- **Ten dead compiled-CSS artifacts deleted** (~208 KB of recurring
+  daemon-recompile churn). The repo tracked compiled `.out.css` output for
+  four theme presets, the `tc` CLI starter kit, a root theme file, a
+  byte-identical duplicate of the demo stylesheet (`demo.out.css`), and a
+  website stylesheet (`global.out.css`) — none had any in-repo consumer: the
+  preset scaffolder (`tc new`) they were committed for never shipped, the
+  CLI only reads `app.css`/`custom.css` from its embedded starter, the demo
+  serves `static/app.css`, and the website compiles its own CSS via
+  `@tailwindcss/vite`. The three legitimate compiled distribution targets
+  remain (`examples/demo/static/app.css`, `templates/styles.css`,
+  `templates/templ-components-theme.out.css`), `scripts/release.sh` now
+  recompiles exactly those, and a new `utils.TestCompiledCSSInventory` guard
+  fails the build if any stray `.out.css` re-enters the tree.
+
 ### Fixed
 
 - **`display.KanbanBoard` no longer widens the page on phone-width viewports.**

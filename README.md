@@ -206,7 +206,7 @@ Page shells and layout primitives: `Base`/`Minimal` HTML documents, theme script
 @navigation.SidebarNav(navigation.SidebarNavProps{CurrentPath: "/users"})
 ```
 
-### `icons` — SVG Icons (106 icons)
+### `icons` — SVG Icons (102 icons)
 
 Typed icon constants, no icon library dependency.
 

@@ -18,17 +18,25 @@ func TestDocsCountDrift(t *testing.T) {
 	actualGenerated := countGeneratedFiles(t, root)
 	actualIsValid := countIsValidMethods(t, root)
 	actualVisualGoldens := countVisualGoldens(t, root)
+	actualIcons := countIconNames(t, root)
+	actualHTMLGoldens := countHTMLGoldens(t, root)
 
 	features := readDoc(t, "FEATURES.md")
 	assertCount(t, features, `(\d+)\s+templ components`, "FEATURES.md templ components", actualComponents)
 	assertCount(t, features, `(\d+)\s+generated\s+.*_templ\.go.*files`, "FEATURES.md generated files", actualGenerated)
+	assertCount(t, features, `(\d+)\s+baselines`, "FEATURES.md HTML golden baselines", actualHTMLGoldens)
+	assertCount(t, features, `(\d+)\s+goldens`, "FEATURES.md visual goldens", actualVisualGoldens)
+	assertCount(t, features, `(\d+)\s+icon names`, "FEATURES.md icon names", actualIcons)
+	assertCount(t, features, `(\d+)\s+with\s+.IsValid`, "FEATURES.md IsValid methods", actualIsValid)
 
 	agents := readDoc(t, "AGENTS.md")
 	assertCount(t, agents, `(\d+)\s+generated files across all packages`, "AGENTS.md generated files", actualGenerated)
+	assertCount(t, agents, `(\d+)\s+golden files across all packages`, "AGENTS.md HTML golden files", actualHTMLGoldens)
 
 	skill := readDoc(t, "skill", "SKILL.md")
 	componentsRe := `(\d+)\s+components across \d+ packages`
 	assertCount(t, skill, componentsRe, "SKILL.md components", actualComponents)
+	assertCount(t, skill, `\+\s+(\d+)\s+icons`, "SKILL.md icons", actualIcons)
 
 	// Per-package counts (single-sourcing, M21): the per-package headings in
 	// README and SKILL must match the actual exported templ function count
@@ -43,6 +51,8 @@ func TestDocsCountDrift(t *testing.T) {
 	assertCount(t, readme, `(\d+)\s+server-rendered components`, "README.md components", actualComponents)
 	assertCount(t, readme, `(\d+)\s+with IsValid\(\)`, "README.md IsValid methods", actualIsValid)
 	assertCount(t, readme, `Visual goldens \| (\d+)\s+pixel-level`, "README.md visual goldens", actualVisualGoldens)
+	assertCount(t, readme, `(\d+) SVG icons`, "README.md SVG icons", actualIcons)
+	assertCount(t, readme, `SVG Icons \((\d+) icons\)`, "README.md icons heading", actualIcons)
 
 	for pkg, want := range packageCounts {
 		if want == 0 {
@@ -58,6 +68,7 @@ func TestDocsCountDrift(t *testing.T) {
 	roadmap := readDoc(t, "ROADMAP.md")
 	assertCount(t, roadmap, `(\d+)[^0-9]{0,6}templ components across`, "ROADMAP.md components", actualComponents)
 	assertCount(t, roadmap, `(\d+)\s+goldens`, "ROADMAP.md visual goldens", actualVisualGoldens)
+	assertCount(t, roadmap, `(\d+)\s+baselines`, "ROADMAP.md HTML golden baselines", actualHTMLGoldens)
 }
 
 func countExportedTemplFunctions(t *testing.T, root string) int {
@@ -198,6 +209,56 @@ func countIsValidMethods(t *testing.T, root string) int {
 	})
 	if err != nil {
 		t.Fatalf("walk IsValid methods: %v", err)
+	}
+
+	return count
+}
+
+// countIconNames counts the iconPathData map entries in icons/icon_paths.go
+// plus the Spinner (the only icon rendered without a path-map entry) — the
+// methodology behind every "N icons" claim in the docs.
+func countIconNames(t *testing.T, root string) int {
+	t.Helper()
+
+	data, err := os.ReadFile(filepath.Join(root, "icons", "icon_paths.go"))
+	if err != nil {
+		t.Fatalf("read icons/icon_paths.go: %v", err)
+	}
+
+	entryRe := regexp.MustCompile(`(?m)^\t[A-Z][A-Za-z0-9]*:\s+"`)
+	return len(entryRe.FindAll(data, -1)) + 1
+}
+
+// countHTMLGoldens counts committed *.golden baseline files across all
+// library packages (visualtest and website excluded — they own other kinds
+// of goldens).
+func countHTMLGoldens(t *testing.T, root string) int {
+	t.Helper()
+
+	count := 0
+
+	err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if d.IsDir() {
+			base := filepath.Base(path)
+			if base == ".git" || base == "website" || base == "visualtest" {
+				return filepath.SkipDir
+			}
+
+			return nil
+		}
+
+		if strings.HasSuffix(path, ".golden") {
+			count++
+		}
+
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("walk HTML goldens: %v", err)
 	}
 
 	return count
