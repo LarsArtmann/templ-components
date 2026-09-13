@@ -42,3 +42,25 @@ templ Header(nonce string) {
 		</nav>
 	</header>
 }
+
+// docSearch is the header's documentation search box. One instance per page —
+// inside #nav-links, which doubles as the mobile menu panel — wired by
+// /assets/js/search.js (lazy-fetched index, combobox keyboard support).
+templ docSearch() {
+	<div class="doc-search-wrap">
+		<label class="sr-only" for="doc-search-input">Search documentation</label>
+		<input
+			type="search"
+			id="doc-search-input"
+			class="doc-search max-sm:w-full"
+			placeholder="Search docs…"
+			autocomplete="off"
+			spellcheck="false"
+			role="combobox"
+			aria-expanded="false"
+			aria-controls="doc-search-results"
+			aria-autocomplete="list"
+		/>
+		<div class="doc-search-results hidden" id="doc-search-results" role="listbox" aria-label="Search results"></div>
+	</div>
+}
