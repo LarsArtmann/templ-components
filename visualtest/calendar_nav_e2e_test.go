@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 	"time"
 
@@ -33,7 +34,8 @@ type calendarNavQuery struct {
 func TestWireE2ECalendarMonthNav(t *testing.T) {
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-			srv := calendarNavServer(t, dialect)
+			seen := &requestLog{}
+			srv := calendarNavServer(t, dialect, seen)
 
 			ctx, cancel := newTab(t)
 			defer cancel()
@@ -60,6 +62,8 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 				next,
 				chromedp.Poll(`document.querySelector('#cal-nav h3')?.textContent.includes('August')?'ok':''`, &done),
 			); err != nil {
+				dumpCalendarNavState(t, ctx, dialect, seen.snapshot())
+
 				t.Fatalf("%s next-month click: %v", dialect, err)
 			}
 
@@ -68,16 +72,58 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 				prev,
 				chromedp.Poll(`document.querySelector('#cal-nav h3')?.textContent.includes('July')?'ok':''`, &done),
 			); err != nil {
+				dumpCalendarNavState(t, ctx, dialect, seen.snapshot())
+
 				t.Fatalf("%s prev-month click: %v", dialect, err)
 			}
 		})
 	}
 }
 
+// dumpCalendarNavState prints the requests the test server saw plus the
+	// calendar region's current DOM — the two facts that distinguish "click never
+	// fired a request" from "response rendered the wrong month".
+	func dumpCalendarNavState(t *testing.T, ctx context.Context, dialect wire.Transport, requests []string) {
+		t.Helper()
+
+		t.Logf("%s: requests seen: %v", dialect, requests)
+
+		var body string
+
+		if err := chromedp.Run(ctx, chromedp.Evaluate(`document.querySelector('#cal-nav')?.outerHTML || 'NO #cal-nav'`, &body)); err != nil {
+			t.Logf("%s: dom dump failed: %v", dialect, err)
+
+			return
+		}
+
+		t.Logf("%s: #cal-nav DOM: %s", dialect, body)
+	}
+
+	// requestLog is a concurrency-safe record of the requests the e2e server
+// received (server handlers run on their own goroutines).
+type requestLog struct {
+	mu       sync.Mutex
+	requests []string
+}
+
+func (l *requestLog) add(entry string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	l.requests = append(l.requests, entry)
+}
+
+func (l *requestLog) snapshot() []string {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	return append([]string(nil), l.requests...)
+}
+
 // calendarNavServer serves a minimal page with one wired Calendar plus the
 // month fragment endpoint. One endpoint serves both dialects via
 // wire.Handler (Datastar targeting comes from response headers).
-func calendarNavServer(t *testing.T, dialect wire.Transport) *httptest.Server {
+func calendarNavServer(t *testing.T, dialect wire.Transport, seen *requestLog) *httptest.Server {
 	t.Helper()
 
 	mux := http.NewServeMux()
@@ -91,6 +137,8 @@ func calendarNavServer(t *testing.T, dialect wire.Transport) *httptest.Server {
 		Selector: "#cal-nav",
 		Mode:     wire.PatchModeOuter,
 	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		seen.add("GET " + r.RequestURI + " hx=" + r.Header.Get("HX-Request"))
+
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 		query, err := wire.DecodeForm[calendarNavQuery](r)
