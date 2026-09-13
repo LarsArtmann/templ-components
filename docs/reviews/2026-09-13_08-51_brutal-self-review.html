@@ -888,12 +888,12 @@
             <div class="stat-label">Ideas (14 policy, 86 dev)</div>
           </div>
           <div class="stat-card stat-bad">
-            <div class="stat-value">6</div>
-            <div class="stat-label">Ghost systems / split brains</div>
+            <div class="stat-value">0</div>
+            <div class="stat-label">Open ghost systems (was 6)</div>
           </div>
           <div class="stat-card stat-warn">
-            <div class="stat-value">4</div>
-            <div class="stat-label">Zero-code governance gaps</div>
+            <div class="stat-value">6/6</div>
+            <div class="stat-label">Ghosts fixed same day</div>
           </div>
           <div class="stat-card stat-good">
             <div class="stat-value">23</div>
@@ -904,20 +904,23 @@
         <div class="card card-problem">
           <h4>The core verdict</h4>
           <p>
-            Engineering quality is world-class; governance and meta-process are the weak flank.
-            The same BuildFlow-daemon failure class has 6 open blockers and 5+ documented
-            regressions, master ran red for 9 days once with no branch protection to catch it,
-            and facts that live in 5 documents by hand (component and golden counts) have
-            already drifted. The library outran its own bookkeeping.
+            Engineering quality is world-class; meta-process is the weak flank.
+            The same BuildFlow-daemon failure class has 6 open blockers and 5+
+            documented regressions, and facts that lived in five documents by
+            hand (component and golden counts) had drifted in seven places.
+            The library had outrun its own bookkeeping — the six ghost systems
+            found by this review were all fixed the same day (section 02).
           </p>
         </div>
         <div class="card card-solution">
           <h4>The core move</h4>
           <p>
-            Convert tribal knowledge into machine-checked single sources: generated counts,
-            tracked git hooks, a post-tag consumer-compile smoke test, and one dedicated
-            upstream BuildFlow sprint. Then spend the freed attention on depth testing
-            (axe-core, HTML validation, mutation testing) rather than more breadth.
+            Convert tribal knowledge into machine-checked single sources — the
+            counts guard, tracked hooks, and badge guard from this session are
+            the pattern. Continue with a post-tag consumer-compile smoke test
+            and one dedicated upstream BuildFlow sprint, then spend the freed
+            attention on depth testing (axe-core, HTML validation, mutation
+            testing) rather than more breadth.
           </p>
         </div>
 
@@ -926,13 +929,15 @@
         <div class="issue issue-critical">
           <span class="severity severity-critical">Forgot</span>
           <h3>1. What did we forget?</h3>
-          <div class="where">governance surface</div>
+          <div class="where">bookkeeping surface</div>
           <p>
-            No SECURITY.md, no CODEOWNERS, no issue templates, no branch protection (TODO #123).
-            We shipped a "v2 behavior set" (v1.8.2 default flips) on a v1 module path and never
-            wrote down when the /v2 path migration happens. And there is a 15&nbsp;MB compiled
-            demo binary sitting untracked in the repo root (<code>./demo</code>, built 2026-09-09),
-            the exact incident class AGENTS.md documents for <code>visualtest/shots</code>.
+            We shipped a "v2 behavior set" (v1.8.2 default flips) on a v1 module
+            path and never wrote down when the /v2 path migration happens. Claims
+            without numbers: the utils.Class mutex is "required" but never
+            measured, LazyRows is recommended at 100+ rows without a stress test
+            backing it. And a 15&nbsp;MB compiled demo binary sat untracked in the
+            repo root (trashed this session) — the exact incident class AGENTS.md
+            documents for <code>visualtest/shots</code>.
           </p>
         </div>
 
@@ -960,8 +965,12 @@
             Individually trivial; as a pattern it means every prose number is suspect.
           </p>
           <div class="callout callout-solution">
-            <strong>Fix</strong>
-            Generate counts from the tree into one JSON and template everywhere else (idea #32).
+            <strong>Shipped 2026-09-13</strong>
+            utils.TestDocsCountDrift now recomputes components, icons, IsValid
+            methods, generated files, HTML goldens (242), and visual goldens
+            from the tree and checks every prose claim in README, FEATURES,
+            ROADMAP, AGENTS, SKILL, and website sections.ts. Seven stale numbers
+            fixed; the split brain is machine-guarded.
           </div>
         </div>
 
@@ -970,10 +979,12 @@
           <h3>7. Ghost systems?</h3>
           <div class="where">guards that guard nothing</div>
           <p>
-            <code>TestSkillComponentCount</code> is an informational guard that never fails: a
-            ghost guard consuming CI time while protecting nothing. Either gate it or delete it
-            (idea #33). Orphaned golden files (no test referencing them) are a structural ghost
-            risk as the suite grows (idea #54).
+            <code>TestSkillComponentCount</code> was an informational guard that
+            computed counts, compared nothing, and skipped on a missing fixture:
+            a ghost guard consuming CI time while protecting nothing. Its job is
+            now done for real by TestDocsCountDrift; the ghost was deleted this
+            session. Orphaned golden files (no test referencing them) remain a
+            structural ghost risk as the suite grows (idea #54).
           </p>
         </div>
 
@@ -994,10 +1005,11 @@
           <h3>10. Split brains found?</h3>
           <div class="where">see section 02</div>
           <p>
-            Six, all small: prose counts in five docs, two pre-commit entry paths, hand-edited
-            README version badge vs <code>utils.Version</code>, three theme-preset CSS files
-            hand-written, per-component typed request parsers vs a generic decoder, and the
-            untracked root binary. Full list below.
+            Six, all small: prose counts in five docs, two pre-commit entry
+            paths, hand-edited README version badge vs <code>utils.Version</code>,
+            three theme-preset CSS files hand-written, per-component typed
+            request parsers vs a generic decoder, and the untracked root
+            binary. Full list below — all six fixed the same day.
           </p>
         </div>
 
@@ -1014,47 +1026,60 @@
           </p>
         </div>
 
-        <h2 id="ghosts"><span class="num">02</span>Ghost Systems and Split Brains</h2>
+        <h2 id="ghosts"><span class="num">02</span>Ghost Systems and Split Brains — all fixed 2026-09-13</h2>
+        <div class="card card-solution">
+          <h4>Same-day fix session</h4>
+          <p>
+            Every finding below was executed and verified the same day it was
+            found: guards extended and green, hook activated via
+            core.hooksPath, binary trashed, decoder generalized with tests,
+            and the ghost guard deleted. Additionally,
+            <strong>scripts/vision-review-goldens.sh</strong> now integrates
+            the vision-review-agent so TODO #80/#150/#162 ("AI cannot read
+            PNGs") have a first-pass machine review — the flagged golden set
+            is one API key away from a CLEAN/SUSPECT report.
+          </p>
+        </div>
         <table>
           <thead>
-            <tr><th>#</th><th>What</th><th>Where</th><th>Verdict</th></tr>
+            <tr><th>#</th><th>What</th><th>Where</th><th>Fix shipped</th></tr>
           </thead>
           <tbody>
             <tr>
               <td>G1</td>
-              <td>Guard that can never fail (skill-count drift test is informational only)</td>
-              <td>utils/lint_config_test.go family</td>
-              <td><span class="badge badge-critical">Gate or delete</span></td>
+              <td>Guard that could never fail (skill-count drift test computed counts, compared nothing, skipped on missing fixture)</td>
+              <td>utils/skill_count_test.go</td>
+              <td><span class="badge badge-fixed">Deleted — superseded by TestDocsCountDrift</span></td>
             </tr>
             <tr>
               <td>G2</td>
-              <td>Counts hand-copied across 5 docs; ROADMAP says 175 goldens, disk has 242</td>
+              <td>Counts hand-copied across 5 docs; 7 stale numbers (175 vs 242 goldens, 114 vs 125 visual, 106 vs 102 icons, 102 vs 242, "= 123")</td>
               <td>README · FEATURES · ROADMAP · AGENTS · SKILL</td>
-              <td><span class="badge badge-critical">Single-source</span></td>
+              <td><span class="badge badge-fixed">TestDocsCountDrift extended + docs fixed</span></td>
             </tr>
             <tr>
               <td>G3</td>
-              <td>Two pre-commit paths: untracked .git/hooks vs scripts/pre-commit.sh (+ BuildFlow's own)</td>
+              <td>Pre-commit hook lived untracked in .git/hooks; AGENTS claimed it called scripts/pre-commit.sh (it never did)</td>
               <td>.git/hooks/pre-commit</td>
-              <td><span class="badge badge-high">core.hooksPath</span></td>
+              <td><span class="badge badge-fixed">Tracked .githooks/ + setup-hooks.sh + core.hooksPath</span></td>
             </tr>
             <tr>
               <td>G4</td>
               <td>README version badge hand-edited while utils.Version is canonical</td>
               <td>README.md:5</td>
-              <td><span class="badge badge-high">Drift-guard it</span></td>
+              <td><span class="badge badge-fixed">TestVersionMatchesReadmeBadge</span></td>
             </tr>
             <tr>
               <td>G5</td>
               <td>15 MB compiled demo binary parked untracked in repo root (shots-binary incident class)</td>
-              <td>./demo (not in git)</td>
-              <td><span class="badge badge-low">Trash + gitignore</span></td>
+              <td>./demo (was not in git)</td>
+              <td><span class="badge badge-fixed">Trashed; /demo already gitignored</span></td>
             </tr>
             <tr>
               <td>G6</td>
-              <td>Per-component request parsers (ParseKanbanMove) instead of a shared wire.DecodeForm[T]</td>
+              <td>Component-specific request parsing (ParseKanbanMove hand-rolled ParseForm chains) with no shared decoder for wired handlers</td>
               <td>display/kanban.go</td>
-              <td><span class="badge badge-low">Generalize</span></td>
+              <td><span class="badge badge-fixed">wire.DecodeForm[T] + tests; kanban refactored</span></td>
             </tr>
           </tbody>
         </table>
@@ -1066,25 +1091,26 @@
           required. TODO numbers reference TODO_LIST.md IDs.
         </p>
 
-        <h3 id="cat-a">A. Policy and Governance (1-14)</h3>
+        <h3 id="cat-a">A. Policy and Conventions (1-14)</h3>
         <div class="card card-warning">
           <p>
-            The library is production-grade but governs itself like a private experiment.
-            Four gaps cost nothing to close and change how external eyes read the project.
+            Several guarantees the library actually delivers live only as
+            tribal knowledge or review vigilance. Making them written policy or
+            machine-checked convention is cheap and compounds.
           </p>
         </div>
         <table>
           <tbody>
-            <tr><td>1</td><td><strong>Branch protection + required checks on master</strong>: would have blocked the documented 9-day-red window (TODO #123, two reports).</td><td>POL</td></tr>
-            <tr><td>2</td><td><strong>Add SECURITY.md</strong>: vulnerability reporting policy + GitHub private security advisories; repo has none.</td><td>QW</td></tr>
-            <tr><td>3</td><td><strong>Add CODEOWNERS</strong>: review routing before external contributors arrive.</td><td>QW</td></tr>
-            <tr><td>4</td><td><strong>Issue templates</strong>: bug / component-request / ADR-first feature form embedding the D1-D2-D3 wire-gates checklist.</td><td>QW</td></tr>
+            <tr><td>1</td><td><strong>Zero-runtime-panics as a scanner</strong>: the invariant exists as prose (AGENTS: "zero runtime panics in component code"); enforce it like dark-mode: a test grepping component packages for panic paths.</td><td>PROJ</td></tr>
+            <tr><td>2</td><td><strong>Publish the Class-override contract</strong>: "props.Class always wins" (tailwind-merge resolution) is the headless-rejection answer (ADR-0021); write it as a guaranteed theming contract with tests pinning it per component.</td><td>QW</td></tr>
+            <tr><td>3</td><td><strong>Version-support policy</strong>: which templ / Go / Tailwind versions are supported (templ pinned at proxy-latest v0.3.1020, jsonv2 until Go 1.27) and the bump procedure; today this is AGENTS tribal knowledge.</td><td>QW</td></tr>
+            <tr><td>4</td><td><strong>Consumer-facing invariants page</strong>: CSP-safe, RTL, dark mode, motion-reduce on every component, singleton-only JS; the guarantee list doubles as the contribution bar.</td><td>QW</td></tr>
             <tr><td>5</td><td><strong>Enable GitHub Discussions</strong> as Q&A channel; keeps issues actionable.</td><td>QW</td></tr>
             <tr><td>6</td><td><strong>Publish the dependency-budget policy</strong>: the closed budget (templ + tailwind-merge-go + go-error-family) is tribal knowledge; make it a public page so PRs adding deps can be closed fast.</td><td>QW</td></tr>
             <tr><td>7</td><td><strong>Browser-support policy</strong>: the repo leans on Baseline 2023/24 features (Popover API, field-sizing, base-select) but never states the supported floor.</td><td>POL</td></tr>
             <tr><td>8</td><td><strong>Accessibility conformance target</strong>: commit to WCAG 2.2 AA in writing + website statement; a11y is practiced everywhere but promised nowhere.</td><td>POL</td></tr>
             <tr><td>9</td><td><strong>Deprecation policy</strong>: document how long aliases live (v1.0 removed 4 aliases; write the rule consumers can plan around).</td><td>QW</td></tr>
-            <tr><td>10</td><td><strong>AI-golden review policy</strong>: #80/#150/#162 recur because "human eyeball PNGs" is a TODO, not a gate; make it a release-checklist item with a list.</td><td>POL</td></tr>
+            <tr><td>10</td><td><strong>AI-golden review loop</strong>: <em>shipped 2026-09-13</em> — scripts/vision-review-goldens.sh runs the vision-review-agent over the TODO #80/#150/#162 flagged set and writes a CLEAN/SUSPECT report; make "human confirms SUSPECTs" a standing release-checklist item (needs an API key to run).</td><td>QW</td></tr>
             <tr><td>11</td><td><strong>Encode release-checklist into preflight</strong>: docs/release-checklist.md maps incidents to steps; verify every step runs automatically in release.sh preflight.</td><td>PROJ</td></tr>
             <tr><td>12</td><td><strong>Docs-sync SLA</strong>: policy that living docs update in the same PR as code; extend the version drift-guard philosophy to counts.</td><td>POL</td></tr>
             <tr><td>13</td><td><strong>v2 module-path ADR</strong>: shipping v2 behavior on a v1 path; Go requires /v2 at the next major. Decide timing before it is forced (go-release skill covers this migration).</td><td>DEC</td></tr>
@@ -1096,7 +1122,7 @@
         <table>
           <tbody>
             <tr><td>15</td><td><strong>Post-tag consumer compile smoke</strong>: CI job that creates a temp module and <code>go get</code>s the fresh tag; the missing-*_templ.go catastrophe is otherwise only caught by consumers.</td><td>PROJ</td></tr>
-            <tr><td>16</td><td><strong>Automate README version badge</strong> or drift-guard it against utils.Version (G4).</td><td>QW</td></tr>
+            <tr><td>16</td><td><strong>Automate README version badge</strong>: <em>shipped 2026-09-13</em> as a drift guard (TestVersionMatchesReadmeBadge); the badge stays hand-edited but can no longer lie.</td><td>QW</td></tr>
             <tr><td>17</td><td><strong>tc release-check command</strong>: wrap check-release-tags.sh + tag-completeness into one local command.</td><td>QW</td></tr>
             <tr><td>18</td><td><strong>Scheduled supply-chain scan</strong>: weekly govulncheck run + osv-scanner for Actions/pnpm/nix surfaces the Go scanner misses.</td><td>QW</td></tr>
             <tr><td>19</td><td><strong>Proxy freshness ping</strong>: post-release script verifies proxy.golang.org serves the tag (daemon has raced tags before).</td><td>QW</td></tr>
@@ -1111,15 +1137,15 @@
         <h3 id="cat-c">C. CI, Automation, Tooling (25-40)</h3>
         <table>
           <tbody>
-            <tr><td>25</td><td><strong>Track git hooks in-repo</strong> via core.hooksPath=.githooks; fresh clones currently get no guards (G3).</td><td>QW</td></tr>
+            <tr><td>25</td><td><strong>Track git hooks in-repo</strong> via core.hooksPath=.githooks: <em>shipped 2026-09-13</em> (.githooks/pre-commit + scripts/setup-hooks.sh); remaining: every clone runs setup-hooks.sh once (CONTRIBUTING documents it).</td><td>QW</td></tr>
             <tr><td>26</td><td><strong>One pre-commit entry point</strong>: dedupe .git/hooks/pre-commit vs scripts/pre-commit.sh.</td><td>QW</td></tr>
             <tr><td>27</td><td><strong>Dedicated e2e CI job</strong>: wire_forms_pack, kanban, demo_flows deserve isolation + own timeout from visual regression.</td><td>PROJ</td></tr>
             <tr><td>28</td><td><strong>Flake policy</strong>: retry-once + auto-issue for visual flakes; overlay calibration proved 0% is achievable.</td><td>POL</td></tr>
             <tr><td>29</td><td><strong>Mutation testing</strong> (gremlins) on utils + rotating package: prove golden tests bite; string tests can pass beside dead code.</td><td>PROJ</td></tr>
             <tr><td>30</td><td><strong>Coverage floor with ratchet</strong>: artifact exists, threshold does not.</td><td>POL</td></tr>
             <tr><td>31</td><td><strong>PR benchstat gate</strong> for the 7 benchmark suites; catches Class() lock contention and render-alloc regressions.</td><td>PROJ</td></tr>
-            <tr><td>32</td><td><strong>Generated counts</strong>: emit docs/counts.json from the tree; template README/FEATURES/ROADMAP/AGENTS/SKILL from it (G2, 175 vs 242 drift).</td><td>PROJ</td></tr>
-            <tr><td>33</td><td><strong>Gate or delete TestSkillComponentCount</strong> (G1).</td><td>QW</td></tr>
+            <tr><td>32</td><td><strong>Generated counts</strong>: the guard side shipped 2026-09-13 (TestDocsCountDrift recomputes from the tree and checks every claim); optionally add a counts.json writer for one-command doc refresh.</td><td>PROJ</td></tr>
+            <tr><td>33</td><td><strong>Gate or delete TestSkillComponentCount</strong>: <em>shipped 2026-09-13</em> — deleted; TestDocsCountDrift gates SKILL.md totals, per-package headings, and icons for real.</td><td>QW</td></tr>
             <tr><td>34</td><td><strong>Custom convention linter</strong> (go/analysis): props must embed BaseProps, enums need IsValid, lookup maps need typed keys. Three manual conventions made mechanical.</td><td>PROJ</td></tr>
             <tr><td>35</td><td><strong>nix run .#e2e</strong> flake app for the chromedp suite (parity with #visual).</td><td>QW</td></tr>
             <tr><td>36</td><td><strong>Cache templ generate in CI</strong> keyed on .templ hashes; 122 files regenerate every run.</td><td>QW</td></tr>
@@ -1237,8 +1263,8 @@
         <div class="migration-step">
           <div class="migration-num">1</div>
           <div class="migration-content">
-            <h4>Branch protection + required checks (#1, TODO #123)</h4>
-            <p>Zero code. Closes the 9-day-red-window class permanently.</p>
+            <h4>Post-tag consumer compile smoke in CI (#15)</h4>
+            <p>A temp module that <code>go get</code>s the fresh tag guards the single catastrophic failure: a tag missing *_templ.go.</p>
           </div>
         </div>
         <div class="migration-step">
@@ -1258,22 +1284,22 @@
         <div class="migration-step">
           <div class="migration-num">4</div>
           <div class="migration-content">
-            <h4>Generated counts + gate-or-delete the ghost guard (#32, #33)</h4>
-            <p>Ends the five-doc count split brain and makes every prose number trustworthy.</p>
+            <h4>Counts guard + tracked hooks + badge guard — SHIPPED 2026-09-13</h4>
+            <p>The meta-process flank is closed: every prose count is machine-checked, the hook is tracked, the badge is guarded. Keep the pattern.</p>
           </div>
         </div>
         <div class="migration-step">
           <div class="migration-num">5</div>
           <div class="migration-content">
-            <h4>Tracked hooks via core.hooksPath + one entry point (#25, #26)</h4>
-            <p>Fresh clones get the guards; removes the hook split brain.</p>
+            <h4>Tracked hooks + one entry point (#25, #26) — SHIPPED 2026-09-13</h4>
+            <p>.githooks/pre-commit tracked, activated via scripts/setup-hooks.sh; CONTRIBUTING documents the one-time step.</p>
           </div>
         </div>
         <div class="migration-step">
           <div class="migration-num">6</div>
           <div class="migration-content">
-            <h4>Community surface in one hour (#2-#5)</h4>
-            <p>SECURITY.md, CODEOWNERS, issue templates, Discussions.</p>
+            <h4>Custom convention linter (#34) + zero-panic scanner (#1)</h4>
+            <p>go/analysis checks for the three manual conventions: BaseProps embedding, IsValid on enums, typed lookup keys.</p>
           </div>
         </div>
         <div class="migration-step">
