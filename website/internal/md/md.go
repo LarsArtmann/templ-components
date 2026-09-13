@@ -7,7 +7,6 @@ package md
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"regexp"
 	"strings"
 
@@ -20,6 +19,7 @@ import (
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/text"
+	"github.com/yuin/goldmark/util"
 )
 
 // Heading is one TOC entry (h2/h3) collected from the document.
@@ -43,11 +43,40 @@ var frontmatterKeyRe = regexp.MustCompile(`(?m)^([a-zA-Z_]+):\s*(.*)$`)
 // templLexer highlights templ fences as Go (chroma has no dedicated templ
 // lexer; Go coloring covers keywords, strings, and struct literals well).
 type templLexer struct {
-	chroma.Lexer
+	registry *chroma.LexerRegistry
 }
 
-func (l templLexer) Tokenise(opts *chroma.TokeniseConfig, source string) (chroma.Iterator, error) {
-	return lexers.Get("go").Tokenise(opts, source)
+func (l templLexer) Config() *chroma.Config {
+	return &chroma.Config{Name: "templ", Aliases: []string{"templ"}, Filenames: []string{"*.templ"}}
+}
+
+func (l templLexer) SetRegistry(registry *chroma.LexerRegistry) chroma.Lexer {
+	l.registry = registry
+
+	return l
+}
+
+func (l templLexer) Tokenise(options *chroma.TokeniseOptions, source string) (chroma.Iterator, error) {
+	goLexer := lexers.Get("go")
+	if l.registry != nil {
+		if found := l.registry.Get("go"); found != nil {
+			goLexer = found
+		}
+	}
+
+	return goLexer.Tokenise(options, source)
+}
+
+func (templLexer) AnalyseText(string) float32 {
+	return 0
+}
+
+func (l templLexer) SetAnalyser(func(string) float32) chroma.Lexer {
+	return l
+}
+
+func init() {
+	lexers.Register(templLexer{})
 }
 
 func newMarkdown() goldmark.Markdown {
@@ -57,11 +86,10 @@ func newMarkdown() goldmark.Markdown {
 			extension.Linkify,
 			highlighting.NewHighlighting(
 				highlighting.WithStyle("github-dark"),
-				highlighting.WithCustomLexer(templLexer{Lexer: lexers.Get("go")}),
 				highlighting.WithFormatOptions(
 					chromahtml.WithClasses(true),
 				),
-				highlighting.WithWrapperRenderer(func(w io.Writer, ctx highlighting.CodeBlockContext, entering bool) {
+				highlighting.WithWrapperRenderer(func(w util.BufWriter, ctx highlighting.CodeBlockContext, entering bool) {
 					if entering {
 						fmt.Fprint(w, `<div class="code-block">`)
 						fmt.Fprint(w, `<button type="button" class="code-copy" aria-label="Copy code to clipboard">Copy</button>`)
@@ -133,19 +161,7 @@ func collectHeadings(source []byte) []Heading {
 
 		var textParts []string
 		for child := heading.FirstChild(); child != nil; child = child.NextSibling() {
-			if codeSpan, isCode := child.(*ast.CodeSpan); isCode {
-				var codeText strings.Builder
-				for segment := range codeSpan.Segments {
-					codeText.Write(segment.Value(source))
-				}
-
-				textParts = append(textParts, codeText.String())
-				continue
-			}
-
-			if textNode, isText := child.(*ast.Text); isText {
-				textParts = append(textParts, string(textNode.Value(source)))
-			}
+			textParts = append(textParts, string(child.Text(source)))
 		}
 
 		headings = append(headings, Heading{ID: idText, Text: strings.Join(textParts, ""), Level: heading.Level})
