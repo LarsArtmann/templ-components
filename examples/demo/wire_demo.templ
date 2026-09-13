@@ -321,6 +321,37 @@ templ wireDemo(transport demoTransport) {
 	</div>
 
 	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Wired nav links</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+			<code>NavLinkProps.Wire</code> puts the wiring on the link itself — the anchor
+			keeps its <code>href</code> (no-JS fallback) and patches a region instead of
+			navigating. Because the field rides <code>NavLinkProps</code>, every nav
+			(<code>Nav</code>, <code>SimpleNav</code>, <code>MobileMenu</code>) inherits it.
+		</p>
+		<div class="max-w-md space-y-3">
+			if transport == demoTransportBoth {
+				<div class="flex gap-4">
+					@navigation.NavLink(navigation.NavLinkProps{
+						Href: "/forms", Text: "Forms (htmx)",
+						Wire: &wire.Action{URL: "/api/wire/fragment", Target: "#wire-nav-htmx-out"}, //nolint:exhaustruct // URL+Target are the wiring surface
+					}, "/")
+					@navigation.NavLink(navigation.NavLinkProps{
+						Href: "/forms", Text: "Forms (Datastar)",
+						Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/wire/fragment"}, //nolint:exhaustruct // URL is the wiring surface
+					}, "/")
+				</div>
+				<div id="wire-nav-htmx-out" class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
+			} else {
+				@navigation.NavLink(navigation.NavLinkProps{
+					Href: "/forms", Text: "Forms (" + transport.humanName() + ")",
+					Wire: &wire.Action{Transport: transport.wireTransport(), URL: "/api/wire/fragment", Target: transport.wireTarget()}, //nolint:exhaustruct // URL+Target are the wiring surface
+				}, "/")
+				<div id={ transport.outID() } class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
+			}
+		</div>
+	</div>
+
+	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Month navigation</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
 			A <code>forms.Calendar</code> whose prev/next arrows carry a
