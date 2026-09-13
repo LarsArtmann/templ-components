@@ -211,10 +211,13 @@ if [ "$RUN_VULN" = "1" ]; then
 		(cd "$mod" && GOWORK=off govulncheck ./...)
 	done
 
-	step "pnpm audit --prod (website; fails on known-vulnerable prod dependencies)"
+	step "website build (Go SSG + Tailwind; mirrors website.yml build job)"
 	(
 		cd website
-		CI=true pnpm audit --prod
+		GOWORK=off go build ./...
+		GOWORK=off golangci-lint run ./...
+		GOEXPERIMENT=jsonv2 go run ./cmd/site --skip-stars --out dist --repo-root ..
+		rm -rf dist
 	)
 fi
 

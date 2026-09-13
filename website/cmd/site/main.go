@@ -57,7 +57,7 @@ func run(out, repoRoot string, skipStars bool) error {
 
 	renderer := build.NewRenderer(nonce)
 
-	docsPages, err := renderDocs(renderer, repoRoot, nonce)
+	docsPages, err := renderDocs(repoRoot, nonce)
 	if err != nil {
 		return err
 	}
@@ -75,6 +75,23 @@ func run(out, repoRoot string, skipStars bool) error {
 		return fmt.Errorf("write pages: %w", err)
 	}
 
+	if err := writeSitemaps(out, repoRoot); err != nil {
+		return fmt.Errorf("sitemaps: %w", err)
+	}
+
+	if err := writeAssets(out); err != nil {
+		return err
+	}
+
+	fmt.Fprintf(os.Stdout, "site: wrote %d page(s) + sitemaps to %s (components=%d icons=%d enums=%d modules=%d)\n",
+		len(sitePages), out, stats.Components, stats.Icons, stats.Enums, stats.Modules)
+
+	return nil
+}
+
+// writeAssets emits the generated chroma stylesheet and copies the static
+// asset trees (assets/, public/) into the dist directory.
+func writeAssets(out string) error {
 	chromaCSS, err := build.ChromaCSS()
 	if err != nil {
 		return fmt.Errorf("chroma css: %w", err)
@@ -89,10 +106,6 @@ func run(out, repoRoot string, skipStars bool) error {
 		return fmt.Errorf("write chroma css: %w", err)
 	}
 
-	if err := writeSitemaps(out, repoRoot); err != nil {
-		return fmt.Errorf("sitemaps: %w", err)
-	}
-
 	for _, tree := range []struct{ src, dst string }{
 		{"assets", filepath.Join(out, "assets")},
 		{"public", out},
@@ -103,9 +116,6 @@ func run(out, repoRoot string, skipStars bool) error {
 			}
 		}
 	}
-
-	fmt.Fprintf(os.Stdout, "site: wrote %d page(s) + sitemaps to %s (components=%d icons=%d enums=%d modules=%d)\n",
-		len(sitePages), out, stats.Components, stats.Icons, stats.Enums, stats.Modules)
 
 	return nil
 }
@@ -152,7 +162,7 @@ func fetchStars() int {
 
 // renderDocs renders every registered docs page from content/docs, wiring
 // prev/next navigation and git last-updated dates.
-func renderDocs(renderer *build.Renderer, repoRoot, nonce string) ([]build.Page, error) {
+func renderDocs(repoRoot, nonce string) ([]build.Page, error) {
 	all := pages.AllDocs()
 
 	out := make([]build.Page, 0, len(all))
@@ -193,8 +203,21 @@ func renderDocs(renderer *build.Renderer, repoRoot, nonce string) ([]build.Page,
 // lastUpdated asks git for the last commit date touching a docs source
 // (YYYY-MM-DD); empty when unavailable (shallow clones, non-git runs).
 func lastUpdated(repoRoot, slug string) string {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	//nolint:gosec // repository-controlled path, never user input
-	cmd := exec.Command("git", "-C", repoRoot, "log", "-1", "--format=%cs", "--", "website/content/docs/"+slug+".md")
+	cmd := exec.CommandContext(
+		ctx,
+		"git",
+		"-C",
+		repoRoot,
+		"log",
+		"-1",
+		"--format=%cs",
+		"--",
+		"website/content/docs/"+slug+".md",
+	)
 
 	out, err := cmd.Output()
 	if err != nil {
@@ -213,7 +236,11 @@ type sitemapEntry struct {
 // writeSitemaps emits sitemap.xml (all pages, git lastmod where known) and
 // sitemap-index.xml (the URL robots.txt already references).
 func writeSitemaps(outDir, repoRoot string) error {
-	entries := []sitemapEntry{{loc: pages.SiteURL + "/", lastmod: ""}}
+	entries := make([]sitemapEntry, 0, 1+len(pages.AllDocs()))
+	entries = append(
+		entries,
+		sitemapEntry{loc: pages.SiteURL + "/", lastmod: ""},
+	)
 
 	for _, doc := range pages.AllDocs() {
 		entries = append(entries, sitemapEntry{

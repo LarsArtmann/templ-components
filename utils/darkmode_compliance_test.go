@@ -144,11 +144,7 @@ func scanDarkMode(t *testing.T, dirs []string, colorRe *regexp.Regexp) {
 				return err
 			}
 
-			if !strings.HasSuffix(path, ".templ") && !strings.HasSuffix(path, ".go") {
-				return nil
-			}
-
-			if strings.HasSuffix(path, "_templ.go") || strings.HasSuffix(path, "_test.go") {
+			if !isDarkModeSweepable(path) {
 				return nil
 			}
 
@@ -157,13 +153,7 @@ func scanDarkMode(t *testing.T, dirs []string, colorRe *regexp.Regexp) {
 				return fmt.Errorf("read file: %w", readErr)
 			}
 
-			for line := range strings.SplitSeq(string(data), "\n") {
-				if checkLineForDarkModeGap(path, line, colorRe) {
-					violations++
-
-					t.Errorf("dark mode gap in %s:\n  %s", path, strings.TrimSpace(line))
-				}
-			}
+			violations += countLineGaps(t, path, string(data), colorRe)
 
 			return nil
 		})
@@ -175,6 +165,31 @@ func scanDarkMode(t *testing.T, dirs []string, colorRe *regexp.Regexp) {
 	if violations > 0 {
 		t.Errorf("found %d dark mode compliance violations", violations)
 	}
+}
+
+// isDarkModeSweepable reports whether a walked file is a component source the
+// dark mode sweep covers (generated and test files are excluded).
+func isDarkModeSweepable(path string) bool {
+	if !strings.HasSuffix(path, ".templ") && !strings.HasSuffix(path, ".go") {
+		return false
+	}
+
+	return !strings.HasSuffix(path, "_templ.go") && !strings.HasSuffix(path, "_test.go")
+}
+
+// countLineGaps reports one t.Errorf per violating line and returns the count.
+func countLineGaps(t *testing.T, path, content string, colorRe *regexp.Regexp) int {
+	gaps := 0
+
+	for line := range strings.SplitSeq(content, "\n") {
+		if checkLineForDarkModeGap(path, line, colorRe) {
+			gaps++
+
+			t.Errorf("dark mode gap in %s:\n  %s", path, strings.TrimSpace(line))
+		}
+	}
+
+	return gaps
 }
 
 // TestDarkModeCompliance verifies that every neutral color class (text-gray-*,

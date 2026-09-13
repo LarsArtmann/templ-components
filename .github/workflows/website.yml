@@ -5,13 +5,11 @@ on:
     branches: [master]
     paths:
       - website/**
-      - examples/demo/**
       - .github/workflows/website.yml
   pull_request:
     branches: [master]
     paths:
       - website/**
-      - examples/demo/**
       - .github/workflows/website.yml
   workflow_dispatch:
 
@@ -29,36 +27,38 @@ jobs:
     defaults:
       run:
         working-directory: website
+    env:
+      # errorpage (404 page) uses encoding/json/v2 until Go 1.27 makes it stable.
+      GOEXPERIMENT: jsonv2
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # Enable corepack BEFORE setup-node: its `cache: pnpm` probe runs
-      # `pnpm store path` and fails if pnpm is not on PATH yet. The website
-      # declares "packageManager": "pnpm@11.20.0" in package.json, so
-      # corepack activates exactly that pinned version (Node 24 ships corepack).
-      - run: corepack enable pnpm
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          node-version: "24"
-          cache: pnpm
-          cache-dependency-path: website/pnpm-lock.yaml
+          go-version: "1.26"
 
-      - run: pnpm --version
+      - name: Compile check (templ output is committed, no generate step needed)
+        run: GOWORK=off go build ./...
 
-      - run: pnpm install
+      - name: Lint website module
+        # Pinned (was @latest): a floating install made lint results drift
+        # between runs (see ci.yaml "Install golangci-lint").
+        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
 
-      - name: pnpm audit
-        run: pnpm audit --audit-level=high --prod
-        continue-on-error: true
+      - name: Run golangci-lint
+        run: GOWORK=off golangci-lint run ./...
 
-      - run: pnpm dlx astro check
-        continue-on-error: true
-
-      - run: pnpm run build
+      - name: Build site (Go SSG + Tailwind CSS v4)
+        # npm -g, not pnpm: pnpm's global bin preflight fails on runners
+        # (see the deploy job note below).
+        run: |
+          npm install -g @tailwindcss/cli
+          bash build.sh
 
       - name: HTML Validation
-        run: pnpm dlx html-validate --config .htmlvalidate.json "dist/**/*.html"
+        run: |
+          npm install -g html-validate
+          html-validate --config .htmlvalidate.json "dist/**/*.html"
         continue-on-error: true
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -119,9 +119,8 @@ jobs:
       - name: Deploy to Firebase Hosting
         working-directory: website
         # npm, not pnpm: `pnpm add -g` fails its preflight because the
-        # pnpm global bin dir (~/.local/share/pnpm/bin) is not on PATH on
-        # GitHub runners, and corepack does not set PNPM_HOME. Verified by
-        # container replication on node:24 with corepack pnpm@11.20.0.
+        # pnpm global bin dir is not on PATH on GitHub runners, and
+        # corepack does not set PNPM_HOME.
         run: |
           npm install -g firebase-tools
           firebase deploy --only hosting:templcomponents --project lars-software

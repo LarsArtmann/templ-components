@@ -44,8 +44,6 @@ var (
 
 // templLexer highlights templ fences as Go (chroma has no dedicated templ
 // lexer; Go coloring covers keywords, strings, and struct literals well).
-//
-//nolint:unused // referenced only via the templLexerRegistration side effect
 type templLexer struct {
 	registry *chroma.LexerRegistry
 }
@@ -92,6 +90,9 @@ func (l templLexer) SetAnalyser(func(string) float32) chroma.Lexer {
 var templLexerRegistration = lexers.Register(templLexer{})
 
 func newMarkdown() goldmark.Markdown {
+	// Touch the registration value so `unused` sees the side-effect var as read.
+	_ = templLexerRegistration
+
 	return goldmark.New(
 		goldmark.WithExtensions(
 			extension.Table,

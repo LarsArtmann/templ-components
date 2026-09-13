@@ -34,7 +34,7 @@ func TestCompiledCSSInventory(t *testing.T) {
 		"templates/templ-components-theme.out.css",
 	}
 
-	gitOut, err := exec.Command("git", "-C", repoRoot, "ls-files", "--", "*.out.css").Output()
+	gitOut, err := exec.CommandContext(t.Context(), "git", "-C", repoRoot, "ls-files", "--", "*.out.css").Output()
 	if err != nil {
 		t.Fatalf("git ls-files *.out.css: %v — the tracked-artifact guard requires git (fail loud, never skip)", err)
 	}

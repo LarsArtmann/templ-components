@@ -106,96 +106,85 @@ func TestFromError(t *testing.T) {
 func TestPreBuiltConstructors(t *testing.T) {
 	t.Parallel()
 
-	t.Run("NotFound has correct family and code", func(t *testing.T) {
-		t.Parallel()
+	tests := []struct {
+		name               string
+		props              ErrorPageProps
+		wantFamily         Family
+		wantCode           string
+		wantMessage        string
+		wantMessageNonEmpty bool
+		wantWayOutHref     string
+	}{
+		{
+			name:           "NotFound has correct family and code",
+			props:          NotFound(),
+			wantFamily:     FamilyRejection,
+			wantCode:       "page.not_found",
+			wantWayOutHref: "/",
+		},
+		{
+			name:       "Forbidden has rejection family",
+			props:      Forbidden(),
+			wantFamily: FamilyRejection,
+			wantCode:   "access.forbidden",
+		},
+		{
+			name:          "BadRequest has rejection family and custom message",
+			props:         BadRequest("Invalid email"),
+			wantFamily:    FamilyRejection,
+			wantMessage:   "Invalid email",
+		},
+		{
+			name:                "BadRequest empty message gets default",
+			props:               BadRequest(""),
+			wantFamily:          FamilyRejection,
+			wantMessageNonEmpty: true,
+		},
+		{
+			name:          "Conflict has conflict family",
+			props:         Conflict("Version mismatch"),
+			wantFamily:    FamilyConflict,
+			wantMessage:   "Version mismatch",
+		},
+		{
+			name:       "ServiceUnavailable has transient family",
+			props:      ServiceUnavailable(),
+			wantFamily: FamilyTransient,
+			wantCode:   "service.unavailable",
+		},
+		{
+			name:       "InternalError has infrastructure family",
+			props:      InternalError(),
+			wantFamily: FamilyInfrastructure,
+			wantCode:   "internal.error",
+		},
+	}
 
-		props := NotFound()
-		if props.Family != FamilyRejection {
-			t.Errorf("Family = %q, want %q", props.Family, FamilyRejection)
-		}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 
-		if props.Code != "page.not_found" {
-			t.Errorf("Code = %q, want %q", props.Code, "page.not_found")
-		}
+			if tc.props.Family != tc.wantFamily {
+				t.Errorf("Family = %q, want %q", tc.props.Family, tc.wantFamily)
+			}
 
-		if props.WayOutHref != "/" {
-			t.Errorf("WayOutHref = %q, want %q", props.WayOutHref, "/")
-		}
-	})
+			if tc.wantCode != "" && tc.props.Code != tc.wantCode {
+				t.Errorf("Code = %q, want %q", tc.props.Code, tc.wantCode)
+			}
 
-	t.Run("Forbidden has rejection family", func(t *testing.T) {
-		t.Parallel()
+			if tc.wantMessage != "" && tc.props.Message != tc.wantMessage {
+				t.Errorf("Message = %q, want %q", tc.props.Message, tc.wantMessage)
+			}
 
-		props := Forbidden()
-		if props.Family != FamilyRejection {
-			t.Errorf("Family = %q", props.Family)
-		}
+			if tc.wantMessageNonEmpty && tc.props.Message == "" {
+				t.Error("expected default message for empty input")
+			}
 
-		if props.Code != "access.forbidden" {
-			t.Errorf("Code = %q", props.Code)
-		}
-	})
-
-	t.Run("BadRequest has rejection family and custom message", func(t *testing.T) {
-		t.Parallel()
-
-		props := BadRequest("Invalid email")
-		if props.Family != FamilyRejection {
-			t.Errorf("Family = %q", props.Family)
-		}
-
-		if props.Message != "Invalid email" {
-			t.Errorf("Message = %q", props.Message)
-		}
-	})
-
-	t.Run("BadRequest empty message gets default", func(t *testing.T) {
-		t.Parallel()
-
-		props := BadRequest("")
-		if props.Message == "" {
-			t.Error("expected default message for empty input")
-		}
-	})
-
-	t.Run("Conflict has conflict family", func(t *testing.T) {
-		t.Parallel()
-
-		props := Conflict("Version mismatch")
-		if props.Family != FamilyConflict {
-			t.Errorf("Family = %q", props.Family)
-		}
-
-		if props.Message != "Version mismatch" {
-			t.Errorf("Message = %q", props.Message)
-		}
-	})
-
-	t.Run("ServiceUnavailable has transient family", func(t *testing.T) {
-		t.Parallel()
-
-		props := ServiceUnavailable()
-		if props.Family != FamilyTransient {
-			t.Errorf("Family = %q", props.Family)
-		}
-
-		if props.Code != "service.unavailable" {
-			t.Errorf("Code = %q", props.Code)
-		}
-	})
-
-	t.Run("InternalError has infrastructure family", func(t *testing.T) {
-		t.Parallel()
-
-		props := InternalError()
-		if props.Family != FamilyInfrastructure {
-			t.Errorf("Family = %q", props.Family)
-		}
-
-		if props.Code != "internal.error" {
-			t.Errorf("Code = %q", props.Code)
-		}
-	})
+			if tc.wantWayOutHref != "" && tc.props.WayOutHref != tc.wantWayOutHref {
+				t.Errorf("WayOutHref = %q, want %q", tc.props.WayOutHref, tc.wantWayOutHref)
+			}
+		})
+	}
 }
 
 func TestPreBuiltConstructorsRender(t *testing.T) {

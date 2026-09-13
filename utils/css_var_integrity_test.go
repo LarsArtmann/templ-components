@@ -75,41 +75,53 @@ func collectComponentVarRefs(defs map[string]bool) (map[string][]string, error) 
 	refs := map[string][]string{}
 
 	for _, pkg := range libraryPackages {
-		err := filepath.Walk(filepath.Join("..", pkg), func(path string, info os.FileInfo, walkErr error) error {
-			if walkErr != nil || info.IsDir() {
-				return walkErr
-			}
-
-			name := info.Name()
-			if !isSweepableSource(name) {
-				return nil
-			}
-
-			content, err := os.ReadFile(path)
-			if err != nil {
-				return fmt.Errorf("read %s: %w", path, err)
-			}
-
-			for _, ref := range varRefPattern.FindAllStringSubmatch(string(content), -1) {
-				refs[ref[1]] = append(refs[ref[1]], path)
-			}
-
-			if strings.Contains(string(content), "\"--") {
-				for _, def := range varDefPattern.FindAllStringSubmatch(string(content), -1) {
-					if strings.Contains(string(content), "\""+def[1]+":") {
-						defs[def[1]] = true
-					}
-				}
-			}
-
-			return nil
-		})
-		if err != nil {
+		if err := walkPackageVarRefs(filepath.Join("..", pkg), defs, refs); err != nil {
 			return nil, fmt.Errorf("walk %s: %w", pkg, err)
 		}
 	}
 
 	return refs, nil
+}
+
+// walkPackageVarRefs sweeps one library package directory for var(--token)
+// references and inline-style definitions.
+func walkPackageVarRefs(pkgDir string, defs map[string]bool, refs map[string][]string) error {
+	return filepath.Walk(pkgDir, func(path string, info os.FileInfo, walkErr error) error {
+		if walkErr != nil || info.IsDir() {
+			return walkErr
+		}
+
+		if !isSweepableSource(info.Name()) {
+			return nil
+		}
+
+		content, err := os.ReadFile(path)
+		if err != nil {
+			return fmt.Errorf("read %s: %w", path, err)
+		}
+
+		collectVarRefsFromFile(content, path, refs, defs)
+
+		return nil
+	})
+}
+
+// collectVarRefsFromFile harvests var(--token) references (always) and
+// quoted "--token:" definitions (when the file contains any) from one source.
+func collectVarRefsFromFile(content []byte, path string, refs map[string][]string, defs map[string]bool) {
+	for _, ref := range varRefPattern.FindAllStringSubmatch(string(content), -1) {
+		refs[ref[1]] = append(refs[ref[1]], path)
+	}
+
+	if !strings.Contains(string(content), "\"--") {
+		return
+	}
+
+	for _, def := range varDefPattern.FindAllStringSubmatch(string(content), -1) {
+		if strings.Contains(string(content), "\""+def[1]+":") {
+			defs[def[1]] = true
+		}
+	}
 }
 
 // isSweepableSource reports whether a walked file is a component source or a

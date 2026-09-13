@@ -6,9 +6,23 @@ import (
 	"testing"
 	"time"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
+
+// benchRender times one component rendering into a fresh buffer.
+func benchRender(b *testing.B, component templ.Component) {
+	b.Helper()
+
+	b.ResetTimer()
+
+	for b.Loop() {
+		var buf bytes.Buffer
+
+		_ = component.Render(context.Background(), &buf)
+	}
+}
 
 func BenchmarkHotPaths(b *testing.B) {
 	b.Run("Class merge", func(b *testing.B) {
@@ -21,26 +35,14 @@ func BenchmarkHotPaths(b *testing.B) {
 		props := DefaultBadgeProps()
 		props.Text = activeBadgeText
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = Badge(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, Badge(props))
 	})
 
 	b.Run("Card render", func(b *testing.B) {
 		props := DefaultCardProps()
 		props.Title = "Users"
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = Card(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, Card(props))
 	})
 
 	b.Run("Table render", func(b *testing.B) {
@@ -52,13 +54,7 @@ func BenchmarkHotPaths(b *testing.B) {
 			},
 		}
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = Table(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, Table(props))
 	})
 
 	b.Run("Modal render", func(b *testing.B) {
@@ -66,13 +62,7 @@ func BenchmarkHotPaths(b *testing.B) {
 		props.ID = "test-modal"
 		props.Title = "Confirm"
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = Modal(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, Modal(props))
 	})
 
 	b.Run("Dropdown render", func(b *testing.B) {
@@ -85,75 +75,39 @@ func BenchmarkHotPaths(b *testing.B) {
 			},
 		}
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = Dropdown(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, Dropdown(props))
 	})
 
 	b.Run("CopyButton render", func(b *testing.B) {
 		props := DefaultCopyButtonProps()
 		props.Text = "pnpm add foo"
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = CopyButton(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, CopyButton(props))
 	})
 
 	b.Run("CountBadge render", func(b *testing.B) {
 		props := CountBadgeProps{Count: 42}
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = CountBadge(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, CountBadge(props))
 	})
 
 	b.Run("Image render", func(b *testing.B) {
 		props := ImageProps{Src: "/photo.jpg", Alt: "Photo", Width: 128, Height: 128, FallbackSrc: "/placeholder.jpg"}
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = Image(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, Image(props))
 	})
 
 	b.Run("RelativeTime render", func(b *testing.B) {
 		props := RelativeTimeProps{Time: mustTime("2025-01-15T10:30:00Z")}
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = RelativeTime(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, RelativeTime(props))
 	})
 
 	b.Run("Sparkline render", func(b *testing.B) {
 		props := DefaultSparklineProps()
 		props.Values = []float64{1, 3, 2, 5, 4, 6, 3, 7, 5, 8}
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = Sparkline(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, Sparkline(props))
 	})
 
 	b.Run("BarChart render", func(b *testing.B) {
@@ -164,13 +118,7 @@ func BenchmarkHotPaths(b *testing.B) {
 			{Label: "dev", Value: 450},
 		}
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = BarChart(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, BarChart(props))
 	})
 
 	b.Run("ExternalLink render", func(b *testing.B) {
@@ -178,13 +126,7 @@ func BenchmarkHotPaths(b *testing.B) {
 		props.Href = "https://example.com"
 		props.Text = "Open"
 
-		b.ResetTimer()
-
-		for b.Loop() {
-			var buf bytes.Buffer
-
-			_ = ExternalLink(props).Render(context.Background(), &buf)
-		}
+		benchRender(b, ExternalLink(props))
 	})
 }
 

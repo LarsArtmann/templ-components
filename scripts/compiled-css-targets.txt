@@ -1,0 +1,15 @@
+# Compiled CSS distribution targets — the SINGLE SOURCE OF TRUTH.
+#
+# Readers (keep in sync with this format only):
+#   scripts/release.sh                 — recompiles every input→output pair
+#   scripts/check-css-minified.sh      — asserts every output is minified (<=5 lines)
+#   utils/compiled_css_inventory_test  — asserts the tracked *.out.css set and
+#                                        that every output exists on disk
+#
+# Format: <input stylesheet> <compiled output>, repo-relative, one per line.
+# Every output MUST have a named consumer (CONTRIBUTING.md rule
+# "committed artifact -> named consumer"); artifacts nobody consumes are
+# daemon-recompile churn bait (2026-09-13 audit deleted ten of them).
+templates/app.css templates/styles.css
+templates/templ-components-theme.css templates/templ-components-theme.out.css
+examples/demo/demo.css examples/demo/static/app.css

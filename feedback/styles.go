@@ -26,7 +26,7 @@ type feedbackStyleSet struct {
 // feedbackStyleMap is the single source of truth for feedback styles.
 // Shared by Alert and Toast to guarantee visual consistency for the same severity.
 //
-//nolint:gochecknoglobals,goconst // Package-level lookup table; Tailwind class strings are intentionally inline
+//nolint:gochecknoglobals // Package-level lookup table; Tailwind class strings are intentionally inline
 var feedbackStyleMap = map[FeedbackType]feedbackStyleSet{
 	FeedbackSuccess: {
 		Border: "border-green-200 dark:border-green-800",
