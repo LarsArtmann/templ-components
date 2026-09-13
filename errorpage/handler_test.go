@@ -119,7 +119,7 @@ func TestPreBuiltConstructors(t *testing.T) {
 			name:           "NotFound has correct family and code",
 			props:          NotFound(),
 			wantFamily:     FamilyRejection,
-			wantCode:   "page.not_found",
+			wantCode:       "page.not_found",
 			wantWayOutHref: "/",
 		},
 		{

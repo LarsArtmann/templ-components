@@ -108,7 +108,35 @@ func TestCompiledCSSInventory(t *testing.T) {
 
 	var litter []string
 
-	err = filepath.Walk(repoRoot, func(path string, info os.FileInfo, walkErr error) error {
+	litter, err = findUntrackedOutCSSLitter(repoRoot, wantOut)
+	if err != nil {
+		t.Logf("walk repo for untracked .out.css litter: %v", err)
+	}
+
+	for _, path := range litter {
+		t.Logf(
+			"untracked .out.css litter in worktree (gitignored, daemon-recompile residue — safe to delete): %s",
+			path,
+		)
+	}
+
+	for _, mustExist := range targets {
+		if _, statErr := os.Stat(filepath.Join(repoRoot, filepath.FromSlash(mustExist))); statErr != nil {
+			t.Errorf(
+				"distribution target missing: %s (%v) — restore it or update scripts/compiled-css-targets.txt (single source, shared with release.sh and check-css-minified.sh)",
+				mustExist,
+				statErr,
+			)
+		}
+	}
+}
+
+// findUntrackedOutCSSLitter walks the worktree for .out.css files outside the
+// tracked set — gitignored daemon-recompile residue, reported informationally.
+func findUntrackedOutCSSLitter(repoRoot string, wantOut []string) ([]string, error) {
+	var litter []string
+
+	err := filepath.Walk(repoRoot, func(path string, info os.FileInfo, walkErr error) error {
 		if walkErr != nil {
 			return walkErr
 		}
@@ -134,24 +162,6 @@ func TestCompiledCSSInventory(t *testing.T) {
 
 		return nil
 	})
-	if err != nil {
-		t.Logf("walk repo for untracked .out.css litter: %v", err)
-	}
 
-	for _, path := range litter {
-		t.Logf(
-			"untracked .out.css litter in worktree (gitignored, daemon-recompile residue — safe to delete): %s",
-			path,
-		)
-	}
-
-	for _, mustExist := range targets {
-		if _, statErr := os.Stat(filepath.Join(repoRoot, filepath.FromSlash(mustExist))); statErr != nil {
-			t.Errorf(
-				"distribution target missing: %s (%v) — restore it or update scripts/compiled-css-targets.txt (single source, shared with release.sh and check-css-minified.sh)",
-				mustExist,
-				statErr,
-			)
-		}
-	}
+	return litter, err
 }
