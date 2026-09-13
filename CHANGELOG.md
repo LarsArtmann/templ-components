@@ -6,6 +6,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`wire.DecodeForm[T]`** — server-side counterpart to form-encoded wire
+  submissions. Decodes POST bodies and GET query parameters into any struct
+  via `form:"name"` tags (string, int, int64, bool; HTML checkbox `"on"`
+  handled), leaving absent fields at zero values and failing loudly on
+  malformed values (`ErrUnsupportedFormField` for other kinds). First
+  consumer: `display.ParseKanbanMove`, now a thin domain-validation layer on
+  top — its documented "form body or query parameters" contract is finally
+  true for GET too. Consumers writing their own wired handlers no longer
+  hand-roll `ParseForm` + `PostForm.Get` chains.
+
+### Changed
+
+- **Pre-commit hooks are now tracked** in `.githooks/pre-commit` (fast guards
+  + BuildFlow), activated per clone via `scripts/setup-hooks.sh`
+  (`git config core.hooksPath .githooks`). Previously the hook lived only in
+  `.git/hooks/` — untracked, silently absent for fresh clones.
+  `scripts/pre-commit.sh` remains the full pre-push verify and is
+  intentionally not wired into the hook.
+
+- **`utils.TestDocsCountDrift` now guards every prose count** — icons
+  (README heading said 106 while the same README said 102), HTML golden
+  baselines (ROADMAP/FEATURES said 175; actual 242), FEATURES visual goldens
+  (114 → 125), and AGENTS golden files (102 → 242) are all machine-checked
+  against the tree. The informational `TestSkillComponentCount` ghost guard
+  (computed counts, compared nothing, skipped on missing fixture) is deleted;
+  `TestDocsCountDrift` covers SKILL.md totals, per-package headings, and
+  icons for real. A new `TestVersionMatchesReadmeBadge` closes the
+  hand-edited version-badge drift gap.
+
 ### Removed
 
 - **Ten dead compiled-CSS artifacts deleted** (~208 KB of recurring

@@ -135,6 +135,30 @@ The demo implements this end-to-end: `examples/demo/wire_demo.templ` renders
 the same Action under both transports, `/api/wire/fragment` serves both, and
 `examples/demo/wire_demo_test.go` pins the branching contract.
 
+### Decoding form submissions: `wire.DecodeForm[T]`
+
+Both dialects submit form-encoded data the same way, so the decoding side is
+shared too. `wire.DecodeForm[T]` fills any struct from the request's POST
+body or GET query parameters using `form:"name"` tags — the same field names
+your wired component sends:
+
+```go
+type Move struct {
+    Card   string `form:"card"`
+    Column string `form:"column"`
+    Index  int    `form:"index"`
+}
+
+move, err := wire.DecodeForm[Move](r)
+```
+
+Absent or empty fields keep their zero values; a malformed value fails with
+an error naming the field; unsupported kinds fail with
+`wire.ErrUnsupportedFormField`. Supported kinds: `string`, `int`, `int64`,
+`bool` (HTML checkbox `"on"` counts as true). Domain rules — required fields,
+ranges — stay with you. `display.ParseKanbanMove` is the in-repo example:
+decode first, then apply the board's own validation.
+
 ## Busy, polling, and reveal signaling (research notes, 2026-09-04)
 
 How the two runtimes communicate "work in progress" — verified against the
