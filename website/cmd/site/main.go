@@ -31,33 +31,52 @@ func main() {
 	out := flag.String("out", "dist", "output directory (relative to the website module)")
 	repoRoot := flag.String("repo-root", "..", "repository root for library-fact statistics")
 	skipStars := flag.Bool("skip-stars", false, "skip the GitHub star lookup (offline builds)")
+	firebasePath := flag.String("firebase-config", "firebase.json", "path to firebase.json for the CSP header guard")
+	updateCSP := flag.Bool("update-csp", false, "rewrite the firebase.json CSP header instead of only checking it")
 
 	flag.Parse()
 
-	if err := run(*out, *repoRoot, *skipStars); err != nil {
+	cfg := config{
+		outDir:       *out,
+		repoRoot:     *repoRoot,
+		firebasePath: *firebasePath,
+		skipStars:    *skipStars,
+		updateCSP:    *updateCSP,
+	}
+
+	if err := run(cfg); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func run(out, repoRoot string, skipStars bool) error {
+// config is one site-build invocation.
+type config struct {
+	outDir       string
+	repoRoot     string
+	firebasePath string
+	skipStars    bool
+	updateCSP    bool
+}
+
+func run(cfg config) error {
 	nonce, err := build.Nonce()
 	if err != nil {
 		return fmt.Errorf("build nonce: %w", err)
 	}
 
-	stats, err := build.CountStats(repoRoot)
+	stats, err := build.CountStats(cfg.repoRoot)
 	if err != nil {
 		return fmt.Errorf("library stats: %w", err)
 	}
 
 	stars := 0
-	if !skipStars {
+	if !cfg.skipStars {
 		stars = fetchStars()
 	}
 
 	renderer := build.NewRenderer(nonce)
 
-	docsPages, err := renderDocs(repoRoot, nonce)
+	docsPages, err := renderDocs(cfg.repoRoot, nonce)
 	if err != nil {
 		return err
 	}
@@ -71,20 +90,55 @@ func run(out, repoRoot string, skipStars bool) error {
 	)
 	sitePages = append(sitePages, docsPages...)
 
-	if err := renderer.WritePages(ctx, out, sitePages); err != nil {
+	rendered, err := renderer.RenderPages(ctx, sitePages)
+	if err != nil {
+		return fmt.Errorf("render pages: %w", err)
+	}
+
+	if err := syncCSP(cfg, rendered); err != nil {
+		return err
+	}
+
+	if err := build.WriteRendered(cfg.outDir, rendered); err != nil {
 		return fmt.Errorf("write pages: %w", err)
 	}
 
-	if err := writeSitemaps(out, repoRoot); err != nil {
+	if err := writeSitemaps(cfg.outDir, cfg.repoRoot); err != nil {
 		return fmt.Errorf("sitemaps: %w", err)
 	}
 
-	if err := writeAssets(out); err != nil {
+	if err := writeAssets(cfg.outDir); err != nil {
 		return err
 	}
 
 	fmt.Fprintf(os.Stdout, "site: wrote %d page(s) + sitemaps to %s (components=%d icons=%d enums=%d modules=%d)\n",
-		len(sitePages), out, stats.Components, stats.Icons, stats.Enums, stats.Modules)
+		len(sitePages), cfg.outDir, stats.Components, stats.Icons, stats.Enums, stats.Modules)
+
+	return nil
+}
+
+// syncCSP pins the rendered pages' inline scripts into the firebase.json CSP
+// header: --update-csp rewrites the config, the default verifies it so a
+// stale committed header fails the build instead of deploying broken pages.
+func syncCSP(cfg config, rendered []build.RenderedPage) error {
+	header := build.CSPHeader(build.InlineScriptHashes(rendered))
+
+	if cfg.updateCSP {
+		changed, err := build.SyncFirebaseCSP(cfg.firebasePath, header)
+		if err != nil {
+			return fmt.Errorf("sync firebase CSP: %w", err)
+		}
+
+		if changed {
+			fmt.Fprintf(os.Stdout, "site: updated %s CSP header\n", cfg.firebasePath)
+		}
+
+		return nil
+	}
+
+	if err := build.CheckFirebaseCSP(cfg.firebasePath, header); err != nil {
+		return fmt.Errorf("CSP guard: %w", err)
+	}
 
 	return nil
 }

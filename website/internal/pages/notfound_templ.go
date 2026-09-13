@@ -58,7 +58,7 @@ func NotFound(nonce string) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = errorpage.NotFound404(siteNotFoundProps()).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = errorpage.NotFound404(siteNotFoundProps(nonce)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -72,8 +72,9 @@ func NotFound(nonce string) templ.Component {
 	})
 }
 
-func siteNotFoundProps() errorpage.NotFound404Props {
+func siteNotFoundProps(nonce string) errorpage.NotFound404Props {
 	props := errorpage.DefaultNotFound404Props()
+	props.BaseProps.Nonce = nonce
 	props.Links = []errorpage.NotFoundLink{
 		{Text: "Documentation", Href: "/getting-started/installation", Icon: icons.Document},
 		{Text: "GitHub", Href: GitHubURL, Icon: icons.CodeBracket},

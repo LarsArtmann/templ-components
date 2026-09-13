@@ -1,29 +1,17 @@
 {
   "hosting": {
-    "target": "templcomponents",
-    "public": "dist",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "**/src/**"],
     "cleanUrls": true,
-    "trailingSlash": false,
-    "redirects": [
-      {
-        "source": "/docs/:path*",
-        "destination": "/:path*",
-        "type": 301
-      }
-    ],
     "headers": [
       {
-        "source": "**/*.@(css|js|jpg|jpeg|gif|png|svg|ico|webp|avif|woff|woff2)",
         "headers": [
           {
             "key": "Cache-Control",
             "value": "public, max-age=31536000, immutable"
           }
-        ]
+        ],
+        "source": "**/*.@(css|js|jpg|jpeg|gif|png|svg|ico|webp|avif|woff|woff2)"
       },
       {
-        "source": "**",
         "headers": [
           {
             "key": "Cache-Control",
@@ -60,18 +48,39 @@
           {
             "key": "Cross-Origin-Opener-Policy",
             "value": "same-origin"
+          },
+          {
+            "key": "Content-Security-Policy",
+            "value": "default-src 'self'; script-src 'self' 'sha256-0++XKYPZv2HoWL8UrU9HODmU5UyLMVcviii63rmZJZk=' 'sha256-AO4OqWm6Ms8LvRxbwPXsO4Fy1QauZJl6sD4NNzrR7S0=' 'sha256-bkI0p3zeYFmHPQbaQe93B6DnrDLaEJMvFwRA1jmisFM=' 'sha256-wWZIte1AE5Of+UcIfSEmYOPPJNQ80vjNdMLa5UrK1m8='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
           }
-        ]
+        ],
+        "source": "**"
       },
       {
-        "source": "404.html",
         "headers": [
           {
             "key": "Cache-Control",
             "value": "public, max-age=300, must-revalidate"
           }
-        ]
+        ],
+        "source": "404.html"
       }
-    ]
+    ],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "**/src/**"
+    ],
+    "public": "dist",
+    "redirects": [
+      {
+        "destination": "/:path*",
+        "source": "/docs/:path*",
+        "type": 301
+      }
+    ],
+    "target": "templcomponents",
+    "trailingSlash": false
   }
 }
