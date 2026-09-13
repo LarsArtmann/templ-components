@@ -1,0 +1,43 @@
+package pages
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/layout"
+)
+
+// Logo is the templ-components mark: rounded accent square with the `</>`
+// glyph (ported from Logo.astro).
+templ Logo(class string) {
+	<svg class={ class } width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="templ-components logo">
+		<rect width="28" height="28" rx="6" class="fill-accent"></rect>
+		<path d="M10 9L5 14l5 5M18 9l5 5-5 5M15.5 7l-3 14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+	</svg>
+}
+
+// Header is the fixed, blurred site navigation (ported from Header.astro).
+// The theme toggle is the library's ThemeToggle component; behavior JS lives
+// in /assets/js/header.js (defer-loaded).
+templ Header(nonce string) {
+	<header role="banner">
+		<nav class="fixed top-0 left-0 right-0 z-50 border-b border-border backdrop-blur-xl bg-bg-primary/60" aria-label="Main navigation">
+			<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+				<a href="/" class="flex items-center gap-2.5 group no-underline">
+					@Logo("transition-transform duration-200 group-hover:rotate-12")
+					<span class="text-base font-semibold text-text-primary tracking-tight">{ SiteName }</span>
+				</a>
+				<button class="nav-toggle bg-transparent border-none text-text-muted cursor-pointer p-1 hover:text-text-primary transition-colors lg:hidden" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+					<span class="menu-icon">@icons.Icon(icons.Menu, "h-[22px] w-[22px]")</span>
+					<span class="close-icon hidden">@icons.Icon(icons.Close, "h-[22px] w-[22px]")</span>
+				</button>
+				<div class="nav-links flex items-center gap-5 max-sm:hidden max-sm:absolute max-sm:top-16 max-sm:inset-x-0 max-sm:flex-col max-sm:p-6 max-sm:gap-4 max-sm:bg-bg-primary max-sm:backdrop-blur-[40px] max-sm:border-b max-sm:border-border [&.open]:max-sm:flex" id="nav-links">
+					@layout.ThemeToggle("Toggle light/dark mode", nonce)
+					<a href="/getting-started/installation" class="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 no-underline nav-link">Docs</a>
+					<a href={ templ.SafeURL(GitHubURL) } target="_blank" rel="noopener noreferrer" class="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 flex items-center gap-1.5 no-underline nav-link">
+						<span class="text-text-muted">@githubIcon("h-4 w-4")</span>
+						GitHub
+					</a>
+				</div>
+			</div>
+		</nav>
+	</header>
+}

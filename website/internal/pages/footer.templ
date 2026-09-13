@@ -1,0 +1,77 @@
+package pages
+
+import (
+	"github.com/larsartmann/templ-components/forms"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// newsletterFormAction is the Buttondown embed endpoint (unchanged from the
+// Astro site). The popup-open behavior moved to /assets/js/newsletter.js so
+// the page stays CSP-safe (no inline event handlers).
+const newsletterFormAction = "https://buttondown.email/api/emails/embed-subscribe/larsartmann"
+
+// Newsletter is the pre-footer subscription band (ported from Newsletter.astro;
+// the email input is the library's forms.Input component).
+templ Newsletter() {
+	<div class="border-b border-border">
+		<div class="max-w-7xl mx-auto px-6 py-10">
+			<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+				<div class="max-w-md">
+					<h2 class="text-lg font-semibold text-text-primary">LarsArtmann Newsletter</h2>
+					<p class="text-sm text-text-muted mt-1">
+						Major releases and new open-source projects across all LarsArtmann work. No spam, unsubscribe anytime.
+					</p>
+				</div>
+				<form
+					id="newsletter-form"
+					action={ newsletterFormAction }
+					method="POST"
+					target="popupwindow"
+					class="flex items-center gap-3 w-full md:w-auto"
+				>
+					@forms.Input(newsletterEmailProps())
+					<button
+						type="submit"
+						class="px-5 py-2.5 bg-accent text-white font-semibold rounded-lg text-sm hover:bg-accent-hover transition-all duration-200 border-none cursor-pointer whitespace-nowrap shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5"
+					>
+						Subscribe
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+}
+
+func newsletterEmailProps() forms.InputProps {
+	return forms.InputProps{
+		Type:        forms.InputEmail,
+		Name:        "email",
+		Required:    true,
+		Placeholder: "you@example.com",
+		BaseProps: utils.BaseProps{
+			AriaLabel: "Email address",
+			Class:     "flex-1 md:w-64",
+		},
+	}
+}
+
+// Footer is the site footer: newsletter band + identity/links row (ported
+// from Footer.astro).
+templ Footer(nonce string) {
+	<footer role="contentinfo" class="border-t border-border mt-24" data-animate>
+		@Newsletter()
+		<div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4">
+			<div class="flex items-center gap-2.5">
+				@Logo("h-5 w-5")
+				<span class="text-sm text-text-muted">
+					{ "MIT License " }&#183;{ " Built by " }<a href={ templ.SafeURL(AuthorURL) } target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-text-primary transition-colors duration-150 underline underline-offset-2">{ AuthorName }</a>
+				</span>
+			</div>
+			<div class="flex items-center gap-5 text-sm">
+				<a href="/getting-started/installation" class="text-text-muted hover:text-text-primary transition-colors duration-150 no-underline">Documentation</a>
+				<a href={ templ.SafeURL(GitHubURL) } target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-text-primary transition-colors duration-150 no-underline">GitHub</a>
+				<a href={ templ.SafeURL(PkgGoDevURL) } target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-text-primary transition-colors duration-150 no-underline">pkg.go.dev</a>
+			</div>
+		</div>
+	</footer>
+}
