@@ -16,6 +16,19 @@ contributions that improve consistency are especially welcome.
 > **Why Nix?** The system `templ` binary may be an unreleased upstream build.
 > Always use `nix develop` before generating. See [`AGENTS.md`](AGENTS.md).
 
+## One-time setup: activate the tracked git hooks
+
+```bash
+scripts/setup-hooks.sh
+```
+
+This sets `core.hooksPath=.githooks` so the tracked pre-commit hook (fast
+guards + BuildFlow) runs on every commit. Without it, commits skip the
+lint-config, templ-sync, version-sync, module-sync, DAG-layer, and
+CSS-minification guards. The full pre-push verify is
+`scripts/pre-commit.sh` (all 7 modules, build + test + lint) — run it
+manually; it is deliberately too slow for the commit hook.
+
 ---
 
 ## Build

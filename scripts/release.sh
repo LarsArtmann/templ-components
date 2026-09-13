@@ -283,12 +283,13 @@ templ generate ./...
 # ships fresh artifacts (commands verified byte-identical to BuildFlow's
 # tailwind-build output). v1.10.0 shipped these one release stale because
 # BuildFlow only recompiled them after the release commit was written.
+# Exactly these three are tracked as distribution targets (guarded by
+# utils.TestCompiledCSSInventory) — dead duplicates (demo.out.css,
+# global.out.css, preset/starter .out.css) were removed 2026-09-13.
 if command -v tailwindcss &>/dev/null; then
 	tailwindcss -i templates/app.css -o templates/styles.css --minify
 	tailwindcss -i templates/templ-components-theme.css -o templates/templ-components-theme.out.css --minify
 	tailwindcss -i examples/demo/demo.css -o examples/demo/static/app.css --minify
-	tailwindcss -i examples/demo/demo.css -o examples/demo/demo.out.css --minify
-	tailwindcss -i website/src/styles/global.css -o website/src/styles/global.out.css --minify
 else
 	echo "Warning: tailwindcss not found — compiled CSS not recompiled." >&2
 	echo "Run 'nix run .#build' or install tailwindcss to recompile." >&2
