@@ -24,8 +24,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   deleted `.out.css` artifacts within hours of the cleanup (`504856b8` after
   `43f1522f`) — `utils.TestCompiledCSSInventory` caught it immediately.
   `.gitignore` now ignores `*.out.css` repo-wide except the one tracked
-  distribution artifact, so daemon rebuilds can no longer re-stage zombie
-  artifacts.
+  distribution artifact, and the guard now asserts the **git-tracked** set
+  (fail-loud on missing git; untracked daemon litter in the worktree is
+  reported informationally), so daemon rebuilds can no longer re-stage zombie
+  artifacts or false-fail the guard.
 
 - **Pre-commit hooks are now tracked** in `.githooks/pre-commit` (fast guards
   + BuildFlow), activated per clone via `scripts/setup-hooks.sh`

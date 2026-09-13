@@ -2,7 +2,9 @@ package utils
 
 import (
 	"os"
+	"os/exec"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 	"testing"
@@ -17,10 +19,12 @@ import (
 // a `tc new` preset scaffolder that never shipped, byte-identical duplicates
 // of static/app.css, and website output the Astro/Vite build regenerates.
 // They were removed 2026-09-13 after audit (see AGENTS.md "CSS artifact
-// inventory"). This guard keeps the set at exactly these three — the
-// BuildFlow tailwind-build daemon has repeatedly resurrected stray compiled
-// CSS in the working tree, and without this test the zombies would silently
-// re-enter master.
+// inventory"). This guard keeps the tracked set at exactly these — the
+// BuildFlow tailwind-build daemon repeatedly resurrects stray compiled CSS
+// in the working tree (proven 2026-09-13: it re-added six deleted artifacts
+// within hours), so the invariant is asserted against `git ls-files` (what
+// consumers actually receive), not the worktree, where ignored litter
+// reappears on every daemon cycle.
 func TestCompiledCSSInventory(t *testing.T) {
 	t.Parallel()
 
@@ -30,16 +34,38 @@ func TestCompiledCSSInventory(t *testing.T) {
 		"templates/templ-components-theme.out.css",
 	}
 
+	gitOut, err := exec.Command("git", "-C", repoRoot, "ls-files", "--", "*.out.css").Output()
+	if err != nil {
+		t.Fatalf("git ls-files *.out.css: %v — the tracked-artifact guard requires git (fail loud, never skip)", err)
+	}
+
 	var gotOut []string
 
-	err := filepath.Walk(repoRoot, func(path string, info os.FileInfo, walkErr error) error {
+	for line := range strings.SplitSeq(strings.TrimSpace(string(gitOut)), "\n") {
+		if line = strings.TrimSpace(line); line != "" {
+			gotOut = append(gotOut, filepath.ToSlash(line))
+		}
+	}
+
+	sort.Strings(gotOut)
+	sort.Strings(wantOut)
+
+	if strings.Join(gotOut, ",") != strings.Join(wantOut, ",") {
+		t.Fatalf(
+			"tracked .out.css set drifted.\n want: %v\n got:  %v\n\nIf you added a compiled artifact intentionally, add it to compiledCSSDistributionTargets AND give it an in-repo consumer or a release.sh compile line — artifacts nobody consumes are daemon-recompile churn bait.",
+			wantOut,
+			gotOut,
+		)
+	}
+
+	var litter []string
+
+	err = filepath.Walk(repoRoot, func(path string, info os.FileInfo, walkErr error) error {
 		if walkErr != nil {
 			return walkErr
 		}
 
 		if info.IsDir() {
-			// Website builds its CSS via @tailwindcss/vite; dist/ is
-			// gitignored build output.
 			if info.Name() == ".git" || info.Name() == "node_modules" || info.Name() == "dist" {
 				return filepath.SkipDir
 			}
@@ -53,23 +79,21 @@ func TestCompiledCSSInventory(t *testing.T) {
 				return relErr
 			}
 
-			gotOut = append(gotOut, rel)
+			if !slices.Contains(wantOut, filepath.ToSlash(rel)) {
+				litter = append(litter, rel)
+			}
 		}
 
 		return nil
 	})
 	if err != nil {
-		t.Fatalf("walk repo for .out.css files: %v", err)
+		t.Logf("walk repo for untracked .out.css litter: %v", err)
 	}
 
-	sort.Strings(gotOut)
-	sort.Strings(wantOut)
-
-	if strings.Join(gotOut, ",") != strings.Join(wantOut, ",") {
-		t.Fatalf(
-			"committed .out.css set drifted.\n want: %v\n got:  %v\n\nIf you added a compiled artifact intentionally, add it to compiledCSSDistributionTargets AND give it an in-repo consumer or a release.sh compile line — artifacts nobody consumes are daemon-recompile churn bait.",
-			wantOut,
-			gotOut,
+	for _, path := range litter {
+		t.Logf(
+			"untracked .out.css litter in worktree (gitignored, daemon-recompile residue — safe to delete): %s",
+			path,
 		)
 	}
 
