@@ -3,29 +3,32 @@ package wire
 import (
 	"errors"
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
 )
 
 type decodeFormTarget struct {
-	Card   string `form:"card"`
-	Column string `form:"column"`
-	Index  int    `form:"index"`
-	Flag   bool   `form:"flag"`
-	Count  int64  `form:"count"`
+	Card    string `form:"card"`
+	Column  string `form:"column"`
+	Index   int    `form:"index"`
+	Flag    bool   `form:"flag"`
+	Count   int64  `form:"count"`
 	Skipped string
 }
 
 func TestDecodeFormPostBody(t *testing.T) {
 	t.Parallel()
 
-	body := url.Values{"card": {"c1"}, "column": {"todo"}, "index": {"2"}, "flag": {"true"}, "count": {"9007199254740993"}}
-	request, err := http.NewRequest(http.MethodPost, "/move", strings.NewReader(body.Encode()))
-	if err != nil {
-		t.Fatal(err)
+	body := url.Values{
+		"card":   {"c1"},
+		"column": {"todo"},
+		"index":  {"2"},
+		"flag":   {"true"},
+		"count":  {"9007199254740993"},
 	}
-
+	request := httptest.NewRequest(http.MethodPost, "/move", strings.NewReader(body.Encode()))
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	got, err := DecodeForm[decodeFormTarget](request)
@@ -42,10 +45,7 @@ func TestDecodeFormPostBody(t *testing.T) {
 func TestDecodeFormQueryParameters(t *testing.T) {
 	t.Parallel()
 
-	request, err := http.NewRequest(http.MethodGet, "/search?q=x", http.NoBody)
-	if err != nil {
-		t.Fatal(err)
-	}
+	request := httptest.NewRequest(http.MethodGet, "/search?q=x", http.NoBody)
 
 	type target struct {
 		Query string `form:"q"`
@@ -65,11 +65,7 @@ func TestDecodeFormQueryParameters(t *testing.T) {
 func TestDecodeFormCheckboxOn(t *testing.T) {
 	t.Parallel()
 
-	request, err := http.NewRequest(http.MethodPost, "/move", strings.NewReader("flag=on"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	request := httptest.NewRequest(http.MethodPost, "/move", strings.NewReader("flag=on"))
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	got, err := DecodeForm[decodeFormTarget](request)
@@ -85,11 +81,7 @@ func TestDecodeFormCheckboxOn(t *testing.T) {
 func TestDecodeFormMalformedInt(t *testing.T) {
 	t.Parallel()
 
-	request, err := http.NewRequest(http.MethodPost, "/move", strings.NewReader("index=abc"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	request := httptest.NewRequest(http.MethodPost, "/move", strings.NewReader("index=abc"))
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	if _, err := DecodeForm[decodeFormTarget](request); err == nil {
@@ -106,14 +98,10 @@ func TestDecodeFormUnsupportedKind(t *testing.T) {
 		Price float64 `form:"price"`
 	}
 
-	request, err := http.NewRequest(http.MethodPost, "/buy", strings.NewReader("price=9.99"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	request := httptest.NewRequest(http.MethodPost, "/buy", strings.NewReader("price=9.99"))
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	_, err = DecodeForm[target](request)
+	_, err := DecodeForm[target](request)
 	if !errors.Is(err, ErrUnsupportedFormField) {
 		t.Errorf("DecodeForm float field: want ErrUnsupportedFormField, got %v", err)
 	}

@@ -91,7 +91,12 @@ func TestVersionMatchesReadmeBadge(t *testing.T) {
 	for line := range strings.SplitSeq(string(data), "\n") {
 		if _, rest, ok := strings.Cut(line, marker); ok {
 			// rest starts with "v1.16.0-blue?style=..."
-			version := strings.TrimPrefix(rest[:strings.Index(rest, "-")], "v")
+			version, _, hasSuffix := strings.Cut(rest, "-")
+			if !hasSuffix {
+				version = rest
+			}
+
+			version = strings.TrimPrefix(version, "v")
 			if version != Version {
 				t.Errorf("utils.Version = %q, but README.md badge shows %q", Version, version)
 			}

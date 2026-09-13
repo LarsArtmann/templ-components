@@ -69,11 +69,13 @@ func decodeFormInto(r *http.Request, target reflect.Value) error {
 }
 
 func setFormValue(field reflect.Value, name, raw string) error {
-	switch field.Kind() {
-	case reflect.String:
+	kind := field.Kind()
+
+	switch {
+	case kind == reflect.String:
 		field.SetString(raw)
 
-	case reflect.Int, reflect.Int64:
+	case kind == reflect.Int || kind == reflect.Int64:
 		number, err := strconv.ParseInt(raw, 10, field.Type().Bits())
 		if err != nil {
 			return fmt.Errorf("field %q: parse int: %w", name, err)
@@ -81,7 +83,7 @@ func setFormValue(field reflect.Value, name, raw string) error {
 
 		field.SetInt(number)
 
-	case reflect.Bool:
+	case kind == reflect.Bool:
 		// HTML checkboxes submit "on" when checked; everything else follows
 		// strconv.ParseBool.
 		parsed := raw == "on"
@@ -97,7 +99,7 @@ func setFormValue(field reflect.Value, name, raw string) error {
 		field.SetBool(parsed)
 
 	default:
-		return fmt.Errorf("%w: %s is a %s", ErrUnsupportedFormField, name, field.Kind())
+		return fmt.Errorf("%w: %s is a %s", ErrUnsupportedFormField, name, kind)
 	}
 
 	return nil
