@@ -68,39 +68,58 @@ func decodeFormInto(r *http.Request, target reflect.Value) error {
 	return nil
 }
 
+// formFieldSetters maps each supported reflect.Kind to its setter — the
+// library's lookup-map convention (typed keys, no switches); a kind missing
+// from the map is an ErrUnsupportedFormField.
+//
+//nolint:gochecknoglobals // Package-level lookup table for supported form field kinds
+var formFieldSetters = map[reflect.Kind]func(field reflect.Value, name, raw string) error{
+	reflect.String: setStringFormField,
+	reflect.Int:    setIntFormField,
+	reflect.Int64:  setIntFormField,
+	reflect.Bool:   setBoolFormField,
+}
+
 func setFormValue(field reflect.Value, name, raw string) error {
-	kind := field.Kind()
-
-	switch {
-	case kind == reflect.String:
-		field.SetString(raw)
-
-	case kind == reflect.Int || kind == reflect.Int64:
-		number, err := strconv.ParseInt(raw, 10, field.Type().Bits())
-		if err != nil {
-			return fmt.Errorf("field %q: parse int: %w", name, err)
-		}
-
-		field.SetInt(number)
-
-	case kind == reflect.Bool:
-		// HTML checkboxes submit "on" when checked; everything else follows
-		// strconv.ParseBool.
-		parsed := raw == "on"
-
-		if !parsed {
-			var err error
-
-			if parsed, err = strconv.ParseBool(raw); err != nil {
-				return fmt.Errorf("field %q: parse bool: %w", name, err)
-			}
-		}
-
-		field.SetBool(parsed)
-
-	default:
-		return fmt.Errorf("%w: %s is a %s", ErrUnsupportedFormField, name, kind)
+	setter, supported := formFieldSetters[field.Kind()]
+	if !supported {
+		return fmt.Errorf("%w: %s is a %s", ErrUnsupportedFormField, name, field.Kind())
 	}
+
+	return setter(field, name, raw)
+}
+
+func setStringFormField(field reflect.Value, _, raw string) error {
+	field.SetString(raw)
+
+	return nil
+}
+
+func setIntFormField(field reflect.Value, name, raw string) error {
+	number, err := strconv.ParseInt(raw, 10, field.Type().Bits())
+	if err != nil {
+		return fmt.Errorf("field %q: parse int: %w", name, err)
+	}
+
+	field.SetInt(number)
+
+	return nil
+}
+
+func setBoolFormField(field reflect.Value, name, raw string) error {
+	// HTML checkboxes submit "on" when checked; everything else follows
+	// strconv.ParseBool.
+	parsed := raw == "on"
+
+	if !parsed {
+		var err error
+
+		if parsed, err = strconv.ParseBool(raw); err != nil {
+			return fmt.Errorf("field %q: parse bool: %w", name, err)
+		}
+	}
+
+	field.SetBool(parsed)
 
 	return nil
 }

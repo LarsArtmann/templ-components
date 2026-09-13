@@ -28,7 +28,7 @@ func TestDecodeFormPostBody(t *testing.T) {
 		"flag":   {"true"},
 		"count":  {"9007199254740993"},
 	}
-	request := httptest.NewRequest(http.MethodPost, "/move", strings.NewReader(body.Encode()))
+	request := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/move", strings.NewReader(body.Encode()))
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	got, err := DecodeForm[decodeFormTarget](request)
@@ -45,7 +45,7 @@ func TestDecodeFormPostBody(t *testing.T) {
 func TestDecodeFormQueryParameters(t *testing.T) {
 	t.Parallel()
 
-	request := httptest.NewRequest(http.MethodGet, "/search?q=x", http.NoBody)
+	request := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/search?q=x", http.NoBody)
 
 	type target struct {
 		Query string `form:"q"`
@@ -65,7 +65,7 @@ func TestDecodeFormQueryParameters(t *testing.T) {
 func TestDecodeFormCheckboxOn(t *testing.T) {
 	t.Parallel()
 
-	request := httptest.NewRequest(http.MethodPost, "/move", strings.NewReader("flag=on"))
+	request := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/move", strings.NewReader("flag=on"))
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	got, err := DecodeForm[decodeFormTarget](request)
@@ -81,7 +81,7 @@ func TestDecodeFormCheckboxOn(t *testing.T) {
 func TestDecodeFormMalformedInt(t *testing.T) {
 	t.Parallel()
 
-	request := httptest.NewRequest(http.MethodPost, "/move", strings.NewReader("index=abc"))
+	request := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/move", strings.NewReader("index=abc"))
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	if _, err := DecodeForm[decodeFormTarget](request); err == nil {
@@ -98,7 +98,7 @@ func TestDecodeFormUnsupportedKind(t *testing.T) {
 		Price float64 `form:"price"`
 	}
 
-	request := httptest.NewRequest(http.MethodPost, "/buy", strings.NewReader("price=9.99"))
+	request := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/buy", strings.NewReader("price=9.99"))
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	_, err := DecodeForm[target](request)
