@@ -60,6 +60,7 @@ func run(out, repoRoot string, skipStars bool) error {
 
 	sitePages := []build.Page{
 		{Path: "index.html", Component: pages.Landing(stats, pages.StarsLabel(stars), nonce)},
+		{Path: "404.html", Component: pages.NotFound(nonce)},
 	}
 
 	docsPages, err := renderDocs(ctx, renderer, repoRoot, nonce)
@@ -85,6 +86,10 @@ func run(out, repoRoot string, skipStars bool) error {
 
 	if err := os.WriteFile(chromaPath, []byte(chromaCSS), 0o644); err != nil { //nolint:gosec // public site asset
 		return fmt.Errorf("write chroma css: %w", err)
+	}
+
+	if err := writeSitemaps(out, repoRoot); err != nil {
+		return fmt.Errorf("sitemaps: %w", err)
 	}
 
 	for _, tree := range []struct{ src, dst string }{

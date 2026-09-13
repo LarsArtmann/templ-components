@@ -13,8 +13,8 @@ import (
 	"github.com/alecthomas/chroma/v2"
 	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/alecthomas/chroma/v2/lexers"
-	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
@@ -37,8 +37,10 @@ type Page struct {
 	Headings    []Heading
 }
 
-var frontmatterRe = regexp.MustCompile(`(?s)\A---\n(.*?)\n---\n?`)
-var frontmatterKeyRe = regexp.MustCompile(`(?m)^([a-zA-Z_]+):\s*(.*)$`)
+var (
+	frontmatterRe    = regexp.MustCompile(`(?s)\A---\n(.*?)\n---\n?`)
+	frontmatterKeyRe = regexp.MustCompile(`(?m)^([a-zA-Z_]+):\s*(.*)$`)
+)
 
 // templLexer highlights templ fences as Go (chroma has no dedicated templ
 // lexer; Go coloring covers keywords, strings, and struct literals well).
@@ -47,6 +49,7 @@ type templLexer struct {
 }
 
 func (l templLexer) Config() *chroma.Config {
+	//nolint:exhaustruct_v5 // chroma's optional lexer-config fields are fine at zero value
 	return &chroma.Config{Name: "templ", Aliases: []string{"templ"}, Filenames: []string{"*.templ"}}
 }
 
@@ -89,15 +92,20 @@ func newMarkdown() goldmark.Markdown {
 				highlighting.WithFormatOptions(
 					chromahtml.WithClasses(true),
 				),
-				highlighting.WithWrapperRenderer(func(w util.BufWriter, ctx highlighting.CodeBlockContext, entering bool) {
-					if entering {
-						fmt.Fprint(w, `<div class="code-block">`)
-						fmt.Fprint(w, `<button type="button" class="code-copy" aria-label="Copy code to clipboard">Copy</button>`)
-						return
-					}
+				highlighting.WithWrapperRenderer(
+					func(w util.BufWriter, ctx highlighting.CodeBlockContext, entering bool) {
+						if entering {
+							fmt.Fprint(w, `<div class="code-block">`)
+							fmt.Fprint(
+								w,
+								`<button type="button" class="code-copy" aria-label="Copy code to clipboard">Copy</button>`,
+							)
+							return
+						}
 
-					fmt.Fprint(w, `</div>`)
-				}),
+						fmt.Fprint(w, `</div>`)
+					},
+				),
 			),
 		),
 		goldmark.WithParserOptions(
@@ -109,7 +117,7 @@ func newMarkdown() goldmark.Markdown {
 // Parse converts one markdown document (with optional frontmatter) to a
 // rendered Page.
 func Parse(source string) (Page, error) {
-	page := Page{}
+	page := Page{} //nolint:exhaustruct_v5 // fields are populated incrementally below
 
 	remainder := source
 	if match := frontmatterRe.FindStringSubmatch(source); match != nil {
@@ -138,7 +146,7 @@ func Parse(source string) (Page, error) {
 }
 
 func collectHeadings(source []byte) []Heading {
-	var headings []Heading
+	headings := []Heading{}
 
 	parsed := newMarkdown().Parser().Parse(text.NewReader(source))
 
@@ -153,15 +161,20 @@ func collectHeadings(source []byte) []Heading {
 		}
 
 		idText := ""
-		if id, ok := heading.AttributeString("id"); ok {
+		if id, idOK := heading.AttributeString("id"); idOK {
 			if raw, isBytes := id.([]byte); isBytes {
 				idText = string(raw)
 			}
 		}
 
 		var textParts []string
-		for child := heading.FirstChild(); child != nil; child = child.NextSibling() {
-			textParts = append(textParts, string(child.Text(source)))
+
+		segments := heading.Lines()
+
+		for i := range segments.Len() {
+			segment := segments.At(i)
+
+			textParts = append(textParts, string(segment.Value(source)))
 		}
 
 		headings = append(headings, Heading{ID: idText, Text: strings.Join(textParts, ""), Level: heading.Level})
