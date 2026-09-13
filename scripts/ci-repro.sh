@@ -11,6 +11,10 @@
 #   scripts/ci-repro.sh              # core: generate + tidy + verify + test (the Build & Test job)
 #   scripts/ci-repro.sh --lint       # also run the Lint job (guards + actionlint + golangci-lint per module)
 #   scripts/ci-repro.sh --css        # also run the CSS Freshness job (needs Nix)
+#                                    # WATCH (#120): the 2026-08-31 local-vs-CI CSS discrepancy was
+#                                    # never root-caused (post-fabd1fb unreproducible; nix run .#css
+#                                    # byte-stable, SHA-256 verified twice). If CI's CSS Freshness
+#                                    # fires where local --css was green, REOPEN #120 with both logs.
 #   scripts/ci-repro.sh --visual     # also run the Visual Regression job (needs Nix + Chromium)
 #   scripts/ci-repro.sh --vuln       # also run the vulnerability gates: govulncheck (all Go modules)
 #                                    # + pnpm audit --prod (website/; needs real node — the bun shim breaks pnpm,
@@ -137,6 +141,16 @@ if [ "$RUN_LINT" = "1" ]; then
 	scripts/check-module-sync.sh
 	scripts/check-module-layers.sh
 	scripts/test-release-assertions.sh
+
+	step "Changelog warmth guard (#133 — local parity with CI's changelog-guard job)"
+	# CI runs scripts/check-changelog-guard.sh over the PR file list; locally
+	# the same diff is origin/master...HEAD (empty on master = vacuously green).
+	CHANGELOG_GUARD_FILES=$(git diff --name-only origin/master...HEAD 2>/dev/null || true)
+	if [ -n "$CHANGELOG_GUARD_FILES" ]; then
+		printf '%s\n' "$CHANGELOG_GUARD_FILES" | scripts/check-changelog-guard.sh
+	else
+		echo "  (no branch diff vs origin/master — guard vacuously green)"
+	fi
 
 	step "Actionlint (GitHub Actions workflows — same as CI's Actionlint step)"
 	if command -v actionlint >/dev/null 2>&1; then
