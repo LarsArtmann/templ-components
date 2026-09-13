@@ -52,15 +52,20 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 
 			var done string
 
+			// JS-dispatched click (the kanban-e2e-proven pattern): chromedp's
+			// trusted click on the icon-only anchor is unreliable in headless;
+			// a bubbling MouseEvent hits the htmx/Datastar listener the same way.
+			next := chromedp.Evaluate(`document.querySelector('a[aria-label="Next month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`, &done)
 			if err := chromedp.Run(ctx,
-				chromedp.Click(`a[aria-label="Next month"]`, chromedp.ByQuery),
+				next,
 				chromedp.Poll(`document.querySelector('#cal-nav-region h3')?.textContent.includes('August')?'ok':''`, &done),
 			); err != nil {
 				t.Fatalf("%s next-month click: %v", dialect, err)
 			}
 
+			prev := chromedp.Evaluate(`document.querySelector('a[aria-label="Previous month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`, &done)
 			if err := chromedp.Run(ctx,
-				chromedp.Click(`a[aria-label="Previous month"]`, chromedp.ByQuery),
+				prev,
 				chromedp.Poll(`document.querySelector('#cal-nav-region h3')?.textContent.includes('July')?'ok':''`, &done),
 			); err != nil {
 				t.Fatalf("%s prev-month click: %v", dialect, err)
@@ -125,9 +130,10 @@ func wiredCalendar(dialect wire.Transport, year, month int) templ.Component {
 	props.Year = year
 	props.Month = time.Month(month)
 	props.BaseProps = utils.BaseProps{ID: "cal-nav"}
-	props.MonthNav = &wire.Action{ //nolint:exhaustruct // URL is the wiring surface
+	props.MonthNav = &wire.Action{ //nolint:exhaustruct // URL+Target are the wiring surface
 		Transport: dialect,
 		URL:       "/api/calendar?year={year}&month={month}",
+		Target:    "#cal-nav-region",
 	}
 
 	return forms.Calendar(props)
