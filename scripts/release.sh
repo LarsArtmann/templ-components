@@ -211,10 +211,15 @@ RELEASE_NOTES="$(printf '%s\n' "$RELEASE_NOTES" | awk 'NF{p=1} p{lines[++n]=$0} 
 # failed during the v1.9.0 cut). Both cleanup concerns live in one hook.
 RELEASE_COMMITTED=0
 REPLACE_BACKUP_DIR="$(mktemp -d)"
+# Snapshot the pre-release HEAD so an abort can restore the EXACT prior
+# content. A bare `git restore` (implicit HEAD) is a no-op when the BuildFlow
+# daemon has already committed the half-bumped files mid-verify — the exact
+# race that broke the first two v1.17.0 attempts (2026-09-13).
+PRE_RELEASE_HEAD="$(git rev-parse HEAD)"
 release_cleanup() {
 	if [ "$RELEASE_COMMITTED" = "0" ]; then
 		echo "Release aborted; rolling back version files, go.mod files, CHANGELOG, FEATURES..." >&2
-		git restore utils/version.go $MODFILES visualtest/go.mod CHANGELOG.md FEATURES.md README.md 2>/dev/null || true
+		git restore --source="$PRE_RELEASE_HEAD" -- utils/version.go $MODFILES visualtest/go.mod website/go.mod CHANGELOG.md FEATURES.md README.md 2>/dev/null || true
 	fi
 	rm -rf "$REPLACE_BACKUP_DIR"
 }
