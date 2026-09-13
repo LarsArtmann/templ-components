@@ -98,6 +98,34 @@ func TestDecodeFormEndpoints(t *testing.T) {
 			wantStatus: http.StatusOK,
 			wantIn:     "go",
 		},
+		{
+			name:       "calendar htmx endpoint decodes year and month",
+			method:     http.MethodGet,
+			path:       "/api/wire/calendar/htmx?year=2026&month=7",
+			wantStatus: http.StatusOK,
+			wantIn:     "July 2026",
+		},
+		{
+			name:       "calendar htmx endpoint renders self-swap attributes",
+			method:     http.MethodGet,
+			path:       "/api/wire/calendar/htmx?year=2026&month=7",
+			wantStatus: http.StatusOK,
+			wantIn:     `hx-swap="outerHTML settle:0s"`,
+		},
+		{
+			name:       "calendar datastar endpoint decodes year and month",
+			method:     http.MethodGet,
+			path:       "/api/wire/calendar/datastar?year=2026&month=12",
+			wantStatus: http.StatusOK,
+			wantIn:     "December 2026",
+		},
+		{
+			name:       "calendar endpoint with garbage query falls back to current month",
+			method:     http.MethodGet,
+			path:       "/api/wire/calendar/htmx?year=abc&month=zzz",
+			wantStatus: http.StatusOK,
+			wantIn:     "aria-label=\"Next month\"",
+		},
 	}
 
 	for _, tt := range tests {

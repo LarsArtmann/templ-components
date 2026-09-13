@@ -324,7 +324,7 @@ templ wireDemo(transport demoTransport) {
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Month navigation</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
 			A <code>forms.Calendar</code> whose prev/next arrows carry a
-			<code>wire.Action</code> with <code>{year}</code>/<code>{month}</code>
+			<code>wire.Action</code> with <code>&#123;year&#125;</code>/<code>&#123;month&#125;</code>
 			placeholders — the component substitutes the navigation target per arrow.
 			The endpoint re-renders the whole calendar: under htmx the arrows self-swap
 			(<code>outerHTML settle:0s</code>, so a rapid second click can never land on an
@@ -753,11 +753,13 @@ templ wireWizardStepResult(dialect wire.Transport, step int, message string) {
 // calendar targets its own id (outerHTML self-swap); the Datastar calendar
 // relies on wire.Handler's response-header targeting instead.
 templ wireCalendarDemo(dialect wire.Transport, year int, month time.Month) {
-	{{ id, url := "wire-cal-htmx", "/api/wire/calendar/htmx" }}
-	{{ target := "#wire-cal-htmx" }}
-	{{ if dialect == wire.TransportDatastar }}
-		{{ id, url, target = "wire-cal-ds", "/api/wire/calendar/datastar", "" }}
-	{{ end }}
+	{{
+		id, target := "wire-cal-htmx", "#wire-cal-htmx"
+		url := "/api/wire/calendar/htmx"
+		if dialect == wire.TransportDatastar {
+			id, target, url = "wire-cal-ds", "", "/api/wire/calendar/datastar"
+		}
+	}}
 	@forms.Calendar(forms.CalendarProps{
 		BaseProps: utils.BaseProps{ID: id},
 		Year:      year,

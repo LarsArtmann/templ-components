@@ -124,6 +124,10 @@ type (
 	searchQuery struct {
 		Q string `form:"q"`
 	}
+	calendarNavQuery struct {
+		Year  int `form:"year"`
+		Month int `form:"month"`
+	}
 	wireFormSubmission struct {
 		Name  string `form:"name"`
 		Email string `form:"email"`
@@ -595,6 +599,33 @@ func newMux() *http.ServeMux {
 
 		componentOr500(w, r, wireFilterResults(strings.TrimSpace(query.Q)))
 	})))
+
+	// Calendar month navigation: one endpoint per dialect, mirroring the
+	// kanban pattern. The htmx arrows target their own calendar id
+	// (outerHTML self-swap); the Datastar endpoint tells the runtime where
+	// to patch via wire.Handler response headers (PatchModeOuter replaces
+	// the whole calendar, matching the htmx swap style).
+	calendarHandler := func(dialect wire.Transport) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			noStore(w)
+
+			now := time.Now()
+			year, month := now.Year(), now.Month()
+
+			if query, err := wire.DecodeForm[calendarNavQuery](r); err == nil && query.Year > 0 && query.Month > 0 {
+				year, month = query.Year, time.Month(query.Month)
+			}
+
+			componentOr500(w, r, wireCalendarDemo(dialect, year, month))
+		}
+	}
+
+	mux.HandleFunc("GET /api/wire/calendar/htmx", calendarHandler(wire.TransportHTMX))
+	mux.Handle("GET /api/wire/calendar/datastar", wire.Handler(wire.PatchTarget{
+		Selector: "#wire-cal-ds",
+		Mode:     wire.PatchModeOuter,
+	}, calendarHandler(wire.TransportDatastar)))
 
 	// Kanban demo: the move endpoint a wired KanbanBoard expects. One handler
 	// shape serves both transports: decode with display.ParseKanbanMove,

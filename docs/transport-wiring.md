@@ -361,6 +361,63 @@ Both runtimes produce `/api/wire/search?q=<value>` — pinned by the demo's
 form-encoding path with multipart — see
 **[`docs/recipes/file-upload.md`](recipes/file-upload.md)**.
 
+## Month navigation (Calendar MonthNav)
+
+`forms.Calendar` navigates months without a page load via
+`CalendarProps.MonthNav` — a `wire.Action` whose URL carries
+`{year}`/`{month}` placeholders. The component clones the action per arrow
+(never mutating yours), substitutes the prev/next target month — including
+the December→January year wrap — and renders the dialect attributes on the
+anchor. `HrefPrev`/`HrefNext` still render as `href` fallbacks alongside the
+wire attributes, so the calendar keeps its no-JS degradation.
+
+```templ
+@forms.Calendar(forms.CalendarProps{
+	BaseProps: utils.BaseProps{ID: "cal"},
+	Year:      2026,
+	Month:     time.July,
+	MonthNav: &wire.Action{
+		URL:    "/api/calendar?year={year}&month={month}",
+		Target: "#cal", // htmx-only; Datastar targeting is response-driven
+	},
+})
+```
+
+The endpoint re-renders the WHOLE calendar and decodes the query with
+`wire.DecodeForm[T]`:
+
+```go
+type calendarQuery struct {
+	Year  int `form:"year"`
+	Month int `form:"month"`
+}
+
+mux.Handle("GET /api/calendar", wire.Handler(wire.PatchTarget{
+	Selector: "#cal",
+	Mode:     wire.PatchModeOuter, // match the htmx outerHTML self-swap
+}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	query, err := wire.DecodeForm[calendarQuery](r)
+	if err != nil { /* 400 */ }
+
+	forms.Calendar(calendarProps(query.Year, time.Month(query.Month))).Render(r.Context(), w)
+})))
+```
+
+Two hard-won details (browser-proven, `visualtest/calendar_nav_e2e_test.go`):
+
+- **The htmx arrows self-swap with `outerHTML settle:0s`.** htmx processes
+  swapped-in elements in its settle phase, ~20ms after insertion by default.
+  Month arrows are clicked in quick bursts, and a click landing inside that
+  window hits an anchor with no listener bound — it silently no-ops.
+  `settle:0s` runs the processing in the same JS task as the swap, closing
+  the window entirely. Any component that re-renders its own triggers should
+  do the same.
+- **`Target` must point at the calendar's own id** (`props.ID` — which the
+  component now actually renders on its root; it used to be dropped
+  silently). Without it the outerHTML self-swap replaces the wrong node.
+  Under Datastar the same effect comes from `wire.Handler`'s
+  `PatchTarget{Selector, PatchModeOuter}` response headers.
+
 ## Dual-transport kanban board
 
 `display.KanbanBoard` is the move-heavy extreme of the same idea: cards
@@ -457,11 +514,10 @@ Facts worth knowing:
   form encoding carries their values under both runtimes; both re-render
   from props (`Value` / `Values`) so server round-trips preserve state.
   Verified in the component tests — no extra wiring needed.
-- **Calendar / DatePicker**: `Calendar` navigates with plain links
-  (`HrefPrev`/`HrefNext`/day hrefs) — server-driven and
-  transport-agnostic by construction. Adopting `Wire` for month navigation
-  is a deliberate future candidate (see TODO_LIST), not a gap: the
-  no-JS-first design already works under either runtime.
+- **Calendar / DatePicker**: `Calendar` month navigation works both ways —
+  plain links (`HrefPrev`/`HrefNext`/day hrefs, no-JS) or the `MonthNav`
+  `wire.Action` for partial-page navigation (see "Month navigation" below).
+  `DatePicker` remains a native `<input type="date">` with no wiring surface.
 
 ## Deliberate scope boundaries
 

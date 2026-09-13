@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`forms.Calendar` month navigation via `MonthNav *wire.Action`.** The
+  prev/next arrows carry a `wire.Action` whose URL uses `{year}`/`{month}`
+  placeholders; the component substitutes the target month per arrow
+  (December/January wrap the year), never mutates the consumer's action, and
+  keeps `HrefPrev`/`HrefNext` as no-JS `href` fallbacks. Under htmx the
+  arrows self-swap with `outerHTML settle:0s` so a rapid second click can
+  never land on an unprocessed anchor (browser-proven); under Datastar the
+  endpoint targets the region via `wire.Handler` response headers. Wired
+  demo card on `/` ("Month navigation"), recipe in
+  `docs/transport-wiring.md`, e2e in `visualtest/calendar_nav_e2e_test.go`.
+
+### Fixed
+
+- **`forms.Calendar` dropped `props.ID` on its root element.** The root div
+  only rendered `class`/`attrs`/`aria-label`, so a consumer-set ID silently
+  vanished — making `hx-target="#my-id"` self-swap wiring impossible. Found
+  by the MonthNav e2e (D3: string-proven ≠ browser-proven).
+
 ## [1.17.0] — 2026-09-13
 
 ### Changed
