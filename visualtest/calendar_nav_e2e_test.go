@@ -50,18 +50,20 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 				t.Fatalf("%s calendar nav setup: %v", dialect, err)
 			}
 
+			var done string
+
 			if err := chromedp.Run(ctx,
 				chromedp.Click(`a[aria-label="Next month"]`, chromedp.ByQuery),
-				chromedp.Poll(`document.querySelector('#cal-nav-region h3')?.textContent.includes('August')`, &ok),
-			); err != nil || !ok {
-				t.Fatalf("%s next-month click did not patch the calendar to August: %v (ok=%v)", dialect, err, ok)
+				chromedp.Poll(`document.querySelector('#cal-nav-region h3')?.textContent.includes('August')?'ok':''`, &done),
+			); err != nil {
+				t.Fatalf("%s next-month click: %v", dialect, err)
 			}
 
 			if err := chromedp.Run(ctx,
 				chromedp.Click(`a[aria-label="Previous month"]`, chromedp.ByQuery),
-				chromedp.Poll(`document.querySelector('#cal-nav-region h3')?.textContent.includes('July')`, &ok),
-			); err != nil || !ok {
-				t.Fatalf("%s prev-month click did not patch the calendar back to July: %v (ok=%v)", dialect, err, ok)
+				chromedp.Poll(`document.querySelector('#cal-nav-region h3')?.textContent.includes('July')?'ok':''`, &done),
+			); err != nil {
+				t.Fatalf("%s prev-month click: %v", dialect, err)
 			}
 		})
 	}
@@ -160,6 +162,14 @@ func calendarNavPage(ctx context.Context, dialect wire.Transport) templ.Componen
 
 	pageProps := layout.DefaultPageProps()
 	pageProps.Title = "Calendar nav e2e"
+	pageProps.HeadContent = templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		_, werr := io.WriteString(
+			w,
+			`<script>window.__dsReady=false;document.addEventListener('datastar-ready',function(){window.__dsReady=true;},{once:true});</script>`,
+		)
+
+		return werr
+	})
 
 	_ = ctx // shell uses its own render context via Base
 
