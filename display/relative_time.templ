@@ -15,6 +15,11 @@ type RelativeTimeProps struct {
 	utils.BaseProps
 	// Time is the timestamp to display relative to now.
 	Time time.Time
+	// Now, when non-zero, pins the reference instant the relative string is
+	// computed against (defaults to time.Now at render time). Tests use it to
+	// pin boundary behavior ("59s vs 60s") deterministically; production
+	// callers leave it zero.
+	Now time.Time
 	// Title, when non-empty, overrides the default title (absolute time shown
 	// on hover). Set to "" to use the formatted absolute timestamp.
 	Title string
@@ -44,7 +49,11 @@ func DefaultRelativeTimeProps() RelativeTimeProps {
 //	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt, AutoRefresh: false}) // static
 templ RelativeTime(props RelativeTimeProps) {
 	{{
-		relative := formatRelativeTime(props.Time, time.Now())
+		now := props.Now
+		if now.IsZero() {
+			now = time.Now()
+		}
+		relative := formatRelativeTime(props.Time, now)
 		title := props.Title
 		if title == "" {
 			title = props.Time.Format("Jan 2, 2006 3:04 PM MST")

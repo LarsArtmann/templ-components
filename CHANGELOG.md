@@ -45,7 +45,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   consumer: `display.ParseKanbanMove`, now a thin domain-validation layer on
   top — its documented "form body or query parameters" contract is finally
   true for GET too. Consumers writing their own wired handlers no longer
-  hand-roll `ParseForm` + `PostForm.Get` chains.
+  hand-roll `ParseForm` + `PostForm.Get` chains: every demo endpoint and the
+  visualtest forms-pack handlers now decode through `wire.DecodeForm`
+  (typed request structs with `form:` tags), browser-proven on both
+  transports by the full wire e2e suite.
 
 - **`layout.Minimal` gains optional `SEO` head tags** — robots noindex,
   canonical, hreflang alternates, and JSON-LD, with identical semantics to
