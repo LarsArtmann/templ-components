@@ -244,6 +244,8 @@ func main() {
 		cmdList(r, os.Args[2:])
 	case "add":
 		cmdAdd(r, os.Args[2:])
+	case "doctor":
+		cmdDoctor(r, os.Args[2:])
 	case "version", "-v", "--version":
 		fmt.Fprintln(os.Stdout, utils.Version)
 	case "-h", "--help", "help":
@@ -265,6 +267,8 @@ Usage:
   tc add <component> --out DIR   Copy to a custom directory.
   tc add <component> --list-deps List sibling .go files the component depends on.
   tc version                Print the library version.
+  tc doctor                 Diagnose consumer-integration traps (Tailwind @source,
+                            GOEXPERIMENT, templ pin, committed *_templ.go, hooks).
 
 Examples:
   tc init
