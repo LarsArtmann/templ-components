@@ -38,11 +38,11 @@ func main() {
 func run(out, repoRoot string, skipStars bool) error {
 	nonce, err := build.Nonce()
 	if err != nil {
-		return err
+		return fmt.Errorf("build nonce: %w", err)
 	}
 	stats, err := build.CountStats(repoRoot)
 	if err != nil {
-		return err
+		return fmt.Errorf("library stats: %w", err)
 	}
 
 	stars := 0
@@ -52,23 +52,23 @@ func run(out, repoRoot string, skipStars bool) error {
 
 	renderer := build.NewRenderer(nonce)
 	ctx := context.Background()
-	pages := []build.Page{
+	sitePages := []build.Page{
 		{Path: "index.html", Component: pages.Landing(stats, pages.StarsLabel(stars), nonce)},
 	}
-	if err := renderer.WritePages(ctx, out, pages); err != nil {
-		return err
+	if err := renderer.WritePages(ctx, out, sitePages); err != nil {
+		return fmt.Errorf("write pages: %w", err)
 	}
 
 	chromaCSS, err := build.ChromaCSS()
 	if err != nil {
-		return err
+		return fmt.Errorf("chroma css: %w", err)
 	}
 	chromaPath := filepath.Join(out, "assets", "css", "chroma.css")
-	if err := os.MkdirAll(filepath.Dir(chromaPath), 0o755); err != nil {
-		return err
+	if err := os.MkdirAll(filepath.Dir(chromaPath), 0o755); err != nil { //nolint:gosec // public site asset directory
+		return fmt.Errorf("create chroma css dir: %w", err)
 	}
-	if err := os.WriteFile(chromaPath, []byte(chromaCSS), 0o644); err != nil {
-		return err
+	if err := os.WriteFile(chromaPath, []byte(chromaCSS), 0o644); err != nil { //nolint:gosec // public site asset
+		return fmt.Errorf("write chroma css: %w", err)
 	}
 
 	for _, tree := range []struct{ src, dst string }{
@@ -82,30 +82,41 @@ func run(out, repoRoot string, skipStars bool) error {
 		}
 	}
 
-	fmt.Printf("site: wrote %d page(s) to %s (components=%d icons=%d enums=%d modules=%d)\n",
-		len(pages), out, stats.Components, stats.Icons, stats.Enums, stats.Modules)
+	fmt.Fprintf(os.Stdout, "site: wrote %d page(s) to %s (components=%d icons=%d enums=%d modules=%d)\n",
+		len(sitePages), out, stats.Components, stats.Icons, stats.Enums, stats.Modules)
 	return nil
 }
 
 // fetchStars mirrors the Astro hero's build-time star lookup: fail-soft, any
 // error means the static "Star on GitHub" fallback label.
 func fetchStars() int {
-	client := &http.Client{Timeout: 5 * time.Second}
-	req, err := http.NewRequest(http.MethodGet, gitHubAPIURL, nil)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	client := &http.Client{
+		Transport:     nil,
+		CheckRedirect: nil,
+		Jar:           nil,
+		Timeout:       5 * time.Second,
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, gitHubAPIURL, nil)
 	if err != nil {
 		return 0
 	}
 	req.Header.Set("Accept", "application/vnd.github.v3+json")
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return 0
 	}
 	defer resp.Body.Close()
+
 	if resp.StatusCode != http.StatusOK {
 		return 0
 	}
+
 	var payload struct {
-		StargazersCount int `json:"stargazers_count"`
+		StargazersCount int `json:"stargazers_count"` //nolint:tagliatelle // GitHub API wire format
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
 		return 0

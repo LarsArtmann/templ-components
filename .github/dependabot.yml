@@ -88,4 +88,14 @@ updates:
     groups:
       actions:
         patterns:
-          - "*"
+          - '*'
+  - package-ecosystem: gomod
+    directory: /website
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch

@@ -29,6 +29,8 @@ type Feature struct {
 
 // Features powers the FeatureGrid section. Content ported from the Astro
 // src/data/features.ts (icon keys now map to the real icons module).
+//
+//nolint:gochecknoglobals // site content table (ported from Astro data files)
 var Features = []Feature{
 	{
 		Icon:  icons.ShieldCheck,
@@ -90,6 +92,8 @@ type Step struct {
 }
 
 // Steps powers the HowItWorks section (ported from src/data/sections.ts).
+//
+//nolint:gochecknoglobals // site content table (ported from Astro data files)
 var Steps = []Step{
 	{
 		Step:      "1",
@@ -133,6 +137,8 @@ const (
 
 // ComparisonColumn is a competitor/library column of the matrix. The last
 // column (templ-components) is highlighted.
+//
+//nolint:gochecknoglobals // site content table (ported from Astro data files)
 var ComparisonColumns = []string{"templUI", "goshipit", SiteName}
 
 // ComparisonMatrixRow is one feature row of the comparison table.
@@ -143,6 +149,8 @@ type ComparisonMatrixRow struct {
 
 // ComparisonMatrix powers the comparison table (ported and refreshed from
 // src/data/sections.ts — enum counts now live in the hero, not here).
+//
+//nolint:gochecknoglobals // site content table (ported from Astro data files)
 var ComparisonMatrix = []ComparisonMatrixRow{
 	{Feature: "CSS approach", Values: []MatrixCell{"Tailwind + vars", "Tailwind + DaisyUI", "Tailwind v4 CSS-first"}},
 	{Feature: "JavaScript", Values: []MatrixCell{"Alpine.js", "DaisyUI JS", "HATEOAS (enhances HTML)"}},
@@ -164,6 +172,8 @@ type UseCase struct {
 }
 
 // UseCases powers the UseCases section (ported from src/data/sections.ts).
+//
+//nolint:gochecknoglobals // site content table (ported from Astro data files)
 var UseCases = []UseCase{
 	{
 		Icon:  icons.Squares2x2,

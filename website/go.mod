@@ -2,6 +2,11 @@ module github.com/larsartmann/templ-components/website
 
 go 1.26.7
 
+ignore (
+	node_modules
+	dist
+)
+
 require (
 	github.com/a-h/templ v0.3.1020
 	github.com/alecthomas/chroma/v2 v2.27.0

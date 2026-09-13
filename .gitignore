@@ -105,3 +105,10 @@ examples/demo/demo
 
 /examples/demo/demo
 website/dist/
+
+# Compiled CSS artifacts are daemon-recompile churn bait (resurrected twice:
+# 2026-09-13 daemon commit 504856b8 re-added 6 deleted .out.css files after
+# 43f1522f deleted them). Only the distribution artifact is tracked; the
+# drift guard utils.TestCompiledCSSInventory pins this exact set.
+*.out.css
+!templates/templ-components-theme.out.css

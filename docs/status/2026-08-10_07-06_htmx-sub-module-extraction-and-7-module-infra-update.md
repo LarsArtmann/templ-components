@@ -140,8 +140,8 @@ The **release.sh gap** (section b-1) is the closest thing to "fucked up" — it 
 
 #### CRITICAL (blocks next release)
 
-1. **Fix `scripts/release.sh` lines 157, 172, 186, 300, 308, 316, 329-330** — add `datastar/go.mod htmx/go.mod` to all loops and messages. This is a release blocker.
-2. **Add `TestReleaseScriptModuleCoverage` drift-guard** — static-analysis test that reads release.sh as text and asserts all sub-module directories appear in the tagging loop.
+1. ~~**Fix `scripts/release.sh` lines 157, 172, 186, 300, 308, 316, 329-330** — add `datastar/go.mod htmx/go.mod` to all loops and messages. This is a release blocker.~~ done (release.sh module loops updated)
+2. ~~**Add `TestReleaseScriptModuleCoverage` drift-guard** — static-analysis test that reads release.sh as text and asserts all sub-module directories appear in the tagging loop.~~ done (TestReleaseScriptInvariants guards module coverage)
 
 #### HIGH (architectural debt)
 
@@ -153,14 +153,14 @@ The **release.sh gap** (section b-1) is the closest thing to "fucked up" — it 
 
 6. **Improve `testSpinner` helper** — copy real spinner SVG markup (circle + path) instead of empty `<svg>`, making golden tests more representative.
 7. **Add htmx `doc.go`** mentioning it's now a separate module (if it doesn't exist).
-8. **Check Dockerfile** for multi-module awareness (does `go build` from Docker context resolve sub-modules correctly?).
+8. ~~**Check Dockerfile** for multi-module awareness (does `go build` from Docker context resolve sub-modules correctly?).~~ done (AGENTS.md multi-module Docker build documented)
 9. **Add `TestModuleLayerGuard`** — extend `utils/` drift-guard tests to assert check-module-layers.sh covers all modules in check-module-sync.sh MODULE_PATHS.
 10. **Run `nix run .#verify`** to validate flake.nix changes work end-to-end (not just ad-hoc Go commands).
 11. **Update `docs/status/2026-08-10_06-46_datastar-sub-module-extraction.md`** — mark its "CRITICAL — must fix before commit" items as done or carry forward.
 12. **Investigate layout test failures** from prior session (`"write inline htmx script: %!w(<nil>)"`) — pre-existing working-tree changes to `layout/base.templ`, `layout/embed.go`, `layout/static/`.
 13. **Consider proactively extracting more packages** — `feedback/` and `forms/` are Layer 1 candidates (depend only on utils/icons) but may have test-import circular deps like htmx did.
 14. **Update `.dockerignore`** if it needs to exclude/include new module directories.
-15. **Add `htmx/v<version>` and `datastar/v<version>` to the release tags section** of `docs/modularization/README.md` (already done in the release process section, verify it matches release.sh after fix).
+15. ~~**Add `htmx/v<version>` and `datastar/v<version>` to the release tags section** of `docs/modularization/README.md` (already done in the release process section, verify it matches release.sh after fix).~~ done (docs/modularization/README.md datastar/v release tags)
 
 #### LOWER (polish)
 

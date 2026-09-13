@@ -26,26 +26,26 @@ build a 1:1 port of all 316 originals.
 
 ### Animation types: 10 → 11
 
-3. **Added `AnimWobble`** — Beaker-style `scale 0.9` + `rotate [0, 6, -6, 3, -3, 0]`,
-   verified from the heroicons-animated `beaker.tsx` source. CSS `@keyframes
-   tc-icon-wobble` in `custom.css`.
-4. **Added `AnimDraw`** — Bolt-style self-draw via `stroke-dashoffset`. Verified
-   from `bolt.tsx` source (`pathLength: [0, 1]`, `opacity: [0, 1]`, linear 0.6s).
-   New `drawIcon` template renders paths with `pathLength="1"` so the CSS
-   `stroke-dasharray: 1; stroke-dashoffset: 1→0` works uniformly.
-5. **CSS for both new types** — `@keyframes tc-icon-wobble`, `@keyframes
-   tc-icon-draw`, `.tc-anim-wobble:hover`, `.tc-anim-draw:hover` rules. Updated
-   `prefers-reduced-motion` block to also reset `stroke-dashoffset`.
+3. ~~**Added `AnimWobble`** — Beaker-style `scale 0.9` + `rotate [0, 6, -6, 3, -3, 0]`,~~ done at `cc44ca34`
+   ~~verified from the heroicons-animated `beaker.tsx` source. CSS `@keyframes~~
+   ~~tc-icon-wobble` in `custom.css`.~~
+4. ~~**Added `AnimDraw`** — Bolt-style self-draw via `stroke-dashoffset`. Verified~~ done at `cc44ca34`
+   ~~from `bolt.tsx` source (`pathLength: [0, 1]`, `opacity: [0, 1]`, linear 0.6s).~~
+   ~~New `drawIcon` template renders paths with `pathLength="1"` so the CSS~~
+   ~~`stroke-dasharray: 1; stroke-dashoffset: 1→0` works uniformly.~~
+5. ~~**CSS for both new types** — `@keyframes tc-icon-wobble`, `@keyframes~~ done at `cc44ca34`
+   ~~tc-icon-draw`, `.tc-anim-wobble:hover`, `.tc-anim-draw:hover` rules. Updated~~
+   ~~`prefers-reduced-motion` block to also reset `stroke-dashoffset`.~~
 
 ### Icon coverage: 35/102 → 96/96 explicit mappings
 
-6. **Every canonical icon in `iconPathData` now has an explicit animation mapping.**
-   The previous session left 67 icons on generic `AnimPulse` fallback. Now: 28
-   pulse, 26 nod, 15 shake, 14 wiggle, 13 bounce, 11 spin, 7 beat, 5 jump, 4
-   wobble, 1 blink, 1 draw (Bolt) — 96 total + Spinner (AnimNone).
-7. **Alias resolution in `DefaultAnimation()`** — ArrowPath, Bars3, MapPin,
-   HandThumbUp now resolve through `iconAliases` to their canonical icon's
-   animation. Previously these got generic pulse.
+6. ~~**Every canonical icon in `iconPathData` now has an explicit animation mapping.**~~ done at `cc44ca34`
+   ~~The previous session left 67 icons on generic `AnimPulse` fallback. Now: 28~~
+   ~~pulse, 26 nod, 15 shake, 14 wiggle, 13 bounce, 11 spin, 7 beat, 5 jump, 4~~
+   ~~wobble, 1 blink, 1 draw (Bolt) — 96 total + Spinner (AnimNone).~~
+7. ~~**Alias resolution in `DefaultAnimation()`** — ArrowPath, Bars3, MapPin,~~ done at `cc44ca34`
+   ~~HandThumbUp now resolve through `iconAliases` to their canonical icon's~~
+   ~~animation. Previously these got generic pulse.~~
 
 ### Tests rewritten
 
