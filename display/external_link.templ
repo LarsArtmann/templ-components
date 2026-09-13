@@ -19,6 +19,9 @@ import "github.com/larsartmann/templ-components/utils"
 //	 }
 templ ExternalLink(props ExternalLinkProps) {
 	<a
+		if props.ID != "" {
+			id={ props.ID }
+		}
 		href={ props.Href }
 		target="_blank"
 		rel="noopener noreferrer"

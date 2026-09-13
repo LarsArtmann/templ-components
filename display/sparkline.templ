@@ -29,6 +29,9 @@ templ Sparkline(props SparklineProps) {
 	}}
 	if len(props.Values) >= 2 {
 		<svg
+			if props.ID != "" {
+				id={ props.ID }
+			}
 			width={ width }
 			height={ height }
 			class={ utils.Class("overflow-visible", props.Class) }
