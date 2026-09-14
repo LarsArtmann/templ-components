@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **ADR-0040: component-level module extraction is trigger-gated.** Kanban,
+  Heatmap, and the native chart family stay `display` package components —
+  the audit found no dependency to isolate (the only criterion behind every
+  prior sub-module split) and zero demand for family-only adoption, while a
+  new module permanently costs 12+ release/CI/sync touchpoints and a v2-gated
+  breaking import-path change. Decision plus T1/T2/T3 extraction triggers in
+  `docs/adr/0040-component-module-extraction-triggers.md`; full assessment in
+  `docs/modularization/2026-09-14_component-module-boundaries.html`.
+
 - **Adoption-driven layout pack (M22, F101–F104 — direct responses to the
   #156 consumer survey).**
   - **AppShell/SidebarNav theming tokens (F101):** new `--tc-sidebar-bg`,
