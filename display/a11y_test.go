@@ -41,7 +41,7 @@ func TestA11yAttributes(t *testing.T) {
 				{Text: dropdownItemEdit, Href: dropdownHrefEdit},
 			},
 		}))
-		utils.AssertContains(t, output, `aria-expanded="false"`)
+		utils.AssertContains(t, output, `popovertarget=`)
 		utils.AssertContains(t, output, `aria-haspopup="true"`)
 		utils.AssertContains(t, output, `role="menu"`)
 		utils.AssertContains(t, output, `role="menuitem"`)

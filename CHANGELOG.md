@@ -190,6 +190,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **HTML-validation compliance pack: vnu's 2025 rules over the golden
+  corpus.** The CI validator (vnu.jar downloaded at runtime) advanced past
+  the snapshot the ignore list was written against — new quote style plus
+  two new attribute rules — red-flagging markup that string tests passed.
+  Component fixes (fix-forward, not ignores): `Dropdown`/`Popover` triggers
+  no longer emit `aria-expanded` next to `popovertarget` (vnu prohibits the
+  combination — the Popover API already exposes expansion state to assistive
+  tech, so the attribute was redundant); the `KanbanBoard` column count
+  label moved from a generic `<span>` (where ARIA ignores `aria-label`
+  entirely) onto the column's `<ul>` as its accessible name;
+  `Scrollback` labeled mode now renders `role="log"` so its `aria-label` is
+  valid; the `Carousel` slide track gets `role="group"`. The validator's
+  ignore regexes now match BOTH vnu quote styles (straight `"` and curly
+  `“”`) — CI's runtime-downloaded jar and the nixpkgs-bundled older checker
+  share one list. Local + CI-jar runs both clean over all 246 goldens.
+
 - **Wired anchors: no more roleless `aria-label` arrows, and no Datastar
   patch-then-navigate double-fire.** The demo axe sweep (run via the full
   visual suite) flagged the Calendar MonthNav arrows as
