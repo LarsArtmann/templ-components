@@ -48,8 +48,25 @@ func TestNavLinkWire(t *testing.T) {
 		html := utils.Render(t, NavLink(props, "/"))
 		utils.AssertContainsAll(t, html,
 			`href="/inbox"`,
-			`data-on:click="@get(&#39;/api/inbox-fragment&#39;)"`,
+			`data-on:click__prevent="@get(&#39;/api/inbox-fragment&#39;)"`,
 		)
+	})
+
+	t.Run("consumer action is cloned, not mutated (PreventDefault set on the copy only)", func(t *testing.T) {
+		t.Parallel()
+
+		props := base
+		action := &wire.Action{ //nolint:exhaustruct // URL is the wiring surface
+			Transport: wire.TransportDatastar,
+			URL:       "/api/inbox-fragment",
+		}
+		props.Wire = action
+
+		_ = utils.Render(t, NavLink(props, "/"))
+
+		if action.PreventDefault {
+			t.Errorf("Wire action PreventDefault mutated on the consumer's spec — components clone, never rewrite")
+		}
 	})
 
 	t.Run("nil Wire keeps a plain link", func(t *testing.T) {

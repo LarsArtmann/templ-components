@@ -108,6 +108,8 @@ templ Calendar(props CalendarProps) {
 		monthName := props.Month.String()
 		prevYear, prevMonth := calendarPrevMonth(props.Year, props.Month)
 		nextYear, nextMonth := calendarNextMonth(props.Year, props.Month)
+		prevHref := calendarMonthNavHref(props.HrefPrev, props.MonthNav, prevYear, prevMonth)
+		nextHref := calendarMonthNavHref(props.HrefNext, props.MonthNav, nextYear, nextMonth)
 	}}
 	<div
 		if props.ID != "" {
@@ -117,11 +119,9 @@ templ Calendar(props CalendarProps) {
 		{ props.Attrs... }
 	>
 		<div class="flex items-center justify-between mb-4">
-			if props.HrefPrev != "" || props.MonthNav != nil {
+			if prevHref != "" {
 				<a
-					if props.HrefPrev != "" {
-						href={ templ.SafeURL(props.HrefPrev) }
-					}
+					href={ templ.SafeURL(prevHref) }
 					{ calendarMonthNavAction(props.MonthNav, prevYear, prevMonth)... }
 					class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
 					aria-label="Previous month"
@@ -132,11 +132,9 @@ templ Calendar(props CalendarProps) {
 				<span class="w-7"></span>
 			}
 			<h3 class="text-sm font-semibold text-gray-900 dark:text-white">{ monthName } { fmt.Sprintf("%d", props.Year) }</h3>
-			if props.HrefNext != "" || props.MonthNav != nil {
+			if nextHref != "" {
 				<a
-					if props.HrefNext != "" {
-						href={ templ.SafeURL(props.HrefNext) }
-					}
+					href={ templ.SafeURL(nextHref) }
 					{ calendarMonthNavAction(props.MonthNav, nextYear, nextMonth)... }
 					class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
 					aria-label="Next month"

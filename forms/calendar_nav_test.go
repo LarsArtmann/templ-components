@@ -55,9 +55,38 @@ func TestCalendarMonthNavWire(t *testing.T) {
 
 		html := utils.Render(t, Calendar(props))
 		utils.AssertContainsAll(t, html,
-			`data-on:click="@get(&#39;/api/calendar?year=2026&amp;month=6&#39;)"`,
-			`data-on:click="@get(&#39;/api/calendar?year=2026&amp;month=8&#39;)"`,
+			`data-on:click__prevent="@get(&#39;/api/calendar?year=2026&amp;month=6&#39;)"`,
+			`data-on:click__prevent="@get(&#39;/api/calendar?year=2026&amp;month=8&#39;)"`,
 		)
+	})
+
+	t.Run(
+		"arrows always carry a synthesized href (roleless aria-label anchor is an axe violation)",
+		func(t *testing.T) {
+			t.Parallel()
+
+			props := props
+			props.MonthNav = &wire.Action{ //nolint:exhaustruct // URL is the wiring surface
+				URL: "/api/calendar?year={year}&month={month}",
+			}
+
+			html := utils.Render(t, Calendar(props))
+			utils.AssertContainsAll(t, html,
+				`href="/api/calendar?year=2026&amp;month=6"`,
+				`href="/api/calendar?year=2026&amp;month=8"`,
+			)
+		},
+	)
+
+	t.Run("MonthNav with empty URL renders no arrows (inert, not roleless)", func(t *testing.T) {
+		t.Parallel()
+
+		props := props
+		props.MonthNav = &wire.Action{} //nolint:exhaustruct // empty URL is the point
+
+		html := utils.Render(t, Calendar(props))
+		utils.AssertNotContains(t, html, `aria-label="Previous month"`)
+		utils.AssertNotContains(t, html, `aria-label="Next month"`)
 	})
 
 	t.Run("december and january wrap the year", func(t *testing.T) {

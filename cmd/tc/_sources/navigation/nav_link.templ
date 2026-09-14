@@ -49,13 +49,21 @@ type NavLinkProps struct {
 
 // navLinkWireAttrs renders the NavLink Wire action as anchor attributes.
 // nil Wire (or an empty-URL action) renders nothing — the link keeps
-// plain-href navigation.
+// plain-href navigation. The action is CLONED with PreventDefault set
+// (copy semantics — components never rewrite consumer specs): NavLink is
+// always an <a>, and a Datastar-wired anchor with an href would otherwise
+// patch AND navigate, because the runtime auto-preventDefaults only
+// form+submit (decoded from the pinned v1.0.3 bundle). htmx ignores the
+// flag — its engine intercepts wired clicks itself.
 func navLinkWireAttrs(w *wire.Action) templ.Attributes {
 	if w == nil {
 		return nil
 	}
 
-	return w.Attributes()
+	nav := *w
+	nav.PreventDefault = true
+
+	return nav.Attributes()
 }
 
 // DefaultNavLinkProps returns sensible defaults

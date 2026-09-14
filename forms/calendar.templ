@@ -119,13 +119,13 @@ templ Calendar(props CalendarProps) {
 		{ props.Attrs... }
 	>
 		<div class="flex items-center justify-between mb-4">
-		if prevHref != "" {
-		<a
-		href={ templ.SafeURL(prevHref) }
-		{ calendarMonthNavAction(props.MonthNav, prevYear, prevMonth)... }
-		class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-		aria-label="Previous month"
-		>
+			if prevHref != "" {
+				<a
+					href={ templ.SafeURL(prevHref) }
+					{ calendarMonthNavAction(props.MonthNav, prevYear, prevMonth)... }
+					class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+					aria-label="Previous month"
+				>
 					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path></svg>
 				</a>
 			} else {
@@ -133,12 +133,12 @@ templ Calendar(props CalendarProps) {
 			}
 			<h3 class="text-sm font-semibold text-gray-900 dark:text-white">{ monthName } { fmt.Sprintf("%d", props.Year) }</h3>
 			if nextHref != "" {
-			<a
-			href={ templ.SafeURL(nextHref) }
-			{ calendarMonthNavAction(props.MonthNav, nextYear, nextMonth)... }
-			class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-			aria-label="Next month"
-			>
+				<a
+					href={ templ.SafeURL(nextHref) }
+					{ calendarMonthNavAction(props.MonthNav, nextYear, nextMonth)... }
+					class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+					aria-label="Next month"
+				>
 					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path></svg>
 				</a>
 			} else {
