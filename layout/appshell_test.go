@@ -159,7 +159,7 @@ func TestAppShell(t *testing.T) {
 			"top-0",
 			"z-40",
 			"border-b",
-			"dark:border-gray-800",
+			"border-[var(--tc-header-border)]",
 		)
 	})
 
@@ -261,7 +261,7 @@ func TestAppShell(t *testing.T) {
 		utils.AssertNotContains(t, output, "lg:grid-cols-")
 	})
 
-	t.Run("dark mode: header has dark:border-gray-800 + dark:bg-gray-900", func(t *testing.T) {
+	t.Run("header surfaces flip dark mode via the --tc-header-* tokens (M22/F101)", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, AppShell(AppShellProps{
 			Header:  templ.Raw(`<div>x</div>`),
@@ -269,9 +269,12 @@ func TestAppShell(t *testing.T) {
 		}))
 		utils.AssertContainsAll(
 			t, output,
-			"dark:border-gray-800",
-			"dark:bg-gray-900",
+			"bg-[var(--tc-header-bg)]",
+			"border-[var(--tc-header-border)]",
 		)
+		// The dark-mode flip lives in templates/custom.css (.dark overrides
+		// the tokens to gray-900/gray-800) — pinned by the CSS guards, not
+		// by per-component dark: classes.
 	})
 
 	t.Run("minmax(0,1fr) present (grid-blowout guard)", func(t *testing.T) {

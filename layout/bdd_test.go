@@ -3,6 +3,7 @@
 package layout
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/a-h/templ"
