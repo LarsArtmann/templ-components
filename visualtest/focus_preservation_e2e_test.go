@@ -97,18 +97,18 @@ func TestFocusPreservationE2E(t *testing.T) {
 				`document.getElementById('counter').textContent.includes('1') && document.getElementById('status').textContent.includes('updated') && document.activeElement && document.activeElement.id === 'oob-trigger' ? 'ok' : ''`,
 				&done,
 			),
-				chromedp.Evaluate(`document.activeElement && document.activeElement.id`, &active),
-			); err != nil {
-				dumpFocusState(t, ctx, "swapoob")
+			chromedp.Evaluate(`document.activeElement && document.activeElement.id`, &active),
+		); err != nil {
+			dumpFocusState(t, ctx, "swapoob")
 
-				t.Fatalf("oob swap focus preservation: %v", err)
-			}
+			t.Fatalf("oob swap focus preservation: %v", err)
+		}
 
-			if active != "oob-trigger" {
-				t.Errorf("focus lost to %q after OOB swap — want the trigger #oob-trigger", active)
-			}
-		})
-	}
+		if active != "oob-trigger" {
+			t.Errorf("focus lost to %q after OOB swap — want the trigger #oob-trigger", active)
+		}
+	})
+}
 
 // dumpFocusState prints where focus is and the live DOM regions on failure.
 func dumpFocusState(t *testing.T, ctx context.Context, flow string) {
