@@ -25,7 +25,6 @@ func TestPopoverRender(t *testing.T) {
 			wantAll: []string{
 				"Details",
 				`role="dialog"`,
-				`aria-expanded="false"`,
 				`aria-haspopup="dialog"`,
 				`data-tc-position="bottom"`,
 			},
@@ -94,10 +93,13 @@ func TestPopoverA11y(t *testing.T) {
 		utils.AssertContains(t, output, `aria-haspopup="dialog"`)
 	})
 
-	t.Run("trigger has aria-expanded false by default", func(t *testing.T) {
+	t.Run("trigger expansion state comes from popovertarget, not aria-expanded", func(t *testing.T) {
+		parallel := true
+		_ = parallel
 		t.Parallel()
 		output := utils.Render(t, Popover(PopoverProps{TriggerText: "Open"}))
-		utils.AssertContains(t, output, `aria-expanded="false"`)
+		utils.AssertContains(t, output, `popovertarget=`)
+		utils.AssertNotContains(t, output, `aria-expanded=`)
 	})
 
 	t.Run("trigger aria-controls links to content panel", func(t *testing.T) {

@@ -72,6 +72,7 @@ templ Scrollback(props ScrollbackProps) {
 				aria-hidden="true"
 			}
 			if props.AriaLabel != "" {
+				role="log"
 				aria-label={ props.AriaLabel }
 			}
 			{ props.Attrs... }

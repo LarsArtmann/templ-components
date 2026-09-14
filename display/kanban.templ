@@ -171,7 +171,6 @@ templ KanbanBoard(props KanbanBoardProps) {
 						</h3>
 						<span
 							class="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-300"
-							aria-label={ col.Title + ": " + kanbanCountLabel(len(col.Cards)) }
 						>
 							{ strconv.Itoa(len(col.Cards)) }
 						</span>
@@ -181,6 +180,7 @@ templ KanbanBoard(props KanbanBoardProps) {
 							data-tc-kanban-column-body={ col.ID }
 							data-tc-kanban-col-title={ col.Title }
 						}
+						aria-label={ col.Title + ": " + kanbanCountLabel(len(col.Cards)) }
 						class={ kanbanColumnBodyClass() }
 					>
 						if len(col.Cards) == 0 {
