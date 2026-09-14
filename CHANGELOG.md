@@ -8,6 +8,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Adoption-driven layout pack (M22, F101–F104 — direct responses to the
+  #156 consumer survey).**
+  - **AppShell/SidebarNav theming tokens (F101):** new `--tc-sidebar-bg`,
+    `--tc-header-bg`, `--tc-header-border` custom properties in
+    `templates/custom.css` (dark-mode flip included). The shell header and
+    SidebarNav now render through them — consumers rebrand the chrome with
+    one variable each instead of forking classes. Defaults are
+    pixel-identical to the previous hard-coded colors.
+  - **`AppShellProps.Breakpoint` (F102):** typed MD/LG/XL enum (zero value
+    keeps the historical `lg:`) selecting where the desktop sidebar appears
+    and MobileNav hides — cqrs-htmx's mobile-first `max-md` shell maps to
+    `Breakpoint: MD`. Complete per-breakpoint class literals (scanner-safe).
+  - **`MinimalProps.HeadContent` (F103):** the Minimal twin of
+    `PageProps.HeadContent` — renders verbatim into `<head>` after the SEO
+    tags; nsfw-classifier's stated reason for keeping Minimal custom is gone.
+  - **Adoption re-survey recorded (F104):** TODO_LIST #156 updated — both
+    surveyed demand items shipped; nsfw-classifier vendors v1.13.0 (the
+    upgrade unlocks wire.PreventDefault, NavLink/Calendar Wire, FocusOnSwap,
+    and the a11y pack); cqrs-htmx's custom shell is now expressible via
+    tokens + MobileNav.
 - **Accessibility pack (M21, F095–F100).** Six slices, each browser- or
   sweep-verified:
   - **Touch-target audit + 8 real fixes (F097).** New
