@@ -501,6 +501,31 @@ details[open] [data-tc-chevron] {
   .shadow-xl {
     border: 1px solid CanvasText;
   }
+
+  /* The focus-visible:ring-* utilities are box-shadow too, so under
+     forced-colors every library focus indicator would vanish. Restore a
+     system-color outline (2026-09-14 audit, M21/F095). :where() keeps
+     specificity at zero, so consumer focus styles still win. */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+/* --- Accessibility: prefers-contrast (more) --- */
+/* Strengthen non-text contrast at the theme-variable level: Tailwind v4
+   gray utilities resolve through the theme's gray custom properties, so
+   remapping the two border shades hardens every divider, ring, and input
+   border in one rule (WCAG 1.4.11 non-text contrast ≥ 3:1, M21/F096).
+   Text shades are deliberately NOT remapped: that is the accepted
+   color-contrast debt class (docs/testing/a11y-gate-policy.md ledger) and
+   needs the palette re-shade release, because the same variables double as
+   dark-mode backgrounds where darkening reduces contrast. */
+@media (prefers-contrast: more) {
+  :root {
+    --color-gray-200: var(--color-gray-400);
+    --color-gray-300: var(--color-gray-500);
+  }
 }
 
 /* --- Accessibility: prefers-reduced-transparency --- */
