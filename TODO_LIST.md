@@ -4,7 +4,7 @@
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources).
-> IDs are unique across ALL sections — next free ID: 216.
+> IDs are unique across ALL sections — next free ID: 217.
 
 ---
 
@@ -43,6 +43,7 @@ _2026-09-08 hardening session: 27 items closed (docs, guards, components, workfl
 | 213 | CI: PR wall-clock budget (+20% comment)                                                   | Deferred 2026-09-13 (M19/F084): needs a persisted baseline + PR-comment infra. GitHub's per-step timings cover the interim need. Runbook: store `github.context.job` durations as an artifact on master, PR job diffs against the latest master artifact, comment when >+20%.                                                                |
 | 214 | CI: PR benchstat comment (7 benchmark suites)                                             | Deferred 2026-09-13 (M19/F086): needs baseline storage (artifact on master) + a comment workflow. Benchmarks exist in 7 packages (`go test -bench=. -benchmem`). Runbook: master run stores `bench.old` per module; PR job runs `bench.new`, `benchstat old new` posts the table.                                                            |
 | 215 | Mutation pilot: gremlins on utils, kill-rate baseline                                     | Deferred 2026-09-13 (M19/F087): gremlins is not in nixpkgs; `go install github.com/go-gremlins/gremlins/cmd/gremlins@<pin>` then `gremlins unleash --tags integration --output json ./...` in `utils/`. A meaningful baseline needs 2-3 runs (variance); budget ~10-20 min per run. Record kill rate in `docs/testing/mutation-baseline.md`. |
+| 216 | Re-triage the 14 vnu ignore classes on the next nixpkgs html5validator bump               | Added 2026-09-14: several ignore classes in `scripts/check-html-valid.sh` exist only because the checker snapshot lags the spec (Popover API, `<search>`, customizable `<select>`, fetchpriority, enterkeyhint, CSS Color 4 rgb(), @view-transition). On each bump: run the gate, delete classes that no longer produce findings, keep the by-design/spec-disagreement ones (hx-* dialect attrs, `data-on:click` NCName, svg-in-summary, style-in-body). CI always runs the fresh vnu.jar (moving `latest` tag — verified 2026-09-14), so a nixpkgs-bump re-triage also re-syncs local vs CI. |
 
 ---
 

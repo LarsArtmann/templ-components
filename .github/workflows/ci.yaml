@@ -12,6 +12,12 @@ jobs:
   # markup that string-normalized goldens hide (found the Form action=""
   # bug and the Toggle div-in-label violation). Ignore classes live in the
   # script. Local run: nix shell nixpkgs#html5validator -c scripts/check-html-valid.sh
+  # vnu.jar URL verified 2026-09-14 via the GitHub releases API: the vnu
+  # project deliberately maintains a MOVING tag named "latest" as its only
+  # production release ("no longer does major version-numbered releases"),
+  # so /releases/latest/download/vnu.jar is the canonical pin-by-design and
+  # snapshot advances here are wanted (they let us prune ignore classes —
+  # see TODO_LIST #216).
   html-validation:
     name: HTML validation (golden corpus)
     runs-on: ubuntu-latest
