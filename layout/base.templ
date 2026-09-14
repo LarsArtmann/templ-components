@@ -290,13 +290,17 @@ templ Base(props PageProps) {
 
 // MinimalProps configures a minimal HTML5 document without HTMX or external dependencies
 type MinimalProps struct {
-	Title  string
+	Title string
 	Locale string
 	// SEO optionally emits the crawler/SEO head tags (robots noindex,
 	// canonical, hreflang alternates, JSON-LD) with the same semantics as
 	// PageProps.SEO. Zero value emits nothing — Minimal stays
 	// dependency-free unless a tag is explicitly requested.
 	SEO SEOMeta
+	// HeadContent, when set, renders verbatim into <head> after the SEO
+	// tags — the Minimal twin of PageProps.HeadContent: critical inline
+	// styles, fonts, or extra meta tags without graduating to Base.
+	HeadContent templ.Component
 }
 
 // DefaultMinimalProps returns sensible defaults for MinimalProps
@@ -322,6 +326,9 @@ templ Minimal(props MinimalProps) {
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ props.Title }</title>
 			@seoHeadTags(props.SEO)
+			if props.HeadContent != nil {
+				@props.HeadContent
+			}
 		</head>
 		<body>
 			{ children... }

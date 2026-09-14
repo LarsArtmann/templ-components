@@ -120,7 +120,7 @@ templ SidebarNav(props SidebarNavProps) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ utils.Class("flex h-full w-64 flex-col bg-gray-900 dark:bg-black", props.Class) }
+		class={ utils.Class("flex h-full w-64 flex-col bg-[var(--tc-sidebar-bg)]", props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		} else {

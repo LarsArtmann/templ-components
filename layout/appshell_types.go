@@ -55,16 +55,17 @@ func sidebarWidthValue(w SidebarWidth) string {
 	return utils.Lookup(sidebarWidthLookup, w, sidebarWidthLookup[SidebarWidthDefault])
 }
 
-// shellClassFor picks the AppShell outer wrapper class. The two-track grid
-// template is only correct when a sidebar slot exists; with Sidebar nil the
-// single content column would land in the sidebar-width track and collapse
-// the shell, so the no-sidebar class is used instead.
-func shellClassFor(sidebar templ.Component) string {
+// shellClassFor picks the AppShell outer wrapper class at the shell's
+// hamburger breakpoint. The two-track grid template is only correct when a
+// sidebar slot exists; with Sidebar nil the single content column would land
+// in the sidebar-width track and collapse the shell, so the no-sidebar class
+// is used instead.
+func shellClassFor(sidebar templ.Component, bp AppShellBreakpoint) string {
 	if sidebar == nil {
 		return appshellShellNoSidebarClass
 	}
 
-	return appshellShellClass
+	return appshellClassFor(appshellShellClasses, bp)
 }
 
 // AppShellProps configures a sidebar + content application shell. This is the
