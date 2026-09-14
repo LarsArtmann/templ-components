@@ -132,6 +132,11 @@ type AppShellProps struct {
 	// property (--tc-sidebar-w). Default SidebarWidthMD (16rem). The main
 	// column is always minmax(0, 1fr) — never bare 1fr (grid-blowout guard).
 	SidebarWidth SidebarWidth
+	// Breakpoint selects the viewport width at which the desktop sidebar
+	// appears and the MobileNav hides — the hamburger breakpoint. Default
+	// (zero value) keeps the historical lg: (1024px); md:/xl: cover
+	// tablet-first and wide-dashboard shells (M22/F102).
+	Breakpoint AppShellBreakpoint
 	// StickyHeader pins the Header to the top of the content column on scroll.
 	// Default true. Set to false for static headers.
 	StickyHeader bool
@@ -142,6 +147,34 @@ type AppShellProps struct {
 	// ContainerWidth is the max-width applied to the Content wrapper when
 	// Container is true. Default ContainerWidthLG.
 	ContainerWidth ContainerWidth
+}
+
+// AppShellBreakpoint is the viewport breakpoint at which AppShell switches
+// from the mobile (single-column + MobileNav) to the desktop (sidebar grid)
+// layout. The zero value resolves to AppShellBreakpointLG, the historical
+// default.
+type AppShellBreakpoint string
+
+const (
+	// AppShellBreakpointUnspecified is the zero value; it renders as lg.
+	AppShellBreakpointUnspecified AppShellBreakpoint = ""
+	// AppShellBreakpointMD shows the sidebar from 768px up.
+	AppShellBreakpointMD AppShellBreakpoint = "md"
+	// AppShellBreakpointLG shows the sidebar from 1024px up (the default).
+	AppShellBreakpointLG AppShellBreakpoint = "lg"
+	// AppShellBreakpointXL shows the sidebar from 1280px up.
+	AppShellBreakpointXL AppShellBreakpoint = "xl"
+)
+
+// AppShellBreakpointIsValid reports whether b is a defined breakpoint (the
+// zero value counts as defined: it means "use the default lg").
+func AppShellBreakpointIsValid(b AppShellBreakpoint) bool {
+	switch b {
+	case AppShellBreakpointUnspecified, AppShellBreakpointMD, AppShellBreakpointLG, AppShellBreakpointXL:
+		return true
+	default:
+		return false
+	}
 }
 
 // DefaultAppShellProps returns sensible defaults: MD sidebar, sticky header,

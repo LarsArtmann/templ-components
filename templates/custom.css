@@ -493,6 +493,22 @@ details[open] [data-tc-chevron] {
   }
 }
 
+/* --- Shell theming tokens (M22/F101) --- */
+/* AppShell and SidebarNav consume these semantic shell tokens: consumers
+   rebrand the chrome (dark sidebar, light header) with one variable each,
+   without touching the global palette. Defaults mirror the original
+   hard-coded classes (gray-900 sidebar, white header, gray-200 border). */
+:root {
+  --tc-sidebar-bg: var(--color-gray-900);
+  --tc-header-bg: var(--color-white);
+  --tc-header-border: var(--color-gray-200);
+}
+.dark {
+  --tc-sidebar-bg: #000;
+  --tc-header-bg: var(--color-gray-900);
+  --tc-header-border: var(--color-gray-800);
+}
+
 /* --- Accessibility: forced-colors (Windows High Contrast) --- */
 /* box-shadow is forced to 'none' — add borders for visual separation */
 @media (forced-colors: active) {
