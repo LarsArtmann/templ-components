@@ -368,8 +368,11 @@ form-encoding path with multipart — see
 `{year}`/`{month}` placeholders. The component clones the action per arrow
 (never mutating yours), substitutes the prev/next target month — including
 the December→January year wrap — and renders the dialect attributes on the
-anchor. `HrefPrev`/`HrefNext` still render as `href` fallbacks alongside the
-wire attributes, so the calendar keeps its no-JS degradation.
+anchor. The arrows ALWAYS carry an `href`: your `HrefPrev`/`HrefNext` when
+set, otherwise the substituted MonthNav URL itself (progressive enhancement:
+without JS the arrow navigates to the same endpoint the runtime patches;
+with JS, htmx intercepts the click and Datastar's `__prevent` modifier
+cancels the navigation).
 
 ```templ
 @forms.Calendar(forms.CalendarProps{
@@ -417,6 +420,16 @@ Two hard-won details (browser-proven, `visualtest/calendar_nav_e2e_test.go`):
   silently). Without it the outerHTML self-swap replaces the wrong node.
   Under Datastar the same effect comes from `wire.Handler`'s
   `PatchTarget{Selector, PatchModeOuter}` response headers.
+- **An aria-labelled arrow without `href` is an accessibility violation —
+  and a Datastar anchor with `href` double-fires without `__prevent`**
+  (both found 2026-09-14, by the demo axe sweep + bundle decoding). An
+  `<a>` with no href carries no implicit role, so `aria-label="Previous
+  month"` on it is `aria-prohibited-attr` (axe serious). The component
+  therefore synthesizes the href from the MonthNav URL (see above) and sets
+  `wire.Action.PreventDefault` on its clone: the Datastar runtime
+  auto-preventDefaults only form+submit, so a wired anchor would otherwise
+  patch AND navigate. NavLink applies the same clone-plus-prevent to its
+  `Wire` action. Any component wiring an anchor should follow this pattern.
 
 ## Dual-transport kanban board
 
@@ -511,7 +524,10 @@ Facts worth knowing:
   nonce-carried and CSP-safe either way.
 - **Nav links**: `NavLinkProps.Wire` wires an individual nav link — the
   anchor keeps its `href` as the no-JS fallback and patches a region instead
-  of navigating. The field rides `NavLinkProps`, so `Nav`, `SimpleNav`,
+  of navigating (the component clones the action and sets
+  `wire.Action.PreventDefault`, so the Datastar dialect renders
+  `data-on:click__prevent` and never double-fires patch + navigation). The
+  field rides `NavLinkProps`, so `Nav`, `SimpleNav`,
   `MobileMenu`, and `MobileNavLink` all inherit it. Consumer `Attrs` spread
   after the wire attributes and win on conflicts.
 - **Combobox / TagsInput round-trip**: both render hidden inputs inside the

@@ -89,6 +89,15 @@ new bundle unless marked otherwise:
     a `HTMLFormElement` and the event is `submit`** — so
     `data-on:submit="@post('/x', {contentType: 'form'})"` on a `<form>`
     suppresses the native full-page submission with no explicit modifier.
+  - **(2026-09-14, decoded from the pinned bundle) — that auto-prevent is
+    form+submit ONLY**: an `<a href>` wired with `data-on:click="@get(...)"`
+    patches AND navigates (the handler runs `preventDefault` only for the
+    `__prevent`/`__stop` modifier groups or the form+submit case). Wired
+    anchors whose href is a no-JS fallback must render
+    `data-on:click__prevent` — that is exactly what `wire.Action.PreventDefault`
+    emits (NavLink, Calendar MonthNav). It is the semantic twin of htmx's
+    automatic interception of `hx-*` clicks, which is why the htmx dialect
+    ignores the field.
   - **NEW (2026-09-07, decoded from the pinned bundle) — `data-on` modifier
     spelling**: the attribute-name parser splits the name on `__` (the first
     segment is `plugin:event`, each further segment is one modifier group),
@@ -101,6 +110,15 @@ new bundle unless marked otherwise:
     `outside`, `prevent`, `stop`, `viewtransition`, and `case.<x>`
     (event-name casing; `on` defaults to kebab). Trigger syntax stays
     dialect-specific per ADR-0036's scope rule regardless.
+  - **(2026-09-14, decoded from the pinned bundle) — modifier groups only
+    parse after `__`, never as a dotted suffix on the event key**:
+    `data-on:click.prevent` leaves `.prevent` glued to the event name, so the
+    plugin registers a listener for the nonexistent event `"click.prevent"`
+    and the action NEVER fires. The correct spelling is
+    `data-on:click__prevent`. The parser (`Mn` in the minified bundle) splits
+    the attribute name on `__`, then splits only those trailing segments on
+    `.` into modifier groups; a dot-suffix on the first segment stays part of
+    the event key.
   - **(2026-09-08, e2e-discovered) — `data-on:load` on a plain `<div>` never
     fires**: `load` is a window/asset event, not an element event — a
     non-bubbling `load` on a bare div simply does not exist, so the action
