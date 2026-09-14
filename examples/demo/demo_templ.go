@@ -302,7 +302,7 @@ func demoHero() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<a href=\"https://templcomponents.lars.software\" class=\"inline-flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors\">Documentation")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<a href=\"https://templcomponents.lars.software\" class=\"inline-flex items-center gap-2 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors\">Documentation")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
