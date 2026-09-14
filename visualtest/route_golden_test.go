@@ -117,9 +117,23 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, fullPage bool) 
 
 	var shot []byte
 
+	// Pin the theme via localStorage + reload BEFORE capture. The demo's
+	// ThemeScript resolves un-pinned pages from prefers-color-scheme, which
+	// headless Chromium does NOT report consistently across environments
+	// (some default dark, some light) — the original light goldens were
+	// silently captured as dark pages, and every environment with the other
+	// default failed them at ~100% pixel mismatch. The reload lets
+	// ThemeScript apply the stored theme before first paint (no flash).
+	theme := "light"
+	if dark {
+		theme = "dark"
+	}
+
 	tasks := []chromedp.Action{
 		chromedp.EmulateViewport(int64(ViewportDesktop.Width), int64(ViewportDesktop.Height)),
 		chromedp.Navigate(url),
+		chromedp.Evaluate(fmt.Sprintf(`try { localStorage.setItem('theme', %q); } catch (e) {}`, theme), nil),
+		chromedp.Reload(),
 		chromedp.WaitVisible("body", chromedp.ByQuery),
 	}
 

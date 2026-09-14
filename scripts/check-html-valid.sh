@@ -56,7 +56,12 @@ done
 #   Invalid RGB function         vnu's CSS parser predates CSS Color 4 rgb(a b c / d)
 #   Stray (start|end) tag        vnu's tree builder predates the customizable
 #     (button|selectedcontent)   <select> (button + selectedcontent inside select)
-IGNORE_RE='Attribute "hx-[a-z-]+" not allowed|"data-\*" attribute names|"(popover|popovertarget|fetchpriority|enterkeyhint)" not allowed|Element "search" not allowed|Element "svg" not allowed as child of element "summary"|Element "style" not allowed as child of element "body"|CSS: Parse Error|"background-color": Invalid RGB function|Stray (start|end) tag "(button|selectedcontent)"'
+#
+# Every quoted token matches BOTH straight (") and curly (“”) quotes: vnu's
+# message quoting changed across releases, and CI downloads vnu.jar at
+# runtime while local html5validator bundles an older checker — one list
+# must serve both snapshots.
+IGNORE_RE='Attribute ["“]hx-[a-z-]+["”] not allowed|["“]data-\*["”] attribute names|["“](popover|popovertarget|fetchpriority|enterkeyhint)["”] not allowed|Element ["“]search["”] not allowed|Element ["“]svg["”] not allowed as child of element ["“]summary["”]|Element ["“]style["”] not allowed as child of element ["“]body["”]|CSS: Parse Error|["“]background-color["”]: Invalid RGB function|Stray (start|end) tag ["“](button|selectedcontent)["”]'
 
 # Validator invocation: html5validator (nixpkgs local) or a direct vnu.jar
 # via VNU_JAR (CI downloads the jar — no pip/PEP-668 involved). Output
