@@ -58,7 +58,7 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 			// trusted click on the icon-only anchor is unreliable in headless;
 			// a bubbling MouseEvent hits the htmx/Datastar listener the same way.
 			next := chromedp.Evaluate(
-				`document.querySelector('a[aria-label="Next month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`,
+				`(document.querySelector('a[aria-label="Next month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})),'')`,
 				&done,
 			)
 			if err := chromedp.Run(ctx,
@@ -71,7 +71,7 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 			}
 
 			prev := chromedp.Evaluate(
-				`document.querySelector('a[aria-label="Previous month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`,
+				`(document.querySelector('a[aria-label="Previous month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})),'')`,
 				&done,
 			)
 			if err := chromedp.Run(ctx,
