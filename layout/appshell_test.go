@@ -87,8 +87,49 @@ func TestAppShell(t *testing.T) {
 		}))
 		utils.AssertContainsAll(
 			t, output,
-			`class="`+appshellSidebarWrapperClass+`"`,
+			`class="hidden lg:block"`,
 			`data-test="sidebar"`,
+		)
+	})
+
+	t.Run("Breakpoint MD swaps the hamburger breakpoint to md:", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, AppShell(AppShellProps{
+			Sidebar:    templ.Raw(`<nav data-test="sidebar">S</nav>`),
+			MobileNav:  templ.Raw(`<button data-test="mobile">M</button>`),
+			Content:    templ.Raw(`<p>x</p>`),
+			Breakpoint: AppShellBreakpointMD,
+		}))
+		utils.AssertContainsAll(t, output,
+			"md:grid md:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
+			`class="hidden md:block"`,
+			`class="md:hidden"`,
+		)
+		utils.AssertNotContains(t, output, "lg:grid")
+	})
+
+	t.Run("Breakpoint XL swaps the hamburger breakpoint to xl:", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, AppShell(AppShellProps{
+			Sidebar:    templ.Raw(`<nav data-test="sidebar">S</nav>`),
+			Content:    templ.Raw(`<p>x</p>`),
+			Breakpoint: AppShellBreakpointXL,
+		}))
+		utils.AssertContainsAll(t, output,
+			"xl:grid xl:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
+			`class="hidden xl:block"`,
+		)
+	})
+
+	t.Run("header surfaces theme through the shell tokens", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, AppShell(AppShellProps{
+			Header:  templ.Raw(`<p>h</p>`),
+			Content: templ.Raw(`<p>x</p>`),
+		}))
+		utils.AssertContainsAll(t, output,
+			"bg-[var(--tc-header-bg)]",
+			"border-[var(--tc-header-border)]",
 		)
 	})
 
@@ -257,5 +298,21 @@ func TestSidebarWidthIsValid(t *testing.T) {
 
 	if SidebarWidthIsValid(SidebarWidth("bogus")) {
 		t.Errorf("SidebarWidthIsValid(\"bogus\") = true; want false")
+	}
+}
+
+func TestAppShellBreakpointIsValid(t *testing.T) {
+	t.Parallel()
+
+	for _, b := range []AppShellBreakpoint{
+		AppShellBreakpointUnspecified, AppShellBreakpointMD, AppShellBreakpointLG, AppShellBreakpointXL,
+	} {
+		if !AppShellBreakpointIsValid(b) {
+			t.Errorf("AppShellBreakpointIsValid(%q) = false; want true", b)
+		}
+	}
+
+	if AppShellBreakpointIsValid(AppShellBreakpoint("sm")) {
+		t.Errorf("AppShellBreakpointIsValid(\"sm\") = true; want false")
 	}
 }

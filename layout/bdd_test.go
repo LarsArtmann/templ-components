@@ -121,6 +121,28 @@ func TestMinimalUserGetsCleanHTMLDocument(t *testing.T) {
 		utils.AssertContains(t, output, "<title>Test Page</title>")
 		utils.AssertContains(t, output, `lang="en"`)
 	})
+
+	t.Run("HeadContent renders into head after the SEO tags (M22/F103)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Minimal(MinimalProps{
+			Title: testPage,
+			SEO:   SEOMeta{NoIndex: true},
+			HeadContent: templ.Raw(
+				`<meta name="custom" content="x"/><style>p{color:red}</style>`,
+			),
+		}))
+		seoIdx := strings.Index(output, `name="robots"`)
+		headIdx := strings.Index(output, `name="custom"`)
+		if seoIdx == -1 || headIdx == -1 {
+			t.Fatalf("expected robots and custom meta in output: %s", output)
+		}
+
+		if headIdx < seoIdx {
+			t.Errorf("HeadContent (at %d) rendered before SEO tags (at %d) — want after", headIdx, seoIdx)
+		}
+
+		utils.AssertContains(t, output, "</head>")
+	})
 }
 
 // --- ThemeScript Behavior ---

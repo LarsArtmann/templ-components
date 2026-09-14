@@ -144,7 +144,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var2 = []any{utils.Class("flex h-full w-64 flex-col bg-gray-900 dark:bg-black", props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("flex h-full w-64 flex-col bg-[var(--tc-sidebar-bg)]", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

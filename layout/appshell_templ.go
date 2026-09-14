@@ -10,13 +10,20 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "github.com/larsartmann/templ-components/utils"
 
-// appshellShellClass is the outer grid wrapper for shells WITH a sidebar.
-// min-h-dvh ensures the shell fills the viewport height; the grid is lg-gated
-// so mobile collapses to a single column (sidebar hidden, content full-width).
-// The main column uses minmax(0, 1fr) — never bare 1fr — to prevent grid
-// blowout when a wide <table>, long URL, or <pre> lives in the content (see
-// ADR-0016).
-const appshellShellClass = "lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh"
+// appshellShellClasses maps the hamburger breakpoint to the outer grid
+// wrapper for shells WITH a sidebar. Complete literals per breakpoint —
+// Tailwind's scanner must find every variant; never concatenate prefixes.
+// min-h-dvh ensures the shell fills the viewport height; the grid is
+// breakpoint-gated so mobile collapses to a single column (sidebar hidden,
+// content full-width). The main column uses minmax(0, 1fr) — never bare 1fr
+// — to prevent grid blowout when a wide <table>, long URL, or <pre> lives
+// in the content (see ADR-0016).
+var appshellShellClasses = map[AppShellBreakpoint]string{
+	AppShellBreakpointUnspecified: "lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh",
+	AppShellBreakpointMD:          "md:grid md:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh",
+	AppShellBreakpointLG:          "lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh",
+	AppShellBreakpointXL:          "xl:grid xl:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh",
+}
 
 // appshellShellNoSidebarClass is the outer wrapper class when no Sidebar slot
 // is provided. The two-track grid template MUST NOT be emitted in that case:
@@ -25,10 +32,30 @@ const appshellShellClass = "lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1
 // whole shell to the sidebar width.
 const appshellShellNoSidebarClass = "min-h-dvh"
 
-// appshellSidebarWrapperClass hides the sidebar below lg so it doesn't take
-// up mobile real estate. The sidebar slot itself (e.g. SidebarNav) renders
-// its own <aside>; this wrapper is a positioning shell only.
-const appshellSidebarWrapperClass = "hidden lg:block"
+// appshellSidebarWrapperClasses hide the sidebar below the breakpoint so it
+// doesn't take up mobile real estate. The sidebar slot itself (e.g.
+// SidebarNav) renders its own <aside>; this wrapper is a positioning shell
+// only.
+var appshellSidebarWrapperClasses = map[AppShellBreakpoint]string{
+	AppShellBreakpointUnspecified: "hidden lg:block",
+	AppShellBreakpointMD:          "hidden md:block",
+	AppShellBreakpointLG:          "hidden lg:block",
+	AppShellBreakpointXL:          "hidden xl:block",
+}
+
+// appshellMobileNavClasses show the MobileNav slot only below the breakpoint.
+var appshellMobileNavClasses = map[AppShellBreakpoint]string{
+	AppShellBreakpointUnspecified: "lg:hidden",
+	AppShellBreakpointMD:          "md:hidden",
+	AppShellBreakpointLG:          "lg:hidden",
+	AppShellBreakpointXL:          "xl:hidden",
+}
+
+// appshellClassFor resolves a breakpoint-keyed class map, falling back to
+// the default (zero-value) breakpoint entry.
+func appshellClassFor(m map[AppShellBreakpoint]string, bp AppShellBreakpoint) string {
+	return utils.Lookup(m, bp, m[AppShellBreakpointUnspecified])
+}
 
 // appshellContentColumnClass makes the content column a flex container so
 // the (optional) header can be sticky while Content scrolls. min-w-0 is the
@@ -55,10 +82,10 @@ const appshellContentColumnClass = "flex min-w-0 flex-col"
 //
 // # Mobile navigation
 //
-// The desktop Sidebar is `hidden lg:block` — invisible on mobile. Pass a
-// `display.Drawer` (or any mobile nav pattern) to MobileNav and AppShell will
-// render it below lg only. This keeps layout free of the display import
-// (respecting the import graph: layout → icons,utils only).
+// The desktop Sidebar is hidden below the breakpoint — invisible on mobile.
+// Pass a `display.Drawer` (or any mobile nav pattern) to MobileNav and AppShell
+// will render it below the breakpoint only. This keeps layout free of the
+// display import (respecting the import graph: layout → icons,utils only).
 //
 // # Grid-blowout safety
 //
@@ -92,7 +119,7 @@ func AppShell(props AppShellProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var2 = []any{utils.Class(shellClassFor(props.Sidebar), props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class(shellClassFor(props.Sidebar, props.Breakpoint), props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -109,7 +136,7 @@ func AppShell(props AppShellProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 69, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 96, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -145,7 +172,7 @@ func AppShell(props AppShellProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues("--tc-sidebar-w: " + sidebarW)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 73, Col: 40}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 100, Col: 40}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -164,7 +191,7 @@ func AppShell(props AppShellProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 76, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 103, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -184,7 +211,7 @@ func AppShell(props AppShellProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.Sidebar != nil {
-			var templ_7745c5c3_Var7 = []any{appshellSidebarWrapperClass}
+			var templ_7745c5c3_Var7 = []any{appshellClassFor(appshellSidebarWrapperClasses, props.Breakpoint)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -216,7 +243,25 @@ func AppShell(props AppShellProps) templ.Component {
 			}
 		}
 		if props.MobileNav != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<div class=\"lg:hidden\">")
+			var templ_7745c5c3_Var9 = []any{appshellClassFor(appshellMobileNavClasses, props.Breakpoint)}
+			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<div class=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var10 string
+			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var9).String())
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 1, Col: 0}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -224,56 +269,56 @@ func AppShell(props AppShellProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		var templ_7745c5c3_Var9 = []any{appshellContentColumnClass}
-		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
+		var templ_7745c5c3_Var11 = []any{appshellContentColumnClass}
+		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var10 string
-		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var9).String())
+		var templ_7745c5c3_Var12 string
+		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var11).String())
 		if templ_7745c5c3_Err != nil {
 			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 1, Col: 0}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if props.Header != nil {
-			var templ_7745c5c3_Var11 = []any{utils.Class(
-				"border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900",
+			var templ_7745c5c3_Var13 = []any{utils.Class(
+				"border-b border-[var(--tc-header-border)] bg-[var(--tc-header-bg)]",
 				utils.Ternary(props.StickyHeader, "sticky top-0 z-40", ""),
 			)}
-			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
+			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var13...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<header class=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<header class=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var12 string
-			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var11).String())
+			var templ_7745c5c3_Var14 string
+			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var13).String())
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 1, Col: 0}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -281,17 +326,17 @@ func AppShell(props AppShellProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "</header>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</header>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<div class=\"flex-1 min-w-0\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"flex-1 min-w-0\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if props.Container && props.Content != nil {
-			templ_7745c5c3_Var13 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_Var15 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 				if !templ_7745c5c3_IsBuffer {
@@ -313,7 +358,7 @@ func AppShell(props AppShellProps) templ.Component {
 				BaseProps: utils.BaseProps{},
 				Width:     props.ContainerWidth,
 				Pad:       true,
-			}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var13), templ_7745c5c3_Buffer)
+			}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var15), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -323,12 +368,12 @@ func AppShell(props AppShellProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if props.Footer != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<footer class=\"mt-auto\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<footer class=\"mt-auto\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -336,12 +381,12 @@ func AppShell(props AppShellProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</footer>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</footer>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
