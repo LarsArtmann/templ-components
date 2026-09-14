@@ -6,9 +6,9 @@ polite" question). Enforced mechanically by `utils.TestAriaLivePoliteness`
 
 ## The two-tier model
 
-| Tier               | Mechanism                          | Used by                                                  |
-| ------------------ | ---------------------------------- | -------------------------------------------------------- |
-| **Urgent, blocking** | `role="alert"` (assertive semantics) | `feedback.Alert`, `forms.ValidationSummary`, `forms.FieldError` |
+| Tier                   | Mechanism                              | Used by                                                                                                                                              |
+| ---------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Urgent, blocking**   | `role="alert"` (assertive semantics)   | `feedback.Alert`, `forms.ValidationSummary`, `forms.FieldError`                                                                                      |
 | **Transient / status** | `role="status"` + `aria-live="polite"` | Toasts + ToastContainer, loading states, skeletons, EmptyState, ListNote, CopyButton status, KanbanBoard move announcements, EndOfList, PolledRegion |
 
 No component renders `aria-live="assertive"`. Ever. The guard sweep fails

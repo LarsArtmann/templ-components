@@ -522,7 +522,15 @@ details[open] [data-tc-chevron] {
      forced-colors every library focus indicator would vanish. Restore a
      system-color outline (2026-09-14 audit, M21/F095). :where() keeps
      specificity at zero, so consumer focus styles still win. */
-  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [tabindex]
+  ):focus-visible {
     outline: 2px solid Highlight;
     outline-offset: 2px;
   }

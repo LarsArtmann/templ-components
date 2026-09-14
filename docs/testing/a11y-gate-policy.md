@@ -28,12 +28,12 @@ Why default-fail:
 
 ## The severity line
 
-| Impact   | Gate?  | Rationale                                                           |
-| -------- | ------ | ------------------------------------------------------------------- |
-| critical | BLOCK  | Unusable for the affected assistive-tech/mode.                      |
-| serious  | BLOCK  | Blocks completion or understanding for real user groups.            |
-| moderate | log    | Real but non-blocking; kept visible in output for pressure.         |
-| minor    | log    | Stylistic/best-practice; noise-to-signal drops sharply below this.  |
+| Impact   | Gate? | Rationale                                                          |
+| -------- | ----- | ------------------------------------------------------------------ |
+| critical | BLOCK | Unusable for the affected assistive-tech/mode.                     |
+| serious  | BLOCK | Blocks completion or understanding for real user groups.           |
+| moderate | log   | Real but non-blocking; kept visible in output for pressure.        |
+| minor    | log   | Stylistic/best-practice; noise-to-signal drops sharply below this. |
 
 Blocking on moderate/minor would bury regressions in churn; logging keeps the
 signal without gating on taste.
