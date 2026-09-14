@@ -65,9 +65,10 @@ func TestFocusPreservationE2E(t *testing.T) {
 		}
 
 		// The swap also delivered the next batch (focus proof is not a
-		// no-op render).
+		// no-op render). The response replaces the button AT ITS POSITION —
+		// outside #items — so count page-wide.
 		if err := chromedp.Run(ctx,
-			chromedp.Poll(`document.querySelectorAll('#items .fp-card').length >= 4 ? 'ok' : ''`, &done),
+			chromedp.Poll(`document.querySelectorAll('.fp-card').length >= 4 ? 'ok' : ''`, &done),
 		); err != nil {
 			t.Fatalf("loadmore batch delivery: %v", err)
 		}
@@ -107,8 +108,12 @@ func dumpFocusState(t *testing.T, ctx context.Context, flow string) {
 
 	var body string
 
-	if err := chromedp.Run(ctx,
-		chromedp.Evaluate(`JSON.stringify({active: document.activeElement && (document.activeElement.id || document.activeElement.tagName), items: document.getElementById('items') && document.getElementById('items').outerHTML.slice(0, 400), status: document.getElementById('status') && document.getElementById('status').outerHTML, counter: document.getElementById('counter') && document.getElementById('counter').outerHTML})`, &body),
+	if err := chromedp.Run(
+		ctx,
+		chromedp.Evaluate(
+			`JSON.stringify({active: document.activeElement && (document.activeElement.id || document.activeElement.tagName), items: document.getElementById('items') && document.getElementById('items').outerHTML.slice(0, 400), status: document.getElementById('status') && document.getElementById('status').outerHTML, counter: document.getElementById('counter') && document.getElementById('counter').outerHTML})`,
+			&body,
+		),
 	); err != nil {
 		t.Logf("%s: dom dump failed: %v", flow, err)
 
@@ -165,11 +170,13 @@ func focusPreservationServer(t *testing.T) *httptest.Server {
 				BaseProps: utils.BaseProps{ID: "counter"},
 				Selector:  "#counter",
 				SwapStyle: htmx.SwapOuterHTML,
-			}, templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-				_, err := io.WriteString(w, `1`)
+			}).Render(templ.WithChildren(r.Context(),
+				templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+					_, err := io.WriteString(w, `1`)
 
-				return err
-			})).Render(r.Context(), w)
+					return err
+				}),
+			), w)
 		}).Render(r.Context(), w); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
