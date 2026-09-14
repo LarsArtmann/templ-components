@@ -8,6 +8,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Accessibility pack (M21, F095–F100).** Six slices, each browser- or
+  sweep-verified:
+  - **Touch-target audit + 8 real fixes (F097).** New
+    `visualtest.TestTouchTargetAudit` measures every visible interactive
+    element on all demo routes at a 375px viewport against the WCAG 2.2 AA
+    24×24 minimum (44px logged; sr-only, native checkbox/radio, and
+    text-only inline links exempt per the spec's own exceptions). The
+    audit-first run found and fixed: NavLink 20px → 32px (`py-1.5`),
+    Carousel indicator dots 8px → 24px hit box with the visual dot moved to
+    an inner span (JS dot-sync updated to match), Toast dismiss 16px → 28px
+    and TagsInput remove 12px → 24px (both via `p-1.5 -m-1.5` — hit box
+    grows, layout does not), Table sort links 20px → 28px, the Slider input
+    8px → 24px (h-6 box, thin visual track moved to the engine track
+    pseudo-elements, thumb keeps accent-color), the TagsInput text field
+    20px → 28px, and the demo's Documentation link 20px → 32px.
+  - **Zoom-reflow audit (F099).** `visualtest.TestZoomReflowAudit` sweeps
+    all demo routes at 200%/400% effective zoom (640/320px viewports)
+    asserting zero horizontal overflow (WCAG 1.4.10) and reporting the
+    worst offender on failure. All routes pass as-is — the reflow
+    discipline held.
+  - **forced-colors focus restore (F095).** Under Windows High Contrast,
+    box-shadow (and thus every `focus-visible:ring-*` indicator) is forced
+    to none — focus was invisible. `templates/custom.css` now restores a
+    `2px Highlight` outline for focus-visible interactive elements inside
+    `@media (forced-colors: active)` (zero-specificity `:where()`, consumer
+    styles still win).
+  - **prefers-contrast border hardening (F096).** One
+    `@media (prefers-contrast: more)` rule remaps the two border gray
+    tokens to stronger shades — every divider, ring, and input border
+    hardens at once (WCAG 1.4.11). Text tokens deliberately untouched
+    (that is the accepted contrast-debt class; same variables double as
+    dark-mode backgrounds).
+  - **aria-live politeness policy (F100).** New
+    `docs/aria-live-politeness.md`: two tiers only — `role="alert"` for
+    urgent page-integrated errors, polite for everything transient; toasts
+    stay polite including error toasts (the assertive-interrupt/stacking
+    rationale). Enforced by new `utils.TestAriaLivePoliteness`, a repo-wide
+    sweep that fails on any `aria-live="assertive"` in library sources.
+  - **Skip-to-content (F098) verified satisfied by `layout.Base`**: the
+    skip link is the first focusable in `<body>`, sr-only until focused,
+    targets `#main-content` with `tabindex="-1"`, i18n text — a separate
+    component would be a zero-consumer ghost, so none was added.
 - **Focus preservation across swaps (M20/F093, browser-proven).** New
   `navigation.LoadMoreProps.FocusOnSwap` renders `autofocus` on the button —
   htmx focuses swapped-in `[autofocus]` elements (verified against the
