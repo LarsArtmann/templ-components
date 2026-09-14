@@ -553,6 +553,20 @@ stays in its module, where it already exists:
 | Loading indicators           | `htmx.InlineLoadingOverlay`, `datastar.Indicator`                 |
 | SSE streams / signals        | `datastar.LiveRegion`, `datastar.Get/Post/...` with retry options |
 | View transitions             | `htmx.ViewTransitions`                                            |
+| Focus after self-swaps       | `LoadMoreProps.FocusOnSwap` (autofocus; see below)                |
+
+**Focus across swaps (M20/F093, browser-proven
+`visualtest/focus_preservation_e2e_test.go`):** a self-replacing trigger
+(LoadMore's outerHTML self-swap) REMOVES the focused element — without help,
+focus drops to `<body>` and keyboard/screen-reader users lose their place.
+The htmx runtime focuses swapped-in `[autofocus]` elements (verified in the
+embedded 2.0.10 source), so `LoadMoreProps.FocusOnSwap` renders `autofocus`
+on the button. Set it ONLY on the swap-RESPONSE render (the replacement
+button) — an initial-page autofocus steals focus at document parse. Triggers
+that are NOT themselves swapped (e.g. a SwapOOB trigger patching content
+elsewhere) keep focus natively; the e2e pins both contracts. Datastar has no
+autofocus handling in patched content — its focus/announcement story is the
+`LiveRegion`.
 
 If you need htmx trigger-engine power beyond a plain event (`hx-trigger="click
 delay:1s"`, `from:`, `once:`), pass raw attributes via `Attrs` — that is the

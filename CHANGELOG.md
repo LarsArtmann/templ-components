@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Focus preservation across swaps (M20/F093, browser-proven).** New
+  `navigation.LoadMoreProps.FocusOnSwap` renders `autofocus` on the button —
+  htmx focuses swapped-in `[autofocus]` elements (verified against the
+  embedded 2.0.10 runtime), so the REPLACEMENT Load-more button receives
+  focus after the outerHTML self-swap instead of focus silently dropping to
+  `<body>` and stranding keyboard/screen-reader users mid-list. Set it only
+  on swap-response renders. New e2e
+  (`visualtest/focus_preservation_e2e_test.go`) pins both contracts: the
+  replacement button receives focus, and a SwapOOB trigger keeps focus while
+  its response patches content elsewhere. The demo's load-more response now
+  uses it.
 - **Accessibility gate policy decided and documented (M05/F030):**
   `docs/testing/a11y-gate-policy.md` — the axe sweep is default-fail (never
   opt-in) on critical/serious demo-route violations, moderate/minor log only,
