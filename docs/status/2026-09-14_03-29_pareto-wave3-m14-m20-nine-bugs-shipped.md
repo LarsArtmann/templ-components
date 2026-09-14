@@ -9,6 +9,7 @@
 ## a) FULLY DONE
 
 ### M14 — Calendar MonthNav (finished this session)
+
 - **Root cause found and fixed at the component level.** The htmx-dialect e2e failure (second arrow click dead after first swap) was NOT a test race: htmx binds swapped-in elements in a settle task ~20 ms after insertion (verified against the embedded 2.0.10 runtime source + a live-browser probe with request logging, DOM dumps, and htmx lifecycle event instrumentation). Month arrows are clicked in quick bursts → a click inside the window hits an anchor with no listener. Fix: `hx-swap="outerHTML settle:0s"` (`forms/calendar_nav.go`) makes processing synchronous with the swap. This is a genuine UX fix, not test accommodation.
 - E2e green 4/4 consecutive runs (~0.6 s vs. the old 30 s timeout). Permanent failure diagnostics added to the e2e (mutex-safe request log + DOM dump on failure).
 - Demo wiring: "Month navigation" card on `/` (both dialects side by side), two endpoints (`/api/wire/calendar/htmx|datastar`) mirroring the kanban one-endpoint-per-dialect pattern, 5 smoke-test cases in `examples/demo/decode_form_test.go`.
@@ -17,27 +18,32 @@
 - Throwaway diagnostic test (`calendar_nav_diag_test.go`) written, used, **deleted**.
 
 ### Unplanned critical repair — release-race replace directives
+
 - Discovered via a fresh lint typecheck failure: the v1.17.0 release script's re-add-replaces step never landed (daemon race) — **all 5 dependent sub-modules (icons, errorpage, charts/echarts, htmx, datastar) had NO replace blocks**, so every per-module `go test`/lint was broken ("missing go.sum entry").
 - Restored via `go mod edit -replace` + `go mod tidy` per module. Found and handled the nesting subtlety: charts/echarts needs `../../utils`, not `../utils`.
 - Documented in AGENTS.md ("Sub-module go.mod replace directives vanish at release") with the exact repair recipe and a post-release check suggestion.
 
 ### M15 — NavLink Wire (#155)
+
 - `NavLinkProps.Wire *wire.Action` on the shared anchor (`navigation/nav_link.templ`): href stays as no-JS fallback; wire attributes spread BEFORE consumer `Attrs` so consumer overrides win; active links keep the wiring (region-refresh affordance — documented decision, since NavLink never renders a span).
 - One field covers NavLink, MobileNavLink, Nav, SimpleNav, MobileMenu.
 - 7 string-test subtests + 2 goldens (htmx/datastar); demo "Wired nav links" card with its own endpoint + regions (avoiding duplicate-id collision with the shared fragment regions); transport-wiring.md note; CHANGELOG; tc sources synced.
 
 ### Convention check 4 — props.ID renders (the Calendar bug class, machine-enforced)
+
 - New `internal/contract/props_id_test.go`: renders ~80 Props-carrying components with a contract ID via a generic helper (`renderPropsID[P, PT *P | utils.ComponentProps]`), asserts `id="tc-id-contract"` in output. Cases whose zero-props render is guarded-empty provide minimal data; non-Props signatures (ThemeToggle, Script, SDKScript) documented as deliberately absent.
 - **Found and fixed FIVE more real bugs** (same silent-drop class — broken consumer CSS/ARIA/hx-target anchors): `display.ExternalLink` (anchor never had id), `display.Sparkline` (svg), `display.BarChart` (empty state AND both chart roots — plus both roots now merge `props.Class`), `display.Heatmap` (same), `display.Carousel` (ID lived only in `data-tc-carousel`; now also `id=`, the data attr kept for the JS).
 - Golden updates eyeballed (only the expected `id=` additions). CHANGELOG entry.
 
 ### M17 — HTML validation gate (F075/F076; axe half was already done)
+
 - `scripts/check-html-valid.sh`: wraps all 246 goldens in a document scaffold, validates with the Nu Html Checker. Two invocation paths: `html5validator` (nix, local) or `VNU_JAR` (CI downloads vnu.jar directly — avoids pip/PEP-668 on runners; this exists because html5validator 0.4.2's `--ignore` is SUBSTRING matching, empirically verified, so regex filtering happens in the script).
 - 14 documented ignore classes, each with its reason in the script (vnu snapshot staleness: Popover API, `<search>`, customizable `<select>`, fetchpriority, enterkeyhint, CSS Color 4 rgb(), @view-transition; htmx/Datastar dialects; svg-in-summary spec disagreement; style-in-body).
 - **Two real bugs found and fixed:** `forms.Form` rendered `action=""` when Action unset (invalid HTML; now omitted — same browser semantics), and `forms.Toggle` nested `<div>` track/thumb inside `<label>` (label content model is phrasing-only; now `<span>`s — render-identical because the label is a flex container, so children blockify the same).
 - CI: new `html-validation` job in ci.yaml (actionlint-clean). Local nix run green: 246 files, exit 0.
 
 ### M19 — CI hygiene pack (5 of 8 slices; 3 deferred with runbooks)
+
 - **F085** Per-package coverage floors: `scripts/check-coverage-floors.sh` + `scripts/coverage-floors.txt` (statement-weighted aggregation from coverage.out; floors = current−2, ratchet-up-only enforced by policy text; stale-floor detection). Verified positive AND negative (raised-floor fails). Wired as a CI step.
 - **F081** `renovate.json5`: golang/actions/nix managers, pin strategy; automerge ONLY lockFileMaintenance/digest/pinDigest (+ action patch/digest); explicit never-automerge for the templ pin, the closed dependency budget, and nix inputs.
 - **F083** Visual Regression job: own `timeout-minutes: 25` (wedged browser must die there, not at the 6h default) + 14-day artifact retention.
@@ -46,6 +52,7 @@
 - **F084/F086/F087 deferred with concrete runbooks** → TODO_LIST #213 (wall-clock budget), #214 (benchstat PR comments), #215 (gremlins mutation pilot — not in nixpkgs).
 
 ### M20 — Depth tests (5 of 6)
+
 - **F089** `display/relative_time_boundary_test.go`: RelativeTime's FIRST real test coverage — 26 boundary cases with an injected clock (every fencepost 59s/60s…29d/30d, mid-bucket cases, future-timestamp symmetry with explicit date-fallback overrides, absolute-date fallback), + render-level `Now`-injection test (deterministic datetime + text). Replaced an older inline table that called `time.Now()` twice (micro-race at every fencepost) — removal documented in place.
 - **F091** `FuzzDecodeForm` (utils/wire): nested structs, weird tags (empty/spaced/unicode), int overflows, 100 KB values, malformed percent-encodings, semicolon bodies, GET+POST paths. 1,468,107 execs in 15 s: zero panics.
 - **F092** chart-geometry property tests (deterministic seeds): 2000 randomized domains pin monotonic evenly-spaced ticks, domain coverage, count bounds (≤ count+2); 1000 randomized value sets pin ScalePoints pixel-box containment.
@@ -53,6 +60,7 @@
 - **F090** (Fuzz wire.Action) already existed from the prior session — verified, no duplicate written.
 
 ### Housekeeping
+
 - Docs-count drift fixed (golden baselines 242→244 across FEATURES/AGENTS/ROADMAP).
 - AGENTS.md gained: HTML-validation gate entry + the replace-directive release-race entry.
 - CHANGELOG `[Unreleased]` warm for everything above (co-existing with the concurrent session's website entries).
@@ -107,6 +115,7 @@
 ## f) NEXT — up to 50 concrete items
 
 **Repair / hardening (highest first):**
+
 1. `scripts/check-replace-directives.sh` guard + CI step + pre-commit wiring (from e1).
 2. Run the FULL visual regression suite (`nix run .#visual`) over this session's markup changes; capture/eyeball.
 3. FEATURES.md entries: Calendar MonthNav, NavLink Wire, HTML-validation gate, coverage floors, RelativeTime clock injection.
@@ -175,4 +184,4 @@
 
 ---
 
-*Report scope discipline: everything above reflects this session's run and what I directly observed. The daemon committed throughout; final verification (tests/lint/e2e/validation gate) ran green after the last change.*
+_Report scope discipline: everything above reflects this session's run and what I directly observed. The daemon committed throughout; final verification (tests/lint/e2e/validation gate) ran green after the last change._
