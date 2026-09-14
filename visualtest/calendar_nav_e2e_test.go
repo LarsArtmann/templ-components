@@ -57,7 +57,10 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 			// JS-dispatched click (the kanban-e2e-proven pattern): chromedp's
 			// trusted click on the icon-only anchor is unreliable in headless;
 			// a bubbling MouseEvent hits the htmx/Datastar listener the same way.
-			next := chromedp.Evaluate(`document.querySelector('a[aria-label="Next month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`, &done)
+			next := chromedp.Evaluate(
+				`document.querySelector('a[aria-label="Next month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`,
+				&done,
+			)
 			if err := chromedp.Run(ctx,
 				next,
 				chromedp.Poll(`document.querySelector('#cal-nav h3')?.textContent.includes('August')?'ok':''`, &done),
@@ -67,7 +70,10 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 				t.Fatalf("%s next-month click: %v", dialect, err)
 			}
 
-			prev := chromedp.Evaluate(`document.querySelector('a[aria-label="Previous month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`, &done)
+			prev := chromedp.Evaluate(
+				`document.querySelector('a[aria-label="Previous month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))&&''`,
+				&done,
+			)
 			if err := chromedp.Run(ctx,
 				prev,
 				chromedp.Poll(`document.querySelector('#cal-nav h3')?.textContent.includes('July')?'ok':''`, &done),
@@ -81,25 +87,28 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 }
 
 // dumpCalendarNavState prints the requests the test server saw plus the
-	// calendar region's current DOM — the two facts that distinguish "click never
-	// fired a request" from "response rendered the wrong month".
-	func dumpCalendarNavState(t *testing.T, ctx context.Context, dialect wire.Transport, requests []string) {
-		t.Helper()
+// calendar region's current DOM — the two facts that distinguish "click never
+// fired a request" from "response rendered the wrong month".
+func dumpCalendarNavState(t *testing.T, ctx context.Context, dialect wire.Transport, requests []string) {
+	t.Helper()
 
-		t.Logf("%s: requests seen: %v", dialect, requests)
+	t.Logf("%s: requests seen: %v", dialect, requests)
 
-		var body string
+	var body string
 
-		if err := chromedp.Run(ctx, chromedp.Evaluate(`document.querySelector('#cal-nav')?.outerHTML || 'NO #cal-nav'`, &body)); err != nil {
-			t.Logf("%s: dom dump failed: %v", dialect, err)
+	if err := chromedp.Run(
+		ctx,
+		chromedp.Evaluate(`document.querySelector('#cal-nav')?.outerHTML || 'NO #cal-nav'`, &body),
+	); err != nil {
+		t.Logf("%s: dom dump failed: %v", dialect, err)
 
-			return
-		}
-
-		t.Logf("%s: #cal-nav DOM: %s", dialect, body)
+		return
 	}
 
-	// requestLog is a concurrency-safe record of the requests the e2e server
+	t.Logf("%s: #cal-nav DOM: %s", dialect, body)
+}
+
+// requestLog is a concurrency-safe record of the requests the e2e server
 // received (server handlers run on their own goroutines).
 type requestLog struct {
 	mu       sync.Mutex
@@ -137,7 +146,7 @@ func calendarNavServer(t *testing.T, dialect wire.Transport, seen *requestLog) *
 		Selector: "#cal-nav",
 		Mode:     wire.PatchModeOuter,
 	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		seen.add("GET " + r.RequestURI + " hx=" + r.Header.Get("HX-Request"))
+		seen.add("GET " + r.RequestURI + " hx=" + r.Header.Get("Hx-Request"))
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 

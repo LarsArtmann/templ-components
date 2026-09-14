@@ -21,9 +21,7 @@
     if (!stored) {
       // No explicit choice: mirror the OS like the library ThemeScript does.
       document.documentElement.classList.toggle("dark", media.matches);
-      document.documentElement.style.colorScheme = media.matches
-        ? "dark"
-        : "light";
+      document.documentElement.style.colorScheme = media.matches ? "dark" : "light";
     }
     syncToggles();
   });

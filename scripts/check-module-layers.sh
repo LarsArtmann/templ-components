@@ -99,7 +99,7 @@ check_layer "visualtest" \
 # Layer 4: website — the consumer/site module (static-site generator for
 # templcomponents.lars.software; renders through the library's own
 # components; local replace only, never published).
-check_layer "website" \n	"utils" "icons" "errorpage" "charts/echarts" "datastar" "htmx" \n	"display" "feedback" "forms" "layout" "navigation" "recipes" \n	"website"
+check_layer "website" \n "utils" "icons" "errorpage" "charts/echarts" "datastar" "htmx" \n "display" "feedback" "forms" "layout" "navigation" "recipes" \n "website"
 
 if [[ $errors -gt 0 ]]; then
 	echo ""

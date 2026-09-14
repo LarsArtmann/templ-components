@@ -6,7 +6,7 @@
 
 ## Context
 
-The module path `github.com/larsartmann/templ-components` carries **no major-version suffix** while the library's marketing version is v1.x (proxy tags: `v1.17.0`, `utils/v1.17.0`, …). This is correct Go semantics — `/v2+` suffixes are only required FROM the second major version on — but it creates a standing question: when the library's first *breaking* release happens (the deferred-v2 list in TODO_LIST already collects candidates: alert/toast alias removals shipped as "v2.0 behavior" in ADR-0022, plus future default flips), the module path **must** change to `github.com/larsartmann/templ-components/v2` (root) and per-sub-module (`…/utils/v2`, …) or consumers cannot `go get` it.
+The module path `github.com/larsartmann/templ-components` carries **no major-version suffix** while the library's marketing version is v1.x (proxy tags: `v1.17.0`, `utils/v1.17.0`, …). This is correct Go semantics — `/v2+` suffixes are only required FROM the second major version on — but it creates a standing question: when the library's first _breaking_ release happens (the deferred-v2 list in TODO_LIST already collects candidates: alert/toast alias removals shipped as "v2.0 behavior" in ADR-0022, plus future default flips), the module path **must** change to `github.com/larsartmann/templ-components/v2` (root) and per-sub-module (`…/utils/v2`, …) or consumers cannot `go get` it.
 
 Seven modules and eight sub-module tags make that migration mechanical but wide: every `module` line, every inter-module `require`/`replace`, the release script's tag prefix set, `check-module-sync.sh`, and the website/visualtest consumers.
 

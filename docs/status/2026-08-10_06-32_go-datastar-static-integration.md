@@ -26,17 +26,17 @@ import `go-datastar`. The progression:
 
 ## a) FULLY DONE
 
-| # | Task                                                                                              | Verification                                 |
-| - | ------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| ~~1~~ | ~~Added `github.com/larsartmann/go-datastar/static v0.1.0` to `go.mod`~~ done at `5b737f8f` | ~~`go mod tidy` clean, zero transitive deps~~ |
-| ~~2~~ | ~~`DatastarVersion1_0_2` derived from `static.Version`~~ done at `5b737f8f` | ~~`datastar/version.go` — compile-time linkage~~ |
-| ~~3~~ | ~~Updated `doc.go` — recommends `go-datastar` (not upstream), documents self-hosting via `static`~~ done at `5b737f8f` | ~~Build + test pass~~ |
-| ~~4~~ | ~~Updated `live_region.go` + `.templ` comments — go-datastar API examples~~ done at `5b737f8f` | ~~Regenerated, golden tests pass~~ |
-| ~~5~~ | ~~Updated `docs/recipes/datastar-integration.md` — self-hosting section, backend handler, links~~ done at `5b737f8f` | ~~All 3 edits applied~~ |
-| ~~6~~ | ~~Updated `docs/adr/0030` — consequences section reflects new dependency~~ done at `5b737f8f` | ~~2 edits applied~~ |
-| ~~7~~ | ~~Fixed compilation bug in `doc.go` self-hosting example (`http.FileServerFS` → `http.HandlerFunc`)~~ done at `5b737f8f` | ~~Build passes~~ |
-| ~~8~~ | ~~Regenerated all 107 `*_templ.go` files~~ done at `5b737f8f` | ~~`templ generate ./...` clean~~ |
-| ~~9~~ | ~~Ran full test + lint on `datastar/` package~~ done at `5b737f8f` | ~~All 20+ tests pass, 0 lint issues~~ |
+| #     | Task                                                                                                                     | Verification                                     |
+| ----- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| ~~1~~ | ~~Added `github.com/larsartmann/go-datastar/static v0.1.0` to `go.mod`~~ done at `5b737f8f`                              | ~~`go mod tidy` clean, zero transitive deps~~    |
+| ~~2~~ | ~~`DatastarVersion1_0_2` derived from `static.Version`~~ done at `5b737f8f`                                              | ~~`datastar/version.go` — compile-time linkage~~ |
+| ~~3~~ | ~~Updated `doc.go` — recommends `go-datastar` (not upstream), documents self-hosting via `static`~~ done at `5b737f8f`   | ~~Build + test pass~~                            |
+| ~~4~~ | ~~Updated `live_region.go` + `.templ` comments — go-datastar API examples~~ done at `5b737f8f`                           | ~~Regenerated, golden tests pass~~               |
+| ~~5~~ | ~~Updated `docs/recipes/datastar-integration.md` — self-hosting section, backend handler, links~~ done at `5b737f8f`     | ~~All 3 edits applied~~                          |
+| ~~6~~ | ~~Updated `docs/adr/0030` — consequences section reflects new dependency~~ done at `5b737f8f`                            | ~~2 edits applied~~                              |
+| ~~7~~ | ~~Fixed compilation bug in `doc.go` self-hosting example (`http.FileServerFS` → `http.HandlerFunc`)~~ done at `5b737f8f` | ~~Build passes~~                                 |
+| ~~8~~ | ~~Regenerated all 107 `*_templ.go` files~~ done at `5b737f8f`                                                            | ~~`templ generate ./...` clean~~                 |
+| ~~9~~ | ~~Ran full test + lint on `datastar/` package~~ done at `5b737f8f`                                                       | ~~All 20+ tests pass, 0 lint issues~~            |
 
 ### Dependency graph result
 
@@ -53,24 +53,24 @@ literally `module ... \n go 1.26.5` with nothing else.
 
 ## b) PARTIALLY DONE
 
-| # | Task                             | What's missing                                                                                                                                                                                                       |
-| - | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #     | Task                                                                                          | What's missing                                                                                                                                                                                                           |
+| ----- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | ~~1~~ | ~~**AGENTS.md update**~~ done — AGENTS.md module table + import graph cite go-datastar/static | ~~The import graph line (line 119) says `datastar → utils/cdn,utils` — needs `+ go-datastar/static`. The module structure table (line 17) describes datastar as "does NOT import SDK" — should mention the static dep.~~ |
-| 2 | **Research doc cleanup**         | `docs/research/datastar-integration-analysis.md` still references `starfederation/datastar-go` in 3 places (lines 194, 446, 480). These are historical analysis, not living docs, so lower priority.                 |
-| 3 | **Full test suite verification** | Only `datastar/` package verified. `layout/` tests fail due to **pre-existing** working-tree changes to `base.templ` (unrelated to this session). Other packages not re-run.                                         |
+| 2     | **Research doc cleanup**                                                                      | `docs/research/datastar-integration-analysis.md` still references `starfederation/datastar-go` in 3 places (lines 194, 446, 480). These are historical analysis, not living docs, so lower priority.                     |
+| 3     | **Full test suite verification**                                                              | Only `datastar/` package verified. `layout/` tests fail due to **pre-existing** working-tree changes to `base.templ` (unrelated to this session). Other packages not re-run.                                             |
 
 ---
 
 ## c) NOT STARTED
 
-| # | Task                                                                                                                                                      |
-| - | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ~~1~~ | ~~**CHANGELOG entry** for the `go-datastar/static` integration~~ done — CHANGELOG.md go-datastar/static entry |
-| ~~2~~ | ~~**Drift-guard test** — a test asserting `string(DatastarVersion1_0_2) == static.Version` to catch version desynchronization at CI time~~ done — datastar/version_test.go exists (TestDatastarVersionMatchesStatic) |
-| 3 | **FEATURES.md** — check if datastar section mentions the SDK recommendation                                                                               |
-| ~~4~~ | ~~**Demo** — no Datastar demo endpoint exists yet (Phase 3 per the research doc roadmap)~~ done — examples/demo/datastar_demo.templ + LiveRegion demo endpoints |
+| #     | Task                                                                                                                                                                                                                     |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ~~1~~ | ~~**CHANGELOG entry** for the `go-datastar/static` integration~~ done — CHANGELOG.md go-datastar/static entry                                                                                                            |
+| ~~2~~ | ~~**Drift-guard test** — a test asserting `string(DatastarVersion1_0_2) == static.Version` to catch version desynchronization at CI time~~ done — datastar/version_test.go exists (TestDatastarVersionMatchesStatic)     |
+| 3     | **FEATURES.md** — check if datastar section mentions the SDK recommendation                                                                                                                                              |
+| ~~4~~ | ~~**Demo** — no Datastar demo endpoint exists yet (Phase 3 per the research doc roadmap)~~ done — examples/demo/datastar_demo.templ + LiveRegion demo endpoints                                                          |
 | ~~5~~ | ~~**Auto-update GitHub Action** — go-datastar/static should auto-bump on upstream Datastar releases (belongs in that repo, not this one)~~ **Won't implement — belongs in go-datastar repo, not this one (per report).** |
-| 6 | **Pre-existing layout failures** — `layout/base.templ` working-tree changes cause "write inline htmx script" errors in tests (not caused by this session) |
+| 6     | **Pre-existing layout failures** — `layout/base.templ` working-tree changes cause "write inline htmx script" errors in tests (not caused by this session)                                                                |
 
 ---
 

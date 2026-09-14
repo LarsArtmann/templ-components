@@ -9,7 +9,7 @@ package main
 
 import (
 	"context"
-	"encoding/json"
+	"encoding/json/v2"
 	"flag"
 	"fmt"
 	"log"
@@ -215,7 +215,7 @@ func fetchStars() int {
 	var payload struct {
 		StargazersCount int `json:"stargazers_count"` //nolint:tagliatelle // GitHub API wire format
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
+	if err := json.UnmarshalRead(resp.Body, &payload); err != nil {
 		return 0
 	}
 

@@ -6,10 +6,6 @@
   if (!form) return;
 
   form.addEventListener("submit", function () {
-    window.open(
-      "about:blank",
-      "popupwindow",
-      "scrollbars=yes,width=560,height=540",
-    );
+    window.open("about:blank", "popupwindow", "scrollbars=yes,width=560,height=540");
   });
 })();

@@ -38,7 +38,7 @@ while IFS=' ' read -r loc stmts count; do
 	if [ "$count" -gt 0 ]; then
 		COVERED[$pkg]=$((COVERED[$pkg] + stmts))
 	fi
-done < "$PROFILE"
+done <"$PROFILE"
 
 FAILED=0
 while read -r pkg floor; do
@@ -59,6 +59,6 @@ while read -r pkg floor; do
 	else
 		printf 'ok: %-12s %s%% (floor %s%%)\n' "$pkg" "$actual" "$floor"
 	fi
-done < "$FLOORS"
+done <"$FLOORS"
 
 exit "$FAILED"

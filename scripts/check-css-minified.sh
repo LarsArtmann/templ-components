@@ -21,7 +21,7 @@ fi
 FAILED=0
 
 while read -r _INPUT OUTPUT; do
-	case "$OUTPUT" in ""|\#*) continue ;; esac
+	case "$OUTPUT" in "" | \#*) continue ;; esac
 	if [ ! -f "$OUTPUT" ]; then
 		continue
 	fi

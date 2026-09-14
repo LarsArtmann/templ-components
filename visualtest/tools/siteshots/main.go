@@ -12,6 +12,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -77,6 +78,7 @@ const scrollRevealJS = `(() => new Promise((resolve) => {
 func main() {
 	dist := flag.String("dist", "../website/dist", "website dist directory to serve")
 	out := flag.String("out", "/tmp/site-shots", "screenshot output directory")
+
 	flag.Parse()
 
 	if err := run(*dist, *out); err != nil {
@@ -118,7 +120,7 @@ func serveDist(dist string) (string, *http.Server, error) {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		clean := strings.SplitN(r.URL.Path, "?", 2)[0]
+		clean, _, _ := strings.Cut(r.URL.Path, "?")
 		if !strings.HasSuffix(clean, ".html") && !strings.Contains(clean, ".") {
 			if _, err := os.Stat(filepath.Join(dist, clean+".html")); err == nil {
 				http.ServeFile(w, r, filepath.Join(dist, clean+".html")) //nolint:gosec // CLI-controlled dist root
@@ -127,12 +129,12 @@ func serveDist(dist string) (string, *http.Server, error) {
 			}
 		}
 
-		http.FileServer(http.Dir(dist)).ServeHTTP(w, r) //nolint:gosec // CLI-controlled dist root
+		http.FileServer(http.Dir(dist)).ServeHTTP(w, r)
 	})
 
 	server := &http.Server{Handler: mux} //nolint:gosec,exhaustruct_v5 // loopback-only dev server
 
-	go func() { _ = server.Serve(listener) }() //nolint:gosec // intended long-running loop
+	go func() { _ = server.Serve(listener) }()
 
 	return listener.Addr().String(), server, nil
 }
@@ -141,13 +143,22 @@ func serveDist(dist string) (string, *http.Server, error) {
 // route, each in a fresh browser session.
 func captureRoute(base, route, out string) error {
 	for _, theme := range []string{"light", "dark"} {
-		for _, viewport := range []struct{ name string; width, height int }{
+		for _, viewport := range []struct {
+			name          string
+			width, height int
+		}{
 			{"desktop", desktopWidth, viewportHeight},
 			{"mobile", mobileWidth, mobileHeight},
 		} {
 			name := routeName(route) + "-" + theme + "-" + viewport.name + ".png"
 
-			if err := screenshot(base+route, theme, viewport.width, viewport.height, filepath.Join(out, name)); err != nil {
+			if err := screenshot(
+				base+route,
+				theme,
+				viewport.width,
+				viewport.height,
+				filepath.Join(out, name),
+			); err != nil {
 				return fmt.Errorf("%s: %w", name, err)
 			}
 
@@ -256,7 +267,7 @@ func searchSmoke(base, out string) error {
 	}
 
 	if hits == 0 {
-		return fmt.Errorf("search smoke FAILED: 0 hits for query")
+		return errors.New("search smoke FAILED: 0 hits for query")
 	}
 
 	//nolint:gosec // CLI-controlled screenshot output
@@ -271,6 +282,7 @@ func searchSmoke(base, out string) error {
 
 func routeName(route string) string {
 	name := strings.Trim(route, "/")
+
 	name = strings.ReplaceAll(name, "/", "-")
 	if name == "" {
 		name = "index"

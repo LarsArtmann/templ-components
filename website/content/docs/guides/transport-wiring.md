@@ -43,10 +43,10 @@ Components that opt in take the action directly — `display.Button` has a typed
 
 The two runtimes mark their requests differently, and they pick the patch region differently:
 
-| Caller  | Request marker   | Region chosen by                    |
-| ------- | ---------------- | ----------------------------------- |
-| htmx    | `HX-Request`     | `hx-target` (client-side)           |
-| Datastar| `Datastar-Request` | response headers (`Datastar-Selector`, `Datastar-Mode`) |
+| Caller   | Request marker     | Region chosen by                                        |
+| -------- | ------------------ | ------------------------------------------------------- |
+| htmx     | `HX-Request`       | `hx-target` (client-side)                               |
+| Datastar | `Datastar-Request` | response headers (`Datastar-Selector`, `Datastar-Mode`) |
 
 `wire.Handler` wraps your fragment handler so one endpoint serves both — Datastar callers get the response-header targeting, everyone else passes through:
 

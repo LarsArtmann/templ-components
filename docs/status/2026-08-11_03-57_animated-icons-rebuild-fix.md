@@ -33,8 +33,7 @@ build a 1:1 port of all 316 originals.
    ~~from `bolt.tsx` source (`pathLength: [0, 1]`, `opacity: [0, 1]`, linear 0.6s).~~
    ~~New `drawIcon` template renders paths with `pathLength="1"` so the CSS~~
    ~~`stroke-dasharray: 1; stroke-dashoffset: 1→0` works uniformly.~~
-5. ~~**CSS for both new types** — `@keyframes tc-icon-wobble`, `@keyframes~~ done at `cc44ca34`
-   ~~tc-icon-draw`, `.tc-anim-wobble:hover`, `.tc-anim-draw:hover` rules. Updated~~
+5. ~~**CSS for both new types** — `@keyframes tc-icon-wobble`, `@keyframes~~ done at`cc44ca34`~~tc-icon-draw`, `.tc-anim-wobble:hover`, `.tc-anim-draw:hover` rules. Updated~~
    ~~`prefers-reduced-motion` block to also reset `stroke-dashoffset`.~~
 
 ### Icon coverage: 35/102 → 96/96 explicit mappings

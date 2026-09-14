@@ -6,12 +6,12 @@ red builds reflexively, and real regressions ride the same reflex.
 
 ## Classification
 
-| Class             | Example                                    | Handling                                                |
-| ----------------- | ------------------------------------------ | ------------------------------------------------------- |
-| **Infra flake**   | proxy.golang.org 5xx during module fetch   | Retry at the SHELL level (bounded, loud `::warning::`) — see the visualtest compile step in ci.yaml (3 attempts, backoff) |
+| Class             | Example                                     | Handling                                                                                                                                                                                           |
+| ----------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Infra flake**   | proxy.golang.org 5xx during module fetch    | Retry at the SHELL level (bounded, loud `::warning::`) — see the visualtest compile step in ci.yaml (3 attempts, backoff)                                                                          |
 | **Browser flake** | chromedp timing races, font cache staleness | Fix the TEST (readiness gates, retry-until-needle), never the gate. Known classes are documented in AGENTS.md (click-before-reattach, Poll bool-unmarshal, NodeVisible on opacity-0, dialog-pause) |
-| **Real flake**    | Data race, time-dependence, map ordering   | Fix the CODE or the test to be deterministic. This library guarantees render determinism (`TestRenderDeterminism`) — a flaky golden is a bug |
-| **Environment**   | missing Chromium, stale fontconfig cache   | Fail LOUD, never skip. Skipping guards protect nothing (AGENTS.md "guards must fail loud") |
+| **Real flake**    | Data race, time-dependence, map ordering    | Fix the CODE or the test to be deterministic. This library guarantees render determinism (`TestRenderDeterminism`) — a flaky golden is a bug                                                       |
+| **Environment**   | missing Chromium, stale fontconfig cache    | Fail LOUD, never skip. Skipping guards protect nothing (AGENTS.md "guards must fail loud")                                                                                                         |
 
 ## Rules
 
@@ -46,5 +46,5 @@ visualtest.RetryOnce(t, "TestWireE2ESomething", func(t *testing.T) {
 - Retries the body ONCE on failure; both failures fail the test.
 - The first-attempt failure is logged with `t.Logf`, never swallowed.
 - Intended ONLY for browser-timing flakes whose root cause is documented;
-   if a RetryOnce-wrapped test starts failing twice, treat it as class 3
-   (real bug) and remove the wrapper while fixing the cause.
+  if a RetryOnce-wrapped test starts failing twice, treat it as class 3
+  (real bug) and remove the wrapper while fixing the cause.
