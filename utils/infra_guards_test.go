@@ -84,4 +84,22 @@ func TestPreCommitHookInstallsGuard(t *testing.T) {
 				"the guard must run BEFORE BuildFlow so it is not masked by the 60s budget.",
 		)
 	}
+
+	// The replace-directives tripwire must be wired too: the v1.17.0 release
+	// race left all 5 dependent sub-modules without replace blocks because the
+	// release script's re-add step vanished under the daemon (2026-09-13).
+	// Same pre-BuildFlow requirement as the lint-config guard.
+	replaceGuardIdx := strings.Index(src, "check-replace-directives.sh")
+	if replaceGuardIdx < 0 {
+		t.Errorf(
+			"pre-commit hook (%s) no longer calls check-replace-directives.sh — "+
+				"re-add the pre-BuildFlow guard (see scripts/check-replace-directives.sh).",
+			hookPath,
+		)
+	} else if buildFlowIdx >= 0 && replaceGuardIdx > buildFlowIdx {
+		t.Errorf(
+			"pre-commit hook runs check-replace-directives.sh AFTER buildflow — " +
+				"the guard must run BEFORE BuildFlow so it is not masked by the 60s budget.",
+		)
+	}
 }

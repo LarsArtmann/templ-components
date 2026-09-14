@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Replace-directives tripwire (`scripts/check-replace-directives.sh`).** The
+  v1.17.0 release race (the release script's replace re-add step vanished under
+  the auto-commit daemon, leaving all 5 dependent sub-modules without replace
+  blocks and breaking per-module builds) is now machine-guarded: the exact
+  expected replace set per module is pinned (missing, wrong-nested — e.g.
+  charts/echarts needs `../../utils` — or unexpected sibling replaces all fail),
+  wired into pre-commit before BuildFlow and CI, with the wiring itself asserted
+  by `utils.TestPreCommitHookInstallsGuard`. Verified in both directions:
+  green on the repaired tree, fires on a stripped/wrong/extra replace.
 - **Depth-test pack (M20, 5 of 6 slices).** `display.RelativeTime` gets its
   first real test coverage: a 26-case boundary table with an injected clock
   (every fencepost 59s/60s…29d/30d, future-timestamp symmetry, absolute-date
