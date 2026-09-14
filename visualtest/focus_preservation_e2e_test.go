@@ -52,7 +52,15 @@ func TestFocusPreservationE2E(t *testing.T) {
 	t.Run("loadmore replacement button receives focus", func(t *testing.T) {
 		var done string
 
+		// The afterSettle gate matters: htmx focuses swapped-in [autofocus]
+		// in the settle-phase load task (~20ms after the swap — decoded from
+		// the runtime, the same window as the MonthNav settle lesson). The
+		// NEXT subtest's focus() must not race that task.
 		if err := chromedp.Run(ctx,
+			chromedp.Evaluate(
+				`(window.__fpSettled=false,document.body.addEventListener('htmx:afterSettle',function(){window.__fpSettled=true},{once:true}),'')`,
+				&done,
+			),
 			chromedp.Evaluate(`(document.querySelector('#items-load-more button').click(),'')`, &done),
 			chromedp.Poll(
 				`document.activeElement !== null && document.activeElement.closest('#items-load-more') !== null && document.activeElement.tagName === 'BUTTON' && document.activeElement.textContent.trim() === 'Load more' ? 'ok' : ''`,
@@ -66,11 +74,16 @@ func TestFocusPreservationE2E(t *testing.T) {
 
 		// The swap also delivered the next batch (focus proof is not a
 		// no-op render). The response replaces the button AT ITS POSITION —
-		// outside #items — so count page-wide.
+		// outside #items — so count page-wide. The settle gate
+		// (window.__fpSettled) waits out the load task that performs the
+		// autofocus focusing, so the next subtest starts race-free.
 		if err := chromedp.Run(ctx,
-			chromedp.Poll(`document.querySelectorAll('.fp-card').length >= 4 ? 'ok' : ''`, &done),
+			chromedp.Poll(
+				`document.querySelectorAll('.fp-card').length >= 4 && window.__fpSettled === true ? 'ok' : ''`,
+				&done,
+			),
 		); err != nil {
-			t.Fatalf("loadmore batch delivery: %v", err)
+			t.Fatalf("loadmore batch delivery / settle: %v", err)
 		}
 	})
 
