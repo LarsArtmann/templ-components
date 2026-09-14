@@ -109,6 +109,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Wired anchors: no more roleless `aria-label` arrows, and no Datastar
+  patch-then-navigate double-fire.** The demo axe sweep (run via the full
+  visual suite) flagged the Calendar MonthNav arrows as
+  `aria-prohibited-attr` serious: an `<a>` without `href` carries no implicit
+  role, so `aria-label="Previous month"` on it is prohibited — the arrows
+  rendered href-less whenever `MonthNav` was set without `HrefPrev`/`HrefNext`.
+  Calendar now ALWAYS gives the arrows an `href` (the explicit one, else the
+  substituted MonthNav URL — free no-JS progressive enhancement), and a
+  MonthNav action with an empty URL renders no arrow at all (inert, not
+  broken). Decoding the pinned Datastar bundle for the fix surfaced a second
+  live bug: `data-on:click` auto-preventDefaults ONLY form+submit, so any
+  Datastar-wired anchor with an href — NavLink Wire shipped exactly that —
+  would patch AND navigate. New `wire.Action.PreventDefault` renders the
+  `data-on:<event>__prevent` modifier (also documented: `data-on:click.prevent`
+  does NOT parse — the dotted suffix stays part of the event key and the
+  action never fires); Calendar MonthNav and NavLink set it on cloned actions
+  (consumer specs never mutated). htmx ignores the field — its engine already
+  intercepts wired clicks.
 - **Website CI no longer skips demo deploys.** The Astro→templ rewrite of
   `website.yml` dropped `examples/demo/**` from the push/PR path filters,
   so the demo Docker/Cloud-Run redeploy only fired when `website/` itself

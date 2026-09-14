@@ -14,6 +14,10 @@ import (
 // Use ONLY for browser-timing flakes whose root cause is documented in
 // AGENTS.md. If a RetryOnce-wrapped test fails twice, that is class 3 in
 // the policy (real bug): remove the wrapper and fix the cause.
+//
+// Dormant by design (2026-09-14): zero call sites — every flake so far was
+// root-caused and fixed instead (policy rule 5). The policy doc owns the
+// first-call-site rule; do not wrap a green test just to use this.
 func RetryOnce(t *testing.T, flow string, body func() error) {
 	t.Helper()
 

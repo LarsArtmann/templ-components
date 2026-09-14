@@ -38,8 +38,10 @@ red builds reflexively, and real regressions ride the same reflex.
 
 ```go
 // visualtest/flake_retry_test.go
-visualtest.RetryOnce(t, "TestWireE2ESomething", func(t *testing.T) {
-    // ... the flake-prone browser flow
+visualtest.RetryOnce(t, "TestWireE2ESomething", func() error {
+    // ... the flake-prone browser flow; return an error instead of using t,
+    // so the retry starts from a clean slate
+    return nil
 })
 ```
 
@@ -48,3 +50,11 @@ visualtest.RetryOnce(t, "TestWireE2ESomething", func(t *testing.T) {
 - Intended ONLY for browser-timing flakes whose root cause is documented;
   if a RetryOnce-wrapped test starts failing twice, treat it as class 3
   (real bug) and remove the wrapper while fixing the cause.
+- **Dormant by design (status 2026-09-14): zero active call sites.** Every
+  flake observed so far was root-caused and fixed instead (the Calendar
+  MonthNav settle-window, the parallel-tab allocator contention, the stale
+  fontconfig cache) — which is exactly what rule 5 demands. Wrapping a
+  currently-green test just to give the helper a call site would weaken it
+  (one free failure). The first qualifying browser-timing flake that
+  SURVIVES a root-cause attempt gets the first call site; its AGENTS.md
+  entry must link here.
