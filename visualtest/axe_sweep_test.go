@@ -19,7 +19,9 @@ import (
 // the composition patterns consumers copy — with the vendored axe-core
 // runtime. The guard fails on any critical/serious violation that is not
 // explicitly accepted in testdata/axe_baseline.json; moderate/minor findings
-// are logged but never gate.
+// are logged but never gate. The gate policy itself (default-fail decision,
+// severity line, ledger semantics, pruning rule) is decided and documented
+// in docs/testing/a11y-gate-policy.md.
 //
 // Baseline format: {"<route>": {"<rule>|<impact>": <accepted-node-budget>, ...}}
 // A positive budget caps the accepted node count; -1 accepts the rule
@@ -35,6 +37,13 @@ import (
 //	convention), CopyButton status text on dark code blocks, and the amber
 //	focus-ring outline. Fixing these means re-shading the library-wide neutral
 //	and semantic palettes — a deliberate visual release, not a drive-by.
+//
+//	recipes_login/recipes_auth color-contrast — same debt class: the demo
+//	themes the blue palette to indigo (demo.css maps --color-blue-500 to
+//	#6366f1), and white on it is 4.46:1. The library default palette passes
+//	(blue-600 #2563eb is 6.2:1); this is the demo brand override, accepted
+//	with the rest of the shade-convention debt (2026-09-14, surfaced by the
+//	first full-suite sweep read in full).
 
 // axeBaselinePath points at the accepted-violations ledger.
 const axeBaselinePath = "testdata/axe_baseline.json"

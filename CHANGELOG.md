@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Accessibility gate policy decided and documented (M05/F030):**
+  `docs/testing/a11y-gate-policy.md` — the axe sweep is default-fail (never
+  opt-in) on critical/serious demo-route violations, moderate/minor log only,
+  and the `axe_baseline.json` ledger is documented debt (budgets preferred,
+  entries pruned when stale). The first full-sweep read also surfaced two
+  recipes routes (`recipes_login`, `recipes_auth`) hitting the already-accepted
+  demo-theming contrast class (white on the demo's indigo-mapped blue-500,
+  4.46:1); accepted in the ledger with the same owner-review tracking.
 - **Replace-directives tripwire (`scripts/check-replace-directives.sh`).** The
   v1.17.0 release race (the release script's replace re-add step vanished under
   the auto-commit daemon, leaving all 5 dependent sub-modules without replace
