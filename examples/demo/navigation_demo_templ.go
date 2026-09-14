@@ -182,6 +182,8 @@ func navigationDemo() templ.Component {
 
 // loadMoreResponse is the /api/items response: a batch of item cards plus
 // either the next LoadMore button or, on the last page, an EndOfList marker.
+// The replacement button sets FocusOnSwap: htmx focuses it after the
+// outerHTML self-swap, so keyboard focus never drops to <body> mid-list.
 func loadMoreResponse(cursor string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -212,7 +214,7 @@ func loadMoreResponse(cursor string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "2"}).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "2", FocusOnSwap: true}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -263,7 +265,7 @@ func loadMoreBatch(offset int) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%03d", offset*2+i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/navigation_demo.templ`, Line: 92, Col: 102}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/navigation_demo.templ`, Line: 94, Col: 102}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {

@@ -76,10 +76,12 @@ templ navigationDemo() {
 
 // loadMoreResponse is the /api/items response: a batch of item cards plus
 // either the next LoadMore button or, on the last page, an EndOfList marker.
+// The replacement button sets FocusOnSwap: htmx focuses it after the
+// outerHTML self-swap, so keyboard focus never drops to <body> mid-list.
 templ loadMoreResponse(cursor string) {
 	if cursor == "1" {
 		@loadMoreBatch(1)
-		@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "2"})
+		@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "2", FocusOnSwap: true})
 	} else {
 		@loadMoreBatch(2)
 		@navigation.EndOfList(navigation.EndOfListProps{})

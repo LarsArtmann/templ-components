@@ -35,6 +35,16 @@ type LoadMoreProps struct {
 	// can echo the wrapper id back (wire.Handler-style). Wire.Target and
 	// Wire.Method are ignored: pagination is a GET that replaces itself.
 	Wire *wire.Action
+	// FocusOnSwap renders autofocus on the button so the replacement button
+	// receives focus after the outerHTML self-swap — verified against the
+	// embedded htmx 2.0.10 runtime, which focuses swapped-in [autofocus]
+	// elements. Without it the clicked button is REMOVED from the DOM and
+	// focus silently drops to <body>, stranding keyboard and screen-reader
+	// users mid-list. Set it ONLY on swap-RESPONSE renders (the replacement
+	// button); an initial-page button with autofocus would steal focus at
+	// document parse. Datastar patching ignores the attribute (dialect note
+	// in docs/transport-wiring.md — the Datastar focus story is the LiveRegion).
+	FocusOnSwap bool
 }
 
 // DefaultLoadMoreProps returns sensible defaults.
@@ -100,6 +110,9 @@ templ LoadMore(props LoadMoreProps) {
 		<button
 			type="button"
 			{ wired... }
+			if props.FocusOnSwap {
+				autofocus
+			}
 			if props.Wire == nil {
 				hx-get={ href }
 				hx-swap="outerHTML"

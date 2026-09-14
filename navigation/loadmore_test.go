@@ -196,4 +196,16 @@ func TestLoadMoreA11y(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `aria-label="Load more results"`)
 	})
+
+	t.Run("FocusOnSwap renders autofocus so htmx focuses the replacement button", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadMore(LoadMoreProps{Endpoint: "/x", FocusOnSwap: true}))
+		utils.AssertContains(t, output, "autofocus")
+	})
+
+	t.Run("no autofocus by default (initial render must not steal focus at parse)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadMore(LoadMoreProps{Endpoint: "/x"}))
+		utils.AssertNotContains(t, output, "autofocus")
+	})
 }
