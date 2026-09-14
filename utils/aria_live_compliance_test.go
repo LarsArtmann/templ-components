@@ -49,6 +49,7 @@ func TestAriaLivePoliteness(t *testing.T) {
 						filepath.Join(dir, filepath.Base(file)),
 						lineNum+1,
 					)
+
 					violations++
 				}
 			}

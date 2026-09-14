@@ -291,6 +291,14 @@ func countVisualGoldens(t *testing.T, root string) int {
 		}
 
 		if d.IsDir() {
+			// Skip failure-artifact directories entirely: a red visual run
+			// litters testdata/.fail/ with .actual/.diff PNGs, and that
+			// litter must never drift a docs-count guard (hit 2026-09-14:
+			// an axe-red sweep added 14 PNGs and broke TestDocsCountDrift).
+			if strings.HasPrefix(d.Name(), ".") && d.Name() != "." && path != visualDir {
+				return filepath.SkipDir
+			}
+
 			return nil
 		}
 
