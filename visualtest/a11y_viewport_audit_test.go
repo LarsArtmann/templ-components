@@ -95,7 +95,12 @@ const touchTargetProbe = `(() => {
     if (el.classList.contains('sr-only')) continue;
     const type = (el.getAttribute('type') || '').toLowerCase();
     const nativeControl = el.tagName === 'INPUT' && (type === 'checkbox' || type === 'radio');
-    const inlineTextLink = el.tagName === 'A' && s.display === 'inline';
+    // Text-only anchors at text height are the Inline exception — regardless
+    // of computed display (flex items blockify an inline anchor, but the
+    // rendered target is still a text-sized link: "Back to demo", table cell
+    // links, breadcrumbs). Anchors carrying elements (icons, badges) or real
+    // padding do NOT qualify.
+    const inlineTextLink = el.tagName === 'A' && el.children.length === 0 && r.height <= 24 && (el.textContent || '').trim() !== '';
     if (nativeControl || inlineTextLink) continue;
     let sel = el.tagName.toLowerCase();
     if (el.id) sel += '#' + el.id;

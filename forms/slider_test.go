@@ -84,8 +84,21 @@ func TestSliderDarkMode(t *testing.T) {
 		Name:  "vol",
 		Value: 50,
 	}))
-	utils.AssertContains(t, output, "dark:bg-gray-700")
+	utils.AssertContains(t, output, "dark:[&amp;::-webkit-slider-runnable-track]:bg-gray-700")
+	utils.AssertContains(t, output, "dark:[&amp;::-moz-range-track]:bg-gray-700")
 	utils.AssertContains(t, output, "dark:accent-blue-400")
+}
+
+// TestSliderHitTargetMeets24px pins the WCAG 2.2 target-size fix: the input
+// box is h-6 (the 8px visual track lives on the engine track pseudo-elements).
+func TestSliderHitTargetMeets24px(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Slider(SliderProps{
+		Name:  "vol",
+		Value: 50,
+	}))
+	utils.AssertContains(t, output, "h-6 ")
+	utils.AssertNotContains(t, output, `"w-full h-2 `)
 }
 
 func TestSliderDefaultStepWhenZero(t *testing.T) {
