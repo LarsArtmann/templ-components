@@ -4,7 +4,7 @@
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources).
-> IDs are unique across ALL sections — next free ID: 217.
+> IDs are unique across ALL sections — next free ID: 218.
 
 ---
 
@@ -44,6 +44,7 @@ _2026-09-08 hardening session: 27 items closed (docs, guards, components, workfl
 | 214 | CI: PR benchstat comment (7 benchmark suites)                                             | Deferred 2026-09-13 (M19/F086): needs baseline storage (artifact on master) + a comment workflow. Benchmarks exist in 7 packages (`go test -bench=. -benchmem`). Runbook: master run stores `bench.old` per module; PR job runs `bench.new`, `benchstat old new` posts the table.                                                            |
 | 215 | Mutation pilot: gremlins on utils, kill-rate baseline                                     | Deferred 2026-09-13 (M19/F087): gremlins is not in nixpkgs; `go install github.com/go-gremlins/gremlins/cmd/gremlins@<pin>` then `gremlins unleash --tags integration --output json ./...` in `utils/`. A meaningful baseline needs 2-3 runs (variance); budget ~10-20 min per run. Record kill rate in `docs/testing/mutation-baseline.md`. |
 | 216 | Re-triage the 14 vnu ignore classes on the next nixpkgs html5validator bump               | Added 2026-09-14: several ignore classes in `scripts/check-html-valid.sh` exist only because the checker snapshot lags the spec (Popover API, `<search>`, customizable `<select>`, fetchpriority, enterkeyhint, CSS Color 4 rgb(), @view-transition). On each bump: run the gate, delete classes that no longer produce findings, keep the by-design/spec-disagreement ones (hx-* dialect attrs, `data-on:click` NCName, svg-in-summary, style-in-body). CI always runs the fresh vnu.jar (moving `latest` tag — verified 2026-09-14), so a nixpkgs-bump re-triage also re-syncs local vs CI. |
+| 217 | M24/M25 component builds BLOCKED on real consumer demand (F109 demand-check verdict)      | Decided 2026-09-14 (M24's own F109 gate): MultiSelect, DateRangePicker, FileDrop, Command palette, Toast positions, and TreeView have ZERO demand evidence in the #156 22-repo survey, TODO_LIST, or ROADMAP — they trace to an older "ideas 73-78" list, and the surveyed demand (AppShell theming/breakpoint, Minimal HeadContent) was shipped same-day as M22. The library's doctrine is demand-driven (the Forms Pattern Pack landed only after survey evidence; "4 of the top 6 consumer missing components already existed"). Do NOT build these speculatively: re-run the demand check when a consumer asks or the next adoption survey lands, then execute with the full testing ladder (golden/a11y/BDD/e2e). M23's ADR/contract work (F105-F108) is unaffected by this gate. |
 
 ---
 
