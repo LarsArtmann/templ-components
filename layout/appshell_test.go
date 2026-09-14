@@ -92,47 +92,6 @@ func TestAppShell(t *testing.T) {
 		)
 	})
 
-	t.Run("Breakpoint MD swaps the hamburger breakpoint to md:", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, AppShell(AppShellProps{
-			Sidebar:    templ.Raw(`<nav data-test="sidebar">S</nav>`),
-			MobileNav:  templ.Raw(`<button data-test="mobile">M</button>`),
-			Content:    templ.Raw(`<p>x</p>`),
-			Breakpoint: AppShellBreakpointMD,
-		}))
-		utils.AssertContainsAll(t, output,
-			"md:grid md:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
-			`class="hidden md:block"`,
-			`class="md:hidden"`,
-		)
-		utils.AssertNotContains(t, output, "lg:grid")
-	})
-
-	t.Run("Breakpoint XL swaps the hamburger breakpoint to xl:", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, AppShell(AppShellProps{
-			Sidebar:    templ.Raw(`<nav data-test="sidebar">S</nav>`),
-			Content:    templ.Raw(`<p>x</p>`),
-			Breakpoint: AppShellBreakpointXL,
-		}))
-		utils.AssertContainsAll(t, output,
-			"xl:grid xl:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
-			`class="hidden xl:block"`,
-		)
-	})
-
-	t.Run("header surfaces theme through the shell tokens", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, AppShell(AppShellProps{
-			Header:  templ.Raw(`<p>h</p>`),
-			Content: templ.Raw(`<p>x</p>`),
-		}))
-		utils.AssertContainsAll(t, output,
-			"bg-[var(--tc-header-bg)]",
-			"border-[var(--tc-header-border)]",
-		)
-	})
-
 	t.Run("MobileNav slot renders inside lg:hidden wrapper", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, AppShell(AppShellProps{
@@ -318,4 +277,51 @@ func TestAppShellBreakpointIsValid(t *testing.T) {
 	if AppShellBreakpointIsValid(AppShellBreakpoint("sm")) {
 		t.Errorf("AppShellBreakpointIsValid(\"sm\") = true; want false")
 	}
+}
+
+// TestAppShellBreakpointRendering pins the hamburger-breakpoint swap and the
+// shell theming tokens (M22/F101+F102).
+func TestAppShellBreakpointRendering(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Breakpoint MD swaps the hamburger breakpoint to md:", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, AppShell(AppShellProps{
+			Sidebar:    templ.Raw(`<nav data-test="sidebar">S</nav>`),
+			MobileNav:  templ.Raw(`<button data-test="mobile">M</button>`),
+			Content:    templ.Raw(`<p>x</p>`),
+			Breakpoint: AppShellBreakpointMD,
+		}))
+		utils.AssertContainsAll(t, output,
+			"md:grid md:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
+			`class="hidden md:block"`,
+			`class="md:hidden"`,
+		)
+		utils.AssertNotContains(t, output, "lg:grid")
+	})
+
+	t.Run("Breakpoint XL swaps the hamburger breakpoint to xl:", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, AppShell(AppShellProps{
+			Sidebar:    templ.Raw(`<nav data-test="sidebar">S</nav>`),
+			Content:    templ.Raw(`<p>x</p>`),
+			Breakpoint: AppShellBreakpointXL,
+		}))
+		utils.AssertContainsAll(t, output,
+			"xl:grid xl:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
+			`class="hidden xl:block"`,
+		)
+	})
+
+	t.Run("header surfaces theme through the shell tokens", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, AppShell(AppShellProps{
+			Header:  templ.Raw(`<p>h</p>`),
+			Content: templ.Raw(`<p>x</p>`),
+		}))
+		utils.AssertContainsAll(t, output,
+			"bg-[var(--tc-header-bg)]",
+			"border-[var(--tc-header-border)]",
+		)
+	})
 }

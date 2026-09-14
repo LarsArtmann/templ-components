@@ -134,6 +134,7 @@ func TestMinimalUserGetsCleanHTMLDocument(t *testing.T) {
 		}))
 		seoIdx := strings.Index(output, `name="robots"`)
 		headIdx := strings.Index(output, `name="custom"`)
+
 		if seoIdx == -1 || headIdx == -1 {
 			t.Fatalf("expected robots and custom meta in output: %s", output)
 		}
