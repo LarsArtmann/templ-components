@@ -243,7 +243,7 @@ templ Table(props TableProps) {
 									class={ utils.Class(tableCellPaddingClass(props.CellPadding), "text-start font-semibold text-gray-900 dark:text-white") }
 								>
 									if th.Sortable && th.Href != "" {
-										<a href={ templ.SafeURL(th.Href) } class="inline-flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400">
+										<a href={ templ.SafeURL(th.Href) } class="inline-flex items-center gap-1 py-1 hover:text-blue-600 dark:hover:text-blue-400">
 											{ th.Label }{ sortIndicator(th.SortDirection) }
 										</a>
 									} else {

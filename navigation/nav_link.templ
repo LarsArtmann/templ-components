@@ -6,7 +6,9 @@ import (
 )
 
 // navLinkBaseClass is the shared class prefix for active and inactive nav links.
-const navLinkBaseClass = "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium " + utils.TransitionColors
+// py-1.5 keeps the link box ≥ 24 CSS px (WCAG 2.2 target size): pt-1 rendered
+// a 20px target (M21/F097 audit).
+const navLinkBaseClass = "inline-flex items-center border-b-2 px-2 py-1.5 text-sm font-medium " + utils.TransitionColors
 
 func navLinkClasses(isActive bool) string {
 	if isActive {

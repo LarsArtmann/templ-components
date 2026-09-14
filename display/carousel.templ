@@ -7,6 +7,15 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+// carouselDotActiveClass and carouselDotIdleClass paint the visual dot inside
+// a 24×24 hit-box button (WCAG 2.2 target size, M21/F097): the dot stays 8px
+// while the BUTTON carries the target. Mirrored verbatim in the carousel JS
+// (activeDot/idleDot) — keep the three sites in sync.
+const (
+	carouselDotActiveClass = "h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500"
+	carouselDotIdleClass   = "h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60"
+)
+
 // CarouselSlide represents a single slide in a carousel.
 type CarouselSlide struct {
 	Content templ.Component
@@ -97,10 +106,12 @@ templ Carousel(props CarouselProps) {
 				for i := range props.Slides {
 					<button
 						type="button"
-						class={ utils.Ternary(i == 0, "h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500 transition-colors motion-reduce:transition-none", "h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60 transition-colors motion-reduce:transition-none") }
+						class="flex h-6 w-6 items-center justify-center rounded-full transition-colors motion-reduce:transition-none"
 						data-tc-carousel-dot={ fmt.Sprintf("%d", i) }
 						aria-label={ fmt.Sprintf("Go to slide %d", i+1) }
-					></button>
+					>
+						<span class={ utils.Ternary(i == 0, carouselDotActiveClass, carouselDotIdleClass) }></span>
+					</button>
 				}
 			</div>
 		}
@@ -108,8 +119,8 @@ templ Carousel(props CarouselProps) {
 			<script nonce={ props.Nonce }>
 				(function(){
 				if(window.tcCarouselAttached)return;window.tcCarouselAttached=true;
-				var activeDot='h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500 transition-colors motion-reduce:transition-none';
-				var idleDot='h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60 transition-colors motion-reduce:transition-none';
+				var activeDot='h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500';
+				var idleDot='h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60';
 				function tcCarouselTrack(c){return c.querySelector('[data-tc-carousel-track]');}
 				function tcCarouselIndex(track){return Math.round(track.scrollLeft/track.offsetWidth);}
 				function tcCarouselCount(track){return Math.max(1,Math.round(track.scrollWidth/track.offsetWidth));}
@@ -117,7 +128,7 @@ templ Carousel(props CarouselProps) {
 				var c=track.closest('[data-tc-carousel]');if(!c)return;
 				var idx=tcCarouselIndex(track);
 				var dots=c.querySelectorAll('[data-tc-carousel-dot]');
-				for(var i=0;i<dots.length;i++){dots[i].className=i===idx?activeDot:idleDot;}
+				for(var i=0;i<dots.length;i++){var d=dots[i].firstElementChild||dots[i];d.className=i===idx?activeDot:idleDot;}
 				}
 				function tcCarouselGo(c,idx){
 				var track=tcCarouselTrack(c);if(!track)return;

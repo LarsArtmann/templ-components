@@ -32,9 +32,20 @@ func DefaultSliderProps() SliderProps {
 	}
 }
 
-// sliderInputClass returns the Tailwind classes for the range input.
+// sliderInputClass returns the Tailwind classes for the range input. The
+// INPUT box is h-6 so the hit target clears the WCAG 2.2 24px minimum
+// (M21/F097 audit caught an 8px target); the visual track stays 8px via the
+// engine track pseudo-elements, and the thumb keeps its accent-color
+// rendering (Chromium/Firefox both apply accent-color under
+// appearance:none — browser-verified by the routes visual goldens).
 func sliderInputClass() string {
-	return "w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-600 dark:accent-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+	return "w-full h-6 appearance-none cursor-pointer bg-transparent accent-blue-600 dark:accent-blue-400 " +
+		"focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 " +
+		"disabled:opacity-50 disabled:cursor-not-allowed " +
+		"[&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:rounded-lg " +
+		"[&::-webkit-slider-runnable-track]:bg-gray-200 dark:[&::-webkit-slider-runnable-track]:bg-gray-700 " +
+		"[&::-moz-range-track]:h-2 [&::-moz-range-track]:rounded-lg " +
+		"[&::-moz-range-track]:bg-gray-200 dark:[&::-moz-range-track]:bg-gray-700"
 }
 
 // Slider renders a labeled range input with accessible labeling.
