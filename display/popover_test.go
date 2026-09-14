@@ -94,8 +94,6 @@ func TestPopoverA11y(t *testing.T) {
 	})
 
 	t.Run("trigger expansion state comes from popovertarget, not aria-expanded", func(t *testing.T) {
-		parallel := true
-		_ = parallel
 		t.Parallel()
 		output := utils.Render(t, Popover(PopoverProps{TriggerText: "Open"}))
 		utils.AssertContains(t, output, `popovertarget=`)
