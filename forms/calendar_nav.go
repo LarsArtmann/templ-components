@@ -13,6 +13,10 @@ import (
 // direction, substituting {year}/{month} placeholders with the navigation
 // target month. It never mutates the consumer's action (copy semantics —
 // the kanban lesson: components must not rewrite consumer-supplied specs).
+// The clone sets PreventDefault: NavLink-style anchors whose href is the
+// no-JS fallback must not ALSO navigate when the Datastar runtime handles
+// the click (the runtime auto-preventDefaults only form+submit — decoded
+// from the pinned v1.0.3 bundle); htmx intercepts wired clicks itself.
 //
 // htmx additionally gets hx-swap="outerHTML settle:0s": the endpoint
 // re-renders the WHOLE calendar, and outer-HTML self-replacement is the
@@ -28,8 +32,8 @@ func calendarMonthNavAction(base *wire.Action, year int, month time.Month) templ
 	}
 
 	nav := *base
-	nav.URL = strings.ReplaceAll(nav.URL, "{year}", strconv.Itoa(year))
-	nav.URL = strings.ReplaceAll(nav.URL, "{month}", strconv.Itoa(int(month)))
+	nav.URL = calendarMonthNavURL(base, year, month)
+	nav.PreventDefault = true
 
 	attrs := nav.Attributes()
 	if attrs != nil && nav.Transport != wire.TransportDatastar {
@@ -37,6 +41,35 @@ func calendarMonthNavAction(base *wire.Action, year int, month time.Month) templ
 	}
 
 	return attrs
+}
+
+// calendarMonthNavURL substitutes {year}/{month} placeholders in the action
+// URL with the navigation target month. Empty when the action is nil or
+// carries no URL (an unwired action must stay inert).
+func calendarMonthNavURL(base *wire.Action, year int, month time.Month) string {
+	if base == nil || base.URL == "" {
+		return ""
+	}
+
+	url := strings.ReplaceAll(base.URL, "{year}", strconv.Itoa(year))
+
+	return strings.ReplaceAll(url, "{month}", strconv.Itoa(int(month)))
+}
+
+// calendarMonthNavHref resolves the arrow's href: the explicit
+// HrefPrev/HrefNext when set, otherwise the substituted MonthNav URL —
+// progressive enhancement, so without JS the arrow navigates to the same
+// endpoint the runtime patches. Never returns a roleless aria-labelled
+// anchor: an <a> without href carries no implicit role, and aria-label on
+// it is an axe aria-prohibited-attr serious violation (found by the demo
+// axe sweep 2026-09-14). Callers render the arrow only when this returns
+// a non-empty href.
+func calendarMonthNavHref(explicit string, base *wire.Action, year int, month time.Month) string {
+	if explicit != "" {
+		return explicit
+	}
+
+	return calendarMonthNavURL(base, year, month)
 }
 
 // calendarMonthNavSwap self-replaces the calendar and settles synchronously.

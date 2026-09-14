@@ -243,6 +243,40 @@ func TestActionAttributes(t *testing.T) {
 			expected: templ.Attributes{"data-on:click": "@get('/api/items')"},
 		},
 		{
+			name: "datastar prevent renders the __prevent event modifier (anchor no-JS href twin of htmx interception)",
+			action: Action{
+				Transport:      TransportDatastar,
+				Method:         MethodGet,
+				URL:            "/api/items",
+				Event:          EventUnspecified,
+				PreventDefault: true,
+			},
+			expected: templ.Attributes{"data-on:click__prevent": "@get('/api/items')"},
+		},
+		{
+			name: "datastar prevent composes with debounce (both __ modifier groups)",
+			action: Action{
+				Transport:      TransportDatastar,
+				Method:         MethodGet,
+				URL:            "/api/search",
+				Event:          EventInput,
+				DebounceMS:     300,
+				PreventDefault: true,
+			},
+			expected: templ.Attributes{"data-on:input__prevent__debounce.300ms": "@get('/api/search')"},
+		},
+		{
+			name: "htmx ignores PreventDefault (its engine already intercepts wired clicks)",
+			action: Action{
+				Transport:      TransportHTMX,
+				Method:         MethodGet,
+				URL:            "/api/items",
+				Event:          EventUnspecified,
+				PreventDefault: true,
+			},
+			expected: templ.Attributes{"hx-get": "/api/items"},
+		},
+		{
 			name: "datastar form content type appends the option",
 			action: Action{
 				Transport:   TransportDatastar,

@@ -181,6 +181,17 @@ type Action struct {
 	// Under htmx it requires an explicit Event (the zero event renders no
 	// hx-trigger at all, so the delay would be silently dropped).
 	DebounceMS int
+	// PreventDefault suppresses the triggering event's native default action
+	// in the Datastar dialect (the __prevent event modifier). The runtime
+	// auto-preventDefaults ONLY form+submit — decoded from the pinned v1.0.3
+	// bundle — so a wired <a href> would otherwise BOTH patch and navigate,
+	// and a wired submit button would double-submit. Set it on actions wired
+	// onto anchors whose href is the no-JS fallback (NavLink, Calendar
+	// MonthNav): it is the semantic twin of htmx's automatic interception of
+	// hx-* clicks, which is why htmx ignores this field. Do NOT set it on
+	// checkbox/radio/change wirings: preventDefault there would cancel the
+	// native toggle/commit that htmx keeps.
+	PreventDefault bool
 }
 
 // Attributes renders the action as templ attributes in the transport's
@@ -243,6 +254,10 @@ func (a Action) datastarAttributes() templ.Attributes {
 	}
 
 	key := "data-on:" + event
+	if a.PreventDefault {
+		key += "__prevent"
+	}
+
 	if a.DebounceMS > 0 {
 		key += fmt.Sprintf("__debounce.%dms", a.DebounceMS)
 	}
