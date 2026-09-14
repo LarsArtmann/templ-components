@@ -32,11 +32,13 @@ import (
 // Accepted today (palette-convention debt, tracked for owner review as the
 // backlog item #175 follow-up):
 //
-//	index/index_dark/forms_dark color-contrast — muted gray-400 caption text,
-//	white-on-blue-500 dark buttons (4.46 vs 4.5, the -600/-500 shade
-//	convention), CopyButton status text on dark code blocks, and the amber
-//	focus-ring outline. Fixing these means re-shading the library-wide neutral
-//	and semantic palettes — a deliberate visual release, not a drive-by.
+//	index/index_dark/forms/forms_dark color-contrast — muted gray-400 caption
+//	text, white-on-blue-500 dark buttons (4.46 vs 4.5, the -600/-500 shade
+//	convention; the forms LIGHT route contains a dark-demo island whose
+//	buttons render the same node class), CopyButton status text on dark code
+//	blocks, and the amber focus-ring outline. Fixing these means re-shading
+//	the library-wide neutral and semantic palettes — a deliberate visual
+//	release, not a drive-by.
 //
 //	recipes_login/recipes_auth color-contrast — same debt class: the demo
 //	themes the blue palette to indigo (demo.css maps --color-blue-500 to
