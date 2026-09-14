@@ -868,171 +868,292 @@
           </p>
         </div>
 
-        <!-- Inline TOC (alternative to sidebar; pick one) -->
-        <nav class="toc">
-          <h3>Contents</h3>
-          <ul>
-            <li><a href="#summary">Summary</a></li>
-            <li><a href="#findings">Findings</a></li>
-            <li><a href="#issues">Issue Cards</a></li>
-            <li><a href="#proposal">Proposal</a></li>
-            <li><a href="#plan">Plan</a></li>
-          </ul>
-        </nav>
-
-        <!-- Stats Dashboard -->
+        <!-- 00 Summary -->
         <h2 id="summary"><span class="num">00</span>Summary</h2>
         <div class="stat-grid">
           <div class="stat-card">
-            <div class="stat-value">42</div>
-            <div class="stat-label">Total Items</div>
+            <div class="stat-value">9</div>
+            <div class="stat-label">go.mod files today (7 published + visualtest + website)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">2</div>
+            <div class="stat-label">Candidates evaluated (KanbanBoard, Heatmap)</div>
           </div>
           <div class="stat-card stat-bad">
-            <div class="stat-value">7</div>
-            <div class="stat-label">Critical</div>
+            <div class="stat-value">0</div>
+            <div class="stat-label">Unique external deps either candidate would isolate</div>
           </div>
           <div class="stat-card stat-warn">
-            <div class="stat-value">12</div>
-            <div class="stat-label">Warnings</div>
+            <div class="stat-value">12+</div>
+            <div class="stat-label">Repo touchpoints every new module adds</div>
           </div>
           <div class="stat-card stat-good">
-            <div class="stat-value">35</div>
-            <div class="stat-label">Resolved</div>
+            <div class="stat-value">Keep ×2</div>
+            <div class="stat-label">Verdict, recorded with triggers in ADR-0040</div>
           </div>
         </div>
 
-        <!-- Findings as Cards -->
-        <h2 id="findings"><span class="num">01</span>Findings</h2>
-
-        <div class="card card-problem">
-          <h4>Critical Issue</h4>
-          <p>Description of the problem and its impact.</p>
+        <!-- 01 Current State -->
+        <h2 id="state"><span class="num">01</span>Current State</h2>
+        <p>
+          The repo is a <strong>7-module published workspace</strong> (ADR-0034, executed
+          2026-08-10) plus two unpublished repo-local modules. The DAG is strictly acyclic
+          and enforced by <code>scripts/check-module-layers.sh</code>:
+        </p>
+        <div class="dep-tree">
+          <span class="root">Layer 0</span> utils (utils, svg, cdn, golden, wire) ── leaf<br />
+          <span class="ok">Layer 1</span> icons · charts/echarts · htmx · datastar ── depend on utils<br />
+          <span class="ok">Layer 2</span> errorpage ── depends on utils + icons<br />
+          <span class="root">Layer 3</span> root (display, feedback, forms, layout, navigation, recipes) ── requires all
         </div>
+        <table>
+          <thead>
+            <tr><th>Module</th><th>Isolates</th><th>Internal deps</th><th>State</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>utils</code></td><td>BaseProps, Class(), EnsureID, svg, cdn, golden, wire</td><td>templ, tailwind-merge-go</td><td><span class="badge badge-fixed">Clean</span></td></tr>
+            <tr><td><code>icons</code></td><td>SVG icons — icons-only adoption</td><td>utils</td><td><span class="badge badge-fixed">Clean</span></td></tr>
+            <tr><td><code>errorpage</code></td><td>go-error-family dependency</td><td>utils, icons</td><td><span class="badge badge-fixed">Clean</span></td></tr>
+            <tr><td><code>charts/echarts</code></td><td>Opt-in adapter boundary</td><td>utils</td><td><span class="badge badge-fixed">Clean</span></td></tr>
+            <tr><td><code>htmx</code></td><td>HTMX helpers</td><td>utils</td><td><span class="badge badge-fixed">Clean</span></td></tr>
+            <tr><td><code>datastar</code></td><td>go-datastar/static dependency</td><td>utils</td><td><span class="badge badge-fixed">Clean</span></td></tr>
+            <tr><td><code>root</code></td><td>Core UI + recipes + demo + CLI</td><td>all six above + testify</td><td><span class="badge badge-fixed">Clean</span></td></tr>
+            <tr><td><code>visualtest</code></td><td colspan="2">unpublished (chromedp, pixelmatch — kept out of the consumer graph)</td><td><span class="badge badge-fixed">Clean</span></td></tr>
+            <tr><td><code>website</code></td><td colspan="2">unpublished (site generator)</td><td><span class="badge badge-fixed">Clean</span></td></tr>
+          </tbody>
+        </table>
+        <p>
+          The two candidates under review both live in the root module's
+          <code>display</code> package (43 components, one Go package):
+          <code>display/kanban.{go,templ}</code> (585 handwritten + 842 generated lines) and
+          <code>display/heatmap.{go,templ}</code> (281 handwritten + 477 generated lines).
+        </p>
 
-        <div class="card card-solution">
-          <h4>Recommended Fix</h4>
-          <p>Description of the solution with rationale.</p>
-        </div>
-
-        <!-- Issue Cards -->
-        <h2 id="issues"><span class="num">02</span>Issue Cards</h2>
+        <!-- 02 Findings -->
+        <h2 id="findings"><span class="num">02</span>Findings</h2>
 
         <div class="issue issue-critical">
-          <span class="severity severity-critical">Blocking</span>
-          <h3>Critical finding title</h3>
-          <div class="where">path/to/file.go:42-58</div>
+          <span class="severity severity-critical">Decisive</span>
+          <h3>F1 — Neither candidate isolates any dependency</h3>
+          <div class="where">display/kanban.go:1-13 · display/heatmap.go:1-8 · display/heatmap.templ:1-8</div>
           <p>
-            Describe the problem and cite the code or behavior that proves it.
+            Dependency isolation is the <em>only</em> criterion that has ever justified a
+            sub-module extraction in this repo. Kanban imports <code>utils</code>,
+            <code>utils/svg</code>, and <code>utils/wire</code> — all already universal
+            transitive deps of every consumer. Heatmap imports only <code>utils</code> plus
+            same-package <code>chart_geometry.go</code> (shared nice-max math with BarChart,
+            chart_geometry.go:49,61). A <code>kanban</code> or <code>heatmap</code> module
+            would have the exact dependency footprint consumers already have — a boundary
+            with nothing behind it.
           </p>
-          <div class="callout callout-solution">
-            <strong>Fix</strong>
-            State the concrete recommended action.
-          </div>
         </div>
 
         <div class="issue issue-important">
-          <span class="severity severity-important">Important</span>
-          <h3>Important finding title</h3>
-          <div class="where">path/to/another.go:12-19</div>
+          <span class="severity severity-important">High</span>
+          <h3>F2 — A new module costs 12+ touchpoints, forever</h3>
+          <div class="where">scripts/release.sh · scripts/check-module-sync.sh:18-23 · scripts/check-release-tags.sh · scripts/check-module-layers.sh · .github/workflows/ci.yaml · go.work · visualtest/go.mod · website/go.mod · docs/modularization/README.md · AGENTS.md</div>
           <p>
-            Explain the risk and why a careful reviewer would hesitate before
-            shipping.
+            Each module is wired into: the release tag set and require-bump sweep, two
+            hardcoded per-module lint/test loops in release.sh (lines 322, 332), the CI lint
+            matrix, GOWORK=off isolation tests, tidy, govulncheck, the module-sync path
+            table, the layers allow-list, workspace use-list, and the require+replace pairs
+            of both in-repo consumers. ADR-0034 explicitly counted this as the negative
+            consequence of the 7-module design. Kanban/heatmap add no isolation win that
+            could pay for it.
+          </p>
+        </div>
+
+        <div class="issue issue-important">
+          <span class="severity severity-important">High</span>
+          <h3>F3 — Composability payoff: zero evidence</h3>
+          <div class="where">docs/adr/0020-per-package-modules-split.md (trigger criteria) · docs/adr/0039 (22 adopting repos)</div>
+          <p>
+            Importing a module is not what costs consumers — importing the
+            <code>display</code> <em>package</em> is, and Go compiles at package
+            granularity with the linker pruning unreachable code. No consumer has ever
+            asked for kanban-only or heatmap-only adoption (ADR-0020's demand triggers
+            remain unmet; the 22 known repos adopt the root or icons). A boundary no
+            consumer would import on its own earns nothing.
           </p>
         </div>
 
         <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice to have</span>
-          <h3>Polish suggestion</h3>
-          <div class="where">docs/ or config</div>
+          <span class="severity severity-nice">Gating</span>
+          <h3>F4 — The extraction is a v2-gated breaking change anyway</h3>
+          <div class="where">docs/adr/0039-v2-module-path-timing.md</div>
           <p>
-            Minor documentation gaps or future-proofing suggestions go here.
+            Moving <code>display.KanbanBoard</code> to a <code>kanban</code> module changes
+            both the import path and the identifier path — a breaking API change. Per
+            ADR-0039, import-path changes ride the v2 module-path migration (option 1:
+            migrate at first real breakage). Extracting now would either break v1
+            consumers or require a compat shim for a payoff of zero.
           </p>
         </div>
 
-        <!-- Strengths -->
-        <h2>Strengths</h2>
-        <div class="strengths">
-          <div class="strength">
-            <div class="check">+</div>
-            <div class="text">
-              <strong>Specific strength</strong>
-              <span>Explain why it matters and what it enables.</span>
-            </div>
-          </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Supporting</span>
+          <h3>F5 — Co-change and cohesion evidence</h3>
+          <div class="where">git log display/ since 2026-08-01</div>
+          <p>
+            93 commits touched display since August; kanban appears in 10 and heatmap in 6 —
+            overwhelmingly their own introduction plus repo-wide sweeps (motion-reduce,
+            dark-mode, lint pins). They are frozen additions, not churn centers. Conversely
+            heatmap is glued to BarChart through chart_geometry; extracting it would force
+            chart_geometry into yet another shared module — precisely the
+            "universal-dependency split" ADR-0034 rejected for utils/svg.
+          </p>
         </div>
 
-        <!-- Table with Badges -->
-        <h2>Issue Table</h2>
+        <!-- 03 Assessment -->
+        <h2 id="assessment"><span class="num">03</span>Re-Modularization Assessment</h2>
         <table>
           <thead>
-            <tr>
-              <th>#</th>
-              <th>Severity</th>
-              <th>Issue</th>
-              <th>Status</th>
-            </tr>
+            <tr><th>Module / candidate</th><th>Cohesion</th><th>Coupling</th><th>Independence</th><th>Depth</th><th>Composability payoff</th><th>Action</th></tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td><span class="badge badge-critical">Critical</span></td>
-              <td>Missing error handling</td>
-              <td><span class="badge badge-fixed">Fixed</span></td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td><span class="badge badge-high">High</span></td>
-              <td>Race condition</td>
-              <td><span class="badge badge-low">Open</span></td>
-            </tr>
+            <tr><td>utils</td><td>5</td><td>1</td><td>yes</td><td>right</td><td>yes</td><td><span class="badge badge-fixed">Keep</span></td></tr>
+            <tr><td>icons</td><td>5</td><td>1</td><td>yes</td><td>right</td><td>yes (icons-only)</td><td><span class="badge badge-fixed">Keep</span></td></tr>
+            <tr><td>errorpage</td><td>5</td><td>2</td><td>yes</td><td>right</td><td>yes (go-error-family)</td><td><span class="badge badge-fixed">Keep</span></td></tr>
+            <tr><td>charts/echarts</td><td>5</td><td>1</td><td>yes</td><td>right</td><td>yes (opt-in)</td><td><span class="badge badge-fixed">Keep</span></td></tr>
+            <tr><td>htmx</td><td>5</td><td>1</td><td>yes</td><td>right</td><td>yes</td><td><span class="badge badge-fixed">Keep</span></td></tr>
+            <tr><td>datastar</td><td>5</td><td>1</td><td>yes</td><td>right</td><td>yes (zero-transitive opt-in)</td><td><span class="badge badge-fixed">Keep</span></td></tr>
+            <tr><td>root (display …)</td><td>4</td><td>3</td><td>yes (lockstep)</td><td>right for v1</td><td>yes (core path)</td><td><span class="badge badge-fixed">Keep</span></td></tr>
+            <tr><td><em>candidate:</em> kanban module</td><td>5</td><td>1</td><td>yes</td><td>too fine</td><td><strong>no</strong></td><td><span class="badge badge-low">Reject — trigger-gated</span></td></tr>
+            <tr><td><em>candidate:</em> heatmap module</td><td>5</td><td>1</td><td>yes</td><td>too fine</td><td><strong>no</strong> (+ chart_geometry coupling)</td><td><span class="badge badge-low">Reject — trigger-gated</span></td></tr>
+            <tr><td><em>candidate:</em> native-charts package split</td><td>4</td><td>2</td><td>yes</td><td>arguable</td><td>no evidence; v2-gated</td><td><span class="badge badge-low">Reject — trigger-gated</span></td></tr>
           </tbody>
         </table>
+        <div class="callout callout-amber">
+          <strong>Granularity note.</strong> <code>display</code> (43 components in one
+          package) exceeds the skill's 15-file god-package heuristic. It is an
+          <em>accepted deviation</em>: the sub-domains share BaseProps, shared.go class
+          constants, chart geometry, and icons; the repo's package-level cohesion is a
+          deliberate v1 design (ADR-0034). Revisit only at v2 (ADR-0039) or when a trigger
+          below fires.
+        </div>
 
-        <!-- Before/After Comparison -->
-        <h2 id="proposal">Before / After</h2>
+        <!-- 04 Proposal -->
+        <h2 id="proposal"><span class="num">04</span>Proposal</h2>
         <div class="compare-header">
-          <div class="compare-before">Before</div>
-          <div class="compare-after">After</div>
+          <div class="compare-before">Considered</div>
+          <div class="compare-after">Decided</div>
         </div>
         <div class="compare-row">
           <div>
-            <pre><code><span class="tok-comment">// Old code</span>
-<span class="tok-keyword">func</span> <span class="tok-func">process</span>(data <span class="tok-type">interface</span>{}) { }</code></pre>
+            <pre><code><span class="tok-comment">// NOT executed</span>
+kanban/go.mod      <span class="tok-comment">// rejected</span>
+heatmap/go.mod     <span class="tok-comment">// rejected</span>
+charts/go.mod      <span class="tok-comment">// rejected</span>
+<span class="tok-comment">// display.KanbanBoard →</span>
+<span class="tok-comment">// kanban.KanbanBoard =</span>
+<span class="tok-comment">// v2-gated breaking change</span></code></pre>
           </div>
           <div>
-            <pre><code><span class="tok-comment">// New code</span>
-<span class="tok-keyword">func</span> <span class="tok-func">process</span>[T <span class="tok-type">any</span>](data T) { }</code></pre>
+            <pre><code><span class="tok-comment">// executed instead</span>
+docs/adr/0040-component-module-extraction-triggers.md
+<span class="tok-comment">// decision + T1/T2/T3 triggers</span>
+ROADMAP.md
+<span class="tok-comment">// per-package row → ADR-0040</span>
+<span class="tok-comment">// DAG unchanged, zero code churn,</span>
+<span class="tok-comment">// future sessions stop re-litigating</span></code></pre>
           </div>
         </div>
 
-        <!-- ASCII Diagram -->
-        <h2>Dependency Tree</h2>
-        <div class="dep-tree">
-          <span class="root">root</span> ├──
-          <span class="ok">wanted-dep</span> └──
-          <span class="unwanted">unwanted-dep</span>
+        <!-- 05 Triggers -->
+        <h2 id="triggers"><span class="num">05</span>Trigger Criteria for Future Extraction</h2>
+        <p>
+          Execute a component-family module split when <strong>any one</strong> fires —
+          the same doctrine as ADR-0020, applied at component granularity:
+        </p>
+        <div class="migration-step">
+          <div class="migration-num">T1</div>
+          <div class="migration-content">
+            <h4>Unique external dependency</h4>
+            <p>
+              The family needs a dependency no other component uses (precedent: datastar
+              isolating go-datastar/static; errorpage isolating go-error-family).
+            </p>
+          </div>
         </div>
+        <div class="migration-step">
+          <div class="migration-num">T2</div>
+          <div class="migration-content">
+            <h4>Documented consumer demand for family-only adoption</h4>
+            <p>
+              A consumer publicly needs the family without the rest of the library
+              (precedent: icons-only adoption driving the icons module).
+            </p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">T3</div>
+          <div class="migration-content">
+            <h4>Family-specific build pipeline or artifact</h4>
+            <p>
+              The family ships its own runtime artifact or build stage (precedent:
+              charts/echarts opt-in adapter; a future WASM or server-driven component
+              runtime would qualify).
+            </p>
+          </div>
+        </div>
+        <p>
+          If a trigger fires, follow the ADR-0034 mechanics (dual go.work + replace,
+          shared lockstep tags via scripts/release.sh) and time the import-path move with
+          the v2 migration (ADR-0039).
+        </p>
 
-        <!-- Numbered Steps -->
-        <h2 id="plan"><span class="num">03</span>Migration Plan</h2>
+        <!-- 06 Self-Review -->
+        <h2 id="selfreview"><span class="num">06</span>Brutal Self-Review</h2>
+        <table>
+          <thead>
+            <tr><th>#</th><th>Question</th><th>Result</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>What did you forget?</td><td>Native chart family (Line/Area/Pie/Bar/Sparkline/Heatmap) evaluated as a third candidate — same verdict (see §03).</td></tr>
+            <tr><td>2</td><td>Could be improved?</td><td>Keeping the verdict negative is the improvement: no new boundary with nothing behind it.</td></tr>
+            <tr><td>3</td><td>Split brains?</td><td>None — no types move; chart_geometry stays with its two consumers.</td></tr>
+            <tr><td>4</td><td>Right granularity?</td><td>display is coarse by file count; accepted deviation documented (§03 callout), v2-gated.</td></tr>
+            <tr><td>5</td><td>Existing code reuse?</td><td>Verdict reuses the ADR-0020/0034 trigger doctrine instead of inventing a new one.</td></tr>
+            <tr><td>6</td><td>Type model quality?</td><td>Unchanged; wire.Action already keeps kanban's transport wiring in the utils leaf.</td></tr>
+            <tr><td>7</td><td>Reinventing the wheel?</td><td>No new tooling; reuses check-module-sync/layers guards as evidence.</td></tr>
+            <tr><td>8</td><td>Import paths verified?</td><td>N/A — no path changes proposed (verified via imports in F1).</td></tr>
+            <tr><td>9</td><td>Test deps isolated?</td><td>N/A — no go.mod changes; per-module GOWORK=off loops already guard this.</td></tr>
+            <tr><td>10</td><td>CI actually faster?</td><td>Splitting display would not: it is one module today and would remain one lint/test unit per extra module added, not less work.</td></tr>
+            <tr><td>11</td><td>Versioning realistic?</td><td>Shared lockstep tagging stays; extraction would add an 8th tag set for zero isolation.</td></tr>
+            <tr><td>12</td><td>Error types accessible?</td><td>N/A — no error-bearing code moves.</td></tr>
+            <tr><td>13</td><td>internal/ safe?</td><td>N/A — no packages move behind or out of internal/.</td></tr>
+            <tr><td>14</td><td>Over-modularized?</td><td>This is the finding: 7 modules is the ceiling that pays for itself; #8 would not.</td></tr>
+            <tr><td>15</td><td>Consumers broken?</td><td>Zero code change — no consumer affected.</td></tr>
+          </tbody>
+        </table>
+
+        <!-- 07 Execution Plan -->
+        <h2 id="plan"><span class="num">07</span>Execution Plan</h2>
         <div class="migration-step">
           <div class="migration-num">1</div>
           <div class="migration-content">
-            <h4>Add generic type parameter</h4>
-            <p>Update the function signature to accept a type parameter.</p>
+            <h4>Record ADR-0040</h4>
+            <p>docs/adr/0040-component-module-extraction-triggers.md — decision, evidence, T1/T2/T3 triggers, rollback = close the ADR.</p>
           </div>
         </div>
         <div class="migration-step">
           <div class="migration-num">2</div>
           <div class="migration-content">
-            <h4>Update all call sites</h4>
-            <p>Pass explicit types at each call site for type safety.</p>
+            <h4>Point ROADMAP at the decision</h4>
+            <p>The "Per-package modules split" row references ADR-0020; add ADR-0040 as the component-granularity record.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">3</div>
+          <div class="migration-content">
+            <h4>Verify docs-only change</h4>
+            <p>go build/test must be untouched; run the docs-count drift guard (utils TestDocsCountDrift) to prove no prose count regressed.</p>
           </div>
         </div>
 
         <footer class="footer">
-          Generated YYYY-MM-DD &middot; All claims verified against source code
-          where noted
+          Generated 2026-09-14 · go-modularize 7-phase workflow · all claims verified
+          against source (files and line numbers cited inline)
         </footer>
       </main>
     </div>
