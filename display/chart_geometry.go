@@ -125,6 +125,7 @@ func computeChartRenderData(
 	valueFormat func(float64) string,
 	emptyMsg, class, ariaLabel, id string,
 	attrs templ.Attributes,
+	maxTicks int,
 ) ChartRenderData {
 	padding = padding.Sanitize()
 	if padding == (ChartPadding{}) { //nolint:exhaustruct_v5 // zero-value sentinel detects unset padding
@@ -134,7 +135,10 @@ func computeChartRenderData(
 	minVal, maxVal := lineChartBounds(series, minOverride, maxOverride)
 	plotW := width - padding.Left - padding.Right
 	plotH := height - padding.Top - padding.Bottom
-	ticks := ComputeNiceTicks(minVal, maxVal, lineChartMaxTicks)
+	if maxTicks <= 0 {
+		maxTicks = lineChartMaxTicks
+	}
+	ticks := ComputeNiceTicks(minVal, maxVal, maxTicks)
 	hasData := lineChartHasData(series)
 	rangeVal := maxVal - minVal
 
