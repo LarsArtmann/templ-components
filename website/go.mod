@@ -1,6 +1,6 @@
 module github.com/larsartmann/templ-components/website
 
-go 1.26.7
+go 1.26
 
 ignore (
 	dist
@@ -21,7 +21,7 @@ require (
 require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
 	github.com/dlclark/regexp2/v2 v2.8.0 // indirect
-	github.com/larsartmann/go-error-family v0.10.0 // indirect
+	github.com/larsartmann/go-error-family v0.10.1 // indirect
 	github.com/larsartmann/templ-components/htmx v1.17.0 // indirect
 )
 

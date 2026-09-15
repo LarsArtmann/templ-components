@@ -1,10 +1,10 @@
 module github.com/larsartmann/templ-components/errorpage
 
-go 1.26.7
+go 1.26
 
 require (
 	github.com/a-h/templ v0.3.1020
-	github.com/larsartmann/go-error-family v0.10.0
+	github.com/larsartmann/go-error-family v0.10.1
 	github.com/larsartmann/templ-components/icons v1.17.0
 	github.com/larsartmann/templ-components/utils v1.17.0
 )

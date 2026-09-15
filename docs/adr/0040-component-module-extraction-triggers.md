@@ -38,7 +38,7 @@ identifier path — a breaking change.
    same dependency footprint consumers already have.
 2. **No composability payoff.** Zero consumers have asked for kanban-only or
    heatmap-only adoption (ADR-0020 demand triggers unmet since 2026-07-21).
-   Importing a module is cheap; importing the `display` *package* is what Go
+   Importing a module is cheap; importing the `display` _package_ is what Go
    compiles, and the linker prunes unreachable code.
 3. **Concrete recurring cost.** A new module touches the release tag set and
    require-bump sweep, the per-module lint/test loops in
@@ -56,11 +56,11 @@ identifier path — a breaking change.
 
 ## Triggers (execute an extraction when ANY fires)
 
-| Trigger | Precedent |
-| ------- | --------- |
-| **T1** — the family needs a unique external dependency no other component uses | datastar (go-datastar/static), errorpage (go-error-family) |
-| **T2** — a documented consumer needs family-only adoption without the rest of the library | icons (icons-only adoption) |
-| **T3** — the family ships its own build pipeline or runtime artifact | charts/echarts (opt-in adapter); a future WASM/server-driven runtime would qualify |
+| Trigger                                                                                   | Precedent                                                                          |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **T1** — the family needs a unique external dependency no other component uses            | datastar (go-datastar/static), errorpage (go-error-family)                         |
+| **T2** — a documented consumer needs family-only adoption without the rest of the library | icons (icons-only adoption)                                                        |
+| **T3** — the family ships its own build pipeline or runtime artifact                      | charts/echarts (opt-in adapter); a future WASM/server-driven runtime would qualify |
 
 ## Consequences
 

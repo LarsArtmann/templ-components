@@ -9,27 +9,27 @@
 
 ## a) FULLY DONE
 
-| Item | Evidence |
-|------|----------|
-| **CV adoption branch: 11 reviewed commits, pushed as-is** (daemon noise interleaved per owner's call) | `48e4f43`…`975d8c9e` on origin |
-| **A1** v1.13.2→v1.14.0 + safelist/CSS | `48e4f43` |
-| **A2** ATS error boundary deleted, single `GlobalErrorHandling` path; API-key/modal listeners preserved | `25c40f04`, golden diff eyeballed (-86) |
-| **A3** SkeletonGroup + 36 motion-reduce fixes (12 core files) | `9208e378` |
-| **A4** EmptyState ×3 fragments + filter-empty + interviews-empty, JS contracts kept | `09cbfc19` |
-| **A6/A7** StatCard(+ValueID/Href) + Table swap | `4c725e2d` |
-| **B1** forms.Form + ProgressBar + LoadingButton + CSP `onclick` fix | `26a25845` |
-| **B2** coaching → forms/Button/Badge/Alert | `99c933e2` |
-| **D2** AGENTS.md adoption table refreshed + share.js nonce'd | `294c3a08` + `19b19bba` tree |
-| **D1** 11 physical→logical property conversions + admin `end-0` | `8ab3675f` |
-| **SSE flake FIXED** (user-directed): root cause = initial state sends 5 events, test drained 4; stale initial fragment interleaved into broadcast window under load. Drain 4→5; **8/8 stress runs green** (was 3/6 failing) | `1f9d7892` |
-| **D7 harvest CV**: 6 TODO items routed (e2e pass, TagsInput eval, pipeline goldens, stat-updated fragment, last raw button, ruling-gated ATS swaps); D6 reads formally dropped with rationale | `975d8c9e` |
-| **PR #12 (C1)** `layout.PageProps.SEO` — noindex/canonical/hreflang/JSON-LD; zero-value byte-identical; 6 tests; scaffolder source re-synced; docs-count 109→112 made honest | open, branch `feat/layout-seo-meta-pr` |
-| **PR #13 (C2)** CollapsibleSection `PersistState` — nonce'd singleton persistence, restore-before-guard, capture-phase toggle; opt-in so existing consumers unaffected; 5 tests | open, branch `feat/collapsible-persist` |
-| **PR #14 (C4)** `icons.Render`/`CustomIcon` — consumer icon-set extension point (viewBox/paths/fill/Title, graceful empty-skip); 5 tests | open, branch `feat/icon-render` |
-| **C3/C5/C6 docs on master** — `sse-fragments.md` (incl. the innerHTML-no-scripts mechanism + drain-lesson), `htmx-modal.md` (dialog-over-div rationale + checklist), `print-pdf.md` (A4 primitives, two-shells pattern, static-export shell) | master `c7074c6` |
-| **D5** AGENTS.md "v2.0" labels annotated with `docs/migration/v1-to-v2.md` + real shipping versions — investigation showed it is a migration-guide convention, NOT drift; behaviors verified current in code | master `c7074c6` |
-| **D7 harvest TC**: TODO #157–#161 routed | master `a756a22` |
-| Final CV gate | `go test ./...` raw exit 0, zero FAIL lines |
+| Item                                                                                                                                                                                                                                         | Evidence                                    |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **CV adoption branch: 11 reviewed commits, pushed as-is** (daemon noise interleaved per owner's call)                                                                                                                                        | `48e4f43`…`975d8c9e` on origin              |
+| **A1** v1.13.2→v1.14.0 + safelist/CSS                                                                                                                                                                                                        | `48e4f43`                                   |
+| **A2** ATS error boundary deleted, single `GlobalErrorHandling` path; API-key/modal listeners preserved                                                                                                                                      | `25c40f04`, golden diff eyeballed (-86)     |
+| **A3** SkeletonGroup + 36 motion-reduce fixes (12 core files)                                                                                                                                                                                | `9208e378`                                  |
+| **A4** EmptyState ×3 fragments + filter-empty + interviews-empty, JS contracts kept                                                                                                                                                          | `09cbfc19`                                  |
+| **A6/A7** StatCard(+ValueID/Href) + Table swap                                                                                                                                                                                               | `4c725e2d`                                  |
+| **B1** forms.Form + ProgressBar + LoadingButton + CSP `onclick` fix                                                                                                                                                                          | `26a25845`                                  |
+| **B2** coaching → forms/Button/Badge/Alert                                                                                                                                                                                                   | `99c933e2`                                  |
+| **D2** AGENTS.md adoption table refreshed + share.js nonce'd                                                                                                                                                                                 | `294c3a08` + `19b19bba` tree                |
+| **D1** 11 physical→logical property conversions + admin `end-0`                                                                                                                                                                              | `8ab3675f`                                  |
+| **SSE flake FIXED** (user-directed): root cause = initial state sends 5 events, test drained 4; stale initial fragment interleaved into broadcast window under load. Drain 4→5; **8/8 stress runs green** (was 3/6 failing)                  | `1f9d7892`                                  |
+| **D7 harvest CV**: 6 TODO items routed (e2e pass, TagsInput eval, pipeline goldens, stat-updated fragment, last raw button, ruling-gated ATS swaps); D6 reads formally dropped with rationale                                                | `975d8c9e`                                  |
+| **PR #12 (C1)** `layout.PageProps.SEO` — noindex/canonical/hreflang/JSON-LD; zero-value byte-identical; 6 tests; scaffolder source re-synced; docs-count 109→112 made honest                                                                 | open, branch `feat/layout-seo-meta-pr`      |
+| **PR #13 (C2)** CollapsibleSection `PersistState` — nonce'd singleton persistence, restore-before-guard, capture-phase toggle; opt-in so existing consumers unaffected; 5 tests                                                              | open, branch `feat/collapsible-persist`     |
+| **PR #14 (C4)** `icons.Render`/`CustomIcon` — consumer icon-set extension point (viewBox/paths/fill/Title, graceful empty-skip); 5 tests                                                                                                     | open, branch `feat/icon-render`             |
+| **C3/C5/C6 docs on master** — `sse-fragments.md` (incl. the innerHTML-no-scripts mechanism + drain-lesson), `htmx-modal.md` (dialog-over-div rationale + checklist), `print-pdf.md` (A4 primitives, two-shells pattern, static-export shell) | master `c7074c6`                            |
+| **D5** AGENTS.md "v2.0" labels annotated with `docs/migration/v1-to-v2.md` + real shipping versions — investigation showed it is a migration-guide convention, NOT drift; behaviors verified current in code                                 | master `c7074c6`                            |
+| **D7 harvest TC**: TODO #157–#161 routed                                                                                                                                                                                                     | master `a756a22`                            |
+| Final CV gate                                                                                                                                                                                                                                | `go test ./...` raw exit 0, zero FAIL lines |
 
 ## b) PARTIALLY DONE
 
@@ -125,4 +125,4 @@ See the question form — (1) e2e now vs CI, (2) TC PR merge policy, (3) paralle
 
 ---
 
-*Point-in-time snapshot. Section (f) is HARVEST input for `TODO_LIST.md`/`ROADMAP.md`.*
+_Point-in-time snapshot. Section (f) is HARVEST input for `TODO_LIST.md`/`ROADMAP.md`._
