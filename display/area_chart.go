@@ -33,10 +33,10 @@ type AreaChartProps struct {
 	// Max overrides the auto-computed Y-axis maximum.
 	Max *float64
 
-	// MaxTicks is an upper bound on the number of Y-axis ticks the chart
-	// computes. 0 or negative keeps the default of 8. The count is
-	// approximate: ticks snap to human-readable steps, so the actual count
-	// may come out lower.
+	// MaxTicks is the tick budget for the Y axis: ComputeNiceTicks aims for
+	// at most this many ticks. 0 or negative keeps the default of 8. The
+	// final count is approximate — ticks snap to human-readable steps, so
+	// the actual count can land slightly above or below the budget.
 	MaxTicks int
 
 	// ShowGrid renders dashed horizontal gridlines at each Y tick. Default: true.

@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`display.LineChart`/`display.AreaChart` gain a `MaxTicks` tick budget.**
+  The Y-axis tick count was hardwired (`lineChartMaxTicks = 8` in
+  `chart_geometry.go`), which renders cramped axes on small charts — the
+  go-taskqueue dashboard's 560×200 metric sparklines were the motivating
+  consumer. `MaxTicks` feeds the budget to `ComputeNiceTicks` (0/negative
+  keeps the default 8); the final count stays approximate because ticks snap
+  to human-readable 1/2/2.5/5 × 10ⁿ steps. Zero-value behavior is
+  byte-identical to the previous output; goldens are unchanged.
+
 - **ADR-0040: component-level module extraction is trigger-gated.** Kanban,
   Heatmap, and the native chart family stay `display` package components —
   the audit found no dependency to isolate (the only criterion behind every

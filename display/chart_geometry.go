@@ -135,9 +135,11 @@ func computeChartRenderData(
 	minVal, maxVal := lineChartBounds(series, minOverride, maxOverride)
 	plotW := width - padding.Left - padding.Right
 	plotH := height - padding.Top - padding.Bottom
+
 	if maxTicks <= 0 {
 		maxTicks = lineChartMaxTicks
 	}
+
 	ticks := ComputeNiceTicks(minVal, maxVal, maxTicks)
 	hasData := lineChartHasData(series)
 	rangeVal := maxVal - minVal

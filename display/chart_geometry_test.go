@@ -212,6 +212,40 @@ func TestBuildAreaPath(t *testing.T) {
 	})
 }
 
+func TestComputeChartRenderData_MaxTicks(t *testing.T) {
+	t.Parallel()
+
+	series := []LineChartSeries{{Name: "s", Values: []float64{0, 100}}}
+	setup := func(maxTicks int) ChartRenderData {
+		return computeChartRenderData(600, 300, ChartPadding{}, series, nil, nil, nil,
+			true, false, nil, "", "", "", "", nil, maxTicks)
+	}
+
+	t.Run("zero and negative keep the default tick budget", func(t *testing.T) {
+		t.Parallel()
+
+		want := ComputeNiceTicks(0, 100, lineChartMaxTicks)
+
+		for _, maxTicks := range []int{0, -3} {
+			got := setup(maxTicks)
+			if len(got.Ticks) != len(want) {
+				t.Fatalf("MaxTicks=%d: got %d ticks, default budget yields %d", maxTicks, len(got.Ticks), len(want))
+			}
+		}
+	})
+
+	t.Run("small budget shrinks the tick count", func(t *testing.T) {
+		t.Parallel()
+
+		def := setup(0)
+
+		got := setup(2)
+		if len(got.Ticks) >= len(def.Ticks) {
+			t.Fatalf("MaxTicks=2: got %d ticks, default %d — budget had no effect", len(got.Ticks), len(def.Ticks))
+		}
+	})
+}
+
 func TestComputeNiceTicks(t *testing.T) {
 	t.Parallel()
 
