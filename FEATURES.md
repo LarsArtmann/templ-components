@@ -18,7 +18,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `htmx`           | 9             | HTMX integration: loading indicators, error handling, polled regions, helpers, View Transitions                                                                                                                                                                                                                                                                                                                                                                                       |
 | `datastar`       | 4             | Datastar integration: SDK runtime injection, SSE-powered LiveRegion, loading Indicator, SSE error handling (opt-in, ADR-0030)                                                                                                                                                                                                                                                                                                                                                         |
 | `charts/echarts` | 2             | Opt-in ECharts adapter: `EChart` wrapper + `SDKScript` with dark mode bridge (ADR-0031). Accepts go-echarts `RenderSnippet()` strings — zero dep on go-echarts                                                                                                                                                                                                                                                                                                                        |
-| `icons`          | 8 (102 icons) | SVG icon system with typed name constants, RTL mirroring, animated variants, consumer icon-set extension point (`Render`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `icons`          | 8 (102 icons) | SVG icon system with typed name constants, RTL mirroring, animated variants, consumer icon-set extension point (`Render`)                                                                                                                                                                                                                                                                                                                                                             |
 | `layout`         | 10            | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                                                                                                                                                                                                                                                                                                                            |
 | `navigation`     | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                                                                                                                                                                                                                                      |
 | `recipes`        | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                                                                                                                                                                                                                                 |
@@ -401,16 +401,16 @@ Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts t
 
 ### Components
 
-| Component             | Status           | Description      | Key Features                                                                     |
-| --------------------- | ---------------- | ---------------- | -------------------------------------------------------------------------------- |
-| `Icon`                | FULLY_FUNCTIONAL | SVG icon by name | 102 named icons, custom class, currentColor theming                              |
-| `IconWithStrokeWidth` | FULLY_FUNCTIONAL | Icon variant     | Custom stroke-width (default Icon uses 1.5)                                      |
-| `IconRTL`             | FULLY_FUNCTIONAL | RTL mirror icon  | Directional icons auto-mirror under `dir="rtl"` via CSS `scaleX(-1)`             |
-| `AnimatedIcon`        | FULLY_FUNCTIONAL | Animated icon    | 11 hover-triggered CSS animation presets, zero JavaScript, RTL variant available                               |
-| `AnimatedIconWithAnimation` | FULLY_FUNCTIONAL | Animated icon variant | Explicit animation preset per render (`DefaultAnimation` supplies per-icon defaults)                            |
-| `AnimatedIconRTL`     | FULLY_FUNCTIONAL | Animated RTL icon | Hover animation + `dir="rtl"` mirroring in one component                                                       |
-| `AnimatedIconWithAnimationRTL` | FULLY_FUNCTIONAL | Animated RTL variant | Explicit animation preset + RTL mirroring                                                                            |
-| `Render`              | FULLY_FUNCTIONAL | Consumer icon renderer | Arbitrary consumer icon sets (`CustomIcon`: viewBox, paths, fill, optional `<title>`) rendered with the built-in markup contract |
+| Component                      | Status           | Description            | Key Features                                                                                                                     |
+| ------------------------------ | ---------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `Icon`                         | FULLY_FUNCTIONAL | SVG icon by name       | 102 named icons, custom class, currentColor theming                                                                              |
+| `IconWithStrokeWidth`          | FULLY_FUNCTIONAL | Icon variant           | Custom stroke-width (default Icon uses 1.5)                                                                                      |
+| `IconRTL`                      | FULLY_FUNCTIONAL | RTL mirror icon        | Directional icons auto-mirror under `dir="rtl"` via CSS `scaleX(-1)`                                                             |
+| `AnimatedIcon`                 | FULLY_FUNCTIONAL | Animated icon          | 11 hover-triggered CSS animation presets, zero JavaScript, RTL variant available                                                 |
+| `AnimatedIconWithAnimation`    | FULLY_FUNCTIONAL | Animated icon variant  | Explicit animation preset per render (`DefaultAnimation` supplies per-icon defaults)                                             |
+| `AnimatedIconRTL`              | FULLY_FUNCTIONAL | Animated RTL icon      | Hover animation + `dir="rtl"` mirroring in one component                                                                         |
+| `AnimatedIconWithAnimationRTL` | FULLY_FUNCTIONAL | Animated RTL variant   | Explicit animation preset + RTL mirroring                                                                                        |
+| `Render`                       | FULLY_FUNCTIONAL | Consumer icon renderer | Arbitrary consumer icon sets (`CustomIcon`: viewBox, paths, fill, optional `<title>`) rendered with the built-in markup contract |
 
 ### Icon Names (102)
 
@@ -418,18 +418,18 @@ Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts t
 
 ### Functions
 
-| Function                    | Purpose                                                                |
-| --------------------------- | ---------------------------------------------------------------------- |
-| `IconWithStrokeWidth`       | Icon with custom stroke-width                                          |
-| `IconPathData`              | Returns raw path data for a named icon (full `<svg>` wrapper control)  |
-| `IconPathJS`                | Returns path data formatted for JS injection                           |
-| `AnimatedIcon`              | Renders an icon with its default hover animation (wraps in `<span>`)   |
-| `AnimatedIconWithAnimation` | Renders an icon with a specific animation preset                       |
-| `AnimatedIconRTL`           | Animated icon with RTL mirroring support                               |
+| Function                    | Purpose                                                                             |
+| --------------------------- | ----------------------------------------------------------------------------------- |
+| `IconWithStrokeWidth`       | Icon with custom stroke-width                                                       |
+| `IconPathData`              | Returns raw path data for a named icon (full `<svg>` wrapper control)               |
+| `IconPathJS`                | Returns path data formatted for JS injection                                        |
+| `AnimatedIcon`              | Renders an icon with its default hover animation (wraps in `<span>`)                |
+| `AnimatedIconWithAnimation` | Renders an icon with a specific animation preset                                    |
+| `AnimatedIconRTL`           | Animated icon with RTL mirroring support                                            |
 | `Render`                    | Renders a consumer-defined `CustomIcon` (paths, viewBox, fill) as a templ component |
-| `DefaultAnimation`          | Returns the default animation for an icon name                         |
-| `AllAnimations`             | Returns all valid animation types, sorted                              |
-| `allIconNames`              | Auto-generated list of all icon names from `iconPathData` (unexported) |
+| `DefaultAnimation`          | Returns the default animation for an icon name                                      |
+| `AllAnimations`             | Returns all valid animation types, sorted                                           |
+| `allIconNames`              | Auto-generated list of all icon names from `iconPathData` (unexported)              |
 
 ### Known Issues
 
