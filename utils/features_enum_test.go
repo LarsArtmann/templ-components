@@ -57,7 +57,7 @@ func TestFeaturesEnumTableExhaustive(t *testing.T) {
 		t.Fatalf("walk packages: %v", err)
 	}
 
-	features := readDoc(t, "FEATURES.md")
+	features := string(readDoc(t, "FEATURES.md"))
 
 	var missing []string
 

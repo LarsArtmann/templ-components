@@ -359,7 +359,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 | Typed enums    | 61 (60 with IsValid)                                |
 | Packages       | 15                                                  |
 | Tests          | ~1,070 test functions + ~1,240 subtests             |
-| Visual goldens | 125 pixel-level regression tests (chromedp)         |
+| Visual goldens | 127 pixel-level regression tests (chromedp)         |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 ---
