@@ -673,6 +673,39 @@ func newMux() *http.ServeMux {
 		wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},
 	)))
 
+	// Per-column add-card endpoints behind the KanbanColumn.Action slot: the
+	// column id travels in the path, so the button needs no request body and
+	// the same handler shape serves both transports.
+	kanbanAddHandler := func(state *kanbanDemoState, id string, action wire.Action) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			noStore(w)
+
+			column := r.PathValue("column")
+			if column == "" {
+				http.Error(w, "missing column path parameter", http.StatusBadRequest)
+
+				return
+			}
+
+			state.add(column)
+			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action)))
+		})
+	}
+	mux.Handle("POST /api/kanban/htmx/add/{column}", kanbanAddHandler(
+		kanbanHTMXState,
+		"kanban-demo-htmx",
+		wire.Action{URL: "/api/kanban/htmx"},
+	))
+	mux.Handle("POST /api/kanban/datastar/add/{column}", wire.Handler(wire.PatchTarget{
+		Selector: "#kanban-demo-datastar",
+		Mode:     wire.PatchModeOuter,
+	}, kanbanAddHandler(
+		kanbanDatastarState,
+		"kanban-demo-datastar",
+		wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},
+	)))
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/forms":

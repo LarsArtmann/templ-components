@@ -17,10 +17,14 @@ templ kanbanDemo() {
 		<code>card</code>, <code>column</code>, and <code>index</code>; the server
 		applies the move and re-renders the board. The htmx board swaps via
 		<code>hx-post</code>, the Datastar board via <code>&#64;post</code> with form
-		encoding — same component, same endpoint shape.
+		encoding — same component, same endpoint shape. Each column header also
+		carries an <code>Action</code> add-card slot (a ghost Button wired in the
+		board's dialect) and a <code>Tone</code> status dot.
 	</p>
 	@demoCodeSnippet("Go", `props.Wire = &wire.Action{URL: "/api/kanban/htmx"}                                  // hx-post
-props.Wire = &wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"} // data-on:submit="@post(...)"`)
+props.Wire = &wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"} // data-on:submit="@post(...)"
+col.Action = display.Button(display.ButtonProps{Wire: &wire.Action{URL: "/api/kanban/htmx/add/" + col.ID}})
+col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red, purple`)
 	<div class="mt-4 grid gap-4 xl:grid-cols-2">
 		<div class="min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800">
 			<h3 class="mb-2 text-sm font-semibold text-gray-900 dark:text-white">HTMX transport</h3>

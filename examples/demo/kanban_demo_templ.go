@@ -42,12 +42,14 @@ func kanbanDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">Drag cards between columns (or use the per-card move buttons revealed on hover/focus — the keyboard path). Every move submits one hidden form with <code>card</code>, <code>column</code>, and <code>index</code>; the server applies the move and re-renders the board. The htmx board swaps via <code>hx-post</code>, the Datastar board via <code>&#64;post</code> with form encoding — same component, same endpoint shape.</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">Drag cards between columns (or use the per-card move buttons revealed on hover/focus — the keyboard path). Every move submits one hidden form with <code>card</code>, <code>column</code>, and <code>index</code>; the server applies the move and re-renders the board. The htmx board swaps via <code>hx-post</code>, the Datastar board via <code>&#64;post</code> with form encoding — same component, same endpoint shape. Each column header also carries an <code>Action</code> add-card slot (a ghost Button wired in the board's dialect) and a <code>Tone</code> status dot.</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = demoCodeSnippet("Go", `props.Wire = &wire.Action{URL: "/api/kanban/htmx"}                                  // hx-post
-props.Wire = &wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"} // data-on:submit="@post(...)"`).Render(ctx, templ_7745c5c3_Buffer)
+props.Wire = &wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"} // data-on:submit="@post(...)"
+col.Action = display.Button(display.ButtonProps{Wire: &wire.Action{URL: "/api/kanban/htmx/add/" + col.ID}})
+col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red, purple`).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
