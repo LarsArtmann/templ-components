@@ -162,6 +162,11 @@ Scope note: Datastar fetch actions accept no target option on the audited pin (v
 | `PieChartLabelMode` | External, None                                     |
 | `BarOrient`         | Horizontal, Vertical                               |
 | `KanbanTone`        | Gray, Blue, Green, Yellow, Red, Purple (zero value = no dot, for `KanbanColumn.Tone`) |
+| `StatTone`          | Blue (zero-value fallback), Green, Yellow, Red, Purple |
+| `ScrollbackTone`    | Neutral, Info, Success, Warning, Danger                |
+| `ButtonType`        | Primary, Secondary, Danger, Ghost, Link, OutlineDanger, OutlineWarning, OutlineSuccess, OutlineInfo |
+| `HoverCardPosition` | Top, Bottom, Start, End                                |
+| `TableCellPadding`  | Comfortable (default), Compact                         |
 
 ---
 
@@ -246,6 +251,7 @@ Scope note: Datastar fetch actions accept no target option on the audited pin (v
 | `SpinnerSize`     | SM, MD, LG                                                                                 |
 | `SkeletonVariant` | Text, TextShort, Title, Avatar, Image, Card, TableRow                                      |
 | `ProgressBarSize` | SM, MD, LG                                                                                 |
+| `StepIndicatorOrientation` | Horizontal, Vertical                                                               |
 
 ### Constants
 
@@ -305,7 +311,11 @@ Used by both Alert and Toast for consistent visual styling.
 | Type         | Values                                                                        |
 | ------------ | ----------------------------------------------------------------------------- |
 | `InputType`  | Text, Email, Password, Number, Tel, URL, Date, Time, Datetime, Search, Hidden |
-| `RatingSize` | SM, MD, LG                                                                    |
+| `RatingSize` | SM, MD, LG                                                                                     |
+| `FormMethod`        | GET, POST                                                                               |
+| `FormEnctype`       | Urlencoded, Multipart                                                                   |
+| `FormLayout`        | Stack (default), Inline (deprecated), Grid                                              |
+| `ToggleSize`        | SM, MD, LG                                                                              |
 
 ### Functions
 
@@ -335,6 +345,13 @@ _(None currently)_
 | `GlobalErrorHandling`  | FULLY_FUNCTIONAL | HTMX error handler         | Network errors, response errors, auto-retry, toast integration, family-aware error parsing                                                                                                                                      |
 | `ViewTransitions`      | FULLY_FUNCTIONAL | View Transitions API       | Native browser animations for HTMX swaps, `prefers-reduced-motion` support, graceful degradation                                                                                                                                |
 | `PolledRegion`         | FULLY_FUNCTIONAL | Auto-refreshing region     | `hx-trigger="every Ns"` polling, `Eager` first load with automatic `aria-busy="true"` busy cue (cleared on `htmx:afterRequest`), custom `Trigger` expression, `Live` aria-live politeness, optional updated-at timestamp footer |
+
+### Enums
+
+| Type         | Values                                                                           |
+| ------------ | -------------------------------------------------------------------------------- |
+| `SwapStyle`  | InnerHTML, OuterHTML, BeforeBegin, AfterBegin, BeforeEnd, AfterEnd, Delete, None |
+| `PolledLive` | Polite, Assertive, Off                                                           |
 
 ### Known Issues
 
@@ -415,7 +432,7 @@ Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts t
 
 ### Icon Names (102)
 
-101 path icons + Spinner covering navigation, UI actions, chevrons/arrows, communication, media, and status. See `icons/icon_names.go` for the complete list.
+101 path icons + Spinner covering navigation, UI actions, chevrons/arrows, communication, media, and status. The names form the typed `Name` enum (`icons.NameIsValid` guards it) — see `icons/icon_names.go` for the complete list.
 
 ### Functions
 
@@ -450,7 +467,7 @@ Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts t
 | `ThemeToggle` | FULLY_FUNCTIONAL | Theme switch button        | Sun/moon icons, JS toggle, CSP nonce                                                                                                                                                                                                                                                                                                                                                                     |
 | `Script`      | FULLY_FUNCTIONAL | CSP-safe script tag        | Auto-injects nonce, optional attrs (async, defer, type)                                                                                                                                                                                                                                                                                                                                                  |
 | `Stylesheet`  | FULLY_FUNCTIONAL | CSP-safe stylesheet        | `<link rel="stylesheet">` companion to Script, optional attrs                                                                                                                                                                                                                                                                                                                                            |
-| `AppShell`    | FULLY_FUNCTIONAL | Admin dashboard shell      | Sidebar + sticky header + main content, `lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh`, `SidebarWidth` enum (SM/MD/LG/Auto), `Breakpoint` enum (MD/LG/XL, default LG — where the sidebar appears / MobileNav hides), themable via `--tc-sidebar-bg`/`--tc-header-bg`/`--tc-header-border` tokens, optional `MobileNav` slot, renders inside `Base`'s `<main>` (no nested `<main>`) |
+| `AppShell`    | FULLY_FUNCTIONAL | Admin dashboard shell      | Sidebar + sticky header + main content, `lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh`, `SidebarWidth` enum (SM/MD/LG/Auto), `AppShellBreakpoint` enum (MD/LG, unspecified default LG — where the sidebar appears / MobileNav hides), themable via `--tc-sidebar-bg`/`--tc-header-bg`/`--tc-header-border` tokens, optional `MobileNav` slot, renders inside `Base`'s `<main>` (no nested `<main>`) |
 | `Container`   | FULLY_FUNCTIONAL | Centered max-width wrapper | Typed `ContainerWidth` enum (SM/MD/LG/XL/Full/Prose) + `ContainerWidthIsValid()`, optional responsive padding; replaces repeated `max-w-Nxl mx-auto px-*` snippet                                                                                                                                                                                                                                        |
 | `Split`       | FULLY_FUNCTIONAL | 2-column content+aside     | Typed `SplitRatio` (1To2/1To3/1To4) + `AsidePosition` (Start/End), logical CSS positioning (auto-mirrors RTL), `min-w-0` blowout guard, `ContainerAware` (stacks by container width via `@md:`)                                                                                                                                                                                                          |
 | `Stack`       | FULLY_FUNCTIONAL | Vertical rhythm            | Typed `StackGap` enum (None/SM/MD/LG/XL), `flex flex-col` (1D — grid reserved for 2D per ADR-0016)                                                                                                                                                                                                                                                                                                       |
