@@ -230,4 +230,39 @@ this plan is a defect, not a contribution:
 
 ## Footer — execution results
 
-_(to be filled when this plan is executed)_
+**Executed 2026-09-16 (same day, one session). All 40 fine tasks done; all gates green.**
+
+- **Phase 1 (recipe + contract docs):** `docs/recipes/kanban-card-anatomy.md` shipped
+  (identity badges, 2+N tag overflow, avatar stack, markdown-to-one-line preview,
+  sorted-views contract, hidden-columns note). Compiling proof folded into
+  `ExampleKanbanBoard_cardAnatomy` (Go-side composition incl. `oneLinePreview` helper).
+  Godoc added to `KanbanCard.Content`, `KanbanBoardProps.Wire`, and `ParseKanbanMove`
+  (sorted-views guidance: the index is advisory; reject same-column moves on
+  server-sorted views).
+- **Phase 2 (`KanbanColumn.Action`):** slot rendered in the column header after the
+  count badge (count extracted to `kanbanColumnCount` sub-template; the grouping div
+  renders ONLY when Action is set, so boards without it stay byte-identical — proven by
+  the existing goldens passing unchanged). Tests: golden `kanban_column_action`,
+  header-ordering a11y test, `ExampleKanbanBoard_columnAction`.
+- **Phase 3 (`KanbanColumn.Tone`):** `KanbanTone` enum + `KanbanToneIsValid` + test
+  (zero value intentionally toneless), `kanbanToneLookup` with `dark:`-paired classes
+  rendered via `utils.Lookup` (unknown → no dot), `aria-hidden` dot before the title.
+  Golden `kanban_column_tone`, rendering test, `TestDarkModeCompliance`/`SemanticColors`
+  green without exemptions.
+- **Phase 4 (integration):** demo wires a WORKING add-card flow — `POST
+  <move URL>/add/<column>` per transport, ghost `+ Add` Button per column, tones
+  (backlog=gray, progress=blue, review=yellow, done=green). Live smoke (HTTP):
+  correct dialect per transport (`hx-post` htmx / `data-on:click="@post(…)"` Datastar),
+  state mutates, board re-renders with the new card, count badge updates. Demo CSS
+  recompiled (`nix run .#css`); CSS guards green. Visual suite + e2e + axe sweep green —
+  note: NO route/component pixel goldens cover the kanban section (it sits below the
+  fold on `/`; nothing needed `-update`). TODO_LIST #218/#219/#220 struck through DONE.
+- **One deviation found during verification:** `wire.Action.Attributes()` defaults an
+  unspecified Method to GET — the demo's add button initially rendered `hx-get`. Fixed
+  by setting `Method: wire.MethodPost` explicitly in the demo builder (an add is a
+  mutation). Library code untouched; `kanbanWireAttributes` already forces POST for the
+  move form.
+- **Final sweep:** per-module loop (utils, icons, errorpage, charts/echarts, datastar,
+  htmx + visualtest + website) green; `nix run .#verify` all checks passed;
+  `nix run .#visual` ok; `nix flake check` passed. Docs-count drift claims bumped:
+  goldens 246→248, IsValid 59→60, enums 60→61.
