@@ -116,32 +116,20 @@ Cap the stack at ~3–4 avatars and fold the rest into a "+N" avatar
 A raw markdown blob is unreadable on a card. Flatten it to one plain line:
 attachments become labeled placeholders, inline syntax is stripped, whitespace
 collapses, and the result truncates. This is consumer-side Go — no component
-change:
+change. The compiling implementation lives in
+`display/kanban_example_test.go` (`oneLinePreview` plus its
+`cardAnatomy*Pattern` regexps) — **that file is the single source of truth**;
+copy from there rather than from this doc so the two can never drift:
 
 ```go
-var (
-    attachmentPattern  = regexp.MustCompile(`!\[([^\]]*)\]\([^)]*\)`)
-    markdownSyntaxPattern = regexp.MustCompile(`\[([^\]]*)\]\([^)]*\)|\*\*([^*]+)\*\*|\*([^*]+)\*|` + "`([^`]+)`")
-)
-
 // oneLinePreview flattens a markdown description into a single plain-text
 // line for card display: attachments become [label] placeholders, link and
 // emphasis syntax is stripped, whitespace collapses. Returns "" when nothing
 // readable remains. Truncated previews end with an ellipsis.
-func oneLinePreview(markdown string) string {
-    line := attachmentPattern.ReplaceAllString(markdown, "[$1]")
-    line = markdownSyntaxPattern.ReplaceAllString(line, "$1$2$3$4")
-    line = strings.Join(strings.Fields(line), " ")
-
-    const maxPreviewRunes = 90
-    runes := []rune(line)
-    if len(runes) > maxPreviewRunes {
-        line = string(runes[:maxPreviewRunes]) + "…"
-    }
-
-    return line
-}
+func oneLinePreview(markdown string) string
 ```
+
+(Rune cap: 90, then an ellipsis.)
 
 ```templ
 templ taskPreview(task Task) {
@@ -178,6 +166,10 @@ a broken board.
 The component cannot know your sort — but your move handler does. Reject
 same-column moves on sorted views instead of silently persisting them:
 
+**Pseudo-code:** `columnOf`, `sortedByPriority`, `persistMove`, and
+`renderBoard` stand in for your app's lookups and render path — the
+library-relevant lines are `display.ParseKanbanMove` and the 422 rejection.
+
 ```go
 func moveCard(w http.ResponseWriter, r *http.Request) {
     move, err := display.ParseKanbanMove(r)
@@ -211,9 +203,18 @@ documented on `KanbanBoardProps.Wire` and decoded by `ParseKanbanMove`.
 
 ## Complete worked example
 
-The library's own test suite proves this composition compiles and renders:
-see `ExampleKanbanBoard_cardAnatomy` in `display/kanban_example_test.go`
-(source of the patterns above).
+The Go side of this recipe is compile-proven and render-exercised by
+`display/kanban_example_test.go` (`taskCardContent` +
+`ExampleKanbanBoard_cardAnatomy`) — treat that file as the source of truth
+for the patterns above. The `templ` snippets here are consumer-side sketches
+(they assume your `Task` model); when they and the compiled example ever
+disagree, trust the example and fix this doc.
+
+**Related — the column Action slot:** per-column affordances (e.g. an
+add-card button) compose through `KanbanColumn.Action`. The consumer owns
+the whole element, including its accessibility: the content must be
+keyboard-reachable (a real button or link), and mutations must set
+`wire.MethodPost` explicitly — an unspecified Method renders GET.
 
 **Grounding:** this recipe transcribes the battle-tested card content design
 of `BloopAI/vibe-kanban` (research: `docs/research/vibe-kanban-analysis.md`

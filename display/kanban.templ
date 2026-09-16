@@ -42,7 +42,9 @@ type KanbanColumn struct {
 	// Action is an optional affordance rendered in the column header after
 	// the count badge — the standard "add card" spot. The consumer owns the
 	// whole element: compose display.Button (its Wire field for transport
-	// wiring), a plain link, or any templ markup. nil omits it; boards
+	// wiring), a plain link, or any templ markup — and owns its
+	// accessibility too: whatever renders there must be keyboard-reachable
+	// (a real button or link, not a hover-only div). nil omits it; boards
 	// without it render byte-identical to before.
 	Action templ.Component
 	// Tone is an optional status color rendered as a small dot before the
