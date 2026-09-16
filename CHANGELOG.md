@@ -8,6 +8,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`display.KanbanBoard` gains `KanbanColumn.Action` — a per-column
+  add-card slot.** The column header's standard affordance spot (the "+"),
+  rendered after the count badge on wired AND read-only boards. The consumer
+  owns the element and its transport: compose `display.Button` (its `Wire`
+  field), a plain link, or any templ markup — the component adds zero
+  JavaScript. nil (the zero value) omits the slot; boards without it render
+  byte-identical output (existing goldens unchanged). From the 2026-09-16
+  vibe-kanban source research (§4.1,
+  `docs/research/vibe-kanban-analysis.md`); recipe:
+  `docs/recipes/kanban-card-anatomy.md`.
+
+- **`docs/recipes/kanban-card-anatomy.md` — rich kanban card content.** The
+  battle-tested card anatomy (identity badges, 2+N tag overflow, assignee
+  avatar stack, markdown-to-one-line description preview) transcribed onto
+  `KanbanCard.Content` + `Badge`/`StatusBadge`/`Avatar`, plus the
+  sorted-views move contract ("the index is advisory — reject same-column
+  moves on server-sorted views") now documented on `KanbanBoardProps.Wire`
+  and `ParseKanbanMove` godoc. Compiling proof:
+  `ExampleKanbanBoard_cardAnatomy`.
+
 - **`display.LineChart`/`display.AreaChart` gain a `MaxTicks` tick budget.**
   The Y-axis tick count was hardwired (`lineChartMaxTicks = 8` in
   `chart_geometry.go`), which renders cramped axes on small charts — the
