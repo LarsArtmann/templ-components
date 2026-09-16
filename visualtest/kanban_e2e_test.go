@@ -2,6 +2,8 @@ package visualtest
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"net/http"
@@ -36,6 +38,7 @@ import (
 type kanbanE2EBoard struct {
 	mu      sync.Mutex
 	columns []display.KanbanColumn
+	next    int64
 }
 
 func newKanbanE2EBoard() *kanbanE2EBoard {
@@ -65,6 +68,7 @@ func (b *kanbanE2EBoard) reset() {
 	defer b.mu.Unlock()
 
 	b.columns = initialKanbanE2EColumns()
+	b.next = 0
 }
 
 // apply mutates the board by one decoded move: remove the card from
@@ -112,6 +116,31 @@ func (b *kanbanE2EBoard) apply(move display.KanbanMove) {
 	}
 }
 
+// add appends a fresh card to the named column and reports whether the
+// column exists — the handler turns false into a 404 so a broken link
+// surfaces instead of silently no-oping.
+func (b *kanbanE2EBoard) add(columnID string) bool {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	for ci := range b.columns {
+		if b.columns[ci].ID != columnID {
+			continue
+		}
+
+		n := b.next
+		b.next++
+		b.columns[ci].Cards = append(b.columns[ci].Cards, display.KanbanCard{
+			ID:    "ea" + strconv.FormatInt(n, 10),
+			Title: "Added " + strconv.FormatInt(n+1, 10),
+		})
+
+		return true
+	}
+
+	return false
+}
+
 // kanbanE2EPage renders both boards on one consumer page shell: layout.Base
 // injects the self-hosted htmx runtime; the Datastar runtime loads from
 // /datastar.js (the pinned bundle) with a datastar-ready catcher registered
@@ -140,14 +169,45 @@ func kanbanE2EPage() templ.Component {
 			return err
 		}
 
+		// Each board sits in a wrapper div carrying its reset button,
+		// mirroring the demo's per-board header layout.
+		if _, err := io.WriteString(w, `<div id="kb-htmx-wrap">`); err != nil {
+			return err
+		}
+
+		if err := kanbanE2EResetButton(wire.Action{
+			URL:    "/api/kanban/htmx/reset",
+			Method: wire.MethodPost,
+			Target: "#kb-htmx",
+		}).Render(ctx, w); err != nil {
+			return err
+		}
+
 		htmxProps := kanbanHTMXBoard.kanbanE2EBoardProps("kb-htmx", htmxAction)
 		if err := display.KanbanBoard(htmxProps).Render(ctx, w); err != nil {
 			return err
 		}
 
-		datastarProps := kanbanDatastarBoard.kanbanE2EBoardProps("kb-ds", datastarAction)
+		if _, err := io.WriteString(w, `</div><div id="kb-ds-wrap">`); err != nil {
+			return err
+		}
 
-		return display.KanbanBoard(datastarProps).Render(ctx, w)
+		if err := kanbanE2EResetButton(wire.Action{
+			Transport: wire.TransportDatastar,
+			Method:    wire.MethodPost,
+			URL:       "/api/kanban/datastar/reset",
+		}).Render(ctx, w); err != nil {
+			return err
+		}
+
+		datastarProps := kanbanDatastarBoard.kanbanE2EBoardProps("kb-ds", datastarAction)
+		if err := display.KanbanBoard(datastarProps).Render(ctx, w); err != nil {
+			return err
+		}
+
+		_, err := io.WriteString(w, `</div>`)
+
+		return err
 	})
 
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
@@ -190,6 +250,12 @@ func kanbanE2EServer(t *testing.T) *httptest.Server {
 				return
 			}
 
+			if r.FormValue(kanbanE2ECSRFField) != kanbanE2ECSRFToken {
+				http.Error(w, "invalid CSRF token", http.StatusForbidden)
+
+				return
+			}
+
 			board.apply(move)
 
 			if err := display.KanbanBoard(board.kanbanE2EBoardProps(id, action)).Render(r.Context(), w); err != nil {
@@ -203,6 +269,69 @@ func kanbanE2EServer(t *testing.T) *httptest.Server {
 		Selector: "#kb-ds",
 		Mode:     wire.PatchModeOuter,
 	}, moveHandler(kanbanDatastarBoard, "kb-ds", wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"})))
+
+	// The column Action slot's add endpoint: column id in the path, no
+	// request body, same-origin enforced — mirrors the demo.
+	addHandler := func(board *kanbanE2EBoard, id string, action wire.Action) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.Header().Set("Cache-Control", "no-store")
+
+			if !kanbanE2ESameOrigin(r) {
+				http.Error(w, "cross-origin request rejected", http.StatusForbidden)
+
+				return
+			}
+
+			column := r.PathValue("column")
+			if column == "" {
+				http.Error(w, "missing column path parameter", http.StatusBadRequest)
+
+				return
+			}
+
+			if !board.add(column) {
+				http.Error(w, "unknown column: "+column, http.StatusNotFound)
+
+				return
+			}
+
+			if err := display.KanbanBoard(board.kanbanE2EBoardProps(id, action)).Render(r.Context(), w); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		})
+	}
+
+	// Board reset: restores the starting layout (mirrors the demo).
+	resetHandler := func(board *kanbanE2EBoard, id string, action wire.Action) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.Header().Set("Cache-Control", "no-store")
+
+			if !kanbanE2ESameOrigin(r) {
+				http.Error(w, "cross-origin request rejected", http.StatusForbidden)
+
+				return
+			}
+
+			board.reset()
+
+			if err := display.KanbanBoard(board.kanbanE2EBoardProps(id, action)).Render(r.Context(), w); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		})
+	}
+
+	mux.Handle("POST /api/kanban/htmx/add/{column}", addHandler(kanbanHTMXBoard, "kb-htmx", wire.Action{URL: "/api/kanban/htmx"}))
+	mux.Handle("POST /api/kanban/datastar/add/{column}", wire.Handler(wire.PatchTarget{
+		Selector: "#kb-ds",
+		Mode:     wire.PatchModeOuter,
+	}, addHandler(kanbanDatastarBoard, "kb-ds", wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"})))
+	mux.Handle("POST /api/kanban/htmx/reset", resetHandler(kanbanHTMXBoard, "kb-htmx", wire.Action{URL: "/api/kanban/htmx"}))
+	mux.Handle("POST /api/kanban/datastar/reset", wire.Handler(wire.PatchTarget{
+		Selector: "#kb-ds",
+		Mode:     wire.PatchModeOuter,
+	}, resetHandler(kanbanDatastarBoard, "kb-ds", wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"})))
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -224,18 +353,89 @@ var (
 	kanbanDatastarBoard = newKanbanE2EBoard()
 )
 
+// kanbanE2ECSRFToken is the e2e server's CSRF token; every move handler
+// rejects form posts without it, so the browser tests prove the token
+// round-trips through the move form's hidden input under both runtimes.
+var kanbanE2ECSRFToken = newKanbanE2ECSRFToken()
+
+// kanbanE2ECSRFField matches KanbanBoardProps's default hidden-input name.
+const kanbanE2ECSRFField = "csrf_token"
+
+func newKanbanE2ECSRFToken() string {
+	var b [16]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		panic("kanban e2e: generate csrf token: " + err.Error())
+	}
+
+	return hex.EncodeToString(b[:])
+}
+
+// kanbanE2ESameOrigin mirrors the demo's same-origin enforcement for the
+// bodyless add/reset POSTs: Sec-Fetch-Site, then an Origin/host match.
+func kanbanE2ESameOrigin(r *http.Request) bool {
+	if r.Header.Get("Sec-Fetch-Site") == "same-origin" {
+		return true
+	}
+
+	origin := r.Header.Get("Origin")
+
+	return origin == "http://"+r.Host || origin == "https://"+r.Host
+}
+
+// kanbanE2EAddButton mirrors the demo's add affordance: a ghost Button
+// whose Wire attributes carry the transport dialect. htmx targets the board
+// root (Target is set by the caller) and must swap outerHTML — otherwise
+// the whole-board response lands inside this button.
+func kanbanE2EAddButton(action wire.Action, columnTitle string) templ.Component {
+	base := utils.BaseProps{AriaLabel: "Add card to " + columnTitle}
+	if action.Transport != wire.TransportDatastar {
+		base.Attrs = templ.Attributes{"hx-swap": "outerHTML"}
+	}
+
+	return display.Button(display.ButtonProps{
+		BaseProps: base,
+		Text:      "+ Add",
+		Variant:   display.ButtonGhost,
+		Size:      display.ButtonSizeSM,
+		Wire:      &action,
+	})
+}
+
+// kanbanE2EResetButton mirrors the demo's reset affordance.
+func kanbanE2EResetButton(action wire.Action) templ.Component {
+	base := utils.BaseProps{AriaLabel: "Reset demo board"}
+	if action.Transport != wire.TransportDatastar {
+		base.Attrs = templ.Attributes{"hx-swap": "outerHTML"}
+	}
+
+	return display.Button(display.ButtonProps{
+		BaseProps: base,
+		Text:      "Reset",
+		Variant:   display.ButtonGhost,
+		Size:      display.ButtonSizeSM,
+		Wire:      &action,
+	})
+}
+
 // kanbanE2EBoardProps snapshots the state into render props with a stable
-// board id and the transport's wire action.
+// board id, the transport's wire action, a CSRF token on the move form, and
+// a per-column add-card button in the Action slot (mirroring the demo).
 func (b *kanbanE2EBoard) kanbanE2EBoardProps(id string, action wire.Action) display.KanbanBoardProps {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
 	snapshot := make([]display.KanbanColumn, len(b.columns))
 	for ci, col := range b.columns {
+		add := action
+		add.URL += "/add/" + col.ID
+		add.Method = wire.MethodPost
+		add.Event = wire.EventClick
+		add.Target = "#" + id
 		snapshot[ci] = display.KanbanColumn{
-			ID:    col.ID,
-			Title: col.Title,
-			Cards: append([]display.KanbanCard(nil), col.Cards...),
+			ID:     col.ID,
+			Title:  col.Title,
+			Cards:  append([]display.KanbanCard(nil), col.Cards...),
+			Action: kanbanE2EAddButton(add, col.Title),
 		}
 	}
 
@@ -243,6 +443,7 @@ func (b *kanbanE2EBoard) kanbanE2EBoardProps(id string, action wire.Action) disp
 	props.BaseProps = utils.BaseProps{ID: id}
 	props.Columns = snapshot
 	props.Wire = &action
+	props.CSRFToken = kanbanE2ECSRFToken
 
 	return props
 }
@@ -622,4 +823,93 @@ func TestKanbanE2EAnnouncesMove(t *testing.T) {
 				boardID, want, announced, err)
 		}
 	}
+}
+
+// kanbanColumnCountExpr returns a JS expression evaluating to the number of
+// cards in one column.
+func kanbanColumnCountExpr(boardID, columnID string) string {
+	return fmt.Sprintf(
+		`document.querySelectorAll('#%s [data-tc-kanban-column-body="%s"] > [data-tc-kanban-card]').length`,
+		boardID,
+		columnID,
+	)
+}
+
+// kanbanClickCountUntil clicks an always-visible affordance (the add/reset
+// buttons live in the column/board header — no opacity-0 dance like the
+// hover-revealed move buttons) and polls for the expected card count,
+// retrying the click a few times: a click issued while the runtime
+// re-attaches to swapped-in markup can be swallowed (the wire-forms-pack
+// lesson).
+func kanbanClickCountUntil(ctx context.Context, t *testing.T, buttonSel, countExpr string, want int) {
+	t.Helper()
+
+	poll := countExpr + "===" + strconv.Itoa(want)
+
+	for range 3 {
+		if err := chromedp.Run(ctx,
+			chromedp.Click(buttonSel),
+		); err != nil {
+			t.Fatalf("click %s: %v", buttonSel, err)
+		}
+
+		var got bool
+
+		err := chromedp.Run(ctx, chromedp.Poll(poll, &got))
+		if err == nil && got {
+			return
+		}
+
+		time.Sleep(300 * time.Millisecond)
+	}
+
+	t.Fatalf("column count never reached %d via %s", want, buttonSel)
+}
+
+// TestKanbanE2EAddAndResetBothTransports proves the KanbanColumn.Action slot
+// end-to-end: clicking the add-card button appends a card to the target
+// column through the transport dialect (htmx hx-post + outerHTML swap of
+// the board root; Datastar @post + response-header targeting), and the
+// reset button restores the empty column — both under the real runtimes.
+// This is the "wired affordance ⇒ browser proof" doctrine test for Action:
+// without it, a missing hx-target/hx-swap pair silently swaps the whole
+// board into the button itself.
+func TestKanbanE2EAddAndResetBothTransports(t *testing.T) {
+	kanbanHTMXBoard.reset()
+	kanbanDatastarBoard.reset()
+
+	srv := kanbanE2EServer(t)
+
+	ctx, cancel := newTab(t)
+	defer cancel()
+
+	ctx, cancelTimeout := context.WithTimeout(ctx, 45*time.Second)
+	defer cancelTimeout()
+
+	var ready bool
+
+	if err := chromedp.Run(ctx,
+		chromedp.Navigate(srv.URL+"/"),
+		chromedp.Poll(kanbanE2EReady, &ready),
+	); err != nil {
+		t.Fatalf("navigate + readiness: %v", err)
+	}
+
+	// htmx board: one click on the empty "In progress" column's add button.
+	kanbanClickCountUntil(ctx, t,
+		`#kb-htmx [data-tc-kanban-column="doing"] [aria-label="Add card to In progress"]`,
+		kanbanColumnCountExpr("kb-htmx", "doing"), 1)
+
+	// Datastar board: the same affordance in the other dialect.
+	kanbanClickCountUntil(ctx, t,
+		`#kb-ds [data-tc-kanban-column="doing"] [aria-label="Add card to In progress"]`,
+		kanbanColumnCountExpr("kb-ds", "doing"), 1)
+
+	// Reset restores the starting layout on both boards.
+	kanbanClickCountUntil(ctx, t,
+		`#kb-htmx-wrap [aria-label="Reset demo board"]`,
+		kanbanColumnCountExpr("kb-htmx", "doing"), 0)
+	kanbanClickCountUntil(ctx, t,
+		`#kb-ds-wrap [aria-label="Reset demo board"]`,
+		kanbanColumnCountExpr("kb-ds", "doing"), 0)
 }
