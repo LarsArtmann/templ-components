@@ -40,6 +40,15 @@ func TestIsValidEnums(t *testing.T) {
 		{"StatTone Blue", func() bool { return StatToneIsValid(StatToneBlue) }, true},
 		{"StatTone Purple", func() bool { return StatToneIsValid(StatTonePurple) }, true},
 		{"StatTone invalid", func() bool { return StatToneIsValid(StatTone("bogus")) }, false},
+		// KanbanTone
+		{"KanbanTone Gray", func() bool { return KanbanToneIsValid(KanbanToneGray) }, true},
+		{"KanbanTone Blue", func() bool { return KanbanToneIsValid(KanbanToneBlue) }, true},
+		{"KanbanTone Green", func() bool { return KanbanToneIsValid(KanbanToneGreen) }, true},
+		{"KanbanTone Yellow", func() bool { return KanbanToneIsValid(KanbanToneYellow) }, true},
+		{"KanbanTone Red", func() bool { return KanbanToneIsValid(KanbanToneRed) }, true},
+		{"KanbanTone Purple", func() bool { return KanbanToneIsValid(KanbanTonePurple) }, true},
+		{"KanbanTone zero value is toneless", func() bool { return KanbanToneIsValid(KanbanTone("")) }, false},
+		{"KanbanTone invalid", func() bool { return KanbanToneIsValid(KanbanTone("bogus")) }, false},
 		// AvatarSize
 		{"AvatarSize SM", func() bool { return AvatarSizeIsValid(AvatarSizeSM) }, true},
 		{"AvatarSize invalid", func() bool { return AvatarSizeIsValid(AvatarSize("bogus")) }, false},

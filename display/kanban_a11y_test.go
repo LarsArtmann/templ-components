@@ -126,7 +126,10 @@ func TestKanbanA11yActionSlot(t *testing.T) {
 	bodyIdx := mustIndex(t, wiredHTML, `data-tc-kanban-column-body="todo"`)
 
 	if actionIdx < headerIdx || actionIdx > bodyIdx {
-		t.Errorf("action button not between the column header and the card list (action %d, header %d, body %d)", actionIdx, headerIdx, bodyIdx)
+		t.Errorf(
+			"action button not between the column header and the card list (action %d, header %d, body %d)",
+			actionIdx, headerIdx, bodyIdx,
+		)
 	}
 
 	utils.AssertContains(t, wiredHTML, `aria-label="To do: 1 card"`)
@@ -134,6 +137,32 @@ func TestKanbanA11yActionSlot(t *testing.T) {
 
 	readonly := utils.Render(t, KanbanBoard(props))
 	utils.AssertContains(t, readonly, ">Add card</button>")
+}
+
+// TestKanbanToneDotRendering verifies the column status dot: rendered
+// before the title when Tone is set (aria-hidden, decorative), and absent
+// for the zero value and unknown tones (graceful degradation — no invisible
+// element).
+func TestKanbanToneDotRendering(t *testing.T) {
+	t.Parallel()
+
+	toned := utils.Render(t, KanbanBoard(KanbanBoardProps{
+		Columns: []KanbanColumn{{ID: "done", Title: "Done", Tone: KanbanToneGreen}},
+	}))
+	utils.AssertContainsAll(t, toned,
+		"rounded-full", "h-2", "w-2", "bg-green-500", "dark:bg-green-400", `aria-hidden="true"`,
+	)
+
+	for name, tone := range map[string]KanbanTone{"zero": "", "unknown": KanbanTone("bogus")} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			html := utils.Render(t, KanbanBoard(KanbanBoardProps{
+				Columns: []KanbanColumn{{ID: "done", Title: "Done", Tone: tone}},
+			}))
+			utils.AssertNotContains(t, html, "rounded-full")
+		})
+	}
 }
 
 // mustIndex returns strings.Index(s, substr) or fails the test when the

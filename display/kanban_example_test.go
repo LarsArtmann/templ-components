@@ -104,14 +104,14 @@ func taskCardContent(task RecipeTask) templ.Component {
 	}
 	// 2. Tag overflow: render at most two badges, then a muted "+N" once.
 	for i, tag := range task.Tags {
-		switch {
-		case i == 0, i == 1:
+		switch i {
+		case 0, 1:
 			parts = append(parts, display.Badge(display.BadgeProps{
 				Text: tag,
 				Type: display.BadgeNeutral,
 				Size: display.BadgeSizeSM,
 			}))
-		case i == 2:
+		case 2:
 			parts = append(parts, templ.Raw(fmt.Sprintf(
 				`<span class="text-xs font-medium text-gray-500 dark:text-gray-400">+%d</span>`,
 				len(task.Tags)-2,

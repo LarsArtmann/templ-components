@@ -45,8 +45,52 @@ type KanbanColumn struct {
 	// wiring), a plain link, or any templ markup. nil omits it; boards
 	// without it render byte-identical to before.
 	Action templ.Component
+	// Tone is an optional status color rendered as a small dot before the
+	// column title (todo=blue, done=green, …). The zero value (and any
+	// unknown value) renders no dot — see KanbanTone.
+	Tone KanbanTone
 	// Class overrides the column's Tailwind classes.
 	Class string
+}
+
+// KanbanTone selects the semantic color of a KanbanColumn's status dot,
+// mirroring StatTone's palette. Unlike StatTone, the zero value is
+// toneless: an empty or unknown Tone renders no dot at all (columns are
+// not required to carry status semantics).
+type KanbanTone string
+
+// Column dot tones. Match the palette of Badge/BadgeType and StatTone:
+// gray, blue, green, yellow, red, purple.
+const (
+	KanbanToneGray   KanbanTone = "gray"
+	KanbanToneBlue   KanbanTone = "blue"
+	KanbanToneGreen  KanbanTone = "green"
+	KanbanToneYellow KanbanTone = "yellow"
+	KanbanToneRed    KanbanTone = "red"
+	KanbanTonePurple KanbanTone = "purple"
+)
+
+// KanbanToneIsValid reports whether v is one of the defined KanbanTone
+// constants. The zero value is intentionally invalid — a toneless column
+// renders no dot.
+func KanbanToneIsValid(v KanbanTone) bool {
+	_, ok := kanbanToneLookup[v]
+
+	return ok
+}
+
+// kanbanToneLookup maps each KanbanTone onto the status-dot background
+// classes. Unknown/empty tones resolve to "" — the signal to render no
+// dot — rather than falling back to a color.
+//
+//nolint:gochecknoglobals // Package-level lookup table, same pattern as statTileLookup
+var kanbanToneLookup = map[KanbanTone]string{
+	KanbanToneGray:   "bg-gray-400 dark:bg-gray-500",
+	KanbanToneBlue:   "bg-blue-500 dark:bg-blue-400",
+	KanbanToneGreen:  "bg-green-500 dark:bg-green-400",
+	KanbanToneYellow: "bg-yellow-500 dark:bg-yellow-400",
+	KanbanToneRed:    "bg-red-500 dark:bg-red-400",
+	KanbanTonePurple: "bg-purple-500 dark:bg-purple-400",
 }
 
 // KanbanBoardProps configures a Kanban board: horizontal swimlanes of
@@ -182,6 +226,12 @@ templ KanbanBoard(props KanbanBoardProps) {
 				>
 					<div class="mb-3 flex items-center justify-between gap-2 px-1">
 						<h3 id={ colID + "-title" } class="truncate text-sm font-semibold text-gray-900 dark:text-white">
+							if dotClass := utils.Lookup(kanbanToneLookup, col.Tone, ""); dotClass != "" {
+								<span
+									class={ "me-1.5 inline-block h-2 w-2 rounded-full align-middle", dotClass }
+									aria-hidden="true"
+								></span>
+							}
 							{ col.Title }
 						</h3>
 						if col.Action != nil {
