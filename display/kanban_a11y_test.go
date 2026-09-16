@@ -118,21 +118,26 @@ func TestKanbanA11yActionSlot(t *testing.T) {
 		}},
 	}
 
-	wired := utils.Render(t, KanbanBoard(props))
-	actionIdx := mustIndex(t, wired, ">Add card</button>")
-	headerIdx := mustIndex(t, wired, `aria-label="To do: 1 card"`)
-	bodyIdx := mustIndex(t, wired, `data-tc-kanban-column-body="todo"`)
+	wired := props
+	wired.Wire = &wire.Action{URL: "/api/kanban/move"}
+	wiredHTML := utils.Render(t, KanbanBoard(wired))
+	actionIdx := mustIndex(t, wiredHTML, ">Add card</button>")
+	headerIdx := mustIndex(t, wiredHTML, ">To do</h3>")
+	bodyIdx := mustIndex(t, wiredHTML, `data-tc-kanban-column-body="todo"`)
 
 	if actionIdx < headerIdx || actionIdx > bodyIdx {
 		t.Errorf("action button not between the column header and the card list (action %d, header %d, body %d)", actionIdx, headerIdx, bodyIdx)
 	}
 
-	utils.AssertContains(t, wired, `aria-label="To do: 1 card"`)
-	utils.AssertContains(t, wired, ">Add card</button>")
+	utils.AssertContains(t, wiredHTML, `aria-label="To do: 1 card"`)
+	utils.AssertContains(t, wiredHTML, ">Add card</button>")
 
 	readonly := utils.Render(t, KanbanBoard(props))
 	utils.AssertContains(t, readonly, ">Add card</button>")
 }
+
+// mustIndex returns strings.Index(s, substr) or fails the test when the
+// substring is absent (a -1 index would slice out of range).
 func mustIndex(t *testing.T, s, substr string) int {
 	t.Helper()
 

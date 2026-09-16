@@ -145,6 +145,31 @@ func taskCardContent(task RecipeTask) templ.Component {
 	})
 }
 
+func ExampleKanbanBoard_columnAction() {
+	// Per-column "add card" affordance via the Action slot. The consumer
+	// owns the element and its transport: this Button posts to the column's
+	// add-card endpoint in either dialect via its Wire field.
+	props := display.KanbanBoardProps{
+		Columns: []display.KanbanColumn{{
+			ID:    "todo",
+			Title: "To do",
+			Action: display.Button(display.ButtonProps{
+				Text:    "Add card",
+				Variant: display.ButtonSecondary,
+				Size:    display.ButtonSizeSM,
+				Wire: &wire.Action{
+					URL:   "/api/kanban/add-card",
+					Event: wire.EventClick,
+				},
+			}),
+		}},
+	}
+
+	var buf bytes.Buffer
+
+	_ = display.KanbanBoard(props).Render(context.Background(), &buf)
+}
+
 func ExampleKanbanBoard_cardAnatomy() {
 	// Rich card content per docs/recipes/kanban-card-anatomy.md.
 	task := RecipeTask{
