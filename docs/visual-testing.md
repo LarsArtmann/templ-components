@@ -111,6 +111,20 @@ The demo binary embeds `static/app.css` — after ANY `templates/custom.css`
 change, recompile the CSS (`nix run .#css`) AND rebuild/restart the demo
 binary, or captures silently serve stale styles.
 
+For scripted endpoint checks there is a tiny smoke client (raw curl/wget are
+banned in agent sessions here; ad-hoc one-offs cannot be reused):
+
+```bash
+go build -o /tmp/smoke ./visualtest/tools/smoke
+/tmp/smoke -contains '<title>' http://localhost:8901/
+/tmp/smoke -X POST -status 403 http://localhost:8901/api/kanban/htmx/add/backlog
+/tmp/smoke -X POST -H "Sec-Fetch-Site: same-origin" \
+    -contains 'data-tc-kanban' http://localhost:8901/api/kanban/htmx/add/backlog
+```
+
+Exit 0 on success; a mismatch prints what happened, the likely cause, and the
+fix, then exits with the unexpected status.
+
 ## Writing a new visual test
 
 ```go

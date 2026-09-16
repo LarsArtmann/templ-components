@@ -8,6 +8,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Demo kanban board models the secure path + board reset.** The move form
+  now carries a server-issued CSRF token (`KanbanBoardProps.CSRFToken`,
+  validated server-side — missing or wrong rejects with 403), the bodyless
+  add/reset POSTs enforce same-origin (`Sec-Fetch-Site`/`Origin` — a token
+  in the URL would leak into logs), an add to an unknown column returns 404
+  instead of 200-nooping, and each board header gains a Reset button that
+  restores the starting layout (new `POST /api/kanban/{htmx,datastar}/reset`
+  endpoints). Wired-affordance browser proof closed the doctrine gap:
+  `TestKanbanE2EAddAndResetBothTransports` clicks add + reset under both
+  runtimes (and forced the fix that the add/reset buttons need
+  `hx-target` + `hx-swap="outerHTML"`, else the whole-board response swaps
+  into the button); `TestDemoKanbanHTTPContracts` pins the HTTP contracts.
+
+- **`visualtest/tools/smoke` — reusable demo smoke CLI.** One request,
+  asserted status + body markers, cause-and-fix error messages, exit 0/1 —
+  replaces the throwaway `/tmp` smoke clients (raw curl/wget are banned in
+  agent sessions here). Documented in `docs/visual-testing.md`.
+
 - **`display.KanbanBoard` gains `KanbanColumn.Tone` — a column status dot.**
   `KanbanTone` (gray/blue/green/yellow/red/purple) mirrors the `StatTone`
   palette and renders a small `aria-hidden` dot before the column title —
