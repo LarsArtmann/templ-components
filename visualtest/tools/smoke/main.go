@@ -87,7 +87,13 @@ func run(args []string) int {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return fail(http.StatusServiceUnavailable, "%s %s failed: %v — is the server running and the PORT correct?", cfg.verb, cfg.url, err)
+		return fail(
+			http.StatusServiceUnavailable,
+			"%s %s failed: %v — is the server running and the PORT correct?",
+			cfg.verb,
+			cfg.url,
+			err,
+		)
 	}
 	defer resp.Body.Close()
 
@@ -107,50 +113,85 @@ func run(args []string) int {
 
 // parseFlags builds the invocation from argv-style args.
 func parseFlags(args []string) smokeConfig {
-	cfg := smokeConfig{
-		verb:       http.MethodGet,
-		wantStatus: http.StatusOK,
-		timeoutMS:  defaultTimeoutMS,
-	}
+	var (
+		verb            string
+		body            string
+		wantStatus      int
+		timeoutMS       int
+		headers         multiFlag
+		wantContains    multiFlag
+		wantNotContains multiFlag
+	)
 
-	fs := flag.NewFlagSet("smoke", flag.ContinueOnError)
-	fs.StringVar(&cfg.verb, "X", http.MethodGet, "HTTP method")
-	fs.StringVar(&cfg.body, "d", "", "request body")
-	fs.IntVar(&cfg.wantStatus, "status", http.StatusOK, "expected status code")
-	fs.IntVar(&cfg.timeoutMS, "timeout-ms", defaultTimeoutMS, "request timeout in milliseconds")
-	fs.Var(&cfg.headers, "H", "request header as k:v (repeatable)")
-	fs.Var(&cfg.wantContains, "contains", "marker that must appear in the response body (repeatable)")
-	fs.Var(&cfg.wantNotContains, "not-contains", "marker that must NOT appear in the response body (repeatable)")
+	flags := flag.NewFlagSet("smoke", flag.ContinueOnError)
+	flags.StringVar(&verb, "X", http.MethodGet, "HTTP method")
+	flags.StringVar(&body, "d", "", "request body")
+	flags.IntVar(&wantStatus, "status", http.StatusOK, "expected status code")
+	flags.IntVar(&timeoutMS, "timeout-ms", defaultTimeoutMS, "request timeout in milliseconds")
+	flags.Var(&headers, "H", "request header as k:v (repeatable)")
+	flags.Var(&wantContains, "contains", "marker that must appear in the response body (repeatable)")
+	flags.Var(&wantNotContains, "not-contains", "marker that must NOT appear in the response body (repeatable)")
 
-	if err := fs.Parse(args); err != nil {
+	if err := flags.Parse(args); err != nil {
 		fail(http.StatusBadRequest, "parse flags: %v", err)
 	}
 
-	if fs.NArg() != 1 {
-		fail(http.StatusBadRequest, "exactly one URL argument is required (got %d) — pass the target as the last argument", fs.NArg())
+	if flags.NArg() != 1 {
+		fail(
+			http.StatusBadRequest,
+			"exactly one URL argument is required (got %d) — pass the target as the last argument",
+			flags.NArg(),
+		)
 	}
 
-	cfg.url = fs.Arg(0)
-
-	return cfg
+	return smokeConfig{
+		verb:            verb,
+		url:             flags.Arg(0),
+		body:            body,
+		wantStatus:      wantStatus,
+		timeoutMS:       timeoutMS,
+		headers:         headers,
+		wantContains:    wantContains,
+		wantNotContains: wantNotContains,
+	}
 }
 
 // assertResponse checks status and body markers, returning a nonzero exit
 // code (the offending status) on the first mismatch.
 func assertResponse(cfg smokeConfig, gotStatus int, body string) int {
 	if gotStatus != cfg.wantStatus {
-		return fail(gotStatus, "%s %s returned %d, want %d — body: %.200s", cfg.verb, cfg.url, gotStatus, cfg.wantStatus, body)
+		return fail(
+			gotStatus,
+			"%s %s returned %d, want %d — body: %.200s",
+			cfg.verb,
+			cfg.url,
+			gotStatus,
+			cfg.wantStatus,
+			body,
+		)
 	}
 
 	for _, marker := range cfg.wantContains {
 		if !strings.Contains(body, marker) {
-			return fail(http.StatusInternalServerError, "response of %s %s is missing required marker %q — the page or endpoint changed, or the server is serving stale content", cfg.verb, cfg.url, marker)
+			return fail(
+				http.StatusInternalServerError,
+				"response of %s %s is missing required marker %q — the page or endpoint changed, or the server is serving stale content",
+				cfg.verb,
+				cfg.url,
+				marker,
+			)
 		}
 	}
 
 	for _, marker := range cfg.wantNotContains {
 		if strings.Contains(body, marker) {
-			return fail(http.StatusInternalServerError, "response of %s %s contains forbidden marker %q — the state change it implies did not happen", cfg.verb, cfg.url, marker)
+			return fail(
+				http.StatusInternalServerError,
+				"response of %s %s contains forbidden marker %q — the state change it implies did not happen",
+				cfg.verb,
+				cfg.url,
+				marker,
+			)
 		}
 	}
 
