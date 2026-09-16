@@ -55,7 +55,7 @@ templ filterBar(action string, filters []FilterDef) {
 		for _, f := range filters {
 			@filterSelect(f)
 		}
-		@forms.Button(forms.ButtonProps{Variant: forms.ButtonOutline, Text: "Reset", Class: "mb-1", Href: action })
+		@display.Button(display.ButtonProps{Variant: display.ButtonSecondary, Text: "Reset", Class: "mb-1", Href: action })
 	</form>
 }
 

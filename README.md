@@ -150,7 +150,10 @@ Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, toolt
 
 @display.KanbanBoard(display.KanbanBoardProps{
     Columns: []display.KanbanColumn{
-        {ID: "todo", Title: "To do", Cards: []display.KanbanCard{{ID: "c1", Title: "Write docs"}}},
+        {ID: "todo", Title: "To do", Tone: display.KanbanToneBlue,
+            Action: display.Button(display.ButtonProps{Text: "+ Add", Size: display.ButtonSizeSM,
+                Wire: &wire.Action{Method: wire.MethodPost, URL: "/api/kanban/add/todo"}}),
+            Cards: []display.KanbanCard{{ID: "c1", Title: "Write docs"}}},
         {ID: "done", Title: "Done"},
     },
     Wire: &wire.Action{URL: "/api/kanban/move"},

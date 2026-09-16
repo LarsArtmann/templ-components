@@ -103,6 +103,10 @@ nix run .#shots -- -page index        # single route
 nix run .#shots -- -base http://localhost:8902 -out /tmp/shots
 ```
 
+Always pass an explicit `PORT`: the demo's default (:8080) is commonly
+occupied (it burned a debugging cycle here against a local SigNoz instance),
+and the demo does not fail loudly enough when the port is taken.
+
 The demo binary embeds `static/app.css` — after ANY `templates/custom.css`
 change, recompile the CSS (`nix run .#css`) AND rebuild/restart the demo
 binary, or captures silently serve stale styles.

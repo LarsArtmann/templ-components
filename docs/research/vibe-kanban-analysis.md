@@ -254,15 +254,15 @@ the product sunset. For us the boundary is already drawn and correct:
 realtime, selection, and issue-panel UX are consumer concerns (composable via our
 `Content` slots and `Wire`). Keep saying no.
 
-## 6. Follow-up candidates (ranked, none implemented)
+## 6. Follow-up candidates (ranked — 1–4 shipped 2026-09-16, #5 deferred)
 
 | # | Item | Cost | Value |
 |---|------|------|-------|
-| 1 | `docs/recipes/kanban-card-anatomy.md` (card anatomy + tag overflow + description preview) | trivial | high — unlocks their best UX with existing API |
-| 2 | `KanbanColumn.Action` slot (per-column add-card) | small | high — real gap |
-| 3 | `KanbanColumn.Tone` status dot | small | medium |
-| 4 | Godoc/recipe note: sorted views ↔ read-only or server-rejected reorder | trivial | medium — prevents consumer confusion |
-| 5 | Drag-handle variant — ONLY if whole-card click actions ever land | medium | low today |
+| 1 | ✅ DONE 2026-09-16 — `docs/recipes/kanban-card-anatomy.md` (card anatomy + tag overflow + description preview) | trivial | high — unlocks their best UX with existing API |
+| 2 | ✅ DONE 2026-09-16 — `KanbanColumn.Action` slot (per-column add-card), browser-proven e2e | small | high — real gap |
+| 3 | ✅ DONE 2026-09-16 — `KanbanColumn.Tone` status dot | small | medium |
+| 4 | ✅ DONE 2026-09-16 — Godoc/recipe note: sorted views ↔ read-only or server-rejected reorder (`ParseKanbanMove` godoc + recipe move contract) | trivial | medium — prevents consumer confusion |
+| 5 | Drag-handle variant — ONLY if whole-card click actions ever land (still deferred, TODO_LIST #190) | medium | low today |
 
 ## 7. Sources
 
