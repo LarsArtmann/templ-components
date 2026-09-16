@@ -57,8 +57,18 @@ func TestGoldenSweepKanban(t *testing.T) {
 		}))},
 		{Name: "kanban_column_tone", HTML: utils.Render(t, KanbanBoard(KanbanBoardProps{
 			Columns: []KanbanColumn{
-				{ID: "todo", Title: "To do", Tone: KanbanToneBlue, Cards: []KanbanCard{{ID: "c1", Title: "Write docs"}}},
-				{ID: "doing", Title: "In progress", Tone: KanbanToneYellow, Cards: []KanbanCard{{ID: "c2", Title: "Review PR"}}},
+				{
+					ID:    "todo",
+					Title: "To do",
+					Tone:  KanbanToneBlue,
+					Cards: []KanbanCard{{ID: "c1", Title: "Write docs"}},
+				},
+				{
+					ID:    "doing",
+					Title: "In progress",
+					Tone:  KanbanToneYellow,
+					Cards: []KanbanCard{{ID: "c2", Title: "Review PR"}},
+				},
 				{ID: "blocked", Title: "Blocked", Tone: KanbanToneRed},
 				{ID: "done", Title: "Done", Tone: KanbanToneGreen},
 				{ID: "icebox", Title: "Icebox", Tone: KanbanToneGray},
