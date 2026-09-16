@@ -39,6 +39,12 @@ type KanbanColumn struct {
 	Title string
 	// Cards renders in order, top to bottom.
 	Cards []KanbanCard
+	// Action is an optional affordance rendered in the column header after
+	// the count badge — the standard "add card" spot. The consumer owns the
+	// whole element: compose display.Button (its Wire field for transport
+	// wiring), a plain link, or any templ markup. nil omits it; boards
+	// without it render byte-identical to before.
+	Action templ.Component
 	// Class overrides the column's Tailwind classes.
 	Class string
 }
@@ -178,11 +184,14 @@ templ KanbanBoard(props KanbanBoardProps) {
 						<h3 id={ colID + "-title" } class="truncate text-sm font-semibold text-gray-900 dark:text-white">
 							{ col.Title }
 						</h3>
-						<span
-							class="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-300"
-						>
-							{ strconv.Itoa(len(col.Cards)) }
-						</span>
+						if col.Action != nil {
+							<div class="flex shrink-0 items-center gap-2">
+								@kanbanColumnCount(len(col.Cards))
+								@col.Action
+							</div>
+						} else {
+							@kanbanColumnCount(len(col.Cards))
+						}
 					</div>
 					<ul
 						if col.ID != "" {
@@ -220,6 +229,15 @@ templ KanbanBoard(props KanbanBoardProps) {
 			@kanbanScriptComponent(props.Nonce)
 		}
 	</div>
+}
+
+// kanbanColumnCount renders a column's card-count badge.
+templ kanbanColumnCount(count int) {
+	<span
+		class="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+	>
+		{ strconv.Itoa(count) }
+	</span>
 }
 
 // kanbanCardInner renders a card's content plus, on a wired board, the

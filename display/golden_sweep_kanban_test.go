@@ -41,5 +41,19 @@ func TestGoldenSweepKanban(t *testing.T) {
 				}},
 			}},
 		}))},
+		{Name: "kanban_column_action", HTML: utils.Render(t, KanbanBoard(KanbanBoardProps{
+			Columns: []KanbanColumn{{
+				ID:    "todo",
+				Title: "To do",
+				Cards: []KanbanCard{{ID: "c1", Title: "Write docs"}},
+				// The add-card slot composes with the library's own Button.
+				Action: Button(ButtonProps{
+					Text:    "Add card",
+					Variant: ButtonSecondary,
+					Size:    ButtonSizeSM,
+				}),
+			}},
+			Wire: &wire.Action{URL: "/api/kanban/move"},
+		}))},
 	})
 }

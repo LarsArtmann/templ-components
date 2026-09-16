@@ -99,8 +99,40 @@ func TestKanbanA11yReadonlyBoardIsSemantic(t *testing.T) {
 	utils.AssertNotContains(t, html, "aria-live")
 }
 
-// mustIndex returns strings.Index(s, substr) or fails the test when the
-// substring is absent (a -1 index would slice out of range).
+// TestKanbanA11yActionSlot verifies the per-column Action slot lands inside
+// the column header (after the count, before the card list) and renders on
+// read-only boards too — it is presentation, not part of the move exchange.
+func TestKanbanA11yActionSlot(t *testing.T) {
+	t.Parallel()
+
+	props := KanbanBoardProps{
+		Columns: []KanbanColumn{{
+			ID:    "todo",
+			Title: "To do",
+			Cards: []KanbanCard{{ID: "c1", Title: "Write docs"}},
+			Action: Button(ButtonProps{
+				Text:    "Add card",
+				Variant: ButtonSecondary,
+				Size:    ButtonSizeSM,
+			}),
+		}},
+	}
+
+	wired := utils.Render(t, KanbanBoard(props))
+	actionIdx := mustIndex(t, wired, ">Add card</button>")
+	headerIdx := mustIndex(t, wired, `aria-label="To do: 1 card"`)
+	bodyIdx := mustIndex(t, wired, `data-tc-kanban-column-body="todo"`)
+
+	if actionIdx < headerIdx || actionIdx > bodyIdx {
+		t.Errorf("action button not between the column header and the card list (action %d, header %d, body %d)", actionIdx, headerIdx, bodyIdx)
+	}
+
+	utils.AssertContains(t, wired, `aria-label="To do: 1 card"`)
+	utils.AssertContains(t, wired, ">Add card</button>")
+
+	readonly := utils.Render(t, KanbanBoard(props))
+	utils.AssertContains(t, readonly, ">Add card</button>")
+}
 func mustIndex(t *testing.T, s, substr string) int {
 	t.Helper()
 
