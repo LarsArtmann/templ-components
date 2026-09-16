@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`display.KanbanBoard` gains `KanbanColumn.Tone` — a column status dot.**
+  `KanbanTone` (gray/blue/green/yellow/red/purple) mirrors the `StatTone`
+  palette and renders a small `aria-hidden` dot before the column title —
+  instant column semantics (todo=blue, done=green) with zero JavaScript.
+  Unlike `StatTone`, the zero value is toneless (no dot), so existing boards
+  render byte-identical output. Unknown values degrade gracefully to no dot.
+  From the 2026-09-16 vibe-kanban source research (§4.2).
+
 - **`display.KanbanBoard` gains `KanbanColumn.Action` — a per-column
   add-card slot.** The column header's standard affordance spot (the "+"),
   rendered after the count badge on wired AND read-only boards. The consumer
