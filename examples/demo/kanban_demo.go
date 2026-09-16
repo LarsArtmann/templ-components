@@ -142,6 +142,7 @@ func (s *kanbanDemoState) kanbanDemoBoardProps(id string, action wire.Action) di
 	for ci, col := range s.columns {
 		add := action
 		add.URL += "/add/" + col.ID
+		add.Method = wire.MethodPost
 		add.Event = wire.EventClick
 		snapshot[ci] = display.KanbanColumn{
 			ID:     col.ID,
