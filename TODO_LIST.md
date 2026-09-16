@@ -104,3 +104,16 @@ _Top of the ranked queue; the full 50-row ranked list lives in the report. Citat
 | 199 | Document or file upstream the stale-gopls kanban diagnostics (false "closing brace" error)            | Recurs every session. (f11)                                                              |
 | 200 | Mirror the Datastar innerHTML-no-scripts runtime fact into the datastar package doc.go                | (f16)                                                                                    |
 | 202 | visualtest `.fail/` stale-subdirectory disk hygiene (pre-session dirs linger; prune after green runs) | Merges f30 + f39.                                                                        |
+
+---
+
+## Harvested 2026-09-16 — kanban-vibe follow-through (docs/status/2026-09-16_19-12, section f)
+
+_30 of the report's 40 ranked tasks shipped same-day (kanban Action/Tone e2e + pixel goldens, demo CSRF/404/reset + board-reset, wire.MethodPost godoc, FEATURES enum-table guard, recipe single-sourcing, smoke CLI, AGENTS plan-authoring checklist — see CHANGELOG `[Unreleased]`). Survivors below; citations `f<nn>` = that report §f. TODO_LIST residents (#28/#29, #80, #93-family, #190, #211–#217, #192) dedupe out._
+
+| #   | Task                                                                                                                              | Why / source                                                                                                                                                            |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 221 | Add `ExampleKanbanBoard_columnTone` godoc example (Tone discoverability)                                                           | Only Action got an example; Tone is discoverable only via the recipe. (f12)                                                                                             |
+| 222 | Website: consumer-facing kanban guide page (docs-health BUILD) — the site has zero kanban docs; seed from the recipe               | Recipe content exists but lives only in the repo. (f21)                                                                                                                 |
+| 223 | Add the two `kanban/section_action_tone_*` goldens to the vision-review flagged set for the next AI-vision pass                    | The script covers flagged sets only. (f34)                                                                                                                              |
+| 224 | e2e: cover the move endpoint's 422 sorted-view rejection once a demo endpoint demonstrates it (pairs with a sorted-view demo board) | The contract is documented (ParseKanbanMove godoc + recipe) but neither demoed nor browser-proven. (f37)                                                                |
