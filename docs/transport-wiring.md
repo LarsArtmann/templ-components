@@ -60,7 +60,7 @@ Any component, even without a `Wire` field — spread the attributes yourself:
 | Field         | Zero value behavior                                                                                                          |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `Transport`   | `""` → htmx (library default)                                                                                                |
-| `Method`      | `""` → GET                                                                                                                   |
+| `Method`      | `""` → GET — in both dialects (`hx-get` / `@get`). Mutations MUST set `Method` explicitly (`MethodPost`); an omitted Method silently turns a write into a read |
 | `Event`       | `""` → htmx: attribute omitted (element defaults: click/submit/change); Datastar: `click`                                    |
 | `URL`         | `""` → renders nothing (inert)                                                                                               |
 | `ContentType` | `""` → Datastar signals as JSON (runtime default); `ContentTypeForm` serializes the enclosing form's fields; htmx ignores it |

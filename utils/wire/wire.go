@@ -140,7 +140,11 @@ func ContentTypeIsValid(c ContentType) bool {
 type Action struct {
 	// Transport selects the attribute dialect. Zero value renders as htmx.
 	Transport Transport
-	// Method is the HTTP verb. Zero value renders as GET.
+	// Method is the HTTP verb. Zero value renders as GET in BOTH dialects
+	// (hx-get / @get): an Action literal that omits Method silently turns a
+	// write into a read. Set Method explicitly on every mutating action
+	// (usually MethodPost); rely on the default only for reads (filters,
+	// searches, fragment loads).
 	Method Method
 	// URL is the exchange endpoint. An empty URL wires nothing (Attributes
 	// returns nil) — a component rendered without a backend endpoint must
