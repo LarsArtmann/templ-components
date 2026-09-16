@@ -655,6 +655,12 @@ func newMux() *http.ServeMux {
 				return
 			}
 
+			if r.FormValue(kanbanCSRFFieldName) != kanbanCSRFToken {
+				http.Error(w, "invalid CSRF token", http.StatusForbidden)
+
+				return
+			}
+
 			state.move(move)
 			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action)))
 		})
@@ -681,6 +687,12 @@ func newMux() *http.ServeMux {
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			noStore(w)
 
+			if !kanbanSameOriginRequest(r) {
+				http.Error(w, "cross-origin request rejected", http.StatusForbidden)
+
+				return
+			}
+
 			column := r.PathValue("column")
 			if column == "" {
 				http.Error(w, "missing column path parameter", http.StatusBadRequest)
@@ -688,7 +700,11 @@ func newMux() *http.ServeMux {
 				return
 			}
 
-			state.add(column)
+			if !state.add(column) {
+				http.Error(w, "unknown column: "+column, http.StatusNotFound)
+
+				return
+			}
 			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action)))
 		})
 	}
@@ -701,6 +717,38 @@ func newMux() *http.ServeMux {
 		Selector: "#kanban-demo-datastar",
 		Mode:     wire.PatchModeOuter,
 	}, kanbanAddHandler(
+		kanbanDatastarState,
+		"kanban-demo-datastar",
+		wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},
+	)))
+
+	// Board reset: restores the starting layout so demo state never fills
+	// unboundedly. Same-origin enforced — a bodyless mutation has no form
+	// to carry a CSRF token.
+	kanbanResetHandler := func(state *kanbanDemoState, id string, action wire.Action) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			noStore(w)
+
+			if !kanbanSameOriginRequest(r) {
+				http.Error(w, "cross-origin request rejected", http.StatusForbidden)
+
+				return
+			}
+
+			state.reset()
+			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action)))
+		})
+	}
+	mux.Handle("POST /api/kanban/htmx/reset", kanbanResetHandler(
+		kanbanHTMXState,
+		"kanban-demo-htmx",
+		wire.Action{URL: "/api/kanban/htmx"},
+	))
+	mux.Handle("POST /api/kanban/datastar/reset", wire.Handler(wire.PatchTarget{
+		Selector: "#kanban-demo-datastar",
+		Mode:     wire.PatchModeOuter,
+	}, kanbanResetHandler(
 		kanbanDatastarState,
 		"kanban-demo-datastar",
 		wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},

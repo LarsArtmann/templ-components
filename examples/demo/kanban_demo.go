@@ -5,6 +5,9 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/hex"
+	"net/http"
 	"strconv"
 	"sync"
 
@@ -13,6 +16,20 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
+
+// kanbanCSRFToken is the demo's server-issued CSRF token. One token per
+// process keeps the demo honest but simple; a real app issues one per
+// session and validates it server-side on every mutating request.
+var kanbanCSRFToken = newKanbanCSRFToken()
+
+func newKanbanCSRFToken() string {
+	var b [16]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		panic("kanban demo: generate csrf token: " + err.Error())
+	}
+
+	return hex.EncodeToString(b[:])
+}
 
 // kanbanDemoState is the mutex-guarded board a demo endpoint owns. Real apps
 // swap this for a database; the move semantics stay identical.
@@ -108,9 +125,10 @@ func (s *kanbanDemoState) move(move display.KanbanMove) {
 	}
 }
 
-// add appends a fresh demo card to the named column. Unknown columns are
-// a no-op — the board is the source of truth.
-func (s *kanbanDemoState) add(columnID string) {
+// add appends a fresh demo card to the named column and reports whether
+// the column exists — the handler turns false into a 404 so a broken link
+// surfaces instead of silently no-oping.
+func (s *kanbanDemoState) add(columnID string) bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -126,8 +144,20 @@ func (s *kanbanDemoState) add(columnID string) {
 			Title: "New card " + strconv.FormatInt(n+1, 10),
 		})
 
-		return
+		return true
 	}
+
+	return false
+}
+
+// reset restores the demo board's starting layout. The new-card counter
+// keeps counting so a stale open tab can never resubmit an id a fresh
+// card already owns.
+func (s *kanbanDemoState) reset() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	s.columns = kanbanDemoInitialColumns()
 }
 
 // kanbanDemoBoardProps builds the render props for one demo board: stable
@@ -144,6 +174,7 @@ func (s *kanbanDemoState) kanbanDemoBoardProps(id string, action wire.Action) di
 		add.URL += "/add/" + col.ID
 		add.Method = wire.MethodPost
 		add.Event = wire.EventClick
+		add.Target = "#" + id
 		snapshot[ci] = display.KanbanColumn{
 			ID:     col.ID,
 			Title:  col.Title,
@@ -157,19 +188,63 @@ func (s *kanbanDemoState) kanbanDemoBoardProps(id string, action wire.Action) di
 	props.BaseProps = utils.BaseProps{ID: id}
 	props.Columns = snapshot
 	props.Wire = &action
+	props.CSRFToken = kanbanCSRFToken
 
 	return props
 }
 
 // kanbanAddButton builds the column header's add-card affordance. The Wire
 // attributes carry the transport dialect (hx-post vs data-on:click), so the
-// same builder serves both boards.
+// same builder serves both boards. htmx targets the board root (Target is
+// set by the caller) and must swap outerHTML — otherwise the whole-board
+// response lands inside this button.
 func kanbanAddButton(action wire.Action, columnTitle string) templ.Component {
+	base := utils.BaseProps{AriaLabel: "Add card to " + columnTitle}
+	if action.Transport != wire.TransportDatastar {
+		base.Attrs = templ.Attributes{"hx-swap": "outerHTML"}
+	}
+
 	return display.Button(display.ButtonProps{
-		BaseProps: utils.BaseProps{AriaLabel: "Add card to " + columnTitle},
+		BaseProps: base,
 		Text:      "+ Add",
 		Variant:   display.ButtonGhost,
 		Size:      display.ButtonSizeSM,
 		Wire:      &action,
 	})
+}
+
+// kanbanResetButton builds the per-board reset affordance in the board's
+// dialect. htmx swaps the board root via Target + hx-swap outerHTML (the
+// move form's response contract); Datastar targeting is response-driven —
+// the endpoint is wrapped in wire.Handler — so no target is carried.
+func kanbanResetButton(action wire.Action) templ.Component {
+	base := utils.BaseProps{AriaLabel: "Reset demo board"}
+	if action.Transport != wire.TransportDatastar {
+		base.Attrs = templ.Attributes{"hx-swap": "outerHTML"}
+	}
+
+	return display.Button(display.ButtonProps{
+		BaseProps: base,
+		Text:      "Reset",
+		Variant:   display.ButtonGhost,
+		Size:      display.ButtonSizeSM,
+		Wire:      &action,
+	})
+}
+
+// kanbanCSRFFieldName matches KanbanBoardProps's default hidden-input name.
+const kanbanCSRFFieldName = "csrf_token"
+
+// kanbanSameOriginRequest reports whether r comes from the demo's own
+// origin. The move form carries the CSRF token in a hidden input; the
+// bodyless add/reset POSTs have no form to carry one, so they enforce
+// same-origin instead — a token in the URL would leak into logs.
+func kanbanSameOriginRequest(r *http.Request) bool {
+	if r.Header.Get("Sec-Fetch-Site") == "same-origin" {
+		return true
+	}
+
+	origin := r.Header.Get("Origin")
+
+	return origin == "http://"+r.Host || origin == "https://"+r.Host
 }

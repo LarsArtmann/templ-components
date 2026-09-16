@@ -19,22 +19,32 @@ templ kanbanDemo() {
 		<code>hx-post</code>, the Datastar board via <code>&#64;post</code> with form
 		encoding — same component, same endpoint shape. Each column header also
 		carries an <code>Action</code> add-card slot (a ghost Button wired in the
-		board's dialect) and a <code>Tone</code> status dot.
+		board's dialect) and a <code>Tone</code> status dot. The move form carries
+		a server-issued CSRF token; the bodyless add/reset POSTs enforce
+		same-origin instead, and an add to an unknown column 404s. Each board
+		header has a Reset button that restores the starting layout.
 	</p>
 	@demoCodeSnippet("Go", `props.Wire = &wire.Action{URL: "/api/kanban/htmx"}                                  // hx-post
 props.Wire = &wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"} // data-on:submit="@post(...)"
-col.Action = display.Button(display.ButtonProps{Wire: &wire.Action{URL: "/api/kanban/htmx/add/" + col.ID}})
+props.CSRFToken = sessionToken                                                            // hidden input in the move form
+col.Action = display.Button(display.ButtonProps{Wire: &wire.Action{Method: wire.MethodPost, URL: "/api/kanban/htmx/add/" + col.ID}}) // mutations set Method
 col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red, purple`)
 	<div class="mt-4 grid gap-4 xl:grid-cols-2">
 		<div class="min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800">
-			<h3 class="mb-2 text-sm font-semibold text-gray-900 dark:text-white">HTMX transport</h3>
+			<div class="mb-2 flex items-center justify-between">
+				<h3 class="text-sm font-semibold text-gray-900 dark:text-white">HTMX transport</h3>
+				@kanbanResetButton(wire.Action{URL: "/api/kanban/htmx/reset", Method: wire.MethodPost, Target: "#kanban-demo-htmx"})
+			</div>
 			@display.KanbanBoard(kanbanHTMXState.kanbanDemoBoardProps(
 				"kanban-demo-htmx",
 				wire.Action{URL: "/api/kanban/htmx"},
 			))
 		</div>
 		<div class="min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800">
-			<h3 class="mb-2 text-sm font-semibold text-gray-900 dark:text-white">Datastar transport</h3>
+			<div class="mb-2 flex items-center justify-between">
+				<h3 class="text-sm font-semibold text-gray-900 dark:text-white">Datastar transport</h3>
+				@kanbanResetButton(wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/kanban/datastar/reset"})
+			</div>
 			@display.KanbanBoard(kanbanDatastarState.kanbanDemoBoardProps(
 				"kanban-demo-datastar",
 				wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},

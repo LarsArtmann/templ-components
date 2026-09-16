@@ -42,18 +42,27 @@ func kanbanDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">Drag cards between columns (or use the per-card move buttons revealed on hover/focus — the keyboard path). Every move submits one hidden form with <code>card</code>, <code>column</code>, and <code>index</code>; the server applies the move and re-renders the board. The htmx board swaps via <code>hx-post</code>, the Datastar board via <code>&#64;post</code> with form encoding — same component, same endpoint shape. Each column header also carries an <code>Action</code> add-card slot (a ghost Button wired in the board's dialect) and a <code>Tone</code> status dot.</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">Drag cards between columns (or use the per-card move buttons revealed on hover/focus — the keyboard path). Every move submits one hidden form with <code>card</code>, <code>column</code>, and <code>index</code>; the server applies the move and re-renders the board. The htmx board swaps via <code>hx-post</code>, the Datastar board via <code>&#64;post</code> with form encoding — same component, same endpoint shape. Each column header also carries an <code>Action</code> add-card slot (a ghost Button wired in the board's dialect) and a <code>Tone</code> status dot. The move form carries a server-issued CSRF token; the bodyless add/reset POSTs enforce same-origin instead, and an add to an unknown column 404s. Each board header has a Reset button that restores the starting layout.</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = demoCodeSnippet("Go", `props.Wire = &wire.Action{URL: "/api/kanban/htmx"}                                  // hx-post
 props.Wire = &wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"} // data-on:submit="@post(...)"
-col.Action = display.Button(display.ButtonProps{Wire: &wire.Action{URL: "/api/kanban/htmx/add/" + col.ID}})
+props.CSRFToken = sessionToken                                                            // hidden input in the move form
+col.Action = display.Button(display.ButtonProps{Wire: &wire.Action{Method: wire.MethodPost, URL: "/api/kanban/htmx/add/" + col.ID}}) // mutations set Method
 col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red, purple`).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"mt-4 grid gap-4 xl:grid-cols-2\"><div class=\"min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800\"><h3 class=\"mb-2 text-sm font-semibold text-gray-900 dark:text-white\">HTMX transport</h3>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"mt-4 grid gap-4 xl:grid-cols-2\"><div class=\"min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800\"><div class=\"mb-2 flex items-center justify-between\"><h3 class=\"text-sm font-semibold text-gray-900 dark:text-white\">HTMX transport</h3>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = kanbanResetButton(wire.Action{URL: "/api/kanban/htmx/reset", Method: wire.MethodPost, Target: "#kanban-demo-htmx"}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -64,7 +73,15 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div><div class=\"min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800\"><h3 class=\"mb-2 text-sm font-semibold text-gray-900 dark:text-white\">Datastar transport</h3>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><div class=\"min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800\"><div class=\"mb-2 flex items-center justify-between\"><h3 class=\"text-sm font-semibold text-gray-900 dark:text-white\">Datastar transport</h3>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = kanbanResetButton(wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/kanban/datastar/reset"}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -75,7 +92,7 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
