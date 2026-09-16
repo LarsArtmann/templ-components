@@ -92,8 +92,11 @@ func kanbanSectionAddButton(url, columnTitle string) templ.Component {
 // kanbanSectionComponent mirrors the demo's kanban section — the visual
 // surface the Action/Tone phase added: a per-board Reset button in a header
 // row, columns with Tone status dots, and a per-column Action add-card
-// button. Behavior is browser-proven by kanban_e2e_test.go; these goldens
-// pin the new pixels, which no below-the-fold route golden ever covered.
+// button. Three columns so every affordance sits inside the capture frame
+// (the board's column row scrolls horizontally by design); the six tone
+// variants are pinned by the kanban_column_tone HTML golden. Behavior is
+// browser-proven by kanban_e2e_test.go; these goldens pin the new pixels,
+// which no below-the-fold route golden ever covered.
 func kanbanSectionComponent() templ.Component {
 	board := display.DefaultKanbanBoardProps()
 	board.BaseProps = utils.BaseProps{ID: "kb-visual-action"}
@@ -113,12 +116,6 @@ func kanbanSectionComponent() templ.Component {
 			Title:  "In progress",
 			Tone:   display.KanbanToneBlue,
 			Action: kanbanSectionAddButton("/api/kanban/visual/add/progress", "In progress"),
-		},
-		{
-			ID:     "review",
-			Title:  "In review",
-			Tone:   display.KanbanToneYellow,
-			Action: kanbanSectionAddButton("/api/kanban/visual/add/review", "In review"),
 		},
 		{
 			ID:     "done",
