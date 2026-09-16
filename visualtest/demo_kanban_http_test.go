@@ -77,7 +77,17 @@ func TestDemoKanbanHTTPContracts(t *testing.T) {
 	)
 
 	// The browser flow: the CSRF token arrives inside the rendered page.
-	token := kanbanDemoCSRFTokenFromHTML(t, get("/"))
+	// Harvest scoped to the htmx board's own form — the demo index renders
+	// other components first and one of them could carry the same input
+	// name with a different value.
+	page := get("/")
+
+	boardStart := strings.Index(page, `id="kanban-demo-htmx"`)
+	if boardStart < 0 {
+		t.Fatal("visualtest[demo]: rendered page has no htmx kanban board")
+	}
+
+	token := kanbanDemoCSRFTokenFromHTML(t, page[boardStart:])
 	if token == "" {
 		t.Fatal("visualtest[demo]: harvested csrf_token is empty")
 	}

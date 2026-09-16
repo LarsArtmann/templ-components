@@ -72,3 +72,109 @@ func TestKanbanBoard(t *testing.T) {
 		visualtest.Options{RTL: new(true)},
 	)
 }
+
+// kanbanSectionAddButton mirrors the demo's per-column add affordance.
+func kanbanSectionAddButton(url, columnTitle string) templ.Component {
+	return display.Button(display.ButtonProps{
+		BaseProps: utils.BaseProps{AriaLabel: "Add card to " + columnTitle},
+		Text:      "+ Add",
+		Variant:   display.ButtonGhost,
+		Size:      display.ButtonSizeSM,
+		Wire: &wire.Action{
+			Method: wire.MethodPost,
+			Event:  wire.EventClick,
+			URL:    url,
+			Target: "#kb-visual-action",
+		},
+	})
+}
+
+// kanbanSectionComponent mirrors the demo's kanban section — the visual
+// surface the Action/Tone phase added: a per-board Reset button in a header
+// row, columns with Tone status dots, and a per-column Action add-card
+// button. Behavior is browser-proven by kanban_e2e_test.go; these goldens
+// pin the new pixels, which no below-the-fold route golden ever covered.
+func kanbanSectionComponent() templ.Component {
+	board := display.DefaultKanbanBoardProps()
+	board.BaseProps = utils.BaseProps{ID: "kb-visual-action"}
+	board.Columns = []display.KanbanColumn{
+		{
+			ID:    "backlog",
+			Title: "Backlog",
+			Tone:  display.KanbanToneGray,
+			Cards: []display.KanbanCard{
+				{ID: "c1", Title: "Audit CSP headers"},
+				{ID: "c2", Title: "Dark mode pass"},
+			},
+			Action: kanbanSectionAddButton("/api/kanban/visual/add/backlog", "Backlog"),
+		},
+		{
+			ID:     "progress",
+			Title:  "In progress",
+			Tone:   display.KanbanToneBlue,
+			Action: kanbanSectionAddButton("/api/kanban/visual/add/progress", "In progress"),
+		},
+		{
+			ID:     "review",
+			Title:  "In review",
+			Tone:   display.KanbanToneYellow,
+			Action: kanbanSectionAddButton("/api/kanban/visual/add/review", "In review"),
+		},
+		{
+			ID:     "done",
+			Title:  "Done",
+			Tone:   display.KanbanToneGreen,
+			Cards:  []display.KanbanCard{{ID: "c3", Title: "Set up CI"}},
+			Action: kanbanSectionAddButton("/api/kanban/visual/add/done", "Done"),
+		},
+	}
+	board.Wire = &wire.Action{URL: "/api/kanban/visual"}
+
+	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		if _, err := io.WriteString(w, `<div class="w-[64rem]"><div class="mb-2 flex items-center justify-between">`); err != nil {
+			return err
+		}
+
+		reset := display.Button(display.ButtonProps{
+			BaseProps: utils.BaseProps{AriaLabel: "Reset demo board"},
+			Text:      "Reset",
+			Variant:   display.ButtonGhost,
+			Size:      display.ButtonSizeSM,
+			Wire: &wire.Action{
+				Method: wire.MethodPost,
+				URL:    "/api/kanban/visual/reset",
+				Target: "#kb-visual-action",
+			},
+		})
+		if err := reset.Render(ctx, w); err != nil {
+			return err
+		}
+
+		if _, err := io.WriteString(w, `</div>`); err != nil {
+			return err
+		}
+
+		if err := display.KanbanBoard(board).Render(ctx, w); err != nil {
+			return err
+		}
+
+		_, err := io.WriteString(w, `</div>`)
+
+		return err
+	})
+}
+
+// TestKanbanSection pins the Action/Tone surface in both modes: tone-dot
+// colors, the Action button in the column header, and the board-header
+// reset affordance.
+func TestKanbanSection(t *testing.T) {
+	t.Parallel()
+
+	visualtest.AssertScreenshot(t, "kanban/section_action_tone_light", kanbanSectionComponent())
+	visualtest.AssertScreenshot(
+		t,
+		"kanban/section_action_tone_dark",
+		kanbanSectionComponent(),
+		visualtest.Options{Dark: new(true)},
+	)
+}
