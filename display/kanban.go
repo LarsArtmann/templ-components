@@ -70,6 +70,12 @@ var errKanbanMoveBadIndex = errors.New("kanban move: index must be a non-negativ
 // parameters) into a KanbanMove via wire.DecodeForm. A missing index defaults
 // to 0 (insert at top); a negative or non-numeric index is an error. Empty
 // card or column fields are an error — a wired board always sends both.
+//
+// The returned Index is advisory: the server owns the real ordering. When
+// the board view is server-sorted, reject same-column moves (Card's current
+// column == Column) — the sort re-asserts on re-render, so accepting them
+// makes the drop look broken. Cross-column moves stay meaningful on sorted
+// views. See docs/recipes/kanban-card-anatomy.md, "Moves on a sorted view".
 func ParseKanbanMove(r *http.Request) (KanbanMove, error) {
 	move, err := wire.DecodeForm[KanbanMove](r)
 	if err != nil {

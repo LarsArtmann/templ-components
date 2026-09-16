@@ -21,7 +21,10 @@ type KanbanCard struct {
 	// Href, when set, links the card title to a detail page.
 	Href string
 	// Content renders arbitrary card body below the title (labels, avatars,
-	// metadata). Compose with Badge, Avatar, RelativeTime, …
+	// metadata). Compose with Badge, Avatar, RelativeTime, … — the proven
+	// anatomy (identity badges, 2+N tag overflow, assignee stack, one-line
+	// description preview) is docs/recipes/kanban-card-anatomy.md; the
+	// compiling composition is ExampleKanbanBoard_cardAnatomy.
 	Content templ.Component
 	// Class overrides the card's Tailwind classes.
 	Class string
@@ -65,6 +68,12 @@ type KanbanBoardProps struct {
 	// Method defaults to POST, Event to submit, ContentType to form
 	// encoding; under htmx, Target defaults to the board root with
 	// hx-swap="outerHTML".
+	//
+	// Sorted views: the submitted index is advisory — the server owns the
+	// real ordering. On a server-sorted view (by priority, created-at, …)
+	// reject same-column moves in the handler; the sort re-asserts on
+	// re-render and would otherwise make the drop look broken. See
+	// docs/recipes/kanban-card-anatomy.md ("Moves on a sorted view").
 	Wire *wire.Action
 	// EmptyColumnText shows inside a column with no cards. Default "No cards".
 	EmptyColumnText string
