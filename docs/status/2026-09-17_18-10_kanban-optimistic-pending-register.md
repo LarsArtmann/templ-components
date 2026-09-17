@@ -64,25 +64,25 @@
 **Kanban / ADR-0041 follow-ups**
 
 1. ~~Capture PNG evidence of pending + failed states (delayed demo + `nix run .#shots` or a visualtest golden with `WaitSelector`).~~ IN PROGRESS (2026-09-17 evening): a concurrent session captured `visualtest/testdata/kanban/pending_state.png` + `failed_state.png` (untracked at annotation time); TODO #248 tracks completion.
-2. Add the BDD lens: `kanban_bdd_test.go` specs for "move looks instant", "pending is visible until confirmed", "failure restores".
-3. Add `ExampleKanbanBoard_optimistic` godoc example.
-4. Extend `kanban_a11y_test.go` with the `role="alert"` + `aria-busy` assertions where they conventionally live.
+2. ~~Add the BDD lens: `kanban_bdd_test.go` specs for "move looks instant", "pending is visible until confirmed", "failure restores".~~ harvested → TODO_LIST #247
+3. ~~Add `ExampleKanbanBoard_optimistic` godoc example.~~ harvested → TODO_LIST #247
+4. ~~Extend `kanban_a11y_test.go` with the `role="alert"` + `aria-busy` assertions where they conventionally live.~~ harvested → TODO_LIST #247
 5. ~~Concurrency test: two overlapping moves on one board (first succeeds, second fails) — pin the documented no-op semantics.~~ harvested → TODO_LIST #249
 6. ~~Concurrency test: two overlapping failures — both revert, both announced.~~ harvested → TODO_LIST #249
 7. Browser-level a11y probe of the mid-move state (aria-busy queryable while in flight).
 8. ~~Retry affordance decision: auto-retry once vs manual-only; if manual, consider a small "retry" hint in the alert region.~~ harvested → owner gate TODO_LIST #238; hint idea in ROADMAP
 9. ~~Decide + document (or reject) a pending-timeout escape hatch for hung servers.~~ harvested → TODO_LIST #239
-10. Measure + note the inline-script size delta; consider whether the events block justifies a minified form.
+10. Measure + note the inline-script size delta; consider whether the events block justifies a minified form. ← untouched = still open
 11. ~~Verify the kanban demo section renders correctly under `?transport=datastar` and `?transport=htmx` single-transport views (screenshots).~~ harvested → TODO_LIST #258
 12. ~~Consider a visualtest golden for the pending card (deterministic with the flaky-board trick: stall the endpoint, WaitSelector the class, screenshot).~~ harvested → TODO_LIST #248 (merge with item 1)
 13. ~~Document how consumers with `GlobalErrorHandling` get toast + inline revert together (complementary, not double-reporting) — one paragraph in transport-wiring.md.~~ harvested → TODO_LIST #260
-14. Un-minified JS: run the kanban pipeline through the same lint/minify review as the htmx embed decision (one-line TODO).
-15. Add `TestKanbanJSPendingSingletonIdempotence`-style guard if listeners could ever double-bind (currently guaranteed by the singleton guard; pin it explicitly for the new listeners).
-16. Check pkg.go.dev rendering of the new godoc (KanbanBoardProps ADR reference).
+14. ~~Un-minified JS: run the kanban pipeline through the same lint/minify review as the htmx embed decision (one-line TODO). ← untouched = still open (pair with item 10)
+15. ~~Add `TestKanbanJSPendingSingletonIdempotence`-style guard if listeners could ever double-bind (currently guaranteed by the singleton guard; pin it explicitly for the new listeners).~~ folded into TODO_LIST #249 (concurrency/double-bind pins)
+16. Check pkg.go.dev rendering of the new godoc (KanbanBoardProps ADR reference). ← untouched = still open (cosmetic)
 
 **Repo hygiene noticed during this session**
-17. Squash/polish the feature into a semantic commit (current history is daemon blobs); get `Fixes #N` linking if a TODO exists.
-18. Push + open PR so CI (linux format check, html-validation, per-module lint) rules on the final tree.
+17. ~~Squash/polish the feature into a semantic commit (current history is daemon blobs); get `Fixes #N` linking if a TODO exists.~~ superseded — history is daemon-blobbed on master by policy (no force-push); the narrative lives in this report + ADR-0041 + CHANGELOG
+18. ~~Push + open PR so CI (linux format check, html-validation, per-module lint) rules on the final tree.~~ superseded — the daemon pushes master directly; CI ruled on the tree via the 16:24/16:28 runs (the 16:28 red root-caused + repaired same evening)
 19. ~~`nix run .#visual` FULL suite (not just `-run TestKanban`) before push — axe sweep + route goldens.~~ done — the 15:27 errorpage session ran the full visual suite incl. axe sweep (74s) green after the tree stabilized
 20. ~~`scripts/ci-repro.sh --lint` once for the exact CI reproduction.~~ done — the 14:17 release session ran `ci-repro.sh --lint` ALL STEPS PASSED
 21. ~~Investigate `TestPrerenderMatchesLiveServer` minute-boundary flake (prerendered timestamps vs live fetch under load) — make it deterministic or retry-tolerant.~~ harvested → TODO_LIST #250
@@ -95,16 +95,16 @@
 28. ~~Post-landing: watch the concurrent ErrorPage/charts/sidebar session's CI run — its work mixed into the same commits.~~ done — 2026-09-17 evening: their 16:24 run green; the 16:28 red was NEW daemon drift (website go.mod/generated import), root-caused and repaired
 
 **Pending register — product polish ideas (from the session, not yet decided)**
-29. Pending ring color could follow `KanbanTone`/semantic tokens via `@theme` instead of hardcoded blues.
-30. Failed flash duration (4s) as a CSS custom property so consumers can tune it.
-31. Alert copy ("The board was restored.") — consider surfacing the server's error message when the response carries one (go-error-family `Why`/`Fix`).
-32. Optimistic scroll/focus preservation when a swap lands mid-interaction (generic kanban+htmx papercut, observed while testing).
-33. Consider `hx-sync` guidance for rapid multi-move users (drop vs queue) in the recipe docs.
-34. Keyboard path: after a failed revert, move focus back to the move button that initiated it.
-35. Datastar network-failure UX: ~2min of honest retrying before revert — consider surfacing "still retrying" in the live region on `retrying` events.
-36. Add the pending register to the kanban card-anatomy recipe (`docs/recipes/kanban-card-anatomy.md`) so composed cards don't fight the spinner's top-right corner.
-37. Reserve the card's top-right corner: document that `Content` slot authors should not place interactive elements at the top-right edge.
-38. Mobile: verify the spinner ring is not clipped by `overflow-x-auto` on narrow viewports (pixel check at 375px).
+29. ~~Pending ring color could follow `KanbanTone`/semantic tokens via `@theme` instead of hardcoded blues.~~ harvested → ROADMAP (Optimistic-kanban product polish)
+30. ~~Failed flash duration (4s) as a CSS custom property so consumers can tune it.~~ harvested → ROADMAP (same section)
+31. ~~Alert copy ("The board was restored.") — consider surfacing the server's error message when the response carries one (go-error-family `Why`/`Fix`).~~ harvested → ROADMAP (same section)
+32. ~~Optimistic scroll/focus preservation when a swap lands mid-interaction (generic kanban+htmx papercut, observed while testing).~~ harvested → ROADMAP (same section)
+33. ~~Consider `hx-sync` guidance for rapid multi-move users (drop vs queue) in the recipe docs.~~ harvested → ROADMAP (same section)
+34. ~~Keyboard path: after a failed revert, move focus back to the move button that initiated it.~~ harvested → ROADMAP (same section)
+35. ~~Datastar network-failure UX: ~2min of honest retrying before revert — consider surfacing "still retrying" in the live region on `retrying` events.~~ harvested → ROADMAP (same section)
+36. ~~Add the pending register to the kanban card-anatomy recipe (`docs/recipes/kanban-card-anatomy.md`) so composed cards don't fight the spinner's top-right corner.~~ harvested → TODO_LIST #260
+37. ~~Reserve the card's top-right corner: document that `Content` slot authors should not place interactive elements at the top-right edge.~~ harvested → TODO_LIST #260
+38. Mobile: verify the spinner ring is not clipped by `overflow-x-auto` on narrow viewports (pixel check at 375px). ← untouched = still open
 
 **Testing infrastructure**
 39. ~~Extract the flaky-board pattern into a reusable visualtest helper (stall/fail cards) for future dual-transport components.~~ harvested → TODO_LIST #262
@@ -128,7 +128,7 @@
 
 1. ~~**Your link anchored `#wire-transport`** (the Wire demo section), but the quoted heading is the Kanban section. Was kanban the only target, or do you want the same optimistic/pending treatment for the Wire demo's buttons/forms (and eventually as a general `wire` pattern)?~~ routed → ROADMAP "Wire-demo optimistic pattern" (product direction, not a question blocking work)
 2. ~~**Failure UX policy:** after a server rejection, should the library attempt ONE automatic retry before reverting (htmx would need a re-submit; Datastar retries network errors natively but not 4xx), or is immediate honest revert + manual retry the intended behavior?~~ routed → owner gate TODO_LIST #238
-3. **Git/PR handling:** the feature currently lives inside daemon `chore: auto-commit` blobs on local master. Do you want me to leave history as-is, or squash into one semantic commit (and push / open a PR), accepting a force-with-lease rewrite of the daemon's tips?
+3. ~~Git/PR handling:~~ ~~the feature currently lives inside daemon `chore: auto-commit` blobs on local master. Do you want me to leave history as-is, or squash into one semantic commit (and push / open a PR), accepting a force-with-lease rewrite of the daemon's tips?~~ answered by inaction-policy: history stays as-is (no force-with-lease on master; see items 17/18)
 
 ---
 

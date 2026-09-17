@@ -59,7 +59,7 @@ phased plan; then a corrected review with new findings and 2 retracted claims).
    - `handler_test.go` / `form_test.go` never opened (asserted-by-name, not read).
    - ADR-0030 / ADR-0035 / ADR-0039 never read directly — relied on AGENTS.md summaries.
    - templ-components SKILL.md **Part 2 (author guidance) never read** — only Part 1.
-   Effort to close: S each; matters before executing Phase 1.
+     Effort to close: S each; matters before executing Phase 1.
 2. **Prior-art verification — weakly evidenced.** Two sourcegraph queries returned
    zero/noise (bad repo-pattern syntax), one `agentic_fetch` errored. The "no prior art
    unifying htmx+Datastar attribute rendering" conclusion rests partly on domain
@@ -137,26 +137,26 @@ constraint, not by neglect:
 
 ## f) Next tasks (session-scoped, ranked)
 
-| #   | Task                                                                                                              | Impact   | Effort | Category      |
-| --- | ----------------------------------------------------------------------------------------------------------------- | -------- | ------ | ------------- |
-| 1   | Phase 0: decode `mode` fetch option + swap-value mapping from the pinned bundle; add facts-doc section            | Critical | S      | Research      |
-| 2   | `Action.Swap` typed enum (hx-swap / `{mode}`); both-dialect tests + goldens per D3 rule                          | High     | M      | Feature       |
-| 3   | Migrate kanban/loadmore/calendar_nav off manual `hx-swap`; deprecate legacy `HxSwap` props on Card/FilterDropdown | High     | M      | Cleanup       |
-| 4   | `wire.Get/Post/Put/Patch/Delete(url)` constructors + table tests                                                | High     | S      | Feature       |
-| 5   | Promote copy-and-default builders (`WithEvent`/`WithContentType`/`WithDebounce`) into wire; delete the 4 dupes + `formWireAttributesLike` mirror | High | S      | Quality       |
-| 6   | Extend `FuzzAction`: add `Selector` param + no-unescaped-quote injection assertion                               | High     | S      | Quality       |
-| 7   | HARVEST this report: Swap gap, constructors, builders, ThrottleMS, stale ROADMAP row → TODO_LIST/ROADMAP         | High     | S      | Documentation |
-| 8   | Refresh stale ROADMAP "Wire fuzzing" row (both fuzzers already exist)                                            | Medium   | S      | Documentation |
-| 9   | `ThrottleMS` sibling of `DebounceMS` (`throttle:Nms` ↔ `__throttle.Nms`, spelling already bundle-verified)       | Medium   | S      | Feature       |
-| 10  | Read the unread spans (wire_test 120–486, transport-wiring 150+, handler/form tests, SKILL.md Part 2)            | Medium   | S      | Research      |
-| 11  | Doc-drift guard: pin `docs/transport-wiring.md` dialect table against real `Attributes()` output                 | Medium   | M      | Quality       |
-| 12  | Invariant test pinning debounce-without-event htmx behavior; then keep-or-fix decision                           | Medium   | S      | Quality       |
-| 13  | Document the `{year}` URL-template convention in wire `doc.go`                                                    | Medium   | S      | Documentation |
-| 14  | `ViewTransition bool` (`useViewTransition` ↔ `transition:true`) — optional, after Swap                            | Low      | S      | Feature       |
-| 15  | Draft the v2 ADR: Target/Selector unification, value-typed `Wire`, `PatchTarget` rename (per ADR-0038 mechanism)  | High (v2)| M      | Documentation |
-| 16  | Retry prior-art search with corrected queries; record verified result in the ADR                                  | Low      | S      | Research      |
-| 17  | TODO #155 follow-through: SimpleNav `Wire` adoption under the D3 rule (named next candidate)                     | Medium   | M      | Feature       |
-| 18  | Owner Q3 (below) resolution: wire Phase 1 lands now vs. v2 freeze — gates items 2–6                              | Critical | —      | Decision      |
+| #  | Task                                                                                                                                             | Impact    | Effort | Category      |
+| -- | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ------ | ------------- |
+| 1  | Phase 0: decode `mode` fetch option + swap-value mapping from the pinned bundle; add facts-doc section                                           | Critical  | S      | Research      |
+| 2  | `Action.Swap` typed enum (hx-swap / `{mode}`); both-dialect tests + goldens per D3 rule                                                          | High      | M      | Feature       |
+| 3  | Migrate kanban/loadmore/calendar_nav off manual `hx-swap`; deprecate legacy `HxSwap` props on Card/FilterDropdown                                | High      | M      | Cleanup       |
+| 4  | `wire.Get/Post/Put/Patch/Delete(url)` constructors + table tests                                                                                 | High      | S      | Feature       |
+| 5  | Promote copy-and-default builders (`WithEvent`/`WithContentType`/`WithDebounce`) into wire; delete the 4 dupes + `formWireAttributesLike` mirror | High      | S      | Quality       |
+| 6  | Extend `FuzzAction`: add `Selector` param + no-unescaped-quote injection assertion                                                               | High      | S      | Quality       |
+| 7  | HARVEST this report: Swap gap, constructors, builders, ThrottleMS, stale ROADMAP row → TODO_LIST/ROADMAP                                         | High      | S      | Documentation |
+| 8  | Refresh stale ROADMAP "Wire fuzzing" row (both fuzzers already exist)                                                                            | Medium    | S      | Documentation |
+| 9  | `ThrottleMS` sibling of `DebounceMS` (`throttle:Nms` ↔ `__throttle.Nms`, spelling already bundle-verified)                                       | Medium    | S      | Feature       |
+| 10 | Read the unread spans (wire_test 120–486, transport-wiring 150+, handler/form tests, SKILL.md Part 2)                                            | Medium    | S      | Research      |
+| 11 | Doc-drift guard: pin `docs/transport-wiring.md` dialect table against real `Attributes()` output                                                 | Medium    | M      | Quality       |
+| 12 | Invariant test pinning debounce-without-event htmx behavior; then keep-or-fix decision                                                           | Medium    | S      | Quality       |
+| 13 | Document the `{year}` URL-template convention in wire `doc.go`                                                                                   | Medium    | S      | Documentation |
+| 14 | `ViewTransition bool` (`useViewTransition` ↔ `transition:true`) — optional, after Swap                                                           | Low       | S      | Feature       |
+| 15 | Draft the v2 ADR: Target/Selector unification, value-typed `Wire`, `PatchTarget` rename (per ADR-0038 mechanism)                                 | High (v2) | M      | Documentation |
+| 16 | Retry prior-art search with corrected queries; record verified result in the ADR                                                                 | Low       | S      | Research      |
+| 17 | TODO #155 follow-through: SimpleNav `Wire` adoption under the D3 rule (named next candidate)                                                     | Medium    | M      | Feature       |
+| 18 | Owner Q3 (below) resolution: wire Phase 1 lands now vs. v2 freeze — gates items 2–6                                                              | Critical  | —      | Decision      |
 
 (18 items — session-scoped. The repo-wide backlog lives in TODO_LIST.md/ROADMAP.md and
 was deliberately not re-audited, per instruction.)

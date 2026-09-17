@@ -1,8 +1,8 @@
 # Migrating from v1.x to v2.0
 
-v2.0 is a major release with breaking changes across four areas: module
-structure, HTMX defaults, container-query defaults, and type aliases.
-This guide walks through each change and what you need to do.
+v2.0 is a major release with breaking changes across five areas: module
+structure, HTMX defaults, container-query defaults, card corner defaults, and
+type aliases. This guide walks through each change and what you need to do.
 
 ## Quick summary
 
@@ -10,7 +10,8 @@ This guide walks through each change and what you need to do.
 | -------------------------- | ------------------------------------------------ | ---------------------------------------- |
 | 7-module workspace split   | Import paths unchanged; `internal/*` → `utils/*` | None (if you didn't import `internal/`)  |
 | HTMX self-host by default  | HTMX embedded inline, no CDN request             | Set `HTMXSrc: ""` to keep CDN            |
-| Container-aware by default | Grid, Card, Split use container queries          | Set `ContainerAware: false` for viewport |
+| Container-aware by default | Grid and Split use container queries             | Set `ContainerAware: false` for viewport |
+| Card corners sharp         | Card/SimpleCard/StatCard render square corners   | Add `Class: "rounded-lg"` to restore     |
 | Alias removal              | `AlertType`/`ToastType` removed                  | Rename to `FeedbackType`                 |
 
 ---
@@ -104,7 +105,7 @@ activates when `HTMXSrc == "self"`.
 
 ## 3. Container-aware by default
 
-Three components now default to container-query-based responsiveness instead of
+Two components now default to container-query-based responsiveness instead of
 viewport breakpoints. See ADR-0018.
 
 ### What changed
@@ -112,8 +113,13 @@ viewport breakpoints. See ADR-0018.
 | Component | Field            | v1.x default       | v2.0 default       |
 | --------- | ---------------- | ------------------ | ------------------ |
 | `Grid`    | `ContainerAware` | `false` (viewport) | `true` (container) |
-| `Card`    | `ContainerAware` | `false` (viewport) | `true` (container) |
 | `Split`   | `ContainerAware` | `false` (viewport) | `true` (container) |
+
+`Card` was briefly flipped to `true` alongside these two, then **reverted to
+`false`** (post-v1.8.2 bugfix): the `@container` wrapper applies
+`container-type: inline-size` containment, which suppresses the card's
+intrinsic width and collapses it to zero width inside shrink-to-fit parents
+(flex rows, inline-block, auto-sized grid columns).
 
 Additionally, `Grid.ContainerResponsive` has been **renamed** to
 `Grid.ContainerAware` for consistency with all other components.
@@ -134,9 +140,9 @@ display.GridProps{Cols: display.GridCols3}
 display.GridProps{Cols: display.GridCols3, ContainerAware: false}
 ```
 
-**Components that stayed viewport-default**: `Nav`, `Pagination`, `Form`,
-`DefinitionGrid`, `SkeletonCardGrid` — their `ContainerAware` flag remains
-opt-in (default `false`).
+**Components that stayed viewport-default**: `Card`, `Nav`, `Pagination`,
+`Form`, `DefinitionGrid`, `SkeletonCardGrid` — their `ContainerAware` flag
+remains opt-in (default `false`).
 
 ---
 
@@ -181,6 +187,49 @@ changed from `AlertType`/`ToastType` to `FeedbackType`.
 
 ---
 
+## 5. Card corners sharp by default
+
+The shared card shell (`display.Card`, `display.SimpleCard`, and
+`display.StatCard`) no longer emits `rounded-lg`.
+
+### What changed
+
+All three card components previously rendered `rounded-lg` corners from the
+shared `cardShellClass`. The shell is now sharp (no border-radius), so cards
+render square corners by default. `SimpleCard` inherits the change
+automatically — it composes through `Card`.
+
+### What you need to do
+
+**If you want the old rounded look back**, add the radius via `Class`
+(consumer classes merge last via tailwind-merge, so they win):
+
+```go
+display.Card(display.CardProps{
+    Title: "Users",
+    BaseProps: utils.BaseProps{Class: "rounded-lg"}, // restore v1.x look
+})
+```
+
+**If you want iOS-style squircle corners**, compose the new `.tc-squircle`
+utility (in `templates/custom.css`) with any `rounded-*` class:
+
+````go
+display.Card(display.CardProps{
+    Title:     "Users",
+    BaseProps: utils.BaseProps{Class: "rounded-lg tc-squircle"},
+})
+```. `.tc-squircle` sets CSS `corner-shape: squircle`, which redraws the
+corners defined by `border-radius` as a continuous superellipse curve. It has
+no effect when the border radius is 0, so it always rides on top of a radius
+utility. Progressive enhancement: Chrome/Edge 139+, Opera 123+, Samsung
+Internet 30; Firefox and Safari render the plain rounded corners.
+
+**No action required** if square corners are acceptable — that is the new
+zero-prop default.
+
+---
+
 ## Semantic tokens (non-breaking)
 
 `templates/app.css` now imports `templ-components-theme.css` by default (it was
@@ -201,7 +250,9 @@ continues to work.
 - [ ] Rename `AlertSuccess` → `FeedbackSuccess`, etc. (if used)
 - [ ] Rename `ToastSuccess` → `FeedbackSuccess`, etc. (if used)
 - [ ] Rename `ContainerResponsive` → `ContainerAware` on `GridProps` (if used)
-- [ ] Set `ContainerAware: false` on Grid/Card/Split if you need viewport breakpoints
+- [ ] Set `ContainerAware: false` on Grid/Split if you need viewport breakpoints
+- [ ] Add `Class: "rounded-lg"` to Cards if you need the old rounded corners (or `rounded-lg tc-squircle` for squircles)
 - [ ] Set `HTMXSrc: ""` if you want to keep using the HTMX CDN
 - [ ] Update CSP: allow `script-src 'nonce-...'` for inline HTMX (or keep CDN mode)
 - [ ] Run `go build ./...` and fix any compile errors from the above changes
+````

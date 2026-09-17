@@ -4,7 +4,7 @@
 **Session scope:** "How are we doing on the website?" → status investigation, found-breakage fixes, drift root-causing, HTML dashboard at `docs/status/2026-09-17_17-40_website-status.html`. This document reviews THAT session: what was forgotten, what was done badly, what to improve. Written per the user's explicit format override (**Markdown instead of the skill's HTML** — flagged per the status-report skill's divergence rule).
 **Headline:** the website itself is healthy, three CI reds were root-caused, one stale number was fixed at its root — but the session's own #1 verification loop (green CI on the fixed tree) is **still open**, and I forgot two mandatory write-downs (CHANGELOG, AGENTS gotcha) until this review forced them.
 
-**State at write time:** no `website.yml` run has executed since the 13:25 failure — the deploy fix (demo compiles now) has never been CI-proven. Production still serves the stale "58". CHANGELOG + AGENTS edits from this review are uncommitted (daemon will pick them up).
+**State at write time:** no `website.yml` run has executed since the 13:25 failure — the deploy fix (demo compiles now) has never been CI-proven. Production still serves the stale "58". CHANGELOG + AGENTS edits from this review are uncommitted (daemon will pick them up). **(2026-09-17 evening update: the 16:24 run went GREEN end-to-end — site + demo deployed, production serves the derived "60"; a NEW daemon drift broke Website again at 16:28 — `website/go.mod` pin dropped + generated import flipped — root-caused and repaired the same evening; see CHANGELOG `[Unreleased]` Fixed + TODO_LIST #252. §f harvested: #241, #252–#254, #264, #265 + ROADMAP website section.)**
 
 ---
 
@@ -24,11 +24,11 @@
 
 ## b) PARTIALLY DONE
 
-1. **The session's #1 loop is open: no green CI run on the fixed tree.** Everything is verified locally, but `website.yml` has not run since 13:25 (checked again at 18:09). "Everything works" was never witnessed by CI. I ended the session on "pending" instead of triggering/watching the workflow.
-2. **Production serves a wrong number right now.** "58 (tested IsValid)" is live until the next deploy. The fix is committed; the deploy is not.
-3. **`website.yml` still has no `go test` step.** I called it the highest-leverage one-line fix, diagnosed it precisely — and did not make the 3-line YAML change. Defensible as scope restraint (repo-wide CI change without owner input), but "fix issues on sight" argues the other way. Left as recommendation #3.
-4. **`goldenStats` is still a hand-typed literal** (123/105/60/7). It could be computed from `build.CountStats` in the test, closing the last literal count in the website surface. Not done.
-5. **`html-validate` remains `continue-on-error: true`** — carried decision, untouched.
+1. ~~**The session's #1 loop is open: no green CI run on the fixed tree.** Everything is verified locally, but `website.yml` has not run since 13:25 (checked again at 18:09). "Everything works" was never witnessed by CI. I ended the session on "pending" instead of triggering/watching the workflow.~~ RESOLVED 16:24 — run `35246357974` Build + Deploy success on `9404801d`; loop re-opened at 16:28 by NEW daemon drift, repaired locally the same evening
+2. ~~**Production serves a wrong number right now.** "58 (tested IsValid)" is live until the next deploy. The fix is committed; the deploy is not.~~ RESOLVED — the 16:24 deploy published the derived "60"
+3. ~~**`website.yml` still has no `go test` step.**~~ harvested → TODO_LIST #241 (bundled with blocking-validator, deploy smoke, repro lane)
+4. ~~**`goldenStats` is still a hand-typed literal** (123/105/60/7).~~ harvested → TODO_LIST #254
+5. ~~**`html-validate` remains `continue-on-error: true`** — carried decision, untouched.~~ harvested → TODO_LIST #241
 6. **The 17:40 dashboard aged badly in real time** — written while a concurrent session was still landing commits; its "final state verified green" line was true of builds but the `_sources` guard went red minutes later. Patched, but the pattern (snapshot during churn) needs a churn-risk banner next time.
 
 ## c) NOT STARTED
@@ -70,58 +70,58 @@ Carried backlog (12 items, detailed in the 17:40 HTML report §03): OG-image gen
 
 **Close this session's loop**
 
-1. Trigger/verify the next `website.yml` run is green end-to-end (Build **and** the demo-deploy job that failed at 13:25).
-2. Confirm production serves "60 (tested IsValid)" after that deploy; then docs-health ANNOTATE the 15:27 + 17:40 reports with the outcome.
-3. Re-check daemon same-day regressions after these commits (historical pattern: CSS minify, config flips).
-4. `scripts/ci-repro.sh --lint` full single-command pass before the next push (carried, never completed as one verdict).
+1. ~~Trigger/verify the next `website.yml` run is green end-to-end (Build **and** the demo-deploy job that failed at 13:25).~~ done 16:24 (run `35246357974`); re-opened 16:28 by daemon drift, repaired
+2. ~~Confirm production serves "60 (tested IsValid)" after that deploy; then docs-health ANNOTATE the 15:27 + 17:40 reports with the outcome.~~ production confirmed via the 16:24 deploy; annotations executed in the 2026-09-17 evening docs-health pass (this file, 15:27, 18-10; the 17:40 HTML dashboard left as a snapshot with this pointer)
+3. ~~Re-check daemon same-day regressions after these commits (historical pattern: CSS minify, config flips).~~ done — found the 16:28 `website/go.mod` + `base_templ.go` flip; repaired (CHANGELOG Fixed entry)
+4. `scripts/ci-repro.sh --lint` full single-command pass before the next push (carried, never completed as one verdict). ← untouched = still open
 
 **Structural (biggest recurrence-killers)**
 
-5. Owner decision + draft: BuildFlow daemon commit-gate (per-module `go build` before auto-commit, foreign-worktree quarantine; TODO #126 family). Four incidents in one day is the argument.
-6. Add `go test ./...` to `website.yml` — enforce the integrity suite in CI.
-7. Make `html-validate` blocking or replace with a Go validator; delete the Node step.
-8. CSP `report-uri`/`report-to` telemetry (violations currently invisible).
-9. Post-deploy smoke step in CI: site URL + demo `/health`.
-10. Firebase preview-channel deploy; live-verify cleanUrls + CSP header delivery.
+5. ~~Owner decision + draft: BuildFlow daemon commit-gate (per-module `go build` before auto-commit, foreign-worktree quarantine; TODO #126 family). Four incidents in one day is the argument.~~ harvested → owner gate TODO_LIST #232
+6. ~~Add `go test ./...` to `website.yml` — enforce the integrity suite in CI.~~ harvested → TODO_LIST #241
+7. ~~Make `html-validate` blocking or replace with a Go validator; delete the Node step.~~ harvested → TODO_LIST #241
+8. ~~CSP `report-uri`/`report-to` telemetry (violations currently invisible).~~ harvested → ROADMAP (Website & docs ideas)
+9. ~~Post-deploy smoke step in CI: site URL + demo `/health`.~~ harvested → TODO_LIST #241
+10. ~~Firebase preview-channel deploy; live-verify cleanUrls + CSP header delivery.~~ harvested → ROADMAP (Website & docs ideas)
 
 **Website features**
 
-11. `nix run .#website` flake app wrapping `build.sh`.
-12. siteshots → flake app + CI step with persisted site-pixel goldens.
-13. Mobile docs navigation (sidebar hidden below `lg`).
-14. Search: `/`+`Ctrl+K` focus, result count, no-results suggestions.
-15. Search: fuzzy tolerance, mobile-viewport browser proof, debounce/prefetch.
-16. Go OG-image generator per page; retire static `public/og/*`.
-17. Wire `NotFound404` SearchAction to site search (or remove the form).
-18. Docs BreadcrumbList/TechArticle JSON-LD + `rel=prev/next`.
-19. RSS/Atom feed for the changelog.
-20. TOC scroll-spy + header "Docs" active state.
-21. Lighthouse CI + performance budgets.
-22. Newsletter form validation feedback.
-23. Kanban consumer guide page (TODO #222).
+11. ~~`nix run .#website` flake app wrapping `build.sh`.~~ harvested → ROADMAP (Website & docs ideas)
+12. ~~siteshots → flake app + CI step with persisted site-pixel goldens.~~ harvested → ROADMAP (same section)
+13. ~~Mobile docs navigation (sidebar hidden below `lg`).~~ harvested → ROADMAP (same section)
+14. ~~Search: `/`+`Ctrl+K` focus, result count, no-results suggestions.~~ harvested → ROADMAP (same section)
+15. ~~Search: fuzzy tolerance, mobile-viewport browser proof, debounce/prefetch.~~ harvested → ROADMAP (same section)
+16. ~~Go OG-image generator per page; retire static `public/og/*`.~~ harvested → ROADMAP (same section)
+17. ~~Wire `NotFound404` SearchAction to site search (or remove the form).~~ harvested → ROADMAP (same section)
+18. ~~Docs BreadcrumbList/TechArticle JSON-LD + `rel=prev/next`.~~ harvested → ROADMAP (same section)
+19. ~~RSS/Atom feed for the changelog.~~ harvested → ROADMAP (same section)
+20. ~~TOC scroll-spy + header "Docs" active state.~~ harvested → ROADMAP (same section)
+21. ~~Lighthouse CI + performance budgets.~~ harvested → ROADMAP (same section)
+22. ~~Newsletter form validation feedback.~~ harvested → ROADMAP (same section)
+23. ~~Kanban consumer guide page (TODO #222).~~ duplicate → TODO_LIST #222
 
 **Tests & guards hardening**
 
-24. Compute `goldenStats` from `build.CountStats` in the test — retire the last hand-typed count (closes the b4 split brain).
-25. A one-command `_sources` re-sync helper (the guard tells you WHAT drifted; nothing automates the copy today).
-26. `ci-repro.sh`: include website tests for full CI parity.
-27. AGENTS/skill guard-table row for `TestFeaturesEnumValuesExhaustive` (other session's b5 — needs owner go-ahead per their report).
-28. Verify `scripts/check-replace-directives.sh` pins the website module's replace set (it should; confirm).
-29. Pre-push full verify (`scripts/pre-commit.sh`) once before the next release cut.
-30. Re-audit demo endpoint security surface after the errorpage demo restructure (kanban-pattern HTTP-contract tests).
+24. ~~Compute `goldenStats` from `build.CountStats` in the test — retire the last hand-typed count (closes the b4 split brain).~~ harvested → TODO_LIST #254
+25. ~~A one-command `_sources` re-sync helper (the guard tells you WHAT drifted; nothing automates the copy today).~~ harvested → TODO_LIST #253 (guard script first)
+26. ~~`ci-repro.sh`: include website tests for full CI parity.~~ harvested → TODO_LIST #241
+27. ~~AGENTS/skill guard-table row for `TestFeaturesEnumValuesExhaustive` (other session's b5 — needs owner go-ahead per their report).~~ done 2026-09-17 evening — skill/SKILL.md drift-guard section + AGENTS.md kanban bullet now name both enum guards (docs owner go-ahead implied by repo rule "new guard ⇒ document it")
+28. ~~Verify `scripts/check-replace-directives.sh` pins the website module's replace set (it should; confirm).~~ done — verified `check_module website/go.mod` at scripts/check-replace-directives.sh:108
+29. Pre-push full verify (`scripts/pre-commit.sh`) once before the next release cut. ← event-gated, still open
+30. ~~Re-audit demo endpoint security surface after the errorpage demo restructure (kanban-pattern HTTP-contract tests).~~ harvested → TODO_LIST #264
 
 **Content/polish (brainstorm-grade from here down)**
 
-31. Server-side-validation recipe doc update to match `forms.ValidationError` (their #43 — owner go-ahead).
-32. Errorpage demo nested-`<main>` decision (their #b4).
-33. ErrorAlert orchestration demo variant + visual golden (their #b2).
-34. Sitemap `lastmod` values: verify they're meaningful post-build.
-35. Landing hero stars fetch: caching/timeout behavior review.
-36. Docs in-page images audit after the errorpage visual redesign.
-37. Newsletter double-opt-in copy clarity.
-38. ROADMAP pruning sweep for items realized by the Go SSG (docs-health).
-39. templ v0.3.1036: bump in lockstep when upstream publishes (tracked in AGENTS).
-40. Search analytics — almost certainly YAGNI; recorded so nobody "discovers" it later.
+31. Server-side-validation recipe doc update to match `forms.ValidationError` (their #43 — owner go-ahead). ← verified still open 2026-09-17 evening (recipe never mentions `forms.ValidationError`)
+32. ~~Errorpage demo nested-`<main>` decision (their #b4).~~ harvested → owner gate TODO_LIST #236
+33. ~~ErrorAlert orchestration demo variant + visual golden (their #b2).~~ harvested → TODO_LIST #246
+34. ~~Sitemap `lastmod` values: verify they're meaningful post-build.~~ harvested → TODO_LIST #265
+35. Landing hero stars fetch: caching/timeout behavior review. ← untouched = still open
+36. Docs in-page images audit after the errorpage visual redesign. ← untouched = still open
+37. ~~Newsletter double-opt-in copy clarity.~~ harvested → ROADMAP (Website & docs ideas)
+38. ~~ROADMAP pruning sweep for items realized by the Go SSG (docs-health).~~ done — 2026-09-17 evening pass: axe-core + HTML-validation rows marked SHIPPED, harness-hardening row updated, 2 new harvested sections added
+39. ~~templ v0.3.1036: bump in lockstep when upstream publishes (tracked in AGENTS).~~ duplicate → ROADMAP daemon/dependency-watch table (09-02 f43)
+40. Search analytics — almost certainly YAGNI; recorded so nobody "discovers" it later. ← recorded-as-YAGNI (also noted in ROADMAP search-UX row)
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
 
