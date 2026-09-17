@@ -103,7 +103,7 @@ templ generate && go run .
 
 ### `display` — Data Display (43 components)
 
-Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, sparklines, bar charts, external links, collapsible sections, heatmaps, **native SVG charts** (LineChart, AreaChart, PieChart/Donut), **dual-transport kanban boards** (drag-and-drop + keyboard moves), eyebrows, terminal-style log scrollbacks, and more.
+Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, sparklines, bar charts, external links, collapsible sections, heatmaps, **native SVG charts** (LineChart, AreaChart, PieChart/Donut), **dual-transport kanban boards** (drag-and-drop + keyboard moves, optimistic moves with a pending register + failure revert), eyebrows, terminal-style log scrollbacks, and more.
 
 ```templ
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {

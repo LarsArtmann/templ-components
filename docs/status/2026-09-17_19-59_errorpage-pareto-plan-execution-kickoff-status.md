@@ -220,3 +220,43 @@ Nothing destructive or wrong-by-construction. One honest miss-level item:
 
 _Waiting for instructions. Next concrete action on resume: run the M01
 `-update` regen (§f item 1) before anything else touches the tree._
+
+---
+
+## Execution log (appended 2026-09-17, post-approval run)
+
+**M01 — DONE.** 4 captures landed (`errorpage/{light,dark}_{mobile,rtl}.png`,
+committed d32da44a; `visualtest.Bool(true)` normalized to the file's
+`new(true)` style in d10f7b70 — parallel-session/daemon interleave noted, no
+content conflict). Regeneration re-run byte-identical (clean tree).
+Eyeball verdict: mobile 375px wraps chips correctly, footer fits, no overflow;
+RTL mirrors chips, context table, action button (arrow flips), footer. Known
+bidi cosmetic: sentence-final periods of English text jump to the left edge in
+RTL — standard Unicode bidi for LTR runs inside `dir="rtl"`, resolves for real
+RTL locales, not chased. Full `nix run .#visual` pass green (104.5s, 133/133
+goldens). `TestDocsCountDrift` green (counts already at 133 across
+FEATURES/README/ROADMAP — same-edit bump landed with the captures).
+
+**M02 — DONE.** ⫱ Owner gate resolved by recommended default (recorded per
+plan micro-task 2.2): **default-ON** fallback, six neutral family titles
+(Transient "Temporary error", Rejection "Request could not be completed",
+Conflict "Conflict detected", Corruption "Data integrity issue",
+Infrastructure "Service unavailable", Orchestration "Internal error"),
+tone-matched to go-error-family v0.10.1 per-family Why/Fix copy. Implementation:
+`familyDefaultTitleMap` + `FamilyDefaultTitle` in `errorpage/styles.go`;
+fallback fires in `FromError` only when `Title` is still empty after the
+`ErrorTitle()` probe (fromerror.go). Tests: per-family fallback table,
+explicit-title-wins, plain-error path (fromerror_safety_test.go). No HTML
+golden drift (no golden renders a titleless FromError page). Probe S1–S5
+re-run — ALL scenarios now titled:
+
+```text
+S1 bridge.Wrap        family="transient"    title="Temporary error"     msg="connection refused after 30s"
+S2 bridge.AutoWrap    family="transient"    title="Temporary error"     ctx=[database,timeout,host,port]
+S3 oops-only(no brdg) family="corruption"   title="Data integrity issue"
+S4 oops.Public        family="rejection"    title="Request could not be completed"  msg="You do not have access to this resource."
+S5 plain+Wrap         family="conflict"     title="Conflict detected"   msg="[conflict] connection refused after 30s"  ← M05 target: prefix still present
+```
+
+CHANGELOG entry added. `nix run .#verify` deferred to the M25 final gate
+(per-batch verification runs incrementally instead).

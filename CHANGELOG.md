@@ -97,6 +97,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   (`errorpage/{light,dark}_{mobile,rtl}.png`): 375px mobile proves the chip
   row wraps and the meta footer fits, RTL proves chips, context table, and
   action button mirror via logical properties.
+- **`FromError` derives a title from the family when the error carries none.**
+  Every `FromError`-driven page now renders a heading: when neither the error
+  nor its type provides `ErrorTitle()`, a short neutral title is filled from
+  the resolved family (`FamilyDefaultTitle` — "Temporary error" for
+  Transient, "Request could not be completed" for Rejection, "Service
+  unavailable" for Infrastructure, etc.), tone-matched to go-error-family's
+  per-family Why/Fix copy. Explicit titles always win; unknown families get
+  the most apologetic default so a page never renders headingless. Fixes the
+  titleless renders every bridge consumer saw through the most common code
+  path.
 - **`FromError` prefers the oops-style user-safe message.** When an error
   exposes `Public() string` (promoted through `go-error-family/bridge`'s
   embedded `OopsError`), a non-empty value now wins over `Message()` and the
