@@ -96,9 +96,7 @@ func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {
 	if err := chromedp.Run(
 		ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		pollBool(
-			`document.readyState==='complete' && window.htmx!==undefined && document.querySelector('#region-a')!==null`,
-			nil,
+					pollTrue(`document.readyState==='complete' && window.htmx!==undefined && document.querySelector('#region-a')!==null`,
 		),
 		chromedp.Evaluate(regionBusyJS("region-a"), &initialBusyA),
 		chromedp.Evaluate(regionBusyJS("region-b"), &initialBusyB),

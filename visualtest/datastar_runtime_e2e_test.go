@@ -186,12 +186,12 @@ func TestDatastarSSEErrorHandlingBrowser(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		pollBool(`window.__dsReady===true && document.querySelector('#tc-datastar-announcer')!==null`, nil),
+		pollTrue(`window.__dsReady===true && document.querySelector('#tc-datastar-announcer')!==null`),
 		// A real click drives the pinned runtime's fetch plugin; the 500
 		// response dispatches datastar-fetch {type: 'error'} and the component
 		// announces + toasts it.
 		chromedp.Click("#bad-fetch-trigger", chromedp.NodeVisible),
-		pollBool(`document.getElementById('tc-datastar-announcer').textContent.includes('Stream error')`, nil),
+		pollTrue(`document.getElementById('tc-datastar-announcer').textContent.includes('Stream error')`),
 		chromedp.Evaluate(`document.getElementById('tc-datastar-announcer').textContent`, &announcerText),
 		pollBool(`(() => {
 			const toasts = document.querySelectorAll('#tc-toast-container > div');
@@ -243,7 +243,7 @@ func TestDatastarLiveRegionBusyClearBrowser(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		pollBool(`window.__dsReady===true && document.querySelector('#live-region')!==null`, nil),
+		pollTrue(`window.__dsReady===true && document.querySelector('#live-region')!==null`),
 		// Before the delayed first patch: the cue must be present.
 		chromedp.Evaluate(`(() => {
 			const el = document.querySelector('#live-region');

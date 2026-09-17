@@ -88,7 +88,7 @@ func TestLoadingButtonE2EStateGatesDuringRequest(t *testing.T) {
 		chromedp.Evaluate(spinnerOpacityJS, &spinnerAtRest),
 		chromedp.Click("#btn-loading-e2e", chromedp.NodeVisible),
 		pollBool(buttonJS+`.classList.contains('htmx-request')`, &requesting),
-		pollBool(spinnerOpacityJS+`>0.99`, nil),
+		pollTrue(spinnerOpacityJS+`>0.99`),
 		chromedp.Evaluate(defaultTextDisplayJS, &defaultTextDuring),
 		pollBool(`!(`+buttonJS+`.classList.contains('htmx-request'))`, &settled),
 		pollBool(spinnerOpacityJS+`<0.01`, &spinnerGatedAgain),
