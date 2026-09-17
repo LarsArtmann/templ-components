@@ -4,8 +4,11 @@ import (
 	"net/http"
 	"net/mail"
 	"net/url"
+	"strconv"
 	"strings"
 
+	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/layout"
 )
 
@@ -31,14 +34,14 @@ func (s recipeLoginState) hasErrors() bool {
 	return s.ErrEmail != "" || s.ErrPassword != ""
 }
 
-func (s recipeLoginState) validationErrors() []formsValidationError {
-	errs := make([]formsValidationError, 0, 2)
+func (s recipeLoginState) validationErrors() []forms.ValidationError {
+	errs := make([]forms.ValidationError, 0, 2)
 	if s.ErrEmail != "" {
-		errs = append(errs, formsValidationError{Field: "email", Message: s.ErrEmail})
+		errs = append(errs, forms.ValidationError{Field: "email", Message: s.ErrEmail})
 	}
 
 	if s.ErrPassword != "" {
-		errs = append(errs, formsValidationError{Field: "password", Message: s.ErrPassword})
+		errs = append(errs, forms.ValidationError{Field: "password", Message: s.ErrPassword})
 	}
 
 	return errs
@@ -56,7 +59,7 @@ func parseRecipeLogin(r *http.Request) recipeLoginState {
 	}
 
 	if password := r.PostFormValue("password"); len(password) < recipePasswordMinLen {
-		st.ErrPassword = "Your password must be at least " + itoa(recipePasswordMinLen) + " characters."
+		st.ErrPassword = "Your password must be at least " + strconv.Itoa(recipePasswordMinLen) + " characters."
 	}
 
 	if !st.hasErrors() {
@@ -83,7 +86,7 @@ func (s recipeSignupState) hasErrors() bool {
 	return s.ErrName != "" || s.ErrEmail != "" || s.ErrPassword != "" || s.ErrTerms != ""
 }
 
-func (s recipeSignupState) validationErrors() []formsValidationError {
+func (s recipeSignupState) validationErrors() []forms.ValidationError {
 	errs := make([]forms.ValidationError, 0, 4)
 	if s.ErrName != "" {
 		errs = append(errs, forms.ValidationError{Field: "full_name", Message: s.ErrName})
@@ -121,7 +124,7 @@ func parseRecipeSignup(r *http.Request) recipeSignupState {
 	}
 
 	if password := r.PostFormValue("password"); len(password) < recipePasswordMinLen {
-		st.ErrPassword = "Your password must be at least " + itoa(recipePasswordMinLen) + " characters."
+		st.ErrPassword = "Your password must be at least " + strconv.Itoa(recipePasswordMinLen) + " characters."
 	}
 
 	if r.PostFormValue("terms") == "" {
@@ -144,7 +147,9 @@ var recipeSettingsSections = map[string]bool{
 }
 
 // handleRecipeSettingsSave accepts a settings section form POST and redirects
-// back to the page with a saved confirmation for the submitted section.
+// back to the page with a saved confirmation for the submitted section. The
+// form itself persists nothing — the redirect loop exists to demonstrate a
+// full POST/redirect/GET round trip against library form components.
 func handleRecipeSettingsSave(w http.ResponseWriter, r *http.Request) {
 	section := r.PostFormValue("section")
 	if !recipeSettingsSections[section] {
@@ -166,10 +171,53 @@ func recipeSavedSection(raw string) string {
 	return ""
 }
 
-func itoa(n int) string {
-	return strings.TrimSpace(strings.Repeat("", 0) + fmtInt(n))
+// renderRecipeSettings serves GET (page, optionally with the saved banner)
+// and POST (save redirect) for the settings recipe demo.
+func renderRecipeSettings(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		handleRecipeSettingsSave(w, r)
+
+		return
+	}
+
+	renderRecipePageState(w, r, "Settings Recipe - templ-components", "Settings recipe demo",
+		func(props layout.PageProps) templ.Component {
+			return recipesSettingsPageState(props, recipeSavedSection(r.URL.Query().Get("saved")))
+		})
 }
 
-func fmtInt(n int) string {
-	return strconv.Itoa(n)
+// renderRecipeLogin serves GET (empty form) and POST (validated form) for
+// the login recipe demo.
+func renderRecipeLogin(w http.ResponseWriter, r *http.Request) {
+	st := recipeLoginState{}
+	if r.Method == http.MethodPost {
+		st = parseRecipeLogin(r)
+	}
+
+	renderRecipePageState(w, r, "Login Recipe - templ-components", "Login card recipe demo",
+		func(props layout.PageProps) templ.Component { return recipesLoginPageState(props, st) })
+}
+
+// renderRecipeAuth serves GET (empty form) and POST (validated form) for the
+// auth layout recipe demo.
+func renderRecipeAuth(w http.ResponseWriter, r *http.Request) {
+	st := recipeSignupState{}
+	if r.Method == http.MethodPost {
+		st = parseRecipeSignup(r)
+	}
+
+	renderRecipePageState(w, r, "Auth Layout Recipe - templ-components", "Auth layout recipe demo",
+		func(props layout.PageProps) templ.Component { return recipesAuthPageState(props, st) })
+}
+
+func renderRecipePageState(
+	w http.ResponseWriter,
+	r *http.Request,
+	title, description string,
+	page func(layout.PageProps) templ.Component,
+) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := page(demoPageProps(title, description)).Render(r.Context(), w); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

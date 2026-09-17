@@ -4,143 +4,229 @@ import (
 	"time"
 
 	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/layout"
+	"github.com/larsartmann/templ-components/navigation"
 	"github.com/larsartmann/templ-components/recipes"
 	"github.com/larsartmann/templ-components/utils"
 )
 
-templ recipesLoginPage(props layout.PageProps) {
-	@layout.Base(props) {
-		<div class="min-h-dvh flex flex-col">
-			<div class="flex items-center justify-between px-4 py-3">
-				<a href="/" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Back to demo</a>
-				@layout.ThemeToggle("Toggle dark mode", "")
-			</div>
-			<div class="flex-1 flex items-center justify-center px-4 pb-12">
-				<div class="w-full max-w-sm">
-					@recipes.LoginCard(recipes.LoginCardProps{
-						Title:    "Sign in",
-						Subtitle: "Welcome back. Enter your credentials to continue.",
-						FormBody: loginForm(),
-						Footer:   templ.Raw(`<p class="text-center text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a href="#" class="font-medium underline text-blue-600 dark:text-blue-400 hover:underline">Sign up</a></p>`),
-					})
-				</div>
-			</div>
-		</div>
-	}
+// Demo chrome shared by every recipe page: a back link and a theme toggle.
+// Flow variant for pages that manage their own document flow (dashboard,
+// settings); overlay variant for recipes that center themselves in the
+// viewport (login, auth) — overlaying keeps the recipe's own min-h-dvh
+// centering exact instead of stacking a second 100dvh block above the fold.
+
+templ recipeUtilityBarLinks() {
+	<a href="/" class="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
+		@icons.Icon(icons.ArrowLeft, "w-4 h-4")
+		<span>Back to demo</span>
+	</a>
+	@layout.ThemeToggle("Toggle dark mode", "")
 }
 
-templ loginForm() {
-	@forms.Form(forms.FormProps{Action: "/", Method: forms.FormGet}) {
-		<div class="space-y-4">
-			@forms.Input(forms.InputProps{
-				Name:        "email",
-				Type:        forms.InputEmail,
-				Label:       "Email",
-				Required:    true,
-				Placeholder: "you@example.com",
-			})
-			@forms.Input(forms.InputProps{
-				Name:        "password",
-				Type:        forms.InputPassword,
-				Label:       "Password",
-				Required:    true,
-				Placeholder: "••••••••",
-			})
-			@display.Button(display.ButtonProps{Text: "Sign in", Type: display.ButtonHTMLSubmit, BaseProps: utils.BaseProps{Class: "w-full justify-center"}})
-		</div>
-	}
+templ recipeUtilityBarFlow() {
+	<div class="flex items-center justify-between px-4 py-3">
+		@recipeUtilityBarLinks()
+	</div>
 }
 
-templ recipesAuthPage(props layout.PageProps) {
-	@layout.Base(props) {
-		<div class="min-h-dvh flex flex-col">
-			<div class="flex items-center justify-end px-4 py-3">
-				<a href="/" class="me-4 text-sm text-blue-600 dark:text-blue-400 hover:underline">Back to demo</a>
-				@layout.ThemeToggle("Toggle dark mode", "")
-			</div>
-			<div class="flex-1">
-				@recipes.AuthLayout(recipes.AuthLayoutProps{
-					Card: authLoginCard(),
-					PanelTitle: "templ-components",
-					PanelText: "Server-rendered UI components for Go. Type-safe, accessible, CSP-ready.",
-					PanelFeatures: []string{
-						componentCount + " components, zero JS required for most",
-						"Native dialog, details, and popover APIs",
-						"Dark mode + RTL out of the box",
-					},
-				})
-			</div>
-		</div>
-	}
+templ recipeUtilityBarOverlay() {
+	<div class="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-4 py-3">
+		@recipeUtilityBarLinks()
+	</div>
 }
 
-templ authLoginCard() {
-	@recipes.LoginCard(recipes.LoginCardProps{
-		Title:    "Create account",
-		Subtitle: "Start building in minutes.",
-		FormBody: loginForm(),
-	})
-}
-
-templ recipesSettingsPage(props layout.PageProps) {
-	@layout.Base(props) {
-		<div class="max-w-3xl mx-auto px-4 py-8">
-			<div class="mb-8 flex items-center justify-between">
-				<div>
-					<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
-					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Recipe: recipes.SettingsLayout</p>
-				</div>
-				<a href="/" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Back to demo</a>
-			</div>
-			@recipes.SettingsLayout(recipes.SettingsLayoutProps{
-				Aside: templ.Raw(`<nav class="space-y-1"><a href="#profile" class="block rounded-md bg-blue-50 dark:bg-blue-900/20 px-3 py-2 text-sm font-medium text-blue-700 dark:text-blue-300">Profile</a><a href="#security" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">Security</a><a href="#notifications" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">Notifications</a></nav>`),
-				Sections: []recipes.SettingsSection{
-					{ID: "profile", Title: "Profile", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Update your profile information, avatar, and display name.</p>`)},
-					{ID: "security", Title: "Security", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Change your password and enable two-factor authentication.</p>`)},
-					{ID: "notifications", Title: "Notifications", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Choose what you get notified about and how.</p>`)},
-				},
-			})
-		</div>
-	}
-}
+// Dashboard recipe: the full admin shell — sidebar brand nav, sticky header
+// with search, four stat cards, and a 2x2 chart/table/activity grid.
 
 templ recipesDashboardPage(props layout.PageProps) {
 	@layout.Base(props) {
-		<div class="px-4 py-8">
-			<div class="mb-8 flex items-center justify-between">
-				<div>
-					<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Recipe: recipes.Dashboard</p>
-				</div>
-				<a href="/" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Back to demo</a>
-			</div>
-			@recipes.Dashboard(recipes.DashboardProps{
-				Title:    "Overview",
-				Subtitle: "Your account at a glance",
-				StatCards: []templ.Component{
-					revenueStatCard(),
-					usersStatCard(),
-					churnStatCard(),
-				},
-				Charts: []templ.Component{
-					revenueTrendCard(),
-					recentActivityCard(),
-				},
-			})
-		</div>
+		@recipeUtilityBarFlow()
+		@recipes.Dashboard(recipes.DashboardProps{
+			Title:         "Overview",
+			Subtitle:      "Your workspace at a glance",
+			Sidebar:       dashboardSidebar(),
+			Header:        dashboardHeader(),
+			HeaderActions: dashboardPageActions(),
+			StatCards: []templ.Component{
+				revenueStatCard(),
+				usersStatCard(),
+				conversionStatCard(),
+				churnStatCard(),
+			},
+			Charts: []templ.Component{
+				revenueTrendCard(),
+				signupsChartCard(),
+				topProductsCard(),
+				recentActivityCard(),
+			},
+		})
 	}
 }
 
+templ dashboardSidebar() {
+	@navigation.SidebarNav(navigation.SidebarNavProps{
+		Brand: dashboardBrand(),
+		Items: []navigation.SidebarNavItem{
+			{Label: "Overview", Href: "#overview", Icon: icons.Home, Active: true},
+			{Label: "Analytics", Href: "#analytics", Icon: icons.Chart},
+			{Label: "Customers", Href: "#customers", Icon: icons.Users},
+			{Label: "Projects", Href: "#projects", Icon: icons.Folder},
+			{Label: "Documents", Href: "#documents", Icon: icons.Document, Section: "General"},
+			{Label: "Settings", Href: "/recipes/settings", Icon: icons.Settings, Section: "General"},
+		},
+		CurrentPath: "/recipes/dashboard",
+		Footer:      dashboardSidebarFooter(),
+	})
+}
+
+templ dashboardBrand() {
+	<div class="flex items-center gap-2.5 px-2 py-1">
+		<span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white dark:bg-blue-500">A</span>
+		<span class="truncate text-base font-semibold text-gray-900 dark:text-white">Acme Inc</span>
+	</div>
+}
+
+templ dashboardSidebarFooter() {
+	<div class="flex items-center gap-3 border-t border-gray-200 px-3 py-3 dark:border-gray-800">
+		@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=AL", Alt: "", Size: display.AvatarSizeSM})
+		<div class="min-w-0">
+			<p class="truncate text-sm font-medium text-gray-900 dark:text-white">Ada Lovelace</p>
+			<p class="truncate text-xs text-gray-500 dark:text-gray-400">ada@acme.dev</p>
+		</div>
+	</div>
+}
+
+templ dashboardHeader() {
+	<div class="flex items-center justify-between gap-4 px-4 py-3 sm:px-6">
+		<div class="w-full max-w-sm">
+			@forms.Input(forms.InputProps{
+				Type:        forms.InputSearch,
+				Name:        "dashboard-search",
+				Placeholder: "Search customers, orders…",
+				BaseProps:   utils.BaseProps{AriaLabel: "Search"},
+			})
+		</div>
+		<div class="flex flex-shrink-0 items-center gap-2">
+			@layout.ThemeToggle("Toggle dark mode", "")
+			@display.Button(display.ButtonProps{Text: "New report", Size: display.ButtonSizeSM})
+		</div>
+	</div>
+}
+
+templ dashboardPageActions() {
+	@display.Button(display.ButtonProps{Text: "Export CSV", Variant: display.ButtonSecondary, Size: display.ButtonSizeSM})
+}
+
+templ revenueStatCard() {
+	@display.StatCard(display.StatCardProps{
+		Label:  "Revenue",
+		Value:  "$48,250",
+		Change: "+12.5%",
+		Trend:  display.TrendUp,
+		Tone:   display.StatToneBlue,
+		Icon:   icons.ArrowTrendingUp,
+	})
+}
+
+templ usersStatCard() {
+	@display.StatCard(display.StatCardProps{
+		Label:  "Active users",
+		Value:  "2,840",
+		Change: "+4.3%",
+		Trend:  display.TrendUp,
+		Tone:   display.StatToneGreen,
+		Icon:   icons.Users,
+	})
+}
+
+templ conversionStatCard() {
+	@display.StatCard(display.StatCardProps{
+		Label:  "Conversion",
+		Value:  "3.2%",
+		Change: "-0.8%",
+		Trend:  display.TrendDown,
+		Tone:   display.StatToneYellow,
+		Icon:   icons.Bolt,
+	})
+}
+
+templ churnStatCard() {
+	@display.StatCard(display.StatCardProps{
+		Label:  "Churn",
+		Value:  "1.8%",
+		Change: "-0.4%",
+		Trend:  display.TrendDown,
+		Tone:   display.StatToneRed,
+		Icon:   icons.ExclamationTriangle,
+	})
+}
+
 templ revenueTrendCard() {
-	@display.Card(display.CardProps{Title: "Revenue trend"}) {
+	@display.Card(display.CardProps{Title: "Revenue trend", Subtitle: "Last 7 days, thousands of dollars"}) {
 		@display.LineChart(display.LineChartProps{
 			Series: []display.LineChartSeries{
 				{Name: "Revenue", Values: []float64{12, 18, 15, 24, 21, 29, 34}},
 			},
 			XAxisLabels: []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"},
-			BaseProps:   utils.BaseProps{AriaLabel: "Revenue by day of week"},
+			Style:       display.LineChartStyleSmooth,
+			ShowDots:    true,
+			BaseProps:   utils.BaseProps{AriaLabel: "Revenue by day of week, in thousands of dollars"},
+		})
+	}
+}
+
+templ signupsChartCard() {
+	@display.Card(display.CardProps{Title: "Signups by channel", Subtitle: "This month"}) {
+		@display.BarChart(display.BarChartProps{
+			Bars: []display.BarChartBar{
+				{Label: "Organic", Value: 412},
+				{Label: "Referral", Value: 296},
+				{Label: "Paid ads", Value: 214},
+				{Label: "Social", Value: 158},
+			},
+			Orient:     display.BarHorizontal,
+			ShowValues: true,
+			BaseProps:  utils.BaseProps{AriaLabel: "Signups by acquisition channel"},
+		})
+	}
+}
+
+templ topProductsCard() {
+	@display.Card(display.CardProps{Title: "Top products", Padding: display.CardPaddingNone}) {
+		@display.Table(display.TableProps{
+			Headers: []string{"Product", "Units", "Revenue", "Status"},
+			Rows: []display.TableRow{
+				{Cells: []display.TableCell{
+					{Text: "Starter plan"},
+					{Text: "1,204"},
+					{Text: "$14,400"},
+					{Content: display.StatusBadge("active")},
+				}},
+				{Cells: []display.TableCell{
+					{Text: "Team plan"},
+					{Text: "486"},
+					{Text: "$29,160"},
+					{Content: display.StatusBadge("active")},
+				}},
+				{Cells: []display.TableCell{
+					{Text: "Enterprise"},
+					{Text: "42"},
+					{Text: "$52,900"},
+					{Content: display.StatusBadge("pending")},
+				}},
+				{Cells: []display.TableCell{
+					{Text: "Priority support add-on"},
+					{Text: "318"},
+					{Text: "$7,950"},
+					{Content: display.StatusBadge("archived")},
+				}},
+			},
+			Flush: true,
+			Hover: true,
 		})
 	}
 }
@@ -148,32 +234,309 @@ templ revenueTrendCard() {
 templ recentActivityCard() {
 	@display.Card(display.CardProps{Title: "Recent activity"}) {
 		<div class="space-y-4">
-			<div class="flex items-center gap-3">
-				@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=AS", Alt: "Alice Smith", Size: display.AvatarSizeSM, Status: display.AvatarStatusOnline})
-				<div>
-					<p class="text-sm font-medium text-gray-900 dark:text-white">Alice Smith deployed v2.3.0</p>
-					@display.RelativeTime(display.RelativeTimeProps{Time: time.Now().Add(-12 * time.Minute)})
-				</div>
-			</div>
-			<div class="flex items-center gap-3">
-				@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=BJ", Alt: "Bob Jones", Size: display.AvatarSizeSM})
-				<div>
-					<p class="text-sm font-medium text-gray-900 dark:text-white">Bob Jones invited Grace Lee</p>
-					@display.RelativeTime(display.RelativeTimeProps{Time: time.Now().Add(-3 * time.Hour)})
-				</div>
-			</div>
+			@activityItem("Alice Smith", "AS", "deployed v2.3.0 to production", display.AvatarStatusOnline, -12*time.Minute)
+			@activityItem("Bob Jones", "BJ", "invited Grace Lee to the workspace", "", -3*time.Hour)
+			@activityItem("Carla Nguyen", "CN", "upgraded to the Team plan", display.AvatarStatusOnline, -26*time.Hour)
 		</div>
 	}
 }
 
-templ revenueStatCard() {
-	@display.StatCard(display.StatCardProps{Label: "Revenue", Value: "$48,250", Trend: display.TrendUp, Change: "+12.5%"})
+templ activityItem(name, initials, action string, status display.AvatarStatus, ago time.Duration) {
+	<div class="flex items-center gap-3">
+		@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=" + initials, Alt: "", Size: display.AvatarSizeSM, Status: status})
+		<p class="min-w-0 flex-1 text-sm text-gray-600 dark:text-gray-400">
+			<span class="font-medium text-gray-900 dark:text-white">{ name }</span>
+			{ " " + action }
+		</p>
+		@display.RelativeTime(display.RelativeTimeProps{Time: time.Now().Add(ago)})
+	</div>
 }
 
-templ usersStatCard() {
-	@display.StatCard(display.StatCardProps{Label: "Users", Value: "2,840", Trend: display.TrendUp, Change: "+4.3%"})
+// Settings recipe: section nav aside plus real, submittable form sections.
+
+templ recipesSettingsPage(props layout.PageProps) {
+	@recipesSettingsPageState(props, "")
 }
 
-templ churnStatCard() {
-	@display.StatCard(display.StatCardProps{Label: "Churn", Value: "1.8%", Trend: display.TrendDown, Change: "-0.4%"})
+templ recipesSettingsPageState(props layout.PageProps, savedSection string) {
+	@layout.Base(props) {
+		@recipeUtilityBarFlow()
+		if savedSection != "" {
+			@layout.Container(layout.ContainerProps{Width: layout.ContainerWidthDefault, Pad: true}) {
+				@feedback.Alert(feedback.AlertProps{
+					Title:       "Changes saved",
+					Message:     "Your " + savedSection + " settings were saved. This demo does not persist data — reload to reset.",
+					Type:        feedback.FeedbackSuccess,
+					Dismissible: true,
+				})
+			}
+		}
+		@recipes.SettingsLayout(recipes.SettingsLayoutProps{
+			Title:    "Settings",
+			Subtitle: "Manage your workspace profile, security, and notifications",
+			Aside:    settingsAsideNav(savedSection),
+			Sections: []recipes.SettingsSection{
+				{ID: "profile", Title: "Profile", Subtitle: "How you appear to your team", Body: settingsProfileSection()},
+				{ID: "security", Title: "Security", Subtitle: "Password and sign-in protection", Body: settingsSecuritySection()},
+				{ID: "notifications", Title: "Notifications", Subtitle: "Choose what we tell you about", Body: settingsNotificationsSection()},
+			},
+		})
+	}
+}
+
+templ settingsAsideNav(savedSection string) {
+	<nav aria-label="Settings sections" class="space-y-1 lg:sticky lg:top-6">
+		@settingsAsideLink("profile", "Profile", icons.UserCircle, savedSection == "" || savedSection == "profile")
+		@settingsAsideLink("security", "Security", icons.Lock, savedSection == "security")
+		@settingsAsideLink("notifications", "Notifications", icons.Bell, savedSection == "notifications")
+	</nav>
+}
+
+templ settingsAsideLink(sectionID, label string, sectionIcon icons.Name, active bool) {
+	<a
+		href={ templ.URL("#" + sectionID) }
+		class={ utils.Class(
+			"flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium",
+			utils.Ternary(active,
+				"bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300",
+				"text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white",
+			),
+		) }
+	>
+		@icons.Icon(sectionIcon, "w-4 h-4 flex-shrink-0")
+		<span>{ label }</span>
+	</a>
+}
+
+templ settingsProfileSection() {
+	@forms.Form(forms.FormProps{Action: "/recipes/settings", Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+		@forms.Input(forms.InputProps{Type: forms.InputHidden, Name: "section", Value: "profile"})
+		<div class="grid gap-4 sm:grid-cols-2">
+			@forms.Input(forms.InputProps{Name: "full_name", Label: "Full name", Value: "Ada Lovelace", Required: true})
+			@forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email", Value: "ada@acme.dev", Required: true})
+		</div>
+		<div class="mt-4">
+			@forms.Select(forms.SelectProps{
+				Name:  "role",
+				Label: "Role",
+				Options: []forms.SelectOption{
+					{Value: "owner", Label: "Owner", Selected: true},
+					{Value: "admin", Label: "Admin"},
+					{Value: "member", Label: "Member"},
+				},
+				HelpText: "Owners can manage billing and members.",
+			})
+		</div>
+		<div class="mt-4">
+			@forms.Textarea(forms.TextareaProps{Name: "bio", Label: "Bio", Rows: 3, Placeholder: "Tell your team about yourself"})
+		</div>
+		<div class="mt-6">
+			@display.Button(display.ButtonProps{Text: "Save changes", Type: display.ButtonHTMLSubmit, Size: display.ButtonSizeSM})
+		</div>
+	}
+}
+
+templ settingsSecuritySection() {
+	@forms.Form(forms.FormProps{Action: "/recipes/settings", Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+		@forms.Input(forms.InputProps{Type: forms.InputHidden, Name: "section", Value: "security"})
+		<div class="grid gap-4 sm:grid-cols-2">
+			@forms.Input(forms.InputProps{Name: "current_password", Type: forms.InputPassword, Label: "Current password", Required: true})
+			@forms.Input(forms.InputProps{Name: "new_password", Type: forms.InputPassword, Label: "New password", Required: true, HelpText: "At least 8 characters."})
+		</div>
+		<div class="mt-5 space-y-4">
+			@forms.Toggle(forms.ToggleProps{
+				Name:     "two_factor",
+				Label:    "Two-factor authentication",
+				Checked:  true,
+				HelpText: "Require a one-time code from your authenticator app at sign-in.",
+			})
+			@forms.Toggle(forms.ToggleProps{Name: "session_alerts", Label: "New sign-in alerts", Checked: true})
+		</div>
+		<div class="mt-6">
+			@display.Button(display.ButtonProps{Text: "Update password", Type: display.ButtonHTMLSubmit, Size: display.ButtonSizeSM})
+		</div>
+	}
+}
+
+templ settingsNotificationsSection() {
+	@forms.Form(forms.FormProps{Action: "/recipes/settings", Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+		@forms.Input(forms.InputProps{Type: forms.InputHidden, Name: "section", Value: "notifications"})
+		<div class="space-y-4">
+			@forms.Toggle(forms.ToggleProps{
+				Name:     "notify_product",
+				Label:    "Product updates",
+				Checked:  true,
+				HelpText: "New features, improvements, and changelog highlights.",
+			})
+			@forms.Toggle(forms.ToggleProps{Name: "notify_security", Label: "Security alerts", Checked: true})
+			@forms.Toggle(forms.ToggleProps{
+				Name:     "notify_digest",
+				Label:    "Weekly digest",
+				HelpText: "A summary of workspace activity every Monday morning.",
+			})
+		</div>
+		<div class="mt-6">
+			@display.Button(display.ButtonProps{Text: "Update preferences", Type: display.ButtonHTMLSubmit, Size: display.ButtonSizeSM})
+		</div>
+	}
+}
+
+// Login recipe: centered sign-in card with a working POST loop — submit
+// empty or short credentials to see server-side validation, or valid ones
+// for the success state.
+
+templ recipesLoginPage(props layout.PageProps) {
+	@recipesLoginPageState(props, recipeLoginState{})
+}
+
+templ recipesLoginPageState(props layout.PageProps, st recipeLoginState) {
+	@layout.Base(props) {
+		<div class="relative min-h-dvh">
+			@recipeUtilityBarOverlay()
+			@recipes.LoginCard(recipes.LoginCardProps{
+				Title:        "Sign in to Acme",
+				Subtitle:     "Welcome back. Enter your credentials to continue.",
+				FormBody:     loginFormBody(st),
+				OAuthButtons: oauthButtonsRow(),
+				Footer:       templ.Raw(loginFooterHTML),
+			})
+		</div>
+	}
+}
+
+const loginFooterHTML = `<p class="text-center text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a href="/recipes/auth" class="font-medium text-blue-600 underline hover:underline dark:text-blue-400">Create one</a></p>`
+
+templ loginFormBody(st recipeLoginState) {
+	if st.Success {
+		@feedback.Alert(feedback.AlertProps{
+			Title:       "Signed in as " + st.Email,
+			Message:     "This demo accepts any valid-looking credentials and shows the success state. Try submitting an empty form to see validation.",
+			Type:        feedback.FeedbackSuccess,
+			Dismissible: true,
+		})
+	} else if st.hasErrors() {
+		@forms.ValidationSummary(forms.ValidationSummaryProps{Errors: st.validationErrors()})
+	}
+	@forms.Form(forms.FormProps{Action: "/recipes/login", Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+		<div class="space-y-4">
+			@forms.Input(forms.InputProps{
+				Name:        "email",
+				Type:        forms.InputEmail,
+				Label:       "Email",
+				Required:    true,
+				Placeholder: "you@example.com",
+				Value:       st.Email,
+				Error:       st.ErrEmail,
+			})
+			@forms.Input(forms.InputProps{
+				Name:        "password",
+				Type:        forms.InputPassword,
+				Label:       "Password",
+				Required:    true,
+				Placeholder: "••••••••",
+				Error:       st.ErrPassword,
+			})
+			@display.Button(display.ButtonProps{Text: "Sign in", Type: display.ButtonHTMLSubmit, BaseProps: utils.BaseProps{Class: "w-full justify-center"}})
+		</div>
+	}
+}
+
+templ oauthButtonsRow() {
+	<div class="grid grid-cols-2 gap-3">
+		@display.Button(display.ButtonProps{Text: "GitHub", Variant: display.ButtonSecondary, Href: "#"})
+		@display.Button(display.ButtonProps{Text: "Google", Variant: display.ButtonSecondary, Href: "#"})
+	</div>
+}
+
+// Auth layout recipe: split-screen branding panel plus a working signup
+// card — same POST loop as the login demo.
+
+templ recipesAuthPage(props layout.PageProps) {
+	@recipesAuthPageState(props, recipeSignupState{})
+}
+
+templ recipesAuthPageState(props layout.PageProps, st recipeSignupState) {
+	@layout.Base(props) {
+		<div class="relative min-h-dvh">
+			@recipeUtilityBarOverlay()
+			@recipes.AuthLayout(recipes.AuthLayoutProps{
+				Card:       signupCard(st),
+				PanelTitle: "templ-components",
+				PanelText:  "Server-rendered UI components for Go. Type-safe, accessible, CSP-ready.",
+				PanelFeatures: []string{
+					componentCount + " components, zero JS required for most",
+					"Native dialog, details, and popover APIs",
+					"Dark mode + RTL out of the box",
+				},
+				PanelFooter: authPanelFooter(),
+			})
+		</div>
+	}
+}
+
+templ authPanelFooter() {
+	<div class="flex items-center gap-4 text-sm text-blue-100">
+		<span>© 2026 Acme Inc</span>
+		@display.ExternalLink(display.ExternalLinkProps{Href: "https://templcomponents.lars.software", Text: "Documentation"})
+	</div>
+}
+
+templ signupCard(st recipeSignupState) {
+	@recipes.LoginCard(recipes.LoginCardProps{
+		Title:    "Create your account",
+		Subtitle: "Start building in minutes. No credit card required.",
+		FormBody: signupFormBody(st),
+		Footer:   templ.Raw(signupFooterHTML),
+	})
+}
+
+const signupFooterHTML = `<p class="text-center text-sm text-gray-500 dark:text-gray-400">Already have an account? <a href="/recipes/login" class="font-medium text-blue-600 underline hover:underline dark:text-blue-400">Sign in</a></p>`
+
+templ signupFormBody(st recipeSignupState) {
+	if st.Success {
+		@feedback.Alert(feedback.AlertProps{
+			Title:       "Account created for " + st.Email,
+			Message:     "This demo persists nothing — submit an incomplete form to see the validation state.",
+			Type:        feedback.FeedbackSuccess,
+			Dismissible: true,
+		})
+	} else if st.hasErrors() {
+		@forms.ValidationSummary(forms.ValidationSummaryProps{Errors: st.validationErrors()})
+	}
+	@forms.Form(forms.FormProps{Action: "/recipes/auth", Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+		<div class="space-y-4">
+			@forms.Input(forms.InputProps{
+				Name:        "full_name",
+				Label:       "Full name",
+				Required:    true,
+				Placeholder: "Ada Lovelace",
+				Value:       st.Name,
+				Error:       st.ErrName,
+			})
+			@forms.Input(forms.InputProps{
+				Name:        "email",
+				Type:        forms.InputEmail,
+				Label:       "Work email",
+				Required:    true,
+				Placeholder: "you@company.com",
+				Value:       st.Email,
+				Error:       st.ErrEmail,
+			})
+			@forms.Input(forms.InputProps{
+				Name:        "password",
+				Type:        forms.InputPassword,
+				Label:       "Password",
+				Required:    true,
+				HelpText:    "At least 8 characters.",
+				Error:       st.ErrPassword,
+			})
+			@forms.Checkbox(forms.CheckboxProps{
+				Name:     "terms",
+				Label:    "I agree to the terms of service",
+				Required: true,
+				Error:    st.ErrTerms,
+			})
+			@display.Button(display.ButtonProps{Text: "Create account", Type: display.ButtonHTMLSubmit, BaseProps: utils.BaseProps{Class: "w-full justify-center"}})
+		</div>
+	}
 }

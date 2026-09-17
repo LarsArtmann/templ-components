@@ -767,11 +767,11 @@ func newMux() *http.ServeMux {
 		case "/recipes/dashboard":
 			renderPage(w, r, "Dashboard Recipe - templ-components", "Dashboard recipe demo", recipesDashboardPage)
 		case "/recipes/settings":
-			renderPage(w, r, "Settings Recipe - templ-components", "Settings recipe demo", recipesSettingsPage)
+			renderRecipeSettings(w, r)
 		case "/recipes/login":
-			renderPage(w, r, "Login Recipe - templ-components", "Login card recipe demo", recipesLoginPage)
+			renderRecipeLogin(w, r)
 		case "/recipes/auth":
-			renderPage(w, r, "Auth Layout Recipe - templ-components", "Auth layout recipe demo", recipesAuthPage)
+			renderRecipeAuth(w, r)
 		case "/":
 			transport := parseDemoTransport(r.URL.Query().Get("transport"))
 			renderPage(
@@ -825,15 +825,22 @@ func renderPage(
 	page func(layout.PageProps) templ.Component,
 ) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := page(demoPageProps(title, description)).Render(r.Context(), w); err != nil {
+		http.Error(w, err.Error(), 500)
+	}
+}
+
+// demoPageProps builds the shared layout.PageProps for a demo page: nonce,
+// CSS path, and font head content.
+func demoPageProps(title, description string) layout.PageProps {
 	props := layout.DefaultPageProps()
 	props.Title = title
 	props.Description = description
 	props.Nonce = "demo-nonce"
 	props.CSSPath = "/css/app.css"
 	props.HeadContent = demoFonts("demo-nonce")
-	if err := page(props).Render(r.Context(), w); err != nil {
-		http.Error(w, err.Error(), 500)
-	}
+
+	return props
 }
 
 // noStore marks a response as uncacheable: HTMX GET fragments must never be
