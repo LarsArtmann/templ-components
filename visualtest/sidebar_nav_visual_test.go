@@ -118,7 +118,9 @@ func TestSidebarNavClassicDarkOptOut(t *testing.T) {
 	)
 
 	if bg == "" {
-		t.Error("opt-out sidebar background does not match a bg-gray-900 probe — the classic-dark token override did not reach the element")
+		t.Error(
+			"opt-out sidebar background does not match a bg-gray-900 probe — the classic-dark token override did not reach the element",
+		)
 	}
 
 	AssertScreenshot(t, "sidebar_nav/classic_dark_opt_out", optOut,
