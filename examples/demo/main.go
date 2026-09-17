@@ -820,13 +820,26 @@ func errorPageFullModelDemoProps() errorpage.ErrorPageProps {
 
 // registerErrorRoutes serves the errorpage constructors as standalone demo
 // routes — the way consumers render them: one handler call per HTTP status,
-// no demo chrome around the page.
+// a real status code, and the page inside the site's own layout shell (the
+// documented integration path; the library's bare HTMLShell mode has no
+// stylesheet hook, so unstyled output would undersell the components).
 func registerErrorRoutes(mux *http.ServeMux) {
 	const nonce = "demo-nonce"
 
 	errorRoute := func(status int, props errorpage.ErrorPageProps) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			errorpage.WriteErrorPage(w, r, status, props, nonce)
+			props.Nonce = nonce
+			if props.StatusCode == 0 {
+				props.StatusCode = status
+			}
+
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(status)
+
+			pageProps := demoPageProps(fmt.Sprintf("%s - templ-components Demo", http.StatusText(status)), "Standalone error page demo")
+			if err := errorRoutePage(pageProps, errorpage.ErrorPage(props)).Render(r.Context(), w); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 		})
 	}
 
@@ -840,7 +853,15 @@ func registerErrorRoutes(mux *http.ServeMux) {
 	mux.Handle("GET /errors/404-page", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		props := errorpage.DefaultNotFound404Props()
 		props.Links = errorpage.DefaultNotFoundLinks()
-		errorpage.WriteNotFound404(w, r, props, nonce)
+		props.Nonce = nonce
+
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusNotFound)
+
+		pageProps := demoPageProps("Page not found - templ-components Demo", "Dedicated 404 page demo")
+		if err := errorRoutePage(pageProps, errorpage.NotFound404(props)).Render(r.Context(), w); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}))
 }
 

@@ -1,6 +1,10 @@
 package main
 
-import "github.com/larsartmann/templ-components/errorpage"
+import (
+	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/errorpage"
+	"github.com/larsartmann/templ-components/layout"
+)
 
 templ errorpageDemo() {
 	@demoSection("Standalone error pages", "errorpage-standalone")
@@ -54,4 +58,10 @@ templ errorRouteCard(title, href string) {
 		<span class="font-medium text-gray-900 dark:text-white">{ title }</span>
 		<span class="font-mono text-xs text-gray-500 dark:text-gray-400">{ href }</span>
 	</a>
+}
+
+templ errorRoutePage(props layout.PageProps, content templ.Component) {
+	@layout.Base(props) {
+		@content
+	}
 }
