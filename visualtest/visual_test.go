@@ -803,7 +803,7 @@ func TestErrorPage(t *testing.T) {
 		t,
 		"errorpage/light_rtl",
 		errorpage.ErrorPage(fullErrorPageProps()),
-		visualtest.Options{RTL: visualtest.Bool(true)},
+		visualtest.Options{RTL: new(true)},
 	)
 }
 
@@ -986,19 +986,19 @@ func TestErrorPageDark(t *testing.T) {
 		t,
 		"errorpage/dark",
 		errorpage.ErrorPage(fullErrorPageProps()),
-		visualtest.Options{Dark: visualtest.Bool(true)},
+		visualtest.Options{Dark: new(true)},
 	)
 	visualtest.AssertScreenshot(
 		t,
 		"errorpage/dark_mobile",
 		errorpage.ErrorPage(fullErrorPageProps()),
-		visualtest.Options{Dark: visualtest.Bool(true), Viewport: visualtest.ViewportMobile},
+		visualtest.Options{Dark: new(true), Viewport: visualtest.ViewportMobile},
 	)
 	visualtest.AssertScreenshot(
 		t,
 		"errorpage/dark_rtl",
 		errorpage.ErrorPage(fullErrorPageProps()),
-		visualtest.Options{Dark: visualtest.Bool(true), RTL: visualtest.Bool(true)},
+		visualtest.Options{Dark: new(true), RTL: new(true)},
 	)
 }
 

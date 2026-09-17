@@ -351,7 +351,11 @@ func TestTableInCardNoDoubleBorder(t *testing.T) {
 
 		roundedCount := strings.Count(output, "rounded-lg")
 		if roundedCount != 0 {
-			t.Errorf("expected 0 rounded-lg (card is sharp; table wrapper border suppressed by Flush), got %d.\nOutput:\n%s", roundedCount, output)
+			t.Errorf(
+				"expected 0 rounded-lg (card is sharp; table wrapper border suppressed by Flush), got %d.\nOutput:\n%s",
+				roundedCount,
+				output,
+			)
 		}
 
 		utils.AssertContainsAll(t, output, "Alice", "px-4", "py-2")
