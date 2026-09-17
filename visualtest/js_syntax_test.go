@@ -50,6 +50,7 @@ func TestDemoInlineScriptsAreSyntaxValid(t *testing.T) {
 
 		body, readErr := io.ReadAll(resp.Body)
 		_ = resp.Body.Close()
+
 		if readErr != nil {
 			t.Fatalf("read %s: %v", route, readErr)
 		}
@@ -71,10 +72,15 @@ func TestDemoInlineScriptsAreSyntaxValid(t *testing.T) {
 				t.Fatalf("write temp script: %v", writeErr)
 			}
 
-			out, cmdErr := exec.Command(node, "--check", tmp).CombinedOutput() //nolint:gosec // fixed tmp path, node from PATH
+			out, cmdErr := exec.Command(node, "--check", tmp).CombinedOutput()
 			if cmdErr != nil {
 				snippet := nonceAttr.FindString(string(body))
-				t.Errorf("route %s: inline script fails `node --check`: %s\nscript head: %s", route, strings.TrimSpace(string(out)), firstN(snippet, 120))
+				t.Errorf(
+					"route %s: inline script fails `node --check`: %s\nscript head: %s",
+					route,
+					strings.TrimSpace(string(out)),
+					firstN(snippet, 120),
+				)
 			}
 		}
 	}
