@@ -139,6 +139,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Error-page small labels now meet WCAG contrast.** The 12px uppercase
+  section labels on `ErrorPage`/`NotFound404` (Fix card, context table, cause
+  code, timestamp, Trace id, "Popular pages") used light-mode `gray-400` —
+  about 2.8:1 on white, far below the 4.5:1 minimum. They now render
+  `gray-500` (4.83:1); dark-mode values are unchanged. Found by the axe
+  sweep's first audit of the new standalone `/errors/*` demo routes, and the
+  route goldens were re-captured for the new pixel truth.
 - **Website CI drift repaired (daemon recurrence, 3rd incident of this class
   in 4 days).** The auto-commit daemon flipped the website module's generated
   import to `encoding/json/v2` against its `.templ` source (the 2026-09-14
