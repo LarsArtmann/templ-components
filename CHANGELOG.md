@@ -49,6 +49,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   from the embedded `OopsError`. Zero configuration for application
   developers.
 
+- **Drift-immunity guards close the two blind spots that shipped this
+  week's reds (M01 of the 2026-09-17 Pareto plan).** The generated-file sync
+  guard now walks the WHOLE repo — every module including `website/` and
+  `examples/demo/` — and checks import equality in BOTH directions
+  (source↔generated), so a daemon-committed stale `*_templ.go` or a flipped
+  import (the 16:28 `base_templ.go` incident, three times in four days)
+  fails in <2s at commit time and in the CI Lint job instead of surfacing as
+  a red workflow. A new lint module-set guard pins that `ci.yaml`,
+  `scripts/ci-repro.sh`, and `scripts/pre-commit.sh` lint the SAME module +
+  root-package set — the hand-copied lists that let the 2026-09-17 lint-lane
+  drift pass locally for 3 runs. The CI `golangci-lint` step now lints every
+  module with a per-module PASS/FAIL summary instead of stopping at the
+  first failure. The tracked pre-commit hook was also found missing the
+  replace-directives tripwire (it existed only in the dead `.git/hooks`
+  copy); it is wired into the active hook now.
+
 ### Changed
 
 - **The website's comparison matrix derives its counts from the codebase.**
