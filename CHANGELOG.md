@@ -61,6 +61,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `tc new` scaffolder source were updated accordingly. Closes the long-open
   "SidebarNav light mode option" backlog item (P3-47, 2026-07-08 dark-mode
   audit).
+- **Demo recipe pages rebuilt into full, working screens.** All four
+  `/recipes/*` demo routes now exercise their recipes end to end. The
+  dashboard demo supplies the sidebar (`SidebarNav` with brand, sections,
+  and user footer) and sticky search header that `Dashboard`'s AppShell
+  scaffold expects, fills the stat grid with four toned `StatCard`s, and
+  completes the 2×2 content grid (line chart, bar chart, table-in-card,
+  activity feed). The settings demo replaces its one-sentence cards with
+  three submittable form sections (inputs, select, textarea, toggles) that
+  POST, redirect, and re-render with a success alert. The login demo now
+  POSTs to the demo server — empty/invalid credentials render a
+  `ValidationSummary` plus per-field errors, valid ones the success state —
+  and showcases the previously unused OAuth divider slot. The auth demo's
+  card copy matches its form ("Create your account" now comes with a
+  register form and terms checkbox) and the branding panel gained a footer.
+  The double `min-h-dvh` wrappers that pushed the login/auth cards below
+  the fold are gone (the demo chrome overlays the recipe's own centering).
+
 - **ErrorPage visual redesign.** The full-page error card is rebuilt around a
   neutral white shell (`rounded-2xl`, subtle shadow, dark-mode aware) with a
   family-colored accent bar, a 48px icon circle, and a metadata chip row that
@@ -81,6 +98,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Chart x-axis labels no longer collide with the y-axis.** `LineChart` and
+  `AreaChart` x-axis labels were middle-anchored on their tick, so the first
+  label crossed the axis line into the y-tick text ("Mon" overlapping "10")
+  and the last could overflow the right edge. Boundary labels now anchor
+  inward (start on the first tick, end on the last), middle labels are
+  unchanged.
+- **Adjacent `Toggle`s no longer merge onto one line.** The toggle's root
+  `<label>` was `inline-flex` while `Checkbox` is block-level, so stacked
+  toggles in a `space-y` form flowed together inline. The root is now
+  `flex w-fit` (same rendered geometry in isolation, own line in a stack) —
+  consistent with `Checkbox` and every other form control.
+- **`LoginCard` constrains itself to a card width.** It wrapped the card in
+  `Container(ContainerWidthSM)` — `max-w-3xl` (48rem), far too wide for a
+  sign-in card, so standalone use rendered a stretched form. The container
+  is now `max-w-sm`, matching `AuthLayout`'s own card column; consumers no
+  longer need an extra `max-w-sm` wrapper.
+- **Table scroll wrappers are keyboard-accessible.** The `overflow-x-auto`
+  wrapper is focusable (`tabindex="0"`), so a table overflowing a narrow
+  container can be scrolled with the keyboard (axe
+  `scrollable-region-focusable`); same pattern as the Carousel track.
+- **The axe sweep now audits light mode in light mode.** The sweep pinned
+  the theme for dark audits only — headless Chromium defaults to
+  `prefers-color-scheme: dark`, so every "light" route was actually audited
+  in dark mode (the same harness bug the route goldens fixed). Both modes
+  are now pinned explicitly via localStorage + class + `color-scheme`, and
+  baseline entries that only existed for the mis-rendered pages are pruned.
 - **Empty family badge no longer renders.** A zero-value or unknown `Family`
   used to emit an empty tinted `<span>`; the badge — and the whole chip row
   when everything is unset — now renders nothing, following the same
