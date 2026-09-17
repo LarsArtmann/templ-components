@@ -81,7 +81,7 @@ func TestDemoDatastarSSEErrorToast(t *testing.T) {
 
 	var announcer string
 
-	if err := chromedp.Run(ctx, chromedp.Poll(
+	if err := chromedp.Run(ctx, pollText(
 		`(document.getElementById('tc-datastar-announcer')||{innerText:''}).innerText`,
 		&announcer,
 		chromedp.WithPollingTimeout(5*time.Second),
@@ -126,7 +126,7 @@ func TestDemoDatastarRetriesFailedToast(t *testing.T) {
 
 	var held bool
 
-	if err := chromedp.Run(ctx, chromedp.Poll(
+	if err := chromedp.Run(ctx, pollBool(
 		`Boolean((document.getElementById('tc-datastar-announcer')||{innerText:''}).innerText.indexOf('Live stream lost') >= 0)`,
 		&held,
 		chromedp.WithPollingTimeout(5*time.Second),
@@ -167,7 +167,7 @@ func TestDemoDatastarBusyClearsOnFirstPatch(t *testing.T) {
 
 	var cleared bool
 
-	if err := chromedp.Run(ctx, chromedp.Poll(
+	if err := chromedp.Run(ctx, pollBool(
 		`Boolean(!(document.getElementById('synth-live').hasAttribute('aria-busy')))`,
 		&cleared,
 		chromedp.WithPollingTimeout(5*time.Second),

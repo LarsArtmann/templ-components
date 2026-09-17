@@ -892,7 +892,7 @@ func regionText(ctx context.Context, region string) (string, error) {
 func packPollOnce(ctx context.Context, expr string) bool {
 	var ok bool
 
-	err := chromedp.Run(ctx, chromedp.Poll(expr, &ok, chromedp.WithPollingTimeout(700*time.Millisecond)))
+	err := chromedp.Run(ctx, pollBool(expr, &ok, chromedp.WithPollingTimeout(700*time.Millisecond)))
 
 	return err == nil && ok
 }
@@ -966,7 +966,7 @@ func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
 
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
-				chromedp.Poll(packGate(dialect), &ok),
+				pollBool(packGate(dialect), &ok),
 			); err != nil {
 				t.Fatalf("%s filter input setup: %v", dialect, err)
 			}
@@ -1016,7 +1016,7 @@ func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
 
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
-				chromedp.Poll(packGate(dialect), &ok),
+				pollBool(packGate(dialect), &ok),
 			); err != nil {
 				t.Fatalf("%s filter dropdown setup: %v", dialect, err)
 			}
@@ -1063,7 +1063,7 @@ func packWizardFlow(t *testing.T, dialect wire.Transport) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(packGate(dialect), &ok),
+		pollBool(packGate(dialect), &ok),
 	); err != nil {
 		t.Fatalf("%s wizard setup: %v", dialect, err)
 	}
@@ -1156,7 +1156,7 @@ func TestWireE2EUploadFileRoundTrip(t *testing.T) {
 
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
-				chromedp.Poll(packGate(dialect), &ok),
+				pollBool(packGate(dialect), &ok),
 			); err != nil {
 				t.Fatalf("%s upload setup: %v", dialect, err)
 			}
@@ -1210,7 +1210,7 @@ func TestWireE2EGETSearchRoundTrip(t *testing.T) {
 
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
-				chromedp.Poll(packGate(dialect), &ok),
+				pollBool(packGate(dialect), &ok),
 				setFieldValue(region, `input[name="q"]`, "ada"),
 			); err != nil {
 				t.Fatalf("%s search setup: %v", dialect, err)
@@ -1271,7 +1271,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(packGate(wire.TransportHTMX), &ok),
+		pollBool(packGate(wire.TransportHTMX), &ok),
 	); err != nil {
 		t.Fatalf("dirty guard setup: %v", err)
 	}
@@ -1315,7 +1315,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	// response swaps in a fresh guarded form.
 	if err := chromedp.Run(ctx,
 		chromedp.Click(formSel(packDirtyRegion, `button[type="submit"]`), chromedp.NodeVisible),
-		chromedp.Poll(regionHasText(packDirtyRegion, "Saved Graf Zeppelin via htmx."), &ok),
+		pollBool(regionHasText(packDirtyRegion, "Saved Graf Zeppelin via htmx."), &ok),
 		waitSwapSettled(),
 	); err != nil {
 		t.Fatalf("submit dirty form: %v", err)
@@ -1360,7 +1360,7 @@ func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
 			// current execution context mid-poll, so give it a beat first.
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
-				chromedp.Poll(packGate(dialect), &ok),
+				pollBool(packGate(dialect), &ok),
 				setValueQuiet(scope, `input[name="q"]`, "enter-test"),
 				chromedp.SendKeys(formSel(scope, `input[name="q"]`), kb.Enter),
 			); err != nil {

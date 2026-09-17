@@ -96,7 +96,7 @@ func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {
 	if err := chromedp.Run(
 		ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(
+		pollBool(
 			`document.readyState==='complete' && window.htmx!==undefined && document.querySelector('#region-a')!==null`,
 			nil,
 		),
@@ -105,8 +105,8 @@ func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {
 		// The eager `load` trigger fires the real request; htmx dispatches the
 		// real htmx:afterRequest on completion — the script must clear both
 		// regions (document-level delegation, one listener for many regions).
-		chromedp.Poll(`!`+regionBusyJS("region-a"), &clearedA),
-		chromedp.Poll(`!`+regionBusyJS("region-b"), &clearedB),
+		pollBool(`!`+regionBusyJS("region-a"), &clearedA),
+		pollBool(`!`+regionBusyJS("region-b"), &clearedB),
 		chromedp.Evaluate(`document.querySelector('#region-a span').textContent`, &contentIntact),
 		// Synthetic re-arm: put the cue back on region-b and dispatch
 		// htmx:afterRequest by hand — proves the listener directly, decoupled

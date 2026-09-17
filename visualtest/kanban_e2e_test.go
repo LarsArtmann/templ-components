@@ -637,7 +637,7 @@ func kanbanClickMoveUntil(ctx context.Context, t *testing.T, buttonSel, orderExp
 
 		var got bool
 
-		err := chromedp.Run(ctx, chromedp.Poll(poll, &got))
+		err := chromedp.Run(ctx, pollBool(poll, &got))
 		if err == nil && got {
 			return
 		}
@@ -668,7 +668,7 @@ func TestKanbanE2EKeyboardMovesBothTransports(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(kanbanE2EReady, &ready),
+		pollBool(kanbanE2EReady, &ready),
 	); err != nil {
 		t.Fatalf("navigate + readiness: %v", err)
 	}
@@ -727,7 +727,7 @@ func TestKanbanE2EDropMovesBothTransports(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(kanbanE2EReady, &ready),
+		pollBool(kanbanE2EReady, &ready),
 	); err != nil {
 		t.Fatalf("navigate + readiness: %v", err)
 	}
@@ -758,7 +758,7 @@ func TestKanbanE2EDropMovesBothTransports(t *testing.T) {
 		var ok bool
 
 		poll := kanbanColumnOrderExpr(drop.boardID, drop.column) + "===" + strconv.Quote(drop.want)
-		if err := chromedp.Run(ctx, chromedp.Poll(poll, &ok)); err != nil || !ok {
+		if err := chromedp.Run(ctx, pollBool(poll, &ok)); err != nil || !ok {
 			t.Fatalf("%s: card %s never landed at the top of %q (want order %q): err=%v",
 				drop.boardID, drop.card, drop.column, drop.want, err)
 		}
@@ -803,7 +803,7 @@ func TestKanbanE2ECoarsePointerButtonsVisible(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(kanbanE2EReady, &ready),
+		pollBool(kanbanE2EReady, &ready),
 	); err != nil {
 		t.Fatalf("navigate + readiness: %v", err)
 	}
@@ -834,7 +834,7 @@ func TestKanbanE2ECoarsePointerButtonsVisible(t *testing.T) {
 
 	var visible bool
 
-	if err := chromedp.Run(ctx, chromedp.Poll(kanbanButtonsOpacityExpr+`==="1"`, &visible)); err != nil || !visible {
+	if err := chromedp.Run(ctx, pollBool(kanbanButtonsOpacityExpr+`==="1"`, &visible)); err != nil || !visible {
 		t.Fatalf(
 			"coarse pointer computed opacity never settled at 1 (visible=%v, err=%v) — touch fallback broken",
 			visible,
@@ -882,7 +882,7 @@ func TestKanbanE2ECrossBoardDropIgnored(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(kanbanE2EReady, &ready),
+		pollBool(kanbanE2EReady, &ready),
 	); err != nil {
 		t.Fatalf("navigate + readiness: %v", err)
 	}
@@ -952,7 +952,7 @@ func TestKanbanE2EAnnouncesMove(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(kanbanE2EReady, &ready),
+		pollBool(kanbanE2EReady, &ready),
 	); err != nil {
 		t.Fatalf("navigate + readiness: %v", err)
 	}
@@ -972,7 +972,7 @@ func TestKanbanE2EAnnouncesMove(t *testing.T) {
 			boardID, want,
 		)
 
-		if err := chromedp.Run(ctx, chromedp.Poll(livePoll, &announced)); err != nil || !announced {
+		if err := chromedp.Run(ctx, pollBool(livePoll, &announced)); err != nil || !announced {
 			t.Fatalf("%s: post-swap live region never announced %q (announced=%v, err=%v)",
 				boardID, want, announced, err)
 		}
@@ -1009,7 +1009,7 @@ func kanbanClickCountUntil(ctx context.Context, t *testing.T, buttonSel, countEx
 
 		var got bool
 
-		err := chromedp.Run(ctx, chromedp.Poll(poll, &got))
+		err := chromedp.Run(ctx, pollBool(poll, &got))
 		if err == nil && got {
 			return
 		}
@@ -1044,7 +1044,7 @@ func TestKanbanE2EAddAndResetBothTransports(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(kanbanE2EReady, &ready),
+		pollBool(kanbanE2EReady, &ready),
 	); err != nil {
 		t.Fatalf("navigate + readiness: %v", err)
 	}
@@ -1149,7 +1149,7 @@ func TestKanbanE2EPendingStateBothTransports(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(kanbanE2EReady, &ready),
+		pollBool(kanbanE2EReady, &ready),
 	); err != nil {
 		t.Fatalf("navigate + readiness: %v", err)
 	}
@@ -1162,7 +1162,7 @@ func TestKanbanE2EPendingStateBothTransports(t *testing.T) {
 		// 1.2s stall, so this poll can only pass BEFORE the response lands.
 		var pending bool
 
-		if err := chromedp.Run(ctx, chromedp.Poll(
+		if err := chromedp.Run(ctx, pollBool(
 			kanbanFlakyPendingExpr(boardID), &pending,
 			chromedp.WithPollingTimeout(500*time.Millisecond), chromedp.WithPollingInterval(50*time.Millisecond),
 		)); err != nil || !pending {
@@ -1177,7 +1177,7 @@ func TestKanbanE2EPendingStateBothTransports(t *testing.T) {
 		// Then the response lands: pending cleared, confirmation announced.
 		var done bool
 
-		if err := chromedp.Run(ctx, chromedp.Poll(kanbanFlakyDoneExpr(boardID), &done)); err != nil || !done {
+		if err := chromedp.Run(ctx, pollBool(kanbanFlakyDoneExpr(boardID), &done)); err != nil || !done {
 			t.Fatalf("%s: pending state never cleared after the swap (done=%v, err=%v)", boardID, done, err)
 		}
 	}
@@ -1203,7 +1203,7 @@ func TestKanbanE2EFailureRevertsBothTransports(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(kanbanE2EReady, &ready),
+		pollBool(kanbanE2EReady, &ready),
 	); err != nil {
 		t.Fatalf("navigate + readiness: %v", err)
 	}
@@ -1216,7 +1216,7 @@ func TestKanbanE2EFailureRevertsBothTransports(t *testing.T) {
 
 		if err := chromedp.Run(
 			ctx,
-			chromedp.Poll(kanbanFlakyRevertedExpr(boardID), &reverted),
+			pollBool(kanbanFlakyRevertedExpr(boardID), &reverted),
 		); err != nil ||
 			!reverted {
 			t.Fatalf("%s: failed move never reverted cleanly (reverted=%v, err=%v)", boardID, reverted, err)
@@ -1230,7 +1230,7 @@ func TestKanbanE2EFailureRevertsBothTransports(t *testing.T) {
 			boardID,
 		)
 
-		if err := chromedp.Run(ctx, chromedp.Poll(flashExpr, &flashGone)); err != nil || !flashGone {
+		if err := chromedp.Run(ctx, pollBool(flashExpr, &flashGone)); err != nil || !flashGone {
 			t.Fatalf("%s: tc-kanban-move-failed flash never self-cleared (gone=%v, err=%v)", boardID, flashGone, err)
 		}
 	}

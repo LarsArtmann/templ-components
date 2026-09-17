@@ -159,7 +159,7 @@ func kanbanCaptureBoardState(
 
 	var state bool
 
-	if err := chromedp.Run(ctx, chromedp.Poll(stateExpr, &state,
+	if err := chromedp.Run(ctx, pollBool(stateExpr, &state,
 		chromedp.WithPollingTimeout(pollTimeout), chromedp.WithPollingInterval(50*time.Millisecond)),
 	); err != nil || !state {
 		t.Fatalf("%s: state never appeared (state=%v, err=%v)", name, state, err)

@@ -186,14 +186,14 @@ func TestDatastarSSEErrorHandlingBrowser(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(`window.__dsReady===true && document.querySelector('#tc-datastar-announcer')!==null`, nil),
+		pollBool(`window.__dsReady===true && document.querySelector('#tc-datastar-announcer')!==null`, nil),
 		// A real click drives the pinned runtime's fetch plugin; the 500
 		// response dispatches datastar-fetch {type: 'error'} and the component
 		// announces + toasts it.
 		chromedp.Click("#bad-fetch-trigger", chromedp.NodeVisible),
-		chromedp.Poll(`document.getElementById('tc-datastar-announcer').textContent.includes('Stream error')`, nil),
+		pollBool(`document.getElementById('tc-datastar-announcer').textContent.includes('Stream error')`, nil),
 		chromedp.Evaluate(`document.getElementById('tc-datastar-announcer').textContent`, &announcerText),
-		chromedp.Poll(`(() => {
+		pollBool(`(() => {
 			const toasts = document.querySelectorAll('#tc-toast-container > div');
 			for (const t of toasts) {
 				if (t.textContent.includes('live stream endpoint returned an error')) return true;
@@ -243,14 +243,14 @@ func TestDatastarLiveRegionBusyClearBrowser(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(`window.__dsReady===true && document.querySelector('#live-region')!==null`, nil),
+		pollBool(`window.__dsReady===true && document.querySelector('#live-region')!==null`, nil),
 		// Before the delayed first patch: the cue must be present.
 		chromedp.Evaluate(`(() => {
 			const el = document.querySelector('#live-region');
 			return el.getAttribute('aria-busy') === 'true' && el.hasAttribute('data-tc-live-busy');
 		})()`, &initialBusy),
 		// After the patch: cue cleared on the region AND content landed.
-		chromedp.Poll(`(() => {
+		pollBool(`(() => {
 			const el = document.querySelector('#live-region');
 			return el.getAttribute('aria-busy') === null && !el.hasAttribute('data-tc-live-busy')
 				&& document.querySelector('#live-child').textContent.includes('fresh via sse');

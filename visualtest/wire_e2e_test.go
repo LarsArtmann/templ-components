@@ -176,9 +176,9 @@ func TestWireE2EHTMXButtonPatchesTarget(t *testing.T) {
 		chromedp.Navigate(srv.URL+"/"),
 		// htmx loads inline (self-host) and processes hx-* nodes on
 		// DOMContentLoaded; "complete" readyState guarantees both.
-		chromedp.Poll(`document.readyState==='complete' && window.htmx!==undefined`, &htmxDefined),
+		pollBool(`document.readyState==='complete' && window.htmx!==undefined`, &htmxDefined),
 		chromedp.Click("#btn-wire-htmx", chromedp.NodeVisible),
-		chromedp.Poll(`document.querySelector('#wire-htmx-out').innerHTML.length>0`, &fragment),
+		pollBool(`document.querySelector('#wire-htmx-out').innerHTML.length>0`, &fragment),
 		chromedp.InnerHTML("#wire-htmx-out", &out, chromedp.NodeVisible),
 	); err != nil {
 		t.Fatalf("htmx E2E: %v", err)
@@ -207,9 +207,9 @@ func TestWireE2EDatastarButtonPatchesSelector(t *testing.T) {
 		chromedp.Navigate(srv.URL+"/"),
 		// The pinned runtime dispatches datastar-ready on document when its
 		// engine booted; before that, data-on:* clicks are inert.
-		chromedp.Poll(`window.__dsReady===true`, &dsReady),
+		pollBool(`window.__dsReady===true`, &dsReady),
 		chromedp.Click("#btn-wire-datastar", chromedp.NodeVisible),
-		chromedp.Poll(`document.querySelector('#wire-datastar-out').innerHTML.length>0`, &fragment),
+		pollBool(`document.querySelector('#wire-datastar-out').innerHTML.length>0`, &fragment),
 		chromedp.InnerHTML("#wire-datastar-out", &out, chromedp.NodeVisible),
 	); err != nil {
 		t.Fatalf("datastar E2E: %v", err)

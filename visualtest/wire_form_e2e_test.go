@@ -349,11 +349,11 @@ func TestWireE2EHTMXFormSubmitsFields(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(`document.readyState==='complete' && window.htmx!==undefined`, &ok),
+		pollBool(`document.readyState==='complete' && window.htmx!==undefined`, &ok),
 		chromedp.SendKeys(formSel(wireFormHTMXRegion, `input[name="name"]`), "Ada Lovelace", chromedp.NodeVisible),
 		chromedp.SendKeys(formSel(wireFormHTMXRegion, `input[name="email"]`), "ada@example.com", chromedp.NodeVisible),
 		chromedp.Click(formSel(wireFormHTMXRegion, `button[type="submit"]`), chromedp.NodeVisible),
-		chromedp.Poll(regionHasText(wireFormHTMXRegion, "Subscribed Ada Lovelace (ada@example.com) via htmx."), &ok),
+		pollBool(regionHasText(wireFormHTMXRegion, "Subscribed Ada Lovelace (ada@example.com) via htmx."), &ok),
 	); err != nil {
 		t.Fatalf("htmx form E2E: %v", err)
 	}
@@ -378,7 +378,7 @@ func TestWireE2EDatastarFormSubmitsFields(t *testing.T) {
 	if err := chromedp.Run(
 		ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(`window.__dsReady===true`, &ok),
+		pollBool(`window.__dsReady===true`, &ok),
 		chromedp.SendKeys(formSel(wireFormDatastarRegion, `input[name="name"]`), "Grace Hopper", chromedp.NodeVisible),
 		chromedp.SendKeys(
 			formSel(wireFormDatastarRegion, `input[name="email"]`),
@@ -386,7 +386,7 @@ func TestWireE2EDatastarFormSubmitsFields(t *testing.T) {
 			chromedp.NodeVisible,
 		),
 		chromedp.Click(formSel(wireFormDatastarRegion, `button[type="submit"]`), chromedp.NodeVisible),
-		chromedp.Poll(
+		pollBool(
 			regionHasText(wireFormDatastarRegion, "Subscribed Grace Hopper (grace@example.com) via datastar."),
 			&ok,
 		),
@@ -429,7 +429,7 @@ func TestWireE2EFormValidationRoundTrip(t *testing.T) {
 
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
-				chromedp.Poll(tc.gate, &ok),
+				pollBool(tc.gate, &ok),
 				// "ada@example" passes the browser's HTML5 email gate but
 				// fails the server's domain rule.
 				chromedp.SendKeys(formSel(tc.region, `input[name="name"]`), "Ada Lovelace", chromedp.NodeVisible),
@@ -439,15 +439,15 @@ func TestWireE2EFormValidationRoundTrip(t *testing.T) {
 				// the runtime settle before re-interacting (htmx wires swapped
 				// nodes during its 20ms settle phase; Datastar initializes
 				// observed mutations asynchronously too).
-				chromedp.Poll(regionHasText(tc.region, "1 error found"), &ok),
-				chromedp.Poll(regionHasText(tc.region, wireFormEmailBad), &ok),
+				pollBool(regionHasText(tc.region, "1 error found"), &ok),
+				pollBool(regionHasText(tc.region, wireFormEmailBad), &ok),
 				waitSwapSettled(),
 				// The submitted value survived the re-render.
 				chromedp.Evaluate(formValueExpr(tc.region, `input[name="email"]`), &preserved),
 				// Fix the email in the re-rendered form and resubmit.
 				setFieldValue(tc.region, `input[name="email"]`, "ada@example.com"),
 				chromedp.Click(formSel(tc.region, `button[type="submit"]`), chromedp.NodeVisible),
-				chromedp.Poll(regionHasText(tc.region, "Subscribed Ada Lovelace (ada@example.com)"), &ok),
+				pollBool(regionHasText(tc.region, "Subscribed Ada Lovelace (ada@example.com)"), &ok),
 			); err != nil {
 				t.Fatalf("%s validation round-trip: %v", tc.name, err)
 			}

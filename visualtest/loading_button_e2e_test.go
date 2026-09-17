@@ -84,14 +84,14 @@ func TestLoadingButtonE2EStateGatesDuringRequest(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(`document.readyState==='complete' && window.htmx!==undefined`, &htmxReady),
+		pollBool(`document.readyState==='complete' && window.htmx!==undefined`, &htmxReady),
 		chromedp.Evaluate(spinnerOpacityJS, &spinnerAtRest),
 		chromedp.Click("#btn-loading-e2e", chromedp.NodeVisible),
-		chromedp.Poll(buttonJS+`.classList.contains('htmx-request')`, &requesting),
-		chromedp.Poll(spinnerOpacityJS+`>0.99`, nil),
+		pollBool(buttonJS+`.classList.contains('htmx-request')`, &requesting),
+		pollBool(spinnerOpacityJS+`>0.99`, nil),
 		chromedp.Evaluate(defaultTextDisplayJS, &defaultTextDuring),
-		chromedp.Poll(`!(`+buttonJS+`.classList.contains('htmx-request'))`, &settled),
-		chromedp.Poll(spinnerOpacityJS+`<0.01`, &spinnerGatedAgain),
+		pollBool(`!(`+buttonJS+`.classList.contains('htmx-request'))`, &settled),
+		pollBool(spinnerOpacityJS+`<0.01`, &spinnerGatedAgain),
 	); err != nil {
 		t.Fatalf("LoadingButton E2E: %v", err)
 	}
