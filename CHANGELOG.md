@@ -139,6 +139,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **The demo's sticky search box no longer collapses to zero width.** In a
+  window narrower than ~1024px the section nav consumed the flex row and the
+  "Filter sections…" input rendered at 0px wide while staying keyboard
+  focusable — an invisible focus stop. The wrapper now takes a fixed
+  `sm:w-60` (full width on mobile). Found by the new keyboard-traversal
+  audit (`TestKeyboardTraversalFocusVisibility`), which Tabs through every
+  demo route and fails if focus ever lands on an invisible or zero-size
+  element.
 - **Error-page small labels now meet WCAG contrast.** The 12px uppercase
   section labels on `ErrorPage`/`NotFound404` (Fix card, context table, cause
   code, timestamp, Trace id, "Popular pages") used light-mode `gray-400` —
