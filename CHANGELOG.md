@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Kanban optimistic move with an honest pending register (ADR-0041).** A
+  wired `KanbanBoard` no longer freezes between drop and server response: the
+  card moves in the DOM the moment the move is submitted (drop OR keyboard
+  button, both transports), the target column's "No cards" placeholder hides,
+  and both columns' count badges/aria-labels sync immediately. The moved card
+  wears a pending register until the server's re-render lands — dimmed with a
+  reduced-motion-safe spinner ring and `aria-busy="true"` — so "the client
+  did this, the server hasn't confirmed it" is always visible. A failed move
+  (4xx/5xx, network error) reverts honestly: the card snaps back to its exact
+  original position, counts/aria-labels are recomputed from the DOM, the card
+  flashes a red border for 4s, and a new sr-only `role="alert"` region
+  announces "Moving X to Y failed. The board was restored." (no
+  `aria-live="assertive"` — the repo's urgency policy). Success clears via
+  three independent signals (htmx `afterRequest` success, Datastar
+  `datastar-fetch` `finished`, and the swap poll — now budgeted 30s instead
+  of 5s) so pending can never stick; every listener filters on
+  `data-tc-kanban-form` so unrelated wired elements can't trigger a revert.
+  No props/API change; wired-board goldens gain the count/empty hooks and the
+  alert region. Browser-proven under both runtimes by
+  `TestKanbanE2EPendingStateBothTransports` (a 1.2s-stalled move proves the
+  optimistic state is observable before the response) and
+  `TestKanbanE2EFailureRevertsBothTransports` (a 500 move proves the revert,
+  flash, and alert). The demo move endpoints now wait 800ms on purpose so the
+  pending register is perceivable on the live demo.
+
 ### Changed
 
 - **ErrorPage visual redesign.** The full-page error card is rebuilt around a

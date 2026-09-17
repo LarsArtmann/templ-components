@@ -495,16 +495,42 @@ details[open] [data-tc-chevron] {
 
 /* --- Shell theming tokens (M22/F101) --- */
 /* AppShell and SidebarNav consume these semantic shell tokens: consumers
-   rebrand the chrome (dark sidebar, light header) with one variable each,
-   without touching the global palette. Defaults mirror the original
-   hard-coded classes (gray-900 sidebar, white header, gray-200 border). */
+   rebrand the chrome with one variable each, without touching the global
+   palette. The sidebar is THEME-ADAPTIVE: a light white sidebar in light
+   mode, the classic near-black sidebar in dark mode. Item/section colors
+   are token-driven too, so a permanently-dark sidebar (the classic admin
+   chrome) stays a pure-CSS opt-out — set the same variables in :root:
+
+     :root {
+       --tc-sidebar-bg: var(--color-gray-900);
+       --tc-sidebar-border: transparent;
+       --tc-sidebar-fg: var(--color-gray-300);
+       --tc-sidebar-fg-hover: var(--color-white);
+       --tc-sidebar-item-hover-bg: var(--color-gray-800);
+       --tc-sidebar-muted: var(--color-gray-500);
+       --tc-sidebar-muted-hover: var(--color-gray-300);
+     }
+
+   Dark-mode values mirror the original hard-coded classes exactly. */
 :root {
-  --tc-sidebar-bg: var(--color-gray-900);
+  --tc-sidebar-bg: var(--color-white);
+  --tc-sidebar-border: var(--color-gray-200);
+  --tc-sidebar-fg: var(--color-gray-700);
+  --tc-sidebar-fg-hover: var(--color-gray-900);
+  --tc-sidebar-item-hover-bg: var(--color-gray-100);
+  --tc-sidebar-muted: var(--color-gray-500);
+  --tc-sidebar-muted-hover: var(--color-gray-700);
   --tc-header-bg: var(--color-white);
   --tc-header-border: var(--color-gray-200);
 }
 .dark {
   --tc-sidebar-bg: #000;
+  --tc-sidebar-border: transparent;
+  --tc-sidebar-fg: var(--color-gray-300);
+  --tc-sidebar-fg-hover: var(--color-white);
+  --tc-sidebar-item-hover-bg: var(--color-gray-800);
+  --tc-sidebar-muted: var(--color-gray-600);
+  --tc-sidebar-muted-hover: var(--color-gray-400);
   --tc-header-bg: var(--color-gray-900);
   --tc-header-border: var(--color-gray-800);
 }
