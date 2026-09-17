@@ -19,7 +19,7 @@ owner instruction.
 
 ### The 1% that delivers 51% — SHIP THE ACCUMULATED VALUE
 
-**→ Cut v1.17.0 (#192) + verify proxy propagation.**
+**→ Cut v1.18.0 (next version — v1.17.0 shipped 2026-09-13; #192's described batch IS v1.17.0, so #192 now means "cut the next one") + verify proxy propagation.**
 
 Three sessions of work (a11y pack, layout pack, `KanbanColumn.Action`/`Tone`,
 kanban security hardening, smoke CLI — 8 warm `[Unreleased]` entries) currently delivers
@@ -64,7 +64,7 @@ Sorted by importance/impact/effort/customer-value. "⫱" marks owner-gated edges
 
 | M#  | Phase | Task                                                                                                     | Covers                                         | Min | Impact | Effort | Value |
 | --- | ----- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | --- | ------ | ------ | ----- |
-| M01 | P1    | Pre-release verify + cut v1.17.0 via release.sh ⫱go                                                      | #192                                           | 60  | ★★★★★  | M      | ★★★★★ |
+| M01 | P1    | Pre-release verify + cut v1.18.0 via release.sh (v1.17.0 shipped 2026-09-13) ⫱go                                                      | #192                                           | 60  | ★★★★★  | M      | ★★★★★ |
 | M02 | P1    | Post-release proxy + pkg.go.dev + consumer `go get` verification                                         | f36, #192                                      | 40  | ★★★★   | S      | ★★★★  |
 | M03 | P2    | Website kanban guide page (BUILD from recipe)                                                            | #222                                           | 90  | ★★★★   | M      | ★★★★  |
 | M04 | P2    | `ExampleKanbanBoard_columnTone` + godoc pass                                                             | #221                                           | 30  | ★★★    | S      | ★★★   |

@@ -268,14 +268,15 @@ ground truth.
 - **MobileMenu keyboard support**: Escape closes the menu and returns focus to the toggle button. Opening moves focus to the first focusable child. Shared `tcMobileMenuSet(menu, btn, open)` helper handles visibility, icon swap, `aria-expanded`, and focus management for both click and keyboard paths.
 - **Global accent-color CSS**: `templates/custom.css` sets `accent-color: blue-600` (light) / `blue-400` (dark) on checkboxes, radios, range inputs, and progress bars. Consumers override via `@theme { --color-blue-600: #custom; }`. No Go code changes needed — same theming model as all other components.
 
-## Plan authoring checklist (2026-09-16, kanban-vibe execution lessons)
+## Plan authoring checklist
 
-Every execution plan that adds components, fields, or demo endpoints answers these per item:
+Every execution plan that adds components, fields, or demo endpoints answers these per
+item — full checklist with rationale: `docs/plan-authoring-checklist.md`.
 
-- **Do the goldens actually cover this?** Grep `visualtest/` route/section goldens and `testdata/` before assuming existing coverage — the kanban section sat below the fold with zero pixel coverage, and the plan's "route goldens WILL change" premise was false (one grep would have caught it).
-- **Wired ⇒ e2e.** Anything rendering consumer-wired attributes (`wire.Action`, `hx-*`/`data-on:*`) gets a chromedp e2e task IN THE SAME plan, or an explicit written waiver — string-proven ≠ browser-proven; the demo add button's missing `hx-target`/`hx-swap` only surfaced in a real click.
-- **Drift counts are predictive, not reactive.** A task that adds goldens/enums/components bumps the README/FEATURES/ROADMAP/AGENTS counts in the SAME edit as its CHANGELOG entry (`TestDocsCountDrift` + `TestFeaturesEnumTableExhaustive` enforce).
-- **Demo smoke is a gate, not a bonus.** Run the live HTTP smoke (`visualtest/tools/smoke`, or `nix run .#visual`) before finalizing any demo endpoint change — the `hx-get` bug survived regenerate+build+unit tests and only the live smoke caught it.
+- **Do the goldens actually cover this?** (grep `visualtest/` before assuming)
+- **Wired ⇒ e2e** task in the SAME plan, or a written waiver.
+- **Drift counts bumped in the same edit** as the CHANGELOG entry.
+- **Demo smoke is a gate**, not a bonus (`visualtest/tools/smoke` / `nix run .#visual`).
 
 ## Demo Infrastructure
 
