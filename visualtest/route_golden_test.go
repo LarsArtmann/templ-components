@@ -102,11 +102,12 @@ var demoRouteBase = sync.OnceValue(func() string {
 	return "READY-TIMEOUT"
 })
 
-// assertRouteScreenshot navigates to url, optionally flips dark mode, waits
-// for finite animations to settle, captures (full-page or viewport), and
-// compares against the routes/<name> golden — mirroring AssertScreenshot's
-// compare/update flow for server-rendered pages.
-func assertRouteScreenshot(t *testing.T, name, url string, dark, fullPage bool) {
+// assertRouteScreenshot navigates to url, optionally flips dark mode and/or
+// RTL, waits for finite animations to settle, captures (full-page or
+// viewport) at the requested viewport, and compares against the
+// routes/<name> golden — mirroring AssertScreenshot's compare/update flow
+// for server-rendered pages.
+func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewport Viewport, fullPage bool) {
 	t.Helper()
 
 	ctx, cancel := newTab(t)
@@ -130,7 +131,7 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, fullPage bool) 
 	}
 
 	tasks := []chromedp.Action{
-		chromedp.EmulateViewport(int64(ViewportDesktop.Width), int64(ViewportDesktop.Height)),
+		chromedp.EmulateViewport(int64(viewport.Width), int64(viewport.Height)),
 		chromedp.Navigate(url),
 		chromedp.Evaluate(fmt.Sprintf(`try { localStorage.setItem('theme', %q); } catch (e) {}`, theme), nil),
 		chromedp.Reload(),
@@ -141,6 +142,13 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, fullPage bool) 
 		tasks = append(tasks,
 			chromedp.Evaluate(`document.documentElement.classList.add('dark');`, nil),
 			chromedp.Sleep(500*time.Millisecond),
+		)
+	}
+
+	if rtl {
+		tasks = append(tasks,
+			chromedp.Evaluate(`document.documentElement.setAttribute('dir', 'rtl');`, nil),
+			chromedp.Sleep(200*time.Millisecond),
 		)
 	}
 
@@ -215,20 +223,34 @@ func TestDemoRouteGoldens(t *testing.T) {
 		name     string
 		path     string
 		dark     bool
+		rtl      bool
+		viewport Viewport
 		fullPage bool
 	}{
-		{"dashboard_light", "/recipes/dashboard", false, true},
-		{"dashboard_dark", "/recipes/dashboard", true, true},
-		{"settings_light", "/recipes/settings", false, true},
-		{"login_light", "/recipes/login", false, true},
-		{"auth_light", "/recipes/auth", false, true},
-		{"forms_light", "/forms", false, true},
-		{"users_light", "/users", false, true},
-		{"errors_404_light", "/errors/404", false, true},
-		{"errors_full_light", "/errors/full", false, true},
-		{"errors_full_dark", "/errors/full", true, true},
-		{"index_fold_light", "/", false, false},
+		{"dashboard_light", "/recipes/dashboard", false, false, ViewportDesktop, true},
+		{"dashboard_dark", "/recipes/dashboard", true, false, ViewportDesktop, true},
+		{"settings_light", "/recipes/settings", false, false, ViewportDesktop, true},
+		{"settings_dark", "/recipes/settings", true, false, ViewportDesktop, true},
+		{"login_light", "/recipes/login", false, false, ViewportDesktop, true},
+		{"login_dark", "/recipes/login", true, false, ViewportDesktop, true},
+		{"login_mobile", "/recipes/login", false, false, ViewportMobile, false},
+		{"auth_light", "/recipes/auth", false, false, ViewportDesktop, true},
+		{"auth_dark", "/recipes/auth", true, false, ViewportDesktop, true},
+		{"auth_mobile", "/recipes/auth", false, false, ViewportMobile, false},
+		{"forms_light", "/forms", false, false, ViewportDesktop, true},
+		{"forms_dark", "/forms", true, false, ViewportDesktop, true},
+		{"forms_mobile", "/forms", false, false, ViewportMobile, false},
+		{"users_light", "/users", false, false, ViewportDesktop, true},
+		{"users_dark", "/users", true, false, ViewportDesktop, true},
+		{"users_mobile", "/users", false, false, ViewportMobile, false},
+		{"errors_404_light", "/errors/404", false, false, ViewportDesktop, true},
+		{"errors_404_dark", "/errors/404", true, false, ViewportDesktop, true},
+		{"errors_full_light", "/errors/full", false, false, ViewportDesktop, true},
+		{"errors_full_dark", "/errors/full", true, false, ViewportDesktop, true},
+		{"dashboard_rtl", "/recipes/dashboard", false, true, ViewportDesktop, true},
+		{"forms_rtl", "/forms", false, true, ViewportDesktop, true},
+		{"index_fold_light", "/", false, false, ViewportDesktop, false},
 	} {
-		assertRouteScreenshot(t, route.name, base+route.path, route.dark, route.fullPage)
+		assertRouteScreenshot(t, route.name, base+route.path, route.dark, route.rtl, route.viewport, route.fullPage)
 	}
 }
