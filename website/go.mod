@@ -1,6 +1,6 @@
 module github.com/larsartmann/templ-components/website
 
-go 1.26.7
+go 1.26
 
 ignore (
 	dist
@@ -10,7 +10,7 @@ ignore (
 require (
 	github.com/a-h/templ v0.3.1020
 	github.com/alecthomas/chroma/v2 v2.27.0
-	github.com/larsartmann/templ-components v1.17.0
+	github.com/larsartmann/templ-components v1.18.0
 	github.com/larsartmann/templ-components/errorpage v1.18.0
 	github.com/larsartmann/templ-components/icons v1.18.0
 	github.com/larsartmann/templ-components/utils v1.18.0

@@ -131,20 +131,20 @@ Every session re-derives these from source; wrong-marker test failures recur.
 This is the pinned list — when a marker here changes in the demo, update this
 table in the same commit.
 
-| What                     | Marker / value                                                                                                                       | Source                          |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- |
-| Port override            | `PORT` env var (default `8080`, non-numeric falls back to `8080`)                                                                     | `examples/demo/main.go`         |
-| Health check             | `GET /health` → `200` + body `{"status":"ok"}`                                                                                       | `examples/demo/main.go`         |
-| Kanban board root        | `[data-tc-kanban]` (id from `KanbanBoardProps.ID`; the e2e harness boards use `#kb-htmx` / `#kb-ds`)                                 | `display/kanban.templ`          |
-| Kanban column body       | `[data-tc-kanban-column-body="<columnID>"]` — drop zone containing the cards                                                          | `display/kanban.templ`          |
-| Kanban card              | `[data-tc-kanban-card="<cardID>"]`                                                                                                   | `display/kanban.templ`          |
-| Keyboard move buttons    | `[data-tc-kanban-move="prev|next"]` on each card (hover-revealed)                                                                     | `display/kanban.templ`          |
-| Hidden move form         | `[data-tc-kanban-form]` with inputs named `card`, `column`, `index` (`data-tc-kanban-f-card` etc.)                                     | `display/kanban.templ`          |
-| CSRF input markup        | `<input type="hidden" name="csrf_token" value="<token>">` inside the move form — demo token is per-process (`kanbanCSRFToken`)          | `examples/demo/kanban_demo.go`  |
-| Kanban move endpoints    | `POST /api/kanban/{htmx,datastar}` (move), `.../add/{column}`, `.../reset`                                                            | `examples/demo/main.go`         |
-| CSRF failure             | missing/wrong token → `403`                                                                                                          | `examples/demo/kanban_demo.go`  |
-| Same-origin enforcement  | add/reset POSTs without `Sec-Fetch-Site: same-origin`/`Origin` → `403` (smoke tests must send the header)                              | `examples/demo/kanban_demo.go`  |
-| Unknown column add       | `404` (not a silent 200)                                                                                                              | `examples/demo/kanban_demo.go`  |
+| What                    | Marker / value                                                                                                                 | Source                                |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- |
+| Port override           | `PORT` env var (default `8080`, non-numeric falls back to `8080`)                                                              | `examples/demo/main.go`               |
+| Health check            | `GET /health` → `200` + body `{"status":"ok"}`                                                                                 | `examples/demo/main.go`               |
+| Kanban board root       | `[data-tc-kanban]` (id from `KanbanBoardProps.ID`; the e2e harness boards use `#kb-htmx` / `#kb-ds`)                           | `display/kanban.templ`                |
+| Kanban column body      | `[data-tc-kanban-column-body="<columnID>"]` — drop zone containing the cards                                                   | `display/kanban.templ`                |
+| Kanban card             | `[data-tc-kanban-card="<cardID>"]`                                                                                             | `display/kanban.templ`                |
+| Keyboard move buttons   | `[data-tc-kanban-move="prev                                                                                                    | next"]` on each card (hover-revealed) |
+| Hidden move form        | `[data-tc-kanban-form]` with inputs named `card`, `column`, `index` (`data-tc-kanban-f-card` etc.)                             | `display/kanban.templ`                |
+| CSRF input markup       | `<input type="hidden" name="csrf_token" value="<token>">` inside the move form — demo token is per-process (`kanbanCSRFToken`) | `examples/demo/kanban_demo.go`        |
+| Kanban move endpoints   | `POST /api/kanban/{htmx,datastar}` (move), `.../add/{column}`, `.../reset`                                                     | `examples/demo/main.go`               |
+| CSRF failure            | missing/wrong token → `403`                                                                                                    | `examples/demo/kanban_demo.go`        |
+| Same-origin enforcement | add/reset POSTs without `Sec-Fetch-Site: same-origin`/`Origin` → `403` (smoke tests must send the header)                      | `examples/demo/kanban_demo.go`        |
+| Unknown column add      | `404` (not a silent 200)                                                                                                       | `examples/demo/kanban_demo.go`        |
 
 ## Writing a new visual test
 
