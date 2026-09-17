@@ -224,6 +224,9 @@ func TestDemoRouteGoldens(t *testing.T) {
 		{"auth_light", "/recipes/auth", false, true},
 		{"forms_light", "/forms", false, true},
 		{"users_light", "/users", false, true},
+		{"errors_404_light", "/errors/404", false, true},
+		{"errors_full_light", "/errors/full", false, true},
+		{"errors_full_dark", "/errors/full", true, true},
 		{"index_fold_light", "/", false, false},
 	} {
 		assertRouteScreenshot(t, route.name, base+route.path, route.dark, route.fullPage)

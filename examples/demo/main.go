@@ -14,6 +14,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
@@ -758,6 +759,8 @@ func newMux() *http.ServeMux {
 		wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},
 	)))
 
+	registerErrorRoutes(mux)
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/forms":
@@ -789,6 +792,56 @@ func newMux() *http.ServeMux {
 	})
 
 	return mux
+}
+
+// errorPageFullModelDemoProps is the complete ErrorPage showcase — every
+// diagnostics slot populated — served standalone at /errors/full.
+func errorPageFullModelDemoProps() errorpage.ErrorPageProps {
+	return errorpage.ErrorPageProps{
+		Family:     errorpage.FamilyTransient,
+		StatusCode: http.StatusServiceUnavailable,
+		Code:       errorpage.CodeUnavailable,
+		Title:      "Service temporarily unavailable",
+		Message:    "We're performing maintenance or experiencing high traffic.",
+		Why:        "This is a temporary issue. No data was lost.",
+		Fix:        "Wait a moment and refresh the page.",
+		WayOut:     "Retry",
+		WayOutHref: "/",
+		Context: []errorpage.ContextPair{
+			{Key: "region", Value: "eu-central-1"},
+			{Key: "request_id", Value: "req_8fk2m1"},
+		},
+		CauseChain:    []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}},
+		Timestamp:     "2026-09-17T12:00:00Z",
+		Trace:         "trc_9f3a1c2d",
+		ShowTimestamp: true,
+	}
+}
+
+// registerErrorRoutes serves the errorpage constructors as standalone demo
+// routes — the way consumers render them: one handler call per HTTP status,
+// no demo chrome around the page.
+func registerErrorRoutes(mux *http.ServeMux) {
+	const nonce = "demo-nonce"
+
+	errorRoute := func(status int, props errorpage.ErrorPageProps) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			errorpage.WriteErrorPage(w, r, status, props, nonce)
+		})
+	}
+
+	mux.Handle("GET /errors/400", errorRoute(http.StatusBadRequest, errorpage.BadRequest("The request body failed schema validation.")))
+	mux.Handle("GET /errors/403", errorRoute(http.StatusForbidden, errorpage.Forbidden()))
+	mux.Handle("GET /errors/404", errorRoute(http.StatusNotFound, errorpage.NotFound()))
+	mux.Handle("GET /errors/409", errorRoute(http.StatusConflict, errorpage.Conflict("Another request modified this resource while you were editing.")))
+	mux.Handle("GET /errors/500", errorRoute(http.StatusInternalServerError, errorpage.InternalError()))
+	mux.Handle("GET /errors/503", errorRoute(http.StatusServiceUnavailable, errorpage.ServiceUnavailable()))
+	mux.Handle("GET /errors/full", errorRoute(http.StatusServiceUnavailable, errorPageFullModelDemoProps()))
+	mux.Handle("GET /errors/404-page", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		props := errorpage.DefaultNotFound404Props()
+		props.Links = errorpage.DefaultNotFoundLinks()
+		errorpage.WriteNotFound404(w, r, props, nonce)
+	}))
 }
 
 // newServer wraps the mux in the demo HTTP server. The global WriteTimeout
