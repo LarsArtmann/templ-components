@@ -44,6 +44,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **The website's comparison matrix derives its counts from the codebase.**
+  The "Typed props enums" cell is computed from `build.CountStats` at render
+  time instead of a hand-typed literal (the literal had drifted from reality);
+  the table physically cannot disagree with the library again.
 - **SidebarNav is theme-adaptive (light sidebar in light mode).** The sidebar
   was permanently dark in both modes — a documented ADR-0011 exception that
   the dark-mode compliance tests had to exempt. It now follows the page
@@ -98,6 +102,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Website no longer advertises a stale enum count.** The landing comparison
+  table, the API-reference docs page, and the invariants guide all claimed 58
+  typed string enums; the library ships 60. Counts corrected, and the
+  docs-count drift guard now also verifies the website's hand-written prose
+  so this class of drift fails CI instead of shipping.
 - **Chart x-axis labels no longer collide with the y-axis.** `LineChart` and
   `AreaChart` x-axis labels were middle-anchored on their tick, so the first
   label crossed the axis line into the y-tick text ("Mon" overlapping "10")
