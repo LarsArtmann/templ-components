@@ -111,25 +111,43 @@ jobs:
         run: |
           # Multi-module: lint each module independently (golangci-lint
           # does not support go.work workspace mode).
-          echo "==> Root module..."
-          golangci-lint run --timeout=5m \
-            ./display/... ./feedback/... ./forms/... \
-            ./integration/... ./internal/... \
-            ./layout/... ./navigation/... ./recipes/... ./cmd/...
-          echo "==> utils module..."
-          (cd utils && golangci-lint run --timeout=5m ./...)
-          echo "==> icons module..."
-          (cd icons && golangci-lint run --timeout=5m ./...)
-          echo "==> errorpage module..."
-          (cd errorpage && golangci-lint run --timeout=5m ./...)
-          echo "==> charts/echarts module..."
-          (cd charts/echarts && golangci-lint run --timeout=5m ./...)
-          echo "==> datastar module..."
-          (cd datastar && golangci-lint run --timeout=5m ./...)
-          echo "==> htmx module..."
-          (cd htmx && golangci-lint run --timeout=5m ./...)
-          echo "==> visualtest module (tests run in the Visual Regression job)..."
-          (cd visualtest && golangci-lint run --timeout=5m ./...)
+          #
+          # Per-module continue-on-error + aggregate verdict: bash -e would
+          # stop at the FIRST failing module, hiding later findings and
+          # forcing fix-then-wait-then-find-next loops. Every module lints,
+          # a PASS/FAIL table prints at the end, and the step fails if ANY
+          # module failed (the exit code stays the gate).
+          #
+          # The module set is pinned by scripts/check-lint-modules.sh (runs
+          # above + in pre-commit) — adding a module here without updating
+          # scripts/ci-repro.sh + scripts/pre-commit.sh fails that guard.
+          set +e
+          statusfile="$(mktemp)"
+          lint_root() {
+            golangci-lint run --timeout=5m \
+              ./display/... ./feedback/... ./forms/... \
+              ./integration/... ./internal/... \
+              ./layout/... ./navigation/... ./recipes/... ./cmd/...
+          }
+          if lint_root; then echo "root PASS" >> "$statusfile"; else echo "root FAIL" >> "$statusfile"; fi
+          for mod in utils icons errorpage charts/echarts datastar htmx visualtest; do
+            echo "==> $mod"
+            if (cd "$mod" && golangci-lint run --timeout=5m ./...); then
+              echo "$mod PASS" >> "$statusfile"
+            else
+              echo "$mod FAIL" >> "$statusfile"
+            fi
+          done
+          echo ""
+          echo "===== golangci-lint summary ====="
+          cat "$statusfile"
+          echo "================================="
+          if grep -q FAIL "$statusfile"; then
+            echo "::error::At least one module failed golangci-lint (see summary above)"
+            rm -f "$statusfile"
+            exit 1
+          fi
+          rm -f "$statusfile"
 
       - name: Actionlint (lint GitHub Actions workflows)
         run: |
