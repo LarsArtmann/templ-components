@@ -20,7 +20,7 @@ never registered that an action was in flight, so it could not honestly report
 its outcome.
 
 The ask: register client actions that are **not yet on the server** — an
-optimistic update, but *transparent*: the UI moves immediately AND clearly
+optimistic update, but _transparent_: the UI moves immediately AND clearly
 marks the move as pending until the server confirms, and undoes it visibly when
 the server refuses.
 

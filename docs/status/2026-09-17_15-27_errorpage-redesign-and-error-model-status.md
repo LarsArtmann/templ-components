@@ -14,19 +14,19 @@ The errorpage package **had** a complete, well-typed error model — but the pag
 
 ## a) FULLY DONE
 
-| # | Item | Evidence |
-|---|------|----------|
-| 1 | **Error-model inventory answered** — two layers documented: `errorpage` model (Family ×6, Code, 3 Props types with `Validate()`, CauseItem, ContextPair, FamilyStatusCode, ParseFamily, 6 constructors) + go-error-family bridge (`FromError`, `ErrorHandler`, `WriteError`, JSON mode) | Reported in-session; code at `errorpage/{styles,fromerror,constructors,handler}.go` |
-| 2 | **ErrorPage visual redesign** — neutral white card (`rounded-2xl`, dark-mode shadow), family accent bar (`familyVisualStyle.Bar` ×6 + default), 48px icon circle, chip row rendering **`HTTP {StatusCode}`** (previously validated but never rendered), `text-2xl` title, lead message, why paragraph, restyled fix card (wrench icon, uppercase label), neutral context table, cause chain, 404-scale action button, tinted timestamp footer | `errorpage/errorpage.templ`, `errorpage/styles.go`, `errorpage/shared.templ` |
-| 3 | **Empty-badge bug fixed** — zero/unknown `Family` used to emit an empty tinted `<span>`; badge (and whole chip row when unset) now renders nothing | `familyBadge`/`errorChips` guards in `shared.templ`; `edge_cases_test.go` assertion flipped to `AssertNotContains("bogus")` |
-| 4 | **Shared-template refactor** — `familyIcon(style, iconClass)` size param; `fixCard`/`contextTable` take inset surface (`errorInsetNeutral` white-card / `errorInsetCard` tinted-card, `styles.go`); `diagnosticSection` rhythm via `space-y`; deleted now-redundant `codeAndFamilyBadge` | Zero stale references (swept); all callers regenerated |
-| 5 | **New HTML golden coverage** — `TestGoldenSweepErrorPage` (`error_page_full`, `error_page_minimal` incl. go-back script branch); corpus 248 → **250** | `errorpage/golden_sweep_test.go`, `errorpage/testdata/` |
-| 6 | **Visual goldens regenerated + inspected** — light & dark PNGs re-captured from full-model props (`TestErrorPage`/`TestErrorPageDark` now exercise the complete API); both verified by eye: dramatic improvement, coherent dark mode | `visualtest/visual_test.go`, `visualtest/testdata/errorpage/{light,dark}.png` |
-| 7 | **Demo showcases the full model** — ErrorPage section now renders StatusCode/Code/Title/Message/Why/Fix/WayOut/Context/CauseChain/Timestamp | `examples/demo/errorpage_demo.templ` |
-| 8 | **Docs drift repaired** — FEATURES enum table gained `Orchestration`; `TrendWarn` and `LiveOff` documented (4 spots incl. StatCard/LiveRegion rows); README errorpage section rewritten (broken `FamilyNotFound` example replaced); golden counts 248→250 in FEATURES/AGENTS/ROADMAP; CHANGELOG `[Unreleased]` entry (Changed + Fixed) | `FEATURES.md`, `README.md`, `AGENTS.md`, `ROADMAP.md`, `CHANGELOG.md` |
-| 9 | **New enforcement guard** — `TestFeaturesEnumValuesExhaustive` (utils) keeps enum VALUES in FEATURES honest; all-or-nothing row resolution, `*Default`/`*Unspecified` exempt; proven red→green (caught 2 real drifts first run) | `utils/features_enum_test.go:88` |
-| 10 | **Website generated-drift fix** — my pinned-binary regen flipped `website/internal/pages/base_templ.go` import back to source truth (`encoding/json`, v2→v1 leftover from the 2026-09-14 daemon incident); website goldens + link checker green after | `git show 3fecc0fb -- website/`, website tests ok |
-| 11 | **Full verification matrix green** — errorpage suite; all 6 sub-modules; root module; website module; errorpage coverage **71.5%** (≥70 gate); HTML validation **250 goldens clean**; full visual suite incl. axe sweep (74s); lint errorpage+root+utils **0 issues**; `nix flake check` (treefmt) green; templ-sync / replace-directives / version-sync / docs-count guards green | Session command log |
+| #  | Item                                                                                                                                                                                                                                                                                                                                                                                                                                          | Evidence                                                                                                                    |
+| -- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 1  | **Error-model inventory answered** — two layers documented: `errorpage` model (Family ×6, Code, 3 Props types with `Validate()`, CauseItem, ContextPair, FamilyStatusCode, ParseFamily, 6 constructors) + go-error-family bridge (`FromError`, `ErrorHandler`, `WriteError`, JSON mode)                                                                                                                                                       | Reported in-session; code at `errorpage/{styles,fromerror,constructors,handler}.go`                                         |
+| 2  | **ErrorPage visual redesign** — neutral white card (`rounded-2xl`, dark-mode shadow), family accent bar (`familyVisualStyle.Bar` ×6 + default), 48px icon circle, chip row rendering **`HTTP {StatusCode}`** (previously validated but never rendered), `text-2xl` title, lead message, why paragraph, restyled fix card (wrench icon, uppercase label), neutral context table, cause chain, 404-scale action button, tinted timestamp footer | `errorpage/errorpage.templ`, `errorpage/styles.go`, `errorpage/shared.templ`                                                |
+| 3  | **Empty-badge bug fixed** — zero/unknown `Family` used to emit an empty tinted `<span>`; badge (and whole chip row when unset) now renders nothing                                                                                                                                                                                                                                                                                            | `familyBadge`/`errorChips` guards in `shared.templ`; `edge_cases_test.go` assertion flipped to `AssertNotContains("bogus")` |
+| 4  | **Shared-template refactor** — `familyIcon(style, iconClass)` size param; `fixCard`/`contextTable` take inset surface (`errorInsetNeutral` white-card / `errorInsetCard` tinted-card, `styles.go`); `diagnosticSection` rhythm via `space-y`; deleted now-redundant `codeAndFamilyBadge`                                                                                                                                                      | Zero stale references (swept); all callers regenerated                                                                      |
+| 5  | **New HTML golden coverage** — `TestGoldenSweepErrorPage` (`error_page_full`, `error_page_minimal` incl. go-back script branch); corpus 248 → **250**                                                                                                                                                                                                                                                                                         | `errorpage/golden_sweep_test.go`, `errorpage/testdata/`                                                                     |
+| 6  | **Visual goldens regenerated + inspected** — light & dark PNGs re-captured from full-model props (`TestErrorPage`/`TestErrorPageDark` now exercise the complete API); both verified by eye: dramatic improvement, coherent dark mode                                                                                                                                                                                                          | `visualtest/visual_test.go`, `visualtest/testdata/errorpage/{light,dark}.png`                                               |
+| 7  | **Demo showcases the full model** — ErrorPage section now renders StatusCode/Code/Title/Message/Why/Fix/WayOut/Context/CauseChain/Timestamp                                                                                                                                                                                                                                                                                                   | `examples/demo/errorpage_demo.templ`                                                                                        |
+| 8  | **Docs drift repaired** — FEATURES enum table gained `Orchestration`; `TrendWarn` and `LiveOff` documented (4 spots incl. StatCard/LiveRegion rows); README errorpage section rewritten (broken `FamilyNotFound` example replaced); golden counts 248→250 in FEATURES/AGENTS/ROADMAP; CHANGELOG `[Unreleased]` entry (Changed + Fixed)                                                                                                        | `FEATURES.md`, `README.md`, `AGENTS.md`, `ROADMAP.md`, `CHANGELOG.md`                                                       |
+| 9  | **New enforcement guard** — `TestFeaturesEnumValuesExhaustive` (utils) keeps enum VALUES in FEATURES honest; all-or-nothing row resolution, `*Default`/`*Unspecified` exempt; proven red→green (caught 2 real drifts first run)                                                                                                                                                                                                               | `utils/features_enum_test.go:88`                                                                                            |
+| 10 | **Website generated-drift fix** — my pinned-binary regen flipped `website/internal/pages/base_templ.go` import back to source truth (`encoding/json`, v2→v1 leftover from the 2026-09-14 daemon incident); website goldens + link checker green after                                                                                                                                                                                         | `git show 3fecc0fb -- website/`, website tests ok                                                                           |
+| 11 | **Full verification matrix green** — errorpage suite; all 6 sub-modules; root module; website module; errorpage coverage **71.5%** (≥70 gate); HTML validation **250 goldens clean**; full visual suite incl. axe sweep (74s); lint errorpage+root+utils **0 issues**; `nix flake check` (treefmt) green; templ-sync / replace-directives / version-sync / docs-count guards green                                                            | Session command log                                                                                                         |
 
 ## b) PARTIALLY DONE
 
@@ -49,7 +49,7 @@ The errorpage package **had** a complete, well-typed error model — but the pag
 
 Nothing destroyed, no data loss, no red tests left behind. Two hazards navigated, worth recording:
 
-1. **Daemon raced the work three times** — heuristic commits `3fecc0fb` (19 files, mid-flight, including the *flipped* `base_templ.go` state before my regen corrected it), `7dcc0d92` (8 files: docs counts, golines fix, demo CSS, visual go.sum churn, errorpage PNGs), `af96082a` (14 files: CHANGELOG/README/FEATURES/guard test + PNG re-diff). Net tree state is correct — verified after each snapshot — but the history is a jumble of partial states, exactly the AGENTS-documented daemon pattern.
+1. **Daemon raced the work three times** — heuristic commits `3fecc0fb` (19 files, mid-flight, including the _flipped_ `base_templ.go` state before my regen corrected it), `7dcc0d92` (8 files: docs counts, golines fix, demo CSS, visual go.sum churn, errorpage PNGs), `af96082a` (14 files: CHANGELOG/README/FEATURES/guard test + PNG re-diff). Net tree state is correct — verified after each snapshot — but the history is a jumble of partial states, exactly the AGENTS-documented daemon pattern.
 2. **`visualtest/go.sum` churned during test runs** (testify 1.11.1→1.12.1, difflib dropped) and got committed by the daemon inside my snapshot. Benign (suite green before and after) but unreviewed-by-me; flagging for a tidy check.
 
 **Foreign work noticed, left untouched (per safety rules):** uncommitted edits to `AGENTS.md` (SidebarNav dark-mode exemption removal) and `examples/demo/recipes_demo.go` (migration to `forms.ValidationError`) belong to a separate workstream; both verified consistent with committed code (`forms.ValidationError` exists; `tc-sidebar-*` tokens present; workspace builds).
@@ -57,6 +57,7 @@ Nothing destroyed, no data loss, no red tests left behind. Two hazards navigated
 ## e) WHAT WE SHOULD IMPROVE — self-review: forgotten, could-do-better, still-improvable
 
 **What I forgot:**
+
 - The AGENTS.md/skill **guard inventory table** row for `TestFeaturesEnumValuesExhaustive` — the repo rule is "new cross-cutting rule ⇒ document it where guards are listed," not just implement it.
 - `ExampleErrorPage` godoc example still shows the old minimal shape.
 - A **before/after image pair** in this report (the PNGs exist; the report should carry them).
@@ -64,19 +65,22 @@ Nothing destroyed, no data loss, no red tests left behind. Two hazards navigated
 - Capturing the **ci-repro verdict explicitly** (`tee` + exit code) — losing the verdict line cost a manual re-verification pass.
 
 **What I could have done better:**
+
 - **Commit per task when the daemon is active** — my changes landed as three heuristic blobs; explicit commits would have kept history reviewable.
 - Verify **ErrorDetail/ErrorAlert in a browser**, not only as HTML strings — they got zero new pixel proof; the 404-page lesson says string-green ≠ browser-green.
 - Add the **mobile visual golden in the same pass** — the viewport was only ever the default; the chip row's `flex-wrap` path is unproven at 375px.
 - Timebox the **enum-guard design** — the first naive version produced 111 false positives; the suffix-convention survey should have preceded implementation.
 
 **What could still be improved (component):**
+
 - ErrorPage secondary-action slot; configurable max-width; `FromError` status-code parity; errorpage docs page on the website (none exists).
 
 ## f) Up to 50 things we should get done next
 
-*Brainstorm, not commitment — ROADMAP/TODO_LIST fuel. ★ = do soon.*
+_Brainstorm, not commitment — ROADMAP/TODO_LIST fuel. ★ = do soon._
 
 **Errorpage components**
+
 1. ★ Update AGENTS.md + skill guard tables with `TestFeaturesEnumValuesExhaustive`.
 2. ★ Refresh `ExampleErrorPage` to the full model.
 3. ★ Errorpage demo: render full-page components via standalone routes (`ErrorHandler`) instead of bordered boxes.
@@ -146,4 +150,4 @@ Nothing destroyed, no data loss, no red tests left behind. Two hazards navigated
 
 ---
 
-*Point-in-time snapshot; goes stale. Section (f) is HARVEST input for `TODO_LIST.md`/`ROADMAP.md` via docs-health when instructed.*
+_Point-in-time snapshot; goes stale. Section (f) is HARVEST input for `TODO_LIST.md`/`ROADMAP.md` via docs-health when instructed._

@@ -62,6 +62,7 @@
 ## f) UP TO 50 THINGS TO GET DONE NEXT (ordered by impact within this session's scope)
 
 **Kanban / ADR-0041 follow-ups**
+
 1. Capture PNG evidence of pending + failed states (delayed demo + `nix run .#shots` or a visualtest golden with `WaitSelector`).
 2. Add the BDD lens: `kanban_bdd_test.go` specs for "move looks instant", "pending is visible until confirmed", "failure restores".
 3. Add `ExampleKanbanBoard_optimistic` godoc example.
@@ -131,4 +132,4 @@
 
 ---
 
-*Prepared by Crush (GLM). Session: single-session design→implement→prove of ADR-0041; all gates green at time of writing.*
+_Prepared by Crush (GLM). Session: single-session design→implement→prove of ADR-0041; all gates green at time of writing._
