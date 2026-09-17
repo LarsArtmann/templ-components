@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-17 18:10 CEST
 **Session scope:** design + implement + prove the "clear action register for client moves NOT yet on the server" (optimistic update, transparent to the human) for `display.KanbanBoard`, both transports.
-**Repo state at end of session:** working tree clean; all work sits in daemon auto-commits (`07e43632`, `ab5a4414`, …) on local master. Full `nix run .#verify` GREEN, W3C HTML gate clean (250 goldens), all 9 kanban browser tests pass, lint 0 issues across all modules.
+**Repo state at end of session:** working tree clean; all work sits in daemon auto-commits (`07e43632`, `ab5a4414`, …) on local master. Full `nix run .#verify` GREEN, W3C HTML gate clean (250 goldens), all 9 kanban browser tests pass, lint 0 issues across all modules. **(2026-09-17 evening docs-health pass: §f harvested into TODO_LIST #238–#249/#250/#251/#258–#262; §b1 in progress by a concurrent session — `kanban/pending_state.png` + `failed_state.png` appeared in testdata; website CI drift found + repaired, see 18-09 report.)**
 
 ---
 
@@ -63,19 +63,19 @@
 
 **Kanban / ADR-0041 follow-ups**
 
-1. Capture PNG evidence of pending + failed states (delayed demo + `nix run .#shots` or a visualtest golden with `WaitSelector`).
+1. ~~Capture PNG evidence of pending + failed states (delayed demo + `nix run .#shots` or a visualtest golden with `WaitSelector`).~~ IN PROGRESS (2026-09-17 evening): a concurrent session captured `visualtest/testdata/kanban/pending_state.png` + `failed_state.png` (untracked at annotation time); TODO #248 tracks completion.
 2. Add the BDD lens: `kanban_bdd_test.go` specs for "move looks instant", "pending is visible until confirmed", "failure restores".
 3. Add `ExampleKanbanBoard_optimistic` godoc example.
 4. Extend `kanban_a11y_test.go` with the `role="alert"` + `aria-busy` assertions where they conventionally live.
-5. Concurrency test: two overlapping moves on one board (first succeeds, second fails) — pin the documented no-op semantics.
-6. Concurrency test: two overlapping failures — both revert, both announced.
+5. ~~Concurrency test: two overlapping moves on one board (first succeeds, second fails) — pin the documented no-op semantics.~~ harvested → TODO_LIST #249
+6. ~~Concurrency test: two overlapping failures — both revert, both announced.~~ harvested → TODO_LIST #249
 7. Browser-level a11y probe of the mid-move state (aria-busy queryable while in flight).
-8. Retry affordance decision: auto-retry once vs manual-only; if manual, consider a small "retry" hint in the alert region.
-9. Decide + document (or reject) a pending-timeout escape hatch for hung servers.
+8. ~~Retry affordance decision: auto-retry once vs manual-only; if manual, consider a small "retry" hint in the alert region.~~ harvested → owner gate TODO_LIST #238; hint idea in ROADMAP
+9. ~~Decide + document (or reject) a pending-timeout escape hatch for hung servers.~~ harvested → TODO_LIST #239
 10. Measure + note the inline-script size delta; consider whether the events block justifies a minified form.
-11. Verify the kanban demo section renders correctly under `?transport=datastar` and `?transport=htmx` single-transport views (screenshots).
-12. Consider a visualtest golden for the pending card (deterministic with the flaky-board trick: stall the endpoint, WaitSelector the class, screenshot).
-13. Document how consumers with `GlobalErrorHandling` get toast + inline revert together (complementary, not double-reporting) — one paragraph in transport-wiring.md.
+11. ~~Verify the kanban demo section renders correctly under `?transport=datastar` and `?transport=htmx` single-transport views (screenshots).~~ harvested → TODO_LIST #258
+12. ~~Consider a visualtest golden for the pending card (deterministic with the flaky-board trick: stall the endpoint, WaitSelector the class, screenshot).~~ harvested → TODO_LIST #248 (merge with item 1)
+13. ~~Document how consumers with `GlobalErrorHandling` get toast + inline revert together (complementary, not double-reporting) — one paragraph in transport-wiring.md.~~ harvested → TODO_LIST #260
 14. Un-minified JS: run the kanban pipeline through the same lint/minify review as the htmx embed decision (one-line TODO).
 15. Add `TestKanbanJSPendingSingletonIdempotence`-style guard if listeners could ever double-bind (currently guaranteed by the singleton guard; pin it explicitly for the new listeners).
 16. Check pkg.go.dev rendering of the new godoc (KanbanBoardProps ADR reference).
@@ -83,16 +83,16 @@
 **Repo hygiene noticed during this session**
 17. Squash/polish the feature into a semantic commit (current history is daemon blobs); get `Fixes #N` linking if a TODO exists.
 18. Push + open PR so CI (linux format check, html-validation, per-module lint) rules on the final tree.
-19. `nix run .#visual` FULL suite (not just `-run TestKanban`) before push — axe sweep + route goldens.
-20. `scripts/ci-repro.sh --lint` once for the exact CI reproduction.
-21. Investigate `TestPrerenderMatchesLiveServer` minute-boundary flake (prerendered timestamps vs live fetch under load) — make it deterministic or retry-tolerant.
-22. TODO_LIST.md: check for an existing optimistic-kanban entry; add/close items for the follow-ups above.
-23. README + website docs-site `KanbanBoard` one-liners: mention optimistic pending register.
-24. Docs-count drift: AGENTS.md still says "248 golden files" somewhere in my memory of the corpus — utils guard passed, but re-check prose counts after the other session's additions (250 now).
-25. Daemon-race hardening: consider a pre-commit guard that refuses to commit when `git status` shows files modified within the last N seconds (torn-snapshot tripwire) — BuildFlow-side fix.
-26. The `AGENTS.md` note "zero-value boards byte-identical" for `KanbanColumn.Action: nil` is now stale relative to the new count/empty hooks — reword to "visually identical".
-27. Consider gating `data-tc-kanban-count`/`-empty` hooks on `wired` (bytes-cleanliness for read-only boards) — deliberate no-op today, but document the choice.
-28. Post-landing: watch the concurrent ErrorPage/charts/sidebar session's CI run — its work mixed into the same commits.
+19. ~~`nix run .#visual` FULL suite (not just `-run TestKanban`) before push — axe sweep + route goldens.~~ done — the 15:27 errorpage session ran the full visual suite incl. axe sweep (74s) green after the tree stabilized
+20. ~~`scripts/ci-repro.sh --lint` once for the exact CI reproduction.~~ done — the 14:17 release session ran `ci-repro.sh --lint` ALL STEPS PASSED
+21. ~~Investigate `TestPrerenderMatchesLiveServer` minute-boundary flake (prerendered timestamps vs live fetch under load) — make it deterministic or retry-tolerant.~~ harvested → TODO_LIST #250
+22. ~~TODO_LIST.md: check for an existing optimistic-kanban entry; add/close items for the follow-ups above.~~ done — 2026-09-17 evening docs-health pass registered #238–#239, #247–#249, #250, #251, #258, #260–#262
+23. ~~README + website docs-site `KanbanBoard` one-liners: mention optimistic pending register.~~ harvested → TODO_LIST #251
+24. ~~Docs-count drift: AGENTS.md still says "248 golden files" somewhere in my memory of the corpus — utils guard passed, but re-check prose counts after the other session's additions (250 now).~~ done — verified 2026-09-17 evening: no stale 248/127 prose remains; `TestDocsCountDrift` green (goldens now 133 after the pending-state captures)
+25. ~~Daemon-race hardening: consider a pre-commit guard that refuses to commit when `git status` shows files modified within the last N seconds (torn-snapshot tripwire) — BuildFlow-side fix.~~ harvested → TODO_LIST #232 (daemon commit-gate bundle)
+26. ~~The `AGENTS.md` note "zero-value boards byte-identical" for `KanbanColumn.Action: nil` is now stale relative to the new count/empty hooks — reword to "visually identical".~~ done — AGENTS.md reworded 2026-09-17 evening
+27. Consider gating `data-tc-kanban-count`/`-empty` hooks on `wired` (bytes-cleanliness for read-only boards) — deliberate no-op today, but document the choice. ← untouched = still open
+28. ~~Post-landing: watch the concurrent ErrorPage/charts/sidebar session's CI run — its work mixed into the same commits.~~ done — 2026-09-17 evening: their 16:24 run green; the 16:28 red was NEW daemon drift (website go.mod/generated import), root-caused and repaired
 
 **Pending register — product polish ideas (from the session, not yet decided)**
 29. Pending ring color could follow `KanbanTone`/semantic tokens via `@theme` instead of hardcoded blues.
@@ -107,27 +107,27 @@
 38. Mobile: verify the spinner ring is not clipped by `overflow-x-auto` on narrow viewports (pixel check at 375px).
 
 **Testing infrastructure**
-39. Extract the flaky-board pattern into a reusable visualtest helper (stall/fail cards) for future dual-transport components.
-40. Add a `chromedp.WithPollingTimeout` primer to the chromedp-lessons section of AGENTS.md (option-name trap hit this session).
-41. Golden-update ordering: add one line to the skill/AGENTS ("goldens AFTER e2e for JS pipelines").
-42. Consider a `go test`-level JS syntax gate (node --check) if node is guaranteed in CI — cheap tripwire for script edits.
+39. ~~Extract the flaky-board pattern into a reusable visualtest helper (stall/fail cards) for future dual-transport components.~~ harvested → TODO_LIST #262
+40. ~~Add a `chromedp.WithPollingTimeout` primer to the chromedp-lessons section of AGENTS.md (option-name trap hit this session).~~ done — the AGENTS.md kanban bullet already documents the 500ms `WithPollingTimeout` pattern proven by the e2e
+41. ~~Golden-update ordering: add one line to the skill/AGENTS ("goldens AFTER e2e for JS pipelines"). ← untouched = still open
+42. ~~Consider a `go test`-level JS syntax gate (node --check) if node is guaranteed in CI — cheap tripwire for script edits.~~ harvested → TODO_LIST #259
 43. Time-bound the announce poll's interval timer cleanup test (30s × 100ms per submit is fine, but a rapid-fire test would confirm no interval leak).
 
 **Docs/writing**
-44. Ship a short blog/recipe: "Optimistic UI with htmx and Datastar — one markup, two runtimes" using this implementation as the case study.
-45. Update `docs/javascript-guide.md` decision ladder with the kanban register as the worked example of transport-event-driven UI state.
-46. ADR-0041: add the follow-up decisions (retry, timeout, tone-token) as a "Deferred" section once decided.
-47. Website docs: kanban page (currently none) — the demo section prose is now long enough to deserve a real docs page.
+44. ~~Ship a short blog/recipe: "Optimistic UI with htmx and Datastar — one markup, two runtimes" using this implementation as the case study.~~ harvested → ROADMAP (Optimistic-kanban product polish)
+45. ~~Update `docs/javascript-guide.md` decision ladder with the kanban register as the worked example of transport-event-driven UI state.~~ harvested → TODO_LIST #261
+46. ADR-0041: add the follow-up decisions (retry, timeout, tone-token) as a "Deferred" section once decided. ← event-gated, still open
+47. ~~Website docs: kanban page (currently none) — the demo section prose is now long enough to deserve a real docs page.~~ duplicate → TODO_LIST #222
 
 **Verification debt**
 48. Run the full verify twice back-to-back on a quiet worktree to shake out the last flake (`TestPrerenderMatchesLiveServer`).
 49. Re-run `TestDemoKanbanHTTPContracts` + parity after any future demo-delay change (they're the tripwire).
-50. After the next release cut: confirm the committed `*_templ.go` + goldens for kanban survive the release script's replace-strip dance (v1.17.0 lesson).
+50. ~~After the next release cut: confirm the committed `*_templ.go` + goldens for kanban survive the release script's replace-strip dance (v1.17.0 lesson).~~ done — v1.18.0 (`511d3ed6`) shipped with all goldens + generated files intact (release session verified the tagged tree consumer-clean)
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
 
-1. **Your link anchored `#wire-transport`** (the Wire demo section), but the quoted heading is the Kanban section. Was kanban the only target, or do you want the same optimistic/pending treatment for the Wire demo's buttons/forms (and eventually as a general `wire` pattern)?
-2. **Failure UX policy:** after a server rejection, should the library attempt ONE automatic retry before reverting (htmx would need a re-submit; Datastar retries network errors natively but not 4xx), or is immediate honest revert + manual retry the intended behavior?
+1. ~~**Your link anchored `#wire-transport`** (the Wire demo section), but the quoted heading is the Kanban section. Was kanban the only target, or do you want the same optimistic/pending treatment for the Wire demo's buttons/forms (and eventually as a general `wire` pattern)?~~ routed → ROADMAP "Wire-demo optimistic pattern" (product direction, not a question blocking work)
+2. ~~**Failure UX policy:** after a server rejection, should the library attempt ONE automatic retry before reverting (htmx would need a re-submit; Datastar retries network errors natively but not 4xx), or is immediate honest revert + manual retry the intended behavior?~~ routed → owner gate TODO_LIST #238
 3. **Git/PR handling:** the feature currently lives inside daemon `chore: auto-commit` blobs on local master. Do you want me to leave history as-is, or squash into one semantic commit (and push / open a PR), accepting a force-with-lease rewrite of the daemon's tips?
 
 ---
