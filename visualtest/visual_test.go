@@ -814,6 +814,7 @@ func fullErrorPageProps() errorpage.ErrorPageProps {
 		},
 		CauseChain:    []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}},
 		Timestamp:     "2026-09-17T12:00:00Z",
+		Trace:         "trc_9f3a1c2d",
 		ShowTimestamp: true,
 	}
 	props.Nonce = "test-nonce"

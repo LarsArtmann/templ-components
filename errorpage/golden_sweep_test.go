@@ -29,6 +29,7 @@ func TestGoldenSweepErrorPage(t *testing.T) {
 			},
 			CauseChain:    []CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}},
 			Timestamp:     "2026-09-17T12:00:00Z",
+			Trace:         "trc_9f3a1c2d",
 			ShowTimestamp: true,
 		}))},
 		{Name: "error_page_minimal", HTML: utils.Render(t, ErrorPage(ErrorPageProps{

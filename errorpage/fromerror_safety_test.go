@@ -1,6 +1,7 @@
 package errorpage
 
 import (
+	"errors"
 	"testing"
 
 	errorfamily "github.com/larsartmann/go-error-family"
@@ -113,5 +114,73 @@ func TestFromErrorFamilyCoversAllValidFamilies(t *testing.T) {
 		if !FamilyIsValid(got) {
 			t.Errorf("family %v dropped: FromErrorFamily returns invalid %q", f, got)
 		}
+	}
+}
+
+// publicTraceError mimics the surface bridge.ClassifiedError exposes: an
+// oops-style user-safe message (Public) and a correlation trace ID (Trace),
+// both promoted from the embedded samber/oops OopsError. Nothing here
+// imports oops — FromError must keep consuming this via small interfaces.
+type publicTraceError struct {
+	err    error
+	public string
+	trace  string
+}
+
+func (e *publicTraceError) Error() string { return e.err.Error() }
+
+func (e *publicTraceError) Public() string { return e.public }
+
+func (e *publicTraceError) Trace() string { return e.trace }
+
+func (e *publicTraceError) ErrorFamily() errorfamily.Family { return errorfamily.Rejection }
+
+// TestFromErrorPrefersPublicMessage verifies that an error carrying an
+// oops-style user-safe message gets it rendered instead of the internal
+// developer-facing Error() string — the bridge/oops integration advantage.
+func TestFromErrorPrefersPublicMessage(t *testing.T) {
+	t.Parallel()
+
+	err := &publicTraceError{
+		err:    errors.New("rbac: deny user=42 role=guest"),
+		public: "You do not have access to this resource.",
+	}
+
+	props := FromError(err)
+	if props.Message != "You do not have access to this resource." {
+		t.Errorf("FromError Message = %q, want the Public() user-safe message", props.Message)
+	}
+}
+
+// TestFromErrorSkipsEmptyPublicMessage verifies the Public probe degrades
+// gracefully: an empty Public() falls through instead of rendering a blank
+// message.
+func TestFromErrorSkipsEmptyPublicMessage(t *testing.T) {
+	t.Parallel()
+
+	err := &publicTraceError{
+		err:    errors.New("internal detail"),
+		public: "",
+	}
+
+	props := FromError(err)
+	if props.Message != "internal detail" {
+		t.Errorf("FromError Message = %q, want the Error() fallback when Public is empty", props.Message)
+	}
+}
+
+// TestFromErrorExtractsTrace verifies the correlation trace ID flows into
+// props.Trace for the footer, and stays empty for plain errors.
+func TestFromErrorExtractsTrace(t *testing.T) {
+	t.Parallel()
+
+	traced := &publicTraceError{err: errors.New("boom"), trace: "trc_9f3a1c2d"}
+	if got := FromError(traced).Trace; got != "trc_9f3a1c2d" {
+		t.Errorf("FromError Trace = %q, want %q", got, "trc_9f3a1c2d")
+	}
+
+	plain := errors.New("boom")
+	if got := FromError(plain).Trace; got != "" {
+		t.Errorf("FromError Trace for plain error = %q, want empty", got)
 	}
 }
