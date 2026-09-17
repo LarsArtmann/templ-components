@@ -42,6 +42,12 @@ jobs:
       - name: Compile check (templ output is committed, no generate step needed)
         run: GOWORK=off go build ./...
 
+      - name: Test website module
+        # Parity with the library's Build job (#241): the module ships tests
+        # (CSP hash sync, link checker, page goldens, site integrity) — a
+        # compile-only workflow let every one of them rot invisibly.
+        run: GOWORK=off go test ./... -count=1
+
       - name: Lint website module
         # Pinned (was @latest): a floating install made lint results drift
         # between runs (see ci.yaml "Install golangci-lint").
@@ -62,11 +68,19 @@ jobs:
           npm install --no-save tailwindcss @tailwindcss/cli
           PATH="$PWD/node_modules/.bin:$PATH" bash build.sh
 
-      - name: HTML Validation
+      - name: HTML Validation (blocking)
+        # Now BLOCKING (#241): the step ran with continue-on-error for its
+        # whole life while 6 real finding classes piled up invisibly
+        # (double <main> on 404, unlabeled landmark twins, duplicated
+        # classes) — all fixed 2026-09-17. Two rules stay off, by design:
+        #   - doctype-style: templ's generator lowercases the doctype no
+        #     matter what the source says; HTML5 is case-insensitive.
+        #   - prefer-native-element: the docs search combobox is a custom
+        #     listbox widget on purpose (no native element provides
+        #     filtered, anchored results).
         run: |
           npm install -g html-validate
           html-validate --config .htmlvalidate.json "dist/**/*.html"
-        continue-on-error: true
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -131,3 +145,18 @@ jobs:
         run: |
           npm install -g firebase-tools
           firebase deploy --only hosting:templcomponents --project lars-software
+
+      - name: Post-deploy smoke (site 200 + demo /health)
+        # A deploy job that proves nothing ships broken sites silently; this
+        # fails the workflow when either surface is down right after deploy.
+        run: |
+          demo_url="$(gcloud run services describe templcomponents-demo \
+            --region=us-central1 --project=lars-software \
+            --format='value(status.url)')"
+          echo "Site: ${SiteURL}/ · Demo: ${demo_url}"
+          curl -fsS -o /dev/null -w "site: %{http_code}\n" "${SiteURL}/"
+          health="$(curl -fsS "${demo_url}/health")"
+          echo "demo /health: ${health}"
+          echo "${health}" | grep -q '"status":"ok"'
+        env:
+          SiteURL: https://templcomponents.lars.software

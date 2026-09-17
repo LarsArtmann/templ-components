@@ -11,6 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/layout"
 )
 
 // NotFoundMeta describes the 404 page.
@@ -24,7 +25,9 @@ func NotFoundMeta() PageMeta {
 }
 
 // NotFound renders the site 404 page around the library's NotFound404
-// component — the site eating its own error-page dogfood.
+// component — the site eating its own error-page dogfood. NoMainWrapper
+// hands the <main> landmark to NotFound404 (a nested second <main> is an
+// HTML violation); the skip link targets the ID set in siteNotFoundProps.
 func NotFound(nonce string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -46,6 +49,8 @@ func NotFound(nonce string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
+		props := pageProps(NotFoundMeta(), nonce)
+		props.NoMainWrapper = true
 		templ_7745c5c3_Var2 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -58,13 +63,21 @@ func NotFound(nonce string) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = Header(nonce).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 			templ_7745c5c3_Err = errorpage.NotFound404(siteNotFoundProps(nonce)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = Page(NotFoundMeta(), nonce).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.Base(props).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -75,6 +88,9 @@ func NotFound(nonce string) templ.Component {
 func siteNotFoundProps(nonce string) errorpage.NotFound404Props {
 	props := errorpage.DefaultNotFound404Props()
 	props.BaseProps.Nonce = nonce
+	// Skip-link target: NotFound404's own <main> becomes #main-content.
+	props.BaseProps.ID = "main-content"
+	props.BaseProps.Attrs = templ.Attributes{"tabindex": "-1"}
 	props.Links = []errorpage.NotFoundLink{
 		{Text: "Documentation", Href: "/getting-started/installation", Icon: icons.Document},
 		{Text: "GitHub", Href: GitHubURL, Icon: icons.CodeBracket},

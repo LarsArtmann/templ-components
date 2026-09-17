@@ -21,8 +21,8 @@ func NotFoundMeta() PageMeta {
 // hands the <main> landmark to NotFound404 (a nested second <main> is an
 // HTML violation); the skip link targets the ID set in siteNotFoundProps.
 templ NotFound(nonce string) {
-	props := pageProps(NotFoundMeta(), nonce)
-	props.NoMainWrapper = true
+	{{ props := pageProps(NotFoundMeta(), nonce) }}
+	{{ props.NoMainWrapper = true }}
 	@layout.Base(props) {
 		@Header(nonce)
 		@errorpage.NotFound404(siteNotFoundProps(nonce))

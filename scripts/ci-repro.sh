@@ -16,6 +16,10 @@
 #                                    # byte-stable, SHA-256 verified twice). If CI's CSS Freshness
 #                                    # fires where local --css was green, REOPEN #120 with both logs.
 #   scripts/ci-repro.sh --visual     # also run the Visual Regression job (needs Nix + Chromium)
+#   scripts/ci-repro.sh --website     # also run the Website job's local lane:
+#                                    # website tests + lint + site build + tidy-check
+#                                    # (the tidy-check is the deterministic undo of the
+#                                    # daemon's go.mod pin flips — 3 incidents in 4 days)
 #   scripts/ci-repro.sh --vuln       # also run the vulnerability gates: govulncheck (all Go modules)
 #                                    # + pnpm audit --prod (website/; needs real node — the bun shim breaks pnpm,
 #                                    # so run under `nix develop` or with the PATH workaround)
@@ -33,6 +37,7 @@ RUN_CSS=0
 RUN_VISUAL=0
 RUN_VULN=0
 RUN_TIDY=0
+RUN_WEBSITE=0
 COLD=0
 for arg in "$@"; do
 	case "$arg" in
@@ -41,10 +46,11 @@ for arg in "$@"; do
 	--visual) RUN_VISUAL=1 ;;
 	--vuln) RUN_VULN=1 ;;
 	--tidy) RUN_TIDY=1 ;;
+	--website) RUN_WEBSITE=1 ;;
 	--cold) COLD=1 ;;
 	*)
 		echo "Unknown flag: $arg" >&2
-		echo "Usage: $0 [--lint] [--css] [--visual] [--vuln] [--tidy] [--cold]" >&2
+		echo "Usage: $0 [--lint] [--css] [--visual] [--vuln] [--tidy] [--website] [--cold]" >&2
 		exit 2
 		;;
 	esac
@@ -198,6 +204,30 @@ fi
 if [ "$RUN_VISUAL" = "1" ]; then
 	step "Visual Regression (Nix Chromium; hard gate in CI)"
 	nix run .#visual
+fi
+
+if [ "$RUN_WEBSITE" = "1" ]; then
+	step "Website module (mirrors website.yml build job, #241)"
+	(
+		cd website
+		GOWORK=off go build ./...
+		GOWORK=off go test ./... -count=1
+		GOWORK=off golangci-lint run ./...
+		GOEXPERIMENT=jsonv2 go run ./cmd/site --skip-stars --out dist --repo-root ..
+		rm -rf dist
+	)
+	step "Website tidy-check (go mod tidy must be a no-op — kills the pin-flip class)"
+	(
+		cd website
+		GOWORK=off go mod tidy
+		if ! git diff --exit-code -- go.mod go.sum >/dev/null; then
+			echo "ERROR: website/go.mod drifted after tidy — the daemon flipped the pin again;" >&2
+			echo "commit the tidied go.mod (tidy is the deterministic undo, #241)." >&2
+			git diff -- go.mod go.sum | head -20 >&2
+			exit 1
+		fi
+	)
+	echo "website lane green."
 fi
 
 if [ "$RUN_TIDY" = "1" ]; then

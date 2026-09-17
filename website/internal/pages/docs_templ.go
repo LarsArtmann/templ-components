@@ -174,7 +174,7 @@ func docsSidebar(current string) templ.Component {
 			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<aside class=\"hidden lg:block w-56 shrink-0\"><nav class=\"sticky top-24 docs-nav\" aria-label=\"Documentation navigation\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<aside class=\"hidden lg:block w-56 shrink-0\" aria-label=\"Documentation navigation\"><nav class=\"sticky top-24 docs-nav\" aria-label=\"Documentation navigation\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -331,7 +331,7 @@ func docsTOC(page md.Page) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if len(page.Headings) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<aside class=\"hidden xl:block w-52 shrink-0\"><nav class=\"sticky top-24 docs-toc\" aria-label=\"On this page\"><div class=\"text-xs font-mono uppercase tracking-[0.2em] text-text-muted mb-2\">On this page</div><ul class=\"space-y-1.5\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<aside class=\"hidden xl:block w-52 shrink-0\" aria-label=\"On this page\"><nav class=\"sticky top-24 docs-toc\" aria-label=\"On this page\"><div class=\"text-xs font-mono uppercase tracking-[0.2em] text-text-muted mb-2\">On this page</div><ul class=\"space-y-1.5\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

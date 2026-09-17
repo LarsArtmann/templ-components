@@ -292,7 +292,7 @@ func NotFound404(props NotFound404Props) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for _, link := range props.Links {
-				var templ_7745c5c3_Var16 = []any{"group flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-start transition-colors hover:border-blue-400 dark:hover:border-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 " + utils.TransitionColors}
+				var templ_7745c5c3_Var16 = []any{"group flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-start hover:border-blue-400 dark:hover:border-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 " + utils.TransitionColors}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var16...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err

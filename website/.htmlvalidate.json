@@ -11,6 +11,8 @@
     "valid-id": "off",
     "no-redundant-role": "off",
     "element-permitted-content": "off",
-    "text-content": "off"
+    "text-content": "off",
+    "doctype-style": "off",
+    "prefer-native-element": "off"
   }
 }
