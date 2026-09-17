@@ -93,6 +93,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   scale. Family color moved out of the card background into accents (bar,
   icon, chips, button), fixing the washed-out look in both themes. No public
   API changed — `StatusCode` was already validated, just never displayed.
+  The new layout is pinned by a 4-capture regression shield
+  (`errorpage/{light,dark}_{mobile,rtl}.png`): 375px mobile proves the chip
+  row wraps and the meta footer fits, RTL proves chips, context table, and
+  action button mirror via logical properties.
 - **`FromError` prefers the oops-style user-safe message.** When an error
   exposes `Public() string` (promoted through `go-error-family/bridge`'s
   embedded `OopsError`), a non-empty value now wins over `Message()` and the
