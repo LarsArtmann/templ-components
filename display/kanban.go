@@ -354,7 +354,7 @@ func kanbanPendingRegistryJS() string {
 		`if(!zone)return;` +
 		`var phs=zone.querySelectorAll('[data-tc-kanban-empty]');` +
 		`for(var i=0;i<phs.length;i++){phs[i].hidden=false;}` +
-		`}` +
+		`}`
 }
 
 // kanbanPendingPipelineJS returns the register's state transitions:
@@ -411,7 +411,7 @@ func kanbanPendingPipelineJS() string {
 		`if(!b||!b.id||!tcKbPendingFor(b.id))return;` +
 		`tcKbAnnounce=null;` +
 		`tcKbRevert(b.id);` +
-		`}` +
+		`}`
 }
 
 // kanbanPendingEventsJS returns the transport event listeners. Success and
