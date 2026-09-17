@@ -55,7 +55,7 @@ runtime eats clicks.
    client-side `Record<columnId, issueId[]>`.
 4. **Persist as a bulk rewrite:** every issue in the destination column (and the source
    column on cross-column moves) gets `sort_order = 1000 * columnIndex + (issueIndex + 1)`
-  (both 1-based) and `status_id`, then one `bulkUpdateIssues(updates)` call.
+   (both 1-based) and `status_id`, then one `bulkUpdateIssues(updates)` call.
 5. **Echo suppression:** an `isSyncingRef` flag is set during the bulk update and cleared
    only after a `setTimeout(…, 500)` "to let Electric sync complete" — so the realtime
    sync of your own write doesn't clobber the optimistic state you already applied.
@@ -235,8 +235,9 @@ column — no client store. Until a consumer asks: YAGNI.
 ### 5.7 Whole-card draggable with no visible affordance (desktop)
 
 On desktop their cards give no cue they're draggable until grabbed. Ours show `cursor-grab`
-+ hover border + move buttons on hover/focus/coarse-pointer. Discoverability is a feature;
-keep ours.
+
+- hover border + move buttons on hover/focus/coarse-pointer. Discoverability is a feature;
+  keep ours.
 
 ### 5.8 Last-write-wins as the entire concurrency story
 
@@ -256,13 +257,13 @@ realtime, selection, and issue-panel UX are consumer concerns (composable via ou
 
 ## 6. Follow-up candidates (ranked — 1–4 shipped 2026-09-16, #5 deferred)
 
-| # | Item | Cost | Value |
-|---|------|------|-------|
-| 1 | ✅ DONE 2026-09-16 — `docs/recipes/kanban-card-anatomy.md` (card anatomy + tag overflow + description preview) | trivial | high — unlocks their best UX with existing API |
-| 2 | ✅ DONE 2026-09-16 — `KanbanColumn.Action` slot (per-column add-card), browser-proven e2e | small | high — real gap |
-| 3 | ✅ DONE 2026-09-16 — `KanbanColumn.Tone` status dot | small | medium |
-| 4 | ✅ DONE 2026-09-16 — Godoc/recipe note: sorted views ↔ read-only or server-rejected reorder (`ParseKanbanMove` godoc + recipe move contract) | trivial | medium — prevents consumer confusion |
-| 5 | Drag-handle variant — ONLY if whole-card click actions ever land (still deferred, TODO_LIST #190) | medium | low today |
+| # | Item                                                                                                                                         | Cost    | Value                                          |
+| - | -------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ---------------------------------------------- |
+| 1 | ✅ DONE 2026-09-16 — `docs/recipes/kanban-card-anatomy.md` (card anatomy + tag overflow + description preview)                               | trivial | high — unlocks their best UX with existing API |
+| 2 | ✅ DONE 2026-09-16 — `KanbanColumn.Action` slot (per-column add-card), browser-proven e2e                                                    | small   | high — real gap                                |
+| 3 | ✅ DONE 2026-09-16 — `KanbanColumn.Tone` status dot                                                                                          | small   | medium                                         |
+| 4 | ✅ DONE 2026-09-16 — Godoc/recipe note: sorted views ↔ read-only or server-rejected reorder (`ParseKanbanMove` godoc + recipe move contract) | trivial | medium — prevents consumer confusion           |
+| 5 | Drag-handle variant — ONLY if whole-card click actions ever land (still deferred, TODO_LIST #190)                                            | medium  | low today                                      |
 
 ## 7. Sources
 
