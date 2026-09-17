@@ -26,6 +26,6 @@ func TestToggleGoldens(t *testing.T) {
 
 	AssertScreenshot(t, "toggle/light", forms.Toggle(off), Options{})
 	AssertScreenshot(t, "toggle/light_checked", forms.Toggle(on), Options{})
-	AssertScreenshot(t, "toggle/dark", forms.Toggle(on), Options{Dark: Bool(true)})
-	AssertScreenshot(t, "toggle/dark_disabled", forms.Toggle(disabled), Options{Dark: Bool(true)})
+	AssertScreenshot(t, "toggle/dark", forms.Toggle(on), Options{Dark: new(true)})
+	AssertScreenshot(t, "toggle/dark_disabled", forms.Toggle(disabled), Options{Dark: new(true)})
 }
