@@ -21,7 +21,7 @@ Renders a full-page 404 with:
 @errorpage.NotFound404(errorpage.NotFound404Props{
     SearchAction: "/search",
     SearchPlaceholder: "Search documentation...",
-    Links: []errorpage.NotFound404Link{
+    Links: []errorpage.NotFoundLink{
         {Label: "Dashboard", Href: "/dashboard"},
         {Label: "API Reference", Href: "/docs/api"},
         {Label: "Status Page", Href: "https://status.example.com"},

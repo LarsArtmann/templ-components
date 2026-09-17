@@ -66,7 +66,7 @@ props.TimeFormat = "2006-01-02 15:04:05" // full date+time instead of time-only
     Every: "1s",
     Live:  htmx.PolledLiveAssertive,
 }) {
-    @display.Alert(display.AlertProps{Type: display.AlertError, Message: "High error rate!"})
+    @feedback.Alert(feedback.AlertProps{Type: feedback.FeedbackError, Message: "High error rate!"})
 }
 ```
 

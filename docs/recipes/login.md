@@ -27,7 +27,7 @@ login := recipes.LoginCard(recipes.LoginCardProps{
     Subtitle: "Welcome back",
     FormBody: forms.Form(forms.FormProps{
         Action: "/login",
-        Method: forms.FormMethodPost,
+        Method: forms.FormPost,
         Layout: forms.FormLayoutStack,
         Content: templ.Raw(`
             <label>Email <input type="email" name="email" required></label>

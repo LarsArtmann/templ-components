@@ -8,6 +8,72 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Cross-binding kanban contract parity test (anti-drift, TODO #227).** The
+  demo binary (`examples/demo/kanban_demo.go`) and the e2e harness server
+  (`visualtest/kanban_e2e_test.go`) implement the same
+  add/reset/CSRF/same-origin contract twice — visualtest boots the demo as an
+  external binary, so a shared builder is impossible. They now share ONE
+  probe table instead: `runKanbanContractProbes` drives
+  `TestDemoKanbanHTTPContracts` (real demo) and the new
+  `TestKanbanE2EHTTPContractParity` (harness server) through identical
+  probes; drift fails naming the side that diverged (verified by
+  intentionally breaking the harness guard and watching the table catch it).
+  The prober also gained a datastar-reset probe so shared package-global
+  boards return to their initial layout. Cross-binding comments live in both
+  implementations.
+
+- **CI lint lane for the visualtest module (TODO #225).** The Lint job now
+  runs `golangci-lint` in `visualtest/` alongside the other 7 modules —
+  `visualtest/tools` was previously lint-enforced nowhere (a 180-line CLI
+  needed 3 lint rounds and `tools/siteshots` carried findings). All 21
+  standing findings fixed forward: siteshots (static error sentinel,
+  `ListenConfig.Listen`, `Fprintf(os.Stdout, …)`, checked `server.Close`,
+  named `screenshotQuality`/`navigationSettle` consts, justified gosec
+  nolints), `demo_kanban_http_test` (`NewRequestWithContext`,
+  `strings.Cut`, stale-nolint removal), golines formatting module-wide, and
+  a documented `.golangci.yml` exclusion scoping gocognit/unparam to
+  `_e2e_test.go` harness fixtures (mux-builder shape, not library code).
+
+- **`pollBool`/`pollTrue`/`pollText` e2e poll helpers (TODO #193).** The
+  chromedp bool-into-string `Poll` mistake (bool predicate captured into
+  `*string` → unmarshal always fails → caller retries forever) can no longer
+  be written: `visualtest/poll.go` wraps predicates in `Boolean(...)` with a
+  `*bool` capture and documents the string-returning shape. The flow tests
+  (`demo_flows`, `focus_preservation`, `calendar_nav`) migrated onto the
+  helpers, dropping the `? 'ok' : ''` ternary noise. Two dead symbols
+  removed on sight (`uploadEchoMarker`, `regionExistsExpr`).
+
+- **`ExampleKanbanBoard_columnTone` godoc example (TODO #221).** `KanbanTone`
+  was discoverable only via the kanban-card-anatomy recipe; the column-status
+  dot now has a compiling godoc example next to `columnAction`.
+
+- **`docs/planning/TEMPLATE.md` (TODO #228).** The plan-authoring checklist
+  (goldens-cover-this / wired⇒e2e / counts-bump-in-same-edit / demo-smoke
+  gate) is now a copyable structural template, cross-linked from
+  `docs/plan-authoring-checklist.md`.
+
+- **Demo contract-marker cheat-sheet (TODO #226).** `docs/visual-testing.md`
+  now pins the endpoint markers every session re-derives from source: PORT
+  override, `/health` JSON, `data-tc-kanban*` selectors, the hidden move
+  form's field names, the CSRF input markup, all kanban endpoints, and the
+  403/404 failure statuses — each with its source file.
+
+- **`visualtest` failure-artifact hygiene (TODO #202).** `TestMain` prunes
+  `testdata/.fail/` at the START of every run: renamed goldens, aborted
+  runs, and cross-session residue (including empty subdirectories) no longer
+  linger and mislead the next debugging session — everything under `.fail/`
+  after a run came from that run.
+
+- **Kanban action/tone goldens joined the AI-vision flagged set (TODO
+  #223).** `scripts/vision-review-goldens.sh` now includes
+  `kanban/section_action_tone_{light,dark}.png` for the next vision pass.
+
+- **Datastar package doc now states the scripts-are-inert runtime fact
+  (TODO #200).** `datastar/doc.go` carries the innerHTML-semantics fact from
+  `docs/datastar-runtime-facts.md`: patched fragments' `<script>` tags are
+  never executed — server patches must drive client-side reactions through
+  `data-*` attributes instead (unlike htmx, which re-evaluates scripts).
+
 - **Demo kanban board models the secure path + board reset.** The move form
   now carries a server-issued CSRF token (`KanbanBoardProps.CSRFToken`,
   validated server-side — missing or wrong rejects with 403), the bodyless
@@ -253,6 +319,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `docs/transport-wiring.md`, e2e in `visualtest/calendar_nav_e2e_test.go`.
 
 ### Fixed
+
+- **Recipes identifier drift sweep, exhaustive (TODO #230).** All 36 recipe
+  files audited per-identifier: every package-qualified symbol (194 unique)
+  checked against the live package APIs via `go doc`. Three real drifts fixed:
+  `polled-region.md` still used `display.Alert`/`AlertError` (moved to the
+  `feedback` package with `FeedbackType` in the v2 behavior set),
+  `custom-404-page.md` referenced `errorpage.NotFound404Link` (actual type:
+  `NotFoundLink`), and `login.md` used `forms.FormMethodPost` (actual
+  constant: `FormPost`). Remaining apparent misses were verified as external
+  go-datastar SDK symbols, test-guard names, or underscore-suffixed constant
+  truncations — not drift.
 
 - **Toolchain-skew fix: root `go.mod` reverted to `go 1.26.7` (TODO #231).**
   A 2026-09-17 auto-commit daemon run bumped the root `go.mod` language
