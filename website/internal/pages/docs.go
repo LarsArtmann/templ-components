@@ -39,6 +39,7 @@ var docSidebar = []DocGroup{
 			{Slug: "guides/dark-mode", Title: "Dark Mode"},
 			{Slug: "guides/htmx-integration", Title: "HTMX Integration"},
 			{Slug: "guides/transport-wiring", Title: "Transport Wiring"},
+			{Slug: "guides/kanban-board", Title: "Kanban Board"},
 			{Slug: "guides/accessibility", Title: "Accessibility"},
 			{Slug: "guides/csp-compliance", Title: "CSP Compliance"},
 			{Slug: "guides/invariants", Title: "Guarantees"},
