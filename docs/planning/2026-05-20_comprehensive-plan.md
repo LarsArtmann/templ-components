@@ -1,5 +1,7 @@
 # Comprehensive Execution Plan — 2026-05-20
 
+> **Resolution (2026-09-17 evening docs-health pass):** Waves 1-5 (T1-T26) executed across the v0.x-v1.x releases — the planned fixes, icon system, validations, and demo deploy all shipped. Residue: T25 (directory listings) = TODO_LIST #28/#29 (queued); T27-T29 (cross-lib error-handling unification, reference starter app, hot-reload env) never started and predate the library's current direction — treat as superseded unless re-requested.
+
 **Generated:** 2026-05-20 | **Scope:** All remaining work across docs/planning, docs/status, docs/STANDOUT-IDEAS, docs/SUPERB-FOR-PERSONAL-USE, codebase audit
 **Source files analyzed:** 9 planning/status docs + live codebase audit
 **Total tasks:** 87 | **Estimated total:** ~17 hours

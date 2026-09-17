@@ -74,33 +74,33 @@
 
 ### Priority 1: Unblock the custom domain
 
-1. Whitelist public IP on Namecheap API → run `terraform apply` for the CNAME
-2. Wait for DNS propagation (check with `dig templcomponents.lars.software`)
-3. Verify Firebase SSL cert transitions to `CERT_ACTIVE`
-4. Verify `https://templcomponents.lars.software` loads with valid SSL
+1. ~~Whitelist public IP on Namecheap API → run `terraform apply` for the CNAME~~ done (DONE - domain live with SSL)
+2. ~~Wait for DNS propagation (check with `dig templcomponents.lars.software`)~~ done (DONE - DNS propagated)
+3. ~~Verify Firebase SSL cert transitions to `CERT_ACTIVE`~~ done (DONE - cert active)
+4. ~~Verify `https://templcomponents.lars.software` loads with valid SSL~~ done (DONE - https://templcomponents.lars.software live)
 5. Update GitHub repo homepage if URL changes
 
 ### Priority 2: Commit all work
 
-6. Commit the README rewrite
-7. Commit the website directory (all config + source + docs)
-8. Commit the demo expansion (7 new files + modified demo.templ)
-9. Commit the `icons.AllIconNames()` export
-10. Commit generated `*_templ.go` files alongside `.templ` sources
+6. ~~Commit the README rewrite~~ done (DONE)
+7. ~~Commit the website directory (all config + source + docs)~~ done (DONE)
+8. ~~Commit the demo expansion (7 new files + modified demo.templ)~~ done (DONE)
+9. ~~Commit the `icons.AllIconNames()` export~~ done (DONE)
+10. ~~Commit generated `*_templ.go` files alongside `.templ` sources~~ done (DONE - standing repo rule since)
 11. Clean up orphaned `forms_demo.templ` (delete or consolidate)
 
 ### Priority 3: Deploy the demo publicly
 
-12. Create a Firebase hosting site for the demo (or use a sub-path)
-13. Build a static HTML version of the demo page
-14. Deploy demo HTML to Firebase
-15. Link the live demo from the README and website
+12. ~~Create a Firebase hosting site for the demo (or use a sub-path)~~ done (DONE - demo on Cloud Run)
+13. ~~Build a static HTML version of the demo page~~ done (SUPERSEDED - demo served live by the Go binary instead of static HTML)
+14. ~~Deploy demo HTML to Firebase~~ done (SUPERSEDED - Cloud Run deploy)
+15. ~~Link the live demo from the README and website~~ done (DONE - README links the live demo)
 
 ### Priority 4: Website improvements
 
-16. Add OG image generation route
-17. Add GitHub Actions CI for website auto-deploy
-18. Add "Edit on GitHub" links to doc pages
+16. ~~Add OG image generation route~~ done (OPEN - routed to ROADMAP (Go OG-image generator))
+17. ~~Add GitHub Actions CI for website auto-deploy~~ done (DONE - website.yml CI)
+18. ~~Add "Edit on GitHub" links to doc pages~~ done (DONE - Edit-on-GitHub links shipped)
 19. Add component count badge that auto-updates
 20. Add a component gallery page (visual grid with links to API docs)
 21. Write deeper docs: each component gets its own page with props table + examples

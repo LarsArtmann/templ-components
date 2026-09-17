@@ -1,5 +1,7 @@
 # FULL Astro → templ Conversion — templ-components Website
 
+> **Resolution (2026-09-17 evening docs-health pass):** P0-P2 COMPLETE as headed; P3 residue since resolved: CSP header flip (hash-based, guarded), search (shipped Go-native, superseding Pagefind), website.yml CI fixed + deployed green 2026-09-17. Still open from P3: `.#website` flake app, Go OG-image generator (both in ROADMAP), and the formal visual-parity sign-off (T20) — siteshots captured the dist but no signed-off side-by-side pass ever ran.
+
 **Date:** 2026-09-13 11:15 · **Status:** P0–P2 COMPLETE (2026-09-13) — landing, docs, 404, sitemaps, CI, decommission all shipped; P3 remainder (Pagefind search, Go OG generator, flake `.#website` app, firebase.json CSP header flip once JSON-LD nonce is verified) tracked as follow-ups · **Mandate:** "FULL Astro to templ conversion, while making it better!" · Prime directive: **VERSCHLIMMBESSERN verboten** — the new site must be a strict upgrade, never a regression.
 
 ---
