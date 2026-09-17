@@ -80,7 +80,8 @@ func assertImportsMatch(t *testing.T, templFile, genFile string, srcImports, gen
 	for _, imp := range onlyInGen {
 		t.Errorf(
 			"%s imports %q but its .templ source does not — the generated file is stale or hand-edited; run `templ generate ./...` to sync",
-			filepath.Base(genFile), imp,
+			filepath.Base(genFile),
+			imp,
 		)
 	}
 }
