@@ -98,19 +98,27 @@ func TestSidebarNavClassicDarkOptOut(t *testing.T) {
 
 	var bg string
 
+	// Palette-independent assertion: the aside's computed background must
+	// equal a live bg-gray-900 probe — whatever --color-gray-900 maps to in
+	// the active theme (the demo palette remaps gray → stone values, so a
+	// hard-coded rgb() would false-fail). The probe guards against BOTH
+	// failure modes: override-not-reaching-element (transparent/white aside)
+	// and a probe that never got its class (empty comparison).
 	chromedp.Run(ctx,
 		chromedp.WaitVisible("aside", chromedp.ByQuery),
-		chromedp.Evaluate(`getComputedStyle(document.querySelector('aside')).backgroundColor`, &bg),
+		chromedp.Evaluate(`(() => {
+			const probe = document.createElement('div');
+			probe.className = 'bg-gray-900';
+			document.body.appendChild(probe);
+			const probeBg = getComputedStyle(probe).backgroundColor;
+			const asideBg = getComputedStyle(document.querySelector('aside')).backgroundColor;
+			probe.remove();
+			return probeBg !== 'rgba(0, 0, 0, 0)' && probeBg === asideBg ? probeBg : '';
+		})()`, &bg),
 	)
 
-	const gray900 = "rgb(17, 24, 39)"
-
-	if bg != gray900 {
-		t.Errorf(
-			"opt-out sidebar background = %q, want %q (the classic-dark token override did not reach the element)",
-			bg,
-			gray900,
-		)
+	if bg == "" {
+		t.Error("opt-out sidebar background does not match a bg-gray-900 probe — the classic-dark token override did not reach the element")
 	}
 
 	AssertScreenshot(t, "sidebar_nav/classic_dark_opt_out", optOut,
