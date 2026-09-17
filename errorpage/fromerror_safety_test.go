@@ -125,6 +125,7 @@ type publicTraceError struct {
 	err    error
 	public string
 	trace  string
+	family errorfamily.Family
 }
 
 func (e *publicTraceError) Error() string { return e.err.Error() }
@@ -133,7 +134,13 @@ func (e *publicTraceError) Public() string { return e.public }
 
 func (e *publicTraceError) Trace() string { return e.trace }
 
-func (e *publicTraceError) ErrorFamily() errorfamily.Family { return errorfamily.Rejection }
+func (e *publicTraceError) ErrorFamily() errorfamily.Family {
+	if e.family.IsValid() {
+		return e.family
+	}
+
+	return errorfamily.Rejection
+}
 
 // TestFromErrorPrefersPublicMessage verifies that an error carrying an
 // oops-style user-safe message gets it rendered instead of the internal
@@ -187,9 +194,12 @@ func TestFromErrorExtractsTrace(t *testing.T) {
 
 // titledError carries an explicit ErrorTitle, mirroring the interface
 // FromError probes for a caller-provided heading.
-type titledError struct{ err error }
+type titledError struct {
+	err   error
+	title string
+}
 
-func (e *titledError) Error() string     { return e.err.Error() }
+func (e *titledError) Error() string      { return e.err.Error() }
 func (e *titledError) ErrorTitle() string { return e.title }
 
 // TestFromErrorTitleFallbackPerFamily verifies every family derives a
@@ -199,8 +209,7 @@ func TestFromErrorTitleFallbackPerFamily(t *testing.T) {
 	t.Parallel()
 
 	for f := range familyDefaultTitleMap {
-		classified := &publicTraceError{err: errors.New("boom")}
-		classified.family = f
+		classified := &publicTraceError{err: errors.New("boom"), family: errorfamilyFamilyForTest(f)}
 
 		props := FromError(classified)
 		want := familyDefaultTitleMap[f]
@@ -208,6 +217,19 @@ func TestFromErrorTitleFallbackPerFamily(t *testing.T) {
 			t.Errorf("FromError(%v) Title = %q, want family default %q", f, props.Title, want)
 		}
 	}
+}
+
+// errorfamilyFamilyForTest maps an errorpage Family back to its
+// go-error-family counterpart so the per-family fallback table can be
+// exercised through the classified-error path.
+func errorfamilyFamilyForTest(f Family) errorfamily.Family {
+	for ef := errorfamily.Rejection; ef <= errorfamily.Orchestration; ef++ {
+		if ef.IsValid() && FromErrorFamily(ef) == f {
+			return ef
+		}
+	}
+
+	return errorfamily.Transient
 }
 
 // TestFromErrorExplicitTitleWins verifies an error's own ErrorTitle beats
