@@ -27,6 +27,30 @@ your problem.
 | 6    | React/Vue islands             | Rich interactive widgets that can't be server-rendered                   | Framework + bundler |
 | 7    | Datastar                      | Server-driven reactive UI with SSE streaming (replaces HTMX + Alpine)    | ~15KB lib           |
 
+### Worked example: the kanban pending register (rung 3, no framework)
+
+`display.KanbanBoard`'s optimistic move register is the ladder applied
+end-to-end. It needs client-side state (a pending-moves list), cross-element
+events (drag drop, keyboard buttons, swap completion), and htmx/Datastar
+integration — yet the implementation stays a **rung-3 singleton script**:
+
+- **Singleton guard** (`window.tcKanbanAttached`) so N boards on a page
+  attach one listener set, not N.
+- **Document-level delegation** — drop events, button clicks,
+  `htmx:afterSwap` / `htmx:responseError` are handled by functions that
+  read a `data-tc-kanban-form` hook attribute, so re-rendered boards need
+  zero re-initialization.
+- **A module-level pending array** as the client-side state; failure paths
+  consult it before reverting, which makes double-failure and
+  stale-listener races no-ops by construction.
+- **No Alpine, no client-side framework state**: the framework stays
+  responsible for transport (rung 2), the script only for optimistic
+  feedback.
+
+The lesson for your own components: reach for rung 4+ only when the state is
+too complex for an array plus guards — not because a drag-and-drop board
+"feels like a framework problem".
+
 ---
 
 ## Pattern 1: Singleton Guard + Event Delegation (Zero-Dependency)

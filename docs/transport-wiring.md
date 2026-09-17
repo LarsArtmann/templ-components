@@ -516,6 +516,24 @@ Facts worth knowing:
   cascade) — they are the touch and keyboard path. Native drag-and-drop
   needs a pointer device; a polyfilled touch-drag story is a documented
   non-goal (the dependency budget is closed).
+- **Interplay with `htmx.GlobalErrorHandling`**: if you render the global
+  error handler on the same page as a wired kanban board, both listen to
+  `htmx:responseError` / `htmx:sendError` on `document` — by design, and
+  the composition is safe, but know what each does:
+  - **4xx**: the global handler does not retry (retry logic is gated to
+    `>= 500` / network), it only toasts + updates the `tc-error-announcer`.
+    The kanban listener reverts the board. Result: inline revert + a global
+    toast describing the same failure.
+  - **5xx / network**: the global handler ALSO schedules up to
+    `MaxRetries` re-triggers of the move form (backoff
+    `RetryDelayMS × attempt`). The kanban listener reverts on the FIRST
+    failure signal, so the board is restored before the retry fires (delay
+    >= 1s); a retried move that succeeds runs from clean, restored DOM and
+    pushes its own fresh pending entry. If retries exhaust, you get the
+    global toast AND an already-reverted board.
+  - The revert path is guarded by the pending register, so extra failure
+    events (retry attempts that fail again) no-op instead of
+    double-reverting.
 
 ## Practical notes (audited 2026-09-07)
 
