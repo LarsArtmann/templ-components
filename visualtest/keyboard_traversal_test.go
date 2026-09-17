@@ -24,12 +24,20 @@ func TestKeyboardTraversalFocusVisibility(t *testing.T) {
 
 	server := StartDemoServer(t)
 
-	routes := []string{"/", "/forms", "/users", "/errors/full"}
+	routes := []struct {
+		path     string
+		minFocus int
+	}{
+		{"/", 5},
+		{"/forms", 5},
+		{"/users", 5},
+		{"/errors/full", 2}, // a minimal error page: go-home + go-back links only
+	}
 
 	const maxTabs = 60
 
 	for _, route := range routes {
-		t.Run(route, func(t *testing.T) {
+		t.Run(route.path, func(t *testing.T) {
 			t.Parallel()
 
 			ctx, cancel := newTab(t)
@@ -39,7 +47,7 @@ func TestKeyboardTraversalFocusVisibility(t *testing.T) {
 			defer cancelTimeout()
 
 			chromedp.Run(timeoutCtx,
-				chromedp.Navigate(server.BaseURL()+route),
+				chromedp.Navigate(server.BaseURL()+route.path),
 				chromedp.WaitVisible("body", chromedp.ByQuery),
 				chromedp.Evaluate(`document.activeElement && document.activeElement.blur();`, nil),
 			)
@@ -77,7 +85,7 @@ func TestKeyboardTraversalFocusVisibility(t *testing.T) {
 						};
 					})()`, &info),
 				); err != nil {
-					t.Fatalf("tab #%d on %s: %v", i+1, route, err)
+					t.Fatalf("tab #%d on %s: %v", i+1, route.path, err)
 				}
 
 				if info.Tag == "" {
@@ -93,12 +101,16 @@ func TestKeyboardTraversalFocusVisibility(t *testing.T) {
 
 				if !info.Visible {
 					t.Errorf("tab #%d on %s landed focus on an INVISIBLE element: <%s id=%q class=%q>",
-						i+1, route, strings.ToLower(info.Tag), info.ID, info.Classes)
+						i+1, route.path, strings.ToLower(info.Tag), info.ID, info.Classes)
 				}
 			}
 
-			if visited < 5 {
-				t.Errorf("only %d focusable element(s) visited on %s — traversal too short to be a real audit", visited, route)
+			if visited < route.minFocus {
+				t.Errorf(
+					"only %d focusable element(s) visited on %s — traversal too short to be a real audit",
+					visited,
+					route.path,
+				)
 			}
 		})
 	}
