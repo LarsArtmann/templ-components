@@ -219,7 +219,9 @@ display.Card(display.CardProps{
     Title:     "Users",
     BaseProps: utils.BaseProps{Class: "rounded-lg tc-squircle"},
 })
-```. `.tc-squircle` sets CSS `corner-shape: squircle`, which redraws the
+```
+
+`.tc-squircle` sets CSS `corner-shape: squircle`, which redraws the
 corners defined by `border-radius` as a continuous superellipse curve. It has
 no effect when the border radius is 0, so it always rides on top of a radius
 utility. Progressive enhancement: Chrome/Edge 139+, Opera 123+, Samsung

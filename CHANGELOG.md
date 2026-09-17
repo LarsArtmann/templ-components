@@ -146,6 +146,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   when everything is unset — now renders nothing, following the same
   graceful-degradation policy as `AvatarStatus` and `KanbanTone`.
 
+### Changed
+
+- **Cards are sharp by default.** The shared card shell (`display.Card`,
+  `display.SimpleCard`, `display.StatCard`) no longer emits `rounded-lg` —
+  all three render square corners with zero props. Restore rounding per card
+  via `Class: "rounded-lg"` (consumer classes merge last and win), or opt
+  into iOS-style continuous corners with `Class: "rounded-lg tc-squircle"` —
+  a new `templates/custom.css` utility built on CSS `corner-shape`
+  (Chrome/Edge 139+, Opera 123+, Samsung Internet 30; other browsers render
+  the plain rounded corners). Documented as section 5 in
+  `docs/migration/v1-to-v2.md`; the demo Cards section shows both looks.
+
 ## [1.18.0] — 2026-09-17
 
 ### Added

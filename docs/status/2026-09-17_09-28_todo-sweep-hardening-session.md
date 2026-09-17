@@ -63,56 +63,56 @@
 
 ## f) NEXT UP TO 50 (ranked-ish: owner gates ⫱ first, then Pareto)
 
-1. ⫱ Ratify/rollback the daemon's `flake.lock` nudge (`b1b875982b`).
-2. ⫱ Decide v1.18.0 release timing — `[Unreleased]` now ~20 entries (see g-1).
+1. ~~⫱ Ratify/rollback the daemon's `flake.lock` nudge (`b1b875982b`).~~ done (routed to owner gate TODO_LIST #233)
+2. ~~⫱ Decide v1.18.0 release timing — `[Unreleased]` now ~20 entries (see g-1).~~ done (ANSWERED - v1.18.0 cut 2026-09-17 14:17 (511d3ed6))
 3. ⫱ Ratify the `_e2e_test.go` gocognit/unparam config waiver breadth (d-flag).
-4. Decide fate of `templates/styles.css` + theme `.out.css` (#211 — evidence complete: recommend delete).
-5. Policy for ~2.1k unannotated name-keyed report items (#212 — recommend (b) or (c)).
-6. #192 release-timing supersession bookkeeping.
-7. Migrate remaining Poll sites in `kanban_e2e_test.go` (~12).
-8. Migrate remaining Poll sites in `wire_forms_pack_e2e_test.go` (~10).
-9. Migrate `wire_e2e_test.go` + `wire_form_e2e_test.go` Poll sites.
-10. Migrate `datastar_runtime` + `datastar_synthetics` Poll sites.
-11. Migrate `loading_button` + `polled_region` Poll sites.
-12. Recipes-identifier drift-guard test (mechanized #230).
-13. Website module CI lint lane (+ fix its findings, if any).
-14. #189 file-backed kanban demo state.
-15. #189 Dashboard-recipe kanban section.
-16. #222 website kanban guide page (seed from recipe; CSP re-hash + site goldens).
-17. #224 sorted-view demo board + 422-rejection e2e.
-18. #194 dark route goldens (6 routes).
-19. #195 375px mobile route goldens (4 routes).
-20. #196 RTL route goldens.
-21. #197 keyboard-only demo traversal (Tab-order UX).
-22. #229 session-scoped CSRF store for the demo (conditional).
-23. #80/#162/#150 run `scripts/vision-review-goldens.sh` (needs API key) + human confirm SUSPECTs — flagged set now includes kanban action/tone.
-24. #28 awesome-templ PR + #29 templ.guide listing (one sitting).
-25. #216 vnu ignore re-triage on next nixpkgs html5validator bump (event-gated).
-26. #213 PR wall-clock budget comment (needs baseline artifact infra).
-27. #214 PR benchstat comment (needs bench.old storage).
-28. #215 gremlins mutation pilot on utils.
-29. #217 M24/M25 demand-check re-run when next survey lands (MultiSelect, DateRangePicker, FileDrop, command palette, toast positions, TreeView).
-30. #93 BuildFlow: honest daemon commit messages (separate repo).
-31. #107 BuildFlow preflight jsonv2 scan fix (separate repo).
-32. #108 BuildFlow eslint-fix scoping (separate repo).
-33. #124 BuildFlow: stop re-appending `*_templ.go` to .gitignore (separate repo).
-34. #125 BuildFlow: provider flag against CSS un-minification (separate repo).
-35. #126 BuildFlow: commit classifier for vetted artifacts (separate repo).
-36. #190 KanbanBoard touch-drag story (owner Q1; vibe-kanban handle pattern documented).
-37. #155 SimpleNav Wire transport symmetry (D3: demand check first).
-38. #157 Calendar month-nav Wire candidate (D3 gate).
-39. #178 typed interval/intersect triggers in `wire.Event` (needs ADR).
-40. #33 `Validate() error` on remaining props structs (only where invalid states are representable).
-41. #34 test helpers → `internal/testutil/` (large mechanical, post-v1.0 deferred).
-42. #154 keep prerendered wire view in sync if demo grows (event-gated).
-43. #120 CSS-recompile false negative — re-open only if CI/local disagree again.
-44. #119-note remove the bun shim at `~/.local/bin/node` (user-level pnpm fix).
+4. ~~Decide fate of `templates/styles.css` + theme `.out.css` (#211 — evidence complete: recommend delete).~~ done (duplicate of TODO_LIST #211)
+5. ~~Policy for ~2.1k unannotated name-keyed report items (#212 — recommend (b) or (c)).~~ done (duplicate of TODO_LIST #212)
+6. ~~#192 release-timing supersession bookkeeping.~~ done (ANSWERED - v1.18.0 shipped; the TODO #192 row removed in the 2026-09-17 evening TODO_LIST rebuild)
+7. ~~Migrate remaining Poll sites in `kanban_e2e_test.go` (~12).~~ done (routed to TODO_LIST #240)
+8. ~~Migrate remaining Poll sites in `wire_forms_pack_e2e_test.go` (~10).~~ done (routed to TODO_LIST #240)
+9. ~~Migrate `wire_e2e_test.go` + `wire_form_e2e_test.go` Poll sites.~~ done (routed to TODO_LIST #240)
+10. ~~Migrate `datastar_runtime` + `datastar_synthetics` Poll sites.~~ done (routed to TODO_LIST #240)
+11. ~~Migrate `loading_button` + `polled_region` Poll sites.~~ done (routed to TODO_LIST #240)
+12. ~~Recipes-identifier drift-guard test (mechanized #230).~~ done (routed to owner gate TODO_LIST #234)
+13. ~~Website module CI lint lane (+ fix its findings, if any).~~ done (routed to TODO_LIST #242)
+14. ~~#189 file-backed kanban demo state.~~ done (routed to TODO_LIST #189)
+15. ~~#189 Dashboard-recipe kanban section.~~ done (routed to TODO_LIST #189)
+16. ~~#222 website kanban guide page (seed from recipe; CSP re-hash + site goldens).~~ done (routed to TODO_LIST #222)
+17. ~~#224 sorted-view demo board + 422-rejection e2e.~~ done (routed to TODO_LIST #224)
+18. ~~#194 dark route goldens (6 routes).~~ done (routed to TODO_LIST #194)
+19. ~~#195 375px mobile route goldens (4 routes).~~ done (routed to TODO_LIST #195)
+20. ~~#196 RTL route goldens.~~ done (routed to TODO_LIST #196)
+21. ~~#197 keyboard-only demo traversal (Tab-order UX).~~ done (routed to TODO_LIST #197)
+22. ~~#229 session-scoped CSRF store for the demo (conditional).~~ done (routed to TODO_LIST #229)
+23. ~~#80/#162/#150 run `scripts/vision-review-goldens.sh` (needs API key) + human confirm SUSPECTs — flagged set now includes kanban action/tone.~~ done (duplicate of TODO_LIST #80 (flagged set now includes kanban action/tone))
+24. ~~#28 awesome-templ PR + #29 templ.guide listing (one sitting).~~ done (duplicate of TODO_LIST #28/#29)
+25. ~~#216 vnu ignore re-triage on next nixpkgs html5validator bump (event-gated).~~ done (duplicate of TODO_LIST #216)
+26. ~~#213 PR wall-clock budget comment (needs baseline artifact infra).~~ done (duplicate of TODO_LIST #213)
+27. ~~#214 PR benchstat comment (needs bench.old storage).~~ done (duplicate of TODO_LIST #214)
+28. ~~#215 gremlins mutation pilot on utils.~~ done (duplicate of TODO_LIST #215)
+29. ~~#217 M24/M25 demand-check re-run when next survey lands (MultiSelect, DateRangePicker, FileDrop, command palette, toast positions, TreeView).~~ done (duplicate of TODO_LIST #217)
+30. ~~#93 BuildFlow: honest daemon commit messages (separate repo).~~ done (duplicate of TODO_LIST #93)
+31. ~~#107 BuildFlow preflight jsonv2 scan fix (separate repo).~~ done (duplicate of TODO_LIST #107)
+32. ~~#108 BuildFlow eslint-fix scoping (separate repo).~~ done (duplicate of TODO_LIST #108)
+33. ~~#124 BuildFlow: stop re-appending `*_templ.go` to .gitignore (separate repo).~~ done (duplicate of TODO_LIST #124)
+34. ~~#125 BuildFlow: provider flag against CSS un-minification (separate repo).~~ done (duplicate of TODO_LIST #125)
+35. ~~#126 BuildFlow: commit classifier for vetted artifacts (separate repo).~~ done (duplicate of TODO_LIST #126)
+36. ~~#190 KanbanBoard touch-drag story (owner Q1; vibe-kanban handle pattern documented).~~ done (duplicate of TODO_LIST #190)
+37. ~~#155 SimpleNav Wire transport symmetry (D3: demand check first).~~ done (duplicate of TODO_LIST #155)
+38. ~~#157 Calendar month-nav Wire candidate (D3 gate).~~ done (duplicate of TODO_LIST #157)
+39. ~~#178 typed interval/intersect triggers in `wire.Event` (needs ADR).~~ done (duplicate of TODO_LIST #178)
+40. ~~#33 `Validate() error` on remaining props structs (only where invalid states are representable).~~ done (duplicate of TODO_LIST #33)
+41. ~~#34 test helpers → `internal/testutil/` (large mechanical, post-v1.0 deferred).~~ done (duplicate of TODO_LIST #34)
+42. ~~#154 keep prerendered wire view in sync if demo grows (event-gated).~~ done (duplicate of TODO_LIST #154)
+43. ~~#120 CSS-recompile false negative — re-open only if CI/local disagree again.~~ done (duplicate of TODO_LIST #120)
+44. ~~#119-note remove the bun shim at `~/.local/bin/node` (user-level pnpm fix).~~ done (duplicate of TODO_LIST #119-note)
 45. File the stale-gopls/templ-LSP diagnostics upstream (#199 residue, owner voice).
 46. Fix or waive the gopls nilness/writestring warnings in visualtest (e-8).
-47. AGENTS.md convention bullet for the poll helpers (e-7).
+47. ~~AGENTS.md convention bullet for the poll helpers (e-7).~~ done (DONE 2026-09-17 evening - AGENTS chromedp-lessons bullet now mandates the pollBool/pollTrue/pollText helpers)
 48. Per-test kanban board instances instead of package globals (e-6).
-49. #156 consumer-adoption follow-ups live in consumer repos (owner action).
-50. Next docs-health/status harvest pass over this report's §f.
+49. ~~#156 consumer-adoption follow-ups live in consumer repos (owner action).~~ done (covered by TODO_LIST #156 row (2026-09-14 re-survey note))
+50. ~~Next docs-health/status harvest pass over this report's §f.~~ done (DONE 2026-09-17 evening - this report's section f harvested into TODO_LIST #240-#267 + owner gates #232-#239)
 
 ## g) THREE QUESTIONS I CANNOT ANSWER MYSELF
 
