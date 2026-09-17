@@ -102,7 +102,7 @@ func stepBadgeClasses(step Step) string {
 }
 
 // Comparison renders the competitor matrix (ported from ComparisonSection.astro).
-templ Comparison() {
+templ Comparison(stats build.Stats) {
 	<div>
 		@sectionHeader("Comparison", "Why templ-components?", "Type safety, CSP compliance, and HTMX integration that alternatives don't offer.")
 
@@ -121,7 +121,7 @@ templ Comparison() {
 					</tr>
 				</thead>
 				<tbody>
-					for _, row := range ComparisonMatrix {
+					for _, row := range ComparisonMatrix(stats) {
 						<tr class="border-b border-border/50 hover:bg-bg-card/50 transition-colors">
 							<td class="py-3 px-4 text-text-secondary font-medium text-left">{ row.Feature }</td>
 							for valueIndex, value := range row.Values {

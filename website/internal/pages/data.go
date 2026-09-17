@@ -4,7 +4,13 @@
 // library's largest dogfood consumer.
 package pages
 
-import "github.com/larsartmann/templ-components/icons"
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/icons"
+
+	"github.com/larsartmann/templ-components/website/internal/build"
+)
 
 // Site identity. Single source of truth for every page (head tags, footer,
 // JSON-LD). Mirrors the values the Astro site shipped in src/data/config.ts.
@@ -147,21 +153,23 @@ type ComparisonMatrixRow struct {
 	Values  []MatrixCell // aligned with ComparisonColumns
 }
 
-// ComparisonMatrix powers the comparison table (ported and refreshed from
-// src/data/sections.ts — enum counts now live in the hero, not here).
-//
-//nolint:gochecknoglobals // site content table (ported from Astro data files)
-var ComparisonMatrix = []ComparisonMatrixRow{
-	{Feature: "CSS approach", Values: []MatrixCell{"Tailwind + vars", "Tailwind + DaisyUI", "Tailwind v4 CSS-first"}},
-	{Feature: "JavaScript", Values: []MatrixCell{"Alpine.js", "DaisyUI JS", "HATEOAS (enhances HTML)"}},
-	{Feature: "Requires Node.js", Values: []MatrixCell{MatrixNo, MatrixYes, MatrixNo}},
-	{Feature: "Typed props enums", Values: []MatrixCell{MatrixNo, MatrixNo, "60 (tested IsValid)"}},
-	{Feature: "CSP nonce support", Values: []MatrixCell{MatrixYes, MatrixNo, MatrixYes}},
-	{Feature: "Dark mode", Values: []MatrixCell{"CSS vars", "DaisyUI", "Tailwind dark: (tested)"}},
-	{Feature: "HTMX integration", Values: []MatrixCell{MatrixNo, MatrixNo, MatrixYes}},
-	{Feature: "Native SVG charts", Values: []MatrixCell{MatrixNo, MatrixNo, "yes (zero-JS)"}},
-	{Feature: "ECharts adapter", Values: []MatrixCell{MatrixNo, MatrixNo, "yes (opt-in)"}},
-	{Feature: "Standalone library", Values: []MatrixCell{MatrixNo, MatrixNo, MatrixYes}},
+// ComparisonMatrix builds the comparison table rows for the given stats
+// (ported and refreshed from src/data/sections.ts). The templ-components
+// column interpolates live counts from build.CountStats so the table cannot
+// drift from the codebase — the hand-typed enum count here once did.
+func ComparisonMatrix(stats build.Stats) []ComparisonMatrixRow {
+	return []ComparisonMatrixRow{
+		{Feature: "CSS approach", Values: []MatrixCell{"Tailwind + vars", "Tailwind + DaisyUI", "Tailwind v4 CSS-first"}},
+		{Feature: "JavaScript", Values: []MatrixCell{"Alpine.js", "DaisyUI JS", "HATEOAS (enhances HTML)"}},
+		{Feature: "Requires Node.js", Values: []MatrixCell{MatrixNo, MatrixYes, MatrixNo}},
+		{Feature: "Typed props enums", Values: []MatrixCell{MatrixNo, MatrixNo, fmt.Sprintf("%d (tested IsValid)", stats.Enums)}},
+		{Feature: "CSP nonce support", Values: []MatrixCell{MatrixYes, MatrixNo, MatrixYes}},
+		{Feature: "Dark mode", Values: []MatrixCell{"CSS vars", "DaisyUI", "Tailwind dark: (tested)"}},
+		{Feature: "HTMX integration", Values: []MatrixCell{MatrixNo, MatrixNo, MatrixYes}},
+		{Feature: "Native SVG charts", Values: []MatrixCell{MatrixNo, MatrixNo, "yes (zero-JS)"}},
+		{Feature: "ECharts adapter", Values: []MatrixCell{MatrixNo, MatrixNo, "yes (opt-in)"}},
+		{Feature: "Standalone library", Values: []MatrixCell{MatrixNo, MatrixNo, MatrixYes}},
+	}
 }
 
 // UseCase is one card of the UseCases section.

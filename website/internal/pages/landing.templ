@@ -32,7 +32,7 @@ templ Landing(stats build.Stats, starsText string, nonce string) {
 		@Hero(stats, starsText)
 		@section("max-w-7xl", FeatureGrid(stats))
 		@section("max-w-7xl", HowItWorks())
-		@section("max-w-7xl", Comparison())
+		@section("max-w-7xl", Comparison(stats))
 		@section("max-w-7xl", UseCasesSection())
 		@section("max-w-4xl", CTA())
 	}
