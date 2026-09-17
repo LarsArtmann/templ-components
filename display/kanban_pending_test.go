@@ -115,14 +115,23 @@ func TestKanbanJSOptimisticPending(t *testing.T) {
 	// The htmx listener must decide success vs failure on detail.successful
 	// AFTER resolving the board, and the Datastar listener must treat error
 	// states before the finished no-op.
-	htmx := js[strings.Index(js, "htmx:afterRequest"):strings.Index(js, "htmx:responseError")]
+	at := func(needle string) int {
+		idx := strings.Index(js, needle)
+		if idx == -1 {
+			t.Fatalf("kanban script lacks %q", needle)
+		}
+
+		return idx
+	}
+
+	htmx := js[at("htmx:afterRequest"):at("htmx:responseError")]
 	if success := strings.Index(htmx, "d.successful===true"); success == -1 {
 		t.Error("htmx afterRequest listener lacks the success branch")
 	} else if fail := strings.Index(htmx, "tcKbFailFrom(f);"); fail != -1 && fail < success {
 		t.Error("htmx afterRequest listener must check success BEFORE failing")
 	}
 
-	datastar := js[strings.Index(js, "datastar-fetch"):]
+	datastar := js[at("datastar-fetch"):]
 	if fail := strings.Index(datastar, "tcKbFailFrom(f);"); fail == -1 {
 		t.Error("datastar listener lacks the failure branch")
 	} else if done := strings.Index(datastar, "tcKbSucceed(b.id);"); done != -1 && done < fail {
@@ -131,7 +140,7 @@ func TestKanbanJSOptimisticPending(t *testing.T) {
 
 	// The revert origin (parent + next sibling) must be captured BEFORE the
 	// card is placed, or a failed move would restore to the wrong position.
-	opt := js[strings.Index(js, "function tcKbOptimistic("):strings.Index(js, "function tcKbSucceed(")]
+	opt := js[at("function tcKbOptimistic("):at("function tcKbSucceed(")]
 	if origin := strings.Index(opt, "var next=card.nextSibling;"); origin == -1 {
 		t.Error("tcKbOptimistic lacks the origin capture")
 	} else if place := strings.Index(opt, "tcKbPlace(zone,card,idx);"); place < origin {

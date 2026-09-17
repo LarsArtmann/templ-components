@@ -322,6 +322,13 @@ func kanbanAnnounceJS() string {
 // (the column Action add button, the page's reset button) can never trigger
 // a revert; entries are keyed by board id so cross-board events stay inert.
 func kanbanPendingJS() string {
+	return kanbanPendingRegistryJS() + kanbanPendingPipelineJS() + kanbanPendingEventsJS()
+}
+
+// kanbanPendingRegistryJS returns the in-flight move registry (keyed by
+// board id) plus the DOM helpers it drives: count-badge/aria-label syncing,
+// optimistic placement, and empty-placeholder unhiding.
+func kanbanPendingRegistryJS() string {
 	return `var tcKbPending=[];` +
 		`function tcKbPendingFor(bid){` +
 		`for(var i=0;i<tcKbPending.length;i++){if(tcKbPending[i].id===bid)return true;}` +
@@ -348,7 +355,13 @@ func kanbanPendingJS() string {
 		`var phs=zone.querySelectorAll('[data-tc-kanban-empty]');` +
 		`for(var i=0;i<phs.length;i++){phs[i].hidden=false;}` +
 		`}` +
-		`function tcKbOptimistic(b,card,zone,idx,title,dest){` +
+}
+
+// kanbanPendingPipelineJS returns the register's state transitions:
+// tcKbOptimistic (capture origin BEFORE placing — the revert restores that
+// exact position), tcKbSucceed, tcKbRevert, and tcKbFailFrom.
+func kanbanPendingPipelineJS() string {
+	return `function tcKbOptimistic(b,card,zone,idx,title,dest){` +
 		`var ph=zone.querySelector(':scope > [data-tc-kanban-empty]');` +
 		`if(ph)ph.hidden=true;` +
 		`var src=card.parentNode;` +
@@ -399,7 +412,12 @@ func kanbanPendingJS() string {
 		`tcKbAnnounce=null;` +
 		`tcKbRevert(b.id);` +
 		`}` +
-		`document.addEventListener('htmx:afterRequest',function(e){` +
+}
+
+// kanbanPendingEventsJS returns the transport event listeners. Success and
+// failure are decided per runtime per the facts pinned on kanbanPendingJS.
+func kanbanPendingEventsJS() string {
+	return `document.addEventListener('htmx:afterRequest',function(e){` +
 		`var d=e.detail||{};` +
 		`var f=d.elt;` +
 		`if(!f||!f.hasAttribute||!f.hasAttribute('data-tc-kanban-form'))return;` +
