@@ -1,5 +1,7 @@
 # Status Report — Docs Health Audit: TODO_LIST, ROADMAP, FEATURES, CHANGELOG Rebuild
 
+> **Resolution (2026-09-17 retrofit — docs-health completeness gate):** this audit's findings were executed the same day (see the 18:50 companion) and its process was superseded by the annotate-scripts + completeness-gate workflow (2026-09-10/09-13 passes). ~~manual per-file annotation pass~~ mechanized via `annotate-rows.py`/`annotate-prose.py` + the archive gate.
+
 **Date:** 2026-08-05 18:24 CEST
 **Session scope:** Read all 11 `2026-08-*` historical files, execute docs-health skill (BUILD + HARVEST + VERIFY), rebuild the 4 living docs.
 **Reporter:** Crush (glm-5.2)

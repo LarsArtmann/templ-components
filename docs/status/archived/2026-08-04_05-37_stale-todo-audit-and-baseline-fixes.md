@@ -3,6 +3,8 @@
 
 # Status Report — Stale TODO Audit & Two Baseline Regression Fixes
 
+> **Resolution (2026-09-17 retrofit — docs-health completeness gate):** the stale-TODO audit's fixes shipped and its baseline corrections were superseded by the standing drift guards (`TestDocsCountDrift`, `TestVersionMatches*`), which now fail CI instead of relying on manual audits. ~~manual stale-TODO audit as the hygiene mechanism~~ replaced by machine guards; nothing actionable remains here.
+
 **Date:** 2026-08-04 05:37 CEST
 **Session scope:** Audit the TODO items pasted into this session (#67, #73, #79–#94), execute what remained, verify against code, fix regressions.
 **Format note:** You requested `.md`; the `status-report` skill defaults to a styled HTML dashboard. Honoring your explicit override.

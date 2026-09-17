@@ -3,6 +3,8 @@
 
 # Status Report: Native SVG Charts + ECharts Adapter Implementation
 
+> **Resolution (2026-09-17 retrofit — docs-health completeness gate):** Tier 1 native SVG charts + the Tier 2 ECharts adapter shipped in v1.7.0 (ADR-0031); the "forgotten or done poorly" follow-ups below closed in v1.8.0 (chart visual goldens, dark-mode variants). ~~several things were forgotten or done poorly~~ verified remediated by the v1.8.0 golden + polish passes.
+
 **Date:** 2026-08-03 03:38
 **Session Goal:** Execute the planning document for two-tier chart architecture (native SVG charts + opt-in ECharts adapter)
 **Planning Doc:** `docs/planning/2026-08-03_02-51_NATIVE-SVG-CHARTS-PLUS-ECHARTS-ADAPTER.md`

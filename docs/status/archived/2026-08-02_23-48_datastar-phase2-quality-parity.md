@@ -3,6 +3,8 @@
 
 # Status Report: Datastar Integration — Phase 2 Quality Parity
 
+> **Resolution (2026-09-17 retrofit — docs-health completeness gate):** the Datastar package shipped in v1.7.0 with full quality parity (ADR-0030); every residual gap below that still matters is tracked in TODO_LIST/ROADMAP (SSE e2e module + bundle-diff ideas live in ROADMAP). ~~Residual c-section work opened here~~ resolved or routed — nothing in this report is actionable in this file anymore.
+
 > **Date:** 2026-08-02 23:48 CEST
 > **Session scope:** Phase 2 of the Datastar integration Pareto plan
 > **Branch:** `master` (6 commits ahead of `origin/master`, not pushed)

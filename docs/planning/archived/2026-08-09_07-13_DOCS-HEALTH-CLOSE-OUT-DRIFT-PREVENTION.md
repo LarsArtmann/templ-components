@@ -1,5 +1,7 @@
 # Comprehensive Execution Plan — Docs Health Close-Out + Drift Prevention
 
+> **Resolution (2026-09-17 retrofit — docs-health completeness gate):** plan EXECUTED — the close-out shipped the drift guards it planned (`TestDocsCountDrift` family + compiled-CSS inventory), and annotation was later mechanized (2026-09-10 pass). ~~drift-prevention tasks open~~ done; archive-only.
+
 **Created:** 2026-08-09 07:13
 **Status:** Planning → Execution
 **Decider:** Lars Artmann

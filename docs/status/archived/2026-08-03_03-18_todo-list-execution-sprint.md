@@ -3,6 +3,8 @@
 
 # Status Report — 2026-08-03 03:18
 
+> **Resolution (2026-09-17 retrofit — docs-health completeness gate):** the 13 executed items shipped in v1.7.0+ and live in CHANGELOG; the 3 "not started" items were either completed by later sessions or routed to TODO_LIST/ROADMAP residents. ~~3 items from TODO, lower priority — tracked here~~ all subsequently closed or routed; this snapshot is final.
+
 > Session: TODO list execution sprint — 15 actionable items from TODO_LIST.md
 > (tasks #67, #73, #79, #80, #81, #82, #83, #84, #85, #86, #87, #88, #89, #90, #91, #92, #94)
 > Duration: ~3 hours

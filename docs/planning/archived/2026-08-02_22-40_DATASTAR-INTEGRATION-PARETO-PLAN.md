@@ -3,6 +3,8 @@
 
 # Datastar Integration — Pareto Execution Plan
 
+> **Resolution (2026-09-17 retrofit — docs-health completeness gate):** plan EXECUTED — the Datastar package shipped v1.7.0 (ADR-0030) with quality parity proven by the 08-02/08-03 status reports. ~~plan tasks open~~ all executed; archive-only.
+
 > **Date:** 2026-08-02 22:40 · **Status:** Planning
 > **Goal:** Bring the `datastar` package to full quality parity with every other
 > package in the library — without verslimmbessern.

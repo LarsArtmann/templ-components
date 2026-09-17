@@ -1,5 +1,7 @@
 # Docs Health Completion Plan — Fix, Annotate, Archive
 
+> **Resolution (2026-09-17 retrofit — docs-health completeness gate):** plan EXECUTED 2026-08-05 (companion status report 18:50) — the audit findings were fixed, annotated, and the affected docs archived. ~~completion tasks open~~ done; archive-only.
+
 **Created:** 2026-08-05 18:29
 **Status:** Planning → Execution
 **Decider:** Lars Artmann

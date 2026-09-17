@@ -3,6 +3,8 @@
 
 # Charts Integration Plan: Native SVG + Opt-in ECharts Adapter
 
+> **Resolution (2026-09-17 retrofit — docs-health completeness gate):** plan EXECUTED — native SVG charts + ECharts adapter shipped v1.7.0 (ADR-0031), polish + goldens v1.8.0. ~~plan tasks open~~ all executed; archive-only.
+
 **Created:** 2026-08-03 02:51
 **Status:** Planning
 **Decider:** Lars Artmann
