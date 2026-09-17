@@ -130,7 +130,7 @@ func TestPreCommitHookInstallsGuard(t *testing.T) {
 		if idx < 0 {
 			t.Errorf(
 				"tracked pre-commit hook (.githooks/pre-commit) no longer calls %s — "+
-					"re-add the pre-BuildFlow guard (see .githooks/pre-commit guards 1-7).",
+					"re-add the pre-BuildFlow guard (see .githooks/pre-commit guards 1-8).",
 				guard,
 			)
 		} else if flowIdx >= 0 && idx > flowIdx {
