@@ -184,3 +184,49 @@ func TestFromErrorExtractsTrace(t *testing.T) {
 		t.Errorf("FromError Trace for plain error = %q, want empty", got)
 	}
 }
+
+// titledError carries an explicit ErrorTitle, mirroring the interface
+// FromError probes for a caller-provided heading.
+type titledError struct{ err error }
+
+func (e *titledError) Error() string     { return e.err.Error() }
+func (e *titledError) ErrorTitle() string { return e.title }
+
+// TestFromErrorTitleFallbackPerFamily verifies every family derives a
+// non-empty, tone-appropriate default title when the error carries none —
+// no FromError-driven page may render headingless.
+func TestFromErrorTitleFallbackPerFamily(t *testing.T) {
+	t.Parallel()
+
+	for f := range familyDefaultTitleMap {
+		classified := &publicTraceError{err: errors.New("boom")}
+		classified.family = f
+
+		props := FromError(classified)
+		want := familyDefaultTitleMap[f]
+		if props.Title != want {
+			t.Errorf("FromError(%v) Title = %q, want family default %q", f, props.Title, want)
+		}
+	}
+}
+
+// TestFromErrorExplicitTitleWins verifies an error's own ErrorTitle beats
+// the family-derived fallback — explicit always wins over default.
+func TestFromErrorExplicitTitleWins(t *testing.T) {
+	t.Parallel()
+
+	err := &titledError{err: errors.New("boom"), title: "Custom heading"}
+	if got := FromError(err).Title; got != "Custom heading" {
+		t.Errorf("FromError Title = %q, want the explicit ErrorTitle", got)
+	}
+}
+
+// TestFromErrorPlainErrorGetsTitle verifies the unknown-error path (which
+// resolves to the Corruption fallback family) still renders a title.
+func TestFromErrorPlainErrorGetsTitle(t *testing.T) {
+	t.Parallel()
+
+	if got := FromError(errors.New("mystery failure")).Title; got != familyDefaultTitleMap[FamilyCorruption] {
+		t.Errorf("FromError(plain) Title = %q, want the Corruption-family default", got)
+	}
+}

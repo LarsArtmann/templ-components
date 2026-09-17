@@ -154,6 +154,28 @@ func FamilyIsValid(f Family) bool {
 	return ok
 }
 
+// familyDefaultTitleMap holds the family-derived page title used when an
+// error carries no title of its own. Tone-matched to go-error-family's
+// per-family DefaultWhy/DefaultFix copy: short, neutral, non-jargony —
+// the title heads the page while the message carries the detail.
+//
+//nolint:gochecknoglobals // Package-level lookup table, mirrors familyStyleMap
+var familyDefaultTitleMap = map[Family]string{
+	FamilyRejection:      "Request could not be completed",
+	FamilyConflict:       "Conflict detected",
+	FamilyTransient:      "Temporary error",
+	FamilyCorruption:     "Data integrity issue",
+	FamilyInfrastructure: "Service unavailable",
+	FamilyOrchestration:  "Internal error",
+}
+
+// FamilyDefaultTitle returns the family-derived fallback title for a full
+// error page. Unknown families return the infrastructure (most apologetic)
+// title so a page never renders headingless.
+func FamilyDefaultTitle(f Family) string {
+	return utils.Lookup(familyDefaultTitleMap, f, "Service unavailable")
+}
+
 // Diagnostic panel surfaces for the shared fix/context helpers. ErrorPage's
 // white card uses the neutral inset; ErrorDetail's family-tinted card keeps
 // the white inset.
