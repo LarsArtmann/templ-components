@@ -134,14 +134,14 @@ and CI docs-health drift guard. See `CHANGELOG.md` for the full entry.
 | Offline fonts check            | Block fonts.googleapis.com and confirm fallback typography is acceptable. (audit f33)                                                                 |
 | Audit-session convention       | Codify "audit sessions produce reports + failing guards, never drive-by fixes" so fix scope stays reviewable. (audit f50)                             |
 | Route-golden variant matrix    | Dark / 375px-mobile / RTL captures for all demo routes, mirroring the component-golden matrix at page level. (2026-09-09 23:21 report f6-f8)          |
-| chromedp harness hardening     | Shared `pollBool`/`pollText` helpers, per-tab timeouts everywhere, and a chromedp trap list — see the 2026-09-09 N3 lessons in AGENTS.md. (report f5) |
+| chromedp harness hardening     | `pollBool`/`pollTrue`/`pollText` helpers SHIPPED (`visualtest/poll.go`, 2026-09-17); remaining: migrate ~48 raw `chromedp.Poll` sites (TODO #240), per-tab timeouts everywhere, and a chromedp trap list — see the 2026-09-09 N3 lessons in AGENTS.md. (report f5) |
 
 ### Depth-testing ideas (harvested 2026-09-13 from the 100-idea review, docs/reviews/2026-09-13_08-51)
 
 | Direction                         | Description                                                                                                                                 |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| axe-core a11y gate                | axe-core in the visualtest harness; zero-violation gate per component, then per demo route (review ideas #41/#91).                          |
-| HTML validation over goldens      | Run an HTML validator across all 250 goldens — string-normalized goldens can still hide malformed markup (idea #42).                        |
+| axe-core a11y gate                | **SHIPPED v1.18.0** — `visualtest/axe_sweep_test.go` audits every live demo route (default-fail on critical/serious, ledger in `visualtest/testdata/axe_baseline.json`). |
+| HTML validation over goldens      | **SHIPPED v1.18.0** — `scripts/check-html-valid.sh` + the CI `html-validation` job validate all 250 goldens (M17).                         |
 | Determinism gate                  | Render twice, byte-compare raw output; catches map-iteration or time-dependent rendering (idea #45).                                        |
 | Golden-orphan detector            | Fail when a golden file exists with no generating test (idea #54).                                                                          |
 | Firefox visual lane               | Popover, `field-sizing`, and `appearance: base-select` diverge most in Firefox; a second-browser lane pins graceful degradation (idea #49). |
@@ -149,6 +149,42 @@ and CI docs-health drift guard. See `CHANGELOG.md` for the full entry.
 | Chart geometry property tests     | Property-based invariants (monotonic ticks, arc closure) for `chart_geometry.go` (idea #47).                                                |
 | Wire fuzzing                      | Fuzz `wire.Action.Attributes` + `wire.DecodeForm` with adversarial inputs (idea #48).                                                       |
 | Convention linter                 | go/analysis linter: BaseProps embedding, IsValid pairing, typed lookup-map keys (idea #34).                                                 |
+
+### Optimistic-kanban product polish (ADR-0041 follow-ups, harvested 2026-09-17 from docs/status/2026-09-17_18-10)
+
+Pending register shipped (TODO #247-249 cover the test debt); the ideas below are post-v1.18 polish, decide on demand:
+
+| Direction                         | Description                                                                                                                                             |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pending ring via tokens           | Pending spinner-ring color could follow `KanbanTone`/semantic tokens via `@theme` instead of hardcoded blues. (18-10 f29)                                |
+| Tunable failed-flash duration     | The 4s red-border flash as a CSS custom property so consumers can tune it. (18-10 f30)                                                                   |
+| Alert copy carries server detail  | Surface the server's error message (go-error-family `Why`/`Fix`) in the revert announcement when the response carries one. (18-10 f31)                    |
+| Retry affordance                  | Auto-retry once vs manual-only; if manual, a small "retry" hint in the alert region. Owner gate: TODO #238. (18-10 f8)                                    |
+| Scroll/focus preservation         | Optimistic scroll/focus preservation when a swap lands mid-interaction (generic kanban+htmx papercut). (18-10 f32)                                        |
+| hx-sync guidance                  | Document drop-vs-queue guidance for rapid multi-move users in the recipe docs. (18-10 f33)                                                                |
+| Focus restore after revert        | After a failed revert, move focus back to the move button that initiated the move. (18-10 f34)                                                            |
+| Datastar "still retrying" surface | Datastar network failures retry ~2min before revert — surface "still retrying" in the live region on `retrying` events. (18-10 f35)                        |
+| Wire-demo optimistic pattern      | The optimistic/pending treatment generalized to the Wire demo's buttons/forms (and eventually as a documented `wire` pattern). (18-10 g1)                 |
+| Case-study writeup                | Blog/recipe: "Optimistic UI with htmx and Datastar — one markup, two runtimes" using ADR-0041 as the case study. (18-10 f44)                              |
+
+### Website & docs ideas (harvested 2026-09-17 from docs/status/2026-09-17_{18-09, 15-27} + the Astro-conversion P3 tail)
+
+| Direction                         | Description                                                                                             |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Go OG-image generator             | Per-page OG images from the SSG; retire the static `public/og/*` frozen artifacts of the old design.      |
+| `.#website` flake app             | Wrap `website/build.sh` as `nix run .#website`.                                                           |
+| Lighthouse CI                     | Performance budgets on the deployed site.                                                                 |
+| Firebase preview channel          | Per-PR preview deploys; also the cleanUrls/CSP live-verification vehicle.                                 |
+| RSS/Atom feed                     | For the changelog.                                                                                        |
+| TOC scroll-spy + active states    | Docs table-of-contents scroll-spy; header "Docs" active state.                                            |
+| Richer JSON-LD                    | BreadcrumbList/TechArticle per docs page + `rel=prev/next`.                                               |
+| siteshots as CI                   | Site-pixel goldens persisted + a CI capture step (currently manual `visualtest/tools/siteshots`).          |
+| CSP violation telemetry           | `report-uri`/`report-to` — violations are invisible today.                                                 |
+| Search UX polish                  | Fuzzy tolerance, `/`+`Ctrl+K` focus, no-results suggestions, mobile-viewport browser proof (search analytics: YAGNI, recorded so nobody rediscovers it). |
+| Newsletter copy clarity           | Double-opt-in copy + validation feedback.                                                                 |
+| 404 search wiring                 | Wire `NotFound404` SearchAction to the site search (or remove the form).                                   |
+| Mobile docs navigation            | Docs sidebar hidden below `lg` needs a mobile nav.                                                        |
+| Code-block chrome in docs         | Filename/title header + language labels on code blocks (goldmark highlighting output).                    |
 
 ### General
 
