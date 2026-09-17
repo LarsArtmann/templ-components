@@ -247,6 +247,31 @@ func kanbanE2EPage() templ.Component {
 			return err
 		}
 
+		// The flaky boards prove the optimistic-pending register: e-slow's
+		// move stalls 1.2s, e-fail's move always 500s (see the flaky handlers
+		// in kanbanE2EServer).
+		if _, err := io.WriteString(
+			w,
+			`</div><div id="kb-flaky-wrap"><h3 class="text-sm font-semibold text-gray-900 dark:text-white">Optimistic pending register (slow + failing moves)</h3>`,
+		); err != nil {
+			return err
+		}
+
+		flakyHTMXProps := kanbanFlakyHTMXBoard.kanbanFlakyBoardProps(
+			"kb-htmx-flaky",
+			wire.Action{URL: "/api/kanban/htmx-flaky"},
+		)
+		if err := display.KanbanBoard(flakyHTMXProps).Render(ctx, w); err != nil {
+			return err
+		}
+
+		if err := display.KanbanBoard(kanbanFlakyDatastarBoard.kanbanFlakyBoardProps(
+			"kb-ds-flaky",
+			wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar-flaky"},
+		)).Render(ctx, w); err != nil {
+			return err
+		}
+
 		_, err := io.WriteString(w, `</div>`)
 
 		return err
@@ -311,6 +336,57 @@ func kanbanE2EServer(t *testing.T) *httptest.Server {
 		Selector: "#kb-ds",
 		Mode:     wire.PatchModeOuter,
 	}, moveHandler(kanbanDatastarBoard, "kb-ds", wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"})))
+
+	// Flaky move endpoints for the optimistic-pending proof: e-fail always
+	// 500s (revert path), e-slow stalls kanbanFlakyMoveDelay (pending window)
+	// before the normal apply + re-render.
+	flakyMoveHandler := func(board *kanbanE2EBoard, id string, action wire.Action) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.Header().Set("Cache-Control", "no-store")
+
+			move, err := display.ParseKanbanMove(r)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+
+				return
+			}
+
+			if r.FormValue(kanbanE2ECSRFField) != kanbanE2ECSRFToken {
+				http.Error(w, "invalid CSRF token", http.StatusForbidden)
+
+				return
+			}
+
+			switch move.Card {
+			case "e-fail":
+				http.Error(w, "boom", http.StatusInternalServerError)
+
+				return
+			case "e-slow":
+				time.Sleep(kanbanFlakyMoveDelay)
+			}
+
+			board.apply(move)
+
+			if err := display.KanbanBoard(board.kanbanFlakyBoardProps(id, action)).Render(r.Context(), w); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		})
+	}
+	mux.Handle("POST /api/kanban/htmx-flaky", flakyMoveHandler(
+		kanbanFlakyHTMXBoard,
+		"kb-htmx-flaky",
+		wire.Action{URL: "/api/kanban/htmx-flaky"},
+	))
+	mux.Handle("POST /api/kanban/datastar-flaky", wire.Handler(wire.PatchTarget{
+		Selector: "#kb-ds-flaky",
+		Mode:     wire.PatchModeOuter,
+	}, flakyMoveHandler(
+		kanbanFlakyDatastarBoard,
+		"kb-ds-flaky",
+		wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar-flaky"},
+	)))
 
 	// The column Action slot's add endpoint: column id in the path, no
 	// request body, same-origin enforced — mirrors the demo.
@@ -399,6 +475,11 @@ func kanbanE2EServer(t *testing.T) *httptest.Server {
 var (
 	kanbanHTMXBoard     = newKanbanE2EBoard()
 	kanbanDatastarBoard = newKanbanE2EBoard()
+
+	// The flaky boards prove the optimistic-pending register (slow + failing
+	// moves) under both runtimes.
+	kanbanFlakyHTMXBoard     = newKanbanE2EBoardWith(kanbanFlakyE2EColumns)
+	kanbanFlakyDatastarBoard = newKanbanE2EBoardWith(kanbanFlakyE2EColumns)
 )
 
 // kanbanE2ECSRFToken is the e2e server's CSRF token; every move handler
@@ -484,6 +565,31 @@ func (b *kanbanE2EBoard) kanbanE2EBoardProps(id string, action wire.Action) disp
 			Title:  col.Title,
 			Cards:  append([]display.KanbanCard(nil), col.Cards...),
 			Action: kanbanE2EAddButton(add, col.Title),
+		}
+	}
+
+	props := display.DefaultKanbanBoardProps()
+	props.BaseProps = utils.BaseProps{ID: id}
+	props.Columns = snapshot
+	props.Wire = &action
+	props.CSRFToken = kanbanE2ECSRFToken
+
+	return props
+}
+
+// kanbanFlakyBoardProps snapshots the flaky board state into render props —
+// like kanbanE2EBoardProps but without the add-card Action slots, which the
+// pending/revert tests never use.
+func (b *kanbanE2EBoard) kanbanFlakyBoardProps(id string, action wire.Action) display.KanbanBoardProps {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	snapshot := make([]display.KanbanColumn, len(b.columns))
+	for ci, col := range b.columns {
+		snapshot[ci] = display.KanbanColumn{
+			ID:    col.ID,
+			Title: col.Title,
+			Cards: append([]display.KanbanCard(nil), col.Cards...),
 		}
 	}
 
@@ -960,4 +1066,172 @@ func TestKanbanE2EAddAndResetBothTransports(t *testing.T) {
 	kanbanClickCountUntil(ctx, t,
 		`#kb-ds-wrap [aria-label="Reset demo board"]`,
 		kanbanColumnCountExpr("kb-ds", "doing"), 0)
+}
+
+// kanbanClickOnce clicks an affordance exactly once (the pending/revert tests
+// need a single move in flight, unlike the retry-until helpers).
+func kanbanClickOnce(ctx context.Context, t *testing.T, buttonSel string) {
+	t.Helper()
+
+	if err := chromedp.Run(ctx, chromedp.Click(buttonSel)); err != nil {
+		t.Fatalf("click %s: %v", buttonSel, err)
+	}
+}
+
+// kanbanFlakyPendingExpr returns the expression asserting e-slow sits in the
+// target column ALREADY (optimistic placement), wearing the full pending
+// register: tc-kanban-pending, aria-busy, and both count badges synced.
+func kanbanFlakyPendingExpr(boardID string) string {
+	return fmt.Sprintf(`(function(){
+		var b=document.getElementById(%q);
+		var card=b.querySelector('[data-tc-kanban-card="e-slow"]');
+		if(!card)return false;
+		return !!card.closest('[data-tc-kanban-column-body="doing"]')
+			&& card.classList.contains('tc-kanban-pending')
+			&& card.getAttribute('aria-busy')==='true'
+			&& b.querySelector('[data-tc-kanban-column="doing"] [data-tc-kanban-count]').textContent==='1'
+			&& b.querySelector('[data-tc-kanban-column="todo"] [data-tc-kanban-count]').textContent==='1';
+	})()`, boardID)
+}
+
+// kanbanFlakyDoneExpr returns the expression asserting the move CONFIRMED:
+// e-slow in place, pending register cleared, live region announcing the
+// completed move.
+func kanbanFlakyDoneExpr(boardID string) string {
+	return fmt.Sprintf(`(function(){
+		var b=document.getElementById(%q);
+		var card=b.querySelector('[data-tc-kanban-card="e-slow"]');
+		if(!card)return false;
+		return !!card.closest('[data-tc-kanban-column-body="doing"]')
+			&& !card.classList.contains('tc-kanban-pending')
+			&& card.getAttribute('aria-busy')===null
+			&& b.querySelector('[data-tc-kanban-live]').textContent==='Moved Slow move to In progress.';
+	})()`, boardID)
+}
+
+// kanbanFlakyRevertedExpr returns the expression asserting the FAILED move
+// was reverted honestly: e-fail back in its original column at the end,
+// pending cleared, the tc-kanban-move-failed flash applied, counts restored,
+// and the role="alert" region announcing the revert.
+func kanbanFlakyRevertedExpr(boardID string) string {
+	return fmt.Sprintf(`(function(){
+		var b=document.getElementById(%q);
+		var card=b.querySelector('[data-tc-kanban-card="e-fail"]');
+		if(!card)return false;
+		return !!card.closest('[data-tc-kanban-column-body="todo"]')
+			&& !card.classList.contains('tc-kanban-pending')
+			&& card.classList.contains('tc-kanban-move-failed')
+			&& b.querySelector('[data-tc-kanban-column="todo"] [data-tc-kanban-count]').textContent==='2'
+			&& b.querySelector('[data-tc-kanban-column="doing"] [data-tc-kanban-count]').textContent==='0'
+			&& b.querySelector('[data-tc-kanban-alert]').textContent==='Moving Doomed move to In progress failed. The board was restored.';
+	})()`, boardID)
+}
+
+// TestKanbanE2EPendingStateBothTransports proves the optimistic register
+// (ADR-0041) at the browser level: the moment e-slow's move is submitted, the
+// card sits in the target column wearing tc-kanban-pending + aria-busy with
+// both count badges synced — long BEFORE the 1.2s-stalled response lands —
+// and once the re-rendered board arrives the pending state is cleared and
+// the live region confirms. Under htmx AND the real Datastar runtime.
+func TestKanbanE2EPendingStateBothTransports(t *testing.T) {
+	kanbanFlakyHTMXBoard.reset()
+	kanbanFlakyDatastarBoard.reset()
+
+	srv := kanbanE2EServer(t)
+
+	ctx, cancel := newTab(t)
+	defer cancel()
+
+	ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
+	defer cancelTimeout()
+
+	var ready bool
+
+	if err := chromedp.Run(ctx,
+		chromedp.Navigate(srv.URL+"/"),
+		chromedp.Poll(kanbanE2EReady, &ready),
+	); err != nil {
+		t.Fatalf("navigate + readiness: %v", err)
+	}
+
+	for _, boardID := range []string{"kb-htmx-flaky", "kb-ds-flaky"} {
+		buttonSel := fmt.Sprintf(`#%s [data-tc-kanban-card="e-slow"] [data-tc-kanban-move="next"]`, boardID)
+		kanbanClickOnce(ctx, t, buttonSel)
+
+		// The optimistic state must appear within 500ms — well inside the
+		// 1.2s stall, so this poll can only pass BEFORE the response lands.
+		var pending bool
+
+		if err := chromedp.Run(ctx, chromedp.Poll(
+			kanbanFlakyPendingExpr(boardID), &pending,
+			chromedp.WithPollingTimeout(500*time.Millisecond), chromedp.WithPollingInterval(50*time.Millisecond),
+		)); err != nil || !pending {
+			t.Fatalf(
+				"%s: optimistic pending state never appeared within 500ms (pending=%v, err=%v)",
+				boardID,
+				pending,
+				err,
+			)
+		}
+
+		// Then the response lands: pending cleared, confirmation announced.
+		var done bool
+
+		if err := chromedp.Run(ctx, chromedp.Poll(kanbanFlakyDoneExpr(boardID), &done)); err != nil || !done {
+			t.Fatalf("%s: pending state never cleared after the swap (done=%v, err=%v)", boardID, done, err)
+		}
+	}
+}
+
+// TestKanbanE2EFailureRevertsBothTransports proves the honest failure path:
+// e-fail's move 500s, the card snaps back to its original column with the
+// tc-kanban-move-failed flash, counts are restored, and the role="alert"
+// region announces the revert — under htmx AND the real Datastar runtime.
+func TestKanbanE2EFailureRevertsBothTransports(t *testing.T) {
+	kanbanFlakyHTMXBoard.reset()
+	kanbanFlakyDatastarBoard.reset()
+
+	srv := kanbanE2EServer(t)
+
+	ctx, cancel := newTab(t)
+	defer cancel()
+
+	ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
+	defer cancelTimeout()
+
+	var ready bool
+
+	if err := chromedp.Run(ctx,
+		chromedp.Navigate(srv.URL+"/"),
+		chromedp.Poll(kanbanE2EReady, &ready),
+	); err != nil {
+		t.Fatalf("navigate + readiness: %v", err)
+	}
+
+	for _, boardID := range []string{"kb-htmx-flaky", "kb-ds-flaky"} {
+		buttonSel := fmt.Sprintf(`#%s [data-tc-kanban-card="e-fail"] [data-tc-kanban-move="next"]`, boardID)
+		kanbanClickOnce(ctx, t, buttonSel)
+
+		var reverted bool
+
+		if err := chromedp.Run(
+			ctx,
+			chromedp.Poll(kanbanFlakyRevertedExpr(boardID), &reverted),
+		); err != nil ||
+			!reverted {
+			t.Fatalf("%s: failed move never reverted cleanly (reverted=%v, err=%v)", boardID, reverted, err)
+		}
+
+		// The failed-state flash self-clears after 4s.
+		var flashGone bool
+
+		flashExpr := fmt.Sprintf(
+			`!document.querySelector('#%s [data-tc-kanban-card="e-fail"]').classList.contains('tc-kanban-move-failed')`,
+			boardID,
+		)
+
+		if err := chromedp.Run(ctx, chromedp.Poll(flashExpr, &flashGone)); err != nil || !flashGone {
+			t.Fatalf("%s: tc-kanban-move-failed flash never self-cleared (gone=%v, err=%v)", boardID, flashGone, err)
+		}
+	}
 }

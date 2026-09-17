@@ -132,7 +132,7 @@ func TestFeaturesEnumValuesExhaustive(t *testing.T) {
 // blocks: \tFamilyRejection Family = "rejection"
 var enumConstDecl = regexp.MustCompile(`(?m)^\t([A-Z][A-Za-z0-9]*)\s+([A-Z][A-Za-z0-9]*)\s*=\s*"([^"]*)"`)
 
-// enumTableRow matches a FEATURES.md enum table row: | `Type` | A, B, C |
+// enumTableRow matches a FEATURES.md enum table row: | `Type` | A, B, C |.
 var enumTableRow = regexp.MustCompile(`(?m)^\|\s*` + "`([A-Za-z0-9]+)`" + `\s*\|\s*([^|]+)\|`)
 
 // collectEnumConsts walks non-test Go sources and maps enum type name ->
