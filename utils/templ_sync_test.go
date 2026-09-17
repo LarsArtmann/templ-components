@@ -28,9 +28,7 @@ import (
 func TestTemplGeneratedInSync(t *testing.T) {
 	t.Parallel()
 
-	root := ".."
-
-	templFiles := walkTemplFiles(t, root)
+	templFiles := walkTemplFiles(t, "..")
 	if len(templFiles) == 0 {
 		t.Fatal("no .templ files found — glob root is wrong")
 	}
@@ -56,38 +54,50 @@ func TestTemplGeneratedInSync(t *testing.T) {
 			srcImports := extractImports(string(src), importRe)
 			genImports := extractImports(string(gen), importRe)
 
-			var missingInGen, missingInSrc []string
-
-			for imp := range srcImports {
-				if !genImports[imp] {
-					missingInGen = append(missingInGen, imp)
-				}
-			}
-
-			for imp := range genImports {
-				if !srcImports[imp] {
-					missingInSrc = append(missingInSrc, imp)
-				}
-			}
-
-			sort.Strings(missingInGen)
-			sort.Strings(missingInSrc)
-
-			for _, imp := range missingInGen {
-				t.Errorf(
-					"%s imports %q but %s does not — run `templ generate ./...` to sync",
-					filepath.Base(templFile), imp, filepath.Base(genFile),
-				)
-			}
-
-			for _, imp := range missingInSrc {
-				t.Errorf(
-					"%s imports %q but its .templ source does not — the generated file is stale or hand-edited; run `templ generate ./...` to sync",
-					filepath.Base(genFile), imp,
-				)
-			}
+			assertImportsMatch(t, templFile, genFile, srcImports, genImports)
 		})
 	}
+}
+
+// assertImportsMatch fails the test for every import present in one file but
+// not the other, in both directions. Missing-in-generated means a stale
+// generated file; missing-in-source means the generated file was hand-edited
+// or generated from a different source. Extracted to keep the driving test's
+// cognitive complexity under the gocognit gate.
+func assertImportsMatch(t *testing.T, templFile, genFile string, srcImports, genImports map[string]bool) {
+	t.Helper()
+
+	onlyInSrc := missingFrom(srcImports, genImports)
+	onlyInGen := missingFrom(genImports, srcImports)
+
+	for _, imp := range onlyInSrc {
+		t.Errorf(
+			"%s imports %q but %s does not — run `templ generate ./...` to sync",
+			filepath.Base(templFile), imp, filepath.Base(genFile),
+		)
+	}
+
+	for _, imp := range onlyInGen {
+		t.Errorf(
+			"%s imports %q but its .templ source does not — the generated file is stale or hand-edited; run `templ generate ./...` to sync",
+			filepath.Base(genFile), imp,
+		)
+	}
+}
+
+// missingFrom returns the sorted paths present in want but absent from have.
+func missingFrom(want, have map[string]bool) []string {
+	var missing []string
+
+	for imp := range want {
+		if !have[imp] {
+			missing = append(missing, imp)
+		}
+	}
+
+	sort.Strings(missing)
+
+	return missing
 }
 
 // walkTemplFiles returns every .templ file under root that is expected to have
@@ -196,6 +206,7 @@ func TestTemplGeneratedInSyncCoverage(t *testing.T) {
 		for _, f := range templFiles {
 			if strings.Contains(f, dir) {
 				found = true
+
 				break
 			}
 		}
