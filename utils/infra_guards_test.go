@@ -101,7 +101,7 @@ func TestPreCommitHookInstallsGuard(t *testing.T) {
 		)
 	} else if buildFlowIdx >= 0 && replaceGuardIdx > buildFlowIdx {
 		t.Errorf(
-			"pre-commit hook runs check-replace-directives.sh AFTER buildflow — "+
+			"pre-commit hook runs check-replace-directives.sh AFTER buildflow — " +
 				"the guard must run BEFORE BuildFlow so it is not masked by the 60s budget.",
 		)
 	}
