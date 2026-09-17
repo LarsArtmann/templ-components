@@ -593,7 +593,7 @@ func KanbanBoard(props KanbanBoardProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if len(col.Cards) == 0 {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "  <li data-tc-kanban-empty class=\"rounded-lg py-6 text-center text-sm text-gray-400 dark:text-gray-500\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "<li data-tc-kanban-empty class=\"rounded-lg py-6 text-center text-sm text-gray-400 dark:text-gray-500\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

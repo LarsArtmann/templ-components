@@ -261,9 +261,9 @@ templ KanbanBoard(props KanbanBoardProps) {
 						aria-label={ col.Title + ": " + kanbanCountLabel(len(col.Cards)) }
 						class={ kanbanColumnBodyClass() }
 					>
+						// data-tc-kanban-empty lets the move script hide the placeholder
+						// while a card is optimistically placed into this column.
 						if len(col.Cards) == 0 {
-							// data-tc-kanban-empty lets the move script hide the placeholder
-							// while a card is optimistically placed into this column.
 							<li data-tc-kanban-empty class="rounded-lg py-6 text-center text-sm text-gray-400 dark:text-gray-500">
 								{ utils.Ternary(props.EmptyColumnText != "", props.EmptyColumnText, kanbanEmptyColumnTextDefault) }
 							</li>
