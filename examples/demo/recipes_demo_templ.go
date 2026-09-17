@@ -47,7 +47,7 @@ func recipeUtilityBarLinks() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<a href=\"/\" class=\"inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<a href=\"/\" class=\"-m-1.5 inline-flex items-center gap-1.5 p-1.5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -717,7 +717,7 @@ func topProductsCard() templ.Component {
 						{Content: display.StatusBadge("pending")},
 					}},
 					{Cells: []display.TableCell{
-						{Text: "Priority support add-on"},
+						{Text: "Priority support"},
 						{Text: "318"},
 						{Text: "$7,950"},
 						{Content: display.StatusBadge("archived")},

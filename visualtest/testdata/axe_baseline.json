@@ -16,5 +16,11 @@
   },
   "recipes_auth": {
     "color-contrast|serious": -1
+  },
+  "recipes_dashboard": {
+    "color-contrast|serious": 1
+  },
+  "recipes_settings": {
+    "color-contrast|serious": 1
   }
 }
