@@ -493,6 +493,17 @@ details[open] [data-tc-chevron] {
   }
 }
 
+/* --- Squircle corners (iOS-style continuous curve) --- */
+/* Opt-in utility: compose with any rounded-* Tailwind class, e.g.
+   Class: "rounded-lg tc-squircle". corner-shape redraws the corners defined
+   by border-radius as a superellipse; it has NO effect when border-radius
+   is 0, so it always rides on top of a radius utility.
+   Progressive enhancement: Chrome/Edge 139+, Opera 123+, Samsung 30.
+   Firefox and Safari (until TP ships it) render the plain rounded corners. */
+.tc-squircle {
+  corner-shape: squircle;
+}
+
 /* --- Shell theming tokens (M22/F101) --- */
 /* AppShell and SidebarNav consume these semantic shell tokens: consumers
    rebrand the chrome with one variable each, without touching the global

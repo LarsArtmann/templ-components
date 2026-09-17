@@ -18,17 +18,29 @@ templ displayDemo() {
 	<div class="grid gap-4 sm:grid-cols-2">
 		@display.Card(display.CardProps{
 			Title:    "Standard Card",
-			Subtitle: "With title, subtitle, and body",
+			Subtitle: "Sharp corners by default",
 		}) {
 			<p class="text-gray-600 dark:text-gray-400">This is a standard card with header and content.</p>
+		}
+		@display.Card(display.CardProps{
+			Title:     "Squircle Card",
+			Subtitle:  "iOS-style continuous corners",
+			BaseProps: utils.BaseProps{Class: "rounded-xl tc-squircle"},
+		}) {
+			<p class="text-gray-600 dark:text-gray-400">Composed with <code>Class: "rounded-xl tc-squircle"</code>. Browsers without CSS corner-shape render plain rounded corners.</p>
 		}
 		@display.SimpleCard(display.SimpleCardProps{}) {
 			<p class="text-gray-600 dark:text-gray-400">SimpleCard — no header, just content.</p>
 		}
 	</div>
 	@demoCodeSnippet("Go", `display.Card(display.CardProps{Title: "Users", Subtitle: "Manage your team"}) {
-	<p>Card content</p>
-}`)
+<p>Card content</p>
+}
+
+display.Card(display.CardProps{
+	Title:     "Squircle",
+	BaseProps: utils.BaseProps{Class: "rounded-xl tc-squircle"},
+}) { ... }`)
 	@demoSection("Stat Cards", "display-stat-cards")
 	@display.Grid(display.GridProps{Cols: display.GridCols3}) {
 		@display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp, Href: "/users"})

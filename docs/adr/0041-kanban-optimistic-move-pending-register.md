@@ -71,6 +71,25 @@ Clearing is idempotent and keyed by board id, so a fast first swap clearing a
 second in-flight move's indicator is harmless — the swap re-renders server
 truth, which is the state the second request will confirm or refute.
 
+### Concurrency timings (verified in the vendored runtimes)
+
+The two transports overlap differently, and the register is correct under
+both:
+
+- **htmx serializes.** With no `hx-sync`, a submit arriving while the same
+  element already has a request in flight is queued (default strategy
+  `"last"`: the in-flight request completes, then the queued one fires —
+  verified in the vendored htmx 2.0.10 source). The optimistic placements
+  stack immediately (both clicks move their card and both register), but the
+  HTTP requests never overlap; the first response's clear/revert plus the
+  full-board swap make the queued request's eventual result a no-op by
+  design.
+- **Datastar runs actions concurrently.** Two rapid moves put two requests in
+  flight. A failure reverts EVERY registered move of that board (the server
+  re-render is authoritative anyway) while leaving other boards' entries
+  untouched; a result arriving after the board's register was cleared is a
+  guarded no-op (`tcKbPendingFor`).
+
 ### 4. Failure — revert honestly
 
 - **htmx**: `htmx:afterRequest` with `successful !== true` — per the vendored

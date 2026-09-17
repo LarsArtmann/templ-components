@@ -9,7 +9,7 @@ import (
 	"github.com/larsartmann/templ-components/utils/svg"
 )
 
-const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs print:shadow-none print:border-0 print:bg-transparent"
+const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xs print:shadow-none print:border-0 print:bg-transparent"
 
 // CardPadding defines the internal padding of a card
 type CardPadding string
@@ -22,6 +22,11 @@ const (
 )
 
 // CardProps configures a card container.
+//
+// Corners are SHARP by default. Restore rounding per card via Class
+// ("rounded-lg") or apply the iOS-style continuous curve with
+// Class: "rounded-lg tc-squircle" (progressive enhancement — browsers
+// without CSS corner-shape render the plain rounded corners).
 //
 // Set ContainerAware: true to make padding adapt to the card's parent
 // container width (CSS @container) instead of the viewport. Useful when Card
