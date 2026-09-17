@@ -31,7 +31,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   optimistic state is observable before the response) and
   `TestKanbanE2EFailureRevertsBothTransports` (a 500 move proves the revert,
   flash, and alert). The demo move endpoints now wait 800ms on purpose so the
-  pending register is perceivable on the live demo.
+  pending register is perceivable on the live demo. Concurrency semantics are
+  pinned by `TestKanbanJSConcurrentMoves` and verified in the vendored runtimes:
+  htmx serializes same-element requests (an in-flight move is never aborted; a
+  second submit queues as "last" and fires after completion), Datastar runs
+  actions concurrently — the pending register stays consistent under both; the
+  pending and failed states are additionally captured as deterministic PNG
+  goldens (`TestKanbanPendingRegisterVisualStates`, frozen spinner ring +
+  pinned light theme).
 
 - **Correlation trace ID on error pages (bridge/oops integration).**
   `ErrorPageProps` and `ErrorDetailProps` gain a `Trace` field; the footer

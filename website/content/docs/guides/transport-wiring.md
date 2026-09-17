@@ -39,6 +39,8 @@ Components that opt in take the action directly — `display.Button` has a typed
 })
 ```
 
+The extreme case is `display.KanbanBoard`: an entire drag-and-drop board wired through one `Wire` action, with optimistic moves (pending register + failure revert) working identically under both runtimes. See [the full guide](https://github.com/larsartmann/templ-components/blob/master/docs/transport-wiring.md#dual-transport-kanban-board).
+
 ## One Endpoint, Both Transports
 
 The two runtimes mark their requests differently, and they pick the patch region differently:
