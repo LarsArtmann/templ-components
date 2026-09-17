@@ -9,20 +9,32 @@ import (
 )
 
 // TestCustomClassTokensCompiled is the content-based half of the CSS
-// freshness story (TODO #263): every `tc-*` hook class referenced in a
-// .templ source MUST appear in the compiled demo CSS. These classes are
+// freshness story (TODO #263): every `tc-*` hook class written in a .templ
+// class attribute MUST appear in the compiled demo CSS. These classes are
 // hand-written in templates/custom.css (component hooks like tc-modal,
 // tc-kanban-pending), so a missing token means either a stale compiled CSS
 // or a typo'd hook — both shipped silently when the old check relied only
 // on file mtimes (git checkouts and daemon commits reset mtimes, so the
 // signal flipped randomly).
 //
-// Arbitrary Tailwind utilities are NOT checked here (constructing them
-// without a real Tailwind build over-produces false positives); the
-// authoritative full check remains `scripts/ci-repro.sh --css`, which
-// recompiles and byte-diffs.
+// Extraction is scoped to class="..." / class={ "..." } attribute values:
+// tokens appearing elsewhere are deliberately out of scope — data-tc-* are
+// hook ATTRIBUTE names, tc-error-announcer / tc-toast-container are element
+// IDs, and JS-applied classes (tc-menu-open) are runtime state styled
+// directly in custom.css.
+//
+// Arbitrary Tailwind utilities are NOT checked here (without a real Tailwind
+// build that over-produces false positives); the authoritative full check
+// remains `scripts/ci-repro.sh --css`, which recompiles and byte-diffs.
 func TestCustomClassTokensCompiled(t *testing.T) {
 	t.Parallel()
+
+	// selectorOnlyHooks are emitted classes that are deliberately unstyled:
+	// stable public selectors consumers target (the justification lives in
+	// the referenced doc). Everything else must exist in the compiled CSS.
+	selectorOnlyHooks := map[string]string{
+		"tc-btn-loading": "deliberately unstyled hook for hx-indicator scoping — see htmx/doc.go",
+	}
 
 	css, err := os.ReadFile("../examples/demo/static/app.css")
 	if err != nil {
@@ -31,10 +43,9 @@ func TestCustomClassTokensCompiled(t *testing.T) {
 
 	cssText := string(css)
 
+	// class="..." (HTML attribute) and class={ "..." } (templ expression).
+	classAttrRe := regexp.MustCompile(`class=(?:\{[[:space:]]*)?"([^"]*)"?`)
 	tokenRe := regexp.MustCompile(`\btc-[a-z0-9]+(?:-[a-z0-9]+)*\b`)
-	// data-tc-* are HOOK ATTRIBUTE names, not classes — strip them before
-	// tokenizing so they don't false-positive as missing class selectors.
-	dataAttrRe := regexp.MustCompile(`data-tc-[a-z0-9-]+`)
 
 	templFiles := walkTemplFiles(t, "..")
 
@@ -48,20 +59,21 @@ func TestCustomClassTokensCompiled(t *testing.T) {
 			t.Fatalf("read %s: %v", file, err)
 		}
 
-		for _, token := range tokenRe.FindAllString(string(src), -1) {
-			if seen[token] {
-				continue
-			}
+		for _, attr := range classAttrRe.FindAllStringSubmatch(string(src), -1) {
+			for _, token := range tokenRe.FindAllString(attr[1], -1) {
+				if seen[token] {
+					continue
+				}
 
-			seen[token] = true
+				seen[token] = true
 
-			// The class must appear in the compiled CSS either as its
-			// escaped selector (.tc-kanban-pending) or inside a custom.css
-			// at-rule block. Match on the bare token with a non-word
-			// boundary handled by the token regex already excluding
-			// longer names.
-			if !strings.Contains(cssText, token) {
-				missing = append(missing, token+" ("+file+")")
+				if !strings.Contains(cssText, token) {
+					if _, ok := selectorOnlyHooks[token]; ok {
+						continue
+					}
+
+					missing = append(missing, token+" ("+file+")")
+				}
 			}
 		}
 	}
@@ -69,11 +81,14 @@ func TestCustomClassTokensCompiled(t *testing.T) {
 	if len(missing) > 0 {
 		sort.Strings(missing)
 
-		t.Errorf("%d tc-* class token(s) referenced in .templ sources but absent from examples/demo/static/app.css — recompile the CSS (nix run .#css) or fix the typo:\n%s",
-			len(missing), strings.Join(missing, "\n"))
+		t.Errorf(
+			"%d tc-* class token(s) referenced in .templ class attributes but absent from examples/demo/static/app.css — recompile the CSS (nix run .#css) or fix the typo:\n%s",
+			len(missing),
+			strings.Join(missing, "\n"),
+		)
 	}
 
-	if len(seen) < 10 {
-		t.Errorf("expected >=10 distinct tc-* tokens across sources, found %d — the scan is likely broken", len(seen))
+	if len(seen) < 5 {
+		t.Errorf("expected >=5 distinct tc-* tokens across sources, found %d — the scan is likely broken", len(seen))
 	}
 }
