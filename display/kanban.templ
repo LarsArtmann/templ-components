@@ -112,6 +112,13 @@ var kanbanToneLookup = map[KanbanTone]string{
 //
 // A board without Wire (or with an empty Wire.URL) is a read-only view: no
 // drag handles, no move buttons, no script.
+//
+// Moves apply optimistically: the card moves in the DOM the moment the move
+// is submitted (before the request resolves) and wears a pending register
+// (tc-kanban-pending spinner + aria-busy) until the server's re-render
+// replaces it. A failed move (4xx/5xx, network error) is reverted to its
+// original position, flashed with tc-kanban-move-failed, and announced
+// through a role="alert" region. See ADR-0041 for the decision.
 type KanbanBoardProps struct {
 	utils.BaseProps
 	// Columns renders left to right (right to left under dir="rtl").
@@ -214,6 +221,7 @@ templ KanbanBoard(props KanbanBoardProps) {
 				}
 			</form>
 			<p data-tc-kanban-live class="sr-only" role="status" aria-live="polite"></p>
+			<p data-tc-kanban-alert class="sr-only" role="alert"></p>
 		}
 		<div class="flex gap-4 overflow-x-auto pb-2">
 			for ci, col := range props.Columns {
@@ -254,7 +262,9 @@ templ KanbanBoard(props KanbanBoardProps) {
 						class={ kanbanColumnBodyClass() }
 					>
 						if len(col.Cards) == 0 {
-							<li class="rounded-lg py-6 text-center text-sm text-gray-400 dark:text-gray-500">
+							// data-tc-kanban-empty lets the move script hide the placeholder
+							// while a card is optimistically placed into this column.
+							<li data-tc-kanban-empty class="rounded-lg py-6 text-center text-sm text-gray-400 dark:text-gray-500">
 								{ utils.Ternary(props.EmptyColumnText != "", props.EmptyColumnText, kanbanEmptyColumnTextDefault) }
 							</li>
 						}
@@ -283,9 +293,12 @@ templ KanbanBoard(props KanbanBoardProps) {
 	</div>
 }
 
-// kanbanColumnCount renders a column's card-count badge.
+// kanbanColumnCount renders a column's card-count badge. The data-tc-kanban-count
+// hook lets the move script keep the badge honest while a move is pending
+// (optimistic ±1) and after a failed move is reverted (recompute from DOM).
 templ kanbanColumnCount(count int) {
 	<span
+		data-tc-kanban-count
 		class="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-300"
 	>
 		{ strconv.Itoa(count) }
