@@ -71,7 +71,7 @@ func TestErrorDetailEdgeCases(t *testing.T) {
 			Family: "bogus",
 			Title:  "Unknown",
 		}))
-		utils.AssertContains(t, output, "bogus")
+		utils.AssertNotContains(t, output, "bogus")
 		utils.AssertContains(t, output, "gray")
 	})
 

@@ -786,15 +786,36 @@ func TestSkeleton(t *testing.T) {
 	visualtest.AssertScreenshot(t, "skeleton/light", feedback.SkeletonCardGrid(skeleton))
 }
 
-// TestErrorPage covers the full-page error display.
+// TestErrorPage covers the full-page error display with the complete props
+// model: status code, code, title, message, why, fix, context, cause chain,
+// action, and timestamp.
 func TestErrorPage(t *testing.T) {
 	t.Parallel()
 
-	props := errorpage.DefaultErrorPageProps()
-	props.Why = "The database connection timed out after 30 seconds."
-	props.Fix = "Check that the database is running and accessible from the application server."
+	visualtest.AssertScreenshot(t, "errorpage/light", errorpage.ErrorPage(fullErrorPageProps()))
+}
+
+// fullErrorPageProps exercises the complete ErrorPage model — the visually
+// richest path through the component.
+func fullErrorPageProps() errorpage.ErrorPageProps {
+	props := errorpage.ErrorPageProps{
+		Family:        errorpage.FamilyTransient,
+		StatusCode:    503,
+		Code:          errorpage.CodeUnavailable,
+		Title:         "Service temporarily unavailable",
+		Message:       "We're performing maintenance or experiencing high traffic.",
+		Why:           "This is a temporary issue. No data was lost.",
+		Fix:           "Wait a moment and refresh the page.",
+		WayOut:        "Retry",
+		WayOutHref:    "/",
+		Context:       []errorpage.ContextPair{{Key: "region", Value: "eu-central-1"}, {Key: "request_id", Value: "req_8fk2m1"}},
+		CauseChain:    []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}},
+		Timestamp:     "2026-09-17T12:00:00Z",
+		ShowTimestamp: true,
+	}
 	props.Nonce = "test-nonce"
-	visualtest.AssertScreenshot(t, "errorpage/light", errorpage.ErrorPage(props))
+
+	return props
 }
 
 // TestNotFound404 covers the dedicated 404 navigation page.
@@ -944,14 +965,10 @@ func TestSkeletonDark(t *testing.T) {
 func TestErrorPageDark(t *testing.T) {
 	t.Parallel()
 
-	props := errorpage.DefaultErrorPageProps()
-	props.Why = "The database connection timed out after 30 seconds."
-	props.Fix = "Check that the database is running and accessible from the application server."
-	props.Nonce = "test-nonce"
 	visualtest.AssertScreenshot(
 		t,
 		"errorpage/dark",
-		errorpage.ErrorPage(props),
+		errorpage.ErrorPage(fullErrorPageProps()),
 		visualtest.Options{Dark: new(true)},
 	)
 }
