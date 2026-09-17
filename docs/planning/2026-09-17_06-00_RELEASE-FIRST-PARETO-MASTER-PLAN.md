@@ -64,7 +64,7 @@ Sorted by importance/impact/effort/customer-value. "⫱" marks owner-gated edges
 
 | M#  | Phase | Task                                                                                                     | Covers                                         | Min | Impact | Effort | Value |
 | --- | ----- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | --- | ------ | ------ | ----- |
-| M01 | P1    | Pre-release verify + cut v1.18.0 via release.sh (v1.17.0 shipped 2026-09-13) ⫱go                                                      | #192                                           | 60  | ★★★★★  | M      | ★★★★★ |
+| M01 | P1    | Pre-release verify + cut v1.18.0 via release.sh (v1.17.0 shipped 2026-09-13) ⫱go                         | #192                                           | 60  | ★★★★★  | M      | ★★★★★ |
 | M02 | P1    | Post-release proxy + pkg.go.dev + consumer `go get` verification                                         | f36, #192                                      | 40  | ★★★★   | S      | ★★★★  |
 | M03 | P2    | Website kanban guide page (BUILD from recipe)                                                            | #222                                           | 90  | ★★★★   | M      | ★★★★  |
 | M04 | P2    | `ExampleKanbanBoard_columnTone` + godoc pass                                                             | #221                                           | 30  | ★★★    | S      | ★★★   |
@@ -107,12 +107,12 @@ Legend: `gate` = stops until the owner provides the named input. Micro-IDs = M-o
 | M01.1 | Pre-verify touched packages + `nix develop -c golangci-lint` on display/utils            | 10  |
 | M01.2 | `git fetch` + clean-tree check + CHANGELOG `[Unreleased]` warmth review                  | 10  |
 | M01.3 | Bump version triple (utils/version.go, CHANGELOG heading, FEATURES) in release.sh run    | 15  |
-| M01.4 | `nix shell nixpkgs#govulncheck -c nix develop -c scripts/release.sh v1.17.0 "<summary>"` | 15  |
-| M01.5 | Review `git show v1.17.0` (replace-strip intact, tags for root + 5 sub-modules)          | 10  |
+| M01.4 | `nix shell nixpkgs#govulncheck -c nix develop -c scripts/release.sh v1.18.0 "<summary>"` | 15  |
+| M01.5 | Review `git show v1.18.0` (replace-strip intact, tags for root + 5 sub-modules)          | 10  |
 | M01.6 | Push master + tags; confirm CI green on the release commit                               | 10  |
-| M02.1 | Poll proxy.golang.org for v1.17.0 visibility                                             | 10  |
+| M02.1 | Poll proxy.golang.org for v1.18.0 visibility                                             | 10  |
 | M02.2 | pkg.go.dev render check (new APIs visible, goldens irrelevant, doc examples render)      | 10  |
-| M02.3 | Scratch-module `go get github.com/larsartmann/templ-components@v1.17.0` + build          | 10  |
+| M02.3 | Scratch-module `go get github.com/larsartmann/templ-components@v1.18.0` + build          | 10  |
 | M02.4 | Record any propagation gaps in docs/release-checklist.md                                 | 10  |
 
 ### P2 — Discovery (the 4%)
@@ -257,7 +257,7 @@ Micro-total ≈ 131 tasks, ≈ 25.4h. Every micro-task ≤12 min.
 ```mermaid
 flowchart TD
     subgraph P1["P1 · RELEASE — the 1% → 51%"]
-        M01["M01 Cut v1.17.0 ⫱owner go"]
+        M01["M01 Cut v1.18.0 ⫱owner go"]
         M02["M02 Proxy + pkg.go.dev verify"]
         M01 --> M02
     end
@@ -358,7 +358,7 @@ Uncovered-by-design: #190 (owner-deferred), #216 (bump-triggered), #217 (standin
 
 1. **No new dependencies.** The budget stays closed (templ, tailwind-merge-go,
    go-error-family). Gremlins is a dev-time `go install` pinned tool, not a dependency.
-2. **No breaking API changes.** v1.17.0 is additive; compound components stay ADR-tracked
+2. **No breaking API changes.** v1.18.0 is additive; compound components stay ADR-tracked
    for v2.0.
 3. **No golden-regen without eyeballing.** Every pixel-golden task includes an explicit
    eyeball micro-task (the route-golden theme-pinning lesson).
