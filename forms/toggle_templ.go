@@ -93,7 +93,7 @@ func Toggle(props ToggleProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		trackClass, thumbClass, translateClass := toggleSizeClasses(props.Size)
-		var templ_7745c5c3_Var2 = []any{utils.Class("inline-flex cursor-pointer items-center", utils.Ternary(props.Disabled, "opacity-50 cursor-not-allowed", "cursor-pointer"), props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("flex w-fit cursor-pointer items-center", utils.Ternary(props.Disabled, "opacity-50 cursor-not-allowed", "cursor-pointer"), props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

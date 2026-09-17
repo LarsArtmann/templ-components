@@ -47,6 +47,7 @@ func FromError(err error) ErrorPageProps {
 		Message:    sanitizeErrorMessage(err),
 		CauseChain: ExtractCauseChain(err, 5),
 		Timestamp:  errorTimestamp(err),
+		Trace:      traceFromError(err),
 	}
 
 	// Reuse the classified error if familyFromError already resolved it,
@@ -92,15 +93,39 @@ func familyFromError(err error) Family {
 	return FamilyCorruption
 }
 
-// sanitizeErrorMessage returns the clean message from a go-error-family error
-// (without the [family:code] prefix), or falls back to err.Error().
+// sanitizeErrorMessage returns the user-facing message from a structured
+// error. Preference order:
+//
+//  1. Public() — oops-style user-safe message (bridge.ClassifiedError promotes
+//     it from the embedded OopsError); skipped when empty.
+//  2. Message() — clean message without classification prefixes.
+//  3. err.Error() — last resort (may carry format decorations).
 func sanitizeErrorMessage(err error) string {
-	type messenger interface{ Message() string }
+	type messenger interface{ Public() string }
 	if m, ok := err.(messenger); ok {
+		if public := m.Public(); public != "" {
+			return public
+		}
+	}
+
+	type cleanMessenger interface{ Message() string }
+	if m, ok := err.(cleanMessenger); ok {
 		return m.Message()
 	}
 
 	return err.Error()
+}
+
+// traceFromError returns the error's correlation trace ID when it exposes
+// one (oops.Trace(), promoted through bridge.ClassifiedError). Empty when
+// absent — the page simply omits the trace footer entry.
+func traceFromError(err error) string {
+	type tracer interface{ Trace() string }
+	if t, ok := err.(tracer); ok {
+		return t.Trace()
+	}
+
+	return ""
 }
 
 // errorTimestamp returns the error's own timestamp if available,
@@ -122,5 +147,6 @@ type errorResponse struct {
 	Title   string            `json:"title,omitempty"`
 	Why     string            `json:"why,omitempty"`
 	Fix     string            `json:"fix,omitempty"`
+	Trace   string            `json:"trace,omitempty"`
 	Context map[string]string `json:"context,omitempty"`
 }

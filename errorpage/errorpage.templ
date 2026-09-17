@@ -55,8 +55,8 @@ templ ErrorPage(props ErrorPageProps) {
 						</div>
 					}
 				</div>
-				if props.ShowTimestamp {
-					@timestampFooter(props.Timestamp, "px-6 py-3.5 sm:px-10 bg-gray-50/60 dark:bg-gray-900/40")
+				if props.ShowTimestamp || props.Trace != "" {
+					@metaFooter(props.Timestamp, props.Trace, "px-6 py-3.5 sm:px-10 bg-gray-50/60 dark:bg-gray-900/40")
 				}
 			</div>
 		</div>

@@ -106,10 +106,18 @@ templ contextTable(pairs []ContextPair, insetClass string) {
 	}
 }
 
-templ timestampFooter(timestamp string, class string) {
-	if timestamp != "" {
-		<div class={ class, "border-t border-gray-100 dark:border-gray-800" }>
-			<p class="text-xs text-gray-400 dark:text-gray-500">{ timestamp }</p>
+// metaFooter renders the footer strip with the timestamp and/or the error's
+// correlation trace ID (support hand-off). Rendered only when at least one
+// is set; each entry is guarded independently.
+templ metaFooter(timestamp string, trace string, class string) {
+	if timestamp != "" || trace != "" {
+		<div class={ class, "flex flex-wrap items-center justify-between gap-2 border-t border-gray-100 dark:border-gray-800" }>
+			if timestamp != "" {
+				<p class="text-xs text-gray-400 dark:text-gray-500">{ timestamp }</p>
+			}
+			if trace != "" {
+				<p class="font-mono text-xs text-gray-400 dark:text-gray-500">Trace: { trace }</p>
+			}
 		</div>
 	}
 }

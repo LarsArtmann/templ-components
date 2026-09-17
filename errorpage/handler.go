@@ -175,6 +175,7 @@ func writeJSONError(w http.ResponseWriter, statusCode int, props ErrorPageProps)
 		Title:   props.Title,
 		Why:     props.Why,
 		Fix:     props.Fix,
+		Trace:   props.Trace,
 	}
 	if len(props.Context) > 0 {
 		ctx := make(map[string]string, len(props.Context))

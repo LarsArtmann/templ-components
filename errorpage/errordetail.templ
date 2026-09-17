@@ -23,6 +23,6 @@ templ ErrorDetail(props ErrorDetailProps) {
 			@errorHeader("gap-3", "flex-shrink-0 mt-0.5", style, props.Family, props.Code, props.Title, "h3", "mt-1.5 text-sm font-semibold text-gray-900 dark:text-white", props.Message, utils.Class("mt-1 text-sm", style.Text))
 			@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-3 ms-8 space-y-3", "Caused by", errorInsetCard)
 		</div>
-		@timestampFooter(props.Timestamp, "px-4 py-2 sm:px-5")
+		@metaFooter(props.Timestamp, props.Trace, "px-4 py-2 sm:px-5")
 	</div>
 }

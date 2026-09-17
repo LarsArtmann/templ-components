@@ -201,6 +201,7 @@ type ErrorPageProps struct {
 	Context       []ContextPair
 	CauseChain    []CauseItem
 	Timestamp     string
+	Trace         string
 	ShowTimestamp bool
 }
 
@@ -260,6 +261,7 @@ type ErrorDetailProps struct {
 	Context    []ContextPair
 	CauseChain []CauseItem
 	Timestamp  string
+	Trace      string
 }
 
 // DefaultErrorDetailProps returns sensible defaults.
