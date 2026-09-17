@@ -116,7 +116,7 @@ func ErrorDetail(props ErrorDetailProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = timestampFooter(props.Timestamp, "px-4 py-2 sm:px-5").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = metaFooter(props.Timestamp, props.Trace, "px-4 py-2 sm:px-5").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

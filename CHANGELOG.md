@@ -33,6 +33,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   flash, and alert). The demo move endpoints now wait 800ms on purpose so the
   pending register is perceivable on the live demo.
 
+- **Correlation trace ID on error pages (bridge/oops integration).**
+  `ErrorPageProps` and `ErrorDetailProps` gain a `Trace` field; the footer
+  renders `Trace: <id>` (mono, muted) next to the timestamp, and the JSON
+  error response gains an optional `trace` field. `FromError` populates it
+  automatically from any error exposing `Trace() string` — including
+  `go-error-family/bridge` errors, where samber/oops' trace ID is promoted
+  from the embedded `OopsError`. Zero configuration for application
+  developers.
+
 ### Changed
 
 - **SidebarNav is theme-adaptive (light sidebar in light mode).** The sidebar
@@ -63,6 +72,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   scale. Family color moved out of the card background into accents (bar,
   icon, chips, button), fixing the washed-out look in both themes. No public
   API changed — `StatusCode` was already validated, just never displayed.
+- **`FromError` prefers the oops-style user-safe message.** When an error
+  exposes `Public() string` (promoted through `go-error-family/bridge`'s
+  embedded `OopsError`), a non-empty value now wins over `Message()` and the
+  raw `Error()` string — so internal details (user IDs, RBAC internals) no
+  longer leak onto user-facing error pages. Falls through cleanly when
+  `Public()` is empty.
 
 ### Fixed
 

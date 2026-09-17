@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Report Title</title>
+    <title>Website Status — templ-components — 2026-09-17</title>
     <style>
       /* =========================================================================
          BAUHAUS DARK — Dashboard template
@@ -826,207 +826,417 @@
     </style>
   </head>
   <body>
-    <!-- Full-bleed top bar (optional — remove for quieter reports) -->
+    <!-- Full-bleed top bar -->
     <div class="top-bar">
-      <span>REPORT TYPE</span>
-      <span>YYYY-MM-DD</span>
-      <span>AUTHOR / TEAM</span>
+      <span>Status Report</span>
+      <span>2026-09-17 17:40 CEST</span>
+      <span>templ-components / website</span>
     </div>
 
     <div class="layout">
-      <!-- Sidebar TOC (hidden below 1024px; use inline .toc if you prefer) -->
+      <!-- Sidebar TOC -->
       <aside class="sidebar" data-nav>
         <nav>
           <div class="label">Contents</div>
           <a href="#summary">Summary</a>
-          <a href="#findings">Findings</a>
-          <a href="#issues">Issue Cards</a>
-          <a href="#proposal">Proposal</a>
-          <a href="#plan">Plan</a>
+          <a href="#done">Fully Done</a>
+          <a href="#partial">Partially Done</a>
+          <a href="#notstarted">Not Started</a>
+          <a href="#fucked">Fucked Up</a>
+          <a href="#improve">Improvements</a>
+          <a href="#top25">Top 25 Next</a>
+          <a href="#question">Open Question</a>
         </nav>
       </aside>
 
       <main class="main">
         <!-- Hero -->
         <div class="hero">
-          <!-- Optional Bauhaus signature: geometric shape cluster. Remove for quieter hero. -->
           <div class="hero-shapes">
             <div class="circle"></div>
             <div class="square"></div>
             <div class="tri"></div>
           </div>
-          <div class="hero-badge">Report Type</div>
-          <h1>Report Title</h1>
+          <div class="hero-badge">Status Report</div>
+          <h1>Website: templcomponents.lars.software</h1>
           <p class="hero-subtitle">
-            One-sentence description of what this report covers.
+            Point-in-time snapshot of the Go SSG website module, its CI/deploy
+            pipeline, and content accuracy. Site is live and healthy; CI was
+            red three times today (two root-caused and fixed, one caused by a
+            parallel session's mid-state that has since landed).
           </p>
         </div>
 
-        <!-- Inline TOC (alternative to sidebar; pick one) -->
         <nav class="toc">
           <h3>Contents</h3>
           <ul>
             <li><a href="#summary">Summary</a></li>
-            <li><a href="#findings">Findings</a></li>
-            <li><a href="#issues">Issue Cards</a></li>
-            <li><a href="#proposal">Proposal</a></li>
-            <li><a href="#plan">Plan</a></li>
+            <li><a href="#done">Fully Done</a></li>
+            <li><a href="#partial">Partially Done</a></li>
+            <li><a href="#notstarted">Not Started</a></li>
+            <li><a href="#fucked">Fucked Up</a></li>
+            <li><a href="#improve">Improvements</a></li>
+            <li><a href="#top25">Top 25 Next</a></li>
+            <li><a href="#question">Open Question</a></li>
           </ul>
         </nav>
 
         <!-- Stats Dashboard -->
         <h2 id="summary"><span class="num">00</span>Summary</h2>
         <div class="stat-grid">
-          <div class="stat-card">
-            <div class="stat-value">42</div>
-            <div class="stat-label">Total Items</div>
-          </div>
-          <div class="stat-card stat-bad">
+          <div class="stat-card stat-good">
             <div class="stat-value">7</div>
-            <div class="stat-label">Critical</div>
+            <div class="stat-label">Fully Done (this session)</div>
           </div>
           <div class="stat-card stat-warn">
+            <div class="stat-value">5</div>
+            <div class="stat-label">Partially Done</div>
+          </div>
+          <div class="stat-card">
             <div class="stat-value">12</div>
-            <div class="stat-label">Warnings</div>
+            <div class="stat-label">Backlog (Not Started)</div>
           </div>
-          <div class="stat-card stat-good">
-            <div class="stat-value">35</div>
-            <div class="stat-label">Resolved</div>
+          <div class="stat-card stat-bad">
+            <div class="stat-value">3</div>
+            <div class="stat-label">CI Reds Today (all root-caused)</div>
           </div>
-        </div>
-
-        <!-- Findings as Cards -->
-        <h2 id="findings"><span class="num">01</span>Findings</h2>
-
-        <div class="card card-problem">
-          <h4>Critical Issue</h4>
-          <p>Description of the problem and its impact.</p>
         </div>
 
         <div class="card card-solution">
-          <h4>Recommended Fix</h4>
-          <p>Description of the solution with rationale.</p>
+          <h4>Current state of the live site</h4>
+          <p>
+            <strong>Production is UP and serving v1.18.0</strong> (last green
+            Build+Deploy run 11:39 UTC). Landing, 14 docs pages, 404, search
+            index, sitemaps, newsletter — all verified live via fetch. Demo
+            Cloud Run answers <code>/health</code> with
+            <code>{"status":"ok"}</code>. Local verification: website module
+            tests all green, 0 lint issues, full <code>build.sh</code> green
+            (16 pages, CSP freshness guard passes, Tailwind v4.3.3). One
+            content defect found and fixed (the "58 enums" claim, below).
+          </p>
         </div>
 
-        <!-- Issue Cards -->
-        <h2 id="issues"><span class="num">02</span>Issue Cards</h2>
+        <!-- Fully Done -->
+        <h2 id="done"><span class="num">01</span>Fully Done</h2>
 
-        <div class="issue issue-critical">
-          <span class="severity severity-critical">Blocking</span>
-          <h3>Critical finding title</h3>
-          <div class="where">path/to/file.go:42-58</div>
+        <div class="card card-solution">
+          <h4>1. Red CI root-caused and fixed: untidied dependency bump</h4>
           <p>
-            Describe the problem and cite the code or behavior that proves it.
+            Daemon commit <code>43a2ab4e</code> half-applied the v1.18.0
+            dependency bump to <code>website/go.mod</code> (root dep
+            v1.17.0→v1.18.0, <code>go 1.26.7</code>→<code>go 1.26</code>)
+            without <code>go mod tidy</code> → 29s compile-check failure (run
+            <code>35220384614</code>, mirrored locally). Fix:
+            <code>go mod tidy</code> in <code>website/</code> — which also
+            restored <code>go 1.26.7</code> (the dependency graph requires it;
+            the earlier pin was load-bearing), bumped testify to v1.12.1, and
+            dropped three stale test-dep sums. Build job verified green on the
+            next run.
+          </p>
+        </div>
+
+        <div class="card card-solution">
+          <h4>2. Stale content shipped to production: "58 typed enums" (truth: 60)</h4>
+          <p>
+            The live landing comparison table, <code>api-reference.md:79</code>,
+            and <code>guides/invariants.md:54</code> all claimed
+            <strong>58</strong> typed string enums; the codebase has
+            <strong>60</strong> (build stats, AGENTS, drift guards agree). All
+            three fixed to 60; the two landing goldens regenerated and the
+            golden diff eyeballed (only the two 58→60 spots changed).
+          </p>
+        </div>
+
+        <div class="card card-solution">
+          <h4>3. Drift class eliminated at the root: the count is now derived</h4>
+          <p>
+            <code>pages.ComparisonMatrix</code> was a static table with a
+            hand-typed count — its own comment claimed "enum counts now live in
+            the hero, not here", but the row survived. It is now a function of
+            <code>build.Stats</code>
+            (<code>MatrixCell(fmt.Sprintf("%d (tested IsValid)", stats.Enums))</code>)
+            flowing through <code>Landing → Comparison(stats)</code>, so the
+            rendered table physically cannot diverge from the codebase the way
+            the hero metrics never did. The stale golden fixture
+            (<code>goldenStats.Enums: 58</code>) was updated to 60 too.
+          </p>
+        </div>
+
+        <div class="card card-solution">
+          <h4>4. Drift guard extended to website prose</h4>
+          <p>
+            <code>utils.TestDocsCountDrift</code> previously scanned
+            README/FEATURES/ROADMAP/AGENTS/skill only, and its comment claimed
+            website drift was "impossible by construction" — false for
+            hand-written markdown. It now also asserts
+            <code>api-reference.md</code> ("N typed string enums") and
+            <code>guides/invariants.md</code> ("`IsValid` function — N today")
+            against the real IsValid count. Prose counts can no longer rot
+            silently. AGENTS.md updated (website test-suite bullet +
+            drift-guard bullet).
+          </p>
+        </div>
+
+        <div class="card card-solution">
+          <h4>5. Full verification matrix green (re-verified, not assumed)</h4>
+          <p>
+            Website module: <code>go build</code> + all package tests (incl.
+            <code>TestSiteBuildIntegrity</code> whole-site render: page count,
+            zero broken links/anchors, nonce policy, search index, sitemap) +
+            <code>golangci-lint</code> 0 issues. Full site build via
+            <code>nix develop -c bash website/build.sh</code>: 16 pages,
+            CSP hash check passes, dist contains the derived
+            "60 (tested IsValid)". Root module build + demo binary build green.
+          </p>
+        </div>
+
+        <div class="card card-solution">
+          <h4>6. Second CI red (13:25, deploy job) triaged to its source</h4>
+          <p>
+            Run <code>35226937904</code>: Build Website succeeded (proving the
+            go.mod fix), Deploy failed — demo Docker compile:
+            <code>undefined: formsValidationError</code> in
+            <code>examples/demo/recipes_demo.go</code>. Traced to the parallel
+            errorpage-redesign session's mid-migration snapshot committed by
+            the daemon. That session finished (its own report at
+            <code>docs/status/2026-09-17_15-27_errorpage-redesign-*</code>
+            lists the demo migration as open item #42) and its final state has
+            since landed; <code>go build ./...</code> and
+            <code>go build ./examples/demo/</code> verified green on current
+            master. <code>formsValidationError</code> now exists nowhere in code.
+          </p>
+        </div>
+
+        <div class="card card-solution">
+          <h4>7. Website module hygiene</h4>
+          <p>
+            Lint autofix applied where my edits introduced gci/golines
+            findings (per the line-splitting policy: run
+            <code>golangci-lint fmt</code>, never hand-wrap). templ files
+            regenerated with the pinned dev-shell binary from the repo root —
+            after a first attempt from <code>website/</code> produced
+            <code>templ.Error</code> FileName-path drift in five untouched
+            generated files (caught by diff review, redone correctly).
+          </p>
+        </div>
+
+        <!-- Partially Done -->
+        <h2 id="partial"><span class="num">02</span>Partially Done</h2>
+
+        <div class="card card-warning">
+          <h4>1. Green CI run on the fixed state — pending</h4>
+          <p>
+            The fix commits (go.mod tidy, content fixes, errorpage final
+            state) are on master via daemon commits, and everything is
+            verified locally — but no Website workflow run has executed on the
+            final tree yet (last run: 13:25 failure). The next push (this
+            report) re-fires it. Watch
+            <code>gh run list --workflow website.yml</code>.
+          </p>
+        </div>
+
+        <div class="card card-warning">
+          <h4>2. Production still serves the stale "58" until next deploy</h4>
+          <p>
+            The live site was last deployed at 11:39, before the content
+            fixes. Visitors currently read "58 (tested IsValid)" against a
+            library that ships 60. One green Website run fixes it
+            automatically.
+          </p>
+        </div>
+
+        <div class="card card-warning">
+          <h4>3. Website tests are still NOT enforced in CI</h4>
+          <p>
+            <code>website.yml</code> compiles (<code>go build ./...</code>)
+            but has no <code>go test</code> step — the 13-test suite including
+            the whole-site integrity test only runs locally. Open since the
+            2026-09-13 hardening session; today's incident (CI red for a
+            reason the suite would have localized instantly) is more
+            evidence. Highest-leverage one-line CI fix available.
+          </p>
+        </div>
+
+        <div class="card card-warning">
+          <h4>4. HTML validation still <code>continue-on-error: true</code></h4>
+          <p>
+            The Node <code>html-validate</code> CI step can fail without
+            failing the build. The 09-13 report flagged the decision (keep /
+            Go validator / make blocking); still undecided.
+          </p>
+        </div>
+
+        <div class="card card-warning">
+          <h4>5. The golden fixture is still a hand-typed count</h4>
+          <p>
+            <code>goldenStats</code> in <code>golden_test.go</code> pins
+            deterministic numbers for rendering (123/105/60/7). The drift
+            guard now covers prose and the site derives its real numbers, but
+            the fixture itself could be computed from
+            <code>build.CountStats</code> in the test to close the loop
+            completely. Minor: fixture drift now fails loudly at
+            golden-update time, not silently.
+          </p>
+        </div>
+
+        <!-- Not Started -->
+        <h2 id="notstarted"><span class="num">03</span>Not Started</h2>
+        <p class="text-muted">
+          Carried over from the 2026-09-13 website-hardening report
+          (re-checked against today's tree; nothing new started since):
+        </p>
+        <table>
+          <thead>
+            <tr><th>#</th><th>Item</th><th>Note</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Go OG-image generator (per-page PNGs)</td><td>static <code>public/og/*</code> still in use</td></tr>
+            <tr><td>2</td><td><code>nix run .#website</code> flake app</td><td>build.sh exists, flake wrapper missing</td></tr>
+            <tr><td>3</td><td>Lighthouse CI / performance budgets</td><td>—</td></tr>
+            <tr><td>4</td><td>Firebase preview-channel deploy workflow</td><td>credential-gated; cleanUrls live-verify still open</td></tr>
+            <tr><td>5</td><td>RSS/Atom feed for the changelog</td><td>—</td></tr>
+            <tr><td>6</td><td>Docs JSON-LD (BreadcrumbList/TechArticle)</td><td>only landing has SoftwareApplication</td></tr>
+            <tr><td>7</td><td>NotFound404 SearchAction wiring</td><td>form present, not connected to search</td></tr>
+            <tr><td>8</td><td>Mobile docs navigation</td><td>sidebar hidden below <code>lg</code></td></tr>
+            <tr><td>9</td><td>Search UX polish</td><td>Ctrl+K, result count, fuzzy, mobile browser check</td></tr>
+            <tr><td>10</td><td>siteshots as CI/regression step</td><td>manual-only today</td></tr>
+            <tr><td>11</td><td>CSP report-uri/report-to telemetry</td><td>violations currently invisible</td></tr>
+            <tr><td>12</td><td>Kanban consumer guide page (TODO #222)</td><td>site has zero kanban docs</td></tr>
+          </tbody>
+        </table>
+
+        <!-- Fucked Up -->
+        <h2 id="fucked"><span class="num">04</span>Totally Fucked Up</h2>
+
+        <div class="card card-problem">
+          <h4>The daemon committed broken mid-state trees three times today</h4>
+          <p>
+            (1) 12:18 — half-applied dependency bump, CI red 29s-compile.
+            (2) ~13:00-15:30 — the parallel errorpage session's working tree
+            was snapshotted mid-refactor; one snapshot didn't compile the demo
+            (<code>undefined: formsValidationError</code>) and another
+            flip-flopped <code>base_templ.go</code>'s json import v1→v2→v1
+            within minutes. During that window <strong>master did not
+            build</strong>. This is the documented BuildFlow failure mode
+            (commits without running tests; TODO #126 family) now shown to
+            break <code>main</code> in under a day after the last hardening
+            pass.
           </p>
           <div class="callout callout-solution">
-            <strong>Fix</strong>
-            State the concrete recommended action.
+            <strong>Mitigation in place</strong>
+            Every incident was caught and root-caused the same day; final
+            state verified green. The structural fix needs the owner decision
+            in the Open Question below.
           </div>
         </div>
 
-        <div class="issue issue-important">
-          <span class="severity severity-important">Important</span>
-          <h3>Important finding title</h3>
-          <div class="where">path/to/another.go:12-19</div>
+        <div class="card card-problem">
+          <h4>My own stumbles (recorded so they don't repeat)</h4>
           <p>
-            Explain the risk and why a careful reviewer would hesitate before
-            shipping.
+            (1) First <code>templ generate</code> ran from
+            <code>website/</code> instead of the repo root — the pinned-binary
+            rule includes the invocation CWD, because
+            <code>templ.Error</code> FileName paths encode it; five untouched
+            generated files drifted until regenerated from root. (2) Missed
+            the <code>MatrixCell(…)</code> conversion on the first try
+            (build caught it). (3) Initially proposed to restore
+            <code>go 1.26.7</code> "because convention" — <code>go mod
+            tidy</code> then proved the pin is <em>required</em> by the dep
+            graph; right answer, wrong reasoning. Verification over
+            convention, every time.
           </p>
         </div>
 
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice to have</span>
-          <h3>Polish suggestion</h3>
-          <div class="where">docs/ or config</div>
-          <p>
-            Minor documentation gaps or future-proofing suggestions go here.
-          </p>
-        </div>
-
-        <!-- Strengths -->
-        <h2>Strengths</h2>
+        <!-- Improvements -->
+        <h2 id="improve"><span class="num">05</span>What We Should Improve</h2>
         <div class="strengths">
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
-              <strong>Specific strength</strong>
-              <span>Explain why it matters and what it enables.</span>
+              <strong>Enforce the website suite in CI (one YAML line)</strong>
+              <span>The integrity test renders the whole site and checks links, nonces, sitemap, search index. CI never runs it. This is the single cheapest reliability upgrade available.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Derive, don't restate, any committed number that mirrors code</strong>
+              <span>Third time this pattern pays (drift guard, CSS freshness, CSP hashes). The comparison-matrix fix generalizes it: if a literal restates a code fact, replace it with the computation.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Daemon needs a build gate before committing</strong>
+              <span>Three CI reds in one day, two from foreign-session snapshots. Even a bare <code>go build ./...</code> per module before commit would have blocked all three.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Read claims about "impossible by construction" as falsifiable hypotheses</strong>
+              <span>The drift-guard comment claimed website drift couldn't happen; prose numbers disproved it within four days. Guards age better than claims.</span>
             </div>
           </div>
         </div>
 
-        <!-- Table with Badges -->
-        <h2>Issue Table</h2>
+        <!-- Top 25 -->
+        <h2 id="top25"><span class="num">06</span>Top 25 Next (impact-ordered)</h2>
         <table>
           <thead>
-            <tr>
-              <th>#</th>
-              <th>Severity</th>
-              <th>Issue</th>
-              <th>Status</th>
-            </tr>
+            <tr><th>#</th><th>Impact</th><th>Task</th></tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td><span class="badge badge-critical">Critical</span></td>
-              <td>Missing error handling</td>
-              <td><span class="badge badge-fixed">Fixed</span></td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td><span class="badge badge-high">High</span></td>
-              <td>Race condition</td>
-              <td><span class="badge badge-low">Open</span></td>
-            </tr>
+            <tr><td>1</td><td><span class="badge badge-critical">Blocking</span></td><td>Verify next Website run goes green on the fixed tree (fix commits + errorpage final state)</td></tr>
+            <tr><td>2</td><td><span class="badge badge-critical">Blocking</span></td><td>Confirm the deploy ships "60 typed enums" live (auto-follows #1)</td></tr>
+            <tr><td>3</td><td><span class="badge badge-high">High</span></td><td>Add <code>go test ./...</code> step to <code>website.yml</code> — enforce the integrity suite</td></tr>
+            <tr><td>4</td><td><span class="badge badge-high">High</span></td><td>Owner decision: daemon commit gate (build per module before auto-commit; TODO #126 family)</td></tr>
+            <tr><td>5</td><td><span class="badge badge-high">High</span></td><td>Make <code>html-validate</code> blocking or replace with a Go validator; delete the Node step</td></tr>
+            <tr><td>6</td><td><span class="badge badge-high">High</span></td><td>CSP <code>report-uri</code>/<code>report-to</code> telemetry — violations currently fail silently</td></tr>
+            <tr><td>7</td><td><span class="badge badge-high">High</span></td><td>Post-deploy smoke in CI: hit site URL + demo <code>/health</code> after deploy</td></tr>
+            <tr><td>8</td><td><span class="badge badge-medium">Med</span></td><td>Firebase preview-channel deploy; verify cleanUrls + CSP header delivery live</td></tr>
+            <tr><td>9</td><td><span class="badge badge-medium">Med</span></td><td>Wire <code>scripts/ci-repro.sh</code> website step to run website tests (CI parity)</td></tr>
+            <tr><td>10</td><td><span class="badge badge-medium">Med</span></td><td>siteshots → flake app + CI step with persisted goldens (site pixel regression)</td></tr>
+            <tr><td>11</td><td><span class="badge badge-medium">Med</span></td><td>Mobile docs navigation: expose sidebar in the mobile menu panel</td></tr>
+            <tr><td>12</td><td><span class="badge badge-medium">Med</span></td><td>Search: <code>/</code>+<code>Ctrl+K</code> focus, result count, no-results suggestions</td></tr>
+            <tr><td>13</td><td><span class="badge badge-medium">Med</span></td><td>Search: fuzzy/typo tolerance, mobile-viewport browser proof, debounce/prefetch</td></tr>
+            <tr><td>14</td><td><span class="badge badge-medium">Med</span></td><td><code>nix run .#website</code> flake app wrapping <code>build.sh</code></td></tr>
+            <tr><td>15</td><td><span class="badge badge-medium">Med</span></td><td>Go OG-image generator per page; retire static <code>public/og/*</code></td></tr>
+            <tr><td>16</td><td><span class="badge badge-low">Nice</span></td><td>Docs BreadcrumbList/TechArticle JSON-LD + <code>rel=prev/next</code></td></tr>
+            <tr><td>17</td><td><span class="badge badge-low">Nice</span></td><td>RSS/Atom feed for the changelog</td></tr>
+            <tr><td>18</td><td><span class="badge badge-low">Nice</span></td><td>TOC scroll-spy + header "Docs" active state</td></tr>
+            <tr><td>19</td><td><span class="badge badge-low">Nice</span></td><td>Wire NotFound404's SearchAction to the site search (or remove the form)</td></tr>
+            <tr><td>20</td><td><span class="badge badge-low">Nice</span></td><td>Lighthouse CI + performance budgets</td></tr>
+            <tr><td>21</td><td><span class="badge badge-low">Nice</span></td><td>Newsletter form validation feedback (buttondown embed is bare)</td></tr>
+            <tr><td>22</td><td><span class="badge badge-low">Nice</span></td><td>Kanban consumer guide page (TODO #222) — seed from the recipe</td></tr>
+            <tr><td>23</td><td><span class="badge badge-low">Nice</span></td><td>Compute golden-test fixture from <code>build.CountStats</code> instead of hand-typed literals</td></tr>
+            <tr><td>24</td><td><span class="badge badge-low">Nice</span></td><td>Errorpage demo nested-<code>&lt;main&gt;</code> presentation (owner decision, from the 15:27 report)</td></tr>
+            <tr><td>25</td><td><span class="badge badge-low">Nice</span></td><td>ErrorAlert orchestration demo variant + visual golden (15:27 report item b2)</td></tr>
           </tbody>
         </table>
 
-        <!-- Before/After Comparison -->
-        <h2 id="proposal">Before / After</h2>
-        <div class="compare-header">
-          <div class="compare-before">Before</div>
-          <div class="compare-after">After</div>
-        </div>
-        <div class="compare-row">
-          <div>
-            <pre><code><span class="tok-comment">// Old code</span>
-<span class="tok-keyword">func</span> <span class="tok-func">process</span>(data <span class="tok-type">interface</span>{}) { }</code></pre>
-          </div>
-          <div>
-            <pre><code><span class="tok-comment">// New code</span>
-<span class="tok-keyword">func</span> <span class="tok-func">process</span>[T <span class="tok-type">any</span>](data T) { }</code></pre>
-          </div>
-        </div>
-
-        <!-- ASCII Diagram -->
-        <h2>Dependency Tree</h2>
-        <div class="dep-tree">
-          <span class="root">root</span> ├──
-          <span class="ok">wanted-dep</span> └──
-          <span class="unwanted">unwanted-dep</span>
-        </div>
-
-        <!-- Numbered Steps -->
-        <h2 id="plan"><span class="num">03</span>Migration Plan</h2>
-        <div class="migration-step">
-          <div class="migration-num">1</div>
-          <div class="migration-content">
-            <h4>Add generic type parameter</h4>
-            <p>Update the function signature to accept a type parameter.</p>
-          </div>
-        </div>
-        <div class="migration-step">
-          <div class="migration-num">2</div>
-          <div class="migration-content">
-            <h4>Update all call sites</h4>
-            <p>Pass explicit types at each call site for type safety.</p>
-          </div>
+        <!-- Question -->
+        <h2 id="question"><span class="num">07</span>Open Question</h2>
+        <div class="card card-problem">
+          <h4>#1 question I cannot resolve myself</h4>
+          <p>
+            The auto-commit daemon broke <code>master</code> three times today
+            (untidied dependency bump, foreign-session mid-refactor snapshots,
+            generated-file flip-flop). The durable fix lives in BuildFlow:
+            gate auto-commits on a cheap verification (per-module
+            <code>go build</code>, cached; commit only on green, quarantine
+            foreign worktrees otherwise). That is
+            <code>larsartmann/buildflow</code> work with real design
+            tradeoffs (daemon latency, partial-tree policies, multi-session
+            ownership). <strong>Do you want me to draft that BuildFlow change
+            (design + implementation plan) next, or keep working around the
+            daemon session-by-session?</strong>
+          </p>
         </div>
 
         <footer class="footer">
-          Generated YYYY-MM-DD &middot; All claims verified against source code
-          where noted
+          Generated 2026-09-17 17:40 CEST &middot; All claims verified against
+          live fetches, CI run logs, and local builds/tests this session
         </footer>
       </main>
     </div>

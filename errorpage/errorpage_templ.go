@@ -320,8 +320,8 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if props.ShowTimestamp {
-			templ_7745c5c3_Err = timestampFooter(props.Timestamp, "px-6 py-3.5 sm:px-10 bg-gray-50/60 dark:bg-gray-900/40").Render(ctx, templ_7745c5c3_Buffer)
+		if props.ShowTimestamp || props.Trace != "" {
+			templ_7745c5c3_Err = metaFooter(props.Timestamp, props.Trace, "px-6 py-3.5 sm:px-10 bg-gray-50/60 dark:bg-gray-900/40").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
