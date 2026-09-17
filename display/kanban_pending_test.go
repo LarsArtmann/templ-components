@@ -66,6 +66,20 @@ func TestKanbanPendingRegisterMarkup(t *testing.T) {
 	}
 }
 
+// kanbanJSTokenAt returns the byte offset of needle in the emitted kanban
+// script, failing the test when absent (callers slice ordering assertions
+// off it; a -1 index would slice out of range).
+func kanbanJSTokenAt(t *testing.T, js, needle string) int {
+	t.Helper()
+
+	idx := strings.Index(js, needle)
+	if idx < 0 {
+		t.Fatalf("kanban script lacks %q", needle)
+	}
+
+	return idx
+}
+
 // TestKanbanJSOptimisticPending pins the optimistic-move pipeline in the
 // singleton script: instant DOM placement, the pending register, the three
 // success clearers, and the failure revert. Browser-level proof:
@@ -115,14 +129,7 @@ func TestKanbanJSOptimisticPending(t *testing.T) {
 	// The htmx listener must decide success vs failure on detail.successful
 	// AFTER resolving the board, and the Datastar listener must treat error
 	// states before the finished no-op.
-	at := func(needle string) int {
-		idx := strings.Index(js, needle)
-		if idx == -1 {
-			t.Fatalf("kanban script lacks %q", needle)
-		}
-
-		return idx
-	}
+	at := func(needle string) int { return kanbanJSTokenAt(t, js, needle) }
 
 	htmx := js[at("htmx:afterRequest"):at("htmx:responseError")]
 	if success := strings.Index(htmx, "d.successful===true"); success == -1 {
@@ -145,5 +152,66 @@ func TestKanbanJSOptimisticPending(t *testing.T) {
 		t.Error("tcKbOptimistic lacks the origin capture")
 	} else if place := strings.Index(opt, "tcKbPlace(zone,card,idx);"); place < origin {
 		t.Error("tcKbOptimistic must capture the origin BEFORE placing the card")
+	}
+}
+
+// TestKanbanJSConcurrentMoves pins the registry semantics under overlapping
+// moves (ADR-0041): optimistic placements stack immediately (two rapid
+// clicks both move their card and both register — the registry is a plain
+// array, no dedup), a failure reverts EVERY registered move of that board
+// while leaving other boards' entries untouched, and a result arriving after
+// the board's register was cleared is a no-op. Under htmx the requests
+// themselves serialize (the vendored 2.0.10 source queues a second submit on
+// the same form as "last" behind the in-flight request), while Datastar
+// actions run concurrently — the registry is conservative and correct under
+// both timings.
+func TestKanbanJSConcurrentMoves(t *testing.T) {
+	t.Parallel()
+
+	js := kanbanJS()
+
+	for _, token := range []string{
+		// Stacking: entries push onto the shared array; nothing dedups by
+		// board, so a second in-flight move registers alongside the first.
+		"tcKbPending.push({id:b.id,",
+		// Revert is board-scoped and exhaustive: the loop walks every entry
+		// and reverts each one belonging to the failing board; entries of
+		// OTHER boards survive untouched (cross-board events stay inert).
+		"function tcKbRevert(bid){",
+		"for(var i=0;i<tcKbPending.length;i++){",
+		"if(e.id!==bid){rest.push(e);continue;}",
+		// Success clears the WHOLE board: every pending card in the current
+		// (possibly re-rendered) board DOM is stripped and every entry for the
+		// board is forgotten — a swap re-renders server truth, which is what
+		// the other in-flight move's response will confirm or refute.
+		"b.querySelectorAll('[data-tc-kanban-card].tc-kanban-pending')",
+		"tcKbForget(bid);",
+		// Failure-after-success is a no-op: the guard consults the register
+		// (emptied by the success) before reverting.
+		"if(!b||!b.id||!tcKbPendingFor(b.id))return;",
+	} {
+		if !strings.Contains(js, token) {
+			t.Errorf("kanban script lacks concurrency token %q", token)
+		}
+	}
+
+	// The revert loop and the exhaustive-clear must live inside their named
+	// functions (not leaked into a sibling), and the no-op guard must
+	// precede the revert call in tcKbFailFrom.
+	revert := js[kanbanJSTokenAt(t, js, "function tcKbRevert(bid){"):kanbanJSTokenAt(t, js, "function tcKbFailFrom(")]
+	for _, token := range []string{
+		"for(var i=0;i<tcKbPending.length;i++){",
+		"if(e.id!==bid){rest.push(e);continue;}",
+	} {
+		if !strings.Contains(revert, token) {
+			t.Errorf("tcKbRevert lacks concurrency token %q", token)
+		}
+	}
+
+	failFrom := js[kanbanJSTokenAt(t, js, "function tcKbFailFrom("):]
+	if guard := strings.Index(failFrom, "!tcKbPendingFor(b.id)"); guard == -1 {
+		t.Error("tcKbFailFrom lacks the cleared-register guard")
+	} else if call := strings.Index(failFrom, "tcKbRevert(b.id);"); call != -1 && call < guard {
+		t.Error("tcKbFailFrom must guard on the register BEFORE reverting")
 	}
 }

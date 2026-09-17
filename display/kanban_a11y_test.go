@@ -165,6 +165,54 @@ func TestKanbanToneDotRendering(t *testing.T) {
 	}
 }
 
+// TestKanbanA11yFailureRegion verifies the failure-announcement channel
+// (ADR-0041): wired boards carry an sr-only role="alert" region so failed
+// moves are announced with the repo's urgency policy (role="alert", never
+// aria-live="assertive"), while the progress live region stays polite.
+// Read-only boards carry neither region — there is nothing to announce.
+func TestKanbanA11yFailureRegion(t *testing.T) {
+	t.Parallel()
+
+	wired := utils.Render(t, KanbanBoard(KanbanBoardProps{
+		BaseProps: utils.BaseProps{ID: "kb-fail-a11y"},
+		Columns:   kanbanTestColumns(),
+		Wire:      &wire.Action{URL: "/api/kanban/move"},
+	}))
+
+	utils.AssertContainsAll(t, wired,
+		`data-tc-kanban-alert`,
+		`role="alert"`,
+		`sr-only`,
+		`aria-live="polite"`,
+	)
+	utils.AssertNotContains(t, wired, `aria-live="assertive"`)
+
+	readonly := utils.Render(t, KanbanBoard(KanbanBoardProps{
+		Columns: kanbanTestColumns(),
+	}))
+	utils.AssertNotContains(t, readonly, `data-tc-kanban-alert`)
+	utils.AssertNotContains(t, readonly, `role="alert"`)
+}
+
+// TestKanbanA11yBusyDuringFlight verifies the mid-move contract: the
+// emitted script marks the moved card aria-busy at submit (screen readers
+// can query the in-flight state) and strips it on both outcomes — success
+// clear and revert.
+func TestKanbanA11yBusyDuringFlight(t *testing.T) {
+	t.Parallel()
+
+	html := utils.Render(t, KanbanBoard(KanbanBoardProps{
+		Columns: kanbanTestColumns(),
+		Wire:    &wire.Action{URL: "/api/kanban/move"},
+	}))
+
+	if got := strings.Count(html, "removeAttribute('aria-busy')"); got != 2 {
+		t.Errorf("aria-busy must be stripped on success AND revert, got %d removals", got)
+	}
+
+	utils.AssertContains(t, html, "card.setAttribute('aria-busy','true');")
+}
+
 // mustIndex returns strings.Index(s, substr) or fails the test when the
 // substring is absent (a -1 index would slice out of range).
 func mustIndex(t *testing.T, s, substr string) int {

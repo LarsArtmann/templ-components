@@ -46,6 +46,25 @@ func ExampleKanbanBoard_readOnly() {
 	}).Render(context.Background(), &buf)
 }
 
+func ExampleKanbanBoard_optimisticPending() {
+	// Every wired board applies moves optimistically (ADR-0041): at submit
+	// time the card moves in the DOM and is marked pending (dim + spinner
+	// ring + aria-busy) until the server responds; a failed move reverts to
+	// its exact original position with a red flash and a screen-reader
+	// announcement. No extra props — wire the board and the register ships.
+	props := display.KanbanBoardProps{
+		Columns: []display.KanbanColumn{
+			{ID: "todo", Title: "To do", Cards: []display.KanbanCard{{ID: "c1", Title: "Write docs"}}},
+			{ID: "doing", Title: "In progress"},
+		},
+		Wire: &wire.Action{URL: "/api/kanban/move", Method: wire.MethodPost},
+	}
+
+	var buf bytes.Buffer
+
+	_ = display.KanbanBoard(props).Render(context.Background(), &buf)
+}
+
 // RecipeTask is the consumer-side task model behind the card-anatomy recipe
 // (docs/recipes/kanban-card-anatomy.md).
 type RecipeTask struct {

@@ -103,6 +103,51 @@ func TestKanbanBehaviourSingleColumnHasNoMoveButtons(t *testing.T) {
 	utils.AssertContains(t, html, `draggable="true"`)
 }
 
+// Spec: a move looks instant — the board ships the optimistic pipeline in
+// its own script, and the card is placed into the target column BEFORE the
+// hidden form is submitted, so a slow server never delays the visual move
+// (ADR-0041). Asserted through the rendered board, not the bare script
+// string, so dropping the script component from the template fails here.
+func TestKanbanBehaviourMoveLooksInstant(t *testing.T) {
+	t.Parallel()
+
+	html := utils.Render(t, KanbanBoard(KanbanBoardProps{
+		BaseProps: utils.BaseProps{Nonce: "n-instant"},
+		Columns:   kanbanTestColumns(),
+		Wire:      &wire.Action{URL: "/api/kanban/move"},
+	}))
+
+	place := mustIndex(t, html, "tcKbOptimistic(b,card,c,index,title,cn||colId);")
+	submit := mustIndex(t, html, "f.requestSubmit()")
+
+	if place > submit {
+		t.Errorf(
+			"optimistic placement must precede the form submit (place %d, submit %d)",
+			place, submit,
+		)
+	}
+}
+
+// Spec: an optimistic recount reads exactly like a server render — the
+// per-column count vocabulary the script writes ("no cards", "1 card",
+// "N cards") matches the vocabulary the board renders, so a pending move's
+// synced counts and aria-labels stay indistinguishable from what the server
+// would have said.
+func TestKanbanBehaviourCountLabelContract(t *testing.T) {
+	t.Parallel()
+
+	html := utils.Render(t, KanbanBoard(KanbanBoardProps{
+		Columns: kanbanTestColumns(),
+		Wire:    &wire.Action{URL: "/api/kanban/move"},
+	}))
+
+	utils.AssertContainsAll(t, html,
+		`aria-label="To do: 2 cards"`,
+		`aria-label="Done: no cards"`,
+		`function tcKbCountLabel(n){return n===0?'no cards':(n===1?'1 card':n+' cards');}`,
+	)
+}
+
 // Spec: BaseProps propagate to the board root (ID, class, extra attrs).
 func TestKanbanBehaviourBasePropsPropagate(t *testing.T) {
 	t.Parallel()
