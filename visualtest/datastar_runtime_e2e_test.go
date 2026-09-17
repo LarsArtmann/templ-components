@@ -193,13 +193,13 @@ func TestDatastarSSEErrorHandlingBrowser(t *testing.T) {
 		chromedp.Click("#bad-fetch-trigger", chromedp.NodeVisible),
 		pollTrue(`document.getElementById('tc-datastar-announcer').textContent.includes('Stream error')`),
 		chromedp.Evaluate(`document.getElementById('tc-datastar-announcer').textContent`, &announcerText),
-		pollBool(`(() => {
+		pollTrue(`(() => {
 			const toasts = document.querySelectorAll('#tc-toast-container > div');
 			for (const t of toasts) {
 				if (t.textContent.includes('live stream endpoint returned an error')) return true;
 			}
 			return false;
-		})()`, nil),
+		})()`),
 		chromedp.Evaluate(`(() => {
 			const toasts = document.querySelectorAll('#tc-toast-container > div');
 			for (const t of toasts) {
@@ -250,11 +250,11 @@ func TestDatastarLiveRegionBusyClearBrowser(t *testing.T) {
 			return el.getAttribute('aria-busy') === 'true' && el.hasAttribute('data-tc-live-busy');
 		})()`, &initialBusy),
 		// After the patch: cue cleared on the region AND content landed.
-		pollBool(`(() => {
+		pollTrue(`(() => {
 			const el = document.querySelector('#live-region');
 			return el.getAttribute('aria-busy') === null && !el.hasAttribute('data-tc-live-busy')
 				&& document.querySelector('#live-child').textContent.includes('fresh via sse');
-		})()`, nil),
+		})()`),
 		chromedp.Evaluate(`document.querySelector('#live-child').textContent`, &childText),
 	); err != nil {
 		t.Fatalf("LiveRegion busy-clear browser proof: %v", err)
