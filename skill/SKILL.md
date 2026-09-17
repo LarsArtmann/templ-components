@@ -466,7 +466,9 @@ done
 ```
 
 **Drift-guard tests** live in the utils module now (`TestVersionMatches*`,
-`TestDocsCountDrift`). Run them via `cd utils && go test ./... -run 'TestVersionMatches|TestDocsCountDrift'`.
+`TestDocsCountDrift`, `TestFeaturesEnumTableExhaustive` — every IsValid-shipping
+type must be named in FEATURES.md — and `TestFeaturesEnumValuesExhaustive` —
+enum VALUES honest). Run them via `cd utils && go test ./... -run 'TestVersionMatches|TestDocsCountDrift|TestFeaturesEnum'`.
 
 **Guard scripts** (all <100ms, wired into `.git/hooks/pre-commit`):
 

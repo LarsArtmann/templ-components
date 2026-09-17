@@ -178,7 +178,6 @@ func TestSimpleCardEdgeCases(t *testing.T) {
 		props SimpleCardProps
 		want  string
 	}{
-		{"none padding", SimpleCardProps{Padding: CardPaddingNone}, "rounded-lg"},
 		{"sm padding", SimpleCardProps{Padding: CardPaddingSM}, "px-3"},
 		{"lg padding", SimpleCardProps{Padding: CardPaddingLG}, "px-6"},
 		{"unknown fallback", SimpleCardProps{Padding: CardPadding("unknown")}, "px-4"},
@@ -189,6 +188,14 @@ func TestSimpleCardEdgeCases(t *testing.T) {
 			utils.AssertContains(t, output, tt.want)
 		})
 	}
+
+	t.Run("none padding renders no padding classes", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SimpleCard(SimpleCardProps{Padding: CardPaddingNone}))
+		utils.AssertNotContains(t, output, "px-3")
+		utils.AssertNotContains(t, output, "px-4")
+		utils.AssertNotContains(t, output, "px-6")
+	})
 }
 
 func TestBadgeEdgeCases(t *testing.T) {

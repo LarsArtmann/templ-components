@@ -340,11 +340,18 @@ func TestTableInCardNoDoubleBorder(t *testing.T) {
 				CellPadding: display.TableCellPaddingCompact,
 			}),
 		}))
-		// rounded-lg appears on the card shell. Without Flush it also appears
-		// on the table wrapper div. With Flush, only once.
+		// The card shell carries one "border border-gray-200". Without Flush
+		// the table wrapper adds its own border AND rounded-lg; with Flush
+		// both are suppressed, leaving only the card's border and no
+		// rounded-lg (the card shell itself is sharp since the v2 defaults).
+		shellBorderCount := strings.Count(output, "border border-gray-200")
+		if shellBorderCount != 1 {
+			t.Errorf("expected exactly 1 card shell border, got %d.\nOutput:\n%s", shellBorderCount, output)
+		}
+
 		roundedCount := strings.Count(output, "rounded-lg")
-		if roundedCount != 1 {
-			t.Errorf("expected exactly 1 rounded-lg (from card shell), got %d.\nOutput:\n%s", roundedCount, output)
+		if roundedCount != 0 {
+			t.Errorf("expected 0 rounded-lg (card is sharp; table wrapper border suppressed by Flush), got %d.\nOutput:\n%s", roundedCount, output)
 		}
 
 		utils.AssertContainsAll(t, output, "Alice", "px-4", "py-2")
@@ -361,10 +368,19 @@ func TestTableInCardNoDoubleBorder(t *testing.T) {
 			}),
 		}))
 
-		roundedCount := strings.Count(output, "rounded-lg")
-		if roundedCount != 2 {
+		shellBorderCount := strings.Count(output, "border border-gray-200")
+		if shellBorderCount != 2 {
 			t.Errorf(
-				"expected 2 rounded-lg (card + table wrapper) without Flush, got %d.\nOutput:\n%s",
+				"expected 2 shell borders (card + table wrapper) without Flush, got %d.\nOutput:\n%s",
+				shellBorderCount,
+				output,
+			)
+		}
+
+		roundedCount := strings.Count(output, "rounded-lg")
+		if roundedCount != 1 {
+			t.Errorf(
+				"expected 1 rounded-lg (table wrapper only; card is sharp) without Flush, got %d.\nOutput:\n%s",
 				roundedCount,
 				output,
 			)

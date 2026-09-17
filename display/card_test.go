@@ -22,7 +22,19 @@ func TestCardRender(t *testing.T) {
 		output := utils.Render(t, Card(props))
 		utils.AssertContains(t, output, cardTitleUsers)
 		utils.AssertContains(t, output, "bg-white")
-		utils.AssertContains(t, output, "rounded-lg")
+		utils.AssertNotContains(t, output, "rounded-")
+	})
+
+	t.Run("sharp corners by default, rounding opt-in via Class", func(t *testing.T) {
+		t.Parallel()
+
+		sharp := utils.Render(t, Card(DefaultCardProps()))
+		utils.AssertNotContains(t, sharp, "rounded-")
+
+		squircle := utils.Render(t, Card(CardProps{
+			BaseProps: utils.BaseProps{Class: "rounded-lg tc-squircle"},
+		}))
+		utils.AssertContainsAll(t, squircle, "rounded-lg", "tc-squircle")
 	})
 
 	t.Run("card with custom class and id", func(t *testing.T) {
@@ -45,7 +57,7 @@ func TestCardRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SimpleCard(DefaultSimpleCardProps()))
 		utils.AssertContains(t, output, "bg-white")
-		utils.AssertContains(t, output, "rounded-lg")
+		utils.AssertNotContains(t, output, "rounded-")
 	})
 
 	t.Run("simple card with custom class and id", func(t *testing.T) {

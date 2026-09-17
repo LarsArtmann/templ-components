@@ -96,5 +96,5 @@ a no-op — the same invariant CI enforces via "Verify no untracked changes".
 `go.work` is missing, run:
 
 ```bash
-go work use . utils icons errorpage charts/echarts datastar htmx visualtest
+go work use . utils icons errorpage charts/echarts datastar htmx visualtest website
 ```
