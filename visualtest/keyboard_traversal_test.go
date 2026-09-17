@@ -44,6 +44,8 @@ func TestKeyboardTraversalFocusVisibility(t *testing.T) {
 				chromedp.Evaluate(`document.activeElement && document.activeElement.blur();`, nil),
 			)
 
+			visited := 0
+
 			for i := 0; i < maxTabs; i++ {
 				var info struct {
 					Tag      string  `json:"tag"`
@@ -53,33 +55,50 @@ func TestKeyboardTraversalFocusVisibility(t *testing.T) {
 					RectArea float64 `json:"area"`
 				}
 
-				chromedp.Run(timeoutCtx,
-					chromedp.KeyEvent("Tab"),
+				if err := chromedp.Run(timeoutCtx,
+					chromedp.KeyEvent("\t"),
 					// Let any scroll-into-view settle before measuring.
 					chromedp.Sleep(30*time.Millisecond),
 					chromedp.Evaluate(`(() => {
 						const el = document.activeElement;
-						if (!el || el === document.body) return null;
+						if (!el || el === document.body) return {tag: ''};
 						const r = el.getBoundingClientRect();
 						const style = getComputedStyle(el);
 						const visible = style.visibility !== 'hidden'
 							&& style.display !== 'none'
 							&& Number(style.opacity) > 0
 							&& r.width > 0 && r.height > 0;
-						return {tag: el.tagName, id: el.id, classes: el.className, visible: visible, area: r.width * r.height};
+						return {
+							tag: el.tagName,
+							id: el.id || '',
+							classes: (el.getAttribute && el.getAttribute('class')) || '',
+							visible: visible,
+							area: r.width * r.height
+						};
 					})()`, &info),
-				)
+				); err != nil {
+					t.Fatalf("tab #%d on %s: %v", i+1, route, err)
+				}
 
 				if info.Tag == "" {
-					// Focus wrapped past the last element (document/body) —
-					// the tab cycle is complete.
+					if visited == 0 {
+						t.Fatal("Tab never moved focus off document.body — the key dispatch is broken")
+					}
+
+					// Focus wrapped past the last element — cycle complete.
 					break
 				}
+
+				visited++
 
 				if !info.Visible {
 					t.Errorf("tab #%d on %s landed focus on an INVISIBLE element: <%s id=%q class=%q>",
 						i+1, route, strings.ToLower(info.Tag), info.ID, info.Classes)
 				}
+			}
+
+			if visited < 5 {
+				t.Errorf("only %d focusable element(s) visited on %s — traversal too short to be a real audit", visited, route)
 			}
 		})
 	}
