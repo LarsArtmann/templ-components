@@ -155,7 +155,7 @@ var ComparisonMatrix = []ComparisonMatrixRow{
 	{Feature: "CSS approach", Values: []MatrixCell{"Tailwind + vars", "Tailwind + DaisyUI", "Tailwind v4 CSS-first"}},
 	{Feature: "JavaScript", Values: []MatrixCell{"Alpine.js", "DaisyUI JS", "HATEOAS (enhances HTML)"}},
 	{Feature: "Requires Node.js", Values: []MatrixCell{MatrixNo, MatrixYes, MatrixNo}},
-	{Feature: "Typed props enums", Values: []MatrixCell{MatrixNo, MatrixNo, "58 (tested IsValid)"}},
+	{Feature: "Typed props enums", Values: []MatrixCell{MatrixNo, MatrixNo, "60 (tested IsValid)"}},
 	{Feature: "CSP nonce support", Values: []MatrixCell{MatrixYes, MatrixNo, MatrixYes}},
 	{Feature: "Dark mode", Values: []MatrixCell{"CSS vars", "DaisyUI", "Tailwind dark: (tested)"}},
 	{Feature: "HTMX integration", Values: []MatrixCell{MatrixNo, MatrixNo, MatrixYes}},

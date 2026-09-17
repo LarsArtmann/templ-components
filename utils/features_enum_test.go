@@ -91,14 +91,56 @@ func TestFeaturesEnumValuesExhaustive(t *testing.T) {
 
 	root := ".."
 
-	// Matches single-line typed const declarations inside const blocks:
-	// \tFamilyRejection Family = "rejection"
-	constDecl := regexp.MustCompile(`(?m)^\t([A-Z][A-Za-z0-9]*)\s+([A-Z][A-Za-z0-9]*)\s*=\s*"([^"]*)"`)
+	consts := collectEnumConsts(t, root)
+	features := string(readDoc(t, "FEATURES.md"))
 
-	// Matches a FEATURES.md enum table row: | `Type` | A, B, C |
-	tableRow := regexp.MustCompile(`(?m)^\|\s*` + "`([A-Za-z0-9]+)`" + `\s*\|\s*([^|]+)\|`)
+	var problems []string
 
-	consts := map[string]map[string]bool{} // type name -> const name set
+	for _, m := range enumTableRow.FindAllStringSubmatch(features, -1) {
+		typ, values := m[1], m[2]
+
+		cset := consts[typ]
+		if len(cset) == 0 {
+			continue
+		}
+
+		documented := documentedValues(values)
+
+		// All-or-nothing: only enforce rows where EVERY documented value
+		// resolves to a constant name ending in that value. Rows using a
+		// different naming convention are skipped rather than mis-judged.
+		if !allValuesResolve(documented, cset) {
+			continue
+		}
+
+		for _, c := range uncoveredConsts(documented, cset) {
+			problems = append(problems, fmt.Sprintf(
+				"enum %s has constant %s that no documented value in FEATURES.md covers",
+				typ, c,
+			))
+		}
+	}
+
+	if len(problems) > 0 {
+		sort.Strings(problems)
+		t.Fatalf("FEATURES.md enum tables are missing %d constants:\n%s",
+			len(problems), strings.Join(problems, "\n"))
+	}
+}
+
+// enumConstDecl matches single-line typed const declarations inside const
+// blocks: \tFamilyRejection Family = "rejection"
+var enumConstDecl = regexp.MustCompile(`(?m)^\t([A-Z][A-Za-z0-9]*)\s+([A-Z][A-Za-z0-9]*)\s*=\s*"([^"]*)"`)
+
+// enumTableRow matches a FEATURES.md enum table row: | `Type` | A, B, C |
+var enumTableRow = regexp.MustCompile(`(?m)^\|\s*` + "`([A-Za-z0-9]+)`" + `\s*\|\s*([^|]+)\|`)
+
+// collectEnumConsts walks non-test Go sources and maps enum type name ->
+// set of constant names declared with a string literal on a single line.
+func collectEnumConsts(t *testing.T, root string) map[string]map[string]bool {
+	t.Helper()
+
+	consts := map[string]map[string]bool{}
 
 	err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
@@ -123,7 +165,7 @@ func TestFeaturesEnumValuesExhaustive(t *testing.T) {
 			return fmt.Errorf("read %s: %w", path, err)
 		}
 
-		for _, m := range constDecl.FindAllSubmatch(data, -1) {
+		for _, m := range enumConstDecl.FindAllSubmatch(data, -1) {
 			typ := string(m[2])
 			if consts[typ] == nil {
 				consts[typ] = map[string]bool{}
@@ -138,79 +180,72 @@ func TestFeaturesEnumValuesExhaustive(t *testing.T) {
 		t.Fatalf("walk packages: %v", err)
 	}
 
-	features := string(readDoc(t, "FEATURES.md"))
+	return consts
+}
 
-	var problems []string
+// documentedValues splits a FEATURES.md value list into trimmed entries.
+func documentedValues(values string) []string {
+	documented := []string{}
 
-	for _, m := range tableRow.FindAllStringSubmatch(features, -1) {
-		typ, values := m[1], m[2]
+	for v := range strings.SplitSeq(values, ",") {
+		v = strings.TrimSpace(v)
+		if v != "" {
+			documented = append(documented, v)
+		}
+	}
 
-		cset := consts[typ]
-		if len(cset) == 0 {
+	return documented
+}
+
+// valueResolves reports whether a documented value is a name suffix of at
+// least one constant of the enum type.
+func valueResolves(value string, cset map[string]bool) bool {
+	for c := range cset {
+		if strings.HasSuffix(strings.ToLower(c), strings.ToLower(value)) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// allValuesResolve reports whether every documented value resolves to a
+// constant; rows that do not are skipped by the caller.
+func allValuesResolve(documented []string, cset map[string]bool) bool {
+	for _, v := range documented {
+		if !valueResolves(v, cset) {
+			return false
+		}
+	}
+
+	return true
+}
+
+// uncoveredConsts returns constants of the enum type that no documented
+// value covers, excluding `*Default`/`*Unspecified` convenience constants.
+func uncoveredConsts(documented []string, cset map[string]bool) []string {
+	var uncovered []string
+
+	for c := range cset {
+		lower := strings.ToLower(c)
+		if strings.HasSuffix(lower, "default") || strings.HasSuffix(lower, "unspecified") {
 			continue
 		}
 
-		documented := []string{}
-		for _, v := range strings.Split(values, ",") {
-			v = strings.TrimSpace(v)
-			if v != "" {
-				documented = append(documented, v)
-			}
-		}
-
-		// All-or-nothing: only enforce rows where EVERY documented value
-		// resolves to a constant name ending in that value. Rows using a
-		// different naming convention are skipped rather than mis-judged.
-		resolvable := true
+		listed := false
 
 		for _, v := range documented {
-			matched := false
-			for c := range cset {
-				if strings.HasSuffix(strings.ToLower(c), strings.ToLower(v)) {
-					matched = true
-
-					break
-				}
-			}
-
-			if !matched {
-				resolvable = false
+			if strings.HasSuffix(lower, strings.ToLower(v)) {
+				listed = true
 
 				break
 			}
 		}
 
-		if !resolvable {
-			continue
-		}
-
-		for c := range cset {
-			lower := strings.ToLower(c)
-			if strings.HasSuffix(lower, "default") || strings.HasSuffix(lower, "unspecified") {
-				continue
-			}
-
-			listed := false
-			for _, v := range documented {
-				if strings.HasSuffix(lower, strings.ToLower(v)) {
-					listed = true
-
-					break
-				}
-			}
-
-			if !listed {
-				problems = append(problems, fmt.Sprintf(
-					"enum %s has constant %s that no documented value in FEATURES.md covers",
-					typ, c,
-				))
-			}
+		if !listed {
+			uncovered = append(uncovered, c)
 		}
 	}
 
-	if len(problems) > 0 {
-		sort.Strings(problems)
-		t.Fatalf("FEATURES.md enum tables are missing %d constants:\n%s",
-			len(problems), strings.Join(problems, "\n"))
-	}
+	return uncovered
 }

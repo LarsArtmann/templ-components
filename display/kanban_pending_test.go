@@ -122,10 +122,19 @@ func TestKanbanJSOptimisticPending(t *testing.T) {
 		t.Error("htmx afterRequest listener must check success BEFORE failing")
 	}
 
-	datastar := js[strings.Index(js, "datastar-fetch"):len(js)]
+	datastar := js[strings.Index(js, "datastar-fetch"):]
 	if fail := strings.Index(datastar, "tcKbFailFrom(f);"); fail == -1 {
 		t.Error("datastar listener lacks the failure branch")
 	} else if done := strings.Index(datastar, "tcKbSucceed(b.id);"); done != -1 && done < fail {
 		t.Error("datastar listener must handle error/retries-failed BEFORE finished")
+	}
+
+	// The revert origin (parent + next sibling) must be captured BEFORE the
+	// card is placed, or a failed move would restore to the wrong position.
+	opt := js[strings.Index(js, "function tcKbOptimistic("):strings.Index(js, "function tcKbSucceed(")]
+	if origin := strings.Index(opt, "var next=card.nextSibling;"); origin == -1 {
+		t.Error("tcKbOptimistic lacks the origin capture")
+	} else if place := strings.Index(opt, "tcKbPlace(zone,card,idx);"); place < origin {
+		t.Error("tcKbOptimistic must capture the origin BEFORE placing the card")
 	}
 }

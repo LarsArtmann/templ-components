@@ -352,12 +352,13 @@ func kanbanPendingJS() string {
 		`var ph=zone.querySelector(':scope > [data-tc-kanban-empty]');` +
 		`if(ph)ph.hidden=true;` +
 		`var src=card.parentNode;` +
+		`var next=card.nextSibling;` +
 		`tcKbPlace(zone,card,idx);` +
 		`tcKbSyncCounts(src);` +
 		`tcKbSyncCounts(zone);` +
 		`card.classList.add('tc-kanban-pending');` +
 		`card.setAttribute('aria-busy','true');` +
-		`tcKbPending.push({id:b.id,card:card,parent:card.parentNode,next:card.nextSibling,msg:'Moving '+title+' to '+dest});` +
+		`tcKbPending.push({id:b.id,card:card,parent:src,next:next,msg:'Moving '+title+' to '+dest});` +
 		`}` +
 		`function tcKbSucceed(bid){` +
 		`var b=document.getElementById(bid);` +
