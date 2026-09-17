@@ -52,7 +52,13 @@ func TestDocsCountDrift(t *testing.T) {
 	apiReference := readDoc(t, "website", "content", "docs", "api-reference.md")
 	assertCount(t, apiReference, `(\d+) typed string enums`, "website api-reference.md typed enums", actualIsValid)
 	invariants := readDoc(t, "website", "content", "docs", "guides", "invariants.md")
-	assertCount(t, invariants, "`IsValid` function — (\\d+) today", "website invariants.md IsValid count", actualIsValid)
+	assertCount(
+		t,
+		invariants,
+		"`IsValid` function — (\\d+) today",
+		"website invariants.md IsValid count",
+		actualIsValid,
+	)
 
 	readme := readDoc(t, "README.md")
 	assertCount(t, readme, `(\d+)\s+server-rendered components`, "README.md components", actualComponents)
