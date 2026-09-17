@@ -1,10 +1,10 @@
 # TODO List — templ-components
 
-**Updated:** 2026-09-16 | **Version:** 1.16.0
+**Updated:** 2026-09-17 | **Version:** 1.16.0
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources).
-> IDs are unique across ALL sections — next free ID: 221.
+> IDs are unique across ALL sections — next free ID: 231.
 
 ---
 
@@ -116,4 +116,10 @@ _30 of the report's 40 ranked tasks shipped same-day (kanban Action/Tone e2e + p
 | 221 | Add `ExampleKanbanBoard_columnTone` godoc example (Tone discoverability)                                                            | Only Action got an example; Tone is discoverable only via the recipe. (f12)                              |
 | 222 | Website: consumer-facing kanban guide page (docs-health BUILD) — the site has zero kanban docs; seed from the recipe                | Recipe content exists but lives only in the repo. (f21)                                                  |
 | 223 | Add the two `kanban/section_action_tone_*` goldens to the vision-review flagged set for the next AI-vision pass                     | The script covers flagged sets only. (f34)                                                               |
-| 224 | e2e: cover the move endpoint's 422 sorted-view rejection once a demo endpoint demonstrates it (pairs with a sorted-view demo board) | The contract is documented (ParseKanbanMove godoc + recipe) but neither demoed nor browser-proven. (f37) |
+| 224 | e2e: cover the move endpoint's 422 sorted-view rejection once a demo endpoint demonstrates it (pairs with a sorted-view demo board) | The contract is documented (ParseKanbanMove godoc + recipe) but neither demoed nor browser-proven. (f37)                                                                |
+| 225 | Add a CI lint lane for the `visualtest` module + fix `tools/siteshots` pre-existing findings (err113/errcheck/forbidigo)         | `visualtest/tools` is not lint-enforced; a 180-line CLI needed 3 lint rounds and siteshots carries findings. (2026-09-17 status §e5)                                     |
+| 226 | Demo contract-marker cheat-sheet in `docs/visual-testing.md` (data-tc-kanban, /health JSON, csrf input markup, PORT override)    | Every session re-derives endpoint markers from scratch; wrong-marker test failures recur. (2026-09-17 status §e6)                                                       |
+| 227 | Anti-drift tie between demo (`kanbanDemoState`) and e2e (`kanbanE2EBoard`) kanban endpoint implementations                       | The same add/reset/CSRF/same-origin contract is implemented twice and can silently diverge — shared builder or cross-binding comment. (2026-09-17 status §e7)           |
+| 228 | `docs/planning/TEMPLATE.md` carrying the plan-authoring checklist (goldens-cover-this / wired-implies-e2e / counts / smoke gate) | Checklist lives in AGENTS.md memory; a template makes it structural. (2026-09-17 status §e9)                                                                            |
+| 229 | Session-scoped CSRF token store for the demo (per-process token today)                                                          | Demo realism ceiling — only if consumers study the demo's security modeling. (2026-09-17 status §e8)                                                                    |
+| 230 | Recipes drift sweep remainder: per-line identifier audit beyond the two grep-audited files                                      | horizontal-filter-bar had a real compile error (`forms.Button`); the sweep was grep-based, not exhaustive. (2026-09-17 status §f34)                                     |
