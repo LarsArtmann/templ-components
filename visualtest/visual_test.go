@@ -793,6 +793,18 @@ func TestErrorPage(t *testing.T) {
 	t.Parallel()
 
 	visualtest.AssertScreenshot(t, "errorpage/light", errorpage.ErrorPage(fullErrorPageProps()))
+	visualtest.AssertScreenshot(
+		t,
+		"errorpage/light_mobile",
+		errorpage.ErrorPage(fullErrorPageProps()),
+		visualtest.Options{Viewport: visualtest.ViewportMobile},
+	)
+	visualtest.AssertScreenshot(
+		t,
+		"errorpage/light_rtl",
+		errorpage.ErrorPage(fullErrorPageProps()),
+		visualtest.Options{RTL: visualtest.Bool(true)},
+	)
 }
 
 // fullErrorPageProps exercises the complete ErrorPage model — the visually
@@ -965,7 +977,8 @@ func TestSkeletonDark(t *testing.T) {
 	)
 }
 
-// TestErrorPageDark covers the full-page error in dark mode.
+// TestErrorPageDark covers the full-page error in dark mode, including the
+// mobile viewport (chip wrap + meta footer stacking) and RTL mirroring.
 func TestErrorPageDark(t *testing.T) {
 	t.Parallel()
 
@@ -973,7 +986,19 @@ func TestErrorPageDark(t *testing.T) {
 		t,
 		"errorpage/dark",
 		errorpage.ErrorPage(fullErrorPageProps()),
-		visualtest.Options{Dark: new(true)},
+		visualtest.Options{Dark: visualtest.Bool(true)},
+	)
+	visualtest.AssertScreenshot(
+		t,
+		"errorpage/dark_mobile",
+		errorpage.ErrorPage(fullErrorPageProps()),
+		visualtest.Options{Dark: visualtest.Bool(true), Viewport: visualtest.ViewportMobile},
+	)
+	visualtest.AssertScreenshot(
+		t,
+		"errorpage/dark_rtl",
+		errorpage.ErrorPage(fullErrorPageProps()),
+		visualtest.Options{Dark: visualtest.Bool(true), RTL: visualtest.Bool(true)},
 	)
 }
 
