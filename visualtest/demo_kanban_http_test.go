@@ -39,72 +39,86 @@ type kanbanContractFixture struct {
 //
 // The valid-token leg follows the browser's real flow: GET /, harvest the
 // hidden csrf_token input from the rendered board, submit it back.
+const (
+	originHeader    = "Origin"
+	fetchSiteHeader = "Sec-Fetch-Site"
+)
+
+// kanbanContractClient carries the per-fixture HTTP plumbing so the probe
+// driver reads as a flat probe table. The helpers started as closures inside
+// runKanbanContractProbes, but gocognit counts nested branches at doubled
+// weight — the closures pushed the driver past the complexity limit without
+// adding any real branching to the probes themselves.
+type kanbanContractClient struct {
+	t    *testing.T
+	base string
+	fx   kanbanContractFixture
+	// Test fixture: the zero-value transport/redirect/jar behavior is exactly
+	// what these contract probes want.
+	client *http.Client
+}
+
+// get fetches path and returns the response body; transport failures are
+// fatal for the calling test.
+func (c kanbanContractClient) get(path string) string {
+	c.t.Helper()
+
+	req, err := http.NewRequestWithContext(c.t.Context(), http.MethodGet, c.base+path, nil)
+	if err != nil {
+		c.t.Fatalf("visualtest[%s]: build GET %s: %v", c.fx.name, path, err)
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		c.t.Fatalf("visualtest[%s]: GET %s: %v", c.fx.name, path, err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		c.t.Fatalf("visualtest[%s]: GET %s body: %v", c.fx.name, path, err)
+	}
+
+	return string(body)
+}
+
+// post submits the form-encoded body and returns the response status code;
+// transport failures are fatal for the calling test.
+func (c kanbanContractClient) post(path string, headers map[string]string, body string) int {
+	c.t.Helper()
+
+	req, err := http.NewRequestWithContext(c.t.Context(), http.MethodPost, c.base+path, strings.NewReader(body))
+	if err != nil {
+		c.t.Fatalf("visualtest[%s]: build POST %s: %v", c.fx.name, path, err)
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		c.t.Fatalf("visualtest[%s]: POST %s: %v", c.fx.name, path, err)
+	}
+	defer resp.Body.Close()
+
+	_, _ = io.Copy(io.Discard, resp.Body)
+
+	return resp.StatusCode
+}
+
 func runKanbanContractProbes(t *testing.T, base string, fx kanbanContractFixture) {
 	t.Helper()
 
-	// Test fixture: the zero-value transport/redirect/jar behavior is exactly
-	// what these contract probes want.
-	client := &http.Client{
-		Timeout: demoHTTPTimeout,
-	}
-
-	get := func(path string) string {
-		t.Helper()
-
-		req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, base+path, nil)
-		if err != nil {
-			t.Fatalf("visualtest[%s]: build GET %s: %v", fx.name, path, err)
-		}
-
-		resp, err := client.Do(req)
-		if err != nil {
-			t.Fatalf("visualtest[%s]: GET %s: %v", fx.name, path, err)
-		}
-		defer resp.Body.Close()
-
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			t.Fatalf("visualtest[%s]: GET %s body: %v", fx.name, path, err)
-		}
-
-		return string(body)
-	}
-
-	post := func(path string, headers map[string]string, body string) int {
-		t.Helper()
-
-		req, err := http.NewRequestWithContext(t.Context(), http.MethodPost, base+path, strings.NewReader(body))
-		if err != nil {
-			t.Fatalf("visualtest[%s]: build POST %s: %v", fx.name, path, err)
-		}
-
-		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
-		for k, v := range headers {
-			req.Header.Set(k, v)
-		}
-
-		resp, err := client.Do(req)
-		if err != nil {
-			t.Fatalf("visualtest[%s]: POST %s: %v", fx.name, path, err)
-		}
-		defer resp.Body.Close()
-
-		_, _ = io.Copy(io.Discard, resp.Body)
-
-		return resp.StatusCode
-	}
-
-	const (
-		originHeader    = "Origin"
-		fetchSiteHeader = "Sec-Fetch-Site"
-	)
+	probe := kanbanContractClient{t: t, base: base, fx: fx, client: &http.Client{Timeout: demoHTTPTimeout}}
 
 	// The browser flow: the CSRF token arrives inside the rendered page.
 	// Harvest scoped to the htmx board's own form — an index page renders
 	// other components first and one of them could carry the same input
 	// name with a different value.
-	page := get("/")
+	page := probe.get("/")
 
 	boardStart := strings.Index(page, `id="`+fx.boardID+`"`)
 	if boardStart < 0 {
@@ -119,19 +133,19 @@ func runKanbanContractProbes(t *testing.T, base string, fx kanbanContractFixture
 	sameOrigin := map[string]string{fetchSiteHeader: "same-origin"}
 
 	// Add: same-origin is mandatory; unknown columns 404; known columns 200.
-	if got := post("/api/kanban/htmx/add/"+fx.addColumn, nil, ""); got != http.StatusForbidden {
+	if got := probe.post("/api/kanban/htmx/add/"+fx.addColumn, nil, ""); got != http.StatusForbidden {
 		t.Fatalf("visualtest[%s]: add without same-origin proof = %d, want 403", fx.name, got)
 	}
 
-	if got := post("/api/kanban/htmx/add/nope", sameOrigin, ""); got != http.StatusNotFound {
+	if got := probe.post("/api/kanban/htmx/add/nope", sameOrigin, ""); got != http.StatusNotFound {
 		t.Fatalf("visualtest[%s]: add to unknown column = %d, want 404", fx.name, got)
 	}
 
-	if got := post("/api/kanban/htmx/add/"+fx.addColumn, sameOrigin, ""); got != http.StatusOK {
+	if got := probe.post("/api/kanban/htmx/add/"+fx.addColumn, sameOrigin, ""); got != http.StatusOK {
 		t.Fatalf("visualtest[%s]: same-origin add = %d, want 200", fx.name, got)
 	}
 
-	if page := get("/"); !strings.Contains(page, `data-tc-kanban-card="`+fx.addedCardID+`"`) {
+	if page := probe.get("/"); !strings.Contains(page, `data-tc-kanban-card="`+fx.addedCardID+`"`) {
 		t.Fatalf("visualtest[%s]: added card %s missing from re-rendered board", fx.name, fx.addedCardID)
 	}
 
@@ -139,39 +153,39 @@ func runKanbanContractProbes(t *testing.T, base string, fx kanbanContractFixture
 	// harvested token passes.
 	moveBody := "card=" + fx.moveCard + "&column=" + fx.moveColumn + "&index=0"
 
-	if got := post("/api/kanban/htmx", sameOrigin, moveBody); got != http.StatusForbidden {
+	if got := probe.post("/api/kanban/htmx", sameOrigin, moveBody); got != http.StatusForbidden {
 		t.Fatalf("visualtest[%s]: move without CSRF token = %d, want 403", fx.name, got)
 	}
 
-	if got := post("/api/kanban/htmx", sameOrigin, moveBody+"&csrf_token=wrong"); got != http.StatusForbidden {
+	if got := probe.post("/api/kanban/htmx", sameOrigin, moveBody+"&csrf_token=wrong"); got != http.StatusForbidden {
 		t.Fatalf("visualtest[%s]: move with wrong CSRF token = %d, want 403", fx.name, got)
 	}
 
-	if got := post("/api/kanban/htmx", sameOrigin, moveBody+"&csrf_token="+token); got != http.StatusOK {
+	if got := probe.post("/api/kanban/htmx", sameOrigin, moveBody+"&csrf_token="+token); got != http.StatusOK {
 		t.Fatalf("visualtest[%s]: move with harvested CSRF token = %d, want 200", fx.name, got)
 	}
 
 	// Reset (Origin-header branch this time) removes the added card again.
-	if got := post("/api/kanban/htmx/reset", map[string]string{originHeader: base}, ""); got != http.StatusOK {
+	if got := probe.post("/api/kanban/htmx/reset", map[string]string{originHeader: base}, ""); got != http.StatusOK {
 		t.Fatalf("visualtest[%s]: reset via Origin header = %d, want 200", fx.name, got)
 	}
 
-	if page := get("/"); strings.Contains(page, `data-tc-kanban-card="`+fx.addedCardID+`"`) {
+	if page := probe.get("/"); strings.Contains(page, `data-tc-kanban-card="`+fx.addedCardID+`"`) {
 		t.Fatalf("visualtest[%s]: reset did not remove the added card", fx.name)
 	}
 
 	// The Datastar-wrapped add goes through the same same-origin gate, and
 	// the datastar board has a reset of its own (leaves shared package-global
 	// boards in their initial layout for whichever test runs next).
-	if got := post("/api/kanban/datastar/add/"+fx.addColumn, nil, ""); got != http.StatusForbidden {
+	if got := probe.post("/api/kanban/datastar/add/"+fx.addColumn, nil, ""); got != http.StatusForbidden {
 		t.Fatalf("visualtest[%s]: datastar add without same-origin proof = %d, want 403", fx.name, got)
 	}
 
-	if got := post("/api/kanban/datastar/add/"+fx.addColumn, sameOrigin, ""); got != http.StatusOK {
+	if got := probe.post("/api/kanban/datastar/add/"+fx.addColumn, sameOrigin, ""); got != http.StatusOK {
 		t.Fatalf("visualtest[%s]: datastar same-origin add = %d, want 200", fx.name, got)
 	}
 
-	if got := post("/api/kanban/datastar/reset", sameOrigin, ""); got != http.StatusOK {
+	if got := probe.post("/api/kanban/datastar/reset", sameOrigin, ""); got != http.StatusOK {
 		t.Fatalf("visualtest[%s]: datastar reset = %d, want 200", fx.name, got)
 	}
 }

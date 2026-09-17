@@ -33,6 +33,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `strings.Cut`, stale-nolint removal), golines formatting module-wide, and
   a documented `.golangci.yml` exclusion scoping gocognit/unparam to
   `_e2e_test.go` harness fixtures (mux-builder shape, not library code).
+  Follow-ups from the lane's first CI contact: the shared kanban probe
+  driver's nested HTTP closures were flattened into a
+  `kanbanContractClient` (gocognit 26 → well under the limit — real
+  decomposition, not a waiver), and `scripts/ci-repro.sh` gained the SAME
+  visualtest lane so local CI reproduction can no longer pass while the
+  real Lint job fails (the gap that let both escape).
 
 - **`pollBool`/`pollTrue`/`pollText` e2e poll helpers (TODO #193).** The
   chromedp bool-into-string `Poll` mistake (bool predicate captured into

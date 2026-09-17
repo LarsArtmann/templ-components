@@ -172,6 +172,14 @@ if [ "$RUN_LINT" = "1" ]; then
 		echo "---- $mod"
 		(cd "$mod" && golangci-lint run --timeout=5m ./...)
 	done
+
+	# Mirror of ci.yaml's Lint job: visualtest has its own go.mod (its tests
+	# run in the Visual Regression job, but the LINT lane lives with the
+	# others). Without this lane a visualtest-only lint finding passes local
+	# CI reproduction and fails the real CI Lint job — exactly how the
+	# gocognit finding on runKanbanContractProbes escaped on 2026-09-17.
+	echo "---- visualtest (tests run in the Visual Regression job)"
+	(cd visualtest && golangci-lint run --timeout=5m ./...)
 fi
 
 if [ "$RUN_CSS" = "1" ]; then
