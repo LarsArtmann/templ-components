@@ -201,6 +201,40 @@ documented on `KanbanBoardProps.Wire` and decoded by `ParseKanbanMove`.
 
 ---
 
+## The optimistic pending register (and the reserved top-right corner)
+
+A wired board does not freeze while a move is in flight (ADR-0041). The
+moment a move is submitted — drop OR keyboard button, both transports — the
+client moves the card optimistically and marks it with a **pending
+register**:
+
+- the card dims and a small **spinner ring spins in its top-right corner**
+  (a `::after` pseudo-element positioned with `inset-inline-*`, so it
+  mirrors in RTL; `prefers-reduced-motion` users get a static ring),
+- the card carries `aria-busy="true"`,
+- the target column's "No cards" placeholder hides and both columns' count
+  badges/aria-labels update immediately.
+
+When the server's re-render lands, the swap replaces the board DOM and the
+pending state is forgotten. When the move FAILS (4xx/5xx, network error),
+the card **snaps back to its exact original position**, counts are
+recomputed from the DOM, the card flashes a red border for 4s, and an
+sr-only `role="alert"` announces "Moving X to Y failed. The board was
+restored." — never `aria-live="assertive"` (repo urgency policy).
+
+**Design consequence for your `Content` slot: the card's top-right corner is
+reserved.** The pending spinner ring is drawn there, so avoid persistent
+affordances (menu buttons, checkboxes) in that corner of custom card
+content — or accept that they are covered for the duration of a move. Put
+such controls in the identity row's normal flow instead (as the demo board
+does).
+
+Concurrency semantics (overlapping moves, double failures, listener
+double-bind) are pinned by `TestKanbanJSConcurrentMoves`; the pending and
+failed visual states by `TestKanbanPendingRegisterVisualStates`.
+
+---
+
 ## Complete worked example
 
 The Go side of this recipe is compile-proven and render-exercised by

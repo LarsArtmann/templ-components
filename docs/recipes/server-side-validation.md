@@ -98,6 +98,34 @@ mux.Handle("/api/subscribe", wire.Handler(wire.PatchTarget{
 })))
 ```
 
+The `formState` glue both snippets rely on — values plus per-field error
+strings, and the `summaryErrors` bridge that feeds `ValidationSummary`:
+
+```go
+type formState struct {
+	Name     string
+	Email    string
+	NameErr  string
+	EmailErr string
+}
+
+func (st formState) invalid() bool { return st.NameErr != "" || st.EmailErr != "" }
+
+// summaryErrors maps field errors to forms.ValidationError; Field must match
+// the input's HTML id (forms.Input with Name: "name" renders id="name"), so
+// the summary's anchor links land on the failing field.
+func (st formState) summaryErrors() []forms.ValidationError {
+	var errs []forms.ValidationError
+	if st.NameErr != "" {
+		errs = append(errs, forms.ValidationError{Field: "name", Message: st.NameErr})
+	}
+	if st.EmailErr != "" {
+		errs = append(errs, forms.ValidationError{Field: "email", Message: st.EmailErr})
+	}
+	return errs
+}
+```
+
 Both dialects serialize the fields into a standard urlencoded body (htmx
 natively; Datastar via `{contentType: 'form'}` — the `Form` component applies
 that default), so `r.ParseForm`/`r.PostFormValue` serve both.

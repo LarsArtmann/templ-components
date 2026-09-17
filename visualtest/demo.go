@@ -93,7 +93,7 @@ func StartDemoServer(t *testing.T) *DemoServer {
 	server := &DemoServer{
 		baseURL: "http://127.0.0.1:" + strconv.Itoa(port),
 		cmd:     cmd,
-		Log:     syncBuffer{},
+		Log:     syncBuffer{}, //nolint:exhaustruct_v5 // zero mutex + zero buffer is the ready state
 	}
 	server.cmd.Stdout = &server.Log
 	server.cmd.Stderr = &server.Log
