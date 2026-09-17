@@ -3,33 +3,20 @@ package main
 import "github.com/larsartmann/templ-components/errorpage"
 
 templ errorpageDemo() {
-	@demoSection("NotFound404", "errorpage-404")
-	<div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-		@errorpage.NotFound404(errorpage.NotFound404Props{
-			Numeral:    "404",
-			Title:      "Page not found",
-			Message:    "The page you're looking for doesn't exist or has been moved.",
-			GoHomeHref: "/",
-			ShowGoBack: false,
-		})
-	</div>
-	@demoSection("ErrorPage (full model)", "errorpage-error-page")
-	<div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-		@errorpage.ErrorPage(errorpage.ErrorPageProps{
-			Family:        errorpage.FamilyTransient,
-			StatusCode:    503,
-			Code:          errorpage.CodeUnavailable,
-			Title:         "Service temporarily unavailable",
-			Message:       "We're performing maintenance or experiencing high traffic.",
-			Why:           "This is a temporary issue. No data was lost.",
-			Fix:           "Wait a moment and refresh the page.",
-			WayOut:        "Retry",
-			WayOutHref:    "/",
-			Context:       []errorpage.ContextPair{{Key: "region", Value: "eu-central-1"}, {Key: "request_id", Value: "req_8fk2m1"}},
-			CauseChain:    []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}},
-			Timestamp:     "2026-09-17T12:00:00Z",
-			ShowTimestamp: true,
-		})
+	@demoSection("Standalone error pages", "errorpage-standalone")
+	<p class="text-sm text-gray-500 dark:text-gray-400">
+		Full-page error views are served by their own routes — the way consumers
+		render them: one handler call per HTTP status, no demo chrome around them.
+	</p>
+	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+		@errorRouteCard("404 — Page not found", "/errors/404")
+		@errorRouteCard("404 — Dedicated NotFound404", "/errors/404-page")
+		@errorRouteCard("403 — Access denied", "/errors/403")
+		@errorRouteCard("400 — Bad request", "/errors/400")
+		@errorRouteCard("409 — Conflict", "/errors/409")
+		@errorRouteCard("500 — Internal error", "/errors/500")
+		@errorRouteCard("503 — Service unavailable", "/errors/503")
+		@errorRouteCard("Full model — context, causes, trace", "/errors/full")
 	</div>
 	@demoSection("ErrorAlert (by family)", "errorpage-alerts")
 	<div class="space-y-4">
@@ -57,4 +44,14 @@ templ errorpageDemo() {
 			CauseChain: []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}, {Message: "timeout after 30s", Code: "db.timeout"}},
 		})
 	</div>
+}
+
+templ errorRouteCard(title, href string) {
+	<a
+		href={ templ.SafeURL(href) }
+		class="flex flex-col justify-between gap-2 rounded-lg border border-gray-200 p-4 transition-colors motion-reduce:transition-none hover:border-blue-300 hover:bg-blue-50 motion-reduce:hover:border-gray-200 motion-reduce:hover:bg-transparent dark:border-gray-700 dark:hover:border-blue-700 dark:hover:bg-blue-900/20"
+	>
+		<span class="font-medium text-gray-900 dark:text-white">{ title }</span>
+		<span class="font-mono text-xs text-gray-500 dark:text-gray-400">{ href }</span>
+	</a>
 }

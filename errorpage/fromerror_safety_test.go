@@ -212,6 +212,7 @@ func TestFromErrorTitleFallbackPerFamily(t *testing.T) {
 		classified := &publicTraceError{err: errors.New("boom"), family: errorfamilyFamilyForTest(f)}
 
 		props := FromError(classified)
+
 		want := familyDefaultTitleMap[f]
 		if props.Title != want {
 			t.Errorf("FromError(%v) Title = %q, want family default %q", f, props.Title, want)
