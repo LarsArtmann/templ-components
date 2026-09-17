@@ -54,7 +54,7 @@ func TestKeyboardTraversalFocusVisibility(t *testing.T) {
 
 			visited := 0
 
-			for i := 0; i < maxTabs; i++ {
+			for i := range maxTabs {
 				var info struct {
 					Tag      string  `json:"tag"`
 					ID       string  `json:"id"`
