@@ -128,7 +128,10 @@ func kanbanSectionComponent() templ.Component {
 	board.Wire = &wire.Action{URL: "/api/kanban/visual"}
 
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-		if _, err := io.WriteString(w, `<div class="w-[64rem]"><div class="mb-2 flex items-center justify-between">`); err != nil {
+		if _, err := io.WriteString(
+			w,
+			`<div class="w-[64rem]"><div class="mb-2 flex items-center justify-between">`,
+		); err != nil {
 			return err
 		}
 

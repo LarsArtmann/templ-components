@@ -300,6 +300,14 @@ linters:
           - contextcheck
           - paralleltest
           - wrapcheck
+      # E2E harness files build one httptest.Server mux per fixture (per-route
+      # handlers inline) and helpers parametrized by the flow that calls them —
+      # cognitive complexity and unparam fire on the fixture shape, not on a
+      # real defect. Library code stays fully covered.
+      - path: _e2e_test\.go
+        linters:
+          - gocognit
+          - unparam
     paths:
       - \.gen\.go$
       - _templ\.go$

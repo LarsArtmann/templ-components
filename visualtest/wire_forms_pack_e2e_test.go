@@ -849,12 +849,6 @@ func setValueQuiet(region, sel, value string) chromedp.ActionFunc {
 	})
 }
 
-// regionExistsExpr builds a predicate: the region contains an element
-// matching sel.
-func regionExistsExpr(region, sel string) string {
-	return `!!document.querySelector('` + formSel(region, sel) + `')`
-}
-
 // fireInputBurst sets the value and fires n synchronous input events in one
 // JS tick — a working debounce collapses the whole burst into one request.
 func fireInputBurst(region, sel, value string, n int) chromedp.ActionFunc {

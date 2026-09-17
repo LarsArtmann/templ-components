@@ -44,7 +44,7 @@ func TestFocusPreservationE2E(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(packGate(wire.TransportHTMX), &ok),
+		pollBool(packGate(wire.TransportHTMX), &ok),
 	); err != nil {
 		t.Fatalf("focus e2e setup: %v", err)
 	}
@@ -62,10 +62,11 @@ func TestFocusPreservationE2E(t *testing.T) {
 				&done,
 			),
 			chromedp.Evaluate(`(document.querySelector('#items-load-more button').click(),'')`, &done),
-			chromedp.Poll(
-				`document.activeElement !== null && document.activeElement.closest('#items-load-more') !== null && document.activeElement.tagName === 'BUTTON' && document.activeElement.textContent.trim() === 'Load more' ? 'ok' : ''`,
-				&done,
-			),
+			pollTrue(`
+				document.activeElement !== null &&
+				document.activeElement.closest('#items-load-more') !== null &&
+				document.activeElement.tagName === 'BUTTON' &&
+				document.activeElement.textContent.trim() === 'Load more'`),
 		); err != nil {
 			dumpFocusState(t, ctx, "loadmore")
 
@@ -78,10 +79,7 @@ func TestFocusPreservationE2E(t *testing.T) {
 		// (window.__fpSettled) waits out the load task that performs the
 		// autofocus focusing, so the next subtest starts race-free.
 		if err := chromedp.Run(ctx,
-			chromedp.Poll(
-				`document.querySelectorAll('.fp-card').length >= 4 && window.__fpSettled === true ? 'ok' : ''`,
-				&done,
-			),
+			pollTrue(`document.querySelectorAll('.fp-card').length >= 4 && window.__fpSettled === true`),
 		); err != nil {
 			t.Fatalf("loadmore batch delivery / settle: %v", err)
 		}
@@ -93,10 +91,10 @@ func TestFocusPreservationE2E(t *testing.T) {
 		if err := chromedp.Run(ctx,
 			chromedp.Evaluate(`(document.getElementById('oob-trigger').focus(),'')`, &done),
 			chromedp.Evaluate(`(document.getElementById('oob-trigger').click(),'')`, &done),
-			chromedp.Poll(
-				`document.getElementById('counter').textContent.includes('1') && document.getElementById('status').textContent.includes('updated') && document.activeElement && document.activeElement.id === 'oob-trigger' ? 'ok' : ''`,
-				&done,
-			),
+			pollTrue(`
+				document.getElementById('counter').textContent.includes('1') &&
+				document.getElementById('status').textContent.includes('updated') &&
+				document.activeElement && document.activeElement.id === 'oob-trigger'`),
 			chromedp.Evaluate(`document.activeElement && document.activeElement.id`, &active),
 		); err != nil {
 			dumpFocusState(t, ctx, "swapoob")

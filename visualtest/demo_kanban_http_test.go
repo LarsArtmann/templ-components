@@ -21,14 +21,21 @@ func TestDemoKanbanHTTPContracts(t *testing.T) {
 	server := StartDemoServer(t)
 	base := server.BaseURL()
 
-	client := &http.Client{ //nolint:exhaustruct_v5 // test fixture: default transport/redirect/jar behavior is exactly what we want
+	// Test fixture: the zero-value transport/redirect/jar behavior is exactly
+	// what these contract probes want.
+	client := &http.Client{
 		Timeout: demoHTTPTimeout,
 	}
 
 	get := func(path string) string {
 		t.Helper()
 
-		resp, err := client.Get(base + path)
+		req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, base+path, nil)
+		if err != nil {
+			t.Fatalf("visualtest[demo]: build GET %s: %v", path, err)
+		}
+
+		resp, err := client.Do(req)
 		if err != nil {
 			t.Fatalf("visualtest[demo]: GET %s: %v", path, err)
 		}
@@ -45,12 +52,13 @@ func TestDemoKanbanHTTPContracts(t *testing.T) {
 	post := func(path string, headers map[string]string, body string) int {
 		t.Helper()
 
-		req, err := http.NewRequest(http.MethodPost, base+path, strings.NewReader(body))
+		req, err := http.NewRequestWithContext(t.Context(), http.MethodPost, base+path, strings.NewReader(body))
 		if err != nil {
 			t.Fatalf("visualtest[demo]: build POST %s: %v", path, err)
 		}
 
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
 		for k, v := range headers {
 			req.Header.Set(k, v)
 		}
@@ -155,17 +163,15 @@ func kanbanDemoCSRFTokenFromHTML(t *testing.T, html string) string {
 
 	const marker = `name="csrf_token" value="`
 
-	i := strings.Index(html, marker)
-	if i < 0 {
+	_, rest, found := strings.Cut(html, marker)
+	if !found {
 		t.Fatal("visualtest[demo]: rendered page has no csrf_token hidden input")
 	}
 
-	rest := html[i+len(marker):]
-	if j := strings.Index(rest, `"`); j > 0 {
-		return rest[:j]
+	value, _, terminated := strings.Cut(rest, `"`)
+	if !terminated {
+		t.Fatal("visualtest[demo]: csrf_token input value unterminated")
 	}
 
-	t.Fatal("visualtest[demo]: csrf_token input value unterminated")
-
-	return ""
+	return value
 }

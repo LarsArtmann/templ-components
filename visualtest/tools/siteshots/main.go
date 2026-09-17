@@ -41,13 +41,21 @@ var routes = []string{
 const (
 	settle = 700 * time.Millisecond
 
+	navigationSettle = 300 * time.Millisecond
+
 	viewportHeight = 900
 	desktopWidth   = 1440
 	mobileWidth    = 390
 	mobileHeight   = 844
 
+	screenshotQuality = 90
+
 	routeTimeout = 60 * time.Second
 )
+
+// errSearchNoHits is the search-smoke failure sentinel (static by design —
+// err113 forbids dynamic error construction).
+var errSearchNoHits = errors.New("search smoke FAILED: 0 hits for query") //nolint:gochecknoglobals // sentinel error
 
 // chromePath resolves the browser binary: CHROMEDP_CHROME_PATH (set by
 // `nix run .#visual`-style wrappers) or "chromium" from PATH.
@@ -96,10 +104,10 @@ func run(dist, out string) error {
 		return err
 	}
 
-	defer server.Close()
+	defer func() { _ = server.Close() }()
 
 	base := "http://" + addr
-	fmt.Printf("siteshots: serving %s at %s\n", dist, base)
+	fmt.Fprintf(os.Stdout, "siteshots: serving %s at %s\n", dist, base)
 
 	for _, route := range routes {
 		if err := captureRoute(base, route, out); err != nil {
@@ -113,7 +121,9 @@ func run(dist, out string) error {
 // serveDist starts a loopback HTTP server with Firebase cleanUrls semantics:
 // /foo resolves to foo.html when the exact file is absent.
 func serveDist(dist string) (string, *http.Server, error) {
-	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	var netListenConfig net.ListenConfig
+
+	listener, err := netListenConfig.Listen(context.Background(), "tcp", "127.0.0.1:0")
 	if err != nil {
 		return "", nil, fmt.Errorf("listen: %w", err)
 	}
@@ -122,7 +132,9 @@ func serveDist(dist string) (string, *http.Server, error) {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		clean, _, _ := strings.Cut(r.URL.Path, "?")
 		if !strings.HasSuffix(clean, ".html") && !strings.Contains(clean, ".") {
-			if _, err := os.Stat(filepath.Join(dist, clean+".html")); err == nil {
+			if _, err := os.Stat(
+				filepath.Join(dist, clean+".html"),
+			); err == nil { //nolint:gosec // CLI-controlled dist root, mirrors the ServeFile nolint below
 				http.ServeFile(w, r, filepath.Join(dist, clean+".html")) //nolint:gosec // CLI-controlled dist root
 
 				return
@@ -162,7 +174,7 @@ func captureRoute(base, route, out string) error {
 				return fmt.Errorf("%s: %w", name, err)
 			}
 
-			fmt.Println("wrote", name)
+			fmt.Fprintln(os.Stdout, "wrote", name)
 		}
 	}
 
@@ -172,7 +184,6 @@ func captureRoute(base, route, out string) error {
 func screenshot(url, theme string, width, height int, target string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), routeTimeout)
 	defer cancel()
-
 	allocCtx, allocCancel := chromedp.NewExecAllocator(
 		ctx,
 		append(chromedp.DefaultExecAllocatorOptions[:],
@@ -198,11 +209,13 @@ func screenshot(url, theme string, width, height int, target string) error {
 		theme, theme,
 	)
 
+	var png []byte
+
 	actions := []chromedp.Action{
 		chromedp.EmulateViewport(int64(width), int64(height)),
 		chromedp.Navigate(url),
 		chromedp.WaitReady("body"),
-		chromedp.Sleep(300 * time.Millisecond),
+		chromedp.Sleep(navigationSettle),
 		chromedp.Evaluate(setTheme, nil),
 		chromedp.Reload(),
 		chromedp.WaitReady("body"),
@@ -210,11 +223,8 @@ func screenshot(url, theme string, width, height int, target string) error {
 		chromedp.Evaluate(setTheme, nil),
 		chromedp.Evaluate(scrollRevealJS, nil),
 		chromedp.Sleep(settle),
+		chromedp.FullScreenshot(&png, screenshotQuality),
 	}
-
-	var png []byte
-
-	actions = append(actions, chromedp.FullScreenshot(&png, 90))
 
 	if err := chromedp.Run(tabCtx, actions...); err != nil {
 		return err
@@ -260,14 +270,14 @@ func searchSmoke(base, out string) error {
 		chromedp.Evaluate(queryJS, nil),
 		chromedp.Sleep(2*settle),
 		chromedp.Evaluate(`document.querySelectorAll('#doc-search-results .doc-search-hit').length`, &hits),
-		chromedp.FullScreenshot(&png, 90),
+		chromedp.FullScreenshot(&png, screenshotQuality),
 	)
 	if err != nil {
 		return fmt.Errorf("search smoke: %w", err)
 	}
 
 	if hits == 0 {
-		return errors.New("search smoke FAILED: 0 hits for query")
+		return fmt.Errorf("query 'component': %w", errSearchNoHits)
 	}
 
 	//nolint:gosec // CLI-controlled screenshot output
@@ -275,7 +285,7 @@ func searchSmoke(base, out string) error {
 		return fmt.Errorf("write search smoke: %w", err)
 	}
 
-	fmt.Printf("search smoke PASS: %d hits (search-smoke.png)\n", hits)
+	fmt.Fprintf(os.Stdout, "search smoke PASS: %d hits (search-smoke.png)\n", hits)
 
 	return nil
 }

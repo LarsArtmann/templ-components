@@ -47,7 +47,7 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
-				chromedp.Poll(packGate(dialect), &ok),
+				pollBool(packGate(dialect), &ok),
 			); err != nil {
 				t.Fatalf("%s calendar nav setup: %v", dialect, err)
 			}
@@ -63,7 +63,7 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 			)
 			if err := chromedp.Run(ctx,
 				next,
-				chromedp.Poll(`document.querySelector('#cal-nav h3')?.textContent.includes('August')?'ok':''`, &done),
+				pollTrue(`document.querySelector('#cal-nav h3')?.textContent.includes('August')`),
 			); err != nil {
 				dumpCalendarNavState(t, ctx, dialect, seen.snapshot())
 
@@ -76,7 +76,7 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 			)
 			if err := chromedp.Run(ctx,
 				prev,
-				chromedp.Poll(`document.querySelector('#cal-nav h3')?.textContent.includes('July')?'ok':''`, &done),
+				pollTrue(`document.querySelector('#cal-nav h3')?.textContent.includes('July')`),
 			); err != nil {
 				dumpCalendarNavState(t, ctx, dialect, seen.snapshot())
 

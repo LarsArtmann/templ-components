@@ -322,12 +322,18 @@ func kanbanE2EServer(t *testing.T) *httptest.Server {
 		})
 	}
 
-	mux.Handle("POST /api/kanban/htmx/add/{column}", addHandler(kanbanHTMXBoard, "kb-htmx", wire.Action{URL: "/api/kanban/htmx"}))
+	mux.Handle(
+		"POST /api/kanban/htmx/add/{column}",
+		addHandler(kanbanHTMXBoard, "kb-htmx", wire.Action{URL: "/api/kanban/htmx"}),
+	)
 	mux.Handle("POST /api/kanban/datastar/add/{column}", wire.Handler(wire.PatchTarget{
 		Selector: "#kb-ds",
 		Mode:     wire.PatchModeOuter,
 	}, addHandler(kanbanDatastarBoard, "kb-ds", wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"})))
-	mux.Handle("POST /api/kanban/htmx/reset", resetHandler(kanbanHTMXBoard, "kb-htmx", wire.Action{URL: "/api/kanban/htmx"}))
+	mux.Handle(
+		"POST /api/kanban/htmx/reset",
+		resetHandler(kanbanHTMXBoard, "kb-htmx", wire.Action{URL: "/api/kanban/htmx"}),
+	)
 	mux.Handle("POST /api/kanban/datastar/reset", wire.Handler(wire.PatchTarget{
 		Selector: "#kb-ds",
 		Mode:     wire.PatchModeOuter,
