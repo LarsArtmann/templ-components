@@ -1,0 +1,141 @@
+# Status: Pareto Planning Session (2026-09-17 06:00–06:43 CEST)
+
+**Session scope:** answered the owner's planning directive — Pareto breakdown (1%/4%/20%),
+comprehensive plan (27 medium tasks, 30–100 min), fine breakdown (~131 micro-tasks, ≤12 min),
+plan file with execution graph, commit + push. No plan EXECUTION — the skill's Full
+Execution Mode awaits the owner's trigger.
+
+**Verification state at handoff:** working tree clean · HEAD == origin/master (0 unpushed
+commits) · plan file verified in HEAD (mermaid graph intact, 27 medium rows, 128 micro
+rows) · TODO_LIST carries #221–#231 incl. the corrected #192 framing · skills loaded this
+session: pareto-planning (+ earlier in the day: templ-components, buildflow, docs-health).
+
+---
+
+## a) FULLY DONE (verifiable)
+
+| # | Item | Evidence |
+|---|------|----------|
+| A1 | **Full TODO inventory** — TODO_LIST.md read end-to-end: ~47 distinct open items across 7 sections (Blocked, Open, Deferred v2.0, Deferred v1.0, three Harvest sections) | `TODO_LIST.md` (119→128 lines) |
+| A2 | **Pareto analysis** — 1% → 51%: cut v1.18.0 (8 warm `[Unreleased]` entries invisible until tagged); 4% → 64%: discovery layer (website guide, columnTone example, outreach, vision pass); 20% → 80%: quality consolidation (route goldens, poll helpers, keyboard traversal, sorted-view 422, lint lane, cheat-sheet, anti-drift tie, CSS deletion); remainder: platform/deferred/owner-gated | plan §1 |
+| A3 | **Medium plan** — 27 tasks, 30–100 min each, ALL TODOs covered, sorted by importance/impact/effort/customer-value, phase sums (~27.9h) | plan §2 |
+| A4 | **Fine breakdown** — ~128–131 micro-tasks ≤12 min each, per-phase tables | plan §3 |
+| A5 | **Plan file with execution graph** — `docs/planning/2026-09-17_06-00_RELEASE-FIRST-PARETO-MASTER-PLAN.md`: mermaid flowchart with 4 phase subgraphs + owner-gate markers (⫱), coverage matrix proving every open TODO has a task or an explicit by-design exclusion, and 7 Verschlimmbesserung guards (no new deps, no breaking changes, no uneyeballed golden regens, owner gates stay gates…) | plan §4–§6; skill's HTML default overridden to `.md`+mermaid per owner instruction — flagged in the file |
+| A6 | **TODO_LIST #225–#230 registered** (visualtest lint lane, marker cheat-sheet, demo/e2e anti-drift tie, planning TEMPLATE, session CSRF, recipes sweep remainder) + header next-free-ID bump | `TODO_LIST.md` harvest section (2026-09-17 status §e/f → living source) |
+| A7 | **#231 registered — the session's biggest discovery**: root `go.mod` says `go 1.27.1` (since the 2026-09-13 v1.17.0 release) vs `go.work`/pinned toolchain 1.26.7 + BuildFlow's `GOTOOLCHAIN=local` ⇒ **every manual `git commit` fails the pre-commit hook**; only the daemon (hook-bypassing) can commit. Durable fix = go.work + nixpkgs-go bump together (owner's deferred flake fold-in) | `TODO_LIST.md` #231; commit ecabd12c |
+| A8 | **#192 re-annotated** — discovered v1.17.0 shipped **2026-09-13** (commit `8a046c48` + re-add `894d8efc`): the batch #192 described IS v1.17.0, so the open decision is now **v1.18.0**; TODO row and plan corrected from their earlier v1.17.0 framing | `TODO_LIST.md` #192; plan M01 |
+| A9 | **Two pre-commit gates fixed** (found when my manual commit tripped them): (1) daemon-committed compiled binary `visualtest/smoke` untracked (`git rm --cached`), worktree copy trashed, `.gitignore` now covers `/visualtest/smoke` + `/visualtest/siteshots`; (2) AGENTS.md 386→375 lines (≤377 budget): plan-authoring checklist extracted to `docs/plan-authoring-checklist.md` with pointer bullet in Conventions, "why this matters" paragraph compressed, kanban bullet tightened | `.gitignore`, `AGENTS.md`, new `docs/plan-authoring-checklist.md` |
+| A10 | **Content committed AND pushed** — tree clean, HEAD == origin/master; daemon swept my staged work across `e22c46e0` (5 files), `6b0e769e` (3 files), `ecabd12c` (#231) | `git log`; `origin/master..HEAD` = 0 |
+| A11 | **Plan integrity verified in HEAD** — mermaid fence intact, 27 medium rows, 128 micro rows, v1.18.0 framing, post-daemon-formatter | grep + view against `6b0e769e` |
+
+## b) PARTIALLY DONE
+
+| # | Item | State | Residue |
+|---|------|-------|---------|
+| B1 | **Detailed commit message** — owner asked for VERY DETAILED commit message(s); I wrote one, but both manual commit attempts were blocked by the pre-existing toolchain-skew gate (see d1/d2) and the **daemon** landed the content with heuristic messages ("chore: auto-commit N changed file(s)") | Content 100% pushed; the narrative/story is NOT in history | This is TODO #93's exact complaint, now first-hand. Option: a follow-up docs commit whose message carries the rationale (no force push — history is on master) |
+| B2 | **Plan execution** — 0 of 27 tasks started | By design: skill's Full Execution Mode triggers on the owner's "NOW GET SHIT DONE" | Awaiting trigger; M01 (v1.18.0) is first |
+| B3 | **#231 verification** — the sweep-check shell moved to background at session end; verified completed at report time (ecabd12c) | Closed at report time | none |
+
+## c) NOT STARTED
+
+| # | Item | Gate |
+|---|------|------|
+| C1 | **Plan M01–M27 execution** (v1.18.0 cut → discovery → quality → platform) | Owner trigger |
+| C2 | **#231 toolchain-skew fix** (go.work + nixpkgs-go → 1.27.x) | Owner call — touches the deliberately deferred flake fold-in; until fixed, manual commits need `--no-verify` |
+| C3 | Owner-gated plan tasks: M06 vision pass (API key), M18 CSS-artifact deletion (veto window), M26 annotation policy (option choice) | Owner inputs |
+| C4 | Pre-existing residents: #28/#29, #80, #93-family, #190, #211–#217, #193–#202, #189 — all planned (M-tasks) or owner-gated, none started | Plan phases |
+
+## d) TOTALLY FUCKED UP
+
+Nothing shipped is broken; all content verified in HEAD and on origin. The failures:
+
+| # | What | Severity | Root cause |
+|---|------|----------|------------|
+| D1 | **I re-asked an already-answered question and shipped wrong version framing twice.** v1.17.0 shipped 2026-09-13 — but my 05:54 status report asked "cut v1.17.0 now?" and the plan's first draft said "cut v1.17.0", while the actual open decision is v1.18.0. Discovered only when the pre-commit failure forced me into `git log`, where `8a046c48` sat in plain sight | Medium — two artifacts carried stale framing before in-session correction; the owner's question 1 had been answered 4 days earlier | I trusted TODO #192's wording ("Release timing for v1.17.0") instead of checking `git tag`/release history. Tags are ground truth; a TODO's framing is a claim |
+| D2 | **A compiled binary entered git under my work.** `go build ./tools/smoke/` without `-o` dropped `visualtest/smoke` in the module root; the daemon committed it (863 KB). I later trashed the file but did NOT verify it was untracked — the pre-commit linter caught the tracked binary two steps later | Medium — repo rule "compiled binaries must never be tracked" violated; binary remains in history (untracked only) | Bare `go build` CWD litter + no `git ls-files` check after trashing |
+| D3 | **AGENTS.md blew its 377-line budget with my own additions** (386) — caught by the hook's structure linter, blocking the commit | Low — fixed by extraction (checklist → `docs/plan-authoring-checklist.md`, arguably the better home) + two compressions | I never ran `wc -l AGENTS.md` while adding ~20 lines across two edits |
+| D4 | **Shell backtick substitution mangled TODO_LIST #192.** My python-one-liner inside double quotes let the shell execute the row's `` `[Unreleased]` `` as a command — corrupted the row; repaired with an exact-match edit | Low — caught by reading the row after the failed grep | AGENTS.md explicitly bans shell/heredoc patching for code and narrows the doc exception to "mechanical count updates… verify with git diff". A row containing backticks is NOT mechanical — violated the narrow reading |
+| D5 | **Both manual commits blocked; the daemon out-raced me and my detailed message was lost.** Retry-once per protocol, still blocked on the pre-existing skew; daemon committed everything with heuristic messages | Medium — process story absent from history (D's narrative now lives in this report + #231/#93) | Pre-existing toolchain skew (#231) + the daemon's known hook-bypassing behavior (#93 family) |
+| D6 | **A verification left dangling in background** (#231 sweep check) when the owner interrupted — the session's LAST verification was its only unconfirmed one at handoff | Low — confirmed completed at report time (ecabd12c) | Synchronous-verify discipline slipped on the final step |
+
+## e) WHAT WE SHOULD IMPROVE
+
+1. **`git tag` before any release talk.** Release planning must start from tags + release
+   commit history, never from a TODO row's wording. One command would have saved D1
+   entirely (and the owner one re-asked question).
+2. **Bare `go build ./pkg/` is banned in this repo** — always `-o /tmp/...` (or bin dir).
+   The daemon commits CWD litter within a minute. Worth an AGENTS line next time it's
+   touched.
+3. **AGENTS.md budget check BEFORE writing** (`wc -l` vs 377), not from the hook's error.
+   Additions >5 lines should propose an extraction target in the same thought.
+4. **Backtick-bearing markdown NEVER goes through shell interpolation** — edit tool only.
+   The "mechanical doc edits" exception means counts, not rows with markup.
+5. **When the daemon races a manual commit:** verify content-in-HEAD + content-on-origin,
+   accept the heuristic message, fold the narrative into the NEXT manual commit. Fighting
+   it wastes cycles (this session: 2 blocked attempts).
+6. **Promote #231** — the toolchain skew is a repo-wide developer-experience blocker
+   (manual commits impossible without `--no-verify`); in the plan it should ride WITH M01
+   (the release) because release.sh's own verify is unaffected but any manual fix-up
+   commits during release are not.
+7. **Plans should open with a "state of the world" block** (latest tag, HEAD vs origin,
+   `[Unreleased]` depth) so staleness is self-evident to the next reader — would have made
+   D1 impossible.
+8. **Post-commit daemon diff-review:** after any daemon sweep of my work, diff HEAD against
+   the intended staged content (I did this for the plan file; do it by default).
+
+## f) NEXT TASKS (ranked; the plan holds the full 27×~131 breakdown)
+
+| #  | Task                                                        | Ref    | Min |
+|----|-------------------------------------------------------------|--------|-----|
+| 1  | **#231 toolchain skew** (go.work + nixpkgs-go → 1.27.x) — unblocks all manual commits; owner flake decision | #231   | 30  |
+| 2  | **M01: cut v1.18.0** (pre-verify → release.sh in nix shell → tag review → push) | M01/#192 | 60 |
+| 3  | M02: proxy + pkg.go.dev + consumer `go get` verification     | M02    | 40  |
+| 4  | M03: website kanban guide page                              | M03/#222 | 90 |
+| 5  | M04: `ExampleKanbanBoard_columnTone`                        | M04/#221 | 30 |
+| 6  | M05: awesome-templ + templ.guide submissions                | M05/#28/29 | 30 |
+| 7  | M06: AI-vision pass over flagged goldens (incl. new kanban set) | M06/#80/150/162/223 | 45 |
+| 8  | M15: visualtest CI lint lane + siteshots findings           | M15/#225 | 60 |
+| 9  | M07: `pollBool`/`pollText` harness helpers + migration      | M07/#193 | 90 |
+| 10 | M14: sorted-view demo board + 422 e2e                       | M14/#224 | 90 |
+| 11 | M16: demo contract-marker cheat-sheet                       | M16/#226 | 30 |
+| 12 | M17: demo/e2e kanban endpoint anti-drift tie                | M17/#227 | 30 |
+| 13 | M08–M10: route goldens dark ×7 / mobile ×4 / RTL            | M08–10/#194-196 | 165 |
+| 14 | M11: keyboard-only demo traversal audit                     | M11/#197 | 60 |
+| 15 | M12: kanban LSP warnings triage + gopls upstream note       | M12/#198/199 | 45 |
+| 16 | M13: datastar doc.go fact + `.fail/` hygiene                | M13/#200/202 | 30 |
+| 17 | M18: CSS-artifact deletion execution (a) ⫱veto window       | M18/#211 | 40 |
+| 18 | M19: BuildFlow family session (cross-repo)                  | M19/#93-family | 100 |
+| 19 | M20: CI wall-clock budget + benchstat comment               | M20/#213/214 | 90 |
+| 20 | M21: mutation-testing pilot baseline                        | M21/#215 | 60 |
+| 21 | M22: typed wire trigger ADR                                 | M22/#178 | 90 |
+| 22 | M23: Calendar/SimpleNav Wire-candidate demand checks        | M23/#157/155 | 60 |
+| 23 | M24: `Validate()` scoping + testutil migration slice 1      | M24/#33/34 | 100 |
+| 24 | M25: compound-components ADR-0023 progress                  | M25/#39 | 60 |
+| 25 | M26: annotation policy application ⫱option choice           | M26/#212 | 60 |
+| 26 | M27 odds bundle: pnpm shim, dormant notes, TEMPLATE.md, recipes remainder, session-CSRF + file-state scoping | M27/#119/120/154/228/229/230/189 | 90 |
+| 27 | TODO #28/#29 follow-through once PRs/listing land           | #28/29 | 15 |
+| 28 | Vision-review SUSPECT human eyeball after M06               | #80    | 15 |
+| 29 | Post-M01: fold release outcome back into plan (ANNOTATE, never rewrite) | plan | 15 |
+| 30 | Re-run demand check cadence on #217 at next survey          | #217   | — |
+
+Deferred-by-decision (no slot): #190 touch-drag, #216 vnu re-triage (bump-triggered),
+#217 demand gate, #191 (closed).
+
+## g) QUESTIONS ONLY YOU CAN ANSWER
+
+1. **#231 toolchain skew:** bump `go.work` + the `nixpkgs-go` input to 1.27.x now
+   (unblocks every manual commit; touches the flake fold-in you deferred) — or keep the
+   1.26.7 pin and accept that manual commits need `--no-verify` until the deliberate flake
+   update? (Your 09-13 release bumped root go.mod to 1.27.1; I did not touch it.)
+2. **Execution trigger:** shall I start the plan now — M01 first (v1.18.0 cut), then P2
+   discovery — or do you want to re-order/amend tiers first?
+3. **Commit-message fidelity:** the plan + TODO work landed on master under daemon
+   heuristic messages (content verified complete). Do you want a follow-up commit carrying
+   the full narrative message (no history rewrite), or is fixing #93 upstream the only
+   acceptable path and history stays as-is?
+
+---
+
+*Format: `.md` per the standing override. This report supersedes the release-framing in
+`2026-09-17_05-54_...` §f2/§g1 (v1.17.0 shipped 2026-09-13; next cut is v1.18.0) — the
+earlier report is historical and stays unedited per ANNOTATE rules.*
