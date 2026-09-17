@@ -46,6 +46,7 @@ const (
 type familyVisualStyle struct {
 	Border       string
 	BG           string
+	Bar          string
 	Text         string
 	IconColor    string
 	Icon         icons.Name
@@ -59,6 +60,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 	FamilyRejection: {
 		Border:       "border-amber-200 dark:border-amber-800",
 		BG:           "bg-amber-50 dark:bg-amber-900/20",
+		Bar:          "bg-amber-400 dark:bg-amber-500",
 		Text:         "text-amber-800 dark:text-amber-200",
 		IconColor:    "text-amber-500 dark:text-amber-400",
 		Icon:         icons.ExclamationTriangle,
@@ -69,6 +71,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 	FamilyConflict: {
 		Border:       "border-orange-200 dark:border-orange-800",
 		BG:           "bg-orange-50 dark:bg-orange-900/20",
+		Bar:          "bg-orange-400 dark:bg-orange-500",
 		Text:         "text-orange-800 dark:text-orange-200",
 		IconColor:    "text-orange-500 dark:text-orange-400",
 		Icon:         icons.ExclamationCircle,
@@ -79,6 +82,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 	FamilyTransient: {
 		Border:       "border-blue-200 dark:border-blue-800",
 		BG:           "bg-blue-50 dark:bg-blue-900/20",
+		Bar:          "bg-blue-500 dark:bg-blue-400",
 		Text:         "text-blue-800 dark:text-blue-200",
 		IconColor:    "text-blue-500 dark:text-blue-400",
 		Icon:         icons.Refresh,
@@ -89,6 +93,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 	FamilyCorruption: {
 		Border:       "border-red-200 dark:border-red-800",
 		BG:           "bg-red-50 dark:bg-red-900/20",
+		Bar:          "bg-red-500 dark:bg-red-400",
 		Text:         "text-red-800 dark:text-red-200",
 		IconColor:    "text-red-500 dark:text-red-400",
 		Icon:         icons.ExclamationTriangle,
@@ -99,6 +104,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 	FamilyInfrastructure: {
 		Border:       "border-gray-200 dark:border-gray-700",
 		BG:           "bg-gray-50 dark:bg-gray-800/50",
+		Bar:          "bg-gray-400 dark:bg-gray-500",
 		Text:         "text-gray-800 dark:text-gray-200",
 		IconColor:    "text-gray-400 dark:text-gray-500",
 		Icon:         icons.Globe,
@@ -109,6 +115,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 	FamilyOrchestration: {
 		Border:       "border-purple-200 dark:border-purple-800",
 		BG:           "bg-purple-50 dark:bg-purple-900/20",
+		Bar:          "bg-purple-500 dark:bg-purple-400",
 		Text:         "text-purple-800 dark:text-purple-200",
 		IconColor:    "text-purple-500 dark:text-purple-400",
 		Icon:         icons.ExclamationTriangle,
@@ -122,6 +129,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 var familyStyleDefault = familyVisualStyle{
 	Border:       "border-gray-200 dark:border-gray-700",
 	BG:           "bg-gray-50 dark:bg-gray-800/50",
+	Bar:          "bg-gray-400 dark:bg-gray-500",
 	Text:         "text-gray-800 dark:text-gray-200",
 	IconColor:    "text-gray-400 dark:text-gray-500",
 	Icon:         icons.Information,
