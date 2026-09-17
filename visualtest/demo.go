@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strconv"
+	"sync"
 	"testing"
 	"time"
 )
@@ -33,8 +34,41 @@ type DemoServer struct {
 	cmd     *exec.Cmd
 
 	// Log accumulates the server's combined stdout+stderr so tests (and the
-	// CI smoke) can assert absence of 500 responses.
-	Log bytes.Buffer
+	// CI smoke) can assert absence of 500 responses. Mutex-guarded: the exec
+	// copier goroutine writes concurrently with test reads (the data race
+	// TestDemoKanbanHTTPContracts caught under -race on 2026-09-17).
+	Log syncBuffer
+}
+
+// syncBuffer is a mutex-guarded bytes.Buffer: cmd.Stdout writers run in a
+// separate goroutine from the tests reading the log, and bytes.Buffer is not
+// safe for that mix.
+type syncBuffer struct {
+	mu  sync.Mutex
+	buf bytes.Buffer
+}
+
+func (b *syncBuffer) Write(p []byte) (int, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	return b.buf.Write(p)
+}
+
+// contains reports whether the accumulated log contains needle.
+func (b *syncBuffer) contains(needle []byte) bool {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	return bytes.Contains(b.buf.Bytes(), needle)
+}
+
+// string returns the accumulated log contents.
+func (b *syncBuffer) string() string {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	return b.buf.String()
 }
 
 // BaseURL returns the demo server's root URL, e.g. http://127.0.0.1:41234.
@@ -59,7 +93,7 @@ func StartDemoServer(t *testing.T) *DemoServer {
 	server := &DemoServer{
 		baseURL: "http://127.0.0.1:" + strconv.Itoa(port),
 		cmd:     cmd,
-		Log:     bytes.Buffer{},
+		Log:     syncBuffer{},
 	}
 	server.cmd.Stdout = &server.Log
 	server.cmd.Stderr = &server.Log
@@ -176,7 +210,7 @@ func waitForDemoHealth(t *testing.T, baseURL string) {
 func (s *DemoServer) FailIfServerErrors(t *testing.T) {
 	t.Helper()
 
-	if bytes.Contains(s.Log.Bytes(), []byte("500 ")) {
-		t.Fatalf("visualtest[demo]: server log contains 500 responses:\n%s", s.Log.String())
+	if s.Log.contains([]byte("500 ")) {
+		t.Fatalf("visualtest[demo]: server log contains 500 responses:\n%s", s.Log.string())
 	}
 }
