@@ -54,7 +54,7 @@ Don't know what to look for? Find your page type:
 
 | Component            | Signature                                           | One-liner                                                                                                                                                               |
 | -------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Card`               | `Card(props CardProps)`                             | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`                                                                            |
+| `Card`               | `Card(props CardProps)`                             | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`, sharp corners by default (`rounded-*` via `Class`, `.tc-squircle` opt-in)                                                                            |
 | `SimpleCard`         | `SimpleCard(props SimpleCardProps)`                 | Minimal card — children only, no header/footer                                                                                                                          |
 | `StatCard`           | `StatCard(props StatCardProps)`                     | Dashboard metric card with value, label, change, trend, icon, semantic `Tone` (`StatTone`: blue/green/yellow/red/purple), optional `Href` link                          |
 | `Grid`               | `Grid(props GridProps)`                             | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerAware` (default `true` since v2.0)                                                                   |
@@ -324,8 +324,9 @@ Dark mode: `@custom-variant dark (&:where(.dark, .dark *))` + `layout.ThemeScrip
 **Custom CSS utilities** (`templates/custom.css`): The library ships `.tc-*` classes for
 features Tailwind can't express: overlay animations (`.tc-overlay`, `.tc-modal`,
 `.tc-drawer`), scroll-snap (`.tc-snap-*`), stylable select (`.tc-select`), auto-growing
-textarea (`.tc-auto-grow`), content-visibility (`.tc-content-auto`), and **fluid
-typography** (`.tc-fluid-display`, `.tc-fluid-h1`–`h4`, `.tc-fluid-lead` — scale text
+textarea (`.tc-auto-grow`), content-visibility (`.tc-content-auto`), squircle corners
+(`.tc-squircle` — CSS `corner-shape: squircle`; compose with any `rounded-*` class), and
+**fluid typography** (`.tc-fluid-display`, `.tc-fluid-h1`–`h4`, `.tc-fluid-lead` — scale text
 with container width via `cqi` units; see `docs/recipes/fluid-typography.md`).
 Consumers vendor `templates/custom.css` via `app.css`; these classes are available
 automatically. Guarded by `TestCustomCSSUtilities`.
@@ -717,7 +718,9 @@ Never invent IDs with `time.Now()` alone — predictable under concurrency.
 - **CSP nonce:** every inline script takes `nonce={ props.Nonce }`. For external scripts, use
   `layout.Script(nonce, src, attrs)` — it auto-injects the nonce.
 - **Card shell:** use the shared `cardShellClass` constant; `SimpleCard` composes through
-  `Card` internally. `StatCard` also uses `cardShellClass`.
+  `Card` internally. `StatCard` also uses `cardShellClass`. The shell is SHARP (no
+  `rounded-*`) — cards render square corners by default; restore rounding via
+  `props.Class: "rounded-lg"` or compose `.tc-squircle` for squircle corners.
 - **Muted text:** use `mutedTextClass` (`text-sm text-gray-500 dark:text-gray-400`) plus a
   margin, not a bespoke class string.
 - **SVG paths:** reference constants in `utils/svg`, never inline a new path literal.

@@ -142,23 +142,23 @@ Concurrent session shipped the harness, sweep, baseline ledger, positive control
 
 **Finish M14 (immediate):**
 
-1. Run `TestWireE2ECalendarMonthNav` after the ID fix; confirm both dialects green.
-2. Wire a MonthNav calendar section into the demo binary (F066 completion) + demo smoke coverage.
-3. Update `docs/transport-wiring.md` Calendar month-nav recipe (placeholders + outerHTML self-swap pattern).
-4. CHANGELOG entry for MonthNav + the Calendar ID bugfix; commit M14.
-5. Re-sync `cmd/tc/_sources` calendar copy (the .templ changed again).
+1. ~~Run `TestWireE2ECalendarMonthNav` after the ID fix; confirm both dialects green.~~ done (DONE 2026-09-14 wave3 (M14 finished))
+2. ~~Wire a MonthNav calendar section into the demo binary (F066 completion) + demo smoke coverage.~~ done (DONE 2026-09-14 wave3)
+3. ~~Update `docs/transport-wiring.md` Calendar month-nav recipe (placeholders + outerHTML self-swap pattern).~~ done (DONE 2026-09-14 wave3)
+4. ~~CHANGELOG entry for MonthNav + the Calendar ID bugfix; commit M14.~~ done (DONE 2026-09-13 (v1.17.0 release commit))
+5. ~~Re-sync `cmd/tc/_sources` calendar copy (the .templ changed again).~~ done (DONE 2026-09-14 wave3)
 
 **Wire chain:**
-6. M15: `SimpleNav`/NavLink `Wire *wire.Action` support (#155) — tests + goldens + e2e via the calendar harness pattern.
-7. Convention-linter check 4: root renders props.ID (the class the Calendar bug proved real).
+6. ~~M15: `SimpleNav`/NavLink `Wire *wire.Action` support (#155) — tests + goldens + e2e via the calendar harness pattern.~~ done (DONE 2026-09-14 wave3 (M15 NavLink Wire shipped v1.18.0))
+7. ~~Convention-linter check 4: root renders props.ID (the class the Calendar bug proved real).~~ done (DONE 2026-09-14 wave3 (check-4))
 8. DataTable contract (M23/F107): typed sort/filter/paginate request↔response types + demo.
 
 **Guarantees/trust follow-ups:**
-9. M17: vnu.jar HTML validation over the golden corpus (F075–F076).
+9. ~~M17: vnu.jar HTML validation over the golden corpus (F075–F076).~~ done (DONE 2026-09-14 wave3 (M17 html-validation gate))
 10. `docs/release-checklist.md`: document the 3 release-script hardenings + the daemon race playbook.
 11. M19 slices: Renovate config (F081), templ-generate CI cache by .templ hash (F082), e2e job split (F083).
-12. Coverage floor per package at current−2% (F085).
-13. PR benchstat comment (F086).
+12. ~~Coverage floor per package at current−2% (F085).~~ done (DONE 2026-09-14 wave3 (M20 coverage floors))
+13. ~~PR benchstat comment (F086).~~ done (DONE as resident TODO_LIST #214 (deferred with runbook))
 14. Mutation-testing pilot on utils (F087).
 15. Flake policy doc + visualtest retry-once (F088).
 

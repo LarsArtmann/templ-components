@@ -58,13 +58,13 @@ The conversion itself is **real and shippable-quality on the code level**: every
 
 | # | Item (plan ref)                                                                                                      |
 | - | -------------------------------------------------------------------------------------------------------------------- |
-| 1 | Pagefind search (T17/M46–M47) — **feature regression vs live Starlight site**                                        |
+| ~~1~~ | ~~Pagefind search (T17/M46–M47) — **feature regression vs live Starlight site**~~ done — SUPERSEDED - shipped as the Go-native search index + CSP-safe combobox (18:38 hardening a4) |
 | 2 | Go OG-image generator (T18/M49)                                                                                      |
-| 3 | Golden HTML snapshot tests + stat-count drift guard for the website module (M52) — website module has **zero tests** |
-| 4 | Link-checker script over dist (M51/T20)                                                                              |
+| ~~3~~ | ~~Golden HTML snapshot tests + stat-count drift guard for the website module (M52) — website module has **zero tests**~~ done — DONE 2026-09-13 18:38 - website test suite (goldens + CountStats + CSP guard) shipped |
+| ~~4~~ | ~~Link-checker script over dist (M51/T20)~~ done — DONE 2026-09-13 18:38 - build.CheckLinks + anchor checker shipped |
 | 5 | Lighthouse spot-check (T20)                                                                                          |
 | 6 | `nix run .#website` flake app (M43)                                                                                  |
-| 7 | Visual regression goldens for the site itself via the `visualtest` harness                                           |
+| ~~7~~ | ~~Visual regression goldens for the site itself via the `visualtest` harness~~ done — DONE 2026-09-13 18:38 - siteshots captures the built dist (light/dark x desktop/mobile) |
 | 8 | Code-block filename/title chrome in docs (hero has it, docs blocks don't) and language labels                        |
 | 9 | RSS/atom feed for releases (never existed — candidate improvement, not parity)                                       |
 
@@ -91,14 +91,14 @@ The conversion itself is **real and shippable-quality on the code level**: every
 
 **P0 — ship-blockers / regressions (do first)**
 
-1. Re-add `examples/demo/**` to `website.yml` path triggers (fix demo-deploy regression).
+1. ~~Re-add `examples/demo/**` to `website.yml` path triggers (fix demo-deploy regression).~~ done (DONE 2026-09-13 18:38 - demo path filter restored (and re-restored 2026-09-17))
 2. Full visual pass: serve old Astro dist (git history) + new dist side-by-side, screenshot light/dark/mobile at 3 widths; file every deviation.
-3. Pagefind search: post-build index + sidebar search UI (restores lost feature).
-4. Verify JSON-LD nonce emission; then add CSP header (`script-src 'self' 'nonce-<build>'`) to `firebase.json` and test on staging target.
-5. Add website module tests: golden HTML snapshot per page + CountStats unit test (pins 123/105/58/7 against the live tree).
-6. Run the real html-validate locally; fix every finding it reports.
-7. Link-checker over dist: every internal href resolves; every `#anchor` matches a generated heading ID.
-8. Audit the 12 docs bodies for stale facts (module count "5-module", old component counts, `/docs/` references, version claims).
+3. ~~Pagefind search: post-build index + sidebar search UI (restores lost feature).~~ done (SUPERSEDED - Go-native search shipped instead of Pagefind (18:38 a4))
+4. ~~Verify JSON-LD nonce emission; then add CSP header (`script-src 'self' 'nonce-<build>'`) to `firebase.json` and test on staging target.~~ done (DONE 2026-09-13 18:38 - hash-based CSP header + sync/check guard shipped)
+5. ~~Add website module tests: golden HTML snapshot per page + CountStats unit test (pins 123/105/58/7 against the live tree).~~ done (DONE 2026-09-13 18:38 - website test suite + TestSiteBuildIntegrity)
+6. ~~Run the real html-validate locally; fix every finding it reports.~~ done (DONE 2026-09-13 18:38 - findings fixed; step remains continue-on-error (TODO_LIST #241))
+7. ~~Link-checker over dist: every internal href resolves; every `#anchor` matches a generated heading ID.~~ done (DONE 2026-09-13 18:38 - link+anchor checker in the build)
+8. ~~Audit the 12 docs bodies for stale facts (module count "5-module", old component counts, `/docs/` references, version claims).~~ done (DONE 2026-09-13 18:38 - docs audit fixed 3 site bugs)
 9. Confirm Firebase cleanUrls serves `slug.html` at `/slug` (test on a Firebase preview channel before master deploy).
 10. Pre-push full CI reproduction (`scripts/ci-repro.sh`) once before declaring cutover done.
 

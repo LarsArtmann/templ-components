@@ -70,23 +70,23 @@ Net assessment: zero fucked-up state survived the session; cost was ~12 wasted t
 
 1. Run the vision golden review with a real key; human-confirm SUSPECTs (closes #80/#150/#162)
 2. Post-tag consumer compile smoke job in CI (#15)
-3. Baseline per-module `golangci-lint run`; drive pre-existing findings to 0 or nolint-with-reason
-4. Cut v1.17.0 (owner decision; Unreleased is warm)
+3. ~~Baseline per-module `golangci-lint run`; drive pre-existing findings to 0 or nolint-with-reason~~ done (DONE 2026-09-13 wave2 (M04 - pre-existing findings driven to 0/nolint))
+4. ~~Cut v1.17.0 (owner decision; Unreleased is warm)~~ done (DONE - v1.17.0 shipped 2026-09-13; v1.18.0 shipped 2026-09-17)
 5. BuildFlow upstream sprint — kill #93/#107/#108/#124/#125/#126 in one week (#40)
-6. Branch protection decision — you said you don't care; then formally wontfix it in TODO #123 instead of leaving it open
+6. ~~Branch protection decision — you said you don't care; then formally wontfix it in TODO #123 instead of leaving it open~~ done (DONE - #123 formally closed as wontfix (wave2 M13))
 7. Re-derive the report's stat-card labels (23 QW / 14 policy) or stamp "at generation time"
 
 **P1 — depth testing (#41–#56 cluster)**
-8. axe-core in visualtest harness; zero-violation gate per component (#41)
-9. axe on every demo route (#91)
-10. HTML validator over all 242 goldens (#42)
+8. ~~axe-core in visualtest harness; zero-violation gate per component (#41)~~ done (DONE 2026-09-14 wave4 (M21/F095-F100 - axe sweep shipped, default-fail + ledger))
+9. ~~axe on every demo route (#91)~~ done (DONE 2026-09-14 wave4 - axe sweep audits every live demo route)
+10. ~~HTML validator over all 242 goldens (#42)~~ done (DONE 2026-09-14 wave3 (M17 - check-html-valid.sh + CI html-validation job over all goldens))
 11. Determinism gate: render twice, byte-compare raw output (#45)
 12. Golden-orphan detector (#54)
-13. Clock injection for RelativeTime boundary tests (#46)
-14. Fuzz `wire.Action.Attributes` + `DecodeForm` with adversarial inputs (#48)
+13. ~~Clock injection for RelativeTime boundary tests (#46)~~ done (DONE 2026-09-13 wave2 - RelativeTime Now field for deterministic tests)
+14. ~~Fuzz `wire.Action.Attributes` + `DecodeForm` with adversarial inputs (#48)~~ done (DONE 2026-09-13 wave2 (M06 - FuzzDecodeForm 1.5M execs))
 15. Property tests for chart_geometry invariants (#47)
 16. Keyboard-only e2e sweep across all interactive components (#43)
-17. aria-live announcement assertions (#44)
+17. ~~aria-live announcement assertions (#44)~~ done (DONE 2026-09-14 wave2 (F055 - TestAriaLivePoliteness bans assertive))
 18. Firefox visual lane for popover/field-sizing/base-select divergence (#49)
 19. 10k-row LazyRows stress test (#50)
 20. Focus-preservation tests after HTMX swaps (#51)

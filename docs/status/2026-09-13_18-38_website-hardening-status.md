@@ -37,15 +37,15 @@
 
 (Backlog items from the conversion status report and successors — untouched this session.)
 
-1. Go OG-image generator (static preserved PNGs still in use).
-2. `nix run .#website` flake app.
-3. Lighthouse CI / performance budgets.
-4. Firebase preview-channel deploy workflow (credential-gated).
-5. RSS/Atom feed for the changelog.
-6. Docs pages' structured data (BreadcrumbList/TechArticle JSON-LD; only landing has SoftwareApplication).
-7. 404 page's `SearchAction` wiring (NotFound404 search form unused — could point at the new search).
-8. Mobile docs sidebar (the docs nav is entirely hidden below `lg`; only header search/menu remain).
-9. Newsletter form hardening (buttondown embed only; no validation feedback).
+1. ~~Go OG-image generator (static preserved PNGs still in use).~~ done (routed to ROADMAP Website-and-docs-ideas (2026-09-17 evening harvest))
+2. ~~`nix run .#website` flake app.~~ done (routed to ROADMAP Website-and-docs-ideas)
+3. ~~Lighthouse CI / performance budgets.~~ done (routed to ROADMAP Website-and-docs-ideas)
+4. ~~Firebase preview-channel deploy workflow (credential-gated).~~ done (routed to ROADMAP Website-and-docs-ideas)
+5. ~~RSS/Atom feed for the changelog.~~ done (routed to ROADMAP Website-and-docs-ideas)
+6. ~~Docs pages' structured data (BreadcrumbList/TechArticle JSON-LD; only landing has SoftwareApplication).~~ done (routed to ROADMAP Website-and-docs-ideas)
+7. ~~404 page's `SearchAction` wiring (NotFound404 search form unused — could point at the new search).~~ done (routed to ROADMAP Website-and-docs-ideas)
+8. ~~Mobile docs sidebar (the docs nav is entirely hidden below `lg`; only header search/menu remain).~~ done (routed to ROADMAP Website-and-docs-ideas)
+9. ~~Newsletter form hardening (buttondown embed only; no validation feedback).~~ done (routed to ROADMAP Website-and-docs-ideas)
 10. `scripts/ci-repro.sh` full run (per-module loop + lint + website were run piecemeal instead).
 
 ## d) TOTALLY FUCKED UP
@@ -77,16 +77,16 @@ Nothing shipped broken — the final tree is verified (build, tests, lint, vet, 
 
 **Website correctness & CI**
 
-1. Run the new website tests in CI: add `go test ./...` step to `website.yml` (currently only build+lint — the integrity test is not enforced yet).
+1. ~~Run the new website tests in CI: add `go test ./...` step to `website.yml` (currently only build+lint — the integrity test is not enforced yet).~~ done (routed to TODO_LIST #241 (website.yml go-test step))
 2. Make the CSP firebase.json check fail the CI build explicitly (it already fails `build.sh` — verify the workflow surfaces it).
 3. Deploy to a Firebase **preview channel**; verify cleanUrls (`/slug` → `slug.html`), CSP header delivery, and 404 handling live.
 4. Decide + execute production deploy (site currently still serves the old Astro build until Firebase picks up the new dist).
-5. Add CSP `report-uri`/`report-to` telemetry (or at least document how to inspect violations).
+5. ~~Add CSP `report-uri`/`report-to` telemetry (or at least document how to inspect violations).~~ done (routed to ROADMAP (CSP violation telemetry))
 6. Replace the Node `html-validate` CI step (continue-on-error) with either a blocking run or a Go-based validator; delete the Node step if the Go checker suffices.
 7. Wire `scripts/ci-repro.sh` website step to also run website tests (parity with CI).
 8. Run `nix run .#visual` full suite + `scripts/ci-repro.sh --lint` once before the next push (not done this session).
 9. Post-deploy smoke: hit `https://templcomponents.lars.software` + `/health` demo endpoint in CI after deploy.
-10. Re-check daemon same-day regressions after these commits land (CSS minification, config flips — historical pattern) + confirm CI green.
+10. ~~Re-check daemon same-day regressions after these commits land (CSS minification, config flips — historical pattern) + confirm CI green.~~ done (SUPERSEDED - the 09-14 mr-status session + 09-17 release session handled the daemon regressions)
 
 **Website features**
 11. Go OG-image generator (per-page PNGs) replacing the static preserved `public/og/*`.
@@ -123,10 +123,10 @@ Nothing shipped broken — the final tree is verified (build, tests, lint, vet, 
 40. `visualtest/go.mod`: confirm tools additions don't affect `go test ./...` runtime (vet only so far).
 
 **Docs/housekeeping**
-41. Annotate `docs/status/2026-09-13_12-33_astro-to-templ-conversion-status.md` P0 items as resolved (docs-health ANNOTATE).
+41. ~~Annotate `docs/status/2026-09-13_12-33_astro-to-templ-conversion-status.md` P0 items as resolved (docs-health ANNOTATE).~~ done (DONE - annotations executed in the 2026-09-17 evening docs-health pass)
 42. Harvest this report's items into `TODO_LIST.md` / `ROADMAP.md` (docs-health HARVEST).
 43. Update `docs/visual-testing.md` + README docs section for the website (search + CSP + tests are user-visible facts).
-44. Move `[Unreleased]` entries into the next release cut when ready (release.sh flow, tag set for all modules).
+44. ~~Move `[Unreleased]` entries into the next release cut when ready (release.sh flow, tag set for all modules).~~ done (DONE - v1.18.0 shipped 2026-09-17 (511d3ed6))
 45. Run `-race` on website tests once (repo standard for library tests).
 46. Measure search-index.json size trend as docs grow (14 docs now; revisit client-side approach at ~50).
 47. Font audit: confirm the 5 self-hosted woff2 cover all used weights (600 for headings?) and preloads match first paint.
