@@ -154,6 +154,14 @@ func FamilyIsValid(f Family) bool {
 	return ok
 }
 
+// Diagnostic panel surfaces for the shared fix/context helpers. ErrorPage's
+// white card uses the neutral inset; ErrorDetail's family-tinted card keeps
+// the white inset.
+const (
+	errorInsetNeutral = "bg-gray-50/60 border-gray-200/80 dark:bg-gray-800/50 dark:border-gray-700/60"
+	errorInsetCard    = "bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+)
+
 // ParseFamily parses a family string (case-insensitive) into a Family.
 // Returns FamilyTransient for unrecognized values.
 func ParseFamily(s string) Family {

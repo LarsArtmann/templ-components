@@ -53,7 +53,7 @@ func errorpageDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = demoSection("ErrorPage", "errorpage-error-page").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = demoSection("ErrorPage (full model)", "errorpage-error-page").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -62,9 +62,19 @@ func errorpageDemo() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = errorpage.ErrorPage(errorpage.ErrorPageProps{
-			Family: errorpage.FamilyRejection,
-			Why:    "The resource was not found",
-			Fix:    "Check the URL or return to the homepage.",
+			Family:        errorpage.FamilyTransient,
+			StatusCode:    503,
+			Code:          errorpage.CodeUnavailable,
+			Title:         "Service temporarily unavailable",
+			Message:       "We're performing maintenance or experiencing high traffic.",
+			Why:           "This is a temporary issue. No data was lost.",
+			Fix:           "Wait a moment and refresh the page.",
+			WayOut:        "Retry",
+			WayOutHref:    "/",
+			Context:       []errorpage.ContextPair{{Key: "region", Value: "eu-central-1"}, {Key: "request_id", Value: "req_8fk2m1"}},
+			CauseChain:    []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}},
+			Timestamp:     "2026-09-17T12:00:00Z",
+			ShowTimestamp: true,
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

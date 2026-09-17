@@ -46,7 +46,7 @@ func TestErrorPageUserSeesFullPageError(t *testing.T) {
 			Fix:     "Check the YAML syntax and fix the indentation.",
 		}))
 		utils.AssertContains(t, output, "Some data appears to be damaged")
-		utils.AssertContains(t, output, "Suggested fix:")
+		utils.AssertContains(t, output, "Suggested fix")
 		utils.AssertContains(t, output, "Check the YAML syntax")
 		utils.AssertContains(t, output, "red")
 	})
@@ -156,7 +156,7 @@ func TestErrorDetailUserSeesErrorCard(t *testing.T) {
 			Title:  "Invalid Input",
 			Fix:    "Check your email format and try again.",
 		}))
-		utils.AssertContains(t, output, "Suggested fix:")
+		utils.AssertContains(t, output, "Suggested fix")
 		utils.AssertContains(t, output, "Check your email format")
 	})
 

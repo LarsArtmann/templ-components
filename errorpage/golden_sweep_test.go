@@ -9,6 +9,35 @@ import (
 
 // Golden sweep for errorpage components that previously lacked golden tests.
 
+func TestGoldenSweepErrorPage(t *testing.T) {
+	t.Parallel()
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "error_page_full", HTML: utils.Render(t, ErrorPage(ErrorPageProps{
+			Family:        FamilyTransient,
+			StatusCode:    503,
+			Code:          CodeUnavailable,
+			Title:         "Service temporarily unavailable",
+			Message:       "We're performing maintenance or experiencing high traffic.",
+			Why:           "This is a temporary issue. No data was lost.",
+			Fix:           "Wait a moment and refresh the page.",
+			WayOut:        "Retry",
+			WayOutHref:    "/",
+			Context:       []ContextPair{{Key: "region", Value: "eu-central-1"}, {Key: "request_id", Value: "req_8fk2m1"}},
+			CauseChain:    []CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}},
+			Timestamp:     "2026-09-17T12:00:00Z",
+			ShowTimestamp: true,
+		}))},
+		{Name: "error_page_minimal", HTML: utils.Render(t, ErrorPage(ErrorPageProps{
+			Family:  FamilyInfrastructure,
+			Code:    CodeInternalError,
+			Title:   titleInternalError,
+			Message: msgInternalUnexpected,
+			WayOut:  msgGoBack,
+		}))},
+	})
+}
+
 func TestGoldenSweepErrorAlert(t *testing.T) {
 	t.Parallel()
 

@@ -104,7 +104,7 @@ func ErrorAlert(props ErrorAlertProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = familyIcon(style).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = familyIcon(style, "h-5 w-5").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

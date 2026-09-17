@@ -1,26 +1,27 @@
 package errorpage
 
 import (
+	"fmt"
+
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
 
-templ familyIcon(style familyVisualStyle) {
-	@icons.Icon(style.Icon, utils.Class("h-5 w-5", style.IconColor))
+templ familyIcon(style familyVisualStyle, iconClass string) {
+	@icons.Icon(style.Icon, utils.Class(iconClass, style.IconColor))
 }
 
 // errorBody renders the badge + title + message block that lives inside the
-// `flex-1 min-w-0` content column of an error header (shared between
-// ErrorPage and ErrorDetail). The icon and outer flex wrapper stay at the
-// call site because their layout (gap, icon container decoration) differs
-// per visual density.
+// `flex-1 min-w-0` content column of an error header (ErrorDetail). The icon
+// and outer flex wrapper stay at the call site because their layout (gap,
+// icon container decoration) differs per visual density.
 //
 // Parameters:
 //   - titleTag: heading element — "h1" for hero/full, "h3" for compact.
 //   - titleClass: Tailwind classes for the heading (mt-N + text size).
 //   - messageClass: Tailwind classes for the message paragraph.
 templ errorBody(style familyVisualStyle, family Family, code Code, title, titleTag, titleClass, message, messageClass string) {
-	@codeAndFamilyBadge(family, style, code)
+	@errorChips(0, family, style, code)
 	if title != "" {
 		switch titleTag {
 			case "h1":
@@ -34,11 +35,8 @@ templ errorBody(style familyVisualStyle, family Family, code Code, title, titleT
 	}
 }
 
-// errorHeader renders the complete icon + content header for error display
-// components. Both ErrorDetail (compact) and ErrorPage (full) call this,
-// passing their variant-specific gap, icon-container class, and text density
-// parameters. The card.templ StatCard uses a different pattern (<dl> + different
-// alignment) and is not served by this template.
+// errorHeader renders the complete icon + content header for the compact
+// error display (ErrorDetail). ErrorPage uses its own stacked hero layout.
 templ errorHeader(
 	gap string,
 	iconContainerClass string,
@@ -53,7 +51,7 @@ templ errorHeader(
 ) {
 	<div class={ "flex items-start", gap }>
 		<div class={ iconContainerClass }>
-			@familyIcon(style)
+			@familyIcon(style, "h-5 w-5")
 		</div>
 		<div class="flex-1 min-w-0">
 			@errorBody(style, family, code, title, titleTag, titleClass, message, messageClass)
@@ -61,19 +59,22 @@ templ errorHeader(
 	</div>
 }
 
-templ fixCard(fix string) {
-	<div class="rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2">
-		<p class="text-xs text-gray-600 dark:text-gray-400">
-			<span class="font-medium text-gray-500 dark:text-gray-500">Suggested fix:</span>
-			<span class="ms-1">{ fix }</span>
+templ fixCard(fix string, insetClass string) {
+	<div class={ utils.Class("rounded-lg border px-3.5 py-3", insetClass) }>
+		<p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+			<span class="inline-flex items-center gap-1.5">
+				@icons.Icon(icons.Wrench, "h-3.5 w-3.5")
+				Suggested fix
+			</span>
 		</p>
+		<p class="mt-1.5 text-sm leading-relaxed text-gray-700 dark:text-gray-300">{ fix }</p>
 	</div>
 }
 
 templ causeList(causes []CauseItem, label string) {
 	if len(causes) > 0 {
-		<div class="mt-3 space-y-1">
-			<p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">{ label }</p>
+		<div class="space-y-1">
+			<p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{ label }</p>
 			for _, cause := range causes {
 				<div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
 					<span class="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 flex-shrink-0"></span>
@@ -87,9 +88,9 @@ templ causeList(causes []CauseItem, label string) {
 	}
 }
 
-templ contextTable(pairs []ContextPair) {
+templ contextTable(pairs []ContextPair, insetClass string) {
 	if len(pairs) > 0 {
-		<div class="mt-3 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden">
+		<div class={ utils.Class("overflow-hidden rounded-lg border", insetClass) }>
 			<table class="min-w-full text-xs">
 				<caption class="sr-only">Error context</caption>
 				<tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -113,30 +114,49 @@ templ timestampFooter(timestamp string, class string) {
 	}
 }
 
+// familyBadge renders the family name as a tinted chip. Zero-value and
+// unknown families render nothing (graceful degradation, same policy as
+// AvatarStatus) instead of an empty visible element.
 templ familyBadge(family Family, style familyVisualStyle) {
-	<span class={ "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium", style.AccentBG, style.AccentText }>
-		{ string(family) }
-	</span>
+	if FamilyIsValid(family) {
+		<span class={ "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium", style.AccentBG, style.AccentText }>
+			{ string(family) }
+		</span>
+	}
 }
 
-templ codeAndFamilyBadge(family Family, style familyVisualStyle, code Code) {
-	<div class="flex items-center gap-2 flex-wrap">
-		if code != "" {
-			<code class={ "inline-flex items-center rounded px-1.5 py-0.5 text-xs font-mono font-medium", style.AccentBG, style.AccentText }>
-				{ code }
-			</code>
-		}
-		@familyBadge(family, style)
-	</div>
+// errorChips renders the metadata chip row: optional HTTP status code,
+// optional error code, and the family badge. Every chip is guarded — a
+// zero-value field renders nothing instead of an empty chip.
+templ errorChips(statusCode int, family Family, style familyVisualStyle, code Code) {
+	if statusCode > 0 || code != "" || FamilyIsValid(family) {
+		<div class="flex flex-wrap items-center gap-2">
+			if statusCode > 0 {
+				<span class="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 font-mono text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+					{ fmt.Sprintf("HTTP %d", statusCode) }
+				</span>
+			}
+			if code != "" {
+				<code class={ "inline-flex items-center rounded px-1.5 py-0.5 text-xs font-mono font-medium", style.AccentBG, style.AccentText }>
+					{ code }
+				</code>
+			}
+			@familyBadge(family, style)
+		</div>
+	}
 }
 
-templ diagnosticSection(fix string, context []ContextPair, causes []CauseItem, containerClass string, causeLabel string) {
+// diagnosticSection renders the fix/context/cause diagnostic blocks. The
+// containerClass owns the vertical rhythm (space-y); insetClass picks the
+// panel surface for the current card background (errorInsetNeutral on the
+// white ErrorPage card, errorInsetCard on tinted ErrorDetail cards).
+templ diagnosticSection(fix string, context []ContextPair, causes []CauseItem, containerClass string, causeLabel string, insetClass string) {
 	if fix != "" || len(context) > 0 || len(causes) > 0 {
 		<div class={ containerClass }>
 			if fix != "" {
-				@fixCard(fix)
+				@fixCard(fix, insetClass)
 			}
-			@contextTable(context)
+			@contextTable(context, insetClass)
 			@causeList(causes, causeLabel)
 		</div>
 	}
