@@ -190,7 +190,7 @@ Don't know what to look for? Find your page type:
 
 | Component / Function           | Signature                             | One-liner                                                                   |
 | ------------------------------ | ------------------------------------- | --------------------------------------------------------------------------- |
-| `ErrorPage`                    | `ErrorPage(props ErrorPageProps)`     | Full-page error display                                                     |
+| `ErrorPage`                    | `ErrorPage(props ErrorPageProps)`     | Full-page error display (neutral card, family accent bar, `HTTP {StatusCode}`/code/family chip row — 2026-09-17 redesign)                                     |
 | `NotFound404`                  | `NotFound404(props NotFound404Props)` | Dedicated 404 page — hero numeral, search, links, configurable `LinksTitle` |
 | `ErrorDetail`                  | `ErrorDetail(props ErrorDetailProps)` | Inline error card                                                           |
 | `ErrorAlert`                   | `ErrorAlert(props ErrorAlertProps)`   | Family-aware alert                                                          |

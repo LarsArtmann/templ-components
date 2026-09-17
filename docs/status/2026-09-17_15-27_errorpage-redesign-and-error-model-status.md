@@ -31,10 +31,10 @@ The errorpage package **had** a complete, well-typed error model — but the pag
 ## b) PARTIALLY DONE
 
 1. **ErrorDetail polish** — received the badge guard, inset parametrization, and spacing fix, but its compact family-tinted design is unchanged (deliberate scope cut; no accent-bar/neutral variant parity with ErrorPage).
-2. **ErrorAlert family completeness** — docs now say 6 color schemes, but the demo still shows only 5 (no orchestration alert) and no orchestration-only visual golden exists.
-3. **`ci-repro.sh --lint` single-command proof** — the run executed but its tail was consumed by a git-diff dump (visualtest/go.sum churned mid-run); I verified every CI lane individually instead of obtaining one clean script verdict.
-4. **Errorpage demo section presentation** — the demo wraps full-page components (`min-h-screen` `<main>`) inside bordered boxes; functional but visually odd (nested main, per-section viewport-height). Noticed, not redesigned — needs an owner decision.
-5. **AGENTS.md guard table** — the new enum-values guard is implemented but the guard inventory table in AGENTS.md/skill was **not** updated with a row for it (discovered during self-review; see (e)).
+2. ~~**ErrorAlert family completeness** — docs now say 6 color schemes, but the demo still shows only 5 (no orchestration alert) and no orchestration-only visual golden exists.~~ routed → TODO_LIST #246
+3. ~~**`ci-repro.sh --lint` single-command proof** — the run executed but its tail was consumed by a git-diff dump (visualtest/go.sum churned mid-run); I verified every CI lane individually instead of obtaining one clean script verdict.~~ routed → TODO_LIST #257 (explicit verdict line)
+4. ~~**Errorpage demo section presentation** — the demo wraps full-page components (`min-h-screen` `<main>`) inside bordered boxes; functional but visually odd (nested main, per-section viewport-height). Noticed, not redesigned — needs an owner decision.~~ routed → owner gate TODO_LIST #236
+5. ~~**AGENTS.md guard table** — the new enum-values guard is implemented but the guard inventory table in AGENTS.md/skill was **not** updated with a row for it (discovered during self-review; see (e)).~~ DONE 2026-09-17 evening — skill/SKILL.md drift-guard section + AGENTS.md kanban bullet name both enum guards
 
 ## c) NOT STARTED (session-adjacent, identified but untouched)
 
@@ -81,16 +81,16 @@ _Brainstorm, not commitment — ROADMAP/TODO_LIST fuel. ★ = do soon._
 
 **Errorpage components**
 
-1. ★ Update AGENTS.md + skill guard tables with `TestFeaturesEnumValuesExhaustive`.
-2. ★ Refresh `ExampleErrorPage` to the full model.
-3. ★ Errorpage demo: render full-page components via standalone routes (`ErrorHandler`) instead of bordered boxes.
-4. Add orchestration ErrorAlert to demo + family matrix golden (6/6).
-5. Mobile viewport visual golden for ErrorPage (375px).
-6. RTL visual golden for ErrorPage (chip row, footer).
-7. Visual goldens for ErrorDetail and ErrorAlert (none exist).
-8. Browser e2e for the WayOut go-back button.
-9. `FromError` sets `StatusCode` via `FamilyStatusCode` (parity with handler).
-10. Handler HTML goldens (`WriteError`/`HTMLShell`) reflecting new markup.
+1. ~~★ Update AGENTS.md + skill guard tables with `TestFeaturesEnumValuesExhaustive`.~~ DONE 2026-09-17 evening — skill/SKILL.md drift-guard section + AGENTS.md kanban bullet name both enum guards.
+2. ~~★ Refresh `ExampleErrorPage` to the full model.~~ routed → TODO_LIST #246.
+3. ~~★ Errorpage demo: render full-page components via standalone routes (`ErrorHandler`) instead of bordered boxes.~~ routed → owner gate TODO_LIST #236 (plan M03).
+4. ~~Add orchestration ErrorAlert to demo + family matrix golden (6/6).~~ routed → TODO_LIST #246.
+5. ~~Mobile viewport visual golden for ErrorPage (375px).~~ routed → TODO_LIST #246.
+6. ~~RTL visual golden for ErrorPage (chip row, footer).~~ routed → TODO_LIST #246.
+7. ~~Visual goldens for ErrorDetail and ErrorAlert (none exist).~~ routed → TODO_LIST #246.
+8. ~~Browser e2e for the WayOut go-back button.~~ routed → TODO_LIST #246.
+9. ~~`FromError` sets `StatusCode` via `FamilyStatusCode` (parity with handler).~~ routed → TODO_LIST #246.
+10. ~~Handler HTML goldens (`WriteError`/`HTMLShell`) reflecting new markup.~~ routed → docs/planning/2026-09-17_18-20 plan.
 11. Secondary (ghost) action slot on ErrorPage (e.g., "Contact support").
 12. Configurable card width (`max-w-*`) for context-heavy pages.
 13. ErrorDetail neutral/accent-bar variant for parity with ErrorPage.
@@ -107,18 +107,18 @@ _Brainstorm, not commitment — ROADMAP/TODO_LIST fuel. ★ = do soon._
 24. JSON `errorResponse` ↔ chips data parity guard.
 
 **Guards/tooling (session-observed)**
-25. ★ `go mod tidy` + review `visualtest/go.sum` churn (testify bump) — decide pin policy.
-26. ci-repro.sh: explicit verdict line + exit code; optionally `--quiet-diff`.
-27. Flake app `visual-update <pattern>` for targeted golden regeneration.
-28. Investigate daemon/templ-watcher race that resurrects `base_templ.go` import flips (BuildFlow upstream).
-29. Extend check-templ-sync.sh to assert website module generated files explicitly.
-30. Consider single-sourcing the golden count (3 docs carry 250) behind the guard only.
-31. Add before/after screenshot pairs to visual-test failure artifacts naming convention.
+25. ~~★ `go mod tidy` + review `visualtest/go.sum` churn (testify bump) — decide pin policy.~~ DONE — churn settled; `GOWORK=off go mod tidy` in visualtest is zero-diff and the suite is green (verified 2026-09-17 evening).
+26. ~~ci-repro.sh: explicit verdict line + exit code; optionally `--quiet-diff`.~~ routed → TODO_LIST #257.
+27. ~~Flake app `visual-update <pattern>` for targeted golden regeneration.~~ routed → TODO_LIST #267.
+28. ~~Investigate daemon/templ-watcher race that resurrects `base_templ.go` import flips (BuildFlow upstream).~~ routed → owner gate TODO_LIST #232; RECURRED 16:28 same day (website `base_templ.go` + go.mod), repaired — see CHANGELOG `[Unreleased]`.
+29. ~~Extend check-templ-sync.sh to assert website module generated files explicitly.~~ routed → TODO_LIST #252 (the 16:28 drift proves the gap).
+30. ~~Consider single-sourcing the golden count (3 docs carry 250) behind the guard only.~~ RESOLVED — `TestDocsCountDrift` already re-derives every doc count from the repo; the copies are guarded, not hand-maintained.
+31. Add before/after screenshot pairs to visual-test failure artifacts naming convention. ← untouched = still open
 
 **Docs**
-32. AGENTS.md "26+ props structs" phrasing vs 121-component reality — refresh stale counts prose.
-33. docs/DOMAIN_LANGUAGE.md: add Family/CauseItem/ContextPair/WayOut terms if absent.
-34. Skill SKILL.md ErrorPage one-liner: mention status chip + redesign.
+32. ~~AGENTS.md "26+ props structs" phrasing vs 121-component reality — refresh stale counts prose.~~ DONE 2026-09-17 evening — the stale floor-count phrasing replaced with a count-free durable claim.
+33. ~~docs/DOMAIN_LANGUAGE.md: add Family/CauseItem/ContextPair/WayOut terms if absent.~~ DONE 2026-09-17 evening — Error Family, Cause Chain, Context Pair, Way Out (+ Pending Register) rows added.
+34. ~~Skill SKILL.md ErrorPage one-liner: mention status chip + redesign.~~ DONE 2026-09-17 evening — component-table row now cites the chip row + redesign.
 35. ROADMAP: route (f) items through docs-health HARVEST with routing rigor.
 
 **Repo hygiene noticed this session (not researched further, per scope)**
@@ -129,9 +129,9 @@ _Brainstorm, not commitment — ROADMAP/TODO_LIST fuel. ★ = do soon._
 40. Read `docs/release-checklist.md` before next cut; CHANGELOG `[Unreleased]` is warm.
 
 **Follow-ups on foreign workstream (only with owner's go-ahead)**
-41. SidebarNav theming change (`AGENTS.md` edit in tree) — needs its own tests/goldens pass.
-42. Demo migration to `forms.ValidationError` — check remaining demo files for the old `formsValidationError`.
-43. Server-side-validation recipe doc update to match `forms.ValidationError`.
+41. ~~SidebarNav theming change (`AGENTS.md` edit in tree) — needs its own tests/goldens pass.~~ DONE — the 17:28 sidebar session shipped it with tokens, demo fixes, goldens, and compliance-guard coverage.
+42. ~~Demo migration to `forms.ValidationError` — check remaining demo files for the old `formsValidationError`.~~ DONE — the 18:09 website session verified the demo compiles on the final state (CI red #2 was the mid-migration snapshot).
+43. Server-side-validation recipe doc update to match `forms.ValidationError`. ← verified still open 2026-09-17 evening (recipe never mentions `forms.ValidationError`).
 
 **Nice-to-have**
 44. ErrorPage `MaxMismatch`/viewport options audit for new overlays.
@@ -150,4 +150,4 @@ _Brainstorm, not commitment — ROADMAP/TODO_LIST fuel. ★ = do soon._
 
 ---
 
-_Point-in-time snapshot; goes stale. Section (f) is HARVEST input for `TODO_LIST.md`/`ROADMAP.md` via docs-health when instructed._
+_Point-in-time snapshot; goes stale. Section (f) is HARVEST input for `TODO_LIST.md`/`ROADMAP.md` via docs-health when instructed._ **(Harvested 2026-09-17 evening: §b2/b3/b4/b5 and §f1–f10/f25–f30/f32–f33/f35/f41–f42 resolved or routed — see inline markers; the rest remains open.)**
