@@ -53,8 +53,13 @@ jobs:
       - name: Build site (Go SSG + Tailwind CSS v4)
         # npm -g, not pnpm: pnpm's global bin preflight fails on runners
         # (see the deploy job note below).
+        # BOTH packages: @tailwindcss/cli declares `tailwindcss` as a peer
+        # dependency, and npm does NOT install peers of globally-installed
+        # packages — the CLI alone dies with "Can't resolve 'tailwindcss'"
+        # (red since the 2026-09-13 SSG rewrite; the demo Dockerfile installs
+        # the same pair for the same reason).
         run: |
-          npm install -g @tailwindcss/cli
+          npm install -g @tailwindcss/cli tailwindcss
           bash build.sh
 
       - name: HTML Validation

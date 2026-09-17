@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"regexp"
 	"strconv"
@@ -127,14 +129,24 @@ func goDirectiveFrom(src string) string {
 // toolchain/go.work, and every manual `git commit` failed in the pre-commit
 // hook with a cryptic "module . requires go >= X but go.work has go Y"
 // go-tool-run error while the daemon itself bypassed the hook. The daemon does
-// not run tests, so CI is where this class of drift must die. The module set
-// is derived from go.work's `use` lines, so newly added modules are covered
-// automatically.
+// not run tests. The module set is derived from go.work's `use` lines, so newly
+// added modules are covered automatically.
+//
+// Where it runs: go.work is gitignored (local dev only), so CI checkouts have
+// none — the guard SKIPS there (it cannot compare against a go.work it cannot
+// read). CI still catches a daemon-bumped directive on its own: the per-module
+// build dies with "go.mod requires go >= X" against the pinned runner
+// toolchain. The guard's added value is local/dev-shell runs, where it names
+// EVERY offending module precisely instead of failing on the first one.
 func TestGoDirectiveSkew(t *testing.T) {
 	t.Parallel()
 
 	workSrc, err := os.ReadFile("../go.work")
 	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			t.Skip("../go.work absent (CI checkout: go.work is gitignored) — skew guard is local-dev only; CI's own build fails on a bumped directive.")
+		}
+
 		t.Fatalf("read ../go.work: %v", err)
 	}
 
@@ -167,6 +179,7 @@ func TestGoDirectiveSkew(t *testing.T) {
 
 			continue
 		}
+
 		if compareGoVersions(modGo, workGo) > 0 {
 			t.Errorf(
 				"%s/go.mod requires go %s but go.work pins go %s — bump go.work AND the pinned "+
@@ -182,6 +195,7 @@ func TestGoDirectiveSkew(t *testing.T) {
 // "1.26.7"). Returns -1, 0, or 1. A missing patch component counts as 0.
 func compareGoVersions(a, b string) int {
 	aParts, bParts := parseGoVersion(a), parseGoVersion(b)
+
 	for i := range 3 {
 		switch {
 		case aParts[i] < bParts[i]:
@@ -196,6 +210,7 @@ func compareGoVersions(a, b string) int {
 
 func parseGoVersion(v string) [3]int {
 	var parts [3]int
+
 	for i, seg := range strings.SplitN(v, ".", 3) {
 		if i == 3 {
 			break

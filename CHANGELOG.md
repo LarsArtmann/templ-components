@@ -340,9 +340,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   hook, so only daemon commits could land. Reverted to 1.26.7 (the documented
   baseline). New drift guard `utils.TestGoDirectiveSkew` pins the invariant
   that no workspace module's `go` directive exceeds `go.work`'s — derived
-  from go.work's `use` lines, so new modules are covered automatically; it
-  fires in the CI per-module (`GOWORK=off`) test loop where the daemon does
-  not run.
+  from go.work's `use` lines, so new modules are covered automatically. It
+  runs wherever `go.work` exists (local dev, dev shells — naming EVERY
+  offending module); in CI checkouts `go.work` is gitignored, so the guard
+  skips there and the per-module build itself fails loudly on a bumped
+  directive (its first CI contact errored on the missing file — now an
+  explicit skip).
 
 - **HTML-validation compliance pack: vnu's 2025 rules over the golden
   corpus.** The CI validator (vnu.jar downloaded at runtime) advanced past
@@ -382,6 +385,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `website.yml` dropped `examples/demo/**` from the push/PR path filters,
   so the demo Docker/Cloud-Run redeploy only fired when `website/` itself
   changed. The filter now covers both.
+- **Website CI build is green again (red since the 2026-09-13 SSG rewrite).**
+  `npm install -g @tailwindcss/cli` alone cannot compile the site:
+  `tailwindcss` is a peer dependency of the CLI, and npm does not install
+  peers of globally-installed packages, so every run since the rewrite died
+  with `Can't resolve 'tailwindcss'` and the site (and demo) last deployed
+  2026-09-10. The workflow now installs BOTH packages (same pair the demo
+  Dockerfile installs for the same reason), restoring build + deploy.
+- **Go-directive skew guard + utils lint are CI-clean.** The guard's first
+  CI run exposed two defects the cutting session's local pass missed (the
+  utils module was never linted: three `wsl_v5` whitespace findings; and
+  the guard `t.Fatalf`'d on CI's absent gitignored `go.work` instead of
+  skipping) — both fixed, closing the "green locally, red in CI" gap.
 - **Website: docs sidebar leaked a literal `continue` text node and a
   broken `href="/"` pkg.go.dev link on every docs page.** templ v0.3.1020
   does not support a bare `continue` inside a template loop — it emits the
