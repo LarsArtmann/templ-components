@@ -11,7 +11,7 @@ import (
 )
 
 // goldenStats are deterministic library facts for golden rendering.
-var goldenStats = build.Stats{Components: 123, Icons: 105, Enums: 58, Modules: 7}
+var goldenStats = build.Stats{Components: 123, Icons: 105, Enums: 60, Modules: 7}
 
 // goldenNonce is a fixed nonce so rendered scripts are byte-stable.
 const goldenNonce = "golden-test-nonce"

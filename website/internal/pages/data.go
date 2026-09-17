@@ -8,7 +8,6 @@ import (
 	"fmt"
 
 	"github.com/larsartmann/templ-components/icons"
-
 	"github.com/larsartmann/templ-components/website/internal/build"
 )
 
@@ -159,10 +158,16 @@ type ComparisonMatrixRow struct {
 // drift from the codebase — the hand-typed enum count here once did.
 func ComparisonMatrix(stats build.Stats) []ComparisonMatrixRow {
 	return []ComparisonMatrixRow{
-		{Feature: "CSS approach", Values: []MatrixCell{"Tailwind + vars", "Tailwind + DaisyUI", "Tailwind v4 CSS-first"}},
+		{
+			Feature: "CSS approach",
+			Values:  []MatrixCell{"Tailwind + vars", "Tailwind + DaisyUI", "Tailwind v4 CSS-first"},
+		},
 		{Feature: "JavaScript", Values: []MatrixCell{"Alpine.js", "DaisyUI JS", "HATEOAS (enhances HTML)"}},
 		{Feature: "Requires Node.js", Values: []MatrixCell{MatrixNo, MatrixYes, MatrixNo}},
-		{Feature: "Typed props enums", Values: []MatrixCell{MatrixNo, MatrixNo, fmt.Sprintf("%d (tested IsValid)", stats.Enums)}},
+		{
+			Feature: "Typed props enums",
+			Values:  []MatrixCell{MatrixNo, MatrixNo, MatrixCell(fmt.Sprintf("%d (tested IsValid)", stats.Enums))},
+		},
 		{Feature: "CSP nonce support", Values: []MatrixCell{MatrixYes, MatrixNo, MatrixYes}},
 		{Feature: "Dark mode", Values: []MatrixCell{"CSS vars", "DaisyUI", "Tailwind dark: (tested)"}},
 		{Feature: "HTMX integration", Values: []MatrixCell{MatrixNo, MatrixNo, MatrixYes}},

@@ -43,10 +43,16 @@ func TestDocsCountDrift(t *testing.T) {
 	// per package — the numbers that historically drifted by hand.
 	packageCounts := countPackageComponents(t, root)
 
-	// Website counts: the Go site generator derives components/icons/enums
-	// from the codebase at build time (website/internal/build), so the old
-	// hand-typed sections.ts probes are gone — drift there is impossible by
-	// construction.
+	// Website counts: the site's hero metrics and comparison matrix derive
+	// components/icons/enums from the codebase at build time
+	// (build.CountStats interpolated into pages.Landing), so those cannot
+	// drift. The hand-written docs PROSE still carries typed counts —
+	// guarded here after the "58 enums" drift shipped to production
+	// (found 2026-09-17; truth was 60).
+	apiReference := readDoc(t, "website", "content", "docs", "api-reference.md")
+	assertCount(t, apiReference, `(\d+) typed string enums`, "website api-reference.md typed enums", actualIsValid)
+	invariants := readDoc(t, "website", "content", "docs", "guides", "invariants.md")
+	assertCount(t, invariants, "`IsValid` function — (\\d+) today", "website invariants.md IsValid count", actualIsValid)
 
 	readme := readDoc(t, "README.md")
 	assertCount(t, readme, `(\d+)\s+server-rendered components`, "README.md components", actualComponents)
