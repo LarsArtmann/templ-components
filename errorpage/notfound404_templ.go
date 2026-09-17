@@ -274,7 +274,7 @@ func NotFound404(props NotFound404Props) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if len(props.Links) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<div class=\"mt-10\"><p class=\"text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<div class=\"mt-10\"><p class=\"text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-500\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

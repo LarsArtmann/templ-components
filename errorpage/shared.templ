@@ -61,7 +61,7 @@ templ errorHeader(
 
 templ fixCard(fix string, insetClass string) {
 	<div class={ utils.Class("rounded-lg border px-3.5 py-3", insetClass) }>
-		<p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+		<p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-500">
 			<span class="inline-flex items-center gap-1.5">
 				@icons.Icon(icons.Wrench, "h-3.5 w-3.5")
 				Suggested fix
@@ -74,13 +74,13 @@ templ fixCard(fix string, insetClass string) {
 templ causeList(causes []CauseItem, label string) {
 	if len(causes) > 0 {
 		<div class="space-y-1">
-			<p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{ label }</p>
+			<p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-500">{ label }</p>
 			for _, cause := range causes {
 				<div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
 					<span class="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 flex-shrink-0"></span>
 					<span class="font-mono">{ cause.Message }</span>
 					if cause.Code != "" {
-						<span class="text-gray-400 dark:text-gray-500">({ cause.Code })</span>
+						<span class="text-gray-500 dark:text-gray-500">({ cause.Code })</span>
 					}
 				</div>
 			}
@@ -113,10 +113,10 @@ templ metaFooter(timestamp string, trace string, class string) {
 	if timestamp != "" || trace != "" {
 		<div class={ class, "flex flex-wrap items-center justify-between gap-2 border-t border-gray-100 dark:border-gray-800" }>
 			if timestamp != "" {
-				<p class="text-xs text-gray-400 dark:text-gray-500">{ timestamp }</p>
+				<p class="text-xs text-gray-500 dark:text-gray-500">{ timestamp }</p>
 			}
 			if trace != "" {
-				<p class="font-mono text-xs text-gray-400 dark:text-gray-500">Trace: { trace }</p>
+				<p class="font-mono text-xs text-gray-500 dark:text-gray-500">Trace: { trace }</p>
 			}
 		</div>
 	}

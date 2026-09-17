@@ -332,7 +332,7 @@ func fixCard(fix string, insetClass string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\"><p class=\"text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500\"><span class=\"inline-flex items-center gap-1.5\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\"><p class=\"text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-500\"><span class=\"inline-flex items-center gap-1.5\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -383,7 +383,7 @@ func causeList(causes []CauseItem, label string) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if len(causes) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div class=\"space-y-1\"><p class=\"text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div class=\"space-y-1\"><p class=\"text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-500\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -419,7 +419,7 @@ func causeList(causes []CauseItem, label string) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				if cause.Code != "" {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<span class=\"text-gray-400 dark:text-gray-500\">(")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<span class=\"text-gray-500 dark:text-gray-500\">(")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -584,7 +584,7 @@ func metaFooter(timestamp string, trace string, class string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if timestamp != "" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "<p class=\"text-xs text-gray-400 dark:text-gray-500\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "<p class=\"text-xs text-gray-500 dark:text-gray-500\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -603,7 +603,7 @@ func metaFooter(timestamp string, trace string, class string) templ.Component {
 				}
 			}
 			if trace != "" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "<p class=\"font-mono text-xs text-gray-400 dark:text-gray-500\">Trace: ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "<p class=\"font-mono text-xs text-gray-500 dark:text-gray-500\">Trace: ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
