@@ -33,6 +33,14 @@ import (
 // encoding and response-header targeting from wire.Handler.
 //
 // Run via `nix run .#visual`; tests skip gracefully without a browser.
+//
+// ANTI-DRIFT TIE (TODO #227): this server's add/reset/CSRF/same-origin
+// contract MIRRORS examples/demo/kanban_demo.go (which cannot be imported —
+// the demo runs as an external binary). The two are pinned together by ONE
+// probe table: runKanbanContractProbes in demo_kanban_http_test.go drives
+// TestDemoKanbanHTTPContracts (real demo) and TestKanbanE2EHTTPContractParity
+// (this server) through identical probes. Diverge from the demo's guards and
+// the parity test names this file.
 
 // kanbanE2EBoard is the mutex-guarded server state one dialect endpoint owns.
 type kanbanE2EBoard struct {

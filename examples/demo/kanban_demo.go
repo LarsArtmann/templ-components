@@ -2,6 +2,16 @@
 // of display.KanbanBoard needs. Two boards share this file — one wired for
 // htmx, one for Datastar — each with its own endpoint and state so the two
 // runtimes never fight over one board.
+//
+// ANTI-DRIFT TIE (TODO #227): visualtest's kanbanE2EServer re-implements
+// this same contract (CSRF-403 / same-origin-403 / unknown-column-404 /
+// reset) because visualtest boots this demo as an external binary and cannot
+// import it. The two implementations are pinned together by ONE probe table:
+// runKanbanContractProbes in visualtest/demo_kanban_http_test.go runs
+// TestDemoKanbanHTTPContracts (this binary) and
+// TestKanbanE2EHTTPContractParity (the harness) through identical probes —
+// change a status code or guard here, and the shared table names the side
+// that drifted. Keep both green.
 package main
 
 import (

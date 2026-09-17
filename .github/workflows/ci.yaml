@@ -128,6 +128,8 @@ jobs:
           (cd datastar && golangci-lint run --timeout=5m ./...)
           echo "==> htmx module..."
           (cd htmx && golangci-lint run --timeout=5m ./...)
+          echo "==> visualtest module (tests run in the Visual Regression job)..."
+          (cd visualtest && golangci-lint run --timeout=5m ./...)
 
       - name: Actionlint (lint GitHub Actions workflows)
         run: |

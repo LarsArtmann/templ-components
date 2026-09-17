@@ -55,7 +55,7 @@ const (
 
 // errSearchNoHits is the search-smoke failure sentinel (static by design —
 // err113 forbids dynamic error construction).
-var errSearchNoHits = errors.New("search smoke FAILED: 0 hits for query") //nolint:gochecknoglobals // sentinel error
+var errSearchNoHits = errors.New("search smoke FAILED: 0 hits for query")
 
 // chromePath resolves the browser binary: CHROMEDP_CHROME_PATH (set by
 // `nix run .#visual`-style wrappers) or "chromium" from PATH.
@@ -132,10 +132,9 @@ func serveDist(dist string) (string, *http.Server, error) {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		clean, _, _ := strings.Cut(r.URL.Path, "?")
 		if !strings.HasSuffix(clean, ".html") && !strings.Contains(clean, ".") {
-			if _, err := os.Stat(
-				filepath.Join(dist, clean+".html"),
-			); err == nil { //nolint:gosec // CLI-controlled dist root, mirrors the ServeFile nolint below
-				http.ServeFile(w, r, filepath.Join(dist, clean+".html")) //nolint:gosec // CLI-controlled dist root
+			cleanPath := filepath.Join(dist, clean+".html")
+			if _, err := os.Stat(cleanPath); err == nil { //nolint:gosec // CLI-controlled dist root
+				http.ServeFile(w, r, cleanPath) //nolint:gosec // CLI-controlled dist root
 
 				return
 			}
@@ -184,6 +183,7 @@ func captureRoute(base, route, out string) error {
 func screenshot(url, theme string, width, height int, target string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), routeTimeout)
 	defer cancel()
+
 	allocCtx, allocCancel := chromedp.NewExecAllocator(
 		ctx,
 		append(chromedp.DefaultExecAllocatorOptions[:],
