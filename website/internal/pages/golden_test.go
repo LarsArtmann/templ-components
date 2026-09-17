@@ -23,6 +23,7 @@ var goldenStats = sync.OnceValue(func() build.Stats {
 	if err != nil {
 		panic(fmt.Sprintf("golden_test: derive library stats: %v", err))
 	}
+
 	return stats
 })
 
