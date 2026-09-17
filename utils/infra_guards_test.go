@@ -101,8 +101,113 @@ func TestPreCommitHookInstallsGuard(t *testing.T) {
 		)
 	} else if buildFlowIdx >= 0 && replaceGuardIdx > buildFlowIdx {
 		t.Errorf(
-			"pre-commit hook runs check-replace-directives.sh AFTER buildflow — " +
+			"pre-commit hook runs check-replace-directives.sh AFTER buildflow — "+
 				"the guard must run BEFORE BuildFlow so it is not masked by the 60s budget.",
 		)
 	}
+}
+
+var goDirectiveRe = regexp.MustCompile(`^go (\d+\.\d+(?:\.\d+)?)$`)
+
+// goDirectiveFrom returns the `go X.Y[.Z]` language version of a go.mod or
+// go.work source, or "" when absent.
+func goDirectiveFrom(src string) string {
+	for line := range strings.SplitSeq(src, "\n") {
+		if match := goDirectiveRe.FindStringSubmatch(strings.TrimSpace(line)); match != nil {
+			return match[1]
+		}
+	}
+
+	return ""
+}
+
+// TestGoDirectiveSkew pins the invariant that every workspace module's go.mod
+// `go` directive is <= the go.work `go` directive. On 2026-09-17 the
+// auto-commit daemon bumped the ROOT go.mod to a newer Go than the pinned
+// toolchain/go.work, and every manual `git commit` failed in the pre-commit
+// hook with a cryptic "module . requires go >= X but go.work has go Y"
+// go-tool-run error while the daemon itself bypassed the hook. The daemon does
+// not run tests, so CI is where this class of drift must die. The module set
+// is derived from go.work's `use` lines, so newly added modules are covered
+// automatically.
+func TestGoDirectiveSkew(t *testing.T) {
+	t.Parallel()
+
+	workSrc, err := os.ReadFile("../go.work")
+	if err != nil {
+		t.Fatalf("read ../go.work: %v", err)
+	}
+
+	var workGo string
+
+	var useDirs []string
+
+	for line := range strings.SplitSeq(string(workSrc), "\n") {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "go ") {
+			workGo = goDirectiveFrom(line)
+		} else if dir, ok := strings.CutPrefix(line, "use "); ok {
+			useDirs = append(useDirs, strings.TrimSpace(dir))
+		}
+	}
+
+	if workGo == "" {
+		t.Fatalf("go.work has no `go <version>` directive — cannot verify toolchain skew.")
+	}
+
+	for _, dir := range useDirs {
+		modSrc, err := os.ReadFile(fmt.Sprintf("../%s/go.mod", strings.TrimPrefix(dir, "./")))
+		if err != nil {
+			t.Fatalf("read %s/go.mod (listed in go.work `use`): %v", dir, err)
+		}
+
+		modGo := goDirectiveFrom(string(modSrc))
+		if modGo == "" {
+			t.Errorf("%s/go.mod has no `go <version>` directive.", dir)
+
+			continue
+		}
+		if compareGoVersions(modGo, workGo) > 0 {
+			t.Errorf(
+				"%s/go.mod requires go %s but go.work pins go %s — bump go.work AND the pinned "+
+					"toolchain together, or revert the module directive. This exact skew broke every "+
+					"manual commit on 2026-09-17.",
+				dir, modGo, workGo,
+			)
+		}
+	}
+}
+
+// compareGoVersions compares two Go language-version strings ("1.26",
+// "1.26.7"). Returns -1, 0, or 1. A missing patch component counts as 0.
+func compareGoVersions(a, b string) int {
+	aParts, bParts := parseGoVersion(a), parseGoVersion(b)
+	for i := range 3 {
+		switch {
+		case aParts[i] < bParts[i]:
+			return -1
+		case aParts[i] > bParts[i]:
+			return 1
+		}
+	}
+
+	return 0
+}
+
+func parseGoVersion(v string) [3]int {
+	var parts [3]int
+	for i, seg := range strings.SplitN(v, ".", 3) {
+		if i == 3 {
+			break
+		}
+
+		n, err := strconv.Atoi(seg)
+		if err != nil {
+			return parts
+		}
+
+		parts[i] = n
+	}
+
+	return parts
 }

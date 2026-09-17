@@ -254,6 +254,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Toolchain-skew fix: root `go.mod` reverted to `go 1.26.7` (TODO #231).**
+  A 2026-09-17 auto-commit daemon run bumped the root `go.mod` language
+  version to 1.27.1 while `go.work`, all six sub-modules, and the nixpkgs
+  toolchain pin stayed at 1.26.x — every manual `git commit` then failed in
+  the pre-commit hook (`go-tool-run`/`gomod-check`: "module . requires go
+  1.27.1 but go.work has go 1.26.7") while the daemon itself bypassed the
+  hook, so only daemon commits could land. Reverted to 1.26.7 (the documented
+  baseline). New drift guard `utils.TestGoDirectiveSkew` pins the invariant
+  that no workspace module's `go` directive exceeds `go.work`'s — derived
+  from go.work's `use` lines, so new modules are covered automatically; it
+  fires in the CI per-module (`GOWORK=off`) test loop where the daemon does
+  not run.
+
 - **HTML-validation compliance pack: vnu's 2025 rules over the golden
   corpus.** The CI validator (vnu.jar downloaded at runtime) advanced past
   the snapshot the ignore list was written against — new quote style plus
