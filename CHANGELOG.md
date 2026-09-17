@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **ErrorPage visual redesign.** The full-page error card is rebuilt around a
+  neutral white shell (`rounded-2xl`, subtle shadow, dark-mode aware) with a
+  family-colored accent bar, a 48px icon circle, and a metadata chip row that
+  now renders `props.StatusCode` (`HTTP 503`) next to the error code and
+  family badge. The title is promoted to a real page heading (`text-2xl
+  font-bold tracking-tight`), the message to a leading paragraph, and the
+  diagnostics (suggested fix with wrench icon, context table, cause chain) to
+  neutral inset panels; the action button matches the NotFound404 button
+  scale. Family color moved out of the card background into accents (bar,
+  icon, chips, button), fixing the washed-out look in both themes. No public
+  API changed — `StatusCode` was already validated, just never displayed.
+
+### Fixed
+
+- **Empty family badge no longer renders.** A zero-value or unknown `Family`
+  used to emit an empty tinted `<span>`; the badge — and the whole chip row
+  when everything is unset — now renders nothing, following the same
+  graceful-degradation policy as `AvatarStatus` and `KanbanTone`.
+
 ## [1.18.0] — 2026-09-17
 
 ### Added
