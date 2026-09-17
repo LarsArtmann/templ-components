@@ -47,10 +47,11 @@ for arg in "$@"; do
 	--vuln) RUN_VULN=1 ;;
 	--tidy) RUN_TIDY=1 ;;
 	--website) RUN_WEBSITE=1 ;;
+	--quiet-diff) QUIET_DIFF=1 ;;
 	--cold) COLD=1 ;;
 	*)
 		echo "Unknown flag: $arg" >&2
-		echo "Usage: $0 [--lint] [--css] [--visual] [--vuln] [--tidy] [--website] [--cold]" >&2
+		echo "Usage: $0 [--lint] [--css] [--visual] [--vuln] [--tidy] [--website] [--quiet-diff] [--cold]" >&2
 		exit 2
 		;;
 	esac
@@ -93,7 +94,17 @@ for mod in $MODULES visualtest; do
 done
 
 step "Verify no untracked changes (git diff --exit-code)"
-git diff --exit-code
+# --quiet-diff: show only that drift EXISTS, not the whole diff (useful for
+# scheduled/CI mirror runs where the log is noise). Default prints the diff —
+# it is the fastest way to see what a daemon commit missed.
+if [ "${QUIET_DIFF:-0}" = "1" ]; then
+	if ! git diff --exit-code --stat >/dev/null; then
+		echo "ERROR: uncommitted changes present (run without --quiet-diff for the diff)" >&2
+		exit 1
+	fi
+else
+	git diff --exit-code
+fi
 
 step "Go vet (root)"
 go vet ./...
@@ -275,4 +286,7 @@ if [ "$RUN_VULN" = "1" ]; then
 fi
 
 echo ""
+echo ""
 echo "ALL STEPS PASSED — working tree matches CI's expectations."
+echo "VERDICT: PASS (exit 0) — $(date '+%Y-%m-%d %H:%M:%S %Z')"
+exit 0

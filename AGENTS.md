@@ -41,8 +41,16 @@ for mod in utils icons errorpage charts/echarts datastar htmx; do (cd "$mod" && 
 (cd visualtest && GOWORK=off go test ./...) # compile check; use nix run .#visual for real runs
 
 # Pre-push CI reproduction — runs CI's Build & Test job step-for-step (the
-# only complete local form; flags add the Lint/CSS/Visual jobs):
-scripts/ci-repro.sh --lint
+# only complete local form; flags add the Lint/CSS/Visual/Website jobs):
+scripts/ci-repro.sh --lint --website
+
+# RITUAL (M03, 2026-09-17): never push on a "should be green" — push only after
+# WITNESSING green-on-tip: run `scripts/ci-repro.sh --lint --website` at the
+# exact commit about to be pushed (it prints "VERDICT: PASS (exit 0)"), then
+# push IMMEDIATELY (the daemon races commits onto master between verify and
+# push — if `git status -sb` shows new local commits you didn't make, re-verify
+# the new tip before pushing). "Green locally" must name its lanes; a bare
+# "tests pass" is not a verdict.
 
 # All-in-one verification
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && nix run .#lint

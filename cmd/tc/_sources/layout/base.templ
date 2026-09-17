@@ -155,6 +155,16 @@ type PageProps struct {
 	Footer              templ.Component
 	// SecurityHeaders controls whether security meta tags are included
 	SecurityHeaders bool
+	// NoMainWrapper, when true, omits the `<main id="main-content">` wrapper
+	// and renders children directly under <body> — for pages whose content is
+	// itself a full landmark component (errorpage.ErrorPage and
+	// errorpage.NotFound404 render their own <main>; nesting a second <main>
+	// is an HTML violation and an axe/html-validate failure). The skip link
+	// still targets #main-content, so give your own landmark that ID
+	// (errorpage.NotFound404Props.BaseProps.ID accepts it, plus a tabindex
+	// Attr for skip-link focus). Zero value keeps the wrapper — existing
+	// pages render byte-identically.
+	NoMainWrapper bool
 }
 
 // DefaultPageProps returns sensible defaults for PageProps.
@@ -278,9 +288,13 @@ templ Base(props PageProps) {
 			<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:start-2 focus:z-50 focus:bg-blue-600 dark:focus:bg-blue-500 focus:text-white focus:px-4 focus:py-2 focus:rounded-md focus:shadow-lg focus:outline-hidden focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 focus:ring-blue-500 dark:focus:ring-blue-400">
 				{ skipLinkText(props.SkipLinkText) }
 			</a>
-			<main id="main-content" tabindex="-1" class="flex-1">
+			if props.NoMainWrapper {
 				{ children... }
-			</main>
+			} else {
+				<main id="main-content" tabindex="-1" class="flex-1">
+					{ children... }
+				</main>
+			}
 			if props.Footer != nil {
 				@props.Footer
 			}
