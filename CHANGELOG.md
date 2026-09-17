@@ -102,6 +102,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Website CI drift repaired (daemon recurrence, 3rd incident of this class
+  in 4 days).** The auto-commit daemon flipped the website module's generated
+  import to `encoding/json/v2` against its `.templ` source (the 2026-09-14
+  map-ordering hazard) and dropped the `go 1.26.7` pin from
+  `website/go.mod`, red-ing the Website workflow at 16:28. Both restored,
+  `go mod tidy` re-run, module build + tests + drift guards green. The
+  generated-file sync guard still does not watch the website module
+  (TODO_LIST #252).
 - **Website no longer advertises a stale enum count.** The landing comparison
   table, the API-reference docs page, and the invariants guide all claimed 58
   typed string enums; the library ships 60. Counts corrected, and the
