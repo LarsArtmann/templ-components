@@ -107,6 +107,35 @@ func TestPreCommitHookInstallsGuard(t *testing.T) {
 				"the guard must run BEFORE BuildFlow so it is not masked by the 60s budget.",
 		)
 	}
+
+	// The lint module-set sync guard must be wired too: the 2026-09-17 lint
+	// lane drift (a module linted in ci.yaml but not ci-repro.sh) passed
+	// locally for 3 runs because no gate compared the hand-copied sets.
+	// Assert against the TRACKED hook (.githooks/pre-commit) — it exists on
+	// every clone and in CI, unlike the .git/hooks copy above.
+	trackedSrc, err := os.ReadFile("../.githooks/pre-commit")
+	if err != nil {
+		t.Fatalf("read ../.githooks/pre-commit: %v", err)
+	}
+
+	for _, guard := range []string{"check-lint-modules.sh", "check-templ-sync.sh", "check-replace-directives.sh"} {
+		idx := strings.Index(string(trackedSrc), guard)
+		flowIdx := strings.Index(string(trackedSrc), "buildflow --build-mode")
+
+		if idx < 0 {
+			t.Errorf(
+				"tracked pre-commit hook (.githooks/pre-commit) no longer calls %s — "+
+					"re-add the pre-BuildFlow guard (see .githooks/pre-commit guards 1-7).",
+				guard,
+			)
+		} else if flowIdx >= 0 && idx > flowIdx {
+			t.Errorf(
+				"tracked pre-commit hook runs %s AFTER buildflow — "+
+					"the guard must run BEFORE BuildFlow so it is not masked by the 60s budget.",
+				guard,
+			)
+		}
+	}
 }
 
 var goDirectiveRe = regexp.MustCompile(`^go (\d+\.\d+(?:\.\d+)?)$`)

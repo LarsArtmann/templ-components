@@ -17,6 +17,10 @@ echo "Running templ-components pre-commit checks..."
 # provider rewrites it un-minified — TODO #125). Fails in <50ms.
 scripts/check-css-minified.sh
 
+# Fast guard: ci.yaml / ci-repro.sh / pre-commit.sh must lint the same
+# module + root-package sets (no go.work support = hand-copied lists).
+scripts/check-lint-modules.sh
+
 # Remove stale generated files and regenerate
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate ./...

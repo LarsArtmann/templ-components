@@ -45,9 +45,12 @@ if [ -z "$REPRO_MODULES" ]; then
 	REPRO_MODULES="(unparsed)"
 fi
 
-# ci.yaml module lint lines: (cd <mod> && golangci-lint run
-YAML_MODULES="$(grep -oE '\(cd [a-z/.-]+ && golangci-lint run' "$CI_YAML" |
-	sed 's/(cd \(.*\) && golangci-lint run/\1/' | sort | tr '\n' ' ' | sed 's/ $//')"
+# ci.yaml module lint loop: `for mod in <mods>; do` inside the golangci-lint
+# step (the per-module continue-on-error rework replaced the old literal
+# `(cd <mod> && golangci-lint run` lines).
+YAML_MODULES="$(grep -oE 'for mod in [a-z/. ]+; do' "$CI_YAML" |
+	head -1 | sed 's/^for mod in //; s/; do$//' | tr -s ' ' |
+	tr ' ' '\n' | sed '/^$/d' | sort | tr '\n' ' ' | sed 's/ $//')"
 
 REPRO_LINT_MODULES="$(for mod in $REPRO_MODULES visualtest; do echo "$mod"; done | sort | tr '\n' ' ' | sed 's/ $//')"
 
@@ -58,10 +61,13 @@ if [ "$YAML_MODULES" != "$REPRO_LINT_MODULES" ]; then
   (also update scripts/pre-commit.sh — both files must carry the same set)"
 fi
 
-# visualtest lane must exist in ci.yaml and ci-repro.sh (its tests live in the
-# Visual job, but the LINT lane must be in both Lint jobs).
-grep -q '(cd visualtest && golangci-lint run' "$CI_YAML" ||
-	fail "visualtest lint lane missing from $CI_YAML"
+# visualtest must be linted in both places: in ci.yaml it lives in the
+# `for mod in` loop (asserted via set membership), in ci-repro.sh as the
+# standalone lane after the MODULES loop.
+case " $YAML_MODULES " in
+*" visualtest "*) ;;
+*) fail "visualtest lint lane missing from $CI_YAML" ;;
+esac
 grep -q '(cd visualtest && golangci-lint run' "$CI_REPRO" ||
 	fail "visualtest lint lane missing from $CI_REPRO"
 

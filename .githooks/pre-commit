@@ -65,12 +65,31 @@ if [ -x "$REPO_ROOT/scripts/check-module-layers.sh" ]; then
     "$REPO_ROOT/scripts/check-module-layers.sh"
 fi
 
+# Guard 5b: Replace-directives tripwire
+#   The v1.17.0 release race left all 5 dependent sub-modules without replace
+#   blocks; this guard pins the exact replace set per module (<50ms). It was
+#   documented as a pre-commit guard but only ever existed in the dead
+#   .git/hooks copy — the tracked, ACTIVE hook (core.hooksPath=.githooks) was
+#   missing it until 2026-09-17 (caught by TestPreCommitHookInstallsGuard).
+if [ -x "$REPO_ROOT/scripts/check-replace-directives.sh" ]; then
+    "$REPO_ROOT/scripts/check-replace-directives.sh"
+fi
+
 # Guard 6: Demo CSS minification check
 #   examples/demo/static/app.css must be minified (<= 5 lines). BuildFlow's
 #   tailwind-build provider rewrites it un-minified (TODO #125 recurrences
 #   2026-09-03 + 2026-09-08); this blocks such commits at commit time.
 if [ -x "$REPO_ROOT/scripts/check-css-minified.sh" ]; then
     "$REPO_ROOT/scripts/check-css-minified.sh"
+fi
+
+# Guard 7: golangci-lint module-set sync check
+#   ci.yaml / scripts/ci-repro.sh / scripts/pre-commit.sh must lint the SAME
+#   module + root-package sets (golangci-lint has no go.work support, so the
+#   set is hand-copied in three places). A module present in only one file is
+#   how lint regressions reached master invisible (2026-09-17, 3 runs).
+if [ -x "$REPO_ROOT/scripts/check-lint-modules.sh" ]; then
+    "$REPO_ROOT/scripts/check-lint-modules.sh"
 fi
 
 echo "Running BuildFlow pre-commit checks (budget: 60s)..."

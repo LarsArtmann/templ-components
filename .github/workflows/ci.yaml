@@ -210,7 +210,7 @@ jobs:
 
       - name: Per-module isolation tests (GOWORK=off, race-enabled)
         run: |
-          for mod in utils icons errorpage charts/echarts datastar htmx; do
+          for mod in utils icons errorpage charts/echarts datastar htmx visualtest; do
             echo "==> $mod"
             (cd "$mod" && GOWORK=off go test -race -count=1 ./...)
           done
