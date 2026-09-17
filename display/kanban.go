@@ -145,9 +145,15 @@ func kanbanWireAttributes(w *wire.Action, boardID string) templ.Attributes {
 // from the pointer position between cards (adjusting for the dragged card's
 // own removal when moving within a column); the keyboard buttons move a card
 // to the end of the adjacent column. A drop whose source card lives on a
-// DIFFERENT board is ignored (each wired board owns its cards), and every
-// submitted move announces its completion into the board's live region once
-// the re-rendered board lands (kanbanAnnounceJS).
+// DIFFERENT board is ignored (each wired board owns its cards).
+//
+// Moves apply optimistically (ADR-0041): before the request fires, the card
+// is moved in the DOM and marked pending (tc-kanban-pending + aria-busy);
+// the pending state is cleared when the re-rendered board lands and REVERTED
+// with a visible flash + role="alert" announcement when the transport reports
+// failure (htmx:afterRequest without success, datastar-fetch error or
+// retries-failed). Every submitted move announces its completion into the
+// board's live region once the re-rendered board lands (kanbanAnnounceJS).
 func kanbanJS() string {
 	return `if(!window.tcKanbanAttached){window.tcKanbanAttached=true;` +
 		`function tcKbBoard(el){return el.closest('[data-tc-kanban]');}` +
@@ -160,13 +166,15 @@ func kanbanJS() string {
 		`f.querySelector('[data-tc-kanban-f-column]').value=colId;` +
 		`f.querySelector('[data-tc-kanban-f-index]').value=String(index);` +
 		`var live=b.querySelector('[data-tc-kanban-live]');` +
-		`var t=b.querySelector('[data-tc-kanban-card="'+tcKbEsc(cardId)+'"] [data-tc-kanban-title]');` +
+		`var card=b.querySelector('[data-tc-kanban-card="'+tcKbEsc(cardId)+'"]');` +
+		`var t=card?card.querySelector('[data-tc-kanban-title]'):null;` +
 		`var c=b.querySelector('[data-tc-kanban-column-body="'+tcKbEsc(colId)+'"]');` +
 		`var cn=c?c.getAttribute('data-tc-kanban-col-title'):colId;` +
 		`var title=t?t.textContent:cardId;` +
 		`if(live){live.textContent='Moving '+title+' to '+(cn||colId)+'.';}` +
 		`tcKbAnnounce='Moved '+title+' to '+(cn||colId)+'.';` +
 		`tcKbAnnounceAfter(b);` +
+		`if(card&&c)tcKbOptimistic(b,card,c,index,title,cn||colId);` +
 		`if(typeof f.requestSubmit==='function'){f.requestSubmit();}else{f.submit();}` +
 		`return true;}` +
 		`var tcKbSrc=null,tcKbZone=null,tcKbIdx=0,tcKbAnnounce=null;` +
@@ -176,6 +184,7 @@ func kanbanJS() string {
 		`}` +
 		kanbanDragJS() +
 		kanbanAnnounceJS() +
+		kanbanPendingJS() +
 		kanbanClickJS() +
 		`}`
 }
@@ -258,9 +267,11 @@ func kanbanDragJS() string {
 // region empty — so an EMPTY region after submit means the response landed,
 // whether the runtime replaced the board element (htmx outerHTML: resolve
 // the new node by id) or morphed it in place (Datastar outer patches keep
-// the old element connected). Boards whose patch never touches the live
-// region degrade to no post-swap announcement — the immediate "Moving"
-// message still fires.
+// the old element connected). The 30s budget (up from the original 5s) also
+// covers slow servers whose swap would otherwise strand the pending register
+// (kanbanPendingJS clears it via transport events regardless). Boards whose
+// patch never touches the live region degrade to no post-swap announcement —
+// the immediate "Moving" message still fires.
 func kanbanAnnounceJS() string {
 	return `function tcKbAnnounceIn(b){` +
 		`if(!tcKbAnnounce||!b)return;` +
@@ -275,11 +286,138 @@ func kanbanAnnounceJS() string {
 		`var b=old.isConnected?old:(old.id?document.getElementById(old.id):null);` +
 		`if(b){` +
 		`var live=b.querySelector('[data-tc-kanban-live]');` +
-		`if(live&&live.textContent===''){clearInterval(timer);tcKbAnnounceIn(b);return;}` +
+		`if(live&&live.textContent===''){clearInterval(timer);tcKbAnnounceIn(b);tcKbSucceed(b.id);return;}` +
 		`}` +
-		`if(tries>50){clearInterval(timer);}` +
+		`if(tries>300){clearInterval(timer);}` +
 		`},100);` +
 		`}`
+}
+
+// kanbanPendingJS returns the optimistic-move pipeline (ADR-0041): the
+// registry of in-flight moves, the DOM placement + count sync that make the
+// move instant, the pending register (tc-kanban-pending + aria-busy), and
+// the transport event listeners that clear it on success and revert it —
+// with a visible flash and a role="alert" announcement — on failure.
+//
+// Success has three independent clearers so pending can never stick: htmx's
+// afterRequest with successful===true (verified in the vendored htmx 2.0.10
+// source: fires from onload after the swap, with successful = !isError), the
+// Datastar bundle's datastar-fetch "finished" lifecycle type (verified in
+// the pinned v1.0.3 bundle: dispatched in finally after every action — after
+// an "error" revert it is a harmless no-op), and the announce poll's
+// swap-landed signal above.
+//
+// Failure is honest: htmx's afterRequest without success covers 4xx/5xx AND
+// network errors, aborts and timeouts (successful is undefined — never true —
+// for those), with responseError/sendError as belt-and-braces; Datastar
+// dispatches "error" (HTTP >= 400, immediate) and "retries-failed" (network
+// errors retry under the runtime's default backoff first — up to ~2 minutes
+// of honest "still trying" before the revert). Revert restores the card to
+// its exact original position, unhides placeholders, recomputes counts and
+// aria-labels from the DOM, flashes tc-kanban-move-failed for 4s, and writes
+// the failure into the board's role="alert" region (the repo's urgency
+// policy: role="alert", never aria-live="assertive").
+//
+// Every listener filters on data-tc-kanban-form so unrelated wired elements
+// (the column Action add button, the page's reset button) can never trigger
+// a revert; entries are keyed by board id so cross-board events stay inert.
+func kanbanPendingJS() string {
+	return `var tcKbPending=[];` +
+		`function tcKbPendingFor(bid){` +
+		`for(var i=0;i<tcKbPending.length;i++){if(tcKbPending[i].id===bid)return true;}` +
+		`return false;}` +
+		`function tcKbForget(bid){tcKbPending=tcKbPending.filter(function(e){return e.id!==bid;});}` +
+		`function tcKbCountLabel(n){return n===0?'no cards':(n===1?'1 card':n+' cards');}` +
+		`function tcKbSyncCounts(zone){` +
+		`if(!zone)return;` +
+		`var col=zone.closest('[data-tc-kanban-column]');if(!col)return;` +
+		`var n=tcKbCards(zone).length;` +
+		`var badge=col.querySelector('[data-tc-kanban-count]');` +
+		`if(badge)badge.textContent=String(n);` +
+		`zone.setAttribute('aria-label',(zone.getAttribute('data-tc-kanban-col-title')||'')+': '+tcKbCountLabel(n));` +
+		`}` +
+		`function tcKbPlace(zone,card,idx){` +
+		`var cards=tcKbCards(zone);` +
+		`var self=cards.indexOf(card);` +
+		`if(self>-1)cards.splice(self,1);` +
+		`if(idx>=cards.length){zone.appendChild(card);}` +
+		`else{zone.insertBefore(card,cards[idx]);}` +
+		`}` +
+		`function tcKbUnhideEmpties(zone){` +
+		`if(!zone)return;` +
+		`var phs=zone.querySelectorAll('[data-tc-kanban-empty]');` +
+		`for(var i=0;i<phs.length;i++){phs[i].hidden=false;}` +
+		`}` +
+		`function tcKbOptimistic(b,card,zone,idx,title,dest){` +
+		`var ph=zone.querySelector(':scope > [data-tc-kanban-empty]');` +
+		`if(ph)ph.hidden=true;` +
+		`var src=card.parentNode;` +
+		`tcKbPlace(zone,card,idx);` +
+		`tcKbSyncCounts(src);` +
+		`tcKbSyncCounts(zone);` +
+		`card.classList.add('tc-kanban-pending');` +
+		`card.setAttribute('aria-busy','true');` +
+		`tcKbPending.push({id:b.id,card:card,parent:card.parentNode,next:card.nextSibling,msg:'Moving '+title+' to '+dest});` +
+		`}` +
+		`function tcKbSucceed(bid){` +
+		`var b=document.getElementById(bid);` +
+		`if(b){` +
+		`var cards=b.querySelectorAll('[data-tc-kanban-card].tc-kanban-pending');` +
+		`for(var i=0;i<cards.length;i++){cards[i].classList.remove('tc-kanban-pending');cards[i].removeAttribute('aria-busy');}` +
+		`}` +
+		`tcKbForget(bid);` +
+		`}` +
+		`function tcKbRevert(bid){` +
+		`var b=document.getElementById(bid);` +
+		`var rest=[];` +
+		`for(var i=0;i<tcKbPending.length;i++){` +
+		`var e=tcKbPending[i];` +
+		`if(e.id!==bid){rest.push(e);continue;}` +
+		`var cur=e.card.parentNode;` +
+		`if(e.next&&e.next.parentNode===e.parent){e.parent.insertBefore(e.card,e.next);}` +
+		`else{e.parent.appendChild(e.card);}` +
+		`tcKbUnhideEmpties(e.parent);` +
+		`tcKbUnhideEmpties(cur);` +
+		`tcKbSyncCounts(e.parent);` +
+		`tcKbSyncCounts(cur);` +
+		`e.card.classList.remove('tc-kanban-pending');` +
+		`e.card.removeAttribute('aria-busy');` +
+		`e.card.classList.add('tc-kanban-move-failed');` +
+		`(function(c){setTimeout(function(){c.classList.remove('tc-kanban-move-failed');},4000);})(e.card);` +
+		`if(b){` +
+		`var alertEl=b.querySelector('[data-tc-kanban-alert]');` +
+		`if(alertEl)alertEl.textContent=e.msg+' failed. The board was restored.';` +
+		`}` +
+		`}` +
+		`tcKbPending=rest;` +
+		`}` +
+		`function tcKbFailFrom(el){` +
+		`if(!el||!el.closest)return;` +
+		`var b=el.closest('[data-tc-kanban]');` +
+		`if(!b||!b.id||!tcKbPendingFor(b.id))return;` +
+		`tcKbAnnounce=null;` +
+		`tcKbRevert(b.id);` +
+		`}` +
+		`document.addEventListener('htmx:afterRequest',function(e){` +
+		`var d=e.detail||{};` +
+		`var f=d.elt;` +
+		`if(!f||!f.hasAttribute||!f.hasAttribute('data-tc-kanban-form'))return;` +
+		`var b=f.closest('[data-tc-kanban]');` +
+		`if(!b||!b.id)return;` +
+		`if(d.successful===true){tcKbSucceed(b.id);}` +
+		`else{tcKbFailFrom(f);}` +
+		`});` +
+		`document.addEventListener('htmx:responseError',function(e){tcKbFailFrom((e.detail||{}).elt);});` +
+		`document.addEventListener('htmx:sendError',function(e){tcKbFailFrom((e.detail||{}).elt);});` +
+		`document.addEventListener('datastar-fetch',function(e){` +
+		`var d=e.detail||{};` +
+		`var f=d.el;` +
+		`if(!f||!f.hasAttribute||!f.hasAttribute('data-tc-kanban-form'))return;` +
+		`var b=f.closest('[data-tc-kanban]');` +
+		`if(!b||!b.id)return;` +
+		`if(d.type==='error'||d.type==='retries-failed'){tcKbFailFrom(f);}` +
+		`else if(d.type==='finished'){tcKbSucceed(b.id);}` +
+		`});`
 }
 
 // kanbanClickJS returns the click listener behind the per-card keyboard

@@ -984,6 +984,60 @@ details[open] [data-tc-chevron] {
   background-color: #3b82f6;
 }
 
+/* --- Kanban board: optimistic move register (ADR-0041) -------------------
+ * display.KanbanBoard's script moves a card the moment its move is
+ * submitted and marks it pending until the server's re-render lands:
+ * the card dims and a spinner ring spins in its top-right corner (the
+ * only corner nothing else claims). A FAILED move (4xx/5xx, network
+ * error) snaps the card back to its original position and flashes a red
+ * border for 4s while a role="alert" region announces the revert.
+ * inset-inline keeps the spinner RTL-correct; reduced-motion users get a
+ * static ring (still an unambiguous "in flight" glyph) instead of spin.
+ * ---------------------------------------------------------------------- */
+[data-tc-kanban] [data-tc-kanban-card].tc-kanban-pending {
+  opacity: 0.7;
+}
+
+[data-tc-kanban] [data-tc-kanban-card].tc-kanban-pending::after {
+  content: "";
+  position: absolute;
+  top: 0.375rem;
+  inset-inline-end: 0.375rem;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid #93c5fd;
+  border-top-color: #2563eb;
+  border-radius: 9999px;
+  animation: tc-kanban-pending-spin 0.8s linear infinite;
+}
+
+.dark [data-tc-kanban] [data-tc-kanban-card].tc-kanban-pending::after {
+  border-color: #1e3a8a;
+  border-top-color: #60a5fa;
+}
+
+[data-tc-kanban] [data-tc-kanban-card].tc-kanban-move-failed {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 1px #dc2626;
+}
+
+.dark [data-tc-kanban] [data-tc-kanban-card].tc-kanban-move-failed {
+  border-color: #f87171;
+  box-shadow: 0 0 0 1px #f87171;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-tc-kanban] [data-tc-kanban-card].tc-kanban-pending::after {
+    animation: none;
+  }
+}
+
+@keyframes tc-kanban-pending-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Touch devices have no hover, so hover-revealed FUNCTIONALITY would stay
  * hidden forever. Library convention (enforced by
  * utils.TestCoarsePointerCompliance): any control gated behind
