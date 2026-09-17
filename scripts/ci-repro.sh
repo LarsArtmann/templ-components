@@ -158,6 +158,7 @@ if [ "$RUN_LINT" = "1" ]; then
 	scripts/check-module-sync.sh
 	scripts/check-module-layers.sh
 	scripts/check-lint-modules.sh
+	scripts/check-tc-sources-sync.sh
 	scripts/test-release-assertions.sh
 
 	step "Changelog warmth guard (#133 — local parity with CI's changelog-guard job)"

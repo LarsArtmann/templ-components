@@ -92,6 +92,14 @@ if [ -x "$REPO_ROOT/scripts/check-lint-modules.sh" ]; then
     "$REPO_ROOT/scripts/check-lint-modules.sh"
 fi
 
+# Guard 8: tc scaffolder source-sync check
+#   cmd/tc/_sources/** must stay byte-identical to the library templates they
+#   mirror; a drifted copy scaffolds stale code for `tc new` consumers.
+#   (TestSourcesMatchPackageFiles pins the same invariant in `go test`.)
+if [ -x "$REPO_ROOT/scripts/check-tc-sources-sync.sh" ]; then
+    "$REPO_ROOT/scripts/check-tc-sources-sync.sh"
+fi
+
 echo "Running BuildFlow pre-commit checks (budget: 60s)..."
 
 START=$(date +%s)

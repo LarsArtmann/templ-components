@@ -21,6 +21,10 @@ scripts/check-css-minified.sh
 # module + root-package sets (no go.work support = hand-copied lists).
 scripts/check-lint-modules.sh
 
+# Fast guard: the `tc new` scaffolder's embedded templates must match the
+# library sources they mirror.
+scripts/check-tc-sources-sync.sh
+
 # Remove stale generated files and regenerate
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate ./...

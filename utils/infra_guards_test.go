@@ -118,7 +118,12 @@ func TestPreCommitHookInstallsGuard(t *testing.T) {
 		t.Fatalf("read ../.githooks/pre-commit: %v", err)
 	}
 
-	for _, guard := range []string{"check-lint-modules.sh", "check-templ-sync.sh", "check-replace-directives.sh"} {
+	for _, guard := range []string{
+		"check-lint-modules.sh",
+		"check-templ-sync.sh",
+		"check-replace-directives.sh",
+		"check-tc-sources-sync.sh",
+	} {
 		idx := strings.Index(string(trackedSrc), guard)
 		flowIdx := strings.Index(string(trackedSrc), "buildflow --build-mode")
 
