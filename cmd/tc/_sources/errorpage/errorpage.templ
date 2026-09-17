@@ -14,22 +14,32 @@ templ ErrorPage(props ErrorPageProps) {
 		}
 		{ props.Attrs... }
 	>
-		<div class="w-full max-w-lg">
-			<div class={ "rounded-xl border shadow-xs overflow-hidden", style.Border, style.BG }>
-				<div class="px-6 py-8 sm:px-10">
-					@errorHeader("gap-4", utils.Class("flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg", style.AccentBG), style, props.Family, props.Code, props.Title, "h1", "mt-2 text-lg font-semibold text-gray-900 dark:text-white", props.Message, "mt-2 text-sm text-gray-600 dark:text-gray-400")
-					if props.Why != "" {
-						<div class="mt-5 ms-14">
-							<p class="text-sm text-gray-500 dark:text-gray-400">{ props.Why }</p>
+		<div class="w-full max-w-xl">
+			<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:shadow-black/20">
+				<div class={ "h-1", style.Bar } aria-hidden="true"></div>
+				<div class="px-6 py-8 sm:px-10 sm:py-10">
+					<div class="flex flex-wrap items-center gap-x-4 gap-y-3">
+						<div class={ "flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full", style.AccentBG }>
+							@familyIcon(style, "h-6 w-6")
 						</div>
+						@errorChips(props.StatusCode, props.Family, style, props.Code)
+					</div>
+					if props.Title != "" {
+						<h1 class="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{ props.Title }</h1>
 					}
-					@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-4 ms-14", "Cause chain")
+					if props.Message != "" {
+						<p class="mt-2.5 text-base leading-relaxed text-gray-600 dark:text-gray-300">{ props.Message }</p>
+					}
+					if props.Why != "" {
+						<p class="mt-4 text-sm leading-relaxed text-gray-500 dark:text-gray-400">{ props.Why }</p>
+					}
+					@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-6 space-y-3", "Cause chain", errorInsetNeutral)
 					if props.WayOut != "" || props.WayOutHref != "" {
-						<div class="mt-6 ms-14">
+						<div class="mt-8">
 							if props.WayOutHref != "" {
 								<a
 									href={ templ.SafeURL(props.WayOutHref) }
-									class={ "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
+									class={ "inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 								>
 									@actionLinkBody(utils.Ternary(props.WayOut != "", props.WayOut, "Go back"))
 								</a>
@@ -37,7 +47,7 @@ templ ErrorPage(props ErrorPageProps) {
 								<button
 									type="button"
 									data-tc-go-back
-									class={ "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
+									class={ "inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 								>
 									{ props.WayOut }
 								</button>
@@ -46,7 +56,7 @@ templ ErrorPage(props ErrorPageProps) {
 					}
 				</div>
 				if props.ShowTimestamp {
-					@timestampFooter(props.Timestamp, "px-6 py-3 sm:px-10 bg-gray-50/50 dark:bg-gray-900/50")
+					@timestampFooter(props.Timestamp, "px-6 py-3.5 sm:px-10 bg-gray-50/60 dark:bg-gray-900/40")
 				}
 			</div>
 		</div>

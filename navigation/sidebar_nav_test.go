@@ -74,7 +74,7 @@ func TestSidebarNavRender(t *testing.T) {
 	t.Run("brand slot renders at top", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SidebarNav(SidebarNavProps{
-			Brand: templ.Raw(`<span class="font-bold text-white">MyApp</span>`),
+			Brand: templ.Raw(`<span class="font-bold text-gray-900 dark:text-white">MyApp</span>`),
 			Items: []SidebarNavItem{{Label: "Home", Href: "/"}},
 		}))
 		utils.AssertContains(t, output, "MyApp")

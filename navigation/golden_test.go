@@ -12,7 +12,7 @@ import (
 func TestGoldenSidebarNav(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, SidebarNav(SidebarNavProps{
-		Brand: templ.Raw(`<span class="font-bold text-white">MyApp</span>`),
+		Brand: templ.Raw(`<span class="font-bold text-gray-900 dark:text-white">MyApp</span>`),
 		Items: []SidebarNavItem{
 			{Label: "Dashboard", Href: "/", Icon: icons.Squares2x2, Active: true},
 			{Label: "Users", Href: "/users", Icon: icons.Users},
