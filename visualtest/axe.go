@@ -111,9 +111,8 @@ true`
 		return AxeResults{}, fmt.Errorf("start axe run: %w", boot)
 	}
 
-	settle := chromedp.Run(runCtx, chromedp.Poll(
+	settle := chromedp.Run(runCtx, pollTrue(
 		`window.__tcAxeJSON !== null || window.__tcAxeErr !== null`,
-		nil,
 		chromedp.WithPollingInterval(axePollInterval),
 		chromedp.WithPollingTimeout(axeResultTimeout),
 	))

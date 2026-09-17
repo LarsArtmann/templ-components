@@ -38,8 +38,11 @@ func TestNoRawChromedpPoll(t *testing.T) {
 			return err
 		}
 
-		if strings.Contains(string(src), "chromedp.Poll(") {
-			t.Errorf("%s uses raw chromedp.Poll — use pollBool/pollTrue (booleans) or pollText (strings); see poll.go and the TODO #193 lesson", path)
+		if strings.Contains(string(src), "chromedp.Poll"+"(") {
+			t.Errorf(
+				"%s uses raw chromedp.Poll — use pollBool/pollTrue (booleans) or pollText (strings); see poll.go and the TODO #193 lesson",
+				path,
+			)
 		}
 
 		return nil
