@@ -216,7 +216,9 @@ func DefaultTableProps() TableProps {
 // For custom cell rendering, set Body to a component that renders <tr> elements
 // directly — see the Body field on TableProps.
 templ Table(props TableProps) {
-	<div class={ tableWrapperClass(props.Flush) }>
+	// tabindex="0" keeps an overflowing table keyboard-scrollable (WCAG 2.1
+	// scrollable-region rule); the same pattern the Carousel track uses.
+	<div class={ tableWrapperClass(props.Flush) } tabindex="0">
 		<table
 			if props.ID != "" {
 				id={ props.ID }
