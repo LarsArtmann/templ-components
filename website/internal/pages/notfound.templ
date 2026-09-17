@@ -3,6 +3,7 @@ package pages
 import (
 	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/layout"
 )
 
 // NotFoundMeta describes the 404 page.
@@ -16,9 +17,14 @@ func NotFoundMeta() PageMeta {
 }
 
 // NotFound renders the site 404 page around the library's NotFound404
-// component — the site eating its own error-page dogfood.
+// component — the site eating its own error-page dogfood. NoMainWrapper
+// hands the <main> landmark to NotFound404 (a nested second <main> is an
+// HTML violation); the skip link targets the ID set in siteNotFoundProps.
 templ NotFound(nonce string) {
-	@Page(NotFoundMeta(), nonce) {
+	props := pageProps(NotFoundMeta(), nonce)
+	props.NoMainWrapper = true
+	@layout.Base(props) {
+		@Header(nonce)
 		@errorpage.NotFound404(siteNotFoundProps(nonce))
 	}
 }
@@ -26,6 +32,9 @@ templ NotFound(nonce string) {
 func siteNotFoundProps(nonce string) errorpage.NotFound404Props {
 	props := errorpage.DefaultNotFound404Props()
 	props.BaseProps.Nonce = nonce
+	// Skip-link target: NotFound404's own <main> becomes #main-content.
+	props.BaseProps.ID = "main-content"
+	props.BaseProps.Attrs = templ.Attributes{"tabindex": "-1"}
 	props.Links = []errorpage.NotFoundLink{
 		{Text: "Documentation", Href: "/getting-started/installation", Icon: icons.Document},
 		{Text: "GitHub", Href: GitHubURL, Icon: icons.CodeBracket},

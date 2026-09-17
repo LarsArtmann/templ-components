@@ -76,7 +76,7 @@ templ NotFound404(props NotFound404Props) {
 						for _, link := range props.Links {
 							<a
 								href={ templ.SafeURL(link.Href) }
-								class={ "group flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-start transition-colors hover:border-blue-400 dark:hover:border-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 " + utils.TransitionColors }
+								class={ "group flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-start hover:border-blue-400 dark:hover:border-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 " + utils.TransitionColors }
 							>
 								if link.Icon != "" {
 									<span class={ "flex-shrink-0 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 " + utils.TransitionColors }>

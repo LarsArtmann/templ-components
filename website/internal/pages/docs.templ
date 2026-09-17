@@ -58,7 +58,7 @@ templ DocsLayout(slug string, page md.Page, prev, next *DocRef, lastUpdated stri
 }
 
 templ docsSidebar(current string) {
-	<aside class="hidden lg:block w-56 shrink-0">
+	<aside class="hidden lg:block w-56 shrink-0" aria-label="Documentation navigation">
 		<nav class="sticky top-24 docs-nav" aria-label="Documentation navigation">
 			for _, group := range Sidebar() {
 				<div class="mb-6">
@@ -87,7 +87,7 @@ templ docsSidebar(current string) {
 
 templ docsTOC(page md.Page) {
 	if len(page.Headings) > 0 {
-		<aside class="hidden xl:block w-52 shrink-0">
+		<aside class="hidden xl:block w-52 shrink-0" aria-label="On this page">
 			<nav class="sticky top-24 docs-toc" aria-label="On this page">
 				<div class="text-xs font-mono uppercase tracking-[0.2em] text-text-muted mb-2">On this page</div>
 				<ul class="space-y-1.5">
