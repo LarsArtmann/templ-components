@@ -33,9 +33,6 @@ const (
 	// endOfListText is navigation.EndOfList's default message; its appearance
 	// proves the LoadMore chain exhausted server-side.
 	endOfListText = "You've reached the end"
-
-	// uploadEchoMarker is the text prefix /api/wire/upload echoes back.
-	uploadEchoMarker = "echo"
 )
 
 // kanbanColumnCardIDsExpr returns a JS expression evaluating to the comma-
@@ -68,10 +65,7 @@ func demoClickUntil(ctx context.Context, t *testing.T, buttonSel, conditionExpr 
 
 	for time.Now().Before(deadline) {
 		if err := chromedp.Run(ctx, chromedp.Click(buttonSel, chromedp.ByQuery)); err == nil {
-			var held bool
-
-			pollErr := chromedp.Run(ctx, chromedp.Poll("Boolean("+conditionExpr+")", &held,
-				chromedp.WithPollingTimeout(3*time.Second)))
+			pollErr := chromedp.Run(ctx, pollTrue(conditionExpr, chromedp.WithPollingTimeout(3*time.Second)))
 			if pollErr == nil {
 				return
 			}
@@ -159,14 +153,12 @@ func TestDemoConfirmDeleteRemovesRow(t *testing.T) {
 		t.Fatalf("visualtest[demo]: ConfirmDelete click: %v", err)
 	}
 
-	var removed bool
-	if err := chromedp.Run(ctx, chromedp.Poll(
+	if err := chromedp.Run(ctx, pollTrue(
 		// Success = the row was REPLACED: #item-123 no longer exists and
 		// the mock endpoint's confirmation text is on the page. Checking
 		// querySelector('#item-123') for the text can never succeed — the
 		// swap removes the element that carried the id.
-		`Boolean(!document.querySelector('#item-123') && document.body.innerText.indexOf('deleted successfully') >= 0)`,
-		&removed,
+		`!document.querySelector('#item-123') && document.body.innerText.indexOf('deleted successfully') >= 0`,
 		chromedp.WithPollingTimeout(demoFlowTimeout),
 	)); err != nil {
 		t.Fatalf("visualtest[demo]: row was not replaced by the delete response: %v", err)
@@ -195,7 +187,7 @@ func TestDemoLoadingButtonBusyGate(t *testing.T) {
 	// htmx-request class (the busy gate) and the default label is hidden.
 	var busySeen bool
 
-	err := chromedp.Run(ctx, chromedp.Poll(
+	err := chromedp.Run(ctx, pollBool(
 		`document.querySelector(`+strconv.Quote(saveButton)+`).classList.contains('htmx-request')`,
 		&busySeen,
 		chromedp.WithPollingInterval(20*time.Millisecond),
@@ -205,10 +197,8 @@ func TestDemoLoadingButtonBusyGate(t *testing.T) {
 		t.Logf("visualtest[demo]: busy class not observed (may have completed too fast): %v", err)
 	}
 
-	var appeared bool
-	if err := chromedp.Run(ctx, chromedp.Poll(
-		`Boolean(document.querySelector('#save-result') && document.querySelector('#save-result').innerText.length > 0)`,
-		&appeared,
+	if err := chromedp.Run(ctx, pollTrue(
+		`document.querySelector('#save-result') && document.querySelector('#save-result').innerText.length > 0`,
 		chromedp.WithPollingTimeout(demoFlowTimeout),
 	)); err != nil {
 		t.Fatalf("visualtest[demo]: save result never appeared: %v", err)
@@ -267,7 +257,7 @@ func TestDemoUploadEcho(t *testing.T) {
 	}
 
 	var out string
-	if err := chromedp.Run(ctx, chromedp.Poll(
+	if err := chromedp.Run(ctx, pollText(
 		`(document.querySelector('#wire-upload-out') ? document.querySelector('#wire-upload-out').innerText : '').toLowerCase()`,
 		&out,
 		chromedp.WithPollingTimeout(demoFlowTimeout),
