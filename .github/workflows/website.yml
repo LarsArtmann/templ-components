@@ -51,16 +51,16 @@ jobs:
         run: GOWORK=off golangci-lint run ./...
 
       - name: Build site (Go SSG + Tailwind CSS v4)
-        # npm -g, not pnpm: pnpm's global bin preflight fails on runners
-        # (see the deploy job note below).
-        # BOTH packages: @tailwindcss/cli declares `tailwindcss` as a peer
-        # dependency, and npm does NOT install peers of globally-installed
-        # packages — the CLI alone dies with "Can't resolve 'tailwindcss'"
-        # (red since the 2026-09-13 SSG rewrite; the demo Dockerfile installs
-        # the same pair for the same reason).
+        # LOCAL install (not npm -g), mirroring the demo Dockerfile: Tailwind
+        # v4 resolves the CSS `@import "tailwindcss"` (and the CLI's own peer
+        # import) against node_modules discoverable from the CWD — a global
+        # install is NOT on that resolution path ("Can't resolve 'tailwindcss'",
+        # red since the 2026-09-13 SSG rewrite), and npm does not install
+        # peers of globally-installed packages either. Both packages go in
+        # together: @tailwindcss/cli declares `tailwindcss` as a peer.
         run: |
-          npm install -g @tailwindcss/cli tailwindcss
-          bash build.sh
+          npm install --no-save tailwindcss @tailwindcss/cli
+          PATH="$PWD/node_modules/.bin:$PATH" bash build.sh
 
       - name: HTML Validation
         run: |
