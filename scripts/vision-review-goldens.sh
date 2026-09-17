@@ -35,7 +35,8 @@ VISION_BIN=${VISION_BIN:-"nix run github:LarsArtmann/vision-review-agent --"}
 VISION_MODEL=${VISION_MODEL:-}
 
 # --- The flagged set (TODO #80: overlays + datastar/eyebrow/scrollback +
-# statcard yellow/purple; TODO #150: wire; TODO #162: progressbar) ---
+# statcard yellow/purple; TODO #150: wire; TODO #162: progressbar;
+# TODO #223: kanban action/tone section) ---
 FLAGGED=(
 	"dropdown/open_light.png" "dropdown/open_dark.png"
 	"popover/open_light.png"
@@ -50,6 +51,7 @@ FLAGGED=(
 	"button/outline_success_light.png" "button/outline_info_light.png"
 	"progressbar/half_light.png"
 	"wire/dual_transport_light.png" "wire/dual_transport_dark.png"
+	"kanban/section_action_tone_light.png" "kanban/section_action_tone_dark.png"
 )
 
 # --- Argument handling: --all or explicit globs replace the flagged set ---

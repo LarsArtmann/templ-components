@@ -32,5 +32,7 @@ plan that adds components, fields, or demo endpoints answers these per item:
 
 Plan skeleton convention: phases ordered by Pareto tiers (1% → 4% → 20% → remaining),
 medium tasks 30–100 min, micro-tasks ≤12 min, owner gates marked `⫱` and planned to the
-gate edge. See `docs/planning/2026-09-17_06-00_RELEASE-FIRST-PARETO-MASTER-PLAN.md` for
+gate edge. `docs/planning/TEMPLATE.md` carries this checklist structurally — copy it for
+new plans. See
+`docs/planning/2026-09-17_06-00_RELEASE-FIRST-PARETO-MASTER-PLAN.md` for
 the reference shape.

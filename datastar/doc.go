@@ -74,6 +74,16 @@
 //	        datastar.WithSelector("#metrics"), datastar.WithModeInner())
 //	}
 //
+// # Patched fragments carry no executable scripts
+//
+// The runtime inserts patched elements with innerHTML/morph semantics, and
+// script elements inserted via innerHTML are inert — they are NEVER executed.
+// This differs from htmx, which re-evaluates scripts in swapped content. A
+// server patch therefore cannot ship behavior as an inline <script> tag:
+// drive client-side reactions with data-* attributes and expressions on the
+// patched elements instead (bundle-proven fact — see
+// docs/datastar-runtime-facts.md, "Fragments carry no executable scripts").
+//
 // # When to choose Datastar over HTMX
 //
 // See docs/research/datastar-integration-analysis.md for the full analysis.

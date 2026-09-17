@@ -170,6 +170,24 @@ func ExampleKanbanBoard_columnAction() {
 	_ = display.KanbanBoard(props).Render(context.Background(), &buf)
 }
 
+func ExampleKanbanBoard_columnTone() {
+	// Column status dot via the Tone field — instant column semantics
+	// (todo=blue, done=green) with zero JavaScript. The dot is aria-hidden
+	// (decorative); the zero value renders NO dot, so existing boards are
+	// unaffected. See KanbanTone for the palette.
+	props := display.KanbanBoardProps{
+		Columns: []display.KanbanColumn{
+			{ID: "todo", Title: "To do", Tone: display.KanbanToneBlue},
+			{ID: "blocked", Title: "Blocked", Tone: display.KanbanToneRed},
+			{ID: "done", Title: "Done", Tone: display.KanbanToneGreen},
+		},
+	}
+
+	var buf bytes.Buffer
+
+	_ = display.KanbanBoard(props).Render(context.Background(), &buf)
+}
+
 func ExampleKanbanBoard_cardAnatomy() {
 	// Rich card content per docs/recipes/kanban-card-anatomy.md.
 	task := RecipeTask{
