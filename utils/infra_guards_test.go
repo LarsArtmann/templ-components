@@ -138,13 +138,18 @@ func goDirectiveFrom(src string) string {
 // build dies with "go.mod requires go >= X" against the pinned runner
 // toolchain. The guard's added value is local/dev-shell runs, where it names
 // EVERY offending module precisely instead of failing on the first one.
+// (Behavior proven both ways 2026-09-17: PASS with go.work present, explicit
+// SKIP with it absent — mind `go test`'s cache, which does NOT track files
+// read via os.ReadFile: use -count=1 when toggling go.work.)
 func TestGoDirectiveSkew(t *testing.T) {
 	t.Parallel()
 
 	workSrc, err := os.ReadFile("../go.work")
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
-			t.Skip("../go.work absent (CI checkout: go.work is gitignored) — skew guard is local-dev only; CI's own build fails on a bumped directive.")
+			t.Skip(
+				"../go.work absent (CI checkout: go.work is gitignored) — skew guard is local-dev only; CI's own build fails on a bumped directive.",
+			)
 		}
 
 		t.Fatalf("read ../go.work: %v", err)
