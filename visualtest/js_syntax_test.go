@@ -1,6 +1,7 @@
 package visualtest
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 )
 
 // TestDemoInlineScriptsAreSyntaxValid runs `node --check` over every inline
@@ -72,7 +74,13 @@ func TestDemoInlineScriptsAreSyntaxValid(t *testing.T) {
 				t.Fatalf("write temp script: %v", writeErr)
 			}
 
-			out, cmdErr := exec.Command(node, "--check", tmp).CombinedOutput()
+			nodeCtx, nodeCancel := context.WithTimeout(context.Background(), 15*time.Second)
+
+			out, cmdErr := exec.CommandContext(nodeCtx, node, "--check", tmp).
+				CombinedOutput()
+
+			nodeCancel()
+
 			if cmdErr != nil {
 				snippet := nonceAttr.FindString(string(body))
 				t.Errorf(
