@@ -101,7 +101,7 @@ Calendar e2e fixed for the new preventDefault reality (`dispatchEvent() && ''` �
 2. Convert recipes_login/recipes_auth/forms axe accepts from `-1` to budgets (e2).
 3. AGENTS + flake-policy: "visual suite runs exclusive" rule (e3).
 4. `.review/` eyeball-artifact protocol for image goldens + generate this session's set for human review (e4).
-5. Extend `nix run .#lint` to the visualtest package; fix or nolint-justify the pack gocognit (e5).
+5. ~~Extend `nix run .#lint` to the visualtest package; fix or nolint-justify the pack gocognit (e5).~~ done (DONE 2026-09-17 (TODO #225 - visualtest lint lane + findings to 0))
 6. Hedge or verify the Slider Firefox comment (quick: one manual Firefox check, or reword to "Chromium-verified, Firefox pending F118").
 7. ci-repro.sh `--html` flag (prior item 38).
 8. ci-repro.sh `--floors` flag (prior item 39).
@@ -160,11 +160,11 @@ Calendar e2e fixed for the new preventDefault reality (`dispatchEvent() && ''` �
 43. TODO #214 benchstat PR comments.
 44. TODO #215 gremlins mutation pilot.
 45. Website: publish flake-policy + a11y-gate-policy + aria-live docs (check the site's sidebar policy).
-46. M02/#80/#162 vision-model golden review — blocked on Q1.
+46. ~~M02/#80/#162 vision-model golden review — blocked on Q1.~~ done (duplicate of TODO_LIST #80)
 47. F058 (v2 module-path move) — blocked on Q2.
 48. cqrs-htmx AppShell-adoption migration PR — blocked on Q3.
 49. nsfw-classifier v1.13.0 → current upgrade PR — blocked on Q3.
-50. #211 consumerless CSS artifacts delete-vs-keep — still awaiting the owner call.
+50. ~~#211 consumerless CSS artifacts delete-vs-keep — still awaiting the owner call.~~ done (duplicate of owner gate TODO_LIST #211)
 
 ## g) QUESTIONS FOR [USER] — cannot be resolved without you
 

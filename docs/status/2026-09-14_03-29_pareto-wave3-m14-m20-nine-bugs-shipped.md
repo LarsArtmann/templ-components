@@ -103,7 +103,7 @@
 ## e) WHAT WE SHOULD IMPROVE (structural, from this session's evidence)
 
 1. **Release script hardening — the replace re-add needs its own guard.** The v1.17.0 race proved step 10 can silently vanish. A `scripts/check-replace-directives.sh` (grep each sub-module go.mod for its expected replace set; wire into pre-commit + CI like the other guards) turns this class from "someone notices lint broke" into a 50 ms tripwire. This is the single highest-value follow-up from this session.
-2. **Convention check 4 should join the AGENTS guard table** (I documented the HTML gate and the replace race in AGENTS.md but did not add props-ID/HTML-validation rows to the SKILL.md guard table).
+2. ~~**Convention check 4 should join the AGENTS guard table** (I documented the HTML gate and the replace race in AGENTS.md but did not add props-ID/HTML-validation rows to the SKILL.md guard table).~~ done (DONE 2026-09-17 - wave3-e2's SKILL guard rows verified present (skill/SKILL.md))
 3. **FEATURES.md needs to ride along with CHANGELOG** — this session produced three feature-inventory-worthy capabilities that only hit the CHANGELOG. Either extend a drift guard or make it a checklist line in the release script.
 4. **A "run the visual suite before declaring markup changes safe" reflex:** any .templ root/element-kind change (div→span counts) should trigger `nix run .#visual`, not just string tests. Codify in SKILL.md's process section.
 5. **RetryOnce needs a call-site policy** — either wire it into the first legitimately-flaky browser test or state in the policy doc that it's dormant until the first observed browser flake.
@@ -166,7 +166,7 @@
 40. Make check-coverage-floors.sh emit a ratchet-UP suggestion (print suggested new floor when actual > floor + 5) so floors crawl upward without manual math.
 
 **Test-debt observations from this session (quick wins):**
-41. Toggle has no visual goldens at all — capture one light/dark pair (it now renders spans; pin it).
+41. ~~Toggle has no visual goldens at all — capture one light/dark pair (it now renders spans; pin it).~~ done (PARTIAL - sparkline/barchart/heatmap goldens captured since; Toggle still missing (routed to TODO_LIST #255))
 42. Sparkline/BarChart/Heatmap have no visual goldens either — same capture pass.
 43. `layout.ThemeToggle` takes no Props struct — consider a Props-based signature in v2 (ADR candidate; listed so it's not forgotten).
 44. The `form action` omission should get a string-test pin (`AssertNotContains action=""`) so it can't regress — validation gate covers it, but a fast unit pin is cheaper.

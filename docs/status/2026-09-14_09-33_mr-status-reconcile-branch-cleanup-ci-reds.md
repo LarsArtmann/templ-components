@@ -41,15 +41,15 @@
 
 ## c) NOT STARTED
 
-1. **Push master** (~6 commits: FEATURES fix, status docs + json fix, gitignore + validator + route goldens, display a11y pack, popover test cleanup, `_sources` pending) — owner-gated.
+1. ~~**Push master** (~6 commits: FEATURES fix, status docs + json fix, gitignore + validator + route goldens, display a11y pack, popover test cleanup, `_sources` pending) — owner-gated.~~ done (DONE - pushed; v1.18.0 shipped 2026-09-17)
 2. **Delete remote `origin/feat/layout-seo-meta`** — owner-gated push op.
-3. **Release cut** — the a11y/validator pack sits warm in `[Unreleased]`; `scripts/release.sh` flow not attempted (owner-gated).
+3. ~~**Release cut** — the a11y/validator pack sits warm in `[Unreleased]`; `scripts/release.sh` flow not attempted (owner-gated).~~ done (DONE - v1.17.0 shipped 2026-09-13 AND v1.18.0 2026-09-17 (511d3ed6))
 4. **Two stale dependabot branches on origin** (`dependabot/github_actions/actions-572115696b`, `dependabot/go_modules/minor-and-patch-3a2e2cb45c`) — not triaged.
 5. **`backup/pre-reword2` + `backup/reword-css` local branches** — intentionally untouched; no obsolescence review.
-6. **visualtest module lint debt** (pre-existing, files I didn't touch): `tools/siteshots/main.go` err113/errcheck/forbidigo×3/gosec G703/mnd×3, `wire_forms_pack_e2e_test.go` gocognit 28 — visualtest is absent from the documented per-module lint loop, so nothing enforces it.
-7. **LSP-flagged dead code in visualtest:** unused const `uploadEchoMarker` (`demo_flows_e2e_test.go:38`), unused func `regionExistsExpr` (`wire_forms_pack_e2e_test.go:854`), `options_test.go` nilness "impossible condition" warnings ×2, `datastar_runtime_e2e_test.go` writestring inefficiencies ×3 — all pre-existing, all ignored per the touch-nothing policy.
-8. **TODO_LIST harvest of this report's section (f)** — per the status-report skill, (f) is HARVEST input; not yet routed into TODO_LIST/ROADMAP.
-9. **Provenance annotation on the 3 restored status docs** (they reference "TC master CI red" facts now resolved) — docs-health ANNOTATE pass not done.
+6. ~~**visualtest module lint debt** (pre-existing, files I didn't touch): `tools/siteshots/main.go` err113/errcheck/forbidigo×3/gosec G703/mnd×3, `wire_forms_pack_e2e_test.go` gocognit 28 — visualtest is absent from the documented per-module lint loop, so nothing enforces it.~~ done (DONE 2026-09-17 (TODO #225 - visualtest lint lane, all findings fixed))
+7. ~~**LSP-flagged dead code in visualtest:** unused const `uploadEchoMarker` (`demo_flows_e2e_test.go:38`), unused func `regionExistsExpr` (`wire_forms_pack_e2e_test.go:854`), `options_test.go` nilness "impossible condition" warnings ×2, `datastar_runtime_e2e_test.go` writestring inefficiencies ×3 — all pre-existing, all ignored per the touch-nothing policy.~~ done (PARTIAL - uploadEchoMarker/regionExistsExpr removed by the poll-helper migration (#193); gopls nilness/writestring remain)
+8. ~~**TODO_LIST harvest of this report's section (f)** — per the status-report skill, (f) is HARVEST input; not yet routed into TODO_LIST/ROADMAP.~~ done (DONE - harvested (survivors are TODO_LIST residents; this pass swept the rest))
+9. ~~**Provenance annotation on the 3 restored status docs** (they reference "TC master CI red" facts now resolved) — docs-health ANNOTATE pass not done.~~ done (DONE - provenance annotations present (all pre-09-13 reports carry inline strikethrough resolutions))
 10. **TODO #216 (prune the ignore list when nixpkgs' vnu advances)** — list count unchanged (14 classes); the quote-style hardening extends life but the prune ritual continues.
 
 ## d) TOTALLY FUCKED UP

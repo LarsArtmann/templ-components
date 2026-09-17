@@ -73,22 +73,22 @@ this time (it has pushed without being asked before).
 
 ## c) NOT STARTED (planned/needed, zero work done this session)
 
-1. **HARVEST of section (f) into TODO_LIST.md/ROADMAP.md** (status-report skill: section (f)
-   must not die in this timestamped file). Blocked on user instruction — user said "wait".
-2. **Doc drift found and deliberately deferred** (user: "do not research/fix unrelated stuff"):
-   - AGENTS.md import-graph line omits `display → htmx` (card.templ imports `htmx.SwapStyle`
-     at `display/card.templ:6,289`) — real drift in the Production-deps enumeration.
-   - `docs/modularization/README.md` Contributing `go work use` list is missing `website`
-     (actual `go.work` has 9 entries incl. `./website`).
-   - Proposal HTML not added to that README's "Files" list (miss I created).
+1. ~~**HARVEST of section (f) into TODO_LIST.md/ROADMAP.md** (status-report skill: section (f)~~ done (DONE - harvested across the 09-14/09-16/09-17 sessions + the 2026-09-17 evening pass)
+   ~~must not die in this timestamped file). Blocked on user instruction — user said "wait".~~
+2. ~~**Doc drift found and deliberately deferred** (user: "do not research/fix unrelated stuff"):~~ done (DONE 2026-09-17 evening - AGENTS.md now lists display -> icons,utils,htmx; modularization README go-work-use now includes website (proposal-HTML row left open))
+   ~~- AGENTS.md import-graph line omits `display → htmx` (card.templ imports `htmx.SwapStyle`~~
+     ~~at `display/card.templ:6,289`) — real drift in the Production-deps enumeration.~~
+   ~~- `docs/modularization/README.md` Contributing `go work use` list is missing `website`~~
+     ~~(actual `go.work` has 9 entries incl. `./website`).~~
+   ~~- Proposal HTML not added to that README's "Files" list (miss I created).~~
 3. **F058 owner decision** (ADR-0039 "Proposed — owner decision pending"): ADR-0040's
    "timed with v2" clause silently assumes option 1. Not mine to decide.
-4. **Post-push CI watch** for the 3 unpushed daemon commits (documented daemon same-day
-   regression pattern: CSS un-minify, website typescript pin).
+4. ~~**Post-push CI watch** for the 3 unpushed daemon commits (documented daemon same-day~~ done (SUPERSEDED - pushed and released (v1.18.0, 511d3ed6); daemon drifts caught by the evening pass)
+   ~~regression pattern: CSS un-minify, website typescript pin).~~
 5. **Remainders from (b):** chart-family audit, content-level co-change, compile-time
    measurement, check-module-layers.sh read.
-6. **BuildFlow upstream fixes** (heuristic commit messages; templ-generate .gitignore
-   re-append) — out of repo, documented 5+ sessions, untouched here.
+6. ~~**BuildFlow upstream fixes** (heuristic commit messages; templ-generate .gitignore~~ done (duplicate of TODO_LIST #93/#124 family)
+   ~~re-append) — out of repo, documented 5+ sessions, untouched here.~~
 
 ## d) TOTALLY FUCKED UP (radical honesty — nothing is on-fire, three things stink)
 

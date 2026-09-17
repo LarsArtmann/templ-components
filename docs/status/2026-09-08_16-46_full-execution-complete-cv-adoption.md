@@ -1,5 +1,7 @@
 # Status Report — Full Execution Complete: templ-components ↔ CV Adoption (Session 3)
 
+> **Resolution (2026-09-17 evening docs-health pass):** TC-side work is complete and shipped (PRs #12/#13/#14 merged; `MinimalProps.HeadContent` landed in v1.18.0 beyond the PR-12 scope; v1.17.0 + v1.18.0 released). The CV-side items below (browser e2e/axe over A.Team, output.css rebuild habit, TagsInput eval, pipeline goldens, ruling-gated ATS adoption) live in the **cv repository**, not here — tracked in that repo's own backlog. TC residue: BuildFlow items remain the #93 family; `RelativeTime`/SSE docs shipped via the recipes.
+
 **Generated:** 2026-09-08 16:46 CEST
 **Session scope:** Execution of the remaining approved plan after the three directional answers: CV branch pushed as-is; upstream C-changes each in one PR (docs → master); the pre-existing SSE flake fixed in-session.
 **End state:** CV branch `feat/templ-components-adoption` pushed (11 reviewed commits, tip `975d8c9e`), full suite **exit 0 / zero failures**. templ-components: 3 PRs open (#12 SEO head, #13 CollapsibleSection persistence, #14 icons.Render), docs recipes + TODO harvest on master.

@@ -1,5 +1,7 @@
 # Status Report — templ-components Public Launch
 
+> **Resolution (2026-09-17 evening docs-health pass):** the mission is long achieved — `templcomponents.lars.software` is live with SSL, all work committed, the demo is on Cloud Run, and the Astro site was REPLACED by a Go SSG on 2026-09-13 (making every Astro/Starlight/Pagefind item below obsolete-by-design). Search shipped Go-native (18:38 hardening), counts are derived + drift-guarded (`build.CountStats` + `TestDocsCountDrift`), and the website CI lane is green. Residue: `forms_demo.templ` orphan (TODO_LIST #256), OG-image generator (ROADMAP), docs depth (ROADMAP).
+
 **Date:** 2026-07-14 02:11
 **Session goal:** Make the repo public-ready — README, wiki website, GitHub metadata, domains/Firebase hosting, comprehensive component demo.
 

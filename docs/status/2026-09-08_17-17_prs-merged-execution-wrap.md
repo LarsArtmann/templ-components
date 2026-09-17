@@ -1,5 +1,7 @@
 # Status Report — PRs Merged: Execution Wrap (Session 4)
 
+> **Resolution (2026-09-17 evening docs-health pass):** closed since writing — the release cut (v1.17.0 2026-09-13, v1.18.0 2026-09-17), the FEATURES icons row (now includes `Render`), and the red "Build Website" lane (Astro removed 2026-09-13; the Go-SSG website.yml was fixed and deployed green on 2026-09-17). CV-side adoption work lives in the cv repository.
+
 **Generated:** 2026-09-08 17:17 CEST
 **Session scope:** The three gating answers executed: local e2e attempted (hard-blocked by the machine's toolchain), the three upstream PRs merged sequentially, worktree-per-branch coordination applied. Plus this wrap-up report.
 **Format note:** user-specified `.md` (skill HTML default overridden).

@@ -1,5 +1,7 @@
 # Status Report — 2026-09-08 16:47 — Follow-Through: Browser Proofs, Route Goldens, Inline-Form Fix (Session 3)
 
+> **Resolution (2026-09-17 evening docs-health pass):** closed since writing — #175 axe (the axe sweep ships in `nix run .#visual`, default-fail + ledger), #123 (wontfix), #146 (nixpkgs bumped), #168 (demo flow e2e shipped), SKILL.md drift (actively maintained). The dark/mobile/RTL route-golden leftovers became TODO_LIST #194-#196 and keyboard traversal #197 (still open). The human PNG eyeball remains #80/#150/#162.
+
 **Scope:** Executed the previous session's §f priority list: quick wins
 (docs, guards, tooling), then the browser/e2e-heavy items in order — datastar
 e2e, PolledRegion proof, overlay open-states, ErrorPage matrix, DateRange,
