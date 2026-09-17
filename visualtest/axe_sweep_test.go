@@ -160,7 +160,9 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 		chromedp.WaitReady("body"),
 		chromedp.Evaluate(fmt.Sprintf(
 			`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; true`,
-			theme, dark, theme,
+			theme,
+			dark,
+			theme,
 		), nil),
 		chromedp.Sleep(settleDelay),
 	}
