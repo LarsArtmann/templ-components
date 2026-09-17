@@ -329,7 +329,7 @@ func appShellDemoSidebar() templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		templ_7745c5c3_Err = navigation.SidebarNav(navigation.SidebarNavProps{
-			Brand: templ.Raw(`<span class="font-bold text-white text-sm">Demo</span>`),
+			Brand: templ.Raw(`<span class="font-bold text-gray-900 dark:text-white text-sm">Demo</span>`),
 			Items: []navigation.SidebarNavItem{
 				{Label: "Dashboard", Href: "#", Active: true},
 				{Label: "Users", Href: "#"},

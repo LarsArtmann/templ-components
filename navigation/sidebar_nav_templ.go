@@ -116,7 +116,7 @@ func sidebarGroupHasActive(items []SidebarNavItem, currentPath string) bool {
 // optional icon), and a footer slot. Designed for admin panels and dashboards.
 //
 //	@navigation.SidebarNav(navigation.SidebarNavProps{
-//	   Brand: templ.Raw(`<span class="font-bold text-white">MyApp</span>`),
+//	   Brand: templ.Raw(`<span class="font-bold text-gray-900 dark:text-white">MyApp</span>`),
 //	   Items: []navigation.SidebarNavItem{
 //	     {Label: "Dashboard", Href: "/", Icon: icons.Squares2x2, Active: true},
 //	     {Label: "Users", Href: "/users", Icon: icons.Users},
@@ -144,7 +144,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var2 = []any{utils.Class("flex h-full w-64 flex-col bg-[var(--tc-sidebar-bg)]", props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("flex h-full w-64 flex-col border-e border-[var(--tc-sidebar-border)] bg-[var(--tc-sidebar-bg)]", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -267,7 +267,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 							return templ_7745c5c3_Err
 						}
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "><summary class=\"flex cursor-pointer list-none items-center justify-between rounded-lg px-3 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-gray-500 hover:text-gray-300 dark:text-gray-600 dark:hover:text-gray-400 [&::-webkit-details-marker]:hidden\"><span>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "><summary class=\"flex cursor-pointer list-none items-center justify-between rounded-lg px-3 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[var(--tc-sidebar-muted)] hover:text-[var(--tc-sidebar-muted-hover)] [&::-webkit-details-marker]:hidden\"><span>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -296,7 +296,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 						active := sidebarItemActive(item, props.CurrentPath)
 						var templ_7745c5c3_Var7 = []any{"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium " + utils.TransitionColors,
 							templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
-							templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active)}
+							templ.KV("text-[var(--tc-sidebar-fg)] hover:bg-[var(--tc-sidebar-item-hover-bg)] hover:text-[var(--tc-sidebar-fg-hover)]", !active)}
 						templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
@@ -370,7 +370,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 						active := sidebarItemActive(item, props.CurrentPath)
 						var templ_7745c5c3_Var11 = []any{"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium " + utils.TransitionColors,
 							templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
-							templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active)}
+							templ.KV("text-[var(--tc-sidebar-fg)] hover:bg-[var(--tc-sidebar-item-hover-bg)] hover:text-[var(--tc-sidebar-fg-hover)]", !active)}
 						templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
@@ -442,7 +442,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 				active := sidebarItemActive(item, props.CurrentPath)
 				var templ_7745c5c3_Var15 = []any{"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium " + utils.TransitionColors,
 					templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
-					templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active)}
+					templ.KV("text-[var(--tc-sidebar-fg)] hover:bg-[var(--tc-sidebar-item-hover-bg)] hover:text-[var(--tc-sidebar-fg-hover)]", !active)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var15...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err

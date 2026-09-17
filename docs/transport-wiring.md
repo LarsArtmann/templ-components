@@ -494,6 +494,22 @@ Facts worth knowing:
   live region arrives empty) so it works under htmx's outerHTML
   replacement AND Datastar's in-place outer patches. Proven by
   `TestKanbanE2EAnnouncesMove`.
+- **Optimistic moves with an honest pending register (ADR-0041)**: the
+  card moves in the DOM the moment a move is submitted - before the
+  request resolves - and wears `tc-kanban-pending` (dim + reduced-motion-safe
+  spinner ring) with `aria-busy="true"` until the server's re-render
+  replaces the board. The target column's "No cards" placeholder hides and
+  both columns' count badges (`data-tc-kanban-count`) and `aria-label`s
+  sync optimistically, so the board reads consistently during the flight.
+  A failed move (4xx/5xx, network error) reverts: the card snaps back to
+  its exact original position, counts/aria-labels are recomputed from the
+  DOM, the card flashes `tc-kanban-move-failed` for 4s, and an sr-only
+  `role="alert"` region announces the revert. Success clears via htmx's
+  `htmx:afterRequest` (`successful === true`), Datastar's
+  `datastar-fetch` `finished` lifecycle type, and the swap poll - three
+  independent signals, so pending can never stick. Proven by
+  `TestKanbanE2EPendingStateBothTransports` and
+  `TestKanbanE2EFailureRevertsBothTransports`.
 - **Touch devices**: the hover-revealed keyboard move buttons stay visible
   under `pointer: coarse` (an intentionally unlayered CSS rule in
   `templates/custom.css` beats Tailwind v4's utilities layer in the

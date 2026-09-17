@@ -35,6 +35,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **SidebarNav is theme-adaptive (light sidebar in light mode).** The sidebar
+  was permanently dark in both modes — a documented ADR-0011 exception that
+  the dark-mode compliance tests had to exempt. It now follows the page
+  theme: a white sidebar (white `--tc-sidebar-bg`, gray-200 end border,
+  gray-700 item text, gray-100 hover) in light mode, the classic near-black
+  sidebar in dark mode — dark-mode pixels are unchanged. Item, hover, and
+  section colors are driven by new `--tc-sidebar-fg`, `--tc-sidebar-fg-hover`,
+  `--tc-sidebar-item-hover-bg`, `--tc-sidebar-muted`,
+  `--tc-sidebar-muted-hover`, and `--tc-sidebar-border` tokens (alongside the
+  existing `--tc-sidebar-bg`), so the classic permanently-dark admin chrome
+  stays a pure-CSS opt-out: set the variable block documented in
+  `templates/custom.css` ("Shell theming tokens") to restore it. Brand/Footer
+  slot content is consumer-owned and must be theme-adaptive too (e.g.
+  `text-gray-900 dark:text-white`); the demo, the godoc example, and the
+  `tc new` scaffolder source were updated accordingly. Closes the long-open
+  "SidebarNav light mode option" backlog item (P3-47, 2026-07-08 dark-mode
+  audit).
 - **ErrorPage visual redesign.** The full-page error card is rebuilt around a
   neutral white shell (`rounded-2xl`, subtle shadow, dark-mode aware) with a
   family-colored accent bar, a 48px icon circle, and a metadata chip row that

@@ -20,11 +20,6 @@ type darkModeException struct {
 var darkModeExceptions = []darkModeException{
 	// Toggle thumb: bg-white in both modes (track changes color instead)
 	{"forms/toggle.templ", "bg-white shadow-sm"},
-	// SidebarNav: permanently dark sidebar
-	{"navigation/sidebar_nav.templ", "hover:bg-gray-800 hover:text-white"},
-	{"navigation/sidebar_nav.templ", "bg-gray-900 dark:bg-black"},
-	{"navigation/sidebar_nav.templ", "text-white"},
-	{"navigation/sidebar_nav.templ", "bg-gray-800"},
 	// JS class arrays for overlay transitions — not CSS color classes
 	{"display/shared.go", "openClasses"},
 	{"display/shared.go", "closeClasses"},

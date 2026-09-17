@@ -81,7 +81,7 @@ func navigationDemo() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = navigation.SidebarNav(navigation.SidebarNavProps{
-			Brand: templ.Raw(`<span class="font-bold text-white">Demo App</span>`),
+			Brand: templ.Raw(`<span class="font-bold text-gray-900 dark:text-white">Demo App</span>`),
 			Items: []navigation.SidebarNavItem{
 				{Label: "Dashboard", Href: "#", Icon: icons.Squares2x2, Active: true},
 				{Label: "Users", Href: "#", Icon: icons.Users},

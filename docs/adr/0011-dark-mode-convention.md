@@ -42,8 +42,16 @@ Two failing tests block CI:
 ### Documented Exceptions
 
 - **Toggle thumb** (`bg-white` in both modes): The track changes color instead; the thumb stays white.
-- **SidebarNav** (permanently dark sidebar): Uses `bg-gray-900` as base; `hover:bg-gray-800` is a lighter shade on the dark sidebar.
 - **Avatar silhouette icon** (`text-blue-200`): Decorative SVG inside a blue background; light-on-blue in both modes.
+
+> **SidebarNav:** originally a documented exception ("permanently dark
+> sidebar", with a permanent darkmode-test exemption). Since the shell
+> theming tokens were extended (see CHANGELOG "SidebarNav is theme-adaptive"),
+> the sidebar follows the page theme — white in light mode, near-black in
+> dark mode — driven entirely by `--tc-sidebar-*` variables in
+> `templates/custom.css`. The compliance-test exemption is gone; the
+> permanently-dark admin chrome remains available as a pure-CSS opt-out via
+> the same tokens.
 
 ## Consequences
 
