@@ -142,19 +142,27 @@ func TestAxeHarnessDetectsViolations(t *testing.T) {
 
 // axeAuditRoute loads one demo page (optionally forced to dark mode) and runs
 // the axe audit against it.
+//
+// The theme is pinned EXPLICITLY for both modes: headless Chromium defaults to
+// prefers-color-scheme: dark, so ThemeScript adds the .dark class on load and
+// an unpinned "light" audit silently audits the dark render (the same bug the
+// route goldens hit — see route_golden_test.go).
 func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark bool) AxeResults {
 	t.Helper()
+
+	theme := "light"
+	if dark {
+		theme = "dark"
+	}
 
 	actions := []chromedp.Action{
 		chromedp.Navigate(baseURL + path),
 		chromedp.WaitReady("body"),
-	}
-
-	if dark {
-		actions = append(actions,
-			chromedp.Evaluate(`document.documentElement.classList.add('dark'); true`, nil),
-			chromedp.Sleep(settleDelay),
-		)
+		chromedp.Evaluate(fmt.Sprintf(
+			`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; true`,
+			theme, dark, theme,
+		), nil),
+		chromedp.Sleep(settleDelay),
 	}
 
 	if err := chromedp.Run(ctx, actions...); err != nil {
