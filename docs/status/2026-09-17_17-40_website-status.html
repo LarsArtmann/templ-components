@@ -1116,7 +1116,12 @@
             was snapshotted mid-refactor; one snapshot didn't compile the demo
             (<code>undefined: formsValidationError</code>) and another
             flip-flopped <code>base_templ.go</code>'s json import v1→v2→v1
-            within minutes. During that window <strong>master did not
+            within minutes. A fourth incident landed while this report was
+            written (17:40): a fresh snapshot red-flagged <code>cmd/tc</code>'s
+            embedded-source drift guard — five library <code>.templ</code>
+            files edited without re-copying them into
+            <code>cmd/tc/_sources/</code>; synced per the guard's own
+            instructions, re-verified green. During that window <strong>master did not
             build</strong>. This is the documented BuildFlow failure mode
             (commits without running tests; TODO #126 family) now shown to
             break <code>main</code> in under a day after the last hardening

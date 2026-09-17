@@ -176,7 +176,7 @@ Scope note: Datastar fetch actions accept no target option on the audited pin (v
 
 | Component     | Status           | Description              | Key Features                                                                                                                                     |
 | ------------- | ---------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ErrorPage`   | FULLY_FUNCTIONAL | Full-page error view     | Neutral card with family accent bar, status/code/family chips, bold title, What/Why/Fix/WayOut, context, cause chain, timestamp, action, `<main>` landmark (WCAG 2.4.1) |
+| `ErrorPage`   | FULLY_FUNCTIONAL | Full-page error view     | Neutral card with family accent bar, status/code/family chips, bold title, What/Why/Fix/WayOut, context, cause chain, timestamp + trace footer, action, `<main>` landmark (WCAG 2.4.1) |
 | `NotFound404` | FULLY_FUNCTIONAL | Dedicated 404 page       | Gradient numeral hero, search form, quick-links grid (configurable `LinksTitle`), `WriteNotFound404` handler, go-home/go-back, `<main>` landmark |
 | `ErrorDetail` | FULLY_FUNCTIONAL | Inline error detail card | Code badge, family badge, context table, cause chain, suggested fix                                                                              |
 | `ErrorAlert`  | FULLY_FUNCTIONAL | Family-aware alert       | 6 distinct color schemes, dismiss, fix suggestion, family badge                                                                                  |

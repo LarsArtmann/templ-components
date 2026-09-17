@@ -787,8 +787,8 @@ func TestSkeleton(t *testing.T) {
 }
 
 // TestErrorPage covers the full-page error display with the complete props
-// model: status code, code, title, message, why, fix, context, cause chain,
-// action, and timestamp.
+// model: HTTP status, error code, title, message, why, fix, context, cause
+// chain, action, trace, and timestamp.
 func TestErrorPage(t *testing.T) {
 	t.Parallel()
 
