@@ -281,7 +281,22 @@ Structured error pages with family-aware styling, HTTP handler integration, dedi
 
 ```templ
 @errorpage.NotFound404(errorpage.DefaultNotFound404Props())
-@errorpage.ErrorPage(errorpage.ErrorPageProps{Family: errorpage.FamilyNotFound, Why: "Not found"})
+
+// Full diagnostic page — status code, code, title, message, why, fix,
+// context, cause chain, and action render as one card.
+@errorpage.ErrorPage(errorpage.ErrorPageProps{
+	Family:     errorpage.FamilyTransient,
+	StatusCode: 503,
+	Code:       errorpage.CodeUnavailable,
+	Title:      "Service temporarily unavailable",
+	Message:    "We're performing maintenance or experiencing high traffic.",
+	Fix:        "Wait a moment and refresh the page.",
+	WayOut:     "Retry",
+	WayOutHref: "/",
+})
+
+// One-call handler integration with go-error-family.
+mux.Handle("/api/thing", errorpage.ErrorHandler(err, errorpage.ErrorHandlerConfig{}))
 ```
 
 ---

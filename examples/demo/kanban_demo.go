@@ -20,6 +20,7 @@ import (
 	"net/http"
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/display"
@@ -31,6 +32,13 @@ import (
 // process keeps the demo honest but simple; a real app issues one per
 // session and validates it server-side on every mutating request.
 var kanbanCSRFToken = newKanbanCSRFToken()
+
+// kanbanDemoMoveDelay simulates real network latency on the move endpoints.
+// The board applies moves optimistically (ADR-0041): the card moves the
+// moment it is dropped and wears a spinner until the server's re-render
+// lands — localhost would make that state invisible, so the demo delays on
+// purpose to show what consumers' users actually experience.
+const kanbanDemoMoveDelay = 800 * time.Millisecond
 
 func newKanbanCSRFToken() string {
 	var b [16]byte

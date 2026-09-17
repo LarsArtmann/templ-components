@@ -47,10 +47,17 @@ type kanbanE2EBoard struct {
 	mu      sync.Mutex
 	columns []display.KanbanColumn
 	next    int64
+	initial func() []display.KanbanColumn
 }
 
 func newKanbanE2EBoard() *kanbanE2EBoard {
-	b := &kanbanE2EBoard{}
+	return newKanbanE2EBoardWith(initialKanbanE2EColumns)
+}
+
+// newKanbanE2EBoardWith builds a board that always resets to the given
+// layout — the flaky boards use their own slow/failing card mix.
+func newKanbanE2EBoardWith(initial func() []display.KanbanColumn) *kanbanE2EBoard {
+	b := &kanbanE2EBoard{initial: initial}
 	b.reset()
 
 	return b
@@ -69,13 +76,40 @@ func initialKanbanE2EColumns() []display.KanbanColumn {
 	}
 }
 
+// kanbanFlakyE2EColumns arms the optimistic-pending proof: one card whose
+// move endpoint stalls 1.2s (the pending window) and one whose move endpoint
+// always 500s (the revert path).
+func kanbanFlakyE2EColumns() []display.KanbanColumn {
+	return []display.KanbanColumn{
+		{
+			ID:    "todo",
+			Title: "To do",
+			Cards: []display.KanbanCard{
+				{ID: "e-slow", Title: "Slow move"},
+				{ID: "e-fail", Title: "Doomed move"},
+			},
+		},
+		{ID: "doing", Title: "In progress"},
+	}
+}
+
+// kanbanFlakyMoveDelay is the stall the e-slow move endpoint applies — long
+// enough that the optimistic pending state is deterministically observable
+// before the response lands.
+const kanbanFlakyMoveDelay = 1200 * time.Millisecond
+
 // reset restores the initial layout (tests share the package-global boards
 // and must not observe each other's moves).
 func (b *kanbanE2EBoard) reset() {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	b.columns = initialKanbanE2EColumns()
+	initial := b.initial
+	if initial == nil {
+		initial = initialKanbanE2EColumns
+	}
+
+	b.columns = initial()
 	b.next = 0
 }
 

@@ -22,7 +22,11 @@ templ kanbanDemo() {
 		board's dialect) and a <code>Tone</code> status dot. The move form carries
 		a server-issued CSRF token; the bodyless add/reset POSTs enforce
 		same-origin instead, and an add to an unknown column 404s. Each board
-		header has a Reset button that restores the starting layout.
+		header has a Reset button that restores the starting layout. Moves apply
+		optimistically (ADR-0041): the card moves the moment you drop it and
+		wears a spinner until the server's re-render lands — the move endpoint
+		deliberately waits 800ms so you can see the pending state. A failed move
+		snaps back with a red flash and a screen-reader alert.
 	</p>
 	@demoCodeSnippet("Go", `props.Wire = &wire.Action{URL: "/api/kanban/htmx"}                                  // hx-post
 props.Wire = &wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"} // data-on:submit="@post(...)"

@@ -661,6 +661,10 @@ func newMux() *http.ServeMux {
 				return
 			}
 
+			// kanbanDemoMoveDelay makes the board's optimistic pending state
+			// (spinner on the moved card) perceivable — see ADR-0041.
+			time.Sleep(kanbanDemoMoveDelay)
+
 			state.move(move)
 			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action)))
 		})
