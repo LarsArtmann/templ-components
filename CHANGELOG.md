@@ -159,6 +159,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   family→status parity, including the corruption fallback for unknown
   errors.
 
+- **`ErrorDetail` gains a `Neutral` variant.** The inline error card has
+  always rendered family-tinted (amber/orange/blue backgrounds), which can
+  clash inside already-colored content — dashboards, tinted panels, side
+  cards. `Variant: ErrorDetailNeutral` renders the redesigned ErrorPage's
+  look instead: a neutral card shell with the family color carried by a
+  4px accent bar, the icon, and the chips, with the message in neutral gray.
+  Default stays `Tinted` (empty/unknown values render Tinted too — zero
+  visual change for existing callers), pinned by `ErrorDetailVariantIsValid`
+  plus HTML and pixel goldens in both themes.
+
 - **Browser proof for the error pages' "Go back" button and a wire-level
   chips↔JSON parity guard.** A chromedp test navigates to a demo error
   route, clicks `data-tc-go-back`, and proves `history.back()` really

@@ -22,7 +22,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-121 server-rendered components. 61 typed string enums (60 with IsValid()). 102 SVG icons. Zero client-side framework.
+121 server-rendered components. 62 typed string enums (61 with IsValid()). 102 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -303,7 +303,7 @@ mux.Handle("/api/thing", errorpage.ErrorHandler(err, errorpage.ErrorHandlerConfi
 
 ## Design Principles
 
-**Type-safe.** 61 typed string enums (60 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 62 typed string enums (61 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation, and screen-reader text across all interactive components. Native `<dialog>` for modals, `<details>` for accordions, `<search>` landmark for search inputs.
 
@@ -371,10 +371,10 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 | -------------- | --------------------------------------------------- |
 | Components     | 121                                                 |
 | SVG icons      | 102                                                 |
-| Typed enums    | 61 (60 with IsValid)                                |
+| Typed enums    | 62 (61 with IsValid)                                |
 | Packages       | 15                                                  |
 | Tests          | ~1,070 test functions + ~1,240 subtests             |
-| Visual goldens | 159 pixel-level regression tests (chromedp)         |
+| Visual goldens | 161 pixel-level regression tests (chromedp)         |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 ---

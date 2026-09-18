@@ -51,7 +51,7 @@ machine-checked (the guard named in parentheses fails CI on regression).
 - **Every component props struct embeds `utils.BaseProps`** (4 reasoned
   exemptions), so `Class`/`Attrs`/`ID`/`AriaLabel`/`Nonce` propagate
   everywhere (`internal/contract.TestPropsEmbedBaseProps`).
-- **Every closed-set enum validates** via an `IsValid` function — 60 today,
+- **Every closed-set enum validates** via an `IsValid` function — 61 today,
   ratcheted against removal (`internal/contract.TestEnumIsValidRatchet`);
   lookup maps use typed enum keys, never bare `map[string]`
   (`internal/contract.TestLookupMapsUseTypedEnumKeys`).
