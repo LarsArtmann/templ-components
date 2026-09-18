@@ -34,8 +34,8 @@ templ ErrorPage(props ErrorPageProps) {
 						<p class="mt-4 text-sm leading-relaxed text-gray-500 dark:text-gray-400">{ props.Why }</p>
 					}
 					@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-6 space-y-3", "Cause chain", errorInsetNeutral)
-					if props.WayOut != "" || props.WayOutHref != "" {
-						<div class="mt-8">
+					if props.WayOut != "" || props.WayOutHref != "" || props.SecondaryWayOut != "" {
+						<div class="mt-8 flex flex-wrap items-center gap-3">
 							if props.WayOutHref != "" {
 								<a
 									href={ templ.SafeURL(props.WayOutHref) }
@@ -52,6 +52,24 @@ templ ErrorPage(props ErrorPageProps) {
 									{ props.WayOut }
 								</button>
 							}
+							if props.SecondaryWayOut != "" {
+								if props.SecondaryWayOutHref != "" {
+									<a
+										href={ templ.SafeURL(props.SecondaryWayOutHref) }
+										class={ "inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-semibold " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost }
+									>
+										{ props.SecondaryWayOut }
+									</a>
+								} else {
+									<button
+										type="button"
+										data-tc-go-back
+										class={ "inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-semibold " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost }
+									>
+										{ props.SecondaryWayOut }
+									</button>
+								}
+							}
 						</div>
 					}
 				</div>
@@ -61,7 +79,7 @@ templ ErrorPage(props ErrorPageProps) {
 			</div>
 		</div>
 	</main>
-	if props.WayOut != "" && props.WayOutHref == "" {
+	if (props.WayOut != "" && props.WayOutHref == "") || (props.SecondaryWayOut != "" && props.SecondaryWayOutHref == "") {
 		@goBackScript(props.Nonce)
 	}
 }

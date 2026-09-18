@@ -53,6 +53,9 @@ type familyVisualStyle struct {
 	AccentBG     string
 	AccentText   string
 	ActionButton string
+	// ActionButtonGhost is the secondary (outline) action style — family-
+	// tinted border/text on a neutral background, used by SecondaryWayOut.
+	ActionButtonGhost string
 }
 
 //nolint:gochecknoglobals // Package-level lookup table for family visual styles
@@ -67,6 +70,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		AccentBG:     "bg-amber-100 dark:bg-amber-900/30",
 		AccentText:   "text-amber-700 dark:text-amber-300",
 		ActionButton: "bg-amber-600 hover:bg-amber-500 dark:bg-amber-500 dark:hover:bg-amber-400 focus-visible:ring-amber-500 dark:focus-visible:ring-amber-400 text-white",
+		ActionButtonGhost: "border border-amber-300 dark:border-amber-700 bg-white dark:bg-transparent text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/30 focus-visible:ring-amber-500 dark:focus-visible:ring-amber-400",
 	},
 	FamilyConflict: {
 		Border:       "border-orange-200 dark:border-orange-800",
@@ -78,6 +82,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		AccentBG:     "bg-orange-100 dark:bg-orange-900/30",
 		AccentText:   "text-orange-700 dark:text-orange-300",
 		ActionButton: "bg-orange-600 hover:bg-orange-500 dark:bg-orange-500 dark:hover:bg-orange-400 focus-visible:ring-orange-500 dark:focus-visible:ring-orange-400 text-white",
+		ActionButtonGhost: "border border-orange-300 dark:border-orange-700 bg-white dark:bg-transparent text-orange-700 dark:text-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 focus-visible:ring-orange-500 dark:focus-visible:ring-orange-400",
 	},
 	FamilyTransient: {
 		Border:       "border-blue-200 dark:border-blue-800",
@@ -89,6 +94,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		AccentBG:     "bg-blue-100 dark:bg-blue-900/30",
 		AccentText:   "text-blue-700 dark:text-blue-300",
 		ActionButton: "bg-blue-600 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 text-white",
+		ActionButtonGhost: "border border-blue-300 dark:border-blue-700 bg-white dark:bg-transparent text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400",
 	},
 	FamilyCorruption: {
 		Border:       "border-red-200 dark:border-red-800",
@@ -100,6 +106,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		AccentBG:     "bg-red-100 dark:bg-red-900/30",
 		AccentText:   "text-red-700 dark:text-red-300",
 		ActionButton: "bg-red-600 hover:bg-red-500 dark:bg-red-500 dark:hover:bg-red-400 focus-visible:ring-red-500 dark:focus-visible:ring-red-400 text-white",
+		ActionButtonGhost: "border border-red-300 dark:border-red-700 bg-white dark:bg-transparent text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 focus-visible:ring-red-500 dark:focus-visible:ring-red-400",
 	},
 	FamilyInfrastructure: {
 		Border:       "border-gray-200 dark:border-gray-700",
@@ -111,6 +118,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		AccentBG:     "bg-gray-100 dark:bg-gray-800",
 		AccentText:   "text-gray-700 dark:text-gray-300",
 		ActionButton: "bg-gray-600 hover:bg-gray-500 dark:bg-gray-500 dark:hover:bg-gray-400 focus-visible:ring-gray-500 dark:focus-visible:ring-gray-400 text-white",
+		ActionButtonGhost: "border border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/40 focus-visible:ring-gray-500 dark:focus-visible:ring-gray-400",
 	},
 	FamilyOrchestration: {
 		Border:       "border-purple-200 dark:border-purple-800",
@@ -122,6 +130,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		AccentBG:     "bg-purple-100 dark:bg-purple-900/30",
 		AccentText:   "text-purple-700 dark:text-purple-300",
 		ActionButton: "bg-purple-600 hover:bg-purple-500 dark:bg-purple-500 dark:hover:bg-purple-400 focus-visible:ring-purple-500 dark:focus-visible:ring-purple-400 text-white",
+		ActionButtonGhost: "border border-purple-300 dark:border-purple-700 bg-white dark:bg-transparent text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/30 focus-visible:ring-purple-500 dark:focus-visible:ring-purple-400",
 	},
 }
 
@@ -136,6 +145,7 @@ var familyStyleDefault = familyVisualStyle{
 	AccentBG:     "bg-gray-100 dark:bg-gray-800",
 	AccentText:   "text-gray-700 dark:text-gray-300",
 	ActionButton: "bg-gray-600 hover:bg-gray-500 dark:bg-gray-500 dark:hover:bg-gray-400 focus-visible:ring-gray-500 dark:focus-visible:ring-gray-400 text-white",
+	ActionButtonGhost: "border border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/40 focus-visible:ring-gray-500 dark:focus-visible:ring-gray-400",
 }
 
 func lookupFamilyStyle(f Family) familyVisualStyle {
@@ -211,20 +221,26 @@ type CauseItem struct {
 type ErrorPageProps struct {
 	utils.BaseProps
 
-	Family        Family
-	StatusCode    int
-	Code          Code
-	Title         string
-	Message       string
-	Why           string
-	Fix           string
-	WayOut        string
-	WayOutHref    string
-	Context       []ContextPair
-	CauseChain    []CauseItem
-	Timestamp     string
-	Trace         string
-	ShowTimestamp bool
+	Family     Family
+	StatusCode int
+	Code       Code
+	Title      string
+	Message    string
+	Why        string
+	Fix        string
+	WayOut     string
+	WayOutHref string
+	// SecondaryWayOut renders a secondary (ghost) action next to the primary
+	// way out ("View status page", "Contact support"). With a
+	// SecondaryWayOutHref it renders as a link; without one it behaves like
+	// the primary's no-href variant (go back in history).
+	SecondaryWayOut     string
+	SecondaryWayOutHref string
+	Context             []ContextPair
+	CauseChain          []CauseItem
+	Timestamp           string
+	Trace               string
+	ShowTimestamp       bool
 }
 
 // errBlankNonRejection is the Validate error returned when the props would
