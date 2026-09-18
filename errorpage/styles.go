@@ -230,17 +230,75 @@ type ErrorPageProps struct {
 	Fix        string
 	WayOut     string
 	WayOutHref string
+	// WayOutAction is the typed bundle for the primary action. When Text is
+	// set it wins entirely over the loose WayOut/WayOutHref strings (no
+	// mixing) — callers may adopt it without touching existing fields.
+	WayOutAction WayOutAction
 	// SecondaryWayOut renders a secondary (ghost) action next to the primary
 	// way out ("View status page", "Contact support"). With a
 	// SecondaryWayOutHref it renders as a link; without one it behaves like
 	// the primary's no-href variant (go back in history).
 	SecondaryWayOut     string
 	SecondaryWayOutHref string
-	Context             []ContextPair
-	CauseChain          []CauseItem
-	Timestamp           string
-	Trace               string
-	ShowTimestamp       bool
+	// MaxWidth caps the card width. Empty/unknown renders MaxWidthXL (the
+	// pre-field look).
+	MaxWidth     ErrorMaxWidth
+	Context      []ContextPair
+	CauseChain   []CauseItem
+	Timestamp    string
+	Trace        string
+	ShowTimestamp bool
+}
+
+// WayOutAction bundles a recovery action's label with its destination. Href
+// empty means a history-back button (the browser-native way out).
+type WayOutAction struct {
+	Text string
+	Href string
+}
+
+// ErrorMaxWidth selects the ErrorPage card's max width. It is a closed-set
+// enum; unknown values fall back to MaxWidthXL (map+fallback convention).
+type ErrorMaxWidth string
+
+const (
+	ErrorMaxWidthLG  ErrorMaxWidth = "lg"
+	ErrorMaxWidthXL  ErrorMaxWidth = "xl"
+	ErrorMaxWidth2XL ErrorMaxWidth = "2xl"
+	ErrorMaxWidth4XL ErrorMaxWidth = "4xl"
+)
+
+// ErrorMaxWidthIsValid reports whether w is a known ErrorMaxWidth.
+func ErrorMaxWidthIsValid(w ErrorMaxWidth) bool {
+	switch w {
+	case ErrorMaxWidthLG, ErrorMaxWidthXL, ErrorMaxWidth2XL, ErrorMaxWidth4XL:
+		return true
+	default:
+		return false
+	}
+}
+
+//nolint:gochecknoglobals // Package-level lookup table
+var errorMaxWidthClassMap = map[ErrorMaxWidth]string{
+	ErrorMaxWidthLG:  "max-w-lg",
+	ErrorMaxWidthXL:  "max-w-xl",
+	ErrorMaxWidth2XL: "max-w-2xl",
+	ErrorMaxWidth4XL: "max-w-4xl",
+}
+
+// errorMaxWidthClass resolves the Tailwind max-width class, defaulting to XL.
+func errorMaxWidthClass(w ErrorMaxWidth) string {
+	return utils.Lookup(errorMaxWidthClassMap, w, "max-w-xl")
+}
+
+// resolvedWayOut returns the effective primary action: WayOutAction wins
+// entirely when its Text is set; otherwise the loose strings apply.
+func (p ErrorPageProps) resolvedWayOut() (string, string) {
+	if p.WayOutAction.Text != "" {
+		return p.WayOutAction.Text, p.WayOutAction.Href
+	}
+
+	return p.WayOut, p.WayOutHref
 }
 
 // errBlankNonRejection is the Validate error returned when the props would

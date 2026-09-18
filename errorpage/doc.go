@@ -54,6 +54,10 @@
 //	Fix          | ✓         | ✓           | ✓          | The suggested fix (renders in its own panel)
 //	WayOut       | ✓         |             |            | Primary action label ("Retry"); requires WayOutHref set
 //	WayOutHref   | ✓         |             |            | Primary action destination
+//	SecondaryWayOut     | ✓ |             |            | Ghost/secondary action label ("Contact support"); without a href it goes back in history
+//	SecondaryWayOutHref | ✓ |             |            | Secondary action destination
+//	WayOutAction | ✓         |             |            | Typed bundle (text+href); wins over WayOut/WayOutHref when Text is set
+//	MaxWidth     | ✓         |             |            | Card width enum (MaxWidthXL default; LG/2XL/4XL)
 //	Context      | ✓         | ✓           |            | Key/value diagnostics (region, request_id, ...)
 //	CauseChain   | ✓         | ✓           |            | Ordered causes, deepest first (message + optional code)
 //	Timestamp    | ✓         | ✓           |            | RFC3339; FromError uses the error's own when available
