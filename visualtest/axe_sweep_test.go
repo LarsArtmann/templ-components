@@ -172,9 +172,11 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 		// unpinned-audit bug the pin exists to prevent), so re-pin once and
 		// fail loudly rather than audit a silently-wrong render.
 		chromedp.ActionFunc(func(ctx context.Context) error {
-			for attempt := 0; attempt < 2; attempt++ {
+			for range 2 {
 				var got bool
-				if err := chromedp.Evaluate(`document.documentElement.classList.contains('dark')`, &got).Do(ctx); err != nil {
+				if err := chromedp.Evaluate(
+					`document.documentElement.classList.contains('dark')`, &got,
+				).Do(ctx); err != nil {
 					return err
 				}
 
