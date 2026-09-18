@@ -1,6 +1,7 @@
 package errorpage
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -168,7 +169,7 @@ func TestGoldenHandlerHTMLShell(t *testing.T) {
 	})
 
 	rec := httptest.NewRecorder()
-	handler.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/test", nil))
+	handler.ServeHTTP(rec, httptest.NewRequestWithContext(context.Background(), http.MethodGet, "/test", nil))
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "handler_htmlshell", HTML: rec.Body.String()},

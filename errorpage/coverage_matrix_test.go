@@ -63,7 +63,16 @@ func TestRenderCoverageMatrix(t *testing.T) {
 		// The compact errorBody header (title/message/chip combinations).
 		for _, title := range []string{"", "Title only"} {
 			for _, message := range []string{"", "Message only"} {
-				if err := errorBody(style, family, CodeConflict, title, "h3", "mt-1.5 text-sm font-semibold text-gray-900 dark:text-white", message, "mt-1 text-sm").Render(context.Background(), io.Discard); err != nil {
+				if err := errorBody(
+					style,
+					family,
+					CodeConflict,
+					title,
+					"h3",
+					"mt-1.5 text-sm font-semibold text-gray-900 dark:text-white",
+					message,
+					"mt-1 text-sm",
+				).Render(context.Background(), io.Discard); err != nil {
 					t.Errorf("errorBody(%s) render failed: %v", family, err)
 				}
 			}

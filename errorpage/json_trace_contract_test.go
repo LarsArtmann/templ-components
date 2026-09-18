@@ -78,7 +78,7 @@ func TestJSONTraceContract(t *testing.T) {
 
 // TestChipsJSONParity guards the wire-level contract between the two error
 // render paths: for the SAME error, the HTML page's chip row (HTTP status,
-// code, trace footer) and the JSON error response (status code, code, trace
+// code, trace footer) and the JSON error response (status, code, trace
 // field) must agree. A drift here means an API consumer and a browser user
 // see different facts about the same failure.
 func TestChipsJSONParity(t *testing.T) {
