@@ -161,12 +161,43 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 		chromedp.Navigate(baseURL + path),
 		chromedp.WaitReady("body"),
 		chromedp.Evaluate(fmt.Sprintf(
-			`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; window.__tcClassLog = []; new MutationObserver(function(muts){ muts.forEach(function(m){ window.__tcClassLog.push(document.documentElement.className + '@' + performance.now()); }); }).observe(document.documentElement, {attributes:true, attributeFilter:['class']}); true`,
+			`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; true`,
 			theme,
 			dark,
 			theme,
 		), nil),
 		chromedp.Sleep(settleDelay),
+		// Verify the pin actually stuck before auditing. An audit that runs
+		// against the wrong theme produces bogus contrast findings (the same
+		// unpinned-audit bug the pin exists to prevent), so re-pin once and
+		// fail loudly rather than audit a silently-wrong render.
+		chromedp.ActionFunc(func(ctx context.Context) error {
+			for attempt := 0; attempt < 2; attempt++ {
+				var got bool
+				if err := chromedp.Evaluate(`document.documentElement.classList.contains('dark')`, &got).Do(ctx); err != nil {
+					return err
+				}
+
+				if got == dark {
+					return nil
+				}
+
+				if err := chromedp.Evaluate(fmt.Sprintf(
+					`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; true`,
+					theme,
+					dark,
+					theme,
+				), nil).Do(ctx); err != nil {
+					return err
+				}
+
+				if err := chromedp.Sleep(settleDelay).Do(ctx); err != nil {
+					return err
+				}
+			}
+
+			return fmt.Errorf("visualtest[axe]: theme pin did not stick on %s%s (wanted dark=%t)", baseURL, path, dark)
+		}),
 	}
 
 	if err := chromedp.Run(ctx, actions...); err != nil {
@@ -177,15 +208,6 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 	if err != nil {
 		t.Fatalf("visualtest[axe]: audit %s%s: %v", baseURL, path, err)
 	}
-
-	var dbgClass, dbgStored string
-	var dbgLog []interface{}
-	_ = chromedp.Run(ctx,
-		chromedp.Evaluate(`document.documentElement.className`, &dbgClass),
-		chromedp.Evaluate(`(function(){try{return localStorage.getItem('theme');}catch(e){return 'ERR';}})()`, &dbgStored),
-		chromedp.Evaluate(`window.__tcClassLog || []`, &dbgLog),
-	)
-	t.Logf("axe-debug[%s%s]: dark=%t finalClass=%q stored=%q classLog=%v", baseURL, path, dark, dbgClass, dbgStored, dbgLog)
 
 	return results
 }

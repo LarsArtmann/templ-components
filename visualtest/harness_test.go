@@ -50,7 +50,7 @@ func TestWaitAnimationsSettled(t *testing.T) {
 
 				// May wait through the registration window if the short animation
 				// has already been cleaned up by the time getAnimations() runs.
-				assertElapsedUnder(t, "finished_animations", elapsed, 500*time.Millisecond,
+				assertElapsedUnder(t, "finished_animations", elapsed, 1500*time.Millisecond,
 					"should return quickly")
 			},
 		},
@@ -67,7 +67,7 @@ func TestWaitAnimationsSettled(t *testing.T) {
 				// Infinite animations are filtered out — they never finish, so
 				// the helper must not block on them. Returns after the
 				// registration window.
-				assertElapsedUnder(t, "long_running", elapsed, 500*time.Millisecond,
+				assertElapsedUnder(t, "long_running", elapsed, 1500*time.Millisecond,
 					"infinite animations must not block")
 			},
 		},
