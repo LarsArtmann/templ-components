@@ -1,7 +1,6 @@
 package visualtest
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -32,17 +31,30 @@ func TestDemoErrorPageGoBack(t *testing.T) {
 		t.Fatalf("visualtest[errorpage]: navigate to /errors/404-page: %v", err)
 	}
 
-	// Click "Go back" and poll until the browser is back on the demo index —
-	// history.back() is async, so the URL check must poll.
+	// Click "Go back" and wait until the browser is back on the demo index.
+	// history.back() is async AND the navigation invalidates the JS execution
+	// context the click's poll would run in — a single chromedp.Poll here
+	// races the navigation and dies with "Cannot find context". Retry the
+	// evaluation in a deadline loop instead (the demoClickUntil pattern).
 	if err := chromedp.Run(ctx, chromedp.Click("[data-tc-go-back]", chromedp.ByQuery)); err != nil {
 		t.Fatalf("visualtest[errorpage]: click go-back: %v", err)
 	}
 
-	condition := "window.location.pathname === '/'"
-	if err := chromedp.Run(ctx, pollTrue(condition, chromedp.WithPollingTimeout(3*time.Second))); err != nil {
-		var url string
-		_ = chromedp.Run(ctx, chromedp.Location(&url))
+	deadline := time.Now().Add(demoFlowTimeout)
+	for {
+		var back bool
+		evalErr := chromedp.Run(ctx, chromedp.Evaluate(`window.location.pathname === '/'`, &back))
+		if evalErr == nil && back {
+			break
+		}
 
-		t.Fatalf("visualtest[errorpage]: go-back never returned to / (stuck at %s): %v", url, err)
+		if !time.Now().Before(deadline) {
+			var url string
+			_ = chromedp.Run(ctx, chromedp.Location(&url))
+
+			t.Fatalf("visualtest[errorpage]: go-back never returned to / (stuck at %s)", url)
+		}
+
+		time.Sleep(300 * time.Millisecond)
 	}
 }

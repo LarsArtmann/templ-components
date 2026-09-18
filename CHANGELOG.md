@@ -159,6 +159,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   family→status parity, including the corruption fallback for unknown
   errors.
 
+- **Browser proof for the error pages' "Go back" button and a wire-level
+  chips↔JSON parity guard.** A chromedp test navigates to a demo error
+  route, clicks `data-tc-go-back`, and proves `history.back()` really
+  returns to the referring page (retry-until-needle, since the navigation
+  invalidates the JS execution context a plain poll races). Two contract
+  tests pin the JSON error response's `trace` field (present for traced
+  errors, key omitted entirely otherwise) and assert that for the SAME
+  error the HTML chip row (`HTTP 409`, code chip, trace footer) and the
+  JSON body (`409` status, `code`, `trace`) agree — API consumers and
+  browser users must see the same facts about one failure.
+
 - **`FromError` derives a title from the family when the error carries none.**
   Every `FromError`-driven page now renders a heading: when neither the error
   nor its type provides `ErrorTitle()`, a short neutral title is filled from
