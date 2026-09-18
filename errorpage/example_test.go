@@ -12,13 +12,23 @@ func ExampleErrorPage() {
 	var buf bytes.Buffer
 
 	_ = errorpage.ErrorPage(errorpage.ErrorPageProps{
-		Family:     errorpage.FamilyRejection,
-		Code:       "page.not_found",
-		Title:      "Page not found",
-		Message:    "The page you requested does not exist.",
-		Fix:        "Check the URL or navigate back to the homepage.",
-		WayOut:     "Go home",
+		Family:     errorpage.FamilyTransient,
+		StatusCode: 503,
+		Code:       errorpage.CodeUnavailable,
+		Title:      "Service temporarily unavailable",
+		Message:    "We're performing maintenance or experiencing high traffic.",
+		Why:        "This is a temporary issue. No data was lost.",
+		Fix:        "Wait a moment and refresh the page.",
+		WayOut:     "Retry",
 		WayOutHref: "/",
+		Context: []errorpage.ContextPair{
+			{Key: "region", Value: "eu-central-1"},
+			{Key: "request_id", Value: "req_8fk2m1"},
+		},
+		CauseChain:    []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}},
+		Timestamp:     "2026-09-17T12:00:00Z",
+		Trace:         "trc_9f3a1c2d",
+		ShowTimestamp: true,
 	}).Render(context.Background(), &buf)
 
 	fmt.Println("renders full-page error view")

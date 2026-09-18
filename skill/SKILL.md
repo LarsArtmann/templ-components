@@ -190,13 +190,13 @@ Don't know what to look for? Find your page type:
 
 | Component / Function           | Signature                             | One-liner                                                                   |
 | ------------------------------ | ------------------------------------- | --------------------------------------------------------------------------- |
-| `ErrorPage`                    | `ErrorPage(props ErrorPageProps)`     | Full-page error display (neutral card, family accent bar, `HTTP {StatusCode}`/code/family chip row — 2026-09-17 redesign)                                     |
+| `ErrorPage`                    | `ErrorPage(props ErrorPageProps)`     | Full-page error display (neutral card, family accent bar, `HTTP {StatusCode}`/code/family chip row, timestamp + trace footer — 2026-09-17 redesign; 4-capture mobile/RTL visual shield)                                     |
 | `NotFound404`                  | `NotFound404(props NotFound404Props)` | Dedicated 404 page — hero numeral, search, links, configurable `LinksTitle` |
 | `ErrorDetail`                  | `ErrorDetail(props ErrorDetailProps)` | Inline error card                                                           |
 | `ErrorAlert`                   | `ErrorAlert(props ErrorAlertProps)`   | Family-aware alert                                                          |
 | `ErrorHandler`                 | `ErrorHandler(err, cfg) http.Handler` | go-error-family aware HTTP handler                                          |
 | `WriteError`                   | `WriteError(w, r, err, nonce)`        | One-call error page from any handler                                        |
-| `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/code/why/fix from error                                      |
+| `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/title/code/why/fix/trace from error; prefers `Public()` user-safe message, derives family title when none set |
 | `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family                                   |
 
 #### `icons` — 102 icons + 3 functions
