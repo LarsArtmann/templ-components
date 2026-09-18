@@ -194,6 +194,11 @@ const (
 	errorInsetCard    = "bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700"
 )
 
+// errorActionClassScaffold is the shared geometry (shape/size/typography)
+// of every action control in ErrorPage and NotFound404; color, border, and
+// effect classes are layered on per call site.
+const errorActionClassScaffold = "inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold "
+
 // ParseFamily parses a family string (case-insensitive) into a Family.
 // Returns FamilyTransient for unrecognized values.
 func ParseFamily(s string) Family {
@@ -240,9 +245,12 @@ type ErrorPageProps struct {
 	// the primary's no-href variant (go back in history).
 	SecondaryWayOut     string
 	SecondaryWayOutHref string
+	// CopyCode renders a copy-to-clipboard icon button next to the error
+	// code chip (opt-in; requires Nonce for the CSP-safe script).
+	CopyCode bool
 	// MaxWidth caps the card width. Empty/unknown renders MaxWidthXL (the
 	// pre-field look).
-	MaxWidth     ErrorMaxWidth
+	MaxWidth ErrorMaxWidth
 	Context      []ContextPair
 	CauseChain   []CauseItem
 	Timestamp    string
