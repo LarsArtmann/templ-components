@@ -41,8 +41,10 @@ func TestDemoErrorPageGoBack(t *testing.T) {
 	}
 
 	deadline := time.Now().Add(demoFlowTimeout)
+
 	for {
 		var back bool
+
 		evalErr := chromedp.Run(ctx, chromedp.Evaluate(`window.location.pathname === '/'`, &back))
 		if evalErr == nil && back {
 			break
@@ -50,6 +52,7 @@ func TestDemoErrorPageGoBack(t *testing.T) {
 
 		if !time.Now().Before(deadline) {
 			var url string
+
 			_ = chromedp.Run(ctx, chromedp.Location(&url))
 
 			t.Fatalf("visualtest[errorpage]: go-back never returned to / (stuck at %s)", url)
