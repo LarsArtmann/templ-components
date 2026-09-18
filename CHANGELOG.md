@@ -159,6 +159,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   family→status parity, including the corruption fallback for unknown
   errors.
 
+- **Quality and tooling push for the errorpage package and the golden
+  workflow.** `ParseFamily` is fuzz-proven (`FuzzParseFamily`, 1.25M
+  executions clean: never panics, always resolves to a valid family with a
+  real status code and a non-empty title), the whole-repo coverage picture
+  was recomputed into FEATURES (root 70.2%, sub-modules 69.6–77.7%), and
+  handler-level branches gained direct tests. Tooling: a `visual-update`
+  flake app regenerates goldens under the pinned font/browser environment
+  in one command, `golden -update` now logs which golden files actually
+  CHANGED (visible with `-v`) so the same-edit count bumps are obvious, and
+  the docs-count drift guard also pins the README's HTML-golden count —
+  immediately catching a stale 251 there. The website gained an "Error
+  Pages" guide (families, `FromError`/`ErrorHandler` quick start, JSON
+  mode) and the link checker proved itself on it by catching a wrong
+  anchor.
+
 - **`ErrorPage` code chip can be copied with one click.** `CopyCode: true`
   renders a clipboard icon button next to the error code chip (CSP-safe,
   nonce'd, `aria-label`'d, reduced-motion safe), so users can lift the

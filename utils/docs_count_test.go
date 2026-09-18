@@ -70,7 +70,7 @@ func TestDocsCountDrift(t *testing.T) {
 	// filesystem walk, never from another doc — every doc that prints it is
 	// asserted against reality here (M17.4). Interpreted string literal: the
 	// pattern itself contains backticks.
-	assertCount(t, readme, "`(\\d+) `\\.golden` files", "README.md HTML golden baselines", actualHTMLGoldens)
+	assertCount(t, readme, "(\\d+) `\\.golden` files", "README.md HTML golden baselines", actualHTMLGoldens)
 
 	for pkg, want := range packageCounts {
 		if want == 0 {
