@@ -52,7 +52,7 @@
 //	Message      | ✓         | ✓           | ✓          | What happened, user-safe (never log details here)
 //	Why          | ✓         |             |            | Reassurance/context ("this is temporary, no data lost")
 //	Fix          | ✓         | ✓           | ✓          | The suggested fix (renders in its own panel)
-//	WayOut       | ✓         |             |            | Primary action label ("Retry"); requires WayOutHref
+//	WayOut       | ✓         |             |            | Primary action label ("Retry"); requires WayOutHref set
 //	WayOutHref   | ✓         |             |            | Primary action destination
 //	Context      | ✓         | ✓           |            | Key/value diagnostics (region, request_id, ...)
 //	CauseChain   | ✓         | ✓           |            | Ordered causes, deepest first (message + optional code)
