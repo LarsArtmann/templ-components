@@ -271,6 +271,43 @@ func DefaultErrorPageProps() ErrorPageProps {
 	}
 }
 
+// ErrorDetailVariant selects the card shell treatment for ErrorDetail.
+// Unknown or empty values render Tinted (the pre-variant look), matching the
+// library's map+fallback convention — zero-value props keep rendering
+// exactly as before the variant existed.
+type ErrorDetailVariant string
+
+const (
+	// ErrorDetailTinted (default) keeps the family-tinted background and
+	// border — the compact alert-like card.
+	ErrorDetailTinted ErrorDetailVariant = "tinted"
+	// ErrorDetailNeutral renders a neutral card shell with a family-colored
+	// accent bar on top — visual parity with the redesigned ErrorPage, for
+	// inline placement in content that already carries color (dashboards,
+	// side panels, tinted sections).
+	ErrorDetailNeutral ErrorDetailVariant = "neutral"
+)
+
+// ErrorDetailVariantIsValid reports whether v is a known ErrorDetailVariant.
+func ErrorDetailVariantIsValid(v ErrorDetailVariant) bool {
+	switch v {
+	case ErrorDetailTinted, ErrorDetailNeutral:
+		return true
+	default:
+		return false
+	}
+}
+
+// errorDetailShellClasses returns the border/background classes for the
+// ErrorDetail card shell under the given variant.
+func errorDetailShellClasses(v ErrorDetailVariant, style familyVisualStyle) string {
+	if v == ErrorDetailNeutral {
+		return "bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+	}
+
+	return style.Border + " " + style.BG
+}
+
 // ErrorDetailProps configures an inline error detail card.
 type ErrorDetailProps struct {
 	utils.BaseProps
@@ -284,12 +321,16 @@ type ErrorDetailProps struct {
 	CauseChain []CauseItem
 	Timestamp  string
 	Trace      string
+	// Variant selects the card shell (Tinted default; Neutral adds a family
+	// accent bar over a neutral shell). Empty/unknown renders Tinted.
+	Variant ErrorDetailVariant
 }
 
 // DefaultErrorDetailProps returns sensible defaults.
 func DefaultErrorDetailProps() ErrorDetailProps {
 	return ErrorDetailProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
-		Family: FamilyTransient,
+		Family:  FamilyTransient,
+		Variant: ErrorDetailTinted,
 	}
 }
 

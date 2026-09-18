@@ -32,7 +32,7 @@ func ErrorDetail(props ErrorDetailProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		style := lookupFamilyStyle(props.Family)
-		var templ_7745c5c3_Var2 = []any{utils.Class("rounded-lg border overflow-hidden", style.Border, style.BG, props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("rounded-lg border overflow-hidden", errorDetailShellClasses(props.Variant, style), props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -100,11 +100,39 @@ func ErrorDetail(props ErrorDetailProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "><div class=\"px-4 py-3 sm:px-5\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, ">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = errorHeader("gap-3", "flex-shrink-0 mt-0.5", style, props.Family, props.Code, props.Title, "h3", "mt-1.5 text-sm font-semibold text-gray-900 dark:text-white", props.Message, utils.Class("mt-1 text-sm", style.Text)).Render(ctx, templ_7745c5c3_Buffer)
+		if props.Variant == ErrorDetailNeutral {
+			var templ_7745c5c3_Var6 = []any{"h-1", style.Bar}
+			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var7 string
+			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var6).String())
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/errordetail.templ`, Line: 1, Col: 0}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" aria-hidden=\"true\"></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"px-4 py-3 sm:px-5\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = errorHeader("gap-3", "flex-shrink-0 mt-0.5", style, props.Family, props.Code, props.Title, "h3", "mt-1.5 text-sm font-semibold text-gray-900 dark:text-white", props.Message, utils.Class("mt-1 text-sm", utils.Ternary(props.Variant == ErrorDetailNeutral, "text-gray-600 dark:text-gray-300", style.Text))).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -112,7 +140,7 @@ func ErrorDetail(props ErrorDetailProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -120,7 +148,7 @@ func ErrorDetail(props ErrorDetailProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

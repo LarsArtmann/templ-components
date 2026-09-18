@@ -852,6 +852,24 @@ func TestErrorDetail(t *testing.T) {
 	visualtest.AssertScreenshot(t, "errorpage/detail_light", errorpage.ErrorDetail(fullErrorDetailProps()))
 }
 
+// TestErrorDetailNeutral covers the Neutral variant — neutral card shell with
+// a family-colored accent bar (parity with the ErrorPage redesign) — in both
+// themes.
+func TestErrorDetailNeutral(t *testing.T) {
+	t.Parallel()
+
+	props := fullErrorDetailProps()
+	props.Variant = errorpage.ErrorDetailNeutral
+
+	visualtest.AssertScreenshot(t, "errorpage/detail_neutral_light", errorpage.ErrorDetail(props))
+	visualtest.AssertScreenshot(
+		t,
+		"errorpage/detail_neutral_dark",
+		errorpage.ErrorDetail(props),
+		visualtest.Options{Dark: new(true)},
+	)
+}
+
 // TestErrorAlert covers the family-aware alert banner, including the
 // dismissible variant (close button + dismiss script).
 func TestErrorAlert(t *testing.T) {

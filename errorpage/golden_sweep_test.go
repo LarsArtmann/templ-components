@@ -88,6 +88,20 @@ func TestGoldenSweepErrorDetail(t *testing.T) {
 			Title:   "Version Conflict",
 			Message: "The record was modified by another user.",
 		}))},
+		{Name: "error_detail_neutral", HTML: utils.Render(t, ErrorDetail(ErrorDetailProps{
+			Family:  FamilyCorruption,
+			Code:    "config.parse_failed",
+			Title:   "Configuration Parse Error",
+			Message: "config.yaml has invalid syntax at line 42.",
+			Fix:     "Check the YAML syntax — the indentation appears incorrect.",
+			Context: []ContextPair{
+				{Key: "file", Value: "config.yaml"},
+				{Key: "line", Value: "42"},
+				{Key: "column", Value: "8"},
+			},
+			Timestamp: "2026-07-30T12:00:00Z",
+			Variant:   ErrorDetailNeutral,
+		}))},
 	})
 }
 
