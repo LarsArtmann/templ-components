@@ -29,17 +29,18 @@ templ AnimatedIcon(name Name, class string) {
 //
 // Requires the animated-icon CSS from templates/custom.css (.tc-anim-* classes).
 templ AnimatedIconWithAnimation(name Name, anim Animation, class string) {
-	if anim == AnimNone {
-		@Icon(name, class)
-	} else if anim == AnimDraw {
-		<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
-			@drawIcon(name, class, false)
-		</span>
-	} else {
-		{{ anim = resolveAnimation(name, anim) }}
-		<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
+	switch anim {
+		case AnimNone:
 			@Icon(name, class)
-		</span>
+		case AnimDraw:
+			<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
+				@drawIcon(name, class, false)
+			</span>
+		default:
+			{{ anim = resolveAnimation(name, anim) }}
+			<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
+				@Icon(name, class)
+			</span>
 	}
 }
 
@@ -56,17 +57,18 @@ templ AnimatedIconRTL(name Name, class string) {
 //
 //	@icons.AnimatedIconWithAnimationRTL(icons.ArrowRight, icons.AnimShake, "h-4 w-4")
 templ AnimatedIconWithAnimationRTL(name Name, anim Animation, class string) {
-	if anim == AnimNone {
-		@IconRTL(name, class)
-	} else if anim == AnimDraw {
-		<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
-			@drawIcon(name, class, true)
-		</span>
-	} else {
-		{{ anim = resolveAnimation(name, anim) }}
-		<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
+	switch anim {
+		case AnimNone:
 			@IconRTL(name, class)
-		</span>
+		case AnimDraw:
+			<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
+				@drawIcon(name, class, true)
+			</span>
+		default:
+			{{ anim = resolveAnimation(name, anim) }}
+			<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
+				@IconRTL(name, class)
+			</span>
 	}
 }
 

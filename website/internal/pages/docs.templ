@@ -65,16 +65,17 @@ templ docsSidebar(current string) {
 					<div class="text-xs font-mono uppercase tracking-[0.2em] text-text-muted mb-2">{ group.Label }</div>
 					<ul class="space-y-1">
 						for _, doc := range group.Docs {
-							if doc.Slug == "" {
+							switch {
+							case doc.Slug == "":
 								<li>
 									<a href={ templ.SafeURL(PkgGoDevURL) } target="_blank" rel="noopener noreferrer" class="docs-nav-link flex items-center gap-1.5">
 										{ doc.Title }
 										@icons.Icon(icons.ExternalLink, "h-3 w-3")
 									</a>
 								</li>
-							} else if doc.Slug == current {
+							case doc.Slug == current:
 								<li><a href={ "/" + doc.Slug } aria-current="page" class="docs-nav-link docs-nav-active">{ doc.Title }</a></li>
-							} else {
+							default:
 								<li><a href={ "/" + doc.Slug } class="docs-nav-link">{ doc.Title }</a></li>
 							}
 						}
