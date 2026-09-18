@@ -106,6 +106,10 @@ func errorpageDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyOrchestration, Title: "Orchestration Failure", Message: "A workflow step failed unexpectedly."}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -175,7 +179,7 @@ func errorRouteCard(title, href string) templ.Component {
 		var templ_7745c5c3_Var3 templ.SafeURL
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(href))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/errorpage_demo.templ`, Line: 55, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/errorpage_demo.templ`, Line: 56, Col: 28}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -188,7 +192,7 @@ func errorRouteCard(title, href string) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/errorpage_demo.templ`, Line: 58, Col: 65}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/errorpage_demo.templ`, Line: 59, Col: 65}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -201,7 +205,7 @@ func errorRouteCard(title, href string) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(href)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/errorpage_demo.templ`, Line: 59, Col: 73}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/errorpage_demo.templ`, Line: 60, Col: 73}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {

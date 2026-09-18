@@ -88,11 +88,12 @@ func TestGoldenSweepErrorDetail(t *testing.T) {
 	})
 }
 
-// TestGoldenSweepErrorFamilyMatrix pins the full five-family matrix —
+// TestGoldenSweepErrorFamilyMatrix pins the full six-family matrix —
 // every go-error-family renders through ErrorAlert (rejection, conflict,
-// transient, corruption, infrastructure) so a family color/icon/text
-// regression is caught for ANY family, not just the two that previously
-// had goldens. ErrorDetail gains the missing infrastructure family too.
+// transient, corruption, infrastructure, orchestration) so a family
+// color/icon/text regression is caught for ANY family, not just the two that
+// previously had goldens. ErrorDetail gains the missing infrastructure
+// family too.
 func TestGoldenSweepErrorFamilyMatrix(t *testing.T) {
 	t.Parallel()
 
@@ -106,6 +107,7 @@ func TestGoldenSweepErrorFamilyMatrix(t *testing.T) {
 		{"transient", FamilyTransient, "Service Unavailable"},
 		{"corruption", FamilyCorruption, "Data Corruption"},
 		{"infrastructure", FamilyInfrastructure, "Infrastructure Failure"},
+		{"orchestration", FamilyOrchestration, "Orchestration Failure"},
 	}
 
 	alerts := make([]golden.Snapshot, 0, len(families))

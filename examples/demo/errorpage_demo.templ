@@ -29,6 +29,7 @@ templ errorpageDemo() {
 		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyTransient, Title: "Temporary Error", Message: "A temporary error occurred.", Fix: "Wait a moment and retry.", Dismissible: true})
 		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyCorruption, Title: "Data Corrupted", Message: "Configuration file is unreadable."})
 		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyInfrastructure, Title: "Service Unavailable", Message: "The service is currently down."})
+		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyOrchestration, Title: "Orchestration Failure", Message: "A workflow step failed unexpectedly."})
 	</div>
 	@demoSection("ErrorDetail (with context + cause chain)", "errorpage-details")
 	<div class="space-y-4">
