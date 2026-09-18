@@ -169,6 +169,14 @@ Pending register shipped (TODO #247-249 cover the test debt); the ideas below ar
 
 ### Website & docs ideas (harvested 2026-09-17 from docs/status/2026-09-17_{18-09, 15-27} + the Astro-conversion P3 tail)
 
+### Errorpage plan remainder (harvested 2026-09-18 from the M18/M19 execution record)
+
+- Failure-screenshot naming convention for `visualtest/testdata/.fail/` (timestamped, component-prefixed) + a CI cleanup step, so failure evidence never rots.
+- Fresh-clone hook check: CI/doctor assertion that `git config core.hooksPath .githooks` is set (`scripts/setup-hooks.sh` was silently skipped on at least one clone).
+- MaxMismatch/viewport audit for the errorpage captures (per-capture MaxMismatch tuning instead of the shared 0.1% default).
+- Upstream: BuildFlow go-structure-linter rule-level config (skip is a band-aid; TODO #231/#93 family).
+
+
 | Direction                      | Description                                                                                                                                              |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Go OG-image generator          | Per-page OG images from the SSG; retire the static `public/og/*` frozen artifacts of the old design.                                                     |
