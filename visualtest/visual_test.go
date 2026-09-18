@@ -878,6 +878,24 @@ func TestErrorAlert(t *testing.T) {
 	visualtest.AssertScreenshot(t, "errorpage/alert_light", errorpage.ErrorAlert(fullErrorAlertProps()))
 }
 
+// TestErrorPageSecondaryAction covers the ghost secondary action slot next
+// to the primary way out (link + link pair), in both themes.
+func TestErrorPageSecondaryAction(t *testing.T) {
+	t.Parallel()
+
+	props := fullErrorPageProps()
+	props.SecondaryWayOut = "Contact support"
+	props.SecondaryWayOutHref = "mailto:support@example.com"
+
+	visualtest.AssertScreenshot(t, "errorpage/secondary_light", errorpage.ErrorPage(props))
+	visualtest.AssertScreenshot(
+		t,
+		"errorpage/secondary_dark",
+		errorpage.ErrorPage(props),
+		visualtest.Options{Dark: new(true)},
+	)
+}
+
 // fullErrorDetailProps exercises the complete ErrorDetail model.
 func fullErrorDetailProps() errorpage.ErrorDetailProps {
 	props := errorpage.DefaultErrorDetailProps()

@@ -807,6 +807,10 @@ func errorPageFullModelDemoProps() errorpage.ErrorPageProps {
 		Fix:        "Wait a moment and refresh the page.",
 		WayOut:     "Retry",
 		WayOutHref: "/",
+		// SecondaryWayOut demos the ghost action slot (an escape hatch that
+		// isn't the primary recovery path).
+		SecondaryWayOut:     "Contact support",
+		SecondaryWayOutHref: "mailto:support@example.com",
 		Context: []errorpage.ContextPair{
 			{Key: "region", Value: "eu-central-1"},
 			{Key: "request_id", Value: "req_8fk2m1"},

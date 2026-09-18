@@ -42,6 +42,25 @@ func TestGoldenSweepErrorPage(t *testing.T) {
 			Message: msgInternalUnexpected,
 			WayOut:  msgGoBack,
 		}))},
+		{Name: "error_page_secondary_action", HTML: utils.Render(t, ErrorPage(ErrorPageProps{
+			Family:               FamilyTransient,
+			StatusCode:           503,
+			Title:                "Service temporarily unavailable",
+			Message:              "We're performing maintenance or experiencing high traffic.",
+			WayOut:               "Retry",
+			WayOutHref:           "/",
+			SecondaryWayOut:      "Contact support",
+			SecondaryWayOutHref:  "mailto:support@example.com",
+			ShowTimestamp:        true,
+		}))},
+		{Name: "error_page_secondary_go_back", HTML: utils.Render(t, ErrorPage(ErrorPageProps{
+			Family:          FamilyInfrastructure,
+			Title:           "Something went wrong",
+			Message:         "An unexpected error occurred.",
+			WayOut:          "Go home",
+			WayOutHref:      "/",
+			SecondaryWayOut: "Go back",
+		}))},
 	})
 }
 
