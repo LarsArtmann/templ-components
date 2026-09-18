@@ -77,7 +77,7 @@ func TestNotFound404RenderVariants(t *testing.T) {
 	t.Parallel()
 
 	variants := []struct {
-		name  string
+		name   string
 		mutate func(props NotFound404Props) NotFound404Props
 	}{
 		{"minimal", func(p NotFound404Props) NotFound404Props {
@@ -135,7 +135,6 @@ type errTestFallback struct{}
 
 func (errTestFallback) Error() string { return "boom" }
 
-
 // TestErrorPageBranchCombos samples the ErrorPage optional-branch space
 // (chips, diagnostics, action pair, footer, copy) so the generated template
 // branches count toward the coverage gate.
@@ -154,52 +153,80 @@ func TestErrorPageBranchCombos(t *testing.T) {
 
 	combos := []func(p ErrorPageProps) ErrorPageProps{
 		func(p ErrorPageProps) ErrorPageProps { return p },
-		func(p ErrorPageProps) ErrorPageProps { p.Why = "Why text"
+		func(p ErrorPageProps) ErrorPageProps {
+			p.Why = "Why text"
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.Fix = "Fix text"
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.Fix = "Fix text"
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.Context = []ContextPair{{Key: "k", Value: "v"}}
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.Context = []ContextPair{{Key: "k", Value: "v"}}
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.CauseChain = []CauseItem{{Message: "cause"}}
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.CauseChain = []CauseItem{{Message: "cause"}}
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.Trace = "trc_1"
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.Trace = "trc_1"
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.ShowTimestamp = true
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.ShowTimestamp = true
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.CopyCode = true
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.CopyCode = true
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.WayOut = "Go back"
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.WayOut = "Go back"
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.WayOut = "Retry"
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.WayOut = "Retry"
 
 			p.WayOutHref = "/"
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.SecondaryWayOut = "Contact support"
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.SecondaryWayOut = "Contact support"
 
 			p.SecondaryWayOutHref = "mailto:s@example.com"
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.WayOutAction = WayOutAction{Text: "Status page", Href: "/status"}
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.WayOutAction = WayOutAction{Text: "Status page", Href: "/status"}
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.MaxWidth = ErrorMaxWidth2XL
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.MaxWidth = ErrorMaxWidth2XL
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.Code = ""
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.Code = ""
 
-			return p },
-		func(p ErrorPageProps) ErrorPageProps { p.StatusCode = 0
+			return p
+		},
+		func(p ErrorPageProps) ErrorPageProps {
+			p.StatusCode = 0
 
-			return p },
+			return p
+		},
 		func(p ErrorPageProps) ErrorPageProps {
 			p.Why = "Why"
 			p.Fix = "Fix"
