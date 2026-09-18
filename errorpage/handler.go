@@ -99,25 +99,7 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 		}
 
 		if cfg.HTMLShell {
-			title := props.Title
-			if title == "" {
-				title = fmt.Sprintf("Error %d", statusCode)
-			}
-
-			lang := cfg.Lang
-			if lang == "" {
-				lang = "en"
-			}
-
-			html, renderErr := renderShellToBuffer(r.Context(), title, lang, props)
-			if renderErr != nil {
-				slog.Error("error page render failed", "error", renderErr, "original_error", err)
-				writeFallbackError(w, statusCode)
-
-				return
-			}
-
-			writeBody(w, statusCode, html)
+			writeHTMLShell(w, r.Context(), statusCode, props, cfg.Lang, err)
 
 			return
 		}
@@ -132,6 +114,37 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 
 		writeBody(w, statusCode, buf)
 	})
+}
+
+// writeHTMLShell renders the props inside the minimal HTML document shell
+// and writes it; on render failure it writes the minimal fallback error —
+// the response is always handled.
+func writeHTMLShell(
+	w http.ResponseWriter,
+	ctx context.Context,
+	statusCode int,
+	props ErrorPageProps,
+	lang string,
+	originalErr error,
+) {
+	title := props.Title
+	if title == "" {
+		title = fmt.Sprintf("Error %d", statusCode)
+	}
+
+	if lang == "" {
+		lang = "en"
+	}
+
+	html, renderErr := renderShellToBuffer(ctx, title, lang, props)
+	if renderErr != nil {
+		slog.Error("error page render failed", "error", renderErr, "original_error", originalErr)
+		writeFallbackError(w, statusCode)
+
+		return
+	}
+
+	writeBody(w, statusCode, html)
 }
 
 // WriteError writes an error page to an http.ResponseWriter.
