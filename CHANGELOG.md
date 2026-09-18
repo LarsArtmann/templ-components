@@ -159,6 +159,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   family→status parity, including the corruption fallback for unknown
   errors.
 
+- **`ErrorPage` gains a secondary action slot, a typed action bundle, and a
+  configurable card width.** `SecondaryWayOut` (+`SecondaryWayOutHref`)
+  renders a family-tinted ghost button/link next to the primary way out —
+  the escape hatch that isn't the primary recovery path ("Contact support"
+  beside "Retry"); without an href it goes back in history like the
+  primary's no-href variant. `WayOutAction{Text, Href}` is the typed bundle
+  for the primary action, winning entirely over the legacy loose strings
+  when set (no field mixing; zero visual change for existing callers).
+  `MaxWidth` (`ErrorMaxWidthLG/XL/2XL/4XL`, XL default) widens the card for
+  content-heavy errors. Goldens pin the secondary pair in both themes, the
+  no-href go-back variant, and the 4xl card.
+
 - **`ErrorDetail` gains a `Neutral` variant.** The inline error card has
   always rendered family-tinted (amber/orange/blue backgrounds), which can
   clash inside already-colored content — dashboards, tinted panels, side

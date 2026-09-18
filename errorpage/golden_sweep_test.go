@@ -61,6 +61,14 @@ func TestGoldenSweepErrorPage(t *testing.T) {
 			WayOutHref:      "/",
 			SecondaryWayOut: "Go back",
 		}))},
+		{Name: "error_page_maxwidth_4xl", HTML: utils.Render(t, ErrorPage(ErrorPageProps{
+			Family:        FamilyInfrastructure,
+			StatusCode:    500,
+			Title:         "Internal server error",
+			Message:       "The server encountered an unexpected condition.",
+			MaxWidth:      ErrorMaxWidth4XL,
+			ShowTimestamp: true,
+		}))},
 	})
 }
 
