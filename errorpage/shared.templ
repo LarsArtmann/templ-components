@@ -59,8 +59,13 @@ templ errorHeader(
 	</div>
 }
 
-templ fixCard(fix string, insetClass string) {
-	<div class={ utils.Class("rounded-lg border px-3.5 py-3", insetClass) }>
+templ fixCard(fix string, insetClass string, describedBy string) {
+	<div
+		class={ utils.Class("rounded-lg border px-3.5 py-3", insetClass) }
+		if describedBy != "" {
+			aria-describedby={ describedBy }
+		}
+	>
 		<p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-500">
 			<span class="inline-flex items-center gap-1.5">
 				@icons.Icon(icons.Wrench, "h-3.5 w-3.5")
@@ -88,9 +93,9 @@ templ causeList(causes []CauseItem, label string) {
 	}
 }
 
-templ contextTable(pairs []ContextPair, insetClass string) {
+templ contextTable(pairs []ContextPair, insetClass string, id string) {
 	if len(pairs) > 0 {
-		<div class={ utils.Class("overflow-hidden rounded-lg border", insetClass) }>
+		<div id={ id } class={ utils.Class("overflow-hidden rounded-lg border", insetClass) }>
 			<table class="min-w-full text-xs">
 				<caption class="sr-only">Error context</caption>
 				<tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -170,11 +175,12 @@ templ errorChips(statusCode int, family Family, style familyVisualStyle, code Co
 // white ErrorPage card, errorInsetCard on tinted ErrorDetail cards).
 templ diagnosticSection(fix string, context []ContextPair, causes []CauseItem, containerClass string, causeLabel string, insetClass string) {
 	if fix != "" || len(context) > 0 || len(causes) > 0 {
+		{{ ctxID := utils.EnsureID("error-context", "") }}
 		<div class={ containerClass }>
 			if fix != "" {
-				@fixCard(fix, insetClass)
+				@fixCard(fix, insetClass, utils.Ternary(len(context) > 0, ctxID, ""))
 			}
-			@contextTable(context, insetClass)
+			@contextTable(context, insetClass, ctxID)
 			@causeList(causes, causeLabel)
 		</div>
 	}

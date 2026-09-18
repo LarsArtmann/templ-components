@@ -1,6 +1,11 @@
 package errorpage
 
-import "testing"
+import (
+	"strings"
+	"testing"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // TestErrorDetailVariantIsValid guards the ErrorDetailVariant closed set.
 // The drift guard requires every IsValid to ship with a test in the same
@@ -71,5 +76,34 @@ func TestResolvedWayOut(t *testing.T) {
 	actionNoHref := ErrorPageProps{WayOutAction: WayOutAction{Text: "Go back"}}
 	if text, href := actionNoHref.resolvedWayOut(); text != "Go back" || href != "" {
 		t.Errorf("action without href: resolved = (%q, %q), want (Go back, empty)", text, href)
+	}
+}
+
+// TestFixCardDescribesContext verifies the M22 a11y grouping: when both a
+// suggested fix and a context table render, the fix card references the
+// context region via aria-describedby so assistive tech reads the
+// supporting detail as an extension of the fix. A fix without context must
+// not emit a dangling reference.
+func TestFixCardDescribesContext(t *testing.T) {
+	t.Parallel()
+
+	withBoth := ErrorPageProps{
+		Family:  FamilyTransient,
+		Title:   "Title",
+		Fix:     "Fix text",
+		Context: []ContextPair{{Key: "k", Value: "v"}},
+	}
+
+	output := utils.Render(t, ErrorPage(withBoth))
+
+	if !strings.Contains(output, "aria-describedby=\"tc-error-context-") {
+		t.Error("fix card must reference the context region via aria-describedby")
+	}
+
+	fixOnly := ErrorPageProps{Family: FamilyTransient, Title: "Title", Fix: "Fix text"}
+	output = utils.Render(t, ErrorPage(fixOnly))
+
+	if strings.Contains(output, "aria-describedby") {
+		t.Error("fix card without context must not carry a dangling aria-describedby")
 	}
 }

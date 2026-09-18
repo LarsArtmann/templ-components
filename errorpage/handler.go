@@ -49,10 +49,33 @@ type ErrorHandlerConfig struct {
 //	    }
 //	    w.WriteHeader(http.StatusOK)
 //	})
+//
+// applyRetrySuggestion fills an empty way out with a same-path Retry link
+// when the error reports itself retryable (go-error-family promotes
+// IsRetryable from oops). Explicit caller way outs always win.
+func applyRetrySuggestion(props *ErrorPageProps, err error, path string) {
+	if props.WayOut != "" || props.WayOutHref != "" || props.WayOutAction.Text != "" || props.SecondaryWayOut != "" {
+		return
+	}
+
+	if retryable, ok := err.(interface{ IsRetryable() bool }); ok && retryable.IsRetryable() {
+		props.WayOut = "Retry"
+		props.WayOutHref = path
+	}
+}
+
 func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		props := FromError(err)
 		props.ShowTimestamp = true
+
+		// Retry suggestion: a retryable error with no caller-provided way
+		// out gets one — a link back to the same path, so "Retry" truly
+		// re-fires the request. An Override always wins (the suggestion is
+		// applied BEFORE it).
+		if !cfg.JSON {
+			applyRetrySuggestion(&props, err, r.URL.Path)
+		}
 
 		if cfg.Override != nil {
 			if overridden := cfg.Override(err, props); overridden != nil {

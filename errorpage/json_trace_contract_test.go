@@ -136,3 +136,69 @@ func TestChipsJSONParity(t *testing.T) {
 		t.Errorf("HTML trace footer missing %q present in JSON", resp.Trace)
 	}
 }
+
+// retryableError mirrors go-error-family's IsRetryable promotion (e.g.
+// Transient/Infrastructure families).
+type retryableError struct {
+	err       error
+	retryable bool
+}
+
+func (e retryableError) Error() string     { return e.err.Error() }
+func (e retryableError) IsRetryable() bool { return e.retryable }
+
+// TestErrorHandlerRetrySuggestion pins the M23 decision: a retryable error
+// with no caller-provided way out gets an automatic `Retry` link pointing
+// at the same path (a true re-request); JSON mode and explicit WayOuts
+// suppress it.
+func TestErrorHandlerRetrySuggestion(t *testing.T) {
+	t.Parallel()
+
+	t.Run("retryable error gains a same-path Retry link", func(t *testing.T) {
+		t.Parallel()
+
+		rec := httptest.NewRecorder()
+		ErrorHandler(retryableError{err: errors.New("upstream timeout"), retryable: true}, ErrorHandlerConfig{}).
+			ServeHTTP(rec, httptest.NewRequestWithContext(context.Background(), http.MethodGet, "/reports", nil))
+
+		body := rec.Body.String()
+		if !strings.Contains(body, "Retry") || !strings.Contains(body, `href="/reports"`) {
+			t.Error("expected an automatic Retry link to the same path for a retryable error")
+		}
+	})
+
+	t.Run("explicit way out suppresses the suggestion", func(t *testing.T) {
+		t.Parallel()
+
+		handler := ErrorHandler(
+			retryableError{err: errors.New("upstream timeout"), retryable: true},
+			ErrorHandlerConfig{
+				Override: func(_ error, props ErrorPageProps) *ErrorPageProps {
+					props.WayOut = "Call support"
+					props.WayOutHref = "/support"
+
+					return &props
+				},
+			},
+		)
+
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, httptest.NewRequestWithContext(context.Background(), http.MethodGet, "/reports", nil))
+
+		if strings.Contains(rec.Body.String(), ">Retry<") {
+			t.Error("an explicit WayOut must suppress the automatic Retry suggestion")
+		}
+	})
+
+	t.Run("non-retryable error gets no suggestion", func(t *testing.T) {
+		t.Parallel()
+
+		rec := httptest.NewRecorder()
+		ErrorHandler(retryableError{err: errors.New("bad input"), retryable: false}, ErrorHandlerConfig{}).
+			ServeHTTP(rec, httptest.NewRequestWithContext(context.Background(), http.MethodGet, "/reports", nil))
+
+		if strings.Contains(rec.Body.String(), ">Retry<") {
+			t.Error("a non-retryable error must not render a Retry action")
+		}
+	})
+}
