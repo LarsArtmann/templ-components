@@ -12,15 +12,18 @@ templ ErrorDetail(props ErrorDetailProps) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ utils.Class("rounded-lg border overflow-hidden", style.Border, style.BG, props.Class) }
+		class={ utils.Class("rounded-lg border overflow-hidden", errorDetailShellClasses(props.Variant, style), props.Class) }
 		role="alert"
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
 		{ props.Attrs... }
 	>
+		if props.Variant == ErrorDetailNeutral {
+			<div class={ "h-1", style.Bar } aria-hidden="true"></div>
+		}
 		<div class="px-4 py-3 sm:px-5">
-			@errorHeader("gap-3", "flex-shrink-0 mt-0.5", style, props.Family, props.Code, props.Title, "h3", "mt-1.5 text-sm font-semibold text-gray-900 dark:text-white", props.Message, utils.Class("mt-1 text-sm", style.Text))
+			@errorHeader("gap-3", "flex-shrink-0 mt-0.5", style, props.Family, props.Code, props.Title, "h3", "mt-1.5 text-sm font-semibold text-gray-900 dark:text-white", props.Message, utils.Class("mt-1 text-sm", utils.Ternary(props.Variant == ErrorDetailNeutral, "text-gray-600 dark:text-gray-300", style.Text)))
 			@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-3 ms-8 space-y-3", "Caused by", errorInsetCard)
 		</div>
 		@metaFooter(props.Timestamp, props.Trace, "px-4 py-2 sm:px-5")

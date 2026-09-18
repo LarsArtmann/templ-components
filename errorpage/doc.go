@@ -59,6 +59,7 @@
 //	Timestamp    | ✓         | ✓           |            | RFC3339; FromError uses the error's own when available
 //	Trace        | ✓         | ✓           |            | Correlation ID (oops.Trace(), promoted via the bridge); footer/JSON field
 //	ShowTimestamp| ✓         |             |            | Render the timestamp footer at all
+//	Variant      |           | ✓           |            | ErrorDetail shell: Tinted (default) or Neutral (accent bar, ErrorPage parity)
 //
 // All three embed utils.BaseProps (Class, Attrs, ID, AriaLabel, Nonce) — set
 // them via the embedded struct, not by promoted field name.
