@@ -332,3 +332,34 @@ exceeds 12 minutes of focused work.
 _Point-in-time snapshot (2026-09-17 18:20). Section 3/4 items are HARVEST input for
 TODO_LIST.md/ROADMAP.md (M25 executes that routing). Annotate, never rewrite, when
 bringing current._
+
+---
+
+## 6. Execution record (annotated 2026-09-18, session close)
+
+Statuses at close: **DONE** M01–M04, M06–M16 (16.2 partly pre-shipped by the
+parallel session), M17.3–M17.5 (17.1/17.2 = BuildFlow-side work, remains
+open as TODO #93 family), M18 (partial: enum-table guard caught the new
+enums; `.fail/` naming, DOMAIN_LANGUAGE entries, fresh-clone hook check,
+MaxMismatch audit NOT done — carried in ROADMAP), M19, M20 (readiness
+verified, cut = ⫱ owner, TODO #270), M21 (all three items verified
+in-tree — pre-shipped by the parallel release-first session), M22, M23
+(23.1/23.2 shipped as the ErrorHandler Retry suggestion; 23.3 documented
+non-change: Validate stays permissive by design; 23.4 documented
+non-change: FromError already probes `Timestamp() time.Time`, oops.Time()
+adaptation belongs bridge-side), M24 (lean stateless GET playground;
+rate-limit posture note folded into TODO #264), M25 (this harvest).
+
+**M05 (⫱):** gef branch `feat/bridge-classified-error-message` prepared
+(red-green tests, lint clean, probe S5 clean). NOT pushed — TODO #269.
+
+**Coverage note (M14):** errorpage standalone coverage settled at 72.4%
+(generated `_templ.go` wrappers dominate the remainder; all hand-written
+handler code ≥ 90% except thin wrappers). FEATURES now reports the honest
+whole-repo numbers (root 70.2%, sub-modules 69.6–77.7%).
+
+**Deliberate deviations from the plan text:** MaxWidth default is XL (the
+plan's "LG default" would have changed every existing render); the
+SecondaryWayOut slot shipped as loose strings + the primary as the typed
+`WayOutAction` bundle (the plan's dual WayOutAction/secondary conversion
+would have doubled brand-new API surface).
