@@ -9,7 +9,8 @@ templ errorpageDemo() {
 	@demoSection("Standalone error pages", "errorpage-standalone")
 	<p class="text-sm text-gray-500 dark:text-gray-400">
 		Full-page error views are served by their own routes — the way consumers
-		render them: one handler call per HTTP status, no demo chrome around them.
+		render them: one handler call per HTTP status, a real status code, the
+		page inside the app's own layout shell.
 	</p>
 	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 		@errorRouteCard("404 — Page not found", "/errors/404")
