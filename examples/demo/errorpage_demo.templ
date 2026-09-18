@@ -22,6 +22,12 @@ templ errorpageDemo() {
 		@errorRouteCard("503 — Service unavailable", "/errors/503")
 		@errorRouteCard("Full model — context, causes, trace", "/errors/full")
 	</div>
+	@demoSection("ErrorPage playground (live render)", "errorpage-playground")
+	<p class="text-sm text-gray-500 dark:text-gray-400">
+		Pick a family and fields, submit, and the route renders a real ErrorPage
+		at the real HTTP status — a stateless GET form, nothing stored.
+	</p>
+	@errorPlaygroundForm()
 	@demoSection("ErrorAlert (by family)", "errorpage-alerts")
 	<div class="space-y-4">
 		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyRejection, Title: "Invalid Input", Message: "The email address format is invalid.", Fix: "Enter a valid email address."})
@@ -65,4 +71,46 @@ templ errorRoutePage(props layout.PageProps, content templ.Component) {
 	@layout.Base(props) {
 		@content
 	}
+}
+
+// errorPlaygroundForm renders the stateless GET form driving the live
+// /errors/playground route. Plain inputs keep the demo section's import
+// surface minimal; the handler sanitizes and clamps every field.
+templ errorPlaygroundForm() {
+	<form method="get" action="/errors/playground" class="grid gap-4 rounded-lg border border-gray-200 bg-white p-4 sm:grid-cols-2 dark:border-gray-700 dark:bg-gray-800">
+		<label class="text-sm font-medium text-gray-700 dark:text-gray-200">
+			Family
+			<select name="family" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+				<option value="transient">Transient (503)</option>
+				<option value="rejection">Rejection (400)</option>
+				<option value="conflict">Conflict (409)</option>
+				<option value="corruption">Corruption (500)</option>
+				<option value="infrastructure">Infrastructure (503)</option>
+				<option value="orchestration">Orchestration (500)</option>
+			</select>
+		</label>
+		<label class="text-sm font-medium text-gray-700 dark:text-gray-200">
+			HTTP status (400–599)
+			<input type="number" name="status" min="400" max="599" placeholder="503" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+		</label>
+		<label class="text-sm font-medium text-gray-700 dark:text-gray-200 sm:col-span-2">
+			Title
+			<input type="text" name="title" maxlength="120" placeholder="Service temporarily unavailable" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+		</label>
+		<label class="text-sm font-medium text-gray-700 dark:text-gray-200 sm:col-span-2">
+			Message
+			<textarea name="message" rows="2" maxlength="300" placeholder="We're performing maintenance or experiencing high traffic." class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"></textarea>
+		</label>
+		<div class="sm:col-span-2">
+			<button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400">Render error page</button>
+		</div>
+	</form>
+}
+
+// errorPlaygroundContent pairs the playground form with the live render.
+templ errorPlaygroundContent(props errorpage.ErrorPageProps) {
+	@errorPlaygroundForm()
+	<div class="mt-8">
+		@errorpage.ErrorPage(props)
+	</div>
 }

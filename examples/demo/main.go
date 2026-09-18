@@ -854,6 +854,7 @@ func registerErrorRoutes(mux *http.ServeMux) {
 	mux.Handle("GET /errors/500", errorRoute(http.StatusInternalServerError, errorpage.InternalError()))
 	mux.Handle("GET /errors/503", errorRoute(http.StatusServiceUnavailable, errorpage.ServiceUnavailable()))
 	mux.Handle("GET /errors/full", errorRoute(http.StatusServiceUnavailable, errorPageFullModelDemoProps()))
+	mux.Handle("GET /errors/playground", errorPlaygroundHandler(nonce))
 	mux.Handle("GET /errors/404-page", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		props := errorpage.DefaultNotFound404Props()
 		props.Links = errorpage.DefaultNotFoundLinks()
@@ -867,6 +868,63 @@ func registerErrorRoutes(mux *http.ServeMux) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}))
+}
+
+// errorPlaygroundHandler renders the stateless live playground: a GET form
+// (no CSRF surface — nothing is stored or mutated) whose sanitized query
+// params drive a real ErrorPage render at the requested HTTP status.
+func errorPlaygroundHandler(nonce string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		q := r.URL.Query()
+
+		family := errorpage.Family(q.Get("family"))
+		if !errorpage.FamilyIsValid(family) {
+			family = errorpage.FamilyTransient
+		}
+
+		status, err := strconv.Atoi(q.Get("status"))
+		if err != nil || status < 400 || status > 599 {
+			status = errorpage.FamilyStatusCode(family)
+		}
+
+		props := errorpage.ErrorPageProps{
+			Family:     family,
+			StatusCode: status,
+			Code:       errorpage.Code(q.Get("code")),
+			Title:      truncateDemoField(q.Get("title"), 120),
+			Message:    truncateDemoField(q.Get("message"), 300),
+		}
+		props.Nonce = nonce
+		if props.Title == "" {
+			props.Title = "Playground error"
+		}
+
+		if q.Get("family") == "" {
+			w.WriteHeader(http.StatusOK)
+		} else {
+			w.WriteHeader(status)
+		}
+
+		pageProps := demoPageProps("ErrorPage playground - templ-components Demo", "Live error page playground")
+
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+		content := errorPlaygroundContent(props)
+
+		if err := errorRoutePage(pageProps, content).Render(r.Context(), w); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	})
+}
+
+// truncateDemoField caps a playground field's length — the form's maxlength
+// attributes are client-side only.
+func truncateDemoField(s string, max int) string {
+	if len(s) > max {
+		return s[:max]
+	}
+
+	return s
 }
 
 // newServer wraps the mux in the demo HTTP server. The global WriteTimeout

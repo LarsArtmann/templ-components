@@ -159,6 +159,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   family→status parity, including the corruption fallback for unknown
   errors.
 
+- **Live ErrorPage playground in the demo, retry-aware handler, and
+  assistive-tech grouping.** The demo gains `/errors/playground`: pick a
+  family, status, title, and message in a stateless GET form and the route
+  renders a real ErrorPage at the real HTTP status. `ErrorHandler` now
+  suggests a `Retry` way out — a link back to the same path, so it truly
+  re-fires the request — when the error reports itself retryable and the
+  caller set no way out (JSON mode and `Override` suppress it). The
+  suggested-fix card now references the context table via
+  `aria-describedby`, so screen readers read the supporting detail as an
+  extension of the fix (no dangling reference when no context exists). The
+  card shell, lint noise (tagged switches, error naming), and
+  `internal/contract` suites are unchanged.
+
 - **Quality and tooling push for the errorpage package and the golden
   workflow.** `ParseFamily` is fuzz-proven (`FuzzParseFamily`, 1.25M
   executions clean: never panics, always resolves to a valid family with a
