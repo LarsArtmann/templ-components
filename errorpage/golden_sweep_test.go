@@ -1,6 +1,9 @@
 package errorpage
 
 import (
+	"errors"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -85,6 +88,35 @@ func TestGoldenSweepErrorDetail(t *testing.T) {
 			Title:   "Version Conflict",
 			Message: "The record was modified by another user.",
 		}))},
+	})
+}
+
+// TestGoldenHandlerHTMLShell pins the ErrorHandler HTMLShell document path —
+// the wire format a consumer's http.Server actually emits when configured
+// with HTMLShell: true (full <!doctype html> document, lang, title, embedded
+// error page). The timestamp is pinned via Override so the golden is
+// deterministic.
+func TestGoldenHandlerHTMLShell(t *testing.T) {
+	t.Parallel()
+
+	handler := ErrorHandler(errors.New("boom"), ErrorHandlerConfig{
+		HTMLShell: true,
+		Nonce:     "test-nonce",
+		Override: func(_ error, props ErrorPageProps) *ErrorPageProps {
+			props.Timestamp = "2026-09-17T12:00:00Z"
+			props.Title = "Something went wrong"
+			props.Message = "An unexpected error occurred."
+			props.Code = CodeInternalError
+
+			return &props
+		},
+	})
+
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/test", nil))
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "handler_htmlshell", HTML: rec.Body.String()},
 	})
 }
 

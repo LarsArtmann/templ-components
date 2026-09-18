@@ -120,6 +120,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   (`errorpage/{light,dark}_{mobile,rtl}.png`): 375px mobile proves the chip
   row wraps and the meta footer fits, RTL proves chips, context table, and
   action button mirror via logical properties.
+
+- **Standalone demo error routes at real status codes.** The demo now serves
+  `/errors/{400,403,404,409,500,503,full,404-page}` — each route renders the
+  real `ErrorPage`/`NotFound404` output through the demo's own layout shell
+  and writes its actual HTTP status code, so `curl -i /errors/503` shows a
+  genuine `503` instead of a 200 with an error-shaped body. The errorpage
+  demo section became a link-card grid pointing at the routes (inline
+  `ErrorAlert`/`ErrorDetail` sections stay), and a contract test
+  (`TestErrorRoutesServeStatusAndBody`) pins status code + body for all 8
+  routes. Route goldens (`errors_404_light`, `errors_full_light`,
+  `errors_full_dark`) and axe audits cover the new surface.
+
+- **Error-family matrix is complete: all 6 families render.**
+  `TestGoldenSweepErrorFamilyMatrix` now covers Orchestration alongside the
+  original five families, pinning the family-derived title, icon, accent
+  color, Why/Fix copy, and chip for every family value — including the newly
+  added `error_alert_family_orchestration` golden. The demo's errorpage
+  section shows the Orchestration alert so all six are visible in the
+  browser, not just in tests.
+
 - **`FromError` derives a title from the family when the error carries none.**
   Every `FromError`-driven page now renders a heading: when neither the error
   nor its type provides `ErrorTitle()`, a short neutral title is filled from

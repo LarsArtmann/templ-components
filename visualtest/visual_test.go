@@ -844,6 +844,55 @@ func TestNotFound404(t *testing.T) {
 	visualtest.AssertScreenshot(t, "notfound404/light", errorpage.NotFound404(props))
 }
 
+// TestErrorDetail covers the inline error detail card with the full model:
+// code, title, message, fix, context table, cause chain, timestamp, trace.
+func TestErrorDetail(t *testing.T) {
+	t.Parallel()
+
+	visualtest.AssertScreenshot(t, "errorpage/detail_light", errorpage.ErrorDetail(fullErrorDetailProps()))
+}
+
+// TestErrorAlert covers the family-aware alert banner, including the
+// dismissible variant (close button + dismiss script).
+func TestErrorAlert(t *testing.T) {
+	t.Parallel()
+
+	visualtest.AssertScreenshot(t, "errorpage/alert_light", errorpage.ErrorAlert(fullErrorAlertProps()))
+}
+
+// fullErrorDetailProps exercises the complete ErrorDetail model.
+func fullErrorDetailProps() errorpage.ErrorDetailProps {
+	props := errorpage.DefaultErrorDetailProps()
+	props.Family = errorpage.FamilyConflict
+	props.Code = errorpage.CodeConflict
+	props.Title = "Resource already exists"
+	props.Message = "A project with that slug is already taken."
+	props.Fix = "Pick a different slug or rename the existing project."
+	props.Context = []errorpage.ContextPair{
+		{Key: "slug", Value: "q4-report"},
+		{Key: "workspace", Value: "acme"},
+	}
+	props.CauseChain = []errorpage.CauseItem{{Message: "unique constraint violated", Code: "db.unique"}}
+	props.Timestamp = "2026-09-17T12:00:00Z"
+	props.Trace = "trc_4b7e09aa"
+	props.Nonce = "test-nonce"
+
+	return props
+}
+
+// fullErrorAlertProps exercises the complete ErrorAlert model.
+func fullErrorAlertProps() errorpage.ErrorAlertProps {
+	props := errorpage.DefaultErrorAlertProps()
+	props.Family = errorpage.FamilyCorruption
+	props.Title = "Data integrity check failed"
+	props.Message = "A stored record did not match its checksum."
+	props.Fix = "Contact support with the trace ID; no action is needed on your side."
+	props.Dismissible = true
+	props.Nonce = "test-nonce"
+
+	return props
+}
+
 // --- #95: Chart visual tests ---
 
 // TestLineChart covers a two-series line chart with gridlines, dots, and legend.
@@ -1013,6 +1062,30 @@ func TestNotFound404Dark(t *testing.T) {
 		t,
 		"notfound404/dark",
 		errorpage.NotFound404(props),
+		visualtest.Options{Dark: new(true)},
+	)
+}
+
+// TestErrorDetailDark covers the inline error detail card in dark mode.
+func TestErrorDetailDark(t *testing.T) {
+	t.Parallel()
+
+	visualtest.AssertScreenshot(
+		t,
+		"errorpage/detail_dark",
+		errorpage.ErrorDetail(fullErrorDetailProps()),
+		visualtest.Options{Dark: new(true)},
+	)
+}
+
+// TestErrorAlertDark covers the dismissible family alert in dark mode.
+func TestErrorAlertDark(t *testing.T) {
+	t.Parallel()
+
+	visualtest.AssertScreenshot(
+		t,
+		"errorpage/alert_dark",
+		errorpage.ErrorAlert(fullErrorAlertProps()),
 		visualtest.Options{Dark: new(true)},
 	)
 }
