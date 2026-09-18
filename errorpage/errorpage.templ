@@ -40,7 +40,7 @@ templ ErrorPage(props ErrorPageProps) {
 						if wayOutHref != "" {
 							<a
 								href={ templ.SafeURL(wayOutHref) }
-								class={ "inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
+								class={ errorActionClassScaffold + "shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 							>
 								@actionLinkBody(utils.Ternary(wayOutText != "", wayOutText, "Go back"))
 							</a>
@@ -48,7 +48,7 @@ templ ErrorPage(props ErrorPageProps) {
 								<button
 									type="button"
 									data-tc-go-back
-									class={ "inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
+									class={ errorActionClassScaffold + "shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 								>
 									{ props.WayOut }
 								</button>
@@ -57,7 +57,7 @@ templ ErrorPage(props ErrorPageProps) {
 								if props.SecondaryWayOutHref != "" {
 									<a
 										href={ templ.SafeURL(props.SecondaryWayOutHref) }
-										class={ "inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-semibold " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost }
+										class={ errorActionClassScaffold + "border " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost }
 									>
 										{ props.SecondaryWayOut }
 									</a>
@@ -65,7 +65,7 @@ templ ErrorPage(props ErrorPageProps) {
 									<button
 										type="button"
 										data-tc-go-back
-										class={ "inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-semibold " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost }
+										class={ errorActionClassScaffold + "border " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost }
 									>
 										{ props.SecondaryWayOut }
 									</button>

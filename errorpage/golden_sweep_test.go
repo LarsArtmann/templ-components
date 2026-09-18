@@ -69,6 +69,16 @@ func TestGoldenSweepErrorPage(t *testing.T) {
 			MaxWidth:      ErrorMaxWidth4XL,
 			ShowTimestamp: true,
 		}))},
+		{Name: "error_page_copy_code", HTML: utils.Render(t, ErrorPage(ErrorPageProps{
+			Family:        FamilyTransient,
+			StatusCode:    503,
+			Code:          CodeUnavailable,
+			Title:         "Service temporarily unavailable",
+			Message:       "We're performing maintenance or experiencing high traffic.",
+			CopyCode:      true,
+			Nonce:         "test-nonce",
+			ShowTimestamp: true,
+		}))},
 	})
 }
 

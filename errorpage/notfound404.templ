@@ -53,7 +53,7 @@ templ NotFound404(props NotFound404Props) {
 				if goHomeHref != "" {
 					<a
 						href={ templ.SafeURL(goHomeHref) }
-						class={ "inline-flex items-center gap-2 rounded-lg bg-blue-600 dark:bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 dark:hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 " + utils.TransitionColors }
+						class={ errorActionClassScaffold + "bg-blue-600 dark:bg-blue-500 text-white shadow-sm hover:bg-blue-500 dark:hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 " + utils.TransitionColors }
 					>
 						@actionLinkBody(goHomeText)
 					</a>
@@ -62,7 +62,7 @@ templ NotFound404(props NotFound404Props) {
 					<button
 						type="button"
 						data-tc-go-back
-						class={ "inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-5 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-gray-400 dark:focus-visible:ring-gray-500 " + utils.TransitionColors }
+						class={ errorActionClassScaffold + "border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-gray-400 dark:focus-visible:ring-gray-500 " + utils.TransitionColors }
 					>
 						@icons.IconRTL(icons.ArrowLeft, "h-4 w-4")
 						<span>{ notFound404GoBackText }</span>

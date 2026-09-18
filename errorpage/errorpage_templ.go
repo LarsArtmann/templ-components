@@ -179,7 +179,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = errorChips(props.StatusCode, props.Family, style, props.Code).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = errorChips(props.StatusCode, props.Family, style, props.Code, props.CopyCode, props.Nonce).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -254,7 +254,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if wayOutHref != "" {
-				var templ_7745c5c3_Var15 = []any{"inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
+				var templ_7745c5c3_Var15 = []any{errorActionClassScaffold + "shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var15...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -298,7 +298,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else if wayOutText != "" {
-				var templ_7745c5c3_Var18 = []any{"inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
+				var templ_7745c5c3_Var18 = []any{errorActionClassScaffold + "shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var18...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -336,7 +336,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 			}
 			if props.SecondaryWayOut != "" {
 				if props.SecondaryWayOutHref != "" {
-					var templ_7745c5c3_Var21 = []any{"inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-semibold " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost}
+					var templ_7745c5c3_Var21 = []any{errorActionClassScaffold + "border " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var21...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -385,7 +385,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				} else {
-					var templ_7745c5c3_Var25 = []any{"inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-semibold " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost}
+					var templ_7745c5c3_Var25 = []any{errorActionClassScaffold + "border " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var25...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -443,6 +443,12 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 		}
 		if (wayOutText != "" && wayOutHref == "") || (props.SecondaryWayOut != "" && props.SecondaryWayOutHref == "") {
 			templ_7745c5c3_Err = goBackScript(props.Nonce).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if props.CopyCode {
+			templ_7745c5c3_Err = copyCodeScript(props.Nonce).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
