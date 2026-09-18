@@ -140,6 +140,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   section shows the Orchestration alert so all six are visible in the
   browser, not just in tests.
 
+- **`ErrorDetail` and `ErrorAlert` gain a visual regression shield, and the
+  handler's HTML-shell document is golden-pinned.** Four new captures
+  (`errorpage/{detail,alert}_{light,dark}.png`) pin the inline error card and
+  the family alert in both themes at their fullest props (code/family chips,
+  suggested fix, context table, cause chain, trace footer, dismiss button) —
+  previously they had string goldens only, so a layout or dark-mode color
+  regression would have shipped silently. `TestGoldenHandlerHTMLShell` pins
+  the exact `<!doctype html>` document `ErrorHandler` emits with
+  `HTMLShell: true` (the wire format of a real error response), with a
+  pinned timestamp for determinism.
+
+- **`FromError` now derives `StatusCode` from the family.** A standalone
+  `FromError(err)` render shows a real `HTTP nnn` chip (`503` for Transient,
+  `409` for Conflict, …) — the same `FamilyStatusCode` mapping the HTTP
+  handler writes to the response — so pages rendered without the handler no
+  longer lack the status chip. `TestFromErrorStatusCodePerFamily` pins the
+  family→status parity, including the corruption fallback for unknown
+  errors.
+
 - **`FromError` derives a title from the family when the error carries none.**
   Every `FromError`-driven page now renders a heading: when neither the error
   nor its type provides `ErrorTitle()`, a short neutral title is filled from
