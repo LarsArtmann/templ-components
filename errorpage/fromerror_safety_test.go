@@ -233,6 +233,29 @@ func errorfamilyFamilyForTest(f Family) errorfamily.Family {
 	return errorfamily.Transient
 }
 
+// TestFromErrorStatusCodePerFamily verifies FromError derives the HTTP status
+// from the family — the same mapping the handler uses to write the response —
+// so a standalone FromError render shows a real `HTTP nnn` chip and matches
+// what a server would actually send.
+func TestFromErrorStatusCodePerFamily(t *testing.T) {
+	t.Parallel()
+
+	for f := range familyStatusCodeMap {
+		classified := &publicTraceError{err: errors.New("boom"), family: errorfamilyFamilyForTest(f)}
+
+		props := FromError(classified)
+
+		if want := FamilyStatusCode(f); props.StatusCode != want {
+			t.Errorf("FromError(%v) StatusCode = %d, want %d", f, props.StatusCode, want)
+		}
+	}
+
+	plain := errors.New("boom")
+	if got, want := FromError(plain).StatusCode, FamilyStatusCode(FamilyCorruption); got != want {
+		t.Errorf("FromError(plain) StatusCode = %d, want corruption default %d", got, want)
+	}
+}
+
 // TestFromErrorExplicitTitleWins verifies an error's own ErrorTitle beats
 // the family-derived fallback — explicit always wins over default.
 func TestFromErrorExplicitTitleWins(t *testing.T) {

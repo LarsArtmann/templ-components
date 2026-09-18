@@ -32,9 +32,11 @@ func FromErrorFamily(f errorfamily.Family) Family {
 
 // FromError converts any error into ErrorPageProps.
 // Extracts code, family, context, and cause chain from structured errors.
-// For go-error-family errors, also extracts Why/Fix defaults. When the error
-// (or its type) carries no ErrorTitle, a short family-derived title fills in
-// via FamilyDefaultTitle so the page never renders headingless.
+// For go-error-family errors, also extracts Why/Fix defaults. StatusCode is
+// derived from the family (FamilyStatusCode) so standalone FromError renders
+// match what the HTTP handler writes — the HTTP chip shows a real status.
+// When the error (or its type) carries no ErrorTitle, a short family-derived
+// title fills in via FamilyDefaultTitle so the page never renders headingless.
 // Falls back to Corruption family for unrecognized errors (HTTP 500),
 // since an unknown error is most likely a bug rather than a temporary outage.
 func FromError(err error) ErrorPageProps {
@@ -46,6 +48,7 @@ func FromError(err error) ErrorPageProps {
 
 	props := ErrorPageProps{ //nolint:exhaustruct_v5 // filled incrementally
 		Family:     family,
+		StatusCode: FamilyStatusCode(family),
 		Message:    sanitizeErrorMessage(err),
 		CauseChain: ExtractCauseChain(err, 5),
 		Timestamp:  errorTimestamp(err),
