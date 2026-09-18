@@ -85,251 +85,269 @@
             test = {
               type = "app";
               meta.description = "Run all tests with race detector (all modules via go.work)";
-              program = pkgs.writeShellApplication {
-                name = "run-tests";
-                runtimeInputs = [ goToolchain ];
-                text = ''
-                  export GOEXPERIMENT=jsonv2
-                  go test ./... -count=1 -race
-                '';
-              };
+              program = pkgs.lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "run-tests";
+                  runtimeInputs = [ goToolchain ];
+                  text = ''
+                    export GOEXPERIMENT=jsonv2
+                    go test ./... -count=1 -race
+                  '';
+                }
+              );
             };
 
             lint = {
               type = "app";
               meta.description = "Run golangci-lint across all modules";
-              program = pkgs.writeShellApplication {
-                name = "run-lint";
-                runtimeInputs = [
-                  golangciLint
-                  # Same version CI pins (.github/workflows/ci.yaml Actionlint
-                  # step) so local `nix run .#lint` and CI agree on workflow
-                  # findings.
-                  pkgs.actionlint
-                ];
-                text = ''
-                  # golangci-lint does not support go.work workspace mode.
-                  # Lint each module independently with GOWORK=off.
-                  export GOEXPERIMENT=jsonv2
-                  echo "==> Linting root module..."
-                  GOWORK=off golangci-lint run ./display/... ./feedback/... ./forms/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./internal/... ./cmd/...
-                  echo "==> Linting utils module..."
-                  (cd utils && GOWORK=off golangci-lint run ./...)
-                  echo "==> Linting icons module..."
-                  (cd icons && GOWORK=off golangci-lint run ./...)
-                  echo "==> Linting errorpage module..."
-                  (cd errorpage && GOWORK=off golangci-lint run ./...)
-                  echo "==> Linting charts/echarts module..."
-                  (cd charts/echarts && GOWORK=off golangci-lint run ./...)
-                  echo "==> Linting datastar module..."
-                  (cd datastar && GOWORK=off golangci-lint run ./...)
-                  echo "==> Linting htmx module..."
-                  (cd htmx && GOWORK=off golangci-lint run ./...)
-                  echo "==> Actionlint (GitHub Actions workflows)..."
-                  actionlint
-                '';
-              };
+              program = pkgs.lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "run-lint";
+                  runtimeInputs = [
+                    golangciLint
+                    # Same version CI pins (.github/workflows/ci.yaml Actionlint
+                    # step) so local `nix run .#lint` and CI agree on workflow
+                    # findings.
+                    pkgs.actionlint
+                  ];
+                  text = ''
+                    # golangci-lint does not support go.work workspace mode.
+                    # Lint each module independently with GOWORK=off.
+                    export GOEXPERIMENT=jsonv2
+                    echo "==> Linting root module..."
+                    GOWORK=off golangci-lint run ./display/... ./feedback/... ./forms/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./internal/... ./cmd/...
+                    echo "==> Linting utils module..."
+                    (cd utils && GOWORK=off golangci-lint run ./...)
+                    echo "==> Linting icons module..."
+                    (cd icons && GOWORK=off golangci-lint run ./...)
+                    echo "==> Linting errorpage module..."
+                    (cd errorpage && GOWORK=off golangci-lint run ./...)
+                    echo "==> Linting charts/echarts module..."
+                    (cd charts/echarts && GOWORK=off golangci-lint run ./...)
+                    echo "==> Linting datastar module..."
+                    (cd datastar && GOWORK=off golangci-lint run ./...)
+                    echo "==> Linting htmx module..."
+                    (cd htmx && GOWORK=off golangci-lint run ./...)
+                    echo "==> Actionlint (GitHub Actions workflows)..."
+                    actionlint
+                  '';
+                }
+              );
             };
 
             build = {
               type = "app";
               meta.description = "Regenerate templ + build all packages";
-              program = pkgs.writeShellApplication {
-                name = "run-build";
-                runtimeInputs = [
-                  goToolchain
-                  pkgs.templ
-                ];
-                text = ''
-                  export GOEXPERIMENT=jsonv2
-                  find . -name '*_templ.go' -print0 | xargs -0 rm
-                  templ generate ./...
-                  go build ./...
-                  echo "Build successful."
-                '';
-              };
+              program = pkgs.lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "run-build";
+                  runtimeInputs = [
+                    goToolchain
+                    pkgs.templ
+                  ];
+                  text = ''
+                    export GOEXPERIMENT=jsonv2
+                    find . -name '*_templ.go' -print0 | xargs -0 rm
+                    templ generate ./...
+                    go build ./...
+                    echo "Build successful."
+                  '';
+                }
+              );
             };
 
             verify = {
               type = "app";
               meta.description = "Full verification: generate + build + test + lint (all modules)";
-              program = pkgs.writeShellApplication {
-                name = "run-verify";
-                runtimeInputs = [
-                  goToolchain
-                  golangciLint
-                  pkgs.templ
-                ];
-                text = ''
-                  export GOEXPERIMENT=jsonv2
-                  echo "==> Regenerating templ..."
-                  find . -name '*_templ.go' -print0 | xargs -0 rm
-                  templ generate ./...
-                  echo "==> Building (workspace)..."
-                  go build ./...
-                  echo "==> Testing (workspace)..."
-                  go test ./... -count=1
-                  echo "==> Per-module GOWORK=off isolation tests..."
-                  for mod in utils icons errorpage charts/echarts datastar htmx; do
-                    echo "  -> $mod"
-                    (cd "$mod" && GOWORK=off go test -count=1 ./...)
-                  done
-                  echo "==> Testing visualtest module..."
-                  (cd visualtest && GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./...)
-                  echo "==> Linting per-module..."
-                  echo "  -> root"
-                  GOWORK=off golangci-lint run ./display/... ./feedback/... ./forms/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./internal/... ./cmd/...
-                  for mod in utils icons errorpage charts/echarts datastar htmx; do
-                    echo "  -> $mod"
-                    (cd "$mod" && GOWORK=off golangci-lint run ./...)
-                  done
-                  echo "==> All checks passed."
-                '';
-              };
+              program = pkgs.lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "run-verify";
+                  runtimeInputs = [
+                    goToolchain
+                    golangciLint
+                    pkgs.templ
+                  ];
+                  text = ''
+                    export GOEXPERIMENT=jsonv2
+                    echo "==> Regenerating templ..."
+                    find . -name '*_templ.go' -print0 | xargs -0 rm
+                    templ generate ./...
+                    echo "==> Building (workspace)..."
+                    go build ./...
+                    echo "==> Testing (workspace)..."
+                    go test ./... -count=1
+                    echo "==> Per-module GOWORK=off isolation tests..."
+                    for mod in utils icons errorpage charts/echarts datastar htmx; do
+                      echo "  -> $mod"
+                      (cd "$mod" && GOWORK=off go test -count=1 ./...)
+                    done
+                    echo "==> Testing visualtest module..."
+                    (cd visualtest && GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./...)
+                    echo "==> Linting per-module..."
+                    echo "  -> root"
+                    GOWORK=off golangci-lint run ./display/... ./feedback/... ./forms/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./internal/... ./cmd/...
+                    for mod in utils icons errorpage charts/echarts datastar htmx; do
+                      echo "  -> $mod"
+                      (cd "$mod" && GOWORK=off golangci-lint run ./...)
+                    done
+                    echo "==> All checks passed."
+                  '';
+                }
+              );
             };
 
             coverage = {
               type = "app";
               meta.description = "Run tests with coverage report (all modules)";
-              program = pkgs.writeShellApplication {
-                name = "run-coverage";
-                runtimeInputs = [ goToolchain ];
-                text = ''
-                  export GOEXPERIMENT=jsonv2
-                  echo "=== Root module ==="
-                  go test ./... -count=1 -coverprofile=coverage.out
-                  go tool cover -func=coverage.out | tail -1
-                  for mod in utils icons errorpage charts/echarts datastar htmx; do
-                    echo "=== $mod ==="
-                    (cd "$mod" && go test ./... -count=1 -coverprofile=coverage.out && go tool cover -func=coverage.out | tail -1)
-                  done
-                '';
-              };
+              program = pkgs.lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "run-coverage";
+                  runtimeInputs = [ goToolchain ];
+                  text = ''
+                    export GOEXPERIMENT=jsonv2
+                    echo "=== Root module ==="
+                    go test ./... -count=1 -coverprofile=coverage.out
+                    go tool cover -func=coverage.out | tail -1
+                    for mod in utils icons errorpage charts/echarts datastar htmx; do
+                      echo "=== $mod ==="
+                      (cd "$mod" && go test ./... -count=1 -coverprofile=coverage.out && go tool cover -func=coverage.out | tail -1)
+                    done
+                  '';
+                }
+              );
             };
 
             css = {
               type = "app";
               meta.description = "Recompile the demo CSS (examples/demo/static/app.css) via tailwindcss --minify";
-              program = pkgs.writeShellApplication {
-                name = "run-css";
-                runtimeInputs = [ pkgs.tailwindcss_4 ];
-                text = ''
-                  tailwindcss \
-                    --input examples/demo/demo.css \
-                    --output examples/demo/static/app.css \
-                    --minify
-                  echo "CSS compiled: examples/demo/static/app.css"
-                '';
-              };
+              program = pkgs.lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "run-css";
+                  runtimeInputs = [ pkgs.tailwindcss_4 ];
+                  text = ''
+                    tailwindcss \
+                      --input examples/demo/demo.css \
+                      --output examples/demo/static/app.css \
+                      --minify
+                    echo "CSS compiled: examples/demo/static/app.css"
+                  '';
+                }
+              );
             };
 
             visual = {
               type = "app";
               meta.description = "Run pixel-level visual regression tests (headless Chromium via chromedp)";
-              program = pkgs.writeShellApplication {
-                name = "run-visual";
-                runtimeInputs = [
-                  goToolchain
-                  # fc-match for the font diagnostics below.
-                  pkgs.fontconfig
-                  # Use Chromium from the pinned nixpkgs-chromium input (not the
-                  # main nixpkgs) so visual goldens don't shift on routine
-                  # `nix flake update`. Update deliberately: see nixpkgs-chromium
-                  # input comment in flake.nix.
-                  inputs'.nixpkgs-chromium.legacyPackages.chromium
-                ];
-                text = ''
-                  export GOEXPERIMENT=jsonv2
-                  # visualtest is its own module with a local replace directive;
-                  # the parent go.work would shadow it, so disable workspace mode.
-                  export GOWORK=off
-                  export CHROMEDP_CHROME_PATH="${inputs'.nixpkgs-chromium.legacyPackages.chromium}/bin/chromium"
-                  # Font determinism: the demo CSS declares Inter, JetBrains
-                  # Mono, and Space Grotesk (headings). Neither dev machines
-                  # nor CI runners reliably have them installed, and host
-                  # fontconfig resolves the fallbacks differently in every
-                  # environment, which shifted text rendering and flipped
-                  # goldens between local and CI.
-                  #
-                  # Fix: a FULLY PURE fonts.conf. Note: pkgs.makeFontsConf is
-                  # unsuitable here — it includes /etc/fonts/conf.d and impure
-                  # FHS/profile font dirs by default, reintroducing exactly
-                  # the host drift this pin exists to eliminate. This conf
-                  # lists only nix store font directories, so rendering is
-                  # identical on every machine. Space Grotesk is not in nixpkgs
-                  # (headings fall back to Inter, next in the CSS stack) and
-                  # the jetbrains-mono derivation is currently broken upstream
-                  # (gftools dependency fails; mono text falls back to DejaVu
-                  # Sans Mono). DejaVu covers glyphs Inter lacks.
-                  #
-                  # After changing the font list, regenerate ALL goldens:
-                  #   nix run .#visual -- -update
-                  export FONTCONFIG_FILE="${pkgs.writeText "tc-visual-fonts.conf" ''
-                    <?xml version="1.0"?>
-                    <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
-                    <fontconfig>
-                      <dir>${pkgs.inter}</dir>
-                      <dir>${pkgs.dejavu_fonts}</dir>
-                      <cachedir>/tmp/tc-visualtest-fontconfig-cache</cachedir>
-                    </fontconfig>
-                  ''}"
-                  cd visualtest
-                  # Font guard: under the pinned FONTCONFIG_FILE every CSS
-                  # generic must resolve to Inter (Space Grotesk and JetBrains
-                  # Mono are absent, so headings and code fall back to it).
-                  # If a generic resolves to anything else, the pure pin is
-                  # broken (host fonts leaked in) and goldens WILL shift, so
-                  # fail fast with a clear message instead of pixel diffs.
-                  for family in sans-serif serif monospace; do
-                    result=$(fc-match "$family")
-                    echo "font pin: $family -> $result"
-                    case "$result" in
-                      Inter*) ;;
-                      *)
-                        echo "ERROR: $family resolves away from Inter ($result)." >&2
-                        echo "The pure fontconfig pin is broken; fix fonts.conf before trusting goldens." >&2
-                        exit 1
-                        ;;
-                    esac
-                  done
-                  # Forward extra args (e.g. -update, -run TestButtons) to go test.
-                  go test ./... -count=1 "$@"
-                '';
-              };
+              program = pkgs.lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "run-visual";
+                  runtimeInputs = [
+                    goToolchain
+                    # fc-match for the font diagnostics below.
+                    pkgs.fontconfig
+                    # Use Chromium from the pinned nixpkgs-chromium input (not the
+                    # main nixpkgs) so visual goldens don't shift on routine
+                    # `nix flake update`. Update deliberately: see nixpkgs-chromium
+                    # input comment in flake.nix.
+                    inputs'.nixpkgs-chromium.legacyPackages.chromium
+                  ];
+                  text = ''
+                    export GOEXPERIMENT=jsonv2
+                    # visualtest is its own module with a local replace directive;
+                    # the parent go.work would shadow it, so disable workspace mode.
+                    export GOWORK=off
+                    export CHROMEDP_CHROME_PATH="${inputs'.nixpkgs-chromium.legacyPackages.chromium}/bin/chromium"
+                    # Font determinism: the demo CSS declares Inter, JetBrains
+                    # Mono, and Space Grotesk (headings). Neither dev machines
+                    # nor CI runners reliably have them installed, and host
+                    # fontconfig resolves the fallbacks differently in every
+                    # environment, which shifted text rendering and flipped
+                    # goldens between local and CI.
+                    #
+                    # Fix: a FULLY PURE fonts.conf. Note: pkgs.makeFontsConf is
+                    # unsuitable here — it includes /etc/fonts/conf.d and impure
+                    # FHS/profile font dirs by default, reintroducing exactly
+                    # the host drift this pin exists to eliminate. This conf
+                    # lists only nix store font directories, so rendering is
+                    # identical on every machine. Space Grotesk is not in nixpkgs
+                    # (headings fall back to Inter, next in the CSS stack) and
+                    # the jetbrains-mono derivation is currently broken upstream
+                    # (gftools dependency fails; mono text falls back to DejaVu
+                    # Sans Mono). DejaVu covers glyphs Inter lacks.
+                    #
+                    # After changing the font list, regenerate ALL goldens:
+                    #   nix run .#visual -- -update
+                    export FONTCONFIG_FILE="${pkgs.writeText "tc-visual-fonts.conf" ''
+                      <?xml version="1.0"?>
+                      <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+                      <fontconfig>
+                        <dir>${pkgs.inter}</dir>
+                        <dir>${pkgs.dejavu_fonts}</dir>
+                        <cachedir>/tmp/tc-visualtest-fontconfig-cache</cachedir>
+                      </fontconfig>
+                    ''}"
+                    cd visualtest
+                    # Font guard: under the pinned FONTCONFIG_FILE every CSS
+                    # generic must resolve to Inter (Space Grotesk and JetBrains
+                    # Mono are absent, so headings and code fall back to it).
+                    # If a generic resolves to anything else, the pure pin is
+                    # broken (host fonts leaked in) and goldens WILL shift, so
+                    # fail fast with a clear message instead of pixel diffs.
+                    for family in sans-serif serif monospace; do
+                      result=$(fc-match "$family")
+                      echo "font pin: $family -> $result"
+                      case "$result" in
+                        Inter*) ;;
+                        *)
+                          echo "ERROR: $family resolves away from Inter ($result)." >&2
+                          echo "The pure fontconfig pin is broken; fix fonts.conf before trusting goldens." >&2
+                          exit 1
+                          ;;
+                      esac
+                    done
+                    # Forward extra args (e.g. -update, -run TestButtons) to go test.
+                    go test ./... -count=1 "$@"
+                  '';
+                }
+              );
             };
 
             visual-update = {
               type = "app";
               meta.description = "Regenerate visual goldens under the pinned font/browser env (implies -update; extra args forward to go test, e.g. -- -run TestErrorPage)";
-              program = pkgs.writeShellApplication {
-                name = "run-visual-update";
-                runtimeInputs = [ pkgs.nix ];
-                text = ''
-                  exec nix run .#visual -- -update "$@"
-                '';
-              };
+              program = pkgs.lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "run-visual-update";
+                  runtimeInputs = [ pkgs.nix ];
+                  text = ''
+                    exec nix run .#visual -- -update "$@"
+                  '';
+                }
+              );
             };
 
             shots = {
               type = "app";
               meta.description = "Capture full-page demo screenshots (light + dark) for manual visual inspection";
-              program = pkgs.writeShellApplication {
-                name = "run-shots";
-                runtimeInputs = [
-                  goToolchain
-                  inputs'.nixpkgs-chromium.legacyPackages.chromium
-                ];
-                text = ''
-                  export GOEXPERIMENT=jsonv2
-                  export GOWORK=off
-                  export CHROMEDP_CHROME_PATH="${inputs'.nixpkgs-chromium.legacyPackages.chromium}/bin/chromium"
-                  # Requires a running demo server (PORT=8901 go run ./examples/demo
-                  # from the repo root, or pass -base to point elsewhere).
-                  # All args are forwarded to the shots tool (-base/-out/-mode/-width/-page).
-                  cd visualtest
-                  exec go run ./tools/shots "$@"
-                '';
-              };
+              program = pkgs.lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "run-shots";
+                  runtimeInputs = [
+                    goToolchain
+                    inputs'.nixpkgs-chromium.legacyPackages.chromium
+                  ];
+                  text = ''
+                    export GOEXPERIMENT=jsonv2
+                    export GOWORK=off
+                    export CHROMEDP_CHROME_PATH="${inputs'.nixpkgs-chromium.legacyPackages.chromium}/bin/chromium"
+                    # Requires a running demo server (PORT=8901 go run ./examples/demo
+                    # from the repo root, or pass -base to point elsewhere).
+                    # All args are forwarded to the shots tool (-base/-out/-mode/-width/-page).
+                    cd visualtest
+                    exec go run ./tools/shots "$@"
+                  '';
+                }
+              );
             };
           };
 
