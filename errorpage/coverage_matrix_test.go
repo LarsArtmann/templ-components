@@ -120,9 +120,9 @@ func TestWriteFallbackErrorPath(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 
-	req := httptest.NewRequest(http.MethodGet, "/", nil).WithContext(ctx)
+	req := httptest.NewRequestWithContext(ctx, http.MethodGet, "/", nil)
 
-	handler := ErrorHandler(errTestFallback{}, ErrorHandlerConfig{HTMLShell: true})
+	handler := ErrorHandler(testFallbackError{}, ErrorHandlerConfig{HTMLShell: true})
 	rec := httptest.NewRecorder()
 	handler.ServeHTTP(rec, req)
 
@@ -131,9 +131,9 @@ func TestWriteFallbackErrorPath(t *testing.T) {
 	}
 }
 
-type errTestFallback struct{}
+type testFallbackError struct{}
 
-func (errTestFallback) Error() string { return "boom" }
+func (testFallbackError) Error() string { return "boom" }
 
 // TestErrorPageBranchCombos samples the ErrorPage optional-branch space
 // (chips, diagnostics, action pair, footer, copy) so the generated template

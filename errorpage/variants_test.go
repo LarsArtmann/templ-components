@@ -54,12 +54,12 @@ func TestErrorMaxWidthIsValid(t *testing.T) {
 func TestResolvedWayOut(t *testing.T) {
 	t.Parallel()
 
-	legacyOnly := ErrorPageProps{WayOut: "Retry", WayOutHref: "/"} //nolint:exhaustruct_v5 // legacy-fields case
+	legacyOnly := ErrorPageProps{WayOut: "Retry", WayOutHref: "/"}
 	if text, href := legacyOnly.resolvedWayOut(); text != "Retry" || href != "/" {
 		t.Errorf("legacy fields: resolved = (%q, %q), want (Retry, /)", text, href)
 	}
 
-	actionWins := ErrorPageProps{ //nolint:exhaustruct_v5 // precedence case
+	actionWins := ErrorPageProps{
 		WayOut:       "Retry",
 		WayOutHref:   "/",
 		WayOutAction: WayOutAction{Text: "View status", Href: "/status"},
@@ -68,7 +68,7 @@ func TestResolvedWayOut(t *testing.T) {
 		t.Errorf("action precedence: resolved = (%q, %q), want (View status, /status) — no mixing", text, href)
 	}
 
-	actionNoHref := ErrorPageProps{WayOutAction: WayOutAction{Text: "Go back"}} //nolint:exhaustruct_v5 // no-href case
+	actionNoHref := ErrorPageProps{WayOutAction: WayOutAction{Text: "Go back"}}
 	if text, href := actionNoHref.resolvedWayOut(); text != "Go back" || href != "" {
 		t.Errorf("action without href: resolved = (%q, %q), want (Go back, empty)", text, href)
 	}

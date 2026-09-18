@@ -123,7 +123,7 @@ func TestChipsJSONParity(t *testing.T) {
 		t.Errorf("JSON code = %q, want %q", resp.Code, "resource.conflict")
 	}
 
-	if !strings.Contains(html, string(resp.Code)) {
+	if !strings.Contains(html, resp.Code) {
 		t.Errorf("HTML code chip missing %q present in JSON", resp.Code)
 	}
 

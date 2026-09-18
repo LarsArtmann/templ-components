@@ -309,10 +309,6 @@ func (p ErrorPageProps) resolvedWayOut() (string, string) {
 	return p.WayOut, p.WayOutHref
 }
 
-// errBlankNonRejection is the Validate error returned when the props would
-// render as an empty error card.
-var errBlankNonRejection = errValidateBlank
-
 // Validate verifies that the props form a coherent error page. Returns an
 // error when:
 //   - Family is not one of the six defined constants (FamilyIsValid).
@@ -332,7 +328,7 @@ func (p ErrorPageProps) Validate() error {
 	}
 
 	if p.Title == "" && p.Message == "" && len(p.CauseChain) == 0 {
-		return errBlankNonRejection
+		return errValidateBlank
 	}
 
 	return nil
