@@ -66,6 +66,11 @@ func TestDocsCountDrift(t *testing.T) {
 	assertCount(t, readme, `Visual goldens \| (\d+)\s+pixel-level`, "README.md visual goldens", actualVisualGoldens)
 	assertCount(t, readme, `(\d+) SVG icons`, "README.md SVG icons", actualIcons)
 	assertCount(t, readme, `SVG Icons \((\d+) icons\)`, "README.md icons heading", actualIcons)
+	// Single-sourced golden count: the number always comes from the
+	// filesystem walk, never from another doc — every doc that prints it is
+	// asserted against reality here (M17.4). Interpreted string literal: the
+	// pattern itself contains backticks.
+	assertCount(t, readme, "`(\\d+) `\\.golden` files", "README.md HTML golden baselines", actualHTMLGoldens)
 
 	for pkg, want := range packageCounts {
 		if want == 0 {

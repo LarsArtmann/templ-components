@@ -1,5 +1,10 @@
 module github.com/larsartmann/templ-components/visualtest
 
+// Pin policy: chromedp and its transitive graph live ONLY in this module so
+// they never reach the library's consumer dependency graph. Versions here
+// track the latest upstream (updated opportunistically with go mod tidy);
+// consumers of github.com/larsartmann/templ-components are never affected.
+
 go 1.26.7
 
 require (

@@ -96,11 +96,22 @@ func assertInDir(t *testing.T, dir, name, got string) {
 			t.Fatalf("golden: create golden dir: %v", err)
 		}
 
+		previous, readErr := os.ReadFile(goldenPath)
+
 		if err := os.WriteFile(goldenPath, []byte(normalized), 0o600); err != nil {
 			t.Fatalf("golden: write %s: %v", goldenPath, err)
 		}
 
-		t.Logf("golden: updated %s", goldenPath)
+		// Changed-file summary: after an -update sweep the developer wants to
+		// know WHICH goldens actually changed (same-edit rule: every changed
+		// golden carries its doc-count bump + CHANGELOG line in the same
+		// batch). Created files log as new; identical rewrites stay silent.
+		switch {
+		case readErr != nil:
+			t.Logf("golden: created %s", goldenPath)
+		case string(previous) != normalized:
+			t.Logf("golden: CHANGED %s", goldenPath)
+		}
 
 		return
 	}
