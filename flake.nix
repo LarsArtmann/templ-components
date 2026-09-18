@@ -298,6 +298,18 @@
               };
             };
 
+            visual-update = {
+              type = "app";
+              meta.description = "Regenerate visual goldens under the pinned font/browser env (implies -update; extra args forward to go test, e.g. -- -run TestErrorPage)";
+              program = pkgs.writeShellApplication {
+                name = "run-visual-update";
+                runtimeInputs = [ pkgs.nix ];
+                text = ''
+                  exec nix run .#visual -- -update "$@"
+                '';
+              };
+            };
+
             shots = {
               type = "app";
               meta.description = "Capture full-page demo screenshots (light + dark) for manual visual inspection";
