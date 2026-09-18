@@ -1,0 +1,22 @@
+<main class="bg-gray-50 dark:bg-gray-900 flex items-center justify-center min-h-screen p-4"><div class="max-w-xl w-full"><div class="bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:shadow-black/20 overflow-hidden rounded-2xl shadow-sm"><div class="bg-blue-500 dark:bg-blue-400 h-1" aria-hidden="true"></div><div class="px-6 py-8 sm:px-10 sm:py-10"><div class="flex flex-wrap gap-x-4 gap-y-3 items-center"><div class="bg-blue-100 dark:bg-blue-900/30 flex flex-shrink-0 h-12 items-center justify-center rounded-full w-12"><svg class="dark:text-blue-400 h-6 text-blue-500 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.0228 9.34841H21.0154V9.34663M2.98413 19.6444V14.6517M2.98413 14.6517L7.97677 14.6517M2.98413 14.6517L6.16502 17.8347C7.15555 18.8271 8.41261 19.58 9.86436 19.969C14.2654 21.1483 18.7892 18.5364 19.9685 14.1353M4.03073 9.86484C5.21 5.46374 9.73377 2.85194 14.1349 4.03121C15.5866 4.4202 16.8437 5.17312 17.8342 6.1655L21.0154 9.34663M21.0154 4.3558V9.34663"></path></svg></div><div class="flex flex-wrap gap-2 items-center"><span class="bg-gray-100 dark:bg-gray-700 dark:text-gray-300 font-medium font-mono inline-flex items-center px-2 py-0.5 rounded-md text-gray-600 text-xs">HTTP 503</span> <code class="bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 font-medium font-mono inline-flex items-center px-1.5 py-0.5 rounded text-blue-700 text-xs">service.unavailable</code> <button type="button" data-tc-copy="service.unavailable" aria-label="Copy error code service.unavailable" class="-m-1.5 dark:focus-visible:ring-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-gray-400 hover:bg-gray-100 hover:text-gray-600 inline-flex items-center justify-center motion-reduce:duration-0 motion-reduce:transition-none p-1.5 rounded text-gray-400 transition-colors"><svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"></path></svg></button><span class="bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 font-medium inline-flex items-center px-2 py-0.5 rounded-md text-blue-700 text-xs">transient</span></div></div><h1 class="dark:text-white font-bold mt-5 text-2xl text-gray-900 tracking-tight">Service temporarily unavailable</h1><p class="dark:text-gray-300 leading-relaxed mt-2.5 text-base text-gray-600">We&#39;re performing maintenance or experiencing high traffic.</p></div></div></div></main><script nonce="test-nonce">
+		if (!window.tcCopyAttached) {
+			window.tcCopyAttached = true;
+			document.addEventListener('click', function(e) {
+				var btn = e.target.closest('[data-tc-copy]');
+				if (!btn) return;
+				e.preventDefault();
+				var text = btn.getAttribute('data-tc-copy');
+				if (navigator.clipboard && navigator.clipboard.writeText) {
+					navigator.clipboard.writeText(text);
+				} else {
+					var ta = document.createElement('textarea');
+					ta.value = text;
+					ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px';
+					document.body.appendChild(ta);
+					ta.select();
+					try { document.execCommand('copy'); } catch (err) {}
+					document.body.removeChild(ta);
+				}
+			});
+		}
+	</script>

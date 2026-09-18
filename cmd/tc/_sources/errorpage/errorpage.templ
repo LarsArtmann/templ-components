@@ -23,7 +23,7 @@ templ ErrorPage(props ErrorPageProps) {
 						<div class={ "flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full", style.AccentBG }>
 							@familyIcon(style, "h-6 w-6")
 						</div>
-						@errorChips(props.StatusCode, props.Family, style, props.Code)
+						@errorChips(props.StatusCode, props.Family, style, props.Code, props.CopyCode, props.Nonce)
 					</div>
 					if props.Title != "" {
 						<h1 class="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{ props.Title }</h1>
@@ -40,7 +40,7 @@ templ ErrorPage(props ErrorPageProps) {
 						if wayOutHref != "" {
 							<a
 								href={ templ.SafeURL(wayOutHref) }
-								class={ "inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
+								class={ errorActionClassScaffold + "shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 							>
 								@actionLinkBody(utils.Ternary(wayOutText != "", wayOutText, "Go back"))
 							</a>
@@ -48,7 +48,7 @@ templ ErrorPage(props ErrorPageProps) {
 								<button
 									type="button"
 									data-tc-go-back
-									class={ "inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
+									class={ errorActionClassScaffold + "shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 								>
 									{ props.WayOut }
 								</button>
@@ -57,7 +57,7 @@ templ ErrorPage(props ErrorPageProps) {
 								if props.SecondaryWayOutHref != "" {
 									<a
 										href={ templ.SafeURL(props.SecondaryWayOutHref) }
-										class={ "inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-semibold " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost }
+										class={ errorActionClassScaffold + "border " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost }
 									>
 										{ props.SecondaryWayOut }
 									</a>
@@ -65,7 +65,7 @@ templ ErrorPage(props ErrorPageProps) {
 									<button
 										type="button"
 										data-tc-go-back
-										class={ "inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-semibold " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost }
+										class={ errorActionClassScaffold + "border " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButtonGhost }
 									>
 										{ props.SecondaryWayOut }
 									</button>
@@ -82,5 +82,8 @@ templ ErrorPage(props ErrorPageProps) {
 	</main>
 	if (wayOutText != "" && wayOutHref == "") || (props.SecondaryWayOut != "" && props.SecondaryWayOutHref == "") {
 		@goBackScript(props.Nonce)
+	}
+	if props.CopyCode {
+		@copyCodeScript(props.Nonce)
 	}
 }

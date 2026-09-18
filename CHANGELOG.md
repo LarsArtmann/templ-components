@@ -159,6 +159,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   family→status parity, including the corruption fallback for unknown
   errors.
 
+- **`ErrorPage` code chip can be copied with one click.** `CopyCode: true`
+  renders a clipboard icon button next to the error code chip (CSP-safe,
+  nonce'd, `aria-label`'d, reduced-motion safe), so users can lift the
+  code into a support ticket without text-selection gymnastics on small
+  screens. The script shares display.CopyButton's `data-tc-copy` contract
+  and singleton guard, so a page carrying both components attaches exactly
+  one listener regardless of load order (module boundaries prevent sharing
+  the code — display is a dependent of errorpage, not vice versa). The
+  ErrorPage/NotFound404 action-button scaffolding was also unified into a
+  single shared class constant; rendering is byte-identical.
+
 - **`ErrorPage` gains a secondary action slot, a typed action bundle, and a
   configurable card width.** `SecondaryWayOut` (+`SecondaryWayOutHref`)
   renders a family-tinted ghost button/link next to the primary way out —

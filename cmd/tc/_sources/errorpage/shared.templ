@@ -21,7 +21,7 @@ templ familyIcon(style familyVisualStyle, iconClass string) {
 //   - titleClass: Tailwind classes for the heading (mt-N + text size).
 //   - messageClass: Tailwind classes for the message paragraph.
 templ errorBody(style familyVisualStyle, family Family, code Code, title, titleTag, titleClass, message, messageClass string) {
-	@errorChips(0, family, style, code)
+	@errorChips(0, family, style, code, false, "")
 	if title != "" {
 		switch titleTag {
 			case "h1":
@@ -136,7 +136,7 @@ templ familyBadge(family Family, style familyVisualStyle) {
 // errorChips renders the metadata chip row: optional HTTP status code,
 // optional error code, and the family badge. Every chip is guarded — a
 // zero-value field renders nothing instead of an empty chip.
-templ errorChips(statusCode int, family Family, style familyVisualStyle, code Code) {
+templ errorChips(statusCode int, family Family, style familyVisualStyle, code Code, copyCode bool, nonce string) {
 	if statusCode > 0 || code != "" || FamilyIsValid(family) {
 		<div class="flex flex-wrap items-center gap-2">
 			if statusCode > 0 {
@@ -148,6 +148,16 @@ templ errorChips(statusCode int, family Family, style familyVisualStyle, code Co
 				<code class={ "inline-flex items-center rounded px-1.5 py-0.5 text-xs font-mono font-medium", style.AccentBG, style.AccentText }>
 					{ code }
 				</code>
+				if copyCode {
+					<button
+						type="button"
+						data-tc-copy={ string(code) }
+						aria-label={ "Copy error code " + string(code) }
+						class={ "-m-1.5 inline-flex items-center justify-center rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-gray-400 dark:focus-visible:ring-gray-500", utils.TransitionColors }
+					>
+						@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
+					</button>
+				}
 			}
 			@familyBadge(family, style)
 		</div>
@@ -183,6 +193,39 @@ templ goBackScript(nonce string) {
 			window.tcGoBackAttached = true;
 			document.addEventListener('click', function(e) {
 				if (e.target.closest('[data-tc-go-back]')) history.back();
+			});
+		}
+	</script>
+}
+
+// copyCodeScript renders the copy-to-clipboard singleton for the ErrorPage
+// code chip. It deliberately shares display.CopyButton's contract AND its
+// window.tcCopyAttached guard key: errorpage cannot import display (module
+// cycle — display's root module imports errorpage), so the ~14-line listener
+// is re-expressed here with identical [data-tc-copy] semantics; on a page
+// that already carries display.CopyButton the guard makes whichever script
+// loads first serve both (accepted clone per ADR-0009, module-boundary
+// required).
+templ copyCodeScript(nonce string) {
+	<script nonce={ nonce }>
+		if (!window.tcCopyAttached) {
+			window.tcCopyAttached = true;
+			document.addEventListener('click', function(e) {
+				var btn = e.target.closest('[data-tc-copy]');
+				if (!btn) return;
+				e.preventDefault();
+				var text = btn.getAttribute('data-tc-copy');
+				if (navigator.clipboard && navigator.clipboard.writeText) {
+					navigator.clipboard.writeText(text);
+				} else {
+					var ta = document.createElement('textarea');
+					ta.value = text;
+					ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px';
+					document.body.appendChild(ta);
+					ta.select();
+					try { document.execCommand('copy'); } catch (err) {}
+					document.body.removeChild(ta);
+				}
 			});
 		}
 	</script>
