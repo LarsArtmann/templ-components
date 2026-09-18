@@ -161,7 +161,7 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 		chromedp.Navigate(baseURL + path),
 		chromedp.WaitReady("body"),
 		chromedp.Evaluate(fmt.Sprintf(
-			`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; true`,
+			`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; window.__tcClassLog = []; new MutationObserver(function(muts){ muts.forEach(function(m){ window.__tcClassLog.push(document.documentElement.className + '@' + performance.now()); }); }).observe(document.documentElement, {attributes:true, attributeFilter:['class']}); true`,
 			theme,
 			dark,
 			theme,
@@ -177,6 +177,15 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 	if err != nil {
 		t.Fatalf("visualtest[axe]: audit %s%s: %v", baseURL, path, err)
 	}
+
+	var dbgClass, dbgStored string
+	var dbgLog []interface{}
+	_ = chromedp.Run(ctx,
+		chromedp.Evaluate(`document.documentElement.className`, &dbgClass),
+		chromedp.Evaluate(`(function(){try{return localStorage.getItem('theme');}catch(e){return 'ERR';}})()`, &dbgStored),
+		chromedp.Evaluate(`window.__tcClassLog || []`, &dbgLog),
+	)
+	t.Logf("axe-debug[%s%s]: dark=%t finalClass=%q stored=%q classLog=%v", baseURL, path, dark, dbgClass, dbgStored, dbgLog)
 
 	return results
 }
