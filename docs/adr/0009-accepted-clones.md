@@ -289,6 +289,23 @@ is the opening `<script nonce=...>` tag.
 fundamental inline-script CSP pattern. Scripts cannot share JS state across
 files; the CSP nonce pattern is universal.
 
+## Excluded: `cmd/tc/_sources/**` (embedded scaffolder copies, ~78 clone groups at t=1)
+
+`cmd/tc/_sources/` contains byte-identical COPIES of the library's `.templ`
+sources, embedded via `//go:embed` so `tc new` can scaffold real component
+code into consumer projects. The copy is intentional and drift-guarded:
+
+- `scripts/check-tc-sources-sync.sh` (fast pre-commit guard, `--fix` to resync)
+- `cmd/tc TestSourcesMatchPackageFiles` (Go test guard)
+- `utils/templ_sync_test.go`
+
+Because a copy must, by definition, duplicate its twin, these clones can
+never be "extracted" — the fix for drift is re-syncing, not deduplication.
+`.art-dupl.json` therefore excludes `cmd/tc/_sources/**` from scans
+(same treatment as vendored or generated code). Scan with
+`art-dupl -c .art-dupl.json ...`; without `-c` the exclusion does not apply
+(art-dupl has no config auto-discovery).
+
 ## Decision
 
 These clones remain because each extraction attempt either:

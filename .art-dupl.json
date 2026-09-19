@@ -1,0 +1,5 @@
+{
+  "excludePatterns": [
+    "cmd/tc/_sources/**"
+  ]
+}
