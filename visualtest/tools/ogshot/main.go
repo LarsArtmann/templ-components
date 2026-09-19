@@ -33,30 +33,45 @@ const (
 	screenshotFmt = 0o644
 )
 
-// ogCardHTML is the social-preview composition. It deliberately avoids
-// derived counts (a static PNG cannot track them) — tagline and tech row
-// only. Served from the dist root so /assets/app.css resolves.
+// ogCardHTML is the social-preview composition. It is styled with a
+// self-contained <style> block — deliberately NOT Tailwind classes, because
+// the compiled app.css only contains utilities Tailwind saw in .templ files,
+// so any class unique to this card would silently not exist. Served from the
+// dist root so /assets/app.css (which loads the Space Grotesk/JetBrains Mono
+// webfonts) resolves. Derived counts are avoided on purpose: a static PNG
+// cannot track them.
 const ogCardHTML = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <link rel="stylesheet" href="/assets/app.css">
-<style>html,body{margin:0;padding:0}</style></head>
-<body class="font-sans antialiased bg-gray-950 text-white">
-<div class="relative flex flex-col justify-between overflow-hidden p-16" style="width:1200px;height:630px">
-  <div class="pointer-events-none absolute rounded-full bg-blue-600/25 blur-[120px] h-[520px] w-[520px] -top-32 -end-24"></div>
-  <div class="pointer-events-none absolute rounded-full bg-indigo-600/15 blur-[100px] h-[360px] w-[360px] -bottom-24 -start-16"></div>
-  <div class="relative flex items-center gap-3">
-    <svg width="44" height="44" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="templ-components logo"><rect width="28" height="28" rx="6" fill="#3b82f6"></rect><path d="M10 9L5 14l5 5M18 9l5 5-5 5M15.5 7l-3 14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-    <span class="text-2xl font-semibold tracking-tight text-white">templ-components</span>
+<style>
+  html,body{margin:0;padding:0}
+  .card{position:relative;display:flex;flex-direction:column;justify-content:space-between;
+    width:1200px;height:630px;overflow:hidden;box-sizing:border-box;padding:64px;
+    background:#030712;color:#fff;font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+  .glow-a{position:absolute;top:-128px;right:-96px;width:520px;height:520px;border-radius:9999px;
+    background:rgba(37,99,235,.25);filter:blur(120px);pointer-events:none}
+  .glow-b{position:absolute;bottom:-96px;left:-64px;width:360px;height:360px;border-radius:9999px;
+    background:rgba(79,70,229,.15);filter:blur(100px);pointer-events:none}
+  .brand{position:relative;display:flex;align-items:center;gap:14px}
+  .brand-name{font-size:26px;font-weight:600;letter-spacing:-.02em}
+  h1{position:relative;margin:0;font-size:64px;line-height:1.08;font-weight:700;letter-spacing:-.03em}
+  h1 .accent{color:#60a5fa}
+  .tagline{position:relative;margin:24px 0 0;font-size:26px;line-height:1.35;color:#9ca3af}
+  .tech{position:relative;display:flex;gap:16px}
+  .tech span{font-size:19px;color:#d1d5db;border:1px solid #374151;border-radius:9999px;
+    background:#111827;padding:10px 22px}
+</style></head>
+<body>
+<div class="card">
+  <div class="glow-a"></div><div class="glow-b"></div>
+  <div class="brand">
+    <svg width="44" height="44" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="templ-components logo"><rect width="28" height="28" rx="6" fill="#2563eb"></rect><path d="M10 9L5 14l5 5M18 9l5 5-5 5M15.5 7l-3 14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    <span class="brand-name">templ-components</span>
   </div>
-  <div class="relative">
-    <h1 class="font-bold leading-[1.08] text-[64px] tracking-tighter text-white m-0">Build complete UIs from Go —<br>without <span class="text-blue-400">the frontend stack</span>.</h1>
-    <p class="text-[26px] leading-snug text-gray-400 mt-6 mb-0">Server-rendered, CSP-safe, dark-mode tested —<br>the website selling it is rendered by it.</p>
+  <div>
+    <h1>Build complete UIs from Go &mdash;<br>without <span class="accent">the frontend stack</span>.</h1>
+    <p class="tagline">Server-rendered, CSP-safe, dark-mode tested &mdash;<br>the website selling it is rendered by it.</p>
   </div>
-  <div class="relative flex items-center gap-4 text-lg text-gray-300">
-    <span class="rounded-full border border-gray-700 bg-gray-900 px-5 py-2">templ</span>
-    <span class="rounded-full border border-gray-700 bg-gray-900 px-5 py-2">HTMX</span>
-    <span class="rounded-full border border-gray-700 bg-gray-900 px-5 py-2">Tailwind v4</span>
-    <span class="rounded-full border border-gray-700 bg-gray-900 px-5 py-2">MIT licensed</span>
-  </div>
+  <div class="tech"><span>templ</span><span>HTMX</span><span>Tailwind v4</span><span>MIT licensed</span></div>
 </div>
 </body></html>`
 
