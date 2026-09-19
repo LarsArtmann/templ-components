@@ -87,7 +87,7 @@ func Sales(stats build.Stats, starsText string, nonce string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = section("max-w-7xl", salesProblem()).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = section("max-w-7xl", salesProblem(), sectionOpts{id: "problem"}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -103,7 +103,7 @@ func Sales(stats build.Stats, starsText string, nonce string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = section("max-w-5xl", salesProof(stats, nonce)).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = section("max-w-5xl", salesProof(stats, nonce), sectionOpts{id: "proof"}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -111,7 +111,7 @@ func Sales(stats build.Stats, starsText string, nonce string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = section("max-w-3xl", salesFAQ(stats)).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = section("max-w-3xl", salesFAQ(stats), sectionOpts{id: "faq"}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -657,6 +657,7 @@ func salesFAQ(stats build.Stats) templ.Component {
 				{
 					ID:      "sales-faq-ready",
 					Title:   "Is it production-ready?",
+					Open:    true,
 					Content: faqAnswerRich(faqProductionReady(stats)),
 				},
 				{
@@ -721,7 +722,7 @@ func faqAnswer(text string) templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 303, Col: 66}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 304, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -804,7 +805,7 @@ func faqLink(href, text string) templ.Component {
 		var templ_7745c5c3_Var19 templ.SafeURL
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(href))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 316, Col: 30}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 317, Col: 30}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
@@ -817,7 +818,7 @@ func faqLink(href, text string) templ.Component {
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 316, Col: 94}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 317, Col: 94}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
@@ -862,7 +863,7 @@ func faqProductionReady(stats build.Stats) templ.Component {
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(libraryMajorLabel(stats.LibraryVersion))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 323, Col: 67}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 324, Col: 67}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
@@ -906,7 +907,7 @@ func faqCost() templ.Component {
 		var templ_7745c5c3_Var24 templ.SafeURL
 		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(GitHubURL + "/blob/master/LICENSE"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 332, Col: 60}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 333, Col: 60}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 		if templ_7745c5c3_Err != nil {

@@ -86,7 +86,7 @@ func Header(nonce string) templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<header role=\"banner\"><nav class=\"fixed top-0 left-0 right-0 z-50 border-b border-border backdrop-blur-xl bg-bg-primary/60\" aria-label=\"Main navigation\"><div class=\"max-w-7xl mx-auto px-6 h-16 flex items-center justify-between\"><a href=\"/\" class=\"flex items-center gap-2.5 group no-underline\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<header><nav class=\"fixed top-0 left-0 right-0 z-50 border-b border-border backdrop-blur-xl bg-bg-primary/60\" aria-label=\"Main navigation\"><div class=\"max-w-7xl mx-auto px-6 h-16 flex items-center justify-between\"><a href=\"/\" class=\"flex items-center gap-2.5 group no-underline\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -135,14 +135,14 @@ func Header(nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<a href=\"/getting-started/installation\" class=\"text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 no-underline nav-link\">Docs</a> <a href=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<a href=\"/sales\" class=\"text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 no-underline nav-link\">Why</a> <a href=\"/getting-started/installation\" class=\"text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 no-underline nav-link\">Docs</a> <a href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 templ.SafeURL
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(GitHubURL))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/header.templ`, Line: 36, Col: 39}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/header.templ`, Line: 37, Col: 39}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {

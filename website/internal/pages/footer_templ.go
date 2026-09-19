@@ -83,7 +83,7 @@ func Footer(nonce string) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<footer role=\"contentinfo\" class=\"border-t border-border mt-24\" data-animate>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<footer class=\"border-t border-border mt-24\" data-animate>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

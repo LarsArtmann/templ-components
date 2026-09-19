@@ -16,20 +16,28 @@ type sectionOpts struct {
 	dense bool
 }
 
+// sectionClass returns the section's vertical-rhythm class — dense halves
+// the padding for campaign-style flows.
+func sectionClass(opts []sectionOpts) string {
+	if len(opts) > 0 && opts[0].dense {
+		return "relative py-12"
+	}
+	return "relative py-24"
+}
+
+// sectionAttrs renders the optional anchor id as spread attributes; nil
+// means no extra attributes.
+func sectionAttrs(opts []sectionOpts) templ.Attributes {
+	if len(opts) == 0 || opts[0].id == "" {
+		return nil
+	}
+	return templ.Attributes{"id": opts[0].id}
+}
+
 // section wraps a landing section: vertical rhythm, scroll-reveal hook, and
 // optional width constraint (ported from Section.astro).
 templ section(width string, comp templ.Component, opts ...sectionOpts) {
-	var class = "relative py-24"
-	var attrs templ.Attributes
-	if len(opts) > 0 {
-		if opts[0].dense {
-			class = "relative py-12"
-		}
-		if opts[0].id != "" {
-			attrs = templ.Attributes{"id": opts[0].id}
-		}
-	}
-	<section class={ class } data-animate { attrs }>
+	<section class={ sectionClass(opts) } data-animate { sectionAttrs(opts)... }>
 		if width != "" {
 			<div class={ width + " mx-auto px-6" }>
 				@comp
