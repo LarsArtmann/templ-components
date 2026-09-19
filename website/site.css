@@ -6,6 +6,10 @@
 
 @import "tailwindcss";
 
+/* Component-specific CSS (dialog animations, scrollback, accordion chevron,
+   etc.) — same single-source-of-truth import the demo uses. */
+@import "../templates/custom.css";
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* Class sources: the library's generated components + this site's own. */
