@@ -151,7 +151,11 @@ templ salesProblem() {
 					Title:   pain.Title,
 					Padding: display.CardPaddingLG,
 					BaseProps: utils.BaseProps{
-						Class: "bg-bg-card border-border rounded-xl backdrop-blur-sm",
+						// Explicit dark: variants — they must beat the library
+						// shell's dark:bg-gray-800/dark:border-gray-700 or dark
+						// mode shows the library's cool grays against this site's
+						// warm stone palette.
+						Class: "bg-bg-card dark:bg-bg-card border-border dark:border-border rounded-xl backdrop-blur-sm",
 					},
 				}) {
 					<p class="text-sm text-text-muted leading-relaxed m-0">{ pain.Desc }</p>
@@ -203,7 +207,8 @@ templ salesBenefits() {
 				@display.SimpleCard(display.SimpleCardProps{
 					Padding: display.CardPaddingNone,
 					BaseProps: utils.BaseProps{
-						Class: "bg-bg-card border-border rounded-xl backdrop-blur-sm p-8",
+						// Same explicit dark: override rationale as salesProblem.
+						Class: "bg-bg-card dark:bg-bg-card border-border dark:border-border rounded-xl backdrop-blur-sm p-8",
 					},
 				}) {
 					<div class="w-11 h-11 rounded-lg bg-accent-dim border border-border-accent flex items-center justify-center text-accent mb-4">
@@ -229,24 +234,37 @@ templ salesProof(stats build.Stats, nonce string) {
 				Label: "Components",
 				Icon:  icons.Squares2x2,
 				Tone:  display.StatToneBlue,
+				BaseProps: utils.BaseProps{
+					// Warm-dark surface override (see salesProblem).
+					Class: "dark:bg-bg-card-solid dark:border-border",
+				},
 			})
 			@display.StatCard(display.StatCardProps{
 				Value: fmt.Sprintf("%d", stats.Icons),
 				Label: "SVG icons",
 				Icon:  icons.Photo,
 				Tone:  display.StatTonePurple,
+				BaseProps: utils.BaseProps{
+					Class: "dark:bg-bg-card-solid dark:border-border",
+				},
 			})
 			@display.StatCard(display.StatCardProps{
 				Value: fmt.Sprintf("%d", stats.Enums),
 				Label: "Typed enums",
 				Icon:  icons.ShieldCheck,
 				Tone:  display.StatToneGreen,
+				BaseProps: utils.BaseProps{
+					Class: "dark:bg-bg-card-solid dark:border-border",
+				},
 			})
 			@display.StatCard(display.StatCardProps{
 				Value: fmt.Sprintf("%d", stats.Modules),
 				Label: "Go modules",
 				Icon:  icons.Cube,
 				Tone:  display.StatToneYellow,
+				BaseProps: utils.BaseProps{
+					Class: "dark:bg-bg-card-solid dark:border-border",
+				},
 			})
 		</div>
 		<div class="rounded-xl border border-border bg-bg-card p-5 flex flex-col sm:flex-row sm:items-center gap-4">
@@ -267,6 +285,13 @@ templ salesFAQ(stats build.Stats) {
 	<div>
 		@sectionHeader("Objections, handled", "The questions you would ask in review.", "")
 		@display.Accordion(display.AccordionProps{
+			// Warm-dark override: the library's per-item <details> hardcodes
+			// bg-white/dark:bg-gray-900, which no prop can reach — the arbitrary
+			// child variant retints the items to this site's stone tokens (the
+			// selector is a complete literal so Tailwind's scanner finds it).
+			BaseProps: utils.BaseProps{
+				Class: "border-border dark:border-border divide-border dark:divide-border [&>details]:bg-bg-card-solid [&>details]:dark:bg-bg-card-solid",
+			},
 			Items: []display.AccordionItem{
 				{
 					ID:      "sales-faq-ready",
