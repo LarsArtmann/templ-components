@@ -26,12 +26,13 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-// routes mirrors the site's key page shapes: landing, docs pages with and
-// without code blocks, and the 404.
+// routes mirrors the site's key page shapes: landing, sales, docs pages with
+// and without code blocks, and the 404.
 //
 //nolint:gochecknoglobals // declarative route list; a package-level table is the point
 var routes = []string{
 	"/",
+	"/sales",
 	"/getting-started/installation",
 	"/guides/theming",
 	"/guides/dark-mode",
