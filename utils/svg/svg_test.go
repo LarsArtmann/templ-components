@@ -1,10 +1,14 @@
-// Package svg provides tests for shared SVG rendering primitives.
-package svg
+// Package svg_test covers the shared SVG rendering primitives from outside
+// the package. External placement is load-bearing: the parent utils package
+// now imports utils/svg (DismissButton sources its X path from PathXMark),
+// so an in-package test importing utils would form an import cycle.
+package svg_test
 
 import (
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/svg"
 )
 
 func TestFillIconRender(t *testing.T) {
@@ -12,7 +16,7 @@ func TestFillIconRender(t *testing.T) {
 
 	t.Run("renders SVG with correct path", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, FillIcon(
+		output := utils.Render(t, svg.FillIcon(
 			"h-5 w-5",
 			"M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10",
 			false,
@@ -25,13 +29,13 @@ func TestFillIconRender(t *testing.T) {
 
 	t.Run("renders with rotation when rotate is true", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, FillIcon("h-4 w-4", "M10 0", true))
+		output := utils.Render(t, svg.FillIcon("h-4 w-4", "M10 0", true))
 		utils.AssertContains(t, output, "rotate-180")
 	})
 
 	t.Run("renders without rotation by default", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, FillIcon("h-4 w-4", "M10 0", false))
+		output := utils.Render(t, svg.FillIcon("h-4 w-4", "M10 0", false))
 		utils.AssertNotContains(t, output, "rotate-180")
 	})
 }
@@ -39,7 +43,7 @@ func TestFillIconRender(t *testing.T) {
 func TestSpinnerSVGRender(t *testing.T) {
 	t.Parallel()
 
-	output := utils.Render(t, SpinnerSVG())
+	output := utils.Render(t, svg.SpinnerSVG())
 	utils.AssertContains(t, output, `opacity-25`)
 	utils.AssertContains(t, output, `opacity-75`)
 	utils.AssertContains(t, output, `stroke="currentColor"`)
@@ -53,14 +57,14 @@ func TestPathConstants(t *testing.T) {
 		name string
 		path string
 	}{
-		{"PathChevronDown", PathChevronDown},
-		{"PathChevronSmall", PathChevronSmall},
-		{"PathXMark", PathXMark},
-		{"PathArrowUp", PathArrowUp},
-		{"PathArrowDown", PathArrowDown},
-		{"PathArrowLeft", PathArrowLeft},
-		{"PathArrowRight", PathArrowRight},
-		{"PathAvatarFill", PathAvatarFill},
+		{"PathChevronDown", svg.PathChevronDown},
+		{"PathChevronSmall", svg.PathChevronSmall},
+		{"PathXMark", svg.PathXMark},
+		{"PathArrowUp", svg.PathArrowUp},
+		{"PathArrowDown", svg.PathArrowDown},
+		{"PathArrowLeft", svg.PathArrowLeft},
+		{"PathArrowRight", svg.PathArrowRight},
+		{"PathAvatarFill", svg.PathAvatarFill},
 	}
 	for _, p := range paths {
 		t.Run(p.name+" is non-empty", func(t *testing.T) {
@@ -75,6 +79,6 @@ func TestPathConstants(t *testing.T) {
 
 func TestFillIconUsesPathConstants(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, FillIcon("h-5 w-5", PathChevronDown, false))
-	utils.AssertContains(t, output, PathChevronDown)
+	output := utils.Render(t, svg.FillIcon("h-5 w-5", svg.PathChevronDown, false))
+	utils.AssertContains(t, output, svg.PathChevronDown)
 }

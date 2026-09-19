@@ -8,15 +8,18 @@ package utils
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import "github.com/larsartmann/templ-components/utils/svg"
+
 // DismissButton renders the shared alert/notification dismiss control used by
 // feedback.Alert and errorpage.ErrorAlert. The bg/text classes must be passed
 // in because the caller owns the visual style set (feedback.FeedbackType vs
 // errorpage.Family).
 //
-// The X icon path (M6 18L18 6M6 6l12 12) is inlined rather than going through
-// github.com/larsartmann/templ-components/icons to keep utils a leaf package
-// that does not depend on icons. The SVG matches the icons package's stroke
-// template (class, fill, viewBox, stroke-width, stroke, aria-hidden).
+// The X icon path is shared with the icons package via svg.PathXMark (the
+// single source of truth for the close glyph): utils cannot import icons
+// (leaf-package rule), but both packages already depend on utils/svg. The SVG
+// matches the icons package's stroke template (class, fill, viewBox,
+// stroke-width, stroke, aria-hidden).
 func DismissButton(bgClass string, textClass string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -60,7 +63,20 @@ func DismissButton(bgClass string, textClass string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" data-dismiss=\"alert\" aria-label=\"Dismiss\"><svg class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" data-dismiss=\"alert\" aria-label=\"Dismiss\"><svg class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var4 string
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(svg.PathXMark)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `utils/dismiss.templ`, Line: 25, Col: 75}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\"></path></svg></button></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

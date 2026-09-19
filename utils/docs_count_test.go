@@ -243,7 +243,10 @@ func countIconNames(t *testing.T, root string) int {
 		t.Fatalf("read icons/icon_paths.go: %v", err)
 	}
 
-	entryRe := regexp.MustCompile(`(?m)^\t[A-Z][A-Za-z0-9]*:\s+"`)
+	// Path-map values are either quoted path literals or references to the
+	// shared svg.Path* constants (e.g. X: svg.PathXMark). Bare identifiers
+	// are alias-map entries and must not count as icons.
+	entryRe := regexp.MustCompile(`(?m)^\t[A-Z][A-Za-z0-9]*:\s+("[^"]*"|svg\.Path[A-Za-z]*)`)
 
 	return len(entryRe.FindAll(data, -1)) + 1
 }

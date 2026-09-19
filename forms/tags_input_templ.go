@@ -9,8 +9,12 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"context"
 	"fmt"
+	"html"
+	"io"
 
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -40,6 +44,50 @@ func DefaultTagsInputProps() TagsInputProps {
 // when the consumer set neither Label nor AriaLabel — a text input must never
 // render unnamed (axe label).
 const tagsInputFallbackName = "Add tag"
+
+// tagsInputRemoveIconPath sources the remove-tag X glyph from the icons
+// package's single source of truth (icons.X) for JS injection.
+func tagsInputRemoveIconPath() string {
+	return icons.IconPathData(icons.X)[0]
+}
+
+// tagsInputJS is the CSP-safe add/remove singleton script (ADR-0005); %s is
+// the icons-sourced X path data.
+const tagsInputJS = `
+				(function(){if(window.tcTagsInputAttached)return;window.tcTagsInputAttached=true;
+				document.addEventListener('keydown',function(e){
+				var input=e.target;if(!input||!input.hasAttribute('data-tc-tags-input'))return;
+				var container=input.closest('[data-tc-tags]');if(!container)return;
+				if(e.key==='Enter'||e.key===','){e.preventDefault();
+				var val=input.value.trim();if(!val)return;input.value='';
+				var existing=container.querySelectorAll('[data-tc-tag]');
+				if(!container.dataset.allowDuplicate){for(var i=0;i<existing.length;i++){if(existing[i].getAttribute('data-tc-tag')===val)return;}}
+				var max=parseInt(container.dataset.maxTags||'0',10);if(max>0&&existing.length>=max)return;
+				var span=document.createElement('span');span.className='inline-flex items-center gap-1 rounded-md bg-blue-50 dark:bg-blue-900/50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300';span.setAttribute('data-tc-tag',val);span.textContent=val+' ';
+				var btn=document.createElement('button');btn.type='button';btn.className='p-1.5 -m-1.5 text-blue-400 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-200';btn.setAttribute('data-tc-tag-remove',val);btn.setAttribute('aria-label','Remove '+val);btn.innerHTML='<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="%s"></path></svg>';
+				span.appendChild(btn);
+				var hidden=document.createElement('input');hidden.type='hidden';hidden.name=container.getAttribute('data-tc-tags');hidden.value=val;
+				container.insertBefore(span,input);container.insertBefore(hidden,input);}
+				if(e.key==='Backspace'&&input.value===''){var tags=container.querySelectorAll('[data-tc-tag]');if(tags.length>0){var last=tags[tags.length-1];var v=last.getAttribute('data-tc-tag');last.remove();var hs=container.querySelectorAll('input[type=hidden][value="'+v+'"]');for(var j=0;j<hs.length;j++){hs[j].remove();}}}});
+				document.addEventListener('click',function(e){var btn=e.target.closest('[data-tc-tag-remove]');if(!btn)return;e.preventDefault();var container=btn.closest('[data-tc-tags]');if(!container)return;var v=btn.getAttribute('data-tc-tag-remove');var tag=btn.closest('[data-tc-tag]');if(tag)tag.remove();var hs=container.querySelectorAll('input[type=hidden][value="'+v+'"]');for(var k=0;k<hs.length;k++){hs[k].remove();}});
+				})();
+			`
+
+// tagsInputScriptComponent writes the tags-input script raw: templ's <script>
+// context sanitizes interpolations, and the JS must land verbatim with the
+// icons-sourced path data (same pattern as dirtyGuardScriptComponent).
+func tagsInputScriptComponent(nonce string) templ.Component {
+	escapedNonce := html.EscapeString(nonce)
+	js := fmt.Sprintf(tagsInputJS, tagsInputRemoveIconPath())
+
+	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">%s</script>", escapedNonce, js); err != nil {
+			return fmt.Errorf("write tags input script: %w", err)
+		}
+
+		return nil
+	})
+}
 
 // tagsInputContainerClass returns the container classes for the tags input.
 func tagsInputContainerClass(hasError bool) string {
@@ -120,7 +168,7 @@ func TagsInput(props TagsInputProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 60, Col: 12}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 108, Col: 12}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -133,7 +181,7 @@ func TagsInput(props TagsInputProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(props.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 63, Col: 17}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 111, Col: 17}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -179,7 +227,7 @@ func TagsInput(props TagsInputProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 71, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 119, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {
@@ -197,7 +245,7 @@ func TagsInput(props TagsInputProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("%d", props.MaxTags))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 73, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 121, Col: 52}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
@@ -226,7 +274,7 @@ func TagsInput(props TagsInputProps) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(val)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 82, Col: 22}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 130, Col: 22}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 			if templ_7745c5c3_Err != nil {
@@ -239,7 +287,7 @@ func TagsInput(props TagsInputProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(val)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 84, Col: 10}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 132, Col: 10}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -252,7 +300,7 @@ func TagsInput(props TagsInputProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue("Remove " + val)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 88, Col: 34}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 136, Col: 34}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 			if templ_7745c5c3_Err != nil {
@@ -265,99 +313,107 @@ func TagsInput(props TagsInputProps) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(val)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 89, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 137, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\"><svg class=\"h-3 w-3\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"2\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></span> <input type=\"hidden\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = icons.IconWithStrokeWidth(icons.X, "h-3 w-3", 2).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "</button></span> <input type=\"hidden\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 96, Col: 42}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 142, Col: 42}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(val)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 96, Col: 56}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 142, Col: 56}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\"> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\"> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<input type=\"text\" id=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<input type=\"text\" id=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 100, Col: 11}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 146, Col: 11}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\" class=\"flex-1 min-w-[120px] bg-transparent border-0 outline-none py-1 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 caret-blue-600 dark:caret-blue-400\" placeholder=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" class=\"flex-1 min-w-[120px] bg-transparent border-0 outline-none py-1 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 caret-blue-600 dark:caret-blue-400\" placeholder=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Placeholder)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 102, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 148, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if props.Disabled {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, " disabled")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, " disabled")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
 		if props.Required {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, " required")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, " required")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, " aria-label=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, " aria-label=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, tagsInputFallbackName)))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 109, Col: 140}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 155, Col: 140}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "\" data-tc-tags-input")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\" data-tc-tags-input")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -369,7 +425,7 @@ func TagsInput(props TagsInputProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -386,25 +442,12 @@ func TagsInput(props TagsInputProps) templ.Component {
 			}
 		}
 		if props.Nonce != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "<script nonce=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var19 string
-			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 122, Col: 30}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\">\n\t\t\t\t(function(){if(window.tcTagsInputAttached)return;window.tcTagsInputAttached=true;\n\t\t\t\tdocument.addEventListener('keydown',function(e){\n\t\t\t\tvar input=e.target;if(!input||!input.hasAttribute('data-tc-tags-input'))return;\n\t\t\t\tvar container=input.closest('[data-tc-tags]');if(!container)return;\n\t\t\t\tif(e.key==='Enter'||e.key===','){e.preventDefault();\n\t\t\t\tvar val=input.value.trim();if(!val)return;input.value='';\n\t\t\t\tvar existing=container.querySelectorAll('[data-tc-tag]');\n\t\t\t\tif(!container.dataset.allowDuplicate){for(var i=0;i<existing.length;i++){if(existing[i].getAttribute('data-tc-tag')===val)return;}}\n\t\t\t\tvar max=parseInt(container.dataset.maxTags||'0',10);if(max>0&&existing.length>=max)return;\n\t\t\t\tvar span=document.createElement('span');span.className='inline-flex items-center gap-1 rounded-md bg-blue-50 dark:bg-blue-900/50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300';span.setAttribute('data-tc-tag',val);span.textContent=val+' ';\n\t\t\t\tvar btn=document.createElement('button');btn.type='button';btn.className='p-1.5 -m-1.5 text-blue-400 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-200';btn.setAttribute('data-tc-tag-remove',val);btn.setAttribute('aria-label','Remove '+val);btn.innerHTML='<svg class=\"h-3 w-3\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"2\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 18L18 6M6 6l12 12\"></path></svg>';\n\t\t\t\tspan.appendChild(btn);\n\t\t\t\tvar hidden=document.createElement('input');hidden.type='hidden';hidden.name=container.getAttribute('data-tc-tags');hidden.value=val;\n\t\t\t\tcontainer.insertBefore(span,input);container.insertBefore(hidden,input);}\n\t\t\t\tif(e.key==='Backspace'&&input.value===''){var tags=container.querySelectorAll('[data-tc-tag]');if(tags.length>0){var last=tags[tags.length-1];var v=last.getAttribute('data-tc-tag');last.remove();var hs=container.querySelectorAll('input[type=hidden][value=\"'+v+'\"]');for(var j=0;j<hs.length;j++){hs[j].remove();}}}});\n\t\t\t\tdocument.addEventListener('click',function(e){var btn=e.target.closest('[data-tc-tag-remove]');if(!btn)return;e.preventDefault();var container=btn.closest('[data-tc-tags]');if(!container)return;var v=btn.getAttribute('data-tc-tag-remove');var tag=btn.closest('[data-tc-tag]');if(tag)tag.remove();var hs=container.querySelectorAll('input[type=hidden][value=\"'+v+'\"]');for(var k=0;k<hs.length;k++){hs[k].remove();}});\n\t\t\t\t})();\n\t\t\t</script>")
+			templ_7745c5c3_Err = tagsInputScriptComponent(props.Nonce).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
