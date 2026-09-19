@@ -32,12 +32,13 @@ func lexerFor(lang string) chroma.Lexer {
 // highlight renders source code to chroma-highlighted HTML using class-based
 // tokens (no inline styles — CSP-safe). Colors come from the site stylesheet,
 // which scopes github-light/github-dark token classes under the theme class.
+// The surrounding <pre> is NOT emitted (PreventSurroundingPre) — callers own
+// the wrapper element; chroma's <pre><code> here would nest a second <pre>
+// inside the hero code window and fail HTML validation.
 func highlight(source, lang string) (templ.Component, error) {
 	lexer := lexerFor(lang)
 	if lexer == nil {
-		escaped := stdhtml.EscapeString(source)
-
-		return templ.Raw(`<pre class="chroma"><code>` + escaped + "</code></pre>"), nil
+		return templ.Raw(stdhtml.EscapeString(source)), nil
 	}
 
 	iterator, err := lexer.Tokenise(nil, source)
@@ -45,7 +46,7 @@ func highlight(source, lang string) (templ.Component, error) {
 		return nil, fmt.Errorf("tokenise %s snippet: %w", lang, err)
 	}
 
-	formatter := chromahtml.New(chromahtml.WithClasses(true))
+	formatter := chromahtml.New(chromahtml.WithClasses(true), chromahtml.PreventSurroundingPre(true))
 
 	var buf bytes.Buffer
 	// The style only drives class emission here; actual colors live in the
