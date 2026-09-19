@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **SVG glyphs now render from a single source (self-integration pass).** The
+  library inlined the same path data in four places: Calendar hand-rolled its
+  month-nav chevrons, TagsInput duplicated the X glyph in both its markup and
+  its add/remove script, and the shared `DismissButton` (used by Alert and
+  ErrorAlert) carried its own copy because utils cannot import icons. All
+  four now flow from one definition: the close glyph lives as
+  `utils/svg.PathXMark` (the shared leaf both `icons` and `utils` already
+  depend on) with `icons.X`/`icons.Close` referencing it, Calendar renders
+  `icons.ChevronLeft`/`ChevronRight`, and TagsInput injects the path via
+  `icons.IconPathData`. Rendered output is byte-identical (all goldens pass
+  unchanged); the TagsInput script now follows the raw-script pattern
+  (`dirtyGuardScriptComponent`) because templ's `<script>` context sanitizes
+  interpolations. New guard `utils.TestInlineIconPathCompliance` bans
+  inlined `d="M..."` path data in library sources (canonical definitions in
+  `icons/icon_paths.go` and `utils/svg` are the documented exemptions), and
+  the icon-count drift guard now accepts constant-referencing path-map
+  entries. `utils/svg/svg_test.go` moved to an external test package for the
+  same reason the shared constant exists: utils now imports utils/svg, so an
+  in-package svg test importing utils would form a cycle.
+
 ### Added
 
 - **Website sales page (`/sales`).** A dedicated long-form pitch for
