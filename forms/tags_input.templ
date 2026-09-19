@@ -1,8 +1,12 @@
 package forms
 
 import (
+	"context"
 	"fmt"
+	"html"
+	"io"
 
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -32,6 +36,15 @@ func DefaultTagsInputProps() TagsInputProps {
 // when the consumer set neither Label nor AriaLabel — a text input must never
 // render unnamed (axe label).
 const tagsInputFallbackName = "Add tag"
+
+// tagsInputRemoveIconPath sources the remove-tag X glyph from the icons
+// package's single source of truth (icons.X) for JS injection.
+func tagsInputRemoveIconPath() string {
+	return icons.IconPathData(icons.X)[0]
+}
+
+// tagsInputJS is the CSP-safe add/remove singleton script (ADR-0005); %s is
+// the icons-sourced X path data.
 
 // tagsInputContainerClass returns the container classes for the tags input.
 func tagsInputContainerClass(hasError bool) string {
