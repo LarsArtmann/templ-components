@@ -177,6 +177,8 @@ Pending register shipped (TODO #247-249 cover the test debt); the ideas below ar
 - Upstream: BuildFlow go-structure-linter rule-level config (skip is a band-aid; TODO #231/#93 family).
 
 
+### Website & docs ideas (harvested 2026-09-17 from docs/status/2026-09-17_{18-09, 15-27} + the Astro-conversion P3 tail)
+
 | Direction                      | Description                                                                                                                                              |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Go OG-image generator          | Per-page OG images from the SSG; retire the static `public/og/*` frozen artifacts of the old design.                                                     |
@@ -193,6 +195,16 @@ Pending register shipped (TODO #247-249 cover the test debt); the ideas below ar
 | 404 search wiring              | Wire `NotFound404` SearchAction to the site search (or remove the form).                                                                                 |
 | Mobile docs navigation         | Docs sidebar hidden below `lg` needs a mobile nav.                                                                                                       |
 | Code-block chrome in docs      | Filename/title header + language labels on code blocks (goldmark highlighting output).                                                                   |
+| Production stars caching       | Cache the last good stars-badge value between deploys in `fetchStars` — the fallback exists; caching stops the live badge flapping when the GitHub API hiccups at build time. (docs/status/2026-09-19_22-45 f30) |
+
+### Errorpage plan remainder (harvested 2026-09-18 from the M18/M19 execution record)
+
+_(moved below the Website & docs table 2026-09-19 — the 09-18 harvest had split that heading from its table)_
+
+- Failure-screenshot naming convention for `visualtest/testdata/.fail/` (timestamped, component-prefixed) + a CI cleanup step, so failure evidence never rots.
+- Fresh-clone hook check: CI/doctor assertion that `git config core.hooksPath .githooks` is set (`scripts/setup-hooks.sh` was silently skipped on at least one clone).
+- MaxMismatch/viewport audit for the errorpage captures (per-capture MaxMismatch tuning instead of the shared 0.1% default).
+- Upstream: BuildFlow go-structure-linter rule-level config (skip is a band-aid; TODO #231/#93 family).
 
 ### General
 
