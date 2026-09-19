@@ -50,6 +50,7 @@ func TestInlineIconPathCompliance(t *testing.T) {
 		if err != nil {
 			t.Fatalf("glob %s: %v", dirPath, err)
 		}
+
 		goFiles, err := filepath.Glob(filepath.Join(dirPath, "*.go"))
 		if err != nil {
 			t.Fatalf("glob %s: %v", dirPath, err)
