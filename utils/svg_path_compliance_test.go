@@ -54,13 +54,16 @@ func TestInlineIconPathCompliance(t *testing.T) {
 		if err != nil {
 			t.Fatalf("glob %s: %v", dirPath, err)
 		}
+
 		files = append(files, goFiles...)
 
 		for _, file := range files {
 			base := filepath.Base(file)
+
 			if strings.HasSuffix(base, "_templ.go") || strings.HasSuffix(base, "_test.go") {
 				continue
 			}
+
 			if _, ok := exemptions[filepath.Join(dir, base)]; ok {
 				continue
 			}
