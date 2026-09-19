@@ -58,9 +58,15 @@ type config struct {
 	updateCSP    bool
 }
 
-// staticPages is the number of non-docs HTML pages the site renders
-// (index, sales, 404).
-const staticPages = 3
+// topLevelPages returns the non-docs HTML pages the site renders (index,
+// sales, 404) — the single structural source for the page set and its count.
+func topLevelPages(stats build.Stats, starsLabel, nonce string) []build.Page {
+	return []build.Page{
+		{Path: "index.html", Component: pages.Landing(stats, starsLabel, nonce)},
+		{Path: "sales.html", Component: pages.Sales(stats, starsLabel, nonce)},
+		{Path: "404.html", Component: pages.NotFound(nonce)},
+	}
+}
 
 func run(cfg config) error {
 	nonce, err := build.Nonce()
@@ -87,12 +93,9 @@ func run(cfg config) error {
 
 	ctx := context.Background()
 
-	sitePages := make([]build.Page, 0, staticPages+len(docsPages))
-	sitePages = append(sitePages,
-		build.Page{Path: "index.html", Component: pages.Landing(stats, pages.StarsLabel(stars), nonce)},
-		build.Page{Path: "sales.html", Component: pages.Sales(stats, pages.StarsLabel(stars), nonce)},
-		build.Page{Path: "404.html", Component: pages.NotFound(nonce)},
-	)
+	topPages := topLevelPages(stats, pages.StarsLabel(stars), nonce)
+	sitePages := make([]build.Page, 0, len(topPages)+len(docsPages))
+	sitePages = append(sitePages, topPages...)
 	sitePages = append(sitePages, docsPages...)
 
 	rendered, err := renderer.RenderPages(ctx, sitePages)

@@ -41,7 +41,14 @@ func TestSiteBuildIntegrity(t *testing.T) {
 	// SSG; declare it so stylesheet references validate in the test dist.
 	assets = append(assets, "assets/app.css")
 
-	wantPages := staticPages + len(pages.AllDocs())
+	// The expected page count is derived structurally: the same topLevelPages
+	// source run() uses, plus the docs set — no hand-kept constants.
+	stats, err := build.CountStats(repoRoot)
+	if err != nil {
+		t.Fatalf("library stats: %v", err)
+	}
+
+	wantPages := len(topLevelPages(stats, pages.StarsLabel(0), "")) + len(pages.AllDocs())
 	if len(rendered) != wantPages {
 		t.Fatalf("wrote %d HTML pages, want %d", len(rendered), wantPages)
 	}
