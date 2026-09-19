@@ -7,5 +7,8 @@
   },
   "forms_dark": {
     "color-contrast|serious": -1
+  },
+  "site_sales_dark": {
+    "color-contrast|serious": 1
   }
 }

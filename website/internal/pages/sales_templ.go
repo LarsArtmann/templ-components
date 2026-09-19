@@ -805,20 +805,20 @@ func faqLink(href, text string) templ.Component {
 		var templ_7745c5c3_Var19 templ.SafeURL
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(href))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 317, Col: 30}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 318, Col: 30}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "\" class=\"text-accent underline underline-offset-2 hover:text-accent-hover\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "\" class=\"text-accent dark:text-accent-light underline underline-offset-2 hover:text-accent-hover\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 317, Col: 112}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 318, Col: 135}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
@@ -863,13 +863,13 @@ func faqProductionReady(stats build.Stats) templ.Component {
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(libraryMajorLabel(stats.LibraryVersion))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 324, Col: 67}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 325, Col: 67}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, " under semantic versioning, and every component ships behind <a href=\"/guides/invariants\" class=\"text-accent underline underline-offset-2 hover:text-accent-hover\">three regression layers</a>: HTML golden tests, pixel-level visual tests in headless Chromium, and an axe-core accessibility gate that fails the build on serious violations. This website — docs included — is rendered through the library itself.")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, " under semantic versioning, and every component ships behind <a href=\"/guides/invariants\" class=\"text-accent dark:text-accent-light underline underline-offset-2 hover:text-accent-hover\">three regression layers</a>: HTML golden tests, pixel-level visual tests in headless Chromium, and an axe-core accessibility gate that fails the build on serious violations. This website — docs included — is rendered through the library itself.")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -907,13 +907,13 @@ func faqCost() templ.Component {
 		var templ_7745c5c3_Var24 templ.SafeURL
 		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(GitHubURL + "/blob/master/LICENSE"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 333, Col: 60}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 334, Col: 60}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "\" class=\"text-accent underline underline-offset-2 hover:text-accent-hover\">read the license</a> — no paid tier, no telemetry. The dependency list is short and auditable — templ and tailwind-merge-go at the core, with integrations like HTMX, Datastar, ECharts, and error pages as separate opt-in modules. Adopt one component or all of them; deleting the import deletes the library.")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "\" class=\"text-accent dark:text-accent-light underline underline-offset-2 hover:text-accent-hover\">read the license</a> — no paid tier, no telemetry. The dependency list is short and auditable — templ and tailwind-merge-go at the core, with integrations like HTMX, Datastar, ECharts, and error pages as separate opt-in modules. Adopt one component or all of them; deleting the import deletes the library.")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
