@@ -52,8 +52,8 @@ var siteDistBase = sync.OnceValue(func() string {
 		clean, _, _ := strings.Cut(r.URL.Path, "?")
 		if !strings.HasSuffix(clean, ".html") && !strings.Contains(clean, ".") {
 			cleanPath := filepath.Join(distRoot, clean+".html")
-			if _, err := os.Stat(cleanPath); err == nil { //nolint:gosec // test-controlled dist root
-				http.ServeFile(w, r, cleanPath) //nolint:gosec // test-controlled dist root
+			if _, err := os.Stat(cleanPath); err == nil {
+				http.ServeFile(w, r, cleanPath)
 
 				return
 			}
@@ -76,7 +76,9 @@ func requireSiteDist(t *testing.T) string {
 
 	base := siteDistBase()
 	if base == "" {
-		t.Fatalf("website dist not built — run `nix develop -c bash website/build.sh` first (the .#visual flake app does this automatically)")
+		t.Fatalf(
+			"website dist not built — run `nix develop -c bash website/build.sh` first (the .#visual flake app does this automatically)",
+		)
 	}
 
 	return base
