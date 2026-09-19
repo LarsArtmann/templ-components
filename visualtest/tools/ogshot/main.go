@@ -72,7 +72,7 @@ func main() {
 }
 
 func run(dist, out string) error {
-	addr, server, cleanup, err := serveDist(dist)
+	addr, cleanup, err := serveDist(dist)
 	if err != nil {
 		return err
 	}
@@ -126,11 +126,11 @@ func run(dist, out string) error {
 
 // serveDist serves the dist directory with the OG card page injected, and
 // returns a cleanup that shuts the server down and removes the injected file.
-func serveDist(dist string) (string, *http.Server, func(), error) {
+func serveDist(dist string) (string, func(), error) {
 	cardPath := filepath.Join(dist, ogPageName)
 
 	if err := os.WriteFile(cardPath, []byte(ogCardHTML), screenshotFmt); err != nil { //nolint:gosec // CLI-controlled dist root
-		return "", nil, nil, fmt.Errorf("write OG card page: %w", err)
+		return "", nil, fmt.Errorf("write OG card page: %w", err)
 	}
 
 	var netListenConfig net.ListenConfig
@@ -139,7 +139,7 @@ func serveDist(dist string) (string, *http.Server, func(), error) {
 	if err != nil {
 		_ = os.Remove(cardPath)
 
-		return "", nil, nil, fmt.Errorf("listen: %w", err)
+		return "", nil, fmt.Errorf("listen: %w", err)
 	}
 
 	mux := http.NewServeMux()
@@ -166,7 +166,7 @@ func serveDist(dist string) (string, *http.Server, func(), error) {
 		_ = os.Remove(cardPath)
 	}
 
-	return listener.Addr().String(), server, cleanup, nil
+	return listener.Addr().String(), cleanup, nil
 }
 
 // chromePath resolves the browser binary: CHROMEDP_CHROME_PATH (set by

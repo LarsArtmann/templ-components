@@ -349,6 +349,29 @@
                 }
               );
             };
+
+            ogshot = {
+              type = "app";
+              meta.description = "Render the /sales social-preview OG card (1200x630 PNG) into website/public/og/";
+              program = pkgs.lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "run-ogshot";
+                  runtimeInputs = [
+                    goToolchain
+                    inputs'.nixpkgs-chromium.legacyPackages.chromium
+                  ];
+                  text = ''
+                    export GOEXPERIMENT=jsonv2
+                    export GOWORK=off
+                    export CHROMEDP_CHROME_PATH="${inputs'.nixpkgs-chromium.legacyPackages.chromium}/bin/chromium"
+                    # Requires a built website dist (nix develop -c bash website/build.sh).
+                    # All args are forwarded to the ogshot tool (-dist/-out).
+                    cd visualtest
+                    exec go run ./tools/ogshot "$@"
+                  '';
+                }
+              );
+            };
           };
 
           # treefmt: format .nix (nixfmt) and .go (gofumpt + goimports).
