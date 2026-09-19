@@ -83,9 +83,10 @@ func run(cfg config) error {
 
 	ctx := context.Background()
 
-	sitePages := make([]build.Page, 0, 2+len(docsPages))
+	sitePages := make([]build.Page, 0, 3+len(docsPages))
 	sitePages = append(sitePages,
 		build.Page{Path: "index.html", Component: pages.Landing(stats, pages.StarsLabel(stars), nonce)},
+		build.Page{Path: "sales.html", Component: pages.Sales(stats, nonce)},
 		build.Page{Path: "404.html", Component: pages.NotFound(nonce)},
 	)
 	sitePages = append(sitePages, docsPages...)
@@ -313,10 +314,11 @@ type sitemapEntry struct {
 // writeSitemaps emits sitemap.xml (all pages, git lastmod where known) and
 // sitemap-index.xml (the URL robots.txt already references).
 func writeSitemaps(outDir, repoRoot string) error {
-	entries := make([]sitemapEntry, 0, 1+len(pages.AllDocs()))
+	entries := make([]sitemapEntry, 0, 2+len(pages.AllDocs()))
 	entries = append(
 		entries,
 		sitemapEntry{loc: pages.SiteURL + "/", lastmod: ""},
+		sitemapEntry{loc: pages.SiteURL + "/sales", lastmod: ""},
 	)
 
 	for _, doc := range pages.AllDocs() {

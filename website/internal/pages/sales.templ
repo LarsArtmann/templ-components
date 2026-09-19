@@ -1,0 +1,314 @@
+package pages
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+
+	"github.com/larsartmann/templ-components/website/internal/build"
+)
+
+// SalesMeta describes the sales page for the shell. Single message, single
+// primary CTA, complete argument on one page — the long-form counterpart to
+// the overview landing.
+func SalesMeta() PageMeta {
+	return PageMeta{
+		Path: "sales",
+		Title: "Why templ-components — The Case for Server-Rendered UI in Go",
+		Description: "Every argument for templ-components on one page: type-safe, server-rendered Go components for templ, HTMX, and Tailwind v4. CSP-ready, dark-mode tested, zero Node.js. MIT licensed.",
+		OGImage: SiteURL + "/og/home.png",
+		Scripts: siteScripts,
+	}
+}
+
+// Sales composes the full sales page: hero with the install path, the
+// frontend-tax problem, the benefits, dogfood proof, objection handling, and
+// the risk-reversing final CTA. Every interactive element renders from the
+// library's own components — the page is its own demo.
+templ Sales(stats build.Stats, nonce string) {
+	@Page(SalesMeta(), nonce) {
+		@salesHero(stats)
+		@section("max-w-7xl", salesProblem())
+		@section("max-w-7xl", salesBenefits())
+		@section("max-w-5xl", salesProof(stats, nonce))
+		@section("max-w-3xl", salesFAQ())
+		@section("max-w-4xl", salesFinalCTA())
+	}
+}
+
+// salesHero is the sales-page hero: positioning badge, transformation
+// headline, one primary CTA, risk-reversal badges, and the install path as a
+// library-rendered terminal block (the Scrollback component).
+templ salesHero(stats build.Stats) {
+	<section class="relative flex items-center justify-center overflow-hidden pt-36 pb-20">
+		<div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-accent/5 blur-[140px] rounded-full pointer-events-none"></div>
+		<div class="relative max-w-3xl mx-auto px-6 text-center">
+			<div class="mb-8 flex justify-center">
+				@display.Badge(display.BadgeProps{
+					Text: "For Go teams shipping web apps",
+					Type: display.BadgeInfo,
+					Pill: true,
+					Dot:  true,
+				})
+			</div>
+
+			<h1 class="text-[clamp(2.5rem,7vw,4rem)] font-bold tracking-tighter leading-[1.05] mb-6 text-text-primary">
+				Build complete UIs from Go —<br/> without <span class="text-accent">the frontend stack</span>.
+			</h1>
+
+			<p class="text-[clamp(1.0625rem,2.5vw,1.25rem)] text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
+				{ fmt.Sprintf("%d server-rendered components for templ, HTMX, and Tailwind v4. Every button, card, and accordion on this page is rendered by the library it sells — view source and look for the framework.", stats.Components) }
+			</p>
+
+			<div class="flex items-center justify-center mb-6">
+				@salesInstallButton()
+			</div>
+
+			<div class="flex items-center justify-center gap-2 flex-wrap mb-14">
+				@display.Badge(display.BadgeProps{Text: "MIT licensed", Type: display.BadgeNeutral, Size: display.BadgeSizeSM})
+				@display.Badge(display.BadgeProps{Text: "No Node.js in your deploy", Type: display.BadgeNeutral, Size: display.BadgeSizeSM})
+				@display.Badge(display.BadgeProps{Text: "Go 1.26+", Type: display.BadgeNeutral, Size: display.BadgeSizeSM})
+			</div>
+
+			<div class="text-left">
+				@display.Scrollback(display.ScrollbackProps{
+					Lines: []display.ScrollbackLine{
+						{Timestamp: "$", Tag: "shell", Text: "go get github.com/larsartmann/templ-components@latest", Tone: display.ScrollbackToneInfo},
+						{Timestamp: "$", Tag: "shell", Text: "templ generate ./... && go build ./...", Tone: display.ScrollbackToneNeutral},
+						{Timestamp: "→", Tag: "done", Text: fmt.Sprintf("%d components · %d icons · zero Node packages installed", stats.Components, stats.Icons), Tone: display.ScrollbackToneSuccess},
+						{Timestamp: "→", Tag: "done", Text: "HTML served from net/http — there is no hydration step", Tone: display.ScrollbackToneSuccess},
+					},
+					Stagger:   true,
+					AriaLabel: "Install workflow: go get the library, run templ generate and go build, then serve HTML from net/http with no Node packages installed",
+				})
+			</div>
+		</div>
+	</section>
+}
+
+// salesInstallButton is the primary CTA, shared by hero and final section.
+templ salesInstallButton() {
+	@display.Button(display.ButtonProps{
+		Text:    "Install templ-components",
+		Href:    "/getting-started/installation",
+		Variant: display.ButtonPrimary,
+		Size:    display.ButtonSizeLG,
+		Icon:    icons.Icon(icons.ArrowRight, "h-4 w-4"),
+		BaseProps: utils.BaseProps{
+			Class: "px-6 py-3 text-sm shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5",
+		},
+	})
+}
+
+// SalesPain is one recurring cost of the conventional frontend stack.
+type SalesPain struct {
+	Title string
+	Desc  string
+}
+
+// SalesPains powers the problem section.
+//
+//nolint:gochecknoglobals // site content table (matches data.go pattern)
+var SalesPains = []SalesPain{
+	{
+		Title: "Two toolchains for one product",
+		Desc:  "Node modules, a bundler, framework upgrades, and a lockfile that drifts — maintained next to the Go service that actually holds your business logic.",
+	},
+	{
+		Title: "Two languages for one feature",
+		Desc:  "A form becomes an API handler, a client store, a schema, and a fetch layer. Every field exists four times, and each copy can rot independently.",
+	},
+	{
+		Title: "UI debt you inherit by default",
+		Desc:  "Focus traps, aria wiring, dark mode, CSP nonces: the details that make UI feel finished are exactly the ones unassisted SPA boilerplate leaves out.",
+	},
+}
+
+// salesProblem names the pain: the frontend tax on Go teams.
+templ salesProblem() {
+	<div>
+		@sectionHeader("The problem", "Every Go web app pays a frontend tax.", "The moment a Go service needs a real UI, someone hands you a second stack. Recurring costs — recognize them?")
+		<div class="grid gap-3 md:grid-cols-3">
+			for _, pain := range SalesPains {
+				@display.Card(display.CardProps{
+					Title:   pain.Title,
+					Padding: display.CardPaddingLG,
+					BaseProps: utils.BaseProps{
+						Class: "bg-bg-card border-border rounded-xl backdrop-blur-sm",
+					},
+				}) {
+					<p class="text-sm text-text-muted leading-relaxed m-0">{ pain.Desc }</p>
+				}
+			}
+		</div>
+	</div>
+}
+
+// SalesBenefit is one outcome the library delivers.
+type SalesBenefit struct {
+	Icon  icons.Name
+	Title string
+	Desc  string
+}
+
+// SalesBenefits powers the benefits section.
+//
+//nolint:gochecknoglobals // site content table (matches data.go pattern)
+var SalesBenefits = []SalesBenefit{
+	{
+		Icon:  icons.ShieldCheck,
+		Title: "Invalid states are compile errors",
+		Desc:  "Typed string enums on every closed set — variant, size, tone, method. Pass an unknown value and the build fails before a browser ever opens.",
+	},
+	{
+		Icon:  icons.Bolt,
+		Title: "Go is the whole pipeline",
+		Desc:  "templ generate and go build. CSS comes from one Tailwind v4 entry file. No pnpm, no bundler config, no node_modules directory in your deploy artifact.",
+	},
+	{
+		Icon:  icons.CheckCircle,
+		Title: "CSP-safe without ceremony",
+		Desc:  "Inline scripts ship with nonces, no eval, no inline handlers. An integration suite renders every component and fails if a single script tag goes out naked.",
+	},
+	{
+		Icon:  icons.Moon,
+		Title: "Accessible and dark by default",
+		Desc:  "Every component carries dark-mode variants and reduced-motion fallbacks — enforced by regression tests, not style-guide memos. Accessibility findings gate the build.",
+	},
+}
+
+// salesBenefits renders the outcomes as library SimpleCards with icon tiles.
+templ salesBenefits() {
+	<div>
+		@sectionHeader("The alternative", "Render the UI where the data already lives.", "The library takes the unfinished details off your plate — typed, tested, and documented once, for every component.")
+		<div class="grid gap-3 sm:grid-cols-2">
+			for _, benefit := range SalesBenefits {
+				@display.SimpleCard(display.SimpleCardProps{
+					Padding: display.CardPaddingNone,
+					BaseProps: utils.BaseProps{
+						Class: "bg-bg-card border-border rounded-xl backdrop-blur-sm p-8",
+					},
+				}) {
+					<div class="w-11 h-11 rounded-lg bg-accent-dim border border-border-accent flex items-center justify-center text-accent mb-4">
+						@icons.Icon(benefit.Icon, "h-5 w-5")
+					</div>
+					<h3 class="font-semibold text-text-primary mb-2 text-base">{ benefit.Title }</h3>
+					<p class="text-sm text-text-muted leading-relaxed m-0">{ benefit.Desc }</p>
+				}
+			}
+		</div>
+	</div>
+}
+
+// salesProof is the dogfood section: derived StatCards plus the install
+// command with the library's CopyButton (the page's one inline-script
+// component, nonce'd like every library script).
+templ salesProof(stats build.Stats, nonce string) {
+	<div>
+		@sectionHeader("Proof", "This page is the demo.", "The stat cards below, the copy button, the FAQ accordion — all rendered by library components. No client framework loads anywhere on this page.")
+		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+			@display.StatCard(display.StatCardProps{
+				Value: fmt.Sprintf("%d", stats.Components),
+				Label: "Components",
+				Icon:  icons.Squares2x2,
+				Tone:  display.StatToneBlue,
+			})
+			@display.StatCard(display.StatCardProps{
+				Value: fmt.Sprintf("%d", stats.Icons),
+				Label: "SVG icons",
+				Icon:  icons.Photo,
+				Tone:  display.StatTonePurple,
+			})
+			@display.StatCard(display.StatCardProps{
+				Value: fmt.Sprintf("%d", stats.Enums),
+				Label: "Typed enums",
+				Icon:  icons.ShieldCheck,
+				Tone:  display.StatToneGreen,
+			})
+			@display.StatCard(display.StatCardProps{
+				Value: fmt.Sprintf("%d", stats.Modules),
+				Label: "Go modules",
+				Icon:  icons.Cube,
+				Tone:  display.StatToneYellow,
+			})
+		</div>
+		<div class="rounded-xl border border-border bg-bg-card p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+			<code class="text-sm font-mono text-accent bg-code-inline-bg/60 px-3 py-2 rounded flex-1 min-w-0 overflow-x-auto">go get github.com/larsartmann/templ-components@latest</code>
+			@display.CopyButton(display.CopyButtonProps{
+				Text: "go get github.com/larsartmann/templ-components@latest",
+				BaseProps: utils.BaseProps{
+					Nonce: nonce,
+				},
+			})
+		</div>
+	</div>
+}
+
+// salesFAQ handles the objections with the library's native-<details>
+// Accordion — zero JavaScript.
+templ salesFAQ() {
+	<div>
+		@sectionHeader("Objections, handled", "The questions you would ask in review.", "")
+		@display.Accordion(display.AccordionProps{
+			Items: []display.AccordionItem{
+				{
+					ID:    "sales-faq-ready",
+					Title: "Is it production-ready?",
+					Content: faqAnswer("It is. The library is at v1 under semantic versioning, and every component ships behind three regression layers: HTML golden tests, pixel-level visual tests in headless Chromium, and an axe-core accessibility gate that fails the build on serious violations. This website — docs included — is rendered through the library itself."),
+				},
+				{
+					ID:    "sales-faq-raw-html",
+					Title: "Why not just write raw HTML in Go?",
+					Content: faqAnswer("You can — templ already makes that pleasant. What the library adds is the long tail every team re-invents, badly and repeatedly: focus traps, aria wiring, dark-mode variants, CSP nonces, RTL-safe layout classes. Here they are typed, tested, and documented once."),
+				},
+				{
+					ID:    "sales-faq-htmx",
+					Title: "Am I locked into HTMX?",
+					Content: faqAnswer("No. Components render plain, semantic HTML first; HTMX attributes are opt-in wiring, self-hosted by default so no CDN request leaves your app. If you prefer Datastar, the wire package renders one action spec into either dialect, and swapping transports is a one-line change."),
+				},
+				{
+					ID:    "sales-faq-styling",
+					Title: "How much styling control do I have?",
+					Content: faqAnswer("All of it. Components emit standard Tailwind utility classes — no DaisyUI, no CSS-in-JS, no shadow DOM. Redefine a Tailwind theme token to recolor every component at once, merge your own classes into any component through BaseProps, and conflicts resolve through tailwind-merge."),
+				},
+				{
+					ID:    "sales-faq-cost",
+					Title: "What does it cost?",
+					Content: faqAnswer("Nothing. MIT licensed, no paid tier, no telemetry. The dependency list is short and auditable — templ and tailwind-merge-go at the core, with integrations like HTMX, Datastar, ECharts, and error pages as separate opt-in modules. Adopt one component or all of them; deleting the import deletes the library."),
+				},
+			},
+		})
+	</div>
+}
+
+// faqAnswer renders one accordion answer paragraph.
+templ faqAnswer(text string) {
+	<p class="text-sm leading-relaxed text-text-secondary m-0">{ text }</p>
+}
+
+// salesFinalCTA is the closing ask with risk reversal: try one component,
+// deleting it costs nothing.
+templ salesFinalCTA() {
+	<div class="text-center">
+		<h2 class="text-[clamp(1.625rem,4vw,2.25rem)] font-bold text-text-primary tracking-tight mb-4">Try it on one screen.</h2>
+		<p class="text-base text-text-secondary max-w-2xl mx-auto mb-8">
+			Pick one component — a Table, a Toast, a StatCard — and drop it into an existing templ page. If it does not fit, delete the import. There is nothing to uninstall.
+		</p>
+		<div class="flex items-center justify-center gap-3 flex-wrap">
+			@salesInstallButton()
+			@display.Button(display.ButtonProps{
+				Text:     "See it live",
+				Href:     DemoURL,
+				External: true,
+				Variant:  display.ButtonGhost,
+				Size:     display.ButtonSizeLG,
+				Icon:     icons.Icon(icons.Eye, "h-4 w-4"),
+				BaseProps: utils.BaseProps{
+					Class: "border border-border text-text-secondary hover:border-border-hover hover:text-text-primary hover:bg-transparent px-6 py-3.5 text-sm hover:-translate-y-0.5",
+				},
+			})
+		</div>
+	</div>
+}
