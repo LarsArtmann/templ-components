@@ -153,7 +153,12 @@ type PageProps struct {
 	SEO                 SEOMeta
 	HeadContent         templ.Component
 	Footer              templ.Component
-	// SecurityHeaders controls whether security meta tags are included
+	// SecurityHeaders is a deprecated no-op: HTTP security headers cannot be
+	// expressed as meta tags (browsers ignore meta http-equiv for
+	// X-Content-Type-Options and Referrer-Policy, and the latter was never a
+	// registered http-equiv, so the emitted tags were invalid HTML that
+	// failed HTML validation). Send real headers at the server instead. The
+	// field remains for API compatibility and emits nothing.
 	SecurityHeaders bool
 	// NoMainWrapper, when true, omits the `<main id="main-content">` wrapper
 	// and renders children directly under <body> — for pages whose content is
@@ -209,10 +214,6 @@ templ Base(props PageProps) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<meta name="color-scheme" content="light dark"/>
-			if props.SecurityHeaders {
-				<meta http-equiv="X-Content-Type-Options" content="nosniff"/>
-				<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin"/>
-			}
 			<title>{ props.Title }</title>
 			if props.Description != "" {
 				<meta name="description" content={ props.Description }/>
