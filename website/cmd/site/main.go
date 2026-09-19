@@ -340,8 +340,8 @@ func writeSitemaps(outDir, repoRoot string) error {
 	}
 
 	var sb strings.Builder
-	sb.WriteString(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
-	sb.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">` + "\n")
+	sb.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+	sb.WriteString("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n")
 
 	for _, entry := range entries {
 		sb.WriteString("\t<url>\n\t\t<loc>" + entry.loc + "</loc>\n")

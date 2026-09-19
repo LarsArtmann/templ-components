@@ -149,6 +149,24 @@ func assertSearchIndex(t *testing.T, outDir string, rendered []build.RenderedPag
 		t.Fatalf("search index has %d docs, want %d", len(docs), len(pages.AllDocs()))
 	}
 
+	// Scope invariant (G1, 2026-09-19): search stays DOCS-ONLY. Marketing
+	// pages (/, /sales) are persuasion surfaces — matching them for
+	// documentation queries would bury the reference content users came
+	// for. renderDocs is the only SearchDoc source; this assertion fails
+	// loudly if a future change starts indexing other pages.
+	docURLs := map[string]bool{}
+	for _, ref := range pages.AllDocs() {
+		if ref.Slug != "" {
+			docURLs["/"+ref.Slug] = true
+		}
+	}
+
+	for _, doc := range docs {
+		if !docURLs[doc.URL] {
+			t.Errorf("search index entry %s is outside the docs scope", doc.URL)
+		}
+	}
+
 	pagePaths := map[string]bool{}
 	for _, page := range rendered {
 		pagePaths[page.Path] = true
