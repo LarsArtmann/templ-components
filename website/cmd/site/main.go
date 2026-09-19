@@ -90,7 +90,7 @@ func run(cfg config) error {
 	sitePages := make([]build.Page, 0, staticPages+len(docsPages))
 	sitePages = append(sitePages,
 		build.Page{Path: "index.html", Component: pages.Landing(stats, pages.StarsLabel(stars), nonce)},
-		build.Page{Path: "sales.html", Component: pages.Sales(stats, nonce)},
+		build.Page{Path: "sales.html", Component: pages.Sales(stats, pages.StarsLabel(stars), nonce)},
 		build.Page{Path: "404.html", Component: pages.NotFound(nonce)},
 	)
 	sitePages = append(sitePages, docsPages...)

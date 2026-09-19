@@ -24,21 +24,23 @@ func libraryMajorLabel(version string) string {
 // the overview landing.
 func SalesMeta() PageMeta {
 	return PageMeta{
-		Path: "sales",
-		Title: "Why templ-components — The Case for Server-Rendered UI in Go",
+		Path:        "sales",
+		Title:       "Why templ-components — The Case for Server-Rendered UI in Go",
 		Description: "Every argument for templ-components on one page: type-safe, server-rendered Go components for templ, HTMX, and Tailwind v4. CSP-ready, dark-mode tested, zero Node.js. MIT licensed.",
-		OGImage: SiteURL + "/og/home.png",
-		Scripts: siteScripts,
+		OGImage:     SiteURL + "/og/home.png",
+		Scripts:     siteScripts,
 	}
 }
 
 // Sales composes the full sales page: hero with the install path, the
 // frontend-tax problem, the benefits, dogfood proof, objection handling, and
 // the risk-reversing final CTA. Every interactive element renders from the
-// library's own components — the page is its own demo.
-templ Sales(stats build.Stats, nonce string) {
+// library's own components — the page is its own demo. starsText comes from
+// StarsLabel so the hero's social proof matches the landing page (or the
+// static fallback when the build-time lookup failed).
+templ Sales(stats build.Stats, starsText string, nonce string) {
 	@Page(SalesMeta(), nonce) {
-		@salesHero(stats)
+		@salesHero(stats, starsText)
 		@section("max-w-7xl", salesProblem())
 		@section("max-w-7xl", salesBenefits())
 		@section("max-w-5xl", salesProof(stats, nonce))
@@ -50,7 +52,7 @@ templ Sales(stats build.Stats, nonce string) {
 // salesHero is the sales-page hero: positioning badge, transformation
 // headline, one primary CTA, risk-reversal badges, and the install path as a
 // library-rendered terminal block (the Scrollback component).
-templ salesHero(stats build.Stats) {
+templ salesHero(stats build.Stats, starsText string) {
 	<section class="relative flex items-center justify-center overflow-hidden pt-36 pb-20">
 		<div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-accent/5 blur-[140px] rounded-full pointer-events-none"></div>
 		<div class="relative max-w-3xl mx-auto px-6 text-center">
@@ -62,27 +64,27 @@ templ salesHero(stats build.Stats) {
 					Dot:  true,
 				})
 			</div>
-
 			<h1 class="text-[clamp(2.5rem,7vw,4rem)] font-bold tracking-tighter leading-[1.05] mb-6 text-text-primary">
-				Build complete UIs from Go —<br/> without <span class="text-accent">the frontend stack</span>.
+				Build complete UIs from Go —
+				<br/>
+				without <span class="text-accent">the frontend stack</span>.
 			</h1>
-
 			<p class="text-[clamp(1.0625rem,2.5vw,1.25rem)] text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
 				{ fmt.Sprintf("%d server-rendered components for templ, HTMX, and Tailwind v4. Every button, card, and accordion on this page is rendered by the library it sells — view source and look for the framework.", stats.Components) }
 			</p>
-
 			<div class="flex items-center justify-center mb-6">
 				@salesInstallButton()
 			</div>
-
 			<div class="flex items-center justify-center gap-2 flex-wrap mb-14">
-				@display.Badge(display.BadgeProps{Text: "MIT licensed", Type: display.BadgeNeutral, Size: display.BadgeSizeSM})
+				@display.Badge(display.BadgeProps{Text: "MIT licensed", Type: display.BadgeNeutral, Size: display.BadgeSizeSM, Href: GitHubURL + "/blob/master/LICENSE"})
 				@display.Badge(display.BadgeProps{Text: "No Node.js in your deploy", Type: display.BadgeNeutral, Size: display.BadgeSizeSM})
 				if stats.GoVersion != "" {
 					@display.Badge(display.BadgeProps{Text: fmt.Sprintf("Go %s+", stats.GoVersion), Type: display.BadgeNeutral, Size: display.BadgeSizeSM})
 				}
+				if starsText != "" {
+					@display.Badge(display.BadgeProps{Text: starsText, Type: display.BadgeNeutral, Size: display.BadgeSizeSM, Href: GitHubURL})
+				}
 			</div>
-
 			<div class="text-left">
 				@display.Scrollback(display.ScrollbackProps{
 					Lines: []display.ScrollbackLine{
@@ -267,29 +269,29 @@ templ salesFAQ(stats build.Stats) {
 		@display.Accordion(display.AccordionProps{
 			Items: []display.AccordionItem{
 				{
-					ID:    "sales-faq-ready",
-					Title: "Is it production-ready?",
-					Content: faqAnswer(fmt.Sprintf("It is. The library is at %s under semantic versioning, and every component ships behind three regression layers: HTML golden tests, pixel-level visual tests in headless Chromium, and an axe-core accessibility gate that fails the build on serious violations. This website — docs included — is rendered through the library itself.", libraryMajorLabel(stats.LibraryVersion))),
+					ID:      "sales-faq-ready",
+					Title:   "Is it production-ready?",
+					Content: faqAnswerRich(faqProductionReady(stats)),
 				},
 				{
-					ID:    "sales-faq-raw-html",
-					Title: "Why not just write raw HTML in Go?",
+					ID:      "sales-faq-raw-html",
+					Title:   "Why not just write raw HTML in Go?",
 					Content: faqAnswer("You can — templ already makes that pleasant. What the library adds is the long tail every team re-invents, badly and repeatedly: focus traps, aria wiring, dark-mode variants, CSP nonces, RTL-safe layout classes. Here they are typed, tested, and documented once."),
 				},
 				{
-					ID:    "sales-faq-htmx",
-					Title: "Am I locked into HTMX?",
+					ID:      "sales-faq-htmx",
+					Title:   "Am I locked into HTMX?",
 					Content: faqAnswer("No. Components render plain, semantic HTML first; HTMX attributes are opt-in wiring, self-hosted by default so no CDN request leaves your app. If you prefer Datastar, the wire package renders one action spec into either dialect, and swapping transports is a one-line change."),
 				},
 				{
-					ID:    "sales-faq-styling",
-					Title: "How much styling control do I have?",
+					ID:      "sales-faq-styling",
+					Title:   "How much styling control do I have?",
 					Content: faqAnswer("All of it. Components emit standard Tailwind utility classes — no DaisyUI, no CSS-in-JS, no shadow DOM. Redefine a Tailwind theme token to recolor every component at once, merge your own classes into any component through BaseProps, and conflicts resolve through tailwind-merge."),
 				},
 				{
-					ID:    "sales-faq-cost",
-					Title: "What does it cost?",
-					Content: faqAnswer("Nothing. MIT licensed, no paid tier, no telemetry. The dependency list is short and auditable — templ and tailwind-merge-go at the core, with integrations like HTMX, Datastar, ECharts, and error pages as separate opt-in modules. Adopt one component or all of them; deleting the import deletes the library."),
+					ID:      "sales-faq-cost",
+					Title:   "What does it cost?",
+					Content: faqAnswerRich(faqCost()),
 				},
 			},
 		})
@@ -299,6 +301,36 @@ templ salesFAQ(stats build.Stats) {
 // faqAnswer renders one accordion answer paragraph.
 templ faqAnswer(text string) {
 	<p class="text-sm leading-relaxed text-text-secondary m-0">{ text }</p>
+}
+
+// faqAnswerRich wraps a composed templ body (text + inline links) in the same
+// paragraph styling as faqAnswer — for answers whose claims point at real
+// evidence instead of bare assertions.
+templ faqAnswerRich(content templ.Component) {
+	<p class="text-sm leading-relaxed text-text-secondary m-0">@content
+</p>
+}
+
+// faqLink styles an inline evidence link inside a FAQ answer.
+templ faqLink(href, text string) {
+	<a href={ templ.SafeURL(href) } class="text-accent hover:underline underline-offset-2">{ text }</a>
+}
+
+// faqProductionReady states the version claim (derived from utils.Version)
+// and links the three-regression-layers claim at the invariants guide that
+// documents the guards.
+templ faqProductionReady(stats build.Stats) {
+	It is. The library is at { libraryMajorLabel(stats.LibraryVersion) } under semantic versioning, and every component ships behind
+	<a href="/guides/invariants" class="text-accent hover:underline underline-offset-2">three regression layers</a>:
+	HTML golden tests, pixel-level visual tests in headless Chromium, and an axe-core accessibility gate that fails the build on serious violations. This website — docs included — is rendered through the library itself.
+}
+
+// faqCost answers the pricing objection and links the license so the claim
+// is verifiable in one click.
+templ faqCost() {
+	Nothing. MIT licensed —
+	<a href={ templ.SafeURL(GitHubURL + "/blob/master/LICENSE") } class="text-accent hover:underline underline-offset-2">read the license</a> —
+	no paid tier, no telemetry. The dependency list is short and auditable — templ and tailwind-merge-go at the core, with integrations like HTMX, Datastar, ECharts, and error pages as separate opt-in modules. Adopt one component or all of them; deleting the import deletes the library.
 }
 
 // salesFinalCTA is the closing ask with risk reversal: try one component,

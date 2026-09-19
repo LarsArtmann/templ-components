@@ -58,7 +58,7 @@ func TestGoldenSweepPages(t *testing.T) {
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "landing", HTML: render(t, Landing(goldenStats(), StarsLabel(1024), goldenNonce))},
 		{Name: "landing-no-stars", HTML: render(t, Landing(goldenStats(), StarsLabel(0), goldenNonce))},
-		{Name: "sales", HTML: render(t, Sales(goldenStats(), goldenNonce))},
+		{Name: "sales", HTML: render(t, Sales(goldenStats(), StarsLabel(1024), goldenNonce))},
 		{Name: "notfound", HTML: render(t, NotFound(goldenNonce))},
 		{
 			Name: "docs-layout",

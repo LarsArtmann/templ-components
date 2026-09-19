@@ -187,6 +187,12 @@ func assertSitemap(t *testing.T, outDir string, rendered []build.RenderedPage) {
 // (nonce-hashed) or root-relative (self-hosted).
 var externalScriptSrcRe = regexp.MustCompile(`(?i)<script[^>]+src=["'](?:https?:)?//`)
 
+// scriptBodyRe extracts inline script bodies so framework identifiers are
+// only banned in CODE. Prose mentions are legitimate: the landing comparison
+// matrix and related-projects page name Alpine.js, React, and Vue as the
+// alternatives the library replaces.
+var scriptBodyRe = regexp.MustCompile(`(?is)<script\b[^>]*>(.*?)</script>`)
+
 // frameworkMentionRe matches client-framework identifiers as whole words.
 // Word boundaries keep prose safe ("revenue" must not trip "vue"); "next"
 // and "nuxt" are deliberately absent because docs prose says "next page" —
@@ -194,7 +200,8 @@ var externalScriptSrcRe = regexp.MustCompile(`(?i)<script[^>]+src=["'](?:https?:
 var frameworkMentionRe = regexp.MustCompile(`(?i)\b(react|vue|alpine|preact|svelte|angular|jquery)\b`)
 
 // findFrameworkViolations returns every framework/CDN violation in an HTML
-// document, with the matched text for failure messages. Empty slice = clean.
+// document: an absolute-URL script source, or a framework identifier inside
+// an inline script body. Empty slice = clean.
 func findFrameworkViolations(html string) []string {
 	var violations []string
 
@@ -202,8 +209,10 @@ func findFrameworkViolations(html string) []string {
 		violations = append(violations, "external script src: "+match)
 	}
 
-	for _, match := range frameworkMentionRe.FindAllString(html, -1) {
-		violations = append(violations, "framework identifier: "+match)
+	for _, body := range scriptBodyRe.FindAllStringSubmatch(html, -1) {
+		for _, hit := range frameworkMentionRe.FindAllString(body[1], -1) {
+			violations = append(violations, "framework identifier in inline script: "+hit)
+		}
 	}
 
 	return violations
@@ -232,8 +241,8 @@ func TestFindFrameworkViolations(t *testing.T) {
 	frames := map[string]string{
 		"cdn script":        `<script src="https://cdn.example.com/react.js"></script>`,
 		"scheme-relative":   `<script src="//unpkg.com/vue@3"></script>`,
-		"inline identifier": `<script>ReactDOM.render()</script>`,
-		"word-boundary hit": `<p>We ship no Alpine either.</p>`,
+		"inline identifier": `<script>React.createElement("div")</script>`,
+		"script-body hit":   `<script>Alpine.start()</script>`,
 	}
 
 	for name, html := range frames {
@@ -243,10 +252,12 @@ func TestFindFrameworkViolations(t *testing.T) {
 	}
 
 	clean := map[string]string{
-		"prose substring": `<p>Revenue grew and the value persisted.</p>`,
-		"next-page link":  `<a href="/guides">Next page</a>`,
-		"root-relative":   `<script src="/assets/js/theme-sync.js" defer></script>`,
-		"inline nonce":    `<script nonce="abc">var x = 1;</script>`,
+		"prose substring":   `<p>Revenue grew and the value persisted.</p>`,
+		"next-page link":    `<a href="/guides">Next page</a>`,
+		"root-relative":     `<script src="/assets/js/theme-sync.js" defer></script>`,
+		"inline nonce":      `<script nonce="abc">var x = 1;</script>`,
+		"prose competitor":  `<span class="font-mono">Alpine.js</span>`,
+		"jsonld data block": `<script type="application/ld+json">{"name":"templ-components"}</script>`,
 	}
 
 	for name, html := range clean {
