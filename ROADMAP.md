@@ -169,16 +169,6 @@ Pending register shipped (TODO #247-249 cover the test debt); the ideas below ar
 
 ### Website & docs ideas (harvested 2026-09-17 from docs/status/2026-09-17_{18-09, 15-27} + the Astro-conversion P3 tail)
 
-### Errorpage plan remainder (harvested 2026-09-18 from the M18/M19 execution record)
-
-- Failure-screenshot naming convention for `visualtest/testdata/.fail/` (timestamped, component-prefixed) + a CI cleanup step, so failure evidence never rots.
-- Fresh-clone hook check: CI/doctor assertion that `git config core.hooksPath .githooks` is set (`scripts/setup-hooks.sh` was silently skipped on at least one clone).
-- MaxMismatch/viewport audit for the errorpage captures (per-capture MaxMismatch tuning instead of the shared 0.1% default).
-- Upstream: BuildFlow go-structure-linter rule-level config (skip is a band-aid; TODO #231/#93 family).
-
-
-### Website & docs ideas (harvested 2026-09-17 from docs/status/2026-09-17_{18-09, 15-27} + the Astro-conversion P3 tail)
-
 | Direction                      | Description                                                                                                                                              |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Go OG-image generator          | Per-page OG images from the SSG; retire the static `public/og/*` frozen artifacts of the old design.                                                     |
@@ -220,6 +210,9 @@ _(moved below the Website & docs table 2026-09-19 — the 09-18 harvest had spli
 | Container-aware expansion      | Fluid typography via container query units (`cqi`) shipped (`.tc-fluid-*` classes + recipe). Candidates for `.ContainerAware` (`Container`, `Breadcrumbs`, `EmptyState`, `NotFound404`, `Footer`) **evaluated and rejected** — none meet all three ADR-0018 criteria. `containerAwareWrapper` consolidation **declined** (minimal boilerplate, ADR-0009). Strategy doc: `docs/container-query-strategy.md`. Container **style queries** (`@container style()`) deferred until Baseline. |
 | Chart ecosystem                | Additional SVG chart types (scatter plot, treemap, funnel), animation support (stroke-dashoffset draw-in with `motion-reduce` guard), data labels, tooltip support, `Href` on PieChart slices, `DownloadAsSVG` helper, `PrintFriendly` option.                                                                                                                                                                                                                                          |
 | Kanban sorted-views API        | A `KanbanBoardProps`-level story for server-sorted views (a `Reorderable`-style flag) — rejected on godoc-first grounds; build ONLY when a real consumer asks. Until then the contract is documentation-only: the index is advisory, and sorted views reject same-column moves (see `ParseKanbanMove` godoc + `docs/recipes/kanban-card-anatomy.md`). Source: docs/status/2026-09-16_19-12 §f32.                                                                                        |
+| Dark CTA contrast decision (v2-scale) | Library-wide dark semantic shade: white on `blue-500` CTAs is 3.76:1 (passes large-text only). Either re-shade dark semantic surfaces to `-400` (4.5:1+) or formally accept 3.76:1-for-large-text in the a11y policy; every per-site axe ledger entry (site_sales_dark + the demo's) references this one decision. (docs/status/2026-09-19_22-45 g3/f19) |
+| gopls analyzer lint gates | `writestring`/prealloc-class findings currently surface only via LSP (stale-prone, see AGENTS); golangci-lint does not run those analyzers. Evaluate enabling gopls-analyzer-backed checks in `.golangci.yml` so they gate in CI. (docs/status/2026-09-19_22-45 f27) |
+| Counts truth table | `build.CountStats` (site dist log: components/icons/enums/modules) and `TestDocsCountDrift`'s sources derive counts independently - one shared counter/truth table would prevent the class of drift the hand-typed "58 enums" matrix cell shipped. Also make the docs' visual-goldens count structural ("site routes + library") instead of hand-typed. (docs/status/2026-09-19_22-45 f24/f29) |
 
 ---
 
