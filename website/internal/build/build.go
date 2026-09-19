@@ -178,12 +178,12 @@ func CountStats(repoRoot string) (Stats, error) {
 // trims the patch segment for display ("1.26"). Empty string on any read or
 // parse failure — fail-soft per metric, like every other stat.
 func goDisplayVersion(goModPath string) string {
-	data, err := os.ReadFile(goModPath) //nolint:gosec // trusted local repository scan
+	data, err := os.ReadFile(goModPath)
 	if err != nil {
 		return ""
 	}
 
-	for _, line := range strings.Split(string(data), "\n") {
+	for line := range strings.SplitSeq(string(data), "\n") {
 		directive, found := strings.CutPrefix(strings.TrimSpace(line), "go ")
 		if !found {
 			continue
