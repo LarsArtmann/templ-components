@@ -269,10 +269,11 @@ func chartAxes(d ChartRenderData) templ.Component {
 					// overflows the right edge.
 					anchor := "middle"
 					x := d.Padding.Left + int(lineChartTickLabelX(d.PlotW, d.LabelCount, i))
-					if i == 0 {
+					switch i {
+					case 0:
 						anchor = "start"
 						x = d.Padding.Left
-					} else if i == d.LabelCount-1 {
+					case d.LabelCount - 1:
 						anchor = "end"
 						x = d.Padding.Left + d.PlotW
 					}
@@ -283,7 +284,7 @@ func chartAxes(d ChartRenderData) templ.Component {
 					var templ_7745c5c3_Var18 string
 					templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(x)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 68, Col: 10}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 69, Col: 10}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 					if templ_7745c5c3_Err != nil {
@@ -296,7 +297,7 @@ func chartAxes(d ChartRenderData) templ.Component {
 					var templ_7745c5c3_Var19 string
 					templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.ResolveAttributeValue(d.Padding.Top + d.PlotH + lineChartXLabelOffset)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 69, Col: 56}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 70, Col: 56}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
 					if templ_7745c5c3_Err != nil {
@@ -309,7 +310,7 @@ func chartAxes(d ChartRenderData) templ.Component {
 					var templ_7745c5c3_Var20 string
 					templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.ResolveAttributeValue(anchor)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 70, Col: 25}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 71, Col: 25}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var20)
 					if templ_7745c5c3_Err != nil {
@@ -322,7 +323,7 @@ func chartAxes(d ChartRenderData) templ.Component {
 					var templ_7745c5c3_Var21 string
 					templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.ResolveAttributeValue(lineChartFontSize)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 72, Col: 34}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 73, Col: 34}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var21)
 					if templ_7745c5c3_Err != nil {
@@ -335,7 +336,7 @@ func chartAxes(d ChartRenderData) templ.Component {
 					var templ_7745c5c3_Var22 string
 					templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(d.XAxisLabels[i])
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 73, Col: 23}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 74, Col: 23}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 					if templ_7745c5c3_Err != nil {
@@ -384,7 +385,7 @@ func chartLegend(d ChartRenderData) templ.Component {
 				var templ_7745c5c3_Var24 string
 				templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("translate(%d,%d)", li.X, lineChartLegendY))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 84, Col: 73}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 85, Col: 73}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var24)
 				if templ_7745c5c3_Err != nil {
@@ -419,7 +420,7 @@ func chartLegend(d ChartRenderData) templ.Component {
 				var templ_7745c5c3_Var27 string
 				templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.ResolveAttributeValue(lineChartFontSize)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 97, Col: 34}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 98, Col: 34}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var27)
 				if templ_7745c5c3_Err != nil {
@@ -432,7 +433,7 @@ func chartLegend(d ChartRenderData) templ.Component {
 				var templ_7745c5c3_Var28 string
 				templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(li.Name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 98, Col: 14}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 99, Col: 14}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 				if templ_7745c5c3_Err != nil {
@@ -478,7 +479,7 @@ func chartEmptyStateMsg(d ChartRenderData) templ.Component {
 		var templ_7745c5c3_Var30 string
 		templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.ResolveAttributeValue(d.Width / 2)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 108, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 109, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var30)
 		if templ_7745c5c3_Err != nil {
@@ -491,7 +492,7 @@ func chartEmptyStateMsg(d ChartRenderData) templ.Component {
 		var templ_7745c5c3_Var31 string
 		templ_7745c5c3_Var31, templ_7745c5c3_Err = templ.ResolveAttributeValue(d.Height / 2)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 109, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 110, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var31)
 		if templ_7745c5c3_Err != nil {
@@ -504,7 +505,7 @@ func chartEmptyStateMsg(d ChartRenderData) templ.Component {
 		var templ_7745c5c3_Var32 string
 		templ_7745c5c3_Var32, templ_7745c5c3_Err = templ.ResolveAttributeValue(lineChartEmptyFontSize)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 113, Col: 36}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 114, Col: 36}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var32)
 		if templ_7745c5c3_Err != nil {
@@ -517,7 +518,7 @@ func chartEmptyStateMsg(d ChartRenderData) templ.Component {
 		var templ_7745c5c3_Var33 string
 		templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(d.EmptyMsg)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 114, Col: 14}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/chart_shared.templ`, Line: 115, Col: 14}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 		if templ_7745c5c3_Err != nil {

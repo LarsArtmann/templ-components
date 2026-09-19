@@ -197,8 +197,8 @@ func docsSidebar(current string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for _, doc := range group.Docs {
-				switch {
-				case doc.Slug == "":
+				switch doc.Slug {
+				case "":
 					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<li><a href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -233,7 +233,7 @@ func docsSidebar(current string) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				case doc.Slug == current:
+				case current:
 					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<li><a href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err

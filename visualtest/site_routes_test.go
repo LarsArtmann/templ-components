@@ -62,7 +62,7 @@ var siteDistBase = sync.OnceValue(func() string {
 		http.FileServer(http.Dir(distRoot)).ServeHTTP(w, r)
 	})
 
-	server := &http.Server{Handler: mux} //nolint:gosec,exhaustruct_v5 // loopback-only test server
+	server := &http.Server{Handler: mux}
 
 	go func() { _ = server.Serve(listener) }()
 

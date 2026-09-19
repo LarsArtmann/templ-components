@@ -50,7 +50,7 @@ import (
 //	site_sales_dark color-contrast — the WEBSITE'S dark render of the
 //	library install CTA: white on dark:bg-blue-500 is 3.76:1. This is the
 //	library-wide -600(light)/-500(dark) shade convention itself, not a site
-//	bug — the same debt class as the demo entries above (budget 1 node,
+//	defect — the same debt class as the demo entries above (budget 1 node,
 //	accepted 2026-09-19 by the first site sweep read; fixing it means
 //	re-shading the library palette). The FAQ evidence links were FIXED, not
 //	ledgered: they now switch to --color-accent-light in dark mode.

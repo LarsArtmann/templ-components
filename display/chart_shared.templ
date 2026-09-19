@@ -56,10 +56,11 @@ templ chartAxes(d ChartRenderData) {
 					// overflows the right edge.
 					anchor := "middle"
 					x := d.Padding.Left + int(lineChartTickLabelX(d.PlotW, d.LabelCount, i))
-					if i == 0 {
+					switch i {
+					case 0:
 						anchor = "start"
 						x = d.Padding.Left
-					} else if i == d.LabelCount-1 {
+					case d.LabelCount - 1:
 						anchor = "end"
 						x = d.Padding.Left + d.PlotW
 					}
