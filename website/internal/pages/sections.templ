@@ -8,10 +8,28 @@ import (
 	"github.com/larsartmann/templ-components/website/internal/build"
 )
 
+// sectionOpts optionally customizes a section: an anchor id for deep links
+// (#problem, #proof, #faq) and a denser vertical rhythm for campaign-style
+// flows. Zero value keeps the landing rendering byte-identical.
+type sectionOpts struct {
+	id    string
+	dense bool
+}
+
 // section wraps a landing section: vertical rhythm, scroll-reveal hook, and
 // optional width constraint (ported from Section.astro).
-templ section(width string, comp templ.Component) {
-	<section class="relative py-24" data-animate>
+templ section(width string, comp templ.Component, opts ...sectionOpts) {
+	var class = "relative py-24"
+	var attrs templ.Attributes
+	if len(opts) > 0 {
+		if opts[0].dense {
+			class = "relative py-12"
+		}
+		if opts[0].id != "" {
+			attrs = templ.Attributes{"id": opts[0].id}
+		}
+	}
+	<section class={ class } data-animate { attrs }>
 		if width != "" {
 			<div class={ width + " mx-auto px-6" }>
 				@comp

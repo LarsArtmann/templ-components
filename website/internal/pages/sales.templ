@@ -41,10 +41,10 @@ func SalesMeta() PageMeta {
 templ Sales(stats build.Stats, starsText string, nonce string) {
 	@Page(SalesMeta(), nonce) {
 		@salesHero(stats, starsText)
-		@section("max-w-7xl", salesProblem())
+		@section("max-w-7xl", salesProblem(), sectionOpts{id: "problem"})
 		@section("max-w-7xl", salesBenefits())
-		@section("max-w-5xl", salesProof(stats, nonce))
-		@section("max-w-3xl", salesFAQ(stats))
+		@section("max-w-5xl", salesProof(stats, nonce), sectionOpts{id: "proof"})
+		@section("max-w-3xl", salesFAQ(stats), sectionOpts{id: "faq"})
 		@section("max-w-4xl", salesFinalCTA())
 	}
 }
@@ -271,6 +271,7 @@ templ salesFAQ(stats build.Stats) {
 				{
 					ID:      "sales-faq-ready",
 					Title:   "Is it production-ready?",
+					Open:    true,
 					Content: faqAnswerRich(faqProductionReady(stats)),
 				},
 				{

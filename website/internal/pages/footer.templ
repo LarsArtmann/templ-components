@@ -50,7 +50,7 @@ templ Newsletter() {
 // Footer is the site footer: newsletter band + identity/links row (ported
 // from Footer.astro).
 templ Footer(nonce string) {
-	<footer role="contentinfo" class="border-t border-border mt-24" data-animate>
+	<footer class="border-t border-border mt-24" data-animate>
 		@Newsletter()
 		<div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4">
 			<div class="flex items-center gap-2.5">
