@@ -66,7 +66,7 @@ var siteDistBase = sync.OnceValue(func() string {
 
 	go func() { _ = server.Serve(listener) }()
 
-	return listener.Addr().String()
+	return "http://" + listener.Addr().String()
 })
 
 // requireSiteDist returns the dist server base URL, failing the test with the
