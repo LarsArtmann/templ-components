@@ -97,7 +97,7 @@ templ HowItWorks() {
 					</div>
 					<p class="text-xs text-text-muted leading-relaxed mb-3">{ step.Desc }</p>
 					if step.Code != "" {
-						<code class="block bg-code-inline-bg/60 px-2.5 py-1.5 rounded text-[0.6875rem] text-accent/80 font-mono leading-relaxed">{ step.Code }</code>
+						<code class="block wrap-anywhere bg-code-inline-bg/60 px-2.5 py-1.5 rounded text-[0.6875rem] text-accent/80 font-mono leading-relaxed">{ step.Code }</code>
 					}
 					if index < len(Steps)-1 {
 						<div class="hidden lg:flex absolute top-1/2 -right-2.5 -translate-y-1/2 w-5 h-5 items-center justify-center text-text-muted z-10 bg-bg-primary">
@@ -113,7 +113,7 @@ templ HowItWorks() {
 }
 
 func stepClasses(step Step) string {
-	base := "relative p-5 rounded-xl border border-border bg-bg-card backdrop-blur-sm lg:rounded-none lg:border-r-0 lg:first:rounded-l-xl lg:last:rounded-r-xl lg:last:border-r "
+	base := "relative min-w-0 p-5 rounded-xl border border-border bg-bg-card backdrop-blur-sm lg:rounded-none lg:border-r-0 lg:first:rounded-l-xl lg:last:rounded-r-xl lg:last:border-r "
 	if step.StepColor == StepAmber {
 		return base + "lg:border-t-2 lg:border-t-amber/30"
 	}

@@ -433,14 +433,14 @@ func HowItWorks() templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if step.Code != "" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "<code class=\"block bg-code-inline-bg/60 px-2.5 py-1.5 rounded text-[0.6875rem] text-accent/80 font-mono leading-relaxed\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "<code class=\"block wrap-anywhere bg-code-inline-bg/60 px-2.5 py-1.5 rounded text-[0.6875rem] text-accent/80 font-mono leading-relaxed\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var21 string
 				templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(step.Code)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sections.templ`, Line: 100, Col: 138}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sections.templ`, Line: 100, Col: 152}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 				if templ_7745c5c3_Err != nil {
@@ -471,7 +471,7 @@ func HowItWorks() templ.Component {
 }
 
 func stepClasses(step Step) string {
-	base := "relative p-5 rounded-xl border border-border bg-bg-card backdrop-blur-sm lg:rounded-none lg:border-r-0 lg:first:rounded-l-xl lg:last:rounded-r-xl lg:last:border-r "
+	base := "relative min-w-0 p-5 rounded-xl border border-border bg-bg-card backdrop-blur-sm lg:rounded-none lg:border-r-0 lg:first:rounded-l-xl lg:last:rounded-r-xl lg:last:border-r "
 	if step.StepColor == StepAmber {
 		return base + "lg:border-t-2 lg:border-t-amber/30"
 	}
