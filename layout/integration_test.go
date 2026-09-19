@@ -38,7 +38,7 @@ func TestIntegrationFullPageRender(t *testing.T) {
 		}
 	})
 
-	t.Run("base with security headers renders meta tags", func(t *testing.T) {
+	t.Run("base security headers flag is a deprecated no-op (invalid metas removed)", func(t *testing.T) {
 		t.Parallel()
 		assertSecurityHeadersPresent(t, true)
 	})

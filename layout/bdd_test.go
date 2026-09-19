@@ -23,13 +23,8 @@ func assertSecurityHeadersPresent(t *testing.T, enabled bool) {
 	t.Helper()
 
 	output := renderBaseWithSecurity(t, enabled)
-	if enabled {
-		utils.AssertContains(t, output, `http-equiv="X-Content-Type-Options"`)
-		utils.AssertContains(t, output, `http-equiv="Referrer-Policy"`)
-	} else {
-		utils.AssertNotContains(t, output, `http-equiv="X-Content-Type-Options"`)
-		utils.AssertNotContains(t, output, `http-equiv="Referrer-Policy"`)
-	}
+	utils.AssertNotContains(t, output, `http-equiv="X-Content-Type-Options"`)
+	utils.AssertNotContains(t, output, `http-equiv="Referrer-Policy"`)
 }
 
 func renderBaseWithNonce(t *testing.T, nonce string) string {
