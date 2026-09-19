@@ -5,13 +5,25 @@ import (
 	"bytes"
 	"context"
 	"strings"
-	"testing"
 
 	"github.com/a-h/templ"
 )
 
+// TestReporter is the subset of *testing.T the render helpers use.
+// *testing.T satisfies it. The interface exists so this PRODUCTION package
+// never imports testing: importing testing here linked the Go test
+// framework (testing.init et al.) into every consumer binary that pulls
+// utils (found in dnsblockd via `go tool nm`, 2026-09-19). Test-only
+// helpers stay importable from _test.go files with zero changes while the
+// production import graph stays test-free.
+type TestReporter interface {
+	Helper()
+	Fatalf(format string, args ...any)
+	Errorf(format string, args ...any)
+}
+
 // Render renders a templ component to a string for testing.
-func Render(t *testing.T, c templ.Component) string {
+func Render(t TestReporter, c templ.Component) string {
 	t.Helper()
 
 	var buf bytes.Buffer
@@ -24,7 +36,7 @@ func Render(t *testing.T, c templ.Component) string {
 
 // RenderAll renders multiple templ components into a single concatenated string.
 // Useful for integration tests that verify component composition.
-func RenderAll(t *testing.T, components ...templ.Component) string {
+func RenderAll(t TestReporter, components ...templ.Component) string {
 	t.Helper()
 
 	var sb strings.Builder
@@ -42,7 +54,7 @@ func RenderAll(t *testing.T, components ...templ.Component) string {
 }
 
 // AssertContains checks that the rendered output contains a substring.
-func AssertContains(t *testing.T, output, want string) {
+func AssertContains(t TestReporter, output, want string) {
 	t.Helper()
 
 	if !strings.Contains(output, want) {
@@ -51,7 +63,7 @@ func AssertContains(t *testing.T, output, want string) {
 }
 
 // AssertNotContains checks that the rendered output does not contain a substring.
-func AssertNotContains(t *testing.T, output, notWant string) {
+func AssertNotContains(t TestReporter, output, notWant string) {
 	t.Helper()
 
 	if strings.Contains(output, notWant) {
@@ -60,7 +72,7 @@ func AssertNotContains(t *testing.T, output, notWant string) {
 }
 
 // AssertEqual checks that got equals want, reporting a test error with context if not.
-func AssertEqual[T comparable](t *testing.T, context string, got, want T) {
+func AssertEqual[T comparable](t TestReporter, context string, got, want T) {
 	t.Helper()
 
 	if got != want {
@@ -70,7 +82,7 @@ func AssertEqual[T comparable](t *testing.T, context string, got, want T) {
 
 // AssertContainsAll checks that the rendered output contains every substring
 // in wants. Reports a single test error per missing substring.
-func AssertContainsAll(t *testing.T, output string, wants ...string) {
+func AssertContainsAll(t TestReporter, output string, wants ...string) {
 	t.Helper()
 
 	for _, want := range wants {
