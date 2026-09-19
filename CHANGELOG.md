@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **The production `utils` package no longer imports `testing`** — the
+  render/assert test helpers (`Render`, `RenderAll`, `AssertContains`,
+  `AssertNotContains`, `AssertEqual`, `AssertContainsAll`) took
+  `*testing.T` parameters, so every consumer binary that imports `utils`
+  linked the Go test framework (`testing.init` and friends; found in
+  dnsblockd via `go tool nm`). The helpers now take a local `TestReporter`
+  interface (`Helper/Fatalf/Errorf` — satisfied by `*testing.T`), keeping
+  the API source-compatible for all existing test callers while the
+  production import graph is test-free. `utils/golden` (a test-support
+  package by name and contract) is unchanged.
+
 ### Changed
 
 - **SVG glyphs now render from a single source (self-integration pass).** The
