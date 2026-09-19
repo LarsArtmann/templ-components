@@ -18,7 +18,7 @@ cd "$(dirname "$0")/.."
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
-PKG_DIRS="display feedback forms layout navigation htmx errorpage charts/echarts datastar"
+PKG_DIRS="display feedback forms layout navigation htmx errorpage charts/echarts datastar website/internal/pages"
 
 for g in $PKG_DIRS; do
 	d="$WORK/pkg-${g//\//-}"
