@@ -41,7 +41,7 @@ func TestSiteBuildIntegrity(t *testing.T) {
 	// SSG; declare it so stylesheet references validate in the test dist.
 	assets = append(assets, "assets/app.css")
 
-	wantPages := 3 + len(pages.AllDocs())
+	wantPages := staticPages + len(pages.AllDocs())
 	if len(rendered) != wantPages {
 		t.Fatalf("wrote %d HTML pages, want %d", len(rendered), wantPages)
 	}

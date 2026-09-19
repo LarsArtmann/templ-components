@@ -58,6 +58,10 @@ type config struct {
 	updateCSP    bool
 }
 
+// staticPages is the number of non-docs HTML pages the site renders
+// (index, sales, 404).
+const staticPages = 3
+
 func run(cfg config) error {
 	nonce, err := build.Nonce()
 	if err != nil {
@@ -83,7 +87,7 @@ func run(cfg config) error {
 
 	ctx := context.Background()
 
-	sitePages := make([]build.Page, 0, 3+len(docsPages))
+	sitePages := make([]build.Page, 0, staticPages+len(docsPages))
 	sitePages = append(sitePages,
 		build.Page{Path: "index.html", Component: pages.Landing(stats, pages.StarsLabel(stars), nonce)},
 		build.Page{Path: "sales.html", Component: pages.Sales(stats, nonce)},

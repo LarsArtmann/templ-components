@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Website sales page (`/sales`).** A dedicated long-form pitch for
+  templ-components — problem (the frontend tax), benefits, dogfood proof
+  (derived StatCards, library Scrollback, CopyButton, and Accordion render
+  the page itself), objection-handling FAQ, and a risk-reversing final CTA.
+  The page is the first site page to use custom-CSS library components, which
+  surfaced that the site stylesheet never imported `templates/custom.css`
+  (the Scrollback/Accordion `.tc-*` rules were missing) — `site.css` now
+  imports it, the same single-source-of-truth pattern the demo uses. Landing
+  links it from the closing CTA; sitemap and CSP header updated.
+
 - **Kanban optimistic move with an honest pending register (ADR-0041).** A
   wired `KanbanBoard` no longer freezes between drop and server response: the
   card moves in the DOM the moment the move is submitted (drop OR keyboard
