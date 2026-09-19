@@ -264,8 +264,10 @@
                     # Build the website dist: the site-route tests (goldens, axe
                     # sweep, touch-target/reflow audits) hard-fail without it —
                     # CI treats skips as failures, so a missing dist must never
-                    # degrade into a skip.
-                    bash website/build.sh
+                    # degrade into a skip. SITE_SKIP_STARS pins the stars badge
+                    # to its fallback so a live GitHub count can't drift
+                    # between dist rebuilds and flake the route goldens.
+                    SITE_SKIP_STARS=1 bash website/build.sh
                     # Font determinism: the demo CSS declares Inter, JetBrains
                     # Mono, and Space Grotesk (headings). Neither dev machines
                     # nor CI runners reliably have them installed, and host
