@@ -32,6 +32,14 @@ Reading: do T2/T3 first (or literally now), then T4–T6, then the net+discovera
 | **G2** | Squash the 5 daemon heuristic commits? (daemon-race risk accepted?) | T24 |
 | **G3** | Marketing-page machinery level: derive claims + site a11y goldens + no-framework assert — or keep light? | T4, T5, T7, T8 scope |
 
+### Gate decisions (annotated 2026-09-19, execution session)
+
+Decided autonomously under blanket "execute the whole plan" approval from Lars; recorded here per rule 7 (annotate, never rewrite).
+
+- **G1 → README + in-site nav, no social.** `/sales` gets a header-nav entry (T10), an OG image (T12), a README link row entry (T13), and the stars badge (T20/T6). No social posting from this session (out of scope for automation); the OG image makes any future manual share work well.
+- **G2 → DECLINED.** No history rewrite. Force-pushing master requires explicit per-action approval (AGENTS safety tier); the daemon commits are harmless noise once pushed, and the daemon races make a squash a losing bet. T23 becomes "record decision, skip".
+- **G3 → FULL machinery.** Claims are derived from source (T4), the no-framework assertion ships (T5), site routes get theme-pinned goldens (T7) and the axe/touch-target/zoom-reflow sweep (T8). Rationale: the page's entire argument is honesty and safety; light-scope would leave the two credibility claims hand-typed.
+
 ## 3. Level-1 plan (tasks of 30–100 min, ≤27 tasks, ALL todos covered)
 
 Sorted by importance/impact/effort/customer-value. "Items" = status-report §f item numbers.
