@@ -1,8 +1,12 @@
 package forms
 
 import (
+	"context"
 	"fmt"
+	"html"
+	"io"
 
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -32,6 +36,50 @@ func DefaultTagsInputProps() TagsInputProps {
 // when the consumer set neither Label nor AriaLabel — a text input must never
 // render unnamed (axe label).
 const tagsInputFallbackName = "Add tag"
+
+// tagsInputRemoveIconPath sources the remove-tag X glyph from the icons
+// package's single source of truth (icons.X) for JS injection.
+func tagsInputRemoveIconPath() string {
+	return icons.IconPathData(icons.X)[0]
+}
+
+// tagsInputJS is the CSP-safe add/remove singleton script (ADR-0005); %s is
+// the icons-sourced X path data.
+const tagsInputJS = `
+				(function(){if(window.tcTagsInputAttached)return;window.tcTagsInputAttached=true;
+				document.addEventListener('keydown',function(e){
+				var input=e.target;if(!input||!input.hasAttribute('data-tc-tags-input'))return;
+				var container=input.closest('[data-tc-tags]');if(!container)return;
+				if(e.key==='Enter'||e.key===','){e.preventDefault();
+				var val=input.value.trim();if(!val)return;input.value='';
+				var existing=container.querySelectorAll('[data-tc-tag]');
+				if(!container.dataset.allowDuplicate){for(var i=0;i<existing.length;i++){if(existing[i].getAttribute('data-tc-tag')===val)return;}}
+				var max=parseInt(container.dataset.maxTags||'0',10);if(max>0&&existing.length>=max)return;
+				var span=document.createElement('span');span.className='inline-flex items-center gap-1 rounded-md bg-blue-50 dark:bg-blue-900/50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300';span.setAttribute('data-tc-tag',val);span.textContent=val+' ';
+				var btn=document.createElement('button');btn.type='button';btn.className='p-1.5 -m-1.5 text-blue-400 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-200';btn.setAttribute('data-tc-tag-remove',val);btn.setAttribute('aria-label','Remove '+val);btn.innerHTML='<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="%s"></path></svg>';
+				span.appendChild(btn);
+				var hidden=document.createElement('input');hidden.type='hidden';hidden.name=container.getAttribute('data-tc-tags');hidden.value=val;
+				container.insertBefore(span,input);container.insertBefore(hidden,input);}
+				if(e.key==='Backspace'&&input.value===''){var tags=container.querySelectorAll('[data-tc-tag]');if(tags.length>0){var last=tags[tags.length-1];var v=last.getAttribute('data-tc-tag');last.remove();var hs=container.querySelectorAll('input[type=hidden][value="'+v+'"]');for(var j=0;j<hs.length;j++){hs[j].remove();}}}});
+				document.addEventListener('click',function(e){var btn=e.target.closest('[data-tc-tag-remove]');if(!btn)return;e.preventDefault();var container=btn.closest('[data-tc-tags]');if(!container)return;var v=btn.getAttribute('data-tc-tag-remove');var tag=btn.closest('[data-tc-tag]');if(tag)tag.remove();var hs=container.querySelectorAll('input[type=hidden][value="'+v+'"]');for(var k=0;k<hs.length;k++){hs[k].remove();}});
+				})();
+			`
+
+// tagsInputScriptComponent writes the tags-input script raw: templ's <script>
+// context sanitizes interpolations, and the JS must land verbatim with the
+// icons-sourced path data (same pattern as dirtyGuardScriptComponent).
+func tagsInputScriptComponent(nonce string) templ.Component {
+	escapedNonce := html.EscapeString(nonce)
+	js := fmt.Sprintf(tagsInputJS, tagsInputRemoveIconPath())
+
+	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">%s</script>", escapedNonce, js); err != nil {
+			return fmt.Errorf("write tags input script: %w", err)
+		}
+
+		return nil
+	})
+}
 
 // tagsInputContainerClass returns the container classes for the tags input.
 func tagsInputContainerClass(hasError bool) string {
@@ -88,9 +136,7 @@ templ TagsInput(props TagsInputProps) {
 						aria-label={ "Remove " + val }
 						data-tc-tag-remove={ val }
 					>
-						<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-						</svg>
+						@icons.IconWithStrokeWidth(icons.X, "h-3 w-3", 2)
 					</button>
 				</span>
 				<input type="hidden" name={ props.Name } value={ val }/>
@@ -119,25 +165,7 @@ templ TagsInput(props TagsInputProps) {
 			@helpText(props.ID, props.HelpText)
 		}
 		if props.Nonce != "" {
-			<script nonce={ props.Nonce }>
-				(function(){if(window.tcTagsInputAttached)return;window.tcTagsInputAttached=true;
-				document.addEventListener('keydown',function(e){
-				var input=e.target;if(!input||!input.hasAttribute('data-tc-tags-input'))return;
-				var container=input.closest('[data-tc-tags]');if(!container)return;
-				if(e.key==='Enter'||e.key===','){e.preventDefault();
-				var val=input.value.trim();if(!val)return;input.value='';
-				var existing=container.querySelectorAll('[data-tc-tag]');
-				if(!container.dataset.allowDuplicate){for(var i=0;i<existing.length;i++){if(existing[i].getAttribute('data-tc-tag')===val)return;}}
-				var max=parseInt(container.dataset.maxTags||'0',10);if(max>0&&existing.length>=max)return;
-				var span=document.createElement('span');span.className='inline-flex items-center gap-1 rounded-md bg-blue-50 dark:bg-blue-900/50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300';span.setAttribute('data-tc-tag',val);span.textContent=val+' ';
-				var btn=document.createElement('button');btn.type='button';btn.className='p-1.5 -m-1.5 text-blue-400 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-200';btn.setAttribute('data-tc-tag-remove',val);btn.setAttribute('aria-label','Remove '+val);btn.innerHTML='<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>';
-				span.appendChild(btn);
-				var hidden=document.createElement('input');hidden.type='hidden';hidden.name=container.getAttribute('data-tc-tags');hidden.value=val;
-				container.insertBefore(span,input);container.insertBefore(hidden,input);}
-				if(e.key==='Backspace'&&input.value===''){var tags=container.querySelectorAll('[data-tc-tag]');if(tags.length>0){var last=tags[tags.length-1];var v=last.getAttribute('data-tc-tag');last.remove();var hs=container.querySelectorAll('input[type=hidden][value="'+v+'"]');for(var j=0;j<hs.length;j++){hs[j].remove();}}}});
-				document.addEventListener('click',function(e){var btn=e.target.closest('[data-tc-tag-remove]');if(!btn)return;e.preventDefault();var container=btn.closest('[data-tc-tags]');if(!container)return;var v=btn.getAttribute('data-tc-tag-remove');var tag=btn.closest('[data-tc-tag]');if(tag)tag.remove();var hs=container.querySelectorAll('input[type=hidden][value="'+v+'"]');for(var k=0;k<hs.length;k++){hs[k].remove();}});
-				})();
-			</script>
+			@tagsInputScriptComponent(props.Nonce)
 		}
 	</div>
 }

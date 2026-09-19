@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
@@ -126,7 +127,7 @@ templ Calendar(props CalendarProps) {
 					class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
 					aria-label="Previous month"
 				>
-					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path></svg>
+					@icons.Icon(icons.ChevronLeft, "h-5 w-5")
 				</a>
 			} else {
 				<span class="w-7"></span>
@@ -139,7 +140,7 @@ templ Calendar(props CalendarProps) {
 					class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
 					aria-label="Next month"
 				>
-					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path></svg>
+					@icons.Icon(icons.ChevronRight, "h-5 w-5")
 				</a>
 			} else {
 				<span class="w-7"></span>
