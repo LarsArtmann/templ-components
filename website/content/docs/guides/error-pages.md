@@ -41,14 +41,14 @@ props.ShowTimestamp = true
 Every error resolves to one of six families, which drives the color, icon,
 default title, and HTTP status:
 
-| Family         | Status | Default title                  |
-| -------------- | ------ | ------------------------------ |
-| `Rejection`    | 400    | Request could not be completed |
-| `Conflict`     | 409    | Conflict detected              |
-| `Transient`    | 503    | Temporary error                |
-| `Corruption`   | 500    | Data integrity error           |
-| `Infrastructure` | 503  | Service unavailable            |
-| `Orchestration` | 500   | Orchestration failure          |
+| Family           | Status | Default title                  |
+| ---------------- | ------ | ------------------------------ |
+| `Rejection`      | 400    | Request could not be completed |
+| `Conflict`       | 409    | Conflict detected              |
+| `Transient`      | 503    | Temporary error                |
+| `Corruption`     | 500    | Data integrity error           |
+| `Infrastructure` | 503    | Service unavailable            |
+| `Orchestration`  | 500    | Orchestration failure          |
 
 `FromError` prefers the error's own `ErrorTitle()`; when absent it falls
 back to the family default, so a page never renders headingless.

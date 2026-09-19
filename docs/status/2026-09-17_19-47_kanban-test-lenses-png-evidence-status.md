@@ -17,8 +17,8 @@
 7. **Example lens** (`display/kanban_example_test.go`): `ExampleKanbanBoard_optimisticPending` godoc example (compile-only, matching the file's existing pattern) documenting that no extra props are needed.
 8. **ADR-0041 updated:** new "Concurrency timings (verified in the vendored runtimes)" section — htmx serializes (queue `"last"` default), Datastar is concurrent; the register is conservative and correct under both; a result after the register cleared is a no-op by design.
 9. **PNG evidence — the headline deliverable.** New internal test `visualtest/kanban_pending_visual_test.go` (`TestKanbanPendingRegisterVisualStates`): own stateless server (e-slow stalls until browser disconnect — no goroutine leak, clean `Server.Close`; e-fail 500s), one-board page, deterministic captures via (a) frozen spinner ring (inline style override = the exact rendering `prefers-reduced-motion` users get — a mid-rotation ring can never capture identically) and (b) the route-golden theme pin (localStorage + reload). Two goldens generated AND human-viewed:
-    - `visualtest/testdata/kanban/pending_state.png` — Slow move in "In progress", dimmed, frozen blue ring top-right, counts 1/1.
-    - `visualtest/testdata/kanban/failed_state.png` — Doomed move back in "To do" with red border flash, counts 2/0, "No cards" placeholder restored.
+   - `visualtest/testdata/kanban/pending_state.png` — Slow move in "In progress", dimmed, frozen blue ring top-right, counts 1/1.
+   - `visualtest/testdata/kanban/failed_state.png` — Doomed move back in "To do" with red border flash, counts 2/0, "No cards" placeholder restored.
 10. **Determinism proven:** 3 consecutive comparison-mode runs PASS (2 plain + 1 `-v` confirmed: `--- PASS: TestKanbanPendingRegisterVisualStates (2.22s)`).
 11. **All 5 new display tests verified individually** (`-run` + `-v`: concurrent moves, move-looks-instant, count-contract, failure-region, busy-during-flight — all PASS; example compiles via package build).
 
@@ -57,6 +57,7 @@
 ## f) UP TO 50 THINGS TO GET DONE NEXT (ordered by impact)
 
 **Immediate gates (this work's tail)**
+
 1. Run `cd utils && GOWORK=off go test ./... -run TestDocsCountDrift` — the +2 visual goldens may break prose counts; fix counts in the same commit if so.
 2. Full unfiltered `nix run .#visual` (axe sweep + route goldens on the current tree).
 3. `scripts/ci-repro.sh --lint` — exact CI reproduction.

@@ -91,8 +91,8 @@ Nothing destructive or wrong-by-construction. One honest miss-level item:
 
 1. **Run-after-edit discipline under interruption:** the regen command should
    have been fired in the same breath as the edit (it is a single `nix run`
-   call); a status request should park a task at a *verified* boundary, not a
-   *written* boundary.
+   call); a status request should park a task at a _verified_ boundary, not a
+   _written_ boundary.
 2. **Bool-helper consistency:** this session introduced `visualtest.Bool(true)`
    while neighboring code uses `new(true)` — both compile, but one style per
    file is cleaner; align to the surrounding file when regenerating.
@@ -170,7 +170,7 @@ Nothing destructive or wrong-by-construction. One honest miss-level item:
 39. ErrorDetail neutral variant + accent bar + 4 goldens + dark/RTL guards.
 40. `SecondaryWayOut` ghost-button slot + goldens + focus-order check.
 41. `WayOutAction` typed struct (dual-read, no deprecation break) + `MaxWidth` enum
-    + contract registration.
+    - contract registration.
 42. Code-chip CopyButton composition (Nonce propagation) + shared button-class const.
 43. Coverage 71.5→75%: profile → targeted branch tests; `FuzzParseFamily`;
     `BenchmarkErrorPage`; FEATURES coverage/bench lines recomputed.

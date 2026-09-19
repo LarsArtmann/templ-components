@@ -77,9 +77,9 @@ this time (it has pushed without being asked before).
    ~~must not die in this timestamped file). Blocked on user instruction — user said "wait".~~
 2. ~~**Doc drift found and deliberately deferred** (user: "do not research/fix unrelated stuff"):~~ done (DONE 2026-09-17 evening - AGENTS.md now lists display -> icons,utils,htmx; modularization README go-work-use now includes website (proposal-HTML row left open))
    ~~- AGENTS.md import-graph line omits `display → htmx` (card.templ imports `htmx.SwapStyle`~~
-     ~~at `display/card.templ:6,289`) — real drift in the Production-deps enumeration.~~
+   ~~at `display/card.templ:6,289`) — real drift in the Production-deps enumeration.~~
    ~~- `docs/modularization/README.md` Contributing `go work use` list is missing `website`~~
-     ~~(actual `go.work` has 9 entries incl. `./website`).~~
+   ~~(actual `go.work` has 9 entries incl. `./website`).~~
    ~~- Proposal HTML not added to that README's "Files" list (miss I created).~~
 3. **F058 owner decision** (ADR-0039 "Proposed — owner decision pending"): ADR-0040's
    "timed with v2" clause silently assumes option 1. Not mine to decide.

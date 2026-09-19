@@ -11,7 +11,7 @@ require (
 	github.com/a-h/templ v0.3.1020
 	github.com/chromedp/cdproto v0.0.0-20260912003405-686a5c723acc
 	github.com/chromedp/chromedp v0.16.0
-	github.com/larsartmann/go-datastar/static v0.5.0
+	github.com/larsartmann/go-datastar/static v0.6.0
 	github.com/larsartmann/templ-components v0.0.0-00010101000000-000000000000
 	github.com/larsartmann/templ-components/datastar v1.18.1
 	github.com/larsartmann/templ-components/errorpage v1.18.1

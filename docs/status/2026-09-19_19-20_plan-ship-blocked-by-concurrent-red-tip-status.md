@@ -8,20 +8,20 @@
 
 ## a) FULLY DONE
 
-| # | Item | Where |
-|---|------|-------|
-| 1 | Pareto decomposition of the 50 next tasks: 1%→51% (harvest+decisions), 4%→64% (+guard & witness), 20%→80% (+codify), remainder→100% | plan §Pareto |
-| 2 | **TABLE VIEW 1**: 8 milestones, 30–100 min each, ALL todos mapped, sorted by impact/effort/value | plan TABLE VIEW 1 |
-| 3 | **TABLE VIEW 2**: 50 micro-tasks ≤12 min each, ALL todos mapped with source-refs (f-items) | plan TABLE VIEW 2 |
-| 4 | Mermaid execution graph with decision diamonds (⫱ owner gates) and the M03 push gate | plan §Execution graph |
-| 5 | Plan written with full context + checklist gates (goldens/wired-e2e/counts/demo) + verification + deferred seeds, following `docs/planning/TEMPLATE.md` house format | `docs/planning/2026-09-19_17-48_SELF-INTEGRATION-PARETO-MASTER-PLAN.md` (179 lines, committed intact) |
-| 6 | ⫱ decision defaults encoded safe-until-answered: ratify stroked-24 arrows; copy primitive → v2; harvest+guard = yes | plan §Decision gates |
-| 7 | `ogshot` lint lane cleared (blocked the pre-push ritual; not my file, fix-on-sight policy): gosec G301 `0o755→0o750`, stale `//nolint:gosec` removed, golines autofix — visualtest lint 0 issues, build green | `1ced1afa` with a detailed commit message |
-| 8 | Full CI reproduction **PASS** at `1ced1afa` (18:12:38): build+test+lint all modules + website lane (19 pages, counts derived) | ci-repro output |
-| 9 | M03 discipline exercised twice: detected tip moved BEFORE pushing both times; no unverified push | session log |
-| 10 | Concurrent-actor forensics (read-only): identified their in-flight edits (`sections.templ` syntax break → committed as `sectionAttrs` helper; README sales link; ogshot; `base_templ.go` refactor breaking `TestSecurityHeaders`), never touched their files | session log + this report |
-| 11 | Diagnosed tip-red precisely: `layout.TestSecurityHeaders/security_headers_rendered_when_enabled` fails from commit `52bc5c77`'s 211-line `base_templ.go` rework | read-only test run |
-| 12 | 17:27 status report written and committed (prior phase) | `docs/status/2026-09-19_17-27_*.md` |
+| #  | Item                                                                                                                                                                                                                                                         | Where                                                                                                 |
+| -- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| 1  | Pareto decomposition of the 50 next tasks: 1%→51% (harvest+decisions), 4%→64% (+guard & witness), 20%→80% (+codify), remainder→100%                                                                                                                          | plan §Pareto                                                                                          |
+| 2  | **TABLE VIEW 1**: 8 milestones, 30–100 min each, ALL todos mapped, sorted by impact/effort/value                                                                                                                                                             | plan TABLE VIEW 1                                                                                     |
+| 3  | **TABLE VIEW 2**: 50 micro-tasks ≤12 min each, ALL todos mapped with source-refs (f-items)                                                                                                                                                                   | plan TABLE VIEW 2                                                                                     |
+| 4  | Mermaid execution graph with decision diamonds (⫱ owner gates) and the M03 push gate                                                                                                                                                                         | plan §Execution graph                                                                                 |
+| 5  | Plan written with full context + checklist gates (goldens/wired-e2e/counts/demo) + verification + deferred seeds, following `docs/planning/TEMPLATE.md` house format                                                                                         | `docs/planning/2026-09-19_17-48_SELF-INTEGRATION-PARETO-MASTER-PLAN.md` (179 lines, committed intact) |
+| 6  | ⫱ decision defaults encoded safe-until-answered: ratify stroked-24 arrows; copy primitive → v2; harvest+guard = yes                                                                                                                                          | plan §Decision gates                                                                                  |
+| 7  | `ogshot` lint lane cleared (blocked the pre-push ritual; not my file, fix-on-sight policy): gosec G301 `0o755→0o750`, stale `//nolint:gosec` removed, golines autofix — visualtest lint 0 issues, build green                                                | `1ced1afa` with a detailed commit message                                                             |
+| 8  | Full CI reproduction **PASS** at `1ced1afa` (18:12:38): build+test+lint all modules + website lane (19 pages, counts derived)                                                                                                                                | ci-repro output                                                                                       |
+| 9  | M03 discipline exercised twice: detected tip moved BEFORE pushing both times; no unverified push                                                                                                                                                             | session log                                                                                           |
+| 10 | Concurrent-actor forensics (read-only): identified their in-flight edits (`sections.templ` syntax break → committed as `sectionAttrs` helper; README sales link; ogshot; `base_templ.go` refactor breaking `TestSecurityHeaders`), never touched their files | session log + this report                                                                             |
+| 11 | Diagnosed tip-red precisely: `layout.TestSecurityHeaders/security_headers_rendered_when_enabled` fails from commit `52bc5c77`'s 211-line `base_templ.go` rework                                                                                              | read-only test run                                                                                    |
+| 12 | 17:27 status report written and committed (prior phase)                                                                                                                                                                                                      | `docs/status/2026-09-19_17-27_*.md`                                                                   |
 
 ## b) PARTIALLY DONE
 
@@ -58,6 +58,7 @@
 ## f) NEXT THINGS (up to 50; plan micro-tasks remain the backbone)
 
 **P1 — as soon as the concurrent session quiesces:**
+
 1. Wait for clean tree + `layout` green at tip (their fix must land first).
 2. `nix develop -c scripts/ci-repro.sh --lint --website` → require `VERDICT: PASS` at the exact push tip.
 3. Push immediately; confirm `ahead` clears; re-check for daemon races in the same breath.
@@ -99,4 +100,4 @@
 
 ---
 
-*Point-in-time snapshot at 19:20 CEST; tip was `d4c233a7`, `layout` red, ahead 36. Goes stale within minutes of the other session's next commit — harvest section f into TODO_LIST or annotate done later (docs-health).*
+_Point-in-time snapshot at 19:20 CEST; tip was `d4c233a7`, `layout` red, ahead 36. Goes stale within minutes of the other session's next commit — harvest section f into TODO_LIST or annotate done later (docs-health)._

@@ -56,17 +56,17 @@ The conversion itself is **real and shippable-quality on the code level**: every
 
 ## c) NOT STARTED
 
-| # | Item (plan ref)                                                                                                      |
-| - | -------------------------------------------------------------------------------------------------------------------- |
-| ~~1~~ | ~~Pagefind search (T17/M46–M47) — **feature regression vs live Starlight site**~~ done — SUPERSEDED - shipped as the Go-native search index + CSP-safe combobox (18:38 hardening a4) |
-| 2 | Go OG-image generator (T18/M49)                                                                                      |
+| #     | Item (plan ref)                                                                                                                                                                                                       |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~1~~ | ~~Pagefind search (T17/M46–M47) — **feature regression vs live Starlight site**~~ done — SUPERSEDED - shipped as the Go-native search index + CSP-safe combobox (18:38 hardening a4)                                  |
+| 2     | Go OG-image generator (T18/M49)                                                                                                                                                                                       |
 | ~~3~~ | ~~Golden HTML snapshot tests + stat-count drift guard for the website module (M52) — website module has **zero tests**~~ done — DONE 2026-09-13 18:38 - website test suite (goldens + CountStats + CSP guard) shipped |
-| ~~4~~ | ~~Link-checker script over dist (M51/T20)~~ done — DONE 2026-09-13 18:38 - build.CheckLinks + anchor checker shipped |
-| 5 | Lighthouse spot-check (T20)                                                                                          |
-| 6 | `nix run .#website` flake app (M43)                                                                                  |
-| ~~7~~ | ~~Visual regression goldens for the site itself via the `visualtest` harness~~ done — DONE 2026-09-13 18:38 - siteshots captures the built dist (light/dark x desktop/mobile) |
-| 8 | Code-block filename/title chrome in docs (hero has it, docs blocks don't) and language labels                        |
-| 9 | RSS/atom feed for releases (never existed — candidate improvement, not parity)                                       |
+| ~~4~~ | ~~Link-checker script over dist (M51/T20)~~ done — DONE 2026-09-13 18:38 - build.CheckLinks + anchor checker shipped                                                                                                  |
+| 5     | Lighthouse spot-check (T20)                                                                                                                                                                                           |
+| 6     | `nix run .#website` flake app (M43)                                                                                                                                                                                   |
+| ~~7~~ | ~~Visual regression goldens for the site itself via the `visualtest` harness~~ done — DONE 2026-09-13 18:38 - siteshots captures the built dist (light/dark x desktop/mobile)                                         |
+| 8     | Code-block filename/title chrome in docs (hero has it, docs blocks don't) and language labels                                                                                                                         |
+| 9     | RSS/atom feed for releases (never existed — candidate improvement, not parity)                                                                                                                                        |
 
 ## d) TOTALLY FUCKED UP
 

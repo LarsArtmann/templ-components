@@ -85,18 +85,18 @@ for nothing.
 ### 5. Release hygiene checklist
 
 - [ ] Inline scripts re-hashed: any script body change requires
-  `go run ./cmd/site --update-csp` (`website/internal/build/csp.go:133` fails
-  the build with that exact instruction when the committed
-  `firebase.json` header goes stale).
+      `go run ./cmd/site --update-csp` (`website/internal/build/csp.go:133` fails
+      the build with that exact instruction when the committed
+      `firebase.json` header goes stale).
 - [ ] Sitemap lastmod wired: a new top-level page goes into
-  `topLevelPages` (`website/cmd/site/main.go`) AND gets `lastUpdated(...)`
-  source paths, so `/sitemap.xml` lastmod reflects real edits.
+      `topLevelPages` (`website/cmd/site/main.go`) AND gets `lastUpdated(...)`
+      source paths, so `/sitemap.xml` lastmod reflects real edits.
 - [ ] Search scope held: the search index covers docs slugs only, derived from
-  `pages.AllDocs()` and test-enforced (`assertSearchIndex` in
-  `website/cmd/site/main_test.go`) — marketing pages never enter the index.
+      `pages.AllDocs()` and test-enforced (`assertSearchIndex` in
+      `website/cmd/site/main_test.go`) — marketing pages never enter the index.
 - [ ] Visual goldens regen'd: `nix run .#visual -- -update -run TestSiteRouteGoldens`
-  after any intentional visual change, light AND dark (`TestAxeSweepSiteRoutes`
-  audits both).
+      after any intentional visual change, light AND dark (`TestAxeSweepSiteRoutes`
+      audits both).
 - [ ] Site build green: `nix develop -c bash website/build.sh`.
 
 ## Design rules that make it work

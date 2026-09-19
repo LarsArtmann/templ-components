@@ -528,9 +528,9 @@ Facts worth knowing:
     `MaxRetries` re-triggers of the move form (backoff
     `RetryDelayMS × attempt`). The kanban listener reverts on the FIRST
     failure signal, so the board is restored before the retry fires (delay
-    >= 1s); a retried move that succeeds runs from clean, restored DOM and
-    pushes its own fresh pending entry. If retries exhaust, you get the
-    global toast AND an already-reverted board.
+    > = 1s); a retried move that succeeds runs from clean, restored DOM and
+    > pushes its own fresh pending entry. If retries exhaust, you get the
+    > global toast AND an already-reverted board.
   - The revert path is guarded by the pending register, so extra failure
     events (retry attempts that fail again) no-op instead of
     double-reverting.

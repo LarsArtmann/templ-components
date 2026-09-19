@@ -35,17 +35,17 @@ interface) and it is now part of the unpushed tip. Current tip verified green
 
 ## a) FULLY DONE (this session, all verified green)
 
-| Task | What shipped |
-| --- | --- |
-| **T9 — HTML validation gate** | `layout/a11y_test.go` flipped to assert absence of the deprecated no-op metas; layout suite green. Website goldens added to `scripts/check-html-valid.sh` corpus (262 files validated). Gate GREEN with 15 documented ignore classes. CI verified: `html-validation` runs on every push (no path filter), so no ci.yaml change needed. **Three real bugs found & fixed:** (1) hero code window nested `<pre><pre class="chroma">` — fixed in `website/internal/pages/highlight.go` with `chromahtml.PreventSurroundingPre(true)` (verified against chroma v2.27.0 source: `nopPreWrapper`); (2) search input used `role="combobox"` + `aria-expanded` on `type="search"`, which ARIA-in-HTML forbids (combobox is legal only on `type=text`; APG pattern uses type=text) — fixed in `header.templ`; (3) new ignore class added ONLY for `media` on meta theme-color (WHATWG spec explicitly allows; vnu dataset lags — spec-verified via fetch). tc scaffolder sources re-synced (`check-tc-sources-sync.sh --fix`). Docs counts updated same-edit (visual goldens 163→171 in FEATURES/README/ROADMAP; `TestDocsCountDrift` green). |
-| **T14 — structural page count** | `staticPages` const deleted; `topLevelPages(stats, starsLabel, nonce)` is now the single structural source of the top-level page set, consumed by both `run()` and `TestSiteBuildIntegrity` (wantPages derived, no hand-kept count). |
-| **T15 — dark-tint tuning** | Sales page library surfaces retinted to the site's warm stone palette via explicit `dark:` Class overrides (they must beat the library shells' `dark:bg-gray-800`/`-900`, which tailwind-merge would otherwise keep): salesProblem Card, salesBenefits SimpleCard, all 4 salesProof StatCards (`dark:bg-bg-card-solid dark:border-border`), and the FAQ Accordion — the per-item `<details>` hardcodes its bg where no prop reaches, so a complete-literal arbitrary child variant `[&>details]:dark:bg-bg-card-solid` retints items (site.css `@source` scans `internal/pages/**/*_templ.go`, so it compiles). templ regen + page goldens + **all 8 site route goldens regenerated**; axe sweep re-read, ledger entry `site_sales_dark` still matches (1 accepted finding). Site tier green WITHOUT `-update`. |
-| **T16 — per-page script audit** | Full hook map built: theme-sync/header/search/animations/newsletter all have consumers on every page they load on (footer newsletter form + `[data-animate]` footer are global; search box is in the header). ONE dead fetch found and removed: `copy-code.js` on docs pages (its only hook `#copy-btn` exists on the landing hero only; docs copy buttons are bound by `docs.js`). Script lists now documented in comments. |
-| **T17 — sitemap lastmod** | `lastUpdated` generalized to variadic repo-relative paths (newest commit across sources, `git log -1 --format=%cs -- p1 p2`); `/sales` lastmod from `sales.templ`, landing lastmod from `landing.templ + hero.templ`; docs entries unchanged semantically. Convention written into `writeSitemaps` godoc: a new top-level page must be added to `topLevelPages` AND get a lastmod source — never a hand-kept count. Site tests green. |
-| **T6b — CopyButton browser e2e** | New `visualtest/site_copy_e2e_test.go` `TestSiteSalesCopyButton`: serves the BUILT dist (`requireSiteDist`), injects a `clipboard.writeText` spy before the click (headless clipboard READS need ungrantable permissions; the spy observes the same call and the real write still executes), clicks `[data-tc-copy]`, asserts the exact install command payload AND the "Copied!" label swap. PASSED under `nix run .#visual`. |
-| **T11 — search index scope** | G1 decision enforced as an invariant: `assertSearchIndex` now derives the docs URL set from `pages.AllDocs()` and fails if ANY search-index entry is outside it. First attempt used a wrong `/docs` prefix (site docs live at `/getting-started/*`, `/guides/*`, …) — caught by its own first run, fixed to set-membership. Site suite green. |
-| **T19 — lint cleanups** | (1) `WriteString(literal + "\n")` concatenations removed in `writeSitemaps`; (2) QF1002: docs sidebar switch → tagged `switch doc.Slug`; (3) QF1003: chart axis-label if/else → tagged `switch i` (+ regen; output-identical, goldens unchanged, display suite green); (4) visualtest module lints **0 issues** (stale `nolint:gosec` → whole directive removed as unused; godox "bug" word in the accepted-debt comment reworded to "defect"); website module lints **0 issues** (golines 120-col restructure, prealloc with named const, wsl blank-line). gopls LSP diagnostics for `main.go:334/337` are STALE — ground truth is `golangci-lint run` = 0 issues. |
-| **Stars-badge flake fix (unplanned, blocking)** | Site route goldens failed with mismatch sets that CHANGED between runs. Root cause: `fetchStars()` hits the live GitHub API on every dist build — badge text drifts (and on mobile can change layout height → 100%-dimension mismatches). Fix: `SITE_SKIP_STARS=1` env → `build.sh --skip-stars`, set in the flake `.#visual` app. Goldens regenerated under the pinned dist; **determinism proven: two consecutive dist rebuilds both green**. Production builds (website.yml) keep live stars. |
+| Task                                            | What shipped                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **T9 — HTML validation gate**                   | `layout/a11y_test.go` flipped to assert absence of the deprecated no-op metas; layout suite green. Website goldens added to `scripts/check-html-valid.sh` corpus (262 files validated). Gate GREEN with 15 documented ignore classes. CI verified: `html-validation` runs on every push (no path filter), so no ci.yaml change needed. **Three real bugs found & fixed:** (1) hero code window nested `<pre><pre class="chroma">` — fixed in `website/internal/pages/highlight.go` with `chromahtml.PreventSurroundingPre(true)` (verified against chroma v2.27.0 source: `nopPreWrapper`); (2) search input used `role="combobox"` + `aria-expanded` on `type="search"`, which ARIA-in-HTML forbids (combobox is legal only on `type=text`; APG pattern uses type=text) — fixed in `header.templ`; (3) new ignore class added ONLY for `media` on meta theme-color (WHATWG spec explicitly allows; vnu dataset lags — spec-verified via fetch). tc scaffolder sources re-synced (`check-tc-sources-sync.sh --fix`). Docs counts updated same-edit (visual goldens 163→171 in FEATURES/README/ROADMAP; `TestDocsCountDrift` green). |
+| **T14 — structural page count**                 | `staticPages` const deleted; `topLevelPages(stats, starsLabel, nonce)` is now the single structural source of the top-level page set, consumed by both `run()` and `TestSiteBuildIntegrity` (wantPages derived, no hand-kept count).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| **T15 — dark-tint tuning**                      | Sales page library surfaces retinted to the site's warm stone palette via explicit `dark:` Class overrides (they must beat the library shells' `dark:bg-gray-800`/`-900`, which tailwind-merge would otherwise keep): salesProblem Card, salesBenefits SimpleCard, all 4 salesProof StatCards (`dark:bg-bg-card-solid dark:border-border`), and the FAQ Accordion — the per-item `<details>` hardcodes its bg where no prop reaches, so a complete-literal arbitrary child variant `[&>details]:dark:bg-bg-card-solid` retints items (site.css `@source` scans `internal/pages/**/*_templ.go`, so it compiles). templ regen + page goldens + **all 8 site route goldens regenerated**; axe sweep re-read, ledger entry `site_sales_dark` still matches (1 accepted finding). Site tier green WITHOUT `-update`.                                                                                                                                                                                                                                                                                                                     |
+| **T16 — per-page script audit**                 | Full hook map built: theme-sync/header/search/animations/newsletter all have consumers on every page they load on (footer newsletter form + `[data-animate]` footer are global; search box is in the header). ONE dead fetch found and removed: `copy-code.js` on docs pages (its only hook `#copy-btn` exists on the landing hero only; docs copy buttons are bound by `docs.js`). Script lists now documented in comments.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| **T17 — sitemap lastmod**                       | `lastUpdated` generalized to variadic repo-relative paths (newest commit across sources, `git log -1 --format=%cs -- p1 p2`); `/sales` lastmod from `sales.templ`, landing lastmod from `landing.templ + hero.templ`; docs entries unchanged semantically. Convention written into `writeSitemaps` godoc: a new top-level page must be added to `topLevelPages` AND get a lastmod source — never a hand-kept count. Site tests green.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| **T6b — CopyButton browser e2e**                | New `visualtest/site_copy_e2e_test.go` `TestSiteSalesCopyButton`: serves the BUILT dist (`requireSiteDist`), injects a `clipboard.writeText` spy before the click (headless clipboard READS need ungrantable permissions; the spy observes the same call and the real write still executes), clicks `[data-tc-copy]`, asserts the exact install command payload AND the "Copied!" label swap. PASSED under `nix run .#visual`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| **T11 — search index scope**                    | G1 decision enforced as an invariant: `assertSearchIndex` now derives the docs URL set from `pages.AllDocs()` and fails if ANY search-index entry is outside it. First attempt used a wrong `/docs` prefix (site docs live at `/getting-started/*`, `/guides/*`, …) — caught by its own first run, fixed to set-membership. Site suite green.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| **T19 — lint cleanups**                         | (1) `WriteString(literal + "\n")` concatenations removed in `writeSitemaps`; (2) QF1002: docs sidebar switch → tagged `switch doc.Slug`; (3) QF1003: chart axis-label if/else → tagged `switch i` (+ regen; output-identical, goldens unchanged, display suite green); (4) visualtest module lints **0 issues** (stale `nolint:gosec` → whole directive removed as unused; godox "bug" word in the accepted-debt comment reworded to "defect"); website module lints **0 issues** (golines 120-col restructure, prealloc with named const, wsl blank-line). gopls LSP diagnostics for `main.go:334/337` are STALE — ground truth is `golangci-lint run` = 0 issues.                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **Stars-badge flake fix (unplanned, blocking)** | Site route goldens failed with mismatch sets that CHANGED between runs. Root cause: `fetchStars()` hits the live GitHub API on every dist build — badge text drifts (and on mobile can change layout height → 100%-dimension mismatches). Fix: `SITE_SKIP_STARS=1` env → `build.sh --skip-stars`, set in the flake `.#visual` app. Goldens regenerated under the pinned dist; **determinism proven: two consecutive dist rebuilds both green**. Production builds (website.yml) keep live stars.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 **Also verified at the CURRENT tip** (after the parallel session's utils commit):
 site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
@@ -142,8 +142,8 @@ site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
 2. **Lighthouse as a repeatable lane, not a one-off.** The manual npx +
    CHROME_PATH dance worked but is undocumented and uncommitted (results JSON
    is in /tmp). Either a tiny flake app `.#lighthouse` (chrome + npx lighthouse
-   + local dist server with cleanUrls) or a chromedp nav-timing budget test in
-   visualtest — one of the two, so T18 numbers stay reproducible.
+   - local dist server with cleanUrls) or a chromedp nav-timing budget test in
+     visualtest — one of the two, so T18 numbers stay reproducible.
 3. **Local dist serving with cleanUrls.** A one-liner Go helper (the
    `siteDistBase` handler extracted) would serve any dist correctly and kill
    the python-server 404 class entirely.
@@ -162,6 +162,7 @@ site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
 ## f) NEXT TASKS (ordered, ≤50)
 
 **Finish the plan (blocking the push):**
+
 1. ~~T18: run Lighthouse on `/sales.html`, record both pages' scores in the plan~~ done (landing 93/100/100/100 re-confirmed on fresh dist; /sales 79/100/100/100; recorded in plan section 8 T18 row)
    ~~annotation (§2 outcome column).~~
 2. ~~T18: quick-wins triage — inspect the 7 perf deductions on landing (likely~~ done (triage complete - no zero-risk code wins; gaps are harness artifacts (no gzip) + htmx-parse (TODO_LIST #282) + stagger design; prod re-measure #280, lane #272)
@@ -198,83 +199,83 @@ site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
 15. ~~`.#lighthouse` flake app or nav-timing budget test (repeatable T18 lane).~~ done (TODO_LIST #272)
 16. ~~Extract a reusable cleanUrls dist server helper (share with `.#shots`).~~ done (TODO_LIST #273)
 17. ~~Prune the `media`-on-meta vnu ignore class when nixpkgs vnu catches up~~ done (folded into TODO_LIST #216)
-    ~~(same TODO class as #216).~~
+~~(same TODO class as #216).~~
 18. ~~Consider adopting ARIA-in-HTML check for `role=combobox` input types as a~~ done (TODO_LIST #274)
-    ~~lint/test rule in the LIBRARY (the site bug class could exist in~~
-    ~~components: grep library `.templ` for `role="combobox"`).~~
+~~lint/test rule in the LIBRARY (the site bug class could exist in~~
+~~components: grep library `.templ` for `role="combobox"`).~~
 19. ~~Schedule the library-wide dark CTA shade decision (Q3) — either bump dark~~ done (ROADMAP General row Dark CTA contrast decision)
-    ~~semantic surfaces to `-500`→`-400` or formally accept 3.76:1 for large~~
-    ~~text only, documented in the a11y policy.~~
+~~semantic surfaces to `-500`→`-400` or formally accept 3.76:1 for large~~
+~~text only, documented in the a11y policy.~~
 20. ~~Add `[&>details]:`-style arbitrary-variant child overrides documentation to~~ done (merged into TODO_LIST #279)
-    ~~the templ-components SKILL.md / theming docs (new pattern proven here).~~
+~~the templ-components SKILL.md / theming docs (new pattern proven here).~~
 21. ~~Move `/tmp/lh-index.json` numbers into the plan annotation + delete the~~ done (numbers recorded in plan section 8; /tmp/lh-*.json deleted)
-    ~~temp file (machine-local artifact).~~
+~~temp file (machine-local artifact).~~
 22. ~~Update `docs/visual-testing.md` with the SITE route tier + skip-stars pin.~~ done (TODO_LIST #275)
 23. ~~Update the skill (templ-components SKILL.md) site section: search scope~~ done (TODO_LIST #276)
-    ~~invariant, lastmod convention, topLevelPages structure.~~
+~~invariant, lastmod convention, topLevelPages structure.~~
 24. ~~Consider `TestDocsCountDrift` coverage for the site's dist log line~~ done (ROADMAP General row Counts truth table)
-    ~~(components=123 icons=105 enums=62) vs FEATURES counts — they derive from~~
-    ~~different counters; one truth table would prevent future confusion.~~
+~~(components=123 icons=105 enums=62) vs FEATURES counts — they derive from~~
+~~different counters; one truth table would prevent future confusion.~~
 25. ~~Add the sales page to the siteshots smoke set if not already covered by~~ **Won't implement — siteshots already covers /sales (added 2026-09-19 15-10 session); route goldens pin the pixels.**
-    ~~route goldens (verify parity).~~
+~~route goldens (verify parity).~~
 26. ~~Grep repo for other `WriteString(literal + literal)` occurrences (gopls~~ done (TODO_LIST #277)
-    ~~writestring may exist elsewhere; golangci-lint doesn't run that analyzer).~~
+~~writestring may exist elsewhere; golangci-lint doesn't run that analyzer).~~
 27. ~~Consider enabling gopls-analyzer-backed checks in golangci-lint config so~~ done (ROADMAP General row gopls analyzer lint gates)
-    ~~writestring/prealloc classes gate in CI, not just LSP.~~
+~~writestring/prealloc classes gate in CI, not just LSP.~~
 28. ~~LSP-staleness: add a note to AGENTS that QF100x hints on `.templ` files~~ done (AGENTS.md LSP-staleness note extended)
-    ~~can point at stale lines; ground truth = golangci-lint + regen.~~
+~~can point at stale lines; ground truth = golangci-lint + regen.~~
 29. ~~The docs' visual-goldens count claim (171) will drift again with every~~ done (ROADMAP General row Counts truth table)
-    ~~site route — consider deriving it in `TestDocsCountDrift` from the~~
-    ~~testdata dir instead of a hand-typed number (it already compares against~~
-    ~~reality; make docs say "site routes + library" structurally).~~
+~~site route — consider deriving it in `TestDocsCountDrift` from the~~
+~~testdata dir instead of a hand-typed number (it already compares against~~
+~~reality; make docs say "site routes + library" structurally).~~
 30. ~~Reduce `fetchStars` flake surface in PRODUCTION builds too (cache last~~ done (ROADMAP Production stars caching row)
-    ~~good value to a file, like Astro did?) — fallback exists; caching would~~
-    ~~stop badge flapping between deploys.~~
+~~good value to a file, like Astro did?) — fallback exists; caching would~~
+~~stop badge flapping between deploys.~~
 
 **Backlog hygiene (pre-existing, cheap):**
 31. Re-check `git status` for re-added `*_templ.go` gitignore lines after
-    daemon commits (BuildFlow gotcha — none observed this session, keep
-    watching).
+daemon commits (BuildFlow gotcha — none observed this session, keep
+watching).
 32. After push: verify GitHub autoclose keywords in any issue-closing commit
-    texts (AGENTS convention).
+texts (AGENTS convention).
 33. ~~Sweep legacy raw `chromedp.Poll` sites (~48, TODO #240) — untouched.~~ **Won't implement — duplicate of TODO_LIST #240.**
 34. ~~website.yml path filters: confirm `website/**` filter covers the new~~ done (folded into TODO_LIST #280)
-    ~~`build.sh` env var behavior (deploy uses live stars — no change needed,~~
-    ~~just verify).~~
+~~`build.sh` env var behavior (deploy uses live stars — no change needed,~~
+~~just verify).~~
 35. `visualtest/tools/siteshots` search smoke: confirm it still passes with
-    `type=text` search input (behavior unchanged; one smoke run would prove).
+`type=text` search input (behavior unchanged; one smoke run would prove).
 36. ~~Add `TestSiteSalesCopyButton` to any documented e2e inventory (docs/testing~~ **Won't implement — no FEATURES.md e2e inventory exists to update; the test gets its docs home via TODO_LIST #275.**
-    ~~or FEATURES test-coverage lines mention suites; the new test should be~~
-    ~~named there if the convention requires).~~
+~~or FEATURES test-coverage lines mention suites; the new test should be~~
+~~named there if the convention requires).~~
 37. ~~Consider swapping python http.server examples in docs for the Go helper~~ done (folded into TODO_LIST #273)
-    ~~(see 16).~~
+~~(see 16).~~
 38. ~~ogshot: `SITE_SKIP_STARS` doesn't affect OG cards (they don't render~~ done (TODO_LIST #281)
-    ~~stars?) — verify and document either way in the ogshot README.~~
+~~stars?) — verify and document either way in the ogshot README.~~
 39. ~~Confirm the demo CSS is fresh after T15's new arbitrary-variant classes~~ done (TODO_LIST #278)
-    ~~(they're site.css-scoped; demo CSS scans `**/*.templ` repo-wide — check~~
-    ~~`examples/demo/static/app.css` contains them or prove they're unused by~~
-    ~~demo routes; the daemon chunk `7de2133c` touched demo app.css already).~~
+~~(they're site.css-scoped; demo CSS scans `**/*.templ` repo-wide — check~~
+~~`examples/demo/static/app.css` contains them or prove they're unused by~~
+~~demo routes; the daemon chunk `7de2133c` touched demo app.css already).~~
 40. ~~Ask the BuildFlow daemon to include a file list in heuristic messages~~ **Won't implement — #93-family upstream idea; TODO_LIST #93/#232 own it.**
-    ~~(upstream larsartmann/buildflow — park as an idea).~~
+~~(upstream larsartmann/buildflow — park as an idea).~~
 
 **Post-release follow-ups (after next version cut):**
 41. ~~Prune vnu ignore classes when a newer checker lands (recurring).~~ **Won't implement — duplicate of TODO_LIST #216.**
 42. ~~Re-measure Lighthouse on PRODUCTION (live stars + Firebase headers) once —~~ done (folded into TODO_LIST #280)
-    ~~local dist numbers lack Firebase caching/CDN effects.~~
+~~local dist numbers lack Firebase caching/CDN effects.~~
 43. ~~Verify prod sitemap shows `/` + `/sales` lastmod after next deploy.~~ done (folded into TODO_LIST #280)
 44. ~~Watch the first real deploy for the stars badge render (live count).~~ done (folded into TODO_LIST #280)
 45. ~~After the next templ upstream release, revisit the v0.3.1020 pin (AGENTS~~ **Won't implement — standing AGENTS.md templ-pin policy owns it.**
-    ~~standing item).~~
+~~standing item).~~
 46. ~~When nixpkgs html5validator updates, re-run the gate to catch newly~~ **Won't implement — duplicate of TODO_LIST #216.**
-    ~~enforced rules early (pre-CI).~~
+~~enforced rules early (pre-CI).~~
 47. ~~Consider adding `/sales` to `search-index.json` exclusion docs prose (the~~ **Won't implement — the T21 recipe documents the search-scope invariant.**
-    ~~docs pages describing the site architecture) if T21 doesn't cover it.~~
+~~docs pages describing the site architecture) if T21 doesn't cover it.~~
 48. ~~Add the warm-dark override pattern to the website's own theming docs page~~ done (TODO_LIST #279)
-    ~~(`guides/theming` content markdown).~~
+~~(`guides/theming` content markdown).~~
 49. Keep an eye on chroma upgrades for `PreventSurroundingPre` behavior
-    (pinned by go.mod; behavior verified at v2.27.0).
+(pinned by go.mod; behavior verified at v2.27.0).
 50. Celebrate, then start the NEXT Pareto planning cycle from the harvested
-    TODO_LIST.
+TODO_LIST.
 
 ## g) QUESTIONS FOR YOU (cannot answer myself)
 

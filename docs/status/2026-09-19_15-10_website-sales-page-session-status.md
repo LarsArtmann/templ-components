@@ -12,22 +12,22 @@
 
 ## Verification evidence (one glance)
 
-| Check | Result |
-| --- | --- |
-| `templ generate` (pinned binary, repo root) | zero unrelated drift; only session files |
-| Website module `go build` + `go test ./...` | PASS (19 pages: index, sales, 404, 16 docs) |
-| `TestSiteBuildIntegrity` | PASS (page count, internal links, script nonces, search index, sitemap) |
-| CSP guard (`firebase.json` vs rendered pages) | PASS after `--update-csp` (new CopyButton script hash committed) |
-| Goldens | `sales.golden` created; landing goldens updated; `TestGoldenSweepPages` PASS |
-| Full dist build (`bash website/build.sh`) | PASS (Go SSG + Tailwind v4 minify) |
-| vnu HTML validation (sales, index, 404) | exit 0, zero errors |
-| Visual smoke (siteshots: light/dark × desktop/mobile, `/sales` added to routes) | reviewed manually — all sections render, no overflow, dark mode coherent |
-| Search smoke (siteshots) | PASS (8 hits) |
-| Lint | website `0 issues`; visualtest tools `0 issues` |
-| Repo-wide drift guards (`TestTemplGeneratedInSync`, `TestDocsCountDrift`, `TestVersionMatches*`) | PASS |
-| `nix fmt` | 0 changed |
-| `git status` at end | clean (all work committed via daemon) |
-| `website/dist/` tracking | gitignored, 0 tracked files (verified — not accidentally committed) |
+| Check                                                                                            | Result                                                                       |
+| ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| `templ generate` (pinned binary, repo root)                                                      | zero unrelated drift; only session files                                     |
+| Website module `go build` + `go test ./...`                                                      | PASS (19 pages: index, sales, 404, 16 docs)                                  |
+| `TestSiteBuildIntegrity`                                                                         | PASS (page count, internal links, script nonces, search index, sitemap)      |
+| CSP guard (`firebase.json` vs rendered pages)                                                    | PASS after `--update-csp` (new CopyButton script hash committed)             |
+| Goldens                                                                                          | `sales.golden` created; landing goldens updated; `TestGoldenSweepPages` PASS |
+| Full dist build (`bash website/build.sh`)                                                        | PASS (Go SSG + Tailwind v4 minify)                                           |
+| vnu HTML validation (sales, index, 404)                                                          | exit 0, zero errors                                                          |
+| Visual smoke (siteshots: light/dark × desktop/mobile, `/sales` added to routes)                  | reviewed manually — all sections render, no overflow, dark mode coherent     |
+| Search smoke (siteshots)                                                                         | PASS (8 hits)                                                                |
+| Lint                                                                                             | website `0 issues`; visualtest tools `0 issues`                              |
+| Repo-wide drift guards (`TestTemplGeneratedInSync`, `TestDocsCountDrift`, `TestVersionMatches*`) | PASS                                                                         |
+| `nix fmt`                                                                                        | 0 changed                                                                    |
+| `git status` at end                                                                              | clean (all work committed via daemon)                                        |
+| `website/dist/` tracking                                                                         | gitignored, 0 tracked files (verified — not accidentally committed)          |
 
 **Session commits (BuildFlow daemon, heuristic messages):** `1e4089ef` (sales.templ + wiring + test), `cd21010b` (generated file + goldens + CSP), `413e1c17` (site.css fix), `b3bdbbc0` (siteshots routes), `d2614027` (CHANGELOG + `staticPages` const). Verified: the union of these 5 commits is exactly the 12-file session diff, nothing more, nothing missing.
 
@@ -49,7 +49,7 @@
 
 ## b) PARTIALLY DONE
 
-1. **Automated regression coverage for the sales page's *look*** — works today via manual siteshots review; what's missing: theme-pinned route goldens (like `TestDemoRouteGoldens`) and an axe-core a11y sweep for site routes. Blocker: none — effort, not feasibility. Effort to finish: M (route goldens), M (site axe sweep).
+1. **Automated regression coverage for the sales page's _look_** — works today via manual siteshots review; what's missing: theme-pinned route goldens (like `TestDemoRouteGoldens`) and an axe-core a11y sweep for site routes. Blocker: none — effort, not feasibility. Effort to finish: M (route goldens), M (site axe sweep).
 2. **Discoverability of `/sales`** — reachable only via the landing CTA link (and direct URL/sitemap). Header nav deliberately untouched this session (would change every page's golden). Remaining: a placement decision + one line + golden regen. Effort: S.
 3. **Dark-mode visual blending of library surfaces** — every library class carries its `dark:` variant (compliance tests own that), and the page is coherent, but library `gray-*` surfaces are blue-tinted vs the site's warm near-black tokens (visible on Card header bands and Accordion items). Accepted as dogfood-authentic; not tuned via `Class` token overrides. Effort if wanted: S.
 4. **Commit hygiene** — all work is committed and complete, but as 5 daemon "heuristic" chunks with no semantic story (documented daemon behavior; I am not authorized to commit and the daemon races master). Content verified complete at tip. Remaining: optional squash with a real message — needs a user call (master is daemon-pushed; history rewrite has risk). Effort: S.
@@ -90,44 +90,44 @@ Nothing remains broken — build, tests, lint, CSP, and HTML validation are all 
 
 Ranked by impact. Impact: Critical/High/Medium/Low. Effort: S <30min, M 30min–2h, L >2h.
 
-| # | Task | Impact | Effort | Category |
-|---|---|---|---|---|
-| 1 | Run `scripts/ci-repro.sh --lint --website` at tip before the next push (M03 ritual; not yet run this session) | Critical | S | Quality |
-| 2 | Add theme-pinned route goldens for `/sales` + index (light+dark, desktop+mobile) to `visualtest` | High | M | Quality |
-| 3 | Extend the axe-core sweep (+ touch-target, zoom-reflow) to the built site's routes | High | M | Quality |
-| 4 | Add website goldens or `dist/` to the HTML validation gate (script + CI Website workflow) | High | S | Quality |
-| 5 | Derive the two hand-typed claims on the sales page: "Go 1.26+" from `go.mod`, "v1" from `utils.Version` | Medium | S | Quality |
-| 6 | Export the site page-list builder so `TestSiteBuildIntegrity` derives the page count structurally | Medium | S | Quality |
-| 7 | Decide `/sales` header-nav placement; if added, regenerate all page goldens in the same commit | Medium | S | Feature |
-| 8 | Squash the session's 5 daemon heuristic commits into one semantic commit (needs daemon coordination / user authorization) | Medium | S | Cleanup |
-| 9 | Assert the dogfood claim in the integrity test: `sales.html` must reference no framework script (react/vue/alpine/htmx-CDN) | Medium | S | Quality |
-| 10 | CopyButton click-through proof on the built site (clipboard assert, siteshots-style smoke) | Medium | M | Quality |
-| 11 | Include sales/pitch content in the search index (scope decision: docs-search vs site-search) | Medium | M | Feature |
-| 12 | Per-page script audit: drop `newsletter.js` from pages without a newsletter form | Low | S | Cleanup |
-| 13 | Tune library card/Accordion surfaces on the site via `Class` token overrides (dark tint mismatch) | Low | S | Quality |
-| 14 | Dedicated OG image for `/sales` (`/og/sales.png`) | Low | M | Feature |
-| 15 | First FAQ item `Open: true` (conversion best practice; CRO call) | Low | S | Feature |
-| 16 | Anchor IDs for sales sections (`#problem`, `#proof`, `#faq`) for shareable deep links | Low | S | Feature |
-| 17 | Derive sitemap `lastmod` for `/sales` from git (parity with docs pages) | Low | S | Quality |
-| 18 | Document the site-content convention (data.go vs per-page tables); move sales tables if data.go wins | Low | S | Cleanup |
-| 19 | Link the FAQ's "three regression layers" claim to the actual testing docs pages | Low | S | Documentation |
-| 20 | Add derived social-proof to the sales hero (GitHub stars badge, landing-style) | Low | S | Feature |
-| 21 | Mention the sales page from README (badge/link row) | Low | S | Documentation |
-| 22 | Lighthouse/perf budget check for landing + sales (single CSS file, fonts preloaded — should be clean) | Low | M | Quality |
-| 23 | Fix pre-existing gopls `writestring` warnings in `cmd/site/main.go:334/337` | Low | S | Cleanup |
-| 24 | Apply `templ QF1002` tagged-switch hint in `docs.templ:197` | Low | S | Cleanup |
-| 25 | Apply `templ QF1003` tagged-switch hint in `display/chart_shared.templ:59` | Low | S | Cleanup |
-| 26 | Run full `visualtest` module lint (this session only linted `./tools/...`) | Low | S | Quality |
-| 27 | Upstream idea: `Scrollback` `Prompt` field so prompt glyphs don't abuse the timestamp column (verify-before-filing first) | Low | S | Feature |
-| 28 | Reusable recipe doc: "dogfood marketing page" pattern (derived counts + self-render proof) for other LarsArtmann projects | Low | S | Documentation |
-| 29 | Cross-link the FAQ cost answer to the LICENSE file | Low | S | Documentation |
-| 30 | When nixpkgs' vnu updates, prune the check-html-valid.sh ignore list (documented standing task; I re-confirmed the local/CI vnu split still exists) | Low | S | Cleanup |
-| 31 | Consider `data-animate` section-padding variant (py-24 hardcoded) if more campaign-style pages follow | Low | S | Feature |
-| 32 | Confirm the Website CI path filters still fire for `website/**` changes post-Astro-removal (my change assumed it; CI run will prove it) | Medium | S | Quality |
-| 33 | Post-deploy: verify `https://templcomponents.lars.software/sales` serves with the committed CSP header (Firebase headers apply) | High | S | Quality |
-| 34 | Decide analytics/conversion-measurement stance for the CTA (privacy-preserving or none) — needs owner input | Medium | S | Decision |
+| #  | Task                                                                                                                                                | Impact   | Effort | Category      |
+| -- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------ | ------------- |
+| 1  | Run `scripts/ci-repro.sh --lint --website` at tip before the next push (M03 ritual; not yet run this session)                                       | Critical | S      | Quality       |
+| 2  | Add theme-pinned route goldens for `/sales` + index (light+dark, desktop+mobile) to `visualtest`                                                    | High     | M      | Quality       |
+| 3  | Extend the axe-core sweep (+ touch-target, zoom-reflow) to the built site's routes                                                                  | High     | M      | Quality       |
+| 4  | Add website goldens or `dist/` to the HTML validation gate (script + CI Website workflow)                                                           | High     | S      | Quality       |
+| 5  | Derive the two hand-typed claims on the sales page: "Go 1.26+" from `go.mod`, "v1" from `utils.Version`                                             | Medium   | S      | Quality       |
+| 6  | Export the site page-list builder so `TestSiteBuildIntegrity` derives the page count structurally                                                   | Medium   | S      | Quality       |
+| 7  | Decide `/sales` header-nav placement; if added, regenerate all page goldens in the same commit                                                      | Medium   | S      | Feature       |
+| 8  | Squash the session's 5 daemon heuristic commits into one semantic commit (needs daemon coordination / user authorization)                           | Medium   | S      | Cleanup       |
+| 9  | Assert the dogfood claim in the integrity test: `sales.html` must reference no framework script (react/vue/alpine/htmx-CDN)                         | Medium   | S      | Quality       |
+| 10 | CopyButton click-through proof on the built site (clipboard assert, siteshots-style smoke)                                                          | Medium   | M      | Quality       |
+| 11 | Include sales/pitch content in the search index (scope decision: docs-search vs site-search)                                                        | Medium   | M      | Feature       |
+| 12 | Per-page script audit: drop `newsletter.js` from pages without a newsletter form                                                                    | Low      | S      | Cleanup       |
+| 13 | Tune library card/Accordion surfaces on the site via `Class` token overrides (dark tint mismatch)                                                   | Low      | S      | Quality       |
+| 14 | Dedicated OG image for `/sales` (`/og/sales.png`)                                                                                                   | Low      | M      | Feature       |
+| 15 | First FAQ item `Open: true` (conversion best practice; CRO call)                                                                                    | Low      | S      | Feature       |
+| 16 | Anchor IDs for sales sections (`#problem`, `#proof`, `#faq`) for shareable deep links                                                               | Low      | S      | Feature       |
+| 17 | Derive sitemap `lastmod` for `/sales` from git (parity with docs pages)                                                                             | Low      | S      | Quality       |
+| 18 | Document the site-content convention (data.go vs per-page tables); move sales tables if data.go wins                                                | Low      | S      | Cleanup       |
+| 19 | Link the FAQ's "three regression layers" claim to the actual testing docs pages                                                                     | Low      | S      | Documentation |
+| 20 | Add derived social-proof to the sales hero (GitHub stars badge, landing-style)                                                                      | Low      | S      | Feature       |
+| 21 | Mention the sales page from README (badge/link row)                                                                                                 | Low      | S      | Documentation |
+| 22 | Lighthouse/perf budget check for landing + sales (single CSS file, fonts preloaded — should be clean)                                               | Low      | M      | Quality       |
+| 23 | Fix pre-existing gopls `writestring` warnings in `cmd/site/main.go:334/337`                                                                         | Low      | S      | Cleanup       |
+| 24 | Apply `templ QF1002` tagged-switch hint in `docs.templ:197`                                                                                         | Low      | S      | Cleanup       |
+| 25 | Apply `templ QF1003` tagged-switch hint in `display/chart_shared.templ:59`                                                                          | Low      | S      | Cleanup       |
+| 26 | Run full `visualtest` module lint (this session only linted `./tools/...`)                                                                          | Low      | S      | Quality       |
+| 27 | Upstream idea: `Scrollback` `Prompt` field so prompt glyphs don't abuse the timestamp column (verify-before-filing first)                           | Low      | S      | Feature       |
+| 28 | Reusable recipe doc: "dogfood marketing page" pattern (derived counts + self-render proof) for other LarsArtmann projects                           | Low      | S      | Documentation |
+| 29 | Cross-link the FAQ cost answer to the LICENSE file                                                                                                  | Low      | S      | Documentation |
+| 30 | When nixpkgs' vnu updates, prune the check-html-valid.sh ignore list (documented standing task; I re-confirmed the local/CI vnu split still exists) | Low      | S      | Cleanup       |
+| 31 | Consider `data-animate` section-padding variant (py-24 hardcoded) if more campaign-style pages follow                                               | Low      | S      | Feature       |
+| 32 | Confirm the Website CI path filters still fire for `website/**` changes post-Astro-removal (my change assumed it; CI run will prove it)             | Medium   | S      | Quality       |
+| 33 | Post-deploy: verify `https://templcomponents.lars.software/sales` serves with the committed CSP header (Firebase headers apply)                     | High     | S      | Quality       |
+| 34 | Decide analytics/conversion-measurement stance for the CTA (privacy-preserving or none) — needs owner input                                         | Medium   | S      | Decision      |
 
-*(Stopped at 34 honest items — the remaining gap to 50 would be padding. Per the status-report skill: items beyond the core are ROADMAP fuel and need HARVEST routing rigor, not automatic TODO_LIST entries.)*
+_(Stopped at 34 honest items — the remaining gap to 50 would be padding. Per the status-report skill: items beyond the core are ROADMAP fuel and need HARVEST routing rigor, not automatic TODO_LIST entries.)_
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
 

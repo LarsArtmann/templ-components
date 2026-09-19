@@ -35,8 +35,8 @@ included, playground route auto-audited), `check-html-valid.sh` clean on
 - **M11** — `SecondaryWayOut`/`SecondaryWayOutHref` ghost slot;
   `ActionButtonGhost` added to all 6 family styles + default; link and
   go-back variants; HTML goldens (`secondary_action`, `secondary_go_back`)
-  + 2 pixel goldens; demo full-model route shows "Contact support";
-  route goldens `errors_full_{light,dark}` re-captured.
+  - 2 pixel goldens; demo full-model route shows "Contact support";
+    route goldens `errors_full_{light,dark}` re-captured.
 - **M12** — `WayOutAction{Text, Href}` (wins entirely over legacy strings,
   pinned by `TestResolvedWayOut`); `ErrorMaxWidth` enum (LG/XL default/
   2XL/4XL, map+fallback); `ErrorMaxWidthIsValid` + test incl. fallback;
@@ -102,8 +102,8 @@ included, playground route auto-audited), `check-html-valid.sh` clean on
 - **M24** — `/errors/playground`: stateless GET form (family, status,
   title, message; server-side clamps/truncation) rendering a real
   ErrorPage at the real status code; demo section + `errorPlaygroundForm`
-  + `errorPlaygroundContent` components; CSS recompiled; axe audited it
-  in the full visual pass.
+  - `errorPlaygroundContent` components; CSS recompiled; axe audited it
+    in the full visual pass.
 - **M25** — Harvest complete: TODO_LIST #246/#267 consumed (removed),
   #264 narrowed to rate-limit posture, #269 (gef PR ⫱) + #270 (release
   ⫱) added, next-free-ID bumped; plan annotated with a full execution

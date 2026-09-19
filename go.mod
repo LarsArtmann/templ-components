@@ -1,6 +1,6 @@
 module github.com/larsartmann/templ-components
 
-go 1.26.7
+go 1.26
 
 require github.com/a-h/templ v0.3.1020
 
@@ -17,7 +17,7 @@ require (
 require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
-	github.com/larsartmann/go-datastar/static v0.5.0 // indirect
+	github.com/larsartmann/go-datastar/static v0.6.0 // indirect
 	github.com/larsartmann/go-error-family v0.10.1 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 )

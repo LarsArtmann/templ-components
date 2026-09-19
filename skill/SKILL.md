@@ -54,7 +54,7 @@ Don't know what to look for? Find your page type:
 
 | Component            | Signature                                           | One-liner                                                                                                                                                               |
 | -------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Card`               | `Card(props CardProps)`                             | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`, sharp corners by default (`rounded-*` via `Class`, `.tc-squircle` opt-in)                                                                            |
+| `Card`               | `Card(props CardProps)`                             | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`, sharp corners by default (`rounded-*` via `Class`, `.tc-squircle` opt-in) |
 | `SimpleCard`         | `SimpleCard(props SimpleCardProps)`                 | Minimal card — children only, no header/footer                                                                                                                          |
 | `StatCard`           | `StatCard(props StatCardProps)`                     | Dashboard metric card with value, label, change, trend, icon, semantic `Tone` (`StatTone`: blue/green/yellow/red/purple), optional `Href` link                          |
 | `Grid`               | `Grid(props GridProps)`                             | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerAware` (default `true` since v2.0)                                                                   |
@@ -188,16 +188,16 @@ Don't know what to look for? Find your page type:
 
 #### `errorpage` — 4 components + 6 constructors + handler
 
-| Component / Function           | Signature                             | One-liner                                                                   |
-| ------------------------------ | ------------------------------------- | --------------------------------------------------------------------------- |
-| `ErrorPage`                    | `ErrorPage(props ErrorPageProps)`     | Full-page error display (neutral card, family accent bar, `HTTP {StatusCode}`/code/family chip row, primary + ghost secondary action, `MaxWidth`, timestamp + trace footer — 2026-09-17 redesign; 4-capture mobile/RTL visual shield)                                     |
-| `NotFound404`                  | `NotFound404(props NotFound404Props)` | Dedicated 404 page — hero numeral, search, links, configurable `LinksTitle` |
-| `ErrorDetail`                  | `ErrorDetail(props ErrorDetailProps)` | Inline error card — `Variant` picks Tinted (default) or Neutral accent-bar shell |
-| `ErrorAlert`                   | `ErrorAlert(props ErrorAlertProps)`   | Family-aware alert                                                          |
-| `ErrorHandler`                 | `ErrorHandler(err, cfg) http.Handler` | go-error-family aware HTTP handler                                          |
-| `WriteError`                   | `WriteError(w, r, err, nonce)`        | One-call error page from any handler                                        |
-| `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/title/code/why/fix/trace/status from error; prefers `Public()` user-safe message, derives family title when none set |
-| `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family                                   |
+| Component / Function           | Signature                             | One-liner                                                                                                                                                                                                                             |
+| ------------------------------ | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ErrorPage`                    | `ErrorPage(props ErrorPageProps)`     | Full-page error display (neutral card, family accent bar, `HTTP {StatusCode}`/code/family chip row, primary + ghost secondary action, `MaxWidth`, timestamp + trace footer — 2026-09-17 redesign; 4-capture mobile/RTL visual shield) |
+| `NotFound404`                  | `NotFound404(props NotFound404Props)` | Dedicated 404 page — hero numeral, search, links, configurable `LinksTitle`                                                                                                                                                           |
+| `ErrorDetail`                  | `ErrorDetail(props ErrorDetailProps)` | Inline error card — `Variant` picks Tinted (default) or Neutral accent-bar shell                                                                                                                                                      |
+| `ErrorAlert`                   | `ErrorAlert(props ErrorAlertProps)`   | Family-aware alert                                                                                                                                                                                                                    |
+| `ErrorHandler`                 | `ErrorHandler(err, cfg) http.Handler` | go-error-family aware HTTP handler                                                                                                                                                                                                    |
+| `WriteError`                   | `WriteError(w, r, err, nonce)`        | One-call error page from any handler                                                                                                                                                                                                  |
+| `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/title/code/why/fix/trace/status from error; prefers `Public()` user-safe message, derives family title when none set                                                                                                   |
+| `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family                                                                                                                                                                                             |
 
 #### `icons` — 102 icons + 3 functions
 

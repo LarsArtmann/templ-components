@@ -3,28 +3,28 @@
 **Date:** 2026-09-19 17:27 CEST
 **Session scope:** "How can templ-components better integrate with itself?" — research, implement, verify.
 **Headline:** The library inlined identical SVG path data in four places (Calendar chevrons, TagsInput markup, TagsInput JS, shared DismissButton). All four now flow from one definition (`utils/svg.PathXMark`, `icons.ChevronLeft/Right`), a new compliance guard locks the rule in, and every rendered byte is provably unchanged. Verified: all 7 modules green, lint clean, goldens byte-identical, treefmt clean.
-**Honesty note:** nothing shipped is broken. The gaps below are about *witnessed* vs *inferred* verification and work that was deliberately deferred but not harvested into the repo's TODO_LIST.
+**Honesty note:** nothing shipped is broken. The gaps below are about _witnessed_ vs _inferred_ verification and work that was deliberately deferred but not harvested into the repo's TODO_LIST.
 
 ---
 
 ## a) FULLY DONE
 
-| # | Item | Where |
-|---|------|-------|
-| 1 | Internal composition research map: all cross-package call sites, same-package sub-templates, raw-HTML-vs-existing-component candidates, module DAG imports | session transcript (agent sweep) |
-| 2 | `PathXMark` shared constant added to `utils/svg` (+ `svg_test.go` inventory row) | `utils/svg/svg.templ` |
-| 3 | `icons.X` / alias `icons.Close` repointed to `svg.PathXMark` — one definition of the close glyph | `icons/icon_paths.go` |
-| 4 | `utils.DismissButton` sources `svg.PathXMark` directly — leaf-package rule preserved (utils still cannot import icons), comment rewritten | `utils/dismiss.templ` |
-| 5 | `Calendar` month-nav chevrons: hand-rolled SVGs → `icons.Icon(icons.ChevronLeft/Right, "h-5 w-5")` — byte-identical output | `forms/calendar.templ:129` |
-| 6 | `TagsInput` X glyph: template side → `icons.IconWithStrokeWidth(icons.X, "h-3 w-3", 2)`; JS side → `icons.IconPathData(icons.X)[0]` via new `tagsInputScriptComponent` (raw-script pattern, because templ's `<script>` context sanitizes interpolations) — byte-identical output including nonce and whitespace | `forms/tags_input.templ:42-82,166` |
-| 7 | New guard `TestInlineIconPathCompliance`: sweeps 12 library dirs for inlined `d="M..."` (template + Go-embedded-JS forms), documented exemptions (`icons/icon_paths.go`, `utils/svg`) | `utils/svg_path_compliance_test.go` |
-| 8 | Regex self-check `TestInlineIconPathRegexDetectsViolations` so the detector itself cannot silently rot | same file |
-| 9 | Icon-count drift guard fixed: `countIconNames` regex now accepts `svg.Path*` constant references (was quoted-literal-only; my repoint tripped it 102→101) | `utils/docs_count_test.go:246` |
-| 10 | `utils/svg/svg_test.go` converted to external `package svg_test` — required because utils now imports utils/svg; an in-package test importing utils is an import cycle | `utils/svg/svg_test.go` |
-| 11 | `cmd/tc/_sources` scaffolder mirror re-synced (calendar.templ, tags_input.templ); sync guard green | `cmd/tc/_sources/forms/*` |
-| 12 | CHANGELOG `[Unreleased]` entry (kept warm per release convention) | `CHANGELOG.md` |
-| 13 | AGENTS.md "SVG paths" convention expanded: the rule, the guard, and two new gotchas (external-test-package cycle; count-regex constant form) | `AGENTS.md:163` |
-| 14 | Verification: pinned `templ generate`, workspace build, all 6 sub-modules + full root module + visualtest compile **green**; golangci-lint **0 issues** on forms/utils/icons (3 wsl_v5 nits fixed); `nix fmt` 0 changed; integration CSP nonce test green; feedback + errorpage goldens green (DismissButton consumers) | per-module loop |
+| #  | Item                                                                                                                                                                                                                                                                                                                    | Where                               |
+| -- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| 1  | Internal composition research map: all cross-package call sites, same-package sub-templates, raw-HTML-vs-existing-component candidates, module DAG imports                                                                                                                                                              | session transcript (agent sweep)    |
+| 2  | `PathXMark` shared constant added to `utils/svg` (+ `svg_test.go` inventory row)                                                                                                                                                                                                                                        | `utils/svg/svg.templ`               |
+| 3  | `icons.X` / alias `icons.Close` repointed to `svg.PathXMark` — one definition of the close glyph                                                                                                                                                                                                                        | `icons/icon_paths.go`               |
+| 4  | `utils.DismissButton` sources `svg.PathXMark` directly — leaf-package rule preserved (utils still cannot import icons), comment rewritten                                                                                                                                                                               | `utils/dismiss.templ`               |
+| 5  | `Calendar` month-nav chevrons: hand-rolled SVGs → `icons.Icon(icons.ChevronLeft/Right, "h-5 w-5")` — byte-identical output                                                                                                                                                                                              | `forms/calendar.templ:129`          |
+| 6  | `TagsInput` X glyph: template side → `icons.IconWithStrokeWidth(icons.X, "h-3 w-3", 2)`; JS side → `icons.IconPathData(icons.X)[0]` via new `tagsInputScriptComponent` (raw-script pattern, because templ's `<script>` context sanitizes interpolations) — byte-identical output including nonce and whitespace         | `forms/tags_input.templ:42-82,166`  |
+| 7  | New guard `TestInlineIconPathCompliance`: sweeps 12 library dirs for inlined `d="M..."` (template + Go-embedded-JS forms), documented exemptions (`icons/icon_paths.go`, `utils/svg`)                                                                                                                                   | `utils/svg_path_compliance_test.go` |
+| 8  | Regex self-check `TestInlineIconPathRegexDetectsViolations` so the detector itself cannot silently rot                                                                                                                                                                                                                  | same file                           |
+| 9  | Icon-count drift guard fixed: `countIconNames` regex now accepts `svg.Path*` constant references (was quoted-literal-only; my repoint tripped it 102→101)                                                                                                                                                               | `utils/docs_count_test.go:246`      |
+| 10 | `utils/svg/svg_test.go` converted to external `package svg_test` — required because utils now imports utils/svg; an in-package test importing utils is an import cycle                                                                                                                                                  | `utils/svg/svg_test.go`             |
+| 11 | `cmd/tc/_sources` scaffolder mirror re-synced (calendar.templ, tags_input.templ); sync guard green                                                                                                                                                                                                                      | `cmd/tc/_sources/forms/*`           |
+| 12 | CHANGELOG `[Unreleased]` entry (kept warm per release convention)                                                                                                                                                                                                                                                       | `CHANGELOG.md`                      |
+| 13 | AGENTS.md "SVG paths" convention expanded: the rule, the guard, and two new gotchas (external-test-package cycle; count-regex constant form)                                                                                                                                                                            | `AGENTS.md:163`                     |
+| 14 | Verification: pinned `templ generate`, workspace build, all 6 sub-modules + full root module + visualtest compile **green**; golangci-lint **0 issues** on forms/utils/icons (3 wsl_v5 nits fixed); `nix fmt` 0 changed; integration CSP nonce test green; feedback + errorpage goldens green (DismissButton consumers) | per-module loop                     |
 
 ## b) PARTIALLY DONE
 
@@ -48,11 +48,11 @@
 
 Nothing shipped is broken. Self-inflicted friction, in order of embarrassment:
 
-1. **Fragile drift-guard was a landmine — and I only defused it because my own change stepped on it.** `countIconNames` counted quoted literals, not map entries. Any future constant-referencing entry in a *different* form (e.g. a non-svg package constant) trips it again. The regex `("[^"]*"|svg\.Path[A-Za-z]*)` remains narrow.
+1. **Fragile drift-guard was a landmine — and I only defused it because my own change stepped on it.** `countIconNames` counted quoted literals, not map entries. Any future constant-referencing entry in a _different_ form (e.g. a non-svg package constant) trips it again. The regex `("[^"]*"|svg\.Path[A-Za-z]*)` remains narrow.
 2. **Em dash in a source comment.** Violated the repo's own no-em-dash code rule on first write of the dismiss.templ comment; caught and fixed myself, but it should not have been written.
 3. **Two tool-order mistakes** (multiedit before view; a wasted round trip each). Process, not product.
-4. **Misread `check-tc-sources-sync.sh --fix` exit semantics** (fix mode exits 1 *by design*, even on success). Briefly concluded the fix had failed; the mirror was already correct. Cost: one redundant command.
-5. **Git history for this work is scattered across meaningless daemon commits** (`776dd79a`, `a101b373`, …) — expected per repo docs, but the change's *narrative* lives only in CHANGELOG/AGENTS, not in commit messages. Final tree state is verified; history is noise.
+4. **Misread `check-tc-sources-sync.sh --fix` exit semantics** (fix mode exits 1 _by design_, even on success). Briefly concluded the fix had failed; the mirror was already correct. Cost: one redundant command.
+5. **Git history for this work is scattered across meaningless daemon commits** (`776dd79a`, `a101b373`, …) — expected per repo docs, but the change's _narrative_ lives only in CHANGELOG/AGENTS, not in commit messages. Final tree state is verified; history is noise.
 
 ## e) WHAT WE SHOULD IMPROVE
 
@@ -68,6 +68,7 @@ Nothing shipped is broken. Self-inflicted friction, in order of embarrassment:
 ## f) NEXT TASKS (up to 50 — brainstorm ranked by impact, most are roadmap fuel)
 
 **P1 — this week (small, high-confidence):**
+
 1. Harvest section c.1–c.7 into `TODO_LIST.md` (docs-health HARVEST rules).
 2. Verify TagsInput is rendered by `integration/csp_nonce_test.go`; add if missing.
 3. Add `scripts/check-svg-paths.sh`-style shell guard to `.githooks/pre-commit` (mirror the tc-sources guard, <100ms).
@@ -135,4 +136,4 @@ Nothing shipped is broken. Self-inflicted friction, in order of embarrassment:
 
 ---
 
-*Point-in-time snapshot; goes stale. Harvest section f into TODO_LIST.md or annotate done via docs-health later.*
+_Point-in-time snapshot; goes stale. Harvest section f into TODO_LIST.md or annotate done via docs-health later._
