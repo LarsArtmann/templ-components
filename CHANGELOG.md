@@ -6,6 +6,51 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Website pages are now HTML-validator-clean under the repo's W3C gate.**
+  The Nu Html Checker gate (`scripts/check-html-valid.sh`) expanded to cover
+  the website module's goldens, and the expansion caught three real defects:
+  the landing hero's code block nested chroma's own `<pre>` inside the page's
+  (the formatter now runs with `PreventSurroundingPre` + class-emitting mode
+  and the fallback emits bare escaped text); the docs search input was
+  `type="search"` while carrying `role="combobox"` (ARIA-in-HTML allows the
+  combobox role only on text inputs — now `type="text"`, matching the APG
+  pattern); and one documented ignore class covers vnu's spec lag
+  (`media` on `meta[name=theme-color]` is WHATWG-legal).
+
+- **The sales page renders its own card surfaces in dark mode.** The
+  marketing sections carry warm site tokens (`--bg-card`, `--bg-card-solid`,
+  `--border`), but the library's card shells own `dark:bg-gray-800/900`
+  defaults that beat un-prefixed overrides — every surface now sets the
+  explicit `dark:` pair via `Class` (tailwind-merge resolves the conflict),
+  and the FAQ accordion styles its `<details>` children through a complete
+  arbitrary-variant literal so the scanner compiles it. All 8 site route
+  goldens regenerated.
+
+- **The search index covers docs pages only — test-enforced.** The search
+  build derives its URL allowlist from `pages.AllDocs()` and fails on any
+  out-of-scope entry, so marketing pages (`/`, `/sales`) can never silently
+  enter site search.
+
+### Changed
+
+- **Sitemap `lastmod` is real for `/` and `/sales`.** The sitemap writer
+  computes each top-level page's lastmod from the newest commit across its
+  actual source files (landing + hero for `/`, sales page for `/sales`);
+  new top-level pages must register a lastmod source alongside their
+  `topLevelPages` entry.
+
+- **Docs pages load one fewer script.** `copy-code.js` was in the docs
+  page script set but its `#copy-btn` hook only exists on the landing hero;
+  docs copy buttons bind through `docs.js`. Site route goldens updated.
+
+- **Site route goldens are deterministic.** `website/build.sh` accepts
+  `--skip-stars` (env `SITE_SKIP_STARS=1`) and the `.#visual` flake app sets
+  it, so regression captures no longer flake when the live GitHub stars
+  badge changes height between builds; production builds keep the live
+  badge.
+
 ## [1.18.1] — 2026-09-19
 
 ### Fixed

@@ -134,7 +134,7 @@ generator auto-injects the templ import for `templ.Attributes`/`templ.Component`
 explicit import produces `templ redeclared in this block` build errors in the generated
 `*_templ.go` (found while adding `formWireAttributes` to `forms/form.templ`). Relatedly, the
 templ LSP reports stale cross-module diagnostics long after edits — `nix run .#build` is ground truth;
-restart the LSP when diagnostics actively mislead (e.g. the phantom go-1.27.1 error during the 2026-09-17 release).
+restart the LSP when diagnostics actively mislead (e.g. the phantom go-1.27.1 error during the 2026-09-17 release). Concretely (verified twice, 2026-09-19): templ QF100x hints and gopls analyzer warnings (writestring, QF1002) keep citing line numbers that no longer exist after the fix lands — never go hunting for code at a cited line; golangci-lint run + a fresh source read are ground truth.
 
 ## Architecture
 
