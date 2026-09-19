@@ -48,7 +48,7 @@ func Logo(class string) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var2).String())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/pages/header.templ`, Line: 1, Col: 0}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/header.templ`, Line: 1, Col: 0}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
@@ -101,7 +101,7 @@ func Header(nonce string) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(SiteName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/pages/header.templ`, Line: 26, Col: 86}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/header.templ`, Line: 26, Col: 86}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -142,7 +142,7 @@ func Header(nonce string) templ.Component {
 		var templ_7745c5c3_Var6 templ.SafeURL
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(GitHubURL))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/pages/header.templ`, Line: 37, Col: 39}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/header.templ`, Line: 37, Col: 39}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -167,6 +167,9 @@ func Header(nonce string) templ.Component {
 // docSearch is the header's documentation search box. One instance per page —
 // inside #nav-links, which doubles as the mobile menu panel — wired by
 // /assets/js/search.js (lazy-fetched index, combobox keyboard support).
+// type="text" (not "search"): ARIA in HTML permits role="combobox" on a text
+// input only; on type="search" the implicit searchbox role makes combobox +
+// aria-expanded invalid (this is also the APG combobox pattern's input type).
 func docSearch() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -188,7 +191,7 @@ func docSearch() templ.Component {
 			templ_7745c5c3_Var7 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"doc-search-wrap\"><label class=\"sr-only\" for=\"doc-search-input\">Search documentation</label> <input type=\"search\" id=\"doc-search-input\" class=\"doc-search max-sm:w-full\" placeholder=\"Search docs…\" autocomplete=\"off\" spellcheck=\"false\" role=\"combobox\" aria-expanded=\"false\" aria-controls=\"doc-search-results\" aria-autocomplete=\"list\"><div class=\"doc-search-results hidden\" id=\"doc-search-results\" role=\"listbox\" aria-label=\"Search results\"></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"doc-search-wrap\"><label class=\"sr-only\" for=\"doc-search-input\">Search documentation</label> <input type=\"text\" id=\"doc-search-input\" class=\"doc-search max-sm:w-full\" placeholder=\"Search docs…\" autocomplete=\"off\" spellcheck=\"false\" role=\"combobox\" aria-expanded=\"false\" aria-controls=\"doc-search-results\" aria-autocomplete=\"list\"><div class=\"doc-search-results hidden\" id=\"doc-search-results\" role=\"listbox\" aria-label=\"Search results\"></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

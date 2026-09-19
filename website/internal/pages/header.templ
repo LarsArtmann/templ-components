@@ -47,11 +47,14 @@ templ Header(nonce string) {
 // docSearch is the header's documentation search box. One instance per page —
 // inside #nav-links, which doubles as the mobile menu panel — wired by
 // /assets/js/search.js (lazy-fetched index, combobox keyboard support).
+// type="text" (not "search"): ARIA in HTML permits role="combobox" on a text
+// input only; on type="search" the implicit searchbox role makes combobox +
+// aria-expanded invalid (this is also the APG combobox pattern's input type).
 templ docSearch() {
 	<div class="doc-search-wrap">
 		<label class="sr-only" for="doc-search-input">Search documentation</label>
 		<input
-			type="search"
+			type="text"
 			id="doc-search-input"
 			class="doc-search max-sm:w-full"
 			placeholder="Search docs…"
