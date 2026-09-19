@@ -7,7 +7,7 @@
 
 **Server-rendered Go components that ship real HTML — no JavaScript framework required. Built on [templ](https://templ.guide), [HTMX](https://htmx.org), and [Tailwind CSS v4](https://tailwindcss.com).**
 
-[Documentation](https://templcomponents.lars.software) · [Quick Start](#quick-start) · [Component Catalog](#component-catalog)
+[Documentation](https://templcomponents.lars.software) · [Why templ-components](https://templcomponents.lars.software/sales) · [Quick Start](#quick-start) · [Component Catalog](#component-catalog)
 
 No DaisyUI. No Node.js. No framework lock-in.
 
