@@ -287,22 +287,22 @@ func renderDocs(repoRoot, nonce string) ([]build.Page, []build.SearchDoc, error)
 
 // lastUpdated asks git for the last commit date touching a docs source
 // (YYYY-MM-DD); empty when unavailable (shallow clones, non-git runs).
-func lastUpdated(repoRoot, slug string) string {
+// lastUpdated returns the committer date (YYYY-MM-DD) of the newest commit
+// touching any of the given repo-relative paths — the sitemap lastmod source.
+// Empty when git is unavailable or the paths have no history.
+func lastUpdated(repoRoot string, paths ...string) string {
+	if len(paths) == 0 {
+		return ""
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	//nolint:gosec // repository-controlled path, never user input
-	cmd := exec.CommandContext(
-		ctx,
-		"git",
-		"-C",
-		repoRoot,
-		"log",
-		"-1",
-		"--format=%cs",
-		"--",
-		"website/content/docs/"+slug+".md",
-	)
+	args := []string{"-C", repoRoot, "log", "-1", "--format=%cs", "--"}
+	args = append(args, paths...)
+
+	//nolint:gosec // repository-controlled paths, never user input
+	cmd := exec.CommandContext(ctx, "git", args...)
 
 	out, err := cmd.Output()
 	if err != nil {
@@ -319,19 +319,23 @@ type sitemapEntry struct {
 }
 
 // writeSitemaps emits sitemap.xml (all pages, git lastmod where known) and
-// sitemap-index.xml (the URL robots.txt already references).
+// sitemap-index.xml (the URL robots.txt already references). Non-docs pages
+// take their lastmod from the page's primary .templ source(s); docs pages
+// from their content markdown. CONVENTION: a new top-level page must be
+// added to topLevelPages AND get a lastmod source here — one entry per
+// rendered top-level page, never a hand-kept count.
 func writeSitemaps(outDir, repoRoot string) error {
 	entries := make([]sitemapEntry, 0, 2+len(pages.AllDocs()))
 	entries = append(
 		entries,
-		sitemapEntry{loc: pages.SiteURL + "/", lastmod: ""},
-		sitemapEntry{loc: pages.SiteURL + "/sales", lastmod: ""},
+		sitemapEntry{loc: pages.SiteURL + "/", lastmod: lastUpdated(repoRoot, "website/internal/pages/landing.templ", "website/internal/pages/hero.templ")},
+		sitemapEntry{loc: pages.SiteURL + "/sales", lastmod: lastUpdated(repoRoot, "website/internal/pages/sales.templ")},
 	)
 
 	for _, doc := range pages.AllDocs() {
 		entries = append(entries, sitemapEntry{
 			loc:     pages.SiteURL + "/" + doc.Slug,
-			lastmod: lastUpdated(repoRoot, doc.Slug),
+			lastmod: lastUpdated(repoRoot, "website/content/docs/"+doc.Slug+".md"),
 		})
 	}
 

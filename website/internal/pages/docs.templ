@@ -8,10 +8,10 @@ import (
 )
 
 // docsScripts are the defer-loaded scripts for docs pages: shared chrome plus
-// the code-copy behavior for highlighted blocks.
+// docs.js (which binds the .code-copy buttons that copy-code.js's #copy-btn
+// hook does not — copy-code.js is the landing hero only).
 var docsScripts = []string{
 	"/assets/js/docs.js",
-	"/assets/js/copy-code.js",
 	"/assets/js/theme-sync.js",
 	"/assets/js/header.js",
 	"/assets/js/search.js",
