@@ -19,3 +19,4 @@ Practical guides for common templ-components patterns.
 | [Multi-Step Forms](multi-step-forms.md)                       | Server-owned wizard state machine — `StepIndicator` + per-step wired fragments, both dialects |
 | [Split Identity Page](split-identity-page.md)                 | Two-zone status page (identity + actions) with Eyebrow + Scrollback                           |
 | [Vendored Tailwind Scanning](vendored-tailwind-scanning.md)   | Deterministic `@source` scanning for vendored consumers (class-inventory file)                |
+| [Dogfooded Marketing Page](dogfood-marketing-page.md)         | The site sells the library through the library — derived counts, self-render, dark overrides  |
