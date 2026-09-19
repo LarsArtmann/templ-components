@@ -16,17 +16,17 @@ const (
 
 func TestSecurityHeaders(t *testing.T) {
 	t.Parallel()
-	t.Run("security headers rendered when enabled", func(t *testing.T) {
+	t.Run("deprecated security headers flag is a no-op", func(t *testing.T) {
 		t.Parallel()
 
 		props := DefaultPageProps()
 		props.SecurityHeaders = true
 		props.Nonce = testNonce
 		output := utils.Render(t, Base(props))
-		utils.AssertContains(t, output, `http-equiv="X-Content-Type-Options"`)
-		utils.AssertContains(t, output, `content="nosniff"`)
-		utils.AssertContains(t, output, `http-equiv="Referrer-Policy"`)
-		utils.AssertContains(t, output, `content="strict-origin-when-cross-origin"`)
+		utils.AssertNotContains(t, output, `http-equiv="X-Content-Type-Options"`)
+		utils.AssertNotContains(t, output, `content="nosniff"`)
+		utils.AssertNotContains(t, output, `http-equiv="Referrer-Policy"`)
+		utils.AssertNotContains(t, output, `content="strict-origin-when-cross-origin"`)
 	})
 
 	t.Run("security headers not rendered when disabled", func(t *testing.T) {
