@@ -1,8 +1,11 @@
 package visualtest
 
 import (
+	"bytes"
 	"context"
+	"encoding/json/v2"
 	"fmt"
+	"image/png"
 	"net"
 	"net/http"
 	"os"
@@ -217,7 +220,7 @@ func compareSiteGolden(t *testing.T, name string, shot []byte) {
 		return
 	}
 
-	actualImg, err := decodePNG(shot)
+	actualImg, err := png.Decode(bytes.NewReader(shot))
 	if err != nil {
 		t.Fatalf("site route golden[%s]: decode actual: %v", name, err)
 	}
@@ -230,8 +233,15 @@ func compareSiteGolden(t *testing.T, name string, shot []byte) {
 	)
 	if !result.Match {
 		writeFailureArtifacts(t, "routes/"+name, shot, diff)
-		t.Errorf("site route golden[%s]: visual mismatch — %s (max %.4f%%).", name, result.Diff, defaultOptions(Options{}).MaxMismatch)
+		t.Errorf("site route golden[%s]: visual mismatch — %s (max %.4f%%).\n"+
+			"Inspect testdata/.fail/routes.%s.{actual,diff}.png, then run `nix run .#visual -- -update -run TestSiteRouteGoldens` if intended.",
+			name, result, defaultOptions(Options{}).MaxMismatch*percentMultiplier, name)
+
+		return
 	}
+
+	cleanFailureArtifacts("routes/" + name)
+	t.Logf("site route golden[%s]: OK (%.4f%% mismatched)", name, result.MismatchPct)
 }
 
 // axeSiteRoutes are the site pages under a11y audit (light + dark: the site's
@@ -370,7 +380,25 @@ func TestSiteTouchTargetAudit(t *testing.T) {
 				t.Fatalf("site touch target audit %s: %v", route.path, err)
 			}
 
-			assertTouchFindings(t, route.name, raw)
+			var findings []touchTargetFinding
+
+			if err := json.Unmarshal([]byte(raw), &findings); err != nil {
+				t.Fatalf("site touch target audit %s: decode %v (raw %s)", route.path, err, raw)
+			}
+
+			for _, f := range findings {
+				if f.Exempt {
+					t.Logf("%s: sub-24 native control (exempt, logged): %s %dx%d", route.name, f.Sel, f.W, f.H)
+
+					continue
+				}
+
+				t.Errorf(
+					"%s: %s renders a %dx%d target — below the WCAG 2.2 AA 24px minimum. "+
+						"Enlarge the control (padding/size), not the audit.",
+					route.name, f.Sel, f.W, f.H,
+				)
+			}
 		})
 	}
 }
@@ -411,7 +439,18 @@ func TestSiteZoomReflowAudit(t *testing.T) {
 					t.Fatalf("site reflow audit %s: %v", route.path, err)
 				}
 
-				assertReflowFinding(t, zoom.name+"/"+route.name, raw, int(zoom.width))
+				var finding reflowFinding
+
+				if err := json.Unmarshal([]byte(raw), &finding); err != nil {
+					t.Fatalf("site reflow audit %s: decode %v (raw %s)", route.path, err, raw)
+				}
+
+				if finding.Overflow > 1 {
+					t.Errorf(
+						"%s at %dpx: horizontal overflow of %dpx (worst offender: %s) — WCAG 1.4.10 reflow violation",
+						zoom.name+"/"+route.name, zoom.width, finding.Overflow, finding.Worst,
+					)
+				}
 			})
 		}
 	}

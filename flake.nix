@@ -250,6 +250,10 @@
                     # `nix flake update`. Update deliberately: see nixpkgs-chromium
                     # input comment in flake.nix.
                     inputs'.nixpkgs-chromium.legacyPackages.chromium
+                    # website/dist build for the site-route tests (build.sh needs
+                    # the Tailwind v4 CLI; the site SSG runs via go run).
+                    pkgs.tailwindcss_4
+                    pkgs.bash
                   ];
                   text = ''
                     export GOEXPERIMENT=jsonv2
@@ -257,6 +261,11 @@
                     # the parent go.work would shadow it, so disable workspace mode.
                     export GOWORK=off
                     export CHROMEDP_CHROME_PATH="${inputs'.nixpkgs-chromium.legacyPackages.chromium}/bin/chromium"
+                    # Build the website dist: the site-route tests (goldens, axe
+                    # sweep, touch-target/reflow audits) hard-fail without it —
+                    # CI treats skips as failures, so a missing dist must never
+                    # degrade into a skip.
+                    bash website/build.sh
                     # Font determinism: the demo CSS declares Inter, JetBrains
                     # Mono, and Space Grotesk (headings). Neither dev machines
                     # nor CI runners reliably have them installed, and host
