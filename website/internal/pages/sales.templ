@@ -314,7 +314,7 @@ templ faqAnswerRich(content templ.Component) {
 
 // faqLink styles an inline evidence link inside a FAQ answer.
 templ faqLink(href, text string) {
-	<a href={ templ.SafeURL(href) } class="text-accent hover:underline underline-offset-2">{ text }</a>
+	<a href={ templ.SafeURL(href) } class="text-accent underline underline-offset-2 hover:text-accent-hover">{ text }</a>
 }
 
 // faqProductionReady states the version claim (derived from utils.Version)
@@ -322,7 +322,7 @@ templ faqLink(href, text string) {
 // documents the guards.
 templ faqProductionReady(stats build.Stats) {
 	It is. The library is at { libraryMajorLabel(stats.LibraryVersion) } under semantic versioning, and every component ships behind
-	<a href="/guides/invariants" class="text-accent hover:underline underline-offset-2">three regression layers</a>:
+	<a href="/guides/invariants" class="text-accent underline underline-offset-2 hover:text-accent-hover">three regression layers</a>:
 	HTML golden tests, pixel-level visual tests in headless Chromium, and an axe-core accessibility gate that fails the build on serious violations. This website — docs included — is rendered through the library itself.
 }
 
@@ -330,7 +330,7 @@ templ faqProductionReady(stats build.Stats) {
 // is verifiable in one click.
 templ faqCost() {
 	Nothing. MIT licensed —
-	<a href={ templ.SafeURL(GitHubURL + "/blob/master/LICENSE") } class="text-accent hover:underline underline-offset-2">read the license</a> —
+	<a href={ templ.SafeURL(GitHubURL + "/blob/master/LICENSE") } class="text-accent underline underline-offset-2 hover:text-accent-hover">read the license</a> —
 	no paid tier, no telemetry. The dependency list is short and auditable — templ and tailwind-merge-go at the core, with integrations like HTMX, Datastar, ECharts, and error pages as separate opt-in modules. Adopt one component or all of them; deleting the import deletes the library.
 }
 

@@ -305,6 +305,11 @@ func siteAxeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, 
 			theme,
 		), nil),
 		chromedp.Evaluate(siteScrollRevealJS, nil),
+		// The scroll-through FIRES the [data-animate] entrance animations;
+		// axe samples computed color+opacity mid-animation and reports bogus
+		// blended-contrast findings (measured: elements at ~38% opacity).
+		// Settle every finite animation before auditing.
+		waitAnimationsSettled(),
 		chromedp.Sleep(settleDelay),
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			for range 2 {
