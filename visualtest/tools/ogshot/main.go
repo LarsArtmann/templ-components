@@ -126,11 +126,11 @@ func run(dist, out string) error {
 		return fmt.Errorf("capture OG card: %w", err)
 	}
 
-	if err := os.MkdirAll(filepath.Dir(out), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(out), 0o750); err != nil {
 		return fmt.Errorf("create output dir: %w", err)
 	}
 
-	if err := os.WriteFile(out, png, screenshotFmt); err != nil { //nolint:gosec // CLI-controlled output path
+	if err := os.WriteFile(out, png, screenshotFmt); err != nil {
 		return fmt.Errorf("write %s: %w", out, err)
 	}
 
@@ -144,7 +144,7 @@ func run(dist, out string) error {
 func serveDist(dist string) (string, func(), error) {
 	cardPath := filepath.Join(dist, ogPageName)
 
-	if err := os.WriteFile(cardPath, []byte(ogCardHTML), screenshotFmt); err != nil { //nolint:gosec // CLI-controlled dist root
+	if err := os.WriteFile(cardPath, []byte(ogCardHTML), screenshotFmt); err != nil {
 		return "", nil, fmt.Errorf("write OG card page: %w", err)
 	}
 
