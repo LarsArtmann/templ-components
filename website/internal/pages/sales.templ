@@ -80,8 +80,10 @@ templ salesHero(stats build.Stats) {
 						{Timestamp: "→", Tag: "done", Text: fmt.Sprintf("%d components · %d icons · zero Node packages installed", stats.Components, stats.Icons), Tone: display.ScrollbackToneSuccess},
 						{Timestamp: "→", Tag: "done", Text: "HTML served from net/http — there is no hydration step", Tone: display.ScrollbackToneSuccess},
 					},
-					Stagger:   true,
-					AriaLabel: "Install workflow: go get the library, run templ generate and go build, then serve HTML from net/http with no Node packages installed",
+					Stagger: true,
+					BaseProps: utils.BaseProps{
+						AriaLabel: "Install workflow: go get the library, run templ generate and go build, then serve HTML from net/http with no Node packages installed",
+					},
 				})
 			</div>
 		</div>

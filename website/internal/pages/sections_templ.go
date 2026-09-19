@@ -776,7 +776,7 @@ func CTA() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 67, "</a></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 67, "</a></div><p class=\"mt-8 text-sm text-text-muted\">Still evaluating? <a href=\"/sales\" class=\"text-accent hover:text-accent-hover underline-offset-4 hover:underline\">Read the full pitch</a> — every argument on one page.</p></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
