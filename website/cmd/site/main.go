@@ -298,7 +298,12 @@ func lastUpdated(repoRoot string, paths ...string) string {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	args := []string{"-C", repoRoot, "log", "-1", "--format=%cs", "--"}
+	// gitFixedArgs counts the fixed "-C repo log -1 --format --" prefix in
+	// lastUpdated's git invocation (prealloc capacity seed).
+	const gitFixedArgs = 6
+
+	args := make([]string, 0, gitFixedArgs+len(paths))
+	args = append(args, "-C", repoRoot, "log", "-1", "--format=%cs", "--")
 	args = append(args, paths...)
 
 	//nolint:gosec // repository-controlled paths, never user input
@@ -326,10 +331,15 @@ type sitemapEntry struct {
 // rendered top-level page, never a hand-kept count.
 func writeSitemaps(outDir, repoRoot string) error {
 	entries := make([]sitemapEntry, 0, 2+len(pages.AllDocs()))
-	entries = append(
-		entries,
-		sitemapEntry{loc: pages.SiteURL + "/", lastmod: lastUpdated(repoRoot, "website/internal/pages/landing.templ", "website/internal/pages/hero.templ")},
-		sitemapEntry{loc: pages.SiteURL + "/sales", lastmod: lastUpdated(repoRoot, "website/internal/pages/sales.templ")},
+	landingSources := []string{"website/internal/pages/landing.templ", "website/internal/pages/hero.templ"}
+	entries = append(entries,
+		sitemapEntry{loc: pages.SiteURL + "/", lastmod: lastUpdated(repoRoot, landingSources...)},
+	)
+	entries = append(entries,
+		sitemapEntry{
+			loc:     pages.SiteURL + "/sales",
+			lastmod: lastUpdated(repoRoot, "website/internal/pages/sales.templ"),
+		},
 	)
 
 	for _, doc := range pages.AllDocs() {

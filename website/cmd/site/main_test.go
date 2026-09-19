@@ -155,6 +155,7 @@ func assertSearchIndex(t *testing.T, outDir string, rendered []build.RenderedPag
 	// for. renderDocs is the only SearchDoc source; this assertion fails
 	// loudly if a future change starts indexing other pages.
 	docURLs := map[string]bool{}
+
 	for _, ref := range pages.AllDocs() {
 		if ref.Slug != "" {
 			docURLs["/"+ref.Slug] = true
