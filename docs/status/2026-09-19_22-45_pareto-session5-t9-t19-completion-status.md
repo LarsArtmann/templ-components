@@ -162,11 +162,11 @@ site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
 ## f) NEXT TASKS (ordered, ≤50)
 
 **Finish the plan (blocking the push):**
-1. T18: run Lighthouse on `/sales.html`, record both pages' scores in the plan
-   annotation (§2 outcome column).
-2. T18: quick-wins triage — inspect the 7 perf deductions on landing (likely
-   render-blocking font preload chain / LCP); fix ONLY trivial ones (e.g.
-   `fetchpriority`, preconnect), regen goldens if pixels change.
+1. ~~T18: run Lighthouse on `/sales.html`, record both pages' scores in the plan~~ done (landing 93/100/100/100 re-confirmed on fresh dist; /sales 79/100/100/100; recorded in plan section 8 T18 row)
+   ~~annotation (§2 outcome column).~~
+2. ~~T18: quick-wins triage — inspect the 7 perf deductions on landing (likely~~ done (triage complete - no zero-risk code wins; gaps are harness artifacts (no gzip) + htmx-parse (TODO_LIST #282) + stagger design; prod re-measure #280, lane #272)
+   ~~render-blocking font preload chain / LCP); fix ONLY trivial ones (e.g.~~
+   ~~`fetchpriority`, preconnect), regen goldens if pixels change.~~
 3. ~~T20: verify Scrollback prompt behavior against the vendored/source code;~~ done (PARKED at docs/upstream-drafts/2026-09-19_scrollback-prompt-field.md; verified against scrollback.templ + sales.templ; no duplicate issue; v2 rename = TODO_LIST #40)
    ~~check upstream (a-h/templ? this repo's own backlog?) for existing issues;~~
    ~~DRAFT the issue in `docs/` — park, never file (G1).~~
@@ -207,8 +207,8 @@ site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
     ~~text only, documented in the a11y policy.~~
 20. ~~Add `[&>details]:`-style arbitrary-variant child overrides documentation to~~ done (merged into TODO_LIST #279)
     ~~the templ-components SKILL.md / theming docs (new pattern proven here).~~
-21. Move `/tmp/lh-index.json` numbers into the plan annotation + delete the
-    temp file (machine-local artifact).
+21. ~~Move `/tmp/lh-index.json` numbers into the plan annotation + delete the~~ done (numbers recorded in plan section 8; /tmp/lh-*.json deleted)
+    ~~temp file (machine-local artifact).~~
 22. ~~Update `docs/visual-testing.md` with the SITE route tier + skip-stars pin.~~ done (TODO_LIST #275)
 23. ~~Update the skill (templ-components SKILL.md) site section: search scope~~ done (TODO_LIST #276)
     ~~invariant, lastmod convention, topLevelPages structure.~~
