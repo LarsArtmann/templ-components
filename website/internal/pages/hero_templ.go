@@ -77,7 +77,7 @@ func Hero(stats build.Stats, starsText string) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d server-rendered components for templ + HTMX + Tailwind CSS v4. Type-safe props, dark mode built-in, CSP-ready, zero Node.js.", stats.Components))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/hero.templ`, Line: 61, Col: 166}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/pages/hero.templ`, Line: 61, Col: 166}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -160,7 +160,7 @@ func Hero(stats build.Stats, starsText string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div class=\"relative max-w-xl mx-auto\"><div class=\"absolute -inset-4 bg-gradient-to-r from-accent/8 via-transparent to-accent/8 rounded-2xl pointer-events-none\"></div><div class=\"relative rounded-xl border border-border bg-bg-code shadow-2xl overflow-hidden code-preview\"><div class=\"flex items-center gap-1.5 px-4 py-3 border-b border-border bg-bg-card-solid/50\"><span class=\"w-2.5 h-2.5 rounded-full bg-code-dot\"></span> <span class=\"w-2.5 h-2.5 rounded-full bg-code-dot\"></span> <span class=\"w-2.5 h-2.5 rounded-full bg-code-dot\"></span> <span class=\"ml-3 text-xs text-text-muted font-mono\">page.templ</span></div><pre class=\"p-5 text-left text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div class=\"relative max-w-xl mx-auto\"><div class=\"absolute -inset-4 bg-gradient-to-r from-accent/8 via-transparent to-accent/8 rounded-2xl pointer-events-none\"></div><div class=\"relative rounded-xl border border-border bg-bg-code shadow-2xl overflow-hidden code-preview\"><div class=\"flex items-center gap-1.5 px-4 py-3 border-b border-border bg-bg-card-solid/50\"><span class=\"w-2.5 h-2.5 rounded-full bg-code-dot\"></span> <span class=\"w-2.5 h-2.5 rounded-full bg-code-dot\"></span> <span class=\"w-2.5 h-2.5 rounded-full bg-code-dot\"></span> <span class=\"ml-3 text-xs text-text-muted font-mono\">page.templ</span></div><pre tabindex=\"0\" class=\"p-5 text-left text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -175,7 +175,7 @@ func Hero(stats build.Stats, starsText string) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(heroCode)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/hero.templ`, Line: 119, Col: 314}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/pages/hero.templ`, Line: 119, Col: 314}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
@@ -218,7 +218,7 @@ func heroMetric(value int, label string) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", value))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/hero.templ`, Line: 129, Col: 87}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/pages/hero.templ`, Line: 129, Col: 87}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -231,7 +231,7 @@ func heroMetric(value int, label string) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/hero.templ`, Line: 130, Col: 53}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/pages/hero.templ`, Line: 130, Col: 53}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
