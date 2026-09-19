@@ -359,7 +359,7 @@ func salesProblem() templ.Component {
 				var templ_7745c5c3_Var8 string
 				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(pain.Desc)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 157, Col: 71}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 161, Col: 71}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 				if templ_7745c5c3_Err != nil {
@@ -375,7 +375,11 @@ func salesProblem() templ.Component {
 				Title:   pain.Title,
 				Padding: display.CardPaddingLG,
 				BaseProps: utils.BaseProps{
-					Class: "bg-bg-card border-border rounded-xl backdrop-blur-sm",
+					// Explicit dark: variants — they must beat the library
+					// shell's dark:bg-gray-800/dark:border-gray-700 or dark
+					// mode shows the library's cool grays against this site's
+					// warm stone palette.
+					Class: "bg-bg-card dark:bg-bg-card border-border dark:border-border rounded-xl backdrop-blur-sm",
 				},
 			}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
@@ -485,7 +489,7 @@ func salesBenefits() templ.Component {
 				var templ_7745c5c3_Var11 string
 				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(benefit.Title)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 212, Col: 79}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 217, Col: 79}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 				if templ_7745c5c3_Err != nil {
@@ -498,7 +502,7 @@ func salesBenefits() templ.Component {
 				var templ_7745c5c3_Var12 string
 				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(benefit.Desc)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 213, Col: 74}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 218, Col: 74}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 				if templ_7745c5c3_Err != nil {
@@ -513,7 +517,8 @@ func salesBenefits() templ.Component {
 			templ_7745c5c3_Err = display.SimpleCard(display.SimpleCardProps{
 				Padding: display.CardPaddingNone,
 				BaseProps: utils.BaseProps{
-					Class: "bg-bg-card border-border rounded-xl backdrop-blur-sm p-8",
+					// Same explicit dark: override rationale as salesProblem.
+					Class: "bg-bg-card dark:bg-bg-card border-border dark:border-border rounded-xl backdrop-blur-sm p-8",
 				},
 			}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
@@ -569,6 +574,10 @@ func salesProof(stats build.Stats, nonce string) templ.Component {
 			Label: "Components",
 			Icon:  icons.Squares2x2,
 			Tone:  display.StatToneBlue,
+			BaseProps: utils.BaseProps{
+				// Warm-dark surface override (see salesProblem).
+				Class: "dark:bg-bg-card-solid dark:border-border",
+			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -578,6 +587,9 @@ func salesProof(stats build.Stats, nonce string) templ.Component {
 			Label: "SVG icons",
 			Icon:  icons.Photo,
 			Tone:  display.StatTonePurple,
+			BaseProps: utils.BaseProps{
+				Class: "dark:bg-bg-card-solid dark:border-border",
+			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -587,6 +599,9 @@ func salesProof(stats build.Stats, nonce string) templ.Component {
 			Label: "Typed enums",
 			Icon:  icons.ShieldCheck,
 			Tone:  display.StatToneGreen,
+			BaseProps: utils.BaseProps{
+				Class: "dark:bg-bg-card-solid dark:border-border",
+			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -596,6 +611,9 @@ func salesProof(stats build.Stats, nonce string) templ.Component {
 			Label: "Go modules",
 			Icon:  icons.Cube,
 			Tone:  display.StatToneYellow,
+			BaseProps: utils.BaseProps{
+				Class: "dark:bg-bg-card-solid dark:border-border",
+			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -653,6 +671,13 @@ func salesFAQ(stats build.Stats) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = display.Accordion(display.AccordionProps{
+			// Warm-dark override: the library's per-item <details> hardcodes
+			// bg-white/dark:bg-gray-900, which no prop can reach — the arbitrary
+			// child variant retints the items to this site's stone tokens (the
+			// selector is a complete literal so Tailwind's scanner finds it).
+			BaseProps: utils.BaseProps{
+				Class: "border-border dark:border-border divide-border dark:divide-border [&>details]:bg-bg-card-solid [&>details]:dark:bg-bg-card-solid",
+			},
 			Items: []display.AccordionItem{
 				{
 					ID:      "sales-faq-ready",
@@ -722,7 +747,7 @@ func faqAnswer(text string) templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 304, Col: 66}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 329, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -805,7 +830,7 @@ func faqLink(href, text string) templ.Component {
 		var templ_7745c5c3_Var19 templ.SafeURL
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(href))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 318, Col: 30}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 343, Col: 30}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
@@ -818,7 +843,7 @@ func faqLink(href, text string) templ.Component {
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 318, Col: 135}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 343, Col: 135}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
@@ -863,7 +888,7 @@ func faqProductionReady(stats build.Stats) templ.Component {
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(libraryMajorLabel(stats.LibraryVersion))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 325, Col: 67}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 350, Col: 67}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
@@ -907,7 +932,7 @@ func faqCost() templ.Component {
 		var templ_7745c5c3_Var24 templ.SafeURL
 		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(GitHubURL + "/blob/master/LICENSE"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 334, Col: 60}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 359, Col: 60}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 		if templ_7745c5c3_Err != nil {
