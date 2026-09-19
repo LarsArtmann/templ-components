@@ -90,6 +90,7 @@ func pageProps(m PageMeta, nonce string) layout.PageProps {
 		Canonical: canonicalURL(m.Path),
 		JSONLD:    softwareApplicationJSONLD(),
 	}
+	p.NoMainWrapper = true
 	p.HeadContent = headExtras(m)
 	p.Footer = Footer(nonce)
 	return p
@@ -98,10 +99,14 @@ func pageProps(m PageMeta, nonce string) layout.PageProps {
 // Page renders a full site document through the library's layout.Base:
 // skip link, ThemeScript (FOUC guard, localStorage-compatible with the old
 // site), SEO head, and the shared chrome (header in-flow, footer via slot).
+// NoMainWrapper keeps the header banner outside <main>; the site owns the
+// main landmark so the banner is not nested inside it.
 templ Page(m PageMeta, nonce string) {
 	@layout.Base(pageProps(m, nonce)) {
 		@Header(nonce)
-		{ children... }
+		<main id="main-content" tabindex="-1" class="flex-1">
+			{ children... }
+		</main>
 	}
 }
 
