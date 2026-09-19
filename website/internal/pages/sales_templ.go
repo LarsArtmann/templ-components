@@ -35,7 +35,7 @@ func SalesMeta() PageMeta {
 		Path:        "sales",
 		Title:       "Why templ-components — The Case for Server-Rendered UI in Go",
 		Description: "Every argument for templ-components on one page: type-safe, server-rendered Go components for templ, HTMX, and Tailwind v4. CSP-ready, dark-mode tested, zero Node.js. MIT licensed.",
-		OGImage:     SiteURL + "/og/home.png",
+		OGImage:     SiteURL + "/og/sales.png",
 		Scripts:     siteScripts,
 	}
 }
