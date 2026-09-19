@@ -254,3 +254,37 @@ All 34 covered. Questions Q1–Q3 → gates G1–G3 → T1.
 4. Docs-count drift guard excludes `website/` goldens — no README/FEATURES count bumps needed for site-only work.
 5. Templ regen always from repo root with the pinned nix binary.
 6. Annotate, never rewrite, point-in-time docs (this plan, status reports).
+
+## 8. Execution status (annotated 2026-09-19, sessions 1–5)
+
+Outcomes per task; evidence `§b` = docs/status/2026-09-19_22-45_pareto-session5-t9-t19-completion-status.md (session 5), `18-46` = docs/status/2026-09-19_18-46_pareto-plan-execution-status.md (sessions 1–4). Most batches landed as daemon heuristic commits (G2 accepted the noise); per-task hashes are not reconstructable — the status reports are the evidence of record.
+
+| ID | Outcome |
+|---|---|
+| T1 | done — gate answers recorded (§2 Gate decisions) |
+| T2 | OPEN — final step; blocked this session by the harness 50-background-shell ceiling (see §b d1); ci-repro witness + push pending, 21+ commits waiting |
+| T3 | OPEN — depends on T2 |
+| T4 | done — claims derived from go.mod/utils.Version (18-46) |
+| T5 | done — no-framework assertion (18-46) |
+| T6 | done — credibility links + stars badge (18-46) |
+| T6b | done — `TestSiteSalesCopyButton` browser e2e, passed under `nix run .#visual` (§b) |
+| T7 | done — theme-pinned site route goldens, 8 captures (18-46) |
+| T8 | done — axe/touch/zoom sweep on site routes + ledger (18-46) |
+| T9 | done — vnu gate expanded to website goldens; 3 real defects fixed (hero nested `<pre>`, combobox `type=search`→`text`, media-on-meta ignore class) (§b) |
+| T10 | done — header nav entry (18-46) |
+| T11 | done — search stays docs-only per G1; `assertSearchIndex` derives scope from `pages.AllDocs()` and fails out-of-scope entries (§b) |
+| T12 | done — `public/og/sales.png` wired (18-46) |
+| T13 | done — anchors, first-FAQ-open, README link row (18-46) |
+| T14 | done — `staticPages` deleted; `topLevelPages` is the single structural source; integrity test derives its count (§b) |
+| T15 | done — explicit `dark:` pair overrides on sales Card/SimpleCard/StatCard/Accordion; 8 site goldens regen'd (§b) |
+| T16 | done — `copy-code.js` removed from docs scripts; full audit map recorded (§b) |
+| T17 | done — `lastUpdated(...)` variadic; `/` + `/sales` sitemap lastmod from real sources; convention documented (§b) |
+| T18 | PARTIAL — landing measured 93/100/100/100 (perf/a11y/best-practices/SEO); `/sales` NOT measured yet (harness ceiling killed the serve step); quick-wins pass not done. Numbers to be appended here when run. Repeatable-lane gap harvested as TODO_LIST #272 |
+| T19 | done — writestring/QF1002/QF1003 fixed (tagged switches are output-identical, templ regen'd); visualtest + website modules lint 0 issues (§b) |
+| T20 | done — PARKED draft at `docs/upstream-drafts/2026-09-19_scrollback-prompt-field.md`: claim verified at source (scrollback.templ:22-30 vs sales.templ:91-94), no duplicate issue (only open issue #18, unrelated), rename proposal routed to TODO_LIST v2 item #40; never auto-filed |
+| T21 | done — `docs/recipes/dogfood-marketing-page.md` + recipe-index row: derived counts, self-render, warm-dark override pattern, script audit, lastmod convention |
+| T22 | done — `section` padding variant (prior session) |
+| T23 | CLOSED by G2 decision — no history rewrite, no force-push (§2 Gate decisions) |
+| T24 | done — harvest: TODO_LIST #271–#281 + v2 #40 + #216 extension; ROADMAP rows (dark CTA Q3, gopls analyzers, counts truth table, prod stars caching); CHANGELOG `[Unreleased]` warmed; AGENTS LSP-staleness note extended; this section + the 22-45 status report annotated |
+
+**Gate outcomes (final):** G1 kept (README + in-site nav, no social). G2 declined — T23 closed. G3 full machinery delivered (T4/T5/T7/T8).

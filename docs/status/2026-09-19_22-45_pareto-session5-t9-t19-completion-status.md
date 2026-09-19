@@ -80,15 +80,15 @@ site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
 
 ## c) NOT STARTED
 
-1. **T20 — Scrollback `Prompt` upstream idea draft.** Park-only deliverable:
-   verify against vendored source, check upstream issues, draft in Lars's voice
-   (verify-before-filing → github-voice). NEVER auto-file.
-2. **T21 — Dogfood-marketing recipe doc.** `docs/recipes/dogfood-marketing-page.md`
-   (derived counts + self-render pattern; the sales page is now the working
-   example — T15/T16/T17 learnings belong in it).
-3. **T24 — HARVEST.** Pull accepted items into TODO_LIST/ROADMAP, annotate the
-   plan + status reports with outcomes (incl. T23-declined note, G1/G2/G3
-   outcomes, T18 numbers once complete, the stars-flake fix).
+1. ~~**T20 — Scrollback `Prompt` upstream idea draft.** Park-only deliverable:~~ done (draft parked at docs/upstream-drafts/2026-09-19_scrollback-prompt-field.md (source-verified, no duplicate issue; rename routed to TODO_LIST v2 #40))
+   ~~verify against vendored source, check upstream issues, draft in Lars's voice~~
+   ~~(verify-before-filing → github-voice). NEVER auto-file.~~
+2. ~~**T21 — Dogfood-marketing recipe doc.** `docs/recipes/dogfood-marketing-page.md`~~ done (written at docs/recipes/dogfood-marketing-page.md + recipe-index row)
+   ~~(derived counts + self-render pattern; the sales page is now the working~~
+   ~~example — T15/T16/T17 learnings belong in it).~~
+3. ~~**T24 — HARVEST.** Pull accepted items into TODO_LIST/ROADMAP, annotate the~~ done (TODO_LIST #271-#281 + v2 #40 + #216 extension; ROADMAP 4 rows; CHANGELOG [Unreleased] warmed; plan got section 8)
+   ~~plan + status reports with outcomes (incl. T23-declined note, G1/G2/G3~~
+   ~~outcomes, T18 numbers once complete, the stars-flake fix).~~
 4. **Final: ci-repro witness + push.**
 
 ## d) TOTALLY FUCKED UP (own mistakes this session, no masking)
@@ -167,69 +167,69 @@ site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
 2. T18: quick-wins triage — inspect the 7 perf deductions on landing (likely
    render-blocking font preload chain / LCP); fix ONLY trivial ones (e.g.
    `fetchpriority`, preconnect), regen goldens if pixels change.
-3. T20: verify Scrollback prompt behavior against the vendored/source code;
-   check upstream (a-h/templ? this repo's own backlog?) for existing issues;
-   DRAFT the issue in `docs/` — park, never file (G1).
-4. T21: write `docs/recipes/dogfood-marketing-page.md` — the sales page as the
-   recipe: derived counts (CountStats), self-render pattern, warm-dark Class
-   override pattern, script-audit checklist, lastmod convention.
-5. T24: annotate the plan (§2 gates outcome: G1 kept, G2 declined=T23 closed,
-   G3 done) + both status reports with outcomes.
-6. T24: harvest accepted items into `TODO_LIST.md` / `ROADMAP.md` — candidates
-   listed in 14–30 below.
-7. Record T23-declined in the plan annotations (G2).
+3. ~~T20: verify Scrollback prompt behavior against the vendored/source code;~~ done (PARKED at docs/upstream-drafts/2026-09-19_scrollback-prompt-field.md; verified against scrollback.templ + sales.templ; no duplicate issue; v2 rename = TODO_LIST #40)
+   ~~check upstream (a-h/templ? this repo's own backlog?) for existing issues;~~
+   ~~DRAFT the issue in `docs/` — park, never file (G1).~~
+4. ~~T21: write `docs/recipes/dogfood-marketing-page.md` — the sales page as the~~ done (docs/recipes/dogfood-marketing-page.md + recipe-index row)
+   ~~recipe: derived counts (CountStats), self-render pattern, warm-dark Class~~
+   ~~override pattern, script-audit checklist, lastmod convention.~~
+5. ~~T24: annotate the plan (§2 gates outcome: G1 kept, G2 declined=T23 closed,~~ done (plan section 8 appended)
+   ~~G3 done) + both status reports with outcomes.~~
+6. ~~T24: harvest accepted items into `TODO_LIST.md` / `ROADMAP.md` — candidates~~ done (TODO_LIST #271-#281 + v2 #40 + #216 extension; ROADMAP 4 new rows)
+   ~~listed in 14–30 below.~~
+7. ~~Record T23-declined in the plan annotations (G2).~~ done (plan section 2 + section 8)
 8. Full `nix run .#visual` (COMPLETE suite incl. demo goldens — not re-run
    since the T19 templ edits; chart output is semantically identical but
    unverified at pixel level).
-9. `git fetch && git status -sb` — re-check for parallel-session/daemon commits.
+9. ~~`git fetch && git status -sb` — re-check for parallel-session/daemon commits.~~ done (fetched; ahead 21 of origin, nothing pushed)
 10. Review `0d4db611` (parallel session's utils refactor) — sanity-read the diff.
 11. Run `nix develop -c bash scripts/ci-repro.sh --lint --website` at the exact
     tip (background, ~7 min), WITNESS `VERDICT: PASS (exit 0)`.
 12. Push IMMEDIATELY after witnessed PASS (re-check tip didn't move), then
     verify CI + Website lanes go green, and spot-check prod `/sales`
     (og:image, lastmod, CSP unchanged).
-13. Confirm CHANGELOG `[Unreleased]` is warm with the session's user-facing
-    items (validation-gate expansion, search scope, sitemap lastmod, dark-tint
-    fixes, hero `<pre>` fix, combobox type fix) — the one-commit-release rule
-    needs it warm; add in the T24 commit if missing.
+13. ~~Confirm CHANGELOG `[Unreleased]` is warm with the session's user-facing~~ done (CHANGELOG [Unreleased] warmed (3 Fixed + 3 Changed))
+    ~~items (validation-gate expansion, search scope, sitemap lastmod, dark-tint~~
+    ~~fixes, hero `<pre>` fix, combobox type fix) — the one-commit-release rule~~
+    ~~needs it warm; add in the T24 commit if missing.~~
 
 **Harvest candidates for TODO_LIST/ROADMAP (from this session's findings):**
-14. Default `SITE_SKIP_STARS=1` for all non-production dist entry points.
-15. `.#lighthouse` flake app or nav-timing budget test (repeatable T18 lane).
-16. Extract a reusable cleanUrls dist server helper (share with `.#shots`).
-17. Prune the `media`-on-meta vnu ignore class when nixpkgs vnu catches up
-    (same TODO class as #216).
-18. Consider adopting ARIA-in-HTML check for `role=combobox` input types as a
-    lint/test rule in the LIBRARY (the site bug class could exist in
-    components: grep library `.templ` for `role="combobox"`).
-19. Schedule the library-wide dark CTA shade decision (Q3) — either bump dark
-    semantic surfaces to `-500`→`-400` or formally accept 3.76:1 for large
-    text only, documented in the a11y policy.
-20. Add `[&>details]:`-style arbitrary-variant child overrides documentation to
-    the templ-components SKILL.md / theming docs (new pattern proven here).
+14. ~~Default `SITE_SKIP_STARS=1` for all non-production dist entry points.~~ done (TODO_LIST #271)
+15. ~~`.#lighthouse` flake app or nav-timing budget test (repeatable T18 lane).~~ done (TODO_LIST #272)
+16. ~~Extract a reusable cleanUrls dist server helper (share with `.#shots`).~~ done (TODO_LIST #273)
+17. ~~Prune the `media`-on-meta vnu ignore class when nixpkgs vnu catches up~~ done (folded into TODO_LIST #216)
+    ~~(same TODO class as #216).~~
+18. ~~Consider adopting ARIA-in-HTML check for `role=combobox` input types as a~~ done (TODO_LIST #274)
+    ~~lint/test rule in the LIBRARY (the site bug class could exist in~~
+    ~~components: grep library `.templ` for `role="combobox"`).~~
+19. ~~Schedule the library-wide dark CTA shade decision (Q3) — either bump dark~~ done (ROADMAP General row Dark CTA contrast decision)
+    ~~semantic surfaces to `-500`→`-400` or formally accept 3.76:1 for large~~
+    ~~text only, documented in the a11y policy.~~
+20. ~~Add `[&>details]:`-style arbitrary-variant child overrides documentation to~~ done (merged into TODO_LIST #279)
+    ~~the templ-components SKILL.md / theming docs (new pattern proven here).~~
 21. Move `/tmp/lh-index.json` numbers into the plan annotation + delete the
     temp file (machine-local artifact).
-22. Update `docs/visual-testing.md` with the SITE route tier + skip-stars pin.
-23. Update the skill (templ-components SKILL.md) site section: search scope
-    invariant, lastmod convention, topLevelPages structure.
-24. Consider `TestDocsCountDrift` coverage for the site's dist log line
-    (components=123 icons=105 enums=62) vs FEATURES counts — they derive from
-    different counters; one truth table would prevent future confusion.
-25. Add the sales page to the siteshots smoke set if not already covered by
-    route goldens (verify parity).
-26. Grep repo for other `WriteString(literal + literal)` occurrences (gopls
-    writestring may exist elsewhere; golangci-lint doesn't run that analyzer).
-27. Consider enabling gopls-analyzer-backed checks in golangci-lint config so
-    writestring/prealloc classes gate in CI, not just LSP.
-28. LSP-staleness: add a note to AGENTS that QF100x hints on `.templ` files
-    can point at stale lines; ground truth = golangci-lint + regen.
-29. The docs' visual-goldens count claim (171) will drift again with every
-    site route — consider deriving it in `TestDocsCountDrift` from the
-    testdata dir instead of a hand-typed number (it already compares against
-    reality; make docs say "site routes + library" structurally).
-30. Reduce `fetchStars` flake surface in PRODUCTION builds too (cache last
-    good value to a file, like Astro did?) — fallback exists; caching would
-    stop badge flapping between deploys.
+22. ~~Update `docs/visual-testing.md` with the SITE route tier + skip-stars pin.~~ done (TODO_LIST #275)
+23. ~~Update the skill (templ-components SKILL.md) site section: search scope~~ done (TODO_LIST #276)
+    ~~invariant, lastmod convention, topLevelPages structure.~~
+24. ~~Consider `TestDocsCountDrift` coverage for the site's dist log line~~ done (ROADMAP General row Counts truth table)
+    ~~(components=123 icons=105 enums=62) vs FEATURES counts — they derive from~~
+    ~~different counters; one truth table would prevent future confusion.~~
+25. ~~Add the sales page to the siteshots smoke set if not already covered by~~ **Won't implement — siteshots already covers /sales (added 2026-09-19 15-10 session); route goldens pin the pixels.**
+    ~~route goldens (verify parity).~~
+26. ~~Grep repo for other `WriteString(literal + literal)` occurrences (gopls~~ done (TODO_LIST #277)
+    ~~writestring may exist elsewhere; golangci-lint doesn't run that analyzer).~~
+27. ~~Consider enabling gopls-analyzer-backed checks in golangci-lint config so~~ done (ROADMAP General row gopls analyzer lint gates)
+    ~~writestring/prealloc classes gate in CI, not just LSP.~~
+28. ~~LSP-staleness: add a note to AGENTS that QF100x hints on `.templ` files~~ done (AGENTS.md LSP-staleness note extended)
+    ~~can point at stale lines; ground truth = golangci-lint + regen.~~
+29. ~~The docs' visual-goldens count claim (171) will drift again with every~~ done (ROADMAP General row Counts truth table)
+    ~~site route — consider deriving it in `TestDocsCountDrift` from the~~
+    ~~testdata dir instead of a hand-typed number (it already compares against~~
+    ~~reality; make docs say "site routes + library" structurally).~~
+30. ~~Reduce `fetchStars` flake surface in PRODUCTION builds too (cache last~~ done (ROADMAP Production stars caching row)
+    ~~good value to a file, like Astro did?) — fallback exists; caching would~~
+    ~~stop badge flapping between deploys.~~
 
 **Backlog hygiene (pre-existing, cheap):**
 31. Re-check `git status` for re-added `*_templ.go` gitignore lines after
@@ -237,40 +237,40 @@ site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
     watching).
 32. After push: verify GitHub autoclose keywords in any issue-closing commit
     texts (AGENTS convention).
-33. Sweep legacy raw `chromedp.Poll` sites (~48, TODO #240) — untouched.
-34. website.yml path filters: confirm `website/**` filter covers the new
-    `build.sh` env var behavior (deploy uses live stars — no change needed,
-    just verify).
+33. ~~Sweep legacy raw `chromedp.Poll` sites (~48, TODO #240) — untouched.~~ **Won't implement — duplicate of TODO_LIST #240.**
+34. ~~website.yml path filters: confirm `website/**` filter covers the new~~ done (folded into TODO_LIST #280)
+    ~~`build.sh` env var behavior (deploy uses live stars — no change needed,~~
+    ~~just verify).~~
 35. `visualtest/tools/siteshots` search smoke: confirm it still passes with
     `type=text` search input (behavior unchanged; one smoke run would prove).
 36. Add `TestSiteSalesCopyButton` to any documented e2e inventory (docs/testing
     or FEATURES test-coverage lines mention suites; the new test should be
     named there if the convention requires).
-37. Consider swapping python http.server examples in docs for the Go helper
-    (see 16).
-38. ogshot: `SITE_SKIP_STARS` doesn't affect OG cards (they don't render
-    stars?) — verify and document either way in the ogshot README.
-39. Confirm the demo CSS is fresh after T15's new arbitrary-variant classes
-    (they're site.css-scoped; demo CSS scans `**/*.templ` repo-wide — check
-    `examples/demo/static/app.css` contains them or prove they're unused by
-    demo routes; the daemon chunk `7de2133c` touched demo app.css already).
-40. Ask the BuildFlow daemon to include a file list in heuristic messages
-    (upstream larsartmann/buildflow — park as an idea).
+37. ~~Consider swapping python http.server examples in docs for the Go helper~~ done (folded into TODO_LIST #273)
+    ~~(see 16).~~
+38. ~~ogshot: `SITE_SKIP_STARS` doesn't affect OG cards (they don't render~~ done (TODO_LIST #281)
+    ~~stars?) — verify and document either way in the ogshot README.~~
+39. ~~Confirm the demo CSS is fresh after T15's new arbitrary-variant classes~~ done (TODO_LIST #278)
+    ~~(they're site.css-scoped; demo CSS scans `**/*.templ` repo-wide — check~~
+    ~~`examples/demo/static/app.css` contains them or prove they're unused by~~
+    ~~demo routes; the daemon chunk `7de2133c` touched demo app.css already).~~
+40. ~~Ask the BuildFlow daemon to include a file list in heuristic messages~~ **Won't implement — #93-family upstream idea; TODO_LIST #93/#232 own it.**
+    ~~(upstream larsartmann/buildflow — park as an idea).~~
 
 **Post-release follow-ups (after next version cut):**
-41. Prune vnu ignore classes when a newer checker lands (recurring).
-42. Re-measure Lighthouse on PRODUCTION (live stars + Firebase headers) once —
-    local dist numbers lack Firebase caching/CDN effects.
-43. Verify prod sitemap shows `/` + `/sales` lastmod after next deploy.
-44. Watch the first real deploy for the stars badge render (live count).
-45. After the next templ upstream release, revisit the v0.3.1020 pin (AGENTS
-    standing item).
-46. When nixpkgs html5validator updates, re-run the gate to catch newly
-    enforced rules early (pre-CI).
-47. Consider adding `/sales` to `search-index.json` exclusion docs prose (the
-    docs pages describing the site architecture) if T21 doesn't cover it.
-48. Add the warm-dark override pattern to the website's own theming docs page
-    (`guides/theming` content markdown).
+41. ~~Prune vnu ignore classes when a newer checker lands (recurring).~~ **Won't implement — duplicate of TODO_LIST #216.**
+42. ~~Re-measure Lighthouse on PRODUCTION (live stars + Firebase headers) once —~~ done (folded into TODO_LIST #280)
+    ~~local dist numbers lack Firebase caching/CDN effects.~~
+43. ~~Verify prod sitemap shows `/` + `/sales` lastmod after next deploy.~~ done (folded into TODO_LIST #280)
+44. ~~Watch the first real deploy for the stars badge render (live count).~~ done (folded into TODO_LIST #280)
+45. ~~After the next templ upstream release, revisit the v0.3.1020 pin (AGENTS~~ **Won't implement — standing AGENTS.md templ-pin policy owns it.**
+    ~~standing item).~~
+46. ~~When nixpkgs html5validator updates, re-run the gate to catch newly~~ **Won't implement — duplicate of TODO_LIST #216.**
+    ~~enforced rules early (pre-CI).~~
+47. ~~Consider adding `/sales` to `search-index.json` exclusion docs prose (the~~ **Won't implement — the T21 recipe documents the search-scope invariant.**
+    ~~docs pages describing the site architecture) if T21 doesn't cover it.~~
+48. ~~Add the warm-dark override pattern to the website's own theming docs page~~ done (TODO_LIST #279)
+    ~~(`guides/theming` content markdown).~~
 49. Keep an eye on chroma upgrades for `PreventSurroundingPre` behavior
     (pinned by go.mod; behavior verified at v2.27.0).
 50. Celebrate, then start the NEXT Pareto planning cycle from the harvested
@@ -278,26 +278,29 @@ site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
 
 ## g) QUESTIONS FOR YOU (cannot answer myself)
 
-1. **The parallel session (`0d4db611` utils TestReporter refactor, plus the
-   earlier `1ced1afa` ogshot commit):** is that session FINISHED, or will it
-   keep committing while I run the final ci-repro + push? If it's still
-   active, do you want ME to hold the push until it's done (M03 witness is
-   only valid at an exact tip — a racing session invalidates it), or is the
-   other session also under the same ritual and coordination is on your side?
-2. **T18 scope confirmation:** Lighthouse landing = 93/100/100/100. The 7 perf
-   points are mostly font/LCP related quick-wins territory. Do you want the
-   cheap fixes applied NOW (touches head/font loading → regenerates site
-   goldens again), or should I record the scores as-is and park perf tuning
-   for a dedicated task? (Plan default says "quick wins only" — but any pixel
-   change re-rolls 8 goldens, which is why I'm asking before touching head
-   loading.)
-3. **Q3 from the 18:46 report, still unanswered — the library-wide dark CTA
-   shade (white on `blue-500` = 3.76:1):** keep accepting per-site (current
-   ledger approach) or schedule the library-wide palette fix? T21's recipe doc
-   and the site's axe ledger both reference this decision.
+1. ~~**The parallel session (`0d4db611` utils TestReporter refactor, plus the~~ done (SUPERSEDED BY DECISION - M03 witness-at-exact-tip covers racing sessions; 0d4db611 gets a git show review before the push)
+   ~~earlier `1ced1afa` ogshot commit):** is that session FINISHED, or will it~~
+   ~~keep committing while I run the final ci-repro + push? If it's still~~
+   ~~active, do you want ME to hold the push until it's done (M03 witness is~~
+   ~~only valid at an exact tip — a racing session invalidates it), or is the~~
+   ~~other session also under the same ritual and coordination is on your side?~~
+2. ~~**T18 scope confirmation:** Lighthouse landing = 93/100/100/100. The 7 perf~~ done (RESOLVED BY THE WHOLE-LIST MANDATE - measure /sales; apply only zero-risk wins (any pixel change re-rolls the 8 site goldens))
+   ~~points are mostly font/LCP related quick-wins territory. Do you want the~~
+   ~~cheap fixes applied NOW (touches head/font loading → regenerates site~~
+   ~~goldens again), or should I record the scores as-is and park perf tuning~~
+   ~~for a dedicated task? (Plan default says "quick wins only" — but any pixel~~
+   ~~change re-rolls 8 goldens, which is why I'm asking before touching head~~
+   ~~loading.)~~
+3. ~~**Q3 from the 18:46 report, still unanswered — the library-wide dark CTA~~ done (ROUTED TO ROADMAP - General row Dark CTA contrast decision (v2-scale))
+   ~~shade (white on `blue-500` = 3.76:1):** keep accepting per-site (current~~
+   ~~ledger approach) or schedule the library-wide palette fix? T21's recipe doc~~
+   ~~and the site's axe ledger both reference this decision.~~
 
 ---
 
-**Verdict:** plan is 21/24 complete + 1 closed-by-decision; T18 half done;
-T20/T21/T24 + push remain. Tip is green on every lane this session ran.
-Nothing pushed yet — deliberately.
+**Verdict:** ~~plan is 21/24 complete + 1 closed-by-decision; T18 half done;
+T20/T21/T24 + push remain.~~ T20/T21/T24 closed by the resume session (2026-09-19 late):
+T20 parked at `docs/upstream-drafts/`, T21 recipe shipped, T24 harvested (TODO_LIST
+#271-#281 + v2 #40, ROADMAP rows, CHANGELOG `[Unreleased]` warm, plan §8). Remaining:
+T18 `/sales` measurement + quick-wins, full visual suite, 0d4db611 review, ci-repro
+witness + push. Tip is green on every lane this session ran. Nothing pushed yet — deliberately.
