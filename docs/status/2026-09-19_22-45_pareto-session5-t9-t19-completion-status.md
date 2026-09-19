@@ -182,7 +182,7 @@ site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
    since the T19 templ edits; chart output is semantically identical but
    unverified at pixel level).
 9. ~~`git fetch && git status -sb` — re-check for parallel-session/daemon commits.~~ done (fetched; ahead 21 of origin, nothing pushed)
-10. Review `0d4db611` (parallel session's utils refactor) — sanity-read the diff.
+10. ~~Review `0d4db611` (parallel session's utils refactor) — sanity-read the diff.~~ done (APPROVED - 0d4db611 is CHANGELOG-only; the TestReporter code rode daemon a4f78a90; claim verified at source (no testing import in utils production files); shipped as v1.18.1)
 11. Run `nix develop -c bash scripts/ci-repro.sh --lint --website` at the exact
     tip (background, ~7 min), WITNESS `VERDICT: PASS (exit 0)`.
 12. Push IMMEDIATELY after witnessed PASS (re-check tip didn't move), then
@@ -243,9 +243,9 @@ site route goldens + axe sweep `ok`; HTML validation gate clean (262 goldens).
     ~~just verify).~~
 35. `visualtest/tools/siteshots` search smoke: confirm it still passes with
     `type=text` search input (behavior unchanged; one smoke run would prove).
-36. Add `TestSiteSalesCopyButton` to any documented e2e inventory (docs/testing
-    or FEATURES test-coverage lines mention suites; the new test should be
-    named there if the convention requires).
+36. ~~Add `TestSiteSalesCopyButton` to any documented e2e inventory (docs/testing~~ **Won't implement — no FEATURES.md e2e inventory exists to update; the test gets its docs home via TODO_LIST #275.**
+    ~~or FEATURES test-coverage lines mention suites; the new test should be~~
+    ~~named there if the convention requires).~~
 37. ~~Consider swapping python http.server examples in docs for the Go helper~~ done (folded into TODO_LIST #273)
     ~~(see 16).~~
 38. ~~ogshot: `SITE_SKIP_STARS` doesn't affect OG cards (they don't render~~ done (TODO_LIST #281)
