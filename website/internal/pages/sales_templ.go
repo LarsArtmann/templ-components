@@ -10,6 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/icons"
@@ -17,6 +18,14 @@ import (
 
 	"github.com/larsartmann/templ-components/website/internal/build"
 )
+
+// libraryMajorLabel renders the semver major prefix sold in prose
+// ("1.18.0" → "v1") so the FAQ claim tracks utils.Version instead of a
+// hand-typed literal.
+func libraryMajorLabel(version string) string {
+	major, _, _ := strings.Cut(version, ".")
+	return "v" + major
+}
 
 // SalesMeta describes the sales page for the shell. Single message, single
 // primary CTA, complete argument on one page — the long-form counterpart to
@@ -100,7 +109,7 @@ func Sales(stats build.Stats, nonce string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = section("max-w-3xl", salesFAQ()).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = section("max-w-3xl", salesFAQ(stats)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -166,7 +175,7 @@ func salesHero(stats build.Stats) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d server-rendered components for templ, HTMX, and Tailwind v4. Every button, card, and accordion on this page is rendered by the library it sells — view source and look for the framework.", stats.Components))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 62, Col: 229}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 71, Col: 229}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -192,9 +201,11 @@ func salesHero(stats build.Stats) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = display.Badge(display.BadgeProps{Text: "Go 1.26+", Type: display.BadgeNeutral, Size: display.BadgeSizeSM}).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
+		if stats.GoVersion != "" {
+			templ_7745c5c3_Err = display.Badge(display.BadgeProps{Text: fmt.Sprintf("Go %s+", stats.GoVersion), Type: display.BadgeNeutral, Size: display.BadgeSizeSM}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</div><div class=\"text-left\">")
 		if templ_7745c5c3_Err != nil {
@@ -340,7 +351,7 @@ func salesProblem() templ.Component {
 				var templ_7745c5c3_Var8 string
 				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(pain.Desc)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 144, Col: 71}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 155, Col: 71}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 				if templ_7745c5c3_Err != nil {
@@ -466,7 +477,7 @@ func salesBenefits() templ.Component {
 				var templ_7745c5c3_Var11 string
 				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(benefit.Title)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 199, Col: 79}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 210, Col: 79}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 				if templ_7745c5c3_Err != nil {
@@ -479,7 +490,7 @@ func salesBenefits() templ.Component {
 				var templ_7745c5c3_Var12 string
 				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(benefit.Desc)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 200, Col: 74}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 211, Col: 74}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 				if templ_7745c5c3_Err != nil {
@@ -604,7 +615,7 @@ func salesProof(stats build.Stats, nonce string) templ.Component {
 
 // salesFAQ handles the objections with the library's native-<details>
 // Accordion — zero JavaScript.
-func salesFAQ() templ.Component {
+func salesFAQ(stats build.Stats) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -638,7 +649,7 @@ func salesFAQ() templ.Component {
 				{
 					ID:      "sales-faq-ready",
 					Title:   "Is it production-ready?",
-					Content: faqAnswer("It is. The library is at v1 under semantic versioning, and every component ships behind three regression layers: HTML golden tests, pixel-level visual tests in headless Chromium, and an axe-core accessibility gate that fails the build on serious violations. This website — docs included — is rendered through the library itself."),
+					Content: faqAnswer(fmt.Sprintf("It is. The library is at %s under semantic versioning, and every component ships behind three regression layers: HTML golden tests, pixel-level visual tests in headless Chromium, and an axe-core accessibility gate that fails the build on serious violations. This website — docs included — is rendered through the library itself.", libraryMajorLabel(stats.LibraryVersion))),
 				},
 				{
 					ID:      "sales-faq-raw-html",
@@ -702,7 +713,7 @@ func faqAnswer(text string) templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 290, Col: 66}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/sales.templ`, Line: 301, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
