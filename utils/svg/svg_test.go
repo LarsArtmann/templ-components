@@ -55,6 +55,7 @@ func TestPathConstants(t *testing.T) {
 	}{
 		{"PathChevronDown", PathChevronDown},
 		{"PathChevronSmall", PathChevronSmall},
+		{"PathXMark", PathXMark},
 		{"PathArrowUp", PathArrowUp},
 		{"PathArrowDown", PathArrowDown},
 		{"PathArrowLeft", PathArrowLeft},
