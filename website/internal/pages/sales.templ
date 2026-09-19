@@ -2,6 +2,7 @@ package pages
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/icons"
@@ -9,6 +10,14 @@ import (
 
 	"github.com/larsartmann/templ-components/website/internal/build"
 )
+
+// libraryMajorLabel renders the semver major prefix sold in prose
+// ("1.18.0" → "v1") so the FAQ claim tracks utils.Version instead of a
+// hand-typed literal.
+func libraryMajorLabel(version string) string {
+	major, _, _ := strings.Cut(version, ".")
+	return "v" + major
+}
 
 // SalesMeta describes the sales page for the shell. Single message, single
 // primary CTA, complete argument on one page — the long-form counterpart to
@@ -33,7 +42,7 @@ templ Sales(stats build.Stats, nonce string) {
 		@section("max-w-7xl", salesProblem())
 		@section("max-w-7xl", salesBenefits())
 		@section("max-w-5xl", salesProof(stats, nonce))
-		@section("max-w-3xl", salesFAQ())
+		@section("max-w-3xl", salesFAQ(stats))
 		@section("max-w-4xl", salesFinalCTA())
 	}
 }
@@ -69,7 +78,9 @@ templ salesHero(stats build.Stats) {
 			<div class="flex items-center justify-center gap-2 flex-wrap mb-14">
 				@display.Badge(display.BadgeProps{Text: "MIT licensed", Type: display.BadgeNeutral, Size: display.BadgeSizeSM})
 				@display.Badge(display.BadgeProps{Text: "No Node.js in your deploy", Type: display.BadgeNeutral, Size: display.BadgeSizeSM})
-				@display.Badge(display.BadgeProps{Text: "Go 1.26+", Type: display.BadgeNeutral, Size: display.BadgeSizeSM})
+				if stats.GoVersion != "" {
+					@display.Badge(display.BadgeProps{Text: fmt.Sprintf("Go %s+", stats.GoVersion), Type: display.BadgeNeutral, Size: display.BadgeSizeSM})
+				}
 			</div>
 
 			<div class="text-left">
@@ -250,7 +261,7 @@ templ salesProof(stats build.Stats, nonce string) {
 
 // salesFAQ handles the objections with the library's native-<details>
 // Accordion — zero JavaScript.
-templ salesFAQ() {
+templ salesFAQ(stats build.Stats) {
 	<div>
 		@sectionHeader("Objections, handled", "The questions you would ask in review.", "")
 		@display.Accordion(display.AccordionProps{
@@ -258,7 +269,7 @@ templ salesFAQ() {
 				{
 					ID:    "sales-faq-ready",
 					Title: "Is it production-ready?",
-					Content: faqAnswer("It is. The library is at v1 under semantic versioning, and every component ships behind three regression layers: HTML golden tests, pixel-level visual tests in headless Chromium, and an axe-core accessibility gate that fails the build on serious violations. This website — docs included — is rendered through the library itself."),
+					Content: faqAnswer(fmt.Sprintf("It is. The library is at %s under semantic versioning, and every component ships behind three regression layers: HTML golden tests, pixel-level visual tests in headless Chromium, and an axe-core accessibility gate that fails the build on serious violations. This website — docs included — is rendered through the library itself.", libraryMajorLabel(stats.LibraryVersion))),
 				},
 				{
 					ID:    "sales-faq-raw-html",

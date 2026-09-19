@@ -18,6 +18,7 @@ import (
 	"github.com/a-h/templ"
 	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/alecthomas/chroma/v2/styles"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 // Nonce returns a fresh CSP nonce (32 hex chars) for one site build. Every
@@ -108,10 +109,12 @@ var (
 // from the actual checkout at build time so the site cannot drift from
 // reality the way the hand-typed Astro numbers did.
 type Stats struct {
-	Components int // templ components across the published library packages
-	Icons      int // distinct SVG icons in the icons module
-	Enums      int // closed-set enums shipping an IsValid() method
-	Modules    int // published Go modules in the library workspace
+	Components     int    // templ components across the published library packages
+	Icons          int    // distinct SVG icons in the icons module
+	Enums          int    // closed-set enums shipping an IsValid() method
+	Modules        int    // published Go modules in the library workspace
+	GoVersion      string // root go.mod go directive, patch-trimmed for display ("1.26")
+	LibraryVersion string // utils.Version verbatim ("1.18.0") — the sold library's own semver
 }
 
 // statsDirs are the published library packages scanned for templ components.
@@ -165,7 +168,36 @@ func CountStats(repoRoot string) (Stats, error) {
 		return stats, fmt.Errorf("count modules: %w", err)
 	}
 
+	stats.GoVersion = goDisplayVersion(filepath.Join(repoRoot, "go.mod"))
+	stats.LibraryVersion = utils.Version
+
 	return stats, nil
+}
+
+// goDisplayVersion reads the root go.mod's go directive ("go 1.26.7") and
+// trims the patch segment for display ("1.26"). Empty string on any read or
+// parse failure — fail-soft per metric, like every other stat.
+func goDisplayVersion(goModPath string) string {
+	data, err := os.ReadFile(goModPath) //nolint:gosec // trusted local repository scan
+	if err != nil {
+		return ""
+	}
+
+	for _, line := range strings.Split(string(data), "\n") {
+		directive, found := strings.CutPrefix(strings.TrimSpace(line), "go ")
+		if !found {
+			continue
+		}
+
+		parts := strings.Split(strings.TrimSpace(directive), ".")
+		if len(parts) < 2 {
+			return ""
+		}
+
+		return parts[0] + "." + parts[1]
+	}
+
+	return ""
 }
 
 // countUniqueIcons counts distinct icon name constants (aliases like Close/X

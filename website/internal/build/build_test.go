@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+
+	"github.com/larsartmann/templ-components/utils"
 )
 
 // tagRemnantRe matches tag-opening shapes ("<h2", "</p") that must never
@@ -19,7 +21,7 @@ func writeFixtureRepo(t *testing.T) string {
 	root := t.TempDir()
 
 	files := map[string]string{
-		"go.mod":                "module example.com/lib\n",
+		"go.mod":                "module example.com/lib\n\ngo 1.26.7\n",
 		"display/go.mod":        "module example.com/lib/display\n",
 		"display/card.templ":    "templ Card(props CardProps) {\n}\n\ntempl Badge(text string) {\n}\n",
 		"display/types.go":      "package display\n\nfunc BadgeTypeIsValid(v BadgeType) bool { return true }\n",
@@ -65,6 +67,14 @@ func TestCountStats(t *testing.T) {
 
 	if stats.Modules != 3 {
 		t.Errorf("Modules = %d, want 3 (root + display + feedback)", stats.Modules)
+	}
+
+	if stats.GoVersion != "1.26" {
+		t.Errorf("GoVersion = %q, want \"1.26\" (patch segment trimmed)", stats.GoVersion)
+	}
+
+	if stats.LibraryVersion != utils.Version {
+		t.Errorf("LibraryVersion = %q, want utils.Version (%q)", stats.LibraryVersion, utils.Version)
 	}
 }
 
