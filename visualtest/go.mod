@@ -5,7 +5,7 @@ module github.com/larsartmann/templ-components/visualtest
 // track the latest upstream (updated opportunistically with go mod tidy);
 // consumers of github.com/larsartmann/templ-components are never affected.
 
-go 1.26.7
+go 1.26.0
 
 require (
 	github.com/a-h/templ v0.3.1020

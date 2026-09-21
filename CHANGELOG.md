@@ -8,13 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-- **Popover/Dropdown panels no longer open at the viewport corner.** The
-  shared popover positioner registered its `toggle` listener on `document`
-  WITHOUT capture — but the Popover API's `toggle` event does not bubble, so
-  the listener never fired and every anchored `[popover]` panel (Dropdown,
-  Popover) rendered at (0,0) until a scroll/resize re-positioned it. The
-  listener now registers with `capture: true` (verified empirically in
-  adminui: bubble-phase 0 events, capture-phase 1). Goldens updated.
+- **Popover/Dropdown panels no longer open at the viewport corner.** Two
+  defects in the shared popover positioner: (1) its `toggle` listener
+  registered on `document` WITHOUT capture — the Popover API's `toggle` event
+  does not bubble, so the listener never fired and every anchored `[popover]`
+  panel (Dropdown, Popover, ContextMenu) rendered at (0,0) until a
+  scroll/resize re-positioned it; the listener now registers with
+  `capture: true`. (2) A panel that was ALREADY open when the script executed
+  (fast automation clicks, HTMX-swapped content) never got positioned — the
+  script now self-heals by positioning every
+  `[popover]:popover-open[data-tc-anchor]` at attach time. Both verified
+  empirically (bubble-phase 0 events, capture-phase 1; visual suite green).
 
 ### Added
 
