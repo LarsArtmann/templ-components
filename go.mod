@@ -22,3 +22,16 @@ require (
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 )
 
+replace github.com/larsartmann/templ-components => ./
+
+replace github.com/larsartmann/templ-components/utils => ./utils
+
+replace github.com/larsartmann/templ-components/icons => ./icons
+
+replace github.com/larsartmann/templ-components/errorpage => ./errorpage
+
+replace github.com/larsartmann/templ-components/charts/echarts => ./charts/echarts
+
+replace github.com/larsartmann/templ-components/datastar => ./datastar
+
+replace github.com/larsartmann/templ-components/htmx => ./htmx
