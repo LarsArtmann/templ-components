@@ -8,6 +8,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Popover/Dropdown panels no longer open at the viewport corner.** The
+  shared popover positioner registered its `toggle` listener on `document`
+  WITHOUT capture — but the Popover API's `toggle` event does not bubble, so
+  the listener never fired and every anchored `[popover]` panel (Dropdown,
+  Popover) rendered at (0,0) until a scroll/resize re-positioned it. The
+  listener now registers with `capture: true` (verified empirically in
+  adminui: bubble-phase 0 events, capture-phase 1). Goldens updated.
+
+### Added
+
+- **`DropdownProps.Trigger` — custom trigger content slot.** When set, the
+  default label + chevron button is replaced by a functionally-wired
+  `<button>` (keeps `popovertarget`, `aria-haspopup`, `data-dropdown-trigger`,
+  `aria-label`) with NO default visual classes — the component owns the
+  trigger's entire appearance (e.g. an avatar + email identity cluster).
+
 - **Website pages are now HTML-validator-clean under the repo's W3C gate.**
   The Nu Html Checker gate (`scripts/check-html-valid.sh`) expanded to cover
   the website module's goldens, and the expansion caught three real defects:

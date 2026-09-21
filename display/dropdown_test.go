@@ -2,7 +2,6 @@
 package display
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/a-h/templ"
@@ -83,9 +82,10 @@ func TestDropdownRender(t *testing.T) {
 		utils.AssertContains(t, output, `data-dropdown-trigger="user"`)
 		utils.AssertContains(t, output, `aria-haspopup="true"`)
 		utils.AssertContains(t, output, `aria-label="Account menu"`)
-		if strings.Contains(output, "rounded-md bg-white") {
-			t.Errorf("custom Trigger must not carry the default button classes, got: %s", output)
-		}
+		// The custom-trigger button carries NO class attribute (the consumer's
+		// component owns the visuals) — the aria-label must sit directly
+		// adjacent to the custom content with no class= between them.
+		utils.AssertContains(t, output, `aria-label="Account menu"><span data-test="identity">ada@example.com</span>`)
 	})
 
 	t.Run("nil Trigger renders default styled button", func(t *testing.T) {
