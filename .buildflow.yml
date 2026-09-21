@@ -26,3 +26,15 @@ skip_steps:
   # toolchain bump (go.work + all module directives + nixpkgs pin in ONE
   # commit, per AGENTS.md).
   - go-structure-linter
+  # go-version-auto-configure skipped: same skew class as go-structure-linter
+  # above — the step normalizes go directives to the bare minor ("1.26") while
+  # `go mod tidy` canonicalizes visualtest's directive to "1.26.0", so the
+  # step's own repair re-creates the go.work toolchain skew ("requires go >=
+  # 1.26.0, but go.work lists go 1.26") and fails every workspace-mode lane
+  # (go-generate, golangci-lint, license-check) later in the SAME pipeline
+  # run. The coherent state is 1.26.0 everywhere (root + website + visualtest
+  # + go.work); utils.TestGoWorkDirectiveMatchesRootGoMod and
+  # utils.TestGoDirectiveSkew are the real enforcement. Re-enable only with a
+  # lockstep toolchain bump or an upstream fix that respects patch-suffixed
+  # directives.
+  - go-version-auto-configure
