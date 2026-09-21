@@ -298,6 +298,12 @@ func popoverPositionJS() string {
 		`top=Math.max(gap,Math.min(top,vh-h-gap));` +
 		`p.style.inset="auto";p.style.left=left+"px";p.style.top=top+"px";p.style.margin="0";` +
 		`}` +
+		// Self-heal: position any anchored popover that is ALREADY open when
+		// this script executes. The toggle listener below only covers future
+		// opens — a panel opened before the script ran (fast automation clicks,
+		// HTMX-swapped content re-injecting the script after an open panel)
+		// would otherwise stay parked at the viewport corner forever.
+		`document.querySelectorAll("[popover]:popover-open[data-tc-anchor]").forEach(tcPositionPopover);` +
 		// Capture phase is REQUIRED: the Popover API's "toggle" event does not
 		// bubble (composed but non-bubbling), so a bubble-phase listener on
 		// document never fires and panels position at the viewport corner
