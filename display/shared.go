@@ -298,12 +298,16 @@ func popoverPositionJS() string {
 		`top=Math.max(gap,Math.min(top,vh-h-gap));` +
 		`p.style.inset="auto";p.style.left=left+"px";p.style.top=top+"px";p.style.margin="0";` +
 		`}` +
+		// Capture phase is REQUIRED: the Popover API's "toggle" event does not
+		// bubble (composed but non-bubbling), so a bubble-phase listener on
+		// document never fires and panels position at the viewport corner
+		// (0,0). Verified empirically in adminui (cqrs-htmx) 2026-09-20.
 		`document.addEventListener("toggle",function(e){` +
 		`var el=e.target;` +
 		`if(el&&el.hasAttribute&&el.hasAttribute("popover")&&el.getAttribute("data-tc-anchor")&&e.newState==="open"){` +
 		`tcPositionPopover(el);` +
 		`}` +
-		`});` +
+		`},true);` +
 		`window.addEventListener("resize",function(){` +
 		`document.querySelectorAll("[popover]:popover-open[data-tc-anchor]").forEach(tcPositionPopover);` +
 		`});` +

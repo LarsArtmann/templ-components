@@ -2,8 +2,10 @@
 package display
 
 import (
+	"strings"
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -63,6 +65,37 @@ func TestDropdownRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{Label: "No ID"}))
 		utils.AssertContains(t, output, `id="tc-dropdown-`)
+	})
+
+	t.Run("custom Trigger replaces default button content and classes", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Dropdown(DropdownProps{
+			BaseProps: utils.BaseProps{ID: "user"},
+			Label:     "Account menu",
+			Trigger:   templ.Raw(`<span data-test="identity">ada@example.com</span>`),
+			Items: []DropdownItem{
+				{Text: "Sign out", Href: "/logout"},
+			},
+		}))
+		utils.AssertContains(t, output, `<span data-test="identity">ada@example.com</span>`)
+		utils.AssertContains(t, output, `id="user-button"`)
+		utils.AssertContains(t, output, `popovertarget="user-menu"`)
+		utils.AssertContains(t, output, `data-dropdown-trigger="user"`)
+		utils.AssertContains(t, output, `aria-haspopup="true"`)
+		utils.AssertContains(t, output, `aria-label="Account menu"`)
+		if strings.Contains(output, "rounded-md bg-white") {
+			t.Errorf("custom Trigger must not carry the default button classes, got: %s", output)
+		}
+	})
+
+	t.Run("nil Trigger renders default styled button", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Dropdown(DropdownProps{
+			BaseProps: utils.BaseProps{ID: "std"},
+			Label:     "Actions",
+		}))
+		utils.AssertContains(t, output, "rounded-md bg-white")
+		utils.AssertContains(t, output, dropdownLabelActions)
 	})
 
 	t.Run("right position", func(t *testing.T) {

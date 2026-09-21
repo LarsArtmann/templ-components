@@ -45,9 +45,16 @@ const (
 )
 
 // DropdownProps configures a dropdown action menu
-type DropdownProps struct {
+ type DropdownProps struct {
 	utils.BaseProps
 	Label    string
+	// Trigger, when set, replaces the default styled button CONTENT: the
+	// component renders inside a functionally-wired <button> (popovertarget,
+	// aria-haspopup, data-dropdown-trigger) with NO default visual classes,
+	// so the custom component owns the trigger's entire appearance (e.g. an
+	// avatar + email identity cluster). Leave nil for the default label +
+	// chevron button.
+	Trigger  templ.Component
 	Items    []DropdownItem
 	Position DropdownPosition
 }
@@ -124,18 +131,31 @@ templ Dropdown(props DropdownProps) {
 		{ props.Attrs... }
 	>
 		<div>
-			<button
-				type="button"
-				id={ id + "-button" }
-				popovertarget={ id + "-menu" }
-				class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white shadow-xs ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
-				aria-haspopup="true"
-				data-dropdown-trigger={ id }
-				aria-label={ props.Label }
-			>
-				{ props.Label }
-				@svg.FillIcon("-me-1 h-5 w-5 text-gray-400 dark:text-gray-500", svg.PathChevronSmall, false)
-			</button>
+			if props.Trigger != nil {
+				<button
+					type="button"
+					id={ id + "-button" }
+					popovertarget={ id + "-menu" }
+					aria-haspopup="true"
+					data-dropdown-trigger={ id }
+					aria-label={ props.Label }
+				>
+					@props.Trigger
+				</button>
+			} else {
+				<button
+					type="button"
+					id={ id + "-button" }
+					popovertarget={ id + "-menu" }
+					class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white shadow-xs ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+					aria-haspopup="true"
+					data-dropdown-trigger={ id }
+					aria-label={ props.Label }
+				>
+					{ props.Label }
+					@svg.FillIcon("-me-1 h-5 w-5 text-gray-400 dark:text-gray-500", svg.PathChevronSmall, false)
+				</button>
+			}
 		</div>
 		<div
 			id={ id + "-menu" }
