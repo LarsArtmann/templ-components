@@ -1,6 +1,6 @@
 module github.com/larsartmann/templ-components/website
 
-go 1.26
+go 1.26.0
 
 ignore (
 	dist
