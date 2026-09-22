@@ -648,21 +648,22 @@ func kanbanClickMoveUntil(ctx context.Context, t *testing.T, buttonSel, orderExp
 	t.Fatalf("card never reached the expected column order %q via %s", want, buttonSel)
 }
 
-// TestKanbanE2EKeyboardMovesBothTransports proves the accessibility path:
-// clicking a card's "move to next column" button submits the hidden form
-// and the re-rendered board carries the card in the target column — under
-// htmx AND the real Datastar runtime.
-func TestKanbanE2EKeyboardMovesBothTransports(t *testing.T) {
+// newKanbanReadyTab bootstraps one kanban e2e test: fresh boards, a demo
+// server, and a browser tab (45s budget) parked on "/" with both boards
+// reporting ready. The returned context is cancelled via t.Cleanup.
+func newKanbanReadyTab(t *testing.T) context.Context {
+	t.Helper()
+
 	kanbanHTMXBoard.reset()
 	kanbanDatastarBoard.reset()
 
 	srv := kanbanE2EServer(t)
 
 	ctx, cancel := newTab(t)
-	defer cancel()
+	t.Cleanup(cancel)
 
 	ctx, cancelTimeout := context.WithTimeout(ctx, 45*time.Second)
-	defer cancelTimeout()
+	t.Cleanup(cancelTimeout)
 
 	var ready bool
 
@@ -672,6 +673,16 @@ func TestKanbanE2EKeyboardMovesBothTransports(t *testing.T) {
 	); err != nil {
 		t.Fatalf("navigate + readiness: %v", err)
 	}
+
+	return ctx
+}
+
+// TestKanbanE2EKeyboardMovesBothTransports proves the accessibility path:
+// clicking a card's "move to next column" button submits the hidden form
+// and the re-rendered board carries the card in the target column — under
+// htmx AND the real Datastar runtime.
+func TestKanbanE2EKeyboardMovesBothTransports(t *testing.T) {
+	ctx := newKanbanReadyTab(t)
 
 	// htmx board: e1 moves to the end of "doing" (empty column).
 	kanbanClickMoveUntil(ctx, t,
@@ -712,25 +723,7 @@ func kanbanDropScript(boardID, cardID, columnID string) string {
 // drag events route through the same hidden form (index 0 = insert at top
 // of the target column) under both runtimes.
 func TestKanbanE2EDropMovesBothTransports(t *testing.T) {
-	kanbanHTMXBoard.reset()
-	kanbanDatastarBoard.reset()
-
-	srv := kanbanE2EServer(t)
-
-	ctx, cancel := newTab(t)
-	defer cancel()
-
-	ctx, cancelTimeout := context.WithTimeout(ctx, 45*time.Second)
-	defer cancelTimeout()
-
-	var ready bool
-
-	if err := chromedp.Run(ctx,
-		chromedp.Navigate(srv.URL+"/"),
-		pollBool(kanbanE2EReady, &ready),
-	); err != nil {
-		t.Fatalf("navigate + readiness: %v", err)
-	}
+	ctx := newKanbanReadyTab(t)
 
 	drops := []struct {
 		boardID string
@@ -867,25 +860,7 @@ func kanbanCrossBoardDropScript(srcBoardID, cardID, dstBoardID, columnID string)
 // board must not submit anything — both boards keep their exact card order
 // and the dragover is not even accepted (no preventDefault).
 func TestKanbanE2ECrossBoardDropIgnored(t *testing.T) {
-	kanbanHTMXBoard.reset()
-	kanbanDatastarBoard.reset()
-
-	srv := kanbanE2EServer(t)
-
-	ctx, cancel := newTab(t)
-	defer cancel()
-
-	ctx, cancelTimeout := context.WithTimeout(ctx, 45*time.Second)
-	defer cancelTimeout()
-
-	var ready bool
-
-	if err := chromedp.Run(ctx,
-		chromedp.Navigate(srv.URL+"/"),
-		pollBool(kanbanE2EReady, &ready),
-	); err != nil {
-		t.Fatalf("navigate + readiness: %v", err)
-	}
+	ctx := newKanbanReadyTab(t)
 
 	var accepted string
 
@@ -937,25 +912,7 @@ func TestKanbanE2ECrossBoardDropIgnored(t *testing.T) {
 // from kanbanAnnounceJS, exercised through htmx's outerHTML swap AND the
 // Datastar patch flow.
 func TestKanbanE2EAnnouncesMove(t *testing.T) {
-	kanbanHTMXBoard.reset()
-	kanbanDatastarBoard.reset()
-
-	srv := kanbanE2EServer(t)
-
-	ctx, cancel := newTab(t)
-	defer cancel()
-
-	ctx, cancelTimeout := context.WithTimeout(ctx, 45*time.Second)
-	defer cancelTimeout()
-
-	var ready bool
-
-	if err := chromedp.Run(ctx,
-		chromedp.Navigate(srv.URL+"/"),
-		pollBool(kanbanE2EReady, &ready),
-	); err != nil {
-		t.Fatalf("navigate + readiness: %v", err)
-	}
+	ctx := newKanbanReadyTab(t)
 
 	const want = "Moved First to In progress."
 
@@ -1029,25 +986,7 @@ func kanbanClickCountUntil(ctx context.Context, t *testing.T, buttonSel, countEx
 // without it, a missing hx-target/hx-swap pair silently swaps the whole
 // board into the button itself.
 func TestKanbanE2EAddAndResetBothTransports(t *testing.T) {
-	kanbanHTMXBoard.reset()
-	kanbanDatastarBoard.reset()
-
-	srv := kanbanE2EServer(t)
-
-	ctx, cancel := newTab(t)
-	defer cancel()
-
-	ctx, cancelTimeout := context.WithTimeout(ctx, 45*time.Second)
-	defer cancelTimeout()
-
-	var ready bool
-
-	if err := chromedp.Run(ctx,
-		chromedp.Navigate(srv.URL+"/"),
-		pollBool(kanbanE2EReady, &ready),
-	); err != nil {
-		t.Fatalf("navigate + readiness: %v", err)
-	}
+	ctx := newKanbanReadyTab(t)
 
 	// htmx board: one click on the empty "In progress" column's add button.
 	kanbanClickCountUntil(ctx, t,

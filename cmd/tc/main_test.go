@@ -3,6 +3,7 @@ package main
 import (
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -71,6 +72,60 @@ func TestSourcesMatchPackageFiles(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatalf("walk _sources: %v", err)
+	}
+}
+
+// mirroredPackages is the scaffolder's shipped package set: every .templ and
+// *_types.go under these directories must be embedded so `tc add` can scaffold
+// the component. Keep in sync with MIRRORED_PKGS in
+// scripts/check-tc-sources-sync.sh (charts/ is a Tier 2 opt-in adapter and
+// utils/ is leaf plumbing — intentionally not mirrored).
+var mirroredPackages = []string{
+	"datastar",
+	"display",
+	"errorpage",
+	"feedback",
+	"forms",
+	"htmx",
+	"layout",
+	"navigation",
+	"recipes",
+}
+
+// TestSourcesShipEveryMirrorableFile is direction 2 of the _sources mirror
+// guard: every mirrorable library file must be embedded. Without it, a newly
+// added component is invisible to `tc add` ("unknown component") until a human
+// remembers to copy it — nothing else fires, not even `go test`.
+func TestSourcesShipEveryMirrorableFile(t *testing.T) {
+	t.Parallel()
+
+	repoRoot := filepath.Join("..", "..")
+
+	for _, pkg := range mirroredPackages {
+		pkgFS := os.DirFS(filepath.Join(repoRoot, pkg))
+
+		walkErr := fs.WalkDir(pkgFS, ".", func(name string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+
+			if d.IsDir() {
+				return nil
+			}
+
+			if !strings.HasSuffix(name, ".templ") && !strings.HasSuffix(name, "_types.go") {
+				return nil
+			}
+
+			if _, statErr := fs.Stat(sourcesFS, path.Join("_sources", pkg, name)); statErr != nil {
+				t.Errorf("package file %s/%s is not embedded — run scripts/check-tc-sources-sync.sh --fix", pkg, name)
+			}
+
+			return nil
+		})
+		if walkErr != nil {
+			t.Errorf("walk %s: %v", pkg, walkErr)
+		}
 	}
 }
 

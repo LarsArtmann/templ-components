@@ -1,0 +1,116 @@
+package display
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// AreaChart renders a pure-SVG area chart with axes, gridlines, multi-series
+// filled areas, optional dots, and a legend. Zero JavaScript — all rendering
+// is server-side. Each series renders both a stroked line and a semi-transparent
+// fill from the line down to the baseline.
+//
+//	@display.AreaChart(display.AreaChartProps{
+//	    Series: []display.LineChartSeries{
+//	        {Name: "Active Users", Values: []float64{120, 180, 250, 300, 280, 340}},
+//	    },
+//	    XAxisLabels: []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun"},
+//	})
+templ AreaChart(props AreaChartProps) {
+	{{
+		width := props.Width
+		if width == 0 {
+			width = areaChartDefaultWidth
+		}
+		height := props.Height
+		if height == 0 {
+			height = areaChartDefaultHeight
+		}
+		style := props.Style
+		if style == "" {
+			style = LineChartStyleLinear
+		}
+		emptyMsg := props.EmptyMessage
+		if emptyMsg == "" {
+			emptyMsg = areaChartDefaultEmpty
+		}
+		fillOpacity := areaChartFillOpacityStr(props.FillOpacity)
+
+		d := computeChartRenderData(
+			width, height, props.Padding,
+			props.Series, props.XAxisLabels,
+			props.Min, props.Max,
+			props.ShowGrid, props.ShowLegend,
+			props.ValueFormat, emptyMsg,
+			props.Class, props.AriaLabel, props.ID, props.Attrs,
+			props.MaxTicks,
+		)
+	}}
+	<svg
+		viewBox={ fmt.Sprintf("0 0 %d %d", d.Width, d.Height) }
+		class={ utils.Class("w-full h-auto", d.Class) }
+		role="img"
+		if d.AriaLabel != "" {
+			aria-label={ d.AriaLabel }
+		} else {
+			aria-hidden="true"
+		}
+		if d.ID != "" {
+			id={ d.ID }
+		}
+		{ d.Attrs... }
+	>
+		if d.HasData {
+			@chartAxes(d)
+			for i, series := range props.Series {
+				if len(series.Values) >= 2 {
+					{{
+						color := lineChartColor(i, series.Color)
+						strokeW := lineChartStrokeWidth(series.StrokeWidth)
+						pts := ScalePoints(series.Values, d.PlotW, d.PlotH, d.MinVal, d.MaxVal)
+
+						var linePath string
+						if style == LineChartStyleSmooth {
+							linePath = BuildSmoothPath(pts)
+						} else {
+							linePath = BuildPolylinePath(pts)
+						}
+
+						areaPath := BuildAreaPath(pts, d.PlotH)
+					}}
+					<g
+						class={ color }
+						transform={ fmt.Sprintf("translate(%d,%d)", d.Padding.Left, d.Padding.Top) }
+					>
+						<path
+							d={ areaPath }
+							fill="currentColor"
+							fill-opacity={ fillOpacity }
+							stroke="none"
+						/>
+						<path
+							d={ linePath }
+							fill="none"
+							stroke="currentColor"
+							stroke-width={ fmt.Sprintf("%g", strokeW) }
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							if series.Dashed {
+								stroke-dasharray="5 5"
+							}
+						/>
+						if props.ShowDots {
+							for _, p := range pts {
+								<circle cx={ p.X } cy={ p.Y } r={ lineChartDotRadius } fill="currentColor"/>
+							}
+						}
+					</g>
+				}
+			}
+			@chartLegend(d)
+		} else {
+			@chartEmptyStateMsg(d)
+		}
+	</svg>
+}

@@ -92,12 +92,24 @@ if [ -x "$REPO_ROOT/scripts/check-lint-modules.sh" ]; then
     "$REPO_ROOT/scripts/check-lint-modules.sh"
 fi
 
-# Guard 8: tc scaffolder source-sync check
-#   cmd/tc/_sources/** must stay byte-identical to the library templates they
-#   mirror; a drifted copy scaffolds stale code for `tc new` consumers.
-#   (TestSourcesMatchPackageFiles pins the same invariant in `go test`.)
+# Guard 8: tc scaffolder source-sync mirror (auto-fix)
+#   cmd/tc/_sources/** is a complete mirror of the library sources `tc add`
+#   ships: drifted copies are re-copied, newly added components are embedded,
+#   orphans (deleted twins) are removed — fixes are staged so a commit can no
+#   longer carry stale or missing scaffolder sources.
+#   (TestSourcesMatchPackageFiles + TestSourcesShipEveryMirrorableFile pin the
+#   same invariant in `go test`.)
 if [ -x "$REPO_ROOT/scripts/check-tc-sources-sync.sh" ]; then
-    "$REPO_ROOT/scripts/check-tc-sources-sync.sh"
+    tc_sync_out="$("$REPO_ROOT/scripts/check-tc-sources-sync.sh" --fix 2>&1)" || {
+        printf '%s\n' "$tc_sync_out"
+        echo "PRE-COMMIT BLOCKED: tc scaffolder mirror could not be auto-synced." >&2
+        exit 1
+    }
+    if printf '%s\n' "$tc_sync_out" | grep -q '^synced '; then
+        printf '%s\n' "$tc_sync_out" >&2
+        git add -- cmd/tc/_sources
+        echo "tc scaffolder mirror: fixes staged (see above)." >&2
+    fi
 fi
 
 echo "Running BuildFlow pre-commit checks (budget: 60s)..."

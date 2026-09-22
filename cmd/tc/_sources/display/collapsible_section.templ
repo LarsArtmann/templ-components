@@ -1,0 +1,95 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// CollapsibleSection wraps content in a native <details>/<summary> pair so
+// users can collapse detail-heavy regions. The section renders open by
+// default. When StorageKey is set, the open/closed state can be persisted
+// to localStorage: either by a consumer-side script reading the
+// data-collapsible attribute, or — with PersistState and Nonce set — by
+// the built-in nonce'd persistence script this component ships.
+//
+//	@display.CollapsibleSection(display.CollapsibleSectionProps{
+//	   Title: "Advanced Filters",
+//	   StorageKey: "advanced-filters",
+//	   PersistState: true,
+//	   Nonce: nonce,
+//	}) {
+//	   <p>Collapsible content here.</p>
+//	}
+templ CollapsibleSection(props CollapsibleSectionProps) {
+	{{
+		p := resolveCollapsibleDefaults(props)
+		tag := p.TitleTag
+		if !isValidHeadingTag(tag) {
+			tag = "h3"
+		}
+	}}
+	<details
+		class={ utils.Class("group rounded-lg", p.Class) }
+		if p.StorageKey != "" { data-collapsible={ p.StorageKey } }
+		if p.ID != "" { id={ p.ID } }
+		if !p.Collapsed { open }
+		{ p.Attrs... }
+	>
+		<summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-1 py-1 text-gray-900 outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-brand)] hover:bg-gray-50 dark:text-white dark:hover:bg-gray-800 [&::-webkit-details-marker]:hidden">
+			switch tag {
+				case "h1":
+					<h1 class="text-lg font-semibold">{ p.Title }</h1>
+				case "h2":
+					<h2 class="text-lg font-semibold">{ p.Title }</h2>
+				case "h4":
+					<h4 class="text-lg font-semibold">{ p.Title }</h4>
+				case "h5":
+					<h5 class="text-lg font-semibold">{ p.Title }</h5>
+				case "h6":
+					<h6 class="text-lg font-semibold">{ p.Title }</h6>
+				default:
+					<h3 class="text-lg font-semibold">{ p.Title }</h3>
+			}
+			@icons.Icon(p.Icon, "h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500 transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-200 group-open:rotate-180")
+		</summary>
+		<div class="mt-4">
+			{ children... }
+		</div>
+	</details>
+	if p.PersistState && p.StorageKey != "" && p.Nonce != "" {
+		@collapsiblePersistScript(p.Nonce)
+	}
+}
+
+// collapsiblePersistScript is the built-in persistence singleton (ADR-0005):
+// first run restores every details[data-collapsible] from localStorage and
+// attaches one capture-phase toggle listener (toggle does not bubble);
+// re-runs after HTMX swaps only re-apply saved state to (re)rendered
+// elements — the listener is never double-bound. localStorage is wrapped
+// in try/catch for Safari private mode.
+templ collapsiblePersistScript(nonce string) {
+	<script nonce={ nonce }>
+		(function () {
+			"use strict";
+			function applyAll() {
+				document.querySelectorAll("details[data-collapsible]").forEach(function (el) {
+					try {
+						var saved = localStorage.getItem(el.getAttribute("data-collapsible"));
+						if (saved === "open") el.open = true;
+						else if (saved === "closed") el.open = false;
+					} catch (err) { /* private mode */ }
+				});
+			}
+			applyAll();
+			if (window.tcCollapsiblePersistAttached) return;
+			window.tcCollapsiblePersistAttached = true;
+			document.addEventListener("toggle", function (e) {
+				var el = e.target;
+				if (!el.matches || !el.matches("details[data-collapsible]")) return;
+				try {
+					localStorage.setItem(el.getAttribute("data-collapsible"), el.open ? "open" : "closed");
+				} catch (err) { /* private mode */ }
+			}, true);
+		})();
+	</script>
+}

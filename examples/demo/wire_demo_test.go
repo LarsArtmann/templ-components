@@ -14,6 +14,28 @@ import (
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
+// fetchDemoHTML starts a fresh demo mux server, fetches "/", and returns the
+// page body. The server and response body are closed via t.Cleanup.
+func fetchDemoHTML(t *testing.T) string {
+	t.Helper()
+
+	server := httptest.NewServer(newMux())
+	t.Cleanup(server.Close)
+
+	resp, err := server.Client().Get(server.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = resp.Body.Close() })
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return string(body)
+}
+
 // TestWireFragmentEndpointServesBothTransports verifies the transport-
 // branching contract of the shared wire demo endpoint: a Datastar caller
 // (marked by the Datastar-Request header) gets the patch region via response
@@ -102,21 +124,7 @@ func TestWireFragmentEndpointServesBothTransports(t *testing.T) {
 func TestWireDemoSectionRendersBothDialects(t *testing.T) {
 	t.Parallel()
 
-	server := httptest.NewServer(newMux())
-	t.Cleanup(server.Close)
-
-	resp, err := server.Client().Get(server.URL + "/")
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() { _ = resp.Body.Close() })
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	html := string(body)
+	html := fetchDemoHTML(t)
 	for _, want := range []string{
 		`hx-get="/api/wire/fragment"`,
 		`hx-target="#wire-htmx-out"`,
@@ -471,21 +479,7 @@ func TestWireFormEndpointServesBothTransports(t *testing.T) {
 func TestWireDemoFormRendersBothDialects(t *testing.T) {
 	t.Parallel()
 
-	server := httptest.NewServer(newMux())
-	t.Cleanup(server.Close)
-
-	resp, err := server.Client().Get(server.URL + "/")
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() { _ = resp.Body.Close() })
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	html := string(body)
+	html := fetchDemoHTML(t)
 	for _, want := range []string{
 		`hx-post="/api/wire/form"`,
 		`hx-trigger="submit"`,
@@ -604,21 +598,7 @@ func TestWireFilterEndpointServesBothTransports(t *testing.T) {
 func TestWireDemoFilterInputRendersBothDialects(t *testing.T) {
 	t.Parallel()
 
-	server := httptest.NewServer(newMux())
-	t.Cleanup(server.Close)
-
-	resp, err := server.Client().Get(server.URL + "/")
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() { _ = resp.Body.Close() })
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	html := string(body)
+	html := fetchDemoHTML(t)
 	for _, want := range []string{
 		`hx-get="/api/wire/filter"`,
 		`hx-trigger="input changed delay:300ms"`,
@@ -706,21 +686,7 @@ func TestWireBusyEndpoint(t *testing.T) {
 func TestWireDemoBusyCardRendersBothDialects(t *testing.T) {
 	t.Parallel()
 
-	server := httptest.NewServer(newMux())
-	t.Cleanup(server.Close)
-
-	resp, err := server.Client().Get(server.URL + "/")
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() { _ = resp.Body.Close() })
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	html := string(body)
+	html := fetchDemoHTML(t)
 	for _, want := range []string{
 		`hx-post="/api/wire/busy"`,
 		`hx-target="#wire-busy-htmx-out"`,
@@ -908,21 +874,7 @@ func TestWireSearchEndpoint(t *testing.T) {
 func TestWireDemoUploadAndSearchCards(t *testing.T) {
 	t.Parallel()
 
-	server := httptest.NewServer(newMux())
-	t.Cleanup(server.Close)
-
-	resp, err := server.Client().Get(server.URL + "/")
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() { _ = resp.Body.Close() })
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	html := string(body)
+	html := fetchDemoHTML(t)
 	for _, want := range []string{
 		`enctype="multipart/form-data"`,
 		`hx-post="/api/wire/upload"`,

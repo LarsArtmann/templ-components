@@ -1,0 +1,377 @@
+package display
+
+import (
+	"strconv"
+
+	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/svg"
+	"github.com/larsartmann/templ-components/utils/wire"
+)
+
+// KanbanCard is one work item in a KanbanBoard column. ID is the
+// consumer-supplied stable identity used by the move exchange — a card
+// without an ID renders fine but is not draggable (the server could not
+// route the move).
+type KanbanCard struct {
+	// ID is the stable card identity submitted as the move's card field.
+	// It must survive re-renders (never auto-generate it per request).
+	ID string
+	// Title is the card's heading text.
+	Title string
+	// Href, when set, links the card title to a detail page.
+	Href string
+	// Content renders arbitrary card body below the title (labels, avatars,
+	// metadata). Compose with Badge, Avatar, RelativeTime, … — the proven
+	// anatomy (identity badges, 2+N tag overflow, assignee stack, one-line
+	// description preview) is docs/recipes/kanban-card-anatomy.md; the
+	// compiling composition is ExampleKanbanBoard_cardAnatomy.
+	Content templ.Component
+	// Class overrides the card's Tailwind classes.
+	Class string
+}
+
+// KanbanColumn is one swimlane of a KanbanBoard. Like cards, columns need a
+// stable ID to be droppable targets of the move exchange.
+type KanbanColumn struct {
+	// ID is the stable column identity submitted as the move's column field.
+	ID string
+	// Title is the column heading.
+	Title string
+	// Cards renders in order, top to bottom.
+	Cards []KanbanCard
+	// Action is an optional affordance rendered in the column header after
+	// the count badge — the standard "add card" spot. The consumer owns the
+	// whole element: compose display.Button (its Wire field for transport
+	// wiring), a plain link, or any templ markup — and owns its
+	// accessibility too: whatever renders there must be keyboard-reachable
+	// (a real button or link, not a hover-only div). nil omits it; boards
+	// without it render byte-identical to before.
+	Action templ.Component
+	// Tone is an optional status color rendered as a small dot before the
+	// column title (todo=blue, done=green, …). The zero value (and any
+	// unknown value) renders no dot — see KanbanTone.
+	Tone KanbanTone
+	// Class overrides the column's Tailwind classes.
+	Class string
+}
+
+// KanbanTone selects the semantic color of a KanbanColumn's status dot,
+// mirroring StatTone's palette. Unlike StatTone, the zero value is
+// toneless: an empty or unknown Tone renders no dot at all (columns are
+// not required to carry status semantics).
+type KanbanTone string
+
+// Column dot tones. Match the palette of Badge/BadgeType and StatTone:
+// gray, blue, green, yellow, red, purple.
+const (
+	KanbanToneGray   KanbanTone = "gray"
+	KanbanToneBlue   KanbanTone = "blue"
+	KanbanToneGreen  KanbanTone = "green"
+	KanbanToneYellow KanbanTone = "yellow"
+	KanbanToneRed    KanbanTone = "red"
+	KanbanTonePurple KanbanTone = "purple"
+)
+
+// KanbanToneIsValid reports whether v is one of the defined KanbanTone
+// constants. The zero value is intentionally invalid — a toneless column
+// renders no dot.
+func KanbanToneIsValid(v KanbanTone) bool {
+	_, ok := kanbanToneLookup[v]
+
+	return ok
+}
+
+// kanbanToneLookup maps each KanbanTone onto the status-dot background
+// classes. Unknown/empty tones resolve to "" — the signal to render no
+// dot — rather than falling back to a color.
+//
+//nolint:gochecknoglobals // Package-level lookup table, same pattern as statTileLookup
+var kanbanToneLookup = map[KanbanTone]string{
+	KanbanToneGray:   "bg-gray-400 dark:bg-gray-500",
+	KanbanToneBlue:   "bg-blue-500 dark:bg-blue-400",
+	KanbanToneGreen:  "bg-green-500 dark:bg-green-400",
+	KanbanToneYellow: "bg-yellow-500 dark:bg-yellow-400",
+	KanbanToneRed:    "bg-red-500 dark:bg-red-400",
+	KanbanTonePurple: "bg-purple-500 dark:bg-purple-400",
+}
+
+// KanbanBoardProps configures a Kanban board: horizontal swimlanes of
+// draggable cards, movable via HTML5 drag-and-drop or per-card keyboard
+// buttons, under either transport.
+//
+// The move exchange: when Wire is set (non-empty URL), the component
+// renders a hidden form carrying the Wire attributes plus three hidden
+// inputs — card, column, index. Every move (drop or keyboard button) fills
+// those inputs and submits the form, so the request travels as a plain form
+// POST under htmx (hx-post) and Datastar (@post with form encoding) alike.
+// The documented response is the freshly rendered board element itself:
+// under htmx the component auto-targets its own id with hx-swap="outerHTML";
+// under Datastar wrap the endpoint in wire.Handler with
+// PatchTarget{Selector: "#<board id>", Mode: wire.PatchModeOuter}. Decode
+// submissions with ParseKanbanMove.
+//
+// A board without Wire (or with an empty Wire.URL) is a read-only view: no
+// drag handles, no move buttons, no script.
+//
+// Moves apply optimistically: the card moves in the DOM the moment the move
+// is submitted (before the request resolves) and wears a pending register
+// (tc-kanban-pending spinner + aria-busy) until the server's re-render
+// replaces it. A failed move (4xx/5xx, network error) is reverted to its
+// original position, flashed with tc-kanban-move-failed, and announced
+// through a role="alert" region. See ADR-0041 for the decision.
+type KanbanBoardProps struct {
+	utils.BaseProps
+	// Columns renders left to right (right to left under dir="rtl").
+	Columns []KanbanColumn
+	// Wire is the move exchange. nil or empty URL renders a read-only board.
+	// Method defaults to POST, Event to submit, ContentType to form
+	// encoding; under htmx, Target defaults to the board root with
+	// hx-swap="outerHTML".
+	//
+	// Sorted views: the submitted index is advisory — the server owns the
+	// real ordering. On a server-sorted view (by priority, created-at, …)
+	// reject same-column moves in the handler; the sort re-asserts on
+	// re-render and would otherwise make the drop look broken. See
+	// docs/recipes/kanban-card-anatomy.md ("Moves on a sorted view").
+	Wire *wire.Action
+	// EmptyColumnText shows inside a column with no cards. Default "No cards".
+	EmptyColumnText string
+	// CSRFToken, when set, renders a hidden CSRF input (name from
+	// CSRFTokenName) inside the move form so submissions pass token checks.
+	CSRFToken string
+	// CSRFTokenName is the hidden input's name. Default "csrf_token".
+	CSRFTokenName string
+}
+
+// kanbanEmptyColumnTextDefault is the muted placeholder for empty columns.
+const kanbanEmptyColumnTextDefault = "No cards"
+
+// kanbanColumnClass returns the Tailwind classes for a board column.
+func kanbanColumnClass(extra string) string {
+	return utils.Class("flex w-72 shrink-0 flex-col rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900", extra)
+}
+
+// kanbanColumnBodyClass returns the Tailwind classes for a column's drop
+// zone (the card list). relative anchors the drop indicators, min-h keeps
+// empty columns droppable.
+func kanbanColumnBodyClass() string {
+	return "relative flex min-h-24 flex-col gap-2 list-none m-0 p-0"
+}
+
+// kanbanCardClass returns the Tailwind classes for a card.
+func kanbanCardClass(extra string) string {
+	return utils.Class("group relative cursor-grab rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover:border-blue-300 active:cursor-grabbing dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600", extra)
+}
+
+// kanbanMoveButtonClass returns the Tailwind classes for the per-card
+// keyboard move buttons.
+func kanbanMoveButtonClass() string {
+	return "inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus-visible:ring-blue-400"
+}
+
+// DefaultKanbanBoardProps returns sensible defaults.
+func DefaultKanbanBoardProps() KanbanBoardProps {
+	return KanbanBoardProps{
+		CSRFTokenName: "csrf_token",
+	}
+}
+
+// KanbanBoard renders a kanban board: horizontally scrolling columns of
+// cards. With Wire set, cards drag between columns (HTML5 drag-and-drop,
+// CSP-safe singleton script) and carry per-card "move to previous/next
+// column" buttons so the board is fully keyboard operable; both affordances
+// submit the same hidden form.
+//
+//	@display.KanbanBoard(display.KanbanBoardProps{
+//	   Columns: []display.KanbanColumn{
+//	     {ID: "todo", Title: "To do", Cards: []display.KanbanCard{{ID: "c1", Title: "Write docs"}}},
+//	     {ID: "done", Title: "Done"},
+//	   },
+//	   Wire: &wire.Action{URL: "/api/kanban/move"},
+//	})
+templ KanbanBoard(props KanbanBoardProps) {
+	{{ boardID := utils.EnsureID("kanban", props.ID) }}
+	{{ moveAttrs := kanbanWireAttributes(props.Wire, boardID) }}
+	{{ wired := len(moveAttrs) > 0 }}
+	<div
+		id={ boardID }
+		data-tc-kanban
+		class={ utils.Class("min-w-0 rounded-xl", props.Class) }
+		role="region"
+		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Kanban board") }
+		{ props.Attrs... }
+	>
+		if wired {
+			<form
+				data-tc-kanban-form
+				method="POST"
+				action={ templ.SafeURL(props.Wire.URL) }
+				class="hidden"
+				{ moveAttrs... }
+			>
+				<input type="hidden" name={ kanbanFieldCard } value="" data-tc-kanban-f-card/>
+				<input type="hidden" name={ kanbanFieldColumn } value="" data-tc-kanban-f-column/>
+				<input type="hidden" name={ kanbanFieldIndex } value="" data-tc-kanban-f-index/>
+				if props.CSRFToken != "" {
+					<input
+						type="hidden"
+						name={ utils.Ternary(props.CSRFTokenName != "", props.CSRFTokenName, "csrf_token") }
+						value={ props.CSRFToken }
+					/>
+				}
+			</form>
+			<p data-tc-kanban-live class="sr-only" role="status" aria-live="polite"></p>
+			<p data-tc-kanban-alert class="sr-only" role="alert"></p>
+		}
+		<div class="flex gap-4 overflow-x-auto pb-2">
+			for ci, col := range props.Columns {
+				{{ colID := kanbanColumnID(boardID, ci, col) }}
+				{{ draggable := wired && col.ID != "" }}
+				<section
+					if col.ID != "" {
+						data-tc-kanban-column={ col.ID }
+					}
+					class={ kanbanColumnClass(col.Class) }
+					aria-labelledby={ colID + "-title" }
+				>
+					<div class="mb-3 flex items-center justify-between gap-2 px-1">
+						<h3 id={ colID + "-title" } class="truncate text-sm font-semibold text-gray-900 dark:text-white">
+							if dotClass := utils.Lookup(kanbanToneLookup, col.Tone, ""); dotClass != "" {
+								<span
+									class={ "me-1.5 inline-block h-2 w-2 rounded-full align-middle", dotClass }
+									aria-hidden="true"
+								></span>
+							}
+							{ col.Title }
+						</h3>
+						if col.Action != nil {
+							<div class="flex shrink-0 items-center gap-2">
+								@kanbanColumnCount(len(col.Cards))
+								@col.Action
+							</div>
+						} else {
+							@kanbanColumnCount(len(col.Cards))
+						}
+					</div>
+					<ul
+						if col.ID != "" {
+							data-tc-kanban-column-body={ col.ID }
+							data-tc-kanban-col-title={ col.Title }
+						}
+						aria-label={ col.Title + ": " + kanbanCountLabel(len(col.Cards)) }
+						class={ kanbanColumnBodyClass() }
+					>
+						// data-tc-kanban-empty lets the move script hide the placeholder
+						// while a card is optimistically placed into this column.
+						if len(col.Cards) == 0 {
+							<li data-tc-kanban-empty class="rounded-lg py-6 text-center text-sm text-gray-400 dark:text-gray-500">
+								{ utils.Ternary(props.EmptyColumnText != "", props.EmptyColumnText, kanbanEmptyColumnTextDefault) }
+							</li>
+						}
+						for _, card := range col.Cards {
+							if draggable && card.ID != "" {
+								<li
+									data-tc-kanban-card={ card.ID }
+									draggable="true"
+									class={ kanbanCardClass(card.Class) }
+								>
+									@kanbanCardInner(card, ci, len(props.Columns), wired)
+								</li>
+							} else {
+								<li class={ utils.Class(kanbanCardClass(card.Class), "cursor-default") }>
+									@kanbanCardInner(card, ci, len(props.Columns), wired)
+								</li>
+							}
+						}
+					</ul>
+				</section>
+			}
+		</div>
+		if wired {
+			@kanbanScriptComponent(props.Nonce)
+		}
+	</div>
+}
+
+// kanbanColumnCount renders a column's card-count badge. The data-tc-kanban-count
+// hook lets the move script keep the badge honest while a move is pending
+// (optimistic ±1) and after a failed move is reverted (recompute from DOM).
+templ kanbanColumnCount(count int) {
+	<span
+		data-tc-kanban-count
+		class="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+	>
+		{ strconv.Itoa(count) }
+	</span>
+}
+
+// kanbanCardInner renders a card's content plus, on a wired board, the
+// keyboard move buttons. The tc-kanban-buttons wrapper hides them until
+// hover or keyboard focus — EXCEPT on coarse pointers (touch), where the
+// custom.css pointer:coarse rule keeps them visible (no hover exists).
+templ kanbanCardInner(card KanbanCard, columnIndex, columnCount int, wired bool) {
+	<div class="flex items-start justify-between gap-1">
+		<div class="min-w-0">
+			if card.Href != "" {
+				<a
+					href={ templ.SafeURL(card.Href) }
+					data-tc-kanban-title
+					class="text-sm font-medium text-gray-900 hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-white dark:hover:text-blue-400 dark:focus-visible:ring-blue-400"
+				>
+					{ card.Title }
+				</a>
+			} else {
+				<span data-tc-kanban-title class="text-sm font-medium text-gray-900 dark:text-white">
+					{ card.Title }
+				</span>
+			}
+			if card.Content != nil {
+				<div class="mt-1.5">
+					@card.Content
+				</div>
+			}
+		</div>
+		if wired && (columnIndex > 0 || columnIndex < columnCount-1) {
+			<div class={ "tc-kanban-buttons flex shrink-0 gap-0.5 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100", utils.TransitionFast }>
+				if columnIndex > 0 {
+					<button
+						type="button"
+						data-tc-kanban-move="prev"
+						class={ kanbanMoveButtonClass() }
+						aria-label={ "Move " + card.Title + " to previous column" }
+					>
+						<svg
+							class="h-4 w-4 rtl:rotate-180"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							aria-hidden="true"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" d={ svg.PathArrowLeft }></path>
+						</svg>
+					</button>
+				}
+				if columnIndex < columnCount-1 {
+					<button
+						type="button"
+						data-tc-kanban-move="next"
+						class={ kanbanMoveButtonClass() }
+						aria-label={ "Move " + card.Title + " to next column" }
+					>
+						<svg
+							class="h-4 w-4 rtl:rotate-180"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							aria-hidden="true"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" d={ svg.PathArrowRight }></path>
+						</svg>
+					</button>
+				}
+			</div>
+		}
+	</div>
+}
