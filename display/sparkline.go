@@ -67,17 +67,17 @@ func sparklinePointCoords(values []float64, width, height int, minVal, maxVal fl
 		return nil, false
 	}
 
-	coords := make([]sparklinePoint, len(values))
+	coords := make([]sparklinePoint, 0, len(values))
 
 	for i, v := range values {
 		normalized := (v - minVal) / rangeVal
 
 		yCoord := max(height-int(math.Round(normalized*float64(height))), 0)
 
-		coords[i] = sparklinePoint{
+		coords = append(coords, sparklinePoint{
 			x: i * int(math.Round(stepX)),
 			y: min(yCoord, height),
-		}
+		})
 	}
 
 	return coords, true
@@ -92,8 +92,8 @@ func sparklinePoints(values []float64, width, height int, minVal, maxVal float64
 
 	points := make([]string, 0, len(coords))
 
-	for _, c := range coords {
-		points = append(points, strconv.Itoa(c.x)+","+strconv.Itoa(c.y))
+	for _, coord := range coords {
+		points = append(points, strconv.Itoa(coord.x)+","+strconv.Itoa(coord.y))
 	}
 
 	return strings.Join(points, " ")
@@ -108,16 +108,16 @@ func sparklineAreaPath(values []float64, width, height int, minVal, maxVal float
 
 	var b strings.Builder
 
-	for i, c := range coords {
+	for i, coord := range coords {
 		if i == 0 {
 			b.WriteString("M ")
 		} else {
 			b.WriteString(" L ")
 		}
 
-		b.WriteString(strconv.Itoa(c.x))
+		b.WriteString(strconv.Itoa(coord.x))
 		b.WriteString(" ")
-		b.WriteString(strconv.Itoa(c.y))
+		b.WriteString(strconv.Itoa(coord.y))
 	}
 
 	b.WriteString(" L ")

@@ -19,7 +19,6 @@ import (
 	"time"
 
 	"github.com/chromedp/chromedp"
-
 	"github.com/larsartmann/templ-components/visualtest/tools/internal/browser"
 	"github.com/larsartmann/templ-components/visualtest/tools/internal/distserver"
 )

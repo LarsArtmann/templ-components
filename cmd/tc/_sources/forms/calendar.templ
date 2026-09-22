@@ -121,27 +121,13 @@ templ Calendar(props CalendarProps) {
 	>
 		<div class="flex items-center justify-between mb-4">
 			if prevHref != "" {
-				<a
-					href={ templ.SafeURL(prevHref) }
-					{ calendarMonthNavAction(props.MonthNav, prevYear, prevMonth)... }
-					class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-					aria-label="Previous month"
-				>
-					@icons.Icon(icons.ChevronLeft, "h-5 w-5")
-				</a>
+				@calendarMonthNavLink(prevHref, calendarMonthNavAction(props.MonthNav, prevYear, prevMonth), "Previous month", icons.ChevronLeft)
 			} else {
 				<span class="w-7"></span>
 			}
 			<h3 class="text-sm font-semibold text-gray-900 dark:text-white">{ monthName } { fmt.Sprintf("%d", props.Year) }</h3>
 			if nextHref != "" {
-				<a
-					href={ templ.SafeURL(nextHref) }
-					{ calendarMonthNavAction(props.MonthNav, nextYear, nextMonth)... }
-					class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-					aria-label="Next month"
-				>
-					@icons.Icon(icons.ChevronRight, "h-5 w-5")
-				</a>
+				@calendarMonthNavLink(nextHref, calendarMonthNavAction(props.MonthNav, nextYear, nextMonth), "Next month", icons.ChevronRight)
 			} else {
 				<span class="w-7"></span>
 			}
@@ -176,4 +162,18 @@ templ Calendar(props CalendarProps) {
 			}
 		</div>
 	</div>
+}
+
+// calendarMonthNavLink renders one month-navigation anchor (previous or
+// next). The href is the no-JS fallback; MonthNav wiring, when set, is
+// spread as transport attributes by the caller.
+templ calendarMonthNavLink(href string, action templ.Attributes, label string, icon icons.Name) {
+	<a
+		href={ templ.SafeURL(href) }
+		{ action... }
+		class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+		aria-label={ label }
+	>
+		@icons.Icon(icon, "h-5 w-5")
+	</a>
 }

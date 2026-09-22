@@ -114,3 +114,60 @@ templ chartEmptyStateMsg(d ChartRenderData) {
 		font-size={ lineChartEmptyFontSize }
 	>{ d.EmptyMsg }</text>
 }
+
+// chartSeriesRenderOpts carries the per-chart series rendering switches.
+type chartSeriesRenderOpts struct {
+	// filled renders the semi-transparent area fill under the line (AreaChart).
+	filled bool
+	// fillOpacity is the area fill opacity string; only used when filled.
+	fillOpacity string
+	// showDots renders a circle at every projected point.
+	showDots bool
+}
+
+// chartSeriesGroup renders one series as an SVG group: optional area fill,
+// the stroked line (smooth or linear), and optional dots. Shared by LineChart
+// and AreaChart so stroke, dash, and dot rendering stay in lockstep.
+templ chartSeriesGroup(d ChartRenderData, series LineChartSeries, i int, style LineChartStyle, opts chartSeriesRenderOpts) {
+	{{
+		color := lineChartColor(i, series.Color)
+		strokeW := lineChartStrokeWidth(series.StrokeWidth)
+		pts := ScalePoints(series.Values, d.PlotW, d.PlotH, d.MinVal, d.MaxVal)
+
+		var linePath string
+		if style == LineChartStyleSmooth {
+			linePath = BuildSmoothPath(pts)
+		} else {
+			linePath = BuildPolylinePath(pts)
+		}
+	}}
+	<g
+		class={ color }
+		transform={ fmt.Sprintf("translate(%d,%d)", d.Padding.Left, d.Padding.Top) }
+	>
+		if opts.filled {
+			<path
+				d={ BuildAreaPath(pts, d.PlotH) }
+				fill="currentColor"
+				fill-opacity={ opts.fillOpacity }
+				stroke="none"
+			/>
+		}
+		<path
+			d={ linePath }
+			fill="none"
+			stroke="currentColor"
+			stroke-width={ fmt.Sprintf("%g", strokeW) }
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			if series.Dashed {
+				stroke-dasharray="5 5"
+			}
+		/>
+		if opts.showDots {
+			for _, p := range pts {
+				<circle cx={ p.X } cy={ p.Y } r={ lineChartDotRadius } fill="currentColor"/>
+			}
+		}
+	</g>
+}

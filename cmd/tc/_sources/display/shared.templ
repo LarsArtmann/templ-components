@@ -61,3 +61,24 @@ templ dialogHeader(title, titleID string, kind OverlayKind) {
 		</div>
 	}
 }
+
+// headingTag renders a title as the requested heading element (h1-h6,
+// defaulting to h3). Templ has no dynamic element names, so this switch is
+// the single home for heading-level selection — shared by Card, EmptyState,
+// and CollapsibleSection.
+templ headingTag(tag string, class string, text string) {
+	switch tag {
+		case "h1":
+			<h1 class={ class }>{ text }</h1>
+		case "h2":
+			<h2 class={ class }>{ text }</h2>
+		case "h4":
+			<h4 class={ class }>{ text }</h4>
+		case "h5":
+			<h5 class={ class }>{ text }</h5>
+		case "h6":
+			<h6 class={ class }>{ text }</h6>
+		default:
+			<h3 class={ class }>{ text }</h3>
+	}
+}
