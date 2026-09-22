@@ -20,6 +20,9 @@ import (
 	"time"
 
 	"github.com/chromedp/chromedp"
+
+	"github.com/larsartmann/templ-components/visualtest/tools/internal/browser"
+	"github.com/larsartmann/templ-components/visualtest/tools/internal/distserver"
 )
 
 const (
@@ -102,7 +105,7 @@ func run(dist, out string) error {
 	allocCtx, allocCancel := chromedp.NewExecAllocator(
 		ctx,
 		append(chromedp.DefaultExecAllocatorOptions[:],
-			chromedp.ExecPath(chromePath()),
+			chromedp.ExecPath(browser.ExecPath()),
 			chromedp.Flag("headless", true),
 		)...,
 	)
@@ -157,22 +160,7 @@ func serveDist(dist string) (string, func(), error) {
 		return "", nil, fmt.Errorf("listen: %w", err)
 	}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		clean, _, _ := strings.Cut(r.URL.Path, "?")
-		if !strings.HasSuffix(clean, ".html") && !strings.Contains(clean, ".") {
-			cleanPath := filepath.Join(dist, clean+".html")
-			if _, err := os.Stat(cleanPath); err == nil { //nolint:gosec // CLI-controlled dist root
-				http.ServeFile(w, r, cleanPath) //nolint:gosec // CLI-controlled dist root
-
-				return
-			}
-		}
-
-		http.FileServer(http.Dir(dist)).ServeHTTP(w, r)
-	})
-
-	server := &http.Server{Handler: mux} //nolint:gosec // loopback-only dev server
+	server := &http.Server{Handler: distserver.Handler(dist)} //nolint:gosec // loopback-only dev server
 
 	go func() { _ = server.Serve(listener) }()
 
@@ -182,14 +170,4 @@ func serveDist(dist string) (string, func(), error) {
 	}
 
 	return listener.Addr().String(), cleanup, nil
-}
-
-// chromePath resolves the browser binary: CHROMEDP_CHROME_PATH (set by
-// `nix run .#visual`-style wrappers) or "chromium" from PATH.
-func chromePath() string {
-	if p := os.Getenv("CHROMEDP_CHROME_PATH"); p != "" {
-		return p
-	}
-
-	return "chromium"
 }

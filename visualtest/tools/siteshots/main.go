@@ -24,6 +24,9 @@ import (
 	"time"
 
 	"github.com/chromedp/chromedp"
+
+	"github.com/larsartmann/templ-components/visualtest/tools/internal/browser"
+	"github.com/larsartmann/templ-components/visualtest/tools/internal/distserver"
 )
 
 // routes mirrors the site's key page shapes: landing, sales, docs pages with
@@ -57,16 +60,6 @@ const (
 // errSearchNoHits is the search-smoke failure sentinel (static by design —
 // err113 forbids dynamic error construction).
 var errSearchNoHits = errors.New("search smoke FAILED: 0 hits for query")
-
-// chromePath resolves the browser binary: CHROMEDP_CHROME_PATH (set by
-// `nix run .#visual`-style wrappers) or "chromium" from PATH.
-func chromePath() string {
-	if p := os.Getenv("CHROMEDP_CHROME_PATH"); p != "" {
-		return p
-	}
-
-	return "chromium"
-}
 
 // scrollRevealJS scrolls through the full document in steps (then returns to
 // the top) so IntersectionObserver-driven scroll reveals fire for every
@@ -129,22 +122,7 @@ func serveDist(dist string) (string, *http.Server, error) {
 		return "", nil, fmt.Errorf("listen: %w", err)
 	}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		clean, _, _ := strings.Cut(r.URL.Path, "?")
-		if !strings.HasSuffix(clean, ".html") && !strings.Contains(clean, ".") {
-			cleanPath := filepath.Join(dist, clean+".html")
-			if _, err := os.Stat(cleanPath); err == nil { //nolint:gosec // CLI-controlled dist root
-				http.ServeFile(w, r, cleanPath) //nolint:gosec // CLI-controlled dist root
-
-				return
-			}
-		}
-
-		http.FileServer(http.Dir(dist)).ServeHTTP(w, r)
-	})
-
-	server := &http.Server{Handler: mux} //nolint:gosec // loopback-only dev server
+	server := &http.Server{Handler: distserver.Handler(dist)} //nolint:gosec // loopback-only dev server
 
 	go func() { _ = server.Serve(listener) }()
 
@@ -188,7 +166,7 @@ func screenshot(url, theme string, width, height int, target string) error {
 	allocCtx, allocCancel := chromedp.NewExecAllocator(
 		ctx,
 		append(chromedp.DefaultExecAllocatorOptions[:],
-			chromedp.ExecPath(chromePath()),
+			chromedp.ExecPath(browser.ExecPath()),
 			chromedp.Flag("headless", true),
 		)...,
 	)
@@ -244,7 +222,7 @@ func searchSmoke(base, out string) error {
 	allocCtx, allocCancel := chromedp.NewExecAllocator(
 		ctx,
 		append(chromedp.DefaultExecAllocatorOptions[:],
-			chromedp.ExecPath(chromePath()),
+			chromedp.ExecPath(browser.ExecPath()),
 			chromedp.Flag("headless", true),
 		)...,
 	)

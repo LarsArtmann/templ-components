@@ -22,6 +22,8 @@ import (
 
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
+
+	"github.com/larsartmann/templ-components/visualtest/tools/internal/browser"
 )
 
 type page struct {
@@ -98,7 +100,7 @@ func main() {
 		// Fresh browser per page: a long-lived shared browser degrades across
 		// very tall captures (multi-minute hangs); an isolated instance
 		// captures each page in ~2s.
-		if err := capturePage(chromePath(), *base, *out, p, modes, *width); err != nil {
+		if err := capturePage(browser.ExecPath(), *base, *out, p, modes, *width); err != nil {
 			log.Fatalf("capture %s: %v", p.name, err)
 		}
 
@@ -106,14 +108,6 @@ func main() {
 	}
 
 	fmt.Fprintln(os.Stdout, "done")
-}
-
-func chromePath() string {
-	if p := os.Getenv("CHROMEDP_CHROME_PATH"); p != "" {
-		return p
-	}
-
-	return "chromium"
 }
 
 // capturePage screenshots one page per requested mode on a single tab,
