@@ -44,7 +44,11 @@ templ copyButtonContent(icon bool, label string) {
 	if icon {
 		@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
 	}
-	<span data-tc-copy-text role="status" aria-live="polite">{ label }</span>
+	// Explicit default color (matches the button's own palette): the span
+	// must not follow ancestor re-coloring in consumers whose table CSS
+	// overrides the button. To re-color the label, target
+	// [data-tc-copy-text] in CSS — the attribute is the styling hook.
+	<span data-tc-copy-text role="status" aria-live="polite" class="text-gray-700 dark:text-gray-200">{ label }</span>
 }
 
 templ CopyButton(props CopyButtonProps) {

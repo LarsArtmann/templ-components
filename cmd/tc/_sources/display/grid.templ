@@ -146,6 +146,16 @@ func DefaultGridProps() GridProps {
 //	@display.Grid(display.GridProps{Cols: display.GridCols3, ContainerAware: true}) {
 //	   // items
 //	}
+//
+// HYBRID RENDERING CAVEAT (strings.Builder path): Grid is a children-slot
+// component. When a component is rendered OUTSIDE a templ file — e.g. a
+// hybrid renderer calling component.Render(ctx, w) straight into a
+// strings.Builder — the { children... } slot renders EMPTY: templ only
+// captures children when the component is invoked from another templ
+// template. Escape hatch: pass children programmatically via
+// templ.WithChildren(ctx, child) before Render (pinned by
+// TestGridHybridChildrenViaWithChildren). Details:
+// docs/recipes/hybrid-strings-builder-rendering.md.
 templ Grid(props GridProps) {
 	{{
 		cols := props.Cols

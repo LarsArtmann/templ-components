@@ -152,8 +152,9 @@ func DefaultGridProps() GridProps {
 // hybrid renderer calling component.Render(ctx, w) straight into a
 // strings.Builder — the { children... } slot renders EMPTY: templ only
 // captures children when the component is invoked from another templ
-// template. In hybrid paths use props-driven components (StatCard, Card
-// with fields, SimpleCard) or render Grid from a real templ file. See
+// template. Escape hatch: pass children programmatically via
+// templ.WithChildren(ctx, child) before Render (pinned by
+// TestGridHybridChildrenViaWithChildren). Details:
 // docs/recipes/hybrid-strings-builder-rendering.md.
 templ Grid(props GridProps) {
 	{{

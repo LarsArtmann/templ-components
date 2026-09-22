@@ -6,33 +6,84 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+// ListNoteVariant selects which count semantics ListNote renders.
+type ListNoteVariant string
+
+const (
+	// ListNoteTruncated renders "Showing N of M. Narrow your search to see
+	// more." — and only when Total > Shown (a truncated result set). This is
+	// the default; the zero value behaves identically.
+	ListNoteTruncated ListNoteVariant = "truncated"
+	// ListNoteCount renders "Showing N items." (pluralized) — count-only,
+	// unconditionally, with no total and no advice. For range/list semantics
+	// where "N items in range" is the whole message (e.g. an event log
+	// between two timestamps): the consumer already knows why the list is
+	// shaped this way, so count-only is the honest hint — including
+	// "Showing 0 items." for an empty-but-loaded range.
+	ListNoteCount ListNoteVariant = "count"
+)
+
 // ListNoteProps configures a "Showing N of M" truncation notice.
 type ListNoteProps struct {
 	utils.BaseProps
 	// Shown is the number of items currently rendered.
 	Shown int
-	// Total is the unfiltered/cap-exceeding match count.
+	// Total is the unfiltered/cap-exceeding match count (truncated variant
+	// only; ignored by ListNoteCount).
 	Total int
+	// Variant selects count semantics. Defaults to ListNoteTruncated.
+	Variant ListNoteVariant
 }
 
-// ListNote renders a "Showing N of M" hint when a list is truncated (Total > Shown).
-// Renders nothing when all rows fit.
+// listNoteMessage returns the notice text and whether it renders at all.
+// Unknown Variant values degrade to truncated semantics (graceful fallback).
+func listNoteMessage(props ListNoteProps) (string, bool) {
+	if props.Variant == ListNoteCount {
+		item := "items"
+		if props.Shown == 1 {
+			item = "item"
+		}
+
+		return fmt.Sprintf("Showing %d %s.", props.Shown, item), true
+	}
+
+	if props.Total <= props.Shown {
+		return "", false
+	}
+
+	return fmt.Sprintf("Showing %d of %d. Narrow your search to see more.", props.Shown, props.Total), true
+}
+
+// listNoteShell renders the shared status div so both variants keep one
+// class/ARIA source of truth.
+templ listNoteShell(props ListNoteProps, message string) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("border-t border-gray-200 dark:border-gray-700 px-4 py-2.5 text-xs text-gray-500 dark:text-gray-400", props.Class) }
+		role="status"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ message }
+	</div>
+}
+
+// ListNote renders a "Showing N of M" hint when a list is truncated
+// (ListNoteTruncated, the default: renders nothing when all rows fit), or a
+// count-only "Showing N items." hint (ListNoteCount: always renders —
+// including zero — for range/list semantics).
 //
 //	@display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
+//	@display.ListNote(display.ListNoteProps{Shown: 42, Variant: display.ListNoteCount})
 templ ListNote(props ListNoteProps) {
-	if props.Total > props.Shown {
-		<div
-			if props.ID != "" {
-				id={ props.ID }
-			}
-			class={ utils.Class("border-t border-gray-200 dark:border-gray-700 px-4 py-2.5 text-xs text-gray-500 dark:text-gray-400", props.Class) }
-			role="status"
-			if props.AriaLabel != "" {
-				aria-label={ props.AriaLabel }
-			}
-			{ props.Attrs... }
-		>
-			{ fmt.Sprintf("Showing %d of %d. Narrow your search to see more.", props.Shown, props.Total) }
-		</div>
+	{{
+		message, visible := listNoteMessage(props)
+	}}
+	if visible {
+		@listNoteShell(props, message)
 	}
 }

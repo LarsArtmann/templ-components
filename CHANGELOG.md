@@ -6,6 +6,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`ListNoteProps.Variant` — count-only semantics for range/list views.**
+  `ListNoteCount` renders "Showing N items." (pluralized, unconditionally —
+  including "Showing 0 items." for an empty-but-loaded range) with no total
+  and no advice; the default `ListNoteTruncated` behavior ("Showing N of M.
+  Narrow your search to see more.", only when truncated) is unchanged and
+  the zero value stays compatible. Unknown variant values degrade to
+  truncated semantics. (cqrs-htmx adoption ask a, TODO 230.)
+
+### Documented
+
+- **Hybrid rendering (strings.Builder) path for children-slot components.**
+  `Grid` and `htmx.PolledRegion` godocs now state that `{ children... }`
+  renders EMPTY when a component is rendered standalone from Go, and
+  document the escape hatch: `templ.WithChildren(ctx, child)` populates the
+  slot programmatically (verified empirically; both behaviors pinned by
+  `TestGridHybridChildrenViaWithChildren` /
+  `TestGridHybridChildrenEmptyWithoutWithChildren`). New recipe:
+  `docs/recipes/hybrid-strings-builder-rendering.md`. (cqrs-htmx adoption
+  ask b, TODO 231.)
+
+### Fixed
+
+- **`CopyButton` label no longer follows ancestor re-coloring.** The inner
+  `span[data-tc-copy-text]` now carries an explicit default color
+  (`text-gray-700 dark:text-gray-200`, matching the button's own palette),
+  so consumers whose (possibly unlayered) table CSS re-colors surrounding
+  elements no longer lose label contrast. To re-color the label, target
+  `[data-tc-copy-text]` in CSS — the attribute remains the styling hook.
+  (cqrs-htmx adoption ask c, TODO 232.)
+
 ## [1.19.0] — 2026-09-21
 
 ### Fixed

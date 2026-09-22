@@ -38,6 +38,15 @@ func TestGoldenCountBadge(t *testing.T) {
 	golden.Assert(t, "count_badge", output)
 }
 
+func TestGoldenListNoteCount(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, ListNote(ListNoteProps{
+		Shown:   42,
+		Variant: ListNoteCount,
+	}))
+	golden.Assert(t, "list_note_count", output)
+}
+
 func TestGoldenDefinitionGrid(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, DefinitionGrid(DefinitionGridProps{
