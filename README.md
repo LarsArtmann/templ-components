@@ -386,7 +386,7 @@ of regression:
 
 | Tier                     | What                                                                 | Where                                | Catches                                                                                                                                         |
 | ------------------------ | -------------------------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 257 `.golden` files | Structure, attribute, and class changes                                                                                                         |
+| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 258 `.golden` files | Structure, attribute, and class changes                                                                                                         |
 | **Drift-guard scanners** | Cross-cutting invariant tests                                        | `utils/`                             | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
 | **Visual regression**    | Pixel-level PNG diff in headless Chromium                            | `visualtest/` (separate module)      | Layout shifts, dark-mode color regressions, RTL mirroring                                                                                       |
 

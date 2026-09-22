@@ -107,6 +107,24 @@ func newTab(t *testing.T) (context.Context, context.CancelFunc) {
 	return ctx, cancel
 }
 
+// browserConfigured reports whether a usable Chromium is available. The
+// site-dist tests use it to SKIP (not fail) in browserless contexts such as
+// CI's compile-only step — with a browser present, a missing dist remains
+// a hard failure so the Visual Regression lane can never silently degrade.
+func browserConfigured() bool {
+	chromePath := os.Getenv("CHROMEDP_CHROME_PATH")
+	if chromePath == "" {
+		return false
+	}
+
+	//nolint:gosec // path is from CHROMEDP_CHROME_PATH env var, not user-controlled
+	if _, err := os.Stat(chromePath); err != nil {
+		return false
+	}
+
+	return true
+}
+
 // ShutdownBrowser closes the shared Chromium process. Called by TestMain
 // after all tests complete.
 func ShutdownBrowser() {

@@ -210,7 +210,14 @@ jobs:
 
       - name: Per-module isolation tests (GOWORK=off, race-enabled)
         run: |
-          for mod in utils icons errorpage charts/echarts datastar htmx visualtest; do
+          # visualtest is DELIBERATELY excluded (mirrors scripts/ci-repro.sh,
+          # whose MODULES list omits it): its site tests hard-require a built
+          # website/dist + a Chromium binary — neither exists in this job.
+          # The dedicated "Compile visualtest module" step below covers the
+          # compile check; the "Visual Regression" job is the real gate.
+          # Including it here made this step deterministically red
+          # ("website dist not built") 2026-09-19 → 2026-09-22.
+          for mod in utils icons errorpage charts/echarts datastar htmx; do
             echo "==> $mod"
             (cd "$mod" && GOWORK=off go test -race -count=1 ./...)
           done

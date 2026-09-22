@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/chromedp/cdproto/browser"
 	"github.com/chromedp/chromedp"
 )
 
@@ -17,6 +18,12 @@ import (
 // observes the same writeText call the browser performs and the write itself
 // still goes through to the real clipboard.
 //
+// Clipboard WRITES are granted via Browser.grantPermissions: without them,
+// headless Chromium rejects navigator.clipboard.writeText (NotAllowedError)
+// and the fallback execCommand path throws in a background tab, so the label
+// never swaps — this was the 2026-09-21 CI failure ("label after click =
+// Copy, want Copied!").
+//
 // Run via `nix run .#visual` (builds the dist, sets CHROMEDP_CHROME_PATH);
 // skips gracefully without a browser like the rest of the suite.
 func TestSiteSalesCopyButton(t *testing.T) {
@@ -27,6 +34,26 @@ func TestSiteSalesCopyButton(t *testing.T) {
 
 	ctx, cancel := context.WithTimeout(tabCtx, 120*time.Second)
 	defer cancel()
+
+	if err := chromedp.Run(ctx,
+		// Clipboard WRITES are granted via Browser.setPermission: without
+		// them, headless Chromium rejects navigator.clipboard.writeText
+		// (NotAllowedError) and the fallback execCommand path throws in a
+		// background tab, so the label never swaps — the 2026-09-21 CI
+		// failure ("label after click = Copy, want Copied!"). Names are the
+		// Permissions-API spellings ("clipboard-write", not the legacy
+		// GrantPermissions "clipboardReadWrite").
+		browser.SetPermission(
+			&browser.PermissionDescriptor{Name: "clipboard-write"},
+			browser.PermissionSettingGranted,
+		).WithOrigin(base),
+		browser.SetPermission(
+			&browser.PermissionDescriptor{Name: "clipboard-read"},
+			browser.PermissionSettingGranted,
+		).WithOrigin(base),
+	); err != nil {
+		t.Fatalf("grant clipboard permissions: %v", err)
+	}
 
 	// Spy on clipboard.writeText BEFORE any click, recording the payload.
 	// The original write still executes so the page behaves exactly as in
