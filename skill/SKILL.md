@@ -75,7 +75,7 @@ Don't know what to look for? Find your page type:
 | `SimpleEmptyState`   | `SimpleEmptyState(message string)`                  | Minimal empty state — text only                                                                                                                                         |
 | `PageHeader`         | `PageHeader(props PageHeaderProps)`                 | Page title block — title, subtitle, breadcrumb, action slots                                                                                                            |
 | `DefinitionList`     | `DefinitionList(props DefinitionListProps)`         | Two-column `<dl>` key/value list                                                                                                                                        |
-| `ListNote`           | `ListNote(props ListNoteProps)`                     | "Showing N of M" truncation notice; `Variant: ListNoteCount` = count-only "Showing N items." (always renders — range/list semantics)                                 |
+| `ListNote`           | `ListNote(props ListNoteProps)`                     | "Showing N of M" truncation notice; `Variant: ListNoteCount` = count-only "Showing N items." (always renders — range/list semantics)                                    |
 | `Eyebrow`            | `Eyebrow(props EyebrowProps)`                       | Small uppercase monospace overline above a title; accent color via `Class`                                                                                              |
 | `Scrollback`         | `Scrollback(props ScrollbackProps)`                 | Terminal-style log block — timestamp + tone-colored tags, CSS-only staggered entrance, reduced-motion safe, zero JS                                                     |
 | `CopyButton`         | `CopyButton(props CopyButtonProps)`                 | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant                                                                                   |
@@ -352,15 +352,15 @@ run `templ generate`. This is the standard pattern for publishable templ package
 
 ## Recipes
 
-| Recipe                                                | When to read                                        |
-| ----------------------------------------------------- | --------------------------------------------------- |
-| `docs/migration/play-cdn-to-tailwind-v4.md`           | Migrating from Tailwind Play CDN to CSS-first build |
-| `docs/recipes/server-rendered-htmx-error-feedback.md` | Wiring HTMX error feedback (toast/alert/page)       |
-| `docs/recipes/server-side-validation.md`              | Dual-transport form validation round-trip           |
-| `docs/recipes/horizontal-filter-bar.md`               | Horizontal HTMX filter bar vs `forms.Form`          |
-| `docs/tailwind-v4-adoption-guide.md`                  | Full Tailwind v4 setup with `@source` scanning      |
-| `docs/icons-only-adoption.md`                         | Adopting just the `icons` package (CSS-agnostic)    |
-| `docs/recipes/hybrid-strings-builder-rendering.md`   | Rendering components into a strings.Builder (children slots, `templ.WithChildren` escape hatch) |
+| Recipe                                                | When to read                                                                                    |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `docs/migration/play-cdn-to-tailwind-v4.md`           | Migrating from Tailwind Play CDN to CSS-first build                                             |
+| `docs/recipes/server-rendered-htmx-error-feedback.md` | Wiring HTMX error feedback (toast/alert/page)                                                   |
+| `docs/recipes/server-side-validation.md`              | Dual-transport form validation round-trip                                                       |
+| `docs/recipes/horizontal-filter-bar.md`               | Horizontal HTMX filter bar vs `forms.Form`                                                      |
+| `docs/tailwind-v4-adoption-guide.md`                  | Full Tailwind v4 setup with `@source` scanning                                                  |
+| `docs/icons-only-adoption.md`                         | Adopting just the `icons` package (CSS-agnostic)                                                |
+| `docs/recipes/hybrid-strings-builder-rendering.md`    | Rendering components into a strings.Builder (children slots, `templ.WithChildren` escape hatch) |
 | `docs/recipes/theme-bridge.md`                        | Remap library colors to custom semantic palette                                                 |
 
 ## How to know if a component already exists

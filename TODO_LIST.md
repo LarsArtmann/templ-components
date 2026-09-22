@@ -148,4 +148,3 @@ _Survivors only; 30 of the report's 40 ranked tasks shipped same-day (see CHANGE
 ## Harvested 2026-09-22 — cqrs-htmx adoption asks (docs-health D1)
 
 _All three asks DONE 2026-09-22 (see CHANGELOG [Unreleased]): (a) `ListNoteProps.Variant` with `ListNoteCount`; (b) hybrid-rendering caveat + `templ.WithChildren` escape hatch documented on Grid/PolledRegion with pinning tests + recipe; (c) CopyButton label span explicit default color. Rows removed per the completed-work convention._
-

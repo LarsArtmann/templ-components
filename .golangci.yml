@@ -146,6 +146,22 @@ linters:
         - fmt.Println
         - (*strings.Builder).WriteString
         - (*bytes.Buffer).WriteString
+    exhaustruct_v5:
+      ignore-patterns:
+        - net/http.Client
+        - net/http.Server
+        - net/http.Request
+        - net/http.Response
+        - net/http.Transport
+        - net/http.Cookie
+        - net.TCPAddr
+        - net.Dialer
+        - log/slog.HandlerOptions
+        - sync.WaitGroup
+        - bytes.Buffer
+        - time.Ticker
+        - time.Timer
+        - os/exec.Cmd
     funlen:
       lines: 65
       statements: 50
@@ -300,10 +316,6 @@ linters:
           - contextcheck
           - paralleltest
           - wrapcheck
-      # E2E harness files build one httptest.Server mux per fixture (per-route
-      # handlers inline) and helpers parametrized by the flow that calls them —
-      # cognitive complexity and unparam fire on the fixture shape, not on a
-      # real defect. Library code stays fully covered.
       - path: _e2e_test\.go
         linters:
           - gocognit
