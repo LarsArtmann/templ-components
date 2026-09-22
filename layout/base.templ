@@ -170,6 +170,16 @@ type PageProps struct {
 	// Attr for skip-link focus). Zero value keeps the wrapper — existing
 	// pages render byte-identically.
 	NoMainWrapper bool
+	// NoThemeScript, when true, skips the inline dark-mode preload script
+	// Base emits in <head> (the ThemeScript that reads localStorage['theme']
+	// and sets the .dark class + color-scheme before paint). For consumers
+	// running a strict CSP that allows no inline scripts: ship the same
+	// logic as a same-origin, render-blocking <script src> via HeadContent,
+	// or drop the script entirely when the page only follows
+	// prefers-color-scheme (the script is only needed for the toggle dark
+	// strategy — see ThemeScript's doc). Zero value keeps the script —
+	// existing pages render byte-identically.
+	NoThemeScript bool
 }
 
 // DefaultPageProps returns sensible defaults for PageProps.
@@ -249,7 +259,9 @@ templ Base(props PageProps) {
 			if props.OGImage != "" {
 				<meta name="twitter:image" content={ props.OGImage }/>
 			}
-			@ThemeScript(props.Nonce)
+			if !props.NoThemeScript {
+				@ThemeScript(props.Nonce)
+			}
 			if props.CSSPath != "" {
 				<link rel="stylesheet" href={ props.CSSPath }/>
 			}

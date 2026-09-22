@@ -163,6 +163,25 @@ func TestThemeScriptUserGetsDarkModeWithoutFOUC(t *testing.T) {
 	}
 }
 
+func TestBaseThemeScriptSuppression(t *testing.T) {
+	t.Parallel()
+
+	t.Run("default page preloads the theme before paint", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Base(DefaultPageProps()))
+		utils.AssertContains(t, output, `localStorage.getItem('theme')`)
+	})
+
+	t.Run("NoThemeScript emits no inline theme script", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultPageProps()
+		props.NoThemeScript = true
+		output := utils.Render(t, Base(props))
+		utils.AssertNotContains(t, output, `localStorage.getItem('theme')`)
+		utils.AssertNotContains(t, output, `style.colorScheme`)
+	})
+}
+
 // --- ThemeToggle Behavior ---
 
 func TestThemeToggleUserCanSwitchTheme(t *testing.T) {

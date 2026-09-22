@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`PageProps.NoThemeScript` — opt out of the inline dark-mode preload
+  script.** Base no longer emits the ThemeScript `<script>` in `<head>` when
+  the flag is set: consumers running a strict CSP that allows no inline
+  scripts can ship the same logic as a same-origin, render-blocking
+  `<script src>` via HeadContent, or drop the script entirely when the page
+  only follows `prefers-color-scheme` (the script is only needed for the
+  toggle dark strategy). Zero value keeps the script — existing pages render
+  byte-identically. Pinned by `TestBaseThemeScriptSuppression`.
+
 ## [1.19.1] — 2026-09-22
 
 ### Added
