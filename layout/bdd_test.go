@@ -174,6 +174,7 @@ func TestBaseThemeScriptSuppression(t *testing.T) {
 
 	t.Run("NoThemeScript emits no inline theme script", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.NoThemeScript = true
 		output := utils.Render(t, Base(props))
