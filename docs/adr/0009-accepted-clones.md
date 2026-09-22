@@ -226,9 +226,11 @@ possible without a generic iterator protocol.
 Both `sparklinePoints` and `sparklineAreaPath` start with the same validation
 block and per-point coordinate calculation.
 
-**Status**: Already extracted (this session) to `sparklineGeometry`. The
-remaining 10-token match is the identical per-point loop body that produces
-the SVG path; output formats differ (polyline vs. area).
+**Status**: Fully extracted. The 2026-09-22 first pass pulled the geometry
+setup into `sparklineGeometry`; the evening pass moved the identical
+per-point projection loop into `sparklinePointCoords`, consumed by both
+`sparklinePoints` and `sparklineAreaPath`. This group no longer appears in
+scans.
 
 ### 16. `charts/echarts/echarts.templ:9-13` vs `datastar/sdk_script.templ:13-15` — SDKScript signatures (t=5)
 
@@ -289,6 +291,41 @@ is the opening `<script nonce=...>` tag.
 fundamental inline-script CSP pattern. Scripts cannot share JS state across
 files; the CSP nonce pattern is universal.
 
+## 2026-09-22 Evening Pass — Five Further Extractions
+
+A full re-read of the t=1/2/3 reports (complete summary lines present) found
+five more harmful clones and extracted them:
+
+- `display.sparklinePointCoords` — the x/y projection loop duplicated between
+  `sparklinePoints` and `sparklineAreaPath`. Entry 15 below called the
+  sparkline match "already extracted"; the per-point math itself is NOW
+  shared too (single source of truth for the projection).
+- `display.headingTag` — the 6-case TitleTag switch duplicated across Card,
+  EmptyState, and CollapsibleSection. Templ has no dynamic element names, so
+  the switch is the heading-level selection; it now lives in exactly one
+  place (`display/shared.templ`).
+- `display.chartSeriesGroup` + `chartSeriesRenderOpts` — the per-series SVG
+  block (area fill, stroke path, dots) duplicated between LineChart and
+  AreaChart. Stroke, dash, and dot rendering can no longer drift between the
+  two chart types.
+- `forms.calendarMonthNavLink` — the mirrored prev/next month-navigation
+  anchors in `forms/calendar.templ` (href fallback + spread transport
+  attributes + aria-label + chevron icon).
+- `visualtest/tools/internal/browser.ExecPath` +
+  `visualtest/tools/internal/distserver.Handler` — `chromePath()` was
+  copy-pasted across three capture tools (ogshot, shots, siteshots) and the
+  Firebase cleanUrls HTTP handler across two of them. The URL-resolution
+  contract and the CHROMEDP_CHROME_PATH lookup now have one home each.
+
+### Accepted residue: the `headingTag` call-shape pair
+
+`display/card.templ` and `display/empty_state.templ` now both call
+`@headingTag(props.TitleTag, <class>, props.Title)`; the two 2-line call
+sites token-match. **Why not lazy**: the call sites must exist at each
+component and differ in class composition (Card merges `TitleClass`,
+EmptyState hardcodes its spacing). This is the extraction working as
+intended, not duplication to remove.
+
 ## Excluded: `cmd/tc/_sources/**` (embedded scaffolder copies)
 
 `cmd/tc/_sources/` contains byte-identical COPIES of the library's `.templ`
@@ -322,35 +359,76 @@ art-dupl check -c .art-dupl.json -t 1 --type-aware
 art-dupl baseline -c .art-dupl.json -t 1 --type-aware
 ```
 
-The baseline file is `.art-dupl-baseline.json` (committed). Baseline counts
-at the 2026-09-22 recording: 39 groups at t=1 — component-idiom/templ-DSL
-clones, demo-binary content, throwaway CLI-tool boilerplate
-(`visualtest/tools/*`), and website page content. The kanban e2e bootstrap
-(`visualtest/kanban_e2e_test.go`, 5×) and the demo-page fetch scaffold
-(`examples/demo/wire_demo_test.go`, 5×) were EXTRACTED in the same pass
-(`newKanbanReadyTab`, `fetchDemoHTML`) instead of being baselined.
+The baseline file is `.art-dupl-baseline.json` (committed).
+
+**TOOL-VERSION PIN (2026-09-22, learned the hard way): baseline hashes are
+only comparable within one art-dupl binary.** The 39-entry baseline recorded
+earlier on 2026-09-22 came from an earlier detector generation (its scan
+also still counted the `cmd/tc/_sources` copies — 575 files). Current
+binaries — the nix-installed 0.7.0 AND the fork at v0.7.0-74 — detect a
+larger set (548 files, ~122 actionable groups after actionability filtering,
+224 filtered) and matched ZERO of those 39 hashes, so `check` reported
+every group as "new". The baseline was RE-RECORDED with the fork build:
+
+```bash
+# in github.com/LarsArtmann/art-dupl (GOTOOLCHAIN=auto — needs go 1.27.1):
+go build -o /tmp/art-dupl-fork ./cmd/art-dupl
+/tmp/art-dupl-fork baseline -c .art-dupl.json -t 1 --type-aware
+/tmp/art-dupl-fork check   -c .art-dupl.json -t 1 --type-aware   # expect: green
+```
+
+After any art-dupl update that changes detection: run the scan, triage every
+new group (extract it or document it in this ADR), then re-record. Until
+upstream ships stable fingerprints (#293), the baseline is a living artifact
+tied to its recording binary, and the advisory CI lane must log the binary
+version beside its verdict.
+
+Baseline counts at the 2026-09-22 evening re-recording (fork
+v0.7.0-74-ge7456139): 122 groups at t=1 — component-idiom/templ-DSL clones
+(heading/span/children-slot one-liners, enum IsValid guards, meta/link head
+tags), demo-binary content, throwaway CLI-tool boilerplate
+(`visualtest/tools/*` defer/flag chains), and website page content. The
+kanban e2e bootstrap (`visualtest/kanban_e2e_test.go`, 5×) and the demo-page
+fetch scaffold (`examples/demo/wire_demo_test.go`, 5×) were EXTRACTED in the
+first 2026-09-22 pass (`newKanbanReadyTab`, `fetchDemoHTML`) instead of
+being baselined; the evening pass extracted the five groups listed above
+instead of baselining them.
 
 ## Decision
 
 These clones remain because each extraction attempt either:
 
-1. Was already performed in this pass (see new entries 14, 15) or prior passes
-   (see extraction list at the top)
+1. Was already performed in one of the 2026-09-22 passes (see the extraction
+   lists at the top and in the evening-pass section) or prior passes
 2. Would add more indirection than lines saved (entries 7, 8, 11)
 3. Is a structural constraint of the templ DSL (entries 9, 10, 13, 16, 17)
 4. Is in the demo binary (not production code) (entries 18-20)
 5. Is the universal runtime/CSP pattern across packages (entries 16, 21)
 
+The first 2026-09-22 session closed with "deduplication budget exhausted";
+the evening pass disproved that — five clean extractions were still hiding
+in the complete report (several only visible at t≥2 with full summary
+lines). The corrected stance: remaining report lines are ACCEPTED as
+documented above, but no pass may declare the budget closed — future passes
+re-judge each group against the ADR-0010 criteria (2+ callers, 5+ lines,
+clear domain name, fewer parameters than duplicated lines) instead of
+blanket-accepting or blanket-extracting.
+
 ## Consequences
 
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
-  — it fails ONLY on clones not in the accepted baseline (currently 39 groups)
-- Historical full-scan counts (pre-baseline): `art-dupl -t 8` ~6 groups,
-  `-t 7` ~10, `-t 5` ~14, `-t 1` ~39 with config
+  — it fails ONLY on clones not in the accepted baseline (currently 122
+  groups under the fork v0.7.0-74 detector; see the tool-version pin above)
+- Historical full-scan counts: the pre-baseline detector generation reported
+  `-t 8` ~6 groups, `-t 7` ~10, `-t 5` ~14, `-t 1` ~39; the current
+  generation reports ~850 raw / ~122 actionable at `-t 1` — the jump is a
+  detector change, not a duplication regression
 - New components should use existing extractions (`errorHeader`, `overlayShell`,
   `skeletonContainer`, `DismissButton`, `definitionDetailContent`,
-  `chartMaxWithOverride`, `sparklineGeometry`, `cdn.ResolveBase`,
-  `cdn.Origin`, `resolveLocale`) where applicable
-- **Deduplication budget is exhausted.** Every remaining clone is structural,
-  templ-DSL-bound, or demo-binary noise. Further passes risk over-extraction
-  (more indirection than saved lines).
+  `chartMaxWithOverride`, `sparklineGeometry`, `sparklinePointCoords`,
+  `headingTag`, `chartSeriesGroup`, `calendarMonthNavLink`,
+  `tools/internal/browser.ExecPath`, `tools/internal/distserver.Handler`,
+  `cdn.ResolveBase`, `cdn.Origin`, `resolveLocale`) where applicable
+- Every remaining actionable clone is structural, templ-DSL-bound, or
+  demo/website-binary noise per the entries above; future passes re-judge
+  with the ADR-0010 criteria rather than treating this ledger as final

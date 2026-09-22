@@ -1,18 +1,49 @@
 {
   "version": "1.0",
   "threshold": 1,
-  "recordedAt": "2026-09-22T20:03:38.082758103Z",
+  "recordedAt": "2026-09-22T22:21:07.281659928Z",
   "entries": [
     {
-      "hash": "084ee2e1f3ced4a5",
+      "hash": "02d58f70c9385ad6",
       "files": [
-        "visualtest/tools/siteshots/main.go",
-        "visualtest/harness.go",
-        "visualtest/tools/ogshot/main.go",
-        "visualtest/tools/siteshots/main.go",
-        "visualtest/tools/shots/main.go"
+        "website/internal/pages/base.templ",
+        "layout/base.templ"
       ],
-      "tokens": 5
+      "tokens": 2
+    },
+    {
+      "hash": "0359259bc102eec1",
+      "files": [
+        "display/definition_grid.templ",
+        "display/definition_grid.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "04f38cb0c1b9fe10",
+      "files": [
+        "display/empty_state.templ",
+        "forms/validation.templ",
+        "errorpage/notfound404.templ",
+        "feedback/alert.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "05deb3ddefa85d16",
+      "files": [
+        "errorpage/shared.templ",
+        "display/scrollback.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "08e0298bfabd8be0",
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 2
     },
     {
       "hash": "08ed8746e1591811",
@@ -23,27 +54,151 @@
       "tokens": 4
     },
     {
-      "hash": "14c06c522551a19f",
+      "hash": "0a6222dacd645b6d",
       "files": [
-        "examples/demo/htmx_demo.templ",
-        "examples/demo/datastar_demo.templ",
-        "examples/demo/errorpage_demo.templ",
-        "examples/demo/htmx_demo.templ",
-        "examples/demo/errorpage_demo.templ",
-        "examples/demo/htmx_demo.templ",
-        "examples/demo/htmx_demo.templ",
-        "examples/demo/htmx_demo.templ",
-        "examples/demo/display_demo.templ",
-        "examples/demo/htmx_demo.templ",
-        "examples/demo/datastar_demo.templ"
+        "navigation/nav.templ",
+        "website/internal/pages/docs.templ"
       ],
-      "tokens": 22
+      "tokens": 2
     },
     {
-      "hash": "160aa699e3a40d4d",
+      "hash": "0ab5621b1142b54f",
       "files": [
-        "examples/demo/recipes_demo.templ",
-        "examples/demo/recipes_demo.templ"
+        "forms/calendar.templ",
+        "forms/calendar.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "0e31d5301362f440",
+      "files": [
+        "feedback/progressbar.templ",
+        "feedback/alert.templ",
+        "errorpage/notfound404.templ",
+        "display/accordion.templ",
+        "feedback/progressbar.templ",
+        "navigation/sidebar_nav.templ",
+        "website/internal/pages/docs.templ",
+        "errorpage/shared.templ"
+      ],
+      "tokens": 8
+    },
+    {
+      "hash": "10cef2673cca9ffb",
+      "files": [
+        "recipes/settings_layout.templ",
+        "display/page_header.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "112322f48c9f18a1",
+      "files": [
+        "errorpage/notfound404.templ",
+        "website/internal/pages/sales.templ",
+        "errorpage/shared.templ",
+        "feedback/loading.templ",
+        "website/internal/pages/sales.templ",
+        "errorpage/shared.templ"
+      ],
+      "tokens": 6
+    },
+    {
+      "hash": "1144b8ba6212f4d3",
+      "files": [
+        "navigation/pagination.templ",
+        "forms/calendar.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "1448e20108a06763",
+      "files": [
+        "website/internal/pages/docs.templ",
+        "website/internal/pages/docs.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "172d11aefb4e2d2b",
+      "files": [
+        "display/accordion.templ",
+        "display/hover_card.templ",
+        "display/carousel.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "1af5c9c5f5616d92",
+      "files": [
+        "display/accordion.templ",
+        "utils/svg/svg.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "1bae946174c279cd",
+      "files": [
+        "website/internal/pages/hero.templ",
+        "website/internal/pages/sales.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "1c3686a8f377258d",
+      "files": [
+        "errorpage/shared.templ",
+        "forms/filter_dropdown.templ",
+        "display/section_heading.templ",
+        "forms/filter_dropdown.templ",
+        "errorpage/shared.templ"
+      ],
+      "tokens": 5
+    },
+    {
+      "hash": "1e454fc80a2279ec",
+      "files": [
+        "display/pie_chart.templ",
+        "display/pie_chart.templ",
+        "display/chart_shared.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "221d77df4f7646ab",
+      "files": [
+        "forms/tags_input.templ",
+        "forms/slider.templ",
+        "forms/radio.templ"
+      ],
+      "tokens": 6
+    },
+    {
+      "hash": "26cbc4ce3e464343",
+      "files": [
+        "website/internal/pages/hero.templ",
+        "website/internal/pages/hero.templ",
+        "website/internal/pages/hero.templ",
+        "website/internal/pages/hero.templ",
+        "website/internal/pages/hero.templ",
+        "navigation/pagination.templ",
+        "forms/toggle.templ",
+        "navigation/mobile_menu.templ",
+        "recipes/login_card.templ",
+        "website/internal/pages/hero.templ",
+        "datastar/indicator.templ",
+        "htmx/loading.templ",
+        "htmx/loading.templ",
+        "display/carousel.templ",
+        "errorpage/shared.templ"
+      ],
+      "tokens": 15
+    },
+    {
+      "hash": "2a615b648cc62d56",
+      "files": [
+        "display/table.templ",
+        "errorpage/shared.templ"
       ],
       "tokens": 2
     },
@@ -58,44 +213,83 @@
     {
       "hash": "2b0d49d1429850ef",
       "files": [
-        "examples/demo/demo.templ",
+        "layout/base.templ",
         "website/internal/pages/base.templ",
         "website/internal/pages/base.templ"
       ],
       "tokens": 3
     },
     {
-      "hash": "30d3f713269803ca",
+      "hash": "2b9358e506a9bf6c",
       "files": [
-        "visualtest/tools/ogshot/main.go",
-        "visualtest/tools/shots/main.go",
-        "visualtest/tools/ogshot/main.go"
+        "website/internal/pages/footer.templ",
+        "website/internal/pages/sales.templ"
       ],
-      "tokens": 3
+      "tokens": 4
     },
     {
-      "hash": "3430542e421f332e",
+      "hash": "2df4f5ed676c98a2",
       "files": [
-        "layout/container.templ",
-        "layout/stack.templ"
+        "display/card.templ",
+        "navigation/sidebar_nav.templ"
       ],
       "tokens": 2
     },
     {
-      "hash": "35b8f958ddc3848a",
+      "hash": "2ebfb8e17539ca7d",
       "files": [
-        "website/internal/pages/sales.templ",
+        "icons/animated_icon.templ",
+        "icons/icon.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "31b74fd16d31c7cf",
+      "files": [
+        "navigation/sidebar_nav.templ",
         "navigation/nav.templ"
       ],
       "tokens": 2
     },
     {
-      "hash": "3802c2c1035088b7",
+      "hash": "3430542e421f332e",
       "files": [
-        "errorpage/handler.go",
-        "errorpage/handler.go"
+        "layout/container.templ",
+        "layout/stack.templ",
+        "display/grid.templ",
+        "display/grid.templ"
       ],
       "tokens": 4
+    },
+    {
+      "hash": "35b8f958ddc3848a",
+      "files": [
+        "layout/base.templ",
+        "website/internal/pages/sales.templ",
+        "forms/validation.templ",
+        "navigation/nav.templ",
+        "errorpage/errorpage.templ",
+        "website/internal/pages/docs.templ"
+      ],
+      "tokens": 6
+    },
+    {
+      "hash": "3757ced7705bcf69",
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "3931a627e434d2cb",
+      "files": [
+        "display/definition_list.templ",
+        "display/definition_grid.templ",
+        "display/definition_grid.templ"
+      ],
+      "tokens": 6
     },
     {
       "hash": "39e97b87a2417788",
@@ -106,34 +300,123 @@
       "tokens": 6
     },
     {
-      "hash": "436260693d89df95",
+      "hash": "401b8898045aaffb",
       "files": [
-        "examples/demo/main.go",
-        "visualtest/calendar_nav_e2e_test.go"
+        "display/heatmap.templ",
+        "display/heatmap.templ"
       ],
       "tokens": 2
     },
     {
-      "hash": "4f8e4fa98ba5bc40",
+      "hash": "4534db285ba334f3",
       "files": [
-        "examples/demo/recipes_demo.templ",
-        "examples/demo/recipes_demo.templ"
-      ],
-      "tokens": 2
-    },
-    {
-      "hash": "56a6e5eb885b0575",
-      "files": [
-        "examples/demo/main.go",
-        "examples/demo/main.go"
+        "website/internal/pages/header.templ",
+        "errorpage/notfound404.templ",
+        "website/internal/pages/header.templ",
+        "errorpage/shared.templ"
       ],
       "tokens": 4
+    },
+    {
+      "hash": "46b1619ed3d1f3b4",
+      "files": [
+        "errorpage/erroralert.templ",
+        "feedback/alert.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "499592a0e737ea75",
+      "files": [
+        "icons/icon.templ",
+        "icons/icon.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "49af6a831de560e6",
+      "files": [
+        "display/avatar.templ",
+        "display/external_link.templ",
+        "display/avatar.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "49afcb34aee41e75",
+      "files": [
+        "display/dropdown.templ",
+        "display/dropdown.templ",
+        "display/button.templ",
+        "display/dropdown.templ",
+        "display/button.templ"
+      ],
+      "tokens": 10
+    },
+    {
+      "hash": "4b0e004ccdf66a38",
+      "files": [
+        "errorpage/errorpage.templ",
+        "errorpage/errordetail.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "5e3ac144e35a8126",
+      "files": [
+        "errorpage/erroralert.templ",
+        "feedback/alert.templ",
+        "navigation/nav.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "5e425feb1d5dabdb",
+      "files": [
+        "display/carousel.templ",
+        "display/tabs.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "5e9d02f9e39e9f37",
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 6
+    },
+    {
+      "hash": "62507a49f39c7c37",
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "63374505e68487fc",
+      "files": [
+        "navigation/sidebar_nav.templ",
+        "navigation/sidebar_nav.templ",
+        "navigation/sidebar_nav.templ"
+      ],
+      "tokens": 3
     },
     {
       "hash": "63a4aab08667a3e9",
       "files": [
         "website/internal/pages/sections.templ",
         "website/internal/pages/sections.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "63a9bc412991e4ed",
+      "files": [
+        "navigation/nav.templ",
+        "navigation/nav.templ"
       ],
       "tokens": 2
     },
@@ -146,30 +429,147 @@
       "tokens": 8
     },
     {
-      "hash": "6c771fc3806cebe0",
+      "hash": "686343b10f895768",
       "files": [
-        "examples/demo/display_demo.templ",
-        "examples/demo/datastar_demo.templ",
-        "examples/demo/display_demo.templ",
-        "examples/demo/feedback_demo.templ",
-        "examples/demo/display_demo.templ",
-        "examples/demo/feedback_demo.templ",
-        "examples/demo/htmx_demo.templ",
-        "examples/demo/display_demo.templ",
-        "examples/demo/forms_section.templ",
-        "examples/demo/display_demo.templ",
-        "examples/demo/display_demo.templ",
-        "examples/demo/display_demo.templ"
+        "website/internal/pages/sections.templ",
+        "website/internal/pages/sections.templ"
       ],
-      "tokens": 24
+      "tokens": 2
     },
     {
-      "hash": "7df226240bd6cadb",
+      "hash": "68839d6036a8ec82",
       "files": [
-        "examples/demo/echarts_demo.templ",
-        "examples/demo/icons_demo.templ"
+        "display/external_link.templ",
+        "feedback/alert.templ"
       ],
       "tokens": 4
+    },
+    {
+      "hash": "6991fb7633b2ffbc",
+      "files": [
+        "icons/custom_icon.templ",
+        "display/avatar.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "6d99da094285007b",
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "7561d09c6a3f298d",
+      "files": [
+        "display/kanban.templ",
+        "forms/tags_input.templ",
+        "htmx/helpers.templ",
+        "forms/form.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "78a39dd0dc172759",
+      "files": [
+        "display/date_range.templ",
+        "display/dropdown.templ",
+        "htmx/polled_region.templ",
+        "display/card.templ",
+        "display/tabs.templ",
+        "display/copy_button.templ",
+        "display/context_menu.templ",
+        "forms/tags_input.templ",
+        "display/shared.templ",
+        "display/table.templ",
+        "navigation/nav_link.templ",
+        "forms/slider.templ",
+        "display/empty_state.templ",
+        "display/definition_list.templ",
+        "navigation/nav_link.templ",
+        "display/kanban.templ",
+        "display/table.templ",
+        "forms/label.templ",
+        "display/empty_state.templ",
+        "website/internal/pages/footer.templ",
+        "display/pie_chart.templ",
+        "website/internal/pages/footer.templ",
+        "display/table.templ",
+        "forms/calendar.templ",
+        "display/date_range.templ",
+        "display/scrollback.templ",
+        "forms/validation.templ",
+        "display/pie_chart.templ",
+        "website/internal/pages/footer.templ",
+        "display/table.templ",
+        "display/date_range.templ",
+        "display/table.templ",
+        "display/date_range.templ",
+        "display/date_range.templ",
+        "display/date_range.templ",
+        "display/date_range.templ",
+        "navigation/nav.templ",
+        "forms/textarea.templ",
+        "display/bar_chart.templ",
+        "errorpage/notfound404.templ",
+        "navigation/loadmore.templ",
+        "forms/calendar.templ",
+        "display/kanban.templ",
+        "display/card.templ",
+        "display/tooltip.templ",
+        "navigation/nav_link.templ",
+        "display/eyebrow.templ",
+        "display/kanban.templ",
+        "display/avatar.templ",
+        "navigation/nav.templ",
+        "display/kanban.templ",
+        "website/internal/pages/sales.templ",
+        "display/table.templ",
+        "forms/filter_input.templ",
+        "display/relative_time.templ"
+      ],
+      "tokens": 55
+    },
+    {
+      "hash": "78dd46cd10c1b449",
+      "files": [
+        "display/count_badge.templ",
+        "navigation/breadcrumbs.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "7d10d631b59cbe27",
+      "files": [
+        "website/internal/pages/docs.templ",
+        "website/internal/pages/hero.templ",
+        "feedback/toast.templ",
+        "website/internal/pages/hero.templ",
+        "website/internal/pages/sections.templ",
+        "forms/calendar.templ"
+      ],
+      "tokens": 6
+    },
+    {
+      "hash": "7d49e4f4ecd5ac3c",
+      "files": [
+        "display/count_badge.templ",
+        "layout/base.templ",
+        "display/context_menu.templ",
+        "layout/base.templ",
+        "htmx/polled_region.templ",
+        "display/tooltip.templ",
+        "display/hover_card.templ",
+        "datastar/live_region.templ",
+        "forms/form.templ",
+        "display/card.templ",
+        "feedback/loading.templ",
+        "display/popover.templ",
+        "htmx/helpers.templ",
+        "forms/label.templ"
+      ],
+      "tokens": 14
     },
     {
       "hash": "805ada161289fb50",
@@ -180,6 +580,38 @@
       "tokens": 4
     },
     {
+      "hash": "82829d8d199f267a",
+      "files": [
+        "display/heatmap.templ",
+        "website/internal/pages/sections.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "82cb0a45de5c0e9a",
+      "files": [
+        "display/kanban.templ",
+        "display/kanban.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "82f48f806692b383",
+      "files": [
+        "website/internal/pages/sections.templ",
+        "errorpage/shared.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "84a694c6ca37353e",
+      "files": [
+        "navigation/breadcrumbs.templ",
+        "errorpage/erroralert.templ"
+      ],
+      "tokens": 2
+    },
+    {
       "hash": "85ae4721d06656eb",
       "files": [
         "display/chart_shared.templ",
@@ -188,48 +620,155 @@
       "tokens": 2
     },
     {
-      "hash": "8e902bfc2f70cdaa",
+      "hash": "8686c87f71c886b6",
       "files": [
-        "display/collapsible_section.templ",
-        "examples/demo/demo.templ",
         "errorpage/shared.templ",
-        "errorpage/shared.templ",
-        "examples/demo/icons_demo.templ",
-        "forms/combobox.templ"
-      ],
-      "tokens": 6
-    },
-    {
-      "hash": "94524daaa9661acf",
-      "files": [
-        "visualtest/harness.go",
-        "visualtest/tools/siteshots/main.go"
-      ],
-      "tokens": 2
-    },
-    {
-      "hash": "95b6753463432244",
-      "files": [
-        "website/cmd/site/main.go",
-        "visualtest/tools/shots/main.go"
+        "errorpage/errorpage.templ"
       ],
       "tokens": 4
     },
     {
-      "hash": "9d4f3d998f65d069",
+      "hash": "8bc3cdc982ad5413",
       "files": [
-        "examples/demo/display_demo.templ",
-        "examples/demo/display_demo.templ"
+        "website/internal/pages/sections.templ",
+        "recipes/auth_layout.templ"
       ],
-      "tokens": 6
+      "tokens": 4
+    },
+    {
+      "hash": "8e902bfc2f70cdaa",
+      "files": [
+        "display/collapsible_section.templ",
+        "errorpage/shared.templ",
+        "navigation/mobile_menu.templ",
+        "errorpage/shared.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "9035f5c6a5954048",
+      "files": [
+        "website/internal/pages/hero.templ",
+        "website/internal/pages/hero.templ",
+        "website/internal/pages/docs.templ",
+        "display/tooltip.templ",
+        "website/internal/pages/sales.templ",
+        "recipes/login_card.templ",
+        "forms/calendar.templ"
+      ],
+      "tokens": 7
+    },
+    {
+      "hash": "910c134aaa550a8e",
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "946d5776c41bde33",
+      "files": [
+        "feedback/step_indicator.templ",
+        "feedback/step_indicator.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "952a41a727fa2d51",
+      "files": [
+        "errorpage/notfound404.templ",
+        "forms/rating.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "958d3722dcbc8712",
+      "files": [
+        "display/empty_state.templ",
+        "display/card.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "96be5a062c6c7097",
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "98cdc8cc4ba16e04",
+      "files": [
+        "display/carousel.templ",
+        "display/carousel.templ",
+        "utils/dismiss.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "9b6998ed79017804",
+      "files": [
+        "forms/validation.templ",
+        "feedback/loading.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "9c8b12d096af51dc",
+      "files": [
+        "layout/split.templ",
+        "layout/split.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "9da1c629134bdf27",
+      "files": [
+        "feedback/step_indicator.templ",
+        "navigation/sidebar_nav.templ",
+        "navigation/sidebar_nav.templ",
+        "navigation/sidebar_nav.templ"
+      ],
+      "tokens": 8
     },
     {
       "hash": "9ff70054ddbe9fe1",
       "files": [
+        "website/internal/pages/header.templ",
+        "website/internal/pages/header.templ",
         "website/internal/pages/sales.templ",
-        "website/internal/pages/sales.templ"
+        "website/internal/pages/footer.templ",
+        "website/internal/pages/sales.templ",
+        "website/internal/pages/sections.templ"
+      ],
+      "tokens": 6
+    },
+    {
+      "hash": "a2f9a4db79420d17",
+      "files": [
+        "display/chart_shared.templ",
+        "display/chart_shared.templ"
       ],
       "tokens": 2
+    },
+    {
+      "hash": "a40bcfc8e7c1abcc",
+      "files": [
+        "navigation/pagination.templ",
+        "navigation/pagination.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "a4d86928652a902f",
+      "files": [
+        "display/heatmap.templ",
+        "website/internal/pages/sections.templ",
+        "website/internal/pages/sections.templ"
+      ],
+      "tokens": 3
     },
     {
       "hash": "a6aabc11273c5023",
@@ -240,28 +779,20 @@
       "tokens": 2
     },
     {
-      "hash": "a82c599807a4f2f9",
+      "hash": "a6fbe4b85022e660",
       "files": [
-        "utils/cdn/cdn.go",
-        "forms/radio.go"
+        "display/pie_chart.templ",
+        "display/chart_shared.templ"
       ],
       "tokens": 2
     },
     {
-      "hash": "b0d53b59fa378e27",
-      "files": [
-        "visualtest/tools/shots/main.go",
-        "visualtest/tools/ogshot/main.go"
-      ],
-      "tokens": 2
-    },
-    {
-      "hash": "b251e3713248f87e",
+      "hash": "aec539fe3b1b1ac3",
       "files": [
         "website/internal/pages/hero.templ",
-        "examples/demo/demo.templ"
+        "website/internal/pages/hero.templ"
       ],
-      "tokens": 2
+      "tokens": 10
     },
     {
       "hash": "b5e127543a118d77",
@@ -272,13 +803,117 @@
       "tokens": 2
     },
     {
-      "hash": "b7ea4760a30fc9c7",
+      "hash": "b6302aaecc7beb49",
       "files": [
-        "visualtest/tools/ogshot/main.go",
-        "visualtest/tools/shots/main.go",
-        "visualtest/tools/siteshots/main.go"
+        "display/line_chart.templ",
+        "display/area_chart.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "b65e431b15ae0e24",
+      "files": [
+        "utils/wire/wire.go",
+        "website/internal/pages/data.go",
+        "utils/wire/wire.go",
+        "utils/wire/wire.go",
+        "utils/wire/wire.go",
+        "errorpage/styles.go",
+        "display/enums_go.go",
+        "display/enums_go.go",
+        "feedback/enums_go.go",
+        "layout/appshell_types.go",
+        "datastar/enums_go.go",
+        "errorpage/styles.go",
+        "display/enums_go.go",
+        "display/enums_go.go",
+        "utils/wire/handler.go",
+        "display/enums_go.go",
+        "display/enums_go.go",
+        "display/enums_go.go",
+        "feedback/enums_go.go",
+        "display/collapsible_section.go"
+      ],
+      "tokens": 40
+    },
+    {
+      "hash": "b851d7f8418a6560",
+      "files": [
+        "htmx/loading.templ",
+        "navigation/pagination.templ",
+        "forms/input.templ",
+        "forms/calendar.templ",
+        "navigation/pagination.templ"
+      ],
+      "tokens": 10
+    },
+    {
+      "hash": "bff23e7c578a89cf",
+      "files": [
+        "display/badge.templ",
+        "display/badge.templ",
+        "display/kanban.templ"
       ],
       "tokens": 6
+    },
+    {
+      "hash": "c1e6e358bb091c68",
+      "files": [
+        "errorpage/errorpage.templ",
+        "errorpage/errorpage.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "c312d36d97318411",
+      "files": [
+        "website/internal/pages/sections.templ",
+        "website/internal/pages/sections.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "c371976614c3d7f1",
+      "files": [
+        "display/bar_chart.templ",
+        "display/bar_chart.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "c841bc098ebadd70",
+      "files": [
+        "forms/radio.templ",
+        "forms/filter_input.templ",
+        "forms/filter_dropdown.templ",
+        "forms/filter_dropdown.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "c972277369ed74e2",
+      "files": [
+        "forms/label.templ",
+        "display/heatmap.templ",
+        "display/bar_chart.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "ccd2451dbb8d5d2b",
+      "files": [
+        "display/context_menu.templ",
+        "forms/combobox.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "cf5f6ae82f9df7b6",
+      "files": [
+        "display/bar_chart.templ",
+        "display/bar_chart.templ"
+      ],
+      "tokens": 2
     },
     {
       "hash": "cf61360bf9c87762",
@@ -289,20 +924,148 @@
       "tokens": 4
     },
     {
-      "hash": "de67abba39237d22",
+      "hash": "d1aa380155d7ef48",
       "files": [
-        "examples/demo/main.go",
-        "visualtest/tools/siteshots/main.go"
+        "display/collapsible_section.templ",
+        "forms/input_group.templ",
+        "display/shared.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "d61921c3b84885cf",
+      "files": [
+        "errorpage/errorpage.templ",
+        "errorpage/notfound404.templ"
       ],
       "tokens": 2
     },
     {
-      "hash": "ea87db60ecd2ec13",
+      "hash": "d954d1509bdb7f40",
       "files": [
-        "visualtest/tools/siteshots/main.go",
-        "visualtest/tools/siteshots/main.go"
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "dc548764488d61a2",
+      "files": [
+        "website/internal/pages/sections.templ",
+        "errorpage/shared.templ",
+        "display/heatmap.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "dda9e5d55267d367",
+      "files": [
+        "navigation/sidebar_nav.templ",
+        "display/card.templ"
       ],
       "tokens": 2
+    },
+    {
+      "hash": "de56fcc944e02f55",
+      "files": [
+        "errorpage/shared.templ",
+        "navigation/breadcrumbs.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "e2de4d2a1fa35685",
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "e4688d61af4f6ad7",
+      "files": [
+        "website/internal/pages/sections.templ",
+        "website/internal/pages/sections.templ",
+        "website/internal/pages/sales.templ"
+      ],
+      "tokens": 9
+    },
+    {
+      "hash": "e46f009668ea7d12",
+      "files": [
+        "forms/tags_input.templ",
+        "forms/slider.templ",
+        "forms/label.templ",
+        "forms/rating.templ",
+        "forms/radio.templ"
+      ],
+      "tokens": 10
+    },
+    {
+      "hash": "e55d7cefdff69d8a",
+      "files": [
+        "website/internal/pages/footer.templ",
+        "forms/filter_dropdown.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "e9bc6391d94500b9",
+      "files": [
+        "website/internal/pages/docs.templ",
+        "display/page_header.templ",
+        "recipes/settings_layout.templ",
+        "errorpage/errorpage.templ",
+        "errorpage/notfound404.templ"
+      ],
+      "tokens": 10
+    },
+    {
+      "hash": "eb80d5bf18efc724",
+      "files": [
+        "feedback/step_indicator.templ",
+        "website/internal/pages/header.templ",
+        "forms/rating.templ",
+        "errorpage/erroralert.templ",
+        "navigation/pagination.templ",
+        "recipes/auth_layout.templ",
+        "navigation/pagination.templ",
+        "htmx/loading.templ",
+        "feedback/loading.templ",
+        "feedback/step_indicator.templ"
+      ],
+      "tokens": 10
+    },
+    {
+      "hash": "ec0db2a91f8c8464",
+      "files": [
+        "forms/select.templ",
+        "forms/select.templ",
+        "forms/filter_dropdown.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "ec7339654c16a940",
+      "files": [
+        "display/card.templ",
+        "display/card.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "ec7b1b5dd7e14fbd",
+      "files": [
+        "forms/toggle.templ",
+        "display/scrollback.templ",
+        "errorpage/shared.templ",
+        "display/bar_chart.templ",
+        "display/bar_chart.templ",
+        "errorpage/shared.templ",
+        "feedback/circular_progress.templ"
+      ],
+      "tokens": 7
     },
     {
       "hash": "ed9dc56877d57d33",
@@ -313,16 +1076,29 @@
       "tokens": 2
     },
     {
-      "hash": "ee8df0ed218ababf",
+      "hash": "ee5c719138a80158",
       "files": [
-        "examples/demo/navigation_demo.templ",
-        "examples/demo/feedback_demo.templ",
-        "examples/demo/htmx_demo.templ",
-        "examples/demo/navigation_demo.templ",
-        "examples/demo/htmx_demo.templ",
-        "examples/demo/datastar_demo.templ"
+        "errorpage/errorpage.templ",
+        "errorpage/shared.templ",
+        "errorpage/erroralert.templ"
       ],
-      "tokens": 12
+      "tokens": 3
+    },
+    {
+      "hash": "efafe2c1f2afe525",
+      "files": [
+        "datastar/sdk_script.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "f0014a7cc9c13469",
+      "files": [
+        "forms/slider.templ",
+        "forms/label.templ"
+      ],
+      "tokens": 2
     },
     {
       "hash": "f390950ac61112bd",
@@ -333,7 +1109,48 @@
       "tokens": 4
     },
     {
+      "hash": "f71fdad77a9213fc",
+      "files": [
+        "feedback/toast.templ",
+        "website/internal/pages/sections.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "fae3bb27e3248c34",
+      "files": [
+        "website/internal/pages/footer.templ",
+        "website/internal/pages/docs.templ",
+        "website/internal/pages/footer.templ"
+      ],
+      "tokens": 3
+    },
+    {
       "hash": "fb6bb35622b74b85",
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "fc7fc9c1dd3fa5bd",
+      "files": [
+        "display/popover.templ",
+        "navigation/pagination.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "fd9d2262b9144c0a",
+      "files": [
+        "website/internal/pages/sales.templ",
+        "website/internal/pages/sales.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "fed458da6f673614",
       "files": [
         "layout/base.templ",
         "layout/base.templ"
@@ -343,8 +1160,8 @@
     {
       "hash": "ff8925b2c9ea0df7",
       "files": [
-        "examples/demo/layout_demo.templ",
-        "display/empty_state.templ"
+        "display/empty_state.templ",
+        "navigation/nav.templ"
       ],
       "tokens": 2
     }
