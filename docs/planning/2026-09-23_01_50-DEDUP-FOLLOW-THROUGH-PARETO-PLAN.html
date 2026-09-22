@@ -1,0 +1,1119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dedup Follow-Through &amp; Open Backlog — Pareto Plan</title>
+    <style>
+      /* =========================================================================
+         BAUHAUS DARK — Dashboard template
+         Design language: form follows function. Primary colors on graphite.
+         Zero external dependencies: system fonts, no CDN, no build step.
+         Token architecture: see references/bauhaus-tokens.md
+         ========================================================================= */
+
+      :root {
+        /* --- Primitive palette (Bauhaus Dark) --- */
+        --color-graphite: #0e0e10;
+        --color-graphite-2: #18181d;
+        --color-graphite-3: #16161a;
+        --color-bone: #f4f4f0;
+        --color-red: #ff6b6b;
+        --color-blue: #6eb5ff;
+        --color-yellow: #f4d35e;
+        --color-amber: #ffb347;
+        --color-hairline: rgba(244, 244, 240, 0.12);
+        --color-hairline-strong: rgba(244, 244, 240, 0.25);
+
+        /* --- Semantic layer (shared vocabulary with editorial template) --- */
+        --surface: var(--color-graphite);
+        --surface-raised: var(--color-graphite-2);
+        --surface-sunken: var(--color-graphite-3);
+        --text: var(--color-bone);
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: var(--color-hairline);
+        --border-strong: var(--color-hairline-strong);
+        --accent: var(--color-amber);
+        --problem: var(--color-red);
+        --solution: var(--color-blue);
+        --warning: var(--color-yellow);
+
+        /* --- Backward-compatible aliases (do not break consumer skills) --- */
+        --bg: var(--surface);
+        --bg-elevated: var(--surface-raised);
+        --bg-sunken: var(--surface-sunken);
+        --bg-card: var(--surface-raised);
+        --bg-code: var(--surface-sunken);
+        --ink: var(--text);
+        --ink-secondary: var(--text-muted);
+        --ink-muted: var(--text-faint);
+        --rose: var(--problem);
+        --rose-glow: color-mix(in srgb, var(--problem) 15%, transparent);
+        --emerald: var(--solution);
+        --emerald-glow: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber-glow: color-mix(in srgb, var(--warning) 15%, transparent);
+        --coral: var(--problem);
+        --coral-light: color-mix(in srgb, var(--problem) 15%, transparent);
+        --teal: var(--solution);
+        --teal-light: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber-light: color-mix(in srgb, var(--warning) 20%, transparent);
+
+        /* --- Shape --- */
+        --radius: 0px; /* Bauhaus default: sharp corners */
+        --radius-sm: 0px;
+
+        /* --- Type stacks (system only — zero external fonts) --- */
+        --font-heading:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-body:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-mono:
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      /* Sticky-header offset for anchor jumps */
+      section[id],
+      [id] {
+        scroll-margin-top: 60px;
+      }
+
+      body {
+        background: var(--surface);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 15px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* --- Accessibility: keyboard focus --- */
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      a:focus-visible {
+        outline-offset: -1px;
+      }
+
+      /* --- Full-bleed top bar --- */
+      .top-bar {
+        background: var(--text);
+        color: var(--surface);
+        padding: 0.6rem 2rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* --- Layout: optional sticky sidebar TOC --- */
+      .layout {
+        display: flex;
+        gap: 2.5rem;
+        padding: 2rem;
+      }
+      .sidebar {
+        width: 220px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 1rem;
+        align-self: flex-start;
+        height: calc(100vh - 2rem);
+        overflow-y: auto;
+        display: none;
+      }
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .sidebar .label {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .sidebar a {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 0.45rem 0.75rem;
+        border-left: 2px solid transparent;
+        transition: all 0.15s ease;
+        line-height: 1.4;
+        font-weight: 500;
+      }
+      .sidebar a:hover,
+      .sidebar a.active {
+        color: var(--accent);
+        border-left-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+      }
+      .main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* --- Headings --- */
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      h1 {
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        line-height: 1.1;
+        margin: 0 0 0.6rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+        margin: 2.5rem 0 1rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+      }
+      h2 .num {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      h3 {
+        font-size: 1.1rem;
+        margin: 0 0 0.4rem;
+        font-weight: 700;
+      }
+      h4 {
+        font-size: 0.98rem;
+        margin: 0 0 0.3rem;
+        font-weight: 700;
+      }
+      p {
+        margin: 0 0 1rem;
+      }
+
+      /* --- Hero --- */
+      .hero {
+        padding: 1.5rem 0 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .hero-badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--surface);
+        background: var(--accent);
+        padding: 0.3rem 0.7rem;
+        margin-bottom: 0.9rem;
+      }
+      .hero-subtitle {
+        font-size: 1.05rem;
+        color: var(--text-muted);
+        max-width: 70ch;
+        margin: 0;
+      }
+
+      /* Bauhaus signature: geometric shape cluster (optional) */
+      .hero-shapes {
+        position: relative;
+        height: 80px;
+        margin-bottom: 1rem;
+      }
+      .hero-shapes .circle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 56px;
+        height: 56px;
+        background: var(--problem);
+        border-radius: 50%;
+      }
+      .hero-shapes .square {
+        position: absolute;
+        top: 24px;
+        left: 72px;
+        width: 48px;
+        height: 48px;
+        background: var(--solution);
+      }
+      .hero-shapes .tri {
+        position: absolute;
+        top: 8px;
+        left: 140px;
+        width: 0;
+        height: 0;
+        border-left: 28px solid transparent;
+        border-right: 28px solid transparent;
+        border-bottom: 48px solid var(--warning);
+      }
+
+      /* --- General cards --- */
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .card-problem {
+        border-left-color: var(--problem);
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
+      }
+      .card-solution {
+        border-left-color: var(--solution);
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
+      }
+      .card-warning {
+        border-left-color: var(--warning);
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
+      }
+
+      /* --- Issue cards --- */
+      .issue {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .issue-critical {
+        border-left-color: var(--problem);
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
+      }
+      .issue-important {
+        border-left-color: var(--warning);
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
+      }
+      .issue-nice {
+        border-left-color: var(--solution);
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
+      }
+      .issue h3 {
+        margin-bottom: 0.3rem;
+      }
+      .issue .where {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--text-faint);
+        margin: 0.2rem 0 0.6rem;
+      }
+      .issue p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* --- Severity badges (used inside issue cards) --- */
+      .severity {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.55rem;
+        margin-bottom: 0.6rem;
+        color: var(--surface);
+      }
+      .severity-critical {
+        background: var(--problem);
+      }
+      .severity-important {
+        background: var(--warning);
+      }
+      .severity-nice {
+        background: var(--solution);
+      }
+
+      /* --- Inline badges (used in tables) --- */
+      .badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.18rem 0.5rem;
+        border: 1px solid var(--border-strong);
+        color: var(--text-muted);
+      }
+      .badge-critical {
+        color: var(--problem);
+        border-color: var(--problem);
+      }
+      .badge-high {
+        color: var(--warning);
+        border-color: var(--warning);
+      }
+      .badge-medium {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .badge-low {
+        color: var(--text-muted);
+      }
+      .badge-fixed {
+        color: var(--solution);
+        border-color: var(--solution);
+      }
+
+      /* --- Callouts (used inside issues or standalone) --- */
+      .callout {
+        margin: 0.8rem 0 0;
+        padding: 0.7rem 0.9rem;
+        border-left: 3px solid var(--border-strong);
+        background: color-mix(in srgb, var(--text) 5%, transparent);
+        font-size: 0.9rem;
+      }
+      .callout strong {
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
+      .callout-solution {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 10%, transparent);
+      }
+      .callout-warning {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 10%, transparent);
+      }
+
+      /* --- Stat cards / scorecards (aliased vocabulary) --- */
+      .stat-grid,
+      .scorecard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.75rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .stat-card,
+      .score-card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1rem;
+        position: relative;
+      }
+      .stat-card::before,
+      .score-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--border-strong);
+      }
+      .stat-bad,
+      .score-bad {
+        /* default top bar already set */
+      }
+      .stat-bad::before,
+      .score-bad::before {
+        background: var(--problem);
+      }
+      .stat-good::before,
+      .score-good::before {
+        background: var(--solution);
+      }
+      .stat-warn::before,
+      .score-warn::before {
+        background: var(--warning);
+      }
+      .stat-value,
+      .score {
+        font-family: var(--font-heading);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        color: var(--text);
+      }
+      .stat-bad .stat-value,
+      .score-bad .score {
+        color: var(--problem);
+      }
+      .stat-good .stat-value,
+      .score-good .score {
+        color: var(--solution);
+      }
+      .stat-warn .stat-value,
+      .score-warn .score {
+        color: var(--warning);
+      }
+      .stat-label,
+      .score-card .label {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-faint);
+        margin-top: 0.5rem;
+      }
+
+      /* --- Strengths list --- */
+      .strengths {
+        display: grid;
+        gap: 0.5rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .strength {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.8rem;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .strength .check {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        color: var(--solution);
+        font-size: 1.1rem;
+        line-height: 1.4;
+      }
+      .strength .text strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+      .strength .text span {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* --- Tables --- */
+      .table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.9rem;
+      }
+      th {
+        text-align: left;
+        padding: 0.6rem 0.9rem;
+        background: var(--surface-raised);
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border-strong);
+      }
+      td {
+        padding: 0.6rem 0.9rem;
+        border-bottom: 1px solid var(--border);
+      }
+      tr:hover td {
+        background: var(--surface-raised);
+      }
+
+      /* --- Before/After comparison --- */
+      .compare-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin: 1rem 0 0.5rem;
+      }
+      .compare-before,
+      .compare-after {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0.4rem 0.7rem;
+        color: var(--surface);
+      }
+      .compare-before {
+        background: var(--problem);
+      }
+      .compare-after {
+        background: var(--solution);
+      }
+      .compare-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .compare-row pre {
+        margin: 0;
+      }
+
+      /* --- Code blocks + syntax highlighting --- */
+      pre {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.65;
+        overflow-x: auto;
+      }
+      code {
+        font-family: var(--font-mono);
+      }
+      p code,
+      li code,
+      td code {
+        font-size: 0.88em;
+        background: var(--surface-sunken);
+        padding: 0.1rem 0.35rem;
+      }
+      .tok-keyword {
+        color: var(--accent);
+      } /* func, type, struct, if, return */
+      .tok-type {
+        color: var(--warning);
+      } /* int, string, bool, error */
+      .tok-string {
+        color: var(--solution);
+      } /* "quoted strings" */
+      .tok-comment {
+        color: var(--text-faint);
+        font-style: italic;
+      }
+      .tok-func {
+        color: #74a9ff;
+      } /* function names */
+      .tok-number {
+        color: var(--accent);
+      } /* 42, 3.14 */
+      .tok-generic {
+        color: var(--problem);
+      } /* T, ID in generics */
+      .tok-builtin {
+        color: #4dd9ff;
+      } /* make, len, append */
+      .tok-punct {
+        color: var(--text-muted);
+      } /* { } ( ) ; = : */
+      .tok-attr {
+        color: var(--accent);
+      } /* Nix attribute names */
+
+      /* --- Dependency tree / ASCII diagrams --- */
+      .dep-tree {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.7;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .dep-tree .root {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .dep-tree .ok {
+        color: var(--solution);
+      }
+      .dep-tree .unwanted {
+        color: var(--problem);
+      }
+
+      /* --- Inline node-and-arrow diagrams --- */
+      .diagram {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+      }
+      .node {
+        display: inline-block;
+        padding: 0.35rem 0.7rem;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: var(--surface-sunken);
+        border: 1px solid var(--border-strong);
+      }
+      .node-core {
+        background: var(--accent);
+        color: var(--surface);
+        border-color: var(--accent);
+      }
+      .node-problem {
+        background: var(--problem);
+        color: var(--surface);
+        border-color: var(--problem);
+      }
+      .node-good {
+        background: var(--solution);
+        color: var(--surface);
+        border-color: var(--solution);
+      }
+      .arrow {
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Grids (responsive) --- */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      /* --- Inline TOC (alternative to sidebar) --- */
+      .toc {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        padding: 1rem 1.3rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .toc h3 {
+        margin-bottom: 0.5rem;
+      }
+      .toc ul {
+        list-style: none;
+        padding: 0;
+      }
+      .toc li {
+        margin: 0.25rem 0;
+      }
+      .toc a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+      .toc a:hover {
+        color: var(--accent);
+      }
+
+      /* --- Migration / numbered steps --- */
+      .migration-step {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+        padding: 1rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+      }
+      .migration-num {
+        font-family: var(--font-mono);
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .migration-content h4 {
+        margin-bottom: 0.2rem;
+      }
+      .migration-content p {
+        margin-bottom: 0;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      /* --- Footer --- */
+      .footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.8rem;
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Responsive --- */
+      @media (min-width: 1024px) {
+        .sidebar {
+          display: block;
+        }
+      }
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+          padding: 1rem;
+        }
+        .top-bar {
+          padding: 0.6rem 1rem;
+          flex-wrap: wrap;
+          gap: 0.3rem;
+        }
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .compare-header,
+        .compare-row {
+          grid-template-columns: 1fr;
+        }
+        .stat-grid,
+        .scorecard {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .migration-step {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Full-bleed top bar (optional — remove for quieter reports) -->
+    <div class="top-bar">
+      <span>REPORT TYPE</span>
+<body>
+    <div class="top-bar">
+      <span>PARETO EXECUTION PLAN</span>
+      <span>2026-09-23</span>
+      <span>templ-components</span>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#context">Context</a>
+          <a href="#tier1">Tier 1 — 1%</a>
+          <a href="#tier2">Tier 2 — 4%</a>
+          <a href="#tier3">Tier 3 — 20%</a>
+          <a href="#tier4">Tier 4 — Rest</a>
+          <a href="#excluded">Excluded</a>
+          <a href="#graph">Execution Graph</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <div class="hero">
+          <div class="hero-shapes">
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="hero-badge">Pareto Plan</div>
+          <h1>Dedup Follow-Through &amp; Open Backlog</h1>
+          <p class="hero-subtitle">
+            Every open TODO from the 2026-09-23 dedup-pass status report (§f) and TODO_LIST.md, split into 66 tasks of ≤12 minutes, sorted by impact and effort.
+          </p>
+        </div>
+
+        <h2 id="summary"><span class="num">00</span>Summary</h2>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">66</div>
+            <div class="stat-label">Fine tasks (≤12 min)</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">10</div>
+            <div class="stat-label">Tier 1 — 1% → 51% of value</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">11</div>
+            <div class="stat-label">Tier 2 — 4% → 64%</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">~12.5h</div>
+            <div class="stat-label">Total estimated (35 in Tier 3, 10 in Tier 4)</div>
+          </div>
+        </div>
+
+        <h2 id="context"><span class="num">01</span>Context</h2>
+        <div class="card card-problem">
+          <h4>The gate was a ghost until yesterday</h4>
+          <p>The art-dupl baseline was binary-pinned: the "105 new clone groups" failure was a false alarm (0 hash matches under current binaries). The baseline was re-recorded under a pinned fork (122 groups, gate green ×2), five clone families were extracted, and the work now sits in 6 unpushed daemon commits (9c1db38e → 00642ee2).</p>
+        </div>
+        <div class="card card-solution">
+          <h4>What this plan does</h4>
+          <p>Tier 1 makes yesterday's work <strong>trusted</strong> (runtime smoke, visual witness, a real advisory gate, one clean commit). Tier 2 <strong>locks it in</strong> (drift guards, enum convention repair, ledger hygiene). Tier 3 clears the hardening backlog. Tier 4 holds gated and larger bets. Owner-gated and separate-repo items are excluded with reasons.</p>
+        </div>
+        <div class="card card-warning">
+          <h4>Decision gates the plan resolves unilaterally</h4>
+          <p><strong>g-q2 (squash):</strong> all 6 commits are unpushed → soft-reset squash needs no force-push; daemon race minimized by one atomic command. <strong>g-q3a (CHANGELOG):</strong> plan writes the rule down and warms <code>[Unreleased]</code> — cheapest reversible default. <strong>g-q1 (binary supply):</strong> advisory lane documents the PATH binary + version echo now; flake-pin stays an explicit decision task (T05b). <strong>g-q3b (website clones):</strong> stays owner-gated (#303).</p>
+        </div>
+
+        <h2 id="tier1"><span class="num">02</span>Tier 1 — the 1% (trust spine, ~106 min)</h2>
+        <p>Everything yesterday shipped string-proven or compile-proven. These ten tasks convert that into witnessed, gate-enforced, clean-history work.</p>
+        <table>
+          <thead><tr><th>#</th><th>Task</th><th>Min</th><th>Impact</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td>T01</td><td>Smoke <code>ogshot</code>: build website dist → real OG capture → verify PNG non-empty</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f3/d6</td></tr>
+            <tr><td>T02</td><td>Smoke <code>shots</code>: one demo route, light+dark full-page captures</td><td>10</td><td><span class="badge badge-high">High</span></td><td>f3</td></tr>
+            <tr><td>T03</td><td>Smoke <code>siteshots</code>: light/dark × desktop/mobile over the built dist</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f3</td></tr>
+            <tr><td>T04</td><td>Witness <code>nix run .#visual</code> — pixels + axe + e2e incl. calendar month-nav over the refactored components</td><td>12 active</td><td><span class="badge badge-critical">Critical</span></td><td>f4/b6</td></tr>
+            <tr><td>T05</td><td>Advisory dup-gate lane in <code>scripts/ci-repro.sh</code>: <code>art-dupl check</code> + <code>--version</code> echoed beside the verdict; lane never fails the run</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f1/#286</td></tr>
+            <tr><td>T05b</td><td>Decide binary supply: flake input (<code>nix run .#dupl</code>) vs documented PATH; record the pin in ADR-0009</td><td>8</td><td><span class="badge badge-high">High</span></td><td>f5/g-q1</td></tr>
+            <tr><td>T06</td><td>Determinism double-run: record baseline twice, assert byte-stability modulo <code>recordedAt</code></td><td>10</td><td><span class="badge badge-high">High</span></td><td>f6</td></tr>
+            <tr><td>T07</td><td>Squash the 6 unpushed daemon commits into one properly-messaged commit (atomic soft reset onto origin/master — no force-push needed)</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f2/d7/g-q2</td></tr>
+            <tr><td>T08</td><td>Witness green at the squashed tip: build + display/forms/utils drift guards + dup-gate check</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f2/M03</td></tr>
+            <tr><td>T09</td><td>Full <code>scripts/ci-repro.sh --lint --website</code> rehearsal at the tip; read the VERDICT line (pre-push ritual, no push)</td><td>12 active</td><td><span class="badge badge-high">High</span></td><td>f46</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="tier2"><span class="num">03</span>Tier 2 — the 4% (lock in the gains, ~106 min)</h2>
+        <table>
+          <thead><tr><th>#</th><th>Task</th><th>Min</th><th>Impact</th><th>Source / TODO#</th></tr></thead>
+          <tbody>
+            <tr><td>T10</td><td>Write the CHANGELOG exemption rule into the release-convention section; warm <code>[Unreleased]</code> with the dedup pass per that rule</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f8 → #317</td></tr>
+            <tr><td>T11</td><td>Drift guard: baseline entry count ↔ ADR-0009/AGENTS claims (extend <code>TestDocsCountDrift</code>), with <code>-count=1</code> discipline</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f7/f34 → #296</td></tr>
+            <tr><td>T13a</td><td><code>HeadingTagType</code> enum + h1–h6 constants + <code>IsValid</code> + test; swap the 3 props fields (defined type — string literals keep compiling)</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f25 → #297</td></tr>
+            <tr><td>T13b</td><td>Remove the redundant <code>isValidHeadingTag</code> normalization; regenerate, goldens, enum-table + docs counts (60→61 IsValid)</td><td>12</td><td><span class="badge badge-low">Low</span></td><td>f26 → #298</td></tr>
+            <tr><td>T14</td><td>Calendar aria-label literals → named constants (goconst discipline)</td><td>6</td><td><span class="badge badge-low">Low</span></td><td>f27 → #299</td></tr>
+            <tr><td>T15</td><td>Document the 5 extraction helpers in FEATURES/skill "reuse these" lists</td><td>10</td><td><span class="badge badge-high">High</span></td><td>f40 → #309</td></tr>
+            <tr><td>T17</td><td>Add the <code>art-dupl check</code> step to <code>docs/plan-authoring-checklist.md</code> (last #291 remainder)</td><td>6</td><td><span class="badge badge-low">Low</span></td><td>f10 → #291</td></tr>
+            <tr><td>T18</td><td>ADR-0009: explicit entries for datastar↔htmx <code>normalize</code> twins + list_note↔end_of_list twins</td><td>10</td><td><span class="badge badge-low">Low</span></td><td>f28 → #300</td></tr>
+            <tr><td>T19</td><td>Re-run art-dupl at t=2/t=3 post-extraction; prune ADR entries whose groups vanished</td><td>12</td><td><span class="badge badge-low">Low</span></td><td>f37 → #306</td></tr>
+            <tr><td>T20</td><td>Mark the ADR-0009 historical-counts table as detector-generation-specific</td><td>6</td><td><span class="badge badge-low">Low</span></td><td>f48</td></tr>
+            <tr><td>T21</td><td>Record the chosen advisory invocation (incl. <code>--min-lines</code> verdict) in ADR + #294</td><td>8</td><td><span class="badge badge-high">High</span></td><td>f11 → #294</td></tr>
+          </tbody>
+        </table>
+        <p><em>Done during planning: TODO rows #291, #293, #273 annotated in place; 22 new rows #296–#317 harvested into TODO_LIST.md.</em></p>
+
+        <h2 id="tier3"><span class="num">04</span>Tier 3 — the 20% (hardening + tooling UX, ~366 min)</h2>
+        <h3>Mirror/guard cluster (#283–#285, #308)</h3>
+        <table>
+          <thead><tr><th>#</th><th>Task</th><th>Min</th><th>Impact</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td>T22</td><td>#283a: Go test pinning <code>MIRRORED_PKGS</code> (bash) == <code>mirroredPackages</code> (Go)</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f16</td></tr>
+            <tr><td>T23</td><td>#283b: <code>*_types.go</code>↔<code>.templ</code> pair-completeness test</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f16</td></tr>
+            <tr><td>T24</td><td>#283c: <code>tc add</code> smoke into <code>t.TempDir()</code> (eyebrow, auth_layout)</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f16</td></tr>
+            <tr><td>T25</td><td>#284a: guard self-test script — clean + drift scenarios, detached temp worktree</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f17</td></tr>
+            <tr><td>T26</td><td>#284b: new/orphan/rename/missing-pkg scenarios + idempotent ×2</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f17</td></tr>
+            <tr><td>T27</td><td>#308: CI lane running the guard self-test on <code>scripts/**</code> changes</td><td>8</td><td><span class="badge badge-high">High</span></td><td>f39</td></tr>
+            <tr><td>T28</td><td>#285: <code>packageDeps</code>/<code>packageImports</code> audit for the 22 rescued components</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f18</td></tr>
+            <tr><td>T29</td><td>#285b: <code>--list-deps</code> honesty review for kanban/charts</td><td>8</td><td><span class="badge badge-high">High</span></td><td>f18</td></tr>
+          </tbody>
+        </table>
+        <h3>Docs-truth + guard-UX cluster (#288, #289, #290, #294)</h3>
+        <table>
+          <thead><tr><th>#</th><th>Task</th><th>Min</th><th>Impact</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td>T30</td><td>#288a: sweep stale <code>tc new</code> → <code>tc init</code>/<code>tc add</code> across docs</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f20</td></tr>
+            <tr><td>T31</td><td>#288b: website/FEATURES/README <code>tc add</code> coverage claims → derived counts</td><td>12</td><td><span class="badge badge-high">High</span></td><td>f20</td></tr>
+            <tr><td>T32</td><td>#288c: CHANGELOG <code>### Fixed</code> reframe of the 22-file rescue</td><td>6</td><td><span class="badge badge-low">Low</span></td><td>f20</td></tr>
+            <tr><td>T33</td><td>#289a: <code>TC_SKIP_SYNC=1</code> opt-out with loud banner</td><td>12</td><td><span class="badge badge-low">Low</span></td><td>f21</td></tr>
+            <tr><td>T34</td><td>#289b: measured guard runtime + <code>--fix</code> pointer in errors</td><td>6</td><td><span class="badge badge-low">Low</span></td><td>f21</td></tr>
+            <tr><td>T35</td><td>#290: <code>starter/</code> dead-CSS trace → delete-or-wire</td><td>12</td><td><span class="badge badge-low">Low</span></td><td>f22</td></tr>
+            <tr><td>T36</td><td>#294a: <code>tc ls</code> derived "N addable" footer</td><td>8</td><td><span class="badge badge-low">Low</span></td><td>f23</td></tr>
+            <tr><td>T37</td><td>#294b: ci-repro guard-failure output review</td><td>6</td><td><span class="badge badge-low">Low</span></td><td>f23</td></tr>
+          </tbody>
+        </table>
+        <h3>Tooling UX + site-tier docs (#271–#281, #302–#314)</h3>
+        <table>
+          <thead><tr><th>#</th><th>Task</th><th>Min</th><th>Impact</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td>T38</td><td>#304: tools README/doc comments pointing at <code>tools/internal</code></td><td>8</td><td><span class="badge badge-low">Low</span></td><td>f35</td></tr>
+            <tr><td>T39</td><td>#305: <code>--selftest</code> flag for the 3 capture tools</td><td>12</td><td><span class="badge badge-low">Low</span></td><td>f36</td></tr>
+            <tr><td>T40</td><td>#302: cross-ref comment for duplicated <code>calendarNavQuery</code> (demo ↔ e2e)</td><td>6</td><td><span class="badge badge-low">Low</span></td><td>f30</td></tr>
+            <tr><td>T41</td><td>#273 close-out: reuse <code>distserver</code> from <code>visualtest/demo.go</code> listener; annotate the row</td><td>12</td><td><span class="badge badge-low">Low</span></td><td>f31</td></tr>
+            <tr><td>T42</td><td>#310: forensics one-liner — 575 vs 548 file-count delta (<code>_sources</code> exclude)</td><td>8</td><td><span class="badge badge-low">Low</span></td><td>f41</td></tr>
+            <tr><td>T43</td><td>#307: varnamelen config sweep (naming guidance vs lint churn)</td><td>8</td><td><span class="badge badge-low">Low</span></td><td>f38</td></tr>
+            <tr><td>T44</td><td>#311: confirm demo smoke covers headingTag render paths (Card/EmptyState demos)</td><td>6</td><td><span class="badge badge-low">Low</span></td><td>f43</td></tr>
+            <tr><td>T45</td><td>#314: evaluate <code>//art-dupl:accept</code> directives vs hash baseline — recommendation into ADR</td><td>10</td><td><span class="badge badge-low">Low</span></td><td>f15</td></tr>
+            <tr><td>T46</td><td>#274: grep <code>role="combobox"</code> on non-text inputs + policy call</td><td>12</td><td><span class="badge badge-high">High</span></td><td>09-19 f18</td></tr>
+            <tr><td>T47</td><td>#277: grep <code>WriteString(literal + literal)</code> repo-wide</td><td>12</td><td><span class="badge badge-high">High</span></td><td>09-19 f26</td></tr>
+            <tr><td>T48</td><td>#278: verify demo CSS freshness vs the T15 arbitrary-variant classes</td><td>10</td><td><span class="badge badge-high">High</span></td><td>09-19 f39</td></tr>
+            <tr><td>T49</td><td>#250: make <code>TestPrerenderMatchesLiveServer</code> deterministic or retry-tolerant</td><td>12</td><td><span class="badge badge-high">High</span></td><td>09-17 f21</td></tr>
+            <tr><td>T50</td><td>#262: extract the flaky-board (stall/fail) pattern into a visualtest helper</td><td>12</td><td><span class="badge badge-high">High</span></td><td>09-17 f39</td></tr>
+            <tr><td>T51</td><td>#281: ogshot × <code>SITE_SKIP_STARS</code> verify + README note</td><td>12</td><td><span class="badge badge-high">High</span></td><td>09-19 f38</td></tr>
+            <tr><td>T52</td><td>#271: make <code>SITE_SKIP_STARS=1</code> the default for non-prod dist consumers; flag-gate prod</td><td>12</td><td><span class="badge badge-high">High</span></td><td>09-19 e1</td></tr>
+            <tr><td>T53</td><td>#275: <code>docs/visual-testing.md</code> — site route tier + skip-stars pin</td><td>12</td><td><span class="badge badge-high">High</span></td><td>09-19 f22</td></tr>
+            <tr><td>T54</td><td>#276: templ-components SKILL.md site section (search scope, lastmod, topLevelPages)</td><td>12</td><td><span class="badge badge-high">High</span></td><td>09-19 f23</td></tr>
+            <tr><td>T55</td><td>#279: warm-dark <code>dark:</code>-pair override pattern into theming docs</td><td>12</td><td><span class="badge badge-high">High</span></td><td>09-19 f20/f48</td></tr>
+            <tr><td>T56</td><td>#313: prune /tmp gate-forensics logs into docs/reviews, or declare accepted-loss</td><td>8</td><td><span class="badge badge-low">Low</span></td><td>f47</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="tier4"><span class="num">05</span>Tier 4 — rest: gated or larger bets (~172 min)</h2>
+        <table>
+          <thead><tr><th>#</th><th>Task</th><th>Min</th><th>Impact</th><th>Gate / Source</th></tr></thead>
+          <tbody>
+            <tr><td>T57</td><td>#303: website content clones (icon-box trio, clamp typography) — extract or blanket-accept</td><td>12+</td><td><span class="badge badge-low">Low</span></td><td>⫱ owner g-q3b (f32/f33)</td></tr>
+            <tr><td>T58</td><td>#312: export <code>display.HeadingTag</code> public helper?</td><td>8</td><td><span class="badge badge-low">Low</span></td><td>⫱ owner API call (f44)</td></tr>
+            <tr><td>T59</td><td>#282: HTMX-off option — design, implement, tests (3 sub-tasks)</td><td>3×12</td><td><span class="badge badge-high">High</span></td><td>09-19 §8 T18</td></tr>
+            <tr><td>T60</td><td>#272: repeatable Lighthouse lane — pick shape, skeleton, verify (3 sub-tasks)</td><td>3×12</td><td><span class="badge badge-high">High</span></td><td>09-19 e2</td></tr>
+            <tr><td>T61</td><td>#264: demo endpoint rate-limit/abuse posture</td><td>12</td><td><span class="badge badge-high">High</span></td><td>09-17 f30</td></tr>
+            <tr><td>T62</td><td>#229: session-scoped CSRF token store for the demo</td><td>12</td><td><span class="badge badge-low">Low</span></td><td>09-17 e8</td></tr>
+            <tr><td>T63</td><td>#224: e2e for the 422 sorted-view rejection (needs a demo endpoint first)</td><td>12</td><td><span class="badge badge-low">Low</span></td><td>kanban f37</td></tr>
+            <tr><td>T64</td><td>#189: demo niceties — file-backed kanban state, recipe section</td><td>12</td><td><span class="badge badge-low">Low</span></td><td>plan M25</td></tr>
+            <tr><td>T65</td><td>#258: kanban demo under single-transport views — screenshots</td><td>12</td><td><span class="badge badge-high">High</span></td><td>09-17 f11</td></tr>
+            <tr><td>T66</td><td>#295: promote dup-gate to BLOCKING — only after 2 consecutive green advisory runs</td><td>8</td><td><span class="badge badge-high">High</span></td><td>⫱ owner ratifies (f24)</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="excluded"><span class="num">06</span>Excluded — with reasons</h2>
+        <table>
+          <thead><tr><th>Items</th><th>Why not scheduled</th></tr></thead>
+          <tbody>
+            <tr><td>#292, #293 remainder, #315, #316 (art-dupl upstream)</td><td>⚫ separate repo (<code>~/projects/art-dupl</code>); #293's local half (re-record) is done</td></tr>
+            <tr><td>#162, #150, #80 (vision-review eyeball)</td><td>Needs a provider API key + human confirmation of SUSPECT findings</td></tr>
+            <tr><td>#213, #214, #215 (CI budget, benchstat, mutation)</td><td>Deferred 2026-09-13 — need persisted baseline + PR-comment infra</td></tr>
+            <tr><td>#216 (vnu re-triage)</td><td>Event-gated: only on the next nixpkgs html5validator bump</td></tr>
+            <tr><td>#217 (M24/M25 components)</td><td>Demand-gated NO — do not build speculatively (F109 verdict)</td></tr>
+            <tr><td>#280 (post-deploy spot-checks)</td><td>Needs the next production deploy to exist</td></tr>
+            <tr><td>Blocked section (#28/29/93/107/108/124/125/126/190/191/211/212/232–239/269/270)</td><td>⫱ owner gates / separate-repo (BuildFlow, go-error-family) / external submissions</td></tr>
+            <tr><td>Deferred v2 (#39, #40) and v1.0 follow-up (#33/34/120/119/154/155/156/157/178)</td><td>Deliberately deferred behind ADR-0039 v2 timing or post-v1.0 windows</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="graph"><span class="num">07</span>Execution Graph</h2>
+        <div style="max-width:900px;margin:1rem 0"><?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 2090 1799"><svg class="d2-2573165301 d2-svg" width="2090" height="1799" viewBox="-91 -121 2090 1799"><rect x="-91" y="-121" width="2090" height="1799" rx="0" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-2573165301 .text {
+	font-family: "d2-2573165301-font-regular";
+}
+@font-face {
+	font-family: d2-2573165301-font-regular;
+	src: url("data:application/font-woff;base64,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");
+}
+.d2-2573165301 .text-bold {
+	font-family: "d2-2573165301-font-bold";
+}
+@font-face {
+	font-family: d2-2573165301-font-bold;
+	src: url("data:application/font-woff;base64,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");
+}
+.d2-2573165301 .text-italic {
+	font-family: "d2-2573165301-font-italic";
+}
+@font-face {
+	font-family: d2-2573165301-font-italic;
+	src: url("data:application/font-woff;base64,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");
+}]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-2573165301 .fill-N1{fill:#0A0F25;}
+		.d2-2573165301 .fill-N2{fill:#676C7E;}
+		.d2-2573165301 .fill-N7{fill:#FFFFFF;}
+		.d2-2573165301 .fill-B1{fill:#0D32B2;}
+		.d2-2573165301 .fill-B4{fill:#E3E9FD;}
+		.d2-2573165301 .fill-B5{fill:#EDF0FD;}
+		.d2-2573165301 .fill-AA4{fill:#EDF0FD;}
+		.d2-2573165301 .stroke-B1{stroke:#0D32B2;}
+		.d2-2573165301 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="dGllcjE="><g class="shape" ><rect x="10" y="20" width="1512" height="458" stroke="#0D32B2" fill="#E3E9FD" class=" stroke-B1 fill-B4" style="stroke-width:2;" /></g><text x="766" y="7" fill="#0A0F25" class="text fill-N1" style="text-anchor:middle;font-size:28px">1% TIER — trust spine (~2h)</text></g><g class="dGllcjI="><g class="shape" ><rect x="497" y="639" width="1401" height="126" stroke="#0D32B2" fill="#E3E9FD" class=" stroke-B1 fill-B4" style="stroke-width:2;" /></g><text x="1197.5" y="626" fill="#0A0F25" class="text fill-N1" style="text-anchor:middle;font-size:28px">4% TIER — lock in gains (~2h)</text></g><g class="dGllcjM="><g class="shape" ><rect x="486" y="926" width="1369" height="126" stroke="#0D32B2" fill="#E3E9FD" class=" stroke-B1 fill-B4" style="stroke-width:2;" /></g><text x="1170.5" y="913" fill="#0A0F25" class="text fill-N1" style="text-anchor:middle;font-size:28px">20% TIER — hardening + tooling UX (~6h)</text></g><g class="dGllcjQ="><g class="shape" ><rect x="1087" y="1192" width="516" height="126" stroke="#0D32B2" fill="#E3E9FD" class=" stroke-B1 fill-B4" style="stroke-width:2;" /></g><text x="1345" y="1179" fill="#0A0F25" class="text fill-N1" style="text-anchor:middle;font-size:28px">REST — gated or larger bets (~3h+)</text></g><g class="YmxvY2tlZA=="><g class="shape" ><path d="M 731 1483 C 731 1459 884 1459 901 1459 C 918 1459 1071 1459 1071 1483 V 1553 C 1071 1577 918 1577 901 1577 C 884 1577 731 1577 731 1553 V 1483 Z" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-AA4" style="stroke-width:2;" /><path d="M 731 1483 C 731 1507 884 1507 901 1507 C 918 1507 1071 1507 1071 1483" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-AA4" style="stroke-width:2;" /></g><text x="901" y="1535.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">EXCLUDED — owner-gated / separate-repo</text></g><g class="dGllcjEuVDAxMDM="><g class="shape" ><rect x="40" y="216" width="303" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="191.5" y="254.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T01-03 Smoke oghot/shots/siteshots</text></g><g class="dGllcjEuVDA0"><g class="shape" ><rect x="71" y="382" width="241" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="191.5" y="420.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T04 Witness nix run .#visual</text></g><g class="dGllcjEuVDA1"><g class="shape" ><rect x="403" y="216" width="314" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="560" y="254.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T05 Advisory dup-gate lane in ci-repro</text></g><g class="dGllcjEuVDA2"><g class="shape" ><rect x="715" y="382" width="248" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="839" y="420.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T06 Determinism double-run</text></g><g class="dGllcjEuVDA3"><g class="shape" ><rect x="1214" y="50" width="263" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="1345.5" y="88.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T07 Squash 6 daemon commits</text></g><g class="dGllcjEuVDA4"><g class="shape" ><rect x="1238" y="216" width="214" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="1345" y="254.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T08 Witness green at tip</text></g><g class="dGllcjEuVDA5"><g class="shape" ><rect x="1199" y="382" width="293" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="1345.5" y="420.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T09 ci-repro lint+website rehearsal</text></g><g class="dGllcjIuVDEw"><g class="shape" ><rect x="527" y="669" width="289" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="671.5" y="707.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T10 CHANGELOG rule + Unreleased</text></g><g class="dGllcjIuVDEx"><g class="shape" ><rect x="876" y="669" width="260" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="1006" y="707.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T11 Baseline-count drift guard</text></g><g class="dGllcjIuVDEz"><g class="shape" ><rect x="1196" y="669" width="299" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="1345.5" y="707.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T13 HeadingTagType enum + IsValid</text></g><g class="dGllcjIuVDE3MjA="><g class="shape" ><rect x="1555" y="669" width="313" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="1711.5" y="707.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T17-20 Checklist + ADR ledger hygiene</text></g><g class="dGllcjMuVDIyMjQ="><g class="shape" ><rect x="516" y="956" width="240" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="636" y="994.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T22-24 #283 mirror Go tests</text></g><g class="dGllcjMuVDI1Mjc="><g class="shape" ><rect x="816" y="956" width="299" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="965.5" y="994.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T25-27 #284 guard self-test + CI lane</text></g><g class="dGllcjMuVDI4Mzc="><g class="shape" ><rect x="1175" y="956" width="340" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="1345" y="994.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T28-37 #285/#288/#289/#290/#294 cluster</text></g><g class="dGllcjMuVDQ2NTY="><g class="shape" ><rect x="1575" y="956" width="250" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="1700" y="994.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T46-56 Site-tier docs + audits</text></g><g class="dGllcjQuVDU3Njk="><g class="shape" ><rect x="1117" y="1222" width="456" height="66" stroke="#0D32B2" fill="#EDF0FD" class=" stroke-B1 fill-B5" style="stroke-width:2;" /></g><text x="1345" y="1260.5" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">T57-69 Website clones, HTMX-off, Lighthouse, demo depth</text></g><g class="dGllcjEuKFQwMTAzIC0mZ3Q7IFQwNClbMF0="><marker id="mk-d2-2573165301-3488378134" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 191.5 284 C 191.5 322 191.5 342 191.5 378" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2573165301-3488378134)" mask="url(#d2-2573165301)" /></g><g class="dGllcjEuKFQwNSAtJmd0OyBUMDYpWzBd"><path d="M 673.166904 282.570507 C 805.650024 322 839.25 342 839.25 378" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2573165301-3488378134)" mask="url(#d2-2573165301)" /></g><g class="dGllcjEuKFQwNyAtJmd0OyBUMDgpWzBd"><path d="M 1345 118 C 1345 156 1345 176 1345 212" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2573165301-3488378134)" mask="url(#d2-2573165301)" /></g><g class="dGllcjEuKFQwOCAtJmd0OyBUMDkpWzBd"><path d="M 1345 284 C 1345 322 1345 342 1345 378" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2573165301-3488378134)" mask="url(#d2-2573165301)" /></g><g class="KHRpZXIxIC0mZ3Q7IHRpZXIyKVswXQ=="><path d="M 1345 479.5 C 1345 542.299988 1345 566.5 1345 594.5" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2573165301-3488378134)" mask="url(#d2-2573165301)" /><text x="1345" y="544" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">verified base</text></g><g class="KHRpZXIyIC0mZ3Q7IHRpZXIzKVswXQ=="><path d="M 1345 766.5 C 1345 829.299988 1345 853.5 1345 881.5" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2573165301-3488378134)" mask="url(#d2-2573165301)" /></g><g class="KHRpZXIzIC0mZ3Q7IHRpZXI0KVswXQ=="><path d="M 1345 1054 C 1345 1108 1345 1127.800049 1345 1147" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2573165301-3488378134)" mask="url(#d2-2573165301)" /></g><g class="KHRpZXIxLlQwNSAtJmd0OyBibG9ja2VkKVswXQ=="><path d="M 517.433422 283.243316 C 468.600006 322 456 348.600006 456 373.5 C 456 398.399994 456 431.600006 456 456.5 C 456 481.399994 456 510.100006 456 528.25 C 456 546.400024 456 570.599976 456 588.75 C 456 606.900024 456 635.599976 456 660.5 C 456 685.400024 456 718.599976 456 743.5 C 456 768.400024 456 797.099976 456 815.25 C 456 833.400024 456 857.599976 456 875.75 C 456 893.900024 456 922.599976 456 947.5 C 456 972.400024 456 1005.599976 456 1030.5 C 456 1055.400024 456 1082 456 1097 C 456 1112 456 1132 456 1147 C 456 1162 456 1188.599976 456 1213.5 C 456 1238.400024 456 1271.599976 456 1296.5 C 456 1321.400024 512.599976 1413.800049 735.138593 1473.956193" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2573165301-3488378134)" mask="url(#d2-2573165301)" /><text x="456.5" y="965" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">#295 blocking gate (owner)</text></g><g class="KHRpZXI0LlQ1NzY5IC0mZ3Q7IGJsb2NrZWQpWzBd"><path d="M 1345 1290 C 1345 1328 1288.599976 1413.800049 1066.860474 1473.952745" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2573165301-3488378134)" mask="url(#d2-2573165301)" /><text x="1244.5" y="1431" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">g-q3 scope</text></g><mask id="d2-2573165301" maskUnits="userSpaceOnUse" x="-91" y="-121" width="2090" height="1799">
+<rect x="-91" y="-121" width="2090" height="1799" fill="white"></rect>
+<rect x="1301" y="528" width="88" height="21" fill="black"></rect>
+<rect x="366" y="949" width="181" height="21" fill="black"></rect>
+<rect x="1207" y="1415" width="75" height="21" fill="black"></rect>
+</mask></svg></svg>
+</div>
+
+        <footer class="footer">
+          Generated 2026-09-23 01:50 CEST &middot; Sources: docs/status/2026-09-23_00-35 §f + TODO_LIST.md (open actionable, 2026-09-23) &middot; All 66 tasks ≤12 min &middot; Completed-work convention: TODO_LIST is the living source; this plan is a snapshot
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        var nav = document.querySelector("[data-nav]");
+        if (!nav) return;
+        var links = nav.querySelectorAll('a[href^="#"]');
+        var ids = Array.from(links).map(function (l) {
+          return l.getAttribute("href").slice(1);
+        });
+        var sections = ids
+          .map(function (id) {
+            return document.getElementById(id);
+          })
+          .filter(Boolean);
+        if (!sections.length) return;
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                links.forEach(function (link) {
+                  link.classList.toggle(
+                    "active",
+                    link.getAttribute("href") === "#" + entry.target.id,
+                  );
+                });
+              }
+            });
+          },
+          { rootMargin: "-80px 0px -60% 0px", threshold: 0 },
+        );
+        sections.forEach(function (s) {
+          observer.observe(s);
+        });
+      })();
+    </script>
+  </body>
+</html>
