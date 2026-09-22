@@ -840,17 +840,29 @@ func registerErrorRoutes(mux *http.ServeMux) {
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			w.WriteHeader(status)
 
-			pageProps := demoPageProps(fmt.Sprintf("%s - templ-components Demo", http.StatusText(status)), "Standalone error page demo")
+			pageProps := demoPageProps(
+				fmt.Sprintf("%s - templ-components Demo", http.StatusText(status)),
+				"Standalone error page demo",
+			)
 			if err := errorRoutePage(pageProps, errorpage.ErrorPage(props)).Render(r.Context(), w); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		})
 	}
 
-	mux.Handle("GET /errors/400", errorRoute(http.StatusBadRequest, errorpage.BadRequest("The request body failed schema validation.")))
+	mux.Handle(
+		"GET /errors/400",
+		errorRoute(http.StatusBadRequest, errorpage.BadRequest("The request body failed schema validation.")),
+	)
 	mux.Handle("GET /errors/403", errorRoute(http.StatusForbidden, errorpage.Forbidden()))
 	mux.Handle("GET /errors/404", errorRoute(http.StatusNotFound, errorpage.NotFound()))
-	mux.Handle("GET /errors/409", errorRoute(http.StatusConflict, errorpage.Conflict("Another request modified this resource while you were editing.")))
+	mux.Handle(
+		"GET /errors/409",
+		errorRoute(
+			http.StatusConflict,
+			errorpage.Conflict("Another request modified this resource while you were editing."),
+		),
+	)
 	mux.Handle("GET /errors/500", errorRoute(http.StatusInternalServerError, errorpage.InternalError()))
 	mux.Handle("GET /errors/503", errorRoute(http.StatusServiceUnavailable, errorpage.ServiceUnavailable()))
 	mux.Handle("GET /errors/full", errorRoute(http.StatusServiceUnavailable, errorPageFullModelDemoProps()))
