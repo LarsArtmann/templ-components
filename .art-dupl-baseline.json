@@ -1,6 +1,352 @@
 {
   "version": "1.0",
-  "threshold": 4,
-  "recordedAt": "2026-07-18T18:02:01.869088311Z",
-  "entries": []
+  "threshold": 1,
+  "recordedAt": "2026-09-22T20:03:38.082758103Z",
+  "entries": [
+    {
+      "hash": "084ee2e1f3ced4a5",
+      "files": [
+        "visualtest/tools/siteshots/main.go",
+        "visualtest/harness.go",
+        "visualtest/tools/ogshot/main.go",
+        "visualtest/tools/siteshots/main.go",
+        "visualtest/tools/shots/main.go"
+      ],
+      "tokens": 5
+    },
+    {
+      "hash": "08ed8746e1591811",
+      "files": [
+        "visualtest/tools/siteshots/main.go",
+        "visualtest/demo.go"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "14c06c522551a19f",
+      "files": [
+        "examples/demo/htmx_demo.templ",
+        "examples/demo/datastar_demo.templ",
+        "examples/demo/errorpage_demo.templ",
+        "examples/demo/htmx_demo.templ",
+        "examples/demo/errorpage_demo.templ",
+        "examples/demo/htmx_demo.templ",
+        "examples/demo/htmx_demo.templ",
+        "examples/demo/htmx_demo.templ",
+        "examples/demo/display_demo.templ",
+        "examples/demo/htmx_demo.templ",
+        "examples/demo/datastar_demo.templ"
+      ],
+      "tokens": 22
+    },
+    {
+      "hash": "160aa699e3a40d4d",
+      "files": [
+        "examples/demo/recipes_demo.templ",
+        "examples/demo/recipes_demo.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "2a7b76100ad3e768",
+      "files": [
+        "display/list_note.templ",
+        "navigation/end_of_list.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "2b0d49d1429850ef",
+      "files": [
+        "examples/demo/demo.templ",
+        "website/internal/pages/base.templ",
+        "website/internal/pages/base.templ"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "30d3f713269803ca",
+      "files": [
+        "visualtest/tools/ogshot/main.go",
+        "visualtest/tools/shots/main.go",
+        "visualtest/tools/ogshot/main.go"
+      ],
+      "tokens": 3
+    },
+    {
+      "hash": "3430542e421f332e",
+      "files": [
+        "layout/container.templ",
+        "layout/stack.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "35b8f958ddc3848a",
+      "files": [
+        "website/internal/pages/sales.templ",
+        "navigation/nav.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "3802c2c1035088b7",
+      "files": [
+        "errorpage/handler.go",
+        "errorpage/handler.go"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "39e97b87a2417788",
+      "files": [
+        "htmx/error_handling.templ",
+        "datastar/sse_error_handling.templ"
+      ],
+      "tokens": 6
+    },
+    {
+      "hash": "436260693d89df95",
+      "files": [
+        "examples/demo/main.go",
+        "visualtest/calendar_nav_e2e_test.go"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "4f8e4fa98ba5bc40",
+      "files": [
+        "examples/demo/recipes_demo.templ",
+        "examples/demo/recipes_demo.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "56a6e5eb885b0575",
+      "files": [
+        "examples/demo/main.go",
+        "examples/demo/main.go"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "63a4aab08667a3e9",
+      "files": [
+        "website/internal/pages/sections.templ",
+        "website/internal/pages/sections.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "67425f3ebc3256a6",
+      "files": [
+        "visualtest/tools/ogshot/main.go",
+        "visualtest/tools/siteshots/main.go"
+      ],
+      "tokens": 8
+    },
+    {
+      "hash": "6c771fc3806cebe0",
+      "files": [
+        "examples/demo/display_demo.templ",
+        "examples/demo/datastar_demo.templ",
+        "examples/demo/display_demo.templ",
+        "examples/demo/feedback_demo.templ",
+        "examples/demo/display_demo.templ",
+        "examples/demo/feedback_demo.templ",
+        "examples/demo/htmx_demo.templ",
+        "examples/demo/display_demo.templ",
+        "examples/demo/forms_section.templ",
+        "examples/demo/display_demo.templ",
+        "examples/demo/display_demo.templ",
+        "examples/demo/display_demo.templ"
+      ],
+      "tokens": 24
+    },
+    {
+      "hash": "7df226240bd6cadb",
+      "files": [
+        "examples/demo/echarts_demo.templ",
+        "examples/demo/icons_demo.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "805ada161289fb50",
+      "files": [
+        "navigation/nav_link.templ",
+        "navigation/nav_link.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "85ae4721d06656eb",
+      "files": [
+        "display/chart_shared.templ",
+        "display/chart_shared.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "8e902bfc2f70cdaa",
+      "files": [
+        "display/collapsible_section.templ",
+        "examples/demo/demo.templ",
+        "errorpage/shared.templ",
+        "errorpage/shared.templ",
+        "examples/demo/icons_demo.templ",
+        "forms/combobox.templ"
+      ],
+      "tokens": 6
+    },
+    {
+      "hash": "94524daaa9661acf",
+      "files": [
+        "visualtest/harness.go",
+        "visualtest/tools/siteshots/main.go"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "95b6753463432244",
+      "files": [
+        "website/cmd/site/main.go",
+        "visualtest/tools/shots/main.go"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "9d4f3d998f65d069",
+      "files": [
+        "examples/demo/display_demo.templ",
+        "examples/demo/display_demo.templ"
+      ],
+      "tokens": 6
+    },
+    {
+      "hash": "9ff70054ddbe9fe1",
+      "files": [
+        "website/internal/pages/sales.templ",
+        "website/internal/pages/sales.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "a6aabc11273c5023",
+      "files": [
+        "errorpage/notfound404.templ",
+        "errorpage/errorpage.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "a82c599807a4f2f9",
+      "files": [
+        "utils/cdn/cdn.go",
+        "forms/radio.go"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "b0d53b59fa378e27",
+      "files": [
+        "visualtest/tools/shots/main.go",
+        "visualtest/tools/ogshot/main.go"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "b251e3713248f87e",
+      "files": [
+        "website/internal/pages/hero.templ",
+        "examples/demo/demo.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "b5e127543a118d77",
+      "files": [
+        "layout/theme.templ",
+        "layout/theme.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "b7ea4760a30fc9c7",
+      "files": [
+        "visualtest/tools/ogshot/main.go",
+        "visualtest/tools/shots/main.go",
+        "visualtest/tools/siteshots/main.go"
+      ],
+      "tokens": 6
+    },
+    {
+      "hash": "cf61360bf9c87762",
+      "files": [
+        "forms/label.templ",
+        "forms/toggle.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "de67abba39237d22",
+      "files": [
+        "examples/demo/main.go",
+        "visualtest/tools/siteshots/main.go"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "ea87db60ecd2ec13",
+      "files": [
+        "visualtest/tools/siteshots/main.go",
+        "visualtest/tools/siteshots/main.go"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "ed9dc56877d57d33",
+      "files": [
+        "htmx/polled_region.templ",
+        "datastar/live_region.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "ee8df0ed218ababf",
+      "files": [
+        "examples/demo/navigation_demo.templ",
+        "examples/demo/feedback_demo.templ",
+        "examples/demo/htmx_demo.templ",
+        "examples/demo/navigation_demo.templ",
+        "examples/demo/htmx_demo.templ",
+        "examples/demo/datastar_demo.templ"
+      ],
+      "tokens": 12
+    },
+    {
+      "hash": "f390950ac61112bd",
+      "files": [
+        "display/modal.templ",
+        "display/drawer.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "fb6bb35622b74b85",
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
+      "tokens": 4
+    },
+    {
+      "hash": "ff8925b2c9ea0df7",
+      "files": [
+        "examples/demo/layout_demo.templ",
+        "display/empty_state.templ"
+      ],
+      "tokens": 2
+    }
+  ]
 }

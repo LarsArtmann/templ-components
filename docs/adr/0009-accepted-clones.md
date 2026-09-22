@@ -289,22 +289,46 @@ is the opening `<script nonce=...>` tag.
 fundamental inline-script CSP pattern. Scripts cannot share JS state across
 files; the CSP nonce pattern is universal.
 
-## Excluded: `cmd/tc/_sources/**` (embedded scaffolder copies, ~78 clone groups at t=1)
+## Excluded: `cmd/tc/_sources/**` (embedded scaffolder copies)
 
 `cmd/tc/_sources/` contains byte-identical COPIES of the library's `.templ`
-sources, embedded via `//go:embed` so `tc new` can scaffold real component
-code into consumer projects. The copy is intentional and drift-guarded:
+and `*_types.go` sources, embedded via `//go:embed` so `tc add` can scaffold
+real component code into consumer projects. The copy is intentional and
+mirror-guarded in BOTH directions:
 
-- `scripts/check-tc-sources-sync.sh` (fast pre-commit guard, `--fix` to resync)
-- `cmd/tc TestSourcesMatchPackageFiles` (Go test guard)
+- `scripts/check-tc-sources-sync.sh` — fast pre-commit guard; auto-fixes
+  (re-copies drift, embeds new components, removes orphans) and stages the
+  result, so a commit can no longer carry stale or missing scaffolder sources
+- `cmd/tc TestSourcesMatchPackageFiles` (direction 1: embedded → library)
+- `cmd/tc TestSourcesShipEveryMirrorableFile` (direction 2: library → embedded)
 - `utils/templ_sync_test.go`
 
 Because a copy must, by definition, duplicate its twin, these clones can
 never be "extracted" — the fix for drift is re-syncing, not deduplication.
 `.art-dupl.json` therefore excludes `cmd/tc/_sources/**` from scans
-(same treatment as vendored or generated code). Scan with
-`art-dupl -c .art-dupl.json ...`; without `-c` the exclusion does not apply
-(art-dupl has no config auto-discovery).
+(same treatment as vendored or generated code).
+
+## Baseline: the canonical dedup gate (`art-dupl check`)
+
+Manual dedup passes re-report every accepted clone above, which buries NEW
+duplication in noise. The accepted set is therefore recorded as a hash-based
+baseline (hashes survive line-number drift):
+
+```bash
+# Canonical gate — reports ONLY clones not yet accepted (expect: 0):
+art-dupl check -c .art-dupl.json -t 1 --type-aware
+
+# After consciously accepting NEW duplication (update this ADR first!):
+art-dupl baseline -c .art-dupl.json -t 1 --type-aware
+```
+
+The baseline file is `.art-dupl-baseline.json` (committed). Baseline counts
+at the 2026-09-22 recording: 39 groups at t=1 — component-idiom/templ-DSL
+clones, demo-binary content, throwaway CLI-tool boilerplate
+(`visualtest/tools/*`), and website page content. The kanban e2e bootstrap
+(`visualtest/kanban_e2e_test.go`, 5×) and the demo-page fetch scaffold
+(`examples/demo/wire_demo_test.go`, 5×) were EXTRACTED in the same pass
+(`newKanbanReadyTab`, `fetchDemoHTML`) instead of being baselined.
 
 ## Decision
 
@@ -319,11 +343,10 @@ These clones remain because each extraction attempt either:
 
 ## Consequences
 
-- Running `art-dupl -t 8` shows ~6 groups (3 production + 3 demo) — reduced
-  from 4 production + 2 demo before this pass
-- Running `art-dupl -t 7` shows ~10 groups (~7 production + 3 demo)
-- Running `art-dupl -t 5` shows ~14 groups
-- Running `art-dupl -t 1` shows ~15 groups
+- The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
+  — it fails ONLY on clones not in the accepted baseline (currently 39 groups)
+- Historical full-scan counts (pre-baseline): `art-dupl -t 8` ~6 groups,
+  `-t 7` ~10, `-t 5` ~14, `-t 1` ~39 with config
 - New components should use existing extractions (`errorHeader`, `overlayShell`,
   `skeletonContainer`, `DismissButton`, `definitionDetailContent`,
   `chartMaxWithOverride`, `sparklineGeometry`, `cdn.ResolveBase`,
