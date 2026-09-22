@@ -6,6 +6,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **`tc add` now ships every component: the scaffolder source mirror is
+  bidirectional and self-healing.** `cmd/tc/_sources` (the byte-identical
+  source copies `tc add` scaffolds from) is guarded as a complete mirror in
+  BOTH directions: content drift is re-copied, newly added components are
+  embedded automatically, and orphans whose library twin was deleted are
+  removed — the pre-commit hook applies and stages these fixes loudly, so a
+  commit can no longer carry stale or missing scaffolder sources. This
+  immediately surfaced a real gap: 22 files had never been embedded —
+  including the kanban board, the SVG charts, Eyebrow, Scrollback,
+  FilterInput, DirtyGuard, and auth-layout surfaces plus nine `*_types.go`
+  companions — so `tc add` rejected them with "unknown component" until now.
+
+- **`art-dupl check` is the canonical duplication gate.** The accepted clone
+  set (39 groups at t=1: component-idiom/templ-DSL clones, demo content,
+  CLI-tool boilerplate) is recorded in a committed hash baseline
+  (`.art-dupl-baseline.json`), so scans report only NEW duplication instead
+  of re-listing every intentional clone. Two genuine 5-site scaffolding
+  duplicates were extracted rather than baselined (`newKanbanReadyTab` in the
+  kanban e2e tests, `fetchDemoHTML` in the wire demo tests). See
+  `docs/adr/0009-accepted-clones.md`.
+
 ## [1.19.2] — 2026-09-22
 
 ### Added
