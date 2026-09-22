@@ -144,7 +144,7 @@ func serveDist(dist string) (string, *http.Server, error) {
 		http.FileServer(http.Dir(dist)).ServeHTTP(w, r)
 	})
 
-	server := &http.Server{Handler: mux} //nolint:gosec,exhaustruct_v5 // loopback-only dev server
+	server := &http.Server{Handler: mux} //nolint:gosec // loopback-only dev server
 
 	go func() { _ = server.Serve(listener) }()
 
