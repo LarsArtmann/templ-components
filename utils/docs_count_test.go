@@ -203,7 +203,9 @@ func countIsValidMethods(t *testing.T, root string) int {
 
 		if d.IsDir() {
 			base := filepath.Base(path)
-			if base == ".git" || base == "website" {
+			// _sources = byte-identical scaffolder copies of library files
+			// (cmd/tc/_sources/**) — counting them double-counts every enum.
+			if base == ".git" || base == "website" || base == "_sources" {
 				return filepath.SkipDir
 			}
 
