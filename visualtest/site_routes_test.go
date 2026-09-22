@@ -71,8 +71,22 @@ var siteDistBase = sync.OnceValue(func() string {
 
 // requireSiteDist returns the dist server base URL, failing the test with the
 // build command when the dist has not been built.
+//
+// Precedence: without a usable Chromium (CHROMEDP_CHROME_PATH unset or
+// inaccessible) the site tests SKIP — they can never run browserless, and
+// contexts like CI's "Compile visualtest module" step run this package on
+// purpose without one. With a browser present, a missing dist stays a HARD
+// failure: the `.#visual` flake app always builds the dist, so the Visual
+// Regression lane (browser + dist, skips fail the job) can never silently
+// degrade.
 func requireSiteDist(t *testing.T) string {
 	t.Helper()
+
+	if !browserConfigured() {
+		t.Skipf("visual tests skipped: %v (set CHROMEDP_CHROME_PATH)", errNoBrowser)
+
+		return ""
+	}
 
 	base := siteDistBase()
 	if base == "" {
