@@ -95,10 +95,10 @@ type SEOMeta struct {
 
 // PageProps configures the base page layout
 type PageProps struct {
-	Title          string
-	Description    string
-	Locale         string
-	OGImage        string
+	Title       string
+	Description string
+	Locale      string
+	OGImage     string
 	// OGType sets the Open Graph type for the og:type meta tag. Defaults to
 	// "website" when empty. Common values: "website", "profile", "article".
 	OGType         string
@@ -141,18 +141,18 @@ type PageProps struct {
 	HTMXResponseTargets bool
 	// SkipLinkText overrides the default "Skip to main content" text for the
 	// accessibility skip link. Useful for i18n.
-	SkipLinkText        string
+	SkipLinkText string
 	// BodyDataAttrs adds extra attributes to the <body> element (e.g.
 	// data-language). Keys are rendered as-is. Pass nil for no extra attributes.
-	BodyDataAttrs       templ.Attributes
-	BodyClass           string
-	Nonce               string
+	BodyDataAttrs templ.Attributes
+	BodyClass     string
+	Nonce         string
 	// SEO carries crawler/SEO head tags (noindex, canonical, hreflang
 	// alternates, JSON-LD). Zero value emits nothing — existing pages keep
 	// byte-identical output.
-	SEO                 SEOMeta
-	HeadContent         templ.Component
-	Footer              templ.Component
+	SEO         SEOMeta
+	HeadContent templ.Component
+	Footer      templ.Component
 	// SecurityHeaders is a deprecated no-op: HTTP security headers cannot be
 	// expressed as meta tags (browsers ignore meta http-equiv for
 	// X-Content-Type-Options and Referrer-Policy, and the latter was never a
@@ -317,7 +317,7 @@ templ Base(props PageProps) {
 
 // MinimalProps configures a minimal HTML5 document without HTMX or external dependencies
 type MinimalProps struct {
-	Title string
+	Title  string
 	Locale string
 	// SEO optionally emits the crawler/SEO head tags (robots noindex,
 	// canonical, hreflang alternates, JSON-LD) with the same semantics as
