@@ -39,6 +39,14 @@ func polledSwapValue(swap SwapStyle) SwapStyle {
 //	@htmx.PolledRegion(htmx.PolledRegionProps{URL: "/partials/stats", Every: "10s", Eager: true}) {
 //	   @display.StatCard(display.StatCardProps{Label: "Messages", Value: "1,234"})
 //	}
+//
+// HYBRID RENDERING CAVEAT (strings.Builder path): PolledRegion is a
+// children-slot component — rendered outside a templ file (component.Render
+// straight into a strings.Builder) the { children... } slot renders EMPTY,
+// and an empty polled region swaps itself for the endpoint's response on
+// the first tick anyway. Render PolledRegion from a real templ file whose
+// children are the server-side partial; the poll endpoint should serve
+// that same partial. See docs/recipes/hybrid-strings-builder-rendering.md.
 templ PolledRegion(props PolledRegionProps) {
 	{{
 		live := polledLiveValue(props.Live)
