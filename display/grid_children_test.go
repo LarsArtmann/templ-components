@@ -27,6 +27,7 @@ func TestGridHybridChildrenViaWithChildren(t *testing.T) {
 	t.Parallel()
 
 	var b strings.Builder
+
 	ctx := templ.WithChildren(context.Background(), hybridChild("a"))
 	if err := Grid(GridProps{Cols: GridCols2}).Render(ctx, &b); err != nil {
 		t.Fatalf("render: %v", err)

@@ -18,7 +18,9 @@ func TestListNoteRender(t *testing.T) {
 
 	t.Run("zero variant equals truncated variant", func(t *testing.T) {
 		t.Parallel()
+
 		explicit := utils.Render(t, ListNote(ListNoteProps{Shown: 50, Total: 127, Variant: ListNoteTruncated}))
+
 		implicit := utils.Render(t, ListNote(ListNoteProps{Shown: 50, Total: 127}))
 		if explicit != implicit {
 			t.Fatalf("zero Variant must behave as ListNoteTruncated:\nexplicit: %s\nimplicit: %s", explicit, implicit)
