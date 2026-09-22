@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/chromedp/cdproto/browser"
+	"github.com/chromedp/cdproto/emulation"
 	"github.com/chromedp/chromedp"
 )
 
@@ -36,13 +37,13 @@ func TestSiteSalesCopyButton(t *testing.T) {
 	defer cancel()
 
 	if err := chromedp.Run(ctx,
-		// Clipboard WRITES are granted via Browser.setPermission: without
-		// them, headless Chromium rejects navigator.clipboard.writeText
-		// (NotAllowedError) and the fallback execCommand path throws in a
-		// background tab, so the label never swaps — the 2026-09-21 CI
-		// failure ("label after click = Copy, want Copied!"). Names are the
-		// Permissions-API spellings ("clipboard-write", not the legacy
-		// GrantPermissions "clipboardReadWrite").
+		// Best-effort real-clipboard setup: grant clipboard permissions
+		// (Permissions-API spellings) and emulate document focus — both are
+		// required by the async clipboard API in headless Chromium. On
+		// Chromium 152 the clipboard daemon still denies sanitized writes
+		// (see the spy comment below), so the spy carries the success path;
+		// in any environment where the daemon cooperates, the REAL write
+		// resolves and nothing is stubbed.
 		browser.SetPermission(
 			&browser.PermissionDescriptor{Name: "clipboard-write"},
 			browser.PermissionSettingGranted,
@@ -51,19 +52,26 @@ func TestSiteSalesCopyButton(t *testing.T) {
 			&browser.PermissionDescriptor{Name: "clipboard-read"},
 			browser.PermissionSettingGranted,
 		).WithOrigin(base),
+		emulation.SetFocusEmulationEnabled(true),
 	); err != nil {
 		t.Fatalf("grant clipboard permissions: %v", err)
 	}
 
 	// Spy on clipboard.writeText BEFORE any click, recording the payload.
 	// The original write still executes so the page behaves exactly as in
-	// production.
+	// production — but its rejection is swallowed: headless Chromium's
+	// clipboard daemon denies sanitized writes even with the permission
+	// state "granted" + focus emulation (verified 2026-09-22: perm query
+	// granted, writeText still "Write permission denied") — the 2026-09-21
+	// CI failure was exactly this. Resolving the spy promise keeps the
+	// COMPONENT's real success path (.then -> label swap) under test while
+	// the payload assertion proves the writeText argument.
 	spyJS := `(() => {
 		window.__tcCopied = null;
 		const orig = navigator.clipboard.writeText.bind(navigator.clipboard);
 		navigator.clipboard.writeText = (text) => {
 			window.__tcCopied = text;
-			return orig(text);
+			return orig(text).catch(() => {});
 		};
 		return true;
 	})()`
