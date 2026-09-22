@@ -81,7 +81,7 @@ func run(args []string) int {
 		req.Header.Set(strings.TrimSpace(k), strings.TrimSpace(v))
 	}
 
-	client := &http.Client{ //nolint:exhaustruct_v5 // a smoke client wants exactly the zero-value transport/redirect/jar plus a timeout
+	client := &http.Client{
 		Timeout: time.Duration(cfg.timeoutMS) * time.Millisecond,
 	}
 

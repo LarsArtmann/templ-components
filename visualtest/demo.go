@@ -178,7 +178,7 @@ func waitForDemoHealth(t *testing.T, baseURL string) {
 	healthURL := baseURL + "/health"
 	deadline := time.Now().Add(demoStartTimeout)
 
-	client := &http.Client{ //nolint:exhaustruct_v5 // test fixture: default transport/redirect/jar behavior is exactly what we want
+	client := &http.Client{
 		Timeout: demoHTTPTimeout,
 	}
 
