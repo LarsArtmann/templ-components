@@ -65,47 +65,7 @@ templ AreaChart(props AreaChartProps) {
 			@chartAxes(d)
 			for i, series := range props.Series {
 				if len(series.Values) >= 2 {
-					{{
-						color := lineChartColor(i, series.Color)
-						strokeW := lineChartStrokeWidth(series.StrokeWidth)
-						pts := ScalePoints(series.Values, d.PlotW, d.PlotH, d.MinVal, d.MaxVal)
-
-						var linePath string
-						if style == LineChartStyleSmooth {
-							linePath = BuildSmoothPath(pts)
-						} else {
-							linePath = BuildPolylinePath(pts)
-						}
-
-						areaPath := BuildAreaPath(pts, d.PlotH)
-					}}
-					<g
-						class={ color }
-						transform={ fmt.Sprintf("translate(%d,%d)", d.Padding.Left, d.Padding.Top) }
-					>
-						<path
-							d={ areaPath }
-							fill="currentColor"
-							fill-opacity={ fillOpacity }
-							stroke="none"
-						/>
-						<path
-							d={ linePath }
-							fill="none"
-							stroke="currentColor"
-							stroke-width={ fmt.Sprintf("%g", strokeW) }
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							if series.Dashed {
-								stroke-dasharray="5 5"
-							}
-						/>
-						if props.ShowDots {
-							for _, p := range pts {
-								<circle cx={ p.X } cy={ p.Y } r={ lineChartDotRadius } fill="currentColor"/>
-							}
-						}
-					</g>
+					@chartSeriesGroup(d, series, i, style, chartSeriesRenderOpts{filled: true, fillOpacity: fillOpacity, showDots: props.ShowDots})
 				}
 			}
 			@chartLegend(d)

@@ -16,7 +16,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/chromedp/chromedp"
