@@ -50,24 +50,50 @@ func DefaultSparklineProps() SparklineProps {
 	}
 }
 
+// sparklinePoint is one projected plot coordinate in SVG pixel space.
+type sparklinePoint struct {
+	x int
+	y int
+}
+
+// sparklinePointCoords projects every value onto the SVG canvas. It is the
+// single source of truth for the x/y math shared by the polyline and area
+// renderers. Returns ok=false when fewer than 2 values are given — callers
+// must render nothing in that case (a single point can't form a line or
+// area).
+func sparklinePointCoords(values []float64, width, height int, minVal, maxVal float64) ([]sparklinePoint, bool) {
+	stepX, rangeVal, ok := sparklineGeometry(values, width, minVal, maxVal)
+	if !ok {
+		return nil, false
+	}
+
+	coords := make([]sparklinePoint, len(values))
+
+	for i, v := range values {
+		normalized := (v - minVal) / rangeVal
+
+		yCoord := max(height-int(math.Round(normalized*float64(height))), 0)
+
+		coords[i] = sparklinePoint{
+			x: i * int(math.Round(stepX)),
+			y: min(yCoord, height),
+		}
+	}
+
+	return coords, true
+}
+
 // sparklinePoints computes the SVG polyline points for the given values.
 func sparklinePoints(values []float64, width, height int, minVal, maxVal float64) string {
-	stepX, rangeVal, ok := sparklineGeometry(values, width, minVal, maxVal)
+	coords, ok := sparklinePointCoords(values, width, height, minVal, maxVal)
 	if !ok {
 		return ""
 	}
 
-	points := make([]string, 0, len(values))
+	points := make([]string, 0, len(coords))
 
-	for i, v := range values {
-		xCoord := i * int(math.Round(stepX))
-
-		normalized := (v - minVal) / rangeVal
-
-		yCoord := max(height-int(math.Round(normalized*float64(height))), 0)
-		yCoord = min(yCoord, height)
-
-		points = append(points, strconv.Itoa(xCoord)+","+strconv.Itoa(yCoord))
+	for _, c := range coords {
+		points = append(points, strconv.Itoa(c.x)+","+strconv.Itoa(c.y))
 	}
 
 	return strings.Join(points, " ")
@@ -75,30 +101,23 @@ func sparklinePoints(values []float64, width, height int, minVal, maxVal float64
 
 // sparklineAreaPath builds a closed SVG path for the filled area beneath the line.
 func sparklineAreaPath(values []float64, width, height int, minVal, maxVal float64) string {
-	stepX, rangeVal, ok := sparklineGeometry(values, width, minVal, maxVal)
+	coords, ok := sparklinePointCoords(values, width, height, minVal, maxVal)
 	if !ok {
 		return ""
 	}
 
 	var b strings.Builder
 
-	for i, v := range values {
-		xCoord := i * int(math.Round(stepX))
-
-		normalized := (v - minVal) / rangeVal
-
-		yCoord := max(height-int(math.Round(normalized*float64(height))), 0)
-		yCoord = min(yCoord, height)
-
+	for i, c := range coords {
 		if i == 0 {
 			b.WriteString("M ")
 		} else {
 			b.WriteString(" L ")
 		}
 
-		b.WriteString(strconv.Itoa(xCoord))
+		b.WriteString(strconv.Itoa(c.x))
 		b.WriteString(" ")
-		b.WriteString(strconv.Itoa(yCoord))
+		b.WriteString(strconv.Itoa(c.y))
 	}
 
 	b.WriteString(" L ")
