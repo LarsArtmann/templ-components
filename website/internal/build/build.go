@@ -228,7 +228,9 @@ func countMatches(root, suffix string, regex *regexp.Regexp) (int, error) {
 
 			if entry.IsDir() {
 				switch entry.Name() {
-				case "node_modules", "dist", ".git", "testdata", "static":
+				// _sources = byte-identical scaffolder copies of library files
+				// (cmd/tc/_sources/**) — counting them double-counts every enum.
+				case "node_modules", "dist", ".git", "testdata", "static", "_sources":
 					return filepath.SkipDir
 				}
 
