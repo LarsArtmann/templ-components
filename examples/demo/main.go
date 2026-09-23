@@ -677,7 +677,7 @@ func newMux() *http.ServeMux {
 			time.Sleep(kanbanDemoMoveDelay)
 
 			state.move(move)
-			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action)))
+			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action, demoSessionCSRF(r))))
 		})
 	}
 	mux.Handle("POST /api/kanban/htmx", kanbanMoveHandler(
@@ -720,7 +720,7 @@ func newMux() *http.ServeMux {
 
 				return
 			}
-			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action)))
+			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action, demoSessionCSRF(r))))
 		})
 	}
 	mux.Handle("POST /api/kanban/htmx/add/{column}", kanbanAddHandler(
@@ -752,7 +752,7 @@ func newMux() *http.ServeMux {
 			}
 
 			state.reset()
-			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action)))
+			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action, demoSessionCSRF(r))))
 		})
 	}
 	mux.Handle("POST /api/kanban/htmx/reset", kanbanResetHandler(
@@ -793,7 +793,7 @@ func newMux() *http.ServeMux {
 				"templ-components Demo",
 				"Showcase of all templ-components",
 				func(props layout.PageProps) templ.Component {
-					return demoPage(props, transport)
+					return demoPage(props, transport, demoSessionCSRF(r))
 				},
 			)
 		default:

@@ -9,7 +9,7 @@ import (
 // same display.KanbanBoard markup moved under htmx and Datastar. Each board
 // owns its endpoint and server state; the move contract (card, column,
 // index) is identical for both.
-templ kanbanDemo() {
+templ kanbanDemo(sessionToken string) {
 	@demoSection("Kanban — Drag-and-Drop, Both Transports", "kanban-board")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
 		Drag cards between columns (or use the per-card move buttons revealed on
@@ -42,6 +42,7 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 			@display.KanbanBoard(kanbanHTMXState.kanbanDemoBoardProps(
 				"kanban-demo-htmx",
 				wire.Action{URL: "/api/kanban/htmx"},
+				sessionToken,
 			))
 		</div>
 		<div class="min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800">
@@ -52,6 +53,7 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 			@display.KanbanBoard(kanbanDatastarState.kanbanDemoBoardProps(
 				"kanban-demo-datastar",
 				wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},
+				sessionToken,
 			))
 		</div>
 	</div>

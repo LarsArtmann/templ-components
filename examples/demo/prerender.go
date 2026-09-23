@@ -28,7 +28,7 @@ func prerender(outputDir string) error {
 			"templ-components Demo",
 			"Showcase of all templ-components",
 			func(props layout.PageProps) templ.Component {
-				return demoPage(props, demoTransportBoth)
+				return demoPage(props, demoTransportBoth, newDemoSessionToken()) // static export: token is build-scoped; a served-static demo page cannot pass CSRF validation (bind moves to the live server)
 			},
 		},
 		{"forms/index.html", "Forms Demo - templ-components", "Complete form showcase with validation", formsDemoPage},

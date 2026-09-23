@@ -15,8 +15,6 @@
 package main
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"net/http"
 	"strconv"
 	"sync"
@@ -28,26 +26,12 @@ import (
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
-// kanbanCSRFToken is the demo's server-issued CSRF token. One token per
-// process keeps the demo honest but simple; a real app issues one per
-// session and validates it server-side on every mutating request.
-var kanbanCSRFToken = newKanbanCSRFToken()
-
 // kanbanDemoMoveDelay simulates real network latency on the move endpoints.
 // The board applies moves optimistically (ADR-0041): the card moves the
 // moment it is dropped and wears a spinner until the server's re-render
 // lands — localhost would make that state invisible, so the demo delays on
 // purpose to show what consumers' users actually experience.
 const kanbanDemoMoveDelay = 800 * time.Millisecond
-
-func newKanbanCSRFToken() string {
-	var b [16]byte
-	if _, err := rand.Read(b[:]); err != nil {
-		panic("kanban demo: generate csrf token: " + err.Error())
-	}
-
-	return hex.EncodeToString(b[:])
-}
 
 // kanbanDemoState is the mutex-guarded board a demo endpoint owns. Real apps
 // swap this for a database; the move semantics stay identical.
@@ -182,7 +166,7 @@ func (s *kanbanDemoState) reset() {
 // board ID (the response re-renders it), the transport's wire.Action, a
 // per-column add-card button (posting to <move URL>/add/<column> in the
 // SAME transport dialect), and a snapshot of the current state.
-func (s *kanbanDemoState) kanbanDemoBoardProps(id string, action wire.Action) display.KanbanBoardProps {
+func (s *kanbanDemoState) kanbanDemoBoardProps(id string, action wire.Action, csrf string) display.KanbanBoardProps {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -206,7 +190,7 @@ func (s *kanbanDemoState) kanbanDemoBoardProps(id string, action wire.Action) di
 	props.BaseProps = utils.BaseProps{ID: id}
 	props.Columns = snapshot
 	props.Wire = &action
-	props.CSRFToken = kanbanCSRFToken
+	props.CSRFToken = csrf
 
 	return props
 }

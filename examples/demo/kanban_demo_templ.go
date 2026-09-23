@@ -17,7 +17,7 @@ import (
 // same display.KanbanBoard markup moved under htmx and Datastar. Each board
 // owns its endpoint and server state; the move contract (card, column,
 // index) is identical for both.
-func kanbanDemo() templ.Component {
+func kanbanDemo(sessionToken string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -69,6 +69,7 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 		templ_7745c5c3_Err = display.KanbanBoard(kanbanHTMXState.kanbanDemoBoardProps(
 			"kanban-demo-htmx",
 			wire.Action{URL: "/api/kanban/htmx"},
+			sessionToken,
 		)).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -88,6 +89,7 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 		templ_7745c5c3_Err = display.KanbanBoard(kanbanDatastarState.kanbanDemoBoardProps(
 			"kanban-demo-datastar",
 			wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},
+			sessionToken,
 		)).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
