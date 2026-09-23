@@ -91,7 +91,7 @@ func main() {
 	// per-instance) because the demo holds no real data. The burst (20)
 	// dwarfs any orchestrator probe cadence, so /health checks are safe
 	// without a special case.
-	server := newServer(newIPLimiter(demoRateLimit, demoRateBurst)(newMux()))
+	server := newServer(withDemoSession(newIPLimiter(demoRateLimit, demoRateBurst)(newMux())))
 
 	fmt.Printf("Demo running at http://localhost:%s\n", server.Addr)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -666,7 +666,7 @@ func newMux() *http.ServeMux {
 				return
 			}
 
-			if r.FormValue(kanbanCSRFFieldName) != kanbanCSRFToken {
+			if !demoSessionTokenValid(r) {
 				http.Error(w, "invalid CSRF token", http.StatusForbidden)
 
 				return
