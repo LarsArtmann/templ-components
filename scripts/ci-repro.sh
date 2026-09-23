@@ -286,8 +286,37 @@ if [ "$RUN_VULN" = "1" ]; then
 	)
 fi
 
+# ADVISORY lane (never fails the run): the art-dupl clone gate is binary-pinned
+# (fork at ~/projects/art-dupl — see docs/adr/0009-accepted-clones.md), so a
+# bare "exit 1" here could be version skew, not real clones. Running it beside
+# every verdict makes drift visible without blocking the ritual.
+step "art-dupl clone gate (ADVISORY — reported beside the verdict, never fails the run)"
+DUPL_BIN="${ART_DUPL_BIN:-}"
+if [ -z "$DUPL_BIN" ] && [ -x /tmp/art-dupl-fork ]; then
+	DUPL_BIN=/tmp/art-dupl-fork
+elif [ -z "$DUPL_BIN" ]; then
+	DUPL_BIN="$(command -v art-dupl 2>/dev/null || true)"
+fi
+if [ -z "$DUPL_BIN" ]; then
+	DUPL_VER="dupl-skip"
+	echo "SKIP: no art-dupl binary (set ART_DUPL_BIN or build the fork — see docs/adr/0009-accepted-clones.md)"
+else
+	DUPL_VER="$("$DUPL_BIN" --version 2>&1 | head -1)"
+	echo "binary: $DUPL_BIN ($DUPL_VER)"
+	set +e
+	DUPL_OUT="$("$DUPL_BIN" check -c .art-dupl.json -t 1 --type-aware 2>&1)"
+	DUPL_EXIT=$?
+	set -e
+	printf '%s\n' "$DUPL_OUT" | tail -3
+	if [ "$DUPL_EXIT" -eq 0 ]; then
+		echo "art-dupl: GREEN — 0 clone groups outside baseline"
+	else
+		echo "art-dupl: ADVISORY-FAIL (exit $DUPL_EXIT) — new clone groups outside baseline; classify per ADR-0009 (extract or accept+rebaseline)"
+	fi
+fi
+
 echo ""
 echo ""
 echo "ALL STEPS PASSED — working tree matches CI's expectations."
-echo "VERDICT: PASS (exit 0) — $(date '+%Y-%m-%d %H:%M:%S %Z')"
+echo "VERDICT: PASS (exit 0) — $(date '+%Y-%m-%d %H:%M:%S %Z') [dupl: $DUPL_VER]"
 exit 0
