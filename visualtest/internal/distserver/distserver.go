@@ -6,6 +6,7 @@ package distserver
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -36,22 +37,31 @@ func Handler(dist string) http.Handler {
 	return mux
 }
 
+// selftestTimeout bounds the selftest's request.
+const selftestTimeout = 10 * time.Second
+
+// ErrSelftestUnavailable marks a dist page that did not answer 200 during a
+// selftest.
+var ErrSelftestUnavailable = errors.New("selftest target unavailable")
+
 // Selftest verifies that a dist directory is servable through this package's
 // handler: it binds a loopback listener, fetches the given page, and shuts
 // down. Both dist-based capture tools call it from their -selftest flag —
 // one home for the come-up check (backlog #305/#262).
 func Selftest(dist, page string) error {
-	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	var listenConfig net.ListenConfig
+
+	listener, err := listenConfig.Listen(context.Background(), "tcp", "127.0.0.1:0")
 	if err != nil {
 		return fmt.Errorf("listen: %w", err)
 	}
 
 	server := &http.Server{Handler: Handler(dist)} //nolint:gosec // loopback-only dev server
-	defer server.Close()
+	defer func() { _ = server.Close() }()
 
 	go func() { _ = server.Serve(listener) }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), selftestTimeout)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+listener.Addr().String()+"/"+page, nil)
@@ -66,7 +76,7 @@ func Selftest(dist, page string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("fetch /%s: status %d", page, resp.StatusCode)
+		return fmt.Errorf("fetch /%s: status %d %w", page, resp.StatusCode, ErrSelftestUnavailable)
 	}
 
 	return nil

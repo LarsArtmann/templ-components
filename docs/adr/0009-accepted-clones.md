@@ -252,6 +252,17 @@ completely: `<div class="text-center py-8">` (empty state) vs
 **Why not lazy**: Different purposes (empty state placeholder vs demo card
 container). The shared token is the opening `<div>` tag — unavoidable.
 
+### 22. Capture-tool `-selftest` flag wiring (added 2026-09-23, backlog #305 residue)
+
+`visualtest/tools/ogshot/main.go` vs `visualtest/tools/siteshots/main.go` —
+the `-dist`/`-selftest` flag registration + `RequireChromium` →
+`distserver.Selftest` → `browser.OK` sequence is line-for-line identical in
+both mains. This is CLI-entry boilerplate in the same accepted class as the
+tools' defer/flag chains (entries 18-20): the flags must register before
+`flag.Parse()` in `main`, so a helper would need a flag-registering builder
+API to save ~10 lines — more indirection than savings. The dist selftest
+LOGIC itself IS extracted (`distserver.Selftest`); only the wiring repeats.
+
 ## Accepted Demo Clones
 
 ### 18. `examples/demo/datastar_demo.templ`, `display_demo.templ`, `feedback_demo.templ`, `forms_section.templ`, `htmx_demo.templ`, `navigation_demo.templ` — `@demoSection` and `@demoCodeSnippet` calls (t=20+ clones across 8 groups)

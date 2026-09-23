@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "threshold": 1,
-  "recordedAt": "2026-09-22T22:21:07.281659928Z",
+  "recordedAt": "2026-09-23T05:17:15.142155736Z",
   "entries": [
     {
       "hash": "02d58f70c9385ad6",
@@ -362,6 +362,14 @@
       "tokens": 2
     },
     {
+      "hash": "4bf17f1ebe07500e",
+      "files": [
+        "visualtest/tools/ogshot/main.go",
+        "visualtest/tools/siteshots/main.go"
+      ],
+      "tokens": 12
+    },
+    {
       "hash": "5e3ac144e35a8126",
       "files": [
         "errorpage/erroralert.templ",
@@ -419,14 +427,6 @@
         "navigation/nav.templ"
       ],
       "tokens": 2
-    },
-    {
-      "hash": "67425f3ebc3256a6",
-      "files": [
-        "visualtest/tools/ogshot/main.go",
-        "visualtest/tools/siteshots/main.go"
-      ],
-      "tokens": 8
     },
     {
       "hash": "686343b10f895768",
@@ -827,12 +827,12 @@
         "errorpage/styles.go",
         "display/enums_go.go",
         "display/enums_go.go",
+        "display/heading_tag.go",
         "utils/wire/handler.go",
         "display/enums_go.go",
         "display/enums_go.go",
         "display/enums_go.go",
-        "feedback/enums_go.go",
-        "display/collapsible_section.go"
+        "feedback/enums_go.go"
       ],
       "tokens": 40
     },
