@@ -90,7 +90,16 @@ func TestSiteSalesCopyButton(t *testing.T) {
 		chromedp.Evaluate(spyJS, &spyArmed),
 		chromedp.Click(`[data-tc-copy]`, chromedp.ByQuery),
 		chromedp.Evaluate(`window.__tcCopied`, &copied),
-		chromedp.Text(`[data-tc-copy-text]`, &label, chromedp.ByQuery),
+		// The label swap runs in writeText's .then — a microtask AFTER the
+		// spy records __tcCopied. A bare Text() read races that microtask
+		// and intermittently sees "Copy" (observed 2026-09-23 under load);
+		// poll until the swap lands instead of sleeping or re-running.
+		pollText(
+			`(document.querySelector('[data-tc-copy-text]')||{textContent:''}).textContent`,
+			&label,
+			chromedp.ByQuery,
+			chromedp.WithPollingTimeout(5*time.Second),
+		),
 	); err != nil {
 		t.Fatalf("copy flow: %v", err)
 	}
