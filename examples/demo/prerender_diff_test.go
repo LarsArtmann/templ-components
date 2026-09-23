@@ -23,14 +23,28 @@ var prerenderAutoID = regexp.MustCompile(`tc-[a-z-]+-[0-9a-f]{16}`)
 // mints a build-scoped one, so the value is normalized away.
 var prerenderCSRFToken = regexp.MustCompile(`(name="csrf_token" value=")[^"]*(")`)
 
-// normalizePrerender strips the two BY-DESIGN differences between a
-// prerendered page and the live server's response: the live stylesheet link
-// (prerender pages embed fonts only, CSSPath="") and fresh random EnsureID
-// tokens. Everything else must match byte-for-byte — if it does not, the
-// static snapshot lies about what the live demo serves.
+// prerenderBuildTime matches the Debug Information collapsible's
+// server-rendered build timestamp (second precision, UTC); the two renders
+// happen at different wall-clock seconds, so the value is normalized away.
+var prerenderBuildTime = regexp.MustCompile(`Build: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z`)
+
+// prerenderPolledUpdated matches the PolledRegion demo's server-time stamp
+// (second precision, local); same render-timing tolerance as the build
+// timestamp.
+var prerenderPolledUpdated = regexp.MustCompile(`Updated \d{2}:\d{2}:\d{2} UTC`)
+
+// normalizePrerender strips the BY-DESIGN differences between a prerendered
+// page and the live server's response: the live stylesheet link (prerender
+// pages embed fonts only, CSSPath=""), fresh random EnsureID tokens, the
+// per-render CSRF tokens, and second-precision wall-clock stamps that the
+// two renders rarely capture in the same second. Everything else must match
+// byte-for-byte — if it does not, the static snapshot lies about what the
+// live demo serves.
 func normalizePrerender(html string) string {
 	html = strings.ReplaceAll(html, `<link rel="stylesheet" href="/css/app.css">`, "")
 	html = prerenderCSRFToken.ReplaceAllString(html, `${1}CSRF-NORMALIZED${2}`)
+	html = prerenderBuildTime.ReplaceAllString(html, "Build: TIME-NORMALIZED")
+	html = prerenderPolledUpdated.ReplaceAllString(html, "Updated TIME-NORMALIZED")
 
 	return prerenderAutoID.ReplaceAllString(html, "tc-NORMALIZED")
 }
