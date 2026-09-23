@@ -116,3 +116,23 @@ func cleanFailureArtifacts(name string) {
 		_ = os.Remove(filepath.Join(goldenDir, ".fail", name+suffix))
 	}
 }
+
+// assertGoldenMatch decodes actual and pixel-compares it against the golden
+// (0.1% tolerance), writing failure artifacts on mismatch — the shared tail
+// of every golden-capturing test.
+func assertGoldenMatch(t *testing.T, name string, golden image.Image, actual []byte) {
+	t.Helper()
+
+	decoded, err := png.Decode(bytes.NewReader(actual))
+	if err != nil {
+		t.Fatalf("visualtest[%s]: decode actual: %v", name, err)
+	}
+
+	result, diff := comparePixels(golden, decoded, 0.1, 0.1*percentMultiplier)
+	if !result.Match {
+		writeFailureArtifacts(t, name, actual, diff)
+		t.Errorf("visualtest[%s]: visual mismatch — %s (max %.4f%%).\n"+
+			"Inspect testdata/.fail/%s.{actual,diff}.png, then run `go test -update` if the change is intended.",
+			name, result, 0.1, name)
+	}
+}
