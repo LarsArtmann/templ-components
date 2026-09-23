@@ -44,6 +44,39 @@ const (
 	chartColorPink    = "text-pink-600 dark:text-pink-400"
 )
 
+// LineChart/AreaChart shared defaults.
+const (
+	chartDefaultWidth    = 600
+	chartDefaultHeight   = 300
+	chartDefaultEmptyMsg = "No data"
+)
+
+// resolveLineAreaChartInputs folds zero-valued LineChart/AreaChart inputs to
+// the shared defaults so both components resolve them identically.
+func resolveLineAreaChartInputs(
+	width, height int,
+	style LineChartStyle,
+	emptyMsg string,
+) (int, int, LineChartStyle, string) {
+	if width == 0 {
+		width = chartDefaultWidth
+	}
+
+	if height == 0 {
+		height = chartDefaultHeight
+	}
+
+	if style == "" {
+		style = LineChartStyleLinear
+	}
+
+	if emptyMsg == "" {
+		emptyMsg = chartDefaultEmptyMsg
+	}
+
+	return width, height, style, emptyMsg
+}
+
 // chartMaxFloor returns 1 when the computed max is zero so percentage-based
 // chart math (bar widths, heatmap opacity) has a non-zero denominator.
 // Used by BarChart and Heatmap when no caller-supplied max is provided.

@@ -62,19 +62,17 @@ type AreaChartProps struct {
 	EmptyMessage string
 }
 
-// AreaChart defaults.
+// AreaChart defaults. Width/height/empty-message defaults are the shared
+// chartDefault* constants in chart_geometry.go.
 const (
-	areaChartDefaultWidth  = 600
-	areaChartDefaultHeight = 300
-	areaChartDefaultFill   = 0.2
-	areaChartDefaultEmpty  = "No data"
+	areaChartDefaultFill = 0.2
 )
 
 // DefaultAreaChartProps returns sensible defaults for an area chart.
 func DefaultAreaChartProps() AreaChartProps {
 	return AreaChartProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
-		Width:        areaChartDefaultWidth,
-		Height:       areaChartDefaultHeight,
+		Width:        chartDefaultWidth,
+		Height:       chartDefaultHeight,
 		Padding:      DefaultChartPadding(),
 		ShowGrid:     true,
 		ShowDots:     false,

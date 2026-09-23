@@ -113,10 +113,9 @@ type LineChartProps struct {
 	EmptyMessage string
 }
 
-// LineChart defaults.
+// LineChart defaults. Width/height/empty-message defaults are the shared
+// chartDefault* constants in chart_geometry.go.
 const (
-	lineChartDefaultWidth  = 600
-	lineChartDefaultHeight = 300
 	lineChartDefaultStroke = 2.0
 
 	chartPaddingTop    = 20
@@ -127,8 +126,6 @@ const (
 	lineChartDotRadius = 3
 	lineChartTickLen   = 5
 	lineChartMaxTicks  = 8
-
-	lineChartDefaultEmptyMsg = "No data"
 
 	lineChartLabelYOffset  = 4.0
 	lineChartFontSize      = "11"
@@ -155,15 +152,15 @@ var lineChartPalette = []string{
 // DefaultLineChartProps returns sensible defaults for a line chart.
 func DefaultLineChartProps() LineChartProps {
 	return LineChartProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
-		Width:        lineChartDefaultWidth,
-		Height:       lineChartDefaultHeight,
+		Width:        chartDefaultWidth,
+		Height:       chartDefaultHeight,
 		Padding:      DefaultChartPadding(),
 		ShowGrid:     true,
 		ShowDots:     true,
 		ShowLegend:   true,
 		Style:        LineChartStyleLinear,
 		ValueFormat:  FormatTickValue,
-		EmptyMessage: lineChartDefaultEmptyMsg,
+		EmptyMessage: chartDefaultEmptyMsg,
 	}
 }
 
