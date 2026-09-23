@@ -33,7 +33,11 @@ func TestStarterCSSMatchesTemplates(t *testing.T) {
 		}
 
 		if string(starter) != string(canonical) {
-			t.Errorf("%s drifted from %s — copy the canonical file over the starter (never hand-edit the starter)", pair[0], pair[1])
+			t.Errorf(
+				"%s drifted from %s — copy the canonical file over the starter (never hand-edit the starter)",
+				pair[0],
+				pair[1],
+			)
 		}
 	}
 }
