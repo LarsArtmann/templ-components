@@ -10,6 +10,9 @@ import (
 	"testing"
 )
 
+// goldenMaxMismatchPercent is the shared pixel-mismatch tolerance (0.1%).
+const goldenMaxMismatchPercent = 0.1
+
 // update is the shared -update flag. When set, golden PNGs are rewritten with
 // the current render instead of being compared. Mirrors utils/golden's DX.
 //
@@ -128,11 +131,11 @@ func assertGoldenMatch(t *testing.T, name string, golden image.Image, actual []b
 		t.Fatalf("visualtest[%s]: decode actual: %v", name, err)
 	}
 
-	result, diff := comparePixels(golden, decoded, 0.1, 0.1*percentMultiplier)
+	result, diff := comparePixels(golden, decoded, goldenMaxMismatchPercent, goldenMaxMismatchPercent*percentMultiplier)
 	if !result.Match {
 		writeFailureArtifacts(t, name, actual, diff)
 		t.Errorf("visualtest[%s]: visual mismatch — %s (max %.4f%%).\n"+
 			"Inspect testdata/.fail/%s.{actual,diff}.png, then run `go test -update` if the change is intended.",
-			name, result, 0.1, name)
+			name, result, goldenMaxMismatchPercent, name)
 	}
 }

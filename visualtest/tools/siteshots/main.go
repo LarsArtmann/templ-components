@@ -101,7 +101,7 @@ func main() {
 		_ = resp.Body.Close()
 		_ = server.Close()
 
-		fmt.Println("siteshots selftest OK (allocator + dist listener)")
+		fmt.Fprintln(os.Stdout, "siteshots selftest OK (allocator + dist listener)")
 
 		return
 	}
@@ -302,10 +302,14 @@ func routeName(route string) string {
 
 	return name
 }
+
 // httpGetSelftest performs the selftest's loopback GET with context and a
 // bounded client — shared shape for all capture tools.
+// selftestTimeout bounds every selftest request.
+const selftestTimeout = 10 * time.Second
+
 func httpGetSelftest(url string) (*http.Response, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), selftestTimeout)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -313,7 +317,7 @@ func httpGetSelftest(url string) (*http.Response, error) {
 		return nil, err
 	}
 
-	client := &http.Client{Timeout: 10 * time.Second}
+	client := &http.Client{Timeout: selftestTimeout}
 
 	return client.Do(req)
 }

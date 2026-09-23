@@ -86,12 +86,13 @@ func main() {
 		}
 
 		resp, err := httpGetSelftest(*base + "/health")
+
 		if err != nil || resp.StatusCode != http.StatusOK {
 			log.Fatalf("selftest FAIL: demo %s: %v", *base, err)
 		}
 
 		_ = resp.Body.Close()
-		fmt.Println("shots selftest OK (allocator + demo health)")
+		fmt.Fprintln(os.Stdout, "shots selftest OK (allocator + demo health)")
 
 		return
 	}
@@ -240,10 +241,14 @@ func rejectErrorPage(p page, execPath string, docStatus int64) error {
 		docStatus,
 	)
 }
+
 // httpGetSelftest performs the selftest's loopback GET with context and a
 // bounded client — shared shape for all capture tools.
+// selftestTimeout bounds every selftest request.
+const selftestTimeout = 10 * time.Second
+
 func httpGetSelftest(url string) (*http.Response, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), selftestTimeout)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -251,7 +256,7 @@ func httpGetSelftest(url string) (*http.Response, error) {
 		return nil, err
 	}
 
-	client := &http.Client{Timeout: 10 * time.Second}
+	client := &http.Client{Timeout: selftestTimeout}
 
 	return client.Do(req)
 }
