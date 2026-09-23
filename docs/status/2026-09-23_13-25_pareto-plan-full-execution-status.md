@@ -17,6 +17,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 ## a) FULLY DONE
 
 ### Tier 1 — trust spine (10/10)
+
 - **T01** ogshot smoke: website dist built, real capture → `website/public/og/sales.png` (90KB), exit 0.
 - **T02** shots smoke: index light+dark full-page captures (2.8MB each).
 - **T03** siteshots smoke: 25 captures light/dark × desktop/mobile + search smoke PASS (8 hits).
@@ -29,6 +30,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 - **T09** Ritual rehearsal: full `--lint --website` **VERDICT: PASS** multiple times, finally at the sealing tip.
 
 ### Tier 2 — lock in the gains (11/11)
+
 - **T10** CHANGELOG exemption rule written into `docs/release-checklist.md` (internal-only changes exempt; user-visible MUST entry in same commit); `[Unreleased]` warmed and corrected (stale "39 groups" fixed → 122, fork-pinned).
 - **T11** `TestDocsCountDrift` extended with `countBaselineEntries` — pins CHANGELOG/ADR/AGENTS "N accepted groups" claims to the parsed baseline. **Proved itself on first run** by catching the CHANGELOG 39-vs-122 drift.
 - **T13a** `HeadingTagType` enum (h1–h6 constants + `HeadingTagTypeIsValid` + tests) on Card/EmptyState/CollapsibleSection `TitleTag`; defined type so string literals keep compiling (v1-safe).
@@ -42,7 +44,9 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 - **T21** Advisory-invocation verdict recorded: `-t 1`, default min-lines (raising it hides the 2-3-line clones that hid the evening-pass extractions) (#294 partial).
 
 ### Tier 3 — hardening (35/35 planned tasks)
+
 **Mirror/guard cluster:**
+
 - **T22** `TestMirroredPackagesListsMatch` — pins bash `MIRRORED_PKGS` == Go `mirroredPackages` (#283a).
 - **T23** `TestTypesFilesHaveTemplTwin` — ghost types-file guard (#283b).
 - **T24** `TestAddSmoke` — execs the real `tc` binary for eyebrow + auth_layout in `t.TempDir()` (#283c).
@@ -51,6 +55,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 - **T28/T29** `TestPackageDepsCoverPackageFiles` — `--list-deps` honesty; added `heading_tag.go`, `kanban.go`, `chart_geometry.go`, `area_chart.go`, `line_chart.go`, `pie_chart.go` (display), `calendar_nav.go` (forms), `embed.go` (layout) that silently predated it (#285).
 
 **Docs-truth + guard-UX cluster:**
+
 - **T30** `tc new` → shipped-commands rewording (2 live refs) (#288a).
 - **T31** Verified docs carry NO numeric tc-add coverage claims — nothing to fix (#288b, closed as verified-no-claims).
 - **T32** CHANGELOG `### Fixed` entry for the 22-component scaffolder rescue (#288c).
@@ -61,6 +66,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 - **T37** Guard-failure output review — all paths print actionable pointers (#294b).
 
 **Tooling UX + site-tier cluster:**
+
 - **T38** `visualtest/tools/README.md` pointing at the shared `internal/` packages (#304).
 - **T39** `-selftest` flag on all three capture tools, verified live (#305).
 - **T40** Twin cross-ref comments for `calendarNavQuery` (demo ↔ e2e) (#302).
@@ -71,6 +77,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 - **T45** `//art-dupl:accept` directives REJECTED vs hash baseline — reasoning recorded in ADR-0009 (#314).
 
 **Sweep/hardening cluster:**
+
 - **T46** `role="combobox"`: both sites on `<input type="text">` per ARIA APG — compliant (#274).
 - **T47** Zero `WriteString(literal + literal)` in library sources (#277).
 - **T48** Demo CSS freshness verified (`nix run .#css` + `TestCSSFreshness`) (#278).
@@ -84,6 +91,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 - **T56** /tmp gate logs purged before salvage → declared accepted-loss in ADR-0009 (#313).
 
 ### Tier 4 — features + gated
+
 - **T59** **`layout.HTMXNone` shipped**: HTMXSrc sentinel rendering no htmx runtime (no script/preconnect/SRI); `TestBaseHTMXNoneProvesHTMXOff` + self-host regression guard; CHANGELOG Added entry; AGENTS.md bullet (#282).
 - **T60** `scripts/lighthouse.sh` skeleton (static-dist target, 4 categories, advisory; CI wiring deliberately deferred until 5 stable runs) (#272).
 - **T61** Demo per-IP token-bucket rate limiter (`examples/demo/rate_limit.go`; knobs tuned to 10/s + burst 100 after the first values 429'd the visual audits) (#264).
@@ -92,6 +100,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 - **Gated rows recorded with session notes:** #303 (website clones), #312 (public HeadingTag export — recommendation: keep private), #295 (dup-gate→blocking: advisory green run 1 witnessed; needs run 2 + ratification), #224/#189 remain open with dependencies noted.
 
 ### Unplanned work the session surfaced and shipped
+
 - CopyButton e2e race fix (see T04).
 - Guard `--fix` destructive-orphan bug fix (see T25/T26).
 - **templ fmt repo-wide canonicalization** (39 .templ files): BuildFlow's templ-fmt repair and the committed compact styles were fighting, desyncing the `cmd/tc/_sources` mirror on every manual commit; canonicalized once, mirror synced, goldens untouched, website pages goldens refreshed, stale `node_modules` ignore dropped from website/go.mod.
@@ -100,6 +109,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 ---
 
 ## b) PARTIALLY DONE
+
 1. **#229 session CSRF** — fully wired for the kanban demo endpoints, but the middleware+minting is demo-grade (no HMAC binding, no expiry); by design, documented in `csrf_session.go`.
 2. **#294** — three of four sub-items done (`tc ls` footer, guard-runtime print, --min-lines verdict); "AGENTS post-daemon re-verify note" not written as a separate item.
 3. **#295** (dup-gate advisory→blocking) — advisory lane green (run 1); promotion needs a second consecutive green run + owner ratification. Cannot be finished inside one session by definition.
@@ -107,6 +117,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 5. **T07's original goal** — the big dedup-pass blob is clean-ish history but as 8 daemon-titled commits already on origin; only my later waves got proper messages.
 
 ## c) NOT STARTED
+
 1. **Push** — 24 commits local-only; house rule forbids me pushing.
 2. **#162/#150/#80** vision-review pass — needs a provider API key + human confirmation.
 3. **#280** post-deploy spot-checks — needs the next production deploy to exist.
@@ -117,6 +128,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 8. **CHANGELOG version cut** — `[Unreleased]` is warm and healthy but no release was requested.
 
 ## d) TOTALLY FUCKED UP (honest failures)
+
 1. **Lost the daemon race on every squash attempt** (3 attempts, 2 failed commits, exit 128 ref-lock + one daemon mid-commit) until the third attempt in a calm clean-worktree window. The original "squash the 6 unpushed daemon commits" plan goal failed outright — the daemon PUSHED them before I acted. Net effect: no data loss, but the history-hygiene goal for the main blob is dead permanently.
 2. **My own rate limiter broke the visual audits** — burst 20 was smaller than one audit sweep's page+asset fetches; the audits measured unstyled pages (22px targets) and 429 error pages (missing title/lang). Caught by the suite, fixed by raising knobs — but I shipped a feature that broke the verification layer and only found out at the final sweep.
 3. **My own new code introduced 4 clone groups** — the three copy-pasted `-selftest` blocks across the capture tools were exactly the duplication this repo fights. The gate caught it; the extraction (`internal/browser` + `internal/distserver.Selftest`) took three sub-iterations of lint fixes (gosec/noctx/mnd/wsl/gci/gocritic/err113) to get clean.
@@ -126,6 +138,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 7. **Background-job budget exhaustion (50)** — piling up ~50 background shells from hook runs + suites jammed the shell tool entirely mid-commit; recovered by probing foreground and re-running, but it interrupted the flow at the worst moment.
 
 ## e) WHAT WE SHOULD IMPROVE
+
 1. **Daemon vs pre-commit race is structural.** Every manual commit runs a 1–4 min hook while the daemon commits within seconds. Proposal: a `daemon pause` file the hook checks (or the hook writes), so atomic squashes become reliable.
 2. **Squash BEFORE accumulating** — future sessions should squash daemon blobs at each milestone, not at the end, while the window is clean.
 3. **Load-aware test invocation should be automatic**: a tiny wrapper that reads load average and appends `-parallel 4` (or skips timing-sensitive tests) would remove a recurring human-judgment tax.
@@ -135,6 +148,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 7. **The BuildFlow hook's transient failures under load** (tool timeouts, OOM kills) produce red commits-without-exit-128 confusion; a retry-once-on-transient mode would remove false blocks.
 
 ## f) NEXT 50 (ordered by impact)
+
 1. Review + push the 24 local commits (human).
 2. Second consecutive green advisory dup-gate run → promote to blocking (#295) + ratify.
 3. #303 website content clones: extract or blanket-accept (owner gate).
@@ -187,6 +201,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 50. Session retro: turn the "edit didn't persist" incidents into a rule — re-read after ANY daemon-adjacent pause before editing.
 
 ## g) Questions I cannot answer myself
+
 1. **Push?** 24 commits are local and fully verified (ritual + visual green at tip). Do you want them pushed as-is, squashed first (I can attempt a final clean-tree squash), or reviewed commit-by-commit?
 2. **#295 promotion**: do you ratify promoting the dup-gate lane to BLOCKING in ci-repro after I witness one more green advisory run (the plan's ladder), or keep it advisory for a longer probation?
 3. **Demo hardening scope**: the rate limiter + session CSRF were built to demo-grade (in-memory, no HMAC). Should I invest in the real-app shape (HMAC-bound cookie, expiry, X-Forwarded-For trust behind the LB), or is the demo's current posture the intended end state?

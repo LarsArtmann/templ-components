@@ -3,12 +3,12 @@
 Standalone main packages (run via the flake apps, which pin Chromium and the
 Go toolchain):
 
-| Tool        | App                   | What it does                                            |
-| ----------- | --------------------- | ------------------------------------------------------- |
-| `ogshot`    | `nix run .#ogshot`    | Renders the OG sales card (1200×630 PNG) from the site. Independent of `SITE_SKIP_STARS` — the card injects its own HTML and only consumes the compiled CSS. |
-| `shots`     | `nix run .#shots`     | Full-page light+dark captures of every demo route.      |
-| `siteshots` | (go run)              | Light/dark × desktop/mobile captures of the site dist + search smoke. |
-| `smoke`     | (go run)              | Live HTTP smoke over the running demo endpoints.        |
+| Tool        | App                | What it does                                                                                                                                                 |
+| ----------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ogshot`    | `nix run .#ogshot` | Renders the OG sales card (1200×630 PNG) from the site. Independent of `SITE_SKIP_STARS` — the card injects its own HTML and only consumes the compiled CSS. |
+| `shots`     | `nix run .#shots`  | Full-page light+dark captures of every demo route.                                                                                                           |
+| `siteshots` | (go run)           | Light/dark × desktop/mobile captures of the site dist + search smoke.                                                                                        |
+| `smoke`     | (go run)           | Live HTTP smoke over the running demo endpoints.                                                                                                             |
 
 ## Shared plumbing — reuse, do not re-roll
 

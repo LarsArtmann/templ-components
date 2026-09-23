@@ -1,7 +1,8 @@
 package utils
 
 import (
-	"encoding/json"
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -325,7 +326,7 @@ func countBaselineEntries(t *testing.T, root string) int {
 	}
 
 	var baseline struct {
-		Entries []json.RawMessage `json:"entries"`
+		Entries []jsontext.Value `json:"entries"`
 	}
 	if err := json.Unmarshal(data, &baseline); err != nil {
 		t.Fatalf("parse .art-dupl-baseline.json: %v", err)

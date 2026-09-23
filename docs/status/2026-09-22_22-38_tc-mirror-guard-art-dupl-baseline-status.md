@@ -10,7 +10,7 @@
 
 ### What I FORGOT
 
-1. **The truncated art-dupl capture nearly poisoned everything.** My first `-t 1` run captured only **20 of 39 groups** (101 lines, missing the `Found total` line — I noticed it was missing and *rationalized it away* instead of investigating). I told the user "20 groups, your 41 is wrong" with high confidence. Only a later re-run for a different purpose revealed **39 groups** — the user's 41 was essentially right. Had I recorded the baseline from the first capture, ~19 accepted groups would have been silently unbaselined and `art-dupl check` would have false-failed later. Caught by luck (a re-run), not by my own rigor.
+1. **The truncated art-dupl capture nearly poisoned everything.** My first `-t 1` run captured only **20 of 39 groups** (101 lines, missing the `Found total` line — I noticed it was missing and _rationalized it away_ instead of investigating). I told the user "20 groups, your 41 is wrong" with high confidence. Only a later re-run for a different purpose revealed **39 groups** — the user's 41 was essentially right. Had I recorded the baseline from the first capture, ~19 accepted groups would have been silently unbaselined and `art-dupl check` would have false-failed later. Caught by luck (a re-run), not by my own rigor.
 2. **No sync guard between the two hand-copied mirror lists.** `MIRRORED_PKGS` (bash array in `scripts/check-tc-sources-sync.sh`) and `mirroredPackages` (Go slice in `cmd/tc/main_test.go`) must stay in sync and are held together by **comments only**. This repo has an exact precedent for machine-guarding hand-copied lists (`scripts/check-lint-modules.sh` exists because the lint module list drifted across 3 files). I had the pattern in front of me and didn't apply it.
 3. **No end-to-end `tc add` smoke test for a rescued component.** I proved registry registration (`tc ls` lists all 22) and read the `_types.go` copy code path (cmd/tc/main.go:382-395), but never actually ran `tc add eyebrow` into a temp dir to watch the `.templ` + `_types.go` land.
 4. **Pair-completeness of the 9 rescued `*_types.go` files unverified.** `tc add X` copies `X_types.go` only if `X.templ` is registered. I verified pairs for `auth_layout`/`notfound404` mentally but did not programmatically assert all 9 `_types.go` have a registered `.templ` sibling (e.g. `layout/container_types.go` ↔ `container.templ`).
@@ -30,7 +30,7 @@
 
 ### What I could STILL improve (forward-looking)
 
-- Turn the baseline from *documentation* into an *enforced gate* (CI/pre-commit wiring — currently nothing fails if someone introduces new duplication).
+- Turn the baseline from _documentation_ into an _enforced gate_ (CI/pre-commit wiring — currently nothing fails if someone introduces new duplication).
 - Regression-test the guard itself (a script that spins the 4 scenarios in a temp worktree instead of my one-off manual run).
 - Give the guard an explicit, loud opt-out (e.g. `TC_SKIP_SYNC=1`) for the rare "I really meant to edit `_sources` directly" case — currently the guard would clobber such edits silently-by-design.
 - Reduce 1-line noise classes (`defer cancel()`) from future baselines via `--min-lines`, or accept and document them.
@@ -39,28 +39,28 @@
 
 ## a) FULLY DONE
 
-| # | Work | Evidence |
-|---|------|----------|
-| 1 | **Bidirectional mirror guard** — `scripts/check-tc-sources-sync.sh` rewritten: direction 1 (embedded→library: drift + orphans), direction 2 (library→embedded: `.templ` + `*_types.go`), full `--fix` (re-copy / add / `git rm`), fix-mode exits 0, check-mode exits 1 | Worktree scenarios: clean→0, drift→caught+refixed, new→caught+added, orphan→caught+removed; all exit codes verified |
-| 2 | **Pre-commit Guard 8 auto-fixes and stages** (`.githooks/pre-commit`) — runs `--fix`, greps `^synced `, `git add`s `cmd/tc/_sources`, prints loud summary; fails only if unfixable | Simulated hook block in worktree: drift fixed + staged (`STAGED:` list printed); full tracked hook run at tip: exit 0 |
-| 3 | **Go guard direction 2** — `TestSourcesShipEveryMirrorableFile` in cmd/tc/main_test.go (recursive os.DirFS walk, `.templ`+`*_types.go`, fs.Stat against embed FS) | `go test -count=1 ./cmd/tc/...` green; would have failed before the 22-file sync |
-| 4 | **22 never-embedded files rescued** — kanban, line/pie/area charts, eyebrow, scrollback, section_heading, collapsible_section, date_range, circular_progress, filter_input, dirty_guard, auth_layout + 9 `*_types.go` — `tc add` rejected all of them before ("unknown component") | `bash scripts/check-tc-sources-sync.sh --fix` → `synced 22 file(s) (added 22…)`; recheck exit 0; `tc ls` lists them |
-| 5 | **Committed hash baseline** `.art-dupl-baseline.json` (39 groups, t=1, type-aware) + ADR-0009 rewritten (baseline section, canonical invocation, consequences) | `art-dupl check -c .art-dupl.json -t 1 --type-aware` → "No new clones detected (baseline: 39 groups)", exit 0 |
-| 6 | **Classification of all 39 groups** — component-idiom/templ-DSL, demo content, CLI-tool boilerplate (`visualtest/tools/*`), website page content; zero `_sources` leaks (exclusion config verified correct) | Full inventory captured and classed; documented in ADR-0009 |
-| 7 | **Two genuine 5-site duplications extracted instead of baselined** — `newKanbanReadyTab` (visualtest/kanban_e2e_test.go, 5×19-line bootstrap) and `fetchDemoHTML` (examples/demo/wire_demo_test.go, 5×17-line fetch scaffold) | demo tests green (3.4s), `go vet ./...` in visualtest clean, both groups gone from scan |
-| 8 | **Docs**: ADR-0009 updated; AGENTS.md dedup bullet rewritten (canonical gate) + new self-healing-mirror gotcha bullet; CHANGELOG `[Unreleased]` warmed with both entries | In tree; daemon committed ADR/baseline in `191090ea` |
-| 9 | **Verification suite**: tracked pre-commit hook end-to-end (exit 0), cmd/tc + demo tests with `-count=1`, visualtest vet, golangci-lint on cmd/... and visualtest (0 issues), `nix fmt` (0 changed), `art-dupl check` (0 new) | All green at tip `191090ea` |
+| # | Work                                                                                                                                                                                                                                                                               | Evidence                                                                                                              |
+| - | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| 1 | **Bidirectional mirror guard** — `scripts/check-tc-sources-sync.sh` rewritten: direction 1 (embedded→library: drift + orphans), direction 2 (library→embedded: `.templ` + `*_types.go`), full `--fix` (re-copy / add / `git rm`), fix-mode exits 0, check-mode exits 1             | Worktree scenarios: clean→0, drift→caught+refixed, new→caught+added, orphan→caught+removed; all exit codes verified   |
+| 2 | **Pre-commit Guard 8 auto-fixes and stages** (`.githooks/pre-commit`) — runs `--fix`, greps `^synced`, `git add`s `cmd/tc/_sources`, prints loud summary; fails only if unfixable                                                                                                  | Simulated hook block in worktree: drift fixed + staged (`STAGED:` list printed); full tracked hook run at tip: exit 0 |
+| 3 | **Go guard direction 2** — `TestSourcesShipEveryMirrorableFile` in cmd/tc/main_test.go (recursive os.DirFS walk, `.templ`+`*_types.go`, fs.Stat against embed FS)                                                                                                                  | `go test -count=1 ./cmd/tc/...` green; would have failed before the 22-file sync                                      |
+| 4 | **22 never-embedded files rescued** — kanban, line/pie/area charts, eyebrow, scrollback, section_heading, collapsible_section, date_range, circular_progress, filter_input, dirty_guard, auth_layout + 9 `*_types.go` — `tc add` rejected all of them before ("unknown component") | `bash scripts/check-tc-sources-sync.sh --fix` → `synced 22 file(s) (added 22…)`; recheck exit 0; `tc ls` lists them   |
+| 5 | **Committed hash baseline** `.art-dupl-baseline.json` (39 groups, t=1, type-aware) + ADR-0009 rewritten (baseline section, canonical invocation, consequences)                                                                                                                     | `art-dupl check -c .art-dupl.json -t 1 --type-aware` → "No new clones detected (baseline: 39 groups)", exit 0         |
+| 6 | **Classification of all 39 groups** — component-idiom/templ-DSL, demo content, CLI-tool boilerplate (`visualtest/tools/*`), website page content; zero `_sources` leaks (exclusion config verified correct)                                                                        | Full inventory captured and classed; documented in ADR-0009                                                           |
+| 7 | **Two genuine 5-site duplications extracted instead of baselined** — `newKanbanReadyTab` (visualtest/kanban_e2e_test.go, 5×19-line bootstrap) and `fetchDemoHTML` (examples/demo/wire_demo_test.go, 5×17-line fetch scaffold)                                                      | demo tests green (3.4s), `go vet ./...` in visualtest clean, both groups gone from scan                               |
+| 8 | **Docs**: ADR-0009 updated; AGENTS.md dedup bullet rewritten (canonical gate) + new self-healing-mirror gotcha bullet; CHANGELOG `[Unreleased]` warmed with both entries                                                                                                           | In tree; daemon committed ADR/baseline in `191090ea`                                                                  |
+| 9 | **Verification suite**: tracked pre-commit hook end-to-end (exit 0), cmd/tc + demo tests with `-count=1`, visualtest vet, golangci-lint on cmd/... and visualtest (0 issues), `nix fmt` (0 changed), `art-dupl check` (0 new)                                                      | All green at tip `191090ea`                                                                                           |
 
 ## b) PARTIALLY DONE
 
-| # | Work | Done | Missing |
-|---|------|------|---------|
-| 1 | Final verification | Hook + touched-module tests/lint/vet/fmt at tip | Full `scripts/ci-repro.sh --lint --website` (all CI lanes) not run — nothing is being pushed, so ritual not triggered |
-| 2 | Browser-proof of extraction | Compile + vet for kanban e2e; real HTTP tests for wire_demo | The 5 kanban e2e tests not executed in Chromium (`nix run .#visual`) |
+| # | Work                                         | Done                                                                          | Missing                                                                                                                                                       |
+| - | -------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | Final verification                           | Hook + touched-module tests/lint/vet/fmt at tip                               | Full `scripts/ci-repro.sh --lint --website` (all CI lanes) not run — nothing is being pushed, so ritual not triggered                                         |
+| 2 | Browser-proof of extraction                  | Compile + vet for kanban e2e; real HTTP tests for wire_demo                   | The 5 kanban e2e tests not executed in Chromium (`nix run .#visual`)                                                                                          |
 | 3 | `tc add` completeness for rescued components | Files embedded, registry lists them, `_types.go` copy path read and confirmed | No runtime smoke (`tc add` into temp dir); no pair-completeness assertion for all 9 `_types.go`; `packageDeps`/`packageImports` accuracy for the 22 unaudited |
-| 4 | Dup-gate institutionalization | Baseline recorded + canonical invocation documented in ADR + AGENTS.md | Gate is not enforced anywhere (no CI lane, no hook step) — today it's documentation, not a gate |
-| 5 | Terminology hygiene | New text uses `tc init`/`tc add` correctly | Old `tc new` references not swept (AGENTS.md line ~280, possibly docs/, website content) |
-| 6 | Guard performance claim | Old "<100ms" header inherited | New guard does strictly more work; no measurement taken |
+| 4 | Dup-gate institutionalization                | Baseline recorded + canonical invocation documented in ADR + AGENTS.md        | Gate is not enforced anywhere (no CI lane, no hook step) — today it's documentation, not a gate                                                               |
+| 5 | Terminology hygiene                          | New text uses `tc init`/`tc add` correctly                                    | Old `tc new` references not swept (AGENTS.md line ~280, possibly docs/, website content)                                                                      |
+| 6 | Guard performance claim                      | Old "<100ms" header inherited                                                 | New guard does strictly more work; no measurement taken                                                                                                       |
 
 ## c) NOT STARTED (identified this session, deliberately out of scope)
 
@@ -95,6 +95,7 @@
 ## f) TOP THINGS TO GET DONE NEXT (brainstorm, impact-ordered; ROADMAP fuel — harvest into TODO_LIST.md)
 
 **Scaffolder / guard hardening**
+
 1. Sync-guard `MIRRORED_PKGS` (bash) vs `mirroredPackages` (Go) — parse the bash array in a Go test, fail on mismatch.
 2. `tc add` smoke test in cmd/tc: scaffold a rescued component into `t.TempDir()`, assert `.templ` + `_types.go` land.
 3. Pair-completeness test: every embedded `*_types.go` must have a registered `.templ` sibling (and vice versa).
@@ -161,4 +162,4 @@
 
 ---
 
-*Point-in-time snapshot. Section (f) is HARVEST fuel for `TODO_LIST.md`/`ROADMAP.md` (docs-health), not an entombed promise list.*
+_Point-in-time snapshot. Section (f) is HARVEST fuel for `TODO_LIST.md`/`ROADMAP.md` (docs-health), not an entombed promise list._

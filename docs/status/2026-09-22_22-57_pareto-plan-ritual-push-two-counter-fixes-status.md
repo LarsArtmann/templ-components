@@ -18,7 +18,7 @@
 
 ### What I could have done BETTER
 
-- **Targeted-lane selection was biased toward files I edited.** The scanners that broke read the *whole tree* — my previous "final verify" ran cmd/tc, demo, visualtest vet, lint, fmt, hook, art-dupl… everything *around* the change, but neither the utils drift guard nor the website module. The AGENTS.md even documents that `os.ReadFile`-based guards don't track dependencies — the inverse lesson (they also don't *care* which files you touched) is what bit.
+- **Targeted-lane selection was biased toward files I edited.** The scanners that broke read the _whole tree_ — my previous "final verify" ran cmd/tc, demo, visualtest vet, lint, fmt, hook, art-dupl… everything _around_ the change, but neither the utils drift guard nor the website module. The AGENTS.md even documents that `os.ReadFile`-based guards don't track dependencies — the inverse lesson (they also don't _care_ which files you touched) is what bit.
 - **A "scanner pre-flight" would have caught both bugs pre-commit:** when adding files anywhere in the tree, enumerate the tree-wide scanners (docs-count, website CountStats, CSS inventory, templ-sync, art-dupl) and run each. Two of five broke; a 5-minute checklist would have found both before any commit.
 - **Decide CHANGELOG placement at commit time, not after.** I wrote excellent commit messages and zero changelog lines — exactly backwards for a library where consumers read the CHANGELOG, not the log.
 
@@ -33,25 +33,25 @@
 
 ## a) FULLY DONE
 
-| # | Work | Evidence |
-|---|------|----------|
+| # | Work                                                                                                                                                                                                                                                                        | Evidence                                                                                         |
+| - | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | 1 | **Pareto plan** — 1%/4%/20% tiers + remaining 20%; 15 coarse tasks (30–100 min); 62 fine tasks (≤12 min); mermaid execution graph; decisions D1 (advisory-before-blocking enforcement), D2 (keep t=1 baseline), D3 (keep complete-mirror); 5 anti-verschlimmbesserung rules | `docs/planning/2026-09-22_22-42_TC-MIRROR-DUP-GATE-HARDENING-PARETO-PLAN.md` (committed, pushed) |
-| 2 | **TODO_LIST harvest** — 13 items #283–#295, impact-sorted, ⫱ owner gates marked (#290, #295), ⚫ upstream-blocked marked (#292, #293); next-free-ID bumped 283→296 | `TODO_LIST.md` new harvest section |
-| 3 | **AGENTS.md gotcha** — never trust a piped/tee'd CLI capture whose summary line is missing | AGENTS.md CI & Tooling Gotchas |
-| 4 | **Emergency fix 1** — `TestDocsCountDrift` IsValid walk now skips `_sources` (62 real + 6 copies = 68 had failed CI's utils lane) | `49dee8e4`, verified: exactly 6 IsValid in the copies; test green `-count=1` |
-| 5 | **Emergency fix 2** — website `CountStats.countMatches` skips `_sources`; landing golden NOT falsified (kept the true 62; fixed the counter) | `5edbc051`, website module green; site build line `enums=62` |
-| 6 | **Green-on-tip ritual, 3 runs** — FAIL → FAIL → **VERDICT: PASS (exit 0)** witnessed at `5edbc051` (Build+Test all modules, lint 0 issues ×7, CSS, website 19 pages) | ci-repro output 22:51:08 CEST |
-| 7 | **Push** — `d13c1445..5edbc051` master→origin, fast-forward, no tags, origin verified equal | `git status -sb` clean/synced |
-| 8 | **Daemon-race recovery ×2** — both heuristic auto-commits amended to detailed messages (local-only, pre-push) | `3052eb51`, `5edbc051` |
+| 2 | **TODO_LIST harvest** — 13 items #283–#295, impact-sorted, ⫱ owner gates marked (#290, #295), ⚫ upstream-blocked marked (#292, #293); next-free-ID bumped 283→296                                                                                                          | `TODO_LIST.md` new harvest section                                                               |
+| 3 | **AGENTS.md gotcha** — never trust a piped/tee'd CLI capture whose summary line is missing                                                                                                                                                                                  | AGENTS.md CI & Tooling Gotchas                                                                   |
+| 4 | **Emergency fix 1** — `TestDocsCountDrift` IsValid walk now skips `_sources` (62 real + 6 copies = 68 had failed CI's utils lane)                                                                                                                                           | `49dee8e4`, verified: exactly 6 IsValid in the copies; test green `-count=1`                     |
+| 5 | **Emergency fix 2** — website `CountStats.countMatches` skips `_sources`; landing golden NOT falsified (kept the true 62; fixed the counter)                                                                                                                                | `5edbc051`, website module green; site build line `enums=62`                                     |
+| 6 | **Green-on-tip ritual, 3 runs** — FAIL → FAIL → **VERDICT: PASS (exit 0)** witnessed at `5edbc051` (Build+Test all modules, lint 0 issues ×7, CSS, website 19 pages)                                                                                                        | ci-repro output 22:51:08 CEST                                                                    |
+| 7 | **Push** — `d13c1445..5edbc051` master→origin, fast-forward, no tags, origin verified equal                                                                                                                                                                                 | `git status -sb` clean/synced                                                                    |
+| 8 | **Daemon-race recovery ×2** — both heuristic auto-commits amended to detailed messages (local-only, pre-push)                                                                                                                                                               | `3052eb51`, `5edbc051`                                                                           |
 
 ## b) PARTIALLY DONE
 
-| # | Work | Done | Missing |
-|---|------|------|---------|
-| 1 | Institutionalizing the emergency fixes | Both root-caused, tested, pushed | **CHANGELOG `[Unreleased]` not warmed** for either fix (release-convention violation) |
-| 2 | Plan-vs-reality fidelity | Plan committed as the source for next sessions | T1 divergence (2 off-plan fixes) not annotated in the plan doc |
-| 3 | Witnessed-green standard | Local ritual PASS at the exact pushed tip | GitHub Actions runs on `5edbc051` unobserved |
-| 4 | Amend protocol | Both amends landed safely | Pre-amend origin check wasn't performed (luck, not rigor) |
+| # | Work                                   | Done                                           | Missing                                                                               |
+| - | -------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 1 | Institutionalizing the emergency fixes | Both root-caused, tested, pushed               | **CHANGELOG `[Unreleased]` not warmed** for either fix (release-convention violation) |
+| 2 | Plan-vs-reality fidelity               | Plan committed as the source for next sessions | T1 divergence (2 off-plan fixes) not annotated in the plan doc                        |
+| 3 | Witnessed-green standard               | Local ritual PASS at the exact pushed tip      | GitHub Actions runs on `5edbc051` unobserved                                          |
+| 4 | Amend protocol                         | Both amends landed safely                      | Pre-amend origin check wasn't performed (luck, not rigor)                             |
 
 ## c) NOT STARTED
 
@@ -94,14 +94,14 @@ All 13 harvested backlog items (#283–#295 = plan T3–T15), by design — this
 19. **Ratify or override D1/D2/D3** (owner) — they shape T6/T15 and any future threshold policy.
 20. **Release cadence decision** (owner): the 22-component `tc add` rescue + counter fixes are user-facing; v1.19.3 soon vs. accumulate.
 
-*(20 items — the full 62-task fine breakdown is in the plan doc; items 14–15 are upstream-repo work.)*
+_(20 items — the full 62-task fine breakdown is in the plan doc; items 14–15 are upstream-repo work.)_
 
 ## g) QUESTIONS I CANNOT FIGURE OUT MYSELF
 
 1. **Ratify or override the three autonomous decisions?** D1: art-dupl enforcement goes advisory-in-ci-repro first, blocking CI only after 2 green runs. D2: canonical threshold stays t=1 with the committed baseline. D3: complete-mirror semantics for `tc add` (no allowlist). Each was chosen as the additive, non-reversing default — but they shape the next three sessions (T6/T15) and are cheap to override now, expensive later.
-2. **Release cadence:** the 22-component `tc add` rescue plus the two counter fixes are consumer-visible. Cut **v1.19.3** soon (after CHANGELOG warm-up + ideally T3 smoke proof), or hold in `[Unreleased]` until a bigger batch? (TODO #270 already tracks the release ritual; the *when* is yours.)
+2. **Release cadence:** the 22-component `tc add` rescue plus the two counter fixes are consumer-visible. Cut **v1.19.3** soon (after CHANGELOG warm-up + ideally T3 smoke proof), or hold in `[Unreleased]` until a bigger batch? (TODO #270 already tracks the release ritual; the _when_ is yours.)
 3. **Does "witnessed green" extend to GitHub Actions?** The house ritual names local ci-repro as the gate, but after a push the remote runs are observable (`gh run watch`). Should post-push CI observation become a required closing step in my workflow, or is the local PASS at the pushed tip sufficient?
 
 ---
 
-*Point-in-time snapshot. Section (f) is HARVEST fuel — top items already live in `TODO_LIST.md` #283–#295; items 1–2, 12–13, 18–20 are new and should be folded in on the next docs-health pass.*
+_Point-in-time snapshot. Section (f) is HARVEST fuel — top items already live in `TODO_LIST.md` #283–#295; items 1–2, 12–13, 18–20 are new and should be folded in on the next docs-health pass._

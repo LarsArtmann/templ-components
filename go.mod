@@ -18,7 +18,7 @@ require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/larsartmann/go-datastar/static v0.6.0 // indirect
-	github.com/larsartmann/go-error-family v0.10.1 // indirect
+	github.com/larsartmann/go-error-family v0.10.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 )
 
