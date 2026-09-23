@@ -393,6 +393,26 @@ grep-able table in your consumer project's `AGENTS.md`:
 This lets every AI session and developer quickly audit what's adopted, what's
 hand-rolled, and where the gaps are.
 
+## The website SSG's page-registration knobs (backlog #276)
+
+The site (`website/`, a Go SSG rendering through this very library) has three
+registration points that must stay in sync when adding pages:
+
+- **`topLevelPages`** (`website/cmd/site/main.go`) — the non-docs HTML pages
+  (index, sales, 404, …). New top-level pages need an entry here AND in the
+  nav/header templates.
+- **Sitemap lastmod sources** — sitemap `lastmod` comes from git history over
+  declared repo-relative paths; top-level pages take it from their primary
+  `.templ` source, docs pages from their markdown. A new page without a
+  lastmod source emits an undated sitemap entry (see the comment on
+  `writeSitemaps`).
+- **Search index** — `build.PlainText` extracts doc bodies into
+  `dist/search-index.json`; only markdown docs pages are indexed, so top-level
+  pages are found via nav, not search (deliberate).
+
+Visual changes to these pages are pinned by the site route tier
+(`TestSiteRouteGoldens`) — see `docs/visual-testing.md`.
+
 ---
 
 # Part 2: Authoring Playbook

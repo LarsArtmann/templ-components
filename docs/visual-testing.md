@@ -86,6 +86,27 @@ Use it when a push got flagged red on the Visual Regression job but your local
 `nix run .#visual` was green — the difference is usually stale demo CSS or an
 un-regenerated `*_templ.go`, both of which the core steps refresh first.
 
+## The site route tier
+
+`TestSiteRouteGoldens` + the site axe/viewport audits pin the WEBSITE's own
+pages (`/`, `/sales` — light/dark × desktop/mobile) on top of the demo-route
+tier. Two properties matter:
+
+- **Theme pinning**: the harness sets `localStorage.theme` and reloads before
+  every capture — headless Chromium defaults to `prefers-color-scheme: dark`,
+  so an unpinned "light" capture silently renders dark (the whole light-golden
+  set once failed at ~99% mismatch for exactly this reason).
+- **Star-badge determinism**: the `.#visual` flake app builds the dist with
+  the no-stars fallback badge (now build.sh's default, backlog #271) so a
+  live GitHub count can never flake a route golden between rebuilds.
+  Production flips this via `SITE_LIVE_STARS=1` in the CI Website job.
+
+Site captures also scroll through the full document first
+(`siteScrollRevealJS`) so IntersectionObserver `[data-animate]` reveals fire
+before the screenshot — under heavy machine load that JS pipeline starves and
+captures go blank below the fold; rerun with `-parallel 4` or when load < ~40
+rather than regenerating goldens.
+
 ## Manual demo screenshots (`nix run .#shots`)
 
 For human visual inspection BETWEEN releases (not a gate — goldens are owned

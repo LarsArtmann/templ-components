@@ -66,7 +66,11 @@ jobs:
         # together: @tailwindcss/cli declares `tailwindcss` as a peer.
         run: |
           npm install --no-save tailwindcss @tailwindcss/cli
-          PATH="$PWD/node_modules/.bin:$PATH" bash build.sh
+          # SITE_LIVE_STARS=1: the artifact from THIS build is what deploys
+          # (deploy-website downloads website-dist), so production keeps the
+          # live star count; every other consumer of build.sh now defaults to
+          # the deterministic fallback badge (backlog #271).
+          SITE_LIVE_STARS=1 PATH="$PWD/node_modules/.bin:$PATH" bash build.sh
 
       - name: HTML Validation (blocking)
         # Now BLOCKING (#241): the step ran with continue-on-error for its
