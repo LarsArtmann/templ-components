@@ -33,18 +33,29 @@ var prerenderBuildTime = regexp.MustCompile(`Build: \d{4}-\d{2}-\d{2}T\d{2}:\d{2
 // timestamp.
 var prerenderPolledUpdated = regexp.MustCompile(`Updated \d{2}:\d{2}:\d{2} UTC`)
 
+// prerenderTimeDatetime / prerenderTimeTitle match the wall-clock attribute
+// values inside <time> elements (RelativeTime's datetime is RFC3339 with
+// second precision, its title minute precision); both are derived from the
+// render moment, so they are normalized.
+var (
+	prerenderTimeDatetime = regexp.MustCompile(`(<time[^>]*\sdatetime=")[^"]*(")`)
+	prerenderTimeTitle    = regexp.MustCompile(`(<time[^>]*\stitle=")[^"]*(")`)
+)
+
 // normalizePrerender strips the BY-DESIGN differences between a prerendered
 // page and the live server's response: the live stylesheet link (prerender
 // pages embed fonts only, CSSPath=""), fresh random EnsureID tokens, the
-// per-render CSRF tokens, and second-precision wall-clock stamps that the
-// two renders rarely capture in the same second. Everything else must match
-// byte-for-byte — if it does not, the static snapshot lies about what the
-// live demo serves.
+// per-render CSRF tokens, and wall-clock stamps (text and <time>-element
+// attributes) that the two renders rarely capture in the same second.
+// Everything else must match byte-for-byte — if it does not, the static
+// snapshot lies about what the live demo serves.
 func normalizePrerender(html string) string {
 	html = strings.ReplaceAll(html, `<link rel="stylesheet" href="/css/app.css">`, "")
 	html = prerenderCSRFToken.ReplaceAllString(html, `${1}CSRF-NORMALIZED${2}`)
 	html = prerenderBuildTime.ReplaceAllString(html, "Build: TIME-NORMALIZED")
 	html = prerenderPolledUpdated.ReplaceAllString(html, "Updated TIME-NORMALIZED")
+	html = prerenderTimeDatetime.ReplaceAllString(html, `${1}TIME-NORMALIZED${2}`)
+	html = prerenderTimeTitle.ReplaceAllString(html, `${1}TIME-NORMALIZED${2}`)
 
 	return prerenderAutoID.ReplaceAllString(html, "tc-NORMALIZED")
 }
