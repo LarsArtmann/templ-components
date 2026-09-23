@@ -569,8 +569,9 @@ were purged before they could be pruned into `docs/reviews/`. The durable
 conclusions are recorded in this ADR and the 2026-09-22/23 status reports;
 the logs themselves are not recoverable and are declared accepted loss.
 
-Baseline counts at the 2026-09-22 evening re-recording (fork
-v0.7.0-74-ge7456139): 122 groups at t=1 — component-idiom/templ-DSL clones
+Baseline counts at the 2026-09-23 second-pass re-recording (nix art-dupl
+0.7.0-81ce00b; superseding the 2026-09-22 evening recording of 122 groups
+under fork v0.7.0-74-ge7456139): 121 groups at t=1 — component-idiom/templ-DSL clones
 (heading/span/children-slot one-liners, enum IsValid guards, meta/link head
 tags), demo-binary content, throwaway CLI-tool boilerplate
 (`visualtest/tools/*` defer/flag chains), and website page content. The
