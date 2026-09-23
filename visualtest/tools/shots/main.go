@@ -81,11 +81,11 @@ func main() {
 	flag.Parse()
 
 	if *selftest {
-		if browser.ExecPath() == "" {
-			log.Fatal("selftest FAIL: no Chromium (set CHROMEDP_CHROME_PATH)")
+		if err := browser.RequireChromium(); err != nil {
+			log.Fatalf("selftest FAIL: %v", err)
 		}
 
-		resp, err := httpGetSelftest(*base + "/health")
+		resp, err := browser.HTTPGetSelftest(*base + "/health")
 
 		if err != nil || resp.StatusCode != http.StatusOK {
 			log.Fatalf("selftest FAIL: demo %s: %v", *base, err)
@@ -93,7 +93,7 @@ func main() {
 
 		_ = resp.Body.Close()
 
-		fmt.Fprintln(os.Stdout, "shots selftest OK (allocator + demo health)")
+		browser.OK(os.Stdout, "shots", "allocator + demo health")
 
 		return
 	}
@@ -241,23 +241,4 @@ func rejectErrorPage(p page, execPath string, docStatus int64) error {
 		execPath,
 		docStatus,
 	)
-}
-
-// httpGetSelftest performs the selftest's loopback GET with context and a
-// bounded client — shared shape for all capture tools.
-// selftestTimeout bounds every selftest request.
-const selftestTimeout = 10 * time.Second
-
-func httpGetSelftest(url string) (*http.Response, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), selftestTimeout)
-	defer cancel()
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	client := &http.Client{Timeout: selftestTimeout}
-
-	return client.Do(req)
 }
