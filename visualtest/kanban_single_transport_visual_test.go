@@ -28,10 +28,12 @@ func kanbanSingleTransportPage(transport wire.Transport) templ.Component {
 	board := display.DefaultKanbanBoardProps()
 	board.BaseProps = utils.BaseProps{ID: "kb-visual"}
 	board.Columns = kanbanFlakyE2EColumns()
+
 	action := wire.Action{URL: "/api/kanban/single"}
 	if transport == wire.TransportDatastar {
 		action.Transport = wire.TransportDatastar
 	}
+
 	board.Wire = &action
 	board.CSRFToken = kanbanE2ECSRFToken
 
@@ -145,7 +147,11 @@ func TestKanbanSingleTransportBoards(t *testing.T) {
 			golden, exists := readGolden(t, tcase.name)
 			if !exists {
 				writeGolden(t, tcase.name, shot)
-				t.Errorf("visualtest[%s]: no golden yet — wrote %s (re-run without -update to verify)", tcase.name, goldenPath(tcase.name))
+				t.Errorf(
+					"visualtest[%s]: no golden yet — wrote %s (re-run without -update to verify)",
+					tcase.name,
+					goldenPath(tcase.name),
+				)
 
 				return
 			}

@@ -87,17 +87,22 @@ func main() {
 		if browser.ExecPath() == "" {
 			log.Fatal("selftest FAIL: no Chromium (set CHROMEDP_CHROME_PATH)")
 		}
+
 		addr, server, err := serveDist(*dist)
 		if err != nil {
 			log.Fatalf("selftest FAIL: dist listener: %v", err)
 		}
-		resp, err := http.Get("http://" + addr + "/sales.html") //nolint:gosec // loopback-only dev server
+
+		resp, err := http.Get("http://" + addr + "/sales.html")
 		if err != nil || resp.StatusCode != http.StatusOK {
 			log.Fatalf("selftest FAIL: dist fetch: %v", err)
 		}
+
 		resp.Body.Close()
 		_ = server.Close()
+
 		fmt.Println("siteshots selftest OK (allocator + dist listener)")
+
 		return
 	}
 

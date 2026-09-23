@@ -84,12 +84,15 @@ func main() {
 		if browser.ExecPath() == "" {
 			log.Fatal("selftest FAIL: no Chromium (set CHROMEDP_CHROME_PATH)")
 		}
-		resp, err := http.Get(*base + "/health") //nolint:gosec // operator-provided base URL
+
+		resp, err := http.Get(*base + "/health")
 		if err != nil || resp.StatusCode != http.StatusOK {
 			log.Fatalf("selftest FAIL: demo %s: %v", *base, err)
 		}
+
 		resp.Body.Close()
 		fmt.Println("shots selftest OK (allocator + demo health)")
+
 		return
 	}
 

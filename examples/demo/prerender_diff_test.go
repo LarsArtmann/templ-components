@@ -1,7 +1,6 @@
 package main
 
 import (
-	"time"
 	"io"
 	"net/http"
 	"net/http/cookiejar"
@@ -11,6 +10,7 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 )
 
 // prerenderAutoID matches the EnsureID-generated tokens (tc-<prefix>-<16
@@ -22,7 +22,6 @@ var prerenderAutoID = regexp.MustCompile(`tc-[a-z-]+-[0-9a-f]{16}`)
 // input; the live server mints a per-visitor token while the prerender
 // mints a build-scoped one, so the value is normalized away.
 var prerenderCSRFToken = regexp.MustCompile(`(name="csrf_token" value=")[^"]*(")`)
-
 
 // normalizePrerender strips the two BY-DESIGN differences between a
 // prerendered page and the live server's response: the live stylesheet link

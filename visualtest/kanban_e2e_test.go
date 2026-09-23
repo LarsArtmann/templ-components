@@ -1179,4 +1179,3 @@ func kanbanParseMoveWithCSRF(w http.ResponseWriter, r *http.Request) (display.Ka
 
 	return move, true
 }
-

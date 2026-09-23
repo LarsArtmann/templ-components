@@ -120,6 +120,7 @@ func runKanbanContractProbes(t *testing.T, base string, fx kanbanContractFixture
 	if jarErr != nil {
 		t.Fatalf("cookie jar: %v", jarErr)
 	}
+
 	probe := kanbanContractClient{t: t, base: base, fx: fx, client: &http.Client{Timeout: demoHTTPTimeout, Jar: jar}}
 
 	// The browser flow: the CSRF token arrives inside the rendered page.
