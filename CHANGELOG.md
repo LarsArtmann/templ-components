@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **All `.templ` sources canonicalized with `templ fmt`** (39 files:
+  library packages, demo, website). Formatting-only — regenerated
+  `*_templ.go` output is semantically identical and every HTML golden
+  passes untouched. This ends a formatter tug-of-war: BuildFlow's
+  templ-fmt repair re-expanded any changed templ file, desyncing the
+  `cmd/tc/_sources` mirror on every manual commit.
+
 - **`tc add` now ships every component: the scaffolder source mirror is
   bidirectional and self-healing.** `cmd/tc/_sources` (the byte-identical
   source copies `tc add` scaffolds from) is guarded as a complete mirror in
