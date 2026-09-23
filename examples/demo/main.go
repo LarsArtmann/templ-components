@@ -84,7 +84,14 @@ func main() {
 		return
 	}
 
-	server := newServer(newMux())
+	// Abuse posture (backlog #264): the demo is a public Cloud Run service
+	// whose POST endpoints mutate in-memory state. A per-IP token bucket in
+	// front of the whole mux keeps scripted hammering from starving the demo
+	// for everyone else — deliberately coarse (no auth, in-memory,
+	// per-instance) because the demo holds no real data. The burst (20)
+	// dwarfs any orchestrator probe cadence, so /health checks are safe
+	// without a special case.
+	server := newServer(newIPLimiter(demoRateLimit, demoRateBurst)(newMux()))
 
 	fmt.Printf("Demo running at http://localhost:%s\n", server.Addr)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {

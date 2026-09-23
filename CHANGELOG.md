@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`layout.HTMXNone` — ship a page with zero htmx bytes.** Set
+  `PageProps.HTMXSrc = layout.HTMXNone` on pages that use no htmx-powered
+  components (or wire everything through Datastar): Base then renders no
+  htmx script, no CDN preconnect/dns-prefetch hints, and no SRI. Components
+  degrade gracefully without the runtime — wired anchors/forms fall back to
+  plain navigation.
+
 ### Changed
 
 - **All `.templ` sources canonicalized with `templ fmt`** (39 files:
