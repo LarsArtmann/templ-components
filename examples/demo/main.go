@@ -91,7 +91,7 @@ func main() {
 	// per-instance) because the demo holds no real data. The burst (20)
 	// dwarfs any orchestrator probe cadence, so /health checks are safe
 	// without a special case.
-	server := newServer(withDemoSession(newIPLimiter(demoRateLimit, demoRateBurst)(newMux())))
+	server := newServer(newDemoHandler())
 
 	fmt.Printf("Demo running at http://localhost:%s\n", server.Addr)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -1012,4 +1012,11 @@ func componentOr500(w http.ResponseWriter, r *http.Request, component templ.Comp
 	if err := component.Render(r.Context(), w); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+// newDemoHandler builds the full middleware chain (session CSRF, rate
+// limit) around the mux. Exposed for tests so TestPrerenderMatchesLiveServer
+// exercises the exact stack the live server runs.
+func newDemoHandler() http.Handler {
+	return withDemoSession(newIPLimiter(demoRateLimit, demoRateBurst)(newMux()))
 }

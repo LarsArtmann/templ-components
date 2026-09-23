@@ -3,6 +3,7 @@ package visualtest
 import (
 	"io"
 	"net/http"
+	"net/http/cookiejar"
 	"strings"
 	"testing"
 )
@@ -112,7 +113,14 @@ func (c kanbanContractClient) post(path string, headers map[string]string, body 
 func runKanbanContractProbes(t *testing.T, base string, fx kanbanContractFixture) {
 	t.Helper()
 
-	probe := kanbanContractClient{t: t, base: base, fx: fx, client: &http.Client{Timeout: demoHTTPTimeout}}
+	// Cookie jar (backlog #229): the demo issues the session-CSRF cookie on
+	// first response and validates every move against it — a jarless client
+	// would 403 on the very first probe. The jar is what a real browser does.
+	jar, jarErr := cookiejar.New(nil)
+	if jarErr != nil {
+		t.Fatalf("cookie jar: %v", jarErr)
+	}
+	probe := kanbanContractClient{t: t, base: base, fx: fx, client: &http.Client{Timeout: demoHTTPTimeout, Jar: jar}}
 
 	// The browser flow: the CSRF token arrives inside the rendered page.
 	// Harvest scoped to the htmx board's own form — an index page renders

@@ -43,7 +43,7 @@ func TestPrerenderMatchesLiveServer(t *testing.T) {
 		t.Fatalf("prerender: %v", err)
 	}
 
-	srv := httptest.NewServer(newMux())
+	srv := httptest.NewServer(newDemoHandler())
 	t.Cleanup(srv.Close)
 
 	// Cookie-jar client: the live server issues the session-CSRF cookie on
