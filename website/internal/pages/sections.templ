@@ -62,6 +62,15 @@ templ sectionHeader(eyebrow, title, subtitle string) {
 	</div>
 }
 
+// iconTile renders the shared 44px accent icon tile used by the feature,
+// benefit, and use-case cards. extraClass carries per-site spacing and
+// hover behavior.
+templ iconTile(icon icons.Name, extraClass string) {
+	<div class={ "w-11 h-11 rounded-lg bg-accent-dim border border-border-accent flex items-center justify-center text-accent " + extraClass }>
+		@icons.Icon(icon, "h-5 w-5")
+	</div>
+}
+
 // FeatureGrid renders the six feature cards (ported from FeatureGrid.astro;
 // icons come from the library's icons module — the hand-copied Icon.astro
 // paths are gone).
@@ -71,9 +80,7 @@ templ FeatureGrid(stats build.Stats) {
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 			for _, feature := range Features {
 				<div class="group rounded-xl border bg-bg-card backdrop-blur-sm transition-all duration-200 p-8 border-border hover:border-border-accent">
-					<div class="w-11 h-11 rounded-lg bg-accent-dim border border-border-accent flex items-center justify-center text-accent mb-4 transition-colors duration-200 group-hover:bg-accent group-hover:text-white">
-						@icons.Icon(feature.Icon, "h-5 w-5")
-					</div>
+					@iconTile(feature.Icon, "mb-4 transition-colors duration-200 group-hover:bg-accent group-hover:text-white")
 					<h3 class="font-semibold text-text-primary mb-2 text-base">{ feature.Title }</h3>
 					<p class="text-sm text-text-muted leading-relaxed">{ feature.Desc }</p>
 				</div>
@@ -187,9 +194,7 @@ templ UseCasesSection() {
 		<div class="grid gap-3 sm:grid-cols-3">
 			for _, useCase := range UseCases {
 				<div class="p-6 rounded-xl border border-border bg-bg-card backdrop-blur-sm text-center hover:border-border-hover transition-all duration-200 hover:-translate-y-0.5">
-					<div class="mx-auto mb-3 text-accent w-11 h-11 rounded-lg bg-accent-dim border border-border-accent flex items-center justify-center">
-						@icons.Icon(useCase.Icon, "h-5 w-5")
-					</div>
+					@iconTile(useCase.Icon, "mx-auto mb-3")
 					<h3 class="font-semibold text-text-primary text-sm mb-1">{ useCase.Title }</h3>
 					<p class="text-xs text-text-muted leading-relaxed">{ useCase.Desc }</p>
 				</div>
