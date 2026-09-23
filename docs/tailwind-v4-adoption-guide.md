@@ -236,6 +236,26 @@ Override colors globally via `@theme`:
 One `@theme` block changes every `bg-blue-600` across every component — no Go code
 changes needed.
 
+### Override one shade pair (the "warm dark" pattern)
+
+The library's dark-mode convention is fixed pairs: light `bg-blue-600` /
+dark `bg-blue-500`, light `text-blue-600` / dark `text-blue-400`. To retune
+ONLY dark mode (e.g. a warmer, less electric dark variant) override BOTH
+sides of the pair, or the mode switch becomes visible on that component:
+
+```css
+@theme {
+  --color-blue-600: #2563eb; /* light: keep */
+  --color-blue-500: #7c9ef5; /* dark: warmer blue instead of default */
+}
+```
+
+Gotcha: Tailwind v4 resolves `dark:bg-blue-500` against the SAME
+`--color-blue-500` variable in both modes — there is no separate
+`--color-dark-blue-500`. Pair-awareness (which shades co-occur across the
+library's `-600`/`-500`/`-400` conventions) is what makes a per-mode override
+land correctly; override a shade used by both modes and BOTH modes change.
+
 ### Map to your CSS-variable design system
 
 If your project uses CSS custom properties (e.g., `var(--surface)`, `var(--text)`),
