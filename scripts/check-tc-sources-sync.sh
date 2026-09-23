@@ -54,6 +54,26 @@ unfixable=0
 
 note() { printf '%s\n' "$*" >&2; }
 
+# Packages whose library directory is absent. --fix must not treat their
+# embedded copies as removable orphans: a missing package directory means a
+# broken checkout (or an MIRRORED_PKGS list error), and auto-removing every
+# embedded copy of that package would be destructive rather than healing
+# (found by scripts/test-tc-sources-guard.sh 2026-09-23).
+missing_pkgs=""
+for pkg in "${MIRRORED_PKGS[@]}"; do
+	if [ ! -d "$pkg" ]; then
+		missing_pkgs="$missing_pkgs $pkg/"
+	fi
+done
+
+pkg_is_missing() {
+	case " $missing_pkgs " in
+	*" $1/"*) return 0 ;;
+	esac
+
+	return 1
+}
+
 # Direction 1: every embedded file has an identical library twin.
 while IFS= read -r -d '' embedded; do
 	rel="${embedded#"$SOURCES_DIR"/}"
@@ -63,6 +83,14 @@ while IFS= read -r -d '' embedded; do
 	starter/*) continue ;;
 	"datastar/$DATASTAR_DOC") continue ;;
 	esac
+
+	pkg="${rel%%/*}"
+	if pkg_is_missing "$pkg"; then
+		note "ORPHAN-SKIPPED: $embedded (package '$pkg' directory is missing — fix the checkout, not the mirror)"
+		problems=$((problems + 1))
+		unfixable=1
+		continue
+	fi
 
 	twin="$rel"
 	if [ ! -f "$twin" ]; then

@@ -190,18 +190,21 @@ var packageImports = map[string][]string{
 // Use 'tc add <component> --list-deps' to print them.
 var packageDeps = map[string][]string{
 	pkgDisplay: {
-		"bar_chart.go", "button_go.go", "collapsible_section.go",
+		"area_chart.go", "bar_chart.go", "button_go.go",
+		"chart_geometry.go", "collapsible_section.go",
 		"drawer_go.go", enumsGoFile, "external_link.go",
-		"heatmap.go", "modal_go.go", "shared.go", "sparkline.go",
+		"heading_tag.go", "heatmap.go", "kanban.go",
+		"line_chart.go", "modal_go.go", "pie_chart.go",
+		"shared.go", "sparkline.go",
 	},
 	pkgFeedback: {enumsGoFile, "styles.go"},
 	pkgForms: {
-		"aria.go", enumsGoFile, "ids.go",
+		"aria.go", "calendar_nav.go", enumsGoFile, "ids.go",
 		"input_classes.go", "radio.go",
 	},
 	pkgLayout: {
 		"appshell_types.go", "container_types.go",
-		"sri.go", "split_types.go", "stack_types.go",
+		"embed.go", "sri.go", "split_types.go", "stack_types.go",
 	},
 
 	pkgNav: {},
