@@ -93,11 +93,10 @@ func TestSiteSalesCopyButton(t *testing.T) {
 		// The label swap runs in writeText's .then — a microtask AFTER the
 		// spy records __tcCopied. A bare Text() read races that microtask
 		// and intermittently sees "Copy" (observed 2026-09-23 under load);
-		// poll until the swap lands instead of sleeping or re-running.
+		// poll a falsy-until-swapped expression instead of re-running.
 		pollText(
-			`(document.querySelector('[data-tc-copy-text]')||{textContent:''}).textContent`,
+			`(function(){var el=document.querySelector('[data-tc-copy-text]');return el&&el.textContent==='Copied!'?el.textContent:'';})()`,
 			&label,
-			chromedp.ByQuery,
 			chromedp.WithPollingTimeout(5*time.Second),
 		),
 	); err != nil {
