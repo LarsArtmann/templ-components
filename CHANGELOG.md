@@ -26,6 +26,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`TestPrerenderMatchesLiveServer` no longer flakes on wall-clock
+  stamps.** The prerender-vs-live comparison normalized CSRF tokens and
+  auto-generated IDs but not server-rendered time: the demo page's build
+  timestamp, the polled-region "Updated HH:MM:SS" stamp, and RelativeTime's
+  second-precision `datetime` / minute-precision `title` attributes all
+  differ whenever the two renders straddle a second (or minute) boundary —
+  routine under `-race` on a loaded machine, so the test-race lane failed
+  with "prerender drift on /". The normalizer now strips wall-clock-derived
+  values inside `<time>` elements and the demo's two second-precision text
+  stamps; structure and everything else still compare byte-for-byte.
+
 - **`tc add` no longer rejects 22 real components with "unknown
   component".** The embedded source mirror was incomplete from birth: the
   kanban board, the SVG charts (Line/Area/Pie/Bar + Sparkline + Heatmap
