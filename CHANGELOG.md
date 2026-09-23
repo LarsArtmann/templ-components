@@ -15,6 +15,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   templ-fmt repair re-expanded any changed templ file, desyncing the
   `cmd/tc/_sources` mirror on every manual commit.
 
+### Fixed
+
+- **`tc add` no longer rejects 22 real components with "unknown
+  component".** The embedded source mirror was incomplete from birth: the
+  kanban board, the SVG charts (Line/Area/Pie/Bar + Sparkline + Heatmap
+  companions), Eyebrow, Scrollback, FilterInput, DirtyGuard, the
+  auth-layout recipe, and nine `*_types.go` files had never been embedded,
+  so the scaffolder could not ship them. The bidirectional mirror embeds
+  every mirrorable file automatically (direction 2), and a completeness
+  test plus CI self-test keep it that way.
+
 - **`tc add` now ships every component: the scaffolder source mirror is
   bidirectional and self-healing.** `cmd/tc/_sources` (the byte-identical
   source copies `tc add` scaffolds from) is guarded as a complete mirror in

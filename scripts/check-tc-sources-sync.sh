@@ -31,7 +31,30 @@
 # Usage:
 #   scripts/check-tc-sources-sync.sh            # exit 1 on any gap
 #   scripts/check-tc-sources-sync.sh --fix      # mirror everything
+#   TC_SKIP_SYNC=1 git commit ...               # loud single-commit opt-out
 set -euo pipefail
+
+# Opt-out hatch (backlog #289a): set TC_SKIP_SYNC=1 to skip the mirror check
+# for a single commit. It is LOUD on purpose — a skipped guard must be
+# visible in the transcript, never a silent green.
+if [ "${TC_SKIP_SYNC:-}" = "1" ]; then
+	printf '%s\n' "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2
+	printf '%s\n' "!! TC_SKIP_SYNC=1 — cmd/tc/_sources mirror check SKIPPED !!" >&2
+	printf '%s\n' "!! The scaffolder may ship stale or missing components.  !!" >&2
+	printf '%s\n' "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2
+	exit 0
+fi
+
+guard_start_ns="$(date +%s%N 2>/dev/null || true)"
+
+# finish <code> — print the measured guard runtime (backlog #289b: a visible
+# cost number makes the "it's too slow" conversation factual) and exit.
+finish() {
+	if [ -n "$guard_start_ns" ] && end_ns="$(date +%s%N 2>/dev/null)"; then
+		note "tc-sources guard runtime: $(((end_ns - guard_start_ns) / 1000000))ms"
+	fi
+	exit "$1"
+}
 
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$REPO_ROOT"
@@ -168,7 +191,7 @@ if [ "$problems" -ne 0 ]; then
 		note "Run scripts/check-tc-sources-sync.sh --fix, review, and commit the result."
 	fi
 
-	exit 1
+	finish 1
 fi
 
 if [ "$synced" -gt 0 ]; then
@@ -177,4 +200,4 @@ else
 	note "tc scaffolder sources are a complete mirror of the library twins."
 fi
 
-exit 0
+finish 0

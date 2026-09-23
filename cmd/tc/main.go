@@ -308,17 +308,26 @@ func cmdInit(_ *registry, _ []string) {
 }
 
 func cmdList(r *registry, _ []string) {
+	count := 0
 	for _, pkg := range r.pkgs {
 		fmt.Fprintf(os.Stdout, "\n# %s\n", pkg)
 
+		pkgCount := 0
 		for name, p := range r.pkg {
 			if p != pkg {
 				continue
 			}
 
 			fmt.Fprintf(os.Stdout, "  %s\n", name)
+			pkgCount++
 		}
+		count += pkgCount
 	}
+
+	// Derived, not hand-typed: always matches the embedded mirror because it
+	// IS the mirror's size (backlog #294a — docs hand-typing this number is
+	// how "58 enums" class drift happened).
+	fmt.Fprintf(os.Stdout, "\n%d components addable with 'tc add <name>'\n", count)
 }
 
 func cmdAdd(r *registry, args []string) {
