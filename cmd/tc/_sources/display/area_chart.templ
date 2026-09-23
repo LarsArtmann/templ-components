@@ -1,11 +1,5 @@
 package display
 
-import (
-	"fmt"
-
-	"github.com/larsartmann/templ-components/utils"
-)
-
 // AreaChart renders a pure-SVG area chart with axes, gridlines, multi-series
 // filled areas, optional dots, and a legend. Zero JavaScript — all rendering
 // is server-side. Each series renders both a stroked line and a semi-transparent
@@ -19,23 +13,9 @@ import (
 //	})
 templ AreaChart(props AreaChartProps) {
 	{{
-		width := props.Width
-		if width == 0 {
-			width = areaChartDefaultWidth
-		}
-		height := props.Height
-		if height == 0 {
-			height = areaChartDefaultHeight
-		}
-		style := props.Style
-		if style == "" {
-			style = LineChartStyleLinear
-		}
-		emptyMsg := props.EmptyMessage
-		if emptyMsg == "" {
-			emptyMsg = areaChartDefaultEmpty
-		}
-		fillOpacity := areaChartFillOpacityStr(props.FillOpacity)
+		width, height, style, emptyMsg := resolveLineAreaChartInputs(
+			props.Width, props.Height, props.Style, props.EmptyMessage,
+		)
 
 		d := computeChartRenderData(
 			width, height, props.Padding,
@@ -47,30 +27,9 @@ templ AreaChart(props AreaChartProps) {
 			props.MaxTicks,
 		)
 	}}
-	<svg
-		viewBox={ fmt.Sprintf("0 0 %d %d", d.Width, d.Height) }
-		class={ utils.Class("w-full h-auto", d.Class) }
-		role="img"
-		if d.AriaLabel != "" {
-			aria-label={ d.AriaLabel }
-		} else {
-			aria-hidden="true"
-		}
-		if d.ID != "" {
-			id={ d.ID }
-		}
-		{ d.Attrs... }
-	>
-		if d.HasData {
-			@chartAxes(d)
-			for i, series := range props.Series {
-				if len(series.Values) >= 2 {
-					@chartSeriesGroup(d, series, i, style, chartSeriesRenderOpts{filled: true, fillOpacity: fillOpacity, showDots: props.ShowDots})
-				}
-			}
-			@chartLegend(d)
-		} else {
-			@chartEmptyStateMsg(d)
-		}
-	</svg>
+	@lineAreaChartSVG(d, props.Series, style, chartSeriesRenderOpts{
+		filled:      true,
+		fillOpacity: areaChartFillOpacityStr(props.FillOpacity),
+		showDots:    props.ShowDots,
+	})
 }

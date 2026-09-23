@@ -56,49 +56,35 @@ templ DefinitionGrid(props DefinitionGridProps) {
 	}}
 	if props.ContainerAware {
 		<div class="@container">
-			<div
-				if props.ID != "" {
-					id={ props.ID }
-				}
-				class={ utils.Class(gridBase, gridGapClass(GridGapDefault), props.Class) }
-				if props.AriaLabel != "" {
-					aria-label={ props.AriaLabel }
-				}
-				{ props.Attrs... }
-			>
-				for _, item := range props.Items {
-					@SimpleCard(SimpleCardProps{Padding: CardPaddingSM}) {
-						<dl class="space-y-1">
-							<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{ item.Term }</dt>
-							<dd class="text-sm font-semibold text-gray-900 dark:text-white m-0">
-								@definitionDetailContent(item)
-							</dd>
-						</dl>
-					}
-				}
-			</div>
+			@definitionGridInner(props, gridBase)
 		</div>
 	} else {
-		<div
-			if props.ID != "" {
-				id={ props.ID }
-			}
-			class={ utils.Class(gridBase, gridGapClass(GridGapDefault), props.Class) }
-			if props.AriaLabel != "" {
-				aria-label={ props.AriaLabel }
-			}
-			{ props.Attrs... }
-		>
-			for _, item := range props.Items {
-				@SimpleCard(SimpleCardProps{Padding: CardPaddingSM}) {
-					<dl class="space-y-1">
-						<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{ item.Term }</dt>
-						<dd class="text-sm font-semibold text-gray-900 dark:text-white m-0">
-							@definitionDetailContent(item)
-						</dd>
-					</dl>
-				}
-			}
-		</div>
+		@definitionGridInner(props, gridBase)
 	}
+}
+
+// definitionGridInner renders the grid div and its item cards; shared by the
+// ContainerAware and viewport-breakpoint branches of DefinitionGrid.
+templ definitionGridInner(props DefinitionGridProps, gridBase string) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class(gridBase, gridGapClass(GridGapDefault), props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		for _, item := range props.Items {
+			@SimpleCard(SimpleCardProps{Padding: CardPaddingSM}) {
+				<dl class="space-y-1">
+					<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{ item.Term }</dt>
+					<dd class="text-sm font-semibold text-gray-900 dark:text-white m-0">
+						@definitionDetailContent(item)
+					</dd>
+				</dl>
+			}
+		}
+	</div>
 }
