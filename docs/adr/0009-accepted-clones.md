@@ -377,6 +377,27 @@ The three call sites `@iconTile(x.Icon, "<extraClass>")` token-match as a
 pair above — call sites must exist at each card and differ in `extraClass`
 (spacing + hover classes). The extraction working as intended.
 
+### Accepted residue: card-grid skeleton + CTA button pair (`website/internal/pages/sections.templ`)
+
+Two groups surfaced by the same re-read (the iconTile extraction
+re-fragmented the file's clone boundaries):
+
+- **FeatureGrid ↔ UseCasesSection section skeleton** (78-90 vs 192-204):
+  both are `@sectionHeader` + grid + per-item iconTile card. Extraction
+  would need 7+ parameters (3 header strings, grid class, unified item
+  type, card class, tile class, title class, desc class) for a 9-line
+  skeleton, and the two grids are intentionally different designs
+  (spacious group-hover feature cards vs compact centered use-case cards).
+  **Why not lazy**: more parameters than duplicated lines.
+- **CTA primary/secondary button pair** (213-217 vs 217-221): the classic
+  hero CTA idiom — two `<a>` buttons side by side differing in href, style
+  variant, label, and icon. **Why not lazy**: idiomatic button pair, not
+  shared logic.
+
+Baseline re-recorded after this triage with the nix-installed art-dupl
+0.7.0-81ce00b (hash-verified compatible: it matched all 122 pre-existing
+baseline hashes before the re-record).
+
 ## Excluded: `cmd/tc/_sources/**` (embedded scaffolder copies)
 
 `cmd/tc/_sources/` contains byte-identical COPIES of the library's `.templ`

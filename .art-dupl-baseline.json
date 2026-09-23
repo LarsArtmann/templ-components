@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "threshold": 1,
-  "recordedAt": "2026-09-23T05:17:15.142155736Z",
+  "recordedAt": "2026-09-23T12:29:32.876025479Z",
   "entries": [
     {
       "hash": "02d58f70c9385ad6",
@@ -23,11 +23,20 @@
       "hash": "04f38cb0c1b9fe10",
       "files": [
         "display/empty_state.templ",
+        "website/internal/pages/sections.templ",
         "forms/validation.templ",
         "errorpage/notfound404.templ",
         "feedback/alert.templ"
       ],
-      "tokens": 4
+      "tokens": 5
+    },
+    {
+      "hash": "05b529a2a3756456",
+      "files": [
+        "website/internal/pages/sections.templ",
+        "website/internal/pages/sections.templ"
+      ],
+      "tokens": 2
     },
     {
       "hash": "05deb3ddefa85d16",
@@ -118,6 +127,15 @@
         "website/internal/pages/docs.templ"
       ],
       "tokens": 2
+    },
+    {
+      "hash": "1706829db5a9ddb4",
+      "files": [
+        "website/internal/pages/sections.templ",
+        "website/internal/pages/sections.templ",
+        "website/internal/pages/sales.templ"
+      ],
+      "tokens": 9
     },
     {
       "hash": "172d11aefb4e2d2b",
@@ -370,6 +388,14 @@
       "tokens": 12
     },
     {
+      "hash": "4e23849ba2d5c463",
+      "files": [
+        "website/internal/pages/sections.templ",
+        "website/internal/pages/sections.templ"
+      ],
+      "tokens": 2
+    },
+    {
       "hash": "5e3ac144e35a8126",
       "files": [
         "errorpage/erroralert.templ",
@@ -413,26 +439,10 @@
       "tokens": 3
     },
     {
-      "hash": "63a4aab08667a3e9",
-      "files": [
-        "website/internal/pages/sections.templ",
-        "website/internal/pages/sections.templ"
-      ],
-      "tokens": 2
-    },
-    {
       "hash": "63a9bc412991e4ed",
       "files": [
         "navigation/nav.templ",
         "navigation/nav.templ"
-      ],
-      "tokens": 2
-    },
-    {
-      "hash": "686343b10f895768",
-      "files": [
-        "website/internal/pages/sections.templ",
-        "website/internal/pages/sections.templ"
       ],
       "tokens": 2
     },
@@ -981,15 +991,6 @@
         "layout/base.templ"
       ],
       "tokens": 3
-    },
-    {
-      "hash": "e4688d61af4f6ad7",
-      "files": [
-        "website/internal/pages/sections.templ",
-        "website/internal/pages/sections.templ",
-        "website/internal/pages/sales.templ"
-      ],
-      "tokens": 9
     },
     {
       "hash": "e46f009668ea7d12",
