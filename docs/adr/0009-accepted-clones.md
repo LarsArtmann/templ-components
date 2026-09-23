@@ -427,6 +427,34 @@ input (`nix run .#dupl`) would make the pin hermetic but couples this repo's
 flake to the fork's go-1.27.1 toolchain requirement; revisit when the fork's
 detector stabilizes or upstream ships stable fingerprints (#292/#293).
 
+**ACCEPT MARKERS vs HASH BASELINE (evaluated 2026-09-23, backlog #314):
+hash baseline wins; `//art-dupl:accept` source directives are NOT adopted.**
+The fork supports per-site accept directives, and the baseline tooling even
+notes that it "includes all groups regardless of //art-dupl:accept
+directives". Directives were rejected because (a) they would sprinkle dedup
+policy through ~122 component sources — noise for every consumer reading
+vendored code, and fork-specific syntax at that; (b) the committed baseline
+already centralizes the accepted set next to its justification (this ADR);
+(c) directives churn on every edit of an accepted block, while baseline
+hashes only change when the clone actually changes shape. Baseline + ADR
+remains the single source of truth.
+
+**FILE-COUNT FORENSICS (closed 2026-09-23, backlog #310): the
+`_sources`-exclude divergence is NOT the whole 575→548 delta.** Today's
+`cmd/tc/_sources` holds 109 mirrorable files (100 `.templ` + 9 `*_types.go`
+— the 2026-09-22 rescue grew it), so a scan without the exclude would see
+~657 files, not 575. The paste-era 575 therefore ALSO reflected a different
+detector/file-filter generation, consistent with the tool-version pin above:
+that baseline's zero-hash-match failure was a generation skew, not a
+duplication regression. The morning generation is non-reproducible and its
+numbers are historical only.
+
+**GATE-FORENSICS /TMP LOGS (backlog #313): accepted loss (2026-09-23).** The
+raw scan/classification logs from the 09-22 gate repair lived in `/tmp` and
+were purged before they could be pruned into `docs/reviews/`. The durable
+conclusions are recorded in this ADR and the 2026-09-22/23 status reports;
+the logs themselves are not recoverable and are declared accepted loss.
+
 Baseline counts at the 2026-09-22 evening re-recording (fork
 v0.7.0-74-ge7456139): 122 groups at t=1 — component-idiom/templ-DSL clones
 (heading/span/children-slot one-liners, enum IsValid guards, meta/link head

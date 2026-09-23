@@ -21,6 +21,11 @@ import (
 
 // calendarNavQuery is the month-nav endpoint payload — decoded via
 // wire.DecodeForm (GET query), the same decoder consumers use.
+// TWIN: kept shape-compatible with `calendarNavQuery` in
+// examples/demo/main.go (the live demo endpoint this e2e drives). A shared
+// fixture would drag the demo package into visualtest's module graph; the
+// contract is pinned from both sides instead — if either copy changes shape,
+// the e2e fails with a decode mismatch.
 type calendarNavQuery struct {
 	Year  int `form:"year"`
 	Month int `form:"month"`
