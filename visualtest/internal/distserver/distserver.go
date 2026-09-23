@@ -5,10 +5,14 @@
 package distserver
 
 import (
+	"context"
+	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 // Handler returns an http.Handler serving dist with Firebase cleanUrls
@@ -30,4 +34,40 @@ func Handler(dist string) http.Handler {
 	})
 
 	return mux
+}
+
+// Selftest verifies that a dist directory is servable through this package's
+// handler: it binds a loopback listener, fetches the given page, and shuts
+// down. Both dist-based capture tools call it from their -selftest flag —
+// one home for the come-up check (backlog #305/#262).
+func Selftest(dist, page string) error {
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		return fmt.Errorf("listen: %w", err)
+	}
+
+	server := &http.Server{Handler: Handler(dist)} //nolint:gosec // loopback-only dev server
+	defer server.Close()
+
+	go func() { _ = server.Serve(listener) }()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+listener.Addr().String()+"/"+page, nil)
+	if err != nil {
+		return fmt.Errorf("build request: %w", err)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("fetch /%s: %w", page, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("fetch /%s: status %d", page, resp.StatusCode)
+	}
+
+	return nil
 }

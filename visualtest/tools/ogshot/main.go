@@ -88,20 +88,9 @@ func main() {
 			log.Fatalf("selftest FAIL: %v", err)
 		}
 
-		addr, cleanup, err := serveDist(*dist)
-		if err != nil {
-			log.Fatalf("selftest FAIL: dist listener: %v", err)
+		if err := distserver.Selftest(*dist, "sales.html"); err != nil {
+			log.Fatalf("selftest FAIL: %v", err)
 		}
-
-		resp, err := browser.HTTPGetSelftest("http://" + addr + "/" + ogPageName)
-
-		cleanup()
-
-		if err != nil || resp.StatusCode != http.StatusOK {
-			log.Fatalf("selftest FAIL: dist fetch: %v", err)
-		}
-
-		_ = resp.Body.Close()
 
 		browser.OK(os.Stdout, "ogshot", "allocator + dist listener")
 
