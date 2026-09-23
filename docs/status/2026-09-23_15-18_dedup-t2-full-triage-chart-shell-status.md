@@ -8,12 +8,12 @@
 
 ## Session Timeline (evidence)
 
-| Commit | Content |
-|---|---|
+| Commit                             | Content                                                                                                           |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | `ca3d84bf`, `d57e5f32`, `7eeac8bf` | Pass 1: `iconTile` extraction, base_templ.go drift fix, sales golden refresh, ADR notes, baseline re-record (122) |
-| `47f27df2`, `000d7708` | Pass 2: heroMetric ADR prose gap closed |
-| `331ebcc9`, `adae4425`, `9577ba24` | Pass 3: chart shell + DefinitionGrid extractions, ADR second-pass section, baseline re-record (121) |
-| uncommitted | `AGENTS.md` baseline-count update (daemon will sweep) |
+| `47f27df2`, `000d7708`             | Pass 2: heroMetric ADR prose gap closed                                                                           |
+| `331ebcc9`, `adae4425`, `9577ba24` | Pass 3: chart shell + DefinitionGrid extractions, ADR second-pass section, baseline re-record (121)               |
+| uncommitted                        | `AGENTS.md` baseline-count update (daemon will sweep)                                                             |
 
 ---
 
@@ -33,7 +33,7 @@
 
 ## b) PARTIALLY DONE
 
-1. **ADR-0009 ↔ baseline coverage reconciliation** — heroMetric was a baselined-but-undocumented group found *by chance* via the user's t=3 paste. The other ~120 baseline groups were never cross-checked for ADR prose. What remains: audit every baseline group for an ADR mention (at least file-level). Effort: M. Blocker: needs a decision on prose granularity (see question 1).
+1. **ADR-0009 ↔ baseline coverage reconciliation** — heroMetric was a baselined-but-undocumented group found _by chance_ via the user's t=3 paste. The other ~120 baseline groups were never cross-checked for ADR prose. What remains: audit every baseline group for an ADR mention (at least file-level). Effort: M. Blocker: needs a decision on prose granularity (see question 1).
 2. **Visual verification of iconTile change** — landing/sales HTML changed by exactly one space between block elements (pixel-neutral by construction), but the browser never witnessed it. What remains: `nix run .#visual -- -parallel 4` site-route captures. Effort: S. Blocker: known load-flakiness on this shared box (AGENTS.md 2026-09-23 entry); visual suite was deliberately skipped.
 3. **Full 7-module test loop** — pass 3 touched display (root) + website; root suite covers display, and no sub-module imports display, so coverage is technically complete. The AGENTS.md-mandated per-module loop was not re-run end-of-session. Effort: S. Not blocking (no push pending).
 
@@ -61,28 +61,28 @@
 
 ## f) Next tasks (session-grounded, ranked by impact)
 
-| # | Task | Impact | Effort | Category |
-|---|---|---|---|---|
-| 1 | Audit all 121 baseline groups for ADR-0009 prose coverage; document gaps (heroMetric class) | High | M | Quality |
-| 2 | Add AGENTS.md gotcha: sub-template calls insert whitespace text nodes → golden flips | High | S | Documentation |
-| 3 | Run `nix run .#visual -- -parallel 4` to witness landing/sales after iconTile | Medium | S | Quality |
-| 4 | Run `scripts/ci-repro.sh --lint --website` before next push (M03 ritual) | High | S | Quality |
-| 5 | Add baseline↔ADR file-coverage guard script (e1) | Medium | M | Tooling |
-| 6 | Re-read t=1-only accepted groups with fresh eyes (evening-pass precedent) | Medium | L | Cleanup |
-| 7 | Chart-family constants audit: rename `lineChart*` constants used by AreaChart to neutral `chart*` | Low | S | Cleanup |
-| 8 | BarChart/PieChart/Heatmap resolve-pattern cross-check at t=1 | Medium | M | Cleanup |
-| 9 | Document plain-scan vs `check` semantics divergence in ADR-0009 baseline section | Medium | S | Documentation |
-| 10 | Upstream: art-dupl embeds binary version in baseline file + warns on mismatch | High | L | Tooling |
-| 11 | Upstream BuildFlow: fix heuristic daemon commit messages (T13, 5+ sessions documented) | High | L | Tooling |
-| 12 | Upstream BuildFlow: stop re-appending `*_templ.go` to .gitignore in pre-commit | Medium | M | Tooling |
-| 13 | Revisit ogshot↔siteshots flag-wiring extraction IF a third dist-serving tool appears (trigger-gated, ADR-22 stands) | Low | S | Cleanup |
-| 14 | heroMetric → data-driven slice IF a 5th metric is ever added (trigger-gated) | Low | S | Cleanup |
-| 15 | bar_chart orientation pair: extract shared bar sub-template IF a third variant appears | Low | S | Cleanup |
-| 16 | Evaluate a generic zero-fold helper (`orDefault`) against the ADR twin-pair rationale before any third resolve-block lands | Low | S | Quality |
-| 17 | HARVEST this report's section (f) into TODO_LIST.md/ROADMAP.md (docs-health) | High | M | Documentation |
-| 18 | Verify the advisory CI lane logs the art-dupl binary version beside its verdict (ADR requirement) | Medium | S | Quality |
-| 19 | Migrate remaining ~48 raw `chromedp.Poll` sites to `pollBool`/`pollTrue`/`pollText` (TODO_LIST #240, seen while reading visualtest) | Medium | L | Cleanup |
-| 20 | Consider `--min-lines 3` discussion for the t=1 gate noise floor (ADR already verdicts NO — re-confirmed this pass; no action unless noise grows) | Low | S | Quality |
+| #  | Task                                                                                                                                              | Impact | Effort | Category      |
+| -- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | ------------- |
+| 1  | Audit all 121 baseline groups for ADR-0009 prose coverage; document gaps (heroMetric class)                                                       | High   | M      | Quality       |
+| 2  | Add AGENTS.md gotcha: sub-template calls insert whitespace text nodes → golden flips                                                              | High   | S      | Documentation |
+| 3  | Run `nix run .#visual -- -parallel 4` to witness landing/sales after iconTile                                                                     | Medium | S      | Quality       |
+| 4  | Run `scripts/ci-repro.sh --lint --website` before next push (M03 ritual)                                                                          | High   | S      | Quality       |
+| 5  | Add baseline↔ADR file-coverage guard script (e1)                                                                                                  | Medium | M      | Tooling       |
+| 6  | Re-read t=1-only accepted groups with fresh eyes (evening-pass precedent)                                                                         | Medium | L      | Cleanup       |
+| 7  | Chart-family constants audit: rename `lineChart*` constants used by AreaChart to neutral `chart*`                                                 | Low    | S      | Cleanup       |
+| 8  | BarChart/PieChart/Heatmap resolve-pattern cross-check at t=1                                                                                      | Medium | M      | Cleanup       |
+| 9  | Document plain-scan vs `check` semantics divergence in ADR-0009 baseline section                                                                  | Medium | S      | Documentation |
+| 10 | Upstream: art-dupl embeds binary version in baseline file + warns on mismatch                                                                     | High   | L      | Tooling       |
+| 11 | Upstream BuildFlow: fix heuristic daemon commit messages (T13, 5+ sessions documented)                                                            | High   | L      | Tooling       |
+| 12 | Upstream BuildFlow: stop re-appending `*_templ.go` to .gitignore in pre-commit                                                                    | Medium | M      | Tooling       |
+| 13 | Revisit ogshot↔siteshots flag-wiring extraction IF a third dist-serving tool appears (trigger-gated, ADR-22 stands)                               | Low    | S      | Cleanup       |
+| 14 | heroMetric → data-driven slice IF a 5th metric is ever added (trigger-gated)                                                                      | Low    | S      | Cleanup       |
+| 15 | bar_chart orientation pair: extract shared bar sub-template IF a third variant appears                                                            | Low    | S      | Cleanup       |
+| 16 | Evaluate a generic zero-fold helper (`orDefault`) against the ADR twin-pair rationale before any third resolve-block lands                        | Low    | S      | Quality       |
+| 17 | HARVEST this report's section (f) into TODO_LIST.md/ROADMAP.md (docs-health)                                                                      | High   | M      | Documentation |
+| 18 | Verify the advisory CI lane logs the art-dupl binary version beside its verdict (ADR requirement)                                                 | Medium | S      | Quality       |
+| 19 | Migrate remaining ~48 raw `chromedp.Poll` sites to `pollBool`/`pollTrue`/`pollText` (TODO_LIST #240, seen while reading visualtest)               | Medium | L      | Cleanup       |
+| 20 | Consider `--min-lines 3` discussion for the t=1 gate noise floor (ADR already verdicts NO — re-confirmed this pass; no action unless noise grows) | Low    | S      | Quality       |
 
 (Items 13–16 are trigger-gated watches, not open work; 21–50 deliberately left empty rather than padded with unrelated backlog — this report covers only what this session touched and noticed.)
 
