@@ -80,7 +80,7 @@ func DefaultAreaChartProps() AreaChartProps {
 		Style:        LineChartStyleLinear,
 		FillOpacity:  areaChartDefaultFill,
 		ValueFormat:  FormatTickValue,
-		EmptyMessage: areaChartDefaultEmpty,
+		EmptyMessage: chartDefaultEmptyMsg,
 	}
 }
 

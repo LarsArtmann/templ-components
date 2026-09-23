@@ -1,6 +1,10 @@
 package display
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // chartAxes renders the Y-axis ticks, optional gridlines, axis lines, and
 // X-axis labels. Shared between LineChart and AreaChart.
@@ -166,4 +170,37 @@ templ chartSeriesGroup(d ChartRenderData, series LineChartSeries, i int, style L
 			}
 		}
 	</g>
+}
+
+// lineAreaChartSVG renders the shared SVG shell for LineChart and AreaChart:
+// viewBox, a11y attributes, axes, the per-series groups, legend, and the
+// empty-state message. The caller supplies the series render options (filled
+// vs stroked-only) so both chart types keep identical chrome.
+templ lineAreaChartSVG(d ChartRenderData, series []LineChartSeries, style LineChartStyle, opts chartSeriesRenderOpts) {
+	<svg
+		viewBox={ fmt.Sprintf("0 0 %d %d", d.Width, d.Height) }
+		class={ utils.Class("w-full h-auto", d.Class) }
+		role="img"
+		if d.AriaLabel != "" {
+			aria-label={ d.AriaLabel }
+		} else {
+			aria-hidden="true"
+		}
+		if d.ID != "" {
+			id={ d.ID }
+		}
+		{ d.Attrs... }
+	>
+		if d.HasData {
+			@chartAxes(d)
+			for i, s := range series {
+				if len(s.Values) >= 2 {
+					@chartSeriesGroup(d, s, i, style, opts)
+				}
+			}
+			@chartLegend(d)
+		} else {
+			@chartEmptyStateMsg(d)
+		}
+	</svg>
 }
