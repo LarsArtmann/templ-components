@@ -310,16 +310,8 @@ func kanbanE2EServer(t *testing.T) *httptest.Server {
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			w.Header().Set("Cache-Control", "no-store")
 
-			move, err := display.ParseKanbanMove(r)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-
-				return
-			}
-
-			if r.FormValue(kanbanE2ECSRFField) != kanbanE2ECSRFToken {
-				http.Error(w, "invalid CSRF token", http.StatusForbidden)
-
+			move, ok := kanbanParseMoveWithCSRF(w, r)
+			if !ok {
 				return
 			}
 
@@ -345,16 +337,8 @@ func kanbanE2EServer(t *testing.T) *httptest.Server {
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			w.Header().Set("Cache-Control", "no-store")
 
-			move, err := display.ParseKanbanMove(r)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-
-				return
-			}
-
-			if r.FormValue(kanbanE2ECSRFField) != kanbanE2ECSRFToken {
-				http.Error(w, "invalid CSRF token", http.StatusForbidden)
-
+			move, ok := kanbanParseMoveWithCSRF(w, r)
+			if !ok {
 				return
 			}
 
@@ -1174,3 +1158,25 @@ func TestKanbanE2EFailureRevertsBothTransports(t *testing.T) {
 		}
 	}
 }
+
+// kanbanParseMoveWithCSRF is the shared prelude of every kanban test move
+// endpoint: parse the move form and enforce the test CSRF token. On failure
+// it writes the error response and returns ok=false (backlog #262: one home
+// for the prelude the e2e and pending-visual servers both need).
+func kanbanParseMoveWithCSRF(w http.ResponseWriter, r *http.Request) (display.KanbanMove, bool) {
+	move, err := display.ParseKanbanMove(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+
+		return display.KanbanMove{}, false
+	}
+
+	if r.FormValue(kanbanE2ECSRFField) != kanbanE2ECSRFToken {
+		http.Error(w, "invalid CSRF token", http.StatusForbidden)
+
+		return display.KanbanMove{}, false
+	}
+
+	return move, true
+}
+

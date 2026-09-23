@@ -41,16 +41,8 @@ func kanbanPendingVisualServer(t *testing.T) *httptest.Server {
 	mux.HandleFunc("POST /api/kanban/visual-state", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-		move, err := display.ParseKanbanMove(r)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-
-			return
-		}
-
-		if r.FormValue(kanbanE2ECSRFField) != kanbanE2ECSRFToken {
-			http.Error(w, "invalid CSRF token", http.StatusForbidden)
-
+		move, ok := kanbanParseMoveWithCSRF(w, r)
+		if !ok {
 			return
 		}
 

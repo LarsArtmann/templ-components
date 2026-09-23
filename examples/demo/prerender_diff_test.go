@@ -1,6 +1,7 @@
 package main
 
 import (
+	"time"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -57,20 +58,30 @@ func TestPrerenderMatchesLiveServer(t *testing.T) {
 				t.Fatalf("read prerendered %s: %v", route.file, err)
 			}
 
-			resp, err := http.Get(srv.URL + route.path) //nolint:noctx // test-local server, bounded response
-			if err != nil {
-				t.Fatalf("fetch %s: %v", route.path, err)
-			}
+			// Retry-tolerant (backlog #250): the live fetch can transiently
+			// answer non-200 or truncate under machine load; the invariant
+			// under test is PRERENDER DRIFT, not transport reliability.
+			var (
+				live []byte
+				code int
+			)
+			for attempt := range 3 {
+				resp, err := http.Get(srv.URL + route.path) //nolint:noctx // test-local server, bounded response
+				if err != nil {
+					t.Fatalf("fetch %s: %v", route.path, err)
+				}
 
-			defer resp.Body.Close()
+				live, err = io.ReadAll(resp.Body)
+				code = resp.StatusCode
+				resp.Body.Close()
 
-			if resp.StatusCode != http.StatusOK {
-				t.Fatalf("live %s answered %d", route.path, resp.StatusCode)
-			}
-
-			live, err := io.ReadAll(resp.Body)
-			if err != nil {
-				t.Fatalf("read live %s: %v", route.path, err)
+				if err == nil && code == http.StatusOK {
+					break
+				}
+				if attempt == 2 {
+					t.Fatalf("live %s answered %d after retries", route.path, code)
+				}
+				time.Sleep(100 * time.Millisecond)
 			}
 
 			want := normalizePrerender(string(pre))
