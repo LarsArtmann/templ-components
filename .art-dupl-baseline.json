@@ -1,21 +1,13 @@
 {
   "version": "1.0",
   "threshold": 1,
-  "recordedAt": "2026-09-23T12:29:32.876025479Z",
+  "recordedAt": "2026-09-23T13:11:26.333042422Z",
   "entries": [
     {
       "hash": "02d58f70c9385ad6",
       "files": [
         "website/internal/pages/base.templ",
         "layout/base.templ"
-      ],
-      "tokens": 2
-    },
-    {
-      "hash": "0359259bc102eec1",
-      "files": [
-        "display/definition_grid.templ",
-        "display/definition_grid.templ"
       ],
       "tokens": 2
     },
@@ -304,10 +296,9 @@
       "hash": "3931a627e434d2cb",
       "files": [
         "display/definition_list.templ",
-        "display/definition_grid.templ",
         "display/definition_grid.templ"
       ],
-      "tokens": 6
+      "tokens": 4
     },
     {
       "hash": "39e97b87a2417788",
@@ -638,6 +629,14 @@
       "tokens": 4
     },
     {
+      "hash": "87b653e0e0f78b48",
+      "files": [
+        "display/line_chart.templ",
+        "display/area_chart.templ"
+      ],
+      "tokens": 4
+    },
+    {
       "hash": "8bc3cdc982ad5413",
       "files": [
         "website/internal/pages/sections.templ",
@@ -811,14 +810,6 @@
         "layout/theme.templ"
       ],
       "tokens": 2
-    },
-    {
-      "hash": "b6302aaecc7beb49",
-      "files": [
-        "display/line_chart.templ",
-        "display/area_chart.templ"
-      ],
-      "tokens": 4
     },
     {
       "hash": "b65e431b15ae0e24",

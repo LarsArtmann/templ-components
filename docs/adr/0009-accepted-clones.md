@@ -378,7 +378,6 @@ pair above — call sites must exist at each card and differ in `extraClass`
 (spacing + hover classes). The extraction working as intended.
 
 ### Accepted residue: the `heroMetric` strip (`website/internal/pages/hero.templ:98-104`)
-
 The hero renders four `@heroMetric(value, label)` calls separated by a
 divider `<div class="w-px h-10 bg-border shrink-0"></div>`; the scanner's
 sliding window reports the metric+divider pair twice (self-overlapping
@@ -406,6 +405,60 @@ re-fragmented the file's clone boundaries):
 Baseline re-recorded after this triage with the nix-installed art-dupl
 0.7.0-81ce00b (hash-verified compatible: it matched all 122 pre-existing
 baseline hashes before the re-record).
+
+## 2026-09-23 Second Pass — Chart Shell + DefinitionGrid Extractions
+
+A full t=2 re-read (35 actionable groups, complete HTML report) found two
+more harmful clones and extracted them:
+
+- `display.lineAreaChartSVG` + `resolveLineAreaChartInputs` +
+  `chartDefault{Width,Height,EmptyMsg}` — LineChart and AreaChart duplicated
+  their entire component body (~30 lines): per-chart copies of the SAME
+  default constants (600/300/"No data" in both), the same zero-fold
+  resolution block, and the same SVG shell (viewBox, a11y attrs, axes,
+  series loop, legend, empty state). The defaults, the fold, and the shell
+  now live in exactly one place each (`chart_geometry.go` /
+  `chart_shared.templ`); each component is a resolve call + one shell call
+  with its own `chartSeriesRenderOpts`. Goldens byte-identical.
+- `display.definitionGridInner` — DefinitionGrid duplicated its whole grid
+  div + item-card loop (~35 lines) between the ContainerAware and viewport
+  branches; only the `@container` wrapper differed. The branches are now
+  one shared sub-template call each. Goldens byte-identical.
+
+### Accepted residue: the LineChart/AreaChart call-shape pair
+
+`display/area_chart.templ` and `display/line_chart.templ` still token-match
+on their remaining bodies: the `resolveLineAreaChartInputs` call, the
+15-argument `computeChartRenderData` call, and the `lineAreaChartSVG` call.
+**Why not lazy**: same class as the `headingTag` call-shape pair — the
+argument lists must be spelled out per component because the props types
+differ (AreaChartProps carries FillOpacity). Collapsing them would need a
+16-parameter function or 15 interface getters, more code than the clone.
+The logic is single-sourced; only the wiring repeats.
+
+### Accepted after inspection (t=2 pass)
+
+- **`<h1>` page-title classes** (page_header ↔ errorpage): matched on a
+  shared prefix only; the literals differ (`mt-5`, `break-after-avoid`) and
+  live in different modules. Per-context heading styles, not a constant.
+- **`layout.Base` ↔ `layout.Minimal` head preamble** (base.templ:222-235 vs
+  350-360): the shared lines are the universal HTML5 preamble (DOCTYPE,
+  charset, viewport, title); Base and Minimal are intentionally different
+  document shells. Not duplicated logic.
+- **DefinitionList ↔ DefinitionGrid `<dt>` classes**: table-cell style
+  (`whitespace-nowrap`) vs card style (`text-xs uppercase tracking-wide`).
+  Different visual treatments by design; the grid side is now single-
+  sourced inside `definitionGridInner` anyway.
+- **`return true / default: return false` switch tails** (20 occurrences):
+  the mandated per-enum `IsValid()` pattern (60+ enums) — each switch body
+  is enum-specific; only the 2-statement tail is shared. Unextractable
+  idiom, not a maintenance burden.
+- **Bar chart vertical vs horizontal bar** (bar_chart.templ:81 vs 121):
+  same bar concept on different axes (height vs width, different track
+  classes); ~5 lines each, structural if-branch per orientation.
+- Remaining t=2 groups are 4-token sliding-window pairs (meta-tag guards,
+  `{ children... }` fallbacks, icon/text guard openings) — below the
+  extraction floor, absorbed by the baseline.
 
 ## Excluded: `cmd/tc/_sources/**` (embedded scaffolder copies)
 
