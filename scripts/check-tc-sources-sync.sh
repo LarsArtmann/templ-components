@@ -46,6 +46,11 @@ DATASTAR_DOC="DATASTAR-BUMP-PROTOCOL.md"
 MIRRORED_PKGS=(datastar display errorpage feedback forms htmx layout navigation recipes)
 
 added=0 refreshed=0 removed=0 problems=0
+# Set when a problem exists that --fix must NOT paper over: a missing package
+# directory means a broken checkout (or a list error), and auto-removing every
+# embedded copy of that package would be destructive rather than healing
+# (found by scripts/test-tc-sources-guard.sh 2026-09-23).
+unfixable=0
 
 note() { printf '%s\n' "$*" >&2; }
 
@@ -93,6 +98,7 @@ for pkg in "${MIRRORED_PKGS[@]}"; do
 	if [ ! -d "$pkg" ]; then
 		note "MISSING PACKAGE: $pkg is listed in MIRRORED_PKGS but has no directory"
 		problems=$((problems + 1))
+		unfixable=1
 		continue
 	fi
 
@@ -116,6 +122,11 @@ done
 synced=$((added + refreshed + removed))
 
 if [ "$problems" -ne 0 ]; then
+	if [ "$unfixable" -eq 1 ]; then
+		note "BLOCKED: unfixable problems present (see above); no fixes were applied for them."
+		exit 1
+	fi
+
 	if [ "$FIX" = "--fix" ] && [ "$synced" -gt 0 ]; then
 		printf 'synced %d file(s) (added %d, refreshed %d, removed %d)\n' "$synced" "$added" "$refreshed" "$removed"
 		exit 0
