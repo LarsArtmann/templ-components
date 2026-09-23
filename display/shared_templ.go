@@ -258,8 +258,8 @@ func dialogHeader(title, titleID string, kind OverlayKind) templ.Component {
 // headingTag renders a title as the requested heading element (h1-h6,
 // defaulting to h3). Templ has no dynamic element names, so this switch is
 // the single home for heading-level selection — shared by Card, EmptyState,
-// and CollapsibleSection.
-func headingTag(tag string, class string, text string) templ.Component {
+// and CollapsibleSection. Unknown or empty tags fall through to the default.
+func headingTag(tag HeadingTagType, class string, text string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -281,7 +281,7 @@ func headingTag(tag string, class string, text string) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		switch tag {
-		case "h1":
+		case HeadingTagH1:
 			var templ_7745c5c3_Var13 = []any{class}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var13...)
 			if templ_7745c5c3_Err != nil {
@@ -317,7 +317,7 @@ func headingTag(tag string, class string, text string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case "h2":
+		case HeadingTagH2:
 			var templ_7745c5c3_Var16 = []any{class}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var16...)
 			if templ_7745c5c3_Err != nil {
@@ -353,7 +353,7 @@ func headingTag(tag string, class string, text string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case "h4":
+		case HeadingTagH4:
 			var templ_7745c5c3_Var19 = []any{class}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var19...)
 			if templ_7745c5c3_Err != nil {
@@ -389,7 +389,7 @@ func headingTag(tag string, class string, text string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case "h5":
+		case HeadingTagH5:
 			var templ_7745c5c3_Var22 = []any{class}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var22...)
 			if templ_7745c5c3_Err != nil {
@@ -425,7 +425,7 @@ func headingTag(tag string, class string, text string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		case "h6":
+		case HeadingTagH6:
 			var templ_7745c5c3_Var25 = []any{class}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var25...)
 			if templ_7745c5c3_Err != nil {

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -20,6 +21,7 @@ func TestDocsCountDrift(t *testing.T) {
 	actualVisualGoldens := countVisualGoldens(t, root)
 	actualIcons := countIconNames(t, root)
 	actualHTMLGoldens := countHTMLGoldens(t, root)
+	actualBaselineEntries := countBaselineEntries(t, root)
 
 	features := readDoc(t, "FEATURES.md")
 	assertCount(t, features, `(\d+)\s+templ components`, "FEATURES.md templ components", actualComponents)
@@ -32,6 +34,16 @@ func TestDocsCountDrift(t *testing.T) {
 	agents := readDoc(t, "AGENTS.md")
 	assertCount(t, agents, `(\d+)\s+generated files across all packages`, "AGENTS.md generated files", actualGenerated)
 	assertCount(t, agents, `(\d+)\s+golden files across all packages`, "AGENTS.md HTML golden files", actualHTMLGoldens)
+	assertCount(t, agents, `(\d+)\s+accepted groups`, "AGENTS.md art-dupl baseline groups", actualBaselineEntries)
+
+	// The clone-gate baseline count is single-sourced from the committed
+	// .art-dupl-baseline.json; every doc that cites it is asserted against
+	// the parsed file (added 2026-09-23 after the 39-vs-122 binary-pin
+	// re-recording drifted the AGENTS.md prose).
+	adr := readDoc(t, "docs", "adr", "0009-accepted-clones.md")
+	assertCount(t, adr, `(\d+)\s+groups at t=1`, "ADR-0009 baseline groups", actualBaselineEntries)
+	changelog := readDoc(t, "CHANGELOG.md")
+	assertCount(t, changelog, `(\d+)\s+groups at t=1`, "CHANGELOG baseline groups", actualBaselineEntries)
 
 	skill := readDoc(t, "skill", "SKILL.md")
 	componentsRe := `(\d+)\s+components across \d+ packages`
@@ -299,6 +311,27 @@ func readDoc(t *testing.T, parts ...string) []byte {
 	}
 
 	return data
+}
+
+// countBaselineEntries parses the committed art-dupl baseline and returns its
+// entry count — the single source the docs' "N accepted groups" claims are
+// pinned to.
+func countBaselineEntries(t *testing.T, root string) int {
+	t.Helper()
+
+	data, err := os.ReadFile(filepath.Join(root, ".art-dupl-baseline.json"))
+	if err != nil {
+		t.Fatalf("read .art-dupl-baseline.json: %v", err)
+	}
+
+	var baseline struct {
+		Entries []json.RawMessage `json:"entries"`
+	}
+	if err := json.Unmarshal(data, &baseline); err != nil {
+		t.Fatalf("parse .art-dupl-baseline.json: %v", err)
+	}
+
+	return len(baseline.Entries)
 }
 
 func countVisualGoldens(t *testing.T, root string) int {

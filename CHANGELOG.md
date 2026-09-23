@@ -21,12 +21,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   companions — so `tc add` rejected them with "unknown component" until now.
 
 - **`art-dupl check` is the canonical duplication gate.** The accepted clone
-  set (39 groups at t=1: component-idiom/templ-DSL clones, demo content,
+  set (122 groups at t=1 under the pinned fork binary: component-idiom/templ-DSL clones, demo content,
   CLI-tool boilerplate) is recorded in a committed hash baseline
   (`.art-dupl-baseline.json`), so scans report only NEW duplication instead
-  of re-listing every intentional clone. Two genuine 5-site scaffolding
-  duplicates were extracted rather than baselined (`newKanbanReadyTab` in the
-  kanban e2e tests, `fetchDemoHTML` in the wire demo tests). See
+  of re-listing every intentional clone. The baseline is binary-pinned: it is
+  recorded and checked with the art-dupl fork build (122 groups at t=1 after
+  the 2026-09-22 re-recording; hashes are only comparable within one binary,
+  so `scripts/ci-repro.sh` logs the binary version beside its advisory
+  verdict). Seven genuine duplicates were extracted rather than baselined
+  (`newKanbanReadyTab`, `fetchDemoHTML`, the sparkline coordinate projection,
+  the capture-tools `browser`/`distserver` packages, `headingTag`,
+  `chartSeriesGroup`, `calendarMonthNavLink`). See
   `docs/adr/0009-accepted-clones.md`.
 
 ## [1.19.2] — 2026-09-22

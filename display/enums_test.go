@@ -84,6 +84,10 @@ func TestIsValidEnums(t *testing.T) {
 		// ButtonHTMLType
 		{"ButtonHTMLType Button", func() bool { return ButtonHTMLTypeIsValid(ButtonHTMLButton) }, true},
 		{"ButtonHTMLType invalid", func() bool { return ButtonHTMLTypeIsValid(ButtonHTMLType("bogus")) }, false},
+		// HeadingTagType
+		{"HeadingTagType H1", func() bool { return HeadingTagTypeIsValid(HeadingTagH1) }, true},
+		{"HeadingTagType H6", func() bool { return HeadingTagTypeIsValid(HeadingTagH6) }, true},
+		{"HeadingTagType invalid", func() bool { return HeadingTagTypeIsValid(HeadingTagType("bogus")) }, false},
 		// ModalSize
 		{"ModalSize MD", func() bool { return ModalSizeIsValid(ModalSizeMD) }, true},
 		{"ModalSize 2XL", func() bool { return ModalSizeIsValid(ModalSize2XL) }, true},

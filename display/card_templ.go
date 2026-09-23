@@ -57,10 +57,10 @@ type CardProps struct {
 	Body    templ.Component
 	Padding CardPadding
 	// TitleTag overrides the heading element for the card title.
-	// Defaults to "h3" when empty. Set to "h2" when the card is the
-	// first heading level after a page <h1> to maintain correct heading
-	// order for screen-reader navigation.
-	TitleTag string
+	// Defaults to h3 (HeadingTagH3) when empty. Set to HeadingTagH2 when the
+	// card is the first heading level after a page <h1> to maintain correct
+	// heading order for screen-reader navigation.
+	TitleTag HeadingTagType
 	// TitleClass, when set, overrides the default <h3> title classes. Consumer
 	// classes are merged LAST so they win via tailwind-merge.
 	TitleClass string

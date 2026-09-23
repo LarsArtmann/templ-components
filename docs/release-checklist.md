@@ -21,6 +21,14 @@ understand _why_, so a refactor never quietly removes a guard.
 - [ ] **`[Unreleased]` in CHANGELOG.md is warm.** The script refuses to cut with
       an empty section. Entries land with their feature/fix commits, never at
       release time.
+      **Exemption rule (2026-09-23):** internal-only changes — drift guards,
+      CI lanes, test tooling, docs, and pure refactors with zero
+      consumer-observable behavior change — do NOT require an entry. Anything
+      a consumer can observe (components, props, rendered markup, behavior,
+      dependency changes, fixes) MUST get one in the same commit. The warm
+      requirement still stands: if `[Unreleased]` holds only exempt changes,
+      the next genuinely user-visible change supplies the entry that unlocks
+      the cut.
 - [ ] **The daemon is not mid-commit.** The auto-commit daemon has raced a cut
       (v1.10.0): it committed the in-flight version bumps and pushed tags before
       the script finished. `git log --oneline -3` — if the daemon just committed,

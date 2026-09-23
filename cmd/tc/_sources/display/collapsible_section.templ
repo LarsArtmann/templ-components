@@ -21,13 +21,7 @@ import (
 //	   <p>Collapsible content here.</p>
 //	}
 templ CollapsibleSection(props CollapsibleSectionProps) {
-	{{
-		p := resolveCollapsibleDefaults(props)
-		tag := p.TitleTag
-		if !isValidHeadingTag(tag) {
-			tag = "h3"
-		}
-	}}
+	{{ p := resolveCollapsibleDefaults(props) }}
 	<details
 		class={ utils.Class("group rounded-lg", p.Class) }
 		if p.StorageKey != "" { data-collapsible={ p.StorageKey } }
@@ -36,7 +30,7 @@ templ CollapsibleSection(props CollapsibleSectionProps) {
 		{ p.Attrs... }
 	>
 		<summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-1 py-1 text-gray-900 outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-brand)] hover:bg-gray-50 dark:text-white dark:hover:bg-gray-800 [&::-webkit-details-marker]:hidden">
-			@headingTag(tag, "text-lg font-semibold", p.Title)
+			@headingTag(p.TitleTag, "text-lg font-semibold", p.Title)
 			@icons.Icon(p.Icon, "h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500 transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-200 group-open:rotate-180")
 		</summary>
 		<div class="mt-4">

@@ -75,6 +75,13 @@ func calendarMonthNavHref(explicit string, base *wire.Action, year int, month ti
 // calendarMonthNavSwap self-replaces the calendar and settles synchronously.
 const calendarMonthNavSwap = "outerHTML settle:0s"
 
+// Accessible names for the month-navigation arrows (named constants per the
+// goconst discipline — the literals appear in calendar.templ and its tests).
+const (
+	calendarPrevMonthLabel = "Previous month"
+	calendarNextMonthLabel = "Next month"
+)
+
 // calendarPrevMonth returns the year/month before the given one
 // (December wraps to the previous year).
 func calendarPrevMonth(year int, month time.Month) (int, time.Month) {

@@ -121,13 +121,13 @@ templ Calendar(props CalendarProps) {
 	>
 		<div class="flex items-center justify-between mb-4">
 			if prevHref != "" {
-				@calendarMonthNavLink(prevHref, calendarMonthNavAction(props.MonthNav, prevYear, prevMonth), "Previous month", icons.ChevronLeft)
+				@calendarMonthNavLink(prevHref, calendarMonthNavAction(props.MonthNav, prevYear, prevMonth), calendarPrevMonthLabel, icons.ChevronLeft)
 			} else {
 				<span class="w-7"></span>
 			}
 			<h3 class="text-sm font-semibold text-gray-900 dark:text-white">{ monthName } { fmt.Sprintf("%d", props.Year) }</h3>
 			if nextHref != "" {
-				@calendarMonthNavLink(nextHref, calendarMonthNavAction(props.MonthNav, nextYear, nextMonth), "Next month", icons.ChevronRight)
+				@calendarMonthNavLink(nextHref, calendarMonthNavAction(props.MonthNav, nextYear, nextMonth), calendarNextMonthLabel, icons.ChevronRight)
 			} else {
 				<span class="w-7"></span>
 			}

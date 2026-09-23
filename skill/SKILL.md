@@ -575,6 +575,20 @@ Inside `component.templ`:
    breakage for consumers using generic wrappers. Forgetting this step is the #1 way a new
    component slips in without the BaseProps embed.
 
+## Shared internal helpers — reuse these (2026-09-23 dedup pass)
+
+These private helpers exist because 2+ call sites needed the same logic. When a
+new component touches the same concern, REUSE the helper instead of re-inlining
+— re-inlined copies are exactly what the art-dupl gate then flags:
+
+| Helper                                                           | Where                                            | Reuse for                                                                                                                                                             |
+| ---------------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `headingTag`                                                     | `display/shared.templ`                           | Rendering a title as h1–h6 (typed `HeadingTagType`, unknown falls back to h3). Shared by Card, EmptyState, CollapsibleSection.                                        |
+| `chartSeriesGroup`                                               | `display/chart_shared.templ`                     | One series' `<g>` (polyline/area/dots) for any new SVG chart type — compose with `chart_geometry.go` primitives, never reimplement the math.                          |
+| `sparklinePointCoords` / `sparklineGeometry`                     | `display/sparkline.go`                           | Value→pixel projection and min/max bounds for any inline SVG chart (BarChart and Sparkline share it).                                                                 |
+| `calendarMonthNavLink` + `calendarMonthNavAction`/`…URL`/`…Href` | `forms/calendar.templ` / `forms/calendar_nav.go` | Month-navigation arrows: href/no-JS fallback + Wire action cloning with `{year}`/`{month}` substitution.                                                              |
+| `browser` / `distserver` packages                                | `visualtest/tools/internal/`                     | Capture tools (`ogshot`, `shots`, `siteshots`): pinned-Chromium context + static-dist HTTP server. New capture tools must use them, not re-roll chromedp boilerplate. |
+
 ## Per-component testing checklist
 
 Every new component MUST have all of these. "Assertion tests only" is not acceptable —

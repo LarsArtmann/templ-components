@@ -30,6 +30,13 @@ plan that adds components, fields, or demo endpoints answers these per item:
    finalizing any demo endpoint change. The unspecified-Method `hx-get` bug survived
    regenerate+build+unit tests; only the live smoke caught it.
 
+5. **Run the clone gate before finalizing dedup-adjacent plans.**
+   `art-dupl check -c .art-dupl.json -t 1 --type-aware` (pinned fork binary, version
+   logged — see ADR-0009) belongs in the plan's verification step whenever the work
+   adds components, extracts helpers, or touches `cmd/tc/_sources`. New clones are
+   classified at plan time (extract or accept+rebaseline per ADR-0009), never left
+   for CI to discover. Added 2026-09-23 — the last open remainder of #291.
+
 Plan skeleton convention: phases ordered by Pareto tiers (1% → 4% → 20% → remaining),
 medium tasks 30–100 min, micro-tasks ≤12 min, owner gates marked `⫱` and planned to the
 gate edge. `docs/planning/TEMPLATE.md` carries this checklist structurally — copy it for

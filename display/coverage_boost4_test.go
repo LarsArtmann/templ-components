@@ -17,10 +17,10 @@ func TestCardVariantCoverage(t *testing.T) {
 	t.Run("title tags h1 through h6", func(t *testing.T) {
 		t.Parallel()
 
-		for _, tag := range []string{"h1", "h2", "h4", "h5", "h6"} {
+		for _, tag := range []HeadingTagType{"h1", "h2", "h4", "h5", "h6"} {
 			output := utils.Render(t, Card(CardProps{Title: "Tagged", TitleTag: tag}))
-			utils.AssertContains(t, output, "<"+tag)
-			utils.AssertContains(t, output, "</"+tag+">")
+			utils.AssertContains(t, output, "<"+string(tag))
+			utils.AssertContains(t, output, "</"+string(tag)+">")
 			utils.AssertContains(t, output, "Tagged")
 		}
 	})
@@ -388,12 +388,12 @@ func TestCollapsibleSectionVariantCoverage(t *testing.T) {
 	t.Run("title tags", func(t *testing.T) {
 		t.Parallel()
 
-		for _, tag := range []string{"h1", "h2", "h4", "h5", "h6"} {
+		for _, tag := range []HeadingTagType{"h1", "h2", "h4", "h5", "h6"} {
 			output := utils.Render(t, CollapsibleSection(CollapsibleSectionProps{
 				Title:    "CS",
 				TitleTag: tag,
 			}))
-			utils.AssertContains(t, output, "<"+tag)
+			utils.AssertContains(t, output, "<"+string(tag))
 			utils.AssertContains(t, output, "CS")
 		}
 	})
@@ -417,12 +417,12 @@ func TestEmptyStateVariantCoverage(t *testing.T) {
 	t.Run("title tag variants", func(t *testing.T) {
 		t.Parallel()
 
-		for _, tag := range []string{"h1", "h2", "h4", "h5", "h6"} {
+		for _, tag := range []HeadingTagType{"h1", "h2", "h4", "h5", "h6"} {
 			output := utils.Render(t, EmptyState(EmptyStateProps{
 				Title:    "Nothing",
 				TitleTag: tag,
 			}))
-			utils.AssertContains(t, output, "<"+tag)
+			utils.AssertContains(t, output, "<"+string(tag))
 		}
 	})
 

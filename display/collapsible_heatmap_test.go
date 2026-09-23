@@ -10,7 +10,7 @@ func TestCollapsibleSectionDefaults(t *testing.T) {
 	t.Parallel()
 
 	p := resolveCollapsibleDefaults(CollapsibleSectionProps{})
-	assert.Equal(t, "h3", p.TitleTag)
+	assert.Equal(t, HeadingTagH3, p.TitleTag)
 	assert.False(t, p.Collapsed, "default should be expanded")
 }
 
@@ -21,19 +21,19 @@ func TestCollapsibleSectionRespectsOverrides(t *testing.T) {
 		TitleTag:  "h2",
 		Collapsed: true,
 	})
-	assert.Equal(t, "h2", p.TitleTag)
+	assert.Equal(t, HeadingTagH2, p.TitleTag)
 	assert.True(t, p.Collapsed)
 }
 
-func TestIsValidHeadingTag(t *testing.T) {
+func TestHeadingTagTypeIsValid(t *testing.T) {
 	t.Parallel()
 
-	for _, tag := range []string{"h1", "h2", "h3", "h4", "h5", "h6"} {
-		assert.True(t, isValidHeadingTag(tag), "%s should be valid", tag)
+	for _, tag := range []HeadingTagType{"h1", "h2", "h3", "h4", "h5", "h6"} {
+		assert.True(t, HeadingTagTypeIsValid(tag), "%s should be valid", tag)
 	}
 
-	for _, tag := range []string{"", "h0", "h7", "div", "span"} {
-		assert.False(t, isValidHeadingTag(tag), "%q should be invalid", tag)
+	for _, tag := range []HeadingTagType{"", "h0", "h7", "div", "span"} {
+		assert.False(t, HeadingTagTypeIsValid(tag), "%q should be invalid", tag)
 	}
 }
 

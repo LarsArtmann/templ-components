@@ -192,7 +192,7 @@ func Calendar(props CalendarProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if prevHref != "" {
-			templ_7745c5c3_Err = calendarMonthNavLink(prevHref, calendarMonthNavAction(props.MonthNav, prevYear, prevMonth), "Previous month", icons.ChevronLeft).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = calendarMonthNavLink(prevHref, calendarMonthNavAction(props.MonthNav, prevYear, prevMonth), calendarPrevMonthLabel, icons.ChevronLeft).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -233,7 +233,7 @@ func Calendar(props CalendarProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if nextHref != "" {
-			templ_7745c5c3_Err = calendarMonthNavLink(nextHref, calendarMonthNavAction(props.MonthNav, nextYear, nextMonth), "Next month", icons.ChevronRight).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = calendarMonthNavLink(nextHref, calendarMonthNavAction(props.MonthNav, nextYear, nextMonth), calendarNextMonthLabel, icons.ChevronRight).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

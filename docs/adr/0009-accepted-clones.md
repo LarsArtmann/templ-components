@@ -291,6 +291,28 @@ is the opening `<script nonce=...>` tag.
 fundamental inline-script CSP pattern. Scripts cannot share JS state across
 files; the CSP nonce pattern is universal.
 
+## Accepted twin pairs (added 2026-09-23, TODO #300)
+
+Two clone shapes surfaced by the 2026-09-23 re-read were classified as
+intentional twins (same structural shape, different domains — extraction
+would couple unrelated packages):
+
+- **datastar `SSEErrorHandlingConfig.normalize()` ↔ htmx `normalizeSwapStyle`**
+  (`datastar/sse_error_handling.templ` vs `htmx/helpers.templ`). Both are
+  "fold unknown/zero input to a safe default" helpers, but one applies config
+  defaults and the other validates a typed enum against a allowlist. A shared
+  helper would need generics + a lookup-table abstraction to save ~6 lines
+  and would couple the two transport modules (they share NO code today by
+  design — ADR-0030 keeps Datastar opt-in with zero transitive deps).
+- **display `ListNote` (`listNoteMessage`/`listNoteShell`) ↔ navigation
+  `EndOfList`** (`display/list_note_templ.go` vs
+  `navigation/end_of_list_templ.go`). Both render a small status notice at
+  the end of a list with a default message + consumer override. Extraction
+  into a shared package is blocked by the module DAG (display and navigation
+  are siblings; a new leaf would be over-modularization per ADR-0040), and
+  the two differ in variant surface (ListNote has info/warn/error tones,
+  EndOfList is a single neutral variant).
+
 ## 2026-09-22 Evening Pass — Five Further Extractions
 
 A full re-read of the t=1/2/3 reports (complete summary lines present) found
@@ -383,6 +405,28 @@ upstream ships stable fingerprints (#293), the baseline is a living artifact
 tied to its recording binary, and the advisory CI lane must log the binary
 version beside its verdict.
 
+**ADVISORY INVOCATION VERDICT (2026-09-23, TODO #294).** The gate runs with
+`-t 1` (report every duplicated pair, however small) and art-dupl's DEFAULT
+min-lines — deliberately NOT a raised `--min-lines`. Raising min-lines would
+silence 2–3-line clones, which are exactly the shape that hid the five
+evening-pass extractions (heading/span one-liners, FieldError call pairs);
+the noise those lines add is absorbed by the committed baseline instead of
+by threshold tuning. `--type-aware` stays on: token-only matching
+re-classified structural clones as noise during the 09-22 forensics. The
+baseline absorbs verbosity; thresholds stay sensitive. Re-read 2026-09-23:
+the gate is green at `-t 1`, `-t 2`, AND `-t 3` against the committed
+baseline (no undocumented clones at any threshold post-extraction).
+
+**BINARY SUPPLY (decided 2026-09-23): documented-PATH resolution, flake pin
+deliberately deferred.** The advisory lane in `scripts/ci-repro.sh` resolves
+its binary as `$ART_DUPL_BIN` → `/tmp/art-dupl-fork` → `command -v
+art-dupl`, echoes `art-dupl --version` beside its verdict, and SKIPS (never
+fails) when none is found. A `/tmp` binary is volatile by design — the lane
+degrades to a visible skip, which is acceptable for an advisory gate. A flake
+input (`nix run .#dupl`) would make the pin hermetic but couples this repo's
+flake to the fork's go-1.27.1 toolchain requirement; revisit when the fork's
+detector stabilizes or upstream ships stable fingerprints (#292/#293).
+
 Baseline counts at the 2026-09-22 evening re-recording (fork
 v0.7.0-74-ge7456139): 122 groups at t=1 — component-idiom/templ-DSL clones
 (heading/span/children-slot one-liners, enum IsValid guards, meta/link head
@@ -419,10 +463,14 @@ blanket-accepting or blanket-extracting.
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
   — it fails ONLY on clones not in the accepted baseline (currently 122
   groups under the fork v0.7.0-74 detector; see the tool-version pin above)
-- Historical full-scan counts: the pre-baseline detector generation reported
-  `-t 8` ~6 groups, `-t 7` ~10, `-t 5` ~14, `-t 1` ~39; the current
+- Historical full-scan counts (DETECTOR-GENERATION-SPECIFIC — numbers are
+  only comparable within one detector generation and are kept as historical
+  narrative, never as a target): the pre-baseline detector generation
+  reported `-t 8` ~6 groups, `-t 7` ~10, `-t 5` ~14, `-t 1` ~39; the current
   generation reports ~850 raw / ~122 actionable at `-t 1` — the jump is a
-  detector change, not a duplication regression
+  detector change, not a duplication regression. Line numbers cited in the
+  entries above are likewise historical (pre-extraction) and intentionally
+  not maintained; entries are located by symbol/file, not by line.
 - New components should use existing extractions (`errorHeader`, `overlayShell`,
   `skeletonContainer`, `DismissButton`, `definitionDetailContent`,
   `chartMaxWithOverride`, `sparklineGeometry`, `sparklinePointCoords`,

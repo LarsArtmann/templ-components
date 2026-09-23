@@ -13,8 +13,8 @@ type CollapsibleSectionProps struct {
 	// Title is the section heading text.
 	Title string
 
-	// TitleTag is the heading element (h1–h6). Default: "h3".
-	TitleTag string
+	// TitleTag is the heading element (h1–h6). Default: HeadingTagH3.
+	TitleTag HeadingTagType
 
 	// Collapsed controls whether the section starts collapsed on initial
 	// render. Default: false (section is expanded).
@@ -42,7 +42,7 @@ type CollapsibleSectionProps struct {
 // DefaultCollapsibleSectionProps returns sensible defaults.
 func DefaultCollapsibleSectionProps() CollapsibleSectionProps {
 	return CollapsibleSectionProps{ //nolint:exhaustruct_v5 // intentionally minimal
-		TitleTag:  "h3",
+		TitleTag:  HeadingTagH3,
 		Collapsed: false,
 		Icon:      icons.ChevronDown,
 	}
@@ -51,7 +51,7 @@ func DefaultCollapsibleSectionProps() CollapsibleSectionProps {
 // resolveCollapsibleDefaults merges user props with defaults.
 func resolveCollapsibleDefaults(p CollapsibleSectionProps) CollapsibleSectionProps {
 	if p.TitleTag == "" {
-		p.TitleTag = "h3"
+		p.TitleTag = HeadingTagH3
 	}
 
 	if p.Icon == "" {
@@ -59,14 +59,4 @@ func resolveCollapsibleDefaults(p CollapsibleSectionProps) CollapsibleSectionPro
 	}
 
 	return p
-}
-
-// isValidHeadingTag reports whether tag is h1–h6.
-func isValidHeadingTag(tag string) bool {
-	switch tag {
-	case "h1", "h2", "h3", "h4", "h5", "h6":
-		return true
-	default:
-		return false
-	}
 }

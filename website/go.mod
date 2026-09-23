@@ -2,10 +2,7 @@ module github.com/larsartmann/templ-components/website
 
 go 1.26.0
 
-ignore (
-	dist
-	node_modules
-)
+ignore dist
 
 require (
 	github.com/a-h/templ v0.3.1020

@@ -18,9 +18,9 @@ type EmptyStateProps struct {
 	utils.BaseProps
 	Title string
 	// TitleTag overrides the heading element for the title.
-	// Defaults to "h3" when empty. Set to "h2" when the empty state
-	// is the first heading level after a page <h1>.
-	TitleTag    string
+	// Defaults to h3 (HeadingTagH3) when empty. Set to HeadingTagH2 when the
+	// empty state is the first heading level after a page <h1>.
+	TitleTag    HeadingTagType
 	Description string
 	Icon        icons.Name
 	ActionText  string
