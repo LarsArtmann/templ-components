@@ -2,8 +2,8 @@ package display
 
 import (
 	"github.com/larsartmann/templ-components/icons"
-	"github.com/larsartmann/templ-components/utils/svg"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/svg"
 )
 
 // DropdownItemKind determines how a dropdown item is rendered
@@ -45,9 +45,9 @@ const (
 )
 
 // DropdownProps configures a dropdown action menu
- type DropdownProps struct {
+type DropdownProps struct {
 	utils.BaseProps
-	Label    string
+	Label string
 	// Trigger, when set, replaces the default styled button CONTENT: the
 	// component renders inside a functionally-wired <button> (popovertarget,
 	// aria-haspopup, data-dropdown-trigger) with NO default visual classes,

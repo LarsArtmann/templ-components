@@ -18,7 +18,6 @@ import (
 // settings); overlay variant for recipes that center themselves in the
 // viewport (login, auth) — overlaying keeps the recipe's own min-h-dvh
 // centering exact instead of stacking a second 100dvh block above the fold.
-
 templ recipeUtilityBarLinks() {
 	<a href="/" class="-m-1.5 inline-flex items-center gap-1.5 p-1.5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
 		@icons.Icon(icons.ArrowLeft, "w-4 h-4")
@@ -41,7 +40,6 @@ templ recipeUtilityBarOverlay() {
 
 // Dashboard recipe: the full admin shell — sidebar brand nav, sticky header
 // with search, four stat cards, and a 2x2 chart/table/activity grid.
-
 templ recipesDashboardPage(props layout.PageProps) {
 	@layout.Base(props) {
 		@recipeUtilityBarFlow()
@@ -253,7 +251,6 @@ templ activityItem(name, initials, action string, status display.AvatarStatus, a
 }
 
 // Settings recipe: section nav aside plus real, submittable form sections.
-
 templ recipesSettingsPage(props layout.PageProps) {
 	@recipesSettingsPageState(props, "")
 }
@@ -384,7 +381,6 @@ templ settingsNotificationsSection() {
 // Login recipe: centered sign-in card with a working POST loop — submit
 // empty or short credentials to see server-side validation, or valid ones
 // for the success state.
-
 templ recipesLoginPage(props layout.PageProps) {
 	@recipesLoginPageState(props, recipeLoginState{})
 }
@@ -450,7 +446,6 @@ templ oauthButtonsRow() {
 
 // Auth layout recipe: split-screen branding panel plus a working signup
 // card — same POST loop as the login demo.
-
 templ recipesAuthPage(props layout.PageProps) {
 	@recipesAuthPageState(props, recipeSignupState{})
 }
@@ -523,12 +518,12 @@ templ signupFormBody(st recipeSignupState) {
 				Error:       st.ErrEmail,
 			})
 			@forms.Input(forms.InputProps{
-				Name:        "password",
-				Type:        forms.InputPassword,
-				Label:       "Password",
-				Required:    true,
-				HelpText:    "At least 8 characters.",
-				Error:       st.ErrPassword,
+				Name:     "password",
+				Type:     forms.InputPassword,
+				Label:    "Password",
+				Required: true,
+				HelpText: "At least 8 characters.",
+				Error:    st.ErrPassword,
 			})
 			@forms.Checkbox(forms.CheckboxProps{
 				Name:     "terms",

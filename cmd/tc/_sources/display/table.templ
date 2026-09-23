@@ -267,11 +267,11 @@ templ Table(props TableProps) {
 				</thead>
 			}
 			<tbody
-			if props.BodyID != "" {
-				id={ props.BodyID }
-			}
-			class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900"
-		>
+				if props.BodyID != "" {
+					id={ props.BodyID }
+				}
+				class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900"
+			>
 				if props.Body != nil {
 					@props.Body
 				} else {

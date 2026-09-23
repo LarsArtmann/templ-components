@@ -35,16 +35,16 @@ templ ErrorPage(props ErrorPageProps) {
 						<p class="mt-4 text-sm leading-relaxed text-gray-500 dark:text-gray-400">{ props.Why }</p>
 					}
 					@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-6 space-y-3", "Cause chain", errorInsetNeutral)
-				if wayOutText != "" || wayOutHref != "" || props.SecondaryWayOut != "" {
-					<div class="mt-8 flex flex-wrap items-center gap-3">
-						if wayOutHref != "" {
-							<a
-								href={ templ.SafeURL(wayOutHref) }
-								class={ errorActionClassScaffold + "shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
-							>
-								@actionLinkBody(utils.Ternary(wayOutText != "", wayOutText, "Go back"))
-							</a>
-						} else if wayOutText != "" {
+					if wayOutText != "" || wayOutHref != "" || props.SecondaryWayOut != "" {
+						<div class="mt-8 flex flex-wrap items-center gap-3">
+							if wayOutHref != "" {
+								<a
+									href={ templ.SafeURL(wayOutHref) }
+									class={ errorActionClassScaffold + "shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
+								>
+									@actionLinkBody(utils.Ternary(wayOutText != "", wayOutText, "Go back"))
+								</a>
+							} else if wayOutText != "" {
 								<button
 									type="button"
 									data-tc-go-back

@@ -8,9 +8,7 @@ package pages
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"github.com/larsartmann/templ-components/website/internal/build"
-)
+import "github.com/larsartmann/templ-components/website/internal/build"
 
 // siteScripts are the defer-loaded behavior scripts shared by pages (all
 // same-origin, CSP 'self'; no inline handlers anywhere).

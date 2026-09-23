@@ -68,7 +68,6 @@ templ sectionHeader(eyebrow, title, subtitle string) {
 templ FeatureGrid(stats build.Stats) {
 	<div>
 		@sectionHeader("Features", "Everything you need to ship.", fmt.Sprintf("%d components with type safety, accessibility, and dark mode baked in. No frontend framework required.", stats.Components))
-
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 			for _, feature := range Features {
 				<div class="group rounded-xl border bg-bg-card backdrop-blur-sm transition-all duration-200 p-8 border-border hover:border-border-accent">
@@ -87,7 +86,6 @@ templ FeatureGrid(stats build.Stats) {
 templ HowItWorks() {
 	<div>
 		@sectionHeader("How it works", "Four steps. No frontend framework.", "Import, render, generate, ship. The server renders HTML; HTMX enhances where needed.")
-
 		<div class="grid gap-3 lg:grid-cols-4 lg:gap-0 text-left relative">
 			for index, step := range Steps {
 				<div class={ stepClasses(step) }>
@@ -131,7 +129,6 @@ func stepBadgeClasses(step Step) string {
 templ Comparison(stats build.Stats) {
 	<div>
 		@sectionHeader("Comparison", "Why templ-components?", "Type safety, CSP compliance, and HTMX integration that alternatives don't offer.")
-
 		<div class="overflow-x-auto">
 			<table class="w-full border-collapse text-sm">
 				<thead>
@@ -152,9 +149,11 @@ templ Comparison(stats build.Stats) {
 							<td class="py-3 px-4 text-text-secondary font-medium text-left">{ row.Feature }</td>
 							for valueIndex, value := range row.Values {
 								if valueIndex == len(row.Values)-1 {
-									<td class="py-3 px-4 text-center bg-accent-dim">@matrixCell(value)</td>
+									<td class="py-3 px-4 text-center bg-accent-dim">@matrixCell(value)
+</td>
 								} else {
-									<td class="py-3 px-4 text-center">@matrixCell(value)</td>
+									<td class="py-3 px-4 text-center">@matrixCell(value)
+</td>
 								}
 							}
 						</tr>
@@ -167,14 +166,16 @@ templ Comparison(stats build.Stats) {
 
 templ matrixCell(value MatrixCell) {
 	switch value {
-	case MatrixYes:
-		<span class="inline-flex items-center justify-center text-success">@icons.Icon(icons.Check, "h-4 w-4")</span>
-	case MatrixNo:
-		<span class="inline-flex items-center justify-center text-danger">@icons.Icon(icons.Close, "h-4 w-4")</span>
-	case MatrixPartial:
-		<span class="inline-flex items-center justify-center text-amber text-xs font-mono">~</span>
-	default:
-		<span class="font-mono text-text-secondary text-xs">{ string(value) }</span>
+		case MatrixYes:
+			<span class="inline-flex items-center justify-center text-success">@icons.Icon(icons.Check, "h-4 w-4")
+</span>
+		case MatrixNo:
+			<span class="inline-flex items-center justify-center text-danger">@icons.Icon(icons.Close, "h-4 w-4")
+</span>
+		case MatrixPartial:
+			<span class="inline-flex items-center justify-center text-amber text-xs font-mono">~</span>
+		default:
+			<span class="font-mono text-text-secondary text-xs">{ string(value) }</span>
 	}
 }
 
@@ -183,7 +184,6 @@ templ matrixCell(value MatrixCell) {
 templ UseCasesSection() {
 	<div>
 		@sectionHeader("Use Cases", "Built for real Go apps.", "Drop in components for admin panels, forms, and SaaS interfaces.")
-
 		<div class="grid gap-3 sm:grid-cols-3">
 			for _, useCase := range UseCases {
 				<div class="p-6 rounded-xl border border-border bg-bg-card backdrop-blur-sm text-center hover:border-border-hover transition-all duration-200 hover:-translate-y-0.5">

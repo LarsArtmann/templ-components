@@ -21,7 +21,8 @@ window.addEventListener('resize', function() { demoChart.resize(); });`
 )
 
 templ echartsDemo() {
-	{{ sdkProps := echarts.DefaultSDKScriptProps(); sdkProps.Nonce = "demo-nonce" }}
+	{{ sdkProps := echarts.DefaultSDKScriptProps()
+sdkProps.Nonce = "demo-nonce" }}
 	@demoSection("ECharts SDK + Chart (opt-in module)", "echarts-sdk")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
 		<code>charts/echarts</code> is a separate opt-in module: it wraps go-echarts

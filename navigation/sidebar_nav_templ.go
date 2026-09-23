@@ -274,7 +274,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 					var templ_7745c5c3_Var6 string
 					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(group.Section)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 148, Col: 29}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 153, Col: 29}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 					if templ_7745c5c3_Err != nil {
@@ -308,7 +308,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 						var templ_7745c5c3_Var8 templ.SafeURL
 						templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(item.Href))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 155, Col: 41}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 160, Col: 41}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 						if templ_7745c5c3_Err != nil {
@@ -350,7 +350,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 						var templ_7745c5c3_Var10 string
 						templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 166, Col: 22}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 171, Col: 22}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 						if templ_7745c5c3_Err != nil {
@@ -382,7 +382,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 						var templ_7745c5c3_Var12 templ.SafeURL
 						templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(item.Href))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 175, Col: 39}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 180, Col: 39}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 						if templ_7745c5c3_Err != nil {
@@ -424,7 +424,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 						var templ_7745c5c3_Var14 string
 						templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 186, Col: 20}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 191, Col: 20}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 						if templ_7745c5c3_Err != nil {
@@ -454,7 +454,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 				var templ_7745c5c3_Var16 templ.SafeURL
 				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(item.Href))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 195, Col: 37}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 200, Col: 37}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 				if templ_7745c5c3_Err != nil {
@@ -496,7 +496,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 				var templ_7745c5c3_Var18 string
 				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 206, Col: 18}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/sidebar_nav.templ`, Line: 211, Col: 18}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 				if templ_7745c5c3_Err != nil {

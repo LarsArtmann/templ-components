@@ -1,8 +1,8 @@
 package display
 
 import (
-	"github.com/larsartmann/templ-components/utils/svg"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/svg"
 )
 
 // PopoverPosition defines where the popover content appears relative to the trigger.
@@ -50,7 +50,9 @@ func DefaultPopoverProps() PopoverProps {
 templ Popover(props PopoverProps) {
 	{{ id := utils.EnsureID("popover", props.ID) }}
 	{{ pos := props.Position }}
-	{{ if pos == "" || !PopoverPositionIsValid(pos) { pos = PopoverPositionBottom } }}
+	{{ if pos == "" || !PopoverPositionIsValid(pos) {
+	pos = PopoverPositionBottom
+} }}
 	<div
 		id={ id }
 		class={ utils.Class("relative inline-block text-start", props.Class) }

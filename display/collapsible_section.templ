@@ -24,9 +24,15 @@ templ CollapsibleSection(props CollapsibleSectionProps) {
 	{{ p := resolveCollapsibleDefaults(props) }}
 	<details
 		class={ utils.Class("group rounded-lg", p.Class) }
-		if p.StorageKey != "" { data-collapsible={ p.StorageKey } }
-		if p.ID != "" { id={ p.ID } }
-		if !p.Collapsed { open }
+		if p.StorageKey != "" {
+			data-collapsible={ p.StorageKey }
+		}
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		if !p.Collapsed {
+			open
+		}
 		{ p.Attrs... }
 	>
 		<summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-1 py-1 text-gray-900 outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-brand)] hover:bg-gray-50 dark:text-white dark:hover:bg-gray-800 [&::-webkit-details-marker]:hidden">

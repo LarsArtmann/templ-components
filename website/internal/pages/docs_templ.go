@@ -206,7 +206,7 @@ func docsSidebar(current string) templ.Component {
 					var templ_7745c5c3_Var7 templ.SafeURL
 					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(PkgGoDevURL))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 71, Col: 45}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 71, Col: 46}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 					if templ_7745c5c3_Err != nil {
@@ -219,7 +219,7 @@ func docsSidebar(current string) templ.Component {
 					var templ_7745c5c3_Var8 string
 					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(doc.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 72, Col: 21}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 72, Col: 22}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 					if templ_7745c5c3_Err != nil {
@@ -241,7 +241,7 @@ func docsSidebar(current string) templ.Component {
 					var templ_7745c5c3_Var9 templ.SafeURL
 					templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinURLErrs("/" + doc.Slug)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 77, Col: 36}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 77, Col: 37}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 					if templ_7745c5c3_Err != nil {
@@ -254,7 +254,7 @@ func docsSidebar(current string) templ.Component {
 					var templ_7745c5c3_Var10 string
 					templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(doc.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 77, Col: 108}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 77, Col: 109}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 					if templ_7745c5c3_Err != nil {
@@ -272,7 +272,7 @@ func docsSidebar(current string) templ.Component {
 					var templ_7745c5c3_Var11 templ.SafeURL
 					templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinURLErrs("/" + doc.Slug)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 79, Col: 36}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 79, Col: 37}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 					if templ_7745c5c3_Err != nil {
@@ -285,7 +285,7 @@ func docsSidebar(current string) templ.Component {
 					var templ_7745c5c3_Var12 string
 					templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(doc.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 79, Col: 72}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `website/internal/pages/docs.templ`, Line: 79, Col: 73}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 					if templ_7745c5c3_Err != nil {

@@ -107,7 +107,6 @@ templ wireDemo(transport demoTransport) {
 		only for htmx. The endpoint is wrapped in <code>wire.Handler</code>, which does the
 		response-header targeting for you.
 	</p>
-
 	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Server validation</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -122,7 +121,6 @@ templ wireDemo(transport demoTransport) {
 			<div id="wire-validate-out" class="mt-3" aria-live="polite"></div>
 		</div>
 	</div>
-
 	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Dual-transport form</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -165,7 +163,6 @@ templ wireDemo(transport demoTransport) {
 			fetch error event at status >= 400 — 200 keeps both zero-config.
 		</p>
 	</div>
-
 	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Debounced filter</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -201,7 +198,6 @@ templ wireDemo(transport demoTransport) {
 			</div>
 		</div>
 	</div>
-
 	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Busy state</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -235,7 +231,6 @@ templ wireDemo(transport demoTransport) {
 			<div id="wire-busy-htmx-out" class="mt-3" aria-live="polite"></div>
 		}
 	</div>
-
 	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">File upload</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -268,7 +263,6 @@ templ wireDemo(transport demoTransport) {
 			<div id="wire-upload-out" class="mt-3" aria-live="polite"></div>
 		</div>
 	</div>
-
 	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">GET search form</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -298,7 +292,6 @@ templ wireDemo(transport demoTransport) {
 			}
 		</div>
 	</div>
-
 	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Multi-step wizard</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -310,17 +303,20 @@ templ wireDemo(transport demoTransport) {
 		<div class="max-w-md">
 			if transport == demoTransportBoth {
 				<div class="space-y-6">
-					<div id="wizard-htmx-region">@wireWizardStep(wire.TransportHTMX, 0, "")</div>
-					<div id="wizard-datastar-region">@wireWizardStep(wire.TransportDatastar, 0, "")</div>
+					<div id="wizard-htmx-region">@wireWizardStep(wire.TransportHTMX, 0, "")
+</div>
+					<div id="wizard-datastar-region">@wireWizardStep(wire.TransportDatastar, 0, "")
+</div>
 				</div>
 			} else if transport.wireTransport() == wire.TransportDatastar {
-				<div id="wizard-datastar-region">@wireWizardStep(wire.TransportDatastar, 0, "")</div>
+				<div id="wizard-datastar-region">@wireWizardStep(wire.TransportDatastar, 0, "")
+</div>
 			} else {
-				<div id="wizard-htmx-region">@wireWizardStep(wire.TransportHTMX, 0, "")</div>
+				<div id="wizard-htmx-region">@wireWizardStep(wire.TransportHTMX, 0, "")
+</div>
 			}
 		</div>
 	</div>
-
 	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Wired nav links</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -331,18 +327,18 @@ templ wireDemo(transport demoTransport) {
 		</p>
 		<div class="max-w-md space-y-3">
 			if transport == demoTransportBoth {
-			<div class="flex gap-4">
-				@navigation.NavLink(navigation.NavLinkProps{
-					Href: "/forms", Text: "Forms (htmx)",
-					Wire: &wire.Action{URL: "/api/wire/nav-fragment", Target: "#wire-nav-htmx-out"}, //nolint:exhaustruct // URL+Target are the wiring surface
-				}, "/")
-				@navigation.NavLink(navigation.NavLinkProps{
-					Href: "/forms", Text: "Forms (Datastar)",
-					Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/wire/nav-fragment"}, //nolint:exhaustruct // URL is the wiring surface
-				}, "/")
-			</div>
-			<div id="wire-nav-htmx-out" class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
-			<div id="wire-nav-datastar-out" class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
+				<div class="flex gap-4">
+					@navigation.NavLink(navigation.NavLinkProps{
+						Href: "/forms", Text: "Forms (htmx)",
+						Wire: &wire.Action{URL: "/api/wire/nav-fragment", Target: "#wire-nav-htmx-out"}, //nolint:exhaustruct // URL+Target are the wiring surface
+					}, "/")
+					@navigation.NavLink(navigation.NavLinkProps{
+						Href: "/forms", Text: "Forms (Datastar)",
+						Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/wire/nav-fragment"}, //nolint:exhaustruct // URL is the wiring surface
+					}, "/")
+				</div>
+				<div id="wire-nav-htmx-out" class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
+				<div id="wire-nav-datastar-out" class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite"></div>
 			} else if transport.wireTransport() == wire.TransportDatastar {
 				@navigation.NavLink(navigation.NavLinkProps{
 					Href: "/forms", Text: "Forms (Datastar)",
@@ -358,7 +354,6 @@ templ wireDemo(transport demoTransport) {
 			}
 		</div>
 	</div>
-
 	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Month navigation</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -373,8 +368,10 @@ templ wireDemo(transport demoTransport) {
 			{{ calYear, calMonth := time.Now().Year(), time.Now().Month() }}
 			if transport == demoTransportBoth {
 				<div class="space-y-6">
-					<div>@wireCalendarDemo(wire.TransportHTMX, calYear, calMonth)</div>
-					<div>@wireCalendarDemo(wire.TransportDatastar, calYear, calMonth)</div>
+					<div>@wireCalendarDemo(wire.TransportHTMX, calYear, calMonth)
+</div>
+					<div>@wireCalendarDemo(wire.TransportDatastar, calYear, calMonth)
+</div>
 				</div>
 			} else if transport.wireTransport() == wire.TransportDatastar {
 				@wireCalendarDemo(wire.TransportDatastar, calYear, calMonth)
@@ -658,7 +655,7 @@ templ wireDemoForm(dialect wire.Transport, st wireFormState) {
 	}
 	@forms.Form(forms.FormProps{
 		DirtyGuard: true,
-		Method: forms.FormPost,
+		Method:     forms.FormPost,
 		Wire: &wire.Action{
 			Transport: dialect,
 			Method:    wire.MethodPost,

@@ -38,9 +38,9 @@ templ SettingsLayout(props SettingsLayoutProps) {
 				}
 			</div>
 			@layout.Split(layout.SplitProps{
-				Ratio:         layout.SplitRatio1To3,
-				Aside:         props.Aside,
-				Main:          settingsMain(props.Sections),
+				Ratio: layout.SplitRatio1To3,
+				Aside: props.Aside,
+				Main:  settingsMain(props.Sections),
 			})
 		}
 	</div>

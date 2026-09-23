@@ -93,18 +93,18 @@ templ SectionHeading(props SectionHeadingProps) {
 		{ props.Attrs... }
 	>
 		switch props.Level {
-		case HeadingLevelH1:
-			<h1 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h1>
-		case HeadingLevelH3:
-			<h3 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h3>
-		case HeadingLevelH4:
-			<h4 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h4>
-		case HeadingLevelH5:
-			<h5 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h5>
-		case HeadingLevelH6:
-			<h6 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h6>
-		default:
-			<h2 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h2>
+			case HeadingLevelH1:
+				<h1 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h1>
+			case HeadingLevelH3:
+				<h3 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h3>
+			case HeadingLevelH4:
+				<h4 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h4>
+			case HeadingLevelH5:
+				<h5 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h5>
+			case HeadingLevelH6:
+				<h6 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h6>
+			default:
+				<h2 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h2>
 		}
 		if props.SubTitle != "" {
 			<p class={ utils.Class(mutedTextClass, "mt-1") }>{ props.SubTitle }</p>

@@ -249,7 +249,7 @@ func BarChart(props BarChartProps) templ.Component {
 					var templ_7745c5c3_Var13 string
 					templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(bar.Tooltip)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 74, Col: 125}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 77, Col: 25}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 					if templ_7745c5c3_Err != nil {
@@ -272,7 +272,7 @@ func BarChart(props BarChartProps) templ.Component {
 					var templ_7745c5c3_Var14 string
 					templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(barValueLabel(bar, valueFmt))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 76, Col: 104}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 81, Col: 104}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 					if templ_7745c5c3_Err != nil {
@@ -312,7 +312,7 @@ func BarChart(props BarChartProps) templ.Component {
 				var templ_7745c5c3_Var17 string
 				templ_7745c5c3_Var17, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues("height:" + barPercentHeight(bar.Value, maxVal))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 81, Col: 62}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 86, Col: 62}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 				if templ_7745c5c3_Err != nil {
@@ -325,7 +325,7 @@ func BarChart(props BarChartProps) templ.Component {
 				var templ_7745c5c3_Var18 string
 				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(bar.Label)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 84, Col: 105}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 89, Col: 105}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 				if templ_7745c5c3_Err != nil {
@@ -338,7 +338,7 @@ func BarChart(props BarChartProps) templ.Component {
 				var templ_7745c5c3_Var19 string
 				templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(truncateLabel(bar.Label, 12))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 85, Col: 36}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 90, Col: 36}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 				if templ_7745c5c3_Err != nil {
@@ -371,7 +371,7 @@ func BarChart(props BarChartProps) templ.Component {
 				var templ_7745c5c3_Var21 string
 				templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 93, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 98, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var21)
 				if templ_7745c5c3_Err != nil {
@@ -402,7 +402,7 @@ func BarChart(props BarChartProps) templ.Component {
 			var templ_7745c5c3_Var23 string
 			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.AriaLabel != "", props.AriaLabel, barChartFallbackName))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 97, Col: 91}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 102, Col: 91}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var23)
 			if templ_7745c5c3_Err != nil {
@@ -425,7 +425,7 @@ func BarChart(props BarChartProps) templ.Component {
 					var templ_7745c5c3_Var24 string
 					templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.ResolveAttributeValue(bar.Tooltip)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 100, Col: 84}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 108, Col: 25}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var24)
 					if templ_7745c5c3_Err != nil {
@@ -453,7 +453,7 @@ func BarChart(props BarChartProps) templ.Component {
 					var templ_7745c5c3_Var26 templ.SafeURL
 					templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(bar.Href))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 103, Col: 37}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 113, Col: 37}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 					if templ_7745c5c3_Err != nil {
@@ -479,7 +479,7 @@ func BarChart(props BarChartProps) templ.Component {
 					var templ_7745c5c3_Var28 string
 					templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.ResolveAttributeValue(bar.Label)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 105, Col: 24}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 115, Col: 24}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var28)
 					if templ_7745c5c3_Err != nil {
@@ -492,7 +492,7 @@ func BarChart(props BarChartProps) templ.Component {
 					var templ_7745c5c3_Var29 string
 					templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(truncateLabel(bar.Label, 22))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 107, Col: 37}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 117, Col: 37}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 					if templ_7745c5c3_Err != nil {
@@ -528,7 +528,7 @@ func BarChart(props BarChartProps) templ.Component {
 					var templ_7745c5c3_Var32 string
 					templ_7745c5c3_Var32, templ_7745c5c3_Err = templ.ResolveAttributeValue(bar.Label)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 110, Col: 137}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 120, Col: 137}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var32)
 					if templ_7745c5c3_Err != nil {
@@ -541,7 +541,7 @@ func BarChart(props BarChartProps) templ.Component {
 					var templ_7745c5c3_Var33 string
 					templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(truncateLabel(bar.Label, 22))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 111, Col: 37}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 121, Col: 37}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 					if templ_7745c5c3_Err != nil {
@@ -581,7 +581,7 @@ func BarChart(props BarChartProps) templ.Component {
 				var templ_7745c5c3_Var36 string
 				templ_7745c5c3_Var36, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues("width:" + barPercentWidth(bar.Value, maxVal))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 117, Col: 60}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 127, Col: 60}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var36))
 				if templ_7745c5c3_Err != nil {
@@ -599,7 +599,7 @@ func BarChart(props BarChartProps) templ.Component {
 					var templ_7745c5c3_Var37 string
 					templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(barValueLabel(bar, valueFmt))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 122, Col: 37}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/bar_chart.templ`, Line: 132, Col: 37}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var37))
 					if templ_7745c5c3_Err != nil {

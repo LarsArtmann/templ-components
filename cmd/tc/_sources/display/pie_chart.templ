@@ -111,7 +111,7 @@ templ PieChart(props PieChartProps) {
 						stroke="white"
 						stroke-width="2"
 						class="dark:stroke-gray-800"
-					/>
+					></path>
 				</g>
 				if showLabels && sa.sliceIdx < len(props.Slices) && props.Slices[sa.sliceIdx].Label != "" {
 					{{
@@ -156,7 +156,7 @@ templ PieChart(props PieChartProps) {
 							rx="2"
 							class={ le.Color }
 							fill="currentColor"
-						/>
+						></rect>
 						<text
 							x={ pieChartLegendSwatch + pieChartLegendGap }
 							y={ pieChartLegendSwatch - 1 }

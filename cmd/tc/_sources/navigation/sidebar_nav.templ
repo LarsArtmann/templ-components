@@ -7,9 +7,9 @@ import (
 
 // SidebarNavItem is one link in a vertical sidebar navigation.
 type SidebarNavItem struct {
-	Label string
-	Href  string
-	Icon  icons.Name // optional; renders before the label if set
+	Label  string
+	Href   string
+	Icon   icons.Name // optional; renders before the label if set
 	Active bool
 	// Section groups this item under a collapsible header. Items with
 	// the same Section value are grouped together. Empty = ungrouped.
@@ -143,7 +143,12 @@ templ SidebarNav(props SidebarNavProps) {
 				for _, group := range sidebarNavGroups(props.Items) {
 					if group.Section != "" {
 						{{ hasActive := sidebarGroupHasActive(group.Items, props.CurrentPath) }}
-						<details class="group" if hasActive { open }>
+						<details
+							class="group"
+							if hasActive {
+								open
+							}
+						>
 							<summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-3 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-[var(--tc-sidebar-muted)] hover:text-[var(--tc-sidebar-muted-hover)] [&::-webkit-details-marker]:hidden">
 								<span>{ group.Section }</span>
 								@icons.Icon(icons.ChevronDown, "h-3 w-3 shrink-0 text-gray-600 transition-transform duration-200 motion-reduce:transition-none group-open:rotate-180 dark:text-gray-500")

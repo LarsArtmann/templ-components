@@ -57,9 +57,9 @@ templ layoutSplitDemo() {
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">2-column grid for article+sidebar / detail+metadata. RTL-aware logical positioning (Start/End). Stacks below md.</p>
 		<div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
 			@layout.Split(layout.SplitProps{
-				Ratio:  layout.SplitRatio1To3,
-				Main:   templ.Raw(`<div class="p-6 bg-white dark:bg-gray-900"><h4 class="font-semibold text-gray-900 dark:text-white">Main content (2/3)</h4><p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Article body, detail view, or primary content lives here.</p></div>`),
-				Aside:  templ.Raw(`<div class="p-6 bg-gray-50 dark:bg-gray-800 h-full"><h4 class="font-semibold text-gray-900 dark:text-white text-sm">Aside (1/3)</h4><p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Related links, metadata, TOC.</p></div>`),
+				Ratio: layout.SplitRatio1To3,
+				Main:  templ.Raw(`<div class="p-6 bg-white dark:bg-gray-900"><h4 class="font-semibold text-gray-900 dark:text-white">Main content (2/3)</h4><p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Article body, detail view, or primary content lives here.</p></div>`),
+				Aside: templ.Raw(`<div class="p-6 bg-gray-50 dark:bg-gray-800 h-full"><h4 class="font-semibold text-gray-900 dark:text-white text-sm">Aside (1/3)</h4><p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Related links, metadata, TOC.</p></div>`),
 			})
 		</div>
 	</div>
@@ -119,14 +119,14 @@ templ layoutFooterDemo() {
 			@navigation.Footer(navigation.FooterProps{
 				BrandText: "templ-components",
 				Columns: []navigation.FooterColumn{
-				{Title: "Docs", Links: []navigation.FooterLink{
-					{Text: "Getting Started", Href: "#"},
-					{Text: "Components", Href: "#"},
-				}},
-				{Title: "Community", Links: []navigation.FooterLink{
-					{Text: "GitHub", Href: "#"},
-					{Text: "Discussions", Href: "#"},
-				}},
+					{Title: "Docs", Links: []navigation.FooterLink{
+						{Text: "Getting Started", Href: "#"},
+						{Text: "Components", Href: "#"},
+					}},
+					{Title: "Community", Links: []navigation.FooterLink{
+						{Text: "GitHub", Href: "#"},
+						{Text: "Discussions", Href: "#"},
+					}},
 				},
 				BottomBar: templ.Raw(`<p>© 2026 templ-components. Built with templ + HTMX + Tailwind v4.</p>`),
 			})

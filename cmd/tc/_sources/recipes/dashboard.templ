@@ -40,10 +40,10 @@ templ Dashboard(props DashboardProps) {
 templ dashboardContent(props DashboardProps) {
 	<div class="py-6 space-y-6">
 		@display.PageHeader(display.PageHeaderProps{
-			Title:     props.Title,
-			Subtitle:  props.Subtitle,
+			Title:      props.Title,
+			Subtitle:   props.Subtitle,
 			Breadcrumb: props.Breadcrumb,
-			Action:    props.HeaderActions,
+			Action:     props.HeaderActions,
 		})
 		if len(props.StatCards) > 0 {
 			@display.Grid(display.GridProps{

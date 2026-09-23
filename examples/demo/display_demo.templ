@@ -418,8 +418,8 @@ display.Card(display.CardProps{
 		@display.Card(display.CardProps{Title: "Message Trend"}) {
 			<div class="flex items-center gap-3">
 				@display.Sparkline(display.SparklineProps{
-					Values: []float64{3, 5, 4, 7, 6, 9, 8, 12, 10, 14},
-					Filled: true,
+					Values:    []float64{3, 5, 4, 7, 6, 9, 8, 12, 10, 14},
+					Filled:    true,
 					BaseProps: utils.BaseProps{Class: "text-blue-600 dark:text-blue-400"},
 				})
 				<span class="text-sm font-medium text-gray-900 dark:text-white">+47%</span>
@@ -508,8 +508,10 @@ display.Card(display.CardProps{
 			Title:     "Debug Information",
 			Collapsed: true,
 		}) {
-			<pre class="text-xs text-gray-500 dark:text-gray-400">Version: v{ utils.Version }
-Build: { time.Now().UTC().Format("2006-01-02T15:04:05Z") }</pre>
+			<pre class="text-xs text-gray-500 dark:text-gray-400">
+				Version: v{ utils.Version }
+				Build: { time.Now().UTC().Format("2006-01-02T15:04:05Z") }
+			</pre>
 		}
 	</div>
 	@demoSection("Heatmap", "display-heatmap")

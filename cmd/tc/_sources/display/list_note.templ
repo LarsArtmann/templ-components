@@ -80,9 +80,7 @@ templ listNoteShell(props ListNoteProps, message string) {
 //	@display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
 //	@display.ListNote(display.ListNoteProps{Shown: 42, Variant: display.ListNoteCount})
 templ ListNote(props ListNoteProps) {
-	{{
-		message, visible := listNoteMessage(props)
-	}}
+	{{ message, visible := listNoteMessage(props) }}
 	if visible {
 		@listNoteShell(props, message)
 	}

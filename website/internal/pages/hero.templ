@@ -52,22 +52,21 @@ templ Hero(stats build.Stats, starsText string) {
 				</span>
 				Server-rendered UI for Go
 			</div>
-
 			<h1 class="text-[clamp(2.75rem,8vw,4.5rem)] font-bold tracking-tighter leading-[1.05] mb-6 text-text-primary">
-				Build Go web apps<br/> without a <span class="text-accent">frontend framework</span>.
+				Build Go web apps
+				<br/>
+				without a <span class="text-accent">frontend framework</span>.
 			</h1>
-
 			<p class="text-[clamp(1.0625rem,2.5vw,1.25rem)] text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
 				{ fmt.Sprintf("%d server-rendered components for templ + HTMX + Tailwind CSS v4. Type-safe props, dark mode built-in, CSP-ready, zero Node.js.", stats.Components) }
 			</p>
-
 			<div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
 				@display.Button(display.ButtonProps{
-					Text:     "Get Started",
-					Href:     "/getting-started/installation",
-					Variant:  display.ButtonPrimary,
-					Size:     display.ButtonSizeLG,
-					Icon:     icons.Icon(icons.ArrowRight, "h-4 w-4"),
+					Text:    "Get Started",
+					Href:    "/getting-started/installation",
+					Variant: display.ButtonPrimary,
+					Size:    display.ButtonSizeLG,
+					Icon:    icons.Icon(icons.ArrowRight, "h-4 w-4"),
 					BaseProps: utils.BaseProps{
 						Class: "px-6 py-3 text-sm shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5",
 					},
@@ -95,7 +94,6 @@ templ Hero(stats build.Stats, starsText string) {
 					},
 				})
 			</div>
-
 			<div class="flex items-center justify-center gap-6 md:gap-10 mb-16 max-w-xl mx-auto">
 				@heroMetric(stats.Components, "Components")
 				<div class="w-px h-10 bg-border shrink-0"></div>
@@ -105,7 +103,6 @@ templ Hero(stats build.Stats, starsText string) {
 				<div class="w-px h-10 bg-border shrink-0"></div>
 				@heroMetric(stats.Modules, "Go modules")
 			</div>
-
 			<div class="relative max-w-xl mx-auto">
 				<div class="absolute -inset-4 bg-gradient-to-r from-accent/8 via-transparent to-accent/8 rounded-2xl pointer-events-none"></div>
 				<div class="relative rounded-xl border border-border bg-bg-code shadow-2xl overflow-hidden code-preview">
@@ -115,7 +112,8 @@ templ Hero(stats build.Stats, starsText string) {
 						<span class="w-2.5 h-2.5 rounded-full bg-code-dot"></span>
 						<span class="ml-3 text-xs text-text-muted font-mono">page.templ</span>
 					</div>
-					<pre tabindex="0" class="p-5 text-left text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative">@highlightTempl(heroCode)</pre>
+					<pre tabindex="0" class="p-5 text-left text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative">@highlightTempl(heroCode)
+</pre>
 					<button class="absolute top-2 right-2 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" id="copy-btn" data-code={ heroCode } aria-label="Copy code to clipboard">Copy</button>
 				</div>
 			</div>

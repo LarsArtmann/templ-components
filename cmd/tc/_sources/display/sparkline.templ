@@ -1,8 +1,6 @@
 package display
 
-import (
-	"github.com/larsartmann/templ-components/utils"
-)
+import "github.com/larsartmann/templ-components/utils"
 
 // Sparkline renders a tiny inline SVG line chart showing a data trend.
 // Pure SVG — no JavaScript. Uses currentColor for stroke so consumers control
@@ -47,7 +45,7 @@ templ Sparkline(props SparklineProps) {
 					fill="currentColor"
 					fill-opacity="0.15"
 					class="opacity-50"
-				/>
+				></path>
 			}
 			<polyline
 				points={ points }
@@ -56,7 +54,7 @@ templ Sparkline(props SparklineProps) {
 				stroke-width={ strokeW }
 				stroke-linecap="round"
 				stroke-linejoin="round"
-			/>
+			></polyline>
 		</svg>
 	}
 }

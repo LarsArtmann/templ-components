@@ -266,7 +266,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 				var templ_7745c5c3_Var16 templ.SafeURL
 				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(wayOutHref))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/errorpage.templ`, Line: 42, Col: 40}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/errorpage.templ`, Line: 42, Col: 41}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 				if templ_7745c5c3_Err != nil {

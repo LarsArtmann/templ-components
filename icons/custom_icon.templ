@@ -31,9 +31,13 @@ type CustomIcon struct {
 //	@icons.Render(icons.CustomIcon{ViewBox: "0 0 24 24", Paths: []string{goLogoPath}}, "h-4 w-4")
 templ Render(icon CustomIcon, class string) {
 	{{ viewBox := icon.ViewBox }}
-	{{ if viewBox == "" { viewBox = "0 0 24 24" } }}
+	{{ if viewBox == "" {
+	viewBox = "0 0 24 24"
+} }}
 	{{ fill := icon.Fill }}
-	{{ if fill == "" { fill = "currentColor" } }}
+	{{ if fill == "" {
+	fill = "currentColor"
+} }}
 	<svg
 		class={ class }
 		viewBox={ viewBox }

@@ -66,17 +66,17 @@ templ docsSidebar(current string) {
 					<ul class="space-y-1">
 						for _, doc := range group.Docs {
 							switch doc.Slug {
-							case "":
-								<li>
-									<a href={ templ.SafeURL(PkgGoDevURL) } target="_blank" rel="noopener noreferrer" class="docs-nav-link flex items-center gap-1.5">
-										{ doc.Title }
-										@icons.Icon(icons.ExternalLink, "h-3 w-3")
-									</a>
-								</li>
-							case current:
-								<li><a href={ "/" + doc.Slug } aria-current="page" class="docs-nav-link docs-nav-active">{ doc.Title }</a></li>
-							default:
-								<li><a href={ "/" + doc.Slug } class="docs-nav-link">{ doc.Title }</a></li>
+								case "":
+									<li>
+										<a href={ templ.SafeURL(PkgGoDevURL) } target="_blank" rel="noopener noreferrer" class="docs-nav-link flex items-center gap-1.5">
+											{ doc.Title }
+											@icons.Icon(icons.ExternalLink, "h-3 w-3")
+										</a>
+									</li>
+								case current:
+									<li><a href={ "/" + doc.Slug } aria-current="page" class="docs-nav-link docs-nav-active">{ doc.Title }</a></li>
+								default:
+									<li><a href={ "/" + doc.Slug } class="docs-nav-link">{ doc.Title }</a></li>
 							}
 						}
 					</ul>

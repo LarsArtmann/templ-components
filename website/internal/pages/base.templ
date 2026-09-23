@@ -40,23 +40,23 @@ func canonicalURL(path string) string {
 // metadata (ported byte-for-byte in meaning from the Astro LandingLayout).
 func softwareApplicationJSONLD() string {
 	doc := map[string]any{
-		"@context":           "https://schema.org",
-		"@type":              "SoftwareApplication",
-		"name":               SiteName,
-		"description":        SiteDescription,
-		"url":                SiteURL,
+		"@context":            "https://schema.org",
+		"@type":               "SoftwareApplication",
+		"name":                SiteName,
+		"description":         SiteDescription,
+		"url":                 SiteURL,
 		"applicationCategory": "DeveloperApplication",
-		"operatingSystem":    "Go",
+		"operatingSystem":     "Go",
 		"programmingLanguage": "Go",
-		"license":            "https://opensource.org/licenses/MIT",
+		"license":             "https://opensource.org/licenses/MIT",
 		"author": map[string]string{
 			"@type": "Person",
 			"name":  AuthorName,
 			"url":   AuthorURL,
 		},
 		"offers": map[string]string{
-			"@type":        "Offer",
-			"price":        "0",
+			"@type":         "Offer",
+			"price":         "0",
 			"priceCurrency": "USD",
 		},
 	}

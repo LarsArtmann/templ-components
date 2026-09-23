@@ -60,12 +60,24 @@ type DateRangeProps struct {
 //	   End:   nil, // shows "Present"
 //	})
 templ DateRange(props DateRangeProps) {
-	{{ 
-		layout := props.Layout; if layout == "" { layout = DateRangeDefaults.Layout }
-		present := props.PresentText; if present == "" { present = DateRangeDefaults.PresentText }
-		sep := props.Separator; if sep == "" { sep = DateRangeDefaults.Separator }
+	{{
+		layout := props.Layout
+		if layout == "" {
+			layout = DateRangeDefaults.Layout
+		}
+		present := props.PresentText
+		if present == "" {
+			present = DateRangeDefaults.PresentText
+		}
+		sep := props.Separator
+		if sep == "" {
+			sep = DateRangeDefaults.Separator
+		}
 		startStr := formatDate(props.Start, layout)
-		endStr := formatDate(props.End, layout); if props.End == nil { endStr = present }
+		endStr := formatDate(props.End, layout)
+		if props.End == nil {
+			endStr = present
+		}
 	}}
 	<time
 		if props.ID != "" {

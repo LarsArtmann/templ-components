@@ -145,8 +145,8 @@ func formLayoutEffective(props FormProps) FormLayout {
 // FormProps configures a form wrapper
 type FormProps struct {
 	utils.BaseProps
-	Action        string
-	Method        FormMethod
+	Action string
+	Method FormMethod
 	// Enctype selects the encoding of a POST body. Zero value (and unknown
 	// values) resolve to the HTML default, urlencoded; set
 	// FormEnctypeMultipart for file uploads. Under both transports the

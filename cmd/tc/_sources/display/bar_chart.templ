@@ -71,7 +71,12 @@ templ BarChart(props BarChartProps) {
 			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, barChartFallbackName) }
 		>
 			for _, bar := range bars {
-				<div class={ utils.Class("flex w-full flex-col items-center gap-1", minBarW) } if bar.Tooltip != "" { title={ bar.Tooltip } }>
+				<div
+					class={ utils.Class("flex w-full flex-col items-center gap-1", minBarW) }
+					if bar.Tooltip != "" {
+						title={ bar.Tooltip }
+					}
+				>
 					if props.ShowValues {
 						<span class="text-xs tabular-nums text-gray-600 dark:text-gray-400">{ barValueLabel(bar, valueFmt) }</span>
 					}
@@ -97,8 +102,13 @@ templ BarChart(props BarChartProps) {
 			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, barChartFallbackName) }
 		>
 			for _, bar := range bars {
-					<div class="flex items-center gap-3" if bar.Tooltip != "" { title={ bar.Tooltip } }>
-						if bar.Href != "" {
+				<div
+					class="flex items-center gap-3"
+					if bar.Tooltip != "" {
+						title={ bar.Tooltip }
+					}
+				>
+					if bar.Href != "" {
 						<a
 							href={ templ.SafeURL(bar.Href) }
 							class={ utils.Class("shrink-0 truncate text-xs font-medium text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400", labelWidth) }

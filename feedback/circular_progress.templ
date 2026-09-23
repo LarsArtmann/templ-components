@@ -36,8 +36,8 @@ type CircularProgressProps struct {
 // DefaultCircularProgressProps returns sensible defaults.
 func DefaultCircularProgressProps() CircularProgressProps {
 	return CircularProgressProps{
-		Size:      CircularProgressSizeMD,
-		Color:     "text-blue-600 dark:text-blue-500",
+		Size:       CircularProgressSizeMD,
+		Color:      "text-blue-600 dark:text-blue-500",
 		TrackColor: "text-gray-200 dark:text-gray-700",
 	}
 }
@@ -105,7 +105,7 @@ templ CircularProgress(props CircularProgressProps) {
 				stroke="currentColor"
 				stroke-width={ fmt.Sprintf("%.2f", strokeWidth) }
 				class={ trackColor }
-			/>
+			></circle>
 			<circle
 				cx="50"
 				cy="50"
@@ -116,7 +116,7 @@ templ CircularProgress(props CircularProgressProps) {
 				stroke-dasharray={ fmt.Sprintf("%.2f", circumference) }
 				stroke-dashoffset={ fmt.Sprintf("%.2f", dashOffset) }
 				class="transition-all duration-500 ease-out motion-reduce:transition-none"
-			/>
+			></circle>
 		</svg>
 		if props.ShowLabel {
 			<span class="absolute inset-0 flex items-center justify-center text-xs font-semibold text-gray-700 dark:text-gray-300">
