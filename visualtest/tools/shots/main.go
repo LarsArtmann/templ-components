@@ -92,6 +92,7 @@ func main() {
 		}
 
 		_ = resp.Body.Close()
+
 		fmt.Fprintln(os.Stdout, "shots selftest OK (allocator + demo health)")
 
 		return

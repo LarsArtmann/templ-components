@@ -92,6 +92,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("selftest FAIL: dist listener: %v", err)
 		}
+
 		resp, err := httpGetSelftest("http://" + addr + "/" + ogPageName)
 
 		cleanup()
@@ -101,6 +102,7 @@ func main() {
 		}
 
 		_ = resp.Body.Close()
+
 		fmt.Fprintln(os.Stdout, "ogshot selftest OK (allocator + dist listener)")
 
 		return
