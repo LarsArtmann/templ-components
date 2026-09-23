@@ -80,6 +80,9 @@ func TestSourcesMatchPackageFiles(t *testing.T) {
 // the component. Keep in sync with MIRRORED_PKGS in
 // scripts/check-tc-sources-sync.sh (charts/ is a Tier 2 opt-in adapter and
 // utils/ is leaf plumbing — intentionally not mirrored).
+// TestMirroredPackagesListsMatch pins THIS list to the bash script's list so
+// the two can never drift silently again (found 2026-09-23, TODO #283a: the
+// hand-sync had two independent lists with only a comment linking them).
 var mirroredPackages = []string{
 	"datastar",
 	"display",
@@ -90,6 +93,58 @@ var mirroredPackages = []string{
 	"layout",
 	"navigation",
 	"recipes",
+}
+
+// bashArrayRe captures the first element of a bash parenthesized array
+// assignment: MIRRORED_PKGS=(a b c).
+var bashArrayRe = regexp.MustCompile(`MIRRORED_PKGS=\(([^)]*)\)`)
+
+// TestMirroredPackagesListsMatch keeps the Go mirror list and the bash
+// guard's MIRRORED_PKGS array identical. The bash script is the pre-commit
+// self-healing guard; the Go list drives `tc add` and the completeness test
+// — a package present in one but missing from the other means either the
+// scaffolder silently rejects a package's components or the bash guard
+// never checks a package the scaffolder ships.
+func TestMirroredPackagesListsMatch(t *testing.T) {
+	t.Parallel()
+
+	scriptPath := filepath.Join("..", "..", "scripts", "check-tc-sources-sync.sh")
+	script, err := os.ReadFile(scriptPath)
+	if err != nil {
+		t.Fatalf("read %s: %v", scriptPath, err)
+	}
+
+	m := bashArrayRe.FindSubmatch(script)
+	if m == nil {
+		t.Fatalf("MIRRORED_PKGS=(...) not found in %s", scriptPath)
+	}
+
+	bashFields := strings.Fields(string(m[1]))
+	if len(bashFields) == 0 {
+		t.Fatalf("MIRRORED_PKGS array in %s is empty", scriptPath)
+	}
+
+	goSet := make(map[string]bool, len(mirroredPackages))
+	for _, pkg := range mirroredPackages {
+		goSet[pkg] = true
+	}
+
+	bashSet := make(map[string]bool, len(bashFields))
+	for _, pkg := range bashFields {
+		bashSet[pkg] = true
+	}
+
+	for _, pkg := range bashFields {
+		if !goSet[pkg] {
+			t.Errorf("package %q is in MIRRORED_PKGS (bash) but missing from mirroredPackages (Go)", pkg)
+		}
+	}
+
+	for _, pkg := range mirroredPackages {
+		if !bashSet[pkg] {
+			t.Errorf("package %q is in mirroredPackages (Go) but missing from MIRRORED_PKGS (bash)", pkg)
+		}
+	}
 }
 
 // TestSourcesShipEveryMirrorableFile is direction 2 of the _sources mirror
