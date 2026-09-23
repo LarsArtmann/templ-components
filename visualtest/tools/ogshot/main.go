@@ -94,12 +94,12 @@ func main() {
 		}
 		defer cleanup()
 
-		resp, err := http.Get("http://" + addr + "/" + ogPageName)
+		resp, err := httpGetSelftest("http://" + addr + "/" + ogPageName)
 		if err != nil || resp.StatusCode != http.StatusOK {
 			log.Fatalf("selftest FAIL: dist fetch: %v", err)
 		}
 
-		resp.Body.Close()
+		_ = resp.Body.Close()
 		fmt.Println("ogshot selftest OK (allocator + dist listener)")
 
 		return
@@ -191,4 +191,19 @@ func serveDist(dist string) (string, func(), error) {
 	}
 
 	return listener.Addr().String(), cleanup, nil
+}
+// httpGetSelftest performs the selftest's loopback GET with context and a
+// bounded client — shared shape for all capture tools.
+func httpGetSelftest(url string) (*http.Response, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	client := &http.Client{Timeout: 10 * time.Second}
+
+	return client.Do(req)
 }
