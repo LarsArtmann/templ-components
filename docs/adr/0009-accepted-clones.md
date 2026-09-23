@@ -377,11 +377,20 @@ The three call sites `@iconTile(x.Icon, "<extraClass>")` token-match as a
 pair above — call sites must exist at each card and differ in `extraClass`
 (spacing + hover classes). The extraction working as intended.
 
+### Accepted residue: the `heroMetric` strip (`website/internal/pages/hero.templ:98-104`)
+
+The hero renders four `@heroMetric(value, label)` calls separated by a
+divider `<div class="w-px h-10 bg-border shrink-0"></div>`; the scanner's
+sliding window reports the metric+divider pair twice (self-overlapping
+ranges 98-102 / 100-104). **Why not lazy**: the metric-strip idiom — the
+values come from four different `build.Stats` fields and the labels all
+differ; a range loop with a conditional divider would add cleverness to
+save ~3 lines of markup. Call-shape repetition, not shared logic.
+
 ### Accepted residue: card-grid skeleton + CTA button pair (`website/internal/pages/sections.templ`)
 
 Two groups surfaced by the same re-read (the iconTile extraction
 re-fragmented the file's clone boundaries):
-
 - **FeatureGrid ↔ UseCasesSection section skeleton** (78-90 vs 192-204):
   both are `@sectionHeader` + grid + per-item iconTile card. Extraction
   would need 7+ parameters (3 header strings, grid class, unified item
