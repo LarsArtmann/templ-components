@@ -359,6 +359,24 @@ component and differ in class composition (Card merges `TitleClass`,
 EmptyState hardcodes its spacing). This is the extraction working as
 intended, not duplication to remove.
 
+## 2026-09-23 Pass — `iconTile` Extraction (website)
+
+A fresh-eyes re-read of the t=3 report found the website's 44px accent
+icon tile (`w-11 h-11 rounded-lg bg-accent-dim border border-border-accent
+flex items-center justify-center text-accent` + `h-5 w-5` icon) copy-pasted
+across three card grids: `sales.templ` (benefits), `sections.templ`
+(FeatureGrid, UseCasesSection). The tile body is now a single sub-template,
+`website/internal/pages.iconTile(icon, extraClass)`, with per-site spacing
+and hover behavior passed as `extraClass`. The class literal can no longer
+drift between the three grids.
+
+### Accepted residue: the `iconTile` call-shape triple
+
+The three call sites `@iconTile(x.Icon, "<extraClass>")` token-match as a
+3-clone group. **Why not lazy**: same class as the `headingTag` call-shape
+pair above — call sites must exist at each card and differ in `extraClass`
+(spacing + hover classes). The extraction working as intended.
+
 ## Excluded: `cmd/tc/_sources/**` (embedded scaffolder copies)
 
 `cmd/tc/_sources/` contains byte-identical COPIES of the library's `.templ`
