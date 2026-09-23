@@ -10,12 +10,12 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 	"testing"
 	"time"
 
 	"github.com/chromedp/chromedp"
+	"github.com/larsartmann/templ-components/visualtest/internal/distserver"
 )
 
 // The SITE route tier (#T7/#T8 of the 2026-09-19 sales-page plan): the built
@@ -48,19 +48,10 @@ var siteDistBase = sync.OnceValue(func() string {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		clean, _, _ := strings.Cut(r.URL.Path, "?")
-		if !strings.HasSuffix(clean, ".html") && !strings.Contains(clean, ".") {
-			cleanPath := filepath.Join(distRoot, clean+".html")
-			if _, err := os.Stat(cleanPath); err == nil {
-				http.ServeFile(w, r, cleanPath)
-
-				return
-			}
-		}
-
-		http.FileServer(http.Dir(distRoot)).ServeHTTP(w, r)
-	})
+	// The cleanUrls handler is shared with the capture tools via
+	// internal/distserver — one home for the URL contract (#273
+	// close-out, 2026-09-23; this file carried a verbatim copy).
+	mux.Handle("/", distserver.Handler(distRoot))
 
 	server := &http.Server{Handler: mux}
 

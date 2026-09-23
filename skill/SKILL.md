@@ -587,7 +587,7 @@ new component touches the same concern, REUSE the helper instead of re-inlining
 | `chartSeriesGroup`                                               | `display/chart_shared.templ`                     | One series' `<g>` (polyline/area/dots) for any new SVG chart type — compose with `chart_geometry.go` primitives, never reimplement the math.                          |
 | `sparklinePointCoords` / `sparklineGeometry`                     | `display/sparkline.go`                           | Value→pixel projection and min/max bounds for any inline SVG chart (BarChart and Sparkline share it).                                                                 |
 | `calendarMonthNavLink` + `calendarMonthNavAction`/`…URL`/`…Href` | `forms/calendar.templ` / `forms/calendar_nav.go` | Month-navigation arrows: href/no-JS fallback + Wire action cloning with `{year}`/`{month}` substitution.                                                              |
-| `browser` / `distserver` packages                                | `visualtest/tools/internal/`                     | Capture tools (`ogshot`, `shots`, `siteshots`): pinned-Chromium context + static-dist HTTP server. New capture tools must use them, not re-roll chromedp boilerplate. |
+| `browser` / `distserver` packages                                | `visualtest/internal/`                     | Capture tools (`ogshot`, `shots`, `siteshots`): pinned-Chromium context + static-dist HTTP server. New capture tools must use them, not re-roll chromedp boilerplate. |
 
 ## Per-component testing checklist
 

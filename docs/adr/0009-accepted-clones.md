@@ -333,8 +333,8 @@ five more harmful clones and extracted them:
 - `forms.calendarMonthNavLink` — the mirrored prev/next month-navigation
   anchors in `forms/calendar.templ` (href fallback + spread transport
   attributes + aria-label + chevron icon).
-- `visualtest/tools/internal/browser.ExecPath` +
-  `visualtest/tools/internal/distserver.Handler` — `chromePath()` was
+- `visualtest/internal/browser.ExecPath` +
+  `visualtest/internal/distserver.Handler` — `chromePath()` was
   copy-pasted across three capture tools (ogshot, shots, siteshots) and the
   Firebase cleanUrls HTTP handler across two of them. The URL-resolution
   contract and the CHROMEDP_CHROME_PATH lookup now have one home each.
@@ -503,7 +503,7 @@ blanket-accepting or blanket-extracting.
   `skeletonContainer`, `DismissButton`, `definitionDetailContent`,
   `chartMaxWithOverride`, `sparklineGeometry`, `sparklinePointCoords`,
   `headingTag`, `chartSeriesGroup`, `calendarMonthNavLink`,
-  `tools/internal/browser.ExecPath`, `tools/internal/distserver.Handler`,
+  `visualtest/internal/browser.ExecPath`, `visualtest/internal/distserver.Handler`,
   `cdn.ResolveBase`, `cdn.Origin`, `resolveLocale`) where applicable
 - Every remaining actionable clone is structural, templ-DSL-bound, or
   demo/website-binary noise per the entries above; future passes re-judge

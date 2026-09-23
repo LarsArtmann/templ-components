@@ -125,6 +125,9 @@ type (
 	searchQuery struct {
 		Q string `form:"q"`
 	}
+	// TWIN: kept shape-compatible with `calendarNavQuery` in
+	// visualtest/calendar_nav_e2e_test.go, whose e2e posts this contract
+	// from a real browser; changing a form tag here breaks that test first.
 	calendarNavQuery struct {
 		Year  int `form:"year"`
 		Month int `form:"month"`
