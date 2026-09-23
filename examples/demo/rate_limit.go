@@ -12,8 +12,8 @@ import (
 // can't monopolize the instance. In-memory and per-instance by design — the
 // demo holds no real data and runs single-instance.
 const (
-	demoRateLimit = 2.0 // requests per second, sustained, per client IP
-	demoRateBurst = 20  // bucket depth: a full demo page's worth of calls
+	demoRateLimit = 10.0 // requests per second, sustained, per client IP
+	demoRateBurst = 100  // bucket depth: absorbs a full audit sweep's pages + assets
 )
 
 // clientBucket is one client's token bucket plus its last-seen time for
