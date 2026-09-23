@@ -126,6 +126,9 @@ type PageProps struct {
 	// a different CDN, or a self-hosted origin. Both the htmx main script and
 	// the response-targets extension derive their URLs from this value.
 	HTMXCDN string
+	// HTMXNone renders NO htmx runtime at all: no script, no preconnect — for
+	// pages that use no htmx-powered components (backlog #282). Components
+	// degrade gracefully without the runtime.
 	// HTMXSrc, when non-empty, switches the htmx main script from the CDN URL
 	// to a self-hosted path. The value becomes the <script src> attribute verbatim.
 	// Example: "/static/htmx.min.js". When set, HTMXVersion/HTMXCDN/HTMXUseSRI
@@ -265,7 +268,7 @@ templ Base(props PageProps) {
 			if props.CSSPath != "" {
 				<link rel="stylesheet" href={ props.CSSPath }/>
 			}
-			if props.HTMXVersion != "" || props.HTMXSrc != "" {
+			if props.HTMXSrc != HTMXNone && (props.HTMXVersion != "" || props.HTMXSrc != "") {
 				{{ cdnOrigin := htmxCDNOrigin(props.HTMXCDN) }}
 				if cdnOrigin != "" && props.HTMXSrc == "" {
 					<link rel="preconnect" href={ cdnOrigin } crossorigin/>
