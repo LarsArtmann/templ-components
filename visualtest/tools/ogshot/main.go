@@ -79,8 +79,27 @@ const ogCardHTML = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 func main() {
 	dist := flag.String("dist", "../website/dist", "website dist directory to serve")
 	out := flag.String("out", "../website/public/og/sales.png", "output PNG path")
+	selftest := flag.Bool("selftest", false, "verify allocator + dist listener come-up, then exit")
 
 	flag.Parse()
+
+	if *selftest {
+		if browser.ExecPath() == "" {
+			log.Fatal("selftest FAIL: no Chromium (set CHROMEDP_CHROME_PATH)")
+		}
+		addr, cleanup, err := serveDist(*dist)
+		if err != nil {
+			log.Fatalf("selftest FAIL: dist listener: %v", err)
+		}
+		defer cleanup()
+		resp, err := http.Get("http://" + addr + "/" + ogPageName) //nolint:gosec // loopback-only dev server
+		if err != nil || resp.StatusCode != http.StatusOK {
+			log.Fatalf("selftest FAIL: dist fetch: %v", err)
+		}
+		resp.Body.Close()
+		fmt.Println("ogshot selftest OK (allocator + dist listener)")
+		return
+	}
 
 	if err := run(*dist, *out); err != nil {
 		log.Fatal(err)

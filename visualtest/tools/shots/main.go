@@ -15,6 +15,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
@@ -75,8 +76,22 @@ func main() {
 	mode := flag.String("mode", "both", "light | dark | both")
 	width := flag.Int("width", defaultShotsWidth, "viewport width")
 	only := flag.String("page", "", "capture a single page by name (e.g. index)")
+	selftest := flag.Bool("selftest", false, "verify allocator + base-URL reachability, then exit")
 
 	flag.Parse()
+
+	if *selftest {
+		if browser.ExecPath() == "" {
+			log.Fatal("selftest FAIL: no Chromium (set CHROMEDP_CHROME_PATH)")
+		}
+		resp, err := http.Get(*base + "/health") //nolint:gosec // operator-provided base URL
+		if err != nil || resp.StatusCode != http.StatusOK {
+			log.Fatalf("selftest FAIL: demo %s: %v", *base, err)
+		}
+		resp.Body.Close()
+		fmt.Println("shots selftest OK (allocator + demo health)")
+		return
+	}
 
 	if err := os.MkdirAll(*out, 0o750); err != nil {
 		log.Fatal(err)
