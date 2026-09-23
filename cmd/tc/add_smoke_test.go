@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"testing"
+	"time"
 )
 
 // TestAddSmoke exercises the real `tc add` binary end-to-end in a throwaway
@@ -17,8 +19,11 @@ func TestAddSmoke(t *testing.T) {
 	t.Parallel()
 
 	bin := filepath.Join(t.TempDir(), "tc-build")
-	build := exec.Command("go", "build", "-o", bin, ".")
-	build.Dir = ".."
+
+	buildCtx, cancelBuild := context.WithTimeout(context.Background(), 2*time.Minute)
+	t.Cleanup(cancelBuild)
+
+	build := exec.CommandContext(buildCtx, "go", "build", "-o", bin, ".")
 	if out, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("go build tc: %v\n%s", err, out)
 	}
@@ -37,20 +42,27 @@ func TestAddSmoke(t *testing.T) {
 
 			dir := t.TempDir()
 
-			add := exec.Command(bin, "add", tcase.name)
+			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+			defer cancel()
+
+			add := exec.CommandContext(ctx, bin, "add", tcase.name)
 			add.Dir = dir
-			if out, err := add.CombinedOutput(); err != nil {
+
+			out, err := add.CombinedOutput()
+			if err != nil {
 				t.Fatalf("tc add %s: %v\n%s", tcase.name, err, out)
 			}
 
 			for _, want := range tcase.wantFiles {
 				got := filepath.Join(dir, "components", want)
+
 				data, err := os.ReadFile(got)
 				if err != nil {
 					t.Errorf("tc add %s did not produce %s: %v", tcase.name, got, err)
 
 					continue
 				}
+
 				if len(data) == 0 {
 					t.Errorf("scaffolded %s is empty", got)
 				}

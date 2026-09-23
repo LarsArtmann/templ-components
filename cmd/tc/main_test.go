@@ -109,6 +109,7 @@ func TestMirroredPackagesListsMatch(t *testing.T) {
 	t.Parallel()
 
 	scriptPath := filepath.Join("..", "..", "scripts", "check-tc-sources-sync.sh")
+
 	script, err := os.ReadFile(scriptPath)
 	if err != nil {
 		t.Fatalf("read %s: %v", scriptPath, err)

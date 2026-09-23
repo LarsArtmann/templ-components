@@ -13,7 +13,7 @@ import (
 // keeps embedding it as a companion for a component that no longer exists
 // (the 2026-09-22 pass found nine *_types.go copies whose components had
 // never been embedded; the inverse ghost had zero coverage until this test,
-// TODO #283b). The reverse direction (a .templ without a *_types.go) is
+// backlog item #283b). The reverse direction (a .templ without a *_types.go) is
 // legal: small components inline their props next to the component.
 func TestTypesFilesHaveTemplTwin(t *testing.T) {
 	t.Parallel()
