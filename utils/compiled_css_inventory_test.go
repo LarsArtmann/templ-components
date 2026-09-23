@@ -57,7 +57,8 @@ func readCompiledCSSTargets(t *testing.T) []string {
 // TestCompiledCSSInventory pins the tracked compiled-CSS artifact set.
 //
 // Everything else with an .out.css suffix was dead weight: compiled output of
-// a `tc new` preset scaffolder that never shipped, byte-identical duplicates
+// a preset-scaffolder subcommand that never shipped (the shipped commands are
+// `tc init` and `tc add`), byte-identical duplicates
 // of static/app.css, and website output the Astro/Vite build regenerates.
 // They were removed 2026-09-13 after audit (see AGENTS.md "CSS artifact
 // inventory"). This guard keeps the tracked set at exactly the targets that
