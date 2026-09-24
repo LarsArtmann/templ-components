@@ -28,6 +28,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`htmx.PolledRegion` normalizes hour-style poll intervals.** htmx's
+  `parseInterval` only understands `ms`/`s`/`m` suffixes and bare numbers;
+  anything else falls through to `parseFloat`, so `Every: "1h"` produced a
+  **1-millisecond** self-poll storm from a natural-looking typo. Hours
+  (`1h`, `1.5h`) are now rendered as seconds (`3600s`, `5400s`); every
+  other timing string passes through verbatim. Pinned by
+  `TestPolledRegionEveryHoursNormalized`.
+
 - **`htmx.PolledRegion` eager mode no longer causes an infinite
   self-refetch loop.** Eager used to prepend a `load` token to the
   auto-generated `hx-trigger` (`hx-trigger="load, every 10s"`). With the

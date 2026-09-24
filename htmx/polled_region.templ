@@ -1,6 +1,8 @@
 package htmx
 
 import (
+	"regexp"
+	"strconv"
 	"time"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -21,6 +23,29 @@ func polledSwapValue(swap SwapStyle) SwapStyle {
 	}
 	return SwapOuterHTML
 }
+
+// polledEveryValue normalizes the poll interval. htmx's parseInterval only
+// understands ms/s/m suffixes (and bare numbers): everything else falls
+// through to parseFloat, so "1h" becomes 1 MILLISECOND — a 1ms self-poll
+// storm from a natural-looking typo (hit while writing this library's own
+// E2E). Hours are converted to seconds; any other string passes through
+// verbatim (exotic timing stays htmx's business).
+func polledEveryValue(every string) string {
+	match := everyHoursRe.FindStringSubmatch(every)
+	if match == nil {
+		return every
+	}
+
+	hours, err := strconv.ParseFloat(match[1], 64)
+
+	if err != nil || hours <= 0 {
+		return every
+	}
+
+	return strconv.FormatFloat(hours*3600, 'f', -1, 64) + "s"
+}
+
+var everyHoursRe = regexp.MustCompile(`^([0-9]+(?:\.[0-9]+)?)h$`)
 
 // PolledRegion renders a div that auto-refreshes its content via HTMX polling
 // on an interval. The region replaces itself (hx-swap="outerHTML") on each
@@ -68,7 +93,9 @@ templ PolledRegion(props PolledRegionProps) {
 		if trigger == "" {
 			// Never a "load" token here — see the EAGER doc above. Eager's
 			// first fetch is fired by the busy-cue script, not by hx-trigger.
-			trigger = "every " + props.Every
+			// polledEveryValue converts "1h"-style typos that htmx would
+			// parse as 1ms into seconds.
+			trigger = "every " + polledEveryValue(props.Every)
 		}
 		eager := props.Eager && props.Trigger == ""
 		updatedAt := time.Now()

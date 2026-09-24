@@ -9,6 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"regexp"
+	"strconv"
 	"time"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -29,6 +31,29 @@ func polledSwapValue(swap SwapStyle) SwapStyle {
 	}
 	return SwapOuterHTML
 }
+
+// polledEveryValue normalizes the poll interval. htmx's parseInterval only
+// understands ms/s/m suffixes (and bare numbers): everything else falls
+// through to parseFloat, so "1h" becomes 1 MILLISECOND — a 1ms self-poll
+// storm from a natural-looking typo (hit while writing this library's own
+// E2E). Hours are converted to seconds; any other string passes through
+// verbatim (exotic timing stays htmx's business).
+func polledEveryValue(every string) string {
+	match := everyHoursRe.FindStringSubmatch(every)
+	if match == nil {
+		return every
+	}
+
+	hours, err := strconv.ParseFloat(match[1], 64)
+
+	if err != nil || hours <= 0 {
+		return every
+	}
+
+	return strconv.FormatFloat(hours*3600, 'f', -1, 64) + "s"
+}
+
+var everyHoursRe = regexp.MustCompile(`^([0-9]+(?:\.[0-9]+)?)h$`)
 
 // PolledRegion renders a div that auto-refreshes its content via HTMX polling
 // on an interval. The region replaces itself (hx-swap="outerHTML") on each
@@ -95,7 +120,9 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		if trigger == "" {
 			// Never a "load" token here — see the EAGER doc above. Eager's
 			// first fetch is fired by the busy-cue script, not by hx-trigger.
-			trigger = "every " + props.Every
+			// polledEveryValue converts "1h"-style typos that htmx would
+			// parse as 1ms into seconds.
+			trigger = "every " + polledEveryValue(props.Every)
 		}
 		eager := props.Eager && props.Trigger == ""
 		updatedAt := time.Now()
@@ -120,7 +147,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 82, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 109, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -138,7 +165,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.SafeURL(props.URL))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 84, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 111, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -151,7 +178,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(trigger)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 85, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 112, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
@@ -164,7 +191,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(swap))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 86, Col: 24}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 113, Col: 24}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
@@ -177,7 +204,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(live))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 87, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 114, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 		if templ_7745c5c3_Err != nil {
@@ -230,7 +257,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(updatedAt.Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 100, Col: 46}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 127, Col: 46}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
@@ -243,7 +270,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(updatedAt.Format(timeFormat))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 102, Col: 43}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 129, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {

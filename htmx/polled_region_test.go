@@ -240,3 +240,37 @@ func TestPolledRegionEagerNeverEmitsLoadTrigger(t *testing.T) {
 		utils.AssertNotContains(t, output, `"load`)
 	})
 }
+
+// TestPolledRegionEveryHoursNormalized pins the htmx parseInterval footgun
+// guard: parseInterval only understands ms/s/m (bare numbers), so "1h"
+// falls through to parseFloat("1h") = 1 MILLISECOND — a 1ms self-poll storm
+// from a natural typo. polledEveryValue converts hours to seconds; any other
+// string passes through verbatim.
+func TestPolledRegionEveryHoursNormalized(t *testing.T) {
+	t.Parallel()
+
+	cases := []struct {
+		name  string
+		every string
+		want  string
+	}{
+		{"hours convert to seconds", "1h", `hx-trigger="every 3600s"`},
+		{"fractional hours convert", "1.5h", `hx-trigger="every 5400s"`},
+		{"seconds pass through", "30s", `hx-trigger="every 30s"`},
+		{"milliseconds pass through", "500ms", `hx-trigger="every 500ms"`},
+		{"minutes pass through", "2m", `hx-trigger="every 2m"`},
+		{"bare number passes through", "5", `hx-trigger="every 5"`},
+		{"zero hours left verbatim (htmx's problem)", "0h", `hx-trigger="every 0h"`},
+	}
+
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, PolledRegion(PolledRegionProps{
+				URL:   "/stats",
+				Every: tt.every,
+			}))
+			utils.AssertContains(t, output, tt.want)
+		})
+	}
+}
