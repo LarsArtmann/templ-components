@@ -33,6 +33,14 @@ placeholder that's replaced with live data ASAP:
 }
 ```
 
+Eager never emits an `hx-trigger="load, ..."` token: with the default
+`hx-swap="outerHTML"` the region replaces itself on every response and htmx
+re-fires `load` for each swapped-in element, which is an infinite
+self-refetch loop. Instead the busy-cue script issues one `htmx.ajax` call
+per region on `DOMContentLoaded`. Regions injected after the initial page
+load (htmx partial swaps, boosted navigation) get no eager fetch and degrade
+to interval-only polling.
+
 ## Timestamp footer
 
 `ShowTimestamp: true` renders an "Updated HH:MM:SS" footer so operators can

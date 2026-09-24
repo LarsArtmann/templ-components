@@ -156,8 +156,10 @@ func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {
 // even though the endpoint re-renders the same eager region on every
 // response. Under the old hx-trigger="load, every Ns" implementation htmx
 // re-fired "load" for every swapped-in element, producing an unbounded
-// self-refetch loop. The interval is set to 1h so it can never fire during
-// the test — every hit after the first is an illegal refetch.
+// self-refetch loop. The interval is 3600s (NOT "1h" — htmx's parseInterval
+// only understands ms/s/m and parses "1h" as parseFloat("1h") = 1ms, a 1ms
+// self-poll storm) so it can never fire during the test — every hit after
+// the first is an illegal refetch.
 func TestPolledRegionEagerOuterHTMLNoRefetchLoop(t *testing.T) {
 	t.Parallel()
 
@@ -166,7 +168,7 @@ func TestPolledRegionEagerOuterHTMLNoRefetchLoop(t *testing.T) {
 	regionProps := htmx.DefaultPolledRegionProps()
 	regionProps.ID = "loop-region"
 	regionProps.URL = "/api/loop"
-	regionProps.Every = "1h"
+	regionProps.Every = "3600s"
 	regionProps.Eager = true
 	regionProps.ShowTimestamp = false
 

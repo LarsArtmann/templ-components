@@ -26,6 +26,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`htmx.PolledRegion` eager mode no longer causes an infinite
+  self-refetch loop.** Eager used to prepend a `load` token to the
+  auto-generated `hx-trigger` (`hx-trigger="load, every 10s"`). With the
+  default `hx-swap="outerHTML"` the region replaces itself on every
+  response, htmx processes each swapped-in element and fires `load` again —
+  an unbounded request storm (the 2026-09-04 DiscordSync projection-health
+  outage). Eager's first fetch is now fired by the singleton busy-cue
+  script as a one-shot `htmx.ajax` call per initial-DOM region on
+  `DOMContentLoaded`; `hx-trigger` is always `every Ns` (custom `Trigger`
+  unchanged). Busy-cue clearing also handles successful self-replacement
+  now: `htmx:afterSwap` clears the marker on the swapped-in element,
+  `htmx:afterRequest` keeps covering error completions. Regions injected
+  after the initial page load (partial swaps, boosted navigation) get no
+  eager fetch and degrade to interval-only polling. Pinned by a render-level
+  guard test across all eight swap styles and a browser E2E that counts
+  endpoint hits (exactly one) against a response that re-renders the eager
+  region.
+
 - **`TestPrerenderMatchesLiveServer` no longer flakes on wall-clock
   stamps.** The prerender-vs-live comparison normalized CSRF tokens and
   auto-generated IDs but not server-rendered time: the demo page's build
