@@ -5,7 +5,7 @@ go 1.26
 require (
 	github.com/a-h/templ v0.3.1020
 	github.com/larsartmann/go-datastar/static v0.6.0
-	github.com/larsartmann/templ-components/utils v1.19.2
+	github.com/larsartmann/templ-components/utils v1.19.3
 )
 
 require github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
