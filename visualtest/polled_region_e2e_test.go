@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -145,6 +146,83 @@ func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {
 	if !syntheticCleared {
 		t.Error(
 			"synthetic htmx:afterRequest dispatch did not clear the re-armed cue — listener not attached or wrong element targeting",
+		)
+	}
+}
+
+// TestPolledRegionEagerOuterHTMLNoRefetchLoop is the browser-level guard for
+// the 2026-09-04 DiscordSync projection-health outage: an eager PolledRegion
+// with the default hx-swap="outerHTML" must issue EXACTLY ONE eager request,
+// even though the endpoint re-renders the same eager region on every
+// response. Under the old hx-trigger="load, every Ns" implementation htmx
+// re-fired "load" for every swapped-in element, producing an unbounded
+// self-refetch loop. The interval is set to 1h so it can never fire during
+// the test — every hit after the first is an illegal refetch.
+func TestPolledRegionEagerOuterHTMLNoRefetchLoop(t *testing.T) {
+	t.Parallel()
+
+	var hits atomic.Int64
+
+	regionProps := htmx.DefaultPolledRegionProps()
+	regionProps.ID = "loop-region"
+	regionProps.URL = "/api/loop"
+	regionProps.Every = "1h"
+	regionProps.Eager = true
+	regionProps.ShowTimestamp = false
+
+	renderRegion := func(w io.Writer) {
+		_ = htmx.PolledRegion(regionProps).Render(
+			templ.WithChildren(context.Background(), templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+				_, err := io.WriteString(w, `<span>loop content</span>`)
+
+				return err
+			})), w)
+	}
+
+	page := func() templ.Component {
+		pageProps := layout.DefaultPageProps()
+		pageProps.Title = "PolledRegion loop-guard E2E — templ-components"
+		pageProps.CSSPath = "/app.css"
+
+		return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+			return layout.Base(pageProps).Render(templ.WithChildren(ctx, templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+				renderRegion(w)
+
+				return nil
+			})), w)
+		})
+	}
+
+	srv := e2ePageServer(t, page, func(mux *http.ServeMux) {
+		mux.HandleFunc("/api/loop", func(w http.ResponseWriter, _ *http.Request) {
+			hits.Add(1)
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			renderRegion(w)
+		})
+	})
+
+	ctx, cancel := newTab(t)
+	defer cancel()
+
+	ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
+	defer cancelTimeout()
+
+	if err := chromedp.Run(
+		ctx,
+		chromedp.Navigate(srv.URL+"/"),
+		pollTrue(
+			`document.readyState==='complete' && window.htmx!==undefined && document.querySelector('#loop-region')!==null`,
+		),
+		// Give any illegal refetch loop ample time to rack up hits.
+		chromedp.Sleep(3*time.Second),
+	); err != nil {
+		t.Fatalf("PolledRegion loop-guard E2E: %v", err)
+	}
+
+	if got := hits.Load(); got != 1 {
+		t.Errorf(
+			"eager outerHTML region must fetch exactly once (the one-shot htmx.ajax); got %d hits — the pre-fix 'load' trigger looped unboundedly here",
+			got,
 		)
 	}
 }
