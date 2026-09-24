@@ -10,3 +10,7 @@ require (
 )
 
 require github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
+
+replace github.com/larsartmann/templ-components/utils => ../utils
+
+replace github.com/larsartmann/templ-components/icons => ../icons
