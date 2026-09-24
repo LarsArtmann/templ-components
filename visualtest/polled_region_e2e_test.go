@@ -187,11 +187,12 @@ func TestPolledRegionEagerOuterHTMLNoRefetchLoop(t *testing.T) {
 		pageProps.CSSPath = "/app.css"
 
 		return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-			return layout.Base(pageProps).Render(templ.WithChildren(ctx, templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-				renderRegion(w)
+			return layout.Base(pageProps).
+				Render(templ.WithChildren(ctx, templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+					renderRegion(w)
 
-				return nil
-			})), w)
+					return nil
+				})), w)
 		})
 	}
 
