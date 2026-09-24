@@ -30,9 +30,17 @@ type PolledRegionProps struct {
 	// Every is the poll interval as an HTMX timing string (e.g. "10s", "2m", "500ms").
 	Every string
 
-	// Eager fires the first fetch on initial load in addition to polling.
-	// When false, the first fetch happens after the first interval elapses.
-	// Ignored when Trigger is set.
+	// Eager fires the first fetch immediately on page load in addition to
+	// polling. When false, the first fetch happens after the first interval
+	// elapses. Ignored when Trigger is set.
+	//
+	// Eager never emits an hx-trigger "load" token: with the default
+	// hx-swap="outerHTML" the region replaces itself on every response and
+	// htmx re-fires "load" for each swapped-in element, which is an
+	// infinite self-refetch loop. Instead the busy-cue script issues one
+	// htmx.ajax call per initial-DOM region on DOMContentLoaded. Regions
+	// injected after the initial page load degrade to interval-only
+	// polling.
 	Eager bool
 
 	// Trigger overrides the auto-generated hx-trigger value. When set,

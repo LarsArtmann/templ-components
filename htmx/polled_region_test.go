@@ -20,7 +20,7 @@ func TestPolledRegionRender(t *testing.T) {
 	}))
 	utils.AssertContains(t, output, `id="stats-region"`)
 	utils.AssertContains(t, output, `hx-get="/partials/stats"`)
-	utils.AssertContains(t, output, `hx-trigger="load, every 10s"`)
+	utils.AssertContains(t, output, `hx-trigger="every 10s"`)
 	utils.AssertContains(t, output, `hx-swap="innerHTML"`)
 	utils.AssertContains(t, output, `aria-live="assertive"`)
 }
@@ -153,7 +153,10 @@ func TestPolledRegionBusyCue(t *testing.T) {
 		utils.AssertContains(t, output, `aria-busy="true"`)
 		utils.AssertContains(t, output, "data-tc-polled-busy")
 		utils.AssertContains(t, output, `nonce="test-nonce"`)
+		utils.AssertContains(t, output, "htmx:afterSwap")
 		utils.AssertContains(t, output, "htmx:afterRequest")
+		utils.AssertContains(t, output, "htmx.ajax")
+		utils.AssertContains(t, output, "DOMContentLoaded")
 		utils.AssertContains(t, output, "window.tcPolledBusyAttached")
 	})
 
@@ -189,5 +192,51 @@ func TestPolledRegionBusyCue(t *testing.T) {
 		utils.AssertContains(t, output, "tcPolledBusyAttached")
 		utils.AssertNotContains(t, output, `nonce=""`)
 		utils.AssertNotContains(t, output, "nonce=")
+	})
+}
+
+// TestPolledRegionEagerNeverEmitsLoadTrigger is the render-level guard for
+// the 2026-09-04 DiscordSync projection-health outage: with the default
+// hx-swap="outerHTML" the region replaces ITSELF on every response, htmx
+// processes each swapped-in element and fires "load" again, so an
+// hx-trigger "load" token on a self-replacing element is an infinite
+// self-refetch loop. Eager's first fetch must come from the one-shot
+// htmx.ajax script, never from hx-trigger — for EVERY swap style, so the
+// rule cannot silently regress when a consumer switches swap modes.
+func TestPolledRegionEagerNeverEmitsLoadTrigger(t *testing.T) {
+	t.Parallel()
+
+	swaps := []SwapStyle{
+		SwapOuterHTML, SwapInnerHTML, SwapBeforeBegin, SwapAfterBegin,
+		SwapBeforeEnd, SwapAfterEnd, SwapDelete, SwapNone,
+	}
+	for _, swap := range swaps {
+		t.Run(string(swap), func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, PolledRegion(PolledRegionProps{
+				URL:   "/stats",
+				Every: "7s",
+				Eager: true,
+				Swap:  swap,
+			}))
+			utils.AssertContains(t, output, `hx-trigger="every 7s"`)
+			utils.AssertNotContains(t, output, "load,")
+			utils.AssertNotContains(t, output, `"load`)
+			// The eager fetch mechanism must be script-driven instead.
+			utils.AssertContains(t, output, "data-tc-polled-busy")
+			utils.AssertContains(t, output, "htmx.ajax")
+		})
+	}
+
+	t.Run("default props (zero-value Swap) also emit no load token", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PolledRegion(PolledRegionProps{
+			URL:   "/stats",
+			Every: "7s",
+			Eager: true,
+		}))
+		utils.AssertContains(t, output, `hx-trigger="every 7s"`)
+		utils.AssertContains(t, output, `hx-swap="outerHTML"`)
+		utils.AssertNotContains(t, output, `"load`)
 	})
 }
