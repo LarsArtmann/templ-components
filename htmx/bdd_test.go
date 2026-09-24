@@ -154,7 +154,12 @@ func TestPolledRegionUserSeesAutoRefreshingContent(t *testing.T) {
 			Every: "30s",
 			Eager: true,
 		}))
-		utils.AssertContains(t, output, `hx-trigger="load, every 30s"`)
+		// Eager must never use an hx-trigger "load" token — with the default
+		// outerHTML swap that is an infinite self-refetch loop. The busy-cue
+		// script fires the first fetch via one-shot htmx.ajax instead.
+		utils.AssertContains(t, output, `hx-trigger="every 30s"`)
+		utils.AssertContains(t, output, "data-tc-polled-busy")
+		utils.AssertContains(t, output, "htmx.ajax")
 	})
 
 	t.Run("timestamp shows polling is active", func(t *testing.T) {

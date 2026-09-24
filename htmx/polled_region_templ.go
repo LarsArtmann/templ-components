@@ -37,12 +37,23 @@ func polledSwapValue(swap SwapStyle) SwapStyle {
 // Include a "Updated HH:MM:SS" timestamp (ShowTimestamp: true) so operators
 // can verify polling is active — if the timestamp freezes, polling has stalled.
 //
-// When Eager fires the first fetch on load, the region renders with an
-// aria-busy="true" busy cue (data-tc-polled-busy marker) that a singleton
-// script clears on the first completed request (htmx:afterRequest fires for
-// success AND error completions) — parity with datastar.LiveRegion's busy
-// cue, so screen readers wait for the fresh content instead of announcing
-// the stale initial render twice.
+// When Eager is set, the region renders with an aria-busy="true" busy cue
+// (data-tc-polled-busy marker) and a singleton script that fires the first
+// fetch once per initial-DOM region on DOMContentLoaded, then clears the
+// busy cue on the first completed request (htmx:afterSwap covers successful
+// self-replacement, htmx:afterRequest covers error completions) — parity
+// with datastar.LiveRegion's busy cue, so screen readers wait for the fresh
+// content instead of announcing the stale initial render twice.
+//
+// EAGER NEVER EMITS AN hx-trigger "load" TOKEN. With the default
+// hx-swap="outerHTML" the region replaces ITSELF on every response; htmx
+// processes each swapped-in element and fires "load" again, so
+// hx-trigger="load, every Ns" on a self-replacing element is an infinite
+// self-refetch loop (the 2026-09-04 DiscordSync projection-health outage).
+// The eager fetch is therefore issued by the script as a one-shot htmx.ajax
+// call. Regions injected after the initial page load (htmx partial swaps,
+// boosted navigation) get no eager fetch and degrade to interval-only
+// polling — the busy cue clears on their first interval response.
 //
 //	@htmx.PolledRegion(htmx.PolledRegionProps{URL: "/partials/stats", Every: "10s", Eager: true}) {
 //	   @display.StatCard(display.StatCardProps{Label: "Messages", Value: "1,234"})
@@ -82,10 +93,9 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		swap := polledSwapValue(props.Swap)
 		trigger := props.Trigger
 		if trigger == "" {
+			// Never a "load" token here — see the EAGER doc above. Eager's
+			// first fetch is fired by the busy-cue script, not by hx-trigger.
 			trigger = "every " + props.Every
-			if props.Eager {
-				trigger = "load, every " + props.Every
-			}
 		}
 		eager := props.Eager && props.Trigger == ""
 		updatedAt := time.Now()
@@ -110,7 +120,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 72, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 82, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -128,7 +138,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.SafeURL(props.URL))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 74, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 84, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -141,7 +151,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(trigger)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 75, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 85, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
@@ -154,7 +164,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(swap))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 76, Col: 24}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 86, Col: 24}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
@@ -167,7 +177,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(live))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 77, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 87, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 		if templ_7745c5c3_Err != nil {
@@ -220,7 +230,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(updatedAt.Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 90, Col: 46}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 100, Col: 46}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
@@ -233,7 +243,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(updatedAt.Format(timeFormat))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 92, Col: 43}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 102, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -258,11 +268,24 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 	})
 }
 
-// polledRegionBusyScript clears the aria-busy loading cue once the region's
-// first poll completes (htmx:afterRequest fires after every request
-// completion — success or error — so a failing endpoint also un-busies the
-// region and leaves the initial content readable). Singleton-guarded: safe
-// across HTMX re-renders and multiple regions on one page.
+// polledRegionBusyScript does two jobs for eager regions, both
+// singleton-guarded (safe across HTMX re-renders and multiple regions on one
+// page):
+//
+//  1. Eager one-shot: on DOMContentLoaded it issues ONE htmx.ajax fetch per
+//     busy-marked region present in the initial DOM. This replaces the old
+//     hx-trigger="load, ..." token, which looped infinitely under
+//     hx-swap="outerHTML" (every swapped-in element re-fires "load").
+//     htmx.ajax needs no processed trigger listener, so it is race-free
+//     regardless of how the htmx runtime itself is loaded (inline or
+//     deferred). Regions injected later are NOT eager-fired — the script
+//     body never re-runs — they poll on the interval only.
+//  2. Busy-cue clearing: htmx:afterSwap clears the marker on the swapped-IN
+//     element (a successful outerHTML poll replaces the region, and the
+//     response may re-render it busy), htmx:afterRequest clears the
+//     requesting element (error completions perform no swap, so a failing
+//     endpoint also un-busies the region and leaves the initial content
+//     readable).
 func polledRegionBusyScript(nonce string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -292,7 +315,7 @@ func polledRegionBusyScript(nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, ">\n\t\t(function() {\n\t\t\t'use strict';\n\t\t\tif (window.tcPolledBusyAttached) return;\n\t\t\twindow.tcPolledBusyAttached = true;\n\t\t\tdocument.addEventListener('htmx:afterRequest', function(evt) {\n\t\t\t\tvar el = (evt.detail && evt.detail.elt) || evt.target;\n\t\t\t\tif (el && el.hasAttribute && el.hasAttribute('data-tc-polled-busy')) {\n\t\t\t\t\tel.removeAttribute('aria-busy');\n\t\t\t\t\tel.removeAttribute('data-tc-polled-busy');\n\t\t\t\t}\n\t\t\t});\n\t\t})();\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, ">\n\t\t(function() {\n\t\t\t'use strict';\n\t\t\tif (window.tcPolledBusyAttached) return;\n\t\t\twindow.tcPolledBusyAttached = true;\n\t\t\tfunction clearBusy(el) {\n\t\t\t\tif (el && el.hasAttribute && el.hasAttribute('data-tc-polled-busy')) {\n\t\t\t\t\tel.removeAttribute('aria-busy');\n\t\t\t\t\tel.removeAttribute('data-tc-polled-busy');\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction fireEager(el) {\n\t\t\t\tif (!window.htmx || !el.isConnected) return;\n\t\t\t\tvar url = el.getAttribute('hx-get');\n\t\t\t\tif (!url) return;\n\t\t\t\thtmx.ajax('GET', url, {\n\t\t\t\t\ttarget: el,\n\t\t\t\t\tswap: el.getAttribute('hx-swap') || 'outerHTML'\n\t\t\t\t});\n\t\t\t}\n\t\t\tfunction fireAllEager() {\n\t\t\t\tvar regions = document.querySelectorAll('[data-tc-polled-busy]');\n\t\t\t\tfor (var i = 0; i < regions.length; i++) fireEager(regions[i]);\n\t\t\t}\n\t\t\tif (document.readyState === 'loading') {\n\t\t\t\tdocument.addEventListener('DOMContentLoaded', fireAllEager);\n\t\t\t} else {\n\t\t\t\tfireAllEager();\n\t\t\t}\n\t\t\tdocument.addEventListener('htmx:afterSwap', function(evt) {\n\t\t\t\tclearBusy(evt.detail && evt.detail.elt);\n\t\t\t});\n\t\t\tdocument.addEventListener('htmx:afterRequest', function(evt) {\n\t\t\t\tclearBusy((evt.detail && evt.detail.elt) || evt.target);\n\t\t\t});\n\t\t})();\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

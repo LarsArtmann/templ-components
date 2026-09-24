@@ -1,14 +1,37 @@
-<div hx-get="/partials/live" hx-trigger="load, every 5s" hx-swap="outerHTML" aria-live="polite" aria-busy="true" data-tc-polled-busy class=""></div><script>
+<div hx-get="/partials/live" hx-trigger="every 5s" hx-swap="outerHTML" aria-live="polite" aria-busy="true" data-tc-polled-busy class=""></div><script>
 		(function() {
 			'use strict';
 			if (window.tcPolledBusyAttached) return;
 			window.tcPolledBusyAttached = true;
-			document.addEventListener('htmx:afterRequest', function(evt) {
-				var el = (evt.detail && evt.detail.elt) || evt.target;
+			function clearBusy(el) {
 				if (el && el.hasAttribute && el.hasAttribute('data-tc-polled-busy')) {
 					el.removeAttribute('aria-busy');
 					el.removeAttribute('data-tc-polled-busy');
 				}
+			}
+			function fireEager(el) {
+				if (!window.htmx || !el.isConnected) return;
+				var url = el.getAttribute('hx-get');
+				if (!url) return;
+				htmx.ajax('GET', url, {
+					target: el,
+					swap: el.getAttribute('hx-swap') || 'outerHTML'
+				});
+			}
+			function fireAllEager() {
+				var regions = document.querySelectorAll('[data-tc-polled-busy]');
+				for (var i = 0; i < regions.length; i++) fireEager(regions[i]);
+			}
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', fireAllEager);
+			} else {
+				fireAllEager();
+			}
+			document.addEventListener('htmx:afterSwap', function(evt) {
+				clearBusy(evt.detail && evt.detail.elt);
+			});
+			document.addEventListener('htmx:afterRequest', function(evt) {
+				clearBusy((evt.detail && evt.detail.elt) || evt.target);
 			});
 		})();
 	</script>

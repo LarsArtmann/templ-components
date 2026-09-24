@@ -101,9 +101,10 @@ func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {
 		),
 		chromedp.Evaluate(regionBusyJS("region-a"), &initialBusyA),
 		chromedp.Evaluate(regionBusyJS("region-b"), &initialBusyB),
-		// The eager `load` trigger fires the real request; htmx dispatches the
-		// real htmx:afterRequest on completion — the script must clear both
-		// regions (document-level delegation, one listener for many regions).
+		// The eager one-shot script fires the real request via htmx.ajax;
+		// htmx dispatches the real htmx:afterRequest on completion — the
+		// script must clear both regions (document-level delegation, one
+		// listener for many regions).
 		pollBool(`!`+regionBusyJS("region-a"), &clearedA),
 		pollBool(`!`+regionBusyJS("region-b"), &clearedB),
 		chromedp.Evaluate(`document.querySelector('#region-a span').textContent`, &contentIntact),
