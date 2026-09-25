@@ -98,7 +98,11 @@ templ PolledRegion(props PolledRegionProps) {
 			trigger = "every " + polledEveryValue(props.Every)
 		}
 		eager := props.Eager && props.Trigger == ""
-		updatedAt := time.Now()
+		nowFn := props.Now
+		if nowFn == nil {
+			nowFn = time.Now
+		}
+		updatedAt := nowFn()
 		timeFormat := props.TimeFormat
 		if timeFormat == "" {
 			timeFormat = "15:04:05"

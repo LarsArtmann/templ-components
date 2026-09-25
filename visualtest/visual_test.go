@@ -1205,19 +1205,21 @@ func TestExternalLink(t *testing.T) {
 // MaxMismatch is 1%: the rendered text uses sub-pixel anti-aliasing that
 // varies slightly between Chromium runs on static content.
 //
-// ShowTimestamp is forced OFF: the default renders "Updated HH:MM:SS" from
-// the wall clock, so every capture at a different second mismatched its own
-// golden — and because the timestamp string also shifts the intrinsic width
-// (digit/colon kerning), the harness reported it as a dimension change:
-// 100% mismatch with 0 differing pixels. A golden of wall-clock content can
-// never match; the timestamp markup stays covered by the string tests.
+// The timestamp footer stays covered WITH the ShowTimestamp=true markup:
+// the injected fixed clock (PolledRegionProps.Now) renders a constant
+// "Updated HH:MM:SS", so the golden is deterministic. (The earlier
+// ShowTimestamp=false workaround was the lesser fix — it removed the
+// wall-clock flake by removing the coverage; the clock seam restores both.)
 func TestPolledRegion(t *testing.T) {
 	t.Parallel()
 
 	props := htmx.DefaultPolledRegionProps()
 	props.URL = "/api/stats"
 	props.Every = "5s"
-	props.ShowTimestamp = false
+	props.ShowTimestamp = true
+	props.Now = func() time.Time {
+		return time.Date(2026, 9, 25, 12, 34, 56, 0, time.UTC)
+	}
 
 	region := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		ctx = templ.WithChildren(ctx, templ.Raw(

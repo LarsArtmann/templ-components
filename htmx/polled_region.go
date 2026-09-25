@@ -1,6 +1,8 @@
 package htmx
 
 import (
+	"time"
+
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -61,6 +63,12 @@ type PolledRegionProps struct {
 	// at a glance that polling is active (the timestamp ticks forward on each
 	// successful poll because the whole region re-renders).
 	ShowTimestamp bool
+
+	// Now overrides the wall clock used for the timestamp footer. Nil (the
+	// zero default) means time.Now. Inject a fixed clock in visual goldens
+	// and tests so ShowTimestamp coverage is deterministic instead of
+	// flaking across the second boundary (or being disabled outright).
+	Now func() time.Time
 
 	// TimeFormat is the Go time format string for the timestamp footer.
 	// Default: "15:04:05" (time-only). Use time.RFC3339 for full date+time.
