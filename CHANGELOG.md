@@ -32,7 +32,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - ADR-0009: 2026-09-25 clone-group classification pass (5 clone groups
-  classified accepted/fix; consequences inventory at 124 groups).
+  classified accepted/fix; consequences inventory at 124 groups at t=1 per
+  the 2026-09-25 re-record with the fork detector).
 - AGENTS.md: sibling-pin tagging policy (sibling module pins ride the release
   version at cut; tracked `result*` symlinks are release blockers).
 

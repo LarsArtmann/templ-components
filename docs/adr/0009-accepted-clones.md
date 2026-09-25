@@ -622,7 +622,7 @@ the logs themselves are not recoverable and are declared accepted loss.
 
 Baseline counts at the 2026-09-23 second-pass re-recording (nix art-dupl
 0.7.0-81ce00b; superseding the 2026-09-22 evening recording of 122 groups
-under fork v0.7.0-74-ge7456139): 121 groups at t=1 — component-idiom/templ-DSL clones
+under fork v0.7.0-74-ge7456139): 121 groups (t=1) — component-idiom/templ-DSL clones
 (heading/span/children-slot one-liners, enum IsValid guards, meta/link head
 tags), demo-binary content, throwaway CLI-tool boilerplate
 (`visualtest/tools/*` defer/flag chains), and website page content. The
@@ -656,7 +656,7 @@ blanket-accepting or blanket-extracting.
 
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
   — it fails ONLY on clones not in the accepted baseline (currently 124
-  groups per the 2026-09-25 re-record with the fork detector: the 5 new
+  groups at t=1, per the 2026-09-25 re-record with the fork detector: the 5 new
   groups are documented in the 2026-09-25 pass; 2 of the prior 121 hashes
   went stale with the v1.19.3 test-file edits, the living-artifact case
   below; see the tool-version pin above)
