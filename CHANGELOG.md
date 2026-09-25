@@ -6,6 +6,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`visualtest/result` symlink untracked; nix `result*` output ignored at any
+  depth.** The auto-commit daemon snapshotted a nix build-output symlink
+  because `.gitignore` only covered the root `/result`; the dangling store
+  reference broke downstream `mkPreparedSource` `noBrokenSymlinks` gates and
+  poisoned the v1.19.3 tag tree — consumers should move to v1.19.4 or pin a
+  rev ≥ `08253ce4`.
+
+### Changed
+
+- **`htmx.PolledRegion` normalizes hour-style poll intervals** (`1h`, `1.5h` →
+  `3600s`, `5400s`). htmx's `parseInterval` only understands `ms`/`s`/`m`
+  suffixes and bare numbers; `Every: "1h"` previously fell through to
+  `parseFloat` and produced a 1-millisecond self-poll storm from a
+  natural-looking typo. NOTE: this fix appears in the [1.19.3] notes below but
+  the v1.19.3 TAG predates it — v1.19.4 is the first release whose tag tree
+  contains it.
+- Visual-regression determinism: the PolledRegion golden now renders with
+  `ShowTimestamp = false` (a live wall-clock timestamp made the golden
+  time-of-day-dependent); `visualtest/testdata/polledregion/light.png`
+  re-baselined (174×86).
+
+### Added
+
+- ADR-0009: 2026-09-25 clone-group classification pass (5 clone groups
+  classified accepted/fix; consequences inventory at 124 groups).
+- AGENTS.md: sibling-pin tagging policy (sibling module pins ride the release
+  version at cut; tracked `result*` symlinks are release blockers).
+
 ## [1.19.3] — 2026-09-24
 
 ### Added
