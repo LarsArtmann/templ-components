@@ -57,6 +57,7 @@ func TestPolledRegionTimestamp(t *testing.T) {
 	})
 	t.Run("injected clock renders a deterministic timestamp", func(t *testing.T) {
 		t.Parallel()
+
 		fixed := time.Date(2026, 9, 25, 12, 34, 56, 0, time.UTC)
 		props := PolledRegionProps{
 			URL:           "/stats",
