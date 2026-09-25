@@ -63,6 +63,24 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 nix shell nixpkgs#govulncheck -c nix develop -c scripts/release.sh <ver> "<summary>"
 ```
 
+### Tagging policy: sibling pins + tag-tree hygiene (decided 2026-09-25, M18)
+
+- **visualtest/website pins ride the RELEASE VERSION, never pseudo-versions.** Both
+  sibling modules keep `replace ... => ../` for local dev and `require` at the last
+  released tag; the release script's bump loop moves them to the new version and
+  strips the replaces from the TAGGED go.mod files (tagged source must be
+  consumer-clean). Pseudo-version pins are rejected: at tag time they reference
+  SHAs that may not exist on the origin yet (unresolvable for consumers fetching
+  the tag), they break the bump loop's determinism, and they leak workspace-local
+  state into the module proxy.
+- **No workspace artifacts in the tag tree — `result*` symlinks are release
+  blockers.** The v1.19.3 tag shipped a daemon-committed `visualtest/result`
+  symlink (nix build output), which poisoned every downstream `mkPreparedSource`
+  fetch of that tag (DiscordSync/SystemNix could not build from it; fixed in
+  `08253ce4`, bare `result` gitignored). Rule: if `git status` shows any `result*`
+  path at release time, STOP — remove/trash it and re-verify the tree is clean
+  before the bump loop runs; do not let an auto-commit daemon race the tag.
+
 ### Nix flake commands
 
 ```bash
