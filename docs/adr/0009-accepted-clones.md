@@ -677,3 +677,13 @@ blanket-accepting or blanket-extracting.
 - Every remaining actionable clone is structural, templ-DSL-bound, or
   demo/website-binary noise per the entries above; future passes re-judge
   with the ADR-0010 criteria rather than treating this ledger as final
+- The 2 stale hashes from the 2026-09-25 re-record (121 → 124), identified
+  by diffing the 86d2a434 baseline against the re-recorded one (M16/F67):
+  `08ed8746e1591811` (visualtest/tools/siteshots/main.go × visualtest/demo.go,
+  4 tokens) and `4bf17f1ebe07500e` (visualtest/tools/ogshot/main.go ×
+  visualtest/tools/siteshots/main.go, 12 tokens). Both lived in the
+  visualtest tools triangle; the v1.19.3-era test-harness edits (ogshot/
+  siteshots binary work) reshaped those files so the clone hashes no longer
+  match — the replacement group `51d0dc005bb0df35` covers the same
+  oghot/siteshots pair post-edit. Living-artifact case: the CODE moved, the
+  acceptance did not change.

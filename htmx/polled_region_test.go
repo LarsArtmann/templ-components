@@ -2,6 +2,7 @@ package htmx
 
 import (
 	"testing"
+	"time"
 
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -53,6 +54,21 @@ func TestPolledRegionTimestamp(t *testing.T) {
 			ShowTimestamp: false,
 		}))
 		utils.AssertNotContains(t, output, "Updated")
+	})
+	t.Run("injected clock renders a deterministic timestamp", func(t *testing.T) {
+		t.Parallel()
+		fixed := time.Date(2026, 9, 25, 12, 34, 56, 0, time.UTC)
+		props := PolledRegionProps{
+			URL:           "/stats",
+			Every:         "10s",
+			ShowTimestamp: true,
+			Now:           func() time.Time { return fixed },
+		}
+
+		output := utils.Render(t, PolledRegion(props))
+
+		utils.AssertContains(t, output, "Updated 12:34:56")
+		utils.AssertContains(t, output, `datetime="2026-09-25T12:34:56Z"`)
 	})
 }
 

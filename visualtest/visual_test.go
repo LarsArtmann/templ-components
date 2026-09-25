@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"testing"
+	"time"
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/datastar"
