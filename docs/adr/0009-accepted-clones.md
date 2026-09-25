@@ -462,6 +462,57 @@ The logic is single-sourced; only the wiring repeats.
   `{ children... }` fallbacks, icon/text guard openings) — below the
   extraction floor, absorbed by the baseline.
 
+## 2026-09-25 Pass — Test-Tooling Idiom Groups (5 new over the 121-group baseline)
+
+Surfaced by `art-dupl check` after the v1.19.3 PolledRegion eager-fix session
+added tests and capture-tool wiring. All five groups are Go test/tooling
+idioms; none touch production component code, and none warranted extraction
+beyond what already exists.
+
+### Accepted: `testing.Short()` skip-guard pair
+
+`layout/sri_net_test.go` (TestPinnedSRIMatchesCDN) vs `visualtest/demo.go`
+(StartDemoServer) — the stdlib `-short` guard idiom
+(`if testing.Short() { t.Skip(...) }`). The skip reason is per-test prose
+(CDN SRI check vs demo e2e server), and a `skipIfShort(t)` helper would hide
+that reason behind a call while saving only 3 universally recognized lines.
+
+### Accepted: ephemeral loopback-listener pair
+
+`visualtest/demo.go` (`reserveFreePort`) vs `visualtest/tools/siteshots/main.go`
+(`serveDist`) — the stdlib `net.ListenConfig.Listen(ctx, "tcp", "127.0.0.1:0")`
+ephemeral-port idiom. `reserveFreePort` already IS the shared helper inside
+the visualtest module; the siteshots copy lives in a deliberately standalone
+single-file CLI tool (`visualtest/tools/*` mains cannot import the test
+module without a dependency inversion). Error handling differs by design
+(`t.Fatalf` vs returned error).
+
+### Accepted: `t.Helper()` marker-line pair
+
+`utils/test_helpers.go` (RenderAll) vs `utils/wire/wire_test.go`
+(renderAttributes) — the 1-line `t.Helper()` marker plus function preamble.
+Pure stdlib-idiom noise: exactly the 1-line class the 2026-09-22 session
+report predicted would be baselined rather than silenced via `--min-lines`
+(raising min-lines would also hide real 2–3-line structural clones).
+
+### Accepted: T/B render-helper twin pair
+
+`utils/test_helpers.go` (`Render`, takes `t TestReporter`, returns the
+trimmed string) vs `utils/benchmark_test.go` (`RenderToBuffer`, takes
+`b *testing.B`, deliberately DISCARDS the result so the benchmark measures
+rendering, not result retention). A shared `testing.TB` generic would erase
+the return-for-assertion vs discard-for-measurement distinction that makes
+each call site's intent readable.
+
+### Accepted: capture-tool `main()` bootstrap pair
+
+`visualtest/tools/ogshot/main.go` vs `visualtest/tools/siteshots/main.go` —
+~20 lines of standalone-tool `main()`: per-tool flag declarations, Parse,
+the `-selftest` gate, `run`/`log.Fatal`. The shared behavior is already
+extracted into `visualtest/internal/browser` (ExecPath, RequireChromium, OK)
+and `visualtest/internal/distserver`; what remains is each tool's own CLI
+surface. Same class as entry 22 (capture-tool `-selftest` wiring).
+
 ## Excluded: `cmd/tc/_sources/**` (embedded scaffolder copies)
 
 `cmd/tc/_sources/` contains byte-identical COPIES of the library's `.templ`
@@ -604,8 +655,11 @@ blanket-accepting or blanket-extracting.
 ## Consequences
 
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
-  — it fails ONLY on clones not in the accepted baseline (currently 122
-  groups under the fork v0.7.0-74 detector; see the tool-version pin above)
+  — it fails ONLY on clones not in the accepted baseline (currently 124
+  groups per the 2026-09-25 re-record with the fork detector: the 5 new
+  groups are documented in the 2026-09-25 pass; 2 of the prior 121 hashes
+  went stale with the v1.19.3 test-file edits, the living-artifact case
+  below; see the tool-version pin above)
 - Historical full-scan counts (DETECTOR-GENERATION-SPECIFIC — numbers are
   only comparable within one detector generation and are kept as historical
   narrative, never as a target): the pre-baseline detector generation

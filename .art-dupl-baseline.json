@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "threshold": 1,
-  "recordedAt": "2026-09-23T13:11:26.333042422Z",
+  "recordedAt": "2026-09-25T02:54:44.562817302Z",
   "entries": [
     {
       "hash": "02d58f70c9385ad6",
@@ -47,12 +47,12 @@
       "tokens": 2
     },
     {
-      "hash": "08ed8746e1591811",
+      "hash": "09b4d777823fe89f",
       "files": [
-        "visualtest/tools/siteshots/main.go",
-        "visualtest/demo.go"
+        "visualtest/demo.go",
+        "layout/sri_net_test.go"
       ],
-      "tokens": 4
+      "tokens": 2
     },
     {
       "hash": "0a6222dacd645b6d",
@@ -139,6 +139,14 @@
       "tokens": 3
     },
     {
+      "hash": "1a01a24b77c4699f",
+      "files": [
+        "visualtest/demo.go",
+        "visualtest/tools/siteshots/main.go"
+      ],
+      "tokens": 4
+    },
+    {
       "hash": "1af5c9c5f5616d92",
       "files": [
         "display/accordion.templ",
@@ -164,6 +172,14 @@
         "errorpage/shared.templ"
       ],
       "tokens": 5
+    },
+    {
+      "hash": "1cb0fdd4ee846cb4",
+      "files": [
+        "utils/test_helpers.go",
+        "utils/wire/wire_test.go"
+      ],
+      "tokens": 4
     },
     {
       "hash": "1e454fc80a2279ec",
@@ -371,12 +387,12 @@
       "tokens": 2
     },
     {
-      "hash": "4bf17f1ebe07500e",
+      "hash": "4d42f7c2dc91bb13",
       "files": [
-        "visualtest/tools/ogshot/main.go",
-        "visualtest/tools/siteshots/main.go"
+        "utils/test_helpers.go",
+        "utils/benchmark_test.go"
       ],
-      "tokens": 12
+      "tokens": 6
     },
     {
       "hash": "4e23849ba2d5c463",
@@ -385,6 +401,14 @@
         "website/internal/pages/sections.templ"
       ],
       "tokens": 2
+    },
+    {
+      "hash": "51d0dc005bb0df35",
+      "files": [
+        "visualtest/tools/ogshot/main.go",
+        "visualtest/tools/siteshots/main.go"
+      ],
+      "tokens": 12
     },
     {
       "hash": "5e3ac144e35a8126",
