@@ -47,6 +47,39 @@ func TestGoldenListNoteCount(t *testing.T) {
 	golden.Assert(t, "list_note_count", output)
 }
 
+func TestGoldenListNoteRange(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, ListNote(ListNoteProps{
+		RangeFrom: 193,
+		RangeTo:   216,
+		Total:     237,
+		Variant:   ListNoteRange,
+	}))
+	golden.Assert(t, "list_note_range", output)
+}
+
+func TestGoldenCopyButtonLabelClass(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, CopyButton(CopyButtonProps{
+		Text:       "pnpm add foo",
+		Label:      "Copy",
+		Icon:       true,
+		LabelClass: "text-red-600 dark:text-red-400",
+		BaseProps:  utils.BaseProps{Nonce: "abc123"},
+	}))
+	golden.Assert(t, "copy_button_label_class", output)
+}
+
+func TestGoldenPageHeaderComponents(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, PageHeader(PageHeaderProps{
+		Title:             "Ignored string title",
+		TitleComponent:    templ.Raw(`<code>orders.conflict</code>`),
+		SubtitleComponent: templ.Raw(`<span>3 running</span>`),
+	}))
+	golden.Assert(t, "page_header_components", output)
+}
+
 func TestGoldenDefinitionGrid(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, DefinitionGrid(DefinitionGridProps{

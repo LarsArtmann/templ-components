@@ -22,6 +22,13 @@ type CopyButtonProps struct {
 	// Href, when set, renders an <a> instead of a <button>. The link still
 	// copies text to the clipboard on click. Use for copy-as-link patterns.
 	Href string
+	// LabelClass, when set, replaces the label span's default color classes
+	// (text-gray-700 dark:text-gray-200). Use for themes that re-color the
+	// button's ancestors (re-colored tables, tinted cards) where the fixed
+	// palette fights the surroundings — e.g. "text-[var(--tc-text)]" or a
+	// full light+dark pair. The [data-tc-copy-text] attribute stays as the
+	// CSS escape hatch for full restyling.
+	LabelClass string
 }
 
 // DefaultCopyButtonProps returns sensible defaults.
@@ -39,16 +46,15 @@ func DefaultCopyButtonProps() CopyButtonProps {
 //
 //	@display.CopyButton(display.CopyButtonProps{Text: "npm install my-package", Label: "Copy install command"})
 // copyButtonContent renders the icon + label body shared by both the <a>
-// and <button> variants of CopyButton.
-templ copyButtonContent(icon bool, label string) {
+// and <button> variants of CopyButton. labelClass carries the label color:
+// the default palette unless props.LabelClass overrides it (the span must
+// not follow ancestor re-coloring in consumers whose table CSS overrides
+// the button). [data-tc-copy-text] remains the attribute-level styling hook.
+templ copyButtonContent(icon bool, label, labelClass string) {
 	if icon {
 		@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
 	}
-	// Explicit default color (matches the button's own palette): the span
-	// must not follow ancestor re-coloring in consumers whose table CSS
-	// overrides the button. To re-color the label, target
-	// [data-tc-copy-text] in CSS — the attribute is the styling hook.
-	<span data-tc-copy-text role="status" aria-live="polite" class="text-gray-700 dark:text-gray-200">{ label }</span>
+	<span data-tc-copy-text role="status" aria-live="polite" class={ labelClass }>{ label }</span>
 }
 
 templ CopyButton(props CopyButtonProps) {
@@ -60,6 +66,10 @@ templ CopyButton(props CopyButtonProps) {
 		copied := props.CopiedLabel
 		if copied == "" {
 			copied = "Copied!"
+		}
+		labelClass := props.LabelClass
+		if labelClass == "" {
+			labelClass = "text-gray-700 dark:text-gray-200"
 		}
 		baseClass := utils.Class("inline-flex items-center gap-1.5 rounded-md bg-gray-50 dark:bg-gray-700 px-2.5 py-1 text-xs font-medium text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer", transitionColors, "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400", props.Class)
 	}}
@@ -77,7 +87,7 @@ templ CopyButton(props CopyButtonProps) {
 			}
 			{ props.Attrs... }
 		>
-			@copyButtonContent(props.Icon, label)
+			@copyButtonContent(props.Icon, label, labelClass)
 		</a>
 	} else {
 		<button
@@ -93,7 +103,7 @@ templ CopyButton(props CopyButtonProps) {
 			}
 			{ props.Attrs... }
 		>
-			@copyButtonContent(props.Icon, label)
+			@copyButtonContent(props.Icon, label, labelClass)
 		</button>
 	}
 	@copyButtonScriptComponent(props.Nonce)
