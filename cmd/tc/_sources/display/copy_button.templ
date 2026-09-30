@@ -25,9 +25,10 @@ type CopyButtonProps struct {
 	// LabelClass, when set, replaces the label span's default color classes
 	// (text-gray-700 dark:text-gray-200). Use for themes that re-color the
 	// button's ancestors (re-colored tables, tinted cards) where the fixed
-	// palette fights the surroundings — e.g. "text-[var(--tc-text)]" or a
-	// full light+dark pair. The [data-tc-copy-text] attribute stays as the
-	// CSS escape hatch for full restyling.
+	// palette fights the surroundings — e.g. "text-emerald-700
+	// dark:text-emerald-300" or a var(--…)-based pair of your own. The
+	// [data-tc-copy-text] attribute stays as the CSS escape hatch for full
+	// restyling.
 	LabelClass string
 }
 
