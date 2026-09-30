@@ -102,9 +102,9 @@ func TestCopyButtonBehavior(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, CopyButton(CopyButtonProps{
 			Text:       "x",
-			LabelClass: "text-[var(--tc-text)] dark:text-[var(--tc-text-dark)]",
+			LabelClass: "text-emerald-700 dark:text-emerald-300",
 		}))
-		utils.AssertContains(t, output, `class="text-[var(--tc-text)] dark:text-[var(--tc-text-dark)]"`)
+		utils.AssertContains(t, output, `class="text-emerald-700 dark:text-emerald-300"`)
 		utils.AssertNotContains(t, output, `class="text-gray-700`)
 	})
 

@@ -6,6 +6,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`ListNote` `ListNoteRange` variant — cursor-paginated "Showing X–Y of Z."**
+  The truncated and count-only variants both miss position semantics: X–Y is
+  the 1-based span on the current page (`RangeFrom`/`RangeTo`), Z is the match
+  count (`Total`). Always renders (a cursor journal has no "everything fits"
+  signal — "Showing 193–216 of 237." on the last page is the honest
+  seen-it-all hint); a non-positive range degrades to the count message.
+  Closes the cqrs-htmx round-10 ask (`paginationInfo` there was the hand-rolled
+  shape).
+- **`PageHeader` `TitleComponent`/`SubtitleComponent` — templ components inside
+  the heading.** Dashboards routinely need code elements, badges, and copy
+  buttons inside the page title; 8 of 11 cqrs-htmx dashboardui page headers
+  could not adopt while Title was string-only. A set component takes
+  precedence over the string field, and the `<h1>`/`<p>` shells stay so the
+  heading semantics never change. Closes the cqrs-htmx round-12 ask.
+- **`CopyButton` `LabelClass` — a color-override hook for the label span.**
+  Re-colored table ancestors still fought the fixed
+  `text-gray-700 dark:text-gray-200` in edge themes; a non-empty `LabelClass`
+  now replaces the span's color classes entirely (a `var(--…)`-based pair or
+  any light+dark utility set), while `[data-tc-copy-text]` remains the
+  attribute-level escape hatch for full restyling. Closes the cqrs-htmx
+  round-10 ask.
+
+### Changed
+
+- **New recipe: Error Pages (`docs/recipes/error-pages.md`).** The two
+  error-page patterns proven in cqrs-htmx, written down at last: status→family
+  mapping with per-code copy + family fallback (`adminui`), the
+  HTMX-swap-vs-navigation branch, and the noindex minimal error-shell for
+  layouts that cannot render on the error path (`dashboardui`). Registered in
+  the recipe index. Closes the cqrs-htmx round-12 error-shell survey ask (M11).
+
 ## [1.19.4] — 2026-09-25
 
 ### Fixed
