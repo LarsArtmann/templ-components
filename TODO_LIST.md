@@ -1,10 +1,10 @@
 # TODO List — templ-components
 
-**Updated:** 2026-09-23 | **Version:** 1.19.1
+**Updated:** 2026-09-30 | **Version:** 1.19.4
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources), ⫱ owner gate (decision/credential).
-> IDs are unique across ALL sections — next free ID: 318.
+> IDs are unique across ALL sections — next free ID: 322.
 
 ---
 
@@ -201,11 +201,8 @@ _From the art-dupl gate-repair + dedup pass. Session-verification tasks (tool sm
 
 ## Harvested 2026-09-26 — cqrs-htmx round-12 adoption asks (docs-health D1)
 
-_Recorded by the cqrs-htmx round-12 session (same D1 precedent as the 2026-09-22 batch above)._
-
-| #   | Task                                                                                                                                                                                                                                                                    | Why / source                                                                                                                          |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| 318 | `CopyButton`: a `var(--text)` (or Class-driven) color override hook for the label span — re-colored table ancestors still fight the fixed `text-gray-700 dark:text-gray-200` in edge themes                                                                             | cqrs-htmx round-10 §f13 (contrast verified AAA there with the current span; the hook is for consumer themes that re-color ancestors). |
-| 319 | `ListNote`: an X–Y range variant ("Showing X–Y of Z") — cursor-paginated journals are not N-of-M truncation and not count-only; cqrs-htmx hand-rolls the range label today                                                                                              | cqrs-htmx round-10 §f14; `paginationInfo` in dashboardui/components.templ is the hand-rolled shape.                                   |
-| 320 | `PageHeader`: an optional Title/Subtitle-as-`templ.Component` shape (alongside the string fields) — dashboards routinely need code elements, badges, and copy buttons INSIDE the header title; 8 of 11 dashboardui page headers cannot adopt while Title is string-only | cqrs-htmx round-12 PageHeader divergence (dashboardui/README.md adoption table).                                                      |
-| 321 | Docs: an error-pages recipe — cqrs-htmx's adminui maps errorfamily → `errorpage.Family` with per-family fallback copy while dashboardui self-hosts a minimal `error-shell` for noindex needs; both patterns are reusable but undiscoverable                             | cqrs-htmx round-12 error-shell survey (M11): shared CODE was rejected (needs differ legitimately); the recipe is the deliverable.     |
+_All four asks DONE 2026-09-30 (see CHANGELOG [Unreleased]): (a) `CopyButton`
+`LabelClass` color hook (#318); (b) `ListNote` `ListNoteRange` "Showing X–Y of
+Z." variant (#319); (c) `PageHeader` `TitleComponent`/`SubtitleComponent`
+(#320); (d) the error-pages recipe `docs/recipes/error-pages.md` (#321). Rows
+removed per the completed-work convention. Next free ID: 322._

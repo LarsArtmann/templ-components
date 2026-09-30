@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`TestGoWorkDirectiveMatchesRootGoMod` red on main: go directive strings
+  aligned at `1.26.0`.** Root `go.mod` said `go 1.26` while `go.work` and
+  `visualtest/go.mod` normalize to `go 1.26.0` (`go mod tidy` and `-mod=mod`
+  rewrite the directive to the full form, so any drift reappears on the next
+  tidy) — the string-equality guard has been failing since the toolchain
+  input moved. Root go.mod and go.work now both read `go 1.26.0`; the skew
+  guard (`TestGoDirectiveSkew`) stays green (semantic compare).
+
 ### Added
 
 - **`ListNote` `ListNoteRange` variant — cursor-paginated "Showing X–Y of Z."**
