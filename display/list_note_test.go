@@ -81,4 +81,30 @@ func TestListNoteRender(t *testing.T) {
 		output := utils.Render(t, ListNote(ListNoteProps{Shown: 1, Total: 2}))
 		utils.AssertContains(t, output, `role="status"`)
 	})
+
+	t.Run("range variant renders the X–Y of Z position hint", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ListNote(ListNoteProps{RangeFrom: 193, RangeTo: 216, Total: 237, Variant: ListNoteRange}))
+		utils.AssertContains(t, output, "Showing 193–216 of 237.")
+		utils.AssertNotContains(t, output, "Narrow your search")
+	})
+
+	t.Run("range variant renders on the last page too", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ListNote(ListNoteProps{RangeFrom: 1, RangeTo: 237, Total: 237, Variant: ListNoteRange}))
+		utils.AssertContains(t, output, "Showing 1–237 of 237.")
+	})
+
+	t.Run("range variant degrades to the count message for an empty page", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ListNote(ListNoteProps{RangeFrom: 0, RangeTo: 0, Shown: 0, Total: 237, Variant: ListNoteRange}))
+		utils.AssertContains(t, output, "Showing 0 items.")
+		utils.AssertNotContains(t, output, "–")
+	})
+
+	t.Run("range variant carries role=status for screen readers", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ListNote(ListNoteProps{RangeFrom: 1, RangeTo: 10, Total: 20, Variant: ListNoteRange}))
+		utils.AssertContains(t, output, `role="status"`)
+	})
 }

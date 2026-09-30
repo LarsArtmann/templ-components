@@ -91,6 +91,34 @@ func TestCopyButtonBehavior(t *testing.T) {
 		utils.AssertContains(t, output, `<button`)
 		utils.AssertNotContains(t, output, `<a`)
 	})
+
+	t.Run("label span carries the explicit default color", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CopyButton(CopyButtonProps{Text: "x"}))
+		utils.AssertContains(t, output, `class="text-gray-700 dark:text-gray-200"`)
+	})
+
+	t.Run("LabelClass replaces the default label color on buttons", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CopyButton(CopyButtonProps{
+			Text:       "x",
+			LabelClass: "text-[var(--tc-text)] dark:text-[var(--tc-text-dark)]",
+		}))
+		utils.AssertContains(t, output, `class="text-[var(--tc-text)] dark:text-[var(--tc-text-dark)]"`)
+		utils.AssertNotContains(t, output, `class="text-gray-700`)
+	})
+
+	t.Run("LabelClass replaces the default label color on anchors", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CopyButton(CopyButtonProps{
+			Text:       "x",
+			Href:       "https://example.com",
+			LabelClass: "text-red-600 dark:text-red-400",
+		}))
+		utils.AssertContains(t, output, `class="text-red-600 dark:text-red-400"`)
+		utils.AssertNotContains(t, output, `class="text-gray-700`)
+		utils.AssertContains(t, output, `data-tc-copy="x"`)
+	})
 }
 
 // --- RelativeTime Behavior ---

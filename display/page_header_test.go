@@ -82,4 +82,37 @@ func TestPageHeaderRender(t *testing.T) {
 		utils.AssertContains(t, output, "custom-header-class")
 		utils.AssertContains(t, output, `aria-label="Page header"`)
 	})
+
+	t.Run("TitleComponent renders inside the h1", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PageHeader(PageHeaderProps{
+			Title:          "Ignored string",
+			TitleComponent: templ.Raw(`<code>orders.conflict</code>`),
+		}))
+		utils.AssertContains(t, output, "<h1")
+		utils.AssertContains(t, output, "<code>orders.conflict</code>")
+		utils.AssertNotContains(t, output, "Ignored string")
+	})
+
+	t.Run("SubtitleComponent renders inside the subtitle paragraph", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PageHeader(PageHeaderProps{
+			Title:             "Deployments",
+			Subtitle:          "Ignored string",
+			SubtitleComponent: templ.Raw(`<span class="wp-pill">3 running</span>`),
+		}))
+		utils.AssertContains(t, output, "<p")
+		utils.AssertContains(t, output, `wp-pill">3 running</span>`)
+		utils.AssertNotContains(t, output, "Ignored string")
+	})
+
+	t.Run("string fields still render without components", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PageHeader(PageHeaderProps{
+			Title:    "Plain",
+			Subtitle: "Plain subtitle",
+		}))
+		utils.AssertContains(t, output, ">Plain</h1>")
+		utils.AssertContains(t, output, "Plain subtitle")
+	})
 }
