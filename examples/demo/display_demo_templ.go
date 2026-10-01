@@ -1252,7 +1252,7 @@ display.Card(display.CardProps{
 			ShowArrows:     true,
 			Slides: []display.CarouselSlide{
 				{Content: carouselSlide("Slide 1", "bg-blue-600 dark:bg-blue-500")},
-				{Content: carouselSlide("Slide 2", "bg-emerald-600 dark:bg-emerald-500")},
+				{Content: carouselSlide("Slide 2", "bg-emerald-700 dark:bg-emerald-500")},
 				{Content: carouselSlide("Slide 3", "bg-purple-600 dark:bg-purple-500")},
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)

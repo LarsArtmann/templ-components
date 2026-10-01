@@ -189,6 +189,11 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 			theme,
 		), nil),
 		chromedp.Sleep(settleDelay),
+		// Audit the SETTLED page, not a mid-entrance frame: staggered finite
+		// animations (e.g. Scrollback's entrance) composite translucent text
+		// that produces bogus color-contrast findings. Same invariant as the
+		// screenshot path — wait until every finite animation reports finished.
+		waitAnimationsSettled(),
 		// Verify the pin actually stuck before auditing. An audit that runs
 		// against the wrong theme produces bogus contrast findings (the same
 		// unpinned-audit bug the pin exists to prevent), so re-pin once and

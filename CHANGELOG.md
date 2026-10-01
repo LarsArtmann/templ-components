@@ -40,7 +40,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   and labels darken on tinted cards; `InlineSuccess` and the outline Warning/
   Success buttons use `text-green-700`/`text-amber-700` in light mode
   (3.2:1 → 5:1); the `Nav` `Footer` bottom bar follows the standard
-  `text-gray-500 dark:text-gray-400` muted pair.
+  `text-gray-500 dark:text-gray-400` muted pair. Also from the sweep's first
+  strict pass: the demo shell footer's Documentation/GitHub links get the
+  `p-1.5 -m-1.5` hit-box pattern (24px touch target, layout unchanged), the
+  carousel emerald slide darkens to `bg-emerald-700` (white 18px-bold text was
+  3.65:1), and the axe sweep now waits for staggered finite animations before
+  auditing — mid-entrance frames composite translucent text and produce bogus
+  contrast findings.
 - **Documented-default-vs-zero-value split brain resolved (Grid/Split
   `ContainerAware`; `Container.Pad` fixed in code — see the breaking change
   below).** The v1→v2 migration doc claimed the `ContainerAware` literal
