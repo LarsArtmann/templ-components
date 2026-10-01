@@ -187,7 +187,7 @@ func (s *kanbanDemoState) kanbanDemoBoardProps(id string, action wire.Action, cs
 	}
 
 	props := display.DefaultKanbanBoardProps()
-	props.BaseProps = utils.BaseProps{ID: id}
+	props.BaseProps = utils.BaseProps{ID: id, Nonce: demoNonceConst}
 	props.Columns = snapshot
 	props.Wire = &action
 	props.CSRFToken = csrf

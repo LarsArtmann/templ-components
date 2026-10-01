@@ -127,7 +127,8 @@ display.Card(display.CardProps{
 	}
 	@demoSection("Dropdown", "display-dropdown")
 	@display.Dropdown(display.DropdownProps{
-		Label: "Actions",
+		Label:       "Actions",
+		BaseProps:   utils.BaseProps{Nonce: "demo-nonce"},
 		Items: []display.DropdownItem{
 			{Text: "Edit", Href: "#", Icon: icons.Edit},
 			{Text: "Duplicate", Href: "#", Icon: icons.DocumentDuplicate},
@@ -136,10 +137,10 @@ display.Card(display.CardProps{
 	})
 	@demoSection("Tooltip", "display-tooltip")
 	<div class="flex items-center gap-4 pt-2">
-		@display.Tooltip(display.TooltipProps{BaseProps: utils.BaseProps{ID: "tt-1"}, Text: "Edit this item"}) {
+		@display.Tooltip(display.TooltipProps{BaseProps: utils.BaseProps{ID: "tt-1", Nonce: "demo-nonce"}, Text: "Edit this item"}) {
 			@display.Button(display.ButtonProps{Text: "Hover me (top)"})
 		}
-		@display.Tooltip(display.TooltipProps{Text: "More details here", Position: display.TooltipPositionBottom, BaseProps: utils.BaseProps{ID: "tt-2"}}) {
+		@display.Tooltip(display.TooltipProps{Text: "More details here", Position: display.TooltipPositionBottom, BaseProps: utils.BaseProps{ID: "tt-2", Nonce: "demo-nonce"}}) {
 			@display.Button(display.ButtonProps{Text: "Hover me (bottom)"})
 		}
 	</div>
@@ -335,7 +336,7 @@ display.Card(display.CardProps{
 		@display.SimpleEmptyState("No data to display.")
 	</div>
 	@demoSection("CopyButton", "display-copy-button")
-	@display.CopyButton(display.CopyButtonProps{Text: "go get github.com/larsartmann/templ-components", Label: "Copy install command"})
+	@display.CopyButton(display.CopyButtonProps{BaseProps: utils.BaseProps{Nonce: "demo-nonce"}, Text: "go get github.com/larsartmann/templ-components", Label: "Copy install command"})
 	@demoSection("RelativeTime", "display-relative-time")
 	<div class="flex items-center gap-4">
 		<span class="text-sm text-gray-500 dark:text-gray-400">2 hours ago:</span>
@@ -377,8 +378,8 @@ display.Card(display.CardProps{
 	})
 	@demoSection("Image", "display-image")
 	<div class="flex items-center gap-4">
-		@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Demo&size=96", Alt: "Demo", Width: 96, Height: 96})
-		@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Round&size=96", Alt: "Rounded", Width: 96, Height: 96, Rounded: true, FallbackSrc: "https://ui-avatars.com/api/?name=Fallback"})
+		@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Demo&size=96", Alt: "Demo", Width: 96, Height: 96, BaseProps: utils.BaseProps{Nonce: "demo-nonce"}})
+		@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Round&size=96", Alt: "Rounded", Width: 96, Height: 96, Rounded: true, FallbackSrc: "https://ui-avatars.com/api/?name=Fallback", BaseProps: utils.BaseProps{Nonce: "demo-nonce"}})
 	</div>
 	@demoSection("HoverCard", "display-hover-card")
 	@display.HoverCard(display.HoverCardProps{

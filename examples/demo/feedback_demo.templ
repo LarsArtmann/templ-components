@@ -17,10 +17,10 @@ templ feedbackDemo() {
 	@demoSection("Toast (auto-generated ID, auto-dismiss)", "feedback-toast")
 	<div class="space-y-3">
 		<p class="text-sm text-gray-500 dark:text-gray-400">Toasts render into ToastContainer. Each auto-dismisses after 5s.</p>
-		@feedback.Toast(feedback.ToastProps{Message: "Settings saved!", Type: feedback.FeedbackSuccess, Duration: 5000})
-		@feedback.Toast(feedback.ToastProps{Message: "Upload failed.", Type: feedback.FeedbackError, Title: "Error"})
-		@feedback.Toast(feedback.ToastProps{Message: "Storage almost full.", Type: feedback.FeedbackWarning})
-		@feedback.Toast(feedback.ToastProps{Message: "New version available.", Type: feedback.FeedbackInfo})
+		@feedback.Toast(feedback.ToastProps{Message: "Settings saved!", Type: feedback.FeedbackSuccess, Duration: 5000, Nonce: demoNonceConst})
+		@feedback.Toast(feedback.ToastProps{Message: "Upload failed.", Type: feedback.FeedbackError, Title: "Error", Nonce: demoNonceConst})
+		@feedback.Toast(feedback.ToastProps{Message: "Storage almost full.", Type: feedback.FeedbackWarning, Nonce: demoNonceConst})
+		@feedback.Toast(feedback.ToastProps{Message: "New version available.", Type: feedback.FeedbackInfo, Nonce: demoNonceConst})
 	</div>
 	@demoCodeSnippet("Go", `feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.FeedbackSuccess, Duration: 5000})`)
 	@demoSection("Inline Feedback", "feedback-inline")

@@ -52,7 +52,11 @@ templ htmxDemo() {
 	@htmx.SwapOOB(htmx.SwapOOBProps{SwapStyle: htmx.SwapOuterHTML, Selector: "#oob-target"})
 	@demoSection("HTMX GlobalErrorHandling", "htmx-error-handling")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Wires up htmx:responseError and htmx:beforeOnError events:</p>
-	@htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
+	@htmx.GlobalErrorHandling(func() htmx.ErrorHandlingConfig {
+		cfg := htmx.DefaultErrorHandlingConfig()
+		cfg.Nonce = demoNonceConst
+		return cfg
+	}())
 	@demoSection("HTMX ViewTransitions", "htmx-view-transitions")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
 		Enables native <a href="https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API" class="underline text-blue-600 dark:text-blue-400 hover:underline">View Transitions</a> on HTMX swaps —
