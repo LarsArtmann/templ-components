@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [master, main]
 
+permissions:
+  contents: read
+
 jobs:
   # W3C HTML validation over the golden corpus (M17/F075): catches invalid
   # markup that string-normalized goldens hide (found the Form action=""

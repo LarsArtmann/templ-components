@@ -18,6 +18,8 @@ plan that adds components, fields, or demo endpoints answers these per item:
    String-proven ≠ browser-proven: the demo add button's missing
    `hx-target`/`hx-swap="outerHTML"` survived regenerate+build+unit tests and only
    surfaced in a real click (`TestKanbanE2EAddAndResetBothTransports`).
+   A newly wired component also ships **both-dialect goldens** — htmx and Datastar —
+   in the same plan; `visualtest/wire_*_dual_transport*` is the pattern.
 
 3. **Drift counts are predictive, not reactive.**
    A task that adds goldens/enums/components bumps the README/FEATURES/ROADMAP/AGENTS
