@@ -23,7 +23,7 @@ templ datastarDemo() {
 	</p>
 	@datastar.LiveRegion(datastar.LiveRegionProps{
 		BaseProps: demoBaseProps(),
-		URL:       "/api/datastar/stream",
+		URL:       demoURL("/api/datastar/stream"),
 		AutoStart: true,
 		Retry:     datastar.RetryAlways,
 	}) {
@@ -40,7 +40,7 @@ templ datastarDemo() {
 	</p>
 	<div class="flex items-center gap-3">
 		<button
-			data-on:click={ datastar.Post("/api/datastar/action") }
+			data-on:click={ datastar.Post(demoURL("/api/datastar/action")) }
 			data-indicator:fetching
 			class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
 		>

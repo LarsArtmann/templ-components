@@ -37,22 +37,22 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 		<div class="min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800">
 			<div class="mb-2 flex items-center justify-between">
 				<h3 class="text-sm font-semibold text-gray-900 dark:text-white">HTMX transport</h3>
-				@kanbanResetButton(wire.Action{URL: "/api/kanban/htmx/reset", Method: wire.MethodPost, Target: "#kanban-demo-htmx"})
+				@kanbanResetButton(wire.Action{URL: demoURL("/api/kanban/htmx/reset"), Method: wire.MethodPost, Target: "#kanban-demo-htmx"})
 			</div>
 			@display.KanbanBoard(kanbanHTMXState.kanbanDemoBoardProps(
 				"kanban-demo-htmx",
-				wire.Action{URL: "/api/kanban/htmx"},
+				wire.Action{URL: demoURL("/api/kanban/htmx")},
 				sessionToken,
 			))
 		</div>
 		<div class="min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800">
 			<div class="mb-2 flex items-center justify-between">
 				<h3 class="text-sm font-semibold text-gray-900 dark:text-white">Datastar transport</h3>
-				@kanbanResetButton(wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/kanban/datastar/reset"})
+				@kanbanResetButton(wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: demoURL("/api/kanban/datastar/reset")})
 			</div>
 			@display.KanbanBoard(kanbanDatastarState.kanbanDemoBoardProps(
 				"kanban-demo-datastar",
-				wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},
+				wire.Action{Transport: wire.TransportDatastar, URL: demoURL("/api/kanban/datastar")},
 				sessionToken,
 			))
 		</div>

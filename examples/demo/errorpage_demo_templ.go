@@ -189,9 +189,9 @@ func errorRouteCard(title, href string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 templ.SafeURL
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(href))
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(demoURL(href)))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/errorpage_demo.templ`, Line: 62, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/errorpage_demo.templ`, Line: 62, Col: 37}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -302,7 +302,20 @@ func errorPlaygroundForm() templ.Component {
 			templ_7745c5c3_Var8 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<form method=\"get\" action=\"/errors/playground\" class=\"grid gap-4 rounded-lg border border-gray-200 bg-white p-4 sm:grid-cols-2 dark:border-gray-700 dark:bg-gray-800\"><label class=\"text-sm font-medium text-gray-700 dark:text-gray-200\">Family <select name=\"family\" class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\"><option value=\"transient\">Transient (503)</option> <option value=\"rejection\">Rejection (400)</option> <option value=\"conflict\">Conflict (409)</option> <option value=\"corruption\">Corruption (500)</option> <option value=\"infrastructure\">Infrastructure (503)</option> <option value=\"orchestration\">Orchestration (500)</option></select></label> <label class=\"text-sm font-medium text-gray-700 dark:text-gray-200\">HTTP status (400–599) <input type=\"number\" name=\"status\" min=\"400\" max=\"599\" placeholder=\"503\" class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\"></label> <label class=\"text-sm font-medium text-gray-700 dark:text-gray-200 sm:col-span-2\">Title <input type=\"text\" name=\"title\" maxlength=\"120\" placeholder=\"Service temporarily unavailable\" class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\"></label> <label class=\"text-sm font-medium text-gray-700 dark:text-gray-200 sm:col-span-2\">Message <textarea name=\"message\" rows=\"2\" maxlength=\"300\" placeholder=\"We're performing maintenance or experiencing high traffic.\" class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\"></textarea></label><div class=\"sm:col-span-2\"><button type=\"submit\" class=\"inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400\">Render error page</button></div></form>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<form method=\"get\" action=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var9 templ.SafeURL
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinURLErrs(demoURL("/errors/playground"))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/errorpage_demo.templ`, Line: 80, Col: 58}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\" class=\"grid gap-4 rounded-lg border border-gray-200 bg-white p-4 sm:grid-cols-2 dark:border-gray-700 dark:bg-gray-800\"><label class=\"text-sm font-medium text-gray-700 dark:text-gray-200\">Family <select name=\"family\" class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\"><option value=\"transient\">Transient (503)</option> <option value=\"rejection\">Rejection (400)</option> <option value=\"conflict\">Conflict (409)</option> <option value=\"corruption\">Corruption (500)</option> <option value=\"infrastructure\">Infrastructure (503)</option> <option value=\"orchestration\">Orchestration (500)</option></select></label> <label class=\"text-sm font-medium text-gray-700 dark:text-gray-200\">HTTP status (400–599) <input type=\"number\" name=\"status\" min=\"400\" max=\"599\" placeholder=\"503\" class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\"></label> <label class=\"text-sm font-medium text-gray-700 dark:text-gray-200 sm:col-span-2\">Title <input type=\"text\" name=\"title\" maxlength=\"120\" placeholder=\"Service temporarily unavailable\" class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\"></label> <label class=\"text-sm font-medium text-gray-700 dark:text-gray-200 sm:col-span-2\">Message <textarea name=\"message\" rows=\"2\" maxlength=\"300\" placeholder=\"We're performing maintenance or experiencing high traffic.\" class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\"></textarea></label><div class=\"sm:col-span-2\"><button type=\"submit\" class=\"inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400\">Render error page</button></div></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -327,16 +340,16 @@ func errorPlaygroundContent(props errorpage.ErrorPageProps) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var9 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var9 == nil {
-			templ_7745c5c3_Var9 = templ.NopComponent
+		templ_7745c5c3_Var10 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var10 == nil {
+			templ_7745c5c3_Var10 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		templ_7745c5c3_Err = errorPlaygroundForm().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"mt-8\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<div class=\"mt-8\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -344,7 +357,7 @@ func errorPlaygroundContent(props errorpage.ErrorPageProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -50,11 +50,11 @@ case needs no conditional on your side. When the cap bites, it renders
 
 Variant semantics (pick per page meaning, see `ListNoteVariant` docs):
 
-| Variant             | Renders                            | Use when                                                 |
-| ------------------- | ---------------------------------- | -------------------------------------------------------- |
-| `ListNoteTruncated` | "Showing N of M. Narrow your…"     | A search/filter narrows results; hidden rows are noise    |
-| `ListNoteCount`     | "Showing N items." (always)        | List semantics: the window IS the answer (log between ts) |
-| `ListNoteRange`     | "Showing X–Y of Z." (always)       | Cursor-paginated position: pairs with `LoadMore` batches  |
+| Variant             | Renders                        | Use when                                                  |
+| ------------------- | ------------------------------ | --------------------------------------------------------- |
+| `ListNoteTruncated` | "Showing N of M. Narrow your…" | A search/filter narrows results; hidden rows are noise    |
+| `ListNoteCount`     | "Showing N items." (always)    | List semantics: the window IS the answer (log between ts) |
+| `ListNoteRange`     | "Showing X–Y of Z." (always)   | Cursor-paginated position: pairs with `LoadMore` batches  |
 
 ## Pattern B: page-number pagination
 

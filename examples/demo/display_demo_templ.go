@@ -154,7 +154,7 @@ display.Card(display.CardProps{
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp, Href: "/users"}).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp, Href: demoURL("/users")}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -740,7 +740,7 @@ display.Card(display.CardProps{
 			},
 			ActiveSortColumn: "Name",
 			ActiveSortDir:    display.SortAsc,
-			SortBaseURL:      "/users",
+			SortBaseURL:      demoURL("/users"),
 			Rows: []display.TableRow{
 				display.SimpleTableRow("Alice", "alice@example.com"),
 				display.SimpleTableRow("Bob", "bob@example.com"),

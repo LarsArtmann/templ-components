@@ -6,14 +6,14 @@ type aliases. This guide walks through each change and what you need to do.
 
 ## Quick summary
 
-| Change                     | Impact                                           | Migration effort                         |
-| -------------------------- | ------------------------------------------------ | ---------------------------------------- |
-| 7-module workspace split   | Import paths unchanged; `internal/*` → `utils/*` | None (if you didn't import `internal/`)  |
-| HTMX self-host by default  | HTMX embedded inline, no CDN request             | Set `HTMXSrc: ""` to keep CDN            |
-| Container-aware constructors | `DefaultGridProps`/`DefaultSplitProps` use container queries | Set `ContainerAware: false` for viewport |
-| Container gutter by default | `Container.Pad` → `NoPad`; the zero value keeps the gutter | Delete `Pad: true`; rename `Pad: false` → `NoPad: true` |
-| Card corners sharp         | Card/SimpleCard/StatCard render square corners   | Add `Class: "rounded-lg"` to restore     |
-| Alias removal              | `AlertType`/`ToastType` removed                  | Rename to `FeedbackType`                 |
+| Change                       | Impact                                                       | Migration effort                                        |
+| ---------------------------- | ------------------------------------------------------------ | ------------------------------------------------------- |
+| 7-module workspace split     | Import paths unchanged; `internal/*` → `utils/*`             | None (if you didn't import `internal/`)                 |
+| HTMX self-host by default    | HTMX embedded inline, no CDN request                         | Set `HTMXSrc: ""` to keep CDN                           |
+| Container-aware constructors | `DefaultGridProps`/`DefaultSplitProps` use container queries | Set `ContainerAware: false` for viewport                |
+| Container gutter by default  | `Container.Pad` → `NoPad`; the zero value keeps the gutter   | Delete `Pad: true`; rename `Pad: false` → `NoPad: true` |
+| Card corners sharp           | Card/SimpleCard/StatCard render square corners               | Add `Class: "rounded-lg"` to restore                    |
+| Alias removal                | `AlertType`/`ToastType` removed                              | Rename to `FeedbackType`                                |
 
 ---
 
@@ -111,10 +111,10 @@ layouts instead of viewport breakpoints. See ADR-0018.
 
 ### What changed
 
-| Component | Field            | v1.x constructor    | v2.0 constructor    |
-| --------- | ---------------- | ------------------- | ------------------- |
-| `Grid`    | `ContainerAware` | `false` (viewport)  | `true` (container)  |
-| `Split`   | `ContainerAware` | `false` (viewport)  | `true` (container)  |
+| Component | Field            | v1.x constructor   | v2.0 constructor   |
+| --------- | ---------------- | ------------------ | ------------------ |
+| `Grid`    | `ContainerAware` | `false` (viewport) | `true` (container) |
+| `Split`   | `ContainerAware` | `false` (viewport) | `true` (container) |
 
 **The struct-literal zero value did NOT flip.** A bare `GridProps{Cols: ...}`
 or `SplitProps{...}` literal renders viewport breakpoints in v1 and v2

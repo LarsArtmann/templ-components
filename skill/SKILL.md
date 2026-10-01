@@ -143,18 +143,18 @@ Don't know what to look for? Find your page type:
 
 #### `layout` — 10 components
 
-| Component     | Signature                              | One-liner                                                                                             |
-| ------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `Base`        | `Base(props PageProps)`                | Full HTML5 shell — head, meta, theme, HTMX, CSS auto-inject, SEO (noindex/canonical/hreflang/JSON-LD) |
-| `Minimal`     | `Minimal(props MinimalProps)`          | Minimal HTML doc — no dependencies, for static/PDF                                                    |
-| `ThemeScript` | `ThemeScript(nonce string)`            | Dark mode script — prevents FOUC, include in `<head>`                                                 |
-| `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                                                          |
-| `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                                                          |
-| `Stylesheet`  | `Stylesheet(href, attrs)`              | CSP-safe `<link rel="stylesheet">`                                                                    |
-| `AppShell`    | `AppShell(props AppShellProps)`        | Sidebar + header + main app shell — the #1 admin dashboard pattern                                    |
+| Component     | Signature                              | One-liner                                                                                                                                    |
+| ------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Base`        | `Base(props PageProps)`                | Full HTML5 shell — head, meta, theme, HTMX, CSS auto-inject, SEO (noindex/canonical/hreflang/JSON-LD)                                        |
+| `Minimal`     | `Minimal(props MinimalProps)`          | Minimal HTML doc — no dependencies, for static/PDF                                                                                           |
+| `ThemeScript` | `ThemeScript(nonce string)`            | Dark mode script — prevents FOUC, include in `<head>`                                                                                        |
+| `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                                                                                                 |
+| `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                                                                                                 |
+| `Stylesheet`  | `Stylesheet(href, attrs)`              | CSP-safe `<link rel="stylesheet">`                                                                                                           |
+| `AppShell`    | `AppShell(props AppShellProps)`        | Sidebar + header + main app shell — the #1 admin dashboard pattern                                                                           |
 | `Container`   | `Container(props ContainerProps)`      | Centered max-width wrapper with responsive gutter ON by default (`NoPad: true` opts out) — replaces `max-w-Nxl mx-auto px-4 sm:px-6 lg:px-8` |
-| `Split`       | `Split(props SplitProps)`              | 2-col content+aside — article+sidebar, detail+metadata (RTL-aware), `ContainerAware`                  |
-| `Stack`       | `Stack(props StackProps)`              | Vertical rhythm — typed Gap enum, replaces repeated `space-y-N`                                       |
+| `Split`       | `Split(props SplitProps)`              | 2-col content+aside — article+sidebar, detail+metadata (RTL-aware), `ContainerAware`                                                         |
+| `Stack`       | `Stack(props StackProps)`              | Vertical rhythm — typed Gap enum, replaces repeated `space-y-N`                                                                              |
 
 #### `navigation` — 12 components
 
@@ -363,7 +363,7 @@ run `templ generate`. This is the standard pattern for publishable templ package
 | `docs/icons-only-adoption.md`                         | Adopting just the `icons` package (CSS-agnostic)                                                |
 | `docs/recipes/hybrid-strings-builder-rendering.md`    | Rendering components into a strings.Builder (children slots, `templ.WithChildren` escape hatch) |
 | `docs/recipes/theme-bridge.md`                        | Remap library colors to custom semantic palette                                                 |
-| `docs/recipes/bounding-tables.md`                     | Cap + ListNote notice, or Pagination/LoadMore — never render an unbounded table                |
+| `docs/recipes/bounding-tables.md`                     | Cap + ListNote notice, or Pagination/LoadMore — never render an unbounded table                 |
 
 ## How to know if a component already exists
 

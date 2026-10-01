@@ -43,7 +43,7 @@ display.Card(display.CardProps{
 }) { ... }`)
 	@demoSection("Stat Cards", "display-stat-cards")
 	@display.Grid(display.GridProps{Cols: display.GridCols3}) {
-		@display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp, Href: "/users"})
+		@display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp, Href: demoURL("/users")})
 		@display.StatCard(display.StatCardProps{Value: "$45.2K", Label: "Revenue", Icon: icons.Chart, Change: "-3%", Trend: display.TrendDown})
 		@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Icon: icons.CheckCircle, Trend: display.TrendNone})
 		@display.StatCard(display.StatCardProps{Value: "42", Label: "Active", Trend: display.TrendWarn})
@@ -236,7 +236,7 @@ display.Card(display.CardProps{
 		},
 		ActiveSortColumn: "Name",
 		ActiveSortDir:    display.SortAsc,
-		SortBaseURL:      "/users",
+		SortBaseURL:      demoURL("/users"),
 		Rows: []display.TableRow{
 			display.SimpleTableRow("Alice", "alice@example.com"),
 			display.SimpleTableRow("Bob", "bob@example.com"),

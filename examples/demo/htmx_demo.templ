@@ -20,7 +20,7 @@ templ htmxDemo() {
 	@demoSection("HTMX LoadingButton", "htmx-loading-button")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Click — the button swaps to its loading state during the request:</p>
 	<button
-		hx-post="/api/save"
+		hx-post={ demoURL("/api/save") }
 		hx-target="#save-result"
 		hx-swap="innerHTML"
 		class="inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
@@ -37,7 +37,7 @@ templ htmxDemo() {
 				<p class="text-xs text-gray-500 dark:text-gray-400">Delete me — the row is replaced by the server response.</p>
 			</div>
 			@htmx.ConfirmDelete(htmx.ConfirmDeleteProps{
-				Delete:  "/api/items/123",
+				Delete:  demoURL("/api/items/123"),
 				Target:  "#item-123",
 				Confirm: "Are you sure you want to delete this item?",
 			})
@@ -72,7 +72,7 @@ templ htmxDemo() {
 templ polledStatsRegion(tick int) {
 	if tick < 3 {
 		@htmx.PolledRegion(htmx.PolledRegionProps{
-			URL:   "/api/demo-stats?tick=" + strconv.Itoa(tick),
+			URL:   demoURL("/api/demo-stats") + "?tick=" + strconv.Itoa(tick),
 			Every: "5s",
 		}) {
 			@polledStatsContent(tick, true)
