@@ -264,7 +264,7 @@ templ KanbanBoard(props KanbanBoardProps) {
 						// data-tc-kanban-empty lets the move script hide the placeholder
 						// while a card is optimistically placed into this column.
 						if len(col.Cards) == 0 {
-							<li data-tc-kanban-empty class="rounded-lg py-6 text-center text-sm text-gray-400 dark:text-gray-500">
+							<li data-tc-kanban-empty class="rounded-lg py-6 text-center text-sm text-gray-600 dark:text-gray-400">
 								{ utils.Ternary(props.EmptyColumnText != "", props.EmptyColumnText, kanbanEmptyColumnTextDefault) }
 							</li>
 						}

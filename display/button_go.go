@@ -101,8 +101,8 @@ var buttonVariantLookup = map[ButtonType]string{
 	ButtonLink:      "bg-transparent text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 underline-offset-2 hover:underline",
 
 	ButtonOutlineDanger:  "bg-transparent text-red-600 ring-1 ring-inset ring-red-300 hover:bg-red-50 dark:text-red-400 dark:ring-red-800 dark:hover:bg-red-900/20 focus-visible:outline-red-600 dark:focus-visible:outline-red-400",
-	ButtonOutlineWarning: "bg-transparent text-amber-600 ring-1 ring-inset ring-amber-300 hover:bg-amber-50 dark:text-amber-400 dark:ring-amber-800 dark:hover:bg-amber-900/20 focus-visible:outline-amber-600 dark:focus-visible:outline-amber-400",
-	ButtonOutlineSuccess: "bg-transparent text-green-600 ring-1 ring-inset ring-green-300 hover:bg-green-50 dark:text-green-400 dark:ring-green-800 dark:hover:bg-green-900/20 focus-visible:outline-green-600 dark:focus-visible:outline-green-400",
+	ButtonOutlineWarning: "bg-transparent text-amber-700 ring-1 ring-inset ring-amber-300 hover:bg-amber-50 dark:text-amber-400 dark:ring-amber-800 dark:hover:bg-amber-900/20 focus-visible:outline-amber-600 dark:focus-visible:outline-amber-400",
+	ButtonOutlineSuccess: "bg-transparent text-green-700 ring-1 ring-inset ring-green-300 hover:bg-green-50 dark:text-green-400 dark:ring-green-800 dark:hover:bg-green-900/20 focus-visible:outline-green-600 dark:focus-visible:outline-green-400",
 	ButtonOutlineInfo:    "bg-transparent text-blue-600 ring-1 ring-inset ring-blue-300 hover:bg-blue-50 dark:text-blue-400 dark:ring-blue-800 dark:hover:bg-blue-900/20 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400",
 }
 

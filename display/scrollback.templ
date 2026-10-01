@@ -80,7 +80,7 @@ templ Scrollback(props ScrollbackProps) {
 			for _, line := range props.Lines {
 				<div class={ utils.Ternary(props.Stagger, "tc-log-line", "tc-log-line tc-log-line-still") }>
 					if line.Timestamp != "" {
-						<span class="me-3 text-gray-400 dark:text-gray-500">{ line.Timestamp }</span>
+						<span class="me-3 text-gray-500 dark:text-gray-400">{ line.Timestamp }</span>
 					}
 					if line.Tag != "" {
 						<span class={ utils.Class("me-2 inline-block min-w-12 font-medium", scrollbackToneClass(line.Tone)) }>{ line.Tag }</span>
