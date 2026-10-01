@@ -210,6 +210,19 @@ func renderRecipeAuth(w http.ResponseWriter, r *http.Request) {
 		func(props layout.PageProps) templ.Component { return recipesAuthPageState(props, st) })
 }
 
+// registerRecipeRoutes mounts the four standalone recipe screens. They keep
+// their own layout.Base (edge-to-edge, no demo shell) because they
+// demonstrate full-screen compositions the way consumers build them; the
+// demo shell links to them from the Recipes page and the home page.
+func registerRecipeRoutes(mux *http.ServeMux) {
+	mux.HandleFunc("GET /recipes/dashboard", func(w http.ResponseWriter, r *http.Request) {
+		renderRecipePageState(w, r, "Dashboard Recipe - templ-components", "Dashboard recipe demo", recipesDashboardPage)
+	})
+	mux.Handle("/recipes/settings", http.HandlerFunc(renderRecipeSettings))
+	mux.Handle("/recipes/login", http.HandlerFunc(renderRecipeLogin))
+	mux.Handle("/recipes/auth", http.HandlerFunc(renderRecipeAuth))
+}
+
 func renderRecipePageState(
 	w http.ResponseWriter,
 	r *http.Request,

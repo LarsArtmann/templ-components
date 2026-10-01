@@ -14,15 +14,17 @@ import (
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
-// fetchDemoHTML starts a fresh demo mux server, fetches "/", and returns the
-// page body. The server and response body are closed via t.Cleanup.
+// fetchDemoHTML starts a fresh demo mux server, fetches "/wire", and
+// returns the page body. The server and response body are closed via
+// t.Cleanup. The wire section lives on the /wire page of the multi-page
+// demo, not on the home page.
 func fetchDemoHTML(t *testing.T) string {
 	t.Helper()
 
 	server := httptest.NewServer(newMux())
 	t.Cleanup(server.Close)
 
-	resp, err := server.Client().Get(server.URL + "/")
+	resp, err := server.Client().Get(server.URL + "/wire")
 	if err != nil {
 		t.Fatal(err)
 	}

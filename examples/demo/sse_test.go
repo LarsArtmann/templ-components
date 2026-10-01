@@ -338,7 +338,7 @@ func fetchDemoPage(t *testing.T) string {
 	server := httptest.NewServer(newMux())
 	t.Cleanup(server.Close)
 
-	resp, err := server.Client().Get(server.URL + "/")
+	resp, err := server.Client().Get(server.URL + "/datastar")
 	if err != nil {
 		t.Fatal(err)
 	}

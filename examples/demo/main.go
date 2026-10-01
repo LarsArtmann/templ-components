@@ -770,6 +770,7 @@ func newMux() *http.ServeMux {
 	)))
 
 	registerErrorRoutes(mux)
+	registerRecipeRoutes(mux)
 
 	// Multi-page demo: every registry page gets one GET route. Routes are
 	// registered ROOT-RELATIVE ("/display"); withBasePath (see newDemoHandler)
