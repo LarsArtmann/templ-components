@@ -54,13 +54,23 @@ func TestContainer(t *testing.T) {
 		utils.AssertContains(t, output, "max-w-7xl")
 	})
 
-	t.Run("pad=false omits pad class", func(t *testing.T) {
+	t.Run("zero-value struct literal keeps the gutter (NoPad regression)", func(t *testing.T) {
 		t.Parallel()
 
-		output := utils.Render(t, Container(ContainerProps{Width: ContainerWidthDefault, Pad: false}))
+		// The consumer-audit footgun: a bare ContainerProps{...} literal must
+		// not silently lose the responsive gutter. Pinned after the Pad→NoPad
+		// inversion (go-cqrs-lite docserver deep-dive, 2026-10-01).
+		output := utils.Render(t, Container(ContainerProps{Width: ContainerWidthProse}))
+		utils.AssertContainsAll(t, output, "px-4", "sm:px-6", "lg:px-8", "max-w-prose")
+	})
+
+	t.Run("NoPad=true omits gutter class", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, Container(ContainerProps{Width: ContainerWidthDefault, NoPad: true}))
 		if strings.Contains(output, "px-4") || strings.Contains(output, "sm:px-6") ||
 			strings.Contains(output, "lg:px-8") {
-			t.Errorf("expected pad class omitted; output = %q", output)
+			t.Errorf("expected gutter class omitted; output = %q", output)
 		}
 
 		utils.AssertContains(t, output, "max-w-7xl")

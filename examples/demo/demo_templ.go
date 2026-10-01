@@ -217,7 +217,7 @@ func demoContent(transport demoTransport, sessionToken string) templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-8"}, Pad: true}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-8"}}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

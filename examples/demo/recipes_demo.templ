@@ -259,7 +259,7 @@ templ recipesSettingsPageState(props layout.PageProps, savedSection string) {
 	@layout.Base(props) {
 		@recipeUtilityBarFlow()
 		if savedSection != "" {
-			@layout.Container(layout.ContainerProps{Width: layout.ContainerWidthDefault, Pad: true}) {
+			@layout.Container(layout.ContainerProps{Width: layout.ContainerWidthDefault}) {
 				@feedback.Alert(feedback.AlertProps{
 					Title:       "Changes saved",
 					Message:     "Your " + savedSection + " settings were saved. This demo does not persist data — reload to reset.",

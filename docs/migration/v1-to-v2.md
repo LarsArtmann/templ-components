@@ -10,7 +10,8 @@ type aliases. This guide walks through each change and what you need to do.
 | -------------------------- | ------------------------------------------------ | ---------------------------------------- |
 | 7-module workspace split   | Import paths unchanged; `internal/*` → `utils/*` | None (if you didn't import `internal/`)  |
 | HTMX self-host by default  | HTMX embedded inline, no CDN request             | Set `HTMXSrc: ""` to keep CDN            |
-| Container-aware by default | Grid and Split use container queries             | Set `ContainerAware: false` for viewport |
+| Container-aware constructors | `DefaultGridProps`/`DefaultSplitProps` use container queries | Set `ContainerAware: false` for viewport |
+| Container gutter by default | `Container.Pad` → `NoPad`; the zero value keeps the gutter | Delete `Pad: true`; rename `Pad: false` → `NoPad: true` |
 | Card corners sharp         | Card/SimpleCard/StatCard render square corners   | Add `Class: "rounded-lg"` to restore     |
 | Alias removal              | `AlertType`/`ToastType` removed                  | Rename to `FeedbackType`                 |
 
@@ -103,17 +104,26 @@ activates when `HTMXSrc == "self"`.
 
 ---
 
-## 3. Container-aware by default
+## 3. Container-aware constructors (struct literals still opt in)
 
-Two components now default to container-query-based responsiveness instead of
-viewport breakpoints. See ADR-0018.
+`DefaultGridProps()` and `DefaultSplitProps()` now return container-query-based
+layouts instead of viewport breakpoints. See ADR-0018.
 
 ### What changed
 
-| Component | Field            | v1.x default       | v2.0 default       |
-| --------- | ---------------- | ------------------ | ------------------ |
-| `Grid`    | `ContainerAware` | `false` (viewport) | `true` (container) |
-| `Split`   | `ContainerAware` | `false` (viewport) | `true` (container) |
+| Component | Field            | v1.x constructor    | v2.0 constructor    |
+| --------- | ---------------- | ------------------- | ------------------- |
+| `Grid`    | `ContainerAware` | `false` (viewport)  | `true` (container)  |
+| `Split`   | `ContainerAware` | `false` (viewport)  | `true` (container)  |
+
+**The struct-literal zero value did NOT flip.** A bare `GridProps{Cols: ...}`
+or `SplitProps{...}` literal renders viewport breakpoints in v1 and v2
+alike — set `ContainerAware: true` explicitly when constructing literals.
+An earlier version of this section claimed the literal default had flipped
+to `true` so the flag could be "omitted entirely"; that never matched the
+shipped code and silently produced viewport grids for consumers who followed
+it. Corrected 2026-10-01 after a consumer audit (go-cqrs-lite docserver)
+caught this class of documented-default-vs-zero-value bug.
 
 `Card` was briefly flipped to `true` alongside these two, then **reverted to
 `false`** (post-v1.8.2 bugfix): the `@container` wrapper applies
@@ -127,22 +137,42 @@ Additionally, `Grid.ContainerResponsive` has been **renamed** to
 ### What you need to do
 
 **If you used `ContainerResponsive: true` on Grid**: rename to `ContainerAware`.
-The default is now `true`, so you can omit it entirely.
 
 ```go
 // Before (v1.x)
 display.GridProps{Cols: display.GridCols3, ContainerResponsive: true}
 
-// After (v2.0) — ContainerAware is now the default, just omit it
-display.GridProps{Cols: display.GridCols3}
+// After (v2.0) — the only literal form that is container-aware is explicit
+display.GridProps{Cols: display.GridCols3, ContainerAware: true}
 
-// Or if you want viewport-based breakpoints (the old default):
-display.GridProps{Cols: display.GridCols3, ContainerAware: false}
+// Viewport-based breakpoints (also the zero value):
+display.GridProps{Cols: display.GridCols3}
 ```
 
 **Components that stayed viewport-default**: `Card`, `Nav`, `Pagination`,
 `Form`, `DefinitionGrid`, `SkeletonCardGrid` — their `ContainerAware` flag
 remains opt-in (default `false`).
+
+### Container: `Pad` → `NoPad` (the gutter is the zero value)
+
+`ContainerProps.Pad bool` documented a default of `true`, but a struct
+literal's zero value is `false` — every bare `ContainerProps{...}` literal
+silently lost the responsive gutter (`px-4 sm:px-6 lg:px-8`) unless the
+caller remembered `Pad: true`. A consumer audit burned a debugging budget on
+exactly this trap. The flag is now inverted:
+
+```go
+// Before — the trap: doc said "default true", the literal said false
+layout.ContainerProps{Width: layout.ContainerWidthProse}        // no gutter!
+layout.ContainerProps{Width: layout.ContainerWidthProse, Pad: true} // gutter
+
+// After — the zero value keeps the gutter
+layout.ContainerProps{Width: layout.ContainerWidthProse}        // gutter ✓
+layout.ContainerProps{Width: layout.ContainerWidthFull, NoPad: true} // edge-to-edge
+```
+
+Both old spellings are compile errors after the rename — the safe kind of
+breakage: delete `Pad: true`, or rename `Pad: false` to `NoPad: true`.
 
 ---
 
@@ -252,7 +282,8 @@ continues to work.
 - [ ] Rename `AlertSuccess` → `FeedbackSuccess`, etc. (if used)
 - [ ] Rename `ToastSuccess` → `FeedbackSuccess`, etc. (if used)
 - [ ] Rename `ContainerResponsive` → `ContainerAware` on `GridProps` (if used)
-- [ ] Set `ContainerAware: false` on Grid/Split if you need viewport breakpoints
+- [ ] Set `ContainerAware: true` explicitly on Grid/Split literals that must be container-aware (the zero value stays viewport-based)
+- [ ] Delete `Pad: true` from `ContainerProps` literals (the gutter is now the zero value); rename `Pad: false` → `NoPad: true`
 - [ ] Add `Class: "rounded-lg"` to Cards if you need the old rounded corners (or `rounded-lg tc-squircle` for squircles)
 - [ ] Set `HTMXSrc: ""` if you want to keep using the HTMX CDN
 - [ ] Update CSP: allow `script-src 'nonce-...'` for inline HTMX (or keep CDN mode)

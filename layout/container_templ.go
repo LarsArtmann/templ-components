@@ -11,7 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import "github.com/larsartmann/templ-components/utils"
 
 // containerPadClass is the responsive horizontal padding applied by Container
-// when Pad is true. Matches the convention used across the demo and is the
+// unless NoPad is set. Matches the convention used across the demo and is the
 // single source of truth for "page gutter" width.
 const containerPadClass = "px-4 sm:px-6 lg:px-8"
 
@@ -22,7 +22,14 @@ const containerPadClass = "px-4 sm:px-6 lg:px-8"
 //
 // # Defaults
 //
-// Width=ContainerWidthLG (max-w-7xl), Pad=true (px-4 sm:px-6 lg:px-8).
+// Width=ContainerWidthLG (max-w-7xl). The responsive gutter (px-4 sm:px-6
+// lg:px-8) is on by DEFAULT — including in a bare `ContainerProps{...}`
+// struct literal, where the zero value is the padded common case. Set
+// `NoPad: true` only for edge-to-edge content (maps, full-bleed tables) where
+// the consumer manages padding. (Historical note: before NoPad existed, the
+// flag was `Pad bool` with a documented default of true that struct literals
+// silently violated — every literal had to remember `Pad: true` or lost the
+// gutter. NoPad restores the Go idiom that the zero value is the default.)
 //
 // # Examples
 //
@@ -40,7 +47,7 @@ const containerPadClass = "px-4 sm:px-6 lg:px-8"
 //
 // Edge-to-edge map or chart (consumer manages padding):
 //
-//	@layout.Container(layout.ContainerProps{Width: layout.ContainerWidthFull, Pad: false}) {
+//	@layout.Container(layout.ContainerProps{Width: layout.ContainerWidthFull, NoPad: true}) {
 //	   { mapComponent }
 //	}
 func Container(props ContainerProps) templ.Component {
@@ -66,7 +73,7 @@ func Container(props ContainerProps) templ.Component {
 		ctx = templ.ClearChildren(ctx)
 		var templ_7745c5c3_Var2 = []any{utils.Class(
 			"mx-auto w-full "+containerWidthClass(props.Width),
-			utils.Ternary(props.Pad, containerPadClass, ""),
+			utils.Ternary(props.NoPad, "", containerPadClass),
 			props.Class,
 		)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
@@ -85,7 +92,7 @@ func Container(props ContainerProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/container.templ`, Line: 41, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/container.templ`, Line: 48, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -121,7 +128,7 @@ func Container(props ContainerProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/container.templ`, Line: 49, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/container.templ`, Line: 56, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {

@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`Input`/`Select`/`Textarea`/`DatePicker`: horizontal padding restored.**
+  The shared input base class set vertical padding only (`py-1.5`) — text and
+  placeholders sat flush against the field's left and right edges (most visible
+  on search inputs, where the placeholder touched the border). The `px-3`
+  baseline is back (the standard Tailwind outline-input pairing: horizontal
+  padding 2× vertical). `InputGroup` addon clearance (`ps-10`/`pe-10` via
+  `InputGroupPaddingClass`) still wins over the baseline on its own side —
+  tailwind-merge keeps both classes and the CSS cascade orders logical padding
+  after `px-*` — so addon inputs are unchanged.
+
 - **`TestGoWorkDirectiveMatchesRootGoMod` red on main: go directive strings
   aligned at `1.26.0`.** Root `go.mod` said `go 1.26` while `go.work` and
   `visualtest/go.mod` normalize to `go 1.26.0` (`go mod tidy` and `-mod=mod`
