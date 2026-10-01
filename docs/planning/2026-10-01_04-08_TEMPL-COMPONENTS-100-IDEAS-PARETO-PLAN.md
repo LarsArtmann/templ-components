@@ -79,33 +79,33 @@ verification buffer. Sequenced last so they never block the cheap wins.
 
 Sorted by Pareto tier, then effort. `Ideas` = which of the 100 this task covers. `⫱` = owner gate.
 
-| ID   | Task                                                            | Ideas                         | Tier | Impact | Effort | Gate |
-| ---- | --------------------------------------------------------------- | ----------------------------- | ---- | :----: | :----: | :--: |
-| M01  | Discovery launch pad (listings + GOTH narrative)                | #1, #4                        | 1%   |   5    |   60m  |      |
-| M02  | `ExampleXxx` sweep across all packages                          | #11                           | 1%   |   4    |   90m  |      |
-| M03  | Daemon commit gates (build gate + torn-snapshot tripwire)       | #2, #3                        | 4%   |   5    |   90m  |      |
-| M04  | Release integrity (release-lock + post-tag compile smoke)       | #9, #10                       | 4%   |   5    |   90m  |      |
-| M05  | Guard spine (determinism + golden-orphan + block art-dupl)      | #5, #37, #38                  | 4%   |   5    |   80m  |  ⫱   |
-| M06  | Repo hygiene monitors (hooks/proxy/screenshots/workflows)       | #25, #27, #77, #91            | 4%   |   3    |   80m  |      |
-| M07  | Transport upgrades (HTMXOff, triggers ADR, v4 audit)            | #7, #71, #68, #47             | 20%  |   4    |   90m  |      |
-| M08  | `tc` CLI suite (doctor, dry-run, ls footer, explain)            | #8, #40, #75, #87             | 20%  |   4    |   100m |      |
-| M09  | API hardening (Validate, attrs test, map ban, scoped-ID, catalog, compat) | #12, #23, #29, #30, #42, #13 | 20% | 4 | 100m | |
-| M10  | New components wave 1 (ConfirmDialog, Segmented, CopyField, output, sheet) | #6, #31, #32, #33, #34 | 20% | 4 | 100m | |
-| M11  | New components wave 2 (Timeline, skeletons, DataTable, palette, demand ADRs) | #44, #45, #64, #18, #81 | 20% | 4 | 100m | ⫱ |
-| M12  | A11y gates (axe over goldens, combobox guard, touch-target, accessible-name) | #14, #24, #48, #49 | 20% | 4 | 90m | |
-| M13  | A11y/visual variants (Firefox, reduced-motion, contrast, focus-order) | #15, #36, #50, #65    | 20%  |   4    |   100m |      |
-| M14  | RTL + conformance (localized demo, statement, aria-live audit)  | #51, #52, #95                 | 20%  |   3    |   80m  |      |
-| M15  | Datastar/wire depth (e2e module, SSE writer, fuzzing, docs)     | #21, #94, #82, #35, #46, #70  | 20%  |   4    |   100m |      |
-| M16  | Testing depth (chart props, race lane, 422 e2e, policies)       | #53, #83, #96, #72, #73       | 20%  |   3    |   80m  |      |
-| M17  | Performance program (budgets, tree-shake, layers, bench)        | #39, #54, #55, #56, #66, #74, #84, #85, #86 | 20% | 3 | 100m | |
-| M18  | Distribution (CDN bundle, CSS hash, nix new, tc migrate)        | #16, #79, #17, #22            | 20%  |   4    |   100m |      |
-| M19  | DX velocity (editor pack, hot-reload, Postgres, Lighthouse)     | #41, #57, #58, #97            | 20%  |   3    |   90m  |      |
-| M20  | Docs/website (case study, OG, TOC, preview, RSS, JSON-LD, CSP)  | #28, #59, #60, #61, #76, #88, #89, #90 | 20% | 3 | 100m | |
-| M21  | Ecosystem (adoption template, consumers, writeups, roadmap, v2 ADR) | #26, #62, #92, #93, #67   | 20%  |   3    |   90m  |      |
-| M22  | Big showcase (playground, example app, hosted playground)       | #19, #20, #69                 | 80%  |   5    |   100m |      |
-| M23  | Type-model polish (Slot, Theme tokens, withDefaults)            | #43, #63, #80                 | 80%  |   3    |   90m  |      |
-| M24  | Ecosystem tails + cleanup (retire dead CSS, cross-lang port)    | #78, #100                     | 80%  |   2    |   60m  |  ⫱   |
-| M25  | CI observability (mutation pilot, PR wall-clock + benchstat)    | #98, #99                      | 80%  |   2    |   90m  |      |
+| ID  | Task                                                                         | Ideas                                       | Tier | Impact | Effort | Gate |
+| --- | ---------------------------------------------------------------------------- | ------------------------------------------- | ---- | :----: | :----: | :--: |
+| M01 | Discovery launch pad (listings + GOTH narrative)                             | #1, #4                                      | 1%   |   5    |  60m   |      |
+| M02 | `ExampleXxx` sweep across all packages                                       | #11                                         | 1%   |   4    |  90m   |      |
+| M03 | Daemon commit gates (build gate + torn-snapshot tripwire)                    | #2, #3                                      | 4%   |   5    |  90m   |      |
+| M04 | Release integrity (release-lock + post-tag compile smoke)                    | #9, #10                                     | 4%   |   5    |  90m   |      |
+| M05 | Guard spine (determinism + golden-orphan + block art-dupl)                   | #5, #37, #38                                | 4%   |   5    |  80m   |  ⫱   |
+| M06 | Repo hygiene monitors (hooks/proxy/screenshots/workflows)                    | #25, #27, #77, #91                          | 4%   |   3    |  80m   |      |
+| M07 | Transport upgrades (HTMXOff, triggers ADR, v4 audit)                         | #7, #71, #68, #47                           | 20%  |   4    |  90m   |      |
+| M08 | `tc` CLI suite (doctor, dry-run, ls footer, explain)                         | #8, #40, #75, #87                           | 20%  |   4    |  100m  |      |
+| M09 | API hardening (Validate, attrs test, map ban, scoped-ID, catalog, compat)    | #12, #23, #29, #30, #42, #13                | 20%  |   4    |  100m  |      |
+| M10 | New components wave 1 (ConfirmDialog, Segmented, CopyField, output, sheet)   | #6, #31, #32, #33, #34                      | 20%  |   4    |  100m  |      |
+| M11 | New components wave 2 (Timeline, skeletons, DataTable, palette, demand ADRs) | #44, #45, #64, #18, #81                     | 20%  |   4    |  100m  |  ⫱   |
+| M12 | A11y gates (axe over goldens, combobox guard, touch-target, accessible-name) | #14, #24, #48, #49                          | 20%  |   4    |  90m   |      |
+| M13 | A11y/visual variants (Firefox, reduced-motion, contrast, focus-order)        | #15, #36, #50, #65                          | 20%  |   4    |  100m  |      |
+| M14 | RTL + conformance (localized demo, statement, aria-live audit)               | #51, #52, #95                               | 20%  |   3    |  80m   |      |
+| M15 | Datastar/wire depth (e2e module, SSE writer, fuzzing, docs)                  | #21, #94, #82, #35, #46, #70                | 20%  |   4    |  100m  |      |
+| M16 | Testing depth (chart props, race lane, 422 e2e, policies)                    | #53, #83, #96, #72, #73                     | 20%  |   3    |  80m   |      |
+| M17 | Performance program (budgets, tree-shake, layers, bench)                     | #39, #54, #55, #56, #66, #74, #84, #85, #86 | 20%  |   3    |  100m  |      |
+| M18 | Distribution (CDN bundle, CSS hash, nix new, tc migrate)                     | #16, #79, #17, #22                          | 20%  |   4    |  100m  |      |
+| M19 | DX velocity (editor pack, hot-reload, Postgres, Lighthouse)                  | #41, #57, #58, #97                          | 20%  |   3    |  90m   |      |
+| M20 | Docs/website (case study, OG, TOC, preview, RSS, JSON-LD, CSP)               | #28, #59, #60, #61, #76, #88, #89, #90      | 20%  |   3    |  100m  |      |
+| M21 | Ecosystem (adoption template, consumers, writeups, roadmap, v2 ADR)          | #26, #62, #92, #93, #67                     | 20%  |   3    |  90m   |      |
+| M22 | Big showcase (playground, example app, hosted playground)                    | #19, #20, #69                               | 80%  |   5    |  100m  |      |
+| M23 | Type-model polish (Slot, Theme tokens, withDefaults)                         | #43, #63, #80                               | 80%  |   3    |  90m   |      |
+| M24 | Ecosystem tails + cleanup (retire dead CSS, cross-lang port)                 | #78, #100                                   | 80%  |   2    |  60m   |  ⫱   |
+| M25 | CI observability (mutation pilot, PR wall-clock + benchstat)                 | #98, #99                                    | 80%  |   2    |  90m   |      |
 
 **M26 is the whole-plan verification buffer** (not a work task): per-module test loop, full
 `ci-repro.sh`, demo smoke, CHANGELOG + count bump check.
@@ -113,15 +113,15 @@ Sorted by Pareto tier, then effort. `Ideas` = which of the 100 this task covers.
 ### Task detail (What / Proof)
 
 - **M01** — Add the library to awesome-templ (#1), open the templ.guide listing (#1), publish the shared
-  GOTH blurb + badges + cross-links in all three READMEs (#4). *Proof:* PR URLs + rendered README diff.
+  GOTH blurb + badges + cross-links in all three READMEs (#4). _Proof:_ PR URLs + rendered README diff.
 - **M02** — Inventory components lacking `ExampleXxx`, add runnable examples per package (#11).
-  *Proof:* `go doc` shows examples; `go test ./...` green.
+  _Proof:_ `go doc` shows examples; `go test ./...` green.
 - **M03** — Per-module build gate + torn-snapshot tripwire in BuildFlow config (#2/#3).
-  *Proof:* replay the 4 incident SHAs against the new gate.
+  _Proof:_ replay the 4 incident SHAs against the new gate.
 - **M04** — Release-lock signal wired into `release.sh`; CI job that `go get`s the fresh tag (#9/#10).
-  *Proof:* CI job fails on a bad tag; daemon skips while lock present.
+  _Proof:_ CI job fails on a bad tag; daemon skips while lock present.
 - **M05** — Determinism byte-compare test, golden-orphan detector, art-dupl flip to blocking (#5/#37/#38).
-  *Proof:* new tests red→green; CI lane blocks on clones. `⫱` owner ratifies the block flip.
+  _Proof:_ new tests red→green; CI lane blocks on clones. `⫱` owner ratifies the block flip.
 - **M06** — Fresh-clone hook check, weekly proxy-lag monitor, failure-screenshot convention, workflow hardening.
 - **M07** — `HTMXOff` (#7), wire-candidate goldens policy (#71), typed trigger ADR (#68), htmx v4 audit (#47).
 - **M08** — `tc doctor`, `tc add --dry-run`, `tc ls` footer, `tc explain` (#8/#40/#75/#87).
@@ -153,144 +153,144 @@ Every micro-task is at most 12 minutes of focused work. `(#n)` maps to the idea 
 
 ### P1 — the 1% (M01–M02)
 
-| ID     | Micro-task                                                        | Ideas |
-| ------ | ----------------------------------------------------------------- | ----- |
-| M01.01 | Verify awesome-templ repo owner + listing criteria                | #1    |
-| M01.02 | Add entry under Resources/Components + open PR                     | #1    |
-| M01.03 | Submit templ.guide directory listing PR                            | #1    |
-| M01.04 | Write shared "GOTH stack" blurb                                    | #4    |
-| M01.05 | Badges + cross-links in all three READMEs                          | #4    |
-| M02.01 | Inventory components missing `ExampleXxx`                          | #11   |
-| M02.02 | Add examples for the `display` package                             | #11   |
-| M02.03 | Add examples for the `forms` package                               | #11   |
-| M02.04 | Add examples for `feedback` / `layout` / `navigation`              | #11   |
-| M02.05 | Add examples for `wire` / `datastar` / `errorpage`                 | #11   |
+| ID     | Micro-task                                            | Ideas |
+| ------ | ----------------------------------------------------- | ----- |
+| M01.01 | Verify awesome-templ repo owner + listing criteria    | #1    |
+| M01.02 | Add entry under Resources/Components + open PR        | #1    |
+| M01.03 | Submit templ.guide directory listing PR               | #1    |
+| M01.04 | Write shared "GOTH stack" blurb                       | #4    |
+| M01.05 | Badges + cross-links in all three READMEs             | #4    |
+| M02.01 | Inventory components missing `ExampleXxx`             | #11   |
+| M02.02 | Add examples for the `display` package                | #11   |
+| M02.03 | Add examples for the `forms` package                  | #11   |
+| M02.04 | Add examples for `feedback` / `layout` / `navigation` | #11   |
+| M02.05 | Add examples for `wire` / `datastar` / `errorpage`    | #11   |
 
 ### P2 — the 4% (M03–M06)
 
-| ID     | Micro-task                                                        | Ideas |
-| ------ | ----------------------------------------------------------------- | ----- |
-| M03.01 | Draft per-module `go build` gate in BuildFlow config              | #2    |
-| M03.02 | Implement torn-snapshot tripwire                                   | #3    |
-| M03.03 | Replay the 4 incident SHAs against the new gate                    | #2, #3 |
-| M04.01 | Design post-tag consumer smoke module                              | #9    |
-| M04.02 | Add CI job that `go get`s the new tag                              | #9    |
-| M04.03 | Add release-lock signal file to `release.sh`                       | #10   |
-| M04.04 | Verify the daemon respects the lock                                | #10   |
-| M05.01 | Determinism test: render twice, byte-compare                       | #5    |
-| M05.02 | Golden-orphan detector test                                        | #37   |
-| M05.03 | Flip art-dupl to blocking CI after two green runs                  | #38   |
-| M06.01 | Fresh-clone hook check in CI/doctor                                | #25   |
-| M06.02 | Weekly proxy-lag monitor workflow                                  | #27   |
-| M06.03 | Failure-screenshot naming + CI cleanup                             | #77   |
-| M06.04 | Workflow permissions + `workflow_dispatch` pass                    | #91   |
+| ID     | Micro-task                                           | Ideas  |
+| ------ | ---------------------------------------------------- | ------ |
+| M03.01 | Draft per-module `go build` gate in BuildFlow config | #2     |
+| M03.02 | Implement torn-snapshot tripwire                     | #3     |
+| M03.03 | Replay the 4 incident SHAs against the new gate      | #2, #3 |
+| M04.01 | Design post-tag consumer smoke module                | #9     |
+| M04.02 | Add CI job that `go get`s the new tag                | #9     |
+| M04.03 | Add release-lock signal file to `release.sh`         | #10    |
+| M04.04 | Verify the daemon respects the lock                  | #10    |
+| M05.01 | Determinism test: render twice, byte-compare         | #5     |
+| M05.02 | Golden-orphan detector test                          | #37    |
+| M05.03 | Flip art-dupl to blocking CI after two green runs    | #38    |
+| M06.01 | Fresh-clone hook check in CI/doctor                  | #25    |
+| M06.02 | Weekly proxy-lag monitor workflow                    | #27    |
+| M06.03 | Failure-screenshot naming + CI cleanup               | #77    |
+| M06.04 | Workflow permissions + `workflow_dispatch` pass      | #91    |
 
 ### P3 — the 20% (M07–M21)
 
-| ID     | Micro-task                                                        | Ideas |
-| ------ | ----------------------------------------------------------------- | ----- |
-| M07.01 | Add `HTMXOff` value + rendering test                              | #7    |
-| M07.02 | Wire site marketing pages to `HTMXOff`                             | #7    |
-| M07.03 | Wire-candidate goldens policy doc line                             | #71   |
-| M07.04 | Typed interval/intersect trigger ADR draft                         | #68   |
-| M07.05 | htmx v4 event-rename audit spike doc                               | #47   |
-| M08.01 | `tc doctor`: hooks path + templ pin checks                         | #8    |
-| M08.02 | `tc doctor`: CSS freshness + go.work + replace checks              | #8    |
-| M08.03 | `tc add --dry-run`                                                 | #40   |
-| M08.04 | `tc ls` derived footer + drift guard                               | #75   |
-| M08.05 | `tc explain <component>`                                           | #87   |
-| M09.01 | Attrs-precedence contract test                                     | #23   |
-| M09.02 | `Validate()` convention doc + shared harness                       | #12   |
-| M09.03 | `map[string]` scanner guard                                        | #29   |
-| M09.04 | Scoped-ID helper + tests                                           | #30   |
-| M09.05 | Cross-module compat matrix doc + guard                             | #42   |
-| M09.06 | `tc.Catalog()` registry design                                     | #13   |
-| M09.07 | Catalog feeding docs + goldens                                     | #13   |
-| M10.01 | `ConfirmDialog` templ + tests                                      | #6    |
-| M10.02 | Segmented control component                                        | #31   |
-| M10.03 | `CopyField` component                                              | #32   |
-| M10.04 | `<output>` live-total helper                                       | #33   |
-| M10.05 | Bottom-sheet Drawer variant                                        | #34   |
-| M10.06 | Goldens for all five new components                                | #6, #31, #32, #33, #34 |
-| M11.01 | Timeline component                                                 | #44   |
-| M11.02 | Layout-preserving skeleton set                                     | #45   |
-| M11.03 | DataTable column visibility + resize                               | #64   |
-| M11.04 | Pre-write demand-gated ADRs                                        | #81   |
-| M11.05 | Command-palette recipe                                             | #18   |
-| M11.06 | Count bumps + goldens for wave 2                                   | #44, #45, #64 |
-| M12.01 | axe sweep over static goldens lane                                 | #14   |
-| M12.02 | Combobox-role scanner guard                                        | #24   |
-| M12.03 | Touch-target audit over all interactive goldens                    | #48   |
-| M12.04 | Accessible-name computation audit                                  | #49   |
-| M13.01 | Firefox visual lane setup                                          | #15   |
-| M13.02 | Reduced-motion visual lane                                         | #36   |
-| M13.03 | `prefers-contrast` / `forced-colors` variants                      | #50   |
-| M13.04 | Focus-order goldens for overlays                                   | #65   |
-| M14.01 | Localized demo route (`dir=rtl` + `lang`)                          | #51   |
-| M14.02 | WCAG 2.2 AA conformance statement                                  | #52   |
-| M14.03 | Screen-reader aria-live region audit                               | #95   |
-| M15.01 | `ssetest` module scaffold                                          | #21   |
-| M15.02 | Datastar real-runtime e2e tests                                    | #21   |
-| M15.03 | SSE writer policy call + helper                                    | #94   |
-| M15.04 | Wire fuzzing (`Attributes` + `DecodeForm`)                         | #82   |
-| M15.05 | Flaky-endpoint visualtest helper extraction                        | #35   |
-| M15.06 | Optimistic + hx-sync guidance docs                                 | #46, #70 |
-| M16.01 | Chart geometry property tests                                      | #53   |
-| M16.02 | visualtest `-race` lane                                            | #83   |
-| M16.03 | 422 sorted-view kanban e2e                                         | #96   |
-| M16.04 | Test-only dependency policy note                                   | #72   |
-| M16.05 | Demo-smoke gate added to plan checklist                            | #73   |
-| M17.01 | CSS size budget guard                                              | #39   |
-| M17.02 | Per-component HTML byte-cost report                                | #54   |
-| M17.03 | Inline-JS byte budget                                              | #55   |
-| M17.04 | `@layer` ordering investigation                                    | #56   |
-| M17.05 | Icon path-data tree-shake split                                    | #66   |
-| M17.06 | `SITE_SKIP_STARS=1` default flip                                   | #74   |
-| M17.07 | Chart large-series benchmark                                       | #84   |
-| M17.08 | `content-visibility` demo                                          | #85   |
-| M17.09 | `preconnect`/`fetchpriority` audit                                 | #86   |
-| M18.01 | Prebuilt CDN bundle output                                         | #16   |
-| M18.02 | CSS content-hash attribute                                         | #79   |
-| M18.03 | `nix run .#new` scaffolder                                         | #17   |
-| M18.04 | `tc migrate` design + first bump                                   | #22   |
-| M19.01 | Editor support pack doc                                            | #41   |
-| M19.02 | Hot-reload dev app                                                 | #57   |
-| M19.03 | One-command Postgres                                               | #58   |
-| M19.04 | Lighthouse lane                                                    | #97   |
-| M20.01 | Optimistic-UI case study                                           | #28   |
-| M20.02 | Go OG-image generator                                              | #59   |
-| M20.03 | Docs TOC scroll-spy + mobile nav                                   | #60   |
-| M20.04 | Firebase preview channel                                           | #61   |
-| M20.05 | `.#website` flake app                                              | #76   |
-| M20.06 | RSS/Atom feed                                                      | #88   |
-| M20.07 | Richer JSON-LD + `rel=prev/next`                                   | #89   |
-| M20.08 | CSP violation telemetry                                            | #90   |
-| M21.01 | Adoption-ask discussion template                                   | #26   |
-| M21.02 | "Who uses this" consumers section                                  | #62   |
-| M21.03 | SSE audit writeup                                                  | #92   |
-| M21.04 | Public roadmap board sync                                          | #93   |
-| M21.05 | v2 module-path ADR + codemod                                       | #67   |
+| ID     | Micro-task                                            | Ideas                  |
+| ------ | ----------------------------------------------------- | ---------------------- |
+| M07.01 | Add `HTMXOff` value + rendering test                  | #7                     |
+| M07.02 | Wire site marketing pages to `HTMXOff`                | #7                     |
+| M07.03 | Wire-candidate goldens policy doc line                | #71                    |
+| M07.04 | Typed interval/intersect trigger ADR draft            | #68                    |
+| M07.05 | htmx v4 event-rename audit spike doc                  | #47                    |
+| M08.01 | `tc doctor`: hooks path + templ pin checks            | #8                     |
+| M08.02 | `tc doctor`: CSS freshness + go.work + replace checks | #8                     |
+| M08.03 | `tc add --dry-run`                                    | #40                    |
+| M08.04 | `tc ls` derived footer + drift guard                  | #75                    |
+| M08.05 | `tc explain <component>`                              | #87                    |
+| M09.01 | Attrs-precedence contract test                        | #23                    |
+| M09.02 | `Validate()` convention doc + shared harness          | #12                    |
+| M09.03 | `map[string]` scanner guard                           | #29                    |
+| M09.04 | Scoped-ID helper + tests                              | #30                    |
+| M09.05 | Cross-module compat matrix doc + guard                | #42                    |
+| M09.06 | `tc.Catalog()` registry design                        | #13                    |
+| M09.07 | Catalog feeding docs + goldens                        | #13                    |
+| M10.01 | `ConfirmDialog` templ + tests                         | #6                     |
+| M10.02 | Segmented control component                           | #31                    |
+| M10.03 | `CopyField` component                                 | #32                    |
+| M10.04 | `<output>` live-total helper                          | #33                    |
+| M10.05 | Bottom-sheet Drawer variant                           | #34                    |
+| M10.06 | Goldens for all five new components                   | #6, #31, #32, #33, #34 |
+| M11.01 | Timeline component                                    | #44                    |
+| M11.02 | Layout-preserving skeleton set                        | #45                    |
+| M11.03 | DataTable column visibility + resize                  | #64                    |
+| M11.04 | Pre-write demand-gated ADRs                           | #81                    |
+| M11.05 | Command-palette recipe                                | #18                    |
+| M11.06 | Count bumps + goldens for wave 2                      | #44, #45, #64          |
+| M12.01 | axe sweep over static goldens lane                    | #14                    |
+| M12.02 | Combobox-role scanner guard                           | #24                    |
+| M12.03 | Touch-target audit over all interactive goldens       | #48                    |
+| M12.04 | Accessible-name computation audit                     | #49                    |
+| M13.01 | Firefox visual lane setup                             | #15                    |
+| M13.02 | Reduced-motion visual lane                            | #36                    |
+| M13.03 | `prefers-contrast` / `forced-colors` variants         | #50                    |
+| M13.04 | Focus-order goldens for overlays                      | #65                    |
+| M14.01 | Localized demo route (`dir=rtl` + `lang`)             | #51                    |
+| M14.02 | WCAG 2.2 AA conformance statement                     | #52                    |
+| M14.03 | Screen-reader aria-live region audit                  | #95                    |
+| M15.01 | `ssetest` module scaffold                             | #21                    |
+| M15.02 | Datastar real-runtime e2e tests                       | #21                    |
+| M15.03 | SSE writer policy call + helper                       | #94                    |
+| M15.04 | Wire fuzzing (`Attributes` + `DecodeForm`)            | #82                    |
+| M15.05 | Flaky-endpoint visualtest helper extraction           | #35                    |
+| M15.06 | Optimistic + hx-sync guidance docs                    | #46, #70               |
+| M16.01 | Chart geometry property tests                         | #53                    |
+| M16.02 | visualtest `-race` lane                               | #83                    |
+| M16.03 | 422 sorted-view kanban e2e                            | #96                    |
+| M16.04 | Test-only dependency policy note                      | #72                    |
+| M16.05 | Demo-smoke gate added to plan checklist               | #73                    |
+| M17.01 | CSS size budget guard                                 | #39                    |
+| M17.02 | Per-component HTML byte-cost report                   | #54                    |
+| M17.03 | Inline-JS byte budget                                 | #55                    |
+| M17.04 | `@layer` ordering investigation                       | #56                    |
+| M17.05 | Icon path-data tree-shake split                       | #66                    |
+| M17.06 | `SITE_SKIP_STARS=1` default flip                      | #74                    |
+| M17.07 | Chart large-series benchmark                          | #84                    |
+| M17.08 | `content-visibility` demo                             | #85                    |
+| M17.09 | `preconnect`/`fetchpriority` audit                    | #86                    |
+| M18.01 | Prebuilt CDN bundle output                            | #16                    |
+| M18.02 | CSS content-hash attribute                            | #79                    |
+| M18.03 | `nix run .#new` scaffolder                            | #17                    |
+| M18.04 | `tc migrate` design + first bump                      | #22                    |
+| M19.01 | Editor support pack doc                               | #41                    |
+| M19.02 | Hot-reload dev app                                    | #57                    |
+| M19.03 | One-command Postgres                                  | #58                    |
+| M19.04 | Lighthouse lane                                       | #97                    |
+| M20.01 | Optimistic-UI case study                              | #28                    |
+| M20.02 | Go OG-image generator                                 | #59                    |
+| M20.03 | Docs TOC scroll-spy + mobile nav                      | #60                    |
+| M20.04 | Firebase preview channel                              | #61                    |
+| M20.05 | `.#website` flake app                                 | #76                    |
+| M20.06 | RSS/Atom feed                                         | #88                    |
+| M20.07 | Richer JSON-LD + `rel=prev/next`                      | #89                    |
+| M20.08 | CSP violation telemetry                               | #90                    |
+| M21.01 | Adoption-ask discussion template                      | #26                    |
+| M21.02 | "Who uses this" consumers section                     | #62                    |
+| M21.03 | SSE audit writeup                                     | #92                    |
+| M21.04 | Public roadmap board sync                             | #93                    |
+| M21.05 | v2 module-path ADR + codemod                          | #67                    |
 
 ### P4 — the remaining 80% (M22–M25) + verification (M26)
 
-| ID     | Micro-task                                                        | Ideas |
-| ------ | ----------------------------------------------------------------- | ----- |
-| M22.01 | Playground design spike                                            | #19   |
-| M22.02 | Playground implementation slices                                   | #19   |
-| M22.03 | Example-app scaffold                                               | #20   |
-| M22.04 | Example-app CRUD + deploy                                          | #20   |
-| M22.05 | Hosted-playground evaluation                                       | #69   |
-| M23.01 | `Slot` type                                                        | #43   |
-| M23.02 | `Theme`/`Tokens` struct                                            | #63   |
-| M23.03 | `withDefaults` generic                                             | #80   |
-| M24.01 | Retire `styles.css` / `theme.out.css` decision                     | #78   |
-| M24.02 | Cross-language `wire` port spike                                   | #100  |
-| M25.01 | Mutation pilot (gremlins on `utils`)                               | #98   |
-| M25.02 | PR wall-clock + benchstat comment                                  | #99   |
-| M26.01 | Per-module `go test` loop (all 7 modules)                          | —     |
-| M26.02 | Full `scripts/ci-repro.sh --lint --website`                        | —     |
-| M26.03 | Demo smoke over changed endpoints                                  | —     |
-| M26.04 | CHANGELOG warm + doc counts bumped                                 | —     |
+| ID     | Micro-task                                     | Ideas |
+| ------ | ---------------------------------------------- | ----- |
+| M22.01 | Playground design spike                        | #19   |
+| M22.02 | Playground implementation slices               | #19   |
+| M22.03 | Example-app scaffold                           | #20   |
+| M22.04 | Example-app CRUD + deploy                      | #20   |
+| M22.05 | Hosted-playground evaluation                   | #69   |
+| M23.01 | `Slot` type                                    | #43   |
+| M23.02 | `Theme`/`Tokens` struct                        | #63   |
+| M23.03 | `withDefaults` generic                         | #80   |
+| M24.01 | Retire `styles.css` / `theme.out.css` decision | #78   |
+| M24.02 | Cross-language `wire` port spike               | #100  |
+| M25.01 | Mutation pilot (gremlins on `utils`)           | #98   |
+| M25.02 | PR wall-clock + benchstat comment              | #99   |
+| M26.01 | Per-module `go test` loop (all 7 modules)      | —     |
+| M26.02 | Full `scripts/ci-repro.sh --lint --website`    | —     |
+| M26.03 | Demo smoke over changed endpoints              | —     |
+| M26.04 | CHANGELOG warm + doc counts bumped             | —     |
 
 **Total: 121 micro-tasks (≤12 min), 25 work tasks (30–100 min) + 1 verification buffer.**
 
@@ -363,33 +363,33 @@ independent and can run in parallel; M26 is the shared exit gate.
 
 ## 7. Coverage Matrix — proof all 100 ideas appear
 
-| Ideas        | Task(s) |
-| ------------ | ------- |
-| #1, #4       | M01 |
-| #11          | M02 |
-| #2, #3       | M03 |
-| #9, #10      | M04 |
-| #5, #37, #38 | M05 |
-| #25, #27, #77, #91 | M06 |
-| #7, #71, #68, #47 | M07 |
-| #8, #40, #75, #87 | M08 |
-| #12, #23, #29, #30, #42, #13 | M09 |
-| #6, #31, #32, #33, #34 | M10 |
-| #44, #45, #64, #18, #81 | M11 |
-| #14, #24, #48, #49 | M12 |
-| #15, #36, #50, #65 | M13 |
-| #51, #52, #95 | M14 |
-| #21, #94, #82, #35, #46, #70 | M15 |
-| #53, #83, #96, #72, #73 | M16 |
-| #39, #54, #55, #56, #66, #74, #84, #85, #86 | M17 |
-| #16, #79, #17, #22 | M18 |
-| #41, #57, #58, #97 | M19 |
-| #28, #59, #60, #61, #76, #88, #89, #90 | M20 |
-| #26, #62, #92, #93, #67 | M21 |
-| #19, #20, #69 | M22 |
-| #43, #63, #80 | M23 |
-| #78, #100 | M24 |
-| #98, #99 | M25 |
+| Ideas                                       | Task(s) |
+| ------------------------------------------- | ------- |
+| #1, #4                                      | M01     |
+| #11                                         | M02     |
+| #2, #3                                      | M03     |
+| #9, #10                                     | M04     |
+| #5, #37, #38                                | M05     |
+| #25, #27, #77, #91                          | M06     |
+| #7, #71, #68, #47                           | M07     |
+| #8, #40, #75, #87                           | M08     |
+| #12, #23, #29, #30, #42, #13                | M09     |
+| #6, #31, #32, #33, #34                      | M10     |
+| #44, #45, #64, #18, #81                     | M11     |
+| #14, #24, #48, #49                          | M12     |
+| #15, #36, #50, #65                          | M13     |
+| #51, #52, #95                               | M14     |
+| #21, #94, #82, #35, #46, #70                | M15     |
+| #53, #83, #96, #72, #73                     | M16     |
+| #39, #54, #55, #56, #66, #74, #84, #85, #86 | M17     |
+| #16, #79, #17, #22                          | M18     |
+| #41, #57, #58, #97                          | M19     |
+| #28, #59, #60, #61, #76, #88, #89, #90      | M20     |
+| #26, #62, #92, #93, #67                     | M21     |
+| #19, #20, #69                               | M22     |
+| #43, #63, #80                               | M23     |
+| #78, #100                                   | M24     |
+| #98, #99                                    | M25     |
 
 Every idea rank 1–100 maps to exactly one task. No orphan ideas.
 
@@ -438,25 +438,24 @@ before executing is therefore load-bearing — executing the plan as written wou
 finished work. Statuses below are evidence-backed; anything not swept this session is marked
 `UNVERIFIED` rather than guessed.
 
-| Task | Status | Evidence / reason |
-| ---- | ------ | ----------------- |
-| M01 (#1, #4) | **PARTIAL** | `templ.guide` PR **a-h/templ#1447** filed; GOTH badge + blurb now in all three READMEs (templ-components, cqrs-htmx, go-cqrs-lite). `awesome-templ` **BLOCKED**: CONTRIBUTING requires coverage ≥ 80%, measured **72.1%** (see TODO #28). |
-| M02 (#11) | **DONE** | `example_coverage_test.go` added to all 12 packages; every `templ.Component` has an `ExampleXxx`; `go test -run Example` green across all modules. |
-| M03 (#2, #3) | **BLOCKED (upstream)** | Per-module build gate + torn-snapshot tripwire are BuildFlow daemon behaviors — code lives in `larsartmann/buildflow`, not settable from this repo. Tracked as TODO #232/#93. |
-| M04 (#9, #10) | **#9 DONE / #10 BLOCKED** | `scripts/check-tag-compiles.sh` + `.github/workflows/release-smoke.yaml` exist. A repo-local release-lock is a no-op unless BuildFlow honors it → upstream. |
-| M05 (#5, #37, #38) | **#5 DONE / #37 DONE / #38 GAP ⫱** | `internal/contract/render_determinism_test.go`; `utils/golden_orphan_test.go`. The art-dupl block-flip is the owner gate. |
-| M06 (#25, #27, #77, #91) | **#25 DONE / #77 DONE / #27 PARTIAL / #91 PARTIAL** | `scripts/check-hooks-path.sh` + `cmd/tc/doctor.go`; ci.yaml `include-hidden-files: true` (line 354); `upstream-watch.yml`. `ci.yaml` + `release-smoke.yaml` lack a top-level `permissions:`. |
-| M07 (#7, #71, #68, #47) | **#7 DONE / rest GAP** | `layout/htmx_off_test.go` pins `HTMXNone`. No wire-candidate goldens policy line, typed-trigger ADR, or htmx-v4 audit doc. |
-| M08 (#8, #40, #75, #87) | **#8 DONE / rest GAP** | `cmd/tc/doctor.go` exists. No `add --dry-run`, `ls` footer, or `explain`. |
-| M09 (#12, #23, #29, #30, #42, #13) | **#23 DONE (this session) / #42 PARTIAL / rest GAP** | New `internal/contract/attrs_test.go` (`TestAttrsPropagateToRoot`). `docs/version-support.md` exists. No `Validate()` convention, map scanner, scoped-ID helper, or `tc.Catalog()`. |
-| M10, M11 (#6, #31–#34, #44, #45, #64, #18, #81) | **GAP** | No `ConfirmDialog`, `Segmented`, `CopyField`, `<output>` helper, bottom-sheet, `Timeline`, layout-preserving skeleton set, or DataTable column visibility in the tree. |
-| M12 (#14, #24, #48, #49) | **#14 DONE / #48 DONE / #24 GAP / #49 PARTIAL** | `visualtest/axe_sweep_test.go`; `TestTouchTargetAudit`. No combobox-role scanner; accessible-name audit not confirmed. |
-| M13 (#15, #36, #50, #65) | **#65 PARTIAL / rest GAP** | `visualtest/focus_preservation_e2e_test.go`. No Firefox lane, reduced-motion lane, or contrast/forced-colors variants. |
-| M14, M15 (#51, #52, #95, #21, #94, #82, #35, #46, #70) | **#82 PARTIAL / rest GAP** | `utils/wire/decode_fuzz_test.go` exists. No `ssetest` module, SSE writer policy, localized demo, or conformance statement. |
-| M16–M23, M25 | **UNVERIFIED** | Not swept in this session — treat the plan's task list as the work queue. |
-| M24 (#78) | **DONE (likely)** | Dead `.out.css` artifacts were deleted 2026-09-13 (AGENTS.md CSS inventory). Cross-language `wire` port (#100) is still open. |
+| Task                                                   | Status                                               | Evidence / reason                                                                                                                                                                                                                         |
+| ------------------------------------------------------ | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| M01 (#1, #4)                                           | **PARTIAL**                                          | `templ.guide` PR **a-h/templ#1447** filed; GOTH badge + blurb now in all three READMEs (templ-components, cqrs-htmx, go-cqrs-lite). `awesome-templ` **BLOCKED**: CONTRIBUTING requires coverage ≥ 80%, measured **72.1%** (see TODO #28). |
+| M02 (#11)                                              | **DONE**                                             | `example_coverage_test.go` added to all 12 packages; every `templ.Component` has an `ExampleXxx`; `go test -run Example` green across all modules.                                                                                        |
+| M03 (#2, #3)                                           | **BLOCKED (upstream)**                               | Per-module build gate + torn-snapshot tripwire are BuildFlow daemon behaviors — code lives in `larsartmann/buildflow`, not settable from this repo. Tracked as TODO #232/#93.                                                             |
+| M04 (#9, #10)                                          | **#9 DONE / #10 BLOCKED**                            | `scripts/check-tag-compiles.sh` + `.github/workflows/release-smoke.yaml` exist. A repo-local release-lock is a no-op unless BuildFlow honors it → upstream.                                                                               |
+| M05 (#5, #37, #38)                                     | **#5 DONE / #37 DONE / #38 GAP ⫱**                   | `internal/contract/render_determinism_test.go`; `utils/golden_orphan_test.go`. The art-dupl block-flip is the owner gate.                                                                                                                 |
+| M06 (#25, #27, #77, #91)                               | **#25 DONE / #77 DONE / #27 PARTIAL / #91 PARTIAL**  | `scripts/check-hooks-path.sh` + `cmd/tc/doctor.go`; ci.yaml `include-hidden-files: true` (line 354); `upstream-watch.yml`. `ci.yaml` + `release-smoke.yaml` lack a top-level `permissions:`.                                              |
+| M07 (#7, #71, #68, #47)                                | **#7 DONE / rest GAP**                               | `layout/htmx_off_test.go` pins `HTMXNone`. No wire-candidate goldens policy line, typed-trigger ADR, or htmx-v4 audit doc.                                                                                                                |
+| M08 (#8, #40, #75, #87)                                | **#8 DONE / rest GAP**                               | `cmd/tc/doctor.go` exists. No `add --dry-run`, `ls` footer, or `explain`.                                                                                                                                                                 |
+| M09 (#12, #23, #29, #30, #42, #13)                     | **#23 DONE (this session) / #42 PARTIAL / rest GAP** | New `internal/contract/attrs_test.go` (`TestAttrsPropagateToRoot`). `docs/version-support.md` exists. No `Validate()` convention, map scanner, scoped-ID helper, or `tc.Catalog()`.                                                       |
+| M10, M11 (#6, #31–#34, #44, #45, #64, #18, #81)        | **GAP**                                              | No `ConfirmDialog`, `Segmented`, `CopyField`, `<output>` helper, bottom-sheet, `Timeline`, layout-preserving skeleton set, or DataTable column visibility in the tree.                                                                    |
+| M12 (#14, #24, #48, #49)                               | **#14 DONE / #48 DONE / #24 GAP / #49 PARTIAL**      | `visualtest/axe_sweep_test.go`; `TestTouchTargetAudit`. No combobox-role scanner; accessible-name audit not confirmed.                                                                                                                    |
+| M13 (#15, #36, #50, #65)                               | **#65 PARTIAL / rest GAP**                           | `visualtest/focus_preservation_e2e_test.go`. No Firefox lane, reduced-motion lane, or contrast/forced-colors variants.                                                                                                                    |
+| M14, M15 (#51, #52, #95, #21, #94, #82, #35, #46, #70) | **#82 PARTIAL / rest GAP**                           | `utils/wire/decode_fuzz_test.go` exists. No `ssetest` module, SSE writer policy, localized demo, or conformance statement.                                                                                                                |
+| M16–M23, M25                                           | **UNVERIFIED**                                       | Not swept in this session — treat the plan's task list as the work queue.                                                                                                                                                                 |
+| M24 (#78)                                              | **DONE (likely)**                                    | Dead `.out.css` artifacts were deleted 2026-09-13 (AGENTS.md CSS inventory). Cross-language `wire` port (#100) is still open.                                                                                                             |
 
 **Harvest actions taken:** TODO #28 corrected (real blocker = coverage, not "sitting down"); TODO #29
 marked PR filed. Net: the honest remaining queue is **M03/M04 partially upstream-blocked**, the M07–M25
 gaps, and the **coverage-to-80% work that gates the awesome-templ listing**.
-

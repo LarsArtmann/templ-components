@@ -6,7 +6,7 @@ must keep the HTTP status honest and never leak internals.
 
 **Problem:** The `errorpage` package ships the components (`ErrorPage`,
 `NotFound404`, `ErrorAlert`, `ErrorDetail`) and handler helpers
-(`WriteError`, `ErrorHandler`, `FromError`), but not the *policy* around
+(`WriteError`, `ErrorHandler`, `FromError`), but not the _policy_ around
 them: how to map your domain errors to visual families, where per-code copy
 lives, how to branch HTMX swaps vs navigations, and what to do when your
 normal layout cannot render on the error path.
@@ -38,7 +38,7 @@ mux.Handle("/payments/declined", errorpage.ErrorHandler(err, errorpage.ErrorHand
 ```
 
 Use these when you have an `error` value. Reach for Tier 2 when you have a
-*status code and a decision to make* instead.
+_status code and a decision to make_ instead.
 
 ## Tier 2: Map statuses to families, codes to copy
 
@@ -121,7 +121,7 @@ func writeErrorPage(w http.ResponseWriter, r *http.Request, status int, title, m
 }
 ```
 
-For failed *actions* (form submits, mutations), pair the page with immediate
+For failed _actions_ (form submits, mutations), pair the page with immediate
 feedback: fire a toast via `HX-Trigger` AND render the error page, so the
 user sees why it failed in both the interaction loop and the navigation.
 
