@@ -77,6 +77,8 @@ type ContainerProps struct {
 
 // DefaultContainerProps returns sensible defaults: LG width. The responsive
 // gutter needs no explicit opt-in — it is the zero-value default.
+//
+//nolint:exhaustruct_v5 // constructor intentionally sets only non-zero defaults
 func DefaultContainerProps() ContainerProps {
 	return ContainerProps{
 		Width: ContainerWidthDefault,

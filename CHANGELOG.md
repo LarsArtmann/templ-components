@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Documented-default-vs-zero-value split brain resolved (Grid/Split
+  `ContainerAware`; `Container.Pad` fixed in code — see the breaking change
+  below).** The v1→v2 migration doc claimed the `ContainerAware` literal
+  default flipped to `true` in v2 ("you can omit it entirely") — it never
+  did: the v1.8.2 flip changed `DefaultGridProps()`/`DefaultSplitProps()`
+  only, and a bare `GridProps{Cols: ...}` literal has always rendered
+  viewport breakpoints (verified against the v1.8.2 tag and a live render).
+  Grid's struct comment ("Defaults to true (v2.0)"), FEATURES.md ("Since
+  v2.0, Grid, Card, and Split default true" — doubly wrong: Card was
+  reverted), AGENTS.md, and the skill all repeated the claim; all corrected
+  to "opt-in at the literal level; the constructors set true". Root rule
+  recorded in AGENTS.md: the struct-literal zero value MUST equal the
+  documented default (found via the go-cqrs-lite docserver deep-dive,
+  2026-10-01).
+
 - **`Input`/`Select`/`Textarea`/`DatePicker`: horizontal padding restored.**
   The shared input base class set vertical padding only (`py-1.5`) — text and
   placeholders sat flush against the field's left and right edges (most visible
@@ -27,6 +42,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   guard (`TestGoDirectiveSkew`) stays green (semantic compare).
 
 ### Added
+
+- **New recipe: Bounding Unbounded Tables (`docs/recipes/bounding-tables.md`).**
+  The decision tree for "table renders every row": cap + `ListNote`
+  truncation notice (the default choice), `Pagination` for bounded sets, or
+  `LoadMore` + `ListNoteRange` for cursor batches — never an unbounded DOM.
+  Written from the go-cqrs-lite docserver deep-dive's open finding (four
+  catalog tables with "no cap, note, or pagination — ListNote and Pagination
+  sit unused"). Registered in the recipe index + skill.
 
 - **`ListNote` `ListNoteRange` variant — cursor-paginated "Showing X–Y of Z."**
   The truncated and count-only variants both miss position semantics: X–Y is
@@ -66,6 +89,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `docs/status/2026-10-01_04-28_consumer-usage-analysis-templ-components-status.md`.
 
 ### Changed
+
+- **BREAKING: `ContainerProps.Pad` → `NoPad` — the responsive gutter is now
+  the zero value.** `Pad bool` documented "default true" but a struct
+  literal's zero value is `false`, so every bare `ContainerProps{...}` literal
+  silently lost the page gutter (`px-4 sm:px-6 lg:px-8`) unless the caller
+  remembered `Pad: true` — including the component's own godoc example. The
+  go-cqrs-lite docserver deep-dive (2026-10-01) burned its debugging budget
+  on exactly this trap and called it "the single most valuable piece of
+  knowledge" in the report. The flag is inverted: `NoPad bool` opts OUT of
+  the gutter; the zero value and `DefaultContainerProps()` keep it. Both old
+  spellings become compile errors — delete `Pad: true`, rename `Pad: false`
+  → `NoPad: true` (migration doc updated). Pinned by a zero-value regression
+  subtest in `layout/container_test.go`; in-repo users (AppShell, demo,
+  SettingsLayout) simplified to plain literals.
 
 - **New recipe: Error Pages (`docs/recipes/error-pages.md`).** The two
   error-page patterns proven in cqrs-htmx, written down at last: status→family

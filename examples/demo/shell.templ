@@ -1,0 +1,225 @@
+package main
+
+import (
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/layout"
+	"github.com/larsartmann/templ-components/navigation"
+	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/feedback"
+)
+
+// demoShell renders a demo page inside the application shell: layout.Base →
+// layout.AppShell with a SidebarNav of every demo page (desktop) and a
+// MobileMenu (mobile). The demo dogfoods the library's own layout stack —
+// the shell IS the showcase.
+//
+// The header carries the mobile menu toggle, a docs link, the GitHub link,
+// and the theme toggle; the sidebar carries the brand, the page registry
+// nav, and the install command.
+templ demoShell(meta demoPageMeta, nonce string, content templ.Component) {
+	@layout.Base(demoShellPageProps(meta, nonce)) {
+		@feedback.ToastContainer(demoNonceConst)
+		@layout.AppShell(layout.AppShellProps{
+			BaseProps: utils.BaseProps{
+				ID: "demo-shell",
+			},
+			Sidebar:   demoSidebar(meta, nonce),
+			MobileNav: demoMobileNav(meta, nonce),
+			Header:    demoHeader(meta, nonce),
+			Content:   demoShellContent(meta, content),
+			Container: false,
+		})
+	}
+}
+
+// demoNonceConst is the demo-wide CSP nonce. Every inline script in the demo
+// uses it, and the CSP middleware (and the firebase.json /demo/** override)
+// allowlists exactly this value.
+const demoNonceConst = "demo-nonce"
+
+// demoShellPageProps builds the shared layout.PageProps for every demo page.
+func demoShellPageProps(meta demoPageMeta, nonce string) layout.PageProps {
+	props := layout.DefaultPageProps()
+	props.Title = meta.Title + " - templ-components Demo"
+	props.Description = meta.Short
+	props.Nonce = nonce
+	props.CSSPath = demoURL("/css/app.css")
+	props.Favicon = demoURL("/favicon.svg")
+	props.HeadContent = demoFonts(nonce)
+
+	return props
+}
+
+// demoShellContent wraps the page body: a PageHeader (registry-driven title
+// + description) above the content, except on the home page whose hero
+// replaces the header.
+templ demoShellContent(meta demoPageMeta, content templ.Component) {
+	if meta.ShowHeader {
+		<div class="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+			<div class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+				@display.PageHeader(display.PageHeaderProps{
+					Title:    meta.Title,
+					Subtitle: meta.Short,
+				})
+			</div>
+		</div>
+	}
+	<div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+		@content
+	</div>
+	@demoShellFooter()
+}
+
+// demoShellFooter closes every page with provenance links.
+templ demoShellFooter() {
+	<footer class="border-t border-gray-200 dark:border-gray-800">
+		<div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-sm text-gray-500 dark:text-gray-400 sm:px-6 lg:px-8">
+			<p>
+				templ-components v{ utils.Version } — server-rendered Go UI components.
+			</p>
+			<div class="flex items-center gap-4">
+				<a href={ templ.SafeURL(demoDocsURL) } class="hover:text-blue-600 dark:hover:text-blue-400">Documentation</a>
+				<a href={ templ.SafeURL(demoGitHubURL) } class="inline-flex items-center gap-1.5 hover:text-blue-600 dark:hover:text-blue-400">
+					@icons.Icon(icons.CodeBracket, "h-4 w-4")
+					GitHub
+				</a>
+			</div>
+		</div>
+	</footer>
+}
+
+// demoSidebar builds the desktop SidebarNav from the page registry.
+templ demoSidebar(meta demoPageMeta, nonce string) {
+	@navigation.SidebarNav(navigation.SidebarNavProps{
+		BaseProps: utils.BaseProps{
+			AriaLabel: "Demo pages",
+		},
+		Brand: demoSidebarBrand(),
+		Items: demoSidebarItems(meta),
+		Header: demoSidebarHeader(nonce),
+		Footer: demoSidebarFooter(),
+		CurrentPath: meta.canonicalPath(),
+	})
+}
+
+// demoSidebarItems maps the registry to SidebarNavItem links. Home is
+// prepended ungrouped; the registry's Section values group the rest.
+func demoSidebarItems(meta demoPageMeta) []navigation.SidebarNavItem {
+	items := []navigation.SidebarNavItem{
+		{
+			Label:  "Overview",
+			Href:   demoURL("/"),
+			Icon:   icons.Home,
+			Active: meta.Path == homePageMeta.Path,
+		},
+	}
+	for _, page := range demoPages() {
+		items = append(items, navigation.SidebarNavItem{
+			Label:   page.Title,
+			Href:    page.canonicalPath(),
+			Icon:    page.Icon,
+			Section: page.Section,
+			Active:  page.Path == meta.Path,
+		})
+	}
+
+	return items
+}
+
+// demoSidebarBrand is the fixed sidebar header: mark, name, version.
+templ demoSidebarBrand() {
+	<a href={ templ.SafeURL(demoURL("/")) } class="flex items-center gap-2.5">
+		<span class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 dark:bg-blue-500 text-sm font-bold text-white font-mono">tc</span>
+		<span class="flex flex-col">
+			<span class="text-sm font-semibold text-gray-900 dark:text-white">templ-components</span>
+			<span class="text-xs text-gray-500 dark:text-gray-400">v{ utils.Version } demo</span>
+		</span>
+	</a>
+}
+
+// demoSidebarHeader carries the live docs link above the nav.
+templ demoSidebarHeader(nonce string) {
+	<div class="px-3 pb-3">
+		<a
+			href={ templ.SafeURL(demoDocsURL) }
+			class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+		>
+			@icons.Icon(icons.Book, "h-3.5 w-3.5")
+			Documentation
+			@icons.Icon(icons.ExternalLink, "h-3 w-3")
+		</a>
+	</div>
+}
+
+// demoSidebarFooter carries the copyable install command.
+templ demoSidebarFooter() {
+	<div class="space-y-3 px-3">
+		@display.CopyButton(display.CopyButtonProps{
+			BaseProps: utils.BaseProps{
+				Class: "w-full justify-center text-xs",
+			},
+			Text:  "go get github.com/larsartmann/templ-components",
+			Label: "Copy install command",
+		})
+		<p class="text-xs text-gray-400 dark:text-gray-600">
+			Every page on this site is built with the components it shows.
+		</p>
+	</div>
+}
+
+// demoMobileNav renders the collapsible mobile menu (below lg only, inside
+// the AppShell MobileNav slot). The toggle button lives in demoHeader.
+templ demoMobileNav(meta demoPageMeta, nonce string) {
+	@navigation.MobileMenu(demoMobileLinks(), meta.canonicalPath(), nonce, "demo-mobile-menu", false)
+}
+
+// demoMobileLinks flattens the registry (plus standalone pages) for the
+// mobile menu, which has no section grouping.
+func demoMobileLinks() []navigation.NavLinkProps {
+	links := []navigation.NavLinkProps{
+		{Href: demoURL("/"), Text: "Overview"},
+	}
+	for _, page := range demoPages() {
+		links = append(links, navigation.NavLinkProps{
+			Href: page.canonicalPath(),
+			Text: page.Title,
+		})
+	}
+
+	return links
+}
+
+// demoHeader is the sticky top bar: mobile brand + menu toggle on the left,
+// docs/GitHub links and the theme toggle on the right.
+templ demoHeader(meta demoPageMeta, nonce string) {
+	<div class="flex h-14 items-center justify-between gap-3 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 px-4 backdrop-blur-xs sm:px-6">
+		<div class="flex min-w-0 items-center gap-2">
+			<span class="lg:hidden">
+				@navigation.MobileMenuToggle(false, "demo-mobile-menu", false)
+			</span>
+			<a href={ templ.SafeURL(demoURL("/")) } class="flex items-center gap-2 lg:hidden" aria-label="Demo home">
+				<span class="flex h-7 w-7 items-center justify-center rounded-md bg-blue-600 dark:bg-blue-500 text-xs font-bold text-white font-mono">tc</span>
+			</a>
+			<span class="hidden min-w-0 truncate text-sm font-medium text-gray-500 dark:text-gray-400 sm:block" aria-hidden="true">
+				{ meta.Title }
+			</span>
+		</div>
+		<div class="flex shrink-0 items-center gap-1.5">
+			<a
+				href={ templ.SafeURL(demoDocsURL) }
+				class="hidden items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0 sm:inline-flex"
+			>
+				Docs
+			</a>
+			<a
+				href={ templ.SafeURL(demoGitHubURL) }
+				class="inline-flex items-center justify-center rounded-md p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+				aria-label="GitHub repository"
+			>
+				@icons.Icon(icons.CodeBracket, "h-5 w-5")
+			</a>
+			@layout.ThemeToggle("Toggle dark mode", nonce)
+		</div>
+	</div>
+}

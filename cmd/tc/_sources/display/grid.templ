@@ -110,8 +110,9 @@ type GridProps struct {
 	Gap GridGap
 	// ContainerAware, when true, renders the grid inside an @container
 	// wrapper so column counts respond to the container's width instead of
-	// the browser viewport. Defaults to true (v2.0). Set to false for
-	// viewport-based breakpoints.
+	// the browser viewport. Opt-in: the struct-literal zero value is
+	// viewport-based; DefaultGridProps() sets it true. Set it explicitly
+	// (true or false) whenever a bare GridProps{...} literal is used.
 	ContainerAware bool
 	// MinColWidth sets the minimum column width for auto-fit grids. Used only
 	// when Cols is GridColsAutoFit. Generates a CSS auto-fit/minmax template

@@ -8,6 +8,7 @@ Practical guides for common templ-components patterns.
 | [Grid Blowout Prevention](grid-blowout-minmax.md)             | Why every grid column uses `minmax(0,1fr)` not bare `1fr` — the #1 grid footgun               |
 | [Table Inside Card](table-in-card.md)                         | Flush + compact padding for table-in-card layouts (the admin dashboard pattern)               |
 | [Custom Table Rows](custom-table-rows.md)                     | Table.Body slot for custom `<tr>` rendering + TypedHeaders for sortable columns               |
+| [Bounding Unbounded Tables](bounding-tables.md)               | Cap + ListNote truncation notice, or Pagination/LoadMore — never render every row            |
 | [Custom 404 Page](custom-404-page.md)                         | NotFound404 component with custom links, search, and HTTP handler integration                 |
 | [Error Pages](error-pages.md)                                 | Family-aware error pages: status→family mapping, per-code copy, HTMX branch, noindex shell    |
 | [Cursor Pagination](cursor-pagination.md)                     | Cursor-based "Load more" pattern with HTMX infinite scroll                                    |

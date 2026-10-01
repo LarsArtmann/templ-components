@@ -152,7 +152,7 @@ Don't know what to look for? Find your page type:
 | `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                                                          |
 | `Stylesheet`  | `Stylesheet(href, attrs)`              | CSP-safe `<link rel="stylesheet">`                                                                    |
 | `AppShell`    | `AppShell(props AppShellProps)`        | Sidebar + header + main app shell — the #1 admin dashboard pattern                                    |
-| `Container`   | `Container(props ContainerProps)`      | Centered max-width wrapper — replaces `max-w-Nxl mx-auto px-4 sm:px-6 lg:px-8`                        |
+| `Container`   | `Container(props ContainerProps)`      | Centered max-width wrapper with responsive gutter ON by default (`NoPad: true` opts out) — replaces `max-w-Nxl mx-auto px-4 sm:px-6 lg:px-8` |
 | `Split`       | `Split(props SplitProps)`              | 2-col content+aside — article+sidebar, detail+metadata (RTL-aware), `ContainerAware`                  |
 | `Stack`       | `Stack(props StackProps)`              | Vertical rhythm — typed Gap enum, replaces repeated `space-y-N`                                       |
 
@@ -363,6 +363,7 @@ run `templ generate`. This is the standard pattern for publishable templ package
 | `docs/icons-only-adoption.md`                         | Adopting just the `icons` package (CSS-agnostic)                                                |
 | `docs/recipes/hybrid-strings-builder-rendering.md`    | Rendering components into a strings.Builder (children slots, `templ.WithChildren` escape hatch) |
 | `docs/recipes/theme-bridge.md`                        | Remap library colors to custom semantic palette                                                 |
+| `docs/recipes/bounding-tables.md`                     | Cap + ListNote notice, or Pagination/LoadMore — never render an unbounded table                |
 
 ## How to know if a component already exists
 
@@ -738,6 +739,13 @@ Never invent IDs with `time.Now()` alone — predictable under concurrency.
 
 ## Mandatory conventions (these have no exceptions)
 
+- **Zero value = documented default.** Consumers build `XxxProps{...}` literals,
+  not just `DefaultXxxProps()`. A bool whose documented default is `true` but
+  whose zero value is `false` silently misbehaves in every literal (the
+  `ContainerProps.Pad` trap, fixed by inverting to `NoPad`; `Grid`/`Split`
+  `ContainerAware` docs were corrected the other way). Prefer inverted flags
+  (`NoPad`, `NoValidate`) when the common case is "on".
+
 - **Dark mode colors:** `gray-*` exclusively. Never mix `slate-*` and `gray-*` in one
   component — the inconsistency shows in dark mode.
 - **Motion safety:** every transition gets
@@ -771,8 +779,12 @@ Never invent IDs with `time.Now()` alone — predictable under concurrency.
 - **Container queries:** when a component should respond to its parent's width
   rather than the viewport, use Tailwind v4's `@container` + `@sm:`/`@md:`/`@lg:`
   variants. 8 components have a `ContainerAware` flag: `Grid`, `Card`, `Nav`,
-  `Split`, `DefinitionGrid`, `Form`, `Pagination`, `SkeletonCardGrid`. Since v2.0,
-  `Grid`, `Card`, and `Split` default `true` (opt-out); the other 5 default `false`. **Fluid typography** via `.tc-fluid-*` classes
+  `Split`, `DefinitionGrid`, `Form`, `Pagination`, `SkeletonCardGrid`. ALL 8 are
+  opt-in at the struct-literal level (zero value = viewport breakpoints);
+  `DefaultGridProps()`/`DefaultSplitProps()` set it `true` — the "v2 default
+  flip" changed the constructors, never the literals (docs corrected
+  2026-10-01 after a consumer audit hit this documented-default-vs-zero-value
+  class). **Fluid typography** via `.tc-fluid-*` classes
   (container query `cqi` units) composes directly inside any container-aware component.
   See ADR-0018 and `docs/container-query-strategy.md`. Do NOT expand `ContainerAware`
   to marginal candidates (Container, Breadcrumbs, EmptyState, NotFound404, Footer) —
