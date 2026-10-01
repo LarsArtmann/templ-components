@@ -69,7 +69,7 @@ func demoPages() []demoPageMeta {
 		{
 			Path: "/forms", Title: "Forms", Short: "Inputs, selects, toggles, validation, filter bar, calendar.", Icon: icons.Edit,
 			Section: "Components", ShowHeader: true,
-			Content: func(*http.Request) templ.Component { return formsSectionContent() },
+			Content: func(*http.Request) templ.Component { return formsDemoContent() },
 		},
 		{
 			Path: "/navigation", Title: "Navigation", Short: "Nav bars, breadcrumbs, pagination, load-more, footer.", Icon: icons.MapPin,

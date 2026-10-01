@@ -201,7 +201,7 @@ func (t demoTransport) humanName() string {
 // (typed wire contract; the input carries its own name/value).
 func wireValidateAttrs() templ.Attributes {
 	return wire.Action{
-		URL:    "/api/wire/validate",
+		URL:    demoURL("/api/wire/validate"),
 		Event:  wire.EventChange,
 		Target: "#wire-validate-out",
 	}.Attributes()
@@ -771,37 +771,41 @@ func newMux() *http.ServeMux {
 
 	registerErrorRoutes(mux)
 
+	// Multi-page demo: every registry page gets one GET route. Routes are
+	// registered ROOT-RELATIVE ("/display"); withBasePath (see newDemoHandler)
+	// additionally serves each of them under /demo/** so the same handlers
+	// answer on the raw Cloud Run origin AND behind the Firebase Hosting
+	// rewrite at https://templcomponents.lars.software/demo/**.
+	for _, page := range demoPages() {
+		mux.Handle("GET "+page.Path, demoPageHandler(page))
+	}
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		switch r.URL.Path {
-		case "/forms":
-			renderPage(w, r, "Forms Demo - templ-components", "Complete form showcase with validation", formsDemoPage)
-		case "/users":
-			renderUsersPage(w, r)
-		case "/recipes/dashboard":
-			renderPage(w, r, "Dashboard Recipe - templ-components", "Dashboard recipe demo", recipesDashboardPage)
-		case "/recipes/settings":
-			renderRecipeSettings(w, r)
-		case "/recipes/login":
-			renderRecipeLogin(w, r)
-		case "/recipes/auth":
-			renderRecipeAuth(w, r)
-		case "/":
-			transport := parseDemoTransport(r.URL.Query().Get("transport"))
-			renderPage(
-				w,
-				r,
-				"templ-components Demo",
-				"Showcase of all templ-components",
-				func(props layout.PageProps) templ.Component {
-					return demoPage(props, transport, demoSessionCSRF(r))
-				},
-			)
-		default:
+		if r.URL.Path != "/" {
 			http.NotFound(w, r)
+
+			return
 		}
+		renderShellPage(w, r, homePageMeta, demoHomeContent(demoNonceConst))
 	})
 
 	return mux
+}
+
+// demoPageHandler serves one registry page through the shared demo shell.
+func demoPageHandler(page demoPageMeta) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		renderShellPage(w, r, page, page.Content(r))
+	})
+}
+
+// renderShellPage renders a shell page (or the home page) as the full HTML
+// response.
+func renderShellPage(w http.ResponseWriter, r *http.Request, meta demoPageMeta, content templ.Component) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := demoShell(meta, demoNonceConst, content).Render(r.Context(), w); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // errorPageFullModelDemoProps is the complete ErrorPage showcase — every
@@ -976,26 +980,16 @@ func newServer(handler http.Handler) *http.Server {
 	}
 }
 
-func renderPage(
-	w http.ResponseWriter,
-	r *http.Request,
-	title, description string,
-	page func(layout.PageProps) templ.Component,
-) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := page(demoPageProps(title, description)).Render(r.Context(), w); err != nil {
-		http.Error(w, err.Error(), 500)
-	}
-}
-
-// demoPageProps builds the shared layout.PageProps for a demo page: nonce,
-// CSS path, and font head content.
+// demoPageProps builds the standalone layout.PageProps (error routes and
+// recipe pages, which render their own Base without the demo shell): nonce,
+// CSS path, favicon, and font head content — all base-path prefixed.
 func demoPageProps(title, description string) layout.PageProps {
 	props := layout.DefaultPageProps()
 	props.Title = title
 	props.Description = description
 	props.Nonce = "demo-nonce"
-	props.CSSPath = "/css/app.css"
+	props.CSSPath = demoURL("/css/app.css")
+	props.Favicon = demoURL("/favicon.svg")
 	props.HeadContent = demoFonts("demo-nonce")
 
 	return props
@@ -1018,5 +1012,14 @@ func componentOr500(w http.ResponseWriter, r *http.Request, component templ.Comp
 // limit) around the mux. Exposed for tests so TestPrerenderMatchesLiveServer
 // exercises the exact stack the live server runs.
 func newDemoHandler() http.Handler {
-	return withDemoSession(newIPLimiter(demoRateLimit, demoRateBurst)(newMux()))
+	// Chain order (outermost first): security headers → base-path dual-mount
+	// → session CSRF → rate limit → mux. The base-path rewrite runs BEFORE
+	// the mux so every route answers at both /path and /demo/path.
+	return withSecurityHeaders(
+		withBasePath(
+			withDemoSession(
+				newIPLimiter(demoRateLimit, demoRateBurst)(newMux()),
+			),
+		),
+	)
 }
