@@ -489,7 +489,8 @@ display.Card(display.CardProps{
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = display.Dropdown(display.DropdownProps{
-			Label: "Actions",
+			Label:     "Actions",
+			BaseProps: utils.BaseProps{Nonce: "demo-nonce"},
 			Items: []display.DropdownItem{
 				{Text: "Edit", Href: "#", Icon: icons.Edit},
 				{Text: "Duplicate", Href: "#", Icon: icons.DocumentDuplicate},
@@ -525,7 +526,7 @@ display.Card(display.CardProps{
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = display.Tooltip(display.TooltipProps{BaseProps: utils.BaseProps{ID: "tt-1"}, Text: "Edit this item"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = display.Tooltip(display.TooltipProps{BaseProps: utils.BaseProps{ID: "tt-1", Nonce: "demo-nonce"}, Text: "Edit this item"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -547,7 +548,7 @@ display.Card(display.CardProps{
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = display.Tooltip(display.TooltipProps{Text: "More details here", Position: display.TooltipPositionBottom, BaseProps: utils.BaseProps{ID: "tt-2"}}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = display.Tooltip(display.TooltipProps{Text: "More details here", Position: display.TooltipPositionBottom, BaseProps: utils.BaseProps{ID: "tt-2", Nonce: "demo-nonce"}}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -607,7 +608,7 @@ display.Card(display.CardProps{
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(utils.Version)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 171, Col: 71}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 172, Col: 71}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -1009,7 +1010,7 @@ display.Card(display.CardProps{
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = display.CopyButton(display.CopyButtonProps{Text: "go get github.com/larsartmann/templ-components", Label: "Copy install command"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = display.CopyButton(display.CopyButtonProps{BaseProps: utils.BaseProps{Nonce: "demo-nonce"}, Text: "go get github.com/larsartmann/templ-components", Label: "Copy install command"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1163,11 +1164,11 @@ display.Card(display.CardProps{
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Demo&size=96", Alt: "Demo", Width: 96, Height: 96}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Demo&size=96", Alt: "Demo", Width: 96, Height: 96, BaseProps: utils.BaseProps{Nonce: "demo-nonce"}}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Round&size=96", Alt: "Rounded", Width: 96, Height: 96, Rounded: true, FallbackSrc: "https://ui-avatars.com/api/?name=Fallback"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Round&size=96", Alt: "Rounded", Width: 96, Height: 96, Rounded: true, FallbackSrc: "https://ui-avatars.com/api/?name=Fallback", BaseProps: utils.BaseProps{Nonce: "demo-nonce"}}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1565,7 +1566,7 @@ display.Card(display.CardProps{
 			var templ_7745c5c3_Var32 string
 			templ_7745c5c3_Var32, templ_7745c5c3_Err = templ.JoinStringErrs(utils.Version)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 512, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 513, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var32))
 			if templ_7745c5c3_Err != nil {
@@ -1578,7 +1579,7 @@ display.Card(display.CardProps{
 			var templ_7745c5c3_Var33 string
 			templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(time.Now().UTC().Format("2006-01-02T15:04:05Z"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 513, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 514, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 			if templ_7745c5c3_Err != nil {
@@ -1689,7 +1690,7 @@ func carouselSlide(label, colorClass string) templ.Component {
 		var templ_7745c5c3_Var38 string
 		templ_7745c5c3_Var38, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 537, Col: 9}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 538, Col: 9}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var38))
 		if templ_7745c5c3_Err != nil {

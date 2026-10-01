@@ -144,7 +144,11 @@ func htmxDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig()).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = htmx.GlobalErrorHandling(func() htmx.ErrorHandlingConfig {
+			cfg := htmx.DefaultErrorHandlingConfig()
+			cfg.Nonce = demoNonceConst
+			return cfg
+		}()).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -269,7 +273,7 @@ func polledStatsContent(tick int, live bool) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", 48_210+tick*137))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/htmx_demo.templ`, Line: 88, Col: 117}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/htmx_demo.templ`, Line: 92, Col: 117}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -282,7 +286,7 @@ func polledStatsContent(tick int, live bool) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(time.Now().Format("15:04:05"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/htmx_demo.templ`, Line: 89, Col: 101}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/htmx_demo.templ`, Line: 93, Col: 101}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {

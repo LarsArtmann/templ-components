@@ -74,19 +74,19 @@ func feedbackDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = feedback.Toast(feedback.ToastProps{Message: "Settings saved!", Type: feedback.FeedbackSuccess, Duration: 5000}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = feedback.Toast(feedback.ToastProps{Message: "Settings saved!", Type: feedback.FeedbackSuccess, Duration: 5000, Nonce: demoNonceConst}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = feedback.Toast(feedback.ToastProps{Message: "Upload failed.", Type: feedback.FeedbackError, Title: "Error"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = feedback.Toast(feedback.ToastProps{Message: "Upload failed.", Type: feedback.FeedbackError, Title: "Error", Nonce: demoNonceConst}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = feedback.Toast(feedback.ToastProps{Message: "Storage almost full.", Type: feedback.FeedbackWarning}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = feedback.Toast(feedback.ToastProps{Message: "Storage almost full.", Type: feedback.FeedbackWarning, Nonce: demoNonceConst}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = feedback.Toast(feedback.ToastProps{Message: "New version available.", Type: feedback.FeedbackInfo}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = feedback.Toast(feedback.ToastProps{Message: "New version available.", Type: feedback.FeedbackInfo, Nonce: demoNonceConst}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
