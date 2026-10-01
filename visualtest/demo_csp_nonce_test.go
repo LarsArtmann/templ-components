@@ -21,6 +21,8 @@ import (
 // asserts attribute PRESENCE — an empty value passes it. This guard asserts
 // the absence of the broken shape on every rendered demo page.
 func TestDemoCSPNonceIntegrity(t *testing.T) {
+	t.Parallel()
+
 	server := StartDemoServer(t)
 
 	client := &http.Client{}
@@ -37,7 +39,12 @@ func TestDemoCSPNonceIntegrity(t *testing.T) {
 		t.Run(page, func(t *testing.T) {
 			t.Parallel()
 
-			resp, err := client.Get(server.BaseURL() + page)
+			req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, server.BaseURL()+page, nil)
+			if err != nil {
+				t.Fatalf("visualtest[csp]: build GET %s: %v", page, err)
+			}
+
+			resp, err := client.Do(req)
 			if err != nil {
 				t.Fatalf("visualtest[csp]: GET %s: %v", page, err)
 			}
