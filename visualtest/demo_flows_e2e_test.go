@@ -99,7 +99,11 @@ func TestDemoLoadMoreReachesEndOfList(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/navigation"), chromedp.WaitReady("body")); err != nil {
+	if err := chromedp.Run(
+		ctx,
+		chromedp.Navigate(server.BaseURL()+"/navigation"),
+		chromedp.WaitReady("body"),
+	); err != nil {
 		t.Fatalf("visualtest[demo]: load navigation page: %v", err)
 	}
 

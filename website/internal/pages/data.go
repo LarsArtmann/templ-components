@@ -24,9 +24,9 @@ const (
 	// domain is the canonical public URL.
 	DemoURL     = SiteURL + "/demo"
 	GitHubURL   = "https://github.com/larsartmann/templ-components"
-	AuthorName      = "LarsArtmann"
-	AuthorURL       = "https://larsartmann.com/"
-	PkgGoDevURL     = "https://pkg.go.dev/github.com/larsartmann/templ-components"
+	AuthorName  = "LarsArtmann"
+	AuthorURL   = "https://larsartmann.com/"
+	PkgGoDevURL = "https://pkg.go.dev/github.com/larsartmann/templ-components"
 )
 
 // Feature is a landing-page feature card.
