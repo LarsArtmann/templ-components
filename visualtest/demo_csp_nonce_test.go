@@ -54,7 +54,11 @@ func TestDemoCSPNonceIntegrity(t *testing.T) {
 			}
 
 			if hits := emptyNonce.FindAllString(string(body), -1); len(hits) > 0 {
-				t.Errorf("visualtest[csp]: %s renders %d script(s) with an EMPTY nonce — the demo CSP blocks them, killing their JS. The component was built without its nonce prop (demoNonceConst).", page, len(hits))
+				t.Errorf(
+					"visualtest[csp]: %s renders %d script(s) with an EMPTY nonce — the demo CSP blocks them, killing their JS. The component was built without its nonce prop (demoNonceConst).",
+					page,
+					len(hits),
+				)
 			}
 		})
 	}
@@ -82,6 +86,8 @@ func TestDemoCSPJSExecutes(t *testing.T) {
 	}
 
 	if !attached {
-		t.Error("visualtest[csp]: window.tcKanbanAttached never became true — inline scripts are not executing under the demo CSP")
+		t.Error(
+			"visualtest[csp]: window.tcKanbanAttached never became true — inline scripts are not executing under the demo CSP",
+		)
 	}
 }
