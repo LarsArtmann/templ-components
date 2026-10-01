@@ -4,7 +4,7 @@
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources), ⫱ owner gate (decision/credential).
-> IDs are unique across ALL sections — next free ID: 322.
+> IDs are unique across ALL sections — next free ID: 328.
 
 ---
 
@@ -206,3 +206,25 @@ _All four asks DONE 2026-09-30 (see CHANGELOG [Unreleased]): (a) `CopyButton`
 Z." variant (#319); (c) `PageHeader` `TitleComponent`/`SubtitleComponent`
 (#320); (d) the error-pages recipe `docs/recipes/error-pages.md` (#321). Rows
 removed per the completed-work convention. Next free ID: 322._
+
+---
+
+## Harvested 2026-10-01 — consumer-usage analysis (docs/status/2026-10-01_04-28 §f, verified)
+
+_From the cross-consumer analysis of `nsfw-classifier`, `dnsblockd`, and
+`cqrs-htmx` (all on v1.19.4). Each item below was re-verified against library
+source in the follow-up session; the report's original §a5/§c2 wording was
+corrected (§↗ addendum). The guide fixes for #323/#324's documentation side
+landed this session in `docs/tailwind-v4-adoption-guide.md`._
+
+| #   | Task                                                                                                                                                 | Why / source                                                                                                                                                                                                                                                                                         |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 322 | `errorpage.FamilyFromStatus(status int) Family` — the inverse of `FamilyStatusCode`                                                                   | The library ships family→status but no status→family, so cqrs-htmx re-implements the same switch twice: `adminui/errorpage.go:15` (`errorFamilyFor`) and `dashboardui/render.go:122` (`statusToFamily`). Additive helper + test; dedupe their third copy `actionErrorStatus`. **NOTE:** the two cqrs modules disagree on 500 (adminui → Corruption, dashboardui → Infrastructure), so the canonical mapping is an owner decision, not an assumption. (§a5 corrected)         |
+| 323 | `AppShell` inline `--tc-sidebar-w` → a class instead of `style=`                                                                                      | `SidebarWidth` is a closed enum (SM/MD/LG/Auto), so the value can be a `tc-sidebar-w-*` class in `custom.css` rather than an inline custom property that strict `style-src` CSP drops silently. Proved consumer-hostile by cqrs's CSS workaround (`adminui/tailwind.css:141-160`). Ties **#237**. (§a4) |
+| 324 | `GridColsAutoFit`: emit a static class, or ship a `safelist.css` consumers `@import`                                                                | `display.Grid` concatenates its `[grid-template-columns:repeat(auto-fit,minmax(N,1fr))]` class (`display/grid.templ:81-88`), invisible to Tailwind's scan — every consumer must `@source inline(...)`. A fixed `@source inline` example is now in the guide, but the design smell remains. (§a3)       |
+| 325 | `display.Table.BodyID` (+ `Body templ.Component` slot) for SSE live-row insertion                                                                     | cqrs-htmx built `rawDataTable` (`dashboardui/components.templ:134-148`) because `display.Table` has no swap target for appending streamed rows. Promote the pattern or document it as the supported extension. (§a6)                                                                                  |
+| 326 | `errorpage.ErrorHandler` wrapper: document the adoption path, or record the accepted divergence                                                        | cqrs-htmx uses the `errorpage` components but not the `ErrorHandler` wrapper — the wrapper assumes a Go error + minimal shell, while consumers need per-code domain messages, their own layout chrome, and an `Hx-Trigger` toast. Decide: extend the wrapper, document the composition, or ADR the refusal. (§a5, §g1) |
+| 327 | Guard test: library inline `style=` emissions stay within the documented exemption set                                                                 | The CSP caveat is now documented, but nothing stops a new component from adding an inline style silently. Assert that only `AppShell`, `BarChart`, `Heatmap`, `ProgressBar`, `LoadingOverlay` emit `style=`. (§f34)                                                                                   |
+
+_Next free ID: 328._
+
