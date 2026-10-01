@@ -155,3 +155,21 @@ _Near-term pipeline first (this session's thread), then hardening, then the inhe
 ---
 
 *Report ends. Verification pipeline (items 1–8) resumes on instruction; the kanban e2e rerun was in flight at writing time.*
+
+---
+
+## Addendum 2 — 13:55 CEST: pipeline COMPLETE, CI fully green, fixes live
+
+All of §b closed; the pipeline ran to the end:
+
+- **Kanban e2e** (the nonce regression's signal): move-buttons both transports + RTL + HTTP contracts + parity — all green after the nonce fix (+ the two remaining hardcoded `/` fetches in the shared contract probe moved to `fx.pagePath`).
+- **Full clean visual witness run**: green twice (incl. the new `TestDemoCSPNonceIntegrity` + `TestDemoCSPJSExecutes` guards, which were promoted from the temporary diagnostics; the kanban diag was deleted).
+- **ci-repro `--lint --website`**: VERDICT PASS at the pushed tip (actionlint requires the nix dev shell — run it as `nix develop -c scripts/ci-repro.sh --lint --website`).
+- **Pushed** (e3b9e6b2→7f282d71 range): nonce fixes, contrast fixes, harness fixes, guards, goldens, go-directive alignment (root `go 1.26.0` — the daemon had flip-flopped it against go.work/visualtest), CSS artifact, vnu ignore class.
+- **CI (ci.yaml) FULLY GREEN** on run 36857280299: Build & Test ✓ Lint ✓ Visual Regression ✓ CSS Freshness ✓ HTML validation ✓ — the first fully-green CI run of the day (it had been red on every push since 05:12Z: CSS freshness → HTML validation (two vnu rules) → tc-mirror sync → route goldens, each fixed at the root).
+- **Website workflow** deployed the demo + site with the fresh CSS (run 36853607372 ✓).
+- **Live re-verification of the fixed deploy**: 0 empty-nonce scripts across all probed canonical pages (was 50), fresh CSS served (emerald/amber/green-700 present), POST fragments 200, site `/` 200, all standalone recipe screens 200 through the proxy, `/demo/errors/404|500` return their intentional status codes, SSE still buffered (documented limitation, TODO #329 — unchanged, owner decision pending).
+
+New defects found and fixed during the pipeline (beyond §d): the daemon's go.mod flip-flop broke the directive-equality guard and workspace toolchain resolution (aligned all to `1.26.0`); `ci-repro` must run inside `nix develop` (actionlint); the shared kanban probe still had two hardcoded `/` verification fetches; the route-golden index captures had baked a stale-CSS render (stacked filter row) and needed one legitimate regeneration; ViewTransitions style/script order violated vnu's first-child rule (fixed forward) and its `::view-transition-*` scoping rule cannot be satisfied by any markup (16th documented ignore class, AGENTS updated).
+
+Open follow-ups unchanged from §f; top of the queue: permanent-guard promotion is DONE (item 9 ✓), items 10–16 (post-deploy JS probe, SSE canary, axe ledger re-triage, #330 tone sweep, `-update` guard, prerender nonce parity, GetNonce ADR) and the owner decisions (#329 SSE, canonical redirect, header Demo link, release timing).
