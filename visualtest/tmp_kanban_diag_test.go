@@ -60,7 +60,9 @@ func TestTmpKanbanDiag(t *testing.T) {
 			lastClick:window.__lastClick||'none',
 			formVals:vals,
 			scripts:document.querySelectorAll('script').length,
-			hasKbJS:document.documentElement.outerHTML.includes('tcKbPendingFor')||document.documentElement.outerHTML.includes('data-tc-kanban-form'),
+			noncedScripts:document.querySelectorAll('script[nonce]').length,
+			kbFns:typeof window.tcKbBoard+'/'+typeof window.tcKbSubmit+'/'+typeof window.tcKbPendingFor,
+			cspMeta:document.querySelector('meta[http-equiv="Content-Security-Policy"]')?'meta':'none',
 			progAfter:Array.from(document.querySelectorAll('#kanban-demo-htmx [data-tc-kanban-column-body="progress"] > [data-tc-kanban-card]')).map(e=>e.getAttribute('data-tc-kanban-card')).join(','),
 			backlogAfter:Array.from(document.querySelectorAll('#kanban-demo-htmx [data-tc-kanban-column-body="backlog"] > [data-tc-kanban-card]')).map(e=>e.getAttribute('data-tc-kanban-card')).join(',')
 		});
