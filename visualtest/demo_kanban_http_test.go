@@ -157,7 +157,7 @@ func runKanbanContractProbes(t *testing.T, base string, fx kanbanContractFixture
 		t.Fatalf("visualtest[%s]: same-origin add = %d, want 200", fx.name, got)
 	}
 
-	if page := probe.get("/"); !strings.Contains(page, `data-tc-kanban-card="`+fx.addedCardID+`"`) {
+	if page := probe.get(fx.pagePath); !strings.Contains(page, `data-tc-kanban-card="`+fx.addedCardID+`"`) {
 		t.Fatalf("visualtest[%s]: added card %s missing from re-rendered board", fx.name, fx.addedCardID)
 	}
 
@@ -182,7 +182,7 @@ func runKanbanContractProbes(t *testing.T, base string, fx kanbanContractFixture
 		t.Fatalf("visualtest[%s]: reset via Origin header = %d, want 200", fx.name, got)
 	}
 
-	if page := probe.get("/"); strings.Contains(page, `data-tc-kanban-card="`+fx.addedCardID+`"`) {
+	if page := probe.get(fx.pagePath); strings.Contains(page, `data-tc-kanban-card="`+fx.addedCardID+`"`) {
 		t.Fatalf("visualtest[%s]: reset did not remove the added card", fx.name)
 	}
 
