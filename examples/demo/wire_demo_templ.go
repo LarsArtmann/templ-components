@@ -1189,7 +1189,7 @@ func wireDemoValidateInput(transport demoTransport) templ.Component {
 				BaseProps: utils.BaseProps{
 					Attrs: templ.Attributes{
 						"data-bind:value": "",
-						"data-on:change":  "@get('/api/wire/validate?value=' + encodeURIComponent($value || ''))",
+						"data-on:change":  "@get('" + demoURL("/api/wire/validate") + "?value=' + encodeURIComponent($value || ''))",
 					},
 				},
 			}).Render(ctx, templ_7745c5c3_Buffer)

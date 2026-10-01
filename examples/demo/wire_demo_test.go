@@ -130,7 +130,7 @@ func TestWireDemoSectionRendersBothDialects(t *testing.T) {
 	for _, want := range []string{
 		`hx-get="/demo/api/wire/fragment"`,
 		`hx-target="#wire-htmx-out"`,
-		`data-on:click="@get(&#39;/api/wire/#39;/demo/api/wire/fragment&#39;)"`,
+		`data-on:click="@get(&#39;/demo/api/wire/fragment&#39;)"`,
 	} {
 		if !strings.Contains(html, want) {
 			t.Errorf("demo page missing %q", want)
@@ -320,7 +320,7 @@ func TestWireDemoValidateInputDialects(t *testing.T) {
 			transport: "datastar",
 			wantContains: []string{
 				`data-bind:value`,
-				`data-on:change="@get(&#39;/api/wire/#39;/demo/api/wire/validate?value=&#39; + encodeURIComponent($value || &#39;&#39;))"`,
+				`data-on:change="@get(&#39;/demo/api/wire/validate?value=&#39; + encodeURIComponent($value || &#39;&#39;))"`,
 			},
 			wantNotContains: []string{`hx-get="/demo/api/wire/validate`},
 		},
@@ -382,7 +382,7 @@ func TestWireFormEndpointServesBothTransports(t *testing.T) {
 			form:            url.Values{"name": {"Ada Lovelace"}, "email": {"ada@example.com"}},
 			wantContains: []string{
 				"Subscribed Ada Lovelace (ada@example.com) via datastar.",
-				`data-on:submit="@post(&#39;/api/wire/#39;/demo/api/wire/form&#39;, {contentType: &#39;form&#39;})"`,
+				`data-on:submit="@post(&#39;/demo/api/wire/form&#39;, {contentType: &#39;form&#39;})"`,
 			},
 		},
 		{
@@ -414,7 +414,7 @@ func TestWireFormEndpointServesBothTransports(t *testing.T) {
 				"2 errors found",
 				wireFormNameMissing,
 				wireFormEmailBad,
-				`data-on:submit="@post(&#39;/api/wire/#39;/demo/api/wire/form&#39;, {contentType: &#39;form&#39;})"`,
+				`data-on:submit="@post(&#39;/demo/api/wire/form&#39;, {contentType: &#39;form&#39;})"`,
 			},
 			wantAbsent: "Subscribed",
 		},
@@ -486,7 +486,7 @@ func TestWireDemoFormRendersBothDialects(t *testing.T) {
 		`hx-post="/demo/api/wire/form"`,
 		`hx-trigger="submit"`,
 		`hx-target="#wire-form-htmx-region"`,
-		`data-on:submit="@post(&#39;/api/wire/#39;/demo/api/wire/form&#39;, {contentType: &#39;form&#39;})"`,
+		`data-on:submit="@post(&#39;/demo/api/wire/form&#39;, {contentType: &#39;form&#39;})"`,
 		`id="wire-form-out"`,
 		// The verdict/error fragments land inside these regions; aria-live
 		// makes screen readers announce the server's response.
@@ -605,7 +605,7 @@ func TestWireDemoFilterInputRendersBothDialects(t *testing.T) {
 		`hx-get="/demo/api/wire/filter"`,
 		`hx-trigger="input changed delay:300ms"`,
 		`hx-target="#wire-filter-out"`,
-		`data-on:input__debounce.300ms="@get(&#39;/api/wire/#39;/demo/api/wire/filter&#39;, {contentType: &#39;form&#39;})"`,
+		`data-on:input__debounce.300ms="@get(&#39;/demo/api/wire/filter&#39;, {contentType: &#39;form&#39;})"`,
 		`id="wire-filter-out"`,
 	} {
 		if !strings.Contains(html, want) {
@@ -692,7 +692,7 @@ func TestWireDemoBusyCardRendersBothDialects(t *testing.T) {
 	for _, want := range []string{
 		`hx-post="/demo/api/wire/busy"`,
 		`hx-target="#wire-busy-htmx-out"`,
-		`data-on:click="@post(&#39;/api/wire/#39;/demo/api/wire/busy&#39;, {selector: &#39;#wire-busy-datastar-out&#39;})"`,
+		`data-on:click="@post(&#39;/demo/api/wire/busy&#39;, {selector: &#39;#wire-busy-datastar-out&#39;})"`,
 		`data-indicator:saving`,
 		`role="status"`,
 		`id="wire-busy-datastar-out"`,
@@ -860,7 +860,7 @@ func TestWireSearchEndpoint(t *testing.T) {
 			if !strings.Contains(string(respBody), tt.wantContains) {
 				t.Errorf("search body missing %q", tt.wantContains)
 			}
-			freshFormWiring := `data-on:submit="@get(&#39;/api/wire/#39;/demo/api/wire/search&#39;`
+			freshFormWiring := `data-on:submit="@get(&#39;/demo/api/wire/search&#39;`
 			if !tt.datastarRequest {
 				freshFormWiring = `hx-get="/demo/api/wire/search"`
 			}
@@ -881,10 +881,10 @@ func TestWireDemoUploadAndSearchCards(t *testing.T) {
 		`enctype="multipart/form-data"`,
 		`hx-post="/demo/api/wire/upload"`,
 		`hx-target="#wire-upload-out"`,
-		`data-on:submit="@post(&#39;/api/wire/#39;/demo/api/wire/upload&#39;, {contentType: &#39;form&#39;})"`,
+		`data-on:submit="@post(&#39;/demo/api/wire/upload&#39;, {contentType: &#39;form&#39;})"`,
 		`hx-get="/demo/api/wire/search"`,
 		`hx-target="#wire-search-htmx-region"`,
-		`data-on:submit="@get(&#39;/api/wire/#39;/demo/api/wire/search&#39;, {contentType: &#39;form&#39;})"`,
+		`data-on:submit="@get(&#39;/demo/api/wire/search&#39;, {contentType: &#39;form&#39;})"`,
 	} {
 		if !strings.Contains(html, want) {
 			t.Errorf("demo page missing %q", want)

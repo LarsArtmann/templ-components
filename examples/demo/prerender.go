@@ -97,6 +97,7 @@ func prerender(outputDir string) error {
 		props.Description = page.desc
 		props.Nonce = nonce
 		props.CSSPath = ""
+		props.Favicon = demoURL("/favicon.svg")
 		props.HeadContent = cssHead
 
 		outPath := filepath.Join(outputDir, page.filename)

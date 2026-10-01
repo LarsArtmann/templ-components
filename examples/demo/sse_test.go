@@ -330,15 +330,23 @@ func readUntilBlankLine(r io.Reader) (string, error) {
 	}
 }
 
-// fetchDemoPage renders the assembled demo index page and returns its body —
-// the shared fixture for page-level SDK contract tests.
+// fetchDemoPage renders the assembled /datastar demo page and returns its
+// body — the shared fixture for page-level SDK contract tests. Other pages
+// use fetchDemoPagePath.
 func fetchDemoPage(t *testing.T) string {
+	t.Helper()
+
+	return fetchDemoPagePath(t, "/datastar")
+}
+
+// fetchDemoPagePath fetches one demo page from a fresh mux server.
+func fetchDemoPagePath(t *testing.T, path string) string {
 	t.Helper()
 
 	server := httptest.NewServer(newMux())
 	t.Cleanup(server.Close)
 
-	resp, err := server.Client().Get(server.URL + "/datastar")
+	resp, err := server.Client().Get(server.URL + path)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -394,7 +402,7 @@ func TestDemoIndexSDKScriptRender(t *testing.T) {
 func TestDemoIndexEChartsSDKScriptRender(t *testing.T) {
 	t.Parallel()
 
-	page := fetchDemoPage(t)
+	page := fetchDemoPagePath(t, "/echarts")
 	pinnedURL := "https://cdn.jsdelivr.net/npm/echarts@" +
 		string(echarts.DefaultSDKScriptProps().Version) + "/dist/echarts.min.js"
 
