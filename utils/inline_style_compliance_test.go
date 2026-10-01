@@ -81,7 +81,7 @@ func TestInlineStyleCompliance(t *testing.T) {
 			return relErr
 		}
 
-		if !inlineStyleRe.MatchString(string(data)) {
+		if !inlineStyleRe.Match(data) {
 			return nil
 		}
 

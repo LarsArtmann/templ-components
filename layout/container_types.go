@@ -66,19 +66,19 @@ type ContainerProps struct {
 	// Width controls the max-width. Default is ContainerWidthLG.
 	// Use ContainerWidthProse for long-form articles.
 	Width ContainerWidth
-	// Pad enables the responsive horizontal padding
-	// (px-4 sm:px-6 lg:px-8). Default is true. Set to false when the
-	// consumer manages padding (e.g. inside a Card or Grid).
-	Pad bool
+	// NoPad suppresses the responsive horizontal gutter
+	// (px-4 sm:px-6 lg:px-8). The gutter is ON by default — the zero
+	// value is the padded common case, so struct literals keep it
+	// without setting anything. Set NoPad to true only when the
+	// consumer manages padding (e.g. edge-to-edge maps inside a
+	// ContainerWidthFull wrapper, or nesting inside a Card/Grid).
+	NoPad bool
 }
 
-// DefaultContainerProps returns sensible defaults: LG width with responsive
-// padding enabled.
-//
-//nolint:exhaustruct_v5 // constructor intentionally sets only non-zero defaults
+// DefaultContainerProps returns sensible defaults: LG width. The responsive
+// gutter needs no explicit opt-in — it is the zero-value default.
 func DefaultContainerProps() ContainerProps {
 	return ContainerProps{
 		Width: ContainerWidthDefault,
-		Pad:   true,
 	}
 }
