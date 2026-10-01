@@ -162,5 +162,17 @@ jobs:
           health="$(curl -fsS "${demo_url}/health")"
           echo "demo /health: ${health}"
           echo "${health}" | grep -q '"status":"ok"'
+          # Canonical surface: the Firebase rewrite at /demo/**. Proves the
+          # rewrite resolves, the MPA shell renders, and the demo CSP survives
+          # the proxy (nonce source must be present in the final header).
+          for path in /demo /demo/ /demo/display; do
+            code="$(curl -sS -o /tmp/demo_probe.html -w '%{http_code}' "${SiteURL}${path}")"
+            echo "demo probe ${path}: ${code}"
+            test "${code}" = "200"
+          done
+          grep -q 'demo-mobile-menu' /tmp/demo_probe.html
+          csp="$(curl -sI "${SiteURL}/demo/" | grep -i '^content-security-policy:' || true)"
+          echo "${csp}"
+          echo "${csp}" | grep -q "'nonce-demo-nonce'"
         env:
           SiteURL: https://templcomponents.lars.software

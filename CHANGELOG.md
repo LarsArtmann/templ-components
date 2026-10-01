@@ -23,10 +23,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Fonts, ui-avatars.com placeholders) — mirrored as a `/demo/**` header
   override in firebase.json so a proxy-applied site CSP cannot intersect it
   away. The website's "Live Demo" links (hero, 404) and the README link bar
-  point at the new canonical URL.
+  point at the new canonical URL. The CI post-deploy smoke now probes the
+  canonical surface (`/demo`, `/demo/`, `/demo/display` status codes, shell
+  marker, CSP nonce survival through the rewrite) instead of only the raw
+  run.app `/health` endpoint.
 
 ### Fixed
 
+- **Color-contrast fixes surfaced by the demo's expanded axe sweep (fix
+  forward, per the a11y gate policy).** Splitting the demo into per-package
+  pages ended the old single-page contrast waiver and audited each page at
+  the strict standard: `KanbanBoard` empty-column placeholder and `Scrollback`
+  timestamps move from `text-gray-400` to `text-gray-600`/`text-gray-500`
+  (light) — the old shade measured 2.4–2.5:1; `CountBadge` red badge uses
+  `bg-red-600` in light mode (white digits now 4.8:1); error-page cause rows
+  and labels darken on tinted cards; `InlineSuccess` and the outline Warning/
+  Success buttons use `text-green-700`/`text-amber-700` in light mode
+  (3.2:1 → 5:1); the `Nav` `Footer` bottom bar follows the standard
+  `text-gray-500 dark:text-gray-400` muted pair.
 - **Documented-default-vs-zero-value split brain resolved (Grid/Split
   `ContainerAware`; `Container.Pad` fixed in code — see the breaking change
   below).** The v1→v2 migration doc claimed the `ContainerAware` literal
