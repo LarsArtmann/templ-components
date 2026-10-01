@@ -4,6 +4,7 @@
 [![Go Reference](https://img.shields.io/badge/go-pkg.go.dev-blue?style=flat-square)](https://pkg.go.dev/github.com/larsartmann/templ-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://github.com/larsartmann/templ-components/blob/master/LICENSE)
 [![Version](https://img.shields.io/badge/version-v1.19.4-blue?style=flat-square)](https://github.com/larsartmann/templ-components/releases)
+[![GOTH stack](https://img.shields.io/badge/GOTH-stack-8A2BE2?style=flat-square)](https://github.com/larsartmann/cqrs-htmx)
 
 **Server-rendered Go components that ship real HTML — no JavaScript framework required. Built on [templ](https://templ.guide), [HTMX](https://htmx.org), and [Tailwind CSS v4](https://tailwindcss.com).**
 
