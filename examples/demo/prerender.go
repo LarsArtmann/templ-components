@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/a-h/templ"
-	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/layout"
 )
 
@@ -18,38 +19,75 @@ type prerenderPage struct {
 	render   func(layout.PageProps) templ.Component
 }
 
+// prerenderRequest builds the synthetic request the registry Content funcs
+// receive during static export: no query (the wire transport defaults to
+// both) and a build-scoped CSRF token in context — a served-static demo page
+// cannot pass live CSRF validation (bind moves to the serving server).
+func prerenderRequest() *http.Request {
+	req, err := http.NewRequest(http.MethodGet, demoURL("/"), nil)
+	if err != nil {
+		panic(fmt.Sprintf("prerender: build synthetic request: %v", err))
+	}
+	*req = *req.WithContext(context.WithValue(req.Context(), demoSessionCtxKey{}, newDemoSessionToken()))
+
+	return req
+}
+
 func prerender(outputDir string) error {
-	nonce := "demo-nonce"
+	nonce := demoNonceConst
 	cssHead := demoFonts(nonce)
+	req := prerenderRequest()
 
 	pages := []prerenderPage{
 		{
 			"index.html",
-			"templ-components Demo",
-			"Showcase of all templ-components",
-			func(props layout.PageProps) templ.Component {
-				return demoPage(props, demoTransportBoth, newDemoSessionToken()) // static export: token is build-scoped; a served-static demo page cannot pass CSRF validation (bind moves to the live server)
+			"templ-components Demo - live component showcase",
+			homePageMeta.Short,
+			func(_ layout.PageProps) templ.Component {
+				return demoShell(homePageMeta, nonce, demoHomeContent(nonce))
 			},
 		},
-		{"forms/index.html", "Forms Demo - templ-components", "Complete form showcase with validation", formsDemoPage},
-		{
+	}
+
+	for _, page := range demoPages() {
+		meta := page
+		pages = append(pages, prerenderPage{
+			filename: strings.TrimPrefix(meta.Path, "/") + "/index.html",
+			title:    meta.Title + " - templ-components Demo",
+			desc:     meta.Short,
+			render: func(_ layout.PageProps) templ.Component {
+				return demoShell(meta, nonce, meta.Content(req))
+			},
+		})
+	}
+
+	pages = append(
+		pages,
+		prerenderPage{
 			"recipes/dashboard.html",
 			"Dashboard Recipe - templ-components",
 			"Dashboard recipe demo",
 			recipesDashboardPage,
 		},
-		{"recipes/settings.html", "Settings Recipe - templ-components", "Settings recipe demo", recipesSettingsPage},
-		{"recipes/login.html", "Login Recipe - templ-components", "Login card recipe demo", recipesLoginPage},
-		{"recipes/auth.html", "Auth Layout Recipe - templ-components", "Auth layout recipe demo", recipesAuthPage},
-		{
-			"users/index.html",
-			"Users - templ-components",
-			"Server-driven data table with sorting and pagination",
-			func(props layout.PageProps) templ.Component {
-				return usersDemoPage(props, "Name", display.SortAsc, 1, usersTotalPages(len(demoUsers())))
-			},
+		prerenderPage{
+			"recipes/settings.html",
+			"Settings Recipe - templ-components",
+			"Settings recipe demo",
+			recipesSettingsPage,
 		},
-	}
+		prerenderPage{
+			"recipes/login.html",
+			"Login Recipe - templ-components",
+			"Login card recipe demo",
+			recipesLoginPage,
+		},
+		prerenderPage{
+			"recipes/auth.html",
+			"Auth Layout Recipe - templ-components",
+			"Auth layout recipe demo",
+			recipesAuthPage,
+		},
+	)
 
 	ctx := context.Background()
 

@@ -58,7 +58,7 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = kanbanResetButton(wire.Action{URL: "/api/kanban/htmx/reset", Method: wire.MethodPost, Target: "#kanban-demo-htmx"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = kanbanResetButton(wire.Action{URL: demoURL("/api/kanban/htmx/reset"), Method: wire.MethodPost, Target: "#kanban-demo-htmx"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -68,7 +68,7 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 		}
 		templ_7745c5c3_Err = display.KanbanBoard(kanbanHTMXState.kanbanDemoBoardProps(
 			"kanban-demo-htmx",
-			wire.Action{URL: "/api/kanban/htmx"},
+			wire.Action{URL: demoURL("/api/kanban/htmx")},
 			sessionToken,
 		)).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -78,7 +78,7 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = kanbanResetButton(wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/kanban/datastar/reset"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = kanbanResetButton(wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: demoURL("/api/kanban/datastar/reset")}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -88,7 +88,7 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 		}
 		templ_7745c5c3_Err = display.KanbanBoard(kanbanDatastarState.kanbanDemoBoardProps(
 			"kanban-demo-datastar",
-			wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},
+			wire.Action{Transport: wire.TransportDatastar, URL: demoURL("/api/kanban/datastar")},
 			sessionToken,
 		)).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {

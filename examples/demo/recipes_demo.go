@@ -158,7 +158,7 @@ func handleRecipeSettingsSave(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/recipes/settings?saved="+url.QueryEscape(section)+"#"+section, http.StatusSeeOther)
+	http.Redirect(w, r, demoURL("/recipes/settings?saved=")+url.QueryEscape(section)+"#"+section, http.StatusSeeOther)
 }
 
 // recipeSavedSection resolves the ?saved= query parameter to a known section

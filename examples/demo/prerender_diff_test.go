@@ -50,7 +50,7 @@ var (
 // Everything else must match byte-for-byte — if it does not, the static
 // snapshot lies about what the live demo serves.
 func normalizePrerender(html string) string {
-	html = strings.ReplaceAll(html, `<link rel="stylesheet" href="/css/app.css">`, "")
+	html = strings.ReplaceAll(html, `<link rel="stylesheet" href="`+demoURL("/css/app.css")+`">`, "")
 	html = prerenderCSRFToken.ReplaceAllString(html, `${1}CSRF-NORMALIZED${2}`)
 	html = prerenderBuildTime.ReplaceAllString(html, "Build: TIME-NORMALIZED")
 	html = prerenderPolledUpdated.ReplaceAllString(html, "Updated TIME-NORMALIZED")
@@ -80,18 +80,26 @@ func TestPrerenderMatchesLiveServer(t *testing.T) {
 	}
 	client := &http.Client{Jar: jar}
 
-	routes := []struct {
+	// Registry pages derive from demoPages(); the standalone recipe screens
+	// keep their fixed routes. File names mirror the prerender output.
+	type prerenderRoute struct {
 		file string
 		path string
-	}{
-		{"index.html", "/"},
-		{"forms/index.html", "/forms"},
-		{"recipes/dashboard.html", "/recipes/dashboard"},
-		{"recipes/settings.html", "/recipes/settings"},
-		{"recipes/login.html", "/recipes/login"},
-		{"recipes/auth.html", "/recipes/auth"},
-		{"users/index.html", "/users"},
 	}
+	routes := []prerenderRoute{{"index.html", "/"}}
+	for _, page := range demoPages() {
+		routes = append(routes, prerenderRoute{
+			file: strings.TrimPrefix(page.Path, "/") + "/index.html",
+			path: page.Path,
+		})
+	}
+	routes = append(
+		routes,
+		prerenderRoute{"recipes/dashboard.html", "/recipes/dashboard"},
+		prerenderRoute{"recipes/settings.html", "/recipes/settings"},
+		prerenderRoute{"recipes/login.html", "/recipes/login"},
+		prerenderRoute{"recipes/auth.html", "/recipes/auth"},
+	)
 
 	for _, route := range routes {
 		t.Run(route.path, func(t *testing.T) {
@@ -108,7 +116,11 @@ func TestPrerenderMatchesLiveServer(t *testing.T) {
 				code int
 			)
 			for attempt := range 3 {
-				req, reqErr := http.NewRequest(http.MethodGet, srv.URL+route.path, nil) //nolint:noctx // test-local server, bounded response
+				req, reqErr := http.NewRequest(
+					http.MethodGet,
+					srv.URL+route.path,
+					nil,
+				) //nolint:noctx // test-local server, bounded response
 				if reqErr != nil {
 					t.Fatalf("request %s: %v", route.path, reqErr)
 				}

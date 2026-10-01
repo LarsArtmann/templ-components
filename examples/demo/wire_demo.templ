@@ -393,14 +393,14 @@ templ wireWizardStep(dialect wire.Transport, step int, message string) {
 		})
 		if step < 2 {
 			@forms.Form(forms.FormProps{
-				Action:     "/api/wire/wizard",
+				Action:     demoURL("/api/wire/wizard"),
 				Method:     forms.FormPost,
 				BaseProps:  utils.BaseProps{Class: "space-y-3"},
 				NoValidate: true,
 				Wire: &wire.Action{
 					Transport: dialect,
 					Method:    wire.MethodPost,
-					URL:       "/api/wire/wizard",
+					URL:       demoURL("/api/wire/wizard"),
 					Target:    utils.Ternary(dialect == wire.TransportDatastar, "", "#wizard-htmx-region"),
 				},
 			}) {
@@ -428,7 +428,7 @@ templ wireWizardStep(dialect wire.Transport, step int, message string) {
 // dialect. Both dialects share the #wire-upload-out results region.
 templ wireUploadForm(dialect wire.Transport) {
 	@forms.Form(forms.FormProps{
-		Action:  "/api/wire/upload",
+		Action:  demoURL("/api/wire/upload"),
 		Method:  forms.FormPost,
 		Enctype: forms.FormEnctypeMultipart,
 		BaseProps: utils.BaseProps{
@@ -437,7 +437,7 @@ templ wireUploadForm(dialect wire.Transport) {
 		Wire: &wire.Action{
 			Transport: dialect,
 			Method:    wire.MethodPost,
-			URL:       "/api/wire/upload",
+			URL:       demoURL("/api/wire/upload"),
 			Target:    utils.Ternary(dialect == wire.TransportDatastar, "", "#wire-upload-out"),
 		},
 	}) {
@@ -479,7 +479,7 @@ func wireFormatBytes(n int64) string {
 // appends a fresh form, so a correction resubmits in place.
 templ wireSearchForm(dialect wire.Transport, query string) {
 	@forms.Form(forms.FormProps{
-		Action: "/api/wire/search",
+		Action: demoURL("/api/wire/search"),
 		Method: forms.FormGet,
 		BaseProps: utils.BaseProps{
 			Class: "flex flex-wrap items-end gap-3",
@@ -487,7 +487,7 @@ templ wireSearchForm(dialect wire.Transport, query string) {
 		Wire: &wire.Action{
 			Transport: dialect,
 			Method:    wire.MethodGet,
-			URL:       "/api/wire/search",
+			URL:       demoURL("/api/wire/search"),
 			Target:    utils.Ternary(dialect == wire.TransportDatastar, "", wireSearchRegionID(dialect)),
 		},
 	}) {
@@ -544,7 +544,7 @@ func wireSearchTransportName(dialect wire.Transport) string {
 templ wireBusyButtonHTMX() {
 	<button
 		class="inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
-		hx-post="/api/wire/busy"
+		hx-post={ demoURL("/api/wire/busy") }
 		hx-target="#wire-busy-htmx-out"
 		hx-swap="innerHTML"
 	>
@@ -564,7 +564,7 @@ templ wireBusyButtonDatastar() {
 			Wire: &wire.Action{
 				Transport: wire.TransportDatastar,
 				Method:    wire.MethodPost,
-				URL:       "/api/wire/busy",
+				URL:       demoURL("/api/wire/busy"),
 				Selector:  "#wire-busy-datastar-out",
 			},
 			BaseProps: utils.BaseProps{
@@ -659,7 +659,7 @@ templ wireDemoForm(dialect wire.Transport, st wireFormState) {
 		Wire: &wire.Action{
 			Transport: dialect,
 			Method:    wire.MethodPost,
-			URL:       "/api/wire/form",
+			URL:       demoURL("/api/wire/form"),
 			Target:    utils.Ternary(dialect == wire.TransportHTMX, "#wire-form-htmx-region", ""),
 		},
 	}) {
@@ -722,7 +722,7 @@ templ wireDemoFilterInput(dialect wire.Transport) {
 		DebounceMS:  300,
 		Wire: &wire.Action{
 			Transport: dialect,
-			URL:       "/api/wire/filter",
+			URL:       demoURL("/api/wire/filter"),
 			Target:    utils.Ternary(dialect == wire.TransportDatastar, "", "#wire-filter-out"),
 		},
 	})
@@ -791,9 +791,9 @@ templ wireWizardStepResult(dialect wire.Transport, step int, message string) {
 templ wireCalendarDemo(dialect wire.Transport, year int, month time.Month) {
 	{{
 		id, target := "wire-cal-htmx", "#wire-cal-htmx"
-		url := "/api/wire/calendar/htmx"
+		url := demoURL("/api/wire/calendar/htmx")
 		if dialect == wire.TransportDatastar {
-			id, target, url = "wire-cal-ds", "", "/api/wire/calendar/datastar"
+			id, target, url = "wire-cal-ds", "", demoURL("/api/wire/calendar/datastar")
 		}
 	}}
 	@forms.Calendar(forms.CalendarProps{

@@ -820,7 +820,7 @@ func errorPageFullModelDemoProps() errorpage.ErrorPageProps {
 		Why:        "This is a temporary issue. No data was lost.",
 		Fix:        "Wait a moment and refresh the page.",
 		WayOut:     "Retry",
-		WayOutHref: "/",
+		WayOutHref: demoURL("/"),
 		// SecondaryWayOut demos the ghost action slot (an escape hatch that
 		// isn't the primary recovery path).
 		SecondaryWayOut:     "Contact support",

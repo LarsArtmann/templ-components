@@ -44,12 +44,12 @@ func navigationDemo() templ.Component {
 		}
 		templ_7745c5c3_Err = navigation.SimpleNav(navigation.SimpleNavProps{
 			BrandText:   "Demo App",
-			BrandHref:   "/",
-			CurrentPath: "/",
+			BrandHref:   demoURL("/"),
+			CurrentPath: demoURL("/"),
 			Links: []navigation.NavLinkProps{
-				{Href: "/", Text: "Home"},
-				{Href: "/users", Text: "Users"},
-				{Href: "/forms", Text: "Forms"},
+				{Href: demoURL("/"), Text: "Home"},
+				{Href: demoURL("/users"), Text: "Users"},
+				{Href: demoURL("/forms"), Text: "Forms"},
 			},
 			RightItems: layout.ThemeToggle("Toggle dark mode", ""),
 		}).Render(ctx, templ_7745c5c3_Buffer)
@@ -61,12 +61,12 @@ func navigationDemo() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = navigation.Nav(navigation.NavProps{
-			CurrentPath: "/",
+			CurrentPath: demoURL("/"),
 			Brand:       templ.Raw(`<span class="text-base font-bold text-gray-900 dark:text-white">Demo App</span>`),
 			Links: []navigation.NavLinkProps{
-				{Href: "/", Text: "Home"},
-				{Href: "/users", Text: "Users"},
-				{Href: "/forms", Text: "Forms"},
+				{Href: demoURL("/"), Text: "Home"},
+				{Href: demoURL("/users"), Text: "Users"},
+				{Href: demoURL("/forms"), Text: "Forms"},
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -101,8 +101,8 @@ func navigationDemo() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = navigation.Breadcrumbs(navigation.BreadcrumbsProps{Items: []navigation.BreadcrumbItem{
-			{Text: "Home", Href: "/"},
-			{Text: "Users", Href: "/users"},
+			{Text: "Home", Href: demoURL("/")},
+			{Text: "Users", Href: demoURL("/users")},
 			{Text: "Alice Smith"},
 		}}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -115,7 +115,7 @@ func navigationDemo() templ.Component {
 		templ_7745c5c3_Err = navigation.Pagination(navigation.PaginationProps{
 			CurrentPage: 3,
 			TotalPages:  10,
-			BaseURL:     "/users",
+			BaseURL:     demoURL("/users"),
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -132,7 +132,7 @@ func navigationDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "1"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = navigation.LoadMore(navigation.LoadMoreProps{Endpoint: demoURL("/api/items"), Cursor: "1"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -152,7 +152,7 @@ func navigationDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "2"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = navigation.LoadMore(navigation.LoadMoreProps{Endpoint: demoURL("/api/items"), Cursor: "2"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -214,7 +214,7 @@ func loadMoreResponse(cursor string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "2", FocusOnSwap: true}).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = navigation.LoadMore(navigation.LoadMoreProps{Endpoint: demoURL("/api/items"), Cursor: "2", FocusOnSwap: true}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

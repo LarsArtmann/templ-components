@@ -246,7 +246,7 @@ func formsDemoSection() templ.Component {
 			templ_7745c5c3_Err = forms.FilterDropdown(forms.FilterDropdownProps{
 				Name:     "sort",
 				Label:    "Sort",
-				HxGet:    "/api/users",
+				HxGet:    demoURL("/api/users"),
 				HxTarget: "#results",
 				Options: []forms.SelectOption{
 					{Value: "name", Label: "Name"},
@@ -266,7 +266,7 @@ func formsDemoSection() templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: "/users", Method: forms.FormGet, Layout: forms.FormLayoutInline}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/users"), Method: forms.FormGet, Layout: forms.FormLayoutInline}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

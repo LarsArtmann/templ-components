@@ -38,7 +38,7 @@ templ demoFonts(nonce string) {
 // directory (filterable card grid driven by the page registry).
 templ demoHomeContent(nonce string) {
 	@demoHero()
-	@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-10"}, Pad: true}) {
+	@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-10"}}) {
 		<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 			<div>
 				<h2 class="text-xl font-semibold text-gray-900 dark:text-white font-[Space_Grotesk]">Explore the library</h2>
@@ -74,7 +74,7 @@ templ demoHomeContent(nonce string) {
 templ demoHero() {
 	<div class="relative overflow-hidden border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
 		<div class="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(59,130,246,0.08),transparent)] dark:bg-[radial-gradient(60%_50%_at_50%_0%,rgba(59,130,246,0.15),transparent)]" aria-hidden="true"></div>
-		@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-12 sm:py-16"}, Pad: true}) {
+		@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-12 sm:py-16"}}) {
 			<div class="flex flex-col items-start gap-6">
 				<div class="inline-flex items-center gap-2 rounded-full border border-blue-100 dark:border-blue-900/30 bg-blue-50 dark:bg-blue-950/30 px-3 py-1 text-xs font-medium text-blue-700 dark:text-blue-300">
 					@icons.Icon(icons.Star, "h-3.5 w-3.5")
@@ -219,4 +219,33 @@ templ demoCodeSnippet(title, code string) {
 		</div>
 		<pre tabindex="0" aria-label="Code example" class="p-3 text-xs sm:text-sm font-mono overflow-x-auto"><code>{ code }</code></pre>
 	</div>
+}
+
+// recipesDemo links the standalone full-screen recipe pages.
+templ recipesDemo() {
+	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		@recipeLinkCard("/recipes/dashboard", "Dashboard", "recipes.Dashboard — stat cards + charts composition.", icons.Squares2x2)
+		@recipeLinkCard("/recipes/settings", "Settings", "recipes.SettingsLayout — aside nav + section cards.", icons.Settings)
+		@recipeLinkCard("/recipes/login", "Login card", "recipes.LoginCard — centered sign-in card.", icons.UserCircle)
+		@recipeLinkCard("/recipes/auth", "Auth layout", "recipes.AuthLayout — split-screen branding + auth card.", icons.ShieldCheck)
+		@recipeLinkCard("/errors/playground", "Error playground", "Live ErrorPage builder — pick a family and status.", icons.Wrench)
+	</div>
+}
+
+// recipeLinkCard is one recipe link tile.
+templ recipeLinkCard(href, title, description string, icon icons.Name) {
+	<a
+		href={ templ.SafeURL(demoURL(href)) }
+		class="group rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-md dark:hover:shadow-black/20 transition-all motion-reduce:transition-none motion-reduce:duration-0"
+	>
+		<div class="flex items-start gap-4">
+			<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
+				@icons.Icon(icon, "h-5 w-5")
+			</span>
+			<div>
+				<p class="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0">{ title }</p>
+				<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ description }</p>
+			</div>
+		</div>
+	</a>
 }

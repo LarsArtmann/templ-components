@@ -19,7 +19,7 @@ import (
 // viewport (login, auth) — overlaying keeps the recipe's own min-h-dvh
 // centering exact instead of stacking a second 100dvh block above the fold.
 templ recipeUtilityBarLinks() {
-	<a href="/" class="-m-1.5 inline-flex items-center gap-1.5 p-1.5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
+	<a href={ templ.SafeURL(demoURL("/")) } class="-m-1.5 inline-flex items-center gap-1.5 p-1.5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
 		@icons.Icon(icons.ArrowLeft, "w-4 h-4")
 		<span>Back to demo</span>
 	</a>
@@ -74,9 +74,9 @@ templ dashboardSidebar() {
 			{Label: "Customers", Href: "#customers", Icon: icons.Users},
 			{Label: "Projects", Href: "#projects", Icon: icons.Folder},
 			{Label: "Documents", Href: "#documents", Icon: icons.Document, Section: "General"},
-			{Label: "Settings", Href: "/recipes/settings", Icon: icons.Settings, Section: "General"},
+			{Label: "Settings", Href: demoURL("/recipes/settings"), Icon: icons.Settings, Section: "General"},
 		},
-		CurrentPath: "/recipes/dashboard",
+		CurrentPath: demoURL("/recipes/dashboard"),
 		Footer:      dashboardSidebarFooter(),
 	})
 }
@@ -306,7 +306,7 @@ templ settingsAsideLink(sectionID, label string, sectionIcon icons.Name, active 
 }
 
 templ settingsProfileSection() {
-	@forms.Form(forms.FormProps{Action: "/recipes/settings", Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+	@forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
 		@forms.Input(forms.InputProps{Type: forms.InputHidden, Name: "section", Value: "profile"})
 		<div class="grid gap-4 sm:grid-cols-2">
 			@forms.Input(forms.InputProps{Name: "full_name", Label: "Full name", Value: "Ada Lovelace", Required: true})
@@ -334,7 +334,7 @@ templ settingsProfileSection() {
 }
 
 templ settingsSecuritySection() {
-	@forms.Form(forms.FormProps{Action: "/recipes/settings", Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+	@forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
 		@forms.Input(forms.InputProps{Type: forms.InputHidden, Name: "section", Value: "security"})
 		<div class="grid gap-4 sm:grid-cols-2">
 			@forms.Input(forms.InputProps{Name: "current_password", Type: forms.InputPassword, Label: "Current password", Required: true})
@@ -356,7 +356,7 @@ templ settingsSecuritySection() {
 }
 
 templ settingsNotificationsSection() {
-	@forms.Form(forms.FormProps{Action: "/recipes/settings", Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+	@forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
 		@forms.Input(forms.InputProps{Type: forms.InputHidden, Name: "section", Value: "notifications"})
 		<div class="space-y-4">
 			@forms.Toggle(forms.ToggleProps{
@@ -400,7 +400,7 @@ templ recipesLoginPageState(props layout.PageProps, st recipeLoginState) {
 	}
 }
 
-const loginFooterHTML = `<p class="text-center text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a href="/recipes/auth" class="font-medium text-blue-600 underline hover:underline dark:text-blue-400">Create one</a></p>`
+var loginFooterHTML = `<p class="text-center text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a href="` + demoURL("/recipes/auth") + `" class="font-medium text-blue-600 underline hover:underline dark:text-blue-400">Create one</a></p>`
 
 templ loginFormBody(st recipeLoginState) {
 	if st.Success {
@@ -413,7 +413,7 @@ templ loginFormBody(st recipeLoginState) {
 	} else if st.hasErrors() {
 		@forms.ValidationSummary(forms.ValidationSummaryProps{Errors: st.validationErrors()})
 	}
-	@forms.Form(forms.FormProps{Action: "/recipes/login", Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+	@forms.Form(forms.FormProps{Action: demoURL("/recipes/login"), Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
 		<div class="space-y-4">
 			@forms.Input(forms.InputProps{
 				Name:        "email",
@@ -485,7 +485,7 @@ templ signupCard(st recipeSignupState) {
 	})
 }
 
-const signupFooterHTML = `<p class="text-center text-sm text-gray-500 dark:text-gray-400">Already have an account? <a href="/recipes/login" class="font-medium text-blue-600 underline hover:underline dark:text-blue-400">Sign in</a></p>`
+var signupFooterHTML = `<p class="text-center text-sm text-gray-500 dark:text-gray-400">Already have an account? <a href="` + demoURL("/recipes/login") + `" class="font-medium text-blue-600 underline hover:underline dark:text-blue-400">Sign in</a></p>`
 
 templ signupFormBody(st recipeSignupState) {
 	if st.Success {
@@ -498,7 +498,7 @@ templ signupFormBody(st recipeSignupState) {
 	} else if st.hasErrors() {
 		@forms.ValidationSummary(forms.ValidationSummaryProps{Errors: st.validationErrors()})
 	}
-	@forms.Form(forms.FormProps{Action: "/recipes/auth", Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+	@forms.Form(forms.FormProps{Action: demoURL("/recipes/auth"), Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
 		<div class="space-y-4">
 			@forms.Input(forms.InputProps{
 				Name:        "full_name",
