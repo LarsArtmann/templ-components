@@ -13,8 +13,11 @@ import (
 type kanbanContractFixture struct {
 	// name prefixes failure messages and marks which implementation failed.
 	name string
-	// boardID is the htmx board's root element id on the index page; the CSRF
-	// token is harvested from that board's own move form.
+	// pagePath is the page the htmx board renders on — the CSRF token is
+	// harvested from that board's own move form. The MPA demo renders the
+	// boards on /kanban; the e2e parity server serves its board at /.
+	pagePath string
+	// boardID is the htmx board's root element id on the pagePath page.
 	boardID string
 	// addColumn is a known column id for the add probes.
 	addColumn string
@@ -127,7 +130,7 @@ func runKanbanContractProbes(t *testing.T, base string, fx kanbanContractFixture
 	// Harvest scoped to the htmx board's own form — an index page renders
 	// other components first and one of them could carry the same input
 	// name with a different value.
-	page := probe.get("/")
+	page := probe.get(fx.pagePath)
 
 	boardStart := strings.Index(page, `id="`+fx.boardID+`"`)
 	if boardStart < 0 {
@@ -208,6 +211,7 @@ func TestDemoKanbanHTTPContracts(t *testing.T) {
 
 	runKanbanContractProbes(t, server.BaseURL(), kanbanContractFixture{
 		name:        "demo",
+		pagePath:    "/kanban",
 		boardID:     "kanban-demo-htmx",
 		addColumn:   "backlog",
 		moveCard:    "kb-1",
@@ -228,6 +232,7 @@ func TestKanbanE2EHTTPContractParity(t *testing.T) {
 
 	runKanbanContractProbes(t, srv.URL, kanbanContractFixture{
 		name:        "e2e-parity",
+		pagePath:    "/",
 		boardID:     "kb-htmx",
 		addColumn:   "todo",
 		moveCard:    "e1",

@@ -80,8 +80,8 @@ func TestScrollbackBehavior(t *testing.T) {
 		utils.AssertContainsAll(t, output,
 			"text-blue-600", "dark:text-blue-400",
 			"text-red-600", "dark:text-red-400",
-			"text-amber-600", "dark:text-amber-400",
-			"text-green-600", "dark:text-green-400",
+			"text-amber-700", "dark:text-amber-400",
+			"text-green-700", "dark:text-green-400",
 		)
 	})
 }

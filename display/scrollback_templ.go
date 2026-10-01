@@ -278,8 +278,8 @@ func Scrollback(props ScrollbackProps) templ.Component {
 var scrollbackToneLookup = map[ScrollbackTone]string{
 	ScrollbackToneNeutral: "text-gray-500 dark:text-gray-400",
 	ScrollbackToneInfo:    "text-blue-600 dark:text-blue-400",
-	ScrollbackToneSuccess: "text-green-600 dark:text-green-400",
-	ScrollbackToneWarning: "text-amber-600 dark:text-amber-400",
+	ScrollbackToneSuccess: "text-green-700 dark:text-green-400",
+	ScrollbackToneWarning: "text-amber-700 dark:text-amber-400",
 	ScrollbackToneDanger:  "text-red-600 dark:text-red-400",
 }
 
