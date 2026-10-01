@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **The demo is a multi-page app at `https://templcomponents.lars.software/demo`.**
+  The old single-page showcase (13 sections stacked into one ~29k-px scroll)
+  is now one page per package behind a shared application shell — the demo
+  dogfoods `layout.AppShell` + `navigation.SidebarNav` (desktop sidebar with
+  section groups, `MobileMenu` below `lg`) + `display.PageHeader`. Routes:
+  `/demo/` (filterable page directory), `/demo/{layout,display,feedback,forms,
+  navigation,icons,htmx,datastar,wire,kanban,echarts,recipes,users,error-pages}`,
+  plus the standalone recipe screens and error routes. Firebase Hosting now
+  proxies `/demo/**` to the `templcomponents-demo` Cloud Run service
+  (`website/firebase.json` rewrites), and the demo dual-mounts every route
+  under `/demo` (raw run.app URLs keep working). The demo serves its own
+  nonce-based CSP (jsDelivr for the ECharts/Datastar SDK scripts, Google
+  Fonts, ui-avatars.com placeholders) — mirrored as a `/demo/**` header
+  override in firebase.json so a proxy-applied site CSP cannot intersect it
+  away. The website's "Live Demo" links (hero, 404) and the README link bar
+  point at the new canonical URL.
+
 ### Fixed
 
 - **Documented-default-vs-zero-value split brain resolved (Grid/Split
