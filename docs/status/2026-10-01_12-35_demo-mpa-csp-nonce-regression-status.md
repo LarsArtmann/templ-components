@@ -83,6 +83,7 @@ Stat line: **14 defect classes fixed · 1 platform limitation documented (owner 
 _Near-term pipeline first (this session's thread), then hardening, then the inherited backlog. IDs: continue TODO_LIST numbering (next free 331)._
 
 **Finish this session's thread (1–8)**
+
 1. Rerun the kanban e2e pair + contract test on the nonce-fixed tree (in progress as this is written) — expect green.
 2. Full visual suite `-update` run (regenerate display/route goldens for `-700` + nonce byte changes) — expect axe + all e2e green.
 3. Full visual suite CLEAN witness run (no `-update`) — the ritual gate.
@@ -154,7 +155,7 @@ _Near-term pipeline first (this session's thread), then hardening, then the inhe
 
 ---
 
-*Report ends. Verification pipeline (items 1–8) resumes on instruction; the kanban e2e rerun was in flight at writing time.*
+_Report ends. Verification pipeline (items 1–8) resumes on instruction; the kanban e2e rerun was in flight at writing time._
 
 ---
 
