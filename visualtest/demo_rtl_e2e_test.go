@@ -22,7 +22,7 @@ func TestDemoRTLNoHorizontalOverflow(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	for _, route := range []string{"/", "/forms", "/users", "/recipes/dashboard"} {
+	for _, route := range []string{"/", "/forms", "/users", "/display", "/kanban", "/recipes/dashboard"} {
 		t.Run(route, func(t *testing.T) {
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(server.BaseURL()+route),

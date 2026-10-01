@@ -99,8 +99,8 @@ func TestDemoLoadMoreReachesEndOfList(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/"), chromedp.WaitReady("body")); err != nil {
-		t.Fatalf("visualtest[demo]: load index: %v", err)
+	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/navigation"), chromedp.WaitReady("body")); err != nil {
+		t.Fatalf("visualtest[demo]: load navigation page: %v", err)
 	}
 
 	// Each LoadMore click REPLACES the button (hx-swap="outerHTML"), so the
@@ -139,8 +139,8 @@ func TestDemoConfirmDeleteRemovesRow(t *testing.T) {
 	// with it (the CDP command queue stops draining on a paused target —
 	// verified by CDP trace). Stub confirm() to auto-accept instead: the
 	// htmx flow under test (hx-confirm gate → DELETE → swap) is identical.
-	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/"), chromedp.WaitReady("body")); err != nil {
-		t.Fatalf("visualtest[demo]: load index: %v", err)
+	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/htmx"), chromedp.WaitReady("body")); err != nil {
+		t.Fatalf("visualtest[demo]: load htmx page: %v", err)
 	}
 
 	if err := chromedp.Run(ctx, chromedp.Evaluate(
@@ -173,11 +173,11 @@ func TestDemoLoadingButtonBusyGate(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/"), chromedp.WaitReady("body")); err != nil {
-		t.Fatalf("visualtest[demo]: load index: %v", err)
+	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/htmx"), chromedp.WaitReady("body")); err != nil {
+		t.Fatalf("visualtest[demo]: load htmx page: %v", err)
 	}
 
-	saveButton := `button[hx-post="/api/save"]`
+	saveButton := `button[hx-post="/demo/api/save"]`
 
 	if err := chromedp.Run(ctx, chromedp.Click(saveButton, chromedp.ByQuery)); err != nil {
 		t.Fatalf("visualtest[demo]: save click: %v", err)
@@ -236,22 +236,22 @@ func TestDemoUploadEcho(t *testing.T) {
 	// transport=htmx renders exactly one upload form, keeping selectors stable.
 	if err := chromedp.Run(
 		ctx,
-		chromedp.Navigate(server.BaseURL()+"/?transport=htmx"),
+		chromedp.Navigate(server.BaseURL()+"/wire?transport=htmx"),
 		chromedp.WaitReady("body"),
 	); err != nil {
-		t.Fatalf("visualtest[demo]: load index: %v", err)
+		t.Fatalf("visualtest[demo]: load wire page: %v", err)
 	}
 
 	if err := chromedp.Run(
 		ctx,
-		chromedp.SetUploadFiles(`form[action="/api/wire/upload"] input[type="file"]`, []string{uploadFile}),
+		chromedp.SetUploadFiles(`form[action="/demo/api/wire/upload"] input[type="file"]`, []string{uploadFile}),
 	); err != nil {
 		t.Fatalf("visualtest[demo]: set upload file: %v", err)
 	}
 
 	if err := chromedp.Run(
 		ctx,
-		chromedp.Click(`form[action="/api/wire/upload"] button[type="submit"]`, chromedp.ByQuery),
+		chromedp.Click(`form[action="/demo/api/wire/upload"] button[type="submit"]`, chromedp.ByQuery),
 	); err != nil {
 		t.Fatalf("visualtest[demo]: submit upload: %v", err)
 	}
@@ -278,8 +278,8 @@ func TestDemoKanbanMoveButtonsBothTransports(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/"), chromedp.WaitReady("body")); err != nil {
-		t.Fatalf("visualtest[demo]: load index: %v", err)
+	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/kanban"), chromedp.WaitReady("body")); err != nil {
+		t.Fatalf("visualtest[demo]: load kanban page: %v", err)
 	}
 
 	for _, board := range []string{"kanban-demo-htmx", "kanban-demo-datastar"} {

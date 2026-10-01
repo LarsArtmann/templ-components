@@ -22,7 +22,7 @@ import (
 // would have caught the recipes-dashboard collapse (component goldens were
 // all green while the composed page was broken). The demo binary is built and
 // served once for the whole suite; each route is captured full-page (the
-// index page, ~29k px tall, is captured above-the-fold instead).
+// multi-page demo keeps every page short enough for a full capture).
 //
 // Run via `nix run .#visual`; update goldens with -update.
 
@@ -209,8 +209,7 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewp
 }
 
 // TestDemoRouteGoldens captures the demo routes end-to-end. Sub-routes are
-// full-page; the index page is above-the-fold (its ~29k px full-page capture
-// is what `nix run .#shots` is for). Runs sequentially: one shared demo
+// full-page; every page of the multi-page demo is short enough for one. Runs sequentially: one shared demo
 // server, one capture at a time.
 func TestDemoRouteGoldens(t *testing.T) {
 	base := demoRouteBase()

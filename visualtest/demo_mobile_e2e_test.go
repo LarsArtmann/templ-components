@@ -24,7 +24,7 @@ func TestDemoMobile375NoHorizontalOverflow(t *testing.T) {
 		t.Fatalf("visualtest[demo]: emulate %dpx viewport: %v", demoMobileViewport, err)
 	}
 
-	for _, route := range []string{"/", "/forms", "/users", "/recipes/dashboard"} {
+	for _, route := range []string{"/", "/forms", "/users", "/display", "/kanban", "/recipes/dashboard"} {
 		t.Run(route, func(t *testing.T) {
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(server.BaseURL()+route),
