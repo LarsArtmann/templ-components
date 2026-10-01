@@ -65,7 +65,7 @@ func TestInlineSuccessRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, InlineSuccess("Done"))
 	utils.AssertContains(t, output, "Done")
-	utils.AssertContains(t, output, "text-green-600")
+	utils.AssertContains(t, output, "text-green-700")
 }
 
 func TestSpinnerRender(t *testing.T) {
@@ -371,7 +371,7 @@ func TestInlineErrorEmptyMessage(t *testing.T) {
 func TestInlineSuccessEmptyMessage(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, InlineSuccess(""))
-	utils.AssertContains(t, output, "text-green-600")
+	utils.AssertContains(t, output, "text-green-700")
 }
 
 func TestDefaultSpinnerProps(t *testing.T) {
