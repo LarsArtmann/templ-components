@@ -426,3 +426,37 @@ Every idea rank 1–100 maps to exactly one task. No orphan ideas.
 - Anything discovered mid-execution that does not fit a micro-task → harvest to `TODO_LIST.md`
   with a new ID (next free currently 322+).
 - Owner gates (M05, M11, M24) stay gates until Lars decides; no speculative work past them.
+
+---
+
+## 11. Execution Triage (2026-10-01, session 1) — appended, not a rewrite
+
+**Key finding:** several planned tasks were **already implemented before the plan was written**
+(they lived in commits dated 2026-09-13 … 2026-09-23), and the 4% reliability cluster is largely
+**blocked on `larsartmann/buildflow`**, not on this repo. Verifying each task against the tree
+before executing is therefore load-bearing — executing the plan as written would have redone
+finished work. Statuses below are evidence-backed; anything not swept this session is marked
+`UNVERIFIED` rather than guessed.
+
+| Task | Status | Evidence / reason |
+| ---- | ------ | ----------------- |
+| M01 (#1, #4) | **PARTIAL** | `templ.guide` PR **a-h/templ#1447** filed; GOTH badge + blurb now in all three READMEs (templ-components, cqrs-htmx, go-cqrs-lite). `awesome-templ` **BLOCKED**: CONTRIBUTING requires coverage ≥ 80%, measured **72.1%** (see TODO #28). |
+| M02 (#11) | **DONE** | `example_coverage_test.go` added to all 12 packages; every `templ.Component` has an `ExampleXxx`; `go test -run Example` green across all modules. |
+| M03 (#2, #3) | **BLOCKED (upstream)** | Per-module build gate + torn-snapshot tripwire are BuildFlow daemon behaviors — code lives in `larsartmann/buildflow`, not settable from this repo. Tracked as TODO #232/#93. |
+| M04 (#9, #10) | **#9 DONE / #10 BLOCKED** | `scripts/check-tag-compiles.sh` + `.github/workflows/release-smoke.yaml` exist. A repo-local release-lock is a no-op unless BuildFlow honors it → upstream. |
+| M05 (#5, #37, #38) | **#5 DONE / #37 DONE / #38 GAP ⫱** | `internal/contract/render_determinism_test.go`; `utils/golden_orphan_test.go`. The art-dupl block-flip is the owner gate. |
+| M06 (#25, #27, #77, #91) | **#25 DONE / #77 DONE / #27 PARTIAL / #91 PARTIAL** | `scripts/check-hooks-path.sh` + `cmd/tc/doctor.go`; ci.yaml `include-hidden-files: true` (line 354); `upstream-watch.yml`. `ci.yaml` + `release-smoke.yaml` lack a top-level `permissions:`. |
+| M07 (#7, #71, #68, #47) | **#7 DONE / rest GAP** | `layout/htmx_off_test.go` pins `HTMXNone`. No wire-candidate goldens policy line, typed-trigger ADR, or htmx-v4 audit doc. |
+| M08 (#8, #40, #75, #87) | **#8 DONE / rest GAP** | `cmd/tc/doctor.go` exists. No `add --dry-run`, `ls` footer, or `explain`. |
+| M09 (#12, #23, #29, #30, #42, #13) | **#23 DONE (this session) / #42 PARTIAL / rest GAP** | New `internal/contract/attrs_test.go` (`TestAttrsPropagateToRoot`). `docs/version-support.md` exists. No `Validate()` convention, map scanner, scoped-ID helper, or `tc.Catalog()`. |
+| M10, M11 (#6, #31–#34, #44, #45, #64, #18, #81) | **GAP** | No `ConfirmDialog`, `Segmented`, `CopyField`, `<output>` helper, bottom-sheet, `Timeline`, layout-preserving skeleton set, or DataTable column visibility in the tree. |
+| M12 (#14, #24, #48, #49) | **#14 DONE / #48 DONE / #24 GAP / #49 PARTIAL** | `visualtest/axe_sweep_test.go`; `TestTouchTargetAudit`. No combobox-role scanner; accessible-name audit not confirmed. |
+| M13 (#15, #36, #50, #65) | **#65 PARTIAL / rest GAP** | `visualtest/focus_preservation_e2e_test.go`. No Firefox lane, reduced-motion lane, or contrast/forced-colors variants. |
+| M14, M15 (#51, #52, #95, #21, #94, #82, #35, #46, #70) | **#82 PARTIAL / rest GAP** | `utils/wire/decode_fuzz_test.go` exists. No `ssetest` module, SSE writer policy, localized demo, or conformance statement. |
+| M16–M23, M25 | **UNVERIFIED** | Not swept in this session — treat the plan's task list as the work queue. |
+| M24 (#78) | **DONE (likely)** | Dead `.out.css` artifacts were deleted 2026-09-13 (AGENTS.md CSS inventory). Cross-language `wire` port (#100) is still open. |
+
+**Harvest actions taken:** TODO #28 corrected (real blocker = coverage, not "sitting down"); TODO #29
+marked PR filed. Net: the honest remaining queue is **M03/M04 partially upstream-blocked**, the M07–M25
+gaps, and the **coverage-to-80% work that gates the awesome-templ listing**.
+
