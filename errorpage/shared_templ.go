@@ -406,7 +406,7 @@ func causeList(causes []CauseItem, label string) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if len(causes) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"space-y-1\"><p class=\"text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-500\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"space-y-1\"><p class=\"text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -424,7 +424,7 @@ func causeList(causes []CauseItem, label string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for _, cause := range causes {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400\"><span class=\"h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 flex-shrink-0\"></span> <span class=\"font-mono\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400\"><span class=\"h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 flex-shrink-0\"></span> <span class=\"font-mono\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -442,7 +442,7 @@ func causeList(causes []CauseItem, label string) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				if cause.Code != "" {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<span class=\"text-gray-500 dark:text-gray-500\">(")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<span class=\"text-gray-600 dark:text-gray-400\">(")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

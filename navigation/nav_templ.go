@@ -573,7 +573,7 @@ func Footer(props FooterProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if props.BottomBar != nil {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "<div class=\"mt-4 text-center text-xs text-gray-400 dark:text-gray-500\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "<div class=\"mt-4 text-center text-xs text-gray-500 dark:text-gray-400\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -706,7 +706,7 @@ func Footer(props FooterProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if props.BottomBar != nil {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "<div class=\"mt-8 border-t border-gray-200 pt-6 dark:border-gray-800\"><div class=\"text-xs text-gray-400 dark:text-gray-500\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "<div class=\"mt-8 border-t border-gray-200 pt-6 dark:border-gray-800\"><div class=\"text-xs text-gray-500 dark:text-gray-400\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

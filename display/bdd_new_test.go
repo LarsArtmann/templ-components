@@ -188,7 +188,7 @@ func TestCountBadgeBehavior(t *testing.T) {
 	t.Run("hides badge when count is zero", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, CountBadge(CountBadgeProps{Count: 0}))
-		utils.AssertNotContains(t, output, "bg-red-500")
+		utils.AssertNotContains(t, output, "bg-red-600")
 	})
 
 	t.Run("shows overflow plus when count exceeds max", func(t *testing.T) {

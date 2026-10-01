@@ -193,7 +193,7 @@ func Scrollback(props ScrollbackProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				if line.Timestamp != "" {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<span class=\"me-3 text-gray-400 dark:text-gray-500\">")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<span class=\"me-3 text-gray-500 dark:text-gray-400\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

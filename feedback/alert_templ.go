@@ -395,7 +395,7 @@ func InlineSuccess(message string) templ.Component {
 			templ_7745c5c3_Var18 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = inlineMessage(message, "text-green-600 dark:text-green-400", "status", icons.Icon(icons.Check, "h-4 w-4 flex-shrink-0")).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = inlineMessage(message, "text-green-700 dark:text-green-400", "status", icons.Icon(icons.Check, "h-4 w-4 flex-shrink-0")).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
