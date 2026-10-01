@@ -64,6 +64,27 @@
           }
         ],
         "source": "404.html"
+      },
+      {
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=0, must-revalidate"
+          },
+          {
+            "key": "Content-Security-Policy",
+            "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-demo-nonce'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://ui-avatars.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          }
+        ],
+        "source": "/demo/**"
       }
     ],
     "ignore": [
@@ -78,6 +99,22 @@
         "destination": "/:path*",
         "source": "/docs/:path*",
         "type": 301
+      }
+    ],
+    "rewrites": [
+      {
+        "run": {
+          "region": "us-central1",
+          "serviceId": "templcomponents-demo"
+        },
+        "source": "/demo/**"
+      },
+      {
+        "run": {
+          "region": "us-central1",
+          "serviceId": "templcomponents-demo"
+        },
+        "source": "/demo"
       }
     ],
     "target": "templcomponents",

@@ -42,18 +42,24 @@ func demoURL(path string) string {
 }
 
 // withBasePath dual-mounts the mux under /demo: requests to /demo/<path> are
-// served by the same handler as /<path>. /demo exactly redirects to /demo/.
+// served by the same handler as /<path>. Bare /demo serves the home page
+// directly (no redirect): Firebase Hosting's trailingSlash normalization may
+// bounce /demo/ and /demo in either direction, so BOTH must render the home
+// page — a redirect here could loop with the edge's own redirect.
 func withBasePath(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch p := r.URL.Path; {
-		case p == demoBasePath:
-			http.Redirect(w, r, demoBasePath+"/", http.StatusPermanentRedirect)
-		case strings.HasPrefix(p, demoBasePath+"/"):
-			r.URL.Path = strings.TrimPrefix(p, demoBasePath)
+		if r.URL.Path == demoBasePath {
+			r.URL.Path = "/"
+
 			next.ServeHTTP(w, r)
-		default:
-			next.ServeHTTP(w, r)
+
+			return
 		}
+		if rest, ok := strings.CutPrefix(r.URL.Path, demoBasePath+"/"); ok {
+			r.URL.Path = "/" + rest
+		}
+
+		next.ServeHTTP(w, r)
 	})
 }
 

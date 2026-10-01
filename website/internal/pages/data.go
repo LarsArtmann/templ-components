@@ -18,8 +18,12 @@ const (
 	SiteTitle       = "templ-components — Server-Rendered UI Components for Go"
 	SiteDescription = "A pure Tailwind CSS v4 component library for Go's templ engine with first-class HTMX integration. No DaisyUI, no Node.js, no framework lock-in."
 	SiteURL         = "https://templcomponents.lars.software"
-	DemoURL         = "https://templcomponents-demo-132045829579.us-central1.run.app"
-	GitHubURL       = "https://github.com/larsartmann/templ-components"
+	// DemoURL is the interactive component demo, proxied by Firebase Hosting
+	// to the templcomponents-demo Cloud Run service (see website/firebase.json
+	// rewrites). The raw run.app URL remains valid but the /demo/ path on this
+	// domain is the canonical public URL.
+	DemoURL     = SiteURL + "/demo"
+	GitHubURL   = "https://github.com/larsartmann/templ-components"
 	AuthorName      = "LarsArtmann"
 	AuthorURL       = "https://larsartmann.com/"
 	PkgGoDevURL     = "https://pkg.go.dev/github.com/larsartmann/templ-components"
