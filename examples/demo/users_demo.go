@@ -7,7 +7,6 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/display"
-	"github.com/larsartmann/templ-components/layout"
 )
 
 type demoUser struct {
@@ -102,10 +101,11 @@ func filterDemoUsers(status, sortKey string) []demoUser {
 	return filtered
 }
 
-// renderUsersPage serves the /users list page: a real server-driven round
-// trip for DataTable sorting and Pagination — the pattern the library is
-// built for.
-func renderUsersPage(w http.ResponseWriter, r *http.Request) {
+// usersDemoContent serves the /users list page body: a real server-driven
+// round trip for DataTable sorting and Pagination — the pattern the library
+// is built for. Sort/pagination state arrives as query params and the
+// server re-renders the full page through the demo shell.
+func usersDemoContent(r *http.Request) templ.Component {
 	sortKey := r.URL.Query().Get("sort")
 	if sortKey != "email" {
 		sortKey = "Name"
@@ -120,8 +120,6 @@ func renderUsersPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sorted := sortDemoUsers(demoUsers(), sortKey, dir)
-	pageFunc := func(props layout.PageProps) templ.Component {
-		return usersDemoPage(props, sortKey, dir, uint(page), usersTotalPages(len(sorted)))
-	}
-	renderPage(w, r, "Users - templ-components", "Server-driven data table with sorting and pagination", pageFunc)
+
+	return usersDemoList(sortKey, dir, uint(page), usersTotalPages(len(sorted)))
 }

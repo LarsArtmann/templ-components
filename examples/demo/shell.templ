@@ -41,7 +41,11 @@ const demoNonceConst = "demo-nonce"
 // demoShellPageProps builds the shared layout.PageProps for every demo page.
 func demoShellPageProps(meta demoPageMeta, nonce string) layout.PageProps {
 	props := layout.DefaultPageProps()
-	props.Title = meta.Title + " - templ-components Demo"
+	if meta.Path == homePageMeta.Path {
+		props.Title = "templ-components Demo - live component showcase"
+	} else {
+		props.Title = meta.Title + " - templ-components Demo"
+	}
 	props.Description = meta.Short
 	props.Nonce = nonce
 	props.CSSPath = demoURL("/css/app.css")

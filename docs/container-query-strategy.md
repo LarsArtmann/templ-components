@@ -125,6 +125,14 @@ every consumer on upgrade. It must ship with a migration guide and the other v2.
 default flips (self-host HTMX, semantic tokens). It is NOT a v1.x item and should not be
 executed piecemeal.
 
+> **Resolution (2026-10-01):** as shipped, this flip changed the DEFAULT
+> CONSTRUCTORS only (`DefaultGridProps()` / `DefaultSplitProps()` set
+> `ContainerAware: true`); the struct-literal zero value stayed viewport-based,
+> and `Card` was reverted to `false` entirely (containment collapses cards in
+> shrink-to-fit parents). See `docs/migration/v1-to-v2.md` §3 for the corrected
+> guidance — set `ContainerAware: true` explicitly in literals. A literal-level
+> default flip remains a v2.0-only candidate (silent DOM change otherwise).
+
 **What this strategy document adds:** the recommendation that, at v2.0, the three
 flipped components should also gain `container-name` so that nested containers don't
 conflict (see Part 6).

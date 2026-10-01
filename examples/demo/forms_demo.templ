@@ -6,24 +6,16 @@ import (
 	"github.com/larsartmann/templ-components/layout"
 )
 
-templ formsDemoPage(props layout.PageProps) {
-	@layout.Base(props) {
-		<div class="max-w-2xl mx-auto px-4 py-8">
-			<div class="flex items-center justify-between mb-8">
-				<div>
-					<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Form Components</h1>
-					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Complete form with validation, inputs, selects, and more.</p>
-				</div>
-				<div class="flex items-center gap-3">
-					<a href="/" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Back to demo</a>
-					@layout.ThemeToggle("Toggle dark mode", "")
-				</div>
-			</div>
+// formsDemoContent renders the forms page body (inside the demo shell):
+// the complete create-account form, the HTMX filter bar, and the control
+// showcase from formsDemoSection.
+templ formsDemoContent() {
+			@demoSection("Complete form", "forms-create-account") {
 			@display.Card(display.CardProps{
 				Title:    "Create Account",
 				Subtitle: "Fill in the details below to create your account.",
 			}) {
-				@forms.Form(forms.FormProps{Action: "/users", Method: forms.FormGet}) {
+				@forms.Form(forms.FormProps{Action: demoURL("/users"), Method: forms.FormGet}) {
 					@forms.ValidationSummary(forms.ValidationSummaryProps{
 						Errors: []forms.ValidationError{
 							{Field: "username", Message: "Username is required"},
@@ -102,7 +94,7 @@ templ formsDemoPage(props layout.PageProps) {
 						Name:     "status",
 						Label:    "Status",
 						Value:    "active",
-						HxGet:    "/api/users",
+						HxGet:    demoURL("/api/users"),
 						HxTarget: "#user-results",
 						Options: []forms.SelectOption{
 							{Value: "", Label: "All"},
@@ -113,7 +105,7 @@ templ formsDemoPage(props layout.PageProps) {
 					@forms.FilterDropdown(forms.FilterDropdownProps{
 						Name:      "sort",
 						Label:     "Sort by",
-						HxGet:     "/api/users",
+						HxGet:     demoURL("/api/users"),
 						HxTarget:  "#user-results",
 						HxTrigger: "change delay:500ms",
 						Options: []forms.SelectOption{
@@ -125,7 +117,15 @@ templ formsDemoPage(props layout.PageProps) {
 						Results will appear here on filter change.
 					</div>
 				</div>
-			</div>
-		</div>
-	}
+			}
+			@demoSection("HTMX filter bar", "forms-filter-bar") {
+				<div class="flex flex-wrap items-end gap-4 rounded-lg border border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+					<p class="text-sm text-gray-500 dark:text-gray-400">
+						The complete-form filter bar above swaps results into <code class="text-xs">#user-results</code>; this section showcases the standalone controls.
+					</p>
+				</div>
+			}
+			@formsDemoSection()
 }
+
+var _ = layout.Base // keep the import when the shell owns the Base render

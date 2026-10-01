@@ -66,7 +66,8 @@ For bounded sets with stable ordering, slice server-side and let
 @navigation.Pagination(navigation.PaginationProps{
     CurrentPage: page,
     TotalPages:  totalPages,
-    Href:        "/messages?page={page}",
+    BaseURL:     "/messages",
+    QueryParam:  "page", // default
 })
 ```
 
@@ -88,8 +89,9 @@ updates the position notice:
     Total:     totalMatches,
 })
 @navigation.LoadMore(navigation.LoadMoreProps{
-    Text:   "Load more",
-    Href:   "/messages?cursor=" + nextCursor,
+    Label:    "Load more",
+    Endpoint: "/messages",
+    Cursor:   nextCursor,
 })
 ```
 
