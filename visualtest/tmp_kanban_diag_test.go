@@ -45,6 +45,10 @@ func TestTmpKanbanDiag(t *testing.T) {
 		t.Fatalf("hook: %v", err)
 	}
 
+	if err := chromedp.Run(ctx, chromedp.Evaluate(`window.__viol=[];document.addEventListener('securitypolicyviolation',e=>window.__viol.push(e.violatedDirective+'|'+(e.sample||'').slice(0,40)));window.__sinit=[...document.querySelectorAll('script')].map(s=>(s.getAttribute('nonce')||'-')+'|'+s.textContent.trim().slice(0,50).replace(/\n/g,' '));true`, nil)); err != nil {
+		t.Fatalf("hook2: %v", err)
+	}
+
 	if err := chromedp.Run(ctx, chromedp.Click(`#kanban-demo-htmx [data-tc-kanban-card="kb-1"] [data-tc-kanban-move=next]`, chromedp.ByQuery)); err != nil {
 		t.Logf("click err: %v", err)
 	}
@@ -61,7 +65,9 @@ func TestTmpKanbanDiag(t *testing.T) {
 			formVals:vals,
 			scripts:document.querySelectorAll('script').length,
 			noncedScripts:document.querySelectorAll('script[nonce]').length,
-			kbFns:typeof window.tcKbBoard+'/'+typeof window.tcKbSubmit+'/'+typeof window.tcKbPendingFor,
+			kbFns:'attached='+window.tcKanbanAttached,
+			viol:window.__viol||[],
+			sinit:(window.__sinit||[]).slice(0,12),
 			cspMeta:document.querySelector('meta[http-equiv="Content-Security-Policy"]')?'meta':'none',
 			progAfter:Array.from(document.querySelectorAll('#kanban-demo-htmx [data-tc-kanban-column-body="progress"] > [data-tc-kanban-card]')).map(e=>e.getAttribute('data-tc-kanban-card')).join(','),
 			backlogAfter:Array.from(document.querySelectorAll('#kanban-demo-htmx [data-tc-kanban-column-body="backlog"] > [data-tc-kanban-card]')).map(e=>e.getAttribute('data-tc-kanban-card')).join(',')
