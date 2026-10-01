@@ -33,7 +33,10 @@ func TestDemoInlineScriptsAreSyntaxValid(t *testing.T) {
 	server := StartDemoServer(t)
 
 	routes := []string{
-		"/", "/forms", "/users",
+		"/",
+		"/layout", "/display", "/feedback", "/forms", "/navigation", "/icons",
+		"/htmx", "/datastar", "/wire", "/kanban", "/echarts", "/error-pages", "/recipes",
+		"/users",
 		"/recipes/dashboard", "/recipes/settings", "/recipes/login", "/recipes/auth",
 		"/errors/full", "/errors/404", "/errors/404-page", "/errors/400",
 		"/errors/403", "/errors/409",
