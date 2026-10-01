@@ -39,6 +39,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   any light+dark utility set), while `[data-tc-copy-text]` remains the
   attribute-level escape hatch for full restyling. Closes the cqrs-htmx
   round-10 ask.
+- **`TestInlineStyleCompliance` — a guard pinning the library's inline `style=`
+  CSP exemptions to the documented set** (`AppShell`'s `--tc-sidebar-w`;
+  `BarChart`/`Heatmap`/`ProgressBar`/`LoadingOverlay` runtime widths/heights).
+  A new component can no longer add an inline `style=` silently — the guard
+  fails naming the file, and a stale allowlist entry is pruned. Paired with two
+  additions to `docs/tailwind-v4-adoption-guide.md`: a "Runtime-assembled
+  classes need a safelist" section (why `GridColsAutoFit`'s concatenated class
+  is invisible to Tailwind's scanner, and the `@source inline(...)` fix) and a
+  CSP FAQ caveat naming the components that emit inline styles.
+- **Cross-consumer analysis (`nsfw-classifier`, `dnsblockd`, `cqrs-htmx`,
+  all v1.19.4) harvested into `TODO_LIST.md`** — six verified follow-ups
+  (#322–#327: a status→family helper, `AppShell` inline-var → class,
+  `GridColsAutoFit` safelist/static-class, `Table.BodyID`, the `ErrorHandler`
+  wrapper gap, and the inline-style guard). See
+  `docs/status/2026-10-01_04-28_consumer-usage-analysis-templ-components-status.md`.
 
 ### Changed
 
