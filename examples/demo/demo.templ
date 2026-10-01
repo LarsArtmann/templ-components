@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/larsartmann/templ-components/display"
-	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/layout"
@@ -18,13 +17,14 @@ const (
 	packageCount   = "11"
 )
 
-templ demoPage(props layout.PageProps, transport demoTransport, sessionToken string) {
-	@layout.Base(props) {
-		@feedback.ToastContainer("demo-nonce")
-		@demoContent(transport, sessionToken)
-	}
+// demoHomePage renders the landing page through the shared shell. The hero
+// replaces the standard PageHeader (homePageMeta.ShowHeader is false).
+templ demoHomePage(nonce string) {
+	@demoShell(homePageMeta, nonce, demoHomeContent(nonce))
 }
 
+// demoFonts loads the demo's web fonts (Inter, JetBrains Mono, Space
+// Grotesk) from Google Fonts.
 templ demoFonts(nonce string) {
 	<link rel="preconnect" href="https://fonts.googleapis.com"/>
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
@@ -34,62 +34,77 @@ templ demoFonts(nonce string) {
 	/>
 }
 
-templ demoContent(transport demoTransport, sessionToken string) {
-	<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-		@demoHero()
-		@demoStickyNav()
-		@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-8"}}) {
-			<div id="demo-sections">
-				@layoutDemo()
-				@displayDemo()
-				@feedbackDemo()
-				@formsDemoSection()
-				@navigationDemo()
-				@htmxDemo()
-				@datastarDemo()
-				@wireDemo(transport)
-				@kanbanDemo(sessionToken)
-				@echartsDemo()
-				@errorpageDemo()
-				@iconsDemo()
-				@recipesDemo()
+// demoHomeContent is the landing body: hero, stat cards, and the page
+// directory (filterable card grid driven by the page registry).
+templ demoHomeContent(nonce string) {
+	@demoHero()
+	@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-10"}, Pad: true}) {
+		<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+			<div>
+				<h2 class="text-xl font-semibold text-gray-900 dark:text-white font-[Space_Grotesk]">Explore the library</h2>
+				<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+					One page per package — every demo below is live and wired to real endpoints.
+				</p>
 			</div>
-		}
-		@demoFilterScript()
-	</div>
+			<div class="w-full sm:w-64">
+				@forms.Input(forms.InputProps{
+					BaseProps: utils.BaseProps{
+						ID:        "demo-search",
+						Class:     "py-2 text-sm",
+						AriaLabel: "Filter demo pages",
+					},
+					Name:        "demo-search",
+					Type:        forms.InputSearch,
+					Placeholder: "Filter pages...",
+				})
+			</div>
+		</div>
+		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" id="demo-cards">
+			for _, page := range demoPages() {
+				@demoPageCard(page)
+			}
+		</div>
+		@demoHomeStandAlone()
+	}
+	@demoCardFilterScript()
 }
 
+// demoHero is the compact landing hero: version badge, headline, install
+// command, and the component/icon/package stat cards.
 templ demoHero() {
 	<div class="relative overflow-hidden border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-		@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-12 sm:py-16 lg:py-20"}}) {
-			<div class="grid lg:grid-cols-2 gap-10 items-center">
-				<div>
-					<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/30 text-xs font-medium text-blue-700 dark:text-blue-300 mb-5">
-						@icons.Icon(icons.Star, "h-3.5 w-3.5")
-						<span>v{ utils.Version }</span>
-					</div>
-					<h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white tracking-tight font-[Space_Grotesk]">
-						templ-components
+		<div class="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(59,130,246,0.08),transparent)] dark:bg-[radial-gradient(60%_50%_at_50%_0%,rgba(59,130,246,0.15),transparent)]" aria-hidden="true"></div>
+		@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-12 sm:py-16"}, Pad: true}) {
+			<div class="flex flex-col items-start gap-6">
+				<div class="inline-flex items-center gap-2 rounded-full border border-blue-100 dark:border-blue-900/30 bg-blue-50 dark:bg-blue-950/30 px-3 py-1 text-xs font-medium text-blue-700 dark:text-blue-300">
+					@icons.Icon(icons.Star, "h-3.5 w-3.5")
+					<span>v{ utils.Version }</span>
+					<span class="text-blue-300 dark:text-blue-700" aria-hidden="true">|</span>
+					<span>Go 1.26 · templ · Tailwind v4</span>
+				</div>
+				<div class="max-w-2xl">
+					<h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white font-[Space_Grotesk] sm:text-5xl">
+						Server-rendered UI components for Go
 					</h1>
-					<p class="mt-4 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-xl leading-relaxed">
-						Server-rendered UI components for Go. Built with <span class="text-blue-600 dark:text-blue-400 font-medium">templ</span>,
-						<span class="text-blue-600 dark:text-blue-400 font-medium">HTMX</span>, and <span class="text-blue-600 dark:text-blue-400 font-medium">Tailwind CSS v4</span>.
-					</p>
-					<div class="mt-6 flex flex-wrap items-center gap-4">
-						@display.CopyButton(display.CopyButtonProps{
-							Text:  "go get github.com/larsartmann/templ-components",
-							Label: "Copy install command",
-						})
-						<a href="https://templcomponents.lars.software" class="inline-flex items-center gap-2 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-							Documentation
-							@icons.Icon(icons.ExternalLink, "h-4 w-4")
-						</a>
-					</div>
-					<p class="mt-5 text-sm text-gray-400 dark:text-gray-600">
-						same component, either runtime — see the Wire section below
+					<p class="mt-4 text-lg leading-relaxed text-gray-600 dark:text-gray-400">
+						121 accessible, CSP-safe components built with
+						<span class="font-medium text-blue-600 dark:text-blue-400">templ</span>,
+						<span class="font-medium text-blue-600 dark:text-blue-400">HTMX</span>, and
+						<span class="font-medium text-blue-600 dark:text-blue-400">Tailwind CSS v4</span>.
+						No Node.js runtime, no client framework — just Go templates.
 					</p>
 				</div>
-				<div class="grid grid-cols-3 gap-3 sm:gap-4">
+				<div class="flex flex-wrap items-center gap-4">
+					@display.CopyButton(display.CopyButtonProps{
+						Text:  "go get github.com/larsartmann/templ-components",
+						Label: "Copy install command",
+					})
+					<a href={ templ.SafeURL(demoDocsURL) } class="inline-flex items-center gap-2 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors motion-reduce:transition-none motion-reduce:duration-0">
+						Documentation
+						@icons.Icon(icons.ExternalLink, "h-4 w-4")
+					</a>
+				</div>
+				<div class="grid w-full max-w-md grid-cols-3 gap-3 sm:max-w-lg sm:gap-4">
 					@demoStatCard(componentCount, "Components")
 					@demoStatCard(strconv.Itoa(len(icons.AllIconNames())), "Icons")
 					@demoStatCard(packageCount, "Packages")
@@ -99,57 +114,83 @@ templ demoHero() {
 	</div>
 }
 
+// demoHomeStandAlone points at the standalone full-screen pages that live
+// outside the shell (recipes rendered edge-to-edge, the way consumers
+// compose them).
+templ demoHomeStandAlone() {
+	<div class="mt-10 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-5">
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white">Full-screen recipes</h3>
+		<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+			Standalone screens rendered edge-to-edge:
+		</p>
+		<div class="mt-3 flex flex-wrap gap-2">
+			@demoStandardLink("/recipes/dashboard", "Dashboard")
+			@demoStandardLink("/recipes/settings", "Settings")
+			@demoStandardLink("/recipes/login", "Login card")
+			@demoStandardLink("/recipes/auth", "Auth layout")
+			@demoStandardLink("/errors/playground", "Error playground")
+		</div>
+	</div>
+}
+
+// demoStandardLink is a compact pill link to a standalone page.
+templ demoStandardLink(href, label string) {
+	<a
+		href={ templ.SafeURL(demoURL(href)) }
+		class="inline-flex items-center gap-1.5 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:border-blue-300 dark:hover:border-blue-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+	>
+		{ label }
+		@icons.Icon(icons.ArrowRight, "h-3 w-3")
+	</a>
+}
+
+// demoStatCard is the hero metric tile.
 templ demoStatCard(value string, label string) {
-	<div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 p-4 sm:p-5 text-center">
-		<div class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white font-[Space_Grotesk]">{ value }</div>
-		<div class="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">{ label }</div>
+	<div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 p-4 text-center">
+		<div class="text-2xl font-bold text-gray-900 dark:text-white font-[Space_Grotesk] sm:text-3xl">{ value }</div>
+		<div class="mt-1 text-xs text-gray-500 dark:text-gray-400 sm:text-sm">{ label }</div>
 	</div>
 }
 
-templ demoStickyNav() {
-	{{
-		tocLinks := []struct{ Label, Anchor string }{
-			{"Layout", "layout-primitives"},
-			{"Display", "display-cards"},
-			{"Feedback", "feedback-alerts"},
-			{"Forms", "forms-controls"},
-			{"Navigation", "nav-simplenav"},
-			{"HTMX", "htmx-loading-indicator"},
-			{"Datastar", "datastar-sdk-script"},
-			{"Wire", "wire-transport"},
-			{"Kanban", "kanban-board"},
-			{"ECharts", "echarts-sdk"},
-			{"Error Pages", "errorpage-404"},
-			{"Icons", "icons-all"},
-			{"Recipes", "recipes-pages"},
-		}
-	}}
-	<div class="sticky top-0 z-30 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur-xs">
-		@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-3"}}) {
-			<div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-				<nav class="flex flex-wrap items-center gap-2" aria-label="Demo sections">
-					for _, link := range tocLinks {
-						<a href={ templ.SafeURL("#" + link.Anchor) } class="px-2.5 py-1.5 rounded-md text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors motion-reduce:transition-none motion-reduce:duration-0">{ link.Label }</a>
-					}
-				</nav>
-				<div class="w-full sm:w-60 sm:ms-auto">
-					@forms.Input(forms.InputProps{
-						BaseProps: utils.BaseProps{
-							ID:        "demo-search",
-							Class:     "py-1.5 text-sm",
-							AriaLabel: "Filter demo sections",
-						},
-						Name:        "demo-search",
-						Type:        forms.InputSearch,
-						Placeholder: "Filter sections...",
-					})
-				</div>
-				@layout.ThemeToggle("Toggle dark mode", "")
-			</div>
-		}
-	</div>
+// demoPageCard is one directory card: icon, title, description, arrow. The
+// card filter script matches on the card's text content.
+templ demoPageCard(page demoPageMeta) {
+	<a
+		href={ templ.SafeURL(page.canonicalPath()) }
+		class="demo-card group flex flex-col rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-md dark:hover:shadow-black/20 transition-all motion-reduce:transition-none motion-reduce:duration-0"
+	>
+		<div class="flex items-start justify-between gap-3">
+			<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
+				@icons.Icon(page.Icon, "h-5 w-5")
+			</span>
+			@icons.Icon(icons.ArrowRight, "h-4 w-4 text-gray-300 dark:text-gray-600 group-hover:text-blue-500 dark:group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all motion-reduce:transition-none motion-reduce:duration-0 motion-reduce:translate-x-0")
+		</div>
+		<p class="mt-4 font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0">{ page.Title }</p>
+		<p class="mt-1 text-sm leading-relaxed text-gray-500 dark:text-gray-400">{ page.Short }</p>
+	</a>
 }
 
+// demoCardFilterScript wires the home filter input to the page cards: a
+// case-insensitive substring match over each card's text, hiding non-matches.
+templ demoCardFilterScript() {
+	<script nonce={ demoNonceConst }>
+		document.addEventListener('DOMContentLoaded', function() {
+			var input = document.getElementById('demo-search');
+			if (!input) return;
+			var cards = document.querySelectorAll('.demo-card');
+			input.addEventListener('input', function() {
+				var term = input.value.trim().toLowerCase();
+				cards.forEach(function(card) {
+					var match = !term || card.textContent.toLowerCase().indexOf(term) !== -1;
+					card.style.display = match ? '' : 'none';
+				});
+			});
+		});
+	</script>
+}
+
+// demoSection wraps one demo block with an anchored heading. Section pages
+// compose several of these; the id doubles as a deep-link target.
 templ demoSection(title, anchor string) {
 	<section class="demo-section scroll-mt-24" id={ anchor }>
 		<div class="flex items-center justify-between mb-6">
@@ -163,6 +204,7 @@ templ demoSection(title, anchor string) {
 	</section>
 }
 
+// demoCodeSnippet shows a Go/HTML snippet with a copy button.
 templ demoCodeSnippet(title, code string) {
 	<div class="mt-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-900 dark:bg-gray-950 text-gray-100 dark:text-gray-100 overflow-hidden">
 		<div class="flex items-center justify-between px-3 py-2 border-b border-gray-800 dark:border-gray-700 bg-gray-950 dark:bg-gray-900">
@@ -177,53 +219,4 @@ templ demoCodeSnippet(title, code string) {
 		</div>
 		<pre tabindex="0" aria-label="Code example" class="p-3 text-xs sm:text-sm font-mono overflow-x-auto"><code>{ code }</code></pre>
 	</div>
-}
-
-templ demoFilterScript() {
-	<script nonce="demo-nonce">
-		document.addEventListener('DOMContentLoaded', function() {
-			var input = document.getElementById('demo-search');
-			if (!input) return;
-			var sections = document.querySelectorAll('.demo-section');
-			input.addEventListener('input', function() {
-				var term = input.value.trim().toLowerCase();
-				sections.forEach(function(section) {
-					var heading = section.querySelector('h2');
-					var text = (heading ? heading.textContent : '') + ' ' + section.textContent;
-					var match = !term || text.toLowerCase().indexOf(term) !== -1;
-					section.style.display = match ? '' : 'none';
-				});
-			});
-		});
-	</script>
-}
-
-// recipesDemo links the full-page demos: every page reachable from one place.
-templ recipesDemo() {
-	@demoSection("Recipes & Full Pages", "recipes-pages")
-	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-		@recipeLinkCard("/users", "Users list", "Server-driven DataTable with sorting + pagination round-trips.", icons.Users)
-		@recipeLinkCard("/forms", "Forms page", "Complete form with validation states and HTMX filter bar.", icons.Edit)
-		@recipeLinkCard("/recipes/dashboard", "Dashboard", "recipes.Dashboard — stat cards + charts composition.", icons.Squares2x2)
-		@recipeLinkCard("/recipes/settings", "Settings", "recipes.SettingsLayout — aside nav + section cards.", icons.Settings)
-		@recipeLinkCard("/recipes/login", "Login card", "recipes.LoginCard — centered sign-in card.", icons.UserCircle)
-		@recipeLinkCard("/recipes/auth", "Auth layout", "recipes.AuthLayout — split-screen branding + auth card.", icons.ShieldCheck)
-	</div>
-}
-
-templ recipeLinkCard(href, title, description string, icon icons.Name) {
-	<a
-		href={ templ.SafeURL(href) }
-		class="group rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-md dark:hover:shadow-black/20 transition-all motion-reduce:transition-none motion-reduce:duration-0"
-	>
-		<div class="flex items-start gap-4">
-			<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
-				@icons.Icon(icon, "h-5 w-5")
-			</span>
-			<div>
-				<p class="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0">{ title }</p>
-				<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ description }</p>
-			</div>
-		</div>
-	</a>
 }
