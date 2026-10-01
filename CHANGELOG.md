@@ -30,6 +30,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Demo CSP regression: the MPA rewrite dropped the explicit nonce pass and
+  shipped 50 component scripts with `nonce=""` — dead JS site-wide under the
+  demo's CSP.** CopyButton (every page via the sidebar footer + code
+  snippets), the Kanban move/drag JS, Tooltip/Popover/ContextMenu menu-nav
+  scripts, Image fallback, DirtyGuard, HTMX GlobalErrorHandling, and the
+  dismissible Alert/Toast scripts were all silently blocked by the
+  `nonce-demo-nonce` CSP since the MPA deploy. Every demo content builder now
+  passes `demoNonceConst` explicitly (13 call sites), verified by a page
+  sweep asserting zero empty-nonce scripts across all 16 demo routes.
 - **Color-contrast fixes surfaced by the demo's expanded axe sweep (fix
   forward, per the a11y gate policy).** Splitting the demo into per-package
   pages ended the old single-page contrast waiver and audited each page at
