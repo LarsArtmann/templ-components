@@ -7,6 +7,12 @@
 
 > **Format override:** the `status-report` skill's canonical output is a styled **HTML** dashboard; the user explicitly requested `.md`. Honoring the explicit instruction. Flagging the divergence per the skill so it is not mistaken for a new default.
 
+> **Verification addendum (2026-10-01, follow-up session).** Three claims below were checked against source and corrected; do not act on the original wording.
+>
+> 1. **§a5 overstated the `errorpage` finding.** cqrs-htmx **does** use `errorpage.ErrorPage` and `errorpage.NotFound404` directly (`adminui/errorpage.go:129,163`; `dashboardui/render.go:85,94`). It bypasses only the `ErrorHandler` *wrapper*, and duplicates only the **inverse** status→family mapping — the library ships `FamilyStatusCode` (family→status) but has **no status→family** helper, which both `adminui/errorpage.go:15` and `dashboardui/render.go:122` re-implement.
+> 2. **§c2 / §f1 "canonical recipe does not exist" was wrong.** `docs/tailwind-v4-adoption-guide.md` (464 lines) already covers vendoring, the `vendor/`-is-gitignored divergence, `source(none)`, and the class-inventory recipe. The genuine gap was narrower — runtime-assembled-class safelisting (`GridColsAutoFit`) and the CSP inline-`style=` caveat — **both now added to that guide this session**.
+> 3. **§b3 resolved: the `GridColsAutoFit` scanner-invisibility is universal, not cqrs-only.** `display.Grid` builds its template class by concatenation (`display/grid.templ:81-88`), so **any** consumer who sets `Cols: GridColsAutoFit` must safelist the literal. §b1 and §b2 are likewise resolved (causes recorded in the addendum and below).
+
 ---
 
 ## Session Summary

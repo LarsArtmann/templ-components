@@ -189,6 +189,45 @@ Rules of thumb:
 4. **Never rely on scanning a gitignored directory** — gitignored paths are
    skipped even when listed explicitly; use the
    [class-inventory recipe](recipes/vendored-tailwind-scanning.md) instead.
+5. **Safelist any class the library assembles at runtime** — see the next
+   section.
+
+---
+
+## Runtime-assembled classes need a safelist
+
+Tailwind extracts class names by scanning **source text**. A class the library
+builds by string concatenation does not exist as text in any `.templ` source, so
+the scanner never sees it and its CSS is never generated — the element renders
+unstyled **even though the utility class appears in the served HTML**.
+
+One component has this property: `display.Grid` with
+`Cols: display.GridColsAutoFit`. It emits
+
+```text
+[grid-template-columns:repeat(auto-fit,minmax(<MinColWidth>,1fr))]
+```
+
+where `<MinColWidth>` is `props.MinColWidth` (empty falls back to `240px`). That
+literal exists only in the rendered page, never in a source file, so consumers
+who use `GridColsAutoFit` MUST safelist the exact literal they pass:
+
+```css
+@source inline("[grid-template-columns:repeat(auto-fit,minmax(190px,1fr))]");
+```
+
+`@source inline(...)` accepts Tailwind's brace expansion, so a small set of
+widths fits on one line:
+
+```css
+@source inline("[grid-template-columns:repeat(auto-fit,minmax({160px,190px,240px},1fr))]");
+```
+
+> **Prefer a fixed variant when you can.** `GridCols1..GridCols6` and the
+> `GridColsAuto` (container-query) variants produce static class names that are
+> scanned automatically and need no safelist. Reach for `GridColsAutoFit` only
+> when the grid must respond to its own container width, and safelist the width
+> you pass.
 
 ---
 
@@ -457,8 +496,20 @@ section above. The simplest option is zero-config (`prefers-color-scheme`), or u
 `@custom-variant dark` + `layout.ThemeScript()` + `layout.ThemeToggle()` for a
 user-controlled toggle.
 
-**What about CSP?** Tailwind produces pure CSS files — no inline styles, no
-`eval()`. Include the built `.css` via `<link>` and you're CSP-compliant.
+**What about CSP?** Tailwind's own output is a pure CSS file — no inline
+`<style>`, no `eval()`. Include the built `.css` via `<link>` and Tailwind
+itself is CSP-clean.
+
+> **Caveat — a few components emit inline `style=` attributes for runtime
+> values:** `feedback.ProgressBar` and `feedback.LoadingOverlay` (bar width),
+> `display.BarChart` (bar height/width), `display.Heatmap` (cell background),
+> and `layout.AppShell` (the `--tc-sidebar-w` custom property). A strict policy
+> of `style-src 'self'` or `style-src 'nonce-…'` **blocks** those attributes, so
+> the dynamic value silently does not apply. If you use any of these under a
+> strict `style-src`, allow `style-src-attr 'unsafe-inline'` (scoped to style
+> attributes only), or override the value from your own stylesheet (for example,
+> set `--tc-sidebar-w` in a class instead of relying on the component's inline
+> custom property).
 
 **Where does custom CSS go?** In your main CSS file, after `@import "tailwindcss"`.
 Use `@layer utilities { ... }` or `@layer components { ... }` for organization.
