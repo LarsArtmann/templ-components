@@ -26,7 +26,7 @@ import (
 // dialect — the SDK pitch: the Action stays identical, one field switches the
 // runtime.
 templ wireDemo(transport demoTransport) {
-	@forms.DirtyGuard(forms.DirtyGuardProps{Nonce: demoNonceConst})
+	@forms.DirtyGuard(forms.DirtyGuardProps{BaseProps: utils.BaseProps{Nonce: demoNonceConst}})
 	@demoSection("Wire — One Action, Both Transports", "wire-transport")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
 		Every button here is the same <code>display.Button</code> with the same

@@ -12,6 +12,7 @@ import (
 templ navigationDemo() {
 	@demoSection("SimpleNav", "nav-simplenav")
 	@navigation.SimpleNav(navigation.SimpleNavProps{
+		BaseProps:   utils.BaseProps{Nonce: demoNonceConst},
 		BrandText:   "Demo App",
 		BrandHref:   demoURL("/"),
 		CurrentPath: demoURL("/"),
@@ -24,7 +25,7 @@ templ navigationDemo() {
 	})
 	@demoSection("Full Nav", "nav-full")
 	@navigation.Nav(navigation.NavProps{
-		Nonce:       demoNonceConst,
+		BaseProps:   utils.BaseProps{Nonce: demoNonceConst},
 		CurrentPath: demoURL("/"),
 		Brand:       templ.Raw(`<span class="text-base font-bold text-gray-900 dark:text-white">Demo App</span>`),
 		Links: []navigation.NavLinkProps{

@@ -43,6 +43,7 @@ func navigationDemo() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = navigation.SimpleNav(navigation.SimpleNavProps{
+			BaseProps:   utils.BaseProps{Nonce: demoNonceConst},
 			BrandText:   "Demo App",
 			BrandHref:   demoURL("/"),
 			CurrentPath: demoURL("/"),
@@ -61,7 +62,7 @@ func navigationDemo() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = navigation.Nav(navigation.NavProps{
-			Nonce:       demoNonceConst,
+			BaseProps:   utils.BaseProps{Nonce: demoNonceConst},
 			CurrentPath: demoURL("/"),
 			Brand:       templ.Raw(`<span class="text-base font-bold text-gray-900 dark:text-white">Demo App</span>`),
 			Links: []navigation.NavLinkProps{
@@ -266,7 +267,7 @@ func loadMoreBatch(offset int) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%03d", offset*2+i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/navigation_demo.templ`, Line: 95, Col: 102}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/navigation_demo.templ`, Line: 96, Col: 102}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {

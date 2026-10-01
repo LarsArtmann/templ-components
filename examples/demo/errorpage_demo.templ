@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/layout"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 templ errorpageDemo() {
@@ -32,7 +33,7 @@ templ errorpageDemo() {
 	<div class="space-y-4">
 		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyRejection, Title: "Invalid Input", Message: "The email address format is invalid.", Fix: "Enter a valid email address."})
 		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyConflict, Title: "Version Conflict", Message: "Someone else modified this resource.", Fix: "Refresh and try again."})
-		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyTransient, Title: "Temporary Error", Message: "A temporary error occurred.", Fix: "Wait a moment and retry.", Dismissible: true, Nonce: demoNonceConst})
+		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyTransient, Title: "Temporary Error", Message: "A temporary error occurred.", Fix: "Wait a moment and retry.", Dismissible: true, BaseProps: utils.BaseProps{Nonce: demoNonceConst}})
 		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyCorruption, Title: "Data Corrupted", Message: "Configuration file is unreadable."})
 		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyInfrastructure, Title: "Service Unavailable", Message: "The service is currently down."})
 		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyOrchestration, Title: "Orchestration Failure", Message: "A workflow step failed unexpectedly."})
