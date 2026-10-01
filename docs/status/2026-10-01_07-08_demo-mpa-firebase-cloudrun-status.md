@@ -15,6 +15,28 @@ Stat line: **9 workstreams fully done · 4 in flight · 8 not started · 8 self-
 
 ---
 
+## Addendum — 08:20 CEST same day (continuation session)
+
+**Deploy already happened.** The daemon had pushed the MPA commits to origin and CI's Website workflow went green at 05:43Z — `https://templcomponents.lars.software/demo/**` is LIVE and was probed directly (python3 urllib, proxy stripped):
+
+| Probe | Result |
+| --- | --- |
+| `/demo/`, `/demo/display`, bare `/demo` | 200, shell renders, correct per-page titles |
+| CSP header on `/demo/` | present, `nonce-demo-nonce` survives the rewrite (override or origin header — either way correct) |
+| `/demo/css/app.css` | 200, correct Cache-Control |
+| POST `/demo/api/wire/form` (htmx headers) | 200 + wire fragment through the proxy |
+| raw run.app `/demo/display` | 200 (dual-mount verified live) |
+| ECharts/Datastar pages | 200, SDK references present |
+| **SSE `/demo/api/datastar/stream` via proxy** | **BROKEN — buffers forever** while raw run.app streams first patch at 2.2s. Firebase Hosting buffers ALL rewrite responses (Firebase team confirmation; `X-Accel-Buffering: no` ignored). Platform limitation, not our bug — bypass options = owner decision, tracked as TODO #329. HTMX flows unaffected. |
+
+**Visual suite triage + fixes (all landed):** the strict per-page axe pass found 11 real contrast failures across 6 routes — ALL fixed forward in the library/demo (kanban empty placeholder 2.41→4.6+, scrollback timestamps, errorpage causeList on tinted cards, `InlineSuccess`/outline Warning+Success buttons → `-700` light shades, CountBadge → `bg-red-600` light, Nav footer bottom bar) plus the demo's filter-results text. The sweep then caught two more: scrollback TAG tones (warning/success → `-700`) and the carousel emerald slide (`bg-emerald-700`); the demo footer's Documentation/GitHub links got the `p-1.5 -m-1.5` 24px hit-box (touch-target audit). Harness fix: the axe sweep now runs `waitAnimationsSettled()` — mid-entrance stagger frames composite translucent text and produce bogus contrast numbers (screenshot path already did this). `TestDemoKanbanHTTPContracts` was still harvesting CSRF from `/` — retargeted to `/kanban` via a `pagePath` fixture field. Latent debt (demo-unrendered failing tone classes) tracked as TODO #330.
+
+**New gotcha (AGENTS.md updated):** in go1.26.7, `go test -update ./pkg/...` is broken — the go command's own `-update` flag consumes the next argument, so the package never resolves (`FAIL . [setup failed]`). Golden updates must use `go test ./pkg/... -update` (flag AFTER packages). The documented form in the golden-testing bullet was silently targeting the root package.
+
+**Remaining:** clean visual-suite witness run → lint/fmt re-check → per-module loop → ci-repro → push (9 local commits) → CI deploy of the fix batch → re-probe the live surface for the contrast/shell changes.
+
+---
+
 ## a) FULLY DONE
 
 1. **Skill + research pass.** Loaded `templ-components` + `website-launch` skills; mapped the whole surface before coding: demo templates/routes, `website.yml` deploy pipeline (website → Firebase Hosting target `templcomponents`; demo image → Artifact Registry → Cloud Run), `website/firebase.json`, `visualtest` harness (`StartDemoServer`, route goldens, axe sweep, siteshots), prerender parity test, library shell APIs (`AppShell`, `SidebarNav`, `MobileMenu`, `PageHeader`, `ContainerProps`), CDN hosts for CSP (jsDelivr ×2, Google Fonts, ui-avatars.com).
