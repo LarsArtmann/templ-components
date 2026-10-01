@@ -69,7 +69,7 @@ func TestDemoMobile375KanbanReachable(t *testing.T) {
 	}
 
 	if err := chromedp.Run(ctx,
-		chromedp.Navigate(server.BaseURL()+"/"),
+		chromedp.Navigate(server.BaseURL()+"/kanban"),
 		chromedp.WaitReady("body"),
 	); err != nil {
 		t.Fatalf("visualtest[demo]: navigate: %v", err)

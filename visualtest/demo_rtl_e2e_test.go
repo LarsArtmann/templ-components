@@ -63,7 +63,7 @@ func TestDemoRTLKanbanMoveWorks(t *testing.T) {
 	defer cancel()
 
 	if err := chromedp.Run(ctx,
-		chromedp.Navigate(server.BaseURL()+"/"),
+		chromedp.Navigate(server.BaseURL()+"/kanban"),
 		chromedp.WaitReady("body"),
 		setRTL(),
 	); err != nil {
