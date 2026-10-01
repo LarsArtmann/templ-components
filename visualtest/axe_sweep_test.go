@@ -62,9 +62,10 @@ const axeBaselinePath = "testdata/axe_baseline.json"
 // rule failure cannot flood the test output.
 const axeMaxReportedNodes = 5
 
-// axeSweepRoutes enumerates the demo pages under audit. index/forms get light
-// + dark passes (the dark palette is where contrast regressions hide); the
-// kanban section lives on the index route.
+// axeSweepRoutes enumerates the demo pages under audit — one entry per page
+// of the multi-page demo (new pages land here in the same commit). index and
+// forms get light + dark passes (the dark palette is where contrast
+// regressions hide); the standalone recipe screens keep their own entries.
 var axeSweepRoutes = []struct {
 	name string
 	path string
@@ -72,8 +73,21 @@ var axeSweepRoutes = []struct {
 }{
 	{name: "index", path: "/", dark: false},
 	{name: "index_dark", path: "/", dark: true},
+	{name: "layout", path: "/layout", dark: false},
+	{name: "display", path: "/display", dark: false},
+	{name: "feedback", path: "/feedback", dark: false},
 	{name: "forms", path: "/forms", dark: false},
 	{name: "forms_dark", path: "/forms", dark: true},
+	{name: "navigation", path: "/navigation", dark: false},
+	{name: "icons", path: "/icons", dark: false},
+	{name: "htmx", path: "/htmx", dark: false},
+	{name: "datastar", path: "/datastar", dark: false},
+	{name: "wire", path: "/wire", dark: false},
+	{name: "kanban", path: "/kanban", dark: false},
+	{name: "echarts", path: "/echarts", dark: false},
+	{name: "error_pages", path: "/error-pages", dark: false},
+	{name: "recipes", path: "/recipes", dark: false},
+	{name: "users", path: "/users", dark: false},
 	{name: "recipes_dashboard", path: "/recipes/dashboard", dark: false},
 	{name: "recipes_settings", path: "/recipes/settings", dark: false},
 	{name: "recipes_login", path: "/recipes/login", dark: false},

@@ -34,12 +34,24 @@ type page struct {
 //nolint:gochecknoglobals // declarative page list; a package-level table is the point
 var pages = []page{
 	{"index", "/"},
-	// The wire section renders per ?transport= (audit f14): capture both
-	// single-transport variants so the htmx/datastar dialects are eyeballed,
-	// not just the default both-view.
-	{"index-htmx", "/?transport=htmx"},
-	{"index-datastar", "/?transport=datastar"},
+	// Every page of the multi-page demo gets a capture; the wire page also
+	// renders per ?transport= (audit f14), so both single-transport variants
+	// are captured for eyeballing.
+	{"layout", "/layout"},
+	{"display", "/display"},
+	{"feedback", "/feedback"},
 	{"forms", "/forms"},
+	{"navigation", "/navigation"},
+	{"icons", "/icons"},
+	{"htmx", "/htmx"},
+	{"datastar", "/datastar"},
+	{"wire", "/wire"},
+	{"wire-htmx", "/wire?transport=htmx"},
+	{"wire-datastar", "/wire?transport=datastar"},
+	{"kanban", "/kanban"},
+	{"echarts", "/echarts"},
+	{"error-pages", "/error-pages"},
+	{"recipes", "/recipes"},
 	{"users", "/users"},
 	{"recipes-dashboard", "/recipes/dashboard"},
 	{"recipes-settings", "/recipes/settings"},

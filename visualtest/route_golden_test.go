@@ -227,6 +227,34 @@ func TestDemoRouteGoldens(t *testing.T) {
 		viewport Viewport
 		fullPage bool
 	}{
+		// Multi-page demo: one golden pair (light/dark) per section page.
+		{"index_light", "/", false, false, ViewportDesktop, true},
+		{"index_dark", "/", true, false, ViewportDesktop, true},
+		{"index_mobile", "/", false, false, ViewportMobile, false},
+		{"layout_light", "/layout", false, false, ViewportDesktop, true},
+		{"layout_dark", "/layout", true, false, ViewportDesktop, true},
+		{"display_light", "/display", false, false, ViewportDesktop, true},
+		{"display_dark", "/display", true, false, ViewportDesktop, true},
+		{"feedback_light", "/feedback", false, false, ViewportDesktop, true},
+		{"feedback_dark", "/feedback", true, false, ViewportDesktop, true},
+		{"navigation_light", "/navigation", false, false, ViewportDesktop, true},
+		{"navigation_dark", "/navigation", true, false, ViewportDesktop, true},
+		{"icons_light", "/icons", false, false, ViewportDesktop, true},
+		{"icons_dark", "/icons", true, false, ViewportDesktop, true},
+		{"htmx_light", "/htmx", false, false, ViewportDesktop, true},
+		{"htmx_dark", "/htmx", true, false, ViewportDesktop, true},
+		{"datastar_light", "/datastar", false, false, ViewportDesktop, true},
+		{"datastar_dark", "/datastar", true, false, ViewportDesktop, true},
+		{"wire_light", "/wire", false, false, ViewportDesktop, true},
+		{"wire_dark", "/wire", true, false, ViewportDesktop, true},
+		{"kanban_light", "/kanban", false, false, ViewportDesktop, true},
+		{"kanban_dark", "/kanban", true, false, ViewportDesktop, true},
+		{"echarts_light", "/echarts", false, false, ViewportDesktop, true},
+		{"echarts_dark", "/echarts", true, false, ViewportDesktop, true},
+		{"error_pages_light", "/error-pages", false, false, ViewportDesktop, true},
+		{"error_pages_dark", "/error-pages", true, false, ViewportDesktop, true},
+		{"recipes_light", "/recipes", false, false, ViewportDesktop, true},
+		{"recipes_dark", "/recipes", true, false, ViewportDesktop, true},
 		{"dashboard_light", "/recipes/dashboard", false, false, ViewportDesktop, true},
 		{"dashboard_dark", "/recipes/dashboard", true, false, ViewportDesktop, true},
 		{"settings_light", "/recipes/settings", false, false, ViewportDesktop, true},
@@ -249,7 +277,6 @@ func TestDemoRouteGoldens(t *testing.T) {
 		{"errors_full_dark", "/errors/full", true, false, ViewportDesktop, true},
 		{"dashboard_rtl", "/recipes/dashboard", false, true, ViewportDesktop, true},
 		{"forms_rtl", "/forms", false, true, ViewportDesktop, true},
-		{"index_fold_light", "/", false, false, ViewportDesktop, false},
 	} {
 		assertRouteScreenshot(t, route.name, base+route.path, route.dark, route.rtl, route.viewport, route.fullPage)
 	}
