@@ -8,8 +8,8 @@ package htmx
 //
 //	@htmx.ViewTransitions(htmx.ViewTransitionsProps{Global: true})
 templ ViewTransitions(props ViewTransitionsProps) {
+	@styleComponent(props.Nonce, viewTransitionsCSS)
 	if props.Global {
 		@scriptComponent(props.Nonce, viewTransitionsScript)
 	}
-	@styleComponent(props.Nonce, viewTransitionsCSS)
 }
