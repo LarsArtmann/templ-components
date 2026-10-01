@@ -21,7 +21,6 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
-    systems.url = "github:nix-systems/default";
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -35,7 +34,15 @@
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = import inputs.systems;
+      # Inline systems (fleet standard, matching go-nix-helpers defaultSystems):
+      # nixpkgs 26.11 (nixos-unstable) dropped x86_64-darwin, so the former
+      # github:nix-systems/default input (which still lists it) made
+      # `nix flake check` fail unconditionally.
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
 
       # treefmt-nix provides the `treefmt` config module and a `formatter` app
       # automatically (replacing the former bare `formatter = pkgs.nixfmt;`).
