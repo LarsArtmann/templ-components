@@ -72,7 +72,7 @@ Stat line: **9 workstreams fully done · 4 in flight · 8 not started · 8 self-
 
 ## f) TOP 50 THINGS TO GET DONE NEXT
 
-*Priority-sorted; items 1–12 are this session's critical path, 13–25 near-term hardening, 26–50 roadmap fuel (docs-health HARVEST should route accordingly).*
+_Priority-sorted; items 1–12 are this session's critical path, 13–25 near-term hardening, 26–50 roadmap fuel (docs-health HARVEST should route accordingly)._
 
 1. Wait for visual suite (job `08E`) → fix any axe findings on new pages (fix forward; baseline only documented debt).
 2. Eyeball the 28 new route goldens (home, every section page, mobile index) — shell must look intentional, not assembled.
@@ -133,4 +133,4 @@ Stat line: **9 workstreams fully done · 4 in flight · 8 not started · 8 self-
 
 ---
 
-*Point-in-time snapshot; goes stale. Section (f) items 13–25 are TODO_LIST fuel, 26–50 ROADMAP fuel — pending your instruction to harvest.*
+_Point-in-time snapshot; goes stale. Section (f) items 13–25 are TODO_LIST fuel, 26–50 ROADMAP fuel — pending your instruction to harvest._
