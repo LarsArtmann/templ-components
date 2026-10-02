@@ -613,7 +613,7 @@ func TestActionSelector(t *testing.T) {
 		}
 	})
 
-	t.Run("selector composes with contentType form", func(t *testing.T) {
+	t.Run("selector composes with contentType form in ONE options object", func(t *testing.T) {
 		t.Parallel()
 
 		action := Action{
@@ -624,7 +624,7 @@ func TestActionSelector(t *testing.T) {
 		}
 
 		got := action.Attributes()["data-on:click"]
-		want := `@get('/api/save', {selector: '#form-region'}, {contentType: 'form'})`
+		want := `@get('/api/save', {selector: '#form-region', contentType: 'form'})`
 
 		if got != want {
 			t.Fatalf("expression = %q, want %q", got, want)

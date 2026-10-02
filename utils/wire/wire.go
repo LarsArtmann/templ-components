@@ -175,6 +175,21 @@ type Action struct {
 	// to the action element's closest form. It renders for Datastar only —
 	// the htmx twin is Target. Empty renders nothing (response-driven).
 	Selector string
+	// Swap is the region-merge style for the exchange — how the response is
+	// inserted relative to the target. It reuses the server-side PatchMode
+	// vocabulary (the SAME enum as PatchTarget.Mode), so one mode word
+	// describes both the client request and the server targeting. Under htmx
+	// it renders hx-swap (innerHTML/outerHTML/afterbegin/…); under Datastar
+	// the fetch option {mode: '…'}, which overrides the Datastar-Mode
+	// response header (verified against the pinned bundle). The zero value
+	// renders nothing in either dialect: htmx's default swap and the
+	// wire.Handler default mode are both "inner", so an unspecified Swap
+	// behaves identically under both runtimes.
+	//
+	// Six modes map 1:1 (inner, outer, before, append, prepend, after, and
+	// remove ↔ htmx delete); PatchModeReplace (Datastar-only) degrades to the
+	// closest htmx style (outerHTML). Unknown values render nothing.
+	Swap PatchMode
 	// DebounceMS delays the wired exchange until the event has stopped
 	// firing for this many milliseconds — the auto-submit filter-input
 	// pattern. htmx renders it as the delay:<n>ms trigger modifier (plus
@@ -247,6 +262,10 @@ func (a Action) htmxAttributes() templ.Attributes {
 		attrs["hx-target"] = a.Target
 	}
 
+	if style := htmxSwapStyle(a.Swap); style != "" {
+		attrs["hx-swap"] = style
+	}
+
 	return attrs
 }
 
@@ -267,7 +286,7 @@ func (a Action) datastarAttributes() templ.Attributes {
 	}
 
 	return templ.Attributes{
-		key: datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector),
+		key: datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector, a.Swap),
 	}
 }
 
@@ -289,27 +308,86 @@ func htmxMethod(m Method) string {
 	return string(MethodGet)
 }
 
-// datastarActionExpr builds a @<method>('<url>') expression, appending
-// {contentType: 'form'} / {selector: '…'} when the action selects them —
-// the only non-default options the common subset expresses (JSON is the
+// datastarActionExpr builds a @<method>('<url>') expression, appending a single
+// options object ({selector, mode, contentType}) when the action selects any of
+// them — the only non-default options the common subset expresses (JSON is the
 // runtime default and is omitted; unknown values degrade to the default).
-// Single quotes are escaped so a URL or selector cannot inject into the
+//
+// All options travel in ONE object literal, never several: the pinned bundle's
+// action dispatcher invokes apply(ctx, url, opts) with spread arguments, so a
+// SECOND object argument is silently ignored (the runtime reads exactly one
+// options object). Emitting separate objects — the earlier shape — dropped form
+// encoding whenever a Selector was also set.
+//
+// Single quotes are escaped so a URL, selector, or mode cannot inject into the
 // expression (mirrors the datastar package's actionExpr).
-func datastarActionExpr(method Method, url string, contentType ContentType, selector string) string {
-	escaped := strings.ReplaceAll(url, `'`, `\'`)
-
+func datastarActionExpr(
+	method Method,
+	url string,
+	contentType ContentType,
+	selector string,
+	swap PatchMode,
+) string {
 	var opts []string
+
 	if selector != "" {
-		opts = append(opts, fmt.Sprintf("{selector: '%s'}", strings.ReplaceAll(selector, `'`, `\'`)))
+		opts = append(opts, fmt.Sprintf("selector: '%s'", escapeSingleQuotes(selector)))
+	}
+
+	if mode := datastarSwapMode(swap); mode != "" {
+		opts = append(opts, fmt.Sprintf("mode: '%s'", mode))
 	}
 
 	if contentType == ContentTypeForm {
-		opts = append(opts, "{contentType: 'form'}")
+		opts = append(opts, "contentType: 'form'")
 	}
 
+	base := fmt.Sprintf("@%s('%s')", method, escapeSingleQuotes(url))
 	if len(opts) == 0 {
-		return fmt.Sprintf("@%s('%s')", method, escaped)
+		return base
 	}
 
-	return fmt.Sprintf("@%s('%s', %s)", method, escaped, strings.Join(opts, ", "))
+	return fmt.Sprintf("@%s('%s', {%s})", method, escapeSingleQuotes(url), strings.Join(opts, ", "))
+}
+
+// escapeSingleQuotes makes a value safe inside a single-quoted JS string
+// literal embedded in a data-on expression.
+func escapeSingleQuotes(value string) string {
+	return strings.ReplaceAll(value, `'`, `\'`)
+}
+
+// datastarSwapMode resolves Swap to a Datastar fetch mode, or "" when unset or
+// unknown (render nothing, use the runtime/response-header default).
+func datastarSwapMode(swap PatchMode) string {
+	if !PatchModeIsValid(swap) || swap == PatchModeUnspecified {
+		return ""
+	}
+
+	return string(swap)
+}
+
+// htmxSwapStyles maps the shared PatchMode vocabulary onto htmx hx-swap styles.
+// PatchModeReplace is Datastar-only (a morphing replaceWith) and degrades to
+// htmx's closest style, outerHTML.
+//
+//nolint:gochecknoglobals // immutable lookup table
+var htmxSwapStyles = map[PatchMode]string{
+	PatchModeInner:   "innerHTML",
+	PatchModeOuter:   "outerHTML",
+	PatchModeBefore:  "beforebegin",
+	PatchModePrepend: "afterbegin",
+	PatchModeAppend:  "beforeend",
+	PatchModeAfter:   "afterend",
+	PatchModeRemove:  "delete",
+	PatchModeReplace: "outerHTML",
+}
+
+// htmxSwapStyle resolves Swap to an htmx hx-swap style, or "" when unset or
+// unknown (render no hx-swap, use htmx's innerHTML default).
+func htmxSwapStyle(swap PatchMode) string {
+	if !PatchModeIsValid(swap) || swap == PatchModeUnspecified {
+		return ""
+	}
+
+	return htmxSwapStyles[swap]
 }
