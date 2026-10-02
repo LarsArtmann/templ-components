@@ -65,6 +65,14 @@ func datastarPolledRegionE2EServer(t *testing.T) (*httptest.Server, *atomic.Int6
 	props := layout.DefaultPageProps()
 	props.Title = "Datastar PolledRegion E2E — templ-components"
 	props.CSSPath = "/app.css"
+	props.HeadContent = templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		_, err := io.WriteString(
+			w,
+			`<script>window.__dsReady=false;document.addEventListener('datastar-ready',function(){window.__dsReady=true;},{once:true});</script>`,
+		)
+
+		return err
+	})
 
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		for _, component := range []templ.Component{
