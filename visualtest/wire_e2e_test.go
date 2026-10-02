@@ -225,3 +225,184 @@ func assertFragmentLanded(t *testing.T, transport, out string) {
 		t.Fatalf("%s transport: fragment did not land in the target region; got %q", transport, out)
 	}
 }
+
+// wireSwapE2EPage renders the Swap/mode matrix (L1-06): htmx outerHTML swap,
+// a Datastar response-header-driven outer patch (the ADR-0036 handler
+// recipe), and a client {mode} option overriding the server's Datastar-Mode
+// response header (bundle-verified precedence: per-key client options win
+// over datastar-* headers).
+func wireSwapE2EPage() templ.Component {
+	props := layout.DefaultPageProps()
+	props.Title = "Wire Swap E2E — templ-components"
+	props.CSSPath = "/app.css"
+	props.HeadContent = templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		_, err := io.WriteString(
+			w,
+			`<script>window.__dsReady=false;document.addEventListener('datastar-ready',function(){window.__dsReady=true;},{once:true});</script>`,
+		)
+
+		return err
+	})
+
+	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		if err := datastar.SDKScript(datastar.SDKScriptProps{
+			BaseProps: utils.BaseProps{Nonce: "wire-e2e-nonce"},
+			Src:       "/datastar.js",
+		}).Render(ctx, w); err != nil {
+			return err
+		}
+
+		buttons := []display.ButtonProps{
+			{
+				BaseProps: utils.BaseProps{ID: "btn-swap-htmx"},
+				Text:      "htmx outer swap",
+				Variant:   display.ButtonSecondary,
+				Size:      display.ButtonSizeSM,
+				Wire: &wire.Action{
+					URL:    "/api/wire/swap-outer",
+					Target: "#htmx-outer-region",
+					Swap:   wire.PatchModeOuter,
+				},
+			},
+			{
+				BaseProps: utils.BaseProps{ID: "btn-swap-ds-outer"},
+				Text:      "Datastar outer (headers)",
+				Variant:   display.ButtonSecondary,
+				Size:      display.ButtonSizeSM,
+				Wire: &wire.Action{
+					Transport: wire.TransportDatastar,
+					URL:       "/api/wire/swap-outer",
+				},
+			},
+			{
+				BaseProps: utils.BaseProps{ID: "btn-swap-ds-override"},
+				Text:      "Datastar inner overrides append header",
+				Variant:   display.ButtonSecondary,
+				Size:      display.ButtonSizeSM,
+				Wire: &wire.Action{
+					Transport: wire.TransportDatastar,
+					URL:       "/api/wire/swap-override",
+					Swap:      wire.PatchModeInner,
+				},
+			},
+		}
+
+		if _, err := io.WriteString(w, `<div class="p-4 flex flex-wrap gap-3 items-start">`); err != nil {
+			return err
+		}
+
+		for i := range buttons {
+			if err := display.Button(buttons[i]).Render(ctx, w); err != nil {
+				return err
+			}
+		}
+
+		_, err := io.WriteString(w,
+			`<div id="htmx-outer-wrap" class="basis-full"><div id="htmx-outer-region">htmx-outer-sentinel</div></div>`+
+				`<div id="ds-outer-wrap" class="basis-full"><div id="ds-outer-region">ds-outer-sentinel</div></div>`+
+				`<div id="ds-override-wrap" class="basis-full"><div id="ds-override-region">ds-override-sentinel</div></div>`+
+				`</div>`)
+
+		return err
+	})
+
+	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		return layout.Base(props).Render(templ.WithChildren(ctx, body), w)
+	})
+}
+
+func wireSwapE2EServer(t *testing.T) *httptest.Server {
+	t.Helper()
+
+	css, err := loadCSS()
+	if err != nil {
+		t.Fatalf("load compiled CSS: %v", err)
+	}
+
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/app.css", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/css; charset=utf-8")
+		_, _ = w.Write(css)
+	})
+
+	mux.HandleFunc("/datastar.js", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
+		_, _ = w.Write(static.Bytes())
+	})
+
+	fragment := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+		if err := feedback.InlineSuccess(wireFragmentText).Render(context.Background(), w); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	})
+
+	mux.Handle("/api/wire/swap-outer", wire.Handler(wire.PatchTarget{
+		Selector: "#ds-outer-region",
+		Mode:     wire.PatchModeOuter,
+	}, fragment))
+
+	mux.Handle("/api/wire/swap-override", wire.Handler(wire.PatchTarget{
+		Selector: "#ds-override-region",
+		Mode:     wire.PatchModeAppend,
+	}, fragment))
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+		if err := wireSwapE2EPage().Render(context.Background(), w); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	})
+
+	srv := httptest.NewServer(mux)
+	t.Cleanup(srv.Close)
+
+	return srv
+}
+
+func TestWireE2ESwapModes(t *testing.T) {
+	srv := wireSwapE2EServer(t)
+
+	ctx, cancel := newTab(t)
+	defer cancel()
+
+	ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
+	defer cancelTimeout()
+
+	var (
+		ready                       bool
+		htmxWrap, dsWrap, override string
+	)
+
+	if err := chromedp.Run(ctx,
+		chromedp.Navigate(srv.URL+"/"),
+		pollBool(`document.readyState==='complete' && window.htmx!==undefined && window.__dsReady===true`, &ready),
+		// htmx: hx-swap="outerHTML" replaces the region element itself.
+		chromedp.Click("#btn-swap-htmx", chromedp.NodeVisible),
+		pollBool(`!document.querySelector('#htmx-outer-region')`, &ready),
+		chromedp.InnerHTML("#htmx-outer-wrap", &htmxWrap, chromedp.NodeVisible),
+		// Datastar: response-header targeting (selector + mode from the
+		// wire.Handler) patches the region with outer mode.
+		chromedp.Click("#btn-swap-ds-outer", chromedp.NodeVisible),
+		pollBool(`!document.querySelector('#ds-outer-region')`, &ready),
+		chromedp.InnerHTML("#ds-outer-wrap", &dsWrap, chromedp.NodeVisible),
+		// Client {mode:'inner'} must override the server's Datastar-Mode:
+		// append header — the sentinel would survive an append, not an inner.
+		chromedp.Click("#btn-swap-ds-override", chromedp.NodeVisible),
+		pollBool(`document.querySelector('#ds-override-region') && document.querySelector('#ds-override-region').innerHTML.indexOf('`+wireFragmentText+`')>=0`, &ready),
+		chromedp.InnerHTML("#ds-override-region", &override, chromedp.NodeVisible),
+	); err != nil {
+		t.Fatalf("swap/mode E2E: %v", err)
+	}
+
+	assertFragmentLanded(t, "htmx outer", htmxWrap)
+	assertFragmentLanded(t, "datastar outer", dsWrap)
+	assertFragmentLanded(t, "datastar mode-override", override)
+
+	if strings.Contains(override, "ds-override-sentinel") {
+		t.Fatalf("client {mode:'inner'} did not override the server's append header: sentinel survived: %q", override)
+	}
+}
