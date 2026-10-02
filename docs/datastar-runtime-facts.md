@@ -175,6 +175,27 @@ new bundle unless marked otherwise:
     request-body capture in `visualtest/wire_forms_pack_e2e_test.go`
     (`TestWireE2EWizardStepsAdvances`).
 
+  - **NEW (2026-10-02, decoded from the pinned bundle) — `data-on-interval`
+    is the native polling trigger**: the `on-interval` plugin requires the
+    expression value (`value:"must"`), denies a key suffix, defaults to
+    **1000ms** (`r=1e3`), and parses the `duration` modifier as
+    `500ms` / `10s` (×1000) / bare number (parseFloat, ms) — first element of
+    the mod set wins. **`leading` must be an element INSIDE the duration mod
+    set** (`data-on-interval__duration.5s.leading` → fires once immediately
+    before the interval starts; the check is `ce(durationSet, "leading")`, so
+    a separate `__leading` group would never be read). Each tick is wrapped
+    in the runtime's busy markers (`O()`/`P()` around the expression) and the
+    plugin returns a `clearInterval` cleanup (runtime-managed teardown).
+    Consumed by `datastar.PolledRegion` (ADR-0042) and `wire`'s typed interval
+    trigger (TODO #178).
+  - **NEW (2026-10-02, decoded from the pinned bundle) — `data-on-intersect`
+    is the native reveal trigger**: the `on-intersect` plugin (expression
+    required, key denied) drives an `IntersectionObserver` with modifiers
+    `full` (threshold 1), `half` (0.5), `threshold.<0-100>` (percent ÷ 100),
+    `exit` (fire when LEAVING the viewport), and `once` (disconnect after the
+    first fire). htmx's twin is `hx-trigger="revealed"` (intersect +
+    once + threshold 0). Consumed by `wire`'s typed reveal trigger (TODO #178).
+
 Full audit context: `docs/research/2026-08-21_go-sse-go-datastar-deep-dive.html`.
 
 ## Wire format (server → client SSE)

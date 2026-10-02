@@ -56,6 +56,14 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 		"contentType",
 		"FetchFormNotFound",
 		"FetchInvalidContentType",
+		// Interval-polling plugin consumed by PolledRegion (ADR-0042): the
+		// plugin name (attribute data-on-interval), the duration modifier,
+		// and the leading flag (an element of the duration mod set, not a
+		// separate group — PolledRegion deliberately never emits it).
+		`name:"on-interval"`,
+		`name:"on-intersect"`,
+		"duration",
+		"leading",
 	} {
 		if !strings.Contains(bundle, token) {
 			t.Errorf(
