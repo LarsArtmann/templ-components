@@ -226,11 +226,13 @@ func assertFragmentLanded(t *testing.T, transport, out string) {
 	}
 }
 
-// wireSwapE2EPage renders the Swap/mode matrix (L1-06): htmx outerHTML swap,
-// a Datastar response-header-driven outer patch (the ADR-0036 handler
-// recipe), and a client {mode} option overriding the server's Datastar-Mode
-// response header (bundle-verified precedence: per-key client options win
-// over datastar-* headers).
+// wireSwapE2EPage renders the Swap/mode matrix (L1-06), pinned against the
+// corrected runtime model (bundle-decoded + browser-proven 2026-10-02): htmx
+// outerHTML swap is client-side; Datastar patch target and mode come
+// EXCLUSIVELY from the response headers (wire.Handler/PatchTarget), a client
+// {mode}/{selector} option is inert for targeting, and a header-less
+// response whose fragment root carries the region's id still patches by
+// id-match (outer default).
 func wireSwapE2EPage() templ.Component {
 	props := layout.DefaultPageProps()
 	props.Title = "Wire Swap E2E — templ-components"
@@ -275,14 +277,35 @@ func wireSwapE2EPage() templ.Component {
 				},
 			},
 			{
-				BaseProps: utils.BaseProps{ID: "btn-swap-ds-override"},
-				Text:      "Datastar inner overrides append header",
+				BaseProps: utils.BaseProps{ID: "btn-swap-ds-append"},
+				Text:      "Datastar: server append header wins",
 				Variant:   display.ButtonSecondary,
 				Size:      display.ButtonSizeSM,
 				Wire: &wire.Action{
 					Transport: wire.TransportDatastar,
 					URL:       "/api/wire/swap-override",
 					Swap:      wire.PatchModeInner,
+				},
+			},
+			{
+				BaseProps: utils.BaseProps{ID: "btn-swap-ds-idmatch"},
+				Text:      "Datastar: id-matched outer (no headers)",
+				Variant:   display.ButtonSecondary,
+				Size:      display.ButtonSizeSM,
+				Wire: &wire.Action{
+					Transport: wire.TransportDatastar,
+					URL:       "/api/wire/idmatch",
+				},
+			},
+			{
+				BaseProps: utils.BaseProps{ID: "btn-swap-ds-selector"},
+				Text:      "Datastar: client selector does not target",
+				Variant:   display.ButtonSecondary,
+				Size:      display.ButtonSizeSM,
+				Wire: &wire.Action{
+					Transport: wire.TransportDatastar,
+					URL:       "/api/wire/unheaded",
+					Selector:  "#ds-selector-region",
 				},
 			},
 		}
@@ -301,6 +324,8 @@ func wireSwapE2EPage() templ.Component {
 			`<div id="htmx-outer-wrap" class="basis-full"><div id="htmx-outer-region">htmx-outer-sentinel</div></div>`+
 				`<div id="ds-outer-wrap" class="basis-full"><div id="ds-outer-region">ds-outer-sentinel</div></div>`+
 				`<div id="ds-override-wrap" class="basis-full"><div id="ds-override-region">ds-override-sentinel</div></div>`+
+				`<div id="ds-idmatch-region">idmatch-sentinel</div>`+
+				`<div id="ds-selector-region">ds-selector-sentinel</div>`+
 				`</div>`)
 
 		return err
@@ -349,6 +374,20 @@ func wireSwapE2EServer(t *testing.T) *httptest.Server {
 		Mode:     wire.PatchModeAppend,
 	}, fragment))
 
+	// Header-less endpoint whose fragment root carries the region's id: the
+	// runtime's outer-default id-match must patch the region anyway.
+	mux.HandleFunc("/api/wire/idmatch", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = w.Write([]byte(`<div id="ds-idmatch-region">id-matched contract</div>`))
+	})
+
+	// Header-less endpoint whose fragment root matches NOTHING: with no
+	// client-side targeting, nothing may change.
+	mux.HandleFunc("/api/wire/unheaded", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = w.Write([]byte(`<p id="never-in-dom">unheaded probe fragment</p>`))
+	})
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
@@ -369,16 +408,15 @@ func TestWireE2ESwapModes(t *testing.T) {
 	ctx, cancel := newTab(t)
 	defer cancel()
 
-	ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
+	ctx, cancelTimeout := context.WithTimeout(ctx, 90*time.Second)
 	defer cancelTimeout()
 
 	var (
-		ready                      bool
-		htmxWrap, dsWrap, override string
+		ready                                            bool
+		htmxWrap, dsWrap, override, idmatch, selectorBox string
 	)
 
-	if err := chromedp.Run(
-		ctx,
+	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollBool(`document.readyState==='complete' && window.htmx!==undefined && window.__dsReady===true`, &ready),
 		// htmx: hx-swap="outerHTML" replaces the region element itself.
@@ -390,23 +428,38 @@ func TestWireE2ESwapModes(t *testing.T) {
 		chromedp.Click("#btn-swap-ds-outer", chromedp.NodeVisible),
 		pollBool(`!document.querySelector('#ds-outer-region')`, &ready),
 		chromedp.InnerHTML("#ds-outer-wrap", &dsWrap, chromedp.NodeVisible),
-		// Client {mode:'inner'} must override the server's Datastar-Mode:
-		// append header — the sentinel would survive an append, not an inner.
-		chromedp.Click("#btn-swap-ds-override", chromedp.NodeVisible),
-		pollBool(
-			`document.querySelector('#ds-override-region') && document.querySelector('#ds-override-region').innerHTML.indexOf('`+wireFragmentText+`')>=0`,
-			&ready,
-		),
+		// The server's Datastar-Mode header WINS: a client {mode:'inner'} is
+		// inert, so the append header appends — the sentinel survives.
+		chromedp.Click("#btn-swap-ds-append", chromedp.NodeVisible),
+		pollBool(`document.querySelector('#ds-override-region') && document.querySelector('#ds-override-region').innerHTML.indexOf('`+wireFragmentText+`')>=0`, &ready),
 		chromedp.InnerHTML("#ds-override-region", &override, chromedp.NodeVisible),
+		// Header-less response, fragment root id matches the region: the
+		// outer-default id-match replaces it.
+		chromedp.Click("#btn-swap-ds-idmatch", chromedp.NodeVisible),
+		pollBool(`document.querySelector('#ds-idmatch-region') && document.querySelector('#ds-idmatch-region').innerHTML==='id-matched contract'`, &ready),
+		chromedp.InnerHTML("#ds-idmatch-region", &idmatch, chromedp.NodeVisible),
+		// Client {selector} must NOT target: header-less + unmatched fragment
+		// root leaves the region untouched.
+		chromedp.Click("#btn-swap-ds-selector", chromedp.NodeVisible),
+		chromedp.Sleep(1200*time.Millisecond),
+		chromedp.InnerHTML("#ds-selector-region", &selectorBox, chromedp.NodeVisible),
 	); err != nil {
 		t.Fatalf("swap/mode E2E: %v", err)
 	}
 
 	assertFragmentLanded(t, "htmx outer", htmxWrap)
 	assertFragmentLanded(t, "datastar outer", dsWrap)
-	assertFragmentLanded(t, "datastar mode-override", override)
+	assertFragmentLanded(t, "datastar header-mode append", override)
 
-	if strings.Contains(override, "ds-override-sentinel") {
-		t.Fatalf("client {mode:'inner'} did not override the server's append header: sentinel survived: %q", override)
+	if !strings.Contains(override, "ds-override-sentinel") {
+		t.Fatalf("server Datastar-Mode: append header did not win over the client {mode:'inner'}: sentinel vanished: %q", override)
+	}
+
+	if idmatch != "id-matched contract" {
+		t.Fatalf("id-matched outer patch failed: got %q", idmatch)
+	}
+
+	if selectorBox != "ds-selector-sentinel" {
+		t.Fatalf("client {selector} must not target patches: region changed: %q", selectorBox)
 	}
 }

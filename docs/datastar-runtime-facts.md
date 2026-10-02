@@ -54,19 +54,23 @@ new bundle unless marked otherwise:
   `retryMaxCount=10`, `retry='auto'`). The reconnect matrix itself
   (which mode reconnects on clean EOF) was verified behaviorally on v1.0.2 and
   the machinery is byte-present in v1.0.3; no behavioral counter-evidence found.
-- **ADOPTED (2026-09-07) — fetch actions accept a client-side `selector`
-  option**: the v1.0.3 fetch options destructure includes `selector`
-  (v1.0.2 had none). The v1.0.2-era fact "fetch actions accept no target
-  option" is therefore OUTDATED. Response dispatch decodes (from the
-  bundle's response handler): for a non-SSE `text/html` response the
-  runtime reads `datastar-selector` / `datastar-mode` / … response
-  headers, then **the fetch options override them field-by-field** — a
-  string `selector` option replaces the header value (`mode`,
-  `namespace`, `useViewTransition` behave the same). Under
-  `contentType: 'form'` the `selector` option additionally picks which
-  form serializes (`querySelector(sel)` over `closest("form")`).
-  Consumed by `wire.Action.Selector` (ADR-0038): renders Datastar-only,
-  empty keeps response-header targeting authoritative.
+- **CORRECTED (2026-10-02) — client fetch options do NOT reach patch
+  targeting; the earlier "options override the headers" reading was a
+  misdecode.** The fetch options destructure does include `selector`
+  (v1.0.3+), but the bundle reads it in exactly ONE place: the
+  form-encoding branch (`selector ? querySelector(sel) :
+  closest("form")`). The response handler builds the patch datalines
+  (`selector`/`mode`/`namespace`/`useViewTransition`) EXCLUSIVELY from the
+  `datastar-*` response headers — the code path that looked like a
+  per-field options-override reads a state key that DOES NOT EXIST in the
+  fetch state object (minified `$`, destructured but never assigned), so
+  the override branch never runs. Browser-proven 2026-10-02: a
+  `@get('/x', {selector: '#region'})` left a header-less patch inert, and
+  a client `{mode: 'inner'}` could not stop a `Datastar-Mode: append`
+  header from appending. Consequence for the library:
+  `wire.Action.Selector` renders ONLY under `ContentTypeForm` (form
+  lookup); `wire.Action.Swap` renders nothing under Datastar —
+  `wire.Handler(PatchTarget)` response headers own target and mode.
 - **NEW (2026-10-02) — a fetch action reads EXACTLY ONE options object**: the
   expression `@get(url, opts)` is rewritten to `__action("get", evt, url, opts)`
   and the dispatcher invokes the action as `apply(ctx, url, opts)` (minified
@@ -76,18 +80,22 @@ new bundle unless marked otherwise:
   earlier shape emitted `{selector}` and `{contentType}` as separate objects,
   silently dropping form encoding whenever a `Selector` was also set. Fixed in
   `wire.datastarActionExpr`.
-- **NEW (2026-10-02) — the `mode` fetch option is the client-side twin of
-  htmx's `hx-swap`**, with an 8-value set:
-  `["remove","outer","inner","replace","prepend","append","before","after"]`
-  (verified in the bundle's `datastar-patch-elements` handler:
-  `if(!$n.includes(r))throw PatchElementsInvalidMode`). Only `outer` and
-  `replace` do NOT require a selector; every other mode throws
-  `PatchElementsExpectedSelector` unless the patch event carries a selector (the
-  fetch option or the `datastar-selector` response header). `mode` is also in
-  the response-header → dataline mapping list, so the client option and the
-  response header are interchangeable and the option wins. Consumed by
-  `wire.Action.Swap` (ADR-0038, third extension) and `wire.PatchMode`
-  (`PatchModeRemove` added).
+- **CORRECTED (2026-10-02) — `mode` is a SERVER-side dataline only.** The
+  8-value set
+  `['remove','outer','inner','replace','prepend','append','before','after']`
+  is real (bundle's `datastar-patch-elements` handler:
+  `if(!$n.includes(r))throw PatchElementsInvalidMode`), but the value
+  arrives via the `datastar-mode` response header (or an SSE dataline) —
+  there is NO client `{mode}` fetch option (absent from the runtime's
+  option destructure; ignored if sent). Only `outer` and `replace` do NOT
+  require a selector; every other mode throws
+  `PatchElementsExpectedSelector` unless the patch event carries a selector
+  (the `datastar-selector` response header). No selector +
+  `outer`/`replace` = **id-matched patching**: each fragment root child
+  patches `getElementById(root.id)` (html/body/head special-cased).
+  Library consumption: `wire.PatchMode` stays the shared server vocabulary
+  (`wire.PatchTarget.Mode`); `wire.Action.Swap` is the htmx client-side
+  half of the vocabulary.
 - **NEW (2026-09-07) — fetch actions accept `contentType: 'form'`** for
   whole-form serialization (consumed by `wire.ContentTypeForm` /
   `forms.FormProps.Wire`):
@@ -95,8 +103,8 @@ new bundle unless marked otherwise:
     body-less GET requests the JSON rides in a `?datastar=<json>` query
     param). Any other value throws `FetchInvalidContentType`.
   - Under `'form'` the action serializes the action element's
-    `closest("form")` (or the form matched by the `selector` option); no
-    enclosing form throws `FetchFormNotFound`.
+    `closest("form")` (or the form matched by the `selector` option — the
+    option's ONLY read site); no enclosing form throws `FetchFormNotFound`.
   - **HTML5 constraint validation gates the request**: unless the form has
     `novalidate`, an invalid form calls `checkValidity` + `reportValidity`
     and the fetch never fires.
