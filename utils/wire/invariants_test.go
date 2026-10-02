@@ -217,18 +217,14 @@ func TestSwapDialectIsolation(t *testing.T) {
 		PatchModeAppend, PatchModeAfter, PatchModeRemove, PatchModeReplace,
 	}
 
-	for _, swap := range swaps {
-		t.Run("htmx_"+string(swap), func(t *testing.T) {
-			t.Parallel()
+	t.Run("htmx renders hx-swap only", func(t *testing.T) {
+		t.Parallel()
 
-			action := Action{
-				Transport: TransportHTMX,
-				Method:    MethodGet,
-				URL:       "/api/items",
-				Swap:      swap,
-			}
+		for _, swap := range swaps {
+			attrs := Action{
+				Transport: TransportHTMX, Method: MethodGet, URL: "/api/items", Swap: swap,
+			}.Attributes()
 
-			attrs := action.Attributes()
 			if _, ok := attrs["hx-swap"]; !ok {
 				t.Fatalf("htmx dialect must render hx-swap for %q, got %v", swap, attrs)
 			}
@@ -239,36 +235,39 @@ func TestSwapDialectIsolation(t *testing.T) {
 					t.Fatalf("htmx dialect must not render the datastar mode option, got %q=%v", key, value)
 				}
 			}
-		})
+		}
+	})
 
-		t.Run("datastar_"+string(swap), func(t *testing.T) {
-			t.Parallel()
+	t.Run("datastar renders the mode option only", func(t *testing.T) {
+		t.Parallel()
 
-			action := Action{
-				Transport: TransportDatastar,
-				Method:    MethodGet,
-				URL:       "/api/items",
-				Swap:      swap,
+		for _, swap := range swaps {
+			attrs := Action{
+				Transport: TransportDatastar, Method: MethodGet, URL: "/api/items", Swap: swap,
+			}.Attributes()
+
+			if !datastarAttrsContain(attrs, "mode: '"+string(swap)+"'") {
+				t.Fatalf("datastar dialect must render the mode option for %q, got %v", swap, attrs)
 			}
-
-			attrs := action.Attributes()
-			found := false
 
 			for key, value := range attrs {
 				if strings.HasPrefix(key, "hx-") {
 					t.Fatalf("datastar dialect must not render an hx-* attribute, got %q=%v", key, value)
 				}
-
-				if strings.Contains(fmt.Sprint(value), "mode: '"+string(swap)+"'") {
-					found = true
-				}
 			}
+		}
+	})
+}
 
-			if !found {
-				t.Fatalf("datastar dialect must render the mode option for %q, got %v", swap, attrs)
-			}
-		})
+// datastarAttrsContain reports whether any attribute value contains needle.
+func datastarAttrsContain(attrs templ.Attributes, needle string) bool {
+	for _, value := range attrs {
+		if strings.Contains(fmt.Sprint(value), needle) {
+			return true
+		}
 	}
+
+	return false
 }
 
 // TestUnspecifiedSwapRendersNothing pins zero-value parity: an unspecified
