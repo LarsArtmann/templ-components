@@ -67,6 +67,27 @@ new bundle unless marked otherwise:
   form serializes (`querySelector(sel)` over `closest("form")`).
   Consumed by `wire.Action.Selector` (ADR-0038): renders Datastar-only,
   empty keeps response-header targeting authoritative.
+- **NEW (2026-10-02) — a fetch action reads EXACTLY ONE options object**: the
+  expression `@get(url, opts)` is rewritten to `__action("get", evt, url, opts)`
+  and the dispatcher invokes the action as `apply(ctx, url, opts)` (minified
+  bundle: `w({el,evt,error,cleanups}, ...u)` where `w = the action's apply`). A
+  SECOND object argument is therefore **ignored**. Consequence for the library:
+  `wire.Action` must merge every fetch option into ONE object literal; the
+  earlier shape emitted `{selector}` and `{contentType}` as separate objects,
+  silently dropping form encoding whenever a `Selector` was also set. Fixed in
+  `wire.datastarActionExpr`.
+- **NEW (2026-10-02) — the `mode` fetch option is the client-side twin of
+  htmx's `hx-swap`**, with an 8-value set:
+  `["remove","outer","inner","replace","prepend","append","before","after"]`
+  (verified in the bundle's `datastar-patch-elements` handler:
+  `if(!$n.includes(r))throw PatchElementsInvalidMode`). Only `outer` and
+  `replace` do NOT require a selector; every other mode throws
+  `PatchElementsExpectedSelector` unless the patch event carries a selector (the
+  fetch option or the `datastar-selector` response header). `mode` is also in
+  the response-header → dataline mapping list, so the client option and the
+  response header are interchangeable and the option wins. Consumed by
+  `wire.Action.Swap` (ADR-0038, third extension) and `wire.PatchMode`
+  (`PatchModeRemove` added).
 - **NEW (2026-09-07) — fetch actions accept `contentType: 'form'`** for
   whole-form serialization (consumed by `wire.ContentTypeForm` /
   `forms.FormProps.Wire`):

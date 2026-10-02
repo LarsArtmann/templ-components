@@ -100,6 +100,52 @@ only; empty Selector keeps response-header targeting authoritative._ The
 invariant tests pin both directions, and the busy-state demo endpoint now
 runs with zero response-header routing to prove the client-side path.
 
+## Third Extension (2026-10-02): Swap — the region-merge style
+
+Swap is the region-merge style of an exchange (how the response is inserted
+relative to the target) — the third and last common-subset gap found by the
+2026-09-17 `wire.Action` design review (6+ in-repo sites hand-rolled `hx-swap`
+outside the contract). Both dialects express it:
+
+- htmx renders `hx-swap` (`innerHTML`, `outerHTML`, `beforebegin`, `afterbegin`,
+  `beforeend`, `afterend`, `delete`, `none`).
+- Datastar's fetch actions accept a `mode` option (bundle-verified — see
+  `docs/datastar-runtime-facts.md`), with the 8-value set
+  `remove/outer/inner/replace/prepend/append/before/after`.
+
+**Decision: `Action.Swap PatchMode`** — it reuses the server-side merge-mode
+vocabulary (the same enum as `PatchTarget.Mode`), so ONE mode word describes
+both the client request and the server targeting. A second dialect-local swap
+enum was rejected: `utils/wire` is a leaf module and cannot import the htmx
+module's `SwapStyle`, and a parallel enum would give the repo three spellings
+of one concept.
+
+Mapping and honesty:
+
+- 1:1 — `inner`→innerHTML, `outer`→outerHTML, `before`→beforebegin,
+  `prepend`→afterbegin, `append`→beforeend, `after`→afterend,
+  `remove`→delete.
+- `replace` is Datastar-only (a morphing replaceWith); under htmx it degrades
+  to `outerHTML`, the closest style. Dialect-only modifiers (htmx
+  `settle:0s`, Datastar `namespace`) stay outside the contract — components
+  that need them keep the raw attribute (see the Calendar MonthNav arrows).
+- Zero value renders NOTHING in either dialect. This is deliberate parity:
+  htmx's default swap is `innerHTML` and `wire.Handler`'s default mode is
+  `inner`, so an unspecified `Swap` behaves identically under both runtimes.
+  A set `Swap` renders `hx-swap` for htmx and `{mode: …}` for Datastar (the
+  option overrides the `Datastar-Mode` response header when both are present).
+
+### Same-day bug fix: ONE Datastar options object
+
+Bundle decoding for this extension surfaced a latent defect: the runtime's
+action dispatcher reads EXACTLY ONE options argument
+(`apply(ctx, url, opts)`), so emitting `{selector: …}` and `{contentType: …}`
+as separate objects silently dropped form encoding whenever a `Selector` was
+also set. `wire.datastarActionExpr` now merges every fetch option
+(selector, mode, contentType) into one object literal; the invariant and
+both-dialect tests pin the shape. `PatchModeRemove` was added at the same
+time — the runtime's mode set has 8 values, not 7.
+
 ## Related
 
 - `docs/transport-wiring.md` — the living contract and pattern pack.
