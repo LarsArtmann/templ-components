@@ -107,6 +107,8 @@ frozen scope.
 - [ADR-0036](0036-transport-wiring-contract.md),
   [ADR-0038](0038-common-subset-extensions.md) — the wire contract and its
   extension mechanism.
+- [ADR-0043](0043-typed-trigger-language.md) — the full ADR for surface 3
+  (typed interval/intersect triggers).
 - `docs/datastar-runtime-facts.md` — the bundle evidence for every fact cited
   above.
 - `docs/planning/2026-10-02_11-05_datastar-htmx-parity-master-plan.md` — the

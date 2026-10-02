@@ -156,4 +156,7 @@ Shadow DOM.
 - [ADR-0038: common-subset extensions](0038-common-subset-extensions.md) —
   ContentType and DebounceMS, the first sanctioned extensions of this
   contract
+- [ADR-0043: typed trigger language](0043-typed-trigger-language.md) — the
+  second sanctioned extension (Interval + Reveal, one spec for polling and
+  reveal wiring in both dialects)
 - `docs/transport-wiring.md` — the consumer guide and the WC recipe
