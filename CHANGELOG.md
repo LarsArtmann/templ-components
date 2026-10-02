@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Dual-transport swap mode: `wire.Action.Swap`.** One `PatchMode` value now
+  renders the region-merge style in BOTH dialects — htmx `hx-swap`
+  (`innerHTML`/`outerHTML`/`afterbegin`/…) and Datastar `{mode: '…'}` — closing
+  the last common-subset gap found by the 2026-09-17 `Action` design review.
+  Reusing the server-side `PatchMode` vocabulary means one word describes both
+  the client request and `wire.PatchTarget.Mode`. The zero value renders
+  nothing in either dialect (both default to inner); `PatchModeRemove` joins
+  the enum (the pinned runtime ships 8 modes, not 7). `display.KanbanBoard`
+  now expresses its self-replacement through `Swap` instead of a hand-rolled
+  `hx-swap`. See ADR-0038 (third extension).
 - **The demo is a multi-page app at `https://templcomponents.lars.software/demo`.**
   The old single-page showcase (13 sections stacked into one ~29k-px scroll)
   is now one page per package behind a shared application shell — the demo
@@ -30,6 +40,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Datastar fetch options were emitted as separate objects and silently
+  dropped after the first.** The pinned runtime's action dispatcher reads
+  exactly ONE options argument, so `wire.Action` rendering `{selector: …}` and
+  `{contentType: 'form'}` as two objects lost form encoding whenever a
+  `Selector` was also set. All fetch options (selector, mode, contentType) now
+  merge into one object literal — bundle-verified, pinned by new swap/option
+  tests and the extended `FuzzAction`.
 - **Demo CSP regression: the MPA rewrite dropped the explicit nonce pass and
   shipped 50 component scripts with `nonce=""` — dead JS site-wide under the
   demo's CSP.** CopyButton (every page via the sidebar footer + code
