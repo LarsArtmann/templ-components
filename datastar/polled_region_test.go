@@ -94,15 +94,17 @@ func TestPolledRegionURLPassesThroughActionExpr(t *testing.T) {
 
 	props := PolledRegionProps{URL: "/partials/stats?a=1"}
 	output := utils.Render(t, PolledRegion(props))
-	utils.AssertContains(t, output, `="@get('/partials/stats?a=1')"`)
+	// templ escapes the expression quotes inside the attribute value.
+	utils.AssertContains(t, output, `="@get(&#39;/partials/stats?a=1&#39;)"`)
 
 	t.Run("single quotes are escaped", func(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, PolledRegion(PolledRegionProps{URL: "/x?name=o'brien"}))
 		// The injected quote becomes \' inside the expression; templ renders
-		// the expression quotes AND the escaped quote as &#39;.
-		utils.AssertContains(t, output, `@get(&#39;/x?name=o\&#39;&#39;)`)
+		// the expression quotes AND the injected quote as &#39; (the
+		// backslash stays literal).
+		utils.AssertContains(t, output, `@get(&#39;/x?name=o\&#39;brien&#39;)`)
 	})
 }
 

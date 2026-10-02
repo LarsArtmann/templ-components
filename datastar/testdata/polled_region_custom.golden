@@ -1,0 +1,1 @@
+<div id="activity-feed" aria-live="assertive" data-on-interval__duration.120s="@get(&#39;/api/activity&#39;)" class="" aria-label="Activity"><div class="flex justify-end mt-3"><time class="dark:text-gray-500 tabular-nums text-gray-400 text-xs" datetime="2026-10-02T14:30:05Z">Updated 14:30:05</time></div></div>
