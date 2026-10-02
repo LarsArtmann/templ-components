@@ -216,13 +216,26 @@ pinned bundles, so you don't have to:
   third abstraction. Each transport module already ships the accessible
   component for its model.
 
-**Interval and intersect triggers are symmetric concepts that stay out of the
-contract for now.** The pinned Datastar v1.0.2 bundle includes
-`data-on-interval` and `data-on-intersect` (IntersectionObserver is in the
-bundle), and htmx has `hx-trigger="every 2s"` / `revealed` — but the trigger
-_syntax_ is dialect-specific (durations, options, filters). Extending
-`wire.Event` would mean modeling a mini trigger language; that is a future
-ADR-sized decision, deliberately not smuggled into the current common subset.
+**Interval and intersect triggers are typed, first-class, and cross-dialect
+(ADR-0043, shipped 2026-10-02).** The earlier research note ("stay out of the
+contract for now") is superseded: `wire.Action.Interval` renders
+`hx-trigger="every 10s"` ↔ `data-on-interval__duration.10s`, and
+`wire.Action.Reveal` renders `revealed`/`intersect …` ↔
+`data-on-intersect__…`. Durations are normalized for you — neither runtime's
+parser understands `m`/`h` (both read them as milliseconds), so
+`wire.NormalizedInterval` converts `2m` → `120s` before rendering; pass it
+through for hand-built attributes too. The two sources compose: htmx merges
+event + reveal + interval into one comma-separated `hx-trigger`, Datastar
+renders one attribute per source, and a trigger-only Action (no `Event`)
+never fires on click.
+
+```go
+// Poll a stats region every 10 seconds, either runtime:
+@wire.Action{URL: "/api/stats", Interval: "10s"}.Attributes()
+
+// Lazy-load more results when the button scrolls into view (fire once):
+@wire.Action{URL: "/api/more", Reveal: &wire.Reveal{}}.Attributes()
+```
 
 **Form-submit parity, updated 2026-09-07.** `wire.EventSubmit` renders
 `hx-trigger="submit"` / `data-on:submit` fine, and whole-**form** submission
