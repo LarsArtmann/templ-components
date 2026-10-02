@@ -69,13 +69,19 @@ func withBasePath(next http.Handler) http.Handler {
 // equal values make that a no-op). Allowances beyond 'self':
 //   - cdn.jsdelivr.net: the ECharts and Datastar SDK scripts (SDKScript
 //     components load their runtimes from the jsDelivr CDN)
+//   - 'unsafe-eval' in script-src: the pinned Datastar runtime compiles
+//     action expressions by evaluating strings (GenerateExpression → eval);
+//     without it every data-on:* action dies with EvalError — the documented
+//     runtime requirement (docs/datastar-runtime-facts.md). The nonce still
+//     gates script LOADING; unsafe-eval only widens runtime-internal
+//     expression compilation.
 //   - fonts.googleapis.com / fonts.gstatic.com: demoFonts() web fonts
 //   - ui-avatars.com: the Avatar/Image demo placeholder images
 //   - 'unsafe-inline' in style-src: library components emit style=""
 //     attributes (heatmap cells, progress bars); inline scripts stay
 //     nonce-gated ('nonce-demo-nonce')
 const demoCSP = "default-src 'self'; " +
-	"script-src 'self' https://cdn.jsdelivr.net 'nonce-demo-nonce'; " +
+	"script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval' 'nonce-demo-nonce'; " +
 	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
 	"font-src 'self' https://fonts.gstatic.com; " +
 	"img-src 'self' data: https://ui-avatars.com; " +

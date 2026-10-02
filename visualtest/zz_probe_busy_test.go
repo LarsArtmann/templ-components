@@ -16,18 +16,22 @@ func TestProbeBusyButtonSelector(t *testing.T) {
 	chromedp.ListenTarget(ctx, func(ev interface{}) {
 		switch e := ev.(type) {
 		case *runtime.EventConsoleAPICalled:
-			t.Logf("CONSOLE %v", e)
+			for _, a := range e.Args {
+				if a.Description != "" {
+					t.Logf("CONSOLE[%s]: %s", e.Type, a.Description)
+				}
+			}
 		case *runtime.EventExceptionThrown:
-			t.Logf("EXCEPTION: %v", e.ExceptionDetails)
+			if e.ExceptionDetails != nil && e.ExceptionDetails.Exception != nil {
+				t.Logf("EXCEPTION: %s | %v", e.ExceptionDetails.Exception.Description, e.ExceptionDetails.StackTrace)
+			}
 		}
 	})
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(server.BaseURL()+"/wire?transport=datastar"),
 		chromedp.Sleep(4*time.Second),
-		chromedp.Evaluate(`window.__ev=[];document.addEventListener('datastar-fetch',()=>window.__ev.push('fetch'),true);
-			const b=[...document.querySelectorAll('button')].find(el => (el.getAttribute('data-on:click')||'').includes('/api/wire/busy'));
-			b.__manualFired=false; b.addEventListener('click',()=>{b.__manualFired=true;});`, nil),
+		chromedp.Evaluate(`window.__fetches=[]; const of=window.fetch; window.fetch=function(...a){window.__fetches.push(String(a[0])); return of.apply(this,a);};`, nil),
 	); err != nil {
 		t.Fatal(err)
 	}
@@ -35,9 +39,9 @@ func TestProbeBusyButtonSelector(t *testing.T) {
 	if err := chromedp.Run(ctx, chromedp.Click(`button[data-on\:click*="/api/wire/busy"]`, chromedp.ByQuery)); err != nil {
 		t.Fatal(err)
 	}
-	time.Sleep(1500 * time.Millisecond)
+	time.Sleep(2500 * time.Millisecond)
 
 	var out string
-	_ = chromedp.Run(ctx, chromedp.Evaluate(`JSON.stringify({manual: (function(){const b=[...document.querySelectorAll('button')].find(el => (el.getAttribute('data-on:click')||'').includes('/api/wire/busy')); return b.__manualFired;})(), ev: window.__ev.length})`, &out))
+	_ = chromedp.Run(ctx, chromedp.Evaluate(`JSON.stringify({fetches: window.__fetches, region: (document.getElementById('wire-busy-datastar-out')||{}).innerText.slice(0,25)})`, &out))
 	t.Log("AFTER TRUSTED CLICK:", out)
 }
