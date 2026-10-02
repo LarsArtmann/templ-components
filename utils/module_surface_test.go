@@ -15,10 +15,12 @@ import (
 var goDirectivePattern = regexp.MustCompile(`(?m)^go (\d+\.\d+(?:\.\d+)?)\s*$`)
 
 // normalizeGoDirective reduces a go directive to major.minor: the repo
-// canonical form is `go 1.26`, but the auto-commit daemon periodically
-// rewrites directives to `1.26.0` (BuildFlow's go-structure-linter is
-// skipped in .buildflow.yml for exactly this flip). Comparing normalized
-// forms makes the flip harmless by construction instead of failing CI.
+// canonical form is `go 1.26.0` (the go1.26 toolchain's own tidy
+// canonicalization — the 2026-10-03 e2e outage proved the toolchain sorts
+// `1.26` BELOW `1.26.0` and rejects mixed directives), but historical trees
+// still carry bare `1.26` from before the normalization. Comparing
+// normalized forms keeps the historical spellings passing instead of
+// failing CI.
 func normalizeGoDirective(v string) string {
 	if dot := strings.IndexByte(v, '.'); dot >= 0 {
 		if second := strings.IndexByte(v[dot+1:], '.'); second >= 0 {
@@ -60,7 +62,7 @@ func TestGoWorkDirectiveMatchesRootGoMod(t *testing.T) {
 
 	if normalizeGoDirective(string(workMatch[1])) != normalizeGoDirective(string(modMatch[1])) {
 		t.Errorf(
-			"go.work go directive (%s) != root go.mod go directive (%s) — align them (canonical form: `go 1.26`; bump go.work when the toolchain input moves)",
+			"go.work go directive (%s) != root go.mod go directive (%s) — align them (canonical form: `go 1.26.0`; bump go.work when the toolchain input moves)",
 			workMatch[1],
 			modMatch[1],
 		)
@@ -70,8 +72,8 @@ func TestGoWorkDirectiveMatchesRootGoMod(t *testing.T) {
 // TestGoDirectivesAlignAcrossWorkspace extends the go.work ↔ root guard to
 // EVERY module in the repo (root, the 7 published sub-modules, visualtest,
 // website): all go directives must agree at major.minor resolution. This is
-// the normalized-compare guard (2026-10-02): the daemon's periodic
-// `go 1.26` ↔ `go 1.26.0` rewrites pass, but a module left on a genuinely
+// the normalized-compare guard (2026-10-02): historical `go 1.26` spellings
+// pass next to the canonical `go 1.26.0`, but a module left on a genuinely
 // different toolchain (the 2026-09-17 1.27.1 incident) fails.
 func TestGoDirectivesAlignAcrossWorkspace(t *testing.T) {
 	t.Parallel()

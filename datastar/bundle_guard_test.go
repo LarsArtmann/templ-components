@@ -10,11 +10,12 @@ import (
 )
 
 // pinnedBundleSHA256 is the SHA-256 of the embedded runtime bundle
-// (static.Bytes()) at go-datastar/static v0.5.0 — Datastar 1.0.3, 33538 bytes.
-// Re-audited 2026-09-05 on the v0.4.0 → v0.5.0 bump: every pinned token
-// survived; the bundle shrank (56330 → 33538 bytes, upstream minification
-// refactor) and the retry machinery (retryInterval/retryMax/retryMaxCount +
-// auto/error/never/always literals) is intact.
+// (static.Bytes()) at go-datastar/static v0.5.0 → v0.6.1 — Datastar 1.0.3,
+// 33538 bytes. Re-audited 2026-09-05 on the v0.4.0 → v0.5.0 bump (the bundle
+// shrank, 56330 → 33538 bytes, upstream minification refactor; the retry
+// machinery retryInterval/retryMax/retryMaxCount + auto/error/never/always
+// literals survived) and re-verified 2026-10-02 on the v0.5.0 → v0.6.1 bump:
+// BYTE-IDENTICAL (same sha256), so every pinned token carries over.
 const pinnedBundleSHA256 = "5d6b7794a50a83d82da962aec5e382f5ae83ac7afbc751f903f7a9c6bd433c65"
 
 // TestPinnedRuntimeBundleContract pins the runtime surface this library

@@ -14,10 +14,16 @@ the bundle if the version pin ever bumps. Enforcement lives in tests:
 | Field   | Value                                                              |
 | ------- | ------------------------------------------------------------------ |
 | Module  | `github.com/larsartmann/go-datastar/static`                        |
-| Pin     | `v0.5.0` (`datastar/go.mod`)                                       |
+| Pin     | `v0.6.1` (`datastar/go.mod`; bumped from v0.5.0, 2026-10-02)       |
 | Runtime | Datastar `1.0.3` (`static.Version`)                                |
 | Bundle  | `datastar.js`, 33538 bytes                                         |
 | sha256  | `5d6b7794a50a83d82da962aec5e382f5ae83ac7afbc751f903f7a9c6bd433c65` |
+
+The v0.5.0 → v0.6.1 bump (2026-10-02) shipped a BYTE-IDENTICAL bundle (same
+sha256, re-verified by hand at re-audit time) — a version-metadata-only
+release upstream. Every fact on this page therefore carries over unchanged;
+the session-2 targeting decode below was performed against exactly these
+bytes.
 
 The hash is machine-enforced by `datastar.TestPinnedRuntimeBundleContract`
 (`datastar/bundle_guard_test.go`) — any byte-level bundle change fails CI until
@@ -25,11 +31,11 @@ the pin is consciously re-audited. Extract the exact bytes a re-audit must
 inspect with:
 
 ```bash
-BUNDLE="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.5.0/datastar.js"
+BUNDLE="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.6.1/datastar.js"
 sha256sum "$BUNDLE"   # must match the table above
 cp "$BUNDLE" /tmp/datastar-pinned.js
 # Diff against the PREVIOUS pin to scope the bump re-audit (adjust versions):
-OLD="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.4.0/datastar.js"
+OLD="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.5.0/datastar.js"
 diff "$OLD" /tmp/datastar-pinned.js | head -100
 ```
 
