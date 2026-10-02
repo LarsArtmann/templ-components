@@ -71,6 +71,7 @@ func TestGoldenSweepPolledRegion(t *testing.T) {
 
 	propsWithClock := func(p PolledRegionProps) PolledRegionProps {
 		p.Now = func() time.Time { return fixed }
+
 		return p
 	}
 

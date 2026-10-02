@@ -115,9 +115,11 @@ func TestPolledRegionDefaults(t *testing.T) {
 	if props.Every != "10s" {
 		t.Errorf("Every = %q, want 10s", props.Every)
 	}
+
 	if props.Live != LivePolite {
 		t.Errorf("Live = %q, want polite", props.Live)
 	}
+
 	if !props.ShowTimestamp {
 		t.Error("ShowTimestamp = false, want true")
 	}
@@ -148,7 +150,12 @@ func TestPolledRegionTimestamp(t *testing.T) {
 	t.Run("custom format", func(t *testing.T) {
 		t.Parallel()
 
-		props := PolledRegionProps{URL: "/x", ShowTimestamp: true, Now: func() time.Time { return fixed }, TimeFormat: time.RFC3339}
+		props := PolledRegionProps{
+			URL:           "/x",
+			ShowTimestamp: true,
+			Now:           func() time.Time { return fixed },
+			TimeFormat:    time.RFC3339,
+		}
 		output := utils.Render(t, PolledRegion(props))
 		utils.AssertContains(t, output, "Updated 2026-10-02T14:30:05Z")
 	})
@@ -171,7 +178,7 @@ func TestPolledRegionBasePropsPropagation(t *testing.T) {
 			ID:        "stats-region",
 			Class:     "min-h-40",
 			AriaLabel: "Live statistics",
-			Attrs: templ.Attributes{"data-test": "polled"},
+			Attrs:     templ.Attributes{"data-test": "polled"},
 		},
 		URL: "/partials/stats",
 	}

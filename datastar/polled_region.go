@@ -113,7 +113,7 @@ var (
 // The duration lives in the ATTRIBUTE NAME (the runtime's modifier grammar:
 // the name splits on __ into modifier groups), so the attribute is emitted
 // through a templ.Attributes map with a dynamic key. An empty URL returns
-// nil — the region renders inert (no @get('') expressions, which the runtime
+// nil — the region renders inert (no @get(”) expressions, which the runtime
 // rejects).
 func polledRegionAttrs(url, every string) templ.Attributes {
 	if strings.TrimSpace(url) == "" {
