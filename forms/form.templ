@@ -210,14 +210,14 @@ func DefaultFormProps() FormProps {
 	}
 }
 
-// formWireAttributes renders the wiring for a Form. It copies the action
-// (never mutates the consumer's) and applies the form defaults: an
-// unspecified Event becomes submit (the only event that submits a form, and
-// the one Datastar's runtime auto-preventDefaults on form elements), and an
-// unspecified ContentType becomes form encoding so the form's fields travel
-// under Datastar too. An empty URL wires nothing (inert HTML form).
+// formWireAttributes renders the wiring for a Form. The shared host defaults
+// (an unspecified Event becomes submit — the only event that submits a form,
+// and the one Datastar's runtime auto-preventDefaults on form elements — and
+// an unspecified ContentType becomes form encoding) live in
+// wire.Action.WithFormDefaults; this adapter is the nil-safe component
+// boundary only. An empty URL wires nothing (inert HTML form).
 func formWireAttributes(w *wire.Action) templ.Attributes {
-	return wireAttributesWithDefaults(w, wire.EventSubmit)
+	return wireHosted(w, wire.EventSubmit)
 }
 
 // wireValidateHTMX reports whether hx-validate applies to the form's
@@ -228,24 +228,15 @@ func wireValidateHTMX(w *wire.Action) bool {
 	return w == nil || w.Transport != wire.TransportDatastar
 }
 
-// wireAttributesWithDefaults copies the action (never mutates the
-// consumer's) and applies the shared component defaults: an unspecified
-// Event becomes defaultEvent and an unspecified ContentType becomes form
-// encoding. An empty URL wires nothing (inert element).
-func wireAttributesWithDefaults(w *wire.Action, defaultEvent wire.Event) templ.Attributes {
+// wireHosted renders a form-hosted action with the host's natural event
+// default plus form encoding (wire.Action.WithFormDefaults). Nil stays
+// unwired — the shared nil boundary for every form-hosting component.
+func wireHosted(w *wire.Action, event wire.Event) templ.Attributes {
 	if w == nil {
 		return nil
 	}
 
-	action := *w
-	if action.Event == wire.EventUnspecified {
-		action.Event = defaultEvent
-	}
-	if action.ContentType == wire.ContentTypeUnspecified {
-		action.ContentType = wire.ContentTypeForm
-	}
-
-	return action.Attributes()
+	return w.WithFormDefaults(event).Attributes()
 }
 
 // Form renders a form element with optional CSRF token
