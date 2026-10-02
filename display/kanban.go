@@ -99,9 +99,11 @@ func ParseKanbanMove(r *http.Request) (KanbanMove, error) {
 // mutation), an unspecified Event becomes submit, and an unspecified
 // ContentType becomes form encoding so the hidden inputs travel under
 // Datastar too (the same defaults forms.Form applies). Under htmx an empty
-// Target resolves to the board root and hx-swap="outerHTML" is added — the
-// documented response contract is "re-render the whole board". An empty URL
-// wires nothing (read-only board).
+// Target resolves to the board root and an unspecified Swap defaults to outer
+// → hx-swap="outerHTML"; Datastar targeting stays response-driven (the
+// endpoint's wire.Handler sets Datastar-Mode: outer). The documented response
+// contract is "re-render the whole board". An empty URL wires nothing
+// (read-only board).
 func kanbanWireAttributes(w *wire.Action, boardID string) templ.Attributes {
 	if w == nil {
 		return nil
@@ -125,16 +127,15 @@ func kanbanWireAttributes(w *wire.Action, boardID string) templ.Attributes {
 		action.Target = "#" + boardID
 	}
 
-	attrs := action.Attributes()
-	if attrs == nil {
-		return nil
+	// The board self-replaces. htmx expresses that as hx-swap="outerHTML" via
+	// the shared Swap vocabulary; Datastar remains response-driven (the
+	// endpoint's wire.Handler sets Datastar-Mode: outer), so the Datastar
+	// expression stays unchanged.
+	if action.Swap == wire.PatchModeUnspecified && action.Transport != wire.TransportDatastar {
+		action.Swap = wire.PatchModeOuter
 	}
 
-	if action.Transport != wire.TransportDatastar {
-		attrs["hx-swap"] = "outerHTML"
-	}
-
-	return attrs
+	return action.Attributes()
 }
 
 // kanbanJS returns the singleton JavaScript for kanban card moves. All
