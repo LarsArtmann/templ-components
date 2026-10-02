@@ -683,8 +683,10 @@ func TestWireBusyEndpoint(t *testing.T) {
 }
 
 // TestWireDemoBusyCardRendersBothDialects pins the busy-state card wiring:
-// the htmx button posts to the slow endpoint, the Datastar button carries
-// the data-indicator signal, and the Indicator announces via role="status".
+// the htmx button posts to the slow endpoint, the Datastar button posts with
+// a plain action expression (patch targeting is the endpoint's response
+// headers — client fetch options never reach patching), and the Indicator
+// announces via role="status".
 func TestWireDemoBusyCardRendersBothDialects(t *testing.T) {
 	t.Parallel()
 
@@ -692,7 +694,7 @@ func TestWireDemoBusyCardRendersBothDialects(t *testing.T) {
 	for _, want := range []string{
 		`hx-post="/demo/api/wire/busy"`,
 		`hx-target="#wire-busy-htmx-out"`,
-		`data-on:click="@post(&#39;/demo/api/wire/busy&#39;, {selector: &#39;#wire-busy-datastar-out&#39;})"`,
+		`data-on:click="@post(&#39;/demo/api/wire/busy&#39;)"`,
 		`data-indicator:saving`,
 		`role="status"`,
 		`id="wire-busy-datastar-out"`,
@@ -700,6 +702,10 @@ func TestWireDemoBusyCardRendersBothDialects(t *testing.T) {
 		if !strings.Contains(html, want) {
 			t.Errorf("demo page missing %q", want)
 		}
+	}
+
+	if strings.Contains(html, `{selector`) {
+		t.Error("demo page renders a bare {selector} fetch option — Datastar fetch options never reach patch targeting; use response headers")
 	}
 }
 

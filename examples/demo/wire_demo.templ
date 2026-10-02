@@ -554,7 +554,9 @@ templ wireBusyButtonHTMX() {
 
 // wireBusyButtonDatastar renders the Datastar busy-state button: the wired
 // display.Button composes with a data-indicator signal via Attrs, and
-// datastar.Indicator shows while the fetch runs (role="status").
+// datastar.Indicator shows while the fetch runs (role="status"). The action
+// carries NO selector: Datastar fetch options never reach patch targeting —
+// the endpoint's response headers own it (wire.Handler).
 templ wireBusyButtonDatastar() {
 	<div class="flex items-center gap-3">
 		@display.Button(display.ButtonProps{
@@ -565,7 +567,6 @@ templ wireBusyButtonDatastar() {
 				Transport: wire.TransportDatastar,
 				Method:    wire.MethodPost,
 				URL:       demoURL("/api/wire/busy"),
-				Selector:  "#wire-busy-datastar-out",
 			},
 			BaseProps: utils.BaseProps{
 				Attrs: templ.Attributes{"data-indicator:saving": true},

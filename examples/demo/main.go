@@ -477,11 +477,13 @@ func newMux() *http.ServeMux {
 
 	// Busy-state demo: a deliberately slow endpoint so the busy UI (htmx
 	// LoadingButton / Datastar indicator) is visible. One endpoint, both
-	// dialects, zero response-header routing: the htmx button targets its
-	// region via hx-target, and the Datastar button carries the client-side
-	// {selector: …} fetch option (wire.Action.Selector) — each client
-	// patches its own region.
-	mux.HandleFunc("POST /api/wire/busy", func(w http.ResponseWriter, r *http.Request) {
+	// dialects: the htmx button targets its region client-side via
+	// hx-target; the Datastar button relies on response-header targeting —
+	// wire.Handler stamps datastar-selector/datastar-mode so the runtime
+	// patches #wire-busy-datastar-out (fetch options never reach patching).
+	mux.Handle("POST /api/wire/busy", wire.Handler(wire.PatchTarget{
+		Selector: "#wire-busy-datastar-out",
+	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(wireBusyDelay)
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -493,7 +495,7 @@ func newMux() *http.ServeMux {
 		}
 
 		componentOr500(w, r, wireBusyDone(transport))
-	})
+	})))
 
 	// File-upload demo: multipart endpoint shared by both dialects. The
 	// wired form travels the CSRF hidden input too — FormData serializes the
