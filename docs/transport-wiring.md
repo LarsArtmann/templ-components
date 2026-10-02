@@ -64,21 +64,21 @@ Any component, even without a `Wire` field — spread the attributes yourself:
 | `Event`       | `""` → htmx: attribute omitted (element defaults: click/submit/change); Datastar: `click`                                                                      |
 | `URL`         | `""` → renders nothing (inert)                                                                                                                                 |
 | `ContentType` | `""` → Datastar signals as JSON (runtime default); `ContentTypeForm` serializes the enclosing form's fields; htmx ignores it                                   |
-| `Selector`    | `""` → Datastar targeting stays response-driven; a selector renders `{selector: '…'}` (Datastar-only; htmx twin is `Target`)                                    |
-| `Swap`        | `""` → renders nothing in either dialect (both default to inner); a `PatchMode` renders `hx-swap` (htmx) or `{mode: '…'}` (Datastar)                          |
-| unknowns      | `TransportIsValid`/`MethodIsValid`/`EventIsValid`/`ContentTypeIsValid`/`PatchModeIsValid` exist; rendering falls back to defaults                             |
+| `Selector`    | `""` → Datastar targeting stays response-driven; a selector renders `{selector: '…'}` (Datastar-only; htmx twin is `Target`)                                   |
+| `Swap`        | `""` → renders nothing in either dialect (both default to inner); a `PatchMode` renders `hx-swap` (htmx) or `{mode: '…'}` (Datastar)                           |
+| unknowns      | `TransportIsValid`/`MethodIsValid`/`EventIsValid`/`ContentTypeIsValid`/`PatchModeIsValid` exist; rendering falls back to defaults                              |
 
 ## Dialect mapping
 
-| `wire.Action`                  | htmx rendering                             | Datastar rendering                                               |
-| ------------------------------ | ------------------------------------------ | ---------------------------------------------------------------- |
-| `Method` + `URL`               | `hx-get="/api/fragment"`                   | `data-on:click="@get('/api/fragment')"`                          |
-| `Event: EventSubmit`           | `hx-trigger="submit"`                      | event key: `data-on:submit="…"`                                  |
-| `Target: "#out"`               | `hx-target="#out"`                         | _not rendered_ — see below                                       |
-| `Selector: "#out"`             | _not rendered_                             | `{selector: '#out'}` — overrides response-header targeting       |
+| `wire.Action`                  | htmx rendering                             | Datastar rendering                                                |
+| ------------------------------ | ------------------------------------------ | ----------------------------------------------------------------- |
+| `Method` + `URL`               | `hx-get="/api/fragment"`                   | `data-on:click="@get('/api/fragment')"`                           |
+| `Event: EventSubmit`           | `hx-trigger="submit"`                      | event key: `data-on:submit="…"`                                   |
+| `Target: "#out"`               | `hx-target="#out"`                         | _not rendered_ — see below                                        |
+| `Selector: "#out"`             | _not rendered_                             | `{selector: '#out'}` — overrides response-header targeting        |
 | `Swap: PatchModeOuter`         | `hx-swap="outerHTML"`                      | `{mode: 'outer'}` — overrides the `Datastar-Mode` response header |
-| `ContentType: ContentTypeForm` | _not rendered_ (native form serialization) | `{contentType: 'form'}` appended — serializes the enclosing form |
-| `URL: ""`                      | nothing                                    | nothing                                                          |
+| `ContentType: ContentTypeForm` | _not rendered_ (native form serialization) | `{contentType: 'form'}` appended — serializes the enclosing form  |
+| `URL: ""`                      | nothing                                    | nothing                                                           |
 
 Datastar fetch options travel in **ONE object literal** — the runtime dispatcher
 reads exactly one options argument, so `Selector` + `Swap` + `ContentTypeForm`

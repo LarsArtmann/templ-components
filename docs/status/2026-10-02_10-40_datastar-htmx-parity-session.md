@@ -109,16 +109,16 @@ Untouched-by-this-session failures: none observed.
 
 ## c) NOT DONE (ranked roadmap for true "best of both")
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 1 | `datastar.PolledRegion` — interval polling (`data-on-interval__duration.10s[.leading]`, bundle-decoded) to match `htmx.PolledRegion`. The single biggest Datastar gap; needs a browser e2e (interval firing) BEFORE shipping | High | M |
-| 2 | `datastar.LoadingButton` — signal-indicator label swap, parity with `htmx.LoadingButton` | Medium | S |
-| 3 | Typed interval/intersect triggers in the wire contract (TODO #178) — `hx-trigger="every Ns"/"revealed"` ↔ `data-on-interval`/`data-on-intersect`; ADR-sized, bundle-verified | High | M |
-| 4 | Adopt `Wire` on more transport-symmetric components (D3 rule): `display.Tabs`, `forms.SimpleNav` (TODO #155) | Medium | M |
-| 5 | Migrate the remaining `hx-swap` sites: `navigation/loadmore.templ` (self-targeting), leave `forms/calendar_nav.go` (`settle:0s` is htmx-only) | Low | S |
-| 6 | `wire.Get/Post/Put/Patch/Delete(url)` constructors + promoted `WithEvent`/`WithContentType`/`WithDebounce` builders (review items 4–5) | Medium | S |
-| 7 | `ThrottleMS` sibling of `DebounceMS` (`throttle:Nms` ↔ `__throttle.Nms`, spelling bundle-verified) | Medium | S |
-| 8 | Demo card showing `Swap` under both transports | Low | S |
+| # | Task                                                                                                                                                                                                                         | Impact | Effort |
+| - | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 1 | `datastar.PolledRegion` — interval polling (`data-on-interval__duration.10s[.leading]`, bundle-decoded) to match `htmx.PolledRegion`. The single biggest Datastar gap; needs a browser e2e (interval firing) BEFORE shipping | High   | M      |
+| 2 | `datastar.LoadingButton` — signal-indicator label swap, parity with `htmx.LoadingButton`                                                                                                                                     | Medium | S      |
+| 3 | Typed interval/intersect triggers in the wire contract (TODO #178) — `hx-trigger="every Ns"/"revealed"` ↔ `data-on-interval`/`data-on-intersect`; ADR-sized, bundle-verified                                                 | High   | M      |
+| 4 | Adopt `Wire` on more transport-symmetric components (D3 rule): `display.Tabs`, `forms.SimpleNav` (TODO #155)                                                                                                                 | Medium | M      |
+| 5 | Migrate the remaining `hx-swap` sites: `navigation/loadmore.templ` (self-targeting), leave `forms/calendar_nav.go` (`settle:0s` is htmx-only)                                                                                | Low    | S      |
+| 6 | `wire.Get/Post/Put/Patch/Delete(url)` constructors + promoted `WithEvent`/`WithContentType`/`WithDebounce` builders (review items 4–5)                                                                                       | Medium | S      |
+| 7 | `ThrottleMS` sibling of `DebounceMS` (`throttle:Nms` ↔ `__throttle.Nms`, spelling bundle-verified)                                                                                                                           | Medium | S      |
+| 8 | Demo card showing `Swap` under both transports                                                                                                                                                                               | Low    | S      |
 
 **Waiver note:** item 1 requires a Chromium e2e; the interval spelling is
 bundle-decoded but not browser-proven in this session, so it was deliberately

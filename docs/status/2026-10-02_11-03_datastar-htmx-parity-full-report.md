@@ -49,7 +49,7 @@ repo go-directive drift repair. No new component; no new dependency.
 
 ## b) PARTIALLY DONE
 
-1. **Browser-level proof of the new `Swap` rendering.** I proved the *strings*
+1. **Browser-level proof of the new `Swap` rendering.** I proved the _strings_
    (unit + invariant + fuzz) and decoded the runtime contract from the pinned
    bundle, but I did **not** extend `visualtest/wire_e2e_test.go` to click a
    `Swap`-wired button under both real runtimes. The repo's own rule is
@@ -103,7 +103,7 @@ repo go-directive drift repair. No new component; no new dependency.
    a tool-managed file (go.work) without reproducing the tool's own enforcement.**
 2. **I nearly shipped a status report claiming a pre-existing failure was
    unrelated when I had, in fact, caused a new one.** The `TestGoWorkDirectiveMatchesRootGoMod`
-   failure existed at baseline; the workspace-unloadable state was *mine*.
+   failure existed at baseline; the workspace-unloadable state was _mine_.
    I caught it via the LSP diagnostics, but only after the visualtest run.
 3. **I took the e2e waiver silently.** The repo's culture is exacting about
    runtime claims; I should have written the (ready-to-run) e2e for `Swap` and
@@ -127,8 +127,8 @@ repo go-directive drift repair. No new component; no new dependency.
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Workaround-sweep before API design** (inherited lesson): I *did* sweep the
-   `hx-swap` sites (good), but I did not sweep for *runtime-version* drift
+1. **Workaround-sweep before API design** (inherited lesson): I _did_ sweep the
+   `hx-swap` sites (good), but I did not sweep for _runtime-version_ drift
    (`go.work`/`go.mod`) before touching them.
 2. **Read tool-managed files' "why" before editing.** `go.work` is generated;
    its value is tool-enforced. Reproduce the tool's enforcement first.
@@ -151,6 +151,7 @@ repo go-directive drift repair. No new component; no new dependency.
 ## f) UP TO 50 THINGS TO GET DONE NEXT
 
 **Datastar depth (highest impact first)**
+
 1. `datastar.PolledRegion` (interval polling) + **browser e2e** in `nix run .#visual`.
 2. Bundle-contract guard tokens for `on-interval` / `duration` / `leading`.
 3. `datastar.LoadingButton` (indicator-signal label swap).
