@@ -592,13 +592,15 @@ func FuzzAction(f *testing.F) {
 	})
 }
 
-// TestActionSelector pins the Datastar selector option: rendered as a
-// client-side fetch option, composing with contentType, escaping single
-// quotes, and never appearing in the htmx dialect (see the invariants test).
+// TestActionSelector pins the Datastar selector option's TRUE semantics
+// (corrected 2026-10-02 against the pinned bundle): it selects which form
+// serializes under ContentTypeForm, and the runtime reads it ONLY there —
+// without form encoding it renders nothing, and it never targets patches
+// (browser-proven; see docs/datastar-runtime-facts.md).
 func TestActionSelector(t *testing.T) {
 	t.Parallel()
 
-	t.Run("selector renders as a fetch option", func(t *testing.T) {
+	t.Run("selector without form encoding renders nothing (runtime ignores it)", func(t *testing.T) {
 		t.Parallel()
 
 		action := Action{
@@ -608,7 +610,7 @@ func TestActionSelector(t *testing.T) {
 			Selector:  "#results",
 		}
 		expected := templ.Attributes{
-			"data-on:input": `@get('/api/search', {selector: '#results'})`,
+			"data-on:input": `@get('/api/search')`,
 		}
 
 		got := action.Attributes()
@@ -643,6 +645,7 @@ func TestActionSelector(t *testing.T) {
 			Transport: TransportDatastar,
 			URL:       "/api/save",
 			Selector:  `#it's`,
+			ContentType: ContentTypeForm,
 		}
 
 		got, _ := action.Attributes()["data-on:click"].(string)
@@ -654,9 +657,10 @@ func TestActionSelector(t *testing.T) {
 }
 
 // TestActionSwap pins the common-subset swap/mode rendering: htmx hx-swap
-// styles, the Datastar {mode} fetch option, the single-object option rule,
-// and the zero-value parity (both dialects default to inner and render
-// nothing).
+// styles and the single-object option rule on the client; under Datastar the
+// patch mode is response-header driven (wire.Handler/PatchTarget), so Swap
+// renders nothing there (corrected against the pinned bundle, 2026-10-02).
+// Zero value parity holds: both dialects default to inner and render nothing.
 func TestActionSwap(t *testing.T) {
 	t.Parallel()
 
@@ -768,13 +772,13 @@ func TestActionSwap(t *testing.T) {
 			expected: templ.Attributes{"data-on:click": "@get('/api/items')"},
 		},
 		{
-			name: "datastar swap renders the mode option",
+			name: "datastar swap renders no mode option (response-header driven)",
 			action: Action{
 				Transport: TransportDatastar,
 				URL:       "/api/items",
 				Swap:      PatchModeOuter,
 			},
-			expected: templ.Attributes{"data-on:click": "@get('/api/items', {mode: 'outer'})"},
+			expected: templ.Attributes{"data-on:click": "@get('/api/items')"},
 		},
 		{
 			name: "datastar unknown swap renders plain expression",
@@ -786,7 +790,7 @@ func TestActionSwap(t *testing.T) {
 			expected: templ.Attributes{"data-on:click": "@get('/api/items')"},
 		},
 		{
-			name: "datastar selector, mode and contentType share ONE options object",
+			name: "datastar selector+form contentType share ONE options object, no mode",
 			action: Action{
 				Transport:   TransportDatastar,
 				Method:      MethodPost,
@@ -797,7 +801,7 @@ func TestActionSwap(t *testing.T) {
 				ContentType: ContentTypeForm,
 			},
 			expected: templ.Attributes{
-				"data-on:submit": "@post('/api/save', {selector: '#form-region', mode: 'inner', contentType: 'form'})",
+				"data-on:submit": "@post('/api/save', {selector: '#form-region', contentType: 'form'})",
 			},
 		},
 	}

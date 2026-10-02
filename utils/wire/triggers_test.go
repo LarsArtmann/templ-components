@@ -186,7 +186,14 @@ func TestTriggerSwapAndTargetCompose(t *testing.T) {
 		Selector:  "#card",
 		Swap:      PatchModeInner,
 	}.Attributes()
-	assertAttrContains(t, dsAttrs, "data-on-intersect__once", "selector: '#card', mode: 'inner'")
+	// Selector renders only under form encoding, and Swap renders nothing
+	// under Datastar (response-header driven) — neither leaks into the
+	// trigger expression.
+	assertAttrContains(t, dsAttrs, "data-on-intersect__once", "@get('/x')")
+
+	if value := fmt.Sprint(dsAttrs["data-on-intersect__once"]); strings.Contains(value, "mode:") || strings.Contains(value, "selector:") {
+		t.Fatalf("trigger expression must not carry client options the runtime ignores: %q", value)
+	}
 }
 
 // assertAttrContains fails unless attrs carries key with a value containing

@@ -205,10 +205,11 @@ func TestContentTypeHTMXInert(t *testing.T) {
 	}
 }
 
-// TestSwapDialectIsolation pins that the shared Swap/PatchMode vocabulary
-// renders in the RIGHT dialect and never leaks across: the htmx dialect
-// renders hx-swap and no datastar mode option; the datastar dialect renders
-// the mode fetch option and no hx-* attribute.
+// TestSwapDialectIsolation pins the transport-asymmetric Swap semantics
+// (corrected 2026-10-02 against the pinned bundle): the htmx dialect renders
+// hx-swap client-side and never a datastar option; the datastar dialect
+// renders NO mode option — the patch mode is response-header driven
+// (wire.Handler/PatchTarget) — and never an hx-* attribute.
 func TestSwapDialectIsolation(t *testing.T) {
 	t.Parallel()
 
@@ -238,7 +239,7 @@ func TestSwapDialectIsolation(t *testing.T) {
 		}
 	})
 
-	t.Run("datastar renders the mode option only", func(t *testing.T) {
+	t.Run("datastar renders no swap at all (response-header driven)", func(t *testing.T) {
 		t.Parallel()
 
 		for _, swap := range swaps {
@@ -246,8 +247,8 @@ func TestSwapDialectIsolation(t *testing.T) {
 				Transport: TransportDatastar, Method: MethodGet, URL: "/api/items", Swap: swap,
 			}.Attributes()
 
-			if !datastarAttrsContain(attrs, "mode: '"+string(swap)+"'") {
-				t.Fatalf("datastar dialect must render the mode option for %q, got %v", swap, attrs)
+			if datastarAttrsContain(attrs, "mode:") {
+				t.Fatalf("datastar dialect must not render a mode option (the runtime ignores it) for %q, got %v", swap, attrs)
 			}
 
 			for key, value := range attrs {
