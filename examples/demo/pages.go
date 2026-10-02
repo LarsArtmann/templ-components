@@ -26,6 +26,14 @@ type demoPageMeta struct {
 	// ShowHeader renders the PageHeader block above the content. Home is the
 	// only page that sets it false (its hero replaces the header).
 	ShowHeader bool
+	// NeedsDatastar loads the Datastar runtime (SDKScript) in the page head.
+	// Pages rendering data-on:* wiring (wire, kanban) must set it — without
+	// the runtime every Datastar attribute is inert markup (the 2026-10-03
+	// e2e outage: /wire's Datastar buttons silently did nothing because only
+	// /datastar loaded the SDK). /datastar keeps loading it in-content for
+	// the SDKScript demo section, so it must NOT set this flag (one tag per
+	// page — double-loading re-runs the runtime's init).
+	NeedsDatastar bool
 	// Content renders the page body. Request-scoped pages (wire transport
 	// query, users sort/pagination query) read their inputs from r.
 	Content func(r *http.Request) templ.Component
@@ -124,8 +132,9 @@ func demoPages() []demoPageMeta {
 			Content:    func(*http.Request) templ.Component { return datastarDemo() },
 		},
 		{
-			Path:       "/wire",
-			Title:      "Wire (htmx + Datastar)",
+			Path:          "/wire",
+			NeedsDatastar: true,
+			Title:         "Wire (htmx + Datastar)",
 			Short:      "One wiring spec, two transports — forms, filters, wizard.",
 			Icon:       icons.Link,
 			Section:    "Interactive",
@@ -135,8 +144,9 @@ func demoPages() []demoPageMeta {
 			},
 		},
 		{
-			Path:       "/kanban",
-			Title:      "Kanban",
+			Path:          "/kanban",
+			NeedsDatastar: true,
+			Title:         "Kanban",
 			Short:      "Drag-and-drop board with optimistic moves over both transports.",
 			Icon:       icons.QueueList,
 			Section:    "Interactive",
