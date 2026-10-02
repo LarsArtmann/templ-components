@@ -168,7 +168,6 @@ func (a Action) datastarTriggerAttrs() templ.Attributes {
 			a.URL,
 			a.ContentType,
 			a.Selector,
-			a.Swap,
 		)
 	}
 
@@ -196,7 +195,7 @@ func (a Action) datastarTriggerAttrs() templ.Attributes {
 			key += "__exit"
 		}
 
-		attrs[key] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector, a.Swap)
+		attrs[key] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector)
 	}
 
 	if len(attrs) == 0 {

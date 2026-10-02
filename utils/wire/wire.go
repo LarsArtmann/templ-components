@@ -167,25 +167,29 @@ type Action struct {
 	// the runtime default (signals as JSON). htmx ignores this field — hx-*
 	// requests serialize the enclosing form natively either way.
 	ContentType ContentType
-	// Selector is the Datastar-dialect patch target: rendered as the fetch
-	// option {selector: '<sel>'}, which patches the response into the
-	// element(s) matching the selector client-side — overriding the
-	// response-header targeting (Datastar-Selector) when both are present
-	// (option wins, verified against the pinned v1.0.3 bundle). Under
-	// contentType form it also selects which form serializes, falling back
-	// to the action element's closest form. It renders for Datastar only —
-	// the htmx twin is Target. Empty renders nothing (response-driven).
+	// Selector selects which form serializes under Datastar ContentTypeForm:
+	// rendered as the fetch option {selector: '<sel>'}, the runtime resolves
+	// the enclosing form via that selector instead of the action element's
+	// closest form (bundle-decoded: the option is read ONLY in the
+	// form-encoding branch). It does NOT target patches — the pinned runtime
+	// reads patch targeting exclusively from the datastar-selector response
+	// header (browser-proven 2026-10-02: a client {selector} left a
+	// header-less patch inert; see docs/datastar-runtime-facts.md) or from the
+	// fragment root's id (outer/replace default). Use wire.Handler(PatchTarget)
+	// server-side instead. Empty renders nothing (closest form).
 	Selector string
 	// Swap is the region-merge style for the exchange — how the response is
 	// inserted relative to the target. It reuses the server-side PatchMode
-	// vocabulary (the SAME enum as PatchTarget.Mode), so one mode word
-	// describes both the client request and the server targeting. Under htmx
-	// it renders hx-swap (innerHTML/outerHTML/afterbegin/…); under Datastar
-	// the fetch option {mode: '…'}, which overrides the Datastar-Mode
-	// response header (verified against the pinned bundle). The zero value
-	// renders nothing in either dialect: htmx's default swap and the
-	// wire.Handler default mode are both "inner", so an unspecified Swap
-	// behaves identically under both runtimes.
+	// vocabulary (the SAME enum as PatchTarget.Mode). Like Target, its effect
+	// is transport-asymmetric (ADR-0036): under htmx it renders hx-swap
+	// (innerHTML/outerHTML/afterbegin/…) client-side; under Datastar the
+	// runtime reads the merge mode EXCLUSIVELY from the datastar-mode response
+	// header (browser-proven 2026-10-02: a client {mode} option is ignored —
+	// earlier bundles' contrary claim was a string-level misread, corrected in
+	// docs/datastar-runtime-facts.md), so Swap renders nothing there and the
+	// wire.Handler(PatchTarget.Mode) owns the mode. The zero value renders
+	// nothing: htmx's default swap and the wire.Handler default mode are both
+	// "inner", so an unspecified Swap behaves identically under both runtimes.
 	//
 	// Six modes map 1:1 (inner, outer, before, append, prepend, after, and
 	// remove ↔ htmx delete); PatchModeReplace (Datastar-only) degrades to the
@@ -316,7 +320,7 @@ func (a Action) datastarAttributes() templ.Attributes {
 			key += fmt.Sprintf("__throttle.%dms", a.ThrottleMS)
 		}
 
-		attrs[key] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector, a.Swap)
+		attrs[key] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector)
 	}
 
 	maps.Copy(attrs, a.datastarTriggerAttrs())
@@ -347,9 +351,14 @@ func htmxMethod(m Method) string {
 }
 
 // datastarActionExpr builds a @<method>('<url>') expression, appending a single
-// options object ({selector, mode, contentType}) when the action selects any of
-// them — the only non-default options the common subset expresses (JSON is the
-// runtime default and is omitted; unknown values degrade to the default).
+// options object ({selector, contentType}) when the action selects them — the
+// only non-default options the runtime actually reads (contentType is read on
+// every request; selector ONLY in the form-encoding branch, where it picks
+// which form serializes). Patch mode and target are response-header driven
+// (Datastar-Mode / Datastar-Selector) and never appear here — the pinned
+// runtime ignores client options for both (browser-proven 2026-10-02; see
+// docs/datastar-runtime-facts.md). JSON is the runtime default and is
+// omitted; unknown values degrade to the default.
 //
 // All options travel in ONE object literal, never several: the pinned bundle's
 // action dispatcher invokes apply(ctx, url, opts) with spread arguments, so a
@@ -364,16 +373,11 @@ func datastarActionExpr(
 	url string,
 	contentType ContentType,
 	selector string,
-	swap PatchMode,
 ) string {
 	var opts []string
 
-	if selector != "" {
+	if selector != "" && contentType == ContentTypeForm {
 		opts = append(opts, fmt.Sprintf("selector: '%s'", escapeSingleQuotes(selector)))
-	}
-
-	if mode := datastarSwapMode(swap); mode != "" {
-		opts = append(opts, fmt.Sprintf("mode: '%s'", mode))
 	}
 
 	if contentType == ContentTypeForm {
