@@ -36,6 +36,14 @@ func datastarLoadingButtonE2EServer(t *testing.T) *httptest.Server {
 	props := layout.DefaultPageProps()
 	props.Title = "Datastar LoadingButton E2E — templ-components"
 	props.CSSPath = "/app.css"
+	props.HeadContent = templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		_, err := io.WriteString(
+			w,
+			`<script>window.__dsReady=false;document.addEventListener('datastar-ready',function(){window.__dsReady=true;},{once:true});</script>`,
+		)
+
+		return err
+	})
 
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		for _, component := range []templ.Component{
