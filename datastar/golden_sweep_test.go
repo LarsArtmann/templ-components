@@ -2,6 +2,7 @@ package datastar
 
 import (
 	"testing"
+	"time"
 
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/golden"
@@ -58,6 +59,37 @@ func TestGoldenSweepIndicator(t *testing.T) {
 		{Name: "indicator_default", HTML: utils.Render(t, Indicator(IndicatorProps{
 			Signal: "saving",
 		}))},
+	})
+}
+
+func TestGoldenSweepPolledRegion(t *testing.T) {
+	t.Parallel()
+
+	// Timestamp is pinned via Now so the footer is deterministic; the
+	// convention matches the htmx twin's golden sweep.
+	fixed := time.Date(2026, 10, 2, 14, 30, 5, 0, time.UTC)
+
+	propsWithClock := func(p PolledRegionProps) PolledRegionProps {
+		p.Now = func() time.Time { return fixed }
+		return p
+	}
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		// Constructor defaults + URL: interval attribute, polite, timestamp footer.
+		{Name: "polled_region_default", HTML: utils.Render(t, PolledRegion(propsWithClock(PolledRegionProps{
+			URL:           "/partials/stats",
+			ShowTimestamp: true,
+		})))},
+		// Custom interval + aria-label + inert children slot.
+		{Name: "polled_region_custom", HTML: utils.Render(t, PolledRegion(propsWithClock(PolledRegionProps{
+			BaseProps:     utils.BaseProps{ID: "activity-feed", AriaLabel: "Activity"},
+			URL:           "/api/activity",
+			Every:         "2m",
+			Live:          LiveAssertive,
+			ShowTimestamp: true,
+		})))},
+		// Empty URL renders inert (no interval attribute at all).
+		{Name: "polled_region_inert", HTML: utils.Render(t, PolledRegion(propsWithClock(PolledRegionProps{})))},
 	})
 }
 
