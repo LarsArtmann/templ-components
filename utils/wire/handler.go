@@ -20,6 +20,12 @@ const (
 	PatchModeBefore      PatchMode = "before"
 	PatchModeAfter       PatchMode = "after"
 	PatchModeReplace     PatchMode = "replace"
+	// PatchModeRemove deletes the matched element(s) from the DOM instead of
+	// patching content into them — the runtime's eighth mode (the pinned
+	// bundle's mode set is ["remove","outer","inner","replace","prepend",
+	// "append","before","after"]). Use it to retract a region, e.g. dismissing
+	// a card.
+	PatchModeRemove PatchMode = "remove"
 )
 
 // PatchModeIsValid reports whether m is a merge mode of the pinned Datastar
@@ -28,7 +34,8 @@ const (
 func PatchModeIsValid(m PatchMode) bool {
 	switch m {
 	case PatchModeUnspecified, PatchModeInner, PatchModeOuter, PatchModePrepend,
-		PatchModeAppend, PatchModeBefore, PatchModeAfter, PatchModeReplace:
+		PatchModeAppend, PatchModeBefore, PatchModeAfter, PatchModeReplace,
+		PatchModeRemove:
 		return true
 	default:
 		return false
