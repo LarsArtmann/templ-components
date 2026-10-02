@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/chromedp/cdproto/runtime"
 	"github.com/chromedp/chromedp"
 )
 
@@ -12,24 +13,31 @@ func TestProbeBusyButtonSelector(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
+	chromedp.ListenTarget(ctx, func(ev interface{}) {
+		switch e := ev.(type) {
+		case *runtime.EventConsoleAPICalled:
+			t.Logf("CONSOLE %v", e)
+		case *runtime.EventExceptionThrown:
+			t.Logf("EXCEPTION: %v", e.ExceptionDetails)
+		}
+	})
+
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(server.BaseURL()+"/wire?transport=datastar"),
-		chromedp.Sleep(5*time.Second),
-		chromedp.Evaluate(`window.__ev=[];['datastar-fetch','error'].forEach(n=>document.addEventListener(n,e=>window.__ev.push(n+(e.detail?':'+JSON.stringify(e.detail).slice(0,120):'')),true));`, nil),
+		chromedp.Sleep(4*time.Second),
+		chromedp.Evaluate(`window.__ev=[];document.addEventListener('datastar-fetch',()=>window.__ev.push('fetch'),true);
+			const b=[...document.querySelectorAll('button')].find(el => (el.getAttribute('data-on:click')||'').includes('/api/wire/busy'));
+			b.__manualFired=false; b.addEventListener('click',()=>{b.__manualFired=true;});`, nil),
 	); err != nil {
 		t.Fatal(err)
 	}
 
-	clickErr := chromedp.Run(ctx, chromedp.Click(`button[data-on\:click*="/api/wire/busy"]`, chromedp.ByQuery))
-
-	time.Sleep(3 * time.Second)
-
-	var out string
-	if err := chromedp.Run(ctx, chromedp.Evaluate(
-		`JSON.stringify({ev: window.__ev, region: (document.getElementById('wire-busy-datastar-out')||{}).innerText})`,
-		&out)); err != nil {
+	if err := chromedp.Run(ctx, chromedp.Click(`button[data-on\:click*="/api/wire/busy"]`, chromedp.ByQuery)); err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("CLICK ERR: %v", clickErr)
-	t.Log("PROBE:", out)
+	time.Sleep(1500 * time.Millisecond)
+
+	var out string
+	_ = chromedp.Run(ctx, chromedp.Evaluate(`JSON.stringify({manual: (function(){const b=[...document.querySelectorAll('button')].find(el => (el.getAttribute('data-on:click')||'').includes('/api/wire/busy')); return b.__manualFired;})(), ev: window.__ev.length})`, &out))
+	t.Log("AFTER TRUSTED CLICK:", out)
 }
