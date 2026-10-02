@@ -104,6 +104,10 @@ func (a Action) htmxTrigger() string {
 			trigger += " delay:" + strconv.Itoa(a.DebounceMS) + "ms"
 		}
 
+		if a.ThrottleMS > 0 {
+			trigger += " throttle:" + strconv.Itoa(a.ThrottleMS) + "ms"
+		}
+
 		tokens = append(tokens, trigger)
 	}
 

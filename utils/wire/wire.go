@@ -200,6 +200,18 @@ type Action struct {
 	// Under htmx it requires an explicit Event (the zero event renders no
 	// hx-trigger at all, so the delay would be silently dropped).
 	DebounceMS int
+	// ThrottleMS bounds the wired exchange to at most one per this many
+	// milliseconds — the rate-limit sibling of DebounceMS (throttle fires
+	// immediately and then at most once per window; debounce waits for quiet).
+	// htmx renders it as the throttle:<n>ms trigger modifier; Datastar as the
+	// __throttle.<n>ms attribute-name modifier (bundle-decoded from the pinned
+	// v0.6.1 bundle: duration parsing identical to debounce; the runtime's
+	// noleading/trailing sub-modifiers are not modeled — the htmx-compatible
+	// leading+trailing default is kept). Under htmx it requires an explicit
+	// Event, like DebounceMS. htmx documents delay and throttle as mutually
+	// exclusive; setting both renders both (Datastar pipelines them
+	// delay-then-throttle) — prefer one.
+	ThrottleMS int
 	// PreventDefault suppresses the triggering event's native default action
 	// in the Datastar dialect (the __prevent event modifier). The runtime
 	// auto-preventDefaults ONLY form+submit — decoded from the pinned v1.0.3
@@ -297,6 +309,10 @@ func (a Action) datastarAttributes() templ.Attributes {
 
 		if a.DebounceMS > 0 {
 			key += fmt.Sprintf("__debounce.%dms", a.DebounceMS)
+		}
+
+		if a.ThrottleMS > 0 {
+			key += fmt.Sprintf("__throttle.%dms", a.ThrottleMS)
 		}
 
 		attrs[key] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector, a.Swap)
