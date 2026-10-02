@@ -64,8 +64,8 @@ Any component, even without a `Wire` field — spread the attributes yourself:
 | `Event`       | `""` → htmx: attribute omitted (element defaults: click/submit/change); Datastar: `click`                                                                      |
 | `URL`         | `""` → renders nothing (inert)                                                                                                                                 |
 | `ContentType` | `""` → Datastar signals as JSON (runtime default); `ContentTypeForm` serializes the enclosing form's fields; htmx ignores it                                   |
-| `Selector`    | `""` → Datastar targeting stays response-driven; a selector renders `{selector: '…'}` (Datastar-only; htmx twin is `Target`)                                   |
-| `Swap`        | `""` → renders nothing in either dialect (both default to inner); a `PatchMode` renders `hx-swap` (htmx) or `{mode: '…'}` (Datastar)                           |
+| `Selector`    | `""` → renders nothing (closest form); a selector renders `{selector: '…'}` under Datastar ContentTypeForm ONLY — it picks which form serializes; it does NOT target patches (corrected 2026-10-02) |
+| `Swap`        | `""` → renders nothing in either dialect (both default to inner); a `PatchMode` renders `hx-swap` under htmx; under Datastar it renders nothing — the mode is response-header driven |
 | unknowns      | `TransportIsValid`/`MethodIsValid`/`EventIsValid`/`ContentTypeIsValid`/`PatchModeIsValid` exist; rendering falls back to defaults                              |
 
 ## Dialect mapping
@@ -75,14 +75,14 @@ Any component, even without a `Wire` field — spread the attributes yourself:
 | `Method` + `URL`               | `hx-get="/api/fragment"`                   | `data-on:click="@get('/api/fragment')"`                           |
 | `Event: EventSubmit`           | `hx-trigger="submit"`                      | event key: `data-on:submit="…"`                                   |
 | `Target: "#out"`               | `hx-target="#out"`                         | _not rendered_ — see below                                        |
-| `Selector: "#out"`             | _not rendered_                             | `{selector: '#out'}` — overrides response-header targeting        |
-| `Swap: PatchModeOuter`         | `hx-swap="outerHTML"`                      | `{mode: 'outer'}` — overrides the `Datastar-Mode` response header |
+| `Selector: "#out"`             | _not rendered_                             | `{selector: '#out'}` — only under `ContentTypeForm`: picks which form serializes; never targets patches |
+| `Swap: PatchModeOuter`         | `hx-swap="outerHTML"`                      | _not rendered_ — the `Datastar-Mode` response header owns the mode (wire.Handler/PatchTarget)           |
 | `ContentType: ContentTypeForm` | _not rendered_ (native form serialization) | `{contentType: 'form'}` appended — serializes the enclosing form  |
 | `URL: ""`                      | nothing                                    | nothing                                                           |
 
 Datastar fetch options travel in **ONE object literal** — the runtime dispatcher
-reads exactly one options argument, so `Selector` + `Swap` + `ContentTypeForm`
-render as `@post('/x', {selector: '#out', mode: 'outer', contentType: 'form'})`.
+reads exactly one options argument, so `Selector` + `ContentTypeForm`
+render as `@post('/x', {selector: '#out', contentType: 'form'})`.
 Emitting them as separate objects (the pre-2026-10-02 shape) silently dropped
 every option after the first.
 
@@ -275,7 +275,7 @@ CSRF hidden input — traveling in both dialects.
 | Field values       | native serialization (urlencoded; multipart with `enctype`)                         | same — FormData → urlencoded (or multipart with `enctype`)                                                         |
 | HTML5 validation   | `Validate: true` adds `hx-validate="true"`; `NoValidate: true` renders `novalidate` | automatic (`checkValidity` gate); `NoValidate: true` renders `novalidate`, which skips the gate                    |
 | Submitter button   | name/value included                                                                 | name/value appended by the runtime                                                                                 |
-| Response targeting | `Wire.Target` → `hx-target` (default swaps into the form)                           | response-driven (`wire.Handler`), or client-side `Wire.Selector` → `{selector: …}` (overrides the response header) |
+| Response targeting | `Wire.Target` → `hx-target` (default swaps into the form)                           | response-driven (`wire.Handler`) — the client cannot target patches (corrected 2026-10-02) |
 
 The form-level defaults: an unspecified `Event` becomes `submit`, an
 unspecified `ContentType` becomes `ContentTypeForm` (set `ContentTypeJSON`
@@ -302,27 +302,28 @@ One timing note for test automation: htmx wires swapped-in nodes during its
 inside that window falls through to a native submit. Humans cannot click
 that fast — e2e drivers must wait for the swap to settle first.
 
-### Client-side targeting under Datastar: `Wire.Selector`
+### Patch targeting under Datastar: response-driven, no client option
 
-Datastar v1.0.3 added a fetch option our pinned bundle carries:
-`{selector: '#region'}` patches the response into the matching element
-client-side. `wire.Action.Selector` renders it (Datastar only; the htmx
-twin is `Target`) and **overrides `Datastar-Selector` response-header
-targeting when set** — the option is checked first in the bundle's
-response dispatcher. With `Selector` set per trigger, one endpoint can
-serve several regions with zero response-header routing (the demo's busy
-card does exactly this). Empty `Selector` keeps `wire.Handler`
-response-header targeting authoritative (ADR-0036, narrowed by
-[ADR-0038](adr/0038-common-subset-extensions.md)).
+There is NO client-side targeting under Datastar (corrected 2026-10-02;
+browser-proven — the earlier "`{selector}` overrides the header" claim was a
+static-decode misread): the runtime builds patch target and mode
+EXCLUSIVELY from the `Datastar-Selector` / `Datastar-Mode` response
+headers (or SSE datalines), and a header-less response still patches by
+id-match when the fragment root carries the target's `id` (outer default).
+`wire.Action.Selector` therefore renders only under `ContentTypeForm`,
+where it picks which form serializes — for patch targeting use
+`wire.Handler(PatchTarget)` server-side (ADR-0036, unchanged;
+[ADR-0038](adr/0038-common-subset-extensions.md) Correction section).
 
-### Swap / merge mode: `Wire.Swap` (one vocabulary, two dialects)
+### Swap / merge mode: `Wire.Swap` (htmx client-side) + `PatchTarget.Mode` (Datastar server-side)
 
 `wire.Action.Swap` describes how the response is merged into the target region.
 It reuses the server-side `PatchMode` enum — the SAME type as
-`wire.PatchTarget.Mode` — so one word describes both what the client requests
-and what the server targets. Under htmx it renders `hx-swap`; under Datastar the
-`{mode: '…'}` fetch option (which overrides the `Datastar-Mode` response
-header). The zero value renders nothing in either dialect, because htmx's
+`wire.PatchTarget.Mode` — but its effect is transport-asymmetric like
+`Target`: under htmx it renders `hx-swap` client-side; under Datastar it
+renders NOTHING — the runtime reads the merge mode exclusively from the
+`Datastar-Mode` response header, so `wire.Handler(PatchTarget.Mode)` owns
+it. The zero value renders nothing in either dialect, because htmx's
 default swap and `wire.Handler`'s default mode are both "inner".
 
 ```templ
@@ -332,10 +333,11 @@ default swap and `wire.Handler`'s default mode are both "inner".
     Wire: &wire.Action{URL: "/api/fragment", Target: "#out", Swap: wire.PatchModeOuter},
 })
 
-// Datastar → data-on:click="@get('/api/fragment', {mode: 'outer'})"
+// Datastar → mode owned by the handler:
+//   wire.Handler(wire.PatchTarget{Selector: "#out", Mode: wire.PatchModeOuter}, ...)
 @display.Button(display.ButtonProps{
     Text: "Replace",
-    Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/fragment", Swap: wire.PatchModeOuter},
+    Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/fragment"},
 })
 ```
 

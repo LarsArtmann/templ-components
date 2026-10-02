@@ -84,6 +84,14 @@ describes ONE exchange, not to change htmx behavior.
 
 ## Second Extension (2026-09-07): Selector
 
+> **CORRECTED 2026-10-02 — the override claim below is FALSE for the pinned
+> bundle.** The `selector` option exists and picks the form under
+> `contentType: 'form'`, but it NEVER reaches patch targeting: the "option
+> checked first, header second" code path reads an undefined state key and
+> never runs (browser-proven; see the Correction section and
+> `docs/datastar-runtime-facts.md`). `wire.Action.Selector` now renders only
+> under `ContentTypeForm`.
+
 Datastar v1.0.3 added a client-side fetch option our pinned bundle now
 carries: `{selector: '<css>'}` — patch the response into the element(s)
 matching the selector, **overriding `Datastar-Selector` response-header
@@ -113,6 +121,11 @@ outside the contract). Both dialects express it:
   `docs/datastar-runtime-facts.md`), with the 8-value set
   `remove/outer/inner/replace/prepend/append/before/after`.
 
+  > **CORRECTED 2026-10-02:** the 8-value MODE SET is real but it is a
+  > SERVER-side dataline vocabulary only — there is no client `{mode}` fetch
+  > option; the runtime reads the mode exclusively from the
+  > `Datastar-Mode` response header. See the Correction section.
+
 **Decision: `Action.Swap PatchMode`** — it reuses the server-side merge-mode
 vocabulary (the same enum as `PatchTarget.Mode`), so ONE mode word describes
 both the client request and the server targeting. A second dialect-local swap
@@ -134,6 +147,38 @@ Mapping and honesty:
   `inner`, so an unspecified `Swap` behaves identically under both runtimes.
   A set `Swap` renders `hx-swap` for htmx and `{mode: …}` for Datastar (the
   option overrides the `Datastar-Mode` response header when both are present).
+
+  > **CORRECTED 2026-10-02:** a set `Swap` renders `hx-swap` for htmx and
+  > NOTHING for Datastar — the client `{mode}` option never existed in the
+  > runtime; `wire.Handler(PatchTarget.Mode)` owns the Datastar mode.
+
+### Correction (2026-10-02): client fetch options do not reach targeting
+
+The L1-06 browser e2e (the first REAL-browser test of this ADR's claims)
+falsified the Selector-override and client-mode readings both ADR sections
+above recorded from static bundle decodes. Full decode + probe evidence:
+
+- The response handler's "options override headers" branch merges over an
+  UNDEFINED state key (minified `$`, destructured but never assigned), so it
+  never executes; patch datalines come exclusively from `datastar-*`
+  response headers.
+- The client `selector` option is read in exactly one place: the
+  form-encoding branch (`querySelector(sel)` over `closest("form")`).
+- Browser proof: `{selector: '#region'}` left a header-less patch inert; a
+  client `{mode: 'inner'}` could not stop a `Datastar-Mode: append` header
+  from appending; a header-less response whose fragment root carried the
+  region's id patched by id-match (outer default).
+
+Library corrections (shipped in the same commit):
+
+- `wire.Action.Selector` renders only under `ContentTypeForm`; godoc and
+  guide now direct patch targeting to `wire.Handler(PatchTarget)`.
+- `wire.Action.Swap` renders htmx-only (`hx-swap`); Datastar stays
+  response-driven — the SAME asymmetry `Target` already has, so ADR-0036's
+  rule is again narrowed, not replaced.
+- `visualtest/wire_e2e_test.go` pins all four behaviors at the browser
+  level — string tests alone encoded the wrong model here; only a real
+  runtime falsified it.
 
 ### Same-day bug fix: ONE Datastar options object
 
