@@ -1,0 +1,1 @@
+<span class="gap-2 inline-flex items-center tc-btn-loading"><span data-show="false" class="gap-2 inline-flex items-center"><span class="animate-spin border-2 border-current border-t-transparent h-4 inline-block motion-reduce:animate-none rounded-full w-4"></span> </span> <span data-show="true">Save</span></span>

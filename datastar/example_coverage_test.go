@@ -19,6 +19,15 @@ func ExamplePolledRegion() {
 	// Output:
 }
 
+func ExampleLoadingButton() {
+	_ = datastar.LoadingButton(datastar.LoadingButtonProps{
+		Signal:      "saving",
+		DefaultText: "Save",
+		LoadingText: "Saving…",
+	})
+	// Output:
+}
+
 func ExampleLiveRegion() {
 	_ = datastar.LiveRegion(datastar.DefaultLiveRegionProps())
 	// Output:

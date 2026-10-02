@@ -62,6 +62,27 @@ func TestGoldenSweepIndicator(t *testing.T) {
 	})
 }
 
+func TestGoldenSweepLoadingButton(t *testing.T) {
+	t.Parallel()
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "loading_button_default", HTML: utils.Render(t, LoadingButton(LoadingButtonProps{
+			Signal:      "saving",
+			DefaultText: "Save",
+			LoadingText: "Saving…",
+		}))},
+		// Empty signal degrades: rest always shown, busy never.
+		{Name: "loading_button_inert", HTML: utils.Render(t, LoadingButton(LoadingButtonProps{
+			DefaultText: "Save",
+		}))},
+		// No LoadingText: spinner-only busy state.
+		{Name: "loading_button_spinner_only", HTML: utils.Render(t, LoadingButton(LoadingButtonProps{
+			Signal:      "busy",
+			DefaultText: "Go",
+		}))},
+	})
+}
+
 func TestGoldenSweepPolledRegion(t *testing.T) {
 	t.Parallel()
 
