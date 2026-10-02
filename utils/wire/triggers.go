@@ -62,7 +62,9 @@ var (
 
 // Reveal configures the viewport-reveal trigger: the exchange fires when the
 // element scrolls into view — the lazy-load / infinite-scroll pattern. The
-// zero value is htmx's "revealed" shorthand (fire once on first entry).
+// zero value is htmx's "revealed" shorthand (fire ONCE on first entry — the
+// common lazy-load case, per the zero-value-equals-documented-default rule);
+// set EveryEntry to re-fire on every viewport entry.
 type Reveal struct {
 	// ThresholdPercent is how much of the element must be visible before the
 	// trigger fires: 0 (the default) = any part enters the viewport, 50 =
@@ -72,10 +74,10 @@ type Reveal struct {
 	// threshold:<fraction> only when nonzero.
 	ThresholdPercent int
 
-	// Once disconnects the trigger after the first fire. Zero-value false
-	// re-fires on every viewport entry (both runtimes behave symmetrically).
-	// htmx's "revealed" shorthand IS intersect+once.
-	Once bool
+	// EveryEntry re-fires the trigger on EVERY viewport entry instead of the
+	// zero-value fire-once behavior (htmx "revealed" = intersect once; the
+	// Datastar __once modifier is omitted only when this is set).
+	EveryEntry bool
 
 	// Exit fires when the element LEAVES the viewport instead of entering.
 	// Datastar renders __exit (bundle-verified). htmx has no exit semantics:
@@ -126,13 +128,14 @@ func (a Action) htmxRevealToken() string {
 
 	reveal := *a.Reveal
 
-	if reveal.ThresholdPercent <= 0 && reveal.Once && !reveal.Exit {
+	// "revealed" IS htmx's intersect-once shorthand; Exit degrades to entry.
+	if reveal.ThresholdPercent <= 0 && !reveal.EveryEntry {
 		return "revealed"
 	}
 
 	token := "intersect"
 
-	if reveal.Once {
+	if !reveal.EveryEntry {
 		token += " once"
 	}
 
@@ -164,7 +167,9 @@ func (a Action) datastarTriggerAttrs() templ.Attributes {
 
 		reveal := *a.Reveal
 
-		if reveal.Once {
+		// Zero value fires once (the "revealed" twin); __once is omitted only
+		// when the consumer opts into every-entry firing.
+		if !reveal.EveryEntry {
 			key += "__once"
 		}
 
