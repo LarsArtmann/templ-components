@@ -8,16 +8,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- **Dual-transport swap mode: `wire.Action.Swap`.** One `PatchMode` value now
-  renders the region-merge style in BOTH dialects — htmx `hx-swap`
-  (`innerHTML`/`outerHTML`/`afterbegin`/…) and Datastar `{mode: '…'}` — closing
-  the last common-subset gap found by the 2026-09-17 `Action` design review.
-  Reusing the server-side `PatchMode` vocabulary means one word describes both
-  the client request and `wire.PatchTarget.Mode`. The zero value renders
-  nothing in either dialect (both default to inner); `PatchModeRemove` joins
+- **Datastar `PolledRegion` — the interval-polling twin of htmx's.**
+  `data-on-interval__duration.<n>` with the shared `NormalizedInterval`
+  guard (minutes/hours become seconds — both runtimes misparse `5m` as 5 ms),
+  empty-URL inert, optional timestamp, `aria-live` politeness — the same
+  props shape as `htmx.PolledRegion` so swapping dialects is a one-line
+  change. Browser-proven by `visualtest/datastar_polled_region_e2e_test.go`.
+- **Datastar `LoadingButton` — the busy-state label twin of htmx's.** Driven
+  by the runtime's `data-indicator` signal + `data-show` swap: zero
+  component JS, empty signal degrades inert. Composes with
+  `datastar.Indicator`. Browser-proven by
+  `visualtest/datastar_loading_button_e2e_test.go`.
+- **Typed trigger language (ADR-0043): `wire.Action.Interval`, `Reveal`,
+  `ThrottleMS`, `PreventDefault`.** Polling, viewport-reveal lazy-load,
+  rate-limiting, and anchor-safe click prevention are now ONE spec rendered
+  for both dialects — htmx `every <n>`/`revealed`/`intersect …`/`throttle:<n>ms`
+  trigger tokens, Datastar `data-on-interval__duration.<n>` /
+  `data-on-intersect[…modifiers]` / `__throttle.<n>ms` / `__prevent` — all
+  bundle-decoded from the pinned v0.6.1 runtime. An interval/reveal-only
+  Action stays a pure poller (no click trigger is added); `Reveal.Exit` is
+  Datastar-only (htmx degrades to the entry trigger, documented); `Reveal`
+  zero value fires once (htmx `revealed` = intersect once).
+- **`wire` constructors and fluent builders: `wire.Get/Post/Put/Patch/Delete(url)`
+  plus `With*` chainers** (`WithTransport/Event/Method/Target/Selector/Swap/
+  ContentType/Debounce/Throttle/Interval/Reveal/PreventDefault`) and the
+  shared host-default applier `WithFormDefaults(event)`. All value-receiver
+  copy-returning — a consumer's `*Action` is never mutated (pinned by
+  `TestBuildersReturnCopiesNeverMutate`) — and chains read left to right:
+  `wire.Post("/api/save").WithTarget("#out").WithDebounce(300)`. Component
+  packages dropped their per-package default-application copies
+  (`forms.formWireAttributes` → shared `wireHosted`).
+- **Dual-transport swap mode: `wire.Action.Swap` (htmx-side), with the
+  Datastar merge mode owned by the response.** `Swap` reuses the server-side
+  `PatchMode` vocabulary so one word describes the client request style
+  (htmx `hx-swap`) and `wire.PatchTarget.Mode` (the response-header mode the
+  Datastar runtime obeys). htmx renders `hx-swap`
+  (`innerHTML`/`outerHTML`/`afterbegin`/…); under Datastar `Swap` renders
+  nothing — the pinned runtime reads the merge mode EXCLUSIVELY from the
+  `datastar-mode` response header (see the correction below). The zero value
+  renders nothing (both dialects default to inner); `PatchModeRemove` joins
   the enum (the pinned runtime ships 8 modes, not 7). `display.KanbanBoard`
-  now expresses its self-replacement through `Swap` instead of a hand-rolled
-  `hx-swap`. See ADR-0038 (third extension).
+  expresses its self-replacement through `Swap` instead of a hand-rolled
+  `hx-swap`. See ADR-0038 (third extension, corrected annotation).
 - **The demo is a multi-page app at `https://templcomponents.lars.software/demo`.**
   The old single-page showcase (13 sections stacked into one ~29k-px scroll)
   is now one page per package behind a shared application shell — the demo
@@ -37,14 +69,77 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   canonical surface (`/demo`, `/demo/`, `/demo/display` status codes, shell
   marker, CSP nonce survival through the rewrite) instead of only the raw
   run.app `/health` endpoint.
+- **New recipe: Bounding Unbounded Tables (`docs/recipes/bounding-tables.md`).**
+  The decision tree for "table renders every row": cap + `ListNote`
+  truncation notice (the default choice), `Pagination` for bounded sets, or
+  `LoadMore` + `ListNoteRange` for cursor batches — never an unbounded DOM.
+  Written from the go-cqrs-lite docserver deep-dive's open finding (four
+  catalog tables with "no cap, note, or pagination — ListNote and Pagination
+  sit unused"). Registered in the recipe index + skill.
+- **`ListNote` `ListNoteRange` variant — cursor-paginated "Showing X–Y of Z."**
+  The truncated and count-only variants both miss position semantics: X–Y is
+  the 1-based span on the current page (`RangeFrom`/`RangeTo`), Z is the match
+  count (`Total`). Always renders (a cursor journal has no "everything fits"
+  signal — "Showing 193–216 of 237." on the last page is the honest
+  seen-it-all hint); a non-positive range degrades to the count message.
+  Closes the cqrs-htmx round-10 ask (`paginationInfo` there was the hand-rolled
+  shape).
+- **`PageHeader` `TitleComponent`/`SubtitleComponent` — templ components inside
+  the heading.** Dashboards routinely need code elements, badges, and copy
+  buttons inside the page title; 8 of 11 cqrs-htmx dashboardui page headers
+  could not adopt while Title was string-only. A set component takes
+  precedence over the string field, and the `<h1>`/`<p>` shells stay so the
+  heading semantics never change. Closes the cqrs-htmx round-12 ask.
+- **`CopyButton` `LabelClass` — a color-override hook for the label span.**
+  Re-colored table ancestors still fought the fixed
+  `text-gray-700 dark:text-gray-200` in edge themes; a non-empty `LabelClass`
+  now replaces the span's color classes entirely (a `var(--…)`-based pair or
+  any light+dark utility set), while `[data-tc-copy-text]` remains the
+  attribute-level escape hatch for full restyling. Closes the cqrs-htmx
+  round-10 ask.
+- **`TestInlineStyleCompliance` — a guard pinning the library's inline `style=`
+  CSP exemptions to the documented set** (`AppShell`'s `--tc-sidebar-w`;
+  `BarChart`/`Heatmap`/`ProgressBar`/`LoadingOverlay` runtime widths/heights).
+  A new component can no longer add an inline `style=` silently — the guard
+  fails naming the file, and a stale allowlist entry is pruned. Paired with two
+  additions to `docs/tailwind-v4-adoption-guide.md`: a "Runtime-assembled
+  classes need a safelist" section (why `GridColsAutoFit`'s concatenated class
+  is invisible to Tailwind's scanner, and the `@source inline(...)` fix) and a
+  CSP FAQ caveat naming the components that emit inline styles.
+- **Cross-consumer analysis (`nsfw-classifier`, `dnsblockd`, `cqrs-htmx`,
+  all v1.19.4) harvested into `TODO_LIST.md`** — six verified follow-ups
+  (#322–#327: a status→family helper, `AppShell` inline-var → class,
+  `GridColsAutoFit` safelist/static-class, `Table.BodyID`, the `ErrorHandler`
+  wrapper gap, and the inline-style guard). See
+  `docs/status/2026-10-01_04-28_consumer-usage-analysis-templ-components-status.md`.
 
 ### Fixed
 
+- **MAJOR CORRECTION (browser-proven): the pinned Datastar runtime ignores
+  ALL client fetch options for patch targeting and merge mode —
+  `wire.Action` no longer claims otherwise.** The earlier claim that
+  `{selector: '…'}` targets patches and `{mode: '…'}` sets the merge style
+  was a string-level misdecode of the pinned bundle: a full decode plus a
+  live-Chromium probe (`TestWireE2ESwapModes`) showed the response handler's
+  "options override headers" branch is dead code and the options destructure
+  contains no `mode` at all — patch target and mode come EXCLUSIVELY from
+  the `datastar-selector`/`datastar-mode` response headers (or SSE
+  datalines). Consequences shipped in the same commit: `Action.Swap` and
+  `Action.Selector` render htmx-side/ form-encoding-only respectively
+  (godocs rewritten); `wire.Handler(PatchTarget)` is the only Datastar
+  targeting surface (unchanged); the demo busy card was silently broken by
+  the old belief (its Datastar button patched nothing) and now uses response
+  headers, browser-proven by
+  `TestDemoWireBusyCardBothTransports`; seven doc surfaces corrected
+  (transport-wiring guide, runtime facts, ADR-0038/0042, FEATURES, AGENTS,
+  skill, website docs). No in-repo consumer relied on the old behavior
+  because it never worked — code that "looked right" was inert. Semantics
+  are unchanged for everyone using `wire.Handler` as documented.
 - **Datastar fetch options were emitted as separate objects and silently
   dropped after the first.** The pinned runtime's action dispatcher reads
   exactly ONE options argument, so `wire.Action` rendering `{selector: …}` and
   `{contentType: 'form'}` as two objects lost form encoding whenever a
-  `Selector` was also set. All fetch options (selector, mode, contentType) now
+  `Selector` was also set. All fetch options (selector, contentType) now
   merge into one object literal — bundle-verified, pinned by new swap/option
   tests and the extended `FuzzAction`.
 - **Demo CSP regression: the MPA rewrite dropped the explicit nonce pass and
@@ -99,59 +194,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   after `px-*` — so addon inputs are unchanged.
 
 - **`TestGoWorkDirectiveMatchesRootGoMod` red on main: go directive strings
-  aligned at `1.26.0`.** Root `go.mod` said `go 1.26` while `go.work` and
-  `visualtest/go.mod` normalize to `go 1.26.0` (`go mod tidy` and `-mod=mod`
-  rewrite the directive to the full form, so any drift reappears on the next
-  tidy) — the string-equality guard has been failing since the toolchain
-  input moved. Root go.mod and go.work now both read `go 1.26.0`; the skew
-  guard (`TestGoDirectiveSkew`) stays green (semantic compare).
-
-### Added
-
-- **New recipe: Bounding Unbounded Tables (`docs/recipes/bounding-tables.md`).**
-  The decision tree for "table renders every row": cap + `ListNote`
-  truncation notice (the default choice), `Pagination` for bounded sets, or
-  `LoadMore` + `ListNoteRange` for cursor batches — never an unbounded DOM.
-  Written from the go-cqrs-lite docserver deep-dive's open finding (four
-  catalog tables with "no cap, note, or pagination — ListNote and Pagination
-  sit unused"). Registered in the recipe index + skill.
-
-- **`ListNote` `ListNoteRange` variant — cursor-paginated "Showing X–Y of Z."**
-  The truncated and count-only variants both miss position semantics: X–Y is
-  the 1-based span on the current page (`RangeFrom`/`RangeTo`), Z is the match
-  count (`Total`). Always renders (a cursor journal has no "everything fits"
-  signal — "Showing 193–216 of 237." on the last page is the honest
-  seen-it-all hint); a non-positive range degrades to the count message.
-  Closes the cqrs-htmx round-10 ask (`paginationInfo` there was the hand-rolled
-  shape).
-- **`PageHeader` `TitleComponent`/`SubtitleComponent` — templ components inside
-  the heading.** Dashboards routinely need code elements, badges, and copy
-  buttons inside the page title; 8 of 11 cqrs-htmx dashboardui page headers
-  could not adopt while Title was string-only. A set component takes
-  precedence over the string field, and the `<h1>`/`<p>` shells stay so the
-  heading semantics never change. Closes the cqrs-htmx round-12 ask.
-- **`CopyButton` `LabelClass` — a color-override hook for the label span.**
-  Re-colored table ancestors still fought the fixed
-  `text-gray-700 dark:text-gray-200` in edge themes; a non-empty `LabelClass`
-  now replaces the span's color classes entirely (a `var(--…)`-based pair or
-  any light+dark utility set), while `[data-tc-copy-text]` remains the
-  attribute-level escape hatch for full restyling. Closes the cqrs-htmx
-  round-10 ask.
-- **`TestInlineStyleCompliance` — a guard pinning the library's inline `style=`
-  CSP exemptions to the documented set** (`AppShell`'s `--tc-sidebar-w`;
-  `BarChart`/`Heatmap`/`ProgressBar`/`LoadingOverlay` runtime widths/heights).
-  A new component can no longer add an inline `style=` silently — the guard
-  fails naming the file, and a stale allowlist entry is pruned. Paired with two
-  additions to `docs/tailwind-v4-adoption-guide.md`: a "Runtime-assembled
-  classes need a safelist" section (why `GridColsAutoFit`'s concatenated class
-  is invisible to Tailwind's scanner, and the `@source inline(...)` fix) and a
-  CSP FAQ caveat naming the components that emit inline styles.
-- **Cross-consumer analysis (`nsfw-classifier`, `dnsblockd`, `cqrs-htmx`,
-  all v1.19.4) harvested into `TODO_LIST.md`** — six verified follow-ups
-  (#322–#327: a status→family helper, `AppShell` inline-var → class,
-  `GridColsAutoFit` safelist/static-class, `Table.BodyID`, the `ErrorHandler`
-  wrapper gap, and the inline-style guard). See
-  `docs/status/2026-10-01_04-28_consumer-usage-analysis-templ-components-status.md`.
+  aligned at `1.26.0` — and the canonical form is now workspace-wide `.0`
+  (2026-10-03 correction).** The go1.26 toolchain ORDERS `1.26` BELOW
+  `1.26.0`: a bare-`1.26` module next to `go.work` at bare `1.26` while
+  another module sits at `.0` kills every workspace build, and `go mod
+  tidy -diff` demands the `.0` form in some module graphs (visualtest's —
+  the e2e demo-binary build silently required it). All go.mod files and
+  go.work now read `go 1.26.0`; the skew guards compare major.minor-normalized
+  so historical spellings stay green.
 
 ### Changed
 
