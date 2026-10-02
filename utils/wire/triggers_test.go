@@ -58,10 +58,10 @@ func TestTriggerHTMXReveal(t *testing.T) {
 		want   string
 	}{
 		{"zero reveal is htmx's revealed shorthand", Reveal{}, "revealed"},
-		{"once + threshold", Reveal{ThresholdPercent: 50, Once: true}, "intersect once threshold:0.5"},
-		{"fraction trimmed", Reveal{ThresholdPercent: 75, Once: true}, "intersect once threshold:0.75"},
-		{"re-firing intersect", Reveal{ThresholdPercent: 100}, "intersect threshold:1"},
-		{"exit degrades to entry trigger", Reveal{Exit: true, Once: true}, "revealed"},
+		{"once + threshold", Reveal{ThresholdPercent: 50}, "intersect once threshold:0.5"},
+		{"fraction trimmed", Reveal{ThresholdPercent: 75}, "intersect once threshold:0.75"},
+		{"every-entry intersect", Reveal{ThresholdPercent: 100, EveryEntry: true}, "intersect threshold:1"},
+		{"exit degrades to entry trigger", Reveal{Exit: true}, "revealed"},
 	}
 
 	for _, tc := range tests {
@@ -110,14 +110,14 @@ func TestTriggerDatastarReveal(t *testing.T) {
 		reveal Reveal
 		want   string
 	}{
-		{"zero reveal", Reveal{}, "data-on-intersect"},
-		{"once", Reveal{Once: true}, "data-on-intersect__once"},
-		{"half", Reveal{ThresholdPercent: 50}, "data-on-intersect__half"},
-		{"full", Reveal{ThresholdPercent: 100}, "data-on-intersect__full"},
-		{"explicit threshold", Reveal{ThresholdPercent: 75}, "data-on-intersect__threshold.75"},
-		{"threshold clamped high", Reveal{ThresholdPercent: 150}, "data-on-intersect__full"},
-		{"exit", Reveal{Exit: true}, "data-on-intersect__exit"},
-		{"combined mods", Reveal{Once: true, ThresholdPercent: 50, Exit: true}, "data-on-intersect__once__half__exit"},
+		{"zero reveal fires once (revealed twin)", Reveal{}, "data-on-intersect__once"},
+		{"every entry omits once", Reveal{EveryEntry: true}, "data-on-intersect"},
+		{"half", Reveal{ThresholdPercent: 50}, "data-on-intersect__once__half"},
+		{"full", Reveal{ThresholdPercent: 100}, "data-on-intersect__once__full"},
+		{"explicit threshold", Reveal{ThresholdPercent: 75}, "data-on-intersect__once__threshold.75"},
+		{"threshold clamped high", Reveal{ThresholdPercent: 150}, "data-on-intersect__once__full"},
+		{"exit", Reveal{Exit: true}, "data-on-intersect__once__exit"},
+		{"combined mods", Reveal{EveryEntry: true, ThresholdPercent: 50, Exit: true}, "data-on-intersect__half__exit"},
 	}
 
 	for _, tc := range tests {
@@ -147,7 +147,7 @@ func TestTriggerDatastarEventPlusInterval(t *testing.T) {
 func TestTriggerEmptyURLInert(t *testing.T) {
 	t.Parallel()
 
-	attrs := Action{Interval: "5s", Reveal: &Reveal{Once: true}}.Attributes()
+	attrs := Action{Interval: "5s", Reveal: &Reveal{}}.Attributes()
 	if attrs != nil {
 		t.Errorf("empty URL must stay inert with triggers set; got %v", attrs)
 	}
@@ -178,7 +178,7 @@ func TestTriggerSwapAndTargetCompose(t *testing.T) {
 	assertAttrContains(t, htmxAttrs, "hx-target", "#region")
 	assertAttrContains(t, htmxAttrs, "hx-swap", "outerHTML")
 
-	reveal := Reveal{Once: true}
+	reveal := Reveal{}
 	dsAttrs := Action{Transport: TransportDatastar, URL: "/x", Reveal: &reveal, Selector: "#card", Swap: PatchModeInner}.Attributes()
 	assertAttrContains(t, dsAttrs, "data-on-intersect__once", "selector: '#card', mode: 'inner'")
 }

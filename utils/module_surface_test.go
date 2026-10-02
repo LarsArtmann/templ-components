@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -13,11 +14,27 @@ import (
 // from a go.mod / go.work file.
 var goDirectivePattern = regexp.MustCompile(`(?m)^go (\d+\.\d+(?:\.\d+)?)\s*$`)
 
+// normalizeGoDirective reduces a go directive to major.minor: the repo
+// canonical form is `go 1.26`, but the auto-commit daemon periodically
+// rewrites directives to `1.26.0` (BuildFlow's go-structure-linter is
+// skipped in .buildflow.yml for exactly this flip). Comparing normalized
+// forms makes the flip harmless by construction instead of failing CI.
+func normalizeGoDirective(v string) string {
+	if dot := strings.IndexByte(v, '.'); dot >= 0 {
+		if second := strings.IndexByte(v[dot+1:], '.'); second >= 0 {
+			return v[:dot+1+second]
+		}
+	}
+
+	return v
+}
+
 // TestGoWorkDirectiveMatchesRootGoMod guards the go.work ↔ go.mod version
 // sync: the workspace directive was left unguarded after the 1.26.7 bump
 // (2026-09-02 f15). A go.work pinned to an older toolchain makes workspace
 // builds download (or reject) a different Go than per-module CI runs use,
-// splitting local vs CI behavior.
+// splitting local vs CI behavior. Comparison is major.minor-normalized
+// (see normalizeGoDirective).
 func TestGoWorkDirectiveMatchesRootGoMod(t *testing.T) {
 	t.Parallel()
 
@@ -41,12 +58,80 @@ func TestGoWorkDirectiveMatchesRootGoMod(t *testing.T) {
 		t.Fatalf("could not parse `go <version>` directive from root go.mod")
 	}
 
-	if string(workMatch[1]) != string(modMatch[1]) {
+	if normalizeGoDirective(string(workMatch[1])) != normalizeGoDirective(string(modMatch[1])) {
 		t.Errorf(
-			"go.work go directive (%s) != root go.mod go directive (%s) — align them (bump go.work when the toolchain input moves)",
+			"go.work go directive (%s) != root go.mod go directive (%s) — align them (canonical form: `go 1.26`; bump go.work when the toolchain input moves)",
 			workMatch[1],
 			modMatch[1],
 		)
+	}
+}
+
+// TestGoDirectivesAlignAcrossWorkspace extends the go.work ↔ root guard to
+// EVERY module in the repo (root, the 7 published sub-modules, visualtest,
+// website): all go directives must agree at major.minor resolution. This is
+// the normalized-compare guard (2026-10-02): the daemon's periodic
+// `go 1.26` ↔ `go 1.26.0` rewrites pass, but a module left on a genuinely
+// different toolchain (the 2026-09-17 1.27.1 incident) fails.
+func TestGoDirectivesAlignAcrossWorkspace(t *testing.T) {
+	t.Parallel()
+
+	root, err := os.ReadFile(filepath.Join("..", "go.mod"))
+	if err != nil {
+		t.Fatalf("read root go.mod: %v", err)
+	}
+
+	rootMatch := goDirectivePattern.FindSubmatch(root)
+	if rootMatch == nil {
+		t.Fatalf("could not parse `go <version>` directive from root go.mod")
+	}
+
+	want := normalizeGoDirective(string(rootMatch[1]))
+
+	var misaligned []string
+
+	err = filepath.WalkDir("..", func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if d.IsDir() {
+			switch filepath.Base(path) {
+			case ".git", "node_modules", "result", "testdata":
+				return filepath.SkipDir
+			}
+
+			return nil
+		}
+
+		if filepath.Base(path) != "go.mod" {
+			return nil
+		}
+
+		content, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+
+		match := goDirectivePattern.FindSubmatch(content)
+		if match == nil {
+			t.Errorf("%s: no `go <version>` directive", path)
+
+			return nil
+		}
+
+		if normalizeGoDirective(string(match[1])) != want {
+			misaligned = append(misaligned, fmt.Sprintf("%s: %s (want %s.x)", path, match[1], want))
+		}
+
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("walk modules: %v", err)
+	}
+
+	for _, m := range misaligned {
+		t.Error(m)
 	}
 }
 
