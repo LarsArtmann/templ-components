@@ -38,6 +38,40 @@ func fetchDemoHTML(t *testing.T) string {
 	return string(body)
 }
 
+// TestWirePageLoadsDatastarRuntime pins the page-head SDK script: pages
+// rendering data-on:* wiring must LOAD the Datastar runtime — without it
+// every Datastar attribute is inert markup (the 2026-10-03 e2e outage: the
+// wire page's Datastar buttons silently did nothing because only /datastar
+// loaded the SDK). The kanban page carries the same NeedsDatastar flag and
+// is pinned here too.
+func TestWirePageLoadsDatastarRuntime(t *testing.T) {
+	t.Parallel()
+
+	server := httptest.NewServer(newMux())
+	t.Cleanup(server.Close)
+
+	for _, path := range []string{"/wire", "/kanban"} {
+		t.Run(path, func(t *testing.T) {
+			t.Parallel()
+
+			resp, err := server.Client().Get(server.URL + path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if !strings.Contains(string(body), "datastar.js") {
+				t.Errorf("%s page does not load the Datastar runtime (SDKScript missing from the head) — Datastar wiring on this page is inert", path)
+			}
+		})
+	}
+}
+
 // TestWireFragmentEndpointServesBothTransports verifies the transport-
 // branching contract of the shared wire demo endpoint: a Datastar caller
 // (marked by the Datastar-Request header) gets the patch region via response
