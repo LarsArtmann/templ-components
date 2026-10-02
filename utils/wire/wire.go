@@ -211,6 +211,22 @@ type Action struct {
 	// checkbox/radio/change wirings: preventDefault there would cancel the
 	// native toggle/commit that htmx keeps.
 	PreventDefault bool
+	// Interval polls the endpoint on a repeating duration ("10s", "500ms",
+	// "2m", "1h") — the polling pattern. NormalizedInterval converts m/h to
+	// seconds (both runtimes would misparse them as milliseconds) and an
+	// empty Interval means no polling. htmx renders it as the "every <n>"
+	// hx-trigger token; Datastar as the data-on-interval__duration.<n>
+	// attribute (bundle-decoded grammar). When Interval or Reveal is set and
+	// Event is not, no event trigger is rendered — an interval-only Action
+	// stays a pure poller instead of also firing on click.
+	Interval string
+	// Reveal fires the exchange when the element scrolls into view (the
+	// lazy-load pattern). Nil (the zero value) means no reveal trigger.
+	// htmx renders "revealed" (the zero Reveal) or explicit intersect
+	// modifiers; Datastar renders data-on-intersect with its modifier set
+	// (bundle-decoded). Reveal.Exit is Datastar-only — htmx degrades to the
+	// entry trigger.
+	Reveal *Reveal
 }
 
 // Attributes renders the action as templ attributes in the transport's
@@ -245,16 +261,7 @@ func (a Action) htmxAttributes() templ.Attributes {
 		"hx-" + method: a.URL,
 	}
 
-	if a.Event != EventUnspecified && EventIsValid(a.Event) {
-		trigger := string(a.Event)
-		if a.DebounceMS > 0 {
-			if a.Event == EventInput || a.Event == EventChange || a.Event == EventKeyUp {
-				trigger += " changed"
-			}
-
-			trigger += fmt.Sprintf(" delay:%dms", a.DebounceMS)
-		}
-
+	if trigger := a.htmxTrigger(); trigger != "" {
 		attrs["hx-trigger"] = trigger
 	}
 
@@ -269,25 +276,41 @@ func (a Action) htmxAttributes() templ.Attributes {
 	return attrs
 }
 
-// datastarAttributes renders data-on:<event>="@<method>('<url>', <opts>)".
+// datastarAttributes renders data-on:<event>="@<method>('<url>', <opts>)"
+// plus one attribute per configured trigger source (interval, reveal).
 func (a Action) datastarAttributes() templ.Attributes {
-	event := string(a.Event)
-	if !EventIsValid(a.Event) || a.Event == EventUnspecified {
-		event = string(EventClick)
+	attrs := templ.Attributes{}
+
+	// An interval/reveal-only Action (Event left at its zero value) must not
+	// also fire on click: the event attribute renders only when the action
+	// actually declares an event trigger.
+	if a.Event != EventUnspecified || (a.Interval == "" && a.Reveal == nil) {
+		event := string(a.Event)
+		if !EventIsValid(a.Event) || a.Event == EventUnspecified {
+			event = string(EventClick)
+		}
+
+		key := "data-on:" + event
+		if a.PreventDefault {
+			key += "__prevent"
+		}
+
+		if a.DebounceMS > 0 {
+			key += fmt.Sprintf("__debounce.%dms", a.DebounceMS)
+		}
+
+		attrs[key] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector, a.Swap)
 	}
 
-	key := "data-on:" + event
-	if a.PreventDefault {
-		key += "__prevent"
+	for key, value := range a.datastarTriggerAttrs() {
+		attrs[key] = value
 	}
 
-	if a.DebounceMS > 0 {
-		key += fmt.Sprintf("__debounce.%dms", a.DebounceMS)
+	if len(attrs) == 0 {
+		return nil
 	}
 
-	return templ.Attributes{
-		key: datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector, a.Swap),
-	}
+	return attrs
 }
 
 // method resolves the zero value (and, defensively, unknown values) to GET.
