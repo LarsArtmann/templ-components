@@ -45,7 +45,7 @@ func TestPolledRegionA11y(t *testing.T) {
 	t.Run("timestamp footer keeps low visual emphasis", func(t *testing.T) {
 		t.Parallel()
 
-		output := utils.Render(t, PolledRegionProps{URL: "/x", ShowTimestamp: true})
+		output := utils.Render(t, PolledRegion(PolledRegionProps{URL: "/x", ShowTimestamp: true}))
 		utils.AssertContains(t, output, "text-xs")
 		utils.AssertContains(t, output, "<time")
 		utils.AssertContains(t, output, "datetime=")

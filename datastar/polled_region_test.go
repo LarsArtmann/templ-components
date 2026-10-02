@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -98,8 +99,10 @@ func TestPolledRegionURLPassesThroughActionExpr(t *testing.T) {
 	t.Run("single quotes are escaped", func(t *testing.T) {
 		t.Parallel()
 
-		output := utils.Render(t, PolledRegionProps{URL: "/x?name=o'brien"})
-		utils.AssertContains(t, output, `@get('/x?name=o\'brien')`)
+		output := utils.Render(t, PolledRegion(PolledRegionProps{URL: "/x?name=o'brien"}))
+		// The injected quote becomes \' inside the expression; templ renders
+		// the expression quotes AND the escaped quote as &#39;.
+		utils.AssertContains(t, output, `@get(&#39;/x?name=o\&#39;&#39;)`)
 	})
 }
 
@@ -134,7 +137,7 @@ func TestPolledRegionTimestamp(t *testing.T) {
 	t.Run("hidden by default in a literal", func(t *testing.T) {
 		t.Parallel()
 
-		output := utils.Render(t, PolledRegionProps{URL: "/x"})
+		output := utils.Render(t, PolledRegion(PolledRegionProps{URL: "/x"}))
 		if strings.Contains(output, "Updated") {
 			t.Errorf("timestamp rendered without ShowTimestamp:\n%s", output)
 		}
@@ -166,7 +169,7 @@ func TestPolledRegionBasePropsPropagation(t *testing.T) {
 			ID:        "stats-region",
 			Class:     "min-h-40",
 			AriaLabel: "Live statistics",
-			Attrs:     map[string]string{"data-test": "polled"},
+			Attrs: templ.Attributes{"data-test": "polled"},
 		},
 		URL: "/partials/stats",
 	}

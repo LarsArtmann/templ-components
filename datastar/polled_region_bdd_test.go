@@ -20,8 +20,9 @@ func TestPolledRegionUserGetsAutoRefreshingRegion(t *testing.T) {
 		}))
 
 		// The interval lives in the attribute NAME (runtime modifier
-		// grammar); the fetch expression is the attribute value.
-		utils.AssertContains(t, output, `data-on-interval__duration.10s="@get('/partials/stats')"`)
+		// grammar); the fetch expression is the attribute value. templ
+		// escapes the expression's quotes in the attribute value.
+		utils.AssertContainsAll(t, output, `data-on-interval__duration.10s="@get(`, `&#39;/partials/stats&#39;)`)
 	})
 
 	t.Run("user sees fresh initial content, not a loading state", func(t *testing.T) {
