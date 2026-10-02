@@ -48,6 +48,13 @@ func (a Action) WithEvent(e Event) Action {
 	return a
 }
 
+// WithTransport selects the attribute dialect (zero value stays htmx).
+func (a Action) WithTransport(t Transport) Action {
+	a.Transport = t
+
+	return a
+}
+
 // WithMethod sets the HTTP verb explicitly (the constructors cover the
 // common cases; this escapes for dynamic verbs).
 func (a Action) WithMethod(m Method) Action {
@@ -65,16 +72,22 @@ func (a Action) WithTarget(target string) Action {
 	return a
 }
 
-// WithSelector sets the Datastar-dialect client-side patch target
-// ({selector: '…'}), overriding response-header targeting.
+// WithSelector selects which form serializes under Datastar ContentTypeForm
+// ({selector: '…'}) — the runtime resolves the enclosing form via that
+// selector instead of the action element's closest form. It NEVER targets
+// patches: the pinned runtime reads patch targeting exclusively from the
+// datastar-selector response header (or the fragment root's id) — use
+// wire.Handler(PatchTarget) server-side instead.
 func (a Action) WithSelector(selector string) Action {
 	a.Selector = selector
 
 	return a
 }
 
-// WithSwap sets the region-merge style (the shared PatchMode vocabulary:
-// hx-swap under htmx, {mode: '…'} under Datastar).
+// WithSwap sets the region-merge style (the shared PatchMode vocabulary).
+// Transport-asymmetric like Target: htmx renders hx-swap client-side; under
+// Datastar the merge mode is response-driven (wire.Handler's PatchTarget.Mode)
+// and Swap renders nothing there.
 func (a Action) WithSwap(mode PatchMode) Action {
 	a.Swap = mode
 

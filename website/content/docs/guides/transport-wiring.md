@@ -68,9 +68,9 @@ mux.Handle("/api/items", wire.Handler(wire.PatchTarget{
 
 The contract covers the dialects' **common subset** only (ADR-0036). Transport-specific machinery stays in its module: polling (`htmx.PolledRegion`), out-of-band swaps (`htmx.SwapOOB`), confirm dialogs (`htmx.ConfirmDelete`), loading indicators (`htmx.InlineLoadingOverlay`, `datastar.Indicator`), and SSE streams (`datastar.LiveRegion`).
 
-One deliberate asymmetry: `Action.Target` renders only for htmx. Datastar targeting is response-driven (`wire.Handler` echoes `Datastar-Selector` back for you) or client-side via `Action.Selector` (`{selector: '#region'}`, the adopted v1.0.3 option).
+One deliberate asymmetry: `Action.Target` renders only for htmx. Datastar targeting is **response-driven only** (`wire.Handler` echoes `Datastar-Selector` back for you): the pinned runtime ignores client fetch options for patch targeting. `Action.Selector` renders `{selector: '#region'}` under Datastar form-encoding only — it picks which `<form>` serializes; it never targets patches.
 
-The region-merge style is symmetric again via `Action.Swap` (a `wire.PatchMode`): htmx renders `hx-swap` (`innerHTML`/`outerHTML`/…) and Datastar renders `{mode: 'inner'}`. The zero value renders nothing in either dialect — both default to `inner`. All Datastar fetch options (selector, mode, contentType) travel in ONE object literal; the runtime reads exactly one options argument.
+The region-merge style is htmx client-side via `Action.Swap` (a `wire.PatchMode` rendering `hx-swap`, `innerHTML`/`outerHTML`/…). Datastar's merge mode is owned by the response: `wire.Handler(wire.PatchTarget{Selector: "#out", Mode: wire.PatchModeOuter}, …)` stamps `Datastar-Mode` for you (zero value = `inner`). Without routing headers the runtime falls back to id-matched patching — a fragment root whose `id` equals the caller element's id. All Datastar fetch options (selector, contentType, retry, …) travel in ONE object literal; the runtime reads exactly one options argument.
 
 ## Web Components
 

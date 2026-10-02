@@ -47,15 +47,19 @@ Transport Wiring guide):
 
 ```go
 type Action struct {
-    Transport   Transport    // "" (htmx default) | "htmx" | "datastar"
-    Method      Method       // "" (GET) | get | post | put | patch | delete
-    URL         string       // empty = inert (no wiring)
-    Event       Event        // dialect default when empty
-    Target      string       // htmx only (hx-target)
-    Selector    string       // datastar only ({selector: …} fetch option)
-    Swap        PatchMode    // "" (inner both) | hx-swap ↔ {mode: '…'}
-    ContentType ContentType  // "" (json) | json | form (form encoding)
-    DebounceMS  int          // htmx delay:<n>ms / datastar __debounce.<n>ms
+    Transport      Transport   // "" (htmx default) | "htmx" | "datastar"
+    Method         Method      // "" (GET — set explicitly on writes!) | get | post | put | patch | delete
+    URL            string      // empty = inert (no wiring)
+    Event          Event       // dialect default when empty
+    Target         string      // htmx only (hx-target); Datastar targets via response headers
+    ContentType    ContentType // "" (json) | json | form (form encoding)
+    Selector       string      // Datastar form-encoding only: picks which <form> serializes; never targets patches
+    Swap           PatchMode   // htmx hx-swap; Datastar's mode is response-driven (wire.Handler)
+    DebounceMS     int         // htmx delay:<n>ms / datastar __debounce.<n>ms
+    ThrottleMS     int         // htmx throttle:<n>ms / datastar __throttle.<n>ms
+    PreventDefault bool        // datastar __prevent (runtime only auto-prevents form+submit)
+    Interval       string      // polling: "10s" | "500ms" | "2m" | "1h" (m/h normalized to seconds)
+    Reveal         *Reveal     // lazy-load on scroll into view
 }
 ```
 
