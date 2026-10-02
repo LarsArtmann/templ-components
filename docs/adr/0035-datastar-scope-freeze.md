@@ -8,9 +8,13 @@
 
 Accepted. **Partially superseded (2026-09-04):** the "no attribute-helper
 surface" clause was superseded by [ADR-0036](0036-transport-wiring-contract.md)
-via this ADR's own revisit trigger (explicit owner request). The freeze on the
-`datastar` module itself remains in full force — the wire contract lives in
-`utils/wire` and adds nothing to this module.
+via this ADR's own revisit trigger (explicit owner request). **Partially
+superseded again (2026-10-02):** the module freeze was lifted for the four
+parity surfaces (PolledRegion, LoadingButton, typed interval/intersect wire
+triggers, confirm-parity evaluation) by
+[ADR-0042](0042-datastar-surface-expansion.md), same trigger class (explicit
+owner request). Everything outside those surfaces stays frozen as written
+below.
 
 ## Context
 

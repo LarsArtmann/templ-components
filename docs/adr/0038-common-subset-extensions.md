@@ -153,3 +153,6 @@ time — the runtime's mode set has 8 values, not 7.
   `contentType: 'form'` and the `__debounce` spelling.
 - `docs/recipes/server-side-validation.md`, `docs/recipes/file-upload.md`
   — the consumer-facing patterns these fields unlock.
+- [ADR-0042](0042-datastar-surface-expansion.md) — where polling/reveal
+  triggers and the Datastar component twins live (deliberately NOT common-subset
+  fields; see the rejected alternative in the second extension above).

@@ -313,11 +313,23 @@ flowchart TD
 
 ## 7. Open owner decisions (blockers)
 
-1. **`Swap` naming** — Datastar-side `PatchMode` names (current) vs htmx-style
-   (`innerHTML`/`outerHTML`/`afterbegin`). Shapes the public wire surface.
-2. **Canonical Go directive** — `1.26` or `1.26.0` (commit `60805f09` says
-   `1.26.0`; the daemon reverts to `1.26`).
-3. **Execution order** — `PolledRegion` first (recommended) vs wire ergonomics first.
+**RESOLVED 2026-10-02 (owner authorized execution — "get shit done"; decisions made
+autonomously and recorded here per the plan's own gate):**
+
+1. **`Swap` naming → KEEP the `PatchMode` vocabulary** (`remove/outer/inner/
+   replace/prepend/append/before/after`). One bundle-verified word set describes
+   both the client request (`Action.Swap`) and the server targeting
+   (`PatchTarget.Mode`); htmx-style names (`innerHTML`…) would fork the
+   vocabulary and churn three shipped sessions of docs for zero functional
+   gain. ADR-0038's Third Extension already documents the rationale. L1-11
+   collapses to "record the decision".
+2. **Canonical Go directive → `go 1.26`** (major.minor, no patch). It is what
+   8/10 module files already carry and what the daemon writes; the L1-29 guard
+   compares MAJOR.MINOR-NORMALIZED versions so the daemon's occasional
+   `1.26.0` flip can no longer fail anything (churn becomes harmless by
+   construction, not by enforcement).
+3. **Execution order → `PolledRegion` first** (the recommended order; polling
+   is the 1% → 51%).
 
 ---
 
