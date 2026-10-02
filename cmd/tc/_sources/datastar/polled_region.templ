@@ -1,0 +1,73 @@
+package datastar
+
+import (
+	"time"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// PolledRegion renders a div that auto-refreshes its content via Datastar
+// interval polling (data-on-interval). This is the Datastar twin of
+// htmx.PolledRegion: the region fetches its own URL on an interval and the
+// endpoint responds with a fragment whose root id matches the region id, so
+// the runtime's default outer-mode patch replaces the region (self-patch).
+// The runtime re-initializes the patched-in element, so polling continues
+// with a fresh interval — and because this component never emits the
+// leading flag, a self-patch CANNOT loop eagerly (leading + outer self-patch
+// would refetch immediately forever; that combination stays out of the API
+// on purpose — the same hazard class as htmx's forbidden "load, every"
+// trigger on a self-replacing region).
+//
+// Initial content belongs in the children slot (server-rendered), so the
+// region never shows an empty state and needs no eager-fetch mechanism.
+//
+// Polling busy state: the runtime wraps every tick in its fetching markers —
+// attach data-indicator:<name> consumers via datastar.Indicator for spinners
+// (see the Indicator docs). This component intentionally does not render
+// aria-busy: there is no "waiting for first load" window to announce.
+//
+//	@datastar.PolledRegion(datastar.PolledRegionProps{
+//	    BaseProps: utils.BaseProps{ID: "stats"},
+//	    URL:       "/partials/stats",
+//	    Every:     "10s",
+//	}) {
+//	    @display.StatCard(display.StatCardProps{Label: "Messages", Value: "1,234"})
+//	}
+templ PolledRegion(props PolledRegionProps) {
+	{{
+		live := livePolitenessValue(props.Live)
+		nowFn := props.Now
+		if nowFn == nil {
+			nowFn = time.Now
+		}
+		updatedAt := nowFn()
+		timeFormat := props.TimeFormat
+		if timeFormat == "" {
+			timeFormat = "15:04:05"
+		}
+	}}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		aria-live={ string(live) }
+		{ polledRegionAttrs(props.URL, props.Every)... }
+		class={ utils.Class("", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ children... }
+		if props.ShowTimestamp {
+			<div class="mt-3 flex justify-end">
+				<time
+					class="text-xs tabular-nums text-gray-400 dark:text-gray-500"
+					datetime={ updatedAt.Format(time.RFC3339) }
+				>
+					Updated { updatedAt.Format(timeFormat) }
+				</time>
+			</div>
+		}
+	</div>
+}

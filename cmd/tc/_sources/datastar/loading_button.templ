@@ -1,0 +1,54 @@
+package datastar
+
+import "github.com/larsartmann/templ-components/utils"
+
+// defaultLoadingButtonSpinner is the inline spinner shown when Spinner is nil
+// (the same default as Indicator).
+const defaultLoadingButtonSpinner = "inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none"
+
+// LoadingButton renders a button label that swaps to a busy state while the
+// enclosing button's Datastar action is in flight — the Datastar equivalent
+// of htmx.LoadingButton, driven entirely by the runtime's indicator signal
+// (zero component-side JavaScript).
+//
+// The component renders CONTENT, not the button: place it inside a button
+// that carries BOTH the action and the indicator marker, and pass the same
+// signal name here. While the action is in flight the runtime sets the
+// signal true (bundle-verified), data-show swaps the labels, and the signal
+// clears when the response lands.
+//
+// Unlike the htmx twin there is no disabled-element mechanism in the
+// Datastar dialect; gate double submissions server-side or via
+// data-indicator-driven UI.
+//
+//	<button
+//	    data-indicator:saving
+//	    data-on:click="@post('/save', {contentType: 'form'})"
+//	    class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white"
+//	>
+//	    @datastar.LoadingButton(datastar.LoadingButtonProps{
+//	        Signal:      "saving",
+//	        DefaultText: "Save",
+//	        LoadingText: "Saving…",
+//	    })
+//	</button>
+templ LoadingButton(props LoadingButtonProps) {
+	<span
+		class={ utils.Class("tc-btn-loading inline-flex items-center gap-2", props.Class) }
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<span data-show={ loadingButtonBusyExpr(props.Signal) } class="inline-flex items-center gap-2">
+			<span class={ defaultLoadingButtonSpinner }></span>
+			if props.LoadingText != "" {
+				<span>{ props.LoadingText }</span>
+			}
+		</span>
+		<span data-show={ loadingButtonRestExpr(props.Signal) }>{ props.DefaultText }</span>
+	</span>
+}

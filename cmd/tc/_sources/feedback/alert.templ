@@ -25,6 +25,10 @@ func DefaultAlertProps() AlertProps {
 //
 //	@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong", Type: feedback.FeedbackError})
 //
+// The ARIA role derives from Type: errors announce assertively
+// (role="alert"); every other type reports politely (role="status") so a
+// success banner is never read as an error by screen readers.
+//
 // The dismiss control markup is shared via utils.DismissButton; only the style
 // classes differ from errorpage.ErrorAlert. JS behaviour is shared via
 // utils.DismissScript().
@@ -35,7 +39,7 @@ templ Alert(props AlertProps) {
 			id={ props.ID }
 		}
 		class={ utils.Class("rounded-md border p-4", s.Border, s.BG, props.Class) }
-		role="alert"
+		role={ feedbackRole(props.Type) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}

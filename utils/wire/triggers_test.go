@@ -179,7 +179,13 @@ func TestTriggerSwapAndTargetCompose(t *testing.T) {
 	assertAttrContains(t, htmxAttrs, "hx-swap", "outerHTML")
 
 	reveal := Reveal{}
-	dsAttrs := Action{Transport: TransportDatastar, URL: "/x", Reveal: &reveal, Selector: "#card", Swap: PatchModeInner}.Attributes()
+	dsAttrs := Action{
+		Transport: TransportDatastar,
+		URL:       "/x",
+		Reveal:    &reveal,
+		Selector:  "#card",
+		Swap:      PatchModeInner,
+	}.Attributes()
 	assertAttrContains(t, dsAttrs, "data-on-intersect__once", "selector: '#card', mode: 'inner'")
 }
 

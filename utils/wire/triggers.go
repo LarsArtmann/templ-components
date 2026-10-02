@@ -163,7 +163,13 @@ func (a Action) datastarTriggerAttrs() templ.Attributes {
 	attrs := templ.Attributes{}
 
 	if interval := NormalizedInterval(a.Interval); interval != "" {
-		attrs["data-on-interval__duration."+interval] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector, a.Swap)
+		attrs["data-on-interval__duration."+interval] = datastarActionExpr(
+			a.method(),
+			a.URL,
+			a.ContentType,
+			a.Selector,
+			a.Swap,
+		)
 	}
 
 	if a.Reveal != nil {

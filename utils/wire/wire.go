@@ -2,6 +2,7 @@ package wire
 
 import (
 	"fmt"
+	"maps"
 	"strings"
 
 	"github.com/a-h/templ"
@@ -318,9 +319,7 @@ func (a Action) datastarAttributes() templ.Attributes {
 		attrs[key] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector, a.Swap)
 	}
 
-	for key, value := range a.datastarTriggerAttrs() {
-		attrs[key] = value
-	}
+	maps.Copy(attrs, a.datastarTriggerAttrs())
 
 	if len(attrs) == 0 {
 		return nil

@@ -373,11 +373,12 @@ func TestWireE2ESwapModes(t *testing.T) {
 	defer cancelTimeout()
 
 	var (
-		ready                       bool
+		ready                      bool
 		htmxWrap, dsWrap, override string
 	)
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Run(
+		ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollBool(`document.readyState==='complete' && window.htmx!==undefined && window.__dsReady===true`, &ready),
 		// htmx: hx-swap="outerHTML" replaces the region element itself.
@@ -392,7 +393,10 @@ func TestWireE2ESwapModes(t *testing.T) {
 		// Client {mode:'inner'} must override the server's Datastar-Mode:
 		// append header — the sentinel would survive an append, not an inner.
 		chromedp.Click("#btn-swap-ds-override", chromedp.NodeVisible),
-		pollBool(`document.querySelector('#ds-override-region') && document.querySelector('#ds-override-region').innerHTML.indexOf('`+wireFragmentText+`')>=0`, &ready),
+		pollBool(
+			`document.querySelector('#ds-override-region') && document.querySelector('#ds-override-region').innerHTML.indexOf('`+wireFragmentText+`')>=0`,
+			&ready,
+		),
 		chromedp.InnerHTML("#ds-override-region", &override, chromedp.NodeVisible),
 	); err != nil {
 		t.Fatalf("swap/mode E2E: %v", err)
