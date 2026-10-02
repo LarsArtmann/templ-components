@@ -72,8 +72,8 @@ func filterInputClass() string {
 // filterInputWireAttributes renders the wiring for a FilterInput. The
 // component-level DebounceMS always wins — it is this component's single
 // source of truth for the trigger delay. Event and ContentType defaults
-// (input / form encoding) are shared with Form via
-// wireAttributesWithDefaults. An empty URL wires nothing (inert form).
+// (input / form encoding) come from wire.Action.WithFormDefaults via
+// wireHosted. An empty URL wires nothing (inert form).
 func filterInputWireAttributes(w *wire.Action, debounceMS int) templ.Attributes {
 	if w == nil {
 		return nil
@@ -82,7 +82,7 @@ func filterInputWireAttributes(w *wire.Action, debounceMS int) templ.Attributes 
 	action := *w
 	action.DebounceMS = debounceMS
 
-	return wireAttributesWithDefaults(&action, wire.EventInput)
+	return wireHosted(&action, wire.EventInput)
 }
 
 // FilterInput renders a debounced search/filter input that auto-submits as

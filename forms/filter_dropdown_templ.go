@@ -129,7 +129,7 @@ func FilterDropdown(props FilterDropdownProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		opts := normalizeSelectOptions(filterDropdownPreselect(props.Options, props.Value))
-		wired := wireAttributesWithDefaults(props.Wire, wire.EventChange)
+		wired := wireHosted(props.Wire, wire.EventChange)
 		isWired := props.Wire != nil && props.Wire.URL != ""
 		props.ID = fieldID(props.ID, props.Name)
 		selectName := utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, filterDropdownFallbackName))

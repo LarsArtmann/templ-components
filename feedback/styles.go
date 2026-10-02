@@ -77,6 +77,19 @@ func feedbackStyle(t FeedbackType) feedbackStyleSet {
 	return utils.Lookup(feedbackStyleMap, t, feedbackStyleDefault)
 }
 
+// feedbackRole maps the feedback type onto the ARIA role: errors announce
+// assertively (role="alert"); every other severity reports politely
+// (role="status") so success and info banners are not read as errors by
+// screen readers. Mirrors the inlineMessage twins' split (InlineError
+// "alert" vs InlineSuccess "status").
+func feedbackRole(t FeedbackType) string {
+	if t == FeedbackError {
+		return "alert"
+	}
+
+	return "status"
+}
+
 func feedbackIcon(t FeedbackType) icons.Name {
 	return utils.Lookup(feedbackIconMap, t, icons.Information)
 }

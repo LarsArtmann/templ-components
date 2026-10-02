@@ -96,31 +96,22 @@ func ParseKanbanMove(r *http.Request) (KanbanMove, error) {
 // kanbanWireAttributes renders the wiring for a KanbanBoard's hidden move
 // form. It copies the action (never mutates the consumer's) and applies the
 // board defaults: an unspecified Method becomes POST (a card move is a
-// mutation), an unspecified Event becomes submit, and an unspecified
-// ContentType becomes form encoding so the hidden inputs travel under
-// Datastar too (the same defaults forms.Form applies). Under htmx an empty
-// Target resolves to the board root and an unspecified Swap defaults to outer
-// → hx-swap="outerHTML"; Datastar targeting stays response-driven (the
-// endpoint's wire.Handler sets Datastar-Mode: outer). The documented response
-// contract is "re-render the whole board". An empty URL wires nothing
-// (read-only board).
+// mutation), and the shared form-host defaults (submit event, form encoding
+// — the same wire.Action.WithFormDefaults that forms.Form applies) cover the
+// rest. Under htmx an empty Target resolves to the board root and an
+// unspecified Swap defaults to outer → hx-swap="outerHTML"; Datastar
+// targeting stays response-driven (the endpoint's wire.Handler sets
+// Datastar-Mode: outer). The documented response contract is "re-render the
+// whole board". An empty URL wires nothing (read-only board).
 func kanbanWireAttributes(w *wire.Action, boardID string) templ.Attributes {
 	if w == nil {
 		return nil
 	}
 
-	action := *w
+	action := w.WithFormDefaults(wire.EventSubmit)
 
 	if action.Method == wire.MethodUnspecified {
 		action.Method = wire.MethodPost
-	}
-
-	if action.Event == wire.EventUnspecified {
-		action.Event = wire.EventSubmit
-	}
-
-	if action.ContentType == wire.ContentTypeUnspecified {
-		action.ContentType = wire.ContentTypeForm
 	}
 
 	if action.Target == "" && action.Transport != wire.TransportDatastar {

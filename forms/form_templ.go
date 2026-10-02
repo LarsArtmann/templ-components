@@ -218,14 +218,14 @@ func DefaultFormProps() FormProps {
 	}
 }
 
-// formWireAttributes renders the wiring for a Form. It copies the action
-// (never mutates the consumer's) and applies the form defaults: an
-// unspecified Event becomes submit (the only event that submits a form, and
-// the one Datastar's runtime auto-preventDefaults on form elements), and an
-// unspecified ContentType becomes form encoding so the form's fields travel
-// under Datastar too. An empty URL wires nothing (inert HTML form).
+// formWireAttributes renders the wiring for a Form. The shared host defaults
+// (an unspecified Event becomes submit — the only event that submits a form,
+// and the one Datastar's runtime auto-preventDefaults on form elements — and
+// an unspecified ContentType becomes form encoding) live in
+// wire.Action.WithFormDefaults; this adapter is the nil-safe component
+// boundary only. An empty URL wires nothing (inert HTML form).
 func formWireAttributes(w *wire.Action) templ.Attributes {
-	return wireAttributesWithDefaults(w, wire.EventSubmit)
+	return wireHosted(w, wire.EventSubmit)
 }
 
 // wireValidateHTMX reports whether hx-validate applies to the form's
@@ -236,24 +236,15 @@ func wireValidateHTMX(w *wire.Action) bool {
 	return w == nil || w.Transport != wire.TransportDatastar
 }
 
-// wireAttributesWithDefaults copies the action (never mutates the
-// consumer's) and applies the shared component defaults: an unspecified
-// Event becomes defaultEvent and an unspecified ContentType becomes form
-// encoding. An empty URL wires nothing (inert element).
-func wireAttributesWithDefaults(w *wire.Action, defaultEvent wire.Event) templ.Attributes {
+// wireHosted renders a form-hosted action with the host's natural event
+// default plus form encoding (wire.Action.WithFormDefaults). Nil stays
+// unwired — the shared nil boundary for every form-hosting component.
+func wireHosted(w *wire.Action, event wire.Event) templ.Attributes {
 	if w == nil {
 		return nil
 	}
 
-	action := *w
-	if action.Event == wire.EventUnspecified {
-		action.Event = defaultEvent
-	}
-	if action.ContentType == wire.ContentTypeUnspecified {
-		action.ContentType = wire.ContentTypeForm
-	}
-
-	return action.Attributes()
+	return w.WithFormDefaults(event).Attributes()
 }
 
 // Form renders a form element with optional CSRF token
@@ -388,7 +379,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 282, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 273, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -407,7 +398,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var7 templ.SafeURL
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(props.Action)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 285, Col: 24}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 276, Col: 24}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -425,7 +416,7 @@ func formInner(props FormProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(formMethod(props.Method))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 287, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 278, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {
@@ -443,7 +434,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(formEnctype(props.Enctype))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 289, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 280, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
@@ -497,7 +488,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 302, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 293, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 			if templ_7745c5c3_Err != nil {
@@ -529,7 +520,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 309, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 300, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 			if templ_7745c5c3_Err != nil {
@@ -542,7 +533,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.CSRFToken)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 309, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 300, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 			if templ_7745c5c3_Err != nil {

@@ -40,7 +40,8 @@ func TestAlertUserReceivesImportantMessages(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "Warning")
 		utils.AssertContains(t, output, "This action cannot be undone.")
-		utils.AssertContains(t, output, `role="alert"`)
+		// Non-error severities report politely (role-from-type contract).
+		utils.AssertContains(t, output, `role="status"`)
 	})
 
 	t.Run("user sees success alert with green styling", func(t *testing.T) {

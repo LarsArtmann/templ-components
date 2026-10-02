@@ -16,7 +16,7 @@ func TestAlertEdgeCases(t *testing.T) {
 			Type:    FeedbackInfo,
 		}))
 		utils.AssertContains(t, output, "Just a message")
-		utils.AssertContains(t, output, `role="alert"`)
+		utils.AssertContains(t, output, `role="status"`)
 	})
 
 	t.Run("empty message renders empty paragraph", func(t *testing.T) {
@@ -26,7 +26,7 @@ func TestAlertEdgeCases(t *testing.T) {
 			Type:  FeedbackInfo,
 		}))
 		utils.AssertContains(t, output, "Title Only")
-		utils.AssertContains(t, output, `role="alert"`)
+		utils.AssertContains(t, output, `role="status"`)
 	})
 
 	t.Run("unknown type falls back to info styling", func(t *testing.T) {
