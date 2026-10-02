@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-122 components across 11 packages + 102 icons. If you're about to hand-roll
+123 components across 11 packages + 102 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -186,7 +186,7 @@ Don't know what to look for? Find your page type:
 | `GlobalErrorHandling`  | `GlobalErrorHandling(cfg ErrorHandlingConfig)`            | HTMX error → toast pipeline                                                               |
 | `PolledRegion`         | `PolledRegion(props PolledRegionProps)`                   | Auto-refreshing HTMX region — interval polling, eager-load, aria-live, optional timestamp |
 
-#### `datastar` — 5 components + action helpers
+#### `datastar` — 6 components + action helpers
 
 | Component          | Signature                                        | One-liner                                                                                                                                                  |
 | ------------------ | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -194,6 +194,7 @@ Don't know what to look for? Find your page type:
 | `LiveRegion`       | `LiveRegion(props LiveRegionProps)`              | SSE-powered live region — `data-init` auto-connect, `RetryMode` self-healing, `LivePoliteness`, busy cue                                                   |
 | `PolledRegion`     | `PolledRegion(props PolledRegionProps)`          | Interval-polling region (Datastar twin of htmx's) — `data-on-interval__duration.<n>`, m/h normalized to seconds, empty URL inert, timestamp, NO leading flag |
 | `Indicator`        | `Indicator(props IndicatorProps)`                | Loading indicator driven by a Datastar indicator signal                                                                                                     |
+| `LoadingButton`    | `LoadingButton(props LoadingButtonProps)`        | Busy-state button label (Datastar twin of htmx's) — `data-indicator` signal + `data-show` swap, zero component JS, empty signal degrades inert              |
 | `SSEErrorHandling` | `SSEErrorHandling(cfg SSEErrorHandlingConfig)`   | SSE error feedback on the real `datastar-fetch` lifecycle events                                                                                           |
 
 #### `errorpage` — 4 components + 6 constructors + handler

@@ -23,7 +23,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-122 server-rendered components. 64 typed string enums (63 with IsValid()). 102 SVG icons. Zero client-side framework.
+123 server-rendered components. 64 typed string enums (63 with IsValid()). 102 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -32,7 +32,7 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **CSS approach**       | Tailwind v4 (CSS-first)                        | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
 | **JavaScript**         | HATEOAS (enhances HTML)                        | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js**   | No                                             | No                            | Yes                                            |
-| **Components**         | 122                                            | 40+                           | —                                              |
+| **Components**         | 123                                            | 40+                           | —                                              |
 | **Typed props**        | 59 enums                                       | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)                              | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts)                     | Yes                           | —                                              |
@@ -370,7 +370,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 
 | Metric         | Value                                               |
 | -------------- | --------------------------------------------------- |
-| Components     | 122                                                 |
+| Components     | 123                                                 |
 | SVG icons      | 102                                                 |
 | Typed enums    | 64 (63 with IsValid)                                |
 | Packages       | 15                                                  |
@@ -387,7 +387,7 @@ of regression:
 
 | Tier                     | What                                                                 | Where                                | Catches                                                                                                                                         |
 | ------------------------ | -------------------------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 264 `.golden` files | Structure, attribute, and class changes                                                                                                         |
+| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 267 `.golden` files | Structure, attribute, and class changes                                                                                                         |
 | **Drift-guard scanners** | Cross-cutting invariant tests                                        | `utils/`                             | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
 | **Visual regression**    | Pixel-level PNG diff in headless Chromium                            | `visualtest/` (separate module)      | Layout shifts, dark-mode color regressions, RTL mirroring                                                                                       |
 

@@ -10,10 +10,10 @@ func TestLoadingButtonSignalExpressions(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name      string
-		signal    string
-		wantBusy  string
-		wantRest  string
+		name     string
+		signal   string
+		wantBusy string
+		wantRest string
 	}{
 		{"normal signal", "saving", "$saving", "!$saving"},
 		{"whitespace signal degrades", "  ", "false", "true"},

@@ -57,8 +57,10 @@ func datastarLoadingButtonE2EServer(t *testing.T) *httptest.Server {
 			}
 		}
 
-		if _, err := io.WriteString(w,
-			`<button id="save-btn" type="button" data-indicator:saving data-on:click="@post('/api/slow-save')">`); err != nil {
+		if _, err := io.WriteString(
+			w,
+			`<button id="save-btn" type="button" data-indicator:saving data-on:click="@post('/api/slow-save')">`,
+		); err != nil {
 			return err
 		}
 
