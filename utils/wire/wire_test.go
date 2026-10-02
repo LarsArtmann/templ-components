@@ -559,12 +559,15 @@ func renderAttributes(t *testing.T, attrs templ.Attributes) string {
 // FuzzAction verifies attribute rendering never panics and never emits an
 // empty-valued attribute on arbitrary input.
 func FuzzAction(f *testing.F) {
-	f.Add("htmx", "post", "click", "/api/items", "#out", "")
-	f.Add("datastar", "", "", "", "", "form")
-	f.Add("", "fetch", "hover", "it's", `"><script>alert(1)</script>`, "json")
-	f.Add("unknown", "GET", "load", "#", "closest div", "multipart")
+	f.Add("htmx", "post", "click", "/api/items", "#out", "", "", "")
+	f.Add("datastar", "", "", "", "", "form", "#out", "outer")
+	f.Add("", "fetch", "hover", "it's", `"><script>alert(1)</script>`, "json", `#it's`, "inner")
+	f.Add("unknown", "GET", "load", "#", "closest div", "multipart", "", "upsert")
 
-	f.Fuzz(func(t *testing.T, transport, method, event, url, target, contentType string) {
+	f.Fuzz(func(
+		t *testing.T,
+		transport, method, event, url, target, contentType, selector, swap string,
+	) {
 		action := Action{
 			Transport:   Transport(transport),
 			Method:      Method(method),
@@ -572,6 +575,8 @@ func FuzzAction(f *testing.F) {
 			Event:       Event(event),
 			Target:      target,
 			ContentType: ContentType(contentType),
+			Selector:    selector,
+			Swap:        PatchMode(swap),
 		}
 
 		attrs := action.Attributes()
@@ -646,4 +651,172 @@ func TestActionSelector(t *testing.T) {
 			t.Fatalf("selector not escaped: %q", got)
 		}
 	})
+}
+
+// TestActionSwap pins the common-subset swap/mode rendering: htmx hx-swap
+// styles, the Datastar {mode} fetch option, the single-object option rule,
+// and the zero-value parity (both dialects default to inner and render
+// nothing).
+func TestActionSwap(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		action   Action
+		expected templ.Attributes
+	}{
+		{
+			name: "htmx unspecified swap renders no hx-swap",
+			action: Action{
+				Transport: TransportHTMX,
+				URL:       "/api/items",
+			},
+			expected: templ.Attributes{"hx-get": "/api/items"},
+		},
+		{
+			name: "htmx inner maps to innerHTML",
+			action: Action{
+				Transport: TransportHTMX,
+				URL:       "/api/items",
+				Target:    "#list",
+				Swap:      PatchModeInner,
+			},
+			expected: templ.Attributes{
+				"hx-get":    "/api/items",
+				"hx-target": "#list",
+				"hx-swap":   "innerHTML",
+			},
+		},
+		{
+			name: "htmx outer maps to outerHTML",
+			action: Action{
+				Transport: TransportHTMX,
+				URL:       "/api/items",
+				Swap:      PatchModeOuter,
+			},
+			expected: templ.Attributes{"hx-get": "/api/items", "hx-swap": "outerHTML"},
+		},
+		{
+			name: "htmx before maps to beforebegin",
+			action: Action{
+				Transport: TransportHTMX,
+				URL:       "/api/items",
+				Swap:      PatchModeBefore,
+			},
+			expected: templ.Attributes{"hx-get": "/api/items", "hx-swap": "beforebegin"},
+		},
+		{
+			name: "htmx prepend maps to afterbegin",
+			action: Action{
+				Transport: TransportHTMX,
+				URL:       "/api/items",
+				Swap:      PatchModePrepend,
+			},
+			expected: templ.Attributes{"hx-get": "/api/items", "hx-swap": "afterbegin"},
+		},
+		{
+			name: "htmx append maps to beforeend",
+			action: Action{
+				Transport: TransportHTMX,
+				URL:       "/api/items",
+				Swap:      PatchModeAppend,
+			},
+			expected: templ.Attributes{"hx-get": "/api/items", "hx-swap": "beforeend"},
+		},
+		{
+			name: "htmx after maps to afterend",
+			action: Action{
+				Transport: TransportHTMX,
+				URL:       "/api/items",
+				Swap:      PatchModeAfter,
+			},
+			expected: templ.Attributes{"hx-get": "/api/items", "hx-swap": "afterend"},
+		},
+		{
+			name: "htmx remove maps to delete",
+			action: Action{
+				Transport: TransportHTMX,
+				URL:       "/api/items/1",
+				Swap:      PatchModeRemove,
+			},
+			expected: templ.Attributes{"hx-get": "/api/items/1", "hx-swap": "delete"},
+		},
+		{
+			name: "htmx Datastar-only replace degrades to outerHTML",
+			action: Action{
+				Transport: TransportHTMX,
+				URL:       "/api/items",
+				Swap:      PatchModeReplace,
+			},
+			expected: templ.Attributes{"hx-get": "/api/items", "hx-swap": "outerHTML"},
+		},
+		{
+			name: "htmx unknown swap renders no hx-swap",
+			action: Action{
+				Transport: TransportHTMX,
+				URL:       "/api/items",
+				Swap:      PatchMode("upsert"),
+			},
+			expected: templ.Attributes{"hx-get": "/api/items"},
+		},
+		{
+			name: "datastar unspecified swap renders plain expression",
+			action: Action{
+				Transport: TransportDatastar,
+				URL:       "/api/items",
+			},
+			expected: templ.Attributes{"data-on:click": "@get('/api/items')"},
+		},
+		{
+			name: "datastar swap renders the mode option",
+			action: Action{
+				Transport: TransportDatastar,
+				URL:       "/api/items",
+				Swap:      PatchModeOuter,
+			},
+			expected: templ.Attributes{"data-on:click": "@get('/api/items', {mode: 'outer'})"},
+		},
+		{
+			name: "datastar unknown swap renders plain expression",
+			action: Action{
+				Transport: TransportDatastar,
+				URL:       "/api/items",
+				Swap:      PatchMode("upsert"),
+			},
+			expected: templ.Attributes{"data-on:click": "@get('/api/items')"},
+		},
+		{
+			name: "datastar selector, mode and contentType share ONE options object",
+			action: Action{
+				Transport:   TransportDatastar,
+				Method:      MethodPost,
+				URL:         "/api/save",
+				Event:       EventSubmit,
+				Selector:    "#form-region",
+				Swap:        PatchModeInner,
+				ContentType: ContentTypeForm,
+			},
+			expected: templ.Attributes{
+				"data-on:submit": "@post('/api/save', {selector: '#form-region', mode: 'inner', contentType: 'form'})",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := tt.action.Attributes()
+
+			if len(got) != len(tt.expected) {
+				t.Fatalf("Attributes() = %v, want %v", got, tt.expected)
+			}
+
+			for key, want := range tt.expected {
+				if got[key] != want {
+					t.Errorf("Attributes()[%q] = %v, want %v", key, got[key], want)
+				}
+			}
+		})
+	}
 }

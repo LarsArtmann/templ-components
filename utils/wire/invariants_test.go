@@ -205,6 +205,95 @@ func TestContentTypeHTMXInert(t *testing.T) {
 	}
 }
 
+// TestSwapDialectIsolation pins that the shared Swap/PatchMode vocabulary
+// renders in the RIGHT dialect and never leaks across: the htmx dialect
+// renders hx-swap and no datastar mode option; the datastar dialect renders
+// the mode fetch option and no hx-* attribute.
+func TestSwapDialectIsolation(t *testing.T) {
+	t.Parallel()
+
+	swaps := []PatchMode{
+		PatchModeInner, PatchModeOuter, PatchModeBefore, PatchModePrepend,
+		PatchModeAppend, PatchModeAfter, PatchModeRemove, PatchModeReplace,
+	}
+
+	for _, swap := range swaps {
+		t.Run("htmx_"+string(swap), func(t *testing.T) {
+			t.Parallel()
+
+			action := Action{
+				Transport: TransportHTMX,
+				Method:    MethodGet,
+				URL:       "/api/items",
+				Swap:      swap,
+			}
+
+			attrs := action.Attributes()
+			if _, ok := attrs["hx-swap"]; !ok {
+				t.Fatalf("htmx dialect must render hx-swap for %q, got %v", swap, attrs)
+			}
+
+			for key, value := range attrs {
+				if strings.Contains(strings.ToLower(key), "data-on") ||
+					strings.Contains(fmt.Sprint(value), "mode:") {
+					t.Fatalf("htmx dialect must not render the datastar mode option, got %q=%v", key, value)
+				}
+			}
+		})
+
+		t.Run("datastar_"+string(swap), func(t *testing.T) {
+			t.Parallel()
+
+			action := Action{
+				Transport: TransportDatastar,
+				Method:    MethodGet,
+				URL:       "/api/items",
+				Swap:      swap,
+			}
+
+			attrs := action.Attributes()
+			found := false
+
+			for key, value := range attrs {
+				if strings.HasPrefix(key, "hx-") {
+					t.Fatalf("datastar dialect must not render an hx-* attribute, got %q=%v", key, value)
+				}
+
+				if strings.Contains(fmt.Sprint(value), "mode: '"+string(swap)+"'") {
+					found = true
+				}
+			}
+
+			if !found {
+				t.Fatalf("datastar dialect must render the mode option for %q, got %v", swap, attrs)
+			}
+		})
+	}
+}
+
+// TestUnspecifiedSwapRendersNothing pins zero-value parity: an unspecified
+// Swap renders no swap attribute in either dialect (htmx defaults to
+// innerHTML, wire.Handler defaults to inner — both "inner").
+func TestUnspecifiedSwapRendersNothing(t *testing.T) {
+	t.Parallel()
+
+	for _, transport := range []Transport{TransportHTMX, TransportDatastar} {
+		action := Action{Transport: transport, Method: MethodGet, URL: "/api/items"}
+
+		for key := range action.Attributes() {
+			if key == "hx-swap" {
+				t.Fatalf("unspecified Swap must not render hx-swap for %q", transport)
+			}
+		}
+
+		if transport == TransportDatastar {
+			if ds := action.Attributes()["data-on:click"]; ds != "@get('/api/items')" {
+				t.Fatalf("unspecified Swap must render a plain expression, got %v", ds)
+			}
+		}
+	}
+}
+
 func TestWireRenderingEmitsNoScript(t *testing.T) {
 	t.Parallel()
 
