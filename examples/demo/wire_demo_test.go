@@ -624,6 +624,7 @@ func TestWireBusyEndpoint(t *testing.T) {
 		name            string
 		datastarRequest bool
 		wantSelector    string
+		wantMode        string
 		wantContains    string
 	}{
 		{
@@ -631,9 +632,10 @@ func TestWireBusyEndpoint(t *testing.T) {
 			wantContains: "Job finished via htmx",
 		},
 		{
-			name:            "datastar caller gets the plain fragment (selector option targets client-side)",
+			name:            "datastar caller gets response-header targeting (fetch options never reach patching)",
 			datastarRequest: true,
-			wantSelector:    "",
+			wantSelector:    "#wire-busy-datastar-out",
+			wantMode:        "inner",
 			wantContains:    "Job finished via datastar",
 		},
 	}
@@ -669,6 +671,9 @@ func TestWireBusyEndpoint(t *testing.T) {
 			}
 			if got := resp.Header.Get(wire.HeaderDatastarSelector); got != tt.wantSelector {
 				t.Errorf("Datastar-Selector = %q, want %q", got, tt.wantSelector)
+			}
+			if got := resp.Header.Get(wire.HeaderDatastarMode); got != tt.wantMode {
+				t.Errorf("Datastar-Mode = %q, want %q", got, tt.wantMode)
 			}
 
 			body, err := io.ReadAll(resp.Body)

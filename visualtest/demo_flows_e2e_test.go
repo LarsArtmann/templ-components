@@ -321,3 +321,66 @@ func TestDemoKanbanMoveButtonsBothTransports(t *testing.T) {
 
 	server.FailIfServerErrors(t)
 }
+
+// TestDemoWireBusyCardBothTransports proves the demo busy card end-to-end in
+// a real browser: each dialect's button runs the slow job and its OWN region
+// receives the done fragment — the htmx button via hx-target, the Datastar
+// button via the endpoint's response headers (client fetch options never
+// reach patch targeting; the action expression is a plain @post).
+func TestDemoWireBusyCardBothTransports(t *testing.T) {
+	server := StartDemoServer(t)
+
+	ctx, cancel := newFlowTab(t)
+	defer cancel()
+
+	tests := []struct {
+		name      string
+		page      string
+		buttonSel string
+		outID     string
+		wantText  string
+	}{
+		{
+			name:      "htmx swaps via hx-target",
+			page:      "/wire?transport=htmx",
+			buttonSel: `button[hx-post="/demo/api/wire/busy"]`,
+			outID:     "wire-busy-htmx-out",
+			wantText:  "Job finished via htmx",
+		},
+		{
+			name:      "datastar patches via response headers",
+			page:      "/wire?transport=datastar",
+			buttonSel: `button[data-on\:click*="/api/wire/busy"]`,
+			outID:     "wire-busy-datastar-out",
+			wantText:  "Job finished via datastar",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := chromedp.Run(ctx,
+				chromedp.Navigate(server.BaseURL()+tt.page),
+				chromedp.WaitReady("body"),
+			); err != nil {
+				t.Fatalf("visualtest[demo]: load %s: %v", tt.page, err)
+			}
+
+			outExpr := fmt.Sprintf(
+				`(document.getElementById('%s') ? document.getElementById('%s').innerText : '')`,
+				tt.outID, tt.outID,
+			)
+			demoClickUntil(ctx, t, tt.buttonSel, fmt.Sprintf(`%s.includes(%q)`, outExpr, tt.wantText), demoFlowTimeout)
+
+			var out string
+			if err := chromedp.Run(ctx, chromedp.Evaluate(outExpr, &out)); err != nil {
+				t.Fatalf("visualtest[demo]: read %s: %v", tt.outID, err)
+			}
+
+			if !strings.Contains(out, tt.wantText) {
+				t.Errorf("visualtest[demo]: %s = %q, want it to contain %q", tt.outID, out, tt.wantText)
+			}
+		})
+	}
+
+	server.FailIfServerErrors(t)
+}
