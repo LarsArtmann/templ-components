@@ -53,6 +53,7 @@ type Action struct {
     Event       Event        // dialect default when empty
     Target      string       // htmx only (hx-target)
     Selector    string       // datastar only ({selector: …} fetch option)
+    Swap        PatchMode    // "" (inner both) | hx-swap ↔ {mode: '…'}
     ContentType ContentType  // "" (json) | json | form (form encoding)
     DebounceMS  int          // htmx delay:<n>ms / datastar __debounce.<n>ms
 }

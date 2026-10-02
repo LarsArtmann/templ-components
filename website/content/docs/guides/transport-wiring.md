@@ -68,7 +68,9 @@ mux.Handle("/api/items", wire.Handler(wire.PatchTarget{
 
 The contract covers the dialects' **common subset** only (ADR-0036). Transport-specific machinery stays in its module: polling (`htmx.PolledRegion`), out-of-band swaps (`htmx.SwapOOB`), confirm dialogs (`htmx.ConfirmDelete`), loading indicators (`htmx.InlineLoadingOverlay`, `datastar.Indicator`), and SSE streams (`datastar.LiveRegion`).
 
-One deliberate asymmetry: `Action.Target` renders only for htmx. The pinned Datastar v1.0.2 runtime accepts no target option on fetch actions — targeting is response-driven, which is exactly what `wire.Handler` does for you.
+One deliberate asymmetry: `Action.Target` renders only for htmx. Datastar targeting is response-driven (`wire.Handler` echoes `Datastar-Selector` back for you) or client-side via `Action.Selector` (`{selector: '#region'}`, the adopted v1.0.3 option).
+
+The region-merge style is symmetric again via `Action.Swap` (a `wire.PatchMode`): htmx renders `hx-swap` (`innerHTML`/`outerHTML`/…) and Datastar renders `{mode: 'inner'}`. The zero value renders nothing in either dialect — both default to `inner`. All Datastar fetch options (selector, mode, contentType) travel in ONE object literal; the runtime reads exactly one options argument.
 
 ## Web Components
 
