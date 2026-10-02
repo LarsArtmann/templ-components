@@ -14,33 +14,18 @@ func TestProbeBusyButtonSelector(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(server.BaseURL()+"/wire?transport=datastar"),
-		chromedp.Sleep(3*time.Second),
-		chromedp.Evaluate(
-			`window.__dsEvents=[];['datastar-fetch','datastar-patch-elements'].forEach(n=>document.addEventListener(n,()=>window.__dsEvents.push(n),true));`,
-			nil,
-		),
+		chromedp.Sleep(2*time.Second),
 	); err != nil {
-		t.Fatal(err)
-	}
-
-	var clicked string
-	if err := chromedp.Run(ctx, chromedp.Evaluate(
-		`(() => { const b=[...document.querySelectorAll('button')].find(el => (el.getAttribute('data-on:click')||'').includes('/api/wire/busy')); if(b) b.click(); return 'clicked=' + !!b; })()`,
-		&clicked,
-	)); err != nil {
-		t.Fatal(err)
-	}
-
-	if err := chromedp.Run(ctx, chromedp.Sleep(3*time.Second)); err != nil {
 		t.Fatal(err)
 	}
 
 	var out string
 	if err := chromedp.Run(ctx, chromedp.Evaluate(
-		`JSON.stringify({region: (document.getElementById('wire-busy-datastar-out')||{}).innerText, events: window.__dsEvents})`,
-		&out,
-	)); err != nil {
+		`JSON.stringify({
+			scripts: [...document.querySelectorAll('script[src]')].map(s => s.getAttribute('src')),
+			inlineScripts: [...document.querySelectorAll('script:not([src])')].length,
+		})`, &out)); err != nil {
 		t.Fatal(err)
 	}
-	t.Log("PROBE:", clicked, out)
+	t.Log("PROBE:", out)
 }
