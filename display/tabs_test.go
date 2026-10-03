@@ -5,6 +5,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 func TestTabsRender(t *testing.T) {
@@ -225,6 +226,74 @@ func TestTabsWire(t *testing.T) {
 			},
 			Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/tabs/{tab}"},
 		}))
-		utils.AssertContains(t, output, `data-on:click__prevent="&#39;` /* placeholder replaced below */)
+		utils.AssertContains(t, output, `data-on:click__prevent="@get(&#39;/api/tabs/general&#39;)"`)
+		utils.AssertContains(t, output, `data-on:click__prevent="@get(&#39;/api/tabs/advanced&#39;)"`)
+		utils.AssertNotContains(t, output, "hx-")
+	})
+
+	t.Run("empty Target defaults to the container's own #ID (htmx)", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, Tabs(TabsProps{
+			ID: "prefs-tabs",
+			Tabs: []Tab{
+				{ID: "general", Label: "General"},
+			},
+			Wire: &wire.Action{URL: "/api/tabs/{tab}"},
+		}))
+		utils.AssertContains(t, output, `hx-target="#prefs-tabs"`)
+	})
+
+	t.Run("empty URL wires nothing (inert anchors)", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, Tabs(TabsProps{
+			ID: "prefs-tabs",
+			Tabs: []Tab{
+				{ID: "general", Label: "General"},
+			},
+			Wire: &wire.Action{},
+		}))
+		utils.AssertNotContains(t, output, "hx-get")
+		utils.AssertNotContains(t, output, "data-on:")
+	})
+
+	t.Run("consumer action is never mutated", func(t *testing.T) {
+		t.Parallel()
+
+		original := &wire.Action{URL: "/api/tabs/{tab}"}
+		snapshot := *original
+
+		_ = utils.Render(t, Tabs(TabsProps{
+			ID: "prefs-tabs",
+			Tabs: []Tab{
+				{ID: "general", Label: "General"},
+				{ID: "advanced", Label: "Advanced"},
+			},
+			Wire: original,
+		}))
+
+		if *original != snapshot {
+			t.Errorf("Tabs mutated the consumer's action: %+v", *original)
+		}
+		if original.Target != "" {
+			t.Errorf("Target = %q, want empty (the clone carries the default, not the original)", original.Target)
+		}
+	})
+
+	t.Run("ClientSide is ignored when Wire is set", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, Tabs(TabsProps{
+			ID:         "prefs-tabs",
+			ClientSide: true,
+			Tabs: []Tab{
+				{ID: "general", Label: "General"},
+			},
+			Wire: &wire.Action{URL: "/api/tabs/{tab}", Target: "#prefs-tabs"},
+		}))
+		utils.AssertNotContains(t, output, "data-tc-tabs")
+		utils.AssertNotContains(t, output, "tcTabsAttached")
+		utils.AssertContains(t, output, `hx-get="/api/tabs/general"`)
 	})
 }
