@@ -229,7 +229,7 @@ A `go doc`-style generated API reference (pkg.go.dev works for this) would speed
 2. ~~**Document the Go module cache `@source` path** — saves 30 minutes of CSS-not-applying debugging~~ done — docs/recipes/vendored-tailwind-scanning.md
 3. ~~**Add `GridColsAutoFit` or `MinColWidth` to GridProps** — common dashboard pattern, currently requires `Class` escape hatch~~ done — docs/recipes/grid-blowout-minmax.md
 4. ~~**Consider CSS-variable-based surface tokens** instead of hardcoded `bg-white` — eliminates the fragile `.bg-white` bridge workaround~~ done — docs/recipes/vendored-tailwind-scanning.md
-5. **Add `TitleClass`/`HeaderClass` or `Header templ.Component` slot to Card** — unlocks custom card headers without full Body-slot replacement
+~~5. **Add `TitleClass`/`HeaderClass` or `Header templ.Component` slot to Card** — unlocks custom card headers without full Body-slot replacement~~ done — Card ships TitleClass/HeaderClass/TitleComponent + Header slot (display/card.templ)
 6. ~~**Document dark mode strategy implications for `prefers-color-scheme` consumers** — set expectations about partial dark mode support~~ done — docs/dark-mode-research.md
 
 ---

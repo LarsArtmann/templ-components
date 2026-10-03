@@ -1,8 +1,8 @@
 # Bug Report: Table-in-Card Double Border
 
-**Consumer:** cqrs-htmx adminui (v0.15.0)
+**Consumer:** ~~cqrs-htmx adminui (v0.15.0)~~ done — fixed by `Table.Flush` (border suppression for table-in-card), documented in AGENTS.md "Card/Table composition"
 **Date:** 2026-07-12
-**Severity:** Medium — visible visual defect on every table page
+~~**Severity:** Medium — visible visual defect on every table page~~ resolved — see AGENTS.md Card/Table composition bullet
 **Components affected:** `display.Table` inside `display.Card(CardPaddingNone)`
 
 ---

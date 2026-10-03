@@ -177,7 +177,7 @@ Sorted by **impact × ease** (Pareto — high impact, low effort first):
 | ~~15~~ | ~~Step indicator vertical variant~~ done — feedback/step indicator.templ StepVertical                       | ~~Medium~~ | ~~M~~  | ~~feedback~~            |
 | ~~16~~ | ~~Client-side JS tab switching~~ done — display/tabs.templ client-side JS                                   | ~~Medium~~ | ~~M~~  | ~~display~~             |
 | ~~17~~ | ~~Tabs keyboard navigation (arrow keys)~~ done — display/tabs.templ arrow keys                              | ~~Medium~~ | ~~M~~  | ~~display~~             |
-| 18     | Consolidate inline JS into shared init                                                                      | High       | L      | layout/display/feedback |
+~~| 18     | Consolidate inline JS into shared init                                                                      | High       | L      | layout/display/feedback |~~ done — ADR-0005 singleton-guard pattern adopted repo-wide (docs/adr/0005)
 | ~~19~~ | ~~Add Form component (inputs + validation)~~ done — forms/form.templ                                        | ~~High~~   | ~~L~~  | ~~forms~~               |
 | ~~20~~ | ~~Skeleton component variants~~ done — feedback testdata skeleton goldens                                   | ~~Medium~~ | ~~L~~  | ~~display~~             |
 | ~~21~~ | ~~Add Dialog/Drawer component variants~~ done — display/drawer.templ                                        | ~~High~~   | ~~L~~  | ~~display~~             |

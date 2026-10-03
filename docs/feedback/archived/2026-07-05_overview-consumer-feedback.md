@@ -68,7 +68,7 @@ Class-based dark mode strategy (`@custom-variant dark (&:where(.dark, .dark *))`
 
 ### 1. `HTMXVersion = ""` to disable CDN injection — undocumented and non-obvious
 
-**Severity:** High (integration friction)
+~~**Severity:** High (integration friction)~~ done — resolved 2026-07-10: godoc + README document suppression; later superseded by the self-host default (v2.0, ADR-0022) and `layout.HTMXNone` (v1.19.3)
 
 `DefaultPageProps()` sets `HTMXVersion: HTMXVersion2_0_10` and `HTMXUseSRI: true`, which auto-injects:
 
@@ -97,7 +97,7 @@ Or at minimum, document in `DefaultPageProps()` godoc: "Set `HTMXVersion = ""` t
 
 ### 2. `CSSPath` defaults to `"/app.css"` — another silent auto-inject
 
-**Severity:** Medium (integration friction)
+~~**Severity:** Medium (integration friction)~~ done — resolved 2026-07-10: godoc + README document the default and suppression
 
 `DefaultPageProps()` sets `CSSPath: "/app.css"`, which injects `<link rel="stylesheet" href="/app.css">`. Apps using Tailwind via browser CDN don't have an `app.css`. I had to explicitly set `CSSPath = ""` to suppress a 404.
 
@@ -105,7 +105,7 @@ Same suggestion: document this default, or make `CSSPath` default to `""` (opt-i
 
 ### 3. Skeleton components exist but are undiscoverable — **✅ RESOLVED**
 
-> **✅ RESOLVED:** `feedback.SkeletonCardGrid(count)` convenience function exists since v0.10.0. README updated.
+> **✅ RESOLVED:** `feedback.SkeletonCardGrid(count)` convenience function exists since v0.10.0. README updated. ~~Still missing: demo page showcase, cross-reference from `EmptyState` godoc.~~ done — demo showcase shipped (`examples/demo/feedback_demo.templ` "Skeletons" section); the EmptyState godoc cross-reference was not added (trivial nice-to-have)
 
 **Severity:** Medium (discoverability)
 
@@ -119,7 +119,7 @@ This is a documentation problem, not a missing feature. The README component cat
 
 ### 4. `StatCard` has no link support
 
-**Severity:** Medium (ergonomic)
+~~**Severity:** Medium (ergonomic)~~ done — `StatCardProps.Href` shipped (renders `<a>` wrapper; appendix 4)
 
 Overview's stats row makes each StatCard a clickable filter link:
 
@@ -133,7 +133,7 @@ The raw `<a>` wrapper works but bypasses `utils.Class` merging and accessibility
 
 ### 5. `SimpleNavProps` has no right-side slot
 
-**Severity:** Low-medium (ergonomic)
+~~**Severity:** Low-medium (ergonomic)~~ done — `SimpleNavProps.RightItems` shipped (appendix 5)
 
 Overview renders `layout.ThemeToggle` outside `SimpleNav` in a separate flex container:
 
@@ -159,7 +159,7 @@ type SimpleNavProps struct {
 
 ### 6. No responsive grid helper
 
-**Severity:** Low (DRY)
+~~**Severity:** Low (DRY)~~ done — `display.Grid` + typed `GridCols` shipped (appendix 6)
 
 The pattern `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">` appears in multiple Overview templates. A `layout.Grid` or `display.CardGrid` with configurable column counts would reduce repetition:
 
