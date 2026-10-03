@@ -1,5 +1,9 @@
 # Archive Manifest — 2026-10-03 docs-health sweep
 
+Every archived report carries inline resolutions in the skill's marker format:
+`~~<original item>~~ done at <evidence>` (variants: `Won't implement — <reason>`,
+`NOT-DO — <reason>`). This manifest itself is an index, not a report.
+
 One line per file archived by the 2026-10-03 docs-health pass (skill rule: bulk
 archives carry a manifest; single-file archives are exempt). Classification per
 the docs-health ANNOTATE/ARCHIVE table: every numbered item resolved inline
