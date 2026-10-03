@@ -33,7 +33,7 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **JavaScript**         | HATEOAS (enhances HTML)                        | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js**   | No                                             | No                            | Yes                                            |
 | **Components**         | 123                                            | 40+                           | —                                              |
-| **Typed props**        | 59 enums                                       | —                             | —                                              |
+| **Typed props**        | 64 enums                                       | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)                              | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts)                     | Yes                           | —                                              |
 | **Container queries**  | 8 opt-in components + fluid typography (`cqi`) | —                             | —                                              |
