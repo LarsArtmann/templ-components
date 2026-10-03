@@ -232,6 +232,77 @@ templ wireDemo(transport demoTransport) {
 		}
 	</div>
 	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Swap styles (one field, both dialects)</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+			<code>Action.Swap = PatchModeAppend</code> renders htmx's
+			<code>hx-swap="beforeend"</code>; under Datastar the merge mode is the
+			endpoint's <code>datastar-mode</code> response header (wire.Handler) — the
+			Action is IDENTICAL. Each click appends a timestamped line.
+		</p>
+		if transport == demoTransportBoth {
+			@display.Grid(display.GridProps{
+				Cols: display.GridCols2,
+				Gap:  display.GridGapMD,
+			}) {
+				<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4">
+					<h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">HTMX</h4>
+					@wireSwapAppendButton(wire.TransportHTMX)
+					<div id="wire-swap-htmx-out" class="mt-3" aria-live="polite"></div>
+				</div>
+				<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4">
+					<h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Datastar</h4>
+					@wireSwapAppendButton(wire.TransportDatastar)
+					<div id="wire-swap-datastar-out" class="mt-3" aria-live="polite"></div>
+				</div>
+			}
+		} else if transport.wireTransport() == wire.TransportDatastar {
+			@wireSwapAppendButton(wire.TransportDatastar)
+			<div id="wire-swap-datastar-out" class="mt-3" aria-live="polite"></div>
+		} else {
+			@wireSwapAppendButton(wire.TransportHTMX)
+			<div id="wire-swap-htmx-out" class="mt-3" aria-live="polite"></div>
+		}
+	</div>
+	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Remove mode (region retraction)</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+			<code>PatchModeRemove</code> DELETES the matched element instead of patching
+			into it — htmx's <code>hx-swap="delete"</code>, Datastar's <code>remove</code>
+			merge mode via the response header. The region is gone until you reload.
+		</p>
+		if transport == demoTransportBoth {
+			@display.Grid(display.GridProps{
+				Cols: display.GridCols2,
+				Gap:  display.GridGapMD,
+			}) {
+				<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4">
+					<h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">HTMX</h4>
+					<div id="wire-remove-htmx-region" class="flex items-center gap-3">
+						<p class="text-sm text-gray-500 dark:text-gray-400">Dismiss me — the whole card goes away.</p>
+						@wireRemoveButton(wire.TransportHTMX, "#wire-remove-htmx-region")
+					</div>
+				</div>
+				<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4">
+					<h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Datastar</h4>
+					<div id="wire-remove-datastar-region" class="flex items-center gap-3">
+						<p class="text-sm text-gray-500 dark:text-gray-400">Dismiss me — the whole card goes away.</p>
+						@wireRemoveButton(wire.TransportDatastar, "#wire-remove-datastar-region")
+					</div>
+				</div>
+			}
+		} else if transport.wireTransport() == wire.TransportDatastar {
+			<div id="wire-remove-datastar-region" class="flex items-center gap-3">
+				<p class="text-sm text-gray-500 dark:text-gray-400">Dismiss me — the whole card goes away.</p>
+				@wireRemoveButton(wire.TransportDatastar, "#wire-remove-datastar-region")
+			</div>
+		} else {
+			<div id="wire-remove-htmx-region" class="flex items-center gap-3">
+				<p class="text-sm text-gray-500 dark:text-gray-400">Dismiss me — the whole card goes away.</p>
+				@wireRemoveButton(wire.TransportHTMX, "#wire-remove-htmx-region")
+			</div>
+		}
+	</div>
+	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
 		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">File upload</h3>
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
 			The classic hypermedia wallflower: <code>Enctype: forms.FormEnctypeMultipart</code>
@@ -579,6 +650,40 @@ templ wireBusyButtonDatastar() {
 	</div>
 }
 
+// wireSwapAppendButton renders the append-mode demo button: the SAME action
+// in both dialects — Swap: PatchModeAppend renders hx-swap="beforeend" under
+// htmx, while the Datastar endpoint's response header owns the merge mode.
+templ wireSwapAppendButton(transport wire.Transport) {
+	@display.Button(display.ButtonProps{
+		Text:    "Append a line",
+		Variant: display.ButtonSecondary,
+		Size:    display.ButtonSizeSM,
+		Wire: &wire.Action{
+			Transport: transport,
+			URL:       demoURL("/api/wire/swap-line"),
+			Swap:      wire.PatchModeAppend,
+		},
+	})
+}
+
+// wireRemoveButton renders the remove-mode demo button: PatchModeRemove
+// deletes the matched region — hx-swap="delete" under htmx, the remove merge
+// mode via the Datastar endpoint's response header.
+templ wireRemoveButton(transport wire.Transport, region string) {
+	@display.Button(display.ButtonProps{
+		Text:    "Dismiss",
+		Variant: display.ButtonDanger,
+		Size:    display.ButtonSizeSM,
+		Wire: &wire.Action{
+			Transport: transport,
+			Method:    wire.MethodPost,
+			URL:       demoURL("/api/wire/remove-region"),
+			Swap:      wire.PatchModeRemove,
+			Target:    region,
+		},
+	})
+}
+
 // wireDemoValidateInput wires the validation input in the selected dialect:
 // the typed wire contract under htmx (hx-get + hx-trigger="change"), the
 // Attrs escape hatch with a bound signal under Datastar.
@@ -762,6 +867,12 @@ templ wireFilterResults(query string) {
 			}
 		</ul>
 	}
+}
+
+// wireSwapLine is the appended fragment for the swap-styles demo: one
+// timestamped line, no region wrapper (the caller's merge mode appends it).
+templ wireSwapLine(stamp string) {
+	<p class="text-sm text-gray-500 dark:text-gray-400">Appended at { stamp }</p>
 }
 
 // wireBusyDelay makes the busy state visible to humans and e2e drivers.

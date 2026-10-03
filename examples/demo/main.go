@@ -497,6 +497,31 @@ func newMux() *http.ServeMux {
 		componentOr500(w, r, wireBusyDone(transport))
 	})))
 
+	// Swap-style demo: the SAME action field (Swap: PatchModeAppend) drives
+	// both dialects — htmx renders hx-swap="beforeend" client-side; the
+	// Datastar caller gets the merge mode from the response header.
+	mux.Handle("GET /api/wire/swap-line", wire.Handler(wire.PatchTarget{
+		Selector: "#wire-swap-datastar-out",
+		Mode:     wire.PatchModeAppend,
+	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
+		componentOr500(w, r, wireSwapLine(time.Now().Format("15:04:05")))
+	})))
+
+	// Remove-mode demo: PatchModeDelete retracts the region — htmx's
+	// hx-swap="delete" targets the region client-side; the Datastar caller
+	// gets mode "remove" via the response header (the empty body patch
+	// removes the matched element instead of filling it).
+	mux.Handle("POST /api/wire/remove-region", wire.Handler(wire.PatchTarget{
+		Selector: "#wire-remove-datastar-region",
+		Mode:     wire.PatchModeRemove,
+	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
+		_, _ = io.WriteString(w, "")
+	})))
+
 	// File-upload demo: multipart endpoint shared by both dialects. The
 	// wired form travels the CSRF hidden input too — FormData serializes the
 	// whole form in both runtimes.

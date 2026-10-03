@@ -29,6 +29,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Action stays a pure poller (no click trigger is added); `Reveal.Exit` is
   Datastar-only (htmx degrades to the entry trigger, documented); `Reveal`
   zero value fires once (htmx `revealed` = intersect once).
+- **`display.Tabs` `Wire` — server-side tab switching (ADR-0036).** Each tab
+  link carries the wired action with the URL's `{tab}` placeholder
+  substituted (the Calendar MonthNav URL-template convention); htmx
+  self-replaces the container with `outerHTML settle:0s` (the re-bind-window
+  rationale proven on the Calendar arrows), Datastar targets via response
+  headers or id-matching; an empty `Wire.Target` defaults to the container's
+  own `#ID`; the anchor hash-hrefs stay as the no-JS fallback (the clone
+  sets `PreventDefault`); `ClientSide` is ignored when wired — one switching
+  model at a time. Both-dialect rendering tests + non-mutation pin + wired
+  goldens; `SimpleNav` inherits wired links through the shared
+  `NavLinkProps` (golden-pinned both dialects).
 - **Per-patch View Transitions under Datastar:
   `wire.PatchTarget.UseViewTransitions`.** `wire.Handler` stamps
   `Datastar-Use-View-Transition: true` (bundle-decoded: the kebab-cased
