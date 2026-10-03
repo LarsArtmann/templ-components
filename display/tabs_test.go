@@ -276,6 +276,7 @@ func TestTabsWire(t *testing.T) {
 		if *original != snapshot {
 			t.Errorf("Tabs mutated the consumer's action: %+v", *original)
 		}
+
 		if original.Target != "" {
 			t.Errorf("Target = %q, want empty (the clone carries the default, not the original)", original.Target)
 		}

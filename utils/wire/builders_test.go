@@ -33,12 +33,15 @@ func TestConstructors(t *testing.T) {
 			if action == nil {
 				t.Fatal("constructor returned nil")
 			}
+
 			if action.URL != "/api/thing" {
 				t.Errorf("URL = %q, want /api/thing", action.URL)
 			}
+
 			if action.Method != tt.wantMethod {
 				t.Errorf("Method = %q, want %q", action.Method, tt.wantMethod)
 			}
+
 			if action.Transport != TransportUnspecified {
 				t.Errorf("Transport = %q, want the htmx zero default", action.Transport)
 			}
@@ -86,36 +89,30 @@ func TestBuildersReturnCopiesNeverMutate(t *testing.T) {
 	}
 
 	// The copy carries every chained change.
-	if chained.Target != "#out" {
-		t.Errorf("chained.Target = %q, want #out", chained.Target)
+	for _, c := range []struct {
+		name string
+		got  any
+		want any
+	}{
+		{"Target", chained.Target, "#out"},
+		{"Swap", chained.Swap, PatchModeOuter},
+		{"ContentType", chained.ContentType, ContentTypeForm},
+		{"DebounceMS", chained.DebounceMS, 300},
+		{"ThrottleMS", chained.ThrottleMS, 1000},
+		{"Event", chained.Event, EventSubmit},
+		{"Method", chained.Method, MethodPut},
+		{"Selector", chained.Selector, "#the-form"},
+		{"Interval", chained.Interval, "10s"},
+	} {
+		if c.got != c.want {
+			t.Errorf("chained.%s = %v, want %v", c.name, c.got, c.want)
+		}
 	}
-	if chained.Swap != PatchModeOuter {
-		t.Errorf("chained.Swap = %q, want outer", chained.Swap)
-	}
-	if chained.ContentType != ContentTypeForm {
-		t.Errorf("chained.ContentType = %q, want form", chained.ContentType)
-	}
-	if chained.DebounceMS != 300 {
-		t.Errorf("chained.DebounceMS = %d, want 300", chained.DebounceMS)
-	}
-	if chained.ThrottleMS != 1000 {
-		t.Errorf("chained.ThrottleMS = %d, want 1000", chained.ThrottleMS)
-	}
-	if chained.Event != EventSubmit {
-		t.Errorf("chained.Event = %q, want submit", chained.Event)
-	}
-	if chained.Method != MethodPut {
-		t.Errorf("chained.Method = %q, want put", chained.Method)
-	}
-	if chained.Selector != "#the-form" {
-		t.Errorf("chained.Selector = %q, want #the-form", chained.Selector)
-	}
-	if chained.Interval != "10s" {
-		t.Errorf("chained.Interval = %q, want 10s", chained.Interval)
-	}
+
 	if chained.Reveal == nil || chained.Reveal.ThresholdPercent != 50 {
 		t.Errorf("chained.Reveal = %+v, want threshold 50", chained.Reveal)
 	}
+
 	if !chained.PreventDefault {
 		t.Error("chained.PreventDefault = false, want true")
 	}
@@ -187,9 +184,11 @@ func TestWithFormDefaults(t *testing.T) {
 			if got.Event != tt.wantEvent {
 				t.Errorf("Event = %q, want %q", got.Event, tt.wantEvent)
 			}
+
 			if got.ContentType != tt.wantContent {
 				t.Errorf("ContentType = %q, want %q", got.ContentType, tt.wantContent)
 			}
+
 			if tt.action != before {
 				t.Errorf("WithFormDefaults mutated the receiver: %+v", tt.action)
 			}
@@ -215,6 +214,7 @@ func TestThrottleRendersBothDialects(t *testing.T) {
 		if !ok {
 			t.Fatalf("hx-trigger missing or not a string: %v", attrs["hx-trigger"])
 		}
+
 		if !strings.Contains(trigger, "throttle:500ms") {
 			t.Errorf("hx-trigger = %q, want it to contain throttle:500ms", trigger)
 		}
@@ -236,6 +236,7 @@ func TestThrottleRendersBothDialects(t *testing.T) {
 				found = true
 			}
 		}
+
 		if !found {
 			t.Errorf("no datastar attribute carries __throttle.500ms: %v", attrs)
 		}
@@ -284,6 +285,7 @@ func TestThrottleRendersBothDialects(t *testing.T) {
 				found = true
 			}
 		}
+
 		if !found {
 			t.Errorf("no attribute pipelines debounce.200ms then throttle.1000ms: %v", attrs)
 		}
@@ -302,6 +304,7 @@ func TestThrottleRendersBothDialects(t *testing.T) {
 		if !ok {
 			t.Fatalf("hx-trigger missing: %v", attrs)
 		}
+
 		for _, want := range []string{"delay:200ms", "throttle:1000ms", "changed"} {
 			if !strings.Contains(trigger, want) {
 				t.Errorf("hx-trigger = %q, want it to contain %q", trigger, want)
@@ -321,6 +324,7 @@ func TestWithTransportComposesWithConstructors(t *testing.T) {
 	if action.Transport != TransportDatastar {
 		t.Errorf("Transport = %q, want datastar", action.Transport)
 	}
+
 	if action.Method != MethodPost || action.URL != "/api/save" {
 		t.Errorf("WithTransport altered other fields: %+v", action)
 	}
@@ -333,10 +337,12 @@ func TestWithTransportComposesWithConstructors(t *testing.T) {
 		if strings.HasPrefix(key, "data-on:") {
 			datastarKey = true
 		}
+
 		if strings.HasPrefix(key, "hx-") {
 			t.Errorf("datastar action rendered htmx attribute %q", key)
 		}
 	}
+
 	if !datastarKey {
 		t.Error("datastar action rendered no data-on attribute")
 	}

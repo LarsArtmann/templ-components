@@ -46,7 +46,11 @@ func TestGoldenSweepSimpleNav(t *testing.T) {
 			CurrentPath: "/",
 			Links: []NavLinkProps{
 				{Href: "/reports", Text: "Reports", Wire: &wire.Action{URL: "/api/nav/reports"}},
-				{Href: "/billing", Text: "Billing", Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/nav/billing"}},
+				{
+					Href: "/billing",
+					Text: "Billing",
+					Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/nav/billing"},
+				},
 				{Href: "/settings", Text: "Settings"},
 			},
 		}))},

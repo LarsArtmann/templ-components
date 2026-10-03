@@ -191,7 +191,10 @@ func TestTriggerSwapAndTargetCompose(t *testing.T) {
 	// trigger expression.
 	assertAttrContains(t, dsAttrs, "data-on-intersect__once", "@get('/x')")
 
-	if value := fmt.Sprint(dsAttrs["data-on-intersect__once"]); strings.Contains(value, "mode:") || strings.Contains(value, "selector:") {
+	if value := fmt.Sprint(
+		dsAttrs["data-on-intersect__once"],
+	); strings.Contains(value, "mode:") ||
+		strings.Contains(value, "selector:") {
 		t.Fatalf("trigger expression must not carry client options the runtime ignores: %q", value)
 	}
 }

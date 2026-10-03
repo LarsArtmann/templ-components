@@ -399,16 +399,6 @@ func escapeSingleQuotes(value string) string {
 	return strings.ReplaceAll(value, `'`, `\'`)
 }
 
-// datastarSwapMode resolves Swap to a Datastar fetch mode, or "" when unset or
-// unknown (render nothing, use the runtime/response-header default).
-func datastarSwapMode(swap PatchMode) string {
-	if !PatchModeIsValid(swap) || swap == PatchModeUnspecified {
-		return ""
-	}
-
-	return string(swap)
-}
-
 // htmxSwapStyles maps the shared PatchMode vocabulary onto htmx hx-swap styles.
 // PatchModeReplace is Datastar-only (a morphing replaceWith) and degrades to
 // htmx's closest style, outerHTML.

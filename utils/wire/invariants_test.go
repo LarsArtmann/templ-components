@@ -248,7 +248,11 @@ func TestSwapDialectIsolation(t *testing.T) {
 			}.Attributes()
 
 			if datastarAttrsContain(attrs, "mode:") {
-				t.Fatalf("datastar dialect must not render a mode option (the runtime ignores it) for %q, got %v", swap, attrs)
+				t.Fatalf(
+					"datastar dialect must not render a mode option (the runtime ignores it) for %q, got %v",
+					swap,
+					attrs,
+				)
 			}
 
 			for key, value := range attrs {

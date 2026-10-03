@@ -183,9 +183,9 @@ func (a Action) datastarTriggerAttrs() templ.Attributes {
 		}
 
 		switch percent := clampPercent(reveal.ThresholdPercent); {
-		case percent == 100:
+		case percent == revealThresholdFull:
 			key += "__full"
-		case percent == 50:
+		case percent == revealThresholdHalf:
 			key += "__half"
 		case percent > 0:
 			key += "__threshold." + strconv.Itoa(percent)
@@ -205,13 +205,20 @@ func (a Action) datastarTriggerAttrs() templ.Attributes {
 	return attrs
 }
 
+// Named reveal-threshold percentages: the Datastar runtime's special
+// modifier spellings (bundle-decoded) and the clamp ceiling.
+const (
+	revealThresholdFull = 100
+	revealThresholdHalf = 50
+)
+
 // clampPercent bounds a reveal threshold to [0, 100].
 func clampPercent(percent int) int {
 	switch {
 	case percent < 0:
 		return 0
-	case percent > 100:
-		return 100
+	case percent > revealThresholdFull:
+		return revealThresholdFull
 	default:
 		return percent
 	}
