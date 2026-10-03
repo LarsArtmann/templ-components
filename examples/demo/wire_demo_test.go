@@ -1129,3 +1129,22 @@ func TestWireWizardEndpoint(t *testing.T) {
 		t.Error("unknown step must restart the wizard at step 0")
 	}
 }
+
+// TestWireDemoSingleOptionsObject pins the ONE-options-object rule at the
+// demo-render level: every data-on action expression on the rendered wire
+// page carries at most one `{` — the pinned runtime reads exactly one options
+// argument, so a second object is silently ignored (the 2026-10-02 regression
+// class: `{selector: …}, {contentType: 'form'}` dropped form encoding).
+func TestWireDemoSingleOptionsObject(t *testing.T) {
+	t.Parallel()
+
+	html := fetchDemoHTML(t)
+
+	re := regexp.MustCompile(`data-on:[a-zA-Z:_-]+="([^"]*)"`)
+	for _, m := range re.FindAllStringSubmatch(html, -1) {
+		expr := m[1]
+		if strings.Count(expr, "{") > 1 {
+			t.Errorf("action expression emits more than one options object: %q", expr)
+		}
+	}
+}
