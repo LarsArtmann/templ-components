@@ -66,3 +66,10 @@ Format: `{"<route>": {"<rule>|<impact>": <budget>}}`
   (same discipline as the vnu ignore classes, TODO_LIST #216).
 - **A sweep failure** → fix the markup. Extending the ledger is the last
   resort and must state why the violation cannot be fixed now.
+- **Theme pin self-verification (2026-09-17 lesson):** the sweep's theme pin
+  re-applies once and FAILS LOUDLY if the class still mismatches. A pin that
+  silently lost the race under machine load produced bogus `color-contrast`
+  findings (dark `bg-blue-500` values reported on light-pinned routes) —
+  never audit a silently-wrong render. Headless Chromium defaults to
+  `prefers-color-scheme: dark`; "light" audits that skip the pin are
+  actually dark renders.
