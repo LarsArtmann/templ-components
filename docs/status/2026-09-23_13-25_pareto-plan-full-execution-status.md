@@ -19,11 +19,12 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 ### Tier 1 — trust spine (10/10)
 
 ~~- **T01** ogshot smoke: website dist built, real capture → `website/public/og/sales.png` (90KB), exit 0.~~ done — website/public/og/sales.png (ogshot real capture)
+
 - **T02** shots smoke: index light+dark full-page captures (2.8MB each).
 - **T03** siteshots smoke: 25 captures light/dark × desktop/mobile + search smoke PASS (8 hits).
-~~- **T04** Full `nix run .#visual` witnessed green twice (137s final). Root-caused `TestSiteSalesCopyButton` flake: bare `chromedp.Text` read raced the clipboard-write `.then` label-swap → replaced with a falsy-until-swapped `pollText` (repo's own poll-helper rule). Learned/recorded: **load-sensitive class on this 32-core shared box** — signature is light AND dark site goldens failing ~100% while demo-route goldens pass; remedy `-parallel 4` (recorded in AGENTS.md).~~ done — pollText helper + AGENTS.md:322 load-flake lesson
-~~- **T05** Advisory dup-gate lane in `scripts/ci-repro.sh`: resolves `$ART_DUPL_BIN` → `/tmp/art-dupl-fork` → PATH, echoes `art-dupl --version` beside the verdict, never fails the run.~~ done — advisory art-dupl lane in scripts/ci-repro.sh:289-314
-~~- **T05b** Binary-supply decision recorded in ADR-0009 (documented-PATH; flake pin deliberately deferred until fork detector stabilizes / #292/#293).~~ done — ADR-0009:585 binary-supply decision (documented-PATH)
+  ~~- **T04** Full `nix run .#visual` witnessed green twice (137s final). Root-caused `TestSiteSalesCopyButton` flake: bare `chromedp.Text` read raced the clipboard-write `.then` label-swap → replaced with a falsy-until-swapped `pollText` (repo's own poll-helper rule). Learned/recorded: **load-sensitive class on this 32-core shared box** — signature is light AND dark site goldens failing ~100% while demo-route goldens pass; remedy `-parallel 4` (recorded in AGENTS.md).~~ done — pollText helper + AGENTS.md:322 load-flake lesson
+  ~~- **T05** Advisory dup-gate lane in `scripts/ci-repro.sh`: resolves `$ART_DUPL_BIN` → `/tmp/art-dupl-fork` → PATH, echoes `art-dupl --version` beside the verdict, never fails the run.~~ done — advisory art-dupl lane in scripts/ci-repro.sh:289-314
+  ~~- **T05b** Binary-supply decision recorded in ADR-0009 (documented-PATH; flake pin deliberately deferred until fork detector stabilizes / #292/#293).~~ done — ADR-0009:585 binary-supply decision (documented-PATH)
 - **T06** Baseline determinism: two fresh recordings byte-identical modulo `recordedAt`, both equal to the committed baseline (and to HEAD's entries).
 - **T07** Squash: landed `146fbf94` "feat: dedup follow-through — typed heading enum, drift guard, ADR hygiene" (33 files) as ONE properly-messaged commit. (The original 8-commit daemon blob was already pushed by the daemon — force-push forbidden, so that history stands.)
 - **T08** Green at tip: build + display/forms/utils + gate all OK.
@@ -58,12 +59,12 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 
 - **T30** `tc new` → shipped-commands rewording (2 live refs) (#288a).
 - **T31** Verified docs carry NO numeric tc-add coverage claims — nothing to fix (#288b, closed as verified-no-claims).
-~~- **T32** CHANGELOG `### Fixed` entry for the 22-component scaffolder rescue (#288c).~~ done — CHANGELOG v1.19.3 `### Fixed` rescue entry
-~~- **T33** `TC_SKIP_SYNC=1` opt-out with a loud banner (#289a).~~ done — TC_SKIP_SYNC=1 (check-tc-sources-sync.sh:37)
-~~- **T34** Guard runtime printed beside every verdict (86ms measured) (#289b).~~ done — guard runtime print (check-tc-sources-sync.sh:50)
-~~- **T35** Starter CSS re-synced from templates/ (it predated the `.go`-scanning `@source` lesson + several custom.css sections) and pinned byte-identical by `TestStarterCSSMatchesTemplates`; `tc-snap-*` kept as documented consumer utilities (#290).~~ done — TestStarterCSSMatchesTemplates (utils/starter_css_sync_test.go)
-~~- **T36** `tc ls` derived "N components addable" footer (#294a).~~ done — `tc ls` addable footer (cmd/tc/main.go:331)
-~~- **T37** Guard-failure output review — all paths print actionable pointers (#294b).~~ done — guard prints actionable `--fix` pointers (script:191)
+  ~~- **T32** CHANGELOG `### Fixed` entry for the 22-component scaffolder rescue (#288c).~~ done — CHANGELOG v1.19.3 `### Fixed` rescue entry
+  ~~- **T33** `TC_SKIP_SYNC=1` opt-out with a loud banner (#289a).~~ done — TC_SKIP_SYNC=1 (check-tc-sources-sync.sh:37)
+  ~~- **T34** Guard runtime printed beside every verdict (86ms measured) (#289b).~~ done — guard runtime print (check-tc-sources-sync.sh:50)
+  ~~- **T35** Starter CSS re-synced from templates/ (it predated the `.go`-scanning `@source` lesson + several custom.css sections) and pinned byte-identical by `TestStarterCSSMatchesTemplates`; `tc-snap-*` kept as documented consumer utilities (#290).~~ done — TestStarterCSSMatchesTemplates (utils/starter_css_sync_test.go)
+  ~~- **T36** `tc ls` derived "N components addable" footer (#294a).~~ done — `tc ls` addable footer (cmd/tc/main.go:331)
+  ~~- **T37** Guard-failure output review — all paths print actionable pointers (#294b).~~ done — guard prints actionable `--fix` pointers (script:191)
 
 **Tooling UX + site-tier cluster:**
 
@@ -72,23 +73,24 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 ~~- **T40** Twin cross-ref comments for `calendarNavQuery` (demo ↔ e2e) (#302).~~ done — TWIN comments on calendarNavQuery copies
 ~~- **T41** `site_routes_test.go` now uses `internal/distserver.Handler` (was a verbatim copy); packages MOVED from `tools/internal/` → `internal/` so the whole module can import them (#273 fully closed).~~ done — TODO #273 struck; visualtest/internal/distserver.Handler
 ~~- **T42** 575-vs-548 forensics closed: the `_sources` exclude is NOT the whole delta (today a no-exclude scan would be ~657); paste-era generation non-reproducible (#310).~~ done — ADR-0009:609-615 657-file generation-skew verdict (#310)
+
 - **T43** varnamelen verdict: keep linter + forced renames; one-time churn (#307).
 - **T44** Demo smoke coverage confirmed: display_demo renders EmptyState ×2 + CollapsibleSection ×2 + Card ×16 (#311).
-~~- **T45** `//art-dupl:accept` directives REJECTED vs hash baseline — reasoning recorded in ADR-0009 (#314).~~ Won't implement — rejected in ADR-0009:596: directives NOT adopted (#314)
+  ~~- **T45** `//art-dupl:accept` directives REJECTED vs hash baseline — reasoning recorded in ADR-0009 (#314).~~ Won't implement — rejected in ADR-0009:596: directives NOT adopted (#314)
 
 **Sweep/hardening cluster:**
 
 - **T46** `role="combobox"`: both sites on `<input type="text">` per ARIA APG — compliant (#274).
 - **T47** Zero `WriteString(literal + literal)` in library sources (#277).
 - **T48** Demo CSS freshness verified (`nix run .#css` + `TestCSSFreshness`) (#278).
-~~- **T49** `TestPrerenderMatchesLiveServer` made retry-tolerant (3 attempts, #250).~~ done — retry loop in prerender_diff_test.go:111-143 (backlog #250)
-~~- **T50** Shared `kanbanParseMoveWithCSRF` prelude extracted (was duplicated 3×) (#262).~~ done — kanbanParseMoveWithCSRF (kanban_e2e_test.go:1166)
-~~- **T51** ogshot is SITE_SKIP_STARS-independent (self-contained HTML); documented (#281).~~ done — ogshot README:8 documents SITE_SKIP_STARS independence
-~~- **T52** build.sh star-resolution inverted: default = deterministic fallback badge; `SITE_LIVE_STARS=1` for production (CI Website job sets it) (#271).~~ done — website/build.sh:19 SITE_LIVE_STARS inversion
-~~- **T53** `docs/visual-testing.md` "The site route tier" section (theme pin, skip-stars, scroll-reveal load caveat) (#275).~~ done — docs/visual-testing.md:89 site route tier section
-~~- **T54** SKILL.md website-SSG knobs section (topLevelPages, lastmod sources, search index) (#276).~~ done — SKILL.md:414 website-SSG knobs (topLevelPages)
-~~- **T55** Warm-dark `dark:`-pair override pattern documented in the Tailwind adoption guide (#279).~~ done — tailwind-v4-adoption-guide.md:278 "warm dark" pattern
-~~- **T56** /tmp gate logs purged before salvage → declared accepted-loss in ADR-0009 (#313).~~ done — ADR-0009:617 /tmp gate logs accepted loss (#313)
+  ~~- **T49** `TestPrerenderMatchesLiveServer` made retry-tolerant (3 attempts, #250).~~ done — retry loop in prerender_diff_test.go:111-143 (backlog #250)
+  ~~- **T50** Shared `kanbanParseMoveWithCSRF` prelude extracted (was duplicated 3×) (#262).~~ done — kanbanParseMoveWithCSRF (kanban_e2e_test.go:1166)
+  ~~- **T51** ogshot is SITE_SKIP_STARS-independent (self-contained HTML); documented (#281).~~ done — ogshot README:8 documents SITE_SKIP_STARS independence
+  ~~- **T52** build.sh star-resolution inverted: default = deterministic fallback badge; `SITE_LIVE_STARS=1` for production (CI Website job sets it) (#271).~~ done — website/build.sh:19 SITE_LIVE_STARS inversion
+  ~~- **T53** `docs/visual-testing.md` "The site route tier" section (theme pin, skip-stars, scroll-reveal load caveat) (#275).~~ done — docs/visual-testing.md:89 site route tier section
+  ~~- **T54** SKILL.md website-SSG knobs section (topLevelPages, lastmod sources, search index) (#276).~~ done — SKILL.md:414 website-SSG knobs (topLevelPages)
+  ~~- **T55** Warm-dark `dark:`-pair override pattern documented in the Tailwind adoption guide (#279).~~ done — tailwind-v4-adoption-guide.md:278 "warm dark" pattern
+  ~~- **T56** /tmp gate logs purged before salvage → declared accepted-loss in ADR-0009 (#313).~~ done — ADR-0009:617 /tmp gate logs accepted loss (#313)
 
 ### Tier 4 — features + gated
 
@@ -97,6 +99,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 ~~- **T61** Demo per-IP token-bucket rate limiter (`examples/demo/rate_limit.go`; knobs tuned to 10/s + burst 100 after the first values 429'd the visual audits) (#264).~~ done — examples/demo/rate_limit.go exists
 ~~- **T62** **Session-scoped demo CSRF**: per-visitor cookie (`tc_demo_csrf`, HttpOnly, SameSite=Lax), `withDemoSession` middleware, threaded through `demoPage → demoContent → kanbanDemo → kanbanDemoBoardProps`; move validation against the cookie; prerender-diff test normalized + cookie-jar client (#229).~~ done — examples/demo/csrf_session.go session middleware
 ~~- **T65** `TestKanbanSingleTransportBoards` — htmx-only and Datastar-only board renders pinned as goldens; shared `assertGoldenMatch` helper extracted (#258).~~ done — TestKanbanSingleTransportBoards (visualtest:96)
+
 - **Gated rows recorded with session notes:** #303 (website clones), #312 (public HeadingTag export — recommendation: keep private), #295 (dup-gate→blocking: advisory green run 1 witnessed; needs run 2 + ratification), #224/#189 remain open with dependencies noted.
 
 ### Unplanned work the session surfaced and shipped
@@ -114,7 +117,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 2. **#294** — three of four sub-items done (`tc ls` footer, guard-runtime print, --min-lines verdict); "AGENTS post-daemon re-verify note" not written as a separate item.
 3. **#295** (dup-gate advisory→blocking) — advisory lane green (run 1); promotion needs a second consecutive green run + owner ratification. Cannot be finished inside one session by definition.
 4. **T60 Lighthouse** — skeleton + decision record only; no budgets asserted, not CI-wired (deliberate, but genuinely not "done").
-~~5. **T07's original goal** — the big dedup-pass blob is clean-ish history but as 8 daemon-titled commits already on origin; only my later waves got proper messages.~~ Won't implement — moot: daemon pushed the 8-commit blob; rewrite forbidden (§d1)
+   ~~5. **T07's original goal** — the big dedup-pass blob is clean-ish history but as 8 daemon-titled commits already on origin; only my later waves got proper messages.~~ Won't implement — moot: daemon pushed the 8-commit blob; rewrite forbidden (§d1)
 
 ## c) NOT STARTED
 

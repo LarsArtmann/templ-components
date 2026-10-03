@@ -66,7 +66,7 @@
 3. **Browser-level proof for every interactive markup swap** — the repo's own history says substring tests lie; e2e belongs in the task's definition-of-done, not a follow-up TODO.
 4. **Re-run asset builds after ANY class-affecting change** (css:build / safelist) — cheap, and the only way local dev matches CI.
 5. **Read the consumer's AGENTS.md during planning** (cost ~4 void tasks last session) and **read the delivery mechanism, not just the API** (B4).
-~~6. **Parallel sessions on one checkout need a coordination convention** (the shared tree mixed my C-branch commits with a sibling session's visualtest/forms WIP three times; the daemon made them indistinguishable until inspected).~~ done — AGENTS.md daemon section prescribes detached-worktree isolation
+   ~~6. **Parallel sessions on one checkout need a coordination convention** (the shared tree mixed my C-branch commits with a sibling session's visualtest/forms WIP three times; the daemon made them indistinguishable until inspected).~~ done — AGENTS.md daemon section prescribes detached-worktree isolation
 
 ## f) NEXT — up to 50 things
 

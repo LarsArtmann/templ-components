@@ -18,29 +18,29 @@ Working tree swept by the daemon. **Branch: all work landed on
 
 ## a) FULLY DONE (verified this session)
 
-| #    | Item                                            | Evidence                                                                                                                                                                                                                                                                                |
-| ---- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-~~| 166  | FormLayoutInline field grouping (component fix) | Context-marker in `forms/form.templ` + group div in `FormFieldWrapper` (`forms/label.templ`, `forms/form_layout_context.go`); unit guard `TestFormLayoutInlineFieldGrouping`; `form/inline_light` golden; demo `sm:w-auto` workaround removed; CHANGELOG entry                          |~~ done — FormLayoutInline grouping shipped; browser-proven (form_inline_width_e2e_test.go)
-~~| 147  | Datastar browser e2e                            | `visualtest/datastar_runtime_e2e_test.go`: real 500 via pinned bundle → SSEErrorHandling announces + toasts; real SSE patch → LiveRegion aria-busy clears. New runtime fact: `data-on:load` on a plain `<div>` NEVER fires (window-only) — recorded in `docs/datastar-runtime-facts.md` |~~ done — visualtest/datastar_runtime_e2e_test.go
-| 153* | PolledRegion busy-clear browser proof           | `visualtest/polled_region_e2e_test.go`: SwapNone makes the script the only possible clearer; real htmx:afterRequest clears BOTH regions + synthetic re-arm dispatch clears again                                                                                                        |
-~~| 158  | Overlay open-state captures                     | Tooltip hover (light+dark), Combobox expanded (light+dark), Carousel scrolled via next-arrow. Harness gained `ClickSelector` + `WaitExpr` options (`waitExprAction` polls JS until settled — scroll-snap convergence)                                                                   |~~ done — overlay open goldens (visualtest/testdata)
-~~| 177  | ErrorPage family matrix                         | 6 goldens `errorpage/family_{rejection,conflict,transient,corruption,infrastructure,orchestration}` (constructors + direct props for the 2 constructor-less families)                                                                                                                   |~~ done — 6 errorpage family goldens (errorpage/testdata)
-~~| 176  | DateRange block-vs-inline                       | Doc note on the inline `<time>` root + `daterange/adjacent_light` golden pinning the `Class: "block"` stacking pattern                                                                                                                                                                  |~~ done — display/testdata/date_range_adjacent.golden
-~~| 159  | Mobile 375px sweep                              | 5 goldens: Nav hamburger, MobileMenu closed, stacked form, table overflow, stacked Split (`responsive_sweep_test.go`)                                                                                                                                                                   |~~ done — visualtest demo_mobile_e2e_test.go + mobile route goldens
-~~| 160  | RTL sweep                                       | 5 goldens: Nav, Split, Carousel, right-Drawer (open), open-Dropdown                                                                                                                                                                                                                     |~~ done — visualtest demo_rtl_e2e_test.go + RTL route goldens
-~~| 167  | Prerender/live parity                           | `examples/demo/prerender_diff_test.go`: all 7 routes diffed (normalizations: CSS link, datetime attrs, Updated footer, EnsureID suffixes, Build stamp, relative-time text). Verified 5× for flake                                                                                       |~~ done — examples/demo/prerender_diff_test.go
-~~| 163  | Route-level page goldens                        | `visualtest/route_golden_test.go`: builds + serves the demo binary in-process (port-probe + /health gate); 8 PNGs in `testdata/routes/` (dashboard light+dark, settings, login, auth, forms, users, index above-the-fold)                                                               |~~ done — visualtest/route_golden_test.go + testdata/routes/
-~~| 18   | AGENTS.md stale claims fixed                    | "cmd/tc excluded from lint" corrected (it IS linted); added lint-per-file + guards-fail-loud conventions (the two lessons from session 2, now written down)                                                                                                                             |~~ done — AGENTS.md per-module lint loop + golines policy
-~~| 19   | FEATURES.md PolledRegion row                    | Row was MISSING entirely (package count said 8/9); added with correct `PolledLive*` semantics (first draft had invented enum names — caught by source check)                                                                                                                            |~~ done — FEATURES.md PolledRegion rows (htmx + datastar)
-~~| 20   | Pre-commit CSS guard                            | `scripts/check-css-minified.sh` (Guard 6 in `.git/hooks/pre-commit` + `scripts/pre-commit.sh`), tested both directions; daemon's 4th un-minification (commit cb4ac82, 4986 lines) defused via `nix run .#css`; byte-stability re-confirmed twice                                        |~~ done — scripts/check-css-minified.sh + CI CSS Freshness
-~~| 36   | SDK version exact pins                          | `TestDemoIndexSDKScriptRender` now asserts the exact URL from `DefaultSDKScriptProps().Version`                                                                                                                                                                                         |~~ done — TestDemoIndexSDKScriptRender (examples/demo/sse_test.go)
-~~| 37   | ECharts SDK page contract                       | `TestDemoIndexEChartsSDKScriptRender` (mirror test; shared `fetchDemoPage` helper)                                                                                                                                                                                                      |~~ done — TestDemoIndexEChartsSDKScriptRender (sse_test.go)
-~~| 48   | actionlint in devShell                          | `flake.nix` devShell packages; verified `nix develop -c actionlint --version`                                                                                                                                                                                                           |~~ done — actionlint in flake.nix devShell
-~~| 49   | shots 404 guard                                 | Network-event status check (ResourceTypeDocument); verified live: real capture OK, 404 refused with non-zero exit                                                                                                                                                                       |~~ done — shots main.go refuses main-frame status ≥400
-~~| 21   | Negative SM-overflow control                    | `TestAppShellSidebarOverflowDetected`: SM track + w-64 sidebar must measurably overflow (≥32px; actual 64px) — proves the fits-track guard detects the bug class                                                                                                                        |~~ done — TestAppShellSidebarOverflowDetected (appshell_visual_test.go)
-~~| 22   | TODO_LIST hygiene                               | Renumbered #152-collision → #178 (+ ROADMAP citation), stale #151 dropped (v0.5.0 already pinned), next-free-ID note; 9 completed items deleted; #80/#125 notes updated                                                                                                                 |~~ done — TODO_LIST renumbered; next-free-ID note present
-| —    | Harness bug fix                                 | `focusAction` now dispatches synthetic bubbling `focusin`: headless windows lack document focus, so `.focus()` set activeElement WITHOUT events — every delegated focusin listener (Combobox) was inert in visual tests. Diagnosed with a scratch probe (docHasFocus=false)             |
-| —    | Lint/format cleanup                             | 7 findings fixed (5 mine, 2 pre-existing in daemon-committed `base_seo_test.go`); scaffolder mirror re-synced (`forms/form.templ`, `forms/label.templ`) after the #148 guard caught my edits                                                                                            |
+| #    | Item                                  | Evidence                                                                                                                                                                                                                                                                    |
+| ---- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~   | 166                                   | FormLayoutInline field grouping (component fix)                                                                                                                                                                                                                             |
+| ~~   | 147                                   | Datastar browser e2e                                                                                                                                                                                                                                                        |
+| 153* | PolledRegion busy-clear browser proof | `visualtest/polled_region_e2e_test.go`: SwapNone makes the script the only possible clearer; real htmx:afterRequest clears BOTH regions + synthetic re-arm dispatch clears again                                                                                            |
+| ~~   | 158                                   | Overlay open-state captures                                                                                                                                                                                                                                                 |
+| ~~   | 177                                   | ErrorPage family matrix                                                                                                                                                                                                                                                     |
+| ~~   | 176                                   | DateRange block-vs-inline                                                                                                                                                                                                                                                   |
+| ~~   | 159                                   | Mobile 375px sweep                                                                                                                                                                                                                                                          |
+| ~~   | 160                                   | RTL sweep                                                                                                                                                                                                                                                                   |
+| ~~   | 167                                   | Prerender/live parity                                                                                                                                                                                                                                                       |
+| ~~   | 163                                   | Route-level page goldens                                                                                                                                                                                                                                                    |
+| ~~   | 18                                    | AGENTS.md stale claims fixed                                                                                                                                                                                                                                                |
+| ~~   | 19                                    | FEATURES.md PolledRegion row                                                                                                                                                                                                                                                |
+| ~~   | 20                                    | Pre-commit CSS guard                                                                                                                                                                                                                                                        |
+| ~~   | 36                                    | SDK version exact pins                                                                                                                                                                                                                                                      |
+| ~~   | 37                                    | ECharts SDK page contract                                                                                                                                                                                                                                                   |
+| ~~   | 48                                    | actionlint in devShell                                                                                                                                                                                                                                                      |
+| ~~   | 49                                    | shots 404 guard                                                                                                                                                                                                                                                             |
+| ~~   | 21                                    | Negative SM-overflow control                                                                                                                                                                                                                                                |
+| ~~   | 22                                    | TODO_LIST hygiene                                                                                                                                                                                                                                                           |
+| —    | Harness bug fix                       | `focusAction` now dispatches synthetic bubbling `focusin`: headless windows lack document focus, so `.focus()` set activeElement WITHOUT events — every delegated focusin listener (Combobox) was inert in visual tests. Diagnosed with a scratch probe (docHasFocus=false) |
+| —    | Lint/format cleanup                   | 7 findings fixed (5 mine, 2 pre-existing in daemon-committed `base_seo_test.go`); scaffolder mirror re-synced (`forms/form.templ`, `forms/label.templ`) after the #148 guard caught my edits                                                                                |
 
 **Golden count: 109 → 140** (README/ROADMAP updated; TestDocsCountDrift green).
 
@@ -73,90 +73,90 @@ Working tree swept by the daemon. **Branch: all work landed on
 ## d) TOTALLY FUCKED UP (honest ledger)
 
 ~~1. **`rm -f` on `forms/zz_probe_test.go` — SECOND house-rule violation of this~~ NOT-DO — retrospective disclosure (incident record)
-   class.** Session 2's report documented `rm -rf` and vowed trash; this
-   session I used `rm -f` on a scratch probe file (and `mv` to /tmp for the
-   other probe). `trash` EXISTS on PATH (`/run/current-system/sw/bin/trash`) —
-   I checked AFTER the fact. There is no excuse; the rule needs to be a
-   reflex, not a lookup.
+class.** Session 2's report documented `rm -rf` and vowed trash; this
+session I used `rm -f` on a scratch probe file (and `mv` to /tmp for the
+other probe). `trash` EXISTS on PATH (`/run/current-system/sw/bin/trash`) —
+I checked AFTER the fact. There is no excuse; the rule needs to be a
+reflex, not a lookup.
 ~~2. **`rg -rn` (replace-flag) misuse TWICE more** — the exact mistake~~ NOT-DO — retrospective disclosure (incident record)
-   documented in session 2's report AND in AGENTS.md. Both times it silently
-   mangled search output (`rg -rln`, `rg -rn`); caught only because the
-   replacement text looked wrong. I know the flag; my fingers don't.
+documented in session 2's report AND in AGENTS.md. Both times it silently
+mangled search output (`rg -rln`, `rg -rn`); caught only because the
+replacement text looked wrong. I know the flag; my fingers don't.
 ~~3. **Invented an enum in documentation.** First FEATURES.md draft claimed~~ NOT-DO — retrospective disclosure (incident record)
-   `PolledLiveAlways/Offline` — values that do not exist. Wrote the row from
-   memory, verified after. Inverse order of the rule: READ, then write.
+`PolledLiveAlways/Offline` — values that do not exist. Wrote the row from
+memory, verified after. Inverse order of the rule: READ, then write.
 ~~4. **7 lint findings in MY new code (again).** Session 2's d.4 documented 3~~ NOT-DO — retrospective disclosure (incident record)
-   burned verify cycles on the same class; I added the AGENTS.md rule this
-   session and STILL only linted at the end (contextcheck, wrapcheck, golines,
-   wsl_v5 in `form_layout_test.go`). The rule now exists in writing and I
-   violated it in the same session that wrote it.
+burned verify cycles on the same class; I added the AGENTS.md rule this
+session and STILL only linted at the end (contextcheck, wrapcheck, golines,
+wsl_v5 in `form_layout_test.go`). The rule now exists in writing and I
+violated it in the same session that wrote it.
 ~~5. **First-draft sloppiness burned cycles:** broken string literal in~~ NOT-DO — retrospective disclosure (incident record)
-   `prerender_diff_test.go`; `t.TempDirForTest()` nonsense + unbalanced
-   braces + leftover helper in `route_golden_test.go` (three edit rounds);
-   `[][]string` vs typed `TableRow`/`TableCell` guessed instead of read;
-   `FullScreenshot(90)` produced JPEG goldens that failed PNG decode (quality
-   100 = PNG — one generate+verify cycle wasted).
+`prerender_diff_test.go`; `t.TempDirForTest()` nonsense + unbalanced
+braces + leftover helper in `route_golden_test.go` (three edit rounds);
+`[][]string` vs typed `TableRow`/`TableCell` guessed instead of read;
+`FullScreenshot(90)` produced JPEG goldens that failed PNG decode (quality
+100 = PNG — one generate+verify cycle wasted).
 ~~6. **Piped-verify masking — repeated the documented failure.** First verify~~ NOT-DO — retrospective disclosure (incident record)
-   "VERIFY-EXIT: 0" was rg's exit code through the pipe; caught it before
-   reporting, re-ran raw → real exit 1 (7 lint findings). The AGENTS.md
-   pipeline-masking bullet exists; I stepped on the same rake hours after
-   reading it.
+"VERIFY-EXIT: 0" was rg's exit code through the pipe; caught it before
+reporting, re-ran raw → real exit 1 (7 lint findings). The AGENTS.md
+pipeline-masking bullet exists; I stepped on the same rake hours after
+reading it.
 ~~7. **Branch blindness for the whole session.** The session-start snapshot said~~ NOT-DO — retrospective disclosure (incident record)
-   "master"; the daemon (or a parallel session) had moved work onto
-   `feat/layout-seo-meta` (15 unpushed commits: the SEO feature + all of
-   today's work). I noticed only during final wrap-up. All verification ran on
-   the branch tip so the work is sound — but hours passed without me knowing
-   where commits were landing. `git branch --show-current` costs nothing at
-   session start.
+"master"; the daemon (or a parallel session) had moved work onto
+`feat/layout-seo-meta` (15 unpushed commits: the SEO feature + all of
+today's work). I noticed only during final wrap-up. All verification ran on
+the branch tip so the work is sound — but hours passed without me knowing
+where commits were landing. `git branch --show-current` costs nothing at
+session start.
 ~~8. **Two templ-harness guesses instead of reading generated code.**~~ NOT-DO — retrospective disclosure (incident record)
-   `formInlineFields` v1 read children from a ctx that templ had already
-   `ClearChildren`'d (empty form output); the combobox focus failure cost two
-   debug iterations before the scratch probe found `docHasFocus=false`. In
-   both cases the answer was in `*_templ.go` / a 10-line probe from the start.
+`formInlineFields` v1 read children from a ctx that templ had already
+`ClearChildren`'d (empty form output); the combobox focus failure cost two
+debug iterations before the scratch probe found `docHasFocus=false`. In
+both cases the answer was in `*_templ.go` / a 10-line probe from the start.
 ~~9. **Debug scaffolding shipped:** `TC_PRERENDER_DEBUG` env flag writes FIXED~~ NOT-DO — retrospective; TC_PRERENDER_DEBUG since removed
-   /tmp paths from PARALLEL subtests (race if two fail simultaneously). Left
-   in deliberately-ish (documented) but the race was not designed away.
+/tmp paths from PARALLEL subtests (race if two fail simultaneously). Left
+in deliberately-ish (documented) but the race was not designed away.
 ~~10. **/tmp litter not cleaned:** tc-pre.html, tc-live.html, tc-shots-verify/,~~ NOT-DO — retrospective disclosure (session hygiene)
-    tc-prerender/, tc-demo, fake-app.css, app.css.bak, zz_debug_test.go.bak.
+tc-prerender/, tc-demo, fake-app.css, app.css.bak, zz_debug_test.go.bak.
 
 ---
 
 ## e) WHAT WE SHOULD IMPROVE (process + code)
 
 ~~1. **Guard 6 has a hole: the daemon bypasses the pre-commit hook.** SKILL.md~~ done — CI CSS Freshness job (ci.yaml:294)
-   and AGENTS.md document that BuildFlow's auto-commit daemon does not run
-   hooks — so `check-css-minified.sh` protects human/agent commits only, and
-   the PRIMARY threat (the daemon, 4 documented recurrences) sails through.
-   Backstop today is CI's CSS Freshness job. Fixes: (a) add the minified-line
-   check as an explicit CI step (<1s), and/or (b) the real fix in
-   `larsartmann/buildflow` (#125).
+and AGENTS.md document that BuildFlow's auto-commit daemon does not run
+hooks — so `check-css-minified.sh` protects human/agent commits only, and
+the PRIMARY threat (the daemon, 4 documented recurrences) sails through.
+Backstop today is CI's CSS Freshness job. Fixes: (a) add the minified-line
+check as an explicit CI step (<1s), and/or (b) the real fix in
+`larsartmann/buildflow` (#125).
 2. **Add "report current branch at session start" to AGENTS.md** — the
-   snapshot can be hours stale; the feat-branch surprise must not repeat.
+snapshot can be hours stale; the feat-branch surprise must not repeat.
 ~~3. **Lint per file, actually.** The command is `(cd <mod> && golangci-lint~~ done — AGENTS.md per-module lint commands; flake #lint app
    run ./...)`; two sessions have now burned 3+ verify cycles on end-loaded
-   lint. Consider a `nix run .#lint-file <path>` app to make it one keystroke.
+lint. Consider a `nix run .#lint-file <path>` app to make it one keystroke.
 4. **`trash` before `rm` as a reflex** — it exists on this machine; add to
-   AGENTS.md environment notes.
+AGENTS.md environment notes.
 5. **Read the generated `*_templ.go` before debugging templ context/children
-   plumbing** — ClearChildren/WithChildren semantics are invisible in the
-   `.templ` source and obvious in the generated code.
+plumbing** — ClearChildren/WithChildren semantics are invisible in the
+`.templ` source and obvious in the generated code.
 6. **Normalize counts ONCE at wrap-up** — I edited the golden count in
-   README/ROADMAP four times mid-session (109→114→120→132) and raced the
-   daemon's own count-bump once (mtime edit failure). Counts belong in the
-   final docs pass.
+README/ROADMAP four times mid-session (109→114→120→132) and raced the
+daemon's own count-bump once (mtime edit failure). Counts belong in the
+final docs pass.
 7. **Extract the shared EnsureID normalization** (regex duplicated between
-   `utils/golden` and `prerender_diff_test.go` with DIFFERENT prefixes
-   handling — the golden one learned `tc-mobile-menu-` the hard way first).
+`utils/golden` and `prerender_diff_test.go` with DIFFERENT prefixes
+handling — the golden one learned `tc-mobile-menu-` the hard way first).
 ~~8. **SKILL.md drift:** still says "118 components" / htmx row needs the~~ done — SKILL.md actively maintained (2026-09-17 resolution)
-   PolledRegion busy-cue note / no mention of route goldens or the e2e
-   suites. `TestSkillComponentCount` only logs.
+PolledRegion busy-cue note / no mention of route goldens or the e2e
+suites. `TestSkillComponentCount` only logs.
 9. **CI parity for the new tiers:** confirm the Visual job environment can
-   run route goldens (it shells `go build` for the demo) and the prerender
-   diff (examples/demo tests run in Build & Test — covered); document in
-   `docs/visual-testing.md`.
+run route goldens (it shells `go build` for the demo) and the prerender
+diff (examples/demo tests run in Build & Test — covered); document in
+`docs/visual-testing.md`.
 10. **Consider a deterministic demo clock** — the Build stamp and RelativeTime
-    bases are time.Now() at render, forcing 3 normalizations in the parity
-    test. Freeze demo-data times; keep one live PolledRegion only.
+bases are time.Now() at render, forcing 3 normalizations in the parity
+test. Freeze demo-data times; keep one live PolledRegion only.
 
 ---
 
@@ -218,16 +218,16 @@ Working tree swept by the daemon. **Branch: all work landed on
 ## g) QUESTIONS (cannot be resolved without you)
 
 ~~1. **Branch strategy for `feat/layout-seo-meta`:** 15 unpushed daemon commits~~ done — branch merged as PR #12 (2026-09-17 resolution)
-   (the SEO feature from a parallel session + all of today's work) sit on it,
-   cleanly ahead of origin/master. Open a PR now and merge to keep master
-   current, or keep accumulating? And do you want future sessions to
-   auto-create PRs when they detect daemon work stranded on a feature branch?
+(the SEO feature from a parallel session + all of today's work) sit on it,
+cleanly ahead of origin/master. Open a PR now and merge to keep master
+current, or keep accumulating? And do you want future sessions to
+auto-create PRs when they detect daemon work stranded on a feature branch?
 ~~2. **Release cadence:** `[Unreleased]` now carries two sessions' worth of~~ done — v1.16.0–v1.18.1 released (CHANGELOG)
-   features (SEO meta, Inline-form fix, 31 new goldens, parity guard, e2e
-   suites). Cut v1.15.0 now, or keep stacking toward a bigger minor?
+features (SEO meta, Inline-form fix, 31 new goldens, parity guard, e2e
+suites). Cut v1.15.0 now, or keep stacking toward a bigger minor?
 3. **Human eyeball scheduling:** the agent-captured golden corpus grew to 140
-   (now including full-route pages and RTL/mobile sweeps). One concentrated
-   human review pass (`nix run .#visual` + `visualtest/testdata/`) would
-   clear #80/#162/#150 in one sitting — when should that happen, and is the
-   list in `docs/visual-testing.md` the right review surface or do you want a
-   generated contact-sheet (single HTML page of all goldens)?
+(now including full-route pages and RTL/mobile sweeps). One concentrated
+human review pass (`nix run .#visual` + `visualtest/testdata/`) would
+clear #80/#162/#150 in one sitting — when should that happen, and is the
+list in `docs/visual-testing.md` the right review surface or do you want a
+generated contact-sheet (single HTML page of all goldens)?

@@ -36,7 +36,7 @@ session files), then this session's `visualtest/visual_test.go` edit is
      `State`; `visualtest.Bool()` helper exists (`render.go:90`). Existing
      RTL/mobile usage patterns found in `visual_test.go:360/370` and
      `kanban_visual_test.go:72`.
-~~5. **M01 micro-task 1.1 EDIT APPLIED** (the 1% task's core change):~~ done — errorpage light/dark mobile+rtl goldens shipped (CHANGELOG v1.18.0)
+     ~~5. **M01 micro-task 1.1 EDIT APPLIED** (the 1% task's core change):~~ done — errorpage light/dark mobile+rtl goldens shipped (CHANGELOG v1.18.0)
    - `TestErrorPage` now additionally captures `errorpage/light_mobile`
      (375×667) and `errorpage/light_rtl` (dir=rtl).
    - `TestErrorPageDark` now additionally captures `errorpage/dark_mobile`
@@ -46,16 +46,18 @@ session files), then this session's `visualtest/visual_test.go` edit is
 ## b) PARTIALLY DONE
 
 ~~1. **M01 overall — roughly 40%.** Test edits are in, but the remaining four~~ done — execution log: M01 DONE (regen, eyeball, counts, visual 133/133)
-   micro-tasks (1.2–1.5) are NOT run:
-   - `-update` regeneration of the 4 new PNGs — **not run; tests not executed at
-     all since the edit** (interrupt arrived first).
-   - Eyeball pass (chip `flex-wrap`, meta-footer `justify-between`, icon circle
-     at 375px; RTL mirroring of chips/footer/buttons) — not done.
-   - Visual-golden count bumps in FEATURES/README/ROADMAP/AGENTS + CHANGELOG
-     `[Unreleased]` line — not done (plan requires same-edit bumps;
-     `TestDocsCountDrift` will currently be GREEN only because the guard counts
-     committed goldens, but it goes stale the moment the 4 PNGs land uncounted).
-   - Full `nix run .#visual` pass + `TestDocsCountDrift` gate — not run.
+micro-tasks (1.2–1.5) are NOT run:
+
+- `-update` regeneration of the 4 new PNGs — **not run; tests not executed at
+  all since the edit** (interrupt arrived first).
+- Eyeball pass (chip `flex-wrap`, meta-footer `justify-between`, icon circle
+  at 375px; RTL mirroring of chips/footer/buttons) — not done.
+- Visual-golden count bumps in FEATURES/README/ROADMAP/AGENTS + CHANGELOG
+  `[Unreleased]` line — not done (plan requires same-edit bumps;
+  `TestDocsCountDrift` will currently be GREEN only because the guard counts
+  committed goldens, but it goes stale the moment the 4 PNGs land uncounted).
+- Full `nix run .#visual` pass + `TestDocsCountDrift` gate — not run.
+
 2. **Skill Part 2 (authoring rules) only skimmed via Part 1** — the M10–M13
    component edits will need the full authoring section re-read before editing
    `.templ` files.
@@ -80,12 +82,12 @@ session files), then this session's `visualtest/visual_test.go` edit is
 Nothing destructive or wrong-by-construction. One honest miss-level item:
 
 ~~1. **Edit-before-verify window left open.** The M01 edit was made and the~~ done — execution log: regen re-run byte-identical, clean tree
-   session was interrupted before ANY test run. The change is almost certainly
-   correct (API verified against the harness source first), but "almost
-   certainly correct" is not the bar — the first action of the next segment
-   MUST be the `-update` regen, before anything else touches the tree. Root
-   cause: batching the interrupt report before the run, against the
-   "test after changes" rule. No tree damage, no daemon race observed.
+session was interrupted before ANY test run. The change is almost certainly
+correct (API verified against the harness source first), but "almost
+certainly correct" is not the bar — the first action of the next segment
+MUST be the `-update` regen, before anything else touches the tree. Root
+cause: batching the interrupt report before the run, against the
+"test after changes" rule. No tree damage, no daemon race observed.
 
 ## e) WHAT WE SHOULD IMPROVE
 
@@ -93,16 +95,16 @@ Nothing destructive or wrong-by-construction. One honest miss-level item:
    have been fired in the same breath as the edit (it is a single `nix run`
    call); a status request should park a task at a _verified_ boundary, not a
    _written_ boundary.
-~~2. **Bool-helper consistency:** this session introduced `visualtest.Bool(true)`~~ done — normalized to new(true) (execution log, d10f7b70)
+   ~~2. **Bool-helper consistency:** this session introduced `visualtest.Bool(true)`~~ done — normalized to new(true) (execution log, d10f7b70)
    while neighboring code uses `new(true)` — both compile, but one style per
    file is cleaner; align to the surrounding file when regenerating.
-3. **Pre-check the runner invocation** (`nix run .#visual -- -run TestErrorPage
+2. **Pre-check the runner invocation** (`nix run .#visual -- -run TestErrorPage
    -update` flag pass-through) before relying on it — read `flake.nix`'s visual
    app argv handling once, instead of trusting the plan's shorthand.
-~~4. **CHANGELOG warming per task:** plan rule "every feature/fix commit adds its~~ done — M01/M02 entries landed same-edit (execution log; CHANGELOG v1.18.0)
+   ~~4. **CHANGELOG warming per task:** plan rule "every feature/fix commit adds its~~ done — M01/M02 entries landed same-edit (execution log; CHANGELOG v1.18.0)
    entry immediately" — the M01 CHANGELOG line should land in the SAME commit as
    the goldens+counts, not deferred to a cleanup pass.
-5. **Gate pre-staging:** M02's family→title table and M05's PR body can be
+3. **Gate pre-staging:** M02's family→title table and M05's PR body can be
    drafted while earlier tasks' test suites run, so the `⫱` owner gates never
    idle the pipeline.
 
@@ -140,12 +142,12 @@ Nothing destructive or wrong-by-construction. One honest miss-level item:
 
 20. AGENTS.md guard-table row for `TestFeaturesEnumValuesExhaustive`.
 21. Same row in skill SKILL.md (repo copy + installed copy).
-~~22. Rewrite `ExampleErrorPage` to the full model (incl. Trace).~~ done — example_test.go:30 renders Trace
-23. Sync skill + FEATURES ErrorPage one-liners ("status/code/trace chips").
-~~24. Document `Code` open-enum policy (no IsValid, by design) in doc.go.~~ done — errorpage/doc.go:50 "open enum" note
-~~25. errorpage doc.go props table (3 Props types, field glossary).~~ done — errorpage/doc.go field table exists
-~~26. Re-sync `cmd/tc/_sources/errorpage/*` — `TestSourcesMatchPackageFiles` green.~~ done — tc-sources sync guard shipped (TODO_LIST #253 struck); mirrors green
-~~27. `go test ./errorpage/...` + commit.~~ done — errorpage work committed; shipped v1.18.0
+    ~~22. Rewrite `ExampleErrorPage` to the full model (incl. Trace).~~ done — example_test.go:30 renders Trace
+22. Sync skill + FEATURES ErrorPage one-liners ("status/code/trace chips").
+    ~~24. Document `Code` open-enum policy (no IsValid, by design) in doc.go.~~ done — errorpage/doc.go:50 "open enum" note
+    ~~25. errorpage doc.go props table (3 Props types, field glossary).~~ done — errorpage/doc.go field table exists
+    ~~26. Re-sync `cmd/tc/_sources/errorpage/*` — `TestSourcesMatchPackageFiles` green.~~ done — tc-sources sync guard shipped (TODO_LIST #253 struck); mirrors green
+    ~~27. `go test ./errorpage/...` + commit.~~ done — errorpage work committed; shipped v1.18.0
 
 **M05 — bridge upstream (gate edge):**
 
@@ -153,7 +155,7 @@ Nothing destructive or wrong-by-construction. One honest miss-level item:
 ~~29. Implement `(*ClassifiedError).Message()` (clean original/oops message).~~ done — TODO_LIST #269: Message() implemented, lint clean
 ~~30. Bridge tests green + module lint; probe re-run; results pasted.~~ done — TODO_LIST #269: probe S1-S5 verified on branch
 31. ⫱ Owner OK → commit on branch with PR body drafted (github-voice +
-    verify-before-filing) — filing the PR itself waits for explicit push approval.
+verify-before-filing) — filing the PR itself waits for explicit push approval.
 
 **M06 — family completeness:**
 
@@ -170,13 +172,15 @@ Nothing destructive or wrong-by-construction. One honest miss-level item:
 ~~39. ErrorDetail neutral variant + accent bar + 4 goldens + dark/RTL guards.~~ done — CHANGELOG v1.18.0: ErrorDetailNeutral + goldens
 ~~40. `SecondaryWayOut` ghost-button slot + goldens + focus-order check.~~ done — CHANGELOG v1.18.0: SecondaryWayOut + goldens
 ~~41. `WayOutAction` typed struct (dual-read, no deprecation break) + `MaxWidth` enum~~ done — CHANGELOG v1.18.0: WayOutAction + MaxWidth shipped
-    - contract registration.
-~~42. Code-chip CopyButton composition (Nonce propagation) + shared button-class const.~~ done — CHANGELOG v1.18.0: CopyCode clipboard button shipped
+
+- contract registration.
+  ~~42. Code-chip CopyButton composition (Nonce propagation) + shared button-class const.~~ done — CHANGELOG v1.18.0: CopyCode clipboard button shipped
+
 43. Coverage 71.5→75%: profile → targeted branch tests; `FuzzParseFamily`;
     `BenchmarkErrorPage`; FEATURES coverage/bench lines recomputed.
-~~44. Website errorpage docs page + link-check + "Wix-style"/stale-phrasing sweep +~~ done — CHANGELOG v1.18.0 website Error Pages guide + error-pages recipe
+    ~~44. Website errorpage docs page + link-check + "Wix-style"/stale-phrasing sweep +~~ done — CHANGELOG v1.18.0 website Error Pages guide + error-pages recipe
     recipe freshness check (server-rendered-htmx-error-feedback).
-45. Tooling: `visual-update <pattern>` flake app; ci-repro verdict line + exit
+44. Tooling: `visual-update <pattern>` flake app; ci-repro verdict line + exit
     code; visualtest `go mod tidy` + pin policy; golden `-update` changed-file summary.
 
 **M17–M25 — Phase 4:**
@@ -200,21 +204,21 @@ Nothing destructive or wrong-by-construction. One honest miss-level item:
 ## g) QUESTIONS I CANNOT FIGURE OUT MYSELF
 
 ~~1. **M02 title fallback — default on or opt-in, and is the wording family~~ done — resolved default-ON, six family titles (execution log M02)
-   pre-approvable in bulk?** My recommendation: opt-IN default OFF is safer for
-   a patch release, but that leaves every FromError consumer titleless (the
-   original "ugly"), so I recommend default-ON with six neutral family titles
-   (e.g. Transient → "Something went wrong on our side", Rejection → "Request
-   could not be completed", …). Do you approve default-ON, and do you want to
-   approve the six strings now (I'll paste the exact table) or review them in
-   the diff?
+pre-approvable in bulk?** My recommendation: opt-IN default OFF is safer for
+a patch release, but that leaves every FromError consumer titleless (the
+original "ugly"), so I recommend default-ON with six neutral family titles
+(e.g. Transient → "Something went wrong on our side", Rejection → "Request
+could not be completed", …). Do you approve default-ON, and do you want to
+approve the six strings now (I'll paste the exact table) or review them in
+the diff?
 2. **M05 upstream filing — do I have standing approval to push a branch to
-   your `go-error-family` fork and open the PR when it's green,** or should I
-   stop at the prepared branch + PR body and hand it to you? (Repo rule: no
-   remote pushes unless explicitly asked — this one crosses repo boundaries.)
+your `go-error-family` fork and open the PR when it's green,** or should I
+stop at the prepared branch + PR body and hand it to you? (Repo rule: no
+remote pushes unless explicitly asked — this one crosses repo boundaries.)
 3. **M20 — if all guards are green at the end of the run, do you want the next
-   release actually cut** (release.sh inside the nix shell with govulncheck,
-   no push, per the release convention), or only the readiness report with a
-   go/no-go recommendation?
+release actually cut** (release.sh inside the nix shell with govulncheck,
+no push, per the release convention), or only the readiness report with a
+go/no-go recommendation?
 
 ---
 

@@ -427,37 +427,37 @@ These items are DONE but still marked ⬜ in TODO_LIST.md (stale):
 
 ## Summary Table — All Tasks Sorted by Priority
 
-| Wave | Task | Description                       | Priority | Impact | ⏱️ Total |                  Deps                  |
-| :--: | :--: | --------------------------------- | :------: | :----: | :-----: | :------------------------------------: |
-~~|  1   |  T1  | Fix Modal Focus Restore (WCAG)    |    P0    |   🔴   |   32m   |                   —                    |~~ done — modal now native <dialog> with focus handling (ADR-0014)
-~~|  1   |  T3  | Fix Icon System Issues            |    P1    |   🔴   |   35m   |                   —                    |~~ done — icons module: typed names + validation (icons/icon_names.go)
-~~|  1   |  T2  | Fix ID Propagation (6 components) |    P1    |   🟡   |   45m   |                   —                    |~~ done — ID propagation tested (navigation edge_cases id="nv")
-~~|  1   |  T4  | Add BaseProps to Breadcrumbs      |    P1    |   🟡   |   48m   |                   —                    |~~ done — navigation.BreadcrumbsProps + DefaultBreadcrumbsProps exist
-~~|  1   |  T5  | Add BaseProps to SimpleNav        |    P1    |   🟡   |   48m   |                   —                    |~~ done — navigation.SimpleNavProps + DefaultSimpleNavProps exist
-~~|  1   |  T6  | Add BaseProps to Spinner          |    P1    |   🟡   |   35m   |       T6.4 updates HTMX loading        |~~ done — feedback.SpinnerProps + DefaultSpinnerProps exist
-~~|  2   |  T7  | Remove Dead Code                  |    P2    |   🟢   |   20m   |                   —                    |~~ done — Deref/DerefOr/MergeAttrs removed from utils
-~~|  2   |  T8  | Replace Hardcoded SVGs            |    P2    |   🟡   |   32m   | T3 (icon system must be correct first) |~~ done — Alert/Toast/StepIndicator use icons.Icon (X/Check)
-~~|  2   |  T9  | Input Validation                  |    P2    |   🟡   |   37m   |                   —                    |~~ done — utils/validate.go validation helpers
-~~|  2   | T10  | BoolString → strconv.FormatBool   |    P2    |   🟢   |   19m   |                   —                    |~~ done — BoolString removed (no func BoolString in utils)
-~~|  2   | T11  | Extract Shared Lookup Helper      |    P2    |   🟡   |   32m   |                   —                    |~~ done — generic utils.Lookup helper (AGENTS.md conventions)
-~~|  2   | T12  | Extract Shared Dismiss JS         |    P2    |   🟡   |   21m   |                   —                    |~~ done — shared dismiss handler (utils/dismiss.templ)
-~~|  2   | T13  | Test Coverage Gaps                |    P2    |   🟡   |   58m   |                   —                    |~~ done — edge_cases/coverage test files across packages
-~~|  2   | T14  | Remove Duplicate Test Data        |    P2    |   🟢   |   20m   |                   —                    |~~ done — shared testNavLinks helper in navigation tests
-|  2   | T15  | Add BaseProps to SimpleEmptyState |    P2    |   🟢   |   19m   |                   —                    |
-~~|  3   | T16  | Fix JS Re-attachment After HTMX   |    P2    |   🔴   |   46m   |                   —                    |~~ done — ADR-0005 JS attachment patterns adopted
-~~|  3   | T17  | Fix Retry Counter Race            |    P2    |   🟡   |   22m   |                   —                    |~~ done — Wave 3 executed (2026-09-17 resolution; error_handling goldens)
-~~|  4   | T18  | Update Stale TODO_LIST.md         |    P3    |   🟢   |   18m   |                   —                    |~~ done — TODO_LIST.md maintained, versioned, ID-hygienic
-~~|  4   | T19  | Document Conventions              |    P3    |   🟢   |   23m   |                   —                    |~~ done — ADR-0006 + CONTRIBUTING thread-safety + AGENTS conventions
-~~|  4   | T20  | Add go doc Examples               |    P3    |   🟡   |   36m   |                   —                    |~~ done — Example* funcs in display/feedback/navigation/icons
-~~|  4   | T21  | Update FEATURES.md                |    P3    |   🟢   |   21m   |                   —                    |~~ done — FEATURES.md maintained with accurate counts
-~~|  4   | T22  | Update AGENTS.md                  |    P3    |   🟢   |   13m   |                   —                    |~~ done — AGENTS.md actively maintained
-~~|  5   | T23  | Tag v0.1.0-alpha                  |    P4    |   🔴   |   18m   |            T1-T17 complete             |~~ done — v0.1 shipped (docs/migration/v0.1-to-v0.2.md)
-~~|  5   | T24  | Cross-link READMEs                |    P4    |   🟡   |   22m   |                   —                    |~~ done — README cross-links cqrs-htmx + ecosystem table
-|  5   | T25  | Get Listed on templ.guide         |    P4    |   🟡   |   18m   |                  T23                   |
-~~|  5   | T26  | Deploy Demo Site                  |    P4    |   🔴   |   23m   |            T1-T17 complete             |~~ done — demo deployed live (TODO_LIST #329 production URL)
-~~|  6   | T27  | Unify Error Handling Across Libs  |    P5    |   🟡   |   30m   |                   —                    |~~ Won't implement — superseded per 2026-09-17 resolution (never started)
-~~|  6   | T28  | Reference Starter App             |    P5    |   🔴   |   62m   |                  T27                   |~~ Won't implement — superseded per 2026-09-17 resolution (never started)
-~~|  6   | T29  | Hot Reload Dev Environment        |    P5    |   🟡   |   15m   |                   —                    |~~ Won't implement — superseded per 2026-09-17 resolution (never started)
+| Wave | Task | Description                       |             Priority              | Impact | ⏱️ Total | Deps |
+| :--: | :--: | --------------------------------- | :-------------------------------: | :----: | :-----: | :--: |
+|  ~~  |  1   | T1                                |  Fix Modal Focus Restore (WCAG)   |   P0   |   🔴    | 32m  |
+|  ~~  |  1   | T3                                |      Fix Icon System Issues       |   P1   |   🔴    | 35m  |
+|  ~~  |  1   | T2                                | Fix ID Propagation (6 components) |   P1   |   🟡    | 45m  |
+|  ~~  |  1   | T4                                |   Add BaseProps to Breadcrumbs    |   P1   |   🟡    | 48m  |
+|  ~~  |  1   | T5                                |    Add BaseProps to SimpleNav     |   P1   |   🟡    | 48m  |
+|  ~~  |  1   | T6                                |     Add BaseProps to Spinner      |   P1   |   🟡    | 35m  |
+|  ~~  |  2   | T7                                |         Remove Dead Code          |   P2   |   🟢    | 20m  |
+|  ~~  |  2   | T8                                |      Replace Hardcoded SVGs       |   P2   |   🟡    | 32m  |
+|  ~~  |  2   | T9                                |         Input Validation          |   P2   |   🟡    | 37m  |
+|  ~~  |  2   | T10                               |  BoolString → strconv.FormatBool  |   P2   |   🟢    | 19m  |
+|  ~~  |  2   | T11                               |   Extract Shared Lookup Helper    |   P2   |   🟡    | 32m  |
+|  ~~  |  2   | T12                               |     Extract Shared Dismiss JS     |   P2   |   🟡    | 21m  |
+|  ~~  |  2   | T13                               |        Test Coverage Gaps         |   P2   |   🟡    | 58m  |
+|  ~~  |  2   | T14                               |    Remove Duplicate Test Data     |   P2   |   🟢    | 20m  |
+|  2   | T15  | Add BaseProps to SimpleEmptyState |                P2                 |   🟢   |   19m   |  —   |
+|  ~~  |  3   | T16                               |  Fix JS Re-attachment After HTMX  |   P2   |   🔴    | 46m  |
+|  ~~  |  3   | T17                               |      Fix Retry Counter Race       |   P2   |   🟡    | 22m  |
+|  ~~  |  4   | T18                               |     Update Stale TODO_LIST.md     |   P3   |   🟢    | 18m  |
+|  ~~  |  4   | T19                               |       Document Conventions        |   P3   |   🟢    | 23m  |
+|  ~~  |  4   | T20                               |        Add go doc Examples        |   P3   |   🟡    | 36m  |
+|  ~~  |  4   | T21                               |        Update FEATURES.md         |   P3   |   🟢    | 21m  |
+|  ~~  |  4   | T22                               |         Update AGENTS.md          |   P3   |   🟢    | 13m  |
+|  ~~  |  5   | T23                               |         Tag v0.1.0-alpha          |   P4   |   🔴    | 18m  |
+|  ~~  |  5   | T24                               |        Cross-link READMEs         |   P4   |   🟡    | 22m  |
+|  5   | T25  | Get Listed on templ.guide         |                P4                 |   🟡   |   18m   | T23  |
+|  ~~  |  5   | T26                               |         Deploy Demo Site          |   P4   |   🔴    | 23m  |
+|  ~~  |  6   | T27                               | Unify Error Handling Across Libs  |   P5   |   🟡    | 30m  |
+|  ~~  |  6   | T28                               |       Reference Starter App       |   P5   |   🔴    | 62m  |
+|  ~~  |  6   | T29                               |    Hot Reload Dev Environment     |   P5   |   🟡    | 15m  |
 
 ---
 

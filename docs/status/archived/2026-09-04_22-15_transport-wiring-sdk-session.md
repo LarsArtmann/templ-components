@@ -40,11 +40,11 @@ Each item: what + evidence + scope.
 5. ~~**Golden snapshots for wired Button variants** — substring tests only; no golden files were added to `display/testdata`. Priority: medium (goldens are the repo's testing backbone).~~ done — wire goldens
 6. ~~**visualtest capture for the wire demo section** — none. Priority: low–medium.~~ done — visualtest/wire e2e test.go
 7. ~~**Benchmarks** for `wire.Action.Attributes` (repo convention: benchmark suites in 7 packages; wire has none). Effort: S.~~ done — BenchmarkActionAttributes
-~~8. **BDD spec** (`bdd_test.go` Ginkgo style exists in htmx/datastar modules) — wire has table tests only. Priority: optional per repo norms.~~ Won't implement — optional per repo norms (in-item); wire keeps table-driven tests
-9. ~~**Full `scripts/ci-repro.sh` pre-push reproduction** (incl. `--lint --css --visual`, coverage threshold, cold cache) — I ran the pieces manually; the complete CI step-for-step mirror was not executed this session.~~ done — ci-repro
-10. ~~**`nix flake check`** — not run this session.~~ done — nix flake check
-11. ~~**Release**: next version cut (utils v1.13.0 + root, 8-module tag lockstep) not started — `[Unreleased]` is warm and the release script will pick it up.~~ done — v1.13.0 cut
-12. ~~**ADR-0035 annotation** — ADR-0035's superseded clause doesn't yet point at ADR-0036 (docs-health ANNOTATE candidate). Effort: S.~~ done — ADR-0035 annotated
+   ~~8. **BDD spec** (`bdd_test.go` Ginkgo style exists in htmx/datastar modules) — wire has table tests only. Priority: optional per repo norms.~~ Won't implement — optional per repo norms (in-item); wire keeps table-driven tests
+8. ~~**Full `scripts/ci-repro.sh` pre-push reproduction** (incl. `--lint --css --visual`, coverage threshold, cold cache) — I ran the pieces manually; the complete CI step-for-step mirror was not executed this session.~~ done — ci-repro
+9. ~~**`nix flake check`** — not run this session.~~ done — nix flake check
+10. ~~**Release**: next version cut (utils v1.13.0 + root, 8-module tag lockstep) not started — `[Unreleased]` is warm and the release script will pick it up.~~ done — v1.13.0 cut
+11. ~~**ADR-0035 annotation** — ADR-0035's superseded clause doesn't yet point at ADR-0036 (docs-health ANNOTATE candidate). Effort: S.~~ done — ADR-0035 annotated
 
 ## d) TOTALLY FUCKED UP
 

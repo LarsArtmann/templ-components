@@ -40,23 +40,23 @@ pushes of intermediate states — detail in (d).
 ## b) PARTIALLY DONE
 
 ~~1. **M08/M09 errorpage verification bundle (#246)** — I marked this "equivalent-done" in the~~ done — all six remainders shipped CHANGELOG v1.18.1; TODO_LIST #246 consumed
-   todo list, which was **overclaimed**. Done: standalone routes (concurrent session), axe
-   contrast, route goldens (full/404 light+dark), NotFound404 goldens. **Still open from the
-   plan:** `ExampleErrorPage` refresh to the full model, ErrorDetail + ErrorAlert component
-   pixel goldens, 6/6 family-matrix golden, go-back browser e2e, `FromError` StatusCode
-   parity test, mobile-375 + RTL ErrorPage goldens. TODO row #246 correctly left open.
+todo list, which was **overclaimed**. Done: standalone routes (concurrent session), axe
+contrast, route goldens (full/404 light+dark), NotFound404 goldens. **Still open from the
+plan:** `ExampleErrorPage` refresh to the full model, ErrorDetail + ErrorAlert component
+pixel goldens, 6/6 family-matrix golden, go-back browser e2e, `FromError` StatusCode
+parity test, mobile-375 + RTL ErrorPage goldens. TODO row #246 correctly left open.
 2. **M03 ritual compliance** — the ritual was followed fully only ~half the time (see d1).
 3. **M17 micro-tasks** — 3.19 (`-count=1`) documented but applied to only some file-reading
-   guards; 3.21 flaky-board helper extraction NOT done; 3.23 prerender flake NOT done.
+guards; 3.21 flaky-board helper extraction NOT done; 3.23 prerender flake NOT done.
 4. **M21 smalls** — one-liners verified; sitemap verified; but single-transport screenshots
-   (#258), session CSRF store (#229, owner-gated), and the #264 security re-audit test for
-   new routes not done (new `/errors/*` routes are read-only renders — no new endpoints —
-   but no explicit audit note/test either).
+(#258), session CSRF store (#229, owner-gated), and the #264 security re-audit test for
+new routes not done (new `/errors/*` routes are read-only renders — no new endpoints —
+but no explicit audit note/test either).
 5. **`ci-repro.sh --website` lane** — green once end-to-end (21:47); after that I pushed
-   with lighter verification (per-module loops + targeted suites) instead of the full lane.
+with lighter verification (per-module loops + targeted suites) instead of the full lane.
 ~~6. **Brutal review integration** — this report includes the self-review, but the skill's~~ done — f-list IDs tracked in TODO_LIST (#232,#235,#238,#211)
-   canonical output (HTML) was overridden to `.md` per your explicit instruction; the
-   f-list below is NOT yet harvested into TODO_LIST/ROADMAP.
+canonical output (HTML) was overridden to `.md` per your explicit instruction; the
+f-list below is NOT yet harvested into TODO_LIST/ROADMAP.
 
 ---
 
@@ -116,28 +116,28 @@ pushes of intermediate states — detail in (d).
 ## e) WHAT WE SHOULD IMPROVE
 
 ~~1. **Capture goldens ONLY under `nix run .#visual -- -update` from minute one.** Manual~~ done — visual-update flake app shipped (flake.nix; CHANGELOG v1.18.1)
-   `CHROMEDP_CHROME_PATH` runs produce system-font captures that mismatch CI. This caused
-   two full re-capture rounds. Candidate improvement: make the visualtest harness refuse
-   (or loudly warn) when `CHROMEDP_CHROME_PATH` is set but the flake fonts.conf is not —
-   or add `nix run .#visual-update <pattern>` (#267, already on the list).
+`CHROMEDP_CHROME_PATH` runs produce system-font captures that mismatch CI. This caused
+two full re-capture rounds. Candidate improvement: make the visualtest harness refuse
+(or loudly warn) when `CHROMEDP_CHROME_PATH` is set but the flake fonts.conf is not —
+or add `nix run .#visual-update <pattern>` (#267, already on the list).
 2. **Run `golangci-lint fmt && golangci-lint run` on every new/edited test file BEFORE
-   staging.** Three pushes failed on exactly this. A tiny wrapper script
-   (`scripts/lint-changed.sh`) or a BuildFlow quick-lane would make it one command.
+staging.** Three pushes failed on exactly this. A tiny wrapper script
+(`scripts/lint-changed.sh`) or a BuildFlow quick-lane would make it one command.
 3. **Pause the daemon during focused execution sessions** (#232 — the known fix), or
-   accept it and stop fighting for message quality. This session proved both sides: the
-   daemon's sweep saved several of my fixes into green state, but it also ate every
-   commit message that mattered. A `buildflow pause`/release-lock style signal is the
-   durable answer.
+accept it and stop fighting for message quality. This session proved both sides: the
+daemon's sweep saved several of my fixes into green state, but it also ate every
+commit message that mattered. A `buildflow pause`/release-lock style signal is the
+durable answer.
 4. **Guard writing discipline:** every new guard gets a fire-proof AND a false-green check
-   (empty-extraction probe). The function-after-use bug is now documented in AGENTS, but a
-   standard "prove the guard can fail AND prove it detects" checklist would generalize.
+(empty-extraction probe). The function-after-use bug is now documented in AGENTS, but a
+standard "prove the guard can fail AND prove it detects" checklist would generalize.
 5. **Honest todo discipline:** don't mark a plan bundle complete because its core landed —
-   strike only the micro-items actually done (I did this correctly in TODO_LIST but not in
-   my session todo list).
+strike only the micro-items actually done (I did this correctly in TODO_LIST but not in
+my session todo list).
 6. **Single canonical capture env:** consider a make-target-style entry point for "capture
-   route goldens for route X" so the flake env is impossible to bypass.
+route goldens for route X" so the flake env is impossible to bypass.
 7. **The `-count=1` lesson needs automation:** a guard-test convention (naming or a helper
-   that wraps file-reading assertions with cache-busting) instead of a prose rule.
+that wraps file-reading assertions with cache-busting) instead of a prose rule.
 
 ---
 
@@ -231,10 +231,10 @@ escape hatch, touch-drag, CSS artifacts, annotation policy)
    merge on green, keeping master permanently green at the cost of merge overhead?
 
 ~~3. **Errorpage verification bundle (#246):** the remaining half (Example refresh, Detail/~~ NOT-DO — superseded: #246 bundle completed (CHANGELOG v1.18.1)
-   Alert goldens, family matrix, go-back e2e, StatusCode parity) is ~2–3h of pure
-   verification work on a surface that just shipped and is currently green. Finish it next
-   session as a standalone block before any new features, or fold it into the next
-   errorpage-touching change whenever that happens (risking the gaps living longer)?
+Alert goldens, family matrix, go-back e2e, StatusCode parity) is ~2–3h of pure
+verification work on a surface that just shipped and is currently green. Finish it next
+session as a standalone block before any new features, or fold it into the next
+errorpage-touching change whenever that happens (risking the gaps living longer)?
 
 ---
 
