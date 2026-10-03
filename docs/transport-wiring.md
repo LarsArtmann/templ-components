@@ -57,28 +57,28 @@ Any component, even without a `Wire` field — spread the attributes yourself:
 
 ### Zero values and validation
 
-| Field         | Zero value behavior                                                                                                                                            |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Transport`   | `""` → htmx (library default)                                                                                                                                  |
-| `Method`      | `""` → GET — in both dialects (`hx-get` / `@get`). Mutations MUST set `Method` explicitly (`MethodPost`); an omitted Method silently turns a write into a read |
-| `Event`       | `""` → htmx: attribute omitted (element defaults: click/submit/change); Datastar: `click`                                                                      |
-| `URL`         | `""` → renders nothing (inert)                                                                                                                                 |
-| `ContentType` | `""` → Datastar signals as JSON (runtime default); `ContentTypeForm` serializes the enclosing form's fields; htmx ignores it                                   |
+| Field         | Zero value behavior                                                                                                                                                                                 |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Transport`   | `""` → htmx (library default)                                                                                                                                                                       |
+| `Method`      | `""` → GET — in both dialects (`hx-get` / `@get`). Mutations MUST set `Method` explicitly (`MethodPost`); an omitted Method silently turns a write into a read                                      |
+| `Event`       | `""` → htmx: attribute omitted (element defaults: click/submit/change); Datastar: `click`                                                                                                           |
+| `URL`         | `""` → renders nothing (inert)                                                                                                                                                                      |
+| `ContentType` | `""` → Datastar signals as JSON (runtime default); `ContentTypeForm` serializes the enclosing form's fields; htmx ignores it                                                                        |
 | `Selector`    | `""` → renders nothing (closest form); a selector renders `{selector: '…'}` under Datastar ContentTypeForm ONLY — it picks which form serializes; it does NOT target patches (corrected 2026-10-02) |
-| `Swap`        | `""` → renders nothing in either dialect (both default to inner); a `PatchMode` renders `hx-swap` under htmx; under Datastar it renders nothing — the mode is response-header driven |
-| unknowns      | `TransportIsValid`/`MethodIsValid`/`EventIsValid`/`ContentTypeIsValid`/`PatchModeIsValid` exist; rendering falls back to defaults                              |
+| `Swap`        | `""` → renders nothing in either dialect (both default to inner); a `PatchMode` renders `hx-swap` under htmx; under Datastar it renders nothing — the mode is response-header driven                |
+| unknowns      | `TransportIsValid`/`MethodIsValid`/`EventIsValid`/`ContentTypeIsValid`/`PatchModeIsValid` exist; rendering falls back to defaults                                                                   |
 
 ## Dialect mapping
 
-| `wire.Action`                  | htmx rendering                             | Datastar rendering                                                |
-| ------------------------------ | ------------------------------------------ | ----------------------------------------------------------------- |
-| `Method` + `URL`               | `hx-get="/api/fragment"`                   | `data-on:click="@get('/api/fragment')"`                           |
-| `Event: EventSubmit`           | `hx-trigger="submit"`                      | event key: `data-on:submit="…"`                                   |
-| `Target: "#out"`               | `hx-target="#out"`                         | _not rendered_ — see below                                        |
+| `wire.Action`                  | htmx rendering                             | Datastar rendering                                                                                      |
+| ------------------------------ | ------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `Method` + `URL`               | `hx-get="/api/fragment"`                   | `data-on:click="@get('/api/fragment')"`                                                                 |
+| `Event: EventSubmit`           | `hx-trigger="submit"`                      | event key: `data-on:submit="…"`                                                                         |
+| `Target: "#out"`               | `hx-target="#out"`                         | _not rendered_ — see below                                                                              |
 | `Selector: "#out"`             | _not rendered_                             | `{selector: '#out'}` — only under `ContentTypeForm`: picks which form serializes; never targets patches |
 | `Swap: PatchModeOuter`         | `hx-swap="outerHTML"`                      | _not rendered_ — the `Datastar-Mode` response header owns the mode (wire.Handler/PatchTarget)           |
-| `ContentType: ContentTypeForm` | _not rendered_ (native form serialization) | `{contentType: 'form'}` appended — serializes the enclosing form  |
-| `URL: ""`                      | nothing                                    | nothing                                                           |
+| `ContentType: ContentTypeForm` | _not rendered_ (native form serialization) | `{contentType: 'form'}` appended — serializes the enclosing form                                        |
+| `URL: ""`                      | nothing                                    | nothing                                                                                                 |
 
 Datastar fetch options travel in **ONE object literal** — the runtime dispatcher
 reads exactly one options argument, so `Selector` + `ContentTypeForm`
@@ -140,13 +140,13 @@ if wire.IsDatastar(r) {
 }
 ```
 
-| Constant                      | Direction | Meaning                                           |
-| ----------------------------- | --------- | ------------------------------------------------- |
-| `wire.HeaderHXRequest`        | request   | set by htmx on every AJAX request                 |
-| `wire.HeaderDatastarRequest`  | request   | set by Datastar on every fetch action             |
-| `wire.HeaderDatastarSelector` | response  | names the patch region for non-SSE HTML responses |
-| `wire.HeaderDatastarMode`     | response  | merge mode (`inner`, `outer`, …)                  |
-| `wire.HeaderDatastarUseViewTransition` | response | wraps the patch in the View Transitions API |
+| Constant                               | Direction | Meaning                                           |
+| -------------------------------------- | --------- | ------------------------------------------------- |
+| `wire.HeaderHXRequest`                 | request   | set by htmx on every AJAX request                 |
+| `wire.HeaderDatastarRequest`           | request   | set by Datastar on every fetch action             |
+| `wire.HeaderDatastarSelector`          | response  | names the patch region for non-SSE HTML responses |
+| `wire.HeaderDatastarMode`              | response  | merge mode (`inner`, `outer`, …)                  |
+| `wire.HeaderDatastarUseViewTransition` | response  | wraps the patch in the View Transitions API       |
 
 The demo implements this end-to-end: `examples/demo/wire_demo.templ` renders
 the same Action under both transports, `/api/wire/fragment` serves both, and
@@ -276,13 +276,13 @@ CSRF hidden input — traveling in both dialects.
 }
 ```
 
-| Aspect             | htmx dialect                                                                        | Datastar dialect (`ContentTypeForm`, applied by Form)                                                              |
-| ------------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Rendering          | `hx-post="/api/save" hx-trigger="submit"` (implicit trigger)                        | `data-on:submit="@post('/api/save', {contentType: 'form'})"`                                                       |
-| Field values       | native serialization (urlencoded; multipart with `enctype`)                         | same — FormData → urlencoded (or multipart with `enctype`)                                                         |
-| HTML5 validation   | `Validate: true` adds `hx-validate="true"`; `NoValidate: true` renders `novalidate` | automatic (`checkValidity` gate); `NoValidate: true` renders `novalidate`, which skips the gate                    |
-| Submitter button   | name/value included                                                                 | name/value appended by the runtime                                                                                 |
-| Response targeting | `Wire.Target` → `hx-target` (default swaps into the form)                           | response-driven (`wire.Handler`) — the client cannot target patches (corrected 2026-10-02) |
+| Aspect             | htmx dialect                                                                        | Datastar dialect (`ContentTypeForm`, applied by Form)                                           |
+| ------------------ | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Rendering          | `hx-post="/api/save" hx-trigger="submit"` (implicit trigger)                        | `data-on:submit="@post('/api/save', {contentType: 'form'})"`                                    |
+| Field values       | native serialization (urlencoded; multipart with `enctype`)                         | same — FormData → urlencoded (or multipart with `enctype`)                                      |
+| HTML5 validation   | `Validate: true` adds `hx-validate="true"`; `NoValidate: true` renders `novalidate` | automatic (`checkValidity` gate); `NoValidate: true` renders `novalidate`, which skips the gate |
+| Submitter button   | name/value included                                                                 | name/value appended by the runtime                                                              |
+| Response targeting | `Wire.Target` → `hx-target` (default swaps into the form)                           | response-driven (`wire.Handler`) — the client cannot target patches (corrected 2026-10-02)      |
 
 The form-level defaults: an unspecified `Event` becomes `submit`, an
 unspecified `ContentType` becomes `ContentTypeForm` (set `ContentTypeJSON`
@@ -656,15 +656,15 @@ Facts worth knowing:
 `wire` covers only the dialects' common subset. Transport-specific machinery
 stays in its module, where it already exists:
 
-| Need                         | Use instead                                                       |
-| ---------------------------- | ----------------------------------------------------------------- |
-| Polling / reveal / lazy load | `htmx.PolledRegion`, `navigation.LoadMore` (typed `Reveal` covers both dialects, ADR-0043) |
-| Out-of-band swaps            | `htmx.SwapOOB`                                                    |
+| Need                         | Use instead                                                                                                                                                                                                          |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Polling / reveal / lazy load | `htmx.PolledRegion`, `navigation.LoadMore` (typed `Reveal` covers both dialects, ADR-0043)                                                                                                                           |
+| Out-of-band swaps            | `htmx.SwapOOB`                                                                                                                                                                                                       |
 | Confirm dialogs              | `htmx.ConfirmDelete` (`hx-confirm`) — htmx-ONLY: the pinned Datastar runtime ships no confirm machinery (bundle-verified 2026-10-03, zero confirm tokens in v0.6.1); Datastar callers own confirmation consumer-side |
-| Loading indicators           | `htmx.InlineLoadingOverlay`, `datastar.Indicator`                 |
-| SSE streams / signals        | `datastar.LiveRegion`, `datastar.Get/Post/...` with retry options |
-| View transitions             | `htmx.ViewTransitions` (global config); per-patch under Datastar via `PatchTarget.UseViewTransitions` (the `Datastar-Use-View-Transition` response header) |
-| Focus after self-swaps       | `LoadMoreProps.FocusOnSwap` (autofocus; see below)                |
+| Loading indicators           | `htmx.InlineLoadingOverlay`, `datastar.Indicator`                                                                                                                                                                    |
+| SSE streams / signals        | `datastar.LiveRegion`, `datastar.Get/Post/...` with retry options                                                                                                                                                    |
+| View transitions             | `htmx.ViewTransitions` (global config); per-patch under Datastar via `PatchTarget.UseViewTransitions` (the `Datastar-Use-View-Transition` response header)                                                           |
+| Focus after self-swaps       | `LoadMoreProps.FocusOnSwap` (autofocus; see below)                                                                                                                                                                   |
 
 **Focus across swaps (M20/F093, browser-proven
 `visualtest/focus_preservation_e2e_test.go`):** a self-replacing trigger

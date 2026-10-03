@@ -17,14 +17,14 @@ out of the contract for now" research note in
 htmx and Datastar both express two trigger sources beyond DOM events —
 **interval polling** and **viewport reveal** — with bundle-verified grammars:
 
-| Concept         | htmx 2.0.10                                        | Datastar v0.6.1 (pinned bundle)                                |
-| --------------- | -------------------------------------------------- | -------------------------------------------------------------- |
-| Polling         | `hx-trigger="every 5s"`                            | `data-on-interval__duration.5s` (duration lives in the attribute NAME) |
-| Reveal once     | `hx-trigger="revealed"` (intersect-once shorthand) | `data-on-intersect__once`                                      |
-| Reveal every    | `hx-trigger="intersect"`                           | `data-on-intersect` (no `__once`)                              |
-| Threshold       | `intersect threshold:0.5`                          | `__half` (50) / `__full` (100) / `__threshold.<0-100>` (percent) |
-| Leave viewport  | — (no exit semantics)                              | `__exit` (bundle-verified)                                     |
-| Multiple sources| one comma-separated `hx-trigger` value             | one attribute PER source (each plugin owns an attribute)       |
+| Concept          | htmx 2.0.10                                        | Datastar v0.6.1 (pinned bundle)                                        |
+| ---------------- | -------------------------------------------------- | ---------------------------------------------------------------------- |
+| Polling          | `hx-trigger="every 5s"`                            | `data-on-interval__duration.5s` (duration lives in the attribute NAME) |
+| Reveal once      | `hx-trigger="revealed"` (intersect-once shorthand) | `data-on-intersect__once`                                              |
+| Reveal every     | `hx-trigger="intersect"`                           | `data-on-intersect` (no `__once`)                                      |
+| Threshold        | `intersect threshold:0.5`                          | `__half` (50) / `__full` (100) / `__threshold.<0-100>` (percent)       |
+| Leave viewport   | — (no exit semantics)                              | `__exit` (bundle-verified)                                             |
+| Multiple sources | one comma-separated `hx-trigger` value             | one attribute PER source (each plugin owns an attribute)               |
 
 Two runtime facts shape any typed model (see
 [docs/datastar-runtime-facts.md](../datastar-runtime-facts.md)):
