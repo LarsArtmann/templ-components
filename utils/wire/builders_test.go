@@ -372,6 +372,6 @@ func TestTriggerAttributesAreStrings(t *testing.T) {
 // Compile-time guards: the Attributes methods exist on both the value and
 // pointer forms the builders traffic in.
 var (
-	_ func() templ.Attributes              = (Action{}).Attributes
+	_ func() templ.Attributes        = (Action{}).Attributes
 	_ func(*Action) templ.Attributes = (*Action).Attributes
 )

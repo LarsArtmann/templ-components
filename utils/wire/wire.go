@@ -15,11 +15,11 @@ import (
 // see docs/datastar-runtime-facts.md). htmx marks its requests with
 // HeaderHXRequest and targets client-side via hx-target.
 const (
-	HeaderDatastarRequest          = "Datastar-Request"
-	HeaderDatastarSelector         = "Datastar-Selector"
-	HeaderDatastarMode             = "Datastar-Mode"
+	HeaderDatastarRequest           = "Datastar-Request"
+	HeaderDatastarSelector          = "Datastar-Selector"
+	HeaderDatastarMode              = "Datastar-Mode"
 	HeaderDatastarUseViewTransition = "Datastar-Use-View-Transition"
-	HeaderHXRequest        = "Hx-Request"
+	HeaderHXRequest                 = "Hx-Request"
 )
 
 // Transport selects the client-side runtime that executes an Action.

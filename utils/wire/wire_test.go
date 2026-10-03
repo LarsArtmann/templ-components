@@ -642,9 +642,9 @@ func TestActionSelector(t *testing.T) {
 		t.Parallel()
 
 		action := Action{
-			Transport: TransportDatastar,
-			URL:       "/api/save",
-			Selector:  `#it's`,
+			Transport:   TransportDatastar,
+			URL:         "/api/save",
+			Selector:    `#it's`,
 			ContentType: ContentTypeForm,
 		}
 

@@ -29,6 +29,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Action stays a pure poller (no click trigger is added); `Reveal.Exit` is
   Datastar-only (htmx degrades to the entry trigger, documented); `Reveal`
   zero value fires once (htmx `revealed` = intersect once).
+- **Per-patch View Transitions under Datastar:
+  `wire.PatchTarget.UseViewTransitions`.** `wire.Handler` stamps
+  `Datastar-Use-View-Transition: true` (bundle-decoded: the kebab-cased
+  `useViewTransition` dataline read from the response header; the patch
+  handler wraps the patch in `document.startViewTransition`). Patch-scoped
+  by design — the deliberate contrast to htmx's global
+  `htmx.ViewTransitions` flag.
+- **`navigation.LoadMore` migrates to the typed trigger language.** The
+  wired path now expresses self-replacement via `Action.Swap =
+  PatchModeOuter` (rendered by the wire contract; the raw `hx-swap` hand
+  render is gone) and `InfiniteScroll` via the typed `Reveal` — which means
+  infinite scroll WORKS under Datastar now (`data-on-intersect__once`)
+  instead of being silently ignored (the old "cannot express it" limitation
+  is obsolete as of ADR-0043). The htmx path renders the same `revealed`
+  shorthand as before; the raw (unwired) path is unchanged.
 - **`wire` constructors and fluent builders: `wire.Get/Post/Put/Patch/Delete(url)`
   plus `With*` chainers** (`WithTransport/Event/Method/Target/Selector/Swap/
   ContentType/Debounce/Throttle/Interval/Reveal/PreventDefault`) and the

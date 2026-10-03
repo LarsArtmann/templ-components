@@ -188,3 +188,74 @@ func TestHandler(t *testing.T) {
 		})
 	}
 }
+
+// TestHandlerUseViewTransitions pins the view-transition header: a Datastar
+// caller whose PatchTarget opts in gets Datastar-Use-View-Transition: true
+// (the runtime reads it into the useViewTransition patch dataline,
+// bundle-decoded from the pinned v0.6.1 bundle); htmx and plain callers get
+// nothing, and an opt-out target renders no header.
+func TestHandlerUseViewTransitions(t *testing.T) {
+	t.Parallel()
+
+	const body = "<p>fragment</p>"
+
+	next := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = io.WriteString(w, body)
+	})
+
+	tests := []struct {
+		name         string
+		target       PatchTarget
+		datastarCall bool
+		wantVT       string
+	}{
+		{
+			name:         "datastar caller gets the view-transition header",
+			target:       PatchTarget{Selector: "#out", UseViewTransitions: true},
+			datastarCall: true,
+			wantVT:       "true",
+		},
+		{
+			name:         "opt-out target renders no header",
+			target:       PatchTarget{Selector: "#out"},
+			datastarCall: true,
+			wantVT:       "",
+		},
+		{
+			name:         "htmx caller gets no view-transition header",
+			target:       PatchTarget{UseViewTransitions: true},
+			datastarCall: false,
+			wantVT:       "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			srv := httptest.NewServer(Handler(tt.target, next))
+			t.Cleanup(srv.Close)
+
+			req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, srv.URL+"/api/fragment", nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if tt.datastarCall {
+				req.Header.Set(HeaderDatastarRequest, "true")
+			}
+
+			resp, err := srv.Client().Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			if got := resp.Header.Get(HeaderDatastarUseViewTransition); got != tt.wantVT {
+				t.Errorf("Datastar-Use-View-Transition = %q, want %q", got, tt.wantVT)
+			}
+		})
+	}
+}

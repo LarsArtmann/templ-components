@@ -42,7 +42,12 @@ type ConfirmDeleteProps struct {
 	Confirm string
 }
 
-// ConfirmDelete renders a button with a confirmation dialog for destructive actions
+// ConfirmDelete renders a button with a confirmation dialog for destructive actions.
+// HTMX-ONLY by design: the pinned Datastar runtime ships NO confirm machinery
+// (bundle-verified 2026-10-03 — zero confirm tokens in the v0.6.1 bundle), so
+// there is no wire-dialect twin. A Datastar caller that needs confirmation
+// owns it consumer-side (e.g. a data-on:click__prevent handler that re-fires
+// the action after its own dialog resolves).
 //
 //	@htmx.ConfirmDelete(htmx.ConfirmDeleteProps{Delete: "/delete/123", Target: "#item-123", Confirm: "Are you sure?"})
 templ ConfirmDelete(props ConfirmDeleteProps) {

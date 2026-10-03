@@ -125,7 +125,13 @@ headers targeting the `PatchTarget` — Datastar decides where to patch from the
 response. htmx and plain callers pass through untouched: htmx targets
 client-side via `hx-target`, and a plain navigation just renders the fragment.
 An empty `PatchTarget.Selector` degrades to Datastar's default id-matched
-patching. For custom branching, the building blocks are exported too:
+patching. `PatchTarget.UseViewTransitions` additionally stamps
+`Datastar-Use-View-Transition: true` — the runtime reads it into the
+`useViewTransition` patch dataline and wraps that patch in the browser's View
+Transitions API (bundle-decoded from the pinned v0.6.1 bundle; the header is
+the kebab-cased dataline name). It is patch-scoped — per request — the
+deliberate contrast to htmx's global `htmx.ViewTransitions` flag. For custom
+branching, the building blocks are exported too:
 
 ```go
 if wire.IsDatastar(r) {
@@ -140,6 +146,7 @@ if wire.IsDatastar(r) {
 | `wire.HeaderDatastarRequest`  | request   | set by Datastar on every fetch action             |
 | `wire.HeaderDatastarSelector` | response  | names the patch region for non-SSE HTML responses |
 | `wire.HeaderDatastarMode`     | response  | merge mode (`inner`, `outer`, …)                  |
+| `wire.HeaderDatastarUseViewTransition` | response | wraps the patch in the View Transitions API |
 
 The demo implements this end-to-end: `examples/demo/wire_demo.templ` renders
 the same Action under both transports, `/api/wire/fragment` serves both, and
@@ -651,12 +658,12 @@ stays in its module, where it already exists:
 
 | Need                         | Use instead                                                       |
 | ---------------------------- | ----------------------------------------------------------------- |
-| Polling / reveal / lazy load | `htmx.PolledRegion`, `navigation.LoadMore`                        |
+| Polling / reveal / lazy load | `htmx.PolledRegion`, `navigation.LoadMore` (typed `Reveal` covers both dialects, ADR-0043) |
 | Out-of-band swaps            | `htmx.SwapOOB`                                                    |
-| Confirm dialogs              | `htmx.ConfirmDelete` (`hx-confirm`)                               |
+| Confirm dialogs              | `htmx.ConfirmDelete` (`hx-confirm`) — htmx-ONLY: the pinned Datastar runtime ships no confirm machinery (bundle-verified 2026-10-03, zero confirm tokens in v0.6.1); Datastar callers own confirmation consumer-side |
 | Loading indicators           | `htmx.InlineLoadingOverlay`, `datastar.Indicator`                 |
 | SSE streams / signals        | `datastar.LiveRegion`, `datastar.Get/Post/...` with retry options |
-| View transitions             | `htmx.ViewTransitions`                                            |
+| View transitions             | `htmx.ViewTransitions` (global config); per-patch under Datastar via `PatchTarget.UseViewTransitions` (the `Datastar-Use-View-Transition` response header) |
 | Focus after self-swaps       | `LoadMoreProps.FocusOnSwap` (autofocus; see below)                |
 
 **Focus across swaps (M20/F093, browser-proven

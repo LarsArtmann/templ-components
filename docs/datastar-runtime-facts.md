@@ -102,6 +102,25 @@ new bundle unless marked otherwise:
   Library consumption: `wire.PatchMode` stays the shared server vocabulary
   (`wire.PatchTarget.Mode`); `wire.Action.Swap` is the htmx client-side
   half of the vocabulary.
+- **NEW (2026-10-03, decoded from the pinned v0.6.1 bundle) — View
+  Transitions are a per-patch RESPONSE option, not an attribute or fetch
+  option.** The non-SSE HTML response converter reads the
+  `datastar-use-view-transition` header (the kebab-case of the dataline
+  name `useViewTransition` — headers map to datalines 1:1 through the same
+  kebab-case function as selector/mode) into the patch event's
+  `useViewTransition` dataline, which the patch handler coerces through a
+  boolean check and feeds to `document.startViewTransition`. There is NO
+  `data-*` attribute spelling. Library consumption:
+  `wire.PatchTarget.UseViewTransitions` → `wire.Handler` stamps
+  `Datastar-Use-View-Transition: true`. Two sibling datalines ride the same
+  converter but are NOT modeled (`namespace`, default `html`) — add only on
+  demand.
+- **NO-GO (2026-10-03, bundle-verified) — the runtime ships NO confirm
+  machinery.** Zero `confirm` tokens in the v0.6.1 bundle: there is no
+  `hx-confirm` twin, no confirm plugin, nothing for the library to bind.
+  `htmx.ConfirmDelete` stays htmx-only; Datastar callers own confirmation
+  consumer-side (e.g. a `data-on:click__prevent` handler re-firing the
+  action after its own dialog resolves).
 - **NEW (2026-09-07) — fetch actions accept `contentType: 'form'`** for
   whole-form serialization (consumed by `wire.ContentTypeForm` /
   `forms.FormProps.Wire`):

@@ -80,7 +80,7 @@ One typed `wire.Action` spec rendered as htmx or Datastar attributes depending o
 | `Action`              | Method + URL + Event + Target/Selector + ContentType + Swap; empty URL wires nothing                                                                                                             |
 | `Action.Attributes()` | Renders the dialect: `hx-*` for htmx, `data-on:<event>="@<method>('url')"` for Datastar                                                                                                          |
 | `PatchMode`           | Datastar merge mode (inner/outer/before/after/prepend/append/replace/remove), shared by `Swap` and `PatchTarget.Mode`                                                                            |
-| `Handler`             | Both-transports endpoint middleware: Datastar callers get response-header targeting (`PatchTarget{Selector, Mode}`, typed `PatchMode` enum), htmx/plain pass through                             |
+| `Handler`             | Both-transports endpoint middleware: Datastar callers get response-header targeting (`PatchTarget{Selector, Mode, UseViewTransitions}`, typed `PatchMode` enum), htmx/plain pass through            |
 | `IsDatastar`/`IsHTMX` | Request predicates on the `Datastar-Request`/`HX-Request` headers for custom branching                                                                                                           |
 | Header constants      | `Datastar-Request`/`Datastar-Selector`/`Datastar-Mode`/`HX-Request` for transport-branching handlers                                                                                             |
 
