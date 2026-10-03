@@ -384,3 +384,66 @@ func TestDemoWireBusyCardBothTransports(t *testing.T) {
 
 	server.FailIfServerErrors(t)
 }
+
+// TestDemoWireSwapCardsBothTransports proves the swap-styles and remove-mode
+// cards in a real browser: the append button grows its region under BOTH
+// dialects (htmx hx-swap="beforeend", Datastar response-header append), and
+// the dismiss button retracts the region entirely (delete / remove mode).
+func TestDemoWireSwapCardsBothTransports(t *testing.T) {
+	server := StartDemoServer(t)
+
+	ctx, cancel := newFlowTab(t)
+	defer cancel()
+
+	cards := []struct {
+		name      string
+		page      string
+		appendSel string
+		appendOut string
+		regionID  string
+	}{
+		{
+			name:      "htmx",
+			page:      "/wire?transport=htmx",
+			appendSel: `button[hx-get="/demo/api/wire/swap-line"]`,
+			appendOut: "wire-swap-htmx-out",
+			regionID:  "wire-remove-htmx-region",
+		},
+		{
+			name:      "datastar",
+			page:      "/wire?transport=datastar",
+			appendSel: `button[data-on\:click*="/api/wire/swap-line"]`,
+			appendOut: "wire-swap-datastar-out",
+			regionID:  "wire-remove-datastar-region",
+		},
+	}
+
+	for _, tt := range cards {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := chromedp.Run(ctx,
+				chromedp.Navigate(server.BaseURL()+tt.page),
+				chromedp.WaitReady("body"),
+			); err != nil {
+				t.Fatalf("visualtest[demo]: load %s: %v", tt.page, err)
+			}
+
+			appendExpr := fmt.Sprintf(
+				`document.querySelectorAll('#%s p').length`,
+				tt.appendOut,
+			)
+
+			// First append: the region gains one line.
+			demoClickUntil(ctx, t, tt.appendSel, appendExpr+">=1", demoFlowTimeout)
+
+			// Second append: still appending (mode did not degenerate).
+			demoClickUntil(ctx, t, tt.appendSel, appendExpr+">=2", demoFlowTimeout)
+
+			// Remove: the whole region is retracted.
+			removeExpr := fmt.Sprintf(`!document.getElementById('%s')`, tt.regionID)
+			removeSel := fmt.Sprintf(`#%s button`, tt.regionID)
+			demoClickUntil(ctx, t, removeSel, removeExpr, demoFlowTimeout)
+		})
+	}
+
+	server.FailIfServerErrors(t)
+}

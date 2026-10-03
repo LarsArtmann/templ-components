@@ -721,6 +721,113 @@ func TestWireBusyEndpoint(t *testing.T) {
 	}
 }
 
+// TestWireDemoSwapCards pins the swap-styles and remove-mode demo cards:
+// the SAME Action.Swap value renders the htmx swap style client-side while
+// the Datastar endpoint owns the merge mode via response headers.
+func TestWireDemoSwapCards(t *testing.T) {
+	t.Parallel()
+
+	html := fetchDemoHTML(t)
+	for _, want := range []string{
+		// Append card: htmx carries the swap style; the Action is identical
+		// across dialects.
+		`hx-get="/demo/api/wire/swap-line"`,
+		`hx-swap="beforeend"`,
+		`data-on:click="@get(&#39;/demo/api/wire/swap-line&#39;)"`,
+		`id="wire-swap-htmx-out"`,
+		`id="wire-swap-datastar-out"`,
+		// Remove card: htmx's delete swap; Datastar's region ids exist.
+		`hx-post="/demo/api/wire/remove-region"`,
+		`hx-swap="delete"`,
+		`id="wire-remove-htmx-region"`,
+		`id="wire-remove-datastar-region"`,
+	} {
+		if !strings.Contains(html, want) {
+			t.Errorf("demo page missing %q", want)
+		}
+	}
+
+	if strings.Contains(html, "hx-swap=\"remove\"") {
+		t.Error("htmx remove swap must render as delete, not remove")
+	}
+}
+
+// TestWireSwapEndpoints pins the demo endpoints' dialect contracts: the
+// Datastar caller receives the merge mode via response headers; the htmx
+// caller gets none (its swap style is client-side).
+func TestWireSwapEndpoints(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name            string
+		method          string
+		path            string
+		datastarRequest bool
+		wantMode        string
+		wantSelector    string
+	}{
+		{
+			name:            "append line: datastar caller gets append mode",
+			method:          http.MethodGet,
+			path:            "/api/wire/swap-line",
+			datastarRequest: true,
+			wantMode:        "append",
+			wantSelector:    "#wire-swap-datastar-out",
+		},
+		{
+			name:   "append line: htmx caller gets no routing headers",
+			method: http.MethodGet,
+			path:   "/api/wire/swap-line",
+		},
+		{
+			name:            "remove region: datastar caller gets remove mode",
+			method:          http.MethodPost,
+			path:            "/api/wire/remove-region",
+			datastarRequest: true,
+			wantMode:        "remove",
+			wantSelector:    "#wire-remove-datastar-region",
+		},
+		{
+			name:   "remove region: htmx caller gets no routing headers",
+			method: http.MethodPost,
+			path:   "/api/wire/remove-region",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			server := httptest.NewServer(newMux())
+			t.Cleanup(server.Close)
+
+			req, err := http.NewRequestWithContext(context.Background(), tt.method, server.URL+tt.path, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if tt.datastarRequest {
+				req.Header.Set(wire.HeaderDatastarRequest, "true")
+			}
+
+			resp, err := server.Client().Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			if resp.StatusCode != http.StatusOK {
+				t.Errorf("status = %d, want 200", resp.StatusCode)
+			}
+			if got := resp.Header.Get(wire.HeaderDatastarMode); got != tt.wantMode {
+				t.Errorf("Datastar-Mode = %q, want %q", got, tt.wantMode)
+			}
+			if got := resp.Header.Get(wire.HeaderDatastarSelector); got != tt.wantSelector {
+				t.Errorf("Datastar-Selector = %q, want %q", got, tt.wantSelector)
+			}
+		})
+	}
+}
+
 // TestWireDemoBusyCardRendersBothDialects pins the busy-state card wiring:
 // the htmx button posts to the slow endpoint, the Datastar button posts with
 // a plain action expression (patch targeting is the endpoint's response
