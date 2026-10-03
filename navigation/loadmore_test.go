@@ -34,7 +34,7 @@ func TestGoldenLoadMoreWired(t *testing.T) {
 			Wire:      &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
 			Cursor:    "next",
 		}))},
-		{Name: "loadmore_wired_datastar_infinite_scroll_ignored", HTML: utils.Render(t, LoadMore(LoadMoreProps{
+		{Name: "loadmore_wired_datastar_infinite_scroll_reveal", HTML: utils.Render(t, LoadMore(LoadMoreProps{
 			BaseProps:      utils.BaseProps{ID: "items-more"},
 			Wire:           &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
 			InfiniteScroll: true,

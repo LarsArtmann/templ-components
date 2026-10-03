@@ -58,6 +58,16 @@ type PatchTarget struct {
 	Selector string
 	// Mode is the merge mode. Zero value renders as inner.
 	Mode PatchMode
+	// UseViewTransitions wraps this patch in the browser's View Transitions
+	// API (document.startViewTransition) — the animated same-document
+	// cross-fade/slide vocabulary. Response-header driven like everything
+	// else: Handler stamps HeaderDatastarUseViewTransition and the runtime
+	// turns it into the useViewTransition dataline (bundle-decoded from the
+	// pinned v0.6.1 bundle: the header name is the kebab-cased dataline name;
+	// the value coerces through a boolean check). It is patch-scoped — per
+	// request, not per page — which is the deliberate contrast to htmx's
+	// global htmx.ViewTransitions config flag.
+	UseViewTransitions bool
 }
 
 // IsDatastar reports whether the request was issued by the Datastar runtime
@@ -92,9 +102,15 @@ func IsHTMX(r *http.Request) bool {
 //	})))
 func Handler(target PatchTarget, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if target.Selector != "" && IsDatastar(r) {
-			w.Header().Set(HeaderDatastarSelector, target.Selector)
-			w.Header().Set(HeaderDatastarMode, string(target.Mode.mode()))
+		if IsDatastar(r) {
+			if target.Selector != "" {
+				w.Header().Set(HeaderDatastarSelector, target.Selector)
+				w.Header().Set(HeaderDatastarMode, string(target.Mode.mode()))
+			}
+
+			if target.UseViewTransitions {
+				w.Header().Set(HeaderDatastarUseViewTransition, "true")
+			}
 		}
 
 		next.ServeHTTP(w, r)
