@@ -56,6 +56,22 @@ func TestGoldenSweepTabs(t *testing.T) {
 			},
 			ActiveTabID: "tab1",
 		}))},
+		{Name: "tabs_wired_htmx", HTML: utils.Render(t, Tabs(TabsProps{
+			Tabs: []Tab{
+				{ID: "overview", Label: "Overview", Content: templ.Raw("<p>Overview content</p>")},
+				{ID: "activity", Label: "Activity", Content: templ.Raw("<p>Activity feed</p>")},
+			},
+			ActiveTabID: "overview",
+			Wire:        &wire.Action{URL: "/api/tabs/{tab}"},
+		}))},
+		{Name: "tabs_wired_datastar", HTML: utils.Render(t, Tabs(TabsProps{
+			Tabs: []Tab{
+				{ID: "overview", Label: "Overview", Content: templ.Raw("<p>Overview content</p>")},
+				{ID: "activity", Label: "Activity", Content: templ.Raw("<p>Activity feed</p>")},
+			},
+			ActiveTabID: "overview",
+			Wire:        &wire.Action{Transport: wire.TransportDatastar, URL: "/api/tabs/{tab}"},
+		}))},
 	})
 }
 

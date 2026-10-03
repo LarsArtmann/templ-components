@@ -151,6 +151,7 @@ const tabsSwap = "outerHTML settle:0s"
 templ Tabs(props TabsProps) {
 	{{ tabs := ensureTabIDs(props.Tabs) }}
 	{{ activeID := resolveActiveTabID(props.ActiveTabID, tabs) }}
+	{{ clientSide := props.ClientSide && props.Wire == nil }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
@@ -159,7 +160,7 @@ templ Tabs(props TabsProps) {
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
-		if props.ClientSide {
+		if clientSide {
 			data-tc-tabs=""
 		}
 		{ props.Attrs... }
@@ -202,7 +203,7 @@ templ Tabs(props TabsProps) {
 				</div>
 			}
 		}
-		if props.ClientSide {
+		if clientSide {
 			<script nonce={ props.Nonce }>
 				if (!window.tcTabsAttached) {
 					window.tcTabsAttached = true;

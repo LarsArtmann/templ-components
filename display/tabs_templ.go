@@ -305,6 +305,7 @@ func Tabs(props TabsProps) templ.Component {
 		ctx = templ.ClearChildren(ctx)
 		tabs := ensureTabIDs(props.Tabs)
 		activeID := resolveActiveTabID(props.ActiveTabID, tabs)
+		clientSide := props.ClientSide && props.Wire == nil
 		var templ_7745c5c3_Var11 = []any{utils.Class("w-full", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
 		if templ_7745c5c3_Err != nil {
@@ -322,7 +323,7 @@ func Tabs(props TabsProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 156, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 157, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 			if templ_7745c5c3_Err != nil {
@@ -358,7 +359,7 @@ func Tabs(props TabsProps) templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 160, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 161, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 			if templ_7745c5c3_Err != nil {
@@ -369,7 +370,7 @@ func Tabs(props TabsProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		if props.ClientSide {
+		if clientSide {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, " data-tc-tabs=\"\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -441,7 +442,7 @@ func Tabs(props TabsProps) templ.Component {
 				var templ_7745c5c3_Var17 string
 				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.ResolveAttributeValue(tab.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 193, Col: 16}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 194, Col: 16}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 				if templ_7745c5c3_Err != nil {
@@ -454,7 +455,7 @@ func Tabs(props TabsProps) templ.Component {
 				var templ_7745c5c3_Var18 string
 				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(tab.ID + "-tab")
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 195, Col: 38}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 196, Col: 38}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 				if templ_7745c5c3_Err != nil {
@@ -484,7 +485,7 @@ func Tabs(props TabsProps) templ.Component {
 				}
 			}
 		}
-		if props.ClientSide {
+		if clientSide {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<script nonce=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -492,7 +493,7 @@ func Tabs(props TabsProps) templ.Component {
 			var templ_7745c5c3_Var19 string
 			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 206, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 207, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
 			if templ_7745c5c3_Err != nil {
