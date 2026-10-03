@@ -662,6 +662,7 @@ templ wireSwapAppendButton(transport wire.Transport) {
 			Transport: transport,
 			URL:       demoURL("/api/wire/swap-line"),
 			Swap:      wire.PatchModeAppend,
+			Target:    utils.Ternary(transport == wire.TransportDatastar, "", "#wire-swap-htmx-out"),
 		},
 	})
 }
