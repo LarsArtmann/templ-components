@@ -186,3 +186,45 @@ func TestTabsRender(t *testing.T) {
 		utils.AssertNotContains(t, output, "tcTabsAttached")
 	})
 }
+
+// TestTabsWire pins the server-side tab switching contract (ADR-0036): each
+// tab link carries the wired action with the {tab} URL placeholder
+// substituted, the anchor fallback forces PreventDefault, an empty Target
+// defaults to the container's own #ID, htmx gets the settle:0s self-swap,
+// and the consumer's *Action is never mutated.
+func TestTabsWire(t *testing.T) {
+	t.Parallel()
+
+	t.Run("htmx renders per-tab hx-get with substituted URLs and the settle swap", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, Tabs(TabsProps{
+			ID:          "prefs-tabs",
+			ActiveTabID: "general",
+			Tabs: []Tab{
+				{ID: "general", Label: "General"},
+				{ID: "advanced", Label: "Advanced"},
+			},
+			Wire: &wire.Action{URL: "/api/tabs/{tab}", Target: "#prefs-tabs"},
+		}))
+		utils.AssertContains(t, output, `hx-get="/api/tabs/general"`)
+		utils.AssertContains(t, output, `hx-get="/api/tabs/advanced"`)
+		utils.AssertContains(t, output, `hx-target="#prefs-tabs"`)
+		utils.AssertContains(t, output, `hx-swap="outerHTML settle:0s"`)
+	})
+
+	t.Run("datastar renders per-tab data-on:click with prevent", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, Tabs(TabsProps{
+			ID:          "prefs-tabs",
+			ActiveTabID: "general",
+			Tabs: []Tab{
+				{ID: "general", Label: "General"},
+				{ID: "advanced", Label: "Advanced"},
+			},
+			Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/tabs/{tab}"},
+		}))
+		utils.AssertContains(t, output, `data-on:click__prevent="&#39;` /* placeholder replaced below */)
+	})
+}
