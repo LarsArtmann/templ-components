@@ -196,121 +196,117 @@ func TestWithFormDefaults(t *testing.T) {
 	}
 }
 
-// TestThrottleRendersBothDialects pins the throttle window spelling: htmx
-// gets the throttle:<n>ms trigger modifier, Datastar the __throttle.<n>ms
-// attribute-name modifier. Zero renders nothing in both.
-func TestThrottleRendersBothDialects(t *testing.T) {
+// TestThrottleHTMXRendering pins the throttle window under htmx: the
+// throttle:<n>ms trigger modifier, nothing at zero, and separate modifiers
+// when debounce pipelines alongside (htmx documents them as exclusive — the
+// rendering simply emits both; prefer one).
+func TestThrottleHTMXRendering(t *testing.T) {
 	t.Parallel()
 
-	t.Run("htmx renders the throttle trigger modifier", func(t *testing.T) {
-		t.Parallel()
+	tests := []struct {
+		name      string
+		action    Action
+		wantParts []string
+		wantNone  []string
+	}{
+		{
+			name:      "throttle renders as the trigger modifier",
+			action:    Get("/api/search").WithEvent(EventInput).WithThrottle(500),
+			wantParts: []string{"throttle:500ms"},
+		},
+		{
+			name:     "zero throttle renders nothing",
+			action:   Get("/api/search").WithEvent(EventClick),
+			wantNone: []string{"throttle"},
+		},
+		{
+			name:      "debounce and throttle render as separate modifiers",
+			action:    Get("/api/search").WithEvent(EventInput).WithDebounce(200).WithThrottle(1000),
+			wantParts: []string{"delay:200ms", "throttle:1000ms", "changed"},
+		},
+	}
 
-		attrs := Get("/api/search").
-			WithEvent(EventInput).
-			WithThrottle(500).
-			Attributes()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 
-		trigger, ok := attrs["hx-trigger"].(string)
-		if !ok {
-			t.Fatalf("hx-trigger missing or not a string: %v", attrs["hx-trigger"])
-		}
+			attrs := tt.action.Attributes()
 
-		if !strings.Contains(trigger, "throttle:500ms") {
-			t.Errorf("hx-trigger = %q, want it to contain throttle:500ms", trigger)
-		}
-	})
+			trigger, _ := attrs["hx-trigger"].(string)
 
-	t.Run("datastar renders the throttle attribute-name modifier", func(t *testing.T) {
-		t.Parallel()
-
-		attrs := Get("/api/search").
-			WithTransport(TransportDatastar).
-			WithEvent(EventInput).
-			WithThrottle(500).
-			Attributes()
-
-		var found bool
-
-		for key := range attrs {
-			if strings.Contains(key, "__throttle.500ms") {
-				found = true
+			for _, want := range tt.wantParts {
+				if !strings.Contains(trigger, want) {
+					t.Errorf("hx-trigger = %q, want it to contain %q", trigger, want)
+				}
 			}
-		}
 
-		if !found {
-			t.Errorf("no datastar attribute carries __throttle.500ms: %v", attrs)
-		}
-	})
-
-	t.Run("zero throttle renders nothing under htmx", func(t *testing.T) {
-		t.Parallel()
-
-		attrs := Get("/api/search").WithEvent(EventClick).Attributes()
-
-		trigger, _ := attrs["hx-trigger"].(string)
-		if strings.Contains(trigger, "throttle") {
-			t.Errorf("hx-trigger = %q, want no throttle token", trigger)
-		}
-	})
-
-	t.Run("zero throttle renders nothing under datastar", func(t *testing.T) {
-		t.Parallel()
-
-		attrs := Get("/api/search").
-			WithTransport(TransportDatastar).
-			WithEvent(EventClick).
-			Attributes()
-
-		for key := range attrs {
-			if strings.Contains(key, "__throttle") {
-				t.Errorf("attribute key %q carries a throttle modifier, want none", key)
+			for _, banned := range tt.wantNone {
+				if strings.Contains(trigger, banned) {
+					t.Errorf("hx-trigger = %q, want no %q token", trigger, banned)
+				}
 			}
-		}
-	})
+		})
+	}
+}
 
-	t.Run("datastar pipelines debounce then throttle in one key", func(t *testing.T) {
-		t.Parallel()
+// TestThrottleDatastarRendering pins the throttle window under Datastar: the
+// __throttle.<n>ms attribute-name modifier, nothing at zero, and the
+// delay-then-throttle pipeline in ONE attribute key.
+func TestThrottleDatastarRendering(t *testing.T) {
+	t.Parallel()
 
-		attrs := Get("/api/search").
-			WithTransport(TransportDatastar).
-			WithEvent(EventInput).
-			WithDebounce(200).
-			WithThrottle(1000).
-			Attributes()
+	tests := []struct {
+		name        string
+		action      Action
+		wantNeedles []string
+		wantBanned  string
+	}{
+		{
+			name:        "throttle renders as the attribute-name modifier",
+			action:      Get("/api/search").WithTransport(TransportDatastar).WithEvent(EventInput).WithThrottle(500),
+			wantNeedles: []string{"__throttle.500ms"},
+		},
+		{
+			name:       "zero throttle renders nothing",
+			action:     Get("/api/search").WithTransport(TransportDatastar).WithEvent(EventClick),
+			wantBanned: "__throttle",
+		},
+		{
+			name: "debounce and throttle pipeline in one key",
+			action: Get(
+				"/api/search",
+			).WithTransport(TransportDatastar).
+				WithEvent(EventInput).
+				WithDebounce(200).
+				WithThrottle(1000),
+			wantNeedles: []string{"__debounce.200ms", "__throttle.1000ms"},
+		},
+	}
 
-		var found bool
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 
-		for key := range attrs {
-			if strings.Contains(key, "__debounce.200ms") && strings.Contains(key, "__throttle.1000ms") {
-				found = true
+			attrs := tt.action.Attributes()
+
+			keys := make([]string, 0, len(attrs))
+			for key := range attrs {
+				keys = append(keys, key)
 			}
-		}
 
-		if !found {
-			t.Errorf("no attribute pipelines debounce.200ms then throttle.1000ms: %v", attrs)
-		}
-	})
+			joined := strings.Join(keys, "\n")
 
-	t.Run("htmx renders debounce and throttle as separate trigger modifiers", func(t *testing.T) {
-		t.Parallel()
-
-		attrs := Get("/api/search").
-			WithEvent(EventInput).
-			WithDebounce(200).
-			WithThrottle(1000).
-			Attributes()
-
-		trigger, ok := attrs["hx-trigger"].(string)
-		if !ok {
-			t.Fatalf("hx-trigger missing: %v", attrs)
-		}
-
-		for _, want := range []string{"delay:200ms", "throttle:1000ms", "changed"} {
-			if !strings.Contains(trigger, want) {
-				t.Errorf("hx-trigger = %q, want it to contain %q", trigger, want)
+			for _, want := range tt.wantNeedles {
+				if !strings.Contains(joined, want) {
+					t.Errorf("no datastar attribute carries %s: %v", want, attrs)
+				}
 			}
-		}
-	})
+
+			if tt.wantBanned != "" && strings.Contains(joined, tt.wantBanned) {
+				t.Errorf("an attribute carries the banned modifier %s: %v", tt.wantBanned, attrs)
+			}
+		})
+	}
 }
 
 // TestWithTransportComposesWithConstructors pins the Transport chain: the

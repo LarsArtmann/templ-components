@@ -16,28 +16,28 @@ package wire
 // Get wires a GET exchange — the read default (fragment loads, filters,
 // searches).
 func Get(url string) *Action {
-	return &Action{URL: url}
+	return &Action{URL: url} //nolint:exhaustruct_v5 // the zero value IS the read default
 }
 
 // Post wires a POST exchange. Mutations MUST set an explicit method — the
 // zero-value Action renders GET in BOTH dialects.
 func Post(url string) *Action {
-	return &Action{URL: url, Method: MethodPost}
+	return &Action{URL: url, Method: MethodPost} //nolint:exhaustruct_v5 // zero value stays dialect-default
 }
 
 // Put wires a PUT exchange.
 func Put(url string) *Action {
-	return &Action{URL: url, Method: MethodPut}
+	return &Action{URL: url, Method: MethodPut} //nolint:exhaustruct_v5 // zero value stays dialect-default
 }
 
 // Patch wires a PATCH exchange.
 func Patch(url string) *Action {
-	return &Action{URL: url, Method: MethodPatch}
+	return &Action{URL: url, Method: MethodPatch} //nolint:exhaustruct_v5 // zero value stays dialect-default
 }
 
 // Delete wires a DELETE exchange.
 func Delete(url string) *Action {
-	return &Action{URL: url, Method: MethodDelete}
+	return &Action{URL: url, Method: MethodDelete} //nolint:exhaustruct_v5 // zero value stays dialect-default
 }
 
 // WithEvent sets the triggering DOM event. Under htmx it renders as the

@@ -215,7 +215,8 @@ var packageDeps = map[string][]string{
 
 	pkgDatastar: {
 		"cancellation.go", enumsGoFile, "indicator.go",
-		"live_region.go", "retry.go", "sdk_script.go",
+		"live_region.go", "loading_button.go", "polled_region.go",
+		"retry.go", "sdk_script.go",
 		// version.go additionally pulls in go-datastar/static (embedded
 		// runtime bundle) + utils/cdn — SDKScript consumers only.
 		"version.go",

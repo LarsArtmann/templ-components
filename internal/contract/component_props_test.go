@@ -34,6 +34,8 @@ func componentTypes() []any {
 		datastar.SDKScriptProps{},
 		datastar.LiveRegionProps{},
 		datastar.IndicatorProps{},
+		datastar.LoadingButtonProps{},
+		datastar.PolledRegionProps{},
 
 		// display (33)
 		display.BadgeProps{},

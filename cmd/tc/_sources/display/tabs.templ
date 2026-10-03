@@ -2,8 +2,10 @@ package display
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // Tab represents a single tab panel
@@ -28,6 +30,22 @@ type TabsProps struct {
 	ActiveTabID string
 	Variant     TabsVariant
 	ClientSide  bool
+	// Wire, when set, switches the tabs from client-side toggling to
+	// SERVER-side switching: each tab link carries the wired action with the
+	// URL's `{tab}` placeholder substituted by that tab's ID (the same
+	// URL-template convention as the Calendar MonthNav `{year}`/`{month}`),
+	// and the endpoint re-renders the WHOLE Tabs component with the new
+	// ActiveTabID. Under htmx the action self-replaces the container with
+	// `outerHTML settle:0s` (the Calendar re-bind-window rationale: without
+	// settle, rapid tab clicks land in htmx's ~20ms processing window and
+	// silently no-op); under Datastar targeting is response-driven
+	// (wire.Handler) or id-matched — give the fragment root the Tabs' id.
+	// An empty Wire.Target defaults to the component's own `#ID` when ID is
+	// set. Wire is nil-safe inert: an empty URL wires nothing. ClientSide is
+	// ignored when Wire is set (one switching model at a time); the anchors'
+	// hash hrefs remain as the no-JS fallback, so the clone sets
+	// PreventDefault (the Datastar runtime auto-prevents only form+submit).
+	Wire *wire.Action
 }
 
 // DefaultTabsProps returns sensible defaults
@@ -69,8 +87,10 @@ func resolveActiveTabID(activeTabID string, tabs []Tab) string {
 
 // tabLink renders a single tab link with the given class based on active state.
 // aria-controls is emitted only when the tab owns a panel — referencing a
-// non-existent id is an axe aria-valid-attr-value violation.
-templ tabLink(tab Tab, hasPanel bool, isActive bool, activeClass, inactiveClass string) {
+// non-existent id is an axe aria-valid-attr-value violation. wired carries
+// the per-tab transport attributes when TabsProps.Wire is set (nil renders
+// nothing — the plain hash-fallback anchor).
+templ tabLink(tab Tab, hasPanel bool, isActive bool, activeClass, inactiveClass string, wired templ.Attributes) {
 	<a
 		id={ tab.ID + "-tab" }
 		href={ templ.SafeURL("#" + tab.ID) }
@@ -81,10 +101,43 @@ templ tabLink(tab Tab, hasPanel bool, isActive bool, activeClass, inactiveClass 
 		}
 		tabindex={ utils.Ternary(isActive, 0, -1) }
 		class={ utils.Ternary(isActive, activeClass, inactiveClass) }
+		{ wired... }
 	>
 		{ tab.Label }
 	</a>
 }
+
+// tabsWiredAttrs clones the Wire action for one tab (never mutating the
+// consumer's spec — the kanban lesson): the URL's {tab} placeholder becomes
+// that tab's ID, the anchor-fallback href forces PreventDefault (the Datastar
+// runtime auto-prevents only form+submit; htmx intercepts wired clicks
+// itself), an empty Target defaults to the Tabs container's own #ID, and htmx
+// gets the settle:0s self-swap composed on top. Nil/empty stays inert.
+func tabsWiredAttrs(base *wire.Action, tabID, tabsID string) templ.Attributes {
+	if base == nil || base.URL == "" {
+		return nil
+	}
+
+	nav := *base
+	nav.URL = strings.ReplaceAll(base.URL, "{tab}", tabID)
+	nav.PreventDefault = true
+	if nav.Target == "" && tabsID != "" {
+		nav.Target = "#" + tabsID
+	}
+
+	attrs := nav.Attributes()
+	if attrs != nil && nav.Transport != wire.TransportDatastar {
+		attrs["hx-swap"] = tabsSwap
+	}
+
+	return attrs
+}
+
+// tabsSwap self-replaces the whole Tabs container and settles synchronously —
+// htmx processes swapped-in anchors in its settle phase (~20ms by default);
+// tab switching is exactly the quick-burst pattern where a click inside that
+// window would silently no-op (Calendar MonthNav lesson, e2e-verified there).
+const tabsSwap = "outerHTML settle:0s"
 
 // Tabs renders a tabbed interface with accessible markup
 //
@@ -98,6 +151,7 @@ templ tabLink(tab Tab, hasPanel bool, isActive bool, activeClass, inactiveClass 
 templ Tabs(props TabsProps) {
 	{{ tabs := ensureTabIDs(props.Tabs) }}
 	{{ activeID := resolveActiveTabID(props.ActiveTabID, tabs) }}
+	{{ clientSide := props.ClientSide && props.Wire == nil }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
@@ -106,7 +160,7 @@ templ Tabs(props TabsProps) {
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
-		if props.ClientSide {
+		if clientSide {
 			data-tc-tabs=""
 		}
 		{ props.Attrs... }
@@ -117,15 +171,18 @@ templ Tabs(props TabsProps) {
 			>
 				for _, tab := range tabs {
 					{{ active := isActiveTab(tab.ID, activeID) }}
+					{{ wired := tabsWiredAttrs(props.Wire, tab.ID, props.ID) }}
 					if props.Variant == TabsPills {
 						@tabLink(tab, tab.Content != nil, active,
 							"rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-2 text-sm font-medium text-white",
 							"rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
+							wired,
 						)
 					} else {
 						@tabLink(tab, tab.Content != nil, active,
 							"whitespace-nowrap border-b-2 border-blue-500 px-1 py-4 text-sm font-medium text-blue-600 dark:text-blue-400",
 							"whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200",
+							wired,
 						)
 					}
 				}
@@ -146,7 +203,7 @@ templ Tabs(props TabsProps) {
 				</div>
 			}
 		}
-		if props.ClientSide {
+		if clientSide {
 			<script nonce={ props.Nonce }>
 				if (!window.tcTabsAttached) {
 					window.tcTabsAttached = true;
