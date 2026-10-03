@@ -135,10 +135,10 @@ func demoPages() []demoPageMeta {
 			Path:          "/wire",
 			NeedsDatastar: true,
 			Title:         "Wire (htmx + Datastar)",
-			Short:      "One wiring spec, two transports — forms, filters, wizard.",
-			Icon:       icons.Link,
-			Section:    "Interactive",
-			ShowHeader: true,
+			Short:         "One wiring spec, two transports — forms, filters, wizard.",
+			Icon:          icons.Link,
+			Section:       "Interactive",
+			ShowHeader:    true,
 			Content: func(r *http.Request) templ.Component {
 				return wireDemo(parseDemoTransport(r.URL.Query().Get("transport")))
 			},
@@ -147,10 +147,10 @@ func demoPages() []demoPageMeta {
 			Path:          "/kanban",
 			NeedsDatastar: true,
 			Title:         "Kanban",
-			Short:      "Drag-and-drop board with optimistic moves over both transports.",
-			Icon:       icons.QueueList,
-			Section:    "Interactive",
-			ShowHeader: true,
+			Short:         "Drag-and-drop board with optimistic moves over both transports.",
+			Icon:          icons.QueueList,
+			Section:       "Interactive",
+			ShowHeader:    true,
 			Content: func(r *http.Request) templ.Component {
 				return kanbanDemo(demoSessionCSRF(r))
 			},

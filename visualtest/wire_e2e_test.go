@@ -416,7 +416,8 @@ func TestWireE2ESwapModes(t *testing.T) {
 		htmxWrap, dsWrap, override, idmatch, selectorBox string
 	)
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Run(
+		ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollBool(`document.readyState==='complete' && window.htmx!==undefined && window.__dsReady===true`, &ready),
 		// htmx: hx-swap="outerHTML" replaces the region element itself.
@@ -431,12 +432,18 @@ func TestWireE2ESwapModes(t *testing.T) {
 		// The server's Datastar-Mode header WINS: a client {mode:'inner'} is
 		// inert, so the append header appends — the sentinel survives.
 		chromedp.Click("#btn-swap-ds-append", chromedp.NodeVisible),
-		pollBool(`document.querySelector('#ds-override-region') && document.querySelector('#ds-override-region').innerHTML.indexOf('`+wireFragmentText+`')>=0`, &ready),
+		pollBool(
+			`document.querySelector('#ds-override-region') && document.querySelector('#ds-override-region').innerHTML.indexOf('`+wireFragmentText+`')>=0`,
+			&ready,
+		),
 		chromedp.InnerHTML("#ds-override-region", &override, chromedp.NodeVisible),
 		// Header-less response, fragment root id matches the region: the
 		// outer-default id-match replaces it.
 		chromedp.Click("#btn-swap-ds-idmatch", chromedp.NodeVisible),
-		pollBool(`document.querySelector('#ds-idmatch-region') && document.querySelector('#ds-idmatch-region').innerHTML==='id-matched contract'`, &ready),
+		pollBool(
+			`document.querySelector('#ds-idmatch-region') && document.querySelector('#ds-idmatch-region').innerHTML==='id-matched contract'`,
+			&ready,
+		),
 		chromedp.InnerHTML("#ds-idmatch-region", &idmatch, chromedp.NodeVisible),
 		// Client {selector} must NOT target: header-less + unmatched fragment
 		// root leaves the region untouched.
@@ -452,7 +459,10 @@ func TestWireE2ESwapModes(t *testing.T) {
 	assertFragmentLanded(t, "datastar header-mode append", override)
 
 	if !strings.Contains(override, "ds-override-sentinel") {
-		t.Fatalf("server Datastar-Mode: append header did not win over the client {mode:'inner'}: sentinel vanished: %q", override)
+		t.Fatalf(
+			"server Datastar-Mode: append header did not win over the client {mode:'inner'}: sentinel vanished: %q",
+			override,
+		)
 	}
 
 	if idmatch != "id-matched contract" {
