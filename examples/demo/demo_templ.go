@@ -21,7 +21,7 @@ import (
 // Canonical counts from FEATURES.md ("Totals:" line, drift-guard verified).
 // demo_counts_test.go asserts these against FEATURES.md so they cannot drift.
 const (
-	componentCount = "121"
+	componentCount = "123"
 	packageCount   = "11"
 )
 
@@ -235,7 +235,7 @@ func demoHero() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</span> <span class=\"text-blue-300 dark:text-blue-700\" aria-hidden=\"true\">|</span> <span>Go 1.26 · templ · Tailwind v4</span></div><div class=\"max-w-2xl\"><h1 class=\"text-4xl font-bold tracking-tight text-gray-900 dark:text-white font-[Space_Grotesk] sm:text-5xl\">Server-rendered UI components for Go</h1><p class=\"mt-4 text-lg leading-relaxed text-gray-600 dark:text-gray-400\">121 accessible, CSP-safe components built with <span class=\"font-medium text-blue-600 dark:text-blue-400\">templ</span>, <span class=\"font-medium text-blue-600 dark:text-blue-400\">HTMX</span>, and <span class=\"font-medium text-blue-600 dark:text-blue-400\">Tailwind CSS v4</span>. No Node.js runtime, no client framework — just Go templates.</p></div><div class=\"flex flex-wrap items-center gap-4\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</span> <span class=\"text-blue-300 dark:text-blue-700\" aria-hidden=\"true\">|</span> <span>Go 1.26 · templ · Tailwind v4</span></div><div class=\"max-w-2xl\"><h1 class=\"text-4xl font-bold tracking-tight text-gray-900 dark:text-white font-[Space_Grotesk] sm:text-5xl\">Server-rendered UI components for Go</h1><p class=\"mt-4 text-lg leading-relaxed text-gray-600 dark:text-gray-400\">123 accessible, CSP-safe components built with <span class=\"font-medium text-blue-600 dark:text-blue-400\">templ</span>, <span class=\"font-medium text-blue-600 dark:text-blue-400\">HTMX</span>, and <span class=\"font-medium text-blue-600 dark:text-blue-400\">Tailwind CSS v4</span>. No Node.js runtime, no client framework — just Go templates.</p></div><div class=\"flex flex-wrap items-center gap-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

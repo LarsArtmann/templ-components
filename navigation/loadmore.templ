@@ -20,20 +20,23 @@ type LoadMoreProps struct {
 	Cursor string
 	// Label is the button text. Defaults to "Load more".
 	Label string
-	// InfiniteScroll, when true, adds hx-trigger="revealed" so the button
-	// auto-fires when scrolled into view (infinite scroll pattern). This is
-	// htmx-specific: the Datastar dialect cannot express it in the wire
-	// contract's common subset, so it is ignored when Wire is set to the
-	// Datastar transport.
+	// InfiniteScroll, when true, adds a reveal trigger so the button
+	// auto-fires when scrolled into view (infinite scroll pattern). Without
+	// Wire this renders htmx's hx-trigger="revealed"; with Wire the typed
+	// trigger language renders it in BOTH dialects (ADR-0043): htmx
+	// "revealed", Datastar data-on-intersect__once — both fire once on first
+	// viewport entry.
 	InfiniteScroll bool
 	// Wire, when set, re-renders the request wiring in the configured
 	// transport (see the utils/wire package, ADR-0036). Wire.URL replaces
 	// Endpoint (the cursor is appended to it exactly the same way); swap
-	// semantics stay self-replacement: under htmx the button keeps
-	// hx-swap="outerHTML" hx-target="this", under Datastar the fragment
-	// replaces this region by id-matching — set ID explicitly so the server
-	// can echo the wrapper id back (wire.Handler-style). Wire.Target and
-	// Wire.Method are ignored: pagination is a GET that replaces itself.
+	// semantics stay self-replacement via the typed trigger language:
+	// under htmx the action renders hx-swap="outerHTML" next to the kept
+	// hx-target="this"; under Datastar the fragment replaces this region by
+	// id-matching — set ID explicitly so the server can echo the wrapper id
+	// back (wire.Handler-style). Wire.Target is ignored (pagination is a GET
+	// that replaces itself); Wire.Swap is overridden to outer; an explicit
+	// Wire.Event merges with the reveal trigger per ADR-0043.
 	Wire *wire.Action
 	// FocusOnSwap renders autofocus on the button so the replacement button
 	// receives focus after the outerHTML self-swap — verified against the
@@ -98,6 +101,10 @@ templ LoadMore(props LoadMoreProps) {
 			a := *props.Wire
 			a.URL = href
 			a.Target = ""
+			a.Swap = wire.PatchModeOuter
+			if props.InfiniteScroll {
+				a.Reveal = &wire.Reveal{}
+			}
 			wired = a.Attributes()
 			isDatastar = a.Transport == wire.TransportDatastar
 		}
@@ -120,15 +127,11 @@ templ LoadMore(props LoadMoreProps) {
 				if props.InfiniteScroll {
 					hx-trigger="revealed"
 				}
-			} else {
-				if !isDatastar && href != "" {
-					hx-swap="outerHTML"
-					hx-target="this"
-					if props.InfiniteScroll {
-						hx-trigger="revealed"
-					}
-				}
+		} else {
+			if !isDatastar && href != "" {
+				hx-target="this"
 			}
+		}
 			class={ "inline-flex items-center gap-2 rounded-md bg-white dark:bg-gray-800 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer " + utils.TransitionColors + " focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400" }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
