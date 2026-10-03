@@ -5,6 +5,7 @@ import (
 
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/golden"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // Golden sweep for navigation components that previously lacked golden tests.
@@ -37,6 +38,16 @@ func TestGoldenSweepSimpleNav(t *testing.T) {
 				{Href: "/", Text: "Home"},
 				{Href: "/docs", Text: "Docs"},
 				{Href: "/pricing", Text: "Pricing"},
+			},
+		}))},
+		{Name: "simple_nav_wired_links", HTML: utils.Render(t, SimpleNav(SimpleNavProps{
+			BrandText:   "Demo App",
+			BrandHref:   "/",
+			CurrentPath: "/",
+			Links: []NavLinkProps{
+				{Href: "/reports", Text: "Reports", Wire: &wire.Action{URL: "/api/nav/reports"}},
+				{Href: "/billing", Text: "Billing", Wire: &wire.Action{Transport: wire.TransportDatastar, URL: "/api/nav/billing"}},
+				{Href: "/settings", Text: "Settings"},
 			},
 		}))},
 	})
