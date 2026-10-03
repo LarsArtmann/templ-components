@@ -87,7 +87,7 @@ Consumers override colors via `@theme { --color-blue-600: #...; }` in their CSS 
 
 ## What's Painful
 
-### 1. No data table / sortable table component
+~~### 1. No data table / sortable table component~~ done — display/table.templ + DataTable sortable (datatable_sortable.golden)
 
 DiscordSync's message browser, member list, and voice states all use hand-built HTML `<table>` elements with manual column headers, sorting, and styling. This is the single biggest gap.
 
@@ -118,17 +118,17 @@ DiscordSync's message browser, member list, and voice states all use hand-built 
 - Zebra striping option
 - Empty state integration
 
-### 2. No modal/drawer for detail views — **✅ EXISTS since v0.8.0**
+~~### 2. No modal/drawer for detail views — **✅ EXISTS since v0.8.0**~~ done — display/modal.templ + display/drawer.templ shipped
 
 Message detail is a full page (`GET /messages/{id}`). A slide-out drawer or modal would be better UX — see the detail without losing the list context.
 
 > **✅ RESOLVED:** `display.Modal` and `display.Drawer` both exist with focus trap, aria sync, backdrop, keyboard nav.
 
-### 3. No pagination component that works with cursor-based pagination — **✅ EXISTS since v0.10.0**
+~~### 3. No pagination component that works with cursor-based pagination — **✅ EXISTS since v0.10.0**~~ done — navigation.LoadMore + docs/recipes/cursor-pagination.md
 
 > **✅ RESOLVED:** `navigation.LoadMore` exists with cursor pagination, `hx-get`/`hx-swap`, and optional `InfiniteScroll` (`hx-trigger="revealed"`).
 
-### 4. The `_templ.go` gitignore problem
+~~### 4. The `_templ.go` gitignore problem~~ done — SKILL.md consumer gitignore guidance (skill/SKILL.md:360)
 
 `_templ.go` files are gitignored in DiscordSync (generated at build time). But the templ-components skill says "commit `*_templ.go`" because it's a library and the Go module proxy doesn't run `templ generate`. This is correct for the library but DIFFERENT for consumers.
 
@@ -136,11 +136,11 @@ The BuildFlow pre-commit hook re-appends `*_templ.go` to `.gitignore` in consume
 
 **Suggestion:** Document the consumer-side pattern clearly: "Consumers should gitignore `*_templ.go` and generate at build time. The library commits them because the module proxy needs them."
 
-### 5. No accordion/toggle for collapsible sections
+~~### 5. No accordion/toggle for collapsible sections~~ done — display/accordion.templ (typed items, keyboard nav)
 
 Message detail has edit history, reactions, embeds, attachments — all stacked vertically. An accordion (`<details>`-based) would improve scannability. The library may have this (the skill mentions it), but we haven't adopted it.
 
-### 6. No badge with count/number overlay
+~~### 6. No badge with count/number overlay~~ done — display/count_badge.templ + count_badge.golden
 
 We show reaction counts and poll answer counts. Currently using `display.Badge` with text like "👍 5". A count badge (small number overlay on an icon) would be cleaner.
 
@@ -156,17 +156,17 @@ We show reaction counts and poll answer counts. Currently using `display.Badge` 
 
 Every page has `for _, x := range items { @template(x) }`. A generic list with consistent spacing, dividers, and empty-state integration would reduce boilerplate.
 
-### 2. A description list / key-value component
+~~### 2. A description list / key-value component~~ done — display/definition_grid.templ + definition_grid.golden
 
 We use `<dl>` manually for attachment metadata (filename, size, content type, dimensions). `display.DefinitionList` + `display.DefinitionItem` exist (we use them) — but they need a `display.DefinitionGrid` wrapper for responsive 2-column layout.
 
-### 3. A copy-to-clipboard button — **✅ EXISTS since v0.10.0**
+~~### 3. A copy-to-clipboard button — **✅ EXISTS since v0.10.0**~~ done — display/copy_button.templ + copy_button.golden
 
 > **✅ RESOLVED:** `display.CopyButton` exists with clipboard write, "Copied!" feedback, `<a>` and `<button>` variants, CSP-safe singleton script.
 
 Message IDs, attachment hashes, and error codes are frequently copied. A `display.CopyButton` with clipboard integration + "Copied!" feedback would be useful.
 
-### 4. A relative time component
+~~### 4. A relative time component~~ done — display/relative_time.templ (AutoRefresh; recipe-documented)
 
 "2 hours ago", "5 minutes ago", "yesterday". Discord messages have timestamps that are more readable as relative time. We format these manually.
 

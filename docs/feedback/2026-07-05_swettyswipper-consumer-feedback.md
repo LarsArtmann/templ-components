@@ -73,7 +73,7 @@ Every inline `<script>` carries `nonce={ props.Nonce }`. This is the correct CSP
 
 ## What's Confusing or Hard to Discover
 
-### 1. CDN Dependency is Hidden
+~~### 1. CDN Dependency is Hidden~~ done — self-host default shipped (HTMXSelfHost; ADR-0007/0022)
 
 **Problem:** `layout.Base` generates `<script src="https://cdn.jsdelivr.net/npm/htmx.org@version">`. This CDN dependency is not obvious from the API surface. We discovered it when our CSP blocked htmx and nothing worked.
 
@@ -81,7 +81,7 @@ Every inline `<script>` carries `nonce={ props.Nonce }`. This is the correct CSP
 
 **Ask:** (a) Add a CSP warning to `PageProps` godoc. (b) Make `HTMXCDN` prop more discoverable — it's the escape hatch for self-hosting but buried in generated code. (c) Consider making self-hosting the default and CDN the opt-in.
 
-### 2. `PageProps` Doesn't Embed `BaseProps`
+~~### 2. `PageProps` Doesn't Embed `BaseProps`~~ done — CONTEXT.md "Why PageProps Doesn't Embed BaseProps" + BodyClass
 
 **Problem:** `layout.PageProps` is the ONE exception that doesn't embed `utils.BaseProps`. This means no `ID`, `Class`, `Attrs`, `AriaLabel` propagation on the layout component.
 
@@ -89,7 +89,7 @@ Every inline `<script>` carries `nonce={ props.Nonce }`. This is the correct CSP
 
 **Ask:** Document why this exception exists (it's noted in the skill but not in the godoc).
 
-### 3. Component Discovery — Hard to Know What Exists
+~~### 3. Component Discovery — Hard to Know What Exists~~ done — website api-reference + demo + README/SKILL catalogues
 
 **Problem:** The library has 53 components across 9 packages. As a consumer, it's hard to discover what's available without reading the source. The README helps but doesn't cover all components.
 
@@ -97,7 +97,7 @@ Every inline `<script>` carries `nonce={ props.Nonce }`. This is the correct CSP
 
 **Ask:** Generate a component catalog page (or at least a complete table in the README) with: component name, package, one-line description, thumbnail/screenshot. Consider a demo site.
 
-### 4. `utils.Class()` vs `utils.Lookup()` — When to Use Which
+~~### 4. `utils.Class()` vs `utils.Lookup()` — When to Use Which~~ done — SKILL.md Class-vs-Lookup decision section
 
 **Problem:** The skill says "always go through `utils.Class(...)`" for class merging, but also "use `utils.Lookup(map, key, fallback)`" for style lookups. The relationship between these isn't clear.
 
@@ -107,7 +107,7 @@ Every inline `<script>` carries `nonce={ props.Nonce }`. This is the correct CSP
 
 ## What's Missing
 
-### 1. Form Components — Exist But Undiscoverable
+~~### 1. Form Components — Exist But Undiscoverable~~ done — demo /forms route + 20+ forms components
 
 The `forms` package (`Input`, `Select`, `Textarea`, `Toggle`, `Radio`, `Combobox`, `Label`, `Form`) exists but our project hand-rolls 44+ raw form elements because we didn't know about it.
 
@@ -115,17 +115,17 @@ The `forms` package (`Input`, `Select`, `Textarea`, `Toggle`, `Radio`, `Combobox
 
 **Ask:** This is the #1 missed opportunity. Make the forms package the flagship feature — it's what every server-rendered app needs. Add a forms demo page and put it front-and-center in the README.
 
-### 2. Feedback Components — Toast Undiscovered
+~~### 2. Feedback Components — Toast Undiscovered~~ done — ToastContainer + docs/recipes/server-rendered-htmx-error-feedback.md
 
 We hand-rolled a 30-line JavaScript toast system in `layout.templ`. The library has `feedback.Toast` which is CSP-safe, accessible, and consistent.
 
 **Ask:** Make `feedback.Toast` discoverable. Consider adding it to `layout.Base` as an optional slot so consumers don't need to wire it separately.
 
-### 3. No Pagination Component
+~~### 3. No Pagination Component~~ done — navigation/pagination.templ (typed props, ellipsis, aria-current)
 
 We hand-roll pagination with `PaginationData` struct + raw HTML. A `pagination.Pagination` component with typed props (CurrentPage, TotalPages, OnChange HTMX attributes) would be valuable.
 
-### 4. No Image Component
+~~### 4. No Image Component~~ done — display/image.templ (image.golden, image_srcset.golden)
 
 For a media comparison app, an `Image` component with lazy loading, aspect ratio, fallback src, and loading spinner would be valuable. We hand-roll `<img>` tags with Tailwind classes.
 
@@ -161,9 +161,9 @@ The library is well-scoped. Every component serves a real need. The typed enum +
 
 ## Top 3 Requests
 
-1. **Make the forms package the flagship.** Generate a forms demo page, put it in the README, make it the first thing consumers see.
-2. **Add a component catalog** — a table or page listing all 53 components with descriptions.
-3. **Make self-hosting htmx the default** — CDN should be opt-in, not the silent default.
+~~1. **Make the forms package the flagship.** Generate a forms demo page, put it in the README, make it the first thing consumers see.~~ done — demo /forms route + README forms section
+~~2. **Add a component catalog** — a table or page listing all 53 components with descriptions.~~ done — website docs/api-reference + README catalogue
+~~3. **Make self-hosting htmx the default** — CDN should be opt-in, not the silent default.~~ done — HTMXSrc self-host is default (AGENTS.md; ADR-0022)
 
 ---
 

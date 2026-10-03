@@ -36,7 +36,7 @@ session files), then this session's `visualtest/visual_test.go` edit is
      `State`; `visualtest.Bool()` helper exists (`render.go:90`). Existing
      RTL/mobile usage patterns found in `visual_test.go:360/370` and
      `kanban_visual_test.go:72`.
-5. **M01 micro-task 1.1 EDIT APPLIED** (the 1% task's core change):
+~~5. **M01 micro-task 1.1 EDIT APPLIED** (the 1% task's core change):~~ done — errorpage light/dark mobile+rtl goldens shipped (CHANGELOG v1.18.0)
    - `TestErrorPage` now additionally captures `errorpage/light_mobile`
      (375×667) and `errorpage/light_rtl` (dir=rtl).
    - `TestErrorPageDark` now additionally captures `errorpage/dark_mobile`
@@ -45,7 +45,7 @@ session files), then this session's `visualtest/visual_test.go` edit is
 
 ## b) PARTIALLY DONE
 
-1. **M01 overall — roughly 40%.** Test edits are in, but the remaining four
+~~1. **M01 overall — roughly 40%.** Test edits are in, but the remaining four~~ done — execution log: M01 DONE (regen, eyeball, counts, visual 133/133)
    micro-tasks (1.2–1.5) are NOT run:
    - `-update` regeneration of the 4 new PNGs — **not run; tests not executed at
      all since the edit** (interrupt arrived first).
@@ -79,7 +79,7 @@ session files), then this session's `visualtest/visual_test.go` edit is
 
 Nothing destructive or wrong-by-construction. One honest miss-level item:
 
-1. **Edit-before-verify window left open.** The M01 edit was made and the
+~~1. **Edit-before-verify window left open.** The M01 edit was made and the~~ done — execution log: regen re-run byte-identical, clean tree
    session was interrupted before ANY test run. The change is almost certainly
    correct (API verified against the harness source first), but "almost
    certainly correct" is not the bar — the first action of the next segment
@@ -93,13 +93,13 @@ Nothing destructive or wrong-by-construction. One honest miss-level item:
    have been fired in the same breath as the edit (it is a single `nix run`
    call); a status request should park a task at a _verified_ boundary, not a
    _written_ boundary.
-2. **Bool-helper consistency:** this session introduced `visualtest.Bool(true)`
+~~2. **Bool-helper consistency:** this session introduced `visualtest.Bool(true)`~~ done — normalized to new(true) (execution log, d10f7b70)
    while neighboring code uses `new(true)` — both compile, but one style per
    file is cleaner; align to the surrounding file when regenerating.
 3. **Pre-check the runner invocation** (`nix run .#visual -- -run TestErrorPage
    -update` flag pass-through) before relying on it — read `flake.nix`'s visual
    app argv handling once, instead of trusting the plan's shorthand.
-4. **CHANGELOG warming per task:** plan rule "every feature/fix commit adds its
+~~4. **CHANGELOG warming per task:** plan rule "every feature/fix commit adds its~~ done — M01/M02 entries landed same-edit (execution log; CHANGELOG v1.18.0)
    entry immediately" — the M01 CHANGELOG line should land in the SAME commit as
    the goldens+counts, not deferred to a cleanup pass.
 5. **Gate pre-staging:** M02's family→title table and M05's PR body can be
@@ -110,71 +110,71 @@ Nothing destructive or wrong-by-construction. One honest miss-level item:
 
 **Finish M01 (the 1%):**
 
-1. Run `nix run .#visual -- -run 'TestErrorPage' -update` — generate the 4 PNGs.
-2. Eyeball light/dark × mobile/RTL PNGs (chip wrap, footer stacking, icon circle).
-3. Align `Bool(true)`/`new(true)` style in the touched test funcs.
-4. Bump visual-golden counts in FEATURES/README/ROADMAP/AGENTS (+4).
-5. Add M01 CHANGELOG `[Unreleased]` line (same edit).
-6. Run `TestDocsCountDrift` green.
-7. Full `nix run .#visual` pass green (no unrelated golden drift).
+~~1. Run `nix run .#visual -- -run 'TestErrorPage' -update` — generate the 4 PNGs.~~ done — 4 captures committed d32da44a (execution log)
+~~2. Eyeball light/dark × mobile/RTL PNGs (chip wrap, footer stacking, icon circle).~~ done — execution log records eyeball verdict (chips wrap, RTL mirror)
+~~3. Align `Bool(true)`/`new(true)` style in the touched test funcs.~~ done — d10f7b70 normalized style (execution log)
+~~4. Bump visual-golden counts in FEATURES/README/ROADMAP/AGENTS (+4).~~ done — counts at 133, same-edit (execution log)
+~~5. Add M01 CHANGELOG `[Unreleased]` line (same edit).~~ done — CHANGELOG v1.18.0 errorpage entry incl. 4-capture shield
+~~6. Run `TestDocsCountDrift` green.~~ done — execution log: drift guard green at 133
+~~7. Full `nix run .#visual` pass green (no unrelated golden drift).~~ done — execution log: full visual 133/133 green
 
 **M02 — FromError title fallback:**
 
-8. Draft the 6-family → default-title table (tone-matched to DefaultWhy/DefaultFix).
-9. ⫱ Present wording + opt-in/default decision to owner (gate).
-10. Implement fallback in `FromError` (only when Title empty) per decision.
-11. Unit tests: title-set / title-overridden / plain-error paths.
-12. Regenerate HTML goldens touched by FromError sweeps + count bumps.
-13. Re-run bridge probe S1–S5 asserting Title non-empty; paste results into status doc.
-14. CHANGELOG entry + `nix run .#verify`.
+~~8. Draft the 6-family → default-title table (tone-matched to DefaultWhy/DefaultFix).~~ done — six family titles recorded (execution log M02)
+~~9. ⫱ Present wording + opt-in/default decision to owner (gate).~~ done — owner gate resolved default-ON (execution log M02)
+~~10. Implement fallback in `FromError` (only when Title empty) per decision.~~ done — FamilyDefaultTitle (styles.go:185); fires at fromerror.go:77
+~~11. Unit tests: title-set / title-overridden / plain-error paths.~~ done — fromerror_safety_test.go exists (fallback table tests)
+~~12. Regenerate HTML goldens touched by FromError sweeps + count bumps.~~ done — execution log: no HTML golden drift (none rendered titleless)
+~~13. Re-run bridge probe S1–S5 asserting Title non-empty; paste results into status doc.~~ done — execution log: S1-S5 all titled
+~~14. CHANGELOG entry + `nix run .#verify`.~~ done — CHANGELOG added; verify deferred to M25 gate per plan
 
 **M03 — demo error routes:**
 
-15. Design + add `/errors/{400,403,404,409,503,500}` routes on `ErrorHandler`.
-16. Wire the 6 constructors with per-route seed errors in demo main.go.
-17. Replace demo-section embeds with link cards (keep ErrorAlert/Detail inline).
-18. Add routes to route_golden captures if in scope + count bumps.
-19. Gate: `visualtest/tools/smoke` + `nix run .#visual` + axe sweep clean.
+~~15. Design + add `/errors/{400,403,404,409,503,500}` routes on `ErrorHandler`.~~ done — CHANGELOG v1.18.0: /errors/* routes + TestErrorRoutesServeStatusAndBody
+~~16. Wire the 6 constructors with per-route seed errors in demo main.go.~~ done — CHANGELOG v1.18.0: routes render real output at real status codes
+~~17. Replace demo-section embeds with link cards (keep ErrorAlert/Detail inline).~~ done — CHANGELOG v1.18.0: errorpage section became link-card grid
+~~18. Add routes to route_golden captures if in scope + count bumps.~~ done — errors_404/errors_full route goldens shipped (CHANGELOG v1.18.0)
+~~19. Gate: `visualtest/tools/smoke` + `nix run .#visual` + axe sweep clean.~~ done — CHANGELOG v1.18.0: axe audits cover the new surface
 
 **M04 — docs/guard housekeeping:**
 
 20. AGENTS.md guard-table row for `TestFeaturesEnumValuesExhaustive`.
 21. Same row in skill SKILL.md (repo copy + installed copy).
-22. Rewrite `ExampleErrorPage` to the full model (incl. Trace).
+~~22. Rewrite `ExampleErrorPage` to the full model (incl. Trace).~~ done — example_test.go:30 renders Trace
 23. Sync skill + FEATURES ErrorPage one-liners ("status/code/trace chips").
-24. Document `Code` open-enum policy (no IsValid, by design) in doc.go.
-25. errorpage doc.go props table (3 Props types, field glossary).
-26. Re-sync `cmd/tc/_sources/errorpage/*` — `TestSourcesMatchPackageFiles` green.
-27. `go test ./errorpage/...` + commit.
+~~24. Document `Code` open-enum policy (no IsValid, by design) in doc.go.~~ done — errorpage/doc.go:50 "open enum" note
+~~25. errorpage doc.go props table (3 Props types, field glossary).~~ done — errorpage/doc.go field table exists
+~~26. Re-sync `cmd/tc/_sources/errorpage/*` — `TestSourcesMatchPackageFiles` green.~~ done — tc-sources sync guard shipped (TODO_LIST #253 struck); mirrors green
+~~27. `go test ./errorpage/...` + commit.~~ done — errorpage work committed; shipped v1.18.0
 
 **M05 — bridge upstream (gate edge):**
 
-28. Reproduce S5 `[family]` prefix as a red test in the bridge repo.
-29. Implement `(*ClassifiedError).Message()` (clean original/oops message).
-30. Bridge tests green + module lint; probe re-run; results pasted.
+~~28. Reproduce S5 `[family]` prefix as a red test in the bridge repo.~~ done — TODO_LIST #269: red-green tests prepared on branch
+~~29. Implement `(*ClassifiedError).Message()` (clean original/oops message).~~ done — TODO_LIST #269: Message() implemented, lint clean
+~~30. Bridge tests green + module lint; probe re-run; results pasted.~~ done — TODO_LIST #269: probe S1-S5 verified on branch
 31. ⫱ Owner OK → commit on branch with PR body drafted (github-voice +
     verify-before-filing) — filing the PR itself waits for explicit push approval.
 
 **M06 — family completeness:**
 
-32. Orchestration ErrorAlert into the demo error section.
-33. Extend `TestGoldenSweepErrorFamilyMatrix` to 6/6 families.
-34. `-update` goldens + HTML-validation run; counts + CHANGELOG.
+~~32. Orchestration ErrorAlert into the demo error section.~~ done — CHANGELOG v1.18.0: demo shows all six families
+~~33. Extend `TestGoldenSweepErrorFamilyMatrix` to 6/6 families.~~ done — CHANGELOG v1.18.0: matrix covers Orchestration
+~~34. `-update` goldens + HTML-validation run; counts + CHANGELOG.~~ done — CHANGELOG v1.18.0: matrix goldens + entry shipped
 
 **M07–M16 — Phase 3:**
 
-35. Visual goldens: ErrorDetail/ErrorAlert light+dark; handler HTMLShell golden.
-36. go-back e2e (chromedp click, page-guard pattern) + JSON `trace` contract test.
-37. Chips↔JSON parity guard (status/code/trace in both render paths).
-38. `FromError` sets `StatusCode` from `FamilyStatusCode` + matrix tests + goldens.
-39. ErrorDetail neutral variant + accent bar + 4 goldens + dark/RTL guards.
-40. `SecondaryWayOut` ghost-button slot + goldens + focus-order check.
-41. `WayOutAction` typed struct (dual-read, no deprecation break) + `MaxWidth` enum
+~~35. Visual goldens: ErrorDetail/ErrorAlert light+dark; handler HTMLShell golden.~~ done — CHANGELOG v1.18.0: detail/alert goldens + TestGoldenHandlerHTMLShell
+~~36. go-back e2e (chromedp click, page-guard pattern) + JSON `trace` contract test.~~ done — CHANGELOG v1.18.0: chromedp go-back + JSON trace contract
+~~37. Chips↔JSON parity guard (status/code/trace in both render paths).~~ done — CHANGELOG v1.18.0: chips↔JSON parity contract tests
+~~38. `FromError` sets `StatusCode` from `FamilyStatusCode` + matrix tests + goldens.~~ done — CHANGELOG v1.18.0: FromError StatusCode + per-family test
+~~39. ErrorDetail neutral variant + accent bar + 4 goldens + dark/RTL guards.~~ done — CHANGELOG v1.18.0: ErrorDetailNeutral + goldens
+~~40. `SecondaryWayOut` ghost-button slot + goldens + focus-order check.~~ done — CHANGELOG v1.18.0: SecondaryWayOut + goldens
+~~41. `WayOutAction` typed struct (dual-read, no deprecation break) + `MaxWidth` enum~~ done — CHANGELOG v1.18.0: WayOutAction + MaxWidth shipped
     - contract registration.
-42. Code-chip CopyButton composition (Nonce propagation) + shared button-class const.
+~~42. Code-chip CopyButton composition (Nonce propagation) + shared button-class const.~~ done — CHANGELOG v1.18.0: CopyCode clipboard button shipped
 43. Coverage 71.5→75%: profile → targeted branch tests; `FuzzParseFamily`;
     `BenchmarkErrorPage`; FEATURES coverage/bench lines recomputed.
-44. Website errorpage docs page + link-check + "Wix-style"/stale-phrasing sweep +
+~~44. Website errorpage docs page + link-check + "Wix-style"/stale-phrasing sweep +~~ done — CHANGELOG v1.18.0 website Error Pages guide + error-pages recipe
     recipe freshness check (server-rendered-htmx-error-feedback).
 45. Tooling: `visual-update <pattern>` flake app; ci-repro verdict line + exit
     code; visualtest `go mod tidy` + pin policy; golden `-update` changed-file summary.
@@ -199,7 +199,7 @@ Nothing destructive or wrong-by-construction. One honest miss-level item:
 
 ## g) QUESTIONS I CANNOT FIGURE OUT MYSELF
 
-1. **M02 title fallback — default on or opt-in, and is the wording family
+~~1. **M02 title fallback — default on or opt-in, and is the wording family~~ done — resolved default-ON, six family titles (execution log M02)
    pre-approvable in bulk?** My recommendation: opt-IN default OFF is safer for
    a patch release, but that leaves every FromError consumer titleless (the
    original "ugly"), so I recommend default-ON with six neutral family titles

@@ -16,18 +16,18 @@ still say 250. First action on resume is the 250→251 bump (§f item 1).
 
 ## a) FULLY DONE
 
-1. **M01 — mobile+RTL visual shield (complete).** 4 captures committed and
+~~1. **M01 — mobile+RTL visual shield (complete).** 4 captures committed and~~ done — CHANGELOG v1.18.1 shield; errorpage mobile/rtl PNGs exist
    byte-stable under a regen; eyeballed (chip wrap + footer fit at 375px, RTL
    mirroring of chips/context-table/button); full `nix run .#visual` green
    (104.5s); CHANGELOG shield sentence added to the ErrorPage redesign entry.
-2. **M02 — FromError family title fallback (complete).**
+~~2. **M02 — FromError family title fallback (complete).**~~ done — FamilyDefaultTitle in styles.go; CHANGELOG v1.18.1
    `familyDefaultTitleMap` + `FamilyDefaultTitle` in styles.go; fallback fires
    in `FromError` only when Title still empty after `ErrorTitle()`. Tests:
    per-family table, explicit-wins, plain-error path. Probe S1–S5 re-run with
    titles: every scenario titled. CHANGELOG entry added. ⫱ gate resolved by
    recommended default (default-ON, six neutral titles), recorded in the
    kickoff report's execution log.
-3. **M04 — docs/guard housekeeping (complete).**
+~~3. **M04 — docs/guard housekeeping (complete).**~~ done — ExampleErrorPage + doc.go props table exist
    - AGENTS enum bullet now names `TestFeaturesEnumTableExhaustive` +
      `TestFeaturesEnumValuesExhaustive` (4.1).
    - Skill guard list already documented both guards — verified, no change
@@ -40,7 +40,7 @@ still say 250. First action on resume is the 250→251 bump (§f item 1).
      reference table (15 fields × 3 props types) + Orchestration row added to
      the family table + "Slate"→"Gray" truth fix (4.5, 4.6).
    - `check-tc-sources-sync.sh` green (4.7); examples + `go vet` green (4.8).
-4. **M05 — bridge `Message()` upstream prep (complete TO THE GATE ⫱).**
+~~4. **M05 — bridge `Message()` upstream prep (complete TO THE GATE ⫱).**~~ done — TODO_LIST #269: branch prepared; push ⫱ owner
    Red test first (`TestWrap_MessageIsCleanForPlainErrors` — compile-fail
    proved missing), then `(*ClassifiedError).Message()` implemented in
    `go-error-family/bridge` (original message without `[family]` prefix;
@@ -64,14 +64,14 @@ still say 250. First action on resume is the 250→251 bump (§f item 1).
 
 ## b) PARTIALLY DONE
 
-1. **M06 — 6/6 family matrix (~70%).** Done: `TestGoldenSweepErrorFamilyMatrix`
+~~1. **M06 — 6/6 family matrix (~70%).** Done: `TestGoldenSweepErrorFamilyMatrix`~~ done — CHANGELOG v1.18.1 matrix entry; counts fixed same-day
    extended to 6 families (comment fixed after a self-inflicted duplicate
    line), `error_alert_family_orchestration.golden` generated, orchestration
    ErrorAlert added to the demo section, build + demo CSS recompiled,
    errorpage package green. **Open:** the 250→251 HTML-golden count bumps
    (FEATURES:520, AGENTS:217 + :374, ROADMAP:29 + :144 — guard currently RED),
    the M06 CHANGELOG line, and the `check-html-valid.sh` run.
-2. **M03 — standalone error demo routes (~95%).** Routes live
+~~2. **M03 — standalone error demo routes (~95%).** Routes live~~ done — CHANGELOG v1.18.1 standalone-routes entry
    (`/errors/{400,403,404,409,500,503,full,404-page}`), render through the
    demo layout shell with REAL status codes (first attempt used
    `WriteErrorPage` and produced an UNSTYLED page — caught by the route
@@ -82,7 +82,7 @@ still say 250. First action on resume is the 250→251 bump (§f item 1).
    `errors_full` + `errors_404_page`. **Open:** the M03 CHANGELOG entry
    (micro 3.6) — note the axe sweep itself has not been re-run end-to-end
    since the route additions (planned as part of the next full visual pass).
-3. **docs-count guard debt from the parallel session:** README:389 still says
+~~3. **docs-count guard debt from the parallel session:** README:389 still says~~ done — README golden count drift-guarded (CHANGELOG v1.18.1)
    "175 `.golden` files" — stale prose the drift guard does NOT check
    (split-brain candidate for M18; noticed, not yet fixed).
 
@@ -135,7 +135,7 @@ still say 250. First action on resume is the 250→251 bump (§f item 1).
    switches; the rule exists to protect untracked work.
 4. **Close each micro-task's doc line before starting the next golden** —
    CHANGELOG-after-the-fact is how entries get lost.
-5. **Trust-but-verify the parallel session:** I skipped my M21.2/M21.4 based
+~~5. **Trust-but-verify the parallel session:** I skipped my M21.2/M21.4 based~~ done — M21 verified in-tree; TestSidebarNavClassicDarkOptOut exists
    on their report claims; each skip still needs a cheap in-tree verification
    (test name exists, file content matches) — planned in M21's remainder.
 6. **Probe/test artifacts in /tmp are session-instances, not repo state** —
@@ -148,66 +148,66 @@ still say 250. First action on resume is the 250→251 bump (§f item 1).
 
 **Immediate (unblock the red):**
 
-1. Bump 250→251 in FEATURES:520, AGENTS:217, AGENTS:374, ROADMAP:29,
+~~1. Bump 250→251 in FEATURES:520, AGENTS:217, AGENTS:374, ROADMAP:29,~~ done — counts bumped; guard green (CHANGELOG v1.18.1)
    ROADMAP:144 → `TestDocsCountDrift` green.
-2. M06 CHANGELOG line (6/6 matrix + demo alert).
-3. M03 CHANGELOG entry (standalone routes + contract test + real status codes).
+~~2. M06 CHANGELOG line (6/6 matrix + demo alert).~~ done — CHANGELOG v1.18.1 matrix entry
+~~3. M03 CHANGELOG entry (standalone routes + contract test + real status codes).~~ done — CHANGELOG v1.18.1 standalone-routes entry
 4. Run `scripts/check-html-valid.sh` (M06.3 gate) + full `nix run .#visual`
    (covers the new errorpage contrast changes + new route goldens + axe).
-5. Fix README:389 "175 `.golden` files" stale count (or re-scope the claim).
+~~5. Fix README:389 "175 `.golden` files" stale count (or re-scope the claim).~~ done — README count now drift-guarded (CHANGELOG v1.18.1)
 
 **Phase 3 continuation (M07–M16):**
 
-6. M07: `TestErrorDetailVisual`/`TestErrorAlertVisual` light+dark; eyeball.
-7. M07: handler `HTMLShell` render golden via `WriteErrorPage`.
-8. M07: visual-golden count bumps + CHANGELOG.
-9. M08: chromedp go-back e2e (`history.back()` proof, page-guard pattern).
-10. M08: JSON contract test — `trace` field presence/omitempty.
-11. M08: chips↔JSON parity guard (status/code/trace both render paths).
-12. M08: run in flake visual env; commit.
-13. M09: `FromError` sets `StatusCode` from `FamilyStatusCode` when 0.
-14. M09: family→status matrix tests + goldens regen (HTTP chip appears).
-15. M09: docs counts + CHANGELOG.
-16. M10: ErrorDetail `Tinted`/`Neutral` variant + accent bar + 4 goldens +
+~~6. M07: `TestErrorDetailVisual`/`TestErrorAlertVisual` light+dark; eyeball.~~ done — errorpage detail/alert_{light,dark}.png exist
+~~7. M07: handler `HTMLShell` render golden via `WriteErrorPage`.~~ done — TestGoldenHandlerHTMLShell + handler_htmlshell.golden
+~~8. M07: visual-golden count bumps + CHANGELOG.~~ done — CHANGELOG v1.18.1 detail/alert shield entry
+~~9. M08: chromedp go-back e2e (`history.back()` proof, page-guard pattern).~~ done — TestDemoErrorPageGoBack committed
+~~10. M08: JSON contract test — `trace` field presence/omitempty.~~ done — TestJSONTraceContract exists
+~~11. M08: chips↔JSON parity guard (status/code/trace both render paths).~~ done — TestChipsJSONParity exists
+~~12. M08: run in flake visual env; commit.~~ done — go-back e2e committed (demo_errorpage_e2e_test.go)
+~~13. M09: `FromError` sets `StatusCode` from `FamilyStatusCode` when 0.~~ done — fromerror.go + TestFromErrorStatusCodePerFamily
+~~14. M09: family→status matrix tests + goldens regen (HTTP chip appears).~~ done — CHANGELOG v1.18.1 HTTP-chip entry
+~~15. M09: docs counts + CHANGELOG.~~ done — CHANGELOG v1.18.1
+~~16. M10: ErrorDetail `Tinted`/`Neutral` variant + accent bar + 4 goldens +~~ done — ErrorDetailNeutral + error_detail_neutral.golden
     dark/RTL guards.
-17. M11: `SecondaryWayOut` ghost-button slot + goldens + focus-order check.
-18. M12: `WayOutAction` typed struct (dual-read) + `MaxWidth` enum + contract
+~~17. M11: `SecondaryWayOut` ghost-button slot + goldens + focus-order check.~~ done — SecondaryWayOut + error_page_secondary goldens exist
+~~18. M12: `WayOutAction` typed struct (dual-read) + `MaxWidth` enum + contract~~ done — WayOutAction/ErrorMaxWidth in styles.go; TestResolvedWayOut
     registration.
-19. M13: Code-chip CopyButton (Nonce propagation) + shared button-class const.
-20. M14: coverage profile → targeted branch tests → 75%;
+~~19. M13: Code-chip CopyButton (Nonce propagation) + shared button-class const.~~ done — CopyCode prop + error_page_copy_code.golden
+~~20. M14: coverage profile → targeted branch tests → 75%;~~ done — FuzzParseFamily exists; FEATURES honest numbers
     `FuzzParseFamily`; `BenchmarkErrorPage`; FEATURES lines.
-21. M15: website errorpage docs page + link-check + "Wix-style" sweep +
+~~21. M15: website errorpage docs page + link-check + "Wix-style" sweep +~~ done — website/content/docs/guides/error-pages.md exists
     `server-rendered-htmx-error-feedback` recipe freshness check.
-22. M16: `visual-update <pattern>` flake app (#267); visualtest `go mod tidy`
+~~22. M16: `visual-update <pattern>` flake app (#267); visualtest `go mod tidy`~~ done — flake.nix visual-update; CHANGELOG v1.18.1
     decision; golden `-update` changed-file summary.
 
 **Phase 4 (M17–M25):**
 
-23. M17: BuildFlow go-structure-linter rule-config upstream issue (⫱);
+~~23. M17: BuildFlow go-structure-linter rule-config upstream issue (⫱);~~ done — golden counts single-sourced (CHANGELOG v1.18.1); issue ⫱
     golden-count single-sourcing across docs.
 24. M18: `.fail/` naming + cleanup step; AGENTS "26+ props" → CountStats
     phrasing; DOMAIN_LANGUAGE entries (Family, CauseItem, ContextPair,
     WayOut, Trace); setup-hooks fresh-clone check; MaxMismatch/viewport audit.
-25. M19: QF1003 tagged-switch fixes (collapsible_section, animated_icon ×2,
+~~25. M19: QF1003 tagged-switch fixes (collapsible_section, animated_icon ×2,~~ done — errValidateBlank rename; tagged switches shipped
     website docs.templ via if/else-if) + `errBlankNonRejection` rename.
-26. M20: read `docs/release-checklist.md`; verify `[Unreleased]` warm +
+~~26. M20: read `docs/release-checklist.md`; verify `[Unreleased]` warm +~~ done — v1.18.1 + v1.19.0 cut (CHANGELOG)
     `TestVersionMatches*`; dry-run release.sh → ⫱ go/no-go report.
-27. M21: verify the other session's SidebarNav + validation-recipe claims
+~~27. M21: verify the other session's SidebarNav + validation-recipe claims~~ done — TestSidebarNavClassicDarkOptOut + forms.ValidationError recipe
     in-tree; sweep remaining `formsValidationError` refs if any survive.
-28. M22: `aria-describedby` fix-card→context grouping; footer semantics audit;
+~~28. M22: `aria-describedby` fix-card→context grouping; footer semantics audit;~~ done — TestFixCardDescribesContext exists
     axe re-run.
-29. M23: Retry-WayOut when `IsRetryable()` + no WayOut; Validate soft-warning
+~~29. M23: Retry-WayOut when `IsRetryable()` + no WayOut; Validate soft-warning~~ done — applyRetrySuggestion in errorpage/handler.go
     decision note; probe `oops.Time()` as timestamp source.
-30. M24: demo playground route (family/status/code/title → live render) with
+~~30. M24: demo playground route (family/status/code/title → live render) with~~ done — /errors/playground live (examples/demo/main.go:911)
     CSRF/rate-limit posture.
-31. M25: HARVEST this plan's remainders into TODO_LIST/ROADMAP; annotate the
+~~31. M25: HARVEST this plan's remainders into TODO_LIST/ROADMAP; annotate the~~ done — plan §6 execution record; TODO_LIST #246/#267 consumed
     plan; final `nix run .#verify` + per-module loop.
 
 **Gate items held for owner:**
 
 32. ⫱ M05: push `feat/bridge-classified-error-message` (gef `5988569`) + file
     the upstream PR — body already drafted in the commit message.
-33. ⫱ M20: release go/no-go.
+~~33. ⫱ M20: release go/no-go.~~ done — CHANGELOG v1.18.1 + v1.19.0 released
 34. ⫱ M17: filing the BuildFlow issue externally.
 
 **Queue hygiene:**
@@ -217,7 +217,7 @@ still say 250. First action on resume is the 250→251 bump (§f item 1).
     `errorRoutePage` (it renders Base → ThemeToggle script).
 37. Confirm `goldenStats`/CountStats picked up no drift from the demo section
     restructure (site build).
-38. Eyeball `errors_404_dark.png` (only 404-page dark capture exists; the
+~~38. Eyeball `errors_404_dark.png` (only 404-page dark capture exists; the~~ done — errors_404_dark.png exists
     ErrorPage-flavored /errors/404 has light only — consider adding dark).
 39. Consider `WriteErrorPage` docs warning: bare mode renders without any
     stylesheet hook (the trap I hit) — doc.go note candidate.
@@ -230,7 +230,7 @@ still say 250. First action on resume is the 250→251 bump (§f item 1).
    go-error-family remote and open the PR now, or do you want to review the
    branch locally first? (One-method change, tests green, lint clean, probe-
    verified; the commit message is PR-body-ready.)
-2. **M20:** if everything is green when I reach release readiness, do you want
+~~2. **M20:** if everything is green when I reach release readiness, do you want~~ NOT-DO — superseded: v1.18.1/v1.19.0 released
    the release actually cut (script is designed to abort safely, nothing
    pushed), or only the go/no-go report?
 3. **Two concurrent execution streams:** the release-first master plan session

@@ -39,7 +39,7 @@ pushes of intermediate states — detail in (d).
 
 ## b) PARTIALLY DONE
 
-1. **M08/M09 errorpage verification bundle (#246)** — I marked this "equivalent-done" in the
+~~1. **M08/M09 errorpage verification bundle (#246)** — I marked this "equivalent-done" in the~~ done — all six remainders shipped CHANGELOG v1.18.1; TODO_LIST #246 consumed
    todo list, which was **overclaimed**. Done: standalone routes (concurrent session), axe
    contrast, route goldens (full/404 light+dark), NotFound404 goldens. **Still open from the
    plan:** `ExampleErrorPage` refresh to the full model, ErrorDetail + ErrorAlert component
@@ -54,7 +54,7 @@ pushes of intermediate states — detail in (d).
    but no explicit audit note/test either).
 5. **`ci-repro.sh --website` lane** — green once end-to-end (21:47); after that I pushed
    with lighter verification (per-module loops + targeted suites) instead of the full lane.
-6. **Brutal review integration** — this report includes the self-review, but the skill's
+~~6. **Brutal review integration** — this report includes the self-review, but the skill's~~ done — f-list IDs tracked in TODO_LIST (#232,#235,#238,#211)
    canonical output (HTML) was overridden to `.md` per your explicit instruction; the
    f-list below is NOT yet harvested into TODO_LIST/ROADMAP.
 
@@ -115,7 +115,7 @@ pushes of intermediate states — detail in (d).
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Capture goldens ONLY under `nix run .#visual -- -update` from minute one.** Manual
+~~1. **Capture goldens ONLY under `nix run .#visual -- -update` from minute one.** Manual~~ done — visual-update flake app shipped (flake.nix; CHANGELOG v1.18.1)
    `CHROMEDP_CHROME_PATH` runs produce system-font captures that mismatch CI. This caused
    two full re-capture rounds. Candidate improvement: make the visualtest harness refuse
    (or loudly warn) when `CHROMEDP_CHROME_PATH` is set but the flake fonts.conf is not —
@@ -148,23 +148,23 @@ rigor). Ordered roughly by impact within tiers._
 
 **Tier 1 — finish what this session started**
 
-1. M08/M09 remainder: `ExampleErrorPage` refresh to full model (#246)
-2. ErrorDetail + ErrorAlert component pixel goldens, light+dark (#246)
-3. 6/6 family-matrix golden for ErrorPage (#246)
-4. Go-back button browser e2e (`history.back()` after nav) (#246)
-5. `FromError` StatusCode parity test (#246)
-6. ErrorPage mobile-375 + RTL goldens (#246)
+~~1. M08/M09 remainder: `ExampleErrorPage` refresh to full model (#246)~~ done — ExampleErrorPage full model in errorpage/example_test.go
+~~2. ErrorDetail + ErrorAlert component pixel goldens, light+dark (#246)~~ done — visualtest/testdata/errorpage detail/alert PNGs exist
+~~3. 6/6 family-matrix golden for ErrorPage (#246)~~ done — error_alert_family_orchestration.golden; CHANGELOG v1.18.1
+~~4. Go-back button browser e2e (`history.back()` after nav) (#246)~~ done — TestDemoErrorPageGoBack exists
+~~5. `FromError` StatusCode parity test (#246)~~ done — TestFromErrorStatusCodePerFamily exists
+~~6. ErrorPage mobile-375 + RTL goldens (#246)~~ done — errorpage light/dark mobile+rtl PNGs exist
 7. M19: file-backed kanban demo state (JSON persistence, restart semantics) (#189)
 8. M19b: Dashboard-recipe kanban section wired to that state (#189)
 9. M20: sorted-view demo board exercising the advisory-index contract (#224)
 10. M20b: 422-rejection e2e, both transports (#224)
 11. `scripts/lint-changed.sh` fast lane (lint exactly the files about to be committed)
-12. `nix run .#visual-update <pattern>` flake app (#267) — kills the wrong-env capture trap
+~~12. `nix run .#visual-update <pattern>` flake app (#267) — kills the wrong-env capture trap~~ done — flake.nix visual-update app; CHANGELOG v1.18.1
 13. Visualtest harness warning when capturing outside the flake font env
-14. #264: explicit HTTP-contract tests for the new `/errors/*` demo routes (kanban-pattern)
+~~14. #264: explicit HTTP-contract tests for the new `/errors/*` demo routes (kanban-pattern)~~ done — TestErrorRoutesServeStatusAndBody exists
 15. #258: `?transport=` single-view screenshots of the kanban section on Cloud Run
 16. #262: extract `newFlakyBoardPair` helper from the ADR-0041 e2e
-17. #250: pin the prerender-vs-live test's clock (minute-boundary flake)
+~~17. #250: pin the prerender-vs-live test's clock (minute-boundary flake)~~ done — CHANGELOG v1.19.3 wall-clock normalization
 18. Apply `-count=1` to all remaining file-reading guard tests (3 sites)
 19. AGENTS line pointing M08/M09 leftovers at #246 (the todo/todolist split-brain cleanup)
 
@@ -186,7 +186,7 @@ output from `CountStats` (single-source the demo/site counts)
 30. Website docs page for the pending register visuals (embed the two PNGs in kanban-board.md)
 31. Site search index check for the new kanban page (verify it indexes + ranks)
 32. #235 ⫱: npm tailwind pin policy decision for website.yml
-33. #251 residue: verify README/site optimistic one-liners link to the new kanban page
+~~33. #251 residue: verify README/site optimistic one-liners link to the new kanban page~~ done — TODO_LIST #251 resolved; one-liners shipped
 34. Sitemap: add the kanban page to any hand-maintained listing (related-projects/PKG docs)
 
 **Tier 4 — quality/verification**
@@ -230,7 +230,7 @@ escape hatch, touch-drag, CSS artifacts, annotation policy)
    tests otherwise; or (c) branch-first flow — push to a feat/* branch, let CI arbitrate,
    merge on green, keeping master permanently green at the cost of merge overhead?
 
-3. **Errorpage verification bundle (#246):** the remaining half (Example refresh, Detail/
+~~3. **Errorpage verification bundle (#246):** the remaining half (Example refresh, Detail/~~ NOT-DO — superseded: #246 bundle completed (CHANGELOG v1.18.1)
    Alert goldens, family matrix, go-back e2e, StatusCode parity) is ~2–3h of pure
    verification work on a surface that just shipped and is currently green. Finish it next
    session as a standalone block before any new features, or fold it into the next

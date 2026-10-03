@@ -18,12 +18,12 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 
 ### Tier 1 — trust spine (10/10)
 
-- **T01** ogshot smoke: website dist built, real capture → `website/public/og/sales.png` (90KB), exit 0.
+~~- **T01** ogshot smoke: website dist built, real capture → `website/public/og/sales.png` (90KB), exit 0.~~ done — website/public/og/sales.png (ogshot real capture)
 - **T02** shots smoke: index light+dark full-page captures (2.8MB each).
 - **T03** siteshots smoke: 25 captures light/dark × desktop/mobile + search smoke PASS (8 hits).
-- **T04** Full `nix run .#visual` witnessed green twice (137s final). Root-caused `TestSiteSalesCopyButton` flake: bare `chromedp.Text` read raced the clipboard-write `.then` label-swap → replaced with a falsy-until-swapped `pollText` (repo's own poll-helper rule). Learned/recorded: **load-sensitive class on this 32-core shared box** — signature is light AND dark site goldens failing ~100% while demo-route goldens pass; remedy `-parallel 4` (recorded in AGENTS.md).
-- **T05** Advisory dup-gate lane in `scripts/ci-repro.sh`: resolves `$ART_DUPL_BIN` → `/tmp/art-dupl-fork` → PATH, echoes `art-dupl --version` beside the verdict, never fails the run.
-- **T05b** Binary-supply decision recorded in ADR-0009 (documented-PATH; flake pin deliberately deferred until fork detector stabilizes / #292/#293).
+~~- **T04** Full `nix run .#visual` witnessed green twice (137s final). Root-caused `TestSiteSalesCopyButton` flake: bare `chromedp.Text` read raced the clipboard-write `.then` label-swap → replaced with a falsy-until-swapped `pollText` (repo's own poll-helper rule). Learned/recorded: **load-sensitive class on this 32-core shared box** — signature is light AND dark site goldens failing ~100% while demo-route goldens pass; remedy `-parallel 4` (recorded in AGENTS.md).~~ done — pollText helper + AGENTS.md:322 load-flake lesson
+~~- **T05** Advisory dup-gate lane in `scripts/ci-repro.sh`: resolves `$ART_DUPL_BIN` → `/tmp/art-dupl-fork` → PATH, echoes `art-dupl --version` beside the verdict, never fails the run.~~ done — advisory art-dupl lane in scripts/ci-repro.sh:289-314
+~~- **T05b** Binary-supply decision recorded in ADR-0009 (documented-PATH; flake pin deliberately deferred until fork detector stabilizes / #292/#293).~~ done — ADR-0009:585 binary-supply decision (documented-PATH)
 - **T06** Baseline determinism: two fresh recordings byte-identical modulo `recordedAt`, both equal to the committed baseline (and to HEAD's entries).
 - **T07** Squash: landed `146fbf94` "feat: dedup follow-through — typed heading enum, drift guard, ADR hygiene" (33 files) as ONE properly-messaged commit. (The original 8-commit daemon blob was already pushed by the daemon — force-push forbidden, so that history stands.)
 - **T08** Green at tip: build + display/forms/utils + gate all OK.
@@ -31,72 +31,72 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 
 ### Tier 2 — lock in the gains (11/11)
 
-- **T10** CHANGELOG exemption rule written into `docs/release-checklist.md` (internal-only changes exempt; user-visible MUST entry in same commit); `[Unreleased]` warmed and corrected (stale "39 groups" fixed → 122, fork-pinned).
-- **T11** `TestDocsCountDrift` extended with `countBaselineEntries` — pins CHANGELOG/ADR/AGENTS "N accepted groups" claims to the parsed baseline. **Proved itself on first run** by catching the CHANGELOG 39-vs-122 drift.
-- **T13a** `HeadingTagType` enum (h1–h6 constants + `HeadingTagTypeIsValid` + tests) on Card/EmptyState/CollapsibleSection `TitleTag`; defined type so string literals keep compiling (v1-safe).
-- **T13b** Redundant `isValidHeadingTag` normalization removed; goldens untouched (behavior-preserving proven); enum counts bumped 62→63 across FEATURES/README/website; FEATURES enum-table row added (both exhaustive guards green).
-- **T14** Calendar month-nav aria-labels → `calendarPrevMonthLabel`/`calendarNextMonthLabel` constants.
-- **T15** skill/SKILL.md "Shared internal helpers — reuse these" table (headingTag, chartSeriesGroup, sparkline projection, calendarMonthNav*, browser/distserver).
-- **T17** Plan-authoring checklist step 5: run the clone gate in dedup-adjacent plans (#291 fully closed).
-- **T18** ADR-0009 "Accepted twin pairs" section: datastar↔htmx normalize twins + ListNote↔EndOfList (#300).
-- **T19** Gate re-run green at t=1, t=2, AND t=3; ledger re-read; historical line numbers disclaimed (#306).
-- **T20** Historical-counts table marked detector-generation-specific.
-- **T21** Advisory-invocation verdict recorded: `-t 1`, default min-lines (raising it hides the 2-3-line clones that hid the evening-pass extractions) (#294 partial).
+~~- **T10** CHANGELOG exemption rule written into `docs/release-checklist.md` (internal-only changes exempt; user-visible MUST entry in same commit); `[Unreleased]` warmed and corrected (stale "39 groups" fixed → 122, fork-pinned).~~ done — release-checklist.md:24 exemption rule (2026-09-23)
+~~- **T11** `TestDocsCountDrift` extended with `countBaselineEntries` — pins CHANGELOG/ADR/AGENTS "N accepted groups" claims to the parsed baseline. **Proved itself on first run** by catching the CHANGELOG 39-vs-122 drift.~~ done — countBaselineEntries (utils/docs_count_test.go:320)
+~~- **T13a** `HeadingTagType` enum (h1–h6 constants + `HeadingTagTypeIsValid` + tests) on Card/EmptyState/CollapsibleSection `TitleTag`; defined type so string literals keep compiling (v1-safe).~~ done — HeadingTagTypeIsValid (display/heading_tag.go)
+~~- **T13b** Redundant `isValidHeadingTag` normalization removed; goldens untouched (behavior-preserving proven); enum counts bumped 62→63 across FEATURES/README/website; FEATURES enum-table row added (both exhaustive guards green).~~ done — TODO #298 struck; headingTag default covers
+~~- **T14** Calendar month-nav aria-labels → `calendarPrevMonthLabel`/`calendarNextMonthLabel` constants.~~ done — calendarPrev/NextMonthLabel (forms/calendar_nav.go:81)
+~~- **T15** skill/SKILL.md "Shared internal helpers — reuse these" table (headingTag, chartSeriesGroup, sparkline projection, calendarMonthNav*, browser/distserver).~~ done — TODO #309 struck (SKILL.md helpers table)
+~~- **T17** Plan-authoring checklist step 5: run the clone gate in dedup-adjacent plans (#291 fully closed).~~ done — plan-authoring-checklist step 5 clone gate
+~~- **T18** ADR-0009 "Accepted twin pairs" section: datastar↔htmx normalize twins + ListNote↔EndOfList (#300).~~ done — ADR-0009:305 "Accepted twin pairs" section
+~~- **T19** Gate re-run green at t=1, t=2, AND t=3; ledger re-read; historical line numbers disclaimed (#306).~~ done — TODO #306 struck (green at t=1/2/3)
+~~- **T20** Historical-counts table marked detector-generation-specific.~~ done — ADR-0009:663 DETECTOR-GENERATION-SPECIFIC marking
+~~- **T21** Advisory-invocation verdict recorded: `-t 1`, default min-lines (raising it hides the 2-3-line clones that hid the evening-pass extractions) (#294 partial).~~ done — ADR-0009:575 keep-default min-lines verdict
 
 ### Tier 3 — hardening (35/35 planned tasks)
 
 **Mirror/guard cluster:**
 
-- **T22** `TestMirroredPackagesListsMatch` — pins bash `MIRRORED_PKGS` == Go `mirroredPackages` (#283a).
-- **T23** `TestTypesFilesHaveTemplTwin` — ghost types-file guard (#283b).
-- **T24** `TestAddSmoke` — execs the real `tc` binary for eyebrow + auth_layout in `t.TempDir()` (#283c).
-- **T25/T26** `scripts/test-tc-sources-guard.sh` — **16 scenarios** (clean/drift/new/orphan/rename/missing-pkg/idempotence ×2) over detached worktrees. **It caught a real bug:** `--fix` treated a missing package directory as removable orphans (destructive); the guard now blocks with `ORPHAN-SKIPPED` instead.
-- **T27** CI Lint job runs the self-test (#308).
-- **T28/T29** `TestPackageDepsCoverPackageFiles` — `--list-deps` honesty; added `heading_tag.go`, `kanban.go`, `chart_geometry.go`, `area_chart.go`, `line_chart.go`, `pie_chart.go` (display), `calendar_nav.go` (forms), `embed.go` (layout) that silently predated it (#285).
+~~- **T22** `TestMirroredPackagesListsMatch` — pins bash `MIRRORED_PKGS` == Go `mirroredPackages` (#283a).~~ done — TestMirroredPackagesListsMatch (main_test.go:108)
+~~- **T23** `TestTypesFilesHaveTemplTwin` — ghost types-file guard (#283b).~~ done — TestTypesFilesHaveTemplTwin (types_pair_test.go:18)
+~~- **T24** `TestAddSmoke` — execs the real `tc` binary for eyebrow + auth_layout in `t.TempDir()` (#283c).~~ done — TestAddSmoke (add_smoke_test.go:18)
+~~- **T25/T26** `scripts/test-tc-sources-guard.sh` — **16 scenarios** (clean/drift/new/orphan/rename/missing-pkg/idempotence ×2) over detached worktrees. **It caught a real bug:** `--fix` treated a missing package directory as removable orphans (destructive); the guard now blocks with `ORPHAN-SKIPPED` instead.~~ done — scripts/test-tc-sources-guard.sh (caught ORPHAN bug)
+~~- **T27** CI Lint job runs the self-test (#308).~~ done — ci.yaml:113 guard self-test lane
+~~- **T28/T29** `TestPackageDepsCoverPackageFiles` — `--list-deps` honesty; added `heading_tag.go`, `kanban.go`, `chart_geometry.go`, `area_chart.go`, `line_chart.go`, `pie_chart.go` (display), `calendar_nav.go` (forms), `embed.go` (layout) that silently predated it (#285).~~ done — TestPackageDepsCoverPackageFiles (deps_coverage_test.go)
 
 **Docs-truth + guard-UX cluster:**
 
 - **T30** `tc new` → shipped-commands rewording (2 live refs) (#288a).
 - **T31** Verified docs carry NO numeric tc-add coverage claims — nothing to fix (#288b, closed as verified-no-claims).
-- **T32** CHANGELOG `### Fixed` entry for the 22-component scaffolder rescue (#288c).
-- **T33** `TC_SKIP_SYNC=1` opt-out with a loud banner (#289a).
-- **T34** Guard runtime printed beside every verdict (86ms measured) (#289b).
-- **T35** Starter CSS re-synced from templates/ (it predated the `.go`-scanning `@source` lesson + several custom.css sections) and pinned byte-identical by `TestStarterCSSMatchesTemplates`; `tc-snap-*` kept as documented consumer utilities (#290).
-- **T36** `tc ls` derived "N components addable" footer (#294a).
-- **T37** Guard-failure output review — all paths print actionable pointers (#294b).
+~~- **T32** CHANGELOG `### Fixed` entry for the 22-component scaffolder rescue (#288c).~~ done — CHANGELOG v1.19.3 `### Fixed` rescue entry
+~~- **T33** `TC_SKIP_SYNC=1` opt-out with a loud banner (#289a).~~ done — TC_SKIP_SYNC=1 (check-tc-sources-sync.sh:37)
+~~- **T34** Guard runtime printed beside every verdict (86ms measured) (#289b).~~ done — guard runtime print (check-tc-sources-sync.sh:50)
+~~- **T35** Starter CSS re-synced from templates/ (it predated the `.go`-scanning `@source` lesson + several custom.css sections) and pinned byte-identical by `TestStarterCSSMatchesTemplates`; `tc-snap-*` kept as documented consumer utilities (#290).~~ done — TestStarterCSSMatchesTemplates (utils/starter_css_sync_test.go)
+~~- **T36** `tc ls` derived "N components addable" footer (#294a).~~ done — `tc ls` addable footer (cmd/tc/main.go:331)
+~~- **T37** Guard-failure output review — all paths print actionable pointers (#294b).~~ done — guard prints actionable `--fix` pointers (script:191)
 
 **Tooling UX + site-tier cluster:**
 
-- **T38** `visualtest/tools/README.md` pointing at the shared `internal/` packages (#304).
-- **T39** `-selftest` flag on all three capture tools, verified live (#305).
-- **T40** Twin cross-ref comments for `calendarNavQuery` (demo ↔ e2e) (#302).
-- **T41** `site_routes_test.go` now uses `internal/distserver.Handler` (was a verbatim copy); packages MOVED from `tools/internal/` → `internal/` so the whole module can import them (#273 fully closed).
-- **T42** 575-vs-548 forensics closed: the `_sources` exclude is NOT the whole delta (today a no-exclude scan would be ~657); paste-era generation non-reproducible (#310).
+~~- **T38** `visualtest/tools/README.md` pointing at the shared `internal/` packages (#304).~~ done — visualtest/tools/README.md (#304)
+~~- **T39** `-selftest` flag on all three capture tools, verified live (#305).~~ done — `-selftest` flags on ogshot/shots/siteshots
+~~- **T40** Twin cross-ref comments for `calendarNavQuery` (demo ↔ e2e) (#302).~~ done — TWIN comments on calendarNavQuery copies
+~~- **T41** `site_routes_test.go` now uses `internal/distserver.Handler` (was a verbatim copy); packages MOVED from `tools/internal/` → `internal/` so the whole module can import them (#273 fully closed).~~ done — TODO #273 struck; visualtest/internal/distserver.Handler
+~~- **T42** 575-vs-548 forensics closed: the `_sources` exclude is NOT the whole delta (today a no-exclude scan would be ~657); paste-era generation non-reproducible (#310).~~ done — ADR-0009:609-615 657-file generation-skew verdict (#310)
 - **T43** varnamelen verdict: keep linter + forced renames; one-time churn (#307).
 - **T44** Demo smoke coverage confirmed: display_demo renders EmptyState ×2 + CollapsibleSection ×2 + Card ×16 (#311).
-- **T45** `//art-dupl:accept` directives REJECTED vs hash baseline — reasoning recorded in ADR-0009 (#314).
+~~- **T45** `//art-dupl:accept` directives REJECTED vs hash baseline — reasoning recorded in ADR-0009 (#314).~~ Won't implement — rejected in ADR-0009:596: directives NOT adopted (#314)
 
 **Sweep/hardening cluster:**
 
 - **T46** `role="combobox"`: both sites on `<input type="text">` per ARIA APG — compliant (#274).
 - **T47** Zero `WriteString(literal + literal)` in library sources (#277).
 - **T48** Demo CSS freshness verified (`nix run .#css` + `TestCSSFreshness`) (#278).
-- **T49** `TestPrerenderMatchesLiveServer` made retry-tolerant (3 attempts, #250).
-- **T50** Shared `kanbanParseMoveWithCSRF` prelude extracted (was duplicated 3×) (#262).
-- **T51** ogshot is SITE_SKIP_STARS-independent (self-contained HTML); documented (#281).
-- **T52** build.sh star-resolution inverted: default = deterministic fallback badge; `SITE_LIVE_STARS=1` for production (CI Website job sets it) (#271).
-- **T53** `docs/visual-testing.md` "The site route tier" section (theme pin, skip-stars, scroll-reveal load caveat) (#275).
-- **T54** SKILL.md website-SSG knobs section (topLevelPages, lastmod sources, search index) (#276).
-- **T55** Warm-dark `dark:`-pair override pattern documented in the Tailwind adoption guide (#279).
-- **T56** /tmp gate logs purged before salvage → declared accepted-loss in ADR-0009 (#313).
+~~- **T49** `TestPrerenderMatchesLiveServer` made retry-tolerant (3 attempts, #250).~~ done — retry loop in prerender_diff_test.go:111-143 (backlog #250)
+~~- **T50** Shared `kanbanParseMoveWithCSRF` prelude extracted (was duplicated 3×) (#262).~~ done — kanbanParseMoveWithCSRF (kanban_e2e_test.go:1166)
+~~- **T51** ogshot is SITE_SKIP_STARS-independent (self-contained HTML); documented (#281).~~ done — ogshot README:8 documents SITE_SKIP_STARS independence
+~~- **T52** build.sh star-resolution inverted: default = deterministic fallback badge; `SITE_LIVE_STARS=1` for production (CI Website job sets it) (#271).~~ done — website/build.sh:19 SITE_LIVE_STARS inversion
+~~- **T53** `docs/visual-testing.md` "The site route tier" section (theme pin, skip-stars, scroll-reveal load caveat) (#275).~~ done — docs/visual-testing.md:89 site route tier section
+~~- **T54** SKILL.md website-SSG knobs section (topLevelPages, lastmod sources, search index) (#276).~~ done — SKILL.md:414 website-SSG knobs (topLevelPages)
+~~- **T55** Warm-dark `dark:`-pair override pattern documented in the Tailwind adoption guide (#279).~~ done — tailwind-v4-adoption-guide.md:278 "warm dark" pattern
+~~- **T56** /tmp gate logs purged before salvage → declared accepted-loss in ADR-0009 (#313).~~ done — ADR-0009:617 /tmp gate logs accepted loss (#313)
 
 ### Tier 4 — features + gated
 
-- **T59** **`layout.HTMXNone` shipped**: HTMXSrc sentinel rendering no htmx runtime (no script/preconnect/SRI); `TestBaseHTMXNoneProvesHTMXOff` + self-host regression guard; CHANGELOG Added entry; AGENTS.md bullet (#282).
-- **T60** `scripts/lighthouse.sh` skeleton (static-dist target, 4 categories, advisory; CI wiring deliberately deferred until 5 stable runs) (#272).
-- **T61** Demo per-IP token-bucket rate limiter (`examples/demo/rate_limit.go`; knobs tuned to 10/s + burst 100 after the first values 429'd the visual audits) (#264).
-- **T62** **Session-scoped demo CSRF**: per-visitor cookie (`tc_demo_csrf`, HttpOnly, SameSite=Lax), `withDemoSession` middleware, threaded through `demoPage → demoContent → kanbanDemo → kanbanDemoBoardProps`; move validation against the cookie; prerender-diff test normalized + cookie-jar client (#229).
-- **T65** `TestKanbanSingleTransportBoards` — htmx-only and Datastar-only board renders pinned as goldens; shared `assertGoldenMatch` helper extracted (#258).
+~~- **T59** **`layout.HTMXNone` shipped**: HTMXSrc sentinel rendering no htmx runtime (no script/preconnect/SRI); `TestBaseHTMXNoneProvesHTMXOff` + self-host regression guard; CHANGELOG Added entry; AGENTS.md bullet (#282).~~ done — layout.HTMXNone + TestBaseHTMXNoneProvesHTMXOff (CHANGELOG v1.19.3)
+~~- **T60** `scripts/lighthouse.sh` skeleton (static-dist target, 4 categories, advisory; CI wiring deliberately deferred until 5 stable runs) (#272).~~ done — scripts/lighthouse.sh skeleton exists
+~~- **T61** Demo per-IP token-bucket rate limiter (`examples/demo/rate_limit.go`; knobs tuned to 10/s + burst 100 after the first values 429'd the visual audits) (#264).~~ done — examples/demo/rate_limit.go exists
+~~- **T62** **Session-scoped demo CSRF**: per-visitor cookie (`tc_demo_csrf`, HttpOnly, SameSite=Lax), `withDemoSession` middleware, threaded through `demoPage → demoContent → kanbanDemo → kanbanDemoBoardProps`; move validation against the cookie; prerender-diff test normalized + cookie-jar client (#229).~~ done — examples/demo/csrf_session.go session middleware
+~~- **T65** `TestKanbanSingleTransportBoards` — htmx-only and Datastar-only board renders pinned as goldens; shared `assertGoldenMatch` helper extracted (#258).~~ done — TestKanbanSingleTransportBoards (visualtest:96)
 - **Gated rows recorded with session notes:** #303 (website clones), #312 (public HeadingTag export — recommendation: keep private), #295 (dup-gate→blocking: advisory green run 1 witnessed; needs run 2 + ratification), #224/#189 remain open with dependencies noted.
 
 ### Unplanned work the session surfaced and shipped
@@ -114,18 +114,18 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 2. **#294** — three of four sub-items done (`tc ls` footer, guard-runtime print, --min-lines verdict); "AGENTS post-daemon re-verify note" not written as a separate item.
 3. **#295** (dup-gate advisory→blocking) — advisory lane green (run 1); promotion needs a second consecutive green run + owner ratification. Cannot be finished inside one session by definition.
 4. **T60 Lighthouse** — skeleton + decision record only; no budgets asserted, not CI-wired (deliberate, but genuinely not "done").
-5. **T07's original goal** — the big dedup-pass blob is clean-ish history but as 8 daemon-titled commits already on origin; only my later waves got proper messages.
+~~5. **T07's original goal** — the big dedup-pass blob is clean-ish history but as 8 daemon-titled commits already on origin; only my later waves got proper messages.~~ Won't implement — moot: daemon pushed the 8-commit blob; rewrite forbidden (§d1)
 
 ## c) NOT STARTED
 
-1. **Push** — 24 commits local-only; house rule forbids me pushing.
+~~1. **Push** — 24 commits local-only; house rule forbids me pushing.~~ done — pushed; v1.19.3 released 2026-09-24 (CHANGELOG)
 2. **#162/#150/#80** vision-review pass — needs a provider API key + human confirmation.
 3. **#280** post-deploy spot-checks — needs the next production deploy to exist.
 4. **#216** vnu re-triage — event-gated on the next nixpkgs html5validator bump.
 5. **#217** M24/M25 components — demand-gated NO (F109).
 6. **#213/#214/#215** CI budget/benchstat/mutation — deferred 2026-09-13, still deferred.
 7. **Blocked ledger** (#28/29/93/107/108/124/125/126/190/191/211/212/232–239/269/270) — owner gates / separate repos, untouched by design.
-8. **CHANGELOG version cut** — `[Unreleased]` is warm and healthy but no release was requested.
+~~8. **CHANGELOG version cut** — `[Unreleased]` is warm and healthy but no release was requested.~~ done — v1.19.3 cut 2026-09-24 (CHANGELOG)
 
 ## d) TOTALLY FUCKED UP (honest failures)
 
@@ -149,7 +149,7 @@ The one process wart: the auto-commit daemon raced me on every squash attempt; t
 
 ## f) NEXT 50 (ordered by impact)
 
-1. Review + push the 24 local commits (human).
+~~1. Review + push the 24 local commits (human).~~ done — pushed; v1.19.3 released 2026-09-24 (CHANGELOG)
 2. Second consecutive green advisory dup-gate run → promote to blocking (#295) + ratify.
 3. #303 website content clones: extract or blanket-accept (owner gate).
 4. #312 decide public `HeadingTag` export (owner gate; recommendation: keep private).

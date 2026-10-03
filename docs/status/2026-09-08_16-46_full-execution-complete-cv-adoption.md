@@ -35,12 +35,12 @@
 
 ## b) PARTIALLY DONE
 
-1. **Browser-level proof still missing (A-T1).** Every swap is unit/golden-green, but no playwright/axe run over A.Team/pipeline/landing. CV's own AGENTS.md documents that markup-substring tests cannot catch the "page functionally dead, unit tests green" class (the chat-page burn) — the same risk class applies to my LoadingButton/ProgressBar/modal-adjacent JS retargets until e2e runs.
-2. ** Interviews link key-stamp unverified**: the operator API-key JS targets `a[href='/calendar/interviews.ics']`; StatCard's `Href` variant renders exactly that anchor so it should match — asserted, never executed.
-3. **Local output.css staleness after D1**: the RTL utilities (`pe-11`, `end-0`, `border-s-2`, `ms/me/ps`) were added after the last `css:build`. Committed artifacts are unaffected (output.css is gitignored; CI/release rebuild fresh), but local dev view is stale and I did not re-run the CSS build.
+~~1. **Browser-level proof still missing (A-T1).** Every swap is unit/golden-green, but no playwright/axe run over A.Team/pipeline/landing. CV's own AGENTS.md documents that markup-substring tests cannot catch the "page functionally dead, unit tests green" class (the chat-page burn) — the same risk class applies to my LoadingButton/ProgressBar/modal-adjacent JS retargets until e2e runs.~~ Won't implement — CV-side; lives in cv repo (2026-09-17 resolution)
+~~2. ** Interviews link key-stamp unverified**: the operator API-key JS targets `a[href='/calendar/interviews.ics']`; StatCard's `Href` variant renders exactly that anchor so it should match — asserted, never executed.~~ Won't implement — CV-side (2026-09-17 resolution)
+~~3. **Local output.css staleness after D1**: the RTL utilities (`pe-11`, `end-0`, `border-s-2`, `ms/me/ps`) were added after the last `css:build`. Committed artifacts are unaffected (output.css is gitignored; CI/release rebuild fresh), but local dev view is stale and I did not re-run the CSS build.~~ Won't implement — CV-side (2026-09-17 resolution)
 4. **`gh pr create` body corruption root cause never pinned down**: the quoted-heredoc body still had its backtick spans executed (suspect: the tool's mvdan/sh interpreter handles heredoc-in-command-substitution differently from bash). Symptom fixed permanently via `--body-file`; mechanism not investigated.
-5. **TC PRs unreviewed and un-merged**; #12 based on `0cdf232` master — master moved since (docs commits) with no conflicts expected, but branches were not updated.
-6. **D2 datastar-dep verdict** decided (keep — pulled by the root module, tidy-managed) but documented only in the status report, not in CV's AGENTS.md.
+~~5. **TC PRs unreviewed and un-merged**; #12 based on `0cdf232` master — master moved since (docs commits) with no conflicts expected, but branches were not updated.~~ done — PRs #12/#13/#14 merged; v1.16.0+ released (CHANGELOG)
+~~6. **D2 datastar-dep verdict** decided (keep — pulled by the root module, tidy-managed) but documented only in the status report, not in CV's AGENTS.md.~~ Won't implement — CV-side (2026-09-17 resolution)
 
 ## c) NOT STARTED
 
@@ -52,12 +52,12 @@
 
 ## d) TOTALLY FUCKED UP
 
-1. **PR #12 body was garbage on first push** — every backtick code span executed by the shell (body rendered with all inline-code missing). Caught immediately by reading the body back; fixed via `--body-file`. Root cause (bash-vs-mvdan heredoc semantics) suspected, never verified. The same class could have hit git commit messages — spot-checked those, all clean (no backticks used).
-2. **One commit landed before its green gate** (previous session's `4c725e2d`, disclosed then): content verified after; discipline fixed via `set -o pipefail` + raw-exit gates, which then held for the rest of the session (final gates used raw `go test` exit codes).
-3. **D1's verification command had the same masking flaw** (`rg FAIL` exit status) — I noticed and superseded it with the final raw-exit full-suite gate, which passed. Net: correct outcome, sloppy intermediate check.
-4. **The plan itself carried a wrong item** (B4 "enable RelativeTime AutoRefresh"): the earlier analysis correctly found nonce support but wrongly concluded adoptability — SSE innerHTML delivery never executes scripts, so `AutoRefresh:false` is correct BY MECHANISM. The plan sent me to flip a flag that could never work; execution downgraded it to a comment fix. Analysis validated the API, not the delivery context.
-5. **The original plan shipped ~4 ATS tasks that were already ruled out** (discovered in D4) — planning read the library's docs but not the consumer's AGENTS.md. Cost: ~4 void tasks; benefit: the ruling is now recorded in the adoption table so it cannot be re-planned by accident.
-6. **No lie detected**: every commit content was verified (stat/eyeball/tests); the empty-commit and masked-gate incidents are disclosed above rather than hidden.
+~~1. **PR #12 body was garbage on first push** — every backtick code span executed by the shell (body rendered with all inline-code missing). Caught immediately by reading the body back; fixed via `--body-file`. Root cause (bash-vs-mvdan heredoc semantics) suspected, never verified. The same class could have hit git commit messages — spot-checked those, all clean (no backticks used).~~ NOT-DO — retrospective disclosure; fixed in-session via --body-file
+~~2. **One commit landed before its green gate** (previous session's `4c725e2d`, disclosed then): content verified after; discipline fixed via `set -o pipefail` + raw-exit gates, which then held for the rest of the session (final gates used raw `go test` exit codes).~~ NOT-DO — retrospective; discipline fixed in-session (raw-exit gates)
+~~3. **D1's verification command had the same masking flaw** (`rg FAIL` exit status) — I noticed and superseded it with the final raw-exit full-suite gate, which passed. Net: correct outcome, sloppy intermediate check.~~ NOT-DO — retrospective; superseded by final raw-exit gate
+~~4. **The plan itself carried a wrong item** (B4 "enable RelativeTime AutoRefresh"): the earlier analysis correctly found nonce support but wrongly concluded adoptability — SSE innerHTML delivery never executes scripts, so `AutoRefresh:false` is correct BY MECHANISM. The plan sent me to flip a flag that could never work; execution downgraded it to a comment fix. Analysis validated the API, not the delivery context.~~ Won't implement — SSE innerHTML never executes scripts; AutoRefresh:false correct (d4)
+~~5. **The original plan shipped ~4 ATS tasks that were already ruled out** (discovered in D4) — planning read the library's docs but not the consumer's AGENTS.md. Cost: ~4 void tasks; benefit: the ruling is now recorded in the adoption table so it cannot be re-planned by accident.~~ Won't implement — ATS surface ruling recorded in adoption table (d5)
+~~6. **No lie detected**: every commit content was verified (stat/eyeball/tests); the empty-commit and masked-gate incidents are disclosed above rather than hidden.~~ NOT-DO — retrospective disclosure; all claims verified
 
 ## e) WHAT WE SHOULD IMPROVE
 
@@ -66,60 +66,60 @@
 3. **Browser-level proof for every interactive markup swap** — the repo's own history says substring tests lie; e2e belongs in the task's definition-of-done, not a follow-up TODO.
 4. **Re-run asset builds after ANY class-affecting change** (css:build / safelist) — cheap, and the only way local dev matches CI.
 5. **Read the consumer's AGENTS.md during planning** (cost ~4 void tasks last session) and **read the delivery mechanism, not just the API** (B4).
-6. **Parallel sessions on one checkout need a coordination convention** (the shared tree mixed my C-branch commits with a sibling session's visualtest/forms WIP three times; the daemon made them indistinguishable until inspected).
+~~6. **Parallel sessions on one checkout need a coordination convention** (the shared tree mixed my C-branch commits with a sibling session's visualtest/forms WIP three times; the daemon made them indistinguishable until inspected).~~ done — AGENTS.md daemon section prescribes detached-worktree isolation
 
 ## f) NEXT — up to 50 things
 
-1. Run CV playwright e2e over A.Team form + pipeline + landing (A-T1) — browser proof for the swaps
-2. axe/a11y pass on pipeline after EmptyState swaps (role=status nesting, heading levels)
-3. Verify Interviews StatCard link receives the API-key `?key=` stamp (execute the selector, don't assert it)
-4. Re-run `nix run .#css-build` after D1's new logical utilities; confirm `checks.tailwind-parity` green
-5. Watch CV CI on `feat/templ-components-adoption`; confirm the flake fix holds in CI's parallel environment
-6. Review + merge TC PR #12 (SEO head) — first, others may rebase on it
-7. Review + merge TC PR #13 (CollapsibleSection persistence)
-8. Review + merge TC PR #14 (icons.Render)
-9. Update #12/#13/#14 branches on master after the docs commits land (no conflicts expected; verify)
-10. TC: cut the next release warming CHANGELOG `[Unreleased]` (SEO + persistence + icons.Render entries already there) and re-tag per-module per release checklist
-11. After release: CV bump to the new version + safelist regen + adopt `PersistState` (delete CV's persistence JS from pipelineScripts) and `icons.Render` (delete the three SVG scaffolds) — the round-trip that proves the upstream work
-12. `layout.Minimal` head-content support (TODO #160) — same SEOMeta shape
-13. Upstream `RelativeTime`/SSE note into the component docs + datastar docs (recipe has it; the component doc comment should too)
-14. TC: consider a `Modal` HTMX-content example in the demo (C5 recipe's living proof)
+~~1. Run CV playwright e2e over A.Team form + pipeline + landing (A-T1) — browser proof for the swaps~~ Won't implement — CV-side; lives in cv repo (2026-09-17 resolution)
+~~2. axe/a11y pass on pipeline after EmptyState swaps (role=status nesting, heading levels)~~ Won't implement — CV-side (2026-09-17 resolution)
+~~3. Verify Interviews StatCard link receives the API-key `?key=` stamp (execute the selector, don't assert it)~~ Won't implement — CV-side (2026-09-17 resolution)
+~~4. Re-run `nix run .#css-build` after D1's new logical utilities; confirm `checks.tailwind-parity` green~~ Won't implement — CV-side (2026-09-17 resolution)
+~~5. Watch CV CI on `feat/templ-components-adoption`; confirm the flake fix holds in CI's parallel environment~~ Won't implement — CV-side (2026-09-17 resolution)
+~~6. Review + merge TC PR #12 (SEO head) — first, others may rebase on it~~ done — PR #12 merged; SEO head in CHANGELOG v1.16.0
+~~7. Review + merge TC PR #13 (CollapsibleSection persistence)~~ done — PersistState shipped v1.16.0 (CHANGELOG)
+~~8. Review + merge TC PR #14 (icons.Render)~~ done — icons.Render shipped (FEATURES.md icons row)
+~~9. Update #12/#13/#14 branches on master after the docs commits land (no conflicts expected; verify)~~ done — PRs merged; stale branches deleted (2026-09-14 report)
+~~10. TC: cut the next release warming CHANGELOG `[Unreleased]` (SEO + persistence + icons.Render entries already there) and re-tag per-module per release checklist~~ done — v1.16.0–v1.18.1 released (CHANGELOG)
+~~11. After release: CV bump to the new version + safelist regen + adopt `PersistState` (delete CV's persistence JS from pipelineScripts) and `icons.Render` (delete the three SVG scaffolds) — the round-trip that proves the upstream work~~ Won't implement — CV-side round-trip (cv repo)
+~~12. `layout.Minimal` head-content support (TODO #160) — same SEOMeta shape~~ done — MinimalProps.HeadContent shipped v1.18.0 (CHANGELOG)
+~~13. Upstream `RelativeTime`/SSE note into the component docs + datastar docs (recipe has it; the component doc comment should too)~~ done — recipes sse-fragments.md + print-pdf.md document AutoRefresh:false
+~~14. TC: consider a `Modal` HTMX-content example in the demo (C5 recipe's living proof)~~ done — demo Modal example (examples/demo/display_demo.templ)
 15. TC: SSE recipe cross-linked from `docs/transport-wiring.md` + datastar docs (written, links pending)
-16. CV: A-Team keySkills → `forms.TagsInput` evaluation (A-T2)
-17. CV: pipeline equivalence goldens (A-T3) — the swaps had no golden net
-18. CV: `stat-updated` SSE scalar → server-driven RelativeTime fragment evaluation (A-T4)
-19. CV: dead-portals Refresh → `display.Button` (A-T5)
-20. CV: ATS Modal/PolledRegion/buttons ONLY if the surface ruling lifts (A-T6; trigger documented)
-21. CV: datastar indirect-dep note into AGENTS.md (decided keep; not yet written down)
-22. CV: local `css:build` habit — add "rebuild CSS after class changes" to the personal checklist (matches checks.tailwind-parity)
-23. Verify archived/loose ends from the daemon era: `git worktree list` clean, no orphan branches (feat/layout-seo-meta on the shared TC tree still exists — delete after #12 merges)
-24. TC: drop `feat/layout-seo-meta` (daemon-contaminated twin of PR #12's clean branch) post-merge
+~~16. CV: A-Team keySkills → `forms.TagsInput` evaluation (A-T2)~~ Won't implement — CV-side (2026-09-17 resolution)
+~~17. CV: pipeline equivalence goldens (A-T3) — the swaps had no golden net~~ Won't implement — CV-side (2026-09-17 resolution)
+~~18. CV: `stat-updated` SSE scalar → server-driven RelativeTime fragment evaluation (A-T4)~~ Won't implement — CV-side (2026-09-17 resolution)
+~~19. CV: dead-portals Refresh → `display.Button` (A-T5)~~ Won't implement — CV-side (2026-09-17 resolution)
+~~20. CV: ATS Modal/PolledRegion/buttons ONLY if the surface ruling lifts (A-T6; trigger documented)~~ Won't implement — CV-side; ruling-gated
+~~21. CV: datastar indirect-dep note into AGENTS.md (decided keep; not yet written down)~~ Won't implement — CV-side (2026-09-17 resolution)
+~~22. CV: local `css:build` habit — add "rebuild CSS after class changes" to the personal checklist (matches checks.tailwind-parity)~~ Won't implement — CV-side (2026-09-17 resolution)
+~~23. Verify archived/loose ends from the daemon era: `git worktree list` clean, no orphan branches (feat/layout-seo-meta on the shared TC tree still exists — delete after #12 merges)~~ done — stale local branches deleted (docs/status/2026-09-14_09-33)
+~~24. TC: drop `feat/layout-seo-meta` (daemon-contaminated twin of PR #12's clean branch) post-merge~~ done — feat/layout-seo-meta deleted (2026-09-14_09-33 §a3)
 25. TC: BuildFlow daemon issues (#93/#107/#108/#124/#125/#126) — unchanged, still the root cause of every snapshot race this session
-26. Propose a session-coordination convention for parallel agents on one checkout (worktree-per-session or a lock file)
-27. CV: confirm print/PDF render is byte-identical post-changes (all edits were screen-side; assert it)
-28. CV: measure output.css size delta after the next css build (safelist superset bound)
-29. CV: admin access-card toggle now uses `end-0` — verify RTL flip visually once
+~~26. Propose a session-coordination convention for parallel agents on one checkout (worktree-per-session or a lock file)~~ done — AGENTS.md daemon-section detached-worktree convention
+~~27. CV: confirm print/PDF render is byte-identical post-changes (all edits were screen-side; assert it)~~ Won't implement — CV-side (2026-09-17 resolution)
+~~28. CV: measure output.css size delta after the next css build (safelist superset bound)~~ Won't implement — CV-side (2026-09-17 resolution)
+~~29. CV: admin access-card toggle now uses `end-0` — verify RTL flip visually once~~ Won't implement — CV-side (2026-09-17 resolution)
 30. TC: consider `EmptyState` ActionAttrs recipe example (the filter-clear pattern CV used)
 31. TC: `StatCard` ValueID + SSE pattern recipe (admin + pipeline both use it now)
-32. CV: landing share.js regression check after nonce'd Script (share still works)
-33. CV: chat page — leave untouched (ruling) except the already-shipped motion-reduce inherited via shared tokens
-34. TC: FEATURE.md icons row "3 functions" → 4 (Render added; docs-count guard doesn't check function counts — manual honesty)
-35. TC: SKILL.md catalogue — done for Base/Render; verify no other catalogue drift after the three PRs merge
-36. CV: keep `data/last-eval-pass.json` out of PRs — consider .gitignore proposal (daemon attractor)
-37. CV: squash the 4 daemon noise commits if history hygiene matters at merge time (currently as-is per owner)
+~~32. CV: landing share.js regression check after nonce'd Script (share still works)~~ Won't implement — CV-side (2026-09-17 resolution)
+~~33. CV: chat page — leave untouched (ruling) except the already-shipped motion-reduce inherited via shared tokens~~ Won't implement — chat-page ruling (recorded, report f33)
+~~34. TC: FEATURE.md icons row "3 functions" → 4 (Render added; docs-count guard doesn't check function counts — manual honesty)~~ done — FEATURES.md icons row includes Render
+~~35. TC: SKILL.md catalogue — done for Base/Render; verify no other catalogue drift after the three PRs merge~~ done — SKILL.md actively maintained (2026-09-17 resolution)
+~~36. CV: keep `data/last-eval-pass.json` out of PRs — consider .gitignore proposal (daemon attractor)~~ Won't implement — CV-side (2026-09-17 resolution)
+~~37. CV: squash the 4 daemon noise commits if history hygiene matters at merge time (currently as-is per owner)~~ Won't implement — CV-side; owner as-is call
 38. TC: after PRs merge, `nix run .#css` byte-stability + `nix run .#verify` on master
-39. CV: after merge + bump, run the full e2e suite once as the adoption sign-off
+~~39. CV: after merge + bump, run the full e2e suite once as the adoption sign-off~~ Won't implement — CV-side (2026-09-17 resolution)
 40. TC: consider exposing the SSE-initial-state drain lesson as a test helper (ssetest.DrainInitialState)
-41. CV: `test-ateam-validation` script — confirm the B1 form contract change didn't affect it
-42. TC: wire.Form/DirtyGuard demo cross-link into CV-facing adoption notes
+~~41. CV: `test-ateam-validation` script — confirm the B1 form contract change didn't affect it~~ Won't implement — CV-side (2026-09-17 resolution)
+~~42. TC: wire.Form/DirtyGuard demo cross-link into CV-facing adoption notes~~ done — adoption analysis documents FormProps.Wire (2026-09-07_21-55)
 43. TC: check `internal/contract` inventory still green with SEOMeta (value struct — intentionally unregistered; assert the reasoning in PR review)
-44. CV: post-merge AGENTS.md — move adopted rows to a "since vX" column for future archaeology
+~~44. CV: post-merge AGENTS.md — move adopted rows to a "since vX" column for future archaeology~~ Won't implement — CV-side (2026-09-17 resolution)
 45. TC: `PolledRegion` trigger-override doc example already matches CV's old HtmxCard strings — add CV's exact `"load, every 30s"` example to its doc comment
-46. Re-evaluate the Chart.js → `display.LineChart` swap if a recruiter-facing dashboard ever exists (ruling-gated, recorded)
-47. TC: add the three recipes to the docs index/README links if a docs index exists
-48. CV: drop the dead `getErrorTitle`-style switch in ats_components if the ruling-free parts ever touch it (minor)
+~~46. Re-evaluate the Chart.js → `display.LineChart` swap if a recruiter-facing dashboard ever exists (ruling-gated, recorded)~~ Won't implement — ruling-gated, recorded (report f46)
+~~47. TC: add the three recipes to the docs index/README links if a docs index exists~~ done — docs/recipes/recipe-index.md exists
+~~48. CV: drop the dead `getErrorTitle`-style switch in ats_components if the ruling-free parts ever touch it (minor)~~ Won't implement — CV-side; ruling-gated minor cleanup
 49. Keep a running "daemon incident log" — three races + two snapshot-mixing events this session; useful evidence for #93
-50. Final status report v4 after PR merges + CV e2e sign-off
+~~50. Final status report v4 after PR merges + CV e2e sign-off~~ done — later status reports exist (docs/status/2026-09-09+)
 
 ## g) QUESTIONS (asked via native tool after this report; answers will gate the follow-ups)
 

@@ -6,81 +6,81 @@ waves: M07–M17 (partial), M18 (partial), M19–M25.
 
 ## a) Fully done (this session)
 
-- **M07** — `ErrorDetail`/`ErrorAlert` visual shield (4 PNGs,
+~~- **M07** — `ErrorDetail`/`ErrorAlert` visual shield (4 PNGs,~~ done — detail/alert PNGs + TestGoldenHandlerHTMLShell (CHANGELOG v1.18.1)
   `errorpage/{detail,alert}_{light,dark}.png`, eyeballed) +
   `TestGoldenHandlerHTMLShell` pinning the exact `<!doctype html>` document
   `ErrorHandler` emits with `HTMLShell: true` (pinned timestamp).
-- **M08** — `TestDemoErrorPageGoBack` (chromedp: click `data-tc-go-back` →
+~~- **M08** — `TestDemoErrorPageGoBack` (chromedp: click `data-tc-go-back` →~~ done — TestDemoErrorPageGoBack + TestJSONTraceContract + TestChipsJSONParity exist
   `history.back()` proof; retry-until-needle because the navigation kills
   the poll's JS context), `TestJSONTraceContract` (trace present /
   omitempty), `TestChipsJSONParity` (HTTP chip ↔ status code, code chip ↔
   JSON `code`, trace footer ↔ JSON `trace`).
-- **M09** — `FromError` sets `StatusCode = FamilyStatusCode(family)`;
+~~- **M09** — `FromError` sets `StatusCode = FamilyStatusCode(family)`;~~ done — TestFromErrorStatusCodePerFamily; CHANGELOG v1.18.1
   `TestFromErrorStatusCodePerFamily` + corruption fallback; goldens
   regenerated (HTTP chip now appears in FromError-driven renders).
-- **M10** — `ErrorDetailVariant` (`Tinted` default / `Neutral` accent-bar
+~~- **M10** — `ErrorDetailVariant` (`Tinted` default / `Neutral` accent-bar~~ done — ErrorDetailNeutral + error_detail_neutral.golden
   shell, ErrorPage parity), `ErrorDetailVariantIsValid` + test, HTML +
   pixel goldens both themes, doc.go table + FEATURES + skill rows.
-- **M11** — `SecondaryWayOut`/`SecondaryWayOutHref` ghost action slot
+~~- **M11** — `SecondaryWayOut`/`SecondaryWayOutHref` ghost action slot~~ done — SecondaryWayOut shipped; secondary goldens exist
   (family-tinted `ActionButtonGhost` for all 6 families + fallback), link
   and go-back variants, goldens, demo full-model shows "Contact support".
-- **M12** — `WayOutAction{Text, Href}` typed bundle (wins entirely, no
+~~- **M12** — `WayOutAction{Text, Href}` typed bundle (wins entirely, no~~ done — WayOutAction/ErrorMaxWidth in styles.go; TestResolvedWayOut
   mixing, pinned by `TestResolvedWayOut`) + `ErrorMaxWidth` enum
   (LG/XL default/2XL/4XL, map+fallback), IsValid + test, 4xl golden.
-- **M13** — `CopyCode` clipboard button on the code chip (CSP-safe,
+~~- **M13** — `CopyCode` clipboard button on the code chip (CSP-safe,~~ done — CopyCode + error_page_copy_code.golden (CHANGELOG v1.18.1)
   shares display.CopyButton's `data-tc-copy` contract + `tcCopyAttached`
   guard so one listener serves both; documented accepted clone per
   ADR-0009); `errorActionClassScaffold` unifies ErrorPage/NotFound404
   action-button geometry (render byte-identical).
-- **M14** — `FuzzParseFamily` (1.25M execs clean), `BenchmarkErrorPage`
+~~- **M14** — `FuzzParseFamily` (1.25M execs clean), `BenchmarkErrorPage`~~ done — FuzzParseFamily exists; BenchmarkErrorpageRenders kept
   dropped (repo already had `BenchmarkErrorpageRenders` — duplicate
   avoided), coverage matrix + branch-combo renders (errorpage 71.9→72.4%,
   handler code 91%+), whole-repo coverage recomputed into FEATURES
   (root 70.2%, sub-modules 69.6–77.7%).
-- **M15** — Website "Error Pages" guide (`guides/error-pages.md` + nav
+~~- **M15** — Website "Error Pages" guide (`guides/error-pages.md` + nav~~ done — website/content/docs/guides/error-pages.md exists
   registration; link checker caught my bad anchor — the gate works);
   phrasing sweep clean (no "Wix-style" phrases shipped anywhere);
   error-feedback recipe verified current (uses `FromError`/`ErrorHandler`,
   no removed aliases); website goldens refreshed (derived enum count 62).
-- **M16** — `.#visual-update` flake app; ci-repro VERDICT + `--quiet-diff`
+~~- **M16** — `.#visual-update` flake app; ci-repro VERDICT + `--quiet-diff`~~ done — flake.nix visual-update; VERDICT/--quiet-diff (TODO #257 struck)
   verified (parallel session shipped them); visualtest go.mod tidy no-op +
   pin-policy comment; `golden -update` now logs CREATED/CHANGED files
   (visible with `-v`) so same-edit count bumps are obvious.
-- **M17.3–M17.5** — check-templ-sync verified repo-wide (website included,
+~~- **M17.3–M17.5** — check-templ-sync verified repo-wide (website included,~~ done — README golden-count drift guard (CHANGELOG v1.18.1)
   pre-shipped); golden count single-sourced to the filesystem walk + new
   README `.golden` assert — immediately caught a stale 251 in README.
 - **M18 (partial)** — DOMAIN_LANGUAGE gained the Correlation Trace term;
   the enum-table guard named the new enums in FEATURES.
-- **M19** — QF1003 tagged switches (collapsible_section, animated_icon ×2,
+~~- **M19** — QF1003 tagged switches (collapsible_section, animated_icon ×2,~~ done — errValidateBlank rename; tagged switches shipped
   website docs.templ; render-identical, zero golden churn); retired the
   `errBlankNonRejection` alias indirection; new errorpage tests linted to
   **0 issues** (noctx/nolintlint/unconvert/errname/dupword/gocognit fixed,
   `ErrorHandler` complexity fixed via `writeHTMLShell`/`applyRetrySuggestion`
   extraction).
-- **M21** — All three items verified in-tree (parallel session did them):
+~~- **M21** — All three items verified in-tree (parallel session did them):~~ done — TestSidebarNavClassicDarkOptOut + forms.ValidationError recipe
   SidebarNav light/dark goldens + opt-out test, zero stale
   `formsValidationError` refs, recipe uses `forms.ValidationError`.
-- **M22** — Fix card now `aria-describedby`-links the context table
+~~- **M22** — Fix card now `aria-describedby`-links the context table~~ done — TestFixCardDescribesContext exists
   (grouped for AT; no dangling ref when context is absent) +
   `TestFixCardDescribesContext`; footer semantics audited: meta footer is
   in-card, not a page landmark — correct as-is.
-- **M23** — Retry suggestion shipped: `ErrorHandler` auto-fills an empty
+~~- **M23** — Retry suggestion shipped: `ErrorHandler` auto-fills an empty~~ done — applyRetrySuggestion in errorpage/handler.go
   way out with a same-path `Retry` link when `IsRetryable()` (JSON +
   Override suppress; 3 test cases). Validate soft-warning and oops.Time()
   documented as deliberate non-changes (permissive Validate is by-design;
   timestamp adaptation belongs bridge-side).
-- **M24** — Lean `/errors/playground`: stateless GET form (family, status,
+~~- **M24** — Lean `/errors/playground`: stateless GET form (family, status,~~ done — /errors/playground live (examples/demo/main.go:911)
   title, message) → real ErrorPage at the real status code; sanitized +
   clamped server-side; demo section + form + content components; axe
   audited it in the full visual pass.
-- **M25** — Harvest: TODO_LIST #246/#267 consumed (removed), #264 narrowed
+~~- **M25** — Harvest: TODO_LIST #246/#267 consumed (removed), #264 narrowed~~ done — plan §6 execution record; ROADMAP remainder block
   to rate-limit posture, #269 (gef PR ⫱) + #270 (release cut ⫱) added;
   plan annotated with a full execution record + deliberate deviations;
   ROADMAP gained the errorpage-remainder block.
 
 ## b) Partially done
 
-- **M14 coverage target**: errorpage settled at 72.4% — the remaining gap
+~~- **M14 coverage target**: errorpage settled at 72.4% — the remaining gap~~ NOT-DO — superseded: gap is generated _templ.go code; FEATURES honest
   is generated `_templ.go` wrapper statements, not hand-written code
   (ErrorHandler 91.2%, WriteErrorPage 70%, writeJSONError 90.9%). The 75%
   plan figure assumed render-only gaps; further gains need generator
@@ -93,7 +93,7 @@ waves: M07–M17 (partial), M18 (partial), M19–M25.
 
 ## c) Not started
 
-- **M20 execution**: readiness fully verified (guards green, `[Unreleased]`
+~~- **M20 execution**: readiness fully verified (guards green, `[Unreleased]`~~ done — v1.19.0 cut 2026-09-21 (CHANGELOG)
   warm, tags for 1.18.0 present) but the CUT itself is ⫱ owner (TODO #270).
 - Nothing else — every plan item is done, verified-done by the parallel
   session, gated, or explicitly carried in TODO_LIST/ROADMAP.
@@ -126,7 +126,7 @@ waves: M07–M17 (partial), M18 (partial), M19–M25.
 ## f) Next things (prioritized)
 
 1. ⫱ Push `feat/bridge-classified-error-message` + file the gef PR (TODO #269).
-2. ⫱ Go/no-go on cutting v1.19.0 (TODO #270) — readiness verified.
+~~2. ⫱ Go/no-go on cutting v1.19.0 (TODO #270) — readiness verified.~~ done — CHANGELOG v1.19.0 released
 3. Re-check CI (lint lane) after the daemon lands this session's commits.
 4. Vision-model pass over the new errorpage goldens (`scripts/vision-review-goldens.sh`)
    to eyeball-verify detail/alert/secondary/neutral captures.
@@ -153,12 +153,12 @@ waves: M07–M17 (partial), M18 (partial), M19–M25.
 20. Docs: mention `MaxWidth` in the website error-pages guide.
 21. Sweep the remaining `//nolint:exhaustruct_v5` in errorpage for
     validity (lint config may have moved).
-22. `TestErrorPageBranchCombos`: add `CopyCode` × `MaxWidth` interaction.
+~~22. `TestErrorPageBranchCombos`: add `CopyCode` × `MaxWidth` interaction.~~ done — TestErrorPageBranchCombos covers CopyCode+MaxWidth
 23. Extract `errorPlaygroundForm` Tailwind classes into shared demo consts
     if a second form appears.
 24. Consider promoting the copy listener to `utils/` if a third package
     needs it (goBackScript precedent documented in shared.templ).
-25. Annotate AGENTS.md with the " promoted-field-in-literal" recurrence
+~~25. Annotate AGENTS.md with the " promoted-field-in-literal" recurrence~~ done — trap documented (AGENTS + docs/tailwind-v4-adoption-guide.md)
     (hit twice this session) if it keeps biting.
 26. Snapshot the gef bridge probe results into the gef PR body when filed.
 27. Check whether `check-html-valid.sh` ignore list can shrink after the
@@ -180,7 +180,7 @@ waves: M07–M17 (partial), M18 (partial), M19–M25.
 
 ## g) Unanswerable questions (need owner)
 
-1. **Release timing** — cut v1.19.0 now (all gates green) or batch with
+~~1. **Release timing** — cut v1.19.0 now (all gates green) or batch with~~ NOT-DO — superseded: v1.19.0 released 2026-09-21
    the gef bridge PR merge so the CHANGELOG can reference the upstream fix?
 2. **gef PR authorship** — file from `larsartmann` directly, or via a
    feature fork with the jj-fork-pr-workflow flow?
