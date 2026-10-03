@@ -104,14 +104,19 @@ demo runtime-loading + unsafe-eval lessons; wire bullet extended).
 
 - `nix run .#verify` — **exit 0, "All checks passed"** (generate + build +
   workspace tests + lint).
-- `nix run .#visual -- -parallel 4` — full pass re-run in progress at report
-  time; route goldens + swap/busy e2e + a11y/viewport sweeps witnessed GREEN
-  in the preceding run (only the intended index-hero golden delta failed and
-  was re-captured).
+- `nix run .#visual -- -parallel 4` — **exit 0, full pass** (the only delta
+  was the intended index-hero golden: "121" → "123"; re-captured, then the
+  complete suite re-ran green).
 - Per-module test suites (utils, htmx, navigation, display, forms,
-  examples/demo, cmd/tc, internal/contract, datastar): GREEN.
-- `scripts/ci-repro.sh --lint --website`: queued after the visual pass
-  (machine-load discipline — Chromium and the CI matrix fight for cores).
+  examples/demo, cmd/tc, internal/contract, datastar, website): GREEN.
+- `scripts/ci-repro.sh --lint --website` — **VERDICT: PASS (exit 0)** at the
+  current tip (03:38 CEST). First attempt failed on nix eval-cache
+  contention (a concurrent visual run held the SQLite cache — sqlite-busy
+  errors corrupted the govulncheck/golangci-lint lanes) plus the visualtest
+  go.sum tidy drift and the stale website sales-page golden; all three
+  remediated and the clean re-run passed. The lesson (never run ci-repro
+  concurrently with `nix run .#visual` — they fight over the nix eval-cache)
+  is queued for AGENTS.md.
 
 ## d) Owner questions (carried + one new)
 
