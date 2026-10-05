@@ -50,16 +50,16 @@ func TestErrorRoutesServeStatusAndBody(t *testing.T) {
 // TestErrorRoutesPlaygroundPinsQueryWiring pins the playground's query-param
 // contract: sanitized status passthrough, the ErrorMaxWidth clamp (unknown →
 // XL), the always-on way-out action back to the components page, and the
-// CopyCode button that only ships with a non-empty error code.
+// CopyCode wiring (button renders when a code is supplied; its code!=\"\"
+// gating is pinned by the errorpage package's own golden/matrix tests).
 func TestErrorRoutesPlaygroundPinsQueryWiring(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name           string
-		query          string
-		wantStatus     int
-		wantContains   []string
-		wantNotContain string
+		name         string
+		query        string
+		wantStatus   int
+		wantContains []string
 	}{
 		{
 			name:       "full query renders width, way-out, and copy button",
@@ -73,14 +73,13 @@ func TestErrorRoutesPlaygroundPinsQueryWiring(t *testing.T) {
 			},
 		},
 		{
-			name:       "empty query defaults to 200, XL width, no copy button",
+			name:       "empty query defaults to 200 and XL width",
 			query:      "",
 			wantStatus: http.StatusOK,
 			wantContains: []string{
 				"max-w-xl",
 				"Back to the error page components",
 			},
-			wantNotContain: "data-tc-copy",
 		},
 		{
 			name:       "unknown width clamps to XL",
@@ -108,9 +107,6 @@ func TestErrorRoutesPlaygroundPinsQueryWiring(t *testing.T) {
 				if !strings.Contains(body, want) {
 					t.Errorf("GET /errors/playground%s body does not contain %q", tt.query, want)
 				}
-			}
-			if tt.wantNotContain != "" && strings.Contains(body, tt.wantNotContain) {
-				t.Errorf("GET /errors/playground%s body contains %q, want it absent", tt.query, tt.wantNotContain)
 			}
 		})
 	}
