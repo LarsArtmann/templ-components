@@ -34,10 +34,10 @@ func TestInputRender(t *testing.T) {
 	t.Run("input with error", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			BaseProps: utils.BaseProps{ID: snapshotInputNameEmail},
-			Name:      snapshotInputNameEmail,
-			Label:     "Email address",
-			Error:     "Invalid email",
+			ID:    snapshotInputNameEmail,
+			Name:  snapshotInputNameEmail,
+			Label: "Email address",
+			Error: "Invalid email",
 		}))
 		utils.AssertContains(t, output, `aria-invalid="true"`)
 		utils.AssertContains(t, output, `aria-describedby="email-error"`)
@@ -57,9 +57,9 @@ func TestInputRender(t *testing.T) {
 func TestCheckboxRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Checkbox(CheckboxProps{
-		BaseProps: utils.BaseProps{ID: snapshotCheckboxFieldTerms},
-		Name:      snapshotCheckboxFieldTerms,
-		Label:     "I agree",
+		ID:    snapshotCheckboxFieldTerms,
+		Name:  snapshotCheckboxFieldTerms,
+		Label: "I agree",
 	}))
 	utils.AssertContains(t, output, `name="terms"`)
 	utils.AssertContains(t, output, `id="terms"`)
@@ -126,10 +126,10 @@ func TestFieldErrorWithoutID(t *testing.T) {
 func TestRadioRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Radio(RadioProps{
-		BaseProps: utils.BaseProps{ID: "plan-pro"},
-		Name:      "plan",
-		Value:     "pro",
-		Label:     "Pro Plan",
+		ID:    "plan-pro",
+		Name:  "plan",
+		Value: "pro",
+		Label: "Pro Plan",
 	}))
 	utils.AssertContains(t, output, `type="radio"`)
 	utils.AssertContains(t, output, `name="plan"`)
@@ -141,9 +141,9 @@ func TestRadioRender(t *testing.T) {
 func TestRadioGroupRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, RadioGroup(RadioGroupProps{
-		BaseProps: utils.BaseProps{ID: "plan"},
-		Name:      "plan",
-		Label:     "Select a plan",
+		ID:    "plan",
+		Name:  "plan",
+		Label: "Select a plan",
 		Options: []RadioOption{
 			{Value: "free", Label: "Free"},
 			{Value: "pro", Label: "Pro"},
@@ -160,10 +160,10 @@ func TestRadioGroupRender(t *testing.T) {
 func TestRadioGroupInlineRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, RadioGroup(RadioGroupProps{
-		BaseProps: utils.BaseProps{ID: "plan"},
-		Name:      "plan",
-		Label:     "Select a plan",
-		Inline:    true,
+		ID:     "plan",
+		Name:   "plan",
+		Label:  "Select a plan",
+		Inline: true,
 		Options: []RadioOption{
 			{Value: "free", Label: "Free"},
 		},
@@ -174,10 +174,10 @@ func TestRadioGroupInlineRender(t *testing.T) {
 func TestRadioGroupWithErrorRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, RadioGroup(RadioGroupProps{
-		BaseProps: utils.BaseProps{ID: "plan"},
-		Name:      "plan",
-		Label:     "Select a plan",
-		Error:     "Please select a plan",
+		ID:    "plan",
+		Name:  "plan",
+		Label: "Select a plan",
+		Error: "Please select a plan",
 		Options: []RadioOption{
 			{Value: "free", Label: "Free"},
 		},
@@ -189,10 +189,10 @@ func TestRadioGroupWithErrorRender(t *testing.T) {
 func TestToggleRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Toggle(ToggleProps{
-		BaseProps: utils.BaseProps{ID: "notifications"},
-		Name:      "notifications",
-		Label:     "Enable notifications",
-		Checked:   true,
+		ID:      "notifications",
+		Name:    "notifications",
+		Label:   "Enable notifications",
+		Checked: true,
 	}))
 	utils.AssertContains(t, output, `type="checkbox"`)
 	utils.AssertContains(t, output, `name="notifications"`)
@@ -233,10 +233,10 @@ func TestToggleSizesRender(t *testing.T) {
 func TestFileInputRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, FileInput(FileInputProps{
-		BaseProps: utils.BaseProps{ID: "avatar"},
-		Name:      "avatar",
-		Label:     "Upload avatar",
-		Accept:    "image/*",
+		ID:     "avatar",
+		Name:   "avatar",
+		Label:  "Upload avatar",
+		Accept: "image/*",
 	}))
 	utils.AssertContains(t, output, `type="file"`)
 	utils.AssertContains(t, output, `name="avatar"`)
@@ -259,8 +259,8 @@ func TestFileInputMultipleRender(t *testing.T) {
 func TestInputGroupRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, InputGroup(InputGroupProps{
-		BaseProps: utils.BaseProps{ID: "search-group"},
-		LeftAddon: Input(InputProps{BaseProps: utils.BaseProps{Class: "ps-10"}}),
+		ID:        "search-group",
+		LeftAddon: Input(InputProps{Class: "ps-10"}),
 	}))
 	utils.AssertContains(t, output, `id="search-group"`)
 	utils.AssertContains(t, output, `pointer-events-none`)

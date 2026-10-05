@@ -109,12 +109,10 @@ func TestSidebarNavRender(t *testing.T) {
 	t.Run("propagates BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SidebarNav(SidebarNavProps{
-			Items: []SidebarNavItem{{Label: "Home", Href: "/"}},
-			BaseProps: utils.BaseProps{
-				ID:        "sidebar",
-				Class:     "w-72",
-				AriaLabel: "Main navigation",
-			},
+			Items:     []SidebarNavItem{{Label: "Home", Href: "/"}},
+			ID:        "sidebar",
+			Class:     "w-72",
+			AriaLabel: "Main navigation",
 		}))
 		utils.AssertContains(t, output, `id="sidebar"`)
 		utils.AssertContains(t, output, "w-72")

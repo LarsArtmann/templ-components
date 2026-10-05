@@ -66,7 +66,7 @@ func TestPaginationEllipsis(t *testing.T) {
 			CurrentPage: 2,
 			TotalPages:  5,
 			BaseURL:     "/items",
-			BaseProps:   utils.BaseProps{AriaLabel: "Results navigation"},
+			AriaLabel:   "Results navigation",
 		}))
 		utils.AssertContains(t, output, `aria-label="Results navigation"`)
 	})
@@ -77,7 +77,7 @@ func TestPaginationEllipsis(t *testing.T) {
 			CurrentPage: 2,
 			TotalPages:  5,
 			BaseURL:     "/items",
-			BaseProps:   utils.BaseProps{Class: "my-pager"},
+			Class:       "my-pager",
 		}))
 		utils.AssertContains(t, output, "my-pager")
 	})
@@ -88,7 +88,7 @@ func TestPaginationEllipsis(t *testing.T) {
 			CurrentPage: 2,
 			TotalPages:  5,
 			BaseURL:     "/items",
-			BaseProps:   utils.BaseProps{Attrs: templ.Attributes{"data-testid": "pager"}},
+			Attrs:       templ.Attributes{"data-testid": "pager"},
 		}))
 		utils.AssertContains(t, output, `data-testid="pager"`)
 	})
@@ -136,7 +136,7 @@ func TestNavLinkWithAriaLabel(t *testing.T) {
 	output := utils.Render(t, NavLink(NavLinkProps{
 		Href:      "/about",
 		Text:      "About",
-		BaseProps: utils.BaseProps{AriaLabel: "About us"},
+		AriaLabel: "About us",
 	}, "/home"))
 	utils.AssertContains(t, output, `aria-label="About us"`)
 }
@@ -144,9 +144,9 @@ func TestNavLinkWithAriaLabel(t *testing.T) {
 func TestNavLinkWithClass(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, NavLink(NavLinkProps{
-		Href:      "/about",
-		Text:      "About",
-		BaseProps: utils.BaseProps{Class: "custom-link"},
+		Href:  "/about",
+		Text:  "About",
+		Class: "custom-link",
 	}, "/home"))
 	utils.AssertContains(t, output, "custom-link")
 }
@@ -182,9 +182,9 @@ func TestMobileNavLinkInactive(t *testing.T) {
 func TestMobileNavLinkWithClass(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, MobileNavLink(NavLinkProps{
-		Href:      "/settings",
-		Text:      "Settings",
-		BaseProps: utils.BaseProps{Class: "my-mobile-link"},
+		Href:  "/settings",
+		Text:  "Settings",
+		Class: "my-mobile-link",
 	}, "/home"))
 	utils.AssertContains(t, output, "my-mobile-link")
 }
@@ -194,7 +194,7 @@ func TestMobileNavLinkWithAriaLabel(t *testing.T) {
 	output := utils.Render(t, MobileNavLink(NavLinkProps{
 		Href:      "/settings",
 		Text:      "Settings",
-		BaseProps: utils.BaseProps{AriaLabel: "Settings page"},
+		AriaLabel: "Settings page",
 	}, "/home"))
 	utils.AssertContains(t, output, `aria-label="Settings page"`)
 }

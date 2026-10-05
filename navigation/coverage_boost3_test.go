@@ -42,7 +42,7 @@ func TestEndOfListCoverageGaps(t *testing.T) {
 	t.Run("aria-label propagation", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, EndOfList(EndOfListProps{
-			BaseProps: utils.BaseProps{AriaLabel: "End of results"},
+			AriaLabel: "End of results",
 		}))
 		utils.AssertContains(t, output, `aria-label="End of results"`)
 	})
@@ -50,7 +50,7 @@ func TestEndOfListCoverageGaps(t *testing.T) {
 	t.Run("attrs propagation", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, EndOfList(EndOfListProps{
-			BaseProps: utils.BaseProps{Attrs: templ.Attributes{"data-testid": "eol"}},
+			Attrs: templ.Attributes{"data-testid": "eol"},
 		}))
 		utils.AssertContains(t, output, `data-testid="eol"`)
 	})
@@ -75,7 +75,7 @@ func TestFooterCoverageGaps(t *testing.T) {
 	t.Run("propagates class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Footer(FooterProps{
-			BaseProps: utils.BaseProps{Class: "mt-12"},
+			Class: "mt-12",
 		}))
 		utils.AssertContains(t, output, "mt-12")
 	})
@@ -83,7 +83,7 @@ func TestFooterCoverageGaps(t *testing.T) {
 	t.Run("propagates aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Footer(FooterProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Site footer"},
+			AriaLabel: "Site footer",
 		}))
 		utils.AssertContains(t, output, `aria-label="Site footer"`)
 	})

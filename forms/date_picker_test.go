@@ -13,10 +13,10 @@ func TestDatePickerRender(t *testing.T) {
 	t.Run("basic date picker with label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, DatePicker(DatePickerProps{
-			BaseProps: utils.BaseProps{ID: "birthday"},
-			Name:      "birthday",
-			Label:     "Date of Birth",
-			Value:     "1990-01-15",
+			ID:    "birthday",
+			Name:  "birthday",
+			Label: "Date of Birth",
+			Value: "1990-01-15",
 		}))
 		utils.AssertContains(t, output, `type="date"`)
 		utils.AssertContains(t, output, `name="birthday"`)
@@ -27,10 +27,10 @@ func TestDatePickerRender(t *testing.T) {
 	t.Run("with min and max constraints", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, DatePicker(DatePickerProps{
-			BaseProps: utils.BaseProps{ID: "event-date"},
-			Name:      "event_date",
-			Min:       "2024-01-01",
-			Max:       "2024-12-31",
+			ID:   "event-date",
+			Name: "event_date",
+			Min:  "2024-01-01",
+			Max:  "2024-12-31",
 		}))
 		utils.AssertContains(t, output, `min="2024-01-01"`)
 		utils.AssertContains(t, output, `max="2024-12-31"`)
@@ -39,12 +39,12 @@ func TestDatePickerRender(t *testing.T) {
 	t.Run("required with error and help text", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, DatePicker(DatePickerProps{
-			BaseProps: utils.BaseProps{ID: "deadline"},
-			Name:      "deadline",
-			Label:     "Deadline",
-			Required:  true,
-			Error:     "Date is required",
-			HelpText:  "Pick a future date",
+			ID:       "deadline",
+			Name:     "deadline",
+			Label:    "Deadline",
+			Required: true,
+			Error:    "Date is required",
+			HelpText: "Pick a future date",
 		}))
 		utils.AssertContains(t, output, `required`)
 		utils.AssertContains(t, output, `aria-required="true"`)
@@ -56,9 +56,9 @@ func TestDatePickerRender(t *testing.T) {
 	t.Run("disabled", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, DatePicker(DatePickerProps{
-			BaseProps: utils.BaseProps{ID: "locked"},
-			Name:      "locked",
-			Disabled:  true,
+			ID:       "locked",
+			Name:     "locked",
+			Disabled: true,
 		}))
 		utils.AssertContains(t, output, `disabled`)
 	})
@@ -66,14 +66,12 @@ func TestDatePickerRender(t *testing.T) {
 	t.Run("with BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, DatePicker(DatePickerProps{
-			BaseProps: utils.BaseProps{
-				ID:        "dp-1",
-				Class:     "w-full",
-				AriaLabel: "Pick a date",
-				Attrs:     templ.Attributes{"data-test": "date"},
-			},
-			Name:  "date",
-			Label: "Date",
+			ID:        "dp-1",
+			Class:     "w-full",
+			AriaLabel: "Pick a date",
+			Attrs:     templ.Attributes{"data-test": "date"},
+			Name:      "date",
+			Label:     "Date",
 		}))
 		utils.AssertContains(t, output, `id="dp-1"`)
 		utils.AssertContains(t, output, "w-full")

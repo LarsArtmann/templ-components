@@ -61,9 +61,9 @@ func TestGoldenAlertDismissible(t *testing.T) {
 func TestGoldenToast(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Toast(ToastProps{
-		BaseProps: utils.BaseProps{ID: "toast-success"},
-		Message:   "Saved!",
-		Type:      FeedbackSuccess,
+		ID:      "toast-success",
+		Message: "Saved!",
+		Type:    FeedbackSuccess,
 	}))
 	golden.Assert(t, "toast_success", output)
 }

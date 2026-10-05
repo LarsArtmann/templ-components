@@ -65,32 +65,32 @@ func TestFormWithMultipleInputs(t *testing.T) {
 	output := utils.RenderAll(
 		t,
 		forms.Input(forms.InputProps{
-			BaseProps: utils.BaseProps{ID: "name"},
-			Name:      "name",
-			Label:     "Full Name",
-			Required:  true,
+			ID:       "name",
+			Name:     "name",
+			Label:    "Full Name",
+			Required: true,
 		}),
 		forms.Input(forms.InputProps{
-			BaseProps: utils.BaseProps{ID: "email"},
-			Name:      "email",
-			Label:     "Email",
-			Type:      forms.InputEmail,
-			Required:  true,
-			Error:     "Email already taken",
+			ID:       "email",
+			Name:     "email",
+			Label:    "Email",
+			Type:     forms.InputEmail,
+			Required: true,
+			Error:    "Email already taken",
 		}),
 		forms.Select(forms.SelectProps{
-			BaseProps: utils.BaseProps{ID: "role"},
-			Name:      "role",
-			Label:     "Role",
+			ID:    "role",
+			Name:  "role",
+			Label: "Role",
 			Options: []forms.SelectOption{
 				{Value: "admin", Label: "Admin"},
 				{Value: "user", Label: "User", Selected: true},
 			},
 		}),
 		forms.Combobox(forms.ComboboxProps{
-			BaseProps: utils.BaseProps{ID: "country"},
-			Name:      "country",
-			Label:     "Country",
+			ID:    "country",
+			Name:  "country",
+			Label: "Country",
 			Options: []forms.ComboboxOption{
 				{Value: "de", Label: "Germany"},
 				{Value: "at", Label: "Austria"},
@@ -113,9 +113,9 @@ func TestModalWithFormContent(t *testing.T) {
 	output := utils.RenderAll(
 		t,
 		forms.Input(forms.InputProps{
-			BaseProps: utils.BaseProps{ID: "modal-name"},
-			Name:      "name",
-			Label:     "Name",
+			ID:    "modal-name",
+			Name:  "name",
+			Label: "Name",
 		}),
 		display.Button(display.ButtonProps{
 			Text: "Save",
@@ -227,7 +227,7 @@ func TestBasePropsPropagation(t *testing.T) {
 			name: "display.Card",
 			render: func() string {
 				return utils.Render(t, display.Card(display.CardProps{
-					BaseProps: utils.BaseProps{ID: "c1", Class: "shadow-lg", AriaLabel: "card"},
+					ID: "c1", Class: "shadow-lg", AriaLabel: "card",
 				}))
 			},
 			checks: []string{`id="c1"`, "shadow-lg", `aria-label="card"`},
@@ -236,8 +236,8 @@ func TestBasePropsPropagation(t *testing.T) {
 			name: "forms.Input",
 			render: func() string {
 				return utils.Render(t, forms.Input(forms.InputProps{
-					BaseProps: utils.BaseProps{ID: "i1", AriaLabel: "input"},
-					Name:      "test",
+					ID: "i1", AriaLabel: "input",
+					Name: "test",
 				}))
 			},
 			checks: []string{`id="i1"`, `aria-label="input"`},
@@ -246,8 +246,8 @@ func TestBasePropsPropagation(t *testing.T) {
 			name: "feedback.Alert",
 			render: func() string {
 				return utils.Render(t, feedback.Alert(feedback.AlertProps{
-					BaseProps: utils.BaseProps{ID: "a1", Class: "mt-4", AriaLabel: "alert"},
-					Title:     "Test",
+					ID: "a1", Class: "mt-4", AriaLabel: "alert",
+					Title: "Test",
 				}))
 			},
 			checks: []string{`id="a1"`, "mt-4", `aria-label="alert"`},
@@ -256,7 +256,7 @@ func TestBasePropsPropagation(t *testing.T) {
 			name: "forms.DatePicker",
 			render: func() string {
 				return utils.Render(t, forms.DatePicker(forms.DatePickerProps{
-					BaseProps: utils.BaseProps{ID: "dp1", AriaLabel: "pick date"},
+					ID: "dp1", AriaLabel: "pick date",
 				}))
 			},
 			checks: []string{`id="dp1"`, `type="date"`, `aria-label="pick date"`},
@@ -265,8 +265,8 @@ func TestBasePropsPropagation(t *testing.T) {
 			name: "forms.Combobox",
 			render: func() string {
 				return utils.Render(t, forms.Combobox(forms.ComboboxProps{
-					BaseProps: utils.BaseProps{ID: "cb1", AriaLabel: "search"},
-					Name:      "x",
+					ID: "cb1", AriaLabel: "search",
+					Name: "x",
 				}))
 			},
 			checks: []string{`role="combobox"`, `aria-label="search"`},
@@ -298,15 +298,15 @@ func TestCSPNonceConsistency(t *testing.T) {
 
 	outputs := []string{
 		utils.Render(t, display.Modal(display.ModalProps{
-			BaseProps: utils.BaseProps{ID: "m1", Nonce: nonce},
+			ID: "m1", Nonce: nonce,
 		})),
 		utils.Render(t, display.Dropdown(display.DropdownProps{
-			BaseProps: utils.BaseProps{ID: "d1", Nonce: nonce},
-			Label:     "Actions",
+			ID: "d1", Nonce: nonce,
+			Label: "Actions",
 		})),
 		utils.Render(t, forms.Combobox(forms.ComboboxProps{
-			BaseProps: utils.BaseProps{ID: "cb1", Nonce: nonce},
-			Name:      "x",
+			ID: "cb1", Nonce: nonce,
+			Name: "x",
 		})),
 		utils.Render(t, layout.ThemeScript(nonce)),
 		utils.Render(t, layout.ThemeToggle("", nonce)),

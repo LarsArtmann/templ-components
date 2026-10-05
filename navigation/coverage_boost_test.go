@@ -12,7 +12,7 @@ func TestBreadcrumbsFullCoverage(t *testing.T) {
 	t.Run("with JSONLD and separator", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{
-			BaseProps: utils.BaseProps{ID: "bc-1", Class: "py-2", AriaLabel: "Trail"},
+			ID: "bc-1", Class: "py-2", AriaLabel: "Trail",
 			Items: []BreadcrumbItem{
 				{Text: "Home", Href: "/"},
 				{Text: "Users", Href: "/users"},
@@ -31,7 +31,7 @@ func TestPaginationFullCoverage(t *testing.T) {
 	t.Run("many pages with ellipsis", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Pagination(PaginationProps{
-			BaseProps:   utils.BaseProps{ID: "pager", AriaLabel: "Pagination"},
+			ID: "pager", AriaLabel: "Pagination",
 			CurrentPage: 5,
 			TotalPages:  20,
 			BaseURL:     "/items",
@@ -58,7 +58,7 @@ func TestNavFullCoverage(t *testing.T) {
 
 		brand := templ.Raw(`<span>Brand</span>`)
 		output := utils.Render(t, Nav(NavProps{
-			BaseProps:   utils.BaseProps{ID: "main-nav", Class: "shadow", AriaLabel: "Main"},
+			ID: "main-nav", Class: "shadow", AriaLabel: "Main",
 			Brand:       brand,
 			Links:       []NavLinkProps{{Href: "/", Text: "Home"}, {Href: "/about", Text: "About"}},
 			CurrentPath: "/about",
@@ -74,7 +74,7 @@ func TestSimpleNavFullCoverage(t *testing.T) {
 	t.Run("with BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SimpleNav(SimpleNavProps{
-			BaseProps:   utils.BaseProps{ID: "simple-nav", AriaLabel: "Navigation"},
+			ID: "simple-nav", AriaLabel: "Navigation",
 			BrandText:   "MyApp",
 			BrandHref:   "/home",
 			Links:       []NavLinkProps{{Href: "/dashboard", Text: "Dashboard"}},

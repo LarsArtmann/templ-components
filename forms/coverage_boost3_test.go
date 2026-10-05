@@ -15,10 +15,10 @@ func TestInputCoverageGaps(t *testing.T) {
 	t.Run("input with help text and no error", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			BaseProps: utils.BaseProps{ID: "name"},
-			Name:      "name",
-			Label:     "Name",
-			HelpText:  "Enter your full name",
+			ID:       "name",
+			Name:     "name",
+			Label:    "Name",
+			HelpText: "Enter your full name",
 		}))
 		utils.AssertContains(t, output, "Enter your full name")
 		utils.AssertContains(t, output, `aria-describedby="name-help"`)
@@ -82,10 +82,10 @@ func TestInputCoverageGaps(t *testing.T) {
 	t.Run("input required", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			BaseProps: utils.BaseProps{ID: "req"},
-			Name:      "req",
-			Label:     "Required",
-			Required:  true,
+			ID:       "req",
+			Name:     "req",
+			Label:    "Required",
+			Required: true,
 		}))
 		utils.AssertContains(t, output, "required")
 	})
@@ -93,7 +93,7 @@ func TestInputCoverageGaps(t *testing.T) {
 	t.Run("input with aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Search field"},
+			AriaLabel: "Search field",
 			Name:      "q",
 			Type:      InputSearch,
 		}))
@@ -103,8 +103,8 @@ func TestInputCoverageGaps(t *testing.T) {
 	t.Run("input with custom class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			BaseProps: utils.BaseProps{Class: "my-input"},
-			Name:      "x",
+			Class: "my-input",
+			Name:  "x",
 		}))
 		utils.AssertContains(t, output, "my-input")
 	})
@@ -112,11 +112,11 @@ func TestInputCoverageGaps(t *testing.T) {
 	t.Run("input with both error and help text", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			BaseProps: utils.BaseProps{ID: "dual"},
-			Name:      "dual",
-			Label:     "Dual",
-			Error:     "Wrong",
-			HelpText:  "Try again",
+			ID:       "dual",
+			Name:     "dual",
+			Label:    "Dual",
+			Error:    "Wrong",
+			HelpText: "Try again",
 		}))
 		utils.AssertContains(t, output, "Wrong")
 		utils.AssertContains(t, output, "Try again")
@@ -129,10 +129,10 @@ func TestCheckboxCoverageGaps(t *testing.T) {
 	t.Run("checkbox with help text", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Checkbox(CheckboxProps{
-			BaseProps: utils.BaseProps{ID: "terms"},
-			Name:      "terms",
-			Label:     "I agree",
-			HelpText:  "You must agree to continue",
+			ID:       "terms",
+			Name:     "terms",
+			Label:    "I agree",
+			HelpText: "You must agree to continue",
 		}))
 		utils.AssertContains(t, output, "You must agree to continue")
 	})
@@ -140,10 +140,10 @@ func TestCheckboxCoverageGaps(t *testing.T) {
 	t.Run("checkbox checked", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Checkbox(CheckboxProps{
-			BaseProps: utils.BaseProps{ID: "sub"},
-			Name:      "sub",
-			Label:     "Subscribe",
-			Checked:   true,
+			ID:      "sub",
+			Name:    "sub",
+			Label:   "Subscribe",
+			Checked: true,
 		}))
 		utils.AssertContains(t, output, "checked")
 	})
@@ -151,10 +151,10 @@ func TestCheckboxCoverageGaps(t *testing.T) {
 	t.Run("checkbox disabled", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Checkbox(CheckboxProps{
-			BaseProps: utils.BaseProps{ID: "locked"},
-			Name:      "locked",
-			Label:     "Locked",
-			Disabled:  true,
+			ID:       "locked",
+			Name:     "locked",
+			Label:    "Locked",
+			Disabled: true,
 		}))
 		utils.AssertContains(t, output, "disabled")
 	})
@@ -182,7 +182,7 @@ func TestComboboxCoverageGaps(t *testing.T) {
 	t.Run("combobox with placeholder", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Combobox(ComboboxProps{
-			BaseProps:   utils.BaseProps{ID: "cb", Nonce: "test-nonce"},
+			ID: "cb", Nonce: "test-nonce",
 			Name:        "country",
 			Label:       "Country",
 			Placeholder: "Select a country...",
@@ -197,10 +197,10 @@ func TestComboboxCoverageGaps(t *testing.T) {
 	t.Run("combobox disabled", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Combobox(ComboboxProps{
-			BaseProps: utils.BaseProps{ID: "cb-disabled", Nonce: "n"},
-			Name:      "locked",
-			Label:     "Locked",
-			Disabled:  true,
+			ID: "cb-disabled", Nonce: "n",
+			Name:     "locked",
+			Label:    "Locked",
+			Disabled: true,
 			Options: []ComboboxOption{
 				{Value: "x", Label: "X"},
 			},
@@ -211,9 +211,9 @@ func TestComboboxCoverageGaps(t *testing.T) {
 	t.Run("combobox with selected value", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Combobox(ComboboxProps{
-			BaseProps: utils.BaseProps{ID: "cb-selected", Nonce: "n"},
-			Name:      "color",
-			Value:     "blue",
+			ID: "cb-selected", Nonce: "n",
+			Name:  "color",
+			Value: "blue",
 			Options: []ComboboxOption{
 				{Value: "red", Label: "Red"},
 				{Value: "blue", Label: "Blue"},
@@ -225,10 +225,10 @@ func TestComboboxCoverageGaps(t *testing.T) {
 	t.Run("combobox with help text", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Combobox(ComboboxProps{
-			BaseProps: utils.BaseProps{ID: "cb-help", Nonce: "n"},
-			Name:      "city",
-			Label:     "City",
-			HelpText:  "Start typing to search",
+			ID: "cb-help", Nonce: "n",
+			Name:     "city",
+			Label:    "City",
+			HelpText: "Start typing to search",
 			Options: []ComboboxOption{
 				{Value: "nyc", Label: "New York"},
 			},

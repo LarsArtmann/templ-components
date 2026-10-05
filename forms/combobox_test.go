@@ -13,7 +13,7 @@ func TestComboboxRender(t *testing.T) {
 	t.Run("basic combobox with options", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Combobox(ComboboxProps{
-			BaseProps:   utils.BaseProps{ID: "country"},
+			ID:          "country",
 			Name:        "country",
 			Label:       "Country",
 			Placeholder: "Search...",
@@ -38,9 +38,9 @@ func TestComboboxRender(t *testing.T) {
 	t.Run("with preselected value", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Combobox(ComboboxProps{
-			BaseProps: utils.BaseProps{ID: "city"},
-			Name:      "city",
-			Value:     "Berlin",
+			ID:    "city",
+			Name:  "city",
+			Value: "Berlin",
 			Options: []ComboboxOption{
 				{Value: "berlin", Label: "Berlin"},
 				{Value: "munich", Label: "Munich"},
@@ -52,13 +52,13 @@ func TestComboboxRender(t *testing.T) {
 	t.Run("with error and help text", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Combobox(ComboboxProps{
-			BaseProps: utils.BaseProps{ID: "tag"},
-			Name:      "tag",
-			Label:     "Tag",
-			Required:  true,
-			Error:     "Please select a tag",
-			HelpText:  "Choose from the list",
-			Options:   []ComboboxOption{{Value: "go", Label: "Go"}},
+			ID:       "tag",
+			Name:     "tag",
+			Label:    "Tag",
+			Required: true,
+			Error:    "Please select a tag",
+			HelpText: "Choose from the list",
+			Options:  []ComboboxOption{{Value: "go", Label: "Go"}},
 		}))
 		utils.AssertContains(t, output, `required`)
 		utils.AssertContains(t, output, `aria-required="true"`)
@@ -69,9 +69,9 @@ func TestComboboxRender(t *testing.T) {
 	t.Run("with nonce for CSP", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Combobox(ComboboxProps{
-			BaseProps: utils.BaseProps{ID: "cb", Nonce: "nonce-cb"},
-			Name:      "search",
-			Options:   []ComboboxOption{{Value: "a", Label: "A"}},
+			ID: "cb", Nonce: "nonce-cb",
+			Name:    "search",
+			Options: []ComboboxOption{{Value: "a", Label: "A"}},
 		}))
 		utils.AssertContains(t, output, `nonce="nonce-cb"`)
 		utils.AssertContains(t, output, "tcComboboxAttached")
@@ -80,14 +80,12 @@ func TestComboboxRender(t *testing.T) {
 	t.Run("with BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Combobox(ComboboxProps{
-			BaseProps: utils.BaseProps{
-				ID:        "cb-custom",
-				Class:     "w-96",
-				AriaLabel: "Search items",
-				Attrs:     templ.Attributes{"data-test": "cb"},
-			},
-			Name:    "items",
-			Options: []ComboboxOption{{Value: "x", Label: "X"}},
+			ID:        "cb-custom",
+			Class:     "w-96",
+			AriaLabel: "Search items",
+			Attrs:     templ.Attributes{"data-test": "cb"},
+			Name:      "items",
+			Options:   []ComboboxOption{{Value: "x", Label: "X"}},
 		}))
 		utils.AssertContains(t, output, `w-96`)
 		utils.AssertContains(t, output, `aria-label="Search items"`)
@@ -107,10 +105,10 @@ func TestComboboxRender(t *testing.T) {
 	t.Run("disabled", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Combobox(ComboboxProps{
-			BaseProps: utils.BaseProps{ID: "disabled-cb"},
-			Name:      "disabled_cb",
-			Disabled:  true,
-			Options:   []ComboboxOption{{Value: "z", Label: "Z"}},
+			ID:       "disabled-cb",
+			Name:     "disabled_cb",
+			Disabled: true,
+			Options:  []ComboboxOption{{Value: "z", Label: "Z"}},
 		}))
 		utils.AssertContains(t, output, `disabled`)
 		// The hidden submission input must also be disabled so its value is

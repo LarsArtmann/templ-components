@@ -26,7 +26,7 @@ func TestEndOfList(t *testing.T) {
 	t.Run("propagates class and id", func(t *testing.T) {
 		t.Parallel()
 		html := utils.Render(t, EndOfList(EndOfListProps{
-			BaseProps: utils.BaseProps{ID: "eol", Class: "border-t pt-4"},
+			ID: "eol", Class: "border-t pt-4",
 		}))
 		utils.AssertContains(t, html, `id="eol"`)
 		utils.AssertContains(t, html, "border-t")

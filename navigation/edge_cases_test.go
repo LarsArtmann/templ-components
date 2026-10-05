@@ -17,7 +17,7 @@ func TestNavLinkEdgeCases(t *testing.T) {
 	}{
 		{"inactive link", NavLinkProps{Href: "/about", Text: "About"}, "/", []string{"About"}},
 		{"external link", NavLinkProps{Href: "https://example.com", Text: "Ext", External: true}, "", []string{`target="_blank"`, `rel="noopener noreferrer"`}},
-		{"custom id/class", NavLinkProps{BaseProps: utils.BaseProps{ID: "nl", Class: "mt-2"}, Href: "/", Text: "Home"}, "/", []string{`id="nl"`, "mt-2"}},
+		{"custom id/class", NavLinkProps{ID: "nl", Class: "mt-2", Href: "/", Text: "Home"}, "/", []string{`id="nl"`, "mt-2"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -38,7 +38,7 @@ func TestMobileNavLinkEdgeCases(t *testing.T) {
 	}{
 		{"inactive", NavLinkProps{Href: "/about", Text: "About"}, "/", []string{"About"}},
 		{"active", NavLinkProps{Href: "/", Text: "Home"}, "/", []string{"Home", "bg-blue-50"}},
-		{"custom id/class", NavLinkProps{BaseProps: utils.BaseProps{ID: "mnl", Class: "mt-2"}, Href: "/", Text: "Home"}, "/", []string{`id="mnl"`, "mt-2"}},
+		{"custom id/class", NavLinkProps{ID: "mnl", Class: "mt-2", Href: "/", Text: "Home"}, "/", []string{`id="mnl"`, "mt-2"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -74,7 +74,7 @@ func TestPaginationEdgeCases(t *testing.T) {
 		want  []string
 	}{
 		{"two pages", PaginationProps{CurrentPage: 1, TotalPages: 2, BaseURL: "/items"}, []string{"href="}},
-		{"custom id/class", PaginationProps{BaseProps: utils.BaseProps{ID: "pg", Class: "mt-2"}, CurrentPage: 1, TotalPages: 3, BaseURL: "/items"}, []string{`id="pg"`, "mt-2"}},
+		{"custom id/class", PaginationProps{ID: "pg", Class: "mt-2", CurrentPage: 1, TotalPages: 3, BaseURL: "/items"}, []string{`id="pg"`, "mt-2"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -94,7 +94,7 @@ func TestNavEdgeCases(t *testing.T) {
 	}{
 		{"no brand", NavProps{Links: testNavLinks}, []string{navItemHome}},
 		{"sticky", NavProps{Links: testNavLinks, Sticky: true}, []string{"sticky"}},
-		{"custom id/class", NavProps{BaseProps: utils.BaseProps{ID: "nv", Class: "mt-2"}, Links: testNavLinks}, []string{`id="nv"`, "mt-2"}},
+		{"custom id/class", NavProps{ID: "nv", Class: "mt-2", Links: testNavLinks}, []string{`id="nv"`, "mt-2"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()

@@ -4,14 +4,12 @@ import (
 	"bytes"
 	"context"
 	"testing"
-
-	"github.com/larsartmann/templ-components/utils"
 )
 
 func BenchmarkForms(b *testing.B) {
 	b.Run("Input render", func(b *testing.B) {
 		props := InputProps{
-			BaseProps:   utils.BaseProps{ID: "email"},
+			ID:          "email",
 			Name:        "email",
 			Type:        InputEmail,
 			Label:       "Email address",
@@ -29,9 +27,9 @@ func BenchmarkForms(b *testing.B) {
 
 	b.Run("Select render", func(b *testing.B) {
 		props := SelectProps{
-			BaseProps: utils.BaseProps{ID: "country"},
-			Name:      "country",
-			Label:     "Country",
+			ID:    "country",
+			Name:  "country",
+			Label: "Country",
 			Options: []SelectOption{
 				{Value: "de", Label: "Germany"},
 				{Value: "at", Label: "Austria"},
@@ -52,10 +50,10 @@ func BenchmarkForms(b *testing.B) {
 
 	b.Run("Textarea render", func(b *testing.B) {
 		props := TextareaProps{
-			BaseProps: utils.BaseProps{ID: "bio"},
-			Name:      "bio",
-			Label:     "Bio",
-			Rows:      4,
+			ID:    "bio",
+			Name:  "bio",
+			Label: "Bio",
+			Rows:  4,
 		}
 
 		b.ResetTimer()
@@ -74,10 +72,10 @@ func BenchmarkForms(b *testing.B) {
 		}
 
 		props := ComboboxProps{
-			BaseProps: utils.BaseProps{ID: "combo"},
-			Name:      "choice",
-			Label:     "Choose",
-			Options:   opts,
+			ID:      "combo",
+			Name:    "choice",
+			Label:   "Choose",
+			Options: opts,
 		}
 
 		b.ResetTimer()

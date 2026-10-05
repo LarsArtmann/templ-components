@@ -26,7 +26,7 @@ func TestInputEdgeCases(t *testing.T) {
 		{"datetime-local type", InputProps{Name: "dt", Type: InputDatetime, Label: "DT"}, []string{`type="datetime-local"`}},
 		{"time type", InputProps{Name: "t", Type: InputTime, Label: "T"}, []string{`type="time"`}},
 		{"hidden type", InputProps{Name: "h", Type: InputHidden, Label: "H"}, []string{`type="hidden"`}},
-		{"custom id/class", InputProps{BaseProps: utils.BaseProps{ID: "inp", Class: "mt-2"}, Name: "x", Type: InputText, Label: "X"}, []string{`id="inp"`, "mt-2"}},
+		{"custom id/class", InputProps{ID: "inp", Class: "mt-2", Name: "x", Type: InputText, Label: "X"}, []string{`id="inp"`, "mt-2"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -46,7 +46,7 @@ func TestTextareaMoreEdgeCases(t *testing.T) {
 	}{
 		{"zero rows", TextareaProps{Name: "t", Label: "T", Rows: 0}, []string{`<textarea`}},
 		{"max rows", TextareaProps{Name: "t", Label: "T", Rows: 20}, []string{`rows="20"`}},
-		{"custom id/class", TextareaProps{BaseProps: utils.BaseProps{ID: "ta", Class: "mt-2"}, Name: "x", Label: "X"}, []string{`id="ta"`, "mt-2"}},
+		{"custom id/class", TextareaProps{ID: "ta", Class: "mt-2", Name: "x", Label: "X"}, []string{`id="ta"`, "mt-2"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -65,7 +65,7 @@ func TestCheckboxMoreEdgeCases(t *testing.T) {
 		want  []string
 	}{
 		{"unchecked", CheckboxProps{Name: "c", Label: "C"}, []string{`type="checkbox"`}},
-		{"custom id/class", CheckboxProps{BaseProps: utils.BaseProps{ID: "cb", Class: "mt-2"}, Name: "x", Label: "X"}, []string{`id="cb"`, "mt-2"}},
+		{"custom id/class", CheckboxProps{ID: "cb", Class: "mt-2", Name: "x", Label: "X"}, []string{`id="cb"`, "mt-2"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -84,10 +84,10 @@ func TestSelectMoreEdgeCases(t *testing.T) {
 		want  []string
 	}{
 		{"disabled select", SelectProps{Name: "s", Label: "S", Disabled: true}, []string{`disabled`}},
-		{"select with id", SelectProps{BaseProps: utils.BaseProps{ID: "sel"}, Name: "s"}, []string{`id="sel"`}},
-		{"select with aria-label", SelectProps{BaseProps: utils.BaseProps{AriaLabel: "Choose"}, Name: "s"}, []string{`aria-label="Choose"`}},
-		{"select with custom class", SelectProps{BaseProps: utils.BaseProps{Class: "custom"}, Name: "s"}, []string{"custom"}},
-		{"select with attrs", SelectProps{BaseProps: utils.BaseProps{Attrs: templ.Attributes{"data-test": "yes"}}, Name: "s"}, []string{`data-test="yes"`}},
+		{"select with id", SelectProps{ID: "sel", Name: "s"}, []string{`id="sel"`}},
+		{"select with aria-label", SelectProps{AriaLabel: "Choose", Name: "s"}, []string{`aria-label="Choose"`}},
+		{"select with custom class", SelectProps{Class: "custom", Name: "s"}, []string{"custom"}},
+		{"select with attrs", SelectProps{Attrs: templ.Attributes{"data-test": "yes"}, Name: "s"}, []string{`data-test="yes"`}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -189,10 +189,8 @@ func TestTextareaFullCoverage(t *testing.T) {
 	t.Run("textarea with aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Textarea(TextareaProps{
-			Name: "t",
-			BaseProps: utils.BaseProps{
-				AriaLabel: "Description",
-			},
+			Name:      "t",
+			AriaLabel: "Description",
 		}))
 		utils.AssertContains(t, output, `aria-label="Description"`)
 	})
@@ -200,10 +198,8 @@ func TestTextareaFullCoverage(t *testing.T) {
 	t.Run("textarea with attrs", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Textarea(TextareaProps{
-			Name: "t",
-			BaseProps: utils.BaseProps{
-				Attrs: templ.Attributes{"data-test": "yes"},
-			},
+			Name:  "t",
+			Attrs: templ.Attributes{"data-test": "yes"},
 		}))
 		utils.AssertContains(t, output, `data-test="yes"`)
 	})
@@ -252,7 +248,7 @@ func TestFormRender(t *testing.T) {
 	t.Run("form with custom ID and class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Form(FormProps{
-			BaseProps: utils.BaseProps{ID: "my-form", Class: "max-w-md"},
+			ID: "my-form", Class: "max-w-md",
 		}))
 		utils.AssertContains(t, output, `id="my-form"`)
 		utils.AssertContains(t, output, "max-w-md")

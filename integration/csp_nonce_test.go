@@ -30,63 +30,63 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 		html string
 	}{
 		{"DatastarSDKScript", utils.Render(t, datastar.SDKScript(datastar.SDKScriptProps{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
+			Nonce: testNonce,
 		}))},
 		{"Accordion", utils.Render(t, display.Accordion(display.AccordionProps{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
-			Items:     []display.AccordionItem{{ID: "a1", Title: "A"}},
+			Nonce: testNonce,
+			Items: []display.AccordionItem{{ID: "a1", Title: "A"}},
 		}))},
 		{"Modal", utils.Render(t, display.Modal(display.ModalProps{
-			BaseProps: utils.BaseProps{ID: "m1", Nonce: testNonce},
-			Title:     "Test",
+			ID: "m1", Nonce: testNonce,
+			Title: "Test",
 		}))},
 		{"Drawer", utils.Render(t, display.Drawer(display.DrawerProps{
-			BaseProps: utils.BaseProps{ID: "dr1", Nonce: testNonce},
-			Title:     "Test",
+			ID: "dr1", Nonce: testNonce,
+			Title: "Test",
 		}))},
 		{"Dropdown", utils.Render(t, display.Dropdown(display.DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd", Nonce: testNonce},
-			Label:     "Menu",
-			Items:     []display.DropdownItem{{Text: "X", Href: "/x"}},
+			ID: "dd", Nonce: testNonce,
+			Label: "Menu",
+			Items: []display.DropdownItem{{Text: "X", Href: "/x"}},
 		}))},
 		{"ContextMenu", utils.Render(t, display.ContextMenu(display.ContextMenuProps{
-			BaseProps: utils.BaseProps{ID: "cm", Nonce: testNonce},
-			Items:     []display.ContextMenuItem{{Text: "Edit", Href: "/edit"}},
+			ID: "cm", Nonce: testNonce,
+			Items: []display.ContextMenuItem{{Text: "Edit", Href: "/edit"}},
 		}))},
 		{"Tabs", utils.Render(t, display.Tabs(display.TabsProps{
-			BaseProps:  utils.BaseProps{Nonce: testNonce},
+			Nonce:      testNonce,
 			Tabs:       []display.Tab{{ID: "t1", Label: "Tab1"}},
 			ClientSide: true,
 		}))},
 		{"Alert", utils.Render(t, feedback.Alert(feedback.AlertProps{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
-			Type:      feedback.FeedbackInfo,
-			Title:     "Info",
+			Nonce: testNonce,
+			Type:  feedback.FeedbackInfo,
+			Title: "Info",
 		}))},
 		{"Toast", utils.Render(t, feedback.Toast(feedback.ToastProps{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
-			Type:      feedback.FeedbackSuccess,
-			Message:   "OK",
+			Nonce:   testNonce,
+			Type:    feedback.FeedbackSuccess,
+			Message: "OK",
 		}))},
 		{"CopyButton", utils.Render(t, display.CopyButton(display.CopyButtonProps{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
-			Text:      "copy me",
+			Nonce: testNonce,
+			Text:  "copy me",
 		}))},
 		{"GlobalErrorHandling", utils.Render(t, htmx.GlobalErrorHandling(htmx.ErrorHandlingConfig{
 			Nonce: testNonce,
 		}))},
 		{"DirtyGuard", utils.Render(t, forms.DirtyGuard(forms.DirtyGuardProps{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
+			Nonce: testNonce,
 		}))},
 		{"ThemeScript", utils.Render(t, layout.ThemeScript(testNonce))},
 		{"ThemeToggle", utils.Render(t, layout.ThemeToggle("Toggle theme", testNonce))},
 		{"MobileMenu", utils.Render(t, navigation.MobileMenu(nil, "/", testNonce, "mm", false))},
 		{"ErrorPage", utils.Render(t, errorpage.ErrorPage(errorpage.ErrorPageProps{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
-			Title:     "Error",
+			Nonce: testNonce,
+			Title: "Error",
 		}))},
 		{"NotFound404", utils.Render(t, errorpage.NotFound404(errorpage.NotFound404Props{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
+			Nonce: testNonce,
 		}))},
 		{"EChart", utils.Render(t, echarts.EChart(echarts.EChartsProps{
 			BaseProps:      utils.BaseProps{Nonce: testNonce},
@@ -100,17 +100,17 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 			Nonce:     testNonce,
 		}))},
 		{"TableWithRowHref", utils.Render(t, display.Table(display.TableProps{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
-			Headers:   []string{"Name"},
+			Nonce:   testNonce,
+			Headers: []string{"Name"},
 			Rows: []display.TableRow{
 				{Cells: []display.TableCell{{Text: "Alice"}}, Href: "/users/1"},
 			},
 		}))},
 		{"PolledRegionEager", utils.Render(t, htmx.PolledRegion(htmx.PolledRegionProps{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
-			URL:       "/stats",
-			Every:     "10s",
-			Eager:     true,
+			Nonce: testNonce,
+			URL:   "/stats",
+			Every: "10s",
+			Eager: true,
 		}))},
 	}
 

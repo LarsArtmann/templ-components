@@ -80,12 +80,10 @@ func TestContainer(t *testing.T) {
 		t.Parallel()
 
 		props := ContainerProps{
-			BaseProps: utils.BaseProps{
-				ID:        "main-wrap",
-				Class:     "data-tc-test",
-				AriaLabel: "Main content wrapper",
-				Attrs:     templ.Attributes{"data-testid": "container"},
-			},
+			ID:        "main-wrap",
+			Class:     "data-tc-test",
+			AriaLabel: "Main content wrapper",
+			Attrs:     templ.Attributes{"data-testid": "container"},
 		}
 		output := utils.Render(t, Container(props))
 		utils.AssertContainsAll(
@@ -100,7 +98,7 @@ func TestContainer(t *testing.T) {
 	t.Run("consumer Class overrides default (tailwind-merge)", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Container(ContainerProps{
-			BaseProps: utils.BaseProps{Class: "max-w-2xl"},
+			Class: "max-w-2xl",
 		}))
 		utils.AssertContains(t, output, "max-w-2xl")
 

@@ -59,9 +59,9 @@ func BenchmarkNavigationRenders(b *testing.B) {
 
 	b.Run("LoadMore render", func(b *testing.B) {
 		props := LoadMoreProps{
-			BaseProps: utils.BaseProps{ID: "bm-loadmore"},
-			Endpoint:  "/items",
-			Cursor:    "abc",
+			ID:       "bm-loadmore",
+			Endpoint: "/items",
+			Cursor:   "abc",
 		}
 
 		b.ResetTimer()

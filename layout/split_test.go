@@ -104,14 +104,12 @@ func TestSplit(t *testing.T) {
 	t.Run("BaseProps propagate", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Split(SplitProps{
-			BaseProps: utils.BaseProps{
-				ID:        "split-1",
-				Class:     "data-tc-test",
-				AriaLabel: "Article and TOC",
-				Attrs:     templ.Attributes{"data-testid": "split"},
-			},
-			Main:  templ.Raw(`<div>M</div>`),
-			Aside: templ.Raw(`<div>A</div>`),
+			ID:        "split-1",
+			Class:     "data-tc-test",
+			AriaLabel: "Article and TOC",
+			Attrs:     templ.Attributes{"data-testid": "split"},
+			Main:      templ.Raw(`<div>M</div>`),
+			Aside:     templ.Raw(`<div>A</div>`),
 		}))
 		utils.AssertContainsAll(
 			t, output,

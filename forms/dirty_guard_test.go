@@ -12,7 +12,7 @@ func TestDirtyGuardScript(t *testing.T) {
 
 	t.Run("renders a nonce-carrying script with the singleton guard", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, DirtyGuard(DirtyGuardProps{BaseProps: utils.BaseProps{Nonce: "test-nonce"}}))
+		output := utils.Render(t, DirtyGuard(DirtyGuardProps{Nonce: "test-nonce"}))
 		utils.AssertContains(t, output, `nonce="test-nonce"`)
 		utils.AssertContains(t, output, "tcDirtyGuardAttached")
 		utils.AssertContains(t, output, "beforeunload")

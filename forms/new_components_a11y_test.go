@@ -26,7 +26,7 @@ func TestFilterDropdownA11y(t *testing.T) {
 	t.Run("propagates aria-label from BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, FilterDropdown(FilterDropdownProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Filter by status"},
+			AriaLabel: "Filter by status",
 			Name:      "status",
 			Options:   []SelectOption{{Value: "all", Label: "All"}},
 			HxGet:     "/api",
@@ -38,12 +38,12 @@ func TestFilterDropdownA11y(t *testing.T) {
 	t.Run("label is associated with select when ID is set", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, FilterDropdown(FilterDropdownProps{
-			BaseProps: utils.BaseProps{ID: "status-filter"},
-			Name:      "status",
-			Label:     "Status",
-			Options:   []SelectOption{{Value: "all", Label: "All"}},
-			HxGet:     "/api",
-			HxTarget:  "#results",
+			ID:       "status-filter",
+			Name:     "status",
+			Label:    "Status",
+			Options:  []SelectOption{{Value: "all", Label: "All"}},
+			HxGet:    "/api",
+			HxTarget: "#results",
 		}))
 		utils.AssertContains(t, output, `id="status-filter"`)
 	})
@@ -69,10 +69,10 @@ func TestSliderA11y(t *testing.T) {
 	t.Run("range input has correct aria attributes when error", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Slider(SliderProps{
-			BaseProps: utils.BaseProps{ID: "vol"},
-			Name:      "vol",
-			Value:     50,
-			Error:     "Too loud",
+			ID:    "vol",
+			Name:  "vol",
+			Value: 50,
+			Error: "Too loud",
 		}))
 		utils.AssertContains(t, output, `aria-invalid="true"`)
 	})
@@ -80,7 +80,7 @@ func TestSliderA11y(t *testing.T) {
 	t.Run("range input has aria-label when set", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Slider(SliderProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Volume control"},
+			AriaLabel: "Volume control",
 			Name:      "vol",
 			Value:     50,
 		}))
@@ -90,10 +90,10 @@ func TestSliderA11y(t *testing.T) {
 	t.Run("label associated via for when ID set", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Slider(SliderProps{
-			BaseProps: utils.BaseProps{ID: "vol-slider"},
-			Name:      "vol",
-			Label:     "Volume",
-			Value:     50,
+			ID:    "vol-slider",
+			Name:  "vol",
+			Label: "Volume",
+			Value: 50,
 		}))
 		utils.AssertContains(t, output, `for="vol-slider"`)
 	})
@@ -111,11 +111,11 @@ func TestSliderA11y(t *testing.T) {
 	t.Run("required slider shows asterisk", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Slider(SliderProps{
-			BaseProps: utils.BaseProps{ID: "vol"},
-			Name:      "vol",
-			Label:     "Volume",
-			Value:     50,
-			Required:  true,
+			ID:       "vol",
+			Name:     "vol",
+			Label:    "Volume",
+			Value:    50,
+			Required: true,
 		}))
 		utils.AssertContains(t, output, "*")
 		utils.AssertContains(t, output, "required")
@@ -230,7 +230,7 @@ func TestRatingA11y(t *testing.T) {
 	t.Run("aria-label overrides Label when both set", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Rating(RatingProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Custom Rating"},
+			AriaLabel: "Custom Rating",
 			Name:      "quality",
 			Value:     3,
 			Max:       5,
@@ -242,11 +242,11 @@ func TestRatingA11y(t *testing.T) {
 	t.Run("only first radio has required boolean attribute", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Rating(RatingProps{
-			BaseProps: utils.BaseProps{ID: "rate"},
-			Name:      "quality",
-			Value:     3,
-			Max:       5,
-			Required:  true,
+			ID:       "rate",
+			Name:     "quality",
+			Value:    3,
+			Max:      5,
+			Required: true,
 		}))
 		// Count only the boolean required attribute on inputs (not aria-required on div)
 		requiredAttrCount := strings.Count(output, " required>")

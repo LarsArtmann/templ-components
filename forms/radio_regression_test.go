@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 func TestRadioGroupRequiredPropagatesToInputs(t *testing.T) {
@@ -106,9 +105,7 @@ func TestRadioGroupErrorPropagatesAriaToInputs(t *testing.T) {
 	props := RadioGroupProps{
 		Name:  "plan",
 		Label: "Select a plan",
-		BaseProps: utils.BaseProps{
-			ID: "plan-group",
-		},
+		ID:    "plan-group",
 		Error: "Please select a plan",
 		Options: []RadioOption{
 			{Value: "free", Label: "Free"},
@@ -140,11 +137,9 @@ func TestRadioGroupHelpTextPropagatesAriaToInputs(t *testing.T) {
 	t.Parallel()
 
 	props := RadioGroupProps{
-		Name:  "plan",
-		Label: "Select a plan",
-		BaseProps: utils.BaseProps{
-			ID: "plan-group",
-		},
+		Name:     "plan",
+		Label:    "Select a plan",
+		ID:       "plan-group",
 		HelpText: "Choose your subscription level",
 		Options: []RadioOption{
 			{Value: "free", Label: "Free"},
@@ -169,9 +164,7 @@ func TestRadioGroupNoErrorNoAriaOnInputs(t *testing.T) {
 	props := RadioGroupProps{
 		Name:  "plan",
 		Label: "Select a plan",
-		BaseProps: utils.BaseProps{
-			ID: "plan-group",
-		},
+		ID:    "plan-group",
 		Options: []RadioOption{
 			{Value: "free", Label: "Free"},
 		},

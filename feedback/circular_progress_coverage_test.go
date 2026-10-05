@@ -221,8 +221,8 @@ func TestCircularProgress_Coverage(t *testing.T) {
 		t.Parallel()
 
 		html := utils.Render(t, CircularProgress(CircularProgressProps{
-			Value:     50,
-			BaseProps: utils.BaseProps{ID: "my-progress"},
+			Value: 50,
+			ID:    "my-progress",
 		}))
 		if !strings.Contains(html, `id="my-progress"`) {
 			t.Error("should render custom ID")

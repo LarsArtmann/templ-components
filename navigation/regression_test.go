@@ -110,10 +110,8 @@ func TestBreadcrumbRelPrevNext(t *testing.T) {
 func TestFooterAcceptsBaseProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Footer(FooterProps{
-		BaseProps: utils.BaseProps{
-			Class: "custom-footer-class",
-			ID:    "site-footer",
-		},
+		Class:     "custom-footer-class",
+		ID:        "site-footer",
 		BrandText: "Acme",
 	}))
 	utils.AssertContains(t, output, "custom-footer-class")

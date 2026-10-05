@@ -43,10 +43,8 @@ func TestBreadcrumbsWithBaseProps(t *testing.T) {
 		Items: []BreadcrumbItem{
 			{Text: "Home", Href: "/"},
 		},
-		BaseProps: utils.BaseProps{
-			ID:        "bc-1",
-			AriaLabel: "Site breadcrumbs",
-		},
+		ID:        "bc-1",
+		AriaLabel: "Site breadcrumbs",
 	}))
 	utils.AssertContainsAll(t, output, `id="bc-1"`, `aria-label="Site breadcrumbs"`)
 }
@@ -73,10 +71,8 @@ func TestPaginationFullProps(t *testing.T) {
 		BaseURL:     "/items",
 		QueryParam:  "p",
 		MaxVisible:  5,
-		BaseProps: utils.BaseProps{
-			ID:        "pager",
-			AriaLabel: "Item pagination",
-		},
+		ID:          "pager",
+		AriaLabel:   "Item pagination",
 	}))
 	utils.AssertContainsAll(t, output, `id="pager"`, "/items")
 }
@@ -130,12 +126,10 @@ func TestPaginationSinglePage(t *testing.T) {
 func TestNavLinkActiveState(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, NavLink(NavLinkProps{
-		Href: "/dashboard",
-		Text: "Dashboard",
-		BaseProps: utils.BaseProps{
-			ID:        "nl-dashboard",
-			AriaLabel: "Dashboard link",
-		},
+		Href:      "/dashboard",
+		Text:      "Dashboard",
+		ID:        "nl-dashboard",
+		AriaLabel: "Dashboard link",
 	}, "/dashboard"))
 	utils.AssertContainsAll(
 		t, output,
@@ -193,10 +187,8 @@ func TestNavFullProps(t *testing.T) {
 		},
 		CurrentPath: "/about",
 		Sticky:      true,
-		BaseProps: utils.BaseProps{
-			ID:        "main-nav",
-			AriaLabel: "Main navigation",
-		},
+		ID:          "main-nav",
+		AriaLabel:   "Main navigation",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -219,10 +211,8 @@ func TestSimpleNavFullProps(t *testing.T) {
 		CurrentPath: "/docs",
 		Sticky:      false,
 		RightItems:  templ.Raw("<button>Sign in</button>"),
-		BaseProps: utils.BaseProps{
-			ID:        "snav",
-			AriaLabel: "Top nav",
-		},
+		ID:          "snav",
+		AriaLabel:   "Top nav",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -254,10 +244,8 @@ func TestSidebarNavFullProps(t *testing.T) {
 		},
 		Footer:      templ.Raw("<div>v1.0</div>"),
 		CurrentPath: "/dashboard",
-		BaseProps: utils.BaseProps{
-			ID:        "sidebar",
-			AriaLabel: "Main sidebar",
-		},
+		ID:          "sidebar",
+		AriaLabel:   "Main sidebar",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -306,12 +294,10 @@ func TestLoadMoreDefaultLabel(t *testing.T) {
 func TestLoadMoreWithBaseProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, LoadMore(LoadMoreProps{
-		Endpoint: "/more",
-		Cursor:   "c",
-		BaseProps: utils.BaseProps{
-			ID:        "lm-1",
-			AriaLabel: "Load more items",
-		},
+		Endpoint:  "/more",
+		Cursor:    "c",
+		ID:        "lm-1",
+		AriaLabel: "Load more items",
 	}))
 	utils.AssertContainsAll(t, output, `id="lm-1"`, `aria-label="Load more items"`)
 }

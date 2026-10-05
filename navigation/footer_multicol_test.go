@@ -79,12 +79,10 @@ func TestFooterMultiColumn(t *testing.T) {
 	t.Run("BaseProps propagate (ID, Class, AriaLabel, Attrs)", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Footer(FooterProps{
-			BaseProps: utils.BaseProps{
-				ID:        "foot",
-				Class:     "data-tc-test",
-				AriaLabel: "Site footer",
-				Attrs:     templ.Attributes{"data-testid": "footer"},
-			},
+			ID:        "foot",
+			Class:     "data-tc-test",
+			AriaLabel: "Site footer",
+			Attrs:     templ.Attributes{"data-testid": "footer"},
 		}))
 		utils.AssertContainsAll(
 			t, output,

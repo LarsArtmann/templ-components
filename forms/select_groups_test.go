@@ -13,8 +13,8 @@ func TestSelectGroups(t *testing.T) {
 	t.Run("renders optgroups when Groups is set", func(t *testing.T) {
 		t.Parallel()
 		html := utils.Render(t, Select(SelectProps{
-			Name:      "channel",
-			BaseProps: utils.BaseProps{ID: "ch"},
+			Name: "channel",
+			ID:   "ch",
 			Groups: []SelectGroup{
 				{Label: "Text Channels", Options: []SelectOption{
 					{Value: "general", Label: "#general"},
@@ -35,9 +35,9 @@ func TestSelectGroups(t *testing.T) {
 		t.Parallel()
 
 		html := utils.Render(t, Select(SelectProps{
-			Name:      "country",
-			BaseProps: utils.BaseProps{ID: "ctry"},
-			Options:   []SelectOption{{Value: "de", Label: "Germany"}},
+			Name:    "country",
+			ID:      "ctry",
+			Options: []SelectOption{{Value: "de", Label: "Germany"}},
 		}))
 		if strings.Contains(html, "<optgroup") {
 			t.Error("flat options should not render optgroup")
@@ -49,8 +49,8 @@ func TestSelectGroups(t *testing.T) {
 	t.Run("Groups selected option is normalized", func(t *testing.T) {
 		t.Parallel()
 		html := utils.Render(t, Select(SelectProps{
-			Name:      "x",
-			BaseProps: utils.BaseProps{ID: "x"},
+			Name: "x",
+			ID:   "x",
 			Groups: []SelectGroup{
 				{Label: "G1", Options: []SelectOption{
 					{Value: "a", Label: "A", Disabled: true, Selected: true},

@@ -85,9 +85,9 @@ func TestFilterInputA11y(t *testing.T) {
 	t.Run("label is associated via for", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, FilterInput(FilterInputProps{
-			BaseProps: utils.BaseProps{ID: "user-search"},
-			Name:      "q",
-			Label:     "Search users",
+			ID:    "user-search",
+			Name:  "q",
+			Label: "Search users",
 		}))
 		utils.AssertContains(t, output, `for="user-search"`)
 		utils.AssertContains(t, output, `id="user-search"`)
@@ -105,7 +105,7 @@ func TestFilterInputA11y(t *testing.T) {
 	t.Run("aria-label reaches the input when no visible label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, FilterInput(FilterInputProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Search users"},
+			AriaLabel: "Search users",
 			Name:      "q",
 		}))
 		utils.AssertContains(t, output, `aria-label="Search users"`)
@@ -114,9 +114,9 @@ func TestFilterInputA11y(t *testing.T) {
 	t.Run("help text is linked via aria-describedby", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, FilterInput(FilterInputProps{
-			BaseProps: utils.BaseProps{ID: "user-search"},
-			Name:      "q",
-			HelpText:  "Matches name or email",
+			ID:       "user-search",
+			Name:     "q",
+			HelpText: "Matches name or email",
 		}))
 		utils.AssertContains(t, output, `aria-describedby="user-search-help"`)
 		utils.AssertContains(t, output, `id="user-search-help"`)

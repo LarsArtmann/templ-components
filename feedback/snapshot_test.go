@@ -96,8 +96,8 @@ func TestLoadingOverlayCoverage(t *testing.T) {
 	t.Run("custom ID and class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{
-			BaseProps: utils.BaseProps{ID: "overlay", Class: "bg-opacity-75"},
-			Message:   "Wait",
+			ID: "overlay", Class: "bg-opacity-75",
+			Message: "Wait",
 		}))
 		utils.AssertContains(t, output, `id="overlay"`)
 		utils.AssertContains(t, output, "bg-opacity-75")
@@ -286,7 +286,7 @@ func TestAlertDismissScript(t *testing.T) {
 	t.Run("alert has dismiss script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Alert(AlertProps{
-			BaseProps:   utils.BaseProps{Nonce: "test-nonce"},
+			Nonce:       "test-nonce",
 			Title:       "Dismiss me",
 			Type:        FeedbackInfo,
 			Dismissible: true,
@@ -386,13 +386,11 @@ func TestDefaultSpinnerProps(t *testing.T) {
 func TestSpinnerWithBaseProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Spinner(SpinnerProps{
-		Size:  SpinnerSM,
-		Color: "text-green-600",
-		BaseProps: utils.BaseProps{
-			ID:        "spin-1",
-			Class:     "my-class",
-			AriaLabel: "Loading data",
-		},
+		Size:      SpinnerSM,
+		Color:     "text-green-600",
+		ID:        "spin-1",
+		Class:     "my-class",
+		AriaLabel: "Loading data",
 	}))
 	utils.AssertContains(t, output, `id="spin-1"`)
 	utils.AssertContains(t, output, "my-class")

@@ -74,9 +74,9 @@ func TestInputSearchWrapsInSearchElement(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, Input(InputProps{
-		BaseProps: utils.BaseProps{ID: "q"},
-		Type:      InputSearch,
-		Name:      "q",
+		ID:   "q",
+		Type: InputSearch,
+		Name: "q",
 	}))
 	if !strings.Contains(html, "<search") {
 		t.Error("InputSearch should wrap input in <search> element")
@@ -91,9 +91,9 @@ func TestInputTextDoesNotWrapInSearchElement(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, Input(InputProps{
-		BaseProps: utils.BaseProps{ID: "name"},
-		Type:      InputText,
-		Name:      "name",
+		ID:   "name",
+		Type: InputText,
+		Name: "name",
 	}))
 	if strings.Contains(html, "<search") {
 		t.Error("InputText should not wrap in <search> element")
@@ -125,7 +125,7 @@ func TestInputEnterKeyHintExplicitOverridesAuto(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, Input(InputProps{
-		BaseProps:    utils.BaseProps{ID: "msg"},
+		ID:           "msg",
 		Type:         InputText,
 		Name:         "msg",
 		EnterKeyHint: EnterKeyHintSend,
@@ -139,9 +139,9 @@ func TestInputEnterKeyHintAutoDerived(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, Input(InputProps{
-		BaseProps: utils.BaseProps{ID: "email"},
-		Type:      InputEmail,
-		Name:      "email",
+		ID:   "email",
+		Type: InputEmail,
+		Name: "email",
 	}))
 	if !strings.Contains(html, `enterkeyhint="next"`) {
 		t.Error("InputEmail should auto-derive enterkeyhint=\"next\"")
@@ -152,9 +152,9 @@ func TestSelectStylableEmitsSelectedContent(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, Select(SelectProps{
-		BaseProps: utils.BaseProps{ID: "country"},
-		Name:      "country",
-		Stylable:  true,
+		ID:       "country",
+		Name:     "country",
+		Stylable: true,
 		Options: []SelectOption{
 			{Value: "de", Label: "Germany"},
 		},
@@ -176,8 +176,8 @@ func TestSelectNotStylableOmitsSelectedContent(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, Select(SelectProps{
-		BaseProps: utils.BaseProps{ID: "country"},
-		Name:      "country",
+		ID:   "country",
+		Name: "country",
 		Options: []SelectOption{
 			{Value: "de", Label: "Germany"},
 		},

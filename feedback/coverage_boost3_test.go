@@ -38,7 +38,7 @@ func TestStepIndicatorCoverageGaps(t *testing.T) {
 	t.Run("propagates aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, StepIndicator(StepIndicatorProps{
-			BaseProps:   utils.BaseProps{AriaLabel: "Checkout progress"},
+			AriaLabel:   "Checkout progress",
 			Steps:       []string{"Cart"},
 			CurrentStep: 0,
 		}))
@@ -48,7 +48,7 @@ func TestStepIndicatorCoverageGaps(t *testing.T) {
 	t.Run("propagates custom class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, StepIndicator(StepIndicatorProps{
-			BaseProps:   utils.BaseProps{Class: "my-steps"},
+			Class:       "my-steps",
 			Steps:       []string{"X"},
 			CurrentStep: 0,
 		}))
@@ -111,7 +111,7 @@ func TestLoadingOverlayCoverageGaps(t *testing.T) {
 	t.Run("renders overlay with aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Loading page"},
+			AriaLabel: "Loading page",
 		}))
 		utils.AssertContains(t, output, "Loading page")
 	})
@@ -119,7 +119,7 @@ func TestLoadingOverlayCoverageGaps(t *testing.T) {
 	t.Run("propagates class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{
-			BaseProps: utils.BaseProps{Class: "my-overlay"},
+			Class: "my-overlay",
 		}))
 		utils.AssertContains(t, output, "my-overlay")
 	})
@@ -137,7 +137,7 @@ func TestSpinnerCoverageGaps(t *testing.T) {
 	t.Run("propagates aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Spinner(SpinnerProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Loading data"},
+			AriaLabel: "Loading data",
 		}))
 		utils.AssertContains(t, output, `aria-label="Loading data"`)
 	})

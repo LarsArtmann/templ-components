@@ -15,7 +15,7 @@ func TestToastAriaLabelBranch(t *testing.T) {
 	output := utils.Render(t, Toast(ToastProps{
 		Message:   "Saved!",
 		Type:      FeedbackSuccess,
-		BaseProps: utils.BaseProps{AriaLabel: "Success notification"},
+		AriaLabel: "Success notification",
 	}))
 	utils.AssertContains(t, output, `aria-label="Success notification"`)
 }
@@ -59,10 +59,8 @@ func TestProgressBarIndeterminateWithAriaLabel(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, ProgressBar(ProgressBarProps{
 		Indeterminate: true,
-		BaseProps: utils.BaseProps{
-			ID:        "pb-indet",
-			AriaLabel: "Loading data",
-		},
+		ID:            "pb-indet",
+		AriaLabel:     "Loading data",
 	}))
 	utils.AssertContainsAll(t, output, `id="pb-indet"`, `aria-label="Loading data"`)
 }
@@ -229,10 +227,8 @@ func TestStepIndicatorVerticalWithBaseProps(t *testing.T) {
 		Steps:       []string{"Step 1", "Step 2"},
 		CurrentStep: 1,
 		Orientation: StepVertical,
-		BaseProps: utils.BaseProps{
-			ID:        "step-v",
-			AriaLabel: "Onboarding progress",
-		},
+		ID:          "step-v",
+		AriaLabel:   "Onboarding progress",
 	}))
 	utils.AssertContainsAll(t, output, `id="step-v"`, "Step 1", "Step 2")
 }
@@ -268,7 +264,7 @@ func TestAlertDismissibleWithNonce(t *testing.T) {
 		Message:     "Dismiss me",
 		Type:        FeedbackInfo,
 		Dismissible: true,
-		BaseProps:   utils.BaseProps{Nonce: "abc123"},
+		Nonce:       "abc123",
 	}))
 	utils.AssertContainsAll(t, output, "Dismiss me", `nonce="abc123"`)
 }
@@ -296,10 +292,8 @@ func TestToastWithTitleAndDuration(t *testing.T) {
 		Message:  "This is a warning",
 		Type:     FeedbackWarning,
 		Duration: 5000,
-		BaseProps: utils.BaseProps{
-			ID:    "toast-1",
-			Nonce: "nonce-abc",
-		},
+		ID:       "toast-1",
+		Nonce:    "nonce-abc",
 	}))
 	utils.AssertContainsAll(t, output, "Heads up", "This is a warning", `id="toast-1"`)
 }

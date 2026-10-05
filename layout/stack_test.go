@@ -54,10 +54,8 @@ func TestStack(t *testing.T) {
 	t.Run("BaseProps propagate (Class, AriaLabel)", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Stack(StackProps{
-			BaseProps: utils.BaseProps{
-				Class:     "data-tc-test",
-				AriaLabel: "Card stack",
-			},
+			Class:     "data-tc-test",
+			AriaLabel: "Card stack",
 		}))
 		utils.AssertContainsAll(t, output, "data-tc-test", `aria-label="Card stack"`)
 	})

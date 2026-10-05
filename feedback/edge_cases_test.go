@@ -42,9 +42,9 @@ func TestAlertEdgeCases(t *testing.T) {
 	t.Run("alert with ID propagates to root element", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Alert(AlertProps{
-			BaseProps: utils.BaseProps{ID: "my-alert"},
-			Message:   "Test",
-			Type:      FeedbackInfo,
+			ID:      "my-alert",
+			Message: "Test",
+			Type:    FeedbackInfo,
 		}))
 		utils.AssertContains(t, output, `id="my-alert"`)
 	})
@@ -76,9 +76,9 @@ func TestToastEdgeCases(t *testing.T) {
 	t.Run("toast with ID propagates to root element", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Toast(ToastProps{
-			BaseProps: utils.BaseProps{ID: "my-toast"},
-			Message:   "Test",
-			Type:      FeedbackInfo,
+			ID:      "my-toast",
+			Message: "Test",
+			Type:    FeedbackInfo,
 		}))
 		utils.AssertContains(t, output, `id="my-toast"`)
 	})
@@ -95,9 +95,9 @@ func TestToastEdgeCases(t *testing.T) {
 	t.Run("duration zero omits setTimeout", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Toast(ToastProps{
-			BaseProps: utils.BaseProps{ID: "manual-toast"},
-			Message:   "Manual",
-			Type:      FeedbackInfo,
+			ID:      "manual-toast",
+			Message: "Manual",
+			Type:    FeedbackInfo,
 		}))
 		utils.AssertNotContains(t, output, "setTimeout")
 	})
@@ -168,7 +168,7 @@ func TestLoadingOverlayEdgeCases(t *testing.T) {
 		want  []string
 	}{
 		{"no message", LoadingOverlayProps{}, []string{"Please wait..."}},
-		{"custom id/class", LoadingOverlayProps{BaseProps: utils.BaseProps{ID: "lo", Class: "mt-2"}, Message: "Loading"}, []string{`id="lo"`, "mt-2"}},
+		{"custom id/class", LoadingOverlayProps{ID: "lo", Class: "mt-2", Message: "Loading"}, []string{`id="lo"`, "mt-2"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()

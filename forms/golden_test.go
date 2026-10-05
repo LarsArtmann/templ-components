@@ -101,10 +101,10 @@ func TestGoldenRatingReadOnly(t *testing.T) {
 func TestGoldenStylableSelect(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Select(SelectProps{
-		BaseProps: utils.BaseProps{ID: "country"},
-		Name:      "country",
-		Label:     "Country",
-		Stylable:  true,
+		ID:       "country",
+		Name:     "country",
+		Label:    "Country",
+		Stylable: true,
 		Options: []SelectOption{
 			{Value: "de", Label: "Germany"},
 			{Value: "at", Label: "Austria", Selected: true},
@@ -116,10 +116,10 @@ func TestGoldenStylableSelect(t *testing.T) {
 func TestGoldenAutoGrowTextarea(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Textarea(TextareaProps{
-		BaseProps: utils.BaseProps{ID: "bio"},
-		Name:      "bio",
-		Label:     "Bio",
-		AutoGrow:  true,
+		ID:       "bio",
+		Name:     "bio",
+		Label:    "Bio",
+		AutoGrow: true,
 	}))
 	golden.Assert(t, "textarea_autogrow", output)
 }
@@ -127,7 +127,7 @@ func TestGoldenAutoGrowTextarea(t *testing.T) {
 func TestGoldenSearchInput(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Input(InputProps{
-		BaseProps:   utils.BaseProps{ID: "q"},
+		ID:          "q",
 		Type:        InputSearch,
 		Name:        "q",
 		Placeholder: "Search...",
@@ -143,7 +143,7 @@ func TestGoldenSearchInput(t *testing.T) {
 func TestGoldenInputBasic(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Input(InputProps{
-		BaseProps:   utils.BaseProps{ID: "email"},
+		ID:          "email",
 		Name:        "email",
 		Label:       "Email address",
 		Value:       "ada@example.com",
@@ -156,11 +156,11 @@ func TestGoldenInputBasic(t *testing.T) {
 func TestGoldenInputError(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Input(InputProps{
-		BaseProps: utils.BaseProps{ID: "email"},
-		Name:      "email",
-		Label:     "Email address",
-		Value:     "not-an-email",
-		Error:     "Please enter a valid email address.",
+		ID:    "email",
+		Name:  "email",
+		Label: "Email address",
+		Value: "not-an-email",
+		Error: "Please enter a valid email address.",
 	}))
 	golden.Assert(t, "input_error", output)
 }

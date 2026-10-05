@@ -192,13 +192,11 @@ func TestAppShell(t *testing.T) {
 		t.Parallel()
 
 		props := AppShellProps{
-			BaseProps: utils.BaseProps{
-				ID:        "app",
-				Class:     "data-tc-test",
-				AriaLabel: "Application",
-				Attrs:     templ.Attributes{"data-testid": "shell"},
-			},
-			Content: templ.Raw(`<p>x</p>`),
+			ID:        "app",
+			Class:     "data-tc-test",
+			AriaLabel: "Application",
+			Attrs:     templ.Attributes{"data-testid": "shell"},
+			Content:   templ.Raw(`<p>x</p>`),
 		}
 		output := utils.Render(t, AppShell(props))
 		utils.AssertContainsAll(

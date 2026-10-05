@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 // Alert's dismiss script must never emit an EMPTY nonce attribute: under a
@@ -64,7 +63,7 @@ func TestAlertNonceFallback(t *testing.T) {
 			err := Alert(AlertProps{
 				Message:     "nonce probe",
 				Dismissible: true,
-				BaseProps:   utils.BaseProps{Nonce: tt.propNonce},
+				Nonce:       tt.propNonce,
 			}).Render(ctx, &buf)
 			if err != nil {
 				t.Fatalf("render: %v", err)

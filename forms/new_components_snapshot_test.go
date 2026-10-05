@@ -57,7 +57,7 @@ func TestSliderSnapshot(t *testing.T) {
 	t.Run("full-featured slider with all options", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Slider(SliderProps{
-			BaseProps: utils.BaseProps{ID: "price-range", Class: "mb-4"},
+			ID: "price-range", Class: "mb-4",
 			Name:      "max_price",
 			Label:     "Maximum Price",
 			Min:       0,
@@ -91,14 +91,14 @@ func TestRatingSnapshot(t *testing.T) {
 	t.Run("interactive rating with all features", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Rating(RatingProps{
-			BaseProps: utils.BaseProps{ID: "product-rating", Class: "mb-4"},
-			Name:      "product_score",
-			Value:     4,
-			Max:       5,
-			Size:      RatingSizeLG,
-			Label:     "Rate this product",
-			Required:  true,
-			HelpText:  "How would you rate your experience?",
+			ID: "product-rating", Class: "mb-4",
+			Name:     "product_score",
+			Value:    4,
+			Max:      5,
+			Size:     RatingSizeLG,
+			Label:    "Rate this product",
+			Required: true,
+			HelpText: "How would you rate your experience?",
 		}))
 		utils.AssertContainsAll(
 			t, output,
@@ -113,7 +113,7 @@ func TestRatingSnapshot(t *testing.T) {
 	t.Run("readonly rating with custom max", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Rating(RatingProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Average customer rating"},
+			AriaLabel: "Average customer rating",
 			Value:     7,
 			Max:       10,
 			Size:      RatingSizeSM,

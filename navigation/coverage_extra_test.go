@@ -54,7 +54,7 @@ func TestPaginationEllipsisCoverage(t *testing.T) {
 			CurrentPage: 2,
 			TotalPages:  5,
 			BaseURL:     "/p",
-			BaseProps:   utils.BaseProps{ID: "pager", Class: "mt-4"},
+			ID:          "pager", Class: "mt-4",
 		}))
 		utils.AssertContains(t, output, `id="pager"`)
 		utils.AssertContains(t, output, "mt-4")
@@ -94,8 +94,8 @@ func TestBreadcrumbsExtraCoverage(t *testing.T) {
 	t.Run("with ID", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{
-			Items:     []BreadcrumbItem{{Text: "Home", Href: "/"}},
-			BaseProps: utils.BaseProps{ID: "bc"},
+			Items: []BreadcrumbItem{{Text: "Home", Href: "/"}},
+			ID:    "bc",
 		}))
 		utils.AssertContains(t, output, `id="bc"`)
 	})

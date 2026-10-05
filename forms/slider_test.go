@@ -70,9 +70,7 @@ func TestSliderError(t *testing.T) {
 		Name:  "vol",
 		Value: 50,
 		Error: "Volume too high",
-		BaseProps: utils.BaseProps{
-			ID: "vol-slider",
-		},
+		ID:    "vol-slider",
 	}))
 	utils.AssertContains(t, output, "Volume too high")
 	utils.AssertContains(t, output, `aria-invalid="true"`)

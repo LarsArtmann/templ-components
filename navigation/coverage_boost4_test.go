@@ -55,15 +55,13 @@ func TestSidebarNavGroupedCoverage(t *testing.T) {
 	t.Run("brand header footer slots and icons", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SidebarNav(SidebarNavProps{
-			BaseProps: utils.BaseProps{
-				ID:        "sb-1",
-				Class:     "w-72",
-				AriaLabel: "Admin sidebar",
-				Attrs:     templ.Attributes{"data-ctx": "admin"},
-			},
-			Brand:  templ.Raw(`<strong data-testid="brand">Acme</strong>`),
-			Header: templ.Raw(`<input data-testid="filter" />`),
-			Footer: templ.Raw(`<div data-testid="foot">v1</div>`),
+			ID:        "sb-1",
+			Class:     "w-72",
+			AriaLabel: "Admin sidebar",
+			Attrs:     templ.Attributes{"data-ctx": "admin"},
+			Brand:     templ.Raw(`<strong data-testid="brand">Acme</strong>`),
+			Header:    templ.Raw(`<input data-testid="filter" />`),
+			Footer:    templ.Raw(`<div data-testid="foot">v1</div>`),
 			Items: []SidebarNavItem{
 				{Label: "Home", Href: "/", Icon: icons.Home},
 				{Label: "Users", Href: "/users", Icon: icons.Users},

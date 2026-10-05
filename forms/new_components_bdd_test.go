@@ -97,10 +97,10 @@ func TestSliderUserCanAdjustRange(t *testing.T) {
 	t.Run("user sees error message when invalid", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Slider(SliderProps{
-			BaseProps: utils.BaseProps{ID: "vol"},
-			Name:      "vol",
-			Value:     50,
-			Error:     "Value exceeds maximum",
+			ID:    "vol",
+			Name:  "vol",
+			Value: 50,
+			Error: "Value exceeds maximum",
 		}))
 		utils.AssertContains(t, output, "Value exceeds maximum")
 		utils.AssertContains(t, output, `aria-invalid="true"`)
@@ -284,9 +284,9 @@ func TestSliderEdgeCases(t *testing.T) {
 	t.Run("custom class propagated", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Slider(SliderProps{
-			BaseProps: utils.BaseProps{Class: "my-slider"},
-			Name:      "vol",
-			Value:     50,
+			Class: "my-slider",
+			Name:  "vol",
+			Value: 50,
 		}))
 		utils.AssertContains(t, output, "my-slider")
 	})
@@ -361,9 +361,9 @@ func TestRatingEdgeCases(t *testing.T) {
 	t.Run("custom class propagated", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Rating(RatingProps{
-			BaseProps: utils.BaseProps{Class: "my-rating"},
-			Value:     3,
-			Max:       5,
+			Class: "my-rating",
+			Value: 3,
+			Max:   5,
 		}))
 		utils.AssertContains(t, output, "my-rating")
 	})

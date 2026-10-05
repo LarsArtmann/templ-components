@@ -62,12 +62,10 @@ func TestCoverageMatrix(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, Dashboard(DashboardProps{
-			BaseProps: utils.BaseProps{
-				ID:        "dash-id",
-				Class:     "dash-class",
-				AriaLabel: "dash-label",
-				Attrs:     templ.Attributes{"data-test-root": "dashboard"},
-			},
+			ID:            "dash-id",
+			Class:         "dash-class",
+			AriaLabel:     "dash-label",
+			Attrs:         templ.Attributes{"data-test-root": "dashboard"},
 			Title:         "Overview",
 			Subtitle:      "Last 30 days",
 			Breadcrumb:    marker,
@@ -116,11 +114,9 @@ func TestCoverageMatrix(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, AuthLayout(AuthLayoutProps{
-			BaseProps: utils.BaseProps{
-				ID:    "auth-id",
-				Class: "auth-class",
-				Attrs: templ.Attributes{"data-test-root": "auth"},
-			},
+			ID:            "auth-id",
+			Class:         "auth-class",
+			Attrs:         templ.Attributes{"data-test-root": "auth"},
 			Card:          marker,
 			PanelTitle:    "Acme",
 			PanelText:     "Build better products.",

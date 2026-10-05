@@ -127,10 +127,8 @@ func TestNavRender(t *testing.T) {
 	t.Run("nav with custom ID and class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Nav(NavProps{
-			BaseProps: utils.BaseProps{
-				ID:    "main-nav",
-				Class: "shadow-lg",
-			},
+			ID:    "main-nav",
+			Class: "shadow-lg",
 			Links: testNavLinks,
 		}))
 		utils.AssertContains(t, output, `id="main-nav"`)
@@ -142,7 +140,7 @@ func TestNavRender(t *testing.T) {
 		output := utils.Render(t, Nav(NavProps{
 			Links:       testNavLinks,
 			CurrentPath: "/",
-			BaseProps:   utils.BaseProps{Nonce: "test-nonce-123"},
+			Nonce:       "test-nonce-123",
 		}))
 		utils.AssertContains(t, output, `nonce="test-nonce-123"`)
 	})
@@ -186,7 +184,7 @@ func TestAriaLabelOverride(t *testing.T) {
 
 		props := NavProps{
 			Links:     testNavLinks,
-			BaseProps: utils.BaseProps{AriaLabel: customLabel},
+			AriaLabel: customLabel,
 		}
 		output := utils.Render(t, Nav(props))
 		utils.AssertContains(t, output, `aria-label="`+customLabel+`"`)
@@ -198,7 +196,7 @@ func TestAriaLabelOverride(t *testing.T) {
 
 		props := BreadcrumbsProps{
 			Items:     breadcrumbHomeOnly(),
-			BaseProps: utils.BaseProps{AriaLabel: customLabel},
+			AriaLabel: customLabel,
 		}
 		output := utils.Render(t, Breadcrumbs(props))
 		utils.AssertContains(t, output, `aria-label="`+customLabel+`"`)
@@ -212,7 +210,7 @@ func TestAriaLabelOverride(t *testing.T) {
 			CurrentPage: 1,
 			TotalPages:  5,
 			QueryParam:  "page",
-			BaseProps:   utils.BaseProps{AriaLabel: customLabel},
+			AriaLabel:   customLabel,
 		}
 		output := utils.Render(t, Pagination(props))
 		utils.AssertContains(t, output, `aria-label="`+customLabel+`"`)
@@ -224,7 +222,7 @@ func TestAriaLabelOverride(t *testing.T) {
 		props := NavLinkProps{
 			Href:      "/",
 			Text:      "Home",
-			BaseProps: utils.BaseProps{AriaLabel: customLabel},
+			AriaLabel: customLabel,
 		}
 		output := utils.Render(t, NavLink(props, "/other"))
 		utils.AssertContains(t, output, `aria-label="`+customLabel+`"`)

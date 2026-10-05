@@ -53,11 +53,9 @@ func TestInputFullProps(t *testing.T) {
 		MaxLength:   50,
 		Error:       "Username taken",
 		HelpText:    "3-50 characters",
-		BaseProps: utils.BaseProps{
-			ID:        "input-username",
-			AriaLabel: "Username field",
-			Class:     "extra-class",
-		},
+		ID:          "input-username",
+		AriaLabel:   "Username field",
+		Class:       "extra-class",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -103,16 +101,14 @@ func TestToggleAllSizes(t *testing.T) {
 func TestToggleFullProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Toggle(ToggleProps{
-		Name:     "notifications",
-		Label:    "Enable notifications",
-		Checked:  true,
-		Required: true,
-		Error:    "Must accept to continue",
-		HelpText: "We'll send you updates",
-		BaseProps: utils.BaseProps{
-			ID:        "toggle-1",
-			AriaLabel: "Notifications toggle",
-		},
+		Name:      "notifications",
+		Label:     "Enable notifications",
+		Checked:   true,
+		Required:  true,
+		Error:     "Must accept to continue",
+		HelpText:  "We'll send you updates",
+		ID:        "toggle-1",
+		AriaLabel: "Notifications toggle",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -161,15 +157,13 @@ func TestSelectDisabledAndSelectedContradiction(t *testing.T) {
 func TestSelectFullProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Select(SelectProps{
-		Name:     "role",
-		Label:    "Role",
-		Required: true,
-		Error:    "Please select a role",
-		HelpText: "Choose your access level",
-		BaseProps: utils.BaseProps{
-			ID:        "select-role",
-			AriaLabel: "Role selector",
-		},
+		Name:      "role",
+		Label:     "Role",
+		Required:  true,
+		Error:     "Please select a role",
+		HelpText:  "Choose your access level",
+		ID:        "select-role",
+		AriaLabel: "Role selector",
 		Options: []SelectOption{
 			{Value: "admin", Label: "Admin"},
 			{Value: "user", Label: "User", Disabled: true},
@@ -244,10 +238,8 @@ func TestTextareaFullProps(t *testing.T) {
 		MaxLength:   500,
 		Error:       "Too short",
 		HelpText:    "Min 50 characters",
-		BaseProps: utils.BaseProps{
-			ID:        "textarea-bio",
-			AriaLabel: "Biography input",
-		},
+		ID:          "textarea-bio",
+		AriaLabel:   "Biography input",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -274,15 +266,13 @@ func TestTextareaMinimal(t *testing.T) {
 func TestCheckboxFullProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Checkbox(CheckboxProps{
-		Name:     "agree",
-		Label:    "I agree to the terms",
-		Required: true,
-		Error:    "You must agree",
-		HelpText: "Read the terms carefully",
-		BaseProps: utils.BaseProps{
-			ID:        "cb-agree",
-			AriaLabel: "Terms agreement",
-		},
+		Name:      "agree",
+		Label:     "I agree to the terms",
+		Required:  true,
+		Error:     "You must agree",
+		HelpText:  "Read the terms carefully",
+		ID:        "cb-agree",
+		AriaLabel: "Terms agreement",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -309,16 +299,14 @@ func TestCheckboxDisabledState(t *testing.T) {
 func TestRadioGroupFullProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, RadioGroup(RadioGroupProps{
-		Name:     "plan",
-		Label:    "Select plan",
-		Inline:   true,
-		Required: true,
-		Error:    "Please choose a plan",
-		HelpText: "You can upgrade later",
-		BaseProps: utils.BaseProps{
-			ID:        "rg-plan",
-			AriaLabel: "Plan selector",
-		},
+		Name:      "plan",
+		Label:     "Select plan",
+		Inline:    true,
+		Required:  true,
+		Error:     "Please choose a plan",
+		HelpText:  "You can upgrade later",
+		ID:        "rg-plan",
+		AriaLabel: "Plan selector",
 		Options: []RadioOption{
 			{Value: "free", Label: "Free"},
 			{Value: "pro", Label: "Pro", Disabled: true},
@@ -352,13 +340,11 @@ func TestRadioGroupVertical(t *testing.T) {
 func TestRadioSingleFullProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Radio(RadioProps{
-		Name:  "option",
-		Value: "val1",
-		Label: "Option 1",
-		BaseProps: utils.BaseProps{
-			ID:        "radio-1",
-			AriaLabel: "First option",
-		},
+		Name:      "option",
+		Value:     "val1",
+		Label:     "Option 1",
+		ID:        "radio-1",
+		AriaLabel: "First option",
 	}))
 	utils.AssertContainsAll(t, output, `id="radio-1"`, "Option 1")
 }
@@ -378,11 +364,9 @@ func TestComboboxFullProps(t *testing.T) {
 		Disabled:    true,
 		Error:       "Country required",
 		HelpText:    "Pick your home country",
-		BaseProps: utils.BaseProps{
-			ID:        "cb-country",
-			AriaLabel: "Country combobox",
-			Nonce:     "nonce123",
-		},
+		ID:          "cb-country",
+		AriaLabel:   "Country combobox",
+		Nonce:       "nonce123",
 		Options: []ComboboxOption{
 			{Value: "de", Label: "Germany"},
 			{Value: "at", Label: "Austria"},
@@ -447,12 +431,10 @@ func TestFormWithCSRF(t *testing.T) {
 func TestFormWithBaseProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Form(FormProps{
-		Action: "/save",
-		BaseProps: utils.BaseProps{
-			ID:        "save-form",
-			AriaLabel: "Save form",
-			Class:     "mb-4",
-		},
+		Action:    "/save",
+		ID:        "save-form",
+		AriaLabel: "Save form",
+		Class:     "mb-4",
 	}))
 	utils.AssertContainsAll(t, output, `id="save-form"`, `action="/save"`)
 }
@@ -464,15 +446,13 @@ func TestFormWithBaseProps(t *testing.T) {
 func TestDatePickerFullProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, DatePicker(DatePickerProps{
-		Name:     "birthdate",
-		Label:    "Birth Date",
-		Required: true,
-		Error:    "Date required",
-		HelpText: "YYYY-MM-DD",
-		BaseProps: utils.BaseProps{
-			ID:        "dp-1",
-			AriaLabel: "Birth date picker",
-		},
+		Name:      "birthdate",
+		Label:     "Birth Date",
+		Required:  true,
+		Error:     "Date required",
+		HelpText:  "YYYY-MM-DD",
+		ID:        "dp-1",
+		AriaLabel: "Birth date picker",
 	}))
 	utils.AssertContainsAll(t, output, `id="dp-1"`, "Birth Date", "Date required")
 }
@@ -480,14 +460,12 @@ func TestDatePickerFullProps(t *testing.T) {
 func TestFileInputFullProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, FileInput(FileInputProps{
-		Name:     "avatar",
-		Label:    "Upload Avatar",
-		Required: true,
-		HelpText: "PNG or JPG, max 2MB",
-		BaseProps: utils.BaseProps{
-			ID:        "fi-1",
-			AriaLabel: "Avatar upload",
-		},
+		Name:      "avatar",
+		Label:     "Upload Avatar",
+		Required:  true,
+		HelpText:  "PNG or JPG, max 2MB",
+		ID:        "fi-1",
+		AriaLabel: "Avatar upload",
 	}))
 	utils.AssertContainsAll(t, output, `id="fi-1"`, "Upload Avatar")
 }
@@ -497,10 +475,8 @@ func TestInputGroupFullProps(t *testing.T) {
 	output := utils.Render(t, InputGroup(InputGroupProps{
 		LeftAddon:  templ.Raw("$"),
 		RightAddon: templ.Raw("USD"),
-		BaseProps: utils.BaseProps{
-			ID:        "ig-1",
-			AriaLabel: "Amount input",
-		},
+		ID:         "ig-1",
+		AriaLabel:  "Amount input",
 	}))
 	utils.AssertContainsAll(t, output, `id="ig-1"`, "$", "USD")
 }

@@ -16,7 +16,7 @@ func TestDefaultTagsInputProps(t *testing.T) {
 func TestTagsInputBasicRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, TagsInput(TagsInputProps{
-		BaseProps:   utils.BaseProps{ID: "skills"},
+		ID:          "skills",
 		Name:        "skills",
 		Label:       "Skills",
 		Values:      []string{"Go", "HTMX"},
@@ -32,7 +32,7 @@ func TestTagsInputBasicRender(t *testing.T) {
 func TestTagsInputGolden(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, TagsInput(TagsInputProps{
-		BaseProps:   utils.BaseProps{ID: "tags"},
+		ID:          "tags",
 		Name:        "tags",
 		Label:       "Tags",
 		Values:      []string{"Go", "Templ"},
@@ -47,9 +47,9 @@ func TestTagsInputA11y(t *testing.T) {
 	t.Run("remove buttons have aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps: utils.BaseProps{ID: "t"},
-			Name:      "tags",
-			Values:    []string{"Go", "HTMX"},
+			ID:     "t",
+			Name:   "tags",
+			Values: []string{"Go", "HTMX"},
 		}))
 		utils.AssertContains(t, output, `aria-label="Remove Go"`)
 		utils.AssertContains(t, output, `aria-label="Remove HTMX"`)
@@ -58,9 +58,9 @@ func TestTagsInputA11y(t *testing.T) {
 	t.Run("error sets aria-invalid", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps: utils.BaseProps{ID: "err"},
-			Name:      "tags",
-			Error:     "At least one tag required",
+			ID:    "err",
+			Name:  "tags",
+			Error: "At least one tag required",
 		}))
 		utils.AssertContains(t, output, `aria-invalid="true"`)
 	})
@@ -68,9 +68,9 @@ func TestTagsInputA11y(t *testing.T) {
 	t.Run("disabled adds disabled attribute", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps: utils.BaseProps{ID: "dis"},
-			Name:      "tags",
-			Disabled:  true,
+			ID:       "dis",
+			Name:     "tags",
+			Disabled: true,
 		}))
 		utils.AssertContains(t, output, "disabled")
 	})
@@ -78,10 +78,10 @@ func TestTagsInputA11y(t *testing.T) {
 	t.Run("required shows asterisk", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps: utils.BaseProps{ID: "req"},
-			Name:      "tags",
-			Label:     "Tags",
-			Required:  true,
+			ID:       "req",
+			Name:     "tags",
+			Label:    "Tags",
+			Required: true,
 		}))
 		utils.AssertContains(t, output, "*")
 	})
@@ -89,9 +89,9 @@ func TestTagsInputA11y(t *testing.T) {
 	t.Run("dark mode classes present", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps: utils.BaseProps{ID: "dm"},
-			Name:      "tags",
-			Values:    []string{"X"},
+			ID:     "dm",
+			Name:   "tags",
+			Values: []string{"X"},
 		}))
 		utils.AssertContains(t, output, "dark:bg-gray-800")
 		utils.AssertContains(t, output, "dark:bg-blue-900/50")
@@ -104,7 +104,7 @@ func TestTagsInputEdgeCases(t *testing.T) {
 	t.Run("empty values renders just input", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps:   utils.BaseProps{ID: "empty"},
+			ID:          "empty",
 			Name:        "tags",
 			Placeholder: "Type...",
 		}))
@@ -115,9 +115,9 @@ func TestTagsInputEdgeCases(t *testing.T) {
 	t.Run("max tags renders data attribute", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps: utils.BaseProps{ID: "max"},
-			Name:      "tags",
-			MaxTags:   5,
+			ID:      "max",
+			Name:    "tags",
+			MaxTags: 5,
 		}))
 		utils.AssertContains(t, output, `data-max-tags="5"`)
 	})
@@ -125,7 +125,7 @@ func TestTagsInputEdgeCases(t *testing.T) {
 	t.Run("allow duplicate renders data attribute", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps:      utils.BaseProps{ID: "dup"},
+			ID:             "dup",
 			Name:           "tags",
 			AllowDuplicate: true,
 		}))
@@ -135,8 +135,8 @@ func TestTagsInputEdgeCases(t *testing.T) {
 	t.Run("no label omits label element", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps: utils.BaseProps{ID: "nolabel"},
-			Name:      "tags",
+			ID:   "nolabel",
+			Name: "tags",
 		}))
 		utils.AssertNotContains(t, output, "<label")
 	})
@@ -144,9 +144,9 @@ func TestTagsInputEdgeCases(t *testing.T) {
 	t.Run("help text renders", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps: utils.BaseProps{ID: "help"},
-			Name:      "tags",
-			HelpText:  "Press Enter to add",
+			ID:       "help",
+			Name:     "tags",
+			HelpText: "Press Enter to add",
 		}))
 		utils.AssertContains(t, output, "Press Enter to add")
 	})
@@ -154,8 +154,8 @@ func TestTagsInputEdgeCases(t *testing.T) {
 	t.Run("nonce renders script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps: utils.BaseProps{ID: "nonce", Nonce: "abc123"},
-			Name:      "tags",
+			ID: "nonce", Nonce: "abc123",
+			Name: "tags",
 		}))
 		utils.AssertContains(t, output, `nonce="abc123"`)
 		utils.AssertContains(t, output, "tcTagsInputAttached")
@@ -164,8 +164,8 @@ func TestTagsInputEdgeCases(t *testing.T) {
 	t.Run("no nonce omits script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps: utils.BaseProps{ID: "noscript"},
-			Name:      "tags",
+			ID:   "noscript",
+			Name: "tags",
 		}))
 		utils.AssertNotContains(t, output, "tcTagsInputAttached")
 	})
@@ -173,8 +173,8 @@ func TestTagsInputEdgeCases(t *testing.T) {
 	t.Run("custom class propagated", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps: utils.BaseProps{ID: "cls", Class: "my-tags"},
-			Name:      "tags",
+			ID: "cls", Class: "my-tags",
+			Name: "tags",
 		}))
 		utils.AssertContains(t, output, "my-tags")
 	})
@@ -186,7 +186,7 @@ func TestTagsInputSnapshot(t *testing.T) {
 	t.Run("full-featured tags input", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
-			BaseProps:   utils.BaseProps{ID: "full", Nonce: "n"},
+			ID: "full", Nonce: "n",
 			Name:        "keywords",
 			Label:       "Keywords",
 			Values:      []string{"Go", "HTMX", "Templ"},

@@ -13,9 +13,7 @@ func TestGoldenLoadMore(t *testing.T) {
 	output := utils.Render(t, LoadMore(LoadMoreProps{
 		Endpoint: "/api/items",
 		Cursor:   "abc123",
-		BaseProps: utils.BaseProps{
-			ID: "test-load-more",
-		},
+		ID:       "test-load-more",
 	}))
 	golden.Assert(t, "loadmore", output)
 }
@@ -25,23 +23,23 @@ func TestGoldenLoadMoreWired(t *testing.T) {
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "loadmore_wired_htmx", HTML: utils.Render(t, LoadMore(LoadMoreProps{
-			BaseProps: utils.BaseProps{ID: "items-more"},
-			Wire:      &wire.Action{URL: "/api/items"},
-			Cursor:    "next",
+			ID:     "items-more",
+			Wire:   &wire.Action{URL: "/api/items"},
+			Cursor: "next",
 		}))},
 		{Name: "loadmore_wired_datastar", HTML: utils.Render(t, LoadMore(LoadMoreProps{
-			BaseProps: utils.BaseProps{ID: "items-more"},
-			Wire:      &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
-			Cursor:    "next",
+			ID:     "items-more",
+			Wire:   &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
+			Cursor: "next",
 		}))},
 		{Name: "loadmore_wired_datastar_infinite_scroll_reveal", HTML: utils.Render(t, LoadMore(LoadMoreProps{
-			BaseProps:      utils.BaseProps{ID: "items-more"},
+			ID:             "items-more",
 			Wire:           &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
 			InfiniteScroll: true,
 		}))},
 		{Name: "loadmore_wired_empty_url_inert", HTML: utils.Render(t, LoadMore(LoadMoreProps{
-			BaseProps: utils.BaseProps{ID: "items-more"},
-			Wire:      &wire.Action{},
+			ID:   "items-more",
+			Wire: &wire.Action{},
 		}))},
 	})
 }
@@ -52,9 +50,9 @@ func TestLoadMoreWire(t *testing.T) {
 	t.Run("htmx wire keeps self-replacement and appends cursor to Wire.URL", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, LoadMore(LoadMoreProps{
-			BaseProps: utils.BaseProps{ID: "items-more"},
-			Wire:      &wire.Action{URL: "/api/items"},
-			Cursor:    "next",
+			ID:     "items-more",
+			Wire:   &wire.Action{URL: "/api/items"},
+			Cursor: "next",
 		}))
 		utils.AssertContains(t, output, `hx-get="/api/items?cursor=next"`)
 		utils.AssertContains(t, output, `hx-swap="outerHTML"`)
@@ -65,9 +63,9 @@ func TestLoadMoreWire(t *testing.T) {
 	t.Run("datastar wire renders the expression and never a target", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, LoadMore(LoadMoreProps{
-			BaseProps: utils.BaseProps{ID: "items-more"},
-			Wire:      &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
-			Cursor:    "next",
+			ID:     "items-more",
+			Wire:   &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
+			Cursor: "next",
 		}))
 		utils.AssertContains(t, output, `data-on:click="@get(&#39;/api/items?cursor=next&#39;)"`)
 		utils.AssertNotContains(t, output, "hx-")
@@ -76,7 +74,7 @@ func TestLoadMoreWire(t *testing.T) {
 	t.Run("InfiniteScroll is ignored under datastar", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, LoadMore(LoadMoreProps{
-			BaseProps:      utils.BaseProps{ID: "items-more"},
+			ID:             "items-more",
 			Wire:           &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
 			InfiniteScroll: true,
 		}))
@@ -87,7 +85,7 @@ func TestLoadMoreWire(t *testing.T) {
 	t.Run("InfiniteScroll survives the htmx wire path", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, LoadMore(LoadMoreProps{
-			BaseProps:      utils.BaseProps{ID: "items-more"},
+			ID:             "items-more",
 			Wire:           &wire.Action{URL: "/api/items"},
 			InfiniteScroll: true,
 		}))
@@ -97,8 +95,8 @@ func TestLoadMoreWire(t *testing.T) {
 	t.Run("empty Wire URL wires nothing", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, LoadMore(LoadMoreProps{
-			BaseProps: utils.BaseProps{ID: "items-more"},
-			Wire:      &wire.Action{},
+			ID:   "items-more",
+			Wire: &wire.Action{},
 		}))
 		utils.AssertNotContains(t, output, "hx-get")
 		utils.AssertNotContains(t, output, "data-on:")
@@ -192,7 +190,7 @@ func TestLoadMoreA11y(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, LoadMore(LoadMoreProps{
 			Endpoint:  "/x",
-			BaseProps: utils.BaseProps{AriaLabel: "Load more results"},
+			AriaLabel: "Load more results",
 		}))
 		utils.AssertContains(t, output, `aria-label="Load more results"`)
 	})

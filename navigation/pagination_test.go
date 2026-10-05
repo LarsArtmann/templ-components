@@ -104,7 +104,7 @@ func TestPaginationRender(t *testing.T) {
 	t.Run("custom ID propagated", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Pagination(PaginationProps{
-			BaseProps:   utils.BaseProps{ID: "my-pager"},
+			ID:          "my-pager",
 			CurrentPage: 2,
 			TotalPages:  3,
 			BaseURL:     "/items",

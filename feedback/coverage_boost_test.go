@@ -13,11 +13,9 @@ func TestAlertFullCoverage(t *testing.T) {
 		t.Run(string(ft)+" dismissible with BaseProps", func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Alert(AlertProps{
-				BaseProps: utils.BaseProps{
-					ID:        "alert-" + string(ft),
-					Class:     "mt-2",
-					AriaLabel: string(ft) + " alert",
-				},
+				ID:          "alert-" + string(ft),
+				Class:       "mt-2",
+				AriaLabel:   string(ft) + " alert",
 				Title:       string(ft) + " title",
 				Message:     string(ft) + " message",
 				Type:        ft,
@@ -36,11 +34,11 @@ func TestToastFullCoverage(t *testing.T) {
 		t.Run(string(ft)+" toast", func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Toast(ToastProps{
-				BaseProps: utils.BaseProps{ID: "toast-" + string(ft)},
-				Title:     string(ft) + " toast",
-				Message:   "message",
-				Type:      ft,
-				Duration:  3000,
+				ID:       "toast-" + string(ft),
+				Title:    string(ft) + " toast",
+				Message:  "message",
+				Type:     ft,
+				Duration: 3000,
 			}))
 			utils.AssertContains(t, output, string(ft)+" toast")
 		})
@@ -54,8 +52,8 @@ func TestSpinnerFullCoverage(t *testing.T) {
 		t.Run("size_"+string(size), func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Spinner(SpinnerProps{
-				BaseProps: utils.BaseProps{ID: "spin-" + string(size), Class: "mr-1", AriaLabel: "Loading"},
-				Size:      size,
+				ID: "spin-" + string(size), Class: "mr-1", AriaLabel: "Loading",
+				Size: size,
 			}))
 			utils.AssertContains(t, output, "animate-spin")
 		})
@@ -67,7 +65,7 @@ func TestProgressBarFullCoverage(t *testing.T) {
 	t.Run("with label and BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ProgressBar(ProgressBarProps{
-			BaseProps: utils.BaseProps{ID: "pb-1", Class: "w-full", AriaLabel: "Upload progress"},
+			ID: "pb-1", Class: "w-full", AriaLabel: "Upload progress",
 			Current:   75,
 			Total:     100,
 			Label:     "Uploading",
@@ -97,7 +95,7 @@ func TestStepIndicatorFullCoverage(t *testing.T) {
 	t.Run("horizontal", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, StepIndicator(StepIndicatorProps{
-			BaseProps:   utils.BaseProps{ID: "steps-h", AriaLabel: "Progress"},
+			ID: "steps-h", AriaLabel: "Progress",
 			Steps:       []string{"Account", "Profile", "Verify", "Done"},
 			CurrentStep: 2,
 		}))
@@ -106,7 +104,7 @@ func TestStepIndicatorFullCoverage(t *testing.T) {
 	t.Run("vertical", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, StepIndicator(StepIndicatorProps{
-			BaseProps:   utils.BaseProps{ID: "steps-v"},
+			ID:          "steps-v",
 			Steps:       []string{"Step 1", "Step 2"},
 			CurrentStep: 1,
 			Orientation: StepVertical,
@@ -120,7 +118,7 @@ func TestLoadingOverlayFullCoverage(t *testing.T) {
 	t.Run("with message and progress", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{
-			BaseProps:    utils.BaseProps{ID: "ovl-1", AriaLabel: "Loading"},
+			ID: "ovl-1", AriaLabel: "Loading",
 			Message:      "Processing files",
 			ShowProgress: true,
 			Progress:     60,

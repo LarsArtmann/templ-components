@@ -14,7 +14,7 @@ func TestInputFullCoverage(t *testing.T) {
 		t.Run(string(it)+" with error and help", func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Input(InputProps{
-				BaseProps:   utils.BaseProps{ID: "in-" + string(it), Class: "w-full", AriaLabel: string(it)},
+				ID: "in-" + string(it), Class: "w-full", AriaLabel: string(it),
 				Type:        it,
 				Name:        "field_" + string(it),
 				Label:       string(it) + " field",
@@ -45,13 +45,13 @@ func TestCheckboxFullCoverage(t *testing.T) {
 	t.Run("checked with error", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Checkbox(CheckboxProps{
-			BaseProps: utils.BaseProps{ID: "cb-1", AriaLabel: "Accept terms"},
-			Name:      "agree",
-			Label:     "I agree",
-			Checked:   true,
-			Required:  true,
-			Error:     "You must agree",
-			HelpText:  "Required to continue",
+			ID: "cb-1", AriaLabel: "Accept terms",
+			Name:     "agree",
+			Label:    "I agree",
+			Checked:  true,
+			Required: true,
+			Error:    "You must agree",
+			HelpText: "Required to continue",
 		}))
 		utils.AssertContains(t, output, "I agree")
 		utils.AssertContains(t, output, `checked`)
@@ -63,12 +63,12 @@ func TestRadioGroupFullCoverage(t *testing.T) {
 	t.Run("inline with options", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, RadioGroup(RadioGroupProps{
-			BaseProps: utils.BaseProps{ID: "rg-1", AriaLabel: "Choose color"},
-			Name:      "color",
-			Label:     "Color",
-			Inline:    true,
-			Required:  true,
-			Error:     "Select a color",
+			ID: "rg-1", AriaLabel: "Choose color",
+			Name:     "color",
+			Label:    "Color",
+			Inline:   true,
+			Required: true,
+			Error:    "Select a color",
 			Options: []RadioOption{
 				{Value: "red", Label: "Red"},
 				{Value: "blue", Label: "Blue", Disabled: true},
@@ -83,12 +83,12 @@ func TestSelectFullCoverage(t *testing.T) {
 	t.Run("with options and error", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Select(SelectProps{
-			BaseProps: utils.BaseProps{ID: "sel-1", AriaLabel: "Choose role"},
-			Name:      "role",
-			Label:     "Role",
-			Required:  true,
-			Error:     "Select required",
-			HelpText:  "Pick one",
+			ID: "sel-1", AriaLabel: "Choose role",
+			Name:     "role",
+			Label:    "Role",
+			Required: true,
+			Error:    "Select required",
+			HelpText: "Pick one",
 			Options: []SelectOption{
 				{Value: "admin", Label: "Admin"},
 				{Value: "user", Label: "User", Disabled: true},
@@ -105,7 +105,7 @@ func TestTextareaComprehensive(t *testing.T) {
 	t.Run("with error and maxlength", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Textarea(TextareaProps{
-			BaseProps:   utils.BaseProps{ID: "ta-1", AriaLabel: "Bio"},
+			ID: "ta-1", AriaLabel: "Bio",
 			Name:        "bio",
 			Label:       "Bio",
 			Placeholder: "Tell us about yourself",
@@ -127,11 +127,11 @@ func TestToggleFullCoverage(t *testing.T) {
 		t.Run("size_"+string(size)+" checked", func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Toggle(ToggleProps{
-				BaseProps: utils.BaseProps{ID: "tg-" + string(size), AriaLabel: "Notifications"},
-				Name:      "notifications",
-				Label:     "Enable notifications",
-				Checked:   true,
-				Size:      size,
+				ID: "tg-" + string(size), AriaLabel: "Notifications",
+				Name:    "notifications",
+				Label:   "Enable notifications",
+				Checked: true,
+				Size:    size,
 			}))
 			utils.AssertContains(t, output, "Enable notifications")
 		})
@@ -143,14 +143,14 @@ func TestFileInputFullCoverage(t *testing.T) {
 	t.Run("with multiple and accept", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, FileInput(FileInputProps{
-			BaseProps: utils.BaseProps{ID: "fi-1", AriaLabel: "Upload"},
-			Name:      "documents",
-			Label:     "Documents",
-			Required:  true,
-			Accept:    ".pdf,.docx",
-			Multiple:  true,
-			Error:     "File too large",
-			HelpText:  "Max 10MB",
+			ID: "fi-1", AriaLabel: "Upload",
+			Name:     "documents",
+			Label:    "Documents",
+			Required: true,
+			Accept:   ".pdf,.docx",
+			Multiple: true,
+			Error:    "File too large",
+			HelpText: "Max 10MB",
 		}))
 		utils.AssertContains(t, output, "Documents")
 		utils.AssertContains(t, output, `accept=".pdf,.docx"`)
@@ -163,7 +163,7 @@ func TestValidationSummaryFullCoverage(t *testing.T) {
 	t.Run("with multiple errors", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ValidationSummary(ValidationSummaryProps{
-			BaseProps: utils.BaseProps{ID: "vs-1", AriaLabel: "Errors"},
+			ID: "vs-1", AriaLabel: "Errors",
 			Errors: []ValidationError{
 				{Field: "email", Message: "Email is required"},
 				{Field: "password", Message: "Password too short"},
@@ -179,11 +179,9 @@ func TestFormFullCoverage(t *testing.T) {
 	t.Run("POST with CSRF", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Form(FormProps{
-			BaseProps: utils.BaseProps{
-				ID:        "form-1",
-				AriaLabel: "Contact form",
-				Attrs:     templ.Attributes{"data-track": "submit"},
-			},
+			ID:        "form-1",
+			AriaLabel: "Contact form",
+			Attrs:     templ.Attributes{"data-track": "submit"},
 			Action:    "/submit",
 			Method:    FormPost,
 			CSRFToken: "test-csrf-token",

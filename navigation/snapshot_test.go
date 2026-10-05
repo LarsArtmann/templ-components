@@ -48,9 +48,9 @@ func TestNavLinkRender(t *testing.T) {
 			t,
 			NavLink(
 				NavLinkProps{
-					BaseProps: utils.BaseProps{Class: "my-custom-link"},
-					Href:      "/",
-					Text:      navItemHome,
+					Class: "my-custom-link",
+					Href:  "/",
+					Text:  navItemHome,
 				},
 				"/",
 			),
@@ -65,9 +65,9 @@ func TestNavLinkRender(t *testing.T) {
 			t,
 			NavLink(
 				NavLinkProps{
-					BaseProps: utils.BaseProps{ID: "nav-home"},
-					Href:      "/",
-					Text:      navItemHome,
+					ID:   "nav-home",
+					Href: "/",
+					Text: navItemHome,
 				},
 				"/",
 			),
@@ -89,9 +89,9 @@ func TestMobileNavLinkClassPropagation(t *testing.T) {
 		t,
 		MobileNavLink(
 			NavLinkProps{
-				BaseProps: utils.BaseProps{Class: "my-mobile-link"},
-				Href:      "/",
-				Text:      navItemHome,
+				Class: "my-mobile-link",
+				Href:  "/",
+				Text:  navItemHome,
 			},
 			"/",
 		),
@@ -145,7 +145,7 @@ func TestBreadcrumbsCoverage(t *testing.T) {
 	t.Run("custom ID and class propagated", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{
-			BaseProps: utils.BaseProps{ID: "trail", Class: "my-crumbs"},
+			ID: "trail", Class: "my-crumbs",
 			Items: []BreadcrumbItem{
 				{Text: navItemHome, Href: "/"},
 			},
@@ -262,8 +262,8 @@ func TestNavContainerAware(t *testing.T) {
 	t.Run("viewport breakpoints by default", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Nav(NavProps{
-			BaseProps: utils.BaseProps{ID: "vnav"},
-			Links:     []NavLinkProps{{Href: "/", Text: "Home"}},
+			ID:    "vnav",
+			Links: []NavLinkProps{{Href: "/", Text: "Home"}},
 		}))
 		utils.AssertNotContains(t, output, "@container")
 		utils.AssertContains(t, output, "sm:flex")
@@ -273,7 +273,7 @@ func TestNavContainerAware(t *testing.T) {
 	t.Run("container breakpoints when flag set", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Nav(NavProps{
-			BaseProps:      utils.BaseProps{ID: "cnav"},
+			ID:             "cnav",
 			Links:          []NavLinkProps{{Href: "/", Text: "Home"}},
 			ContainerAware: true,
 		}))

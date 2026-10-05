@@ -220,7 +220,7 @@ func TestGoldenSweepFilterInput(t *testing.T) {
 			DebounceMS:  300,
 		}))},
 		{Name: "filter_input_wired_htmx", HTML: utils.Render(t, FilterInput(FilterInputProps{
-			BaseProps:  utils.BaseProps{ID: "user-search"},
+			ID:         "user-search",
 			Name:       "q",
 			Label:      "Search users",
 			Value:      "ada",
@@ -231,7 +231,7 @@ func TestGoldenSweepFilterInput(t *testing.T) {
 			},
 		}))},
 		{Name: "filter_input_wired_datastar", HTML: utils.Render(t, FilterInput(FilterInputProps{
-			BaseProps:  utils.BaseProps{ID: "user-search"},
+			ID:         "user-search",
 			Name:       "q",
 			Label:      "Search users",
 			DebounceMS: 300,
@@ -241,7 +241,7 @@ func TestGoldenSweepFilterInput(t *testing.T) {
 			},
 		}))},
 		{Name: "filter_input_no_debounce", HTML: utils.Render(t, FilterInput(FilterInputProps{
-			BaseProps:  utils.BaseProps{AriaLabel: "Search users"},
+			AriaLabel:  "Search users",
 			Name:       "q",
 			DebounceMS: 0,
 			Wire:       &wire.Action{URL: "/api/search"},
@@ -293,7 +293,7 @@ func TestGoldenSweepDirtyGuard(t *testing.T) {
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "dirty_guard_script", HTML: utils.Render(t, DirtyGuard(DirtyGuardProps{
-			BaseProps: utils.BaseProps{Nonce: "nonce-123"},
+			Nonce: "nonce-123",
 		}))},
 	})
 }

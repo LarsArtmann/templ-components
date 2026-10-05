@@ -106,9 +106,9 @@ func TestCalendarEdgeCases(t *testing.T) {
 	t.Run("custom class propagated", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Calendar(CalendarProps{
-			BaseProps: utils.BaseProps{Class: "my-cal"},
-			Year:      2026,
-			Month:     time.July,
+			Class: "my-cal",
+			Year:  2026,
+			Month: time.July,
 		}))
 		utils.AssertContains(t, output, "my-cal")
 	})

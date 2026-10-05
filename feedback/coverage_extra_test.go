@@ -63,8 +63,8 @@ func TestProgressBarCoverage(t *testing.T) {
 	t.Run("with ID and AriaLabel", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ProgressBar(ProgressBarProps{
-			BaseProps: utils.BaseProps{ID: "pb1", AriaLabel: "Upload progress"},
-			Current:   50, Total: 100,
+			ID: "pb1", AriaLabel: "Upload progress",
+			Current: 50, Total: 100,
 		}))
 		utils.AssertContains(t, output, `id="pb1"`)
 		utils.AssertContains(t, output, `aria-label="Upload progress"`)
@@ -122,7 +122,7 @@ func TestToastCoverage(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Toast(ToastProps{
 			Message: "test", Type: FeedbackInfo,
-			BaseProps: utils.BaseProps{Nonce: "nonce123"},
+			Nonce: "nonce123",
 		}))
 		utils.AssertContains(t, output, `nonce="nonce123"`)
 	})
@@ -165,7 +165,7 @@ func TestAlertCoverage(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Alert(AlertProps{
 			Message: "test", Type: FeedbackInfo, Dismissible: true,
-			BaseProps: utils.BaseProps{Nonce: "n1"},
+			Nonce: "n1",
 		}))
 		utils.AssertContains(t, output, `nonce="n1"`)
 	})
@@ -197,8 +197,8 @@ func TestStepIndicatorCoverage(t *testing.T) {
 	t.Run("with ID and class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, StepIndicator(StepIndicatorProps{
-			Steps:     []string{"One"},
-			BaseProps: utils.BaseProps{ID: "steps", Class: "mt-4"},
+			Steps: []string{"One"},
+			ID:    "steps", Class: "mt-4",
 		}))
 		utils.AssertContains(t, output, `id="steps"`)
 		utils.AssertContains(t, output, "mt-4")
@@ -233,8 +233,8 @@ func TestSpinnerCoverage(t *testing.T) {
 	t.Run("custom color and class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Spinner(SpinnerProps{
-			Color:     "text-red-600",
-			BaseProps: utils.BaseProps{Class: "my-2"},
+			Color: "text-red-600",
+			Class: "my-2",
 		}))
 		utils.AssertContains(t, output, "text-red-600")
 		utils.AssertContains(t, output, "my-2")

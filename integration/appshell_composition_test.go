@@ -101,8 +101,8 @@ func TestStackWithFeedbackComponents(t *testing.T) {
 	t.Parallel()
 
 	output := utils.Render(t, layout.Stack(layout.StackProps{
-		BaseProps: utils.BaseProps{Class: "test-stack"},
-		Gap:       layout.StackGapMD,
+		Class: "test-stack",
+		Gap:   layout.StackGapMD,
 	}))
 
 	// utils.Class (tailwind-merge) reorders classes non-deterministically, so the

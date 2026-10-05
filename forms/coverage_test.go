@@ -50,7 +50,7 @@ func TestInputMaxLength(t *testing.T) {
 func TestInputWithAriaLabel(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Input(InputProps{
-		BaseProps: utils.BaseProps{AriaLabel: "Search field"},
+		AriaLabel: "Search field",
 		Name:      "search",
 	}))
 	utils.AssertContains(t, output, `aria-label="Search field"`)
@@ -99,7 +99,7 @@ func TestCheckboxDisabled(t *testing.T) {
 func TestCheckboxWithAriaLabel(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Checkbox(CheckboxProps{
-		BaseProps: utils.BaseProps{AriaLabel: "Accept terms"},
+		AriaLabel: "Accept terms",
 		Name:      "al",
 	}))
 	utils.AssertContains(t, output, `aria-label="Accept terms"`)
@@ -129,7 +129,7 @@ func TestFormWithAriaLabel(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Form(FormProps{
 		Action:    "/submit",
-		BaseProps: utils.BaseProps{AriaLabel: "Login form"},
+		AriaLabel: "Login form",
 	}))
 	utils.AssertContains(t, output, `aria-label="Login form"`)
 }
@@ -145,8 +145,8 @@ func TestFormWithNilContent(t *testing.T) {
 func TestFormWithClass(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Form(FormProps{
-		Action:    "/submit",
-		BaseProps: utils.BaseProps{Class: "space-y-4"},
+		Action: "/submit",
+		Class:  "space-y-4",
 	}))
 	utils.AssertContains(t, output, "space-y-4")
 }
@@ -154,8 +154,8 @@ func TestFormWithClass(t *testing.T) {
 func TestFormWithAttrs(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Form(FormProps{
-		Action:    "/submit",
-		BaseProps: utils.BaseProps{Attrs: templ.Attributes{"data-testid": "form"}},
+		Action: "/submit",
+		Attrs:  templ.Attributes{"data-testid": "form"},
 	}))
 	utils.AssertContains(t, output, `data-testid="form"`)
 }
@@ -185,7 +185,7 @@ func TestFileInputDisabled(t *testing.T) {
 func TestFileInputWithAriaLabel(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, FileInput(FileInputProps{
-		BaseProps: utils.BaseProps{AriaLabel: "Upload file"},
+		AriaLabel: "Upload file",
 		Name:      "upload",
 	}))
 	utils.AssertContains(t, output, `aria-label="Upload file"`)
@@ -225,10 +225,10 @@ func TestRadioWithoutID(t *testing.T) {
 func TestRadioChecked(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Radio(RadioProps{
-		BaseProps: utils.BaseProps{ID: "opt-1"},
-		Label:     "Selected",
-		Name:      "opt",
-		Checked:   true,
+		ID:      "opt-1",
+		Label:   "Selected",
+		Name:    "opt",
+		Checked: true,
 	}))
 	utils.AssertContains(t, output, `checked`)
 }
@@ -246,7 +246,7 @@ func TestRadioDisabled(t *testing.T) {
 func TestRadioWithAriaLabel(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Radio(RadioProps{
-		BaseProps: utils.BaseProps{AriaLabel: "Plan option"},
+		AriaLabel: "Plan option",
 		Name:      "opt",
 	}))
 	utils.AssertContains(t, output, `aria-label="Plan option"`)
@@ -306,7 +306,7 @@ func TestToggleDisabled(t *testing.T) {
 func TestToggleWithAriaLabel(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Toggle(ToggleProps{
-		BaseProps: utils.BaseProps{AriaLabel: "Toggle setting"},
+		AriaLabel: "Toggle setting",
 		Name:      "toggle",
 	}))
 	utils.AssertContains(t, output, `aria-label="Toggle setting"`)
@@ -426,8 +426,8 @@ func TestValidationSummaryNoField(t *testing.T) {
 func TestValidationSummaryWithID(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, ValidationSummary(ValidationSummaryProps{
-		BaseProps: utils.BaseProps{ID: "val-summary"},
-		Errors:    []ValidationError{{Field: "x", Message: "err"}},
+		ID:     "val-summary",
+		Errors: []ValidationError{{Field: "x", Message: "err"}},
 	}))
 	utils.AssertContains(t, output, `id="val-summary"`)
 }
@@ -435,7 +435,7 @@ func TestValidationSummaryWithID(t *testing.T) {
 func TestValidationSummaryWithAriaLabel(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, ValidationSummary(ValidationSummaryProps{
-		BaseProps: utils.BaseProps{AriaLabel: "Form errors"},
+		AriaLabel: "Form errors",
 		Errors:    []ValidationError{{Field: "x", Message: "err"}},
 	}))
 	utils.AssertContains(t, output, `aria-label="Form errors"`)
@@ -446,7 +446,7 @@ func TestRadioGroupAriaLabel(t *testing.T) {
 	output := utils.Render(t, RadioGroup(RadioGroupProps{
 		Name:      "plan",
 		Label:     "Select Plan",
-		BaseProps: utils.BaseProps{AriaLabel: "Plan selection group"},
+		AriaLabel: "Plan selection group",
 		Options:   []RadioOption{{Value: "free", Label: "Free"}},
 	}))
 	utils.AssertContains(t, output, `aria-label="Plan selection group"`)
