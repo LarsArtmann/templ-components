@@ -14,4 +14,3 @@ require (
 	github.com/stretchr/testify v1.12.1 // indirect
 )
 
-replace github.com/larsartmann/templ-components/utils => ../utils
