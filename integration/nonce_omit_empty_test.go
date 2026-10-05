@@ -99,7 +99,7 @@ func TestNoEmptyNonceAttribute(t *testing.T) {
 			"MobileMenu",
 			utils.Render(
 				t,
-				navigation.MobileMenu([]navigation.NavLinkProps{{Label: "Home", Href: "/"}}, "/", "", "mm", false),
+				navigation.MobileMenu([]navigation.NavLinkProps{{Text: "Home", Href: "/"}}, "/", "", "mm", false),
 			),
 		},
 		{"ErrorPage", utils.Render(t, errorpage.ErrorPage(errorpage.ErrorPageProps{
@@ -152,7 +152,7 @@ func TestEmptyNonceStillRendersScripts(t *testing.T) {
 		"SSEErrorHandling":    utils.Render(t, datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{})),
 		"MobileMenu": utils.Render(
 			t,
-			navigation.MobileMenu([]navigation.NavLinkProps{{Label: "Home", Href: "/"}}, "/", "", "mm", false),
+			navigation.MobileMenu([]navigation.NavLinkProps{{Text: "Home", Href: "/"}}, "/", "", "mm", false),
 		),
 		"Combobox": utils.Render(t, forms.Combobox(forms.ComboboxProps{
 			Name: "c", Label: "C", Options: []forms.ComboboxOption{{Value: "a", Label: "A"}},
