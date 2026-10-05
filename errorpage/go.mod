@@ -14,3 +14,7 @@ require (
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/stretchr/testify v1.12.1 // indirect
 )
+
+replace github.com/larsartmann/templ-components/utils => ../utils
+
+replace github.com/larsartmann/templ-components/icons => ../icons
