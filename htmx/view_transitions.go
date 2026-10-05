@@ -54,10 +54,13 @@ const viewTransitionsScript = `(function(){if(typeof htmx!=='undefined'&&documen
 // given CSS string. Uses the same pattern as display.scriptComponent to
 // bypass templ's raw-text element handling.
 func styleComponent(nonce, css string) templ.Component {
-	escapedNonce := html.EscapeString(nonce)
+	nonceAttr := ""
+	if nonce != "" {
+		nonceAttr = fmt.Sprintf(" nonce=\"%s\"", html.EscapeString(nonce))
+	}
 
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<style nonce=\"%s\">\n%s\n</style>\n", escapedNonce, css); err != nil {
+		if _, err := fmt.Fprintf(w, "<style%s>\n%s\n</style>\n", nonceAttr, css); err != nil {
 			return fmt.Errorf("write view transitions style: %w", err)
 		}
 
@@ -65,12 +68,17 @@ func styleComponent(nonce, css string) templ.Component {
 	})
 }
 
-// scriptComponent renders a CSP-safe <script nonce="..."> tag.
+// scriptComponent renders a CSP-safe <script nonce="..."> tag. An empty
+// nonce omits the attribute entirely (nonce="" is rejected by strict-CSP
+// pages — the omit-empty rule, see utils.ScriptAttrs).
 func scriptComponent(nonce, js string) templ.Component {
-	escapedNonce := html.EscapeString(nonce)
+	nonceAttr := ""
+	if nonce != "" {
+		nonceAttr = fmt.Sprintf(" nonce=\"%s\"", html.EscapeString(nonce))
+	}
 
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s\n</script>\n", escapedNonce, js); err != nil {
+		if _, err := fmt.Fprintf(w, "<script%s>\n%s\n</script>\n", nonceAttr, js); err != nil {
 			return fmt.Errorf("write view transitions script: %w", err)
 		}
 
