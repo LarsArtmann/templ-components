@@ -2,7 +2,6 @@ package datastar_test
 
 import (
 	"github.com/larsartmann/templ-components/datastar"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 func ExampleIndicator() {
@@ -12,9 +11,9 @@ func ExampleIndicator() {
 
 func ExamplePolledRegion() {
 	_ = datastar.PolledRegion(datastar.PolledRegionProps{
-		BaseProps: utils.BaseProps{ID: "stats"},
-		URL:       "/partials/stats",
-		Every:     "10s",
+		ID:    "stats",
+		URL:   "/partials/stats",
+		Every: "10s",
 	})
 	// Output:
 }

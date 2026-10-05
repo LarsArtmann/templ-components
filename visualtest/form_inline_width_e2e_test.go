@@ -9,7 +9,6 @@ import (
 	"github.com/chromedp/chromedp"
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 // TestFormLayoutInlineWidthContract pins the inline-layout width contract in
@@ -28,17 +27,17 @@ func TestFormLayoutInlineWidthContract(t *testing.T) {
 					Layout: forms.FormLayoutInline,
 				}).Render(templ.WithChildren(ctx, templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 					if err := forms.Input(forms.InputProps{
-						BaseProps: utils.BaseProps{ID: "in1"},
-						Name:      "q",
-						Label:     "Query",
+						ID:    "in1",
+						Name:  "q",
+						Label: "Query",
 					}).Render(ctx, w); err != nil {
 						return err
 					}
 
 					return forms.Input(forms.InputProps{
-						BaseProps: utils.BaseProps{ID: "in2"},
-						Name:      "n",
-						Label:     "Number",
+						ID:    "in2",
+						Name:  "n",
+						Label: "Number",
 					}).Render(ctx, w)
 				})), w); err != nil {
 					return err

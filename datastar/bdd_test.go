@@ -37,7 +37,7 @@ func TestSDKScriptUserGetsDatastarRuntime(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, SDKScript(SDKScriptProps{
-			BaseProps: utils.BaseProps{Nonce: "nonce-abc-789"},
+			Nonce: "nonce-abc-789",
 		}))
 		utils.AssertContains(t, output, `nonce="nonce-abc-789"`)
 	})

@@ -99,10 +99,8 @@ func TestErrorPageFullProps(t *testing.T) {
 		CauseChain: []CauseItem{
 			{Message: "Session expired"},
 		},
-		BaseProps: utils.BaseProps{
-			ID:        "err-page",
-			AriaLabel: "Error page",
-		},
+		ID:        "err-page",
+		AriaLabel: "Error page",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -123,9 +121,7 @@ func TestErrorPageWithNonce(t *testing.T) {
 	output := utils.Render(t, ErrorPage(ErrorPageProps{
 		Family: FamilyTransient,
 		Title:  "Server Error",
-		BaseProps: utils.BaseProps{
-			ID: "err-with-nonce",
-		},
+		ID:     "err-with-nonce",
 	}))
 	utils.AssertContains(t, output, "Server Error")
 }
@@ -137,16 +133,14 @@ func TestErrorPageWithNonce(t *testing.T) {
 func TestErrorDetailFullProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, ErrorDetail(ErrorDetailProps{
-		Family:  FamilyConflict,
-		Code:    "duplicate_entry",
-		Title:   "Conflict",
-		Message: "Item already exists",
-		Fix:     "Use a different name",
-		Context: []ContextPair{{Key: "id", Value: "42"}},
-		BaseProps: utils.BaseProps{
-			ID:        "detail-1",
-			AriaLabel: "Error detail",
-		},
+		Family:    FamilyConflict,
+		Code:      "duplicate_entry",
+		Title:     "Conflict",
+		Message:   "Item already exists",
+		Fix:       "Use a different name",
+		Context:   []ContextPair{{Key: "id", Value: "42"}},
+		ID:        "detail-1",
+		AriaLabel: "Error detail",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -184,11 +178,9 @@ func TestErrorAlertFullProps(t *testing.T) {
 		Message:     "Service is degraded",
 		Fix:         "Try again in a few minutes",
 		Dismissible: true,
-		BaseProps: utils.BaseProps{
-			ID:        "alert-1",
-			AriaLabel: "Service alert",
-			Nonce:     "n-123",
-		},
+		ID:          "alert-1",
+		AriaLabel:   "Service alert",
+		Nonce:       "n-123",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -230,10 +222,8 @@ func TestNotFound404FullProps(t *testing.T) {
 		GoHomeHref:        "/home",
 		GoHomeText:        "Back Home",
 		ShowGoBack:        true,
-		BaseProps: utils.BaseProps{
-			ID:        "nf-404",
-			AriaLabel: "404 error page",
-		},
+		ID:                "nf-404",
+		AriaLabel:         "404 error page",
 	}))
 	utils.AssertContainsAll(
 		t, output,

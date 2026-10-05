@@ -24,7 +24,7 @@ func TestErrorPageA11y(t *testing.T) {
 		output := utils.Render(t, ErrorPage(ErrorPageProps{
 			Family:    FamilyRejection,
 			Title:     "Error",
-			BaseProps: utils.BaseProps{AriaLabel: "404 Error"},
+			AriaLabel: "404 Error",
 		}))
 		utils.AssertContains(t, output, `aria-label="404 Error"`)
 	})
@@ -32,8 +32,8 @@ func TestErrorPageA11y(t *testing.T) {
 	t.Run("error page propagates custom ID", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ErrorPage(ErrorPageProps{
-			Family:    FamilyTransient,
-			BaseProps: utils.BaseProps{ID: "error-page"},
+			Family: FamilyTransient,
+			ID:     "error-page",
 		}))
 		utils.AssertContains(t, output, `id="error-page"`)
 	})
@@ -57,7 +57,7 @@ func TestErrorDetailA11y(t *testing.T) {
 		output := utils.Render(t, ErrorDetail(ErrorDetailProps{
 			Family:    FamilyCorruption,
 			Title:     "Error",
-			BaseProps: utils.BaseProps{AriaLabel: "Detailed error information"},
+			AriaLabel: "Detailed error information",
 		}))
 		utils.AssertContains(t, output, `aria-label="Detailed error information"`)
 	})
@@ -82,7 +82,7 @@ func TestErrorAlertA11y(t *testing.T) {
 			Family:      FamilyTransient,
 			Title:       "Error",
 			Dismissible: true,
-			BaseProps:   utils.BaseProps{Nonce: "test-nonce-abc"},
+			Nonce:       "test-nonce-abc",
 		}))
 		utils.AssertContains(t, output, `nonce="test-nonce-abc"`)
 	})

@@ -15,9 +15,7 @@ func TestPolledRegionRender(t *testing.T) {
 		Eager: true,
 		Swap:  SwapInnerHTML,
 		Live:  PolledLiveAssertive,
-		BaseProps: utils.BaseProps{
-			ID: "stats-region",
-		},
+		ID:    "stats-region",
 	}))
 	utils.AssertContains(t, output, `id="stats-region"`)
 	utils.AssertContains(t, output, `hx-get="/partials/stats"`)
@@ -163,9 +161,7 @@ func TestPolledRegionBusyCue(t *testing.T) {
 			URL:   "/stats",
 			Every: "5s",
 			Eager: true,
-			BaseProps: utils.BaseProps{
-				Nonce: "test-nonce",
-			},
+			Nonce: "test-nonce",
 		}))
 		utils.AssertContains(t, output, `aria-busy="true"`)
 		utils.AssertContains(t, output, "data-tc-polled-busy")

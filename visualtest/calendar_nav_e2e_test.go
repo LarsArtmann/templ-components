@@ -208,8 +208,8 @@ func calendarNavPage(ctx context.Context, dialect wire.Transport) templ.Componen
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		if dialect == wire.TransportDatastar {
 			if err := datastar.SDKScript(datastar.SDKScriptProps{
-				BaseProps: utils.BaseProps{Nonce: "cal-e2e"},
-				Src:       "/datastar.js",
+				Nonce: "cal-e2e",
+				Src:   "/datastar.js",
 			}).Render(ctx, w); err != nil {
 				return err
 			}

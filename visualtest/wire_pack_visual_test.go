@@ -10,7 +10,6 @@ import (
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
-	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 	"github.com/larsartmann/templ-components/visualtest"
 )
@@ -160,9 +159,7 @@ func packUploadSection() templ.Component {
 			Action:  "/api/wire/upload",
 			Method:  forms.FormPost,
 			Enctype: forms.FormEnctypeMultipart,
-			BaseProps: utils.BaseProps{
-				Class: "space-y-3",
-			},
+			Class:   "space-y-3",
 			Wire: &wire.Action{
 				URL:    "/api/wire/upload",
 				Target: "#pack-vis-upload-out",
@@ -217,9 +214,7 @@ func packSearchSection() templ.Component {
 		if err := forms.Form(forms.FormProps{
 			Action: "/api/wire/search",
 			Method: forms.FormGet,
-			BaseProps: utils.BaseProps{
-				Class: "flex flex-wrap items-end gap-3",
-			},
+			Class:  "flex flex-wrap items-end gap-3",
 			Wire: &wire.Action{
 				URL:    "/api/wire/search",
 				Target: "#pack-vis-search-out",
@@ -267,7 +262,7 @@ func packDirtySection() templ.Component {
 		if err := forms.Form(forms.FormProps{
 			Method:     forms.FormPost,
 			DirtyGuard: true,
-			BaseProps:  utils.BaseProps{Class: "space-y-3"},
+			Class:      "space-y-3",
 			Wire: &wire.Action{
 				URL:    "/api/wire/dirty",
 				Target: "#pack-vis-dirty-out",

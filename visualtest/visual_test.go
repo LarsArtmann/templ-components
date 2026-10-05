@@ -14,7 +14,6 @@ import (
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/icons"
-	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/visualtest"
 )
 
@@ -829,8 +828,9 @@ func fullErrorPageProps() errorpage.ErrorPageProps {
 		Timestamp:     "2026-09-17T12:00:00Z",
 		Trace:         "trc_9f3a1c2d",
 		ShowTimestamp: true,
+
+		Nonce: "test-nonce",
 	}
-	props.Nonce = "test-nonce"
 
 	return props
 }
@@ -1259,8 +1259,8 @@ func TestEyebrowScrollbackAndPageHeader(t *testing.T) {
 	t.Parallel()
 
 	eyebrow := display.EyebrowProps{
-		BaseProps: utils.BaseProps{Class: "text-blue-600 dark:text-blue-400"},
-		Text:      "Deploy pipeline",
+		Class: "text-blue-600 dark:text-blue-400",
+		Text:  "Deploy pipeline",
 	}
 	visualtest.AssertScreenshot(t, "eyebrow/light", display.Eyebrow(eyebrow))
 	visualtest.AssertScreenshot(

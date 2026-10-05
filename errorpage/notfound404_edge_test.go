@@ -90,7 +90,7 @@ func TestNotFound404EdgeCases(t *testing.T) {
 	t.Run("custom ID and class propagate", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, NotFound404(NotFound404Props{
-			BaseProps: utils.BaseProps{ID: "my-404", Class: "custom-bg"},
+			ID: "my-404", Class: "custom-bg",
 		}))
 		utils.AssertContains(t, output, `id="my-404"`)
 		utils.AssertContains(t, output, "custom-bg")

@@ -15,7 +15,6 @@ import (
 	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 // The Datastar runtime E2E suite closes the #147 gap: the SSEErrorHandling
@@ -82,8 +81,8 @@ func datastarRuntimeE2EServer(t *testing.T) *httptest.Server {
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		for _, component := range []templ.Component{
 			datastar.SDKScript(datastar.SDKScriptProps{
-				BaseProps: utils.BaseProps{Nonce: "ds-e2e-nonce"},
-				Src:       "/datastar.js",
+				Nonce: "ds-e2e-nonce",
+				Src:   "/datastar.js",
 			}),
 			feedback.ToastContainer(""),
 			datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{Nonce: "ds-e2e-nonce"}),

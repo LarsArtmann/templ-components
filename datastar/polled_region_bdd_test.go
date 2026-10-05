@@ -53,8 +53,8 @@ func TestPolledRegionUserGetsAutoRefreshingRegion(t *testing.T) {
 		// mode self-patches — the component itself renders no patching
 		// attributes beyond the interval trigger.
 		output := utils.Render(t, PolledRegion(PolledRegionProps{
-			BaseProps: utils.BaseProps{ID: "stats"},
-			URL:       "/partials/stats",
+			ID:  "stats",
+			URL: "/partials/stats",
 		}))
 		utils.AssertContains(t, output, `id="stats"`)
 		utils.AssertNotContains(t, output, "hx-")

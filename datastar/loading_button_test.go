@@ -39,7 +39,7 @@ func TestLoadingButtonMarkup(t *testing.T) {
 	t.Parallel()
 
 	props := LoadingButtonProps{
-		BaseProps:   utils.BaseProps{ID: "save-label"},
+		ID:          "save-label",
 		Signal:      "saving",
 		DefaultText: "Save",
 		LoadingText: "Saving…",

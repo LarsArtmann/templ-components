@@ -16,7 +16,6 @@ import (
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
@@ -53,8 +52,8 @@ func wireE2EPage() templ.Component {
 		// Same runtime injection point a consumer page uses (the demo does
 		// exactly this inside its datastar section).
 		if err := datastar.SDKScript(datastar.SDKScriptProps{
-			BaseProps: utils.BaseProps{Nonce: "wire-e2e-nonce"},
-			Src:       "/datastar.js",
+			Nonce: "wire-e2e-nonce",
+			Src:   "/datastar.js",
 		}).Render(ctx, w); err != nil {
 			return err
 		}
@@ -64,10 +63,10 @@ func wireE2EPage() templ.Component {
 		}
 
 		htmxButton := display.ButtonProps{
-			BaseProps: utils.BaseProps{ID: "btn-wire-htmx", Class: "mr-4"},
-			Text:      "Load via htmx",
-			Variant:   display.ButtonSecondary,
-			Size:      display.ButtonSizeSM,
+			ID: "btn-wire-htmx", Class: "mr-4",
+			Text:    "Load via htmx",
+			Variant: display.ButtonSecondary,
+			Size:    display.ButtonSizeSM,
 			Wire: &wire.Action{
 				URL:    "/api/wire/fragment",
 				Target: "#wire-htmx-out",
@@ -78,10 +77,10 @@ func wireE2EPage() templ.Component {
 		}
 
 		datastarButton := display.ButtonProps{
-			BaseProps: utils.BaseProps{ID: "btn-wire-datastar"},
-			Text:      "Load via Datastar",
-			Variant:   display.ButtonSecondary,
-			Size:      display.ButtonSizeSM,
+			ID:      "btn-wire-datastar",
+			Text:    "Load via Datastar",
+			Variant: display.ButtonSecondary,
+			Size:    display.ButtonSizeSM,
 			Wire: &wire.Action{
 				Transport: wire.TransportDatastar,
 				URL:       "/api/wire/fragment",
@@ -248,18 +247,18 @@ func wireSwapE2EPage() templ.Component {
 
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		if err := datastar.SDKScript(datastar.SDKScriptProps{
-			BaseProps: utils.BaseProps{Nonce: "wire-e2e-nonce"},
-			Src:       "/datastar.js",
+			Nonce: "wire-e2e-nonce",
+			Src:   "/datastar.js",
 		}).Render(ctx, w); err != nil {
 			return err
 		}
 
 		buttons := []display.ButtonProps{
 			{
-				BaseProps: utils.BaseProps{ID: "btn-swap-htmx"},
-				Text:      "htmx outer swap",
-				Variant:   display.ButtonSecondary,
-				Size:      display.ButtonSizeSM,
+				ID:      "btn-swap-htmx",
+				Text:    "htmx outer swap",
+				Variant: display.ButtonSecondary,
+				Size:    display.ButtonSizeSM,
 				Wire: &wire.Action{
 					URL:    "/api/wire/swap-outer",
 					Target: "#htmx-outer-region",
@@ -267,20 +266,20 @@ func wireSwapE2EPage() templ.Component {
 				},
 			},
 			{
-				BaseProps: utils.BaseProps{ID: "btn-swap-ds-outer"},
-				Text:      "Datastar outer (headers)",
-				Variant:   display.ButtonSecondary,
-				Size:      display.ButtonSizeSM,
+				ID:      "btn-swap-ds-outer",
+				Text:    "Datastar outer (headers)",
+				Variant: display.ButtonSecondary,
+				Size:    display.ButtonSizeSM,
 				Wire: &wire.Action{
 					Transport: wire.TransportDatastar,
 					URL:       "/api/wire/swap-outer",
 				},
 			},
 			{
-				BaseProps: utils.BaseProps{ID: "btn-swap-ds-append"},
-				Text:      "Datastar: server append header wins",
-				Variant:   display.ButtonSecondary,
-				Size:      display.ButtonSizeSM,
+				ID:      "btn-swap-ds-append",
+				Text:    "Datastar: server append header wins",
+				Variant: display.ButtonSecondary,
+				Size:    display.ButtonSizeSM,
 				Wire: &wire.Action{
 					Transport: wire.TransportDatastar,
 					URL:       "/api/wire/swap-override",
@@ -288,20 +287,20 @@ func wireSwapE2EPage() templ.Component {
 				},
 			},
 			{
-				BaseProps: utils.BaseProps{ID: "btn-swap-ds-idmatch"},
-				Text:      "Datastar: id-matched outer (no headers)",
-				Variant:   display.ButtonSecondary,
-				Size:      display.ButtonSizeSM,
+				ID:      "btn-swap-ds-idmatch",
+				Text:    "Datastar: id-matched outer (no headers)",
+				Variant: display.ButtonSecondary,
+				Size:    display.ButtonSizeSM,
 				Wire: &wire.Action{
 					Transport: wire.TransportDatastar,
 					URL:       "/api/wire/idmatch",
 				},
 			},
 			{
-				BaseProps: utils.BaseProps{ID: "btn-swap-ds-selector"},
-				Text:      "Datastar: client selector does not target",
-				Variant:   display.ButtonSecondary,
-				Size:      display.ButtonSizeSM,
+				ID:      "btn-swap-ds-selector",
+				Text:    "Datastar: client selector does not target",
+				Variant: display.ButtonSecondary,
+				Size:    display.ButtonSizeSM,
 				Wire: &wire.Action{
 					Transport: wire.TransportDatastar,
 					URL:       "/api/wire/unheaded",

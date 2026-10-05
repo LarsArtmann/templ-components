@@ -25,9 +25,9 @@ func TestGoldenSweepPolledRegion(t *testing.T) {
 			Eager: true,
 		}))},
 		{Name: "polled_region_with_id", HTML: utils.Render(t, PolledRegion(PolledRegionProps{
-			BaseProps: utils.BaseProps{ID: "activity-feed"},
-			URL:       "/api/activity",
-			Every:     "30s",
+			ID:    "activity-feed",
+			URL:   "/api/activity",
+			Every: "30s",
 		}))},
 		{Name: "polled_region_assertive", HTML: utils.Render(t, PolledRegion(PolledRegionProps{
 			URL:   "/api/alerts",

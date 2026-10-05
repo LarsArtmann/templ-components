@@ -58,8 +58,8 @@ func TestSDKScriptCDNWithNonce(t *testing.T) {
 	t.Parallel()
 
 	output := utils.Render(t, SDKScript(SDKScriptProps{
-		BaseProps: utils.BaseProps{Nonce: "test-nonce-123"},
-		Version:   DatastarVersion1_0_3,
+		Nonce:   "test-nonce-123",
+		Version: DatastarVersion1_0_3,
 	}))
 
 	utils.AssertContains(t, output, `<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>`)
@@ -86,7 +86,7 @@ func TestSDKScriptNonce(t *testing.T) {
 	t.Parallel()
 
 	output := utils.Render(t, SDKScript(SDKScriptProps{
-		BaseProps: utils.BaseProps{Nonce: "abc123"},
+		Nonce: "abc123",
 	}))
 
 	utils.AssertContains(t, output, `nonce="abc123"`)

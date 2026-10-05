@@ -17,7 +17,6 @@ import (
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
@@ -289,8 +288,8 @@ func wireFormE2EServer(t *testing.T) *httptest.Server {
 func wireFormE2EPage(props layout.PageProps) templ.Component {
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		if err := datastar.SDKScript(datastar.SDKScriptProps{
-			BaseProps: utils.BaseProps{Nonce: "wire-form-e2e-nonce"},
-			Src:       "/datastar.js",
+			Nonce: "wire-form-e2e-nonce",
+			Src:   "/datastar.js",
 		}).Render(ctx, w); err != nil {
 			return err
 		}

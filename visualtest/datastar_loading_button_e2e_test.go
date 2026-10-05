@@ -13,7 +13,6 @@ import (
 	"github.com/larsartmann/go-datastar/static"
 	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 // The Datastar LoadingButton browser E2E proves the indicator-signal label
@@ -48,8 +47,8 @@ func datastarLoadingButtonE2EServer(t *testing.T) *httptest.Server {
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		for _, component := range []templ.Component{
 			datastar.SDKScript(datastar.SDKScriptProps{
-				BaseProps: utils.BaseProps{Nonce: "lbtn-e2e-nonce"},
-				Src:       "/datastar.js",
+				Nonce: "lbtn-e2e-nonce",
+				Src:   "/datastar.js",
 			}),
 		} {
 			if err := component.Render(ctx, w); err != nil {

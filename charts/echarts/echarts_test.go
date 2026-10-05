@@ -150,13 +150,11 @@ func TestEChartBasePropsPropagation(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, EChart(EChartsProps{
-		BaseProps: utils.BaseProps{
-			Class:     "max-w-2xl",
-			ID:        "my-echart",
-			AriaLabel: "Sales chart",
-		},
-		Element: `<div id="c"></div>`,
-		Nonce:   "nonce",
+		Class:     "max-w-2xl",
+		ID:        "my-echart",
+		AriaLabel: "Sales chart",
+		Element:   `<div id="c"></div>`,
+		Nonce:     "nonce",
 	}))
 	utils.AssertContains(t, html, "max-w-2xl")
 	utils.AssertContains(t, html, `id="my-echart"`)

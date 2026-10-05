@@ -16,9 +16,9 @@ func TestErrorPageWithClassAndAriaLabel(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, ErrorPage(ErrorPageProps{
-		BaseProps: utils.BaseProps{Class: "my-error", AriaLabel: "Error dialog", Nonce: "n"},
-		Family:    FamilyInfrastructure,
-		Title:     "Oops",
+		Class: "my-error", AriaLabel: "Error dialog", Nonce: "n",
+		Family: FamilyInfrastructure,
+		Title:  "Oops",
 	}))
 	if !strings.Contains(html, "my-error") {
 		t.Error("Class should propagate to root element")
@@ -29,8 +29,8 @@ func TestErrorDetailWithNonceAndClass(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, ErrorDetail(ErrorDetailProps{
-		BaseProps: utils.BaseProps{Class: "detail-cls", Nonce: "x", AriaLabel: "Detail"},
-		Family:    FamilyTransient,
+		Class: "detail-cls", Nonce: "x", AriaLabel: "Detail",
+		Family: FamilyTransient,
 	}))
 	if !strings.Contains(html, "detail-cls") {
 		t.Error("Class should propagate to ErrorDetail root")

@@ -13,7 +13,6 @@ import (
 	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/navigation"
-	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
@@ -147,7 +146,7 @@ func focusPreservationServer(t *testing.T) *httptest.Server {
 		}
 
 		props := navigation.LoadMoreProps{
-			BaseProps:   utils.BaseProps{ID: "items-load-more"},
+			ID:          "items-load-more",
 			Endpoint:    "/api/items",
 			Cursor:      "2",
 			FocusOnSwap: true,
@@ -173,7 +172,7 @@ func focusPreservationServer(t *testing.T) *httptest.Server {
 			}
 
 			return htmx.SwapOOB(htmx.SwapOOBProps{
-				BaseProps: utils.BaseProps{ID: "counter"},
+				ID:        "counter",
 				Selector:  "#counter",
 				SwapStyle: htmx.SwapOuterHTML,
 			}).Render(templ.WithChildren(r.Context(),
@@ -206,9 +205,9 @@ func focusPreservationServer(t *testing.T) *httptest.Server {
 			}
 
 			return navigation.LoadMore(navigation.LoadMoreProps{
-				BaseProps: utils.BaseProps{ID: "items-load-more"},
-				Endpoint:  "/api/items",
-				Cursor:    "1",
+				ID:       "items-load-more",
+				Endpoint: "/api/items",
+				Cursor:   "1",
 			}).Render(ctx, w)
 		})
 

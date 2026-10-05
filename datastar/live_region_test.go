@@ -103,7 +103,7 @@ func TestLiveRegionBusyState(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, LiveRegion(LiveRegionProps{
-			BaseProps: utils.BaseProps{Nonce: "busy-nonce"},
+			Nonce:     "busy-nonce",
 			URL:       "/stream/metrics",
 			AutoStart: true,
 		}))
@@ -226,7 +226,7 @@ func TestLiveRegionWithID(t *testing.T) {
 	t.Parallel()
 
 	output := utils.Render(t, LiveRegion(LiveRegionProps{
-		BaseProps: utils.BaseProps{ID: "live-stats"},
+		ID:        "live-stats",
 		URL:       "/stream/stats",
 		AutoStart: true,
 	}))

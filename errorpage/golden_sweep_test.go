@@ -79,8 +79,9 @@ func TestGoldenSweepErrorPage(t *testing.T) {
 				Message:       "We're performing maintenance or experiencing high traffic.",
 				CopyCode:      true,
 				ShowTimestamp: true,
+
+				Nonce: "test-nonce",
 			}
-			props.Nonce = "test-nonce"
 
 			return props
 		}()))},

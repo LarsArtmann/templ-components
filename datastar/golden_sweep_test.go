@@ -21,8 +21,8 @@ func TestGoldenSweepSDKScript(t *testing.T) {
 			Version: DatastarVersion1_0_3,
 		}))},
 		{Name: "sdk_script_cdn_nonce", HTML: utils.Render(t, SDKScript(SDKScriptProps{
-			BaseProps: utils.BaseProps{Nonce: "test-nonce-123"},
-			Version:   DatastarVersion1_0_3,
+			Nonce:   "test-nonce-123",
+			Version: DatastarVersion1_0_3,
 		}))},
 	})
 }
@@ -104,7 +104,7 @@ func TestGoldenSweepPolledRegion(t *testing.T) {
 		})))},
 		// Custom interval + aria-label + inert children slot.
 		{Name: "polled_region_custom", HTML: utils.Render(t, PolledRegion(propsWithClock(PolledRegionProps{
-			BaseProps:     utils.BaseProps{ID: "activity-feed", AriaLabel: "Activity"},
+			ID: "activity-feed", AriaLabel: "Activity",
 			URL:           "/api/activity",
 			Every:         "2m",
 			Live:          LiveAssertive,

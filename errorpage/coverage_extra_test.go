@@ -40,7 +40,7 @@ func TestErrorAlertCoverage(t *testing.T) {
 			Family:      FamilyConflict,
 			Title:       "Conflict",
 			Dismissible: true,
-			BaseProps:   utils.BaseProps{Nonce: "n1"},
+			Nonce:       "n1",
 		}))
 		utils.AssertContains(t, output, "data-dismiss")
 	})

@@ -76,7 +76,7 @@ func TestKanbanBoard(t *testing.T) {
 // kanbanSectionAddButton mirrors the demo's per-column add affordance.
 func kanbanSectionAddButton(url, columnTitle string) templ.Component {
 	return display.Button(display.ButtonProps{
-		BaseProps: utils.BaseProps{AriaLabel: "Add card to " + columnTitle},
+		AriaLabel: "Add card to " + columnTitle,
 		Text:      "+ Add",
 		Variant:   display.ButtonGhost,
 		Size:      display.ButtonSizeSM,
@@ -136,7 +136,7 @@ func kanbanSectionComponent() templ.Component {
 		}
 
 		reset := display.Button(display.ButtonProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Reset demo board"},
+			AriaLabel: "Reset demo board",
 			Text:      "Reset",
 			Variant:   display.ButtonGhost,
 			Size:      display.ButtonSizeSM,

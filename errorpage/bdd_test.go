@@ -120,9 +120,9 @@ func TestErrorPageUserSeesFullPageError(t *testing.T) {
 	t.Run("user sees custom ID and aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ErrorPage(ErrorPageProps{
-			Family:    FamilyRejection,
-			Title:     "Not Found",
-			BaseProps: utils.BaseProps{ID: "error-404", AriaLabel: "404 Error Page"},
+			Family: FamilyRejection,
+			Title:  "Not Found",
+			ID:     "error-404", AriaLabel: "404 Error Page",
 		}))
 		utils.AssertContains(t, output, `id="error-404"`)
 		utils.AssertContains(t, output, `aria-label="404 Error Page"`)

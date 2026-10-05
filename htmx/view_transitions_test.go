@@ -12,8 +12,8 @@ func TestViewTransitionsRender(t *testing.T) {
 	t.Run("global enables config", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ViewTransitions(ViewTransitionsProps{
-			Global:    true,
-			BaseProps: utils.BaseProps{Nonce: "test-nonce"},
+			Global: true,
+			Nonce:  "test-nonce",
 		}))
 		utils.AssertContains(t, output, "globalViewTransitions")
 		utils.AssertContains(t, output, `nonce="test-nonce"`)
@@ -22,8 +22,8 @@ func TestViewTransitionsRender(t *testing.T) {
 	t.Run("non-global omits script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ViewTransitions(ViewTransitionsProps{
-			Global:    false,
-			BaseProps: utils.BaseProps{Nonce: "n"},
+			Global: false,
+			Nonce:  "n",
 		}))
 		utils.AssertNotContains(t, output, "globalViewTransitions")
 		utils.AssertNotContains(t, output, "<script")
@@ -32,7 +32,7 @@ func TestViewTransitionsRender(t *testing.T) {
 	t.Run("always renders CSS", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ViewTransitions(ViewTransitionsProps{
-			BaseProps: utils.BaseProps{Nonce: "n"},
+			Nonce: "n",
 		}))
 		utils.AssertContains(t, output, "view-transition-old")
 		utils.AssertContains(t, output, "view-transition-new")

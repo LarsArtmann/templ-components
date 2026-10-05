@@ -18,7 +18,7 @@ func TestNotFound404A11y(t *testing.T) {
 	t.Run("propagates custom aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, NotFound404(NotFound404Props{
-			BaseProps: utils.BaseProps{AriaLabel: "Custom 404 label"},
+			AriaLabel: "Custom 404 label",
 		}))
 		utils.AssertContains(t, output, `aria-label="Custom 404 label"`)
 		utils.AssertNotContains(t, output, `aria-label="404 — Page not found"`)
@@ -84,7 +84,7 @@ func TestNotFound404A11y(t *testing.T) {
 	t.Run("nonce on script tag when ShowGoBack", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, NotFound404(NotFound404Props{
-			ShowGoBack: true, BaseProps: utils.BaseProps{Nonce: "test-nonce-xyz"},
+			ShowGoBack: true, Nonce: "test-nonce-xyz",
 		}))
 		utils.AssertContains(t, output, `nonce="test-nonce-xyz"`)
 	})

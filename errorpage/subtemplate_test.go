@@ -15,7 +15,7 @@ func TestErrorHeaderSubTemplate(t *testing.T) {
 
 	// ErrorPage renders errorHeader internally
 	props := ErrorPageProps{
-		BaseProps: utils.BaseProps{AriaLabel: "Error"},
+		AriaLabel: "Error",
 		Title:     "Test Error",
 		Message:   "Something broke",
 	}
@@ -54,8 +54,8 @@ func TestGoBackScriptSubTemplate(t *testing.T) {
 	t.Parallel()
 
 	props := ErrorPageProps{
-		BaseProps: utils.BaseProps{Nonce: "test-nonce-123"},
-		WayOut:    "Go back",
+		Nonce:  "test-nonce-123",
+		WayOut: "Go back",
 	}
 
 	result := utils.Render(t, ErrorPage(props))
@@ -74,7 +74,7 @@ func TestNotFound404GoBackScript(t *testing.T) {
 
 	props := NotFound404Props{
 		ShowGoBack: true,
-		BaseProps:  utils.BaseProps{Nonce: "404-nonce"},
+		Nonce:      "404-nonce",
 	}
 
 	result := utils.Render(t, NotFound404(props))

@@ -12,15 +12,13 @@ func TestConfirmDeleteCoverage(t *testing.T) {
 	t.Run("full props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ConfirmDelete(ConfirmDeleteProps{
-			BaseProps: utils.BaseProps{
-				ID:        "del-btn",
-				Class:     "text-sm",
-				AriaLabel: "Delete item",
-				Attrs:     templ.Attributes{"data-test": "yes"},
-			},
-			Delete:  "/api/items/42",
-			Target:  "#row-42",
-			Confirm: "Really delete?",
+			ID:        "del-btn",
+			Class:     "text-sm",
+			AriaLabel: "Delete item",
+			Attrs:     templ.Attributes{"data-test": "yes"},
+			Delete:    "/api/items/42",
+			Target:    "#row-42",
+			Confirm:   "Really delete?",
 		}))
 		utils.AssertContainsAll(
 			t, output,
@@ -74,11 +72,9 @@ func TestSwapOOBCoverage(t *testing.T) {
 	t.Run("with id and attrs", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SwapOOB(SwapOOBProps{
-			BaseProps: utils.BaseProps{
-				ID:    "oob-1",
-				Class: "custom",
-				Attrs: templ.Attributes{"data-x": "1"},
-			},
+			ID:        "oob-1",
+			Class:     "custom",
+			Attrs:     templ.Attributes{"data-x": "1"},
 			Selector:  "#toast",
 			SwapStyle: SwapBeforeEnd,
 		}))

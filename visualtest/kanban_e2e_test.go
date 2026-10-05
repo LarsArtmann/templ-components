@@ -205,8 +205,8 @@ func kanbanE2EPage() templ.Component {
 
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		if err := datastar.SDKScript(datastar.SDKScriptProps{
-			BaseProps: utils.BaseProps{Nonce: "kanban-e2e-nonce"},
-			Src:       "/datastar.js",
+			Nonce: "kanban-e2e-nonce",
+			Src:   "/datastar.js",
 		}).Render(ctx, w); err != nil {
 			return err
 		}

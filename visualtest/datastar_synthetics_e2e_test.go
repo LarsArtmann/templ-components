@@ -12,7 +12,6 @@ import (
 	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 // The Datastar synthetics browser-prove the two JS paths that string tests
@@ -37,7 +36,7 @@ func datastarSyntheticsServer(t *testing.T) *httptest.Server {
 				}
 
 				return datastar.LiveRegion(datastar.LiveRegionProps{
-					BaseProps: utils.BaseProps{ID: "synth-live", Nonce: "synthetics-nonce"},
+					ID: "synth-live", Nonce: "synthetics-nonce",
 					URL:       "/api/stream",
 					AutoStart: true,
 				}).Render(ctx, w)

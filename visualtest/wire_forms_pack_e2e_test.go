@@ -29,7 +29,6 @@ import (
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
@@ -372,7 +371,7 @@ func packWizardStep(dialect wire.Transport, step int, message string) templ.Comp
 		return forms.Form(forms.FormProps{
 			Action:     "/api/pack/wizard",
 			Method:     forms.FormPost,
-			BaseProps:  utils.BaseProps{Class: "space-y-3"},
+			Class:      "space-y-3",
 			NoValidate: true,
 			Wire:       packWire(dialect, wire.MethodPost, "/api/pack/wizard", packWizardHTMXRegion),
 		}).Render(templ.WithChildren(ctx, formChildren), w)
@@ -469,10 +468,8 @@ func packSearchForm(dialect wire.Transport, q string) templ.Component {
 		return forms.Form(forms.FormProps{
 			Action: "/api/pack/search",
 			Method: forms.FormGet,
-			BaseProps: utils.BaseProps{
-				Class: "flex flex-wrap items-end gap-3",
-			},
-			Wire: packWire(dialect, wire.MethodGet, "/api/pack/search", packSearchHTMXRegion),
+			Class:  "flex flex-wrap items-end gap-3",
+			Wire:   packWire(dialect, wire.MethodGet, "/api/pack/search", packSearchHTMXRegion),
 		}).Render(templ.WithChildren(ctx, children), w)
 	})
 }
@@ -502,7 +499,7 @@ func packDirtyForm(value string) templ.Component {
 		return forms.Form(forms.FormProps{
 			Method:     forms.FormPost,
 			DirtyGuard: true,
-			BaseProps:  utils.BaseProps{Class: "space-y-3"},
+			Class:      "space-y-3",
 			Wire:       packWire(wire.TransportHTMX, wire.MethodPost, "/api/pack/dirty", packDirtyRegion),
 		}).Render(templ.WithChildren(ctx, children), w)
 	})
@@ -530,12 +527,10 @@ func packFilterInput(dialect wire.Transport) templ.Component {
 		Placeholder: "Type to filter…",
 		DebounceMS:  100,
 		Wire:        packWire(dialect, wire.MethodGet, "/api/pack/filter", packFilterHTMXOut),
-		BaseProps: utils.BaseProps{
-			// The filter form is the only one allowed to submit natively:
-			// the Enter-key test asserts the documented full-page GET
-			// degradation (the page guard swallows wired-submit fallthroughs).
-			Attrs: templ.Attributes{"data-pack-native": true},
-		},
+		// The filter form is the only one allowed to submit natively:
+		// the Enter-key test asserts the documented full-page GET
+		// degradation (the page guard swallows wired-submit fallthroughs).
+		Attrs: templ.Attributes{"data-pack-native": true},
 	})
 }
 
@@ -561,14 +556,14 @@ func packScopeID(kind string, dialect wire.Transport) string {
 func packE2EPage(props layout.PageProps) templ.Component {
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		if err := datastar.SDKScript(datastar.SDKScriptProps{
-			BaseProps: utils.BaseProps{Nonce: "pack-e2e-nonce"},
-			Src:       "/datastar.js",
+			Nonce: "pack-e2e-nonce",
+			Src:   "/datastar.js",
 		}).Render(ctx, w); err != nil {
 			return err
 		}
 
 		if err := forms.DirtyGuard(forms.DirtyGuardProps{
-			BaseProps: utils.BaseProps{Nonce: "pack-e2e-nonce"},
+			Nonce: "pack-e2e-nonce",
 		}).Render(ctx, w); err != nil {
 			return err
 		}
@@ -750,10 +745,8 @@ func (p packPaneWriter) uploadPane(ctx context.Context, dialect wire.Transport) 
 		Action:  "/api/pack/upload",
 		Method:  forms.FormPost,
 		Enctype: forms.FormEnctypeMultipart,
-		BaseProps: utils.BaseProps{
-			Class: "space-y-3",
-		},
-		Wire: packWire(dialect, wire.MethodPost, "/api/pack/upload", target),
+		Class:   "space-y-3",
+		Wire:    packWire(dialect, wire.MethodPost, "/api/pack/upload", target),
 	}).Render(templ.WithChildren(ctx, uploadChildren), p.w); err != nil {
 		return err
 	}

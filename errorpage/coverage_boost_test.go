@@ -13,13 +13,11 @@ func TestErrorPageFullCoverage(t *testing.T) {
 	t.Run("all fields populated with WayOutHref and ShowTimestamp", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ErrorPage(ErrorPageProps{
-			BaseProps: utils.BaseProps{
-				ID:        "err-page",
-				Class:     "custom-class",
-				AriaLabel: "Error page",
-				Nonce:     "nonce-123",
-				Attrs:     templ.Attributes{"data-test": "true"},
-			},
+			ID:            "err-page",
+			Class:         "custom-class",
+			AriaLabel:     "Error page",
+			Nonce:         "nonce-123",
+			Attrs:         templ.Attributes{"data-test": "true"},
 			Family:        FamilyConflict,
 			Code:          "ERR_CONFLICT_409",
 			Title:         "Resource Conflict",
@@ -53,10 +51,10 @@ func TestErrorPageFullCoverage(t *testing.T) {
 	t.Run("WayOut without WayOutHref renders button and script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ErrorPage(ErrorPageProps{
-			BaseProps: utils.BaseProps{Nonce: "n1"},
-			Family:    FamilyRejection,
-			Title:     "Rejected",
-			WayOut:    "Return to list",
+			Nonce:  "n1",
+			Family: FamilyRejection,
+			Title:  "Rejected",
+			WayOut: "Return to list",
 		}))
 		utils.AssertContains(t, output, "data-tc-go-back")
 		utils.AssertContains(t, output, "Return to list")
@@ -111,17 +109,15 @@ func TestErrorDetailFullCoverage(t *testing.T) {
 	t.Run("with all fields including BaseProps and cause codes", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ErrorDetail(ErrorDetailProps{
-			BaseProps: utils.BaseProps{
-				ID:        "detail-1",
-				Class:     "detail-class",
-				AriaLabel: "Error detail",
-				Nonce:     "nonce-x",
-			},
-			Family:  FamilyCorruption,
-			Code:    "CORRUPT_500",
-			Title:   "Data Corruption",
-			Message: "Records are damaged",
-			Fix:     "Restore from backup",
+			ID:        "detail-1",
+			Class:     "detail-class",
+			AriaLabel: "Error detail",
+			Nonce:     "nonce-x",
+			Family:    FamilyCorruption,
+			Code:      "CORRUPT_500",
+			Title:     "Data Corruption",
+			Message:   "Records are damaged",
+			Fix:       "Restore from backup",
 			Context: []ContextPair{
 				{Key: "table", Value: "orders"},
 				{Key: "rows", Value: "1234"},
@@ -159,12 +155,10 @@ func TestErrorAlertFullCoverage(t *testing.T) {
 	t.Run("with BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ErrorAlert(ErrorAlertProps{
-			BaseProps: utils.BaseProps{
-				ID:        "alert-1",
-				Class:     "alert-class",
-				AriaLabel: "Error alert",
-				Attrs:     templ.Attributes{"data-severity": "high"},
-			},
+			ID:          "alert-1",
+			Class:       "alert-class",
+			AriaLabel:   "Error alert",
+			Attrs:       templ.Attributes{"data-severity": "high"},
 			Family:      FamilyCorruption,
 			Title:       "Critical Alert",
 			Message:     "Immediate action required",

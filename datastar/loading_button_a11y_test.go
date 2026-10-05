@@ -36,7 +36,7 @@ func TestLoadingButtonA11y(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, LoadingButton(LoadingButtonProps{
-			BaseProps:   utils.BaseProps{AriaLabel: "Save changes"},
+			AriaLabel:   "Save changes",
 			Signal:      "saving",
 			DefaultText: "Save",
 		}))

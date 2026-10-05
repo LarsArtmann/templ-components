@@ -174,13 +174,11 @@ func TestPolledRegionBasePropsPropagation(t *testing.T) {
 	t.Parallel()
 
 	props := PolledRegionProps{
-		BaseProps: utils.BaseProps{
-			ID:        "stats-region",
-			Class:     "min-h-40",
-			AriaLabel: "Live statistics",
-			Attrs:     templ.Attributes{"data-test": "polled"},
-		},
-		URL: "/partials/stats",
+		ID:        "stats-region",
+		Class:     "min-h-40",
+		AriaLabel: "Live statistics",
+		Attrs:     templ.Attributes{"data-test": "polled"},
+		URL:       "/partials/stats",
 	}
 	output := utils.Render(t, PolledRegion(props))
 

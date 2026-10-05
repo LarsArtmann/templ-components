@@ -31,7 +31,7 @@ func TestNotFound404Coverage(t *testing.T) {
 	t.Run("attrs propagate to root element", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, NotFound404(NotFound404Props{
-			BaseProps: utils.BaseProps{Attrs: templ.Attributes{"data-testid": "not-found-page"}},
+			Attrs: templ.Attributes{"data-testid": "not-found-page"},
 		}))
 		utils.AssertContains(t, output, `data-testid="not-found-page"`)
 	})

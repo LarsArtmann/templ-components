@@ -16,7 +16,6 @@ import (
 	"github.com/larsartmann/go-datastar/static"
 	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 // The Datastar PolledRegion browser E2E proves the polling loop end to end
@@ -41,7 +40,7 @@ func datastarPolledRegionPartial(tick int) templ.Component {
 	})
 
 	props := datastar.PolledRegionProps{
-		BaseProps:     utils.BaseProps{ID: "polled-region"},
+		ID:            "polled-region",
 		URL:           "/partials/stats",
 		Every:         "500ms",
 		ShowTimestamp: true,
@@ -77,8 +76,8 @@ func datastarPolledRegionE2EServer(t *testing.T) (*httptest.Server, *atomic.Int6
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		for _, component := range []templ.Component{
 			datastar.SDKScript(datastar.SDKScriptProps{
-				BaseProps: utils.BaseProps{Nonce: "polled-e2e-nonce"},
-				Src:       "/datastar.js",
+				Nonce: "polled-e2e-nonce",
+				Src:   "/datastar.js",
 			}),
 			datastarPolledRegionPartial(0),
 		} {
