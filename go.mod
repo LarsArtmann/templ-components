@@ -2,13 +2,12 @@ module github.com/larsartmann/templ-components
 
 go 1.27
 
-require github.com/a-h/templ v0.3.1070
-
 require (
-	github.com/larsartmann/templ-components/charts/echarts v1.19.4
-	github.com/larsartmann/templ-components/datastar v1.19.4
-	github.com/larsartmann/templ-components/errorpage v1.19.4
-	github.com/larsartmann/templ-components/htmx v1.19.4
+	github.com/a-h/templ v0.3.1020
+	github.com/larsartmann/templ-components/charts/echarts v0.0.0-00010101000000-000000000000
+	github.com/larsartmann/templ-components/datastar v0.0.0-00010101000000-000000000000
+	github.com/larsartmann/templ-components/errorpage v0.0.0-00010101000000-000000000000
+	github.com/larsartmann/templ-components/htmx v0.0.0-00010101000000-000000000000
 	github.com/larsartmann/templ-components/icons v1.19.4
 	github.com/larsartmann/templ-components/utils v1.19.4
 	github.com/stretchr/testify v1.12.1
