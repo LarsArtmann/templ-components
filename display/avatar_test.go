@@ -112,9 +112,9 @@ func TestAvatarRender(t *testing.T) {
 	t.Run("image with custom ID and class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
-			BaseProps: utils.BaseProps{ID: "user-avatar", Class: "ring-2"},
-			Src:       "/me.jpg",
-			Alt:       "Me",
+			ID: "user-avatar", Class: "ring-2",
+			Src: "/me.jpg",
+			Alt: "Me",
 		}))
 		utils.AssertContains(t, output, `id="user-avatar"`)
 		utils.AssertContains(t, output, "ring-2")
@@ -123,8 +123,8 @@ func TestAvatarRender(t *testing.T) {
 	t.Run("initials with custom ID and class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
-			BaseProps: utils.BaseProps{ID: "initials-avatar", Class: "shadow-md"},
-			Initials:  "CD",
+			ID: "initials-avatar", Class: "shadow-md",
+			Initials: "CD",
 		}))
 		utils.AssertContains(t, output, `id="initials-avatar"`)
 		utils.AssertContains(t, output, "shadow-md")

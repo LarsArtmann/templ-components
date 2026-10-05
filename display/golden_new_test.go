@@ -14,10 +14,10 @@ import (
 func TestGoldenCopyButton(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, CopyButton(CopyButtonProps{
-		Text:      "pnpm add foo",
-		Label:     "Copy",
-		Icon:      true,
-		BaseProps: utils.BaseProps{Nonce: "abc123"},
+		Text:  "pnpm add foo",
+		Label: "Copy",
+		Icon:  true,
+		Nonce: "abc123",
 	}))
 	golden.Assert(t, "copy_button", output)
 }
@@ -65,7 +65,7 @@ func TestGoldenCopyButtonLabelClass(t *testing.T) {
 		Label:      "Copy",
 		Icon:       true,
 		LabelClass: "text-red-600 dark:text-red-400",
-		BaseProps:  utils.BaseProps{Nonce: "abc123"},
+		Nonce:      "abc123",
 	}))
 	golden.Assert(t, "copy_button_label_class", output)
 }
@@ -213,9 +213,9 @@ func TestGoldenDataTableSortable(t *testing.T) {
 func TestGoldenModal(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Modal(ModalProps{
-		BaseProps: utils.BaseProps{ID: "confirm-modal", Nonce: "nonce123"},
-		Title:     "Confirm Action",
-		Size:      ModalSizeMD,
+		ID: "confirm-modal", Nonce: "nonce123",
+		Title: "Confirm Action",
+		Size:  ModalSizeMD,
 	}))
 	golden.Assert(t, "modal", output)
 }
@@ -223,10 +223,10 @@ func TestGoldenModal(t *testing.T) {
 func TestGoldenDrawer(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Drawer(DrawerProps{
-		BaseProps: utils.BaseProps{ID: "filter-drawer", Nonce: "nonce123"},
-		Title:     "Filters",
-		Side:      DrawerRight,
-		Size:      DrawerSizeMD,
+		ID: "filter-drawer", Nonce: "nonce123",
+		Title: "Filters",
+		Side:  DrawerRight,
+		Size:  DrawerSizeMD,
 	}))
 	golden.Assert(t, "drawer", output)
 }

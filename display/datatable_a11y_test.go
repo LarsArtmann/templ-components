@@ -107,7 +107,7 @@ func TestDataTableA11y(t *testing.T) {
 	t.Run("propagates aria-label from BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, DataTable(DataTableProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Users table"},
+			AriaLabel: "Users table",
 			Columns: []DataTableColumn{
 				{Label: "Name"},
 			},
@@ -121,7 +121,7 @@ func TestDataTableA11y(t *testing.T) {
 	t.Run("propagates custom class from BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, DataTable(DataTableProps{
-			BaseProps: utils.BaseProps{Class: "my-table"},
+			Class: "my-table",
 			Columns: []DataTableColumn{
 				{Label: "Name"},
 			},

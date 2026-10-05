@@ -36,8 +36,8 @@ func TestHoverCardPositionIsValid(t *testing.T) {
 func TestHoverCardBasicRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, HoverCard(HoverCardProps{
-		BaseProps: utils.BaseProps{ID: "hc"},
-		Content:   templ.Raw("<p>Card content</p>"),
+		ID:      "hc",
+		Content: templ.Raw("<p>Card content</p>"),
 	}))
 	utils.AssertContains(t, output, "Card content")
 	utils.AssertContains(t, output, `role="tooltip"`)
@@ -47,9 +47,9 @@ func TestHoverCardBasicRender(t *testing.T) {
 func TestHoverCardGolden(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, HoverCard(HoverCardProps{
-		BaseProps: utils.BaseProps{ID: "hcg"},
-		Position:  HoverCardPositionTop,
-		Content:   templ.Raw("<p>Tooltip text</p>"),
+		ID:       "hcg",
+		Position: HoverCardPositionTop,
+		Content:  templ.Raw("<p>Tooltip text</p>"),
 	}))
 	golden.Assert(t, "hover_card_basic", output)
 }
@@ -83,9 +83,9 @@ func TestHoverCardEdgeCases(t *testing.T) {
 	t.Run("invalid position falls back to bottom", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, HoverCard(HoverCardProps{
-			BaseProps: utils.BaseProps{ID: "inv"},
-			Position:  HoverCardPosition("bad"),
-			Content:   templ.Raw("x"),
+			ID:       "inv",
+			Position: HoverCardPosition("bad"),
+			Content:  templ.Raw("x"),
 		}))
 		utils.AssertContains(t, output, "top-full")
 	})
@@ -99,7 +99,7 @@ func TestHoverCardEdgeCases(t *testing.T) {
 	t.Run("custom class propagated", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, HoverCard(HoverCardProps{
-			BaseProps: utils.BaseProps{Class: "my-hc"},
+			Class: "my-hc",
 		}))
 		utils.AssertContains(t, output, "my-hc")
 	})
@@ -116,7 +116,7 @@ func TestDefaultContextMenuProps(t *testing.T) {
 func TestContextMenuBasicRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, ContextMenu(ContextMenuProps{
-		BaseProps: utils.BaseProps{ID: "ctx", Nonce: "n"},
+		ID: "ctx", Nonce: "n",
 		Items: []ContextMenuItem{
 			{Text: "Edit", Href: "/edit"},
 			{Text: "Delete", Href: "/delete"},
@@ -134,8 +134,8 @@ func TestContextMenuA11y(t *testing.T) {
 	t.Run("items have role menuitem", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ContextMenu(ContextMenuProps{
-			BaseProps: utils.BaseProps{ID: "a11y", Nonce: "n"},
-			Items:     []ContextMenuItem{{Text: "Edit", Href: "/edit"}},
+			ID: "a11y", Nonce: "n",
+			Items: []ContextMenuItem{{Text: "Edit", Href: "/edit"}},
 		}))
 		utils.AssertContains(t, output, `role="menuitem"`)
 	})
@@ -143,8 +143,8 @@ func TestContextMenuA11y(t *testing.T) {
 	t.Run("disabled items have pointer-events-none", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ContextMenu(ContextMenuProps{
-			BaseProps: utils.BaseProps{ID: "dis", Nonce: "n"},
-			Items:     []ContextMenuItem{{Text: "Edit", Disabled: true}},
+			ID: "dis", Nonce: "n",
+			Items: []ContextMenuItem{{Text: "Edit", Disabled: true}},
 		}))
 		utils.AssertContains(t, output, "pointer-events-none")
 	})
@@ -156,8 +156,8 @@ func TestContextMenuEdgeCases(t *testing.T) {
 	t.Run("no nonce omits script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ContextMenu(ContextMenuProps{
-			BaseProps: utils.BaseProps{ID: "nononce"},
-			Items:     []ContextMenuItem{{Text: "X", Href: "/x"}},
+			ID:    "nononce",
+			Items: []ContextMenuItem{{Text: "X", Href: "/x"}},
 		}))
 		utils.AssertNotContains(t, output, "tcCtxMenuAttached")
 	})
@@ -165,8 +165,8 @@ func TestContextMenuEdgeCases(t *testing.T) {
 	t.Run("item without href renders span", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ContextMenu(ContextMenuProps{
-			BaseProps: utils.BaseProps{ID: "span", Nonce: "n"},
-			Items:     []ContextMenuItem{{Text: "Label only"}},
+			ID: "span", Nonce: "n",
+			Items: []ContextMenuItem{{Text: "Label only"}},
 		}))
 		utils.AssertContains(t, output, "Label only")
 	})
@@ -245,7 +245,7 @@ func TestCarouselEdgeCases(t *testing.T) {
 	t.Run("nonce renders script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Carousel(CarouselProps{
-			BaseProps: utils.BaseProps{Nonce: "n"},
+			Nonce: "n",
 			Slides: []CarouselSlide{
 				{Content: templ.Raw("a")},
 				{Content: templ.Raw("b")},

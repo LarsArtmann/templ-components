@@ -13,8 +13,8 @@ func TestEyebrowGoldenSweep(t *testing.T) {
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "eyebrow_default", HTML: utils.Render(t, Eyebrow(EyebrowProps{Text: "Deploy #142 · production"}))},
 		{Name: "eyebrow_accent", HTML: utils.Render(t, Eyebrow(EyebrowProps{
-			Text:      "DNS block · 12:47:03",
-			BaseProps: utils.BaseProps{Class: "text-red-600 dark:text-red-400"},
+			Text:  "DNS block · 12:47:03",
+			Class: "text-red-600 dark:text-red-400",
 		}))},
 		{Name: "eyebrow_empty", HTML: utils.Render(t, Eyebrow(DefaultEyebrowProps()))},
 	})
@@ -38,8 +38,8 @@ func TestEyebrowBehavior(t *testing.T) {
 	t.Run("consumer class override wins for accent theming", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Eyebrow(EyebrowProps{
-			Text:      "accented",
-			BaseProps: utils.BaseProps{Class: "text-blue-600 dark:text-blue-400"},
+			Text:  "accented",
+			Class: "text-blue-600 dark:text-blue-400",
 		}))
 		utils.AssertContains(t, output, "text-blue-600")
 		utils.AssertNotContains(t, output, "text-gray-500")
@@ -53,7 +53,7 @@ func TestEyebrowA11y(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Eyebrow(EyebrowProps{
 			Text:      "status",
-			BaseProps: utils.BaseProps{AriaLabel: "Deployment status"},
+			AriaLabel: "Deployment status",
 		}))
 		utils.AssertContains(t, output, `aria-label="Deployment status"`)
 	})
@@ -81,11 +81,9 @@ func TestEyebrowEdgeCases(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, Eyebrow(EyebrowProps{
-			Text: "x",
-			BaseProps: utils.BaseProps{
-				ID:    "eyebrow-1",
-				Attrs: map[string]any{"data-testid": "eyebrow"},
-			},
+			Text:  "x",
+			ID:    "eyebrow-1",
+			Attrs: map[string]any{"data-testid": "eyebrow"},
 		}))
 		utils.AssertContainsAll(t, output, `id="eyebrow-1"`, `data-testid="eyebrow"`)
 	})

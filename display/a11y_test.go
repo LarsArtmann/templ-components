@@ -35,8 +35,8 @@ func TestA11yAttributes(t *testing.T) {
 	t.Run("dropdown has proper ARIA", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd"},
-			Label:     dropdownLabelActions,
+			ID:    "dd",
+			Label: dropdownLabelActions,
 			Items: []DropdownItem{
 				{Text: dropdownItemEdit, Href: dropdownHrefEdit},
 			},
@@ -116,8 +116,8 @@ func TestDarkModeClasses(t *testing.T) {
 	t.Run("dropdown has dark mode classes", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd"},
-			Label:     dropdownLabelMenu,
+			ID:    "dd",
+			Label: dropdownLabelMenu,
 		}))
 		utils.AssertContains(t, output, "dark:bg-gray-800")
 	})
@@ -176,8 +176,8 @@ func TestDropdownXSSSafety(t *testing.T) {
 
 		maliciousID := `<script>alert('xss')</script>`
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: maliciousID},
-			Label:     dropdownLabelMenu,
+			ID:    maliciousID,
+			Label: dropdownLabelMenu,
 		}))
 		utils.AssertNotContains(t, output, `<script>alert('xss')</script>`)
 		utils.AssertContains(t, output, `&lt;script&gt;`)
@@ -190,7 +190,7 @@ func TestGridA11y(t *testing.T) {
 	t.Run("Grid propagates AriaLabel", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Grid(GridProps{
-			BaseProps: utils.BaseProps{AriaLabel: "User cards"},
+			AriaLabel: "User cards",
 			Cols:      GridCols3,
 		}))
 		utils.AssertContains(t, output, `aria-label="User cards"`)
@@ -199,7 +199,7 @@ func TestGridA11y(t *testing.T) {
 	t.Run("Grid propagates ID", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Grid(GridProps{
-			BaseProps: utils.BaseProps{ID: "user-grid"},
+			ID: "user-grid",
 		}))
 		utils.AssertContains(t, output, `id="user-grid"`)
 	})
@@ -211,12 +211,10 @@ func TestStatCardHrefA11y(t *testing.T) {
 	t.Run("Href anchor propagates AriaLabel", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, StatCard(StatCardProps{
-			Label: "Active",
-			Value: "42",
-			BaseProps: utils.BaseProps{
-				AriaLabel: "Filter by active users",
-			},
-			Href: "/active",
+			Label:     "Active",
+			Value:     "42",
+			AriaLabel: "Filter by active users",
+			Href:      "/active",
 		}))
 		utils.AssertContains(t, output, `aria-label="Filter by active users"`)
 		utils.AssertContains(t, output, `<a `)

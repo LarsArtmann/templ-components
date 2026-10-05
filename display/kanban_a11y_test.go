@@ -15,9 +15,9 @@ func TestKanbanA11y(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, KanbanBoard(KanbanBoardProps{
-		BaseProps: utils.BaseProps{ID: "kb-a11y", Nonce: "n-a11y"},
-		Columns:   kanbanTestColumns(),
-		Wire:      &wire.Action{URL: "/api/kanban/move"},
+		ID: "kb-a11y", Nonce: "n-a11y",
+		Columns: kanbanTestColumns(),
+		Wire:    &wire.Action{URL: "/api/kanban/move"},
 	}))
 
 	utils.AssertContainsAll(t, html,
@@ -42,7 +42,7 @@ func TestKanbanA11yAriaLabelOverride(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, KanbanBoard(KanbanBoardProps{
-		BaseProps: utils.BaseProps{AriaLabel: "Sprint board"},
+		AriaLabel: "Sprint board",
 		Columns:   kanbanTestColumns(),
 	}))
 	utils.AssertContains(t, html, `aria-label="Sprint board"`)
@@ -174,9 +174,9 @@ func TestKanbanA11yFailureRegion(t *testing.T) {
 	t.Parallel()
 
 	wired := utils.Render(t, KanbanBoard(KanbanBoardProps{
-		BaseProps: utils.BaseProps{ID: "kb-fail-a11y"},
-		Columns:   kanbanTestColumns(),
-		Wire:      &wire.Action{URL: "/api/kanban/move"},
+		ID:      "kb-fail-a11y",
+		Columns: kanbanTestColumns(),
+		Wire:    &wire.Action{URL: "/api/kanban/move"},
 	}))
 
 	utils.AssertContainsAll(t, wired,

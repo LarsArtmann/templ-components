@@ -71,12 +71,10 @@ func TestPageHeaderRender(t *testing.T) {
 	t.Run("propagates BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, PageHeader(PageHeaderProps{
-			Title: "Audit",
-			BaseProps: utils.BaseProps{
-				ID:        "page-header-test",
-				Class:     "custom-header-class",
-				AriaLabel: "Page header",
-			},
+			Title:     "Audit",
+			ID:        "page-header-test",
+			Class:     "custom-header-class",
+			AriaLabel: "Page header",
 		}))
 		utils.AssertContains(t, output, `id="page-header-test"`)
 		utils.AssertContains(t, output, "custom-header-class")

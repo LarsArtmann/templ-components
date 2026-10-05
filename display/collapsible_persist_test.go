@@ -20,7 +20,7 @@ func TestCollapsiblePersist_OffByDefault(t *testing.T) {
 	output := persistRender(t, CollapsibleSectionProps{
 		Title:      "Section",
 		StorageKey: "key",
-		BaseProps:  utils.BaseProps{Nonce: "n1"},
+		Nonce:      "n1",
 	})
 
 	if strings.Contains(output, "tcCollapsiblePersist") {
@@ -34,7 +34,7 @@ func TestCollapsiblePersist_RequiresStorageKey(t *testing.T) {
 	output := persistRender(t, CollapsibleSectionProps{
 		Title:        "Section",
 		PersistState: true,
-		BaseProps:    utils.BaseProps{Nonce: "n1"},
+		Nonce:        "n1",
 	})
 
 	if strings.Contains(output, "tcCollapsiblePersist") {
@@ -67,7 +67,7 @@ func TestCollapsiblePersist_ScriptShipsWithNonce(t *testing.T) {
 		Title:        "Section",
 		StorageKey:   "pipeline-portals",
 		PersistState: true,
-		BaseProps:    utils.BaseProps{Nonce: "persist-nonce"},
+		Nonce:        "persist-nonce",
 	})
 
 	for _, want := range []string{
@@ -95,7 +95,7 @@ func TestCollapsiblePersist_RestoresBeforeGuard(t *testing.T) {
 		Title:        "Section",
 		StorageKey:   "key",
 		PersistState: true,
-		BaseProps:    utils.BaseProps{Nonce: "n"},
+		Nonce:        "n",
 	})
 
 	applyIdx := strings.Index(output, "applyAll();")

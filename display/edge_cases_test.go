@@ -14,9 +14,9 @@ func TestModalEdgeCases(t *testing.T) {
 		t.Parallel()
 
 		props := ModalProps{
-			BaseProps: utils.BaseProps{ID: "no-title-modal"},
-			Open:      true,
-			Size:      ModalSizeMD,
+			ID:   "no-title-modal",
+			Open: true,
+			Size: ModalSizeMD,
 		}
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, `id="no-title-modal"`)
@@ -28,8 +28,8 @@ func TestModalEdgeCases(t *testing.T) {
 		t.Parallel()
 
 		props := DropdownProps{
-			BaseProps: utils.BaseProps{ID: "empty-dd"},
-			Items:     []DropdownItem{},
+			ID:    "empty-dd",
+			Items: []DropdownItem{},
 		}
 		output := utils.Render(t, Dropdown(props))
 		utils.AssertContains(t, output, `id="empty-dd"`)
@@ -40,7 +40,7 @@ func TestModalEdgeCases(t *testing.T) {
 		t.Parallel()
 
 		props := DropdownProps{
-			BaseProps: utils.BaseProps{ID: "both-dd"},
+			ID: "both-dd",
 			Items: []DropdownItem{
 				{Text: "Link", Href: "/link"},
 			},
@@ -106,7 +106,7 @@ func TestStatCardEdgeCases(t *testing.T) {
 		{"up trend", StatCardProps{Value: "100", Label: "Users", Change: "+12%", Trend: TrendUp}, []string{"100", "+12%", "text-green-700"}},
 		{"down trend", StatCardProps{Value: "100", Label: "Users", Change: "-5%", Trend: TrendDown}, []string{"100", "-5%", "text-red-600"}},
 		{"empty", StatCardProps{}, []string{"<dl>"}},
-		{"custom id/class", StatCardProps{BaseProps: utils.BaseProps{ID: "stat-1", Class: "mt-4"}, Value: "42", Label: "Count"}, []string{`id="stat-1"`, "mt-4"}},
+		{"custom id/class", StatCardProps{ID: "stat-1", Class: "mt-4", Value: "42", Label: "Count"}, []string{`id="stat-1"`, "mt-4"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -130,7 +130,7 @@ func TestEmptyStateEdgeCases(t *testing.T) {
 		{"no action", EmptyStateProps{Title: "Done", ActionText: ""}, []string{"Done"}, []string{"bg-blue-600"}},
 		{"button without href", EmptyStateProps{Title: "Oops", ActionText: "Retry", ActionHref: ""}, []string{"Retry", "<button"}, []string{"<a"}},
 		{"link with href", EmptyStateProps{Title: "Oops", ActionText: "Retry", ActionHref: "/retry"}, []string{"Retry", `<a href="/retry"`}, []string{"<button"}},
-		{"custom id/class", EmptyStateProps{BaseProps: utils.BaseProps{ID: "empty-1", Class: "my-8"}, Title: "Nothing", Description: "Here"}, []string{`id="empty-1"`, "my-8", "Nothing", "Here"}, nil},
+		{"custom id/class", EmptyStateProps{ID: "empty-1", Class: "my-8", Title: "Nothing", Description: "Here"}, []string{`id="empty-1"`, "my-8", "Nothing", "Here"}, nil},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -212,7 +212,7 @@ func TestBadgeEdgeCases(t *testing.T) {
 		{"warning", BadgeProps{Text: "Test", Type: BadgeWarning}, []string{"yellow"}},
 		{"info", BadgeProps{Text: "Test", Type: BadgeInfo}, []string{"blue"}},
 		{"with dot", BadgeProps{Text: "Live", Type: BadgeSuccess, Dot: true}, []string{"bg-green"}},
-		{"custom id/class", BadgeProps{BaseProps: utils.BaseProps{ID: "badge-1", Class: "ml-2"}, Text: "Test"}, []string{`id="badge-1"`, "ml-2"}},
+		{"custom id/class", BadgeProps{ID: "badge-1", Class: "ml-2", Text: "Test"}, []string{`id="badge-1"`, "ml-2"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -235,7 +235,7 @@ func TestAvatarEdgeCases(t *testing.T) {
 		{"online with image", AvatarProps{Src: "/a.jpg", Alt: "User", Status: AvatarStatusOnline}, []string{"bg-green-400"}},
 		{"offline with image", AvatarProps{Src: "/a.jpg", Alt: "User", Status: AvatarStatusOffline}, []string{"bg-gray-400"}},
 		{"xs size", AvatarProps{Initials: "AB", Size: AvatarSizeXS}, []string{"h-6"}},
-		{"custom id/class", AvatarProps{BaseProps: utils.BaseProps{ID: "av", Class: "mr-2"}, Initials: "AB"}, []string{`id="av"`, "mr-2"}},
+		{"custom id/class", AvatarProps{ID: "av", Class: "mr-2", Initials: "AB"}, []string{`id="av"`, "mr-2"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -296,10 +296,10 @@ func TestDropdownEdgeCases(t *testing.T) {
 		props DropdownProps
 		want  []string
 	}{
-		{"right position", DropdownProps{BaseProps: utils.BaseProps{ID: "dd"}, Label: "A", Position: DropdownPositionRight}, []string{`data-tc-align="end"`}},
-		{"left position", DropdownProps{BaseProps: utils.BaseProps{ID: "dd"}, Label: "A", Position: DropdownPositionLeft}, []string{"hidden"}},
-		{"default position", DropdownProps{BaseProps: utils.BaseProps{ID: "dd"}, Label: "A"}, []string{"hidden"}},
-		{"item with icon", DropdownProps{BaseProps: utils.BaseProps{ID: "dd"}, Label: "A", Items: []DropdownItem{{Text: "Edit", Href: "/edit", Icon: icons.Edit}}}, []string{"Edit"}},
+		{"right position", DropdownProps{ID: "dd", Label: "A", Position: DropdownPositionRight}, []string{`data-tc-align="end"`}},
+		{"left position", DropdownProps{ID: "dd", Label: "A", Position: DropdownPositionLeft}, []string{"hidden"}},
+		{"default position", DropdownProps{ID: "dd", Label: "A"}, []string{"hidden"}},
+		{"item with icon", DropdownProps{ID: "dd", Label: "A", Items: []DropdownItem{{Text: "Edit", Href: "/edit", Icon: icons.Edit}}}, []string{"Edit"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -348,14 +348,14 @@ func TestAriaLabelPropagation(t *testing.T) {
 			CardProps{
 				Title:     "T",
 				Padding:   CardPaddingMD,
-				BaseProps: utils.BaseProps{AriaLabel: label},
+				AriaLabel: label,
 			},
 		},
 		{
 			"SimpleCard",
 			SimpleCardProps{
 				Padding:   CardPaddingSM,
-				BaseProps: utils.BaseProps{AriaLabel: label},
+				AriaLabel: label,
 			},
 		},
 		{
@@ -364,29 +364,29 @@ func TestAriaLabelPropagation(t *testing.T) {
 				Value:     "42",
 				Label:     "L",
 				Trend:     TrendNone,
-				BaseProps: utils.BaseProps{AriaLabel: label},
+				AriaLabel: label,
 			},
 		},
 		{
 			"Accordion",
 			AccordionProps{
 				Items:     []AccordionItem{{ID: "a", Title: "A"}},
-				BaseProps: utils.BaseProps{AriaLabel: label},
+				AriaLabel: label,
 			},
 		},
 		{
 			"Table",
 			TableProps{
 				Headers:   []string{"H"},
-				BaseProps: utils.BaseProps{AriaLabel: label},
+				AriaLabel: label,
 			},
 		},
 		{
 			"Dropdown",
 			DropdownProps{
-				Label:     "Menu",
-				Items:     []DropdownItem{{Text: "I"}},
-				BaseProps: utils.BaseProps{ID: "dd", AriaLabel: label},
+				Label: "Menu",
+				Items: []DropdownItem{{Text: "I"}},
+				ID:    "dd", AriaLabel: label,
 			},
 		},
 		{
@@ -394,7 +394,7 @@ func TestAriaLabelPropagation(t *testing.T) {
 			TabsProps{
 				ActiveTabID: "t1",
 				Tabs:        []Tab{{ID: "t1", Label: "T"}},
-				BaseProps:   utils.BaseProps{AriaLabel: label},
+				AriaLabel:   label,
 			},
 		},
 	}

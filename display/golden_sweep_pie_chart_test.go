@@ -19,7 +19,7 @@ func TestGoldenSweepPieChart(t *testing.T) {
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "pie_chart_basic", HTML: utils.Render(t, PieChart(PieChartProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Traffic sources"},
+			AriaLabel: "Traffic sources",
 			Slices:    slices,
 		}))},
 		{Name: "pie_chart_donut", HTML: utils.Render(t, PieChart(PieChartProps{
@@ -59,7 +59,7 @@ func TestPieChartAriaLabel(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, PieChart(PieChartProps{
-		BaseProps: utils.BaseProps{AriaLabel: "Traffic sources"},
+		AriaLabel: "Traffic sources",
 		Slices:    []PieChartSlice{{Label: "A", Value: 1}},
 	}))
 	utils.AssertContains(t, html, `aria-label="Traffic sources"`)
@@ -87,10 +87,8 @@ func TestPieChartBasePropsPropagation(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, PieChart(PieChartProps{
-		BaseProps: utils.BaseProps{
-			Class: "max-w-sm",
-			ID:    "my-pie",
-		},
+		Class:  "max-w-sm",
+		ID:     "my-pie",
 		Slices: []PieChartSlice{{Label: "A", Value: 1}},
 	}))
 	utils.AssertContains(t, html, "max-w-sm")

@@ -52,8 +52,8 @@ func TestCopyButtonBehavior(t *testing.T) {
 	t.Run("includes singleton script with nonce", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, CopyButton(CopyButtonProps{
-			Text:      "x",
-			BaseProps: utils.BaseProps{Nonce: "secret123"},
+			Text:  "x",
+			Nonce: "secret123",
 		}))
 		utils.AssertContains(t, output, `nonce="secret123"`)
 		utils.AssertContains(t, output, "tcCopyAttached")
@@ -285,7 +285,7 @@ func TestImageBehavior(t *testing.T) {
 		output := utils.Render(t, Image(ImageProps{
 			Src:         "/x.jpg",
 			FallbackSrc: "/fallback.jpg",
-			BaseProps:   utils.BaseProps{Nonce: "n1"},
+			Nonce:       "n1",
 		}))
 		utils.AssertContains(t, output, `data-tc-img-fallback="/fallback.jpg"`)
 		utils.AssertContains(t, output, "tcImageFallbackAttached")

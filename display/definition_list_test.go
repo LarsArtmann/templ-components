@@ -48,12 +48,10 @@ func TestDefinitionListRender(t *testing.T) {
 	t.Run("propagates BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, DefinitionList(DefinitionListProps{
-			Items: []DefinitionItem{{Term: "Key", Detail: "Val"}},
-			BaseProps: utils.BaseProps{
-				ID:        "deflist",
-				Class:     "extra-class",
-				AriaLabel: "Details",
-			},
+			Items:     []DefinitionItem{{Term: "Key", Detail: "Val"}},
+			ID:        "deflist",
+			Class:     "extra-class",
+			AriaLabel: "Details",
 		}))
 		utils.AssertContains(t, output, `id="deflist"`)
 		utils.AssertContains(t, output, "extra-class")

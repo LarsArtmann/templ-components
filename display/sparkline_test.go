@@ -31,7 +31,7 @@ func TestSparklineAriaLabel(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Sparkline(SparklineProps{
 		Values:    []float64{1, 2, 3},
-		BaseProps: utils.BaseProps{AriaLabel: "Trend: increasing"},
+		AriaLabel: "Trend: increasing",
 	}))
 	utils.AssertContains(t, output, `aria-label="Trend: increasing"`)
 	utils.AssertNotContains(t, output, `aria-hidden`)

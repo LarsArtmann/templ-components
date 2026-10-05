@@ -139,7 +139,7 @@ func TestTabsRender(t *testing.T) {
 	t.Run("custom ID and class propagated", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tabs(TabsProps{
-			BaseProps:   utils.BaseProps{ID: "my-tabs", Class: "max-w-2xl"},
+			ID: "my-tabs", Class: "max-w-2xl",
 			ActiveTabID: "a",
 			Tabs:        []Tab{{ID: "a", Label: "A"}},
 		}))
@@ -200,7 +200,7 @@ func TestTabsWire(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, Tabs(TabsProps{
-			BaseProps:   utils.BaseProps{ID: "prefs-tabs"},
+			ID:          "prefs-tabs",
 			ActiveTabID: "general",
 			Tabs: []Tab{
 				{ID: "general", Label: "General"},
@@ -218,7 +218,7 @@ func TestTabsWire(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, Tabs(TabsProps{
-			BaseProps:   utils.BaseProps{ID: "prefs-tabs"},
+			ID:          "prefs-tabs",
 			ActiveTabID: "general",
 			Tabs: []Tab{
 				{ID: "general", Label: "General"},
@@ -235,7 +235,7 @@ func TestTabsWire(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, Tabs(TabsProps{
-			BaseProps: utils.BaseProps{ID: "prefs-tabs"},
+			ID: "prefs-tabs",
 			Tabs: []Tab{
 				{ID: "general", Label: "General"},
 			},
@@ -248,7 +248,7 @@ func TestTabsWire(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, Tabs(TabsProps{
-			BaseProps: utils.BaseProps{ID: "prefs-tabs"},
+			ID: "prefs-tabs",
 			Tabs: []Tab{
 				{ID: "general", Label: "General"},
 			},
@@ -265,7 +265,7 @@ func TestTabsWire(t *testing.T) {
 		snapshot := *original
 
 		_ = utils.Render(t, Tabs(TabsProps{
-			BaseProps: utils.BaseProps{ID: "prefs-tabs"},
+			ID: "prefs-tabs",
 			Tabs: []Tab{
 				{ID: "general", Label: "General"},
 				{ID: "advanced", Label: "Advanced"},
@@ -286,7 +286,7 @@ func TestTabsWire(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, Tabs(TabsProps{
-			BaseProps:  utils.BaseProps{ID: "prefs-tabs"},
+			ID:         "prefs-tabs",
 			ClientSide: true,
 			Tabs: []Tab{
 				{ID: "general", Label: "General"},

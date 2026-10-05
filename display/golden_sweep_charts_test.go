@@ -23,7 +23,7 @@ func TestGoldenSweepSparkline(t *testing.T) {
 		}))},
 		{Name: "sparkline_aria_label", HTML: utils.Render(t, Sparkline(SparklineProps{
 			Values:    []float64{1, 3, 2, 5, 4, 6, 3, 7},
-			BaseProps: utils.BaseProps{AriaLabel: "Message rate over 8 hours"},
+			AriaLabel: "Message rate over 8 hours",
 		}))},
 		{Name: "sparkline_custom_dims", HTML: utils.Render(t, Sparkline(SparklineProps{
 			Values:      []float64{1, 3, 2, 5, 4, 6, 3, 7},
@@ -84,11 +84,9 @@ func TestGoldenSweepExternalLink(t *testing.T) {
 			ShowIcon: false,
 		}))},
 		{Name: "external_link_custom_class", HTML: utils.Render(t, ExternalLink(ExternalLinkProps{
-			Href: "https://docs.example.com",
-			Text: "Documentation",
-			BaseProps: utils.BaseProps{
-				Class: "text-blue-600 hover:text-blue-500 dark:text-blue-400",
-			},
+			Href:  "https://docs.example.com",
+			Text:  "Documentation",
+			Class: "text-blue-600 hover:text-blue-500 dark:text-blue-400",
 		}))},
 	})
 }

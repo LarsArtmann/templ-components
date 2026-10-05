@@ -15,9 +15,9 @@ func TestRTLRendering(t *testing.T) {
 	t.Run("drawer uses logical positioning via data-side", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Drawer(DrawerProps{
-			BaseProps: utils.BaseProps{ID: "rtl-drawer"},
-			Open:      true,
-			Side:      DrawerLeft,
+			ID:   "rtl-drawer",
+			Open: true,
+			Side: DrawerLeft,
 		}))
 		utils.AssertContains(t, output, `data-side="left"`)
 	})

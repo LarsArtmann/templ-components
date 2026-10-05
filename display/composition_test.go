@@ -106,8 +106,8 @@ func TestCompositionDropdownWithMixedItems(t *testing.T) {
 	t.Run("dropdown with internal and external links", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "mixed-menu"},
-			Label:     dropdownLabelMenu,
+			ID:    "mixed-menu",
+			Label: dropdownLabelMenu,
 			Items: []DropdownItem{
 				{Text: "Internal", Href: "/page"},
 				{Text: "External", Href: "https://example.com", External: true},

@@ -36,8 +36,8 @@ func TestEmptyStateCoverage(t *testing.T) {
 	t.Run("with ID and class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, EmptyState(EmptyStateProps{
-			Title:     "Test",
-			BaseProps: utils.BaseProps{ID: "empty", Class: "py-12"},
+			Title: "Test",
+			ID:    "empty", Class: "py-12",
 		}))
 		utils.AssertContains(t, output, `id="empty"`)
 		utils.AssertContains(t, output, "py-12")
@@ -77,9 +77,9 @@ func TestTableExtraCoverage(t *testing.T) {
 	t.Run("with ID", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Table(TableProps{
-			Headers:   []string{"A"},
-			Rows:      []TableRow{SimpleTableRow("1")},
-			BaseProps: utils.BaseProps{ID: "tbl"},
+			Headers: []string{"A"},
+			Rows:    []TableRow{SimpleTableRow("1")},
+			ID:      "tbl",
 		}))
 		utils.AssertContains(t, output, `id="tbl"`)
 	})

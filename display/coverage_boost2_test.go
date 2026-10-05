@@ -16,10 +16,8 @@ func TestListNoteBaseProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, ListNote(ListNoteProps{
 		Shown: 5, Total: 20,
-		BaseProps: utils.BaseProps{
-			ID:        "list-note-1",
-			AriaLabel: "Truncation notice",
-		},
+		ID:        "list-note-1",
+		AriaLabel: "Truncation notice",
 	}))
 	utils.AssertContainsAll(t, output, `id="list-note-1"`, `aria-label="Truncation notice"`)
 }
@@ -29,10 +27,8 @@ func TestGridContainerAwareWithBaseProps(t *testing.T) {
 	output := utils.Render(t, Grid(GridProps{
 		Cols:           GridCols3,
 		ContainerAware: true,
-		BaseProps: utils.BaseProps{
-			ID:        "cgrid",
-			AriaLabel: "Responsive grid",
-		},
+		ID:             "cgrid",
+		AriaLabel:      "Responsive grid",
 	}))
 	utils.AssertContainsAll(t, output, `id="cgrid"`, `aria-label="Responsive grid"`, "@container")
 }
@@ -49,11 +45,9 @@ func TestGridContainerClassFallback(t *testing.T) {
 func TestImageBaseProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Image(ImageProps{
-		Src: "photo.jpg",
-		BaseProps: utils.BaseProps{
-			ID:        "avatar-img",
-			AriaLabel: "User avatar",
-		},
+		Src:       "photo.jpg",
+		ID:        "avatar-img",
+		AriaLabel: "User avatar",
 	}))
 	utils.AssertContainsAll(t, output, `id="avatar-img"`, `aria-label="User avatar"`)
 }
@@ -67,13 +61,11 @@ func TestImageEmptySrc(t *testing.T) {
 func TestCopyButtonAnchorWithBaseProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, CopyButton(CopyButtonProps{
-		Text: "Copy me",
-		Href: "/copy",
-		Icon: true,
-		BaseProps: utils.BaseProps{
-			ID:        "copy-link",
-			AriaLabel: "Copy link to clipboard",
-		},
+		Text:      "Copy me",
+		Href:      "/copy",
+		Icon:      true,
+		ID:        "copy-link",
+		AriaLabel: "Copy link to clipboard",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -87,8 +79,8 @@ func TestCopyButtonAnchorWithBaseProps(t *testing.T) {
 func TestCopyButtonButtonWithID(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, CopyButton(CopyButtonProps{
-		Text:      "Copy",
-		BaseProps: utils.BaseProps{ID: "copy-btn"},
+		Text: "Copy",
+		ID:   "copy-btn",
 	}))
 	utils.AssertContains(t, output, `id="copy-btn"`)
 }
@@ -96,8 +88,8 @@ func TestCopyButtonButtonWithID(t *testing.T) {
 func TestCountBadgeWithID(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, CountBadge(CountBadgeProps{
-		Count:     5,
-		BaseProps: utils.BaseProps{ID: "notif-count"},
+		Count: 5,
+		ID:    "notif-count",
 	}))
 	utils.AssertContains(t, output, `id="notif-count"`)
 }
@@ -108,7 +100,7 @@ func TestDefinitionGridWithID(t *testing.T) {
 		Items: []DefinitionItem{
 			{Term: "Name", Detail: "Alice"},
 		},
-		BaseProps: utils.BaseProps{ID: "def-grid"},
+		ID: "def-grid",
 	}))
 	utils.AssertContains(t, output, `id="def-grid"`)
 }
@@ -249,10 +241,8 @@ func TestImageFullProps(t *testing.T) {
 		Lazy:        false,
 		Rounded:     true,
 		FallbackSrc: "placeholder.jpg",
-		BaseProps: utils.BaseProps{
-			ID:    "hero-img",
-			Class: "border-2",
-		},
+		ID:          "hero-img",
+		Class:       "border-2",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -274,11 +264,9 @@ func TestAccordionFullProps(t *testing.T) {
 			{Title: "Section 1", Content: templ.Raw("Content 1")},
 			{Title: "Section 2", Content: templ.Raw("Content 2"), Open: true},
 		},
-		BaseProps: utils.BaseProps{
-			ID:        "accordion-1",
-			AriaLabel: "FAQ accordion",
-			Class:     "border rounded-lg",
-		},
+		ID:        "accordion-1",
+		AriaLabel: "FAQ accordion",
+		Class:     "border rounded-lg",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -298,10 +286,8 @@ func TestDropdownFullProps(t *testing.T) {
 			{Text: "Edit", Href: "/edit"},
 			{Text: "Delete", Href: "/delete"},
 		},
-		BaseProps: utils.BaseProps{
-			ID:        "dd-1",
-			AriaLabel: "Actions menu",
-		},
+		ID:        "dd-1",
+		AriaLabel: "Actions menu",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -314,14 +300,12 @@ func TestDropdownFullProps(t *testing.T) {
 func TestButtonAsLinkWithIcon(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Button(ButtonProps{
-		Text:    "Settings",
-		Href:    "/settings",
-		Variant: ButtonPrimary,
-		Icon:    icons.Icon(icons.Settings, "w-4 h-4"),
-		BaseProps: utils.BaseProps{
-			ID:        "settings-link",
-			AriaLabel: "Open settings",
-		},
+		Text:      "Settings",
+		Href:      "/settings",
+		Variant:   ButtonPrimary,
+		Icon:      icons.Icon(icons.Settings, "w-4 h-4"),
+		ID:        "settings-link",
+		AriaLabel: "Open settings",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -334,12 +318,10 @@ func TestButtonAsLinkWithIcon(t *testing.T) {
 func TestDrawerFullProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Drawer(DrawerProps{
-		Title: "Filter Options",
-		Side:  "right",
-		BaseProps: utils.BaseProps{
-			ID:        "drawer-1",
-			AriaLabel: "Filter drawer",
-		},
+		Title:     "Filter Options",
+		Side:      "right",
+		ID:        "drawer-1",
+		AriaLabel: "Filter drawer",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -351,12 +333,10 @@ func TestDrawerFullProps(t *testing.T) {
 func TestModalFullProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Modal(ModalProps{
-		Title: "Confirm Action",
-		Size:  ModalSizeLG,
-		BaseProps: utils.BaseProps{
-			ID:        "modal-1",
-			AriaLabel: "Confirmation dialog",
-		},
+		Title:     "Confirm Action",
+		Size:      ModalSizeLG,
+		ID:        "modal-1",
+		AriaLabel: "Confirmation dialog",
 	}))
 	utils.AssertContainsAll(
 		t, output,
@@ -368,9 +348,9 @@ func TestModalFullProps(t *testing.T) {
 func TestTooltipFullProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Tooltip(TooltipProps{
-		Text:      "Helpful tip",
-		Position:  TooltipPositionTop,
-		BaseProps: utils.BaseProps{ID: "tip-1"},
+		Text:     "Helpful tip",
+		Position: TooltipPositionTop,
+		ID:       "tip-1",
 	}))
 	utils.AssertContainsAll(t, output, `id="tip-1"`, "Helpful tip")
 }
@@ -384,10 +364,8 @@ func TestTabsDefaultVariant(t *testing.T) {
 			{ID: "tab1", Label: "Overview"},
 			{ID: "tab2", Label: "Details"},
 		},
-		BaseProps: utils.BaseProps{
-			ID:        "settings-tabs",
-			AriaLabel: "Settings",
-		},
+		ID:        "settings-tabs",
+		AriaLabel: "Settings",
 	}))
 	utils.AssertContainsAll(t, output, `id="settings-tabs"`, "Overview", "Details")
 }
@@ -399,10 +377,8 @@ func TestDefinitionListDetailComponent(t *testing.T) {
 			{Term: "Status", DetailComponent: templ.Raw(`<span class="badge">Active</span>`)},
 			{Term: "Email", Detail: "alice@example.com"},
 		},
-		BaseProps: utils.BaseProps{
-			ID:        "def-list",
-			AriaLabel: "User details",
-		},
+		ID:        "def-list",
+		AriaLabel: "User details",
 	}))
 	utils.AssertContainsAll(
 		t, output,

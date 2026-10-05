@@ -112,9 +112,9 @@ func TestKanbanBehaviourMoveLooksInstant(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, KanbanBoard(KanbanBoardProps{
-		BaseProps: utils.BaseProps{Nonce: "n-instant"},
-		Columns:   kanbanTestColumns(),
-		Wire:      &wire.Action{URL: "/api/kanban/move"},
+		Nonce:   "n-instant",
+		Columns: kanbanTestColumns(),
+		Wire:    &wire.Action{URL: "/api/kanban/move"},
 	}))
 
 	place := mustIndex(t, html, "tcKbOptimistic(b,card,c,index,title,cn||colId);")
@@ -153,11 +153,9 @@ func TestKanbanBehaviourBasePropsPropagate(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, KanbanBoard(KanbanBoardProps{
-		BaseProps: utils.BaseProps{
-			ID:    "custom-board",
-			Class: "my-board",
-			Attrs: map[string]any{"data-testid": "kanban"},
-		},
+		ID:      "custom-board",
+		Class:   "my-board",
+		Attrs:   map[string]any{"data-testid": "kanban"},
 		Columns: kanbanTestColumns(),
 	}))
 

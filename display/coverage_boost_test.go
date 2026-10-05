@@ -14,12 +14,10 @@ func TestEmptyStateFullCoverage(t *testing.T) {
 	t.Run("with all props including action link and BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, EmptyState(EmptyStateProps{
-			BaseProps: utils.BaseProps{
-				ID:        "empty-1",
-				Class:     "mt-8",
-				AriaLabel: "No data",
-				Attrs:     templ.Attributes{"data-ctx": "dashboard"},
-			},
+			ID:          "empty-1",
+			Class:       "mt-8",
+			AriaLabel:   "No data",
+			Attrs:       templ.Attributes{"data-ctx": "dashboard"},
 			Title:       "No results",
 			Description: "Try adjusting your filters",
 			Icon:        icons.Search,
@@ -57,16 +55,14 @@ func TestTableFullCoverage(t *testing.T) {
 	t.Run("with all options", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Table(TableProps{
-			BaseProps: utils.BaseProps{
-				ID:        "data-table",
-				Class:     "w-full",
-				AriaLabel: "User data",
-			},
-			Caption:  "User Statistics",
-			Headers:  []string{"Name", "Email", "Role"},
-			Striped:  true,
-			Hover:    true,
-			Bordered: true,
+			ID:        "data-table",
+			Class:     "w-full",
+			AriaLabel: "User data",
+			Caption:   "User Statistics",
+			Headers:   []string{"Name", "Email", "Role"},
+			Striped:   true,
+			Hover:     true,
+			Bordered:  true,
 			Rows: []TableRow{
 				{Cells: []TableCell{{Text: "Alice"}, {Text: "alice@example.com"}, {Text: "Admin"}}},
 				{Cells: []TableCell{{Text: "Bob"}, {Text: "bob@example.com"}, {Text: "User"}}},
@@ -84,11 +80,9 @@ func TestTabsFullCoverage(t *testing.T) {
 	t.Run("pills variant with client-side and BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tabs(TabsProps{
-			BaseProps: utils.BaseProps{
-				ID:        "my-tabs",
-				Class:     "border-b",
-				AriaLabel: "Settings tabs",
-			},
+			ID:          "my-tabs",
+			Class:       "border-b",
+			AriaLabel:   "Settings tabs",
 			Variant:     TabsPills,
 			ClientSide:  true,
 			ActiveTabID: "tab2",
@@ -119,12 +113,12 @@ func TestBadgeFullCoverage(t *testing.T) {
 		t.Run(tt.name+" badge", func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Badge(BadgeProps{
-				BaseProps: utils.BaseProps{ID: "b-" + tt.name},
-				Text:      tt.name,
-				Type:      tt.btype,
-				Size:      BadgeSizeLG,
-				Pill:      true,
-				Dot:       true,
+				ID:   "b-" + tt.name,
+				Text: tt.name,
+				Type: tt.btype,
+				Size: BadgeSizeLG,
+				Pill: true,
+				Dot:  true,
 			}))
 			utils.AssertContains(t, output, tt.name)
 		})
@@ -147,14 +141,12 @@ func TestButtonFullCoverage(t *testing.T) {
 		t.Run(string(variant)+" variant", func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Button(ButtonProps{
-				BaseProps: utils.BaseProps{
-					ID:        "btn-" + string(variant),
-					Class:     "extra",
-					AriaLabel: string(variant) + " button",
-				},
-				Text:    string(variant),
-				Variant: variant,
-				Size:    ButtonSizeLG,
+				ID:        "btn-" + string(variant),
+				Class:     "extra",
+				AriaLabel: string(variant) + " button",
+				Text:      string(variant),
+				Variant:   variant,
+				Size:      ButtonSizeLG,
 			}))
 			utils.AssertContains(t, output, string(variant))
 		})
@@ -176,14 +168,12 @@ func TestCardFullCoverage(t *testing.T) {
 	t.Run("with all options", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Card(CardProps{
-			BaseProps: utils.BaseProps{
-				ID:        "card-1",
-				Class:     "shadow-lg",
-				AriaLabel: "User card",
-			},
-			Title:    "User Profile",
-			Subtitle: "Admin account",
-			Padding:  CardPaddingLG,
+			ID:        "card-1",
+			Class:     "shadow-lg",
+			AriaLabel: "User card",
+			Title:     "User Profile",
+			Subtitle:  "Admin account",
+			Padding:   CardPaddingLG,
 		}))
 		utils.AssertContains(t, output, "User Profile")
 		utils.AssertContains(t, output, "Admin account")
@@ -198,11 +188,11 @@ func TestStatCardFullCoverage(t *testing.T) {
 		t.Run("trend_"+string(trend), func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, StatCard(StatCardProps{
-				BaseProps: utils.BaseProps{ID: "stat-" + string(trend)},
-				Value:     "$1,234",
-				Label:     "Revenue",
-				Change:    "+12%",
-				Trend:     trend,
+				ID:     "stat-" + string(trend),
+				Value:  "$1,234",
+				Label:  "Revenue",
+				Change: "+12%",
+				Trend:  trend,
 			}))
 			utils.AssertContains(t, output, "$1,234")
 			utils.AssertContains(t, output, "Revenue")
@@ -254,9 +244,9 @@ func TestTooltipFullCoverage(t *testing.T) {
 		t.Run("position_"+string(pos), func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Tooltip(TooltipProps{
-				BaseProps: utils.BaseProps{ID: "tip-" + string(pos)},
-				Text:      "Helpful tip",
-				Position:  pos,
+				ID:       "tip-" + string(pos),
+				Text:     "Helpful tip",
+				Position: pos,
 			}))
 			utils.AssertContains(t, output, "Helpful tip")
 		})

@@ -54,7 +54,7 @@ func TestAccordionRender(t *testing.T) {
 	t.Run("no script tag - uses native details", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Accordion(AccordionProps{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
+			Nonce: testNonce,
 			Items: []AccordionItem{
 				{ID: "n1", Title: "Q", Content: templ.Raw("A")},
 			},
@@ -66,7 +66,7 @@ func TestAccordionRender(t *testing.T) {
 	t.Run("custom class and id", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Accordion(AccordionProps{
-			BaseProps: utils.BaseProps{ID: "faq", Class: cssClassMt4},
+			ID: "faq", Class: cssClassMt4,
 			Items: []AccordionItem{
 				{ID: "n1", Title: "Q", Content: templ.Raw("A")},
 			},

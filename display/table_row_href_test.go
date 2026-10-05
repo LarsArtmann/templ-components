@@ -45,8 +45,8 @@ func TestTableRowHref(t *testing.T) {
 	t.Run("clickable rows include nonce-guarded script", func(t *testing.T) {
 		t.Parallel()
 		html := utils.Render(t, Table(TableProps{
-			BaseProps: utils.BaseProps{Nonce: "row-nonce"},
-			Headers:   []string{"X"},
+			Nonce:   "row-nonce",
+			Headers: []string{"X"},
 			Rows: []TableRow{
 				{Cells: []TableCell{{Text: "A"}}, Href: "/a"},
 			},

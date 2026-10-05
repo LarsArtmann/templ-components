@@ -30,8 +30,8 @@ func TestGoldenSweepCollapsibleSection(t *testing.T) {
 			StorageKey: "persisted-section",
 		}))},
 		{Name: "collapsible_section_custom_class", HTML: utils.Render(t, CollapsibleSection(CollapsibleSectionProps{
-			Title:     "Styled Section",
-			BaseProps: utils.BaseProps{Class: "border border-gray-200"},
+			Title: "Styled Section",
+			Class: "border border-gray-200",
 		}))},
 	})
 }

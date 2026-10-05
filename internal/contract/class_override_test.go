@@ -72,8 +72,8 @@ func TestClassOverrideWins(t *testing.T) {
 			name: "input text-size override",
 			render: func() string {
 				return utils.Render(t, forms.Input(forms.InputProps{ //nolint:exhaustruct // minimal
-					Name:      "x",
-					BaseProps: utils.BaseProps{Class: "text-xl " + marker},
+					Name:  "x",
+					Class: "text-xl " + marker,
 				}))
 			},
 			wantPresent: []string{marker, "text-xl"},
@@ -83,8 +83,8 @@ func TestClassOverrideWins(t *testing.T) {
 			name: "alert border override",
 			render: func() string {
 				return utils.Render(t, feedback.Alert(feedback.AlertProps{ //nolint:exhaustruct // minimal
-					Title:     "x",
-					BaseProps: utils.BaseProps{Class: "border-4 " + marker},
+					Title: "x",
+					Class: "border-4 " + marker,
 				}))
 			},
 			wantPresent: []string{marker, "border-4"},
@@ -97,7 +97,7 @@ func TestClassOverrideWins(t *testing.T) {
 					CurrentPage: 1,
 					TotalPages:  3,
 					BaseURL:     "/",
-					BaseProps:   utils.BaseProps{Class: "gap-8 " + marker},
+					Class:       "gap-8 " + marker,
 				}))
 			},
 			wantPresent: []string{marker, "gap-8"},
@@ -107,8 +107,8 @@ func TestClassOverrideWins(t *testing.T) {
 			name: "table wrapper width override",
 			render: func() string {
 				return utils.Render(t, display.Table(display.TableProps{ //nolint:exhaustruct // minimal
-					Headers:   []string{"a"},
-					BaseProps: utils.BaseProps{Class: "w-24 " + marker},
+					Headers: []string{"a"},
+					Class:   "w-24 " + marker,
 				}))
 			},
 			wantPresent: []string{marker, "w-24"},
@@ -118,9 +118,9 @@ func TestClassOverrideWins(t *testing.T) {
 			name: "progressbar height override",
 			render: func() string {
 				return utils.Render(t, feedback.ProgressBar(feedback.ProgressBarProps{ //nolint:exhaustruct // minimal
-					Current:   1,
-					Total:     2,
-					BaseProps: utils.BaseProps{Class: "h-1 " + marker},
+					Current: 1,
+					Total:   2,
+					Class:   "h-1 " + marker,
 				}))
 			},
 			wantPresent: []string{marker, "h-1"},
@@ -130,7 +130,7 @@ func TestClassOverrideWins(t *testing.T) {
 			name: "container padding override",
 			render: func() string {
 				return utils.Render(t, layout.Container(layout.ContainerProps{ //nolint:exhaustruct // minimal
-					BaseProps: utils.BaseProps{Class: "max-w-md " + marker},
+					Class: "max-w-md " + marker,
 				}))
 			},
 			wantPresent: []string{marker, "max-w-md"},
@@ -140,8 +140,8 @@ func TestClassOverrideWins(t *testing.T) {
 			name: "empty state icon color override",
 			render: func() string {
 				return utils.Render(t, display.EmptyState(display.EmptyStateProps{ //nolint:exhaustruct // minimal
-					Title:     "x",
-					BaseProps: utils.BaseProps{Class: "py-20 " + marker},
+					Title: "x",
+					Class: "py-20 " + marker,
 				}))
 			},
 			wantPresent: []string{marker, "py-20"},

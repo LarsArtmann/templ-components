@@ -32,7 +32,7 @@ func TestCardRender(t *testing.T) {
 		utils.AssertNotContains(t, sharp, "rounded-")
 
 		squircle := utils.Render(t, Card(CardProps{
-			BaseProps: utils.BaseProps{Class: "rounded-lg tc-squircle"},
+			Class: "rounded-lg tc-squircle",
 		}))
 		utils.AssertContainsAll(t, squircle, "rounded-lg", "tc-squircle")
 	})
@@ -41,10 +41,8 @@ func TestCardRender(t *testing.T) {
 		t.Parallel()
 
 		props := CardProps{
-			BaseProps: utils.BaseProps{
-				ID:    "my-card",
-				Class: cssClassMt4,
-			},
+			ID:      "my-card",
+			Class:   cssClassMt4,
 			Title:   "Test",
 			Padding: CardPaddingMD,
 		}
@@ -64,10 +62,8 @@ func TestCardRender(t *testing.T) {
 		t.Parallel()
 
 		props := SimpleCardProps{
-			BaseProps: utils.BaseProps{
-				ID:    "simple-card",
-				Class: cssClassMt4,
-			},
+			ID:    "simple-card",
+			Class: cssClassMt4,
 		}
 		output := utils.Render(t, SimpleCard(props))
 		utils.AssertContains(t, output, `id="simple-card"`)
@@ -216,14 +212,12 @@ func TestStatCardRender(t *testing.T) {
 	t.Run("Href forwards BaseProps to anchor", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, StatCard(StatCardProps{
-			BaseProps: utils.BaseProps{
-				ID:        "active-stat",
-				Class:     "mb-4",
-				AriaLabel: "Filter by active users",
-			},
-			Label: "Active",
-			Value: "42",
-			Href:  "/active",
+			ID:        "active-stat",
+			Class:     "mb-4",
+			AriaLabel: "Filter by active users",
+			Label:     "Active",
+			Value:     "42",
+			Href:      "/active",
 		}))
 		utils.AssertContains(t, output, `id="active-stat"`)
 		utils.AssertContains(t, output, `mb-4`)

@@ -67,8 +67,8 @@ func BenchmarkHotPaths(b *testing.B) {
 
 	b.Run("Dropdown render", func(b *testing.B) {
 		props := DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd"},
-			Label:     dropdownLabelActions,
+			ID:    "dd",
+			Label: dropdownLabelActions,
 			Items: []DropdownItem{
 				{Text: dropdownItemEdit, Href: dropdownHrefEdit},
 				{Text: "Delete", Href: "/delete"},
@@ -142,9 +142,7 @@ func mustTime(s string) time.Time {
 func BenchmarkHotPaths_CollapsibleSection_render(b *testing.B) {
 	props := CollapsibleSectionProps{
 		Title: "Advanced Settings",
-		BaseProps: utils.BaseProps{
-			Class: "border border-gray-200",
-		},
+		Class: "border border-gray-200",
 	}
 
 	b.ResetTimer()

@@ -73,8 +73,8 @@ func TestPropsIDRendersInOutput(t *testing.T) {
 		{"display.DataTable", renderPropsID(t, display.DataTable)},
 		{"display.PageHeader", renderPropsID(t, display.PageHeader)},
 		{"display.ListNote", func() string {
-			props := display.ListNoteProps{Shown: 25, Total: 100}
-			props.BaseProps = utils.BaseProps{ID: "tc-id-contract"}
+			props := display.ListNoteProps{Shown: 25, Total: 100,
+				BaseProps: utils.BaseProps{ID: "tc-id-contract"}}
 
 			return utils.Render(t, display.ListNote(props))
 		}},
@@ -144,8 +144,8 @@ func TestPropsIDRendersInOutput(t *testing.T) {
 		{"forms.Form", renderPropsID(t, forms.Form)},
 		{"forms.InputGroup", renderPropsID(t, forms.InputGroup)},
 		{"forms.ValidationSummary", func() string {
-			props := forms.ValidationSummaryProps{Errors: []forms.ValidationError{{Field: "email", Message: "invalid"}}}
-			props.BaseProps = utils.BaseProps{ID: "tc-id-contract"}
+			props := forms.ValidationSummaryProps{Errors: []forms.ValidationError{{Field: "email", Message: "invalid"}},
+				BaseProps: utils.BaseProps{ID: "tc-id-contract"}}
 
 			return utils.Render(t, forms.ValidationSummary(props))
 		}},

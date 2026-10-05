@@ -17,8 +17,8 @@ func TestDropdownRender(t *testing.T) {
 	t.Run("basic dropdown", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "actions"},
-			Label:     dropdownLabelActions,
+			ID:    "actions",
+			Label: dropdownLabelActions,
 			Items: []DropdownItem{
 				{Text: dropdownItemEdit, Href: dropdownHrefEdit},
 				{Text: dropdownItemDelete, Href: "/delete"},
@@ -37,8 +37,8 @@ func TestDropdownRender(t *testing.T) {
 	t.Run("external link item", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "links"},
-			Label:     "Links",
+			ID:    "links",
+			Label: "Links",
 			Items: []DropdownItem{
 				{Text: "Docs", Href: "https://example.com", External: true},
 			},
@@ -50,8 +50,8 @@ func TestDropdownRender(t *testing.T) {
 	t.Run("button-only item", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "cmds"},
-			Label:     "Commands",
+			ID:    "cmds",
+			Label: "Commands",
 			Items: []DropdownItem{
 				{Text: "Copy"},
 			},
@@ -69,9 +69,9 @@ func TestDropdownRender(t *testing.T) {
 	t.Run("custom Trigger replaces default button content and classes", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "user"},
-			Label:     "Account menu",
-			Trigger:   templ.Raw(`<span data-test="identity">ada@example.com</span>`),
+			ID:      "user",
+			Label:   "Account menu",
+			Trigger: templ.Raw(`<span data-test="identity">ada@example.com</span>`),
 			Items: []DropdownItem{
 				{Text: "Sign out", Href: "/logout"},
 			},
@@ -91,8 +91,8 @@ func TestDropdownRender(t *testing.T) {
 	t.Run("nil Trigger renders default styled button", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "std"},
-			Label:     "Actions",
+			ID:    "std",
+			Label: "Actions",
 		}))
 		utils.AssertContains(t, output, "rounded-md bg-white")
 		utils.AssertContains(t, output, dropdownLabelActions)
@@ -101,10 +101,10 @@ func TestDropdownRender(t *testing.T) {
 	t.Run("right position", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "rmenu"},
-			Label:     dropdownLabelMenu,
-			Position:  DropdownPositionRight,
-			Items:     []DropdownItem{{Text: "Item", Href: "/x"}},
+			ID:       "rmenu",
+			Label:    dropdownLabelMenu,
+			Position: DropdownPositionRight,
+			Items:    []DropdownItem{{Text: "Item", Href: "/x"}},
 		}))
 		utils.AssertContains(t, output, `data-tc-align="end"`)
 	})
@@ -112,8 +112,8 @@ func TestDropdownRender(t *testing.T) {
 	t.Run("with icon items", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "imenu"},
-			Label:     "Actions",
+			ID:    "imenu",
+			Label: "Actions",
 			Items: []DropdownItem{
 				{Text: dropdownItemEdit, Href: "/edit", Icon: icons.Edit},
 				{Text: dropdownItemDelete, Href: "/del", Icon: icons.Trash},
@@ -135,8 +135,8 @@ func TestDropdownRender(t *testing.T) {
 	t.Run("with divider items", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dmenu"},
-			Label:     dropdownLabelMenu,
+			ID:    "dmenu",
+			Label: dropdownLabelMenu,
 			Items: []DropdownItem{
 				{Text: dropdownItemEdit, Href: "/edit"},
 				{
@@ -154,9 +154,9 @@ func TestDropdownRender(t *testing.T) {
 	t.Run("RTL keyboard nav computes keys correctly", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "rtl-menu"},
-			Label:     dropdownLabelMenu,
-			Items:     []DropdownItem{{Text: "Item", Href: "/x"}},
+			ID:    "rtl-menu",
+			Label: dropdownLabelMenu,
+			Items: []DropdownItem{{Text: "Item", Href: "/x"}},
 		}))
 		// The RTL ternary must NOT be inside a JS string literal (dead code).
 		// It should be computed as a variable assignment.
@@ -169,8 +169,8 @@ func TestDropdownKeyboardEnhancements(t *testing.T) {
 	t.Parallel()
 
 	output := utils.Render(t, Dropdown(DropdownProps{
-		BaseProps: utils.BaseProps{ID: "kbd-menu", Nonce: "n"},
-		Label:     dropdownLabelMenu,
+		ID: "kbd-menu", Nonce: "n",
+		Label: dropdownLabelMenu,
 		Items: []DropdownItem{
 			{Text: "One", Href: "/1"},
 			{Text: "Two", Href: "/2"},

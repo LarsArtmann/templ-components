@@ -31,9 +31,9 @@ func TestBadgeHrefRendersAsAnchor(t *testing.T) {
 	t.Run("href with ID", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Badge(BadgeProps{
-			BaseProps: utils.BaseProps{ID: "link-badge"},
-			Text:      "Go",
-			Href:      "/go",
+			ID:   "link-badge",
+			Text: "Go",
+			Href: "/go",
 		}))
 		utils.AssertContains(t, output, `id="link-badge"`)
 		utils.AssertContains(t, output, `href="/go"`)
@@ -42,7 +42,7 @@ func TestBadgeHrefRendersAsAnchor(t *testing.T) {
 	t.Run("href with aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Badge(BadgeProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Navigate"},
+			AriaLabel: "Navigate",
 			Text:      "Nav",
 			Href:      "/nav",
 		}))
@@ -76,9 +76,9 @@ func TestBadgeHrefRendersAsAnchor(t *testing.T) {
 	t.Run("href with class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Badge(BadgeProps{
-			BaseProps: utils.BaseProps{Class: "my-class"},
-			Text:      "Styled",
-			Href:      "/styled",
+			Class: "my-class",
+			Text:  "Styled",
+			Href:  "/styled",
 		}))
 		utils.AssertContains(t, output, "my-class")
 	})
@@ -86,9 +86,9 @@ func TestBadgeHrefRendersAsAnchor(t *testing.T) {
 	t.Run("href with custom attrs", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Badge(BadgeProps{
-			BaseProps: utils.BaseProps{Attrs: templ.Attributes{"data-testid": "badge-link"}},
-			Text:      "Attr",
-			Href:      "/attr",
+			Attrs: templ.Attributes{"data-testid": "badge-link"},
+			Text:  "Attr",
+			Href:  "/attr",
 		}))
 		utils.AssertContains(t, output, `data-testid="badge-link"`)
 	})
@@ -191,11 +191,9 @@ func TestGridRendersChildren(t *testing.T) {
 func TestGridPropagatesBaseProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Grid(GridProps{
-		BaseProps: utils.BaseProps{
-			ID:        "user-grid",
-			Class:     "mt-8",
-			AriaLabel: "User list",
-		},
+		ID:        "user-grid",
+		Class:     "mt-8",
+		AriaLabel: "User list",
 	}))
 	utils.AssertContains(t, output, `id="user-grid"`)
 	utils.AssertContains(t, output, "mt-8")
@@ -269,11 +267,9 @@ func TestButtonIcon(t *testing.T) {
 	t.Run("button with ID and class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Button(ButtonProps{
-			BaseProps: utils.BaseProps{
-				ID:    "my-btn",
-				Class: "extra-class",
-			},
-			Text: "Styled",
+			ID:    "my-btn",
+			Class: "extra-class",
+			Text:  "Styled",
 		}))
 		utils.AssertContains(t, output, `id="my-btn"`)
 		utils.AssertContains(t, output, "extra-class")
@@ -282,7 +278,7 @@ func TestButtonIcon(t *testing.T) {
 	t.Run("button with aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Button(ButtonProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Submit form"},
+			AriaLabel: "Submit form",
 			Text:      "Submit",
 		}))
 		utils.AssertContains(t, output, `aria-label="Submit form"`)
@@ -291,8 +287,8 @@ func TestButtonIcon(t *testing.T) {
 	t.Run("button with custom attrs", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Button(ButtonProps{
-			BaseProps: utils.BaseProps{Attrs: templ.Attributes{"data-testid": "btn"}},
-			Text:      "Test",
+			Attrs: templ.Attributes{"data-testid": "btn"},
+			Text:  "Test",
 		}))
 		utils.AssertContains(t, output, `data-testid="btn"`)
 	})
@@ -300,12 +296,10 @@ func TestButtonIcon(t *testing.T) {
 	t.Run("link button with ID and aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Button(ButtonProps{
-			BaseProps: utils.BaseProps{
-				ID:        "link-btn",
-				AriaLabel: "Navigate",
-			},
-			Text: "Go",
-			Href: "/go",
+			ID:        "link-btn",
+			AriaLabel: "Navigate",
+			Text:      "Go",
+			Href:      "/go",
 		}))
 		utils.AssertContains(t, output, `id="link-btn"`)
 		utils.AssertContains(t, output, `aria-label="Navigate"`)
@@ -334,8 +328,8 @@ func TestDropdownButtonItems(t *testing.T) {
 	t.Run("button kind item renders <button>", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd-btn"},
-			Label:     "Actions",
+			ID:    "dd-btn",
+			Label: "Actions",
 			Items: []DropdownItem{
 				{Text: "Delete", Kind: DropdownItemButton},
 			},
@@ -347,8 +341,8 @@ func TestDropdownButtonItems(t *testing.T) {
 	t.Run("disabled button kind item", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd-dis"},
-			Label:     "Actions",
+			ID:    "dd-dis",
+			Label: "Actions",
 			Items: []DropdownItem{
 				{Text: "Archive", Kind: DropdownItemButton, Disabled: true},
 			},
@@ -361,8 +355,8 @@ func TestDropdownButtonItems(t *testing.T) {
 	t.Run("disabled link item renders span", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd-dislink"},
-			Label:     "Menu",
+			ID:    "dd-dislink",
+			Label: "Menu",
 			Items: []DropdownItem{
 				{Text: "Disabled Link", Href: "/link", Disabled: true},
 			},
@@ -375,8 +369,8 @@ func TestDropdownButtonItems(t *testing.T) {
 	t.Run("disabled link item with icon", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd-disicon"},
-			Label:     "Menu",
+			ID:    "dd-disicon",
+			Label: "Menu",
 			Items: []DropdownItem{
 				{Text: "Settings", Href: "/settings", Icon: icons.Settings, Disabled: true},
 			},
@@ -403,8 +397,8 @@ func TestDropdownButtonItems(t *testing.T) {
 	t.Run("dropdown with nonce", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd-nonce", Nonce: "test123"},
-			Label:     "Nonce",
+			ID: "dd-nonce", Nonce: "test123",
+			Label: "Nonce",
 		}))
 		utils.AssertContains(t, output, `nonce="test123"`)
 	})
@@ -412,8 +406,8 @@ func TestDropdownButtonItems(t *testing.T) {
 	t.Run("dropdown with aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd-aria", AriaLabel: "Actions menu"},
-			Label:     "Actions",
+			ID: "dd-aria", AriaLabel: "Actions menu",
+			Label: "Actions",
 		}))
 		utils.AssertContains(t, output, `aria-label="Actions menu"`)
 	})
@@ -421,8 +415,8 @@ func TestDropdownButtonItems(t *testing.T) {
 	t.Run("dropdown with custom attrs", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd-attr", Attrs: templ.Attributes{"data-testid": "dd"}},
-			Label:     "Attr",
+			ID: "dd-attr", Attrs: templ.Attributes{"data-testid": "dd"},
+			Label: "Attr",
 		}))
 		utils.AssertContains(t, output, `data-testid="dd"`)
 	})
@@ -430,8 +424,8 @@ func TestDropdownButtonItems(t *testing.T) {
 	t.Run("button item with icon", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd-btnicon"},
-			Label:     "Menu",
+			ID:    "dd-btnicon",
+			Label: "Menu",
 			Items: []DropdownItem{
 				{Text: "Edit", Kind: DropdownItemButton, Icon: icons.Edit},
 			},
@@ -443,8 +437,8 @@ func TestDropdownButtonItems(t *testing.T) {
 	t.Run("link item with icon", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd-linkicon"},
-			Label:     "Menu",
+			ID:    "dd-linkicon",
+			Label: "Menu",
 			Items: []DropdownItem{
 				{Text: "Profile", Href: "/profile", Icon: icons.Users},
 			},
@@ -456,8 +450,8 @@ func TestDropdownButtonItems(t *testing.T) {
 	t.Run("item with custom attrs", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd-itemattr"},
-			Label:     "Menu",
+			ID:    "dd-itemattr",
+			Label: "Menu",
 			Items: []DropdownItem{
 				{Text: "Item", Href: "/item", Attrs: templ.Attributes{"data-action": "click"}},
 			},
@@ -475,10 +469,10 @@ func TestModalSizes(t *testing.T) {
 		t.Run("size_"+string(size), func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Modal(ModalProps{
-				BaseProps: utils.BaseProps{ID: "modal-" + string(size)},
-				Title:     "Test",
-				Size:      size,
-				Open:      true,
+				ID:    "modal-" + string(size),
+				Title: "Test",
+				Size:  size,
+				Open:  true,
 			}))
 			utils.AssertContains(t, output, `id="modal-`+string(size)+`"`)
 		})
@@ -488,9 +482,9 @@ func TestModalSizes(t *testing.T) {
 func TestModalClosed(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Modal(ModalProps{
-		BaseProps: utils.BaseProps{ID: "closed-modal"},
-		Title:     "Hidden",
-		Open:      false,
+		ID:    "closed-modal",
+		Title: "Hidden",
+		Open:  false,
 	}))
 	utils.AssertContains(t, output, "<dialog")
 	utils.AssertNotContains(t, output, `data-tc-open="true"`)
@@ -499,9 +493,9 @@ func TestModalClosed(t *testing.T) {
 func TestModalWithClass(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Modal(ModalProps{
-		BaseProps: utils.BaseProps{ID: "styled-modal", Class: "custom-modal"},
-		Title:     "Styled",
-		Open:      true,
+		ID: "styled-modal", Class: "custom-modal",
+		Title: "Styled",
+		Open:  true,
 	}))
 	utils.AssertContains(t, output, "custom-modal")
 }
@@ -509,8 +503,8 @@ func TestModalWithClass(t *testing.T) {
 func TestModalWithAttrs(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Modal(ModalProps{
-		BaseProps: utils.BaseProps{ID: "attr-modal", Attrs: templ.Attributes{"data-testid": "modal"}},
-		Open:      true,
+		ID: "attr-modal", Attrs: templ.Attributes{"data-testid": "modal"},
+		Open: true,
 	}))
 	utils.AssertContains(t, output, `data-testid="modal"`)
 }
@@ -518,8 +512,8 @@ func TestModalWithAttrs(t *testing.T) {
 func TestModalWithAriaLabel(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Modal(ModalProps{
-		BaseProps: utils.BaseProps{ID: "aria-modal", AriaLabel: "Custom label"},
-		Open:      true,
+		ID: "aria-modal", AriaLabel: "Custom label",
+		Open: true,
 	}))
 	utils.AssertContains(t, output, `aria-label="Custom label"`)
 }
@@ -527,9 +521,9 @@ func TestModalWithAriaLabel(t *testing.T) {
 func TestModalWithNonce(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Modal(ModalProps{
-		BaseProps: utils.BaseProps{ID: "nonce-modal", Nonce: "nonce-xyz"},
-		Title:     "Nonce",
-		Open:      true,
+		ID: "nonce-modal", Nonce: "nonce-xyz",
+		Title: "Nonce",
+		Open:  true,
 	}))
 	utils.AssertContains(t, output, `nonce="nonce-xyz"`)
 }
@@ -548,9 +542,9 @@ func TestTooltipTopPosition(t *testing.T) {
 func TestTooltipWithID(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Tooltip(TooltipProps{
-		Text:      "ID tip",
-		Position:  TooltipPositionTop,
-		BaseProps: utils.BaseProps{ID: "my-tip"},
+		Text:     "ID tip",
+		Position: TooltipPositionTop,
+		ID:       "my-tip",
 	}))
 	utils.AssertContains(t, output, `id="my-tip"`)
 	utils.AssertContains(t, output, `aria-describedby="my-tip-tooltip"`)
@@ -560,9 +554,9 @@ func TestTooltipWithID(t *testing.T) {
 func TestTooltipWithClass(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Tooltip(TooltipProps{
-		Text:      "Class tip",
-		Position:  TooltipPositionTop,
-		BaseProps: utils.BaseProps{Class: "extra-wrap"},
+		Text:     "Class tip",
+		Position: TooltipPositionTop,
+		Class:    "extra-wrap",
 	}))
 	utils.AssertContains(t, output, "extra-wrap")
 }
@@ -572,7 +566,7 @@ func TestTooltipWithAriaLabel(t *testing.T) {
 	output := utils.Render(t, Tooltip(TooltipProps{
 		Text:      "Aria tip",
 		Position:  TooltipPositionTop,
-		BaseProps: utils.BaseProps{AriaLabel: "Custom aria"},
+		AriaLabel: "Custom aria",
 	}))
 	utils.AssertContains(t, output, `aria-label="Custom aria"`)
 }
@@ -599,7 +593,7 @@ func TestAvatarFallbackSVG(t *testing.T) {
 	t.Run("no src with aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
-			BaseProps: utils.BaseProps{AriaLabel: "User avatar"},
+			AriaLabel: "User avatar",
 		}))
 		utils.AssertContains(t, output, `aria-label="User avatar"`)
 	})
@@ -607,7 +601,7 @@ func TestAvatarFallbackSVG(t *testing.T) {
 	t.Run("no src with ID", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
-			BaseProps: utils.BaseProps{ID: "fallback-av"},
+			ID: "fallback-av",
 		}))
 		utils.AssertContains(t, output, `id="fallback-av"`)
 	})
@@ -624,8 +618,8 @@ func TestAvatarFallbackSVG(t *testing.T) {
 	t.Run("image with class", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
-			Src:       "/img.jpg",
-			BaseProps: utils.BaseProps{Class: "border-2"},
+			Src:   "/img.jpg",
+			Class: "border-2",
 		}))
 		utils.AssertContains(t, output, "border-2")
 	})
@@ -645,8 +639,8 @@ func TestAvatarFallbackSVG(t *testing.T) {
 	t.Run("image with attrs", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
-			Src:       "/img.jpg",
-			BaseProps: utils.BaseProps{Attrs: templ.Attributes{"loading": "lazy"}},
+			Src:   "/img.jpg",
+			Attrs: templ.Attributes{"loading": "lazy"},
 		}))
 		utils.AssertContains(t, output, `loading="lazy"`)
 	})
@@ -781,10 +775,10 @@ func TestDrawerRender(t *testing.T) {
 	t.Run("right drawer with title", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Drawer(DrawerProps{
-			BaseProps: utils.BaseProps{ID: "test-drawer"},
-			Title:     "Settings",
-			Open:      true,
-			Side:      DrawerRight,
+			ID:    "test-drawer",
+			Title: "Settings",
+			Open:  true,
+			Side:  DrawerRight,
 		}))
 		utils.AssertContains(t, output, `<dialog`)
 		utils.AssertContains(t, output, `id="test-drawer"`)
@@ -796,9 +790,9 @@ func TestDrawerRender(t *testing.T) {
 	t.Run("left drawer", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Drawer(DrawerProps{
-			BaseProps: utils.BaseProps{ID: "left-drawer"},
-			Open:      true,
-			Side:      DrawerLeft,
+			ID:   "left-drawer",
+			Open: true,
+			Side: DrawerLeft,
 		}))
 		utils.AssertContains(t, output, `data-side="left"`)
 	})
@@ -806,9 +800,9 @@ func TestDrawerRender(t *testing.T) {
 	t.Run("closed drawer", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Drawer(DrawerProps{
-			BaseProps: utils.BaseProps{ID: "closed-drawer"},
-			Open:      false,
-			Side:      DrawerRight,
+			ID:   "closed-drawer",
+			Open: false,
+			Side: DrawerRight,
 		}))
 		utils.AssertContains(t, output, "<dialog")
 		utils.AssertNotContains(t, output, `data-tc-open="true"`)
@@ -826,9 +820,9 @@ func TestDrawerRender(t *testing.T) {
 
 		for _, size := range []DrawerSize{DrawerSizeSM, DrawerSizeMD, DrawerSizeLG, DrawerSizeXL, DrawerSize2XL} {
 			output := utils.Render(t, Drawer(DrawerProps{
-				BaseProps: utils.BaseProps{ID: "size-" + string(size)},
-				Open:      true,
-				Size:      size,
+				ID:   "size-" + string(size),
+				Open: true,
+				Size: size,
 			}))
 			utils.AssertContains(t, output, `id="size-`+string(size)+`"`)
 		}
@@ -837,8 +831,8 @@ func TestDrawerRender(t *testing.T) {
 	t.Run("with aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Drawer(DrawerProps{
-			BaseProps: utils.BaseProps{ID: "aria-drawer", AriaLabel: "Navigation panel"},
-			Open:      true,
+			ID: "aria-drawer", AriaLabel: "Navigation panel",
+			Open: true,
 		}))
 		utils.AssertContains(t, output, `aria-label="Navigation panel"`)
 	})
@@ -846,8 +840,8 @@ func TestDrawerRender(t *testing.T) {
 	t.Run("with nonce", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Drawer(DrawerProps{
-			BaseProps: utils.BaseProps{ID: "nonce-drawer", Nonce: "test-nonce"},
-			Open:      true,
+			ID: "nonce-drawer", Nonce: "test-nonce",
+			Open: true,
 		}))
 		utils.AssertContains(t, output, `nonce="test-nonce"`)
 	})
@@ -855,8 +849,8 @@ func TestDrawerRender(t *testing.T) {
 	t.Run("without title", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Drawer(DrawerProps{
-			BaseProps: utils.BaseProps{ID: "no-title-drawer"},
-			Open:      true,
+			ID:   "no-title-drawer",
+			Open: true,
 		}))
 		utils.AssertNotContains(t, output, `id="no-title-drawer-title"`)
 	})
@@ -878,9 +872,9 @@ func TestDrawerRender(t *testing.T) {
 func TestAvatarImageBaseProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Avatar(AvatarProps{
-		Src:       "/photo.jpg",
-		Alt:       "Profile photo",
-		BaseProps: utils.BaseProps{ID: "user-avatar", Class: "ring-2", AriaLabel: "Alice avatar"},
+		Src: "/photo.jpg",
+		Alt: "Profile photo",
+		ID:  "user-avatar", Class: "ring-2", AriaLabel: "Alice avatar",
 	}))
 	utils.AssertContains(t, output, `id="user-avatar"`)
 	utils.AssertContains(t, output, "ring-2")

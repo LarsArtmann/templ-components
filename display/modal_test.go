@@ -14,10 +14,8 @@ func TestModalRender(t *testing.T) {
 		t.Parallel()
 
 		props := ModalProps{
-			BaseProps: utils.BaseProps{
-				ID:    "test-modal",
-				Nonce: modalTestNonce,
-			},
+			ID:    "test-modal",
+			Nonce: modalTestNonce,
 			Title: "Confirm",
 			Open:  false,
 			Size:  ModalSizeMD,
@@ -35,9 +33,7 @@ func TestModalRender(t *testing.T) {
 		t.Parallel()
 
 		props := ModalProps{
-			BaseProps: utils.BaseProps{
-				ID: "open-modal",
-			},
+			ID:    "open-modal",
 			Title: "Hello",
 			Open:  true,
 			Size:  ModalSizeMD,
@@ -59,9 +55,7 @@ func TestModalRender(t *testing.T) {
 				t.Parallel()
 
 				props := ModalProps{
-					BaseProps: utils.BaseProps{
-						ID: "sz-modal",
-					},
+					ID:    "sz-modal",
 					Title: "Test Modal",
 					Open:  false,
 					Size:  size,
@@ -76,10 +70,8 @@ func TestModalRender(t *testing.T) {
 		t.Parallel()
 
 		props := ModalProps{
-			BaseProps: utils.BaseProps{
-				ID:    "modal-with-'quotes'",
-				Nonce: modalTestNonce,
-			},
+			ID:    "modal-with-'quotes'",
+			Nonce: modalTestNonce,
 			Title: "Escape Test",
 			Open:  false,
 		}
@@ -92,10 +84,8 @@ func TestModalRender(t *testing.T) {
 		t.Parallel()
 
 		props := ModalProps{
-			BaseProps: utils.BaseProps{
-				ID:    "dialog-modal",
-				Nonce: modalTestNonce,
-			},
+			ID:    "dialog-modal",
+			Nonce: modalTestNonce,
 			Title: "Dialog Test",
 			Open:  false,
 		}
@@ -115,9 +105,9 @@ func TestModalRender(t *testing.T) {
 		t.Parallel()
 
 		props := ModalProps{
-			BaseProps: utils.BaseProps{ID: "notitle-modal"},
-			Title:     "",
-			Open:      false,
+			ID:    "notitle-modal",
+			Title: "",
+			Open:  false,
 		}
 		output := utils.Render(t, Modal(props))
 		utils.AssertNotContains(t, output, "aria-labelledby")
@@ -127,9 +117,9 @@ func TestModalRender(t *testing.T) {
 		t.Parallel()
 
 		props := ModalProps{
-			BaseProps: utils.BaseProps{ID: "titled-modal"},
-			Title:     "Titled",
-			Open:      false,
+			ID:    "titled-modal",
+			Title: "Titled",
+			Open:  false,
 		}
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, `aria-labelledby="titled-modal-title"`)
@@ -139,9 +129,9 @@ func TestModalRender(t *testing.T) {
 		t.Parallel()
 
 		props := ModalProps{
-			BaseProps: utils.BaseProps{ID: "closed-modal"},
-			Title:     "Closed",
-			Open:      false,
+			ID:    "closed-modal",
+			Title: "Closed",
+			Open:  false,
 		}
 		output := utils.Render(t, Modal(props))
 		utils.AssertNotContains(t, output, `data-tc-open="true"`)
@@ -151,9 +141,9 @@ func TestModalRender(t *testing.T) {
 		t.Parallel()
 
 		props := ModalProps{
-			BaseProps: utils.BaseProps{ID: "open-modal-a11y"},
-			Title:     "Open",
-			Open:      true,
+			ID:    "open-modal-a11y",
+			Title: "Open",
+			Open:  true,
 		}
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, `data-tc-open="true"`)
@@ -162,9 +152,9 @@ func TestModalRender(t *testing.T) {
 	t.Run("JS singleton guard prevents double-binding", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Modal(ModalProps{
-			BaseProps: utils.BaseProps{ID: "js-guard-modal"},
-			Title:     "Guard",
-			Open:      false,
+			ID:    "js-guard-modal",
+			Title: "Guard",
+			Open:  false,
 		}))
 		utils.AssertContains(t, output, "window.tcOverlayModalAttached")
 	})
@@ -172,9 +162,9 @@ func TestModalRender(t *testing.T) {
 	t.Run("JS backdrop click handler detects dialog target", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Modal(ModalProps{
-			BaseProps: utils.BaseProps{ID: "backdrop-modal"},
-			Title:     "Backdrop",
-			Open:      false,
+			ID:    "backdrop-modal",
+			Title: "Backdrop",
+			Open:  false,
 		}))
 		utils.AssertContains(t, output, "e.target===d")
 	})

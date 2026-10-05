@@ -21,9 +21,9 @@ func TestButtonRender(t *testing.T) {
 	t.Run("button with text", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Button(ButtonProps{
-			BaseProps: utils.BaseProps{ID: "save-btn"},
-			Text:      "Save",
-			Type:      ButtonHTMLSubmit,
+			ID:   "save-btn",
+			Text: "Save",
+			Type: ButtonHTMLSubmit,
 		}))
 		utils.AssertContains(t, output, `id="save-btn"`)
 		utils.AssertContains(t, output, "Save")

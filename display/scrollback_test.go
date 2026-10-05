@@ -30,10 +30,8 @@ func TestScrollbackGoldenSweep(t *testing.T) {
 			Lines: scrollbackFixtureLines(),
 		}))},
 		{Name: "scrollback_labeled", HTML: utils.Render(t, Scrollback(ScrollbackProps{
-			Lines: scrollbackFixtureLines(),
-			BaseProps: utils.BaseProps{
-				AriaLabel: "DNS resolution trace for ads.example.com",
-			},
+			Lines:     scrollbackFixtureLines(),
+			AriaLabel: "DNS resolution trace for ads.example.com",
 		}))},
 		{Name: "scrollback_empty", HTML: utils.Render(t, Scrollback(DefaultScrollbackProps()))},
 	})
@@ -99,10 +97,8 @@ func TestScrollbackA11y(t *testing.T) {
 	t.Run("aria-label exposes real log content to screen readers", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Scrollback(ScrollbackProps{
-			Lines: scrollbackFixtureLines(),
-			BaseProps: utils.BaseProps{
-				AriaLabel: "DNS resolution trace",
-			},
+			Lines:     scrollbackFixtureLines(),
+			AriaLabel: "DNS resolution trace",
 		}))
 		utils.AssertContains(t, output, `aria-label="DNS resolution trace"`)
 		utils.AssertNotContains(t, output, `aria-hidden="true"`)

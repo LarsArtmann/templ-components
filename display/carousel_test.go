@@ -11,7 +11,7 @@ func TestCarouselKeyboardNavigation(t *testing.T) {
 	t.Parallel()
 
 	output := utils.Render(t, Carousel(CarouselProps{
-		BaseProps:      utils.BaseProps{Nonce: "n"},
+		Nonce:          "n",
 		ShowArrows:     true,
 		ShowIndicators: true,
 		Slides: []CarouselSlide{

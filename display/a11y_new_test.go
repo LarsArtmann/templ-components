@@ -24,7 +24,7 @@ func TestCopyButtonA11y(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, CopyButton(CopyButtonProps{
 			Text:      "x",
-			BaseProps: utils.BaseProps{AriaLabel: "Copy install command"},
+			AriaLabel: "Copy install command",
 		}))
 		utils.AssertContains(t, output, `aria-label="Copy install command"`)
 	})
@@ -80,7 +80,7 @@ func TestCountBadgeA11y(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, CountBadge(CountBadgeProps{
 			Count:     1,
-			BaseProps: utils.BaseProps{AriaLabel: "3 unread notifications"},
+			AriaLabel: "3 unread notifications",
 		}))
 		utils.AssertContains(t, output, `aria-label="3 unread notifications"`)
 	})
@@ -105,7 +105,7 @@ func TestDefinitionGridA11y(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, DefinitionGrid(DefinitionGridProps{
 			Items:     []DefinitionItem{{Term: "X", Detail: "Y"}},
-			BaseProps: utils.BaseProps{AriaLabel: "System metrics"},
+			AriaLabel: "System metrics",
 		}))
 		utils.AssertContains(t, output, `aria-label="System metrics"`)
 	})
@@ -196,7 +196,7 @@ func TestSparklineA11y(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Sparkline(SparklineProps{
 			Values:    []float64{1, 3, 2, 5},
-			BaseProps: utils.BaseProps{AriaLabel: "Daily active users trend"},
+			AriaLabel: "Daily active users trend",
 		}))
 		utils.AssertContains(t, output, `aria-label="Daily active users trend"`)
 		utils.AssertNotContains(t, output, `aria-hidden`)
@@ -224,7 +224,7 @@ func TestBarChartA11y(t *testing.T) {
 			Bars: []BarChartBar{
 				{Label: "general", Value: 100},
 			},
-			BaseProps: utils.BaseProps{AriaLabel: "Messages by channel"},
+			AriaLabel: "Messages by channel",
 		}))
 		utils.AssertContains(t, output, `aria-label="Messages by channel"`)
 	})
@@ -327,7 +327,7 @@ func TestHeatmapA11y(t *testing.T) {
 			Rows: []HeatmapRow{
 				{Label: "Mon", Cells: []HeatmapCell{{Value: 5}}},
 			},
-			BaseProps: utils.BaseProps{AriaLabel: "Activity heatmap"},
+			AriaLabel: "Activity heatmap",
 		}))
 		utils.AssertContains(t, output, `aria-label="Activity heatmap"`)
 	})

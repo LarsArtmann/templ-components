@@ -164,8 +164,8 @@ func TestBadgeFeatures(t *testing.T) {
 	t.Run("badge with custom class and id", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Badge(BadgeProps{
-			BaseProps: utils.BaseProps{ID: "my-badge", Class: cssClassMt2},
-			Text:      badgeTextCustom,
+			ID: "my-badge", Class: cssClassMt2,
+			Text: badgeTextCustom,
 		}))
 		utils.AssertContains(t, output, `id="my-badge"`)
 		utils.AssertContains(t, output, cssClassMt2)
@@ -174,7 +174,7 @@ func TestBadgeFeatures(t *testing.T) {
 	t.Run("badge with aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Badge(BadgeProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Status indicator"},
+			AriaLabel: "Status indicator",
 			Text:      badgeTextOK,
 		}))
 		utils.AssertContains(t, output, `aria-label="Status indicator"`)

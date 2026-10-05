@@ -65,9 +65,9 @@ func TestGoldenDateRangeAdjacent(t *testing.T) {
 
 	first := utils.Render(t, DateRange(DateRangeProps{Start: &start, End: &end}))
 	second := utils.Render(t, DateRange(DateRangeProps{
-		BaseProps: utils.BaseProps{Attrs: templ.Attributes{"data-test": "second"}},
-		Start:     &start,
-		End:       &end,
+		Attrs: templ.Attributes{"data-test": "second"},
+		Start: &start,
+		End:   &end,
 	}))
 
 	golden.Assert(t, "date_range_adjacent", first+"\n"+second)

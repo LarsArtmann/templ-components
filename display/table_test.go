@@ -50,9 +50,9 @@ func TestTableRender(t *testing.T) {
 	t.Run("with custom id", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Table(TableProps{
-			BaseProps: utils.BaseProps{ID: "users-table"},
-			Headers:   []string{"Name"},
-			Rows:      []TableRow{SimpleTableRow("Alice")},
+			ID:      "users-table",
+			Headers: []string{"Name"},
+			Rows:    []TableRow{SimpleTableRow("Alice")},
 		}))
 		utils.AssertContains(t, output, `id="users-table"`)
 	})

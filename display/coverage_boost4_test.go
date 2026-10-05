@@ -73,13 +73,11 @@ func TestCardVariantCoverage(t *testing.T) {
 	t.Run("base props propagate", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Card(CardProps{
-			BaseProps: utils.BaseProps{
-				ID:        "card-x",
-				Class:     "w-96",
-				AriaLabel: "Stats card",
-				Attrs:     templ.Attributes{"data-ctx": "dash"},
-			},
-			Title: "T",
+			ID:        "card-x",
+			Class:     "w-96",
+			AriaLabel: "Stats card",
+			Attrs:     templ.Attributes{"data-ctx": "dash"},
+			Title:     "T",
 		}))
 		utils.AssertContains(t, output, `id="card-x"`)
 		utils.AssertContains(t, output, `aria-label="Stats card"`)
@@ -89,9 +87,9 @@ func TestCardVariantCoverage(t *testing.T) {
 	t.Run("simple card with body slot", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SimpleCard(SimpleCardProps{
-			BaseProps: utils.BaseProps{ID: "simple-1"},
-			Padding:   CardPaddingLG,
-			Body:      slot,
+			ID:      "simple-1",
+			Padding: CardPaddingLG,
+			Body:    slot,
 		}))
 		utils.AssertContains(t, output, `id="simple-1"`)
 		utils.AssertContains(t, output, `data-testid="slot"`)
@@ -199,13 +197,11 @@ func TestSectionHeadingVariantCoverage(t *testing.T) {
 	t.Run("subtitle and base props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SectionHeading(SectionHeadingProps{
-			BaseProps: utils.BaseProps{
-				ID:        "sec-1",
-				AriaLabel: "Section",
-				Attrs:     templ.Attributes{"data-k": "v"},
-			},
-			Title:    "T",
-			SubTitle: "Sub",
+			ID:        "sec-1",
+			AriaLabel: "Section",
+			Attrs:     templ.Attributes{"data-k": "v"},
+			Title:     "T",
+			SubTitle:  "Sub",
 		}))
 		utils.AssertContains(t, output, `id="sec-1"`)
 		utils.AssertContains(t, output, `aria-label="Section"`)

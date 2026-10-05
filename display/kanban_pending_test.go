@@ -14,9 +14,9 @@ func kanbanWiredHTML(t *testing.T) string {
 	t.Helper()
 
 	return utils.Render(t, KanbanBoard(KanbanBoardProps{
-		BaseProps: utils.BaseProps{ID: "kb-pending"},
-		Columns:   kanbanTestColumns(),
-		Wire:      &wire.Action{URL: "/api/kanban/move"},
+		ID:      "kb-pending",
+		Columns: kanbanTestColumns(),
+		Wire:    &wire.Action{URL: "/api/kanban/move"},
 	}))
 }
 
@@ -42,8 +42,8 @@ func TestKanbanPendingRegisterMarkup(t *testing.T) {
 	}
 
 	readonly := utils.Render(t, KanbanBoard(KanbanBoardProps{
-		BaseProps: utils.BaseProps{ID: "kb-ro"},
-		Columns:   kanbanTestColumns(),
+		ID:      "kb-ro",
+		Columns: kanbanTestColumns(),
 	}))
 
 	for _, token := range []string{

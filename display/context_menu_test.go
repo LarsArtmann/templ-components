@@ -10,7 +10,7 @@ func TestContextMenuRender(t *testing.T) {
 	t.Parallel()
 
 	output := utils.Render(t, ContextMenu(ContextMenuProps{
-		BaseProps: utils.BaseProps{Nonce: "n"},
+		Nonce: "n",
 		Items: []ContextMenuItem{
 			{Text: "Edit", Href: "/edit"},
 			{Text: "Delete", Href: "/delete"},
@@ -27,7 +27,7 @@ func TestContextMenuKeyboardTrigger(t *testing.T) {
 	t.Parallel()
 
 	output := utils.Render(t, ContextMenu(ContextMenuProps{
-		BaseProps: utils.BaseProps{Nonce: "n"},
+		Nonce: "n",
 		Items: []ContextMenuItem{
 			{Text: "Edit", Href: "/edit"},
 			{Text: "Delete", Href: "/delete"},
@@ -49,7 +49,7 @@ func TestContextMenuSharedMenuNav(t *testing.T) {
 	t.Parallel()
 
 	output := utils.Render(t, ContextMenu(ContextMenuProps{
-		BaseProps: utils.BaseProps{Nonce: "n"},
+		Nonce: "n",
 		Items: []ContextMenuItem{
 			{Text: "Edit", Href: "/edit"},
 			{Text: "Delete", Href: "/delete"},
@@ -65,7 +65,7 @@ func TestContextMenuDisabledItem(t *testing.T) {
 	t.Parallel()
 
 	output := utils.Render(t, ContextMenu(ContextMenuProps{
-		BaseProps: utils.BaseProps{Nonce: "n"},
+		Nonce: "n",
 		Items: []ContextMenuItem{
 			{Text: "Edit", Href: "/edit"},
 			{Text: "Delete", Disabled: true},

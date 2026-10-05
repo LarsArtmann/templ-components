@@ -83,9 +83,9 @@ func TestTooltipA11yLinkage(t *testing.T) {
 	t.Run("tooltip with custom class and ID", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tooltip(TooltipProps{
-			BaseProps: utils.BaseProps{ID: "tip-1", Class: "ml-2"},
-			Text:      "Hint",
-			Position:  TooltipPositionTop,
+			ID: "tip-1", Class: "ml-2",
+			Text:     "Hint",
+			Position: TooltipPositionTop,
 		}))
 		utils.AssertContains(t, output, `id="tip-1"`)
 		utils.AssertContains(t, output, "ml-2")
@@ -106,9 +106,9 @@ func TestTooltipPositionEdgeCases(t *testing.T) {
 	t.Run("tooltip with ID sets aria-describedby linkage", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tooltip(TooltipProps{
-			BaseProps: utils.BaseProps{ID: "my-tip"},
-			Text:      "Tip",
-			Position:  TooltipPositionTop,
+			ID:       "my-tip",
+			Text:     "Tip",
+			Position: TooltipPositionTop,
 		}))
 		utils.AssertContains(t, output, `aria-describedby="my-tip-tooltip"`)
 		utils.AssertContains(t, output, `id="my-tip-tooltip"`)
@@ -119,9 +119,9 @@ func TestTooltipEscapeDismiss(t *testing.T) {
 	t.Parallel()
 
 	output := utils.Render(t, Tooltip(TooltipProps{
-		BaseProps: utils.BaseProps{Nonce: "n"},
-		Text:      "Dismissible",
-		Position:  TooltipPositionTop,
+		Nonce:    "n",
+		Text:     "Dismissible",
+		Position: TooltipPositionTop,
 	}))
 
 	// Escape on the focusable trigger sets the dismissed state.

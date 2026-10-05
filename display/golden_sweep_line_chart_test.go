@@ -14,7 +14,7 @@ func TestGoldenSweepLineChart(t *testing.T) {
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "line_chart_single_series", HTML: utils.Render(t, LineChart(LineChartProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Revenue by day"},
+			AriaLabel: "Revenue by day",
 			Series: []LineChartSeries{
 				{Name: "Revenue", Values: []float64{10, 25, 40, 35, 60, 55, 80}},
 			},
@@ -83,7 +83,7 @@ func TestLineChartAriaLabel(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, LineChart(LineChartProps{
-		BaseProps:   utils.BaseProps{AriaLabel: "Revenue trend"},
+		AriaLabel:   "Revenue trend",
 		Series:      []LineChartSeries{{Name: "Rev", Values: []float64{1, 2, 3}}},
 		XAxisLabels: []string{"A", "B", "C"},
 	}))
@@ -136,10 +136,8 @@ func TestLineChartBasePropsPropagation(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, LineChart(LineChartProps{
-		BaseProps: utils.BaseProps{
-			Class: "max-w-2xl",
-			ID:    "my-chart",
-		},
+		Class:  "max-w-2xl",
+		ID:     "my-chart",
 		Series: []LineChartSeries{{Values: []float64{1, 2, 3}}},
 	}))
 	utils.AssertContains(t, html, "max-w-2xl")

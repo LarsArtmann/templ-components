@@ -103,7 +103,7 @@ func TestPopoverA11y(t *testing.T) {
 	t.Run("trigger aria-controls links to content panel", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Popover(PopoverProps{
-			BaseProps:   utils.BaseProps{ID: "my-pop"},
+			ID:          "my-pop",
 			TriggerText: "Open",
 		}))
 		utils.AssertContains(t, output, `aria-controls="my-pop-content"`)
@@ -118,7 +118,7 @@ func TestPopoverA11y(t *testing.T) {
 	t.Run("content panel has aria-labelledby trigger", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Popover(PopoverProps{
-			BaseProps:   utils.BaseProps{ID: "p1"},
+			ID:          "p1",
 			TriggerText: "Open",
 		}))
 		utils.AssertContains(t, output, `aria-labelledby="p1-trigger"`)
@@ -148,7 +148,7 @@ func TestPopoverEdgeCases(t *testing.T) {
 	t.Run("custom class on root element", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Popover(PopoverProps{
-			BaseProps:   utils.BaseProps{Class: "custom-pop"},
+			Class:       "custom-pop",
 			TriggerText: "X",
 		}))
 		utils.AssertContains(t, output, "custom-pop")
@@ -157,7 +157,7 @@ func TestPopoverEdgeCases(t *testing.T) {
 	t.Run("aria-label propagated to root", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Popover(PopoverProps{
-			BaseProps:   utils.BaseProps{AriaLabel: "More info popover"},
+			AriaLabel:   "More info popover",
 			TriggerText: "X",
 		}))
 		utils.AssertContains(t, output, `aria-label="More info popover"`)
@@ -166,7 +166,7 @@ func TestPopoverEdgeCases(t *testing.T) {
 	t.Run("nonce on positioner script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Popover(PopoverProps{
-			BaseProps:   utils.BaseProps{Nonce: "test-nonce-123"},
+			Nonce:       "test-nonce-123",
 			TriggerText: "X",
 		}))
 		utils.AssertContains(t, output, `<script nonce="test-nonce-123">`)
@@ -176,7 +176,7 @@ func TestPopoverEdgeCases(t *testing.T) {
 	t.Run("trigger has popovertarget attribute (native invoker)", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Popover(PopoverProps{
-			BaseProps:   utils.BaseProps{ID: "native-pop"},
+			ID:          "native-pop",
 			TriggerText: "X",
 		}))
 		utils.AssertContains(t, output, `popovertarget="native-pop-content"`)
@@ -187,7 +187,7 @@ func TestPopoverEdgeCases(t *testing.T) {
 func TestPopoverGolden(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Popover(PopoverProps{
-		BaseProps:   utils.BaseProps{ID: "golden-popover"},
+		ID:          "golden-popover",
 		TriggerText: "Details",
 		Position:    PopoverPositionBottom,
 	}))

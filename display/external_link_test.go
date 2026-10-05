@@ -23,10 +23,8 @@ func TestExternalLinkText(t *testing.T) {
 func TestExternalLinkChildren(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, ExternalLink(ExternalLinkProps{
-		Href: "https://docs.example.com",
-		BaseProps: utils.BaseProps{
-			AriaLabel: "Documentation",
-		},
+		Href:      "https://docs.example.com",
+		AriaLabel: "Documentation",
 	}))
 	utils.AssertContains(t, output, `href="https://docs.example.com"`)
 	utils.AssertContains(t, output, `aria-label="Documentation"`)
@@ -64,11 +62,9 @@ func TestExternalLinkDefaults(t *testing.T) {
 func TestExternalLinkClass(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, ExternalLink(ExternalLinkProps{
-		Href: "https://example.com",
-		Text: "Link",
-		BaseProps: utils.BaseProps{
-			Class: "text-blue-600 dark:text-blue-400",
-		},
+		Href:  "https://example.com",
+		Text:  "Link",
+		Class: "text-blue-600 dark:text-blue-400",
 	}))
 	utils.AssertContains(t, output, "text-blue-600")
 }
