@@ -8,7 +8,7 @@
     # GO-2026-5972/6089/6090 fixes) is FOLDED back into `nixpkgs` — both
     # inputs had locked the identical rev, so the split no longer insulated
     # anything. Re-split deliberately if pkgs.templ (v0.3.1020 generate
-    # pin, see AGENTS.md) and pkgs.go_1_26 versioning diverge again.
+    # pin, see AGENTS.md) and pkgs.go_1_27 versioning diverge again.
     # Separate nixpkgs pin for Chromium. Visual regression tests are
     # pixel-sensitive: a Chromium major bump can shift font AA, sub-pixel
     # layout, or rendering timings enough to flip goldens. Pinning Chromium
@@ -62,7 +62,7 @@
           # golangci-lint rides the same input: its version matches the CI
           # pin (.github/workflows/ci.yaml), so local `nix run .#lint` and
           # CI run the same scanner.
-          goToolchain = inputs'.nixpkgs.legacyPackages.go_1_26;
+          goToolchain = inputs'.nixpkgs.legacyPackages.go_1_27;
           golangciLint = inputs'.nixpkgs.legacyPackages.golangci-lint;
         in
         {
