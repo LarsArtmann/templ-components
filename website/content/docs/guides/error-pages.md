@@ -27,7 +27,7 @@ mux.Handle("GET /dashboard", errorpage.ErrorHandler(
 ```
 
 Prefer full control? Build the props yourself and render inside your own
-layout shell (the [demo](/demo) uses exactly this pattern for its standalone
+layout shell (the [demo](https://templcomponents.lars.software/demo) uses exactly this pattern for its standalone
 `/errors/*` routes):
 
 ```templ
@@ -94,7 +94,7 @@ caller way out always wins.
 The demo ships a stateless playground that renders a real `ErrorPage` from
 query params — family, status, code, title, message, and card width:
 
-**[Open the error-page playground →](/demo/errors/playground)**
+**[Open the error-page playground →](https://templcomponents.lars.software/demo/errors/playground)**
 
 ## Components
 
