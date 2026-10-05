@@ -16,4 +16,5 @@ require (
 )
 
 replace github.com/larsartmann/templ-components/utils => ../utils
+
 replace github.com/larsartmann/templ-components/icons => ../icons
