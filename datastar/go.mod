@@ -1,9 +1,9 @@
 module github.com/larsartmann/templ-components/datastar
 
-go 1.26
+go 1.26.0
 
 require (
-	github.com/a-h/templ v0.3.1020
+	github.com/a-h/templ v0.3.1070
 	github.com/larsartmann/go-datastar/static v0.6.1
 	github.com/larsartmann/templ-components/utils v1.19.4
 )
