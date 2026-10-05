@@ -947,8 +947,8 @@ func errorPlaygroundHandler(nonce string) http.Handler {
 			Code:       errorpage.Code(q.Get("code")),
 			Title:      truncateDemoField(q.Get("title"), 120),
 			Message:    truncateDemoField(q.Get("message"), 300),
-		}
-		props.Nonce = nonce
+
+			Nonce: nonce}
 		if props.Title == "" {
 			props.Title = "Playground error"
 		}
