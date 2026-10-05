@@ -55,10 +55,11 @@ func TestErrorRoutesPlaygroundPinsQueryWiring(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name         string
-		query        string
-		wantStatus   int
-		wantContains []string
+		name           string
+		query          string
+		wantStatus     int
+		wantContains   []string
+		wantNotContain string
 	}{
 		{
 			name:       "full query renders width, way-out, and copy button",
@@ -79,6 +80,7 @@ func TestErrorRoutesPlaygroundPinsQueryWiring(t *testing.T) {
 				"max-w-xl",
 				"Back to the error page components",
 			},
+			wantNotContain: "data-tc-copy",
 		},
 		{
 			name:       "unknown width clamps to XL",
@@ -106,6 +108,9 @@ func TestErrorRoutesPlaygroundPinsQueryWiring(t *testing.T) {
 				if !strings.Contains(body, want) {
 					t.Errorf("GET /errors/playground%s body does not contain %q", tt.query, want)
 				}
+			}
+			if tt.wantNotContain != "" && strings.Contains(body, tt.wantNotContain) {
+				t.Errorf("GET /errors/playground%s body contains %q, want it absent", tt.query, tt.wantNotContain)
 			}
 		})
 	}
