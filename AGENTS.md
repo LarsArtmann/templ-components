@@ -141,6 +141,17 @@ import-style changes; the generated code is semantically identical.
 **Do not bump `go.mod` to v0.3.1036** — that version is not yet on the module proxy, so consumers
 who `go get` this package would fail. Wait for the official upstream release, then bump in lockstep.
 
+**2026-10-05 sweep note — v0.3.1070 IS on the proxy but stays unpinned.** The sweep bumped all
+9 modules to v0.3.1070 and regenerated; that release (upstream ADR 0001, fix #693) intentionally
+changes generator OUTPUT, not just imports: a self-closing `@icon()` adjacent to a text expression
+now emits a separating space (`</svg> Edit`), which flipped the HTML goldens (dropdown, sidebar_nav,
+pagination) and alters rendered HTML at every icon+label site next to their `me-3` margins. Since
+nixpkgs (locked rev AND unstable as of 2026-10-05) still ships `pkgs.templ v0.3.1020`, the
+zero-diff invariant cannot hold at 0.3.1070 — the bump was rolled back the same day (goldens and
+generated code verified byte-stable again). Migration is TODO #335: it needs a templ source pin
+in the flake (or nixpkgs catching up), a deliberate golden + pixel-visual re-baseline, and a
+source-trim review of icon+label sites. Do not "just bump" templ without that plan.
+
 **Toolchain input split (2026-09-02):** the Go toolchain comes from a dedicated `nixpkgs-go`
 flake input (nixos-unstable, currently 1.26.7 for GO-2026-5972/6089/6090) while `templ`,
 `golangci-lint`, etc. stay on the older locked `nixpkgs` — a wholesale input bump would drift

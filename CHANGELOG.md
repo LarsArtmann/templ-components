@@ -252,6 +252,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   layouts that cannot render on the error path (`dashboardui`). Registered in
   the recipe index. Closes the cqrs-htmx round-12 error-shell survey ask (M11).
 
+- **Dependency sweep 2026-10-05: Go floor 1.26.0 → 1.27 workspace-wide; templ
+  deliberately HELD at v0.3.1020.** All nine `go.mod` directives, `go.work`,
+  and the flake's Go toolchain (`go_1_27`) moved to 1.27 together (the
+  patch-floor form rejected `go get -u` once deps required ≥1.27 — chromedp
+  cdproto in visualtest). `visualtest` picks up chromedp v0.16.0 + its pinned
+  cdproto (isolated to that module by design); golangci-lint config/actions
+  refreshed. templ v0.3.1070 was evaluated and rolled back: its ADR 0001
+  whitespace semantics (`@icon()` adjacent to text now emits a separating
+  space) change rendered HTML for every icon+label site, and nixpkgs ships
+  only 0.3.1020 — the zero-diff generate invariant (shell templ == go.mod
+  pin) pins the release until lockstep is possible (TODO #335). Goldens and
+  generated code re-verified byte-stable under 0.3.1020.
+
 ## [1.19.4] — 2026-09-25
 
 ### Fixed
