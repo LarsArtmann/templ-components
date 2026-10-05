@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.20.1] — 2026-10-05
+
+## Fixed
+
+- Root `go.mod` no longer pins `charts/echarts`, `errorpage`, `datastar`, `htmx` at zero pseudo-versions (`v1.20.0-00010101000000-000000000000`). Consumers ignore the local `replace` directives, so any full module-graph load (`go mod tidy` / `go mod download`) failed with `invalid version: unknown revision` — this broke every downstream hermetic build (e.g. go-taskqueue's Nix go-modules FOD) immediately after the v1.20.0 release.
+
 ## [1.20.0] — 2026-10-05
 
 ### Added
