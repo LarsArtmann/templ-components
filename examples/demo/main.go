@@ -947,6 +947,11 @@ func errorPlaygroundHandler(nonce string) http.Handler {
 			status = errorpage.FamilyStatusCode(family)
 		}
 
+		width := errorpage.ErrorMaxWidth(q.Get("width"))
+		if !errorpage.ErrorMaxWidthIsValid(width) {
+			width = errorpage.ErrorMaxWidthXL
+		}
+
 		props := errorpage.ErrorPageProps{
 			Family:     family,
 			StatusCode: status,
@@ -954,7 +959,13 @@ func errorPlaygroundHandler(nonce string) http.Handler {
 			Title:      truncateDemoField(q.Get("title"), 120),
 			Message:    truncateDemoField(q.Get("message"), 300),
 
-			Nonce: nonce}
+			CopyCode: true,
+			WayOutAction: errorpage.WayOutAction{
+				Text: "Back to the error page components",
+				Href: demoURL("/error-pages"),
+			},
+			MaxWidth: width,
+			Nonce:    nonce}
 		if props.Title == "" {
 			props.Title = "Playground error"
 		}
