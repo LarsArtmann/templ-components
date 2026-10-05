@@ -204,7 +204,7 @@ templ Tabs(props TabsProps) {
 			}
 		}
 		if clientSide {
-			<script nonce={ props.Nonce }>
+			<script { utils.ScriptAttrs(props.Nonce)... }>
 				if (!window.tcTabsAttached) {
 					window.tcTabsAttached = true;
 					document.addEventListener('click', function(e) {
