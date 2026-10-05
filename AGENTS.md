@@ -382,15 +382,17 @@ for mod in utils icons errorpage charts/echarts htmx datastar; do (cd "$mod" && 
 
 ## `encoding/json/v2` Adoption
 
-This library uses `encoding/json/v2` + `encoding/json/jsontext` (Go 1.26+ with
-`GOEXPERIMENT=jsonv2`). The pre-commit hook (`scripts/pre-commit.sh`) sets
+This library uses `encoding/json/v2` + `encoding/json/jsontext` (Go 1.27 floor;
+stable there — verified 2026-10-05: builds with no flag on go1.27.1, still
+gated on 1.26.8). The pre-commit hook (`scripts/pre-commit.sh`) sets
 `GOEXPERIMENT=jsonv2` automatically. The `.golangci.yml` enables the
 `goexperiment.jsonv2` build tag. The `flake.nix` devShell exports
 `GOEXPERIMENT=jsonv2` via `shellHook`. **`.envrc`** (direnv) sets
 `GOEXPERIMENT=jsonv2` repo-wide for ALL tools. `go.work` is active by default (lists all 7 modules). Use `GOWORK=off` for per-module isolation testing.
 
-**Consumers** must set `GOEXPERIMENT=jsonv2` when building (or wait for Go 1.27
-where it becomes stable). The `errorpage` package uses `json.MarshalEncode` +
+**Consumers** on the Go 1.27 floor need NO flag (json/v2 is stable there);
+the repo's `GOEXPERIMENT=jsonv2` exports remain as belt-and-braces for older
+toolchains. The `errorpage` package uses `json.MarshalEncode` +
 `jsontext.NewEncoder` for JSON error responses. The `navigation/breadcrumbs`
 package also uses `encoding/json/v2`. Remaining packages (tests) still use
 `encoding/json` v1 — both coexist fine under the experiment flag.

@@ -68,6 +68,6 @@ machine-checked (the guard named in parentheses fails CI on regression).
 
 ## Toolchain
 
-- The version-support floors (Go 1.26, templ v0.3.1020, Tailwind v4) are
+- The version-support floors (Go 1.27, templ v0.3.1020, Tailwind v4) are
   documented in [`version-support.md`](version-support.md) and diagnosed by
   `tc doctor`.
