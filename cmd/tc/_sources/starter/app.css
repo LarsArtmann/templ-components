@@ -8,7 +8,13 @@
  *   tailwindcss -i app.css -o styles.css --minify
  *   go run github.com/larsartmann/templ-components/cmd/tc-css -input app.css -output styles.css
  *   buildflow (tailwind-build provider handles it automatically)
+ *
+ * The @tailwindcss-output directive below tells the BuildFlow tailwind-build
+ * provider (which compile-checks this scaffold) to write its artifact to
+ * app.out.css — covered by the repo's *.out.css gitignore — instead of
+ * styles.css, which this repo deliberately does not ship for the starter.
  */
+/* @tailwindcss-output: app.out.css */
 
 /* Tailwind v4 — CSS-first config, no tailwind.config.js */
 @import "tailwindcss" source(none);
