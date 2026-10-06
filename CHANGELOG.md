@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Documented the children/render-context limitation on `Grid`.** Grid
+  receives its cells through templ's children slot, so rendering the
+  component into a plain writer from Go (`Component.Render(ctx, &buf)`
+  outside a templ tree) emits the shell with empty cells — valid HTML,
+  silently missing content. The doc comment now says so and points at the
+  fix (route the items through a templ template); the note covers every
+  children-carrying component (issue #21).
+
 - **`PageProps.HTMLDataAttrs` — root-level attributes on `<html>`.**
   Mirrors `BodyDataAttrs` for the root element: consumers integrating
   libraries that read configuration off `document.documentElement`
