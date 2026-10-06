@@ -46,6 +46,13 @@ func TestDocsCountDrift(t *testing.T) {
 	changelog := readDoc(t, "CHANGELOG.md")
 	assertCount(t, changelog, `(\d+)\s+groups at t=1`, "CHANGELOG baseline groups", actualBaselineEntries)
 
+	// The demo hero's "N accessible, CSP-safe components" claim is
+	// single-sourced in demo.templ's componentCount constant; pin it to the
+	// real exported-templ-function count (added 2026-10-06 — the
+	// hand-typed-count class burned the website matrix cell before).
+	demo := readDoc(t, "examples", "demo", "demo.templ")
+	assertCount(t, demo, `componentCount = "(\d+)"`, "demo hero componentCount", actualComponents)
+
 	skill := readDoc(t, "skill", "SKILL.md")
 	componentsRe := `(\d+)\s+components across \d+ packages`
 	assertCount(t, skill, componentsRe, "SKILL.md components", actualComponents)
