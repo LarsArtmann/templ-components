@@ -344,8 +344,7 @@ build tag, flake devShell shellHook, `.envrc` (direnv). `go.work` is active by d
 for per-module isolation testing. GOTCHA (2026-10-05): direnv exports contaminate ad-hoc probes —
 prefix behavior-sensitive probes with `env -u GOEXPERIMENT`.
 
-**Consumers** on the Go 1.27 floor need NO flag. `errorpage` and `navigation/breadcrumbs` use
-`json.MarshalEncode`/`jsontext.NewEncoder`; remaining packages (tests) still use v1 — both coexist.
+**Consumers** on the Go 1.27 floor need NO flag; `errorpage` + `navigation/breadcrumbs` use `json.MarshalEncode`/`jsontext.NewEncoder`, remaining packages (tests) still use v1 — both coexist.
 
 ## Conventions
 
