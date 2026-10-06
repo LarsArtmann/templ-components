@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Release guard: zero-commit pseudo-version requires fail the cut.**
+  `assert_release_tree` (release.sh step 8b) now rejects any go.mod that pins
+  a templ-components sibling at `v…-00010101000000-000000000000` — the
+  replace-generated placeholder that made the v1.20.0 tag unconsumable from
+  the module proxy (issue #27). The bare `v0.0.0` placeholder used by
+  internal-only consumers stays exempt; fixture cases pin all three shapes.
+
 - **Nonce omit-empty rule.** Inline-script components no longer render
   `nonce=""` when no nonce is provided — the attribute is omitted entirely
   (`utils.ScriptAttrs`). An empty nonce was worse than useless: strict-CSP

@@ -98,5 +98,46 @@ expect_err "0.0.1" go.mod utils/go.mod errorpage/go.mod
 # Negative: a leaked replace directive in one module file.
 expect_err "$VERSION" go.mod utils/go.mod icons/go.mod
 
+# Negative: a sibling pinned at a zero-commit pseudo-version — the v1.20.0
+# break (issue #27): a surviving family replace kept the placeholder through
+# tidy, and the tag was unconsumable from the module proxy.
+mkdir -p charts/echarts
+cat >charts/echarts/go.mod <<EOF
+module github.com/larsartmann/templ-components/charts/echarts
+
+go 1.26.7
+
+require github.com/larsartmann/templ-components/utils v1.20.0-00010101000000-000000000000
+EOF
+git add -A
+git commit -qm poisoned-sibling
+expect_err "$VERSION" go.mod utils/go.mod charts/echarts/go.mod
+
+# Exempt: the bare v0.0.0-00010101000000 placeholder (the internal-only
+# visualtest shape) must NOT trip the guard.
+cat >charts/echarts/go.mod <<EOF
+module github.com/larsartmann/templ-components/charts/echarts
+
+go 1.26.7
+
+require github.com/larsartmann/templ-components/utils v0.0.0-00010101000000-000000000000
+EOF
+git add -A
+git commit -qm placeholder-exempt
+expect_ok "$VERSION" go.mod utils/go.mod charts/echarts/go.mod
+
+# Positive again: the sibling pinned at a real tag (the healthy release
+# shape — requires resolve from the proxy).
+cat >charts/echarts/go.mod <<EOF
+module github.com/larsartmann/templ-components/charts/echarts
+
+go 1.26.7
+
+require github.com/larsartmann/templ-components/utils v${VERSION}
+EOF
+git add -A
+git commit -qm clean-sibling
+expect_ok "$VERSION" go.mod utils/go.mod charts/echarts/go.mod
+
 echo "release-assertions: ${pass} passed, ${fail} failed"
 [ "$fail" -eq 0 ]

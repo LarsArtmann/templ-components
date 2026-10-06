@@ -44,6 +44,21 @@ assert_release_tree() {
 			echo "Error: HEAD tree ${modfile} still contains templ-components replace directives." >&2
 			return 1
 		fi
+		# Zero-commit pseudo-version guard (the v1.20.0 break): a sibling
+		# require pinned at v<semver>-00010101000000-000000000000 never
+		# resolves from the module proxy — any consumer bumping to the tag
+		# fails with "unknown revision". It happens when a family replace
+		# survives into the tagged go.mod and tidy keeps the placeholder.
+		# The bare v0.0.0-00010101000000 placeholder is exempt: internal-only
+		# consumers (visualtest) pin the root with it behind a local replace.
+		if git show "HEAD:${modfile}" \
+			| grep -E '^[[:space:]]*(require[[:space:]]+)?github\.com/larsartmann/templ-components[[:alnum:]/-]*[[:space:]]+v[0-9]+\.[0-9]+\.[0-9]+-00010101000000-000000000000' \
+			| grep -cv 'v0\.0\.0-00010101000000-000000000000' >/dev/null; then
+			echo "Error: HEAD tree ${modfile} pins a templ-components sibling at a zero-commit pseudo-version (v…-00010101000000)." >&2
+			echo "The tag would be unconsumable from the module proxy (v1.20.0 break, issue #27)." >&2
+			echo "Drop the family replace directives and run go mod tidy so the requires resolve to real tags, then re-cut." >&2
+			return 1
+		fi
 	done
 	return 0
 }
