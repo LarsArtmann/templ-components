@@ -44,13 +44,15 @@
 }
 
 /*
- * Semantic aliases (included by default since v2.0):
- * The theme file aliases Tailwind palette colors to semantic names
- * (tc-primary, tc-danger, tc-success, etc.). Override --color-tc-primary
- * in your @theme block to re-skin every component without touching any
- * .templ source. See docs/theming.md and ADR-0008.
+ * Semantic aliases (opt-in):
+ * The library's templates/ directory ships templ-components-theme.css, which
+ * aliases Tailwind palette colors to semantic names (tc-primary, tc-danger,
+ * tc-success, etc.). `tc init` does not copy it, so it is NOT imported here —
+ * copy the file next to this one and add `@import "./templ-components-theme.css";`
+ * to opt in. Override --color-tc-primary in your @theme block to re-skin
+ * every component without touching any .templ source.
+ * See docs/theming.md and ADR-0008.
  */
-@import "./templ-components-theme.css";
 
 /*
  * Custom component CSS — imported from a single source of truth.
