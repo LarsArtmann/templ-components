@@ -250,6 +250,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`datastar.PolledRegion`: a labeled region is now a landmark.** Setting
+  `AriaLabel` emitted `aria-label` on a roleless `<div>` — invalid per the
+  HTML spec (labels on generic containers are ignored by assistive tech)
+  and flagged by the HTML-validation gate once the toolchain red stopped
+  masking it. A labeled region now also carries `role="region"`
+  (navigable landmark); unlabeled renders are byte-identical.
+
 - **MAJOR CORRECTION (browser-proven): the pinned Datastar runtime ignores
   ALL client fetch options for patch targeting and merge mode —
   `wire.Action` no longer claims otherwise.** The earlier claim that
