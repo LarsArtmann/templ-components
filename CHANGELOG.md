@@ -49,12 +49,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - **`tc init` scaffold compiles out of the box.** The starter `app.css`
-  shipped by the scaffolder imported `./templ-components-theme.css`, a file
-  `tc init` never copies — every scaffolded project failed its first
-  Tailwind compile until the missing file was hand-copied from the library's
-  `templates/` directory. The import is replaced by an opt-in comment; the
-  semantic-alias theme file itself keeps shipping in `templates/` for
-  consumers who copy that directory wholesale.
+  imported `./templ-components-theme.css`, a file `tc init` never copied —
+  every scaffolded project failed its first Tailwind compile until the
+  missing file was hand-copied from the library's `templates/` directory
+  (broken since the v2.0 "semantic aliases included by default" flip).
+  `tc init` now scaffolds all three files (`app.css`, `custom.css`,
+  `templ-components-theme.css`), the starter stays a byte-mirror of
+  `templates/` as the sync guard demands, and the copy instructions say
+  "all three" instead of "both". Only the true compiled-artifact zombies
+  (`styles.css`, `*.out.css`) remain banned from the starter.
 - **Stale pre-1.27 build-flag docs corrected.** README's build callout and
   requirements, `docs/cli.md`, and the website installation guide still told
   consumers to set `GOEXPERIMENT=jsonv2` "until Go 1.27" — the floor moved

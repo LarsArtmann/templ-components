@@ -131,24 +131,44 @@ func TestCompiledCSSInventory(t *testing.T) {
 		}
 	}
 
-	// The 2026-10-06 zombie sweep: cmd/tc/_sources/starter shipped three
-	// dead files — styles.css (a compiled artifact), templ-components-theme
-	// .css, and templ-components-theme.out.css — none read by tc init (it
-	// scaffolds only app.css + custom.css). styles.css evaded both guards
-	// for months because it lacked the .out.css suffix while the daemon
-	// kept recompiling it. Refuse any resurrection.
+	// The 2026-10-06 zombie sweep: cmd/tc/_sources/starter shipped dead
+	// compiled artifacts — styles.css and templ-components-theme.out.css —
+	// none read by tc init. styles.css evaded both guards for months because
+	// it lacked the .out.css suffix while the daemon kept recompiling it.
+	// templ-components-theme.css was on this list too, but that was a
+	// misdiagnosis: it is a SOURCE the scaffold needs — templates/app.css
+	// (the byte-equality canon) imports it, and tc init now scaffolds all
+	// three. Refuse only the compiled artifacts; for styles.css the refusal
+	// is git-tracked-based because the BuildFlow tailwind-build provider
+	// legitimately rewrites it as untracked compile litter on every run
+	// (gitignored, same class as examples/demo/demo.out.css).
 	for _, zombie := range []string{
 		"cmd/tc/_sources/starter/styles.css",
-		"cmd/tc/_sources/starter/templ-components-theme.css",
 		"cmd/tc/_sources/starter/templ-components-theme.out.css",
 	} {
-		if _, statErr := os.Stat(filepath.Join(repoRoot, filepath.FromSlash(zombie))); statErr == nil {
+		tracked, lsErr := gitLsFiles(repoRoot, zombie)
+		if lsErr != nil {
+			t.Fatalf("git ls-files %s: %v", zombie, lsErr)
+		}
+
+		if tracked {
 			t.Errorf(
-				"%s resurrected — tc init scaffolds only app.css + custom.css, so this is dead starter weight (TODO_LIST #290 class); delete it, do not re-add it",
+				"%s is git-tracked — it is compiled tailwindcss output (tc init never ships it); git rm it and keep it gitignored, do not re-add it",
 				zombie,
 			)
 		}
 	}
+}
+
+// gitLsFiles reports whether the given repo-relative path is git-tracked.
+func gitLsFiles(repoRoot, path string) (bool, error) {
+	cmd := exec.Command("git", "-C", repoRoot, "ls-files", "--", path)
+	out, err := cmd.Output()
+	if err != nil {
+		return false, err
+	}
+
+	return len(strings.TrimSpace(string(out))) > 0, nil
 }
 
 // findUntrackedOutCSSLitter walks the worktree for .out.css files outside the

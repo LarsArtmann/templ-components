@@ -1,9 +1,12 @@
 /*
  * templ-components starter CSS — Tailwind v4 entry point.
  *
- * Copy both app.css AND custom.css into your project (e.g. to your styles/
- * directory) and customize. The @import "./custom.css" at the bottom pulls in
- * component-specific styles (dialog animations, stylable select, etc.).
+ * Copy app.css, custom.css, AND templ-components-theme.css into your
+ * project (e.g. to your styles/ directory) and customize — `tc init`
+ * scaffolds all three. The @import "./custom.css" at the bottom pulls in
+ * component-specific styles (dialog animations, stylable select, etc.),
+ * and @import "./templ-components-theme.css" pulls in the semantic
+ * aliases (tc-primary, tc-danger, ...).
  * Build with:
  *   tailwindcss -i app.css -o styles.css --minify
  *   go run github.com/larsartmann/templ-components/cmd/tc-css -input app.css -output styles.css

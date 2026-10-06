@@ -1,20 +1,17 @@
 /*
  * templ-components starter CSS — Tailwind v4 entry point.
  *
- * Copy both app.css AND custom.css into your project (e.g. to your styles/
- * directory) and customize. The @import "./custom.css" at the bottom pulls in
- * component-specific styles (dialog animations, stylable select, etc.).
+ * Copy app.css, custom.css, AND templ-components-theme.css into your
+ * project (e.g. to your styles/ directory) and customize — `tc init`
+ * scaffolds all three. The @import "./custom.css" at the bottom pulls in
+ * component-specific styles (dialog animations, stylable select, etc.),
+ * and @import "./templ-components-theme.css" pulls in the semantic
+ * aliases (tc-primary, tc-danger, ...).
  * Build with:
  *   tailwindcss -i app.css -o styles.css --minify
  *   go run github.com/larsartmann/templ-components/cmd/tc-css -input app.css -output styles.css
  *   buildflow (tailwind-build provider handles it automatically)
- *
- * The @tailwindcss-output directive below tells the BuildFlow tailwind-build
- * provider (which compile-checks this scaffold) to write its artifact to
- * app.out.css — covered by the repo's *.out.css gitignore — instead of
- * styles.css, which this repo deliberately does not ship for the starter.
  */
-/* @tailwindcss-output: app.out.css */
 
 /* Tailwind v4 — CSS-first config, no tailwind.config.js */
 @import "tailwindcss" source(none);
@@ -50,15 +47,13 @@
 }
 
 /*
- * Semantic aliases (opt-in):
- * The library's templates/ directory ships templ-components-theme.css, which
- * aliases Tailwind palette colors to semantic names (tc-primary, tc-danger,
- * tc-success, etc.). `tc init` does not copy it, so it is NOT imported here —
- * copy the file next to this one and add `@import "./templ-components-theme.css";`
- * to opt in. Override --color-tc-primary in your @theme block to re-skin
- * every component without touching any .templ source.
- * See docs/theming.md and ADR-0008.
+ * Semantic aliases (included by default since v2.0):
+ * The theme file aliases Tailwind palette colors to semantic names
+ * (tc-primary, tc-danger, tc-success, etc.). Override --color-tc-primary
+ * in your @theme block to re-skin every component without touching any
+ * .templ source. See docs/theming.md and ADR-0008.
  */
+@import "./templ-components-theme.css";
 
 /*
  * Custom component CSS — imported from a single source of truth.
