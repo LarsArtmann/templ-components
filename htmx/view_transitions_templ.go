@@ -8,6 +8,8 @@ package htmx
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import "github.com/larsartmann/templ-components/utils"
+
 // ViewTransitions renders a CSP-safe script that enables native View
 // Transitions for HTMX swaps, plus default transition CSS.
 //
@@ -41,7 +43,7 @@ func ViewTransitions(props ViewTransitionsProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.Global {
-			templ_7745c5c3_Err = scriptComponent(props.Nonce, viewTransitionsScript).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = utils.ScriptComponent(props.Nonce, viewTransitionsScript, "view transitions script").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

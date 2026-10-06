@@ -1,10 +1,7 @@
 package forms
 
 import (
-	"context"
 	"fmt"
-	"html"
-	"io"
 
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
@@ -67,31 +64,14 @@ const tagsInputJS = `
 
 // tagsInputScriptComponent writes the tags-input script raw: templ's <script>
 // context sanitizes interpolations, and the JS must land verbatim with the
-// icons-sourced path data (same pattern as dirtyGuardScriptComponent). An
-// empty nonce omits the attribute entirely (nonce="" is rejected by
-// strict-CSP pages — the omit-empty rule, see utils.ScriptAttrs); the script
-// itself always renders so non-CSP consumers still get working tags.
-//
-// Tracked as row #350 in the repo task list: differs from
-// utils.ScriptComponent (the canonical writer) only in whitespace (no
-// newlines around the JS); fold onto it and regenerate the golden when
-// touched next.
+// icons-sourced path data (same pattern as dirtyGuardScriptComponent). The
+// script itself always renders so non-CSP consumers still get working tags;
+// utils.ScriptComponent owns the omit-empty nonce rule and the CSP-safe
+// write (nonce="" is rejected by strict-CSP pages — see utils.ScriptAttrs).
 func tagsInputScriptComponent(nonce string) templ.Component {
-	escapedNonce := html.EscapeString(nonce)
-	js := fmt.Sprintf(tagsInputJS, tagsInputRemoveIconPath())
+	script := fmt.Sprintf(tagsInputJS, tagsInputRemoveIconPath())
 
-	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		nonceAttr := ""
-		if nonce != "" {
-			nonceAttr = fmt.Sprintf(" nonce=\"%s\"", escapedNonce)
-		}
-
-		if _, err := fmt.Fprintf(w, "<script%s>%s</script>", nonceAttr, js); err != nil {
-			return fmt.Errorf("write tags input script: %w", err)
-		}
-
-		return nil
-	})
+	return utils.ScriptComponent(nonce, script, "tags input script")
 }
 
 // tagsInputContainerClass returns the container classes for the tags input.
