@@ -5,7 +5,7 @@ go 1.27
 ignore dist
 
 require (
-	github.com/a-h/templ v0.3.1070
+	github.com/a-h/templ v0.3.1020
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/larsartmann/templ-components v1.20.1
 	github.com/larsartmann/templ-components/errorpage v1.20.1
