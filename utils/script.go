@@ -17,5 +17,6 @@ func ScriptAttrs(nonce string) templ.Attributes {
 	if nonce == "" {
 		return nil
 	}
+
 	return templ.Attributes{"nonce": nonce}
 }

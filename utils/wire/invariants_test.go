@@ -549,14 +549,21 @@ func TestEveryActionFieldHasADialectContract(t *testing.T) {
 		for _, ctx := range contract.contextFields {
 			applyProbeValue(&probe, ctx)
 		}
+
 		applyProbeValue(&probe, name)
 
 		gotHTMX := canonicalAttrs(t, probe.Attributes()) != baseHTMX
 		gotDatastar := canonicalAttrs(t, probe.TransportDatastarAction().Attributes()) != baseDatastar
 
 		if gotHTMX != contract.htmx || gotDatastar != contract.datastar {
-			t.Errorf("Action field %q dialect drift: contract says htmx=%v datastar=%v, probe rendered htmx=%v datastar=%v",
-				name, contract.htmx, contract.datastar, gotHTMX, gotDatastar)
+			t.Errorf(
+				"Action field %q dialect drift: contract says htmx=%v datastar=%v, probe rendered htmx=%v datastar=%v",
+				name,
+				contract.htmx,
+				contract.datastar,
+				gotHTMX,
+				gotDatastar,
+			)
 		}
 	}
 }
