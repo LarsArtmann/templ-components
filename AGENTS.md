@@ -31,12 +31,9 @@ This repo is a **7-module Go workspace** (`github.com/larsartmann/templ-componen
 # Full build (workspace mode via go.work — builds all 7 modules)
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./...
 
-# CAUTION: `go test ./...` from the repo root (workspace mode) only runs the
-# ROOT module's packages — `go list ./...` lists ZERO utils/icons/... packages
-# even with go.work active (verified 2026-08-31: a utils drift-guard failure
-# was invisible to the root-form run and only CI's per-module step caught it).
-# The per-module loop below is the only COMPLETE local test form — always run
-# it before pushing.
+# CAUTION: `go test ./...` from the repo root runs ONLY the root module's
+# packages even with go.work active (verified 2026-08-31) — the per-module
+# loop below is the only COMPLETE local test form; always run it before pushing.
 for mod in utils icons errorpage charts/echarts datastar htmx; do (cd "$mod" && GOWORK=off go test ./...); done
 (cd visualtest && GOWORK=off go test ./...) # compile check; use nix run .#visual for real runs
 
@@ -44,13 +41,12 @@ for mod in utils icons errorpage charts/echarts datastar htmx; do (cd "$mod" && 
 # only complete local form; flags add the Lint/CSS/Visual/Website jobs):
 scripts/ci-repro.sh --lint --website
 
-# RITUAL (M03, 2026-09-17): never push on a "should be green" — push only after
-# WITNESSING green-on-tip: run `scripts/ci-repro.sh --lint --website` at the
-# exact commit about to be pushed (it prints "VERDICT: PASS (exit 0)"), then
-# push IMMEDIATELY (the daemon races commits onto master between verify and
-# push — if `git status -sb` shows new local commits you didn't make, re-verify
-# the new tip before pushing). "Green locally" must name its lanes; a bare
-# "tests pass" is not a verdict.
+# RITUAL (M03, 2026-09-17): never push on a "should be green" — run
+# `scripts/ci-repro.sh --lint --website` at the exact commit about to be pushed
+# (it prints "VERDICT: PASS (exit 0)"), then push IMMEDIATELY (the daemon races
+# commits onto master between verify and push — re-verify the new tip if
+# `git status -sb` shows commits you didn't make). A bare "tests pass" is not
+# a verdict; green must name its lanes.
 
 # All-in-one verification
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && nix run .#lint
@@ -65,29 +61,9 @@ nix shell nixpkgs#govulncheck -c nix develop -c scripts/release.sh <ver> "<summa
 
 ### Tagging policy: sibling pins + tag-tree hygiene (decided 2026-09-25, M18)
 
-- **visualtest/website pins ride the RELEASE VERSION, never pseudo-versions.** Both
-  sibling modules keep `replace ... => ../` for local dev and `require` at the last
-  released tag; the release script's bump loop moves them to the new version and
-  strips the replaces from the TAGGED go.mod files (tagged source must be
-  consumer-clean). Pseudo-version pins are rejected: at tag time they reference
-  SHAs that may not exist on the origin yet (unresolvable for consumers fetching
-  the tag), they break the bump loop's determinism, and they leak workspace-local
-  state into the module proxy.
-- **Zero-commit pseudo-version requires fail the cut (v1.20.0 break, issue #27).**
-  `assert_release_tree` (step 8b, pre-tag) rejects any go.mod pinning a
-  templ-components sibling at `v…-00010101000000-000000000000` (a surviving
-  family replace kept the placeholder through tidy; the tag was unconsumable —
-  every consumer bump failed with `unknown revision`). The bare
-  `v0.0.0-00010101000000` placeholder (visualtest's internal-only shape) is
-  exempt; fixture cases in `scripts/test-release-assertions.sh` pin all three
-  shapes.
-- **No workspace artifacts in the tag tree — `result*` symlinks are release
-  blockers.** The v1.19.3 tag shipped a daemon-committed `visualtest/result`
-  symlink (nix build output), which poisoned every downstream `mkPreparedSource`
-  fetch of that tag (DiscordSync/SystemNix could not build from it; fixed in
-  `08253ce4`, bare `result` gitignored). Rule: if `git status` shows any `result*`
-  path at release time, STOP — remove/trash it and re-verify the tree is clean
-  before the bump loop runs; do not let an auto-commit daemon race the tag.
+- **visualtest/website pins ride the RELEASE VERSION, never pseudo-versions** (rationale + the v1.20.0 zero-commit-placeholder break, issue #27: `docs/agent-context-history.md#tagging-policy`).
+- **`assert_release_tree` (release step 8b) rejects zero-commit pseudo-version sibling pins** (`v…-00010101000000-000000000000`); visualtest's internal bare `v0.0.0-00010101000000` shape is exempt; fixtures in `scripts/test-release-assertions.sh` pin all three shapes.
+- **`result*` paths are release blockers** — a daemon-committed `visualtest/result` symlink poisoned the v1.19.3 tag for every downstream fetch (`docs/agent-context-history.md#tag-tree`). If `git status` shows any `result*` at release time, STOP and clean before the bump loop runs.
 
 ### Nix flake commands
 
@@ -108,80 +84,48 @@ nix run .#coverage  # go test -coverprofile
 nix run .#visual    # pixel-level visual regression tests (headless Chromium). See docs/visual-testing.md
 ```
 
-The flake uses `flake-parts` + `treefmt-nix` (mirrors `website/flake.nix`). The
-`formatter` output is provided by treefmt-nix's flakeModule (replaces the former
-bare `formatter = pkgs.nixfmt;`). BuildFlow still owns the pre-commit hook.
+The flake uses `flake-parts` + `treefmt-nix` (formatter via flakeModule); BuildFlow owns the pre-commit hook.
 
 ## CRITICAL: Generated `*_templ.go` Files MUST Be Committed
 
-This is a **templ library**, not an application. The Go module proxy (proxy.golang.org) fetches
-source from the Git tag — it does **not** run `templ generate`. Without committed `*_templ.go`
-files, consumers get uncompilable code (`undefined` errors on every component function).
+This is a **templ library**, not an application: the Go module proxy serves tagged source as-is
+and never runs `templ generate` — without committed `*_templ.go` files, consumers get `undefined`
+errors on every component function. Therefore: `.gitignore` carries `!*_templ.go`; after editing
+any `.templ` file, run `templ generate ./...` and commit the generated file; never re-ignore
+`*_templ.go`; 125 generated files across all packages.
 
-- The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
-- After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
-- Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 125 generated files across all packages
-- **BuildFlow gotcha:** the BuildFlow pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` on every run, which (being the last pattern) overrides the `!*_templ.go` unignore and hides generated files from `git status`. This is harmless for already-tracked files (gitignore cannot untrack), but any NEW component's `*_templ.go` will be invisible until `git add -f`. After each commit, check `git status` for a re-added `*_templ.go` line and remove it. Consider fixing this in BuildFlow itself (it is `larsartmann/buildflow`).
+- **BuildFlow gotcha:** the pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore`
+  every run (the last pattern wins), hiding NEW components' generated files until `git add -f` —
+  after each commit, check `git status` for a re-added ignore line and remove it.
 - **BuildFlow daemon commit messages (identified 2026-07-28, T13):** The auto-commit daemon commits with generic, hallucinated messages (e.g., `"chore: update project configuration and documentation"`) authored as `"Unknown Author <unknown@example.com>"`. These commits are invisible to `git log --grep` for specific features. 5+ sessions have documented this. The daemon also has a 60s budget and does NOT run `go test ./...`, meaning the `TestGolangciDisabledLinters` guard only fires in CI. Root cause: the daemon generates messages from a template, not from `git diff --stat`. Fix requires modifying BuildFlow (`larsartmann/buildflow`). The `.golangci.yml` regression root cause (T1) is directly related — the daemon commits a stale working tree without running tests. **2026-10-05/06 incident pair (6th class):** the daemon (a) committed `integration/nonce_omit_empty_test.go` WITHOUT it ever compiling (`NavLinkProps.Label` field error — proof there is no build gate on daemon commits; a broken test file silently disabled the whole integration package), and (b) reverted session edits (a restored test entry, all TODO_LIST strikes, the warm CHANGELOG `[Unreleased]`) back to pre-session state while a parallel session ran — `git log -1 -- <file>` moving BACKWARD mid-session is the signature. After any daemon commit: re-check the files you just edited still contain your edits, and re-verify `[Unreleased]` is warm before a release.
 - **BuildFlow aborts in-progress rebases in the watched worktree (identified 2026-09-05):** mid-rebase reflog showed `rebase (abort): returning to refs/heads/...` from an external actor while merging PR #8 — the daemon's tree snapshot logic fights rebase state. Do branch surgery in a detached temp worktree instead: `git worktree add --detach /tmp/tc-rebase-wt <tip>`, rebase/resolve there, land with `git push --force-with-lease=<branch>:<old-tip> origin HEAD:refs/heads/<branch>` (the lease rejects the push if the daemon moved the remote branch meanwhile). Daemon commits on feature branches are raw working-tree snapshots: when rebasing them, expect conflicts in files master fixed later, skip superseded intermediate daemon commits (`git rebase --skip`) when a later polished commit carries the content, drop pure-snapshot tips via `GIT_SEQUENCE_EDITOR` + `git rebase -i --autosquash`/drop, and verify the final tree with `git diff origin/master --stat` — it must show ONLY semantic content before pushing.
 
-**Why this matters:** the module proxy serves tagged source as-is — generated code is part
-of the distributable artifact; without it consumers cannot compile.
+## templ Version Pin: go.mod v0.3.1020 = dev-shell generator, in lockstep
 
-## templ Version Pin: go.mod v0.3.1020, system binary may be v0.3.1036
+`go.mod` pins `github.com/a-h/templ v0.3.1020`; the dev shell (`nix develop`) provides the matching
+generator. ALWAYS run `templ generate ./...` from the REPO ROOT inside `nix develop` — a binary at
+any other version produces non-zero diffs (the v0.3.1036-era system binary emitted cosmetic
+import-block changes across all 51 `*_templ.go` files; full history:
+`docs/agent-context-history.md#templ-version`).
 
-`go.mod` pins `github.com/a-h/templ v0.3.1020` — the latest **published** version on the Go module
-proxy (https://proxy.golang.org/github.com/a-h/templ/@v/list). The system `templ` binary in
-`~/.nix-profile/bin/templ` may be a local Nix build of unreleased upstream master
-(`github:a-h/templ` flake), reporting `v0.3.1036`. This causes a cosmetic import-block style diff
-across all 51 `*_templ.go` files on every regen:
-
-- v0.3.1020 emits `import "github.com/a-h/templ"` on its own line, then a separate
-  `import (...)` block for project imports
-- v0.3.1036 collapses both into a single `import (...)` block
-
-**Rule:** always use `nix develop` to enter the dev shell before running `templ generate`. The dev
-shell provides `pkgs.templ` (v0.3.1020) which matches `go.mod` and produces zero diff. If you run
-`templ generate` with the system binary, expect 51 files to change cosmetically — these are no-op
-import-style changes; the generated code is semantically identical.
-
-**Do not bump `go.mod` to v0.3.1036** — that version is not yet on the module proxy, so consumers
-who `go get` this package would fail. Wait for the official upstream release, then bump in lockstep.
-
-**2026-10-05 sweep note — v0.3.1070 IS on the proxy but stays unpinned.** The sweep bumped all
-9 modules to v0.3.1070 and regenerated; that release (upstream ADR 0001, fix #693) intentionally
-changes generator OUTPUT, not just imports: a self-closing `@icon()` adjacent to a text expression
-now emits a separating space (`</svg> Edit`), which flipped the HTML goldens (dropdown, sidebar_nav,
-pagination) and alters rendered HTML at every icon+label site next to their `me-3` margins. Since
-nixpkgs (locked rev AND unstable as of 2026-10-05) still ships `pkgs.templ v0.3.1020`, the
-zero-diff invariant cannot hold at 0.3.1070 — the bump was rolled back the same day (goldens and
-generated code verified byte-stable again). Migration is TODO #335: it needs a templ source pin
-in the flake (or nixpkgs catching up), a deliberate golden + pixel-visual re-baseline, and a
-source-trim review of icon+label sites. Do not "just bump" templ without that plan.
-**The daemon RE-APPLIES this bump (2026-10-05 evening, twice):** BuildFlow's go-auto-upgrade
-re-bumped all 9 go.mods to v0.3.1070 + nudged flake.lock within hours of the rollback; both
-reapplications were reverted (go.mod/go.sum ×9 + flake.lock). Expect to fight this war on every
-session: if a diff shows templ at 0.3.1070 in ANY go.mod, restore from the last good release
-commit before anything else. Upstream-watch issue #26 was closed as planned-deferred.
-
-**Toolchain input split (2026-09-02):** the Go toolchain comes from a dedicated `nixpkgs-go`
-flake input (nixos-unstable, currently 1.26.7 for GO-2026-5972/6089/6090) while `templ`,
-`golangci-lint`, etc. stay on the older locked `nixpkgs` — a wholesale input bump would drift
-`pkgs.templ` past v0.3.1020 and break the zero-diff generate invariant. Same isolation pattern
-as `nixpkgs-chromium`; fold back together at the next deliberate full-flake update.
-
-**Never import `"github.com/a-h/templ"` explicitly in a `.templ` file** (2026-09-07). The
-generator auto-injects the templ import for `templ.Attributes`/`templ.Component` usage; an
-explicit import produces `templ redeclared in this block` build errors in the generated
-`*_templ.go` (found while adding `formWireAttributes` to `forms/form.templ`). Relatedly, the
-templ LSP reports stale cross-module diagnostics long after edits — `nix run .#build` is ground truth;
-restart the LSP when diagnostics actively mislead (e.g. the phantom go-1.27.1 error during the 2026-09-17 release). Concretely (verified twice, 2026-09-19): templ QF100x hints and gopls analyzer warnings (writestring, QF1002) keep citing line numbers that no longer exist after the fix lands — never go hunting for code at a cited line; golangci-lint run + a fresh source read are ground truth.
+- **v0.3.1070 is on the proxy but stays unpinned (TODO_LIST #335):** it changes generator OUTPUT
+  (icon+label spacing flips goldens and rendered HTML at every icon+label site). Migration needs a
+  flake-level generator pin, a golden + pixel-visual re-baseline, and a source-trim review — do NOT
+  "just bump". **The daemon re-applies the bump (twice 2026-10-05, again 2026-10-06; now caught by
+  `utils.TestTemplVersionPin`)** — if ANY go.mod shows templ ≠ v0.3.1020, restore before anything else.
+- **Never import `"github.com/a-h/templ"` explicitly in a `.templ` file** — the generator auto-injects
+  it; an explicit import is a `templ redeclared in this block` build error in the generated file.
+- The templ LSP reports stale cross-module diagnostics long after edits — `nix run .#build` + a fresh
+  source read are ground truth; restart the LSP when diagnostics actively mislead; never hunt for code
+  at a cited line number (QF100x/gopls hints kept citing lines that no longer existed, 2026-09-19).
+- **Toolchain input split (2026-09-02):** the Go toolchain comes from a dedicated `nixpkgs-go` flake
+  input while `templ`/`golangci-lint` stay on the locked `nixpkgs` — a wholesale input bump would
+  drift `pkgs.templ` past the go.mod pin and break the zero-diff invariant.
 
 ## Architecture
 
 - **Module:** `github.com/larsartmann/templ-components`
-- **Go:** 1.26, **templ:** v0.3.x
+- **Go:** 1.27 floor (all directives bare `go 1.27`, lockstep), **templ:** v0.3.1020 generator pin
 - **No framework deps** — pure Go + templ + Tailwind v4 class strings
 - **CSS standard:** Tailwind CSS v4+ (latest) for ALL LarsArtmann projects. CSS-first config, no Node.js runtime, no DaisyUI. Small custom CSS only where Tailwind doesn't cover something. See `docs/adr-001-tailwind-v4-standard.md` and `docs/tailwind-v4-adoption-guide.md`.
 - **CSS setup:** Consumers vendor the library and copy `templates/app.css` + `templates/custom.css` as a starter entry point, then compile with `tailwindcss`. `app.css` imports `custom.css` via `@import "./custom.css"`. BuildFlow's `tailwind-build` provider automates this in its DAG. See `docs/tailwind-v4-adoption-guide.md` for details.
@@ -220,7 +164,7 @@ restart the LSP when diagnostics actively mislead (e.g. the phantom go-1.27.1 er
 - Size constants: uppercase suffix pattern `[Component]Size[SM|MD|LG]` (e.g., `AvatarSizeSM`, `BadgeSizeSM`, `SpinnerSM`)
 - Default constructors: `DefaultXxxProps()` for every component with non-zero defaults
 - Private helpers: `xxxClass()` for Tailwind class mapping
-- CSP nonce: **omit-empty rule** (issues #7/#9/#24) — an inline-script emitter NEVER renders `nonce=""` (strict-CSP browsers reject it, silently killing the feature); an empty Nonce omits the attribute entirely. Canonical helpers: `utils.ScriptAttrs` (attribute set for templ-attribute sites) and `utils.ScriptComponent` (the raw-JS writer; display + charts render through it — remaining bespoke writers carry TODO #350 pointer comments). Theme scripts are the documented whole-tag-omission exception. Regression guards: `integration.TestNoEmptyNonceAttribute` (renders EVERY script-emitting component with empty Nonce, fails on any `nonce=""`) + `TestEmptyNonceStillRendersScripts` (dropping the attribute must not drop the script) — new script emitters MUST join that render table.
+- CSP nonce: **omit-empty rule** (issues #7/#9/#24) — an inline-script emitter NEVER renders `nonce=""` (strict-CSP browsers reject it, silently killing the feature); an empty Nonce omits the attribute entirely. Canonical helpers: `utils.ScriptAttrs` (attribute set for templ-attribute sites) and `utils.ScriptComponent` (the raw-JS writer; display, charts, forms, and htmx render through it — the only deliberate exception is layout's embedded htmx runtime injection). Theme scripts are the documented whole-tag-omission exception. Regression guards: `integration.TestNoEmptyNonceAttribute` (renders EVERY script-emitting component with empty Nonce, fails on any `nonce=""`) + `TestEmptyNonceStillRendersScripts` (dropping the attribute must not drop the script) — new script emitters MUST join that render table.
 - Sub-templates: extract shared rendering to private `templ` functions
 - Feedback styles: shared `feedbackStyleSet` struct + `lookupFeedbackStyle[T]()` generic + `feedbackIconName()` + `dismissScript()` in `feedback/styles.go`
 - FeedbackType: canonical `FeedbackType` enum (`FeedbackSuccess/Error/Warning/Info`). **Removed per the v1-to-v2 migration (docs/migration/v1-to-v2.md)** the `AlertType`/`ToastType` aliases and `AlertSuccess`/`ToastSuccess`/etc. constants — use `FeedbackType`/`FeedbackSuccess`/etc. directly. See ADR-0022.
@@ -351,33 +295,25 @@ restart the LSP when diagnostics actively mislead (e.g. the phantom go-1.27.1 er
 - **Daemon commits can regress same-day fixes.** During the v1.9.0 cut, daemon auto-commits prettier-un-minified `examples/demo/static/app.css` (+4780 lines → CSS Freshness CI failure) and flipped `website/package.json` typescript back to `^7.0.2` (astro check crashes on TS 7 — needs 6.x until `astro check` supports the native compiler). After any daemon commit lands, re-check: `nix run .#css` byte-stability, the website typescript pin, and CI status. The daemon also pushes master (and once, the release tags) without being asked — always `git fetch` before assuming local-only state.
 - **`encoding/json/v2` does NOT sort map keys — v1 did (found 2026-09-14).** A daemon commit flipped the GENERATED `website/internal/pages/base_templ.go` import to `encoding/json/v2` while its `base.templ` source still said v1; v2 marshals `map[string]any` in (randomized) map iteration order, so the site's JSON-LD `<script>` became non-deterministic and the pages golden failed on key ORDER alone. Two rules: (1) `templ generate` copies imports from the `.templ` source — a generated file whose import differs from source is DRIFT; regenerate from repo root with the pinned binary; (2) deterministic JSON from maps under json/v2 requires sorting the keys yourself (or use a struct).
 - **Compiled binaries must never be tracked.** `visualtest/shots` (10MB, built by `nix run .#shots`) sat in git for months until go-structure-linter flagged it; binaries are gitignored — they exist only on disk and are rebuildable from source.
-- **The daemon also bumps `go` directives (2026-09-17, TODO #231).** A daemon run bumped root `go.mod` to `go 1.27.1` (+ a `flake.lock` nixpkgs nudge) while go.work/toolchain stayed 1.26.7 — every MANUAL commit then failed the pre-commit hook (`go-tool-run`: "module . requires go 1.27.1 but go.work has go 1.26.7") while the daemon bypassed the hook. Fixed by reverting to 1.26.7; `utils.TestGoDirectiveSkew` now pins module-directive <= go.work for every `use` entry (runs wherever `go.work` exists — local dev/dev-shell; CI checkouts have NO go.work since it is gitignored, so the guard SKIPS there and the per-module build fails on its own; in workspace mode the toolchain error preempts `go test` entirely). If Go is ever deliberately bumped, raise go.work + all module go directives + the nixpkgs pin together in ONE commit. **Second wave same evening (18:13–18:16): after the nixpkgs nudge delivers Go 1.27.1, BuildFlow's `go-structure-linter` go-version rule AUTO-REPAIRS go.mod back to 1.27.1 DURING the pre-commit hook ("✅ Applied fix file=go.mod rule=go-version"), re-creating the skew on every manual commit — a self-fighting loop where reverting is undone mid-hook. Fixed by skipping `go-structure-linter` in `.buildflow.yml` (findings are informational; `TestGoDirectiveSkew` + CI are the enforcement). Re-enable only with a deliberate lockstep toolchain bump.** **Canonical directive is now `go 1.26.0` WORKSPACE-WIDE (2026-10-03, e2e-outage correction — supersedes the 2026-10-02 "bare `go 1.26` is canonical" call).** The toolchain ORDERS `1.26` BELOW `1.26.0` and enforces two consequences: (a) in workspace mode, `go.work` must be >= every module's directive, so one module at `.0` next to `go.work` at bare `1.26` kills EVERY workspace build ("module X listed in go.work file requires go >= 1.26.0"); (b) `go mod tidy -diff` in some module graphs (visualtest's) demands exactly the `.0` form, so a bare `1.26` there fails the cross-module demo-binary build ("updates to go.mod needed"). Session 1's guards stay correct — they compare major.minor-NORMALIZED directives (`utils.TestGoWorkDirectiveMatchesRootGoMod`, `utils.TestGoDirectivesAlignAcrossWorkspace`), so both historical spellings pass; the 2026-10-03 normalization commit folded every go.mod + go.work onto `.0`. Do NOT "re-normalize" any directive DOWN to bare `1.26` — that flip is what broke the e2e harness (session 1's runs passed only because visualtest was accidentally `.0` at the time; the 12:43 "normalization" daemon commit broke it). Only a jump across the minor boundary (1.26 → 1.27) is a real skew; raise go.work + all module go directives + the nixpkgs pin together in ONE deliberate commit.
+- **Go directives: workspace-wide LOCKSTEP, currently bare `go 1.27` in go.work + all 9 modules (2026-10-05 sweep).** Keep every directive the SAME spelling — the toolchain orders `1.26` below `1.26.0`, so mixed spellings kill workspace builds ("module X requires go >= 1.26.0") and `go mod tidy -diff` can demand the `.0` form. Bump go.work + all modules + the `nixpkgs-go` pin + the golangci-lint pin in ONE commit. Guards: `utils.TestGoDirectiveSkew` (module ≤ go.work; SKIPS on CI checkouts — no go.work there), `utils.TestGoWorkDirectiveMatchesRootGoMod`, `utils.TestGoDirectivesAlignAcrossWorkspace`. **The daemon bumps directives and BuildFlow's auto-configure tools re-normalize spelling MID-HOOK — `go-structure-linter` and `go-version-auto-configure` are skipped in `.buildflow.yml`; re-enable only with a deliberate lockstep bump.** Incident history (2026-09-17 skew war + auto-repair loop, 2026-10-03 `.0` canon, 2026-10-05 floor move): `docs/agent-context-history.md#go-directives`.
 
 ## Release Convention: One-Commit Release
 
 Each version is cut with a **single release commit** at the tip of `master`; its message is the
-canonical user-facing description of the release. **`[Unreleased]` must be warm at all times** —
-every feature/fix commit adds its CHANGELOG entry immediately, never at release time
-(`scripts/release.sh` refuses to cut with an empty `[Unreleased]`).
+canonical user-facing description. **`[Unreleased]` must be warm at all times** — every
+feature/fix commit adds its CHANGELOG entry immediately (`release.sh` refuses an empty one).
 
-The script automates: the version triple-bump (`utils/version.go` + CHANGELOG heading +
-FEATURES.md `**Version:**`, enforced by the `TestVersionMatches*` drift guards), full verify
-**while local `replace` directives are still present**, replace-strip + one commit, and
-annotated SSH-signed tags for root + every published sub-module in lockstep
-(`scripts/check-release-tags.sh` guards the set — a root-only release breaks every consumer).
-It does NOT push — review `git show v<version>`, then push manually. Never retag a version;
-the proxy caches tags permanently.
+The script automates the version triple-bump (`utils/version.go` + CHANGELOG heading + FEATURES.md
+`**Version:**`, guarded by `TestVersionMatches*`), full verify while local `replace` directives are
+still present, replace-strip + one commit, and annotated SSH-signed tags for root + every published
+sub-module in lockstep (`scripts/check-release-tags.sh` guards the set — a root-only release breaks
+every consumer). It does NOT push — review `git show v<version>`, then push manually; never retag
+(the proxy caches tags permanently). **Read `docs/release-checklist.md` BEFORE cutting or
+refactoring the script** — every hardening step maps to the incident that caused it.
 
-**Read `docs/release-checklist.md` BEFORE cutting or refactoring the script** — it maps every
-hardening step to the incident that caused it (verify-before-strip, the single EXIT trap,
-re-add-replaces + re-tidy, the post-propagation tidy sweep, the daemon race window, SIGPIPE in
-tree assertions, late-abort recovery).
-
-**golangci-lint pin and the go.mod floor move in LOCKSTEP (2026-10-06):** golangci-lint
-≤ v2.13.2 PANICS under Go 1.27 (exhaustruct v5.0.3 `makeslice: cap out of range`, e.g.
-analyzing `layout`) — the Lint lane cannot run on the go 1.27 floor without ≥ v2.14.0
-(pinned in ci.yaml; verified `0 issues` on every module locally). When bumping the go
-directive floor, bump this pin in the same commit, and vice versa.
+**golangci-lint pin and the go.mod floor move in LOCKSTEP (2026-10-06):** golangci-lint ≤ v2.13.2
+PANICS under Go 1.27 (exhaustruct v5.0.3 `makeslice: cap out of range`); ≥ v2.14.0 is pinned in
+ci.yaml (verified `0 issues` on every module). Bump it with any go-directive floor move.
 
 ## Lint Command
 
@@ -401,20 +337,15 @@ for mod in utils icons errorpage charts/echarts htmx datastar; do (cd "$mod" && 
 
 ## `encoding/json/v2` Adoption
 
-This library uses `encoding/json/v2` + `encoding/json/jsontext` (Go 1.27 floor;
-stable there — verified 2026-10-05: builds with no flag on go1.27.1, still
-gated on 1.26.8). The pre-commit hook (`scripts/pre-commit.sh`) sets
-`GOEXPERIMENT=jsonv2` automatically. The `.golangci.yml` enables the
-`goexperiment.jsonv2` build tag. The `flake.nix` devShell exports
-`GOEXPERIMENT=jsonv2` via `shellHook`. **`.envrc`** (direnv) sets
-`GOEXPERIMENT=jsonv2` repo-wide for ALL tools. `go.work` is active by default (lists all 7 modules). Use `GOWORK=off` for per-module isolation testing. GOTCHA (2026-10-05): direnv exports contaminate ad-hoc probes — `go build`/`go vet` invoked outside the dev shell still see `GOEXPERIMENT=jsonv2`; prefix behavior-sensitive probes with `env -u GOEXPERIMENT` (and check `env | grep -E 'GO|EXPERIMENT'` when a probe's verdict looks impossible).
+This library uses `encoding/json/v2` + `encoding/json/jsontext` — stable on the Go 1.27 floor
+(verified 2026-10-05: no flag needed on go1.27.1; still flag-gated on 1.26.x). `GOEXPERIMENT=jsonv2`
+is exported repo-wide for older toolchains: pre-commit hook (`scripts/pre-commit.sh`), `.golangci.yml`
+build tag, flake devShell shellHook, `.envrc` (direnv). `go.work` is active by default; use `GOWORK=off`
+for per-module isolation testing. GOTCHA (2026-10-05): direnv exports contaminate ad-hoc probes —
+prefix behavior-sensitive probes with `env -u GOEXPERIMENT`.
 
-**Consumers** on the Go 1.27 floor need NO flag (json/v2 is stable there);
-the repo's `GOEXPERIMENT=jsonv2` exports remain as belt-and-braces for older
-toolchains. The `errorpage` package uses `json.MarshalEncode` +
-`jsontext.NewEncoder` for JSON error responses. The `navigation/breadcrumbs`
-package also uses `encoding/json/v2`. Remaining packages (tests) still use
-`encoding/json` v1 — both coexist fine under the experiment flag.
+**Consumers** on the Go 1.27 floor need NO flag. `errorpage` and `navigation/breadcrumbs` use
+`json.MarshalEncode`/`jsontext.NewEncoder`; remaining packages (tests) still use v1 — both coexist.
 
 ## Conventions
 
