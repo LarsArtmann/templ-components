@@ -47,14 +47,14 @@ func darkModeBridgeComponent(nonce string) templ.Component {
 // given JS string. Used for both the chart init script and the dark mode
 // bridge. An empty nonce omits the attribute entirely (nonce="" is rejected
 // by strict-CSP pages — the omit-empty rule, see utils.ScriptAttrs).
-func chartScriptComponent(nonce, js, errLabel string) templ.Component {
+func chartScriptComponent(nonce, script, errLabel string) templ.Component {
 	nonceAttr := ""
 	if nonce != "" {
 		nonceAttr = fmt.Sprintf(" nonce=\"%s\"", html.EscapeString(nonce))
 	}
 
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script%s>\n%s</script>\n", nonceAttr, js); err != nil {
+		if _, err := fmt.Fprintf(w, "<script%s>\n%s</script>\n", nonceAttr, script); err != nil {
 			return fmt.Errorf("write %s: %w", errLabel, err)
 		}
 
