@@ -79,9 +79,9 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 			Nonce: testNonce,
 		}))},
 		{"TagsInput", utils.Render(t, forms.TagsInput(forms.TagsInputProps{
-			BaseProps: utils.BaseProps{Nonce: testNonce},
-			Name:      "tags",
-			Label:     "Tags",
+			Nonce: testNonce,
+			Name:  "tags",
+			Label: "Tags",
 		}))},
 		{"ThemeScript", utils.Render(t, layout.ThemeScript(testNonce))},
 		{"ThemeToggle", utils.Render(t, layout.ThemeToggle("Toggle theme", testNonce))},

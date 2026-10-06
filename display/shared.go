@@ -108,14 +108,14 @@ func overlayDialogJS(id, componentName string) string {
 // wrapped error message for debugging. An empty nonce omits the attribute
 // entirely (nonce="" is rejected by strict-CSP pages — the omit-empty rule,
 // see utils.ScriptAttrs).
-func scriptComponent(nonce, js, errLabel string) templ.Component {
+func scriptComponent(nonce, script, errLabel string) templ.Component {
 	nonceAttr := ""
 	if nonce != "" {
 		nonceAttr = fmt.Sprintf(" nonce=\"%s\"", html.EscapeString(nonce))
 	}
 
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script%s>\n%s</script>\n", nonceAttr, js); err != nil {
+		if _, err := fmt.Fprintf(w, "<script%s>\n%s</script>\n", nonceAttr, script); err != nil {
 			return fmt.Errorf("write %s: %w", errLabel, err)
 		}
 
