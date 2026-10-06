@@ -54,6 +54,7 @@ templ PolledRegion(props PolledRegionProps) {
 		{ polledRegionAttrs(props.URL, props.Every)... }
 		class={ utils.Class("", props.Class) }
 		if props.AriaLabel != "" {
+			role="region"
 			aria-label={ props.AriaLabel }
 		}
 		{ props.Attrs... }
