@@ -131,15 +131,23 @@ func TestCompiledCSSInventory(t *testing.T) {
 		}
 	}
 
-	// The 2026-10-06 zombie: cmd/tc/_sources/starter/styles.css was a dead
-	// compiled artifact (tc init writes only app.css/custom.css) that evaded
-	// both guards because it lacked the .out.css suffix. The daemon
-	// recompiled it for months before deletion. Refuse any resurrection.
-	zombie := filepath.Join(repoRoot, "cmd", "tc", "_sources", "starter", "styles.css")
-	if _, statErr := os.Stat(zombie); statErr == nil {
-		t.Errorf(
-			"cmd/tc/_sources/starter/styles.css resurrected — it is a dead compiled artifact (tc init scaffolds only app.css + custom.css); delete it, do not re-add it",
-		)
+	// The 2026-10-06 zombie sweep: cmd/tc/_sources/starter shipped three
+	// dead files — styles.css (a compiled artifact), templ-components-theme
+	// .css, and templ-components-theme.out.css — none read by tc init (it
+	// scaffolds only app.css + custom.css). styles.css evaded both guards
+	// for months because it lacked the .out.css suffix while the daemon
+	// kept recompiling it. Refuse any resurrection.
+	for _, zombie := range []string{
+		"cmd/tc/_sources/starter/styles.css",
+		"cmd/tc/_sources/starter/templ-components-theme.css",
+		"cmd/tc/_sources/starter/templ-components-theme.out.css",
+	} {
+		if _, statErr := os.Stat(filepath.Join(repoRoot, filepath.FromSlash(zombie))); statErr == nil {
+			t.Errorf(
+				"%s resurrected — tc init scaffolds only app.css + custom.css, so this is dead starter weight (TODO_LIST #290 class); delete it, do not re-add it",
+				zombie,
+			)
+		}
 	}
 }
 
