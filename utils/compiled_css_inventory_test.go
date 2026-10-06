@@ -130,6 +130,17 @@ func TestCompiledCSSInventory(t *testing.T) {
 			)
 		}
 	}
+
+	// The 2026-10-06 zombie: cmd/tc/_sources/starter/styles.css was a dead
+	// compiled artifact (tc init writes only app.css/custom.css) that evaded
+	// both guards because it lacked the .out.css suffix. The daemon
+	// recompiled it for months before deletion. Refuse any resurrection.
+	zombie := filepath.Join(repoRoot, "cmd", "tc", "_sources", "starter", "styles.css")
+	if _, statErr := os.Stat(zombie); statErr == nil {
+		t.Errorf(
+			"cmd/tc/_sources/starter/styles.css resurrected — it is a dead compiled artifact (tc init scaffolds only app.css + custom.css); delete it, do not re-add it",
+		)
+	}
 }
 
 // findUntrackedOutCSSLitter walks the worktree for .out.css files outside the

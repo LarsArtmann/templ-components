@@ -67,18 +67,18 @@ Three things were true simultaneously during this session:
 
 | # | Task | Impact | Effort | Cat |
 |---|------|--------|--------|-----|
-| 1 | ⚡ Re-apply the lost #332 edit (TagsInput block into `integration/csp_nonce_test.go` render set, after DirtyGuard) + re-run the sweep test | High | S | Bug |
-| 2 | ⚡ Re-apply TODO_LIST strikes: #327, #332, #274, #277, #331, #325 + bump `Updated:` to 2026-10-05 | Medium | S | Docs |
-| 3 | ⚡ Finish #333 handler: parse `width` (clamp via `ErrorMaxWidthIsValid`), set `CopyCode: true`, `WayOutAction{Text: "Back to the error page components", Href: demoURL("/errorpage")}`, `MaxWidth` in `errorPlaygroundHandler` | Medium | S | Feature |
-| 4 | ⚡ `templ generate` + `nix run .#css` + verify `max-w-lg/2xl/4xl` present in `examples/demo/static/app.css` (Go-map classes vs `.templ`-only `@source`) | High | S | Bug |
-| 5 | ⚡ Re-run `go test ./examples/demo/... -run TestErrorRoutes` after #333 | Medium | S | Quality |
-| 6 | ⚡ Write the #331 CHANGELOG entry (**behavior change**: orphan debounce/throttle modifiers dropped under Datastar) under `[Unreleased] ### Changed` | High | S | Docs |
-| 7 | ⚡ Run the ritual: `nix run .#lint` (wire.go changed) → `scripts/ci-repro.sh --lint --website` | High | M | Quality |
-| 8 | ⚡ `nix run .#visual` — nonce-omit-empty may shift e2e/route goldens; also captures the #333 playground changes | High | M | Quality |
-| 9 | #334: write the site content-convention doc (pages/*.go data vs per-page templ) — target `website/internal/pages/doc.go` godoc + website README section | Medium | S | Docs |
-| 10 | Website guide: add "Try it live" (`/demo/errors/playground`, `/errors/404-page`) to `website/content/docs/guides/error-pages.md` | Medium | S | Docs |
-| 11 | Library recipe: document `WayOutAction` (typed bundle wins over loose strings), `SecondaryWayOut`, `CopyCode`, `ErrorMaxWidth`, auto-Retry in `docs/recipes/error-pages.md` | Medium | S | Docs |
-| 12 | Verify the nonce-omit-empty feature's own tail: does it have a CHANGELOG entry, guard test (`nonce=""` never emitted), and AGENTS note? Its untracked test file suggests work in flight — reconcile rather than duplicate | High | S | Quality |
+| ~~1~~ | ~~⚡ Re-apply the lost #332 edit (TagsInput block into `integration/csp_nonce_test.go` render set, after DirtyGuard) + re-run the sweep test~~ done — by the 2026-10-06 continuation — TagsInput block re-applied to integration/csp_nonce_test.go after DirtyGuard; sweep passes (03-51 report §a) | ~~High~~ | ~~S~~ | ~~Bug~~ |
+| ~~2~~ | ~~⚡ Re-apply TODO_LIST strikes: #327, #332, #274, #277, #331, #325 + bump `Updated:` to 2026-10-05~~ done — by the 2026-10-06 continuation — all six strikes landed + header bumped (03-51 report §a) | ~~Medium~~ | ~~S~~ | ~~Docs~~ |
+| ~~3~~ | ~~⚡ Finish #333 handler: parse `width` (clamp via `ErrorMaxWidthIsValid`), set `CopyCode: true`, `WayOutAction{Text: "Back to the error page components", Href: demoURL("/errorpage")}`, `MaxWidth` in `errorPlaygroundHandler`~~ done — with #333 (03-51 report §a) — correction: the href is demoURL("/error-pages"), not "/errorpage" as written here; the route is /error-pages | ~~Medium~~ | ~~S~~ | ~~Feature~~ |
+| ~~4~~ | ~~⚡ `templ generate` + `nix run .#css` + verify `max-w-lg/2xl/4xl` present in `examples/demo/static/app.css` (Go-map classes vs `.templ`-only `@source`)~~ done — in the #333 round (demo CSS recompiled and embedded; 03-51 report §a) | ~~High~~ | ~~S~~ | ~~Bug~~ |
+| ~~5~~ | ~~⚡ Re-run `go test ./examples/demo/... -run TestErrorRoutes` after #333~~ done — TestErrorRoutesPlaygroundPinsQueryWiring (3 subtests incl. the width-clamp negative) green (03-51 report §a) | ~~Medium~~ | ~~S~~ | ~~Quality~~ |
+| ~~6~~ | ~~⚡ Write the #331 CHANGELOG entry (**behavior change**: orphan debounce/throttle modifiers dropped under Datastar) under `[Unreleased] ### Changed`~~ done — the Changed entry (wire orphan debounce/throttle modifiers dropped under Datastar) is in [Unreleased] | ~~High~~ | ~~S~~ | ~~Docs~~ |
+| ~~7~~ | ~~⚡ Run the ritual: `nix run .#lint` (wire.go changed) → `scripts/ci-repro.sh --lint --website`~~ done — nix run .#lint EXIT=0 + ci-repro VERDICT: PASS at 637a697f (03-51 report header) | ~~High~~ | ~~M~~ | ~~Quality~~ |
+| ~~8~~ | ~~⚡ `nix run .#visual` — nonce-omit-empty may shift e2e/route goldens; also captures the #333 playground changes~~ done — nix run .#visual EXIT=0 after the route-golden re-baseline (v1.20.1 version pill) | ~~High~~ | ~~M~~ | ~~Quality~~ |
+| ~~9~~ | ~~#334: write the site content-convention doc (pages/*.go data vs per-page templ) — target `website/internal/pages/doc.go` godoc + website README section~~ done — with #334 — website/internal/pages/doc.go + website/README.md (03-51 report §a) | ~~Medium~~ | ~~S~~ | ~~Docs~~ |
+| ~~10~~ | ~~Website guide: add "Try it live" (`/demo/errors/playground`, `/errors/404-page`) to `website/content/docs/guides/error-pages.md`~~ done — "Try it live" added (playground link; the 404-page link became 03-51 f23, still open) | ~~Medium~~ | ~~S~~ | ~~Docs~~ |
+| ~~11~~ | ~~Library recipe: document `WayOutAction` (typed bundle wins over loose strings), `SecondaryWayOut`, `CopyCode`, `ErrorMaxWidth`, auto-Retry in `docs/recipes/error-pages.md`~~ done — with #333 — docs/recipes/error-pages.md "The way out" section (03-51 report §a) | ~~Medium~~ | ~~S~~ | ~~Docs~~ |
+| ~~12~~ | ~~Verify the nonce-omit-empty feature's own tail: does it have a CHANGELOG entry, guard test (`nonce=""` never emitted), and AGENTS note? Its untracked test file suggests work in flight — reconcile rather than duplicate~~ done — the feature test was repaired (NavLinkProps.Label → Text) and its CHANGELOG entry written on its behalf (03-51 report §a/§b-5) | ~~High~~ | ~~S~~ | ~~Quality~~ |
 | 13 | PR `fix/nonce-omit-empty` whole (both features) with a two-section body, once lanes 7–8 are green; verify referenced issues auto-close | High | M | Cleanup |
 | 14 | Add the "session edit survived" tripwire (e-1) — even a manual end-of-session `git diff <start>` review habit | Medium | S | Quality |
 | 15 | Extend `docs/version-support.md` "What a floor bump looks like" with the missed steps (goldens, pins, docs floors, AGENTS, consumer-note probe) | Medium | S | Docs |
@@ -86,23 +86,23 @@ Three things were true simultaneously during this session:
 | 17 | `#322 FamilyFromStatus` — unblock via the owner mapping decision (Corruption per FromError fallback is the library-consistent default; confirm) | Medium | S | Feature |
 | 18 | docs-health VERIFY sweep over "Open" TODO rows older than 7 days (grep claimed symbols; strike shipped rows — #325/#327 class) | Medium | M | Docs |
 | 19 | Consider `TestInlineStyleEmissions` component-level attribution (my in-progress design, superseded by the existing file-level guard) — only if a per-component exemption need ever materializes | Low | M | Quality |
-| 20 | Demo playground: CSRF-less GET form is fine, but the new `code` field flows into a `font-mono` chip — verify `Code` is HTML-escaped through `errorChips` (it goes through templ text interpolation — spot-check one XSS probe) | Medium | S | Bug |
-| 21 | After nonce-omit-empty lands: sweep for OTHER blind `nonce=` writers the feature missed (grep `Fprintf.*nonce=` in non-generated Go) — the tags_input writer at `forms/tags_input.templ:76` still emits `nonce=""` for empty nonces | Medium | S | Bug |
-| 22 | Promote the demo zero-empty-nonce page sweep from AGENTS "real guard" prose to an actual test (AGENTS notes the integration test can't see it) | Medium | M | Quality |
+| ~~20~~ | ~~Demo playground: CSRF-less GET form is fine, but the new `code` field flows into a `font-mono` chip — verify `Code` is HTML-escaped through `errorChips` (it goes through templ text interpolation — spot-check one XSS probe)~~ done — TestErrorCodeChipEscaping pins all three Code interpolation sites entity-escaped (03-51 report §a, TODO #341) | ~~Medium~~ | ~~S~~ | ~~Bug~~ |
+| ~~21~~ | ~~After nonce-omit-empty lands: sweep for OTHER blind `nonce=` writers the feature missed (grep `Fprintf.*nonce=` in non-generated Go) — the tags_input writer at `forms/tags_input.templ:76` still emits `nonce=""` for empty nonces~~ done — sweep executed via the utils.ScriptComponent unification; CORRECTION: TagsInput's real failure mode was script-SKIPPING when nonce was empty (never nonce="", as written here) — probed in #342 and aligned; every singleton writer now folds onto the canonical helper (bed8aeb9, 8f8d987b, 42452893; TODO #350) | ~~Medium~~ | ~~S~~ | ~~Bug~~ |
+| ~~22~~ | ~~Promote the demo zero-empty-nonce page sweep from AGENTS "real guard" prose to an actual test (AGENTS notes the integration test can't see it)~~ done — TestNoEmptyNonceAcrossDemoPages: 28 routes, zero nonce="" (03-51 report §a, TODO #343) | ~~Medium~~ | ~~M~~ | ~~Quality~~ |
 | 23 | `#323 AppShell --tc-sidebar-w` inline style → class (pairs with the style-guard; needs the v2-safe additive path) | Medium | M | Feature |
 | 24 | `#324 GridColsAutoFit` static class or safelist.css (design smell confirmed by two consumers) | Medium | M | Feature |
 | 25 | `#325` follow-through: document the SSE live-row pattern (BodyID + Body + `hx-swap-oob`/SSE append) as a recipe — the API shipped, the pattern story didn't | Medium | S | Docs |
 | 26 | `#326 ErrorHandler wrapper` adoption path vs ADR'd divergence — owner decision pending | Low | S | Docs |
 | 27 | `#327` residue: none open (verified) — strike stays | — | — | — |
 | 28 | `#331` follow-through: wire the dialect-parity guard into the htmx-v4 radar (#316b) — when v4 lands, `actionFieldDialects` rows become the audit checklist | Low | S | Quality |
-| 29 | `#333` website guide + demo (this table's 3/5/10/11) — then strike | Medium | S | Docs |
-| 30 | `#334` (this table's 9) — then strike | Medium | S | Docs |
-| 31 | CHANGELOG `[Unreleased]` is warm but thin — add the sweep-fallout fixes (goldens/docs/jsonv2) as a `### Fixed` entry so the next cut tells the story | Medium | S | Docs |
-| 32 | AGENTS.md: record today's daemon-regression incident (d-1) in the daemon gotchas bullet — it's the 5th documented class | Medium | S | Docs |
-| 33 | AGENTS.md: the `rg -rn` trap is a good one-line addition to the "never patch via heredoc" neighborhood (same tool-misuse family) | Low | S | Docs |
-| 34 | Probe env hygiene: add `env \| grep -E 'GO\|EXPERIMENT'` to the probe recipe in AGENTS toolchain notes | Low | S | Docs |
+| ~~29~~ | ~~`#333` website guide + demo (this table's 3/5/10/11) — then strike~~ done — with #333 (guide + playground + contract test; 03-51 report §a) | ~~Medium~~ | ~~S~~ | ~~Docs~~ |
+| ~~30~~ | ~~`#334` (this table's 9) — then strike~~ done — with #334 (03-51 report §a) | ~~Medium~~ | ~~S~~ | ~~Docs~~ |
+| ~~31~~ | ~~CHANGELOG `[Unreleased]` is warm but thin — add the sweep-fallout fixes (goldens/docs/jsonv2) as a `### Fixed` entry so the next cut tells the story~~ done — [Unreleased] ### Fixed carries the Go 1.27 sweep-fallout entry (rebuilt by the continuation after the daemon wipe) | ~~Medium~~ | ~~S~~ | ~~Docs~~ |
+| ~~32~~ | ~~AGENTS.md: record today's daemon-regression incident (d-1) in the daemon gotchas bullet — it's the 5th documented class~~ done — daemon-incident bullets landed in AGENTS.md (03-51 report §a) | ~~Medium~~ | ~~S~~ | ~~Docs~~ |
+| ~~33~~ | ~~AGENTS.md: the `rg -rn` trap is a good one-line addition to the "never patch via heredoc" neighborhood (same tool-misuse family)~~ done — the rg -rn trap note landed in AGENTS.md (03-51 report §a) | ~~Low~~ | ~~S~~ | ~~Docs~~ |
+| ~~34~~ | ~~Probe env hygiene: add `env \~~ done — env-hygiene probe note landed in AGENTS.md (03-51 report §a) | ~~grep -E 'GO\~~ | ~~EXPERIMENT'` to the probe recipe in AGENTS toolchain notes~~ | ~~Low~~ | ~~S~~ | ~~Docs~~ |
 | 35 | `starter/styles.css` was modified at session start (`git status` snapshot) and the tc-sources mirror guard auto-syncs it — confirm the change was intentional, not daemon churn | Low | S | Cleanup |
-| 36 | `datastar/go.mod` + `errorpage/go.mod` gopls warnings: unused `go-cmp` require — run `go mod tidy` per module (trivial, pre-commit Guard 5b will pin the replace set) | Low | S | Cleanup |
+| ~~36~~ | ~~`datastar/go.mod` + `errorpage/go.mod` gopls warnings: unused `go-cmp` require — run `go mod tidy` per module (trivial, pre-commit Guard 5b will pin the replace set)~~ **NOT-DO — not needed — go-cmp is a tidy-STABLE indirect require (test dep of a dep); the gopls "not used" warning is cosmetic and documented in the 03-51 report environment notes.** | ~~Low~~ | ~~S~~ | ~~Cleanup~~ |
 | 37 | `nix run .#shots` after #333 lands — eyeball the playground light/dark (form select + chip + width enum visuals) | Low | S | Quality |
 | 38 | `#271` SITE_SKIP_STARS default flip for non-prod entry points — untouched, still valid | Low | S | Feature |
 | 39 | `#275`/`#276`/`#279` docs tails (visual-testing site tier, SKILL site section, warm-dark pattern) — untouched, still valid | Low | S | Docs |
@@ -113,12 +113,14 @@ Three things were true simultaneously during this session:
 | 44 | `#289` TC_SKIP_SYNC guard UX — untouched | Low | S | Quality |
 | 45 | `#294` tc ls footer polish — untouched | Low | S | Cleanup |
 | 46 | When the parallel session lands: re-check `nix run .#css` byte-stability + website typescript pin (daemon-regression checklist from AGENTS) | Medium | S | Quality |
-| 47 | Consider a `TestPlaygroundPropsContract` pinning the playground's prop surface (CopyCode/WayOut/MaxWidth actually render) once #333 completes — goldens-cover-this | Low | S | Quality |
+| ~~47~~ | ~~Consider a `TestPlaygroundPropsContract` pinning the playground's prop surface (CopyCode/WayOut/MaxWidth actually render) once #333 completes — goldens-cover-this~~ done — TestErrorRoutesPlaygroundPinsQueryWiring pins the prop surface (CopyCode always-on, width clamp, WayOutAction) as part of #333 | ~~Low~~ | ~~S~~ | ~~Quality~~ |
 | 48 | Sweep docs for other "wait for Go 1.27" predictions now falsified/fulfilled by the 1.27 floor (grep `Go 1\.27` in living docs) — installation.md was one of likely several | Low | S | Docs |
 | 49 | `#329` SSE-through-Firebase and `#270` push gates remain the top owner decisions blocking consumer-facing work | Low | S | Decision |
-| 50 | HARVEST this table into TODO_LIST (new IDs from 336) — per the standing rule, items 1–13 are TODO_LIST material, 14–18 quality/docs seeds, 31–48 mostly ROADMAP fuel | Medium | M | Docs |
+| ~~50~~ | ~~HARVEST this table into TODO_LIST (new IDs from 336) — per the standing rule, items 1–13 are TODO_LIST material, 14–18 quality/docs seeds, 31–48 mostly ROADMAP fuel~~ done — #336–#349 harvested into TODO_LIST by the continuation (03-51 report §a) | ~~Medium~~ | ~~M~~ | ~~Docs~~ |
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
+
+> RESOLVED 2026-10-06: superseded by the continuation run — g-1: the two sessions' work landed interleaved on one branch (recovery documented in the 03-51 report §a); g-2: the branch carries the website-lane fixes and goes out as one PR (owner then directed full autonomous execution); g-3: the playground shipped form-driven (Code + Width inputs) per the handler in examples/demo/main.go.
 
 1. **Is the parallel `fix/nonce-omit-empty` session still active, and how should the two sessions' work land?** Evidence it's live: its untracked `integration/nonce_omit_empty_test.go` appeared while I wrote this report, and two of my edits were reverted during its pass. I cannot know whether to re-apply my lost edits now, wait for it to finish, or coordinate a handoff — re-applying into its window risks a second silent collision. Who is running it, and should I stand down from shared files until it lands?
 2. **Was v1.20.1 cut knowing the website lanes were red** (stale goldens/docs floors), or was the fallout an oversight? This decides whether my sweep-completion work should ride a fast v1.20.2 patch (master is red for consumers of the site lanes until the branch lands) or wait for the nonce-omit-empty feature release.
