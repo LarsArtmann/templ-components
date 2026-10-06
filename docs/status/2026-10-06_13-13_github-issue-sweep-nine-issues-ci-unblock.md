@@ -26,7 +26,7 @@ colliding — but only by luck and mid-flight adaptation, not process. See §d/�
 2. **#25 fix built and fully green** — PR #28 (`fix/ci-go-127`): setup-go pins bumped
    to 1.27 across ci.yaml (×2), tidy-probe.yml, release-smoke.yaml, website.yml.
    **All 10 checks pass** (Build & Test, Website, Lint, Visual, HTML, CSS, CHANGELOG
-   warmth, GitGuardian, CodeRabbit, DontMergeMeYet). *Not yet merged.*
+   warmth, GitGuardian, CodeRabbit, DontMergeMeYet). _Not yet merged._
 3. **#23 (golangci-lint v2.14.0)** — root-caused deeper than the watch issue suspected:
    golangci-lint ≤ v2.13.2 **panics** under Go 1.27 (exhaustruct v5.0.3
    `makeslice: cap out of range` analyzing `layout`). Bumped the ci.yaml pin to
@@ -175,6 +175,7 @@ colliding — but only by luck and mid-flight adaptation, not process. See §d/�
 ## f) NEXT 50 (ordered, roughly Pareto within tiers)
 
 **Tier 0 — land the work (today)**
+
 1. Merge PR #28 (10/10 green) → master CI goes green → close #25 and #23.
 2. Rebase #31 (release guard) onto new master, wait green, merge → closes #27.
 3. Rebase #32 (HTMLDataAttrs), merge → closes #18.
@@ -193,62 +194,62 @@ colliding — but only by luck and mid-flight adaptation, not process. See §d/�
 
 **Tier 1 — kill the recurring failure classes**
 11. Add a templ-pin drift guard (fail on any go.mod templ require ≠ v0.3.1020) wired
-    into pre-commit + CI.
+into pre-commit + CI.
 12. Decide go-auto-upgrade disposition in `.buildflow.yml` (skip or pin-aware).
 13. Fix BuildFlow license-check so the pre-commit hook runs its guards again.
 14. Pin the vnu.jar release version in ci.yaml (kill /latest/ drift); keep a
-    documented bump ritual.
+documented bump ritual.
 15. Add GitHub Actions `concurrency` groups (cancel superseded runs) — observed 1h+
-    runner-starvation hangs today.
+runner-starvation hangs today.
 16. De-duplicate setup-go version pins (go-version-file or reusable workflow).
 17. Document the agent single-writer/claim protocol in AGENTS.md.
 18. Record the shared-worktree two-agent lessons (what converged, what collided).
 19. Post-merge: dedupe the two copies of the PolledRegion CHANGELOG entry and the
-    status doc that rode the cherry-pick.
+status doc that rode the cherry-pick.
 20. Prune AGENTS.md back under its line budget (move detail to docs/).
 
 **Tier 1 — release readiness (the [Unreleased] section is heavily loaded)**
 21. Warm-release review: cut v1.21.0 (nonce contract, HTMLDataAttrs, release guard,
-    PolledRegion role, Go-floor docs) via the release script inside nix shell with
-    govulncheck on PATH.
+PolledRegion role, Go-floor docs) via the release script inside nix shell with
+govulncheck on PATH.
 22. FEATURES.md: add ScriptAttrs/ScriptComponent, HTMLDataAttrs, PolledRegion role,
-    the omit-empty nonce contract.
+the omit-empty nonce contract.
 23. Update the templ-components SKILL.md consumer catalogue to match (skill honesty
-    rule).
+rule).
 24. Docs-count drift guard sweep: confirm no count claims broke (component counts
-    unchanged, but enum/IsValid tables gained nothing either — verify TestDocsCountDrift
-    green on final master).
+unchanged, but enum/IsValid tables gained nothing either — verify TestDocsCountDrift
+green on final master).
 25. Migration notes: consumers who rendered with empty nonce will see scripts lose
-    the (dead) nonce attribute — document the visible-diff shape.
+the (dead) nonce attribute — document the visible-diff shape.
 
 **Tier 2 — nonce/CSP deepening**
 26. TODO #350: fold htmx `view_transitions.go` + `forms/tags_input.templ` onto
-    `utils.ScriptComponent` (whitespace diffs only), regen goldens.
+`utils.ScriptComponent` (whitespace diffs only), regen goldens.
 27. Decide #24 Phase 3: opt-in strict mode erroring on empty Nonce.
 28. forbidigo (or convention guard) banning literal `nonce=""` write sites in library
-    sources.
+sources.
 29. Demo-level zero-empty-nonce page sweep (AGENTS.md calls it "the real guard" —
-    verify whether it exists post-MPA; add if not).
+verify whether it exists post-MPA; add if not).
 30. Review whether components should auto-detect `templ.GetNonce(ctx)` when Nonce is
-    empty (Alert already does; others don't — inconsistency worth a decision).
+empty (Alert already does; others don't — inconsistency worth a decision).
 31. Consider `<style nonce>` coverage in the guard table (ViewTransitions style is
-    covered; sweep for other style emitters).
+covered; sweep for other style emitters).
 
 **Tier 2 — jsonv2 / toolchain simplification**
 32. Decide the GOEXPERIMENT=jsonv2 question now that Go 1.27 ships json/v2 stable
-    (drop repo-wide exports vs keep until a release boundary).
+(drop repo-wide exports vs keep until a release boundary).
 33. If dropping: update .envrc, flake shellHook, pre-commit.sh, ci.yaml env blocks,
-    AGENTS.md, website installation.md in ONE lockstep commit.
+AGENTS.md, website installation.md in ONE lockstep commit.
 
 **Tier 2 — backlog hygiene (existing TODOs surfaced today)**
 34. TODO #335 (templ 0.3.1070 migration) — execute when nixpkgs catches up or via a
-    flake source pin; the plan is already written.
+flake source pin; the plan is already written.
 35. TODO #216 — vnu ignore-list re-triage on the next nixpkgs html5validator bump.
 36. TODO #208 — wire check-tag-compiles.sh into a post-release workflow_dispatch job.
 37. TODO #350 adjacent — sweep for other `fmt.Fprintf(w, "<script…")` writers outside
-    the audited packages.
+the audited packages.
 38. TODO #213/214/215 — CI budget comment, benchstat comment, gremlins mutation pilot
-    (all deferred-with-runbooks; unchanged priority).
+(all deferred-with-runbooks; unchanged priority).
 39. TODO #217 — M24/M25 components remain demand-gated (no change).
 40. Rebuild the BuildFlow binary (preflight warns 3bb229e vs HEAD ec87f04).
 
@@ -257,20 +258,20 @@ colliding — but only by luck and mid-flight adaptation, not process. See §d/�
 42. lychee excludes: add `docs/feedback/archived` (BuildFlow health warn).
 43. `interrogate` missing from PATH (BuildFlow health warn) — install or skip_step.
 44. Regenerate the stale OG home card (`website/public/og/home.png` still says "94
-    components") via ogshot.
+components") via ogshot.
 45. investigate the 1h+ "Build Website" GitHub hangs (runner starvation) once
-    concurrency groups land — confirm they disappear.
+concurrency groups land — confirm they disappear.
 46. Consider a lightweight claim mechanism on issues (assignee or label) so parallel
-    agent sessions don't duplicate work.
+agent sessions don't duplicate work.
 47. MobileMenu renders its script only when links exist — revisit gating so the
-    singleton script renders with the menu markup unconditionally.
+singleton script renders with the menu markup unconditionally.
 48. The `tc doctor` floors text (invariants.md updated; check `tc doctor` output
-    matches the new Go 1.27 floor).
+matches the new Go 1.27 floor).
 49. Sweep `website/content/docs/**` for any other stale floors/counts after the
-    version-support update (I fixed the four known sites; a full prose sweep wasn't
-    done).
+version-support update (I fixed the four known sites; a full prose sweep wasn't
+done).
 50. Post-release: verify pkg.go.dev renders the new docs and the demo deploys
-    (Website workflow path-filter includes examples/demo/**).
+(Website workflow path-filter includes examples/demo/**).
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
 
