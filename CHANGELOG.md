@@ -17,10 +17,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   an unset nonce; mirrored against `TestAllInlineScriptsHaveNonce`).
 - **`utils.ScriptComponent` — the canonical CSP-safe script writer.** One
   helper owns the omit-empty nonce rule, nonce escaping, and error wrapping
-  for every component singleton script; `display` (10 writers) and
-  `charts/echarts` (2) now render through it byte-identically, and the two
-  remaining bespoke writers (htmx, forms tags input) carry pointer comments
-  to fold next (TODO #350).
+  for every component singleton script; `display` (10 writers),
+  `charts/echarts` (2), `htmx` ViewTransitions, and `forms` TagsInput all
+  render through it — the last two fold completed the unification, with
+  their goldens regenerated for the whitespace-only output change.
 - **TagsInput follows the omit-empty contract.** The tags-input script now
   always renders — with the nonce attribute omitted when none is provided —
   so non-CSP consumers get a working component instead of silent no-JS

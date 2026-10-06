@@ -6,5 +6,4 @@
 @media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
 </style>
 <script>
-(function(){if(typeof htmx!=='undefined'&&document.startViewTransition){htmx.config.globalViewTransitions=true;}})();
-</script>
+(function(){if(typeof htmx!=='undefined'&&document.startViewTransition){htmx.config.globalViewTransitions=true;}})();</script>
