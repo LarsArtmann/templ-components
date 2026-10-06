@@ -17,7 +17,10 @@ set -euo pipefail
 
 start="${1:?usage: session-tripwire.sh <session-start-sha>}"
 git rev-parse --verify --quiet "${start}^{commit}" >/dev/null ||
-	{ echo "FATAL: ${start} is not a commit" >&2; exit 1; }
+	{
+		echo "FATAL: ${start} is not a commit" >&2
+		exit 1
+	}
 
 echo "== 1. working tree =="
 if [ -n "$(git status --porcelain)" ]; then
