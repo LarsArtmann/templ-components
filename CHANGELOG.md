@@ -18,9 +18,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`utils.ScriptComponent` — the canonical CSP-safe script writer.** One
   helper owns the omit-empty nonce rule, nonce escaping, and error wrapping
   for every component singleton script; `display` (10 writers),
-  `charts/echarts` (2), `htmx` ViewTransitions, and `forms` TagsInput all
-  render through it — the last two fold completed the unification, with
-  their goldens regenerated for the whitespace-only output change.
+  `charts/echarts` (2), `htmx` ViewTransitions, and `forms` (TagsInput,
+  DirtyGuard) all render through it — the fold completed the unification
+  (the layout self-hosted HTMX runtime injection is the documented exception:
+  framework-runtime, not a singleton script), with goldens regenerated for
+  the whitespace-only output changes.
 - **TagsInput follows the omit-empty contract.** The tags-input script now
   always renders — with the nonce attribute omitted when none is provided —
   so non-CSP consumers get a working component instead of silent no-JS

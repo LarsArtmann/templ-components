@@ -9,11 +9,6 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"context"
-	"fmt"
-	"html"
-	"io"
-
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -52,23 +47,12 @@ if (!window.tcDirtyGuardAttached) {
 `
 
 // dirtyGuardScriptComponent writes the guard script raw: templ's <script>
-// context sanitizes interpolations, and the JS must land verbatim (same
-// pattern as the echarts chartScriptComponent). An empty nonce omits the
-// attribute entirely (nonce="" is rejected by strict-CSP pages — the
-// omit-empty rule, see utils.ScriptAttrs).
+// context sanitizes interpolations, and the JS must land verbatim. The
+// script always renders so non-CSP consumers still get the guard;
+// utils.ScriptComponent owns the omit-empty nonce rule and the CSP-safe
+// write (nonce="" is rejected by strict-CSP pages — see utils.ScriptAttrs).
 func dirtyGuardScriptComponent(nonce string) templ.Component {
-	nonceAttr := ""
-	if nonce != "" {
-		nonceAttr = fmt.Sprintf(" nonce=\"%s\"", html.EscapeString(nonce))
-	}
-
-	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script%s>%s</script>\n", nonceAttr, dirtyGuardJS); err != nil {
-			return fmt.Errorf("write dirty guard script: %w", err)
-		}
-
-		return nil
-	})
+	return utils.ScriptComponent(nonce, dirtyGuardJS, "dirty guard script")
 }
 
 // DirtyGuard renders the page-level script for the unsaved-changes guard.
