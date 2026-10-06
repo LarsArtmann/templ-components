@@ -86,6 +86,25 @@ func TestBaseRenderFullProps(t *testing.T) {
 	utils.AssertContains(t, output, "response-targets.min.js")
 }
 
+func TestBaseHTMLDataAttrs(t *testing.T) {
+	t.Parallel()
+
+	// Zero value: the <html> tag stays byte-identical (no extra attributes).
+	output := utils.Render(t, Base(PageProps{Title: testPage, CSSPath: testCSSPath, HTMXVersion: ""}))
+	utils.AssertContains(t, output, `<html lang="en" class="h-full">`)
+
+	// With attrs: root-level data attributes land on <html> (the seam for
+	// document.documentElement feature flags, e.g. Datastar's data-nonce
+	// CSP mode).
+	output = utils.Render(t, Base(PageProps{
+		Title:         testPage,
+		CSSPath:       testCSSPath,
+		HTMXVersion:   "",
+		HTMLDataAttrs: templ.Attributes{"data-nonce": "abc123", "data-controller": "clock"},
+	}))
+	utils.AssertContains(t, output, `<html lang="en" class="h-full" data-controller="clock" data-nonce="abc123">`)
+}
+
 func TestMinimalRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Minimal(MinimalProps{Title: "Simple", Locale: "en"}))
