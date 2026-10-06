@@ -6,6 +6,59 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Nonce omit-empty rule.** Inline-script components no longer render
+  `nonce=""` when no nonce is provided — the attribute is omitted entirely
+  (`utils.ScriptAttrs`). An empty nonce was worse than useless: strict-CSP
+  browsers reject such scripts anyway, and the empty attribute made that
+  silent failure invisible. Pinned by the new integration sweep
+  `TestNoEmptyNonceAttribute` (renders every script-emitting component with
+  an unset nonce; mirrored against `TestAllInlineScriptsHaveNonce`).
+- **Demo `/errors/playground` exercises the full `ErrorPage` surface.**
+  Query params now drive the card width (`MaxWidth`, clamped through
+  `ErrorMaxWidthIsValid`, unknown → XL), `CopyCode` is always on (the
+  clipboard button renders whenever a code is supplied), and every render
+  carries the typed `WayOutAction` back to the error-pages component demo.
+  `TestErrorRoutesPlaygroundPinsQueryWiring` pins the query contract.
+
+### Changed
+
+- **`wire.Action` trigger modifiers now require an event trigger in BOTH
+  dialects.** A Datastar action with `DebounceMS`/`ThrottleMS` but no event
+  trigger used to render orphan `__debounce`/`__throttle` modifiers while
+  htmx rendered nothing — the dialects disagreed and the Datastar output
+  was runtime-inert. Orphan modifiers are now dropped (`PreventDefault`
+  still attaches). Pinned by `TestTriggerModifiersRequireAnEventTrigger`
+  (4 cases × both dialects) plus `TestEveryActionFieldHasADialectContract`,
+  a reflection drift-guard that fails when a new `Action` field ships
+  without a declared dialect contract.
+
+### Fixed
+
+- **Go 1.27 sweep fallout.** After the module `go` directives moved to
+  1.27.0, the website goldens (`sales.golden`, `docs-layout.golden`) and
+  their fixture strings were regenerated, and the docs now state the real
+  floor: `docs/invariants.md`, `docs/version-support.md`, the website
+  invariants/version-support pages, and the installation guide's
+  `encoding/json/v2` passage (stable without the experiment flag on
+  Go 1.27+, still gated on 1.26.x).
+- **The CSP nonce sweep covers `forms.TagsInput`.** TagsInput ships a
+  singleton script but was missing from
+  `TestAllInlineScriptsHaveNonce`'s "every inline-script component" render
+  set (found twice, documented in TODO #332).
+- **Site content convention documented.** `website/internal/pages/doc.go`
+  carries the package contract (markdown vs templ decision rule, sidebar
+  registration, derived counts, CSP `--update-csp` rule, absolute-link
+  rule) and `website/README.md` sums it up with build/test commands.
+- **Website error-pages guide + library recipe document the recovery
+  surface.** The guide gained "Recovery actions and the code chip"
+  (`WayOutAction`, `SecondaryWayOut`, `CopyCode`, `MaxWidth`, auto-Retry)
+  and a "Try it live" pointer to the playground;
+  `docs/recipes/error-pages.md` documents the same props with the
+  empty-href-equals-history-back rule and the
+  `applyRetrySuggestion` behavior (explicit caller way outs always win).
+
 ## [1.20.1] — 2026-10-05
 
 ## Fixed
