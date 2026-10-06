@@ -73,6 +73,14 @@ nix shell nixpkgs#govulncheck -c nix develop -c scripts/release.sh <ver> "<summa
   SHAs that may not exist on the origin yet (unresolvable for consumers fetching
   the tag), they break the bump loop's determinism, and they leak workspace-local
   state into the module proxy.
+- **Zero-commit pseudo-version requires fail the cut (v1.20.0 break, issue #27).**
+  `assert_release_tree` (step 8b, pre-tag) rejects any go.mod pinning a
+  templ-components sibling at `v…-00010101000000-000000000000` (a surviving
+  family replace kept the placeholder through tidy; the tag was unconsumable —
+  every consumer bump failed with `unknown revision`). The bare
+  `v0.0.0-00010101000000` placeholder (visualtest's internal-only shape) is
+  exempt; fixture cases in `scripts/test-release-assertions.sh` pin all three
+  shapes.
 - **No workspace artifacts in the tag tree — `result*` symlinks are release
   blockers.** The v1.19.3 tag shipped a daemon-committed `visualtest/result`
   symlink (nix build output), which poisoned every downstream `mkPreparedSource`
@@ -151,6 +159,11 @@ zero-diff invariant cannot hold at 0.3.1070 — the bump was rolled back the sam
 generated code verified byte-stable again). Migration is TODO #335: it needs a templ source pin
 in the flake (or nixpkgs catching up), a deliberate golden + pixel-visual re-baseline, and a
 source-trim review of icon+label sites. Do not "just bump" templ without that plan.
+**The daemon RE-APPLIES this bump (2026-10-05 evening, twice):** BuildFlow's go-auto-upgrade
+re-bumped all 9 go.mods to v0.3.1070 + nudged flake.lock within hours of the rollback; both
+reapplications were reverted (go.mod/go.sum ×9 + flake.lock). Expect to fight this war on every
+session: if a diff shows templ at 0.3.1070 in ANY go.mod, restore from the last good release
+commit before anything else. Upstream-watch issue #26 was closed as planned-deferred.
 
 **Toolchain input split (2026-09-02):** the Go toolchain comes from a dedicated `nixpkgs-go`
 flake input (nixos-unstable, currently 1.26.7 for GO-2026-5972/6089/6090) while `templ`,
@@ -207,7 +220,7 @@ restart the LSP when diagnostics actively mislead (e.g. the phantom go-1.27.1 er
 - Size constants: uppercase suffix pattern `[Component]Size[SM|MD|LG]` (e.g., `AvatarSizeSM`, `BadgeSizeSM`, `SpinnerSM`)
 - Default constructors: `DefaultXxxProps()` for every component with non-zero defaults
 - Private helpers: `xxxClass()` for Tailwind class mapping
-- CSP: all inline scripts use `nonce={ props.Nonce }`
+- CSP nonce: **omit-empty rule** (issues #7/#9/#24) — an inline-script emitter NEVER renders `nonce=""` (strict-CSP browsers reject it, silently killing the feature); an empty Nonce omits the attribute entirely. Canonical helpers: `utils.ScriptAttrs` (attribute set for templ-attribute sites) and `utils.ScriptComponent` (the raw-JS writer; display + charts render through it — remaining bespoke writers carry TODO #350 pointer comments). Theme scripts are the documented whole-tag-omission exception. Regression guards: `integration.TestNoEmptyNonceAttribute` (renders EVERY script-emitting component with empty Nonce, fails on any `nonce=""`) + `TestEmptyNonceStillRendersScripts` (dropping the attribute must not drop the script) — new script emitters MUST join that render table.
 - Sub-templates: extract shared rendering to private `templ` functions
 - Feedback styles: shared `feedbackStyleSet` struct + `lookupFeedbackStyle[T]()` generic + `feedbackIconName()` + `dismissScript()` in `feedback/styles.go`
 - FeedbackType: canonical `FeedbackType` enum (`FeedbackSuccess/Error/Warning/Info`). **Removed per the v1-to-v2 migration (docs/migration/v1-to-v2.md)** the `AlertType`/`ToastType` aliases and `AlertSuccess`/`ToastSuccess`/etc. constants — use `FeedbackType`/`FeedbackSuccess`/etc. directly. See ADR-0022.
@@ -319,7 +332,7 @@ restart the LSP when diagnostics actively mislead (e.g. the phantom go-1.27.1 er
 
 ## CI & Tooling Gotchas
 
-- **HTML validation gate (M17, 2026-09-13).** `scripts/check-html-valid.sh` validates all goldens with the W3C Nu Html Checker — local: `nix shell nixpkgs#html5validator -c scripts/check-html-valid.sh`; CI: `html-validation` job in ci.yaml downloads vnu.jar (VNU_JAR env; the script supports both invocation paths because html5validator 0.4.2's `--ignore` is SUBSTRING matching, not regex — filtering happens in the script). 14 documented ignore classes (16 as of 2026-10-01: + `Element style not allowed as child of body`, + vnu's body-style selector-scope rule vs `::view-transition-*` pseudos, which are not DOM nodes and cannot "match before the parent" — fixed forward where real, ignored where the checker disagrees with the spec) cover vnu snapshot staleness (Popover API, `<search>`, customizable `<select>`, `fetchpriority`, `enterkeyhint`, CSS Color 4 rgb, `@view-transition`) and the htmx/Datastar attribute dialects. First run found two real bugs (Form `action=""`, Toggle div-in-label → spans). When a nixpkgs vnu update lands, prune the ignore list. **2026-09-14 hardening:** vnu's message quoting changed (straight `"` → curly `“”`) and CI downloads the jar at RUNTIME while local html5validator bundles an older checker — ignore regexes now match BOTH quote styles (`["“]…["”]`), one list serves both snapshots. The newer vnu also added two real rules, fixed forward in components (not ignored): `aria-expanded` is PROHIBITED next to `popovertarget` (the Popover API exposes expansion state natively — Dropdown/Popover triggers dropped it), and `aria-label` on roleless generic elements (span/div) is invalid (KanbanBoard count moved to the `<ul>`, Scrollback labeled mode got `role="log"`, Carousel track got `role="group"`).
+- **HTML validation gate (M17, 2026-09-13).** `scripts/check-html-valid.sh` validates all goldens with the W3C Nu Html Checker — local: `nix shell nixpkgs#html5validator -c scripts/check-html-valid.sh`; CI: `html-validation` job in ci.yaml downloads vnu.jar (VNU_JAR env; the script supports both invocation paths because html5validator 0.4.2's `--ignore` is SUBSTRING matching, not regex — filtering happens in the script). 14 documented ignore classes (16 as of 2026-10-01: + `Element style not allowed as child of body`, + vnu's body-style selector-scope rule vs `::view-transition-*` pseudos, which are not DOM nodes and cannot "match before the parent" — fixed forward where real, ignored where the checker disagrees with the spec) cover vnu snapshot staleness (Popover API, `<search>`, customizable `<select>`, `fetchpriority`, `enterkeyhint`, CSS Color 4 rgb, `@view-transition`) and the htmx/Datastar attribute dialects. First run found two real bugs (Form `action=""`, Toggle div-in-label → spans). When a nixpkgs vnu update lands, prune the ignore list. **2026-09-14 hardening:** vnu's message quoting changed (straight `"` → curly `“”`) and CI downloads the jar at RUNTIME while local html5validator bundles an older checker — ignore regexes now match BOTH quote styles (`["“]…["”]`), one list serves both snapshots. The newer vnu also added two real rules, fixed forward in components (not ignored): `aria-expanded` is PROHIBITED next to `popovertarget` (the Popover API exposes expansion state natively — Dropdown/Popover triggers dropped it), and `aria-label` on roleless generic elements (span/div) is invalid (KanbanBoard count moved to the `<ul>`, Scrollback labeled mode got `role="log"`, Carousel track got `role="group"`, and the v1.20.0 Datastar PolledRegion custom-label golden — masked by the toolchain red until 2026-10-06 — got `role="region"`). **2026-10-06 phrasing drift:** the same vnu update reports the body-style view-transition class as `Style rule … not allowed outside an @scope rule in a style element in body` (+ matching `@keyframes` wording); the ignore class now matches BOTH phrasings.
 - **`.gitignore`'s generic `build/` rule once swallowed a Go SOURCE package (found 2026-09-14).** `website/internal/build/` (CSP/link/search site builders) sat UNTRACKED for days — committed `main.go` imported it, so the Website workflow failed with "no required module provides package" while local builds passed (untracked files compile fine locally). A blanket `build/` gitignore rule is fine for JS output but MUST carry the `!website/internal/build/` negation (now in .gitignore). Symptom: CI fails on a package your tree has; `git status` shows nothing — check `git status --ignored`.
 - **Sub-module go.mod replace directives vanish at release.** The release script strips replaces for the tagged commit and re-adds them after (step 10); a daemon race during the v1.17.0 cut left all 5 dependent sub-modules (icons, errorpage, charts/echarts, htmx, datastar) WITHOUT their replace blocks — `go test` per-module then fails with "missing go.sum entry". Fix: `go mod edit -replace github.com/larsartmann/templ-components/utils=../utils` per dependency (charts/echarts needs `../../utils` — it's nested one level deeper!), then `go mod tidy` per module. **Machine-guarded since 2026-09-14: `scripts/check-replace-directives.sh` pins the exact replace set per module (root self+6 at `./`, utils-leaf none, layer-1 utils, errorpage utils+icons, charts/echarts `../../utils`, visualtest/website root+6 at `../`) and runs in pre-commit (Guard 5b, before BuildFlow) + CI — a vanished re-add now fails in <50 ms instead of surfacing as mystery lint breakage. `TestPreCommitHookInstallsGuard` asserts the wiring. GOTCHA found 2026-09-17: the guard existed only in the dead `.git/hooks` copy, NOT in the tracked, ACTIVE `.githooks/pre-commit` — the wiring test now asserts the tracked hook directly, so a guard that exists only where hooksPath points AWAY from fails the test.**
 - **`cmd/tc/_sources` is a SELF-HEALING bidirectional mirror (2026-09-22).** The pre-commit guard (`scripts/check-tc-sources-sync.sh`, Guard 8) no longer just detects drift: it mirrors in BOTH directions (drifted copies re-copied, newly added components embedded, orphans whose library twin was deleted removed), STAGES the fixes, and lets the commit proceed — if a commit suddenly contains `cmd/tc/_sources/**` changes you did not hand-edit, that is the guard syncing the mirror, and the `synced N file(s)` line names them. Direction 2 exists because newly added components are invisible to a one-way guard: the 2026-09-22 pass found 22 never-embedded files (kanban, charts, eyebrow, scrollback, filter_input, dirty_guard, auth_layout + nine `*_types.go`) that `tc add` silently rejected. Go-side parity: `TestSourcesMatchPackageFiles` (direction 1) + `TestSourcesShipEveryMirrorableFile` (direction 2) — keep `MIRRORED_PKGS` in the script and `mirroredPackages` in `cmd/tc/main_test.go` in sync when adding a package (charts/ and utils/ are intentionally unmirrored).
@@ -359,6 +372,12 @@ the proxy caches tags permanently.
 hardening step to the incident that caused it (verify-before-strip, the single EXIT trap,
 re-add-replaces + re-tidy, the post-propagation tidy sweep, the daemon race window, SIGPIPE in
 tree assertions, late-abort recovery).
+
+**golangci-lint pin and the go.mod floor move in LOCKSTEP (2026-10-06):** golangci-lint
+≤ v2.13.2 PANICS under Go 1.27 (exhaustruct v5.0.3 `makeslice: cap out of range`, e.g.
+analyzing `layout`) — the Lint lane cannot run on the go 1.27 floor without ≥ v2.14.0
+(pinned in ci.yaml; verified `0 issues` on every module locally). When bumping the go
+directive floor, bump this pin in the same commit, and vice versa.
 
 ## Lint Command
 
