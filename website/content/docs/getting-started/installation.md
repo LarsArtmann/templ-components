@@ -5,11 +5,10 @@ description: Install templ-components in your Go project.
 
 ## Requirements
 
-- **Go** 1.26+
+- **Go** 1.27+ (no build flags — json/v2 is stable on 1.27)
 - **templ** CLI ([install](https://templ.guide/quick-start/installation))
 - **Tailwind CSS** 4.x+
 - **HTMX** 2.x (optional, for the `htmx` package)
-- `GOEXPERIMENT=jsonv2` environment variable (until Go 1.27 makes it stable)
 
 ## Install
 
