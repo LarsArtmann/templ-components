@@ -22,11 +22,16 @@ require (
 	github.com/larsartmann/templ-components/htmx v1.20.1 // indirect
 )
 
-
 replace github.com/larsartmann/templ-components => ../
+
 replace github.com/larsartmann/templ-components/charts/echarts => ../charts/echarts
+
 replace github.com/larsartmann/templ-components/datastar => ../datastar
+
 replace github.com/larsartmann/templ-components/errorpage => ../errorpage
+
 replace github.com/larsartmann/templ-components/htmx => ../htmx
+
 replace github.com/larsartmann/templ-components/icons => ../icons
+
 replace github.com/larsartmann/templ-components/utils => ../utils
