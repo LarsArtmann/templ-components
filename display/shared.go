@@ -126,7 +126,7 @@ func scriptComponent(nonce, script, errLabel string) templ.Component {
 // overlayScriptComponent renders the overlay (modal/drawer) JS in a CSP-safe
 // <script nonce> tag.
 func overlayScriptComponent(nonce, id, componentName string) templ.Component {
-	return scriptComponent(nonce, overlayDialogJS(id, componentName), "overlay script")
+	return utils.ScriptComponent(nonce, overlayDialogJS(id, componentName), "overlay script")
 }
 
 // copyButtonJS returns the singleton JavaScript for clipboard copy via event
@@ -164,7 +164,7 @@ func copyButtonJS() string {
 // clipboard copy JS. Singleton — only the first CopyButton on the page injects
 // executable code; subsequent instances skip via the window.tcCopyAttached guard.
 func copyButtonScriptComponent(nonce string) templ.Component {
-	return scriptComponent(nonce, copyButtonJS(), "copy button script")
+	return utils.ScriptComponent(nonce, copyButtonJS(), "copy button script")
 }
 
 // imageFallbackJS returns the singleton JavaScript for image fallback source
@@ -188,7 +188,7 @@ func imageFallbackJS() string {
 // the image fallback JS. Singleton — only injected when at least one Image
 // with FallbackSrc is rendered on the page.
 func imageFallbackScriptComponent(nonce string) templ.Component {
-	return scriptComponent(nonce, imageFallbackJS(), "image fallback script")
+	return utils.ScriptComponent(nonce, imageFallbackJS(), "image fallback script")
 }
 
 // relativeTimeJS returns the singleton JavaScript for live-updating relative
@@ -223,7 +223,7 @@ func relativeTimeJS() string {
 // Singleton — only the first RelativeTime with AutoRefresh=true on the page
 // injects executable code; subsequent instances skip via the guard flag.
 func relativeTimeScriptComponent(nonce string) templ.Component {
-	return scriptComponent(nonce, relativeTimeJS(), "relative time script")
+	return utils.ScriptComponent(nonce, relativeTimeJS(), "relative time script")
 }
 
 // tableRowHrefJS returns the singleton JavaScript for clickable table rows.
@@ -260,7 +260,7 @@ func tableRowHrefJS() string {
 // tableRowHrefScriptComponent renders the clickable-row JS. Only injected when
 // at least one TableRow has Href set.
 func tableRowHrefScriptComponent(nonce string) templ.Component {
-	return scriptComponent(nonce, tableRowHrefJS(), "table row href script")
+	return utils.ScriptComponent(nonce, tableRowHrefJS(), "table row href script")
 }
 
 // popoverPositionJS returns the singleton JavaScript that positions a
@@ -332,7 +332,7 @@ func popoverPositionJS() string {
 // popoverPositionScriptComponent renders the popover-positioning JS in a
 // CSP-safe <script nonce> tag. Singleton, shared by Popover and Dropdown.
 func popoverPositionScriptComponent(nonce string) templ.Component {
-	return scriptComponent(nonce, popoverPositionJS(), "popover position script")
+	return utils.ScriptComponent(nonce, popoverPositionJS(), "popover position script")
 }
 
 // tooltipAriaJS returns the singleton JavaScript that propagates
@@ -381,7 +381,7 @@ func tooltipAriaJS() string {
 // tooltipAriaScriptComponent renders the tooltip aria-describedby
 // propagation JS. Singleton, injected by the first Tooltip on the page.
 func tooltipAriaScriptComponent(nonce string) templ.Component {
-	return scriptComponent(nonce, tooltipAriaJS(), "tooltip aria script")
+	return utils.ScriptComponent(nonce, tooltipAriaJS(), "tooltip aria script")
 }
 
 // menuKeyboardNavJS returns the singleton JavaScript implementing the WAI-ARIA
@@ -425,5 +425,5 @@ func menuKeyboardNavJS() string {
 // menuKeyboardNavScriptComponent renders the shared menu keyboard-nav JS in a
 // CSP-safe <script nonce> tag. Singleton, shared by Dropdown and ContextMenu.
 func menuKeyboardNavScriptComponent(nonce string) templ.Component {
-	return scriptComponent(nonce, menuKeyboardNavJS(), "menu keyboard nav script")
+	return utils.ScriptComponent(nonce, menuKeyboardNavJS(), "menu keyboard nav script")
 }

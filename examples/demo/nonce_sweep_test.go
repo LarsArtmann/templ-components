@@ -1,7 +1,7 @@
 package main
 
 import (
-	"net/http"
+	"io"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -57,12 +57,12 @@ func TestNoEmptyNonceAcrossDemoPages(t *testing.T) {
 			}
 			defer resp.Body.Close()
 
-			buf := new(strings.Builder)
-			if _, err := readAll(resp.Body, buf); err != nil {
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
 				t.Fatalf("read %s: %v", route, err)
 			}
 
-			if body := buf.String(); strings.Contains(body, `nonce=""`) {
+			if strings.Contains(string(body), `nonce=""`) {
 				t.Errorf("GET %s renders nonce=\"\" — dead script under the demo CSP", route)
 			}
 		})

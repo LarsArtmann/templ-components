@@ -451,5 +451,5 @@ func kanbanClickJS() string {
 
 // kanbanScriptComponent renders the kanban singleton script CSP-safe.
 func kanbanScriptComponent(nonce string) templ.Component {
-	return scriptComponent(nonce, kanbanJS(), "kanban script")
+	return utils.ScriptComponent(nonce, kanbanJS(), "kanban script")
 }
