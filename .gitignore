@@ -118,3 +118,9 @@ website/dist/
 # drift guard utils.TestCompiledCSSInventory pins this exact set.
 *.out.css
 !templates/templ-components-theme.out.css
+
+# BuildFlow tailwind-build compiles cmd/tc/_sources/starter/app.css on every
+# run (entry-point discovery scans **/app.css). The output is compile-check
+# residue, never shipped by tc init — keep it untracked (the inventory guard
+# refuses the TRACKED file).
+cmd/tc/_sources/starter/styles.css

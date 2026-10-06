@@ -354,10 +354,14 @@ func writeSitemaps(outDir, repoRoot string) error {
 	sb.WriteString("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n")
 
 	for _, entry := range entries {
-		sb.WriteString("\t<url>\n\t\t<loc>" + entry.loc + "</loc>\n")
+		sb.WriteString("\t<url>\n\t\t<loc>")
+		sb.WriteString(entry.loc)
+		sb.WriteString("</loc>\n")
 
 		if entry.lastmod != "" {
-			sb.WriteString("\t\t<lastmod>" + entry.lastmod + "</lastmod>\n")
+			sb.WriteString("\t\t<lastmod>")
+			sb.WriteString(entry.lastmod)
+			sb.WriteString("</lastmod>\n")
 		}
 
 		sb.WriteString("\t</url>\n")

@@ -203,8 +203,10 @@ type Action struct {
 	// value never re-requests); Datastar renders it as the __debounce.<n>ms
 	// event modifier (spelling decoded from the pinned v1.0.3 bundle — see
 	// docs/datastar-runtime-facts.md). Zero (the default) emits no debounce.
-	// Under htmx it requires an explicit Event (the zero event renders no
-	// hx-trigger at all, so the delay would be silently dropped).
+	// The modifier requires an explicit Event in BOTH dialects: with no
+	// event trigger it is dropped (htmx cannot hang a delay on its implicit
+	// default trigger; Datastar matches so the modifier never silently
+	// re-targets the defaulted click).
 	DebounceMS int
 	// ThrottleMS bounds the wired exchange to at most one per this many
 	// milliseconds — the rate-limit sibling of DebounceMS (throttle fires
@@ -213,8 +215,9 @@ type Action struct {
 	// __throttle.<n>ms attribute-name modifier (bundle-decoded from the pinned
 	// v0.6.1 bundle: duration parsing identical to debounce; the runtime's
 	// noleading/trailing sub-modifiers are not modeled — the htmx-compatible
-	// leading+trailing default is kept). Under htmx it requires an explicit
-	// Event, like DebounceMS. htmx documents delay and throttle as mutually
+	// leading+trailing default is kept). Requires an explicit Event in both
+	// dialects, like DebounceMS — an orphan modifier is dropped. htmx
+	// documents delay and throttle as mutually
 	// exclusive; setting both renders both (Datastar pipelines them
 	// delay-then-throttle) — prefer one.
 	ThrottleMS int
@@ -302,9 +305,11 @@ func (a Action) datastarAttributes() templ.Attributes {
 	// An interval/reveal-only Action (Event left at its zero value) must not
 	// also fire on click: the event attribute renders only when the action
 	// actually declares an event trigger.
+	hasEventTrigger := a.Event != EventUnspecified && EventIsValid(a.Event)
+
 	if a.Event != EventUnspecified || (a.Interval == "" && a.Reveal == nil) {
 		event := string(a.Event)
-		if !EventIsValid(a.Event) || a.Event == EventUnspecified {
+		if !hasEventTrigger {
 			event = string(EventClick)
 		}
 
@@ -313,11 +318,17 @@ func (a Action) datastarAttributes() templ.Attributes {
 			key += "__prevent"
 		}
 
-		if a.DebounceMS > 0 {
+		// Debounce/throttle are event-trigger modifiers: they attach only to
+		// an EXPLICIT, valid event trigger. An orphan modifier (no event, no
+		// interval/reveal) is dropped — matching htmx, where hx-trigger needs
+		// the event name to hang modifiers on — so the dialects never
+		// disagree about whether the modifier applies (pinned by
+		// TestTriggerModifiersRequireAnEventTrigger).
+		if hasEventTrigger && a.DebounceMS > 0 {
 			key += fmt.Sprintf("__debounce.%dms", a.DebounceMS)
 		}
 
-		if a.ThrottleMS > 0 {
+		if hasEventTrigger && a.ThrottleMS > 0 {
 			key += fmt.Sprintf("__throttle.%dms", a.ThrottleMS)
 		}
 

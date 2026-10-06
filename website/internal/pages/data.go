@@ -1,7 +1,3 @@
-// Package pages contains the templ components and typed content data for the
-// templ-components marketing site. Every page renders through the library's
-// own components (layout.Base, display.Button, icons, ...) — the site is the
-// library's largest dogfood consumer.
 package pages
 
 import (

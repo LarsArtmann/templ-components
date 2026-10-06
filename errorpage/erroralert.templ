@@ -49,7 +49,11 @@ templ ErrorAlert(props ErrorAlertProps) {
 			}
 		</div>
 		if props.Dismissible {
-			@templ.Raw("<script nonce=\"" + props.Nonce + "\">" + utils.DismissScript() + "</script>")
+			if props.Nonce != "" {
+				@templ.Raw("<script nonce=\"" + props.Nonce + "\">" + utils.DismissScript() + "</script>")
+			} else {
+				@templ.Raw("<script>" + utils.DismissScript() + "</script>")
+			}
 		}
 	</div>
 }

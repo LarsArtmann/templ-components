@@ -51,27 +51,18 @@ const viewTransitionsCSS = `::view-transition-old(root){animation:tc-vt-fade-out
 const viewTransitionsScript = `(function(){if(typeof htmx!=='undefined'&&document.startViewTransition){htmx.config.globalViewTransitions=true;}})();`
 
 // styleComponent renders a CSP-safe <style nonce="..."> tag wrapping the
-// given CSS string. Uses the same pattern as display.scriptComponent to
-// bypass templ's raw-text element handling.
+// given CSS string. Uses the same pattern as utils.ScriptComponent (the
+// canonical script writer) to bypass templ's raw-text element handling;
+// styles keep their own writer because ScriptComponent emits <script>.
 func styleComponent(nonce, css string) templ.Component {
-	escapedNonce := html.EscapeString(nonce)
+	nonceAttr := ""
+	if nonce != "" {
+		nonceAttr = fmt.Sprintf(" nonce=\"%s\"", html.EscapeString(nonce))
+	}
 
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<style nonce=\"%s\">\n%s\n</style>\n", escapedNonce, css); err != nil {
+		if _, err := fmt.Fprintf(w, "<style%s>\n%s\n</style>\n", nonceAttr, css); err != nil {
 			return fmt.Errorf("write view transitions style: %w", err)
-		}
-
-		return nil
-	})
-}
-
-// scriptComponent renders a CSP-safe <script nonce="..."> tag.
-func scriptComponent(nonce, js string) templ.Component {
-	escapedNonce := html.EscapeString(nonce)
-
-	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s\n</script>\n", escapedNonce, js); err != nil {
-			return fmt.Errorf("write view transitions script: %w", err)
 		}
 
 		return nil

@@ -52,15 +52,10 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 go get github.com/larsartmann/templ-components
 ```
 
-> **Build flag required:** this library uses `encoding/json/v2` (via
-> `errorpage`). Set `GOEXPERIMENT=jsonv2` when building until Go 1.27 ships it
-> as stable:
->
-> ```bash
-> export GOEXPERIMENT=jsonv2
-> ```
->
-> Without it the build fails with:
+> **Build flag (older toolchains only):** this library uses `encoding/json/v2`
+> (via `errorpage`). On the Go 1.27+ floor no flag is needed — json/v2 is
+> stable there. Toolchains older than 1.27 must set `GOEXPERIMENT=jsonv2`,
+> or the build fails with:
 > `build constraints exclude all Go files in .../encoding/json/v2`
 
 **2. Build a page**
@@ -403,7 +398,7 @@ update goldens, and how to add coverage for a new component.
 
 ## Requirements
 
-- **Go** 1.26+ (`GOEXPERIMENT=jsonv2`)
+- **Go** 1.27+ (no build flags)
 - **templ** CLI ([install](https://templ.guide/quick-start/installation))
 - **Tailwind CSS** 4.x+
 - **HTMX** 2.x (optional, for `htmx` package)

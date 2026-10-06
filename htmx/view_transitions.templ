@@ -1,5 +1,7 @@
 package htmx
 
+import "github.com/larsartmann/templ-components/utils"
+
 // ViewTransitions renders a CSP-safe script that enables native View
 // Transitions for HTMX swaps, plus default transition CSS.
 //
@@ -10,6 +12,6 @@ package htmx
 templ ViewTransitions(props ViewTransitionsProps) {
 	@styleComponent(props.Nonce, viewTransitionsCSS)
 	if props.Global {
-		@scriptComponent(props.Nonce, viewTransitionsScript)
+		@utils.ScriptComponent(props.Nonce, viewTransitionsScript, "view transitions script")
 	}
 }

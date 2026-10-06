@@ -356,3 +356,34 @@ func toAny(errs []*testError) []error {
 
 	return out
 }
+
+// TestErrorCodeChipEscaping pins the code chip's HTML-escaping: the demo
+// playground feeds user-typed query params straight into Code, so every
+// interpolation site (text body, data-tc-copy attribute, aria-label) must
+// render entity-escaped — never raw markup.
+func TestErrorCodeChipEscaping(t *testing.T) {
+	t.Parallel()
+
+	malicious := Code(`<script>alert("x")</script>`)
+	output := utils.Render(t, ErrorPage(ErrorPageProps{
+		Family:     FamilyTransient,
+		StatusCode: 503,
+		Code:       malicious,
+		CopyCode:   true,
+		Nonce:      "test-nonce",
+	}))
+
+	if strings.Contains(output, string(malicious)) {
+		t.Error("raw code value rendered unescaped — XSS surface")
+	}
+
+	for _, want := range []string{
+		"&lt;script&gt;", // text body
+		`data-tc-copy="&lt;script&gt;alert(&#34;x&#34;`, // copy attribute
+		"Copy error code", // aria-label prefix intact
+	} {
+		if !strings.Contains(output, want) {
+			t.Errorf("escaped output missing %q", want)
+		}
+	}
+}

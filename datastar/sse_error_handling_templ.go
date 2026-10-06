@@ -8,6 +8,8 @@ package datastar
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import "github.com/larsartmann/templ-components/utils"
+
 // SSEErrorHandlingConfig configures global DataStar SSE error handling.
 type SSEErrorHandlingConfig struct {
 	// Nonce is the CSP nonce for the inline script.
@@ -79,28 +81,23 @@ func SSEErrorHandling(cfg SSEErrorHandlingConfig) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		cfg.normalize()
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"tc-datastar-announcer\" aria-live=\"polite\" class=\"sr-only\"></div><script nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"tc-datastar-announcer\" aria-live=\"polite\" class=\"sr-only\"></div><script")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Nonce)
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, utils.ScriptAttrs(cfg.Nonce))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/sse_error_handling.templ`, Line: 55, Col: 26}
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, ">\n\t\t(function() {\n\t\t\t'use strict';\n\t\t\tvar DURATION = ")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var2, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(cfg.DurationMS)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/sse_error_handling.templ`, Line: 60, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\">\n\t\t(function() {\n\t\t\t'use strict';\n\t\t\tvar DURATION = ")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var3, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(cfg.DurationMS)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/sse_error_handling.templ`, Line: 58, Col: 35}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

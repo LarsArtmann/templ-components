@@ -62,6 +62,9 @@ with the pre-commit hook.
   before running formatters, to match CI.
 - When Go 1.27 ships with json/v2 as stable, the experiment flag becomes
   unnecessary and this ADR can be retired.
+  **Realized 2026-10-05:** the floor is now Go 1.27 (json/v2 stable); the
+  repo keeps the flag exports as belt-and-braces for pre-1.27 toolchains.
+  Retiring the exports is still pending.
 - The breadcrumbs package stays on v1 until v2 is the default — it marshals
   a simple struct and gains nothing from v2.
 
