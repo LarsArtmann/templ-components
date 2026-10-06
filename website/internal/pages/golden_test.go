@@ -35,7 +35,7 @@ var goldenDocsPage = md.Page{
 	Title:       "Installation",
 	Description: "How to install the library",
 	HTML: `<h2 id="requirements">Requirements</h2>` +
-		`<p>Go 1.26+ with the templ CLI.</p>` +
+		`<p>Go 1.27+ with the templ CLI.</p>` +
 		`<div class="code-block"><button type="button" class="code-copy">Copy</button>` +
 		`<pre><code class="chroma">go get github.com/larsartmann/templ-components</code></pre></div>` +
 		`<h3 id="tools">Tools</h3>` +

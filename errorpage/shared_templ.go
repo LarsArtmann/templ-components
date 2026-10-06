@@ -987,20 +987,15 @@ func goBackScript(nonce string) templ.Component {
 			templ_7745c5c3_Var53 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 63, "<script nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 63, "<script")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var54 string
-		templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 197, Col: 22}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var54)
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, utils.ScriptAttrs(nonce))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 64, "\">\n\t\tif (!window.tcGoBackAttached) {\n\t\t\twindow.tcGoBackAttached = true;\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tif (e.target.closest('[data-tc-go-back]')) history.back();\n\t\t\t});\n\t\t}\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 64, ">\n\t\tif (!window.tcGoBackAttached) {\n\t\t\twindow.tcGoBackAttached = true;\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tif (e.target.closest('[data-tc-go-back]')) history.back();\n\t\t\t});\n\t\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1032,25 +1027,20 @@ func copyCodeScript(nonce string) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var55 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var55 == nil {
-			templ_7745c5c3_Var55 = templ.NopComponent
+		templ_7745c5c3_Var54 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var54 == nil {
+			templ_7745c5c3_Var54 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, "<script nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, "<script")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var56 string
-		templ_7745c5c3_Var56, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 216, Col: 22}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var56)
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, utils.ScriptAttrs(nonce))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 66, "\">\n\t\tif (!window.tcCopyAttached) {\n\t\t\twindow.tcCopyAttached = true;\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar btn = e.target.closest('[data-tc-copy]');\n\t\t\t\tif (!btn) return;\n\t\t\t\te.preventDefault();\n\t\t\t\tvar text = btn.getAttribute('data-tc-copy');\n\t\t\t\tif (navigator.clipboard && navigator.clipboard.writeText) {\n\t\t\t\t\tnavigator.clipboard.writeText(text);\n\t\t\t\t} else {\n\t\t\t\t\tvar ta = document.createElement('textarea');\n\t\t\t\t\tta.value = text;\n\t\t\t\t\tta.style.cssText = 'position:fixed;top:-9999px;left:-9999px';\n\t\t\t\t\tdocument.body.appendChild(ta);\n\t\t\t\t\tta.select();\n\t\t\t\t\ttry { document.execCommand('copy'); } catch (err) {}\n\t\t\t\t\tdocument.body.removeChild(ta);\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 66, ">\n\t\tif (!window.tcCopyAttached) {\n\t\t\twindow.tcCopyAttached = true;\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar btn = e.target.closest('[data-tc-copy]');\n\t\t\t\tif (!btn) return;\n\t\t\t\te.preventDefault();\n\t\t\t\tvar text = btn.getAttribute('data-tc-copy');\n\t\t\t\tif (navigator.clipboard && navigator.clipboard.writeText) {\n\t\t\t\t\tnavigator.clipboard.writeText(text);\n\t\t\t\t} else {\n\t\t\t\t\tvar ta = document.createElement('textarea');\n\t\t\t\t\tta.value = text;\n\t\t\t\t\tta.style.cssText = 'position:fixed;top:-9999px;left:-9999px';\n\t\t\t\t\tdocument.body.appendChild(ta);\n\t\t\t\t\tta.select();\n\t\t\t\t\ttry { document.execCommand('copy'); } catch (err) {}\n\t\t\t\t\tdocument.body.removeChild(ta);\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1076,21 +1066,21 @@ func actionLinkBody(text string) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var57 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var57 == nil {
-			templ_7745c5c3_Var57 = templ.NopComponent
+		templ_7745c5c3_Var55 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var55 == nil {
+			templ_7745c5c3_Var55 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 67, "<span>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var58 string
-		templ_7745c5c3_Var58, templ_7745c5c3_Err = templ.JoinStringErrs(text)
+		var templ_7745c5c3_Var56 string
+		templ_7745c5c3_Var56, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
 			return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 243, Col: 13}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var58))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var56))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

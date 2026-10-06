@@ -1,10 +1,7 @@
 package forms
 
 import (
-	"context"
 	"fmt"
-	"html"
-	"io"
 
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
@@ -67,18 +64,14 @@ const tagsInputJS = `
 
 // tagsInputScriptComponent writes the tags-input script raw: templ's <script>
 // context sanitizes interpolations, and the JS must land verbatim with the
-// icons-sourced path data (same pattern as dirtyGuardScriptComponent).
+// icons-sourced path data (same pattern as dirtyGuardScriptComponent). The
+// script itself always renders so non-CSP consumers still get working tags;
+// utils.ScriptComponent owns the omit-empty nonce rule and the CSP-safe
+// write (nonce="" is rejected by strict-CSP pages — see utils.ScriptAttrs).
 func tagsInputScriptComponent(nonce string) templ.Component {
-	escapedNonce := html.EscapeString(nonce)
-	js := fmt.Sprintf(tagsInputJS, tagsInputRemoveIconPath())
+	script := fmt.Sprintf(tagsInputJS, tagsInputRemoveIconPath())
 
-	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">%s</script>", escapedNonce, js); err != nil {
-			return fmt.Errorf("write tags input script: %w", err)
-		}
-
-		return nil
-	})
+	return utils.ScriptComponent(nonce, script, "tags input script")
 }
 
 // tagsInputContainerClass returns the container classes for the tags input.
@@ -164,8 +157,6 @@ templ TagsInput(props TagsInputProps) {
 		if props.HelpText != "" {
 			@helpText(props.ID, props.HelpText)
 		}
-		if props.Nonce != "" {
-			@tagsInputScriptComponent(props.Nonce)
-		}
+		@tagsInputScriptComponent(props.Nonce)
 	</div>
 }

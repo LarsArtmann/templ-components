@@ -1,5 +1,7 @@
 package datastar
 
+import "github.com/larsartmann/templ-components/utils"
+
 // SSEErrorHandlingConfig configures global DataStar SSE error handling.
 type SSEErrorHandlingConfig struct {
 	// Nonce is the CSP nonce for the inline script.
@@ -52,7 +54,7 @@ func (c *SSEErrorHandlingConfig) normalize() {
 templ SSEErrorHandling(cfg SSEErrorHandlingConfig) {
 	{{ cfg.normalize() }}
 	<div id="tc-datastar-announcer" aria-live="polite" class="sr-only"></div>
-	<script nonce={ cfg.Nonce }>
+	<script { utils.ScriptAttrs(cfg.Nonce)... }>
 		(function() {
 			'use strict';
 			var DURATION = {{ cfg.DurationMS }};

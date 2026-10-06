@@ -46,3 +46,68 @@ func TestErrorRoutesServeStatusAndBody(t *testing.T) {
 		})
 	}
 }
+
+// TestErrorRoutesPlaygroundPinsQueryWiring pins the playground's query-param
+// contract: sanitized status passthrough, the ErrorMaxWidth clamp (unknown →
+// XL), the always-on way-out action back to the components page, and the
+// CopyCode wiring (button renders when a code is supplied; its code!=\"\"
+// gating is pinned by the errorpage package's own golden/matrix tests).
+func TestErrorRoutesPlaygroundPinsQueryWiring(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name         string
+		query        string
+		wantStatus   int
+		wantContains []string
+	}{
+		{
+			name:       "full query renders width, way-out, and copy button",
+			query:      "?family=transient&status=503&code=MAINT_WINDOW&width=2xl&title=Down",
+			wantStatus: http.StatusServiceUnavailable,
+			wantContains: []string{
+				"max-w-2xl",
+				`data-tc-copy="MAINT_WINDOW"`,
+				"Back to the error page components",
+				"/demo/error-pages",
+			},
+		},
+		{
+			name:       "empty query defaults to 200 and XL width",
+			query:      "",
+			wantStatus: http.StatusOK,
+			wantContains: []string{
+				"max-w-xl",
+				"Back to the error page components",
+			},
+		},
+		{
+			name:       "unknown width clamps to XL",
+			query:      "?width=banana",
+			wantStatus: http.StatusOK,
+			wantContains: []string{
+				"max-w-xl",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			rec := httptest.NewRecorder()
+			newMux().ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/errors/playground"+tt.query, nil))
+
+			if rec.Code != tt.wantStatus {
+				t.Errorf("GET /errors/playground%s status = %d, want %d", tt.query, rec.Code, tt.wantStatus)
+			}
+
+			body := rec.Body.String()
+			for _, want := range tt.wantContains {
+				if !strings.Contains(body, want) {
+					t.Errorf("GET /errors/playground%s body does not contain %q", tt.query, want)
+				}
+			}
+		})
+	}
+}

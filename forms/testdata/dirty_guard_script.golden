@@ -1,4 +1,5 @@
 <script nonce="nonce-123">
+
 if (!window.tcDirtyGuardAttached) {
   window.tcDirtyGuardAttached = true;
   var tcDirtyForms = new WeakSet();

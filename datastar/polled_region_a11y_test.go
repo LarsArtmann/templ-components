@@ -50,4 +50,16 @@ func TestPolledRegionA11y(t *testing.T) {
 		utils.AssertContains(t, output, "<time")
 		utils.AssertContains(t, output, "datetime=")
 	})
+
+	t.Run("labelled region is a region landmark", func(t *testing.T) {
+		t.Parallel()
+
+		// aria-label on a roleless generic div is invalid ARIA (the class the
+		// HTML-validation gate fixed for KanbanBoard, Scrollback, Carousel):
+		// a labelled polled region must expose role="region".
+		labelled := utils.Render(t, PolledRegion(PolledRegionProps{URL: "/x", AriaLabel: "Activity"}))
+		utils.AssertContains(t, labelled, `role="region"`)
+		utils.AssertContains(t, labelled, `aria-label="Activity"`)
+		utils.AssertNotContains(t, utils.Render(t, PolledRegion(PolledRegionProps{URL: "/x"})), `role="region"`)
+	})
 }

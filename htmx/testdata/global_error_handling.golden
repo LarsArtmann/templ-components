@@ -1,4 +1,4 @@
-<div id="tc-error-announcer" aria-live="polite" class="sr-only"></div><script nonce="">
+<div id="tc-error-announcer" aria-live="polite" class="sr-only"></div><script>
 		(function() {
 			'use strict';
 
