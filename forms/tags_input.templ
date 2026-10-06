@@ -71,6 +71,10 @@ const tagsInputJS = `
 // empty nonce omits the attribute entirely (nonce="" is rejected by
 // strict-CSP pages — the omit-empty rule, see utils.ScriptAttrs); the script
 // itself always renders so non-CSP consumers still get working tags.
+//
+// TODO(#350): differs from utils.ScriptComponent (the canonical writer) only
+// in whitespace (no newlines around the JS); fold onto it and regenerate the
+// golden when touched next.
 func tagsInputScriptComponent(nonce string) templ.Component {
 	escapedNonce := html.EscapeString(nonce)
 	js := fmt.Sprintf(tagsInputJS, tagsInputRemoveIconPath())

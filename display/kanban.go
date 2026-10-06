@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 

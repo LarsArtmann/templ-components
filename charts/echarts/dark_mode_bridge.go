@@ -1,12 +1,8 @@
 package echarts
 
 import (
-	"context"
-	"fmt"
-	"html"
-	"io"
-
 	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 // darkModeBridgeJS returns the singleton JavaScript that syncs ECharts chart
@@ -40,24 +36,5 @@ func darkModeBridgeJS() string {
 // darkModeBridgeComponent renders the dark mode bridge script in a CSP-safe
 // <script nonce> tag. Singleton via the window.tcEChartsDarkBridge guard.
 func darkModeBridgeComponent(nonce string) templ.Component {
-	return chartScriptComponent(nonce, darkModeBridgeJS(), "echarts dark mode bridge")
-}
-
-// chartScriptComponent renders a CSP-safe <script nonce> tag wrapping the
-// given JS string. Used for both the chart init script and the dark mode
-// bridge. An empty nonce omits the attribute entirely (nonce="" is rejected
-// by strict-CSP pages — the omit-empty rule, see utils.ScriptAttrs).
-func chartScriptComponent(nonce, script, errLabel string) templ.Component {
-	nonceAttr := ""
-	if nonce != "" {
-		nonceAttr = fmt.Sprintf(" nonce=\"%s\"", html.EscapeString(nonce))
-	}
-
-	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script%s>\n%s</script>\n", nonceAttr, script); err != nil {
-			return fmt.Errorf("write %s: %w", errLabel, err)
-		}
-
-		return nil
-	})
+	return utils.ScriptComponent(nonce, darkModeBridgeJS(), "echarts dark mode bridge")
 }

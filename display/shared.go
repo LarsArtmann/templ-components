@@ -1,10 +1,6 @@
 package display
 
 import (
-	"context"
-	"fmt"
-	"html"
-	"io"
 	"strconv"
 
 	"github.com/a-h/templ"
@@ -102,26 +98,6 @@ func overlayDialogJS(id, componentName string) string {
 // script-context sanitization (which would JSON-encode the JS string).
 // The nonce is HTML-attribute-escaped to prevent attribute-boundary breakage
 // from a caller-supplied value containing quotes or angle brackets.
-// scriptComponent renders a CSP-safe <script nonce="..."> tag wrapping the
-// given JS string. Shared by all singleton-script components to avoid duplicating
-// the nonce-escaping and error-wrapping pattern. The errLabel is used in the
-// wrapped error message for debugging. An empty nonce omits the attribute
-// entirely (nonce="" is rejected by strict-CSP pages — the omit-empty rule,
-// see utils.ScriptAttrs).
-func scriptComponent(nonce, script, errLabel string) templ.Component {
-	nonceAttr := ""
-	if nonce != "" {
-		nonceAttr = fmt.Sprintf(" nonce=\"%s\"", html.EscapeString(nonce))
-	}
-
-	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script%s>\n%s</script>\n", nonceAttr, script); err != nil {
-			return fmt.Errorf("write %s: %w", errLabel, err)
-		}
-
-		return nil
-	})
-}
 
 // overlayScriptComponent renders the overlay (modal/drawer) JS in a CSP-safe
 // <script nonce> tag.
