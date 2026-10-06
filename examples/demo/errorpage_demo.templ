@@ -94,6 +94,19 @@ templ errorPlaygroundForm() {
 			HTTP status (400–599)
 			<input type="number" name="status" min="400" max="599" placeholder="503" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"/>
 		</label>
+		<label class="text-sm font-medium text-gray-700 dark:text-gray-200">
+			Error code (copied by the code chip)
+			<input type="text" name="code" maxlength="60" placeholder="MAINTENANCE_WINDOW" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 font-mono text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"/>
+		</label>
+		<label class="text-sm font-medium text-gray-700 dark:text-gray-200">
+			Card width
+			<select name="width" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+				<option value="">XL (default)</option>
+				<option value="lg">LG</option>
+				<option value="2xl">2XL</option>
+				<option value="4xl">4XL</option>
+			</select>
+		</label>
 		<label class="text-sm font-medium text-gray-700 dark:text-gray-200 sm:col-span-2">
 			Title
 			<input type="text" name="title" maxlength="120" placeholder="Service temporarily unavailable" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"/>

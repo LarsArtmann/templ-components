@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
@@ -451,5 +452,5 @@ func kanbanClickJS() string {
 
 // kanbanScriptComponent renders the kanban singleton script CSP-safe.
 func kanbanScriptComponent(nonce string) templ.Component {
-	return scriptComponent(nonce, kanbanJS(), "kanban script")
+	return utils.ScriptComponent(nonce, kanbanJS(), "kanban script")
 }

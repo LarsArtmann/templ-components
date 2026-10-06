@@ -161,6 +161,40 @@ never learn your error URLs.
 Choose Tier 3 over "render the normal layout anyway" whenever the error
 originated in the layout's own dependencies.
 
+## The way out: primary action, ghost action, code chip, width
+
+The card's recovery affordances are four props on `ErrorPageProps`:
+
+- **`WayOutAction` (typed bundle)** — `Text` + `Href`. When `Text` is set it
+  wins entirely over the loose `WayOut`/`WayOutHref` strings (no merging).
+  Text with an empty href renders as a history-back button.
+- **`SecondaryWayOut` / `SecondaryWayOutHref`** — a ghost-styled second
+  action beside the primary (e.g. a status page or docs link). Same
+  empty-href = history-back rule.
+- **`CopyCode`** — renders a clipboard button next to the error-code chip
+  (only when a `Code` is set; without a code there is no chip to copy).
+  The button reuses the library's `data-tc-copy` singleton script and needs
+  a `Nonce` like every inline script.
+- **`MaxWidth`** — closed-set enum (`ErrorMaxWidthLG`/`XL`/`2XL`/`4XL`);
+  empty or unknown falls back to XL. Useful when the error shell is narrow
+  (mobile-first Tier 3 shells read well at `LG`).
+
+```go
+props := errorpage.ErrorPageProps{
+    // ...family/status/title as in Tier 2...
+    WayOutAction: errorpage.WayOutAction{Text: "Back to dashboard", Href: "/dashboard"},
+    SecondaryWayOut:     "Status page",
+    SecondaryWayOutHref: "https://status.example.com",
+    CopyCode:            true,
+    MaxWidth:            errorpage.ErrorMaxWidthLG,
+}
+```
+
+One behavioral default to know: in the `ErrorHandler` pipeline, if you set
+NONE of the way-out fields and the error implements `IsRetryable() bool`,
+the handler fills in a same-path "Retry" link (`applyRetrySuggestion`).
+Explicit caller way outs always win — there is no merge to fight.
+
 ## Rules that apply at every tier
 
 - **Never render raw `err.Error()` to users.** It leaks stream IDs, storage

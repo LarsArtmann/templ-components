@@ -320,6 +320,19 @@ Use `layout.Script` instead of raw `<script>` — the nonce can never be forgott
 @layout.Script(nonce, "/static/app.js", templ.Attributes{"defer": true})
 ```
 
+**Inline component scripts MUST render through `utils.ScriptComponent(nonce, script,
+errLabel)`** — the canonical CSP-safe writer (owns the omit-empty nonce rule, nonce
+escaping, and error wrapping; `display`, `charts/echarts`, `htmx`, and `forms` all
+render through it). The omit-empty rule: an empty nonce renders NO nonce attribute,
+never `nonce=""` — a nonce attribute with the wrong value is rejected by strict-CSP
+browsers while non-CSP consumers lose the script for nothing (the dead-script class
+behind the 2026-10-01 demo outage, pinned by `TestNoEmptyNonceAttribute` +
+`TestNoEmptyNonceAcrossDemoPages`). Relatedly: a component's singleton script ALWAYS
+renders — never skip the whole `<script>` when the nonce is empty, or non-CSP
+consumers silently get no JS (the TagsInput bug class). templ's `<script>` context
+sanitizes interpolation, so JS with braces/template literals must go through the
+ComponentFunc writer, not a templ `<script>` block.
+
 ### Theming
 
 Components emit standard Tailwind classes (`bg-blue-600`). Override globally in your CSS:
@@ -592,6 +605,13 @@ Inside `component.templ`:
    ```
    Embedding auto-satisfies the `utils.ComponentProps` interface via promoted
    `GetBaseProps()`/`SetBaseProps()` (pointer receivers, required by `recvcheck`).
+   GOTCHA (probe-proven 2026-10-06): promoted fields CANNOT be set in struct literals
+   below the Go 1.27 language version — `BadgeProps{Nonce: "x"}` is rejected when the
+   module `go` directive is 1.26.x and compiles at 1.27+ (same toolchain, the gate is
+   the directive). Consumers on older toolchains must nest:
+   `BadgeProps{BaseProps: utils.BaseProps{Nonce: "x"}}`. The `modernize` embedlit
+   analyzer rewrites the nested form to the simple one — never hand-write the simple
+   form in code that must compile below 1.27.
 4. **Default constructor** `DefaultComponentProps()` returns meaningful non-zero defaults.
 5. **Render template** with a godoc example comment.
 6. **Root element** propagates `props.ID`, `props.Class` (via `utils.Class(...)`),

@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"html"
 	"io"
 
 	"github.com/a-h/templ"
@@ -30,10 +31,17 @@ const HTMXNone = "none"
 // htmxSelfHostComponent returns a templ.Component that renders the embedded
 // HTMX source inline in a nonce-protected <script> tag. Used when
 // PageProps.HTMXSrc == HTMXSelfHost. Writing raw HTML via ComponentFunc is
-// required because templ's <script> context sanitizes interpolation.
+// required because templ's <script> context sanitizes interpolation. An
+// empty nonce omits the attribute entirely (nonce="" is rejected by
+// strict-CSP pages — the omit-empty rule, see utils.ScriptAttrs).
 func htmxSelfHostComponent(nonce string) templ.Component {
+	nonceAttr := ""
+	if nonce != "" {
+		nonceAttr = fmt.Sprintf(" nonce=\"%s\"", html.EscapeString(nonce))
+	}
+
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		_, err := fmt.Fprintf(w, `<script nonce="%s">%s</script>`, nonce, htmxSource)
+		_, err := fmt.Fprintf(w, `<script%s>%s</script>`, nonceAttr, htmxSource)
 		if err != nil {
 			return fmt.Errorf("write inline htmx script: %w", err)
 		}

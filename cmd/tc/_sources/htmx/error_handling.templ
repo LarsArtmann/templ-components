@@ -1,5 +1,7 @@
 package htmx
 
+import "github.com/larsartmann/templ-components/utils"
+
 // ErrorHandlingConfig configures the global HTMX error handling behavior
 type ErrorHandlingConfig struct {
 	// Nonce is the CSP nonce for inline scripts
@@ -48,7 +50,7 @@ func (c *ErrorHandlingConfig) normalize() {
 templ GlobalErrorHandling(cfg ErrorHandlingConfig) {
 	{{ cfg.normalize() }}
 	<div id="tc-error-announcer" aria-live="polite" class="sr-only"></div>
-	<script nonce={ cfg.Nonce }>
+	<script { utils.ScriptAttrs(cfg.Nonce)... }>
 		(function() {
 			'use strict';
 

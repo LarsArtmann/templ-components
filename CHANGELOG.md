@@ -6,12 +6,113 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
 - **Release guard: zero-commit pseudo-version requires fail the cut.**
   `assert_release_tree` (release.sh step 8b) now rejects any go.mod that pins
   a templ-components sibling at `v…-00010101000000-000000000000` — the
   replace-generated placeholder that made the v1.20.0 tag unconsumable from
   the module proxy (issue #27). The bare `v0.0.0` placeholder used by
   internal-only consumers stays exempt; fixture cases pin all three shapes.
+
+- **Nonce omit-empty rule.** Inline-script components no longer render
+  `nonce=""` when no nonce is provided — the attribute is omitted entirely
+  (`utils.ScriptAttrs`). An empty nonce was worse than useless: strict-CSP
+  browsers reject such scripts anyway, and the empty attribute made that
+  silent failure invisible. Pinned by the new integration sweep
+  `TestNoEmptyNonceAttribute` (renders every script-emitting component with
+  an unset nonce; mirrored against `TestAllInlineScriptsHaveNonce`).
+- **`utils.ScriptComponent` — the canonical CSP-safe script writer.** One
+  helper owns the omit-empty nonce rule, nonce escaping, and error wrapping
+  for every component singleton script; `display` (10 writers),
+  `charts/echarts` (2), `htmx` ViewTransitions, and `forms` (TagsInput,
+  DirtyGuard) all render through it — the fold completed the unification
+  (the layout self-hosted HTMX runtime injection is the documented exception:
+  framework-runtime, not a singleton script), with goldens regenerated for
+  the whitespace-only output changes.
+- **TagsInput follows the omit-empty contract.** The tags-input script now
+  always renders — with the nonce attribute omitted when none is provided —
+  so non-CSP consumers get a working component instead of silent no-JS
+  markup; nonce-carrying renders are byte-identical to before.
+- **Demo `/errors/playground` exercises the full `ErrorPage` surface.**
+  Query params now drive the card width (`MaxWidth`, clamped through
+  `ErrorMaxWidthIsValid`, unknown → XL), `CopyCode` is always on (the
+  clipboard button renders whenever a code is supplied), and every render
+  carries the typed `WayOutAction` back to the error-pages component demo.
+  `TestErrorRoutesPlaygroundPinsQueryWiring` pins the query contract.
+
+### Changed
+
+- **`wire.Action` trigger modifiers now require an event trigger in BOTH
+  dialects.** A Datastar action with `DebounceMS`/`ThrottleMS` but no event
+  trigger used to render orphan `__debounce`/`__throttle` modifiers while
+  htmx rendered nothing — the dialects disagreed and the Datastar output
+  was runtime-inert. Orphan modifiers are now dropped (`PreventDefault`
+  still attaches). Pinned by `TestTriggerModifiersRequireAnEventTrigger`
+  (4 cases × both dialects) plus `TestEveryActionFieldHasADialectContract`,
+  a reflection drift-guard that fails when a new `Action` field ships
+  without a declared dialect contract.
+
+### Fixed
+
+- **`tc init` scaffold compiles out of the box.** The starter `app.css`
+  imported `./templ-components-theme.css`, a file `tc init` never copied —
+  every scaffolded project failed its first Tailwind compile until the
+  missing file was hand-copied from the library's `templates/` directory
+  (broken since the v2.0 "semantic aliases included by default" flip).
+  `tc init` now scaffolds all three files (`app.css`, `custom.css`,
+  `templ-components-theme.css`), the starter stays a byte-mirror of
+  `templates/` as the sync guard demands, and the copy instructions say
+  "all three" instead of "both". Only the true compiled-artifact zombies
+  (`styles.css`, `*.out.css`) remain banned from the starter.
+- **Stale pre-1.27 build-flag docs corrected.** README's build callout and
+  requirements, `docs/cli.md`, and the website installation guide still told
+  consumers to set `GOEXPERIMENT=jsonv2` "until Go 1.27" — the floor moved
+  to 1.27 in the 2026-10-05 sweep and json/v2 is stable there, so the flag
+  is documented as older-toolchain-only. ADR-0013's retirement consequence
+  gained a realized-dated note.
+- **Go 1.27 sweep fallout.** After the module `go` directives moved to
+  1.27.0, the website goldens (`sales.golden`, `docs-layout.golden`) and
+  their fixture strings were regenerated, and the docs now state the real
+  floor: `docs/invariants.md`, `docs/version-support.md`, the website
+  invariants/version-support pages, and the installation guide's
+  `encoding/json/v2` passage (stable without the experiment flag on
+  Go 1.27+, still gated on 1.26.x).
+- **The CSP nonce sweep covers `forms.TagsInput`.** TagsInput ships a
+  singleton script but was missing from
+  `TestAllInlineScriptsHaveNonce`'s "every inline-script component" render
+  set (found twice, documented in TODO #332).
+- **Site content convention documented.** `website/internal/pages/doc.go`
+  carries the package contract (markdown vs templ decision rule, sidebar
+  registration, derived counts, CSP `--update-csp` rule, absolute-link
+  rule) and `website/README.md` sums it up with build/test commands.
+- **Website error-pages guide + library recipe document the recovery
+  surface.** The guide gained "Recovery actions and the code chip"
+  (`WayOutAction`, `SecondaryWayOut`, `CopyCode`, `MaxWidth`, auto-Retry)
+  and a "Try it live" pointer to the playground;
+  `docs/recipes/error-pages.md` documents the same props with the
+  empty-href-equals-history-back rule and the
+  `applyRetrySuggestion` behavior (explicit caller way outs always win).
+- **New guards: code-chip escaping, demo nonce sweep, demo hero count.**
+  `TestErrorCodeChipEscaping` pins that every `Code` interpolation site
+  (text, `data-tc-copy`, `aria-label`) renders entity-escaped — the
+  playground feeds user-typed query params straight into the chip.
+  `TestNoEmptyNonceAcrossDemoPages` sweeps all 28 rendered demo routes for
+  the `nonce=""` dead-script class (the 2026-10-01 outage shape) as a real
+  test instead of AGENTS prose. `TestDocsCountDrift` now also pins the demo
+  hero's `componentCount` constant against the real exported-component
+  count.
+- **Datastar `PolledRegion` with an `AriaLabel` renders `role="region"`.**
+  `aria-label` on a roleless generic `div` is invalid ARIA (the same class
+  the HTML-validation gate fixed for KanbanBoard, Scrollback, and Carousel);
+  the labelled polled region now exposes a proper region landmark. The
+  change rode into a daemon commit unrecorded; it is pinned by
+  `TestPolledRegionA11y` now.
+- **Every published sub-module carries the MIT LICENSE.** The Go module
+  proxy serves each module's subdirectory without the parent `LICENSE`, so
+  `utils`, `icons`, `errorpage`, `charts/echarts`, `datastar`, and `htmx`
+  reported Unknown licenses on pkg.go.dev and in every `go-licenses`
+  consumer scan. Each published module root now has the root MIT text.
 
 ## [1.20.1] — 2026-10-05
 
@@ -155,6 +256,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `docs/status/2026-10-01_04-28_consumer-usage-analysis-templ-components-status.md`.
 
 ### Fixed
+
+- **`datastar.PolledRegion`: a labeled region is now a landmark.** Setting
+  `AriaLabel` emitted `aria-label` on a roleless `<div>` — invalid per the
+  HTML spec (labels on generic containers are ignored by assistive tech)
+  and flagged by the HTML-validation gate once the toolchain red stopped
+  masking it. A labeled region now also carries `role="region"`
+  (navigable landmark); unlabeled renders are byte-identical.
 
 - **MAJOR CORRECTION (browser-proven): the pinned Datastar runtime ignores
   ALL client fetch options for patch targeting and merge mode —

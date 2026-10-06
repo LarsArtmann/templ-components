@@ -40,7 +40,7 @@ go mod vendor
 tailwindcss -i app.css -o styles.css --minify
 ```
 
-`app.css` contains the Tailwind directives (`@import`, `@source`, `@theme`, `@custom-variant`). `custom.css` contains component-specific styles (dialog animations, stylable select, auto-grow textarea, etc.) and is imported by `app.css` via `@import "./custom.css"`. Copy both files to the same directory.
+`app.css` contains the Tailwind directives (`@import`, `@source`, `@theme`, `@custom-variant`). `custom.css` contains component-specific styles (dialog animations, stylable select, auto-grow textarea, etc.) and is imported by `app.css` via `@import "./custom.css"`; `templ-components-theme.css` holds the semantic aliases (`tc-primary`, `tc-danger`, ...) imported the same way. Copy all three files to the same directory (`tc init` scaffolds exactly these three).
 
 ---
 
