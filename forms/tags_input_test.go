@@ -161,13 +161,14 @@ func TestTagsInputEdgeCases(t *testing.T) {
 		utils.AssertContains(t, output, "tcTagsInputAttached")
 	})
 
-	t.Run("no nonce omits script", func(t *testing.T) {
+	t.Run("no nonce renders script without nonce attribute", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, TagsInput(TagsInputProps{
 			ID:   "noscript",
 			Name: "tags",
 		}))
-		utils.AssertNotContains(t, output, "tcTagsInputAttached")
+		utils.AssertContains(t, output, "tcTagsInputAttached")
+		utils.AssertNotContains(t, output, `nonce=""`)
 	})
 
 	t.Run("custom class propagated", func(t *testing.T) {
