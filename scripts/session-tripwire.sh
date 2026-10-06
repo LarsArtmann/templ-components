@@ -54,6 +54,18 @@ done
 [ "$reappeared" -eq 0 ] && echo "none"
 
 echo
+echo "== 3b. added-then-deleted churn (resurrected zombies) =="
+added="$(echo "$files" | awk '$1 == "A" { print $2 }')"
+churned=0
+for f in $added; do
+	if ! git cat-file -e "HEAD:$f" 2>/dev/null; then
+		echo "CHURNED: $f (added in range, gone at HEAD — daemon resurrection cycle?)"
+		churned=$((churned + 1))
+	fi
+done
+[ "$churned" -eq 0 ] && echo "none"
+
+echo
 echo "== 4. daemon commits overlapping real commits =="
 overlap=0
 daemon_shas="$(git log --format='%H %s' "${start}"..HEAD | awk '/chore: auto-commit/ { print $1 }')"
