@@ -78,7 +78,7 @@ for dsha in $daemon_shas; do
 		continue
 	fi
 	for dfile in $dfiles; do
-		real_touches="$(git log --format='%h %s' "${start}"..HEAD -- "$dfile" | grep -v 'chore: auto-commit' | wc -l | tr -d ' ')"
+		real_touches="$(git log --format='%h %s' "${start}"..HEAD -- "$dfile" | grep -v 'chore: auto-commit' | wc -l | tr -d ' ' || true)"
 		if [ "$real_touches" -gt 0 ]; then
 			echo "OVERLAP: $(git rev-parse --short "$dsha") + $real_touches real commit(s) both touch $dfile — diff-review this file"
 			overlap=$((overlap + 1))
