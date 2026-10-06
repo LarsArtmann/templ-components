@@ -965,7 +965,8 @@ func errorPlaygroundHandler(nonce string) http.Handler {
 				Href: demoURL("/error-pages"),
 			},
 			MaxWidth: width,
-			Nonce:    nonce}
+			Nonce:    nonce,
+		}
 		if props.Title == "" {
 			props.Title = "Playground error"
 		}
