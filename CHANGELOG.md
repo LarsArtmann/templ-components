@@ -48,6 +48,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`tc init` scaffold compiles out of the box.** The starter `app.css`
+  shipped by the scaffolder imported `./templ-components-theme.css`, a file
+  `tc init` never copies — every scaffolded project failed its first
+  Tailwind compile until the missing file was hand-copied from the library's
+  `templates/` directory. The import is replaced by an opt-in comment; the
+  semantic-alias theme file itself keeps shipping in `templates/` for
+  consumers who copy that directory wholesale.
+- **Stale pre-1.27 build-flag docs corrected.** README's build callout and
+  requirements, `docs/cli.md`, and the website installation guide still told
+  consumers to set `GOEXPERIMENT=jsonv2` "until Go 1.27" — the floor moved
+  to 1.27 in the 2026-10-05 sweep and json/v2 is stable there, so the flag
+  is documented as older-toolchain-only. ADR-0013's retirement consequence
+  gained a realized-dated note.
 - **Go 1.27 sweep fallout.** After the module `go` directives moved to
   1.27.0, the website goldens (`sales.golden`, `docs-layout.golden`) and
   their fixture strings were regenerated, and the docs now state the real
