@@ -72,9 +72,10 @@ func styleComponent(nonce, css string) templ.Component {
 // nonce omits the attribute entirely (nonce="" is rejected by strict-CSP
 // pages — the omit-empty rule, see utils.ScriptAttrs).
 //
-// TODO(#350): byte-identical to utils.ScriptComponent except for one
-// trailing newline before </script>; fold onto the canonical helper and
-// regenerate the view_transitions goldens when touched next.
+// Tracked as row #350 in the repo task list: byte-identical to
+// utils.ScriptComponent except for one trailing newline before </script>;
+// fold onto the canonical helper and regenerate the view_transitions
+// goldens when touched next.
 func scriptComponent(nonce, script string) templ.Component {
 	nonceAttr := ""
 	if nonce != "" {

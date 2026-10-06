@@ -15,6 +15,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   silent failure invisible. Pinned by the new integration sweep
   `TestNoEmptyNonceAttribute` (renders every script-emitting component with
   an unset nonce; mirrored against `TestAllInlineScriptsHaveNonce`).
+- **`utils.ScriptComponent` — the canonical CSP-safe script writer.** One
+  helper owns the omit-empty nonce rule, nonce escaping, and error wrapping
+  for every component singleton script; `display` (10 writers) and
+  `charts/echarts` (2) now render through it byte-identically, and the two
+  remaining bespoke writers (htmx, forms tags input) carry pointer comments
+  to fold next (TODO #350).
+- **TagsInput follows the omit-empty contract.** The tags-input script now
+  always renders — with the nonce attribute omitted when none is provided —
+  so non-CSP consumers get a working component instead of silent no-JS
+  markup; nonce-carrying renders are byte-identical to before.
 - **Demo `/errors/playground` exercises the full `ErrorPage` surface.**
   Query params now drive the card width (`MaxWidth`, clamped through
   `ErrorMaxWidthIsValid`, unknown → XL), `CopyCode` is always on (the
@@ -58,6 +68,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `docs/recipes/error-pages.md` documents the same props with the
   empty-href-equals-history-back rule and the
   `applyRetrySuggestion` behavior (explicit caller way outs always win).
+- **New guards: code-chip escaping, demo nonce sweep, demo hero count.**
+  `TestErrorCodeChipEscaping` pins that every `Code` interpolation site
+  (text, `data-tc-copy`, `aria-label`) renders entity-escaped — the
+  playground feeds user-typed query params straight into the chip.
+  `TestNoEmptyNonceAcrossDemoPages` sweeps all 28 rendered demo routes for
+  the `nonce=""` dead-script class (the 2026-10-01 outage shape) as a real
+  test instead of AGENTS prose. `TestDocsCountDrift` now also pins the demo
+  hero's `componentCount` constant against the real exported-component
+  count.
 
 ## [1.20.1] — 2026-10-05
 
