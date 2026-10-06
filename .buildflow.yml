@@ -11,6 +11,13 @@
 # exists to audit (website/ is a separate pnpm project BuildFlow does not
 # traverse from here). The tool hard-fails on the missing lockfile, which
 # blocked every manual pre-commit run (2026-09-13).
+# license-check REQUIRES the machine-local ~/.local/bin/go-licenses wrapper
+# (re-exports the active `go env GOROOT` before exec): go-licenses v1.6.0
+# classifies stdlib by the GOROOT baked into its binary, so under
+# GOTOOLCHAIN=auto every stdlib package is misread as "no module info" and
+# the step fails on all 10 modules (2026-10-06). If BuildFlow reinstalls the
+# raw binary over the wrapper, this gate dies again — restore the wrapper or
+# land the upstream fix (TODO_LIST #352).
 skip_steps:
   - nix-build
   - pnpm-audit

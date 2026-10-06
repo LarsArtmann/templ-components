@@ -77,6 +77,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   test instead of AGENTS prose. `TestDocsCountDrift` now also pins the demo
   hero's `componentCount` constant against the real exported-component
   count.
+- **Datastar `PolledRegion` with an `AriaLabel` renders `role="region"`.**
+  `aria-label` on a roleless generic `div` is invalid ARIA (the same class
+  the HTML-validation gate fixed for KanbanBoard, Scrollback, and Carousel);
+  the labelled polled region now exposes a proper region landmark. The
+  change rode into a daemon commit unrecorded; it is pinned by
+  `TestPolledRegionA11y` now.
+- **Every published sub-module carries the MIT LICENSE.** The Go module
+  proxy serves each module's subdirectory without the parent `LICENSE`, so
+  `utils`, `icons`, `errorpage`, `charts/echarts`, `datastar`, and `htmx`
+  reported Unknown licenses on pkg.go.dev and in every `go-licenses`
+  consumer scan. Each published module root now has the root MIT text.
 
 ## [1.20.1] — 2026-10-05
 
