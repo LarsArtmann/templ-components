@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`PageProps.HTMLDataAttrs` — root-level attributes on `<html>`.**
+  Mirrors `BodyDataAttrs` for the root element: consumers integrating
+  libraries that read configuration off `document.documentElement`
+  (Datastar's opt-in `data-nonce` CSP mode, root feature flags) no longer
+  fork `Base` or ship a boot-script workaround. Zero value renders
+  byte-identical output (issue #18).
+
 - **Release guard: zero-commit pseudo-version requires fail the cut.**
   `assert_release_tree` (release.sh step 8b) now rejects any go.mod that pins
   a templ-components sibling at `v…-00010101000000-000000000000` — the
