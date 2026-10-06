@@ -27,7 +27,7 @@ mux.Handle("GET /dashboard", errorpage.ErrorHandler(
 ```
 
 Prefer full control? Build the props yourself and render inside your own
-layout shell (the [demo](/) uses exactly this pattern for its standalone
+layout shell (the [demo](https://templcomponents.lars.software/demo) uses exactly this pattern for its standalone
 `/errors/*` routes):
 
 ```templ
@@ -65,6 +65,36 @@ errorpage.ErrorHandler(err, errorpage.ErrorHandlerConfig{
 
 The body carries `family`, `code`, `message`, `title`, `why`, `fix`,
 `trace`, and `context`; untraced errors omit the `trace` key entirely.
+
+## Recovery actions and the code chip
+
+`ErrorPage` carries a typed primary action, an optional secondary ghost
+action, a copy-to-clipboard button on the error-code chip, and a card-width
+enum:
+
+```go
+props := errorpage.FromError(err)
+props.WayOutAction = errorpage.WayOutAction{ // typed bundle; Text wins over the loose WayOut/WayOutHref strings
+    Text: "Back to dashboard",
+    Href: "/dashboard",
+}
+props.SecondaryWayOut = "Status page"                // ghost link beside the primary action
+props.SecondaryWayOutHref = "https://status.example.com"
+props.CopyCode = true                                // clipboard button next to the code chip
+props.MaxWidth = errorpage.ErrorMaxWidthLG           // lg | xl (default) | 2xl | 4xl
+```
+
+An action with text but no href renders as a history-back button. When the
+`ErrorHandler` pipeline finds no way out at all and the error implements
+`IsRetryable() bool`, it fills in a same-path **Retry** link — an explicit
+caller way out always wins.
+
+## Try it live
+
+The demo ships a stateless playground that renders a real `ErrorPage` from
+query params — family, status, code, title, message, and card width:
+
+**[Open the error-page playground →](https://templcomponents.lars.software/demo/errors/playground)**
 
 ## Components
 

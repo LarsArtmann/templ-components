@@ -5,11 +5,10 @@ description: Install templ-components in your Go project.
 
 ## Requirements
 
-- **Go** 1.26+
+- **Go** 1.27+ (no build flags — json/v2 is stable on 1.27)
 - **templ** CLI ([install](https://templ.guide/quick-start/installation))
 - **Tailwind CSS** 4.x+
 - **HTMX** 2.x (optional, for the `htmx` package)
-- `GOEXPERIMENT=jsonv2` environment variable (until Go 1.27 makes it stable)
 
 ## Install
 
@@ -74,15 +73,9 @@ go list -m github.com/larsartmann/templ-components
 
 ### `build constraints exclude all Go files in .../encoding/json/v2`
 
-The `errorpage` module uses `encoding/json/v2`, which requires the `jsonv2`
-experiment on Go 1.26. Export it before building:
-
-```bash
-export GOEXPERIMENT=jsonv2
-```
-
-The flag becomes the default when Go 1.27 ships. Until then, put it in your
-`.envrc`, `flake.nix` devShell, or CI environment so every tool picks it up.
+The `errorpage` module uses `encoding/json/v2`, which is stable on the
+library's Go 1.27 floor — no `GOEXPERIMENT` flag needed. This error means
+your toolchain is older than the floor; upgrade to Go 1.27 or newer.
 
 ## Next Steps
 

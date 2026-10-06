@@ -129,7 +129,7 @@ templ Combobox(props ComboboxProps) {
 			</ul>
 		</div>
 	}
-	<script nonce={ props.Nonce }>
+	<script { utils.ScriptAttrs(props.Nonce)... }>
 		if (!window.tcComboboxAttached) {
 			window.tcComboboxAttached = true;
 			function tcClearComboSelection(opts, input) {

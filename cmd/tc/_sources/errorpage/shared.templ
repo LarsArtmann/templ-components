@@ -194,7 +194,7 @@ templ diagnosticSection(fix string, context []ContextPair, causes []CauseItem, c
 // promote to utils, following the DismissButton precedent (utils/dismiss.templ
 // was promoted only when both feedback and errorpage needed the same markup).
 templ goBackScript(nonce string) {
-	<script nonce={ nonce }>
+	<script { utils.ScriptAttrs(nonce)... }>
 		if (!window.tcGoBackAttached) {
 			window.tcGoBackAttached = true;
 			document.addEventListener('click', function(e) {
@@ -213,7 +213,7 @@ templ goBackScript(nonce string) {
 // loads first serve both (accepted clone per ADR-0009, module-boundary
 // required).
 templ copyCodeScript(nonce string) {
-	<script nonce={ nonce }>
+	<script { utils.ScriptAttrs(nonce)... }>
 		if (!window.tcCopyAttached) {
 			window.tcCopyAttached = true;
 			document.addEventListener('click', function(e) {

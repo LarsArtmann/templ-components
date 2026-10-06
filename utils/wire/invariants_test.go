@@ -2,6 +2,8 @@ package wire
 
 import (
 	"fmt"
+	"reflect"
+	"sort"
 	"strings"
 	"testing"
 
@@ -415,4 +417,210 @@ func formWireAttributesLike(w *Action) templ.Attributes {
 	}
 
 	return action.Attributes()
+}
+
+// TestTriggerModifiersRequireAnEventTrigger pins the debounce/throttle
+// orphan-modifier invariant: a delay or throttle window with NO explicit,
+// valid event trigger renders nothing in EITHER dialect. htmx cannot hang a
+// modifier on its implicit default trigger (hx-trigger needs the event
+// name), and Datastar must match — the earlier behavior attached the
+// orphan modifier to the defaulted click, so the same Action silently
+// debounce'd under Datastar but not under htmx. The action itself still
+// fires (htmx element default / data-on:click); only the orphan modifier
+// vanishes.
+func TestTriggerModifiersRequireAnEventTrigger(t *testing.T) {
+	t.Parallel()
+
+	orphanModifiers := []struct {
+		name         string
+		mutate       func(*Action)
+		bannedNeedle string
+	}{
+		{"debounce without event", func(a *Action) { a.DebounceMS = 150 }, "__debounce"},
+		{"throttle without event", func(a *Action) { a.ThrottleMS = 150 }, "__throttle"},
+		{"debounce with interval, no event", func(a *Action) {
+			a.DebounceMS = 150
+			a.Interval = "5s"
+		}, "__debounce"},
+		{"invalid event counts as no trigger", func(a *Action) {
+			a.Event = Event("hover")
+			a.DebounceMS = 150
+		}, "__debounce"},
+	}
+
+	for _, tt := range orphanModifiers {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			for _, transport := range []Transport{TransportHTMX, TransportDatastar} {
+				action := Action{Transport: transport, Method: MethodGet, URL: "/api/items"}
+				tt.mutate(&action)
+
+				rendered := renderAttributes(t, action.Attributes())
+
+				if transport == TransportDatastar && strings.Contains(rendered, tt.bannedNeedle) {
+					t.Fatalf("orphan %s modifier must be dropped under datastar, got %s", tt.bannedNeedle, rendered)
+				}
+
+				if transport == TransportHTMX {
+					if strings.Contains(rendered, "delay:") || strings.Contains(rendered, "throttle:") {
+						t.Fatalf("orphan modifier must be dropped under htmx, got %s", rendered)
+					}
+				}
+			}
+		})
+	}
+}
+
+// actionFieldDialects is the drift-guard contract for every `wire.Action`
+// field: which dialect(s) the field must render in, given its probe context.
+// TestEveryActionFieldHasADialectContract reflects over Action's exported
+// fields, so a NEWLY ADDED field fails here until it gets a row — a dialect
+// wired in one spelling only can no longer ship silently (the htmx v4
+// event-renames class, TODO #316b, is exactly the drift this pins).
+//
+// Fields whose probe needs context (a modifier needs an event to attach to;
+// the selector needs ContentTypeForm to be read at all) carry contextFields
+// merged into the probed action AND the baseline it is diffed against.
+var actionFieldDialects = map[string]struct {
+	htmx          bool
+	datastar      bool
+	contextFields []string
+}{
+	"Method":         {htmx: true, datastar: true},
+	"Event":          {htmx: true, datastar: true},
+	"Target":         {htmx: true, datastar: false},
+	"ContentType":    {htmx: false, datastar: true},
+	"Selector":       {htmx: false, datastar: true, contextFields: []string{"ContentType"}},
+	"Swap":           {htmx: true, datastar: false},
+	"DebounceMS":     {htmx: true, datastar: true, contextFields: []string{"Event"}},
+	"ThrottleMS":     {htmx: true, datastar: true, contextFields: []string{"Event"}},
+	"PreventDefault": {htmx: false, datastar: true},
+	"Interval":       {htmx: true, datastar: true},
+	"Reveal":         {htmx: true, datastar: true},
+}
+
+// skippedActionFields are not probeable one-field-at-a-time: Transport IS
+// the dialect selector (the test renders both dialects itself) and URL is
+// the base every probe stands on (its parity is pinned by
+// TestURLReferencedInBothDialects).
+var skippedActionFields = map[string]string{
+	"Transport": "dialect selector — rendered by the test itself",
+	"URL":       "the base field; parity pinned by TestURLReferencedInBothDialects",
+}
+
+// TestEveryActionFieldHasADialectContract reflects over every exported
+// Action field, probes it one field at a time in both dialects, and fails
+// when (a) a field has no row in actionFieldDialects, (b) a mapped field
+// stops rendering where the map says it must, or (c) a field starts
+// rendering where the map says it must not (a dialect leak).
+func TestEveryActionFieldHasADialectContract(t *testing.T) {
+	t.Parallel()
+
+	base := Action{Method: MethodGet, URL: "/api/probe"}
+	baseHTMX := canonicalAttrs(t, base.Attributes())
+	baseDatastar := canonicalAttrs(t, base.TransportDatastarAction().Attributes())
+
+	fields := reflect.VisibleFields(reflect.TypeOf(base))
+
+	for _, field := range fields {
+		if !field.IsExported() {
+			continue
+		}
+
+		name := field.Name
+
+		if why, skip := skippedActionFields[name]; skip {
+			t.Logf("skipped %s: %s", name, why)
+
+			continue
+		}
+
+		contract, mapped := actionFieldDialects[name]
+		if !mapped {
+			t.Errorf("Action field %q has no dialect contract: add it to actionFieldDialects "+
+				"and render it in both dialects (or document the asymmetry there) — "+
+				"a field wired into one dialect only ships a silent consumer bug", name)
+
+			continue
+		}
+
+		probe := base
+		for _, ctx := range contract.contextFields {
+			applyProbeValue(&probe, ctx)
+		}
+
+		applyProbeValue(&probe, name)
+
+		gotHTMX := canonicalAttrs(t, probe.Attributes()) != baseHTMX
+		gotDatastar := canonicalAttrs(t, probe.TransportDatastarAction().Attributes()) != baseDatastar
+
+		if gotHTMX != contract.htmx || gotDatastar != contract.datastar {
+			t.Errorf(
+				"Action field %q dialect drift: contract says htmx=%v datastar=%v, probe rendered htmx=%v datastar=%v",
+				name,
+				contract.htmx,
+				contract.datastar,
+				gotHTMX,
+				gotDatastar,
+			)
+		}
+	}
+}
+
+// TransportDatastarAction returns a copy of the action pinned to the
+// Datastar dialect — the probe's second rendering.
+func (a Action) TransportDatastarAction() Action {
+	a.Transport = TransportDatastar
+
+	return a
+}
+
+// probeValues are representative values per field name; every field in
+// actionFieldDialects must have one.
+var probeValues = map[string]func(*Action){
+	"Method":         func(a *Action) { a.Method = MethodPost },
+	"Event":          func(a *Action) { a.Event = EventSubmit },
+	"Target":         func(a *Action) { a.Target = "#probe-target" },
+	"ContentType":    func(a *Action) { a.ContentType = ContentTypeForm },
+	"Selector":       func(a *Action) { a.Selector = "#probe-form" },
+	"Swap":           func(a *Action) { a.Swap = PatchModeOuter },
+	"DebounceMS":     func(a *Action) { a.DebounceMS = 150 },
+	"ThrottleMS":     func(a *Action) { a.ThrottleMS = 150 },
+	"PreventDefault": func(a *Action) { a.PreventDefault = true },
+	"Interval":       func(a *Action) { a.Interval = "5s" },
+	"Reveal":         func(a *Action) { a.Reveal = &Reveal{ThresholdPercent: 50} },
+}
+
+func applyProbeValue(action *Action, field string) {
+	mutate, ok := probeValues[field]
+	if !ok {
+		panic("no probe value for Action field " + field + " — add one to probeValues")
+	}
+
+	mutate(action)
+}
+
+// canonicalAttrs renders attributes as a deterministic sorted string so
+// two renderings compare by content.
+func canonicalAttrs(t *testing.T, attrs templ.Attributes) string {
+	t.Helper()
+
+	if attrs == nil {
+		return "<nil>"
+	}
+
+	keys := make([]string, 0, len(attrs))
+	for key := range attrs {
+		keys = append(keys, key)
+	}
+
+	sort.Strings(keys)
+
+	var b strings.Builder
+	for _, key := range keys {
+		fmt.Fprintf(&b, "%s=%v;", key, attrs[key])
+	}
+
+	return b.String()
 }

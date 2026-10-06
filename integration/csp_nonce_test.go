@@ -78,6 +78,11 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 		{"DirtyGuard", utils.Render(t, forms.DirtyGuard(forms.DirtyGuardProps{
 			Nonce: testNonce,
 		}))},
+		{"TagsInput", utils.Render(t, forms.TagsInput(forms.TagsInputProps{
+			Nonce: testNonce,
+			Name:  "tags",
+			Label: "Tags",
+		}))},
 		{"ThemeScript", utils.Render(t, layout.ThemeScript(testNonce))},
 		{"ThemeToggle", utils.Render(t, layout.ThemeToggle("Toggle theme", testNonce))},
 		{"MobileMenu", utils.Render(t, navigation.MobileMenu(nil, "/", testNonce, "mm", false))},

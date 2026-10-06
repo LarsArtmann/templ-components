@@ -699,9 +699,10 @@ func TestTabsClientSide(t *testing.T) {
 			ActiveTabID: "tab1",
 			Tabs:        []Tab{{ID: "tab1", Label: "First"}, {ID: "tab2", Label: "Second"}},
 			ClientSide:  true,
+			Nonce:       "test-nonce",
 		}))
 		utils.AssertContains(t, output, `data-tc-tabs`)
-		utils.AssertContains(t, output, `nonce=`)
+		utils.AssertContains(t, output, `nonce="test-nonce"`)
 	})
 
 	t.Run("inactive tab renders without active classes", func(t *testing.T) {

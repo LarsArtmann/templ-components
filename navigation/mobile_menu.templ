@@ -64,7 +64,7 @@ templ MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID 
 				}
 			</div>
 		</div>
-		<script nonce={ nonce }>
+		<script { utils.ScriptAttrs(nonce)... }>
 			if (!window.tcMobileMenuAttached) {
 				window.tcMobileMenuAttached = true;
 				function tcMobileMenuSet(menu, btn, open) {
