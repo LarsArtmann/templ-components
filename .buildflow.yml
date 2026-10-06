@@ -45,3 +45,12 @@ skip_steps:
   # lockstep toolchain bump or an upstream fix that respects patch-suffixed
   # directives.
   - go-version-auto-configure
+  # go-auto-upgrade skipped: it "upgrades" dependencies to the newest proxy
+  # version without consulting repo-level pin decisions — it re-applied the
+  # templ v0.3.1070 go.mod bump THREE times (2026-10-05 twice, 2026-10-06
+  # again as daemon commit befc13ba) after the rollback documented in
+  # docs/agent-context-history.md. The bump is deliberately deferred until
+  # the TODO_LIST #335 migration (flake generator pin + golden re-baseline);
+  # utils.TestTemplVersionPin is the enforcement. Re-enable only after #335
+  # lands (or when the step learns to respect pinned rejects).
+  - go-auto-upgrade

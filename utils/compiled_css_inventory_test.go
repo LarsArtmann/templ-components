@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -162,7 +163,7 @@ func TestCompiledCSSInventory(t *testing.T) {
 
 // gitLsFiles reports whether the given repo-relative path is git-tracked.
 func gitLsFiles(repoRoot, path string) (bool, error) {
-	cmd := exec.Command("git", "-C", repoRoot, "ls-files", "--", path)
+	cmd := exec.CommandContext(context.Background(), "git", "-C", repoRoot, "ls-files", "--", path)
 
 	out, err := cmd.Output()
 	if err != nil {
