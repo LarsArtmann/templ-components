@@ -145,6 +145,12 @@ type PageProps struct {
 	// SkipLinkText overrides the default "Skip to main content" text for the
 	// accessibility skip link. Useful for i18n.
 	SkipLinkText string
+	// HTMLDataAttrs adds extra attributes to the <html> element (e.g.
+	// data-nonce for Datastar's opt-in CSP mode, which reads root-level
+	// attributes off document.documentElement). Keys are rendered as-is.
+	// Pass nil for no extra attributes — the zero value keeps existing pages
+	// byte-identical.
+	HTMLDataAttrs templ.Attributes
 	// BodyDataAttrs adds extra attributes to the <body> element (e.g.
 	// data-language). Keys are rendered as-is. Pass nil for no extra attributes.
 	BodyDataAttrs templ.Attributes
@@ -222,7 +228,7 @@ func DefaultPageProps() PageProps {
 templ Base(props PageProps) {
 	{{ locale := resolveLocale(props.Locale) }}
 	<!DOCTYPE html>
-	<html lang={ locale } class="h-full">
+	<html lang={ locale } class="h-full" { props.HTMLDataAttrs... }>
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
