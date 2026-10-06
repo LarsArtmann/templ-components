@@ -4,7 +4,7 @@
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources), ⫱ owner gate (decision/credential).
-> IDs are unique across ALL sections — next free ID: 336.
+> IDs are unique across ALL sections — next free ID: 350.
 
 ---
 
@@ -235,3 +235,33 @@ landed this session in `docs/tailwind-v4-adoption-guide.md`._
 | ~~327~~ | ~~Guard test: library inline `style=` emissions stay within the documented exemption set~~ already shipped 2026-10-01 — `utils.TestInlineStyleCompliance` (commit c2d74c15); runs in the per-module utils test lane          | The CSP caveat is now documented, but nothing stops a new component from adding an inline style silently. Assert that only `AppShell`, `BarChart`, `Heatmap`, `ProgressBar`, `LoadingOverlay` emit `style=`. (§f34)                                                                                                                                                                                                                                                  |
 
 _Next free ID: 335._
+
+---
+
+## Harvested 2026-10-06 — consumer-guards + go-1.27-sweep session (docs/status/2026-10-05_22-15 §f)
+
+_Open residue after the session completed items f1–f6/f9–f12 (re-applied #332, strikes,
+#333 wiring+docs, #334 convention doc, CHANGELOG warm). Citations `f<nn>` = that report §f.
+Items f17/#322, f23/#323, f24/#324, f26/#326, f49/#270+#329 already have rows above;
+f47 (playground prop contract) shipped same-day as `TestErrorRoutesPlaygroundPinsQueryWiring`;
+f21's "tags_input emits nonce=\"\"" claim was PROBED FALSE (render check: no nonce="" — the
+component gates the whole script on Nonce != "") but surfaced #342 below._
+
+| #   | Task                                                                                                                              | Why / source                                                                                                                                                                                        |
+| --- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 336 | PR `fix/nonce-omit-empty` whole (nonce feature + guards/sweep + #331 wire guards + #333 playground + #334 docs) after green lanes | One PR, two-section body; verify referenced issues auto-close (`Fixes #N`). Blocked on the ritual (f7/f8) witnessing green. (f13)                                                                     |
+| 337 | Session edit-survived tripwire: end-of-session `git diff <session-start-SHA>` review habit (or scripted)                          | Two edits were silently reverted mid-session by the daemon while a parallel session ran; the loss was found only by inventory. (f14, §d-1)                                                           |
+| 338 | Extend `docs/version-support.md` "What a floor bump looks like" with the missed steps (goldens, pins, docs floors, AGENTS, consumer-note probe) | The go-1.27 sweep shipped the floor but missed website goldens + docs prose on the first pass — the doc's checklist is the fix. (f15)                                                                |
+| 339 | Golden diff readability: windowed/word diff (or both-blobs-to-files + unified diff) in `utils/golden`                             | LCS line diffs on minified-ish templ output are near-unreadable during goldens triage. (f16)                                                                                                        |
+| 340 | docs-health VERIFY sweep over "Open" TODO rows older than 7 days (grep claimed symbols; strike shipped rows — the #325/#327 class) | Two rows this session were "already shipped" — a standing sweep prevents stale-open drift. (f18)                                                                                                    |
+| 341 | Spot-check `errorChips` escaping of the playground `code` param (XSS probe through templ text interpolation) + pin with a test    | The playground now feeds user input into the font-mono chip; templ interpolation escapes, but nothing pins it. (f20)                                                                                |
+| 342 | TagsInput's omit-empty strategy diverges from the nonce-omit-empty contract: `if props.Nonce != ""` skips the WHOLE script (tags_input.templ:168) instead of rendering it nonce-less — non-CSP consumers get NO JS where every other script component still works. Decide: align (render via ScriptAttrs omit-empty) or document the nonce-gates-script convention | Found by probing report f21's (false) claim. The feature's test comment says "the script still runs for non-CSP consumers" — TagsInput is the exception. (f21 residue)                                |
+| 343 | Promote the demo zero-empty-nonce page sweep (AGENTS prose) to a real test across demo routes                                    | The integration sweep only sees component output; the demo nonce-passing outage needed a page-level sweep. (f22)                                                                                    |
+| 344 | #325 follow-through: document the SSE live-row pattern (Table `BodyID` + `Body` slot + `hx-swap-oob`/SSE append) as a recipe      | The API shipped (v1.19.x) but the pattern story cqrs-htmx needed didn't. (f25)                                                                                                                      |
+| 345 | #331 follow-through: when htmx v4 lands (#316b), `actionFieldDialects` rows become the dialect audit checklist                    | The drift-guard's map IS the audit surface for the v4 event renames. (f28)                                                                                                                          |
+| 346 | Confirm the session-start `cmd/tc/_sources/starter/styles.css` modification was intentional, not daemon churn                     | Git status snapshot showed it modified at session start; the tc-sources guard auto-syncs this file. (f35)                                                                                           |
+| 347 | `nix run .#shots` the `/errors/playground` page light+dark after #333 (form select + code chip + width enum visuals)              | String tests prove markup, not pixels. (f37)                                                                                                                                                        |
+| 348 | Post-merge daemon re-verify: `nix run .#css` byte-stability + website typescript pin + CI status                                  | Standing post-daemon-activity checklist (AGENTS). (f46)                                                                                                                                            |
+| 349 | Sweep living docs for other falsified/fulfilled "Go 1.27" predictions (grep `Go 1\.27`) — installation.md was one of likely several | The jsonv2 passage was found and fixed; siblings may lurk. (f48)                                                                                                                                    |
+
+_Next free ID: 350._
