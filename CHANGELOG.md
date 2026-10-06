@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- **Release guard: zero-commit pseudo-version requires fail the cut.**
+  `assert_release_tree` (release.sh step 8b) now rejects any go.mod that pins
+  a templ-components sibling at `v…-00010101000000-000000000000` — the
+  replace-generated placeholder that made the v1.20.0 tag unconsumable from
+  the module proxy (issue #27). The bare `v0.0.0` placeholder used by
+  internal-only consumers stays exempt; fixture cases pin all three shapes.
+
 ## [1.20.1] — 2026-10-05
 
 ## Fixed
