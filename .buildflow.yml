@@ -2,10 +2,10 @@
 # See: https://github.com/larsartmann/buildflow
 # (eslint-fix skip removed: BuildFlow now auto-defers eslint when the repo
 # has no eslint config, which is by design here.)
-# pnpm-audit skipped: this repo root has no JavaScript — no pnpm-lock.yaml
-# exists to audit (website/ is a separate pnpm project BuildFlow does not
-# traverse from here). The tool hard-fails on the missing lockfile, which
-# blocked every manual pre-commit run (2026-09-13).
+# pnpm-audit UNSKIPPED 2026-10-07: the trigger requires a lock file
+# (lockfilePatterns) and none exists in this repo, so the tool is
+# not-applicable by construction — the hard-fail era predates the
+# trigger contract.
 # license-check REQUIRES the machine-local ~/.local/bin/go-licenses wrapper
 # (re-exports the active `go env GOROOT` before exec): go-licenses v1.6.0
 # classifies stdlib by the GOROOT baked into its binary, so under
@@ -20,21 +20,18 @@
 # go1.27.0 inside the network-free build sandbox (connection refused on
 # proxy.golang.org). Fix = pin the formatter go wrappers to the flake's goPkg
 # the way cqrs-htmx/flake.nix does, then remove this skip.
+tool_options:
+  go-version-auto-configure:
+    respect_patch_floor: true
+
 skip_steps:
   - nix-build
-  - pnpm-audit
-  # go-version-auto-configure skipped: same skew class as go-structure-linter
-  # above — the step normalizes go directives to the bare minor ("1.26") while
-  # `go mod tidy` canonicalizes visualtest's directive to "1.26.0", so the
-  # step's own repair re-creates the go.work toolchain skew ("requires go >=
-  # 1.26.0, but go.work lists go 1.26") and fails every workspace-mode lane
-  # (go-generate, golangci-lint, license-check) later in the SAME pipeline
-  # run. The coherent state is 1.26.0 everywhere (root + website + visualtest
-  # + go.work); utils.TestGoWorkDirectiveMatchesRootGoMod and
-  # utils.TestGoDirectiveSkew are the real enforcement. Re-enable only with a
-  # lockstep toolchain bump or an upstream fix that respects patch-suffixed
-  # directives.
-  - go-version-auto-configure
+  # go-version-auto-configure UNSKIPPED 2026-10-07: directives are
+  # minor-form (go 1.27) everywhere after the lockstep bump, and gvac
+  # v0.2.5's respect_patch_floor honors any tidy-canonicalized patch form
+  # (1.27.0 <= installed) instead of re-creating the go.work skew. The
+  # utils.TestGoWorkDirectiveMatchesRootGoMod / TestGoDirectiveSkew
+  # enforcement stays the real contract. Option in tool_options.
   # go-auto-upgrade skipped: it "upgrades" dependencies to the newest proxy
   # version without consulting repo-level pin decisions — it re-applied the
   # templ v0.3.1070 go.mod bump THREE times (2026-10-05 twice, 2026-10-06

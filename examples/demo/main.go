@@ -15,6 +15,7 @@ import (
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/errorpage"
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
@@ -816,7 +817,7 @@ func newMux() *http.ServeMux {
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
-			http.NotFound(w, r)
+			renderNotFound404Page(w, r)
 
 			return
 		}
@@ -838,6 +839,32 @@ func demoPageHandler(page demoPageMeta) http.Handler {
 func renderShellPage(w http.ResponseWriter, r *http.Request, meta demoPageMeta, content templ.Component) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := demoShell(meta, demoNonceConst, content).Render(r.Context(), w); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+// renderNotFound404Page answers unknown demo paths with the library's own
+// dedicated NotFound404 page — the demo eats its own dog food instead of
+// serving Go's plain-text 404 next to a showcase of the very component.
+// The default popular links point at site routes (/docs) that only exist
+// on the docs origin, so they are replaced with base-path-prefixed demo
+// routes; the default GoHomeHref ("/") is kept because it lands on the
+// demo home on the run.app origin and the docs-site home behind the
+// Firebase rewrite.
+func renderNotFound404Page(w http.ResponseWriter, r *http.Request) {
+	props := errorpage.DefaultNotFound404Props()
+	props.Nonce = demoNonceConst
+	props.Links = []errorpage.NotFoundLink{
+		{Text: "Demo home", Href: demoURL("/"), Icon: icons.Home},
+		{Text: "Display components", Href: demoURL("/display"), Icon: icons.Cube},
+		{Text: "Error pages", Href: demoURL("/error-pages"), Icon: icons.ExclamationTriangle},
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusNotFound)
+
+	pageProps := demoPageProps("Page not found - templ-components Demo", "Unknown demo route")
+	if err := errorRoutePage(pageProps, errorpage.NotFound404(props)).Render(r.Context(), w); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
