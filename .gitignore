@@ -124,3 +124,6 @@ website/dist/
 # residue, never shipped by tc init — keep it untracked (the inventory guard
 # refuses the TRACKED file).
 cmd/tc/_sources/starter/styles.css
+
+# Visual-test screenshot binary (built by visualtest/tools/ogshot)
+visualtest/ogshot

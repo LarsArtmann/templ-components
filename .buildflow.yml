@@ -1,10 +1,5 @@
 # BuildFlow Configuration
 # See: https://github.com/larsartmann/buildflow
-# nix-build builds the full `.#checks` tree for EVERY system the flake
-# advertises (github:nix-systems/default = darwin + linux), so on any single
-# machine the other platform's checks always fail with a platform mismatch.
-# Coverage is preserved: nix-flake-check still evaluates everything and the
-# linux format check is enforced in CI; real builds go through the flake apps.
 # (eslint-fix skip removed: BuildFlow now auto-defers eslint when the repo
 # has no eslint config, which is by design here.)
 # pnpm-audit skipped: this repo root has no JavaScript — no pnpm-lock.yaml
@@ -18,21 +13,16 @@
 # the step fails on all 10 modules (2026-10-06). If BuildFlow reinstalls the
 # raw binary over the wrapper, this gate dies again — restore the wrapper or
 # land the upstream fix (TODO_LIST #352).
+# nix-build (re-verified 2026-10-07): the multi-system platform mismatch is
+# FIXED (BuildFlow now filters to x86_64-linux only), but
+# checks.x86_64-linux.{format,treefmt} still fail structurally: the treefmt
+# golines/templ formatters resolve go via GOTOOLCHAIN=auto and try to download
+# go1.27.0 inside the network-free build sandbox (connection refused on
+# proxy.golang.org). Fix = pin the formatter go wrappers to the flake's goPkg
+# the way cqrs-htmx/flake.nix does, then remove this skip.
 skip_steps:
   - nix-build
   - pnpm-audit
-  # go-structure-linter skipped: its go-version rule auto-REPAIRS go.mod to
-  # the newest Go it can see (applied "go 1.27.1" during the 18:13/18:16
-  # pre-commit runs) while go.work and the flake's nixpkgs-go toolchain stay
-  # pinned to 1.26.7 — the repair itself re-created the exact toolchain skew
-  # (TODO #231) that breaks go-generate/golangci-lint/license-check and
-  # blocks every manual commit. utils.TestGoDirectiveSkew is the real
-  # enforcement for directive consistency; the linter's remaining findings
-  # (assets/ dir, README install section, testdata/ placement) are
-  # informational. Re-enable only together with a deliberate, lockstep
-  # toolchain bump (go.work + all module directives + nixpkgs pin in ONE
-  # commit, per AGENTS.md).
-  - go-structure-linter
   # go-version-auto-configure skipped: same skew class as go-structure-linter
   # above — the step normalizes go directives to the bare minor ("1.26") while
   # `go mod tidy` canonicalizes visualtest's directive to "1.26.0", so the
