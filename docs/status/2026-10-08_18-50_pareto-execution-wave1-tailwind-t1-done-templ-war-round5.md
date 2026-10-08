@@ -1,6 +1,7 @@
 # Status Report — Pareto Plan Execution Wave 1 (Tailwind T1 done + verified; templ-pin war round 5 live in HEAD)
 
 **Written:** 2026-10-08 18:50 CEST
+**HARVESTED 2026-10-08 (continuation session, same day):** the templ war ended bloodlessly — all 9 go.mods verified back at v0.3.1020 (daemon commit 4b41e1cd landed the working-tree restores; the flake.lock nixpkgs node move proved harmless — both old and new revs ship templ v0.3.1020 — and was KEPT per verify-at-source; visualtest.Bool's `//nolint:modernize` restored). T2/T3 executed: 11 inset sites + Toggle logical-motion fix, RTL guard tightened (red→green), lane pins, scrollbar/field-sizing/bg-linear migrations, goldens + website goldens re-baselined, capability ledger + screenshot done. §f items f-01..f-18 land in TODO_LIST #368–#370.
 **Session scope:** Execution of `docs/planning/2026-10-08_15-18_tailwind-v4-audit-pareto-execution-plan.md` ("NOW GET SHIT DONE" dispatch). This report covers THIS execution session only — planning/audit history lives in the input artifacts.
 **Branch state at writing:** `master` ahead of origin by 4 commits, ALL FOUR daemon-authored, ALL FOUR contaminated (details in §d). Working tree holds 4 uncommitted file restores that FIX the worst contamination.
 

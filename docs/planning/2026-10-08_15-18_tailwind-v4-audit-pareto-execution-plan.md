@@ -1,6 +1,7 @@
 # Pareto Execution Plan — Tailwind v4 Audit Follow-Up
 
 **Created:** 2026-10-08 15:18 CEST
+**HARVESTED 2026-10-08 (same-day execution):** T1 theming (F-01..F-08, F-49), T2 insets + guard + docs + lane pins (F-09..F-20), T3 scrollbar/field-sizing/bg-linear (F-21..F-27, F-41 partially) and report integrity (F-28/F-29) + harvest (F-30..F-32) are DONE — see the wave-1 section in `TODO_LIST.md` for the remainder (#368 size-* window gate, #369 @utility migration, #370 browser verification). F-17/F-27 (pixel checks) ride TODO #370; F-38..F-40 (size-* sweep) ride #368; F-42 is the window checklist; F-43..F-48 doc/tooling tails landed with the T3/T4 passes or are superseded by #369.
 **Scope:** execution plan for ALL todos from the 2026-10-08 Tailwind CSS v4 deep-dive session (8 findings, 35 status-report items). This is a PLANNING artifact — no source code changed for this plan.
 **Format note:** pareto-planning skill's canonical output is HTML; the operator prompt explicitly demands `.md` with an inline mermaid.js/d2 graph — the explicit instruction wins (flagged per skill spec). Fine-granularity capped at 12min per task (operator) instead of the skill's 15min.
 **Input artifacts:** `docs/research/2026-10-08_tailwindcss-deep-dive.html` (findings 1-8) · `docs/status/2026-10-08_15-08_tailwind-deep-dive-session-status.md` (items f1-f35, questions Q1-Q3).
