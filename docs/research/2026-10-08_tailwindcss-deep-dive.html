@@ -1462,6 +1462,48 @@ bg-linear-to-br from-blue-600 via-blue-500 to-indigo-500</code></pre>
               <tr><td>has-/not-/supports-/aria-/data- variants</td><td>3</td><td>size-*, text-shadow, mask-*, 3D, columns, --alpha(), @source inline, scheme-*</td><td>0</td></tr>
             </tbody>
           </table>
+          <h3 id="capability-ledger">Capability ledger &mdash; the 21 groups behind the scorecard</h3>
+          <p>
+            The scorecard&rsquo;s <code>14/21</code> is the count of capability groups
+            fully leveraged at audit time (6 partial, 1 violation). This is that ledger.
+            The right-hand column records the same-day wave-1 execution status: five of
+            the seven findings were fixed within hours of the audit, which raises the
+            de-facto full-leverage count to 18/21 &mdash; the scorecard deliberately
+            stays at audit-time values.
+          </p>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Capability group</th>
+                <th>Audit verdict</th>
+                <th>Status after wave-1 (2026-10-08)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>CSS-first config (<code>source(none)</code> + <code>@source</code> allowlist scanning <code>.templ</code> and <code>.go</code>)</td><td>Full (guarded)</td><td>Unchanged</td></tr>
+              <tr><td>2</td><td>Class-strategy dark mode (<code>@custom-variant dark</code>, guard tests)</td><td>Full</td><td>Unchanged</td></tr>
+              <tr><td>3</td><td>Container queries (<code>@container</code>, <code>@sm:/@md:/@lg:</code>, <code>ContainerAware</code>, fluid <code>cqi</code> type)</td><td>Full</td><td>Unchanged</td></tr>
+              <tr><td>4</td><td>Logical RTL properties (<code>ms-/me-/ps-/pe-/border-s-/border-e-</code>)</td><td>Full</td><td>Extended: inset sites migrated to <code>inset-s-*/inset-e-*</code>; guard bans bare <code>start-/end-</code></td></tr>
+              <tr><td>5</td><td>Motion discipline (<code>motion-reduce:</code> fallbacks everywhere)</td><td>Full</td><td>Unchanged</td></tr>
+              <tr><td>6</td><td>Native <code>&lt;dialog&gt;</code> + <code>@starting-style</code>/<code>allow-discrete</code> overlays</td><td>Full</td><td>Unchanged</td></tr>
+              <tr><td>7</td><td>Popover API (Dropdown/Popover/ContextMenu, top-layer positioning)</td><td>Full</td><td>Unchanged</td></tr>
+              <tr><td>8</td><td><code>content-visibility</code> virtualization (Table <code>LazyRows</code>)</td><td>Full</td><td>Unchanged</td></tr>
+              <tr><td>9</td><td><code>peer-*</code> variants incl. the <code>*:</code> child-reach pattern</td><td>Full</td><td>Extended: Toggle thumb moved to logical <code>inset-s</code> motion</td></tr>
+              <tr><td>10</td><td>Modern variant hygiene (<code>has-/not-/supports-/aria-/data-</code>)</td><td>Full</td><td>Unchanged</td></tr>
+              <tr><td>11</td><td>Accessibility utilities (<code>sr-only</code>, a11y gate, touch targets)</td><td>Full</td><td>Unchanged</td></tr>
+              <tr><td>12</td><td>v4 renames adopted (<code>shadow-xs</code>, <code>ring-N</code>, <code>outline-hidden</code>)</td><td>Full</td><td>Extended: gradients renamed to <code>bg-linear-to-*</code></td></tr>
+              <tr><td>13</td><td>Go-source class scanning guard (<code>TestTailwindGoSourceScanning</code>)</td><td>Full</td><td>Unchanged</td></tr>
+              <tr><td>14</td><td>Version currency (4.3.3 = latest; nix-pinned dev shell)</td><td>Full</td><td>Extended: Dockerfile + website.yml lanes pinned to 4.3.3</td></tr>
+              <tr><td>15</td><td>Scrollbar utilities (<code>scrollbar-none</code>, v4.3)</td><td>Partial (dup <code>.tc-no-scrollbar</code>)</td><td>Fixed: stock utility adopted, dup deleted</td></tr>
+              <tr><td>16</td><td><code>field-sizing</code> (v4.1 auto-grow)</td><td>Partial (dup <code>.tc-auto-grow</code>)</td><td>Fixed: <code>field-sizing-content min-h-10 max-h-80</code></td></tr>
+              <tr><td>17</td><td><code>user-valid:</code>/<code>user-invalid:</code> variants</td><td>Partial (hand-rolled <code>:is()</code> rules)</td><td>Unchanged (tokens now var-driven; variant swap is cosmetic)</td></tr>
+              <tr><td>18</td><td><code>@utility</code> tree-shaking for <code>.tc-*</code> classes</td><td>Partial (unconditional emission)</td><td>Unchanged (planned; dead helpers <code>tc-snap-*</code>/<code>tc-no-scrollbar</code>/<code>tc-auto-grow</code> deleted instead)</td></tr>
+              <tr><td>19</td><td><code>size-*</code> utilities</td><td>Partial (168 <code>w-N h-N</code> pairs)</td><td>Deferred by design (re-baseline rides the templ v0.3.1070 window)</td></tr>
+              <tr><td>20</td><td><code>bg-linear-to-*</code> gradient name</td><td>Partial (legacy aliases)</td><td>Fixed (2 sites)</td></tr>
+              <tr><td>21</td><td>Theming contract (<code>var(--color-*)</code> everywhere in custom.css)</td><td>Violation (12+ literals)</td><td>Fixed: zero raw palette literals; guard added (<code>TestCustomCSSThemeTokens</code>)</td></tr>
+            </tbody>
+          </table>
           <p>
             <strong>Judgment calls (Not Applicable, not scored):</strong> <code>@plugin</code>
             (dependency budget closed by design), <code>@apply</code> (zero uses is a
