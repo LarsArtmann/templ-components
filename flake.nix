@@ -51,6 +51,7 @@
       perSystem =
         {
           config,
+          lib,
           pkgs,
           inputs',
           ...
@@ -410,13 +411,32 @@
               nixfmt.enable = true;
               gofumpt.enable = true;
               goimports.enable = true;
-              # gotools (goimports) shells out to `go` at format time: that
-              # go must match the go.mod toolchain (1.26.7) or it tries to
-              # DOWNLOAD the newer toolchain, which fails inside the
-              # flake-check sandbox (no network). Same input as
-              # goToolchain.
-              goimports.package = inputs'.nixpkgs.legacyPackages.gotools;
             };
+            # goimports (gotools) shells out to `go` at format time. The go
+            # treefmt-nix puts on the wrapper's PATH is older than the go.mod
+            # floor (bare `go 1.27`), so GOTOOLCHAIN=auto tried to DOWNLOAD
+            # go1.27.0 inside the network-free check sandbox (found live
+            # 2026-10-08 while re-verifying the BuildFlow nix-build skip).
+            # Pin the formatter's go to goToolchain + force offline env, the
+            # cqrs-htmx pattern: GOTOOLCHAIN=local satisfies the floor locally
+            # or fails fast, and GOPROXY=off makes import resolution fail fast
+            # so goimports falls back to stdlib-only fixing.
+            settings.formatter.goimports.command = lib.mkForce (
+              lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "goimports-offline";
+                  runtimeInputs = [
+                    goToolchain
+                    inputs'.nixpkgs.legacyPackages.gotools
+                  ];
+                  text = ''
+                    export GOTOOLCHAIN=local
+                    export GOPROXY=off
+                    exec goimports "$@"
+                  '';
+                }
+              )
+            );
           };
 
           # `nix flake check` runs these. format = treefmt verification (catches
