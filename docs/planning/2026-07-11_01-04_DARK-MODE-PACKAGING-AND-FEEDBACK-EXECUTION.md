@@ -1,7 +1,7 @@
 # Dark Mode Packaging & Consumer Feedback Execution Plan
 
 **Date:** 2026-07-11
-**Trigger:** Consumer feedback from cqrs-htmx ([feedback](../feedback/2026-07-10_cqrs-htmx-consumer-feedback.md)) + [dark mode research](../dark-mode-research.md)
+**Trigger:** Consumer feedback from cqrs-htmx ([feedback](../feedback/archived/2026-07-10_cqrs-htmx-consumer-feedback.md)) + [dark mode research](../dark-mode-research.md)
 **Goal:** Fix the packaging/documentation issues that block clean library adoption, plus the 3 highest-value component API improvements
 
 ---
