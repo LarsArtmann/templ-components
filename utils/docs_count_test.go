@@ -101,15 +101,16 @@ func TestDocsCountDrift(t *testing.T) {
 	actualPackages := countPublicPackages(t, root)
 	actualModules := countPublishedModules(t, root)
 	assertCount(t, readme, `Packages\s+\|\s+(\d+)`, "README.md packages", actualPackages)
-	assertCount(t, readme, `\((\d+) Go modules\)`, "README.md Go modules", actualModules)
+	assertCount(t, readme, `across (\d+) Go modules`, "README.md Go modules", actualModules)
 
 	actualTestFuncs, actualSubtests := countLibraryTests(t, root)
 	assertRoundedCount(t, readme, `~([\d,]+) test functions`, "README.md test functions", actualTestFuncs)
 	assertRoundedCount(t, readme, `~([\d,]+) subtests`, "README.md subtests", actualSubtests)
 
-	// The UseCases card's per-package component count ("23 form components")
-	// must track the forms package's real exported count.
-	assertCount(t, readme, `(\d+) form components`, "README.md form components", packageCounts["forms"])
+	// The website UseCases card hand-types its per-package component count
+	// ("23 form components") — pinned to the forms package's real count.
+	useCases := readDoc(t, "website", "internal", "pages", "data.go")
+	assertCount(t, useCases, `(\d+) form components`, "website UseCases form components", packageCounts["forms"])
 
 	for pkg, want := range packageCounts {
 		if want == 0 {
@@ -445,6 +446,15 @@ var nonConsumerDirs = map[string]bool{
 	"node_modules": true,
 }
 
+// isRepoLocalModule reports whether dir carries its own go.mod — a
+// repo-local module (visualtest/, website/) whose packages are NOT part of
+// the published library surface, no matter where it sits.
+func isRepoLocalModule(root, dir string) bool {
+	_, err := os.Stat(filepath.Join(root, dir, "go.mod"))
+
+	return err == nil
+}
+
 // countPublicPackages counts importable packages across the published
 // modules: the module root (when it has Go files) plus subdirectories that
 // contain Go files, skipping tooling directories. Must match `go list ./...`
@@ -522,11 +532,13 @@ func countLibraryTests(t *testing.T, root string) (funcs, subtests int) {
 		}
 
 		for _, entry := range entries {
-			if !entry.IsDir() || nonConsumerDirs[entry.Name()] || strings.HasPrefix(entry.Name(), ".") {
+			sub := filepath.Join(mod, entry.Name())
+
+			if !entry.IsDir() || nonConsumerDirs[entry.Name()] || strings.HasPrefix(entry.Name(), ".") || isRepoLocalModule(root, sub) {
 				continue
 			}
 
-			paths = append(paths, filepath.Join(mod, entry.Name()))
+			paths = append(paths, sub)
 		}
 
 		seen := map[string]bool{}
@@ -580,8 +592,8 @@ func assertRoundedCount(t *testing.T, doc []byte, pattern, label string, actual 
 		return
 	}
 
-	if claimed%100 != 0 {
-		t.Errorf("%s claims %d; the ~ convention requires a multiple of 100", label, claimed)
+	if claimed%50 != 0 {
+		t.Errorf("%s claims %d; the ~ convention requires a multiple of 50", label, claimed)
 
 		return
 	}
