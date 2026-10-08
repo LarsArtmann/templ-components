@@ -216,7 +216,13 @@ func renderRecipeAuth(w http.ResponseWriter, r *http.Request) {
 // demo shell links to them from the Recipes page and the home page.
 func registerRecipeRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /recipes/dashboard", func(w http.ResponseWriter, r *http.Request) {
-		renderRecipePageState(w, r, "Dashboard Recipe - templ-components", "Dashboard recipe demo", recipesDashboardPage)
+		renderRecipePageState(
+			w,
+			r,
+			"Dashboard Recipe - templ-components",
+			"Dashboard recipe demo",
+			recipesDashboardPage,
+		)
 	})
 	mux.Handle("/recipes/settings", http.HandlerFunc(renderRecipeSettings))
 	mux.Handle("/recipes/login", http.HandlerFunc(renderRecipeLogin))

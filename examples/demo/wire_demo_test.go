@@ -67,7 +67,10 @@ func TestWirePageLoadsDatastarRuntime(t *testing.T) {
 			}
 
 			if !strings.Contains(string(body), "datastar.js") {
-				t.Errorf("%s page does not load the Datastar runtime (SDKScript missing from the head) — Datastar wiring on this page is inert", path)
+				t.Errorf(
+					"%s page does not load the Datastar runtime (SDKScript missing from the head) — Datastar wiring on this page is inert",
+					path,
+				)
 			}
 		})
 	}
@@ -852,7 +855,9 @@ func TestWireDemoBusyCardRendersBothDialects(t *testing.T) {
 	}
 
 	if strings.Contains(html, `{selector`) {
-		t.Error("demo page renders a bare {selector} fetch option — Datastar fetch options never reach patch targeting; use response headers")
+		t.Error(
+			"demo page renders a bare {selector} fetch option — Datastar fetch options never reach patch targeting; use response headers",
+		)
 	}
 }
 
