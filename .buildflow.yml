@@ -13,19 +13,18 @@
 # the step fails on all 10 modules (2026-10-06). If BuildFlow reinstalls the
 # raw binary over the wrapper, this gate dies again — restore the wrapper or
 # land the upstream fix (TODO_LIST #352).
-# nix-build (re-verified 2026-10-07): the multi-system platform mismatch is
-# FIXED (BuildFlow now filters to x86_64-linux only), but
-# checks.x86_64-linux.{format,treefmt} still fail structurally: the treefmt
-# golines/templ formatters resolve go via GOTOOLCHAIN=auto and try to download
-# go1.27.0 inside the network-free build sandbox (connection refused on
-# proxy.golang.org). Fix = pin the formatter go wrappers to the flake's goPkg
-# the way cqrs-htmx/flake.nix does, then remove this skip.
+# nix-build UNSKIPPED 2026-10-08: the root cause was the treefmt goimports
+# formatter resolving go via GOTOOLCHAIN=auto and trying to download
+# go1.27.0 inside the network-free check sandbox (the 2026-10-07 note's
+# "pin the formatter go wrappers" fix). flake.nix now wraps goimports in a
+# goimports-offline writeShellApplication (goToolchain first on PATH +
+# GOTOOLCHAIN=local + GOPROXY=off, the cqrs-htmx pattern);
+# checks.x86_64-linux.format is green (496 files, 0 changed).
 tool_options:
   go-version-auto-configure:
     respect_patch_floor: true
 
 skip_steps:
-  - nix-build
   # go-version-auto-configure UNSKIPPED 2026-10-07: directives are
   # minor-form (go 1.27) everywhere after the lockstep bump, and gvac
   # v0.2.5's respect_patch_floor honors any tidy-canonicalized patch form
