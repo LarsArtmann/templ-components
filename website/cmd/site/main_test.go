@@ -185,7 +185,35 @@ func assertSearchIndex(t *testing.T, outDir string, rendered []build.RenderedPag
 	}
 }
 
+// assertLLMS verifies dist/llms.txt: present, spec-shaped (H1 then blockquote),
+// and covering every registered docs page. The footer links to the file, so a
+// missing or empty index would ship a dead link to every page.
+func assertLLMS(t *testing.T, outDir string) {
+	t.Helper()
+
+	data, err := os.ReadFile(filepath.Join(outDir, "llms.txt"))
+	if err != nil {
+		t.Fatalf("read llms.txt: %v", err)
+	}
+
+	content := string(data)
+	if !strings.HasPrefix(content, "# templ-components\n\n> ") {
+		t.Errorf("llms.txt missing H1 + blockquote shape: %.60q", content)
+	}
+
+	for _, ref := range pages.AllDocs() {
+		if ref.Slug == "" {
+			continue
+		}
+
+		if !strings.Contains(content, "templcomponents.lars.software/"+ref.Slug+")") {
+			t.Errorf("llms.txt missing docs page %s", ref.Slug)
+		}
+	}
+}
+
 func assertSitemap(t *testing.T, outDir string, rendered []build.RenderedPage) {
+	t.Helper()
 
 	data, err := os.ReadFile(filepath.Join(outDir, "sitemap.xml"))
 	if err != nil {
