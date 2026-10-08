@@ -120,7 +120,7 @@ func NotFound404(props NotFound404Props) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "><div class=\"w-full max-w-xl text-center\"><p class=\"text-[8rem] sm:text-[10rem] leading-none font-extrabold tracking-tighter bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-500 dark:from-blue-500 dark:via-blue-400 dark:to-indigo-400 bg-clip-text text-transparent select-none\" aria-hidden=\"true\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "><div class=\"w-full max-w-xl text-center\"><p class=\"text-[8rem] sm:text-[10rem] leading-none font-extrabold tracking-tighter bg-linear-to-br from-blue-600 via-blue-500 to-indigo-500 dark:from-blue-500 dark:via-blue-400 dark:to-indigo-400 bg-clip-text text-transparent select-none\" aria-hidden=\"true\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

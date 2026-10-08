@@ -58,7 +58,8 @@ func TestFocusPreservationE2E(t *testing.T) {
 		if err := chromedp.Do(ctx,
 			evalExprInto(
 				`(window.__fpSettled=false,document.body.addEventListener('htmx:afterSettle',function(){window.__fpSettled=true},{once:true}),'')`,
-				&done),
+				&done,
+			),
 
 			evalExprInto(`(document.querySelector('#items-load-more button').click(),'')`, &done),
 			pollTrue(`
@@ -117,7 +118,8 @@ func dumpFocusState(t *testing.T, ctx context.Context, flow string) {
 		ctx,
 		evalExprInto(
 			`JSON.stringify({active: document.activeElement && (document.activeElement.id || document.activeElement.tagName), items: document.getElementById('items') && document.getElementById('items').outerHTML.slice(0, 400), status: document.getElementById('status') && document.getElementById('status').outerHTML, counter: document.getElementById('counter') && document.getElementById('counter').outerHTML})`,
-			&body),
+			&body,
+		),
 	); err != nil {
 		t.Logf("%s: dom dump failed: %v", flow, err)
 

@@ -84,7 +84,7 @@ templ Textarea(props TextareaProps) {
 			} else {
 				rows="4"
 			}
-			class={ utils.Class(baseInputClass(props.Error != ""), utils.Ternary(props.AutoGrow, "tc-auto-grow", ""), props.Class) }
+			class={ utils.Class(baseInputClass(props.Error != ""), utils.Ternary(props.AutoGrow, "field-sizing-content min-h-10 max-h-80", ""), props.Class) }
 			if props.EnterKeyHint != "" {
 				enterkeyhint={ props.EnterKeyHint }
 			}

@@ -104,15 +104,15 @@ templ Hero(stats build.Stats, starsText string) {
 				@heroMetric(stats.Modules, "Go modules")
 			</div>
 			<div class="relative max-w-xl mx-auto">
-				<div class="absolute -inset-4 bg-gradient-to-r from-accent/8 via-transparent to-accent/8 rounded-2xl pointer-events-none"></div>
+				<div class="absolute -inset-4 bg-linear-to-r from-accent/8 via-transparent to-accent/8 rounded-2xl pointer-events-none"></div>
 				<div class="relative rounded-xl border border-border bg-bg-code shadow-2xl overflow-hidden code-preview">
 					<div class="flex items-center gap-1.5 px-4 py-3 border-b border-border bg-bg-card-solid/50">
 						<span class="w-2.5 h-2.5 rounded-full bg-code-dot"></span>
 						<span class="w-2.5 h-2.5 rounded-full bg-code-dot"></span>
 						<span class="w-2.5 h-2.5 rounded-full bg-code-dot"></span>
-						<span class="ml-3 text-xs text-text-muted font-mono">page.templ</span>
+						<span class="ms-3 text-xs text-text-muted font-mono">page.templ</span>
 					</div>
-					<pre tabindex="0" class="p-5 text-left text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative">@highlightTempl(heroCode)
+					<pre tabindex="0" class="p-5 text-start text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative">@highlightTempl(heroCode)
 </pre>
 					<button class="absolute top-2 right-2 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" id="copy-btn" data-code={ heroCode } aria-label="Copy code to clipboard">Copy</button>
 				</div>

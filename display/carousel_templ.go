@@ -143,7 +143,7 @@ func Carousel(props CarouselProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "><div class=\"flex overflow-x-auto snap-x snap-mandatory scroll-smooth tc-no-scrollbar\" data-tc-carousel-track role=\"group\" tabindex=\"0\" aria-label=\"Slides\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "><div class=\"flex overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none\" data-tc-carousel-track role=\"group\" tabindex=\"0\" aria-label=\"Slides\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

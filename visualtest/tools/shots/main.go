@@ -171,7 +171,7 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 	// succeeded, even if a later step failed, so error messages keep the status.
 	resp, runErr := chromedp.RunResponse(ctx, captureTasks(base, p.path, width)...)
 	if resp != nil {
-		docStatus = int64(resp.Status)
+		docStatus = resp.Status
 	}
 
 	if runErr != nil {
@@ -188,27 +188,9 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 		return fmt.Errorf("capture %s (execPath=%s, docStatus=%d): %w", p.path, execPath, docStatus, err)
 	}
 
-	has := func(m string) bool { return slices.Contains(modes, m) }
-
-	light, err := chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
+	light, dark, err := captureModeShots(ctx, modes)
 	if err != nil {
-		return fmt.Errorf("capture light (execPath=%s, docStatus=%d): %w", execPath, docStatus, err)
-	}
-
-	var dark []byte
-
-	if has(modeDark) {
-		if err := chromedp.Do(ctx,
-			chromedp.Evaluate[chromedp.Void](`document.documentElement.classList.add('dark');`),
-			chromedp.Sleep(2*settle),
-		); err != nil {
-			return fmt.Errorf("toggle dark (execPath=%s, docStatus=%d): %w", execPath, docStatus, err)
-		}
-
-		dark, err = chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
-		if err != nil {
-			return fmt.Errorf("capture dark (execPath=%s, docStatus=%d): %w", execPath, docStatus, err)
-		}
+		return fmt.Errorf("capture (execPath=%s, docStatus=%d): %w", execPath, docStatus, err)
 	}
 
 	for _, mode := range modes {
@@ -223,6 +205,34 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 	}
 
 	return nil
+}
+
+// captureModeShots screenshots the settled page in light mode and — when
+// dark is among the modes — toggles the class in place (no re-navigation),
+// waits the double settle, and screenshots again.
+func captureModeShots(ctx context.Context, modes []string) (light, dark []byte, err error) {
+	light, err = chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
+	if err != nil {
+		return nil, nil, fmt.Errorf("capture light: %w", err)
+	}
+
+	if !slices.Contains(modes, modeDark) {
+		return light, nil, nil
+	}
+
+	if err := chromedp.Do(ctx,
+		chromedp.Evaluate[chromedp.Void](`document.documentElement.classList.add('dark');`),
+		chromedp.Sleep(2*settle),
+	); err != nil {
+		return nil, nil, fmt.Errorf("toggle dark: %w", err)
+	}
+
+	dark, err = chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
+	if err != nil {
+		return nil, nil, fmt.Errorf("capture dark: %w", err)
+	}
+
+	return light, dark, nil
 }
 
 // captureTasks builds the chromedp action sequence: viewport, navigation (its

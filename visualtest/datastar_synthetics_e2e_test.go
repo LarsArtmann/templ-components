@@ -57,7 +57,6 @@ func datastarSyntheticsServer(t *testing.T) *httptest.Server {
 func dispatchDatastarFetch(detailJSON string) chromedp.Action[chromedp.Void] {
 	return chromedp.Evaluate[chromedp.Void](
 		`document.dispatchEvent(new CustomEvent('datastar-fetch', {detail: ` + detailJSON + `}));`)
-
 }
 
 func TestDemoDatastarSSEErrorToast(t *testing.T) {
@@ -150,7 +149,8 @@ func TestDemoDatastarBusyClearsOnFirstPatch(t *testing.T) {
 
 	if err := chromedp.Do(ctx, evalExprInto(
 		`(document.getElementById('synth-live')||{getAttribute:function(){return 'MISSING'}}).getAttribute('aria-busy')`,
-		&busyBefore)); err != nil {
+		&busyBefore,
+	)); err != nil {
 		t.Fatalf("visualtest[datastar]: read aria-busy: %v", err)
 	}
 

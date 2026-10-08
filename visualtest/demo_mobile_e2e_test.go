@@ -92,7 +92,8 @@ func TestDemoMobile375KanbanReachable(t *testing.T) {
 
 	if err := chromedp.Do(ctx, evalExprInto(
 		`(() => { const el = document.querySelector('#kanban-demo-htmx .overflow-x-auto'); return {Scroll: el ? el.scrollWidth : 0, Client: el ? el.clientWidth : 0}; })()`,
-		&boardScroll)); err != nil {
+		&boardScroll,
+	)); err != nil {
 		t.Fatalf("visualtest[demo]: measure kanban scroll container: %v", err)
 	}
 

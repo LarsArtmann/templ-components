@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/chromedp/cdproto/browser"
+	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/cdproto/emulation"
 	"github.com/chromedp/chromedp"
 )
@@ -44,15 +45,34 @@ func TestSiteSalesCopyButton(t *testing.T) {
 		// (see the spy comment below), so the spy carries the success path;
 		// in any environment where the daemon cooperates, the REAL write
 		// resolves and nothing is stubbed.
-		browser.SetPermission(
-			&browser.PermissionDescriptor{Name: "clipboard-write"},
-			browser.PermissionSettingGranted,
-		).WithOrigin(base),
-		browser.SetPermission(
-			&browser.PermissionDescriptor{Name: "clipboard-read"},
-			browser.PermissionSettingGranted,
-		).WithOrigin(base),
-		emulation.SetFocusEmulationEnabled(true),
+		chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
+			_, err := chromedp.CallBrowser(ctx, browser.SetPermission, browser.SetPermissionParams{
+				Permission: &browser.PermissionDescriptor{Name: "clipboard-write"},
+				Setting:    browser.PermissionSettingGranted,
+				Origin:     base,
+			})
+
+			return err
+		}),
+		chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
+			_, err := chromedp.CallBrowser(ctx, browser.SetPermission, browser.SetPermissionParams{
+				Permission: &browser.PermissionDescriptor{Name: "clipboard-read"},
+				Setting:    browser.PermissionSettingGranted,
+				Origin:     base,
+			})
+
+			return err
+		}),
+		chromedp.Func(func(ctx context.Context, t *chromedp.Target) error {
+			_, err := cdp.Call(
+				ctx,
+				t,
+				emulation.SetFocusEmulationEnabled,
+				emulation.SetFocusEmulationEnabledParams{Enabled: true},
+			)
+
+			return err
+		}),
 	); err != nil {
 		t.Fatalf("grant clipboard permissions: %v", err)
 	}

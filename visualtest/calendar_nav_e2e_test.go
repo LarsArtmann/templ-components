@@ -64,7 +64,8 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 			// a bubbling MouseEvent hits the htmx/Datastar listener the same way.
 			next := evalExprInto(
 				`(document.querySelector('a[aria-label="Next month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})),'')`,
-				&done)
+				&done,
+			)
 
 			if err := chromedp.Do(ctx,
 				next,
@@ -77,7 +78,8 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 
 			prev := evalExprInto(
 				`(document.querySelector('a[aria-label="Previous month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})),'')`,
-				&done)
+				&done,
+			)
 
 			if err := chromedp.Do(ctx,
 				prev,

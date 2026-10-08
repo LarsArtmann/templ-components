@@ -24,8 +24,10 @@ func TestTextareaAutoGrowAddsClass(t *testing.T) {
 	props.Name = "bio"
 
 	html := utils.Render(t, Textarea(props))
-	if !strings.Contains(html, "tc-auto-grow") {
-		t.Error("AutoGrow=true should add tc-auto-grow class")
+	for _, want := range []string{"field-sizing-content", "min-h-10", "max-h-80"} {
+		if !strings.Contains(html, want) {
+			t.Errorf("AutoGrow=true should add %s class", want)
+		}
 	}
 }
 
@@ -38,8 +40,10 @@ func TestTextareaAutoGrowFalseOmitsClass(t *testing.T) {
 	props.Name = "bio"
 
 	html := utils.Render(t, Textarea(props))
-	if strings.Contains(html, "tc-auto-grow") {
-		t.Error("AutoGrow=false should not add tc-auto-grow class")
+	for _, banned := range []string{"tc-auto-grow", "field-sizing-content", "min-h-10", "max-h-80"} {
+		if strings.Contains(html, banned) {
+			t.Errorf("AutoGrow=false should not add %s class", banned)
+		}
 	}
 }
 

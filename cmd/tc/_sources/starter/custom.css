@@ -7,6 +7,15 @@
  *
  * Both templates/app.css (consumer entry point) and examples/demo/demo.css
  * import this file so the custom CSS stays in one place.
+ *
+ * Color token policy (enforced by utils.TestCustomCSSThemeTokens): every
+ * palette color references Tailwind v4 theme variables (var(--color-*)) so
+ * consumer @theme overrides re-skin these rules with the rest of the
+ * library. Alpha variants use Tailwind's build-time --alpha() function,
+ * which compiles to a var-preserving color-mix() inside @supports. This
+ * file is always compiled by Tailwind (imported by app.css / demo.css);
+ * the plain-CSS equivalent of --alpha(C / N%) is
+ * color-mix(in srgb, C N%, transparent).
  */
 
 @layer utilities {
@@ -79,7 +88,7 @@
 
   /* Backdrop: shared by modal and drawer, animated via background-color */
   dialog.tc-overlay::backdrop {
-    background-color: rgb(0 0 0 / 0%);
+    background-color: --alpha(var(--color-black) / 0%);
     backdrop-filter: blur(2px);
     transition:
       background-color 200ms ease-out,
@@ -88,12 +97,12 @@
   }
 
   dialog.tc-overlay[open]::backdrop {
-    background-color: rgb(0 0 0 / 50%);
+    background-color: --alpha(var(--color-black) / 50%);
   }
 
   @starting-style {
     dialog.tc-overlay[open]::backdrop {
-      background-color: rgb(0 0 0 / 0%);
+      background-color: --alpha(var(--color-black) / 0%);
     }
   }
 
@@ -188,23 +197,6 @@
   .tc-content-auto-compact {
     content-visibility: auto;
     contain-intrinsic-size: auto 40px;
-  }
-}
-
-/* --- scroll-snap carousel helpers --- */
-@layer utilities {
-  .tc-snap-x {
-    scroll-snap-type: x mandatory;
-  }
-  .tc-snap-center {
-    scroll-snap-align: center;
-    scroll-snap-stop: always;
-  }
-  .tc-no-scrollbar {
-    scrollbar-width: none;
-  }
-  .tc-no-scrollbar::-webkit-scrollbar {
-    display: none;
   }
 }
 
@@ -321,13 +313,13 @@ details[open] [data-tc-chevron] {
   input[type="radio"],
   input[type="range"],
   progress {
-    accent-color: rgb(37 99 235); /* blue-600 */
+    accent-color: var(--color-blue-600);
   }
   .dark input[type="checkbox"],
   .dark input[type="radio"],
   .dark input[type="range"],
   .dark progress {
-    accent-color: rgb(96 165 250); /* blue-400 */
+    accent-color: var(--color-blue-400);
   }
 }
 
@@ -338,12 +330,12 @@ details[open] [data-tc-chevron] {
   input:user-invalid,
   textarea:user-invalid,
   select:user-invalid {
-    border-color: rgb(220 38 38); /* red-600 */
+    border-color: var(--color-red-600);
   }
   input:user-valid,
   textarea:user-valid,
   select:user-valid {
-    border-color: rgb(22 163 74); /* green-600 */
+    border-color: var(--color-green-600);
   }
 }
 
@@ -359,13 +351,13 @@ details[open] [data-tc-chevron] {
   }
 
   select.tc-select {
-    background-color: rgb(255 255 255);
-    border: 1px solid rgb(209 213 219); /* gray-300 */
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-300);
     border-radius: 0.5rem;
     padding: 0.625rem 2.5rem 0.625rem 0.75rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: rgb(17 24 39); /* gray-900 */
+    color: var(--color-gray-900);
     cursor: pointer;
     transition:
       border-color 150ms ease,
@@ -373,14 +365,14 @@ details[open] [data-tc-chevron] {
   }
 
   select.tc-select:hover {
-    border-color: rgb(107 114 128); /* gray-500 */
+    border-color: var(--color-gray-500);
   }
 
   select.tc-select:focus,
   select.tc-select:focus-visible {
     outline: none;
-    border-color: rgb(59 130 246); /* blue-500 */
-    box-shadow: 0 0 0 2px rgb(59 130 246 / 0.3);
+    border-color: var(--color-blue-500);
+    box-shadow: 0 0 0 2px --alpha(var(--color-blue-500) / 30%);
   }
 
   select.tc-select:disabled {
@@ -392,7 +384,7 @@ details[open] [data-tc-chevron] {
   select.tc-select::picker-icon {
     width: 1.25rem;
     height: 1.25rem;
-    color: rgb(107 114 128); /* gray-500 */
+    color: var(--color-gray-500);
     transition: rotate 200ms ease;
   }
 
@@ -402,10 +394,10 @@ details[open] [data-tc-chevron] {
 
   /* Dropdown container */
   select.tc-select::picker(select) {
-    background-color: rgb(255 255 255);
-    border: 1px solid rgb(209 213 219); /* gray-300 */
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-300);
     border-radius: 0.5rem;
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    box-shadow: 0 10px 15px -3px --alpha(var(--color-black) / 10%);
     padding: 0.25rem;
     margin-block: 0.25rem;
     max-height: 20rem;
@@ -418,69 +410,59 @@ details[open] [data-tc-chevron] {
     border-radius: 0.375rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: rgb(17 24 39); /* gray-900 */
+    color: var(--color-gray-900);
     cursor: pointer;
     transition: background-color 100ms ease;
   }
 
   select.tc-select option:hover,
   select.tc-select option:focus {
-    background-color: rgb(243 244 246); /* gray-100 */
+    background-color: var(--color-gray-100);
   }
 
   select.tc-select option:checked {
-    background-color: rgb(219 234 254); /* blue-100 */
+    background-color: var(--color-blue-100);
     font-weight: 500;
   }
 
   /* Dark mode */
   .dark select.tc-select {
-    background-color: rgb(17 24 39); /* gray-900 */
-    border-color: rgb(75 85 99); /* gray-600 */
-    color: rgb(255 255 255);
+    background-color: var(--color-gray-900);
+    border-color: var(--color-gray-600);
+    color: var(--color-white);
   }
 
   .dark select.tc-select:hover {
-    border-color: rgb(156 163 175); /* gray-400 */
+    border-color: var(--color-gray-400);
   }
 
   .dark select.tc-select:focus,
   .dark select.tc-select:focus-visible {
-    border-color: rgb(96 165 250); /* blue-400 */
-    box-shadow: 0 0 0 2px rgb(96 165 250 / 0.3);
+    border-color: var(--color-blue-400);
+    box-shadow: 0 0 0 2px --alpha(var(--color-blue-400) / 30%);
   }
 
   .dark select.tc-select::picker-icon {
-    color: rgb(156 163 175); /* gray-400 */
+    color: var(--color-gray-400);
   }
 
   .dark select.tc-select::picker(select) {
-    background-color: rgb(31 41 55); /* gray-800 */
-    border-color: rgb(75 85 99); /* gray-600 */
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+    background-color: var(--color-gray-800);
+    border-color: var(--color-gray-600);
+    box-shadow: 0 10px 15px -3px --alpha(var(--color-black) / 30%);
   }
 
   .dark select.tc-select option {
-    color: rgb(255 255 255);
+    color: var(--color-white);
   }
 
   .dark select.tc-select option:hover,
   .dark select.tc-select option:focus {
-    background-color: rgb(55 65 81); /* gray-700 */
+    background-color: var(--color-gray-700);
   }
 
   .dark select.tc-select option:checked {
-    background-color: rgb(30 58 138); /* blue-900 */
-  }
-}
-
-/* --- Auto-growing textarea (field-sizing) --- */
-/* Progressive enhancement: grows textarea to fit content */
-@layer utilities {
-  .tc-auto-grow {
-    field-sizing: content;
-    min-height: 2.5rem;
-    max-height: 20rem;
+    background-color: var(--color-blue-900);
   }
 }
 
@@ -535,7 +517,7 @@ details[open] [data-tc-chevron] {
   --tc-header-border: var(--color-gray-200);
 }
 .dark {
-  --tc-sidebar-bg: #000;
+  --tc-sidebar-bg: var(--color-black);
   --tc-sidebar-border: transparent;
   --tc-sidebar-fg: var(--color-gray-300);
   --tc-sidebar-fg-hover: var(--color-white);
@@ -595,7 +577,7 @@ details[open] [data-tc-chevron] {
   [popover]::backdrop,
   dialog.tc-overlay[open]::backdrop {
     backdrop-filter: none;
-    background-color: rgb(0 0 0 / 0.85);
+    background-color: --alpha(var(--color-black) / 85%);
   }
 }
 
@@ -966,15 +948,20 @@ details[open] [data-tc-chevron] {
  * component renders out of the box; consumers override either variable in
  * their own CSS (RGB triplets must be comma-separated (the component emits legacy rgba(var(--ds-brand-rgb), alpha)), e.g. "124, 58, 237").
  * Light uses violet-600, dark uses violet-500 (the -600/-500 convention).
+ * --ds-brand tracks the Tailwind palette (var(--color-violet-*)); the
+ * --ds-brand-rgb comma triplets are the legacy alpha contract consumed by
+ * Heatmap's rgba(var(--x-rgb), alpha) inline styles (ADR-0028) — they
+ * intentionally mirror violet-600/violet-500 and stay literal until that
+ * contract modernizes to color-mix (v2 window; see ROADMAP).
  * ---------------------------------------------------------------------- */
 :root {
   --ds-brand-rgb: 124, 58, 237;
-  --ds-brand: #7c3aed;
+  --ds-brand: var(--color-violet-600);
 }
 
 .dark {
   --ds-brand-rgb: 139, 92, 246;
-  --ds-brand: #8b5cf6;
+  --ds-brand: var(--color-violet-500);
 }
 
 /* --- Kanban board: drag-and-drop feedback --------------------------------
@@ -989,12 +976,12 @@ details[open] [data-tc-chevron] {
 }
 
 [data-tc-kanban] [data-tc-kanban-column-body].tc-kanban-over {
-  background-color: rgb(219 234 254 / 0.6);
+  background-color: --alpha(var(--color-blue-100) / 60%);
   border-radius: 0.5rem;
 }
 
 .dark [data-tc-kanban] [data-tc-kanban-column-body].tc-kanban-over {
-  background-color: rgb(30 58 138 / 0.35);
+  background-color: --alpha(var(--color-blue-900) / 35%);
 }
 
 [data-tc-kanban] .tc-kanban-drop-before::before,
@@ -1005,7 +992,7 @@ details[open] [data-tc-chevron] {
   inset-inline-end: 0;
   height: 0.125rem;
   border-radius: 0.125rem;
-  background-color: #2563eb;
+  background-color: var(--color-blue-600);
 }
 
 [data-tc-kanban] .tc-kanban-drop-before::before {
@@ -1018,7 +1005,7 @@ details[open] [data-tc-chevron] {
 
 .dark [data-tc-kanban] .tc-kanban-drop-before::before,
 .dark [data-tc-kanban] .tc-kanban-drop-end::after {
-  background-color: #3b82f6;
+  background-color: var(--color-blue-500);
 }
 
 /* --- Kanban board: optimistic move register (ADR-0041) -------------------
@@ -1042,25 +1029,25 @@ details[open] [data-tc-chevron] {
   inset-inline-end: 0.375rem;
   width: 0.875rem;
   height: 0.875rem;
-  border: 2px solid #93c5fd;
-  border-top-color: #2563eb;
+  border: 2px solid var(--color-blue-300);
+  border-top-color: var(--color-blue-600);
   border-radius: 9999px;
   animation: tc-kanban-pending-spin 0.8s linear infinite;
 }
 
 .dark [data-tc-kanban] [data-tc-kanban-card].tc-kanban-pending::after {
-  border-color: #1e3a8a;
-  border-top-color: #60a5fa;
+  border-color: var(--color-blue-900);
+  border-top-color: var(--color-blue-400);
 }
 
 [data-tc-kanban] [data-tc-kanban-card].tc-kanban-move-failed {
-  border-color: #dc2626;
-  box-shadow: 0 0 0 1px #dc2626;
+  border-color: var(--color-red-600);
+  box-shadow: 0 0 0 1px var(--color-red-600);
 }
 
 .dark [data-tc-kanban] [data-tc-kanban-card].tc-kanban-move-failed {
-  border-color: #f87171;
-  box-shadow: 0 0 0 1px #f87171;
+  border-color: var(--color-red-400);
+  box-shadow: 0 0 0 1px var(--color-red-400);
 }
 
 @media (prefers-reduced-motion: reduce) {

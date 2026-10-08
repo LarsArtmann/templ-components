@@ -200,23 +200,6 @@
   }
 }
 
-/* --- scroll-snap carousel helpers --- */
-@layer utilities {
-  .tc-snap-x {
-    scroll-snap-type: x mandatory;
-  }
-  .tc-snap-center {
-    scroll-snap-align: center;
-    scroll-snap-stop: always;
-  }
-  .tc-no-scrollbar {
-    scrollbar-width: none;
-  }
-  .tc-no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-}
-
 /* --- Scrollback: terminal-style log block --- */
 /* The .tc-log container wraps Scrollback's monospace lines; overflow-wrap
    keeps long unbroken tokens (domains, hashes) from blowing out layouts. */
@@ -480,16 +463,6 @@ details[open] [data-tc-chevron] {
 
   .dark select.tc-select option:checked {
     background-color: var(--color-blue-900);
-  }
-}
-
-/* --- Auto-growing textarea (field-sizing) --- */
-/* Progressive enhancement: grows textarea to fit content */
-@layer utilities {
-  .tc-auto-grow {
-    field-sizing: content;
-    min-height: 2.5rem;
-    max-height: 20rem;
   }
 }
 

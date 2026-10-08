@@ -173,7 +173,6 @@ func assertSiteRouteScreenshot(t *testing.T, name, url string, dark bool, viewpo
 		theme = "dark"
 	}
 
-
 	tasks := []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(viewport.Width), int64(viewport.Height)),
 		chromedp.Navigate(url),

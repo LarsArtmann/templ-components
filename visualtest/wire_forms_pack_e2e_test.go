@@ -1067,7 +1067,7 @@ func packWizardFlow(t *testing.T, dialect wire.Transport) {
 	// submit empty" is not a runtime-invariant — clearing is.
 	phases := []struct {
 		phase  string
-		fill   chromedp.Action
+		fill   chromedp.Action[chromedp.Void]
 		needle string
 	}{
 		{phase: "step 0 (invalid)", needle: packWizardEmailBad},
@@ -1097,7 +1097,12 @@ func packWizardFlow(t *testing.T, dialect wire.Transport) {
 
 // packWizardExpect settles a swap (optionally filling a field first),
 // submits until the needle appears, and wraps failures with the phase name.
-func packWizardExpect(ctx context.Context, region, phase string, fill chromedp.Action[chromedp.Void], needle string) error {
+func packWizardExpect(
+	ctx context.Context,
+	region, phase string,
+	fill chromedp.Action[chromedp.Void],
+	needle string,
+) error {
 	pre := []chromedp.Action[chromedp.Void]{waitSwapSettled()}
 	if fill != nil {
 		pre = append(pre, fill)
@@ -1359,13 +1364,15 @@ func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
 				t.Fatalf("%s Enter-key submit: %v", dialect, err)
 			}
 
-			var location string
-
 			if err := chromedp.Do(ctx,
 				chromedp.Sleep(wireFormSettleWait),
 				chromedp.Sleep(750*time.Millisecond),
-				chromedp.Location(&location),
 			); err != nil {
+				t.Fatalf("%s Enter-key location: %v", dialect, err)
+			}
+
+			location, err := chromedp.Run(ctx, chromedp.Location())
+			if err != nil {
 				t.Fatalf("%s Enter-key location: %v", dialect, err)
 			}
 
