@@ -527,10 +527,11 @@ capability ledger in its appendix):
   Popover API overlays, `content-visibility` table virtualization.
 - **v4.1+ logical properties (fully adopted):** all directional CSS uses logical utilities
   (`ms-`, `me-`, `ps-`, `pe-`, `inset-s-*`, `inset-e-*`, `border-s-`, `border-e-`,
-  `text-start`). Note the naming trap: bare `start-0`/`end-full` are PHYSICAL (they compile
-  to `left`/`right`) — use `inset-s-*`/`inset-e-*` for mirroring insets; the repo guard
-  `utils.TestRTLLogicalProperties` bans both classes. Motion on logical insets must be
-  logical too (`transition-[inset-inline-start]`, not `translate-x`).
+  `text-start`). Naming trap: bare `start-0`/`end-full` are v4.2-DEPRECATED aliases of
+  `inset-s-*`/`inset-e-*` — identical logical output today, but a future major can drop
+  the aliases; stay on the canonical forms. The repo guard `utils.TestRTLLogicalProperties`
+  bans both classes. Motion on logical insets must be logical too
+  (`transition-[inset-inline-start]`, not `translate-x`).
 - **v4.2+ state variants (available to consumers):** the library's validation styling uses
   native `:user-valid`/`:user-invalid` selectors in `custom.css` (borders flip only after
   the user interacts — see `templates/custom.css` "user-valid/user-invalid" block). Tailwind's

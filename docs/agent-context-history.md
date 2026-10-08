@@ -110,16 +110,20 @@ starting points, not facts — re-grep at execution time before believing any co
 (same family as the 2026-09-22 truncated-pipe lesson, opposite cause: there the capture
 was cut, here the estimate was never a count).
 
-**Template-class-vs-guide verification (2026-10-08).** Two audit claims were wrong in the
-direction that only compiling proves: (1) the audit (and the repo's own AGENTS RTL bullet)
-called `start-`/`end-` "logical" — the pinned v4.3.3 binary compiles `start-0` to physical
-`inset-inline-start`? No: it compiles to `left`-equivalent via `inset-inline-start` ONLY for
-`inset-s-*`; bare `start-0` emits `left: …` (physical), so 11 shipped sites never mirrored
-in RTL; (2) the audit's `--alpha(var(--color-blue-500), 30%)` comma syntax is a hard build
-error — only the slash form (`--alpha(X / 30%)`) compiles. Rule: every audit claim about
-what a Tailwind class/function compiles to gets a probe run through the PINNED binary
-(`nix develop -c tailwindcss -i … -o …` from repo root) before it drives an edit; names and
-docs have been wrong twice in one audit.
+**Template-class-vs-guide verification (2026-10-08).** Two audit claims needed probe-level
+verification before edits, with opposite outcomes: (1) the audit's `--alpha(var(--color-blue-500),
+30%)` comma syntax is a hard build error — only the slash form (`--alpha(X / 30%)`) compiles;
+that claim was corrected BEFORE shipping. (2) The execution layer (AGENTS bullet, skill doc,
+guard comment) briefly recorded the audit's "start-*/end-* compile to physical left/right"
+framing — a pinned-binary probe DISPROVED it: `start-0`/`end-full` compile to
+`inset-inline-start/end`, i.e. they are deprecated LOGICAL ALIASES of `inset-s-*`/`inset-e-*`
+with identical output. The 11-site migration therefore shipped as deprecation hygiene
+(canonical forms survive v5 alias removal), not an RTL bug fix — the ONE real RTL bug fixed
+that day was the Toggle thumb MOTION (`translate-x` is genuinely physical and pushed the
+checked thumb off-track in RTL; fixed with logical `inset-s-N` motion + the inset
+transition). Rule: every claim about what a class/function compiles to gets a probe through
+the PINNED binary (`nix develop -c tailwindcss -i … -o …` from repo root) — names, docs, AND
+audit reports have each been wrong at least once.
 
 **Heredoc/sed relapse ledger (2026-10-08).** Clean session except one near-miss: a probe
 CSS needed `@source "path"` (quoted) — the heredoc + `source(none)` variant fought back

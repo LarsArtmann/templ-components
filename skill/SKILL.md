@@ -681,7 +681,7 @@ generated files:
 | `TestPreCommitHookInstallsGuard`               | `utils/infra_guards_test.go`               | The pre-commit hook dropping the `check-lint-config.sh` guard (or running it after BuildFlow).                                                                                                     |
 | `TestDarkModeCompliance` / `…SemanticColors`   | `utils/darkmode_compliance_test.go`        | Neutral/semantic colors without `dark:` variants.                                                                                                                                                  |
 | `TestMotionReduceCompliance`                   | `utils/motion_compliance_test.go`          | `transition-*`/`animate-*` without `motion-reduce:` fallbacks.                                                                                                                                     |
-| `TestRTLLogicalProperties`                     | `utils/rtl_compliance_test.go`             | Physical properties (`ml-`/`mr-`/`left-`) or bare physical insets (`start-`/`end-`, which compile to `left`/`right`) instead of logical forms (`ms-`/`me-`/`inset-s-`/`inset-e-`).                     |
+| `TestRTLLogicalProperties`                     | `utils/rtl_compliance_test.go`             | Physical properties (`ml-`/`mr-`/`left-`) or the deprecated `start-`/`end-` inset aliases instead of canonical logical forms (`ms-`/`me-`/`inset-s-`/`inset-e-`).                                     |
 | `TestCoarsePointerCompliance`                  | `utils/coarse_pointer_compliance_test.go`  | Hover-revealed functionality (`opacity-0`/`hidden` + `group-hover:`/`peer-hover:`) without a `tc-*` hook kept visible in custom.css's `@media (pointer: coarse)` block, or a documented exemption. |
 | `TestAriaLivePoliteness`                       | `utils/aria_live_compliance_test.go`       | Any `aria-live="assertive"` in library `.templ` sources — urgency is `role="alert"` only (docs/aria-live-politeness.md).                                                                           |
 | `TestPropsIDRendersInOutput`                   | `internal/contract/props_id_test.go`       | A Props-carrying component that silently drops a consumer-set `ID` (broken CSS/ARIA/`hx-target` anchors).                                                                                          |
@@ -803,14 +803,14 @@ Never invent IDs with `time.Now()` alone — predictable under concurrency.
 - **RTL logical properties:** use logical Tailwind utilities (`ms-`, `me-`, `ps-`,
   `pe-`, `inset-s-*`, `inset-e-*`, `text-start`, `border-s-`, `border-e-`) instead
   of physical ones (`ml-`, `mr-`, `pl-`, `pr-`, `left-`, `right-`, `text-left`,
-  `border-l-`, `border-r-`) — and NEVER the bare `start-`/`end-` inset classes:
-  despite the name, Tailwind compiles `start-0`/`end-full` to physical
-  `left`/`right` (verified against the pinned v4.3.3 binary), so they never
-  mirror in RTL. Logical properties render identically in LTR and mirror
-  automatically in RTL (Arabic, Hebrew, Persian, Urdu). The ONLY exception is
-  `left-1/2` (centering — not directional). Motion on logical insets must also
-  be logical: `translate-x` never mirrors (the Toggle thumb uses
-  `peer-checked:*:inset-s-N` + `transition-[inset-inline-start]`).
+  `border-l-`, `border-r-`) — and never the bare `start-`/`end-` inset classes:
+  they are v4.2-DEPRECATED aliases of `inset-s-*`/`inset-e-*` (probe-verified
+  2026-10-08: identical logical output today — the ban keeps the canon on the
+  canonical form before the aliases can disappear). Logical properties render
+  identically in LTR and mirror automatically in RTL (Arabic, Hebrew, Persian,
+  Urdu). The ONLY exception is `left-1/2` (centering — not directional). Motion
+  on logical insets must also be logical: `translate-x` never mirrors (the Toggle
+  thumb uses `peer-checked:*:inset-s-N` + `transition-[inset-inline-start]`).
 - **Container queries:** when a component should respond to its parent's width
   rather than the viewport, use Tailwind v4's `@container` + `@sm:`/`@md:`/`@lg:`
   variants. 8 components have a `ContainerAware` flag: `Grid`, `Card`, `Nav`,
@@ -841,7 +841,7 @@ Never invent IDs with `time.Now()` alone — predictable under concurrency.
 - `slate-*` dark-mode colors → switch to `gray-*`.
 - Hardcoded `aria-label` that ignores `props.AriaLabel` → propagate via `utils.Ternary`.
 - Physical Tailwind properties (`ml-`, `mr-`, `pl-`, `pr-`, `left-`, `right-`, `text-left`,
-  bare `start-`, `end-` insets) → switch to logical (`ms-`, `me-`, `ps-`, `pe-`,
+  deprecated `start-`/`end-` insets) → switch to logical (`ms-`, `me-`, `ps-`, `pe-`,
   `inset-s-*`, `inset-e-*`, `text-start`).
 - Inline transition strings (`"transition-colors motion-reduce:..."`) → use the
   shared `transitionFast`/`transitionNormal`/`transitionColors`/`transitionTransform`
