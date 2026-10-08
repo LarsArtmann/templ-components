@@ -9,12 +9,12 @@
  * import this file so the custom CSS stays in one place.
  *
  * Color token policy (enforced by utils.TestCustomCSSThemeTokens): every
- * palette color references Tailwind v4 theme variables (var(--color-*)) so
- * consumer @theme overrides re-skin these rules with the rest of the
- * library. Alpha variants use Tailwind's build-time --alpha() function,
- * which compiles to a var-preserving color-mix() inside @supports. This
- * file is always compiled by Tailwind (imported by app.css / demo.css);
- * the plain-CSS equivalent of --alpha(C / N%) is
+ * palette color references Tailwind v4 theme variables (the --color-*
+ * namespace) so consumer @theme overrides re-skin these rules with the rest
+ * of the library. Alpha variants use Tailwind's build-time --alpha()
+ * function, which compiles to a var-preserving color-mix() inside @supports.
+ * This file is always compiled by Tailwind (imported by app.css /
+ * demo.css); the plain-CSS equivalent of --alpha(C / N%) is
  * color-mix(in srgb, C N%, transparent).
  */
 
@@ -948,9 +948,9 @@ details[open] [data-tc-chevron] {
  * component renders out of the box; consumers override either variable in
  * their own CSS (RGB triplets must be comma-separated (the component emits legacy rgba(var(--ds-brand-rgb), alpha)), e.g. "124, 58, 237").
  * Light uses violet-600, dark uses violet-500 (the -600/-500 convention).
- * --ds-brand tracks the Tailwind palette (var(--color-violet-*)); the
+ * --ds-brand tracks the Tailwind violet palette; the
  * --ds-brand-rgb comma triplets are the legacy alpha contract consumed by
- * Heatmap's rgba(var(--x-rgb), alpha) inline styles (ADR-0028) — they
+ * Heatmap's rgba() calls over --x-rgb (ADR-0028) — they
  * intentionally mirror violet-600/violet-500 and stay literal until that
  * contract modernizes to color-mix (v2 window; see ROADMAP).
  * ---------------------------------------------------------------------- */
