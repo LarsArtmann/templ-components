@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Ghost icon constants render their canonical glyph.** `icons.ArrowPath`,
+  `icons.Bars3`, and `icons.HandThumbUp` were exported `Name` constants with no
+  `iconPathData` entry — passing one to `icons.Icon()` silently rendered the
+  Question-mark fallback. The new `iconAliases` table points each duplicate-name
+  constant at its canonical entry (`ArrowPath→Refresh`, `Bars3→Menu`,
+  `HandThumbUp→ThumbUp`, plus `MapPin→Location` to complete the set), and
+  `TestAllExportedNameConstsHavePathDataOrAreSpecial` fails any future exported
+  const that lacks path data, an alias, or special status — the silent-wrong-glyph
+  class is closed (TODO_LIST #371).
+
 ## [1.21.0] — 2026-10-08
 
 ### Added
