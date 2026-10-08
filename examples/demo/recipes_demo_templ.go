@@ -54,7 +54,7 @@ func recipeUtilityBarLinks() templ.Component {
 		var templ_7745c5c3_Var2 templ.SafeURL
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(demoURL("/")))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/recipes_demo.templ`, Line: 22, Col: 38}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/recipes_demo.templ`, Line: 22, Col: 38}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -851,7 +851,7 @@ func activityItem(name, initials, action string, status display.AvatarStatus, ag
 		var templ_7745c5c3_Var25 string
 		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/recipes_demo.templ`, Line: 246, Col: 65}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/recipes_demo.templ`, Line: 246, Col: 65}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 		if templ_7745c5c3_Err != nil {
@@ -864,7 +864,7 @@ func activityItem(name, initials, action string, status display.AvatarStatus, ag
 		var templ_7745c5c3_Var26 string
 		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(" " + action)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/recipes_demo.templ`, Line: 247, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/recipes_demo.templ`, Line: 247, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 		if templ_7745c5c3_Err != nil {
@@ -1097,7 +1097,7 @@ func settingsAsideLink(sectionID, label string, sectionIcon icons.Name, active b
 		var templ_7745c5c3_Var34 templ.SafeURL
 		templ_7745c5c3_Var34, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL("#" + sectionID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/recipes_demo.templ`, Line: 294, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/recipes_demo.templ`, Line: 294, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var34))
 		if templ_7745c5c3_Err != nil {
@@ -1110,7 +1110,7 @@ func settingsAsideLink(sectionID, label string, sectionIcon icons.Name, active b
 		var templ_7745c5c3_Var35 string
 		templ_7745c5c3_Var35, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var33).String())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/recipes_demo.templ`, Line: 1, Col: 0}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/recipes_demo.templ`, Line: 1, Col: 0}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var35)
 		if templ_7745c5c3_Err != nil {
@@ -1131,7 +1131,7 @@ func settingsAsideLink(sectionID, label string, sectionIcon icons.Name, active b
 		var templ_7745c5c3_Var36 string
 		templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/recipes_demo.templ`, Line: 304, Col: 15}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/recipes_demo.templ`, Line: 304, Col: 15}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var36))
 		if templ_7745c5c3_Err != nil {

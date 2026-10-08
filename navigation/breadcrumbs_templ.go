@@ -148,7 +148,7 @@ func breadcrumbSeparator(custom string) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(custom)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/navigation/breadcrumbs.templ`, Line: 116, Col: 81}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 116, Col: 81}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -215,7 +215,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/navigation/breadcrumbs.templ`, Line: 134, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 134, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -233,7 +233,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var4).String())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/navigation/breadcrumbs.templ`, Line: 1, Col: 0}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 1, Col: 0}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
@@ -246,7 +246,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Breadcrumb"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/navigation/breadcrumbs.templ`, Line: 137, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 137, Col: 82}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 		if templ_7745c5c3_Err != nil {

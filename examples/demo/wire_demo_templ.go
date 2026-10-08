@@ -189,7 +189,7 @@ func wireDemo(transport demoTransport) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(transport.outID())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/wire_demo.templ`, Line: 100, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 100, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -825,7 +825,7 @@ func wireWizardStep(dialect wire.Transport, step int, message string) templ.Comp
 				var templ_7745c5c3_Var9 string
 				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(step))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/wire_demo.templ`, Line: 478, Col: 63}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 478, Col: 63}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 				if templ_7745c5c3_Err != nil {
@@ -1212,7 +1212,7 @@ func wireBusyButtonHTMX() templ.Component {
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.ResolveAttributeValue(demoURL("/api/wire/busy"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/wire_demo.templ`, Line: 618, Col: 37}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 618, Col: 37}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 		if templ_7745c5c3_Err != nil {
@@ -1668,7 +1668,7 @@ func wireTransportLink(label string, value demoTransport, active demoTransport) 
 			var templ_7745c5c3_Var27 templ.SafeURL
 			templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL("?transport=" + string(value) + "#wire-transport"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/wire_demo.templ`, Line: 808, Col: 72}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 808, Col: 72}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 			if templ_7745c5c3_Err != nil {
@@ -1681,7 +1681,7 @@ func wireTransportLink(label string, value demoTransport, active demoTransport) 
 			var templ_7745c5c3_Var28 string
 			templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/wire_demo.templ`, Line: 808, Col: 182}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 808, Col: 182}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 			if templ_7745c5c3_Err != nil {
@@ -1699,7 +1699,7 @@ func wireTransportLink(label string, value demoTransport, active demoTransport) 
 			var templ_7745c5c3_Var29 templ.SafeURL
 			templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL("?transport=" + string(value) + "#wire-transport"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/wire_demo.templ`, Line: 810, Col: 72}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 810, Col: 72}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 			if templ_7745c5c3_Err != nil {
@@ -1712,7 +1712,7 @@ func wireTransportLink(label string, value demoTransport, active demoTransport) 
 			var templ_7745c5c3_Var30 string
 			templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/wire_demo.templ`, Line: 810, Col: 196}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 810, Col: 196}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
 			if templ_7745c5c3_Err != nil {
@@ -1853,7 +1853,7 @@ func wireFilterResults(query string) templ.Component {
 			var templ_7745c5c3_Var34 string
 			templ_7745c5c3_Var34, templ_7745c5c3_Err = templ.JoinStringErrs(query)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/wire_demo.templ`, Line: 863, Col: 79}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 863, Col: 79}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var34))
 			if templ_7745c5c3_Err != nil {
@@ -1876,7 +1876,7 @@ func wireFilterResults(query string) templ.Component {
 				var templ_7745c5c3_Var35 string
 				templ_7745c5c3_Var35, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/wire_demo.templ`, Line: 867, Col: 29}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 867, Col: 29}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var35))
 				if templ_7745c5c3_Err != nil {
@@ -1926,7 +1926,7 @@ func wireSwapLine(stamp string) templ.Component {
 		var templ_7745c5c3_Var37 string
 		templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(stamp)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ-components/examples/demo/wire_demo.templ`, Line: 876, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 876, Col: 72}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var37))
 		if templ_7745c5c3_Err != nil {
