@@ -8,9 +8,9 @@ module github.com/larsartmann/templ-components/visualtest
 go 1.27
 
 require (
-	github.com/a-h/templ v0.3.1020
-	github.com/chromedp/cdproto v0.0.0-20260922220944-a19bff23514f
-	github.com/chromedp/chromedp v0.16.0
+	github.com/a-h/templ v0.3.1070
+	github.com/chromedp/cdproto v0.157.9
+	github.com/chromedp/chromedp v0.20.1
 	github.com/larsartmann/go-datastar/static v0.6.1
 	github.com/larsartmann/templ-components v0.0.0-00010101000000-000000000000
 	github.com/larsartmann/templ-components/datastar v1.20.1
@@ -23,13 +23,8 @@ require (
 
 require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
-	github.com/chromedp/sysutil v1.1.0 // indirect
 	github.com/go-json-experiment/json v0.0.0-20260820222146-c27c302e5fc3 // indirect
-	github.com/gobwas/httphead v0.1.0 // indirect
-	github.com/gobwas/pool v0.2.1 // indirect
-	github.com/gobwas/ws v1.4.0 // indirect
 	github.com/larsartmann/go-error-family v0.11.0 // indirect
-	golang.org/x/sys v0.48.0 // indirect
 )
 
 replace github.com/larsartmann/templ-components => ..
