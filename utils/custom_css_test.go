@@ -214,3 +214,53 @@ var cssClassExceptions = map[string]string{
 	"tc-datastar-announcer": "element ID (id=), not a CSS class",
 	"tc-form-loading":       "referenced in comment only, not a CSS class",
 }
+
+// rawColorLiteralRe matches hardcoded color literals: hex values, rgb()/rgba()
+// and hsl()/hsla() function calls. Palette colors must go through Tailwind v4
+// theme variables (var(--color-*) / --alpha()) so consumer @theme overrides
+// re-skin custom.css rules together with the components.
+var rawColorLiteralRe = regexp.MustCompile(`#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(`)
+
+// cssBlockCommentRe matches /* ... */ comments (including multiline).
+var cssBlockCommentRe = regexp.MustCompile(`(?s)/\*.*?\*/`)
+
+// TestCustomCSSThemeTokens fails on any raw hex/rgb/hsl color literal in
+// templates/custom.css (comments exempt). Bare comma triplets like the
+// ADR-0028 --ds-brand-rgb contract are deliberately NOT matched (they are
+// not color values); system keywords (transparent, currentcolor, CanvasText,
+// Highlight) are not color literals and pass.
+func TestCustomCSSThemeTokens(t *testing.T) {
+	t.Parallel()
+
+	cssPath := filepath.Join("..", "templates", "custom.css")
+
+	data, err := os.ReadFile(cssPath)
+	if err != nil {
+		t.Fatalf("cannot read templates/custom.css: %v", err)
+	}
+
+	stripped := cssBlockCommentRe.ReplaceAllString(string(data), "")
+
+	var violations []string
+
+	for i, line := range strings.Split(stripped, "\n") {
+		if !rawColorLiteralRe.MatchString(line) {
+			continue
+		}
+
+		violations = append(violations, fmt.Sprintf(
+			"  custom.css:%d: %s", i+1, strings.TrimSpace(line),
+		))
+	}
+
+	if len(violations) > 0 {
+		t.Errorf(
+			"%d raw color literal(s) in templates/custom.css — use theme tokens so consumer @theme overrides re-skin these rules:\n"+
+				"  palette colors: var(--color-blue-600) etc.\n"+
+				"  alpha variants: %s (Tailwind build-time; compiles to var-preserving color-mix)\n%s",
+			len(violations),
+			"--alpha(var(--color-blue-500) / 30%)",
+			strings.Join(violations, "\n"),
+		)
+	}
+}
