@@ -37,8 +37,10 @@ func TestRTLLogicalProperties(t *testing.T) {
 		`\b(ml-|mr-|pl-|pr-|text-left|text-right|border-l-|border-r-)`,
 	)
 
-	// Physical-positioning inset utilities: start-*/end-* resolve to
-	// left-*/right-* and do not mirror in RTL; inset-s-*/inset-e-* do.
+	// Deprecated physical-positioning inset utilities: start-*/end-* are
+	// v4.2-deprecated ALIASES of inset-s-*/inset-e-* (probe-verified 2026-10-08:
+	// identical logical output today — the ban is future-proofing against the
+	// aliases' removal, and keeps the canon on one form).
 	insetRe := regexp.MustCompile(`(?:^|[\s"'({])(start|end)-[a-z0-9.]`)
 
 	violations := 0

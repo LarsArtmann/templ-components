@@ -143,8 +143,11 @@ const (
 // ComparisonColumn is a competitor/library column of the matrix. The last
 // column (templ-components) is highlighted.
 //
+// Competitor facts verified 2026-10-08 (see docs/comparison.md): templUI was
+// renamed and reworked into shadcn-templ (vanilla JS, not Alpine.js).
+//
 //nolint:gochecknoglobals // site content table (ported from Astro data files)
-var ComparisonColumns = []string{"templUI", "goshipit", SiteName}
+var ComparisonColumns = []string{"shadcn-templ", "goshipit", SiteName}
 
 // ComparisonMatrixRow is one feature row of the comparison table.
 type ComparisonMatrixRow struct {
@@ -160,20 +163,27 @@ func ComparisonMatrix(stats build.Stats) []ComparisonMatrixRow {
 	return []ComparisonMatrixRow{
 		{
 			Feature: "CSS approach",
-			Values:  []MatrixCell{"Tailwind + vars", "Tailwind + DaisyUI", "Tailwind v4 CSS-first"},
+			Values:  []MatrixCell{"Tailwind v4 + vars (8 themes)", "Tailwind + DaisyUI", "Tailwind v4 CSS-first"},
 		},
-		{Feature: "JavaScript", Values: []MatrixCell{"Alpine.js", "DaisyUI JS", "HATEOAS (enhances HTML)"}},
+		{Feature: "JavaScript", Values: []MatrixCell{"Vanilla JS (bundled)", "HTMX", "HATEOAS (enhances HTML)"}},
 		{Feature: "Requires Node.js", Values: []MatrixCell{MatrixNo, MatrixYes, MatrixNo}},
 		{
 			Feature: "Typed props enums",
 			Values:  []MatrixCell{MatrixNo, MatrixNo, MatrixCell(fmt.Sprintf("%d (tested IsValid)", stats.Enums))},
 		},
-		{Feature: "CSP nonce support", Values: []MatrixCell{MatrixYes, MatrixNo, MatrixYes}},
+		{Feature: "CSP nonce support", Values: []MatrixCell{MatrixYes, "not documented", MatrixYes}},
 		{Feature: "Dark mode", Values: []MatrixCell{"CSS vars", "DaisyUI", "Tailwind dark: (tested)"}},
-		{Feature: "HTMX integration", Values: []MatrixCell{MatrixNo, MatrixNo, MatrixYes}},
-		{Feature: "Native SVG charts", Values: []MatrixCell{MatrixNo, MatrixNo, "yes (zero-JS)"}},
+		{Feature: "HTMX integration", Values: []MatrixCell{"compatible (tested)", "yes (core design)", MatrixYes}},
+		{Feature: "Datastar support", Values: []MatrixCell{MatrixNo, MatrixNo, MatrixYes}},
+		{
+			Feature: "Native SVG charts",
+			Values:  []MatrixCell{"client-rendered", MatrixNo, "yes (zero-JS)"},
+		},
 		{Feature: "ECharts adapter", Values: []MatrixCell{MatrixNo, MatrixNo, "yes (opt-in)"}},
-		{Feature: "Standalone library", Values: []MatrixCell{MatrixNo, MatrixNo, MatrixYes}},
+		{
+			Feature: "Distribution",
+			Values:  []MatrixCell{"copy-paste registry", "copy CLI (gsi)", "Go module (semver)"},
+		},
 	}
 }
 

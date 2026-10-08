@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`docs/comparison.md` — head-to-head comparison against the templ UI
+  ecosystem.** Compares templ-components with shadcn-templ (fka templUI),
+  goshipit, and the official templ examples: distribution models, component
+  breadth, JS/CSP architecture, testing depth, and an honest "where each
+  wins" section. All external facts date-stamped (verified 2026-10-08);
+  linked from the README comparison table and the website's Related
+  Projects page.
+
 - **Documented the children/render-context limitation on `Grid`.** Grid
   receives its cells through templ's children slot, so rendering the
   component into a plain writer from Go (`Component.Render(ctx, &buf)`
@@ -69,6 +77,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   without a declared dialect contract.
 
 ### Fixed
+
+- **README fact drift: competitor table, datastar count, package/test
+  numbers.** The comparison table still described templUI as a separate
+  current project using Alpine.js — templUI was renamed and reworked into
+  shadcn-templ (vanilla JS, ~64 components + 27 blocks); the table now
+  compares against shadcn-templ and a verified goshipit (52 components,
+  DaisyUI + HTMX). The `datastar` catalog heading said 4 components after
+  ADR-0042 grew the package to 6; "Packages 18" is now 20 (7 Go modules);
+  the test counts now match measurement (~1,775 test functions + ~1,650
+  subtests). The website's Related Projects page carried the same stale
+  templUI row and now points at the comparison doc.
 
 - **`Toggle`'s thumb (circle) actually slides when checked.** The thumb
   translate class (`peer-checked:translate-x-N`) was rendered on the thumb
