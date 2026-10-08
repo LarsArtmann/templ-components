@@ -135,11 +135,13 @@ func TestCheckboxWithoutIDDoesNotEmitEmptyFor(t *testing.T) {
 }
 
 // TestToggleEmitsCompletePeerCheckedClasses verifies that the toggle's thumb
-// translate classes are complete "peer-checked:*:" variant literals so
-// Tailwind's content scanner can detect them, and that the child variant is
-// used — a plain "peer-checked:translate-x-N" compiles to ":is(:where(.peer):checked ~ *)",
+// move classes are complete "peer-checked:*:" variant literals so Tailwind's
+// content scanner can detect them, and that the child variant is used — a
+// plain "peer-checked:inset-s-N" compiles to ":is(:where(.peer):checked ~ *)",
 // which only matches siblings of the peer input. The thumb is nested inside
 // the track, so that form never matches and the circle does not slide.
+// The motion itself is logical (inset-inline-start), not translate-x, so the
+// slide mirrors under dir="rtl" instead of pushing the thumb off-track.
 func TestToggleEmitsCompletePeerCheckedClasses(t *testing.T) {
 	t.Parallel()
 
@@ -148,9 +150,9 @@ func TestToggleEmitsCompletePeerCheckedClasses(t *testing.T) {
 		size ToggleSize
 		want string
 	}{
-		{"sm", ToggleSizeSM, "peer-checked:*:translate-x-4"},
-		{"md default", ToggleSizeMD, "peer-checked:*:translate-x-5"},
-		{"lg", ToggleSizeLG, "peer-checked:*:translate-x-6"},
+		{"sm", ToggleSizeSM, "peer-checked:*:inset-s-4.5"},
+		{"md default", ToggleSizeMD, "peer-checked:*:inset-s-5.5"},
+		{"lg", ToggleSizeLG, "peer-checked:*:inset-s-6.5"},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -160,7 +162,9 @@ func TestToggleEmitsCompletePeerCheckedClasses(t *testing.T) {
 				Size:  tt.size,
 			}))
 			utils.AssertContains(t, output, tt.want)
+			utils.AssertContains(t, output, "transition-[inset-inline-start]")
 			utils.AssertNotContains(t, output, "peer-checked:translate-")
+			utils.AssertNotContains(t, output, "translate-x-")
 		})
 	}
 }

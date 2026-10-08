@@ -130,15 +130,17 @@ func run(dist, out string) error {
 	tabCtx, tabCancel = context.WithTimeout(tabCtx, routeTimeout)
 	defer tabCancel()
 
-	var png []byte
-
-	if err := chromedp.Run(tabCtx,
+	if err := chromedp.Do(tabCtx,
 		chromedp.EmulateViewport(ogWidth, ogHeight),
 		chromedp.Navigate(base+"/"+ogPageName),
 		chromedp.WaitReady("body"),
 		chromedp.Sleep(settle),
-		chromedp.FullScreenshot(&png, shotQuality),
 	); err != nil {
+		return fmt.Errorf("capture OG card: %w", err)
+	}
+
+	png, err := chromedp.Run(tabCtx, chromedp.FullScreenshot(shotQuality))
+	if err != nil {
 		return fmt.Errorf("capture OG card: %w", err)
 	}
 

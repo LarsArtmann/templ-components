@@ -31,36 +31,44 @@ func DefaultToggleProps() ToggleProps {
 	}
 }
 
-// toggleSizeClasses returns the track, thumb, and translate classes for each size
-func toggleSizeClasses(size ToggleSize) (track, thumb, translate string) {
+// toggleSizeClasses returns the track, thumb, and checked-state move classes for each size
+func toggleSizeClasses(size ToggleSize) (track, thumb, move string) {
 	s := toggleSizeLookup(size)
-	return s.Track, s.Thumb, s.Translate
+	return s.Track, s.Thumb, s.Move
 }
 
 type toggleSizeSet struct {
-	Track, Thumb, Translate string
+	Track, Thumb, Move string
 }
 
-// Translate values include the complete "peer-checked:*:" variant prefix as a
+// Move values include the complete "peer-checked:*:" variant prefix as a
 // literal so Tailwind's content scanner can detect them. Concatenating the
 // variant at runtime ("peer-checked:" + x) produces an invisible token that
 // the scanner never finds, so the generated CSS omits the class and the thumb
 // does not slide.
 //
-// The translate class is applied to the TRACK, not the thumb: Tailwind's
+// The move class is applied to the TRACK, not the thumb: Tailwind's
 // peer-checked variant compiles to ":is(:where(.peer):checked ~ *)", which
 // only matches SIBLINGS of the peer input. The thumb is nested inside the
 // track, so a peer-checked class on the thumb itself can never match (the
 // circle never moved). The "*" child variant reaches it:
-// peer-checked:*:translate-x-N compiles to "sibling-of-checked-peer > *".
+// peer-checked:*:inset-s-N compiles to "sibling-of-checked-peer > *".
+//
+// The thumb moves via inset-inline-start (logical), not translate-x
+// (physical): the unchecked thumb rests at inset-s-0.5, so checked must set
+// the end-of-track position 0.125rem from the inline end
+// (track − thumb − 2×0.125rem, in spacing units: 4.5/5.5/6.5). translate-x
+// is physical and would push the thumb off the track's start edge in RTL;
+// inset-inline-start mirrors with dir="rtl" in both rest and checked states.
+// The thumb animates via transition-[inset-inline-start].
 //
 //nolint:gochecknoglobals // Package-level lookup table for toggle sizes.
 var toggleSizeMap = map[ToggleSize]toggleSizeSet{
-	ToggleSizeSM: {"w-9 h-5", "w-4 h-4", "peer-checked:*:translate-x-4"},
-	ToggleSizeLG: {"w-14 h-8", "w-7 h-7", "peer-checked:*:translate-x-6"},
+	ToggleSizeSM: {"w-9 h-5", "w-4 h-4", "peer-checked:*:inset-s-4.5"},
+	ToggleSizeLG: {"w-14 h-8", "w-7 h-7", "peer-checked:*:inset-s-6.5"},
 }
 
-var toggleSizeDefault = toggleSizeSet{"w-11 h-6", "w-5 h-5", "peer-checked:*:translate-x-5"}
+var toggleSizeDefault = toggleSizeSet{"w-11 h-6", "w-5 h-5", "peer-checked:*:inset-s-5.5"}
 
 func toggleSizeLookup(size ToggleSize) toggleSizeSet {
 	return utils.Lookup(toggleSizeMap, size, toggleSizeDefault)
@@ -71,7 +79,7 @@ func toggleSizeLookup(size ToggleSize) toggleSizeSet {
 //
 //	@forms.Toggle(forms.ToggleProps{Name: "notifications", Label: "Enable notifications", Checked: true})
 templ Toggle(props ToggleProps) {
-	{{ trackClass, thumbClass, translateClass := toggleSizeClasses(props.Size) }}
+	{{ trackClass, thumbClass, moveClass := toggleSizeClasses(props.Size) }}
 	<label
 		class={ utils.Class("flex w-fit cursor-pointer items-center", utils.Ternary(props.Disabled, "opacity-50 cursor-not-allowed", "cursor-pointer"), props.Class) }
 		if props.AriaLabel != "" {
@@ -98,8 +106,8 @@ templ Toggle(props ToggleProps) {
 			}
 			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
 		/>
-		<span class={ utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700 dark:peer-checked:bg-blue-500 motion-reduce:transition-none", trackClass, translateClass) }>
-			<span class={ utils.Class("absolute top-0.5 inset-s-0.5 rounded-full bg-white shadow-sm transition-transform motion-reduce:transition-none", thumbClass) }></span>
+		<span class={ utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700 dark:peer-checked:bg-blue-500 motion-reduce:transition-none", trackClass, moveClass) }>
+			<span class={ utils.Class("absolute top-0.5 inset-s-0.5 rounded-full bg-white shadow-sm transition-[inset-inline-start] motion-reduce:transition-none", thumbClass) }></span>
 		</span>
 		if props.Label != "" {
 			<span class="ms-3 text-sm font-medium text-gray-900 dark:text-white">{ props.Label }</span>

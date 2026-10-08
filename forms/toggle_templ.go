@@ -39,36 +39,44 @@ func DefaultToggleProps() ToggleProps {
 	}
 }
 
-// toggleSizeClasses returns the track, thumb, and translate classes for each size
-func toggleSizeClasses(size ToggleSize) (track, thumb, translate string) {
+// toggleSizeClasses returns the track, thumb, and checked-state move classes for each size
+func toggleSizeClasses(size ToggleSize) (track, thumb, move string) {
 	s := toggleSizeLookup(size)
-	return s.Track, s.Thumb, s.Translate
+	return s.Track, s.Thumb, s.Move
 }
 
 type toggleSizeSet struct {
-	Track, Thumb, Translate string
+	Track, Thumb, Move string
 }
 
-// Translate values include the complete "peer-checked:*:" variant prefix as a
+// Move values include the complete "peer-checked:*:" variant prefix as a
 // literal so Tailwind's content scanner can detect them. Concatenating the
 // variant at runtime ("peer-checked:" + x) produces an invisible token that
 // the scanner never finds, so the generated CSS omits the class and the thumb
 // does not slide.
 //
-// The translate class is applied to the TRACK, not the thumb: Tailwind's
+// The move class is applied to the TRACK, not the thumb: Tailwind's
 // peer-checked variant compiles to ":is(:where(.peer):checked ~ *)", which
 // only matches SIBLINGS of the peer input. The thumb is nested inside the
 // track, so a peer-checked class on the thumb itself can never match (the
 // circle never moved). The "*" child variant reaches it:
-// peer-checked:*:translate-x-N compiles to "sibling-of-checked-peer > *".
+// peer-checked:*:inset-s-N compiles to "sibling-of-checked-peer > *".
+//
+// The thumb moves via inset-inline-start (logical), not translate-x
+// (physical): the unchecked thumb rests at inset-s-0.5, so checked must set
+// the end-of-track position 0.125rem from the inline end
+// (track − thumb − 2×0.125rem, in spacing units: 4.5/5.5/6.5). translate-x
+// is physical and would push the thumb off the track's start edge in RTL;
+// inset-inline-start mirrors with dir="rtl" in both rest and checked states.
+// The thumb animates via transition-[inset-inline-start].
 //
 //nolint:gochecknoglobals // Package-level lookup table for toggle sizes.
 var toggleSizeMap = map[ToggleSize]toggleSizeSet{
-	ToggleSizeSM: {"w-9 h-5", "w-4 h-4", "peer-checked:*:translate-x-4"},
-	ToggleSizeLG: {"w-14 h-8", "w-7 h-7", "peer-checked:*:translate-x-6"},
+	ToggleSizeSM: {"w-9 h-5", "w-4 h-4", "peer-checked:*:inset-s-4.5"},
+	ToggleSizeLG: {"w-14 h-8", "w-7 h-7", "peer-checked:*:inset-s-6.5"},
 }
 
-var toggleSizeDefault = toggleSizeSet{"w-11 h-6", "w-5 h-5", "peer-checked:*:translate-x-5"}
+var toggleSizeDefault = toggleSizeSet{"w-11 h-6", "w-5 h-5", "peer-checked:*:inset-s-5.5"}
 
 func toggleSizeLookup(size ToggleSize) toggleSizeSet {
 	return utils.Lookup(toggleSizeMap, size, toggleSizeDefault)
@@ -99,7 +107,7 @@ func Toggle(props ToggleProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		trackClass, thumbClass, translateClass := toggleSizeClasses(props.Size)
+		trackClass, thumbClass, moveClass := toggleSizeClasses(props.Size)
 		var templ_7745c5c3_Var2 = []any{utils.Class("flex w-fit cursor-pointer items-center", utils.Ternary(props.Disabled, "opacity-50 cursor-not-allowed", "cursor-pointer"), props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
@@ -130,7 +138,7 @@ func Toggle(props ToggleProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 78, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 86, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -152,7 +160,7 @@ func Toggle(props ToggleProps) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 84, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 92, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
@@ -170,7 +178,7 @@ func Toggle(props ToggleProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 86, Col: 17}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 94, Col: 17}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -211,7 +219,7 @@ func Toggle(props ToggleProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var7 = []any{utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700 dark:peer-checked:bg-blue-500 motion-reduce:transition-none", trackClass, translateClass)}
+		var templ_7745c5c3_Var7 = []any{utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700 dark:peer-checked:bg-blue-500 motion-reduce:transition-none", trackClass, moveClass)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -233,7 +241,7 @@ func Toggle(props ToggleProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var9 = []any{utils.Class("absolute top-0.5 inset-s-0.5 rounded-full bg-white shadow-sm transition-transform motion-reduce:transition-none", thumbClass)}
+		var templ_7745c5c3_Var9 = []any{utils.Class("absolute top-0.5 inset-s-0.5 rounded-full bg-white shadow-sm transition-[inset-inline-start] motion-reduce:transition-none", thumbClass)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -263,7 +271,7 @@ func Toggle(props ToggleProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(props.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 105, Col: 85}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 113, Col: 85}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {

@@ -9,8 +9,8 @@ import (
 // setRTL returns a chromedp action flipping the document to right-to-left —
 // the browser-level trigger for the logical-property mirroring the RTL
 // compliance scanner can only approximate.
-func setRTL() chromedp.Action {
-	return evalVoid(`document.documentElement.setAttribute('dir','rtl');`)
+func setRTL() chromedp.Action[chromedp.Void] {
+	return chromedp.Evaluate[chromedp.Void](`document.documentElement.setAttribute('dir','rtl');`)
 }
 
 // TestDemoRTLNoHorizontalOverflow proves the demo routes keep physical

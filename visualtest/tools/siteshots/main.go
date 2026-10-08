@@ -202,24 +202,26 @@ func screenshot(url, theme string, width, height int, target string) error {
 		theme, theme,
 	)
 
-	var png []byte
-
 	actions := []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(width), int64(height)),
 		chromedp.Navigate(url),
 		chromedp.WaitReady("body"),
 		chromedp.Sleep(navigationSettle),
-		evalVoid(setTheme),
+		chromedp.Evaluate[chromedp.Void](setTheme),
 		chromedp.Reload(),
 		chromedp.WaitReady("body"),
 		chromedp.Sleep(settle),
-		evalVoid(setTheme),
-		evalVoid(scrollRevealJS),
+		chromedp.Evaluate[chromedp.Void](setTheme),
+		chromedp.Evaluate[chromedp.Void](scrollRevealJS),
 		chromedp.Sleep(settle),
-		chromedp.FullScreenshot(&png, screenshotQuality),
 	}
 
-	if err := chromedp.Run(tabCtx, actions...); err != nil {
+	if err := chromedp.Do(tabCtx, actions...); err != nil {
+		return err
+	}
+
+	png, err := chromedp.Run(tabCtx, chromedp.FullScreenshot(screenshotQuality))
+	if err != nil {
 		return err
 	}
 
@@ -248,23 +250,28 @@ func searchSmoke(base, out string) error {
 	tabCtx, tabCancel = context.WithTimeout(tabCtx, routeTimeout)
 	defer tabCancel()
 
-	var hits int
-
 	queryJS := `(() => { const el = document.querySelector('#doc-search-input');
 		el.focus(); el.value = 'component';
 		el.dispatchEvent(new Event('input', {bubbles: true})); })()`
 
-	var png []byte
-
-	err := chromedp.Run(tabCtx,
+	if err := chromedp.Do(tabCtx,
 		chromedp.Navigate(base+"/getting-started/installation"),
 		chromedp.WaitReady("body"),
 		chromedp.Sleep(settle),
-		evalVoid(queryJS),
+		chromedp.Evaluate[chromedp.Void](queryJS),
 		chromedp.Sleep(2*settle),
-		evalExprInto(`document.querySelectorAll('#doc-search-results .doc-search-hit').length`, &hits),
-		chromedp.FullScreenshot(&png, screenshotQuality),
-	)
+	); err != nil {
+		return fmt.Errorf("search smoke: %w", err)
+	}
+
+	hits, err := chromedp.Run(tabCtx, chromedp.Evaluate[int](
+		`document.querySelectorAll('#doc-search-results .doc-search-hit').length`,
+	))
+	if err != nil {
+		return fmt.Errorf("search smoke: %w", err)
+	}
+
+	png, err := chromedp.Run(tabCtx, chromedp.FullScreenshot(screenshotQuality))
 	if err != nil {
 		return fmt.Errorf("search smoke: %w", err)
 	}

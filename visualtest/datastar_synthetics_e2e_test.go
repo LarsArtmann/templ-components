@@ -54,8 +54,8 @@ func datastarSyntheticsServer(t *testing.T) *httptest.Server {
 
 // dispatchDatastarFetch synthesizes the document-level datastar-fetch event
 // whose detail mirrors the DataStar runtime's shape.
-func dispatchDatastarFetch(detailJSON string) chromedp.Action {
-	return evalVoid(
+func dispatchDatastarFetch(detailJSON string) chromedp.Action[chromedp.Void] {
+	return chromedp.Evaluate[chromedp.Void](
 		`document.dispatchEvent(new CustomEvent('datastar-fetch', {detail: ` + detailJSON + `}));`)
 
 }

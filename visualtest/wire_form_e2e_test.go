@@ -80,7 +80,7 @@ func setFieldValue(region, field, value string) chromedp.Action[chromedp.Void] {
 
 // waitSwapSettled blocks until a freshly swapped region is safe to interact
 // with again (see wireFormSettleWait).
-func waitSwapSettled() chromedp.Action {
+func waitSwapSettled() chromedp.Action[chromedp.Void] {
 	return chromedp.Sleep(wireFormSettleWait)
 }
 

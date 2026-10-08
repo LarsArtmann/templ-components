@@ -164,33 +164,52 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 
 	var docStatus int64
 
-	chromedp.ListenTarget(ctx, func(ev any) {
-		received, ok := ev.(*network.EventResponseReceived)
-		if !ok || received.Type != network.ResourceTypeDocument {
-			return
-		}
-
-		docStatus = received.Response.Status
-	})
-
-	var light, dark []byte
-
-	tasks := captureTasks(base, p.path, modes, width, &light, &dark)
-
 	start := time.Now()
 
-	if err := chromedp.Run(ctx, tasks...); err != nil {
+	// RunResponse returns the main-frame document response of the navigation in
+	// the steps — the v0.20 replacement for the old ListenTarget + network.Enable
+	// docStatus handshake. resp is non-nil whenever the navigation itself
+	// succeeded, even if a later step failed, so error messages keep the status.
+	resp, runErr := chromedp.RunResponse(ctx, captureTasks(base, p.path, width)...)
+	if resp != nil {
+		docStatus = int64(resp.Status)
+	}
+
+	if runErr != nil {
 		return fmt.Errorf(
 			"chromium (execPath=%s, docStatus=%d) after %s: %w",
 			execPath,
 			docStatus,
 			time.Since(start).Round(time.Second),
-			err,
+			runErr,
 		)
 	}
 
 	if err := rejectErrorPage(p, execPath, docStatus); err != nil {
 		return fmt.Errorf("capture %s (execPath=%s, docStatus=%d): %w", p.path, execPath, docStatus, err)
+	}
+
+	has := func(m string) bool { return slices.Contains(modes, m) }
+
+	light, err := chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
+	if err != nil {
+		return fmt.Errorf("capture light (execPath=%s, docStatus=%d): %w", execPath, docStatus, err)
+	}
+
+	var dark []byte
+
+	if has(modeDark) {
+		if err := chromedp.Do(ctx,
+			chromedp.Evaluate[chromedp.Void](`document.documentElement.classList.add('dark');`),
+			chromedp.Sleep(2*settle),
+		); err != nil {
+			return fmt.Errorf("toggle dark (execPath=%s, docStatus=%d): %w", execPath, docStatus, err)
+		}
+
+		dark, err = chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
+		if err != nil {
+			return fmt.Errorf("capture dark (execPath=%s, docStatus=%d): %w", execPath, docStatus, err)
+		}
 	}
 
 	for _, mode := range modes {
@@ -207,35 +226,17 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 	return nil
 }
 
-// captureTasks builds the chromedp action sequence: navigate, wait for layout
-// to settle, then screenshot every requested mode (dark toggles the class in
-// place on the same tab — no re-navigation).
-func captureTasks(base, path string, modes []string, width int, light, dark *[]byte) []chromedp.Action {
-	has := func(m string) bool {
-		return slices.Contains(modes, m)
-	}
-
-	tasks := []chromedp.Action[chromedp.Void]{
+// captureTasks builds the chromedp action sequence: viewport, navigation (its
+// main-frame response is returned by RunResponse), then wait for layout to
+// settle. Dark-mode toggling and the screenshots happen in capturePage so the
+// PNG bytes come from the typed FullScreenshot action.
+func captureTasks(base, path string, width int) []chromedp.Action[chromedp.Void] {
+	return []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(width), shotsViewportHeight),
-		network.Enable(),
 		chromedp.Navigate(base + path),
 		chromedp.WaitReady(chromedp.CSS("body")),
 		chromedp.Sleep(settle),
 	}
-
-	if has(modeLight) {
-		tasks = append(tasks, chromedp.FullScreenshot(light, screenshotQuality))
-	}
-
-	if has(modeDark) {
-		tasks = append(tasks,
-			evalVoid(`document.documentElement.classList.add('dark');`),
-			chromedp.Sleep(2*settle),
-			chromedp.FullScreenshot(dark, screenshotQuality),
-		)
-	}
-
-	return tasks
 }
 
 // rejectErrorPage refuses to capture when the main-frame response was an HTTP
