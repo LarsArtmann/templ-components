@@ -8,6 +8,12 @@
 > motion design best practices, and form-handling patterns for server-rendered apps.
 >
 > **Date:** 2026-07-05 · **Audience:** templ-components maintainers
+>
+> **Competitor-landscape note (2026-10-08):** "templui" below is templUI v1
+> (axzilla/templui), which was renamed and reworked into **shadcn-templ**
+> (vanilla JS, no Alpine) after this research was written. The analysis is
+> preserved as written; current competitor facts live in
+> [`docs/comparison.md`](../comparison.md).
 
 ---
 
