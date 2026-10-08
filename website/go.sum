@@ -1,7 +1,7 @@
 github.com/Oudwins/tailwind-merge-go v0.2.3 h1:RCiZ/DlLpoJnE5QSs1sRPDtIs3We0RQpsLH7bBWfbUI=
 github.com/Oudwins/tailwind-merge-go v0.2.3/go.mod h1:kkZodgOPvZQ8f7SIrlWkG/w1g9JTbtnptnePIh3V72U=
-github.com/a-h/templ v0.3.1070 h1:3iCOXHXqFXa99OQzgkUOLJbNzv/QjFGLwKZkBAg+ADA=
-github.com/a-h/templ v0.3.1070/go.mod h1:iIqB3g2RHBe/WlnPwa+Bvhh1TKXHWLRnBD9NWHOLm78=
+github.com/a-h/templ v0.3.1020 h1:ypAT/L5ySWEnZ6Zft/5yfoWXYYkhFNvEFOeeqecg4tw=
+github.com/a-h/templ v0.3.1020/go.mod h1:A2DlK61v+K+NRoGnhmYbNYVmtYHcFO5/AisMvBdDxTM=
 github.com/alecthomas/assert/v2 v2.11.0 h1:2Q9r3ki8+JYXvGsDyBXwH3LcJ+WK5D0gc5E8vS6K3D0=
 github.com/alecthomas/assert/v2 v2.11.0/go.mod h1:Bze95FyfUr7x34QZrjL+XP+0qgp/zg8yS+TtBj1WA3k=
 github.com/alecthomas/chroma/v2 v2.2.0/go.mod h1:vf4zrexSH54oEjJ7EdB65tGNHmH3pGZmVkgTP5RHvAs=
@@ -16,8 +16,8 @@ github.com/dlclark/regexp2 v1.4.0/go.mod h1:2pZnwuY/m+8K6iRw6wQdMtk+rH5tNGR1i55k
 github.com/dlclark/regexp2 v1.7.0/go.mod h1:DHkYz0B9wPfa6wondMfaivmHpzrQ3v9q8cnmRbL6yW8=
 github.com/dlclark/regexp2/v2 v2.8.4 h1:yfDDXTn4oxyLDC10/ieOBNDCCdIVWS9WbT6ddVXsPKI=
 github.com/dlclark/regexp2/v2 v2.8.4/go.mod h1:avUrQvPaLz2DrFNHJF0taWAFFX2C1GMSSoeiqFjcBmU=
-github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
-github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
+github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
+github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/hexops/gotextdiff v1.0.3 h1:gitA9+qJrrTCsiCl7+kh75nPqQt1cx4ZkudSTLoUqJM=
 github.com/hexops/gotextdiff v1.0.3/go.mod h1:pSWU5MAI3yDq+fZBTazCSJysOMbxWL1BSow5/V2vxeg=
 github.com/larsartmann/go-error-family v0.11.0 h1:xqXLKrTMznStmHUapxd/6Fj5/878sb4SIZiy4JvCItQ=

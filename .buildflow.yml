@@ -41,3 +41,13 @@ skip_steps:
   # utils.TestTemplVersionPin is the enforcement. Re-enable only after #335
   # lands (or when the step learns to respect pinned rejects).
   - go-auto-upgrade
+  # go-mod-update skipped 2026-10-08 (same root cause as go-auto-upgrade):
+  # the step re-applied the templ v0.3.1070 go.mod bump to EVERY module
+  # within minutes (verified live twice: a manual `-s "go-mod-update
+  # [visualtest]" --fix` run and the background BuildFlow watcher's cycle)
+  # while the bump is deliberately deferred to TODO_LIST #335 (flake
+  # generator pin + golden re-baseline); utils.TestTemplVersionPin is the
+  # enforcement. The step's other work (post-bump tidy) is covered by the
+  # per-module go.sum checks; re-enable only after #335 lands (or when the
+  # step learns to respect pinned rejects).
+  - go-mod-update

@@ -108,11 +108,8 @@ any other version produces non-zero diffs (the v0.3.1036-era system binary emitt
 import-block changes across all 51 `*_templ.go` files; full history:
 `docs/agent-context-history.md#templ-version`).
 
-- **v0.3.1070 is on the proxy but stays unpinned (TODO_LIST #335):** it changes generator OUTPUT
-  (icon+label spacing flips goldens and rendered HTML at every icon+label site). Migration needs a
-  flake-level generator pin, a golden + pixel-visual re-baseline, and a source-trim review — do NOT
-  "just bump". **The daemon re-applies the bump (twice 2026-10-05, again 2026-10-06; now caught by
-  `utils.TestTemplVersionPin`)** — if ANY go.mod shows templ ≠ v0.3.1020, restore before anything else.
+- **v0.3.1070 is on the proxy but stays unpinned (TODO_LIST #335):** it changes generator OUTPUT (icon+label spacing flips goldens and rendered HTML at every icon+label site). Migration needs a flake-level generator pin, a golden + pixel-visual re-baseline, and a source-trim review — do NOT "just bump".
+  **The bump keeps being re-applied (daemon: twice 2026-10-05, again 2026-10-06; BuildFlow's `go-mod-update` repair step: 2026-10-08; now caught by `utils.TestTemplVersionPin`)** — if ANY go.mod shows templ ≠ v0.3.1020, restore before anything else.
 - **Never import `"github.com/a-h/templ"` explicitly in a `.templ` file** — the generator auto-injects
   it; an explicit import is a `templ redeclared in this block` build error in the generated file.
 - The templ LSP reports stale cross-module diagnostics long after edits — `nix run .#build` + a fresh
@@ -121,14 +118,8 @@ import-block changes across all 51 `*_templ.go` files; full history:
 - **Toolchain input split (2026-09-02):** the Go toolchain comes from a dedicated `nixpkgs-go` flake
   input while `templ`/`golangci-lint` stay on the locked `nixpkgs` — a wholesale input bump would
   drift `pkgs.templ` past the go.mod pin and break the zero-diff invariant.
-- **Tailwind lane pin checklist (F-20, 2026-10-08):** the demo CSS compiles through THREE lanes that
-  must move in LOCKSTEP — the nix dev shell (`pkgs.tailwindcss_4`), the demo Dockerfile
-  (`pnpm add tailwindcss@X @tailwindcss/cli@X`), and `website.yml` (`npm install --no-save …@X`).
-  All three currently pin **4.3.3** (verified identical output via the pinned binary). When bumping
-  Tailwind: bump all three in one commit, recompile `examples/demo/static/app.css` (`nix run .#css`),
-  re-run the visual suite (compiled CSS shifts pixels), and re-probe any `--alpha()`/new-utility
-  assumptions with the NEW binary before shipping (`verify-at-source`; the comma-form `--alpha(a, b)`
-  is a hard build error — slash form only).
+- **Tailwind lane pin checklist (F-20, 2026-10-08):** the demo CSS compiles through THREE lanes that must move in LOCKSTEP — the nix dev shell (`pkgs.tailwindcss_4`), the demo Dockerfile (`pnpm add tailwindcss@X @tailwindcss/cli@X`), and `website.yml` (`npm install --no-save …@X`). All three currently pin **4.3.3** (verified identical output via the pinned binary).
+  When bumping Tailwind: bump all three in one commit, recompile `examples/demo/static/app.css` (`nix run .#css`), re-run the visual suite (compiled CSS shifts pixels), and re-probe any `--alpha()`/new-utility assumptions with the NEW binary before shipping (`verify-at-source`; the comma-form `--alpha(a, b)` is a hard build error — slash form only).
 
 ## Architecture
 
