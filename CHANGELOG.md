@@ -66,6 +66,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **Canonical repo-root FileName paths in generated echarts templates.**
+  `charts/echarts/echarts_templ.go` carried module-dir-relative
+  `templ.Error` FileName paths; regenerated with the pinned v0.3.1020
+  generator from the repo root so the tree matches a fresh root-level
+  `templ generate` byte-for-byte (internal; no rendered-output change).
+
 - **visualtest migrated to chromedp v0.20.1 (generic `Action[T]` API) +
   cdproto v0.157.9.** The dependency bump had broken the test module's
   compile (BuildFlow loop-detected 6 failed `go-mod-update` runs); ~40 test
