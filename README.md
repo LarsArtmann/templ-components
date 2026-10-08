@@ -93,10 +93,15 @@ UI in a Go binary — without adopting a frontend stack.
 | Components     | 123                                                 |
 | SVG icons      | 102                                                 |
 | Typed enums    | 64 (63 with IsValid)                                |
-| Packages       | 20 (across 7 Go modules)                            |
+| Packages       | 17 (across 7 Go modules)                            |
 | Tests          | ~1,600 test functions + ~1,650 subtests             |
 | Visual goldens | 200 pixel-level regression tests (chromedp)         |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
+
+Packages = the importable Go packages across the published modules
+(`internal/`, `cmd/`, and `examples/` tooling excluded). Tests = `func
+Test/Fuzz/Benchmark` declarations in those packages, rounded to the nearest
+hundred; both rows are computed live by `utils.TestDocsCountDrift`.
 
 ---
 

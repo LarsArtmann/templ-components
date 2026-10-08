@@ -92,6 +92,25 @@ func TestDocsCountDrift(t *testing.T) {
 	// pattern itself contains backticks.
 	assertCount(t, readme, "(\\d+) `\\.golden` files", "README.md HTML golden baselines", actualHTMLGoldens)
 
+	// Packages/Tests rows (T6, 2026-10-08): the hand-typed "20 packages" was
+	// inflated (it counted cmd/examples/internal tooling) and the test-count
+	// scope was undefined — both now compute live. Packages = importable
+	// public packages across the 7 published modules; Tests = Test/Fuzz/
+	// Benchmark declarations in those packages, rounded to the nearest
+	// hundred (demo, cmd, and internal tooling excluded).
+	actualPackages := countPublicPackages(t, root)
+	actualModules := countPublishedModules(t, root)
+	assertCount(t, readme, `Packages\s+\|\s+(\d+)`, "README.md packages", actualPackages)
+	assertCount(t, readme, `\((\d+) Go modules\)`, "README.md Go modules", actualModules)
+
+	actualTestFuncs, actualSubtests := countLibraryTests(t, root)
+	assertRoundedCount(t, readme, `~([\d,]+) test functions`, "README.md test functions", actualTestFuncs)
+	assertRoundedCount(t, readme, `~([\d,]+) subtests`, "README.md subtests", actualSubtests)
+
+	// The UseCases card's per-package component count ("23 form components")
+	// must track the forms package's real exported count.
+	assertCount(t, readme, `(\d+) form components`, "README.md form components", packageCounts["forms"])
+
 	for pkg, want := range packageCounts {
 		if want == 0 {
 			continue
@@ -107,6 +126,15 @@ func TestDocsCountDrift(t *testing.T) {
 	assertCount(t, roadmap, `(\d+)[^0-9]{0,6}templ components across`, "ROADMAP.md components", actualComponents)
 	assertCount(t, roadmap, `(\d+)\s+goldens`, "ROADMAP.md visual goldens", actualVisualGoldens)
 	assertCount(t, roadmap, `(\d+)\s+baselines`, "ROADMAP.md HTML golden baselines", actualHTMLGoldens)
+
+	// The head-to-head doc (docs/comparison.md) hand-types our canonical
+	// numbers in its snapshot table — pinned like every other doc (T6.2).
+	comparison := readDoc(t, "docs", "comparison.md")
+	assertCount(t, comparison, `(\d+) primitives \+`, "comparison.md components", actualComponents)
+	assertCount(t, comparison, `(\d+) typed names`, "comparison.md icons", actualIcons)
+	assertCount(t, comparison, `(\d+) with .IsValid\(\)`, "comparison.md IsValid methods", actualIsValid)
+	assertCount(t, comparison, `(\d+) HTML goldens`, "comparison.md HTML goldens", actualHTMLGoldens)
+	assertCount(t, comparison, `HTML goldens, (\d+) pixel goldens`, "comparison.md pixel goldens", actualVisualGoldens)
 }
 
 func countExportedTemplFunctions(t *testing.T, root string) int {
@@ -399,5 +427,166 @@ func assertCount(t *testing.T, doc []byte, pattern, label string, want int) {
 
 	if got != want {
 		t.Errorf("%s says %d; actual is %d", label, got, want)
+	}
+}
+
+// publishedModules are the 7 consumer-facing Go modules. visualtest/ and
+// website/ are repo-local (own go.mod, never published) — excluded here and
+// from every count derived from this list.
+var publishedModules = []string{".", "utils", "icons", "errorpage", "charts/echarts", "htmx", "datastar"}
+
+// nonConsumerDirs mark directory segments that are tooling or scaffolding,
+// never an importable consumer surface.
+var nonConsumerDirs = map[string]bool{
+	"internal":     true,
+	"examples":     true,
+	"cmd":          true,
+	"testdata":     true,
+	"node_modules": true,
+}
+
+// countPublicPackages counts importable packages across the published
+// modules: the module root (when it has Go files) plus subdirectories that
+// contain Go files, skipping tooling directories. Must match `go list ./...`
+// across those modules minus internal/cmd/examples (17 as of 2026-10-08).
+func countPublicPackages(t *testing.T, root string) int {
+	t.Helper()
+
+	count := 0
+
+	for _, mod := range publishedModules {
+		goFiles, err := filepath.Glob(filepath.Join(root, mod, "*.go"))
+		if err != nil {
+			t.Fatalf("glob %s: %v", mod, err)
+		}
+
+		if len(goFiles) > 0 {
+			count++
+		}
+
+		entries, err := os.ReadDir(filepath.Join(root, mod))
+		if err != nil {
+			t.Fatalf("read %s: %v", mod, err)
+		}
+
+		for _, entry := range entries {
+			if !entry.IsDir() || nonConsumerDirs[entry.Name()] || strings.HasPrefix(entry.Name(), ".") {
+				continue
+			}
+
+			sub := filepath.Join(mod, entry.Name())
+			subGo, err := filepath.Glob(filepath.Join(root, sub, "*.go"))
+			if err != nil {
+				t.Fatalf("glob %s: %v", sub, err)
+			}
+
+			if len(subGo) > 0 {
+				count++
+			}
+		}
+	}
+
+	return count
+}
+
+// countPublishedModules counts the published go.mod files (repo-local
+// website/ and visualtest/ excluded). README's "across N Go modules".
+func countPublishedModules(t *testing.T, root string) int {
+	t.Helper()
+
+	count := 0
+
+	for _, mod := range publishedModules {
+		if _, err := os.Stat(filepath.Join(root, mod, "go.mod")); err == nil {
+			count++
+		}
+	}
+
+	return count
+}
+
+// countLibraryTests counts test functions and t.Run subtests across the
+// public packages of the published modules — the README Tests row's scope.
+func countLibraryTests(t *testing.T, root string) (funcs, subtests int) {
+	t.Helper()
+
+	funcRe := regexp.MustCompile(`(?m)^func (Test|Fuzz|Benchmark)`)
+	subtestRe := regexp.MustCompile(`t\.Run\(`)
+
+	for _, mod := range publishedModules {
+		paths := []string{mod}
+
+		entries, err := os.ReadDir(filepath.Join(root, mod))
+		if err != nil {
+			t.Fatalf("read %s: %v", mod, err)
+		}
+
+		for _, entry := range entries {
+			if !entry.IsDir() || nonConsumerDirs[entry.Name()] || strings.HasPrefix(entry.Name(), ".") {
+				continue
+			}
+
+			paths = append(paths, filepath.Join(mod, entry.Name()))
+		}
+
+		seen := map[string]bool{}
+
+		for _, dir := range paths {
+			if seen[dir] {
+				continue
+			}
+
+			seen[dir] = true
+
+			files, err := filepath.Glob(filepath.Join(root, dir, "*_test.go"))
+			if err != nil {
+				t.Fatalf("glob %s: %v", dir, err)
+			}
+
+			for _, file := range files {
+				data, err := os.ReadFile(file)
+				if err != nil {
+					t.Fatalf("read %s: %v", file, err)
+				}
+
+				funcs += len(funcRe.FindAllString(string(data), -1))
+				subtests += len(subtestRe.FindAllString(string(data), -1))
+			}
+		}
+	}
+
+	return funcs, subtests
+}
+
+// assertRoundedCount asserts a "~N" doc claim: N must be an exact multiple
+// of 100 within 49 of the live count — the "~" stays honest and the doc is
+// forced to re-round when the count drifts past the band.
+func assertRoundedCount(t *testing.T, doc []byte, pattern, label string, actual int) {
+	t.Helper()
+
+	re := regexp.MustCompile(pattern)
+
+	m := re.FindSubmatch(doc)
+	if m == nil {
+		t.Errorf("%s missing count", label)
+
+		return
+	}
+
+	claimed, err := strconv.Atoi(strings.ReplaceAll(string(m[1]), ",", ""))
+	if err != nil {
+		t.Errorf("%s has non-numeric count %q", label, string(m[1]))
+
+		return
+	}
+
+	if claimed%100 != 0 {
+		t.Errorf("%s claims %d; the ~ convention requires a multiple of 100", label, claimed)
+
+		return
+	}
+
+	if diff := claimed - actual; diff > 49 || diff < -49 {
+		t.Errorf("%s claims ~%d; actual is %d (drifted past the rounding band)", label, claimed, actual)
 	}
 }
