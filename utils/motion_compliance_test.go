@@ -20,7 +20,8 @@ type motionReduceRules struct {
 // TestMotionReduceCompliance verifies that every transition/animation class
 // in .templ source files has a corresponding motion-reduce fallback.
 // This prevents accessibility regressions where transitions are added without
-// the motion-reduce safety net.
+// the motion-reduce safety net. HTML comments are stripped before scanning,
+// so comment prose never trips the class regexes.
 func TestMotionReduceCompliance(t *testing.T) {
 	t.Parallel()
 
@@ -75,7 +76,7 @@ func countMotionGapsInDir(t *testing.T, dir string, rules motionReduceRules) (in
 			return fmt.Errorf("read file: %w", readErr)
 		}
 
-		violations += countMotionGapsInContent(t, path, string(data), rules)
+		violations += countMotionGapsInContent(t, path, stripHTMLComments(string(data)), rules)
 
 		return nil
 	})

@@ -16,10 +16,12 @@ import (
 // Logical properties automatically mirror in RTL (dir="rtl") without code
 // changes; physical properties do not and cause broken RTL layouts.
 //
-// It also bans the PHYSICAL-positioning inset utilities start-* / end-*
-// (e.g. start-0, end-full): they resolve to left-*/right-* and never mirror
-// in RTL. Use the logical inset-s-* / inset-e-* forms instead. The regex's
-// preceding-character class keeps longer classes safe (inset-s-0,
+// It also bans the v4.2-DEPRECATED inset aliases start-* / end-* (e.g.
+// start-0, end-full): probe-verified 2026-10-08 as output-identical LOGICAL
+// aliases of inset-s-* / inset-e-* today, but a future major can drop the
+// aliases, so the library stays on the canonical forms. HTML comments are
+// stripped before scanning, so prose never trips the class regexes. The
+// regex's preceding-character class keeps longer classes safe (inset-s-0,
 // text-start, items-start, justify-end, col-start-2, rounded-s-*).
 //
 // This is a FAILING test — violations block CI.
@@ -60,7 +62,7 @@ func TestRTLLogicalProperties(t *testing.T) {
 				return fmt.Errorf("read file: %w", readErr)
 			}
 
-			for line := range strings.SplitSeq(string(data), "\n") {
+			for line := range strings.SplitSeq(stripHTMLComments(string(data)), "\n") {
 				switch {
 				case physicalRe.MatchString(line):
 					violations++
