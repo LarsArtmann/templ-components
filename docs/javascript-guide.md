@@ -155,7 +155,9 @@ update. No separate API endpoint or JSON serialization needed.
 
 ## Pattern 3: HTMX + Alpine.js (The T.A.H. Stack)
 
-**Used by:** templUI, most community templates, the "GOAT Stack"
+**Used by:** most community templates, the "GOAT Stack". (templUI v1 shipped
+this stack; its successor shadcn-templ moved to vanilla bundled JS — verified
+2026-10-08, see `docs/comparison.md`.)
 
 Alpine.js handles client-side state (toggles, dropdowns); HTMX handles server
 communication.

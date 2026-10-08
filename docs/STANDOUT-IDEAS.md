@@ -2,6 +2,15 @@
 
 **Updated:** 2026-06-20
 
+> **Competitor-landscape note (2026-10-08):** this document was written against
+> **templUI v1.9.3**, which no longer exists under that name — templUI was
+> renamed and reworked into **shadcn-templ** (vanilla bundled JS, no Alpine.js,
+> ~64 components + 27 blocks; verified 2026-10-08). Every "templUI" comparison
+> below describes the pre-rename library and is preserved as point-in-time
+> brainstorm provenance, not current fact. The maintained head-to-head lives in
+> [`docs/comparison.md`](comparison.md); the old templUI repo (axzilla/templui)
+> now redirects to shadcn-templ.
+
 ---
 
 ## The Ecosystem Play

@@ -218,13 +218,13 @@ _(moved below the Website & docs table 2026-09-19 — the 09-18 harvest had spli
 
 ### Competitor-signal & distribution ideas (harvested 2026-10-08 from the shadcn-templ comparison)
 
-| Direction | Description |
-| --- | --- |
-| Installable blocks | Recipes (Dashboard, SettingsLayout, LoginCard, AuthLayout) as one-command scaffolds (`tc add`-style). shadcn-templ's 27 installable blocks at 1.7k stars are the evidence the model converts; identity decision first: module-only vs hybrid distribution. (docs/comparison.md) |
-| Alternate style themes | shadcn-templ ships 8 complete styles (luma…vega); we ship one look (consumer-overridable via `@theme`). Large design investment — demand-gated like the #217 family. (docs/comparison.md) |
-| Upstream-parity harness analogue | shadcn-templ diffs DOM tree, focus, scroll lock, and pixels against a pinned shadcn/ui reference build; our snapshots have no external ground truth. A pinned reference-render suite would anchor them externally. (axadrn/shadcn-templ `parity/README.md`, read 2026-10-08) |
-| htmx-4 compatibility probe | shadcn-templ already fixture-tests htmx 4 betas (portal/process semantics changed upstream, their issue #616). Our vendored htmx 2.0.10 and the htmx package's attribute surface need a probe plan for 4.x event renames (neighbor of TODO_LIST #316b). |
-| llms-full.txt | Full docs corpus for AI consumers once `llms.txt` (TODO_LIST #375) ships; shadcn-templ markets "AI-Ready" as a distribution channel. |
+| Direction                           | Description                                                                                                                                                                                                                                                                               |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Installable blocks                  | Recipes (Dashboard, SettingsLayout, LoginCard, AuthLayout) as one-command scaffolds (`tc add`-style). shadcn-templ's 27 installable blocks at 1.7k stars are the evidence the model converts; identity decision first: module-only vs hybrid distribution. (docs/comparison.md)           |
+| Alternate style themes              | shadcn-templ ships 8 complete styles (luma…vega); we ship one look (consumer-overridable via `@theme`). Large design investment — demand-gated like the #217 family. (docs/comparison.md)                                                                                                 |
+| Upstream-parity harness analogue    | shadcn-templ diffs DOM tree, focus, scroll lock, and pixels against a pinned shadcn/ui reference build; our snapshots have no external ground truth. A pinned reference-render suite would anchor them externally. (axadrn/shadcn-templ `parity/README.md`, read 2026-10-08)              |
+| htmx-4 compatibility probe          | shadcn-templ already fixture-tests htmx 4 betas (portal/process semantics changed upstream, their issue #616). Our vendored htmx 2.0.10 and the htmx package's attribute surface need a probe plan for 4.x event renames (neighbor of TODO_LIST #316b).                                   |
+| llms-full.txt                       | Full docs corpus for AI consumers once `llms.txt` (TODO_LIST #375) ships; shadcn-templ markets "AI-Ready" as a distribution channel.                                                                                                                                                      |
 | docs-health skill legs (cross-repo) | crush-config repo: add an external-claims leg ("grep competitor names; check verify-dates") and per-doc job-fitness questions to docs-health VERIFY — the 2026-10-08 Critical was external-claim rot passing an internal-counts-only guard. (docs/status/2026-10-08_19-57 §e1, 20-45 §e1) |
 
 ---

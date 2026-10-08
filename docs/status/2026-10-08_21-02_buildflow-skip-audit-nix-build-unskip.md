@@ -6,11 +6,11 @@
 
 ## TL;DR
 
-| Skip | Verdict | One-line reason |
-|------|---------|-----------------|
-| `go-auto-upgrade` | Still valid | templ pinned v0.3.1020 in all 9 go.mod; TODO #335 open; `utils.TestTemplVersionPin` enforces |
-| `go-mod-update` | Still valid | Same root cause as above (added today, so trivially current) |
-| `nix-build` | **Removed** | Root cause reproduced live, then fixed: treefmt `goimports` now runs through an offline go wrapper; step green |
+| Skip              | Verdict     | One-line reason                                                                                                |
+| ----------------- | ----------- | -------------------------------------------------------------------------------------------------------------- |
+| `go-auto-upgrade` | Still valid | templ pinned v0.3.1020 in all 9 go.mod; TODO #335 open; `utils.TestTemplVersionPin` enforces                   |
+| `go-mod-update`   | Still valid | Same root cause as above (added today, so trivially current)                                                   |
+| `nix-build`       | **Removed** | Root cause reproduced live, then fixed: treefmt `goimports` now runs through an offline go wrapper; step green |
 
 **Bottom line:** `buildflow -s nix-build` went from structurally-failing (documented 2026-10-07) to **✔ 1 success, 0 failed, 2 checks on x86_64-linux, 4.3s**. The two templ-pin skips remain correct and must NOT be removed until TODO #335 lands.
 
@@ -19,20 +19,24 @@
 ## Self-review (asked explicitly: forgotten / better / improve)
 
 **What did I forget?**
+
 1. **The config in front of me.** After the flake fix, I ran `buildflow -s nix-build` and got `pipeline build failed: no executable nodes after compilation` — and treated it as a BuildFlow behavior mystery. I spent 4 tool calls source-diving the BuildFlow repo (errors.go, pipeline_builder.go, provider listings, commit diffs since the binary build) before concluding the boring truth: `nix-build` was STILL in `skip_steps`, and a skipped step cannot compile into a single-step pipeline. The skip list was literally in the user's first message. **Fix order should have been: remove skip → run step.**
 2. **Read-before-edit discipline.** The AGENTS.md multiedit failed once ("you must read the file first") because I sourced the target text from `rg` output instead of `view`. Correct guard, wasted round trip.
 3. **Off-by-one on `view` offset** (it is 0-based) when reading TODO_LIST row #335 — cost one extra call.
 
 **What is stupid that we do anyway (observed, not introduced today)?**
-1. **Skip rationale comments drift.** The 2026-10-07 `nix-build` rationale named "golines/templ formatters" — neither exists in this repo's treefmt config (only nixfmt/gofumpt/goimports). The *root cause* (go download in sandbox) was right; the *specifics* were wrong. Rationale comments are read months later as fact; wrong specifics mislead the next debugger (it misled me for one read today).
+
+1. **Skip rationale comments drift.** The 2026-10-07 `nix-build` rationale named "golines/templ formatters" — neither exists in this repo's treefmt config (only nixfmt/gofumpt/goimports). The _root cause_ (go download in sandbox) was right; the _specifics_ were wrong. Rationale comments are read months later as fact; wrong specifics mislead the next debugger (it misled me for one read today).
 2. **Advisory FAIL semantics.** BuildFlow's preflight printed `preflight FAIL [workspace/pseudo-version-hygiene]` in warning-red, then the run passed 1/1. A verdict word that lies ("FAIL" on a passing run) trains humans to ignore preflight output.
 3. **Daemon rewrite risk on config files.** The 2026-10-07 daemon rewrite of `.buildflow.yml` silently reshaped entries; today I had to re-verify my own edits survived `3d34979c`. This remains a live hazard for every hand-written config.
 
 **What could I have done better?**
+
 - Grep AGENTS.md's tagging-policy section BEFORE settling the pseudo-version question (3 calls to conclude something the repo policy already answered: sibling requires ride release versions by design).
 - State the verification envelope explicitly up front: x86_64-linux only; aarch64 check untested; only the `format` check and the `nix-build` step verified — not the full `nix flake check`, not other BuildFlow lanes.
 
 **What could I still improve?**
+
 - The goimports-offline wrapper changes goimports' failure mode (`GOPROXY=off`): "falls back to stdlib-only fixing" is cqrs-htmx's validated claim, not yet probed on THIS tree (item f-2).
 - Two places now record the nix-build story (.buildflow.yml log + AGENTS.md gotcha). Agreed today; they can drift. Accepted with eyes open (repo-wide pattern), but it is a split brain by construction.
 
@@ -42,39 +46,39 @@
 
 ## a) FULLY DONE
 
-| # | Work | Evidence |
-|---|------|----------|
-| 1 | Templ-pin state verified → both templ skips re-confirmed valid | 9/9 go.mod @ v0.3.1020; TODO_LIST #335 row open (unmigrated); `utils/templ_pin_test.go:22` present and pinning vs `cmd/tc/doctor.go` |
-| 2 | `nix-build` skip root cause reproduced live | `nix build .#checks.x86_64-linux.format` failed with exactly the documented error: 6× `go: downloading go1.27.0` → `proxy.golang.org` DNS refused in sandbox |
-| 3 | Root cause fixed in flake.nix (the 2026-10-07 note's own fix path) | `goimports-offline` writeShellApplication wrapper: `goToolchain` first on PATH + `GOTOOLCHAIN=local` + `GOPROXY=off` (cqrs-htmx pattern); `lib` added to perSystem args; stale "(1.26.7)" comment replaced — flake.nix:411 |
-| 4 | Fix verified at both levels | Check derivation green: `formatted 496 files (0 changed)`; BuildFlow step green: `✔ nix-build 4.3s`, "1 success, 0 failed, 2 check(s) on x86_64-linux" |
-| 5 | Skip removed from `.buildflow.yml` + rationale converted to `UNSKIPPED 2026-10-08` note (file's documented-history style) | commit `3d34979c`; no `nix-build` skip entry remains |
-| 6 | Stale AGENTS.md claim #1 fixed: "eslint-fix / nix-build are in skip_steps" → both UNSKIPPED with the real blocker + the new GOTCHA (future go-shelling formatters must use the offline wrapper) | AGENTS.md CI & Tooling Gotchas |
-| 7 | Stale AGENTS.md claim #2 fixed: "go-structure-linter and go-version-auto-configure are skipped" → corrected (go-structure-linter re-enabled with the 2026-10-05 lockstep bump; gvac unskipped 2026-10-07 via `respect_patch_floor: true`; go-auto-upgrade + go-mod-update remain skipped) | AGENTS.md Go-directives bullet |
-| 8 | BuildFlow `workspace/pseudo-version-hygiene` preflight FAIL investigated and documented as a known false positive for this repo | Root go.mod requires were v1.20.0 pre-drift; daemon `go mod tidy` (commit `6de0ae7b`, 2026-10-05 21:15) refreshed to v1.20.1 after the release — this is the repo's release-version pin convention (tagging policy 2026-09-25, issue #27), not a regression; gate is advisory (today's nix-build passed 1/1 with it present). Documented in AGENTS.md with "do NOT fix go.mod to zero pseudo-versions" |
-| 9 | Daemon-commit integrity check | `6e30a1e6` (flake.nix, 20:55:56) + `3d34979c` (2 files, 21:00:52) both contain this session's edits verbatim (post-commit `rg` spot-checks green) |
+| # | Work                                                                                                                                                                                                                                                                                      | Evidence                                                                                                                                                                                                                                                                                                                                                                                               |
+| - | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1 | Templ-pin state verified → both templ skips re-confirmed valid                                                                                                                                                                                                                            | 9/9 go.mod @ v0.3.1020; TODO_LIST #335 row open (unmigrated); `utils/templ_pin_test.go:22` present and pinning vs `cmd/tc/doctor.go`                                                                                                                                                                                                                                                                   |
+| 2 | `nix-build` skip root cause reproduced live                                                                                                                                                                                                                                               | `nix build .#checks.x86_64-linux.format` failed with exactly the documented error: 6× `go: downloading go1.27.0` → `proxy.golang.org` DNS refused in sandbox                                                                                                                                                                                                                                           |
+| 3 | Root cause fixed in flake.nix (the 2026-10-07 note's own fix path)                                                                                                                                                                                                                        | `goimports-offline` writeShellApplication wrapper: `goToolchain` first on PATH + `GOTOOLCHAIN=local` + `GOPROXY=off` (cqrs-htmx pattern); `lib` added to perSystem args; stale "(1.26.7)" comment replaced — flake.nix:411                                                                                                                                                                             |
+| 4 | Fix verified at both levels                                                                                                                                                                                                                                                               | Check derivation green: `formatted 496 files (0 changed)`; BuildFlow step green: `✔ nix-build 4.3s`, "1 success, 0 failed, 2 check(s) on x86_64-linux"                                                                                                                                                                                                                                                 |
+| 5 | Skip removed from `.buildflow.yml` + rationale converted to `UNSKIPPED 2026-10-08` note (file's documented-history style)                                                                                                                                                                 | commit `3d34979c`; no `nix-build` skip entry remains                                                                                                                                                                                                                                                                                                                                                   |
+| 6 | Stale AGENTS.md claim #1 fixed: "eslint-fix / nix-build are in skip_steps" → both UNSKIPPED with the real blocker + the new GOTCHA (future go-shelling formatters must use the offline wrapper)                                                                                           | AGENTS.md CI & Tooling Gotchas                                                                                                                                                                                                                                                                                                                                                                         |
+| 7 | Stale AGENTS.md claim #2 fixed: "go-structure-linter and go-version-auto-configure are skipped" → corrected (go-structure-linter re-enabled with the 2026-10-05 lockstep bump; gvac unskipped 2026-10-07 via `respect_patch_floor: true`; go-auto-upgrade + go-mod-update remain skipped) | AGENTS.md Go-directives bullet                                                                                                                                                                                                                                                                                                                                                                         |
+| 8 | BuildFlow `workspace/pseudo-version-hygiene` preflight FAIL investigated and documented as a known false positive for this repo                                                                                                                                                           | Root go.mod requires were v1.20.0 pre-drift; daemon `go mod tidy` (commit `6de0ae7b`, 2026-10-05 21:15) refreshed to v1.20.1 after the release — this is the repo's release-version pin convention (tagging policy 2026-09-25, issue #27), not a regression; gate is advisory (today's nix-build passed 1/1 with it present). Documented in AGENTS.md with "do NOT fix go.mod to zero pseudo-versions" |
+| 9 | Daemon-commit integrity check                                                                                                                                                                                                                                                             | `6e30a1e6` (flake.nix, 20:55:56) + `3d34979c` (2 files, 21:00:52) both contain this session's edits verbatim (post-commit `rg` spot-checks green)                                                                                                                                                                                                                                                      |
 
 ## b) PARTIALLY DONE
 
-| # | Work | What is missing |
-|---|------|-----------------|
-| 1 | nix-build fix verification | x86_64-linux only. `checks.aarch64-linux.format` never built (would need an aarch64 builder/emulation); full `nix flake check` (both systems, both checks) not run; other BuildFlow nix lanes (nix-flake-check etc.) not re-run after the wrapper change |
-| 2 | `GOPROXY=off` fallback claim | The "goimports falls back to stdlib-only fixing" behavior is adopted from cqrs-htmx's validation, not probed on this tree (no deliberately-broken-import test was run) |
-| 3 | Pseudo-version drift history | Conclusion based on 2 of 6 drifted requires (utils, icons) + the policy section; the other 4 modules' pre-drift states were not individually diffed |
-| 4 | Session todo list | 4/4 completed — but items f-1..f-6 (this report's tail) are the unfinished verification fringe by design |
-| 5 | This report | Written in `.md` per explicit user instruction (skill default is HTML) — see closing note |
+| # | Work                         | What is missing                                                                                                                                                                                                                                          |
+| - | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | nix-build fix verification   | x86_64-linux only. `checks.aarch64-linux.format` never built (would need an aarch64 builder/emulation); full `nix flake check` (both systems, both checks) not run; other BuildFlow nix lanes (nix-flake-check etc.) not re-run after the wrapper change |
+| 2 | `GOPROXY=off` fallback claim | The "goimports falls back to stdlib-only fixing" behavior is adopted from cqrs-htmx's validation, not probed on this tree (no deliberately-broken-import test was run)                                                                                   |
+| 3 | Pseudo-version drift history | Conclusion based on 2 of 6 drifted requires (utils, icons) + the policy section; the other 4 modules' pre-drift states were not individually diffed                                                                                                      |
+| 4 | Session todo list            | 4/4 completed — but items f-1..f-6 (this report's tail) are the unfinished verification fringe by design                                                                                                                                                 |
+| 5 | This report                  | Written in `.md` per explicit user instruction (skill default is HTML) — see closing note                                                                                                                                                                |
 
 ## c) NOT STARTED (noticed; deliberately out of scope)
 
-| # | Item | Why not started |
-|---|------|-----------------|
-| 1 | TODO #335 (templ v0.3.1070 migration: flake generator pin, 9 go.mod bumps, golden + pixel re-baseline, source-trim review) | Own plan; gates re-enabling the two remaining skips |
-| 2 | Re-enabling `go-auto-upgrade` / `go-mod-update` | Blocked on #335 (or upstream BuildFlow learning pinned rejects) |
-| 3 | BuildFlow binary rebuild/reinstall | Doctor advises (`binary built at ec8d2d3, HEAD e4ad71a`); advisory only, and BuildFlow is its own project/session |
-| 4 | Upstream BuildFlow: pseudo-version-hygiene gate vs release-version pin policy | Upstream decision, not a repo edit |
-| 5 | lychee excludes for `docs/feedback/archived` (preflight warn, exact fix printed) | Preflight warn only; touches docs tooling untouched this session |
-| 6 | AGENTS.md size budget (378 lines vs BuildFlow's 220; excess 158) | Recurring warn; a docs-restructuring pass, not this session |
-| 7 | HARVEST of section (f) into TODO_LIST/ROADMAP | Awaits user instruction (skill: report first, then wait) |
+| # | Item                                                                                                                       | Why not started                                                                                                   |
+| - | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 1 | TODO #335 (templ v0.3.1070 migration: flake generator pin, 9 go.mod bumps, golden + pixel re-baseline, source-trim review) | Own plan; gates re-enabling the two remaining skips                                                               |
+| 2 | Re-enabling `go-auto-upgrade` / `go-mod-update`                                                                            | Blocked on #335 (or upstream BuildFlow learning pinned rejects)                                                   |
+| 3 | BuildFlow binary rebuild/reinstall                                                                                         | Doctor advises (`binary built at ec8d2d3, HEAD e4ad71a`); advisory only, and BuildFlow is its own project/session |
+| 4 | Upstream BuildFlow: pseudo-version-hygiene gate vs release-version pin policy                                              | Upstream decision, not a repo edit                                                                                |
+| 5 | lychee excludes for `docs/feedback/archived` (preflight warn, exact fix printed)                                           | Preflight warn only; touches docs tooling untouched this session                                                  |
+| 6 | AGENTS.md size budget (378 lines vs BuildFlow's 220; excess 158)                                                           | Recurring warn; a docs-restructuring pass, not this session                                                       |
+| 7 | HARVEST of section (f) into TODO_LIST/ROADMAP                                                                              | Awaits user instruction (skill: report first, then wait)                                                          |
 
 ## d) TOTALLY FUCKED UP
 
@@ -97,6 +101,7 @@
 ## f) Things to get done next (ranked; ≤ 50 — brainstorm, not commitment; HARVEST input)
 
 **Verify this session's fix envelope**
+
 1. Run full `nix flake check` once (both systems, both checks) to prove no other nix lane broke from the wrapper. (~5 min)
 2. Probe the `GOPROXY=off` fallback on THIS tree: add a deliberately-unresolvable import in a scratch branch, run the format check, observe fail-fast/fallback, revert. Pins the adopted claim locally.
 3. Resolve aarch64: either verify `checks.aarch64-linux.format` once or trim `aarch64-linux` from flake `systems` with rationale (needs g-question 1).
@@ -134,7 +139,7 @@
 29. After the next release cycle, confirm requires stay at the new release version and the pseudo-version-hygiene note in AGENTS.md survived daemon rewrites.
 30. Fold the "check config-in-hand first" lesson into the project's AGENTS.md tooling-gotchas only if it generalizes beyond this session (it is a session-process lesson; candidate for crush-config `references/lessons.md` instead — cross-project).
 
-*(Stopped at 30: items 31–50 would be filler — the honest backlog from this session's observations is exhausted. Per the skill: a larger N is a brainstorm, and unharvested items belong in ROADMAP, not TODO_LIST.)*
+_(Stopped at 30: items 31–50 would be filler — the honest backlog from this session's observations is exhausted. Per the skill: a larger N is a brainstorm, and unharvested items belong in ROADMAP, not TODO_LIST.)_
 
 ## g) Questions I cannot figure out myself
 
@@ -144,4 +149,4 @@
 
 ---
 
-*Report per explicit instruction: `.md` format at the requested path (skill default is a styled HTML dashboard; the user's format demand wins). No commit made — harness forbids unrequested commits; the auto-commit daemon picks this file up. WAITING FOR INSTRUCTIONS.*
+_Report per explicit instruction: `.md` format at the requested path (skill default is a styled HTML dashboard; the user's format demand wins). No commit made — harness forbids unrequested commits; the auto-commit daemon picks this file up. WAITING FOR INSTRUCTIONS._
