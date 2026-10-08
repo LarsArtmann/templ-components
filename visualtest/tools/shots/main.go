@@ -210,8 +210,8 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 // captureModeShots screenshots the settled page in light mode and — when
 // dark is among the modes — toggles the class in place (no re-navigation),
 // waits the double settle, and screenshots again.
-func captureModeShots(ctx context.Context, modes []string) (light, dark []byte, err error) {
-	light, err = chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
+func captureModeShots(ctx context.Context, modes []string) ([]byte, []byte, error) {
+	light, err := chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
 	if err != nil {
 		return nil, nil, fmt.Errorf("capture light: %w", err)
 	}
@@ -227,7 +227,7 @@ func captureModeShots(ctx context.Context, modes []string) (light, dark []byte, 
 		return nil, nil, fmt.Errorf("toggle dark: %w", err)
 	}
 
-	dark, err = chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
+	dark, err := chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
 	if err != nil {
 		return nil, nil, fmt.Errorf("capture dark: %w", err)
 	}

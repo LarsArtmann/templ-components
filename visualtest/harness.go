@@ -230,7 +230,7 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 		tasks = append(tasks, waitExprAction(opts.WaitExpr))
 	}
 
-	var capture = chromedp.Screenshot(chromedp.CSS(rootSel), chromedp.NodeVisible)
+	capture := chromedp.Screenshot(chromedp.CSS(rootSel), chromedp.NodeVisible)
 	if opts.FullViewport {
 		// Full-viewport capture: top-layer overlays (Popover API menus,
 		// <dialog>) paint outside #tc-root's box, so an element screenshot
@@ -358,11 +358,16 @@ func hoverAction(sel string) chromedp.Action[chromedp.Void] {
 			return wrapSelector(errHoverElementNotFound, sel)
 		}
 
-		_, err = cdp.Call(ctx, t, input.DispatchMouseEvent, input.DispatchMouseEventParams{ //nolint:exhaustruct_v5 // omitted CDP fields take protocol defaults
-			Type: input.DispatchMouseEventTypeMouseMoved,
-			X:    coords[0],
-			Y:    coords[1],
-		})
+		_, err = cdp.Call(
+			ctx,
+			t,
+			input.DispatchMouseEvent,
+			input.DispatchMouseEventParams{ //nolint:exhaustruct_v5 // omitted CDP fields take protocol defaults
+				Type: input.DispatchMouseEventTypeMouseMoved,
+				X:    coords[0],
+				Y:    coords[1],
+			},
+		)
 
 		return err
 	})
