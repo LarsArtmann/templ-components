@@ -10,12 +10,12 @@ extending this document — they rot fastest.
 
 ## The contenders
 
-| Project | What it is | Stars* |
-| --- | --- | --- |
-| **templ-components** (this repo) | Server-rendered Go component library: templ + Tailwind v4, HTMX-native, Datastar opt-in. Versioned Go module. | 4 |
-| [shadcn-templ](https://github.com/axadrn/shadcn-templ) (formerly **templUI**) | The shadcn/ui port for templ: same DOM (`data-slot`), same design language, 8 style themes, copy-paste registry + installable blocks. | 1,754 |
-| [goshipit](https://github.com/haatos/goshipit) (GoShip.it) | DaisyUI-on-Tailwind component library for the GOTH stack, HTMX-driven, with a `gsi` copy CLI and a demo app. | 277 |
-| [templ examples (a-h)](https://github.com/a-h/templ/tree/main/examples) | Official educational examples in the templ repo — not a library. | — |
+| Project                                                                       | What it is                                                                                                                            | Stars* |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| **templ-components** (this repo)                                              | Server-rendered Go component library: templ + Tailwind v4, HTMX-native, Datastar opt-in. Versioned Go module.                         | 4      |
+| [shadcn-templ](https://github.com/axadrn/shadcn-templ) (formerly **templUI**) | The shadcn/ui port for templ: same DOM (`data-slot`), same design language, 8 style themes, copy-paste registry + installable blocks. | 1,754  |
+| [goshipit](https://github.com/haatos/goshipit) (GoShip.it)                    | DaisyUI-on-Tailwind component library for the GOTH stack, HTMX-driven, with a `gsi` copy CLI and a demo app.                          | 277    |
+| [templ examples (a-h)](https://github.com/a-h/templ/tree/main/examples)       | Official educational examples in the templ repo — not a library.                                                                      | —      |
 
 \* GitHub API, 2026-10-08.
 
@@ -27,25 +27,25 @@ vanilla JS only.
 
 ## Snapshot
 
-| | templ-components | shadcn-templ | goshipit |
-| --- | --- | --- | --- |
-| License | MIT | MIT | MIT |
-| templ version | v0.3.1020 (pinned, zero-diff generator) | v0.3.1070 | not checked |
-| Go floor | 1.27 | 1.26 | 1.x |
-| Components | 123 primitives + 4 recipe screens | ~64 + 27 installable blocks | 52 |
-| Icons | 102 typed names, animated variants | icon component (lucide set) | via DaisyUI/inline |
-| CSS | Tailwind v4 (CSS-first), one look | Tailwind v4 + CSS vars, **8 style themes** | Tailwind v4 + **DaisyUI 5** |
-| JavaScript | Per-component CSP-safe inline singletons; native APIs first (`<dialog>`, Popover API, `<details>`, CSS tooltips) | One esbuild-bundled, minified runtime porting Base UI behavior (Floating UI, portals, focus, scroll lock) | HTMX-driven; no custom framework |
-| CSP | Strict nonce discipline incl. omit-empty rule, render-table guard | Nonce via `templ.GetNonce` on the runtime bundle | not documented |
-| HTMX | Built-in package; self-hosted runtime embedded by default | Compatible (htmx fixture-tested) | Native (core design) |
-| Datastar | Opt-in package + `wire.Action` dual transport | none | none |
-| Dark mode | Built-in, scanner-enforced (`TestDarkModeCompliance`) | Class strategy + CSS vars | via DaisyUI themes |
-| Distribution | `go get`, semver, 7-module opt-in DAG | copy-paste registry (`shadcn-templ add`), you own the code | copy CLI (`gsi`) |
-| Requires Node.js | No | No | CSS build only |
-| Typed props | 64 string enums (63 with `IsValid()`), compile-time-checked lookup maps | Base UI-named props, value-only | DaisyUI-shaped props |
-| Testing | 272 HTML goldens, 200 pixel goldens, axe gate (default-fail), RTL/motion/dark-mode scanners, fuzz, vnu HTML gate | 52 Go test files + Playwright parity harness vs pinned shadcn/ui (DOM/focus/scroll-lock/pixel) + a11y/behavior suites | demo-site level |
-| Charts | Native SVG (Line/Area/Pie/Sparkline/Bar/Heatmap) + opt-in ECharts adapter | client-rendered (Recharts-compatible) | — |
-| Error pages | `errorpage` package + go-error-family integration | — | — |
+|                  | templ-components                                                                                                 | shadcn-templ                                                                                                          | goshipit                         |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| License          | MIT                                                                                                              | MIT                                                                                                                   | MIT                              |
+| templ version    | v0.3.1020 (pinned, zero-diff generator)                                                                          | v0.3.1070                                                                                                             | not checked                      |
+| Go floor         | 1.27                                                                                                             | 1.26                                                                                                                  | 1.x                              |
+| Components       | 123 primitives + 4 recipe screens                                                                                | ~64 + 27 installable blocks                                                                                           | 52                               |
+| Icons            | 102 typed names, animated variants                                                                               | icon component (lucide set)                                                                                           | via DaisyUI/inline               |
+| CSS              | Tailwind v4 (CSS-first), one look                                                                                | Tailwind v4 + CSS vars, **8 style themes**                                                                            | Tailwind v4 + **DaisyUI 5**      |
+| JavaScript       | Per-component CSP-safe inline singletons; native APIs first (`<dialog>`, Popover API, `<details>`, CSS tooltips) | One esbuild-bundled, minified runtime porting Base UI behavior (Floating UI, portals, focus, scroll lock)             | HTMX-driven; no custom framework |
+| CSP              | Strict nonce discipline incl. omit-empty rule, render-table guard                                                | Nonce via `templ.GetNonce` on the runtime bundle                                                                      | not documented                   |
+| HTMX             | Built-in package; self-hosted runtime embedded by default                                                        | Compatible (htmx fixture-tested)                                                                                      | Native (core design)             |
+| Datastar         | Opt-in package + `wire.Action` dual transport                                                                    | none                                                                                                                  | none                             |
+| Dark mode        | Built-in, scanner-enforced (`TestDarkModeCompliance`)                                                            | Class strategy + CSS vars                                                                                             | via DaisyUI themes               |
+| Distribution     | `go get`, semver, 7-module opt-in DAG                                                                            | copy-paste registry (`shadcn-templ add`), you own the code                                                            | copy CLI (`gsi`)                 |
+| Requires Node.js | No                                                                                                               | No                                                                                                                    | CSS build only                   |
+| Typed props      | 64 string enums (63 with `IsValid()`), compile-time-checked lookup maps                                          | Base UI-named props, value-only                                                                                       | DaisyUI-shaped props             |
+| Testing          | 272 HTML goldens, 200 pixel goldens, axe gate (default-fail), RTL/motion/dark-mode scanners, fuzz, vnu HTML gate | 52 Go test files + Playwright parity harness vs pinned shadcn/ui (DOM/focus/scroll-lock/pixel) + a11y/behavior suites | demo-site level                  |
+| Charts           | Native SVG (Line/Area/Pie/Sparkline/Bar/Heatmap) + opt-in ECharts adapter                                        | client-rendered (Recharts-compatible)                                                                                 | —                                |
+| Error pages      | `errorpage` package + go-error-family integration                                                                | —                                                                                                                     | —                                |
 
 ## Philosophy: who owns the component code?
 

@@ -11,13 +11,13 @@ Per the verify-external-claims gate, every claim about shadcn-templ below was
 verified against the primary source on 2026-10-08, not taken from docs prose
 alone:
 
-| Claim | How verified |
-|---|---|
-| `utils.WithDirection(ctx, dir)` / `utils.Direction(ctx)` with `directionKey{}` ctx key, `"ltr"` fallback | Sourcegraph on `github.com/axadrn/shadcn-templ`, `utils/shadcn-templ.go:205-218` |
-| `DirectionProvider` renders no element, defaults `ltr`, injects ctx only | `components/direction/direction.templ:21-31` |
-| "Set `dir` on `<html>` as well, the layout follows the attribute, not the provider" (their own caveat) | Comment in `components/direction/direction.templ:19-20` |
-| Client side: `useDirection(element)` reads the nearest `data-templ-direction` DOM marker, "ltr" otherwise; scripts read it **instead of** `getComputedStyle(...).direction` or `closest('[dir]')`; applies to tabs, toggle group, radio group, menubar, slider, scroll area, navigation menu, popup positioners | `plans/parity-components.md` §Task 16 (Direction entry) |
-| Build-time RTL inliner (`applyRtlMapping`: physical→logical utilities, `rtl:` variants, `cn-rtl-flip`) with 106 upstream test cases | `plans/parity-components.md` §Task 16 |
+| Claim                                                                                                                                                                                                                                                                                                           | How verified                                                                     |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `utils.WithDirection(ctx, dir)` / `utils.Direction(ctx)` with `directionKey{}` ctx key, `"ltr"` fallback                                                                                                                                                                                                        | Sourcegraph on `github.com/axadrn/shadcn-templ`, `utils/shadcn-templ.go:205-218` |
+| `DirectionProvider` renders no element, defaults `ltr`, injects ctx only                                                                                                                                                                                                                                        | `components/direction/direction.templ:21-31`                                     |
+| "Set `dir` on `<html>` as well, the layout follows the attribute, not the provider" (their own caveat)                                                                                                                                                                                                          | Comment in `components/direction/direction.templ:19-20`                          |
+| Client side: `useDirection(element)` reads the nearest `data-templ-direction` DOM marker, "ltr" otherwise; scripts read it **instead of** `getComputedStyle(...).direction` or `closest('[dir]')`; applies to tabs, toggle group, radio group, menubar, slider, scroll area, navigation menu, popup positioners | `plans/parity-components.md` §Task 16 (Direction entry)                          |
+| Build-time RTL inliner (`applyRtlMapping`: physical→logical utilities, `rtl:` variants, `cn-rtl-flip`) with 106 upstream test cases                                                                                                                                                                             | `plans/parity-components.md` §Task 16                                            |
 
 Context: shadcn-templ (formerly templUI) is a shadcn/ui port for templ that
 wraps **Base UI** JS primitives. Their components ship real client-side
@@ -76,7 +76,7 @@ and **popup positioning** (anchor side flips). CSS layout mirroring is
 explicitly NOT the provider's job — their own source comment says: set
 `dir="rtl"` on `<html>` too, "the layout follows the attribute, not the
 provider." So even in the context-propagation design, CSS still runs on the
-plain HTML attribute; the provider exists *only* to feed JavaScript.
+plain HTML attribute; the provider exists _only_ to feed JavaScript.
 
 ---
 
@@ -103,14 +103,14 @@ One source of truth: the DOM `dir` attribute.
 
 ## Comparison
 
-| Dimension | shadcn-templ | templ-components |
-|---|---|---|
-| Layout mirroring | Physical utilities + build-time `applyRtlMapping` inliner (106 upstream test cases) to convert them | Logical properties banned-in at the source; no build step, no test corpus for the conversion |
-| Direction source of truth | **Two**: ctx marker (`data-templ-direction`) drives JS; `dir` attribute drives CSS | **One**: the `dir` attribute drives both |
-| JS direction resolution | Per-subtree correct (`useDirection` walks to nearest provider marker) | Page-scoped only (`documentElement.getAttribute('dir')`) |
-| Server-side branching | Yes — components branch markup on `utils.Direction(ctx)` | No — components are direction-ignorant by construction |
-| API surface for consumers | A provider component to wrap content | None (just the standard `dir` attribute) |
-| Failure mode when omitted | Provider defaults `ltr` — JS disagrees with an RTL layout (their own comment warns about this) | Mixed-direction subtrees: JS reads the page-level `dir`, wrong arrow mapping inside a subtree |
+| Dimension                 | shadcn-templ                                                                                        | templ-components                                                                              |
+| ------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Layout mirroring          | Physical utilities + build-time `applyRtlMapping` inliner (106 upstream test cases) to convert them | Logical properties banned-in at the source; no build step, no test corpus for the conversion  |
+| Direction source of truth | **Two**: ctx marker (`data-templ-direction`) drives JS; `dir` attribute drives CSS                  | **One**: the `dir` attribute drives both                                                      |
+| JS direction resolution   | Per-subtree correct (`useDirection` walks to nearest provider marker)                               | Page-scoped only (`documentElement.getAttribute('dir')`)                                      |
+| Server-side branching     | Yes — components branch markup on `utils.Direction(ctx)`                                            | No — components are direction-ignorant by construction                                        |
+| API surface for consumers | A provider component to wrap content                                                                | None (just the standard `dir` attribute)                                                      |
+| Failure mode when omitted | Provider defaults `ltr` — JS disagrees with an RTL layout (their own comment warns about this)      | Mixed-direction subtrees: JS reads the page-level `dir`, wrong arrow mapping inside a subtree |
 
 ---
 

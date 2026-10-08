@@ -64,10 +64,16 @@ func TestRTLLogicalProperties(t *testing.T) {
 				switch {
 				case physicalRe.MatchString(line):
 					violations++
+
 					t.Errorf("RTL physical-property violation in %s:\n  %s", path, strings.TrimSpace(line))
 				case insetRe.MatchString(line):
 					violations++
-					t.Errorf("RTL physical-inset violation (use inset-s-*/inset-e-* instead of start-*/end-*) in %s:\n  %s", path, strings.TrimSpace(line))
+
+					t.Errorf(
+						"RTL physical-inset violation (use inset-s-*/inset-e-* instead of start-*/end-*) in %s:\n  %s",
+						path,
+						strings.TrimSpace(line),
+					)
 				}
 			}
 

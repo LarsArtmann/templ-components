@@ -114,7 +114,7 @@ was cut, here the estimate was never a count).
 verification before edits, with opposite outcomes: (1) the audit's `--alpha(var(--color-blue-500),
 30%)` comma syntax is a hard build error — only the slash form (`--alpha(X / 30%)`) compiles;
 that claim was corrected BEFORE shipping. (2) The execution layer (AGENTS bullet, skill doc,
-guard comment) briefly recorded the audit's "start-*/end-* compile to physical left/right"
+guard comment) briefly recorded the audit's "start-_/end-_ compile to physical left/right"
 framing — a pinned-binary probe DISPROVED it: `start-0`/`end-full` compile to
 `inset-inline-start/end`, i.e. they are deprecated LOGICAL ALIASES of `inset-s-*`/`inset-e-*`
 with identical output. The 11-site migration therefore shipped as deprecation hygiene

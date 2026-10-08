@@ -102,6 +102,7 @@ module to the new chromedp/cdproto APIs, verify at runtime.
 ## f) Next tasks (prioritized, ≤50)
 
 **Migration closure**
+
 1. Diagnose run-#2's route-golden failures (kanban/recipes/users) once the parallel session's
    demo churn settles; pipe full output to a file this time.
 2. If those routes are genuine parallel-session redesigns: re-baseline via
@@ -124,54 +125,54 @@ module to the new chromedp/cdproto APIs, verify at runtime.
 
 **Daemons/guardrails**
 15. Investigate which BuildFlow step keeps re-applying the templ v0.3.1070 bump (3rd time
-    today); gate it at the source, not just via TestTemplVersionPin post-hoc.
+today); gate it at the source, not just via TestTemplVersionPin post-hoc.
 16. Make demo-CSS recompile atomic with template changes (or commit-time freshness guard).
 17. Visual-suite pre-flight: refuse dirty/churning trees; detect mid-run HEAD movement.
 18. Always tee long test runs to a file; enforce the "final summary line present" rule.
 19. Re-verify pseudo-version hygiene after today's go.mod surgery (BuildFlow preflight
-    flagged 6 drifted requires; check they are still canonical).
+flagged 6 drifted requires; check they are still canonical).
 
 **Parallel session's changes (respect, don't revert)**
 20. Verify the toggle thumb fix's visual goldens land in ITS session (or offer my re-baseline).
 21. Same for the carousel extra slide (check HTML goldens updated in same edit — count rule).
 22. Confirm `inset-s-0` is an intended Tailwind v4 utility (compiled fine; verify intent —
-    v4 idiom is `start-0`/`end-*`).
+v4 idiom is `start-0`/`end-*`).
 23. Confirm notfound404 passes now (probe says the consistent tree paints; run #2 suggests yes).
 24. Review the renamed classes for the demo brand overrides (`--color-blue-500` indigo) —
-    axe color-contrast ledger entries still valid?
+axe color-contrast ledger entries still valid?
 
 **Repo hygiene surfaced by BuildFlow preflight today**
 25. AGENTS.md 377 lines > 220 budget — split content into docs/ per the buildflow hint.
 26. lychee.toml: add `exclude_path = ['docs/feedback/archived']` (+ prune the 30 dead
-    file:// links it flags).
+file:// links it flags).
 27. shellcheck: fix the 13 findings in scripts (SC2046 word splitting first).
 28. Add dprint/prettier/hadolint/lychee/shellcheck to the devShell (removes the nix-run
-    WITHOUT project deps warnings).
+WITHOUT project deps warnings).
 29. interrogate: install or add to BuildFlow config as not-applicable.
 30. Rebuild/reinstall BuildFlow (binary at ec8d2d3, repo HEAD moved past it).
 31. vulnix: 56 CVEs in the nix closure (binutils, apr-util, avahi, ada…) — evaluate a
-    nixpkgs bump; likely upstream-side, but record the decision.
+nixpkgs bump; likely upstream-side, but record the decision.
 32. golangci-lint-auto-configure nags the 3 deliberately disabled linters every run —
-    document in .buildflow.yml or file upstream.
+document in .buildflow.yml or file upstream.
 33. `.fail/` artifacts: add to .gitignore check (they are transient; make sure never staged).
 34. Re-check `TestCompiledCSSInventory`/`TestCSSFreshness` after today's daemon recompiles.
 35. Run root-module test suite (go test ./...) — untouched by my work but the demo CSS and
-    templates churned; cheap insurance.
+templates churned; cheap insurance.
 36. `scripts/check-templ-sync.sh` after the daemon's templ regen bursts.
 
 **Migration quality follow-ups (non-blocking)**
 37. Migrate remaining ~48 raw `chromedp.Poll` call sites (TODO #240) onto typed `Poll[T]` —
-    now mechanical via evalExprInto-style helpers.
+now mechanical via evalExprInto-style helpers.
 38. Consider `RunResponse` where e2e tests hand-roll navigation-response checks.
 39. Re-check the kanban e2e timing-flake classes under the new action execution model.
 40. ogshot quality constant: confirm 95 (JPEG-in-.png gotcha) is still intended.
 41. Evaluate deleting `evalVoid` in favor of direct `chromedp.Evaluate[chromedp.Void]` once
-    call sites stop churning (one indirection fewer).
+call sites stop churning (one indirection fewer).
 42. Update `docs/agent-context-history.md` pointer for the 2026-10-08 daemon race incident
-    (its entry is being written by the other session — coordinate).
+(its entry is being written by the other session — coordinate).
 43. After green: run `nix run .#verify` once end-to-end.
 44. Revisit `.buildflow.yml` skip list: `go-auto-upgrade` skip note mentions "when the step
-    learns to respect pinned rejects" — same applies to go-mod-update now (loop evidence).
+learns to respect pinned rejects" — same applies to go-mod-update now (loop evidence).
 45. Confirm the A/B temp worktree is cleaned up (`git worktree remove /tmp/tc-ab-404`).
 46. Clean `/tmp/tc-404-probe` artifacts (not in repo, but tidy).
 47. Check `TestDemoKanbanHTTPContracts` & friends still green post CSS churn.

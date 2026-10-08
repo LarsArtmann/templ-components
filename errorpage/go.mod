@@ -3,7 +3,7 @@ module github.com/larsartmann/templ-components/errorpage
 go 1.27
 
 require (
-	github.com/a-h/templ v0.3.1020
+	github.com/a-h/templ v0.3.1070
 	github.com/larsartmann/go-error-family v0.11.0
 	github.com/larsartmann/templ-components/icons v1.20.1
 	github.com/larsartmann/templ-components/utils v1.20.1
@@ -11,7 +11,6 @@ require (
 
 require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
-	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/stretchr/testify v1.12.1 // indirect
 )
 

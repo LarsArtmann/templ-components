@@ -27,20 +27,20 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
-| Feature                | templ-components                               | [shadcn-templ](https://github.com/axadrn/shadcn-templ) (fka templUI) | [goshipit](https://github.com/haatos/goshipit)   |
-| ---------------------- | ---------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------ |
-| **CSS approach**       | Tailwind v4 (CSS-first)                        | Tailwind v4 + CSS vars, 8 style themes                               | Tailwind v4 + DaisyUI                            |
-| **JavaScript**         | HATEOAS (enhances HTML)                        | Vanilla JS (Base UI behavior ports, bundled runtime)                 | HTMX-driven                                      |
-| **Requires Node.js**   | No                                             | No                                                                   | Yes (CSS build only)                             |
-| **Components**         | 123                                            | ~64 + 27 installable blocks                                          | 52                                               |
-| **Typed props**        | 64 enums                                       | —                                                                    | —                                                |
-| **Dark mode**          | Built-in (tested)                              | CSS custom properties                                                | Via DaisyUI                                      |
-| **CSP compliant**      | Yes (nonce on all scripts)                     | Yes (nonce on runtime bundle)                                        | —                                                |
-| **Container queries**  | 8 opt-in components + fluid typography (`cqi`) | —                                                                    | —                                                |
-| **Visual regression**  | chromedp pixel tests                           | Playwright parity suite vs shadcn/ui                                 | —                                                |
-| **HTMX integration**   | Built-in package                               | Compatible (htmx fixture-tested)                                     | Native (core design)                             |
-| **Datastar support**   | Opt-in package                                 | —                                                                    | —                                                |
-| **Distribution**       | Go module (semver upgrades)                    | Copy-paste registry (you own the code)                               | Copy CLI (`gsi`)                                 |
+| Feature               | templ-components                               | [shadcn-templ](https://github.com/axadrn/shadcn-templ) (fka templUI) | [goshipit](https://github.com/haatos/goshipit) |
+| --------------------- | ---------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
+| **CSS approach**      | Tailwind v4 (CSS-first)                        | Tailwind v4 + CSS vars, 8 style themes                               | Tailwind v4 + DaisyUI                          |
+| **JavaScript**        | HATEOAS (enhances HTML)                        | Vanilla JS (Base UI behavior ports, bundled runtime)                 | HTMX-driven                                    |
+| **Requires Node.js**  | No                                             | No                                                                   | Yes (CSS build only)                           |
+| **Components**        | 123                                            | ~64 + 27 installable blocks                                          | 52                                             |
+| **Typed props**       | 64 enums                                       | —                                                                    | —                                              |
+| **Dark mode**         | Built-in (tested)                              | CSS custom properties                                                | Via DaisyUI                                    |
+| **CSP compliant**     | Yes (nonce on all scripts)                     | Yes (nonce on runtime bundle)                                        | —                                              |
+| **Container queries** | 8 opt-in components + fluid typography (`cqi`) | —                                                                    | —                                              |
+| **Visual regression** | chromedp pixel tests                           | Playwright parity suite vs shadcn/ui                                 | —                                              |
+| **HTMX integration**  | Built-in package                               | Compatible (htmx fixture-tested)                                     | Native (core design)                           |
+| **Datastar support**  | Opt-in package                                 | —                                                                    | —                                              |
+| **Distribution**      | Go module (semver upgrades)                    | Copy-paste registry (you own the code)                               | Copy CLI (`gsi`)                               |
 
 **Head-to-head:** the full comparison — architecture, testing depth, what each
 class of project is best at — lives in
