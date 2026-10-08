@@ -1,0 +1,139 @@
+# Status Report — README fitness/conversion pass (turn 3) + session-wide state
+
+**Generated:** 2026-10-08 20:45 CEST
+**Session scope:** three turns — (1) shadcn-templ competitor research, (2) docs-health VERIFY/BUILD on README + `docs/comparison.md` + production website fact repairs, (3) the "are you losing the MAIN goal?" correction: a full README **fitness/conversion** restructure. This report supersedes `2026-10-08_19-57_*` as the current snapshot; that file remains as the point-in-time record of the as-found audit (Accuracy 4.75 / Fitness 9).
+**Skills executed this turn:** copywriting (README sales rewrite), status-report (this file, `.md` per explicit path demand — standing exception), docs-health ownership rules (GOTH blockquote single-homed into Ecosystem).
+
+---
+
+## Executive summary
+
+Turn 2 made the README *true*; the user's challenge ("are you losing the MAIN goal of a SUPERBLY perfect README?") exposed that I had optimized Accuracy and ignored Fitness — a README is a **sales page with ~10 seconds to hook a Go developer**, and ours was a fact-dump in sales clothing: ecosystem blockquote before the hook, counts instead of benefits, a competitor table before the visitor had seen anything work, and a build-flag scare-note inside the Quick Start. Turn 3 rebuilt the funnel: Quick Start above the fold, benefit-led Why, proof strip, objection handling last. All drift guards and suites stayed green. Open loop called out in §b: the two status reports' §f item lists have **not** been harvested into TODO_LIST/ROADMAP yet.
+
+**Parallel-session note (observed via git log, not researched):** the chromedp v0.20.1 migration of `visualtest` has landed (`a0c18c3c`, CHANGELOG "Changed" entry) and a second session has a staged CHANGELOG entry for echarts `templ.Error` FileName canonicalization. Consequence: my §b item "route goldens likely stale" is now actionable — the module compiles again.
+
+---
+
+## a) FULLY DONE — verifiably complete
+
+| # | What | Evidence |
+|---|---|---|
+| A1 | **README restructured into a conversion funnel**: Quick Start (install → code → run) now sits above the fold at line 15; Why/Numbers/How-It-Compares follow as benefit → proof → objection handling; Catalog onward unchanged | `README.md` section order verified: QS(15) → Why(62) → Numbers(75) → How It Compares(89) → Catalog(112); committed by daemon (`c5d430ea`) |
+| A2 | **Why section rewritten benefit-first** (copywriting pass): subheadline "UI in a Go binary — without adopting a frontend stack." + 4 one-idea bullets (HTML over the wire / invalid states don't compile / security & polish enforced by tests / pay for what you use); counts preserved as a closing proof strip | Guard-critical phrases kept verbatim: "123 server-rendered components", "63 with IsValid()", "102 SVG icons" — `TestDocsCountDrift` green after restructure |
+| A3 | **Hero payoff line added** under the Quick Start code: "A complete, dark-mode-aware, CSP-safe page from one Go binary — the live demo is built entirely this way." (show → CTA) | README:56-57 region; live-demo link points at the real demo |
+| A4 | **GOTH blockquote removed from the intro** and merged into Ecosystem as the pairing pitch (single home for the ecosystem fact; intro no longer navel-gazes before the hook) | Ecosystem section now opens with the cqrs-htmx/go-cqrs-lite pairing sentence |
+| A5 | **GOEXPERIMENT scare-note moved out of Quick Start** into Requirements (new "> Older toolchains:" blockquote) | README Requirements section; exactly one note block (2 mentions), zero in Quick Start |
+| A6 | **Nav line extended** with `How It Compares` anchor; all three original anchors (#quick-start, #component-catalog, #why-…) still resolve | README:11; headings verified at lines 15/62/89/112 |
+| A7 | **Test-count self-correction landed cleanly** (from previous turn's self-review): README now says "~1,600 test functions + ~1,650 subtests", scoped to library modules (site's own `excludedModules` definition); CHANGELOG wording updated to match | `TestDocsCountDrift` + full `utils` suite green post-edit |
+| A8 | **Turn-2 deliverables all at HEAD** (carried over, confirmed): `docs/comparison.md`, website matrix fixes, CountStats alignment (123/102), related-projects, TODO #371, CHANGELOG entries | commits `a769a27f`, `dc2112e7`, `35308a6e`, `3b436106` |
+| A9 | **19:57 status report written and committed** (turn-2 audit snapshot with as-found scores) | commit `3b436106` |
+
+## b) PARTIALLY DONE — works, with named gaps
+
+| # | Item | Works | Open gap | Effort |
+|---|---|---|---|---|
+| B1 | **HARVEST loop (the big one).** The docs-health skill says §f of a status report is the primary input to TODO_LIST/ROADMAP and "run HARVEST now" if the session continues. Two reports now carry ~40 brainstorm items (19:57 + this file); only TODO #371 was actually routed during the session | Top items are written, evidence-cited, ranked | Nothing beyond #371 has been routed into TODO_LIST/ROADMAP; the items are entombed in timestamped files until then | S–M |
+| B2 | **README hero visual.** The copy funnel is text-only | Hero code sample shows the API instantly | No screenshot/GIF centerpiece; the only existing home-page PNG is STALE (baked "94 components" text, pre-dating ogshot); visual pipeline was mid-migration — now landed per parallel session, so regenerating is unblocked | M |
+| B3 | **Copy quality.** Rewrite follows copywriting principles (clarity, benefits, specificity, one-idea-per-section) | Guards green, structure verified | No copy-editing pass (the skill explicitly recommends one after drafting); voice not cross-checked against the site's `/sales` page or Lars's register; the "CSP-safe page" payoff line is slightly stronger than the Design Principles' "CSP-ready" (ThemeScript's nonce behavior is the documented exception — claim is defensible but could be softened) | S |
+| B4 | **README rendering verification.** Structure, anchors, guard patterns verified programmatically | Tables well-formed; anchors match headings | Never eyeballed on GitHub (mobile overflow of the 4-column How-It-Compares table; badge row wrap) | S |
+| B5 | **Carry-over: site verification after content changes** (route goldens for `/` + `/sales`) | Build/link/CSP-sync tests green | visualtest route goldens not re-baselined; **unblocked now** — chromedp migration landed this evening | S |
+| B6 | **Carry-over: guard the numbers I typed** (README "Packages 20", Tests row, UseCases "23 form components", comparison-doc internals) | All currently correct by measurement | Still not pinned by `TestDocsCountDrift` patterns — same rot class as the ones I fixed | S–M |
+
+## c) NOT STARTED — planned/observed, zero code
+
+| # | Item | Why not started | Still wanted? |
+|---|---|---|---|
+| C1 | **llms.txt** on the website (turn-1 recommendation; shadcn-templ markets "AI-Ready", ours 404s) | Scoped out of both doc turns; ~1-hour change | Yes — cheapest high-value gap |
+| C2 | **F109 demand-check re-run** (TODO #217): Command palette/MultiSelect/TreeView/DateRangePicker/FileDrop — shadcn-templ's 1.7k-star adoption is new demand evidence | Decision-gated; needs the check, not silent building | Yes |
+| C3 | **ROADMAP/FEATURES/docs sweep for stale competitor claims** (templUI/Alpine/goshipit mentions outside README/website/data.go — 100-IMPROVEMENT-IDEAS, STANDOUT-IDEAS, ROADMAP, docs/*) | My sweeps covered README/website/data.go only | Yes — S effort, same falsehood class as the production fix |
+| C4 | **Ghost icon constants fix** (`ArrowPath`/`Bars3`/`HandThumbUp` render question-mark fallbacks) — TODO #371 | Needs the alias-vs-delete owner call (Q2 below) | Yes — still a live silent-wrong-glyph bug |
+| C5 | **Installable blocks / registry ergonomics**, **alternate style themes**, **parity-harness analogue**, **htmx-4 compatibility probe** | Turn-1 strategic takeaways; ROADMAP fuel, no demand/decision yet | ROADMAP |
+| C6 | Pre-existing planned work owned elsewhere: templ v0.3.1070 window (TODO #335), size-* sweep (#368), `@utility` migration (#369), browser-verify wave-1 CSS (#370 — note: chromedp migration landed, so this may be unblocked too) | Out of session scope | Yes |
+
+## d) TOTALLY FUCKED UP — radical honesty
+
+1. **The README spent ~6 months as a fact-dump in sales clothing.** Not one line of it was false after turn 2 — and it still buried the product under an ecosystem blockquote, led "Why" with inventory counts, and put a competitor table between the visitor and the only working code on the page. Accuracy 10/10, Fitness mediocre. The user needed ONE pointed question to expose it. Self-review lesson: when the deliverable is a sales page, audit CONVERSION, not just claims — the docs-health VERIFY checklist has a "job-fitness" step and I ran it shallowly in turn 2 (checked "no internal architecture leaking", never asked "does the hook land in 10 seconds?").
+2. **I shipped a wrong number and only self-review caught it.** Turn 2's "~1,775 test functions" was a repo-wide grep that mixed 166 website/visualtest tooling tests into a library claim. Fixed to ~1,600 with a labeled definition (A7) — but it existed on master for ~45 minutes, and nothing would have caught it in CI. Root cause: I verified the OLD number's staleness with more rigor than my REPLACEMENT's correctness.
+3. **The production website lied about a competitor for weeks** (templUI/Alpine.js) and sold 125/105 instead of 123/102 — found and fixed in turn 2, but the guard gap that allowed it (external claims and cross-counter definitions have no mechanical check) is still open. The next drift of this class will sail through CI again.
+4. **3 ghost icon constants still render question-mark fallbacks right now** (`ArrowPath`, `Bars3`, `HandThumbUp` — exported, documented, broken). Routed to TODO #371, blocked only on the alias-vs-delete call. Every day unfixed, consumers silently get wrong glyphs.
+5. **CHANGELOG split-brain persists**: two Toggle entries with different wording coexist in `[Unreleased]` (parallel session artifact, flagged since 19:57, unresolved). Minor, but it is literally the repo's documented #1 doc-failure class living in its own changelog.
+6. **Turn-2's inline verdict "Fitness 9/10" was generous for the README.** I scored fitness mostly on structural decay (TODO_LIST-style criteria) and barely on the README's actual job. If fitness had meant "does the doc serve its job," the README was a 5-6 before tonight. Scoring frame discipline: the formula is fine; my severity classification under-weighted the sales-page job.
+
+## e) WHAT WE SHOULD IMPROVE — process/design
+
+1. **Job-fitness checks need job-specific questions.** "Does the doc serve its job" must be asked WITH the job named: README = "does it hook a Go dev in 10 seconds and get them to `go get`?" FEATURES = "can I trust each status?" Concrete fix: add per-doc fitness questions to the docs-health VERIFY checklist (README: hook/CTA/proof; FEATURES: status honesty; TODO_LIST: open-only).
+2. **Every number gets a definition and a guard in the same edit.** Tonight's two number incidents (theirs: 125/105; mine: ~1,775) share one root cause — counters and claims without pinned definitions. Concrete fix: canonical counters exported once from `utils`; guard patterns added in the same commit that touches a doc number; definitions printed beside the claims.
+3. **External claims need date-stamps + a sweep leg.** The Critical finding of this session was external-claim rot (templUI/Alpine on production). Concrete fix: docs-health VERIFY gains "grep competitor names; check verify-dates" as a standing step; `docs/comparison.md` gets a re-verify cadence.
+4. **Rewrites of persuasive surfaces should start from the copy skill, not end at it.** Turn 2 touched README copy (comparison table) as a fact-fixer; turn 3 redid it as a copywriter. The order should always be: copy/fitness pass FIRST, then fact-verify the result — I did it backwards and did the work twice.
+5. **Parallel-session hygiene**: tonight three sessions touched overlapping files (CHANGELOG, website, status reports) via the daemon. It worked, but produced the Toggle duplicate and interleaved commits. Concrete fix: end-of-session grep for duplicate bold-led CHANGELOG titles; treat staged-but-uncommitted foreign files as untouchable.
+6. **The demand gate (#217) should consume competitor signals automatically.** shadcn-templ shipping a Command palette is demand evidence; nothing in the repo would have noticed. Concrete fix: F109 re-check trigger added to TODO #217 ("re-run when a major templ competitor ships a gated component").
+
+## f) NEXT TASKS — brainstorm, ranked (feeds docs-health HARVEST; items ≥ ~#25 are ROADMAP fuel)
+
+*Impact: 🔴 Critical / 🟠 High / 🟡 Medium / ⚪ Low — Effort: S <30min / M 30min–2h / L >2h. *(C) = carry-over from the 19:57 report.**
+
+| # | Task | Impact | Effort | Category |
+|---|---|---|---|---|
+| 1 | **HARVEST this + the 19:57 report's §f lists into TODO_LIST/ROADMAP** (route mechanical items; escalate strategy items C3/C5) — the documented open loop | 🔴 | S–M | Process |
+| 2 | Fix ghost icons `ArrowPath`/`Bars3`/`HandThumbUp` — alias to canonical path data or delete (needs Q2) | 🔴 | S | Bug (TODO #371) |
+| 3 | Add icons test: every exported `Name` constant must have `iconPathData` (ghost constants fail CI forever) | 🟠 | S | Quality |
+| 4 | Re-baseline visualtest route goldens for `/` + `/sales` — **unblocked tonight**: chromedp migration landed (`a0c18c3c`) and site content changed this session | 🟠 | S | Quality |
+| 5 | Sweep ROADMAP/FEATURES/docs ideas files for stale templUI/Alpine/goshipit claims (C3) | 🟠 | S | Docs |
+| 6 | Ship **llms.txt** from the website SSG (C1) | 🟠 | M | Feature |
+| 7 | Re-run **F109 demand check** with shadcn-templ evidence (C2) | 🟠 | S | Planning |
+| 8 | Guard the hand-typed numbers: TestDocsCountDrift patterns for README Packages/Tests rows + UseCases "23 form components" + comparison-doc internals (B6) | 🟠 | S–M | Quality |
+| 9 | Copy-editing pass over the new README (copywriting skill's own recommendation) — line-by-line tightening (B3) | 🟡 | S | Docs |
+| 10 | Hero visual: regenerate a fresh home screenshot via `visualtest/tools/siteshots` (ogshot-style, evergreen text — NO baked counts; the old og/home.png says "94 components") and wire it under the README hero (B2) | 🟡 | M | Feature |
+| 11 | GitHub-render eyeball: badges row, 4-column table on mobile, anchor jumps (B4) | 🟡 | S | Quality |
+| 12 | Single-source the counters: export canonical component/icon/test counters from `utils`; guard + `build.CountStats` + demo hero consume them (E2) | 🟡 | M | Quality |
+| 13 | Decide + document the CHANGELOG policy for README/site copy changes (does a sales-page restructure warrant an entry? — this session: yes for fact fixes, silent for restructure; pick one rule) | 🟡 | S | Process |
+| 14 | Verify or soften the hero line "CSP-safe page" vs ThemeScript("") nonce-exception behavior (B3 nit) | 🟡 | S | Docs |
+| 15 | Nav-link intent: "Why templ-components" → external `/sales` while an on-page section exists — pick one (Q below) | 🟡 | S | Docs |
+| 16 | Siteshots eyeball of landing/sales after the matrix rewrite (mobile wrap of long cells) (C) | 🟡 | S | Quality |
+| 17 | Label the test-count definition in README beside the row (or link a counting script) (C) | 🟡 | S | Docs |
+| 18 | Pin `statsDirs` (exact 9-package list) in a website build test so 125-vs-123 can't regress (C) | 🟡 | S | Quality |
+| 19 | Add "verified 2026-10-08" rendered caption under the site's comparison matrix, from a const (C) | ⚪ | S | Docs |
+| 20 | Re-verify cadence for `docs/comparison.md` (stars, blocks, styles, htmx support) + calendar/TODO reminder (C) | 🟡 | S | Docs |
+| 21 | Demo prose sweep: hand-typed counts outside the guard-pinned hero (C) | 🟡 | S | Docs |
+| 22 | Reconcile the duplicate Toggle CHANGELOG entries — blocked on parallel-session answer (Q3 last report; still open) | 🟡 | S | Docs |
+| 23 | Run `scripts/ci-repro.sh --lint --website` at tip before the next push (M03 ritual — not run this session) | 🟠 | M | Process |
+| 24 | Grep consumers (go-cqrs-lite, cqrs-htmx) for the 3 ghost icon names before the alias/delete call | 🟡 | S | Bug |
+| 25 | AGENTS.md ownership line: competitor facts live ONLY in `docs/comparison.md` + `website/.../data.go`, both date-stamped (C) | 🟡 | S | Docs |
+| 26 | Mirror `docs/comparison.md` as a rendered website docs page (stronger sales surface than a GitHub link) (C) | 🟡 | M | Feature |
+| 27 | Sitemap `lastmod` for `/sales` keys off `sales.templ` but changes landed in `data.go` — verify lastmod freshness (C) | ⚪ | S | Quality |
+| 28 | CHANGELOG lint: fail on duplicate bold-led titles in `[Unreleased]` (Toggle-dup class) (C) | ⚪ | S | Quality |
+| 29 | Per-doc fitness questions added to docs-health VERIFY reference (E1 — encode tonight's lesson) | 🟠 | S | Process |
+| 30 | External-claims verification leg added to docs-health VERIFY (E3) | 🟠 | S | Process |
+| 31 | ROADMAP: pinned reference-render suite (goldens have no external ground truth) (C) | ⚪ | L | Feature |
+| 32 | ROADMAP: installable blocks (recipes → scaffoldable) — pending distribution-identity answer | ⚪ | L | Feature |
+| 33 | ROADMAP: alternate style themes (they ship 8; we ship one) | ⚪ | L | Feature |
+| 34 | ROADMAP: htmx-4 compatibility probe for our vendored htmx 2.0.10 (event renames, #316b) | 🟡 | M | Feature |
+| 35 | ROADMAP: Command palette / TreeView / MultiSelect / DateRangePicker / FileDrop — only if #7 flips the gate | ⚪ | L | Feature |
+| 36 | Check TODO #370 (browser-verify wave-1 CSS) — chromedp migration landed tonight, so it may be runnable now (observed, not verified) | 🟡 | S | Process |
+| 37 | `check-canonical-facts.sh` legs for README numbers + TODO #371 (C) | ⚪ | M | Quality |
+| 38 | Voice pass: align README copy with Lars's register / site tone (Q1 below) | ⚪ | S | Docs |
+| 39 | Quarterly external-facts re-check ritual: shadcn-templ + goshipit cells in `data.go` (C) | ⚪ | S | Docs |
+| 40 | Verify `[Unreleased]` warmth immediately before the next `scripts/release.sh` (daemon reverted warm entries once — 2026-10-06 incident class; this session's entries are warm now) | 🟠 | S | Process |
+
+*(40 items. Deliberately NOT re-listed: pre-existing TODO_LIST residents untouched by this session — they have their own home.)*
+
+## g) THREE QUESTIONS I CANNOT ANSWER MYSELF
+
+1. **Hero visual priority:** should the README get a real screenshot/GIF as its centerpiece (requires regenerating the stale home PNG ogshot-style + wiring an asset path), or is the hero code block the permanent answer for a code-first audience?
+2. **Nav-link intent:** "Why templ-components" in the README nav goes to the external `/sales` page while an on-page `## Why templ-components?` section exists. Deliberate (pull traffic to the site) or should it anchor in-page?
+3. **Ghost icons (deciding #2/#24):** do you know of consumers passing `icons.ArrowPath` / `icons.Bars3` / `icons.HandThumbUp`? That decides alias-to-canonical (non-breaking, new pattern + ADR) vs delete-the-constants (breaking, clean).
+
+---
+
+## Verification ledger
+
+**Ran and green this turn:** `TestDocsCountDrift` + `TestVersionMatches*` (post-restructure), full `utils` package, section-order/anchor/duplicate greps, `cat -A` byte-check of moved table blocks, daemon-commit confirmation for all deliverables.
+**Did not run:** GitHub-render preview (no renderer available locally), copy-editing pass, siteshots/visual lanes, `ci-repro.sh` (not pushing), per-module test loop (no published-module Go code touched this turn — README only).
+**Could not verify:** actual GitHub mobile rendering; whether the parallel sessions' staged work (echarts FileName entry) is finished; live deployed site state.
+
+## Self-review one-liners (asked directly)
+
+- **Forgot:** the HARVEST loop for two reports' worth of §f items; a CHANGELOG entry for the restructure (policy gap); the copy-editing pass; that "CSP-safe" in my hero line is a slightly stronger claim than the nonce-exception reality; the nav-link ambiguity I introduced left unresolved.
+- **Could have done better:** run the fitness/copy pass BEFORE the fact pass (I did the work twice); score Fitness with the doc's JOB in mind instead of structural-decay proxies; verify my replacement numbers with the same rigor I applied to the stale ones; eyeball the result on GitHub before calling it superb.
+- **Still improvable:** per-doc fitness questions + external-claims leg in docs-health VERIFY; counter single-sourcing; mechanical ghost-system detection; demand-gate consuming competitor signals.
+- **Did I lie?** No. The 19:57 report's "Fitness 9/10" was, with hindsight, too kind to the README's job-fitness — the honest pre-restructure number was lower; the finding stands corrected here rather than silently rewritten there.
