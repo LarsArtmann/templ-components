@@ -138,7 +138,7 @@ func TestAxeHarnessDetectsViolations(t *testing.T) {
 	ctx, cancel := newTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx, chromedp.Navigate(srv.URL), chromedp.WaitReady("body")); err != nil {
+	if err := chromedp.Do(ctx, chromedp.Navigate(srv.URL), chromedp.WaitReady("body")); err != nil {
 		t.Fatalf("visualtest[axe]: load control page: %v", err)
 	}
 
@@ -202,9 +202,8 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 		chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
 			for range 2 {
 				var got bool
-				if err := evalExprInto(
-					`document.documentElement.classList.contains('dark')`, &got).
-					Do(ctx); err != nil {
+				if err := chromedp.Do(ctx, evalExprInto(
+					`document.documentElement.classList.contains('dark')`, &got)); err != nil {
 					return err
 				}
 
@@ -212,17 +211,16 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 					return nil
 				}
 
-				if err := evalVoid(fmt.Sprintf(
+				if err := chromedp.Do(ctx, evalVoid(fmt.Sprintf(
 					`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; true`,
 					theme,
 					dark,
 					theme,
-				)).
-					Do(ctx); err != nil {
+				))); err != nil {
 					return err
 				}
 
-				if err := chromedp.Sleep(settleDelay).Do(ctx); err != nil {
+				if err := chromedp.Do(ctx, chromedp.Sleep(settleDelay)); err != nil {
 					return err
 				}
 			}
@@ -231,7 +229,7 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 		}),
 	}
 
-	if err := chromedp.Run(ctx, actions...); err != nil {
+	if err := chromedp.Do(ctx, actions...); err != nil {
 		t.Fatalf("visualtest[axe]: load %s%s: %v", baseURL, path, err)
 	}
 

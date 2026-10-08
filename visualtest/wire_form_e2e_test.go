@@ -74,7 +74,7 @@ func setFieldValue(region, field, value string) chromedp.Action[chromedp.Void] {
 
 		var out string
 
-		return evalExprInto(expr, &out).Do(cctx)
+		return chromedp.Do(cctx, evalExprInto(expr, &out))
 	})
 }
 
@@ -346,7 +346,7 @@ func TestWireE2EHTMXFormSubmitsFields(t *testing.T) {
 
 	var ok bool
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollBool(`document.readyState==='complete' && window.htmx!==undefined`, &ok),
 		chromedp.SendKeys(formSel(wireFormHTMXRegion, `input[name="name"]`), "Ada Lovelace", chromedp.NodeVisible),
@@ -426,7 +426,7 @@ func TestWireE2EFormValidationRoundTrip(t *testing.T) {
 				preserved string
 			)
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				pollBool(tc.gate, &ok),
 				// "ada@example" passes the browser's HTML5 email gate but

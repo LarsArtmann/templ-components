@@ -826,7 +826,7 @@ func setSelectValue(region, sel, value string) chromedp.Action[chromedp.Void] {
 
 		var out string
 
-		return evalExprInto(expr, &out).Do(cctx)
+		return chromedp.Do(cctx, evalExprInto(expr, &out))
 	})
 }
 
@@ -838,7 +838,7 @@ func setValueQuiet(region, sel, value string) chromedp.Action[chromedp.Void] {
 
 		var out string
 
-		return evalExprInto(expr, &out).Do(cctx)
+		return chromedp.Do(cctx, evalExprInto(expr, &out))
 	})
 }
 
@@ -851,7 +851,7 @@ func fireInputBurst(region, sel, value string, n int) chromedp.Action[chromedp.V
 
 		var out string
 
-		return evalExprInto(expr, &out).Do(cctx)
+		return chromedp.Do(cctx, evalExprInto(expr, &out))
 	})
 }
 
@@ -896,7 +896,7 @@ func packPollOnce(ctx context.Context, expr string) bool {
 // real user clicking again and makes the test deterministic.
 func packSubmitUntil(ctx context.Context, scope, needleRegion, needle string) error {
 	for range 20 {
-		if err := chromedp.Run(ctx,
+		if err := chromedp.Do(ctx,
 			chromedp.Click(formSel(scope, `button[type="submit"]`), chromedp.NodeVisible),
 		); err != nil {
 			return err
@@ -956,7 +956,7 @@ func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
 
 			var ok bool
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				pollBool(packGate(dialect), &ok),
 			); err != nil {
@@ -1006,7 +1006,7 @@ func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
 
 			var ok bool
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				pollBool(packGate(dialect), &ok),
 			); err != nil {
@@ -1053,7 +1053,7 @@ func packWizardFlow(t *testing.T, dialect wire.Transport) {
 
 	var ok bool
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollBool(packGate(dialect), &ok),
 	); err != nil {
@@ -1146,7 +1146,7 @@ func TestWireE2EUploadFileRoundTrip(t *testing.T) {
 
 			var ok bool
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				pollBool(packGate(dialect), &ok),
 			); err != nil {
@@ -1158,7 +1158,7 @@ func TestWireE2EUploadFileRoundTrip(t *testing.T) {
 				t.Fatalf("%s upload empty submit: %v", dialect, err)
 			}
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				waitSwapSettled(),
 				// Pick a real file and upload it.
 				chromedp.SetUploadFiles(formSel(scope, `input[type="file"]`), []string{filePath}),
@@ -1200,7 +1200,7 @@ func TestWireE2EGETSearchRoundTrip(t *testing.T) {
 				preserved string
 			)
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				pollBool(packGate(dialect), &ok),
 				setFieldValue(region, `input[name="q"]`, "ada"),
@@ -1217,7 +1217,7 @@ func TestWireE2EGETSearchRoundTrip(t *testing.T) {
 				t.Fatalf("%s search first submit: %v", dialect, err)
 			}
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				waitSwapSettled(),
 
 				evalExprInto(formValueExpr(region, `input[name="q"]`), &preserved),
@@ -1261,7 +1261,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 		attached bool
 	)
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollBool(packGate(wire.TransportHTMX), &ok),
 	); err != nil {
@@ -1305,7 +1305,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 
 	// The wired submit dispatches submit, which clears the flag; the
 	// response swaps in a fresh guarded form.
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Click(formSel(packDirtyRegion, `button[type="submit"]`), chromedp.NodeVisible),
 		pollBool(regionHasText(packDirtyRegion, "Saved Graf Zeppelin via htmx."), &ok),
 		waitSwapSettled(),
@@ -1350,7 +1350,7 @@ func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
 			// Fire the native submit, then wait out the navigation commit
 			// before polling: the full-page navigation invalidates the
 			// current execution context mid-poll, so give it a beat first.
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				pollBool(packGate(dialect), &ok),
 				setValueQuiet(scope, `input[name="q"]`, "enter-test"),
@@ -1361,7 +1361,7 @@ func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
 
 			var location string
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.Sleep(wireFormSettleWait),
 				chromedp.Sleep(750*time.Millisecond),
 				chromedp.Location(&location),

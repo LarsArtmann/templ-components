@@ -342,7 +342,7 @@ func siteAxeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, 
 					return err
 				}
 
-				if err := chromedp.Sleep(settleDelay).Do(ctx); err != nil {
+				if err := chromedp.Do(ctx, chromedp.Sleep(settleDelay)); err != nil {
 					return err
 				}
 			}
@@ -383,7 +383,7 @@ func TestSiteTouchTargetAudit(t *testing.T) {
 
 			var raw string
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.EmulateViewport(375, 667),
 				chromedp.Navigate(base+route.path),
 				chromedp.WaitReady("body"),
@@ -443,7 +443,7 @@ func TestSiteZoomReflowAudit(t *testing.T) {
 
 				var raw string
 
-				if err := chromedp.Run(ctx,
+				if err := chromedp.Do(ctx,
 					chromedp.EmulateViewport(zoom.width, 900),
 					chromedp.Navigate(base+route.path),
 					chromedp.WaitReady("body"),

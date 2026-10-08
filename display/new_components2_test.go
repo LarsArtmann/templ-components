@@ -46,12 +46,23 @@ func TestHoverCardBasicRender(t *testing.T) {
 
 func TestHoverCardGolden(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, HoverCard(HoverCardProps{
-		ID:       "hcg",
-		Position: HoverCardPositionTop,
-		Content:  templ.Raw("<p>Tooltip text</p>"),
-	}))
-	golden.Assert(t, "hover_card_basic", output)
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "hover_card_basic", HTML: utils.Render(t, HoverCard(HoverCardProps{
+			ID:       "hcg",
+			Position: HoverCardPositionTop,
+			Content:  templ.Raw("<p>Tooltip text</p>"),
+		}))},
+		{Name: "hover_card_start", HTML: utils.Render(t, HoverCard(HoverCardProps{
+			ID:       "hcs",
+			Position: HoverCardPositionStart,
+			Content:  templ.Raw("<p>Tooltip text</p>"),
+		}))},
+		{Name: "hover_card_end", HTML: utils.Render(t, HoverCard(HoverCardProps{
+			ID:       "hce",
+			Position: HoverCardPositionEnd,
+			Content:  templ.Raw("<p>Tooltip text</p>"),
+		}))},
+	})
 }
 
 func TestHoverCardA11y(t *testing.T) {

@@ -121,7 +121,7 @@ func TestAppShellSidebarFitsTrack(t *testing.T) {
 
 	var overflow float64
 
-	err = chromedp.Run(ctx,
+	err = chromedp.Do(ctx,
 		chromedp.EmulateViewport(viewportDesktopWidth, viewportDesktopHeight),
 		chromedp.Navigate(srv.URL),
 		chromedp.WaitVisible(chromedp.CSS("#tc-root")),
@@ -184,7 +184,7 @@ func TestAppShellSidebarOverflowDetected(t *testing.T) {
 
 	var overflow float64
 
-	err = chromedp.Run(ctx,
+	err = chromedp.Do(ctx,
 		chromedp.EmulateViewport(viewportDesktopWidth, viewportDesktopHeight),
 		chromedp.Navigate(srv.URL),
 		chromedp.WaitVisible(chromedp.CSS("#tc-root")),

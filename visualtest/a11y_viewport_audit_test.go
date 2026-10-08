@@ -36,7 +36,7 @@ func TestTouchTargetAudit(t *testing.T) {
 
 			var raw string
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.EmulateViewport(375, 667),
 				chromedp.Navigate(server.BaseURL()+route.path),
 				chromedp.WaitReady("body"),
@@ -144,7 +144,7 @@ func TestZoomReflowAudit(t *testing.T) {
 
 				var raw string
 
-				if err := chromedp.Run(ctx,
+				if err := chromedp.Do(ctx,
 					chromedp.EmulateViewport(zoom.width, 900),
 					chromedp.Navigate(server.BaseURL()+route.path),
 					chromedp.WaitReady("body"),
