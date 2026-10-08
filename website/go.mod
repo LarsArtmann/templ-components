@@ -5,7 +5,7 @@ go 1.27
 ignore dist
 
 require (
-	github.com/a-h/templ v0.3.1070
+	github.com/a-h/templ v0.3.1020
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/larsartmann/templ-components v1.20.1
 	github.com/larsartmann/templ-components/errorpage v1.20.1
@@ -17,7 +17,7 @@ require (
 
 require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
-	github.com/dlclark/regexp2/v2 v2.8.4 // indirect
+	github.com/dlclark/regexp2/v2 v2.8.3 // indirect
 	github.com/larsartmann/go-error-family v0.11.0 // indirect
 	github.com/larsartmann/templ-components/htmx v1.20.1 // indirect
 )
