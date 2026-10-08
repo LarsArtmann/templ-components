@@ -545,3 +545,36 @@ capability ledger in its appendix):
 **Version pinning:** the nix dev shell (`pkgs.tailwindcss_4`), the demo Dockerfile, and the
 website CI lane all pin the SAME version (4.3.3) — bump all three in one commit (see
 AGENTS.md "Tailwind lane pin checklist").
+
+## Verifying class compilation (probe protocol)
+
+Before shipping any claim about whether a Tailwind class (or variant form)
+compiles — and what CSS it produces — verify against the PINNED binary with a
+minimal probe. This caught two wrong assumptions on 2026-10-08 alone (the
+`start-`/`end-` "physical" claim was false, and `@source inline` was the only
+working safelist syntax).
+
+From the repo ROOT (the nix dev shell resolves the flake by searching upward;
+a subdirectory works too, but paths below assume root):
+
+```bash
+cat > /tmp/probe.css << 'CSS'
+@import "tailwindcss" source(none);
+@source inline("start-0 end-full inset-s-0 peer-checked:*:inset-s-5.5 transition-[inset-inline-start]");
+CSS
+nix develop -c tailwindcss -i /tmp/probe.css -o /tmp/out.css
+grep -A2 'inset-inline\|translate' /tmp/out.css
+```
+
+Rules learned the hard way:
+
+- `@source inline("…")` is the ONLY safelist form that worked; `@source
+  "path"` requires quoting and fought back. It accepts variant-prefixed
+  literals (`peer-checked:*:inset-s-5.5`) and arbitrary properties
+  (`transition-[inset-inline-start]`).
+- One class per claim: probe the exact literal you ship — variants change
+  the emitted selector shape (`peer-checked:*:` compiles to a sibling
+  selector `:is(:where(.peer):checked ~ *) > *`).
+- Read the OUTPUT CSS, not the class name: `start-0` and `inset-s-0` emit
+  byte-identical `inset-inline-start` rules (deprecated aliases), while
+  `bg-gradient-to-*` and `bg-linear-to-*` differ in interpolation hint.
