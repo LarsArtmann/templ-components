@@ -28,7 +28,7 @@ func writeFixtureRepo(t *testing.T) string {
 		"display/types_test.go": "package display\n\nfunc NeverIsValid(v string) bool { return false }\n",
 		"feedback/go.mod":       "module example.com/lib/feedback\n",
 		"feedback/alert.templ":  "templ Alert(message string) {\n}\n",
-		"icons/icon_names.go":   "package icons\n\nconst (\n\tHome  Name = \"home\"\n\tClose Name = \"home\"\n\tX     Name = \"x\"\n)",
+		"icons/icon_paths.go":   "package icons\n\nvar iconPathData = map[Name]string{\n\tHome: \"M0 0\",\n\tX:    svg.PathXMark,\n}\n",
 	}
 
 	for path, content := range files {

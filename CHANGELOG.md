@@ -116,6 +116,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   subtests). The website's Related Projects page carried the same stale
   templUI row and now points at the comparison doc.
 
+- **Website sold the wrong counts: 125 components / 105 icons / 22 form
+  components.** `build.CountStats` scanned `recipes` (compositions, counted
+  separately everywhere else) and omitted `charts/echarts`, landing on 125
+  while README, FEATURES, the demo hero, and the drift guard all pin 123;
+  its icon counter read `icon_names.go` constants instead of renderable
+  path data, selling 105 icons (3 of which — `ArrowPath`, `Bars3`,
+  `HandThumbUp` — are ghost constants with no path data; TODO_LIST #371)
+  against the canonical 102. Both counters now mirror
+  `utils.TestDocsCountDrift`'s definitions (123 components across the 9
+  primitive packages incl. charts/echarts; 101 path entries + Spinner), and
+  the UseCases card says 23 form components. Site goldens re-baselined.
+
 - **`Toggle`'s thumb (circle) actually slides when checked.** The thumb
   translate class (`peer-checked:translate-x-N`) was rendered on the thumb
   span, which is nested INSIDE the track span — but Tailwind's
