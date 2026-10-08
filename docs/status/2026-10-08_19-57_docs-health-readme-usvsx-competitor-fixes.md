@@ -1,0 +1,141 @@
+# Status Report — docs-health README pass + US-vs-X comparison doc + competitor-fact repairs
+
+**Generated:** 2026-10-08 19:57 CEST
+**Session scope:** two prompts — (1) "How do we compare to axadrn/shadcn-templ?" (research), (2) "Execute the docs-health SKILL properly, for README.md + a new dedicated US vs X.md".
+**Skills executed:** docs-health (VERIFY + BUILD + cross-file fixes), status-report (this file, `.md` per explicit user path demand), brutal-self-review questions woven into §d/§e (no separate reviews/ HTML — user asked for one `.md` report and no unrelated research).
+**Repo:** `github.com/larsartmann/templ-components` @ master, tip `35308a6e` + in-flight edits (daemon auto-commits).
+
+---
+
+## Executive summary
+
+The README claimed numbers that were quietly wrong (datastar "4 components" — actually 6; "Packages 18" — actually 20; competitor table described **templUI with Alpine.js** — templUI no longer exists, it was renamed/reworked into **shadcn-templ** which uses **vanilla JS**). The verification spread to the production website and found worse: the site's landing comparison matrix sold the same templUI/Alpine falsehood, its `CountStats` sold **125 components / 105 icons** against the canonical **123 / 102**, and a probe uncovered **3 ghost icon constants** (`ArrowPath`, `Bars3`, `HandThumbUp`) that render a question-mark fallback. Everything found was either fixed with green tests or routed to TODO_LIST (#371). A new `docs/comparison.md` head-to-head was built and wired into README + website.
+
+**As-found health scores (README scope):** Accuracy **4.75/10**, Fitness **9/10** (computed in the inline report; 1 Critical + 7 Medium + 3 Low findings).
+
+---
+
+## a) FULLY DONE — verifiably complete
+
+| # | What | Evidence |
+|---|---|---|
+| A1 | **shadcn-templ competitor research** (turn 1): repo tree, go.mod, registry.json (63 ui + 27 blocks), parity harness (DOM/focus/scroll-lock/pixel vs pinned shadcn/ui), htmx-616 plan, AGENTS.md, llms.txt, button/utils/icon sources; our README/FEATURES/TODO #217 | GitHub API + raw file reads, 2026-10-08; analysis delivered inline (stars 1,754 vs our 4) |
+| A2 | **README fact fixes**: comparison table rebuilt (shadcn-templ fka templUI + verified goshipit 52 comps/DaisyUI/HTMX/Node-for-CSS-only; new Distribution row; head-to-head link), datastar heading 4→**6**, Packages 18→**20 (7 Go modules)** | commit `a769a27f`; `TestDocsCountDrift` green after |
+| A3 | **`docs/comparison.md` built** (the "US vs X" doc): snapshot table, distribution-philosophy section, honest "where each wins", decision guide, all external facts date-stamped 2026-10-08 with sources | commit `a769a27f`; linked from README + website related-projects |
+| A4 | **Production falsehood fixed**: website matrix column "templUI" → "shadcn-templ", "Alpine.js" → "Vanilla JS (bundled)", CSP/HTMX cells corrected, Datastar row added, "Standalone library" row → "Distribution" | `website/internal/pages/data.go:147-186` (commit `35308a6e`); full website suite green; landing goldens re-baselined |
+| A5 | **Site counter split-brain fixed**: `CountStats` statsDirs now mirrors the guard's canonical package set (swapped `recipes`→`charts/echarts`) → site says **123** components; icon counter now reads `icon_paths.go` entries + Spinner (same definition as `utils.countIconNames`) → **102** icons; sales page renders "123 components · 102 icons" | `website/internal/build/build.go` (commit `dc2112e7`), fixture test updated, goldens re-baselined (commit `35308a6e`) |
+| A6 | **UseCases card** "22 form components" → **23** (guard-verified per-package count) | `data.go` (commit `35308a6e`); goldens contain "23 form components", zero "22" remain |
+| A7 | **Website related-projects.md**: stale templUI row replaced (shadcn-templ + goshipit + comparison link) | commit `a769a27f`; `cmd/site` whole-site render + link checks green |
+| A8 | **TODO_LIST #371** added: ghost icon constants with probe evidence; next-free-ID footers corrected (371→372) | commit `35308a6e` |
+| A9 | **CHANGELOG `[Unreleased]` kept warm**: 1 Added (comparison doc) + 2 Fixed (README drift; site counts) entries | commit `35308a6e` + in-flight edit |
+| A10 | **AGENTS.md fix-on-sight**: "HTML golden baselines (261)" → 272 | commit `a769a27f` |
+| A11 | **Test-count regression caught and fixed during self-review**: my first correction shipped "~1,775 test functions" using a repo-wide grep that mixed in 166 website/visualtest tooling tests; re-measured library-only (site's own `excludedModules` definition) = **1,609**; README now says "~1,600 test functions + ~1,650 subtests", CHANGELOG wording updated | `TestDocsCountDrift` green after fix (this report turn) |
+| A12 | **Inline health report delivered** with visible math (Accuracy 4.75 / Fitness 9, as-found scoring per skill) | conversation, 2026-10-08 |
+
+## b) PARTIALLY DONE — works, with named gaps
+
+| # | Item | Works | Open gap | Effort |
+|---|---|---|---|---|
+| B1 | **Competitor-fact freshness** | `docs/comparison.md` + data.go comments carry verify dates (2026-10-08) | No re-verification cadence/mechanism; stars and "~64 + 27 blocks" rot silently | S |
+| B2 | **Drift-guard coverage** | `TestDocsCountDrift` pins the pre-existing claims; full utils + website suites green | The NEW numbers I typed (README "Packages 20", "Tests ~1,600", UseCases "23 form components") are NOT guard-pinned — they can drift again exactly like their predecessors | S–M |
+| B3 | **Site correctness after matrix rewrite** | All Go tests + link/anchor/CSP-sync checks green | No human eyeball of the rebuilt matrix (longer cells like "Tailwind v4 + vars (8 themes)" may wrap badly on mobile; siteshots not run) | S |
+| B4 | **CHANGELOG hygiene** | Entries warm and correctly sectioned | Parallel session left TWO Toggle entries (old v1.20.x wording at ~line 119, new RTL-inset wording at ~line 88) — split-brain in the same file I edited; deliberately not touched (not my edit, session possibly active) | S |
+| B5 | **visualtest route goldens** | Untouched and unverified — visualtest module is mid-migration (chromedp generic-API, TODO #370 says it may not compile) | Landing/sales HTML changed ⇒ any pixel route goldens covering `/` and `/sales` are **likely stale**; could not confirm without compiling the broken module | S after migration lands |
+
+## c) NOT STARTED — planned/observed, zero code this session
+
+| # | Item | Why not started | Still wanted? |
+|---|---|---|---|
+| C1 | **llms.txt** on the website (turn-1 recommendation #1, "~1-hour change"; shadcn-templ markets "AI-Ready", ours 404s) | User scoped turn 2 to README + US-vs-X doc | Yes — cheapest high-value gap |
+| C2 | **F109 demand-check re-run** (TODO_LIST #217): Command palette/MultiSelect/TreeView/DateRangePicker/FileDrop were demand-gated on "zero evidence"; shadcn-templ's adoption is new evidence | Decision-gated by the F109 verdict itself; needs the check, not silent building | Yes |
+| C3 | **Installable blocks / registry ergonomics** (recipes → one-command scaffolds) | Strategy decision (distribution identity) — turn-1 takeaway #3 | Unknown — question for Lars |
+| C4 | **Alternate style themes** (they ship 8; we ship one look) | Big design investment, no demand signal yet | ROADMAP fuel |
+| C5 | **Upstream-parity-harness analogue** (pinned reference renders as external ground truth for our goldens) | Idea only (turn-1 takeaway #4) | ROADMAP fuel |
+| C6 | templ v0.3.1070 migration window (TODO #335), visualtest chromedp migration (in flight, other session), size-* sweep (TODO #368), `@utility` migration (TODO #369) | Pre-existing planned work, explicitly out of session scope | Yes, owned elsewhere |
+
+## d) TOTALLY FUCKED UP — radical honesty
+
+1. **The production website lied about a competitor for weeks.** The landing matrix said templUI uses Alpine.js; templUI was renamed shadcn-templ long ago and uses vanilla JS. Every evaluator who compared us against the actual shadcn-templ saw the site contradict reality — the exact "docs that lie" failure this repo keeps guard against, and it shipped anyway because **external claims have no drift guard** (TestDocsCountDrift covers internal counts only). FIXED this session; the guard gap remains (see E2).
+2. **The site sold wrong flagship numbers**: 125 components (should be 123 — it counted recipe compositions and skipped charts/echarts) and 105 icons (should be 102 — it counted constants, three of which don't render). Two counters, one repo, two truths; the guard and the site had divergent *definitions*, so no test could catch it. FIXED — definitions now mirrored.
+3. **3 ghost icon constants are still broken right now**: `icons.ArrowPath`, `icons.Bars3`, `icons.HandThumbUp` are exported, documented-in-AGENTS names that render a **question-mark fallback** — a silent wrong-glyph bug for common icons (refresh arrow, hamburger, thumbs-up). Probe-proven (106 consts / 105 unique / 102 renderable). Routed to TODO #371, not fixed — needs the alias-vs-delete call.
+4. **My own first fix was wrong**: I replaced "~1,500 tests" with "~1,775" using a repo-wide grep that counted website/visualtest tooling tests. The old number was library-scoped and closer to right. Caught during this report's self-review (A11) — but it shipped wrong for ~20 minutes and only self-review caught it. Lesson: I changed a number without pinning its *definition*.
+5. **Split-brain in CHANGELOG**: two Toggle entries with different wording now coexist (parallel session artifact). Minor but it's exactly the duplication class this repo documents as its #1 doc failure mode. Unresolved (deliberate — not my edit).
+
+## e) WHAT WE SHOULD IMPROVE — process/design
+
+1. **External claims need a verify-date discipline, not just internal counts.** Pattern: any doc fact about a THIRD party (stars, component counts, JS frameworks) must carry a date + source, and live in exactly ONE home. Impact: this session's Critical finding was purely external-claim rot. Concrete fix: a `verify-external-claims` checklist leg in docs-health VERIFY ("grep for competitor names, check dates"), + re-verify TODO for `docs/comparison.md` (~quarterly).
+2. **Single-source the counters.** We now have THREE counting implementations of "components" (guard, site CountStats, demo hero const) and TWO of "icons" (guard, site). They agree today because I mirrored definitions by hand. Concrete fix: `utils` exports the canonical counters (or a tiny `facts` package); guard + site both call it; delete the regex twins.
+3. **Ghost-system scan should be mechanical.** #371 (exported const with no backing data) was found by a hand-rolled probe in /tmp. Concrete fix: an icons-package test asserting every exported `Name` constant has an `iconPathData` entry (or is a documented alias) — ghost constants then fail CI, forever.
+4. **New doc numbers should enter the guard in the same edit.** Every count I typed by hand (Packages, Tests, UseCases 23) is a future Critical finding. Concrete fix: extend `TestDocsCountDrift` patterns in the same commit that changes README numbers.
+5. **Counter definitions must be labeled where they're printed.** "~1,600 test functions" silently means "library modules, website/visualtest excluded". One parenthetical in README (or a linked counting script) prevents the next definition war.
+6. **Parallel-session coordination.** Two sessions edited CHANGELOG/TODO_LIST concurrently today (daemon interleaved commits). Worked, but produced the Toggle duplicate. Concrete fix: session-end grep for duplicate bold-led entries in `[Unreleased]`, or accept daemon-only commits while two sessions run.
+
+## f) NEXT TASKS — brainstorm, ranked (feeds docs-health HARVEST; most ≥#25 are ROADMAP fuel)
+
+*Impact: 🔴 Critical / 🟠 High / 🟡 Medium / ⚪ Low — Effort: S <30min / M 30min–2h / L >2h*
+
+| # | Task | Impact | Effort | Category |
+|---|---|---|---|---|
+| 1 | Fix ghost icons `ArrowPath`/`Bars3`/`HandThumbUp`: add `iconPathData` entries aliasing the canonical icons the animation table already maps (or delete consts — needs Q2 answer) | 🔴 | S | Bug (TODO #371) |
+| 2 | Add icons test: every exported `Name` constant must exist in `iconPathData` (or be an alias) — ghost constants fail CI | 🟠 | S | Quality |
+| 3 | Sweep ROADMAP.md, FEATURES.md, docs/*.md (incl. 100-IMPROVEMENT-IDEAS/STANDOUT-IDEAS/SUPERB-FOR-PERSONAL-USE) for stale templUI/Alpine/goshipit claims — my session only swept README/website/data.go | 🟠 | S | Docs |
+| 4 | Re-baseline visualtest route goldens for `/` + `/sales` once the chromedp migration compiles (site content changed this session) | 🟠 | S | Quality |
+| 5 | Ship **llms.txt** from the website SSG (we have search-index.json machinery; shadcn-templ advertises "AI-Ready", we 404) | 🟠 | M | Feature |
+| 6 | Re-run the **F109 demand check** (TODO #217) with shadcn-templ's 1.7k-star adoption as evidence; re-decide Command palette / MultiSelect / TreeView / DateRangePicker / FileDrop | 🟠 | S | Planning |
+| 7 | Guard the new README numbers: extend `TestDocsCountDrift` with patterns for "Packages \| 20", the Tests row, and UseCases "23 form components" | 🟠 | S–M | Quality |
+| 8 | Single-source the counters: export canonical component/icon counters from `utils`; have guard + `build.CountStats` + demo hero consume them | 🟡 | M | Quality |
+| 9 | Siteshots eyeball of landing/sales after the matrix rewrite (long cells on mobile; check horizontal overflow) | 🟡 | S | Quality |
+| 10 | Label the test-count definition in README (or link a `scripts/count-tests.sh`) so "~1,600" can't be re-litigated | 🟡 | S | Docs |
+| 11 | Add re-verify cadence for `docs/comparison.md` (header says 2026-10-08; add TODO/reminder + what to re-check: stars, block count, styles, htmx support) | 🟡 | S | Docs |
+| 12 | Reconcile the duplicate Toggle CHANGELOG entries (after Q3 answer) | 🟡 | S | Docs |
+| 13 | Verify the README htmx section claim "CSRF protection" — spot-checked most claims this session but not this one | 🟡 | S | Docs |
+| 14 | Pin `statsDirs` in a test (assert the exact 9-package list == guard's canonical set) so the 125-vs-123 class can't regress | 🟡 | S | Quality |
+| 15 | Demo prose sweep: hand-typed counts outside the guard-pinned hero (icons/enum numbers on demo pages) | 🟡 | S | Docs |
+| 16 | Mirror `docs/comparison.md` as a website docs page (today it's GitHub-link-only from related-projects; a rendered /docs/comparison is a stronger sales surface) | 🟡 | M | Feature |
+| 17 | Add `scripts/check-canonical-facts.sh` legs for README Packages/Tests + TODO_LIST #371 (repo already has this script pattern for status) | ⚪ | M | Quality |
+| 18 | Guard `docs/comparison.md` internal numbers (123/102/64 appear there too) via TestDocsCountDrift | ⚪ | S | Quality |
+| 19 | "Last verified 2026-10-08" rendered caption under the site's comparison matrix (from a const, so it can't silently rot) | ⚪ | S | Docs |
+| 20 | Sitemap `lastmod` sanity for `/sales` (lastUpdated keys off `sales.templ`, but my change lived in `data.go` — lastmod may under-report) | ⚪ | S | Quality |
+| 21 | Sitemap/docs re-verify related-projects.md rendering (search-index regenerated at build — confirm `<mark>` snippets look right) | ⚪ | S | Docs |
+| 22 | Run `scripts/ci-repro.sh --lint --website` at the tip before the next push (M03 ritual; this session never ran it) | 🟠 | M | Process |
+| 23 | Check visualtest module compile status; coordinate with the in-flight chromedp migration session before touching goldens | 🟡 | S | Process |
+| 24 | Consider a `docs/status/` archive sweep: reports older than 30 days with zero `~~` markers → ANNOTATE pass | ⚪ | M | Docs |
+| 25 | ROADMAP: pinned reference-render suite (our goldens currently have no external ground truth) | ⚪ | L | Feature |
+| 26 | ROADMAP: installable blocks (recipes → scaffoldable) — pending Q on distribution identity | ⚪ | L | Feature |
+| 27 | ROADMAP: alternate style themes (they ship 8; we ship one) | ⚪ | L | Feature |
+| 28 | ROADMAP: llms-full.txt (full docs corpus for AI consumers) once llms.txt exists | ⚪ | S | Feature |
+| 29 | ROADMAP: htmx-4 compatibility probe for our vendored htmx 2.0.10 (shadcn-templ already fixture-tests htmx 4 betas; event renames tracked in #316b) | 🟡 | M | Feature |
+| 30 | ROADMAP: Command palette component (only if #6 demand check flips) | ⚪ | L | Feature |
+| 31 | ROADMAP: TreeView, MultiSelect, DateRangePicker, FileDrop (same gate as #30) | ⚪ | L | Feature |
+| 32 | Add "verified-external-facts" checklist to docs-health VERIFY reference (this session's Critical was external-claim rot — encode the lesson) | 🟠 | S | Process |
+| 33 | CHANGELOG self-lint: fail on duplicate bold-led titles in `[Unreleased]` (Toggle-dup class) | ⚪ | S | Quality |
+| 34 | README: consider adding Datastar row cell for shadcn-templ "—" is honest; keep — no action (recorded so it isn't "fixed" into a falsehood later) | ⚪ | S | Docs |
+| 35 | Check whether any consumer imports `icons.ArrowPath`/`Bars3`/`HandThumbUp` before choosing alias-vs-delete (grep go-cqrs-lite, cqrs-htmx) | 🟡 | S | Bug |
+| 36 | Add AGENTS.md one-liner: "competitor facts live ONLY in docs/comparison.md + data.go, both date-stamped" (ownership rule) | 🟡 | S | Docs |
+| 37 | Re-check the 4 goshipit cells in data.go against their repo quarterly (they ship fast) | ⚪ | S | Docs |
+| 38 | Consider vendoring competitor star counts as a build-time fetch with cache + date, instead of hand-edits (probably over-engineering — decide) | ⚪ | M | Quality |
+| 39 | Write the icons alias decision into ADR if we alias (path-data aliasing is a new pattern) | ⚪ | S | Docs |
+| 40 | Post-release: CHANGELOG entries from this session ship in the next version cut — verify `[Unreleased]` warmth right before `scripts/release.sh` (daemon reverted warm entries once, 2026-10-06 incident class) | 🟠 | S | Process |
+
+*(40 items — the user cap was 50; the remaining obvious candidates are all pre-existing TODO_LIST residents, not session findings, so they're not re-listed here.)*
+
+## g) THREE QUESTIONS I CANNOT ANSWER MYSELF
+
+1. **Component-count sales policy:** I aligned the site, README, and comparison doc to **123** (primitives, the guard/demo-hero canonical). FEATURES defines "123 + 4 recipe screens = 127". Is 123 the permanent public number, or should marketing surfaces show "123 components + 4 recipe screens"?
+2. **Ghost icon constants (`ArrowPath`, `Bars3`, `HandThumbUp`):** alias them to canonical path data (non-breaking, new pattern) or delete the constants (breaking, clean)? Do you know of consumers (go-cqrs-lite, cqrs-htmx) already passing them?
+3. **Parallel session:** is another session still active on CHANGELOG/TODO_LIST (the Toggle entries now exist twice with different wording)? Should I reconcile, or hands-off until it lands?
+
+---
+
+## Verification ledger
+
+**Ran and green:** `utils.TestDocsCountDrift`, `TestVersionMatches*`, full `utils` package, full website suite (`internal/build`, `internal/pages` incl. golden re-baseline, `cmd/site` incl. whole-site render/link/CSP-sync), `gofmt -l` on touched Go files, icon ghost-constant runtime probe.
+**Did not run (honest gaps):** per-module test loop for the other 6 modules (no Go code in published modules was touched — only markdown + website module — but the M03 ritual would run it anyway), `scripts/ci-repro.sh` (pre-push ritual — not pushing this session), `nix fmt` (no .go/.nix formatting drift expected; gofmt clean), visual/nix lanes (visualtest module mid-migration), siteshots visual eyeball.
+**Could not verify:** whether visualtest route goldens cover `/`+`/sales` (module doesn't compile mid-migration); live deployed site state.
+
+## Self-review one-liners (asked directly)
+
+- **Forgot:** ROADMAP/FEATURES/docs sweep for the same stale competitor claims (#3); visualtest route-golden staleness (#4); llms.txt (my own #1 recommendation, scoped out); the test-count *definition* (shipped wrong, fixed in A11).
+- **Could have done better:** pin every number I typed into a guard in the same commit; verify my own replacement numbers with the same rigor as the ones I called stale; eyeball the rebuilt matrix; ask about the parallel session instead of silently working around its duplicate.
+- **Still improvable:** external-claims verification as a standing process (E1), counter single-sourcing (E2), mechanical ghost-system detection (E3).
+- **Did I lie?** No — but I shipped one wrong number ("~1,775 tests") through over-broad measurement, corrected above; the inline report's scores were computed from as-found state per the skill's scoring frame.

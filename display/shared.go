@@ -381,7 +381,7 @@ func menuKeyboardNavJS() string {
 		`var items=Array.from(menu.querySelectorAll('[role="menuitem"]:not([disabled]):not([aria-disabled="true"])'));` +
 		`if(items.length===0)return;` +
 		`var idx=items.indexOf(document.activeElement);` +
-		`var isRtl=document.documentElement.getAttribute('dir')==='rtl';` +
+		`var isRtl=(menu.closest('[dir]')||document.documentElement).getAttribute('dir')==='rtl';` +
 		`var nextKey=isRtl?'ArrowLeft':'ArrowRight';` +
 		`var prevKey=isRtl?'ArrowRight':'ArrowLeft';` +
 		`var pageSize=Math.max(1,Math.floor(items.length/4));` +

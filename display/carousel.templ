@@ -156,7 +156,7 @@ templ Carousel(props CarouselProps) {
 				var track=tcCarouselTrack(c);if(!track)return;
 				var idx=tcCarouselIndex(track);
 				var count=tcCarouselCount(track);
-				var rtl=document.documentElement.getAttribute('dir')==='rtl';
+				var rtl=(c.closest('[dir]')||document.documentElement).getAttribute('dir')==='rtl';
 				if(e.key==='Home')tcCarouselGo(c,0);
 				else if(e.key==='End')tcCarouselGo(c,count-1);
 				else if((!rtl&&e.key==='ArrowRight')||(rtl&&e.key==='ArrowLeft'))tcCarouselGo(c,idx+1);

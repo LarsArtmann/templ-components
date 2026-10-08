@@ -373,7 +373,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 | SVG icons      | 102                                                 |
 | Typed enums    | 64 (63 with IsValid)                                |
 | Packages       | 20 (across 7 Go modules)                            |
-| Tests          | ~1,775 test functions + ~1,650 subtests             |
+| Tests          | ~1,600 test functions + ~1,650 subtests             |
 | Visual goldens | 200 pixel-level regression tests (chromedp)         |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 

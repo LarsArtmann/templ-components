@@ -112,8 +112,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   compares against shadcn-templ and a verified goshipit (52 components,
   DaisyUI + HTMX). The `datastar` catalog heading said 4 components after
   ADR-0042 grew the package to 6; "Packages 18" is now 20 (7 Go modules);
-  the test counts now match measurement (~1,775 test functions + ~1,650
-  subtests). The website's Related Projects page carried the same stale
+  the test counts now match measurement, scoped to the library modules the
+  way the site's own `excludedModules` defines it (~1,600 test functions +
+  ~1,650 subtests, website/visualtest tooling excluded). The website's
+  Related Projects page carried the same stale
   templUI row and now points at the comparison doc.
 
 - **Website sold the wrong counts: 125 components / 105 icons / 22 form
