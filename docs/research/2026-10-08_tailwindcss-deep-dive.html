@@ -847,3 +847,694 @@
       }
     </style>
   </head>
+  <body>
+    <div class="top-bar">
+      <span>Library Deep Dive &middot; Tailwind CSS</span>
+      <span>2026-10-08</span>
+      <span>templ-components</span>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#scorecard">Scorecard</a>
+          <a href="#strengths">Strengths</a>
+          <a href="#findings">Findings</a>
+          <a href="#version">Version Currency</a>
+          <a href="#opportunities">Opportunities</a>
+          <a href="#appendix">Appendix</a>
+          <a href="#conclusion">Conclusion</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="hero">
+          <div class="hero-shapes">
+            <div class="bar"></div>
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="eyebrow">LIBRARY DEEP DIVE &middot; 2026-10-08</div>
+          <h1>Tailwind CSS v4 &mdash; Adoption &amp; Utilization Audit</h1>
+          <p class="subtitle">
+            How completely does templ-components (123 components, 102 icons, 7 Go modules)
+            use Tailwind CSS v4 &mdash; and where hand-rolled CSS still duplicates what the
+            framework now ships. Verdict up front: elite adoption with one real contract
+            violation and a short list of v4.2/v4.3 modernizations.
+          </p>
+          <div class="meta">
+            <span class="tag">Installed: 4.3.3</span>
+            <span class="tag teal">Latest: 4.3.3 (current)</span>
+            <span class="tag amber">Adoption Score: 82/100</span>
+          </div>
+        </header>
+
+        <section id="scorecard" class="scorecard">
+          <div class="score-card score-good">
+            <div class="score">82</div>
+            <div class="label">Adoption score / 100</div>
+          </div>
+          <div class="score-card score-good">
+            <div class="score">14/21</div>
+            <div class="label">Capability groups fully leveraged</div>
+          </div>
+          <div class="score-card score-warn">
+            <div class="score">6</div>
+            <div class="label">Partial / missed findings</div>
+          </div>
+          <div class="score-card score-bad">
+            <div class="score">1</div>
+            <div class="label">Theming contract violations</div>
+          </div>
+          <div class="score-card score-good">
+            <div class="score">0</div>
+            <div class="label">Versions behind latest</div>
+          </div>
+        </section>
+
+        <section id="summary">
+          <h2><span class="num">00</span>Summary</h2>
+          <p>
+            templ-components treats Tailwind v4 as infrastructure, not as a styling
+            afterthought. The CSS-first configuration model is adopted end to end:
+            <code>@import "tailwindcss" source(none)</code> with an explicit
+            <code>@source</code> allowlist that scans <strong>both</strong>
+            <code>.templ</code> and <code>.go</code> files &mdash; solving the
+            lookup-maps-live-in-Go blind spot that silently drops classes in most
+            Tailwind projects, and guarding it with a dedicated test. Class-strategy dark
+            mode, container queries, logical properties, and motion-reduce fallbacks are
+            not just used, they are <em>enforced by eight repo-wide guard tests</em>. The
+            compiled demo artifact is built with v4.3.3 &mdash; the latest release.
+          </p>
+          <p>
+            The gaps are narrow and specific. One finding rises above hygiene: a dozen
+            hardcoded palette literals in <code>custom.css</code> bypass the CSS-variable
+            theming model that is the library&rsquo;s own headline promise. The rest are
+            modernizations against features Tailwind shipped after the affected code was
+            written: <code>scrollbar-none</code>, <code>field-sizing-content</code>,
+            <code>user-valid:</code>/<code>user-invalid:</code>, the
+            <code>inset-s-*</code>/<code>inset-e-*</code> rename that deprecates the
+            repo&rsquo;s canonical <code>start-*</code>/<code>end-*</code> RTL pattern,
+            and <code>@utility</code> tree-shaking for the <code>.tc-*</code> classes.
+          </p>
+          <div class="callout callout-amber">
+            <strong>The bottom line</strong>
+            This is one of the most disciplined Tailwind v4 codebases auditable from the
+            outside &mdash; framework conventions are enforced by tests, not comments.
+            The single action with real consumer impact: replace the 12 hardcoded
+            hex/rgb palette literals in <code>templates/custom.css</code> with
+            <code>var(--color-*)</code> references so a consumer&rsquo;s
+            <code>@theme</code> override actually re-skins checkboxes, validation
+            borders, and kanban indicators &mdash; today it silently does not.
+          </div>
+        </section>
+
+        <section id="strengths">
+          <h2><span class="num">&#9670;</span>What&rsquo;s already excellent</h2>
+          <p>
+            The baseline is strong enough that the findings below read as tuning, not
+            triage. Evidence for each: repo source, counted across
+            <code>.templ</code>/<code>.go</code> library sources (generated files,
+            mirrors, docs, and compiled artifacts excluded).
+          </p>
+          <div class="strengths">
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Go-source class scanning, solved and guarded</strong>
+                <span><code>templates/app.css:17-31</code> &mdash; <code>source(none)</code> plus explicit <code>@source</code> for <code>.templ</code> AND <code>.go</code>. Class lookup maps in Go (the dominant pattern in this library) would be invisible to a default Tailwind scan; <code>utils.TestTailwindGoSourceScanning</code> pins exactly this failure class.</span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Dark mode as an enforced convention</strong>
+                <span><code>@custom-variant dark</code> (app.css:37), 1,284 <code>dark:</code> tokens, <code>TestDarkModeCompliance</code> + <code>TestDarkModeSemanticColors</code> scan every source line for neutral/semantic colors missing a dark variant. Convention by test, not by review.</span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Container queries as product architecture</strong>
+                <span>48 <code>@container</code> roots, 83 <code>@sm:</code>/<code>@md:</code>/<code>@lg:</code> class usages, a typed <code>ContainerAware</code> prop on 8 components (ADR-0018), plus fluid <code>cqi</code>-unit typography (<code>.tc-fluid-*</code>, custom.css:625+). Viewport-vs-container is a per-component decision, guarded by <code>TestContainerQueryCompliance</code>.</span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Expert-grade modern CSS where Tailwind stops</strong>
+                <span>custom.css: 14 <code>@starting-style</code> + <code>overlay</code>/<code>allow-discrete</code> dialog transitions, <code>content-visibility</code>, <code>corner-shape: squircle</code>, <code>interpolate-size</code>, <code>forced-colors</code>, <code>prefers-contrast</code>, <code>prefers-reduced-transparency</code> &mdash; each with reduced-motion fallbacks.</span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Class merging with a real conflict resolver</strong>
+                <span>146 <code>utils.Class()</code> call sites route through tailwind-merge (mutex-protected) so consumer overrides deterministically win &mdash; the single most common Tailwind integration bug (override order) is structurally prevented. 24 <code>templ.KV</code> sites documented as the deliberate exception.</span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Accessibility variants everywhere</strong>
+                <span>130 <code>focus-visible:</code>, 104 <code>motion-reduce:</code>, 21 <code>peer-checked:</code>, 20 <code>group-hover:</code>, 30 <code>sr-only</code> &mdash; with <code>TestMotionReduceCompliance</code>, <code>TestRTLLogicalProperties</code> (logical <code>ms/me/ps/pe</code> only), and <code>TestCoarsePointerCompliance</code> enforcing the patterns.</span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>CSS builds treated like generated code</strong>
+                <span><code>TestCSSFreshness</code> (stale demo artifact fails CI), <code>TestCompiledCSSInventory</code> (exactly 3 sanctioned compiled artifacts; daemon-resurrected zombies fail), <code>TestCustomCSSUtilities</code> (tc-* class used but undefined in custom.css fails). Four theme presets including a <code>@utility</code>-based glass preset.</span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Version currency: current</strong>
+                <span>Compiled demo CSS header reads <code>tailwindcss v4.3.3</code>; the nix lane resolves <code>nixpkgs#tailwindcss_4</code> = 4.3.3 &mdash; the newest release (2026-07-16). Zero version debt.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="findings">
+          <h2><span class="num">01</span>Findings</h2>
+          <p>
+            Feature-by-feature assessment, ordered by impact. Every claim cites repo
+            source (file:line) and the Tailwind capability (docs/release source).
+          </p>
+
+          <div class="issue issue-critical" id="finding-theme-bypass">
+            <span class="severity severity-critical">Misused &middot; Breaks the theming contract</span>
+            <h3>Hardcoded palette literals in custom.css bypass the @theme theming model</h3>
+            <div class="where">
+              templates/custom.css:324,330 (accent-color rgb(37 99 235) / rgb(96 165 250)) &middot;
+              :341-348 (user-valid/invalid rgb(220 38 38) / rgb(22 163 74)) &middot;
+              :1045-1063 (kanban #2563eb, #93c5fd, #dc2626, #f87171, #1e3a8a) &middot;
+              :972-977 (--ds-brand) &mdash; 12 hex/rgb lines, zero uses of --alpha()
+            </div>
+            <p>
+              The library&rsquo;s documented promise (README, skill, ADR-0008): consumers
+              re-skin every component globally via <code>@theme { --color-blue-600:
+              ... }</code> with no Go changes, because components emit standard Tailwind
+              utilities that resolve through theme variables. The hand-written
+              <code>.tc-*</code> CSS does not honor that promise: native form-control
+              accent color, CSS-only validation borders, and all kanban drag/pending/fail
+              indicators are literal palette values. A consumer remapping blue-600 to
+              indigo gets a half-themed app &mdash; checkboxes, progress bars, and kanban
+              states stay stock Tailwind blue/red with no error pointing at the cause.
+              The repo already proved the correct pattern in-house: the sidebar chrome is
+              theme-adaptive via <code>--tc-sidebar-*</code> tokens that reference
+              <code>var(--color-gray-*)</code> (custom.css:516-535).
+            </p>
+            <pre><code>/* Before &mdash; custom.css:324 (immune to @theme overrides) */
+accent-color: rgb(37 99 235); /* blue-600 */
+
+/* After &mdash; resolves through the consumer's @theme */
+accent-color: var(--color-blue-600);
+
+/* Translucency without hex-alpha literals (v4 function, docs:
+   tailwindcss.com/docs/functions-and-directives) */
+border-color: --alpha(var(--color-blue-500) / 30%);</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Replace all 12 literals with <code>var(--color-*)</code> references and
+              adopt <code>--alpha()</code> for the translucent hex suffixes. Then extend
+              the guard family: a <code>TestCustomCSSThemeTokens</code> scan that fails
+              on raw hex/rgb color values in <code>custom.css</code> (comment-ignored),
+              mirroring <code>TestDarkModeCompliance</code>. Impact is immediate and
+              consumer-visible; effort is one file.
+            </div>
+          </div>
+
+          <div class="issue issue-important" id="finding-inset-logical">
+            <span class="severity severity-important">Partially Used &middot; Deprecation exposure</span>
+            <h3>start-*/end-* are deprecated since v4.2 &mdash; the repo&rsquo;s RTL canon needs the inset-s-*/inset-e-* rename</h3>
+            <div class="where">
+              21 sites: errorpage/notfound404.templ:119 &middot; feedback/toast.templ:92 &middot;
+              forms/toggle.templ:102 &middot; forms/input_group.templ:60,68 &middot;
+              display/avatar.templ:108,136 &middot; display/carousel.templ:86,96 &middot;
+              display/hover_card.templ:19-20 &middot; AGENTS.md RTL convention &middot;
+              utils.TestRTLLogicalProperties pins the old names
+            </div>
+            <p>
+              Tailwind v4.2.0 introduced <code>inset-s-*</code>/<code>inset-e-</code>* as
+              the canonical logical inset utilities and deprecated
+              <code>start-*</code>/<code>end-*</code> (the v4.2.3 release notes ship the
+              upgrade-tool migration for exactly this rename; source: GitHub releases,
+              v4.2.0/v4.2.3 entries). The old names still compile today, so nothing is
+              broken &mdash; but they sit inside the repo&rsquo;s most load-bearing
+              convention: absolute positioning of tooltips, carousel arrows, toggle
+              thumbs, avatar status dots, and the toast container. If the aliases are
+              ever removed, every one of those loses RTL mirroring silently in
+              production. Zero <code>inset-s-</code>/<code>inset-e-</code> uses exist
+              today; the guard test actively canonizes the deprecated form.
+            </p>
+            <pre><code>&lt;!-- Before: display/carousel.templ:86 --&gt;
+class="absolute start-0 top-1/2 ..."
+
+&lt;!-- After: same box, canonical v4.2+ logical inset --&gt;
+class="absolute inset-s-0 top-1/2 ..."</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Mechanical 21-site rename plus updates to the RTL section of AGENTS.md,
+              the skill, and <code>utils.TestRTLLogicalProperties</code> (which should
+              ban <code>start-</code>/<code>end-</code> going forward). Safe, purely
+              positional, goldens verify.
+            </div>
+          </div>
+
+          <div class="issue issue-important" id="finding-lane-pin">
+            <span class="severity severity-important">Partially Used &middot; Drift risk</span>
+            <h3>CSS build lanes are version-unpinned outside nix &mdash; today aligned, tomorrow divergent</h3>
+            <div class="where">
+              .github/workflows/website.yml:68 (npm install --no-save tailwindcss @tailwindcss/cli) &middot;
+              examples/demo/Dockerfile:18 (pnpm add tailwindcss @tailwindcss/cli) &middot;
+              flake.nix:75 (nixpkgs tailwindcss_4 = 4.3.3)
+            </div>
+            <p>
+              Three lanes compile this library&rsquo;s CSS: the nix dev shell (builds the
+              committed artifacts, currently 4.3.3), the website CI job (installs
+              <em>latest</em> at run time), and the demo Docker build (installs
+              <em>latest</em> at build time). Today all three agree because 4.3.3 is the
+              newest release. The moment 4.4.0 ships, Docker and website rebuilds
+              silently compile with a different generator than the committed artifacts
+              were built with &mdash; the exact drift class this repo already paid for
+              once with the templ v0.3.1020 generator pin (a system binary produced
+              cosmetic diffs across 51 generated files). <code>TestCSSFreshness</code>
+              catches staleness, not version skew.
+            </p>
+            <pre><code># Before &mdash; examples/demo/Dockerfile:18 (floating)
+RUN pnpm add tailwindcss @tailwindcss/cli
+
+# After &mdash; pinned, bumped deliberately in the same commit as flake.nix
+RUN pnpm add tailwindcss@4.3.3 @tailwindcss/cli@4.3.3</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Pin an explicit version in both unpinned lanes and add the bump to the
+              same deliberate-commit ritual as the templ pin. Low effort now; prevents a
+              confusing &ldquo;CSS changed without a source change&rdquo; incident later.
+            </div>
+          </div>
+
+          <div class="issue issue-important" id="finding-at-utility">
+            <span class="severity severity-important">Partially Used &middot; Consumer bundle size</span>
+            <h3>.tc-* utility classes ship unconditionally &mdash; @utility would make them tree-shakeable</h3>
+            <div class="where">
+              templates/custom.css (14 plain .tc-* classes in @layer utilities, ~1,091 lines imported wholesale) &middot;
+              @utility used exactly once: templates/presets/glass.css:35
+            </div>
+            <p>
+              Tailwind v4&rsquo;s <code>@utility</code> directive defines first-class
+              utilities that are <strong>only emitted when the content scanner sees them
+              used</strong>, and that compose with variants (<code>hover:</code>,
+              <code>dark:</code>, <code>md:</code>). Plain classes inside
+              <code>@layer utilities</code> of an imported file ship to every consumer
+              regardless of use, and cannot take variants. Because every consumer
+              imports <code>custom.css</code> via <code>app.css</code>, an icons-only or
+              three-component adoption still ships all 14 <code>.tc-*</code> classes
+              (overlay transitions, select styling, kanban states, animations,
+              scroll-snap, fluid typography). Verified: zero variant-prefixed
+              <code>tc-*</code> usages exist, so today the win is dead-CSS elimination
+              for minimal-adoption consumers &mdash; the adoption mode this library
+              explicitly documents (<code>docs/icons-only-adoption.md</code>) &mdash;
+              not variant composability.
+            </p>
+            <pre><code>/* Before &mdash; always emitted */
+@layer utilities { .tc-squircle { corner-shape: squircle; } }
+
+/* After &mdash; emitted only when a scanned class uses it */
+@utility tc-squircle { corner-shape: squircle; }</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Migrate only utility-shaped classes (<code>tc-squircle</code>,
+              <code>tc-content-auto(-compact)</code>, <code>tc-no-scrollbar</code>,
+              <code>tc-auto-grow</code>, <code>tc-snap-*</code>,
+              <code>tc-fluid-*</code>); keep component-shaped CSS (<code>tc-select</code>,
+              <code>tc-modal</code>, <code>tc-drawer</code>, <code>tc-log</code>,
+              <code>tc-kanban</code>, <code>tc-anim-*</code>) as plain classes since
+              they need selectors, pseudo-elements, and <code>@supports</code> blocks.
+              Sync <code>TestCustomCSSUtilities</code>. Re-baseline goldens and visuals
+              &mdash; schedule with the next planned one, not ad hoc.
+            </div>
+          </div>
+
+          <div class="issue issue-nice" id="finding-scrollbar">
+            <span class="severity severity-nice">Missed Opportunity &middot; Low impact</span>
+            <h3>.tc-no-scrollbar duplicates v4.3&rsquo;s scrollbar utilities</h3>
+            <div class="where">
+              templates/custom.css (.tc-no-scrollbar + ::-webkit-scrollbar rules) &middot;
+              display/carousel.templ:64
+            </div>
+            <p>
+              v4.3.0 shipped native scrollbar utilities: <code>scrollbar-{auto,thin,
+              none}</code> plus <code>scrollbar-thumb-*</code>/<code>scrollbar-track-*>>
+              </code>/<code>scrollbar-gutter-*</code> (source: GitHub releases, v4.3.0).
+              The hand-rolled <code>.tc-no-scrollbar</code> predates that and is now a
+              duplicate of <code>scrollbar-none</code>.
+            </p>
+            <pre><code>&lt;!-- Before: display/carousel.templ:64 --&gt;
+class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth tc-no-scrollbar"
+
+&lt;!-- After --&gt;
+class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none"</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Swap the class, delete the custom rule, update
+              <code>TestCustomCSSUtilities</code>. Two-file change.
+            </div>
+          </div>
+
+          <div class="issue issue-nice" id="finding-hand-rolled-builtins">
+            <span class="severity severity-nice">Partially Used &middot; Low impact</span>
+            <h3>Hand-rolled CSS now covered by v4 built-ins: field-sizing and user-valid</h3>
+            <div class="where">
+              templates/custom.css (.tc-auto-grow: field-sizing: content + min/max-height) &middot;
+              templates/custom.css:337-349 (user-valid/user-invalid border defaults)
+            </div>
+            <p>
+              Two more custom.css blocks duplicate utilities Tailwind now ships:
+              <code>field-sizing-content</code> exists since v4.0
+              (tailwindcss.com/docs/field-sizing) and would let
+              <code>forms.Textarea</code> emit
+              <code>field-sizing-content min-h-10 max-h-80</code> instead of the
+              <code>.tc-auto-grow</code> class; <code>user-valid:</code>/
+              <code>user-invalid:</code> variants exist since v4.1
+              (tailwindcss.com/docs/hover-focus-and-other-states) and could express
+              per-component validation styling. One honest counterpoint: as a
+              <em>global default</em>, the base-layer rule for validation borders is a
+              defensible layer choice &mdash; the real defect there is the hardcoded
+              palette, already covered by finding 1. Keeping
+              <code>.tc-auto-grow</code> as a single guarded point of truth is also
+              defensible; if kept, its comment should say so explicitly.
+            </p>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Adopt <code>field-sizing-content</code> in the Textarea component and
+              retire <code>.tc-auto-grow</code>; treat user-valid/invalid as a
+              docs-level note (variants available) rather than a migration.
+            </div>
+          </div>
+
+          <div class="issue issue-nice" id="finding-size">
+            <span class="severity severity-nice">Missed Opportunity &middot; Low impact</span>
+            <h3>size-* never used &mdash; 168 collapsible w-N h-N pairs</h3>
+            <div class="where">
+              w-5 h-5 &times;68 &middot; w-4 h-4 &times;40 &middot; w-6 h-6 &times;38 &middot;
+              w-12 h-12 &times;8 &middot; w-3/8/9/10/16 pairs &times;14 &mdash; icon boxes,
+              avatars, status dots, kanban handles across display/forms/feedback
+            </div>
+            <p>
+              Tailwind v4&rsquo;s <code>size-N</code> (v4.0) collapses same-value width +
+              height into one token, and v4.2.2&rsquo;s canonicalizer even collapses the
+              pair in output CSS. The codebase has 168 sites writing the pair the v3
+              way. Rendered output is visually identical either way; this is code
+              economy and idiom, not correctness.
+            </p>
+            <pre><code>&lt;!-- Before --&gt;
+class="h-5 w-5 shrink-0"
+
+&lt;!-- After --&gt;
+class="size-5 shrink-0"</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Mechanical sweep &mdash; but it touches many goldens. Bundle it with the
+              next planned visual/golden re-baseline (e.g. the templ v0.3.1070
+              generator migration already queued in TODO_LIST) rather than spending an
+              isolated re-baseline on it.
+            </div>
+          </div>
+
+          <div class="issue issue-nice" id="finding-bg-linear">
+            <span class="severity severity-nice">Partially Used &middot; Cosmetic</span>
+            <h3>bg-gradient-to-* legacy aliases in the one gradient usage</h3>
+            <div class="where">
+              errorpage/notfound404.templ:42 (hero numeral gradient, 2 tokens incl. dark: variants) &middot;
+              website/internal/pages/hero.templ:107
+            </div>
+            <p>
+              Tailwind v4 renamed gradient utilities to <code>bg-linear-to-*</code>; the
+              v3-era <code>bg-gradient-to-*</code> names remain as deprecated aliases
+              that still compile. The repo uses the legacy form at its only two gradient
+              sites. Nothing breaks today; the canonical name is future-proof.
+            </p>
+            <pre><code>&lt;!-- errorpage/notfound404.templ:42 --&gt;
+bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-500
+&lt;!-- becomes --&gt;
+bg-linear-to-br from-blue-600 via-blue-500 to-indigo-500</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Two-line rename; fold into any pass through errorpage or the website hero.
+            </div>
+          </div>
+        </section>
+
+        <section id="version">
+          <h2><span class="num">02</span>Version Currency</h2>
+          <p>
+            Installed <span class="highlight">4.3.3</span> equals the latest release
+            (2026-07-16). Nothing to upgrade &mdash; the table maps what each recent
+            release contributed to the findings above.
+          </p>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Date</th>
+                <th>Notable capabilities</th>
+                <th>Relevance here</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>4.3.3</td>
+                <td>2026-07-16</td>
+                <td><code>--watch --poll</code> CLI; case-insensitive hex canonicalization; Firefox preflight fix</td>
+                <td class="yes">Installed = latest</td>
+              </tr>
+              <tr>
+                <td>4.3.0-4.3.1</td>
+                <td>2026-05/06</td>
+                <td><code>scrollbar-{auto,thin,none}</code> + thumb/track/gutter; <code>@variant</code> stacked/compound; <code>@container-size</code>; <code>zoom-*</code>, <code>tab-*</code></td>
+                <td class="no"><code>scrollbar-none</code> replaces .tc-no-scrollbar (finding 5)</td>
+              </tr>
+              <tr>
+                <td>4.2.0-4.2.4</td>
+                <td>2026-02/04</td>
+                <td><code>inset-s-*/inset-e-*</code> deprecating <code>start-*/end-*</code>; <code>pbs-/pbe-</code>, <code>border-bs-/be-</code>, <code>inline-*/block-*</code> sizes; <code>font-features-*</code>; 4 new palettes; size-* output collapsing</td>
+                <td class="no">start/end deprecation (finding 2); size-* idiom (finding 7)</td>
+              </tr>
+              <tr>
+                <td>4.1.x</td>
+                <td>2025-04/12</td>
+                <td><code>user-valid:/user-invalid:</code>; <code>text-shadow-*</code>; <code>mask-*</code>; <code>inset-shadow-*</code>; <code>columns-*</code>; <code>@source inline()/not</code></td>
+                <td class="no">Validation variants (finding 6); masks/text-shadow = future opportunity</td>
+              </tr>
+              <tr>
+                <td>4.0.x</td>
+                <td>2025-01</td>
+                <td>CSS-first config (<code>@theme</code>/<code>@utility</code>/<code>@custom-variant</code>); container queries; <code>size-*</code>; <code>scheme-*</code>; <code>field-sizing-content</code>; <code>--alpha()</code>/<code>--spacing()</code></td>
+                <td class="yes">Adopted broadly &mdash; the repo&rsquo;s foundation</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="callout callout-teal">
+            <strong>Current</strong>
+            The nix lane (<code>nixpkgs#tailwindcss_4</code>) and the committed demo
+            artifact both resolve to 4.3.3. The only version debt is procedural
+            (finding 3): two lanes install unpinned latest.
+          </div>
+        </section>
+
+        <section id="opportunities">
+          <h2><span class="num">03</span>Top Opportunities</h2>
+          <p>Pareto-ranked by impact &times; ease. Items 1-2 are the only ones with consumer-visible effect.</p>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Opportunity</th>
+                <th>Impact</th>
+                <th>Ease</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Replace 12 hardcoded palette literals with <code>var(--color-*)</code> + <code>--alpha()</code>; add a custom.css theme-token guard (finding 1)</td>
+                <td class="yes">5</td>
+                <td class="yes">5</td>
+                <td><span class="highlight">25</span></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Migrate start-*/end-* to inset-s-*/inset-e-* (21 sites + guard + docs) (finding 2)</td>
+                <td class="yes">4</td>
+                <td class="yes">5</td>
+                <td><span class="highlight">20</span></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Pin tailwindcss versions in the website CI and demo Docker lanes (finding 3)</td>
+                <td>3</td>
+                <td class="yes">5</td>
+                <td><span class="highlight">15</span></td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Migrate utility-shaped .tc-* classes to @utility for tree-shaking (finding 4)</td>
+                <td class="yes">4</td>
+                <td>3</td>
+                <td><span class="highlight">12</span></td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>.tc-no-scrollbar to scrollbar-none (finding 5)</td>
+                <td>2</td>
+                <td class="yes">5</td>
+                <td>10</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>bg-gradient-to-* to bg-linear-to-* (finding 8)</td>
+                <td>2</td>
+                <td class="yes">5</td>
+                <td>10</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>.tc-auto-grow to field-sizing-content (finding 6)</td>
+                <td>2</td>
+                <td>4</td>
+                <td>8</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>size-* sweep, bundled with the next golden re-baseline (finding 7)</td>
+                <td>2</td>
+                <td>3</td>
+                <td>6</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="appendix">
+          <h2><span class="num">04</span>Appendix &mdash; Evidence &amp; Method</h2>
+          <p>
+            Counts computed 2026-10-08 over library sources (<code>.templ</code>,
+            <code>.go</code>, source CSS) across display, feedback, forms, layout,
+            navigation, htmx, datastar, errorpage, icons, utils, recipes, templates,
+            examples/demo, website &mdash; excluding generated <code>*_templ.go</code>,
+            <code>cmd/tc/_sources</code>, docs, and compiled CSS artifacts.
+          </p>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>Signal</th>
+                <th>Count</th>
+                <th>Signal</th>
+                <th>Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>dark:</td><td>1,284</td><td>@container roots</td><td>48</td></tr>
+              <tr><td>focus-visible:</td><td>130</td><td>@sm:/@md:/@lg:</td><td>83</td></tr>
+              <tr><td>motion-reduce:</td><td>104</td><td>utils.Class() call sites</td><td>146</td></tr>
+              <tr><td>sm:/md:/lg:</td><td>371</td><td>sr-only</td><td>30</td></tr>
+              <tr><td>ring-N (v4 widths)</td><td>60</td><td>peer-checked:</td><td>21</td></tr>
+              <tr><td>outline-hidden (v4 name)</td><td>8</td><td>group-hover:</td><td>20</td></tr>
+              <tr><td>shadow-xs (v4 name)</td><td>7</td><td>selection:/placeholder:/file:</td><td>5/12/23</td></tr>
+              <tr><td>@starting-style (CSS)</td><td>14</td><td>@utility directives</td><td>1</td></tr>
+              <tr><td>w-N h-N collapse pairs</td><td>168</td><td>@apply uses</td><td>0</td></tr>
+              <tr><td>has-/not-/supports-/aria-/data- variants</td><td>3</td><td>size-*, text-shadow, mask-*, 3D, columns, --alpha(), @source inline, scheme-*</td><td>0</td></tr>
+            </tbody>
+          </table>
+          <p>
+            <strong>Judgment calls (Not Applicable, not scored):</strong> <code>@plugin</code>
+            (dependency budget closed by design), <code>@apply</code> (zero uses is a
+            virtue here &mdash; utilities stay in Go lookup maps), <code>@reference</code>
+            (nothing to reference without @apply), <code>scheme-*</code> utilities (the
+            JS-toggle + meta-tag theme model supersedes them), <code>motion-safe:</code>
+            (motion-reduce gating is stricter), 3D transforms / masks / text-shadows /
+            columns (no current UI surface calls for them &mdash; recorded as future
+            capability, not debt).
+          </p>
+          <p>
+            <strong>Sources:</strong> GitHub releases feed for tailwindlabs/tailwindcss
+            (v4.1.18 through v4.3.3 entries, fetched 2026-10-08); tailwindcss.com docs:
+            /docs/color-scheme, /docs/field-sizing, /docs/functions-and-directives,
+            /docs/detecting-classes-in-source-files, /docs/hover-focus-and-other-states;
+            compiled artifact header <code>examples/demo/static/app.css</code> (v4.3.3);
+            <code>nix eval nixpkgs#tailwindcss_4.version</code> = 4.3.3.
+          </p>
+        </section>
+
+        <section id="conclusion">
+          <h2><span class="num">05</span>Conclusion</h2>
+          <p>
+            templ-components uses Tailwind v4 about as well as a Go server-rendered
+            library can: CSS-first config adopted to the letter, the one Tailwind
+            feature this codebase uniquely needs (scanning Go source for class maps)
+            implemented and test-guarded, accessibility and RTL conventions enforced by
+            machine, and the generator current at 4.3.3. The adoption score of 82 rests
+            on one real violation &mdash; hardcoded palette literals in
+            <code>custom.css</code> that quietly break the library&rsquo;s own @theme
+            re-skinning promise &mdash; plus a short, mostly mechanical list of v4.2/4.3
+            modernizations. Fix finding 1 in an afternoon, fold findings 2-8 into
+            already-planned re-baselines, and this codebase is a reference
+            implementation.
+          </p>
+        </section>
+
+        <footer class="footer">
+          <p>
+            Generated 2026-10-08 &middot; Reviewed against Tailwind CSS v4.3.3 (latest)
+            &middot; All claims verified against repo source (file:line) and fetched
+            release notes/docs &middot; templ-components library deep dive
+          </p>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        var nav = document.querySelector("[data-nav]");
+        if (!nav) return;
+        var links = nav.querySelectorAll('a[href^="#"]');
+        var ids = Array.from(links).map(function (l) {
+          return l.getAttribute("href").slice(1);
+        });
+        var sections = ids
+          .map(function (id) {
+            return document.getElementById(id);
+          })
+          .filter(Boolean);
+        if (!sections.length) return;
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                links.forEach(function (link) {
+                  link.classList.toggle(
+                    "active",
+                    link.getAttribute("href") === "#" + entry.target.id,
+                  );
+                });
+              }
+            });
+          },
+          { rootMargin: "-80px 0px -60% 0px", threshold: 0 },
+        );
+        sections.forEach(function (s) {
+          observer.observe(s);
+        });
+      })();
+    </script>
+  </body>
+</html>
