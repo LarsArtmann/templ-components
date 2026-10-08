@@ -22,7 +22,7 @@ RUN npm install -g pnpm@11.20.0 \
         --minify
 
 # Stage 2: Build templ + Go binary
-FROM golang:1.26 AS builder
+FROM golang:1.27 AS builder
 
 ENV GOEXPERIMENT=jsonv2
 ENV CGO_ENABLED=0
