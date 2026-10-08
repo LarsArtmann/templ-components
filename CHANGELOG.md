@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`/llms.txt` — the site's machine-readable index for AI agents.** The
+  lean llmstxt.org shape (H1, blockquote summary with the canonical counts,
+  one link per docs page) generated from the same parsed docs metadata as
+  the search index, so titles and URLs can never drift between the two.
+  Linked from the site footer; pinned by `assertLLMS` in the site-build
+  integrity test and a `build.LLMSIndex` fixture test. shadcn-templ markets
+  "AI-Ready"; ours used to 404 (verified 2026-10-08, TODO_LIST #375).
+
 ### Fixed
 
 - **Ghost icon constants render their canonical glyph.** `icons.ArrowPath`,
