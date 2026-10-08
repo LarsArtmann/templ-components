@@ -25,7 +25,7 @@ prior 2026-10-02 deep-dive are **largely resolved** (the entire `forms` package 
 `errorpage.NotFound404`/`WriteNotFound404`, `htmx.PolledRegion`, `utils/wire`).
 
 The remaining opportunities are **narrow and specific** — four hand-rolled patterns where a
-library component exists or *should* exist, and two genuine **library gaps** the consumer's
+library component exists or _should_ exist, and two genuine **library gaps** the consumer's
 correct, documented non-adoption decisions expose (`layout.Container` width enum, `StatCard`
 value-color escape hatch). The headline library lesson: **browser-history hand-rolls three
 stat cards because `display.StatCard` has no `ValueClass` override — exactly the escape hatch
@@ -56,14 +56,14 @@ library finding.
 
 **Verdict: structurally excellent; a handful of narrow gaps.** An adoption scorecard:
 
-| Dimension | Score | Basis |
-|---|---|---|
-| Version coherence | 100 | go.mod `v1.20.1` = latest tag; flake rev = same tag; `GOEXPERIMENT=jsonv2` wired |
-| Correctness of adopted usage | 95 | `utils.BaseProps{...}` extension used properly; CSP nonces threaded; dark-mode tests pass |
-| Constructive coverage | 70 | ~25 library components/helpers adopted across 9 packages; ~90 of 115 exported components unreferenced |
-| Deliberate non-adoption hygiene | 95 | Every non-adoption documented with a reason |
-| Hand-roll residue | 60 | 33 raw `<button>`, 9 raw `<form>`, 10 raw `<input>`, 6 raw `<select>` — most legitimately custom, a few avoidable |
-| Nix/go parity | 100 | Current and machine-guarded |
+| Dimension                       | Score | Basis                                                                                                             |
+| ------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------- |
+| Version coherence               | 100   | go.mod `v1.20.1` = latest tag; flake rev = same tag; `GOEXPERIMENT=jsonv2` wired                                  |
+| Correctness of adopted usage    | 95    | `utils.BaseProps{...}` extension used properly; CSP nonces threaded; dark-mode tests pass                         |
+| Constructive coverage           | 70    | ~25 library components/helpers adopted across 9 packages; ~90 of 115 exported components unreferenced             |
+| Deliberate non-adoption hygiene | 95    | Every non-adoption documented with a reason                                                                       |
+| Hand-roll residue               | 60    | 33 raw `<button>`, 9 raw `<form>`, 10 raw `<input>`, 6 raw `<select>` — most legitimately custom, a few avoidable |
+| Nix/go parity                   | 100   | Current and machine-guarded                                                                                       |
 
 **Adopted (verified this session):** `layout.Base`; `navigation.Nav`/`NavLink`/`Pagination`;
 `display.Badge`/`Grid`/`StatCard`/`Table`(+`TableHeader`,`CellPaddingCompact`)/`Heatmap`/
@@ -83,23 +83,25 @@ cookie SSR theme → uses `NoThemeScript`), custom hero instead of `display.Page
 Split by repo (full list in section e):
 
 **Library (`templ-components`):**
+
 - **`display.StatCard` lacks a `ValueClass` escape hatch** (`display/card.templ:259-287`, value
   `<dd>` hardcodes `text-2xl font-semibold text-gray-900 dark:text-white` at :429).
-  *Why:* browser-history hand-rolls 3 otherwise-identical stat cards
+  _Why:_ browser-history hand-rolls 3 otherwise-identical stat cards
   (`dashboard.templ:373-410`) purely because it needs a dynamic value color
   (`productivityColor(...)`). `CopyButton.LabelClass` is the proven pattern; mirror it.
 - **`layout.Container` width enum skips `max-w-6xl` (72rem) and `max-w-4xl` (56rem)**
   (`layout/container_types.go:40-46` offers 3xl/5xl/7xl/`[90rem]`/full/prose).
-  *Why:* `max-w-6xl` is Tailwind's canonical dashboard width and browser-history's page-shell
+  _Why:_ `max-w-6xl` is Tailwind's canonical dashboard width and browser-history's page-shell
   width on 3 of 4 pages; the gap is the sole documented reason for Container non-adoption and it
   forces 4 hand-rolled `mx-auto px-*` wrappers (`dashboard.templ:160`, `devices.templ:18`,
   `summary.templ:16`, `timeline.templ:127`). Additive, guarded, low-risk.
 - **`display.Tabs` cannot render link-based (server-navigation) tabs** — `TabsProps` has
   `ClientSide` and `Wire` but no per-tab `Href` (`display/tabs.templ`).
-  *Why:* browser-history's timeline day/week toggle is exactly "server-navigation tabs" and is
+  _Why:_ browser-history's timeline day/week toggle is exactly "server-navigation tabs" and is
   hand-rolled with the documented reason "Tab has no Href".
 
 **Consumer (`browser-history`):**
+
 - Adopt **`display.ExternalLink`** for the visit URL (`timeline.templ:448` renders it as inert
   `<p>` text — the URL is never clickable; the library component adds `target="_blank"`,
   `rel="noopener"`, and URL sanitization for free).
@@ -114,31 +116,31 @@ Split by repo (full list in section e):
 
 ## a) FULLY DONE
 
-| # | Item | Evidence |
-|---|---|---|
-| 1 | Loaded `templ-components` skill (Parts 1+2) before acting, per rule 14 | tool log |
-| 2 | Read browser-history `AGENTS.md` in full (adoption table, key patterns, gotchas) | AGENTS.md:1-320+ |
-| 3 | Read the prior 2026-10-02 templ-components deep-dive and extracted its 4 findings + resolutions | docs/research HTML, lines 884-1200 |
-| 4 | Verified version coherence on BOTH sides: go.mod `v1.20.1` (api/go.mod:37-41); local tag `v1.20.1`; flake rev `8ae9ec6f` confirmed = the `v1.20.1` annotated tag object | `git cat-file`/`git tag --points-at` |
-| 5 | Confirmed the 2026-10-02 pin/forms/RelativeTime/Skeleton findings are RESOLVED (forms package now adopted) | symbol scan + AGENTS table |
-| 6 | Quantified hand-roll residue in `api/*.templ`: 33 `<button`, 9 `<form`, 10 `<input`, 6 `<select`, 1 `<details>`/`<summary>` | grep |
-| 7 | Enumerated ~130 library symbols actually used across `*.templ`/`*.go` | grep |
-| 8 | Diffed the library's 115 exported components vs consumer usage → ~90 unreferenced (raw list captured) | grep loop |
-| 9 | Verified library APIs for each candidate: `Container` enum, `CopyButton` props (+`LabelClass`), `ProgressBar` props, `StatCard` props (no `ValueClass`), `CircularProgress` (max 64px), `DateRange` (not a picker) | source reads |
-| 10 | Avoided two false recommendations by reading the actual APIs: `display.DateRange` is a resume-style date-string component (not a picker), and `feedback.CircularProgress` maxes at `w-16 h-16` (unusable for a `text-8xl` hero) | source reads |
-| 11 | Located the exact consumer evidence for each finding (file:line) | greps above |
-| 12 | Nothing committed / pushed; daemon left alone | — |
+| #  | Item                                                                                                                                                                                                                            | Evidence                             |
+| -- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| 1  | Loaded `templ-components` skill (Parts 1+2) before acting, per rule 14                                                                                                                                                          | tool log                             |
+| 2  | Read browser-history `AGENTS.md` in full (adoption table, key patterns, gotchas)                                                                                                                                                | AGENTS.md:1-320+                     |
+| 3  | Read the prior 2026-10-02 templ-components deep-dive and extracted its 4 findings + resolutions                                                                                                                                 | docs/research HTML, lines 884-1200   |
+| 4  | Verified version coherence on BOTH sides: go.mod `v1.20.1` (api/go.mod:37-41); local tag `v1.20.1`; flake rev `8ae9ec6f` confirmed = the `v1.20.1` annotated tag object                                                         | `git cat-file`/`git tag --points-at` |
+| 5  | Confirmed the 2026-10-02 pin/forms/RelativeTime/Skeleton findings are RESOLVED (forms package now adopted)                                                                                                                      | symbol scan + AGENTS table           |
+| 6  | Quantified hand-roll residue in `api/*.templ`: 33 `<button`, 9 `<form`, 10 `<input`, 6 `<select`, 1 `<details>`/`<summary>`                                                                                                     | grep                                 |
+| 7  | Enumerated ~130 library symbols actually used across `*.templ`/`*.go`                                                                                                                                                           | grep                                 |
+| 8  | Diffed the library's 115 exported components vs consumer usage → ~90 unreferenced (raw list captured)                                                                                                                           | grep loop                            |
+| 9  | Verified library APIs for each candidate: `Container` enum, `CopyButton` props (+`LabelClass`), `ProgressBar` props, `StatCard` props (no `ValueClass`), `CircularProgress` (max 64px), `DateRange` (not a picker)              | source reads                         |
+| 10 | Avoided two false recommendations by reading the actual APIs: `display.DateRange` is a resume-style date-string component (not a picker), and `feedback.CircularProgress` maxes at `w-16 h-16` (unusable for a `text-8xl` hero) | source reads                         |
+| 11 | Located the exact consumer evidence for each finding (file:line)                                                                                                                                                                | greps above                          |
+| 12 | Nothing committed / pushed; daemon left alone                                                                                                                                                                                   | —                                    |
 
 ## b) PARTIALLY DONE
 
-| # | Item | What's missing |
-|---|---|---|
-| 1 | The audit itself | Findings identified and cited, but **no written research report** was produced (the prior deep-dive lived at `browser-history/docs/research/…html`); this `.md` is a summary, not a full evidence-cited report |
+| # | Item                             | What's missing                                                                                                                                                                                                                               |
+| - | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | The audit itself                 | Findings identified and cited, but **no written research report** was produced (the prior deep-dive lived at `browser-history/docs/research/…html`); this `.md` is a summary, not a full evidence-cited report                               |
 | 2 | "3 hand-rolled stat cards" claim | Verified the `<dd>` has no `ValueClass` and the cards differ in value color/size/label style; did NOT diff every class against `StatCard`'s shell to prove only `ValueClass` is needed (a full adoption may also need shell/label overrides) |
-| 3 | Container width gap | Confirmed the enum values; did NOT check whether `Container ` + `Class:"max-w-6xl"` (tailwind-merge resolves the conflict) is already a viable zero-library-change workaround |
-| 4 | Tabs Href gap | Confirmed no `Href` field; did NOT design the feature or check whether `Wire` + a plain-link tab is subtly possible |
-| 5 | Theme findings | Noted `NoThemeScript` usage; did NOT re-open the cookie-vs-localStorage theme split (the Tailwind deep-dive cross-ref covers it) |
-| 6 | Icon/adoption completeness | Symbol scan is regex-based; a few matches (`htmx.NewUserID`, `htmx.UserIDFromContext`) are cqrs-htmx false positives under the `htmx.` prefix — counts are approximate |
+| 3 | Container width gap              | Confirmed the enum values; did NOT check whether `Container` + `Class:"max-w-6xl"` (tailwind-merge resolves the conflict) is already a viable zero-library-change workaround                                                                 |
+| 4 | Tabs Href gap                    | Confirmed no `Href` field; did NOT design the feature or check whether `Wire` + a plain-link tab is subtly possible                                                                                                                          |
+| 5 | Theme findings                   | Noted `NoThemeScript` usage; did NOT re-open the cookie-vs-localStorage theme split (the Tailwind deep-dive cross-ref covers it)                                                                                                             |
+| 6 | Icon/adoption completeness       | Symbol scan is regex-based; a few matches (`htmx.NewUserID`, `htmx.UserIDFromContext`) are cqrs-htmx false positives under the `htmx.` prefix — counts are approximate                                                                       |
 
 ## c) NOT STARTED
 
@@ -177,14 +179,15 @@ Split by repo (full list in section e):
 ## e) WHAT WE SHOULD IMPROVE (prioritized, with where + why)
 
 **Tier 1 — library, high confidence, low risk:**
+
 1. **`display.StatCard.ValueClass`** (and consider `LabelClass`/`ValueSize`): mirror
-   `CopyButton.LabelClass`. *Where:* `display/card.templ` (props + `statCardFigures`).
-   *Why:* unblocks adopting StatCard for dynamic-tone dashboard cards; the exact asymmetry a
+   `CopyButton.LabelClass`. _Where:_ `display/card.templ` (props + `statCardFigures`).
+   _Why:_ unblocks adopting StatCard for dynamic-tone dashboard cards; the exact asymmetry a
    mature consumer tripped over.
 2. **`layout.ContainerWidth6XL` (+ optionally `4XL`)**: `layout/container_types.go` enum +
-   lookup + `IsValid` test + FEATURES enum table + docs counts. *Why:* canonical Tailwind
+   lookup + `IsValid` test + FEATURES enum table + docs counts. _Why:_ canonical Tailwind
    dashboard width; sole blocker of Container adoption; deletes 4 hand-rolled wrappers.
-3. **`display.Tabs` per-tab `Href`** (link tabs, no JS): `display/tabs.templ`. *Why:* enables
+3. **`display.Tabs` per-tab `Href`** (link tabs, no JS): `display/tabs.templ`. _Why:_ enables
    server-navigation tab bars — a common pattern the library currently cannot express.
 
 **Tier 2 — consumer, clear wins:**
@@ -194,15 +197,16 @@ Split by repo (full list in section e):
 
 **Tier 3 — consistency/docs:**
 7. Library: audit every "escapable" component for the `*Class` hatch (`StatCard`, `Badge`,
-   `DefinitionList`, …) and make the presence/absence a documented rule.
+`DefinitionList`, …) and make the presence/absence a documented rule.
 8. Consumer: refresh the `AGENTS.md` adoption table with this session's findings.
 9. Library: add a short "consumer feedback → library backlog" section to `AGENTS.md` so
-   deep-dive learnings don't evaporate.
+deep-dive learnings don't evaporate.
 10. Consider a skill note: "when auditing a consumer, produce a durable artifact, not just a scan."
 
 ## f) Up to 50 things we could do next
 
 **Library — escape hatches & gaps**
+
 1. Add `StatCardProps.ValueClass` (+ doc).
 2. Add `StatCardProps.LabelClass`.
 3. Add `StatCardProps.ValueSize` (or document that `Class` covers the shell only).
