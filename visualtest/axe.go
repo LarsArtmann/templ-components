@@ -85,19 +85,19 @@ const (
 // a violations-only audit against the whole document. The context must be a
 // chromedp tab context with the page already loaded.
 //
-// The async axe.run promise is bridged via a polling handshake because
-// chromedp v0.16 has no await-promise evaluate option: the run parks its JSON
-// payload in window.__tcAxeJSON (or the error in window.__tcAxeErr), and the
-// poll waits for either to appear.
+// The async axe.run promise is bridged via a polling handshake because the
+// sweep predates chromedp v0.20's EvalAwaitPromise option; the run parks its
+// JSON payload in window.__tcAxeJSON (or the error in window.__tcAxeErr), and
+// the poll waits for either to appear. (Modernizing to EvalAwaitPromise is
+// tracked in TODO_LIST.)
 func RunAxe(ctx context.Context) (AxeResults, error) {
 	runCtx, cancel := context.WithTimeout(ctx, axeRunTimeout)
 	defer cancel()
 
 	// chromedp.Run, never action.Do: Do on a tab context hits the documented
 	// "invalid context" flakiness (see visualtest e2e lessons).
-	inject := chromedp.Run(runCtx, chromedp.Evaluate(axeSource, nil))
-	if inject != nil {
-		return AxeResults{}, fmt.Errorf("inject axe runtime: %w", inject)
+	if _, err := chromedp.Run(runCtx, chromedp.Evaluate[chromedp.Void](axeSource)); err != nil {
+		return AxeResults{}, fmt.Errorf("inject axe runtime: %w", err)
 	}
 
 	const bootScript = `window.__tcAxeJSON = null; window.__tcAxeErr = null;
@@ -106,28 +106,23 @@ axe.run(document, {resultTypes: ['violations']})
   .catch(e => { window.__tcAxeErr = String(e); });
 true`
 
-	boot := chromedp.Run(runCtx, chromedp.Evaluate(bootScript, nil))
-	if boot != nil {
-		return AxeResults{}, fmt.Errorf("start axe run: %w", boot)
+	if _, err := chromedp.Run(runCtx, chromedp.Evaluate[chromedp.Void](bootScript)); err != nil {
+		return AxeResults{}, fmt.Errorf("start axe run: %w", err)
 	}
 
-	settle := chromedp.Run(runCtx, pollTrue(
+	if _, err := chromedp.Run(runCtx, pollTrue(
 		`window.__tcAxeJSON !== null || window.__tcAxeErr !== null`,
 		chromedp.WithPollingInterval(axePollInterval),
 		chromedp.WithPollingTimeout(axeResultTimeout),
-	))
-	if settle != nil {
-		return AxeResults{}, fmt.Errorf("axe run did not settle: %w", settle)
+	)); err != nil {
+		return AxeResults{}, fmt.Errorf("axe run did not settle: %w", err)
 	}
 
-	var payload string
-
-	fetchErr := chromedp.Run(runCtx, chromedp.Evaluate(
+	payload, err := chromedp.Run(runCtx, chromedp.Evaluate[string](
 		`window.__tcAxeErr !== null ? "ERR:" + window.__tcAxeErr : window.__tcAxeJSON`,
-		&payload,
 	))
-	if fetchErr != nil {
-		return AxeResults{}, fmt.Errorf("fetch axe result: %w", fetchErr)
+	if err != nil {
+		return AxeResults{}, fmt.Errorf("fetch axe result: %w", err)
 	}
 
 	if len(payload) > 4 && payload[:4] == "ERR:" {

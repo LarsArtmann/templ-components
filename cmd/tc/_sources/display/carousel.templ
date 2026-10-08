@@ -83,7 +83,7 @@ templ Carousel(props CarouselProps) {
 		if props.ShowArrows && len(props.Slides) > 1 {
 			<button
 				type="button"
-				class="absolute start-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 shadow-sm"
+				class="absolute inset-s-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 shadow-sm"
 				data-tc-carousel-prev
 				aria-label="Previous slide"
 			>
@@ -93,7 +93,7 @@ templ Carousel(props CarouselProps) {
 			</button>
 			<button
 				type="button"
-				class="absolute end-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 shadow-sm"
+				class="absolute inset-e-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 shadow-sm"
 				data-tc-carousel-next
 				aria-label="Next slide"
 			>

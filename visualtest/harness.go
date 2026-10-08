@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
+	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/cdproto/input"
 	"github.com/chromedp/chromedp"
 )
@@ -191,12 +192,12 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 
 	var screenshot []byte
 
-	tasks := []chromedp.Action{
+	tasks := []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(opts.Viewport.Width), int64(opts.Viewport.Height)),
 		chromedp.Navigate(srv.URL),
 		// Wait for the root to exist and the document to finish loading so web
 		// fonts / CSS settle before the screenshot.
-		chromedp.WaitVisible(rootSel, chromedp.ByQuery),
+		chromedp.WaitVisible(chromedp.CSS(rootSel)),
 	}
 
 	// Apply the requested interaction state before settling + capture so
@@ -219,7 +220,7 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	// overlay. Animation settling is handled document-wide for every capture
 	// (see waitAnimationsSettled below).
 	if opts.WaitSelector != "" {
-		tasks = append(tasks, chromedp.WaitVisible(opts.WaitSelector, chromedp.ByQuery))
+		tasks = append(tasks, chromedp.WaitVisible(chromedp.CSS(opts.WaitSelector)))
 	}
 
 	// Optionally poll a JS expression until truthy — for states that settle
@@ -229,12 +230,12 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 		tasks = append(tasks, waitExprAction(opts.WaitExpr))
 	}
 
-	var capture chromedp.Action = chromedp.Screenshot(rootSel, &screenshot, chromedp.ByQuery, chromedp.NodeVisible)
+	var capture chromedp.Action[[]byte] = chromedp.Screenshot(chromedp.CSS(rootSel), chromedp.NodeVisible)
 	if opts.FullViewport {
 		// Full-viewport capture: top-layer overlays (Popover API menus,
 		// <dialog>) paint outside #tc-root's box, so an element screenshot
 		// would crop them.
-		capture = chromedp.CaptureScreenshot(&screenshot)
+		capture = chromedp.CaptureScreenshot()
 	}
 
 	// Wait for finite CSS animations/transitions anywhere in the document to
@@ -248,10 +249,17 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 		tasks,
 		waitAnimationsSettled(),
 		chromedp.Sleep(settleDelay),
-		capture,
 	)
-	if err := chromedp.Run(timeoutCtx, tasks...); err != nil {
+	if err := chromedp.Do(timeoutCtx, tasks...); err != nil {
 		return nil, fmt.Errorf("chromedp actions: %w", err)
+	}
+
+	// v0.20 screenshots are typed actions returning the PNG bytes; the capture
+	// runs after the settle chain so its frame is identical to the old
+	// Run(ctx, append(tasks, capture)) ordering.
+	screenshot, err := chromedp.Run(timeoutCtx, capture)
+	if err != nil {
+		return nil, fmt.Errorf("chromedp capture: %w", err)
 	}
 
 	return screenshot, nil
@@ -266,9 +274,9 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 // are filtered out — blocking on them would burn the whole deadline on every
 // spinner capture. If no finite animation appears within the registration
 // window, the function returns immediately (the page genuinely has none).
-func waitAnimationsSettled() chromedp.Action {
-	return chromedp.ActionFunc(func(ctx context.Context) error {
-		if err := chromedp.Sleep(animInitialDelay).Do(ctx); err != nil {
+func waitAnimationsSettled() chromedp.Action[chromedp.Void] {
+	return chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
+		if err := chromedp.Do(ctx, chromedp.Sleep(animInitialDelay)); err != nil {
 			return fmt.Errorf("wait animations settled: initial sleep: %w", err)
 		}
 
@@ -282,9 +290,8 @@ func waitAnimationsSettled() chromedp.Action {
 		animSeen := false
 
 		for time.Now().Before(settleDeadline) {
-			var state string
-
-			if err := chromedp.Evaluate(expr, &state).Do(ctx); err != nil {
+			state, err := chromedp.Run(ctx, chromedp.Evaluate[string](expr))
+			if err != nil {
 				return fmt.Errorf("wait animations settled: evaluate: %w", err)
 			}
 
@@ -299,14 +306,14 @@ func waitAnimationsSettled() chromedp.Action {
 				}
 			}
 
-			if err := chromedp.Sleep(animPollDelay).Do(ctx); err != nil {
-				return fmt.Errorf("wait animations settled: poll sleep: %w", err)
+				if err := chromedp.Do(ctx, chromedp.Sleep(animPollDelay)); err != nil {
+					return fmt.Errorf("wait animations settled: poll sleep: %w", err)
+				}
 			}
-		}
 
-		return nil
-	})
-}
+			return nil
+		})
+	}
 
 const (
 	captureTimeout    = 20 * time.Second
@@ -329,8 +336,8 @@ const (
 // to capture. A real mouse-move event is dispatched (synthetic mouseover events
 // do not trigger :hover) at the element's centre so coordinates are correct
 // regardless of scroll position.
-func hoverAction(sel string) chromedp.Action {
-	return chromedp.ActionFunc(func(ctx context.Context) error {
+func hoverAction(sel string) chromedp.Action[chromedp.Void] {
+	return chromedp.Func(func(ctx context.Context, t *chromedp.Target) error {
 		// Descend to the first interactive child like focusAction; fall back to
 		// the root so components with no inner interactive element still get a
 		// hover at the root centre.
@@ -342,8 +349,8 @@ func hoverAction(sel string) chromedp.Action {
 			return [r.x + r.width/2, r.y + r.height/2];
 		})()`
 
-		var coords []float64
-		if err := chromedp.Evaluate(script, &coords).Do(ctx); err != nil {
+		coords, err := chromedp.Run(ctx, chromedp.Evaluate[[]float64](script))
+		if err != nil {
 			return fmt.Errorf("hover: get %s rect: %w", sel, err)
 		}
 
@@ -351,7 +358,13 @@ func hoverAction(sel string) chromedp.Action {
 			return wrapSelector(errHoverElementNotFound, sel)
 		}
 
-		return input.DispatchMouseEvent(input.MouseMoved, coords[0], coords[1]).Do(ctx)
+		_, err = cdp.Call(ctx, t, input.DispatchMouseEvent, input.DispatchMouseEventParams{
+			Type: input.DispatchMouseEventTypeMouseMoved,
+			X:    coords[0],
+			Y:    coords[1],
+		})
+
+		return err
 	})
 }
 
@@ -359,8 +372,8 @@ func hoverAction(sel string) chromedp.Action {
 // sel. The wrapper (#tc-root) is a <div> and not itself focusable, so we
 // descend to the interactive element (button/a/input) it wraps. No-op if no
 // focusable element exists.
-func focusAction(sel string) chromedp.Action {
-	return chromedp.ActionFunc(func(ctx context.Context) error {
+func focusAction(sel string) chromedp.Action[chromedp.Void] {
+	return chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
 		// f.focus() alone is not enough on current Chromium headless: it moves
 		// document.activeElement (so :focus/:focus-visible CSS still matches)
 		// but dispatches NO focus events, so any component that opens on a
@@ -378,8 +391,8 @@ func focusAction(sel string) chromedp.Action {
 			return true;
 		})()`
 
-		var focused bool
-		if err := chromedp.Evaluate(script, &focused).Do(ctx); err != nil {
+		focused, err := chromedp.Run(ctx, chromedp.Evaluate[bool](script))
+		if err != nil {
 			return fmt.Errorf("focus: query %s: %w", sel, err)
 		}
 
@@ -399,8 +412,8 @@ func focusAction(sel string) chromedp.Action {
 // native :active state and popovertarget invoker both fire (synthetic .click()
 // is enough for the invoker, but a dispatched event also exercises
 // hover/active paint).
-func clickAction(sel, override string) chromedp.Action {
-	return chromedp.ActionFunc(func(ctx context.Context) error {
+func clickAction(sel, override string) chromedp.Action[chromedp.Void] {
+	return chromedp.Func(func(ctx context.Context, t *chromedp.Target) error {
 		selector := `[popovertarget], button, a[href], [role="button"]`
 		if override != "" {
 			selector = override
@@ -415,8 +428,8 @@ func clickAction(sel, override string) chromedp.Action {
 			return [r.x + r.width/2, r.y + r.height/2];
 		})()`
 
-		var coords []float64
-		if err := chromedp.Evaluate(script, &coords).Do(ctx); err != nil {
+		coords, err := chromedp.Run(ctx, chromedp.Evaluate[[]float64](script))
+		if err != nil {
 			return fmt.Errorf("click: query %s: %w", sel, err)
 		}
 
@@ -426,13 +439,22 @@ func clickAction(sel, override string) chromedp.Action {
 
 		// Press + release at centre: this triggers the popovertarget invoker
 		// (opening the menu) and a real :active paint cycle.
-		if err := input.DispatchMouseEvent(input.MousePressed, coords[0], coords[1]).
-			WithButton(input.Left).WithClickCount(1).Do(ctx); err != nil {
+		press := input.DispatchMouseEventParams{
+			Type:       input.DispatchMouseEventTypeMousePressed,
+			X:          coords[0],
+			Y:          coords[1],
+			Button:     input.MouseButtonLeft,
+			ClickCount: 1,
+		}
+		if _, err := cdp.Call(ctx, t, input.DispatchMouseEvent, press); err != nil {
 			return fmt.Errorf("click: press: %w", err)
 		}
 
-		return input.DispatchMouseEvent(input.MouseReleased, coords[0], coords[1]).
-			WithButton(input.Left).WithClickCount(1).Do(ctx)
+		release := press
+		release.Type = input.DispatchMouseEventTypeMouseReleased
+		_, err = cdp.Call(ctx, t, input.DispatchMouseEvent, release)
+
+		return err
 	})
 }
 
@@ -441,8 +463,8 @@ func clickAction(sel, override string) chromedp.Action {
 // MouseEvent('contextmenu') is used because it reliably fires the singleton
 // handler that calls showPopover(); a real right-button press is flaky under
 // headless Chromium.
-func contextAction(sel string) chromedp.Action {
-	return chromedp.ActionFunc(func(ctx context.Context) error {
+func contextAction(sel string) chromedp.Action[chromedp.Void] {
+	return chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
 		script := `(() => {
 			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
 			if (!root) return false;
@@ -452,8 +474,8 @@ func contextAction(sel string) chromedp.Action {
 			return true;
 		})()`
 
-		var ok bool
-		if err := chromedp.Evaluate(script, &ok).Do(ctx); err != nil {
+		ok, err := chromedp.Run(ctx, chromedp.Evaluate[bool](script))
+		if err != nil {
 			return fmt.Errorf("context: query %s: %w", sel, err)
 		}
 
@@ -470,14 +492,13 @@ func contextAction(sel string) chromedp.Action {
 // asynchronously without a DOM visibility change — e.g. a scroll-snap track
 // whose smooth scroll converges after the next-arrow click, which neither
 // WaitVisible nor waitAnimationsSettled can observe.
-func waitExprAction(expr string) chromedp.Action {
-	return chromedp.ActionFunc(func(ctx context.Context) error {
+func waitExprAction(expr string) chromedp.Action[chromedp.Void] {
+	return chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
 		deadline := time.Now().Add(waitExprMaxWait)
 
 		for time.Now().Before(deadline) {
-			var done bool
-
-			if err := chromedp.Evaluate(expr, &done).Do(ctx); err != nil {
+			done, err := chromedp.Run(ctx, chromedp.Evaluate[bool](expr))
+			if err != nil {
 				return fmt.Errorf("wait expr: evaluate: %w", err)
 			}
 
@@ -485,7 +506,7 @@ func waitExprAction(expr string) chromedp.Action {
 				return nil
 			}
 
-			if err := chromedp.Sleep(waitExprPollDelay).Do(ctx); err != nil {
+			if err := chromedp.Do(ctx, chromedp.Sleep(waitExprPollDelay)); err != nil {
 				return fmt.Errorf("wait expr: sleep: %w", err)
 			}
 		}
