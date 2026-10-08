@@ -513,3 +513,34 @@ itself is CSP-clean.
 
 **Where does custom CSS go?** In your main CSS file, after `@import "tailwindcss"`.
 Use `@layer utilities { ... }` or `@layer components { ... }` for organization.
+
+## Tailwind capability coverage
+
+What the library uses per Tailwind release tier (audit: `docs/research/2026-10-08_tailwindcss-deep-dive.html`,
+capability ledger in its appendix):
+
+- **v4.0 CSS-first foundation (fully adopted):** `@import "tailwindcss" source(none)` +
+  explicit `@source` scanning of `.templ` AND `.go` files (class lookup maps live in Go —
+  a default scan would miss them; guarded by `utils.TestTailwindGoSourceScanning`), CSS-first
+  `@theme` theming, class-strategy dark mode via `@custom-variant dark`, container queries
+  (`@container` + `@sm:/@md:/@lg:`), `@starting-style`/`allow-discrete` overlay animation,
+  Popover API overlays, `content-visibility` table virtualization.
+- **v4.1+ logical properties (fully adopted):** all directional CSS uses logical utilities
+  (`ms-`, `me-`, `ps-`, `pe-`, `inset-s-*`, `inset-e-*`, `border-s-`, `border-e-`,
+  `text-start`). Note the naming trap: bare `start-0`/`end-full` are PHYSICAL (they compile
+  to `left`/`right`) — use `inset-s-*`/`inset-e-*` for mirroring insets; the repo guard
+  `utils.TestRTLLogicalProperties` bans both classes. Motion on logical insets must be
+  logical too (`transition-[inset-inline-start]`, not `translate-x`).
+- **v4.2+ state variants (available to consumers):** the library's validation styling uses
+  native `:user-valid`/`:user-invalid` selectors in `custom.css` (borders flip only after
+  the user interacts — see `templates/custom.css` "user-valid/user-invalid" block). Tailwind's
+  `user-valid:`/`user-invalid:` VARIANTS (v4.1+) are available for consumers who prefer
+  utility-level styling, e.g. `class="border-gray-300 user-valid:border-green-600
+  user-invalid:border-red-600"` on any `forms` input; both approaches compose with the same
+  `@theme` color overrides.
+- **v4.3 scrollbar utilities (adopted):** `scrollbar-none` replaces the retired
+  `.tc-no-scrollbar` helper (carousel track).
+
+**Version pinning:** the nix dev shell (`pkgs.tailwindcss_4`), the demo Dockerfile, and the
+website CI lane all pin the SAME version (4.3.3) — bump all three in one commit (see
+AGENTS.md "Tailwind lane pin checklist").

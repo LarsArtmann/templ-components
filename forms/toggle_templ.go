@@ -64,11 +64,11 @@ type toggleSizeSet struct {
 //
 // The thumb moves via inset-inline-start (logical), not translate-x
 // (physical): the unchecked thumb rests at inset-s-0.5, so checked must set
-// the end-of-track position 0.125rem from the inline end
+// the checked position 0.125rem from the inline edge
 // (track − thumb − 2×0.125rem, in spacing units: 4.5/5.5/6.5). translate-x
-// is physical and would push the thumb off the track's start edge in RTL;
+// is physical and would push the thumb off the track's leading edge in RTL;
 // inset-inline-start mirrors with dir="rtl" in both rest and checked states.
-// The thumb animates via transition-[inset-inline-start].
+// The thumb animates its inline-start inset (CSS transition on that property).
 //
 //nolint:gochecknoglobals // Package-level lookup table for toggle sizes.
 var toggleSizeMap = map[ToggleSize]toggleSizeSet{

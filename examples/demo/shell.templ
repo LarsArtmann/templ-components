@@ -17,7 +17,9 @@ import (
 //
 // The header carries the mobile menu toggle, a docs link, the GitHub link,
 // and the theme toggle; the sidebar carries the brand, the page registry
-// nav, and the install command.
+// nav, and the install command. The footer rides the AppShell Footer slot
+// (NOT the Content slot) so its mt-auto pins it to the bottom of the
+// viewport on every page — short content must never leave it mid-screen.
 templ demoShell(meta demoPageMeta, nonce string, content templ.Component) {
 	@layout.Base(demoShellPageProps(meta, nonce)) {
 		@feedback.ToastContainer(demoNonceConst)
@@ -29,6 +31,7 @@ templ demoShell(meta demoPageMeta, nonce string, content templ.Component) {
 			MobileNav: demoMobileNav(meta, nonce),
 			Header:    demoHeader(meta, nonce),
 			Content:   demoShellContent(meta, content),
+			Footer:    demoShellFooter(),
 			Container: false,
 		})
 	}
@@ -68,7 +71,9 @@ templ demoHead(meta demoPageMeta, nonce string) {
 
 // demoShellContent wraps the page body: a PageHeader (registry-driven title
 // + description) above the content, except on the home page whose hero
-// replaces the header.
+// replaces the header. The provenance footer is NOT part of the content —
+// demoShell passes it via the AppShell Footer slot so it pins to the
+// viewport bottom.
 templ demoShellContent(meta demoPageMeta, content templ.Component) {
 	if meta.ShowHeader {
 		<div class="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
@@ -83,7 +88,6 @@ templ demoShellContent(meta demoPageMeta, content templ.Component) {
 	<div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
 		@content
 	</div>
-	@demoShellFooter()
 }
 
 // demoShellFooter closes every page with provenance links.

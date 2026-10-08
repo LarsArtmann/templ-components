@@ -14,7 +14,12 @@ This library is part of the **GOTH stack** (Go + Templ + HTMX):
 
 ## Other Templ UI Libraries
 
-| Library                                                                   | Focus                                   |
-| ------------------------------------------------------------------------- | --------------------------------------- |
-| [templUI](https://templui.io)                                             | 40+ components, Alpine.js interactivity |
-| [templ components (a-h)](https://github.com/a-h/templ/tree/main/examples) | Official templ examples                 |
+| Library                                                                     | Focus                                                                                             |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| [shadcn-templ](https://github.com/axadrn/shadcn-templ) (formerly templUI)   | shadcn/ui port: copy-paste registry, 8 style themes, installable blocks.                          |
+| [goshipit](https://github.com/haatos/goshipit)                              | DaisyUI-on-Tailwind components for the GOTH stack, HTMX-driven, `gsi` copy CLI.                    |
+| [templ components (a-h)](https://github.com/a-h/templ/tree/main/examples)   | Official templ examples (educational, not a library).                                             |
+
+Head-to-head comparison (architecture, testing depth, where each wins):
+[docs/comparison.md](https://github.com/larsartmann/templ-components/blob/master/docs/comparison.md)
+(external facts verified 2026-10-08).

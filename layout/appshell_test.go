@@ -11,17 +11,37 @@ import (
 func TestAppShell(t *testing.T) {
 	t.Parallel()
 
-	t.Run("sidebar present produces grid + minmax + dvh", func(t *testing.T) {
+	t.Run("sidebar present produces grid + minmax + dvh + mobile flex column", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, AppShell(AppShellProps{
 			Sidebar: templ.Raw(`<aside>nav</aside>`),
 			Content: templ.Raw(`<p>body</p>`),
+			Footer:  templ.Raw(`<div data-test="footer">f</div>`),
 		}))
 		utils.AssertContainsAll(
 			t, output,
 			"lg:grid",
 			"lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
 			"min-h-dvh",
+			// The shell is a flex column below the grid breakpoint so the
+			// Footer slot's mt-auto sticks to the bottom at every viewport.
+			"flex flex-col",
+		)
+	})
+
+	t.Run("footer sticks to the bottom: content column is flex-1 in the stretched shell", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, AppShell(AppShellProps{
+			Sidebar: templ.Raw(`<aside>nav</aside>`),
+			Content: templ.Raw(`<p>body</p>`),
+			Footer:  templ.Raw(`<div data-test="footer">f</div>`),
+		}))
+		utils.AssertContainsAll(
+			t, output,
+			// content column grows to fill the shell …
+			"flex flex-1 min-w-0 flex-col",
+			// … and the footer is pushed to its end.
+			`<footer class="mt-auto">`,
 		)
 	})
 
@@ -30,7 +50,7 @@ func TestAppShell(t *testing.T) {
 		output := utils.Render(t, AppShell(AppShellProps{
 			Content: templ.Raw(`<p>body</p>`),
 		}))
-		utils.AssertContains(t, output, "min-h-dvh")
+		utils.AssertContainsAll(t, output, "min-h-dvh", "flex flex-col")
 		utils.AssertNotContains(t, output, "lg:grid-cols-")
 	})
 

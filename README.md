@@ -27,20 +27,24 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
-| Feature                | templ-components                               | [templUI](https://templui.io) | [goshipit](https://github.com/haatos/goshipit) |
-| ---------------------- | ---------------------------------------------- | ----------------------------- | ---------------------------------------------- |
-| **CSS approach**       | Tailwind v4 (CSS-first)                        | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
-| **JavaScript**         | HATEOAS (enhances HTML)                        | Alpine.js                     | DaisyUI JS                                     |
-| **Requires Node.js**   | No                                             | No                            | Yes                                            |
-| **Components**         | 123                                            | 40+                           | —                                              |
-| **Typed props**        | 64 enums                                       | —                             | —                                              |
-| **Dark mode**          | Built-in (tested)                              | CSS custom properties         | Via DaisyUI                                    |
-| **CSP compliant**      | Yes (nonce on all scripts)                     | Yes                           | —                                              |
-| **Container queries**  | 8 opt-in components + fluid typography (`cqi`) | —                             | —                                              |
-| **Visual regression**  | chromedp pixel tests                           | —                             | —                                              |
-| **HTMX integration**   | Built-in package                               | —                             | —                                              |
-| **Datastar support**   | Opt-in package                                 | —                             | —                                              |
-| **Standalone library** | Yes                                            | No                            | No                                             |
+| Feature                | templ-components                               | [shadcn-templ](https://github.com/axadrn/shadcn-templ) (fka templUI) | [goshipit](https://github.com/haatos/goshipit)   |
+| ---------------------- | ---------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------ |
+| **CSS approach**       | Tailwind v4 (CSS-first)                        | Tailwind v4 + CSS vars, 8 style themes                               | Tailwind v4 + DaisyUI                            |
+| **JavaScript**         | HATEOAS (enhances HTML)                        | Vanilla JS (Base UI behavior ports, bundled runtime)                 | HTMX-driven                                      |
+| **Requires Node.js**   | No                                             | No                                                                   | Yes (CSS build only)                             |
+| **Components**         | 123                                            | ~64 + 27 installable blocks                                          | 52                                               |
+| **Typed props**        | 64 enums                                       | —                                                                    | —                                                |
+| **Dark mode**          | Built-in (tested)                              | CSS custom properties                                                | Via DaisyUI                                      |
+| **CSP compliant**      | Yes (nonce on all scripts)                     | Yes (nonce on runtime bundle)                                        | —                                                |
+| **Container queries**  | 8 opt-in components + fluid typography (`cqi`) | —                                                                    | —                                                |
+| **Visual regression**  | chromedp pixel tests                           | Playwright parity suite vs shadcn/ui                                 | —                                                |
+| **HTMX integration**   | Built-in package                               | Compatible (htmx fixture-tested)                                     | Native (core design)                             |
+| **Datastar support**   | Opt-in package                                 | —                                                                    | —                                                |
+| **Distribution**       | Go module (semver upgrades)                    | Copy-paste registry (you own the code)                               | Copy CLI (`gsi`)                                 |
+
+**Head-to-head:** the full comparison — architecture, testing depth, what each
+class of project is best at — lives in
+[`docs/comparison.md`](docs/comparison.md) (external facts verified 2026-10-08).
 
 ---
 
@@ -224,9 +228,9 @@ Loading indicators, error handling, CSRF protection, out-of-band swaps, View Tra
 @htmx.ViewTransitions(htmx.ViewTransitionsProps{Global: true})
 ```
 
-### `datastar` — Datastar Integration (4 components)
+### `datastar` — Datastar Integration (6 components)
 
-[Datastar](https://data-star.dev) runtime injection, SSE-powered live regions, and loading indicators. An opt-in complement to HTMX for real-time streaming apps — zero new Go dependencies.
+[Datastar](https://data-star.dev) runtime injection, SSE-powered live regions, polled regions, loading indicators and buttons, and SSE error handling. An opt-in complement to HTMX for real-time streaming apps — zero new Go dependencies.
 
 ```templ
 @datastar.SDKScript(datastar.DefaultSDKScriptProps())
@@ -368,8 +372,8 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 | Components     | 123                                                 |
 | SVG icons      | 102                                                 |
 | Typed enums    | 64 (63 with IsValid)                                |
-| Packages       | 18                                                  |
-| Tests          | ~1,500 test functions + ~1,600 subtests             |
+| Packages       | 20 (across 7 Go modules)                            |
+| Tests          | ~1,775 test functions + ~1,650 subtests             |
 | Visual goldens | 200 pixel-level regression tests (chromedp)         |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 

@@ -1522,6 +1522,23 @@ bg-linear-to-br from-blue-600 via-blue-500 to-indigo-500</code></pre>
             compiled artifact header <code>examples/demo/static/app.css</code> (v4.3.3);
             <code>nix eval nixpkgs#tailwindcss_4.version</code> = 4.3.3.
           </p>
+          <h3 id="tc-class-audit"><code>.tc-*</code> dead/alive audit (wave-1 execution, 2026-10-08)</h3>
+          <p>
+            Post-execution census: <strong>24 defined classes, 0 dead</strong> &mdash; every
+            remaining <code>.tc-*</code> rule in <code>custom.css</code> has &ge;1 component-source
+            user (<code>rg</code> over all library packages, mirrors/generated excluded). Four dead
+            helpers were deleted by the wave instead of migrated:
+            <code>tc-snap-x</code>/<code>tc-snap-center</code> (stock <code>snap-x snap-mandatory</code>
+            already in use), <code>tc-no-scrollbar</code> (finding 5), <code>tc-auto-grow</code>
+            (finding 6). Byte baseline: <code>custom.css</code> = 29,560 bytes (1,078 lines);
+            compiled demo artifact = 113,999 bytes. Post-<code>@utility</code> projection: the demo
+            bundle stays ~flat (every candidate is used here); the win is consumer-side &mdash;
+            an icons-only or forms-only consumer stops shipping kanban/animation/log CSS entirely
+            (TODO_LIST #369 candidates: <code>tc-squircle</code>, <code>tc-content-auto/-compact</code>,
+            <code>tc-fluid-*</code>, <code>tc-log</code>; the component-shaped
+            <code>tc-select</code>/<code>tc-modal</code>/<code>tc-drawer</code>/<code>tc-overlay</code>/
+            <code>tc-anim-*</code>/<code>tc-kanban-*</code> families stay plain by design).
+          </p>
         </section>
 
         <section id="conclusion">

@@ -99,3 +99,30 @@ current canon is therefore: every directive the SAME spelling, whatever it is; b
 go.work + all modules + the `nixpkgs-go` flake pin + the golangci-lint pin in ONE commit
 (golangci-lint ≤ v2.13.2 panics under Go 1.27; the pin moved to ≥ v2.14.0 in the same
 sweep, 2026-10-06).
+
+## Tailwind v4 audit execution <a id="tailwind-v4-audit"></a>
+
+**Recount rule (2026-10-08, wave-1 execution).** The deep-dive report claimed "a dozen
+hardcoded palette literals" in custom.css; the execution pass found ~45 (19 multiedits
+across dialog backdrops, accent-color, validation borders, tc-select, sidebar tokens,
+reduced-transparency, ds-brand, kanban states). Hand-counted numbers in reports are
+starting points, not facts — re-grep at execution time before believing any count
+(same family as the 2026-09-22 truncated-pipe lesson, opposite cause: there the capture
+was cut, here the estimate was never a count).
+
+**Template-class-vs-guide verification (2026-10-08).** Two audit claims were wrong in the
+direction that only compiling proves: (1) the audit (and the repo's own AGENTS RTL bullet)
+called `start-`/`end-` "logical" — the pinned v4.3.3 binary compiles `start-0` to physical
+`inset-inline-start`? No: it compiles to `left`-equivalent via `inset-inline-start` ONLY for
+`inset-s-*`; bare `start-0` emits `left: …` (physical), so 11 shipped sites never mirrored
+in RTL; (2) the audit's `--alpha(var(--color-blue-500), 30%)` comma syntax is a hard build
+error — only the slash form (`--alpha(X / 30%)`) compiles. Rule: every audit claim about
+what a Tailwind class/function compiles to gets a probe run through the PINNED binary
+(`nix develop -c tailwindcss -i … -o …` from repo root) before it drives an edit; names and
+docs have been wrong twice in one audit.
+
+**Heredoc/sed relapse ledger (2026-10-08).** Clean session except one near-miss: a probe
+CSS needed `@source "path"` (quoted) — the heredoc + `source(none)` variant fought back
+twice before `@source inline("…")` settled it. Docs count bumps (270→272) used `sed -i`
+with a per-file phrasing check; one file (ROADMAP) phrased the count differently and
+needed a second targeted sed — mechanical doc-count edits only, never code.

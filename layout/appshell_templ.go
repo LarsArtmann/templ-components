@@ -15,22 +15,26 @@ import "github.com/larsartmann/templ-components/utils"
 // Tailwind's scanner must find every variant; never concatenate prefixes.
 // min-h-dvh ensures the shell fills the viewport height; the grid is
 // breakpoint-gated so mobile collapses to a single column (sidebar hidden,
-// content full-width). The main column uses minmax(0, 1fr) — never bare 1fr
-// — to prevent grid blowout when a wide <table>, long URL, or <pre> lives
-// in the content (see ADR-0016).
+// content full-width). BELOW the breakpoint the shell is `flex flex-col`
+// — that is what stretches the content column (with its flex-1) to the
+// viewport so the Footer slot's mt-auto pins the footer to the bottom at
+// every viewport, not only at the grid breakpoint. The main column uses
+// minmax(0, 1fr) — never bare 1fr — to prevent grid blowout when a wide
+// <table>, long URL, or <pre> lives in the content (see ADR-0016).
 var appshellShellClasses = map[AppShellBreakpoint]string{
-	AppShellBreakpointUnspecified: "lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh",
-	AppShellBreakpointMD:          "md:grid md:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh",
-	AppShellBreakpointLG:          "lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh",
-	AppShellBreakpointXL:          "xl:grid xl:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh",
+	AppShellBreakpointUnspecified: "flex flex-col min-h-dvh lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
+	AppShellBreakpointMD:          "flex flex-col min-h-dvh md:grid md:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
+	AppShellBreakpointLG:          "flex flex-col min-h-dvh lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
+	AppShellBreakpointXL:          "flex flex-col min-h-dvh xl:grid xl:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
 }
 
 // appshellShellNoSidebarClass is the outer wrapper class when no Sidebar slot
 // is provided. The two-track grid template MUST NOT be emitted in that case:
 // with a single child it would place the content column into the
 // sidebar-width track, leaving the second track empty and collapsing the
-// whole shell to the sidebar width.
-const appshellShellNoSidebarClass = "min-h-dvh"
+// whole shell to the sidebar width. The flex column + min-h-dvh keeps the
+// Footer slot's mt-auto sticky-footer working without a sidebar too.
+const appshellShellNoSidebarClass = "flex flex-col min-h-dvh"
 
 // appshellSidebarWrapperClasses hide the sidebar below the breakpoint so it
 // doesn't take up mobile real estate. The sidebar slot itself (e.g.
@@ -58,9 +62,12 @@ func appshellClassFor(m map[AppShellBreakpoint]string, bp AppShellBreakpoint) st
 }
 
 // appshellContentColumnClass makes the content column a flex container so
-// the (optional) header can be sticky while Content scrolls. min-w-0 is the
-// flex-blowout guard (complements minmax(0,1fr) on the grid).
-const appshellContentColumnClass = "flex min-w-0 flex-col"
+// the (optional) header can be sticky while Content scrolls. flex-1 lets the
+// column fill the shell's min-h-dvh below the grid breakpoint (above it the
+// grid's align-items:stretch does the same), so the Footer slot's mt-auto
+// pins to the true bottom at every viewport. min-w-0 is the flex-blowout
+// guard (complements minmax(0,1fr) on the grid).
+const appshellContentColumnClass = "flex flex-1 min-w-0 flex-col"
 
 // AppShell renders a sidebar + header + content application shell. It is the
 // 2D layout primitive for admin panels and dashboards: a fixed-width sidebar
@@ -136,7 +143,7 @@ func AppShell(props AppShellProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 96, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 103, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -172,7 +179,7 @@ func AppShell(props AppShellProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues("--tc-sidebar-w: " + sidebarW)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 100, Col: 40}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 107, Col: 40}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -191,7 +198,7 @@ func AppShell(props AppShellProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 103, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 110, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {

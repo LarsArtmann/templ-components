@@ -13,10 +13,12 @@ import (
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
-// kanbanDemo renders the Kanban board section: two boards side by side, the
-// same display.KanbanBoard markup moved under htmx and Datastar. Each board
-// owns its endpoint and server state; the move contract (card, column,
-// index) is identical for both.
+// kanbanDemo renders the Kanban board section: two boards stacked on
+// separate full-width rows, the same display.KanbanBoard markup moved under
+// htmx and Datastar. Each board owns its endpoint and server state; the move
+// contract (card, column, index) is identical for both. Full-width rows keep
+// all four columns visible without horizontal scrolling — side-by-side
+// panels crammed each 4-column board into half the container.
 func kanbanDemo(sessionToken string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -54,7 +56,7 @@ col.Tone = display.KanbanToneBlue // status dot: gray, blue, green, yellow, red,
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"mt-4 grid gap-4 xl:grid-cols-2\"><div class=\"min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800\"><div class=\"mb-2 flex items-center justify-between\"><h3 class=\"text-sm font-semibold text-gray-900 dark:text-white\">HTMX transport</h3>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"mt-4 grid gap-4\"><div class=\"min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800\"><div class=\"mb-2 flex items-center justify-between\"><h3 class=\"text-sm font-semibold text-gray-900 dark:text-white\">HTMX transport</h3>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

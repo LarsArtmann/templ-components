@@ -125,7 +125,10 @@ type AppShellProps struct {
 	// Header renders inside the content column, sticky to the top when
 	// StickyHeader is true. Typically navigation.Nav. Optional.
 	Header templ.Component
-	// Footer renders inside the content column, after Content. Optional.
+	// Footer renders inside the content column, after Content, pinned to the
+	// bottom of the viewport (mt-auto) at every breakpoint — the shell is a
+	// full-height flex column below the grid breakpoint and a stretching grid
+	// above it. Optional.
 	Footer templ.Component
 	// Content is the main body of the shell. Required.
 	Content templ.Component
