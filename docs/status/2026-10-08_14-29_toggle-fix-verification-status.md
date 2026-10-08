@@ -1,0 +1,116 @@
+# Status Report — Toggle Thumb-Slide Fix: Verification Session
+
+**Date:** 2026-10-08 14:29 CEST
+**Session scope:** Follow-up verification pass ("all fixed?") after the 13:57 fix session. No new code written — every layer of the Toggle fix re-verified end to end, git state re-synced, daemon commits since the last check inspected. Report covers this session's run plus the open tail of the fix it verified.
+**Predecessor:** `docs/status/2026-10-08_13-57_toggle-thumb-slide-fix-status.md` (the fix itself, its 50-item next-task pool, and 3 open questions live there — none answered yet).
+
+---
+
+## a) FULLY DONE
+
+| # | Item | Evidence |
+|---|------|----------|
+| 1 | **Git state re-synced after daemon activity** — 2 new daemon commits landed since 13:59 and were inspected, not assumed | `7a272b6c` = remaining visual PNG re-baselines (forms routes, toggle) + `cmd/tc/_sources` mirror sync; `b4c80cfb` = the 13:57 status report doc. Zero Go/CSS source touched. Tree clean; master **6 ahead of origin, not pushed** at check time — *superseded ~14:33: the daemon pushed autonomously mid-session, see Addendum* |
+| 2 | **Fix verified in source** — `peer-checked:*:translate-x-4/5/6` on the TRACK span in `forms/toggle.templ:59-63`, the exact child-variant literal, complete (Tailwind-scanner-safe) | `rg` over `forms/toggle.templ`, `cmd/tc/_sources/forms/toggle.templ` (byte-identical mirror), `forms/toggle_templ.go` (generated, in sync) |
+| 3 | **Guard test verified** — wants child variants per size AND bans the broken bare sibling form forever | `forms/edge_cases_test.go:151-163` (`utils.AssertNotContains(t, output, "peer-checked:translate-")`) |
+| 4 | **Compiled CSS verified at the selector level** — the actual minified rules, not a string grep of comments | `examples/demo/static/app.css` contains `:is(.peer-checked\:\*\:translate-x-N:is(:where(.peer):checked~*)>*)` for N=4,5,6; exactly **1** `translate-x-5` rule, no stale sibling-form duplicate |
+| 5 | **Unit/golden tests green** | `go test ./forms/... -run TestToggle -count=1` → ok |
+| 6 | **Workspace build green** | `go build ./...` → OK |
+| 7 | **Compliance guards green** — the repo-wide scanners this change could plausibly trip | `TestDarkModeCompliance`, `TestDarkModeSemanticColors`, `TestMotionReduceCompliance`, `TestTemplGeneratedInSync` all PASS |
+| 8 | **Sync guards green** | `scripts/check-templ-sync.sh` + `scripts/check-tc-sources-sync.sh` pass (89ms) |
+| 9 | **Pixel proof green in pinned Chromium** | `nix run .#visual -- -run TestToggleGoldens` → ok (3.7s); committed `toggle/light_checked.png` matches the fixed render — if the fix had regressed, this fails at the known 6.57% delta |
+| 10 | **Human eyeball of the PNG** — the actual deliverable confirmed | `visualtest/testdata/toggle/light_checked.png`: white circle visibly on the RIGHT of the blue track ("Notifications" toggle, checked) |
+| 11 | **TODO #255 already harvested** — toggle goldens entry struck in TODO_LIST | `TODO_LIST.md:66` shows `~~255~~` done |
+| 12 | **Skill compliance** — status-report skill loaded; user's explicit `.md`-at-`docs/status/` instruction honored over the skill's HTML default (flagged in closing message) | This file |
+
+## b) PARTIALLY DONE
+
+| # | Item | Works now | Remaining open | Effort |
+|---|------|-----------|----------------|--------|
+| 1 | **Verification depth at this tip** | Toggle tests, workspace build, compliance guards, sync guards, pixel suite — all green at commit `b4c80cfb` | Full per-module test loop, lint, and `scripts/ci-repro.sh --lint --website` NOT re-run this session. Justification: the 2 new daemon commits touched only PNGs/mirror/doc (zero code), and the full suite ran green at `e2a35054`..`6d237b8d` yesterday's tip. But the RITUAL (AGENTS.md M03) demands the repro **at the exact commit about to be pushed** — that has not happened yet | M |
+| 2 | **The Toggle fix's distribution** | Code, goldens, guard test, compiled CSS, CHANGELOG `[Unreleased]`, AGENTS.md lesson — all committed AND **pushed** (daemon, ~14:33 — see Addendum) | No release cut yet; live demo still serves the STUCK thumb until CI finishes and Cloud Run redeploys | M (verify CI + redeploy) |
+| 3 | **HARVEST from the 13:57 report** | TODO #255 struck; the report itself committed (`b4c80cfb`) | Section (f)'s 50-item pool + 3 questions still awaiting user decisions; TODO_LIST/ROADMAP not otherwise updated from it (deliberately — "then wait for instructions" was the standing order, twice) | S |
+| 4 | **Session-learned lessons recorded** | AGENTS.md carries the sibling-matcher trap + guard test pointer (committed `7dd3aead`) | The templ-components SKILL.md (authoring playbook) does not yet mention the `peer-checked:*:` child-variant pattern — future sessions reading only the skill could reintroduce the bug | S |
+
+## c) NOT STARTED
+
+| # | Item | Why not started | Still wanted? |
+|---|------|-----------------|---------------|
+| 1 | `scripts/ci-repro.sh --lint --website` at the tip + push master | Harness forbids unrequested pushes; waiting on question g-1 | Yes — blocking the live-demo fix |
+| 2 | Patch release for the Toggle fix (or batch decision) | Business decision, question g-2 | Yes |
+| 3 | chromedp interaction test (click toggle → computed `translate` ≠ 0, light+dark) — the only test shape that catches baked-golden bugs | Investment decision, question g-3 | Yes (High value) |
+| 4 | HARVEST fold of 13:57 section (f) into TODO_LIST/ROADMAP | Awaiting instruction | Yes |
+| 5 | Guard test for `*_templ.go` FileName CWD drift (the `templ-components/` prefix class, normalized yesterday, unguarded) | Out of scope for a verification session | Yes (Medium) |
+| 6 | Delete dead `examples/demo/forms_section.templ` (unwired into any route) | Out of scope; flagged in 13:57 report (f) | Yes (Low) |
+| 7 | Repo-wide audit for OTHER nested-peer traps (`peer-checked:`/`peer-hover:` applied to elements nested inside the peer's sibling — Checkbox/Rating/FilterDropdown use peer patterns) | Discovered while writing this report; not researched per session scope | **Yes — this is the highest-value unchecked follow-up** |
+| 8 | Visual-route threshold rework (0.1% full-page budget diluted a ~640px thumb move below detection on `/forms`) | Documented 13:57 finding; needs design | Yes (Medium) |
+| 9 | `-update` granularity for visual goldens (per-capture selection; yesterday's re-baseline re-baked 9 unrelated route PNGs) | Documented 13:57 finding; needs design | Yes (Medium) |
+
+## d) TOTALLY FUCKED UP
+
+Nothing in the repo's final state is broken — all gates verified green this session. What IS fucked up:
+
+1. **The public demo ships the bug right now.** `templcomponents.lars.software/demo` (recipes → settings security section) still shows the stuck-circle toggle — the exact UI the user reported. Severity: user-facing, high embarrassment factor, zero risk to library consumers (fix is now ON origin after the daemon's autonomous push; CI is running, redeploy pending). Root cause: deploy pipeline latency. Mitigation: watch CI green → Cloud Run redeploy → eyeball the live toggle (f-2).
+2. **The fix was local-only for ~35 minutes with no push gate.** Resolved mid-session by the daemon's autonomous push (documented behavior, AGENTS.md) — but the RITUAL was violated by the race: no `ci-repro.sh` verdict ran at the pushed tip before it landed on origin. Post-hoc verification (f-1, revised) is now the only gate.
+3. **The test-gate scandal class remains structurally unfixed:** every gold and pixel gate was green while production shipped a stuck toggle, because goldens bake bugs in. Not a new breakage — but until the interaction-test harness exists (g-3), the repo's "all green" remains provably insufficient for stateful visual components. The 13:57 report says this; this session re-confirmed it is still true.
+
+Honest near-misses **this session** (caught before damage; listed here because they are the same failure classes AGENTS.md documents, hit again):
+- First CSS check grepped for `sibling-of-checked-peer` — the source COMMENT's phrasing, not real CSS — got a false zero-match. Caught by reasoning before concluding anything; AGENTS.md's "verify absence claims with a second method" gotcha re-confirmed at session cost of one round trip.
+- First compliance-test run piped through `tail -3` and cut off the main package's result line, forcing a re-run. Same "never trust a truncated capture" class as AGENTS.md's art-dupl lesson.
+
+## e) WHAT WE SHOULD IMPROVE
+
+1. **Grep compiled artifacts by artifact syntax, not source phrasing.** Impact: one wasted round trip this session, recurring class (3rd+ occurrence repo-wide). Fix: when verifying presence/absence in minified output, first extract the real rule shape (`rg -o '[^{}]*token[^{]*\{[^}]*\}'`) or probe-compile — never grep human-readable comment strings. Candidate for `references/lessons.md` in crush-config (cross-project).
+2. **Never window test output through `tail`/`head` when the verdict line's position is unknown.** Impact: forced re-runs, and the dangerous version (yesterday's `| head -40` on the visual suite) hides failures. Fix: `rg '^(ok|FAIL|--- )'` filtering, or write full output to a file and grep it.
+3. **Interaction-proof testing for stateful visual components.** Goldens + pixel suites structurally cannot catch "renders broken from day one, so the golden is a faithful portrait of the bug". Concrete: a small chromedp harness asserting computed style AFTER interaction (click toggle → `transform`/`translate` ≠ 0), extendable to Accordion/Dropdown/Carousel. Start with Toggle (g-3).
+4. **Per-component pixel budgets on route goldens.** A 0.1% full-page threshold lets a 640px thumb move pass. Fix: per-capture threshold overrides or component-scoped captures for stateful components on route pages.
+5. **Put the peer-checked child-variant pattern into the templ-components SKILL.md** (Part 2 authoring playbook) — AGENTS.md is project memory, the skill is what authoring sessions load first. One paragraph + the guard-test pointer.
+6. **Status-report format default.** The skill's canonical format is HTML; the user's standing instruction is `.md` at `docs/status/` (3rd+ occurrence). Suggest recording `.md` as the default for this repo's status reports (a one-line skill standing-exception note, like the task-queue dispatch exception) instead of re-flagging the override every time.
+7. **Daemon commit fragmentation is documented but unfixable from here.** The toggle fix spans 6+ auto-commits with hallucinated messages; bisecting this change later requires the 13:57 report. Existing mitigation (status docs) works — no new action, just an acknowledgment.
+
+## f) Next tasks (ranked by impact)
+
+Provenance: ★ = direct tail of this fix/session; ○ = carried forward from the 13:57 report's pool (fuller 50-item brainstorm lives there, pending HARVEST); all concrete and actionable.
+
+| # | Task | Impact | Effort | Category |
+|---|------|--------|--------|----------|
+| 1 | ★ Run `scripts/ci-repro.sh --lint --website` at the pushed tip `b4c80cfb` as POST-HOC verification (the daemon pushed before any verdict ran); if it FAILS, fix-forward immediately on master | Critical | M | Quality |
+| 2 | ★ Watch CI on origin (`b4c80cfb`); after green, verify Cloud Run demo redeploy and eyeball the settings toggle live on `templcomponents.lars.software/demo` | Critical | S | Quality |
+| 3 | ★ Decide + cut patch release for the Toggle fix (release ritual per AGENTS.md) or explicitly batch it | Critical | M | Release |
+| 4 | ★ Audit repo for other nested-peer traps: every `peer-*:` class whose carrier element is not a sibling of the `.peer` input (Checkbox, Rating, FilterDropdown, TagsInput) — probe-compile each suspect selector | High | M | Bug-hunt |
+| 5 | ★ Build chromedp interaction test: click Toggle → assert computed translate ≠ 0, light + dark, in `visualtest/` | High | M | Quality |
+| 6 | ★ Add the `peer-checked:*:` child-variant pattern + guard-test pointer to templ-components SKILL.md Part 2 | Medium | S | Documentation |
+| 7 | ○ HARVEST: fold 13:57 section (f) + this report's items into TODO_LIST/ROADMAP (docs-health skill) | High | S | Documentation |
+| 8 | ○ Guard test preventing `*_templ.go` FileName CWD drift (normalize check: no `templ-components/` prefix in generated FileName) | Medium | M | Quality |
+| 9 | ○ Delete dead `examples/demo/forms_section.templ` + confirm nothing references it | Low | S | Cleanup |
+| 10 | ○ Rework route-golden thresholds: per-capture overrides so component-level moves can't hide under 0.1% full-page budget | Medium | M | Quality |
+| 11 | ○ `-update` granularity for visual goldens: support per-capture selection to avoid re-baking unrelated route PNGs | Medium | L | Quality |
+| 12 | ○ Generalize the interaction-harness (task 5) to Accordion (`details[open]`), Dropdown (popover-open), Carousel (scroll position) — one test shape, N components | Medium | L | Quality |
+| 13 | ○ Record the false-zero-match grep lesson in crush-config `references/lessons.md` (cross-project: "grep the artifact's syntax, not the comment's") | Low | S | Documentation |
+| 14 | ○ Prune vnu ignore classes when nixpkgs html5validator/vnu updates land (standing AGENTS.md item, unchanged) | Low | S | Quality |
+| 15 | ○ Regenerate stale home OG image via ogshot ("94 components" baked text) — unchanged from AGENTS.md notes | Low | S | Cleanup |
+| 16 | ★ Extend `edge_cases_test.go` pattern into a small table other components copy: every stateful class-variant component gets a "complete literal + ban the broken form" want-list | Medium | S | Quality |
+| 17 | ○ Consider a lightweight `TestCompiledCSSTogglesChildVariant` guard: compiled demo CSS must contain the `:where(.peer):checked~*>` form (catches CSS-compile-order regressions killing the fix) | Medium | S | Quality |
+| 18 | ○ If interaction tests land (5/12): re-evaluate which pixel goldens are load-bearing vs. interaction-covered, and document the tiering in `docs/visual-testing.md` | Low | M | Documentation |
+| 19 | ○ Sweep `.golangci.yml` exclusions list for stale entries left by the 13:57 session's runs (parity hygiene, cheap) | Low | S | Cleanup |
+| 20 | ★ Add "verify compiled CSS at selector level" to the AGENTS.md CSS-recompile bullet (the demo CSS gotcha currently says "recompile", not "verify the selector form after") | Low | S | Documentation |
+
+(20 items — deliberately short of 50: this session generated no new research, and padding the list with the 13:57 pool's repeats would be filler. That pool remains the sanctioned brainstorm source pending HARVEST.)
+
+## g) Questions (3 — none answerable from the repo)
+
+1. **CI + deploy watch:** The daemon pushed `b4c80cfb` autonomously mid-session (again — documented behavior). Shall I run the post-hoc `ci-repro.sh --lint --website` verification at that tip now and watch CI/Cloud Run until the live demo shows the fixed toggle, or do you watch it? (I cannot answer this from the repo — it is a permission/ownership question.)
+2. **Release cadence:** Patch release now for the Toggle fix, or batch it with whatever else is warming `[Unreleased]`? This decides whether task 3 runs today and whether the fix reaches proxy consumers this week.
+3. **Testing investment:** Shall I build the chromedp interaction-test harness (click → computed-style assertion), starting with Toggle and generalizing later? It is the only test shape that would have caught this bug class; it costs roughly half a day for the Toggle-only version.
+
+---
+
+## ADDENDUM — written minutes after the report (14:33 CEST, same session)
+
+During the final `git status` check, `master...origin/master` showed **no ahead-count**. A fetch confirmed: **the BuildFlow daemon pushed master autonomously mid-session** — `origin/master` = local `HEAD` = `b4c80cfb`, 0 ahead. All 6 commits, including the verified Toggle fix, are on origin; CI is running there now.
+
+Consequences folded into the sections above (b-2, d-1, d-2, f-1, f-2, g-1). Net effect: the push-ownership question answered itself the way AGENTS.md documents ("the daemon also pushes master ... without being asked"), the M03 verify-then-push ritual was preempted (no verdict ran at the pushed tip — post-hoc ci-repro is the remediation), and the live-demo unblock is now: **CI green → Cloud Run redeploy → eyeball the toggle**.
+
+**Report format note:** the status-report skill's canonical output is a styled HTML dashboard; this report is `.md` at your explicitly demanded `docs/status/` path (your instruction wins, flagged per skill contract). Not committed manually — harness forbids unrequested commits; the daemon will pick this file up.
+
+**WAITING FOR INSTRUCTIONS.**
