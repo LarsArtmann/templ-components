@@ -39,7 +39,7 @@ func DefaultToggleProps() ToggleProps {
 	}
 }
 
-// toggleSizeClasses returns the track and thumb classes for each size
+// toggleSizeClasses returns the track, thumb, and translate classes for each size
 func toggleSizeClasses(size ToggleSize) (track, thumb, translate string) {
 	s := toggleSizeLookup(size)
 	return s.Track, s.Thumb, s.Translate
