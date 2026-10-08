@@ -46,7 +46,7 @@ func TestKeyboardTraversalFocusVisibility(t *testing.T) {
 			timeoutCtx, cancelTimeout := context.WithTimeout(ctx, 90*time.Second)
 			defer cancelTimeout()
 
-			chromedp.Run(timeoutCtx,
+			chromedp.Do(timeoutCtx,
 				chromedp.Navigate(server.BaseURL()+route.path),
 				chromedp.WaitVisible(chromedp.CSS("body")),
 				evalVoid(`document.activeElement && document.activeElement.blur();`),
@@ -63,7 +63,7 @@ func TestKeyboardTraversalFocusVisibility(t *testing.T) {
 					RectArea float64 `json:"area"`
 				}
 
-				if err := chromedp.Run(timeoutCtx,
+				if err := chromedp.Do(timeoutCtx,
 					chromedp.KeyEvent("\t"),
 					// Let any scroll-into-view settle before measuring.
 					chromedp.Sleep(30*time.Millisecond),

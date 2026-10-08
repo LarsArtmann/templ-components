@@ -66,21 +66,21 @@ func TestDemoDatastarSSEErrorToast(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(server.URL),
 		chromedp.WaitReady("body"),
 	); err != nil {
 		t.Fatalf("visualtest[datastar]: navigate: %v", err)
 	}
 
-	if err := chromedp.Run(ctx, dispatchDatastarFetch(
+	if err := chromedp.Do(ctx, dispatchDatastarFetch(
 		`{type: 'error', argsRaw: {status: 500}}`)); err != nil {
 		t.Fatalf("visualtest[datastar]: dispatch error event: %v", err)
 	}
 
 	var announcer string
 
-	if err := chromedp.Run(ctx, pollText(
+	if err := chromedp.Do(ctx, pollText(
 		`(document.getElementById('tc-datastar-announcer')||{innerText:''}).innerText`,
 		&announcer,
 		chromedp.WithPollingTimeout(5*time.Second),
@@ -94,7 +94,7 @@ func TestDemoDatastarSSEErrorToast(t *testing.T) {
 
 	var toastCount int64
 
-	if err := chromedp.Run(ctx, evalExprInto(
+	if err := chromedp.Do(ctx, evalExprInto(
 		`document.querySelectorAll('#tc-toast-container .pointer-events-auto').length`,
 		&toastCount)); err != nil {
 		t.Fatalf("visualtest[datastar]: count toasts: %v", err)
@@ -111,20 +111,20 @@ func TestDemoDatastarRetriesFailedToast(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(server.URL),
 		chromedp.WaitReady("body"),
 	); err != nil {
 		t.Fatalf("visualtest[datastar]: navigate: %v", err)
 	}
 
-	if err := chromedp.Run(ctx, dispatchDatastarFetch(`{type: 'retries-failed'}`)); err != nil {
+	if err := chromedp.Do(ctx, dispatchDatastarFetch(`{type: 'retries-failed'}`)); err != nil {
 		t.Fatalf("visualtest[datastar]: dispatch retries-failed event: %v", err)
 	}
 
 	var held bool
 
-	if err := chromedp.Run(ctx, pollBool(
+	if err := chromedp.Do(ctx, pollBool(
 		`Boolean((document.getElementById('tc-datastar-announcer')||{innerText:''}).innerText.indexOf('Live stream lost') >= 0)`,
 		&held,
 		chromedp.WithPollingTimeout(5*time.Second),
@@ -139,7 +139,7 @@ func TestDemoDatastarBusyClearsOnFirstPatch(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(server.URL),
 		chromedp.WaitReady("body"),
 	); err != nil {
@@ -148,7 +148,7 @@ func TestDemoDatastarBusyClearsOnFirstPatch(t *testing.T) {
 
 	var busyBefore string
 
-	if err := chromedp.Run(ctx, evalExprInto(
+	if err := chromedp.Do(ctx, evalExprInto(
 		`(document.getElementById('synth-live')||{getAttribute:function(){return 'MISSING'}}).getAttribute('aria-busy')`,
 		&busyBefore)); err != nil {
 		t.Fatalf("visualtest[datastar]: read aria-busy: %v", err)
@@ -158,13 +158,13 @@ func TestDemoDatastarBusyClearsOnFirstPatch(t *testing.T) {
 		t.Fatalf("visualtest[datastar]: live region should start aria-busy=true, got %q", busyBefore)
 	}
 
-	if err := chromedp.Run(ctx, dispatchDatastarFetch(`{type: 'datastar-patch-elements'}`)); err != nil {
+	if err := chromedp.Do(ctx, dispatchDatastarFetch(`{type: 'datastar-patch-elements'}`)); err != nil {
 		t.Fatalf("visualtest[datastar]: dispatch patch event: %v", err)
 	}
 
 	var cleared bool
 
-	if err := chromedp.Run(ctx, pollBool(
+	if err := chromedp.Do(ctx, pollBool(
 		`Boolean(!(document.getElementById('synth-live').hasAttribute('aria-busy')))`,
 		&cleared,
 		chromedp.WithPollingTimeout(5*time.Second),

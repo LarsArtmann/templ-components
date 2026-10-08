@@ -147,7 +147,7 @@ func TestDatastarPolledRegionBrowser(t *testing.T) {
 	ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
 	defer cancelTimeout()
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollTrue(`window.__dsReady===true && document.querySelector('#polled-region')!==null`),
 		// At least two interval ticks must have fetched AND patched: the
@@ -164,7 +164,7 @@ func TestDatastarPolledRegionBrowser(t *testing.T) {
 	// Exactly ONE region element: the outer self-patch replaces, never
 	// duplicates (a broken re-arm strategy would stack regions).
 	var regionCount int
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		evalExprInto(`document.querySelectorAll('#polled-region').length`, &regionCount),
 	); err != nil {
 		t.Fatalf("region count: %v", err)

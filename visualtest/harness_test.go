@@ -122,7 +122,7 @@ func navigateAndSettleAnimations(t *testing.T, name, page string) time.Duration 
 	taskCtx, taskCancel := context.WithTimeout(ctx, 5*time.Second)
 	defer taskCancel()
 
-	if err := chromedp.Run(taskCtx,
+	if err := chromedp.Do(taskCtx,
 		chromedp.Navigate(srv.URL),
 		chromedp.WaitVisible(chromedp.CSS("#test")),
 	); err != nil {
@@ -131,7 +131,7 @@ func navigateAndSettleAnimations(t *testing.T, name, page string) time.Duration 
 
 	start := time.Now()
 
-	if err := chromedp.Run(taskCtx, waitAnimationsSettled()); err != nil {
+	if err := chromedp.Do(taskCtx, waitAnimationsSettled()); err != nil {
 		t.Fatalf("waitAnimationsSettled(%s): %v", name, err)
 	}
 

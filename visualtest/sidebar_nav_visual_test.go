@@ -94,7 +94,7 @@ func TestSidebarNavClassicDarkOptOut(t *testing.T) {
 	ctx, cancel := newTab(t)
 	defer cancel()
 
-	chromedp.Run(ctx, chromedp.Navigate(srv.URL))
+	chromedp.Do(ctx, chromedp.Navigate(srv.URL))
 
 	var bg string
 
@@ -104,7 +104,7 @@ func TestSidebarNavClassicDarkOptOut(t *testing.T) {
 	// hard-coded rgb() would false-fail). The probe guards against BOTH
 	// failure modes: override-not-reaching-element (transparent/white aside)
 	// and a probe that never got its class (empty comparison).
-	chromedp.Run(ctx,
+	chromedp.Do(ctx,
 		chromedp.WaitVisible(chromedp.CSS("aside")),
 		evalExprInto(`(() => {
 			const probe = document.createElement('div');

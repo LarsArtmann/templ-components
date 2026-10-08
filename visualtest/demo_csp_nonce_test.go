@@ -83,12 +83,12 @@ func TestDemoCSPJSExecutes(t *testing.T) {
 	ctx, cancel := newTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/kanban"), chromedp.WaitReady("body")); err != nil {
+	if err := chromedp.Do(ctx, chromedp.Navigate(server.BaseURL()+"/kanban"), chromedp.WaitReady("body")); err != nil {
 		t.Fatalf("visualtest[csp]: load kanban: %v", err)
 	}
 
 	var attached bool
-	if err := chromedp.Run(ctx, evalExprInto(`window.tcKanbanAttached===true`, &attached)); err != nil {
+	if err := chromedp.Do(ctx, evalExprInto(`window.tcKanbanAttached===true`, &attached)); err != nil {
 		t.Fatalf("visualtest[csp]: evaluate: %v", err)
 	}
 

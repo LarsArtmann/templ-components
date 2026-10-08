@@ -82,7 +82,7 @@ func TestLoadingButtonE2EStateGatesDuringRequest(t *testing.T) {
 		defaultTextDuring                                 string
 	)
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollBool(`document.readyState==='complete' && window.htmx!==undefined`, &htmxReady),
 		evalExprInto(spinnerOpacityJS, &spinnerAtRest),

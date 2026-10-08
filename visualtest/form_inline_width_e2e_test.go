@@ -58,7 +58,7 @@ func TestFormLayoutInlineWidthContract(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(server.URL),
 		chromedp.WaitReady("body"),
 	); err != nil {
@@ -73,7 +73,7 @@ func TestFormLayoutInlineWidthContract(t *testing.T) {
 		TopB  float64 `json:"topB"`
 	}
 
-	if err := chromedp.Run(ctx, evalExprInto(
+	if err := chromedp.Do(ctx, evalExprInto(
 		`(() => {
 			const form = document.querySelector('form.flex');
 			if (!form) return null;

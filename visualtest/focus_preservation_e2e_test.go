@@ -41,7 +41,7 @@ func TestFocusPreservationE2E(t *testing.T) {
 
 	var ok bool
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollBool(packGate(wire.TransportHTMX), &ok),
 	); err != nil {
@@ -55,7 +55,7 @@ func TestFocusPreservationE2E(t *testing.T) {
 		// in the settle-phase load task (~20ms after the swap — decoded from
 		// the runtime, the same window as the MonthNav settle lesson). The
 		// NEXT subtest's focus() must not race that task.
-		if err := chromedp.Run(ctx,
+		if err := chromedp.Do(ctx,
 			evalExprInto(
 				`(window.__fpSettled=false,document.body.addEventListener('htmx:afterSettle',function(){window.__fpSettled=true},{once:true}),'')`,
 				&done),
@@ -77,7 +77,7 @@ func TestFocusPreservationE2E(t *testing.T) {
 		// outside #items — so count page-wide. The settle gate
 		// (window.__fpSettled) waits out the load task that performs the
 		// autofocus focusing, so the next subtest starts race-free.
-		if err := chromedp.Run(ctx,
+		if err := chromedp.Do(ctx,
 			pollTrue(`document.querySelectorAll('.fp-card').length >= 4 && window.__fpSettled === true`),
 		); err != nil {
 			t.Fatalf("loadmore batch delivery / settle: %v", err)
@@ -87,7 +87,7 @@ func TestFocusPreservationE2E(t *testing.T) {
 	t.Run("swapoob keeps trigger focus", func(t *testing.T) {
 		var done, active string
 
-		if err := chromedp.Run(ctx,
+		if err := chromedp.Do(ctx,
 			evalExprInto(`(document.getElementById('oob-trigger').focus(),'')`, &done),
 			evalExprInto(`(document.getElementById('oob-trigger').click(),'')`, &done),
 			pollTrue(`
@@ -113,7 +113,7 @@ func dumpFocusState(t *testing.T, ctx context.Context, flow string) {
 
 	var body string
 
-	if err := chromedp.Run(
+	if err := chromedp.Do(
 		ctx,
 		evalExprInto(
 			`JSON.stringify({active: document.activeElement && (document.activeElement.id || document.activeElement.tagName), items: document.getElementById('items') && document.getElementById('items').outerHTML.slice(0, 400), status: document.getElementById('status') && document.getElementById('status').outerHTML, counter: document.getElementById('counter') && document.getElementById('counter').outerHTML})`,

@@ -374,7 +374,7 @@ func TestWireE2EDatastarFormSubmitsFields(t *testing.T) {
 
 	var ok bool
 
-	if err := chromedp.Run(
+	if err := chromedp.Do(
 		ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollBool(`window.__dsReady===true`, &ok),

@@ -154,15 +154,21 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewp
 
 	tasks = append(tasks, waitAnimationsSettled(), chromedp.Sleep(settleDelay))
 
-	if fullPage {
-		// quality 100 = PNG (any other value yields JPEG — the golden
-		// pipeline decodes PNG; the shots tool deliberately uses JPEG).
-		tasks = append(tasks, chromedp.FullScreenshot(&shot, 100))
-	} else {
-		tasks = append(tasks, chromedp.CaptureScreenshot(&shot))
+	if err := chromedp.Do(timeoutCtx, tasks...); err != nil {
+		t.Fatalf("route golden[%s]: capture: %v", name, err)
 	}
 
-	if err := chromedp.Run(timeoutCtx, tasks...); err != nil {
+	// quality 100 = PNG (any other value yields JPEG — the golden
+	// pipeline decodes PNG; the shots tool deliberately uses JPEG).
+	var err error
+
+	if fullPage {
+		shot, err = chromedp.Run(timeoutCtx, chromedp.FullScreenshot(100))
+	} else {
+		shot, err = chromedp.Run(timeoutCtx, chromedp.CaptureScreenshot())
+	}
+
+	if err != nil {
 		t.Fatalf("route golden[%s]: capture: %v", name, err)
 	}
 

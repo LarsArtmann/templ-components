@@ -20,13 +20,13 @@ func TestDemoMobile375NoHorizontalOverflow(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx, chromedp.EmulateViewport(demoMobileViewport, 812)); err != nil {
+	if err := chromedp.Do(ctx, chromedp.EmulateViewport(demoMobileViewport, 812)); err != nil {
 		t.Fatalf("visualtest[demo]: emulate %dpx viewport: %v", demoMobileViewport, err)
 	}
 
 	for _, route := range []string{"/", "/forms", "/users", "/display", "/kanban", "/recipes/dashboard"} {
 		t.Run(route, func(t *testing.T) {
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.Navigate(server.BaseURL()+route),
 				chromedp.WaitReady("body"),
 			); err != nil {
@@ -35,7 +35,7 @@ func TestDemoMobile375NoHorizontalOverflow(t *testing.T) {
 
 			var overflow int64
 
-			if err := chromedp.Run(ctx, evalExprInto(
+			if err := chromedp.Do(ctx, evalExprInto(
 				`document.documentElement.scrollWidth - document.documentElement.clientWidth`, &overflow)); err != nil {
 				t.Fatalf("visualtest[demo]: measure %s overflow: %v", route, err)
 			}
@@ -63,11 +63,11 @@ func TestDemoMobile375KanbanReachable(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx, chromedp.EmulateViewport(demoMobileViewport, 812)); err != nil {
+	if err := chromedp.Do(ctx, chromedp.EmulateViewport(demoMobileViewport, 812)); err != nil {
 		t.Fatalf("visualtest[demo]: emulate %dpx viewport: %v", demoMobileViewport, err)
 	}
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(server.BaseURL()+"/kanban"),
 		chromedp.WaitReady("body"),
 	); err != nil {
@@ -76,7 +76,7 @@ func TestDemoMobile375KanbanReachable(t *testing.T) {
 
 	var cardCount int64
 
-	if err := chromedp.Run(ctx, evalExprInto(
+	if err := chromedp.Do(ctx, evalExprInto(
 		`document.querySelectorAll('#kanban-demo-htmx [data-tc-kanban-card]').length`, &cardCount)); err != nil {
 		t.Fatalf("visualtest[demo]: count kanban cards: %v", err)
 	}
@@ -90,7 +90,7 @@ func TestDemoMobile375KanbanReachable(t *testing.T) {
 		Client int64
 	}
 
-	if err := chromedp.Run(ctx, evalExprInto(
+	if err := chromedp.Do(ctx, evalExprInto(
 		`(() => { const el = document.querySelector('#kanban-demo-htmx .overflow-x-auto'); return {Scroll: el ? el.scrollWidth : 0, Client: el ? el.clientWidth : 0}; })()`,
 		&boardScroll)); err != nil {
 		t.Fatalf("visualtest[demo]: measure kanban scroll container: %v", err)
@@ -102,7 +102,7 @@ func TestDemoMobile375KanbanReachable(t *testing.T) {
 
 	var pageOverflow int64
 
-	if err := chromedp.Run(ctx, evalExprInto(
+	if err := chromedp.Do(ctx, evalExprInto(
 		`document.documentElement.scrollWidth - document.documentElement.clientWidth`, &pageOverflow)); err != nil {
 		t.Fatalf("visualtest[demo]: measure page overflow: %v", err)
 	}

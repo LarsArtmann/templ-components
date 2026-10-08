@@ -132,7 +132,7 @@ func kanbanCaptureBoardState(
 	ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
 	defer cancelTimeout()
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.EmulateViewport(viewportDesktopWidth, viewportDesktopHeight),
 		chromedp.Navigate(srv.URL+"/"),
 		chromedp.WaitVisible(chromedp.CSS("#kb-visual")),
@@ -148,19 +148,21 @@ func kanbanCaptureBoardState(
 
 	var state bool
 
-	if err := chromedp.Run(ctx, pollBool(stateExpr, &state,
+	if err := chromedp.Do(ctx, pollBool(stateExpr, &state,
 		chromedp.WithPollingTimeout(pollTimeout), chromedp.WithPollingInterval(50*time.Millisecond)),
 	); err != nil || !state {
 		t.Fatalf("%s: state never appeared (state=%v, err=%v)", name, state, err)
 	}
 
-	var shot []byte
-
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		waitAnimationsSettled(),
 		chromedp.Sleep(settleDelay),
-		chromedp.Screenshot("#kb-visual", &shot, chromedp.ByQuery, chromedp.NodeVisible),
 	); err != nil {
+		t.Fatalf("%s: capture: %v", name, err)
+	}
+
+	shot, err := chromedp.Run(ctx, chromedp.Screenshot(chromedp.CSS("#kb-visual"), chromedp.NodeVisible))
+	if err != nil {
 		t.Fatalf("%s: capture: %v", name, err)
 	}
 

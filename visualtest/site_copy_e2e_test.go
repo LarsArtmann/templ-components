@@ -36,7 +36,7 @@ func TestSiteSalesCopyButton(t *testing.T) {
 	ctx, cancel := context.WithTimeout(tabCtx, 120*time.Second)
 	defer cancel()
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		// Best-effort real-clipboard setup: grant clipboard permissions
 		// (Permissions-API spellings) and emulate document focus — both are
 		// required by the async clipboard API in headless Chromium. On
@@ -84,7 +84,7 @@ func TestSiteSalesCopyButton(t *testing.T) {
 
 	want := "go get github.com/larsartmann/templ-components@latest"
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(base+"/sales"),
 		chromedp.WaitVisible(chromedp.CSS(`[data-tc-copy]`)),
 		evalExprInto(spyJS, &spyArmed),

@@ -65,7 +65,9 @@ jobs:
         # peers of globally-installed packages either. Both packages go in
         # together: @tailwindcss/cli declares `tailwindcss` as a peer.
         run: |
-          npm install --no-save tailwindcss @tailwindcss/cli
+          # Versions pinned to match the nix dev shell's tailwindcss_4 (flake.nix)
+          # — bump all three together or the lanes compile different CSS.
+          npm install --no-save tailwindcss@4.3.3 @tailwindcss/cli@4.3.3
           # SITE_LIVE_STARS=1: the artifact from THIS build is what deploys
           # (deploy-website downloads website-dist), so production keeps the
           # live star count; every other consumer of build.sh now defaults to

@@ -117,7 +117,7 @@ func TestKanbanSingleTransportBoards(t *testing.T) {
 			ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
 			defer cancelTimeout()
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.EmulateViewport(viewportDesktopWidth, viewportDesktopHeight),
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.WaitVisible(chromedp.CSS("#kb-visual")),
@@ -128,13 +128,15 @@ func TestKanbanSingleTransportBoards(t *testing.T) {
 				t.Fatalf("navigate: %v", err)
 			}
 
-			var shot []byte
-
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				waitAnimationsSettled(),
 				chromedp.Sleep(settleDelay),
-				chromedp.Screenshot("#kb-visual", &shot, chromedp.ByQuery, chromedp.NodeVisible),
 			); err != nil {
+				t.Fatalf("capture: %v", err)
+			}
+
+			shot, err := chromedp.Run(ctx, chromedp.Screenshot(chromedp.CSS("#kb-visual"), chromedp.NodeVisible))
+			if err != nil {
 				t.Fatalf("capture: %v", err)
 			}
 

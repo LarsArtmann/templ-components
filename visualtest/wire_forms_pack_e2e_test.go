@@ -863,7 +863,7 @@ func fireInputBurst(region, sel, value string, n int) chromedp.Action[chromedp.V
 func beforeUnloadPrevented(ctx context.Context) (bool, error) {
 	var prevented bool
 
-	err := chromedp.Run(ctx, evalExprInto(
+	err := chromedp.Do(ctx, evalExprInto(
 		`var e=new Event('beforeunload',{cancelable:true}); window.dispatchEvent(e); e.defaultPrevented`,
 		&prevented))
 
@@ -874,7 +874,7 @@ func beforeUnloadPrevented(ctx context.Context) (bool, error) {
 func regionText(ctx context.Context, region string) (string, error) {
 	var text string
 
-	err := chromedp.Run(ctx, evalExprInto(`document.querySelector('`+region+`').innerText`, &text))
+	err := chromedp.Do(ctx, evalExprInto(`document.querySelector('`+region+`').innerText`, &text))
 
 	return text, err
 }
@@ -884,7 +884,7 @@ func regionText(ctx context.Context, region string) (string, error) {
 func packPollOnce(ctx context.Context, expr string) bool {
 	var ok bool
 
-	err := chromedp.Run(ctx, pollBool(expr, &ok, chromedp.WithPollingTimeout(700*time.Millisecond)))
+	err := chromedp.Do(ctx, pollBool(expr, &ok, chromedp.WithPollingTimeout(700*time.Millisecond)))
 
 	return err == nil && ok
 }
@@ -917,9 +917,9 @@ func packSubmitUntil(ctx context.Context, scope, needleRegion, needle string) er
 
 // packFireUntil performs action until needle appears in needleRegion's text
 // (bounded retries) — the debounce/autocomplete twin of packSubmitUntil.
-func packFireUntil(ctx context.Context, action chromedp.Action, needleRegion, needle string) error {
+func packFireUntil(ctx context.Context, action chromedp.Action[chromedp.Void], needleRegion, needle string) error {
 	for range 20 {
-		if err := chromedp.Run(ctx, action); err != nil {
+		if err := chromedp.Do(ctx, action); err != nil {
 			return err
 		}
 
@@ -1097,13 +1097,13 @@ func packWizardFlow(t *testing.T, dialect wire.Transport) {
 
 // packWizardExpect settles a swap (optionally filling a field first),
 // submits until the needle appears, and wraps failures with the phase name.
-func packWizardExpect(ctx context.Context, region, phase string, fill chromedp.Action, needle string) error {
+func packWizardExpect(ctx context.Context, region, phase string, fill chromedp.Action[chromedp.Void], needle string) error {
 	pre := []chromedp.Action[chromedp.Void]{waitSwapSettled()}
 	if fill != nil {
 		pre = append(pre, fill)
 	}
 
-	if err := chromedp.Run(ctx, pre...); err != nil {
+	if err := chromedp.Do(ctx, pre...); err != nil {
 		return fmt.Errorf("%s prepare: %w", phase, err)
 	}
 
@@ -1269,7 +1269,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	}
 
 	// The singleton attached (the page really executed the guard script).
-	if err := chromedp.Run(ctx, evalExprInto(`window.tcDirtyGuardAttached===true`, &attached)); err != nil {
+	if err := chromedp.Do(ctx, evalExprInto(`window.tcDirtyGuardAttached===true`, &attached)); err != nil {
 		t.Fatalf("read guard singleton: %v", err)
 	}
 
@@ -1294,7 +1294,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	assertPrevented(false, "clean form")
 
 	// Typing marks the form dirty (capture-phase input listener).
-	if err := chromedp.Run(
+	if err := chromedp.Do(
 		ctx,
 		setFieldValue(packDirtyRegion, `input[name="project"]`, "Graf Zeppelin"),
 	); err != nil {
@@ -1318,7 +1318,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	// The swapped-in form starts clean — and tracks dirt again.
 	assertPrevented(false, "swapped-in form")
 
-	if err := chromedp.Run(
+	if err := chromedp.Do(
 		ctx,
 		setFieldValue(packDirtyRegion, `input[name="project"]`, "Hindenburg"),
 	); err != nil {

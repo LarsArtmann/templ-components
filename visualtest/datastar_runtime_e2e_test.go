@@ -183,7 +183,7 @@ func TestDatastarSSEErrorHandlingBrowser(t *testing.T) {
 		toastText     string
 	)
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollTrue(`window.__dsReady===true && document.querySelector('#tc-datastar-announcer')!==null`),
 		// A real click drives the pinned runtime's fetch plugin; the 500
@@ -240,7 +240,7 @@ func TestDatastarLiveRegionBusyClearBrowser(t *testing.T) {
 		childText   string
 	)
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollTrue(`window.__dsReady===true && document.querySelector('#live-region')!==null`),
 

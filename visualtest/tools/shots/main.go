@@ -21,7 +21,6 @@ import (
 	"slices"
 	"time"
 
-	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 	"github.com/larsartmann/templ-components/visualtest/internal/browser"
 )

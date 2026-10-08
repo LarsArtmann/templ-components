@@ -138,7 +138,7 @@ func TestDatastarLoadingButtonBrowser(t *testing.T) {
 		})()`
 	}
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollTrue(`window.__dsReady===true && document.querySelector('#save-btn')!==null`),
 		// At rest: "Save" visible, "Saving…" hidden.

@@ -44,7 +44,7 @@ func TestDemoSmokeAllRoutes(t *testing.T) {
 
 	for _, route := range routes {
 		t.Run(route.path, func(t *testing.T) {
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.Navigate(server.BaseURL()+route.path),
 				chromedp.WaitReady("body"),
 			); err != nil {
@@ -53,7 +53,7 @@ func TestDemoSmokeAllRoutes(t *testing.T) {
 
 			var title string
 
-			if err := chromedp.Run(ctx, evalExprInto(`document.title`, &title)); err != nil {
+			if err := chromedp.Do(ctx, evalExprInto(`document.title`, &title)); err != nil {
 				t.Fatalf("visualtest[demo]: read %s title: %v", route.path, err)
 			}
 

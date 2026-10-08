@@ -94,7 +94,7 @@ func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {
 		syntheticCleared           bool
 	)
 
-	if err := chromedp.Run(
+	if err := chromedp.Do(
 		ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollTrue(
@@ -208,7 +208,7 @@ func TestPolledRegionEagerOuterHTMLNoRefetchLoop(t *testing.T) {
 	ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
 	defer cancelTimeout()
 
-	if err := chromedp.Run(
+	if err := chromedp.Do(
 		ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollTrue(

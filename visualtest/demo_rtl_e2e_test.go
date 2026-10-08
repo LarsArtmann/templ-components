@@ -24,7 +24,7 @@ func TestDemoRTLNoHorizontalOverflow(t *testing.T) {
 
 	for _, route := range []string{"/", "/forms", "/users", "/display", "/kanban", "/recipes/dashboard"} {
 		t.Run(route, func(t *testing.T) {
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.Navigate(server.BaseURL()+route),
 				chromedp.WaitReady("body"),
 				setRTL(),
@@ -34,7 +34,7 @@ func TestDemoRTLNoHorizontalOverflow(t *testing.T) {
 
 			var overflow int64
 
-			if err := chromedp.Run(ctx, evalExprInto(
+			if err := chromedp.Do(ctx, evalExprInto(
 				`document.documentElement.scrollWidth - document.documentElement.clientWidth`, &overflow)); err != nil {
 				t.Fatalf("visualtest[demo]: measure %s RTL overflow: %v", route, err)
 			}
@@ -61,7 +61,7 @@ func TestDemoRTLKanbanMoveWorks(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(server.BaseURL()+"/kanban"),
 		chromedp.WaitReady("body"),
 		setRTL(),
@@ -76,7 +76,7 @@ func TestDemoRTLKanbanMoveWorks(t *testing.T) {
 
 			var before string
 
-			if err := chromedp.Run(ctx, evalExprInto(backlogExpr, &before)); err != nil {
+			if err := chromedp.Do(ctx, evalExprInto(backlogExpr, &before)); err != nil {
 				t.Fatalf("visualtest[demo]: read RTL backlog order: %v", err)
 			}
 

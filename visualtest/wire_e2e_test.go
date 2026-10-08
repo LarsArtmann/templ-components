@@ -171,14 +171,14 @@ func TestWireE2EHTMXButtonPatchesTarget(t *testing.T) {
 		out                   string
 	)
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		// htmx loads inline (self-host) and processes hx-* nodes on
 		// DOMContentLoaded; "complete" readyState guarantees both.
 		pollBool(`document.readyState==='complete' && window.htmx!==undefined`, &htmxDefined),
 		chromedp.Click("#btn-wire-htmx", chromedp.NodeVisible),
 		pollBool(`document.querySelector('#wire-htmx-out').innerHTML.length>0`, &fragment),
-		chromedp.InnerHTML("#wire-htmx-out", &out, chromedp.NodeVisible),
+		evalInto(chromedp.InnerHTML(chromedp.CSS("#wire-htmx-out"), chromedp.NodeVisible), &out),
 	); err != nil {
 		t.Fatalf("htmx E2E: %v", err)
 	}
@@ -202,14 +202,14 @@ func TestWireE2EDatastarButtonPatchesSelector(t *testing.T) {
 		out               string
 	)
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		// The pinned runtime dispatches datastar-ready on document when its
 		// engine booted; before that, data-on:* clicks are inert.
 		pollBool(`window.__dsReady===true`, &dsReady),
 		chromedp.Click("#btn-wire-datastar", chromedp.NodeVisible),
 		pollBool(`document.querySelector('#wire-datastar-out').innerHTML.length>0`, &fragment),
-		chromedp.InnerHTML("#wire-datastar-out", &out, chromedp.NodeVisible),
+		evalInto(chromedp.InnerHTML(chromedp.CSS("#wire-datastar-out"), chromedp.NodeVisible), &out),
 	); err != nil {
 		t.Fatalf("datastar E2E: %v", err)
 	}
@@ -415,19 +415,19 @@ func TestWireE2ESwapModes(t *testing.T) {
 		htmxWrap, dsWrap, override, idmatch, selectorBox string
 	)
 
-	if err := chromedp.Run(
+	if err := chromedp.Do(
 		ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollBool(`document.readyState==='complete' && window.htmx!==undefined && window.__dsReady===true`, &ready),
 		// htmx: hx-swap="outerHTML" replaces the region element itself.
 		chromedp.Click("#btn-swap-htmx", chromedp.NodeVisible),
 		pollBool(`!document.querySelector('#htmx-outer-region')`, &ready),
-		chromedp.InnerHTML("#htmx-outer-wrap", &htmxWrap, chromedp.NodeVisible),
+		evalInto(chromedp.InnerHTML(chromedp.CSS("#htmx-outer-wrap"), chromedp.NodeVisible), &htmxWrap),
 		// Datastar: response-header targeting (selector + mode from the
 		// wire.Handler) patches the region with outer mode.
 		chromedp.Click("#btn-swap-ds-outer", chromedp.NodeVisible),
 		pollBool(`!document.querySelector('#ds-outer-region')`, &ready),
-		chromedp.InnerHTML("#ds-outer-wrap", &dsWrap, chromedp.NodeVisible),
+		evalInto(chromedp.InnerHTML(chromedp.CSS("#ds-outer-wrap"), chromedp.NodeVisible), &dsWrap),
 		// The server's Datastar-Mode header WINS: a client {mode:'inner'} is
 		// inert, so the append header appends — the sentinel survives.
 		chromedp.Click("#btn-swap-ds-append", chromedp.NodeVisible),
@@ -435,7 +435,7 @@ func TestWireE2ESwapModes(t *testing.T) {
 			`document.querySelector('#ds-override-region') && document.querySelector('#ds-override-region').innerHTML.indexOf('`+wireFragmentText+`')>=0`,
 			&ready,
 		),
-		chromedp.InnerHTML("#ds-override-region", &override, chromedp.NodeVisible),
+		evalInto(chromedp.InnerHTML(chromedp.CSS("#ds-override-region"), chromedp.NodeVisible), &override),
 		// Header-less response, fragment root id matches the region: the
 		// outer-default id-match replaces it.
 		chromedp.Click("#btn-swap-ds-idmatch", chromedp.NodeVisible),
@@ -443,12 +443,12 @@ func TestWireE2ESwapModes(t *testing.T) {
 			`document.querySelector('#ds-idmatch-region') && document.querySelector('#ds-idmatch-region').innerHTML==='id-matched contract'`,
 			&ready,
 		),
-		chromedp.InnerHTML("#ds-idmatch-region", &idmatch, chromedp.NodeVisible),
+		evalInto(chromedp.InnerHTML(chromedp.CSS("#ds-idmatch-region"), chromedp.NodeVisible), &idmatch),
 		// Client {selector} must NOT target: header-less + unmatched fragment
 		// root leaves the region untouched.
 		chromedp.Click("#btn-swap-ds-selector", chromedp.NodeVisible),
 		chromedp.Sleep(1200*time.Millisecond),
-		chromedp.InnerHTML("#ds-selector-region", &selectorBox, chromedp.NodeVisible),
+		evalInto(chromedp.InnerHTML(chromedp.CSS("#ds-selector-region"), chromedp.NodeVisible), &selectorBox),
 	); err != nil {
 		t.Fatalf("swap/mode E2E: %v", err)
 	}

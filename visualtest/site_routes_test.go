@@ -173,7 +173,6 @@ func assertSiteRouteScreenshot(t *testing.T, name, url string, dark bool, viewpo
 		theme = "dark"
 	}
 
-	var shot []byte
 
 	tasks := []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(viewport.Width), int64(viewport.Height)),
@@ -194,11 +193,15 @@ func assertSiteRouteScreenshot(t *testing.T, name, url string, dark bool, viewpo
 		evalVoid(siteScrollRevealJS),
 		waitAnimationsSettled(),
 		chromedp.Sleep(settleDelay),
-		// quality 100 = PNG (any other value yields JPEG).
-		chromedp.FullScreenshot(&shot, 100),
 	)
 
-	if err := chromedp.Run(timeoutCtx, tasks...); err != nil {
+	if err := chromedp.Do(timeoutCtx, tasks...); err != nil {
+		t.Fatalf("site route golden[%s]: capture: %v", name, err)
+	}
+
+	// quality 100 = PNG (any other value yields JPEG).
+	shot, err := chromedp.Run(timeoutCtx, chromedp.FullScreenshot(100))
+	if err != nil {
 		t.Fatalf("site route golden[%s]: capture: %v", name, err)
 	}
 
@@ -322,9 +325,8 @@ func siteAxeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, 
 		chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
 			for range 2 {
 				var got bool
-				if err := evalExprInto(
-					`document.documentElement.classList.contains('dark')`, &got).
-					Do(ctx); err != nil {
+				if err := chromedp.Do(ctx, evalExprInto(
+					`document.documentElement.classList.contains('dark')`, &got)); err != nil {
 					return err
 				}
 
@@ -332,13 +334,12 @@ func siteAxeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, 
 					return nil
 				}
 
-				if err := evalVoid(fmt.Sprintf(
+				if err := chromedp.Do(ctx, evalVoid(fmt.Sprintf(
 					`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; true`,
 					theme,
 					dark,
 					theme,
-				)).
-					Do(ctx); err != nil {
+				))); err != nil {
 					return err
 				}
 
@@ -351,7 +352,7 @@ func siteAxeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, 
 		}),
 	}
 
-	if err := chromedp.Run(ctx, actions...); err != nil {
+	if err := chromedp.Do(ctx, actions...); err != nil {
 		t.Fatalf("visualtest[axe]: load %s%s: %v", baseURL, path, err)
 	}
 

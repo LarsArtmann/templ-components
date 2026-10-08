@@ -50,7 +50,7 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 
 			var ok bool
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				pollBool(packGate(dialect), &ok),
 			); err != nil {
@@ -66,7 +66,7 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 				`(document.querySelector('a[aria-label="Next month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})),'')`,
 				&done)
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				next,
 				pollTrue(`document.querySelector('#cal-nav h3')?.textContent.includes('August')`),
 			); err != nil {
@@ -79,7 +79,7 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 				`(document.querySelector('a[aria-label="Previous month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})),'')`,
 				&done)
 
-			if err := chromedp.Run(ctx,
+			if err := chromedp.Do(ctx,
 				prev,
 				pollTrue(`document.querySelector('#cal-nav h3')?.textContent.includes('July')`),
 			); err != nil {
@@ -101,7 +101,7 @@ func dumpCalendarNavState(t *testing.T, ctx context.Context, dialect wire.Transp
 
 	var body string
 
-	if err := chromedp.Run(
+	if err := chromedp.Do(
 		ctx,
 		evalExprInto(`document.querySelector('#cal-nav')?.outerHTML || 'NO #cal-nav'`, &body),
 	); err != nil {
