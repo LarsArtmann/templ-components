@@ -70,6 +70,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`Toggle`'s thumb (circle) actually slides when checked.** The thumb
+  translate class (`peer-checked:translate-x-N`) was rendered on the thumb
+  span, which is nested INSIDE the track span — but Tailwind's
+  `peer-checked` variant compiles to a sibling selector
+  (`:is(:where(.peer):checked ~ *)`), so it never matched and the circle
+  never moved (the track still turned blue, masking the bug in color-only
+  checks). The translate now rides the track via the Tailwind v4 child
+  variant (`peer-checked:*:translate-x-N`), probe-compiled to
+  "sibling-of-checked-peer > *". Same failure class as `Rating`'s
+  documented trap (peer-checked classes on nested elements never resolve);
+  the HTML + pixel goldens that had captured the broken state are
+  re-baselined.
 - **`tc init` scaffold compiles out of the box.** The starter `app.css`
   imported `./templ-components-theme.css`, a file `tc init` never copied —
   every scaffolded project failed its first Tailwind compile until the
