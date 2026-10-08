@@ -119,6 +119,10 @@ func run(cfg config) error {
 		return fmt.Errorf("search index: %w", err)
 	}
 
+	if err := build.WriteLLMS(cfg.outDir, stats, searchDocs); err != nil {
+		return fmt.Errorf("llms.txt: %w", err)
+	}
+
 	if err := writeAssets(cfg.outDir, cfg.repoRoot); err != nil {
 		return err
 	}

@@ -60,6 +60,7 @@ func TestSiteBuildIntegrity(t *testing.T) {
 	assertScriptNonces(t, rendered)
 	assertSearchIndex(t, outDir, rendered)
 	assertSitemap(t, outDir, rendered)
+	assertLLMS(t, outDir)
 	assertNoFrameworkScripts(t, rendered)
 }
 
@@ -185,7 +186,6 @@ func assertSearchIndex(t *testing.T, outDir string, rendered []build.RenderedPag
 }
 
 func assertSitemap(t *testing.T, outDir string, rendered []build.RenderedPage) {
-	t.Helper()
 
 	data, err := os.ReadFile(filepath.Join(outDir, "sitemap.xml"))
 	if err != nil {

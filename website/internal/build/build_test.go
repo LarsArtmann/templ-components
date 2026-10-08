@@ -134,3 +134,37 @@ func TestWriteSearchIndex(t *testing.T) {
 		t.Errorf("unexpected index content: %s", data)
 	}
 }
+
+func TestLLMSIndex(t *testing.T) {
+	t.Parallel()
+
+	stats := Stats{Components: 123, Icons: 102, Enums: 63, Modules: 7, GoVersion: "1.27", LibraryVersion: "1.21.0"}
+	docs := []SearchDoc{
+		{URL: "/install", Title: "Installation", Description: "go get and templ generate", Body: "ignored"},
+		{URL: "/guide", Title: "Guide\nwith newline", Body: "ignored"},
+	}
+
+	got := LLMSIndex(stats, docs)
+
+	if !strings.HasPrefix(got, "# templ-components\n\n> ") {
+		t.Errorf("missing llms.txt H1 + blockquote shape: %q", got[:60])
+	}
+
+	for _, want := range []string{
+		"123 components, 102 SVG icons, 63 typed enums, 7 opt-in Go modules",
+		"## Product",
+		"](" + "https://templcomponents.lars.software/sales)",
+		"## Documentation",
+		"- [Installation](https://templcomponents.lars.software/install): go get and templ generate",
+		"- [Guide with newline](https://templcomponents.lars.software/guide)",
+		"Version 1.21.0",
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("llms.txt missing %q\ngot:\n%s", want, got)
+		}
+	}
+
+	if strings.Contains(got, "\n\n\n") {
+		t.Errorf("blank-line runs in llms.txt:\n%s", got)
+	}
+}
