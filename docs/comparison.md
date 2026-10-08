@@ -6,6 +6,14 @@ Internal claims (component/test/golden counts) are drift-guarded by
 `utils.TestDocsCountDrift`. Re-verify the external numbers before citing or
 extending this document — they rot fastest.
 
+**Re-verify cadence:** re-check the external facts (stars, component lists,
+naming, distribution model) at least QUARTERLY, and immediately after any
+known competitor event (a rename/rework like templUI→shadcn-templ, a major
+release, or a star-order-of-magnitude move). Record the new verify date in
+this header and in the TODO_LIST sweep row; competitor claims shipped stale
+twice before this cadence existed (templUI/Alpine.js falsehood in README +
+website, found and fixed 2026-10-08).
+
 ---
 
 ## The contenders

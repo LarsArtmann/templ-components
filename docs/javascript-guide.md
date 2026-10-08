@@ -516,7 +516,7 @@ IDs and works after HTMX swaps.
 - [ADR 0005: JavaScript Attachment Patterns](adr/0005-js-attachment-patterns.md)
 - [GitHub Issue #220: CSP safe templ](https://github.com/a-h/templ/issues/220)
 - [templ-csp-example](https://github.com/leonyork/templ-csp-example)
-- [templUI (templ + Alpine.js component library)](https://github.com/axzilla/templui)
+- [templUI v1 → shadcn-templ (successor library, vanilla JS)](https://github.com/axadrn/shadcn-templ)
 - [DatastarUI (Go/templ port of shadcn/ui)](https://github.com/CoreyCole/datastarui)
 - [datastar-templ (type-safe Datastar helpers)](https://github.com/Yacobolo/datastar-templ)
 - [Go Templ + Alpine.js + HTMX guide](https://sachinsharma.dev/blogs/go-templ-alpine-js-interactive-htmx)
