@@ -57,7 +57,7 @@ Radical honesty section — includes my own failures.
 ## e) WHAT WE SHOULD IMPROVE
 
 1. **BuildFlow pin-respect (upstream).** `go-mod-update`/`go-auto-upgrade` should honor a per-dependency reject list in `.buildflow.yml` (e.g. `tool_options: go-mod-update: reject: ["github.com/a-h/templ"]`). Impact: eliminates the entire war class; both steps could be re-enabled. Concrete fix: upstream feature request after the verify-before-filing gate.
-2. **FileName census guard.** Extend `scripts/check-templ-sync.sh` (or a utils test) to assert every `templ.Error{FileName: …}` in generated files matches the ONE canonical form. Impact: permanently kills the flip-flop class that churned ~40 files today. 
+2. **FileName census guard.** Extend `scripts/check-templ-sync.sh` (or a utils test) to assert every `templ.Error{FileName: …}` in generated files matches the ONE canonical form. Impact: permanently kills the flip-flop class that churned ~40 files today.
 3. **Single canonical generation command.** BuildFlow's `go-generate` and the documented manual invocation (`nix develop -c templ generate ./...` from repo root) must be the same command. Today they provably produced different output (three FileName forms in one day's history).
 4. **AGENTS.md budget mechanics.** A 377-line cap with 1 line of headroom will re-trip mid-session. Options: raise the cap, or adopt a "new bullet must displace equal lines" rule. Impact: every future session currently risks a red findings gate on its first memory write.
 5. **Restore-loop hygiene (personal rule).** Any batch mutation loop must assert its end-state per iteration (e.g. `grep -q` the expected value) before printing success — the silent-6-failure loop in (d2) is the anti-pattern.
@@ -70,58 +70,58 @@ Radical honesty section — includes my own failures.
 
 Ranked by impact; effort S <30min, M 30min–2h, L >2h. **This section is HARVEST input for `TODO_LIST.md`/`ROADMAP.md`** (docs-health) — pending the user's WAIT instruction, only #373 has landed so far.
 
-| # | Task | Impact | Effort | Category |
-|---|------|--------|--------|----------|
-| 1 | Pre-push ritual: fresh `nix run .#visual -- -parallel 4` at the exact tip (tree changed after green run #3: FileName fix `a0c18c3c`, daemon churn) | Critical | M | Quality |
-| 2 | Run `scripts/ci-repro.sh --lint --website` at the exact commit to push, then push (approval pending) | Critical | M | Process |
-| 3 | Run the full per-module test loop (`for mod in …; GOWORK=off go test ./...`) at the tip before push | Critical | M | Quality |
-| 4 | Verify `scripts/check-replace-directives.sh` after today's go.mod churn (replace-strip race class) | High | S | Quality |
-| 5 | Soak-verify the `go-mod-update` skip across several more watcher cycles (incl. the new 20m-budget profile) | High | S | Quality |
-| 6 | Verify the parallel session's FileName canonicalization (`a0c18c3c`) holds under BOTH generation paths | High | S | Bug |
-| 7 | Add a FileName census guard to `scripts/check-templ-sync.sh` (assert canonical `templ.Error` FileName form repo-wide) | High | M | Quality |
-| 8 | Decide `go-mod-update` policy: keep repo-wide skip vs upstream pin-reject feature (see question 2) | High | S | Decision |
-| 9 | File upstream BuildFlow issue: per-dependency pin rejects for go-mod-update/go-auto-upgrade (after verify-before-filing) | Medium | S | Feature |
-| 10 | HARVEST this section into TODO_LIST.md/ROADMAP.md (docs-health) once instructed | High | S | Documentation |
-| 11 | Implement TODO #373: axe-sweep handshake → `chromedp.EvalAwaitPromise` | Medium | M | Quality |
-| 12 | Move the full chromedp API map into `docs/visual-testing.md`; leave AGENTS.md a pointer bullet | Medium | S | Documentation |
-| 13 | Add a monthly manual dependency-update recipe (flake app or documented script) replacing the two skipped automation steps | Medium | M | Process |
-| 14 | Resolve the `zz_probe_widefoot_test.go` fate: delete per its own header (captures reviewed in /tmp) or promote to a sanctioned tool | Medium | S | Cleanup |
-| 15 | Fix the AGENTS.md 1-line-headroom problem (raise linter budget or displacement rule) | Medium | S | Quality |
-| 16 | Grep repo-wide for residual pre-v0.20 identifiers (`ActionFunc`, `Tasks`, `ByQuery`, `Evaluate(expr, nil)` two-arg form) — expect zero | Medium | S | Quality |
-| 17 | Write the pin-war + migration narrative into `docs/agent-context-history.md` | Medium | S | Documentation |
-| 18 | Annotate the 19-46 status report (docs-health ANNOTATE): its 3 open questions were resolved by events | Medium | S | Documentation |
-| 19 | Re-run docs-count drift guards after the parallel session's count changes (272 goldens, new components) | Medium | S | Quality |
-| 20 | Re-read `visualtest/testdata/axe_baseline.json` after the parallel session's new demo routes (sticky-footer/stacked-kanban) — new routes auto-audit, ledger may need prunes | Medium | S | Quality |
-| 21 | Confirm `website/go.mod` is inside `TestTemplVersionPin`'s module walk (it was re-bumped today like the others) | Medium | S | Quality |
-| 22 | Add a loop canary: CI or pre-commit assertion that `buildflow -s "go-mod-update [visualtest]"` stays passable (skip-aware) | Low | M | Quality |
-| 23 | Decide whether BuildFlow `--fix` should run concurrently with human/agent sessions at all (root of two-actor churn; see question 1) | Medium | S | Decision |
-| 24 | Sweep `visualtest/go.sum` for stray entries accumulated during the pin ping-pong | Low | S | Quality |
-| 25 | Audit the migration's `nolint:exhaustruct_v5` comments in `harness.go` for continued necessity | Low | S | Quality |
-| 26 | Add a tiny test pinning `chromedp.FullScreenshot` call sites to quality=100 (PNG-only invariant) | Low | S | Quality |
-| 27 | Adopt `chromedp.Events[E]` where `ListenTarget`-era patterns remain in tools (`siteshots`, `ogshot`) | Low | M | Refactor |
-| 28 | Verify bench suites compile under the new API (`go test -bench=. -run=NONE` per package) | Low | S | Quality |
-| 29 | Confirm `.golangci.yml` visualtest exclusions (paralleltest/contextcheck/wrapcheck) still accurate post-migration | Low | S | Quality |
-| 30 | Document the chromedp version policy in one place (visualtest/go.mod comment vs AGENTS.md vs docs) to prevent drift | Low | S | Documentation |
-| 31 | Refresh the stale `.buildflow.yml` nix-build skip comment (block claims "FIXED then still failing" — re-verify reality) | Low | S | Documentation |
-| 32 | Evaluate the go-structure-linter INFO finding on `errorpage/notfound404_golden_test.go` (testdata-directory rule) — fix or exempt | Low | S | Quality |
-| 33 | Migrate the ~48 legacy raw-`Poll` sites (TODO #240 residual) onto the typed helpers | Low | M | Quality |
-| 34 | Prune stale `visualtest/testdata/.fail/` artifacts from run #2 if still on disk | Low | S | Cleanup |
-| 35 | Delete `/tmp/probe_*.png` captures once the parallel actor's review is done | Low | S | Cleanup |
-| 36 | Verify `CHANGELOG.md [Unreleased]` still warm and my entry intact after further daemon churn (pre-release gate) | High | S | Documentation |
-| 37 | Re-run `TestGoDirectiveSkew`/`TestGoDirectivesAlignAcrossWorkspace` once more after all BuildFlow cycles settle | Medium | S | Quality |
-| 38 | Add the pre-push ancestry check habit (daemon 7th class: single-parent fake merges) as a script, not just a note | Low | S | Quality |
-| 39 | Update `visualtest/go.mod`'s pin-policy comment: "track latest upstream" is now TRUE and proven — make the comment say the migration cost | Low | S | Documentation |
-| 40 | Add doc comments to `visualtest/eval.go`/`poll.go` helpers referencing the AGENTS.md gotchas | Low | S | Quality |
-| 41 | Consider a `git worktree list` hygiene guard (leftover A/B worktrees) in pre-commit or AGENTS.md | Low | S | Cleanup |
-| 42 | Re-check README/website for any chromedp or visualtest version mentions needing sync | Low | S | Documentation |
-| 43 | Confirm the 20:42-launched 20m-budget BuildFlow invocation leaves pins intact when it completes | High | S | Quality |
-| 44 | Fold the "parallel session may be editing" check into the RITUAL (`git log --since` before verify+push) | Medium | S | Process |
-| 45 | Split the AGENTS.md chromedp bullet if it grows again (API map → docs, gotchas stay) | Low | S | Documentation |
-| 46 | Sanity-render one demo page in a browser after the FileName canonicalization (error paths changed, not rendering) | Low | S | Quality |
-| 47 | Tag today's three golden re-baselines (parallel session) with a note in the ADR/golden docs so future sessions know routes changed intentionally | Low | S | Documentation |
-| 48 | Re-run `scripts/check-tc-sources-sync.sh` awareness: the mirror synced carousel/tabs copies today without a human edit — confirm staged state was committed sanely | Low | S | Quality |
-| 49 | Verify `go.work`/`go.work.sum` (gitignored, local) are consistent after the go.mod ping-pong — regenerate if stale | Low | S | Quality |
-| 50 | Book the templ v0.3.1070 migration (#335) decision: with go-mod-update now skipped, the ONLY path to 1070 is the deliberate flake-pin migration — schedule it or explicitly shelve it | Medium | S | Decision |
+| #  | Task                                                                                                                                                                                  | Impact   | Effort | Category      |
+| -- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------ | ------------- |
+| 1  | Pre-push ritual: fresh `nix run .#visual -- -parallel 4` at the exact tip (tree changed after green run #3: FileName fix `a0c18c3c`, daemon churn)                                    | Critical | M      | Quality       |
+| 2  | Run `scripts/ci-repro.sh --lint --website` at the exact commit to push, then push (approval pending)                                                                                  | Critical | M      | Process       |
+| 3  | Run the full per-module test loop (`for mod in …; GOWORK=off go test ./...`) at the tip before push                                                                                   | Critical | M      | Quality       |
+| 4  | Verify `scripts/check-replace-directives.sh` after today's go.mod churn (replace-strip race class)                                                                                    | High     | S      | Quality       |
+| 5  | Soak-verify the `go-mod-update` skip across several more watcher cycles (incl. the new 20m-budget profile)                                                                            | High     | S      | Quality       |
+| 6  | Verify the parallel session's FileName canonicalization (`a0c18c3c`) holds under BOTH generation paths                                                                                | High     | S      | Bug           |
+| 7  | Add a FileName census guard to `scripts/check-templ-sync.sh` (assert canonical `templ.Error` FileName form repo-wide)                                                                 | High     | M      | Quality       |
+| 8  | Decide `go-mod-update` policy: keep repo-wide skip vs upstream pin-reject feature (see question 2)                                                                                    | High     | S      | Decision      |
+| 9  | File upstream BuildFlow issue: per-dependency pin rejects for go-mod-update/go-auto-upgrade (after verify-before-filing)                                                              | Medium   | S      | Feature       |
+| 10 | HARVEST this section into TODO_LIST.md/ROADMAP.md (docs-health) once instructed                                                                                                       | High     | S      | Documentation |
+| 11 | Implement TODO #373: axe-sweep handshake → `chromedp.EvalAwaitPromise`                                                                                                                | Medium   | M      | Quality       |
+| 12 | Move the full chromedp API map into `docs/visual-testing.md`; leave AGENTS.md a pointer bullet                                                                                        | Medium   | S      | Documentation |
+| 13 | Add a monthly manual dependency-update recipe (flake app or documented script) replacing the two skipped automation steps                                                             | Medium   | M      | Process       |
+| 14 | Resolve the `zz_probe_widefoot_test.go` fate: delete per its own header (captures reviewed in /tmp) or promote to a sanctioned tool                                                   | Medium   | S      | Cleanup       |
+| 15 | Fix the AGENTS.md 1-line-headroom problem (raise linter budget or displacement rule)                                                                                                  | Medium   | S      | Quality       |
+| 16 | Grep repo-wide for residual pre-v0.20 identifiers (`ActionFunc`, `Tasks`, `ByQuery`, `Evaluate(expr, nil)` two-arg form) — expect zero                                                | Medium   | S      | Quality       |
+| 17 | Write the pin-war + migration narrative into `docs/agent-context-history.md`                                                                                                          | Medium   | S      | Documentation |
+| 18 | Annotate the 19-46 status report (docs-health ANNOTATE): its 3 open questions were resolved by events                                                                                 | Medium   | S      | Documentation |
+| 19 | Re-run docs-count drift guards after the parallel session's count changes (272 goldens, new components)                                                                               | Medium   | S      | Quality       |
+| 20 | Re-read `visualtest/testdata/axe_baseline.json` after the parallel session's new demo routes (sticky-footer/stacked-kanban) — new routes auto-audit, ledger may need prunes           | Medium   | S      | Quality       |
+| 21 | Confirm `website/go.mod` is inside `TestTemplVersionPin`'s module walk (it was re-bumped today like the others)                                                                       | Medium   | S      | Quality       |
+| 22 | Add a loop canary: CI or pre-commit assertion that `buildflow -s "go-mod-update [visualtest]"` stays passable (skip-aware)                                                            | Low      | M      | Quality       |
+| 23 | Decide whether BuildFlow `--fix` should run concurrently with human/agent sessions at all (root of two-actor churn; see question 1)                                                   | Medium   | S      | Decision      |
+| 24 | Sweep `visualtest/go.sum` for stray entries accumulated during the pin ping-pong                                                                                                      | Low      | S      | Quality       |
+| 25 | Audit the migration's `nolint:exhaustruct_v5` comments in `harness.go` for continued necessity                                                                                        | Low      | S      | Quality       |
+| 26 | Add a tiny test pinning `chromedp.FullScreenshot` call sites to quality=100 (PNG-only invariant)                                                                                      | Low      | S      | Quality       |
+| 27 | Adopt `chromedp.Events[E]` where `ListenTarget`-era patterns remain in tools (`siteshots`, `ogshot`)                                                                                  | Low      | M      | Refactor      |
+| 28 | Verify bench suites compile under the new API (`go test -bench=. -run=NONE` per package)                                                                                              | Low      | S      | Quality       |
+| 29 | Confirm `.golangci.yml` visualtest exclusions (paralleltest/contextcheck/wrapcheck) still accurate post-migration                                                                     | Low      | S      | Quality       |
+| 30 | Document the chromedp version policy in one place (visualtest/go.mod comment vs AGENTS.md vs docs) to prevent drift                                                                   | Low      | S      | Documentation |
+| 31 | Refresh the stale `.buildflow.yml` nix-build skip comment (block claims "FIXED then still failing" — re-verify reality)                                                               | Low      | S      | Documentation |
+| 32 | Evaluate the go-structure-linter INFO finding on `errorpage/notfound404_golden_test.go` (testdata-directory rule) — fix or exempt                                                     | Low      | S      | Quality       |
+| 33 | Migrate the ~48 legacy raw-`Poll` sites (TODO #240 residual) onto the typed helpers                                                                                                   | Low      | M      | Quality       |
+| 34 | Prune stale `visualtest/testdata/.fail/` artifacts from run #2 if still on disk                                                                                                       | Low      | S      | Cleanup       |
+| 35 | Delete `/tmp/probe_*.png` captures once the parallel actor's review is done                                                                                                           | Low      | S      | Cleanup       |
+| 36 | Verify `CHANGELOG.md [Unreleased]` still warm and my entry intact after further daemon churn (pre-release gate)                                                                       | High     | S      | Documentation |
+| 37 | Re-run `TestGoDirectiveSkew`/`TestGoDirectivesAlignAcrossWorkspace` once more after all BuildFlow cycles settle                                                                       | Medium   | S      | Quality       |
+| 38 | Add the pre-push ancestry check habit (daemon 7th class: single-parent fake merges) as a script, not just a note                                                                      | Low      | S      | Quality       |
+| 39 | Update `visualtest/go.mod`'s pin-policy comment: "track latest upstream" is now TRUE and proven — make the comment say the migration cost                                             | Low      | S      | Documentation |
+| 40 | Add doc comments to `visualtest/eval.go`/`poll.go` helpers referencing the AGENTS.md gotchas                                                                                          | Low      | S      | Quality       |
+| 41 | Consider a `git worktree list` hygiene guard (leftover A/B worktrees) in pre-commit or AGENTS.md                                                                                      | Low      | S      | Cleanup       |
+| 42 | Re-check README/website for any chromedp or visualtest version mentions needing sync                                                                                                  | Low      | S      | Documentation |
+| 43 | Confirm the 20:42-launched 20m-budget BuildFlow invocation leaves pins intact when it completes                                                                                       | High     | S      | Quality       |
+| 44 | Fold the "parallel session may be editing" check into the RITUAL (`git log --since` before verify+push)                                                                               | Medium   | S      | Process       |
+| 45 | Split the AGENTS.md chromedp bullet if it grows again (API map → docs, gotchas stay)                                                                                                  | Low      | S      | Documentation |
+| 46 | Sanity-render one demo page in a browser after the FileName canonicalization (error paths changed, not rendering)                                                                     | Low      | S      | Quality       |
+| 47 | Tag today's three golden re-baselines (parallel session) with a note in the ADR/golden docs so future sessions know routes changed intentionally                                      | Low      | S      | Documentation |
+| 48 | Re-run `scripts/check-tc-sources-sync.sh` awareness: the mirror synced carousel/tabs copies today without a human edit — confirm staged state was committed sanely                    | Low      | S      | Quality       |
+| 49 | Verify `go.work`/`go.work.sum` (gitignored, local) are consistent after the go.mod ping-pong — regenerate if stale                                                                    | Low      | S      | Quality       |
+| 50 | Book the templ v0.3.1070 migration (#335) decision: with go-mod-update now skipped, the ONLY path to 1070 is the deliberate flake-pin migration — schedule it or explicitly shelve it | Medium   | S      | Decision      |
 
 ## g) Top 3 questions I cannot figure out myself
 
@@ -131,4 +131,4 @@ Ranked by impact; effort S <30min, M 30min–2h, L >2h. **This section is HARVES
 
 ---
 
-*Report ends. WAITING FOR INSTRUCTIONS per operator directive.*
+_Report ends. WAITING FOR INSTRUCTIONS per operator directive._
