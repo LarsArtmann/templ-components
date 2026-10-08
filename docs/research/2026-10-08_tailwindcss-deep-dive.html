@@ -845,6 +845,14 @@
           display: none;
         }
       }
+
+      /* .highlight is mapped in the kit's output guide but only styled in the
+         dark template — defined here so priority numbers get inline emphasis. */
+      .highlight {
+        background: color-mix(in srgb, var(--accent) 14%, transparent);
+        padding: 0 0.25em;
+        font-weight: 800;
+      }
     </style>
   </head>
   <body>
@@ -1074,7 +1082,7 @@ border-color: --alpha(var(--color-blue-500) / 30%);</code></pre>
             <span class="severity severity-important">Partially Used &middot; Deprecation exposure</span>
             <h3>start-*/end-* are deprecated since v4.2 &mdash; the repo&rsquo;s RTL canon needs the inset-s-*/inset-e-* rename</h3>
             <div class="where">
-              21 sites: errorpage/notfound404.templ:119 &middot; feedback/toast.templ:92 &middot;
+              11 sites across 7 files: errorpage/notfound404.templ:119 &middot; feedback/toast.templ:92 &middot;
               forms/toggle.templ:102 &middot; forms/input_group.templ:60,68 &middot;
               display/avatar.templ:108,136 &middot; display/carousel.templ:86,96 &middot;
               display/hover_card.templ:19-20 &middot; AGENTS.md RTL convention &middot;
@@ -1372,7 +1380,7 @@ bg-linear-to-br from-blue-600 via-blue-500 to-indigo-500</code></pre>
               </tr>
               <tr>
                 <td>2</td>
-                <td>Migrate start-*/end-* to inset-s-*/inset-e-* (21 sites + guard + docs) (finding 2)</td>
+                <td>Migrate start-*/end-* to inset-s-*/inset-e-* (11 sites + guard + docs) (finding 2)</td>
                 <td class="yes">4</td>
                 <td class="yes">5</td>
                 <td><span class="highlight">20</span></td>
