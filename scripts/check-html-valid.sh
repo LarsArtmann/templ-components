@@ -77,7 +77,7 @@ IGNORE_RE='Attribute ["“]hx-[a-z-]+["”] not allowed|["“]data-\*["”] attr
 # via VNU_JAR (CI downloads the jar — no pip/PEP-668 involved). Output
 # message format is identical (html5validator wraps the same checker).
 if [ -n "${VNU_JAR:-}" ]; then
-	report="$(java -jar "$VNU_JAR" $(find "$WORK" -name '*.html') 2>&1 || true)"
+	report="$(find "$WORK" -name '*.html' -print0 | xargs -0 java -jar "$VNU_JAR" 2>&1 || true)"
 else
 	report="$(html5validator --root "$WORK" 2>/dev/null || true)"
 fi
@@ -89,5 +89,5 @@ if [ -n "$filtered" ]; then
 fi
 
 echo "HTML validation clean: $(
-	cd "$WORK" && ls pkg-*/*.html 2>/dev/null | wc -l
+	cd "$WORK" && find pkg-* -name '*.html' 2>/dev/null | wc -l
 ) golden files, $(printf '%s\n' "$IGNORE_RE" | tr '|' '\n' | wc -l) documented ignore classes."

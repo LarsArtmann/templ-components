@@ -87,4 +87,4 @@ This is intentional:
 ## Related
 
 - [Recipe: Table Inside Card](../recipes/table-in-card.md)
-- [Bug report: Table-in-Card Double Border](../feedback/2026-07-12_table-in-card-double-border.md)
+- [Bug report: Table-in-Card Double Border](../feedback/archived/2026-07-12_table-in-card-double-border.md)

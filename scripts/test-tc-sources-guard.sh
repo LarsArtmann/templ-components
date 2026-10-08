@@ -148,7 +148,7 @@ new_worktree
 printf '\n' >>"$WORKTREE/forms/slider.templ"
 cd "$WORKTREE"
 "$GUARD" --fix >/dev/null 2>&1 || true
-out2="$("$GUARD" --fix 2>&1)" && rc2=0 || rc2=$?
+"$GUARD" --fix >/dev/null 2>&1 && rc2=0 || rc2=$?
 out3="$("$GUARD" --fix 2>&1)" && rc3=0 || rc3=$?
 if [ "$rc2" -eq 0 ] && [ "$rc3" -eq 0 ] && ! printf '%s' "$out3" | grep -q "synced [1-9]"; then
 	printf 'ok   idempotent: second and third --fix are no-ops\n'

@@ -3,7 +3,7 @@
 **Date:** 2026-07-10
 **Status:** Research — informs documentation and packaging, not a decision record
 
-Triggered by consumer feedback from cqrs-htmx ([feedback](feedback/2026-07-10_cqrs-htmx-consumer-feedback.md)),
+Triggered by consumer feedback from cqrs-htmx ([feedback](feedback/archived/2026-07-10_cqrs-htmx-consumer-feedback.md)),
 which reported friction between the library's class-based dark mode strategy and
 adminui's `prefers-color-scheme` + CSS-variable design system. This document
 researches all available dark mode mechanisms in Tailwind v4 and modern CSS,
@@ -420,4 +420,4 @@ an indirection that most don't need.
 - [ADR 0008: Semantic Token Layer](adr/0008-semantic-tokens.md)
 - [ADR 001: Tailwind CSS v4+ Standard](adr-001-tailwind-v4-standard.md)
 - [Tailwind v4 Adoption Guide](tailwind-v4-adoption-guide.md)
-- [cqrs-htmx Consumer Feedback](feedback/2026-07-10_cqrs-htmx-consumer-feedback.md)
+- [cqrs-htmx Consumer Feedback](feedback/archived/2026-07-10_cqrs-htmx-consumer-feedback.md)
