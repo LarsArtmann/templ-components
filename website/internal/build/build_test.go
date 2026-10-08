@@ -57,8 +57,8 @@ func TestCountStats(t *testing.T) {
 		t.Errorf("Components = %d, want 3 (2 display + 1 feedback)", stats.Components)
 	}
 
-	if stats.Icons != 2 {
-		t.Errorf("Icons = %d, want 2 (aliases deduplicated)", stats.Icons)
+	if stats.Icons != 3 {
+		t.Errorf("Icons = %d, want 3 (2 path entries + Spinner)", stats.Icons)
 	}
 
 	if stats.Enums != 1 {

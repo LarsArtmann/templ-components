@@ -66,6 +66,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **Tailwind v4 canonical forms across the library (v4.3.3 audit execution).**
+  All positional insets migrated from the v4.2-deprecated `start-*`/`end-*`
+  aliases to canonical `inset-s-*`/`inset-e-*` (11 sites: toast container,
+  toggle thumb, input-group + 404-search addons, hover-card start/end positions,
+  avatar status dots, carousel arrows — probe-verified output-identical).
+  Gradients renamed `bg-gradient-to-*` → `bg-linear-to-*` (404 numeral, website
+  hero). `forms.Textarea` `AutoGrow` now emits stock utilities
+  (`field-sizing-content min-h-10 max-h-80`) instead of the custom `.tc-auto-grow`
+  class; the carousel track uses stock `scrollbar-none` instead of
+  `.tc-no-scrollbar`; the dead `.tc-snap-*` helpers are deleted. Every palette
+  color in `templates/custom.css` now references `var(--color-*)` (+ Tailwind's
+  `--alpha()` for translucent overlays) so consumer `@theme` overrides re-skin
+  dialogs, selects, kanban indicators, and validation borders. Demo
+  Dockerfile + website CI pin `tailwindcss@4.3.3` to match the nix dev shell.
+  Guards: `TestCustomCSSThemeTokens` (zero raw palette literals),
+  `TestRTLLogicalProperties` now bans the deprecated `start-`/`end-` forms,
+  `scripts/check-html-report-classes.sh` verifies research-report class
+  coverage.
+
+- **`forms.Toggle` thumb motion is now logical (RTL-correct).** The checked
+  thumb moved via `peer-checked:*:translate-x-N` (physical), which pushed it
+  off the track's edge under `dir="rtl"` — it now moves via
+  `peer-checked:*:inset-s-N` (4.5/5.5/6.5 by size — same LTR rest positions)
+  with a `transition-[inset-inline-start]` animation. LTR rendering is
+  unchanged; `TestToggleEmitsCompletePeerCheckedClasses` pins the new literals
+  and bans `translate-x-` on the thumb.
+
 - **`wire.Action` trigger modifiers now require an event trigger in BOTH
   dialects.** A Datastar action with `DebounceMS`/`ThrottleMS` but no event
   trigger used to render orphan `__debounce`/`__throttle` modifiers while

@@ -101,7 +101,7 @@ func WriteRendered(outDir string, pages []RenderedPage) error {
 
 var (
 	templComponentRe = regexp.MustCompile(`(?m)^templ ([A-Z][A-Za-z0-9]*)\(`)
-	iconNameRe       = regexp.MustCompile(`Name\s*=\s*("[a-z0-9-]+")`)
+	iconPathEntryRe  = regexp.MustCompile(`(?m)^\t[A-Z][A-Za-z0-9]*:\s+("[^"]*"|svg\.Path[A-Za-z]*)`)
 	isValidRe        = regexp.MustCompile(`(?m)^func ([A-Za-z0-9]+)IsValid\(`)
 )
 
@@ -118,11 +118,16 @@ type Stats struct {
 }
 
 // statsDirs are the published library packages scanned for templ components.
+// Mirrors utils.TestDocsCountDrift's canonical package set (primitives incl.
+// charts/echarts, recipes counted separately) so the site, README, FEATURES,
+// and the demo hero all sell ONE number (verified 2026-10-08: the old set
+// included recipes and omitted charts/echarts, selling 125 vs the canonical
+// 123).
 //
 //nolint:gochecknoglobals // static scan configuration table
 var statsDirs = []string{
-	"display", "feedback", "forms", "layout", "navigation", "recipes",
-	"htmx", "datastar", "errorpage",
+	"display", "feedback", "forms", "layout", "navigation",
+	"charts/echarts", "htmx", "datastar", "errorpage",
 }
 
 // excludedModules are repo-local Go modules that are not part of the
@@ -154,7 +159,7 @@ func CountStats(repoRoot string) (Stats, error) {
 		stats.Components += count
 	}
 
-	stats.Icons = countUniqueIcons(filepath.Join(repoRoot, "icons", "icon_names.go"))
+	stats.Icons = countIcons(filepath.Join(repoRoot, "icons", "icon_paths.go"))
 
 	enumCount, err := countMatches(repoRoot, ".go", isValidRe)
 	if err != nil {
@@ -200,20 +205,18 @@ func goDisplayVersion(goModPath string) string {
 	return ""
 }
 
-// countUniqueIcons counts distinct icon name constants (aliases like Close/X
-// point at the same name value, so the raw constant count overstates).
-func countUniqueIcons(iconNamesFile string) int {
-	data, err := os.ReadFile(iconNamesFile)
+// countIcons counts renderable icons: path-map entries in icon_paths.go plus
+// Spinner (handled outside the map). Same definition as
+// utils.TestDocsCountDrift/countIconNames so the site cannot sell a number
+// the library docs contradict (the old icon_names.go const scan counted 3
+// alias constants that have no path data and render the fallback glyph).
+func countIcons(iconPathsFile string) int {
+	data, err := os.ReadFile(iconPathsFile)
 	if err != nil {
 		return 0
 	}
 
-	seen := map[string]bool{}
-	for _, match := range iconNameRe.FindAllStringSubmatch(string(data), -1) {
-		seen[match[1]] = true
-	}
-
-	return len(seen)
+	return len(iconPathEntryRe.FindAll(data, -1)) + 1
 }
 
 func countMatches(root, suffix string, regex *regexp.Regexp) (int, error) {
