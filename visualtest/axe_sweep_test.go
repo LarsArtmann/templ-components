@@ -179,15 +179,16 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 		theme = "dark"
 	}
 
-	actions := []chromedp.Action{
+	actions := []chromedp.Action[chromedp.Void]{
 		chromedp.Navigate(baseURL + path),
 		chromedp.WaitReady("body"),
-		chromedp.Evaluate(fmt.Sprintf(
+		evalVoid(fmt.Sprintf(
 			`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; true`,
 			theme,
 			dark,
 			theme,
-		), nil),
+		)),
+
 		chromedp.Sleep(settleDelay),
 		// Audit the SETTLED page, not a mid-entrance frame: staggered finite
 		// animations (e.g. Scrollback's entrance) composite translucent text
@@ -198,12 +199,12 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 		// against the wrong theme produces bogus contrast findings (the same
 		// unpinned-audit bug the pin exists to prevent), so re-pin once and
 		// fail loudly rather than audit a silently-wrong render.
-		chromedp.ActionFunc(func(ctx context.Context) error {
+		chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
 			for range 2 {
 				var got bool
-				if err := chromedp.Evaluate(
-					`document.documentElement.classList.contains('dark')`, &got,
-				).Do(ctx); err != nil {
+				if err := evalExprInto(
+					`document.documentElement.classList.contains('dark')`, &got).
+					Do(ctx); err != nil {
 					return err
 				}
 
@@ -211,12 +212,13 @@ func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark
 					return nil
 				}
 
-				if err := chromedp.Evaluate(fmt.Sprintf(
+				if err := evalVoid(fmt.Sprintf(
 					`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; true`,
 					theme,
 					dark,
 					theme,
-				), nil).Do(ctx); err != nil {
+				)).
+					Do(ctx); err != nil {
 					return err
 				}
 

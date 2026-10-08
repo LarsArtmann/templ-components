@@ -26,7 +26,7 @@ func TestDemoErrorPageGoBack(t *testing.T) {
 		chromedp.Navigate(base+"/"),
 		chromedp.WaitReady("body"),
 		chromedp.Navigate(base+"/errors/404-page"),
-		chromedp.WaitVisible("[data-tc-go-back]", chromedp.ByQuery),
+		chromedp.WaitVisible(chromedp.CSS("[data-tc-go-back]")),
 	); err != nil {
 		t.Fatalf("visualtest[errorpage]: navigate to /errors/404-page: %v", err)
 	}
@@ -36,7 +36,7 @@ func TestDemoErrorPageGoBack(t *testing.T) {
 	// context the click's poll would run in — a single chromedp.Poll here
 	// races the navigation and dies with "Cannot find context". Retry the
 	// evaluation in a deadline loop instead (the demoClickUntil pattern).
-	if err := chromedp.Run(ctx, chromedp.Click("[data-tc-go-back]", chromedp.ByQuery)); err != nil {
+	if err := chromedp.Run(ctx, chromedp.Click(chromedp.CSS("[data-tc-go-back]"))); err != nil {
 		t.Fatalf("visualtest[errorpage]: click go-back: %v", err)
 	}
 
@@ -45,7 +45,7 @@ func TestDemoErrorPageGoBack(t *testing.T) {
 	for {
 		var back bool
 
-		evalErr := chromedp.Run(ctx, chromedp.Evaluate(`window.location.pathname === '/'`, &back))
+		evalErr := chromedp.Run(ctx, evalExprInto(`window.location.pathname === '/'`, &back))
 		if evalErr == nil && back {
 			break
 		}

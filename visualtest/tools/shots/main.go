@@ -215,11 +215,11 @@ func captureTasks(base, path string, modes []string, width int, light, dark *[]b
 		return slices.Contains(modes, m)
 	}
 
-	tasks := []chromedp.Action{
+	tasks := []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(width), shotsViewportHeight),
 		network.Enable(),
 		chromedp.Navigate(base + path),
-		chromedp.WaitReady("body", chromedp.ByQuery),
+		chromedp.WaitReady(chromedp.CSS("body")),
 		chromedp.Sleep(settle),
 	}
 
@@ -229,7 +229,7 @@ func captureTasks(base, path string, modes []string, width int, light, dark *[]b
 
 	if has(modeDark) {
 		tasks = append(tasks,
-			chromedp.Evaluate(`document.documentElement.classList.add('dark');`, nil),
+			evalVoid(`document.documentElement.classList.add('dark');`),
 			chromedp.Sleep(2*settle),
 			chromedp.FullScreenshot(dark, screenshotQuality),
 		)

@@ -306,14 +306,14 @@ func waitAnimationsSettled() chromedp.Action[chromedp.Void] {
 				}
 			}
 
-				if err := chromedp.Do(ctx, chromedp.Sleep(animPollDelay)); err != nil {
-					return fmt.Errorf("wait animations settled: poll sleep: %w", err)
-				}
+			if err := chromedp.Do(ctx, chromedp.Sleep(animPollDelay)); err != nil {
+				return fmt.Errorf("wait animations settled: poll sleep: %w", err)
 			}
+		}
 
-			return nil
-		})
-	}
+		return nil
+	})
+}
 
 const (
 	captureTimeout    = 20 * time.Second

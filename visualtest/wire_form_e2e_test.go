@@ -67,14 +67,14 @@ func jsString(s string) string {
 // event, so runtimes tracking the field observe the change. Deterministic
 // replacement — unlike chromedp.SendKeys, which types at the cursor (position
 // 0 for values set via the value attribute) and prepends.
-func setFieldValue(region, field, value string) chromedp.ActionFunc {
-	return chromedp.ActionFunc(func(cctx context.Context) error {
+func setFieldValue(region, field, value string) chromedp.Action[chromedp.Void] {
+	return chromedp.Func(func(cctx context.Context, _ *chromedp.Target) error {
 		expr := `var i=document.querySelector('` + formSel(region, field) + `'); i.value=` + jsString(value) +
 			`; i.dispatchEvent(new Event('input',{bubbles:true})); i.value`
 
 		var out string
 
-		return chromedp.Evaluate(expr, &out).Do(cctx)
+		return evalExprInto(expr, &out).Do(cctx)
 	})
 }
 
@@ -441,8 +441,8 @@ func TestWireE2EFormValidationRoundTrip(t *testing.T) {
 				pollBool(regionHasText(tc.region, "1 error found"), &ok),
 				pollBool(regionHasText(tc.region, wireFormEmailBad), &ok),
 				waitSwapSettled(),
-				// The submitted value survived the re-render.
-				chromedp.Evaluate(formValueExpr(tc.region, `input[name="email"]`), &preserved),
+
+				evalExprInto(formValueExpr(tc.region, `input[name="email"]`), &preserved),
 				// Fix the email in the re-rendered form and resubmit.
 				setFieldValue(tc.region, `input[name="email"]`, "ada@example.com"),
 				chromedp.Click(formSel(tc.region, `button[type="submit"]`), chromedp.NodeVisible),

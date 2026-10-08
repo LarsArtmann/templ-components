@@ -191,7 +191,7 @@ func TestDatastarSSEErrorHandlingBrowser(t *testing.T) {
 		// announces + toasts it.
 		chromedp.Click("#bad-fetch-trigger", chromedp.NodeVisible),
 		pollTrue(`document.getElementById('tc-datastar-announcer').textContent.includes('Stream error')`),
-		chromedp.Evaluate(`document.getElementById('tc-datastar-announcer').textContent`, &announcerText),
+		evalExprInto(`document.getElementById('tc-datastar-announcer').textContent`, &announcerText),
 		pollTrue(`(() => {
 			const toasts = document.querySelectorAll('#tc-toast-container > div');
 			for (const t of toasts) {
@@ -199,7 +199,7 @@ func TestDatastarSSEErrorHandlingBrowser(t *testing.T) {
 			}
 			return false;
 		})()`),
-		chromedp.Evaluate(`(() => {
+		evalExprInto(`(() => {
 			const toasts = document.querySelectorAll('#tc-toast-container > div');
 			for (const t of toasts) {
 				if (t.textContent.includes('live stream endpoint returned an error')) return t.textContent;
@@ -243,18 +243,19 @@ func TestDatastarLiveRegionBusyClearBrowser(t *testing.T) {
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		pollTrue(`window.__dsReady===true && document.querySelector('#live-region')!==null`),
-		// Before the delayed first patch: the cue must be present.
-		chromedp.Evaluate(`(() => {
+
+		evalExprInto(`(() => {
 			const el = document.querySelector('#live-region');
 			return el.getAttribute('aria-busy') === 'true' && el.hasAttribute('data-tc-live-busy');
 		})()`, &initialBusy),
+
 		// After the patch: cue cleared on the region AND content landed.
 		pollTrue(`(() => {
 			const el = document.querySelector('#live-region');
 			return el.getAttribute('aria-busy') === null && !el.hasAttribute('data-tc-live-busy')
 				&& document.querySelector('#live-child').textContent.includes('fresh via sse');
 		})()`),
-		chromedp.Evaluate(`document.querySelector('#live-child').textContent`, &childText),
+		evalExprInto(`document.querySelector('#live-child').textContent`, &childText),
 	); err != nil {
 		t.Fatalf("LiveRegion busy-clear browser proof: %v", err)
 	}

@@ -456,7 +456,7 @@ func notFound404Search(props NotFound404Props) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "\" method=\"get\" class=\"mt-6 mx-auto max-w-md\" role=\"search\"><div class=\"relative\"><div class=\"pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "\" method=\"get\" class=\"mt-6 mx-auto max-w-md\" role=\"search\"><div class=\"relative\"><div class=\"pointer-events-none absolute inset-y-0 inset-s-0 flex items-center ps-3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

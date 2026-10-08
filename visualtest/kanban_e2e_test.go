@@ -723,7 +723,7 @@ func TestKanbanE2EDropMovesBothTransports(t *testing.T) {
 		var dropped string
 
 		if err := chromedp.Run(ctx,
-			chromedp.Evaluate(kanbanDropScript(drop.boardID, drop.card, drop.column), &dropped),
+			evalExprInto(kanbanDropScript(drop.boardID, drop.card, drop.column), &dropped),
 		); err != nil {
 			t.Fatalf("%s drop dispatch: %v", drop.boardID, err)
 		}
@@ -745,7 +745,7 @@ func TestKanbanE2EDropMovesBothTransports(t *testing.T) {
 	var todo string
 
 	if err := chromedp.Run(ctx,
-		chromedp.Evaluate(kanbanColumnOrderExpr("kb-htmx", "todo"), &todo),
+		evalExprInto(kanbanColumnOrderExpr("kb-htmx", "todo"), &todo),
 	); err != nil || strings.TrimSpace(todo) != "e1" {
 		t.Fatalf("htmx todo column after drop = %q, want e1 (err %v)", todo, err)
 	}
@@ -787,7 +787,7 @@ func TestKanbanE2ECoarsePointerButtonsVisible(t *testing.T) {
 
 	var fine string
 
-	if err := chromedp.Run(ctx, chromedp.Evaluate(kanbanButtonsOpacityExpr, &fine)); err != nil {
+	if err := chromedp.Run(ctx, evalExprInto(kanbanButtonsOpacityExpr, &fine)); err != nil {
 		t.Fatalf("fine-pointer opacity eval: %v", err)
 	}
 
@@ -795,7 +795,7 @@ func TestKanbanE2ECoarsePointerButtonsVisible(t *testing.T) {
 		t.Fatalf("fine pointer computed opacity = %q, want 0 (control leg)", fine)
 	}
 
-	if err := chromedp.Run(ctx, chromedp.ActionFunc(func(ctx context.Context) error {
+	if err := chromedp.Run(ctx, chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
 		return emulation.SetTouchEmulationEnabled(true).WithMaxTouchPoints(5).Do(ctx)
 	})); err != nil {
 		t.Fatalf("emulate coarse pointer: %v", err)
@@ -804,7 +804,7 @@ func TestKanbanE2ECoarsePointerButtonsVisible(t *testing.T) {
 	var coarseMatches bool
 
 	if err := chromedp.Run(ctx,
-		chromedp.Evaluate(`matchMedia('(pointer:coarse)').matches`, &coarseMatches),
+		evalExprInto(`matchMedia('(pointer:coarse)').matches`, &coarseMatches),
 	); err != nil || !coarseMatches {
 		t.Fatalf("pointer:coarse media feature not emulated (matches=%v, err=%v)", coarseMatches, err)
 	}
@@ -849,10 +849,9 @@ func TestKanbanE2ECrossBoardDropIgnored(t *testing.T) {
 	var accepted string
 
 	if err := chromedp.Run(ctx,
-		chromedp.Evaluate(
+		evalExprInto(
 			kanbanCrossBoardDropScript("kb-htmx", "e2", "kb-ds", "done"),
-			&accepted,
-		),
+			&accepted),
 	); err != nil {
 		t.Fatalf("cross-board drop dispatch: %v", err)
 	}
@@ -882,7 +881,7 @@ func TestKanbanE2ECrossBoardDropIgnored(t *testing.T) {
 		var got string
 
 		if err := chromedp.Run(ctx,
-			chromedp.Evaluate(kanbanColumnOrderExpr(check.boardID, check.column), &got),
+			evalExprInto(kanbanColumnOrderExpr(check.boardID, check.column), &got),
 		); err != nil || got != check.want {
 			t.Fatalf("%s %s after cross-board drop = %q, want %q (err %v)",
 				check.boardID, check.column, got, check.want, err)

@@ -165,7 +165,7 @@ func TestDatastarPolledRegionBrowser(t *testing.T) {
 	// duplicates (a broken re-arm strategy would stack regions).
 	var regionCount int
 	if err := chromedp.Run(ctx,
-		chromedp.Evaluate(`document.querySelectorAll('#polled-region').length`, &regionCount),
+		evalExprInto(`document.querySelectorAll('#polled-region').length`, &regionCount),
 	); err != nil {
 		t.Fatalf("region count: %v", err)
 	}

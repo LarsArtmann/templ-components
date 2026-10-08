@@ -175,23 +175,23 @@ func assertSiteRouteScreenshot(t *testing.T, name, url string, dark bool, viewpo
 
 	var shot []byte
 
-	tasks := []chromedp.Action{
+	tasks := []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(viewport.Width), int64(viewport.Height)),
 		chromedp.Navigate(url),
-		chromedp.Evaluate(fmt.Sprintf(`try { localStorage.setItem('theme', %q); } catch (e) {}`, theme), nil),
+		evalVoid(fmt.Sprintf(`try { localStorage.setItem('theme', %q); } catch (e) {}`, theme)),
 		chromedp.Reload(),
-		chromedp.WaitVisible("body", chromedp.ByQuery),
+		chromedp.WaitVisible(chromedp.CSS("body")),
 	}
 
 	if dark {
 		tasks = append(tasks,
-			chromedp.Evaluate(`document.documentElement.classList.add('dark');`, nil),
+			evalVoid(`document.documentElement.classList.add('dark');`),
 			chromedp.Sleep(500*time.Millisecond),
 		)
 	}
 
 	tasks = append(tasks,
-		chromedp.Evaluate(siteScrollRevealJS, nil),
+		evalVoid(siteScrollRevealJS),
 		waitAnimationsSettled(),
 		chromedp.Sleep(settleDelay),
 		// quality 100 = PNG (any other value yields JPEG).
@@ -302,28 +302,29 @@ func siteAxeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, 
 		theme = "dark"
 	}
 
-	actions := []chromedp.Action{
+	actions := []chromedp.Action[chromedp.Void]{
 		chromedp.Navigate(baseURL + path),
 		chromedp.WaitReady("body"),
-		chromedp.Evaluate(fmt.Sprintf(
+		evalVoid(fmt.Sprintf(
 			`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; true`,
 			theme,
 			dark,
 			theme,
-		), nil),
-		chromedp.Evaluate(siteScrollRevealJS, nil),
+		)),
+
+		evalVoid(siteScrollRevealJS),
 		// The scroll-through FIRES the [data-animate] entrance animations;
 		// axe samples computed color+opacity mid-animation and reports bogus
 		// blended-contrast findings (measured: elements at ~38% opacity).
 		// Settle every finite animation before auditing.
 		waitAnimationsSettled(),
 		chromedp.Sleep(settleDelay),
-		chromedp.ActionFunc(func(ctx context.Context) error {
+		chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
 			for range 2 {
 				var got bool
-				if err := chromedp.Evaluate(
-					`document.documentElement.classList.contains('dark')`, &got,
-				).Do(ctx); err != nil {
+				if err := evalExprInto(
+					`document.documentElement.classList.contains('dark')`, &got).
+					Do(ctx); err != nil {
 					return err
 				}
 
@@ -331,12 +332,13 @@ func siteAxeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, 
 					return nil
 				}
 
-				if err := chromedp.Evaluate(fmt.Sprintf(
+				if err := evalVoid(fmt.Sprintf(
 					`localStorage.setItem('theme', %q); document.documentElement.classList.toggle('dark', %t); document.documentElement.style.colorScheme = %q; true`,
 					theme,
 					dark,
 					theme,
-				), nil).Do(ctx); err != nil {
+				)).
+					Do(ctx); err != nil {
 					return err
 				}
 
@@ -385,9 +387,9 @@ func TestSiteTouchTargetAudit(t *testing.T) {
 				chromedp.EmulateViewport(375, 667),
 				chromedp.Navigate(base+route.path),
 				chromedp.WaitReady("body"),
-				chromedp.Evaluate(siteScrollRevealJS, nil),
+				evalVoid(siteScrollRevealJS),
 				chromedp.Sleep(settleDelay),
-				chromedp.Evaluate(touchTargetProbe, &raw),
+				evalExprInto(touchTargetProbe, &raw),
 			); err != nil {
 				t.Fatalf("site touch target audit %s: %v", route.path, err)
 			}
@@ -446,7 +448,7 @@ func TestSiteZoomReflowAudit(t *testing.T) {
 					chromedp.Navigate(base+route.path),
 					chromedp.WaitReady("body"),
 					chromedp.Sleep(settleDelay),
-					chromedp.Evaluate(reflowProbe, &raw),
+					evalExprInto(reflowProbe, &raw),
 				); err != nil {
 					t.Fatalf("site reflow audit %s: %v", route.path, err)
 				}

@@ -204,17 +204,17 @@ func screenshot(url, theme string, width, height int, target string) error {
 
 	var png []byte
 
-	actions := []chromedp.Action{
+	actions := []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(width), int64(height)),
 		chromedp.Navigate(url),
 		chromedp.WaitReady("body"),
 		chromedp.Sleep(navigationSettle),
-		chromedp.Evaluate(setTheme, nil),
+		evalVoid(setTheme),
 		chromedp.Reload(),
 		chromedp.WaitReady("body"),
 		chromedp.Sleep(settle),
-		chromedp.Evaluate(setTheme, nil),
-		chromedp.Evaluate(scrollRevealJS, nil),
+		evalVoid(setTheme),
+		evalVoid(scrollRevealJS),
 		chromedp.Sleep(settle),
 		chromedp.FullScreenshot(&png, screenshotQuality),
 	}
@@ -260,9 +260,9 @@ func searchSmoke(base, out string) error {
 		chromedp.Navigate(base+"/getting-started/installation"),
 		chromedp.WaitReady("body"),
 		chromedp.Sleep(settle),
-		chromedp.Evaluate(queryJS, nil),
+		evalVoid(queryJS),
 		chromedp.Sleep(2*settle),
-		chromedp.Evaluate(`document.querySelectorAll('#doc-search-results .doc-search-hit').length`, &hits),
+		evalExprInto(`document.querySelectorAll('#doc-search-results .doc-search-hit').length`, &hits),
 		chromedp.FullScreenshot(&png, screenshotQuality),
 	)
 	if err != nil {

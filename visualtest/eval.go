@@ -20,3 +20,16 @@ func evalInto[T any](action chromedp.Action[T], dest *T) chromedp.Action[chromed
 		return err
 	})
 }
+
+// evalExprInto evaluates a JavaScript expression and stores the decoded
+// result into dest (the v0.20 replacement for Evaluate(expr, &dest)).
+func evalExprInto[T any](expression string, dest *T) chromedp.Action[chromedp.Void] {
+	return evalInto(chromedp.Evaluate[T](expression), dest)
+}
+
+// evalVoid evaluates a fire-and-forget JavaScript expression, discarding the
+// result. Void decodes from any value, including undefined/null, so scripts
+// without a useful return value never fail the action.
+func evalVoid(expression string) chromedp.Action[chromedp.Void] {
+	return chromedp.Evaluate[chromedp.Void](expression)
+}

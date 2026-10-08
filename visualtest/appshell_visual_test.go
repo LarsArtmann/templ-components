@@ -124,8 +124,8 @@ func TestAppShellSidebarFitsTrack(t *testing.T) {
 	err = chromedp.Run(ctx,
 		chromedp.EmulateViewport(viewportDesktopWidth, viewportDesktopHeight),
 		chromedp.Navigate(srv.URL),
-		chromedp.WaitVisible("#tc-root", chromedp.ByQuery),
-		chromedp.Evaluate(`(() => {
+		chromedp.WaitVisible(chromedp.CSS("#tc-root")),
+		evalExprInto(`(() => {
 			const wrapper = document.querySelector('.hidden.lg\\:block');
 			if (!wrapper) return -1;
 			const aside = wrapper.querySelector('aside') || wrapper.firstElementChild;
@@ -187,8 +187,8 @@ func TestAppShellSidebarOverflowDetected(t *testing.T) {
 	err = chromedp.Run(ctx,
 		chromedp.EmulateViewport(viewportDesktopWidth, viewportDesktopHeight),
 		chromedp.Navigate(srv.URL),
-		chromedp.WaitVisible("#tc-root", chromedp.ByQuery),
-		chromedp.Evaluate(`(() => {
+		chromedp.WaitVisible(chromedp.CSS("#tc-root")),
+		evalExprInto(`(() => {
 			const wrapper = document.querySelector('.hidden.lg\\:block');
 			if (!wrapper) return -1;
 			const aside = wrapper.querySelector('aside') || wrapper.firstElementChild;

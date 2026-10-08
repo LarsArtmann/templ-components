@@ -88,7 +88,7 @@ func TestDemoCSPJSExecutes(t *testing.T) {
 	}
 
 	var attached bool
-	if err := chromedp.Run(ctx, chromedp.Evaluate(`window.tcKanbanAttached===true`, &attached)); err != nil {
+	if err := chromedp.Run(ctx, evalExprInto(`window.tcKanbanAttached===true`, &attached)); err != nil {
 		t.Fatalf("visualtest[csp]: evaluate: %v", err)
 	}
 

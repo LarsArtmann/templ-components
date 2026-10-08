@@ -100,19 +100,17 @@ func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {
 		pollTrue(
 			`document.readyState==='complete' && window.htmx!==undefined && document.querySelector('#region-a')!==null`,
 		),
-		chromedp.Evaluate(regionBusyJS("region-a"), &initialBusyA),
-		chromedp.Evaluate(regionBusyJS("region-b"), &initialBusyB),
+		evalExprInto(regionBusyJS("region-a"), &initialBusyA),
+		evalExprInto(regionBusyJS("region-b"), &initialBusyB),
 		// The eager one-shot script fires the real request via htmx.ajax;
 		// htmx dispatches the real htmx:afterRequest on completion — the
 		// script must clear both regions (document-level delegation, one
 		// listener for many regions).
 		pollBool(`!`+regionBusyJS("region-a"), &clearedA),
 		pollBool(`!`+regionBusyJS("region-b"), &clearedB),
-		chromedp.Evaluate(`document.querySelector('#region-a span').textContent`, &contentIntact),
-		// Synthetic re-arm: put the cue back on region-b and dispatch
-		// htmx:afterRequest by hand — proves the listener directly, decoupled
-		// from htmx's own request timing.
-		chromedp.Evaluate(`(() => {
+		evalExprInto(`document.querySelector('#region-a span').textContent`, &contentIntact),
+
+		evalExprInto(`(() => {
 			const el = document.querySelector('#region-b');
 			el.setAttribute('aria-busy', 'true');
 			el.setAttribute('data-tc-polled-busy', '');

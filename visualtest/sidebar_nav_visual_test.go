@@ -105,8 +105,8 @@ func TestSidebarNavClassicDarkOptOut(t *testing.T) {
 	// failure modes: override-not-reaching-element (transparent/white aside)
 	// and a probe that never got its class (empty comparison).
 	chromedp.Run(ctx,
-		chromedp.WaitVisible("aside", chromedp.ByQuery),
-		chromedp.Evaluate(`(() => {
+		chromedp.WaitVisible(chromedp.CSS("aside")),
+		evalExprInto(`(() => {
 			const probe = document.createElement('div');
 			probe.className = 'bg-gray-900';
 			document.body.appendChild(probe);

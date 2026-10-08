@@ -819,39 +819,39 @@ func packDialects() []wire.Transport {
 
 // setSelectValue sets a select's value and fires the change event (the
 // trigger both dialects' dropdown wiring listens for).
-func setSelectValue(region, sel, value string) chromedp.ActionFunc {
-	return chromedp.ActionFunc(func(cctx context.Context) error {
+func setSelectValue(region, sel, value string) chromedp.Action[chromedp.Void] {
+	return chromedp.Func(func(cctx context.Context, _ *chromedp.Target) error {
 		expr := `var s=document.querySelector('` + formSel(region, sel) + `'); s.value=` + jsString(value) +
 			`; s.dispatchEvent(new Event('change',{bubbles:true})); s.value`
 
 		var out string
 
-		return chromedp.Evaluate(expr, &out).Do(cctx)
+		return evalExprInto(expr, &out).Do(cctx)
 	})
 }
 
 // setValueQuiet sets an input's value WITHOUT firing events — used by the
 // Enter-key test so the debounce never races the native submit.
-func setValueQuiet(region, sel, value string) chromedp.ActionFunc {
-	return chromedp.ActionFunc(func(cctx context.Context) error {
+func setValueQuiet(region, sel, value string) chromedp.Action[chromedp.Void] {
+	return chromedp.Func(func(cctx context.Context, _ *chromedp.Target) error {
 		expr := `var i=document.querySelector('` + formSel(region, sel) + `'); i.value=` + jsString(value) + `; i.value`
 
 		var out string
 
-		return chromedp.Evaluate(expr, &out).Do(cctx)
+		return evalExprInto(expr, &out).Do(cctx)
 	})
 }
 
 // fireInputBurst sets the value and fires n synchronous input events in one
 // JS tick — a working debounce collapses the whole burst into one request.
-func fireInputBurst(region, sel, value string, n int) chromedp.ActionFunc {
-	return chromedp.ActionFunc(func(cctx context.Context) error {
+func fireInputBurst(region, sel, value string, n int) chromedp.Action[chromedp.Void] {
+	return chromedp.Func(func(cctx context.Context, _ *chromedp.Target) error {
 		expr := `var i=document.querySelector('` + formSel(region, sel) + `'); i.value=` + jsString(value) +
 			`; for (var k=0;k<` + strconv.Itoa(n) + `;k++) { i.dispatchEvent(new Event('input',{bubbles:true})); } 'burst'`
 
 		var out string
 
-		return chromedp.Evaluate(expr, &out).Do(cctx)
+		return evalExprInto(expr, &out).Do(cctx)
 	})
 }
 
@@ -863,10 +863,9 @@ func fireInputBurst(region, sel, value string, n int) chromedp.ActionFunc {
 func beforeUnloadPrevented(ctx context.Context) (bool, error) {
 	var prevented bool
 
-	err := chromedp.Run(ctx, chromedp.Evaluate(
+	err := chromedp.Run(ctx, evalExprInto(
 		`var e=new Event('beforeunload',{cancelable:true}); window.dispatchEvent(e); e.defaultPrevented`,
-		&prevented,
-	))
+		&prevented))
 
 	return prevented, err
 }
@@ -875,7 +874,7 @@ func beforeUnloadPrevented(ctx context.Context) (bool, error) {
 func regionText(ctx context.Context, region string) (string, error) {
 	var text string
 
-	err := chromedp.Run(ctx, chromedp.Evaluate(`document.querySelector('`+region+`').innerText`, &text))
+	err := chromedp.Run(ctx, evalExprInto(`document.querySelector('`+region+`').innerText`, &text))
 
 	return text, err
 }
@@ -1099,7 +1098,7 @@ func packWizardFlow(t *testing.T, dialect wire.Transport) {
 // packWizardExpect settles a swap (optionally filling a field first),
 // submits until the needle appears, and wraps failures with the phase name.
 func packWizardExpect(ctx context.Context, region, phase string, fill chromedp.Action, needle string) error {
-	pre := []chromedp.Action{waitSwapSettled()}
+	pre := []chromedp.Action[chromedp.Void]{waitSwapSettled()}
 	if fill != nil {
 		pre = append(pre, fill)
 	}
@@ -1220,8 +1219,8 @@ func TestWireE2EGETSearchRoundTrip(t *testing.T) {
 
 			if err := chromedp.Run(ctx,
 				waitSwapSettled(),
-				// The submitted value survived the round-trip re-render.
-				chromedp.Evaluate(formValueExpr(region, `input[name="q"]`), &preserved),
+
+				evalExprInto(formValueExpr(region, `input[name="q"]`), &preserved),
 				// A correction resubmits in place.
 				setFieldValue(region, `input[name="q"]`, "grace"),
 			); err != nil {
@@ -1270,7 +1269,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	}
 
 	// The singleton attached (the page really executed the guard script).
-	if err := chromedp.Run(ctx, chromedp.Evaluate(`window.tcDirtyGuardAttached===true`, &attached)); err != nil {
+	if err := chromedp.Run(ctx, evalExprInto(`window.tcDirtyGuardAttached===true`, &attached)); err != nil {
 		t.Fatalf("read guard singleton: %v", err)
 	}
 

@@ -16,6 +16,12 @@ import (
 // Logical properties automatically mirror in RTL (dir="rtl") without code
 // changes; physical properties do not and cause broken RTL layouts.
 //
+// It also bans the PHYSICAL-positioning inset utilities start-* / end-*
+// (e.g. start-0, end-full): they resolve to left-*/right-* and never mirror
+// in RTL. Use the logical inset-s-* / inset-e-* forms instead. The regex's
+// preceding-character class keeps longer classes safe (inset-s-0,
+// text-start, items-start, justify-end, col-start-2, rounded-s-*).
+//
 // This is a FAILING test — violations block CI.
 //
 // Run via: go test ./utils/... -run TestRTL.
@@ -30,6 +36,10 @@ func TestRTLLogicalProperties(t *testing.T) {
 	physicalRe := regexp.MustCompile(
 		`\b(ml-|mr-|pl-|pr-|text-left|text-right|border-l-|border-r-)`,
 	)
+
+	// Physical-positioning inset utilities: start-*/end-* resolve to
+	// left-*/right-* and do not mirror in RTL; inset-s-*/inset-e-* do.
+	insetRe := regexp.MustCompile(`(?:^|[\s"'({])(start|end)-[a-z0-9.]`)
 
 	violations := 0
 
@@ -49,13 +59,14 @@ func TestRTLLogicalProperties(t *testing.T) {
 			}
 
 			for line := range strings.SplitSeq(string(data), "\n") {
-				if !physicalRe.MatchString(line) {
-					continue
+				switch {
+				case physicalRe.MatchString(line):
+					violations++
+					t.Errorf("RTL physical-property violation in %s:\n  %s", path, strings.TrimSpace(line))
+				case insetRe.MatchString(line):
+					violations++
+					t.Errorf("RTL physical-inset violation (use inset-s-*/inset-e-* instead of start-*/end-*) in %s:\n  %s", path, strings.TrimSpace(line))
 				}
-
-				violations++
-
-				t.Errorf("RTL physical-property violation in %s:\n  %s", path, strings.TrimSpace(line))
 			}
 
 			return nil

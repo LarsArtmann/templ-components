@@ -135,14 +135,11 @@ func kanbanCaptureBoardState(
 	if err := chromedp.Run(ctx,
 		chromedp.EmulateViewport(viewportDesktopWidth, viewportDesktopHeight),
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.WaitVisible("#kb-visual", chromedp.ByQuery),
-		// Pin light mode before capture: ThemeScript resolves un-pinned
-		// pages from prefers-color-scheme, which headless Chromium reports
-		// as dark by default (the route-golden lesson — unpinned "light"
-		// captures silently render dark).
-		chromedp.Evaluate(`try { localStorage.setItem('theme', 'light'); } catch (e) {}`, nil),
+		chromedp.WaitVisible(chromedp.CSS("#kb-visual")),
+
+		evalVoid(`try { localStorage.setItem('theme', 'light'); } catch (e) {}`),
 		chromedp.Reload(),
-		chromedp.WaitVisible("#kb-visual", chromedp.ByQuery),
+		chromedp.WaitVisible(chromedp.CSS("#kb-visual")),
 	); err != nil {
 		t.Fatalf("navigate: %v", err)
 	}

@@ -120,10 +120,10 @@ func TestKanbanSingleTransportBoards(t *testing.T) {
 			if err := chromedp.Run(ctx,
 				chromedp.EmulateViewport(viewportDesktopWidth, viewportDesktopHeight),
 				chromedp.Navigate(srv.URL+"/"),
-				chromedp.WaitVisible("#kb-visual", chromedp.ByQuery),
-				chromedp.Evaluate(`try { localStorage.setItem('theme', 'light'); } catch (e) {}`, nil),
+				chromedp.WaitVisible(chromedp.CSS("#kb-visual")),
+				evalVoid(`try { localStorage.setItem('theme', 'light'); } catch (e) {}`),
 				chromedp.Reload(),
-				chromedp.WaitVisible("#kb-visual", chromedp.ByQuery),
+				chromedp.WaitVisible(chromedp.CSS("#kb-visual")),
 			); err != nil {
 				t.Fatalf("navigate: %v", err)
 			}

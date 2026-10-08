@@ -55,9 +55,9 @@ func datastarSyntheticsServer(t *testing.T) *httptest.Server {
 // dispatchDatastarFetch synthesizes the document-level datastar-fetch event
 // whose detail mirrors the DataStar runtime's shape.
 func dispatchDatastarFetch(detailJSON string) chromedp.Action {
-	return chromedp.Evaluate(
-		`document.dispatchEvent(new CustomEvent('datastar-fetch', {detail: `+detailJSON+`}));`, nil,
-	)
+	return evalVoid(
+		`document.dispatchEvent(new CustomEvent('datastar-fetch', {detail: ` + detailJSON + `}));`)
+
 }
 
 func TestDemoDatastarSSEErrorToast(t *testing.T) {
@@ -94,10 +94,9 @@ func TestDemoDatastarSSEErrorToast(t *testing.T) {
 
 	var toastCount int64
 
-	if err := chromedp.Run(ctx, chromedp.Evaluate(
+	if err := chromedp.Run(ctx, evalExprInto(
 		`document.querySelectorAll('#tc-toast-container .pointer-events-auto').length`,
-		&toastCount,
-	)); err != nil {
+		&toastCount)); err != nil {
 		t.Fatalf("visualtest[datastar]: count toasts: %v", err)
 	}
 
@@ -149,10 +148,9 @@ func TestDemoDatastarBusyClearsOnFirstPatch(t *testing.T) {
 
 	var busyBefore string
 
-	if err := chromedp.Run(ctx, chromedp.Evaluate(
+	if err := chromedp.Run(ctx, evalExprInto(
 		`(document.getElementById('synth-live')||{getAttribute:function(){return 'MISSING'}}).getAttribute('aria-busy')`,
-		&busyBefore,
-	)); err != nil {
+		&busyBefore)); err != nil {
 		t.Fatalf("visualtest[datastar]: read aria-busy: %v", err)
 	}
 

@@ -124,7 +124,7 @@ func navigateAndSettleAnimations(t *testing.T, name, page string) time.Duration 
 
 	if err := chromedp.Run(taskCtx,
 		chromedp.Navigate(srv.URL),
-		chromedp.WaitVisible("#test", chromedp.ByQuery),
+		chromedp.WaitVisible(chromedp.CSS("#test")),
 	); err != nil {
 		t.Fatalf("navigate(%s): %v", name, err)
 	}

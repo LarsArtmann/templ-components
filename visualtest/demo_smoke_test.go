@@ -53,7 +53,7 @@ func TestDemoSmokeAllRoutes(t *testing.T) {
 
 			var title string
 
-			if err := chromedp.Run(ctx, chromedp.Evaluate(`document.title`, &title)); err != nil {
+			if err := chromedp.Run(ctx, evalExprInto(`document.title`, &title)); err != nil {
 				t.Fatalf("visualtest[demo]: read %s title: %v", route.path, err)
 			}
 

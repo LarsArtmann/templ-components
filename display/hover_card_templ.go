@@ -24,8 +24,8 @@ const (
 var hoverCardPositionMap = map[HoverCardPosition]string{
 	HoverCardPositionTop:    "bottom-full left-1/2 -translate-x-1/2 mb-2",
 	HoverCardPositionBottom: "top-full left-1/2 -translate-x-1/2 mt-2",
-	HoverCardPositionStart:  "end-full top-1/2 -translate-y-1/2 me-2",
-	HoverCardPositionEnd:    "start-full top-1/2 -translate-y-1/2 ms-2",
+	HoverCardPositionStart:  "inset-e-full top-1/2 -translate-y-1/2 me-2",
+	HoverCardPositionEnd:    "inset-s-full top-1/2 -translate-y-1/2 ms-2",
 }
 
 // HoverCardPositionIsValid reports whether v is one of the defined HoverCardPosition constants.

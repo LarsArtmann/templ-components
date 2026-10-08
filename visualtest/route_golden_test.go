@@ -130,24 +130,24 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewp
 		theme = "dark"
 	}
 
-	tasks := []chromedp.Action{
+	tasks := []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(viewport.Width), int64(viewport.Height)),
 		chromedp.Navigate(url),
-		chromedp.Evaluate(fmt.Sprintf(`try { localStorage.setItem('theme', %q); } catch (e) {}`, theme), nil),
+		evalVoid(fmt.Sprintf(`try { localStorage.setItem('theme', %q); } catch (e) {}`, theme)),
 		chromedp.Reload(),
-		chromedp.WaitVisible("body", chromedp.ByQuery),
+		chromedp.WaitVisible(chromedp.CSS("body")),
 	}
 
 	if dark {
 		tasks = append(tasks,
-			chromedp.Evaluate(`document.documentElement.classList.add('dark');`, nil),
+			evalVoid(`document.documentElement.classList.add('dark');`),
 			chromedp.Sleep(500*time.Millisecond),
 		)
 	}
 
 	if rtl {
 		tasks = append(tasks,
-			chromedp.Evaluate(`document.documentElement.setAttribute('dir', 'rtl');`, nil),
+			evalVoid(`document.documentElement.setAttribute('dir', 'rtl');`),
 			chromedp.Sleep(200*time.Millisecond),
 		)
 	}

@@ -41,7 +41,7 @@ func TestTouchTargetAudit(t *testing.T) {
 				chromedp.Navigate(server.BaseURL()+route.path),
 				chromedp.WaitReady("body"),
 				chromedp.Sleep(settleDelay),
-				chromedp.Evaluate(touchTargetProbe, &raw),
+				evalExprInto(touchTargetProbe, &raw),
 			); err != nil {
 				t.Fatalf("touch target audit %s: %v", route.path, err)
 			}
@@ -149,7 +149,7 @@ func TestZoomReflowAudit(t *testing.T) {
 					chromedp.Navigate(server.BaseURL()+route.path),
 					chromedp.WaitReady("body"),
 					chromedp.Sleep(settleDelay),
-					chromedp.Evaluate(reflowProbe, &raw),
+					evalExprInto(reflowProbe, &raw),
 				); err != nil {
 					t.Fatalf("reflow audit %s: %v", route.path, err)
 				}

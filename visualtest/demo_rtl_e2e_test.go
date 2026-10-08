@@ -10,7 +10,7 @@ import (
 // the browser-level trigger for the logical-property mirroring the RTL
 // compliance scanner can only approximate.
 func setRTL() chromedp.Action {
-	return chromedp.Evaluate(`document.documentElement.setAttribute('dir','rtl');`, nil)
+	return evalVoid(`document.documentElement.setAttribute('dir','rtl');`)
 }
 
 // TestDemoRTLNoHorizontalOverflow proves the demo routes keep physical
@@ -34,9 +34,8 @@ func TestDemoRTLNoHorizontalOverflow(t *testing.T) {
 
 			var overflow int64
 
-			if err := chromedp.Run(ctx, chromedp.Evaluate(
-				`document.documentElement.scrollWidth - document.documentElement.clientWidth`, &overflow,
-			)); err != nil {
+			if err := chromedp.Run(ctx, evalExprInto(
+				`document.documentElement.scrollWidth - document.documentElement.clientWidth`, &overflow)); err != nil {
 				t.Fatalf("visualtest[demo]: measure %s RTL overflow: %v", route, err)
 			}
 
@@ -77,7 +76,7 @@ func TestDemoRTLKanbanMoveWorks(t *testing.T) {
 
 			var before string
 
-			if err := chromedp.Run(ctx, chromedp.Evaluate(backlogExpr, &before)); err != nil {
+			if err := chromedp.Run(ctx, evalExprInto(backlogExpr, &before)); err != nil {
 				t.Fatalf("visualtest[demo]: read RTL backlog order: %v", err)
 			}
 

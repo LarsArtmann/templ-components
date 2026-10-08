@@ -35,9 +35,8 @@ func TestDemoMobile375NoHorizontalOverflow(t *testing.T) {
 
 			var overflow int64
 
-			if err := chromedp.Run(ctx, chromedp.Evaluate(
-				`document.documentElement.scrollWidth - document.documentElement.clientWidth`, &overflow,
-			)); err != nil {
+			if err := chromedp.Run(ctx, evalExprInto(
+				`document.documentElement.scrollWidth - document.documentElement.clientWidth`, &overflow)); err != nil {
 				t.Fatalf("visualtest[demo]: measure %s overflow: %v", route, err)
 			}
 
@@ -77,9 +76,8 @@ func TestDemoMobile375KanbanReachable(t *testing.T) {
 
 	var cardCount int64
 
-	if err := chromedp.Run(ctx, chromedp.Evaluate(
-		`document.querySelectorAll('#kanban-demo-htmx [data-tc-kanban-card]').length`, &cardCount,
-	)); err != nil {
+	if err := chromedp.Run(ctx, evalExprInto(
+		`document.querySelectorAll('#kanban-demo-htmx [data-tc-kanban-card]').length`, &cardCount)); err != nil {
 		t.Fatalf("visualtest[demo]: count kanban cards: %v", err)
 	}
 
@@ -92,10 +90,9 @@ func TestDemoMobile375KanbanReachable(t *testing.T) {
 		Client int64
 	}
 
-	if err := chromedp.Run(ctx, chromedp.Evaluate(
+	if err := chromedp.Run(ctx, evalExprInto(
 		`(() => { const el = document.querySelector('#kanban-demo-htmx .overflow-x-auto'); return {Scroll: el ? el.scrollWidth : 0, Client: el ? el.clientWidth : 0}; })()`,
-		&boardScroll,
-	)); err != nil {
+		&boardScroll)); err != nil {
 		t.Fatalf("visualtest[demo]: measure kanban scroll container: %v", err)
 	}
 
@@ -105,9 +102,8 @@ func TestDemoMobile375KanbanReachable(t *testing.T) {
 
 	var pageOverflow int64
 
-	if err := chromedp.Run(ctx, chromedp.Evaluate(
-		`document.documentElement.scrollWidth - document.documentElement.clientWidth`, &pageOverflow,
-	)); err != nil {
+	if err := chromedp.Run(ctx, evalExprInto(
+		`document.documentElement.scrollWidth - document.documentElement.clientWidth`, &pageOverflow)); err != nil {
 		t.Fatalf("visualtest[demo]: measure page overflow: %v", err)
 	}
 

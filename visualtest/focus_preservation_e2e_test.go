@@ -56,11 +56,11 @@ func TestFocusPreservationE2E(t *testing.T) {
 		// the runtime, the same window as the MonthNav settle lesson). The
 		// NEXT subtest's focus() must not race that task.
 		if err := chromedp.Run(ctx,
-			chromedp.Evaluate(
+			evalExprInto(
 				`(window.__fpSettled=false,document.body.addEventListener('htmx:afterSettle',function(){window.__fpSettled=true},{once:true}),'')`,
-				&done,
-			),
-			chromedp.Evaluate(`(document.querySelector('#items-load-more button').click(),'')`, &done),
+				&done),
+
+			evalExprInto(`(document.querySelector('#items-load-more button').click(),'')`, &done),
 			pollTrue(`
 				document.activeElement !== null &&
 				document.activeElement.closest('#items-load-more') !== null &&
@@ -88,13 +88,13 @@ func TestFocusPreservationE2E(t *testing.T) {
 		var done, active string
 
 		if err := chromedp.Run(ctx,
-			chromedp.Evaluate(`(document.getElementById('oob-trigger').focus(),'')`, &done),
-			chromedp.Evaluate(`(document.getElementById('oob-trigger').click(),'')`, &done),
+			evalExprInto(`(document.getElementById('oob-trigger').focus(),'')`, &done),
+			evalExprInto(`(document.getElementById('oob-trigger').click(),'')`, &done),
 			pollTrue(`
 				document.getElementById('counter').textContent.includes('1') &&
 				document.getElementById('status').textContent.includes('updated') &&
 				document.activeElement && document.activeElement.id === 'oob-trigger'`),
-			chromedp.Evaluate(`document.activeElement && document.activeElement.id`, &active),
+			evalExprInto(`document.activeElement && document.activeElement.id`, &active),
 		); err != nil {
 			dumpFocusState(t, ctx, "swapoob")
 
@@ -115,10 +115,9 @@ func dumpFocusState(t *testing.T, ctx context.Context, flow string) {
 
 	if err := chromedp.Run(
 		ctx,
-		chromedp.Evaluate(
+		evalExprInto(
 			`JSON.stringify({active: document.activeElement && (document.activeElement.id || document.activeElement.tagName), items: document.getElementById('items') && document.getElementById('items').outerHTML.slice(0, 400), status: document.getElementById('status') && document.getElementById('status').outerHTML, counter: document.getElementById('counter') && document.getElementById('counter').outerHTML})`,
-			&body,
-		),
+			&body),
 	); err != nil {
 		t.Logf("%s: dom dump failed: %v", flow, err)
 

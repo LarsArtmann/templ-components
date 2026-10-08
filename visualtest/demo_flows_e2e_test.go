@@ -64,7 +64,7 @@ func demoClickUntil(ctx context.Context, t *testing.T, buttonSel, conditionExpr 
 	deadline := time.Now().Add(timeout)
 
 	for time.Now().Before(deadline) {
-		if err := chromedp.Run(ctx, chromedp.Click(buttonSel, chromedp.ByQuery)); err == nil {
+		if err := chromedp.Run(ctx, chromedp.Click(chromedp.CSS(buttonSel))); err == nil {
 			pollErr := chromedp.Run(ctx, pollTrue(conditionExpr, chromedp.WithPollingTimeout(3*time.Second)))
 			if pollErr == nil {
 				return
@@ -119,9 +119,8 @@ func TestDemoLoadMoreReachesEndOfList(t *testing.T) {
 		demoFlowTimeout)
 
 	var itemCount int
-	if err := chromedp.Run(ctx, chromedp.Evaluate(
-		`document.querySelectorAll('#demo-load-more .rounded-lg').length`, &itemCount,
-	)); err != nil {
+	if err := chromedp.Run(ctx, evalExprInto(
+		`document.querySelectorAll('#demo-load-more .rounded-lg').length`, &itemCount)); err != nil {
 		t.Fatalf("visualtest[demo]: count items: %v", err)
 	}
 
@@ -147,13 +146,12 @@ func TestDemoConfirmDeleteRemovesRow(t *testing.T) {
 		t.Fatalf("visualtest[demo]: load htmx page: %v", err)
 	}
 
-	if err := chromedp.Run(ctx, chromedp.Evaluate(
-		`window.confirm = function(){return true;}`, nil,
-	)); err != nil {
+	if err := chromedp.Run(ctx, evalVoid(
+		`window.confirm = function(){return true;}`)); err != nil {
 		t.Fatalf("visualtest[demo]: stub confirm: %v", err)
 	}
 
-	if err := chromedp.Run(ctx, chromedp.Click(`#item-123 button[hx-delete]`, chromedp.ByQuery)); err != nil {
+	if err := chromedp.Run(ctx, chromedp.Click(chromedp.CSS(`#item-123 button[hx-delete]`))); err != nil {
 		t.Fatalf("visualtest[demo]: ConfirmDelete click: %v", err)
 	}
 
@@ -183,7 +181,7 @@ func TestDemoLoadingButtonBusyGate(t *testing.T) {
 
 	saveButton := `button[hx-post="/demo/api/save"]`
 
-	if err := chromedp.Run(ctx, chromedp.Click(saveButton, chromedp.ByQuery)); err != nil {
+	if err := chromedp.Run(ctx, chromedp.Click(chromedp.CSS(saveButton))); err != nil {
 		t.Fatalf("visualtest[demo]: save click: %v", err)
 	}
 
@@ -209,9 +207,8 @@ func TestDemoLoadingButtonBusyGate(t *testing.T) {
 	}
 
 	var result string
-	if err := chromedp.Run(ctx, chromedp.Evaluate(
-		`document.querySelector('#save-result').innerText`, &result,
-	)); err != nil {
+	if err := chromedp.Run(ctx, evalExprInto(
+		`document.querySelector('#save-result').innerText`, &result)); err != nil {
 		t.Fatalf("visualtest[demo]: read save result: %v", err)
 	}
 
@@ -255,7 +252,7 @@ func TestDemoUploadEcho(t *testing.T) {
 
 	if err := chromedp.Run(
 		ctx,
-		chromedp.Click(`form[action="/demo/api/wire/upload"] button[type="submit"]`, chromedp.ByQuery),
+		chromedp.Click(chromedp.CSS(`form[action="/demo/api/wire/upload"] button[type="submit"]`)),
 	); err != nil {
 		t.Fatalf("visualtest[demo]: submit upload: %v", err)
 	}
@@ -292,7 +289,7 @@ func TestDemoKanbanMoveButtonsBothTransports(t *testing.T) {
 			progressExpr := kanbanColumnCardIDsExpr(board, "progress")
 
 			var before string
-			if err := chromedp.Run(ctx, chromedp.Evaluate(backlogExpr, &before)); err != nil {
+			if err := chromedp.Run(ctx, evalExprInto(backlogExpr, &before)); err != nil {
 				t.Fatalf("visualtest[demo]: read backlog order: %v", err)
 			}
 
@@ -309,7 +306,7 @@ func TestDemoKanbanMoveButtonsBothTransports(t *testing.T) {
 			kanbanClickUntilMove(ctx, t, buttonSel, progressExpr, wantProgress)
 
 			var gotBacklog string
-			if err := chromedp.Run(ctx, chromedp.Evaluate(backlogExpr, &gotBacklog)); err != nil {
+			if err := chromedp.Run(ctx, evalExprInto(backlogExpr, &gotBacklog)); err != nil {
 				t.Fatalf("visualtest[demo]: read backlog after move: %v", err)
 			}
 
@@ -372,7 +369,7 @@ func TestDemoWireBusyCardBothTransports(t *testing.T) {
 			demoClickUntil(ctx, t, tt.buttonSel, fmt.Sprintf(`%s.includes(%q)`, outExpr, tt.wantText), demoFlowTimeout)
 
 			var out string
-			if err := chromedp.Run(ctx, chromedp.Evaluate(outExpr, &out)); err != nil {
+			if err := chromedp.Run(ctx, evalExprInto(outExpr, &out)); err != nil {
 				t.Fatalf("visualtest[demo]: read %s: %v", tt.outID, err)
 			}
 

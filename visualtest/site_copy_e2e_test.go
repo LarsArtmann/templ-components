@@ -86,10 +86,10 @@ func TestSiteSalesCopyButton(t *testing.T) {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(base+"/sales"),
-		chromedp.WaitVisible(`[data-tc-copy]`, chromedp.ByQuery),
-		chromedp.Evaluate(spyJS, &spyArmed),
-		chromedp.Click(`[data-tc-copy]`, chromedp.ByQuery),
-		chromedp.Evaluate(`window.__tcCopied`, &copied),
+		chromedp.WaitVisible(chromedp.CSS(`[data-tc-copy]`)),
+		evalExprInto(spyJS, &spyArmed),
+		chromedp.Click(chromedp.CSS(`[data-tc-copy]`)),
+		evalExprInto(`window.__tcCopied`, &copied),
 		// The label swap runs in writeText's .then — a microtask AFTER the
 		// spy records __tcCopied. A bare Text() read races that microtask
 		// and intermittently sees "Copy" (observed 2026-09-23 under load);

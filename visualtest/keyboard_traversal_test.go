@@ -48,8 +48,8 @@ func TestKeyboardTraversalFocusVisibility(t *testing.T) {
 
 			chromedp.Run(timeoutCtx,
 				chromedp.Navigate(server.BaseURL()+route.path),
-				chromedp.WaitVisible("body", chromedp.ByQuery),
-				chromedp.Evaluate(`document.activeElement && document.activeElement.blur();`, nil),
+				chromedp.WaitVisible(chromedp.CSS("body")),
+				evalVoid(`document.activeElement && document.activeElement.blur();`),
 			)
 
 			visited := 0
@@ -67,7 +67,7 @@ func TestKeyboardTraversalFocusVisibility(t *testing.T) {
 					chromedp.KeyEvent("\t"),
 					// Let any scroll-into-view settle before measuring.
 					chromedp.Sleep(30*time.Millisecond),
-					chromedp.Evaluate(`(() => {
+					evalExprInto(`(() => {
 						const el = document.activeElement;
 						if (!el || el === document.body) return {tag: ''};
 						const r = el.getBoundingClientRect();

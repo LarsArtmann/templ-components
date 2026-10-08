@@ -62,10 +62,10 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 			// JS-dispatched click (the kanban-e2e-proven pattern): chromedp's
 			// trusted click on the icon-only anchor is unreliable in headless;
 			// a bubbling MouseEvent hits the htmx/Datastar listener the same way.
-			next := chromedp.Evaluate(
+			next := evalExprInto(
 				`(document.querySelector('a[aria-label="Next month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})),'')`,
-				&done,
-			)
+				&done)
+
 			if err := chromedp.Run(ctx,
 				next,
 				pollTrue(`document.querySelector('#cal-nav h3')?.textContent.includes('August')`),
@@ -75,10 +75,10 @@ func TestWireE2ECalendarMonthNav(t *testing.T) {
 				t.Fatalf("%s next-month click: %v", dialect, err)
 			}
 
-			prev := chromedp.Evaluate(
+			prev := evalExprInto(
 				`(document.querySelector('a[aria-label="Previous month"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})),'')`,
-				&done,
-			)
+				&done)
+
 			if err := chromedp.Run(ctx,
 				prev,
 				pollTrue(`document.querySelector('#cal-nav h3')?.textContent.includes('July')`),
@@ -103,7 +103,7 @@ func dumpCalendarNavState(t *testing.T, ctx context.Context, dialect wire.Transp
 
 	if err := chromedp.Run(
 		ctx,
-		chromedp.Evaluate(`document.querySelector('#cal-nav')?.outerHTML || 'NO #cal-nav'`, &body),
+		evalExprInto(`document.querySelector('#cal-nav')?.outerHTML || 'NO #cal-nav'`, &body),
 	); err != nil {
 		t.Logf("%s: dom dump failed: %v", dialect, err)
 

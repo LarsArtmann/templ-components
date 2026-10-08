@@ -73,7 +73,7 @@ func TestFormLayoutInlineWidthContract(t *testing.T) {
 		TopB  float64 `json:"topB"`
 	}
 
-	if err := chromedp.Run(ctx, chromedp.Evaluate(
+	if err := chromedp.Run(ctx, evalExprInto(
 		`(() => {
 			const form = document.querySelector('form.flex');
 			if (!form) return null;
@@ -85,8 +85,7 @@ func TestFormLayoutInlineWidthContract(t *testing.T) {
 				topA: inputs.length ? inputs[0].getBoundingClientRect().top : -1,
 				topB: inputs.length > 1 ? inputs[1].getBoundingClientRect().top : -1,
 			};
-		})()`, &widths,
-	)); err != nil {
+		})()`, &widths)); err != nil {
 		t.Fatalf("visualtest[forms]: measure inline widths: %v", err)
 	}
 
