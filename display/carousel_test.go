@@ -31,7 +31,9 @@ func TestCarouselKeyboardNavigation(t *testing.T) {
 	utils.AssertContains(t, output, "'End'")
 
 	// RTL-aware arrow-key mapping mirrors the spatial direction of the arrows.
-	utils.AssertContains(t, output, "document.documentElement.getAttribute('dir')==='rtl'")
+	// The RTL check is scoped to the nearest [dir] ancestor (a carousel inside
+	// an RTL region flips even when <html> is LTR), falling back to the root.
+	utils.AssertContains(t, output, "(c.closest('[dir]')||document.documentElement).getAttribute('dir')==='rtl'")
 }
 
 func TestCarouselFocusVisible(t *testing.T) {

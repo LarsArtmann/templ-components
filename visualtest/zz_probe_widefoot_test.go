@@ -7,7 +7,6 @@ package visualtest
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -69,7 +68,7 @@ func TestZZProbeCustomViewports(t *testing.T) {
 				t.Fatalf("write: %v", err)
 			}
 
-			fmt.Printf("probe wrote %s (%d bytes)\n", out, len(shot))
+			t.Logf("probe wrote %s (%d bytes)", out, len(shot))
 		})
 	}
 }

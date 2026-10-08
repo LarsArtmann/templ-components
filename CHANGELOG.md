@@ -66,6 +66,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **visualtest migrated to chromedp v0.20.1 (generic `Action[T]` API) +
+  cdproto v0.157.9.** The dependency bump had broken the test module's
+  compile (BuildFlow loop-detected 6 failed `go-mod-update` runs); ~40 test
+  files now use the typed API — `chromedp.Do` for void chains, typed
+  `Evaluate[T]` with new `evalInto`/`evalExprInto`/`evalVoid` helpers,
+  `FullScreenshot(quality)` byte captures, `RunResponse` for navigation
+  status, and `cdp.Call` for raw protocol commands (emulation, input,
+  browser permissions). Public test helpers keep their signatures; no
+  component code changed and the full visual suite (goldens, e2e, axe
+  sweep) passes unchanged.
+
 - **Tailwind v4 canonical forms across the library (v4.3.3 audit execution).**
   All positional insets migrated from the v4.2-deprecated `start-*`/`end-*`
   aliases to canonical `inset-s-*`/`inset-e-*` (11 sites: toast container,
