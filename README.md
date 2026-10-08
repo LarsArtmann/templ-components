@@ -59,6 +59,20 @@ A complete, dark-mode-aware, CSP-safe page from one Go binary — the [live demo
 
 ---
 
+## Installation
+
+```bash
+go get github.com/larsartmann/templ-components@latest
+```
+
+Import a package and render — the generated `*_templ.go` files ship inside the
+module, so a plain `go get` builds without the templ CLI. Runtime requirements
+and toolchain notes live under [Requirements](#requirements); the templ CLI and
+Tailwind CSS 4.x toolchain are needed when you develop your own templates. Full
+setup: [Installation guide](https://templcomponents.lars.software/getting-started/installation/).
+
+---
+
 ## Why templ-components?
 
 UI in a Go binary — without adopting a frontend stack.

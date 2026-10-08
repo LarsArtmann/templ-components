@@ -1,5 +1,17 @@
 # BuildFlow Configuration
 # See: https://github.com/larsartmann/buildflow
+#
+# KNOWN PREFLIGHT TENSION (documented non-fix, 2026-10-08): the
+# workspace/pseudo-version-hygiene check FAILs on the root go.mod's six
+# intra-repo requires at the release version (e.g. v1.21.0). That state is
+# DELIBERATE: commit e4fa4228 re-tidied sibling requires to the release
+# version after every cut so master CI stays green (v1.11.0 lesson: the
+# zero-pseudo form left every pipeline red for 9 days). The check's
+# zero-pseudo rule is generically right (nix-build determinism, gotcha #84)
+# and only constrains ./dir replaces — visualtest/website ../sibling pins
+# are out of scope by design — but for THIS repo the resolvable version
+# wins. Do NOT normalize the requires; the ask for an acceptance option is
+# TODO_LIST #383.
 # (eslint-fix skip removed: BuildFlow now auto-defers eslint when the repo
 # has no eslint config, which is by design here.)
 # pnpm-audit UNSKIPPED 2026-10-07: the trigger requires a lock file

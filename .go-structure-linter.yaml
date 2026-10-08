@@ -1,0 +1,12 @@
+# go-structure-linter config (repo-owned). BuildFlow passes this file to the
+# tool (contract pinned by BuildFlow's TestGoStructureLinterHonorsRepoConfig).
+exclude_patterns:
+  # Static files live in templates/ (consumer-facing; every doc references
+  # templates/app.css) and examples/demo/static/ (go:embed'ed demo assets).
+  # "Move to assets/" would break the documented surface — not applicable.
+  - assets-directory
+  # The rule name-matches files containing "golden" and flags the test
+  # HARNESS source (utils/golden/golden.go, visualtest/golden.go,
+  # *_golden_test.go) as fixtures. The actual golden fixtures already live
+  # in testdata/ directories.
+  - testdata-directory

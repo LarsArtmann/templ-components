@@ -9,3 +9,20 @@ exclude = [
   'github\.com/larsartmann/overview',
   'github\.com/larsartmann/sec',
 ]
+
+# Point-in-time report dirs + the website are excluded from scanning:
+# - archived/ report dirs quote links as they were when written (rewriting
+#   them falsifies the record; BuildFlow's lychee-archived-docs preflight
+#   check requires this coverage).
+# - docs/reviews holds the 2026-07-18 multi-skill review HTML batch whose
+#   cross-links use root-relative paths that never resolved on disk.
+# - website/ content uses site-root-relative links (/getting-started/...)
+#   that cannot resolve in a repo scan; the SSG's own build gates them for
+#   real (website/internal/build CheckLinks + TestSiteBuildIntegrity).
+exclude_path = [
+  'docs/feedback/archived',
+  'docs/planning/archived',
+  'docs/status/archived',
+  'docs/reviews',
+  'website',
+]

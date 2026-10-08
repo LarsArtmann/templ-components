@@ -79,6 +79,14 @@
               # lint app's runtimeInputs — `nix shell nixpkgs#actionlint` was
               # needed for ad-hoc workflow checks).
               actionlint
+              # govulncheck must run in THIS shell, not `nix run nixpkgs#…`:
+              # outside it the scan driver is nixpkgs' default go (1.26),
+              # which pulls toolchain go1.27.0 in through GOTOOLCHAIN=auto
+              # and emits "package requires newer Go version go1.27"
+              # warnings for every repo package instead of scanning
+              # (BuildFlow govulncheck findings, 2026-10-08). Here go_1_27
+              # is on PATH, so the driver matches the scanned code.
+              govulncheck
             ];
             shellHook = ''
               # GOEXPERIMENT=jsonv2: required until Go 1.27 stabilizes it.
