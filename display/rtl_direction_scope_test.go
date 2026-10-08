@@ -15,20 +15,29 @@ func TestRTLDirectionReadsAreSubtreeScoped(t *testing.T) {
 	t.Parallel()
 
 	sources := []string{"shared.go", "tabs.templ", "carousel.templ"}
+
 	for _, name := range sources {
 		content, err := os.ReadFile(name)
 		if err != nil {
 			t.Fatalf("read %s: %v", name, err)
 		}
+
 		src := string(content)
+
 		if !strings.Contains(src, "closest('[dir]')") {
 			t.Errorf("%s: no subtree-scoped direction read found (missing closest('[dir]'))", name)
+
 			continue
 		}
+
 		scoped := strings.ReplaceAll(src, "||document.documentElement", "")
 		scoped = strings.ReplaceAll(scoped, "|| document.documentElement", "")
+
 		if strings.Contains(scoped, "documentElement.getAttribute('dir')") {
-			t.Errorf("%s: page-scoped direction read found; use (el.closest('[dir]')||document.documentElement).getAttribute('dir')", name)
+			t.Errorf(
+				"%s: page-scoped direction read found; use (el.closest('[dir]')||document.documentElement).getAttribute('dir')",
+				name,
+			)
 		}
 	}
 }

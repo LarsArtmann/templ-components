@@ -8,45 +8,9 @@
 
 **Server-rendered Go components that ship real HTML — no JavaScript framework required. Built on [templ](https://templ.guide), [HTMX](https://htmx.org), and [Tailwind CSS v4](https://tailwindcss.com).**
 
-[Documentation](https://templcomponents.lars.software) · [Live Demo](https://templcomponents.lars.software/demo) · [Why templ-components](https://templcomponents.lars.software/sales) · [Quick Start](#quick-start) · [Component Catalog](#component-catalog)
+[Documentation](https://templcomponents.lars.software) · [Live Demo](https://templcomponents.lars.software/demo) · [Why templ-components](https://templcomponents.lars.software/sales) · [Quick Start](#quick-start) · [Component Catalog](#component-catalog) · [How It Compares](#how-it-compares)
 
 No DaisyUI. No Node.js. No framework lock-in.
-
-> **Part of the GOTH stack** — pair with
-> [cqrs-htmx](https://github.com/larsartmann/cqrs-htmx) (HTTP → CQRS wiring,
-> auth, HTMX response building) and
-> [go-cqrs-lite](https://github.com/larsartmann/go-cqrs-lite) (event sourcing
-> core) for a complete server-rendered Go web stack with zero framework
-> lock-in.
-
----
-
-## Why templ-components?
-
-123 server-rendered components. 64 typed string enums (63 with IsValid()). 102 SVG icons. Zero client-side framework.
-
-templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
-
-| Feature               | templ-components                               | [shadcn-templ](https://github.com/axadrn/shadcn-templ) (fka templUI) | [goshipit](https://github.com/haatos/goshipit) |
-| --------------------- | ---------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| **CSS approach**      | Tailwind v4 (CSS-first)                        | Tailwind v4 + CSS vars, 8 style themes                               | Tailwind v4 + DaisyUI                          |
-| **JavaScript**        | HATEOAS (enhances HTML)                        | Vanilla JS (Base UI behavior ports, bundled runtime)                 | HTMX-driven                                    |
-| **Requires Node.js**  | No                                             | No                                                                   | Yes (CSS build only)                           |
-| **Components**        | 123                                            | ~64 + 27 installable blocks                                          | 52                                             |
-| **Typed props**       | 64 enums                                       | —                                                                    | —                                              |
-| **Dark mode**         | Built-in (tested)                              | CSS custom properties                                                | Via DaisyUI                                    |
-| **CSP compliant**     | Yes (nonce on all scripts)                     | Yes (nonce on runtime bundle)                                        | —                                              |
-| **Container queries** | 8 opt-in components + fluid typography (`cqi`) | —                                                                    | —                                              |
-| **Visual regression** | chromedp pixel tests                           | Playwright parity suite vs shadcn/ui                                 | —                                              |
-| **HTMX integration**  | Built-in package                               | Compatible (htmx fixture-tested)                                     | Native (core design)                           |
-| **Datastar support**  | Opt-in package                                 | —                                                                    | —                                              |
-| **Distribution**      | Go module (semver upgrades)                    | Copy-paste registry (you own the code)                               | Copy CLI (`gsi`)                               |
-
-**Head-to-head:** the full comparison — architecture, testing depth, what each
-class of project is best at — lives in
-[`docs/comparison.md`](docs/comparison.md) (external facts verified 2026-10-08).
-
----
 
 ## Quick Start
 
@@ -55,12 +19,6 @@ class of project is best at — lives in
 ```bash
 go get github.com/larsartmann/templ-components
 ```
-
-> **Build flag (older toolchains only):** this library uses `encoding/json/v2`
-> (via `errorpage`). On the Go 1.27+ floor no flag is needed — json/v2 is
-> stable there. Toolchains older than 1.27 must set `GOEXPERIMENT=jsonv2`,
-> or the build fails with:
-> `build constraints exclude all Go files in .../encoding/json/v2`
 
 **2. Build a page**
 
@@ -95,7 +53,59 @@ templ Dashboard() {
 templ generate && go run .
 ```
 
+A complete, dark-mode-aware, CSP-safe page from one Go binary — the [live demo](https://templcomponents.lars.software/demo) is built entirely this way.
+
 **Full guide:** [Installation](https://templcomponents.lars.software/getting-started/installation/) · [Quick Start](https://templcomponents.lars.software/getting-started/quick-start/)
+
+---
+
+## Why templ-components?
+
+UI in a Go binary — without adopting a frontend stack.
+
+- **HTML over the wire.** Components render complete, accessible HTML on the server; [HTMX](https://htmx.org) (or opt-in [Datastar](https://data-star.dev)) enhances it. No hydration, no virtual DOM, no bundler.
+- **Invalid states don't compile.** Every closed set — variant, size, tone, method — is a typed enum. Pass a wrong value and the build fails before a browser opens.
+- **Security and polish are defaults, not TODOs.** CSP nonces on every script, dark mode and `prefers-reduced-motion` support on every component, logical RTL properties throughout — each enforced by a regression test, not a code-review memo.
+- **Pay for what you use.** Pure Go + templ + Tailwind CSS v4 in seven small modules; import one package or all of them.
+
+123 server-rendered components · 64 typed string enums (63 with IsValid()) · 102 SVG icons — in one `go get`.
+
+---
+
+## By the Numbers
+
+| Metric         | Value                                               |
+| -------------- | --------------------------------------------------- |
+| Components     | 123                                                 |
+| SVG icons      | 102                                                 |
+| Typed enums    | 64 (63 with IsValid)                                |
+| Packages       | 20 (across 7 Go modules)                            |
+| Tests          | ~1,600 test functions + ~1,650 subtests             |
+| Visual goldens | 200 pixel-level regression tests (chromedp)         |
+| Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
+
+---
+
+## How It Compares
+
+| Feature               | templ-components                               | [shadcn-templ](https://github.com/axadrn/shadcn-templ) (fka templUI) | [goshipit](https://github.com/haatos/goshipit) |
+| --------------------- | ---------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
+| **CSS approach**      | Tailwind v4 (CSS-first)                        | Tailwind v4 + CSS vars, 8 style themes                               | Tailwind v4 + DaisyUI                          |
+| **JavaScript**        | HATEOAS (enhances HTML)                        | Vanilla JS (Base UI behavior ports, bundled runtime)                 | HTMX-driven                                    |
+| **Requires Node.js**  | No                                             | No                                                                   | Yes (CSS build only)                           |
+| **Components**        | 123                                            | ~64 + 27 installable blocks                                          | 52                                             |
+| **Typed props**       | 64 enums                                       | —                                                                    | —                                              |
+| **Dark mode**         | Built-in (tested)                              | CSS custom properties                                                | Via DaisyUI                                    |
+| **CSP compliant**     | Yes (nonce on all scripts)                     | Yes (nonce on runtime bundle)                                        | —                                              |
+| **Container queries** | 8 opt-in components + fluid typography (`cqi`) | —                                                                    | —                                              |
+| **Visual regression** | chromedp pixel tests                           | Playwright parity suite vs shadcn/ui                                 | —                                              |
+| **HTMX integration**  | Built-in package                               | Compatible (htmx fixture-tested)                                     | Native (core design)                           |
+| **Datastar support**  | Opt-in package                                 | —                                                                    | —                                              |
+| **Distribution**      | Go module (semver upgrades)                    | Copy-paste registry (you own the code)                               | Copy CLI (`gsi`)                               |
+
+**Head-to-head:** the full comparison — architecture, testing depth, what each
+class of project is best at — lives in
+[`docs/comparison.md`](docs/comparison.md) (external facts verified 2026-10-08).
 
 ---
 
@@ -365,20 +375,6 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 
 ---
 
-## By the Numbers
-
-| Metric         | Value                                               |
-| -------------- | --------------------------------------------------- |
-| Components     | 123                                                 |
-| SVG icons      | 102                                                 |
-| Typed enums    | 64 (63 with IsValid)                                |
-| Packages       | 20 (across 7 Go modules)                            |
-| Tests          | ~1,600 test functions + ~1,650 subtests             |
-| Visual goldens | 200 pixel-level regression tests (chromedp)         |
-| Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
-
----
-
 ## Testing
 
 The library is verified by a three-tier strategy that catches different classes
@@ -407,6 +403,11 @@ update goldens, and how to add coverage for a new component.
 - **Tailwind CSS** 4.x+
 - **HTMX** 2.x (optional, for `htmx` package)
 
+> **Older toolchains:** this library uses `encoding/json/v2` (via `errorpage`).
+> On the Go 1.27+ floor no flag is needed — json/v2 is stable there. Toolchains
+> older than 1.27 must set `GOEXPERIMENT=jsonv2`, or the build fails with:
+> `build constraints exclude all Go files in .../encoding/json/v2`
+
 > **Contributing?** The repo ships a committed `.envrc` for
 > [direnv](https://direnv.net/) that exports `GOEXPERIMENT=jsonv2` and
 > `GOWORK=off` for every tool (go, gopls, IDE) — not just inside
@@ -418,7 +419,10 @@ update goldens, and how to add coverage for a new component.
 
 ## Ecosystem
 
-This library is part of the **GOTH stack** (Go + Templ + HTMX):
+Pair [cqrs-htmx](https://github.com/larsartmann/cqrs-htmx) (HTTP → CQRS wiring,
+auth, HTMX response building) and [go-cqrs-lite](https://github.com/larsartmann/go-cqrs-lite)
+(event sourcing core) with this library for a complete server-rendered Go web
+stack — all part of the **GOTH stack** (Go + Templ + HTMX):
 
 | Project                                                           | What it does                                                            |
 | ----------------------------------------------------------------- | ----------------------------------------------------------------------- |

@@ -1,7 +1,7 @@
 # Research Note: Direction Context Propagation (shadcn-templ's DirectionProvider) — Pattern Comparison
 
 **Created:** 2026-10-08
-**Status:** Adopted the actionable piece (element-scoped `dir` reads, TODO_LIST #372). The full provider pattern is deliberately NOT adopted — revisit triggers listed below.
+**Status:** IMPLEMENTED 2026-10-08 (same day) — element-scoped `dir` reads shipped in menu nav, Tabs, and Carousel, pinned by `display.TestRTLDirectionReadsAreSubtreeScoped`. The full provider pattern is deliberately NOT adopted — revisit triggers listed below.
 
 ---
 
@@ -90,7 +90,10 @@ One source of truth: the DOM `dir` attribute.
    which compile to physical `left`/`right`) are banned at the source and
    enforced by `utils.TestRTLLogicalProperties`. Layout mirrors automatically
    wherever a consumer puts `dir="rtl"`, with zero per-component awareness.
-2. **JS:** three event-time reads, all page-scoped:
+2. **JS:** three event-time reads, subtree-scoped since 2026-10-08 — each
+   resolves `(container.closest('[dir]') || document.documentElement)` with
+   the component's own root as the container, pinned by
+   `display.TestRTLDirectionReadsAreSubtreeScoped`:
    - `display/shared.go:384` — shared menu keyboard nav (Dropdown, ContextMenu)
    - `display/tabs.templ:222` — Tabs
    - `display/carousel.templ:159` — Carousel
@@ -107,10 +110,10 @@ One source of truth: the DOM `dir` attribute.
 | ------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | Layout mirroring          | Physical utilities + build-time `applyRtlMapping` inliner (106 upstream test cases) to convert them | Logical properties banned-in at the source; no build step, no test corpus for the conversion  |
 | Direction source of truth | **Two**: ctx marker (`data-templ-direction`) drives JS; `dir` attribute drives CSS                  | **One**: the `dir` attribute drives both                                                      |
-| JS direction resolution   | Per-subtree correct (`useDirection` walks to nearest provider marker)                               | Page-scoped only (`documentElement.getAttribute('dir')`)                                      |
+| JS direction resolution   | Per-subtree correct (`useDirection` walks to nearest provider marker)                               | Per-subtree correct since 2026-10-08 (`closest('[dir]')` + `<html>` fallback, guard test)     |
 | Server-side branching     | Yes — components branch markup on `utils.Direction(ctx)`                                            | No — components are direction-ignorant by construction                                        |
 | API surface for consumers | A provider component to wrap content                                                                | None (just the standard `dir` attribute)                                                      |
-| Failure mode when omitted | Provider defaults `ltr` — JS disagrees with an RTL layout (their own comment warns about this)      | Mixed-direction subtrees: JS reads the page-level `dir`, wrong arrow mapping inside a subtree |
+| Failure mode when omitted | Provider defaults `ltr` — JS disagrees with an RTL layout (their own comment warns about this)      | None left (subtree gap fixed 2026-10-08; was: page-level `dir`, wrong arrows in RTL subtrees) |
 
 ---
 
@@ -118,20 +121,20 @@ One source of truth: the DOM `dir` attribute.
 
 ### Adopted: element-scoped `dir` resolution in JS (TODO_LIST #372)
 
-The one real gap our model has. An RTL widget embedded in an LTR page (or vice
-versa) gets backwards ArrowLeft/Right in menu nav, Tabs, and Carousel, because
-all three read `<html>` only. The fix is three one-line changes:
+Shipped 2026-10-08 (TODO_LIST #372). The one real gap our model had: an RTL
+widget embedded in an LTR page (or vice versa) got backwards ArrowLeft/Right
+in menu nav, Tabs, and Carousel, because all three read `<html>` only. All
+three now resolve:
 
 ```js
-// before
-var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
-// after
-var isRtl = (e.target.closest('[dir]') || document.documentElement).getAttribute('dir') === 'rtl';
+var isRtl = (container.closest('[dir]') || document.documentElement).getAttribute('dir') === 'rtl';
 ```
 
-The `dir` attribute IS the equivalent of their `data-templ-direction` marker —
-the platform already gives us per-subtree context propagation for free. We get
-their correctness without adding a provider API.
+with `container` being the component root the handler already resolved (the
+menu, the tab, the carousel region). The `dir` attribute IS the equivalent of
+their `data-templ-direction` marker — the platform already gives us per-subtree
+context propagation for free. We get their correctness without adding a
+provider API. Regression guard: `display.TestRTLDirectionReadsAreSubtreeScoped`.
 
 ### Rejected: Go-side `utils.WithDirection`/`Direction` (for now)
 

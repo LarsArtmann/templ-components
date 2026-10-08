@@ -116,6 +116,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **RTL keyboard navigation resolved direction from `<html>` only.** Menu
+  keyboard nav (Dropdown/ContextMenu), Tabs, and Carousel now resolve the
+  direction from the nearest `[dir]` ancestor (document root as fallback), so
+  RTL widgets embedded in LTR pages — and the inverse — map
+  ArrowLeft/ArrowRight correctly. Markup and API unchanged; regression-pinned
+  by `display.TestRTLDirectionReadsAreSubtreeScoped`. Pattern comparison vs
+  shadcn-templ's DirectionProvider:
+  `docs/research/direction-context-propagation.md`.
+
+- **AppShell `Footer` now pins to the viewport bottom at every breakpoint.**
+  The footer slot's `mt-auto` only worked at the grid breakpoint (lg+):
+  below it the shell was a plain block, the content column never stretched,
+  and short pages left the footer floating mid-screen. The shell wrapper is
+  now a full-height flex column (`flex flex-col min-h-dvh`) with a
+  `flex-1` content column at every width — the grid still takes over at the
+  hamburger breakpoint (flex properties are inert on grid items), so
+  desktop rendering is unchanged. The demo now rides this slot instead of
+  nesting its provenance footer inside the content.
+
+- **Kanban demo: each transport board gets its own full-width row.** The
+  two demo boards (htmx + Datastar) sat side by side in half-width panels,
+  cramming each 4-column board into heavy horizontal scrolling with
+  cramped drag targets. Stacked full width, all columns are visible and
+  the two transports read as clearly labeled, directly comparable rows.
+
 - **README fact drift: competitor table, datastar count, package/test
   numbers.** The comparison table still described templUI as a separate
   current project using Alpine.js — templUI was renamed and reworked into
