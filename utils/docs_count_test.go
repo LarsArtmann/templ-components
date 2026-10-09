@@ -482,7 +482,8 @@ func countPublicPackages(t *testing.T, root string) int {
 		for _, entry := range entries {
 			sub := filepath.Join(mod, entry.Name())
 
-			if !entry.IsDir() || nonConsumerDirs[entry.Name()] || strings.HasPrefix(entry.Name(), ".") || isRepoLocalModule(root, sub) {
+			if !entry.IsDir() || nonConsumerDirs[entry.Name()] || strings.HasPrefix(entry.Name(), ".") ||
+				isRepoLocalModule(root, sub) {
 				continue
 			}
 
@@ -518,8 +519,10 @@ func countPublishedModules(t *testing.T, root string) int {
 
 // countLibraryTests counts test functions and t.Run subtests across the
 // public packages of the published modules — the README Tests row's scope.
-func countLibraryTests(t *testing.T, root string) (funcs, subtests int) {
+func countLibraryTests(t *testing.T, root string) (int, int) {
 	t.Helper()
+
+	var funcs, subtests int
 
 	funcRe := regexp.MustCompile(`(?m)^func (Test|Fuzz|Benchmark)`)
 	subtestRe := regexp.MustCompile(`t\.Run\(`)
@@ -535,7 +538,8 @@ func countLibraryTests(t *testing.T, root string) (funcs, subtests int) {
 		for _, entry := range entries {
 			sub := filepath.Join(mod, entry.Name())
 
-			if !entry.IsDir() || nonConsumerDirs[entry.Name()] || strings.HasPrefix(entry.Name(), ".") || isRepoLocalModule(root, sub) {
+			if !entry.IsDir() || nonConsumerDirs[entry.Name()] || strings.HasPrefix(entry.Name(), ".") ||
+				isRepoLocalModule(root, sub) {
 				continue
 			}
 
