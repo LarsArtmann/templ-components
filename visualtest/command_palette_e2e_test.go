@@ -13,7 +13,6 @@ import (
 	"github.com/chromedp/chromedp"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
@@ -25,7 +24,7 @@ func commandPaletteE2EPage() templ.Component {
 
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		palette := display.CommandPaletteProps{
-			BaseProps:    utils.BaseProps{ID: "e2e-palette", Nonce: "e2e-nonce"},
+			ID: "e2e-palette", Nonce: "e2e-nonce",
 			TriggerLabel: "Commands",
 			Hotkey:       true,
 			Groups: []display.CommandGroup{
@@ -99,6 +98,7 @@ func TestCommandPaletteE2E(t *testing.T) {
 	}
 
 	srv := commandPaletteE2EServer(t)
+
 	ctx, cancel := newTab(t)
 	defer cancel()
 
@@ -119,10 +119,15 @@ func TestCommandPaletteE2E(t *testing.T) {
 	}
 
 	// Filter: "target" keeps the link row visible and hides the others.
-	if err := chromedp.Do(tabCtx,
+	if err := chromedp.Do(
+		tabCtx,
 		chromedp.SendKeys(chromedp.CSS("#e2e-palette-input"), "target"),
-		pollTrue(`document.getElementById('e2e-palette-item-1').getAttribute('data-tc-palette-hidden')==='true'`, pollFast()...),
-		pollTrue(`document.getElementById('e2e-palette-item-0').getAttribute('data-tc-palette-hidden')==='false'`, pollFast()...),
+		pollTrue(
+			`document.getElementById('e2e-palette-item-1').getAttribute('data-tc-palette-hidden')==='true'`,
+			pollFast()...),
+		pollTrue(
+			`document.getElementById('e2e-palette-item-0').getAttribute('data-tc-palette-hidden')==='false'`,
+			pollFast()...),
 	); err != nil {
 		t.Fatalf("filter: %v", err)
 	}
@@ -138,7 +143,7 @@ func TestCommandPaletteE2E(t *testing.T) {
 	}
 
 	if err := chromedp.Do(tabCtx,
-		chromedp.WaitVisible(chromedp.CSS("#target-marker"), chromedp.WithPollingTimeout(15*time.Second)),
+		chromedp.WaitVisible(chromedp.CSS("#target-marker")),
 	); err != nil {
 		t.Fatalf("enter navigate: %v (enter err: %v)", err, enterErr)
 	}
@@ -153,6 +158,7 @@ func TestCommandPaletteWireE2E(t *testing.T) {
 	}
 
 	srv := commandPaletteE2EServer(t)
+
 	ctx, cancel := newTab(t)
 	defer cancel()
 

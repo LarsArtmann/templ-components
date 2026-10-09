@@ -8,6 +8,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`display.CommandPalette` — the ⌘K command palette.** A CSP-safe
+  `<dialog>`-based palette (native focus trap, Escape, top layer, backdrop)
+  with a search input that filters server-rendered groups client-side:
+  non-matching rows hide, empty groups collapse, and an empty-state message
+  appears when nothing matches. Items select via links (`CommandItem.Href`)
+  or wire actions (`CommandItem.Wire` — htmx or Datastar through one
+  `wire.Action`), with full keyboard support (arrow keys move the highlighted
+  option via `aria-activedescendant`, Enter selects, Cmd/Ctrl+K opens when
+  `Hotkey` is set). The only F109 flip from the 2026-10-08 demand re-check:
+  shadcn-templ ships Command and two named internal consumers exist (website
+  docs search, demo MPA navigation). Golden sweep + wire/structure tests +
+  browser e2e for both selection flows (TODO_LIST #382).
+
 - **`/llms.txt` — the site's machine-readable index for AI agents.** The
   lean llmstxt.org shape (H1, blockquote summary with the canonical counts,
   one link per docs page) generated from the same parsed docs metadata as
