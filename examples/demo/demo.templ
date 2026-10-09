@@ -14,7 +14,7 @@ import (
 // demo_counts_test.go asserts these against FEATURES.md so they cannot drift.
 const (
 	componentCount = "123"
-	packageCount   = "11"
+	packageCount   = "17"
 )
 
 // demoHomePage renders the landing page through the shared shell. The hero
@@ -87,7 +87,7 @@ templ demoHero() {
 						Server-rendered UI components for Go
 					</h1>
 					<p class="mt-4 text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-						123 accessible, CSP-safe components built with
+						{ componentCount } accessible, CSP-safe components built with
 						<span class="font-medium text-blue-600 dark:text-blue-400">templ</span>,
 						<span class="font-medium text-blue-600 dark:text-blue-400">HTMX</span>, and
 						<span class="font-medium text-blue-600 dark:text-blue-400">Tailwind CSS v4</span>.
@@ -97,8 +97,8 @@ templ demoHero() {
 				<div class="flex flex-wrap items-center gap-4">
 					@display.CopyButton(display.CopyButtonProps{
 						BaseProps: utils.BaseProps{Nonce: demoNonceConst},
-						Text:  "go get github.com/larsartmann/templ-components",
-						Label: "Copy install command",
+						Text:      "go get github.com/larsartmann/templ-components",
+						Label:     "Copy install command",
 					})
 					<a href={ templ.SafeURL(demoDocsURL) } class="inline-flex items-center gap-2 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors motion-reduce:transition-none motion-reduce:duration-0">
 						Documentation

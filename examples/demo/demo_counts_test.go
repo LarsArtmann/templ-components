@@ -35,6 +35,24 @@ func TestHeroCountsMatchFeatures(t *testing.T) {
 			componentCount, totals[1])
 	}
 
+	// packageCount must equal the README Packages row (live-computed by
+	// utils.TestDocsCountDrift) so the demo hero sells the same number as the
+	// README and the site — one number everywhere.
+	readme, err := os.ReadFile(filepath.Join("..", "..", "README.md"))
+	if err != nil {
+		t.Skipf("README.md not readable: %v", err)
+	}
+
+	packages := regexp.MustCompile(`\|\s*Packages\s*\|\s*(\d+) `).FindStringSubmatch(string(readme))
+	if packages == nil {
+		t.Fatal("could not parse README.md Packages row")
+	}
+
+	if packageCount != packages[1] {
+		t.Errorf("demo packageCount = %s, README.md Packages row = %s (update the const in demo.templ)",
+			packageCount, packages[1])
+	}
+
 	wantIcons, err := strconv.Atoi(totals[2])
 	if err != nil {
 		t.Fatalf("parse icon count: %v", err)
