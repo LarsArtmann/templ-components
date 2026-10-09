@@ -43,6 +43,7 @@ type CommandPaletteProps struct {
 	utils.BaseProps
 
 	Placeholder  string
+	Groups       []CommandGroup
 	TriggerLabel string // renders an opener button when non-empty
 	Hotkey       bool   // register Cmd/Ctrl+K to open
 	EmptyMessage string
@@ -99,7 +100,7 @@ func commandPaletteJS(id string) string {
 		"var empty=d.querySelector('[data-tc-palette-empty]');" +
 		"var active=null;" +
 		"function options(){return Array.prototype.slice.call(d.querySelectorAll('[data-tc-palette-item]'))" +
-		".filter(function(o){return o.closest('[data-tc-palette-group]').getAttribute('data-tc-palette-hidden')!=='true';});}" +
+		".filter(function(o){return o.getAttribute('data-tc-palette-hidden')!=='true';});}" +
 		"function groups(){return d.querySelectorAll('[data-tc-palette-group]');}" +
 		"function setActive(opt){if(active)active.removeAttribute('data-tc-palette-active');" +
 		"active=opt;if(active){active.setAttribute('data-tc-palette-active','true');" +
@@ -121,7 +122,7 @@ func commandPaletteJS(id string) string {
 		"d.addEventListener('click',function(e){" +
 		"if(e.target===d){d.close();return;}" +
 		"var opt=e.target.closest('[data-tc-palette-item]');" +
-		"if(opt&&!opt.getAttribute('data-tc-palette-hidden')){if(opt.closest('[data-tc-palette-group]').getAttribute('data-tc-palette-hidden')!=='true')d.close();return;}" +
+		"if(opt){d.close();return;}" +
 		"if(e.target.closest('[data-tc-close]'))d.close();});" +
 		"if(input){input.addEventListener('input',applyFilter);" +
 		"input.addEventListener('keydown',function(e){" +

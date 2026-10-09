@@ -21,6 +21,8 @@ import "github.com/larsartmann/templ-components/utils"
 templ CommandPalette(props CommandPaletteProps) {
 	{{ id := utils.EnsureID("palette", props.ID) }}
 	{{ emptyMessage := utils.Ternary(props.EmptyMessage != "", props.EmptyMessage, "No results found.") }}
+	{{ inputPlaceholder := utils.Ternary(props.Placeholder != "", props.Placeholder, "Type a command or search…") }}
+	{{ listLabel := utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Commands") }}
 	<div class="inline-flex">
 		if props.TriggerLabel != "" {
 			<button
@@ -38,7 +40,7 @@ templ CommandPalette(props CommandPaletteProps) {
 	</div>
 	<dialog
 		id={ id }
-		class={ utils.Class("tc-overlay tc-modal mt-[12vh] mb-auto h-fit w-[calc(100%-2rem)] rounded-xl bg-white p-0 shadow-xl backdrop:bg-transparent print:hidden dark:bg-gray-900", commandPaletteSizeClass(props.Size), props.Class) }
+		class={ utils.Class("tc-overlay tc-modal mt-[12vh] mb-auto h-fit w-[calc(100%-2rem)] rounded-xl bg-white p-0 shadow-xl print:hidden dark:bg-gray-900", commandPaletteSizeClass(props.Size), props.Class) }
 		data-tc-palette={ id }
 		if props.Hotkey {
 			data-tc-hotkey="true"
@@ -46,7 +48,7 @@ templ CommandPalette(props CommandPaletteProps) {
 		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Command palette") }
 		{ props.Attrs... }
 	>
-		<div class="border-b border-gray-200 dark:border-gray-700">
+		<div class="border-gray-200 border-b dark:border-gray-700">
 			<input
 				type="text"
 				id={ id + "-input" }
@@ -56,17 +58,17 @@ templ CommandPalette(props CommandPaletteProps) {
 				aria-controls={ id + "-list" }
 				aria-autocomplete="list"
 				autocomplete="off"
-				placeholder={ utils.Ternary(props.Placeholder != "", props.Placeholder, "Type a command or search…") }
+				placeholder={ inputPlaceholder }
 				data-tc-palette-input
 			/>
 		</div>
 		<div
-			id={ id + "-list" }
 			role="listbox"
-			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Commands") }
+			aria-label={ listLabel }
 			class="max-h-[60vh] overflow-y-auto overscroll-contain p-2"
 			data-tc-palette-list
 		>
+			{{ itemOffset := 0 }}
 			for _, group := range props.Groups {
 				if len(group.Items) > 0 {
 					<div
@@ -81,15 +83,16 @@ templ CommandPalette(props CommandPaletteProps) {
 								{ group.Label }
 							</div>
 						}
-						for _, item := range group.Items {
+						for itemIndex, item := range group.Items {
+							{{ itemID := commandPaletteItemID(id, itemOffset+itemIndex) }}
 							if commandPaletteItemIsLink(item) {
 								<a
-									id={ commandPaletteItemID(id, loopIndex()) }
+									id={ itemID }
 									href={ templ.SafeURL(item.Href) }
 									role="option"
 									aria-selected="false"
 									tabindex="-1"
-									class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-700 data-[hidden=true]:hidden data-[active=true]:bg-blue-50 dark:text-gray-200 dark:data-[active=true]:bg-gray-800"
+									class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-700 data-[tc-palette-active=true]:bg-blue-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-200 dark:data-[tc-palette-active=true]:bg-gray-800"
 									data-tc-palette-item
 									data-tc-palette-hidden="false"
 								>
@@ -100,16 +103,16 @@ templ CommandPalette(props CommandPaletteProps) {
 								</a>
 							} else if item.Wire != nil {
 								<button
-									id={ commandPaletteItemID(id, loopIndex()) }
+									id={ itemID }
 									type="button"
 									role="option"
 									aria-selected="false"
 									tabindex="-1"
-									class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-start text-sm text-gray-700 data-[hidden=true]:hidden data-[active=true]:bg-blue-50 dark:text-gray-200 dark:data-[active=true]:bg-gray-800"
+									class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-start text-sm text-gray-700 data-[tc-palette-active=true]:bg-blue-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-200 dark:data-[tc-palette-active=true]:bg-gray-800"
 									data-tc-palette-item
 									data-tc-palette-hidden="false"
-								>
 									{ item.Wire.Attributes()... }
+								>
 									<span class="truncate">{ item.Label }</span>
 									if item.Hint != "" {
 										<span class="shrink-0 text-xs text-gray-400 dark:text-gray-500">{ item.Hint }</span>
@@ -117,11 +120,11 @@ templ CommandPalette(props CommandPaletteProps) {
 								</button>
 							} else {
 								<div
-									id={ commandPaletteItemID(id, loopIndex()) }
+									id={ itemID }
 									role="option"
 									aria-selected="false"
 									tabindex="-1"
-									class="flex items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-500 data-[hidden=true]:hidden dark:text-gray-400"
+									class="flex items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-500 data-[tc-palette-active=true]:bg-blue-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-400"
 									data-tc-palette-item
 									data-tc-palette-hidden="false"
 								>
@@ -134,13 +137,12 @@ templ CommandPalette(props CommandPaletteProps) {
 						}
 					</div>
 				}
+				{{ itemOffset += len(group.Items) }}
 			}
 			<div class="px-3 py-8 text-center text-sm text-gray-400 dark:text-gray-500" data-tc-palette-empty data-tc-palette-hidden="true">
 				{ emptyMessage }
 			</div>
 		</div>
 	</dialog>
-	<script { utils.ScriptAttrs(props.Nonce)... }>
-		{{ commandPaletteJS(id) }}
-	</script>
+	@utils.ScriptComponent(props.Nonce, commandPaletteJS(id), "command palette script")
 }
