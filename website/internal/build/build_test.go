@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
@@ -166,5 +167,21 @@ func TestLLMSIndex(t *testing.T) {
 
 	if strings.Contains(got, "\n\n\n") {
 		t.Errorf("blank-line runs in llms.txt:\n%s", got)
+	}
+}
+
+// TestStatsDirsAreCanonical pins statsDirs to the canonical 9-package
+// component-scan set, order-sensitive: any add, removal, rename, or reorder
+// changes what the site's hero "N components" counts, so it must be a
+// deliberate two-place update (here and utils.TestDocsCountDrift's canonical
+// package set).
+func TestStatsDirsAreCanonical(t *testing.T) {
+	canonical := []string{
+		"display", "feedback", "forms", "layout", "navigation",
+		"charts/echarts", "htmx", "datastar", "errorpage",
+	}
+
+	if !slices.Equal(statsDirs, canonical) {
+		t.Errorf("statsDirs drifted from the canonical set — update BOTH statsDirs and utils.TestDocsCountDrift's package set together, then re-pin here.\ngot:  %q\nwant: %q", statsDirs, canonical)
 	}
 }
