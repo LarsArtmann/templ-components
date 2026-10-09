@@ -421,7 +421,7 @@ func writeSitemaps(outDir, repoRoot string) error {
 // docsSitemapEntries builds the sitemap entries for every registered docs
 // page; the lastmod tracks the content file plus any repo-root source.
 func docsSitemapEntries(repoRoot string) []sitemapEntry {
-	entries := make([]sitemapEntry, 0, 16)
+	entries := make([]sitemapEntry, 0)
 
 	for _, doc := range pages.AllDocs() {
 		docPaths := []string{"website/content/docs/" + doc.Slug + ".md"}
