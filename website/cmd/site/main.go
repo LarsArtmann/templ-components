@@ -359,8 +359,9 @@ func writeSitemaps(outDir, repoRoot string) error {
 	)
 	entries = append(entries,
 		sitemapEntry{
-			loc:     pages.SiteURL + "/sales",
-			lastmod: lastUpdated(repoRoot, "website/internal/pages/sales.templ"),
+			loc: pages.SiteURL + "/sales",
+			lastmod: lastUpdated(repoRoot, "website/internal/pages/sales.templ",
+				"website/internal/pages/data.go", "website/internal/pages/sections.templ"),
 		},
 	)
 
