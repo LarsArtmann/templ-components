@@ -147,6 +147,7 @@ Every fix below is a measured step re-run, not a self-reported claim.
 ## f) UP TO 50 NEXT THINGS (prioritized; ⭐ = this session's direct output, ◇ = carried)
 
 **Release follow-through (v1.21.0 is LIVE; watch ~1 h old)**
+
 1. ◇ GitHub Release page for v1.21.0 from the release notes.
 2. ◇ Poll `go list -m github.com/larsartmann/templ-components@v1.21.0` (+ `/utils@v1.21.0`) until
    the proxy resolves.
@@ -163,20 +164,20 @@ Every fix below is a measured step re-run, not a self-reported claim.
 11. ⭐ Land TODO #384 upstream: art-dupl config-file (`-c .art-dupl.json`) passthrough.
 12. ⭐ Land TODO #385 upstream: golangci-lint-auto-configure accepted-disabled allowlist.
 13. ⭐ Rebuild + reinstall the BuildFlow binary AFTER the concurrent session settles
-    (binary-freshness advisory: built at ec8d2d3, HEAD moved twice during this session alone).
+(binary-freshness advisory: built at ec8d2d3, HEAD moved twice during this session alone).
 14. ⭐ Add the "0 findings + failed step" trap to the buildflow skill's failure-triage table.
 15. ⭐ Consider `docs/planning/archived` + `docs/status/archived` lychee.toml entries: drop
-    (provider-default duplication) or keep for bare-run parity — decide + one comment.
+(provider-default duplication) or keep for bare-run parity — decide + one comment.
 16. ⭐ shellcheck notes disposition: fix release.sh SC2086×3 post-release-cycle, SC2126, SC2129 —
-    or write the accepted-notes rationale block.
+or write the accepted-notes rationale block.
 17. ⭐ lychee redirect hint: pin the 20 redirecting URLs to resolved targets (cosmetic).
 18. ⭐ `v1.10.0.~~` mangled URL (docs/status/2026-08-22:33) + fluid-typography quote-line policy
-    (2026-08-10:66) — 2-char fix vs quote-purity; needs the point-in-time-docs policy call.
+(2026-08-10:66) — 2-char fix vs quote-purity; needs the point-in-time-docs policy call.
 19. ⭐ DevShell additions triage: lychee/shellcheck/prettier/dprint/hadolint (kill the nix-run
-    advisories; each is a version-pin decision) + the 9 unavailable tools (interrogate …).
+advisories; each is a version-pin decision) + the 9 unavailable tools (interrogate …).
 20. ⭐ Full branching-flow sweep once (~140 remaining detect-only) for other genuinely-good ideas.
 21. ⭐ go-structure-linter: one full-rule-surface review now that `.go-structure-linter.yaml`
-    exists (are other rules silently misfiring or worth enabling?).
+exists (are other rules silently misfiring or worth enabling?).
 
 **rg-guard (carried, blocked on operator mechanics)**
 22. ◇ Merge `lessons/windows-ci-workflow-shas` in crush-config + home-manager rebuild.
@@ -186,14 +187,14 @@ Every fix below is a measured step re-run, not a self-reported claim.
 24. ◇ §g Q2: Bool ownership — `//nolint:modernize` vs `//go:fix inline`.
 25. ◇ §g Q3: build.go intent (website/internal/build).
 26. ◇ FileName-flipper ownership (datastar/echarts regenerated every ~8 min) +
-    rtl-session §g Q1 (root-relative-everywhere vs per-module-acceptable).
+rtl-session §g Q1 (root-relative-everywhere vs per-module-acceptable).
 27. ◇ TODO_LIST churn review (~54 lines the daemon reformatted on 2026-10-08, unreviewed —
-    previous report §f10).
+previous report §f10).
 
 **Carried roadmap (from TODO_LIST, unchanged by this session)**
 28. ◇ #382 `display.CommandPalette` (F109 flip, plan exists).
 29. ◇ #375 llms.txt — NOTE: a concurrent session shipped `467000fb feat(website): ship /llms.txt`
-    at ~23:3x; verify + strike instead of re-doing.
+at ~23:3x; verify + strike instead of re-doing.
 30. ◇ #381 duplicate Toggle CHANGELOG entries (blocked on parallel session).
 31. ◇ #377 hand-typed doc-number drift guards (README/website).
 32. ◇ #335 templ v0.3.1070 migration (held; generator pin + golden re-baseline).
@@ -226,7 +227,7 @@ Every fix below is a measured step re-run, not a self-reported claim.
 
 ---
 
-*Session window 22:41–23:38 CEST; tip at report time `d2eee934` (daemon) with concurrent
+_Session window 22:41–23:38 CEST; tip at report time `d2eee934` (daemon) with concurrent
 sessions active (llms.txt shipped at `467000fb`; `utils/docs_count_test.go` modified by a
 foreign session — untouched). All work landed via daemon commits `867dd5e5`, `d1ab8457`,
-`16851b84` (content verified post-sweep).*
+`16851b84` (content verified post-sweep)._
