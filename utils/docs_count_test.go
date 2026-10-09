@@ -480,11 +480,12 @@ func countPublicPackages(t *testing.T, root string) int {
 		}
 
 		for _, entry := range entries {
-			if !entry.IsDir() || nonConsumerDirs[entry.Name()] || strings.HasPrefix(entry.Name(), ".") {
+			sub := filepath.Join(mod, entry.Name())
+
+			if !entry.IsDir() || nonConsumerDirs[entry.Name()] || strings.HasPrefix(entry.Name(), ".") || isRepoLocalModule(root, sub) {
 				continue
 			}
 
-			sub := filepath.Join(mod, entry.Name())
 			subGo, err := filepath.Glob(filepath.Join(root, sub, "*.go"))
 			if err != nil {
 				t.Fatalf("glob %s: %v", sub, err)
