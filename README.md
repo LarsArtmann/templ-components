@@ -12,6 +12,8 @@
 
 No DaisyUI. No Node.js. No framework lock-in.
 
+<img src="website/public/og/home.png" alt="templ-components: build complete UIs from Go, without the frontend stack" width="1200" />
+
 ## Quick Start
 
 **1. Install**
