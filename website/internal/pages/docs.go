@@ -23,14 +23,13 @@ type DocGroup struct {
 // pkgGoDevDoc is the sidebar entry that links off-site (mirrors the Astro
 // sidebar's "Full API on pkg.go.dev").
 //
-//nolint:gochecknoglobals // site information architecture table
-
+//nolint:gochecknoglobals,exhaustruct_v5 // site IA table; entries list only identifying fields
 var pkgGoDevDoc = DocRef{Slug: "", Title: "Full API on pkg.go.dev"}
 
 // docSidebar mirrors the Astro Starlight sidebar configuration
 // (website/astro.config.mjs) so information architecture is unchanged.
 //
-//nolint:gochecknoglobals // site information architecture table
+//nolint:gochecknoglobals,exhaustruct_v5 // static IA table; entries list only identifying fields
 var docSidebar = []DocGroup{
 	{
 		Label: "Getting Started",
