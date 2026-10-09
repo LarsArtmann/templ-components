@@ -5,11 +5,12 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
-	"github.com/chromedp/chromedp"
 	"github.com/a-h/templ"
+	"github.com/chromedp/chromedp"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/utils"
@@ -49,6 +50,15 @@ func commandPaletteE2EPage() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		return layout.Base(layout.DefaultPageProps()).Render(templ.WithChildren(ctx, body), w)
 	})
+}
+
+// pollFast bounds every in-page poll in this file so a failing predicate
+// fails the test in seconds instead of hanging the tab for the full timeout.
+func pollFast() []chromedp.PollOption {
+	return []chromedp.PollOption{
+		chromedp.WithPollingTimeout(10 * time.Second),
+		chromedp.WithPollingInterval(100 * time.Millisecond),
+	}
 }
 
 func commandPaletteE2EServer(t *testing.T) *httptest.Server {
@@ -95,34 +105,42 @@ func TestCommandPaletteE2E(t *testing.T) {
 	tabCtx, tabCancel := context.WithTimeout(ctx, 120*time.Second)
 	defer tabCancel()
 
-	if err := chromedp.Run(tabCtx, chromedp.Navigate(srv.URL)); err != nil {
+	if err := chromedp.Do(tabCtx, chromedp.Navigate(srv.URL)); err != nil {
 		t.Fatalf("navigate: %v", err)
 	}
 
 	// Open via the trigger button.
-	if err := chromedp.Run(tabCtx,
-		chromedp.WaitVisible(`[data-tc-palette-open]`, chromedp.ByQuery),
-		chromedp.Click(`[data-tc-palette-open]`, chromedp.ByQuery),
-		pollTrue(`document.getElementById('e2e-palette').open`),
+	if err := chromedp.Do(tabCtx,
+		chromedp.WaitVisible(chromedp.CSS("[data-tc-palette-open]")),
+		chromedp.Click(chromedp.CSS("[data-tc-palette-open]")),
+		pollTrue(`document.getElementById('e2e-palette').open`, pollFast()...),
 	); err != nil {
 		t.Fatalf("open palette: %v", err)
 	}
 
 	// Filter: "target" keeps the link row visible and hides the others.
-	if err := chromedp.Run(tabCtx,
-		chromedp.SendKeys(`#e2e-palette-input`, "target"),
-		pollTrue(`document.getElementById('e2e-palette-item-1').getAttribute('data-tc-palette-hidden')==='true'`),
-		pollTrue(`document.getElementById('e2e-palette-item-0').getAttribute('data-tc-palette-hidden')==='false'`),
+	if err := chromedp.Do(tabCtx,
+		chromedp.SendKeys(chromedp.CSS("#e2e-palette-input"), "target"),
+		pollTrue(`document.getElementById('e2e-palette-item-1').getAttribute('data-tc-palette-hidden')==='true'`, pollFast()...),
+		pollTrue(`document.getElementById('e2e-palette-item-0').getAttribute('data-tc-palette-hidden')==='false'`, pollFast()...),
 	); err != nil {
 		t.Fatalf("filter: %v", err)
 	}
 
-	// Enter on the highlighted (first visible) link row navigates.
-	if err := chromedp.Run(tabCtx,
-		chromedp.SendKeys(`#e2e-palette-input`, "\r"),
-		pollTrue(`location.pathname==='/target' && !!document.getElementById('target-marker')`),
+	// Enter on the highlighted (first visible) link row navigates. The
+	// navigation destroys the tab's execution context mid-action, so the
+	// Enter itself may fail with "Cannot find context" — that transient is
+	// EXPECTED; the verdict is the target page's marker in the fresh
+	// document (same failure shape as the pack submit helpers).
+	enterErr := chromedp.Do(tabCtx, chromedp.SendKeys(chromedp.CSS("#e2e-palette-input"), "\r"))
+	if enterErr != nil && !strings.Contains(enterErr.Error(), "Cannot find context") {
+		t.Fatalf("enter: %v", enterErr)
+	}
+
+	if err := chromedp.Do(tabCtx,
+		chromedp.WaitVisible(chromedp.CSS("#target-marker"), chromedp.WithPollingTimeout(15*time.Second)),
 	); err != nil {
-		t.Fatalf("enter navigate: %v", err)
+		t.Fatalf("enter navigate: %v (enter err: %v)", err, enterErr)
 	}
 }
 
@@ -141,24 +159,23 @@ func TestCommandPaletteWireE2E(t *testing.T) {
 	tabCtx, tabCancel := context.WithTimeout(ctx, 120*time.Second)
 	defer tabCancel()
 
-	if err := chromedp.Run(tabCtx, chromedp.Navigate(srv.URL)); err != nil {
+	if err := chromedp.Do(tabCtx, chromedp.Navigate(srv.URL)); err != nil {
 		t.Fatalf("navigate: %v", err)
 	}
 
 	// Open via the hotkey (synthetic keydown — the JS listens on document).
-	if err := chromedp.Run(tabCtx,
-		chromedp.WaitVisible(`#e2e-palette`, chromedp.ByQuery),
-		chromedp.Evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'k',ctrlKey:true,bubbles:true,cancelable:true}));`, nil),
-		pollTrue(`document.getElementById('e2e-palette').open`),
+	if err := chromedp.Do(tabCtx,
+		chromedp.KeyEvent("k", chromedp.KeyModifiers(chromedp.ModifierCtrl)),
+		pollTrue(`document.getElementById('e2e-palette').open`, pollFast()...),
 	); err != nil {
 		t.Fatalf("hotkey open: %v", err)
 	}
 
 	// Click the wire row: palette closes, outer patch lands.
-	if err := chromedp.Run(tabCtx,
-		chromedp.Click(`#e2e-palette-item-2`, chromedp.ByQuery),
-		pollTrue(`!document.getElementById('e2e-palette').open`),
-		pollTrue(`document.getElementById('output').textContent.trim()==='job ran'`),
+	if err := chromedp.Do(tabCtx,
+		chromedp.Click(chromedp.CSS("#e2e-palette-item-2")),
+		pollTrue(`!document.getElementById('e2e-palette').open`, pollFast()...),
+		pollTrue(`document.getElementById('output').textContent.trim()==='job ran'`, pollFast()...),
 	); err != nil {
 		t.Fatalf("wire select: %v", err)
 	}
