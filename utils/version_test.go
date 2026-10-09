@@ -2,6 +2,7 @@ package utils
 
 import (
 	"os"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -106,4 +107,62 @@ func TestVersionMatchesReadmeBadge(t *testing.T) {
 	}
 
 	t.Fatalf("no version badge (marker %q) found in README.md", marker)
+}
+
+// TestChangelogNoDuplicateEntryTitles fails when two entries in the same
+// CHANGELOG section open with the same bold title ("the Toggle class": the
+// same change written twice — once per iteration — forces readers to
+// reconcile the final state themselves). Duplicates ACROSS sections are
+// legitimate (a bug class can be fixed again in a later release).
+func TestChangelogNoDuplicateEntryTitles(t *testing.T) {
+	t.Parallel()
+
+	data, err := os.ReadFile("../CHANGELOG.md")
+	if err != nil {
+		t.Skipf("CHANGELOG.md not found (running outside repo root?): %v", err)
+	}
+
+	entryRe := regexp.MustCompile(`^- \*\*(.+?)\*\*`)
+	// Older sections mark breaking changes with a generic "**BREAKING**"/
+	// "**Breaking:**" bold marker on many different entries — a category
+	// label, not a title; exempt it so only descriptive duplicate titles
+	// (the Toggle class) fail.
+	genericBreakingRe := regexp.MustCompile(`(?i)^breaking:?$`)
+
+	var section, category string
+
+	seen := map[string]string{}
+
+	for line := range strings.SplitSeq(string(data), "\n") {
+		trimmed := strings.TrimSpace(line)
+
+		if strings.HasPrefix(trimmed, "## [") {
+			section = trimmed
+			category = ""
+
+			continue
+		}
+
+		if strings.HasPrefix(trimmed, "### ") {
+			category = strings.TrimSpace(strings.TrimPrefix(trimmed, "###"))
+
+			continue
+		}
+
+		if section == "" || category == "" {
+			continue
+		}
+
+		match := entryRe.FindStringSubmatch(trimmed)
+		if match == nil || genericBreakingRe.MatchString(match[1]) {
+			continue
+		}
+
+		key := section + " / " + category + " / " + match[1]
+		if first, dup := seen[key]; dup {
+			t.Errorf("duplicate CHANGELOG entry title in %s [%s]: %q (first at %q)", section, category, match[1], first)
+		}
+
+		seen[key] = match[1]
+	}
 }

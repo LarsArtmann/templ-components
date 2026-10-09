@@ -127,14 +127,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `scripts/check-html-report-classes.sh` verifies research-report class
   coverage.
 
-- **`forms.Toggle` thumb motion is now logical (RTL-correct).** The checked
-  thumb moved via `peer-checked:*:translate-x-N` (physical), which pushed it
-  off the track's edge under `dir="rtl"` — it now moves via
-  `peer-checked:*:inset-s-N` (4.5/5.5/6.5 by size — same LTR rest positions)
-  with a `transition-[inset-inline-start]` animation. LTR rendering is
-  unchanged; `TestToggleEmitsCompletePeerCheckedClasses` pins the new literals
-  and bans `translate-x-` on the thumb.
-
 - **`wire.Action` trigger modifiers now require an event trigger in BOTH
   dialects.** A Datastar action with `DebounceMS`/`ThrottleMS` but no event
   trigger used to render orphan `__debounce`/`__throttle` modifiers while
@@ -197,18 +189,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   primitive packages incl. charts/echarts; 101 path entries + Spinner), and
   the UseCases card says 23 form components. Site goldens re-baselined.
 
-- **`Toggle`'s thumb (circle) actually slides when checked.** The thumb
-  translate class (`peer-checked:translate-x-N`) was rendered on the thumb
-  span, which is nested INSIDE the track span — but Tailwind's
+- **`Toggle`'s thumb (circle) actually slides when checked — with RTL-correct
+  motion.** The translate class (`peer-checked:translate-x-N`) was rendered on
+  the thumb span, nested INSIDE the track span — but Tailwind's
   `peer-checked` variant compiles to a sibling selector
   (`:is(:where(.peer):checked ~ *)`), so it never matched and the circle
   never moved (the track still turned blue, masking the bug in color-only
-  checks). The translate now rides the track via the Tailwind v4 child
-  variant (`peer-checked:*:translate-x-N`), probe-compiled to
-  "sibling-of-checked-peer > *". Same failure class as `Rating`'s
-  documented trap (peer-checked classes on nested elements never resolve);
-  the HTML + pixel goldens that had captured the broken state are
-  re-baselined.
+  checks). The checked thumb now rides the track via the Tailwind v4 child
+  variant (`peer-checked:*:inset-s-N`, 4.5/5.5/6.5 by size — same LTR rest
+  positions) animated with `transition-[inset-inline-start]`, which moves it
+  logically so `dir="rtl"` mirrors the motion instead of pushing the thumb off
+  the track's edge. Same failure class as `Rating`'s documented trap
+  (peer-checked classes on nested elements never resolve);
+  `TestToggleEmitsCompletePeerCheckedClasses` pins the complete literals and
+  bans the bare form; the HTML + pixel goldens that had captured the broken
+  state are re-baselined.
 - **`tc init` scaffold compiles out of the box.** The starter `app.css`
   imported `./templ-components-theme.css`, a file `tc init` never copied —
   every scaffolded project failed its first Tailwind compile until the
