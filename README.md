@@ -8,7 +8,7 @@
 
 **Server-rendered Go components that ship real HTML — no JavaScript framework required. Built on [templ](https://templ.guide), [HTMX](https://htmx.org), and [Tailwind CSS v4](https://tailwindcss.com).**
 
-[Documentation](https://templcomponents.lars.software) · [Live Demo](https://templcomponents.lars.software/demo) · [Why templ-components](https://templcomponents.lars.software/sales) · [Quick Start](#quick-start) · [Component Catalog](#component-catalog) · [How It Compares](#how-it-compares)
+[Documentation](https://templcomponents.lars.software) · [Live Demo](https://templcomponents.lars.software/demo) · [Why templ-components](#why-templ-components) · [Quick Start](#quick-start) · [Component Catalog](#component-catalog) · [How It Compares](#how-it-compares)
 
 No DaisyUI. No Node.js. No framework lock-in.
 
@@ -53,7 +53,7 @@ templ Dashboard() {
 templ generate && go run .
 ```
 
-A complete, dark-mode-aware, CSP-safe page from one Go binary — the [live demo](https://templcomponents.lars.software/demo) is built entirely this way.
+A complete, dark-mode-aware page from one Go binary — thread your CSP nonce through `BaseProps` and every script ships compliant (the [live demo](https://templcomponents.lars.software/demo) is built entirely this way).
 
 **Full guide:** [Installation](https://templcomponents.lars.software/getting-started/installation/) · [Quick Start](https://templcomponents.lars.software/getting-started/quick-start/)
 
@@ -79,10 +79,12 @@ UI in a Go binary — without adopting a frontend stack.
 
 - **HTML over the wire.** Components render complete, accessible HTML on the server; [HTMX](https://htmx.org) (or opt-in [Datastar](https://data-star.dev)) enhances it. No hydration, no virtual DOM, no bundler.
 - **Invalid states don't compile.** Every closed set — variant, size, tone, method — is a typed enum. Pass a wrong value and the build fails before a browser opens.
-- **Security and polish are defaults, not TODOs.** CSP nonces on every script, dark mode and `prefers-reduced-motion` support on every component, logical RTL properties throughout — each enforced by a regression test, not a code-review memo.
+- **Security and polish are defaults, not TODOs.** CSP-nonce threading on every script, dark mode and `prefers-reduced-motion` support on every component, logical RTL properties throughout — each enforced by a regression test, not a code-review memo.
 - **Pay for what you use.** Pure Go + templ + Tailwind CSS v4 in seven small modules; import one package or all of them.
 
 123 server-rendered components · 64 typed string enums (63 with IsValid()) · 102 SVG icons — in one `go get`.
+
+The long-form pitch, with screenshots: [Why templ-components](https://templcomponents.lars.software/sales).
 
 ---
 
