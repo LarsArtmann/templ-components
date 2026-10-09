@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-123 components across 11 packages + 102 icons. If you're about to hand-roll
+124 components across 11 packages + 102 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -50,7 +50,7 @@ Don't know what to look for? Find your page type:
 
 ### By package (import path reference)
 
-#### `display` — 43 components
+#### `display` — 44 components
 
 | Component            | Signature                                           | One-liner                                                                                                                                                               |
 | -------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -91,6 +91,7 @@ Don't know what to look for? Find your page type:
 | `BarChart`           | `BarChart(props BarChartProps)`                     | CSS bar chart (horizontal/vertical) — per-bar colors, links, value formatting, empty state                                                                              |
 | `ExternalLink`       | `ExternalLink(props ExternalLinkProps)`             | Safe off-site link — `target="_blank" rel="noopener"`, URL-sanitized href, optional arrow icon                                                                          |
 | `CollapsibleSection` | `CollapsibleSection(props CollapsibleSectionProps)` | Native `<details>/<summary>` — configurable heading, open/closed default, optional `StorageKey` for localStorage persistence, chevron rotation                          |
+| `CommandPalette`     | `CommandPalette(props CommandPaletteProps)`         | ⌘K command palette — native `<dialog>`, client-side filter over server-rendered groups, link or `Wire` selection, arrow/Enter navigation                              |
 | `Heatmap`            | `Heatmap(props HeatmapProps)`                       | CSS grid heatmap — row/column labels, opacity-based coloring, peak highlighting, tooltips, empty state                                                                  |
 | `LineChart`          | `LineChart(props LineChartProps)`                   | Pure SVG line chart — axes, gridlines, multi-series, dots, legend, linear/smooth styles, ARIA. Zero JS (ADR-0031)                                                       |
 | `PieChart`           | `PieChart(props PieChartProps)`                     | Pure SVG pie/donut chart — arc paths, external labels, legend, center label, custom colors, ARIA. Zero JS                                                               |

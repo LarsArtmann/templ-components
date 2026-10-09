@@ -4,7 +4,7 @@ Every public-facing count in this repo must be either live-computed by a guard
 or pinned to a source that is. This page is the definitional home: when a
 number is questioned, answer from here, not from memory.
 
-## Components — **123**
+## Components — **124**
 
 - **Definition:** exported `templ` components declared as `templ Name(...)` in
   the canonical 9-package scan set: `display`, `feedback`, `forms`, `layout`,
@@ -24,7 +24,7 @@ number is questioned, answer from here, not from memory.
 - **Computed by:** `icons.AllIconNames()` (live, in-process); the website and
   demo compute from it at render time.
 
-## Typed enums — **64 (63 with IsValid())**
+## Typed enums — **65 (64 with IsValid())**
 
 - **Definition:** exported closed-set string types; the IsValid count is
   functions matching `<Name>IsValid(` across library source.
@@ -56,7 +56,7 @@ number is questioned, answer from here, not from memory.
   (multiple of 50 within 49 of live).
 - **Computed by:** `utils.TestDocsCountDrift` (`countLibraryTests`).
 
-## Goldens — **272 HTML / 200 pixel**
+## Goldens — **279 HTML / 200 pixel**
 
 - **Definition:** committed baseline files under the golden testdata trees.
 - **Computed by:** `utils.TestDocsCountDrift` (file counts per tree).

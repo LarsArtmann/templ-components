@@ -125,6 +125,26 @@ display.Card(display.CardProps{
 	}) {
 		<p class="text-gray-600 dark:text-gray-400">Drawer slides in from the side using native <code>&lt;dialog&gt;</code>.</p>
 	}
+	@demoSection("Command Palette (⌘K)", "display-command-palette")
+	<p class="mb-4 text-sm text-gray-600 dark:text-gray-400">Click the button or press <kbd class="rounded border border-gray-300 bg-gray-50 px-1.5 font-mono text-xs text-gray-500 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-400">⌘K</kbd> / <kbd class="rounded border border-gray-300 bg-gray-50 px-1.5 font-mono text-xs text-gray-500 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-400">Ctrl+K</kbd>. Type to filter; arrow keys move; Enter selects.</p>
+	@display.CommandPalette(display.CommandPaletteProps{
+		BaseProps:    utils.BaseProps{ID: "demo-palette", Nonce: "demo-nonce"},
+		TriggerLabel: "Open command palette",
+		Hotkey:       true,
+		Placeholder:  "Search demo pages…",
+		Groups: []display.CommandGroup{
+			{Label: "Demo pages", Items: []display.CommandItem{
+				{Label: "Display components", Href: demoURL("/display"), Hint: "this page"},
+				{Label: "Form controls", Href: demoURL("/forms")},
+				{Label: "Kanban board", Href: demoURL("/kanban")},
+				{Label: "Wire transports", Href: demoURL("/wire")},
+			}},
+			{Label: "Elsewhere", Items: []display.CommandItem{
+				{Label: "Documentation", Href: "https://templcomponents.lars.software", Hint: "external"},
+				{Label: "Live demo home", Href: demoURL("/")},
+			}},
+		},
+	})
 	@demoSection("Dropdown", "display-dropdown")
 	@display.Dropdown(display.DropdownProps{
 		Label:       "Actions",
