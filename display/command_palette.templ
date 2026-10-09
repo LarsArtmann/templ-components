@@ -1,0 +1,146 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// CommandPalette renders a CSP-safe command palette: a <dialog> with a search
+// input filtering server-rendered groups client-side. Items select via links
+// (Href) or wire actions (Wire — htmx or Datastar through one spec). Open it
+// with the built-in trigger button (TriggerLabel), the Cmd/Ctrl+K hotkey
+// (Hotkey), or your own element carrying data-tc-palette-open.
+//
+//	@display.CommandPalette(display.CommandPaletteProps{
+//	   TriggerLabel: "Commands", Hotkey: true,
+//	   Groups: []display.CommandGroup{
+//	     {Label: "Pages", Items: []display.CommandItem{{Label: "Dashboard", Href: "/dashboard"}}},
+//	   },
+//	})
+//
+// The native <dialog> provides focus trapping, Escape-to-close, top-layer
+// rendering, and ::backdrop; the tc-overlay/tc-modal classes select the
+// shared animation profile in app.css.
+templ CommandPalette(props CommandPaletteProps) {
+	{{ id := utils.EnsureID("palette", props.ID) }}
+	{{ emptyMessage := utils.Ternary(props.EmptyMessage != "", props.EmptyMessage, "No results found.") }}
+	<div class="inline-flex">
+		if props.TriggerLabel != "" {
+			<button
+				type="button"
+				class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 motion-reduce:transition-none motion-reduce:duration-0 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+				data-tc-palette-open
+				aria-haspopup="dialog"
+			>
+				{ props.TriggerLabel }
+				if props.Hotkey {
+					<kbd class="rounded border border-gray-300 bg-gray-50 px-1.5 font-mono text-xs text-gray-500 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-400">⌘K</kbd>
+				}
+			</button>
+		}
+	</div>
+	<dialog
+		id={ id }
+		class={ utils.Class("tc-overlay tc-modal mt-[12vh] mb-auto h-fit w-[calc(100%-2rem)] rounded-xl bg-white p-0 shadow-xl backdrop:bg-transparent print:hidden dark:bg-gray-900", commandPaletteSizeClass(props.Size), props.Class) }
+		data-tc-palette={ id }
+		if props.Hotkey {
+			data-tc-hotkey="true"
+		}
+		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Command palette") }
+		{ props.Attrs... }
+	>
+		<div class="border-b border-gray-200 dark:border-gray-700">
+			<input
+				type="text"
+				id={ id + "-input" }
+				class="w-full bg-transparent px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-hidden dark:text-white dark:placeholder:text-gray-500"
+				role="combobox"
+				aria-expanded="true"
+				aria-controls={ id + "-list" }
+				aria-autocomplete="list"
+				autocomplete="off"
+				placeholder={ utils.Ternary(props.Placeholder != "", props.Placeholder, "Type a command or search…") }
+				data-tc-palette-input
+			/>
+		</div>
+		<div
+			id={ id + "-list" }
+			role="listbox"
+			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Commands") }
+			class="max-h-[60vh] overflow-y-auto overscroll-contain p-2"
+			data-tc-palette-list
+		>
+			for _, group := range props.Groups {
+				if len(group.Items) > 0 {
+					<div
+						class="py-1"
+						role="group"
+						aria-label={ group.Label }
+						data-tc-palette-group
+						data-tc-palette-hidden="false"
+					>
+						if group.Label != "" {
+							<div class="px-2 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+								{ group.Label }
+							</div>
+						}
+						for _, item := range group.Items {
+							if commandPaletteItemIsLink(item) {
+								<a
+									id={ commandPaletteItemID(id, loopIndex()) }
+									href={ templ.SafeURL(item.Href) }
+									role="option"
+									aria-selected="false"
+									tabindex="-1"
+									class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-700 data-[hidden=true]:hidden data-[active=true]:bg-blue-50 dark:text-gray-200 dark:data-[active=true]:bg-gray-800"
+									data-tc-palette-item
+									data-tc-palette-hidden="false"
+								>
+									<span class="truncate">{ item.Label }</span>
+									if item.Hint != "" {
+										<span class="shrink-0 text-xs text-gray-400 dark:text-gray-500">{ item.Hint }</span>
+									}
+								</a>
+							} else if item.Wire != nil {
+								<button
+									id={ commandPaletteItemID(id, loopIndex()) }
+									type="button"
+									role="option"
+									aria-selected="false"
+									tabindex="-1"
+									class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-start text-sm text-gray-700 data-[hidden=true]:hidden data-[active=true]:bg-blue-50 dark:text-gray-200 dark:data-[active=true]:bg-gray-800"
+									data-tc-palette-item
+									data-tc-palette-hidden="false"
+								>
+									{ item.Wire.Attributes()... }
+									<span class="truncate">{ item.Label }</span>
+									if item.Hint != "" {
+										<span class="shrink-0 text-xs text-gray-400 dark:text-gray-500">{ item.Hint }</span>
+									}
+								</button>
+							} else {
+								<div
+									id={ commandPaletteItemID(id, loopIndex()) }
+									role="option"
+									aria-selected="false"
+									tabindex="-1"
+									class="flex items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-500 data-[hidden=true]:hidden dark:text-gray-400"
+									data-tc-palette-item
+									data-tc-palette-hidden="false"
+								>
+									<span class="truncate">{ item.Label }</span>
+									if item.Hint != "" {
+										<span class="shrink-0 text-xs text-gray-400 dark:text-gray-500">{ item.Hint }</span>
+									}
+								</div>
+							}
+						}
+					</div>
+				}
+			}
+			<div class="px-3 py-8 text-center text-sm text-gray-400 dark:text-gray-500" data-tc-palette-empty data-tc-palette-hidden="true">
+				{ emptyMessage }
+			</div>
+		</div>
+	</dialog>
+	<script { utils.ScriptAttrs(props.Nonce)... }>
+		{{ commandPaletteJS(id) }}
+	</script>
+}
