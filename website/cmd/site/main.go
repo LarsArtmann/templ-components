@@ -244,7 +244,7 @@ func renderDocs(repoRoot, nonce string) ([]build.Page, []build.SearchDoc, error)
 	searchDocs := make([]build.SearchDoc, 0, len(all))
 
 	for index, doc := range all {
-		source, err := os.ReadFile(filepath.Join(repoRoot, "website", "content", "docs", doc.Slug+".md"))
+		source, err := docsSource(repoRoot, doc)
 		if err != nil {
 			return nil, nil, fmt.Errorf("read docs %s: %w", doc.Slug, err)
 		}
@@ -287,6 +287,24 @@ func renderDocs(repoRoot, nonce string) ([]build.Page, []build.SearchDoc, error)
 	}
 
 	return out, searchDocs, nil
+}
+
+// docsSource loads a docs page's markdown: the content file by default, or
+// the repo-root file named by DocRef.RepoFile with frontmatter synthesized
+// from the registry entry (single-source mirror, no site copy to drift).
+func docsSource(repoRoot string, doc pages.DocRef) ([]byte, error) {
+	if doc.RepoFile == "" {
+		return os.ReadFile(filepath.Join(repoRoot, "website", "content", "docs", doc.Slug+".md"))
+	}
+
+	repoDoc, err := os.ReadFile(filepath.Join(repoRoot, filepath.FromSlash(doc.RepoFile)))
+	if err != nil {
+		return nil, err
+	}
+
+	frontmatter := fmt.Sprintf("---\ntitle: %s\ndescription: %s\n---\n\n", doc.Title, doc.Description)
+
+	return append([]byte(frontmatter), repoDoc...), nil
 }
 
 // lastUpdated asks git for the last commit date touching a docs source
@@ -347,9 +365,14 @@ func writeSitemaps(outDir, repoRoot string) error {
 	)
 
 	for _, doc := range pages.AllDocs() {
+		docPaths := []string{"website/content/docs/" + doc.Slug + ".md"}
+		if doc.RepoFile != "" {
+			docPaths = append(docPaths, doc.RepoFile)
+		}
+
 		entries = append(entries, sitemapEntry{
 			loc:     pages.SiteURL + "/" + doc.Slug,
-			lastmod: lastUpdated(repoRoot, "website/content/docs/"+doc.Slug+".md"),
+			lastmod: lastUpdated(repoRoot, docPaths...),
 		})
 	}
 

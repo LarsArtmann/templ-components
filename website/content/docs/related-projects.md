@@ -21,5 +21,5 @@ This library is part of the **GOTH stack** (Go + Templ + HTMX):
 | [templ components (a-h)](https://github.com/a-h/templ/tree/main/examples) | Official templ examples (educational, not a library).                           |
 
 Head-to-head comparison (architecture, testing depth, where each wins):
-[docs/comparison.md](https://github.com/larsartmann/templ-components/blob/master/docs/comparison.md)
+[How It Compares](/comparison) — the same doc this site renders from the repo's `docs/comparison.md`.
 (external facts verified 2026-10-08).

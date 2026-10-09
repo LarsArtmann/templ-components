@@ -6,6 +6,12 @@ type DocRef struct {
 	Slug string
 	// Title is the sidebar label (and <h1> fallback).
 	Title string
+	// RepoFile is a repo-root-relative markdown file rendered verbatim under
+	// this slug, frontmatter synthesized from Title/Description — for pages
+	// that must stay single-sourced with a repo doc (no site copy to drift).
+	RepoFile string
+	// Description feeds the synthesized frontmatter (meta + search index).
+	Description string
 }
 
 // DocGroup is one sidebar section.
@@ -59,6 +65,13 @@ var docSidebar = []DocGroup{
 		Docs: []DocRef{
 			{Slug: "changelog", Title: "Changelog"},
 			{Slug: "contributing", Title: "Contributing"},
+			{
+				Slug:     "comparison",
+				Title:    "How It Compares",
+				RepoFile: "docs/comparison.md",
+				Description: "Head-to-head with shadcn-templ (formerly templUI) and goshipit: " +
+					"architecture, testing depth, and what each class of project is best at.",
+			},
 			{Slug: "related-projects", Title: "Related Projects"},
 		},
 	},
