@@ -37,8 +37,9 @@ func componentTypes() []any {
 		datastar.LoadingButtonProps{},
 		datastar.PolledRegionProps{},
 
-		// display (33)
+		// display (34)
 		display.BadgeProps{},
+		display.CommandPaletteProps{},
 		display.AvatarProps{},
 		display.EyebrowProps{},
 		display.ScrollbackProps{},
