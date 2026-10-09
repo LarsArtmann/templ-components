@@ -213,6 +213,8 @@ var cssClassExceptions = map[string]string{
 	"tc-error-announcer":    "element ID (id=), not a CSS class",
 	"tc-datastar-announcer": "element ID (id=), not a CSS class",
 	"tc-form-loading":       "referenced in comment only, not a CSS class",
+	"tc-palette-active":     "data attribute (data-tc-palette-active) toggled by the palette JS, styled via Tailwind data variants",
+	"tc-palette-hidden":     "data attribute (data-tc-palette-hidden) toggled by the palette JS, styled via Tailwind data variants",
 }
 
 // rawColorLiteralRe matches hardcoded color literals: hex values, rgb()/rgba()

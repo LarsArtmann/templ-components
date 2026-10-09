@@ -192,10 +192,10 @@ var packageDeps = map[string][]string{
 	pkgDisplay: {
 		"area_chart.go", "bar_chart.go", "button_go.go",
 		"chart_geometry.go", "collapsible_section.go",
-		"drawer_go.go", enumsGoFile, "external_link.go",
-		"heading_tag.go", "heatmap.go", "kanban.go",
-		"line_chart.go", "modal_go.go", "pie_chart.go",
-		"shared.go", "sparkline.go",
+		"command_palette.go", "drawer_go.go", enumsGoFile,
+		"external_link.go", "heading_tag.go", "heatmap.go",
+		"kanban.go", "line_chart.go", "modal_go.go",
+		"pie_chart.go", "shared.go", "sparkline.go",
 	},
 	pkgFeedback: {enumsGoFile, "styles.go"},
 	pkgForms: {
