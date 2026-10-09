@@ -81,3 +81,40 @@ func siteURLPath(path string) string {
 func llmsLine(text string) string {
 	return strings.Join(strings.Fields(text), " ")
 }
+
+// WriteLLMSFull emits dist/llms-full.txt — the llmstxt.org "full corpus"
+// companion to llms.txt: the same H1/blockquote header followed by every
+// docs page's full plain-text body under a heading carrying its canonical
+// URL. Deterministic: docs in their registered reading order, no timestamps.
+func WriteLLMSFull(outDir string, stats Stats, docs []SearchDoc) error {
+	content := LLMSFullIndex(stats, docs)
+
+	target := filepath.Join(outDir, "llms-full.txt")
+	//nolint:gosec // public site asset must be world-readable
+	if err := os.WriteFile(target, []byte(content), 0o644); err != nil {
+		return fmt.Errorf("write llms-full.txt: %w", err)
+	}
+
+	return nil
+}
+
+// LLMSFullIndex renders the llms-full.txt document from the same SearchDoc
+// metadata as the search index and llms.txt — one source, no drift.
+func LLMSFullIndex(stats Stats, docs []SearchDoc) string {
+	var sb strings.Builder
+
+	sb.WriteString(LLMSIndex(stats, docs))
+
+	if len(docs) > 0 {
+		sb.WriteString("\n## Full documentation\n\n")
+
+		for _, doc := range docs {
+			sb.WriteString("\n---\n\n# " + llmsLine(doc.Title) +
+				" (" + siteURLPath(doc.URL) + ")\n\n")
+			sb.WriteString(strings.TrimSpace(doc.Body))
+			sb.WriteString("\n")
+		}
+	}
+
+	return sb.String()
+}
