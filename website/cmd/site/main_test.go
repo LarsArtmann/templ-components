@@ -61,6 +61,7 @@ func TestSiteBuildIntegrity(t *testing.T) {
 	assertSearchIndex(t, outDir, rendered)
 	assertSitemap(t, outDir, rendered)
 	assertLLMS(t, outDir)
+	assertLLMSFull(t, outDir)
 	assertNoFrameworkScripts(t, rendered)
 }
 
@@ -208,6 +209,32 @@ func assertLLMS(t *testing.T, outDir string) {
 
 		if !strings.Contains(content, "templcomponents.lars.software/"+ref.Slug+")") {
 			t.Errorf("llms.txt missing docs page %s", ref.Slug)
+		}
+	}
+}
+
+// assertLLMSFull verifies dist/llms-full.txt: present, carries the corpus
+// marker, and embeds every registered docs page's full-text heading.
+func assertLLMSFull(t *testing.T, outDir string) {
+	t.Helper()
+
+	data, err := os.ReadFile(filepath.Join(outDir, "llms-full.txt"))
+	if err != nil {
+		t.Fatalf("read llms-full.txt: %v", err)
+	}
+
+	content := string(data)
+	if !strings.Contains(content, "\n## Full documentation\n") {
+		t.Errorf("llms-full.txt missing corpus section: %.80q", content)
+	}
+
+	for _, ref := range pages.AllDocs() {
+		if ref.Slug == "" {
+			continue
+		}
+
+		if !strings.Contains(content, "templcomponents.lars.software/"+ref.Slug+")") {
+			t.Errorf("llms-full.txt missing docs page %s", ref.Slug)
 		}
 	}
 }

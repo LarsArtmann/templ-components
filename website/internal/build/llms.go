@@ -67,6 +67,9 @@ func LLMSIndex(stats Stats, docs []SearchDoc) string {
 
 			sb.WriteString("\n")
 		}
+
+		sb.WriteString("\n- [Full documentation corpus](" + siteURLPath("/llms-full.txt") +
+			"): every docs page's full text in one file\n")
 	}
 
 	return sb.String()

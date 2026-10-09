@@ -123,6 +123,10 @@ func run(cfg config) error {
 		return fmt.Errorf("llms.txt: %w", err)
 	}
 
+	if err := build.WriteLLMSFull(cfg.outDir, stats, searchDocs); err != nil {
+		return fmt.Errorf("llms-full.txt: %w", err)
+	}
+
 	if err := writeAssets(cfg.outDir, cfg.repoRoot); err != nil {
 		return err
 	}

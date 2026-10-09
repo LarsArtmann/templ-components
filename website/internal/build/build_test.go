@@ -189,3 +189,35 @@ func TestStatsDirsAreCanonical(t *testing.T) {
 		)
 	}
 }
+
+// TestLLMSFullIndex pins the llms-full.txt shape: llms.txt header verbatim,
+// the corpus section, one titled heading per doc carrying its canonical URL,
+// and the doc's full plain-text body.
+func TestLLMSFullIndex(t *testing.T) {
+	stats := Stats{Components: 123, Icons: 102, Enums: 63, Modules: 7, GoVersion: "1.27", LibraryVersion: "1.21.0"}
+	docs := []SearchDoc{
+		{
+			URL:         "/install",
+			Title:       "Installation",
+			Description: "go get and templ generate",
+			Body:        "Step one.\ngo get the module.",
+		},
+	}
+
+	got := LLMSFullIndex(stats, docs)
+
+	if !strings.HasPrefix(got, "# templ-components\n\n> ") {
+		t.Errorf("llms-full.txt missing llms.txt header shape: %.60q", got)
+	}
+
+	for _, want := range []string{
+		"## Full documentation",
+		"# Installation (https://templcomponents.lars.software/install)",
+		"Step one.\ngo get the module.",
+		"](" + "https://templcomponents.lars.software/llms-full.txt)",
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("llms-full.txt missing %q\ngot:\n%s", want, got)
+		}
+	}
+}
