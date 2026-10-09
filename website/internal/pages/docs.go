@@ -24,6 +24,7 @@ type DocGroup struct {
 // sidebar's "Full API on pkg.go.dev").
 //
 //nolint:gochecknoglobals // site information architecture table
+
 var pkgGoDevDoc = DocRef{Slug: "", Title: "Full API on pkg.go.dev"}
 
 // docSidebar mirrors the Astro Starlight sidebar configuration

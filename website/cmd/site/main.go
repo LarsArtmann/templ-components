@@ -298,12 +298,17 @@ func renderDocs(repoRoot, nonce string) ([]build.Page, []build.SearchDoc, error)
 // from the registry entry (single-source mirror, no site copy to drift).
 func docsSource(repoRoot string, doc pages.DocRef) ([]byte, error) {
 	if doc.RepoFile == "" {
-		return os.ReadFile(filepath.Join(repoRoot, "website", "content", "docs", doc.Slug+".md"))
+		content, err := os.ReadFile(filepath.Join(repoRoot, "website", "content", "docs", doc.Slug+".md"))
+		if err != nil {
+			return nil, fmt.Errorf("read content docs: %w", err)
+		}
+
+		return content, nil
 	}
 
 	repoDoc, err := os.ReadFile(filepath.Join(repoRoot, filepath.FromSlash(doc.RepoFile)))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("read repo doc: %w", err)
 	}
 
 	frontmatter := fmt.Sprintf("---\ntitle: %s\ndescription: %s\n---\n\n", doc.Title, doc.Description)
@@ -369,17 +374,7 @@ func writeSitemaps(outDir, repoRoot string) error {
 		},
 	)
 
-	for _, doc := range pages.AllDocs() {
-		docPaths := []string{"website/content/docs/" + doc.Slug + ".md"}
-		if doc.RepoFile != "" {
-			docPaths = append(docPaths, doc.RepoFile)
-		}
-
-		entries = append(entries, sitemapEntry{
-			loc:     pages.SiteURL + "/" + doc.Slug,
-			lastmod: lastUpdated(repoRoot, docPaths...),
-		})
-	}
+	entries = append(entries, docsSitemapEntries(repoRoot)...)
 
 	var sb strings.Builder
 	sb.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
@@ -421,4 +416,24 @@ func writeSitemaps(outDir, repoRoot string) error {
 	}
 
 	return nil
+}
+
+// docsSitemapEntries builds the sitemap entries for every registered docs
+// page; the lastmod tracks the content file plus any repo-root source.
+func docsSitemapEntries(repoRoot string) []sitemapEntry {
+	entries := make([]sitemapEntry, 0, 16)
+
+	for _, doc := range pages.AllDocs() {
+		docPaths := []string{"website/content/docs/" + doc.Slug + ".md"}
+		if doc.RepoFile != "" {
+			docPaths = append(docPaths, doc.RepoFile)
+		}
+
+		entries = append(entries, sitemapEntry{
+			loc:     pages.SiteURL + "/" + doc.Slug,
+			lastmod: lastUpdated(repoRoot, docPaths...),
+		})
+	}
+
+	return entries
 }

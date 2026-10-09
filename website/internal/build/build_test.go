@@ -176,6 +176,8 @@ func TestLLMSIndex(t *testing.T) {
 // deliberate two-place update (here and utils.TestDocsCountDrift's canonical
 // package set).
 func TestStatsDirsAreCanonical(t *testing.T) {
+	t.Parallel()
+
 	canonical := []string{
 		"display", "feedback", "forms", "layout", "navigation",
 		"charts/echarts", "htmx", "datastar", "errorpage",
@@ -194,6 +196,8 @@ func TestStatsDirsAreCanonical(t *testing.T) {
 // the corpus section, one titled heading per doc carrying its canonical URL,
 // and the doc's full plain-text body.
 func TestLLMSFullIndex(t *testing.T) {
+	t.Parallel()
+
 	stats := Stats{Components: 123, Icons: 102, Enums: 63, Modules: 7, GoVersion: "1.27", LibraryVersion: "1.21.0"}
 	docs := []SearchDoc{
 		{
