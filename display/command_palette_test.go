@@ -61,7 +61,7 @@ func TestGoldenSweepCommandPalette(t *testing.T) {
 		{
 			Name: "command_palette_trigger_hotkey",
 			HTML: utils.Render(t, CommandPalette(CommandPaletteProps{
-				BaseProps:    utils.BaseProps{ID: "cmdk"},
+				ID:           "cmdk",
 				TriggerLabel: "Commands",
 				Hotkey:       true,
 				Groups:       linkGroups,
@@ -70,22 +70,22 @@ func TestGoldenSweepCommandPalette(t *testing.T) {
 		{
 			Name: "command_palette_link_items",
 			HTML: utils.Render(t, CommandPalette(CommandPaletteProps{
-				BaseProps: utils.BaseProps{ID: "links"},
-				Groups:    linkGroups,
+				ID:     "links",
+				Groups: linkGroups,
 			})),
 		},
 		{
 			Name: "command_palette_no_groups",
 			HTML: utils.Render(t, CommandPalette(CommandPaletteProps{
-				BaseProps: utils.BaseProps{ID: "empty"},
+				ID: "empty",
 			})),
 		},
 		{
 			Name: "command_palette_large",
 			HTML: utils.Render(t, CommandPalette(CommandPaletteProps{
-				BaseProps: utils.BaseProps{ID: "wide"},
-				Size:      CommandPaletteSizeLG,
-				Groups:    linkGroups[:1],
+				ID:     "wide",
+				Size:   CommandPaletteSizeLG,
+				Groups: linkGroups[:1],
 			})),
 		},
 	})
@@ -101,7 +101,7 @@ func TestGoldenSweepCommandPaletteWire(t *testing.T) {
 		{
 			Name: "command_palette_wire_item",
 			HTML: utils.Render(t, CommandPalette(CommandPaletteProps{
-				BaseProps: utils.BaseProps{ID: "wired"},
+				ID: "wired",
 				Groups: []CommandGroup{
 					{
 						Label: "Danger zone",
@@ -115,7 +115,7 @@ func TestGoldenSweepCommandPaletteWire(t *testing.T) {
 		{
 			Name: "command_palette_inert_item",
 			HTML: utils.Render(t, CommandPalette(CommandPaletteProps{
-				BaseProps: utils.BaseProps{ID: "inert"},
+				ID: "inert",
 				Groups: []CommandGroup{
 					{Label: "Read only", Items: []CommandItem{{Label: "Just a label"}}},
 				},
@@ -128,7 +128,7 @@ func TestCommandPaletteStructure(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, CommandPalette(CommandPaletteProps{
-		BaseProps:    utils.BaseProps{ID: "palette", Nonce: "test-nonce"},
+		ID: "palette", Nonce: "test-nonce",
 		TriggerLabel: "Commands",
 		Hotkey:       true,
 		Groups: []CommandGroup{
@@ -175,7 +175,7 @@ func TestCommandPaletteWireAttributesRender(t *testing.T) {
 	wired := wire.Post("/api/run").WithTarget("#output")
 	action := &wired
 	html := utils.Render(t, CommandPalette(CommandPaletteProps{
-		BaseProps: utils.BaseProps{ID: "wired"},
+		ID: "wired",
 		Groups: []CommandGroup{
 			{Items: []CommandItem{{Label: "Run job", Wire: action}}},
 		},
@@ -190,7 +190,7 @@ func TestCommandPaletteEmptyMessage(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, CommandPalette(CommandPaletteProps{
-		BaseProps:    utils.BaseProps{ID: "msg"},
+		ID:           "msg",
 		EmptyMessage: "Nothing matches.",
 	}))
 
