@@ -182,6 +182,10 @@ func TestStatsDirsAreCanonical(t *testing.T) {
 	}
 
 	if !slices.Equal(statsDirs, canonical) {
-		t.Errorf("statsDirs drifted from the canonical set — update BOTH statsDirs and utils.TestDocsCountDrift's package set together, then re-pin here.\ngot:  %q\nwant: %q", statsDirs, canonical)
+		t.Errorf(
+			"statsDirs drifted from the canonical set — update BOTH statsDirs and utils.TestDocsCountDrift's package set together, then re-pin here.\ngot:  %q\nwant: %q",
+			statsDirs,
+			canonical,
+		)
 	}
 }
