@@ -119,12 +119,8 @@ func run(cfg config) error {
 		return fmt.Errorf("search index: %w", err)
 	}
 
-	if err := build.WriteLLMS(cfg.outDir, stats, searchDocs); err != nil {
-		return fmt.Errorf("llms.txt: %w", err)
-	}
-
-	if err := build.WriteLLMSFull(cfg.outDir, stats, searchDocs); err != nil {
-		return fmt.Errorf("llms-full.txt: %w", err)
+	if err := writeLLMSFiles(cfg.outDir, stats, searchDocs); err != nil {
+		return err
 	}
 
 	if err := writeAssets(cfg.outDir, cfg.repoRoot); err != nil {
@@ -436,4 +432,18 @@ func docsSitemapEntries(repoRoot string) []sitemapEntry {
 	}
 
 	return entries
+}
+
+// writeLLMSFiles emits both llmstxt.org artifacts (index + full corpus) from
+// the same docs metadata.
+func writeLLMSFiles(outDir string, stats build.Stats, docs []build.SearchDoc) error {
+	if err := build.WriteLLMS(outDir, stats, docs); err != nil {
+		return fmt.Errorf("llms.txt: %w", err)
+	}
+
+	if err := build.WriteLLMSFull(outDir, stats, docs); err != nil {
+		return fmt.Errorf("llms-full.txt: %w", err)
+	}
+
+	return nil
 }
