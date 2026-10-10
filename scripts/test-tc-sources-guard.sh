@@ -11,6 +11,8 @@
 #   5. rename (orphan+new)   -> check exit 1, --fix adds 1 + removes 1, then clean
 #   6. missing package dir   -> check exit 1 (MISSING PACKAGE), unfixable by --fix
 #   7. idempotence           -> --fix twice after a fix; second run is a no-op
+#   8. generated stray       -> check exit 1 (GENERATED STRAY), --fix removes it,
+#                               then clean (2026-10-10 BuildFlow templ-generate war)
 #
 # Usage: scripts/test-tc-sources-guard.sh
 # Exit 0 = every scenario passed. Run from anywhere; needs only git + bash.
@@ -157,6 +159,22 @@ else
 	printf 'FAIL idempotence: rc2=%d rc3=%d out3=%s\n' "$rc2" "$rc3" "$out3"
 	record 1
 fi
+
+# --- Scenario 8: generated stray (BuildFlow templ-generate war) ------------
+new_worktree
+printf 'package display\n' >"$WORKTREE/cmd/tc/_sources/display/tc_guard_stray_templ.go"
+expect "generated stray detected" 1 'GENERATED STRAY' bash -c "cd '$WORKTREE' && '$GUARD' 2>&1"
+record $?
+out="$(cd "$WORKTREE" && "$GUARD" --fix 2>&1)"
+if printf '%s' "$out" | grep -q "removed 1"; then
+	printf 'ok   generated stray --fix removes exactly 1\n'
+	record 0
+else
+	printf 'FAIL generated stray --fix: %s\n' "$out"
+	record 1
+fi
+expect "clean after stray fix" 0 '' bash -c "cd '$WORKTREE' && '$GUARD' >/dev/null"
+record $?
 
 printf '\n%d passed, %d failed\n' "$passed" "$failed"
 [ "$failed" -eq 0 ]

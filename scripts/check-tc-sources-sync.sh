@@ -21,6 +21,12 @@
 #   - starter/**                         curated scaffolder templates, no twins
 #   - datastar/DATASTAR-BUMP-PROTOCOL.md scaffolder-owned checklist
 #
+# Generated strays: any embedded *_templ.go outside starter/ is a problem
+# (removed by --fix). BuildFlow's templ-generate step regenerates the
+# mirror's .templ copies in place (no _-prefix skip in its ownership walk,
+# 2026-10-10 incident); the mirror ships sources only — consumers run
+# `templ generate` after `tc add`.
+#
 # Modes:
 #   (default)  check only — print every problem, exit 1
 #   --fix      full mirror: re-copy drifted, copy unembedded, remove orphans;
@@ -105,6 +111,29 @@ while IFS= read -r -d '' embedded; do
 	case "$rel" in
 	starter/*) continue ;;
 	"datastar/$DATASTAR_DOC") continue ;;
+	esac
+
+	# GENERATED STRAYS (2026-10-10 incident): BuildFlow's templ-generate step
+	# regenerates the mirror's .templ copies in place (its ownership walk does
+	# not skip _-prefixed directories) and the daemon commits the results.
+	# The mirror ships .templ + *_types.go sources only — generated files are
+	# stale duplicates (cmd/tc TestSourcesMirrorExcludesGenerated enforces
+	# this in go test; this rule self-heals at commit time).
+	case "$rel" in
+	*_templ.go)
+		note "GENERATED STRAY: $embedded (mirror ships sources only, never generated files)"
+		problems=$((problems + 1))
+		if [ "$FIX" = "--fix" ]; then
+			if git ls-files --error-unmatch -- "$embedded" >/dev/null 2>&1; then
+				git rm -q -- "$embedded"
+			else
+				rm -f -- "$embedded"
+			fi
+			note "  fixed: removed $embedded"
+			removed=$((removed + 1))
+		fi
+		continue
+		;;
 	esac
 
 	pkg="${rel%%/*}"

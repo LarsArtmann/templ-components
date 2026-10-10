@@ -186,6 +186,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`tc add` scaffolder no longer ships stale generated files.** The
+  scaffolder's embedded source mirror (`cmd/tc/_sources`) is for `.templ` +
+  `*_types.go` sources only, but an external build tool kept regenerating the
+  mirrored `.templ` copies in place and auto-committing the generated results
+  (112 stray `*_templ.go` files in one snapshot, breaking every `cmd/tc`
+  test via FileName-path drift). The mirror now bans generated files three
+  ways: `.gitignore` refuses to stage them, the pre-commit mirror guard
+  removes them in `--fix` mode, and a new `cmd/tc` test
+  (`TestSourcesMirrorExcludesGenerated`) fails CI if any ever land. Also
+  dropped the stale `ignore dist` directive from the website module (its
+  build output contains no Go packages, and the directive tripped go.mod
+  hygiene checks in clean checkouts).
 - **SegmentBar legend + CodeBlock compact-ID color contrast (axe serious).**
   The 12px legend percents and the compact-ID code span used
   `text-gray-400 dark:text-gray-500` — 2.52:1 on white, below WCAG AA 4.5:1.

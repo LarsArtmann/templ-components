@@ -23,6 +23,48 @@ func TestComponentSourcesPopulated(t *testing.T) {
 	}
 }
 
+// TestSourcesMirrorExcludesGenerated bans generated `*_templ.go` files from
+// the embedded mirror (outside the curated starter/). The mirror ships
+// .templ + *_types.go SOURCES only; consumers run `templ generate` after
+// `tc add`. Generated copies would be stale duplicates the moment any
+// component is regenerated — and BuildFlow's templ-generate step keeps
+// recreating them because its ownership walk doesn't skip _-prefixed
+// directories (the daemon then commits them; the 2026-10-10 incident added
+// 112 of them in one snapshot, breaking every cmd/tc test via the
+// FileName-path drift). go:embed all:_sources picks up these strays even
+// when .gitignore'd, so this test is the gate that fires regardless of git
+// state. scripts/check-tc-sources-sync.sh removes them in --fix mode.
+func TestSourcesMirrorExcludesGenerated(t *testing.T) {
+	t.Parallel()
+
+	err := fs.WalkDir(sourcesFS, "_sources", func(p string, d fs.DirEntry, walkErr error) error {
+		if walkErr != nil || d.IsDir() {
+			return walkErr
+		}
+
+		rel, _ := filepath.Rel("_sources", p)
+
+		if strings.HasPrefix(rel, "starter"+string(filepath.Separator)) {
+			return nil
+		}
+
+		if strings.HasSuffix(rel, "_templ.go") {
+			t.Errorf(
+				"embedded %s is a GENERATED file — the mirror ships .templ and "+
+					"*_types.go sources only. Delete it (scripts/check-tc-sources-sync.sh "+
+					"--fix does this). Root cause: BuildFlow templ-generate regenerates "+
+					"the mirror's .templ copies in place; see AGENTS.md.",
+				rel,
+			)
+		}
+
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("walk _sources: %v", err)
+	}
+}
+
 // TestSourcesMatchPackageFiles is the _sources/ drift guard: every embedded
 // source file must be byte-identical to the real package file it was copied
 // from. The sources were copied by hand; without this guard the scaffolder
