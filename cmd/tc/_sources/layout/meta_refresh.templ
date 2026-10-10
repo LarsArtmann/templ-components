@@ -1,0 +1,22 @@
+package layout
+
+import "strconv"
+
+// MetaRefresh renders a `<meta http-equiv="refresh">` tag that reloads or
+// redirects the page without JavaScript — the zero-JS retry/stale-session
+// pattern (dnsblockd's login guard and allow-list retry pages both use it).
+//
+// With url empty the page reloads itself after delay seconds; otherwise the
+// browser navigates to url. Negative delays clamp to 0 (immediate).
+//
+//	@layout.MetaRefresh(5, "/login?retry=1")
+//	@layout.MetaRefresh(30, "") // reload this page every 30s
+templ MetaRefresh(delaySeconds int, url string) {
+	{{
+		refreshContent := strconv.Itoa(max(delaySeconds, 0))
+		if url != "" {
+			refreshContent += ";url=" + url
+		}
+	}}
+	<meta http-equiv="refresh" content={ refreshContent }/>
+}

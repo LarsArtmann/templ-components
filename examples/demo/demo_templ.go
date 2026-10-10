@@ -21,8 +21,8 @@ import (
 // Canonical counts from FEATURES.md ("Totals:" line, drift-guard verified).
 // demo_counts_test.go asserts these against FEATURES.md so they cannot drift.
 const (
-	componentCount = "126"
-	packageCount   = "17"
+	componentCount = "127"
+	packageCount   = "18"
 )
 
 // demoHomePage renders the landing page through the shared shell. The hero
