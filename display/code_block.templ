@@ -1,0 +1,65 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// codeBlockCopy renders the integrated copy button with the component's
+// nonce threaded through (CSP-safe singleton script; see CopyButton).
+templ codeBlockCopy(code, nonce string) {
+	@CopyButton(CopyButtonProps{
+		BaseProps: utils.BaseProps{Nonce: nonce},
+		Text:      code,
+		Icon:      true,
+	})
+}
+
+// CodeBlock renders a code display with an integrated copy button.
+//
+//	@display.CodeBlock(display.CodeBlockProps{Code: "go install ./...", Language: "bash"})
+//
+// Variant display.CodeBlockCompactID renders the inline "copy this ID" row
+// used on detail pages.
+templ CodeBlock(props CodeBlockProps) {
+	if props.Variant == CodeBlockCompactID {
+		<div
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("flex items-center gap-1.5 min-w-0 text-xs text-gray-400 dark:text-gray-500", props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			<span class="font-mono truncate" title={ props.Code }>{ props.Code }</span>
+			if !props.NoCopy {
+				@codeBlockCopy(props.Code, props.Nonce)
+			}
+		</div>
+	} else {
+		<figure
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 rounded-md", props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			{{ label := codeBlockLabel(props) }}
+			if label != "" || !props.NoCopy {
+				<figcaption class="flex items-center justify-between gap-2 border-b border-gray-200 dark:border-gray-700 ps-3 pe-2 py-1.5">
+					if label != "" {
+						<span class="text-xs font-medium text-gray-500 dark:text-gray-400">{ label }</span>
+					}
+					if !props.NoCopy {
+						@codeBlockCopy(props.Code, props.Nonce)
+					}
+				</figcaption>
+			}
+			<pre class="overflow-x-auto p-4"><code class="block font-mono text-[0.8125rem] leading-relaxed text-gray-800 dark:text-gray-200">{ props.Code }</code></pre>
+		</figure>
+	}
+}
