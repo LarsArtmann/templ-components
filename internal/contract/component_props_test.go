@@ -150,6 +150,7 @@ func componentTypes() []any {
 		display.HeatmapProps{},
 		display.ExternalLinkProps{},
 		display.CollapsibleSectionProps{},
+		display.CodeBlockProps{},
 
 		// feedback/layout/navigation/htmx additions (2026-09-13)
 		navigation.FooterProps{},

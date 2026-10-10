@@ -518,6 +518,24 @@ display.Card(display.CardProps{
 			ShowIcon: false,
 		})
 	</div>
+	@demoSection("Code Blocks", "display-code-block")
+	<div class="space-y-4">
+		@display.CodeBlock(display.CodeBlockProps{
+			BaseProps: utils.BaseProps{Nonce: "demo-nonce"},
+			Code:      "go install github.com/larsartmann/templ-components/cmd/tc@latest",
+			Language:  "bash",
+		})
+		@display.CodeBlock(display.CodeBlockProps{
+			BaseProps: utils.BaseProps{Nonce: "demo-nonce"},
+			Code:      "templ generate ./... && go build ./...",
+			Label:     "Two-step build",
+		})
+		@display.CodeBlock(display.CodeBlockProps{
+			BaseProps: utils.BaseProps{Nonce: "demo-nonce"},
+			Code:      "9007199254740993",
+			Variant:   display.CodeBlockCompactID,
+		})
+	</div>
 	@demoSection("Collapsible Sections", "display-collapsible")
 	<div class="space-y-4">
 		@display.CollapsibleSection(display.CollapsibleSectionProps{

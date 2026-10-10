@@ -41,8 +41,8 @@ func TestGoldenSweepCodeBlock(t *testing.T) {
 			NoCopy:  true,
 		}))},
 		{Name: "code_block_custom_class", HTML: utils.Render(t, CodeBlock(CodeBlockProps{
-			BaseProps: utils.BaseProps{Class: "max-w-md"},
-			Code:      "bounded",
+			Class: "max-w-md",
+			Code:  "bounded",
 		}))},
 	})
 }
