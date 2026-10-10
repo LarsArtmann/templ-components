@@ -19,9 +19,21 @@ func TestGoldenSweepStatusIndicators(t *testing.T) {
 			Pulse: true,
 			Label: "Live",
 		}))},
-		{Name: "status_dot_warning", HTML: utils.Render(t, StatusDot(StatusDotProps{Tone: StatusToneWarning, Label: "Reconnecting"}))},
-		{Name: "live_pill_live", HTML: utils.Render(t, LivePill(LivePillProps{Tone: StatusToneSuccess, Text: "Live", Pulse: true}))},
-		{Name: "live_pill_reconnecting", HTML: utils.Render(t, LivePill(LivePillProps{Tone: StatusToneWarning, Text: "Reconnecting…"}))},
-		{Name: "live_pill_paused", HTML: utils.Render(t, LivePill(LivePillProps{Tone: StatusToneNeutral, Text: "Paused"}))},
+		{
+			Name: "status_dot_warning",
+			HTML: utils.Render(t, StatusDot(StatusDotProps{Tone: StatusToneWarning, Label: "Reconnecting"})),
+		},
+		{
+			Name: "live_pill_live",
+			HTML: utils.Render(t, LivePill(LivePillProps{Tone: StatusToneSuccess, Text: "Live", Pulse: true})),
+		},
+		{
+			Name: "live_pill_reconnecting",
+			HTML: utils.Render(t, LivePill(LivePillProps{Tone: StatusToneWarning, Text: "Reconnecting…"})),
+		},
+		{
+			Name: "live_pill_paused",
+			HTML: utils.Render(t, LivePill(LivePillProps{Tone: StatusToneNeutral, Text: "Paused"})),
+		},
 	})
 }

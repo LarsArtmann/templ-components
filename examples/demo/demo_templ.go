@@ -21,7 +21,7 @@ import (
 // Canonical counts from FEATURES.md ("Totals:" line, drift-guard verified).
 // demo_counts_test.go asserts these against FEATURES.md so they cannot drift.
 const (
-	componentCount = "132"
+	componentCount = "133"
 	packageCount   = "18"
 )
 

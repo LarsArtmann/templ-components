@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`display.SegmentBar` — stacked proportion bar.** Language shares,
+  evidence breakdowns, storage composition (mr-sync's language bars +
+  nsfw-classifier's evidence proportions): segments sized by `flex-grow`
+  (proportional, no percentage rounding gaps), a deterministic palette
+  keyed by label (the shared chart palette as background class pairs;
+  `Color` overrides), a dot+label+percent legend (`NoLegend` opts out), a
+  composed `role="img"` aria-label (overridable), negative values clamped,
+  and zero-total bars rendering nothing. The runtime flex-grow values are a
+  documented inline-style exemption (same class as BarChart). 4 HTML
+  goldens + render/helper tests + 2 pixel visual goldens (light/dark)
+  (TODO_LIST #395; plan C7).
 - **`forms.SegmentedControl` — segmented single-select group.** Two zero-JS
   modes: radio (a native `radiogroup` in forward DOM order with
   `peer-checked` segment styling — arrow keys move down the value order per

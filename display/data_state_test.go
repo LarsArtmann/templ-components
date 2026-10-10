@@ -54,7 +54,11 @@ func TestDataStateRender(t *testing.T) {
 
 	t.Run("unknown state falls back to content", func(t *testing.T) {
 		t.Parallel()
-		output := renderDataStateWithChildren(t, DataStateProps{State: DataStateState("bogus")}, plainChild("<p>still content</p>"))
+		output := renderDataStateWithChildren(
+			t,
+			DataStateProps{State: DataStateState("bogus")},
+			plainChild("<p>still content</p>"),
+		)
 		utils.AssertContains(t, output, "still content")
 	})
 

@@ -38,8 +38,13 @@ func TestStatusDotRender(t *testing.T) {
 	t.Run("propagates base props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, StatusDot(StatusDotProps{
-			BaseProps: utils.BaseProps{ID: "dot", Class: "mt-1", AriaLabel: "Conn", Attrs: templ.Attributes{"data-x": "1"}},
-			Tone:      StatusToneDanger,
+			BaseProps: utils.BaseProps{
+				ID:        "dot",
+				Class:     "mt-1",
+				AriaLabel: "Conn",
+				Attrs:     templ.Attributes{"data-x": "1"},
+			},
+			Tone: StatusToneDanger,
 		}))
 		utils.AssertContains(t, output, `id="dot"`)
 		utils.AssertContains(t, output, "mt-1")
