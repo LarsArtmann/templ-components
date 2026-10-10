@@ -738,6 +738,7 @@ func (p packPaneWriter) barPane(ctx context.Context, dialect wire.Transport) err
 	bar := forms.FilterBar(forms.FilterBarProps{
 		Wire: packWire(dialect, wire.MethodGet, "/api/pack/bar", target),
 	})
+
 	barCtx := templ.WithChildren(ctx, forms.Select(forms.SelectProps{
 		Name:  "status",
 		Label: "Status",

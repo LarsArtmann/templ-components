@@ -61,9 +61,12 @@ func TestLightboxE2E(t *testing.T) {
 	}
 
 	// Rotate: transform carries 90deg.
-	if err := chromedp.Do(tabCtx,
+	if err := chromedp.Do(
+		tabCtx,
 		chromedp.Click(chromedp.CSS("[data-tc-lightbox-rotate]")),
-		pollTrue(`document.querySelectorAll('[data-tc-lightbox-img]')[1].style.transform.indexOf('rotate(90deg)')>=0`, pollFast()...),
+		pollTrue(
+			`document.querySelectorAll('[data-tc-lightbox-img]')[1].style.transform.indexOf('rotate(90deg)')>=0`,
+			pollFast()...),
 	); err != nil {
 		t.Fatalf("rotate: %v", err)
 	}
