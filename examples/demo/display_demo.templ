@@ -536,6 +536,35 @@ display.Card(display.CardProps{
 			Variant:   display.CodeBlockCompactID,
 		})
 	</div>
+	@demoSection("Data States", "display-data-state")
+	<div class="grid gap-4 sm:grid-cols-2">
+		@display.Card(display.CardProps{Title: "Empty"}) {
+			@display.DataState(display.DataStateProps{
+				State:       display.DataStateEmpty,
+				Title:       "No tracked activity",
+				Description: "Nothing landed in the last 30 days.",
+			})
+		}
+		@display.Card(display.CardProps{Title: "Unavailable"}) {
+			@display.DataState(display.DataStateProps{
+				State:       display.DataStateUnavailable,
+				Title:       "Unavailable — retrying",
+				Description: "The query failed; this region keeps retrying.",
+			})
+		}
+		@display.Card(display.CardProps{Title: "Disabled"}) {
+			@display.DataState(display.DataStateProps{
+				State:       display.DataStateDisabled,
+				Title:       "Tracking is off",
+				Description: "Enable tracking in settings to see this data.",
+			})
+		}
+		@display.Card(display.CardProps{Title: "Content"}) {
+			@display.DataState(display.DataStateProps{}) {
+				<p class="text-sm text-gray-600 dark:text-gray-400">The data landed — children render normally.</p>
+			}
+		}
+	</div>
 	@demoSection("Collapsible Sections", "display-collapsible")
 	<div class="space-y-4">
 		@display.CollapsibleSection(display.CollapsibleSectionProps{

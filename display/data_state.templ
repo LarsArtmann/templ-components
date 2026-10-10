@@ -1,0 +1,61 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+//nolint:gochecknoglobals // Package-level lookup table for state default icons
+var dataStateIconMap = map[DataStateState]icons.Name{
+	DataStateEmpty:       icons.Inbox,
+	DataStateUnavailable: icons.ExclamationTriangle,
+	DataStateDisabled:    icons.NoSymbol,
+}
+
+// dataStateIcon resolves the placeholder icon: explicit Icon wins, then the
+// state default. Content has no placeholder and therefore no icon.
+func dataStateIcon(props DataStateProps) icons.Name {
+	if props.Icon != "" {
+		return props.Icon
+	}
+
+	return utils.Lookup(dataStateIconMap, props.State, icons.Inbox)
+}
+
+// DataState renders the honesty ladder for one data region.
+//
+//	@display.DataState(display.DataStateProps{
+//		State:       display.DataStateUnavailable,
+//		Title:       "Unavailable — retrying",
+//		Description: "The query failed; this region keeps retrying.",
+//	})
+//
+// Content rung (the zero value) renders children:
+//
+//	@display.DataState(display.DataStateProps{}) {
+//		@display.Table(display.TableProps{Headers: []string{"Device"}, Rows: rows})
+//	}
+templ DataState(props DataStateProps) {
+	if props.State == DataStateContent || !DataStateStateIsValid(props.State) {
+		<div
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ props.Class }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			{ children... }
+		</div>
+	} else {
+		@EmptyState(EmptyStateProps{
+			BaseProps: utils.BaseProps{ID: props.ID, Class: props.Class, Attrs: props.Attrs, AriaLabel: props.AriaLabel},
+			Title:     props.Title,
+			TitleTag:  props.TitleTag,
+			Description: props.Description,
+			Icon:      dataStateIcon(props),
+		})
+	}
+}
