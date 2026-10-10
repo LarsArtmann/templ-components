@@ -24,6 +24,7 @@ var inlineStyleAllowlist = map[string]string{
 	filepath.Join("display", "heatmap.templ"):      "runtime cell background",
 	filepath.Join("feedback", "progressbar.templ"): "runtime bar width",
 	filepath.Join("feedback", "loading.templ"):     "runtime overlay progress width",
+	filepath.Join("display", "segment_bar.templ"):   "runtime segment flex-grow proportions",
 }
 
 // inlineStyleRe matches a `style=` attribute in either templ form: the Go

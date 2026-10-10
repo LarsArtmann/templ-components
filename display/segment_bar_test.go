@@ -35,7 +35,7 @@ func TestSegmentBarRender(t *testing.T) {
 	t.Run("no legend opt-out", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, renderSegmentBarNoLegend(segments))
-		utils.AssertNotContains(t, output, "62.3%")
+		utils.AssertNotContains(t, output, "<li")
 	})
 
 	t.Run("aria label composed from segments", func(t *testing.T) {
@@ -71,7 +71,7 @@ func TestSegmentBarRender(t *testing.T) {
 			Segments: []SegmentBarSegment{{Label: "A", Value: 10}, {Label: "B", Value: -3}},
 		}))
 		utils.AssertContains(t, output, "100.0%")
-		utils.AssertNotContains(t, output, "-")
+		utils.AssertNotContains(t, output, "-3")
 	})
 
 	t.Run("explicit color override", func(t *testing.T) {
