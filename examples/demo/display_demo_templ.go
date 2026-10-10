@@ -1210,7 +1210,7 @@ display.Card(display.CardProps{
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = display.Image(display.ImageProps{Src: "https://picsum.photos/seed/tc-blur/480/96", Alt: "Blur-up placeholder", Width: 480, Height: 96, Placeholder: "https://picsum.photos/seed/tc-blur/24/5", BaseProps: utils.BaseProps{Nonce: "demo-nonce"}}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = display.Image(display.ImageProps{Src: "https://picsum.photos/seed/blurup/480/96", Alt: "Blur-up placeholder", Width: 480, Height: 96, Placeholder: "https://picsum.photos/seed/blurup/24/5", BaseProps: utils.BaseProps{Nonce: "demo-nonce"}}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

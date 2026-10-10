@@ -191,16 +191,19 @@ var packageImports = map[string][]string{
 var packageDeps = map[string][]string{
 	pkgDisplay: {
 		"area_chart.go", "bar_chart.go", "button_go.go",
-		"chart_geometry.go", "collapsible_section.go",
-		"command_palette.go", "drawer_go.go", enumsGoFile,
+		"chart_geometry.go", "code_block.go",
+		"collapsible_section.go", "command_palette.go",
+		"data_state.go", "drawer_go.go", enumsGoFile,
 		"external_link.go", "heading_tag.go", "heatmap.go",
-		"kanban.go", "line_chart.go", "modal_go.go",
-		"pie_chart.go", "shared.go", "sparkline.go",
+		"kanban.go", "lightbox.go", "line_chart.go", "modal_go.go",
+		"pie_chart.go", "segment_bar.go", "shared.go",
+		"sparkline.go", "status_dot.go",
 	},
 	pkgFeedback: {enumsGoFile, "styles.go"},
 	pkgForms: {
-		"aria.go", "calendar_nav.go", enumsGoFile, "ids.go",
-		"input_classes.go", "radio.go",
+		"aria.go", "calendar_nav.go", enumsGoFile,
+		"filter_bar.go", "filter_chips.go", "ids.go",
+		"input_classes.go", "radio.go", "segmented_control.go",
 	},
 	pkgLayout: {
 		"appshell_types.go", "container_types.go",
