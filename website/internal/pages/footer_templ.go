@@ -91,7 +91,7 @@ func Footer(nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4\"><div class=\"flex items-center gap-2.5\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4\"><div class=\"flex flex-wrap items-center justify-center gap-2.5\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -151,7 +151,7 @@ func Footer(nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</a></span></div><div class=\"flex items-center gap-5 text-sm\"><a href=\"/getting-started/installation\" class=\"text-text-muted hover:text-text-primary transition-colors duration-150 no-underline\">Documentation</a> <a href=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</a></span></div><div class=\"flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm\"><a href=\"/getting-started/installation\" class=\"text-text-muted hover:text-text-primary transition-colors duration-150 no-underline\">Documentation</a> <a href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -75,7 +75,7 @@ func CodeBlock(props CodeBlockProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if props.Variant == CodeBlockCompactID {
-			var templ_7745c5c3_Var3 = []any{utils.Class("flex items-center gap-1.5 min-w-0 text-xs text-gray-400 dark:text-gray-500", props.Class)}
+			var templ_7745c5c3_Var3 = []any{utils.Class("flex items-center gap-1.5 min-w-0 text-xs text-gray-500 dark:text-gray-400", props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var3...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
