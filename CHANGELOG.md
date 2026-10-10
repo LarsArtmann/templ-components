@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`layout.MetaRefresh` — zero-JS reload/redirect.** `<meta
+  http-equiv="refresh">` helper following the `Script`/`Stylesheet` shape:
+  reload the same page (`MetaRefresh(30, "")`) or navigate after a delay
+  (`MetaRefresh(5, "/login?retry=1")`) without JavaScript — the
+  retry/stale-session pattern (dnsblockd's login guard + allow-list retry
+  pages). Negative delays clamp to 0. Tests + goldens.
 - **`display.CodeBlock` — copyable code display.** Two variants from two
   verified demand signals (mr-sync's `commandLine` command row, DiscordSync's
   `copyIDRow` detail-page ID row): `CodeBlockBlock` (default) renders a

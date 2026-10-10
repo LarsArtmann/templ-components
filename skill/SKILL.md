@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-125 components across 11 packages + 102 icons. If you're about to hand-roll
+126 components across 11 packages + 102 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -143,7 +143,7 @@ Don't know what to look for? Find your page type:
 | `ProgressBar`      | `ProgressBar(props ProgressBarProps)`           | Progress indicator — 3 sizes, indeterminate, label                             |
 | `StepIndicator`    | `StepIndicator(props StepIndicatorProps)`       | Horizontal/vertical step progress                                              |
 
-#### `layout` — 10 components
+#### `layout` — 11 components
 
 | Component     | Signature                              | One-liner                                                                                                                                    |
 | ------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -153,6 +153,7 @@ Don't know what to look for? Find your page type:
 | `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                                                                                                 |
 | `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                                                                                                 |
 | `Stylesheet`  | `Stylesheet(href, attrs)`              | CSP-safe `<link rel="stylesheet">`                                                                                                           |
+| `MetaRefresh` | `MetaRefresh(delaySeconds, url)`       | Zero-JS reload/redirect via `<meta http-equiv=refresh>` — retry/stale-session pattern; empty url reloads                                       |
 | `AppShell`    | `AppShell(props AppShellProps)`        | Sidebar + header + main app shell — the #1 admin dashboard pattern                                                                           |
 | `Container`   | `Container(props ContainerProps)`      | Centered max-width wrapper with responsive gutter ON by default (`NoPad: true` opts out) — replaces `max-w-Nxl mx-auto px-4 sm:px-6 lg:px-8` |
 | `Split`       | `Split(props SplitProps)`              | 2-col content+aside — article+sidebar, detail+metadata (RTL-aware), `ContainerAware`                                                         |
