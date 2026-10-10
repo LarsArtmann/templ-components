@@ -1,6 +1,13 @@
 # Generated templ files — MUST be committed for Go module proxy compatibility
 !*_templ.go
 
+# Generated strays inside the tc scaffolder mirror: the mirror ships .templ +
+# *_types.go sources only. BuildFlow's templ-generate step regenerates the
+# mirror's .templ copies in place (no _-prefix skip in its ownership walk);
+# these are never meant to be committed (enforced by
+# cmd/tc TestSourcesMirrorExcludesGenerated + scripts/check-tc-sources-sync.sh).
+cmd/tc/_sources/**/*_templ.go
+
 # Build artifacts
 /server
 coverage.out
