@@ -4,6 +4,7 @@
 dnsblockd) — findings in `docs/status/2026-10-10_05-51_extraction-analysis-four-projects.md`.
 This plan converts that analysis into an executable, prioritized backlog. All load-bearing
 claims were **source-verified on 2026-10-10 06:06–06:10** (see Evidence).
+Consumer-side runbook: `docs/integration/extraction-analysis.md`.
 
 **Anti-verschlimmbesser contract:** no speculative rewrites; every task follows the repo's
 testing ladder; demand gates (#217) are respected — gated items stay parked until a second

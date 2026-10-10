@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **ADR-0045: CSS class delivery decided.** Module consumers get a
+  release-generated class inventory (`templates/templ-components-classes.txt`,
+  freshness-guarded, generated across all 7 modules by `release.sh`) as the
+  blessed scan source — three adoption lines, environment- and
+  toolchain-independent. Tracked-source `@source` stays blessed for
+  monorepos; compiled whole-library CSS is rejected. Deciding evidence: of
+  the three hand-rolled consumer mechanisms, the default-looking one
+  (DiscordSync's vendor-dir `@source`) is inert under Tailwind v4.3 — v4.3
+  never scans `.gitignore`d paths, and their `vendor/` is gitignored — so
+  their library utilities ride a stale compiled artifact. Implementation is
+  T2 (TODO_LIST #399).
 - **`layout.MetaRefresh` — zero-JS reload/redirect.** `<meta
   http-equiv="refresh">` helper following the `Script`/`Stylesheet` shape:
   reload the same page (`MetaRefresh(30, "")`) or navigate after a delay
