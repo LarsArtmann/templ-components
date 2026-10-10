@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Three consumer-flag extractions (C9–C11).** `Table.StickyHeader` pins
+  the header row inside scroll containers (`sticky top-0 z-10`; harmless
+  no-op on short tables — DiscordSync's `listTableWithHeader`).
+  `StatusBadgeWith(mapper, status)` renders StatusBadge through a
+  consumer-supplied `StatusBadgeMapper` — inject your domain's status
+  vocabulary; nil falls back to the built-in map, and `MapStatusToBadgeType`
+  is exported for extend-not-replace mappers (dnsblockd's four local
+  mappers are the demand). `ImageProps.Placeholder` is the zero-JS blur-up
+  pattern: a tiny image renders blurred behind the main image and is covered
+  the moment it paints — no JavaScript, no animation race (DiscordSync's
+  ThumbHash thumbnails).
 - **`display.Lightbox` — native-dialog image viewer.** Thumbnail or
   single-button triggers open a `<dialog>` (Escape, backdrop dismissal, focus
   trap, and top-layer rendering are all native) with prev/next wrap-around

@@ -238,16 +238,19 @@ display.Card(display.CardProps{
 })`)
 	@demoSection("Table in Card (Flush + Compact)", "display-table-card")
 	@display.Card(display.CardProps{Title: "Recent Users", Padding: display.CardPaddingNone}) {
-		@display.Table(display.TableProps{
-			Headers: []string{"Name", "Email", "Status"},
-			Rows: []display.TableRow{
-				display.SimpleTableRow("Alice Smith", "alice@example.com", "Active"),
-				display.SimpleTableRow("Bob Jones", "bob@example.com", "Invited"),
-			},
-			Flush:       true,
-			Hover:       true,
-			CellPadding: display.TableCellPaddingCompact,
-		})
+		<div class="max-h-48 overflow-y-auto">
+			@display.Table(display.TableProps{
+				StickyHeader: true,
+				Headers:      []string{"Name", "Email", "Status"},
+				Rows: []display.TableRow{
+					display.SimpleTableRow("Alice Smith", "alice@example.com", "Active"),
+					display.SimpleTableRow("Bob Jones", "bob@example.com", "Invited"),
+				},
+				Flush:       true,
+				Hover:       true,
+				CellPadding: display.TableCellPaddingCompact,
+			})
+		</div>
 	}
 	@demoSection("DataTable (sort + pagination)", "display-data-table")
 	@display.DataTable(display.DataTableProps{
@@ -400,6 +403,7 @@ display.Card(display.CardProps{
 	<div class="flex items-center gap-4">
 		@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Demo&size=96", Alt: "Demo", Width: 96, Height: 96, BaseProps: utils.BaseProps{Nonce: "demo-nonce"}})
 		@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Round&size=96", Alt: "Rounded", Width: 96, Height: 96, Rounded: true, FallbackSrc: "https://ui-avatars.com/api/?name=Fallback", BaseProps: utils.BaseProps{Nonce: "demo-nonce"}})
+		@display.Image(display.ImageProps{Src: "https://picsum.photos/seed/tc-blur/480/96", Alt: "Blur-up placeholder", Width: 480, Height: 96, Placeholder: "https://picsum.photos/seed/tc-blur/24/5", BaseProps: utils.BaseProps{Nonce: "demo-nonce"}})
 	</div>
 	@demoSection("HoverCard", "display-hover-card")
 	@display.HoverCard(display.HoverCardProps{

@@ -365,7 +365,7 @@ func Table(props TableProps) templ.Component {
 			}
 		}
 		if len(props.Headers) > 0 || len(props.TypedHeaders) > 0 {
-			var templ_7745c5c3_Var9 = []any{templ.KV("sticky top-0 z-10 bg-gray-50 dark:bg-gray-800", props.StickyHeader, "bg-gray-50 dark:bg-gray-800")}
+			var templ_7745c5c3_Var9 = []any{utils.Ternary(props.StickyHeader, "sticky top-0 z-10 bg-gray-50 dark:bg-gray-800", "bg-gray-50 dark:bg-gray-800")}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

@@ -165,6 +165,12 @@ type TableProps struct {
 	// a double border — the card provides the outer border, and the table sits
 	// flush against it. The overflow-x-auto scroll wrapper is always retained.
 	Flush bool
+	// StickyHeader, when true, pins the header row to the top of the table's
+	// scroll container (sticky top-0 + z). Effective when the table scrolls
+	// vertically — inside a height-constrained wrapper or a scrollable
+	// ancestor (the built-in overflow-x-auto wrapper counts as a scroll
+	// container). Harmless no-op on short tables.
+	StickyHeader bool
 	// CellPadding controls the vertical density of header and body cells.
 	// Defaults to TableCellPaddingComfortable (px-4 py-3). Set to
 	// TableCellPaddingCompact (px-4 py-2) for data-heavy dashboards and admin
@@ -233,7 +239,7 @@ templ Table(props TableProps) {
 				<caption class="sr-only">{ props.Caption }</caption>
 			}
 			if len(props.Headers) > 0 || len(props.TypedHeaders) > 0 {
-				<thead class="bg-gray-50 dark:bg-gray-800">
+				<thead class={ utils.Ternary(props.StickyHeader, "sticky top-0 z-10 bg-gray-50 dark:bg-gray-800", "bg-gray-50 dark:bg-gray-800") }>
 					<tr>
 						if len(props.TypedHeaders) > 0 {
 							for _, th := range props.TypedHeaders {
