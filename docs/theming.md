@@ -11,8 +11,10 @@ There are **three** ways to override colors, in order of recommended use.
 ## 1. Semantic token layer (recommended)
 
 Import `templ-components-theme.css` from your `app.css`. This file aliases
-every Tailwind palette color used by the library to a semantic name
-(`--color-tc-primary`, `--color-tc-danger`, `--color-tc-success`, etc.).
+every Tailwind palette color used by the library to a semantic name — since
+2026-10-10 over the **full 50–950 ramp** per family
+(`--color-tc-primary-600`, `--color-tc-danger-700`, …), with `yellow-*`
+bound to the warning family too (badge tints use yellow, feedback amber).
 
 ```css
 /* app.css */
@@ -21,33 +23,40 @@ every Tailwind palette color used by the library to a semantic name
 @import "./custom.css";
 
 @theme {
-  /* Override semantic names — every component updates */
-  --color-tc-primary: #4f46e5; /* indigo */
-  --color-tc-primary-hover: #4338ca;
-  --color-tc-danger: #dc2626;
+  /* Override semantic shades — every component updates */
+  --color-tc-primary-600: #4f46e5; /* indigo buttons/links */
+  --color-tc-primary-700: #4338ca; /* hover */
+  --color-tc-primary-100: #e0e7ff; /* badge tints */
+  --color-tc-primary-800: #3730a3; /* badge tint text */
   /* … */
 }
 ```
 
 Once you've imported the theme file, every `bg-blue-600` in the library
-silently becomes your `--color-tc-primary`. One override re-skins the
-whole library — buttons, links, focus rings, active states, toasts,
-progress bars, all of it.
+silently becomes your `--color-tc-primary-600`. One override re-skins the
+whole library — buttons, links, focus rings, active states, badge tints,
+toasts, progress bars, all of it. The defaults are Tailwind's palette values
+as literals, so an unmodified import renders identically to stock Tailwind.
 
 **Available semantic tokens** (see `templates/templ-components-theme.css`
 for the full list):
 
-| Token                      | Default     | Used by                                    |
-| -------------------------- | ----------- | ------------------------------------------ |
-| `--color-tc-primary`       | `blue-600`  | Buttons, links, active states, focus rings |
-| `--color-tc-primary-hover` | `blue-700`  | Button hover                               |
-| `--color-tc-danger`        | `red-600`   | Destructive buttons, errors, validation    |
-| `--color-tc-success`       | `green-600` | Positive feedback, success toasts          |
-| `--color-tc-warning`       | `amber-500` | Caution, "holding" trends                  |
-| `--color-tc-info`          | `blue-500`  | Info toasts, informational feedback        |
+| Token family              | Default palette | Used by                                    |
+| ------------------------- | --------------- | ------------------------------------------ |
+| `--color-tc-primary-*`    | `blue-*` (50–950) | Buttons, links, active states, focus rings, badge primary tints |
+| `--color-tc-danger-*`     | `red-*` (50–950)  | Destructive buttons, errors, validation    |
+| `--color-tc-success-*`    | `green-*` (50–950) | Positive feedback, success toasts        |
+| `--color-tc-warning-*`    | `amber-*` + `yellow-*` (50–950) | Caution, warning badges/tints |
 
-Dark-mode equivalents: override `--color-tc-primary` etc. inside a
-`.dark` scope or use Tailwind's `dark:` variants in your override CSS.
+Legacy named tokens (`--color-tc-primary`, `--color-tc-danger`, …) remain
+and resolve through the shade tokens (e.g. `tc-primary` ≡ `tc-primary-600`).
+
+Dark-mode equivalents: override the shade tokens inside a `.dark` scope or
+use Tailwind's `dark:` variants in your override CSS.
+
+Need the remap scoped to LIBRARY components only (your own blue stays blue)?
+See [recipes/scoped-theme-bridge.md](recipes/scoped-theme-bridge.md) — and
+ADR-0044's `--color-accent-*` family, which makes scoping structural in v2.
 
 See [ADR-0008](adr/0008-semantic-tokens.md) for the design rationale.
 

@@ -54,7 +54,7 @@ templ SegmentBar(props SegmentBarProps) {
 							<li class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
 								<span class={ "h-2 w-2 rounded-full " + segmentBarColor(seg) } aria-hidden="true"></span>
 								{ seg.Label }
-								<span class="text-gray-400 dark:text-gray-500">{ segmentBarPercent(seg.Value, total) }</span>
+								<span class="text-gray-500 dark:text-gray-400">{ segmentBarPercent(seg.Value, total) }</span>
 							</li>
 						}
 					}
