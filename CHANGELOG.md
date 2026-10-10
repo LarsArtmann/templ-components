@@ -8,6 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`forms.FilterBar` — horizontal auto-submit filter row.** The converged
+  shape behind DiscordSync's `filterForm` (9 list pages) and dnsblockd's
+  filter rows: a GET form whose child selects/checkboxes re-submit on
+  change (the composite `from:find` trigger encodes the recipe's checkbox
+  footgun), with a Reset link, a `<noscript>` Apply button for non-JS
+  browsers, an htmx loading indicator, optional sticky top-bar shell, and
+  URL pushing for shareable filtered views (`NoPushURL` opts out).
+  Dual-transport via `Wire` (change event + form encoding defaults; the
+  consumer's action is never mutated). Children are plain controls
+  (`Select`, `Checkbox`, hidden inputs) — self-wiring children like
+  `FilterInput` would nest forms. 7 HTML goldens + browser e2e proving
+  auto-submit under BOTH transports (TODO_LIST #390; plan C2/C2T).
 - **ADR-0045: CSS class delivery decided.** Module consumers get a
   release-generated class inventory (`templates/templ-components-classes.txt`,
   freshness-guarded, generated across all 7 modules by `release.sh`) as the

@@ -89,6 +89,7 @@ func componentTypes() []any {
 		forms.RadioGroupProps{},
 		forms.FilterDropdownProps{},
 		forms.FilterInputProps{},
+		forms.FilterBarProps{},
 		forms.DirtyGuardProps{},
 		forms.SliderProps{},
 		forms.RatingProps{},

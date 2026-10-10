@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/forms"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // formsDemoContent renders the forms page body (inside the demo shell):
@@ -114,6 +115,35 @@ templ formsDemoContent() {
 			})
 			<div id="user-results" class="flex-1 text-sm text-gray-500 dark:text-gray-400">
 				Results will appear here on filter change.
+			</div>
+		</div>
+	}
+	@demoSection("FilterBar (auto-submit)", "forms-filter-bar-component") {
+		<div class="space-y-3">
+			@forms.FilterBar(forms.FilterBarProps{
+				Action: demoURL("/forms"),
+				Wire:   &wire.Action{Method: wire.MethodGet, URL: demoURL("/api/users"), Target: "#bar-results"},
+			}) {
+				@forms.Select(forms.SelectProps{
+					Name:  "status",
+					Label: "Status",
+					Options: []forms.SelectOption{
+						{Value: "", Label: "All"},
+						{Value: "active", Label: "Active"},
+						{Value: "inactive", Label: "Inactive"},
+					},
+				})
+				@forms.Select(forms.SelectProps{
+					Name:  "sort",
+					Label: "Sort by",
+					Options: []forms.SelectOption{
+						{Value: "name", Label: "Name"},
+						{Value: "created", Label: "Date Created"},
+					},
+				})
+			}
+			<div id="bar-results" class="text-sm text-gray-500 dark:text-gray-400">
+				Change a filter to see results update — selects and checkboxes auto-submit the bar.
 			</div>
 		</div>
 	}

@@ -206,7 +206,7 @@ var UseCases = []UseCase{
 	{
 		Icon:  icons.Clipboard,
 		Title: "Forms & CRUD",
-		Desc:  "23 form components with validation, comboboxes, date pickers, and accessible error handling.",
+		Desc:  "24 form components with validation, comboboxes, date pickers, and accessible error handling.",
 	},
 	{
 		Icon:  icons.Bars3,

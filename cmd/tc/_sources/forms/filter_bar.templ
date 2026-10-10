@@ -1,0 +1,75 @@
+package forms
+
+import (
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// filterBarNoscriptButtonClass is the Apply button styling, shared with
+// FilterDropdown's noscript fallback (compact primary button).
+const filterBarNoscriptButtonClass = "inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-1.5 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-500"
+
+// FilterBar renders the horizontal auto-submit filter row for list pages.
+//
+//	@forms.FilterBar(forms.DefaultFilterBarProps()) {
+//		@forms.FilterDropdown(forms.FilterDropdownProps{
+//			Name: "status", Label: "Status", HxGet: "/users", HxTarget: "#results",
+//			Options: []forms.SelectOption{{Value: "", Label: "All"}, {Value: "active", Label: "Active"}},
+//		})
+//	}
+//
+// Dual-transport: set Wire instead of relying on the Action-derived htmx
+// defaults (see FilterBarProps.Wire). Children compose any filter controls —
+// selects, checkboxes, search inputs, and the hidden inputs that keep
+// link-driven query params in the form (recipe footgun #1).
+templ FilterBar(props FilterBarProps) {
+	{{
+		wiring := filterBarAttributes(props)
+		wired := wiring != nil
+		indicatorID := utils.EnsureID("filter-bar", props.ID) + "-indicator"
+		barClass := "flex flex-wrap items-end gap-3"
+		if props.Sticky {
+			barClass = utils.Class("sticky top-0 z-20 flex flex-wrap items-center gap-3 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900", props.Class)
+		} else {
+			barClass = utils.Class(barClass, props.Class)
+		}
+	}}
+	<form
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		method="get"
+		if props.Action != "" {
+			action={ templ.SafeURL(props.Action) }
+		}
+		class={ barClass }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ wiring... }
+		if wired && filterBarIsHTMX(props) {
+			hx-indicator={ "#" + indicatorID }
+		}
+		{ props.Attrs... }
+	>
+		{ children... }
+		if props.ResetText != "" && props.Action != "" {
+			<a
+				href={ templ.SafeURL(props.Action) }
+				class="text-sm text-gray-500 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-200 dark:focus-visible:ring-blue-400"
+			>
+				{ props.ResetText }
+			</a>
+		}
+		if wired && filterBarIsHTMX(props) {
+			<span
+				id={ indicatorID }
+				class="htmx-indicator inline-flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500"
+			>
+				Loading…
+			</span>
+		}
+		<noscript>
+			<button type="submit" class={ filterBarNoscriptButtonClass }>Apply</button>
+		</noscript>
+	</form>
+}
