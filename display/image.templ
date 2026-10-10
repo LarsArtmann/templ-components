@@ -34,6 +34,13 @@ type ImageProps struct {
 	// Rounded, when true, adds rounded-full for circular images (avatars, icons).
 	// Defaults to false (rounded-md).
 	Rounded bool
+	// Placeholder, when non-empty, is a tiny image URL (a 10-30px thumbhash
+	// or thumbnail) rendered blurred BEHIND the main image — the zero-JS
+	// blur-up pattern. The placeholder fills the box while Src loads and is
+	// covered the moment the full image paints (no JavaScript, no animation
+	// timing to race). Consumer generates the tiny image; the library adds
+	// only CSS.
+	Placeholder string
 }
 
 // DefaultImageProps returns sensible defaults.
@@ -58,7 +65,48 @@ func DefaultImageProps() ImageProps {
 //
 //	@display.Image(display.ImageProps{Src: "/photo.jpg", Alt: "Profile photo", Width: 128, Height: 128, FallbackSrc: "/placeholder.jpg"})
 templ Image(props ImageProps) {
-	if props.Src != "" {
+	if props.Src != "" && props.Placeholder != "" {
+		<span
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("relative inline-block max-w-full overflow-hidden", utils.Ternary(props.Rounded, "rounded-full", "rounded-md"), props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			<img
+				src={ props.Placeholder }
+				alt=""
+				aria-hidden="true"
+				class="absolute inset-0 h-full w-full scale-110 object-cover blur-lg"
+			/>
+			<img
+				src={ props.Src }
+				alt={ props.Alt }
+				if props.SrcSet != "" {
+					srcset={ props.SrcSet }
+				}
+				if props.Sizes != "" {
+					sizes={ props.Sizes }
+				}
+				loading={ utils.Ternary(props.Lazy, "lazy", "eager") }
+				decoding="async"
+				fetchpriority={ utils.Ternary(props.Lazy, "low", "high") }
+				if props.Width > 0 {
+					width={ props.Width }
+				}
+				if props.Height > 0 {
+					height={ props.Height }
+				}
+				if props.FallbackSrc != "" {
+					data-tc-img-fallback={ props.FallbackSrc }
+				}
+				class="relative h-auto w-full"
+			/>
+		</span>
+	} else if props.Src != "" {
 		<img
 			src={ props.Src }
 			alt={ props.Alt }

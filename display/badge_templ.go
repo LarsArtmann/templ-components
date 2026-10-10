@@ -394,6 +394,68 @@ func mapStatusToBadgeType(status string) BadgeType {
 	return utils.Lookup(statusToBadgeMap, strings.ToLower(status), BadgeNeutral)
 }
 
+// StatusBadgeMapper maps a consumer status string to a badge type. Return
+// the zero value ("" — rendered neutral) for unknown statuses; mappers that
+// want the built-in mapping for unhandled values can call
+// MapStatusToBadgeType.
+type StatusBadgeMapper func(status string) BadgeType
+
+// MapStatusToBadgeType exposes the built-in status-to-badge mapping for
+// consumer mappers that extend rather than replace it (dnsblockd carries
+// four local mappers — the extraction demand behind StatusBadgeWith).
+func MapStatusToBadgeType(status string) BadgeType {
+	return mapStatusToBadgeType(status)
+}
+
+// resolveStatusBadgeType applies the consumer mapper when set, else the
+// built-in mapping.
+func resolveStatusBadgeType(mapper StatusBadgeMapper, status string) BadgeType {
+	if mapper != nil {
+		return mapper(status)
+	}
+
+	return mapStatusToBadgeType(status)
+}
+
+// StatusBadgeWith renders a StatusBadge through a consumer-supplied mapper —
+// inject your domain's status vocabulary (e.g. dnsblockd's allow/block
+// states) without forking the component. A nil mapper falls back to the
+// built-in mapping (identical to StatusBadge).
+//
+//	@display.StatusBadgeWith(func(s string) display.BadgeType {
+//		if s == "blocked" { return display.BadgeError }
+//		return display.MapStatusToBadgeType(s)
+//	}, row.Status)
+func StatusBadgeWith(mapper StatusBadgeMapper, status string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var18 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var18 == nil {
+			templ_7745c5c3_Var18 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		badgeType := resolveStatusBadgeType(mapper, status)
+		templ_7745c5c3_Err = Badge(BadgeProps{Text: status, Type: badgeType, Dot: true}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
 var statusToBadgeMap = map[string]BadgeType{
 	"active": BadgeSuccess, "healthy": BadgeSuccess, "success": BadgeSuccess,
 	"completed": BadgeSuccess, "done": BadgeSuccess, "passed": BadgeSuccess, "green": BadgeSuccess,
