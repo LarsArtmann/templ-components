@@ -4,13 +4,13 @@ Every public-facing count in this repo must be either live-computed by a guard
 or pinned to a source that is. This page is the definitional home: when a
 number is questioned, answer from here, not from memory.
 
-## Components — **124**
+## Components — **135**
 
 - **Definition:** exported `templ` components declared as `templ Name(...)` in
   the canonical 9-package scan set: `display`, `feedback`, `forms`, `layout`,
   `navigation`, `charts/echarts`, `htmx`, `datastar`, `errorpage`. The 4
   `recipes` screens are compositions, counted separately in FEATURES.md
-  ("123 + 4 recipe screens = 127") but the sold headline is 123.
+  ("135 + 4 recipe screens = 139") but the sold headline is 135.
 - **Computed by:** `website/internal/build.CountStats` (site hero, live) over
   `statsDirs` (order-pinned by `TestStatsDirsAreCanonical`); the same set is
   the canonical package list in `utils.TestDocsCountDrift`.
@@ -24,14 +24,14 @@ number is questioned, answer from here, not from memory.
 - **Computed by:** `icons.AllIconNames()` (live, in-process); the website and
   demo compute from it at render time.
 
-## Typed enums — **65 (64 with IsValid())**
+## Typed enums — **68 (67 with IsValid())**
 
 - **Definition:** exported closed-set string types; the IsValid count is
   functions matching `<Name>IsValid(` across library source.
 - **Computed by:** `CountStats` (site, live); `utils.TestDocsCountDrift`
   guards the prose claims.
 
-## Packages — **17**
+## Packages — **18**
 
 - **Definition:** importable Go packages across the 7 published modules
   (module roots with Go files + first-level subpackages with Go files),
@@ -48,7 +48,7 @@ number is questioned, answer from here, not from memory.
   icons, errorpage, charts/echarts, htmx, datastar). `visualtest/` and
   `website/` are repo-local and never counted or published.
 
-## Tests — **~1,600 functions + ~1,650 subtests**
+## Tests — **~1,600 functions + ~1,700 subtests**
 
 - **Definition:** `func Test/Fuzz/Benchmark` declarations and `t.Run(`
   occurrences in `*_test.go` files of the public packages (same scope as
@@ -56,7 +56,7 @@ number is questioned, answer from here, not from memory.
   (multiple of 50 within 49 of live).
 - **Computed by:** `utils.TestDocsCountDrift` (`countLibraryTests`).
 
-## Goldens — **279 HTML / 200 pixel**
+## Goldens — **320 HTML / 202 pixel**
 
 - **Definition:** committed baseline files under the golden testdata trees.
 - **Computed by:** `utils.TestDocsCountDrift` (file counts per tree).

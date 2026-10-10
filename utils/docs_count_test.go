@@ -107,6 +107,21 @@ func TestDocsCountDrift(t *testing.T) {
 	assertRoundedCount(t, readme, `~([\d,]+) test functions`, "README.md test functions", actualTestFuncs)
 	assertRoundedCount(t, readme, `~([\d,]+) subtests`, "README.md subtests", actualSubtests)
 
+	// The definitional home for every sold count (docs/count-definitions.md)
+	// is itself a count-carrying surface — it drifted to 124-vs-135 because
+	// the guard never read it (found 2026-10-10). Every number it states is
+	// now pinned like every other doc.
+	countDefs := readDoc(t, "docs", "count-definitions.md")
+	assertCount(t, countDefs, `## Components — \*\*(\d+)\*\*`, "count-definitions.md components", actualComponents)
+	assertCount(t, countDefs, `## Icons — \*\*(\d+)\*\*`, "count-definitions.md icons", actualIcons)
+	assertCount(t, countDefs, `\((\d+) with IsValid\(\)\)\*\*`, "count-definitions.md IsValid methods", actualIsValid)
+	assertCount(t, countDefs, `## Packages — \*\*(\d+)\*\*`, "count-definitions.md packages", actualPackages)
+	assertCount(t, countDefs, `## Go modules — \*\*(\d+)\*\*`, "count-definitions.md Go modules", actualModules)
+	assertCount(t, countDefs, `\*\*(\d+) HTML /`, "count-definitions.md HTML golden baselines", actualHTMLGoldens)
+	assertCount(t, countDefs, `/ (\d+) pixel\*\*`, "count-definitions.md visual goldens", actualVisualGoldens)
+	assertRoundedCount(t, countDefs, `~([\d,]+) functions`, "count-definitions.md test functions", actualTestFuncs)
+	assertRoundedCount(t, countDefs, `~([\d,]+) subtests`, "count-definitions.md subtests", actualSubtests)
+
 	// The website UseCases card hand-types its per-package component count
 	// ("23 form components") — pinned to the forms package's real count.
 	useCases := readDoc(t, "website", "internal", "pages", "data.go")

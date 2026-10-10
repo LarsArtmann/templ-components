@@ -850,6 +850,19 @@ Never invent IDs with `time.Now()` alone — predictable under concurrency.
   doesn't exist for a Go-source library. The library achieves component encapsulation
   via native APIs (`<dialog>`, Popover, `<details>`, scroll-snap, `@container`).
   Never re-evaluate; the decision is binding.
+- **templ language traps** (each burned a 2026-10-10 session build):
+  - `templ.KV(cond, class)` is a TWO-ARG conditional-attribute helper, not a
+    ternary. For value selection in expressions use `utils.Ternary(cond, a, b)`.
+  - `checked={ someBool }` renders `checked="false"` when the bool is false —
+    and a `checked` ATTRIBUTE OF ANY VALUE MEANS CHECKED (HTML boolean
+    attribute semantics). Conditionally render it as a bare attribute via an
+    `if` block: `if sel { checked }`. Same rule for `disabled`, `selected`,
+    `open`, `readonly`, `multiple`.
+  - Void elements (`<img>`, `<input>`, `<br>`) render WITHOUT a trailing `/>`;
+    substring tests must assert `>` endings, not `/>`.
+  - Attribute values escape `'` as `&#39;` — assert the escaped form.
+  - No implicit int→string: use `strconv.Itoa` in Go helpers, never try to
+    interpolate an int directly in a templ expression.
 
 ## Anti-patterns to refuse on review
 

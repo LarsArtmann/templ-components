@@ -79,25 +79,25 @@ Sorted by importance/impact/effort/customer-value. Status: ⬜ open, ✅ done th
 |---|----|------|------|--------|--------|----------------|---------|--------|
 | 1 | R1 | Record gate evidence + harvest backlog into TODO_LIST.md (#328 flip, #217 update, IDs 388–400) | 1% | Critical | 30m | All future sessions start from truth | V1 | ✅ done 06:2x |
 | 2 | V1 | Source-verify the 7 load-bearing claims (E1–E7) | 1% | Critical | 30m | Prevents building on agent hearsay | — | ✅ done 06:06 |
-| 3 | D1 | ADR-0044: semantic theming tokens (`--tc-accent-*`) — decision + scope, NOT implementation | 1% | High | 90m | Deletes 3 consumer CSS bridges (E4); shapes all builds | R1 | ⬜ |
-| 4 | F1 | `utils/format`: FormatBytes/Duration/Percent/StringOrDash/CompactCount + tests + bench | 4% | High | 90m | 3 consumers hand-roll these today | — | ⬜ |
-| 5 | C1 | `display.CodeBlock` core: props, templ, CopyButton integration, goldens | 4% | High | 90m | Gate flipped (E1); 2 named consumers + docserver | R1 | ⬜ |
-| 6 | C1T | CodeBlock ladder tail: demo, docs counts, tc mirror, CHANGELOG | 4% | Med | 45m | Completes the ladder (plan-authoring checklist) | C1 | ⬜ |
-| 7 | C2 | `forms.FilterBar` core: sticky auto-submit composition, Reset, noscript | 20% | Critical | 90m | Strongest demand signal (E2 + dnsblockd) | D1 (token-ready) | ⬜ |
-| 8 | C2T | FilterBar tail: e2e both transports, axe, demo, counts, tc, CHANGELOG | 20% | High | 60m | wired⇒e2e rule | C2 | ⬜ |
-| 9 | C5 | `display.DataState` ladder (disabled→unavailable→empty→content) | 20% | High | 60m | 9 dup markers in one consumer (E3) | — | ⬜ |
-| 10 | C4 | `display.StatusDot`/LivePill (pulse + motion-reduce, latency sub) | 20% | High | 60m | 3 consumers hand-roll status dots | D1 | ⬜ |
-| 11 | C3 | `forms.FilterChips` (link/query-param, zero JS) | 20% | Med | 60m | Zero-JS/SEO filter differentiator (E6) | C2 (design kinship) | ⬜ |
-| 12 | C6 | `forms.SegmentedControl` (link or submit single-select group) | 20% | Med | 60m | dnsblockd duration buttons + nsfw presets | — | ⬜ |
-| 13 | C7 | `display.SegmentBar` (stacked proportion bar + legend, deterministic colors) | 20% | Med | 90m | mr-sync languages + nsfw evidence bars | — | ⬜ |
-| 14 | C8 | `display.Lightbox` (native `<dialog>`, keyboard, zoom/rotate) | 20% | Med | 90m | DiscordSync thumbnails + nsfw viewer | — | ⬜ |
-| 15 | D2 | ADR-0045: CSS delivery for consumers (bless vendor-`@source` vs class inventory vs compiled CSS) | 4% | High | 60m | 3 mirror mechanisms exist (E7); every new component deepens friction | R1 | ⬜ |
-| 16 | F2 | utils/format docs: README/FEATURES/CHANGELOG, skill catalogue, docs-count guard | 4% | Med | 30m | Discoverability | F1 | ⬜ |
-| 17 | P1 | `docs/integration/extraction-analysis.md`: verified findings + per-project adoption map | 4% | Med | 60m | Consumer-side migration runbook | V1, R1 | ⬜ |
-| 18 | M1 | `layout.MetaRefresh` helper + tests + docs | 4% | Low | 30m | dnsblockd stale-session/retry meta tags | — | ⬜ |
-| 19 | C9 | `Table.StickyHeader` flag + thead CSS + goldens + demo | rest | Low | 30m | DiscordSync `listTableWithHeader` | — | ⬜ |
-| 20 | C10 | `StatusBadgeWith(mapper, status)` injectable mapper + tests | rest | Low | 30m | dnsblockd has 4 local mappers | — | ⬜ |
-| 21 | C11 | `ImageProps` ThumbHash/blur-up field + demo + goldens | rest | Low | 60m | DiscordSync `imageThumbnail` blur-up | — | ⬜ |
+| 3 | D1 | ADR-0044: semantic theming tokens (`--tc-accent-*`) — decision + scope, NOT implementation | 1% | High | 90m | Deletes 3 consumer CSS bridges (E4); shapes all builds | R1 | ✅ done |
+| 4 | F1 | `utils/format`: FormatBytes/Duration/Percent/StringOrDash/CompactCount + tests + bench | 4% | High | 90m | 3 consumers hand-roll these today | — | ✅ done |
+| 5 | C1 | `display.CodeBlock` core: props, templ, CopyButton integration, goldens | 4% | High | 90m | Gate flipped (E1); 2 named consumers + docserver | R1 | ✅ done |
+| 6 | C1T | CodeBlock ladder tail: demo, docs counts, tc mirror, CHANGELOG | 4% | Med | 45m | Completes the ladder (plan-authoring checklist) | C1 | ✅ done |
+| 7 | C2 | `forms.FilterBar` core: sticky auto-submit composition, Reset, noscript | 20% | Critical | 90m | Strongest demand signal (E2 + dnsblockd) | D1 (token-ready) | ✅ done |
+| 8 | C2T | FilterBar tail: e2e both transports, axe, demo, counts, tc, CHANGELOG | 20% | High | 60m | wired⇒e2e rule | C2 | ✅ done |
+| 9 | C5 | `display.DataState` ladder (disabled→unavailable→empty→content) | 20% | High | 60m | 9 dup markers in one consumer (E3) | — | ✅ done |
+| 10 | C4 | `display.StatusDot`/LivePill (pulse + motion-reduce, latency sub) | 20% | High | 60m | 3 consumers hand-roll status dots | D1 | ✅ done |
+| 11 | C3 | `forms.FilterChips` (link/query-param, zero JS) | 20% | Med | 60m | Zero-JS/SEO filter differentiator (E6) | C2 (design kinship) | ✅ done |
+| 12 | C6 | `forms.SegmentedControl` (link or submit single-select group) | 20% | Med | 60m | dnsblockd duration buttons + nsfw presets | — | ✅ done |
+| 13 | C7 | `display.SegmentBar` (stacked proportion bar + legend, deterministic colors) | 20% | Med | 90m | mr-sync languages + nsfw evidence bars | — | ✅ done |
+| 14 | C8 | `display.Lightbox` (native `<dialog>`, keyboard, zoom/rotate) | 20% | Med | 90m | DiscordSync thumbnails + nsfw viewer | — | ✅ done |
+| 15 | D2 | ADR-0045: CSS delivery for consumers (bless vendor-`@source` vs class inventory vs compiled CSS) | 4% | High | 60m | 3 mirror mechanisms exist (E7); every new component deepens friction | R1 | ✅ done |
+| 16 | F2 | utils/format docs: README/FEATURES/CHANGELOG, skill catalogue, docs-count guard | 4% | Med | 30m | Discoverability | F1 | ✅ done |
+| 17 | P1 | `docs/integration/extraction-analysis.md`: verified findings + per-project adoption map | 4% | Med | 60m | Consumer-side migration runbook | V1, R1 | ✅ done |
+| 18 | M1 | `layout.MetaRefresh` helper + tests + docs | 4% | Low | 30m | dnsblockd stale-session/retry meta tags | — | ✅ done |
+| 19 | C9 | `Table.StickyHeader` flag + thead CSS + goldens + demo | rest | Low | 30m | DiscordSync `listTableWithHeader` | — | ✅ done |
+| 20 | C10 | `StatusBadgeWith(mapper, status)` injectable mapper + tests | rest | Low | 30m | dnsblockd has 4 local mappers | — | ✅ done |
+| 21 | C11 | `ImageProps` ThumbHash/blur-up field + demo + goldens | rest | Low | 60m | DiscordSync `imageThumbnail` blur-up | — | ✅ done |
 | 22 | T1 | Theming tokens IMPLEMENTATION (per ADR-0044): custom.css tokens + class-swap batches + visual rebaseline + migration doc | rest | Critical | 100m | Deletes consumer bridges; likely version-plan gate (v2?) | D1 | ⬜ |
 | 23 | T2 | CSS-delivery IMPLEMENTATION (per ADR-0045): inventory generator or blessed-pattern docs + consumer migration notes | rest | High | 100m | Deletes nsfw mirror script + dnsblockd regen | D2 | ⬜ |
 | 24 | X1 | Consumer wave 1 (other repos): dnsblockd bump v1.19.4→current + SidebarNav swap + DataState adoption; DiscordSync adopt ExternalLink/CollapsibleSection | rest | High | 100m | Real consumers get real wins (E5) | C5; dnsblockd release | ⬜ |
