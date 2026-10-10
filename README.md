@@ -84,7 +84,7 @@ UI in a Go binary — without adopting a frontend stack.
 - **Security and polish are defaults, not TODOs.** CSP-nonce threading on every script, dark mode and `prefers-reduced-motion` support on every component, logical RTL properties throughout — each enforced by a regression test, not a code-review memo.
 - **Pay for what you use.** Pure Go + templ + Tailwind CSS v4 in seven small modules; import one package or all of them.
 
-133 server-rendered components · 68 typed string enums (67 with IsValid()) · 102 SVG icons — in one `go get`.
+134 server-rendered components · 68 typed string enums (67 with IsValid()) · 102 SVG icons — in one `go get`.
 
 The long-form pitch, with screenshots: [Why templ-components](https://templcomponents.lars.software/sales).
 
@@ -134,7 +134,7 @@ class of project is best at — lives in
 
 ## Component Catalog
 
-### `display` — Data Display (49 components)
+### `display` — Data Display (50 components)
 
 Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, sparklines, bar charts, external links, collapsible sections, copyable code blocks, heatmaps, **native SVG charts** (LineChart, AreaChart, PieChart/Donut), **dual-transport kanban boards** (drag-and-drop + keyboard moves, optimistic moves with a pending register + failure revert), eyebrows, terminal-style log scrollbacks, and more.
 
@@ -405,7 +405,7 @@ of regression:
 
 | Tier                     | What                                                                 | Where                                | Catches                                                                                                                                         |
 | ------------------------ | -------------------------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 314 `.golden` files | Structure, attribute, and class changes                                                                                                         |
+| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 317 `.golden` files | Structure, attribute, and class changes                                                                                                         |
 | **Drift-guard scanners** | Cross-cutting invariant tests                                        | `utils/`                             | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
 | **Visual regression**    | Pixel-level PNG diff in headless Chromium                            | `visualtest/` (separate module)      | Layout shifts, dark-mode color regressions, RTL mirroring                                                                                       |
 

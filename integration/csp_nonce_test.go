@@ -72,6 +72,9 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 			Nonce: testNonce,
 			Text:  "copy me",
 		}))},
+		{"Lightbox", utils.Render(t, display.Lightbox(display.LightboxProps{
+			Images: []display.LightboxImage{{Src: "/x.jpg", Alt: "X"}},
+		}))},
 		{"GlobalErrorHandling", utils.Render(t, htmx.GlobalErrorHandling(htmx.ErrorHandlingConfig{
 			Nonce: testNonce,
 		}))},

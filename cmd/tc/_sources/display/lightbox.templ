@@ -1,0 +1,111 @@
+package display
+
+import (
+	"strconv"
+
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// lightboxControlClass is the shared control-button style (prev/next/rotate/
+// zoom/close): ghost buttons over the dark overlay.
+const lightboxControlClass = "inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0 cursor-pointer"
+
+// Lightbox renders a native-dialog image viewer.
+//
+//	@display.Lightbox(display.LightboxProps{
+//		Images: []display.LightboxImage{
+//			{Src: "/img/1.jpg", Alt: "Front view", Caption: "Front"},
+//			{Src: "/img/2.jpg", Alt: "Back view"},
+//		},
+//	})
+//
+// Thumbnails mode renders one opener per image:
+//
+//	@display.Lightbox(display.LightboxProps{Thumbnails: true, Images: images})
+templ Lightbox(props LightboxProps) {
+	{{ rootID := utils.EnsureID("lightbox", props.ID) }}
+	<div
+		id={ rootID }
+		data-tc-lightbox
+		class={ utils.Class("inline-block", props.Class) }
+		{ props.Attrs... }
+	>
+		if props.Thumbnails {
+			<div class="flex flex-wrap gap-2">
+				for i, img := range props.Images {
+					<button
+						type="button"
+						data-tc-lightbox-open={ strconv.Itoa(i) }
+						class="group cursor-pointer overflow-hidden rounded-md border border-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:focus-visible:ring-blue-400"
+						aria-label={ "Open image: " + img.Alt }
+					>
+						<img
+							src={ templ.SafeURL(utils.Ternary(img.ThumbSrc != "", img.ThumbSrc, img.Src)) }
+							alt={ img.Alt }
+							class="h-20 w-20 object-cover transition-transform group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+							loading="lazy"
+						/>
+					</button>
+				}
+			</div>
+		} else if props.TriggerLabel != "" {
+			<button
+				type="button"
+				data-tc-lightbox-open="0"
+				class="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700 dark:hover:bg-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+			>
+				@icons.Icon(icons.Photo, "h-4 w-4")
+				{ props.TriggerLabel }
+			</button>
+		}
+		<dialog
+			id={ rootID + "-dialog" }
+			data-tc-lightbox-dialog
+			class="tc-overlay tc-modal bg-black/90 p-4 dark:bg-black/90"
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			} else {
+				aria-label="Image viewer"
+			}
+		>
+			<div class="flex min-h-[80vh] min-w-[80vw] flex-col items-center justify-center gap-3">
+				<figure class="flex flex-col items-center gap-2">
+					for i, img := range props.Images {
+						<img
+							src={ templ.SafeURL(img.Src) }
+							alt={ img.Alt }
+							data-tc-lightbox-img
+							data-tc-lightbox-cap={ img.Caption }
+							if i > 0 {
+								hidden
+							}
+							class="max-h-[70vh] max-w-full cursor-zoom-in object-contain"
+						/>
+					}
+					<figcaption data-tc-lightbox-caption class="text-sm text-gray-200"></figcaption>
+				</figure>
+				<div class="flex items-center gap-2">
+					if len(props.Images) > 1 {
+						<button type="button" data-tc-lightbox-prev class={ lightboxControlClass } aria-label="Previous image">
+							@icons.Icon(icons.ChevronLeft, "h-5 w-5")
+						</button>
+						<button type="button" data-tc-lightbox-next class={ lightboxControlClass } aria-label="Next image">
+							@icons.Icon(icons.ChevronRight, "h-5 w-5")
+						</button>
+					}
+					<button type="button" data-tc-lightbox-rotate class={ lightboxControlClass } aria-label="Rotate image">
+						@icons.Icon(icons.ArrowPath, "h-5 w-5")
+					</button>
+					<button type="button" data-tc-lightbox-zoom class={ lightboxControlClass } aria-label="Zoom image">
+						@icons.Icon(icons.Search, "h-5 w-5")
+					</button>
+					<button type="button" data-tc-close class={ lightboxControlClass } aria-label="Close viewer">
+						@icons.Icon(icons.Close, "h-5 w-5")
+					</button>
+				</div>
+			</div>
+		</dialog>
+	</div>
+	@utils.ScriptComponent(props.Nonce, lightboxJS, "lightbox script")
+}

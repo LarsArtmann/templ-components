@@ -596,6 +596,17 @@ display.Card(display.CardProps{
 			},
 		})
 	</div>
+	@demoSection("Lightbox", "display-lightbox")
+	@display.Lightbox(display.LightboxProps{
+		BaseProps:   utils.BaseProps{Nonce: "demo-nonce"},
+		Thumbnails:  true,
+		TriggerLabel: "View images",
+		Images: []display.LightboxImage{
+			{Src: "https://picsum.photos/seed/tc-lb-1/800/500", Alt: "Mountain landscape", Caption: "Mountain landscape"},
+			{Src: "https://picsum.photos/seed/tc-lb-2/800/500", Alt: "City at night", Caption: "City at night"},
+			{Src: "https://picsum.photos/seed/tc-lb-3/800/500", Alt: "Forest path", Caption: "Forest path"},
+		},
+	})
 	@demoSection("Collapsible Sections", "display-collapsible")
 	<div class="space-y-4">
 		@display.CollapsibleSection(display.CollapsibleSectionProps{

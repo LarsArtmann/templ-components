@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`display.Lightbox` — native-dialog image viewer.** Thumbnail or
+  single-button triggers open a `<dialog>` (Escape, backdrop dismissal, focus
+  trap, and top-layer rendering are all native) with prev/next wrap-around
+  navigation, per-image captions, rotate (0/90/180/270), and zoom — driven by
+  one CSP-safe singleton script (`tcOpenLightbox(id, index)` for consumer
+  wiring; nonce-threaded, omit-empty compliant, joined to the integration
+  nonce render table). Single-image viewers hide the nav controls.
+  Browser-proven e2e: open, initial state, next+caption, rotate transform,
+  wrap-around, close (TODO_LIST #396; plan C8).
 - **`display.SegmentBar` — stacked proportion bar.** Language shares,
   evidence breakdowns, storage composition (mr-sync's language bars +
   nsfw-classifier's evidence proportions): segments sized by `flex-grow`

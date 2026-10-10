@@ -50,11 +50,11 @@ func TestLightboxRender(t *testing.T) {
 	t.Run("single image hides prev and next", func(t *testing.T) {
 		t.Parallel()
 		single := utils.Render(t, Lightbox(LightboxProps{Images: lightboxTestImages()[:1]}))
-		utils.AssertNotContains(t, single, "data-tc-lightbox-prev")
+		utils.AssertNotContains(t, single, `aria-label="Previous image"`)
 
 		multi := utils.Render(t, Lightbox(LightboxProps{Images: lightboxTestImages()}))
-		utils.AssertContains(t, multi, "data-tc-lightbox-prev")
-		utils.AssertContains(t, multi, "data-tc-lightbox-next")
+		utils.AssertContains(t, multi, `aria-label="Previous image"`)
+		utils.AssertContains(t, multi, `aria-label="Next image"`)
 	})
 
 	t.Run("controls carry aria labels", func(t *testing.T) {

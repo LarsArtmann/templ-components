@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-133 components across 11 packages + 102 icons. If you're about to hand-roll
+134 components across 11 packages + 102 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -52,7 +52,7 @@ Don't know what to look for? Find your page type:
 
 ### By package (import path reference)
 
-#### `display` — 49 components
+#### `display` — 50 components
 
 | Component            | Signature                                           | One-liner                                                                                                                                                               |
 | -------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -103,6 +103,7 @@ Don't know what to look for? Find your page type:
 | `StatusDot`          | `StatusDot(props StatusDotProps)`                   | Colored status dot — 5 tones, optional pulse ring (motion-reduce safe), sr-only Label for a11y                                        |
 | `LivePill`            | `LivePill(props LivePillProps)`                     | Dot+text status pill — the Live / Reconnecting / Paused connection indicator shape                                                    |
 | `SegmentBar`         | `SegmentBar(props SegmentBarProps)`                 | Stacked proportion bar + legend — flex-grow proportions, deterministic label-keyed palette, `Color` override, role=img summary      |
+| `Lightbox`            | `Lightbox(props LightboxProps)`                     | Native-dialog image viewer — thumbnails or trigger button, prev/next, rotate, zoom, captions; CSP-safe singleton script                                        |
 #### `forms` — 26 components
 
 | Component           | Signature                                         | One-liner                                                                                                                            |

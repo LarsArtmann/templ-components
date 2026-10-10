@@ -1782,6 +1782,23 @@ display.Card(display.CardProps{
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = demoSection("Lightbox", "display-lightbox").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = display.Lightbox(display.LightboxProps{
+			BaseProps:    utils.BaseProps{Nonce: "demo-nonce"},
+			Thumbnails:   true,
+			TriggerLabel: "View images",
+			Images: []display.LightboxImage{
+				{Src: "https://picsum.photos/seed/tc-lb-1/800/500", Alt: "Mountain landscape", Caption: "Mountain landscape"},
+				{Src: "https://picsum.photos/seed/tc-lb-2/800/500", Alt: "City at night", Caption: "City at night"},
+				{Src: "https://picsum.photos/seed/tc-lb-3/800/500", Alt: "Forest path", Caption: "Forest path"},
+			},
+		}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = demoSection("Collapsible Sections", "display-collapsible").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -1833,7 +1850,7 @@ display.Card(display.CardProps{
 			var templ_7745c5c3_Var37 string
 			templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(utils.Version)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 611, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 622, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var37))
 			if templ_7745c5c3_Err != nil {
@@ -1846,7 +1863,7 @@ display.Card(display.CardProps{
 			var templ_7745c5c3_Var38 string
 			templ_7745c5c3_Var38, templ_7745c5c3_Err = templ.JoinStringErrs(time.Now().UTC().Format("2006-01-02T15:04:05Z"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 612, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 623, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var38))
 			if templ_7745c5c3_Err != nil {
@@ -1957,7 +1974,7 @@ func carouselSlide(label, colorClass string) templ.Component {
 		var templ_7745c5c3_Var43 string
 		templ_7745c5c3_Var43, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 636, Col: 9}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 647, Col: 9}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var43))
 		if templ_7745c5c3_Err != nil {
