@@ -237,6 +237,17 @@ Don't know what to look for? Find your page type:
 | `EnsureID(prefix, id)`     | Auto-generate DOM-safe IDs (crypto/rand)                         |
 | `Version`                  | Library version string (matches CHANGELOG)                       |
 
+#### `utils/format` — display formatting (pure functions, no deps)
+
+| Function                    | One-liner                                                             |
+| --------------------------- | --------------------------------------------------------------------- |
+| `format.Bytes(n)`           | IEC bytes: `1.5 KiB`, `42 MiB` — sign preserved, no panic on overflow |
+| `format.CompactDuration(d)` | Operator style: `42s`, `1m30s`, `12h30m` (no Go `String` padding)     |
+| `format.ClockDuration(d)`   | Display style: `3:45`, `1:02:03`, `2d 5h`; negatives clamp to `0:00`  |
+| `format.Percent(ratio)`     | 0–1 → `87.3%`; >100 honest; NaN/Inf → `—`                            |
+| `format.StringOrDash(s)`    | Empty → `—` placeholder for tables/detail views                      |
+| `format.CompactCount(n)`    | `999`, `1.2k`, `3.4M`, `7.8T` — sign preserved                       |
+
 #### `utils/wire` — transport-agnostic wiring (ADR-0036)
 
 | Function                                                                                                                               | One-liner                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |

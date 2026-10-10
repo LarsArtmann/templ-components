@@ -52,6 +52,19 @@ type BaseProps struct {
 | `EnsureID`      | `(prefix, id string) string`                            | Auto-generates unique ID via crypto/rand if empty |
 | `DismissScript` | `() string`                                             | Shared JS for [data-dismiss] click delegation     |
 
+### `utils/format` (display formatting helpers)
+
+Pure functions for dashboards, tables, and detail views — graceful on zero, negative, NaN, and overflow inputs (a formatter must never panic in a render path). Extracted from three consumers' hand-rolled helpers (extraction analysis, 2026-10-10).
+
+| Function          | Signature                            | Purpose                                                                       |
+| ----------------- | ------------------------------------ | ----------------------------------------------------------------------------- |
+| `Bytes`           | `(b int64) string`                   | IEC units: `"512 B"`, `"1.5 KiB"`, `"42 MiB"`; sign preserved                 |
+| `CompactDuration` | `(d time.Duration) string`           | Operator style: `"42s"`, `"1m30s"`, `"12h30m"` — no Go `String` padding       |
+| `ClockDuration`   | `(d time.Duration) string`           | Display style: `"3:45"`, `"1:02:03"`, `"2d 5h"`; negatives clamp to `"0:00"`  |
+| `Percent`         | `(ratio float64) string`             | 0–1 ratio → `"87.3%"`; >100 honest; NaN/Inf → `"—"`                           |
+| `StringOrDash`    | `(s string) string`                  | Empty value → `"—"` placeholder                                               |
+| `CompactCount`    | `(n int64) string`                   | `"999"`, `"1.2k"`, `"3.4M"`, `"5.6B"`, `"7.8T"`; sign preserved               |
+
 ### Test Helpers (exported)
 
 | Function            | Purpose                                            |
