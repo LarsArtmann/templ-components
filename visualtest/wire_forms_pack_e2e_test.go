@@ -50,6 +50,9 @@ const (
 	packDropdownHTMXOut     = "#pack-dropdown-htmx-out"
 	packDropdownDatastarOut = "#pack-dropdown-datastar-out"
 
+	packBarHTMXOut     = "#pack-bar-htmx-out"
+	packBarDatastarOut = "#pack-bar-datastar-out"
+
 	packWizardHTMXRegion     = "#pack-wizard-htmx-region"
 	packWizardDatastarRegion = "#pack-wizard-datastar-region"
 
@@ -76,6 +79,9 @@ type (
 	}
 	packDropdownQuery struct {
 		Framework string `form:"framework"`
+	}
+	packBarQuery struct {
+		Status string `form:"status"`
 	}
 	packWizardSubmission struct {
 		Step  int    `form:"step"`
@@ -156,6 +162,22 @@ func packE2EServer(t *testing.T) *httptest.Server {
 		}
 
 		packWriteComponent(w, r, packDropdownResult(query.Framework, packTransportName(r)))
+	})))
+
+	mux.Handle("GET /api/pack/bar", wire.Handler(wire.PatchTarget{
+		Selector: packBarDatastarOut,
+		Mode:     wire.PatchModeInner,
+	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+		query, err := wire.DecodeForm[packBarQuery](r)
+		if err != nil {
+			http.Error(w, "invalid query", http.StatusBadRequest)
+
+			return
+		}
+
+		packWriteComponent(w, r, packBarResult(query.Status, packTransportName(r)))
 	})))
 
 	mux.Handle("POST /api/pack/wizard", wire.Handler(wire.PatchTarget{
@@ -583,6 +605,10 @@ func packE2EPage(props layout.PageProps) templ.Component {
 				return err
 			}
 
+			if err := pane.barPane(ctx, dialect); err != nil {
+				return err
+			}
+
 			if err := pane.wizardPane(ctx, dialect); err != nil {
 				return err
 			}
@@ -694,6 +720,56 @@ func (p packPaneWriter) dropdownPane(ctx context.Context, dialect wire.Transport
 	}
 
 	return p.write(`</div></section>`)
+}
+
+// barPane renders the FilterBar for one dialect: a plain select child (the
+// bar owns the wiring — self-wired children like FilterInput would nest
+// forms), plus the results region.
+func (p packPaneWriter) barPane(ctx context.Context, dialect wire.Transport) error {
+	target := ""
+	if dialect == wire.TransportHTMX {
+		target = packBarHTMXOut
+	}
+
+	if err := p.openSection(packScopeID("bar", dialect), "filter bar "+string(dialect)); err != nil {
+		return err
+	}
+
+	bar := forms.FilterBar(forms.FilterBarProps{
+		Wire: packWire(dialect, wire.MethodGet, "/api/pack/bar", target),
+	})
+	barCtx := templ.WithChildren(ctx, forms.Select(forms.SelectProps{
+		Name:  "status",
+		Label: "Status",
+		Options: []forms.SelectOption{
+			{Value: "all", Label: "All"},
+			{Value: "open", Label: "Open"},
+			{Value: "done", Label: "Done"},
+		},
+	}))
+	if err := bar.Render(barCtx, p.w); err != nil {
+		return err
+	}
+
+	outID := packBarDatastarOut
+	if target != "" {
+		outID = target
+	}
+
+	if err := p.openRegion(outID, `aria-live="polite"`); err != nil {
+		return err
+	}
+
+	return p.write(`</div></section>`)
+}
+
+// packBarResult is the bar endpoint verdict fragment.
+func packBarResult(status, transport string) templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		_, werr := io.WriteString(w, "Bar status="+status+" via "+transport+".")
+
+		return werr
+	})
 }
 
 func (p packPaneWriter) wizardPane(ctx context.Context, dialect wire.Transport) error {
@@ -1018,6 +1094,56 @@ func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
 				region, "Picked beta via "+string(dialect)+".",
 			); err != nil {
 				t.Fatalf("%s filter dropdown E2E: %v", dialect, err)
+			}
+		})
+	}
+}
+
+// TestWireE2EFilterBarAutoSubmits proves forms.FilterBar under both runtimes:
+// changing a child select fires the bar's form-level auto-submit (the
+// composite change trigger), the form's fields serialize (form content
+// type), and the response swaps into the results region. The noscript Apply
+// and Reset link are covered by the HTML golden sweep.
+func TestWireE2EFilterBarAutoSubmits(t *testing.T) {
+	for _, dialect := range packDialects() {
+		t.Run(string(dialect), func(t *testing.T) {
+			srv := packE2EServer(t)
+
+			ctx, cancel := newTab(t)
+			defer cancel()
+
+			ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
+			defer cancelTimeout()
+
+			region := packBarDatastarOut
+			if dialect == wire.TransportHTMX {
+				region = packBarHTMXOut
+			}
+
+			scope := packScopeID("bar", dialect)
+
+			var ok bool
+
+			if err := chromedp.Do(ctx,
+				chromedp.Navigate(srv.URL+"/"),
+				pollBool(packGate(dialect), &ok),
+			); err != nil {
+				t.Fatalf("%s filter bar setup: %v", dialect, err)
+			}
+
+			if err := packFireUntil(ctx,
+				setSelectValue(scope, `select[name="status"]`, "open"),
+				region, "Bar status=open via "+string(dialect)+".",
+			); err != nil {
+				t.Fatalf("%s filter bar E2E: %v", dialect, err)
+			}
+
+			// A second change re-submits with the new value.
+			if err := packFireUntil(ctx,
+				setSelectValue(scope, `select[name="status"]`, "done"),
+				region, "Bar status=done via "+string(dialect)+".",
+			); err != nil {
+				t.Fatalf("%s filter bar second change: %v", dialect, err)
 			}
 		})
 	}
