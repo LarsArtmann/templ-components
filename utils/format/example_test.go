@@ -59,29 +59,29 @@ func BenchmarkFormat(b *testing.B) {
 }
 
 func ExampleBytes() {
-	_ = format.Bytes(1536)   // "1.5 KiB"
+	_ = format.Bytes(1536)       // "1.5 KiB"
 	_ = format.Bytes(44_040_192) // "42 MiB"
-	_ = format.Bytes(-512)   // "-512 B"
+	_ = format.Bytes(-512)       // "-512 B"
 	// Output:
 }
 
 func ExampleCompactDuration() {
-	_ = format.CompactDuration(42 * time.Second)                    // "42s"
-	_ = format.CompactDuration(90 * time.Second)                    // "1m30s"
-	_ = format.CompactDuration(12*time.Hour + 30*time.Minute)       // "12h30m"
+	_ = format.CompactDuration(42 * time.Second)              // "42s"
+	_ = format.CompactDuration(90 * time.Second)              // "1m30s"
+	_ = format.CompactDuration(12*time.Hour + 30*time.Minute) // "12h30m"
 	// Output:
 }
 
 func ExampleClockDuration() {
-	_ = format.ClockDuration(225 * time.Second) // "3:45"
+	_ = format.ClockDuration(225 * time.Second)  // "3:45"
 	_ = format.ClockDuration(3723 * time.Second) // "1:02:03"
 	_ = format.ClockDuration(53 * time.Hour)     // "2d 5h"
 	// Output:
 }
 
 func ExamplePercent() {
-	_ = format.Percent(0.873)    // "87.3%"
-	_ = format.Percent(1.5)      // "150.0%"
+	_ = format.Percent(0.873)      // "87.3%"
+	_ = format.Percent(1.5)        // "150.0%"
 	_ = format.Percent(math.NaN()) // "—" placeholder
 	// Output:
 }

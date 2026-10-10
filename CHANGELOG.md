@@ -8,6 +8,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`utils/format` — display formatting helpers.** Six pure functions for
+  dashboards, tables, and detail views, extracted from three consumers'
+  hand-rolled helpers (extraction analysis 2026-10-10): `format.Bytes`
+  (IEC units, `"1.5 KiB"`/`"42 MiB"`), `format.CompactDuration` (operator
+  style `"42s"`/`"1m30s"`/`"12h30m"` — Go units without `Duration.String`'s
+  trailing-zero padding), `format.ClockDuration` (`"3:45"`/`"1:02:03"`/
+  `"2d 5h"`), `format.Percent` (0–1 ratio → `"87.3%"`; NaN/Inf degrade to
+  `"—"`), `format.StringOrDash` (empty → `"—"`), and `format.CompactCount`
+  (`"999"`/`"1.2k"`/`"3.4M"`/`"7.8T"`). Zero dependencies, graceful on
+  zero/negative/NaN/overflow inputs — table-driven tests + benchmarks
+  (~40–90ns/op).
+- **ADR-0044: semantic accent tokens decided.** The library's 212 hardcoded
+  `blue-*` accent sites (shades 50–900) will move to a dedicated
+  `--color-accent-*` family defined in `templates/custom.css` (literal-blue
+  defaults — independence by construction). Two-phase plan: Phase 1 (v1.x,
+  non-breaking) completes the ADR-0008 semantic alias layer + documents the
+  scoped-bridge recipe; Phase 2 (v2.0, implementation T1) swaps component
+  classes so consumers delete their CSS override bridges (three of four
+  audited consumers ship one — DiscordSync's `input.css:184` admits it
+  verbatim). Token-ready rule effective now: no new hardcoded `blue-*`
+  accent sites in new components.
 - **`display.CommandPalette` — the ⌘K command palette.** A CSP-safe
   `<dialog>`-based palette (native focus trap, Escape, top layer, backdrop)
   with a search input that filters server-rendered groups client-side:

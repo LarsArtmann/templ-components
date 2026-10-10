@@ -7,11 +7,27 @@ import (
 	"time"
 )
 
-// placeholder is the em-dash rendered for absent values (see StringOrDash).
-const placeholder = "—"
+const (
+	// placeholderDash is the em-dash rendered for absent values (see
+	// StringOrDash) and non-finite percentages (see Percent).
+	placeholderDash = "—"
+
+	bytesPerStep  = 1024 // IEC binary step between byte units
+	countsPerStep = 1000 // decimal step between count units
+
+	secondsPerMinute = 60
+	secondsPerHour   = 3600
+	secondsPerDay    = 86400
+
+	// decimalThreshold is the value below which magnitudes render one
+	// decimal place ("1.5") and from which they render integers ("42").
+	decimalThreshold = 10
+)
 
 var (
-	byteUnits  = []string{"B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"}
+	//nolint:gochecknoglobals // Package-level lookup tables for the unit ramps
+	byteUnits = []string{"B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"}
+	//nolint:gochecknoglobals // Package-level lookup table for the count unit suffixes
 	countUnits = []string{"", "k", "M", "B", "T"}
 )
 
@@ -30,8 +46,8 @@ func Bytes(b int64) string {
 	}
 
 	unit := 0
-	for value >= 1024 && unit < len(byteUnits)-1 {
-		value /= 1024
+	for value >= bytesPerStep && unit < len(byteUnits)-1 {
+		value /= bytesPerStep
 		unit++
 	}
 
@@ -43,7 +59,7 @@ func Bytes(b int64) string {
 	if text == "1024" && unit < len(byteUnits)-1 {
 		// Rounding crossed the unit boundary (1023.995 KiB → "1024 KiB"):
 		// bump to the next unit and reformat ("1.0 MiB").
-		value /= 1024
+		value /= bytesPerStep
 		unit++
 		text = strconv.FormatFloat(value, 'f', 1, 64)
 	}
@@ -66,9 +82,9 @@ func CompactDuration(d time.Duration) string {
 		seconds = -seconds
 	}
 
-	hours := seconds / 3600
-	minutes := seconds % 3600 / 60
-	secs := seconds % 60
+	hours := seconds / secondsPerHour
+	minutes := seconds % secondsPerHour / secondsPerMinute
+	secs := seconds % secondsPerMinute
 
 	var parts []string
 
@@ -100,12 +116,14 @@ func ClockDuration(d time.Duration) string {
 	seconds := int64(d / time.Second)
 
 	switch {
-	case seconds < 3600:
-		return strconv.FormatInt(seconds/60, 10) + ":" + twoDigits(seconds%60)
-	case seconds < 86400:
-		return strconv.FormatInt(seconds/3600, 10) + ":" + twoDigits(seconds%3600/60) + ":" + twoDigits(seconds%60)
+	case seconds < secondsPerHour:
+		return strconv.FormatInt(seconds/secondsPerMinute, 10) + ":" + twoDigits(seconds%secondsPerMinute)
+	case seconds < secondsPerDay:
+		return strconv.FormatInt(seconds/secondsPerHour, 10) + ":" +
+			twoDigits(seconds%secondsPerHour/secondsPerMinute) + ":" + twoDigits(seconds%secondsPerMinute)
 	default:
-		return strconv.FormatInt(seconds/86400, 10) + "d " + strconv.FormatInt(seconds%86400/3600, 10) + "h"
+		return strconv.FormatInt(seconds/secondsPerDay, 10) + "d " +
+			strconv.FormatInt(seconds%secondsPerDay/secondsPerHour, 10) + "h"
 	}
 }
 
@@ -115,7 +133,7 @@ func ClockDuration(d time.Duration) string {
 // the em-dash placeholder instead of rendering "NaN%" in a UI.
 func Percent(ratio float64) string {
 	if math.IsNaN(ratio) || math.IsInf(ratio, 0) {
-		return placeholder
+		return placeholderDash
 	}
 
 	return strconv.FormatFloat(ratio*100, 'f', 1, 64) + "%"
@@ -125,7 +143,7 @@ func Percent(ratio float64) string {
 // table and detail-view convention for absent values.
 func StringOrDash(s string) string {
 	if s == "" {
-		return placeholder
+		return placeholderDash
 	}
 
 	return s
@@ -146,8 +164,8 @@ func CompactCount(n int64) string {
 	}
 
 	unit := 0
-	for value >= 1000 && unit < len(countUnits)-1 {
-		value /= 1000
+	for value >= countsPerStep && unit < len(countUnits)-1 {
+		value /= countsPerStep
 		unit++
 	}
 
@@ -159,7 +177,7 @@ func CompactCount(n int64) string {
 	if text == "1000" && unit < len(countUnits)-1 {
 		// Rounding crossed the unit boundary (999,999 → "1000k"):
 		// bump to the next unit ("1.0M").
-		value /= 1000
+		value /= countsPerStep
 		unit++
 		text = strconv.FormatFloat(value, 'f', 1, 64)
 	}
@@ -170,7 +188,7 @@ func CompactCount(n int64) string {
 // formatMagnitude renders a value ≥ 1 with one decimal below ten and no
 // decimals from ten up.
 func formatMagnitude(value float64) string {
-	if value < 10 {
+	if value < decimalThreshold {
 		return strconv.FormatFloat(value, 'f', 1, 64)
 	}
 
@@ -179,7 +197,7 @@ func formatMagnitude(value float64) string {
 
 // twoDigits renders 0–59 with a leading zero.
 func twoDigits(n int64) string {
-	if n < 10 {
+	if n < decimalThreshold {
 		return "0" + strconv.FormatInt(n, 10)
 	}
 

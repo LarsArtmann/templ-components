@@ -9,6 +9,8 @@ import (
 )
 
 func TestBytes(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		b    int64
@@ -36,6 +38,8 @@ func TestBytes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := format.Bytes(tt.b); got != tt.want {
 				t.Errorf("Bytes(%d) = %q, want %q", tt.b, got, tt.want)
 			}
@@ -44,6 +48,8 @@ func TestBytes(t *testing.T) {
 }
 
 func TestCompactDuration(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		d    time.Duration
@@ -64,6 +70,8 @@ func TestCompactDuration(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := format.CompactDuration(tt.d); got != tt.want {
 				t.Errorf("CompactDuration(%v) = %q, want %q", tt.d, got, tt.want)
 			}
@@ -72,6 +80,8 @@ func TestCompactDuration(t *testing.T) {
 }
 
 func TestClockDuration(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		d    time.Duration
@@ -91,6 +101,8 @@ func TestClockDuration(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := format.ClockDuration(tt.d); got != tt.want {
 				t.Errorf("ClockDuration(%v) = %q, want %q", tt.d, got, tt.want)
 			}
@@ -99,6 +111,8 @@ func TestClockDuration(t *testing.T) {
 }
 
 func TestPercent(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		ratio float64
@@ -117,6 +131,8 @@ func TestPercent(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := format.Percent(tt.ratio); got != tt.want {
 				t.Errorf("Percent(%v) = %q, want %q", tt.ratio, got, tt.want)
 			}
@@ -125,6 +141,8 @@ func TestPercent(t *testing.T) {
 }
 
 func TestStringOrDash(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		in   string
@@ -138,6 +156,8 @@ func TestStringOrDash(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := format.StringOrDash(tt.in); got != tt.want {
 				t.Errorf("StringOrDash(%q) = %q, want %q", tt.in, got, tt.want)
 			}
@@ -146,6 +166,8 @@ func TestStringOrDash(t *testing.T) {
 }
 
 func TestCompactCount(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		n    int64
@@ -169,6 +191,8 @@ func TestCompactCount(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := format.CompactCount(tt.n); got != tt.want {
 				t.Errorf("CompactCount(%d) = %q, want %q", tt.n, got, tt.want)
 			}
