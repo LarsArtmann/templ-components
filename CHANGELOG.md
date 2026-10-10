@@ -8,6 +8,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`forms.FilterChips` — zero-JS filter chips.** Link-based chips whose
+  hrefs carry the filter state: query-param truth, crawler-friendly, no
+  JavaScript anywhere (extracted from nsfw-classifier's `historyChip`).
+  `FilterChip{Label, Href, Active}` with `aria-current="true"` on the active
+  chip, a labelled `role="group"` container, motion-reduce-safe transitions,
+  and the `FilterToggleHref(basePath, params, key, value)` builder — set or
+  remove one param while preserving siblings, URL-escaped by construction,
+  never mutating the caller's values. 2 goldens + render/href-builder tests
+  (TODO_LIST #391; plan C3).
+- **`display.StatusDot` + `display.LivePill` — status indicators.** The
+  colored-dot family from three consumers' hand-rolled staleness/live pills
+  (dnsblockd's connection states are the canonical shape): `StatusDot` is a
+  10px dot with five semantic tones (`StatusTone`:
+  neutral/success/warning/danger/info), an optional radiating pulse ring
+  (Tailwind `animate-ping` with a motion-reduce fallback), and an optional
+  sr-only `Label` — a dot that is the only status indicator must be
+  announced; without a Label the dot is decorative (`aria-hidden`).
+  `LivePill` is the dot+text pill ("Live", "Reconnecting…", "Paused").
+  Unknown tones degrade to neutral. 6 goldens + render/tone/enum tests
+  (TODO_LIST #392; plan C4).
 - **`display.DataState` — the honesty ladder for data regions.** Four rungs
   from one component: `Content` (the zero value — renders children), `Empty`,
   `Unavailable` (query failed / retrying), and `Disabled` (feature off) —

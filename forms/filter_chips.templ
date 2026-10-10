@@ -1,0 +1,45 @@
+package forms
+
+import (
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// FilterChips renders a row of zero-JS filter chips — plain links whose
+// hrefs carry the filter state (query-param truth, crawler-friendly, no
+// JavaScript).
+//
+//	@forms.FilterChips(forms.FilterChipsProps{
+//		Chips: []forms.FilterChip{
+//			{Label: "All", Href: forms.FilterToggleHref("/history", q, "source", "")},
+//			{Label: "Uploads", Href: forms.FilterToggleHref("/history", q, "source", "upload"), Active: true},
+//		},
+//	})
+templ FilterChips(props FilterChipsProps) {
+	{{
+		label := props.AriaLabel
+		if label == "" {
+			label = filterChipsLabel
+		}
+	}}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("flex flex-wrap items-center gap-2", props.Class) }
+		role="group"
+		aria-label={ label }
+		{ props.Attrs... }
+	>
+		for _, chip := range props.Chips {
+			<a
+				href={ templ.SafeURL(chip.Href) }
+				class={ filterChipClasses(chip.Active, "") }
+				if chip.Active {
+					aria-current="true"
+				}
+			>
+				{ chip.Label }
+			</a>
+		}
+	</div>
+}

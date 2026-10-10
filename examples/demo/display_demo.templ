@@ -565,6 +565,20 @@ display.Card(display.CardProps{
 			}
 		}
 	</div>
+	@demoSection("Status Indicators", "display-status")
+	<div class="flex flex-wrap items-center gap-4">
+		@display.LivePill(display.LivePillProps{Tone: display.StatusToneSuccess, Text: "Live", Pulse: true})
+		@display.LivePill(display.LivePillProps{Tone: display.StatusToneWarning, Text: "Reconnecting…"})
+		@display.LivePill(display.LivePillProps{Tone: display.StatusToneNeutral, Text: "Paused"})
+		<span class="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+			@display.StatusDot(display.StatusDotProps{Tone: display.StatusToneSuccess, Pulse: true, Label: "Service healthy"})
+			All systems operational
+		</span>
+		<span class="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+			@display.StatusDot(display.StatusDotProps{Tone: display.StatusToneDanger, Label: "Degraded"})
+			Degraded
+		</span>
+	</div>
 	@demoSection("Collapsible Sections", "display-collapsible")
 	<div class="space-y-4">
 		@display.CollapsibleSection(display.CollapsibleSectionProps{

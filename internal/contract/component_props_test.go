@@ -90,6 +90,7 @@ func componentTypes() []any {
 		forms.FilterDropdownProps{},
 		forms.FilterInputProps{},
 		forms.FilterBarProps{},
+		forms.FilterChipsProps{},
 		forms.DirtyGuardProps{},
 		forms.SliderProps{},
 		forms.RatingProps{},
@@ -153,6 +154,8 @@ func componentTypes() []any {
 		display.CollapsibleSectionProps{},
 		display.CodeBlockProps{},
 		display.DataStateProps{},
+		display.StatusDotProps{},
+		display.LivePillProps{},
 
 		// feedback/layout/navigation/htmx additions (2026-09-13)
 		navigation.FooterProps{},
