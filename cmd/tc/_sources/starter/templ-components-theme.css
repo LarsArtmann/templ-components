@@ -1,66 +1,167 @@
 /*
- * templates/templ-components-theme.css — semantic-token LAYER (ADR-0008).
+ * templates/templ-components-theme.css — semantic-token LAYER (ADR-0008,
+ * shade-complete since the ADR-0044 Phase 1 completion, 2026-10-10).
  *
  * NOT the same file as the repo-root templ-components-theme.css (the
  * palette-override @theme example). This one aliases Tailwind palette colors
  * to semantic names and is a release.sh compile input
- * (templ-components-theme.out.css distribution artifact). See docs/theming.md.
+ * (templ-components-theme.out.css distribution artifact). See docs/theming.md
+ * and docs/recipes/scoped-theme-bridge.md.
  *
  * Import this file from your app.css to alias Tailwind palette colors to
- * semantic names (tc-primary, tc-danger, tc-success, etc.). Once imported,
- * you can override --color-tc-primary in your @theme block to re-skin every
- * component that uses bg-blue-600 / text-blue-600 / etc. — without touching
- * any .templ source.
+ * semantic names (tc-primary-*, tc-danger-*, tc-success-*, tc-warning-*).
+ * Once imported, override the tokens in your @theme block to re-skin every
+ * component that uses those palette classes — without touching any .templ
+ * source, and without the custom-property cycle the pre-2026-10 var-chained
+ * version risked:
  *
- * Usage:
- *   @import "tailwindcss" source(none);
- *   @import "./templ-components-theme.css";   <-- this file
- *   @import "./custom.css";
- *
- * Override:
  *   @theme {
- *     --color-tc-primary: #4f46e5;   (indigo instead of blue)
+ *     --color-tc-primary-600: #7c3aed;   (brand purple buttons/links)
+ *     --color-tc-warning-500: #f59e0b;   (status-amber warnings)
  *   }
  *
- * Then every bg-blue-600 / text-blue-600 / border-blue-600 in the library
- * silently becomes your brand color, because blue-600 IS tc-primary.
+ * The defaults below are Tailwind's default palette values AS LITERALS —
+ * not var(--color-blue-600) references. Two reasons (ADR-0044 rationale):
+ * the no-override import renders identically to stock Tailwind (a var chain
+ * that rebinds blue-* back to tc-* is a cycle and collapses to invalid),
+ * and a consumer's global blue remap cannot leak through the tokens.
  *
- * This file is OPT-IN. The library works without it — the @theme block
- * below only aliases names, it does not change any visible color until you
- * override --color-tc-primary.
+ * Coverage: the FULL 50–950 ramp for primary/danger/success/warning, plus
+ * yellow-* bound to the warning tokens (Badge/kanban warning tints use
+ * yellow, feedback styles use amber — one semantic, two palettes).
+ * Legacy named tokens (tc-primary, tc-danger, ...) remain for compatibility
+ * and now resolve through the shade tokens.
+ *
+ * This file is OPT-IN. The library works without it.
  */
 
 @theme {
-  /* Primary (default: blue) — buttons, links, active states, focus rings */
-  --color-tc-primary: var(--color-blue-600);
-  --color-tc-primary-hover: var(--color-blue-700);
+  /* Primary (default: blue) — full ramp, literal Tailwind defaults */
+  --color-tc-primary-50: oklch(97% 0.014 254.604);
+  --color-tc-primary-100: oklch(93.2% 0.032 255.585);
+  --color-tc-primary-200: oklch(88.2% 0.059 254.128);
+  --color-tc-primary-300: oklch(80.9% 0.105 251.813);
+  --color-tc-primary-400: oklch(70.7% 0.165 254.624);
+  --color-tc-primary-500: oklch(62.3% 0.214 259.815);
+  --color-tc-primary-600: oklch(54.6% 0.245 262.881);
+  --color-tc-primary-700: oklch(48.8% 0.243 264.376);
+  --color-tc-primary-800: oklch(42.4% 0.199 265.638);
+  --color-tc-primary-900: oklch(37.9% 0.146 265.522);
+  --color-tc-primary-950: oklch(28.2% 0.091 267.935);
+
+  /* Danger (default: red) — full ramp, literal Tailwind defaults */
+  --color-tc-danger-50: oklch(97.1% 0.013 17.38);
+  --color-tc-danger-100: oklch(93.6% 0.032 17.717);
+  --color-tc-danger-200: oklch(88.5% 0.062 18.334);
+  --color-tc-danger-300: oklch(80.8% 0.114 19.571);
+  --color-tc-danger-400: oklch(70.4% 0.191 22.216);
+  --color-tc-danger-500: oklch(63.7% 0.237 25.331);
+  --color-tc-danger-600: oklch(57.7% 0.245 27.325);
+  --color-tc-danger-700: oklch(50.5% 0.213 27.518);
+  --color-tc-danger-800: oklch(44.4% 0.177 26.899);
+  --color-tc-danger-900: oklch(39.6% 0.141 25.723);
+  --color-tc-danger-950: oklch(25.8% 0.092 26.042);
+
+  /* Success (default: green) — full ramp, literal Tailwind defaults */
+  --color-tc-success-50: oklch(98.2% 0.018 155.826);
+  --color-tc-success-100: oklch(96.2% 0.044 156.743);
+  --color-tc-success-200: oklch(92.5% 0.084 155.995);
+  --color-tc-success-300: oklch(87.1% 0.15 154.449);
+  --color-tc-success-400: oklch(79.2% 0.209 151.711);
+  --color-tc-success-500: oklch(72.3% 0.219 149.579);
+  --color-tc-success-600: oklch(62.7% 0.194 149.214);
+  --color-tc-success-700: oklch(52.7% 0.154 150.069);
+  --color-tc-success-800: oklch(44.8% 0.119 151.328);
+  --color-tc-success-900: oklch(39.3% 0.095 152.535);
+  --color-tc-success-950: oklch(26.6% 0.065 152.934);
+
+  /* Warning (default: amber) — full ramp, literal Tailwind defaults */
+  --color-tc-warning-50: oklch(98.7% 0.022 95.277);
+  --color-tc-warning-100: oklch(96.2% 0.059 95.617);
+  --color-tc-warning-200: oklch(92.4% 0.12 95.746);
+  --color-tc-warning-300: oklch(87.9% 0.169 91.605);
+  --color-tc-warning-400: oklch(82.8% 0.189 84.429);
+  --color-tc-warning-500: oklch(76.9% 0.188 70.08);
+  --color-tc-warning-600: oklch(66.6% 0.179 58.318);
+  --color-tc-warning-700: oklch(55.5% 0.163 48.998);
+  --color-tc-warning-800: oklch(47.3% 0.137 46.201);
+  --color-tc-warning-900: oklch(41.4% 0.112 45.904);
+  --color-tc-warning-950: oklch(27.9% 0.077 45.635);
+
+  /* Legacy named tokens (pre-shade API) — resolve through the ramp above. */
+  --color-tc-primary: var(--color-tc-primary-600);
+  --color-tc-primary-hover: var(--color-tc-primary-700);
   --color-tc-primary-fg: var(--color-white);
-
-  /* Danger (default: red) — destructive actions, errors, validation */
-  --color-tc-danger: var(--color-red-600);
-  --color-tc-danger-hover: var(--color-red-700);
-
-  /* Success (default: green) — confirmation, positive feedback */
-  --color-tc-success: var(--color-green-600);
-
-  /* Warning (default: amber) — caution, holding states */
-  --color-tc-warning: var(--color-amber-500);
-
-  /* Info (default: blue) — informational feedback */
-  --color-tc-info: var(--color-blue-500);
+  --color-tc-danger: var(--color-tc-danger-600);
+  --color-tc-danger-hover: var(--color-tc-danger-700);
+  --color-tc-success: var(--color-tc-success-600);
+  --color-tc-warning: var(--color-tc-warning-500);
+  --color-tc-info: var(--color-tc-primary-500);
 
   /*
-   * Semantic palette → Tailwind palette binding.
-   *
-   * The components reference bg-blue-600, text-red-600, etc. By aliasing
-   * those Tailwind palette names back to the semantic names above, a
-   * single override of --color-tc-primary cascades to every component.
+   * Palette → semantic binding: components reference bg-blue-600,
+   * text-red-600, border-amber-300, badge yellow tints, etc. Rebinding the
+   * palette names to the semantic tokens makes one @theme override cascade
+   * to every component. All defaults above are literals, so these var()
+   * references can never form a cycle.
    */
-  --color-blue-600: var(--color-tc-primary);
-  --color-blue-700: var(--color-tc-primary-hover);
-  --color-blue-500: var(--color-tc-info);
-  --color-red-600: var(--color-tc-danger);
-  --color-red-700: var(--color-tc-danger-hover);
-  --color-green-600: var(--color-tc-success);
-  --color-amber-500: var(--color-tc-warning);
+  --color-blue-50: var(--color-tc-primary-50);
+  --color-blue-100: var(--color-tc-primary-100);
+  --color-blue-200: var(--color-tc-primary-200);
+  --color-blue-300: var(--color-tc-primary-300);
+  --color-blue-400: var(--color-tc-primary-400);
+  --color-blue-500: var(--color-tc-primary-500);
+  --color-blue-600: var(--color-tc-primary-600);
+  --color-blue-700: var(--color-tc-primary-700);
+  --color-blue-800: var(--color-tc-primary-800);
+  --color-blue-900: var(--color-tc-primary-900);
+  --color-blue-950: var(--color-tc-primary-950);
+
+  --color-red-50: var(--color-tc-danger-50);
+  --color-red-100: var(--color-tc-danger-100);
+  --color-red-200: var(--color-tc-danger-200);
+  --color-red-300: var(--color-tc-danger-300);
+  --color-red-400: var(--color-tc-danger-400);
+  --color-red-500: var(--color-tc-danger-500);
+  --color-red-600: var(--color-tc-danger-600);
+  --color-red-700: var(--color-tc-danger-700);
+  --color-red-800: var(--color-tc-danger-800);
+  --color-red-900: var(--color-tc-danger-900);
+  --color-red-950: var(--color-tc-danger-950);
+
+  --color-green-50: var(--color-tc-success-50);
+  --color-green-100: var(--color-tc-success-100);
+  --color-green-200: var(--color-tc-success-200);
+  --color-green-300: var(--color-tc-success-300);
+  --color-green-400: var(--color-tc-success-400);
+  --color-green-500: var(--color-tc-success-500);
+  --color-green-600: var(--color-tc-success-600);
+  --color-green-700: var(--color-tc-success-700);
+  --color-green-800: var(--color-tc-success-800);
+  --color-green-900: var(--color-tc-success-900);
+  --color-green-950: var(--color-tc-success-950);
+
+  --color-amber-50: var(--color-tc-warning-50);
+  --color-amber-100: var(--color-tc-warning-100);
+  --color-amber-200: var(--color-tc-warning-200);
+  --color-amber-300: var(--color-tc-warning-300);
+  --color-amber-400: var(--color-tc-warning-400);
+  --color-amber-500: var(--color-tc-warning-500);
+  --color-amber-600: var(--color-tc-warning-600);
+  --color-amber-700: var(--color-tc-warning-700);
+  --color-amber-800: var(--color-tc-warning-800);
+  --color-amber-900: var(--color-tc-warning-900);
+  --color-amber-950: var(--color-tc-warning-950);
+
+  --color-yellow-50: var(--color-tc-warning-50);
+  --color-yellow-100: var(--color-tc-warning-100);
+  --color-yellow-200: var(--color-tc-warning-200);
+  --color-yellow-300: var(--color-tc-warning-300);
+  --color-yellow-400: var(--color-tc-warning-400);
+  --color-yellow-500: var(--color-tc-warning-500);
+  --color-yellow-600: var(--color-tc-warning-600);
+  --color-yellow-700: var(--color-tc-warning-700);
+  --color-yellow-800: var(--color-tc-warning-800);
+  --color-yellow-900: var(--color-tc-warning-900);
+  --color-yellow-950: var(--color-tc-warning-950);
 }
