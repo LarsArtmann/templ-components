@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`display.CodeBlock` — copyable code display.** Two variants from two
+  verified demand signals (mr-sync's `commandLine` command row, DiscordSync's
+  `copyIDRow` detail-page ID row): `CodeBlockBlock` (default) renders a
+  `figure` with an optional language/label header and a scrollable
+  `pre`/`code` body; `CodeBlockCompactID` renders the inline monospace
+  "copy this ID" row. Both compose the existing `CopyButton` (CSP-safe
+  singleton script, nonce-threaded; `NoCopy: true` opts out). Code is
+  HTML-escaped by templ; unknown variants fall back to block. Golden sweep
+  (7 baselines) + render/behavior tests (TODO_LIST #389; plan C1/C1T).
 - **`utils/format` — display formatting helpers.** Six pure functions for
   dashboards, tables, and detail views, extracted from three consumers'
   hand-rolled helpers (extraction analysis 2026-10-10): `format.Bytes`

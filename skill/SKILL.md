@@ -96,6 +96,7 @@ Don't know what to look for? Find your page type:
 | `LineChart`          | `LineChart(props LineChartProps)`                   | Pure SVG line chart — axes, gridlines, multi-series, dots, legend, linear/smooth styles, ARIA. Zero JS (ADR-0031)                                                       |
 | `PieChart`           | `PieChart(props PieChartProps)`                     | Pure SVG pie/donut chart — arc paths, external labels, legend, center label, custom colors, ARIA. Zero JS                                                               |
 | `AreaChart`          | `AreaChart(props AreaChartProps)`                   | Pure SVG area chart — filled areas, multi-series, fill opacity, smooth curves, ARIA. Zero JS                                                                            |
+| `CodeBlock`          | `CodeBlock(props CodeBlockProps)`                   | Copyable code display — block (figure+pre/code, language/label header) or compact-ID variant, integrated CopyButton, HTML-escaped      |
 
 #### `forms` — 23 components
 
