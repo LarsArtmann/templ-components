@@ -84,7 +84,7 @@ UI in a Go binary — without adopting a frontend stack.
 - **Security and polish are defaults, not TODOs.** CSP-nonce threading on every script, dark mode and `prefers-reduced-motion` support on every component, logical RTL properties throughout — each enforced by a regression test, not a code-review memo.
 - **Pay for what you use.** Pure Go + templ + Tailwind CSS v4 in seven small modules; import one package or all of them.
 
-131 server-rendered components · 68 typed string enums (67 with IsValid()) · 102 SVG icons — in one `go get`.
+132 server-rendered components · 68 typed string enums (67 with IsValid()) · 102 SVG icons — in one `go get`.
 
 The long-form pitch, with screenshots: [Why templ-components](https://templcomponents.lars.software/sales).
 
@@ -205,7 +205,7 @@ Alerts, toasts, spinners, progress bars, skeletons, step indicators, loading sta
 @feedback.SkeletonCardGrid(feedback.SkeletonCardGridProps{Count: 6})
 ```
 
-### `forms` — Form Controls (25 components)
+### `forms` — Form Controls (26 components)
 
 Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, sliders, ratings, tags input, validation, debounced filter inputs.
 
@@ -405,7 +405,7 @@ of regression:
 
 | Tier                     | What                                                                 | Where                                | Catches                                                                                                                                         |
 | ------------------------ | -------------------------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 307 `.golden` files | Structure, attribute, and class changes                                                                                                         |
+| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 310 `.golden` files | Structure, attribute, and class changes                                                                                                         |
 | **Drift-guard scanners** | Cross-cutting invariant tests                                        | `utils/`                             | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
 | **Visual regression**    | Pixel-level PNG diff in headless Chromium                            | `visualtest/` (separate module)      | Layout shifts, dark-mode color regressions, RTL mirroring                                                                                       |
 

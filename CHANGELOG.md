@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`forms.SegmentedControl` — segmented single-select group.** Two zero-JS
+  modes: radio (a native `radiogroup` in forward DOM order with
+  `peer-checked` segment styling — arrow keys move down the value order per
+  the Rating rule — that submits with its enclosing form, e.g. `FilterBar`)
+  and link (`aria-current` server-round-trip filtering, the FilterChips
+  sibling with segmented visuals). `ActiveValue` selects; any item carrying
+  an `Href` switches the whole control to link mode. Logical CSS properties
+  only (RTL-safe). 3 goldens + render/RTL/mode tests (TODO_LIST #394; plan
+  C6).
 - **`forms.FilterChips` — zero-JS filter chips.** Link-based chips whose
   hrefs carry the filter state: query-param truth, crawler-friendly, no
   JavaScript anywhere (extracted from nsfw-classifier's `historyChip`).

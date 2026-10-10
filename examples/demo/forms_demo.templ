@@ -155,5 +155,27 @@ templ formsDemoContent() {
 			{Label: "Body", Href: demoURL("/forms?source=body")},
 		}})
 	}
+	@demoSection("Segmented Control", "forms-segmented") {
+		<div class="flex flex-wrap items-center gap-6">
+			@forms.SegmentedControl(forms.SegmentedControlProps{
+				Name:  "duration",
+				Items: []forms.SegmentedControlItem{
+					{Label: "15m", Value: "15m"},
+					{Label: "1h", Value: "60m"},
+					{Label: "1d", Value: "1440m"},
+				},
+				ActiveValue: "60m",
+			})
+			@forms.SegmentedControl(forms.SegmentedControlProps{
+				AriaLabel: "Threshold presets",
+				Items: []forms.SegmentedControlItem{
+					{Label: "Strict", Value: "30", Href: demoURL("/forms?threshold=30")},
+					{Label: "Balanced", Value: "50", Href: demoURL("/forms?threshold=50")},
+					{Label: "Lenient", Value: "70", Href: demoURL("/forms?threshold=70")},
+				},
+				ActiveValue: "50",
+			})
+		</div>
+	}
 	@formsDemoSection()
 }

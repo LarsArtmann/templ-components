@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-131 components across 11 packages + 102 icons. If you're about to hand-roll
+132 components across 11 packages + 102 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -43,6 +43,7 @@ Don't know what to look for? Find your page type:
 | **Settings / data-entry form** | `Form`, `Input`, `Select` (supports `Groups` for optgroups), `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`                                                                                                   |
 | **Filter bar (horizontal)**    | `FilterBar` (auto-submit GET form, composite change trigger, Reset, noscript Apply, sticky opt-in, `Wire`) — children are plain controls; recipe `docs/recipes/horizontal-filter-bar.md` documents the footguns                                                            |
 | `FilterChips`       | `FilterChips(props FilterChipsProps)`               | Zero-JS filter chips — link-based, `aria-current`, `FilterToggleHref` query builder; crawler-friendly                                          |
+| `SegmentedControl`  | `SegmentedControl(props SegmentedControlProps)`      | Segmented single-select — radio mode (radiogroup, submits with the form) or link mode (aria-current); zero JS                                                 |
 | **Feedback / notifications**   | `Toast`, `ToastContainer`, `Alert`, `Spinner`, `ProgressBar`, `GlobalErrorHandling`                                                                                                                                                |
 | **Navigation**                 | `Nav`, `SimpleNav`, `SidebarNav`, `Breadcrumbs`, `Pagination`, `MobileMenu`                                                                                                                                                        |
 | **Modal / overlay**            | `Modal`, `Drawer`, `Dropdown`, `Tooltip`, `Popover`, `Accordion`                                                                                                                                                                   |
@@ -101,7 +102,7 @@ Don't know what to look for? Find your page type:
 | `DataState`          | `DataState(props DataStateProps)`                   | Honesty ladder — Content (children) / Empty / Unavailable / Disabled; composes EmptyState, per-state default icons                                        |
 | `StatusDot`          | `StatusDot(props StatusDotProps)`                   | Colored status dot — 5 tones, optional pulse ring (motion-reduce safe), sr-only Label for a11y                                        |
 | `LivePill`            | `LivePill(props LivePillProps)`                     | Dot+text status pill — the Live / Reconnecting / Paused connection indicator shape                                                    |
-#### `forms` — 25 components
+#### `forms` — 26 components
 
 | Component           | Signature                                         | One-liner                                                                                                                            |
 | ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |

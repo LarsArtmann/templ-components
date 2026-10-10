@@ -144,4 +144,3 @@ func TestGoldenSweepFilterChips(t *testing.T) {
 		{Name: "filter_chips_empty", HTML: utils.Render(t, FilterChips(FilterChipsProps{}))},
 	})
 }
-

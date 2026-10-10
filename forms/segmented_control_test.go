@@ -51,7 +51,7 @@ func TestSegmentedControlRender(t *testing.T) {
 			Items:       radioItems,
 			ActiveValue: "60m",
 		}))
-		if got, want := strings.Count(output, `checked`), 1; got != want {
+		if got, want := strings.Count(output, ` checked`), 1; got != want {
 			t.Errorf("checked count = %d, want %d", got, want)
 		}
 	})
@@ -173,4 +173,3 @@ func TestGoldenSweepSegmentedControl(t *testing.T) {
 		}))},
 	})
 }
-

@@ -183,7 +183,7 @@ func TestFilterBarIsHTMX(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name string
+		name  string
 		props FilterBarProps
 		want  bool
 	}{

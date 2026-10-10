@@ -91,6 +91,7 @@ func componentTypes() []any {
 		forms.FilterInputProps{},
 		forms.FilterBarProps{},
 		forms.FilterChipsProps{},
+		forms.SegmentedControlProps{},
 		forms.DirtyGuardProps{},
 		forms.SliderProps{},
 		forms.RatingProps{},
