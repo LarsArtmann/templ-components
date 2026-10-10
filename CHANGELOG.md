@@ -157,6 +157,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   integrity test and a `build.LLMSIndex` fixture test. shadcn-templ markets
   "AI-Ready"; ours used to 404 (verified 2026-10-08, TODO_LIST #375).
 
+- **Semantic token layer completed, shade-for-shade (ADR-0044 Phase 1).**
+  `templates/templ-components-theme.css` now covers the FULL 50–950 ramp for
+  primary/danger/success/warning (plus `yellow-*` bound to warning — badge
+  tints use yellow, feedback uses amber), so a consumer override reaches
+  every tint shade the library emits, not just 500/600/700. The rewrite also
+  fixes a latent custom-property cycle: defaults are now Tailwind palette
+  LITERALS instead of `var(--color-blue-600)` references, so an unmodified
+  import renders identically to stock Tailwind and consumer palette remaps
+  cannot leak through the tokens (verified by compiled-probe: override
+  `--color-tc-primary-600` → `bg-blue-600` resolves through the rebind).
+  New `docs/recipes/scoped-theme-bridge.md` documents the attribute-selector
+  bridge pattern (what DiscordSync/dnsblockd/nsfw ship today), its failure
+  modes, and the escape hatches. The v2 accent class swap stays gated
+  (ADR-0039).
+
 - **Class inventory file for module consumers (ADR-0045).** The library now
   ships `templates/templ-components-classes.txt` — a generated concatenation
   of every class-bearing source across all 7 modules. Consumers copy it next

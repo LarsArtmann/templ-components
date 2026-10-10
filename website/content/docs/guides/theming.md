@@ -34,7 +34,9 @@ Then import it in your CSS:
 
 ```css
 @import "tailwindcss";
-@source "../vendor/github.com/larsartmann/templ-components";
+/* Scan the library's shipped class inventory (copy it next to this file):
+   cp "$(go list -m -f '{{.Dir}}' github.com/larsartmann/templ-components)/templates/templ-components-classes.txt" . */
+@source "./templ-components-classes.txt";
 @import "./templ-components-theme.css";
 ```
 

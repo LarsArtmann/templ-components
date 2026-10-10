@@ -408,6 +408,7 @@ run `templ generate`. This is the standard pattern for publishable templ package
 | `docs/icons-only-adoption.md`                         | Adopting just the `icons` package (CSS-agnostic)                                                |
 | `docs/recipes/hybrid-strings-builder-rendering.md`    | Rendering components into a strings.Builder (children slots, `templ.WithChildren` escape hatch) |
 | `docs/recipes/theme-bridge.md`                        | Remap library colors to custom semantic palette                                                 |
+| `docs/recipes/scoped-theme-bridge.md`                | Remap library colors WITHOUT touching your own palette use (attribute bridges, escape hatches)  |
 | `docs/recipes/bounding-tables.md`                     | Cap + ListNote notice, or Pagination/LoadMore — never render an unbounded table                 |
 
 ## How to know if a component already exists
