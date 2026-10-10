@@ -18,17 +18,28 @@
 
 /*
  * @source directives tell Tailwind where to scan for class names.
- * Adjust the vendored path to match your module layout.
  *
- * .templ files are the primary source. .go files are also scanned because
- * many components define Tailwind class lookup maps in Go source (e.g.,
- * buttonVariantLookup, feedbackStyleMap, familyStyleMap). Without scanning
- * .go files, classes defined only in Go produce silently-missing CSS.
+ * Your own sources: .templ files are the primary source. .go files are also
+ * scanned because many components define Tailwind class lookup maps in Go
+ * source (e.g., buttonVariantLookup, feedbackStyleMap, familyStyleMap).
+ * Without scanning .go files, classes defined only in Go produce
+ * silently-missing CSS.
  */
 @source "**/*.templ";
 @source "**/*.go";
-@source "vendor/github.com/larsartmann/templ-components/**/*.templ";
-@source "vendor/github.com/larsartmann/templ-components/**/*.go";
+
+/*
+ * templ-components class names (ADR-0045): the library ships a generated
+ * scan corpus in the module. Copy it next to this file and scan the copy:
+ *
+ *   cp "$(go list -m -f '{{.Dir}}' github.com/larsartmann/templ-components)/templates/templ-components-classes.txt" .
+ *
+ * Do NOT point @source at a gitignored vendor/ tree — Tailwind v4.3 never
+ * scans gitignored paths, even when listed explicitly, so the line is
+ * silently inert in fresh clones (ADR-0045 evidence). If your vendored tree
+ * is COMMITTED (tracked), scanning it directly is fine instead.
+ */
+@source "./templ-components-classes.txt";
 
 /*
  * Class-based dark mode — required for layout.ThemeScript() / layout.ThemeToggle().

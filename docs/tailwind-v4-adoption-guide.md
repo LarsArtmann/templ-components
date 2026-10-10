@@ -201,8 +201,9 @@ Rules of thumb:
 3. **Always exclude your own CSS outputs** — otherwise removed classes never
    leave the build.
 4. **Never rely on scanning a gitignored directory** — gitignored paths are
-   skipped even when listed explicitly; use the
-   [class-inventory recipe](recipes/vendored-tailwind-scanning.md) instead.
+   skipped even when listed explicitly; copy and scan the shipped
+   `templates/templ-components-classes.txt` inventory instead (see
+   "Making Tailwind see templ-components" above).
 5. **Safelist any class the library assembles at runtime** — see the next
    section.
 

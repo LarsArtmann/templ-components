@@ -99,7 +99,7 @@ Sorted by importance/impact/effort/customer-value. Status: ⬜ open, ✅ done th
 | 20 | C10 | `StatusBadgeWith(mapper, status)` injectable mapper + tests | rest | Low | 30m | dnsblockd has 4 local mappers | — | ✅ done |
 | 21 | C11 | `ImageProps` ThumbHash/blur-up field + demo + goldens | rest | Low | 60m | DiscordSync `imageThumbnail` blur-up | — | ✅ done |
 | 22 | T1 | Theming tokens IMPLEMENTATION (per ADR-0044): custom.css tokens + class-swap batches + visual rebaseline + migration doc | rest | Critical | 100m | Deletes consumer bridges; likely version-plan gate (v2?) | D1 | ⬜ |
-| 23 | T2 | CSS-delivery IMPLEMENTATION (per ADR-0045): inventory generator or blessed-pattern docs + consumer migration notes | rest | High | 100m | Deletes nsfw mirror script + dnsblockd regen | D2 | ⬜ |
+| 23 | T2 | CSS-delivery IMPLEMENTATION (per ADR-0045): inventory generator or blessed-pattern docs + consumer migration notes | rest | High | 100m | Deletes nsfw mirror script + dnsblockd regen | D2 | ✅ done |
 | 24 | X1 | Consumer wave 1 (other repos): dnsblockd bump v1.19.4→current + SidebarNav swap + DataState adoption; DiscordSync adopt ExternalLink/CollapsibleSection | rest | High | 100m | Real consumers get real wins (E5) | C5; dnsblockd release | ⬜ |
 | 25 | X2 | Consumer wave 2 (other repos): DiscordSync chart migration + bridge deletion (post-T1); nsfw SurfaceNav check + Lightbox adoption + mirror deletion (post-T2); mr-sync decision ⫱ + migration | rest | High | 100m | Pays off the whole plan in the consumers | C8, T1, T2 | ⬜ |
 | P1 | G1 | `display.JSONTree` — recursive `<details>` JSON viewer | parked | Med | 90m | 1 consumer (DiscordSync) — #217 gate: needs 2nd | second consumer | ⬛ |
