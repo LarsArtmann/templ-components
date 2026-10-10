@@ -898,3 +898,10 @@ after cloning or switching machines. Verify it appears in `available_skills` (na
 
 Prefer a copy? `cp skill/SKILL.md ~/.config/crush/skills/templ-components/SKILL.md` works too,
 but you must re-copy after every update — the symlink is the recommended option.
+
+---
+
+**Fan-out:** the symlink above is the norm, not a convenience — the authoring
+rule, its guards, and the 2026-09 stale-link incident that spawned them live
+in `/home/lars/projects/crush-config/README.md` § "Skill fan-out: authoring
+norm and integrity".
