@@ -1,0 +1,68 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// statusDotSize is the standalone dot diameter (10px).
+const statusDotSize = "h-2.5 w-2.5"
+
+// statusPillDotSize is the pill's dot diameter (6px, dnsblockd's size).
+const statusPillDotSize = "h-1.5 w-1.5"
+
+// StatusDot renders a colored status dot, optionally pulsing.
+//
+//	@display.StatusDot(display.StatusDotProps{Tone: display.StatusToneSuccess, Pulse: true, Label: "Live"})
+//
+// Without a Label the dot is decorative (aria-hidden) — pair it with your
+// own visible text.
+templ StatusDot(props StatusDotProps) {
+	<span
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("relative inline-flex " + statusDotSize, props.Class) }
+		if props.Label != "" {
+			role="status"
+		} else {
+			aria-hidden="true"
+		}
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		if props.Pulse {
+			<span class={ "absolute inline-flex " + statusDotSize + " animate-ping rounded-full opacity-75 motion-reduce:animate-none " + statusToneBg(props.Tone) }></span>
+		}
+		<span class={ "relative inline-flex " + statusDotSize + " rounded-full " + statusToneBg(props.Tone) }></span>
+		if props.Label != "" {
+			<span class="sr-only">{ props.Label }</span>
+		}
+	</span>
+}
+
+// LivePill renders the dot+text status pill — "Live", "Reconnecting…",
+// "Paused" — the dashboard connection indicator shape.
+//
+//	@display.LivePill(display.LivePillProps{Tone: display.StatusToneSuccess, Text: "Live", Pulse: true})
+templ LivePill(props LivePillProps) {
+	<span
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-2.5 py-0.5 text-xs text-gray-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<span class={ "relative inline-flex " + statusPillDotSize } aria-hidden="true">
+			if props.Pulse {
+				<span class={ "absolute inline-flex " + statusPillDotSize + " animate-ping rounded-full opacity-75 motion-reduce:animate-none " + statusToneBg(props.Tone) }></span>
+			}
+			<span class={ "relative inline-flex " + statusPillDotSize + " rounded-full " + statusToneBg(props.Tone) }></span>
+		</span>
+		{ props.Text }
+	</span>
+}

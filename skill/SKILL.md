@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-127 components across 11 packages + 102 icons. If you're about to hand-roll
+128 components across 11 packages + 102 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -38,7 +38,7 @@ Don't know what to look for? Find your page type:
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Dashboard / metrics page**   | `AppShell`, `Container`, `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`, `Sparkline`, `BarChart`, `LineChart`, `PieChart`, `AreaChart`, `PolledRegion`                                                |
 | **Kanban / pipeline board**    | `KanbanBoard` — HTML5 drag-and-drop + keyboard move buttons, `Wire` move exchange (htmx or Datastar), `ParseKanbanMove` server helper, per-column `Action` add-card slot and `Tone` status dot                                     |
-| **List / table page**          | `Table` (`Flush` for card nesting, `CellPadding` for compact rows, `Table.Body` for custom rows, `Row.Href` for clickable rows), `Badge`, `StatusBadge`, `Avatar`, `Pagination`, `LoadMore`, `EndOfList`, `EmptyState`, `ListNote` |
+| **List / table page**          | `Table` (`Flush` for card nesting, `CellPadding` for compact rows, `Table.Body` for custom rows, `Row.Href` for clickable rows), `Badge`, `StatusBadge`, `Avatar`, `Pagination`, `LoadMore`, `EndOfList`, `EmptyState`, `DataState` (disabled→unavailable→empty→content ladder), `ListNote` |
 | **Detail page**                | `Split`, `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `Breadcrumbs`                                                                                                                                           |
 | **Settings / data-entry form** | `Form`, `Input`, `Select` (supports `Groups` for optgroups), `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`                                                                                                   |
 | **Filter bar (horizontal)**    | `FilterBar` (auto-submit GET form, composite change trigger, Reset, noscript Apply, sticky opt-in, `Wire`) — children are plain controls; recipe `docs/recipes/horizontal-filter-bar.md` documents the footguns                                                            |
@@ -50,7 +50,7 @@ Don't know what to look for? Find your page type:
 
 ### By package (import path reference)
 
-#### `display` — 45 components
+#### `display` — 46 components
 
 | Component            | Signature                                           | One-liner                                                                                                                                                               |
 | -------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -97,7 +97,7 @@ Don't know what to look for? Find your page type:
 | `PieChart`           | `PieChart(props PieChartProps)`                     | Pure SVG pie/donut chart — arc paths, external labels, legend, center label, custom colors, ARIA. Zero JS                                                               |
 | `AreaChart`          | `AreaChart(props AreaChartProps)`                   | Pure SVG area chart — filled areas, multi-series, fill opacity, smooth curves, ARIA. Zero JS                                                                            |
 | `CodeBlock`          | `CodeBlock(props CodeBlockProps)`                   | Copyable code display — block (figure+pre/code, language/label header) or compact-ID variant, integrated CopyButton, HTML-escaped      |
-
+| `DataState`          | `DataState(props DataStateProps)`                   | Honesty ladder — Content (children) / Empty / Unavailable / Disabled; composes EmptyState, per-state default icons                                        |
 #### `forms` — 24 components
 
 | Component           | Signature                                         | One-liner                                                                                                                            |

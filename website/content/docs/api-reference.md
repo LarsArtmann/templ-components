@@ -81,7 +81,7 @@ includes `TitleClass` and `HeaderClass`:
 
 ### Typed Enums
 
-65 typed string enums make invalid states unrepresentable. Each ships with an `IsValid()` method.
+66 typed string enums make invalid states unrepresentable. Each ships with an `IsValid()` method.
 
 ```go
 type BadgeType string

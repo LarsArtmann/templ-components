@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`display.DataState` — the honesty ladder for data regions.** Four rungs
+  from one component: `Content` (the zero value — renders children), `Empty`,
+  `Unavailable` (query failed / retrying), and `Disabled` (feature off) —
+  composing `EmptyState` with per-state default icons (`inbox`,
+  `exclamation-triangle`, `no-symbol`; `Icon` overrides). Per-state copy
+  lives on the props (`Title`/`Description`) because the honesty contract is
+  per-card truth; unknown states fall back to content. Extracted from
+  dnsblockd's per-card ladders (9 accepted-duplication markers across 4 view
+  files). 4 goldens + render/enum tests (TODO_LIST #393; plan C5).
 - **`forms.FilterBar` — horizontal auto-submit filter row.** The converged
   shape behind DiscordSync's `filterForm` (9 list pages) and dnsblockd's
   filter rows: a GET form whose child selects/checkboxes re-submit on
