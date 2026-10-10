@@ -157,6 +157,7 @@ func componentTypes() []any {
 		display.DataStateProps{},
 		display.StatusDotProps{},
 		display.LivePillProps{},
+		display.SegmentBarProps{},
 
 		// feedback/layout/navigation/htmx additions (2026-09-13)
 		navigation.FooterProps{},

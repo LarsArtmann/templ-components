@@ -579,6 +579,23 @@ display.Card(display.CardProps{
 			Degraded
 		</span>
 	</div>
+	@demoSection("Segment Bar", "display-segment-bar")
+	<div class="max-w-md space-y-4">
+		@display.SegmentBar(display.SegmentBarProps{
+			Segments: []display.SegmentBarSegment{
+				{Label: "Go", Value: 62.3},
+				{Label: "TypeScript", Value: 27.1},
+				{Label: "Shell", Value: 8.4},
+				{Label: "Other", Value: 2.2},
+			},
+		})
+		@display.SegmentBar(display.SegmentBarProps{
+			Segments: []display.SegmentBarSegment{
+				{Label: "Safe", Value: 90, Color: "bg-emerald-600 dark:bg-emerald-400"},
+				{Label: "Risky", Value: 10, Color: "bg-rose-600 dark:bg-rose-400"},
+			},
+		})
+	</div>
 	@demoSection("Collapsible Sections", "display-collapsible")
 	<div class="space-y-4">
 		@display.CollapsibleSection(display.CollapsibleSectionProps{

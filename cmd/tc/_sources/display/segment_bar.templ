@@ -1,0 +1,65 @@
+package display
+
+import (
+	"strconv"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// SegmentBar renders a stacked proportion bar with an optional legend.
+//
+//	@display.SegmentBar(display.SegmentBarProps{
+//		Segments: []display.SegmentBarSegment{
+//			{Label: "Go", Value: 62.3},
+//			{Label: "TypeScript", Value: 37.7},
+//		},
+//	})
+//
+// Proportions use flex-grow (not percentage widths), so rounding never opens
+// gaps between segments. The runtime flex-grow values are the component's
+// documented inline-style exemption (same class as BarChart's bar widths —
+// see utils.TestInlineStyleCompliance).
+templ SegmentBar(props SegmentBarProps) {
+	{{ total := segmentBarTotal(props.Segments) }}
+	if total > 0 {
+		{{
+			label := props.AriaLabel
+			if label == "" {
+				label = segmentBarAriaLabel(props.Segments, total)
+			}
+		}}
+		<div
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("flex flex-col gap-2", props.Class) }
+			role="img"
+			aria-label={ label }
+			{ props.Attrs... }
+		>
+			<div class="flex h-2.5 w-full overflow-hidden rounded-full">
+				for _, seg := range props.Segments {
+					if seg.Value > 0 {
+						<div
+							class={ segmentBarColor(seg) }
+							style={ "flex-grow:" + strconv.FormatFloat(seg.Value, 'f', -1, 64) }
+						></div>
+					}
+				}
+			</div>
+			if !props.NoLegend {
+				<ul class="flex flex-wrap gap-x-4 gap-y-1">
+					for _, seg := range props.Segments {
+						if seg.Value > 0 {
+							<li class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+								<span class={ "h-2 w-2 rounded-full " + segmentBarColor(seg) } aria-hidden="true"></span>
+								{ seg.Label }
+								<span class="text-gray-400 dark:text-gray-500">{ segmentBarPercent(seg.Value, total) }</span>
+							</li>
+						}
+					}
+				</ul>
+			}
+		</div>
+	}
+}
