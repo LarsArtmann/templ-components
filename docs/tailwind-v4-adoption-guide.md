@@ -68,8 +68,13 @@ pnpm dlx @tailwindcss/cli -i app.css -o static/app.css --minify
 /* app.css */
 @import "tailwindcss";
 
-/* Scan templ-components (vendored) for class names */
-@source "../vendor/github.com/larsartmann/templ-components";
+/* Scan templ-components for class names — the library ships a generated
+   class inventory in the module (ADR-0045). Copy it next to this file and
+   scan the copy; see "Making Tailwind see templ-components" below. */
+@source "./templ-components-classes.txt";
+
+/* Your own templates */
+@source "./**/*.templ";
 
 /* Class-based dark mode toggle */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -107,32 +112,41 @@ tailwindcss -i app.css -o static/app.css --watch
 
 ---
 
-## Vendoring templ-components
+## Making Tailwind see templ-components
 
-If you use `templ-components`, Tailwind needs to scan the library's source files
-for class names. There are two approaches:
-
-### Vendored (recommended for full control)
+Components emit Tailwind class strings that live in the Go module cache —
+outside every consumer's scan root. The library ships the answer in the
+module itself (ADR-0045): **`templates/templ-components-classes.txt`, a
+generated concatenation of every class-bearing library source across all 7
+modules**, regenerated at every release and freshness-guarded in CI. Three
+lines and you are done:
 
 ```bash
-go mod vendor
+mkdir -p internal/css
+cp "$(go list -m -f '{{.Dir}}' github.com/larsartmann/templ-components)/templates/templ-components-classes.txt" internal/css/
 ```
 
-Then add the `@source` line pointing at the vendored path (shown above).
+```css
+@source "./internal/css/templ-components-classes.txt";
+@source "./**/*.templ"; /* your own sources */
+```
 
-> **Gotcha: `vendor/` is gitignored, and Tailwind v4 skips gitignored paths —
-> even ones listed explicitly via `@source`.** `go mod vendor` makes consumers
-> gitignore `vendor/` by convention, so pointing `@source` at the vendor tree
-> silently drops library classes in some environments (it may appear to work in
-> sandboxes without a `.gitignore`, then break in CI or on a fresh clone). The
-> deterministic fix is a **tracked class-inventory file**: concatenate the
-> library sources into one committed `.txt` and scan that instead. See
-> [`docs/recipes/vendored-tailwind-scanning.md`](recipes/vendored-tailwind-scanning.md)
-> for the full pattern (proven in a Nix-built production consumer).
+The file rides the module, so it versions with `go.mod` — bump the library,
+re-copy, rescan. Commit the copy: it is a tracked plain file, so there is no
+`.gitignore` semantics, no vendor tree, no module cache in the CSS pipeline,
+and no per-consumer generator to maintain.
 
-### Go module cache (no vendoring)
+### Variant: tracked-source `@source` (monorepos)
 
-If you don't vendor, Tailwind can scan the module cache directly:
+If the library sources are **checked out and committed inside** your Tailwind
+scan root (monorepo, committed submodule), scanning the real files remains
+blessed — this is exactly what the library's own demo does
+(`@source "../../**/*.templ"`). The requirement is one word: **tracked**.
+
+### Variant: Go module cache (no vendoring, no copy step)
+
+Tailwind can scan the module cache directly, at the cost of a version-pinned
+path in CSS:
 
 ```css
 /* Use go list to find the exact path */

@@ -314,6 +314,11 @@ else
 	echo "Run 'nix run .#build' or install tailwindcss to recompile." >&2
 fi
 
+# Regenerate the ADR-0045 class inventory so the shipped scan corpus never
+# lags a release (belt-and-braces with utils.TestClassInventoryFreshness,
+# which runs in the go test step below and would fail the cut on drift).
+bash "$(dirname "$0")/gen-class-inventory.sh"
+
 # Root module (workspace mode — replaces removed, tags don't exist yet).
 go build ./...
 go test ./... -count=1 -race
