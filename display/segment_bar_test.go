@@ -47,7 +47,7 @@ func TestSegmentBarRender(t *testing.T) {
 	t.Run("aria label override", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SegmentBar(SegmentBarProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Language shares"},
+			AriaLabel: "Language shares",
 			Segments:  segments,
 		}))
 		utils.AssertContains(t, output, `aria-label="Language shares"`)
@@ -55,6 +55,7 @@ func TestSegmentBarRender(t *testing.T) {
 
 	t.Run("empty or zero-total renders nothing", func(t *testing.T) {
 		t.Parallel()
+
 		if output := utils.Render(t, SegmentBar(SegmentBarProps{})); output != "" {
 			t.Errorf("empty segments rendered %q", output)
 		}
@@ -87,6 +88,7 @@ func TestSegmentBarRender(t *testing.T) {
 		first := utils.Render(t, SegmentBar(SegmentBarProps{
 			Segments: []SegmentBarSegment{{Label: "Go", Value: 1}},
 		}))
+
 		second := utils.Render(t, SegmentBar(SegmentBarProps{
 			Segments: []SegmentBarSegment{{Label: "Go", Value: 1}},
 		}))
@@ -98,8 +100,8 @@ func TestSegmentBarRender(t *testing.T) {
 	t.Run("propagates base props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SegmentBar(SegmentBarProps{
-			BaseProps: utils.BaseProps{ID: "bar", Class: "mb-2", Attrs: templ.Attributes{"data-x": "1"}},
-			Segments:  segments,
+			ID: "bar", Class: "mb-2", Attrs: templ.Attributes{"data-x": "1"},
+			Segments: segments,
 		}))
 		utils.AssertContains(t, output, `id="bar"`)
 		utils.AssertContains(t, output, "mb-2")
@@ -112,6 +114,7 @@ func TestSegmentBarHelpers(t *testing.T) {
 
 	t.Run("percent zero total", func(t *testing.T) {
 		t.Parallel()
+
 		if got := segmentBarPercent(5, 0); got != "0.0%" {
 			t.Errorf("segmentBarPercent(5, 0) = %q", got)
 		}
@@ -119,7 +122,9 @@ func TestSegmentBarHelpers(t *testing.T) {
 
 	t.Run("color palette cycle is deterministic", func(t *testing.T) {
 		t.Parallel()
+
 		a := segmentBarColor(SegmentBarSegment{Label: "a"})
+
 		b := segmentBarColor(SegmentBarSegment{Label: "a"})
 		if a != b {
 			t.Errorf("label 'a' resolved to two colors: %q vs %q", a, b)
@@ -128,6 +133,7 @@ func TestSegmentBarHelpers(t *testing.T) {
 
 	t.Run("total ignores negative values", func(t *testing.T) {
 		t.Parallel()
+
 		got := segmentBarTotal([]SegmentBarSegment{{Value: 5}, {Value: -2}, {Value: 5}})
 		if got != 10 {
 			t.Errorf("segmentBarTotal = %v, want 10", got)

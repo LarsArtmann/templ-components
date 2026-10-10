@@ -75,16 +75,16 @@ func TestDataStateRender(t *testing.T) {
 	t.Run("propagates base props on both rungs", func(t *testing.T) {
 		t.Parallel()
 		content := renderDataStateWithChildren(t, DataStateProps{
-			BaseProps: utils.BaseProps{ID: "region", Class: "mb-4", AriaLabel: "Devices"},
+			ID: "region", Class: "mb-4", AriaLabel: "Devices",
 		}, plainChild("<p>x</p>"))
 		utils.AssertContains(t, content, `id="region"`)
 		utils.AssertContains(t, content, "mb-4")
 		utils.AssertContains(t, content, `aria-label="Devices"`)
 
 		empty := utils.Render(t, DataState(DataStateProps{
-			BaseProps: utils.BaseProps{ID: "region2", Class: "mb-6"},
-			State:     DataStateEmpty,
-			Title:     "Empty",
+			ID: "region2", Class: "mb-6",
+			State: DataStateEmpty,
+			Title: "Empty",
 		}))
 		utils.AssertContains(t, empty, `id="region2"`)
 		utils.AssertContains(t, empty, "mb-6")
@@ -109,6 +109,7 @@ func TestDataStateIcon(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := dataStateIcon(tt.props); got != tt.want {
 				t.Errorf("dataStateIcon(%+v) = %q, want %q", tt.props.State, got, tt.want)
 			}
@@ -134,6 +135,7 @@ func TestDataStateStateIsValid(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := DataStateStateIsValid(tt.s); got != tt.want {
 				t.Errorf("DataStateStateIsValid(%q) = %v, want %v", tt.s, got, tt.want)
 			}

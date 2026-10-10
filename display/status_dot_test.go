@@ -38,13 +38,11 @@ func TestStatusDotRender(t *testing.T) {
 	t.Run("propagates base props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, StatusDot(StatusDotProps{
-			BaseProps: utils.BaseProps{
-				ID:        "dot",
-				Class:     "mt-1",
-				AriaLabel: "Conn",
-				Attrs:     templ.Attributes{"data-x": "1"},
-			},
-			Tone: StatusToneDanger,
+			ID:        "dot",
+			Class:     "mt-1",
+			AriaLabel: "Conn",
+			Attrs:     templ.Attributes{"data-x": "1"},
+			Tone:      StatusToneDanger,
 		}))
 		utils.AssertContains(t, output, `id="dot"`)
 		utils.AssertContains(t, output, "mt-1")
@@ -81,9 +79,9 @@ func TestLivePillRender(t *testing.T) {
 	t.Run("propagates base props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, LivePill(LivePillProps{
-			BaseProps: utils.BaseProps{ID: "conn", Class: "mb-2"},
-			Tone:      StatusToneSuccess,
-			Text:      "Live",
+			ID: "conn", Class: "mb-2",
+			Tone: StatusToneSuccess,
+			Text: "Live",
 		}))
 		utils.AssertContains(t, output, `id="conn"`)
 		utils.AssertContains(t, output, "mb-2")
@@ -109,6 +107,7 @@ func TestStatusToneBg(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := statusToneBg(tt.tone); got != tt.want {
 				t.Errorf("statusToneBg(%q) = %q, want %q", tt.tone, got, tt.want)
 			}
@@ -135,6 +134,7 @@ func TestStatusToneIsValid(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := StatusToneIsValid(tt.tone); got != tt.want {
 				t.Errorf("StatusToneIsValid(%q) = %v, want %v", tt.tone, got, tt.want)
 			}

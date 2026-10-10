@@ -70,7 +70,7 @@ func TestLightboxRender(t *testing.T) {
 	t.Run("aria label override", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Lightbox(LightboxProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Evidence images"},
+			AriaLabel: "Evidence images",
 			Images:    lightboxTestImages(),
 		}))
 		utils.AssertContains(t, output, `aria-label="Evidence images"`)
@@ -79,8 +79,8 @@ func TestLightboxRender(t *testing.T) {
 	t.Run("singleton script renders with nonce and without when empty", func(t *testing.T) {
 		t.Parallel()
 		withNonce := utils.Render(t, Lightbox(LightboxProps{
-			BaseProps: utils.BaseProps{Nonce: "n-1"},
-			Images:    lightboxTestImages(),
+			Nonce:  "n-1",
+			Images: lightboxTestImages(),
 		}))
 		utils.AssertContains(t, withNonce, `nonce="n-1"`)
 		utils.AssertContains(t, withNonce, "tcLightboxAttached")
@@ -93,8 +93,8 @@ func TestLightboxRender(t *testing.T) {
 	t.Run("propagates base props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Lightbox(LightboxProps{
-			BaseProps: utils.BaseProps{ID: "gal", Class: "mb-2", Attrs: templ.Attributes{"data-x": "1"}},
-			Images:    lightboxTestImages(),
+			ID: "gal", Class: "mb-2", Attrs: templ.Attributes{"data-x": "1"},
+			Images: lightboxTestImages(),
 		}))
 		utils.AssertContains(t, output, `id="gal"`)
 		utils.AssertContains(t, output, `id="gal-dialog"`)

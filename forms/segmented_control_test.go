@@ -38,6 +38,7 @@ func TestSegmentedControlRender(t *testing.T) {
 		utils.AssertContains(t, output, "peer-checked:bg-blue-600")
 		// Forward DOM order: the first radio in the HTML is the first item.
 		first := strings.Index(output, `value="15m"`)
+
 		second := strings.Index(output, `value="60m"`)
 		if first > second || first < 0 {
 			t.Errorf("radios not in forward DOM order (15m at %d, 60m at %d)", first, second)
@@ -46,6 +47,7 @@ func TestSegmentedControlRender(t *testing.T) {
 
 	t.Run("checked radio matches active value exactly once", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, SegmentedControl(SegmentedControlProps{
 			Name:        "duration",
 			Items:       radioItems,
@@ -81,7 +83,7 @@ func TestSegmentedControlRender(t *testing.T) {
 	t.Run("aria label override", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SegmentedControl(SegmentedControlProps{
-			BaseProps:   utils.BaseProps{AriaLabel: "Threshold presets"},
+			AriaLabel:   "Threshold presets",
 			Name:        "threshold",
 			Items:       radioItems,
 			ActiveValue: "15m",
@@ -92,9 +94,9 @@ func TestSegmentedControlRender(t *testing.T) {
 	t.Run("propagates class and attrs", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SegmentedControl(SegmentedControlProps{
-			BaseProps: utils.BaseProps{Class: "mb-2", Attrs: templ.Attributes{"data-x": "1"}},
-			Name:      "duration",
-			Items:     radioItems,
+			Class: "mb-2", Attrs: templ.Attributes{"data-x": "1"},
+			Name:  "duration",
+			Items: radioItems,
 		}))
 		utils.AssertContains(t, output, "mb-2")
 		utils.AssertContains(t, output, `data-x="1"`)
@@ -108,6 +110,7 @@ func TestSegmentedControlRender(t *testing.T) {
 
 	t.Run("logical properties only (RTL safe)", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, SegmentedControl(SegmentedControlProps{
 			Name:  "duration",
 			Items: radioItems,
@@ -136,6 +139,7 @@ func TestSegmentedControlIsLinkMode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := segmentedControlIsLinkMode(tt.items); got != tt.want {
 				t.Errorf("segmentedControlIsLinkMode() = %v, want %v", got, tt.want)
 			}

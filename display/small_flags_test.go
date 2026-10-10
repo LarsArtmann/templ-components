@@ -24,6 +24,7 @@ func TestTableStickyHeader(t *testing.T) {
 
 	t.Run("sticky header flag adds sticky classes", func(t *testing.T) {
 		t.Parallel()
+
 		sticky := base
 		sticky.StickyHeader = true
 		output := utils.Render(t, Table(sticky))
@@ -65,6 +66,7 @@ func TestStatusBadgeWith(t *testing.T) {
 	t.Run("matches StatusBadge for built-in mapping", func(t *testing.T) {
 		t.Parallel()
 		builtin := utils.Render(t, StatusBadge("pending"))
+
 		withNil := utils.Render(t, StatusBadgeWith(nil, "pending"))
 		if builtin != withNil {
 			t.Error("nil mapper output differs from StatusBadge")

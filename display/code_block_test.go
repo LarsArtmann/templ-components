@@ -71,13 +71,11 @@ func TestCodeBlockRender(t *testing.T) {
 	t.Run("propagates id class aria-label and attrs", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, CodeBlock(CodeBlockProps{
-			BaseProps: utils.BaseProps{
-				ID:        "snippet",
-				Class:     "my-4",
-				AriaLabel: "Install command",
-				Attrs:     templ.Attributes{"data-foo": "bar"},
-			},
-			Code: "x",
+			ID:        "snippet",
+			Class:     "my-4",
+			AriaLabel: "Install command",
+			Attrs:     templ.Attributes{"data-foo": "bar"},
+			Code:      "x",
 		}))
 		utils.AssertContains(t, output, `id="snippet"`)
 		utils.AssertContains(t, output, "my-4")
@@ -88,8 +86,8 @@ func TestCodeBlockRender(t *testing.T) {
 	t.Run("nonce threads to the copy script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, CodeBlock(CodeBlockProps{
-			BaseProps: utils.BaseProps{Nonce: "nonce-abc"},
-			Code:      "x",
+			Nonce: "nonce-abc",
+			Code:  "x",
 		}))
 		utils.AssertContains(t, output, `nonce="nonce-abc"`)
 	})
@@ -107,6 +105,7 @@ func TestCodeBlockLabelResolution(t *testing.T) {
 
 	t.Run("label wins over language", func(t *testing.T) {
 		t.Parallel()
+
 		if got := codeBlockLabel(CodeBlockProps{Label: "L", Language: "go"}); got != "L" {
 			t.Errorf("codeBlockLabel(Label=L, Language=go) = %q, want %q", got, "L")
 		}
@@ -114,6 +113,7 @@ func TestCodeBlockLabelResolution(t *testing.T) {
 
 	t.Run("language used when label empty", func(t *testing.T) {
 		t.Parallel()
+
 		if got := codeBlockLabel(CodeBlockProps{Language: "go"}); got != "go" {
 			t.Errorf("codeBlockLabel(Language=go) = %q, want %q", got, "go")
 		}
@@ -121,6 +121,7 @@ func TestCodeBlockLabelResolution(t *testing.T) {
 
 	t.Run("both empty", func(t *testing.T) {
 		t.Parallel()
+
 		if got := codeBlockLabel(CodeBlockProps{}); got != "" {
 			t.Errorf("codeBlockLabel() = %q, want empty", got)
 		}
@@ -144,6 +145,7 @@ func TestCodeBlockVariantIsValid(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := CodeBlockVariantIsValid(tt.v); got != tt.want {
 				t.Errorf("CodeBlockVariantIsValid(%q) = %v, want %v", tt.v, got, tt.want)
 			}

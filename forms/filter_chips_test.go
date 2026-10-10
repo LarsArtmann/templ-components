@@ -36,6 +36,7 @@ func TestFilterChipsRender(t *testing.T) {
 
 	t.Run("inactive chips have no aria-current", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, FilterChips(FilterChipsProps{Chips: chips}))
 		if got, want := strings.Count(output, `aria-current="true"`), 1; got != want {
 			t.Errorf("aria-current count = %d, want %d", got, want)
@@ -52,7 +53,7 @@ func TestFilterChipsRender(t *testing.T) {
 	t.Run("aria label override", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, FilterChips(FilterChipsProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Source filter"},
+			AriaLabel: "Source filter",
 			Chips:     chips,
 		}))
 		utils.AssertContains(t, output, `aria-label="Source filter"`)
@@ -61,8 +62,8 @@ func TestFilterChipsRender(t *testing.T) {
 	t.Run("propagates base props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, FilterChips(FilterChipsProps{
-			BaseProps: utils.BaseProps{ID: "chips", Class: "mb-2", Attrs: templ.Attributes{"data-x": "1"}},
-			Chips:     chips,
+			ID: "chips", Class: "mb-2", Attrs: templ.Attributes{"data-x": "1"},
+			Chips: chips,
 		}))
 		utils.AssertContains(t, output, `id="chips"`)
 		utils.AssertContains(t, output, "mb-2")
@@ -88,6 +89,7 @@ func TestFilterToggleHref(t *testing.T) {
 
 	t.Run("sets the key", func(t *testing.T) {
 		t.Parallel()
+
 		got := FilterToggleHref("/history", url.Values{}, "source", "upload")
 		if got != "/history?source=upload" {
 			t.Errorf("FilterToggleHref = %q, want /history?source=upload", got)
@@ -96,6 +98,7 @@ func TestFilterToggleHref(t *testing.T) {
 
 	t.Run("empty value removes the key", func(t *testing.T) {
 		t.Parallel()
+
 		got := FilterToggleHref("/history", url.Values{"source": {"upload"}}, "source", "")
 		if got != "/history" {
 			t.Errorf("FilterToggleHref = %q, want /history", got)
@@ -104,7 +107,9 @@ func TestFilterToggleHref(t *testing.T) {
 
 	t.Run("preserves sibling params", func(t *testing.T) {
 		t.Parallel()
+
 		got := FilterToggleHref("/history", url.Values{"lane": {"main"}, "source": {"upload"}}, "source", "fetch")
+
 		want := "/history?lane=main&source=fetch"
 		if got != want {
 			t.Errorf("FilterToggleHref = %q, want %q", got, want)
@@ -113,6 +118,7 @@ func TestFilterToggleHref(t *testing.T) {
 
 	t.Run("escapes values", func(t *testing.T) {
 		t.Parallel()
+
 		got := FilterToggleHref("/history", url.Values{}, "q", "a b&c=d")
 		if got != "/history?q=a+b%26c%3Dd" {
 			t.Errorf("FilterToggleHref = %q, want escaped", got)
@@ -121,7 +127,9 @@ func TestFilterToggleHref(t *testing.T) {
 
 	t.Run("does not mutate the caller's values", func(t *testing.T) {
 		t.Parallel()
+
 		params := url.Values{"source": {"upload"}}
+
 		_ = FilterToggleHref("/history", params, "source", "")
 		if params.Get("source") != "upload" {
 			t.Error("caller's url.Values mutated")

@@ -19,6 +19,7 @@ func TestFilterBarRender(t *testing.T) {
 
 	t.Run("action wires the bar", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultFilterBarProps()
 		props.Action = "/users"
 		props.Target = "#results"
@@ -33,6 +34,7 @@ func TestFilterBarRender(t *testing.T) {
 
 	t.Run("composite trigger encodes the checkbox footgun", func(t *testing.T) {
 		t.Parallel()
+
 		props := FilterBarProps{Action: "/list"}
 		output := utils.Render(t, FilterBar(props))
 		utils.AssertContains(t, output, "change from:find select")
@@ -41,6 +43,7 @@ func TestFilterBarRender(t *testing.T) {
 
 	t.Run("no push url opt-out", func(t *testing.T) {
 		t.Parallel()
+
 		props := FilterBarProps{Action: "/users", NoPushURL: true}
 		output := utils.Render(t, FilterBar(props))
 		utils.AssertNotContains(t, output, "hx-push-url")
@@ -48,6 +51,7 @@ func TestFilterBarRender(t *testing.T) {
 
 	t.Run("reset link renders when reset text and action set", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultFilterBarProps()
 		props.Action = "/users"
 		output := utils.Render(t, FilterBar(props))
@@ -57,6 +61,7 @@ func TestFilterBarRender(t *testing.T) {
 
 	t.Run("no reset without action", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultFilterBarProps()
 		output := utils.Render(t, FilterBar(props))
 		utils.AssertNotContains(t, output, "Reset")
@@ -64,6 +69,7 @@ func TestFilterBarRender(t *testing.T) {
 
 	t.Run("sticky shell classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := FilterBarProps{Action: "/users", Sticky: true}
 		output := utils.Render(t, FilterBar(props))
 		utils.AssertContains(t, output, "sticky")
@@ -73,6 +79,7 @@ func TestFilterBarRender(t *testing.T) {
 
 	t.Run("indicator only when wired htmx", func(t *testing.T) {
 		t.Parallel()
+
 		wired := FilterBarProps{Action: "/users"}
 		output := utils.Render(t, FilterBar(wired))
 		utils.AssertContains(t, output, "htmx-indicator")
@@ -92,14 +99,13 @@ func TestFilterBarRender(t *testing.T) {
 
 	t.Run("propagates id class aria-label and attrs", func(t *testing.T) {
 		t.Parallel()
+
 		props := FilterBarProps{
-			BaseProps: utils.BaseProps{
-				ID:        "bar",
-				Class:     "mb-4",
-				AriaLabel: "Filters",
-				Attrs:     templ.Attributes{"data-foo": "bar"},
-			},
-			Action: "/users",
+			ID:        "bar",
+			Class:     "mb-4",
+			AriaLabel: "Filters",
+			Attrs:     templ.Attributes{"data-foo": "bar"},
+			Action:    "/users",
 		}
 		output := utils.Render(t, FilterBar(props))
 		utils.AssertContains(t, output, `id="bar"`)
@@ -124,6 +130,7 @@ func TestFilterBarWiring(t *testing.T) {
 
 	t.Run("wire htmx keeps composite trigger and form encoding", func(t *testing.T) {
 		t.Parallel()
+
 		props := FilterBarProps{
 			Wire:   &wire.Action{Method: wire.MethodGet, URL: "/api/users", Target: "#results"},
 			Target: "#results",
@@ -137,6 +144,7 @@ func TestFilterBarWiring(t *testing.T) {
 
 	t.Run("wire datastar renders change event with form content type and no htmx attrs", func(t *testing.T) {
 		t.Parallel()
+
 		props := FilterBarProps{
 			Wire: &wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodGet, URL: "/api/users"},
 		}
@@ -149,6 +157,7 @@ func TestFilterBarWiring(t *testing.T) {
 
 	t.Run("wire with empty url stays inert", func(t *testing.T) {
 		t.Parallel()
+
 		props := FilterBarProps{Wire: &wire.Action{}}
 		output := utils.Render(t, FilterBar(props))
 		utils.AssertNotContains(t, output, "hx-get")
@@ -157,6 +166,7 @@ func TestFilterBarWiring(t *testing.T) {
 
 	t.Run("wire no push url opt-out", func(t *testing.T) {
 		t.Parallel()
+
 		props := FilterBarProps{
 			Wire:      &wire.Action{Method: wire.MethodGet, URL: "/api/users"},
 			NoPushURL: true,
@@ -167,12 +177,15 @@ func TestFilterBarWiring(t *testing.T) {
 
 	t.Run("consumer wire action is never mutated", func(t *testing.T) {
 		t.Parallel()
+
 		action := &wire.Action{Method: wire.MethodGet, URL: "/api/users"}
 		props := FilterBarProps{Wire: action}
+
 		_ = utils.Render(t, FilterBar(props))
 		if action.Event != wire.EventUnspecified {
 			t.Errorf("consumer action Event mutated to %q", action.Event)
 		}
+
 		if action.ContentType != wire.ContentTypeUnspecified {
 			t.Errorf("consumer action ContentType mutated to %q", action.ContentType)
 		}
@@ -195,6 +208,7 @@ func TestFilterBarIsHTMX(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := filterBarIsHTMX(tt.props); got != tt.want {
 				t.Errorf("filterBarIsHTMX() = %v, want %v", got, tt.want)
 			}
