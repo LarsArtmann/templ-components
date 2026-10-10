@@ -36,7 +36,7 @@ type SegmentBarProps struct {
 
 // DefaultSegmentBarProps returns sensible defaults.
 func DefaultSegmentBarProps() SegmentBarProps {
-	return SegmentBarProps{} //nolint:exhaustruct // no non-zero defaults
+	return SegmentBarProps{} //nolint:exhaustruct_v5 // no non-zero defaults
 }
 
 //nolint:gochecknoglobals // Package-level lookup table: the shared chart palette as background class pairs

@@ -5,6 +5,7 @@
 package forms
 
 import (
+	"maps"
 	"net/url"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -36,7 +37,7 @@ type FilterChipsProps struct {
 
 // DefaultFilterChipsProps returns sensible defaults.
 func DefaultFilterChipsProps() FilterChipsProps {
-	return FilterChipsProps{} //nolint:exhaustruct // no non-zero defaults
+	return FilterChipsProps{} //nolint:exhaustruct_v5 // no non-zero defaults
 }
 
 // FilterToggleHref builds a chip href that sets key=value on basePath,
@@ -47,9 +48,7 @@ func DefaultFilterChipsProps() FilterChipsProps {
 //	href := forms.FilterToggleHref("/history", r.URL.Query(), "source", "upload")
 func FilterToggleHref(basePath string, params url.Values, key, value string) string {
 	values := make(url.Values, len(params))
-	for k, v := range params {
-		values[k] = v
-	}
+	maps.Copy(values, params)
 
 	if value == "" {
 		values.Del(key)

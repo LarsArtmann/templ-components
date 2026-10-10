@@ -286,7 +286,7 @@ func Lightbox(props LightboxProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<figcaption data-tc-lightbox-caption class=\"text-sm text-gray-200\"></figcaption></figure><div class=\"flex items-center gap-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<figcaption data-tc-lightbox-caption class=\"text-sm text-gray-200 dark:text-gray-200\"></figcaption></figure><div class=\"flex items-center gap-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

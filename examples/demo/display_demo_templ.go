@@ -1804,9 +1804,9 @@ display.Card(display.CardProps{
 			Thumbnails:   true,
 			TriggerLabel: "View images",
 			Images: []display.LightboxImage{
-				{Src: "https://picsum.photos/seed/tc-lb-1/800/500", Alt: "Mountain landscape", Caption: "Mountain landscape"},
-				{Src: "https://picsum.photos/seed/tc-lb-2/800/500", Alt: "City at night", Caption: "City at night"},
-				{Src: "https://picsum.photos/seed/tc-lb-3/800/500", Alt: "Forest path", Caption: "Forest path"},
+				{Src: "https://picsum.photos/seed/lb1/800/500", Alt: "Mountain landscape", Caption: "Mountain landscape"},
+				{Src: "https://picsum.photos/seed/lb2/800/500", Alt: "City at night", Caption: "City at night"},
+				{Src: "https://picsum.photos/seed/lb3/800/500", Alt: "Forest path", Caption: "Forest path"},
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
