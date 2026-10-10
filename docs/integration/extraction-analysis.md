@@ -1,7 +1,8 @@
 # Component Extraction Analysis: Four Consumer Projects
 
-**Date:** 2026-10-10 · **Status:** verified findings, execution in progress
-(**source of truth:** `docs/planning/2026-10-10_06-06_extraction-backlog-pareto-master-plan.md`, TODO_LIST #388–400)
+**Date:** 2026-10-10 · **Status:** all library-side builds shipped
+(2026-10-10); consumer adoption waves X1/X2 pending (**source of truth:**
+`docs/planning/2026-10-10_06-06_extraction-backlog-pareto-master-plan.md`, TODO_LIST #388–400)
 
 This document is the consumer-side runbook produced by the four-project
 extraction analysis (DiscordSync, mr-sync, nsfw-classifier, dnsblockd). Every
@@ -24,9 +25,9 @@ Hand-rolled consumer code that a library component now (or soon) replaces.
 | Hand-rolled (source) | Library replacement | Status |
 | --- | --- | --- |
 | `commandLine`/`copyBtn` (`cmd/mr-sync/...` shape mirrored here via `copyIDRow`, `filters.templ:363–383`) | `display.CodeBlock` (CompactID variant) | ✅ shipped |
-| `filterForm`/`filterSelect`/`selectOptionsWithCurrent`/`selectOptionsFromItems` (`filters.templ:391–434`) | `forms.FilterBar` + `forms.Select` | 🔨 C2 (in plan) |
-| `listTableWithHeader` sticky thead | `Table.StickyHeader` flag | 🔨 C9 |
-| `imageThumbnail` blur-up placeholders | `ImageProps` blur-up field | 🔨 C11 |
+| `filterForm`/`filterSelect`/`selectOptionsWithCurrent`/`selectOptionsFromItems` (`filters.templ:391–434`) | `forms.FilterBar` + `forms.Select` | ✅ shipped — adoption pending (X2) |
+| `listTableWithHeader` sticky thead | `Table.StickyHeader` flag | ✅ shipped — adoption pending |
+| `imageThumbnail` blur-up placeholders | `ImageProps.Placeholder` (zero-JS blur-up) | ✅ shipped — adoption pending |
 | Hand-rolled charts | `display.LineChart`/`AreaChart`/`PieChart` | X2 (post-ADR-0044) |
 | Vendor color bridge (`input.css:184` — comment admits overriding library blue → brand purple) | `--color-accent-*` tokens (ADR-0044) | decided; T1 |
 | Vendor-dir `@source` (`input.css:5`) — **inert under Tailwind v4.3: `vendor/` is gitignored** | `templates/templ-components-classes.txt` inventory (ADR-0045) | decided; T2 |
@@ -48,10 +49,10 @@ Hand-rolled consumer code that a library component now (or soon) replaces.
 
 | Hand-rolled (source) | Library replacement | Status |
 | --- | --- | --- |
-| `historyChip` zero-JS filter chips (`internal/server/views/history_page.templ:105`) | `forms.FilterChips` | 🔨 C3 |
-| Preset/duration buttons | `forms.SegmentedControl` | 🔨 C6 |
-| Evidence proportion bars | `display.SegmentBar` | 🔨 C7 |
-| Image viewer | `display.Lightbox` | 🔨 C8 |
+| `historyChip` zero-JS filter chips (`internal/server/views/history_page.templ:105`) | `forms.FilterChips` | ✅ shipped — adoption pending |
+| Preset/duration buttons | `forms.SegmentedControl` | ✅ shipped — adoption pending |
+| Evidence proportion bars | `display.SegmentBar` | ✅ shipped — adoption pending |
+| Image viewer | `display.Lightbox` | ✅ shipped — adoption pending |
 | `scorePercent`/`formatDuration(ms)` (`views/types.go:176–190`) | `format.Percent`/`format.CompactDuration` | ✅ shipped |
 | `third_party/css-scan` mirror + `scripts/sync-css-scan-sources.sh` | class inventory (ADR-0045) | decided; T2 |
 | SurfaceNav | library `Nav` (determinism check first) | X2 |
@@ -62,9 +63,9 @@ Hand-rolled consumer code that a library component now (or soon) replaces.
 
 | Hand-rolled (source) | Library replacement | Status |
 | --- | --- | --- |
-| Honesty-ladder state duplication — 9 `art-dupl:accept` markers across 4 view files (e.g. `devices_page.templ:177–183`) | `display.DataState` | 🔨 C5 |
-| Staleness/live pills | `display.StatusDot`/LivePill | 🔨 C4 |
-| 4 local status-badge mappers | `StatusBadgeWith` injectable mapper | 🔨 C10 |
+| Honesty-ladder state duplication — 9 `art-dupl:accept` markers across 4 view files (e.g. `devices_page.templ:177–183`) | `display.DataState` | ✅ shipped — adoption pending |
+| Staleness/live pills | `display.StatusDot`/LivePill | ✅ shipped — adoption pending |
+| 4 local status-badge mappers | `StatusBadgeWith` injectable mapper | ✅ shipped — adoption pending |
 | Stale-session/retry meta tags (`dashboard_login.templ:63`, `allow.templ:21`) | `layout.MetaRefresh` | ✅ shipped |
 | `scripts/gen-library-classes.sh` + `library-classes.txt` | class inventory (ADR-0045 — dnsblockd's mechanism, library-owned) | decided; T2 |
 | Hand-rolled dashboard sidebar | `navigation.SidebarNav` | X1 |
@@ -94,12 +95,11 @@ release-generated class inventory file; consumers copy it with one line and
 
 ### Library-side waves (from the same analysis)
 
-- **Shipped:** `utils/format` (six helpers), `display.CodeBlock`,
-  `layout.MetaRefresh`.
-- **In flight (C-wave):** FilterBar, DataState, StatusDot, FilterChips,
-  SegmentedControl, SegmentBar, Lightbox, StickyHeader, StatusBadgeWith,
-  Image blur-up.
-- **Deferred:** T1/T2 implementations (version-gated per the ADRs), consumer
+- **Shipped (2026-10-10):** `utils/format` (six helpers), `display.CodeBlock`,
+  `layout.MetaRefresh`, and the full C-wave — FilterBar, DataState, StatusDot,
+  LivePill, FilterChips, SegmentedControl, SegmentBar, Lightbox,
+  `Table.StickyHeader`, `StatusBadgeWith`, `Image.Placeholder` blur-up.
+- **Pending:** T1/T2 implementations (version-gated per the ADRs), consumer
   migrations X1/X2 (each repo runs its own verify ritual).
 
 ## Using this document
