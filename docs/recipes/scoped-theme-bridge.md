@@ -6,11 +6,11 @@
 
 ## The three answers, in order of preference
 
-| Need | Mechanism | Status |
-| --- | --- | --- |
+| Need                                                        | Mechanism                                                                                                                         | Status                                        |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
 | Re-skin semantics globally (primary/danger/success/warning) | [Semantic token layer](../theming.md) (`templates/templ-components-theme.css`, ADR-0008) — override `--color-tc-primary-600` etc. | **Shipped** — shade-complete since 2026-10-10 |
-| Re-skin the library accent ONLY, every shade, one block | `--color-accent-*` family (ADR-0044) — components emit `accent-*` after the v2 class swap | Decided; ships with v2 |
-| Scoped remap TODAY, pre-v2, without the token layer | Attribute-selector bridge (this recipe) | Works, fragile — read the failure modes |
+| Re-skin the library accent ONLY, every shade, one block     | `--color-accent-*` family (ADR-0044) — components emit `accent-*` after the v2 class swap                                         | Decided; ships with v2                        |
+| Scoped remap TODAY, pre-v2, without the token layer         | Attribute-selector bridge (this recipe)                                                                                           | Works, fragile — read the failure modes       |
 
 ## The bridge pattern (what consumers actually do)
 

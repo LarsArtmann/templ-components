@@ -21,46 +21,46 @@ trap 'rm -f "$tmp"' EXIT
 # Deliberately excluded: examples/, cmd/, website/, visualtest/, docs/,
 # scripts/, tests (*_test.go), and generated files (*_templ.go).
 dirs=(
-  display
-  feedback
-  forms
-  layout
-  navigation
-  recipes
-  utils
-  icons
-  errorpage
-  charts/echarts
-  htmx
-  datastar
+	display
+	feedback
+	forms
+	layout
+	navigation
+	recipes
+	utils
+	icons
+	errorpage
+	charts/echarts
+	htmx
+	datastar
 )
 
 {
-  echo "# templ-components class inventory — GENERATED, do not edit."
-  echo "# Regenerate: scripts/gen-class-inventory.sh (release.sh runs it; the"
-  echo "# freshness guard utils.TestClassInventoryFreshness fails on drift)."
-  echo "# Purpose (ADR-0045): a tracked, environment-independent scan corpus."
-  echo "# Copy next to your app.css and add: @source \"./templ-components-classes.txt\";"
-} > "$tmp"
+	echo "# templ-components class inventory — GENERATED, do not edit."
+	echo "# Regenerate: scripts/gen-class-inventory.sh (release.sh runs it; the"
+	echo "# freshness guard utils.TestClassInventoryFreshness fails on drift)."
+	echo "# Purpose (ADR-0045): a tracked, environment-independent scan corpus."
+	echo "# Copy next to your app.css and add: @source \"./templ-components-classes.txt\";"
+} >"$tmp"
 
 for dir in "${dirs[@]}"; do
-  # shellcheck disable=SC2044
-  for file in $(cd "$root" && find "$dir" -type f \( -name '*.templ' -o -name '*.go' \) \
-    ! -name '*_templ.go' ! -name '*_test.go' | LC_ALL=C sort); do
-    {
-      echo
-      echo "# ── $file ─────────────────────────────────────────────"
-      cat "$root/$file"
-    } >> "$tmp"
-  done
+	# shellcheck disable=SC2044
+	for file in $(cd "$root" && find "$dir" -type f \( -name '*.templ' -o -name '*.go' \) \
+		! -name '*_templ.go' ! -name '*_test.go' | LC_ALL=C sort); do
+		{
+			echo
+			echo "# ── $file ─────────────────────────────────────────────"
+			cat "$root/$file"
+		} >>"$tmp"
+	done
 done
 
 if [[ ! -s "$tmp" ]]; then
-  echo "gen-class-inventory: generated EMPTY inventory — refusing to write" >&2
-  exit 1
+	echo "gen-class-inventory: generated EMPTY inventory — refusing to write" >&2
+	exit 1
 fi
 
 # Atomic replace: never leave a truncated inventory behind.
 mv "$tmp" "$out"
 trap - EXIT
-echo "class inventory: $out ($(wc -l < "$out") lines)"
+echo "class inventory: $out ($(wc -l <"$out") lines)"

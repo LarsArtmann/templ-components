@@ -22,53 +22,53 @@ Hand-rolled consumer code that a library component now (or soon) replaces.
 
 ### DiscordSync (`~/projects/DiscordSync`)
 
-| Hand-rolled (source) | Library replacement | Status |
-| --- | --- | --- |
-| `commandLine`/`copyBtn` (`cmd/mr-sync/...` shape mirrored here via `copyIDRow`, `filters.templ:363–383`) | `display.CodeBlock` (CompactID variant) | ✅ shipped |
-| `filterForm`/`filterSelect`/`selectOptionsWithCurrent`/`selectOptionsFromItems` (`filters.templ:391–434`) | `forms.FilterBar` + `forms.Select` | ✅ shipped — adoption pending (X2) |
-| `listTableWithHeader` sticky thead | `Table.StickyHeader` flag | ✅ shipped — adoption pending |
-| `imageThumbnail` blur-up placeholders | `ImageProps.Placeholder` (zero-JS blur-up) | ✅ shipped — adoption pending |
-| Hand-rolled charts | `display.LineChart`/`AreaChart`/`PieChart` | X2 (post-ADR-0044) |
-| Vendor color bridge (`input.css:184` — comment admits overriding library blue → brand purple) | `--color-accent-*` tokens (ADR-0044) | decided; T1 |
-| Vendor-dir `@source` (`input.css:5`) — **inert under Tailwind v4.3: `vendor/` is gitignored** | `templates/templ-components-classes.txt` inventory (ADR-0045) | decided; T2 |
+| Hand-rolled (source)                                                                                      | Library replacement                                           | Status                             |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------- |
+| `commandLine`/`copyBtn` (`cmd/mr-sync/...` shape mirrored here via `copyIDRow`, `filters.templ:363–383`)  | `display.CodeBlock` (CompactID variant)                       | ✅ shipped                         |
+| `filterForm`/`filterSelect`/`selectOptionsWithCurrent`/`selectOptionsFromItems` (`filters.templ:391–434`) | `forms.FilterBar` + `forms.Select`                            | ✅ shipped — adoption pending (X2) |
+| `listTableWithHeader` sticky thead                                                                        | `Table.StickyHeader` flag                                     | ✅ shipped — adoption pending      |
+| `imageThumbnail` blur-up placeholders                                                                     | `ImageProps.Placeholder` (zero-JS blur-up)                    | ✅ shipped — adoption pending      |
+| Hand-rolled charts                                                                                        | `display.LineChart`/`AreaChart`/`PieChart`                    | X2 (post-ADR-0044)                 |
+| Vendor color bridge (`input.css:184` — comment admits overriding library blue → brand purple)             | `--color-accent-*` tokens (ADR-0044)                          | decided; T1                        |
+| Vendor-dir `@source` (`input.css:5`) — **inert under Tailwind v4.3: `vendor/` is gitignored**             | `templates/templ-components-classes.txt` inventory (ADR-0045) | decided; T2                        |
 
 **Pin:** templ-components v1.19.4 (stale).
 
 ### mr-sync (`/home/lars/projects/mr-sync`)
 
-| Hand-rolled (source) | Library replacement | Status |
-| --- | --- | --- |
-| `commandLine`/`copyBtn` (`cmd/mr-sync/dashboard_components.templ:11`) | `display.CodeBlock` | ✅ shipped |
-| `cardValueBlock`/`statCard` | `display.StatCard` | migration ⫱ owner |
-| `fetchErrorBanner` | `feedback.Alert` / `errorpage` family | migration ⫱ owner |
-| Hand-rolled semantic CSS dashboard (no Tailwind/HTMX) | full library adoption | **owner-gated** — recommendation: migrate (small dashboard, near-total duplication); final call is the owner's, like PapDashboard in adoption survey #156 |
+| Hand-rolled (source)                                                  | Library replacement                   | Status                                                                                                                                                    |
+| --------------------------------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `commandLine`/`copyBtn` (`cmd/mr-sync/dashboard_components.templ:11`) | `display.CodeBlock`                   | ✅ shipped                                                                                                                                                |
+| `cardValueBlock`/`statCard`                                           | `display.StatCard`                    | migration ⫱ owner                                                                                                                                         |
+| `fetchErrorBanner`                                                    | `feedback.Alert` / `errorpage` family | migration ⫱ owner                                                                                                                                         |
+| Hand-rolled semantic CSS dashboard (no Tailwind/HTMX)                 | full library adoption                 | **owner-gated** — recommendation: migrate (small dashboard, near-total duplication); final call is the owner's, like PapDashboard in adoption survey #156 |
 
 **Pin:** not a consumer yet (templ + custom CSS only).
 
 ### nsfw-classifier (`/home/lars/projects/nsfw-classifier`)
 
-| Hand-rolled (source) | Library replacement | Status |
-| --- | --- | --- |
-| `historyChip` zero-JS filter chips (`internal/server/views/history_page.templ:105`) | `forms.FilterChips` | ✅ shipped — adoption pending |
-| Preset/duration buttons | `forms.SegmentedControl` | ✅ shipped — adoption pending |
-| Evidence proportion bars | `display.SegmentBar` | ✅ shipped — adoption pending |
-| Image viewer | `display.Lightbox` | ✅ shipped — adoption pending |
-| `scorePercent`/`formatDuration(ms)` (`views/types.go:176–190`) | `format.Percent`/`format.CompactDuration` | ✅ shipped |
-| `third_party/css-scan` mirror + `scripts/sync-css-scan-sources.sh` | class inventory (ADR-0045) | decided; T2 |
-| SurfaceNav | library `Nav` (determinism check first) | X2 |
+| Hand-rolled (source)                                                                | Library replacement                       | Status                        |
+| ----------------------------------------------------------------------------------- | ----------------------------------------- | ----------------------------- |
+| `historyChip` zero-JS filter chips (`internal/server/views/history_page.templ:105`) | `forms.FilterChips`                       | ✅ shipped — adoption pending |
+| Preset/duration buttons                                                             | `forms.SegmentedControl`                  | ✅ shipped — adoption pending |
+| Evidence proportion bars                                                            | `display.SegmentBar`                      | ✅ shipped — adoption pending |
+| Image viewer                                                                        | `display.Lightbox`                        | ✅ shipped — adoption pending |
+| `scorePercent`/`formatDuration(ms)` (`views/types.go:176–190`)                      | `format.Percent`/`format.CompactDuration` | ✅ shipped                    |
+| `third_party/css-scan` mirror + `scripts/sync-css-scan-sources.sh`                  | class inventory (ADR-0045)                | decided; T2                   |
+| SurfaceNav                                                                          | library `Nav` (determinism check first)   | X2                            |
 
 **Pin:** v1.21.0.
 
 ### dnsblockd (`/home/lars/projects/dnsblockd`)
 
-| Hand-rolled (source) | Library replacement | Status |
-| --- | --- | --- |
-| Honesty-ladder state duplication — 9 `art-dupl:accept` markers across 4 view files (e.g. `devices_page.templ:177–183`) | `display.DataState` | ✅ shipped — adoption pending |
-| Staleness/live pills | `display.StatusDot`/LivePill | ✅ shipped — adoption pending |
-| 4 local status-badge mappers | `StatusBadgeWith` injectable mapper | ✅ shipped — adoption pending |
-| Stale-session/retry meta tags (`dashboard_login.templ:63`, `allow.templ:21`) | `layout.MetaRefresh` | ✅ shipped |
-| `scripts/gen-library-classes.sh` + `library-classes.txt` | class inventory (ADR-0045 — dnsblockd's mechanism, library-owned) | decided; T2 |
-| Hand-rolled dashboard sidebar | `navigation.SidebarNav` | X1 |
+| Hand-rolled (source)                                                                                                   | Library replacement                                               | Status                        |
+| ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------- |
+| Honesty-ladder state duplication — 9 `art-dupl:accept` markers across 4 view files (e.g. `devices_page.templ:177–183`) | `display.DataState`                                               | ✅ shipped — adoption pending |
+| Staleness/live pills                                                                                                   | `display.StatusDot`/LivePill                                      | ✅ shipped — adoption pending |
+| 4 local status-badge mappers                                                                                           | `StatusBadgeWith` injectable mapper                               | ✅ shipped — adoption pending |
+| Stale-session/retry meta tags (`dashboard_login.templ:63`, `allow.templ:21`)                                           | `layout.MetaRefresh`                                              | ✅ shipped                    |
+| `scripts/gen-library-classes.sh` + `library-classes.txt`                                                               | class inventory (ADR-0045 — dnsblockd's mechanism, library-owned) | decided; T2                   |
+| Hand-rolled dashboard sidebar                                                                                          | `navigation.SidebarNav`                                           | X1                            |
 
 **Pin:** v1.19.4 (stale).
 

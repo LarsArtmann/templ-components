@@ -20,11 +20,11 @@ the Go module cache is outside every consumer's scan root. Each of three
 audited consumers solved this independently (evidence E7, verified at source
 2026-10-10):
 
-| Consumer | Mechanism | Source |
-| --- | --- | --- |
-| DiscordSync | vendor-dir `@source`: `@source "../../../vendor/github.com/larsartmann/templ-components/**/*.templ"` | `internal/web/static/input.css:5` |
-| nsfw-classifier | curated per-file mirror (`third_party/css-scan/templ-components`) + `scripts/sync-css-scan-sources.sh` (resolves every sub-module from the build list via `go list -m`, copies from module cache, prunes) | `scripts/sync-css-scan-sources.sh` |
-| dnsblockd | concatenated class inventory: `scripts/gen-library-classes.sh` concatenates library sources into ONE tracked `library-classes.txt`, `@source "."`-scanned next to `app.css`; atomic write + self-vendor via `go mod vendor -o` | `scripts/gen-library-classes.sh`, `internal/server/views/library-classes.txt` |
+| Consumer        | Mechanism                                                                                                                                                                                                                      | Source                                                                        |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| DiscordSync     | vendor-dir `@source`: `@source "../../../vendor/github.com/larsartmann/templ-components/**/*.templ"`                                                                                                                           | `internal/web/static/input.css:5`                                             |
+| nsfw-classifier | curated per-file mirror (`third_party/css-scan/templ-components`) + `scripts/sync-css-scan-sources.sh` (resolves every sub-module from the build list via `go list -m`, copies from module cache, prunes)                      | `scripts/sync-css-scan-sources.sh`                                            |
+| dnsblockd       | concatenated class inventory: `scripts/gen-library-classes.sh` concatenates library sources into ONE tracked `library-classes.txt`, `@source "."`-scanned next to `app.css`; atomic write + self-vendor via `go mod vendor -o` | `scripts/gen-library-classes.sh`, `internal/server/views/library-classes.txt` |
 
 ### The mechanism landscape is worse than "three ways" — the default-looking one is broken
 
@@ -147,10 +147,10 @@ compiler the single source of CSS truth. Revisit only alongside a future
 
 ## Verification of the decision against consumer evidence
 
-| Consumer pain (source) | Decision answer |
-| --- | --- |
-| dnsblockd: "Tailwind v4.3 never scans .gitignore'd paths… different CSS depending on the environment" | Tracked plain file — no gitignore semantics anywhere in the path |
-| dnsblockd: atomicity + staleness gates (F47) | Library-side generation + freshness guard centralizes what each consumer currently re-builds |
-| nsfw: "no vendor/ directory, no Go toolchain, no module cache" in the CSS pipeline | Copy-then-scan; only the copy step touches Go |
-| nsfw: multi-module cache stripping | Generator walks all 7 modules once, centrally |
-| DiscordSync: inert vendor `@source` under current Tailwind (gitignored `vendor/`) | Inventory default makes the fragile line unnecessary; tracked-source variant documented with its requirement stated |
+| Consumer pain (source)                                                                                | Decision answer                                                                                                     |
+| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| dnsblockd: "Tailwind v4.3 never scans .gitignore'd paths… different CSS depending on the environment" | Tracked plain file — no gitignore semantics anywhere in the path                                                    |
+| dnsblockd: atomicity + staleness gates (F47)                                                          | Library-side generation + freshness guard centralizes what each consumer currently re-builds                        |
+| nsfw: "no vendor/ directory, no Go toolchain, no module cache" in the CSS pipeline                    | Copy-then-scan; only the copy step touches Go                                                                       |
+| nsfw: multi-module cache stripping                                                                    | Generator walks all 7 modules once, centrally                                                                       |
+| DiscordSync: inert vendor `@source` under current Tailwind (gitignored `vendor/`)                     | Inventory default makes the fragile line unnecessary; tracked-source variant documented with its requirement stated |

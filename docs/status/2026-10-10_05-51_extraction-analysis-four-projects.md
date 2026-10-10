@@ -45,7 +45,7 @@ no library files were changed. This report reviews that analysis run honestly.
    client-side-JS filtering, not HTMX auto-submit; nsfw-classifier is link chips). The table
    overstated this nuance.
 3. **Prior-art docs** — DiscordSync's own `docs/integration/templ-components-cross-project-analysis.md`
-   + `templ-components-migration-guide.md` were cited secondhand via the agent; never read directly.
+   - `templ-components-migration-guide.md` were cited secondhand via the agent; never read directly.
 
 ## c) NOT STARTED
 
@@ -76,10 +76,10 @@ failures are judgment-level:
 3. **Missed a whole architectural finding in the delivered answer:** consumers maintain
    **CSS-scan mirrors** of library `.templ` sources (nsfw-classifier's
    `third_party/_css-scan/` + sync script per its ADR 0006; dnsblockd's `library-classes.txt`
-   + regen script) because their Tailwind builds must see the library's class literals. Every
-   extracted component deepens this friction — the delivery layer (shipped class inventory or
-   pre-compiled component CSS) belongs in the same conversation as new components. The agents
-   reported it; I dropped it.
+   - regen script) because their Tailwind builds must see the library's class literals. Every
+     extracted component deepens this friction — the delivery layer (shipped class inventory or
+     pre-compiled component CSS) belongs in the same conversation as new components. The agents
+     reported it; I dropped it.
 
 ## e) WHAT WE SHOULD IMPROVE
 
@@ -96,6 +96,7 @@ failures are judgment-level:
 ## f) NEXT UP TO 50 (grounded in this session, priority order)
 
 **Record & verify (do first, ~1h):**
+
 1. Source-verify mr-sync `commandLine` + DiscordSync `copyIDRow` structure (CodeBlock gate evidence)
 2. Source-verify dnsblockd DataState 6× duplication + DiscordSync vendor CSS override
 3. Write #328 gate-flip evidence into TODO_LIST.md
@@ -109,7 +110,7 @@ failures are judgment-level:
 **Architecture (owner-gated):**
 10. ADR: semantic `--tc-*` theming tokens (deletes 3 consumer color-bridge hacks)
 11. ADR/investigation: CSS delivery for consumers (kill `third_party/_css-scan` mirrors +
-    `library-classes.txt` regen scripts; ship class inventory or compiled component CSS)
+`library-classes.txt` regen scripts; ship class inventory or compiled component CSS)
 12. Decide library stance on zero-JS filter pattern (chips/links) vs HTMX-only FilterBar
 
 **Component builds (each = full ladder: spec → props/enum/IsValid → goldens → a11y → e2e →
@@ -117,7 +118,7 @@ docs-count bumps → `tc` mirror → CHANGELOG):**
 13. `forms.FilterBar` (sticky auto-submit composition; Reset; noscript fallback)
 14. `forms.FilterChips` (link/query-param chips, zero JS)
 15. `utils/format` — `FormatBytes`, `FormatDuration`, `FormatPercent`, `StringOrDash`,
-     `FormatCompactCount` (table-driven; NO go-humanize dep — budget closed)
+`FormatCompactCount` (table-driven; NO go-humanize dep — budget closed)
 16. `display.CodeBlock` (per #328: label + integrated CopyButton; compact ID variant)
 17. `display.StatusDot` / LivePill (pulse, latency/uptime sub, dark-mode compliant)
 18. `display.DataState` (disabled → unavailable → empty → data ladder)
@@ -147,7 +148,7 @@ docs-count bumps → `tc` mirror → CHANGELOG):**
 38. Tabulate per-project adoption map (hand-rolled → library component) into the integration doc
 39. Add "second consumer found" tracking convention to #217 so future sessions record evidence
 40. Consider a `docs/consumers/` page listing known consumers + their pinned versions
-    (v1.19.4 ×2, v1.21.0 ×1 discovered this session — stale pins visible)
+(v1.19.4 ×2, v1.21.0 ×1 discovered this session — stale pins visible)
 
 ## g) QUESTIONS ONLY YOU CAN ANSWER
 

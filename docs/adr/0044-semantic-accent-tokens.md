@@ -18,24 +18,24 @@ in v1.x immediately. New components designed from today are **token-ready**
 The library hardcodes Tailwind `blue-*` as its primary/brand accent. Inventory
 (2026-10-10, all `.templ`/`.go` component sources, `dark:` pairs included):
 
-| Package    | Accent sites | Shades used                |
-| ---------- | ------------ | -------------------------- |
-| display    | 67           | 50–900 (all ten)           |
-| forms      | 58           | 50–900                     |
-| feedback   | 28           | 300–700                    |
-| layout     | 8            | 400–700                    |
-| navigation | 23           | 400–900                    |
-| errorpage  | 23           | 400–900                    |
-| recipes    | 5            | 500–600                    |
+| Package    | Accent sites | Shades used                            |
+| ---------- | ------------ | -------------------------------------- |
+| display    | 67           | 50–900 (all ten)                       |
+| forms      | 58           | 50–900                                 |
+| feedback   | 28           | 300–700                                |
+| layout     | 8            | 400–700                                |
+| navigation | 23           | 400–900                                |
+| errorpage  | 23           | 400–900                                |
+| recipes    | 5            | 500–600                                |
 | **Total**  | **212**      | 50,100,200,300,400,500,600,700,800,900 |
 
 Three of four audited consumers ship CSS override bridges because of this
 (verified at source, evidence E4 of the extraction analysis):
 
 - **DiscordSync** (`internal/web/static/input.css:184`): the comment admits it
-  verbatim — *"The templ-components library hardcodes blue for Primary
+  verbatim — _"The templ-components library hardcodes blue for Primary
   badges/buttons and yellow for Warning badges. These overrides remap them to
-  DiscordSync's brand purple and status-amber tokens."* The bridge uses
+  DiscordSync's brand purple and status-amber tokens."_ The bridge uses
   `[class~="bg-blue-100"][class~="text-blue-800"]` attribute selectors to catch
   vendor Badge tints while leaving hand-rolled elements alone.
 - **dnsblockd** and **nsfw-classifier** ship equivalent bridges.
@@ -44,23 +44,23 @@ Three of four audited consumers ship CSS override bridges because of this
 
 1. **`@theme` palette remap** (`templ-components-theme.css` root example,
    `docs/recipes/theme-bridge.md`): override `--color-blue-600` → brand. Works,
-   documented — but is **global per color**: it also restyles every *consumer*
-  element that legitimately uses `blue-600` (info states, links, charts). This
-  collision is exactly why DiscordSync rejected it and hand-rolled attribute
+   documented — but is **global per color**: it also restyles every _consumer_
+   element that legitimately uses `blue-600` (info states, links, charts). This
+   collision is exactly why DiscordSync rejected it and hand-rolled attribute
    selectors instead.
 2. **ADR-0008 semantic alias layer** (`templates/templ-components-theme.css`,
-   opt-in import): aliases a *subset* of shades (`blue-500/600/700`, `red-600/700`,
+   opt-in import): aliases a _subset_ of shades (`blue-500/600/700`, `red-600/700`,
    `green-600`, `amber-500`) to `tc-*` semantic names. Two gaps: badge **tint
    shades** (`blue-100/800/50`, the exact sites DiscordSync bridges) are not
    aliased, and the underlying remap is still global-per-color once imported.
 3. **Attribute-selector bridges** (what consumers actually do): scoped, but
-   fragile — they encode the library's exact class *combinations* and silently
+   fragile — they encode the library's exact class _combinations_ and silently
    stop matching when a component's class set changes. Three consumers
    maintaining three copies of this is the pain signal.
 
-**The requirement the current model cannot express:** *remap the library's
+**The requirement the current model cannot express:** _remap the library's
 accent, scoped to library components only, across every shade the library uses,
-without a per-consumer CSS bridge.*
+without a per-consumer CSS bridge._
 
 ## Decision
 
@@ -108,7 +108,7 @@ regexes to `accent-*`.
 ### 3. Semantic feedback colors stay palette classes
 
 `success`/`danger`/`warning`/`info` keep their Tailwind palette classes
-(green/red/amber/blue). They are *semantic*, rarely rebranded, and ADR-0008's
+(green/red/amber/blue). They are _semantic_, rarely rebranded, and ADR-0008's
 opt-in layer already owns their override path — **extended in Phase 1 to cover
 every library-used shade** (adding at minimum `blue-50/100/200/300/400/800/900`,
 `amber-300/400/700`, and the red/green tint shades badges use), so the layer
@@ -118,7 +118,7 @@ becomes the complete opt-in answer for consumers who want to shift semantics.
 
 - **Phase 1 (v1.x, non-breaking, immediate):** complete the ADR-0008 shade
   coverage + add `docs/recipes/scoped-theme-bridge.md` documenting the
-  attribute-selector pattern for consumers who need scoped remap *today*.
+  attribute-selector pattern for consumers who need scoped remap _today_.
   Delivered with normal minor releases.
 - **Phase 2 (v2.0, breaking, T1):** the class swap. Emitted class names change,
   so consumers targeting `bg-blue-600` in CSS/tests and the ADR-0008 alias
@@ -134,6 +134,7 @@ becomes the complete opt-in answer for consumers who want to shift semantics.
 New components added between this decision and T1 MUST NOT introduce new
 hardcoded `blue-*` accent sites. They use the current `blue-*` classes for
 consistency with shipped siblings, but their accent usage MUST be:
+
 - confined to shades already in the library's used set (50–900), and
 - documented in the component's CHANGELOG entry as accent-axis usage,
 
@@ -142,12 +143,12 @@ added post-T1 emit `accent-*` directly.
 
 ## Migration options considered
 
-| Option | Scoped to library | All shades | No consumer bridge | Breaking | Verdict |
-| ------ | ----------------- | ---------- | ------------------ | -------- | ------- |
-| A. Status quo + document the attribute bridge recipe | ✅ | ✅ | ❌ (every consumer re-derives fragile selectors) | No | Rejected as the answer; ships as Phase 1 docs because it is what consumers do today |
-| B. Complete ADR-0008 alias layer only | ❌ (global per color) | ✅ after Phase 1 | ❌ (import + override still collides with own-palette use) | No | Partial answer; folded into Phase 1 |
-| C. Library emits `accent-*` family | ✅ | ✅ | ✅ (one `@theme` override block) | Yes (class names) — v2 | **Chosen (Phase 2 / T1)** |
-| D. `Variant`/`Color` props on every component | ✅ | ✅ | ❌ (Go-side config per component; defeats the CSS-variable model) | API churn | Rejected — contradicts the standing theming decision (see `docs/recipes/theme-bridge.md`) |
+| Option                                               | Scoped to library     | All shades       | No consumer bridge                                                | Breaking               | Verdict                                                                                   |
+| ---------------------------------------------------- | --------------------- | ---------------- | ----------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------- |
+| A. Status quo + document the attribute bridge recipe | ✅                    | ✅               | ❌ (every consumer re-derives fragile selectors)                  | No                     | Rejected as the answer; ships as Phase 1 docs because it is what consumers do today       |
+| B. Complete ADR-0008 alias layer only                | ❌ (global per color) | ✅ after Phase 1 | ❌ (import + override still collides with own-palette use)        | No                     | Partial answer; folded into Phase 1                                                       |
+| C. Library emits `accent-*` family                   | ✅                    | ✅               | ✅ (one `@theme` override block)                                  | Yes (class names) — v2 | **Chosen (Phase 2 / T1)**                                                                 |
+| D. `Variant`/`Color` props on every component        | ✅                    | ✅               | ❌ (Go-side config per component; defeats the CSS-variable model) | API churn              | Rejected — contradicts the standing theming decision (see `docs/recipes/theme-bridge.md`) |
 
 ## Consequences
 
@@ -171,9 +172,9 @@ added post-T1 emit `accent-*` directly.
 
 DiscordSync `input.css:184` asks for three things; the decided API answers each:
 
-| DiscordSync need (source) | API answer |
-| --- | --- |
-| Badge Primary tint `bg-blue-100 text-blue-800` → brand purple | `--color-accent-100`/`--color-accent-800` overrides (family covers every tint shade) |
-| Badge Primary dot `bg-blue-500` → brand | `--color-accent-500` override |
-| Warning yellow → status-amber | Phase 1 ADR-0008 completion: `--color-tc-warning` override now reaches `amber-300/400/700` tint shades too |
-| "narrow enough to leave hand-rolled elements alone" | Structural: `accent-*` classes exist ONLY on library components — scoping is guaranteed by construction, not by selector specificity |
+| DiscordSync need (source)                                     | API answer                                                                                                                           |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Badge Primary tint `bg-blue-100 text-blue-800` → brand purple | `--color-accent-100`/`--color-accent-800` overrides (family covers every tint shade)                                                 |
+| Badge Primary dot `bg-blue-500` → brand                       | `--color-accent-500` override                                                                                                        |
+| Warning yellow → status-amber                                 | Phase 1 ADR-0008 completion: `--color-tc-warning` override now reaches `amber-300/400/700` tint shades too                           |
+| "narrow enough to leave hand-rolled elements alone"           | Structural: `accent-*` classes exist ONLY on library components — scoping is guaranteed by construction, not by selector specificity |

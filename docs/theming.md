@@ -41,12 +41,12 @@ as literals, so an unmodified import renders identically to stock Tailwind.
 **Available semantic tokens** (see `templates/templ-components-theme.css`
 for the full list):
 
-| Token family              | Default palette | Used by                                    |
-| ------------------------- | --------------- | ------------------------------------------ |
-| `--color-tc-primary-*`    | `blue-*` (50–950) | Buttons, links, active states, focus rings, badge primary tints |
-| `--color-tc-danger-*`     | `red-*` (50–950)  | Destructive buttons, errors, validation    |
-| `--color-tc-success-*`    | `green-*` (50–950) | Positive feedback, success toasts        |
-| `--color-tc-warning-*`    | `amber-*` + `yellow-*` (50–950) | Caution, warning badges/tints |
+| Token family           | Default palette                 | Used by                                                         |
+| ---------------------- | ------------------------------- | --------------------------------------------------------------- |
+| `--color-tc-primary-*` | `blue-*` (50–950)               | Buttons, links, active states, focus rings, badge primary tints |
+| `--color-tc-danger-*`  | `red-*` (50–950)                | Destructive buttons, errors, validation                         |
+| `--color-tc-success-*` | `green-*` (50–950)              | Positive feedback, success toasts                               |
+| `--color-tc-warning-*` | `amber-*` + `yellow-*` (50–950) | Caution, warning badges/tints                                   |
 
 Legacy named tokens (`--color-tc-primary`, `--color-tc-danger`, …) remain
 and resolve through the shade tokens (e.g. `tc-primary` ≡ `tc-primary-600`).

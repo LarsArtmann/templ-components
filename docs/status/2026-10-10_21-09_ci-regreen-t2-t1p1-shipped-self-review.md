@@ -138,9 +138,9 @@ Supersedes `2026-10-10_13-53_extraction-plan-execution-13-builds-ci-red-edges.md
    ci.yaml/ci-repro/pre-commit) — today the flake app has a silent module
    blind spot that only the full repro catches.
 2. **A render-environment fingerprint test:** hash chromium/font store paths
-   + emit them into visual-golden failure messages. Today's drift took ~1h to
-   characterize; a fingerprint would have answered "did the environment
-   move?" in one run.
+   - emit them into visual-golden failure messages. Today's drift took ~1h to
+     characterize; a fingerprint would have answered "did the environment
+     move?" in one run.
 3. **app.css trailing-newline instability (tailwindcss vs daemon/prettier)
    is a recurring flip-flop** — normalize in the `#css` app (strip final
    newline after compile) so compile output is canonical regardless of
@@ -274,5 +274,5 @@ Supersedes `2026-10-10_13-53_extraction-plan-execution-13-builds-ci-red-edges.md
 
 ---
 
-*Written 21:09 CEST, after the 17:25 VERDICT; tree clean at +42 ahead;
-waiting for instructions.*
+_Written 21:09 CEST, after the 17:25 VERDICT; tree clean at +42 ahead;
+waiting for instructions._
