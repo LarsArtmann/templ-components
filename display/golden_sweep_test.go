@@ -291,7 +291,10 @@ func TestGoldenSweepTableRowClass(t *testing.T) {
 			Headers: []string{"Plugin", "Status"},
 			Hover:   true,
 			Rows: []TableRow{
-				{Cells: []TableCell{{Text: "dns-sync"}, {Text: "installed"}}, Class: "hover:bg-blue-50 dark:hover:bg-blue-900/20"},
+				{
+					Cells: []TableCell{{Text: "dns-sync"}, {Text: "installed"}},
+					Class: "hover:bg-blue-50 dark:hover:bg-blue-900/20",
+				},
 			},
 		}))},
 	})
