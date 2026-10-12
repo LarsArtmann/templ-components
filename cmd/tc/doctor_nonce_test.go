@@ -8,6 +8,19 @@ import (
 	"testing"
 )
 
+// writeFile writes content to path, creating parent directories.
+func writeFile(t *testing.T, path, content string) {
+	t.Helper()
+
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatalf("mkdir %s: %v", filepath.Dir(path), err)
+	}
+
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+		t.Fatalf("write %s: %v", path, err)
+	}
+}
+
 // TestNonceConsumerDocsSync pins docs/nonce-consumers.md to the doctor's
 // nonceConsumers scan table: every table entry must appear in the docs and
 // vice versa. The docs are the human-readable twin of the scan list (F-058,
@@ -20,6 +33,7 @@ func TestNonceConsumerDocsSync(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read docs/nonce-consumers.md: %v", err)
 	}
+
 	docs := string(data)
 
 	if len(nonceConsumers) == 0 {
@@ -29,7 +43,10 @@ func TestNonceConsumerDocsSync(t *testing.T) {
 	for _, consumer := range nonceConsumers {
 		name := consumer.Qualified
 		if !strings.Contains(docs, "`"+name+"`") {
-			t.Errorf("nonceConsumers entry %q missing from docs/nonce-consumers.md — update both in the same commit", name)
+			t.Errorf(
+				"nonceConsumers entry %q missing from docs/nonce-consumers.md — update both in the same commit",
+				name,
+			)
 		}
 	}
 
@@ -43,13 +60,17 @@ func TestNonceConsumerDocsSync(t *testing.T) {
 			name == "Dismissible" || name == "Eager" || name == "Content-Security-Policy" {
 			continue
 		}
+
 		found := false
+
 		for _, consumer := range nonceConsumers {
 			if consumer.Qualified == name {
 				found = true
+
 				break
 			}
 		}
+
 		if !found {
 			t.Errorf("docs row %q is not in the nonceConsumers scan table — update both in the same commit", name)
 		}
@@ -74,10 +95,12 @@ templ page() {
 	@display.CopyButton(display.CopyButtonProps{ Nonce: "" })
 }
 `)
+
 		findings := scanNonceFindings(dir)
 		if len(findings) < 3 {
 			t.Fatalf("expected >=3 findings, got %d: %v", len(findings), findings)
 		}
+
 		for _, f := range findings {
 			if !strings.Contains(f, "page.templ:") {
 				t.Errorf("finding not file-anchored: %q", f)
@@ -95,6 +118,7 @@ templ page(nonce string) {
 	@layout.ThemeToggle("Toggle theme", nonce)
 }
 `)
+
 		if findings := scanNonceFindings(dir); len(findings) != 0 {
 			t.Fatalf("expected 0 findings, got %d: %v", len(findings), findings)
 		}
@@ -105,6 +129,7 @@ templ page(nonce string) {
 		dir := t.TempDir()
 		writeFile(t, filepath.Join(dir, "go.mod"), "module github.com/larsartmann/templ-components\n\ngo 1.27\n")
 		writeFile(t, filepath.Join(dir, "display", "x.templ"), "package display\n\nNonce: \"\"\n")
+
 		if findings := scanNonceFindings(dir); len(findings) != 0 {
 			t.Fatalf("library dirs must be skipped, got %d findings", len(findings))
 		}

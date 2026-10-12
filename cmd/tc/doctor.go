@@ -273,36 +273,11 @@ func checkNoncelessScripts() int {
 		return 0 // not a Go module — check does not apply
 	}
 
-	templFiles := walkTemplSources(wd)
-	if len(templFiles) == 0 {
+	if len(walkTemplSources(wd)) == 0 {
 		return 0 // no templ sources — check does not apply
 	}
 
-	propsRe := regexp.MustCompile(`Nonce:\s*""`)
-	positionalRe := regexp.MustCompile(
-		`(ThemeScript|ThemeToggle|ToastContainer|MobileMenu)\(([^()]|"[^"]*")*?,?\s*(""|"[a-z][a-z0-9-]*")`)
-
-	findings := []string{}
-
-	for _, file := range templFiles {
-		data, err := os.ReadFile(file)
-		if err != nil {
-			continue
-		}
-
-		lines := strings.Split(string(data), "\n")
-		for i, line := range lines {
-			code := stripTemplComment(line)
-			if propsRe.MatchString(code) {
-				findings = append(findings, fmt.Sprintf("%s:%d: Nonce: \"\" — thread the request nonce", file, i+1))
-				continue
-			}
-			if positionalRe.MatchString(code) {
-				findings = append(findings, fmt.Sprintf(
-					"%s:%d: empty/fake literal nonce passed to a nonce-consuming constructor", file, i+1))
-			}
-		}
-	}
+	findings := scanNonceFindings(wd)
 
 	if len(findings) == 0 {
 		return doctorCheck("no nonce-less script call sites in .templ sources", true, "")
@@ -322,7 +297,43 @@ func checkNoncelessScripts() int {
 
 	fmt.Fprintf(os.Stdout, "  info: %d nonce-less script call site(s), but no CSP declared yet — "+
 		"the scripts run today and will silently die the day you adopt one\n", len(findings))
+
 	return 0
+}
+
+// scanNonceFindings returns file:line findings for nonce-less call sites to
+// script-emitting components under root. Kept separate from the check so the
+// tests can assert on the raw findings.
+func scanNonceFindings(root string) []string {
+	propsRe := regexp.MustCompile(`Nonce:\s*""`)
+	positionalRe := regexp.MustCompile(
+		`(ThemeScript|ThemeToggle|ToastContainer|MobileMenu)\(([^()]|"[^"]*")*?,?\s*(""|"[a-z][a-z0-9-]*")`)
+
+	findings := []string{}
+
+	for _, file := range walkTemplSources(root) {
+		data, err := os.ReadFile(file)
+		if err != nil {
+			continue
+		}
+
+		lines := strings.Split(string(data), "\n")
+		for i, line := range lines {
+			code := stripTemplComment(line)
+			if propsRe.MatchString(code) {
+				findings = append(findings, fmt.Sprintf("%s:%d: Nonce: \"\" — thread the request nonce", file, i+1))
+
+				continue
+			}
+
+			if positionalRe.MatchString(code) {
+				findings = append(findings, fmt.Sprintf(
+					"%s:%d: empty/fake literal nonce passed to a nonce-consuming constructor", file, i+1))
+			}
+		}
+	}
+
+	return findings
 }
 
 // walkTemplSources returns .templ files under root, skipping generated
@@ -343,15 +354,19 @@ func walkTemplSources(root string) []string {
 		if err != nil {
 			return nil
 		}
+
 		if d.IsDir() {
 			if skip[d.Name()] {
 				return filepath.SkipDir
 			}
+
 			return nil
 		}
+
 		if strings.HasSuffix(path, ".templ") && !strings.HasSuffix(path, "_templ.go") {
 			files = append(files, path)
 		}
+
 		return nil
 	})
 
@@ -361,9 +376,10 @@ func walkTemplSources(root string) []string {
 // stripTemplComment removes an HTML comment tail so prose never trips the
 // nonce regexes (same defense as the utils compliance scans).
 func stripTemplComment(line string) string {
-	if idx := strings.Index(line, "<!--"); idx >= 0 {
-		return line[:idx]
+	if before, _, ok := strings.Cut(line, "<!--"); ok {
+		return before
 	}
+
 	return line
 }
 
@@ -377,21 +393,26 @@ func declaresCSP(root string) bool {
 		if err != nil || found {
 			return filepath.SkipAll
 		}
+
 		if d.IsDir() {
 			switch d.Name() {
 			case "vendor", "node_modules", ".git", "testdata":
 				return filepath.SkipDir
 			}
+
 			return nil
 		}
+
 		if !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") ||
 			strings.HasSuffix(path, "_templ.go") {
 			return nil
 		}
+
 		data, readErr := os.ReadFile(path)
 		if readErr == nil && cspRe.Match(data) {
 			found = true
 		}
+
 		return nil
 	})
 
