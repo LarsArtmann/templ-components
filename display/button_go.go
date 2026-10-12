@@ -73,6 +73,13 @@ type ButtonProps struct {
 	Size     ButtonSize     // default: MD
 	Disabled bool
 	Icon     templ.Component
+	// Children, when set, replaces the default content (Icon + Text) inside
+	// the element. Use it to compose rich button content — a spinner plus a
+	// loading label, an icon-text stack, a badge — while keeping the
+	// library's classes, variants, and Wire/HTMX attributes. Consumer-owned:
+	// a11y of the inner markup is the consumer's responsibility (the element
+	// still carries AriaLabel when set).
+	Children templ.Component
 	External bool // adds target="_blank" and rel="noopener noreferrer" for links
 	// Wire is the optional transport-agnostic wiring (see the wire package).
 	// When set, the action's attributes are rendered on the element in the
