@@ -905,6 +905,18 @@ package display
 
 import "github.com/larsartmann/templ-components/utils"
 
+// buttonContent renders the element's inner markup: the consumer Children
+// slot when set, otherwise Icon + Text.
+templ buttonContent(props ButtonProps) {
+	if props.Children != nil {
+		@props.Children
+	} else {
+		if props.Icon != nil {
+			@props.Icon
+		}{ props.Text }
+	}
+}
+
 // Button renders a button or link styled as a button.
 // When Href is set, renders as an anchor tag; otherwise renders as a button element.
 //
@@ -942,12 +954,7 @@ templ Button(props ButtonProps) {
 				{ props.Wire.Attributes()... }
 			}
 			{ props.Attrs... }
-		>
-			if props.Icon != nil {
-				@props.Icon
-			}
-			{ props.Text }
-		</a>
+		>@buttonContent(props)</a>
 	} else {
 		<button
 			if props.ID != "" {
@@ -965,12 +972,7 @@ templ Button(props ButtonProps) {
 				{ props.Wire.Attributes()... }
 			}
 			{ props.Attrs... }
-		>
-			if props.Icon != nil {
-				@props.Icon
-			}
-			{ props.Text }
-		</button>
+		>@buttonContent(props)</button>
 	}
 }
 
@@ -1050,6 +1052,13 @@ type ButtonProps struct {
 	Size     ButtonSize     // default: MD
 	Disabled bool
 	Icon     templ.Component
+	// Children, when set, replaces the default content (Icon + Text) inside
+	// the element. Use it to compose rich button content — a spinner plus a
+	// loading label, an icon-text stack, a badge — while keeping the
+	// library's classes, variants, and Wire/HTMX attributes. Consumer-owned:
+	// a11y of the inner markup is the consumer's responsibility (the element
+	// still carries AriaLabel when set).
+	Children templ.Component
 	External bool // adds target="_blank" and rel="noopener noreferrer" for links
 	// Wire is the optional transport-agnostic wiring (see the wire package).
 	// When set, the action's attributes are rendered on the element in the
@@ -8934,6 +8943,12 @@ type TableRow struct {
 	// Href, when non-empty, makes the entire row clickable. The row gets
 	// data-tc-row-href, role="link", tabindex="0", and cursor-pointer.
 	Href string
+	// Class, when set, is merged onto the row's <tr> (consumer classes last,
+	// tailwind-merge resolves conflicts). Use it for per-row styling — e.g.
+	// a hover treatment on a Body-less table without flipping Table.Hover
+	// for every row, or a status tint on specific rows — without the
+	// dummy-Href hack of borrowing the clickable-row styling.
+	Class string
 }
 
 // SimpleTableRow creates a row from string values for convenience
@@ -8969,6 +8984,20 @@ func tableHasRowHref(rows []TableRow) bool {
 		}
 	}
 	return false
+}
+
+// tableRowClasses returns the merged class string for one body row:
+// the conditional library classes (lazy-load, striped, hover) plus the
+// consumer's row.Class last so tailwind-merge resolves conflicts.
+func tableRowClasses(props TableProps, row TableRow, index int) string {
+	return utils.Class(
+		utils.Ternary(props.LazyRows && props.CellPadding != TableCellPaddingCompact, "tc-content-auto", ""),
+		utils.Ternary(props.LazyRows && props.CellPadding == TableCellPaddingCompact, "tc-content-auto-compact", ""),
+		utils.Ternary(props.Striped && index%2 == 1, "bg-gray-50 dark:bg-gray-800/50", ""),
+		utils.Ternary(props.Hover || row.Href != "", "hover:bg-gray-100 dark:hover:bg-gray-800", ""),
+		utils.Ternary(row.Href != "", "cursor-pointer", ""),
+		row.Class,
+	)
 }
 
 // tableHeaderCount returns the number of headers to align cells against.
@@ -9118,13 +9147,7 @@ templ Table(props TableProps) {
 								role="link"
 								tabindex="0"
 							}
-							class={
-								templ.KV("tc-content-auto", props.LazyRows && props.CellPadding != TableCellPaddingCompact),
-								templ.KV("tc-content-auto-compact", props.LazyRows && props.CellPadding == TableCellPaddingCompact),
-								templ.KV("bg-gray-50 dark:bg-gray-800/50", props.Striped && i%2 == 1),
-								templ.KV("hover:bg-gray-100 dark:hover:bg-gray-800", props.Hover || row.Href != ""),
-								templ.KV("cursor-pointer", row.Href != ""),
-							}
+							class={ tableRowClasses(props, row, i) }
 						>
 							for _, cell := range tableRowCells(row, tableHeaderCount(props)) {
 								<td class={ utils.Class(tableCellPaddingClass(props.CellPadding), "text-gray-700 dark:text-gray-300") }>
