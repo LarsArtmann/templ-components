@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -28,6 +29,7 @@ func cmdDoctor(_ *registry, _ []string) {
 	failures += checkTemplVersionPinned()
 	failures += checkGeneratedCommitted()
 	failures += checkHooksAdoption()
+	failures += checkNoncelessScripts()
 
 	fmt.Fprintln(os.Stdout)
 
@@ -218,6 +220,182 @@ func compareSemver(a, b string) int {
 	}
 
 	return 0
+}
+
+// nonceConsumers lists the library components that render an inline
+// <script> gated on the consumer-supplied Nonce. A call site that passes an
+// empty nonce renders markup that silently dies under a nonce-locked CSP —
+// the 2026-10-12 fleet-audit bug class (cqrs-htmx CopyButton ×13, GmbH
+// ThemeToggle, KeyHolderAI ToastContainer). docs/nonce-consumers.md is the
+// human-readable twin of this table; TestNonceConsumerDocsSync pins them
+// together.
+var nonceConsumers = []struct{ Qualified, Note string }{
+	{"display.Accordion", "chevron rotation script"},
+	{"display.Carousel", "prev/next/dot navigation script"},
+	{"display.ContextMenu", "menu keyboard-nav + positioning script"},
+	{"display.CopyButton", "clipboard singleton script"},
+	{"display.Dropdown", "menu keyboard-nav + positioning script"},
+	{"display.Drawer", "auto-open + backdrop-click script"},
+	{"display.KanbanBoard", "drag-and-drop + optimistic move script"},
+	{"display.Lightbox", "viewer navigation script"},
+	{"display.Modal", "auto-open + backdrop-click script"},
+	{"display.Table", "row-click script when any TableRow.Href is set"},
+	{"display.Tabs", "client-side tab switching (when not Wire-driven)"},
+	{"errorpage.ErrorPage", "go-back singleton script"},
+	{"errorpage.NotFound404", "go-back singleton script"},
+	{"echarts.EChart", "chart init script"},
+	{"feedback.Alert", "dismiss script when Dismissible"},
+	{"feedback.Toast", "dismiss + auto-dismiss timer script"},
+	{"feedback.ToastContainer", "container for injected toasts"},
+	{"forms.Combobox", "filter/selection singleton script"},
+	{"forms.DirtyGuard", "unsaved-changes guard script"},
+	{"forms.TagsInput", "tag add/remove script"},
+	{"htmx.GlobalErrorHandling", "global error→toast pipeline script"},
+	{"htmx.PolledRegion", "poll loop script when Eager"},
+	{"layout.ThemeScript", "FOUC-prevention head script"},
+	{"layout.ThemeToggle", "theme toggle script"},
+}
+
+// Note: MobileMenu's toggle script also consumes a nonce; consumers reach it
+// through navigation.Nav/SimpleNav (pass the nonce to the nav component).
+// It is documented in docs/nonce-consumers.md rather than the table above
+// because the consuming constructor is positional-arg based.
+
+// checkNoncelessScripts scans the consumer's .templ sources for call sites
+// that pass an empty nonce to a script-emitting component — markup that
+// silently dies under a nonce-locked CSP. Findings FAIL when the repo
+// declares a Content-Security-Policy anywhere in its .go sources, and stay
+// informational otherwise (nothing is broken yet, but the trap is armed).
+func checkNoncelessScripts() int {
+	wd, _ := os.Getwd()
+
+	if _, err := os.Stat(filepath.Join(wd, "go.mod")); err != nil {
+		return 0 // not a Go module — check does not apply
+	}
+
+	templFiles := walkTemplSources(wd)
+	if len(templFiles) == 0 {
+		return 0 // no templ sources — check does not apply
+	}
+
+	propsRe := regexp.MustCompile(`Nonce:\s*""`)
+	positionalRe := regexp.MustCompile(
+		`(ThemeScript|ThemeToggle|ToastContainer|MobileMenu)\(([^()]|"[^"]*")*?,?\s*(""|"[a-z][a-z0-9-]*")`)
+
+	findings := []string{}
+
+	for _, file := range templFiles {
+		data, err := os.ReadFile(file)
+		if err != nil {
+			continue
+		}
+
+		lines := strings.Split(string(data), "\n")
+		for i, line := range lines {
+			code := stripTemplComment(line)
+			if propsRe.MatchString(code) {
+				findings = append(findings, fmt.Sprintf("%s:%d: Nonce: \"\" — thread the request nonce", file, i+1))
+				continue
+			}
+			if positionalRe.MatchString(code) {
+				findings = append(findings, fmt.Sprintf(
+					"%s:%d: empty/fake literal nonce passed to a nonce-consuming constructor", file, i+1))
+			}
+		}
+	}
+
+	if len(findings) == 0 {
+		return doctorCheck("no nonce-less script call sites in .templ sources", true, "")
+	}
+
+	cspDeclared := declaresCSP(wd)
+
+	hint := strings.Join(findings, "; ") +
+		" — see docs/nonce-consumers.md for the full consuming-component table"
+	if cspDeclared {
+		return doctorCheck(
+			fmt.Sprintf("no nonce-less script call sites in .templ sources (%d found, CSP declared)", len(findings)),
+			false,
+			hint,
+		)
+	}
+
+	fmt.Fprintf(os.Stdout, "  info: %d nonce-less script call site(s), but no CSP declared yet — "+
+		"the scripts run today and will silently die the day you adopt one\n", len(findings))
+	return 0
+}
+
+// walkTemplSources returns .templ files under root, skipping generated
+// files, vendor/node_modules, and the library's own packages.
+func walkTemplSources(root string) []string {
+	files := []string{}
+
+	skip := map[string]bool{
+		"vendor": true, "node_modules": true, ".git": true,
+		"display": true, "feedback": true, "forms": true, "layout": true,
+		"navigation": true, "errorpage": true, "htmx": true, "datastar": true,
+		"utils": true, "icons": true, "cmd": true, "examples": true,
+		"internal": true, "charts": true, "recipes": true, "website": true,
+		"integration": true,
+	}
+
+	_ = filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return nil
+		}
+		if d.IsDir() {
+			if skip[d.Name()] {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		if strings.HasSuffix(path, ".templ") && !strings.HasSuffix(path, "_templ.go") {
+			files = append(files, path)
+		}
+		return nil
+	})
+
+	return files
+}
+
+// stripTemplComment removes an HTML comment tail so prose never trips the
+// nonce regexes (same defense as the utils compliance scans).
+func stripTemplComment(line string) string {
+	if idx := strings.Index(line, "<!--"); idx >= 0 {
+		return line[:idx]
+	}
+	return line
+}
+
+// declaresCSP reports whether any .go file under root (excluding tests,
+// vendor, and generated code) mentions a Content-Security-Policy.
+func declaresCSP(root string) bool {
+	cspRe := regexp.MustCompile(`Content-Security-Policy`)
+	found := false
+
+	_ = filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+		if err != nil || found {
+			return filepath.SkipAll
+		}
+		if d.IsDir() {
+			switch d.Name() {
+			case "vendor", "node_modules", ".git", "testdata":
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		if !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") ||
+			strings.HasSuffix(path, "_templ.go") {
+			return nil
+		}
+		data, readErr := os.ReadFile(path)
+		if readErr == nil && cspRe.Match(data) {
+			found = true
+		}
+		return nil
+	})
+
+	return found
 }
 
 // checkGeneratedCommitted applies only inside the library repo: a .templ
