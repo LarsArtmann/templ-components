@@ -1,10 +1,14 @@
 package display
 
 import (
+	"context"
+	"io"
 	"strings"
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 func TestButtonRender(t *testing.T) {
@@ -149,4 +153,63 @@ func TestButtonOutlineVariants(t *testing.T) {
 			t.Errorf("variant %q should be valid", tc.variant)
 		}
 	}
+}
+
+func TestButtonChildren(t *testing.T) {
+	t.Parallel()
+
+	spinner := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		_, err := w.Write([]byte(`<span class="animate-spin" aria-hidden="true">◌</span>`))
+		return err
+	})
+	slot := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		_, err := w.Write([]byte(`<span class="tc-slot-label">Saving…</span>`))
+		return err
+	})
+
+	t.Run("children replace icon and text", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Button(ButtonProps{
+			Text: "IGNORED",
+			Icon: spinner,
+			//nolint:exhaustruct_v5 // exercising the Children slot directly
+			Children: slot,
+		}))
+		utils.AssertContains(t, output, `tc-slot-label`)
+		utils.AssertNotContains(t, output, "IGNORED")
+		utils.AssertNotContains(t, output, `aria-hidden="true"`)
+	})
+
+	t.Run("children render inside the anchor variant", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Button(ButtonProps{
+			Href: "/docs",
+			Text: "IGNORED",
+			//nolint:exhaustruct_v5 // exercising the Children slot directly
+			Children: slot,
+		}))
+		utils.AssertContains(t, output, `<a`)
+		utils.AssertContains(t, output, `tc-slot-label`)
+		utils.AssertNotContains(t, output, "IGNORED")
+	})
+
+	t.Run("children keep wire attributes and aria-label", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Button(ButtonProps{
+			AriaLabel: "Save document",
+			Wire:      &wire.Action{Method: wire.MethodPost, URL: "/api/save"},
+			//nolint:exhaustruct_v5 // exercising the Children slot directly
+			Children: slot,
+		}))
+		utils.AssertContains(t, output, `aria-label="Save document"`)
+		utils.AssertContains(t, output, `hx-post="/api/save"`)
+		utils.AssertContains(t, output, `tc-slot-label`)
+	})
+
+	t.Run("nil children render text (zero value unchanged)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Button(ButtonProps{Text: "Save"}))
+		utils.AssertContains(t, output, "Save")
+		utils.AssertNotContains(t, output, `tc-slot-label`)
+	})
 }

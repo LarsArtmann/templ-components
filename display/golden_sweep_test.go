@@ -1,6 +1,8 @@
 package display
 
 import (
+	"context"
+	"io"
 	"testing"
 
 	"github.com/a-h/templ"
@@ -242,6 +244,33 @@ func TestGoldenSweepButtonWired(t *testing.T) {
 			Text: "Wired link",
 			Href: "/fallback",
 			Wire: &wire.Action{URL: "/api/items"},
+		}))},
+	})
+}
+
+func TestGoldenSweepButtonChildren(t *testing.T) {
+	t.Parallel()
+
+	slot := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		_, err := w.Write([]byte(`<span class="animate-spin" aria-hidden="true"></span><span>Saving…</span>`))
+		return err
+	})
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "button_children_content_slot", HTML: utils.Render(t, Button(ButtonProps{
+			Text: "IGNORED",
+			//nolint:exhaustruct_v5 // exercising the Children slot directly
+			Children: slot,
+		}))},
+		{Name: "button_children_link", HTML: utils.Render(t, Button(ButtonProps{
+			Href: "/docs",
+			//nolint:exhaustruct_v5 // exercising the Children slot directly
+			Children: slot,
+		}))},
+		{Name: "button_children_wired", HTML: utils.Render(t, Button(ButtonProps{
+			Wire: &wire.Action{Method: wire.MethodPost, URL: "/api/save"},
+			//nolint:exhaustruct_v5 // exercising the Children slot directly
+			Children: slot,
 		}))},
 	})
 }

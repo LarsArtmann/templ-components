@@ -52,9 +52,7 @@ templ Button(props ButtonProps) {
 				{ props.Wire.Attributes()... }
 			}
 			{ props.Attrs... }
-		>
-			@buttonContent(props)
-		</a>
+		>@buttonContent(props)</a>
 	} else {
 		<button
 			if props.ID != "" {
@@ -72,8 +70,6 @@ templ Button(props ButtonProps) {
 				{ props.Wire.Attributes()... }
 			}
 			{ props.Attrs... }
-		>
-			@buttonContent(props)
-		</button>
+		>@buttonContent(props)</button>
 	}
 }
