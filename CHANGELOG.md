@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.22.0] — 2026-10-12
+
 ### Added
 
 - **Three consumer-flag extractions (C9–C11).** `Table.StickyHeader` pins
