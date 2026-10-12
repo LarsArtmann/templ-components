@@ -162,6 +162,7 @@ Scope note: `Action.Target` renders only for htmx; Datastar targeting is respons
 | Type                 | Values                                                                                              |
 | -------------------- | --------------------------------------------------------------------------------------------------- |
 | `AvatarSize`         | XS, SM, MD, LG, XL                                                                                  |
+| `AvatarShape`        | Circle, Square                                                                                      |
 | `CodeBlockVariant`   | Block, CompactID                                                                                    |
 | `DataStateState`     | Content, Empty, Unavailable, Disabled                                                               |
 | `StatusTone`         | Neutral, Success, Warning, Danger, Info                                                             |
