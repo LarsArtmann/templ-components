@@ -147,6 +147,20 @@ func tableHasRowHref(rows []TableRow) bool {
 	return false
 }
 
+// tableRowClasses returns the merged class string for one body row:
+// the conditional library classes (lazy-load, striped, hover) plus the
+// consumer's row.Class last so tailwind-merge resolves conflicts.
+func tableRowClasses(props TableProps, row TableRow, index int) string {
+	return utils.Class(
+		utils.Ternary(props.LazyRows && props.CellPadding != TableCellPaddingCompact, "tc-content-auto", ""),
+		utils.Ternary(props.LazyRows && props.CellPadding == TableCellPaddingCompact, "tc-content-auto-compact", ""),
+		utils.Ternary(props.Striped && index%2 == 1, "bg-gray-50 dark:bg-gray-800/50", ""),
+		utils.Ternary(props.Hover || row.Href != "", "hover:bg-gray-100 dark:hover:bg-gray-800", ""),
+		utils.Ternary(row.Href != "", "cursor-pointer", ""),
+		row.Class,
+	)
+}
+
 // tableHeaderCount returns the number of headers to align cells against.
 // TypedHeaders takes precedence over Headers when set.
 func tableHeaderCount(props TableProps) int {
@@ -294,13 +308,7 @@ templ Table(props TableProps) {
 								role="link"
 								tabindex="0"
 							}
-							class={
-								templ.KV("tc-content-auto", props.LazyRows && props.CellPadding != TableCellPaddingCompact),
-								templ.KV("tc-content-auto-compact", props.LazyRows && props.CellPadding == TableCellPaddingCompact),
-								templ.KV("bg-gray-50 dark:bg-gray-800/50", props.Striped && i%2 == 1),
-								templ.KV("hover:bg-gray-100 dark:hover:bg-gray-800", props.Hover || row.Href != ""),
-								templ.KV("cursor-pointer", row.Href != ""),
-							}
+							class={ tableRowClasses(props, row, i) }
 						>
 							for _, cell := range tableRowCells(row, tableHeaderCount(props)) {
 								<td class={ utils.Class(tableCellPaddingClass(props.CellPadding), "text-gray-700 dark:text-gray-300") }>

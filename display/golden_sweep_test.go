@@ -275,3 +275,24 @@ func TestGoldenSweepButtonChildren(t *testing.T) {
 		}))},
 	})
 }
+
+func TestGoldenSweepTableRowClass(t *testing.T) {
+	t.Parallel()
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "table_row_class", HTML: utils.Render(t, Table(TableProps{
+			Headers: []string{"Plugin", "Status"},
+			Rows: []TableRow{
+				{Cells: []TableCell{{Text: "dns-sync"}, {Text: "installed"}}, Class: "ds-row-hover"},
+				{Cells: []TableCell{{Text: "etl-hook"}, {Text: "available"}}, Class: "opacity-60"},
+			},
+		}))},
+		{Name: "table_row_class_overrides_hover", HTML: utils.Render(t, Table(TableProps{
+			Headers: []string{"Plugin", "Status"},
+			Hover:   true,
+			Rows: []TableRow{
+				{Cells: []TableCell{{Text: "dns-sync"}, {Text: "installed"}}, Class: "hover:bg-blue-50 dark:hover:bg-blue-900/20"},
+			},
+		}))},
+	})
+}

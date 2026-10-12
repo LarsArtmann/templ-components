@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`TableRow.Class` — per-row styling for `display.Table`.** Extra
+  classes merged onto the row's `<tr>` (consumer classes last,
+  tailwind-merge resolves conflicts) so a hover treatment or status
+  tint can target individual rows without flipping `Table.Hover` for
+  the whole table or borrowing the clickable-row styling via a dummy
+  `Href` (DiscordSync's documented `ds-row-hover` hack). Zero value
+  renders unchanged; rows with `Class` but no `Href` emit no
+  row-click script.
 - **`ButtonProps.Children` — a content slot for rich button inner
   markup.** When set, it replaces the default Icon+Text content inside
   the button/link element, so an HTMX spinner plus a loading label can

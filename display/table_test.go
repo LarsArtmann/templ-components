@@ -280,3 +280,56 @@ func TestTableTypedHeaders(t *testing.T) {
 		utils.AssertNotContains(t, output, "aria-sort")
 	})
 }
+
+func TestTableRowClass(t *testing.T) {
+	t.Parallel()
+
+	t.Run("class lands on the row", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"A", "B"},
+			Rows: []TableRow{{
+				Cells: []TableCell{{Text: "1"}, {Text: "2"}},
+				Class: "ds-row-hover",
+			}},
+		}))
+		utils.AssertContains(t, output, `ds-row-hover`)
+	})
+
+	t.Run("no class renders unchanged", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"A", "B"},
+			Rows:    []TableRow{SimpleTableRow("1", "2")},
+		}))
+		utils.AssertNotContains(t, output, `ds-row-hover`)
+		utils.AssertContains(t, output, `<tr>`)
+	})
+
+	t.Run("consumer hover overrides the library hover via tailwind-merge", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"A", "B"},
+			Hover:   true,
+			Rows: []TableRow{{
+				Cells: []TableCell{{Text: "1"}, {Text: "2"}},
+				Class: "hover:bg-blue-50 dark:hover:bg-blue-900/20",
+			}},
+		}))
+		utils.AssertContains(t, output, `hover:bg-blue-50`)
+		utils.AssertNotContains(t, output, `hover:bg-gray-100`)
+	})
+
+	t.Run("class without href emits no row-click script", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"A", "B"},
+			Rows: []TableRow{{
+				Cells: []TableCell{{Text: "1"}, {Text: "2"}},
+				Class: "ds-row-hover",
+			}},
+		}))
+		utils.AssertNotContains(t, output, `data-tc-row-href`)
+		utils.AssertNotContains(t, output, `data-tc-table-row-href`)
+	})
+}

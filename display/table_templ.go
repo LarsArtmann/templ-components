@@ -113,6 +113,12 @@ type TableRow struct {
 	// Href, when non-empty, makes the entire row clickable. The row gets
 	// data-tc-row-href, role="link", tabindex="0", and cursor-pointer.
 	Href string
+	// Class, when set, is merged onto the row's <tr> (consumer classes last,
+	// tailwind-merge resolves conflicts). Use it for per-row styling — e.g.
+	// a hover treatment on a Body-less table without flipping Table.Hover
+	// for every row, or a status tint on specific rows — without the
+	// dummy-Href hack of borrowing the clickable-row styling.
+	Class string
 }
 
 // SimpleTableRow creates a row from string values for convenience
@@ -148,6 +154,20 @@ func tableHasRowHref(rows []TableRow) bool {
 		}
 	}
 	return false
+}
+
+// tableRowClasses returns the merged class string for one body row:
+// the conditional library classes (lazy-load, striped, hover) plus the
+// consumer's row.Class last so tailwind-merge resolves conflicts.
+func tableRowClasses(props TableProps, row TableRow, index int) string {
+	return utils.Class(
+		utils.Ternary(props.LazyRows && props.CellPadding != TableCellPaddingCompact, "tc-content-auto", ""),
+		utils.Ternary(props.LazyRows && props.CellPadding == TableCellPaddingCompact, "tc-content-auto-compact", ""),
+		utils.Ternary(props.Striped && index%2 == 1, "bg-gray-50 dark:bg-gray-800/50", ""),
+		utils.Ternary(props.Hover || row.Href != "", "hover:bg-gray-100 dark:hover:bg-gray-800", ""),
+		utils.Ternary(row.Href != "", "cursor-pointer", ""),
+		row.Class,
+	)
 }
 
 // tableHeaderCount returns the number of headers to align cells against.
@@ -290,7 +310,7 @@ func Table(props TableProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 230, Col: 17}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 250, Col: 17}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -326,7 +346,7 @@ func Table(props TableProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 234, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 254, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
@@ -353,7 +373,7 @@ func Table(props TableProps) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(props.Caption)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 239, Col: 44}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 259, Col: 44}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -406,7 +426,7 @@ func Table(props TableProps) templ.Component {
 						var templ_7745c5c3_Var12 string
 						templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(ariaSortValue(th.SortDirection))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 249, Col: 53}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 269, Col: 53}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 						if templ_7745c5c3_Err != nil {
@@ -442,7 +462,7 @@ func Table(props TableProps) templ.Component {
 						var templ_7745c5c3_Var14 templ.SafeURL
 						templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(th.Href))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 254, Col: 42}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 274, Col: 42}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 						if templ_7745c5c3_Err != nil {
@@ -455,7 +475,7 @@ func Table(props TableProps) templ.Component {
 						var templ_7745c5c3_Var15 string
 						templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(th.Label)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 255, Col: 21}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 275, Col: 21}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 						if templ_7745c5c3_Err != nil {
@@ -464,7 +484,7 @@ func Table(props TableProps) templ.Component {
 						var templ_7745c5c3_Var16 string
 						templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(sortIndicator(th.SortDirection))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 255, Col: 56}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 275, Col: 56}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 						if templ_7745c5c3_Err != nil {
@@ -478,7 +498,7 @@ func Table(props TableProps) templ.Component {
 						var templ_7745c5c3_Var17 string
 						templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(th.Label)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 258, Col: 20}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 278, Col: 20}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 						if templ_7745c5c3_Err != nil {
@@ -487,7 +507,7 @@ func Table(props TableProps) templ.Component {
 						var templ_7745c5c3_Var18 string
 						templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(sortIndicator(th.SortDirection))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 258, Col: 55}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 278, Col: 55}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 						if templ_7745c5c3_Err != nil {
@@ -526,7 +546,7 @@ func Table(props TableProps) templ.Component {
 					var templ_7745c5c3_Var21 string
 					templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(h)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 268, Col: 12}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 288, Col: 12}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 					if templ_7745c5c3_Err != nil {
@@ -555,7 +575,7 @@ func Table(props TableProps) templ.Component {
 			var templ_7745c5c3_Var22 string
 			templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.BodyID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 277, Col: 22}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 297, Col: 22}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var22)
 			if templ_7745c5c3_Err != nil {
@@ -577,12 +597,7 @@ func Table(props TableProps) templ.Component {
 			}
 		} else {
 			for i, row := range props.Rows {
-				var templ_7745c5c3_Var23 = []any{templ.KV("tc-content-auto", props.LazyRows && props.CellPadding != TableCellPaddingCompact),
-					templ.KV("tc-content-auto-compact", props.LazyRows && props.CellPadding == TableCellPaddingCompact),
-					templ.KV("bg-gray-50 dark:bg-gray-800/50", props.Striped && i%2 == 1),
-					templ.KV("hover:bg-gray-100 dark:hover:bg-gray-800", props.Hover || row.Href != ""),
-					templ.KV("cursor-pointer", row.Href != ""),
-				}
+				var templ_7745c5c3_Var23 = []any{tableRowClasses(props, row, i)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var23...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -599,7 +614,7 @@ func Table(props TableProps) templ.Component {
 					var templ_7745c5c3_Var24 string
 					templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.ResolveAttributeValue(row.Href)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 287, Col: 35}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 307, Col: 35}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var24)
 					if templ_7745c5c3_Err != nil {
@@ -659,7 +674,7 @@ func Table(props TableProps) templ.Component {
 						var templ_7745c5c3_Var28 string
 						templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(cell.Text)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 304, Col: 21}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/table.templ`, Line: 318, Col: 21}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 						if templ_7745c5c3_Err != nil {
