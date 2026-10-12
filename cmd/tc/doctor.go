@@ -229,7 +229,7 @@ func compareSemver(a, b string) int {
 // ThemeToggle, KeyHolderAI ToastContainer). docs/nonce-consumers.md is the
 // human-readable twin of this table; TestNonceConsumerDocsSync pins them
 // together.
-var nonceConsumers = []struct{ Qualified, Note string }{
+var nonceConsumers = []struct{ Qualified, Note string }{ //nolint:gochecknoglobals // Package-level scan table, the docs twin pins it
 	{"display.Accordion", "chevron rotation script"},
 	{"display.Carousel", "prev/next/dot navigation script"},
 	{"display.ContextMenu", "menu keyboard-nav + positioning script"},
@@ -267,23 +267,23 @@ var nonceConsumers = []struct{ Qualified, Note string }{
 // declares a Content-Security-Policy anywhere in its .go sources, and stay
 // informational otherwise (nothing is broken yet, but the trap is armed).
 func checkNoncelessScripts() int {
-	wd, _ := os.Getwd()
+	workDir, _ := os.Getwd()
 
-	if _, err := os.Stat(filepath.Join(wd, "go.mod")); err != nil {
+	if _, err := os.Stat(filepath.Join(workDir, "go.mod")); err != nil {
 		return 0 // not a Go module — check does not apply
 	}
 
-	if len(walkTemplSources(wd)) == 0 {
+	if len(walkTemplSources(workDir)) == 0 {
 		return 0 // no templ sources — check does not apply
 	}
 
-	findings := scanNonceFindings(wd)
+	findings := scanNonceFindings(workDir)
 
 	if len(findings) == 0 {
 		return doctorCheck("no nonce-less script call sites in .templ sources", true, "")
 	}
 
-	cspDeclared := declaresCSP(wd)
+	cspDeclared := declaresCSP(workDir)
 
 	hint := strings.Join(findings, "; ") +
 		" — see docs/nonce-consumers.md for the full consuming-component table"
@@ -350,13 +350,13 @@ func walkTemplSources(root string) []string {
 		"integration": true,
 	}
 
-	_ = filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+	_ = filepath.WalkDir(root, func(path string, dirEntry os.DirEntry, err error) error {
 		if err != nil {
-			return nil
+			return nil //nolint:nilerr // skip unreadable entries; a scan must not abort on one bad path
 		}
 
-		if d.IsDir() {
-			if skip[d.Name()] {
+		if dirEntry.IsDir() {
+			if skip[dirEntry.Name()] {
 				return filepath.SkipDir
 			}
 
@@ -389,13 +389,13 @@ func declaresCSP(root string) bool {
 	cspRe := regexp.MustCompile(`Content-Security-Policy`)
 	found := false
 
-	_ = filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+	_ = filepath.WalkDir(root, func(path string, dirEntry os.DirEntry, err error) error {
 		if err != nil || found {
 			return filepath.SkipAll
 		}
 
-		if d.IsDir() {
-			switch d.Name() {
+		if dirEntry.IsDir() {
+			switch dirEntry.Name() {
 			case "vendor", "node_modules", ".git", "testdata":
 				return filepath.SkipDir
 			}
@@ -408,7 +408,7 @@ func declaresCSP(root string) bool {
 			return nil
 		}
 
-		data, readErr := os.ReadFile(path)
+		data, readErr := os.ReadFile(path) //nolint:gosec // diagnostic scan over the consumer's own tree
 		if readErr == nil && cspRe.Match(data) {
 			found = true
 		}

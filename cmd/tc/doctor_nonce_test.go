@@ -24,7 +24,7 @@ func writeFile(t *testing.T, path, content string) {
 // TestNonceConsumerDocsSync pins docs/nonce-consumers.md to the doctor's
 // nonceConsumers scan table: every table entry must appear in the docs and
 // vice versa. The docs are the human-readable twin of the scan list (F-058,
-// TODO_LIST #407) — the 2026-10-12 fleet audit shipped three repos of dead
+// issue #407) — the 2026-10-12 fleet audit shipped three repos of dead
 // scripts because nobody knew which components consume a nonce.
 func TestNonceConsumerDocsSync(t *testing.T) {
 	t.Parallel()
