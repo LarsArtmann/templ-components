@@ -5,7 +5,7 @@ go 1.27
 require (
 	github.com/a-h/templ v0.3.1020
 	github.com/alecthomas/chroma/v2 v2.27.0
-	github.com/larsartmann/templ-components v1.21.0
+	github.com/larsartmann/templ-components v1.22.0
 	github.com/larsartmann/templ-components/errorpage v1.22.0
 	github.com/larsartmann/templ-components/icons v1.22.0
 	github.com/larsartmann/templ-components/utils v1.22.0

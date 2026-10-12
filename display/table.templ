@@ -104,6 +104,12 @@ type TableRow struct {
 	// Href, when non-empty, makes the entire row clickable. The row gets
 	// data-tc-row-href, role="link", tabindex="0", and cursor-pointer.
 	Href string
+	// Class, when set, is merged onto the row's <tr> (consumer classes last,
+	// tailwind-merge resolves conflicts). Use it for per-row styling — e.g.
+	// a hover treatment on a Body-less table without flipping Table.Hover
+	// for every row, or a status tint on specific rows — without the
+	// dummy-Href hack of borrowing the clickable-row styling.
+	Class string
 }
 
 // SimpleTableRow creates a row from string values for convenience

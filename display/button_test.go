@@ -160,10 +160,12 @@ func TestButtonChildren(t *testing.T) {
 
 	spinner := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 		_, err := w.Write([]byte(`<span class="animate-spin" aria-hidden="true">◌</span>`))
+
 		return err
 	})
 	slot := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 		_, err := w.Write([]byte(`<span class="tc-slot-label">Saving…</span>`))
+
 		return err
 	})
 
@@ -172,7 +174,7 @@ func TestButtonChildren(t *testing.T) {
 		output := utils.Render(t, Button(ButtonProps{
 			Text: "IGNORED",
 			Icon: spinner,
-			//nolint:exhaustruct_v5 // exercising the Children slot directly
+
 			Children: slot,
 		}))
 		utils.AssertContains(t, output, `tc-slot-label`)
@@ -185,7 +187,7 @@ func TestButtonChildren(t *testing.T) {
 		output := utils.Render(t, Button(ButtonProps{
 			Href: "/docs",
 			Text: "IGNORED",
-			//nolint:exhaustruct_v5 // exercising the Children slot directly
+
 			Children: slot,
 		}))
 		utils.AssertContains(t, output, `<a`)
@@ -198,7 +200,7 @@ func TestButtonChildren(t *testing.T) {
 		output := utils.Render(t, Button(ButtonProps{
 			AriaLabel: "Save document",
 			Wire:      &wire.Action{Method: wire.MethodPost, URL: "/api/save"},
-			//nolint:exhaustruct_v5 // exercising the Children slot directly
+
 			Children: slot,
 		}))
 		utils.AssertContains(t, output, `aria-label="Save document"`)
