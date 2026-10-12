@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`ButtonProps.Children` — a content slot for rich button inner
+  markup.** When set, it replaces the default Icon+Text content inside
+  the button/link element, so an HTMX spinner plus a loading label can
+  live INSIDE a library `Button` while the classes, variants, sizes,
+  and `Wire`/HTMX attributes stay library-owned (cqrs-htmx adminui
+  copied full Button class strings for exactly this; the slot deletes
+  the workaround class). Zero value `nil` renders unchanged.
+
 ## [1.22.0] — 2026-10-12
 
 ### Added

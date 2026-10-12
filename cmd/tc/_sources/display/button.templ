@@ -2,6 +2,19 @@ package display
 
 import "github.com/larsartmann/templ-components/utils"
 
+// buttonContent renders the element's inner markup: the consumer Children
+// slot when set, otherwise Icon + Text.
+templ buttonContent(props ButtonProps) {
+	if props.Children != nil {
+		@props.Children
+	} else {
+		if props.Icon != nil {
+			@props.Icon
+		}
+		{ props.Text }
+	}
+}
+
 // Button renders a button or link styled as a button.
 // When Href is set, renders as an anchor tag; otherwise renders as a button element.
 //
@@ -39,12 +52,8 @@ templ Button(props ButtonProps) {
 				{ props.Wire.Attributes()... }
 			}
 			{ props.Attrs... }
-		>
-			if props.Icon != nil {
-				@props.Icon
-			}
-			{ props.Text }
-		</a>
+		>@buttonContent(props)
+</a>
 	} else {
 		<button
 			if props.ID != "" {
@@ -62,11 +71,7 @@ templ Button(props ButtonProps) {
 				{ props.Wire.Attributes()... }
 			}
 			{ props.Attrs... }
-		>
-			if props.Icon != nil {
-				@props.Icon
-			}
-			{ props.Text }
-		</button>
+		>@buttonContent(props)
+</button>
 	}
 }
