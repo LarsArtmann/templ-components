@@ -49,6 +49,7 @@ var docSidebar = []DocGroup{
 			{Slug: "guides/error-pages", Title: "Error Pages"},
 			{Slug: "guides/accessibility", Title: "Accessibility"},
 			{Slug: "guides/csp-compliance", Title: "CSP Compliance"},
+			{Slug: "guides/nonce-consumers", Title: "Nonce Consumers"},
 			{Slug: "guides/invariants", Title: "Guarantees"},
 			{Slug: "guides/version-support", Title: "Version Support"},
 		},

@@ -40,7 +40,8 @@ func TestNonceConsumerIntegrationSync(t *testing.T) {
 		if !slicesContainsPrefix(integrationNames, short) {
 			t.Errorf(
 				"nonceConsumers entry %q has no integration render-table coverage (expected an entry starting with %q in integration/csp_nonce_test.go or integration/nonce_omit_empty_test.go) — add it to both tables in the same commit",
-				consumer.Qualified, short,
+				consumer.Qualified,
+				short,
 			)
 		}
 	}
@@ -114,7 +115,8 @@ func parseIntegrationRenderTableNames(t *testing.T, integrationDir string) []str
 func slicesHasDoctorEntry(consumers []struct {
 	Qualified string
 	Note      string
-}, name string) bool {
+}, name string,
+) bool {
 	for _, c := range consumers {
 		short := c.Qualified[strings.LastIndex(c.Qualified, ".")+1:]
 		if strings.HasPrefix(name, short) {

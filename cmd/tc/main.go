@@ -191,7 +191,7 @@ var packageImports = map[string][]string{
 var packageDeps = map[string][]string{
 	pkgDisplay: {
 		"area_chart.go", "bar_chart.go", "button_go.go",
-		"chart_geometry.go", "code_block.go",
+		"carousel_go.go", "chart_geometry.go", "code_block.go",
 		"collapsible_section.go", "command_palette.go",
 		"data_state.go", "drawer_go.go", enumsGoFile,
 		"external_link.go", "heading_tag.go", "heatmap.go",
