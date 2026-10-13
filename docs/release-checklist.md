@@ -93,9 +93,9 @@ commit was verified byte-correct.
 - [ ] **CSS byte-stability:** `nix run .#css` produces no diff. v1.10.0 shipped
       demo CSS one release stale because BuildFlow recompiled only after the
       release commit.
-- [ ] **website typescript pin intact** (`website/package.json`): `astro check`
-      crashes on TS 7 — needs the 6.x pin until `astro check` supports the
-      native compiler. The daemon has flipped it back before.
+- [ ] ~~website typescript pin~~ RETIRED 2026-10-13: `website/package.json` no
+      longer exists (the site is a pure Go SSG; the Astro-era pin check is
+      obsolete). If a JS frontend ever returns, re-add a pin check here.
 - [ ] `scripts/check-release-tags.sh <version>` — every published module has its
       tag on the release commit.
 - [ ] All four fast guards pass: `check-lint-config.sh`, `check-templ-sync.sh`,
@@ -117,7 +117,7 @@ auto-commit daemon can land AND PUSH its own commits inside that window (it
 has pushed tags before). After the release commit exists, before creating
 tags, run `git log --oneline -3`: if a daemon commit sits on top of the
 release commit, verify it changed NOTHING the verify phase proved
-(`git diff <release-commit>..<daemon-commit> -- utils/version.go **/go.mod **/go.sum examples/demo/static/app.css website/package.json` —
+(`git diff <release-commit>..<daemon-commit> -- utils/version.go **/go.mod **/go.sum examples/demo/static/app.css` —
 empty diff or trivially-safe changes only), and re-run the four fast guards.
 A daemon commit that touches those paths means the tree you are about to tag
 was never verified: abort the tagging, re-run the script's verify steps on
@@ -134,6 +134,10 @@ the new tip, then tag.
       `go.sum` moved. A red master inside the watch window with a daemon
       commit on top of the release is this failure mode until proven
       otherwise.
+      (The v1.23.0 cut hit the milder variant live: the daemon committed the
+      step-5/6 version bumps as its own commit 24s before step 8 — the 8b
+      tree assertions passed over the combined tree, so the TAGGED content
+      was correct; only the commit-message attribution split.)
 - [ ] **CI + Website green on master AND on the tag.**
 - [ ] **Post-propagation tidy sweep:** once `go list -m
       github.com/larsartmann/templ-components@<version>` resolves, re-run the
