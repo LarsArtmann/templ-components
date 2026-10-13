@@ -41,7 +41,7 @@ func formatInt(n int) string {
 // highlighted code window with copy button (ported from HeroSection.astro).
 // The metric numbers come from build.Stats — derived from the codebase at
 // build time, never hand-typed.
-templ Hero(stats build.Stats, starsText string) {
+templ Hero(stats build.Stats, starsText string, nonce string) {
 	<section class="relative flex items-center justify-center overflow-hidden pt-36 pb-20">
 		<div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-accent/5 blur-[140px] rounded-full pointer-events-none"></div>
 		<div class="relative max-w-3xl xl:max-w-7xl mx-auto px-6 text-center">
@@ -114,7 +114,16 @@ templ Hero(stats build.Stats, starsText string) {
 					</div>
 					<pre tabindex="0" class="p-5 text-start text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative">@highlightTempl(heroCode)
 </pre>
-					<button class="absolute top-2 right-2 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" id="copy-btn" data-code={ heroCode } aria-label="Copy code to clipboard">Copy</button>
+					@display.CopyButton(display.CopyButtonProps{
+						Text:        heroCode,
+						Icon:        false,
+						LabelClass:  "text-text-muted hover:text-text-primary",
+						BaseProps: utils.BaseProps{
+							Nonce:     nonce,
+							AriaLabel: "Copy code to clipboard",
+							Class: "absolute top-2 end-2 px-2 py-1 font-mono bg-code-inline-bg/80 dark:bg-code-inline-bg/80 hover:bg-code-inline-bg dark:hover:bg-code-inline-bg border border-border ring-0 hover:border-border-hover opacity-0 [.code-preview:hover_&]:opacity-100",
+						},
+					})
 				</div>
 			</div>
 		</div>

@@ -19,7 +19,7 @@ func LandingMeta() PageMeta {
 		Title:       SiteTitle,
 		Description: SiteDescription,
 		OGImage:     SiteURL + "/og/home.png",
-		Scripts:     append([]string{"/assets/js/copy-code.js"}, siteScripts...),
+		Scripts:     siteScripts,
 	}
 }
 
@@ -27,7 +27,7 @@ func LandingMeta() PageMeta {
 // Hero, FeatureGrid, HowItWorks, Comparison, UseCases, CTA.
 templ Landing(stats build.Stats, starsText string, nonce string) {
 	@Page(LandingMeta(), nonce) {
-		@Hero(stats, starsText)
+		@Hero(stats, starsText, nonce)
 		@section("max-w-7xl", FeatureGrid(stats))
 		@section("max-w-7xl", HowItWorks())
 		@section("max-w-7xl", Comparison(stats))

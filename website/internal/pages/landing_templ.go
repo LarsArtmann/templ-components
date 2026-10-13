@@ -27,7 +27,7 @@ func LandingMeta() PageMeta {
 		Title:       SiteTitle,
 		Description: SiteDescription,
 		OGImage:     SiteURL + "/og/home.png",
-		Scripts:     append([]string{"/assets/js/copy-code.js"}, siteScripts...),
+		Scripts:     siteScripts,
 	}
 }
 
@@ -66,7 +66,7 @@ func Landing(stats build.Stats, starsText string, nonce string) templ.Component 
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = Hero(stats, starsText).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = Hero(stats, starsText, nonce).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
