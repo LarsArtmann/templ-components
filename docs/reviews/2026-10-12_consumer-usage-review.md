@@ -70,6 +70,7 @@ The feeling is correct, and it is **two-sided**:
   verified under go 1.27.2 + tidy (tidy itself reverted — see Caveats).
 
 **Caveats / adjacent discoveries (not fixed):**
+
 - crm-exec-stage is **build-broken for ad-hoc local builds** (pre-existing):
   the committed `go.mod` is out of sync with the sibling checkouts it
   replaces (`../cqrs-htmx/usermgmt` now requires go ≥ 1.27.2, pins say
@@ -88,12 +89,12 @@ The feeling is correct, and it is **two-sided**:
 
 ## Fleet version matrix (vs current v1.21.0)
 
-| Version | Projects |
-| --- | --- |
-| master pseudo-version (`v1.21.1-0.…a30aa632`) | CV (load-bearing: uses `HTMXNone`/`SEOMeta` — a release rollback breaks its build) |
-| v1.21.0 | bank-sync, browser-history, cqrs-htmx (all UIs), crm, crush-daily, DiscordSync, file-and-image-renamer, go-health-dashboard, go-taskqueue, library-policy (indirect), nsfw-classifier, overview, pbx-lens, sperrmuell-direct, Zlota44 |
-| v1.20.1 | crm-exec-stage, GmbH, InboxClean, PapDashboard, webphone, go-cqrs-lite/catalog |
-| v1.19.4 | ChastityAPI, Cyberdom, dnsblockd, index, KeyHolderAI, Rolls-Royce-mtuGoHelpCenter-golang, github-local-sync (indirect), plugmarket, timesheets (indirect) |
+| Version                                       | Projects                                                                                                                                                                                                                              |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| master pseudo-version (`v1.21.1-0.…a30aa632`) | CV (load-bearing: uses `HTMXNone`/`SEOMeta` — a release rollback breaks its build)                                                                                                                                                    |
+| v1.21.0                                       | bank-sync, browser-history, cqrs-htmx (all UIs), crm, crush-daily, DiscordSync, file-and-image-renamer, go-health-dashboard, go-taskqueue, library-policy (indirect), nsfw-classifier, overview, pbx-lens, sperrmuell-direct, Zlota44 |
+| v1.20.1                                       | crm-exec-stage, GmbH, InboxClean, PapDashboard, webphone, go-cqrs-lite/catalog                                                                                                                                                        |
+| v1.19.4                                       | ChastityAPI, Cyberdom, dnsblockd, index, KeyHolderAI, Rolls-Royce-mtuGoHelpCenter-golang, github-local-sync (indirect), plugmarket, timesheets (indirect)                                                                             |
 
 14 consumers lag ≥1 minor version. Bumps are mechanical (`go get … && go mod
 tidy` + build/test) but must ride the `go-ecosystem-upgrade` skill loop —
@@ -160,7 +161,7 @@ above, which blocks verification today.
 - **overview** — full nonce threading, errorpage with family mapping,
   SkeletonCardGrid, `layout.Script` everywhere.
 - **go-health-dashboard** — exemplary Base+Container+PageHeader+Grid+StatCard
-  + Datastar LiveRegion (only debt: the copied ThemeToggle SVG).
+  - Datastar LiveRegion (only debt: the copied ThemeToggle SVG).
 - **Cyberdom** — clean textbook mainstream adoption, zero misuse found.
 - **Rolls-Royce-mtuGoHelpCenter-golang** — full module surface, per-library-
   pattern CSS workflow, errorpage wired.

@@ -22,32 +22,32 @@ and forget to thread it.
 
 ## The table
 
-| Component | What breaks when the nonce is missing |
-| --- | --- |
-| `display.Accordion` | Chevron rotation script |
-| `display.Carousel` | Prev/next/dot navigation script |
-| `display.ContextMenu` | Menu keyboard-nav + positioning script |
-| `display.CopyButton` | Clipboard singleton script |
-| `display.Dropdown` | Menu keyboard-nav + positioning script |
-| `display.Drawer` | Auto-open + backdrop-click script |
-| `display.KanbanBoard` | Drag-and-drop + optimistic move script |
-| `display.Lightbox` | Viewer navigation script |
-| `display.Modal` | Auto-open + backdrop-click script |
-| `display.Table` | Row-click script when any `TableRow.Href` is set |
-| `display.Tabs` | Client-side tab switching (when not Wire-driven) |
-| `errorpage.ErrorPage` | Go-back singleton script |
-| `errorpage.NotFound404` | Go-back singleton script |
-| `echarts.EChart` | Chart init script |
-| `feedback.Alert` | Dismiss script when `Dismissible` |
-| `feedback.Toast` | Dismiss + auto-dismiss timer script |
-| `feedback.ToastContainer` | Container for injected toasts |
-| `forms.Combobox` | Filter/selection singleton script |
-| `forms.DirtyGuard` | Unsaved-changes guard script |
-| `forms.TagsInput` | Tag add/remove script |
-| `htmx.GlobalErrorHandling` | Global error→toast pipeline script |
-| `htmx.PolledRegion` | Poll loop script when `Eager` |
-| `layout.ThemeScript` | FOUC-prevention head script |
-| `layout.ThemeToggle` | Theme toggle script |
+| Component                  | What breaks when the nonce is missing            |
+| -------------------------- | ------------------------------------------------ |
+| `display.Accordion`        | Chevron rotation script                          |
+| `display.Carousel`         | Prev/next/dot navigation script                  |
+| `display.ContextMenu`      | Menu keyboard-nav + positioning script           |
+| `display.CopyButton`       | Clipboard singleton script                       |
+| `display.Dropdown`         | Menu keyboard-nav + positioning script           |
+| `display.Drawer`           | Auto-open + backdrop-click script                |
+| `display.KanbanBoard`      | Drag-and-drop + optimistic move script           |
+| `display.Lightbox`         | Viewer navigation script                         |
+| `display.Modal`            | Auto-open + backdrop-click script                |
+| `display.Table`            | Row-click script when any `TableRow.Href` is set |
+| `display.Tabs`             | Client-side tab switching (when not Wire-driven) |
+| `errorpage.ErrorPage`      | Go-back singleton script                         |
+| `errorpage.NotFound404`    | Go-back singleton script                         |
+| `echarts.EChart`           | Chart init script                                |
+| `feedback.Alert`           | Dismiss script when `Dismissible`                |
+| `feedback.Toast`           | Dismiss + auto-dismiss timer script              |
+| `feedback.ToastContainer`  | Container for injected toasts                    |
+| `forms.Combobox`           | Filter/selection singleton script                |
+| `forms.DirtyGuard`         | Unsaved-changes guard script                     |
+| `forms.TagsInput`          | Tag add/remove script                            |
+| `htmx.GlobalErrorHandling` | Global error→toast pipeline script               |
+| `htmx.PolledRegion`        | Poll loop script when `Eager`                    |
+| `layout.ThemeScript`       | FOUC-prevention head script                      |
+| `layout.ThemeToggle`       | Theme toggle script                              |
 
 MobileMenu's toggle script also consumes a nonce; consumers reach it through
 `navigation.Nav`/`SimpleNav`, so pass the nonce to the nav component (its
