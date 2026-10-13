@@ -81,7 +81,7 @@ UI in a Go binary — without adopting a frontend stack.
 
 - **HTML over the wire.** Components render complete, accessible HTML on the server; [HTMX](https://htmx.org) (or opt-in [Datastar](https://data-star.dev)) enhances it. No hydration, no virtual DOM, no bundler.
 - **Invalid states don't compile.** Every closed set — variant, size, tone, method — is a typed enum. Pass a wrong value and the build fails before a browser opens.
-- **Security and polish are defaults, not TODOs.** CSP-nonce threading on every script, dark mode and `prefers-reduced-motion` support on every component, logical RTL properties throughout — each enforced by a regression test, not a code-review memo.
+- **Security and polish are defaults, not TODOs.** CSP-nonce threading on every script, dark mode and `prefers-reduced-motion` support on every component, logical RTL properties throughout — each enforced by a regression test, not a code-review memo. Every nonce-consuming component is inventoried in [`docs/nonce-consumers.md`](docs/nonce-consumers.md), and `tc doctor` scans your repo for nonce-less call sites.
 - **Pay for what you use.** Pure Go + templ + Tailwind CSS v4 in seven small modules; import one package or all of them.
 
 135 server-rendered components · 68 typed string enums (67 with IsValid()) · 102 SVG icons — in one `go get`.
