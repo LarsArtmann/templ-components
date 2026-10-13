@@ -4,6 +4,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/a-h/templ"
+
 	"github.com/larsartmann/templ-components/charts/echarts"
 	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/display"
@@ -43,6 +45,14 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 		{"Drawer", utils.Render(t, display.Drawer(display.DrawerProps{
 			ID: "dr1", Nonce: testNonce,
 			Title: "Test",
+		}))},
+		{"Carousel", utils.Render(t, display.Carousel(display.CarouselProps{
+			Nonce:  testNonce,
+			Slides: []display.CarouselSlide{{Content: templ.Raw("<div>s1</div>")}},
+		}))},
+		{"Lightbox", utils.Render(t, display.Lightbox(display.LightboxProps{
+			Nonce:  testNonce,
+			Images: []display.LightboxImage{{Src: "/a.png", Alt: "a"}},
 		}))},
 		{"Dropdown", utils.Render(t, display.Dropdown(display.DropdownProps{
 			ID: "dd", Nonce: testNonce,
