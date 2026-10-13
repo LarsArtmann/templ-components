@@ -8,10 +8,16 @@ package layout
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import "github.com/larsartmann/templ-components/utils"
+
 // Script renders a CSP-safe external `<script src="...">` tag with the nonce
 // applied automatically. Use it instead of a raw `<script>` tag so the nonce
 // can never be forgotten — under a strict Content-Security-Policy a forgotten
 // nonce silently breaks the script in the browser with no error in your logs.
+//
+// The omit-empty nonce rule applies (issues #7/#9/#24): an empty nonce omits
+// the attribute entirely — `nonce=""` is the dead-script class (strict-CSP
+// browsers reject it) and, on external scripts, a pointless footgun.
 //
 // Pass optional attributes (async, defer, type="module", crossorigin, …) via
 // attrs. Do not pass `nonce` via attrs; the nonce parameter owns it.
@@ -47,26 +53,17 @@ func Script(nonce string, src string, attrs templ.Attributes) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(src)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/script.templ`, Line: 15, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/script.templ`, Line: 21, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var3 string
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/script.templ`, Line: 15, Col: 34}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"")
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, utils.ScriptAttrs(nonce))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -74,7 +71,7 @@ func Script(nonce string, src string, attrs templ.Attributes) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "></script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "></script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
