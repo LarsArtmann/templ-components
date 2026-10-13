@@ -377,6 +377,24 @@ with container width via `cqi` units; see `docs/recipes/fluid-typography.md`).
 Consumers vendor `templates/custom.css` via `app.css`; these classes are available
 automatically. Guarded by `TestCustomCSSUtilities`.
 
+### Compiled-CSS artifact rule (fleet adoption lesson)
+
+A consumer with a TRACKED compiled CSS artifact must regenerate it in the SAME
+commit as any component adoption — an adopted component whose utility classes
+never reached the compiled stylesheet renders unstyled outside local dev
+(string tests cannot see this; the palette and 404-page outages did).
+
+1. Regenerate the artifact via the consumer's canonical pipeline (nix app or
+   `regen-ui.sh`-style script), not ad-hoc tool invocations.
+2. If classes enter the scan through a committed inventory (vendored-library
+   concatenation), the scan must be REPLACE-AWARE — resolve the library with
+   `go list -m -f '{{.Dir}}'`, which honors go.mod replace, instead of the
+   module-cache release copy, which silently lags a bridge checkout — and it
+   must cover EVERY package the consumer imports (the crm/crm-exec-stage 404
+   outage: `errorpage` was missing from the scan list).
+3. Verify with a grep for the adopted component's classes/variant selectors in
+   the compiled artifact before committing.
+
 ### Dark mode checklist (for new components)
 
 Every new component MUST pass `TestDarkModeCompliance` + `TestDarkModeSemanticColors`. Checklist:
