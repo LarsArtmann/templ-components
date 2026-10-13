@@ -24,6 +24,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   copied full Button class strings for exactly this; the slot deletes
   the workaround class). Zero value `nil` renders unchanged.
 
+### Fixed
+
+- **`CommandPalette` input has an accessible name.** The combobox rendered
+  without `aria-label` or a bound `<label>`, failing form-label audits in
+  consumers; it now mirrors the placeholder text (caught by DiscordSync's
+  a11y suite during adoption).
+
 ## [1.22.0] — 2026-10-12
 
 ### Added
