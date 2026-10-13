@@ -75,6 +75,15 @@ MODULES="utils icons errorpage charts/echarts datastar htmx"
 step "Generate templ files (pinned templ via PATH — use nix develop for the pinned binary)"
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate
+# FileName-form normalization: a root invocation encodes repo-root-relative
+# paths into EVERY workspace module's generated files, while the committed
+# canonical form is module-relative (BuildFlow's per-module steppers). The
+# form is error-metadata only, but the drift gate below compares bytes, so
+# regenerate each published sub-module + website from its own directory —
+# the same shape CI's ephemeral checkout never needs because it is discarded.
+for mod in $MODULES website; do
+	(cd "$mod" && templ generate ./...)
+done
 
 step "Verify all *_templ.go files are tracked"
 MISSING=0
@@ -97,13 +106,34 @@ step "Verify no untracked changes (git diff --exit-code)"
 # --quiet-diff: show only that drift EXISTS, not the whole diff (useful for
 # scheduled/CI mirror runs where the log is noise). Default prints the diff —
 # it is the fastest way to see what a daemon commit missed.
-if [ "${QUIET_DIFF:-0}" = "1" ]; then
-	if ! git diff --exit-code --stat >/dev/null; then
-		echo "ERROR: uncommitted changes present (run without --quiet-diff for the diff)" >&2
-		exit 1
+#
+# FileName-form tolerance: a generated file's templ.Error FileName strings
+# encode the INVOKING DIRECTORY (repo root vs the file's module), and this
+# script must work from a tree committed in either form (BuildFlow's
+# per-module steppers commit module-relative; a root `templ generate` — what
+# CI runs — writes repo-root-relative). FileName strings are error metadata
+# only, so both sides are normalized to a placeholder before comparing; any
+# OTHER line still counts as drift.
+normalize_form() {
+	sed 's/FileName: `[^`]*`/FileName: NORM/'
+}
+drift=0
+non_templ_drift=$(git diff --name-only -- . ':(exclude)*_templ.go')
+if [ -n "$non_templ_drift" ]; then
+	git diff --exit-code -- $non_templ_drift || drift=1
+fi
+while IFS= read -r gen_file; do
+	if ! diff <(git show ":$gen_file" | normalize_form) <(normalize_form <"$gen_file") >/dev/null; then
+		echo "REAL content drift: $gen_file"
+		git diff -- "$gen_file" | head -40
+		drift=1
 	fi
-else
-	git diff --exit-code
+done < <(git diff --name-only -- '*_templ.go')
+if [ "$drift" = "1" ]; then
+	if [ "${QUIET_DIFF:-0}" = "1" ]; then
+		echo "ERROR: uncommitted changes present (run without --quiet-diff for the diff)" >&2
+	fi
+	exit 1
 fi
 
 step "Go vet (root)"
