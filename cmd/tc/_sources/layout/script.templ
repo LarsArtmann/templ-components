@@ -1,9 +1,15 @@
 package layout
 
+import "github.com/larsartmann/templ-components/utils"
+
 // Script renders a CSP-safe external `<script src="...">` tag with the nonce
 // applied automatically. Use it instead of a raw `<script>` tag so the nonce
 // can never be forgotten — under a strict Content-Security-Policy a forgotten
 // nonce silently breaks the script in the browser with no error in your logs.
+//
+// The omit-empty nonce rule applies (issues #7/#9/#24): an empty nonce omits
+// the attribute entirely — `nonce=""` is the dead-script class (strict-CSP
+// browsers reject it) and, on external scripts, a pointless footgun.
 //
 // Pass optional attributes (async, defer, type="module", crossorigin, …) via
 // attrs. Do not pass `nonce` via attrs; the nonce parameter owns it.
@@ -12,5 +18,5 @@ package layout
 //	@layout.Script(nonce, "/static/app.js", templ.Attributes{"defer": true})
 //	@layout.Script(nonce, "/static/tailwind.min.js", templ.Attributes{"type": "module"})
 templ Script(nonce string, src string, attrs templ.Attributes) {
-	<script src={ src } nonce={ nonce } { attrs... }></script>
+	<script src={ src } { utils.ScriptAttrs(nonce)... } { attrs... }></script>
 }

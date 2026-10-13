@@ -118,6 +118,7 @@ func TestNoEmptyNonceAttribute(t *testing.T) {
 		{"EChartsSDKScript", utils.Render(t, echarts.SDKScript(echarts.SDKScriptProps{}))},
 		{"ThemeScript", utils.Render(t, layout.ThemeScript(""))},
 		{"ThemeToggle", utils.Render(t, layout.ThemeToggle("Toggle theme", ""))},
+		{"Script", utils.Render(t, layout.Script("", "/static/app.js", nil))},
 		{"BaseSelfHostedHTMX", utils.Render(t, layout.Base(layout.PageProps{
 			Title: "t", Nonce: "",
 		}))},

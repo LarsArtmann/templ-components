@@ -148,11 +148,12 @@ func TestScriptRender(t *testing.T) {
 		utils.AssertContains(t, output, `nonce="abc123"`)
 	})
 
-	t.Run("empty nonce still tags the attribute", func(t *testing.T) {
+	t.Run("empty nonce omits the attribute, keeps the tag", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Script("", "/static/app.js", nil))
-		// Empty nonce is emitted so the helper never forgets the attribute.
-		utils.AssertContains(t, output, `nonce=""`)
+		// Omit-empty rule (issues #7/#9/#24): nonce="" is the dead-script
+		// class — strict-CSP browsers reject it. Omit, never emit empty.
+		utils.AssertNotContains(t, output, `nonce=`)
 		utils.AssertContains(t, output, `src="/static/app.js"`)
 	})
 

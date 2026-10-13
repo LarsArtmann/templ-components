@@ -165,6 +165,8 @@ func TestScriptA11y(t *testing.T) {
 	t.Run("empty nonce still emits the attribute", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Script("", "/app.js", nil))
-		utils.AssertContains(t, output, `nonce=""`)
+		// Omit-empty rule (issues #7/#9/#24): nonce="" is the dead-script
+		// class — strict-CSP browsers reject it. Omit, never emit empty.
+		utils.AssertNotContains(t, output, `nonce=`)
 	})
 }
