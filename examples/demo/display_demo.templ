@@ -5,6 +5,7 @@ import (
 
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
+	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -92,8 +93,8 @@ display.Card(display.CardProps{
 		@display.Button(display.ButtonProps{Text: "External Link", Href: "https://example.com", External: true})
 		@display.Button(display.ButtonProps{Text: "With Icon", Icon: icons.Icon(icons.Plus, "h-5 w-5")})
 		@display.Button(display.ButtonProps{
-			Text: "Loading (Children slot)",
-			Children: feedback.InlineLoading("Saving…"),
+			Text:     "Save",
+			Children: htmx.LoadingButton("Save", "Saving…", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-white"})),
 		})
 	</div>
 	@demoCodeSnippet("Go", `display.Button(display.ButtonProps{Text: "Save", Variant: display.ButtonPrimary})`)
@@ -233,8 +234,10 @@ display.Card(display.CardProps{
 		Rows: []display.TableRow{
 			display.SimpleTableRow("Alice Smith", "alice@example.com", "Admin"),
 			display.SimpleTableRow("Bob Jones", "bob@example.com", "User"),
-			// #406: per-row styling — this row dims like a disabled record.
-			{Cells: display.SimpleTableRow("Carol White", "carol@example.com", "Suspended").Cells, Class: "opacity-60"},
+			// #406: per-row styling — this row tints like a suspended record
+			// (background tint keeps the text at full contrast; opacity would
+			// fail the axe color-contrast gate).
+			{Cells: display.SimpleTableRow("Carol White", "carol@example.com", "Suspended").Cells, Class: "bg-amber-50 dark:bg-amber-950/40"},
 		},
 		Striped: true,
 		Hover:   true,
