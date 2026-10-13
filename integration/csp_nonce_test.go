@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
-
 	"github.com/larsartmann/templ-components/charts/echarts"
 	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/display"

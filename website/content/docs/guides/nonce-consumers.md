@@ -24,7 +24,7 @@ render tables by `cmd/tc.TestNonceConsumerIntegrationSync`.
 The library's own guarantee (omit-empty rule, issues #7/#9/#24): an empty
 `Nonce` OMITS the attribute entirely — the library never renders a broken
 `nonce=""`. The failure mode is consumer-side: you hold a per-request nonce
-and forget to thread it. See [CSP Compliance](/docs/guides/csp-compliance)
+and forget to thread it. See [CSP Compliance](/guides/csp-compliance)
 for the threading patterns.
 
 ## The Table

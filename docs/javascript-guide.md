@@ -368,6 +368,10 @@ Client-side: `const config = JSON.parse(document.getElementById('page-config').t
 > issue. Avoid inline handlers entirely if your CSP is strict — use event delegation
 > (Pattern 1) or `addEventListener` via IIFE scripts.
 
+> **Which components need the nonce?** Every inline-script component is
+> inventoried in [docs/nonce-consumers.md](./nonce-consumers.md), and
+> `tc doctor` scans your repo for nonce-less call sites to that exact list.
+
 ### Nonce middleware pattern
 
 ```go
