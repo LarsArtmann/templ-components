@@ -206,6 +206,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Command palette input has an accessible name.** The palette's
+  combobox search field carried placeholder text but neither a
+  `label` nor an `aria-label`, so screen readers announced an unnamed
+  input (caught by DiscordSync's form-label audit after adopting the
+  palette). The input now renders `aria-label` mirroring the
+  placeholder.
+
 - **`tc add` scaffolder no longer ships stale generated files.** The
   scaffolder's embedded source mirror (`cmd/tc/_sources`) is for `.templ` +
   `*_types.go` sources only, but an external build tool kept regenerating the
