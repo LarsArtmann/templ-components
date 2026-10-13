@@ -14,7 +14,7 @@ import (
 func TestRTLDirectionReadsAreSubtreeScoped(t *testing.T) {
 	t.Parallel()
 
-	sources := []string{"shared.go", "tabs.templ", "carousel.templ"}
+	sources := []string{"shared.go", "tabs.templ", "carousel_go.go"}
 
 	for _, name := range sources {
 		content, err := os.ReadFile(name)
