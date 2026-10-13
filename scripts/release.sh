@@ -297,6 +297,13 @@ fi
 echo "Running full verify (templ generate + CSS compile + per-module build/test/lint)..."
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate ./...
+# The root generate stamps repo-root-relative FileName paths into every module's
+# generated files; the canonical committed form is module-relative (nested
+# modules: basename; website: module-relative). Same normalization ci-repro.sh
+# applies after its root generate — without it every cut re-drifts the tree.
+for mod in utils icons errorpage charts/echarts datastar htmx website; do
+	(cd "$mod" && templ generate ./...)
+done
 
 # Recompile every compiled-CSS distribution target so the release commit
 # ships fresh artifacts (commands verified byte-identical to BuildFlow's
