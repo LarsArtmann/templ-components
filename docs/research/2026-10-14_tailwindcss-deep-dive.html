@@ -1,0 +1,1941 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tailwind CSS v4 — Adoption &amp; Utilization Audit II — templ-components</title>
+    <style>
+      /* =========================================================================
+         BAUHAUS LIGHT — Editorial template (library-deep-dive kit)
+         ========================================================================= */
+
+      :root {
+        /* --- Primitive palette (Bauhaus Light) --- */
+        --color-paper: #f4f4f0;
+        --color-paper-2: #ffffff;
+        --color-paper-3: #e8e8e2;
+        --color-ink: #111111;
+        --color-red: #e63946;
+        --color-blue: #1d3557;
+        --color-yellow: #f4d35e;
+        --color-hairline: rgba(17, 17, 17, 0.14);
+        --color-hairline-strong: rgba(17, 17, 17, 0.3);
+
+        /* --- Semantic layer --- */
+        --surface: var(--color-paper);
+        --surface-raised: var(--color-paper-2);
+        --surface-sunken: var(--color-paper-3);
+        --text: var(--color-ink);
+        --text-muted: rgba(17, 17, 17, 0.72);
+        --text-faint: rgba(17, 17, 17, 0.5);
+        --border: var(--color-hairline);
+        --border-strong: var(--color-hairline-strong);
+        --accent: var(--color-red);
+        --problem: var(--color-red);
+        --solution: var(--color-blue);
+        --warning: var(--color-yellow);
+
+        /* --- Aliases --- */
+        --bg: var(--surface);
+        --bg-elevated: var(--surface-raised);
+        --bg-sunken: var(--surface-sunken);
+        --bg-card: var(--surface-raised);
+        --bg-code: var(--surface-sunken);
+        --ink: var(--text);
+        --ink-secondary: var(--text-muted);
+        --ink-muted: var(--text-faint);
+        --rose: var(--problem);
+        --rose-glow: color-mix(in srgb, var(--problem) 15%, transparent);
+        --emerald: var(--solution);
+        --emerald-glow: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber: var(--warning);
+        --amber-glow: color-mix(in srgb, var(--warning) 15%, transparent);
+        --amber-light: color-mix(in srgb, var(--warning) 22%, transparent);
+        --coral: var(--problem);
+        --coral-light: color-mix(in srgb, var(--problem) 12%, transparent);
+        --teal: var(--solution);
+        --teal-light: color-mix(in srgb, var(--solution) 12%, transparent);
+
+        /* --- Shape --- */
+        --radius: 0px;
+        --radius-sm: 0px;
+
+        /* --- Type stacks (system only) --- */
+        --font-heading:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-body:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-mono:
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      section[id],
+      [id] {
+        scroll-margin-top: 60px;
+      }
+
+      body {
+        background: var(--surface);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 16px;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      a:focus-visible {
+        outline-offset: -1px;
+      }
+
+      .top-bar {
+        background: var(--text);
+        color: var(--surface);
+        padding: 0.6rem 2rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .layout {
+        display: flex;
+        gap: 2.5rem;
+        padding: 2rem;
+      }
+      .sidebar {
+        width: 220px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 1rem;
+        align-self: flex-start;
+        height: calc(100vh - 2rem);
+        overflow-y: auto;
+        display: none;
+      }
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .sidebar .label {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--text);
+      }
+      .sidebar a {
+        font-size: 0.86rem;
+        color: var(--text);
+        text-decoration: none;
+        padding: 0.5rem 0.75rem;
+        border-left: 4px solid transparent;
+        font-weight: 600;
+        transition: all 0.15s ease;
+        line-height: 1.4;
+      }
+      .sidebar a:hover,
+      .sidebar a.active {
+        border-left-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+        color: var(--accent);
+      }
+      .main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-heading);
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        color: var(--text);
+      }
+      h1 {
+        font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+        line-height: 1.05;
+        margin: 0 0 0.6rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+        margin: 2.5rem 0 1rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 3px solid var(--text);
+        display: flex;
+        align-items: baseline;
+        gap: 0.7rem;
+      }
+      h2 .num {
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+      h3 {
+        font-size: 1.15rem;
+        margin: 0 0 0.4rem;
+        font-weight: 700;
+      }
+      h4 {
+        font-size: 1rem;
+        margin: 0 0 0.3rem;
+        font-weight: 700;
+      }
+      p {
+        margin: 0 0 1rem;
+      }
+
+      .hero {
+        padding: 1.5rem 0 2rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 3px solid var(--text);
+      }
+      .eyebrow {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: var(--accent);
+        margin-bottom: 0.9rem;
+      }
+      .subtitle {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        max-width: 70ch;
+        margin: 0 0 1rem;
+      }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .tag {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        padding: 0.25rem 0.6rem;
+        background: var(--surface-sunken);
+        color: var(--text);
+        border: 1px solid var(--border-strong);
+      }
+      .tag.amber {
+        background: var(--warning);
+        border-color: var(--warning);
+        color: var(--text);
+      }
+      .tag.teal {
+        background: var(--solution);
+        border-color: var(--solution);
+        color: var(--surface);
+      }
+
+      .hero-shapes {
+        position: relative;
+        height: 90px;
+        margin-bottom: 1.2rem;
+      }
+      .hero-shapes .circle {
+        position: absolute;
+        top: 0;
+        right: 180px;
+        width: 64px;
+        height: 64px;
+        background: var(--problem);
+        border-radius: 50%;
+      }
+      .hero-shapes .square {
+        position: absolute;
+        top: 26px;
+        right: 90px;
+        width: 56px;
+        height: 56px;
+        background: var(--solution);
+      }
+      .hero-shapes .tri {
+        position: absolute;
+        top: 8px;
+        right: 0;
+        width: 0;
+        height: 0;
+        border-left: 32px solid transparent;
+        border-right: 32px solid transparent;
+        border-bottom: 56px solid var(--warning);
+      }
+      .hero-shapes .bar {
+        position: absolute;
+        bottom: 0;
+        right: 230px;
+        width: 100px;
+        height: 14px;
+        background: var(--text);
+      }
+
+      .scorecard,
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 0;
+        margin: 1.5rem 0 2rem;
+        border: 3px solid var(--text);
+      }
+      .score-card,
+      .stat-card {
+        padding: 1.3rem 1rem;
+        text-align: center;
+        border-right: 3px solid var(--text);
+        background: var(--surface-raised);
+      }
+      .score-card:last-child,
+      .stat-card:last-child {
+        border-right: none;
+      }
+
+      .score,
+      .stat-value {
+        font-family: var(--font-heading);
+        font-size: 2.6rem;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+      .score-card .label,
+      .stat-label {
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin-top: 0.5rem;
+      }
+      .score-good,
+      .stat-good {
+        background: var(--solution);
+        color: var(--surface);
+      }
+      .score-warn,
+      .stat-warn {
+        background: var(--warning);
+        color: var(--text);
+      }
+      .score-bad,
+      .stat-bad {
+        background: var(--problem);
+        color: var(--surface);
+      }
+
+      .card {
+        background: var(--surface-raised);
+        border: 2px solid var(--text);
+        padding: 1.2rem 1.4rem;
+        margin-bottom: 1rem;
+        border-left: 8px solid var(--border-strong);
+      }
+      .card-problem {
+        border-left-color: var(--problem);
+      }
+      .card-solution {
+        border-left-color: var(--solution);
+      }
+      .card-warning {
+        border-left-color: var(--warning);
+      }
+
+      .issue {
+        background: var(--surface-raised);
+        border: 2px solid var(--text);
+        padding: 1.2rem 1.4rem;
+        margin-bottom: 1rem;
+        border-left: 8px solid var(--border-strong);
+      }
+      .issue-critical {
+        border-left-color: var(--problem);
+      }
+      .issue-important {
+        border-left-color: var(--warning);
+      }
+      .issue-nice {
+        border-left-color: var(--solution);
+      }
+      .issue h3 {
+        margin-bottom: 0.3rem;
+      }
+      .issue .where {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--text-faint);
+        margin: 0.2rem 0 0.6rem;
+      }
+      .issue p:last-child {
+        margin-bottom: 0;
+      }
+
+      .severity {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.22rem 0.6rem;
+        margin-bottom: 0.6rem;
+        color: var(--surface);
+      }
+      .severity-critical {
+        background: var(--problem);
+      }
+      .severity-important {
+        background: var(--warning);
+        color: var(--text);
+      }
+      .severity-nice {
+        background: var(--solution);
+      }
+
+      .badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.55rem;
+        border: 1px solid var(--text);
+        color: var(--text);
+      }
+      .badge-critical {
+        background: var(--problem);
+        color: var(--surface);
+      }
+      .badge-high {
+        background: var(--warning);
+      }
+      .badge-medium {
+        background: var(--surface-sunken);
+      }
+      .badge-low {
+        background: var(--surface-raised);
+        color: var(--text-muted);
+      }
+      .badge-fixed {
+        background: var(--solution);
+        color: var(--surface);
+      }
+
+      .callout {
+        margin: 0.8rem 0 0;
+        padding: 0.8rem 1rem;
+        border: 1px solid var(--border-strong);
+        border-left: 4px solid var(--border-strong);
+        background: var(--surface-sunken);
+        font-size: 0.92rem;
+      }
+      .callout strong {
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
+      .callout-teal,
+      .callout-solution {
+        border-left-color: var(--solution);
+        background: color-mix(
+          in srgb,
+          var(--solution) 10%,
+          var(--surface-raised)
+        );
+      }
+      .callout-amber,
+      .callout-warning {
+        border-left-color: var(--warning);
+        background: color-mix(
+          in srgb,
+          var(--warning) 18%,
+          var(--surface-raised)
+        );
+      }
+
+      .strengths {
+        display: grid;
+        gap: 0.5rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .strength {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.9rem;
+        padding: 0.75rem 0;
+        border-bottom: 2px solid var(--border);
+      }
+      .strength .check {
+        font-family: var(--font-mono);
+        font-weight: 900;
+        color: var(--solution);
+        font-size: 1.3rem;
+        line-height: 1.3;
+      }
+      .strength .text strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+      .strength .text span {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.92rem;
+        border: 2px solid var(--text);
+      }
+      th {
+        text-align: left;
+        padding: 0.6rem 0.9rem;
+        background: var(--text);
+        color: var(--surface);
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-right: 1px solid var(--border-strong);
+      }
+      th:last-child {
+        border-right: none;
+      }
+      td {
+        padding: 0.6rem 0.9rem;
+        border-top: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+      }
+      td:last-child {
+        border-right: none;
+      }
+      tr:nth-child(even) td {
+        background: var(--surface-sunken);
+      }
+      table.compare td.yes {
+        color: var(--solution);
+        font-weight: 700;
+      }
+      table.compare td.no {
+        color: var(--problem);
+        font-weight: 700;
+      }
+
+      pre {
+        background: var(--text);
+        color: var(--surface);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.65;
+        overflow-x: auto;
+        border: 2px solid var(--text);
+      }
+      code {
+        font-family: var(--font-mono);
+      }
+      p code,
+      li code,
+      td code {
+        font-size: 0.88em;
+        background: var(--surface-sunken);
+        padding: 0.1rem 0.35rem;
+      }
+      .tok-keyword {
+        color: var(--warning);
+      }
+      .tok-type {
+        color: var(--warning);
+      }
+      .tok-string {
+        color: #95e1d3;
+      }
+      .tok-comment {
+        color: rgba(244, 244, 240, 0.45);
+        font-style: italic;
+      }
+      .tok-func {
+        color: #6eb5ff;
+      }
+      .tok-number {
+        color: var(--warning);
+      }
+      .tok-generic {
+        color: var(--problem);
+      }
+      .tok-builtin {
+        color: #6eb5ff;
+      }
+      .tok-punct {
+        color: rgba(244, 244, 240, 0.7);
+      }
+      .tok-attr {
+        color: var(--warning);
+      }
+
+      .dep-tree {
+        background: var(--surface-sunken);
+        border: 2px solid var(--text);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.7;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .dep-tree .root {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .dep-tree .ok {
+        color: var(--solution);
+      }
+      .dep-tree .unwanted {
+        color: var(--problem);
+      }
+
+      .diagram {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: var(--surface-raised);
+        border: 2px solid var(--text);
+      }
+      .node {
+        display: inline-block;
+        padding: 0.4rem 0.75rem;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 700;
+        background: var(--surface-sunken);
+        border: 1px solid var(--text);
+      }
+      .node-core {
+        background: var(--accent);
+        color: var(--surface);
+      }
+      .node-problem {
+        background: var(--problem);
+        color: var(--surface);
+      }
+      .node-good {
+        background: var(--solution);
+        color: var(--surface);
+      }
+      .arrow {
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .toc {
+        background: var(--surface-raised);
+        border: 2px solid var(--text);
+        border-left: 6px solid var(--accent);
+        padding: 1rem 1.3rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .toc h3 {
+        margin-bottom: 0.5rem;
+      }
+      .toc ul {
+        list-style: none;
+        padding: 0;
+      }
+      .toc li {
+        margin: 0.25rem 0;
+      }
+      .toc a {
+        color: var(--text);
+        text-decoration: none;
+        font-size: 0.92rem;
+        font-weight: 600;
+      }
+      .toc a:hover {
+        color: var(--accent);
+      }
+
+      .migration-step {
+        display: grid;
+        grid-template-columns: 56px 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+        padding: 1.1rem;
+        background: var(--surface-raised);
+        border: 2px solid var(--text);
+        border-left: 6px solid var(--accent);
+      }
+      .migration-num {
+        font-family: var(--font-mono);
+        font-weight: 900;
+        font-size: 1.8rem;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .migration-content h4 {
+        margin-bottom: 0.2rem;
+      }
+      .migration-content p {
+        margin-bottom: 0;
+        color: var(--text-muted);
+        font-size: 0.94rem;
+      }
+
+      .compare-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin: 1rem 0 0.5rem;
+      }
+      .compare-before,
+      .compare-after {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0.4rem 0.7rem;
+        color: var(--surface);
+      }
+      .compare-before {
+        background: var(--problem);
+      }
+      .compare-after {
+        background: var(--solution);
+      }
+      .compare-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .compare-row pre {
+        margin: 0;
+      }
+
+      .footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 3px solid var(--text);
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+      }
+
+      @media (min-width: 1024px) {
+        .sidebar {
+          display: block;
+        }
+      }
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+          padding: 1rem;
+        }
+        .top-bar {
+          padding: 0.6rem 1rem;
+          flex-wrap: wrap;
+          gap: 0.3rem;
+        }
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .compare-header,
+        .compare-row {
+          grid-template-columns: 1fr;
+        }
+        .scorecard,
+        .stat-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .score-card:nth-child(2),
+        .stat-card:nth-child(2) {
+          border-right: none;
+        }
+        .score-card:nth-child(1),
+        .stat-card:nth-child(1),
+        .score-card:nth-child(2),
+        .stat-card:nth-child(2) {
+          border-bottom: 3px solid var(--text);
+        }
+        .migration-step {
+          grid-template-columns: 1fr;
+        }
+        .hero-shapes {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <span>LIBRARY DEEP DIVE II</span>
+      <span>2026-10-14</span>
+      <span>templ-components &middot; Tailwind CSS</span>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#scorecard">Scorecard</a>
+          <a href="#strengths">Strengths</a>
+          <a href="#remediation">Remediation Ledger</a>
+          <a href="#findings">Findings</a>
+          <a href="#version">Version Currency</a>
+          <a href="#opportunities">Opportunities</a>
+          <a href="#notapplicable">Not Applicable</a>
+          <a href="#conclusion">Conclusion</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <!-- Hero -->
+        <header class="hero">
+          <div class="hero-shapes">
+            <div class="bar"></div>
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="eyebrow">LIBRARY DEEP DIVE &middot; 2026-10-14</div>
+          <h1>Tailwind CSS v4 — Adoption &amp; Utilization Audit II</h1>
+          <p class="subtitle">
+            Second audit of how completely templ-components uses Tailwind CSS
+            v4 — the styling engine for 135 components, 102 icons, and the
+            website. This pass verifies remediation of the 2026-10-08 audit,
+            re-confirms version currency, and goes one level deeper on the
+            dimension the first audit only opened: making the framework's
+            variant and theming machinery work for <em>consumers</em>, not just
+            for the library's own CSS.
+          </p>
+          <div class="meta">
+            <span class="tag amber">Installed: 4.3.3</span>
+            <span class="tag teal">Latest: 4.3.3 &middot; zero gap</span>
+            <span class="tag teal">Adoption Score: 83/100</span>
+            <span class="tag">Prior audit: 82/100 (2026-10-08)</span>
+          </div>
+        </header>
+
+        <!-- Scorecard -->
+        <section id="scorecard" class="scorecard">
+          <div class="score-card score-good">
+            <div class="score">83</div>
+            <div class="label">Adoption score / 100</div>
+          </div>
+          <div class="score-card score-good">
+            <div class="score">0</div>
+            <div class="label">Versions behind latest</div>
+          </div>
+          <div class="score-card score-good">
+            <div class="score">5</div>
+            <div class="label">Prior findings fixed</div>
+          </div>
+          <div class="score-card score-warn">
+            <div class="score">8</div>
+            <div class="label">Partially-used findings</div>
+          </div>
+          <div class="score-card">
+            <div class="score">0</div>
+            <div class="label">Anti-patterns</div>
+          </div>
+        </section>
+
+        <!-- Summary -->
+        <section id="summary">
+          <h2><span class="num">00</span>Summary</h2>
+          <p>
+            templ-components treats Tailwind v4 as load-bearing infrastructure,
+            and the discipline is enforced by tests rather than convention
+            documents: curated <code>@source</code> scanning that covers
+            Go-embedded class maps, a class-strategy dark mode scanned
+            line-by-line, motion-reduce fallbacks counted per utility, and a
+            CSS build pipeline with freshness and inventory guards. The pinned
+            generator — <code>4.3.3</code> in all three build lanes — is still
+            the newest release as of 2026-10-14, so there is zero version debt
+            to pay.
+          </p>
+          <p>
+            Since the first audit (2026-10-08, score 82), five findings were
+            remediated and are verified fixed in this tree: the hardcoded
+            palette literals in <code>custom.css</code> (now
+            <code>var(--color-*)</code> + <code>--alpha()</code>, guarded by
+            <code>TestCustomCSSThemeTokens</code>), the deprecated
+            <code>start-*/end-*</code> insets (now the v4.2-canonical
+            <code>inset-s-*/inset-e-*</code>, with the guard test banning the
+            old names), the unpinned CSS build lanes (now lockstep-pinned at
+            4.3.3), <code>.tc-no-scrollbar</code> (replaced by v4.3's
+            <code>scrollbar-none</code>), and the legacy
+            <code>bg-gradient-to-*</code> aliases (now
+            <code>bg-linear-to-*</code>). That remediation pace is the story of
+            this audit: the findings list below is narrower and deeper than
+            last time.
+          </p>
+          <div class="callout callout-amber">
+            <strong>The bottom line</strong>
+            The library's own CSS now honors its theming contract; the next
+            unit of value is <em>consumer-facing composability</em>. Three
+            moves deliver most of it: (1) adopt <code>@variant dark { }</code>
+            inside <code>custom.css</code> to delete the ~15 hand-written
+            <code>.dark</code> selector blocks, (2) convert the simple
+            <code>.tc-*</code> helpers to <code>@utility</code> so consumers
+            get tree-shaking and <code>hover:tc-*</code>-style variant
+            composition, and (3) replace the website's WebKit-only hand-rolled
+            scrollbar CSS with v4.3's cross-browser
+            <code>scrollbar-*</code> utilities.
+          </div>
+        </section>
+
+        <!-- Strengths -->
+        <section id="strengths">
+          <h2><span class="num">&#9670;</span>What's already excellent</h2>
+          <p>
+            The baseline earned its reputation again this pass. Every claim
+            below was re-verified against the current tree (counts from
+            <code>.templ</code>/<code>.go</code> library sources, generated
+            files and mirrors excluded).
+          </p>
+
+          <div class="strengths">
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Curated scanning that beats Tailwind's biggest blind spot</strong>
+                <span>
+                  <code>templates/app.css:17-29</code> —
+                  <code>@import "tailwindcss" source(none)</code> plus explicit
+                  <code>@source "**/*.templ"</code> and <code>"**/*.go"</code>.
+                  Class lookup maps live in Go in this library; a default scan
+                  would silently drop them. <code>TestTailwindGoSourceScanning</code>
+                  pins the failure class. The consumer story ships in-module
+                  (ADR-0045 <code>templ-components-classes.txt</code>,
+                  <code>app.css:42</code>) — the hardest templ&#43;Tailwind
+                  integration problem, solved and versioned.
+                </span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Theme system is now contract-clean</strong>
+                <span>
+                  <code>templates/templ-components-theme.css:38-167</code> —
+                  full 50&#8211;950 semantic ramps as literal oklch values
+                  (cycle-proof by construction, ADR-0044) with palette&#8594;semantic
+                  <code>var()</code> re-binding so one <code>@theme</code>
+                  override re-skins every component. Four presets
+                  (<code>templates/presets/</code>), including the
+                  <code>@utility</code>-based glass preset. Verified this pass:
+                  zero hex/rgb literals remain in <code>custom.css</code>.
+                </span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Modern CSS where Tailwind stops — at expert depth</strong>
+                <span>
+                  <code>templates/custom.css</code> —
+                  <code>@starting-style</code> + <code>allow-discrete</code>
+                  dialog/popover animation system (:34-130),
+                  <code>@supports (appearance: base-select)</code> with
+                  <code>::picker</code>/<code>::picker-icon</code> (:347-460),
+                  <code>corner-shape: squircle</code>,
+                  <code>content-visibility</code>, <code>interpolate-size</code>,
+                  and the build-time <code>--alpha()</code> function (:91, :100,
+                  :375) compiling to var-preserving <code>color-mix()</code>.
+                </span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Container queries as product architecture</strong>
+                <span>
+                  8 components carry a typed <code>ContainerAware</code> prop
+                  swapping viewport breakpoints for <code>@sm:/@md:/@lg:</code>
+                  (ADR-0018), and container-query units power
+                  <code>.tc-fluid-*</code> typography via <code>cqi</code> +
+                  <code>clamp()</code> (<code>custom.css:607-632</code>) — text
+                  that adapts to placement, not viewport.
+                </span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>v4.1/v4.3 features already landing</strong>
+                <span>
+                  <code>inert:</code> variant in <code>display/tabs.templ</code>,
+                  <code>scrollbar-none</code> in <code>display/carousel.templ</code>,
+                  <code>wrap-anywhere</code> on the website, canonical
+                  <code>bg-linear-to-*</code> at both gradient sites,
+                  <code>user-valid</code>/<code>user-invalid</code> selectors in
+                  the validation base layer — the repo adopts new releases
+                  within days, not quarters.
+                </span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Discipline the framework can't enforce, enforced anyway</strong>
+                <span>
+                  1,440 <code>dark:</code> tokens and 121
+                  <code>motion-reduce:</code> fallbacks, both scanned by guard
+                  tests; logical properties only (the v4.2 <code>inset-s-* /
+                  inset-e-*</code> canon was adopted <em>ahead</em> of the
+                  deprecation curve); exactly 3 sanctioned compiled CSS
+                  artifacts with freshness, inventory, and version-pin guards
+                  across nix, Docker, and CI lanes (F-20).
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Remediation Ledger -->
+        <section id="remediation">
+          <h2><span class="num">01</span>Remediation ledger — since the 2026-10-08 audit</h2>
+          <p>
+            The first audit scored 82/100 with 8 findings. Verified status of
+            each in today's tree:
+          </p>
+          <div class="table-wrap">
+            <table class="compare">
+              <thead>
+                <tr>
+                  <th>Prior finding</th>
+                  <th>Status</th>
+                  <th>Evidence (today)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Hardcoded palette literals in <code>custom.css</code> (12 hex/rgb) broke the <code>@theme</code> contract</td>
+                  <td class="yes">FIXED</td>
+                  <td>Token policy + <code>utils.TestCustomCSSThemeTokens</code>; zero hex literals; <code>--alpha()</code> throughout</td>
+                </tr>
+                <tr>
+                  <td>Deprecated <code>start-*/end-*</code> insets (21 sites)</td>
+                  <td class="yes">FIXED</td>
+                  <td><code>inset-s-*/inset-e-*</code> canon; <code>TestRTLLogicalProperties</code> now bans the old names</td>
+                </tr>
+                <tr>
+                  <td>CSS build lanes version-unpinned (npm/pnpm)</td>
+                  <td class="yes">FIXED</td>
+                  <td>F-20 lockstep: nix, demo Dockerfile, and <code>website.yml</code> all pin 4.3.3</td>
+                </tr>
+                <tr>
+                  <td><code>.tc-no-scrollbar</code> duplicated v4.3 <code>scrollbar-none</code></td>
+                  <td class="yes">FIXED</td>
+                  <td>Carousel uses <code>scrollbar-none</code>; <code>.tc-no-scrollbar</code> deleted</td>
+                </tr>
+                <tr>
+                  <td>Legacy <code>bg-gradient-to-*</code> aliases (2 sites)</td>
+                  <td class="yes">FIXED</td>
+                  <td><code>bg-linear-to-br</code> / <code>bg-linear-to-r</code> canonical</td>
+                </tr>
+                <tr>
+                  <td><code>@utility</code> tree-shaking for simple <code>.tc-*</code> classes</td>
+                  <td class="no">CARRIED</td>
+                  <td>Still 1 use total (<code>presets/glass.css:35</code>); <code>custom.css</code> still <code>@layer utilities</code> — finding F2</td>
+                </tr>
+                <tr>
+                  <td><code>field-sizing-content</code> should replace <code>.tc-auto-grow</code></td>
+                  <td class="no">CARRIED</td>
+                  <td>Still hand-rolled — finding F4</td>
+                </tr>
+                <tr>
+                  <td><code>size-*</code> idiom (168 <code>w-N h-N</code> pairs)</td>
+                  <td class="no">CARRIED</td>
+                  <td>Still 0 <code>size-*</code> uses — finding F13, bundle with next golden re-baseline</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Findings -->
+        <section id="findings">
+          <h2><span class="num">02</span>Findings</h2>
+          <p>
+            Ordered by impact. New findings from this audit are marked
+            <span class="badge badge-high">NEW</span>; items carried from the
+            prior audit are marked <span class="badge badge-medium">CARRIED</span>.
+          </p>
+
+          <!-- F1 -->
+          <div class="issue issue-important" id="f1">
+            <span class="severity severity-important"
+              >Partially used &middot; High impact &middot;
+              <span class="badge badge-high">NEW</span></span
+            >
+            <h3>
+              <code>@variant</code> unused in custom.css — every dark-mode rule
+              is a hand-written <code>.dark</code> selector fork
+            </h3>
+            <div class="where">
+              templates/custom.css:429-460 (select + picker dark blocks), :294-328
+              (base layer), :1074+ (coarse pointer) &middot; docs:
+              tailwindcss.com/docs/functions-and-directives
+            </div>
+            <p>
+              <code>custom.css</code> is compiled by Tailwind (imported by
+              <code>app.css</code> and <code>demo.css</code>), so the
+              <code>@custom-variant dark</code> defined in <code>app.css:48</code>
+              is in scope — but the file never uses it. Instead, the stylable
+              select alone duplicates its light-mode rules under a
+              <code>.dark</code> prefix eight times (background, border, focus
+              ring, picker icon, picker panel, options&#8230;), and v4.3's
+              stacked (<code>@variant hover:focus</code>) and compound
+              (<code>@variant hover, focus</code>) forms — verified against the
+              official docs — would let hover/focus/dark combinations collapse
+              into single blocks. Each hand-written fork is a place a future
+              edit can forget the dark half.
+            </p>
+            <pre><code><span class="tok-comment">/* Before — two rules per property, drift-prone (custom.css:429) */</span>
+<span class="tok-type">select</span><span class="tok-punct">.</span><span class="tok-func">tc-select</span> { <span class="tok-attr">background-color</span><span class="tok-punct">:</span> <span class="tok-builtin">var</span>(--color-white); }
+<span class="tok-type">.dark</span> <span class="tok-type">select</span><span class="tok-punct">.</span><span class="tok-func">tc-select</span> { <span class="tok-attr">background-color</span><span class="tok-punct">:</span> <span class="tok-builtin">var</span>(--color-gray-900); }
+
+<span class="tok-comment">/* After — one rule, variant-nested (v4.3 compound syntax) */</span>
+<span class="tok-type">select</span><span class="tok-punct">.</span><span class="tok-func">tc-select</span> {
+  <span class="tok-attr">background-color</span><span class="tok-punct">:</span> <span class="tok-builtin">var</span>(--color-white);
+  <span class="tok-keyword">@variant</span> dark { <span class="tok-attr">background-color</span><span class="tok-punct">:</span> <span class="tok-builtin">var</span>(--color-gray-900); }
+  <span class="tok-punct">&amp;</span><span class="tok-punct">:focus-visible</span> {
+    <span class="tok-attr">box-shadow</span><span class="tok-punct">:</span> 0 0 0 2px <span class="tok-func">--alpha</span>(<span class="tok-builtin">var</span>(--color-blue-500) / 30%);
+    <span class="tok-keyword">@variant</span> dark {
+      <span class="tok-attr">box-shadow</span><span class="tok-punct">:</span> 0 0 0 2px <span class="tok-func">--alpha</span>(<span class="tok-builtin">var</span>(--color-blue-400) / 30%);
+    }
+  }
+}</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Migrate the <code>.dark</code> forks in the select block (and the
+              backdrop/overlay color swaps) to <code>@variant dark { }</code>.
+              Output CSS is semantically identical, so goldens verify without a
+              visual re-baseline; <code>TestCustomCSSUtilities</code> still
+              passes since class names are unchanged.
+            </div>
+          </div>
+
+          <!-- F2 -->
+          <div class="issue issue-important" id="f2">
+            <span class="severity severity-important"
+              >Partially used &middot; High impact &middot;
+              <span class="badge badge-medium">CARRIED</span></span
+            >
+            <h3>
+              Simple <code>.tc-*</code> helpers still ship in
+              <code>@layer utilities</code> — no tree-shaking, no variants
+            </h3>
+            <div class="where">
+              templates/custom.css (14 plain classes, ~1,091 lines imported
+              wholesale) &middot; used once ever: templates/presets/glass.css:35
+              &middot; docs: tailwindcss.com/docs/utility-directive
+            </div>
+            <p>
+              Verified rules of <code>@utility</code>: classes registered with
+              it are <em>emitted only when the scanner sees them used</em>, and
+              they compose with every variant (<code>hover:</code>,
+              <code>dark:</code>, <code>md:</code>). Plain classes in
+              <code>@layer utilities</code> of an imported file ship to every
+              consumer regardless of use and cannot take variants. Because
+              <code>app.css</code> imports <code>custom.css</code> unconditionally,
+              an icons-only or three-component adoption still ships all fluid
+              typography, scroll-snap, content-visibility, and squircle CSS.
+              The constraint that kept this open is real: compound selectors
+              (<code>dialog.tc-overlay</code>, the <code>@supports</code>
+              select block) cannot be <code>@utility</code> — but that was
+              never the proposal.
+            </p>
+            <pre><code><span class="tok-comment">/* Before — always emitted, variant-deaf */</span>
+<span class="tok-keyword">@layer</span> <span class="tok-type">utilities</span> {
+  <span class="tok-punct">.</span><span class="tok-func">tc-content-auto</span> { <span class="tok-attr">content-visibility</span><span class="tok-punct">:</span> auto; <span class="tok-attr">contain-intrinsic-size</span><span class="tok-punct">:</span> auto 48px; }
+}
+
+<span class="tok-comment">/* After — tree-shaken, composable: &lt;div class="hover:tc-content-auto"&gt; */</span>
+<span class="tok-keyword">@utility</span> <span class="tok-func">tc-content-auto</span> {
+  <span class="tok-attr">content-visibility</span><span class="tok-punct">:</span> auto;
+  <span class="tok-attr">contain-intrinsic-size</span><span class="tok-punct">:</span> auto 48px;
+}</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Convert only utility-shaped single-class rules:
+              <code>tc-content-auto(-compact)</code>, <code>tc-auto-grow</code>,
+              <code>tc-squircle</code>, <code>tc-snap-*</code>,
+              <code>tc-fluid-*</code>. Keep component-shaped CSS
+              (<code>tc-select</code>, <code>tc-modal</code>,
+              <code>tc-log</code>, <code>tc-anim-*</code>) as-is. Layer
+              re-sorting means this needs the next planned golden/visual
+              re-baseline, not an ad-hoc run. Sync
+              <code>TestCustomCSSUtilities</code>.
+            </div>
+          </div>
+
+          <!-- F3 -->
+          <div class="issue issue-important" id="f3">
+            <span class="severity severity-important"
+              >Missed opportunity &middot; Medium-high impact &middot;
+              <span class="badge badge-high">NEW</span></span
+            >
+            <h3>
+              The website hand-rolls WebKit-only scrollbar CSS — v4.3's
+              <code>scrollbar-*</code> utilities cover all engines
+            </h3>
+            <div class="where">
+              website/site.css:223-237 (<code>::-webkit-scrollbar</code>,
+              <code>-track</code>, <code>-thumb</code>,
+              <code>-thumb:hover</code>) &middot; docs: v4.3.0 release notes
+            </div>
+            <p>
+              The library already proved the migration inside its own
+              components (carousel's <code>scrollbar-none</code>), but the
+              website's own chrome still styles scrollbars through
+              <code>::-webkit-scrollbar</code> pseudo-elements — which Firefox
+              ignores entirely, so Firefox visitors get default fat scrollbars
+              on every docs page. v4.3.0 shipped
+              <code>scrollbar-{auto,thin,none}</code>,
+              <code>scrollbar-thumb-*</code>,
+              <code>scrollbar-track-*</code>, and
+              <code>scrollbar-gutter-*</code>, compiling to the standard
+              <code>scrollbar-width</code>/<code>scrollbar-color</code>
+              properties with the WebKit fallback included.
+            </p>
+            <pre><code><span class="tok-comment">&lt;!-- Before — site.css:223-237 + scattered usage; Firefox sees none of it --&gt;</span>
+<span class="tok-comment">::-webkit-scrollbar { height: 6px; } ::-webkit-scrollbar-thumb { background: ...; }</span>
+
+<span class="tok-comment">&lt;!-- After — one utility chain, all engines, dark: aware --&gt;</span>
+<span class="tok-generic">&lt;div class="scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700"&gt;</span></code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Replace the <code>::-webkit-scrollbar</code> block with
+              utilities on the scrolling containers, and while there, refresh
+              <code>docs/tailwind-v4-adoption-guide.md:89-94</code> — its
+              "manual setup" example still teaches a hand-rolled
+              <code>.scrollbar-thin</code> utility that Tailwind now ships
+              natively. Docs teaching hand-rolls for shipped utilities is the
+              cheapest possible drift to fix.
+            </div>
+          </div>
+
+          <!-- F4 -->
+          <div class="issue issue-nice" id="f4">
+            <span class="severity severity-nice"
+              >Partially used &middot; Medium impact &middot;
+              <span class="badge badge-medium">CARRIED</span></span
+            >
+            <h3>
+              <code>.tc-auto-grow</code> hand-rolls what
+              <code>field-sizing-content</code> ships
+            </h3>
+            <div class="where">
+              templates/custom.css (<code>.tc-auto-grow</code>:
+              <code>field-sizing: content</code> + min/max-height) &middot;
+              <code>forms.Textarea</code> <code>AutoGrow</code> &middot; docs:
+              tailwindcss.com/docs/field-sizing
+            </div>
+            <p>
+              The custom class predates the audit's note and survives today.
+              <code>field-sizing-content</code> exists since v4.0 and would let
+              <code>forms.Textarea</code> emit the utility directly, with the
+              min/max clamps as ordinary classes. Counterpoint from last time
+              still holds: a single guarded point of truth is defensible — but
+              then the class should say so, and today it is also one of the
+              classes that would benefit from F2's <code>@utility</code>
+              conversion (consumers could write
+              <code>md:tc-auto-grow</code>).
+            </p>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Either adopt <code>field-sizing-content min-h-10 max-h-80</code>
+              in the Textarea markup and retire the class, or convert
+              <code>tc-auto-grow</code> to <code>@utility</code> in the F2 pass
+              and document it as the deliberate wrapper. Pick one owner.
+            </div>
+          </div>
+
+          <!-- F5 -->
+          <div class="issue issue-nice" id="f5">
+            <span class="severity severity-nice"
+              >Missed opportunity &middot; Medium impact &middot;
+              <span class="badge badge-high">NEW</span></span
+            >
+            <h3>
+              Zero <code>aria-*</code> variants — state styling routes through
+              JS-set data attributes instead
+            </h3>
+            <div class="where">
+              0 uses repo-wide (counted) &middot; contrast:
+              <code>display/command_palette.templ</code> (5
+              <code>data-[tc-palette-active=true]:</code> sites),
+              <code>forms/combobox.templ</code> (<code>data-[selected]:</code>)
+              &middot; docs: tailwindcss.com/docs/hover-focus-and-other-states
+            </div>
+            <p>
+              Tailwind ships nine built-in <code>aria-*</code> variants
+              (<code>aria-checked</code>, <code>aria-selected</code>,
+              <code>aria-expanded</code>, <code>aria-disabled</code>&#8230;)
+              plus arbitrary <code>aria-[sort=ascending]:</code> and
+              composable <code>group-aria-*</code>/<code>peer-aria-*</code>. The
+              components already maintain these ARIA attributes for
+              accessibility — but style from parallel JS-managed
+              <code>data-*</code> hooks instead. Where an element's aria state
+              flips with its visual state (tabs: <code>aria-selected</code>,
+              dropdown triggers: <code>aria-expanded</code>, combobox options:
+              <code>aria-selected</code>), the aria variant can replace a
+              JS class mutation, shrinking the singleton scripts.
+            </p>
+            <pre><code><span class="tok-comment">&lt;!-- Tab trigger — style follows the ARIA state it already sets --&gt;</span>
+<span class="tok-generic">&lt;button role="tab" aria-selected="true"</span>
+        <span class="tok-attr">class</span>=<span class="tok-string">"aria-selected:border-blue-600 aria-selected:text-blue-600 ..."</span><span class="tok-generic">&gt;</span>
+
+<span class="tok-comment">&lt;!-- Dropdown trigger — chevron rotates with aria-expanded, no JS class writes --&gt;</span>
+<span class="tok-generic">&lt;button aria-expanded="false"</span> <span class="tok-attr">class</span>=<span class="tok-string">"aria-expanded:rotate-180 transition-transform"</span><span class="tok-generic">&gt;</span></code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Adopt for new components first (Tabs refactors, Dropdown trigger
+              rotation), keeping the existing <code>data-*</code> machinery
+              until each component's next natural touch. Golden churn is
+              per-component, so this rides the ordinary workflow rather than a
+              dedicated sweep.
+            </div>
+          </div>
+
+          <!-- F6 -->
+          <div class="issue issue-nice" id="f6">
+            <span class="severity severity-nice"
+              >Missed opportunity &middot; Medium impact &middot;
+              <span class="badge badge-high">NEW</span></span
+            >
+            <h3>
+              The 11 icon animations live outside the theme — consumers can't
+              compose them with variants
+            </h3>
+            <div class="where">
+              templates/custom.css:659-930 (<code>tc-anim</code> wrapper +
+              11 <code>tc-icon-*</code> keyframes) &middot;
+              <code>icons.AnimatedIcon</code> &middot; docs:
+              tailwindcss.com/docs/theme (animate namespace)
+            </div>
+            <p>
+              <code>@theme</code>'s <code>--animate-*</code> namespace turns a
+              keyframe into a first-class <code>animate-*</code> utility that
+              composes with every variant. Today the animations are reachable
+              only through the <code>tc-anim-*</code> wrapper classes, which
+              hard-code the hover/focus trigger — a consumer wanting
+              "pulse on group hover" or "spin while pending" (kanban already
+              ships its own <code>tc-kanban-pending-spin</code> keyframe for
+              exactly this) must write new CSS. Registering the same keyframes
+              as theme tokens adds zero runtime and opens the full variant
+              surface; the reduced-motion story stays with the existing
+              <code>motion-reduce:animate-none</code> convention the repo
+              already guards.
+            </p>
+            <pre><code><span class="tok-keyword">@theme</span> {
+  <span class="tok-attr">--animate-tc-pulse</span><span class="tok-punct">:</span> tc-icon-pulse 0.9s ease-in-out;
+  <span class="tok-comment">/* keyframes live inside @theme, emitted only when used */</span>
+  <span class="tok-keyword">@keyframes</span> <span class="tok-func">tc-icon-pulse</span> { 0%, 100% { <span class="tok-attr">scale</span><span class="tok-punct">:</span> 1; } 50% { <span class="tok-attr">scale</span><span class="tok-punct">:</span> 1.08; } }
+}
+
+<span class="tok-comment">&lt;!-- consumer-side: full variant power the wrapper classes can't offer --&gt;</span>
+<span class="tok-generic">&lt;svg class="group-hover:animate-tc-pulse motion-reduce:animate-none"&gt;</span></code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Register all 11 presets as <code>--animate-tc-*</code> tokens
+              (keyframes move inside <code>@theme</code>), keep the
+              <code>tc-anim</code> wrapper as the zero-config default path, and
+              document both surfaces in the icons recipe.
+            </div>
+          </div>
+
+          <!-- F7 -->
+          <div class="issue issue-nice" id="f7">
+            <span class="severity severity-nice"
+              >Missed opportunity &middot; Low-medium impact &middot;
+              <span class="badge badge-high">NEW</span></span
+            >
+            <h3>
+              Overflow-prone centering never uses <code>-safe</code> alignment;
+              <code>@source not</code> exclusions unused
+            </h3>
+            <div class="where">
+              <code>navigation/pagination.templ</code>, nav bars (centered
+              flex groups that clip when over-full) &middot;
+              <code>examples/demo/demo.css</code> <code>@source</code> glob
+              &middot; docs: v4.1 release notes
+            </div>
+            <p>
+              Two small v4.1 additions fit this codebase's safety-first
+              character. <code>items-center-safe</code> /
+              <code>justify-center-safe</code> fall back to
+              <code>start</code> alignment when content overflows — the exact
+              failure mode of a centered pagination row on a 375px viewport
+              with many page numbers (the component already leans on
+              <code>ContainerAware</code> for layout, but the row itself can
+              still clip). And <code>@source not "&lt;path&gt;"</code> excludes
+              dead directories from scanning: the demo's
+              <code>@source "../../**/*.templ"</code> sweeps
+              <code>website/</code> and <code>visualtest/</code> testdata into
+              the scan for classes the demo never renders.
+            </p>
+            <pre><code><span class="tok-comment">&lt;!-- pagination row — center, but never clip off-canvas --&gt;</span>
+<span class="tok-generic">&lt;nav class="flex items-center-safe justify-center-safe gap-1"&gt;</span>
+
+<span class="tok-comment">/* demo.css — trim the scan root */</span>
+<span class="tok-keyword">@source</span> <span class="tok-string">"../../**/*.templ"</span>;
+<span class="tok-keyword">@source</span> <span class="tok-keyword">not</span> <span class="tok-string">"../../website"</span>;
+<span class="tok-keyword">@source</span> <span class="tok-keyword">not</span> <span class="tok-string">"../../visualtest"</span>;</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Add <code>-safe</code> modifiers to the pagination/nav centering
+              rows (visually identical at normal widths; safer at extremes),
+              and add the two <code>@source not</code> lines to
+              <code>demo.css</code> — the compiled artifact should not change,
+              which the freshness guard will confirm.
+            </div>
+          </div>
+
+          <!-- F8 -->
+          <div class="issue issue-nice" id="f8">
+            <span class="severity severity-nice"
+              >Considered &middot; Keep current approach &middot;
+              <span class="badge badge-high">NEW</span></span
+            >
+            <h3>
+              <code>pointer-coarse:</code> variant vs the centralized
+              coarse-pointer hook block
+            </h3>
+            <div class="where">
+              templates/custom.css:1074 (<code>@media (pointer: coarse)</code>)
+              &middot; <code>TestCoarsePointerCompliance</code> &middot; docs:
+              v4.1 release notes
+            </div>
+            <p>
+              v4.1's <code>pointer-coarse:</code> variant could express each
+              hover-fallback in markup
+              (<code>pointer-coarse:opacity-100</code>). The repo instead
+              centralizes the fallback in one <code>@media</code> block keyed
+              by <code>tc-*</code> hook classes — and enforces completeness
+              with a compliance test that knows the pattern. The centralized
+              form is the stronger design here: one surface to audit, one test
+              to extend, and the markup stays honest about hover-only styling.
+              Migrating would mean rewriting the guard for zero consumer
+              benefit.
+            </p>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Keep the centralized block. Document
+              <code>pointer-coarse:</code> as the escape hatch for genuinely
+              one-off cases, the same way <code>templ.KV</code> is documented
+              as the deliberate <code>utils.Class</code> exception.
+            </div>
+          </div>
+
+          <!-- F9 -->
+          <div class="issue issue-nice" id="f9">
+            <span class="severity severity-nice"
+              >Missed opportunity &middot; Low impact &middot;
+              <span class="badge badge-high">NEW</span></span
+            >
+            <h3>
+              v4.2's four new neutral palettes are unexplored — a fifth preset
+              is a one-file showcase
+            </h3>
+            <div class="where">
+              templates/presets/ (default, emerald, glass, minimal) &middot;
+              docs: v4.2.0 release notes (mauve, olive, mist, taupe)
+            </div>
+            <p>
+              v4.2.0 added mauve, olive, mist, and taupe — new neutral ramps
+              that fit the repo's gray-only dark-mode policy (they are neutrals,
+              not mixed-hue slates). The preset system is pure
+              <code>@theme</code> re-binding, so a <code>mist.css</code> preset
+              demonstrating a cooler neutral scale is ~25 lines, zero Go
+              changes, and immediately documents the palettes for consumers —
+              the same showcase role the glass preset plays for
+              <code>@utility</code>.
+            </p>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Add <code>templates/presets/mist.css</code> rebinding the gray
+              ramp to mist, wire it into the presets docs and the demo theme
+              page. Purely additive; new golden files only.
+            </div>
+          </div>
+
+          <!-- F10 -->
+          <div class="issue issue-nice" id="f10">
+            <span class="severity severity-nice"
+              >Partially used &middot; Low impact &middot;
+              <span class="badge badge-high">NEW</span></span
+            >
+            <h3>
+              Website docs prose is hand-styled —
+              <code>@tailwindcss/typography</code> is the framework answer
+              (verify plugin support first)
+            </h3>
+            <div class="where">
+              website/site.css:275+ (<code>.docs-content h2, h3, p, ul&#8230;</code>
+              element rules) &middot; docs: tailwindcss.com/docs/typography-plugin
+            </div>
+            <p>
+              The site's markdown-docs typography is a growing pile of scoped
+              element rules — the classic <code>prose</code> use case, and v4's
+              <code>@plugin "@tailwindcss/typography"</code> loads it
+              CSS-first. Honest caveat per this repo's
+              verify-before-adopting culture: the nix lane compiles with the
+              standalone binary (<code>pkgs.tailwindcss_4</code>), and
+              standalone support for JS plugins must be probed before adoption
+              — the demo Docker and website CI lanes use <code>@tailwindcss/cli</code>,
+              which supports plugins natively. If the standalone binary
+              refuses <code>@plugin</code>, the three lanes diverge and the
+              hand-rolled CSS stays.
+            </p>
+            <pre><code><span class="tok-comment">/* site.css — if and only if the standalone binary loads plugins */</span>
+<span class="tok-keyword">@plugin</span> <span class="tok-string">"@tailwindcss/typography"</span>;
+<span class="tok-comment">&lt;!-- article class="prose prose-gray dark:prose-invert" replaces .docs-content rules --&gt;</span></code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Probe first: <code>nix develop -c sh -c 'tailwindcss -i probe.css -o /tmp/out.css'</code>
+              with an <code>@plugin</code> line. If it compiles identically in
+              all three lanes, migrate; otherwise keep the current CSS and
+              note the constraint in the adoption guide.
+            </div>
+          </div>
+
+          <!-- F11 -->
+          <div class="issue issue-nice" id="f11">
+            <span class="severity severity-nice"
+              >Missed opportunity &middot; Low impact &middot;
+              <span class="badge badge-high">NEW</span></span
+            >
+            <h3>
+              <code>tab-*</code> utilities (v4.3) — a natural
+              <code>CodeBlock.TabSize</code> prop
+            </h3>
+            <div class="where">
+              <code>display/code_block.templ</code> &middot; docs: v4.3.0
+              release notes
+            </div>
+            <p>
+              v4.3.0 added <code>tab-N</code>/<code>tab-[N]</code> utilities
+              (tab-size). CodeBlock already renders <code>pre/code</code> with
+              language headers; tab width is the one whitespace knob consumers
+              routinely want for displayed snippets. A typed prop mapping to
+              the utility keeps the zero-arbitrary-classes discipline.
+            </p>
+            <pre><code><span class="tok-comment">&lt;!-- CodeBlock with TabSize: 2 --&gt;</span>
+<span class="tok-generic">&lt;pre class="tab-2 overflow-x-auto ..."&gt;</span><span class="tok-comment">...&lt;/pre&gt;</span></code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              Add <code>TabSize int</code> (default 4, clamped 1&#8211;8)
+              emitting <code>tab-N</code>; one component, one golden, one
+              props-inventory registration.
+            </div>
+          </div>
+
+          <!-- F12 -->
+          <div class="issue issue-nice" id="f12">
+            <span class="severity severity-nice"
+              >Considered &middot; Keep global layer &middot;
+              <span class="badge badge-medium">CARRIED</span></span
+            >
+            <h3>
+              <code>user-valid:</code>/<code>user-invalid:</code> variants —
+              the global base rule remains the right call
+            </h3>
+            <div class="where">
+              templates/custom.css:325-340 (base layer, now
+              <code>var(--color-*)</code> after the token fix)
+            </div>
+            <p>
+              The prior audit already landed the right verdict and this pass
+              confirms it: applying validation borders as a base-layer default
+              for <em>all</em> form controls is DRYer than spraying
+              <code>user-invalid:border-red-600</code> across 26 form
+              components, and the palette fix removed the actual defect. The
+              variants remain the documented escape hatch for a component that
+              needs custom validation styling.
+            </p>
+            <div class="callout callout-teal">
+              <strong>Recommendation</strong>
+              No code change. Add one sentence to the forms docs noting the
+              variants exist for per-component overrides.
+            </div>
+          </div>
+
+          <!-- F13 -->
+          <div class="issue issue-nice" id="f13">
+            <span class="severity severity-nice"
+              >Missed opportunity &middot; Cosmetic &middot;
+              <span class="badge badge-medium">CARRIED</span></span
+            >
+            <h3>
+              <code>size-*</code> idiom: still 168 <code>w-N h-N</code> pairs
+            </h3>
+            <div class="where">
+              w-5 h-5 &#215;68, w-4 h-4 &#215;40, w-6 h-6 &#215;38, w-12 h-12
+              &#215;8, plus 14 smaller pairs (re-counted this pass; still 0
+              <code>size-*</code> uses)
+            </div>
+            <p>
+              Unchanged verdict from the prior audit: rendered output is
+              identical, this is code economy. The bundling advice stands —
+              mechanical sweep riding the next planned golden/visual
+              re-baseline (the templ v0.3.1070 generator migration already
+              queued), never an isolated re-baseline of its own.
+            </p>
+          </div>
+        </section>
+
+        <!-- Version Currency -->
+        <section id="version">
+          <h2><span class="num">03</span>Version currency</h2>
+          <p>
+            Installed <code>4.3.3</code> (nixpkgs <code>tailwindcss_4</code>,
+            verified via <code>nix eval</code>) is still the newest release as
+            of 2026-10-14 — the releases page lists nothing newer. All three
+            build lanes compile with the same generator. The table maps each
+            recent release to this audit's findings.
+          </p>
+          <div class="table-wrap">
+            <table class="compare">
+              <thead>
+                <tr>
+                  <th>Version</th>
+                  <th>Date</th>
+                  <th>Notable capabilities</th>
+                  <th>Relevance here</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>4.3.3</td>
+                  <td>2026-07-16</td>
+                  <td><code>--watch --poll</code>; hex canonicalization; <code>shadow-sm/12.5</code> fractional modifiers</td>
+                  <td class="yes">Installed = latest</td>
+                </tr>
+                <tr>
+                  <td>4.3.0&#8211;4.3.1</td>
+                  <td>2026-05/06</td>
+                  <td><code>scrollbar-*</code> + <code>scrollbar-gutter-*</code>; <code>@variant</code> stacked/compound; <code>@container-size</code>; <code>zoom-*</code>; <code>tab-*</code>; <code>--default()</code> in functional <code>@utility</code></td>
+                  <td class="no">F1, F3, F11 &#8212; the release this audit draws from</td>
+                </tr>
+                <tr>
+                  <td>4.2.0&#8211;4.2.4</td>
+                  <td>2026-02/04</td>
+                  <td><code>inset-s-*/inset-e-*</code> canon; block/inline logical utilities; mauve/olive/mist/taupe palettes; <code>font-features-*</code></td>
+                  <td class="yes">Inset canon adopted; palettes unexplored (F9)</td>
+                </tr>
+                <tr>
+                  <td>4.1.x</td>
+                  <td>2025-04/12</td>
+                  <td><code>pointer-coarse:</code>; <code>noscript:</code>; <code>inert:</code>; <code>user-valid:/user-invalid:</code>; <code>-safe</code> alignment; <code>@source not</code>/<code>inline()</code>; <code>wrap-anywhere</code></td>
+                  <td class="no">F5, F7, F8 &#8212; partially tapped</td>
+                </tr>
+                <tr>
+                  <td>4.0.x</td>
+                  <td>2025-01</td>
+                  <td>CSS-first config; <code>@theme</code>/<code>@utility</code>/<code>@custom-variant</code>; container queries; <code>size-*</code>; <code>field-sizing-content</code>; <code>--alpha()</code></td>
+                  <td class="yes">Adopted broadly; <code>@utility</code>/<code>size-*</code>/<code>field-sizing</code> carry (F2, F4, F13)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Opportunities -->
+        <section id="opportunities">
+          <h2><span class="num">04</span>Top opportunities (impact &#215; ease)</h2>
+          <div class="table-wrap">
+            <table class="compare">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Opportunity</th>
+                  <th>Impact</th>
+                  <th>Ease</th>
+                  <th>Priority</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><code>@variant dark { }</code> in custom.css — delete the <code>.dark</code> forks (F1)</td>
+                  <td class="yes">4</td>
+                  <td class="yes">5</td>
+                  <td><span class="highlight">20</span></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><code>@utility</code> for simple <code>.tc-*</code> classes — tree-shake + variants (F2, carried)</td>
+                  <td class="yes">4</td>
+                  <td class="yes">4</td>
+                  <td><span class="highlight">16</span></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>Website <code>scrollbar-*</code> utilities + adoption-guide refresh (F3)</td>
+                  <td class="yes">3</td>
+                  <td class="yes">5</td>
+                  <td><span class="highlight">15</span></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><code>@theme --animate-tc-*</code> tokens for the 11 icon animations (F6)</td>
+                  <td class="yes">3</td>
+                  <td class="yes">3</td>
+                  <td><span class="highlight">9</span></td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td><code>aria-*</code> variants for state-styled components, new-first (F5)</td>
+                  <td class="yes">3</td>
+                  <td class="yes">3</td>
+                  <td><span class="highlight">9</span></td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td><code>-safe</code> alignment on pagination/nav + <code>@source not</code> demo exclusions (F7)</td>
+                  <td class="yes">2</td>
+                  <td class="yes">5</td>
+                  <td><span class="highlight">10</span></td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td>Mist preset from v4.2 neutral palettes (F9)</td>
+                  <td class="yes">2</td>
+                  <td class="yes">4</td>
+                  <td><span class="highlight">8</span></td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td>Resolve <code>tc-auto-grow</code> vs <code>field-sizing-content</code> (F4, carried)</td>
+                  <td class="yes">2</td>
+                  <td class="yes">4</td>
+                  <td><span class="highlight">8</span></td>
+                </tr>
+                <tr>
+                  <td>9</td>
+                  <td>Typography plugin for website prose — after the standalone-binary probe (F10)</td>
+                  <td class="yes">3</td>
+                  <td class="yes">2</td>
+                  <td><span class="highlight">6</span></td>
+                </tr>
+                <tr>
+                  <td>10</td>
+                  <td><code>CodeBlock.TabSize</code> via <code>tab-*</code> (F11)</td>
+                  <td class="yes">1</td>
+                  <td class="yes">4</td>
+                  <td><span class="highlight">4</span></td>
+                </tr>
+                <tr>
+                  <td>11</td>
+                  <td>Document <code>pointer-coarse:</code> escape hatch; keep centralized block (F8)</td>
+                  <td class="yes">1</td>
+                  <td class="yes">5</td>
+                  <td><span class="highlight">5</span></td>
+                </tr>
+                <tr>
+                  <td>12</td>
+                  <td><code>size-*</code> sweep — bundle with next re-baseline (F13, carried)</td>
+                  <td class="yes">1</td>
+                  <td class="yes">3</td>
+                  <td><span class="highlight">3</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-amber">
+            <strong>Sequencing note</strong>
+            Items 1&#8211;3 are safe now (no golden re-baseline needed: F1 and
+            F3 produce semantically identical CSS; F2 is the one that needs the
+            planned re-baseline window). Items 4&#8211;6 ride ordinary
+            component workflows. The carried cosmetic items (11&#8211;12) wait
+            for the queued templ generator migration to share its re-baseline.
+          </div>
+        </section>
+
+        <!-- Not Applicable -->
+        <section id="notapplicable">
+          <h2><span class="num">05</span>Not applicable — considered and excluded</h2>
+          <p>
+            Recorded so the next audit doesn't re-litigate. Each was evaluated
+            against this library's actual surface.
+          </p>
+          <div class="table-wrap">
+            <table class="compare">
+              <thead>
+                <tr>
+                  <th>Capability</th>
+                  <th>Why it doesn't apply</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>3D transforms (<code>rotate-x-*</code>, <code>perspective-*</code>, <code>transform-3d</code>), <code>text-shadow-*</code>, <code>mask-*</code></td>
+                  <td>Admin-component vocabulary; the one hero-gradient site already migrated to <code>bg-linear-*</code>. Marketing-site flourishes, not library surface.</td>
+                </tr>
+                <tr>
+                  <td><code>@container-size</code> (v4.3)</td>
+                  <td><code>ContainerAware</code> correctly uses inline-size; <code>size</code> containment requires explicit heights — wrong tool for flowing content.</td>
+                </tr>
+                <tr>
+                  <td><code>noscript:</code> variant</td>
+                  <td>FilterBar's no-JS path provides a real Apply <em>button</em> via the semantic <code>&lt;noscript&gt;</code> element (<code>forms/filter_dropdown.templ:137</code>) — content injection beats styling a hidden state.</td>
+                </tr>
+                <tr>
+                  <td><code>details-content</code> variant</td>
+                  <td>Accordion content is a styled element in markup already; the variant solves a problem the library doesn't have.</td>
+                </tr>
+                <tr>
+                  <td>Block-axis logical utilities (<code>pbs-*</code>, <code>mbe-*</code>, <code>border-bs-*</code>)</td>
+                  <td>RTL policy lives on the inline axis; vertical rhythm runs through <code>Stack</code>/gap. No directional need.</td>
+                </tr>
+                <tr>
+                  <td><code>zoom-*</code> (v4.3)</td>
+                  <td>Zoom is a consumer-page concern; the library never scales content.</td>
+                </tr>
+                <tr>
+                  <td>Named container queries (<code>@container/name:</code>)</td>
+                  <td>Architecturally interesting for nested <code>ContainerAware</code> grids, but no current component nests containers. Revisit if a dashboard pattern demands it.</td>
+                </tr>
+                <tr>
+                  <td><code>font-features-*</code> (v4.2), <code>items-baseline-last</code>, <code>--default()</code> in functional <code>@utility</code></td>
+                  <td>Real capabilities with no current consumer problem in this codebase; <code>tabular-nums</code>/existing utilities cover the typographic niches.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section id="conclusion">
+          <h2><span class="num">06</span>Conclusion</h2>
+          <p>
+            An 83/100 on a framework this deep is a strong score with an
+            unusually short, concrete gap list — and the trajectory is the best
+            signal: five findings from the previous audit were fixed and
+            guard-tested within six days. The scoring components: core API and
+            performance features 92% (weight 40%), advanced features 50%
+            (25%), configuration 95% (15%), best-practice adherence 97% (10%),
+            version currency 100% (10%).
+          </p>
+          <p>
+            The single theme of what remains: the library has mastered
+            Tailwind as a <em>build tool</em> and is only beginning to use it
+            as an <em>extension API for consumers</em>. <code>@variant</code>
+            inside its own CSS, <code>@utility</code> for its helpers,
+            <code>@theme</code> animate tokens, and <code>aria-*</code> state
+            variants all share one property — they hand the framework's
+            variant-composition machinery to the people who consume the
+            library. That is where the next points live.
+          </p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+          <p>
+            Generated 2026-10-14 &middot; Reviewed against tailwindcss 4.3.3
+            (latest release as of audit date) &middot; All code claims verified
+            against the working tree; all framework claims verified against
+            official docs (tailwindcss.com) and GitHub releases &middot;
+            Prior audit: docs/research/2026-10-08_tailwindcss-deep-dive.html
+          </p>
+        </footer>
+      </main>
+    </div>
+
+    <!-- Progressive-enhancement scrollspy. Nav still works without JS via anchor links. -->
+    <script>
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        var nav = document.querySelector("[data-nav]");
+        if (!nav) return;
+        var links = nav.querySelectorAll('a[href^="#"]');
+        var ids = Array.from(links).map(function (l) {
+          return l.getAttribute("href").slice(1);
+        });
+        var sections = ids
+          .map(function (id) {
+            return document.getElementById(id);
+          })
+          .filter(Boolean);
+        if (!sections.length) return;
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                links.forEach(function (link) {
+                  link.classList.toggle(
+                    "active",
+                    link.getAttribute("href") === "#" + entry.target.id,
+                  );
+                });
+              }
+            });
+          },
+          { rootMargin: "-80px 0px -60% 0px", threshold: 0 },
+        );
+        sections.forEach(function (s) {
+          observer.observe(s);
+        });
+      })();
+    </script>
+  </body>
+</html>
