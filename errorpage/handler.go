@@ -98,6 +98,8 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 			return
 		}
 
+		setNoIndexHeader(w)
+
 		if cfg.HTMLShell {
 			writeHTMLShell(w, r.Context(), statusCode, props, cfg.Lang, err)
 
@@ -167,6 +169,8 @@ func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, prop
 		props.Nonce = nonce
 	}
 
+	setNoIndexHeader(w)
+
 	buf, renderErr := renderToBuffer(r.Context(), ErrorPage(props)) //nolint:contextcheck // intentional passthrough
 	if renderErr != nil {
 		slog.Error("error page render failed", "error", renderErr, "status_code", statusCode)
@@ -187,14 +191,55 @@ func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, prop
 //	        errorpage.WriteNotFound404(w, r, errorpage.DefaultNotFound404Props(), "")
 //	    })
 //	}
+//
+// The response carries X-Robots-Tag: noindex. Use WriteNotFound404Document
+// when the page is served standalone (no layout component embedding it).
 func WriteNotFound404(w http.ResponseWriter, r *http.Request, props NotFound404Props, nonce string) {
 	if nonce != "" {
 		props.Nonce = nonce
 	}
 
+	setNoIndexHeader(w)
+
 	buf, renderErr := renderToBuffer(r.Context(), NotFound404(props)) //nolint:contextcheck // intentional passthrough
 	if renderErr != nil {
 		slog.Error("not found 404 page render failed", "error", renderErr)
+		writeFallbackError(w, http.StatusNotFound)
+
+		return
+	}
+
+	writeBody(w, http.StatusNotFound, buf)
+}
+
+// WriteNotFound404Document writes the NotFound404 page wrapped in a minimal
+// standalone HTML document (DOCTYPE, html lang, head with title and a noindex
+// robots meta) with a 404 status code. Use it when nothing else renders the
+// surrounding document — the ErrorHandler HTMLShell equivalent for the
+// dedicated 404 page. Consumers with a layout component keep using
+// WriteNotFound404 and render the fragment inside their own shell.
+//
+// lang sets the <html lang="..."> attribute and defaults to "en" when empty.
+// The response carries X-Robots-Tag: noindex.
+func WriteNotFound404Document(w http.ResponseWriter, r *http.Request, props NotFound404Props, nonce, lang string) {
+	if nonce != "" {
+		props.Nonce = nonce
+	}
+
+	if lang == "" {
+		lang = "en"
+	}
+
+	title := props.Title
+	if title == "" {
+		title = notFound404DefaultTitle
+	}
+
+	setNoIndexHeader(w)
+
+	buf, renderErr := renderDocumentShell(r.Context(), title, lang, NotFound404(props)) //nolint:contextcheck // intentional passthrough
+	if renderErr != nil {
+		slog.Error("not found 404 document render failed", "error", renderErr)
 		writeFallbackError(w, http.StatusNotFound)
 
 		return
@@ -248,23 +293,38 @@ func renderToBuffer(ctx context.Context, comp templ.Component) ([]byte, error) {
 // document to a byte slice, ensuring the full document renders before
 // writing to the ResponseWriter.
 func renderShellToBuffer(ctx context.Context, title, lang string, props ErrorPageProps) ([]byte, error) {
+	buf, err := renderDocumentShell(ctx, title, lang, ErrorPage(props))
+	if err != nil {
+		return nil, fmt.Errorf("render error page shell (title=%q): %w", title, err)
+	}
+
+	return buf, nil
+}
+
+// renderDocumentShell wraps content in a minimal standalone HTML document
+// (DOCTYPE, html lang, head with charset/viewport/title, body) and renders
+// it fully to a byte slice. Every document this module serves is an error or
+// 404 response, so the noindex robots meta is unconditional — an indexable
+// error page is an impossible-want (defense against soft-404
+// misconfigurations that serve error markup under a 2xx status).
+func renderDocumentShell(ctx context.Context, title, lang string, content templ.Component) ([]byte, error) {
 	shell := templ.ComponentFunc(func(_ context.Context, bw io.Writer) error {
 		prologue := fmt.Sprintf(
-			`<!DOCTYPE html><html lang="%s"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>%s</title></head><body>`,
+			`<!DOCTYPE html><html lang="%s"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex"><title>%s</title></head><body>`,
 			html.EscapeString(lang),
 			html.EscapeString(title),
 		)
 		if _, err := io.WriteString(bw, prologue); err != nil {
-			return fmt.Errorf("write error page shell prologue: %w", err)
+			return fmt.Errorf("write document shell prologue: %w", err)
 		}
 
-		renderErr := ErrorPage(props).Render(ctx, bw) //nolint:contextcheck // intentional passthrough
+		renderErr := content.Render(ctx, bw) //nolint:contextcheck // intentional passthrough
 		if renderErr != nil {
-			return fmt.Errorf("render error page: %w", renderErr)
+			return fmt.Errorf("render document content: %w", renderErr)
 		}
 
 		if _, err := io.WriteString(bw, `</body></html>`); err != nil {
-			return fmt.Errorf("write error page shell epilogue: %w", err)
+			return fmt.Errorf("write document shell epilogue: %w", err)
 		}
 
 		return nil
@@ -272,10 +332,19 @@ func renderShellToBuffer(ctx context.Context, title, lang string, props ErrorPag
 
 	var buf bytes.Buffer
 	if err := shell.Render(ctx, &buf); err != nil {
-		return nil, fmt.Errorf("render error page shell (title=%q): %w", title, err)
+		return nil, fmt.Errorf("render document shell (title=%q): %w", title, err)
 	}
 
 	return buf.Bytes(), nil
+}
+
+// setNoIndexHeader marks the response as non-indexable. Every HTML response
+// this module writes is an error or 404 page: search engines must never
+// index it, even when a misconfiguration serves error markup under a 2xx
+// status (soft 404). Pairs with the unconditional noindex robots meta in
+// renderDocumentShell.
+func setNoIndexHeader(w http.ResponseWriter) {
+	w.Header().Set("X-Robots-Tag", "noindex")
 }
 
 // writeBody writes a rendered error page with the correct status code and
@@ -295,6 +364,7 @@ func writeBody(w http.ResponseWriter, statusCode int, body []byte) {
 // the templ error page itself fails to render. This ensures the client
 // always receives a response with the correct status code.
 func writeFallbackError(w http.ResponseWriter, statusCode int) {
+	setNoIndexHeader(w)
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	// If headers haven't been written yet, WriteHeader will succeed.
 	// If they have (e.g. superedge case), this is a no-op.
