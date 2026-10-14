@@ -1,0 +1,36 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// Prose renders a longform-content container (rendered markdown, articles,
+// documentation bodies). The .tc-prose family in templates/custom.css styles
+// the content's descendants — headings, lists, blockquotes, code, tables,
+// images — so callers drop raw content HTML inside without per-element
+// classes:
+//
+//	@display.Prose(display.ProseProps{Size: display.ProseSizeMD}) {
+//		<h2>Release notes</h2>
+//		<p>Plain markup is styled by the container.</p>
+//	}
+//
+// The wrapper carries BaseProps (ID, Class, Attrs, AriaLabel, Nonce);
+// utilities still win over the descendant rules, so per-element Tailwind
+// classes and the tc-fluid-* sizes compose on top.
+templ Prose(props ProseProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("tc-prose", proseSizeClass(props.Size), props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		if props.Children != nil {
+			@props.Children
+		}
+	</div>
+}
