@@ -66,5 +66,5 @@ type ProseProps struct {
 
 // DefaultProseProps returns sensible defaults.
 func DefaultProseProps() ProseProps {
-	return ProseProps{Size: ProseSizeMD}
+	return ProseProps{Size: ProseSizeMD} //nolint:exhaustruct_v5 // Children/BaseProps stay zero by design
 }
