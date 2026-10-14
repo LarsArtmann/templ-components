@@ -66,12 +66,17 @@ done
 #                                meta[name=theme-color] ("The media attribute may
 #                                be used to describe the context in which the
 #                                provided color should be used")
+#   aria-controls...same document  widgets reference targets their script
+#                                creates on first open (command palette
+#                                listbox) — a static golden cannot contain
+#                                them; CI's runtime vnu.jar no longer emits
+#                                this check, the nixpkgs checker still does
 #
 # Every quoted token matches BOTH straight (") and curly (“”) quotes: vnu's
 # message quoting changed across releases, and CI downloads vnu.jar at
 # runtime while local html5validator bundles an older checker — one list
 # must serve both snapshots.
-IGNORE_RE='Attribute ["“]hx-[a-z-]+["”] not allowed|["“]data-\*["”] attribute names|["“](popover|popovertarget|fetchpriority|enterkeyhint)["”] not allowed|Element ["“]search["”] not allowed|Attribute ["“]media["”] not allowed on element ["“]meta["”]|Element ["“]svg["”] not allowed as child of element ["“]summary["”]|Element ["“]style["”] not allowed as child of element ["“]body["”]|must only have selectors that match its parent and elements after its parent|not allowed outside an ["“]@scope["”] rule in a ["“]style["”] element in ["“]body["”]|CSS: Parse Error|["“]background-color["”]: Invalid RGB function|Stray (start|end) tag ["“](button|selectedcontent)["”]'
+IGNORE_RE='Attribute ["“]hx-[a-z-]+["”] not allowed|["“]data-\*["”] attribute names|["“](popover|popovertarget|fetchpriority|enterkeyhint)["”] not allowed|Element ["“]search["”] not allowed|Attribute ["“]media["”] not allowed on element ["“]meta["”]|Element ["“]svg["”] not allowed as child of element ["“]summary["”]|Element ["“]style["”] not allowed as child of element ["“]body["”]|must only have selectors that match its parent and elements after its parent|not allowed outside an ["“]@scope["”] rule in a ["“]style["”] element in ["“]body["”]|CSS: Parse Error|["“]background-color["”]: Invalid RGB function|Stray (start|end) tag ["“](button|selectedcontent)["”]|["“]aria-controls["”] attribute must point to'
 
 # Validator invocation: html5validator (nixpkgs local) or a direct vnu.jar
 # via VNU_JAR (CI downloads the jar — no pip/PEP-668 involved). Output

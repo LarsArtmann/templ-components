@@ -203,7 +203,28 @@ jobs:
           done
 
       - name: Verify no untracked changes
-        run: git diff --exit-code
+        # FileName-form tolerance, mirroring scripts/ci-repro.sh
+        # normalize_form: a generated file's templ.Error FileName strings
+        # encode the INVOKING DIRECTORY (the root `templ generate` above
+        # writes repo-root-relative; BuildFlow's per-module steppers commit
+        # module-relative). The form is error metadata only, so *_templ.go
+        # diffs are compared with FileName normalized to a placeholder; any
+        # OTHER changed line still fails the gate.
+        run: |
+          drift=0
+          non_templ=$(git diff --name-only -- . ':(exclude)*_templ.go')
+          if [ -n "$non_templ" ]; then
+            git diff --exit-code -- $non_templ || drift=1
+          fi
+          while IFS= read -r gen_file; do
+            if ! diff <(git show ":$gen_file" | sed 's/FileName: `[^`]*`/FileName: NORM/') \
+                      <(sed 's/FileName: `[^`]*`/FileName: NORM/' "$gen_file") >/dev/null; then
+              echo "::error::REAL content drift in $gen_file"
+              git diff -- "$gen_file" | head -40
+              drift=1
+            fi
+          done < <(git diff --name-only -- '*_templ.go')
+          exit $drift
 
       - name: Go vet
         run: go vet ./...

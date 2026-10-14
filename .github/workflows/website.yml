@@ -50,8 +50,10 @@ jobs:
 
       - name: Lint website module
         # Pinned (was @latest): a floating install made lint results drift
-        # between runs (see ci.yaml "Install golangci-lint").
-        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
+        # between runs (see ci.yaml "Install golangci-lint"). v2.14.0 floor:
+        # ≤ v2.13.2 cannot read Go 1.27 stdlib export data ("export data
+        # version 5 is greater than maximum supported version 4").
+        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.14.0
 
       - name: Run golangci-lint
         run: GOWORK=off golangci-lint run ./...

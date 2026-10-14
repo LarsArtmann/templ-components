@@ -42,6 +42,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **CI drift gate accepts FileName-form-only churn in generated files.** The
+  root `templ generate` writes repo-root-relative `templ.Error` FileName
+  strings while per-module tooling commits module-relative ones; the
+  "Verify no untracked changes" step now normalizes the FileName placeholder
+  exactly like `scripts/ci-repro.sh` and still fails on any other drift.
+- **Website CI lint runs on golangci-lint v2.14.0** (was v2.13.2, which cannot
+  read Go 1.27 stdlib export data — every `website.yml` lint run failed with
+  typecheck errors).
+- **`MetaRefresh` goldens are valid HTML, and the refresh content is
+  spec-canonical.** The two snapshots rendered the bare `<meta http-equiv>`
+  element, which the W3C golden-corpus gate wraps into `<body>` where the
+  attribute is not allowed; they now render inside a full document's
+  `<head>`. The component also emits the spec's spaced separator
+  (`content="5; url=..."`, was `5;url=...`) — identical browser behavior,
+  accepted by every validator snapshot.
+
 - **Website RTL/motion compliance.** The marketing site's hand-written pages
   carried 6 physical-direction/deprecated-inset classes and 23
   transition/animation classes without reduced-motion fallbacks — the exact
