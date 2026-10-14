@@ -25,17 +25,18 @@ convergences are called out inline (⚑ = existing TODO_LIST/100-ideas anchor).
 
 ## Pareto breakdown (ideas → value tiers)
 
-| Tier | Claim | Ideas (review-doc #) | Why this tier |
-| ---- | ----- | -------------------- | ------------- |
-| **1% → 51%** | 3 ideas carry over half the total value | **#34 tc lint, #1 context-injected defaults, #13 Prose** | tc lint converts the repo's private QA moat into public adoption surface (near-unique in the ecosystem, scanners already exist). Context-injection removes the single largest per-props papercut and un-blocks every future label/locale feature. Prose closes the most-visible catalogue gap for real content-heavy apps. All three are internal-quality-driven (no demand gate needed) and compound: context shrinks every future component's props surface; tc lint makes every consumer's code meet the library's bar. |
-| **4% → 64%** | +4 ideas | **#21 docs-embed-goldens, #41 benchmark gate (⚑ #214), #9 flash recipe, #48 public roadmap page** | Docs that cannot lie + a perf claim that is load-bearing + the daily-use PRG pattern + free distribution of the roadmap. Cheap relative to value. |
-| **20% → 80%** | +~9 ideas | **#16 password, #20 sticky thead, #25 migration guide, #26 authoring guide, #27 SR protocol, #31 class-diff, #29 windows lane, #36 security dry run, #47 chart data fallback** | Pragmatic tier: docs/CI/medium components with full-ladder budgets, each independently shippable in a session. |
-| **Remaining → 100%** | the other ~34 ideas | everything else (platform spikes, demand-gated ADRs, i18n pair, heavy components, distribution) | Real value, lower urgency or gated: sequenced last, several are explicitly ADR/spike-only by policy. |
+| Tier                 | Claim                                   | Ideas (review-doc #)                                                                                                                                                           | Why this tier                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| -------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1% → 51%**         | 3 ideas carry over half the total value | **#34 tc lint, #1 context-injected defaults, #13 Prose**                                                                                                                       | tc lint converts the repo's private QA moat into public adoption surface (near-unique in the ecosystem, scanners already exist). Context-injection removes the single largest per-props papercut and un-blocks every future label/locale feature. Prose closes the most-visible catalogue gap for real content-heavy apps. All three are internal-quality-driven (no demand gate needed) and compound: context shrinks every future component's props surface; tc lint makes every consumer's code meet the library's bar. |
+| **4% → 64%**         | +4 ideas                                | **#21 docs-embed-goldens, #41 benchmark gate (⚑ #214), #9 flash recipe, #48 public roadmap page**                                                                              | Docs that cannot lie + a perf claim that is load-bearing + the daily-use PRG pattern + free distribution of the roadmap. Cheap relative to value.                                                                                                                                                                                                                                                                                                                                                                          |
+| **20% → 80%**        | +~9 ideas                               | **#16 password, #20 sticky thead, #25 migration guide, #26 authoring guide, #27 SR protocol, #31 class-diff, #29 windows lane, #36 security dry run, #47 chart data fallback** | Pragmatic tier: docs/CI/medium components with full-ladder budgets, each independently shippable in a session.                                                                                                                                                                                                                                                                                                                                                                                                             |
+| **Remaining → 100%** | the other ~34 ideas                     | everything else (platform spikes, demand-gated ADRs, i18n pair, heavy components, distribution)                                                                                | Real value, lower urgency or gated: sequenced last, several are explicitly ADR/spike-only by policy.                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
 ## Phases (Pareto order)
 
 Global gate rules (apply to every task; the four gates from
 `docs/plan-authoring-checklist.md`):
+
 - **Goldens cover this** — only component/CSS-emitting tasks (M4-M6, M13, M15,
   M22, M24-M25, M27, M29, M32, M42, M47, M49, M50, M55) owe named golden files.
   Docs/CI/ADR tasks: N/A by nature (no rendered output change).
@@ -186,8 +187,8 @@ Global gate rules (apply to every task; the four gates from
   from their llms.txt (re-verify cadence per TODO #376); mapping table; gaps
   section; DocRef page. Proof: page renders; claims carry verify dates.
 - **M36 — Public authoring guide** (90min | F95-F96) — distill SKILL.md Part 2
-  + plan-authoring-checklist into a human contributor guide; link from
-  CONTRIBUTING. Proof: page live; a fresh-eyes read test (Lars approves).
+  - plan-authoring-checklist into a human contributor guide; link from
+    CONTRIBUTING. Proof: page live; a fresh-eyes read test (Lars approves).
 - **M37 — Screen-reader protocol + first pass** (100min | F97-F99) — protocol
   doc (NVDA/VoiceOver/Orca scripts, expected announcements); Modal + Drawer
   pass; ledger beside `axe_baseline.json`. Proof: ledger committed with
@@ -205,9 +206,9 @@ Global gate rules (apply to every task; the four gates from
   validate against known-intentional changes; release.sh hook decision.
   Proof: v1.20.1→master run classifies the known Toggle change correctly.
 - **M42 — Attribute-injection fuzz lane** (90min | F109-F111) — `FuzzHTMLDataAttrs`
-  + `FuzzClass` with quote/angle/newline seeds; attribute-breakout assertions.
-  Proof: fuzz targets run 10k execs clean; one seeded smuggling shape is
-  caught by the assertion.
+  - `FuzzClass` with quote/angle/newline seeds; attribute-breakout assertions.
+    Proof: fuzz targets run 10k execs clean; one seeded smuggling shape is
+    caught by the assertion.
 - **M43 — Release provenance attestations** (90min | F112-F113) —
   attest-build-provenance on the demo image workflow; "verify a release" doc
   (tag → provenance → checksums). Proof: attestation verifiable via gh CLI.
@@ -323,168 +324,168 @@ Columns: F# | Task | Scope (single ≤12min unit) | Feeds
 
 ### Tier 1 micros
 
-| F#  | Task                                   | Scope (single ≤12min unit)                                            | Feeds |
-| --- | -------------------------------------- | --------------------------------------------------------------------- | ----- |
-| F1  | Extract RTL scanner core               | `utils` RTL scanner gains a `scanDir(dir string) []Finding` entry point, repo test keeps passing | M1 |
-| F2  | `tc lint --rtl` subcommand             | flag parsing + scanDir call + findings printer + exit codes           | M1 |
-| F3  | Dogfood on website module              | run on `website/`, file the findings list, fix trivial ones in place  | M1 |
-| F4  | Wire dark-mode scanner                 | same scanDir shape for `darkmode_compliance` logic behind `--dark`    | M2 |
-| F5  | Wire motion + icon scanners            | `--motion` + `--icons` flags, shared finding model                    | M2 |
-| F6  | Allowlist syntax + docs page           | `// tc-lint:ignore` comment convention; `docs/cli.md` section         | M2 |
-| F7  | `tc lint --all` parity test            | test asserting scanner verdicts == the four guard tests on this repo  | M2 |
-| F8  | Context precedence ADR skeleton        | `docs/adr/00XX-context-defaults.md`: props > context > zero           | M3 |
-| F9  | `ContextWithNonce` + lookup            | `utils/context.go`: setter + typed getter, zero fallback              | M3 |
-| F10 | Precedence guard test                  | explicit props always win; context only fills empty                   | M3 |
-| F11 | Pick pilot component                   | grep nonce consumers, choose smallest script emitter, note rationale  | M4 |
-| F12 | Context read-through in pilot          | component resolves nonce via lookup helper; unit tests                | M4 |
-| F13 | Pilot goldens + `[Unreleased]`         | re-baseline affected goldens; warm changelog entry                    | M4 |
-| F14 | Lift typography block                  | move `custom.css` typography section to `.tc-prose` base classes      | M5 |
-| F15 | Element coverage in `.tc-prose`        | headings/lists/quotes/code/tables/imgs + dark/RTL pass                | M5 |
-| F16 | Prose golden sample                    | golden a rendered markdown sample with the new classes                | M5 |
-| F17 | `ProseSize` enum + IsValid             | typed enum + `IsValid()` + test in the SAME commit (repo rule)        | M6 |
-| F18 | `Prose` props + templ wrapper          | `ProseProps{Children, Size, Class, Attrs}` + wrapper                  | M6 |
-| F19 | Prose ladder completion                | goldens, demo route, counts in same edit, demo smoke                  | M6 |
+| F#  | Task                            | Scope (single ≤12min unit)                                                                       | Feeds |
+| --- | ------------------------------- | ------------------------------------------------------------------------------------------------ | ----- |
+| F1  | Extract RTL scanner core        | `utils` RTL scanner gains a `scanDir(dir string) []Finding` entry point, repo test keeps passing | M1    |
+| F2  | `tc lint --rtl` subcommand      | flag parsing + scanDir call + findings printer + exit codes                                      | M1    |
+| F3  | Dogfood on website module       | run on `website/`, file the findings list, fix trivial ones in place                             | M1    |
+| F4  | Wire dark-mode scanner          | same scanDir shape for `darkmode_compliance` logic behind `--dark`                               | M2    |
+| F5  | Wire motion + icon scanners     | `--motion` + `--icons` flags, shared finding model                                               | M2    |
+| F6  | Allowlist syntax + docs page    | `// tc-lint:ignore` comment convention; `docs/cli.md` section                                    | M2    |
+| F7  | `tc lint --all` parity test     | test asserting scanner verdicts == the four guard tests on this repo                             | M2    |
+| F8  | Context precedence ADR skeleton | `docs/adr/00XX-context-defaults.md`: props > context > zero                                      | M3    |
+| F9  | `ContextWithNonce` + lookup     | `utils/context.go`: setter + typed getter, zero fallback                                         | M3    |
+| F10 | Precedence guard test           | explicit props always win; context only fills empty                                              | M3    |
+| F11 | Pick pilot component            | grep nonce consumers, choose smallest script emitter, note rationale                             | M4    |
+| F12 | Context read-through in pilot   | component resolves nonce via lookup helper; unit tests                                           | M4    |
+| F13 | Pilot goldens + `[Unreleased]`  | re-baseline affected goldens; warm changelog entry                                               | M4    |
+| F14 | Lift typography block           | move `custom.css` typography section to `.tc-prose` base classes                                 | M5    |
+| F15 | Element coverage in `.tc-prose` | headings/lists/quotes/code/tables/imgs + dark/RTL pass                                           | M5    |
+| F16 | Prose golden sample             | golden a rendered markdown sample with the new classes                                           | M5    |
+| F17 | `ProseSize` enum + IsValid      | typed enum + `IsValid()` + test in the SAME commit (repo rule)                                   | M6    |
+| F18 | `Prose` props + templ wrapper   | `ProseProps{Children, Size, Class, Attrs}` + wrapper                                             | M6    |
+| F19 | Prose ladder completion         | goldens, demo route, counts in same edit, demo smoke                                             | M6    |
 
 ### Tier 2 micros
 
-| F#   | Task                          | Scope (single ≤12min unit)                                        | Feeds |
-| ---- | ----------------------------- | ------------------------------------------------------------------ | ----- |
-| F20  | Card golden loader            | docs generator reads the Card golden file by convention            | M7 |
-| F21  | Embed + scoped styling        | render golden verbatim in the docs page, scoped CSS wrapper        | M7 |
-| F22  | Docs-drift proof test         | golden edit ⇒ docs build fails; restore ⇒ green                    | M7 |
-| F23  | `bench.old` artifact on master| workflow step storing per-module bench baselines                   | M8 |
-| F24  | PR bench job                  | run benches, `benchstat old new`, emit markdown table              | M8 |
-| F25  | Comment step + runbook        | post/update PR comment; document the flow (⚑ #214 close-out)       | M8 |
-| F26  | Threshold calibration         | benchstat last 3 releases; pick noise floor; write thresholds      | M9 |
-| F27  | Master gate wiring            | master job fails on regression beyond threshold; seed-test proves  | M9 |
-| F28  | Flash recipe doc              | cookie set → redirect → read+render+clear; `hx-redirect` variant   | M10 |
-| F29  | Flash demo route              | demo endpoint + smoke capture (appears once, not on reload)        | M10 |
-| F30  | ROADMAP DocRef entry          | registry entry + source override like comparison.md                | M11 |
-| F31  | Frontmatter + sidebar         | synthesize frontmatter; add nav entry; sitemap lastmod             | M11 |
-| F32  | Roadmap page test pin         | site test asserts /roadmap renders + heading present               | M11 |
+| F#  | Task                           | Scope (single ≤12min unit)                                        | Feeds |
+| --- | ------------------------------ | ----------------------------------------------------------------- | ----- |
+| F20 | Card golden loader             | docs generator reads the Card golden file by convention           | M7    |
+| F21 | Embed + scoped styling         | render golden verbatim in the docs page, scoped CSS wrapper       | M7    |
+| F22 | Docs-drift proof test          | golden edit ⇒ docs build fails; restore ⇒ green                   | M7    |
+| F23 | `bench.old` artifact on master | workflow step storing per-module bench baselines                  | M8    |
+| F24 | PR bench job                   | run benches, `benchstat old new`, emit markdown table             | M8    |
+| F25 | Comment step + runbook         | post/update PR comment; document the flow (⚑ #214 close-out)      | M8    |
+| F26 | Threshold calibration          | benchstat last 3 releases; pick noise floor; write thresholds     | M9    |
+| F27 | Master gate wiring             | master job fails on regression beyond threshold; seed-test proves | M9    |
+| F28 | Flash recipe doc               | cookie set → redirect → read+render+clear; `hx-redirect` variant  | M10   |
+| F29 | Flash demo route               | demo endpoint + smoke capture (appears once, not on reload)       | M10   |
+| F30 | ROADMAP DocRef entry           | registry entry + source override like comparison.md               | M11   |
+| F31 | Frontmatter + sidebar          | synthesize frontmatter; add nav entry; sitemap lastmod            | M11   |
+| F32 | Roadmap page test pin          | site test asserts /roadmap renders + heading present              | M11   |
 
 ### Tier 3 micros
 
-| F#   | Task                            | Scope (single ≤12min unit)                                     | Feeds |
-| ---- | ------------------------------- | --------------------------------------------------------------- | ----- |
-| F33  | Href field inventory            | grep all `Href string` props fields into an ADR table            | M12 |
-| F34  | `ParseHref` design              | internal/fragment/external+rel constructors + rejection table    | M12 |
-| F35  | One-package alias migration     | switch ONE package's Href fields behind the type alias           | M13 |
-| F36  | Pilot consumers + goldens       | update call sites; goldens unchanged proof                       | M13 |
-| F37  | Migration lint note             | document the remaining-package path in the ADR                   | M13 |
-| F38  | EncodeQuery godoc-first API     | signature + semantics doc; nil/empty/round-trip contract         | M14 |
-| F39  | Round-trip property harness     | `Decode(Encode(x)) == x` over the filter-state struct            | M14 |
-| F40  | Adversarial fuzz seeds          | malformed queries, dup keys, bad types into the fuzz corpus      | M14 |
-| F41  | FilterChips integration         | chips build hrefs via EncodeQuery                                | M15 |
-| F42  | Pagination integration          | page links via EncodeQuery                                       | M15 |
-| F43  | Goldens + waiver note           | encoded-href goldens; record the no-e2e waiver                   | M15 |
-| F44  | Cloud Run 103 probe             | minimal service emitting 103; confirm upstream forwards          | M16 |
-| F45  | Demo middleware spike           | `Link: preload` for app.css before body render                   | M16 |
-| F46  | Measurement writeup             | TTFB/paint numbers; go/no-go note                                | M16 |
-| F47  | Theme middleware impl           | cookie read → `dark` class server-side; reference impl           | M17 |
-| F48  | Toggle form endpoint pattern    | ThemeToggle variant posting to a cookie-setter endpoint          | M17 |
-| F49  | Recipe + noscript proof         | recipe doc; demo flips theme with JS disabled                    | M17 |
-| F50  | Observer wrap-benchmark         | benchmark page render with/without the hook                      | M18 |
-| F51  | Observer ADR                    | go/no-go at measured overhead                                    | M18 |
-| F52  | Memo LRU spike                  | wrapper on demo index subtree; correctness under staleness       | M19 |
-| F53  | Memo numbers doc                | latency/CPU deltas; promote-or-pattern verdict                   | M19 |
-| F54  | `ETagOf` helper                 | hash rendered fragment; If-None-Match compare; 204/304           | M20 |
-| F55  | PolledRegion worked example     | demo poll endpoint returning 304 on unchanged data               | M20 |
-| F56  | Promote-or-pattern note         | decide helper vs docs-only; record rationale                     | M20 |
-| F57  | CSP policy struct               | typed directives + sources model                                 | M21 |
-| F58  | Demo CSP as test                | struct renders the demo's exact policy string                    | M21 |
-| F59  | firebase equality property      | generated header == committed firebase.json header               | M21 |
-| F60  | `String()` + nonce points       | render with nonce injection; omit-empty contract respected       | M22 |
-| F61  | firebase generation path        | `--update-csp` style generator writes firebase.json block        | M22 |
-| F62  | CSP builder docs + recipe       | docs page; demo adopts generated path                            | M22 |
-| F63  | TT report-only flip             | capture run adds `require-trusted-types-for` report-only         | M23 |
-| F64  | Violation report read           | collect + summarize violations from the run                      | M23 |
-| F65  | Trusted Types stance doc        | javascript-guide section: surviving sinks, consumer guidance     | M23 |
-| F66  | Upload progress spike           | progress events against stub endpoint in visualtest              | M24 |
-| F67  | Dual-transport shape decision   | htmx vs datastar emission contract note                          | M24 |
-| F68  | Upload props + templ            | FileUploadProgress props + markup                                | M25 |
-| F69  | Wire emission                   | htmx `hx-post` + datastar `data-on:` paths                       | M25 |
-| F70  | Upload e2e + counts             | chromedp e2e to 100%; goldens; counts same edit                  | M25 |
-| F71  | Password scoring ADR            | server-side scoring locus; breach-check hook shape               | M26 |
-| F72  | Reveal toggle                   | show/hide button, hit-box pattern, aria-pressed                  | M27 |
-| F73  | Meter + states                  | 0-4 strength bar, confirm-match error state                      | M27 |
-| F74  | Password ladder + counts        | goldens, a11y sweep, counts same edit                            | M27 |
-| F75  | Extract hotkey shape            | CommandPalette hotkey wiring → shared singleton script           | M28 |
-| F76  | Registry contract               | data-attribute binding declaration format                        | M28 |
-| F77  | `Kbd` atom + goldens            | kbd display component + goldens                                  | M29 |
-| F78  | ShortcutsDialog                 | dialog listing active bindings from the registry                 | M29 |
-| F79  | Shortcuts e2e + counts          | open via `?`, Esc closes; counts same edit                       | M29 |
-| F80  | Presence SSE handler example    | reference handler: connect/disconnect → roster broadcast         | M30 |
-| F81  | Avatar-stack recipe + probe     | recipe doc; two-tab demo probe                                   | M30 |
-| F82  | Wizard step-state shape         | signed cookie state; step transitions; back without loss         | M31 |
-| F83  | Demo checkout route             | 3-step flow on StepIndicator + Form                              | M31 |
-| F84  | Wizard recipe doc               | the canonical writeup incl. error re-render                      | M31 |
-| F85  | Shell-header CSS var contract   | `--tc-shell-header-h` emitted by AppShell                        | M32 |
-| F86  | Sticky thead CSS + RTL          | `position: sticky` with var offset; RTL scroll check             | M32 |
-| F87  | Tall-table golden               | sticky golden + scroll-container edge case                       | M32 |
-| F88  | Demo image tagging              | release workflow tags demo image with version                    | M33 |
-| F89  | Deploy verify                   | two versions reachable; note URLs                                | M33 |
-| F90  | Modal-open capture              | chromedp capture of open animation frames                        | M34 |
-| F91  | Format verdict                  | gif/webp/mp4 quality/size verdict; pipeline-ize decision         | M34 |
-| F92  | shadcn-templ inventory pull     | their llms.txt component list, verify-dated                      | M35 |
-| F93  | Mapping table                   | their component → ours → prop translation → gap                  | M35 |
-| F94  | Migration DocRef page           | render + sidebar + sitemap                                       | M35 |
-| F95  | Distill SKILL.md Part 2         | human-facing authoring guide draft                               | M36 |
-| F96  | Guide page + CONTRIBUTING link  | publish + link from CONTRIBUTING                                 | M36 |
-| F97  | SR protocol doc                 | NVDA/VoiceOver/Orca scripts + expected announcements             | M37 |
-| F98  | Modal + Drawer pass             | run the protocol; record transcript notes                        | M37 |
-| F99  | SR ledger                       | results ledger beside axe_baseline.json                          | M37 |
-| F100 | Extract consumer example        | minimal golden harness from an existing sweep test               | M38 |
-| F101 | Guide + starter fragment        | docs page; starter-template fragment                             | M38 |
-| F102 | Windows workflow job            | windows-latest: go build + per-module unit loop                  | M39 |
-| F103 | Lane verification               | green run; fix any path/sep findings                             | M39 |
-| F104 | Class CPU profile               | profile on heaviest demo route; hot spots doc                    | M40 |
-| F105 | Fast-path ADR                   | decide constant-pair cache; complexity vs win                    | M40 |
-| F106 | Class inventory diff script     | two versions → class sets → classified diff                      | M41 |
-| F107 | Validate vs known changes       | run on Toggle rework; classification must match reality          | M41 |
-| F108 | release.sh hook decision        | integrate or keep one-off; record rationale                      | M41 |
-| F109 | `FuzzHTMLDataAttrs`             | fuzz target with quote/angle/newline seeds                       | M42 |
-| F110 | `FuzzClass`                     | class-string fuzz target                                         | M42 |
-| F111 | Breakout assertions             | attribute-boundary assertions; seeded smuggling shape caught     | M42 |
-| F112 | Attest workflow                 | attest-build-provenance on demo image release                    | M43 |
-| F113 | Verify-release doc              | tag → provenance → checksums walk-through                        | M43 |
-| F114 | Supported-versions table        | policy draft; ⫱ owner gate on scope (latest minor only?)         | M44 |
-| F115 | govulncheck schedule            | weekly workflow + results note                                   | M44 |
-| F116 | Fake advisory draft             | end-to-end advisory draft in docs/advisories/draft/              | M44 |
-| F117 | Talk abstract                   | flagship abstract + CFP short list                               | M45 |
-| F118 | Artifact links check            | demo/site links in the abstract verified live                    | M45 |
-| F119 | chi mount example               | 50-line chi integration, tested in scratch                       | M46 |
-| F120 | Adapter docs page               | publish with stdlib as canonical                                 | M46 |
-| F121 | Direction inference spike       | BCP47 → dir vs ICU ground truths table                           | M47 |
-| F122 | RelativeTime i18n probe         | de/ar/ja output vs expectations                                  | M47 |
-| F123 | x/text weight ADR               | dependency budget verdict (opt-in subpackage?)                   | M47 |
-| F124 | Text-node scanner               | extract user-facing strings from templ files                     | M48 |
-| F125 | Outlier catalog                 | jargon/length/idiom flags; feeds M54                             | M48 |
-| F126 | Catalog struct design           | typed struct, English zero value, plural fn fields               | M49 |
-| F127 | errorpage migration             | swap hardcoded strings for the struct                            | M49 |
-| F128 | Zero-value proof                | goldens byte-identical pre/post migration                        | M49 |
-| F129 | FetchPriority prop              | Image prop + golden                                              | M50 |
-| F130 | LCP docs note                   | pair with Early Hints section                                    | M50 |
-| F131 | Manual bot run                  | artifact + comment on the next component PR                      | M51 |
-| F132 | Comment template                | finalize side-by-side layout                                     | M51 |
-| F133 | Sweep JSON emission             | quality report per route from the axe/visual jobs                | M52 |
-| F134 | Quality ledger page             | table over the JSON; site test                                   | M52 |
-| F135 | Demo boost spike                | hx-boost on the docs section                                     | M53 |
-| F136 | Sharp-edge catalog              | scripts/focus/scroll findings                                    | M53 |
-| F137 | hx-boost ADR                    | support or reject, in writing                                    | M53 |
-| F138 | Worst-ten flagging              | from M48 inventory                                               | M54 |
-| F139 | Fix worst ten                   | string fixes; same-edit counts where numbers move                | M54 |
-| F140 | LineChart sr table              | visually-hidden data table fallback                              | M55 |
-| F141 | Fallback golden + review        | golden asserts shape; a11y verdict recorded                      | M55 |
-| F142 | AutoForm ADR pre-write          | demand gate + design Qs answered in advance                      | M56 |
-| F143 | OtpInput ADR pre-write          | same pattern                                                     | M57 |
-| F144 | Registry prerequisite note      | document 100-ideas #13 as MCP prerequisite                       | M58 |
-| F145 | MCP query-layer sketch          | tool surface: lookup/signature/wiring queries                    | M58 |
-| F146 | Inline-style render probe       | Alert+Button with inlined styles                                 | M59 |
-| F147 | Email checker pass              | litmus-style checks on the probe output                          | M59 |
-| F148 | Email ADR                       | honest verdict, incl. "not planned"                              | M59 |
-| F149 | Fleet scan script               | consumer go.mod pins + imports → matrix                          | M60 |
-| F150 | Matrix + decision feed          | run once; feed one demand-gate decision; note outcome            | M60 |
+| F#   | Task                           | Scope (single ≤12min unit)                                    | Feeds |
+| ---- | ------------------------------ | ------------------------------------------------------------- | ----- |
+| F33  | Href field inventory           | grep all `Href string` props fields into an ADR table         | M12   |
+| F34  | `ParseHref` design             | internal/fragment/external+rel constructors + rejection table | M12   |
+| F35  | One-package alias migration    | switch ONE package's Href fields behind the type alias        | M13   |
+| F36  | Pilot consumers + goldens      | update call sites; goldens unchanged proof                    | M13   |
+| F37  | Migration lint note            | document the remaining-package path in the ADR                | M13   |
+| F38  | EncodeQuery godoc-first API    | signature + semantics doc; nil/empty/round-trip contract      | M14   |
+| F39  | Round-trip property harness    | `Decode(Encode(x)) == x` over the filter-state struct         | M14   |
+| F40  | Adversarial fuzz seeds         | malformed queries, dup keys, bad types into the fuzz corpus   | M14   |
+| F41  | FilterChips integration        | chips build hrefs via EncodeQuery                             | M15   |
+| F42  | Pagination integration         | page links via EncodeQuery                                    | M15   |
+| F43  | Goldens + waiver note          | encoded-href goldens; record the no-e2e waiver                | M15   |
+| F44  | Cloud Run 103 probe            | minimal service emitting 103; confirm upstream forwards       | M16   |
+| F45  | Demo middleware spike          | `Link: preload` for app.css before body render                | M16   |
+| F46  | Measurement writeup            | TTFB/paint numbers; go/no-go note                             | M16   |
+| F47  | Theme middleware impl          | cookie read → `dark` class server-side; reference impl        | M17   |
+| F48  | Toggle form endpoint pattern   | ThemeToggle variant posting to a cookie-setter endpoint       | M17   |
+| F49  | Recipe + noscript proof        | recipe doc; demo flips theme with JS disabled                 | M17   |
+| F50  | Observer wrap-benchmark        | benchmark page render with/without the hook                   | M18   |
+| F51  | Observer ADR                   | go/no-go at measured overhead                                 | M18   |
+| F52  | Memo LRU spike                 | wrapper on demo index subtree; correctness under staleness    | M19   |
+| F53  | Memo numbers doc               | latency/CPU deltas; promote-or-pattern verdict                | M19   |
+| F54  | `ETagOf` helper                | hash rendered fragment; If-None-Match compare; 204/304        | M20   |
+| F55  | PolledRegion worked example    | demo poll endpoint returning 304 on unchanged data            | M20   |
+| F56  | Promote-or-pattern note        | decide helper vs docs-only; record rationale                  | M20   |
+| F57  | CSP policy struct              | typed directives + sources model                              | M21   |
+| F58  | Demo CSP as test               | struct renders the demo's exact policy string                 | M21   |
+| F59  | firebase equality property     | generated header == committed firebase.json header            | M21   |
+| F60  | `String()` + nonce points      | render with nonce injection; omit-empty contract respected    | M22   |
+| F61  | firebase generation path       | `--update-csp` style generator writes firebase.json block     | M22   |
+| F62  | CSP builder docs + recipe      | docs page; demo adopts generated path                         | M22   |
+| F63  | TT report-only flip            | capture run adds `require-trusted-types-for` report-only      | M23   |
+| F64  | Violation report read          | collect + summarize violations from the run                   | M23   |
+| F65  | Trusted Types stance doc       | javascript-guide section: surviving sinks, consumer guidance  | M23   |
+| F66  | Upload progress spike          | progress events against stub endpoint in visualtest           | M24   |
+| F67  | Dual-transport shape decision  | htmx vs datastar emission contract note                       | M24   |
+| F68  | Upload props + templ           | FileUploadProgress props + markup                             | M25   |
+| F69  | Wire emission                  | htmx `hx-post` + datastar `data-on:` paths                    | M25   |
+| F70  | Upload e2e + counts            | chromedp e2e to 100%; goldens; counts same edit               | M25   |
+| F71  | Password scoring ADR           | server-side scoring locus; breach-check hook shape            | M26   |
+| F72  | Reveal toggle                  | show/hide button, hit-box pattern, aria-pressed               | M27   |
+| F73  | Meter + states                 | 0-4 strength bar, confirm-match error state                   | M27   |
+| F74  | Password ladder + counts       | goldens, a11y sweep, counts same edit                         | M27   |
+| F75  | Extract hotkey shape           | CommandPalette hotkey wiring → shared singleton script        | M28   |
+| F76  | Registry contract              | data-attribute binding declaration format                     | M28   |
+| F77  | `Kbd` atom + goldens           | kbd display component + goldens                               | M29   |
+| F78  | ShortcutsDialog                | dialog listing active bindings from the registry              | M29   |
+| F79  | Shortcuts e2e + counts         | open via `?`, Esc closes; counts same edit                    | M29   |
+| F80  | Presence SSE handler example   | reference handler: connect/disconnect → roster broadcast      | M30   |
+| F81  | Avatar-stack recipe + probe    | recipe doc; two-tab demo probe                                | M30   |
+| F82  | Wizard step-state shape        | signed cookie state; step transitions; back without loss      | M31   |
+| F83  | Demo checkout route            | 3-step flow on StepIndicator + Form                           | M31   |
+| F84  | Wizard recipe doc              | the canonical writeup incl. error re-render                   | M31   |
+| F85  | Shell-header CSS var contract  | `--tc-shell-header-h` emitted by AppShell                     | M32   |
+| F86  | Sticky thead CSS + RTL         | `position: sticky` with var offset; RTL scroll check          | M32   |
+| F87  | Tall-table golden              | sticky golden + scroll-container edge case                    | M32   |
+| F88  | Demo image tagging             | release workflow tags demo image with version                 | M33   |
+| F89  | Deploy verify                  | two versions reachable; note URLs                             | M33   |
+| F90  | Modal-open capture             | chromedp capture of open animation frames                     | M34   |
+| F91  | Format verdict                 | gif/webp/mp4 quality/size verdict; pipeline-ize decision      | M34   |
+| F92  | shadcn-templ inventory pull    | their llms.txt component list, verify-dated                   | M35   |
+| F93  | Mapping table                  | their component → ours → prop translation → gap               | M35   |
+| F94  | Migration DocRef page          | render + sidebar + sitemap                                    | M35   |
+| F95  | Distill SKILL.md Part 2        | human-facing authoring guide draft                            | M36   |
+| F96  | Guide page + CONTRIBUTING link | publish + link from CONTRIBUTING                              | M36   |
+| F97  | SR protocol doc                | NVDA/VoiceOver/Orca scripts + expected announcements          | M37   |
+| F98  | Modal + Drawer pass            | run the protocol; record transcript notes                     | M37   |
+| F99  | SR ledger                      | results ledger beside axe_baseline.json                       | M37   |
+| F100 | Extract consumer example       | minimal golden harness from an existing sweep test            | M38   |
+| F101 | Guide + starter fragment       | docs page; starter-template fragment                          | M38   |
+| F102 | Windows workflow job           | windows-latest: go build + per-module unit loop               | M39   |
+| F103 | Lane verification              | green run; fix any path/sep findings                          | M39   |
+| F104 | Class CPU profile              | profile on heaviest demo route; hot spots doc                 | M40   |
+| F105 | Fast-path ADR                  | decide constant-pair cache; complexity vs win                 | M40   |
+| F106 | Class inventory diff script    | two versions → class sets → classified diff                   | M41   |
+| F107 | Validate vs known changes      | run on Toggle rework; classification must match reality       | M41   |
+| F108 | release.sh hook decision       | integrate or keep one-off; record rationale                   | M41   |
+| F109 | `FuzzHTMLDataAttrs`            | fuzz target with quote/angle/newline seeds                    | M42   |
+| F110 | `FuzzClass`                    | class-string fuzz target                                      | M42   |
+| F111 | Breakout assertions            | attribute-boundary assertions; seeded smuggling shape caught  | M42   |
+| F112 | Attest workflow                | attest-build-provenance on demo image release                 | M43   |
+| F113 | Verify-release doc             | tag → provenance → checksums walk-through                     | M43   |
+| F114 | Supported-versions table       | policy draft; ⫱ owner gate on scope (latest minor only?)      | M44   |
+| F115 | govulncheck schedule           | weekly workflow + results note                                | M44   |
+| F116 | Fake advisory draft            | end-to-end advisory draft in docs/advisories/draft/           | M44   |
+| F117 | Talk abstract                  | flagship abstract + CFP short list                            | M45   |
+| F118 | Artifact links check           | demo/site links in the abstract verified live                 | M45   |
+| F119 | chi mount example              | 50-line chi integration, tested in scratch                    | M46   |
+| F120 | Adapter docs page              | publish with stdlib as canonical                              | M46   |
+| F121 | Direction inference spike      | BCP47 → dir vs ICU ground truths table                        | M47   |
+| F122 | RelativeTime i18n probe        | de/ar/ja output vs expectations                               | M47   |
+| F123 | x/text weight ADR              | dependency budget verdict (opt-in subpackage?)                | M47   |
+| F124 | Text-node scanner              | extract user-facing strings from templ files                  | M48   |
+| F125 | Outlier catalog                | jargon/length/idiom flags; feeds M54                          | M48   |
+| F126 | Catalog struct design          | typed struct, English zero value, plural fn fields            | M49   |
+| F127 | errorpage migration            | swap hardcoded strings for the struct                         | M49   |
+| F128 | Zero-value proof               | goldens byte-identical pre/post migration                     | M49   |
+| F129 | FetchPriority prop             | Image prop + golden                                           | M50   |
+| F130 | LCP docs note                  | pair with Early Hints section                                 | M50   |
+| F131 | Manual bot run                 | artifact + comment on the next component PR                   | M51   |
+| F132 | Comment template               | finalize side-by-side layout                                  | M51   |
+| F133 | Sweep JSON emission            | quality report per route from the axe/visual jobs             | M52   |
+| F134 | Quality ledger page            | table over the JSON; site test                                | M52   |
+| F135 | Demo boost spike               | hx-boost on the docs section                                  | M53   |
+| F136 | Sharp-edge catalog             | scripts/focus/scroll findings                                 | M53   |
+| F137 | hx-boost ADR                   | support or reject, in writing                                 | M53   |
+| F138 | Worst-ten flagging             | from M48 inventory                                            | M54   |
+| F139 | Fix worst ten                  | string fixes; same-edit counts where numbers move             | M54   |
+| F140 | LineChart sr table             | visually-hidden data table fallback                           | M55   |
+| F141 | Fallback golden + review       | golden asserts shape; a11y verdict recorded                   | M55   |
+| F142 | AutoForm ADR pre-write         | demand gate + design Qs answered in advance                   | M56   |
+| F143 | OtpInput ADR pre-write         | same pattern                                                  | M57   |
+| F144 | Registry prerequisite note     | document 100-ideas #13 as MCP prerequisite                    | M58   |
+| F145 | MCP query-layer sketch         | tool surface: lookup/signature/wiring queries                 | M58   |
+| F146 | Inline-style render probe      | Alert+Button with inlined styles                              | M59   |
+| F147 | Email checker pass             | litmus-style checks on the probe output                       | M59   |
+| F148 | Email ADR                      | honest verdict, incl. "not planned"                           | M59   |
+| F149 | Fleet scan script              | consumer go.mod pins + imports → matrix                       | M60   |
+| F150 | Matrix + decision feed         | run once; feed one demand-gate decision; note outcome         | M60   |
 
 ## Verification (whole plan)
 

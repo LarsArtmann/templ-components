@@ -91,12 +91,12 @@ tc lint [--rtl] [--dark] [--motion] [--icons] [DIR ...]
 Without `DIR`, the current directory is scanned recursively (icons: direct
 children only). Select at least one scanner:
 
-| Scanner    | Rule(s)                           | Catches                                                                                            |
-| ---------- | --------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `--rtl`    | `rtl-physical`, `rtl-inset-alias` | Physical direction classes (`ml-`, `pr-`, `text-left`, …) and deprecated `start-*`/`end-*` aliases |
-| `--dark`   | `darkmode-neutral`, `darkmode-semantic` | Color classes without a same-line `dark:` variant                                            |
-| `--motion` | `motion-reduce`                   | `transition-*`/`animate-*` without a `motion-reduce:` fallback                                     |
-| `--icons`  | `icon-path-inline`                | Inlined SVG `d="M..."` literals outside the canonical tables                                       |
+| Scanner    | Rule(s)                                 | Catches                                                                                            |
+| ---------- | --------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `--rtl`    | `rtl-physical`, `rtl-inset-alias`       | Physical direction classes (`ml-`, `pr-`, `text-left`, …) and deprecated `start-*`/`end-*` aliases |
+| `--dark`   | `darkmode-neutral`, `darkmode-semantic` | Color classes without a same-line `dark:` variant                                                  |
+| `--motion` | `motion-reduce`                         | `transition-*`/`animate-*` without a `motion-reduce:` fallback                                     |
+| `--icons`  | `icon-path-inline`                      | Inlined SVG `d="M..."` literals outside the canonical tables                                       |
 
 Findings print as `file:line: rule: message` with the offending line. Exit
 codes: `0` clean, `1` findings or scan failure, `2` usage error — so a CI job

@@ -102,7 +102,7 @@ Don't know what to look for? Find your page type:
 | `LivePill`           | `LivePill(props LivePillProps)`                     | Dot+text status pill — the Live / Reconnecting / Paused connection indicator shape                                                                                      |
 | `SegmentBar`         | `SegmentBar(props SegmentBarProps)`                 | Stacked proportion bar + legend — flex-grow proportions, deterministic label-keyed palette, `Color` override, role=img summary                                          |
 | `Lightbox`           | `Lightbox(props LightboxProps)`                     | Native-dialog image viewer — thumbnails or trigger button, prev/next, rotate, zoom, captions; CSP-safe singleton script                                                 |
-| `Prose`               | `Prose(props ProseProps)`                           | Longform-content container — `.tc-prose` descendant styling for rendered markdown (headings/lists/quotes/code/tables/images), typed `ProseSize`, dark+RTL safe          |
+| `Prose`              | `Prose(props ProseProps)`                           | Longform-content container — `.tc-prose` descendant styling for rendered markdown (headings/lists/quotes/code/tables/images), typed `ProseSize`, dark+RTL safe          |
 
 #### `forms` — 26 components
 

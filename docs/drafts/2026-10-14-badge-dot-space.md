@@ -18,10 +18,10 @@ templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\" aria-hidden=\"true\"></s
 That space sits between the dot `<span>` and `{ props.Text }` inside the badge span (display/badge.templ:81-84 @ v1.23.0):
 
 ```go
-			if props.Dot {
-				<span class={ "me-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>
-			}
-			{ props.Text }
+if props.Dot {
+	<span class={ "me-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>
+}
+{ props.Text }
 ```
 
 The dot already carries `me-1.5` for the gap, so the hard space is redundant spacing stacked on utility spacing.

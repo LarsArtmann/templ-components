@@ -37,16 +37,17 @@ pre-empt #13.
 
 ## Pareto breakdown (items → value tiers)
 
-| Tier | Claim | Items (status-doc #) | Why this tier |
-| ---- | ----- | -------------------- | ------------- |
-| **1% → 51%** | 1 medium task carries over half the composability value | **#6 (F1 `@variant dark`)** | Priority 20/20, safe today (no re-baseline: semantically identical CSS), deletes the ~15 `.dark` forks that are the last hand-maintained duplication in custom.css, and establishes the `@variant` pattern that F2/F6/F25 build on. One file, one verify loop, whole-pattern unlock. |
-| **4% → 64%** | +1 task | **#12 (F2 `@utility` conversion)** | Priority 16; the other half of the composability thesis. Tree-shakes custom.css for minimal-adoption consumers (the library's documented adoption mode) and gives consumers `hover:tc-*` variant composition. Needs the re-baseline window (bundling decision ⫱2). |
-| **20% → 80%** | +5 tasks | **#1-3 (integrity trio), #4 (F10 probe), #9-10 (F3 website scrollbar + guide), #14 (F4 owner), #17 (F6 animate tokens)** | The audit's credibility fixes (never edit on a secondhand claim), the website's Firefox-visible scrollbar win, the probe that resolves a whole finding for 5 minutes of work, the DRY-est form-control decision, and the consumer animation surface. |
-| **Remaining → 100%** | the other ~19 medium tasks | aria suite (F5a-d), `-safe`/`@source not` (F7), mist preset (F9), CodeBlock tab-size (F11), docs pair (F8/F12), size-\* sweep (F13), F25-post, harvest + process rules, hygiene + whole-plan verification | Real value, lower urgency: docs, showcases, mechanical sweeps, process hardening — sequenced last, several bundled into the shared re-baseline window. |
+| Tier                 | Claim                                                   | Items (status-doc #)                                                                                                                                                                                      | Why this tier                                                                                                                                                                                                                                                                        |
+| -------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1% → 51%**         | 1 medium task carries over half the composability value | **#6 (F1 `@variant dark`)**                                                                                                                                                                               | Priority 20/20, safe today (no re-baseline: semantically identical CSS), deletes the ~15 `.dark` forks that are the last hand-maintained duplication in custom.css, and establishes the `@variant` pattern that F2/F6/F25 build on. One file, one verify loop, whole-pattern unlock. |
+| **4% → 64%**         | +1 task                                                 | **#12 (F2 `@utility` conversion)**                                                                                                                                                                        | Priority 16; the other half of the composability thesis. Tree-shakes custom.css for minimal-adoption consumers (the library's documented adoption mode) and gives consumers `hover:tc-*` variant composition. Needs the re-baseline window (bundling decision ⫱2).                   |
+| **20% → 80%**        | +5 tasks                                                | **#1-3 (integrity trio), #4 (F10 probe), #9-10 (F3 website scrollbar + guide), #14 (F4 owner), #17 (F6 animate tokens)**                                                                                  | The audit's credibility fixes (never edit on a secondhand claim), the website's Firefox-visible scrollbar win, the probe that resolves a whole finding for 5 minutes of work, the DRY-est form-control decision, and the consumer animation surface.                                 |
+| **Remaining → 100%** | the other ~19 medium tasks                              | aria suite (F5a-d), `-safe`/`@source not` (F7), mist preset (F9), CodeBlock tab-size (F11), docs pair (F8/F12), size-\* sweep (F13), F25-post, harvest + process rules, hygiene + whole-plan verification | Real value, lower urgency: docs, showcases, mechanical sweeps, process hardening — sequenced last, several bundled into the shared re-baseline window.                                                                                                                               |
 
 ## Phases (Pareto order)
 
 Global gate rules (from `docs/plan-authoring-checklist.md`, applied per task):
+
 - **Goldens cover this** — CSS-emitting tasks (M05, M07, M10, M12, M13, M15,
   M16, M18, M19, M20, M21, M24) owe named golden files or a recorded
   byte-stable proof; docs tasks are N/A by nature.
@@ -167,140 +168,140 @@ Global gate rules (from `docs/plan-authoring-checklist.md`, applied per task):
 
 ## Comprehensive plan — medium tasks (30–100 min each, ALL todos, impact-sorted)
 
-| # | Task | Covers (status #) | Min | Impact | Proof / gate |
-|---|------|--------------------|-----|--------|--------------|
-| M04 | F1 pre-flight census + probe | 7, 8a | 45 | High | census + probe output |
-| M05 | F1 `@variant dark` migration | 6 | 75 | High | selector-set diff empty |
-| M06 | F1 verify guards + smoke | 11a | 45 | High | guards green |
-| M09 | F2 classification + constraint doc | 36 (+12 prep) | 60 | High | table reviewed |
-| M10 | F2 `@utility` conversion | 12 | 90 | High | variant smoke compiles |
-| M11 | F2 verify + re-baseline ⫱2 | 13, 15a | 100 | High | guards green, diff reviewed |
-| M01 | Integrity trio (D1-D3) | 1, 2, 3 | 45 | High | fresh command outputs |
-| M02 | F10 `@plugin` probe | 4 | 45 | High | verdict recorded |
-| M03 | Index + back-link + policy | 5, 39, 40 | 45 | Medium | docs exist |
-| M07 | F3a website scrollbar | 9 | 45 | High | light+dark visual check |
-| M08 | F3b guide refresh + @utility section | 10, 37 | 60 | Medium | examples compile |
-| M12 | F4 owner resolution | 14 | 60 | Medium | decision + goldens |
-| M13 | F6 animate tokens | 17 | 90 | High | consumer variant compiles |
-| M14 | F6 docs | 18 | 30 | Medium | docs build |
-| M15 | F5a Tabs aria-selected | 19 | 90 | Medium | goldens + a11y green |
-| M16 | F5b aria-expanded chevron | 20 | 90 | Medium | keyboard e2e pack green |
-| M17 | F5c/d Table aria-sort + playbook | 21, 22 | 45 | Low | probe verdict |
-| M18 | F7a `-safe` alignment | 23 | 60 | Medium | goldens stable |
-| M19 | F7b `@source not` | 24, 25 | 30 | Low | byte-stable proof |
-| M20 | F9 mist preset | 31 | 90 | Medium | count bump + goldens |
-| M21 | F11 CodeBlock.TabSize | 32 | 100 | Low | full ladder green |
-| M22 | F8+F12 docs pair | 33, 34 | 30 | Low | docs build |
-| M23 | F13 codemod script | 16 | 100 | Medium | dry-run diff clean |
-| M24 | F13 sweep + re-baseline ⫱2 | (F13 carried) | 100 | Medium | diff reviewed |
-| M25 | F10-post typography or keep | 35 | 60 | Medium | lanes agree |
-| M26 | Harvest + standing rules ⫱1 | 38, 41-43, 50 | 60 | High | TODO_LIST updated |
-| M27 | Hygiene + whole-plan verify ⫱3 | 44-47, template ladder | 100 | High | ci-repro VERDICT PASS |
+| #   | Task                                 | Covers (status #)      | Min | Impact | Proof / gate                |
+| --- | ------------------------------------ | ---------------------- | --- | ------ | --------------------------- |
+| M04 | F1 pre-flight census + probe         | 7, 8a                  | 45  | High   | census + probe output       |
+| M05 | F1 `@variant dark` migration         | 6                      | 75  | High   | selector-set diff empty     |
+| M06 | F1 verify guards + smoke             | 11a                    | 45  | High   | guards green                |
+| M09 | F2 classification + constraint doc   | 36 (+12 prep)          | 60  | High   | table reviewed              |
+| M10 | F2 `@utility` conversion             | 12                     | 90  | High   | variant smoke compiles      |
+| M11 | F2 verify + re-baseline ⫱2           | 13, 15a                | 100 | High   | guards green, diff reviewed |
+| M01 | Integrity trio (D1-D3)               | 1, 2, 3                | 45  | High   | fresh command outputs       |
+| M02 | F10 `@plugin` probe                  | 4                      | 45  | High   | verdict recorded            |
+| M03 | Index + back-link + policy           | 5, 39, 40              | 45  | Medium | docs exist                  |
+| M07 | F3a website scrollbar                | 9                      | 45  | High   | light+dark visual check     |
+| M08 | F3b guide refresh + @utility section | 10, 37                 | 60  | Medium | examples compile            |
+| M12 | F4 owner resolution                  | 14                     | 60  | Medium | decision + goldens          |
+| M13 | F6 animate tokens                    | 17                     | 90  | High   | consumer variant compiles   |
+| M14 | F6 docs                              | 18                     | 30  | Medium | docs build                  |
+| M15 | F5a Tabs aria-selected               | 19                     | 90  | Medium | goldens + a11y green        |
+| M16 | F5b aria-expanded chevron            | 20                     | 90  | Medium | keyboard e2e pack green     |
+| M17 | F5c/d Table aria-sort + playbook     | 21, 22                 | 45  | Low    | probe verdict               |
+| M18 | F7a `-safe` alignment                | 23                     | 60  | Medium | goldens stable              |
+| M19 | F7b `@source not`                    | 24, 25                 | 30  | Low    | byte-stable proof           |
+| M20 | F9 mist preset                       | 31                     | 90  | Medium | count bump + goldens        |
+| M21 | F11 CodeBlock.TabSize                | 32                     | 100 | Low    | full ladder green           |
+| M22 | F8+F12 docs pair                     | 33, 34                 | 30  | Low    | docs build                  |
+| M23 | F13 codemod script                   | 16                     | 100 | Medium | dry-run diff clean          |
+| M24 | F13 sweep + re-baseline ⫱2           | (F13 carried)          | 100 | Medium | diff reviewed               |
+| M25 | F10-post typography or keep          | 35                     | 60  | Medium | lanes agree                 |
+| M26 | Harvest + standing rules ⫱1          | 38, 41-43, 50          | 60  | High   | TODO_LIST updated           |
+| M27 | Hygiene + whole-plan verify ⫱3       | 44-47, template ladder | 100 | High   | ci-repro VERDICT PASS       |
 
 Total: 27 medium tasks · 1,845 min ≈ 31 h · covers all 50 status items.
 
 ## Detailed breakdown — micro tasks (≤12 min each, ALL todos, execution order)
 
-| # | M | Micro task (≤12 min) | Verify |
-|---|---|----------------------|--------|
-| F01 | M01 | Recount `w-N h-N` pairs with the one-liner; record output | counts in note |
-| F02 | M01 | Fix F13 line in 10-14 report HTML (drop "re-counted" or make true) | grep fixed |
-| F03 | M01 | Read demo.css `@source` block; confirm/correct F7b claim in report | cite lines |
-| F04 | M01 | Read `.tc-auto-grow` block; confirm/correct F4 values in report | cite lines |
-| F05 | M01 | Re-validate report HTML after edits (tag balance + anchors) | script clean |
-| F06 | M02 | Scratch CSS with `@plugin "@tailwindcss/typography"`; nix standalone compile | exit code |
-| F07 | M02 | Same compile via `@tailwindcss/cli` lane (node) for comparison | exit code |
-| F08 | M02 | Record verdict + lane table in report appendix and guide | docs diff |
-| F09 | M03 | Write docs/research/README.md index (both deep-dives + md notes) | file exists |
-| F10 | M03 | Append forward-pointer note to 10-08 report (ANNOTATE, append-only) | diff is append |
-| F11 | M03 | Write changelog-policy paragraph; park in docs/agent-context-history | policy recorded |
-| F12 | M04 | Census: list every `.dark`-fork rule in custom.css with line numbers | census list |
-| F13 | M04 | Scratch-probe `@variant dark` inside `@supports` block | compile ok |
-| F14 | M04 | Scratch-probe v4.3 compound `@variant hover, focus` nesting | compile ok |
-| F15 | M05 | Migrate select block forks (largest cluster) to `@variant dark` | diff review |
-| F16 | M05 | Migrate backdrop/overlay + remaining forks | diff review |
-| F17 | M05 | Collapse duplicated hover/focus pairs with compound form | diff review |
-| F18 | M05 | Recompile demo CSS; diff selector sets (must be equal) | diff empty |
-| F19 | M06 | Run TestCustomCSSUtilities + TestCustomCSSThemeTokens `-count=1` | green |
-| F20 | M06 | `nix run .#css` + TestCSSFreshness `-count=1` | green |
-| F21 | M06 | Demo smoke pass (changed CSS = all pages; spot-run visual) | smoke ok |
-| F22 | M07 | Map site.css scrollbar block to scrolling containers | container list |
-| F23 | M07 | Replace block with `scrollbar-thin scrollbar-thumb-* dark:*` | class diff |
-| F24 | M07 | Rebuild website; light+dark screenshot check | images ok |
-| F25 | M08 | Rewrite guide :89-94 example to native `scrollbar-thin` | compile ok |
-| F26 | M08 | Draft guide section: consumer `@utility`/`@variant` composition | section draft |
-| F27 | M08 | Verify every guide example compiles in scratch CSS | compile ok |
-| F28 | M09 | Classify all tc-* classes: eligible vs component-shaped | table |
-| F29 | M09 | Write constraint rationale into theming docs (status #36) | doc drafted |
-| F30 | M10 | Convert `tc-content-auto` + `-compact` to `@utility` | resolves |
-| F31 | M10 | Convert `tc-auto-grow` (or note M12 outcome if retired) | resolves |
-| F32 | M10 | Convert `tc-squircle` + `tc-snap-*` set | resolves |
-| F33 | M10 | Convert `tc-fluid-*` set | resolves |
-| F34 | M10 | Scratch page: `hover:tc-squircle md:tc-content-auto` generates CSS | css emitted |
-| F35 | M11 | Sync TestCustomCSSUtilities expectations | test green |
-| F36 | M11 | Golden sweep across touched packages | goldens green |
-| F37 | M11 | Visual re-baseline per ⫱2 decision (bundled or standalone) | diff reviewed |
-| F38 | M11 | `[Unreleased]` entry for the conversion | changelog warm |
-| F39 | M12 | Read values; write one-paragraph decision (owner: utility vs wrapper) | decision recorded |
-| F40 | M12 | Implement chosen path in forms.Textarea / custom.css | diff review |
-| F41 | M12 | Golden + substring tests for the touched component | tests green |
-| F42 | M13 | Move 11 icon keyframes into `@theme` with `--animate-tc-*` keys | tokens exist |
-| F43 | M13 | Register `tc-log-in` (scrollback) as token if semantics fit | decision note |
-| F44 | M13 | Scratch: `group-hover:animate-tc-pulse motion-reduce:animate-none` | css emitted |
-| F45 | M13 | Demo smoke + count bump (new utilities) same commit | guards green |
-| F46 | M14 | Icons recipe section: wrapper default vs token utility | docs diff |
-| F47 | M14 | skill/SKILL.md consumer-table one-liner update | docs diff |
-| F48 | M15 | Map Tabs JS class-write sites to `aria-selected:` variants | site list |
-| F49 | M15 | Refactor Tabs markup to aria-variants | diff review |
-| F50 | M15 | Delete the now-dead JS class writes | diff review |
-| F51 | M15 | Goldens + a11y tests for Tabs | tests green |
-| F52 | M16 | Same treatment for Dropdown trigger chevron | diff review |
-| F53 | M16 | Same for Popover + ContextMenu triggers | diff review |
-| F54 | M16 | Keyboard e2e pack run (wire-proof) | pack green |
-| F55 | M17 | Probe `aria-[sort=ascending]:` on Table sorted header | probe verdict |
-| F56 | M17 | Adopt or waive with reason in plan appendix | note |
-| F57 | M17 | Add aria-variant pattern note to skill playbook | docs diff |
-| F58 | M18 | Add `-safe` modifiers to Pagination row | diff review |
-| F59 | M18 | Add `-safe` modifiers to Nav centering groups | diff review |
-| F60 | M18 | Goldens (expect identical at standard viewports) | goldens green |
-| F61 | M18 | Demo smoke | smoke ok |
-| F62 | M19 | Add `@source not` lines to demo.css (post-F03 verification) | lines added |
-| F63 | M19 | Recompile demo CSS; assert byte-stable artifact | byte diff empty |
-| F64 | M20 | Draft mist.css preset from v4.2 mist ramp | file exists |
-| F65 | M20 | Presets docs entry + demo theme page wiring | demo renders |
-| F66 | M20 | Goldens for preset page + count bump same commit | guards green |
-| F67 | M21 | Add `TabSize` field + clamp to CodeBlockProps | compiles |
-| F68 | M21 | Emit `tab-N` utility on the pre element | markup ok |
-| F69 | M21 | Golden + edge cases (0, 9, negative → clamp/default) | tests green |
-| F70 | M21 | Props-inventory registration + example_test | inventory green |
-| F71 | M21 | Count bump + `[Unreleased]` same commit | guards green |
-| F72 | M22 | Pointer-coarse escape-hatch note in javascript-guide | docs diff |
-| F73 | M22 | user-valid/invalid variant note in forms docs | docs diff |
-| F74 | M23 | Write codemod (parse+rewrite pairs, exclusion list, dry-run flag) | script runs |
-| F75 | M23 | Dry-run on tree; inspect sample of 20 rewrites for false positives | sample clean |
-| F76 | M23 | Unit-test codemod on fixture file | test green |
-| F77 | M24 | Full sweep via codemod (real run) | diff bounded |
-| F78 | M24 | Build + per-package goldens | green |
-| F79 | M24 | Fold into shared re-baseline window per ⫱2 | diff reviewed |
-| F80 | M24 | `[Unreleased]` entry (idiom change, no visual delta claimed) | changelog warm |
-| F81 | M25 | If probe passed: migrate `.docs-content` rules to prose classes | site builds |
-| F82 | M25 | Else: write standalone-binary constraint into guide | docs diff |
-| F83 | M25 | Website test suite + route goldens | green |
-| F84 | M26 | ⫱1 asked/answered; harvest Medium/High items into TODO_LIST | TODO_LIST diff |
-| F85 | M26 | Park exploratory items into ROADMAP (named-container, font-features) | ROADMAP diff |
-| F86 | M26 | Record standing rule: copied stats get re-verified or dated | rule recorded |
-| F87 | M26 | Record standing rule: HTML deliverables get screenshot pass | rule recorded |
-| F88 | M26 | Record standing rule: <10-min gating probes run in-session | rule recorded |
-| F89 | M26 | Retro item scheduled: review (d)+(e) at next session start | note |
-| F90 | M27 | ⫱3 coordination check before tree-wide lint tasks | note |
-| F91 | M27 | `nix build . && nix run .#reinstall` (BuildFlow freshness) | preflight warn gone |
-| F92 | M27 | `interrogate` availability: devShell add or mark N/A | decision note |
-| F93 | M27 | govulncheck stdlib findings: triage note (wait-for-patch stance) | note |
-| F94 | M27 | Per-module test loop (all 6 sub-modules) | all green |
-| F95 | M27 | `nix run .#verify` (generate+build+test+lint) | green |
-| F96 | M27 | `scripts/ci-repro.sh --lint --website` → VERDICT PASS | exit 0 |
-| F97 | M27 | Demo smoke over all touched endpoints | smoke ok |
-| F98 | M27 | `git status` clean check + result\* audit pre-close | clean |
+| #   | M   | Micro task (≤12 min)                                                         | Verify              |
+| --- | --- | ---------------------------------------------------------------------------- | ------------------- |
+| F01 | M01 | Recount `w-N h-N` pairs with the one-liner; record output                    | counts in note      |
+| F02 | M01 | Fix F13 line in 10-14 report HTML (drop "re-counted" or make true)           | grep fixed          |
+| F03 | M01 | Read demo.css `@source` block; confirm/correct F7b claim in report           | cite lines          |
+| F04 | M01 | Read `.tc-auto-grow` block; confirm/correct F4 values in report              | cite lines          |
+| F05 | M01 | Re-validate report HTML after edits (tag balance + anchors)                  | script clean        |
+| F06 | M02 | Scratch CSS with `@plugin "@tailwindcss/typography"`; nix standalone compile | exit code           |
+| F07 | M02 | Same compile via `@tailwindcss/cli` lane (node) for comparison               | exit code           |
+| F08 | M02 | Record verdict + lane table in report appendix and guide                     | docs diff           |
+| F09 | M03 | Write docs/research/README.md index (both deep-dives + md notes)             | file exists         |
+| F10 | M03 | Append forward-pointer note to 10-08 report (ANNOTATE, append-only)          | diff is append      |
+| F11 | M03 | Write changelog-policy paragraph; park in docs/agent-context-history         | policy recorded     |
+| F12 | M04 | Census: list every `.dark`-fork rule in custom.css with line numbers         | census list         |
+| F13 | M04 | Scratch-probe `@variant dark` inside `@supports` block                       | compile ok          |
+| F14 | M04 | Scratch-probe v4.3 compound `@variant hover, focus` nesting                  | compile ok          |
+| F15 | M05 | Migrate select block forks (largest cluster) to `@variant dark`              | diff review         |
+| F16 | M05 | Migrate backdrop/overlay + remaining forks                                   | diff review         |
+| F17 | M05 | Collapse duplicated hover/focus pairs with compound form                     | diff review         |
+| F18 | M05 | Recompile demo CSS; diff selector sets (must be equal)                       | diff empty          |
+| F19 | M06 | Run TestCustomCSSUtilities + TestCustomCSSThemeTokens `-count=1`             | green               |
+| F20 | M06 | `nix run .#css` + TestCSSFreshness `-count=1`                                | green               |
+| F21 | M06 | Demo smoke pass (changed CSS = all pages; spot-run visual)                   | smoke ok            |
+| F22 | M07 | Map site.css scrollbar block to scrolling containers                         | container list      |
+| F23 | M07 | Replace block with `scrollbar-thin scrollbar-thumb-* dark:*`                 | class diff          |
+| F24 | M07 | Rebuild website; light+dark screenshot check                                 | images ok           |
+| F25 | M08 | Rewrite guide :89-94 example to native `scrollbar-thin`                      | compile ok          |
+| F26 | M08 | Draft guide section: consumer `@utility`/`@variant` composition              | section draft       |
+| F27 | M08 | Verify every guide example compiles in scratch CSS                           | compile ok          |
+| F28 | M09 | Classify all tc-* classes: eligible vs component-shaped                      | table               |
+| F29 | M09 | Write constraint rationale into theming docs (status #36)                    | doc drafted         |
+| F30 | M10 | Convert `tc-content-auto` + `-compact` to `@utility`                         | resolves            |
+| F31 | M10 | Convert `tc-auto-grow` (or note M12 outcome if retired)                      | resolves            |
+| F32 | M10 | Convert `tc-squircle` + `tc-snap-*` set                                      | resolves            |
+| F33 | M10 | Convert `tc-fluid-*` set                                                     | resolves            |
+| F34 | M10 | Scratch page: `hover:tc-squircle md:tc-content-auto` generates CSS           | css emitted         |
+| F35 | M11 | Sync TestCustomCSSUtilities expectations                                     | test green          |
+| F36 | M11 | Golden sweep across touched packages                                         | goldens green       |
+| F37 | M11 | Visual re-baseline per ⫱2 decision (bundled or standalone)                   | diff reviewed       |
+| F38 | M11 | `[Unreleased]` entry for the conversion                                      | changelog warm      |
+| F39 | M12 | Read values; write one-paragraph decision (owner: utility vs wrapper)        | decision recorded   |
+| F40 | M12 | Implement chosen path in forms.Textarea / custom.css                         | diff review         |
+| F41 | M12 | Golden + substring tests for the touched component                           | tests green         |
+| F42 | M13 | Move 11 icon keyframes into `@theme` with `--animate-tc-*` keys              | tokens exist        |
+| F43 | M13 | Register `tc-log-in` (scrollback) as token if semantics fit                  | decision note       |
+| F44 | M13 | Scratch: `group-hover:animate-tc-pulse motion-reduce:animate-none`           | css emitted         |
+| F45 | M13 | Demo smoke + count bump (new utilities) same commit                          | guards green        |
+| F46 | M14 | Icons recipe section: wrapper default vs token utility                       | docs diff           |
+| F47 | M14 | skill/SKILL.md consumer-table one-liner update                               | docs diff           |
+| F48 | M15 | Map Tabs JS class-write sites to `aria-selected:` variants                   | site list           |
+| F49 | M15 | Refactor Tabs markup to aria-variants                                        | diff review         |
+| F50 | M15 | Delete the now-dead JS class writes                                          | diff review         |
+| F51 | M15 | Goldens + a11y tests for Tabs                                                | tests green         |
+| F52 | M16 | Same treatment for Dropdown trigger chevron                                  | diff review         |
+| F53 | M16 | Same for Popover + ContextMenu triggers                                      | diff review         |
+| F54 | M16 | Keyboard e2e pack run (wire-proof)                                           | pack green          |
+| F55 | M17 | Probe `aria-[sort=ascending]:` on Table sorted header                        | probe verdict       |
+| F56 | M17 | Adopt or waive with reason in plan appendix                                  | note                |
+| F57 | M17 | Add aria-variant pattern note to skill playbook                              | docs diff           |
+| F58 | M18 | Add `-safe` modifiers to Pagination row                                      | diff review         |
+| F59 | M18 | Add `-safe` modifiers to Nav centering groups                                | diff review         |
+| F60 | M18 | Goldens (expect identical at standard viewports)                             | goldens green       |
+| F61 | M18 | Demo smoke                                                                   | smoke ok            |
+| F62 | M19 | Add `@source not` lines to demo.css (post-F03 verification)                  | lines added         |
+| F63 | M19 | Recompile demo CSS; assert byte-stable artifact                              | byte diff empty     |
+| F64 | M20 | Draft mist.css preset from v4.2 mist ramp                                    | file exists         |
+| F65 | M20 | Presets docs entry + demo theme page wiring                                  | demo renders        |
+| F66 | M20 | Goldens for preset page + count bump same commit                             | guards green        |
+| F67 | M21 | Add `TabSize` field + clamp to CodeBlockProps                                | compiles            |
+| F68 | M21 | Emit `tab-N` utility on the pre element                                      | markup ok           |
+| F69 | M21 | Golden + edge cases (0, 9, negative → clamp/default)                         | tests green         |
+| F70 | M21 | Props-inventory registration + example_test                                  | inventory green     |
+| F71 | M21 | Count bump + `[Unreleased]` same commit                                      | guards green        |
+| F72 | M22 | Pointer-coarse escape-hatch note in javascript-guide                         | docs diff           |
+| F73 | M22 | user-valid/invalid variant note in forms docs                                | docs diff           |
+| F74 | M23 | Write codemod (parse+rewrite pairs, exclusion list, dry-run flag)            | script runs         |
+| F75 | M23 | Dry-run on tree; inspect sample of 20 rewrites for false positives           | sample clean        |
+| F76 | M23 | Unit-test codemod on fixture file                                            | test green          |
+| F77 | M24 | Full sweep via codemod (real run)                                            | diff bounded        |
+| F78 | M24 | Build + per-package goldens                                                  | green               |
+| F79 | M24 | Fold into shared re-baseline window per ⫱2                                   | diff reviewed       |
+| F80 | M24 | `[Unreleased]` entry (idiom change, no visual delta claimed)                 | changelog warm      |
+| F81 | M25 | If probe passed: migrate `.docs-content` rules to prose classes              | site builds         |
+| F82 | M25 | Else: write standalone-binary constraint into guide                          | docs diff           |
+| F83 | M25 | Website test suite + route goldens                                           | green               |
+| F84 | M26 | ⫱1 asked/answered; harvest Medium/High items into TODO_LIST                  | TODO_LIST diff      |
+| F85 | M26 | Park exploratory items into ROADMAP (named-container, font-features)         | ROADMAP diff        |
+| F86 | M26 | Record standing rule: copied stats get re-verified or dated                  | rule recorded       |
+| F87 | M26 | Record standing rule: HTML deliverables get screenshot pass                  | rule recorded       |
+| F88 | M26 | Record standing rule: <10-min gating probes run in-session                   | rule recorded       |
+| F89 | M26 | Retro item scheduled: review (d)+(e) at next session start                   | note                |
+| F90 | M27 | ⫱3 coordination check before tree-wide lint tasks                            | note                |
+| F91 | M27 | `nix build . && nix run .#reinstall` (BuildFlow freshness)                   | preflight warn gone |
+| F92 | M27 | `interrogate` availability: devShell add or mark N/A                         | decision note       |
+| F93 | M27 | govulncheck stdlib findings: triage note (wait-for-patch stance)             | note                |
+| F94 | M27 | Per-module test loop (all 6 sub-modules)                                     | all green           |
+| F95 | M27 | `nix run .#verify` (generate+build+test+lint)                                | green               |
+| F96 | M27 | `scripts/ci-repro.sh --lint --website` → VERDICT PASS                        | exit 0              |
+| F97 | M27 | Demo smoke over all touched endpoints                                        | smoke ok            |
+| F98 | M27 | `git status` clean check + result\* audit pre-close                          | clean               |
 
 Total: 98 micro tasks ≤ 150 cap · each ≤12 min · covers every medium task.
 
