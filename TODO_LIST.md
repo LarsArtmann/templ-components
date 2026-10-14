@@ -1,10 +1,10 @@
 # TODO List — templ-components
 
-**Updated:** 2026-10-10 | **Version:** 1.20.1
+**Updated:** 2026-10-15 | **Version:** 1.23.0
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources), ⫱ owner gate (decision/credential).
-> IDs are unique across ALL sections — next free ID → 401.
+> IDs are unique across ALL sections — next free ID → 421.
 
 ---
 
@@ -250,7 +250,7 @@ landed this session in `docs/tailwind-v4-adoption-guide.md`._
 | 326     | `errorpage.ErrorHandler` wrapper: document the adoption path, or record the accepted divergence                                                                                                                     | cqrs-htmx uses the `errorpage` components but not the `ErrorHandler` wrapper — the wrapper assumes a Go error + minimal shell, while consumers need per-code domain messages, their own layout chrome, and an `Hx-Trigger` toast. Decide: extend the wrapper, document the composition, or ADR the refusal. (§a5, §g1)                                                                                                                                               |
 | ~~327~~ | ~~Guard test: library inline `style=` emissions stay within the documented exemption set~~ already shipped 2026-10-01 — `utils.TestInlineStyleCompliance` (commit c2d74c15); runs in the per-module utils test lane | The CSP caveat is now documented, but nothing stops a new component from adding an inline style silently. Assert that only `AppShell`, `BarChart`, `Heatmap`, `ProgressBar`, `LoadingOverlay` emit `style=`. (§f34)                                                                                                                                                                                                                                                  |
 
-_Next free ID: 335._
+~~_Next free ID: 335._~~ (superseded 2026-10-15 — the file footer owns the next-free-ID; section footers are historical)
 
 ---
 
@@ -359,4 +359,21 @@ Demand evidence source-verified 2026-10-10 (details: `docs/status/2026-10-10_05-
 
 | 410 | v1.23.0 release + fleet bridge-retirement tails (2026-10-13 session): DONE — v1.23.0 cut (release.sh now normalizes per-module FileName forms; the cut's daemon-race variant documented in release-checklist) and published with all 7 tags; crm bridge retired with the module-cache fallback fix in `gen-library-classes.sh` (errorpage/icons are separate modules — joining them off the root module dir only worked under the bridge); DiscordSync + cqrs-htmx retired externally; R23 InboxClean StatusDot slice + R24 browser-history v1.23.0 bump + 7 ml→ms logical-class fixes landed. OPEN TAILS: (a) crm-exec-stage branch is 18 ahead / 176 behind origin/master — rebase-or-abandon decision needed before its twin `gen-library-classes.sh` gets the same cache-fallback fix; (b) R23 blockers documented: InboxClean's gmail connection dot is JS-owned (`className=` swaps cannot express StatusDot's two-element pulse markup) and the responsive sidebar does NOT fit the library Drawer (overlay-only native dialog); (c) stale-CSS sweep of the remaining fleet (KeyHolderAI, pbx-lens, PapDashboard, sperrmuell-direct, go-taskqueue, webphone, Rolls-Royce, GmbH, Zlota44) with the SKILL.md grep-the-artifact check; (d) crm `internal/app` BDD convergence tests flake under machine load (30s catch-up timeouts, different spec each run — pre-existing, unrelated to the bump) | ROADMAP now carries the four grow-decision capability bookings (semantic-token theming depth, i18n label props, delegated lightbox API, configurable dark-mode selector) — owner decision 2026-10-13: GROW, not deferral. |
 
-_Next free ID: 411._
+## Harvested 2026-10-15 — UI testing tooling pareto plan (docs/planning/2026-10-15_00-05)
+
+> Plan: `docs/planning/2026-10-15_00-05_UI-TESTING-TOOLING-PARETO-PLAN.md` — 26 medium M-tasks, 84 micro μ-tasks, mermaid graph; grown from the 2026-10-14 UI-testing-tool research session and its status report (`docs/status/2026-10-14_23-59_ui-testing-tool-research-status.md`, §f items 1–50). Items below are the decision-shaping subset (Pareto 1%/4% + gates); the plan owns the full phase 0–6 sequence.
+
+| #   | Task                                                                                                                                                                     | Why / source                                                                                                                                              |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 411 | ⫱ Owner ratifies tool verdicts — Playwright / IBM achecker / k6 adopt-trial-reject, chromedp additive-vs-replacement (plan gates ⫱G1–⫱G3)                                | Every lane funnels into the M14 verdict table; nothing integrates before this. Plan M14/M15.                                                              |
+| 412 | Verify packaging & cheap-win claims: nixpkgs `playwright-driver.browsers` for Node Playwright, rustywind, stylelint+Tailwind-v4 at-rules, chromedp CDP emulation surface | These are the plan's deliberately-unverified claims (f-1..f-5); the 1% spike depends on the packaging verdict. Plan M01.                                  |
+| 413 | Playwright 3-engine spike: Chromium+Firefox+WebKit full-page screenshots over the EXISTING demo routes, pinned theme                                                     | THE 1% (≈51% of value): proves-or-kills cross-engine coverage for a Chromium-only repo; findings list = adoption-thesis evidence. Plan M06.               |
+| 414 | Demo coverage map: `demoPageMeta` routes vs the 136 components → `docs/testing/demo-coverage-map.md` (keep-gap / waive-gap verdict per gap)                              | Makes the demo's blind spots explicit and waivable instead of folklore; `Stylable` has ZERO demo references (rg, 2026-10-15). Plan M04.                   |
+| 415 | Demo section for `forms.Select` `Stylable` (base-select path + native-fallback note) — auto axe audit + route golden                                                     | The riskiest cross-engine component currently has no demo route. Plan M05.                                                                                |
+| 416 | Assert base-select Firefox fallback: native rendering, no layout breakage (screenshot + computed style)                                                                  | Firefox does not ship `appearance: base-select` (Mozilla bugs 1944403/1958443, verified) — the fallback path is completely untested. Plan M07.            |
+| 417 | IBM accessibility-checker spike over demo routes + finding-class diff vs the axe baseline ledger                                                                         | Second a11y engine with its own ACT-mapped ruleset (≠ axe-core); catches what one engine cannot. Plan M08.                                                |
+| 418 | Persist `docs/testing/tooling-evaluation.md` (verified facts + spike results) + draft ADR (adopt/reject matrix, ⫱G1–⫱G3 placeholders)                                    | Verdicts must survive sessions — re-researching tool states is the recurring waste (f-33/f-34). Plan M09.                                                 |
+| 419 | `nix run .#crossbrowser` flake app (wrap the M06 spike) + optional NON-blocking CI lane with artifact upload                                                             | ⫱G1 after the M06 spike; lane stays non-blocking until the verdict; kill-criteria mandatory (see #420). Plan M13.                                         |
+| 420 | Tool-trial protocol (spike → verdict → ADR → integrate OR log-rejection) + CI tooling budget table (lane → owner → kill-criteria)                                        | Standing rule from the plan's guardrails: no new lane without a named owner and kill-criteria; dead tools (Lost Pixel) get logged, not retried. Plan M24. |
+
+_Next free ID: 421._
