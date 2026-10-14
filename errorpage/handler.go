@@ -241,7 +241,7 @@ func WriteNotFound404Document(w http.ResponseWriter, r *http.Request, props NotF
 		r.Context(),
 		title,
 		lang,
-		NotFound404(props),
+		NotFound404(props), //nolint:contextcheck // templ render chain, intentional passthrough
 	)
 	if renderErr != nil {
 		slog.Error("not found 404 document render failed", "error", renderErr)
@@ -298,7 +298,10 @@ func renderToBuffer(ctx context.Context, comp templ.Component) ([]byte, error) {
 // document to a byte slice, ensuring the full document renders before
 // writing to the ResponseWriter.
 func renderShellToBuffer(ctx context.Context, title, lang string, props ErrorPageProps) ([]byte, error) {
-	buf, err := renderDocumentShell(ctx, title, lang, ErrorPage(props))
+	buf, err := renderDocumentShell(
+		ctx, title, lang,
+		ErrorPage(props), //nolint:contextcheck // templ render chain, intentional passthrough
+	)
 	if err != nil {
 		return nil, fmt.Errorf("render error page shell (title=%q): %w", title, err)
 	}

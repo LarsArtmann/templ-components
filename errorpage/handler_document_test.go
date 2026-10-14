@@ -98,13 +98,13 @@ func TestXRobotsTagHeaderInvariant(t *testing.T) {
 			WriteNotFound404Document(w, r, DefaultNotFound404Props(), "", "")
 		}, true},
 		{"ErrorHandler HTML", func(w http.ResponseWriter, r *http.Request) {
-			ErrorHandler(errTest{}, ErrorHandlerConfig{}).ServeHTTP(w, r)
+			ErrorHandler(&testError{msg: "boom"}, ErrorHandlerConfig{}).ServeHTTP(w, r)
 		}, true},
 		{"ErrorHandler HTMLShell", func(w http.ResponseWriter, r *http.Request) {
-			ErrorHandler(errTest{}, ErrorHandlerConfig{HTMLShell: true}).ServeHTTP(w, r)
+			ErrorHandler(&testError{msg: "boom"}, ErrorHandlerConfig{HTMLShell: true}).ServeHTTP(w, r)
 		}, true},
 		{"ErrorHandler JSON", func(w http.ResponseWriter, r *http.Request) {
-			ErrorHandler(errTest{}, ErrorHandlerConfig{JSON: true}).ServeHTTP(w, r)
+			ErrorHandler(&testError{msg: "boom"}, ErrorHandlerConfig{JSON: true}).ServeHTTP(w, r)
 		}, false},
 		{"fallback error", func(w http.ResponseWriter, r *http.Request) {
 			writeFallbackError(w, http.StatusInternalServerError)
@@ -129,7 +129,3 @@ func TestXRobotsTagHeaderInvariant(t *testing.T) {
 		})
 	}
 }
-
-type errTest struct{}
-
-func (errTest) Error() string { return "boom" }
