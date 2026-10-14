@@ -32,6 +32,16 @@ var lintScanners = []lintScanner{
 		help: "neutral + semantic color classes missing a same-line dark: variant (.templ/.go sources)",
 		scan: utils.ScanDarkMode,
 	},
+	{
+		flag: "motion",
+		help: "transition/animate classes without a motion-reduce fallback (.templ files)",
+		scan: utils.ScanMotionReduce,
+	},
+	{
+		flag: "icons",
+		help: "inlined SVG path d=\"M...\" literals outside the canonical tables (.templ/.go direct children)",
+		scan: utils.ScanIconPaths,
+	},
 }
 
 // cmdLint runs the compliance scanners and exits with 1 when findings exist,

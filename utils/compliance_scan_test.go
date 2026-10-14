@@ -167,6 +167,62 @@ func TestScanDarkMode(t *testing.T) {
 	})
 }
 
+// TestScanMotionReduce seeds transition fixtures and proves the rule: a
+// transition/animate class needs a same-line motion-reduce fallback or a
+// shared motion constant.
+func TestScanMotionReduce(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	writeLintFixture(t, dir, "gaps.templ", "<span class=\"transition-colors\">x</span>\n")
+	writeLintFixture(t, dir, "ok.templ",
+		"<span class=\"transition-colors motion-reduce:transition-none\">x</span>\n"+
+			"<span class={ \"transitionFast\" }>x</span>\n"+
+			"<!-- prose about transition-colors stays clean -->\n")
+	writeLintFixture(t, dir, "sub", "ignored") // non-.templ files are skipped
+
+	findings, err := ScanMotionReduce(dir)
+	if err != nil {
+		t.Fatalf("ScanMotionReduce: %v", err)
+	}
+
+	if len(findings) != 1 || findings[0].Line != 1 || findings[0].File != "gaps.templ" {
+		t.Errorf("expected exactly the gaps.templ line-1 finding, got %+v", findings)
+	}
+
+	if findings[0].Rule != "motion-reduce" {
+		t.Errorf("Rule = %q, want motion-reduce", findings[0].Rule)
+	}
+}
+
+// TestScanIconPaths seeds inlined-path fixtures and proves both literal forms
+// fire while component-sourced paths and canonical names stay clean.
+func TestScanIconPaths(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	writeLintFixture(t, dir, "bad.templ", "<path d=\"M6 18L18 6M6 6l12 12\"></path>\n")
+	writeLintFixture(t, dir, "bad_js.go", "package p\n\nvar s = \"<path d=\\\"M6 18\\\">\"\n")
+	writeLintFixture(t, dir, "clean.templ", "<path d={ svg.PathXMark }></path>\n")
+
+	findings, err := ScanIconPaths(dir)
+	if err != nil {
+		t.Fatalf("ScanIconPaths: %v", err)
+	}
+
+	if len(findings) != 2 {
+		t.Fatalf("expected 2 findings, got %d:\n%+v", len(findings), findings)
+	}
+
+	if findings[0].File != "bad.templ" || findings[0].Rule != "icon-path-inline" {
+		t.Errorf("finding 0 = %+v, want bad.templ icon-path-inline", findings[0])
+	}
+
+	if findings[1].File != "bad_js.go" {
+		t.Errorf("finding 1 = %+v, want bad_js.go (embedded-JS form)", findings[1])
+	}
+}
+
 func writeLintFixture(t *testing.T, dir, name, content string) {
 	t.Helper()
 

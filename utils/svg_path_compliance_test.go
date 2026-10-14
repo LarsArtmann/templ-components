@@ -1,10 +1,8 @@
 package utils
 
 import (
-	"os"
 	"path/filepath"
 	"regexp"
-	"strings"
 	"testing"
 )
 
@@ -30,64 +28,25 @@ func TestInlineIconPathCompliance(t *testing.T) {
 		"icons", "utils",
 	}
 
-	// File-relative exemptions with the reason each path literal is canonical.
-	exemptions := map[string]string{
-		"icons/icon_paths.go":                         "canonical icon path table",
-		filepath.Join("utils", "svg", "svg.templ"):    "canonical shared constants + SpinnerSVG",
-		filepath.Join("utils", "svg", "svg_templ.go"): "generated canonical constants",
-	}
-
-	// d="M..." in template/JS text and the d=\"M...\" form inside Go string
-	// literals that embed JavaScript.
-	pathRe := regexp.MustCompile(`d=\\"M[0-9]|d="M[0-9]`)
-
 	violations := 0
 
 	for _, dir := range dirs {
-		dirPath := filepath.Join(root, dir)
-
-		files, err := filepath.Glob(filepath.Join(dirPath, "*.templ"))
+		findings, err := ScanIconPaths(filepath.Join(root, dir))
 		if err != nil {
-			t.Fatalf("glob %s: %v", dirPath, err)
+			t.Fatalf("scan %s: %v", dir, err)
 		}
 
-		goFiles, err := filepath.Glob(filepath.Join(dirPath, "*.go"))
-		if err != nil {
-			t.Fatalf("glob %s: %v", dirPath, err)
-		}
+		violations += len(findings)
 
-		files = append(files, goFiles...)
-
-		for _, file := range files {
-			base := filepath.Base(file)
-
-			if strings.HasSuffix(base, "_templ.go") || strings.HasSuffix(base, "_test.go") {
-				continue
-			}
-
-			if _, ok := exemptions[filepath.Join(dir, base)]; ok {
-				continue
-			}
-
-			data, err := os.ReadFile(file)
-			if err != nil {
-				t.Fatalf("read %s: %v", file, err)
-			}
-
-			for lineNum, line := range strings.Split(string(data), "\n") {
-				if pathRe.MatchString(line) {
-					t.Errorf(
-						"%s:%d inlines SVG path data — single-source violation. "+
-							"Render via icons.Icon / icons.IconWithStrokeWidth (markup) or "+
-							"icons.IconPathData (JS injection); for cross-module needs add a "+
-							"constant in utils/svg.",
-						filepath.Join(dir, base),
-						lineNum+1,
-					)
-
-					violations++
-				}
-			}
+		for _, f := range findings {
+			t.Errorf(
+				"%s:%d inlines SVG path data — single-source violation. "+
+					"Render via icons.Icon / icons.IconWithStrokeWidth (markup) or "+
+					"icons.IconPathData (JS injection); for cross-module needs add a "+
+					"constant in utils/svg.",
+				filepath.Join(dir, f.File),
+				f.Line,
+			)
 		}
 	}
 
