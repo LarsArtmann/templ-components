@@ -49,7 +49,9 @@ func TestScriptComponentContextNonce(t *testing.T) {
 		t.Parallel()
 
 		viaProps := render(t, context.Background(), "same-nonce")
+
 		viaContext := render(t, ContextWithNonce(context.Background(), "same-nonce"), "")
+
 		if viaProps != viaContext {
 			t.Errorf("context path diverges from props path:\nprops:    %s\ncontext:  %s", viaProps, viaContext)
 		}

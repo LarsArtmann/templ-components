@@ -23,6 +23,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `utils.ScriptComponent` (the canonical writer behind every component
   singleton script) resolves per render — context-free renders are
   byte-identical, goldens unchanged.
+- **`display.Prose` — a longform-content container.** One wrapper around
+  rendered markdown/article HTML; the new `.tc-prose` family in
+  `templates/custom.css` styles headings, lists, blockquotes, inline and
+  block code, tables, and images via descendant selectors (theme-token
+  colors with `.dark` overrides, logical/RTL-safe spacing, rem scale). Typed
+  `ProseSize` (SM/MD/LG, zero value = MD) via a lookup map; `BaseProps`
+  propagates ID/Class/Attrs. Tailwind utilities still beat the descendant
+  rules, so per-element classes and the `tc-fluid-*` sizes compose on top.
+  Consumers adopt by copying the refreshed `templates/custom.css` (or
+  `tc init`) and recompiling.
+
+### Changed
+
+- **`templates/custom.css` gains the `.tc-prose` class family** (13 new
+  element rules + dark overrides). Recompile your entry CSS after adopting;
+  `tc init` starters are refreshed in lockstep.
 
 ### Fixed
 
