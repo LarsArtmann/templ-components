@@ -1076,3 +1076,216 @@ details[open] [data-tc-chevron] {
     opacity: 1;
   }
 }
+
+/* --- Longform prose (.tc-prose) --------------------------------------- */
+/*
+ * A longform-content container for rendered markdown/articles: headings,
+ * lists, blockquotes, code, tables, and images styled via DESCENDANT
+ * selectors, so the caller renders raw content HTML inside one wrapper:
+ *
+ *   <article class="tc-prose">{ renderedMarkdown }</article>
+ *   @display.Prose(display.ProseProps{...}) { ... }
+ *
+ * Element rules are intentionally WEAKER than Tailwind utilities, so a
+ * single utility on a specific element still wins; per-element `tc-fluid-*`
+ * classes compose on top (utilities beat the descendant font-size).
+ *
+ * Scale is rem-based (deterministic without a query container). Colors use
+ * Tailwind v4 theme variables (token policy) with explicit `.dark`
+ * overrides, matching the tc-select pattern. Spacing uses LOGICAL properties
+ * (margin-block, padding-inline-start, text-align: start) so RTL mirrors
+ * with no extra rules. No transitions/animations: nothing to reduce.
+ */
+@layer components {
+  .tc-prose {
+    color: var(--color-gray-700);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .dark .tc-prose {
+    color: var(--color-gray-300);
+  }
+
+  .tc-prose > :first-child {
+    margin-block-start: 0;
+  }
+
+  .tc-prose > :last-child {
+    margin-block-end: 0;
+  }
+
+  .tc-prose p {
+    margin-block: 1.25rem;
+  }
+
+  .tc-prose h1,
+  .tc-prose h2,
+  .tc-prose h3,
+  .tc-prose h4 {
+    color: var(--color-gray-900);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-block: 2rem 0.75rem;
+  }
+
+  .dark .tc-prose h1,
+  .dark .tc-prose h2,
+  .dark .tc-prose h3,
+  .dark .tc-prose h4 {
+    color: var(--color-white);
+  }
+
+  .tc-prose h1 {
+    font-size: 2.25rem;
+    letter-spacing: -0.02em;
+  }
+
+  .tc-prose h2 {
+    font-size: 1.875rem;
+    letter-spacing: -0.02em;
+  }
+
+  .tc-prose h3 {
+    font-size: 1.5rem;
+  }
+
+  .tc-prose h4 {
+    font-size: 1.25rem;
+  }
+
+  .tc-prose a {
+    color: var(--color-blue-600);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .tc-prose a:hover {
+    color: var(--color-blue-500);
+  }
+
+  .dark .tc-prose a {
+    color: var(--color-blue-400);
+  }
+
+  .dark .tc-prose a:hover {
+    color: var(--color-blue-300);
+  }
+
+  .tc-prose strong {
+    color: var(--color-gray-900);
+    font-weight: 600;
+  }
+
+  .dark .tc-prose strong {
+    color: var(--color-white);
+  }
+
+  .tc-prose ul,
+  .tc-prose ol {
+    margin-block: 1.25rem;
+    padding-inline-start: 1.625rem;
+  }
+
+  .tc-prose ul {
+    list-style-type: disc;
+  }
+
+  .tc-prose ol {
+    list-style-type: decimal;
+  }
+
+  .tc-prose li {
+    margin-block: 0.375rem;
+  }
+
+  .tc-prose li > ul,
+  .tc-prose li > ol {
+    margin-block: 0.375rem;
+  }
+
+  .tc-prose blockquote {
+    border-inline-start: 0.25rem solid var(--color-gray-300);
+    color: var(--color-gray-600);
+    font-style: italic;
+    margin-block: 1.5rem;
+    padding-inline-start: 1rem;
+  }
+
+  .dark .tc-prose blockquote {
+    border-inline-start-color: var(--color-gray-700);
+    color: var(--color-gray-400);
+  }
+
+  .tc-prose code {
+    background-color: var(--color-gray-100);
+    border-radius: 0.25rem;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.875em;
+    padding: 0.125rem 0.375rem;
+  }
+
+  .dark .tc-prose code {
+    background-color: var(--color-gray-800);
+  }
+
+  .tc-prose pre {
+    background-color: var(--color-gray-950);
+    border-radius: 0.5rem;
+    color: var(--color-gray-100);
+    line-height: 1.6;
+    margin-block: 1.5rem;
+    overflow-x: auto;
+    padding: 1rem 1.25rem;
+  }
+
+  .tc-prose pre code {
+    background-color: transparent;
+    color: inherit;
+    font-size: 0.875rem;
+    padding: 0;
+  }
+
+  .tc-prose hr {
+    border: 0;
+    border-block-start: 1px solid var(--color-gray-200);
+    margin-block: 2rem;
+  }
+
+  .dark .tc-prose hr {
+    border-block-start-color: var(--color-gray-800);
+  }
+
+  .tc-prose table {
+    border-collapse: collapse;
+    margin-block: 1.5rem;
+    width: 100%;
+  }
+
+  .tc-prose th {
+    border-block-end: 1px solid var(--color-gray-300);
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    text-align: start;
+  }
+
+  .dark .tc-prose th {
+    border-block-end-color: var(--color-gray-700);
+  }
+
+  .tc-prose td {
+    border-block-end: 1px solid var(--color-gray-200);
+    padding: 0.5rem 0.75rem;
+  }
+
+  .dark .tc-prose td {
+    border-block-end-color: var(--color-gray-800);
+  }
+
+  .tc-prose img {
+    border-radius: 0.5rem;
+    height: auto;
+    margin-block: 1.5rem;
+    max-width: 100%;
+  }
+}

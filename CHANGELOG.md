@@ -6,6 +6,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`tc lint` — the library's compliance guards as a consumer CLI.** Four
+  scanners (`--rtl`, `--dark`, `--motion`, `--icons`, `--all`) run the exact
+  engines behind the library's guard tests (`ScanRTL`, `ScanDarkMode`,
+  `ScanMotionReduce`, `ScanIconPaths` in `utils`) over any directory, print
+  `file:line: rule: message` findings, and exit 1 on findings so CI and
+  pre-commit hooks can gate on them. Per-line `tc-lint:ignore [rule ...]`
+  allowlist markers suppress deliberate exceptions (bare marker = all rules
+  on the line; prefer the narrow form). Documented in `docs/cli.md`.
+- **Context-injected defaults (ADR-0047): `utils.ContextWithNonce` +
+  `ResolveNonce` — precedence props > context > zero.** Middleware wraps the
+  handler once with the request's CSP nonce; every script-emitting component
+  resolves it automatically, and an explicit `Nonce` prop always wins.
+  `utils.ScriptComponent` (the canonical writer behind every component
+  singleton script) resolves per render — context-free renders are
+  byte-identical, goldens unchanged.
+
+### Fixed
+
+- **Website RTL/motion compliance.** The marketing site's hand-written pages
+  carried 6 physical-direction/deprecated-inset classes and 23
+  transition/animation classes without reduced-motion fallbacks — the exact
+  violations `tc lint` exists to catch, found by dogfooding it on
+  `./website` (now clean on all four scanners).
+
 ## [1.23.0] — 2026-10-13
 
 ### Added
