@@ -15347,7 +15347,7 @@ templ MetaRefresh(delaySeconds int, url string) {
 	{{
 		refreshContent := strconv.Itoa(max(delaySeconds, 0))
 		if url != "" {
-			refreshContent += ";url=" + url
+			refreshContent += "; url=" + url
 		}
 	}}
 	<meta http-equiv="refresh" content={ refreshContent }/>
