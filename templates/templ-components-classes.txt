@@ -7410,6 +7410,116 @@ templ Popover(props PopoverProps) {
 	@popoverPositionScriptComponent(props.Nonce)
 }
 
+# ── display/prose.go ─────────────────────────────────────────────
+// Prose component: a longform-content container for rendered markdown and
+// article HTML. One wrapper class (.tc-prose, templates/custom.css) styles
+// headings, lists, blockquotes, code, tables, and images via descendant
+// selectors — the consumer renders raw content HTML inside and gets the
+// library's typographic contract (theme-token colors, dark-mode overrides,
+// logical/RTL-safe spacing) without per-element classes.
+package display
+
+import (
+	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// ProseSize controls the container's font scale. Utilities beat the
+// .tc-prose descendant rules, so the size classes override the base font.
+type ProseSize string
+
+const (
+	// ProseSizeSM renders compact longform text (0.875rem).
+	ProseSizeSM ProseSize = "sm"
+	// ProseSizeMD is the default reading scale (1rem, the .tc-prose base).
+	ProseSizeMD ProseSize = "md"
+	// ProseSizeLG renders large text (1.125rem) for lead articles.
+	ProseSizeLG ProseSize = "lg"
+)
+
+// ProseSizeDefault is the zero-value-compatible default size.
+const ProseSizeDefault = ProseSizeMD
+
+// ProseSizeIsValid reports whether v is one of the defined ProseSize constants.
+func ProseSizeIsValid(v ProseSize) bool {
+	switch v {
+	case ProseSizeSM, ProseSizeMD, ProseSizeLG:
+		return true
+	default:
+		return false
+	}
+}
+
+// proseSizeLookup maps each size to the classes layered over .tc-prose.
+// MD is intentionally empty: the .tc-prose base IS the medium scale.
+var proseSizeLookup = map[ProseSize]string{ //nolint:gochecknoglobals // typed-key style lookup (repo convention)
+	ProseSizeSM: "text-sm leading-relaxed",
+	ProseSizeMD: "",
+	ProseSizeLG: "text-lg leading-relaxed",
+}
+
+// proseSizeClass resolves the size classes with the zero value = default.
+func proseSizeClass(size ProseSize) string {
+	if size == "" {
+		return proseSizeLookup[ProseSizeMD]
+	}
+
+	return utils.Lookup(proseSizeLookup, size, "")
+}
+
+// ProseProps configures a longform-content container.
+type ProseProps struct {
+	utils.BaseProps
+
+	// Children is the longform content (typically rendered markdown HTML).
+	Children templ.Component
+	// Size sets the font scale. Zero value falls back to ProseSizeMD.
+	Size ProseSize
+}
+
+// DefaultProseProps returns sensible defaults.
+func DefaultProseProps() ProseProps {
+	return ProseProps{Size: ProseSizeMD} //nolint:exhaustruct_v5 // Children/BaseProps stay zero by design
+}
+
+# ── display/prose.templ ─────────────────────────────────────────────
+package display
+
+import (
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// Prose renders a longform-content container (rendered markdown, articles,
+// documentation bodies). The .tc-prose family in templates/custom.css styles
+// the content's descendants — headings, lists, blockquotes, code, tables,
+// images — so callers drop raw content HTML inside without per-element
+// classes:
+//
+//	@display.Prose(display.ProseProps{Size: display.ProseSizeMD}) {
+//		<h2>Release notes</h2>
+//		<p>Plain markup is styled by the container.</p>
+//	}
+//
+// The wrapper carries BaseProps (ID, Class, Attrs, AriaLabel, Nonce);
+// utilities still win over the descendant rules, so per-element Tailwind
+// classes and the tc-fluid-* sizes compose on top.
+templ Prose(props ProseProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("tc-prose", proseSizeClass(props.Size), props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		if props.Children != nil {
+			@props.Children
+		}
+	</div>
+}
+
 # ── display/relative_time.templ ─────────────────────────────────────────────
 package display
 

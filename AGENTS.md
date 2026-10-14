@@ -62,7 +62,7 @@ The flake uses `flake-parts` + `treefmt-nix`; BuildFlow owns the pre-commit hook
 
 ## CRITICAL: Generated `*_templ.go` Files MUST Be Committed
 
-This is a templ LIBRARY: the module proxy serves tagged source as-is and never runs `templ generate` — without committed `*_templ.go`, consumers get `undefined` errors on every component. `.gitignore` carries `!*_templ.go`; after editing any `.templ`, run `templ generate ./...` and commit the generated file; never re-ignore it; 135 generated files across all packages.
+This is a templ LIBRARY: the module proxy serves tagged source as-is and never runs `templ generate` — without committed `*_templ.go`, consumers get `undefined` errors on every component. `.gitignore` carries `!*_templ.go`; after editing any `.templ`, run `templ generate ./...` and commit the generated file; never re-ignore it; 136 generated files across all packages.
 
 - **BuildFlow gotcha:** the pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` every run (last pattern wins), hiding NEW components' generated files until `git add -f` — after each commit, check `git status` for a re-added ignore line and remove it.
 - **The auto-commit daemon is adversarial-by-accident:** generic hallucinated messages, 60s budget, NO tests, reverts mid-session edits, consumes merge parents, pushes master/tags unasked (full incident classes + detached-worktree rebase recipe: `docs/agent-context-history.md#agents-md-size`). After ANY daemon commit: re-check your edits survived, `[Unreleased]` still warm, `git fetch` before assuming local-only state, and commit visual-golden PNG churn MANUALLY (daemon commits are text-diff-driven).

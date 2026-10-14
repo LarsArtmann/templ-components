@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-135 components across 11 packages + 102 icons. If you're about to hand-roll
+136 components across 11 packages + 102 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -50,7 +50,7 @@ Don't know what to look for? Find your page type:
 
 ### By package (import path reference)
 
-#### `display` — 51 components
+#### `display` — 52 components
 
 | Component            | Signature                                           | One-liner                                                                                                                                                               |
 | -------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -102,6 +102,7 @@ Don't know what to look for? Find your page type:
 | `LivePill`           | `LivePill(props LivePillProps)`                     | Dot+text status pill — the Live / Reconnecting / Paused connection indicator shape                                                                                      |
 | `SegmentBar`         | `SegmentBar(props SegmentBarProps)`                 | Stacked proportion bar + legend — flex-grow proportions, deterministic label-keyed palette, `Color` override, role=img summary                                          |
 | `Lightbox`           | `Lightbox(props LightboxProps)`                     | Native-dialog image viewer — thumbnails or trigger button, prev/next, rotate, zoom, captions; CSP-safe singleton script                                                 |
+| `Prose`               | `Prose(props ProseProps)`                           | Longform-content container — `.tc-prose` descendant styling for rendered markdown (headings/lists/quotes/code/tables/images), typed `ProseSize`, dark+RTL safe          |
 
 #### `forms` — 26 components
 
