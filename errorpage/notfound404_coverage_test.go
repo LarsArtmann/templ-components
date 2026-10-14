@@ -28,6 +28,19 @@ func TestNotFound404Coverage(t *testing.T) {
 		utils.AssertContains(t, output, "Go to homepage")
 	})
 
+	t.Run("go back text defaults when empty", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, NotFound404(NotFound404Props{ShowGoBack: true, GoBackText: ""}))
+		utils.AssertContains(t, output, "Go back")
+	})
+
+	t.Run("go back text overrides when set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, NotFound404(NotFound404Props{ShowGoBack: true, GoBackText: "Zurück"}))
+		utils.AssertContains(t, output, "Zurück")
+		utils.AssertNotContains(t, output, "Go back")
+	})
+
 	t.Run("attrs propagate to root element", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, NotFound404(NotFound404Props{
@@ -81,6 +94,14 @@ func TestNotFound404DefaultPropsValues(t *testing.T) {
 
 	if props.GoHomeText != "Go to homepage" {
 		t.Errorf("GoHomeText = %q, want %q", props.GoHomeText, "Go to homepage")
+	}
+
+	if props.GoBackText != "Go back" {
+		t.Errorf("GoBackText = %q, want %q", props.GoBackText, "Go back")
+	}
+
+	if props.SearchSubmitLabel != "Search" {
+		t.Errorf("SearchSubmitLabel = %q, want %q", props.SearchSubmitLabel, "Search")
 	}
 
 	if !props.ShowGoBack {

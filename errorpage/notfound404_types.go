@@ -6,15 +6,16 @@ import (
 )
 
 const (
-	notFound404DefaultTitle   = "Page not found"
-	notFound404DefaultMessage = "The page you're looking for doesn't exist or has been moved."
-	notFound404DefaultNumeral = "404"
-	notFound404GoHomeText     = "Go to homepage"
-	notFound404GoBackText     = "Go back"
-	notFound404PopularLabel   = "Popular pages"
-	notFound404SearchDefault  = "Search..."
-	notFound404InputName      = "q"
-	notFound404HomeText       = "Home"
+	notFound404DefaultTitle      = "Page not found"
+	notFound404DefaultMessage    = "The page you're looking for doesn't exist or has been moved."
+	notFound404DefaultNumeral    = "404"
+	notFound404GoHomeText        = "Go to homepage"
+	notFound404GoBackText        = "Go back"
+	notFound404PopularLabel      = "Popular pages"
+	notFound404SearchDefault     = "Search..."
+	notFound404InputName         = "q"
+	notFound404HomeText          = "Home"
+	notFound404SearchSubmitLabel = "Search"
 )
 
 type NotFoundLink struct {
@@ -32,10 +33,12 @@ type NotFound404Props struct {
 	SearchAction      string
 	SearchPlaceholder string
 	SearchInputName   string
+	SearchSubmitLabel string
 	Links             []NotFoundLink
 	LinksTitle        string
 	GoHomeHref        string
 	GoHomeText        string
+	GoBackText        string
 	ShowGoBack        bool
 }
 
@@ -46,9 +49,11 @@ func DefaultNotFound404Props() NotFound404Props {
 		Message:           notFound404DefaultMessage,
 		SearchPlaceholder: notFound404SearchDefault,
 		SearchInputName:   notFound404InputName,
+		SearchSubmitLabel: notFound404SearchSubmitLabel,
 		LinksTitle:        notFound404PopularLabel,
 		GoHomeHref:        "/",
 		GoHomeText:        notFound404GoHomeText,
+		GoBackText:        notFound404GoBackText,
 		ShowGoBack:        true,
 	}
 }
