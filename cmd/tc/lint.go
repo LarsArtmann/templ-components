@@ -80,7 +80,14 @@ func runLint(args []string, stdout, stderr io.Writer) int {
 	}
 
 	if findings > 0 {
-		fmt.Fprintf(stdout, "tc lint: %d finding(s) (%s) in %d %s\n", findings, strings.Join(flags, " "), len(dirs), pluralDirs)
+		fmt.Fprintf(
+			stdout,
+			"tc lint: %d finding(s) (%s) in %d %s\n",
+			findings,
+			strings.Join(flags, " "),
+			len(dirs),
+			pluralDirs,
+		)
 
 		return 1
 	}
