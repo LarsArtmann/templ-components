@@ -36,13 +36,19 @@ func ScriptAttrs(nonce string) templ.Attributes {
 // 2026-10-01 demo outage), HTML-escapes the nonce value, and wraps write
 // errors with the caller's errLabel for debugging. A nonce-carrying render
 // is byte-identical to `<script nonce="…">\n<js></script>\n`.
+//
+// The nonce resolves through the ADR-0047 precedence: an explicit props
+// nonce always wins; a request context carrying ContextWithNonce fills an
+// empty prop; both empty renders NO nonce attribute. Resolution happens per
+// render (inside the ComponentFunc), so one component value is safe across
+// requests with different context nonces.
 func ScriptComponent(nonce, script, errLabel string) templ.Component {
-	nonceAttr := ""
-	if nonce != "" {
-		nonceAttr = fmt.Sprintf(" nonce=\"%s\"", html.EscapeString(nonce))
-	}
+	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		nonceAttr := ""
+		if resolved := ResolveNonce(ctx, nonce); resolved != "" {
+			nonceAttr = fmt.Sprintf(" nonce=\"%s\"", html.EscapeString(resolved))
+		}
 
-	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 		if _, err := fmt.Fprintf(w, "<script%s>\n%s</script>\n", nonceAttr, script); err != nil {
 			return fmt.Errorf("write %s: %w", errLabel, err)
 		}
