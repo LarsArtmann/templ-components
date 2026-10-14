@@ -237,7 +237,12 @@ func WriteNotFound404Document(w http.ResponseWriter, r *http.Request, props NotF
 
 	setNoIndexHeader(w)
 
-	buf, renderErr := renderDocumentShell(r.Context(), title, lang, NotFound404(props)) //nolint:contextcheck // intentional passthrough
+	buf, renderErr := renderDocumentShell(
+		r.Context(),
+		title,
+		lang,
+		NotFound404(props),
+	)
 	if renderErr != nil {
 		slog.Error("not found 404 document render failed", "error", renderErr)
 		writeFallbackError(w, http.StatusNotFound)
@@ -318,7 +323,7 @@ func renderDocumentShell(ctx context.Context, title, lang string, content templ.
 			return fmt.Errorf("write document shell prologue: %w", err)
 		}
 
-		renderErr := content.Render(ctx, bw) //nolint:contextcheck // intentional passthrough
+		renderErr := content.Render(ctx, bw)
 		if renderErr != nil {
 			return fmt.Errorf("render document content: %w", renderErr)
 		}

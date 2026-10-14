@@ -25,6 +25,12 @@ templ NotFound404(props NotFound404Props) {
 			goHomeText = notFound404GoHomeText
 		}
 	}}
+	{{
+		goBackText := props.GoBackText
+		if goBackText == "" {
+			goBackText = notFound404GoBackText
+		}
+	}}
 	<main
 		if props.ID != "" {
 			id={ props.ID }
@@ -65,7 +71,7 @@ templ NotFound404(props NotFound404Props) {
 						class={ errorActionClassScaffold + "border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-gray-400 dark:focus-visible:ring-gray-500 " + utils.TransitionColors }
 					>
 						@icons.IconRTL(icons.ArrowLeft, "h-4 w-4")
-						<span>{ notFound404GoBackText }</span>
+						<span>{ goBackText }</span>
 					</button>
 				}
 			</div>
@@ -109,6 +115,12 @@ templ notFound404Search(props NotFound404Props) {
 			placeholder = notFound404SearchDefault
 		}
 	}}
+	{{
+		submitLabel := props.SearchSubmitLabel
+		if submitLabel == "" {
+			submitLabel = notFound404SearchSubmitLabel
+		}
+	}}
 	<form
 		action={ templ.SafeURL(props.SearchAction) }
 		method="get"
@@ -116,16 +128,20 @@ templ notFound404Search(props NotFound404Props) {
 		role="search"
 	>
 		<div class="relative">
-			<div class="pointer-events-none absolute inset-y-0 inset-s-0 flex items-center ps-3">
-				@icons.Icon(icons.Search, "h-5 w-5 text-gray-400 dark:text-gray-500")
-			</div>
 			<input
 				type="search"
 				name={ inputName }
 				placeholder={ placeholder }
-				class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 ps-10 pe-3 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-hidden dark:focus:border-blue-400 caret-blue-600 dark:caret-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+				class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 ps-4 pe-14 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-hidden dark:focus:border-blue-400 caret-blue-600 dark:caret-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
 				aria-label={ placeholder }
 			/>
+			<button
+				type="submit"
+				aria-label={ submitLabel }
+				class={ "absolute inset-y-0 inset-e-0 my-auto me-1.5 flex h-9 w-9 items-center justify-center rounded-md text-gray-400 dark:text-gray-500 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 " + utils.TransitionColors }
+			>
+				@icons.Icon(icons.Search, "h-5 w-5")
+			</button>
 		</div>
 	</form>
 }

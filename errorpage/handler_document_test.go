@@ -112,8 +112,6 @@ func TestXRobotsTagHeaderInvariant(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -124,6 +122,7 @@ func TestXRobotsTagHeaderInvariant(t *testing.T) {
 			if tt.noindx && got != "noindex" {
 				t.Errorf("X-Robots-Tag = %q, want %q", got, "noindex")
 			}
+
 			if !tt.noindx && got != "" {
 				t.Errorf("X-Robots-Tag = %q, want empty (JSON path stays header-free)", got)
 			}
