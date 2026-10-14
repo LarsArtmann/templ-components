@@ -77,6 +77,55 @@ tc doctor
 # result: all checks passed.
 ```
 
+### `tc lint`
+
+Scans your source files for the same compliance rules the library enforces on
+itself with its own guard tests. Each scanner is the exact engine behind a
+library test, so adopting `tc lint` in CI pins your markup to the library's
+accessibility and RTL contract.
+
+```bash
+tc lint [--rtl] [--dark] [--motion] [--icons] [DIR ...]
+```
+
+Without `DIR`, the current directory is scanned recursively (icons: direct
+children only). Select at least one scanner:
+
+| Scanner    | Rule(s)                           | Catches                                                                                            |
+| ---------- | --------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `--rtl`    | `rtl-physical`, `rtl-inset-alias` | Physical direction classes (`ml-`, `pr-`, `text-left`, …) and deprecated `start-*`/`end-*` aliases |
+| `--dark`   | `darkmode-neutral`, `darkmode-semantic` | Color classes without a same-line `dark:` variant                                            |
+| `--motion` | `motion-reduce`                   | `transition-*`/`animate-*` without a `motion-reduce:` fallback                                     |
+| `--icons`  | `icon-path-inline`                | Inlined SVG `d="M..."` literals outside the canonical tables                                       |
+
+Findings print as `file:line: rule: message` with the offending line. Exit
+codes: `0` clean, `1` findings or scan failure, `2` usage error — so a CI job
+or pre-commit hook can gate on it:
+
+```bash
+tc lint --rtl --motion ./components
+# components/banner.templ:12: rtl-physical: RTL physical-property violation ...
+# tc lint: 1 finding(s) (--rtl --motion) in 1 directory
+```
+
+#### Suppressing findings: `tc-lint:ignore`
+
+Deliberate exceptions carry a per-line marker, in any comment syntax the file
+language offers. It must sit on the SAME line as the finding:
+
+```html
+<div class="ml-2"><!-- tc-lint:ignore --></div>
+<span class="ml-2"><!-- tc-lint:ignore rtl-physical --></span>
+```
+
+```go
+var arrow = "translate-x-1" // tc-lint:ignore motion-reduce
+```
+
+A bare `tc-lint:ignore` suppresses every rule on the line; listing rule ids
+suppresses exactly those. Prefer the narrow form — a bare marker hides future
+rules too.
+
 ## Why use this?
 
 The library is designed to cover the common cases with sensible defaults.

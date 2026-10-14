@@ -67,22 +67,36 @@ func scanSources(dir string, include func(name string) bool, fn func(rel, conten
 // `tc-lint:ignore <rule> [<rule>...]` suppresses exactly the named rules.
 const lintIgnoreMarker = "tc-lint:ignore"
 
-// lintIgnoreTrimCuts strips comment-closer punctuation from the tokens after
-// the marker, so `<!-- tc-lint:ignore rtl-physical-->` parses as the rule
-// "rtl-physical". Only token EDGES are trimmed; internal hyphens in rule ids
-// survive.
-const lintIgnoreTrimCuts = "-!>*\"',;()"
+// lintIgnoreTrimCuts strips leftover comment punctuation from the tokens
+// between the marker and the comment closer.
+const lintIgnoreTrimCuts = "\"',;()/-*"
 
-// lintIgnoreFor parses one raw source line's suppression directive.
-func lintIgnoreFor(line string) (all bool, rules map[string]bool) {
-	idx := strings.Index(line, lintIgnoreMarker)
-	if idx < 0 {
+// lintRuleRe is the rule-id shape: lowercase letters/digits/hyphens starting
+// with a letter. It keeps markup after the comment closer from leaking in as
+// bogus rule names.
+var lintRuleRe = regexp.MustCompile(`^[a-z][a-z0-9-]*$`)
+
+// lintIgnoreFor parses one raw source line's suppression directive. Only the
+// text between the marker and the comment closer (-->, */) is considered, so
+// later markup never becomes a rule name. No rules in scope means "suppress
+// every rule on this line".
+func lintIgnoreFor(line string) (bool, map[string]bool) {
+	_, rest, found := strings.Cut(line, lintIgnoreMarker)
+	if !found {
 		return false, nil
 	}
 
-	for _, token := range strings.Fields(line[idx+len(lintIgnoreMarker):]) {
+	for _, closer := range []string{"-->", "*/"} {
+		if end := strings.Index(rest, closer); end >= 0 {
+			rest = rest[:end]
+		}
+	}
+
+	var rules map[string]bool
+
+	for token := range strings.FieldsSeq(rest) {
 		rule := strings.Trim(token, lintIgnoreTrimCuts)
-		if rule == "" {
+		if !lintRuleRe.MatchString(rule) {
 			continue
 		}
 
@@ -98,6 +112,17 @@ func lintIgnoreFor(line string) (all bool, rules map[string]bool) {
 	}
 
 	return false, rules
+}
+
+// lintFindingSuppressed reports whether the raw line's ignore directive
+// suppresses a finding of the given rule.
+func lintFindingSuppressed(rawLine, rule string) bool {
+	all, rules := lintIgnoreFor(rawLine)
+	if all {
+		return true
+	}
+
+	return rules[rule]
 }
 
 // htmlCommentAnyRe matches HTML comments across line breaks. An unterminated
@@ -151,23 +176,26 @@ func ScanRTL(dir string) ([]Finding, error) {
 
 	err := scanSources(dir, func(name string) bool { return strings.HasSuffix(name, ".templ") },
 		func(rel, content string) error {
-			for i, line := range strings.Split(stripCommentsKeepLines(content), "\n") {
+			raw := strings.Split(content, "\n")
+			masked := strings.Split(stripCommentsKeepLines(content), "\n")
+
+			for i := range raw {
 				switch {
-				case rtlPhysicalRe.MatchString(line):
+				case rtlPhysicalRe.MatchString(masked[i]) && !lintFindingSuppressed(raw[i], "rtl-physical"):
 					findings = append(findings, Finding{
 						File:    rel,
 						Line:    i + 1,
 						Rule:    "rtl-physical",
 						Message: "RTL physical-property violation (use the logical ms-/me-/ps-/pe-/text-start/text-end/border-s-/border-e- form)",
-						Snippet: strings.TrimSpace(line),
+						Snippet: strings.TrimSpace(masked[i]),
 					})
-				case rtlInsetAliasRe.MatchString(line):
+				case rtlInsetAliasRe.MatchString(masked[i]) && !lintFindingSuppressed(raw[i], "rtl-inset-alias"):
 					findings = append(findings, Finding{
 						File:    rel,
 						Line:    i + 1,
 						Rule:    "rtl-inset-alias",
 						Message: "RTL physical-inset violation (use inset-s-*/inset-e-* instead of start-*/end-*)",
-						Snippet: strings.TrimSpace(line),
+						Snippet: strings.TrimSpace(masked[i]),
 					})
 				}
 			}

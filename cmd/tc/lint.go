@@ -115,6 +115,9 @@ func runLint(args []string, stdout, stderr io.Writer) int {
 // parseLintArgs splits `tc lint` arguments into selected scanners and target
 // directories. It prints usage to stderr and reports !ok for usage errors.
 func parseLintArgs(args []string, stderr io.Writer) (selected []lintScanner, dirs []string, ok bool) {
+	chosen := map[string]bool{}
+	wantAll := false
+
 	i := 0
 
 	for i < len(args) {
@@ -125,13 +128,17 @@ func parseLintArgs(args []string, stderr io.Writer) (selected []lintScanner, dir
 			fmt.Fprint(stderr, lintUsage())
 
 			return nil, nil, false
+		case a == "--all":
+			wantAll = true
+
+			i++
 		case strings.HasPrefix(a, "--"):
 			name := strings.TrimPrefix(a, "--")
 			matched := false
 
 			for _, s := range lintScanners {
 				if name == s.flag {
-					selected = append(selected, s)
+					chosen[name] = true
 					matched = true
 
 					break
@@ -151,6 +158,12 @@ func parseLintArgs(args []string, stderr io.Writer) (selected []lintScanner, dir
 		}
 	}
 
+	for _, s := range lintScanners {
+		if wantAll || chosen[s.flag] {
+			selected = append(selected, s)
+		}
+	}
+
 	if len(selected) == 0 {
 		fmt.Fprintf(stderr, "tc lint: select at least one scanner\n\n%s", lintUsage())
 
@@ -167,13 +180,15 @@ func parseLintArgs(args []string, stderr io.Writer) (selected []lintScanner, dir
 func lintUsage() string {
 	var b strings.Builder
 
-	b.WriteString("tc lint [--rtl] [DIR ...]\n\n")
+	b.WriteString("tc lint [--rtl] [--dark] [--motion] [--icons] [--all] [DIR ...]\n\n")
 	b.WriteString("Scans source files for the library's compliance rules. Without DIR,\n")
-	b.WriteString("scans the current directory recursively.\n\nScanners:\n")
+	b.WriteString("scans the current directory recursively (icons: direct children).\n\nScanners:\n")
 
 	for _, s := range lintScanners {
 		fmt.Fprintf(&b, "  --%-8s %s\n", s.flag, s.help)
 	}
+
+	b.WriteString("  --all    run every scanner\n")
 
 	b.WriteString("\nExit codes: 0 clean, 1 findings or scan failure, 2 usage error.\n")
 

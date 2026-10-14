@@ -179,7 +179,7 @@ func ScanDarkMode(dir string) ([]Finding, error) {
 
 		for i, line := range strings.Split(content, "\n") {
 			for _, r := range darkModeRules {
-				if checkLineForDarkModeGap(full, line, r.re) {
+				if checkLineForDarkModeGap(full, line, r.re) && !lintFindingSuppressed(line, r.rule) {
 					findings = append(findings, Finding{
 						File:    rel,
 						Line:    i + 1,

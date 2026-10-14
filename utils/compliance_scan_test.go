@@ -223,6 +223,89 @@ func TestScanIconPaths(t *testing.T) {
 	}
 }
 
+// TestLintIgnoreFor pins the per-line suppression directive parser: bare
+// marker suppresses all, a rule list narrows, comment-closer punctuation is
+// trimmed, and lines without the marker suppress nothing.
+func TestLintIgnoreFor(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		line      string
+		wantAll   bool
+		wantRules []string
+	}{
+		{name: "no marker", line: `<div class="ml-2">`, wantAll: false},
+		{
+			name:      "bare marker in HTML comment",
+			line:      `<div class="ml-2"><!-- tc-lint:ignore --></div>`,
+			wantAll:   true,
+			wantRules: []string{},
+		},
+		{
+			name:      "rule list with closer punctuation",
+			line:      `<div class="ml-2"><!-- tc-lint:ignore rtl-physical--></div>`,
+			wantAll:   false,
+			wantRules: []string{"rtl-physical"},
+		},
+		{
+			name:      "multiple rules space separated",
+			line:      `// tc-lint:ignore rtl-physical motion-reduce`,
+			wantAll:   false,
+			wantRules: []string{"rtl-physical", "motion-reduce"},
+		},
+		{
+			name:      "marker with no rules before comment end",
+			line:      `<div><!-- tc-lint:ignore -->`,
+			wantAll:   true,
+			wantRules: []string{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			all, rules := lintIgnoreFor(tt.line)
+			if all != tt.wantAll {
+				t.Errorf("all = %v, want %v", all, tt.wantAll)
+			}
+
+			if len(rules) != len(tt.wantRules) {
+				t.Fatalf("rules = %v, want %v", rules, tt.wantRules)
+			}
+
+			for _, want := range tt.wantRules {
+				if !rules[want] {
+					t.Errorf("rules missing %q: %v", want, rules)
+				}
+			}
+		})
+	}
+}
+
+// TestScanRTLLintIgnore proves the suppression end-to-end: a bare marker
+// kills both RTL rules on the line, a narrow marker kills only its rule.
+func TestScanRTLLintIgnore(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	writeLintFixture(t, dir, "ignored.templ", strings.Join([]string{
+		`<div class="ml-2 start-0"><!-- tc-lint:ignore --></div>`,
+		`<div class="mr-2"><!-- tc-lint:ignore rtl-physical --></div>`,
+		`<div class="start-1"><!-- tc-lint:ignore rtl-physical --></div>`,
+	}, "\n")+"\n")
+
+	findings, err := ScanRTL(dir)
+	if err != nil {
+		t.Fatalf("ScanRTL: %v", err)
+	}
+
+	if len(findings) != 1 || findings[0].Line != 3 || findings[0].Rule != "rtl-inset-alias" {
+		t.Errorf("expected only line 3's rtl-inset-alias (narrow marker must not cover it), got %+v", findings)
+	}
+}
+
 func writeLintFixture(t *testing.T, dir, name, content string) {
 	t.Helper()
 

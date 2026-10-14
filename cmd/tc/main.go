@@ -278,8 +278,8 @@ Usage:
   tc version                Print the library version.
   tc doctor                 Diagnose consumer-integration traps (Tailwind @source,
                             GOEXPERIMENT, templ pin, committed *_templ.go, hooks).
-  tc lint [--rtl] [DIR ...] Scan sources for compliance violations (RTL physical
-                            classes today). Exit 1 on findings — CI-gateable.
+  tc lint [flags] [DIR ...] Scan sources for compliance violations (--rtl, --dark,
+                            --motion, --icons). Exit 1 on findings — CI-gateable.
 
 Examples:
   tc init

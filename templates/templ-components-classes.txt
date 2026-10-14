@@ -17801,6 +17801,71 @@ func scanSources(dir string, include func(name string) bool, fn func(rel, conten
 	return nil
 }
 
+// lintIgnoreMarker is the per-line suppression marker for tc lint. It must
+// appear on the SAME line as the finding, inside any comment syntax the file
+// language offers (`<!-- tc-lint:ignore -->` in .templ, `// tc-lint:ignore`
+// in .go). Bare `tc-lint:ignore` suppresses every rule on the line;
+// `tc-lint:ignore <rule> [<rule>...]` suppresses exactly the named rules.
+const lintIgnoreMarker = "tc-lint:ignore"
+
+// lintIgnoreTrimCuts strips leftover comment punctuation from the tokens
+// between the marker and the comment closer.
+const lintIgnoreTrimCuts = "\"',;()/-*"
+
+// lintRuleRe is the rule-id shape: lowercase letters/digits/hyphens starting
+// with a letter. It keeps markup after the comment closer from leaking in as
+// bogus rule names.
+var lintRuleRe = regexp.MustCompile(`^[a-z][a-z0-9-]*$`)
+
+// lintIgnoreFor parses one raw source line's suppression directive. Only the
+// text between the marker and the comment closer (-->, */) is considered, so
+// later markup never becomes a rule name. No rules in scope means "suppress
+// every rule on this line".
+func lintIgnoreFor(line string) (bool, map[string]bool) {
+	_, rest, found := strings.Cut(line, lintIgnoreMarker)
+	if !found {
+		return false, nil
+	}
+
+	for _, closer := range []string{"-->", "*/"} {
+		if end := strings.Index(rest, closer); end >= 0 {
+			rest = rest[:end]
+		}
+	}
+
+	var rules map[string]bool
+
+	for token := range strings.FieldsSeq(rest) {
+		rule := strings.Trim(token, lintIgnoreTrimCuts)
+		if !lintRuleRe.MatchString(rule) {
+			continue
+		}
+
+		if rules == nil {
+			rules = map[string]bool{}
+		}
+
+		rules[rule] = true
+	}
+
+	if rules == nil {
+		return true, nil // bare marker: suppress every rule on this line
+	}
+
+	return false, rules
+}
+
+// lintFindingSuppressed reports whether the raw line's ignore directive
+// suppresses a finding of the given rule.
+func lintFindingSuppressed(rawLine, rule string) bool {
+	all, rules := lintIgnoreFor(rawLine)
+	if all {
+		return true
+	}
+
+	return rules[rule]
+}
+
 // htmlCommentAnyRe matches HTML comments across line breaks. An unterminated
 // comment is left in place, so its text stays scannable — a violation-shaped
 // token inside broken markup still gets reported (fails safe).
@@ -17852,23 +17917,26 @@ func ScanRTL(dir string) ([]Finding, error) {
 
 	err := scanSources(dir, func(name string) bool { return strings.HasSuffix(name, ".templ") },
 		func(rel, content string) error {
-			for i, line := range strings.Split(stripCommentsKeepLines(content), "\n") {
+			raw := strings.Split(content, "\n")
+			masked := strings.Split(stripCommentsKeepLines(content), "\n")
+
+			for i := range raw {
 				switch {
-				case rtlPhysicalRe.MatchString(line):
+				case rtlPhysicalRe.MatchString(masked[i]) && !lintFindingSuppressed(raw[i], "rtl-physical"):
 					findings = append(findings, Finding{
 						File:    rel,
 						Line:    i + 1,
 						Rule:    "rtl-physical",
 						Message: "RTL physical-property violation (use the logical ms-/me-/ps-/pe-/text-start/text-end/border-s-/border-e- form)",
-						Snippet: strings.TrimSpace(line),
+						Snippet: strings.TrimSpace(masked[i]),
 					})
-				case rtlInsetAliasRe.MatchString(line):
+				case rtlInsetAliasRe.MatchString(masked[i]) && !lintFindingSuppressed(raw[i], "rtl-inset-alias"):
 					findings = append(findings, Finding{
 						File:    rel,
 						Line:    i + 1,
 						Rule:    "rtl-inset-alias",
 						Message: "RTL physical-inset violation (use inset-s-*/inset-e-* instead of start-*/end-*)",
-						Snippet: strings.TrimSpace(line),
+						Snippet: strings.TrimSpace(masked[i]),
 					})
 				}
 			}
@@ -18064,7 +18132,7 @@ func ScanDarkMode(dir string) ([]Finding, error) {
 
 		for i, line := range strings.Split(content, "\n") {
 			for _, r := range darkModeRules {
-				if checkLineForDarkModeGap(full, line, r.re) {
+				if checkLineForDarkModeGap(full, line, r.re) && !lintFindingSuppressed(line, r.rule) {
 					findings = append(findings, Finding{
 						File:    rel,
 						Line:    i + 1,
@@ -18638,7 +18706,7 @@ func ScanIconPaths(dir string) ([]Finding, error) {
 			}
 
 			for i, line := range strings.Split(string(data), "\n") {
-				if !iconPathInlineRe.MatchString(line) {
+				if !iconPathInlineRe.MatchString(line) || lintFindingSuppressed(line, "icon-path-inline") {
 					continue
 				}
 
@@ -18746,8 +18814,12 @@ func ScanMotionReduce(dir string) ([]Finding, error) {
 
 	err := scanSources(dir, func(name string) bool { return strings.HasSuffix(name, ".templ") },
 		func(rel, content string) error {
-			for i, line := range strings.Split(stripCommentsKeepLines(content), "\n") {
-				if !defaultMotionReduceRules.needsMotionReduce(line) {
+			raw := strings.Split(content, "\n")
+			masked := strings.Split(stripCommentsKeepLines(content), "\n")
+
+			for i := range raw {
+				if !defaultMotionReduceRules.needsMotionReduce(masked[i]) ||
+					lintFindingSuppressed(raw[i], "motion-reduce") {
 					continue
 				}
 
@@ -18756,7 +18828,7 @@ func ScanMotionReduce(dir string) ([]Finding, error) {
 					Line:    i + 1,
 					Rule:    "motion-reduce",
 					Message: "motion-reduce gap (transition/animate class without a motion-reduce fallback or shared motion constant)",
-					Snippet: strings.TrimSpace(line),
+					Snippet: strings.TrimSpace(masked[i]),
 				})
 			}
 

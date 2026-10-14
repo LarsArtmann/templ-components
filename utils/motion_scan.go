@@ -56,8 +56,12 @@ func ScanMotionReduce(dir string) ([]Finding, error) {
 
 	err := scanSources(dir, func(name string) bool { return strings.HasSuffix(name, ".templ") },
 		func(rel, content string) error {
-			for i, line := range strings.Split(stripCommentsKeepLines(content), "\n") {
-				if !defaultMotionReduceRules.needsMotionReduce(line) {
+			raw := strings.Split(content, "\n")
+			masked := strings.Split(stripCommentsKeepLines(content), "\n")
+
+			for i := range raw {
+				if !defaultMotionReduceRules.needsMotionReduce(masked[i]) ||
+					lintFindingSuppressed(raw[i], "motion-reduce") {
 					continue
 				}
 
@@ -66,7 +70,7 @@ func ScanMotionReduce(dir string) ([]Finding, error) {
 					Line:    i + 1,
 					Rule:    "motion-reduce",
 					Message: "motion-reduce gap (transition/animate class without a motion-reduce fallback or shared motion constant)",
-					Snippet: strings.TrimSpace(line),
+					Snippet: strings.TrimSpace(masked[i]),
 				})
 			}
 

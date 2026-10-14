@@ -68,7 +68,7 @@ func ScanIconPaths(dir string) ([]Finding, error) {
 			}
 
 			for i, line := range strings.Split(string(data), "\n") {
-				if !iconPathInlineRe.MatchString(line) {
+				if !iconPathInlineRe.MatchString(line) || lintFindingSuppressed(line, "icon-path-inline") {
 					continue
 				}
 
