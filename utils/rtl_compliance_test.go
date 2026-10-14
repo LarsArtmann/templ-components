@@ -1,11 +1,7 @@
 package utils
 
 import (
-	"fmt"
-	"os"
 	"path/filepath"
-	"regexp"
-	"strings"
 	"testing"
 )
 
@@ -33,56 +29,20 @@ func TestRTLLogicalProperties(t *testing.T) {
 	root := ".."
 	dirs := []string{"display", "feedback", "forms", "navigation", "errorpage", "layout", "htmx"}
 
-	// Physical properties that have direct logical equivalents.
-	// These have ZERO exceptions — every occurrence is a violation.
-	physicalRe := regexp.MustCompile(
-		`\b(ml-|mr-|pl-|pr-|text-left|text-right|border-l-|border-r-)`,
-	)
-
-	// Deprecated physical-positioning inset utilities: start-*/end-* are
-	// v4.2-deprecated ALIASES of inset-s-*/inset-e-* (probe-verified 2026-10-08:
-	// identical logical output today — the ban is future-proofing against the
-	// aliases' removal, and keeps the canon on one form).
-	insetRe := regexp.MustCompile(`(?:^|[\s"'({])(start|end)-[a-z0-9.]`)
-
 	violations := 0
 
 	for _, dir := range dirs {
-		err := filepath.Walk(filepath.Join(root, dir), func(path string, info os.FileInfo, err error) error {
-			if err != nil || info.IsDir() {
-				return err
-			}
-
-			if !strings.HasSuffix(path, ".templ") {
-				return nil
-			}
-
-			data, readErr := os.ReadFile(path)
-			if readErr != nil {
-				return fmt.Errorf("read file: %w", readErr)
-			}
-
-			for line := range strings.SplitSeq(stripHTMLComments(string(data)), "\n") {
-				switch {
-				case physicalRe.MatchString(line):
-					violations++
-
-					t.Errorf("RTL physical-property violation in %s:\n  %s", path, strings.TrimSpace(line))
-				case insetRe.MatchString(line):
-					violations++
-
-					t.Errorf(
-						"RTL physical-inset violation (use inset-s-*/inset-e-* instead of start-*/end-*) in %s:\n  %s",
-						path,
-						strings.TrimSpace(line),
-					)
-				}
-			}
-
-			return nil
-		})
+		findings, err := ScanRTL(filepath.Join(root, dir))
 		if err != nil {
-			t.Logf("walk error for %s: %v", dir, err)
+			t.Logf("scan error for %s: %v", dir, err)
+
+			continue
+		}
+
+		for _, f := range findings {
+			violations++
+
+			t.Errorf("%s in %s:\n  %s", f.Message, f.File, f.Snippet)
 		}
 	}
 
