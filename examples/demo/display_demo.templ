@@ -614,6 +614,20 @@ display.Card(display.CardProps{
 			},
 		})
 	</div>
+	@demoSection("Prose", "display-prose")
+	@display.Prose(display.ProseProps{Size: display.ProseSizeMD}) {
+		<h3>Ship documentation with the library's typographic contract</h3>
+		<p>The <code>.tc-prose</code> container styles rendered markdown —
+			<strong>strong</strong>, <em>emphasis</em>, and
+			<a href="https://templ.guide" rel="noopener">links</a> — through
+			descendant selectors, so articles need zero per-element classes.</p>
+		<ul>
+			<li>Theme-token colors with dark-mode overrides</li>
+			<li>Logical spacing that mirrors in RTL</li>
+			<li>Tables, blockquotes, and code blocks included</li>
+		</ul>
+		<blockquote>One wrapper class, the whole typographic system.</blockquote>
+	}
 	@demoSection("Lightbox", "display-lightbox")
 	@display.Lightbox(display.LightboxProps{
 		BaseProps:   utils.BaseProps{Nonce: "demo-nonce"},

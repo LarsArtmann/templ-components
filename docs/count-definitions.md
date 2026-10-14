@@ -4,13 +4,13 @@ Every public-facing count in this repo must be either live-computed by a guard
 or pinned to a source that is. This page is the definitional home: when a
 number is questioned, answer from here, not from memory.
 
-## Components — **135**
+## Components — **136**
 
 - **Definition:** exported `templ` components declared as `templ Name(...)` in
   the canonical 9-package scan set: `display`, `feedback`, `forms`, `layout`,
   `navigation`, `charts/echarts`, `htmx`, `datastar`, `errorpage`. The 4
   `recipes` screens are compositions, counted separately in FEATURES.md
-  ("135 + 4 recipe screens = 139") but the sold headline is 135.
+  ("136 + 4 recipe screens = 140") but the sold headline is 136.
 - **Computed by:** `website/internal/build.CountStats` (site hero, live) over
   `statsDirs` (order-pinned by `TestStatsDirsAreCanonical`); the same set is
   the canonical package list in `utils.TestDocsCountDrift`.
@@ -24,7 +24,7 @@ number is questioned, answer from here, not from memory.
 - **Computed by:** `icons.AllIconNames()` (live, in-process); the website and
   demo compute from it at render time.
 
-## Typed enums — **68 (67 with IsValid())**
+## Typed enums — **69 (68 with IsValid())**
 
 - **Definition:** exported closed-set string types; the IsValid count is
   functions matching `<Name>IsValid(` across library source.
@@ -56,7 +56,7 @@ number is questioned, answer from here, not from memory.
   (multiple of 50 within 49 of live).
 - **Computed by:** `utils.TestDocsCountDrift` (`countLibraryTests`).
 
-## Goldens — **325 HTML / 202 pixel**
+## Goldens — **329 HTML / 202 pixel**
 
 - **Definition:** committed baseline files under the golden testdata trees.
 - **Computed by:** `utils.TestDocsCountDrift` (file counts per tree).

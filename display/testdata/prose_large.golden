@@ -1,0 +1,29 @@
+<div class="leading-relaxed tc-prose text-lg">
+<h2>Release notes</h2>
+<p>Longform content renders <strong>bold leads</strong>, <em>emphasis</em>, and
+<a href="https://templ.guide">links</a> without per-element classes.</p>
+<h3>Highlights</h3>
+<ul>
+	<li>Typed props for every component</li>
+	<li>Dark mode with
+		<ol>
+			<li>class strategy</li>
+			<li>color-scheme</li>
+		</ol>
+	</li>
+</ul>
+<blockquote>Cite your sources; style them once.</blockquote>
+<p>Inline <code>utils.Render</code> references and a block:</p>
+<pre><code class="language-go">err := Prose(props).Render(ctx, w)</code></pre>
+<hr>
+<table>
+	<thead>
+		<tr><th>Package</th><th>Components</th></tr>
+	</thead>
+	<tbody>
+		<tr><td>display</td><td>52</td></tr>
+		<tr><td>forms</td><td>26</td></tr>
+	</tbody>
+</table>
+<img src="/screenshots/prose.png" alt="Prose rendering sample" width="640" height="360">
+</div>

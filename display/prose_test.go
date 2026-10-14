@@ -71,12 +71,12 @@ func TestProseRender(t *testing.T) {
 		{
 			name:     "small size class merges",
 			props:    ProseProps{Children: content, Size: ProseSizeSM},
-			contains: []string{`tc-prose`, `text-sm leading-relaxed`},
+			contains: []string{"tc-prose", "text-sm", "leading-relaxed"},
 		},
 		{
 			name:     "large size class merges",
 			props:    ProseProps{Children: content, Size: ProseSizeLG},
-			contains: []string{`tc-prose`, `text-lg leading-relaxed`},
+			contains: []string{"tc-prose", "text-lg", "leading-relaxed"},
 		},
 		{
 			name: "id, class, and attrs propagate",
