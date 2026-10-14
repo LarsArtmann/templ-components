@@ -402,7 +402,7 @@ func HowItWorks() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<div class=\"grid gap-3 lg:grid-cols-4 lg:gap-0 text-left relative\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<div class=\"grid gap-3 lg:grid-cols-4 lg:gap-0 text-start relative\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -529,7 +529,7 @@ func HowItWorks() templ.Component {
 }
 
 func stepClasses(step Step) string {
-	base := "relative min-w-0 p-5 rounded-xl border border-border bg-bg-card backdrop-blur-sm lg:rounded-none lg:border-r-0 lg:first:rounded-l-xl lg:last:rounded-r-xl lg:last:border-r "
+	base := "relative min-w-0 p-5 rounded-xl border border-border bg-bg-card backdrop-blur-sm lg:rounded-none lg:border-e-0 lg:first:rounded-s-xl lg:last:rounded-e-xl lg:last:border-e "
 	if step.StepColor == StepAmber {
 		return base + "lg:border-t-2 lg:border-t-amber/30"
 	}
@@ -578,7 +578,7 @@ func Comparison(stats build.Stats) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "<div class=\"overflow-x-auto\"><table class=\"w-full border-collapse text-sm\"><thead><tr><th class=\"text-left py-3 px-4 font-medium text-text-muted text-xs uppercase tracking-wider border-b border-border\">Feature</th>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "<div class=\"overflow-x-auto\"><table class=\"w-full border-collapse text-sm\"><thead><tr><th class=\"text-start py-3 px-4 font-medium text-text-muted text-xs uppercase tracking-wider border-b border-border\">Feature</th>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -626,14 +626,14 @@ func Comparison(stats build.Stats) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, row := range ComparisonMatrix(stats) {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 47, "<tr class=\"border-b border-border/50 hover:bg-bg-card/50 transition-colors\"><td class=\"py-3 px-4 text-text-secondary font-medium text-left\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 47, "<tr class=\"border-b border-border/50 hover:bg-bg-card/50 transition-colors\"><td class=\"py-3 px-4 text-text-secondary font-medium text-start\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var28 string
 			templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(row.Feature)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/pages/sections.templ`, Line: 161, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/pages/sections.templ`, Line: 161, Col: 85}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 			if templ_7745c5c3_Err != nil {

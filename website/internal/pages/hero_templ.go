@@ -179,7 +179,7 @@ func Hero(stats build.Stats, starsText string, nonce string) templ.Component {
 			BaseProps: utils.BaseProps{
 				Nonce:     nonce,
 				AriaLabel: "Copy code to clipboard",
-				Class:     "absolute top-2 end-2 px-2 py-1 font-mono bg-code-inline-bg/80 dark:bg-code-inline-bg/80 hover:bg-code-inline-bg dark:hover:bg-code-inline-bg border border-border ring-0 hover:border-border-hover opacity-0 [.code-preview:hover_&]:opacity-100",
+				Class:     "absolute top-2 inset-e-2 px-2 py-1 font-mono bg-code-inline-bg/80 dark:bg-code-inline-bg/80 hover:bg-code-inline-bg dark:hover:bg-code-inline-bg border border-border ring-0 hover:border-border-hover opacity-0 [.code-preview:hover_&]:opacity-100",
 			},
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {

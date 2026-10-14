@@ -85,7 +85,7 @@ templ salesHero(stats build.Stats, starsText string) {
 					@display.Badge(display.BadgeProps{Text: starsText, Type: display.BadgeNeutral, Size: display.BadgeSizeSM, Href: GitHubURL})
 				}
 			</div>
-			<div class="text-left">
+			<div class="text-start">
 				@display.Scrollback(display.ScrollbackProps{
 					Lines: []display.ScrollbackLine{
 						{Timestamp: "$", Tag: "shell", Text: "go get github.com/larsartmann/templ-components@latest", Tone: display.ScrollbackToneInfo},

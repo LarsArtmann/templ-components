@@ -93,7 +93,7 @@ templ FeatureGrid(stats build.Stats) {
 templ HowItWorks() {
 	<div>
 		@sectionHeader("How it works", "Four steps. No frontend framework.", "Import, render, generate, ship. The server renders HTML; HTMX enhances where needed.")
-		<div class="grid gap-3 lg:grid-cols-4 lg:gap-0 text-left relative">
+		<div class="grid gap-3 lg:grid-cols-4 lg:gap-0 text-start relative">
 			for index, step := range Steps {
 				<div class={ stepClasses(step) }>
 					<div class="flex items-center gap-2.5 mb-3">
@@ -118,7 +118,7 @@ templ HowItWorks() {
 }
 
 func stepClasses(step Step) string {
-	base := "relative min-w-0 p-5 rounded-xl border border-border bg-bg-card backdrop-blur-sm lg:rounded-none lg:border-r-0 lg:first:rounded-l-xl lg:last:rounded-r-xl lg:last:border-r "
+	base := "relative min-w-0 p-5 rounded-xl border border-border bg-bg-card backdrop-blur-sm lg:rounded-none lg:border-e-0 lg:first:rounded-s-xl lg:last:rounded-e-xl lg:last:border-e "
 	if step.StepColor == StepAmber {
 		return base + "lg:border-t-2 lg:border-t-amber/30"
 	}
@@ -145,7 +145,7 @@ templ Comparison(stats build.Stats) {
 			<table class="w-full border-collapse text-sm">
 				<thead>
 					<tr>
-						<th class="text-left py-3 px-4 font-medium text-text-muted text-xs uppercase tracking-wider border-b border-border">Feature</th>
+						<th class="text-start py-3 px-4 font-medium text-text-muted text-xs uppercase tracking-wider border-b border-border">Feature</th>
 						for index, col := range ComparisonColumns {
 							if index == len(ComparisonColumns)-1 {
 								<th class="py-3 px-4 font-semibold text-center border-b border-border text-accent">{ col }</th>
@@ -158,7 +158,7 @@ templ Comparison(stats build.Stats) {
 				<tbody>
 					for _, row := range ComparisonMatrix(stats) {
 						<tr class="border-b border-border/50 hover:bg-bg-card/50 transition-colors">
-							<td class="py-3 px-4 text-text-secondary font-medium text-left">{ row.Feature }</td>
+							<td class="py-3 px-4 text-text-secondary font-medium text-start">{ row.Feature }</td>
 							for valueIndex, value := range row.Values {
 								if valueIndex == len(row.Values)-1 {
 									<td class="py-3 px-4 text-center bg-accent-dim">
