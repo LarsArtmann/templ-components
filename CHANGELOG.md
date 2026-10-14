@@ -63,6 +63,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Stale demo stylesheet red CI after new component classes.** A `.templ`
+  change that introduced new class strings (errorpage 404 search button)
+  staled the committed demo CSS: the demo stylesheet scans every templ file,
+  but neither the docs nor the pre-push ritual named that trigger, so CI's
+  always-on CSS Freshness job caught it locally unchecked. The canonical
+  ritual command now includes `--css`, the regeneration rule covers `.templ`
+  class additions, and the artifact is regenerated.
+
 - **CI drift gate accepts FileName-form-only churn in generated files.** The
   root `templ generate` writes repo-root-relative `templ.Error` FileName
   strings while per-module tooling commits module-relative ones; the

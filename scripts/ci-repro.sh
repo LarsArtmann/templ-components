@@ -15,6 +15,9 @@
 #                                    # never root-caused (post-fabd1fb unreproducible; nix run .#css
 #                                    # byte-stable, SHA-256 verified twice). If CI's CSS Freshness
 #                                    # fires where local --css was green, REOPEN #120 with both logs.
+#                                    # 2026-10-14 (NOT #120): CI fired where the ritual had never run
+#                                    # --css at all; new .templ classes staled app.css. The canonical
+#                                    # ritual command now includes --css.
 #   scripts/ci-repro.sh --visual     # also run the Visual Regression job (needs Nix + Chromium)
 #   scripts/ci-repro.sh --website     # also run the Website job's local lane:
 #                                    # website tests + lint + site build + tidy-check
