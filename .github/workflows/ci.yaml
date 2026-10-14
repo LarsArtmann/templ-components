@@ -214,11 +214,13 @@ jobs:
           drift=0
           non_templ=$(git diff --name-only -- . ':(exclude)*_templ.go')
           if [ -n "$non_templ" ]; then
+            # paths are newline-listed repo files without spaces
+            # shellcheck disable=SC2086
             git diff --exit-code -- $non_templ || drift=1
           fi
+          norm() { sed "s/FileName: \`[^\`]*\`/FileName: NORM/"; }
           while IFS= read -r gen_file; do
-            if ! diff <(git show ":$gen_file" | sed 's/FileName: `[^`]*`/FileName: NORM/') \
-                      <(sed 's/FileName: `[^`]*`/FileName: NORM/' "$gen_file") >/dev/null; then
+            if ! diff <(git show ":$gen_file" | norm) <(norm <"$gen_file") >/dev/null; then
               echo "::error::REAL content drift in $gen_file"
               git diff -- "$gen_file" | head -40
               drift=1

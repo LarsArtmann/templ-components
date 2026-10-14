@@ -47,6 +47,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   strings while per-module tooling commits module-relative ones; the
   "Verify no untracked changes" step now normalizes the FileName placeholder
   exactly like `scripts/ci-repro.sh` and still fails on any other drift.
+  The gate script is actionlint/shellcheck-clean (CI's actionlint embeds
+  shellcheck; local actionlint silently skips that pass without a shellcheck
+  binary on PATH).
 - **Website CI lint runs on golangci-lint v2.14.0** (was v2.13.2, which cannot
   read Go 1.27 stdlib export data — every `website.yml` lint run failed with
   typecheck errors).
