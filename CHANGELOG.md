@@ -8,6 +8,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`errorpage.WriteNotFound404Document` — the 404 page as a standalone HTML
+  document.** The `ErrorHandler` `HTMLShell` equivalent for the dedicated 404
+  page: DOCTYPE, `<html lang>` (default `"en"`, parameter), `<head>` with
+  charset/viewport/title, and the full 404 page — for consumers that serve the
+  page without a layout component. The document shell embeds a
+  `<meta name="robots" content="noindex">` unconditionally.
+- **noindex hardening on every HTML error response.** All HTML writers
+  (`WriteErrorPage`, `WriteNotFound404`, `WriteNotFound404Document`,
+  `ErrorHandler` HTML/HTMLShell paths, and the render-failure fallback) now
+  send `X-Robots-Tag: noindex` — defense-in-depth against soft-404
+  misconfigurations that serve error markup under a 2xx status. JSON error
+  responses stay header-free.
+- **`NotFound404Props.GoBackText`** — the "Go back" button label is now
+  overridable (default `"Go back"`), completing the all-strings-are-props i18n
+  contract for the 404 page. See `docs/integrations/go-i18n.md` for the
+  httputil Language + go-i18n bridge pattern.
+- **`NotFound404Props.SearchSubmitLabel` + search submit button** — the 404
+  search form now renders a right-aligned, icon-only submit button (36px hit
+  target, RTL-logical positioning, motion-reduce safe, accessible name via
+  `SearchSubmitLabel`, default `"Search"`) instead of relying on the Enter key
+  alone.
 - **`tc lint` — the library's compliance guards as a consumer CLI.** Four
   scanners (`--rtl`, `--dark`, `--motion`, `--icons`, `--all`) run the exact
   engines behind the library's guard tests (`ScanRTL`, `ScanDarkMode`,

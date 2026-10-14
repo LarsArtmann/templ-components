@@ -26,8 +26,16 @@
 //   - ErrorHandler(err, cfg): returns http.Handler with correct status code
 //   - WriteError(w, r, err, nonce): convenience wrapper
 //   - WriteErrorPage(w, r, status, props, nonce): pre-configured page
+//   - WriteNotFound404(w, r, props, nonce): dedicated 404 page fragment
+//   - WriteNotFound404Document(w, r, props, nonce, lang): 404 page wrapped in
+//     a standalone HTML document (the NotFound404 equivalent of HTMLShell)
 //   - HTMLShell option: wraps in valid HTML document for standalone responses
 //   - JSON option: renders JSON for API/HTMX endpoints
+//
+// Every HTML response this package writes carries X-Robots-Tag: noindex, and
+// document shells embed a noindex robots meta — error pages must never be
+// indexed, even when a misconfiguration serves them under a 2xx status
+// (soft 404).
 //
 // Pre-built constructors: NotFound(), Forbidden(), BadRequest(msg),
 // Conflict(msg), ServiceUnavailable(), InternalError()

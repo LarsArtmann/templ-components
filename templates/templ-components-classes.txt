@@ -21484,8 +21484,16 @@ func InternalError() ErrorPageProps {
 //   - ErrorHandler(err, cfg): returns http.Handler with correct status code
 //   - WriteError(w, r, err, nonce): convenience wrapper
 //   - WriteErrorPage(w, r, status, props, nonce): pre-configured page
+//   - WriteNotFound404(w, r, props, nonce): dedicated 404 page fragment
+//   - WriteNotFound404Document(w, r, props, nonce, lang): 404 page wrapped in
+//     a standalone HTML document (the NotFound404 equivalent of HTMLShell)
 //   - HTMLShell option: wraps in valid HTML document for standalone responses
 //   - JSON option: renders JSON for API/HTMX endpoints
+//
+// Every HTML response this package writes carries X-Robots-Tag: noindex, and
+// document shells embed a noindex robots meta — error pages must never be
+// indexed, even when a misconfiguration serves them under a 2xx status
+// (soft 404).
 //
 // Pre-built constructors: NotFound(), Forbidden(), BadRequest(msg),
 // Conflict(msg), ServiceUnavailable(), InternalError()
@@ -21985,6 +21993,8 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 			return
 		}
 
+		setNoIndexHeader(w)
+
 		if cfg.HTMLShell {
 			writeHTMLShell(w, r.Context(), statusCode, props, cfg.Lang, err)
 
@@ -22054,6 +22064,8 @@ func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, prop
 		props.Nonce = nonce
 	}
 
+	setNoIndexHeader(w)
+
 	buf, renderErr := renderToBuffer(r.Context(), ErrorPage(props)) //nolint:contextcheck // intentional passthrough
 	if renderErr != nil {
 		slog.Error("error page render failed", "error", renderErr, "status_code", statusCode)
@@ -22074,14 +22086,55 @@ func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, prop
 //	        errorpage.WriteNotFound404(w, r, errorpage.DefaultNotFound404Props(), "")
 //	    })
 //	}
+//
+// The response carries X-Robots-Tag: noindex. Use WriteNotFound404Document
+// when the page is served standalone (no layout component embedding it).
 func WriteNotFound404(w http.ResponseWriter, r *http.Request, props NotFound404Props, nonce string) {
 	if nonce != "" {
 		props.Nonce = nonce
 	}
 
+	setNoIndexHeader(w)
+
 	buf, renderErr := renderToBuffer(r.Context(), NotFound404(props)) //nolint:contextcheck // intentional passthrough
 	if renderErr != nil {
 		slog.Error("not found 404 page render failed", "error", renderErr)
+		writeFallbackError(w, http.StatusNotFound)
+
+		return
+	}
+
+	writeBody(w, http.StatusNotFound, buf)
+}
+
+// WriteNotFound404Document writes the NotFound404 page wrapped in a minimal
+// standalone HTML document (DOCTYPE, html lang, head with title and a noindex
+// robots meta) with a 404 status code. Use it when nothing else renders the
+// surrounding document — the ErrorHandler HTMLShell equivalent for the
+// dedicated 404 page. Consumers with a layout component keep using
+// WriteNotFound404 and render the fragment inside their own shell.
+//
+// lang sets the <html lang="..."> attribute and defaults to "en" when empty.
+// The response carries X-Robots-Tag: noindex.
+func WriteNotFound404Document(w http.ResponseWriter, r *http.Request, props NotFound404Props, nonce, lang string) {
+	if nonce != "" {
+		props.Nonce = nonce
+	}
+
+	if lang == "" {
+		lang = "en"
+	}
+
+	title := props.Title
+	if title == "" {
+		title = notFound404DefaultTitle
+	}
+
+	setNoIndexHeader(w)
+
+	buf, renderErr := renderDocumentShell(r.Context(), title, lang, NotFound404(props)) //nolint:contextcheck // intentional passthrough
+	if renderErr != nil {
+		slog.Error("not found 404 document render failed", "error", renderErr)
 		writeFallbackError(w, http.StatusNotFound)
 
 		return
@@ -22135,23 +22188,38 @@ func renderToBuffer(ctx context.Context, comp templ.Component) ([]byte, error) {
 // document to a byte slice, ensuring the full document renders before
 // writing to the ResponseWriter.
 func renderShellToBuffer(ctx context.Context, title, lang string, props ErrorPageProps) ([]byte, error) {
+	buf, err := renderDocumentShell(ctx, title, lang, ErrorPage(props))
+	if err != nil {
+		return nil, fmt.Errorf("render error page shell (title=%q): %w", title, err)
+	}
+
+	return buf, nil
+}
+
+// renderDocumentShell wraps content in a minimal standalone HTML document
+// (DOCTYPE, html lang, head with charset/viewport/title, body) and renders
+// it fully to a byte slice. Every document this module serves is an error or
+// 404 response, so the noindex robots meta is unconditional — an indexable
+// error page is an impossible-want (defense against soft-404
+// misconfigurations that serve error markup under a 2xx status).
+func renderDocumentShell(ctx context.Context, title, lang string, content templ.Component) ([]byte, error) {
 	shell := templ.ComponentFunc(func(_ context.Context, bw io.Writer) error {
 		prologue := fmt.Sprintf(
-			`<!DOCTYPE html><html lang="%s"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>%s</title></head><body>`,
+			`<!DOCTYPE html><html lang="%s"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex"><title>%s</title></head><body>`,
 			html.EscapeString(lang),
 			html.EscapeString(title),
 		)
 		if _, err := io.WriteString(bw, prologue); err != nil {
-			return fmt.Errorf("write error page shell prologue: %w", err)
+			return fmt.Errorf("write document shell prologue: %w", err)
 		}
 
-		renderErr := ErrorPage(props).Render(ctx, bw) //nolint:contextcheck // intentional passthrough
+		renderErr := content.Render(ctx, bw) //nolint:contextcheck // intentional passthrough
 		if renderErr != nil {
-			return fmt.Errorf("render error page: %w", renderErr)
+			return fmt.Errorf("render document content: %w", renderErr)
 		}
 
 		if _, err := io.WriteString(bw, `</body></html>`); err != nil {
-			return fmt.Errorf("write error page shell epilogue: %w", err)
+			return fmt.Errorf("write document shell epilogue: %w", err)
 		}
 
 		return nil
@@ -22159,10 +22227,19 @@ func renderShellToBuffer(ctx context.Context, title, lang string, props ErrorPag
 
 	var buf bytes.Buffer
 	if err := shell.Render(ctx, &buf); err != nil {
-		return nil, fmt.Errorf("render error page shell (title=%q): %w", title, err)
+		return nil, fmt.Errorf("render document shell (title=%q): %w", title, err)
 	}
 
 	return buf.Bytes(), nil
+}
+
+// setNoIndexHeader marks the response as non-indexable. Every HTML response
+// this module writes is an error or 404 page: search engines must never
+// index it, even when a misconfiguration serves error markup under a 2xx
+// status (soft 404). Pairs with the unconditional noindex robots meta in
+// renderDocumentShell.
+func setNoIndexHeader(w http.ResponseWriter) {
+	w.Header().Set("X-Robots-Tag", "noindex")
 }
 
 // writeBody writes a rendered error page with the correct status code and
@@ -22182,6 +22259,7 @@ func writeBody(w http.ResponseWriter, statusCode int, body []byte) {
 // the templ error page itself fails to render. This ensures the client
 // always receives a response with the correct status code.
 func writeFallbackError(w http.ResponseWriter, statusCode int) {
+	setNoIndexHeader(w)
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	// If headers haven't been written yet, WriteHeader will succeed.
 	// If they have (e.g. superedge case), this is a no-op.
@@ -22221,6 +22299,12 @@ templ NotFound404(props NotFound404Props) {
 		goHomeText := props.GoHomeText
 		if goHomeText == "" {
 			goHomeText = notFound404GoHomeText
+		}
+	}}
+	{{
+		goBackText := props.GoBackText
+		if goBackText == "" {
+			goBackText = notFound404GoBackText
 		}
 	}}
 	<main
@@ -22263,7 +22347,7 @@ templ NotFound404(props NotFound404Props) {
 						class={ errorActionClassScaffold + "border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-gray-400 dark:focus-visible:ring-gray-500 " + utils.TransitionColors }
 					>
 						@icons.IconRTL(icons.ArrowLeft, "h-4 w-4")
-						<span>{ notFound404GoBackText }</span>
+						<span>{ goBackText }</span>
 					</button>
 				}
 			</div>
@@ -22307,6 +22391,12 @@ templ notFound404Search(props NotFound404Props) {
 			placeholder = notFound404SearchDefault
 		}
 	}}
+	{{
+		submitLabel := props.SearchSubmitLabel
+		if submitLabel == "" {
+			submitLabel = notFound404SearchSubmitLabel
+		}
+	}}
 	<form
 		action={ templ.SafeURL(props.SearchAction) }
 		method="get"
@@ -22314,16 +22404,20 @@ templ notFound404Search(props NotFound404Props) {
 		role="search"
 	>
 		<div class="relative">
-			<div class="pointer-events-none absolute inset-y-0 inset-s-0 flex items-center ps-3">
-				@icons.Icon(icons.Search, "h-5 w-5 text-gray-400 dark:text-gray-500")
-			</div>
 			<input
 				type="search"
 				name={ inputName }
 				placeholder={ placeholder }
-				class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 ps-10 pe-3 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-hidden dark:focus:border-blue-400 caret-blue-600 dark:caret-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+				class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 ps-4 pe-14 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-hidden dark:focus:border-blue-400 caret-blue-600 dark:caret-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
 				aria-label={ placeholder }
 			/>
+			<button
+				type="submit"
+				aria-label={ submitLabel }
+				class={ "absolute inset-y-0 inset-e-0 my-auto me-1.5 flex h-9 w-9 items-center justify-center rounded-md text-gray-400 dark:text-gray-500 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 " + utils.TransitionColors }
+			>
+				@icons.Icon(icons.Search, "h-5 w-5")
+			</button>
 		</div>
 	</form>
 }
@@ -22337,15 +22431,16 @@ import (
 )
 
 const (
-	notFound404DefaultTitle   = "Page not found"
-	notFound404DefaultMessage = "The page you're looking for doesn't exist or has been moved."
-	notFound404DefaultNumeral = "404"
-	notFound404GoHomeText     = "Go to homepage"
-	notFound404GoBackText     = "Go back"
-	notFound404PopularLabel   = "Popular pages"
-	notFound404SearchDefault  = "Search..."
-	notFound404InputName      = "q"
-	notFound404HomeText       = "Home"
+	notFound404DefaultTitle      = "Page not found"
+	notFound404DefaultMessage    = "The page you're looking for doesn't exist or has been moved."
+	notFound404DefaultNumeral    = "404"
+	notFound404GoHomeText        = "Go to homepage"
+	notFound404GoBackText        = "Go back"
+	notFound404PopularLabel      = "Popular pages"
+	notFound404SearchDefault     = "Search..."
+	notFound404InputName         = "q"
+	notFound404HomeText          = "Home"
+	notFound404SearchSubmitLabel = "Search"
 )
 
 type NotFoundLink struct {
@@ -22363,10 +22458,12 @@ type NotFound404Props struct {
 	SearchAction      string
 	SearchPlaceholder string
 	SearchInputName   string
+	SearchSubmitLabel string
 	Links             []NotFoundLink
 	LinksTitle        string
 	GoHomeHref        string
 	GoHomeText        string
+	GoBackText        string
 	ShowGoBack        bool
 }
 
@@ -22377,9 +22474,11 @@ func DefaultNotFound404Props() NotFound404Props {
 		Message:           notFound404DefaultMessage,
 		SearchPlaceholder: notFound404SearchDefault,
 		SearchInputName:   notFound404InputName,
+		SearchSubmitLabel: notFound404SearchSubmitLabel,
 		LinksTitle:        notFound404PopularLabel,
 		GoHomeHref:        "/",
 		GoHomeText:        notFound404GoHomeText,
+		GoBackText:        notFound404GoBackText,
 		ShowGoBack:        true,
 	}
 }
