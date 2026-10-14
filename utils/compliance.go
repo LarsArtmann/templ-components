@@ -35,7 +35,7 @@ func scanSources(dir string, include func(name string) bool, fn func(rel, conten
 		return fmt.Errorf("open %s: %w", dir, err)
 	}
 
-	defer root.Close()
+	defer func() { _ = root.Close() }()
 
 	walkErr := fs.WalkDir(root.FS(), ".", func(rel string, d fs.DirEntry, err error) error {
 		if err != nil {

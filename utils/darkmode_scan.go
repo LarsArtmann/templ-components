@@ -17,6 +17,8 @@ type darkModeException struct {
 // patterns (documented in AGENTS.md). The table matches on library-relative
 // path SUBSTRING, so it only ever fires on the library's own paths — a
 // consumer's tree needs the per-line `tc-lint:ignore` allowlist instead.
+//
+//nolint:gochecknoglobals // declarative exception table, mirrors the lookup maps convention
 var darkModeExceptions = []darkModeException{
 	// Toggle thumb: bg-white in both modes (track changes color instead)
 	{"forms/toggle.templ", "bg-white shadow-sm"},
@@ -52,6 +54,8 @@ func isDarkModeException(path, line string) bool {
 }
 
 // darkPrefixes lists all dark: variant prefixes that can precede a color class.
+//
+//nolint:gochecknoglobals // declarative prefix table
 var darkPrefixes = []string{
 	"dark:",
 	"dark:hover:",
@@ -117,6 +121,8 @@ var goCommentLineRe = regexp.MustCompile(`^\s*//`)
 var hasDarkVariantRe = regexp.MustCompile(`dark:`)
 
 // darkModeRules pairs each dark-mode rule with its color regex.
+//
+//nolint:gochecknoglobals // declarative rule table
 var darkModeRules = []struct {
 	rule string
 	re   *regexp.Regexp
