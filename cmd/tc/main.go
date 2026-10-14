@@ -196,7 +196,7 @@ var packageDeps = map[string][]string{
 		"data_state.go", "drawer_go.go", enumsGoFile,
 		"external_link.go", "heading_tag.go", "heatmap.go",
 		"kanban.go", "lightbox.go", "line_chart.go", "modal_go.go",
-		"pie_chart.go", "segment_bar.go", "shared.go",
+		"pie_chart.go", "prose.go", "segment_bar.go", "shared.go",
 		"sparkline.go", "status_dot.go",
 	},
 	pkgFeedback: {enumsGoFile, "styles.go"},

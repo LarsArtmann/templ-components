@@ -112,49 +112,68 @@ func runLint(args []string, stdout, stderr io.Writer) int {
 	return 0
 }
 
+// selectLintScanner resolves a scanner flag name to its scanner.
+func selectLintScanner(name string) (lintScanner, bool) {
+	for _, s := range lintScanners {
+		if name == s.flag {
+			return s, true
+		}
+	}
+
+	return lintScanner{}, false //nolint:exhaustruct_v5 // zero sentinel
+}
+
+// lintArgKind classifies one `tc lint` argument.
+type lintArgKind int
+
+const (
+	lintArgDir     lintArgKind = iota // positional target directory
+	lintArgScanner                    // --<scanner>
+	lintArgAll                        // --all
+	lintArgHelp                       // -h/--help
+)
+
+// classifyLintArg sorts one argument into its kind and (for scanners) its
+// flag name.
+func classifyLintArg(a string) (lintArgKind, string) {
+	switch {
+	case a == "-h" || a == "--help":
+		return lintArgHelp, ""
+	case a == "--all":
+		return lintArgAll, ""
+	case strings.HasPrefix(a, "--"):
+		return lintArgScanner, strings.TrimPrefix(a, "--")
+	default:
+		return lintArgDir, a
+	}
+}
+
 // parseLintArgs splits `tc lint` arguments into selected scanners and target
 // directories. It prints usage to stderr and reports !ok for usage errors.
 func parseLintArgs(args []string, stderr io.Writer) (selected []lintScanner, dirs []string, ok bool) {
 	chosen := map[string]bool{}
 	wantAll := false
 
-	i := 0
+	for _, a := range args {
+		kind, name := classifyLintArg(a)
 
-	for i < len(args) {
-		a := args[i]
-
-		switch {
-		case a == "-h" || a == "--help":
+		switch kind {
+		case lintArgHelp:
 			fmt.Fprint(stderr, lintUsage())
 
 			return nil, nil, false
-		case a == "--all":
+		case lintArgAll:
 			wantAll = true
-
-			i++
-		case strings.HasPrefix(a, "--"):
-			name := strings.TrimPrefix(a, "--")
-			matched := false
-
-			for _, s := range lintScanners {
-				if name == s.flag {
-					chosen[name] = true
-					matched = true
-
-					break
-				}
-			}
-
-			if !matched {
+		case lintArgScanner:
+			if _, matched := selectLintScanner(name); !matched {
 				fmt.Fprintf(stderr, "tc lint: unknown flag %q\n\n%s", a, lintUsage())
 
 				return nil, nil, false
 			}
 
-			i++
-		default:
-			dirs = append(dirs, a)
-			i++
+			chosen[name] = true
+		case lintArgDir:
+			dirs = append(dirs, name)
 		}
 	}
 
