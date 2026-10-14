@@ -1,9 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"io/fs"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -13,7 +13,7 @@ import (
 // scan logic can run inside `go test` (repo guards) and inside the `tc lint`
 // CLI (consumer adoption).
 type Finding struct {
-	// File is the path as scanned (relative to the directory the caller passed).
+	// File is the path relative to the directory the caller passed.
 	File string
 	// Line is the 1-based line number in the original file.
 	Line int
@@ -23,6 +23,41 @@ type Finding struct {
 	Message string
 	// Snippet is the trimmed offending source line.
 	Snippet string
+}
+
+// scanSources walks dir and hands every file whose name passes include to fn
+// as (dir-relative path, content). Reads go through os.Root so the scanner
+// cannot be walked out of the target directory by a swapped symlink, and a
+// missing or unreadable directory is an error, never a silent "clean".
+func scanSources(dir string, include func(name string) bool, fn func(rel, content string) error) error {
+	root, err := os.OpenRoot(dir)
+	if err != nil {
+		return fmt.Errorf("open %s: %w", dir, err)
+	}
+
+	defer root.Close()
+
+	walkErr := fs.WalkDir(root.FS(), ".", func(rel string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if d.IsDir() || !include(d.Name()) {
+			return nil
+		}
+
+		data, readErr := root.ReadFile(rel)
+		if readErr != nil {
+			return fmt.Errorf("read %s: %w", rel, readErr)
+		}
+
+		return fn(rel, string(data))
+	})
+	if walkErr != nil {
+		return fmt.Errorf("scan %s: %w", dir, walkErr)
+	}
+
+	return nil
 }
 
 // htmlCommentAnyRe matches HTML comments across line breaks. An unterminated
@@ -69,48 +104,36 @@ var rtlInsetAliasRe = regexp.MustCompile(`(?:^|[\s"'({])(start|end)-[a-z0-9.]`)
 // the class regexes.
 //
 // It is the engine behind TestRTLLogicalProperties (repo guard) and
-// `tc lint --rtl` (consumer adoption). A missing or unreadable directory is
-// an error; findings are returned in walk order.
+// `tc lint --rtl` (consumer adoption). Findings use dir-relative paths and are
+// returned in walk order.
 func ScanRTL(dir string) ([]Finding, error) {
 	var findings []Finding
 
-	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if d.IsDir() || !strings.HasSuffix(path, ".templ") {
-			return nil
-		}
-
-		data, readErr := os.ReadFile(path)
-		if readErr != nil {
-			return readErr
-		}
-
-		for i, line := range strings.Split(stripCommentsKeepLines(string(data)), "\n") {
-			switch {
-			case rtlPhysicalRe.MatchString(line):
-				findings = append(findings, Finding{
-					File:    path,
-					Line:    i + 1,
-					Rule:    "rtl-physical",
-					Message: "RTL physical-property violation (use the logical ms-/me-/ps-/pe-/text-start/text-end/border-s-/border-e- form)",
-					Snippet: strings.TrimSpace(line),
-				})
-			case rtlInsetAliasRe.MatchString(line):
-				findings = append(findings, Finding{
-					File:    path,
-					Line:    i + 1,
-					Rule:    "rtl-inset-alias",
-					Message: "RTL physical-inset violation (use inset-s-*/inset-e-* instead of start-*/end-*)",
-					Snippet: strings.TrimSpace(line),
-				})
+	err := scanSources(dir, func(name string) bool { return strings.HasSuffix(name, ".templ") },
+		func(rel, content string) error {
+			for i, line := range strings.Split(stripCommentsKeepLines(content), "\n") {
+				switch {
+				case rtlPhysicalRe.MatchString(line):
+					findings = append(findings, Finding{
+						File:    rel,
+						Line:    i + 1,
+						Rule:    "rtl-physical",
+						Message: "RTL physical-property violation (use the logical ms-/me-/ps-/pe-/text-start/text-end/border-s-/border-e- form)",
+						Snippet: strings.TrimSpace(line),
+					})
+				case rtlInsetAliasRe.MatchString(line):
+					findings = append(findings, Finding{
+						File:    rel,
+						Line:    i + 1,
+						Rule:    "rtl-inset-alias",
+						Message: "RTL physical-inset violation (use inset-s-*/inset-e-* instead of start-*/end-*)",
+						Snippet: strings.TrimSpace(line),
+					})
+				}
 			}
-		}
 
-		return nil
-	})
+			return nil
+		})
 	if err != nil {
 		return nil, err
 	}

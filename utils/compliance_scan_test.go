@@ -51,52 +51,117 @@ func TestScanRTL(t *testing.T) {
 			t.Errorf("expected 0 findings, got %d: %+v", len(findings), findings)
 		}
 	})
+}
 
-	t.Run("physical and inset-alias violations with line attribution", func(t *testing.T) {
+// TestScanRTLSeededViolations proves both RTL rules fire with true file/line
+// attribution on a seeded fixture (HTML comments must not shift line numbers
+// nor survive as prose).
+func TestScanRTLSeededViolations(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	writeLintFixture(t, dir, "bad.templ", strings.Join([]string{
+		"<div class=\"flex\">",
+		"  <!-- prose mentioning start-0 and ml-2 must NOT trip the scanner -->",
+		"  <span class=\"ml-2\">",
+		"  <span class=\"pl-3 text-left\">",
+		"  <span class=\"start-0\">",
+		"</div>",
+	}, "\n")+"\n")
+
+	findings, err := ScanRTL(dir)
+	if err != nil {
+		t.Fatalf("ScanRTL: %v", err)
+	}
+
+	if len(findings) != 3 {
+		t.Fatalf("expected 3 findings (ml-, pl-3+text-left, start-0), got %d:\n%+v", len(findings), findings)
+	}
+
+	wantLines := []int{3, 4, 5}
+	for i, want := range wantLines {
+		if findings[i].Line != want {
+			t.Errorf("finding %d: Line = %d, want %d (comments must not shift line numbers)", i, findings[i].Line, want)
+		}
+	}
+
+	wantRules := []string{"rtl-physical", "rtl-physical", "rtl-inset-alias"}
+	for i, want := range wantRules {
+		if findings[i].Rule != want {
+			t.Errorf("finding %d: Rule = %q, want %q", i, findings[i].Rule, want)
+		}
+	}
+
+	if !strings.Contains(findings[0].Snippet, "ml-2") {
+		t.Errorf("finding 0: Snippet = %q, want it to contain ml-2", findings[0].Snippet)
+	}
+}
+
+// TestScanRTLMissingDir proves a missing target directory is an error, never
+// a silent "clean".
+func TestScanRTLMissingDir(t *testing.T) {
+	t.Parallel()
+
+	if _, err := ScanRTL(filepath.Join(t.TempDir(), "does-not-exist")); err == nil {
+		t.Error("expected an error for a missing directory, got nil")
+	}
+}
+
+// TestScanDarkMode seeds dark-mode gap fixtures and proves the reusable
+// scanner core reports both rule families with same-line dark: coverage
+// respected and generated/test files excluded.
+func TestScanDarkMode(t *testing.T) {
+	t.Parallel()
+
+	t.Run("gaps in templ and go sources, both rules", func(t *testing.T) {
 		t.Parallel()
 
 		dir := t.TempDir()
-		writeLintFixture(t, dir, "bad.templ", strings.Join([]string{
-			"<div class=\"flex\">",
-			"  <!-- prose mentioning start-0 and ml-2 must NOT trip the scanner -->",
-			"  <span class=\"ml-2\">",
-			"  <span class=\"pl-3 text-left\">",
-			"  <span class=\"start-0\">",
-			"</div>",
-		}, "\n")+"\n")
+		writeLintFixture(t, dir, "gaps.templ", "<span class=\"text-gray-500\">x</span>\n")
+		writeLintFixture(t, dir, "gaps_styles.go", "package p\n\nvar c = \"bg-blue-600\"\n")
+		writeLintFixture(t, dir, "gen_templ.go", "package p\n\nvar c = \"text-gray-900\"\n") // generated: excluded
+		writeLintFixture(t, dir, "gaps_test.go", "package p\n\nvar c = \"bg-red-600\"\n")    // test: excluded
 
-		findings, err := ScanRTL(dir)
+		findings, err := ScanDarkMode(dir)
 		if err != nil {
-			t.Fatalf("ScanRTL: %v", err)
+			t.Fatalf("ScanDarkMode: %v", err)
 		}
 
-		if len(findings) != 3 {
-			t.Fatalf("expected 3 findings (ml-, pl-3+text-left, start-0), got %d:\n%+v", len(findings), findings)
+		if len(findings) != 2 {
+			t.Fatalf("expected 2 findings, got %d:\n%+v", len(findings), findings)
 		}
 
-		wantLines := []int{3, 4, 5}
-		for i, want := range wantLines {
-			if findings[i].Line != want {
-				t.Errorf("finding %d: Line = %d, want %d (comments must not shift line numbers)", i, findings[i].Line, want)
-			}
+		if findings[0].Rule != "darkmode-neutral" || findings[0].Line != 1 {
+			t.Errorf("finding 0 = %+v, want darkmode-neutral line 1", findings[0])
 		}
 
-		wantRules := []string{"rtl-physical", "rtl-physical", "rtl-inset-alias"}
-		for i, want := range wantRules {
-			if findings[i].Rule != want {
-				t.Errorf("finding %d: Rule = %q, want %q", i, findings[i].Rule, want)
-			}
+		if findings[1].Rule != "darkmode-semantic" || findings[1].Line != 3 {
+			t.Errorf("finding 1 = %+v, want darkmode-semantic line 3", findings[1])
+		}
+	})
+
+	t.Run("same-line dark variant passes", func(t *testing.T) {
+		t.Parallel()
+
+		dir := t.TempDir()
+		writeLintFixture(t, dir, "ok.templ",
+			"<span class=\"text-gray-500 dark:text-gray-400 bg-blue-600 dark:bg-blue-500\">x</span>\n"+
+				"// text-gray-900 inside a Go comment is not markup\n")
+
+		findings, err := ScanDarkMode(dir)
+		if err != nil {
+			t.Fatalf("ScanDarkMode: %v", err)
 		}
 
-		if !strings.Contains(findings[0].Snippet, "ml-2") {
-			t.Errorf("finding 0: Snippet = %q, want it to contain ml-2", findings[0].Snippet)
+		if len(findings) != 0 {
+			t.Errorf("expected 0 findings, got %d:\n%+v", len(findings), findings)
 		}
 	})
 
 	t.Run("missing dir is an error", func(t *testing.T) {
 		t.Parallel()
 
-		if _, err := ScanRTL(filepath.Join(t.TempDir(), "does-not-exist")); err == nil {
+		if _, err := ScanDarkMode(filepath.Join(t.TempDir(), "gone")); err == nil {
 			t.Error("expected an error for a missing directory, got nil")
 		}
 	})

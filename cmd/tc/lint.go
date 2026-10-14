@@ -27,6 +27,11 @@ var lintScanners = []lintScanner{
 		help: "physical direction classes (ml-/mr-/pl-/pr-/text-left/text-right/border-l-/border-r-) and deprecated start-*/end-* inset aliases in .templ files",
 		scan: utils.ScanRTL,
 	},
+	{
+		flag: "dark",
+		help: "neutral + semantic color classes missing a same-line dark: variant (.templ/.go sources)",
+		scan: utils.ScanDarkMode,
+	},
 }
 
 // cmdLint runs the compliance scanners and exits with 1 when findings exist,
