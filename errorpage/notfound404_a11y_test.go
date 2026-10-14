@@ -45,6 +45,22 @@ func TestNotFound404A11y(t *testing.T) {
 		utils.AssertContains(t, output, `aria-label="Search the site..."`)
 	})
 
+	t.Run("search submit button exposes an accessible name", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, NotFound404(NotFound404Props{SearchAction: "/search"}))
+		utils.AssertContains(t, output, `type="submit"`)
+		utils.AssertContains(t, output, `aria-label="Search"`)
+	})
+
+	t.Run("search submit label overrides when set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, NotFound404(NotFound404Props{
+			SearchAction:      "/search",
+			SearchSubmitLabel: "Suchen",
+		}))
+		utils.AssertContains(t, output, `aria-label="Suchen"`)
+	})
+
 	t.Run("go back button has type=button", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, NotFound404(NotFound404Props{ShowGoBack: true}))

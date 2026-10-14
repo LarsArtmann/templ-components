@@ -177,6 +177,22 @@ func TestGoldenHandlerHTMLShell(t *testing.T) {
 	})
 }
 
+// TestGoldenNotFound404Document pins the WriteNotFound404Document wire format —
+// the standalone document a consumer's http.Server emits for an unhandled
+// route: DOCTYPE, lang, noindex robots meta, title, embedded 404 page, and the
+// nonce'd go-back script.
+func TestGoldenNotFound404Document(t *testing.T) {
+	t.Parallel()
+
+	w := httptest.NewRecorder()
+	r := httptest.NewRequestWithContext(context.Background(), http.MethodGet, "/missing", nil)
+	WriteNotFound404Document(w, r, DefaultNotFound404Props(), "test-nonce", "en")
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "notfound404_document", HTML: w.Body.String()},
+	})
+}
+
 // TestGoldenSweepErrorFamilyMatrix pins the full six-family matrix —
 // every go-error-family renders through ErrorAlert (rejection, conflict,
 // transient, corruption, infrastructure, orchestration) so a family
