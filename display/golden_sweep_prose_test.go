@@ -75,10 +75,8 @@ func TestGoldenSweepProse(t *testing.T) {
 			HTML: utils.Render(t, Prose(ProseProps{
 				Children: proseMarkdownSample(),
 				Size:     ProseSizeMD,
-				BaseProps: utils.BaseProps{
-					ID:    "release-notes",
-					Class: "max-w-3xl mx-auto",
-				},
+				ID:       "release-notes",
+				Class:    "max-w-3xl mx-auto",
 			})),
 		},
 	})

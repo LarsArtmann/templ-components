@@ -159,6 +159,7 @@ func componentTypes() []any {
 		display.LivePillProps{},
 		display.SegmentBarProps{},
 		display.LightboxProps{},
+		display.ProseProps{},
 
 		// feedback/layout/navigation/htmx additions (2026-09-13)
 		navigation.FooterProps{},
