@@ -60,6 +60,46 @@ func scanSources(dir string, include func(name string) bool, fn func(rel, conten
 	return nil
 }
 
+// lintIgnoreMarker is the per-line suppression marker for tc lint. It must
+// appear on the SAME line as the finding, inside any comment syntax the file
+// language offers (`<!-- tc-lint:ignore -->` in .templ, `// tc-lint:ignore`
+// in .go). Bare `tc-lint:ignore` suppresses every rule on the line;
+// `tc-lint:ignore <rule> [<rule>...]` suppresses exactly the named rules.
+const lintIgnoreMarker = "tc-lint:ignore"
+
+// lintIgnoreTrimCuts strips comment-closer punctuation from the tokens after
+// the marker, so `<!-- tc-lint:ignore rtl-physical-->` parses as the rule
+// "rtl-physical". Only token EDGES are trimmed; internal hyphens in rule ids
+// survive.
+const lintIgnoreTrimCuts = "-!>*\"',;()"
+
+// lintIgnoreFor parses one raw source line's suppression directive.
+func lintIgnoreFor(line string) (all bool, rules map[string]bool) {
+	idx := strings.Index(line, lintIgnoreMarker)
+	if idx < 0 {
+		return false, nil
+	}
+
+	for _, token := range strings.Fields(line[idx+len(lintIgnoreMarker):]) {
+		rule := strings.Trim(token, lintIgnoreTrimCuts)
+		if rule == "" {
+			continue
+		}
+
+		if rules == nil {
+			rules = map[string]bool{}
+		}
+
+		rules[rule] = true
+	}
+
+	if rules == nil {
+		return true, nil // bare marker: suppress every rule on this line
+	}
+
+	return false, rules
+}
+
 // htmlCommentAnyRe matches HTML comments across line breaks. An unterminated
 // comment is left in place, so its text stays scannable — a violation-shaped
 // token inside broken markup still gets reported (fails safe).

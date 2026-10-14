@@ -48,7 +48,7 @@ func ScanIconPaths(dir string) ([]Finding, error) {
 	for _, pattern := range []string{"*.templ", "*.go"} {
 		matches, globErr := fs.Glob(root.FS(), pattern)
 		if globErr != nil {
-			return nil, globErr
+			return nil, fmt.Errorf("glob %s: %w", pattern, globErr)
 		}
 
 		for _, rel := range matches {
@@ -64,7 +64,7 @@ func ScanIconPaths(dir string) ([]Finding, error) {
 
 			data, readErr := root.ReadFile(rel)
 			if readErr != nil {
-				return nil, readErr
+				return nil, fmt.Errorf("read %s: %w", rel, readErr)
 			}
 
 			for i, line := range strings.Split(string(data), "\n") {

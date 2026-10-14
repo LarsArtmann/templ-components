@@ -325,11 +325,11 @@ func FeatureGrid(stats build.Stats) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, feature := range Features {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div class=\"group rounded-xl border bg-bg-card backdrop-blur-sm transition-all duration-200 p-8 border-border hover:border-border-accent\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div class=\"group rounded-xl border bg-bg-card backdrop-blur-sm transition-all motion-reduce:transition-none motion-reduce:duration-0 duration-200 p-8 border-border hover:border-border-accent\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = iconTile(feature.Icon, "mb-4 transition-colors duration-200 group-hover:bg-accent group-hover:text-white").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = iconTile(feature.Icon, "mb-4 transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-200 group-hover:bg-accent group-hover:text-white").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -626,7 +626,7 @@ func Comparison(stats build.Stats) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, row := range ComparisonMatrix(stats) {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 47, "<tr class=\"border-b border-border/50 hover:bg-bg-card/50 transition-colors\"><td class=\"py-3 px-4 text-text-secondary font-medium text-start\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 47, "<tr class=\"border-b border-border/50 hover:bg-bg-card/50 transition-colors motion-reduce:transition-none motion-reduce:duration-0\"><td class=\"py-3 px-4 text-text-secondary font-medium text-start\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -690,7 +690,7 @@ func Comparison(stats build.Stats) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, " · detail and re-verify cadence in <a href=\"/comparison\" class=\"underline underline-offset-2 hover:text-text-secondary transition-colors\">How It Compares</a></p></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, " · detail and re-verify cadence in <a href=\"/comparison\" class=\"underline underline-offset-2 hover:text-text-secondary transition-colors motion-reduce:transition-none motion-reduce:duration-0\">How It Compares</a></p></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -810,7 +810,7 @@ func UseCasesSection() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, useCase := range UseCases {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, "<div class=\"p-6 rounded-xl border border-border bg-bg-card backdrop-blur-sm text-center hover:border-border-hover transition-all duration-200 hover:-translate-y-0.5\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, "<div class=\"p-6 rounded-xl border border-border bg-bg-card backdrop-blur-sm text-center hover:border-border-hover transition-all motion-reduce:transition-none motion-reduce:duration-0 duration-200 hover:-translate-y-0.5\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -888,7 +888,7 @@ func CTA() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 71, "<div class=\"text-center\"><div class=\"flex items-center justify-center gap-3 flex-wrap\"><a href=\"/getting-started/installation\" class=\"px-7 py-3.5 bg-accent text-white font-semibold rounded-lg text-sm hover:bg-accent-hover transition-all duration-200 inline-flex items-center gap-2 border-none cursor-pointer shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5 no-underline\">Read the Docs")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 71, "<div class=\"text-center\"><div class=\"flex items-center justify-center gap-3 flex-wrap\"><a href=\"/getting-started/installation\" class=\"px-7 py-3.5 bg-accent text-white font-semibold rounded-lg text-sm hover:bg-accent-hover transition-all motion-reduce:transition-none motion-reduce:duration-0 duration-200 inline-flex items-center gap-2 border-none cursor-pointer shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5 no-underline\">Read the Docs")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -896,7 +896,7 @@ func CTA() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 72, "</a> <a href=\"/api-reference\" class=\"px-6 py-3.5 border border-border text-text-secondary font-medium rounded-lg text-sm hover:border-border-hover hover:text-text-primary transition-all duration-200 inline-flex items-center gap-2 no-underline hover:-translate-y-0.5\">API Reference")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 72, "</a> <a href=\"/api-reference\" class=\"px-6 py-3.5 border border-border text-text-secondary font-medium rounded-lg text-sm hover:border-border-hover hover:text-text-primary transition-all motion-reduce:transition-none motion-reduce:duration-0 duration-200 inline-flex items-center gap-2 no-underline hover:-translate-y-0.5\">API Reference")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

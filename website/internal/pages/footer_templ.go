@@ -52,7 +52,7 @@ func Newsletter() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" method=\"POST\" target=\"popupwindow\" class=\"flex items-center gap-3 w-full md:w-auto\"><input type=\"email\" name=\"email\" required placeholder=\"you@example.com\" aria-label=\"Email address\" class=\"min-w-0 flex-1 md:w-64 px-4 py-2.5 bg-bg-elevated border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none transition-colors duration-150\"> <button type=\"submit\" class=\"px-5 py-2.5 bg-accent text-white font-semibold rounded-lg text-sm hover:bg-accent-hover transition-all duration-200 border-none cursor-pointer whitespace-nowrap shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5\">Subscribe</button></form></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" method=\"POST\" target=\"popupwindow\" class=\"flex items-center gap-3 w-full md:w-auto\"><input type=\"email\" name=\"email\" required placeholder=\"you@example.com\" aria-label=\"Email address\" class=\"min-w-0 flex-1 md:w-64 px-4 py-2.5 bg-bg-elevated border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150\"> <button type=\"submit\" class=\"px-5 py-2.5 bg-accent text-white font-semibold rounded-lg text-sm hover:bg-accent-hover transition-all motion-reduce:transition-none motion-reduce:duration-0 duration-200 border-none cursor-pointer whitespace-nowrap shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5\">Subscribe</button></form></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -138,20 +138,20 @@ func Footer(nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-text-secondary hover:text-text-primary transition-colors duration-150 underline underline-offset-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-text-secondary hover:text-text-primary transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 underline underline-offset-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(AuthorName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/pages/footer.templ`, Line: 59, Col: 248}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/pages/footer.templ`, Line: 59, Col: 303}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</a></span></div><div class=\"flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm\"><a href=\"/getting-started/installation\" class=\"text-text-muted hover:text-text-primary transition-colors duration-150 no-underline\">Documentation</a> <a href=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</a></span></div><div class=\"flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm\"><a href=\"/getting-started/installation\" class=\"text-text-muted hover:text-text-primary transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 no-underline\">Documentation</a> <a href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -164,7 +164,7 @@ func Footer(nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-text-muted hover:text-text-primary transition-colors duration-150 no-underline\">GitHub</a> <a href=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-text-muted hover:text-text-primary transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 no-underline\">GitHub</a> <a href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -177,7 +177,7 @@ func Footer(nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-text-muted hover:text-text-primary transition-colors duration-150 no-underline\">pkg.go.dev</a> <a href=\"/llms.txt\" class=\"text-text-muted hover:text-text-primary transition-colors duration-150 no-underline\">llms.txt</a></div></div></footer>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-text-muted hover:text-text-primary transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 no-underline\">pkg.go.dev</a> <a href=\"/llms.txt\" class=\"text-text-muted hover:text-text-primary transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 no-underline\">llms.txt</a></div></div></footer>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

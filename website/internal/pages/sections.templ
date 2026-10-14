@@ -79,8 +79,8 @@ templ FeatureGrid(stats build.Stats) {
 		@sectionHeader("Features", "Everything you need to ship.", fmt.Sprintf("%d components with type safety, accessibility, and dark mode baked in. No frontend framework required.", stats.Components))
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 			for _, feature := range Features {
-				<div class="group rounded-xl border bg-bg-card backdrop-blur-sm transition-all duration-200 p-8 border-border hover:border-border-accent">
-					@iconTile(feature.Icon, "mb-4 transition-colors duration-200 group-hover:bg-accent group-hover:text-white")
+				<div class="group rounded-xl border bg-bg-card backdrop-blur-sm transition-all motion-reduce:transition-none motion-reduce:duration-0 duration-200 p-8 border-border hover:border-border-accent">
+					@iconTile(feature.Icon, "mb-4 transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-200 group-hover:bg-accent group-hover:text-white")
 					<h3 class="font-semibold text-text-primary mb-2 text-base">{ feature.Title }</h3>
 					<p class="text-sm text-text-muted leading-relaxed">{ feature.Desc }</p>
 				</div>
@@ -157,7 +157,7 @@ templ Comparison(stats build.Stats) {
 				</thead>
 				<tbody>
 					for _, row := range ComparisonMatrix(stats) {
-						<tr class="border-b border-border/50 hover:bg-bg-card/50 transition-colors">
+						<tr class="border-b border-border/50 hover:bg-bg-card/50 transition-colors motion-reduce:transition-none motion-reduce:duration-0">
 							<td class="py-3 px-4 text-text-secondary font-medium text-start">{ row.Feature }</td>
 							for valueIndex, value := range row.Values {
 								if valueIndex == len(row.Values)-1 {
@@ -175,7 +175,7 @@ templ Comparison(stats build.Stats) {
 				</tbody>
 			</table>
 		</div>
-		<p class="mt-3 text-text-muted text-xs">{ comparisonVerifiedCaption } · detail and re-verify cadence in <a href="/comparison" class="underline underline-offset-2 hover:text-text-secondary transition-colors">How It Compares</a></p>
+		<p class="mt-3 text-text-muted text-xs">{ comparisonVerifiedCaption } · detail and re-verify cadence in <a href="/comparison" class="underline underline-offset-2 hover:text-text-secondary transition-colors motion-reduce:transition-none motion-reduce:duration-0">How It Compares</a></p>
 	</div>
 }
 
@@ -203,7 +203,7 @@ templ UseCasesSection() {
 		@sectionHeader("Use Cases", "Built for real Go apps.", "Drop in components for admin panels, forms, and SaaS interfaces.")
 		<div class="grid gap-3 sm:grid-cols-3">
 			for _, useCase := range UseCases {
-				<div class="p-6 rounded-xl border border-border bg-bg-card backdrop-blur-sm text-center hover:border-border-hover transition-all duration-200 hover:-translate-y-0.5">
+				<div class="p-6 rounded-xl border border-border bg-bg-card backdrop-blur-sm text-center hover:border-border-hover transition-all motion-reduce:transition-none motion-reduce:duration-0 duration-200 hover:-translate-y-0.5">
 					@iconTile(useCase.Icon, "mx-auto mb-3")
 					<h3 class="font-semibold text-text-primary text-sm mb-1">{ useCase.Title }</h3>
 					<p class="text-xs text-text-muted leading-relaxed">{ useCase.Desc }</p>
@@ -220,11 +220,11 @@ templ CTA() {
 		@sectionHeader("Get Started", "Install in 30 seconds.", "go get, templ generate, ship. No Node.js required.")
 		<div class="text-center">
 			<div class="flex items-center justify-center gap-3 flex-wrap">
-				<a href="/getting-started/installation" class="px-7 py-3.5 bg-accent text-white font-semibold rounded-lg text-sm hover:bg-accent-hover transition-all duration-200 inline-flex items-center gap-2 border-none cursor-pointer shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5 no-underline">
+				<a href="/getting-started/installation" class="px-7 py-3.5 bg-accent text-white font-semibold rounded-lg text-sm hover:bg-accent-hover transition-all motion-reduce:transition-none motion-reduce:duration-0 duration-200 inline-flex items-center gap-2 border-none cursor-pointer shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5 no-underline">
 					Read the Docs
 					@icons.Icon(icons.ArrowRight, "h-4 w-4")
 				</a>
-				<a href="/api-reference" class="px-6 py-3.5 border border-border text-text-secondary font-medium rounded-lg text-sm hover:border-border-hover hover:text-text-primary transition-all duration-200 inline-flex items-center gap-2 no-underline hover:-translate-y-0.5">
+				<a href="/api-reference" class="px-6 py-3.5 border border-border text-text-secondary font-medium rounded-lg text-sm hover:border-border-hover hover:text-text-primary transition-all motion-reduce:transition-none motion-reduce:duration-0 duration-200 inline-flex items-center gap-2 no-underline hover:-translate-y-0.5">
 					API Reference
 					@icons.Icon(icons.ExternalLink, "h-4 w-4")
 				</a>

@@ -90,7 +90,7 @@ func Header(nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Logo("transition-transform duration-200 group-hover:rotate-12").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Logo("transition-transform motion-reduce:transition-none motion-reduce:duration-0 duration-200 group-hover:rotate-12").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -107,7 +107,7 @@ func Header(nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</span></a> <button class=\"nav-toggle bg-transparent border-none text-text-muted cursor-pointer p-1 hover:text-text-primary transition-colors lg:hidden\" id=\"nav-toggle\" aria-label=\"Toggle navigation\" aria-expanded=\"false\" aria-controls=\"nav-links\"><span class=\"menu-icon\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</span></a> <button class=\"nav-toggle bg-transparent border-none text-text-muted cursor-pointer p-1 hover:text-text-primary transition-colors motion-reduce:transition-none motion-reduce:duration-0 lg:hidden\" id=\"nav-toggle\" aria-label=\"Toggle navigation\" aria-expanded=\"false\" aria-controls=\"nav-links\"><span class=\"menu-icon\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -135,7 +135,7 @@ func Header(nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<a href=\"/sales\" class=\"text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 no-underline nav-link\">Why</a> <a href=\"/getting-started/installation\" class=\"text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 no-underline nav-link\">Docs</a> <a href=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<a href=\"/sales\" class=\"text-sm text-text-secondary hover:text-text-primary transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 no-underline nav-link\">Why</a> <a href=\"/getting-started/installation\" class=\"text-sm text-text-secondary hover:text-text-primary transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 no-underline nav-link\">Docs</a> <a href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -148,7 +148,7 @@ func Header(nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 flex items-center gap-1.5 no-underline nav-link\"><span class=\"text-text-muted\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-sm text-text-secondary hover:text-text-primary transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 flex items-center gap-1.5 no-underline nav-link\"><span class=\"text-text-muted\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -108,7 +108,7 @@ templ docsTOC(page md.Page) {
 templ docsFooterNav(current string, prev, next *DocRef, lastUpdated string) {
 	<div class="mt-12 pt-6 border-t border-border flex items-center justify-between gap-4 text-sm">
 		if prev != nil {
-			<a href={ "/" + prev.Slug } class="docs-nav-card flex flex-col items-start rounded-lg border border-border p-3 hover:border-border-hover transition-colors duration-150 no-underline min-w-0">
+			<a href={ "/" + prev.Slug } class="docs-nav-card flex flex-col items-start rounded-lg border border-border p-3 hover:border-border-hover transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 no-underline min-w-0">
 				<span class="text-xs text-text-muted">Previous</span>
 				<span class="text-text-primary font-medium truncate">{ prev.Title }</span>
 			</a>
@@ -116,7 +116,7 @@ templ docsFooterNav(current string, prev, next *DocRef, lastUpdated string) {
 			<span></span>
 		}
 		if next != nil {
-			<a href={ "/" + next.Slug } class="docs-nav-card flex flex-col items-end rounded-lg border border-border p-3 hover:border-border-hover transition-colors duration-150 no-underline min-w-0 text-end">
+			<a href={ "/" + next.Slug } class="docs-nav-card flex flex-col items-end rounded-lg border border-border p-3 hover:border-border-hover transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 no-underline min-w-0 text-end">
 				<span class="text-xs text-text-muted">Next</span>
 				<span class="text-text-primary font-medium truncate">{ next.Title }</span>
 			</a>
@@ -126,6 +126,6 @@ templ docsFooterNav(current string, prev, next *DocRef, lastUpdated string) {
 	</div>
 	<div class="mt-6 flex items-center justify-between gap-4 text-xs text-text-muted">
 		<span>Last updated { lastUpdated }</span>
-		<a href={ templ.SafeURL(EditLink(current)) } target="_blank" rel="noopener noreferrer" class="hover:text-text-primary transition-colors duration-150 underline underline-offset-2">Edit this page</a>
+		<a href={ templ.SafeURL(EditLink(current)) } target="_blank" rel="noopener noreferrer" class="hover:text-text-primary transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 underline underline-offset-2">Edit this page</a>
 	</div>
 }

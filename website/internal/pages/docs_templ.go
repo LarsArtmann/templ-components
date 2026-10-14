@@ -449,7 +449,7 @@ func docsFooterNav(current string, prev, next *DocRef, lastUpdated string) templ
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\" class=\"docs-nav-card flex flex-col items-start rounded-lg border border-border p-3 hover:border-border-hover transition-colors duration-150 no-underline min-w-0\"><span class=\"text-xs text-text-muted\">Previous</span> <span class=\"text-text-primary font-medium truncate\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\" class=\"docs-nav-card flex flex-col items-start rounded-lg border border-border p-3 hover:border-border-hover transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 no-underline min-w-0\"><span class=\"text-xs text-text-muted\">Previous</span> <span class=\"text-text-primary font-medium truncate\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -486,7 +486,7 @@ func docsFooterNav(current string, prev, next *DocRef, lastUpdated string) templ
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "\" class=\"docs-nav-card flex flex-col items-end rounded-lg border border-border p-3 hover:border-border-hover transition-colors duration-150 no-underline min-w-0 text-end\"><span class=\"text-xs text-text-muted\">Next</span> <span class=\"text-text-primary font-medium truncate\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "\" class=\"docs-nav-card flex flex-col items-end rounded-lg border border-border p-3 hover:border-border-hover transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 no-underline min-w-0 text-end\"><span class=\"text-xs text-text-muted\">Next</span> <span class=\"text-text-primary font-medium truncate\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -535,7 +535,7 @@ func docsFooterNav(current string, prev, next *DocRef, lastUpdated string) templ
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"hover:text-text-primary transition-colors duration-150 underline underline-offset-2\">Edit this page</a></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"hover:text-text-primary transition-colors motion-reduce:transition-none motion-reduce:duration-0 duration-150 underline underline-offset-2\">Edit this page</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
