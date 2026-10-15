@@ -75,6 +75,7 @@ for (const route of routes) {
 }
 
 writeFileSync(join(outdir, "report.json"), JSON.stringify({ perRoute, ruleTotals }, null, 2));
+await aChecker.close(); // aChecker keeps its puppeteer alive — without this node never exits
 
 console.log("\n=== rule totals across 16 routes (ruleId | level | routes | count) ===");
 for (const t of Object.values(ruleTotals).sort((a, b) => b.count - a.count)) {
