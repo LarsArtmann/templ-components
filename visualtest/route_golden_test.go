@@ -273,6 +273,8 @@ func TestDemoRouteGoldens(t *testing.T) {
 		{"forms_light", "/forms", false, false, ViewportDesktop, true},
 		{"forms_dark", "/forms", true, false, ViewportDesktop, true},
 		{"forms_mobile", "/forms", false, false, ViewportMobile, false},
+		{"stylable_select_light", "/stylable-select", false, false, ViewportDesktop, true},
+		{"stylable_select_dark", "/stylable-select", true, false, ViewportDesktop, true},
 		{"users_light", "/users", false, false, ViewportDesktop, true},
 		{"users_dark", "/users", true, false, ViewportDesktop, true},
 		{"users_mobile", "/users", false, false, ViewportMobile, false},

@@ -1,0 +1,126 @@
+package main
+
+import (
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/forms"
+	"github.com/larsartmann/templ-components/icons"
+)
+
+// stylableSelectDemo exercises forms.Select's Stylable mode (the modern
+// customizable <select> API, appearance: base-select). This page is the
+// browser-level proof surface for the riskiest cross-engine property in the
+// library: base-select is unsupported in Firefox (Mozilla bugs 1944403 and
+// 1958443), so every non-supporting engine must fall back to the native
+// select rendering without layout breakage (docs/testing/demo-coverage-map.md).
+templ stylableSelectDemo() {
+	@display.Card(display.CardProps{Title: "About this page"}) {
+		<p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+			Selects below marked <em>Stylable</em> opt into the customizable
+			&lt;select&gt; API (<code>appearance: base-select</code> plus a
+			<code>&lt;button&gt;&lt;selectedcontent&gt;</code> structure inside the
+			select, styled by <code>.tc-select</code> from
+			<code>templates/custom.css</code>). Supporting engines render a fully
+			styleable picker; non-supporting engines (Firefox) ignore the opt-in
+			markers and render the same <code>&lt;select&gt;</code> natively —
+			progressive enhancement with no breaking change.
+		</p>
+		<p class="text-sm text-gray-600 dark:text-gray-400">
+			Compare each Stylable example against its native counterpart: both must
+			remain usable, aligned, and free of overflow in every engine.
+		</p>
+	}
+	@demoSection("Stylable select (flat options)", "stylable-flat")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Flat option list with a pre-selected value — the base-select path:
+	</p>
+	<div class="max-w-sm">
+		@forms.Select(forms.SelectProps{
+			BaseProps: demoBaseProps(),
+			Name:      "stylable-region",
+			Label:     "Region",
+			Stylable:  true,
+			Options: []forms.SelectOption{
+				{Value: "eu-central", Label: "EU Central (Frankfurt)"},
+				{Value: "eu-west", Label: "EU West (Dublin)", Selected: true},
+				{Value: "us-east", Label: "US East (Virginia)"},
+				{Value: "us-west", Label: "US West (Oregon)"},
+				{Value: "ap-south", Label: "Asia Pacific (Mumbai)"},
+			},
+			HelpText: "Deploy target for new workloads.",
+		})
+	</div>
+	@demoSection("Stylable select (option groups)", "stylable-groups")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Optgroups render inside the customizable picker the same way they do
+		natively:
+	</p>
+	<div class="max-w-sm">
+		@forms.Select(forms.SelectProps{
+			BaseProps: demoBaseProps(),
+			Name:      "stylable-channel",
+			Label:     "Channel",
+			Stylable:  true,
+			Groups: []forms.SelectGroup{
+				{Label: "Text", Options: []forms.SelectOption{
+					{Value: "general", Label: "#general"},
+					{Value: "random", Label: "#random"},
+					{Value: "engineering", Label: "#engineering", Selected: true},
+				}},
+				{Label: "Voice", Options: []forms.SelectOption{
+					{Value: "lounge", Label: "Lounge"},
+					{Value: "standup", Label: "Daily Standup"},
+				}},
+			},
+		})
+	</div>
+	@demoSection("Stylable select (validation error)", "stylable-error")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Error styling and the <code>.tc-select</code> border compose through the
+		standard <code>aria-invalid</code> path:
+	</p>
+	<div class="max-w-sm">
+		@forms.Select(forms.SelectProps{
+			BaseProps: demoBaseProps(),
+			Name:      "stylable-env",
+			Label:     "Environment",
+			Stylable:  true,
+			Required:  true,
+			Options: []forms.SelectOption{
+				{Value: "", Label: "Choose an environment", Disabled: true},
+				{Value: "staging", Label: "Staging"},
+				{Value: "production", Label: "Production"},
+			},
+			Error: "An environment is required before deploying.",
+		})
+	</div>
+	@demoSection("Native select (comparison)", "stylable-native")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		The same select without <code>Stylable</code> — this is exactly what
+		non-supporting engines show for the examples above:
+	</p>
+	<div class="max-w-sm">
+		@forms.Select(forms.SelectProps{
+			BaseProps: demoBaseProps(),
+			Name:      "native-region",
+			Label:     "Region (native)",
+			Options: []forms.SelectOption{
+				{Value: "eu-central", Label: "EU Central (Frankfurt)"},
+				{Value: "eu-west", Label: "EU West (Dublin)", Selected: true},
+				{Value: "us-east", Label: "US East (Virginia)"},
+				{Value: "us-west", Label: "US West (Oregon)"},
+				{Value: "ap-south", Label: "Asia Pacific (Mumbai)"},
+			},
+		})
+	</div>
+	@display.Card(display.CardProps{Title: "Fallback behaviour"}) {
+		<ul class="text-sm text-gray-600 dark:text-gray-400 list-disc list-inside space-y-1">
+			<li>Supporting engines (Chromium, Safari): the picker is styleable via <code>.tc-select</code>, including the <code>::picker-icon</code> and <code>::picker(select)</code> pseudo-elements.</li>
+			<li>Firefox: <code>appearance: base-select</code> is unsupported (Mozilla bugs 1944403 and 1958443, unshipped as of 2026-10). The inner <code>&lt;button&gt;&lt;selectedcontent&gt;</code> structure is ignored per HTML spec and the select renders fully native.</li>
+			<li>Both paths share one DOM and one accessibility tree — the label, help text, and error wiring are identical, so the cross-engine difference is purely visual.</li>
+		</ul>
+		<div class="mt-3 flex items-center gap-2">
+			@icons.Icon(icons.ChevronDown, "w-4 h-4 text-gray-400 dark:text-gray-500")
+			<span class="text-xs text-gray-500 dark:text-gray-400">Selects stay keyboard-operable natively in every engine.</span>
+		</div>
+	}
+}

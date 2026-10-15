@@ -96,6 +96,15 @@ func demoPages() []demoPageMeta {
 			Content:    func(*http.Request) templ.Component { return formsDemoContent() },
 		},
 		{
+			Path:       "/stylable-select",
+			Title:      "Stylable select",
+			Short:      "Customizable <select> (base-select) with native fallback proof.",
+			Icon:       icons.ListBullet,
+			Section:    "Components",
+			ShowHeader: true,
+			Content:    func(*http.Request) templ.Component { return stylableSelectDemo() },
+		},
+		{
 			Path:       "/navigation",
 			Title:      "Navigation",
 			Short:      "Nav bars, breadcrumbs, pagination, load-more, footer.",

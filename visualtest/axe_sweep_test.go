@@ -78,6 +78,8 @@ var axeSweepRoutes = []struct {
 	{name: "feedback", path: "/feedback", dark: false},
 	{name: "forms", path: "/forms", dark: false},
 	{name: "forms_dark", path: "/forms", dark: true},
+	{name: "stylable_select", path: "/stylable-select", dark: false},
+	{name: "stylable_select_dark", path: "/stylable-select", dark: true},
 	{name: "navigation", path: "/navigation", dark: false},
 	{name: "icons", path: "/icons", dark: false},
 	{name: "htmx", path: "/htmx", dark: false},
