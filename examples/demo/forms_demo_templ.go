@@ -248,6 +248,7 @@ func formsDemoContent() templ.Component {
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = forms.FilterDropdown(forms.FilterDropdownProps{
+				BaseProps: utils.BaseProps{ID: "htmx-filter-sort"},
 				Name:      "sort",
 				Label:     "Sort by",
 				HxGet:     demoURL("/api/users"),
@@ -317,8 +318,9 @@ func formsDemoContent() templ.Component {
 					return templ_7745c5c3_Err
 				}
 				templ_7745c5c3_Err = forms.Select(forms.SelectProps{
-					Name:  "sort",
-					Label: "Sort by",
+					BaseProps: utils.BaseProps{ID: "filterbar-sort"},
+					Name:      "sort",
+					Label:     "Sort by",
 					Options: []forms.SelectOption{
 						{Value: "name", Label: "Name"},
 						{Value: "created", Label: "Date Created"},

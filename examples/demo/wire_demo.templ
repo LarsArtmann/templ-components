@@ -563,6 +563,7 @@ templ wireSearchForm(dialect wire.Transport, query string) {
 		},
 	}) {
 		@forms.Input(forms.InputProps{
+			BaseProps:   utils.BaseProps{ID: "wire-search-" + string(dialect)},
 			Name:        "q",
 			Type:        forms.InputSearch,
 			Label:       "Search",
@@ -824,6 +825,7 @@ templ wireFragment(loadedAt string) {
 // headers.
 templ wireDemoFilterInput(dialect wire.Transport) {
 	@forms.FilterInput(forms.FilterInputProps{
+		BaseProps:   utils.BaseProps{ID: "wire-filter-" + string(dialect)},
 		Name:        "q",
 		Label:       "Filter frameworks",
 		Placeholder: "Type to filter…",

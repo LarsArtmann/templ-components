@@ -198,7 +198,7 @@
         }
     ],
     "numExecuted": 1349,
-    "ruleTime": 25,
+    "ruleTime": 23,
     "nls": {
         "style_color_misuse": {
             "0": "Combine color and descriptive markup to convey information",
@@ -227,7 +227,7 @@
             "manual": 1,
             "pass": 1336
         },
-        "scanTime": 84,
+        "scanTime": 81,
         "ruleArchive": "Latest Deployment (latest)",
         "policies": [
             "IBM_Accessibility"
@@ -236,10 +236,10 @@
             "violation",
             "potentialviolation"
         ],
-        "startScan": 1792085684268,
+        "startScan": 1792086237327,
         "URL": "http://localhost:8093/error-pages"
     },
-    "scanID": "4cb57184-97c4-4429-9d45-b2c578992931",
+    "scanID": "1e0a3b8f-bf7a-4a3a-9970-7ccf80c28444",
     "toolID": "accessibility-checker-v4.0.34",
     "label": "m08"
 }

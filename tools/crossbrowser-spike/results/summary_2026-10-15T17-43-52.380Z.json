@@ -1,0 +1,271 @@
+{
+    "counts": {
+        "ignored": 0,
+        "violation": 117,
+        "recommendation": 8,
+        "pass": 26652,
+        "potentialviolation": 136,
+        "potentialrecommendation": 44,
+        "manual": 17,
+        "elements": 275,
+        "elementsViolation": 98,
+        "elementsViolationReview": 239
+    },
+    "startReport": 1792086232380,
+    "endReport": 1792086238143,
+    "toolID": "accessibility-checker-v4.0.34",
+    "policies": [
+        "IBM_Accessibility"
+    ],
+    "reportLevels": [
+        "violation",
+        "potentialviolation"
+    ],
+    "failLevels": [
+        "violation",
+        "potentialviolation"
+    ],
+    "scanID": "1e0a3b8f-bf7a-4a3a-9970-7ccf80c28444",
+    "pageScanSummary": [
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 12,
+                "elementsViolation": 2,
+                "elementsViolationReview": 12,
+                "violation": 2,
+                "potentialviolation": 10,
+                "recommendation": 0,
+                "potentialrecommendation": 0,
+                "manual": 1,
+                "pass": 1366
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 9,
+                "elementsViolation": 3,
+                "elementsViolationReview": 9,
+                "violation": 3,
+                "potentialviolation": 5,
+                "recommendation": 0,
+                "potentialrecommendation": 0,
+                "manual": 1,
+                "pass": 712
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 71,
+                "elementsViolation": 24,
+                "elementsViolationReview": 53,
+                "violation": 24,
+                "potentialviolation": 30,
+                "recommendation": 0,
+                "potentialrecommendation": 18,
+                "manual": 1,
+                "pass": 6129
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 12,
+                "elementsViolation": 5,
+                "elementsViolationReview": 12,
+                "violation": 5,
+                "potentialviolation": 6,
+                "recommendation": 0,
+                "potentialrecommendation": 0,
+                "manual": 1,
+                "pass": 1866
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 48,
+                "elementsViolation": 19,
+                "elementsViolationReview": 34,
+                "violation": 24,
+                "potentialviolation": 17,
+                "recommendation": 6,
+                "potentialrecommendation": 17,
+                "manual": 1,
+                "pass": 2731
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 13,
+                "elementsViolation": 1,
+                "elementsViolationReview": 12,
+                "violation": 1,
+                "potentialviolation": 10,
+                "recommendation": 1,
+                "potentialrecommendation": 4,
+                "manual": 1,
+                "pass": 807
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 12,
+                "elementsViolation": 4,
+                "elementsViolationReview": 11,
+                "violation": 6,
+                "potentialviolation": 6,
+                "recommendation": 1,
+                "potentialrecommendation": 0,
+                "manual": 1,
+                "pass": 1170
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 5,
+                "elementsViolation": 1,
+                "elementsViolationReview": 5,
+                "violation": 1,
+                "potentialviolation": 4,
+                "recommendation": 0,
+                "potentialrecommendation": 0,
+                "manual": 1,
+                "pass": 3521
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 8,
+                "elementsViolation": 3,
+                "elementsViolationReview": 8,
+                "violation": 3,
+                "potentialviolation": 4,
+                "recommendation": 0,
+                "potentialrecommendation": 0,
+                "manual": 1,
+                "pass": 731
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 9,
+                "elementsViolation": 5,
+                "elementsViolationReview": 9,
+                "violation": 5,
+                "potentialviolation": 3,
+                "recommendation": 0,
+                "potentialrecommendation": 0,
+                "manual": 1,
+                "pass": 616
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 30,
+                "elementsViolation": 22,
+                "elementsViolationReview": 30,
+                "violation": 34,
+                "potentialviolation": 10,
+                "recommendation": 0,
+                "potentialrecommendation": 0,
+                "manual": 1,
+                "pass": 2742
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 22,
+                "elementsViolation": 2,
+                "elementsViolationReview": 22,
+                "violation": 2,
+                "potentialviolation": 19,
+                "recommendation": 0,
+                "potentialrecommendation": 0,
+                "manual": 1,
+                "pass": 1358
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 7,
+                "elementsViolation": 3,
+                "elementsViolationReview": 7,
+                "violation": 3,
+                "potentialviolation": 2,
+                "recommendation": 0,
+                "potentialrecommendation": 0,
+                "manual": 2,
+                "pass": 415
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 3,
+                "elementsViolation": 1,
+                "elementsViolationReview": 3,
+                "violation": 1,
+                "potentialviolation": 2,
+                "recommendation": 0,
+                "potentialrecommendation": 0,
+                "manual": 1,
+                "pass": 498
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 4,
+                "elementsViolation": 2,
+                "elementsViolationReview": 4,
+                "violation": 2,
+                "potentialviolation": 2,
+                "recommendation": 0,
+                "potentialrecommendation": 0,
+                "manual": 1,
+                "pass": 654
+            }
+        },
+        {
+            "label": "m08",
+            "counts": {
+                "ignored": 0,
+                "elements": 10,
+                "elementsViolation": 1,
+                "elementsViolationReview": 8,
+                "violation": 1,
+                "potentialviolation": 6,
+                "recommendation": 0,
+                "potentialrecommendation": 5,
+                "manual": 1,
+                "pass": 1336
+            }
+        }
+    ]
+}

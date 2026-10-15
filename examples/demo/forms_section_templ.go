@@ -46,11 +46,11 @@ func formsDemoSection() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email address", Required: true, Placeholder: "you@example.com"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Input(forms.InputProps{BaseProps: utils.BaseProps{ID: "controls-email"}, Name: "email", Type: forms.InputEmail, Label: "Email address", Required: true, Placeholder: "you@example.com"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = forms.Input(forms.InputProps{Name: "password", Type: forms.InputPassword, Label: "Password"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Input(forms.InputProps{BaseProps: utils.BaseProps{ID: "controls-password"}, Name: "password", Type: forms.InputPassword, Label: "Password"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -104,16 +104,16 @@ func formsDemoSection() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = forms.Textarea(forms.TextareaProps{Name: "bio", Label: "Bio", Rows: 4, HelpText: "Tell us about yourself."}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Textarea(forms.TextareaProps{BaseProps: utils.BaseProps{ID: "controls-bio"}, Name: "bio", Label: "Bio", Rows: 4, HelpText: "Tell us about yourself."}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = forms.Checkbox(forms.CheckboxProps{BaseProps: utils.BaseProps{ID: "terms"}, Name: "terms", Label: "I agree to the terms"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Checkbox(forms.CheckboxProps{BaseProps: utils.BaseProps{ID: "controls-terms"}, Name: "terms", Label: "I agree to the terms"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = forms.RadioGroup(forms.RadioGroupProps{
-			BaseProps: utils.BaseProps{ID: "plan"},
+			BaseProps: utils.BaseProps{ID: "controls-plan"},
 			Name:      "plan",
 			Label:     "Select a plan",
 			Options: []forms.RadioOption{
@@ -244,10 +244,11 @@ func formsDemoSection() templ.Component {
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = forms.FilterDropdown(forms.FilterDropdownProps{
-				Name:     "sort",
-				Label:    "Sort",
-				HxGet:    demoURL("/api/users"),
-				HxTarget: "#results",
+				BaseProps: utils.BaseProps{ID: "inline-sort"},
+				Name:      "sort",
+				Label:     "Sort",
+				HxGet:     demoURL("/api/users"),
+				HxTarget:  "#results",
 				Options: []forms.SelectOption{
 					{Value: "name", Label: "Name"},
 					{Value: "date", Label: "Date"},
