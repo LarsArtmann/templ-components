@@ -75,6 +75,12 @@ Global gate rules (from `docs/plan-authoring-checklist.md`, applied per task):
   v4.3 compound `@variant hover, focus { }` where light rules duplicate.
   Proof: compiled demo CSS semantically identical (selector-set diff empty);
   goldens untouched.
+  ⚠ M04 2026-10-15 correction: the proof AS WRITTEN is unachievable —
+  `@variant dark` compiles to native CSS nesting (`&:where(.dark, .dark *)`)
+  so no shape emits the flat `.dark X` selectors; the honest proof is the
+  visual suite (light+dark) plus guard freshness. Use the RULE-NESTED shape
+  (probe-verified); keep the two bare `.dark { tokens }` root blocks
+  unmigrated (they are the variant's own domain).
 - **M06 — F1 verify: guards + freshness + demo smoke** (45min)
   `TestCustomCSSUtilities`, `TestCustomCSSThemeTokens`, `nix run .#css`,
   `TestCSSFreshness` with `-count=1`, demo smoke.
@@ -407,3 +413,51 @@ flowchart TD
   agent-context-history; harvest to TODO_LIST only if it needs enforcement.
 - ⫱ gates (harvest approval, re-baseline bundling, utils coordination) are
   Lars's calls; tasks M11, M24, M26, M27 stop at the gate edge if unanswered.
+
+## Appendix: M04 census + probe record (2026-10-15)
+
+### F12 census — `.dark` forks in `templates/custom.css` (precise)
+
+`grep -n '\.dark' templates/custom.css` → 35 occurrences: 1 comment mention
+(line 1094, token-policy prose), 34 selector occurrences across 25 rules, in
+6 clusters:
+
+| Cluster                | Lines     | `.dark` selectors | Notes                                                                        |
+| ---------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
+| accent-color base fork | 318-321   | 4                 | one rule (checkbox/radio/range/progress), inside `@layer base`               |
+| select cluster         | 429-464   | 12                | ~8 rules, inside `@supports (appearance: base-select)` — the largest cluster |
+| root token block #1    | 519       | 1                 | bare `.dark { tokens }`                                                      |
+| root token block #2    | 962       | 1                 | bare `.dark { tokens }` (sidebar/header)                                     |
+| kanban cluster         | 983-1048  | 5                 | 4 rules incl. one two-selector rule (1006-1007)                              |
+| tc-prose cluster       | 1106-1281 | 13                | ~11 rules, inside `@layer components`                                        |
+
+The 10-14 report's "~15 forks" undercounted by ~2x (F13's own finding, now
+corrected here). The 10-08 report's counts were never re-derived.
+
+### F13 probe — `@variant dark` inside `@supports (appearance: base-select)`
+
+- Sibling shape (`@variant dark { select.tc-select { ... } }` at rule level
+  inside the at-rule): compiles (exit 0) but binds `&` to `:scope` — emits
+  `:scope:where(.dark, .dark *) select.tc-select` (root-scoped). Avoid.
+- Rule-nested shape (`select.tc-select { @variant dark { ... } }`): compiles
+  (exit 0) to native CSS nesting — `select.tc-select { ...; &:where(.dark,
+  .dark *) { ... } }`. Semantically the `.dark X` fork plus a harmless
+  self-case superset. THIS is the migration shape.
+- Consequence: the compiled artifact contains native CSS nesting for migrated
+  rules; no shape emits the flat `.dark X` selectors, so M05's original
+  "selector-set diff empty" proof is impossible. Replacement proof: the
+  visual suite light+dark plus `nix run .#css` freshness (the repo's support
+  floor already exceeds CSS nesting's Baseline: `@starting-style` is in use).
+
+### F14 probe — compound `@variant hover, focus`
+
+- Top-level shape: binds to `:scope` (wrong — emits `:scope:hover .x`).
+  Avoid.
+- Rule-nested shape: compiles (exit 0) to `&:hover { @media (hover: hover)
+  { ... } }` + `&:focus { ... }` — two rules, and the hover variant brings
+  Tailwind's hover-capable-media guard for free. Correct shape for F17's
+  duplicated hover/focus collapse.
+
+Probe artifacts: `/tmp/tc-m04-probe/` (scratch, not committed); commands and
+exit codes are recorded here, which is the durable proof per the plan's M04
+row.
