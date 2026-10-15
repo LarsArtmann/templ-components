@@ -88,11 +88,11 @@ console errors** in the final pass. Artifacts: `tools/crossbrowser-spike/artifac
 
 **Findings (all three were real, all fixed in this repo):**
 
-| # | Finding | Engine(s) | Class | Fix |
-| - | ------- | --------- | ----- | --- |
-| 1 | ThemeToggle script rendered nonce-less (`Nonce: ""`) → CSP-dead under the demo's nonce CSP (silent feature kill, exactly the `nonce` omit-empty trap) | all | real — feature dead | `navigation_demo.templ`, `recipes_demo.templ` (2 sites): pass `demoNonceConst` |
-| 2 | Avatar images from `picsum.photos` blocked by `img-src`; the fastly.picsum.photos redirect target too | all | real — content missing | `examples/demo/basepath.go` demoCSP `img-src += https://picsum.photos https://fastly.picsum.photos`; `website/firebase.json` header kept EQUAL |
-| 3 | Demo Modal/Drawer buttons called `onclick="tcOpenOverlay('id')"` — broken TWICE: `tcOpenOverlay` is undefined (the library emits `tcOpenModal`/`tcOpenDrawer`), and inline `onclick` is CSP-dead (`script-src-attr`, proven by the Firefox report) | all (Firefox reported the CSP violation; the undefined global killed every engine) | real — feature dead | Library-level: CSP-safe declarative `data-tc-overlay-trigger="<dialog-id>"` attribute (document-level click delegation, singleton guard) added to the overlay script; demo buttons now `display.Button` + attribute; recipe doc updated |
+| # | Finding                                                                                                                                                                                                                                            | Engine(s)                                                                          | Class                  | Fix                                                                                                                                                                                                                                     |
+| - | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | ThemeToggle script rendered nonce-less (`Nonce: ""`) → CSP-dead under the demo's nonce CSP (silent feature kill, exactly the `nonce` omit-empty trap)                                                                                              | all                                                                                | real — feature dead    | `navigation_demo.templ`, `recipes_demo.templ` (2 sites): pass `demoNonceConst`                                                                                                                                                          |
+| 2 | Avatar images from `picsum.photos` blocked by `img-src`; the fastly.picsum.photos redirect target too                                                                                                                                              | all                                                                                | real — content missing | `examples/demo/basepath.go` demoCSP `img-src += https://picsum.photos https://fastly.picsum.photos`; `website/firebase.json` header kept EQUAL                                                                                          |
+| 3 | Demo Modal/Drawer buttons called `onclick="tcOpenOverlay('id')"` — broken TWICE: `tcOpenOverlay` is undefined (the library emits `tcOpenModal`/`tcOpenDrawer`), and inline `onclick` is CSP-dead (`script-src-attr`, proven by the Firefox report) | all (Firefox reported the CSP violation; the undefined global killed every engine) | real — feature dead    | Library-level: CSP-safe declarative `data-tc-overlay-trigger="<dialog-id>"` attribute (document-level click delegation, singleton guard) added to the overlay script; demo buttons now `display.Button` + attribute; recipe doc updated |
 
 **Fix verification:** post-fix runs report **0 errors on all 48 shots**; a click test
 (`click [data-tc-overlay-trigger]` → `dialog.open === true`, Escape-close, second
@@ -118,13 +118,13 @@ adopt as a diagnostic lane (⫱G1); findings-class value proven, integration cos
 alongside). Measured on all four demo selects (`stylable-region`, `stylable-channel`,
 `stylable-env`, `native-region`):
 
-| Probe | Chromium (base-select) | Firefox (no support) |
-| ----- | ---------------------- | -------------------- |
-| computed `appearance` (Stylable selects) | `base-select` | `auto` (invalid keyword dropped at parse → initial value) |
-| Stylable select box | 384×62 (styled picker button) | 384×29 — **identical to the native comparison select** |
-| pre-selected value / options intact | yes | yes |
-| `selectOption()` functional pick | yes | yes |
-| horizontal overflow (`scrollWidth > innerWidth`) | none | none |
+| Probe                                            | Chromium (base-select)        | Firefox (no support)                                      |
+| ------------------------------------------------ | ----------------------------- | --------------------------------------------------------- |
+| computed `appearance` (Stylable selects)         | `base-select`                 | `auto` (invalid keyword dropped at parse → initial value) |
+| Stylable select box                              | 384×62 (styled picker button) | 384×29 — **identical to the native comparison select**    |
+| pre-selected value / options intact              | yes                           | yes                                                       |
+| `selectOption()` functional pick                 | yes                           | yes                                                       |
+| horizontal overflow (`scrollWidth > innerWidth`) | none                          | none                                                      |
 
 **Verdict (μ28): degraded-but-usable — no bug, no upstream action beyond tracking.**
 Firefox renders the Stylable selects EXACTLY like the demo's native comparison select

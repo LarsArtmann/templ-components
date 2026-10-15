@@ -56,11 +56,16 @@ const probe = (names) => `
 `;
 
 const report = [];
-for (const [engineName, engine] of [["chromium", chromium], ["firefox", firefox]]) {
+for (const [engineName, engine] of [
+  ["chromium", chromium],
+  ["firefox", firefox],
+]) {
   const browser = await engine.launch();
   const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
   await context.addInitScript((t) => {
-    try { localStorage.setItem("theme", t); } catch (e) {}
+    try {
+      localStorage.setItem("theme", t);
+    } catch (e) {}
   }, "light");
   const page = await context.newPage();
   await page.goto(base + "/stylable-select", { waitUntil: "load" });
@@ -88,7 +93,12 @@ for (const r of report) {
   console.log(`--- ${r.engine} (layoutOk=${r.layoutOk}, functionalPick=${r.functionalPick})`);
   for (const [name, v] of Object.entries(r.selects)) {
     if (name === "_page") continue;
-    if (!v) { console.log(`  ${name}: MISSING`); continue; }
-    console.log(`  ${name}: appearance=${v.appearance} ${v.width}x${v.height} value=${v.value} options=${v.optionCount}`);
+    if (!v) {
+      console.log(`  ${name}: MISSING`);
+      continue;
+    }
+    console.log(
+      `  ${name}: appearance=${v.appearance} ${v.width}x${v.height} value=${v.value} options=${v.optionCount}`,
+    );
   }
 }

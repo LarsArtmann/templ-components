@@ -47,13 +47,30 @@ for (const route of routes) {
       sample: null,
     };
     byRule[key].count++;
-    if (!byRule[key].sample) byRule[key].sample = { dom: res.path && res.path.dom, snippet: res.snippet && String(res.snippet).slice(0, 160) };
-    ruleTotals[key] = ruleTotals[key] || { ruleId: res.ruleId, level: res.level, message: res.message, routes: 0, count: 0 };
+    if (!byRule[key].sample)
+      byRule[key].sample = {
+        dom: res.path && res.path.dom,
+        snippet: res.snippet && String(res.snippet).slice(0, 160),
+      };
+    ruleTotals[key] = ruleTotals[key] || {
+      ruleId: res.ruleId,
+      level: res.level,
+      message: res.message,
+      routes: 0,
+      count: 0,
+    };
     if (byRule[key].count === 1) ruleTotals[key].routes++;
     ruleTotals[key].count++;
   }
   const findings = Object.values(byRule);
-  perRoute.push({ path: route.path, findingClasses: findings.length, violations: results.filter((x) => x.level === "violation").length, needsReview: results.filter((x) => x.level === "needsreview").length, recommendations: results.filter((x) => x.level === "recommendation").length, rules: findings });
+  perRoute.push({
+    path: route.path,
+    findingClasses: findings.length,
+    violations: results.filter((x) => x.level === "violation").length,
+    needsReview: results.filter((x) => x.level === "needsreview").length,
+    recommendations: results.filter((x) => x.level === "recommendation").length,
+    rules: findings,
+  });
   console.log(`${route.path}: ${findings.length} rule classes, ${results.length} results`);
 }
 
@@ -66,6 +83,8 @@ for (const t of Object.values(ruleTotals).sort((a, b) => b.count - a.count)) {
 console.log("\n=== axe baseline entries (for the overlap table) ===");
 for (const [route, rules] of Object.entries(axeBaseline)) {
   for (const [rule, info] of Object.entries(rules)) {
-    console.log(`${route}: ${rule} (${(info && (info.count ?? JSON.stringify(info).slice(0, 40))) || "?"})`);
+    console.log(
+      `${route}: ${rule} (${(info && (info.count ?? JSON.stringify(info).slice(0, 40))) || "?"})`,
+    );
   }
 }
