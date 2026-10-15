@@ -1097,11 +1097,11 @@
                 </tr>
                 <tr>
                   <td><code>field-sizing-content</code> should replace <code>.tc-auto-grow</code></td>
-                  <td class="no">CARRIED</td>
-                  <td>Still hand-rolled — finding F4</td>
+                  <td class="no">RESOLVED IN-TREE</td>
+                  <td>Textarea already emits <code>field-sizing-content min-h-10 max-h-80</code> inline (<code>forms/textarea.templ:87</code>); no <code>.tc-auto-grow</code> CSS exists — corrected 2026-10-15</td>
                 </tr>
                 <tr>
-                  <td><code>size-*</code> idiom (168 <code>w-N h-N</code> pairs)</td>
+                  <td><code>size-*</code> idiom (25 <code>w-N h-N</code> pair sites — re-verified 2026-10-15)</td>
                   <td class="no">CARRIED</td>
                   <td>Still 0 <code>size-*</code> uses — finding F13, bundle with next golden re-baseline</td>
                 </tr>
@@ -1284,29 +1284,25 @@
               <code>field-sizing-content</code> ships
             </h3>
             <div class="where">
-              templates/custom.css (<code>.tc-auto-grow</code>:
-              <code>field-sizing: content</code> + min/max-height) &middot;
+              forms/textarea.templ:87 (<code>field-sizing-content
+              min-h-10 max-h-80</code>, emitted inline) &middot;
               <code>forms.Textarea</code> <code>AutoGrow</code> &middot; docs:
               tailwindcss.com/docs/field-sizing
             </div>
             <p>
-              The custom class predates the audit's note and survives today.
-              <code>field-sizing-content</code> exists since v4.0 and would let
-              <code>forms.Textarea</code> emit the utility directly, with the
-              min/max clamps as ordinary classes. Counterpoint from last time
-              still holds: a single guarded point of truth is defensible — but
-              then the class should say so, and today it is also one of the
-              classes that would benefit from F2's <code>@utility</code>
-              conversion (consumers could write
-              <code>md:tc-auto-grow</code>).
+              <strong>Corrected 2026-10-15 (primary re-verification):</strong>
+              this finding claimed <code>templates/custom.css</code> defines a
+              <code>.tc-auto-grow</code> wrapper; no such rule exists in any
+              CSS source today (<code>rg -n 'tc-auto-grow' templates/
+              examples/demo/demo.css website/ --include='*.css'</code> &rarr;
+              0 hits). <code>forms.Textarea</code> with <code>AutoGrow</code>
+              (default true) already emits the native utility with the same
+              min/max clamps directly — the pick-one decision this finding
+              asked for was made in-tree: <code>field-sizing-content</code>
+              owns it, and <code>tc-auto-grow</code> is <em>not</em> an F2
+              <code>@utility</code> conversion candidate. The inherited clamp
+              values (<code>min-h-10 max-h-80</code>) were accurate.
             </p>
-            <div class="callout callout-teal">
-              <strong>Recommendation</strong>
-              Either adopt <code>field-sizing-content min-h-10 max-h-80</code>
-              in the Textarea markup and retire the class, or convert
-              <code>tc-auto-grow</code> to <code>@utility</code> in the F2 pass
-              and document it as the deliberate wrapper. Pick one owner.
-            </div>
           </div>
 
           <!-- F5 -->
@@ -1431,7 +1427,11 @@
               dead directories from scanning: the demo's
               <code>@source "../../**/*.templ"</code> sweeps
               <code>website/</code> and <code>visualtest/</code> testdata into
-              the scan for classes the demo never renders.
+              the scan for classes the demo never renders
+              (primary-verified 2026-10-15: <code>examples/demo/demo.css:14-15</code>
+              scans <code>"../../**/*.templ"</code> and
+              <code>"../../**/*.go"</code> — the repo-root glob reaches
+              both).
             </p>
             <pre><code><span class="tok-comment">&lt;!-- pagination row — center, but never clip off-canvas --&gt;</span>
 <span class="tok-generic">&lt;nav class="flex items-center-safe justify-center-safe gap-1"&gt;</span>
@@ -1626,12 +1626,17 @@
               <span class="badge badge-medium">CARRIED</span></span
             >
             <h3>
-              <code>size-*</code> idiom: still 168 <code>w-N h-N</code> pairs
+              <code>size-*</code> idiom: 25 <code>w-N h-N</code> pair sites
             </h3>
             <div class="where">
-              w-5 h-5 &#215;68, w-4 h-4 &#215;40, w-6 h-6 &#215;38, w-12 h-12
-              &#215;8, plus 14 smaller pairs (re-counted this pass; still 0
-              <code>size-*</code> uses)
+              w-5 h-5 &#215;8, w-4 h-4 &#215;5, w-7 h-7 &#215;3, w-8 h-8
+              &#215;2, w-2 h-2 &#215;2, w-12 h-12 &#215;2, w-6 h-6 &#215;1,
+              w-16 h-16 &#215;1, w-11 h-11 &#215;1 — 25 sites in 10 files
+              (re-counted 2026-10-15 with
+              <code>rg -o --pcre2 '\bw-([0-9]+) h-\1\b|\bh-([0-9]+) w-\1\b'</code>
+              over non-generated <code>*.templ</code> + <code>*.go</code>;
+              still 0 <code>size-*</code> uses). The inherited "168"
+              (10-08 audit, methodology unrecorded) did not reproduce.
             </div>
             <p>
               Unchanged verdict from the prior audit: rendered output is

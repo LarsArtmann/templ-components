@@ -124,6 +124,10 @@ Global gate rules (from `docs/plan-authoring-checklist.md`, applied per task):
   Read actual values; pick owner; either Textarea emits
   `field-sizing-content` + clamps, or wrapper documented as deliberate.
   Proof: decision recorded; goldens for the touched component; M10 alignment.
+  ⚠ M01 2026-10-15: F4 is ALREADY RESOLVED in-tree — `forms/textarea.templ:87`
+  emits `field-sizing-content min-h-10 max-h-80` inline and NO `.tc-auto-grow`
+  CSS rule exists anywhere. Scope shrinks to: verify + close (drop
+  `tc-auto-grow` from the F2 `@utility` list), no redesign.
 - **M13 — F6 execute: `--animate-tc-*` theme tokens** (90min)
   Register 11 icon presets (+ `tc-log-in` where sensible) as `--animate-tc-*`
   with keyframes inside `@theme`; keep `.tc-anim` wrapper defaults.
@@ -386,7 +390,7 @@ flowchart TD
 - [ ] Root build+test via `scripts/ci-repro.sh --lint --website` → `VERDICT: PASS (exit 0)` before any push (M03 ritual)
 - [ ] Demo smoke over changed endpoints; `nix run .#visual` only inside the ⫱2 window
 - [ ] CHANGELOG `[Unreleased]` warm; drift counts bumped in the same edits
-- [ ] Report-integrity loop closed: D1–D3 verified or corrected (M01)
+- [x] Report-integrity loop closed: D1–D3 verified or corrected (M01, 2026-10-15 — D1 corrected to 25 pair sites with command, D2 confirmed with demo.css:14-15 citation, D3 corrected: F4 resolved in-tree)
 - [ ] No un-bundled golden/visual re-baseline was spent (M11+M24 share one window)
 
 ## Deferred / follow-through seeds
