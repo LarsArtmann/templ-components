@@ -5,6 +5,7 @@ package tone
 // grammar, anchored to what the components actually render today:
 //
 //	Text           600 / dark:400   (chart series text, icons on tint)
+//	TextMuted      500 / dark:400   (muted neutral text — the gray-500 inverted convention)
 //	TextStrong     700 / dark:400   (trend arrows, log tags)
 //	TextOnTint     800 / dark:200   (body text on 50-tinted backgrounds)
 //	BGSolid        500 / dark:400   (status dots, kanban lane dots)
@@ -19,6 +20,7 @@ package tone
 // tables describe the grammar, the components choose the slots.
 type Utilities struct {
 	Text           Pair
+	TextMuted      Pair
 	TextStrong     Pair
 	TextOnTint     Pair
 	BGSolid        Pair
@@ -34,6 +36,7 @@ type Utilities struct {
 var hueTable = map[Hue]Utilities{
 	HueBlue: {
 		Text:           Pair{"text-blue-600", "dark:text-blue-400"},
+		TextMuted:      Pair{"text-blue-500", "dark:text-blue-400"},
 		TextStrong:     Pair{"text-blue-700", "dark:text-blue-400"},
 		TextOnTint:     Pair{"text-blue-800", "dark:text-blue-200"},
 		BGSolid:        Pair{"bg-blue-500", "dark:bg-blue-400"},
@@ -43,6 +46,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HueEmerald: {
 		Text:           Pair{"text-emerald-600", "dark:text-emerald-400"},
+		TextMuted:      Pair{"text-emerald-500", "dark:text-emerald-400"},
 		TextStrong:     Pair{"text-emerald-700", "dark:text-emerald-400"},
 		TextOnTint:     Pair{"text-emerald-800", "dark:text-emerald-200"},
 		BGSolid:        Pair{"bg-emerald-500", "dark:bg-emerald-400"},
@@ -52,6 +56,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HueAmber: {
 		Text:           Pair{"text-amber-600", "dark:text-amber-400"},
+		TextMuted:      Pair{"text-amber-500", "dark:text-amber-400"},
 		TextStrong:     Pair{"text-amber-700", "dark:text-amber-400"},
 		TextOnTint:     Pair{"text-amber-800", "dark:text-amber-200"},
 		BGSolid:        Pair{"bg-amber-500", "dark:bg-amber-400"},
@@ -61,6 +66,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HueRose: {
 		Text:           Pair{"text-rose-600", "dark:text-rose-400"},
+		TextMuted:      Pair{"text-rose-500", "dark:text-rose-400"},
 		TextStrong:     Pair{"text-rose-700", "dark:text-rose-400"},
 		TextOnTint:     Pair{"text-rose-800", "dark:text-rose-200"},
 		BGSolid:        Pair{"bg-rose-500", "dark:bg-rose-400"},
@@ -70,6 +76,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HueViolet: {
 		Text:           Pair{"text-violet-600", "dark:text-violet-400"},
+		TextMuted:      Pair{"text-violet-500", "dark:text-violet-400"},
 		TextStrong:     Pair{"text-violet-700", "dark:text-violet-400"},
 		TextOnTint:     Pair{"text-violet-800", "dark:text-violet-200"},
 		BGSolid:        Pair{"bg-violet-500", "dark:bg-violet-400"},
@@ -79,6 +86,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HueCyan: {
 		Text:           Pair{"text-cyan-600", "dark:text-cyan-400"},
+		TextMuted:      Pair{"text-cyan-500", "dark:text-cyan-400"},
 		TextStrong:     Pair{"text-cyan-700", "dark:text-cyan-400"},
 		TextOnTint:     Pair{"text-cyan-800", "dark:text-cyan-200"},
 		BGSolid:        Pair{"bg-cyan-500", "dark:bg-cyan-400"},
@@ -88,6 +96,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HueOrange: {
 		Text:           Pair{"text-orange-600", "dark:text-orange-400"},
+		TextMuted:      Pair{"text-orange-500", "dark:text-orange-400"},
 		TextStrong:     Pair{"text-orange-700", "dark:text-orange-400"},
 		TextOnTint:     Pair{"text-orange-800", "dark:text-orange-200"},
 		BGSolid:        Pair{"bg-orange-500", "dark:bg-orange-400"},
@@ -97,6 +106,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HuePink: {
 		Text:           Pair{"text-pink-600", "dark:text-pink-400"},
+		TextMuted:      Pair{"text-pink-500", "dark:text-pink-400"},
 		TextStrong:     Pair{"text-pink-700", "dark:text-pink-400"},
 		TextOnTint:     Pair{"text-pink-800", "dark:text-pink-200"},
 		BGSolid:        Pair{"bg-pink-500", "dark:bg-pink-400"},
@@ -106,6 +116,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HueGray: {
 		Text:           Pair{"text-gray-600", "dark:text-gray-400"},
+		TextMuted:      Pair{"text-gray-500", "dark:text-gray-400"},
 		TextStrong:     Pair{"text-gray-700", "dark:text-gray-400"},
 		TextOnTint:     Pair{"text-gray-800", "dark:text-gray-200"},
 		BGSolid:        Pair{"bg-gray-400", "dark:bg-gray-500"}, // dot convention: grays render one step darker
@@ -115,6 +126,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HueGreen: {
 		Text:           Pair{"text-green-600", "dark:text-green-400"},
+		TextMuted:      Pair{"text-green-500", "dark:text-green-400"},
 		TextStrong:     Pair{"text-green-700", "dark:text-green-400"},
 		TextOnTint:     Pair{"text-green-800", "dark:text-green-200"},
 		BGSolid:        Pair{"bg-green-500", "dark:bg-green-400"},
@@ -124,6 +136,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HueYellow: {
 		Text:           Pair{"text-yellow-600", "dark:text-yellow-400"},
+		TextMuted:      Pair{"text-yellow-500", "dark:text-yellow-400"},
 		TextStrong:     Pair{"text-yellow-700", "dark:text-yellow-400"},
 		TextOnTint:     Pair{"text-yellow-800", "dark:text-yellow-200"},
 		BGSolid:        Pair{"bg-yellow-500", "dark:bg-yellow-400"},
@@ -133,6 +146,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HueRed: {
 		Text:           Pair{"text-red-600", "dark:text-red-400"},
+		TextMuted:      Pair{"text-red-500", "dark:text-red-400"},
 		TextStrong:     Pair{"text-red-700", "dark:text-red-400"},
 		TextOnTint:     Pair{"text-red-800", "dark:text-red-200"},
 		BGSolid:        Pair{"bg-red-500", "dark:bg-red-400"},
@@ -142,6 +156,7 @@ var hueTable = map[Hue]Utilities{
 	},
 	HuePurple: {
 		Text:           Pair{"text-purple-600", "dark:text-purple-400"},
+		TextMuted:      Pair{"text-purple-500", "dark:text-purple-400"},
 		TextStrong:     Pair{"text-purple-700", "dark:text-purple-400"},
 		TextOnTint:     Pair{"text-purple-800", "dark:text-purple-200"},
 		BGSolid:        Pair{"bg-purple-500", "dark:bg-purple-400"},
