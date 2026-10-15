@@ -51,23 +51,6 @@ func AvatarSizeIsValid(v AvatarSize) bool {
 	return ok
 }
 
-// TooltipPositionIsValid reports whether v is one of the defined TooltipPosition constants.
-func TooltipPositionIsValid(v TooltipPosition) bool {
-	_, ok := tooltipPositionMap[v]
-
-	return ok
-}
-
-// PopoverPositionIsValid reports whether v is one of the defined PopoverPosition constants.
-func PopoverPositionIsValid(v PopoverPosition) bool {
-	switch v {
-	case PopoverPositionTop, PopoverPositionBottom, PopoverPositionLeft, PopoverPositionRight:
-		return true
-	}
-
-	return false
-}
-
 // AvatarShapeIsValid reports whether v is one of the defined AvatarShape constants.
 func AvatarShapeIsValid(v AvatarShape) bool {
 	switch v {
@@ -101,7 +84,7 @@ func DropdownItemKindIsValid(v DropdownItemKind) bool {
 // DropdownPositionIsValid reports whether v is one of the defined DropdownPosition constants.
 func DropdownPositionIsValid(v DropdownPosition) bool {
 	switch v {
-	case DropdownPositionLeft, DropdownPositionRight:
+	case DropdownPositionStart, DropdownPositionEnd, DropdownPositionLeft, DropdownPositionRight:
 		return true
 	default:
 		return false

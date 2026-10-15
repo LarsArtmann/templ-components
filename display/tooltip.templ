@@ -2,16 +2,6 @@ package display
 
 import "github.com/larsartmann/templ-components/utils"
 
-// TooltipPosition defines where the tooltip appears relative to the trigger
-type TooltipPosition string
-
-const (
-	TooltipPositionTop    TooltipPosition = "top"
-	TooltipPositionBottom TooltipPosition = "bottom"
-	TooltipPositionLeft   TooltipPosition = "left"
-	TooltipPositionRight  TooltipPosition = "right"
-)
-
 // TooltipProps configures a tooltip component.
 //
 // The tooltip shows on :hover and :focus-within via pure CSS. A tiny
@@ -37,27 +27,35 @@ type tooltipPositionStyles struct {
 }
 
 //nolint:gochecknoglobals // Package-level lookup table for tooltip position styles
-var tooltipPositionMap = map[TooltipPosition]tooltipPositionStyles{
-	TooltipPositionTop: {
+var tooltipPositionMap = map[Position]tooltipPositionStyles{
+	PositionTop: {
 		Tooltip: "bottom-full left-1/2 -translate-x-1/2 mb-2",
 		Arrow:   "top-full left-1/2 -translate-x-1/2 border-t-gray-900 dark:border-t-gray-700",
 	},
-	TooltipPositionBottom: {
+	PositionBottom: {
 		Tooltip: "top-full left-1/2 -translate-x-1/2 mt-2",
 		Arrow:   "bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 dark:border-b-gray-700",
 	},
-	TooltipPositionLeft: {
+	PositionStart: {
+		Tooltip: "inset-e-full top-1/2 -translate-y-1/2 me-2",
+		Arrow:   "inset-s-full top-1/2 -translate-y-1/2 border-s-gray-900 dark:border-s-gray-700",
+	},
+	PositionEnd: {
+		Tooltip: "inset-s-full top-1/2 -translate-y-1/2 ms-2",
+		Arrow:   "inset-e-full top-1/2 -translate-y-1/2 border-e-gray-900 dark:border-e-gray-700",
+	},
+	PositionLeft: {
 		Tooltip: "right-full top-1/2 -translate-y-1/2 me-2",
 		Arrow:   "left-full top-1/2 -translate-y-1/2 border-s-gray-900 dark:border-s-gray-700",
 	},
-	TooltipPositionRight: {
+	PositionRight: {
 		Tooltip: "left-full top-1/2 -translate-y-1/2 ms-2",
 		Arrow:   "right-full top-1/2 -translate-y-1/2 border-e-gray-900 dark:border-e-gray-700",
 	},
 }
 
 func tooltipLookupPosition(pos TooltipPosition) tooltipPositionStyles {
-	return utils.Lookup(tooltipPositionMap, pos, tooltipPositionMap[TooltipPositionTop])
+	return utils.Lookup(tooltipPositionMap, pos, tooltipPositionMap[PositionTop])
 }
 
 // Tooltip wraps content in a hover/focus-activated tooltip. Pure CSS for
