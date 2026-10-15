@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`cmd/site` is deterministic by default: `--skip-stars` flips to true.**
+  A bare `go run ./cmd/site` no longer does a live GitHub star lookup — the
+  last dist entry point that could flake a route golden. Production deploys
+  opt in with the new `--live-stars` flag (CI's Website job already sets
+  `SITE_LIVE_STARS=1`, which `build.sh` now maps to it); `--skip-stars=false`
+  still forces live for compatibility.
 - **CI runner hygiene: concurrency groups + single-source Go version.** Every
   workflow now carries a concurrency group that cancels superseded runs on
   the same ref (rapid push series no longer queue N stale CI runs behind the
