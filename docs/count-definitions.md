@@ -24,14 +24,14 @@ number is questioned, answer from here, not from memory.
 - **Computed by:** `icons.AllIconNames()` (live, in-process); the website and
   demo compute from it at render time.
 
-## Typed enums — **69 (68 with IsValid())**
+## Typed enums — **71 (70 with IsValid())**
 
 - **Definition:** exported closed-set string types; the IsValid count is
   functions matching `<Name>IsValid(` across library source.
 - **Computed by:** `CountStats` (site, live); `utils.TestDocsCountDrift`
   guards the prose claims.
 
-## Packages — **18**
+## Packages — **19**
 
 - **Definition:** importable Go packages across the 7 published modules
   (module roots with Go files + first-level subpackages with Go files),
