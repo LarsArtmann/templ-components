@@ -138,7 +138,7 @@ templ mobileNav(currentPath string) {
     <!-- Hamburger button — visible only below lg -->
     <button
         class="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-        onclick="tcOpenOverlay('mobile-drawer')"
+        data-tc-overlay-trigger="mobile-drawer"
         aria-label="Open navigation menu"
     >
         @icons.Icon(icons.Bars3, "h-6 w-6")
@@ -168,10 +168,13 @@ Then wire it into AppShell:
 })
 ```
 
-The `tcOpenOverlay('mobile-drawer')` call is the thin JS wrapper around
-`dialog.showModal()` provided by the overlay system. The Drawer's native
-`<dialog>` handles focus trapping, Escape-to-close, backdrop click, and
-focus restore automatically — zero custom JS needed.
+The `data-tc-overlay-trigger="mobile-drawer"` attribute is the CSP-safe way to
+open an overlay declaratively: the overlay script delegates clicks on any
+`[data-tc-overlay-trigger]` element to `dialog.showModal()` — no inline `onclick`,
+so it works under strict nonce-based CSPs (inline handlers would be blocked).
+`tcOpenModal(id)`/`tcCloseDrawer(id)` wrappers remain for programmatic use. The
+Drawer's native `<dialog>` handles focus trapping, Escape-to-close, backdrop
+click, and focus restore automatically — zero custom JS needed.
 
 ## Skip link and main landmark
 
