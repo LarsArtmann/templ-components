@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: DeterminateSystems/nix-installer-action@786fff0690178f123d7382d60a6d94bcfde26ce0 # v19
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
 
       - name: 3-engine demo screenshots (Chromium + Firefox + WebKit)
         run: nix run .#crossbrowser
