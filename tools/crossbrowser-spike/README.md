@@ -26,10 +26,17 @@ for e in chromium firefox webkit; do
   PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true \
   node screenshot.mjs --engine $e --base http://localhost:8093 --theme light
 done
+
+# 6. M07: base-select fallback assert over /stylable-select (Chromium + Firefox)
+PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers \
+PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true \
+node stylable-assert.mjs --base http://localhost:8093
 ```
 
 Artifacts land in `artifacts/` (gitignored): `<engine>-<theme>/<route>.png` +
-`report.json` with per-route console errors and pageerrors.
+`report.json` with per-route console errors and pageerrors; the M07 fallback
+report + per-select crops land in `artifacts/m07-fallback/`. The pre-fix M06
+run is preserved at `artifacts-m06-initial/` (evidence for eval doc §5.1).
 
 ## Version lockstep (same-edit rule, like the templ pin)
 

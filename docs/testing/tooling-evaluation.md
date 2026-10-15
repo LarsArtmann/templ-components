@@ -112,6 +112,29 @@ adopt as a diagnostic lane (⫱G1); findings-class value proven, integration cos
 
 <!-- §5.2 fallback verdict -->
 
+**Run (2026-10-15):** `tools/crossbrowser-spike/stylable-assert.mjs` over
+`/stylable-select` in Chromium + Firefox (light theme). Script + raw report:
+`tools/crossbrowser-spike/artifacts/m07-fallback/report.json` (per-select crops
+alongside). Measured on all four demo selects (`stylable-region`, `stylable-channel`,
+`stylable-env`, `native-region`):
+
+| Probe | Chromium (base-select) | Firefox (no support) |
+| ----- | ---------------------- | -------------------- |
+| computed `appearance` (Stylable selects) | `base-select` | `auto` (invalid keyword dropped at parse → initial value) |
+| Stylable select box | 384×62 (styled picker button) | 384×29 — **identical to the native comparison select** |
+| pre-selected value / options intact | yes | yes |
+| `selectOption()` functional pick | yes | yes |
+| horizontal overflow (`scrollWidth > innerWidth`) | none | none |
+
+**Verdict (μ28): degraded-but-usable — no bug, no upstream action beyond tracking.**
+Firefox renders the Stylable selects EXACTLY like the demo's native comparison select
+(same 384×29 geometry, native chevron), which is precisely what the demo page promises
+non-supporting engines will show. No layout breakage, values and keyboard/programmatic
+selection fully functional. μ29 follow-up seed = re-check when Mozilla 1944403/1958443
+ships (see §7); no repro note needed. Chromium's styled picker measured 62px tall vs
+29px native — the docs' claim that `base-select` opts into taller picker buttons is
+confirmed.
+
 ### M08 — IBM accessibility-checker spike + axe diff
 
 - Result: see §5.3.
