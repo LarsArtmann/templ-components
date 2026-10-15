@@ -80,7 +80,8 @@ func TestPrintMediaHidesInteractiveChrome(t *testing.T) {
 
 		if err := chromedp.Do(ctx, evalExprInto(
 			`(() => { const el = document.querySelector('[class*="shadow"]'); return el ? getComputedStyle(el).boxShadow : 'none'; })()`,
-			&boxShadow)); err != nil {
+			&boxShadow,
+		)); err != nil {
 			t.Fatalf("visualtest[print]: computed boxShadow: %v", err)
 		}
 

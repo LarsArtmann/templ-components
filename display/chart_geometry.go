@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
-
 	"github.com/larsartmann/templ-components/utils/tone"
 )
 

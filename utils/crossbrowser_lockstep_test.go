@@ -29,23 +29,31 @@ func TestCrossbrowserLockstep(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read spike package.json: %v", err)
 	}
+
 	pkgVersion := regexp.MustCompile(`"playwright-core"\s*:\s*"([^"]+)"`).FindSubmatch(pkg)
 	if pkgVersion == nil {
 		t.Fatalf("no playwright-core dependency in spike package.json:\n%s", pkg)
 	}
+
 	if string(pkgVersion[1]) != expectedPlaywrightVersion {
-		t.Errorf("spike package.json playwright-core = %q, want %q (nixpkgs playwright-driver lockstep; update both + the flake in one commit)",
-			pkgVersion[1], expectedPlaywrightVersion)
+		t.Errorf(
+			"spike package.json playwright-core = %q, want %q (nixpkgs playwright-driver lockstep; update both + the flake in one commit)",
+			pkgVersion[1],
+			expectedPlaywrightVersion,
+		)
 	}
 
 	lock, err := os.ReadFile("../tools/crossbrowser-spike/package-lock.json")
 	if err != nil {
 		t.Fatalf("read spike package-lock.json: %v", err)
 	}
-	lockVersion := regexp.MustCompile(`"node_modules/playwright-core":\s*\{[^}]*"version":\s*"([^"]+)"`).FindSubmatch(lock)
+
+	lockVersion := regexp.MustCompile(`"node_modules/playwright-core":\s*\{[^}]*"version":\s*"([^"]+)"`).
+		FindSubmatch(lock)
 	if lockVersion == nil {
 		t.Fatalf("no node_modules/playwright-core entry in spike package-lock.json")
 	}
+
 	if string(lockVersion[1]) != expectedPlaywrightVersion {
 		t.Errorf("spike package-lock.json playwright-core = %q, want %q (an npm install rewrote the pin — restore it)",
 			lockVersion[1], expectedPlaywrightVersion)

@@ -79,6 +79,7 @@ func TestCopyButtonBehavior(t *testing.T) {
 		utils.AssertContains(t, output, `tcAnnounceCopy`)
 		// The status region must be a SIBLING of the button, not a descendant.
 		btnClose := strings.Index(output, "</button>")
+
 		statusIdx := strings.Index(output, `data-tc-copy-status`)
 		if btnClose < 0 || statusIdx < 0 || statusIdx < btnClose {
 			t.Errorf("status region must render after the button element: %q", output)

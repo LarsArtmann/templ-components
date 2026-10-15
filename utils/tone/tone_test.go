@@ -33,7 +33,12 @@ func TestToneTableExhaustive(t *testing.T) {
 			}
 
 			if !strings.HasPrefix(p.Dark, "dark:") {
-				t.Errorf("tone %s: surface %s dark half %q lacks the dark: prefix (scanner-safety contract)", tn, name, p.Dark)
+				t.Errorf(
+					"tone %s: surface %s dark half %q lacks the dark: prefix (scanner-safety contract)",
+					tn,
+					name,
+					p.Dark,
+				)
 			}
 
 			if got := p.Classes(); got != p.Light+" "+p.Dark {
@@ -99,17 +104,49 @@ func TestHueUtilityAnchors(t *testing.T) {
 	}{
 		{"chart blue text", tone.UtilitiesFor(tone.HueBlue).Text.Classes(), "text-blue-600 dark:text-blue-400"},
 		{"chart rose text", tone.UtilitiesFor(tone.HueRose).Text.Classes(), "text-rose-600 dark:text-rose-400"},
-		{"segment violet fill", tone.UtilitiesFor(tone.HueViolet).BGSolidStrong.Classes(), "bg-violet-600 dark:bg-violet-400"},
+		{
+			"segment violet fill",
+			tone.UtilitiesFor(tone.HueViolet).BGSolidStrong.Classes(),
+			"bg-violet-600 dark:bg-violet-400",
+		},
 		{"status dot success", tone.UtilitiesFor(tone.HueGreen).BGSolid.Classes(), "bg-green-500 dark:bg-green-400"},
-		{"status dot warning (amber dialect)", tone.UtilitiesFor(tone.HueAmber).BGSolid.Classes(), "bg-amber-500 dark:bg-amber-400"},
-		{"status dot neutral (gray exception)", tone.UtilitiesFor(tone.HueGray).BGSolid.Classes(), "bg-gray-400 dark:bg-gray-500"},
+		{
+			"status dot warning (amber dialect)",
+			tone.UtilitiesFor(tone.HueAmber).BGSolid.Classes(),
+			"bg-amber-500 dark:bg-amber-400",
+		},
+		{
+			"status dot neutral (gray exception)",
+			tone.UtilitiesFor(tone.HueGray).BGSolid.Classes(),
+			"bg-gray-400 dark:bg-gray-500",
+		},
 		{"kanban purple dot", tone.UtilitiesFor(tone.HuePurple).BGSolid.Classes(), "bg-purple-500 dark:bg-purple-400"},
-		{"trend up (green strong)", tone.UtilitiesFor(tone.HueGreen).TextStrong.Classes(), "text-green-700 dark:text-green-400"},
-		{"trend warn (amber strong)", tone.UtilitiesFor(tone.HueAmber).TextStrong.Classes(), "text-amber-700 dark:text-amber-400"},
-		{"stat tile purple tint", tone.UtilitiesFor(tone.HuePurple).BGTint.Classes(), "bg-purple-50 dark:bg-purple-900/30"},
-		{"feedback success border", tone.UtilitiesFor(tone.HueGreen).Border.Classes(), "border-green-200 dark:border-green-800"},
+		{
+			"trend up (green strong)",
+			tone.UtilitiesFor(tone.HueGreen).TextStrong.Classes(),
+			"text-green-700 dark:text-green-400",
+		},
+		{
+			"trend warn (amber strong)",
+			tone.UtilitiesFor(tone.HueAmber).TextStrong.Classes(),
+			"text-amber-700 dark:text-amber-400",
+		},
+		{
+			"stat tile purple tint",
+			tone.UtilitiesFor(tone.HuePurple).BGTint.Classes(),
+			"bg-purple-50 dark:bg-purple-900/30",
+		},
+		{
+			"feedback success border",
+			tone.UtilitiesFor(tone.HueGreen).Border.Classes(),
+			"border-green-200 dark:border-green-800",
+		},
 		{"scrollback info tag", tone.UtilitiesFor(tone.HueBlue).Text.Classes(), "text-blue-600 dark:text-blue-400"},
-		{"scrollback neutral tag (muted convention)", tone.UtilitiesFor(tone.HueGray).TextMuted.Classes(), "text-gray-500 dark:text-gray-400"},
+		{
+			"scrollback neutral tag (muted convention)",
+			tone.UtilitiesFor(tone.HueGray).TextMuted.Classes(),
+			"text-gray-500 dark:text-gray-400",
+		},
 	}
 
 	for _, a := range anchors {
