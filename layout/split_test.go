@@ -141,7 +141,7 @@ func TestSplit(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, Split(SplitProps{
-			Main: templ.Raw(`<div>M</div>`),
+			Main:  templ.Raw(`<div>M</div>`),
 			Aside: templ.Raw(`<div>A</div>`),
 		}))
 		if strings.Contains(output, "<aside") {

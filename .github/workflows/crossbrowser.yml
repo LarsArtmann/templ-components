@@ -2,7 +2,8 @@
 # DRAFT: workflow_dispatch ONLY — this lane never runs on push/PR and gates
 # nothing until the owner ratifies ⫱G1 (see docs/adr/0048 and the M24 budget
 # table for owner + kill-criteria). Guardrail 1: findings lane, never a second
-# pixel suite.
+# pixel suite. Action pins verified against upstream tags 2026-10-15
+# (checkout v7.0.1, nix-installer-action v23, upload-artifact v7.0.2).
 name: crossbrowser
 
 on:
