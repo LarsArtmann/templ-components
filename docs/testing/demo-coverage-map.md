@@ -25,30 +25,30 @@ Plus standalone shells outside the AppShell: recipe detail routes and error rout
 
 ### Composition-covered (rendered via a parent component — waivable)
 
-| Component | Rendered by | Demo evidence |
-| --- | --- | --- |
-| `forms.Label` | every field wrapper (Input, Combobox, …) | `/forms` renders dozens of labelled fields |
-| `forms.FormFieldWrapper` | Input/Select/Textarea/… internals | same as above |
-| `forms.Radio` | `RadioGroup` internals | RadioGroup demoed on `/forms` |
-| `layout.Stylesheet` | `Base`/`DefaultPageProps` head injection | every demo page |
-| `layout.ThemeScript` | `Base`/`DefaultPageProps` head injection | every demo page |
-| `navigation.MobileNavLink` | `MobileMenu` internals | mobile menu on every AppShell route (e2e-covered by `demo_mobile_e2e_test.go`) |
+| Component                  | Rendered by                              | Demo evidence                                                                  |
+| -------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------ |
+| `forms.Label`              | every field wrapper (Input, Combobox, …) | `/forms` renders dozens of labelled fields                                     |
+| `forms.FormFieldWrapper`   | Input/Select/Textarea/… internals        | same as above                                                                  |
+| `forms.Radio`              | `RadioGroup` internals                   | RadioGroup demoed on `/forms`                                                  |
+| `layout.Stylesheet`        | `Base`/`DefaultPageProps` head injection | every demo page                                                                |
+| `layout.ThemeScript`       | `Base`/`DefaultPageProps` head injection | every demo page                                                                |
+| `navigation.MobileNavLink` | `MobileMenu` internals                   | mobile menu on every AppShell route (e2e-covered by `demo_mobile_e2e_test.go`) |
 
 ### True gaps (never rendered anywhere in `examples/demo/`)
 
-| Component | Keep/waive | Reason + suggested remedy |
-| --- | --- | --- |
-| `datastar.LoadingButton` | **KEEP** | The Datastar twin of a heavily-demoed htmx component is invisible; the twin-parity claim is unproven in a browser. Add to `/datastar` with an `Indicator`-driven action. |
-| `datastar.PolledRegion` | **KEEP** | Same twin-parity gap (htmx.PolledRegion IS demoed). Add to `/datastar` with a short interval against a stub endpoint. |
-| `display.StatusBadgeWith` | **KEEP** | Public API with ZERO usage anywhere in the repo outside its own tests — an API-surface orphan. Either demo it on `/display` (preferred, one-liner) or deprecate it. |
-| `layout.MetaRefresh` | waive | Head-level redirect utility with no visual surface; golden + unit tests cover it. Browser-level coverage adds nothing observable. |
-| `layout.Minimal` | waive | Infrastructure shell variant (no chrome); exercised by design in unit tests. Not a UI component. |
-| `layout.Script` | waive | External-script helper; demo pages use the self-hosted inline HTMX embed and `SDKScript` instead. Golden-covered; rendering an external CDN script in the demo would add a network dependency to every capture. |
+| Component                 | Keep/waive | Reason + suggested remedy                                                                                                                                                                                       |
+| ------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `datastar.LoadingButton`  | **KEEP**   | The Datastar twin of a heavily-demoed htmx component is invisible; the twin-parity claim is unproven in a browser. Add to `/datastar` with an `Indicator`-driven action.                                        |
+| `datastar.PolledRegion`   | **KEEP**   | Same twin-parity gap (htmx.PolledRegion IS demoed). Add to `/datastar` with a short interval against a stub endpoint.                                                                                           |
+| `display.StatusBadgeWith` | **KEEP**   | Public API with ZERO usage anywhere in the repo outside its own tests — an API-surface orphan. Either demo it on `/display` (preferred, one-liner) or deprecate it.                                             |
+| `layout.MetaRefresh`      | waive      | Head-level redirect utility with no visual surface; golden + unit tests cover it. Browser-level coverage adds nothing observable.                                                                               |
+| `layout.Minimal`          | waive      | Infrastructure shell variant (no chrome); exercised by design in unit tests. Not a UI component.                                                                                                                |
+| `layout.Script`           | waive      | External-script helper; demo pages use the self-hosted inline HTMX embed and `SDKScript` instead. Golden-covered; rendering an external CDN script in the demo would add a network dependency to every capture. |
 
 ### Property-level gap (component demoed, a variant never exercised)
 
-| Component | Missing state | Remedy |
-| --- | --- | --- |
+| Component      | Missing state                                     | Remedy                                                                                                                                                                                                                                                                                                                                                                  |
+| -------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `forms.Select` | `Stylable: true` (`appearance: base-select` path) | **Fixed 2026-10-15**: new `/stylable-select` demo route renders the Stylable path (flat, groups, error) next to its native counterpart with fallback documentation. This is the riskiest cross-engine property in the library — `base-select` is unsupported in Firefox (Mozilla bugs 1944403/1958443) — and was invisible to every browser-level gate before this fix. |
 
 ## Maintenance

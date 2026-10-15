@@ -7,12 +7,12 @@ corrections are the case study).
 
 ## Deep-dives
 
-| Report | Date | Subject | Follow-through |
-| --- | --- | --- | --- |
-| [2026-10-14 Tailwind CSS deep-dive](2026-10-14_tailwindcss-deep-dive.html) | 2026-10-14 | Tailwind v4.3.x audit: the remaining composability gaps (`@variant dark`, `@utility`, `@theme` animation tokens, `@plugin`, `aria-*` state variants) | ACTIVE — executed by [the composability Pareto plan](../planning/2026-10-14_20-45_TAILWIND-V4-COMPOSABILITY-PARETO-PLAN.md) |
-| [2026-10-08 Tailwind CSS deep-dive](2026-10-08_tailwindcss-deep-dive.html) | 2026-10-08 | Tailwind v4 audit; its fixes are verified in-tree | Superseded by the 2026-10-14 report for the remaining gap list |
-| [go-sse-go / Datastar deep-dive](2026-08-21_go-sse-go-datastar-deep-dive.html) | 2026-08-21 | SSE transport landscape for the Datastar integration | — |
-| [UI library design research](ui-library-design-research.md) | — | How to build a superb web UI component library | — |
+| Report                                                                         | Date       | Subject                                                                                                                                              | Follow-through                                                                                                              |
+| ------------------------------------------------------------------------------ | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| [2026-10-14 Tailwind CSS deep-dive](2026-10-14_tailwindcss-deep-dive.html)     | 2026-10-14 | Tailwind v4.3.x audit: the remaining composability gaps (`@variant dark`, `@utility`, `@theme` animation tokens, `@plugin`, `aria-*` state variants) | ACTIVE — executed by [the composability Pareto plan](../planning/2026-10-14_20-45_TAILWIND-V4-COMPOSABILITY-PARETO-PLAN.md) |
+| [2026-10-08 Tailwind CSS deep-dive](2026-10-08_tailwindcss-deep-dive.html)     | 2026-10-08 | Tailwind v4 audit; its fixes are verified in-tree                                                                                                    | Superseded by the 2026-10-14 report for the remaining gap list                                                              |
+| [go-sse-go / Datastar deep-dive](2026-08-21_go-sse-go-datastar-deep-dive.html) | 2026-08-21 | SSE transport landscape for the Datastar integration                                                                                                 | —                                                                                                                           |
+| [UI library design research](ui-library-design-research.md)                    | —          | How to build a superb web UI component library                                                                                                       | —                                                                                                                           |
 
 ## Notes
 

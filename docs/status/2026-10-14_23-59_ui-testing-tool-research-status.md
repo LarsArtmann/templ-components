@@ -32,8 +32,8 @@
 ## b) PARTIALLY DONE
 
 - **`templ-components` SKILL.md read: ~200 lines of a much longer file.** The consumer catalogue section was read; whatever authoring/testing guidance sits beyond line 200 was never loaded. Did not affect this session's answer, but the gate says "read the entire SKILL.md" — partially honored.
-- **The recommendation deliverable is ~60% of a decision package.** It has the *what* and the *why*, but no adoption plan, no effort estimates, no CI-lane wiring sketch, no trial-branch proposal. As delivered, it's chat commentary, not an actionable engineering artifact.
-- **Cross-browser gap analysis: identified but not localized.** I established `base-select` has no Firefox support, but never checked *which* demo routes actually exercise `Stylable` select, so "verify the fallback path" has no concrete test target attached yet.
+- **The recommendation deliverable is ~60% of a decision package.** It has the _what_ and the _why_, but no adoption plan, no effort estimates, no CI-lane wiring sketch, no trial-branch proposal. As delivered, it's chat commentary, not an actionable engineering artifact.
+- **Cross-browser gap analysis: identified but not localized.** I established `base-select` has no Firefox support, but never checked _which_ demo routes actually exercise `Stylable` select, so "verify the fallback path" has no concrete test target attached yet.
 - **"Cheap wins" tier is listed but unverified.** The CDP vision-deficiency emulation, print/reduced-motion media emulation via chromedp, stylelint, and rustywind items were asserted from prior knowledge — **no fetch verified any of them this session.**
 - **Nix-integration risk for Playwright was named but not verified.** "nixpkgs ships `playwright-driver.browsers`" is prior knowledge, **not** verified this session (the k6 fetch verified nixpkgs packaging for k6 only). The single biggest adoption risk (browser binaries under Nix hermeticity) rests on an unverified claim.
 
@@ -49,14 +49,14 @@
 
 **No repo damage exists** — nothing was edited, built, committed, or deleted. The honest "fucked up" list is process-level, and it is real:
 
-1. **Unverified claims shipped in a chat answer.** The recommendation message mixed session-verified facts (fetch-backed) with prior-knowledge assertions (Playwright nix packaging, rustywind, stylelint, CDP `setEmulatedVisionDeficiency` via chromedp) **without marking which was which.** The `verify-external-claims` gate exists precisely for this and was never loaded this session — its description scopes it to "encoding claims into skill, documentation, code, or review," and I hid behind that scoping while shipping a decision-grade recommendation. A claim that drives an adoption *decision* deserves the same rigor as one that lands in a file.
-2. **Confidence tiering was absent from the answer itself.** The reader cannot tell from my message that the k6/base-select/Bencher claims were fetch-verified *this session* while the "cheap wins" tier was memory-only. That distinction is exactly what makes a recommendation trustworthy or not.
+1. **Unverified claims shipped in a chat answer.** The recommendation message mixed session-verified facts (fetch-backed) with prior-knowledge assertions (Playwright nix packaging, rustywind, stylelint, CDP `setEmulatedVisionDeficiency` via chromedp) **without marking which was which.** The `verify-external-claims` gate exists precisely for this and was never loaded this session — its description scopes it to "encoding claims into skill, documentation, code, or review," and I hid behind that scoping while shipping a decision-grade recommendation. A claim that drives an adoption _decision_ deserves the same rigor as one that lands in a file.
+2. **Confidence tiering was absent from the answer itself.** The reader cannot tell from my message that the k6/base-select/Bencher claims were fetch-verified _this session_ while the "cheap wins" tier was memory-only. That distinction is exactly what makes a recommendation trustworthy or not.
 3. **The deliverable was not persisted.** For a repo whose culture is "write it down or lose it" (AGENTS.md memory protocol, docs-health, status reports), leaving the entire tool shortlist in chat is the same anti-pattern as not writing it at all.
 4. **Partial skill load presented as full compliance.** The gate says read the entire SKILL.md; I read the first 200 lines and proceeded. No harm materialized this time, but the pattern is exactly how a stale-guidance bug gets introduced.
 
 ## e) WHAT WE SHOULD IMPROVE
 
-- **Mark claim provenance in recommendations.** Every external claim in a chat answer should be implicitly or explicitly tiered: *verified-this-session (source)* vs *prior knowledge, unverified*. One parenthetical per claim. Cheap, and it would have made item d-1 disappear.
+- **Mark claim provenance in recommendations.** Every external claim in a chat answer should be implicitly or explicitly tiered: _verified-this-session (source)_ vs _prior knowledge, unverified_. One parenthetical per claim. Cheap, and it would have made item d-1 disappear.
 - **Load `verify-external-claims` for decision-grade recommendations, not just file edits.** The gate's spirit covers anything whose acceptance will cause work; treat tool-adoption answers as in-scope.
 - **Persist decision artifacts immediately.** A tooling shortlist that the user may act on should land as `docs/testing-tool-evaluation.md` (or TODO_LIST entries) in the same session, not wait for a status report to rescue it.
 - **Finish skill reads.** 200 lines is a default, not a license; read to EOF or note explicitly that the remainder was skipped and why it's judged irrelevant.
@@ -65,7 +65,7 @@
 
 ## f) Up to 50 things we should get done next
 
-*Brainstorm list grounded in this session — most items are ROADMAP fuel, not commitments. Grouped by phase; each is small by design.*
+_Brainstorm list grounded in this session — most items are ROADMAP fuel, not commitments. Grouped by phase; each is small by design._
 
 **Phase 0 — verify before acting (the session's own debts):**
 
@@ -121,11 +121,11 @@
 
 **Phase 4 — larger ideas the session surfaced (ROADMAP fuel):**
 
-41. Cross-browser parity as a *contract*: per-component minimum acceptable rendering per engine (degraded-but-usable), not pixel equality.
+41. Cross-browser parity as a _contract_: per-component minimum acceptable rendering per engine (degraded-but-usable), not pixel equality.
 42. A11y testing beyond checkers: keyboard-only walkthrough scripts (Playwright keyboard traversal over Menu/Dropdown/Combobox).
 43. Screen-reader automation (Guidepup/NVDA) as a far-future tier — Windows-runner constraint makes it expensive; park it.
 44. Contract-style HTTP tests for htmx fragment endpoints (headers + status + fragment shape) — cheap complement to browser e2e.
-45. Perf budget for component pages via Lighthouse CI *only if* demo perf becomes a selling point; otherwise skip (session called it marginal — revisit only with evidence).
+45. Perf budget for component pages via Lighthouse CI _only if_ demo perf becomes a selling point; otherwise skip (session called it marginal — revisit only with evidence).
 46. Evaluate Playwright's component-coverage economics: 136 components × 3 engines × dark/RTL — decide sampling strategy (full matrix for interactive components, sampled for static).
 47. Reconnect/chaos testing for Datastar SSE paths (kill the stream mid-flight, assert recovery UX).
 48. Track templ-generator-driven golden churn separately from tooling churn when adding new golden classes (one variable at a time).
@@ -134,7 +134,7 @@
 
 ## g) Questions I cannot figure out myself
 
-1. **Additive or replacement?** If Playwright earns its place, should cross-engine screenshots *join* the chromedp visual suite, or is the long-term intent to *replace* it? (Determines whether we build a second pixel pipeline or plan a migration; I won't recommend running two pixel suites indefinitely.)
+1. **Additive or replacement?** If Playwright earns its place, should cross-engine screenshots _join_ the chromedp visual suite, or is the long-term intent to _replace_ it? (Determines whether we build a second pixel pipeline or plan a migration; I won't recommend running two pixel suites indefinitely.)
 2. **Is a Node toolchain acceptable in CI at all?** Playwright, IBM achecker, and Bencher's CLI are JS/npm-world. The repo is deliberately Go+Nix. If Node is politically off-limits, the whole shortlist reshapes (e.g. cross-browser via a prebuilt Playwright container in GitHub Actions, keeping nix hermetic locally).
 3. **What is the real coverage target for "all our components"?** Demo MPA routes only? Website pages too? Or a generated per-component gallery route so every one of the 136 components has a stable test URL? (I did not verify this session whether every component is reachable from `pages.go`; that answer defines the test matrix size — 136 × engines × dark/RTL vs ~40 routes.)
 
@@ -142,15 +142,15 @@
 
 ## Appendix: verified facts + sources (this session)
 
-| Claim | Status | Source |
-|---|---|---|
-| Playwright `toMatchAriaSnapshot()` stable; multi-engine; trace viewer/UI mode/codegen current | verified | playwright.dev/docs/aria-snapshots, /release-notes, /browsers |
-| k6 OSS (AGPL), nixpkgs v2.2.0; native SSE closed as not planned (Nov 2025); `xk6-sse` is the blessed path | verified | grafana.com docs, github.com/grafana/k6#746, nixpkgs `pkgs/by-name/k6` |
-| IBM accessibility-checker maintained (4.0.34, Sep 2026), Apache-2.0, own "ace" ruleset, ACT-mapped | verified | github.com/IBMa/equal-access + releases |
-| `field-sizing`: all 3 engines (FF 152, Jun 2026, Baseline Newly Available) | verified | caniuse mdn-css_properties_field-sizing, MDN |
-| `appearance: base-select`: Chromium 135+, Safari 27+, Firefox NOT supported (~157–161) | verified | caniuse.com/selectlist, Mozilla Bug 1944403/1958444/1958443 |
-| Bencher OSS core, self-hostable | verified | github.com/bencherdev/bencher, bencher.dev docs |
-| Lost Pixel archived 2026-04-22 (joined Figma) — do not adopt | verified | github.com/lost-pixel/lost-pixel |
-| nixpkgs `playwright-driver.browsers` packaging; rustywind; stylelint; CDP emulation via chromedp | **NOT verified this session** | prior knowledge only — verify before acting (items f-1..f-5) |
+| Claim                                                                                                     | Status                        | Source                                                                 |
+| --------------------------------------------------------------------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------- |
+| Playwright `toMatchAriaSnapshot()` stable; multi-engine; trace viewer/UI mode/codegen current             | verified                      | playwright.dev/docs/aria-snapshots, /release-notes, /browsers          |
+| k6 OSS (AGPL), nixpkgs v2.2.0; native SSE closed as not planned (Nov 2025); `xk6-sse` is the blessed path | verified                      | grafana.com docs, github.com/grafana/k6#746, nixpkgs `pkgs/by-name/k6` |
+| IBM accessibility-checker maintained (4.0.34, Sep 2026), Apache-2.0, own "ace" ruleset, ACT-mapped        | verified                      | github.com/IBMa/equal-access + releases                                |
+| `field-sizing`: all 3 engines (FF 152, Jun 2026, Baseline Newly Available)                                | verified                      | caniuse mdn-css_properties_field-sizing, MDN                           |
+| `appearance: base-select`: Chromium 135+, Safari 27+, Firefox NOT supported (~157–161)                    | verified                      | caniuse.com/selectlist, Mozilla Bug 1944403/1958444/1958443            |
+| Bencher OSS core, self-hostable                                                                           | verified                      | github.com/bencherdev/bencher, bencher.dev docs                        |
+| Lost Pixel archived 2026-04-22 (joined Figma) — do not adopt                                              | verified                      | github.com/lost-pixel/lost-pixel                                       |
+| nixpkgs `playwright-driver.browsers` packaging; rustywind; stylelint; CDP emulation via chromedp          | **NOT verified this session** | prior knowledge only — verify before acting (items f-1..f-5)           |
 
-*Report written per operator instruction in Markdown (`.md`). Note: the status-report skill's canonical format is a styled HTML dashboard; the explicit `.md` path demand in the prompt wins and is flagged here per the skill's override rule.*
+_Report written per operator instruction in Markdown (`.md`). Note: the status-report skill's canonical format is a styled HTML dashboard; the explicit `.md` path demand in the prompt wins and is flagged here per the skill's override rule._
