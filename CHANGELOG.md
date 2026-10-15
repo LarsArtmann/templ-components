@@ -49,11 +49,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Site chrome (your header/nav/footer) stays your sheet's job — see the new
   "The global print layer" guidance in `docs/theming.md`. Recompile your
   entry CSS after adopting; `tc init` starters are refreshed in lockstep.
-- **`layout.SplitProps.AsideLabel` names the aside landmark.** An unlabeled
-  `<aside>` shows up nameless in screen-reader landmark rotors (achecker
-  `aria_complementary_labelled`). When set, the `<aside>` gets
-  `aria-label`; empty keeps the previous markup exactly (non-breaking). The
-  layout demo now labels its Split aside.
+- **`layout.Split` aside column defaults to a plain `<div>`; the
+  `<aside>` landmark is now opt-in.** An unlabeled `<aside>` shows up
+  nameless in screen-reader landmark rotors (achecker
+  `aria_complementary_labelled`), and the common Split use is a plain
+  two-column layout, not complementary content. Zero value now renders a
+  `<div>` layout column; set the new `AsideLandmark: true` (or name the
+  column with the existing `AsideLabel`) to render a semantic `<aside>`
+  complementary landmark — a label always implies the landmark element,
+  because `aria-label` on a roleless generic is itself invalid HTML-ARIA.
+  No CSS hooks target `aside`, so visuals are unchanged; consumers relying
+  on the landmark element must opt in. The layout demo labels its Split
+  aside (`AsideLabel: "Related content"`), which keeps rendering
+  `<aside>`.
 
 - **CSP-safe declarative overlay trigger: `data-tc-overlay-trigger` on Modal/Drawer.**
   Any element carrying `data-tc-overlay-trigger="<dialog-id>"` opens that overlay via
@@ -120,12 +128,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - **Invalid ARIA nesting in `display.CopyButton` (and every `CodeBlock` that
-  embeds it).** The label span carried `role="status"` INSIDE the
-  `<button>`/`<a>` trigger — a live-region role is not a valid button
-  descendant (achecker `aria_descendant_valid`, 28 hits across 9 demo routes;
-  axe has no equivalent rule). The span keeps its global `aria-live="polite"`
-  attribute, so the "Copied!" announcement is unchanged; only the invalid role
-  is gone. Pure attribute change — no visual or script difference.
+  embeds it).** Live semantics lived INSIDE the `<button>`/`<a>` trigger —
+  first as `role="status"`, and after the role was dropped, the bare
+  `aria-live="polite"` label span STILL tripped achecker's
+  `aria_descendant_valid` (28 hits across 9 demo routes; axe has no
+  equivalent rule). The component now renders a visually-hidden sibling
+  live region (`<span data-tc-copy-status role="status" class="sr-only">`)
+  OUTSIDE the interactive element; the copy script announces "Copied!"
+  through it (and clears it after 2s so repeat copies re-announce) while
+  the visible label swap continues unchanged. The label span carries no
+  live semantics anymore. Visual output is identical; markup and script
+  bytes change (goldens updated).
 
 - **`display.Table` scrollable wrapper now exposes `role="region"`.** The
   keyboard-scroll wrapper (`tabindex="0"`) had no role, tripping achecker's

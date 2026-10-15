@@ -68,6 +68,13 @@ func splitAsideSpan(containerAware bool) string {
 // 2D pattern after AppShell: article+sidebar, detail+metadata, primary
 // content + related links.
 //
+// # Aside semantics (landmark opt-in)
+//
+// By default the aside column renders a plain <div> — a two-column layout
+// grid, not a landmark. Set AsideLandmark: true (or name it via AsideLabel)
+// to render a semantic <aside> complementary landmark; name landmarks with
+// AsideLabel so they do not add unnamed entries to screen-reader rotors.
+//
 // Both columns use minmax(0,1fr) per grid track to prevent grid blowout
 // (see ADR-0016). The layout stacks to a single column below md (mobile).
 //
@@ -119,9 +126,7 @@ templ splitInner(props SplitProps) {
 		{ props.Attrs... }
 	>
 		if props.AsidePosition == AsidePositionStart && props.Aside != nil {
-			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") } if props.AsideLabel != "" { aria-label={ props.AsideLabel } }>
-				@props.Aside
-			</aside>
+			@splitAside(props)
 		}
 		if props.Main != nil {
 			<div class={ utils.Class("min-w-0", splitRatioMainSpan(props.Ratio, props.ContainerAware)) }>
@@ -129,9 +134,24 @@ templ splitInner(props SplitProps) {
 			</div>
 		}
 		if props.AsidePosition != AsidePositionStart && props.Aside != nil {
-			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") } if props.AsideLabel != "" { aria-label={ props.AsideLabel } }>
-				@props.Aside
-			</aside>
+			@splitAside(props)
 		}
 	</div>
+}
+
+// splitAside renders the aside column: a semantic <aside> complementary
+// landmark when AsideLandmark (or AsideLabel) opts in, else a plain <div>
+// layout column. A labeled non-landmark element is invalid HTML-ARIA
+// (aria-label on a roleless generic), so an AsideLabel always implies the
+// landmark element.
+templ splitAside(props SplitProps) {
+	if props.AsideLandmark || props.AsideLabel != "" {
+		<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") } if props.AsideLabel != "" { aria-label={ props.AsideLabel } }>
+			@props.Aside
+		</aside>
+	} else {
+		<div class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") }>
+			@props.Aside
+		</div>
+	}
 }

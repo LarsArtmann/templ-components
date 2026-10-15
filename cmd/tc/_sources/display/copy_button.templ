@@ -51,11 +51,14 @@ func DefaultCopyButtonProps() CopyButtonProps {
 // the default palette unless props.LabelClass overrides it (the span must
 // not follow ancestor re-coloring in consumers whose table CSS overrides
 // the button). [data-tc-copy-text] remains the attribute-level styling hook.
+// The label span carries NO live semantics: live regions must live outside
+// interactive elements (achecker aria_descendant_valid); announcement is
+// owned by the sibling [data-tc-copy-status] region the component emits.
 templ copyButtonContent(icon bool, label, labelClass string) {
 	if icon {
 		@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
 	}
-	<span data-tc-copy-text aria-live="polite" class={ labelClass }>{ label }</span>
+	<span data-tc-copy-text class={ labelClass }>{ label }</span>
 }
 
 templ CopyButton(props CopyButtonProps) {
@@ -90,6 +93,7 @@ templ CopyButton(props CopyButtonProps) {
 		>
 			@copyButtonContent(props.Icon, label, labelClass)
 		</a>
+		<span data-tc-copy-status role="status" class="sr-only"></span>
 	} else {
 		<button
 			type="button"
@@ -106,6 +110,7 @@ templ CopyButton(props CopyButtonProps) {
 		>
 			@copyButtonContent(props.Icon, label, labelClass)
 		</button>
+		<span data-tc-copy-status role="status" class="sr-only"></span>
 	}
 	@copyButtonScriptComponent(props.Nonce)
 }

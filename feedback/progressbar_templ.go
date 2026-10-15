@@ -205,7 +205,7 @@ func ProgressBar(props ProgressBarProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.Indeterminate {
-			var templ_7745c5c3_Var9 = []any{"rounded-full animate-indeterminate-progress motion-reduce:animate-none", progressHeightClass(props.Size), props.Color}
+			var templ_7745c5c3_Var9 = []any{"rounded-full animate-indeterminate-progress motion-reduce:animate-none", progressHeightClass(props.Size), string(props.Color)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -241,7 +241,7 @@ func ProgressBar(props ProgressBarProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			var templ_7745c5c3_Var12 = []any{"rounded-full transition-all duration-300 ease-out motion-reduce:transition-none", progressHeightClass(props.Size), props.Color}
+			var templ_7745c5c3_Var12 = []any{"rounded-full transition-all duration-300 ease-out motion-reduce:transition-none", progressHeightClass(props.Size), string(props.Color)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var12...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

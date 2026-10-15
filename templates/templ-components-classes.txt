@@ -10187,11 +10187,11 @@ templ CircularProgress(props CircularProgressProps) {
 		circumference := 2 * math.Pi * radius
 		dashOffset := circumference * (1 - float64(value)/100)
 		sizeClass := utils.Lookup(circularProgressSizeLookup, props.Size, "w-12 h-12")
-		color := props.Color
+		color := string(props.Color)
 		if color == "" {
 			color = "text-blue-600 dark:text-blue-500"
 		}
-		trackColor := props.TrackColor
+		trackColor := string(props.TrackColor)
 		if trackColor == "" {
 			trackColor = "text-gray-200 dark:text-gray-700"
 		}
@@ -10637,14 +10637,14 @@ templ ProgressBar(props ProgressBarProps) {
 		<div class={ progressTrackClass(props.Size) }>
 			if props.Indeterminate {
 				<div
-					class={ "rounded-full animate-indeterminate-progress motion-reduce:animate-none", progressHeightClass(props.Size), props.Color }
+					class={ "rounded-full animate-indeterminate-progress motion-reduce:animate-none", progressHeightClass(props.Size), string(props.Color) }
 					role="progressbar"
 					aria-busy="true"
 					aria-label={ progressName }
 				></div>
 			} else {
 				<div
-					class={ "rounded-full transition-all duration-300 ease-out motion-reduce:transition-none", progressHeightClass(props.Size), props.Color }
+					class={ "rounded-full transition-all duration-300 ease-out motion-reduce:transition-none", progressHeightClass(props.Size), string(props.Color) }
 					style={ fmt.Sprintf("width: %.0f%%;", percent) }
 					role="progressbar"
 					aria-label={ progressName }

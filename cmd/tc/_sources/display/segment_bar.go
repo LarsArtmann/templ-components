@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // SegmentBarSegment is one proportion of the bar.
@@ -18,9 +19,9 @@ type SegmentBarSegment struct {
 	// Value is the segment's magnitude (relative to the sum of all values).
 	// Negative values clamp to zero.
 	Value float64
-	// Color optionally overrides the deterministic palette — a full class
-	// pair such as "bg-emerald-600 dark:bg-emerald-400".
-	Color string
+	// Color optionally overrides the deterministic palette — a complete
+	// light+dark literal pair such as "bg-emerald-600 dark:bg-emerald-400".
+	Color tone.ColorClass
 }
 
 // SegmentBarProps configures a stacked proportion bar.
@@ -40,7 +41,7 @@ func DefaultSegmentBarProps() SegmentBarProps {
 }
 
 //nolint:gochecknoglobals // Package-level lookup table: the shared chart palette as background class pairs
-var segmentBarPalette = []string{
+var segmentBarPalette = []tone.ColorClass{
 	"bg-blue-600 dark:bg-blue-400",
 	"bg-emerald-600 dark:bg-emerald-400",
 	"bg-amber-600 dark:bg-amber-400",
@@ -56,7 +57,7 @@ var segmentBarPalette = []string{
 // renders and filter orders — the same label always gets the same color).
 func segmentBarColor(seg SegmentBarSegment) string {
 	if seg.Color != "" {
-		return seg.Color
+		return string(seg.Color)
 	}
 
 	hash := 0
@@ -65,7 +66,7 @@ func segmentBarColor(seg SegmentBarSegment) string {
 		hash = (hash*31 + int(r)) % len(segmentBarPalette)
 	}
 
-	return segmentBarPalette[hash]
+	return string(segmentBarPalette[hash])
 }
 
 // segmentBarTotal sums the clamped segment values.

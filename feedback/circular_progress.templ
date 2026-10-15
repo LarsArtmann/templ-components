@@ -73,11 +73,11 @@ templ CircularProgress(props CircularProgressProps) {
 		circumference := 2 * math.Pi * radius
 		dashOffset := circumference * (1 - float64(value)/100)
 		sizeClass := utils.Lookup(circularProgressSizeLookup, props.Size, "w-12 h-12")
-		color := props.Color
+		color := string(props.Color)
 		if color == "" {
 			color = "text-blue-600 dark:text-blue-500"
 		}
-		trackColor := props.TrackColor
+		trackColor := string(props.TrackColor)
 		if trackColor == "" {
 			trackColor = "text-gray-200 dark:text-gray-700"
 		}
