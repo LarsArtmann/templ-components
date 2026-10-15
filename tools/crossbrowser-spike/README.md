@@ -1,0 +1,45 @@
+# crossbrowser-spike — 3-engine diagnostic screenshots (M06)
+
+Playwright-driven full-page screenshots of every demo route in Chromium,
+Firefox, and WebKit. **Diagnostic lane only** — produces artifacts and an
+error report; it never gates CI and is deliberately NOT part of the Go test
+surface (plan guardrail: never two pixel suites).
+
+## Run
+
+```bash
+# 1. Browser binaries from the LOCKED nixpkgs (version-matched, see below)
+nix build --inputs-from . nixpkgs#playwright-driver.browsers -o /tmp/pw-browsers
+
+# 2. Node deps (playwright-core version below MUST equal nixpkgs playwright-driver)
+cd tools/crossbrowser-spike && npm install --no-save
+
+# 3. Route manifest from the demo registry (single source of truth)
+./gen-routes.sh
+
+# 4. Demo server (any free port)
+go build -o /tmp/tc-demo ./examples/demo && (PORT=8093 /tmp/tc-demo &) 
+
+# 5. Shoot all routes, all engines
+for e in chromium firefox webkit; do
+  PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers \
+  PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true \
+  node screenshot.mjs --engine $e --base http://localhost:8093 --theme light
+done
+```
+
+Artifacts land in `artifacts/` (gitignored): `<engine>-<theme>/<route>.png` +
+`report.json` with per-route console errors and pageerrors.
+
+## Version lockstep (same-edit rule, like the templ pin)
+
+`package.json` pins `playwright-core` to the nixpkgs `playwright-driver`
+version (1.63.0 as of 2026-10-15). Playwright hardcodes browser revision
+numbers per release (`chromium-1243`, `firefox-1543`, `webkit-2359`); a
+mismatch fails with "Executable doesn't exist". Bump BOTH in one commit when
+nixpkgs moves — `nix eval --inputs-from . nixpkgs#playwright-driver.version`.
+
+## Findings
+
+2026-10-15 spike results and the adoption verdict live in
+`docs/testing/tooling-evaluation.md` (§5.1) and ADR 0048.

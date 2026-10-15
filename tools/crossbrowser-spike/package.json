@@ -1,0 +1,13 @@
+{
+  "name": "crossbrowser-spike",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Playwright 3-engine diagnostic screenshots of the demo routes. NOT part of the Go test surface (plan guardrail 1). playwright-core version MUST equal the nixpkgs playwright-driver version (browser revisions are hardcoded per release).",
+  "type": "module",
+  "scripts": {
+    "shoot": "node screenshot.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.63.0"
+  }
+}
