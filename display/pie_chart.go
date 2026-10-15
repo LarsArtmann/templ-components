@@ -99,14 +99,14 @@ const (
 //
 //nolint:gochecknoglobals // Package-level lookup table for chart slice colors
 var pieChartPalette = []string{
-	chartColorBlue,
-	chartColorEmerald,
-	chartColorAmber,
-	chartColorRose,
-	chartColorViolet,
-	chartColorCyan,
-	chartColorOrange,
-	chartColorPink,
+	ChartColorBlue,
+	ChartColorEmerald,
+	ChartColorAmber,
+	ChartColorRose,
+	ChartColorViolet,
+	ChartColorCyan,
+	ChartColorOrange,
+	ChartColorPink,
 }
 
 // DefaultPieChartProps returns sensible defaults for a pie chart.

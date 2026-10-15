@@ -118,12 +118,18 @@ func overlayScriptComponent(nonce, id, componentName string) templ.Component {
 // copyButtonJS returns the singleton JavaScript for clipboard copy via event
 // delegation. Listens for clicks on [data-tc-copy] buttons, copies the text
 // via navigator.clipboard.writeText (with a document.execCommand fallback for
-// non-secure HTTP contexts or older browsers), and temporarily swaps the label.
+// non-secure HTTP contexts or older browsers), temporarily swaps the visible
+// label, and announces the copy through the sibling [data-tc-copy-status]
+// live region — live semantics must stay OUTSIDE the interactive element
+// (achecker aria_descendant_valid).
 func copyButtonJS() string {
 	return `if(!window.tcCopyAttached){window.tcCopyAttached=true;` +
 		`function tcSwapLabel(el,label,original){` +
 		`if(el)el.textContent=label;` +
 		`setTimeout(function(){if(el)el.textContent=original;},2000);}` +
+		`function tcAnnounceCopy(btn,label){` +
+		`var st=btn.nextElementSibling;st=st&&st.hasAttribute('data-tc-copy-status')?st:null;` +
+		`if(st){st.textContent=label;setTimeout(function(){st.textContent='';},2000);}}` +
 		`function tcFallbackCopy(text,done){` +
 		`var ta=document.createElement('textarea');ta.value=text;` +
 		`ta.style.cssText='position:fixed;top:-9999px;left:-9999px';` +
@@ -137,11 +143,10 @@ func copyButtonJS() string {
 		`var label=btn.getAttribute('data-tc-copy-label')||'Copied!';` +
 		`var labelEl=btn.querySelector('[data-tc-copy-text]');` +
 		`var original=labelEl?labelEl.textContent:'';` +
+		`var done=function(){tcSwapLabel(labelEl,label,original);tcAnnounceCopy(btn,label);};` +
 		`if(navigator.clipboard&&navigator.clipboard.writeText){` +
-		`navigator.clipboard.writeText(text).then(function(){` +
-		`tcSwapLabel(labelEl,label,original);}).catch(function(){` +
-		`tcFallbackCopy(text,function(){tcSwapLabel(labelEl,label,original);});});` +
-		`}else{tcFallbackCopy(text,function(){tcSwapLabel(labelEl,label,original);});}` +
+		`navigator.clipboard.writeText(text).then(done).catch(function(){tcFallbackCopy(text,done);});}` +
+		`else{tcFallbackCopy(text,done);}` +
 		`});}` +
 		"\n"
 }

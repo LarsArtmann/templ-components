@@ -141,12 +141,12 @@ const (
 //
 //nolint:gochecknoglobals // Package-level lookup table for chart series colors
 var lineChartPalette = []string{
-	chartColorBlue,
-	chartColorEmerald,
-	chartColorAmber,
-	chartColorRose,
-	chartColorViolet,
-	chartColorCyan,
+	ChartColorBlue,
+	ChartColorEmerald,
+	ChartColorAmber,
+	ChartColorRose,
+	ChartColorViolet,
+	ChartColorCyan,
 }
 
 // DefaultLineChartProps returns sensible defaults for a line chart.

@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
+
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // Chart geometry constants — shared across all native SVG chart components.
@@ -31,17 +33,20 @@ const (
 	smoothPathMinPoints   = 3
 )
 
-// Shared Tailwind color class constants for chart palettes. Used by LineChart,
-// AreaChart, and PieChart series/slice coloring via currentColor inheritance.
+// Chart color constants: complete light+dark literals (tone.ColorClass) for
+// chart series, slice, segment, spinner, and progress coloring via
+// currentColor inheritance. Charts cycle them in declaration order; prefer
+// them over hand-typed literals so a typo cannot silently render nothing
+// (TODO #426).
 const (
-	chartColorBlue    = "text-blue-600 dark:text-blue-400"
-	chartColorEmerald = "text-emerald-600 dark:text-emerald-400"
-	chartColorAmber   = "text-amber-600 dark:text-amber-400"
-	chartColorRose    = "text-rose-600 dark:text-rose-400"
-	chartColorViolet  = "text-violet-600 dark:text-violet-400"
-	chartColorCyan    = "text-cyan-600 dark:text-cyan-400"
-	chartColorOrange  = "text-orange-600 dark:text-orange-400"
-	chartColorPink    = "text-pink-600 dark:text-pink-400"
+	ChartColorBlue    tone.ColorClass = "text-blue-600 dark:text-blue-400"
+	ChartColorEmerald tone.ColorClass = "text-emerald-600 dark:text-emerald-400"
+	ChartColorAmber   tone.ColorClass = "text-amber-600 dark:text-amber-400"
+	ChartColorRose    tone.ColorClass = "text-rose-600 dark:text-rose-400"
+	ChartColorViolet  tone.ColorClass = "text-violet-600 dark:text-violet-400"
+	ChartColorCyan    tone.ColorClass = "text-cyan-600 dark:text-cyan-400"
+	ChartColorOrange  tone.ColorClass = "text-orange-600 dark:text-orange-400"
+	ChartColorPink    tone.ColorClass = "text-pink-600 dark:text-pink-400"
 )
 
 // LineChart/AreaChart shared defaults.

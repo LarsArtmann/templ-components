@@ -1,6 +1,7 @@
 package display
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -66,15 +67,22 @@ func TestCopyButtonBehavior(t *testing.T) {
 		utils.AssertContains(t, output, "tcFallbackCopy")
 	})
 
-	t.Run("label span has aria-live for screen reader feedback", func(t *testing.T) {
+	t.Run("copy announcement lives outside the interactive element", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, CopyButton(CopyButtonProps{Text: "x"}))
-		utils.AssertContains(t, output, `aria-live="polite"`)
-		// role="status" is intentionally absent: a live-region ROLE inside a
-		// <button> is invalid ARIA descendant nesting (achecker
-		// aria_descendant_valid); the global aria-live attribute announces
-		// the label swap without the role.
-		utils.AssertNotContains(t, output, `role="status"`)
+		// The label span carries NO live semantics: live regions must live
+		// outside <button>/<a> (achecker aria_descendant_valid — role AND
+		// aria-live both trip it). The sibling [data-tc-copy-status] region
+		// (role="status") receives the announcement from the copy script.
+		utils.AssertNotContains(t, output, `aria-live="polite"`)
+		utils.AssertContains(t, output, `<span data-tc-copy-status role="status" class="sr-only"></span>`)
+		utils.AssertContains(t, output, `tcAnnounceCopy`)
+		// The status region must be a SIBLING of the button, not a descendant.
+		btnClose := strings.Index(output, "</button>")
+		statusIdx := strings.Index(output, `data-tc-copy-status`)
+		if btnClose < 0 || statusIdx < 0 || statusIdx < btnClose {
+			t.Errorf("status region must render after the button element: %q", output)
+		}
 	})
 
 	t.Run("renders anchor when Href is set", func(t *testing.T) {

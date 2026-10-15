@@ -3,7 +3,40 @@ package utils
 import (
 	"path/filepath"
 	"testing"
+
+	"github.com/larsartmann/templ-components/utils/tone"
 )
+
+// TestDarkModeSemanticRegexCoversEveryHue is the regression proof for the
+// derived hue list (TODO #427): the hand-maintained alternation had drifted
+// and classes like text-emerald-600 or bg-yellow-500 WITHOUT a dark: half
+// silently passed the guard. Every non-gray hue in the tone table, in both
+// text- and bg- form, must now be FLAGGED when the dark: variant is
+// missing — and ignored when it is present on the line.
+func TestDarkModeSemanticRegexCoversEveryHue(t *testing.T) {
+	t.Parallel()
+
+	for _, h := range tone.Hues() {
+		if h == tone.HueGray {
+			continue // the neutral rule owns gray
+		}
+
+		for _, class := range []string{"text-" + string(h) + "-600", "bg-" + string(h) + "-500"} {
+			gapLine := `class="` + class + `"`
+			if !checkLineForDarkModeGap("synthetic.templ", gapLine, darkModeSemanticRe) {
+				t.Errorf(
+					"semantic regex does not flag %q without a dark: variant — the hue list drifted from tone.Hues() again",
+					class,
+				)
+			}
+
+			coveredLine := `class="` + class + ` dark:` + class + `"`
+			if checkLineForDarkModeGap("synthetic.templ", coveredLine, darkModeSemanticRe) {
+				t.Errorf("semantic regex flags %q although the dark: variant is present", coveredLine)
+			}
+		}
+	}
+}
 
 // scanDarkModeDirs runs ScanDarkMode over the library package dirs (relative
 // to this test's CWD) and reports findings for ONE rule id in the guard
