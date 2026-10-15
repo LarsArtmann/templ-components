@@ -7,6 +7,12 @@ surface (plan guardrail: never two pixel suites).
 
 ## Run
 
+**Blessed path (M13):** `nix run .#crossbrowser` — builds the pinned browsers,
+applies the pure fontconfig pin (same as the visual app), starts the demo binary,
+and shoots all 3 engines. Findings land in `artifacts/` inside the spike dir.
+
+Manual equivalent (what the app automates):
+
 ```bash
 # 1. Browser binaries from the LOCKED nixpkgs (version-matched, see below)
 nix build --inputs-from . nixpkgs#playwright-driver.browsers -o /tmp/pw-browsers
@@ -50,3 +56,12 @@ nixpkgs moves — `nix eval --inputs-from . nixpkgs#playwright-driver.version`.
 
 2026-10-15 spike results and the adoption verdict live in
 `docs/testing/tooling-evaluation.md` (§5.1) and ADR 0048.
+
+## Determinism (μ51)
+
+Consecutive runs under the flake app's env are **pixel-identical**
+(0/13,949,440 pixels differ on repeat captures) — the localStorage theme pin +
+pure fontconfig pin make engine captures stable. Raw PNG BYTES may differ
+between runs (encoder chunk noise): compare pixels with tolerance, never bytes.
+The optional CI lane (`.github/workflows/crossbrowser.yml`) is
+workflow_dispatch-only and stays INERT until ⫱G1.

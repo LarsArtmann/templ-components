@@ -380,6 +380,12 @@ Demand evidence source-verified 2026-10-10 (details: `docs/status/2026-10-10_05-
 | 423 | `display.Table` keyboard-scrollable wrapper (`tabindex="0"`) lacks `role="region"` + accessible name — scrollable-region best practice (achecker `element_tabbable_role_valid`)                            | Add `role="region"` + reuse the table's AriaLabel/caption on the wrapper; needs golden updates. From M08 spike.                                                       |
 | 424 | Demo/library has ZERO `@media print` styling — sidebar, header, theme toggle, and action buttons all render on paper (M11 print probe)                                                                     | Minimal print layer in `templates/custom.css` + demo: hide nav chrome/actions, drop shadows; add docs guidance for consumers. From M11 CDP probe.                     |
 
+_Execution status 2026-10-15: #412–#418 executed (evidence + verdicts in
+`docs/testing/tooling-evaluation.md`; M11 tests integrated in `visualtest`); #419
+delivered to the gate edge (flake app works, CI draft is dispatch-only); #411/#420
+open pending ⫱G1–G4 — protocol + budget table already committed
+(`docs/testing/tool-trial-protocol.md`). Spike findings registered as #421–#424._
+
 ## Harvested 2026-10-15 — color domain-model deep dive (docs/reviews/2026-10-15_color-domain-model.html)
 
 > Evidence base: 13 color vocabularies, 1,880 raw class occurrences, 6 parallel "success=green" recipes, stale guard-regex hue list. Full redesign + decision log in the report; master sequencing in `docs/planning/2026-10-15_20-00_ALL-TODOS-MASTER-PARETO-PLAN.md`.

@@ -399,6 +399,65 @@
                 }
               );
             };
+
+            # M13 diagnostic lane (plan 2026-10-15): 3-engine Playwright
+            # screenshots of every demo route. Findings lane — produces
+            # artifacts + an error report and NEVER gates CI (guardrail 1:
+            # never two pixel suites; adoption gated on ⫱G1).
+            crossbrowser = {
+              type = "app";
+              meta.description = "3-engine (Chromium/Firefox/WebKit) demo screenshot diagnostics via Playwright — findings, never gates (⫱G1)";
+              program = pkgs.lib.getExe (
+                pkgs.writeShellApplication {
+                  name = "run-crossbrowser";
+                  runtimeInputs = [
+                    goToolchain
+                    pkgs.nodejs
+                    pkgs.nix
+                    pkgs.fontconfig
+                  ];
+                  text = ''
+                    set -e
+                    # 1. Version-matched browser binaries from the LOCKED
+                    #    nixpkgs. Playwright hardcodes browser revision numbers
+                    #    per release — tools/crossbrowser-spike/package.json
+                    #    MUST stay pinned to the same playwright version
+                    #    (lockstep rule, see that README).
+                    export PLAYWRIGHT_BROWSERS_PATH=/tmp/tc-pw-browsers
+                    nix build --inputs-from . nixpkgs#playwright-driver.browsers -o "$PLAYWRIGHT_BROWSERS_PATH"
+                    export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
+                    # 2. The same pure fontconfig pin as the visual app —
+                    #    engine captures must not shift with host fonts
+                    #    (determinism pass, plan μ51).
+                    export FONTCONFIG_FILE="${pkgs.writeText "tc-crossbrowser-fonts.conf" ''
+                      <?xml version="1.0"?>
+                      <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+                      <fontconfig>
+                        <dir>${pkgs.inter}</dir>
+                        <dir>${pkgs.dejavu_fonts}</dir>
+                        <cachedir>/tmp/tc-crossbrowser-fontconfig-cache</cachedir>
+                      </fontconfig>
+                    ''}"
+                    # 3. Demo binary (target the local binary DIRECTLY; the
+                    #    spike never runs against a proxied URL) + node deps.
+                    export GOEXPERIMENT=jsonv2
+                    export GOWORK=off
+                    go build -o /tmp/tc-crossbrowser-demo ./examples/demo
+                    PORT=8094 /tmp/tc-crossbrowser-demo &
+                    DEMO_PID=$!
+                    trap 'kill "$DEMO_PID" 2>/dev/null || true' EXIT
+                    sleep 1
+                    cd tools/crossbrowser-spike
+                    npm install --no-save >/dev/null
+                    # 4. Shoot every route in all three engines (light theme,
+                    #    pinned via localStorage before any page script runs).
+                    for engine in chromium firefox webkit; do
+                      node screenshot.mjs --engine "$engine" --base http://localhost:8094 --theme light
+                    done
+                  '';
+                }
+              );
+            };
           };
 
           # treefmt: format .nix (nixfmt) and .go (gofumpt + goimports).
