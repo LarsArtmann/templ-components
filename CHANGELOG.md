@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **CSP-safe declarative overlay trigger: `data-tc-overlay-trigger` on Modal/Drawer.**
+  Any element carrying `data-tc-overlay-trigger="<dialog-id>"` opens that overlay via
+  the shared overlay script's document-level click delegation (singleton-guarded, one
+  listener per page, safe with Modal + Drawer together). This replaces the inline
+  `onclick="tcOpenOverlay(...)"` pattern, which strict nonce-based CSPs block
+  (`script-src-attr`) — and which referenced an undefined wrapper name. The
+  `tcOpenModal(id)`/`tcCloseModal(id)`/`tcOpenDrawer(id)`/`tcCloseDrawer(id)` programmatic
+  wrappers are unchanged. See `docs/recipes/appshell-dashboard-layout.md` for the
+  mobile-drawer wiring.
 - **`errorpage.WriteNotFound404Document` — the 404 page as a standalone HTML
   document.** The `ErrorHandler` `HTMLShell` equivalent for the dedicated 404
   page: DOCTYPE, `<html lang>` (default `"en"`, parameter), `<head>` with

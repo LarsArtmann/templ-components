@@ -1,0 +1,130 @@
+[
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/layout",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/display",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/feedback",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/forms",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/stylable-select",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/navigation",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/icons",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/htmx",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/datastar",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/wire",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/kanban",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/echarts",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/recipes",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/users",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "theme": "light",
+    "path": "/error-pages",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  }
+]

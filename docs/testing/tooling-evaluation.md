@@ -80,6 +80,32 @@ CDP cheap wins (M11) therefore land as: new Go test files using `cdp.Call` with
 
 <!-- §5.1 engine findings table -->
 
+**Run (2026-10-15):** 16 routes × 3 engines = 48 full-page screenshots (light theme,
+1280 viewport, localStorage theme pin + `load` + 1200 ms settle). **0 pageerrors, 0
+console errors** in the final pass. Artifacts: `tools/crossbrowser-spike/artifacts/
+<engine>-light/` (per-route PNG + report.json); the pre-fix run is preserved at
+`artifacts-m06-initial/`.
+
+**Findings (all three were real, all fixed in this repo):**
+
+| # | Finding | Engine(s) | Class | Fix |
+| - | ------- | --------- | ----- | --- |
+| 1 | ThemeToggle script rendered nonce-less (`Nonce: ""`) → CSP-dead under the demo's nonce CSP (silent feature kill, exactly the `nonce` omit-empty trap) | all | real — feature dead | `navigation_demo.templ`, `recipes_demo.templ` (2 sites): pass `demoNonceConst` |
+| 2 | Avatar images from `picsum.photos` blocked by `img-src`; the fastly.picsum.photos redirect target too | all | real — content missing | `examples/demo/basepath.go` demoCSP `img-src += https://picsum.photos https://fastly.picsum.photos`; `website/firebase.json` header kept EQUAL |
+| 3 | Demo Modal/Drawer buttons called `onclick="tcOpenOverlay('id')"` — broken TWICE: `tcOpenOverlay` is undefined (the library emits `tcOpenModal`/`tcOpenDrawer`), and inline `onclick` is CSP-dead (`script-src-attr`, proven by the Firefox report) | all (Firefox reported the CSP violation; the undefined global killed every engine) | real — feature dead | Library-level: CSP-safe declarative `data-tc-overlay-trigger="<dialog-id>"` attribute (document-level click delegation, singleton guard) added to the overlay script; demo buttons now `display.Button` + attribute; recipe doc updated |
+
+**Fix verification:** post-fix runs report **0 errors on all 48 shots**; a click test
+(`click [data-tc-overlay-trigger]` → `dialog.open === true`, Escape-close, second
+trigger) passes in Chromium, Firefox, AND WebKit. Display-package goldens updated for
+the extended overlay script; `/display` route golden re-verified.
+
+**Verdict (μ26 → ⫱G1 material):** multi-engine testing is **practical in this
+Nix/Go repo** — the spike went from zero to 48 verified captures in well under a day,
+and it caught 3 real CSP bugs that Chromium-only chromedp testing structurally missed
+(2 were silent feature deaths). Engine notes: PNG sizes scale FF ≈ +35 % (encoder, not
+layout); SSE routes never reach `networkidle` (use `load` + settle). **Recommendation:
+adopt as a diagnostic lane (⫱G1); findings-class value proven, integration cost low.**
+
 ### M07 — base-select Firefox fallback assert
 
 - Target: `/stylable-select` demo route (M05). Result: see §5.2.

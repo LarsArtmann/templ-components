@@ -1,0 +1,141 @@
+[
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/layout",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/display",
+    "console": [
+      "error: Refused to load https://picsum.photos/seed/blurup/24/5 because it does not appear in the img-src directive of the Content Security Policy.",
+      "error: Refused to load https://picsum.photos/seed/blurup/480/96 because it does not appear in the img-src directive of the Content Security Policy.",
+      "error: Refused to load https://picsum.photos/seed/lb1/800/500 because it does not appear in the img-src directive of the Content Security Policy.",
+      "error: Refused to load https://picsum.photos/seed/lb2/800/500 because it does not appear in the img-src directive of the Content Security Policy.",
+      "error: Refused to load https://picsum.photos/seed/lb3/800/500 because it does not appear in the img-src directive of the Content Security Policy.",
+      "error: Refused to load https://picsum.photos/seed/lb1/800/500 because it does not appear in the img-src directive of the Content Security Policy.",
+      "error: Refused to load https://picsum.photos/seed/lb2/800/500 because it does not appear in the img-src directive of the Content Security Policy.",
+      "error: Refused to load https://picsum.photos/seed/lb3/800/500 because it does not appear in the img-src directive of the Content Security Policy."
+    ],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/feedback",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/forms",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/stylable-select",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/navigation",
+    "console": [
+      "error: Refused to execute a script because its hash, its nonce, or 'unsafe-inline' does not appear in the script-src directive of the Content Security Policy."
+    ],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/icons",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/htmx",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/datastar",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/wire",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/kanban",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/echarts",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/recipes",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/users",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "theme": "light",
+    "path": "/error-pages",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  }
+]

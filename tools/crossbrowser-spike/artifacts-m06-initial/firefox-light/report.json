@@ -1,0 +1,133 @@
+[
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/layout",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/display",
+    "console": [
+      "error: [JavaScript Error: \"Content-Security-Policy: The page’s settings blocked an event handler (script-src-attr) from being executed because it violates the following directive: “script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval' 'nonce-demo-nonce'”. Consider using a hash ('sha256-pIhj2InwOQsbOHlFG",
+      "error: [JavaScript Error: \"Content-Security-Policy: The page’s settings blocked an event handler (script-src-attr) from being executed because it violates the following directive: “script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval' 'nonce-demo-nonce'”. Consider using a hash ('sha256-eq3zL5A69NCDllqsx"
+    ],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/feedback",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/forms",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/stylable-select",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/navigation",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/icons",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/htmx",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/datastar",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/wire",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/kanban",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/echarts",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/recipes",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/users",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  },
+  {
+    "engine": "firefox",
+    "theme": "light",
+    "path": "/error-pages",
+    "console": [],
+    "pageerrors": [],
+    "ok": true
+  }
+]
