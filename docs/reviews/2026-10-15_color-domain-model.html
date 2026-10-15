@@ -1,0 +1,1764 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Color Domain Model — templ-components Deep Dive</title>
+    <style>
+      /* =========================================================================
+         BAUHAUS DARK — Dashboard template
+         Design language: form follows function. Primary colors on graphite.
+         Zero external dependencies: system fonts, no CDN, no build step.
+         Token architecture: see references/bauhaus-tokens.md
+         ========================================================================= */
+
+      :root {
+        /* --- Primitive palette (Bauhaus Dark) --- */
+        --color-graphite: #0e0e10;
+        --color-graphite-2: #18181d;
+        --color-graphite-3: #16161a;
+        --color-bone: #f4f4f0;
+        --color-red: #ff6b6b;
+        --color-blue: #6eb5ff;
+        --color-yellow: #f4d35e;
+        --color-amber: #ffb347;
+        --color-hairline: rgba(244, 244, 240, 0.12);
+        --color-hairline-strong: rgba(244, 244, 240, 0.25);
+
+        /* --- Semantic layer (shared vocabulary with editorial template) --- */
+        --surface: var(--color-graphite);
+        --surface-raised: var(--color-graphite-2);
+        --surface-sunken: var(--color-graphite-3);
+        --text: var(--color-bone);
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: var(--color-hairline);
+        --border-strong: var(--color-hairline-strong);
+        --accent: var(--color-amber);
+        --problem: var(--color-red);
+        --solution: var(--color-blue);
+        --warning: var(--color-yellow);
+
+        /* --- Backward-compatible aliases (do not break consumer skills) --- */
+        --bg: var(--surface);
+        --bg-elevated: var(--surface-raised);
+        --bg-sunken: var(--surface-sunken);
+        --bg-card: var(--surface-raised);
+        --bg-code: var(--surface-sunken);
+        --ink: var(--text);
+        --ink-secondary: var(--text-muted);
+        --ink-muted: var(--text-faint);
+        --rose: var(--problem);
+        --rose-glow: color-mix(in srgb, var(--problem) 15%, transparent);
+        --emerald: var(--solution);
+        --emerald-glow: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber-glow: color-mix(in srgb, var(--warning) 15%, transparent);
+        --coral: var(--problem);
+        --coral-light: color-mix(in srgb, var(--problem) 15%, transparent);
+        --teal: var(--solution);
+        --teal-light: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber-light: color-mix(in srgb, var(--warning) 20%, transparent);
+
+        /* --- Shape --- */
+        --radius: 0px; /* Bauhaus default: sharp corners */
+        --radius-sm: 0px;
+
+        /* --- Type stacks (system only — zero external fonts) --- */
+        --font-heading:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-body:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-mono:
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      /* Sticky-header offset for anchor jumps */
+      section[id],
+      [id] {
+        scroll-margin-top: 60px;
+      }
+
+      body {
+        background: var(--surface);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 15px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* --- Accessibility: keyboard focus --- */
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      a:focus-visible {
+        outline-offset: -1px;
+      }
+
+      /* --- Full-bleed top bar --- */
+      .top-bar {
+        background: var(--text);
+        color: var(--surface);
+        padding: 0.6rem 2rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* --- Layout: optional sticky sidebar TOC --- */
+      .layout {
+        display: flex;
+        gap: 2.5rem;
+        padding: 2rem;
+      }
+      .sidebar {
+        width: 220px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 1rem;
+        align-self: flex-start;
+        height: calc(100vh - 2rem);
+        overflow-y: auto;
+        display: none;
+      }
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .sidebar .label {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .sidebar a {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 0.45rem 0.75rem;
+        border-left: 2px solid transparent;
+        transition: all 0.15s ease;
+        line-height: 1.4;
+        font-weight: 500;
+      }
+      .sidebar a:hover,
+      .sidebar a.active {
+        color: var(--accent);
+        border-left-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+      }
+      .main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* --- Headings --- */
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      h1 {
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        line-height: 1.1;
+        margin: 0 0 0.6rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+        margin: 2.5rem 0 1rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+      }
+      h2 .num {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      h3 {
+        font-size: 1.1rem;
+        margin: 0 0 0.4rem;
+        font-weight: 700;
+      }
+      h4 {
+        font-size: 0.98rem;
+        margin: 0 0 0.3rem;
+        font-weight: 700;
+      }
+      p {
+        margin: 0 0 1rem;
+      }
+
+      /* --- Hero --- */
+      .hero {
+        padding: 1.5rem 0 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .hero-badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--surface);
+        background: var(--accent);
+        padding: 0.3rem 0.7rem;
+        margin-bottom: 0.9rem;
+      }
+      .hero-subtitle {
+        font-size: 1.05rem;
+        color: var(--text-muted);
+        max-width: 70ch;
+        margin: 0;
+      }
+
+      /* Bauhaus signature: geometric shape cluster (optional) */
+      .hero-shapes {
+        position: relative;
+        height: 80px;
+        margin-bottom: 1rem;
+      }
+      .hero-shapes .circle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 56px;
+        height: 56px;
+        background: var(--problem);
+        border-radius: 50%;
+      }
+      .hero-shapes .square {
+        position: absolute;
+        top: 24px;
+        left: 72px;
+        width: 48px;
+        height: 48px;
+        background: var(--solution);
+      }
+      .hero-shapes .tri {
+        position: absolute;
+        top: 8px;
+        left: 140px;
+        width: 0;
+        height: 0;
+        border-left: 28px solid transparent;
+        border-right: 28px solid transparent;
+        border-bottom: 48px solid var(--warning);
+      }
+
+      /* --- General cards --- */
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .card-problem {
+        border-left-color: var(--problem);
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
+      }
+      .card-solution {
+        border-left-color: var(--solution);
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
+      }
+      .card-warning {
+        border-left-color: var(--warning);
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
+      }
+
+      /* --- Issue cards --- */
+      .issue {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .issue-critical {
+        border-left-color: var(--problem);
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
+      }
+      .issue-important {
+        border-left-color: var(--warning);
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
+      }
+      .issue-nice {
+        border-left-color: var(--solution);
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
+      }
+      .issue h3 {
+        margin-bottom: 0.3rem;
+      }
+      .issue .where {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--text-faint);
+        margin: 0.2rem 0 0.6rem;
+      }
+      .issue p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* --- Severity badges (used inside issue cards) --- */
+      .severity {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.55rem;
+        margin-bottom: 0.6rem;
+        color: var(--surface);
+      }
+      .severity-critical {
+        background: var(--problem);
+      }
+      .severity-important {
+        background: var(--warning);
+      }
+      .severity-nice {
+        background: var(--solution);
+      }
+
+      /* --- Inline badges (used in tables) --- */
+      .badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.18rem 0.5rem;
+        border: 1px solid var(--border-strong);
+        color: var(--text-muted);
+      }
+      .badge-critical {
+        color: var(--problem);
+        border-color: var(--problem);
+      }
+      .badge-high {
+        color: var(--warning);
+        border-color: var(--warning);
+      }
+      .badge-medium {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .badge-low {
+        color: var(--text-muted);
+      }
+      .badge-fixed {
+        color: var(--solution);
+        border-color: var(--solution);
+      }
+
+      /* --- Callouts (used inside issues or standalone) --- */
+      .callout {
+        margin: 0.8rem 0 0;
+        padding: 0.7rem 0.9rem;
+        border-left: 3px solid var(--border-strong);
+        background: color-mix(in srgb, var(--text) 5%, transparent);
+        font-size: 0.9rem;
+      }
+      .callout strong {
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
+      .callout-solution {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 10%, transparent);
+      }
+      .callout-warning {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 10%, transparent);
+      }
+
+      /* --- Stat cards / scorecards (aliased vocabulary) --- */
+      .stat-grid,
+      .scorecard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.75rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .stat-card,
+      .score-card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1rem;
+        position: relative;
+      }
+      .stat-card::before,
+      .score-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--border-strong);
+      }
+      .stat-bad,
+      .score-bad {
+        /* default top bar already set */
+      }
+      .stat-bad::before,
+      .score-bad::before {
+        background: var(--problem);
+      }
+      .stat-good::before,
+      .score-good::before {
+        background: var(--solution);
+      }
+      .stat-warn::before,
+      .score-warn::before {
+        background: var(--warning);
+      }
+      .stat-value,
+      .score {
+        font-family: var(--font-heading);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        color: var(--text);
+      }
+      .stat-bad .stat-value,
+      .score-bad .score {
+        color: var(--problem);
+      }
+      .stat-good .stat-value,
+      .score-good .score {
+        color: var(--solution);
+      }
+      .stat-warn .stat-value,
+      .score-warn .score {
+        color: var(--warning);
+      }
+      .stat-label,
+      .score-card .label {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-faint);
+        margin-top: 0.5rem;
+      }
+
+      /* --- Strengths list --- */
+      .strengths {
+        display: grid;
+        gap: 0.5rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .strength {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.8rem;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .strength .check {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        color: var(--solution);
+        font-size: 1.1rem;
+        line-height: 1.4;
+      }
+      .strength .text strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+      .strength .text span {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* --- Tables --- */
+      .table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.9rem;
+      }
+      th {
+        text-align: left;
+        padding: 0.6rem 0.9rem;
+        background: var(--surface-raised);
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border-strong);
+      }
+      td {
+        padding: 0.6rem 0.9rem;
+        border-bottom: 1px solid var(--border);
+      }
+      tr:hover td {
+        background: var(--surface-raised);
+      }
+
+      /* --- Before/After comparison --- */
+      .compare-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin: 1rem 0 0.5rem;
+      }
+      .compare-before,
+      .compare-after {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0.4rem 0.7rem;
+        color: var(--surface);
+      }
+      .compare-before {
+        background: var(--problem);
+      }
+      .compare-after {
+        background: var(--solution);
+      }
+      .compare-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .compare-row pre {
+        margin: 0;
+      }
+
+      /* --- Code blocks + syntax highlighting --- */
+      pre {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.65;
+        overflow-x: auto;
+      }
+      code {
+        font-family: var(--font-mono);
+      }
+      p code,
+      li code,
+      td code {
+        font-size: 0.88em;
+        background: var(--surface-sunken);
+        padding: 0.1rem 0.35rem;
+      }
+      .tok-keyword {
+        color: var(--accent);
+      } /* func, type, struct, if, return */
+      .tok-type {
+        color: var(--warning);
+      } /* int, string, bool, error */
+      .tok-string {
+        color: var(--solution);
+      } /* "quoted strings" */
+      .tok-comment {
+        color: var(--text-faint);
+        font-style: italic;
+      }
+      .tok-func {
+        color: #74a9ff;
+      } /* function names */
+      .tok-number {
+        color: var(--accent);
+      } /* 42, 3.14 */
+      .tok-generic {
+        color: var(--problem);
+      } /* T, ID in generics */
+      .tok-builtin {
+        color: #4dd9ff;
+      } /* make, len, append */
+      .tok-punct {
+        color: var(--text-muted);
+      } /* { } ( ) ; = : */
+      .tok-attr {
+        color: var(--accent);
+      } /* Nix attribute names */
+
+      /* --- Dependency tree / ASCII diagrams --- */
+      .dep-tree {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.7;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .dep-tree .root {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .dep-tree .ok {
+        color: var(--solution);
+      }
+      .dep-tree .unwanted {
+        color: var(--problem);
+      }
+
+      /* --- Inline node-and-arrow diagrams --- */
+      .diagram {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+      }
+      .node {
+        display: inline-block;
+        padding: 0.35rem 0.7rem;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: var(--surface-sunken);
+        border: 1px solid var(--border-strong);
+      }
+      .node-core {
+        background: var(--accent);
+        color: var(--surface);
+        border-color: var(--accent);
+      }
+      .node-problem {
+        background: var(--problem);
+        color: var(--surface);
+        border-color: var(--problem);
+      }
+      .node-good {
+        background: var(--solution);
+        color: var(--surface);
+        border-color: var(--solution);
+      }
+      .arrow {
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Grids (responsive) --- */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      /* --- Inline TOC (alternative to sidebar) --- */
+      .toc {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        padding: 1rem 1.3rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .toc h3 {
+        margin-bottom: 0.5rem;
+      }
+      .toc ul {
+        list-style: none;
+        padding: 0;
+      }
+      .toc li {
+        margin: 0.25rem 0;
+      }
+      .toc a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+      .toc a:hover {
+        color: var(--accent);
+      }
+
+      /* --- Migration / numbered steps --- */
+      .migration-step {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+        padding: 1rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+      }
+      .migration-num {
+        font-family: var(--font-mono);
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .migration-content h4 {
+        margin-bottom: 0.2rem;
+      }
+      .migration-content p {
+        margin-bottom: 0;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      /* --- Footer --- */
+      .footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.8rem;
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Responsive --- */
+      @media (min-width: 1024px) {
+        .sidebar {
+          display: block;
+        }
+      }
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+          padding: 1rem;
+        }
+        .top-bar {
+          padding: 0.6rem 1rem;
+          flex-wrap: wrap;
+          gap: 0.3rem;
+        }
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .compare-header,
+        .compare-row {
+          grid-template-columns: 1fr;
+        }
+        .stat-grid,
+        .scorecard {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .migration-step {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Full-bleed top bar (optional — remove for quieter reports) -->
+    <div class="top-bar">
+      <span>DATA-MODEL DEEP DIVE</span>
+      <span>2026-10-15</span>
+      <span>templ-components · series #3</span>
+    </div>
+
+    <div class="layout">
+      <!-- Sidebar TOC (hidden below 1024px; use inline .toc if you prefer) -->
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#findings">Problem Catalog</a>
+          <a href="#strengths">What Is Right</a>
+          <a href="#vision">The Vision</a>
+          <a href="#model">The Go Model</a>
+          <a href="#proposal">Before / After</a>
+          <a href="#validation">Validation</a>
+          <a href="#decisions">Decision Log</a>
+          <a href="#antipatterns">Anti-Patterns</a>
+          <a href="#plan">Migration Plan</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <!-- Hero -->
+        <div class="hero">
+          <div class="hero-shapes">
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="hero-badge">Architecture Deep-Dive</div>
+          <h1>The Color Domain Model</h1>
+          <p class="hero-subtitle">
+            One concept — &ldquo;why is this thing colored&rdquo; — is modeled thirteen
+            different ways in this library: 10 enums, 12 lookup maps, 3 palette
+            slices, ~10 fixed-color sites, 52 CSS tokens nobody emits, and 2 guard
+            regexes with a stale hue list. This is the deep dive into that
+            fragmentation and the typed model that collapses it.
+          </p>
+        </div>
+
+        <!-- Inline TOC (alternative to sidebar; pick one) -->
+        <nav class="toc">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#summary">Summary</a></li>
+            <li><a href="#findings">Problem Catalog</a></li>
+            <li><a href="#strengths">What the model gets right</a></li>
+            <li><a href="#vision">The Vision</a></li>
+            <li><a href="#model">The Go Data Model</a></li>
+            <li><a href="#proposal">Composition in Action</a></li>
+            <li><a href="#validation">Validation Layer</a></li>
+            <li><a href="#decisions">Decision Log</a></li>
+            <li><a href="#antipatterns">Anti-Patterns</a></li>
+            <li><a href="#plan">Migration Roadmap</a></li>
+          </ul>
+        </nav>
+
+        <!-- Stats Dashboard -->
+        <h2 id="summary"><span class="num">00</span>Summary</h2>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">13</div>
+            <div class="stat-label">Color vocabularies (10 enums + 3 palettes)</div>
+          </div>
+          <div class="stat-card stat-bad">
+            <div class="stat-value">1,880</div>
+            <div class="stat-label">Raw color-class occurrences</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">669</div>
+            <div class="stat-label">Hand-maintained <code>dark:</code> pairs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">233</div>
+            <div class="stat-label">Unique color tokens across 14 hue families</div>
+          </div>
+          <div class="stat-card stat-bad">
+            <div class="stat-value">6</div>
+            <div class="stat-label">Distinct &ldquo;green = success&rdquo; recipes</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">4</div>
+            <div class="stat-label">Spellings of &ldquo;error&rdquo;: error · danger · red · corruption</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">52 / 0</div>
+            <div class="stat-label">tc-* semantic tokens defined / emitted by components</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">1</div>
+            <div class="stat-label">Table the redesign needs (tone &times; surface)</div>
+          </div>
+        </div>
+        <div class="card card-warning">
+          <h4>Companion reports</h4>
+          <p>
+            This extends <em>2026-07-18 data-model-review</em> (which concluded
+            &ldquo;typed enums everywhere — the Props model is a good fit&rdquo;) and
+            <em>2026-10-14 50-big-picture-ideas</em>. The prior verdict was correct
+            <strong>locally</strong>: every component&rsquo;s enum is well-formed. The
+            finding here is <strong>global</strong>: the color subdomain has no
+            shared language between those well-formed islands. It also slots the Go
+            layer into ADR-0044&rsquo;s CSS-token plan (T1, v2-gated) without
+            contradicting its rejected options.
+          </p>
+        </div>
+
+        <!-- Findings as Cards -->
+        <h2 id="findings"><span class="num">01</span>Problem Catalog</h2>
+
+        <div class="card card-problem">
+          <h4>C1 — Critical · No ubiquitous language: 13 dialects for one concept</h4>
+          <p>
+            Every component package invented its own color vocabulary. Five of the
+            ten enums even agree on the <em>word</em> (&ldquo;tone&rdquo;) — the
+            ubiquitous language already exists; it was never extracted:
+          </p>
+          <table>
+            <thead>
+              <tr><th>Enum</th><th>Values</th><th>Naming axis</th><th>Where</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>StatusTone</code></td><td>neutral · success · warning · danger · info</td><td>semantic</td><td>display/status_dot.go:12</td></tr>
+              <tr><td><code>ScrollbackTone</code></td><td>neutral · info · success · warning · danger</td><td>semantic</td><td>display/scrollback.templ:6</td></tr>
+              <tr><td><code>BadgeType</code></td><td>primary · success · warning · error · info · neutral</td><td>semantic</td><td>display/badge.templ:10</td></tr>
+              <tr><td><code>FeedbackType</code></td><td>success · error · warning · info</td><td>semantic</td><td>feedback/styles.go:11</td></tr>
+              <tr><td><code>StatTone</code></td><td>blue · green · yellow · red · purple</td><td><strong>hue</strong></td><td>display/card.templ:239</td></tr>
+              <tr><td><code>KanbanTone</code></td><td>gray · blue · green · yellow · red · purple</td><td><strong>hue</strong></td><td>display/kanban.templ:62</td></tr>
+              <tr><td><code>TrendDirection</code></td><td>up · down · warn · none</td><td>direction→color</td><td>display/card.templ:228</td></tr>
+              <tr><td><code>AvatarStatus</code></td><td>online · offline</td><td>presence→color</td><td>display/avatar.templ:28</td></tr>
+              <tr><td><code>ButtonType</code></td><td>primary · secondary · danger · ghost · link · outline-danger/warning/success/info</td><td>action+color</td><td>display/button_go.go:11</td></tr>
+              <tr><td><code>errorpage.Family</code></td><td>rejection · conflict · transient · corruption · infrastructure · orchestration</td><td>domain→hue</td><td>errorpage/styles.go:17</td></tr>
+              <tr><td>chart palettes ×3</td><td>8 hues as <code>[]string</code> slices</td><td>categorical</td><td>line_chart.go:143 · pie_chart.go:101 · segment_bar.go:43</td></tr>
+            </tbody>
+          </table>
+          <p>
+            Consequence: a consumer rendering <em>one</em> status across Badge +
+            StatusDot + Alert translates between three enums whose values
+            overlap-but-differ. The word for &ldquo;failure&rdquo; is
+            <code>error</code> in Badge/Feedback, <code>danger</code> in
+            StatusTone/ScrollbackTone/ButtonType, <code>red</code> in
+            StatTone/KanbanTone, <code>corruption</code> in errorpage, and
+            <code>down</code>/<code>TrendDown</code> elsewhere — plus the raw
+            status strings <code>failed/critical/unhealthy/down/red</code> in
+            <code>statusToBadgeMap</code> (badge.templ:179).
+          </p>
+        </div>
+
+        <div class="card card-problem">
+          <h4>C2 — Critical · The class layer is stringly typed everywhere</h4>
+          <p>
+            1,880 raw color-utility occurrences (233 unique tokens, 14 hue
+            families) flow through free-form strings. Nine props fields accept
+            color-ish strings with <strong>no type, no validation, silent
+            failure</strong>: <code>Spinner.Color</code>, <code>ProgressBar.Color</code>,
+            <code>CircularProgress.Color/TrackColor</code>,
+            <code>SegmentBarSegment.Color</code> (&ldquo;a full class pair&rdquo;),
+            <code>BarChartBar.Color</code>, <code>LineChartSeries.Color</code>,
+            <code>PieChartSlice.Color</code>, <code>HeatmapProps.ColorVar</code>.
+            A typo like <code>"bg-emerald-6oo"</code> compiles, passes every test,
+            and renders the browser default — the contract lives only in doc
+            comments.
+          </p>
+        </div>
+
+        <div class="card card-problem">
+          <h4>H1 — High · Six hand-maintained &ldquo;green = success&rdquo; recipes</h4>
+          <p>
+            The same semantic decision — success is green, light 500-ish, dark
+            400-ish — is re-encoded per component, each with its own shade
+            arithmetic:
+          </p>
+          <table>
+            <thead><tr><th>Site</th><th>The green recipe (verbatim)</th></tr></thead>
+            <tbody>
+              <tr><td>statusToneBgMap</td><td><code>bg-green-500 dark:bg-green-400</code></td></tr>
+              <tr><td>kanbanToneLookup</td><td><code>bg-green-500 dark:bg-green-400</code> — an exact clone of the row above (ADR-0009 baseline group)</td></tr>
+              <tr><td>badgeStyleMap</td><td><code>bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300</code> + dot <code>bg-green-500</code></td></tr>
+              <tr><td>feedbackStyleMap</td><td>border <code>border-green-200 dark:border-green-800</code> · bg <code>bg-green-50 dark:bg-green-900/20</code> · text <code>text-green-800 dark:text-green-200</code> · icon <code>text-green-600 dark:text-green-400</code></td></tr>
+              <tr><td>scrollbackToneLookup</td><td><code>text-green-700 dark:text-green-400</code></td></tr>
+              <tr><td>StatTone tile</td><td><code>bg-green-50 dark:bg-green-900/30</code> + <code>text-green-600 dark:text-green-400</code></td></tr>
+              <tr><td>InlineSuccess / TrendUp</td><td><code>text-green-700 dark:text-green-400</code> (+ icon <code>text-green-500 dark:text-green-400</code>) — hardcoded, no lookup at all</td></tr>
+            </tbody>
+          </table>
+          <p>
+            The per-surface differences are legitimate design (a dot needs a solid,
+            an alert needs a tint). The problem is that the <em>relationship</em>
+            between those surfaces is maintained by parallel editing — seven places
+            must agree when the recipe changes, and nothing links them.
+          </p>
+        </div>
+
+        <div class="card card-problem">
+          <h4>H2 — High · Hue names frozen into the public API</h4>
+          <p>
+            <code>StatToneBlue = "blue"</code> and <code>KanbanToneGreen = "green"</code>
+            encode an implementation detail (which Tailwind hue) into the
+            permanent v1/v2 contract. After ADR-0044&rsquo;s T1 swap the accent
+            family is <code>accent-*</code>, not blue — the enum value will still
+            say &ldquo;blue&rdquo;. The inverse inversion exists too:
+            <code>statusToBadgeMap</code> keys on the <em>color words</em>
+            <code>"green"/"red"/"yellow"/"blue"</code> as status semantics —
+            the consumer&rsquo;s domain language mapped through color names.
+          </p>
+        </div>
+
+        <div class="card card-problem">
+          <h4>H3 — High · The light/dark invariant lives in a regex, not the model</h4>
+          <p>
+            &ldquo;Every color needs a dark: sibling&rdquo; is enforced by
+            <code>TestDarkModeCompliance</code>/<code>TestDarkModeSemanticColors</code>
+            — a source-text regex scan (utils/darkmode_scan.go). The model cannot
+            express the pairing, so 669 <code>dark:</code> occurrences are
+            hand-maintained and policed after the fact. Worse, the semantic
+            regex&rsquo;s hue list is a <strong>stale copy</strong> of the palette:
+            it knows <code>bg-(blue|red|green|amber|orange|gray)</code> and five
+            text hues — <code>emerald, rose, violet, cyan, pink, purple</code> and
+            <code>bg-yellow</code> escape the semantic scan entirely
+            (darkmode_scan.go:112-114). The charts currently carry correct pairs,
+            but a dropped <code>dark:</code> in any of those seven hues would ship
+            silently.
+          </p>
+        </div>
+
+        <div class="card card-problem">
+          <h4>H4 — High · Four unlinked representations of one concept</h4>
+          <p>
+            &ldquo;The library&rsquo;s danger color&rdquo; exists simultaneously as:
+            (1) Go lookup maps (12 of them), (2) emitted Tailwind classes,
+            (3) 52 <code>--color-tc-*</code> token definitions in
+            templ-components-theme.css — shade-complete since 2026-10-10, yet
+            <strong>emitted by zero components</strong> (ADR-0008 stays opt-in),
+            and (4) the hand-maintained &ldquo;Which colors does the library
+            use?&rdquo; table in docs/recipes/theme-bridge.md. Five if you count the
+            guard regexes. None can reference another; every change is a
+            five-place edit.
+          </p>
+        </div>
+
+        <div class="card card-warning">
+          <h4>M1 — Medium · Runtime validation masquerading as type safety</h4>
+          <p>
+            <code>PageProps.ThemeColor/DarkThemeColor</code> are raw strings
+            validated at render time by the <code>validHexColor</code> regex
+            (layout/base.templ:13-24). <code>HeatmapProps.ColorVar</code> is a
+            two-variable protocol smuggled through one string: pass
+            <code>"--ds-brand"</code> and the component synthesizes
+            <code>rgba(var(--ds-brand-rgb), n)</code> (heatmap.go:140-144) — the
+            required <code>-rgb</code> triplet sibling is documented nowhere in the
+            type system and fails silently as an invisible heatmap.
+          </p>
+        </div>
+
+        <div class="card card-warning">
+          <h4>M2 — Medium · ButtonType couples two axes</h4>
+          <p>
+            <code>ButtonPrimary…ButtonGhost</code> (hierarchy/variant axis) and
+            <code>ButtonOutlineDanger/Warning/Success/Info</code> (color axis) live
+            in one 9-value enum. The cross product is already leaking — there is no
+            <code>ButtonOutlinePrimary</code> — and every new variant multiplies:
+            the enum grows variant×color instead of composing them.
+          </p>
+        </div>
+
+        <div class="card card-warning">
+          <h4>M3 — Medium · Fixed-color sites with no derivation channel</h4>
+          <p>
+            StepIndicator state colors, CountBadge
+            (<code>bg-red-600 dark:bg-red-500</code>), ValidationSummary&rsquo;s
+            red set, ConfirmDelete, ProgressBar/CircularProgress defaults, the
+            echarts bridge&rsquo;s five hardcoded gray hex pairs
+            (dark_mode_bridge.go:21-29) — all semantic colors with no tone type
+            and no token reference. They cannot be re-skinned by any mechanism
+            short of editing the library.
+          </p>
+        </div>
+
+        <h3 style="margin-top:2rem">Severity roll-up</h3>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Critical</span>
+          <h3>C1 · The color subdomain has no shared type</h3>
+          <div class="where">display/* · feedback/styles.go · errorpage/styles.go · charts</div>
+          <p>
+            Thirteen vocabularies, four spellings of &ldquo;error&rdquo;, six green
+            recipes — every symptom in C2/H1/H2/H4 is this one root cause: the
+            concept &ldquo;color intent&rdquo; was never modeled once, so every
+            component re-modeled it locally.
+          </p>
+          <div class="callout callout-solution">
+            <strong>Fix</strong>
+            One canonical <code>tone.Tone</code> (semantic) + <code>tone.Hue</code>
+            (categorical) pair in a leaf package; every existing enum derives from
+            it via adapter methods; v2 collapses the duplicates (ADR-0006
+            alias-then-remove precedent).
+          </div>
+        </div>
+
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Critical</span>
+          <h3>C2 · Color strings cross the API boundary untyped</h3>
+          <div class="where">LineChartSeries.Color · SegmentBarSegment.Color · Spinner.Color · ThemeColor · ColorVar · +4 more</div>
+          <p>
+            Nine props fields take free-form class/hex/CSS-var strings. The
+            failure mode is silent: an unknown class emits verbatim and renders the
+            browser default; a bad hex fails a render-time regex; a missing
+            <code>-rgb</code> sibling var makes the heatmap invisible.
+          </p>
+          <div class="callout callout-solution">
+            <strong>Fix</strong>
+            Typed <code>ChartColor</code> constants (untyped literals keep
+            compiling — non-breaking), branded <code>HexColor</code> with a
+            validating constructor, and a documented single-token contract for
+            ColorVar.
+          </div>
+        </div>
+
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>H3 · The guard regex is a stale copy of the palette</h3>
+          <div class="where">utils/darkmode_scan.go:104-114</div>
+          <p>
+            The dark-mode guard&rsquo;s semantic hue list covers 6 bg / 5 text
+            hues; the library also uses emerald, rose, violet, cyan, pink, purple,
+            and bg-yellow (charts, kanban, stat tiles). Those escape the scan. The
+            model is invisible to the type system, so the guard guesses — and the
+            guess drifts.
+          </p>
+          <div class="callout callout-solution">
+            <strong>Fix</strong>
+            Derive the scanned hue list from the tone/hue tables (single source);
+            longer term the <code>Pair</code> type makes the light/dark coupling
+            structural and the library-side regex retires.
+          </div>
+        </div>
+
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice to have</span>
+          <h3>M3 · Fixed-color sites are unreachable by theming</h3>
+          <div class="where">StepIndicator · CountBadge · ValidationSummary · echarts bridge</div>
+          <p>
+            These sites accept no tone, no token, no override — they are correct
+            today and un-skinnable forever. Routing them through the tone table
+            (or at minimum the tc-* opt-in layer) costs one line each once the
+            table exists.
+          </p>
+        </div>
+
+        <!-- Strengths -->
+        <h2 id="strengths">What the model gets right</h2>
+        <p class="hero-subtitle" style="text-align:left">
+          Fairness first: the 2026-07-18 review&rsquo;s verdict stands locally.
+          The right raw material for the redesign is already in the codebase.
+        </p>
+        <div class="strengths">
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>ADR-0006 is the proof the unification pattern works</strong>
+              <span>AlertType + ToastType collapsed into one FeedbackType with shared generic lookup — aliases removed at v2. The redesign is this pattern applied to the whole color subdomain, not a new invention.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>errorpage.Family is the best-modeled color consumer</strong>
+              <span>A real domain concept (rejection/conflict/transient/…) with one 10-field visual set per family, single map, single accessor. It shows the library already knows how to separate <em>domain</em> from <em>visual</em> — it just did it once, for errors only.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>feedbackStyleSet is the right shared-shape</strong>
+              <span>Border/BG/Text/Icon resolved once for Alert + Toast + the JS mirror (toastJSStyles derives from the same map — zero drift). Generalize this struct, don&rsquo;t replace it.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>chartColor* constants already single-source three palettes</strong>
+              <span>line/pie palettes are literal constants in one file; SegmentBar duplicates them as bg-* twins only because the scanner demands complete literals — a table with two literal columns absorbs that duplication honestly.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>ADR-0044/0008 already own the CSS half and rejected the right things</strong>
+              <span>The accent token family (v2), the shade-complete opt-in tc-* layer, and the explicit rejection of per-component <code>Color</code> props (option D) are all correct. This report adds the missing Go half and changes none of those decisions.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Render-time fallback discipline</strong>
+              <span>Unknown enum → documented fallback, never a panic (zero-runtime-panic guard). The redesign keeps this: invalid input degrades to neutral, the type system just makes valid input the easy path.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Issue Table -->
+        <h2>Findings index</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Severity</th>
+              <th>Finding</th>
+              <th>Resolved by</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>C1</td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td>13 color vocabularies, no shared language, 4 spellings of &ldquo;error&rdquo;</td>
+              <td><span class="badge badge-fixed">tone.Tone + adapters → v2 collapse</span></td>
+            </tr>
+            <tr>
+              <td>C2</td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td>9 untyped color-string props, silent failure on typo</td>
+              <td><span class="badge badge-fixed">ChartColor consts · HexColor · ColorVar contract</span></td>
+            </tr>
+            <tr>
+              <td>H1</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>6 parallel &ldquo;success is green&rdquo; recipes, StatusTone↔KanbanTone clone</td>
+              <td><span class="badge badge-fixed">one tone×surface table</span></td>
+            </tr>
+            <tr>
+              <td>H2</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>Hue names frozen into public enum values</td>
+              <td><span class="badge badge-fixed">Hue axis separation, semantic values in API</span></td>
+            </tr>
+            <tr>
+              <td>H3</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>Dark-pair invariant policed by a regex with a stale hue list</td>
+              <td><span class="badge badge-fixed">Pair type · derived scan list</span></td>
+            </tr>
+            <tr>
+              <td>H4</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>4 unlinked representations (maps · classes · 52 tokens · docs table)</td>
+              <td><span class="badge badge-fixed">single table + generated docs</span></td>
+            </tr>
+            <tr>
+              <td>M1</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td>Runtime hex regex · two-var ColorVar protocol</td>
+              <td><span class="badge badge-fixed">HexColor constructor · documented contract</span></td>
+            </tr>
+            <tr>
+              <td>M2</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td>ButtonType couples variant and color axes</td>
+              <td><span class="badge badge-low">v2+ composition (out of scope here)</span></td>
+            </tr>
+            <tr>
+              <td>M3</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td>Fixed-color sites unreachable by theming</td>
+              <td><span class="badge badge-fixed">route through tone table</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- The Vision -->
+        <h2 id="vision"><span class="num">02</span>The Vision</h2>
+        <div class="card card-solution">
+          <h4>What perfection looks like</h4>
+          <p>
+            <strong>1.</strong> One word per intent — a consumer says
+            <code>tone.Danger</code> and every component (Badge, Alert, Toast,
+            StatusDot, Button outline, Scrollback) renders its danger treatment.
+            <strong>2.</strong> Hues are data-viz vocabulary — categorical series
+            colors — never status semantics. <strong>3.</strong> The green recipe
+            is chosen exactly once, in one table, and every surface (dot, tint,
+            text, border, ring, icon) derives from it. <strong>4.</strong> The
+            light/dair pairing is structural — a value of type
+            <code>Pair</code> that cannot exist with only one half.
+            <strong>5.</strong> The guard regexes, the docs color table, and the
+            CSS token inventory are all generated from that one table — five
+            hand-maintained representations become one.
+            <strong>6.</strong> The library&rsquo;s standing theming decision
+            survives untouched: values still come from CSS
+            (<code>@theme</code> / tc-* tokens); Go owns the <em>intent</em>
+            vocabulary only.
+          </p>
+        </div>
+
+        <!-- The Go Model -->
+        <h2 id="model"><span class="num">03</span>The Go Data Model</h2>
+
+        <div class="card">
+          <h4>utils/tone — the leaf package every module may import</h4>
+          <p>
+            <code>utils</code> is already the DAG leaf (root packages, feedback,
+            errorpage, charts all import it) — the only home the import graph
+            permits.
+          </p>
+        </div>
+        <pre><code><span class="tok-comment">// Package tone is the library's canonical color-intent vocabulary.</span>
+<span class="tok-comment">// Two orthogonal axes, because the current code proves they ARE orthogonal:</span>
+<span class="tok-comment">// status semantics (success/danger/…) and categorical identity (chart series).</span>
+<span class="tok-keyword">package</span> tone
+
+<span class="tok-comment">// Tone answers "WHY is this colored?" — one word per intent.</span>
+<span class="tok-keyword">type</span> <span class="tok-type">Tone</span> <span class="tok-type">string</span>
+
+<span class="tok-keyword">const</span> (
+	<span class="tok-type">ToneNeutral</span> <span class="tok-type">Tone</span> = <span class="tok-string">"neutral"</span> <span class="tok-comment">// absence of signal</span>
+	<span class="tok-type">ToneSuccess</span> <span class="tok-type">Tone</span> = <span class="tok-string">"success"</span> <span class="tok-comment">// goal reached, healthy</span>
+	<span class="tok-type">ToneWarning</span> <span class="tok-type">Tone</span> = <span class="tok-string">"warning"</span> <span class="tok-comment">// attention, degraded</span>
+	<span class="tok-type">ToneDanger</span>  <span class="tok-type">Tone</span> = <span class="tok-string">"danger"</span>  <span class="tok-comment">// failure, destructive</span>
+	<span class="tok-type">ToneInfo</span>    <span class="tok-type">Tone</span> = <span class="tok-string">"info"</span>    <span class="tok-comment">// neutral-active, in progress</span>
+	<span class="tok-type">ToneAccent</span>  <span class="tok-type">Tone</span> = <span class="tok-string">"accent"</span>  <span class="tok-comment">// brand axis (ADR-0044)</span>
+)
+
+<span class="tok-keyword">func</span> (t <span class="tok-type">Tone</span>) <span class="tok-func">IsValid</span>() <span class="tok-type">bool</span> { <span class="tok-keyword">return</span> <span class="tok-builtin">contains</span>(allTones, t) } <span class="tok-comment">// THE one IsValid</span>
+
+<span class="tok-comment">// Hue answers "WHICH categorical color?" — data-viz and decoration only.</span>
+<span class="tok-keyword">type</span> <span class="tok-type">Hue</span> <span class="tok-type">string</span>
+
+<span class="tok-keyword">const</span> (
+	<span class="tok-type">HueBlue</span> <span class="tok-type">Hue</span> = <span class="tok-string">"blue"</span>; <span class="tok-type">HueEmerald</span> <span class="tok-type">Hue</span> = <span class="tok-string">"emerald"</span>; <span class="tok-type">HueAmber</span> <span class="tok-type">Hue</span> = <span class="tok-string">"amber"</span>
+	<span class="tok-type">HueRose</span> <span class="tok-type">Hue</span> = <span class="tok-string">"rose"</span>; <span class="tok-type">HueViolet</span> <span class="tok-type">Hue</span> = <span class="tok-string">"violet"</span>; <span class="tok-type">HueCyan</span> <span class="tok-type">Hue</span> = <span class="tok-string">"cyan"</span>
+	<span class="tok-type">HueOrange</span> <span class="tok-type">Hue</span> = <span class="tok-string">"orange"</span>; <span class="tok-type">HuePink</span> <span class="tok-type">Hue</span> = <span class="tok-string">"pink"</span>; <span class="tok-type">HuePurple</span> <span class="tok-type">Hue</span> = <span class="tok-string">"purple"</span>
+	<span class="tok-type">HueGray</span> <span class="tok-type">Hue</span> = <span class="tok-string">"gray"</span>
+)</code></pre>
+
+        <div class="card">
+          <h4>Pair — the light/dark coupling becomes structural</h4>
+          <p>
+            Both fields are <strong>complete literals including the variant
+            prefix</strong> — the Tailwind scanner (and the ADR-0045 shipped class
+            corpus) sees every candidate; joining them at runtime is a plain space
+            join of complete tokens, which is safe.
+          </p>
+        </div>
+        <pre><code><span class="tok-comment">// Pair couples a light utility with its dark sibling. The dark half carries</span>
+<span class="tok-comment">// its own variant prefix so both are scanner-visible complete literals.</span>
+<span class="tok-keyword">type</span> <span class="tok-type">Pair</span> <span class="tok-keyword">struct</span> {
+	Light <span class="tok-type">string</span> <span class="tok-comment">// "bg-green-500"</span>
+	Dark  <span class="tok-type">string</span> <span class="tok-comment">// "dark:bg-green-400"</span>
+}
+
+<span class="tok-keyword">func</span> (p <span class="tok-type">Pair</span>) <span class="tok-func">Classes</span>() <span class="tok-type">string</span> { <span class="tok-keyword">return</span> p.Light + <span class="tok-string">" "</span> + p.Dark }</code></pre>
+
+        <div class="card">
+          <h4>The one table — tone × surface, chosen once</h4>
+          <p>
+            This generalizes <code>feedbackStyleSet</code> (Border/BG/Text/Icon)
+            from one package to the whole library. Every component&rsquo;s map
+            becomes a one-line view of this table.
+          </p>
+        </div>
+        <pre><code><span class="tok-comment">// Surfaces is what a tone looks like on every surface the library paints.</span>
+<span class="tok-comment">// THE only place a shade is chosen by hand.</span>
+<span class="tok-keyword">type</span> <span class="tok-type">Surfaces</span> <span class="tok-keyword">struct</span> {
+	Dot      <span class="tok-type">Pair</span> <span class="tok-comment">// solid dot: StatusDot, Kanban, Avatar, Badge dot</span>
+	Text     <span class="tok-type">Pair</span> <span class="tok-comment">// strong text on plain background</span>
+	TextSoft <span class="tok-type">Pair</span> <span class="tok-comment">// readable text on the tint</span>
+	Border   <span class="tok-type">Pair</span> <span class="tok-comment">// hairline for tinted containers</span>
+	BGTint   <span class="tok-type">Pair</span> <span class="tok-comment">// washed container: badges, alerts, tiles</span>
+	BGSolid  <span class="tok-type">Pair</span> <span class="tok-comment">// solid fill: primary buttons, bars</span>
+	Icon     <span class="tok-type">Pair</span> <span class="tok-comment">// icon-only accent</span>
+	Ring     <span class="tok-type">Pair</span> <span class="tok-comment">// focus rings</span>
+}
+
+<span class="tok-keyword">var</span> styles = <span class="tok-keyword">map</span>[<span class="tok-type">Tone</span>]<span class="tok-type">Surfaces</span>{
+	<span class="tok-type">ToneSuccess</span>: {
+		Dot:      <span class="tok-type">Pair</span>{<span class="tok-string">"bg-green-500"</span>, <span class="tok-string">"dark:bg-green-400"</span>},
+		BGTint:   <span class="tok-type">Pair</span>{<span class="tok-string">"bg-green-50"</span>, <span class="tok-string">"dark:bg-green-900/20"</span>},
+		Text:     <span class="tok-type">Pair</span>{<span class="tok-string">"text-green-700"</span>, <span class="tok-string">"dark:text-green-400"</span>},
+		TextSoft: <span class="tok-type">Pair</span>{<span class="tok-string">"text-green-800"</span>, <span class="tok-string">"dark:text-green-200"</span>},
+		Border:   <span class="tok-type">Pair</span>{<span class="tok-string">"border-green-200"</span>, <span class="tok-string">"dark:border-green-800"</span>},
+		Icon:     <span class="tok-type">Pair</span>{<span class="tok-string">"text-green-600"</span>, <span class="tok-string">"dark:text-green-400"</span>},
+		<span class="tok-comment">// …</span>
+	},
+	<span class="tok-comment">// neutral, warning, danger, info, accent — five more entries,</span>
+	<span class="tok-comment">// and NOTHING else in the library hand-picks a status shade again.</span>
+}
+
+<span class="tok-keyword">func</span> <span class="tok-func">Style</span>(t <span class="tok-type">Tone</span>) <span class="tok-type">Surfaces</span> { <span class="tok-keyword">return</span> utils.<span class="tok-func">Lookup</span>(styles, t, styles[<span class="tok-type">ToneNeutral</span>]) }</code></pre>
+
+        <div class="card">
+          <h4>Charts — one hue table, two literal columns</h4>
+          <p>
+            Absorbs the three palette slices AND SegmentBar&rsquo;s forced bg-*
+            duplication: one row per hue, both spellings side by side.
+            <code>ChartColor</code> stays a string type so existing untyped
+            literals keep compiling — non-breaking.
+          </p>
+        </div>
+        <pre><code><span class="tok-keyword">type</span> <span class="tok-type">ChartColor</span> <span class="tok-type">string</span> <span class="tok-comment">// complete literal pair, or a constant below</span>
+
+<span class="tok-keyword">const</span> (
+	<span class="tok-type">ChartBlue</span>   <span class="tok-type">ChartColor</span> = <span class="tok-string">"text-blue-600 dark:text-blue-400"</span>
+	<span class="tok-type">ChartEmerald</span> <span class="tok-type">ChartColor</span> = <span class="tok-string">"text-emerald-600 dark:text-emerald-400"</span>
+	<span class="tok-comment">// … 6 more, replacing chartColor* + 3 palette slices</span>
+)
+
+<span class="tok-keyword">type</span> <span class="tok-type">LineChartSeries</span> <span class="tok-keyword">struct</span> {
+	<span class="tok-comment">// Color overrides the palette. Takes a ChartColor constant</span>
+	<span class="tok-comment">// (display.ChartEmerald); raw literals still compile.</span>
+	Color <span class="tok-type">ChartColor</span>
+}</code></pre>
+
+        <div class="card">
+          <h4>Adapters — the v1 bridge, ADR-0006 pattern</h4>
+        </div>
+        <pre><code><span class="tok-comment">// display — existing enums DERIVE instead of owning their own semantics:</span>
+<span class="tok-keyword">func</span> (t <span class="tok-type">StatTone</span>) <span class="tok-func">Hue</span>() tone.<span class="tok-type">Hue</span>          <span class="tok-comment">// "blue" → HueBlue … (v2: field type becomes Hue)</span>
+<span class="tok-keyword">func</span> (k <span class="tok-type">KanbanTone</span>) <span class="tok-func">Hue</span>() tone.<span class="tok-type">Hue</span>
+<span class="tok-keyword">func</span> (d <span class="tok-type">TrendDirection</span>) <span class="tok-func">Tone</span>() tone.<span class="tok-type">Tone</span>  <span class="tok-comment">// Up→Success, Down→Danger, Warn→Warning, None→Neutral</span>
+<span class="tok-keyword">func</span> (s <span class="tok-type">AvatarStatus</span>) <span class="tok-func">Tone</span>() tone.<span class="tok-type">Tone</span>  <span class="tok-comment">// Online→Success, Offline→Neutral</span>
+<span class="tok-keyword">func</span> (b <span class="tok-type">BadgeType</span>) <span class="tok-func">Tone</span>() tone.<span class="tok-type">Tone</span>     <span class="tok-comment">// Primary→Accent, Success→Success, …</span>
+
+<span class="tok-comment">// feedback — values already align 3 of 4:</span>
+<span class="tok-keyword">func</span> (f <span class="tok-type">FeedbackType</span>) <span class="tok-func">Tone</span>() tone.<span class="tok-type">Tone</span> <span class="tok-comment">// Error→Danger (v2 renames the value, ADR-0006/0022)</span>
+
+<span class="tok-comment">// errorpage — the domain concept STAYS; only the visual derives:</span>
+<span class="tok-keyword">func</span> (f <span class="tok-type">Family</span>) <span class="tok-func">Hue</span>() tone.<span class="tok-type">Hue</span>   <span class="tok-comment">// Corruption→red, Transient→blue, Rejection→amber …</span>
+
+<span class="tok-comment">// layout — runtime regex becomes a branded constructor:</span>
+<span class="tok-keyword">type</span> <span class="tok-type">HexColor</span> <span class="tok-type">string</span>
+<span class="tok-keyword">func</span> <span class="tok-func">ParseHexColor</span>(raw <span class="tok-type">string</span>) (<span class="tok-type">HexColor</span>, <span class="tok-type">error</span>) <span class="tok-comment">// #rgb … #rrggbbaa, once, at the boundary</span></code></pre>
+
+        <!-- Composition in Action -->
+        <h2 id="proposal"><span class="num">04</span>Composition in Action</h2>
+        <div class="compare-header">
+          <div class="compare-before">Before — four maps, four green recipes</div>
+          <div class="compare-after">After — one table, structure only</div>
+        </div>
+        <div class="compare-row">
+          <div>
+            <pre><code><span class="tok-comment">// status_dot.go:38 — recipe #1</span>
+<span class="tok-type">StatusToneSuccess</span>: <span class="tok-string">"bg-green-500 dark:bg-green-400"</span>,
+
+<span class="tok-comment">// kanban.templ:92 — recipe #2 (clone of #1)</span>
+<span class="tok-type">KanbanToneGreen</span>: <span class="tok-string">"bg-green-500 dark:bg-green-400"</span>,
+
+<span class="tok-comment">// badge.templ:115 — recipe #3</span>
+<span class="tok-type">BadgeSuccess</span>: {<span class="tok-string">"bg-green-100 text-green-800"</span> +
+	<span class="tok-string">" dark:bg-green-900/30 dark:text-green-300"</span>,
+	<span class="tok-string">"bg-green-500"</span>},
+
+<span class="tok-comment">// feedback/styles.go:33 — recipe #4</span>
+<span class="tok-type">FeedbackSuccess</span>: {
+	<span class="tok-type">Border</span>: <span class="tok-string">"border-green-200 dark:border-green-800"</span>,
+	<span class="tok-type">BG</span>:     <span class="tok-string">"bg-green-50 dark:bg-green-900/20"</span>,
+	<span class="tok-type">Text</span>:   <span class="tok-string">"text-green-800 dark:text-green-200"</span>,
+	<span class="tok-type">Icon</span>:   <span class="tok-string">"text-green-600 dark:text-green-400"</span>},</code></pre>
+          </div>
+          <div>
+            <pre><code><span class="tok-comment">// EVERY component becomes structure + derivation:</span>
+
+<span class="tok-comment">// StatusDot</span>
+<span class="tok-keyword">class</span>={tone.<span class="tok-func">Style</span>(props.Tone).Dot.<span class="tok-func">Classes</span>()}
+
+<span class="tok-comment">// Badge — color from the table, shape stays local</span>
+s := tone.<span class="tok-func">Style</span>(props.Type.<span class="tok-func">Tone</span>())
+<span class="tok-keyword">class</span>={utils.<span class="tok-func">Class</span>(s.BGTint.<span class="tok-func">Classes</span>(),
+	s.TextSoft.<span class="tok-func">Classes</span>(),
+	<span class="tok-string">"rounded-full px-2.5 py-0.5 text-xs font-medium"</span>)}
+
+<span class="tok-comment">// Alert — feedbackStyleSet survives as a thin view</span>
+s := tone.<span class="tok-func">Style</span>(props.Type.<span class="tok-func">Tone</span>())
+set := feedbackStyleSet{
+	<span class="tok-type">Border</span>: s.Border.<span class="tok-func">Classes</span>(), <span class="tok-type">BG</span>: s.BGTint.<span class="tok-func">Classes</span>(),
+	<span class="tok-type">Text</span>: s.TextSoft.<span class="tok-func">Classes</span>(), <span class="tok-type">Icon</span>: s.Icon.<span class="tok-func">Classes</span>()}
+
+<span class="tok-comment">// One recipe change = one table edit,</span>
+<span class="tok-comment">// 1,880 sites follow. No clone to forget.</span></code></pre>
+          </div>
+        </div>
+        <div class="compare-header">
+          <div class="compare-before">Before — hue frozen in API, stringly chart color</div>
+          <div class="compare-after">After — semantic API, typed constant</div>
+        </div>
+        <div class="compare-row">
+          <div>
+            <pre><code><span class="tok-comment">// card.templ:244 — implementation detail in the contract</span>
+<span class="tok-type">StatToneBlue</span> <span class="tok-type">StatTone</span> = <span class="tok-string">"blue"</span>
+
+<span class="tok-comment">// line_chart.go:52 — the "full class pair" doc-comment contract</span>
+Color <span class="tok-type">string</span> <span class="tok-comment">// e.g. "text-emerald-600</span>
+              <span class="tok-comment">//   dark:text-emerald-400"</span>
+
+<span class="tok-comment">// consumer code today:</span>
+series := []display.<span class="tok-type">LineChartSeries</span>{{
+	Label: <span class="tok-string">"Signups"</span>,
+	Color: <span class="tok-string">"text-emerald-600 dark:text-emerald-400"</span>,
+}}  <span class="tok-comment">// typo "emera1d" ships silently</span></code></pre>
+          </div>
+          <div>
+            <pre><code><span class="tok-comment">// The stat tile says what it MEANS:</span>
+<span class="tok-keyword">type</span> <span class="tok-type">StatCardProps</span> <span class="tok-keyword">struct</span> {
+	Tile tone.<span class="tok-type">Hue</span> <span class="tok-comment">// zero value = HueBlue (documented default preserved)</span>
+}
+
+<span class="tok-comment">// The chart color is a named constant:</span>
+series := []display.<span class="tok-type">LineChartSeries</span>{{
+	Label: <span class="tok-string">"Signups"</span>,
+	Color: display.<span class="tok-type">ChartEmerald</span>,
+}}
+
+<span class="tok-comment">// Escape hatch preserved: any complete-literal</span>
+<span class="tok-comment">// string still assigns (untyped constant → ChartColor).</span></code></pre>
+          </div>
+        </div>
+
+        <!-- Validation Layer -->
+        <h2 id="validation"><span class="num">05</span>Validation Layer</h2>
+        <div class="card card-solution">
+          <h4>How invalid states become unrepresentable</h4>
+          <p>
+            <strong>Closed sets:</strong> <code>Tone</code>/<code>Hue</code> are
+            string enums with ONE <code>IsValid</code> and ONE exhaustiveness test
+            — replacing ten per-enum IsValid copies and their drift-guarded test
+            counts. <strong>Table completeness:</strong> one test asserts every
+            tone has a <code>Surfaces</code> entry and every
+            <code>Surfaces</code> field has both Pair halves with the
+            <code>dark:</code> prefix present — the invariant the 1,880-site regex
+            scan enforces today, checked at ONE definition site instead.
+            <strong>Boundary validation:</strong> <code>ParseHexColor</code>
+            validates once at construction; <code>PageProps</code> takes
+            <code>HexColor</code>, the render-time regex retires.
+            <strong>Render safety preserved:</strong> unknown tone → neutral
+            fallback inside <code>Style()</code> — a bad value can never crash a
+            page render (the library&rsquo;s standing graceful-degradation rule).
+            <strong>Scanner safety:</strong> every class the table emits is a
+            complete literal inside the package — the ADR-0045 class corpus picks
+            them up; nothing is concatenated from parts.
+          </p>
+        </div>
+
+        <!-- Knowledge scatter -->
+        <h2>Where color knowledge lives — before vs after</h2>
+        <div class="dep-tree">
+          <span class="root">today: ~28 encodings</span> ├──
+          <span class="unwanted">10 enums · 12 class maps/palettes · 8 hue consts · 2 KV branch clusters</span> ├──
+          <span class="unwanted">~10 fixed-color sites (StepIndicator, CountBadge, echarts hex …)</span> ├──
+          <span class="unwanted">52 tc-* CSS tokens defined, emitted by 0 components</span> ├──
+          <span class="unwanted">2 guard regexes with a stale hue list</span> └──
+          <span class="unwanted">1 hand-maintained docs table (theme-bridge.md)</span>
+        </div>
+        <div class="dep-tree" style="margin-top:0.6rem">
+          <span class="root">after: 1 source</span> ├──
+          <span class="ok">utils/tone: 2 axes · 2 tables (tone×surface, hue×utility)</span> ├──
+          <span class="ok">generated: guard hue list · docs color table · tc-token inventory</span> └──
+          <span class="ok">CSS keeps owning VALUES (@theme / ADR-0044) — unchanged</span>
+        </div>
+
+        <!-- Decision Log -->
+        <h2 id="decisions"><span class="num">06</span>Decision Log</h2>
+        <table>
+          <thead>
+            <tr><th>#</th><th>Decision</th><th>Rejected alternative — why</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>D1</td>
+              <td>Home the vocabulary in <code>utils/tone</code></td>
+              <td><code>display</code>-owned: feedback/errorpage importing display violates the import DAG. New top-level module: the 7-module split is frozen (ADR-0034/0040).</td>
+            </tr>
+            <tr>
+              <td>D2</td>
+              <td>Word: <em>Tone</em> + <em>Hue</em></td>
+              <td>&ldquo;Color&rdquo; lies (it&rsquo;s intent, not a color); &ldquo;Severity&rdquo; fits only the feedback subset. Five of ten existing enums already end in Tone — extracting the language the code already speaks.</td>
+            </tr>
+            <tr>
+              <td>D3</td>
+              <td>Canonical danger spelling: <code>danger</code>; <code>FeedbackError</code> becomes a v2-removed alias</td>
+              <td>Keeping <code>error</code>: error is an event/domain concept, danger is the presentation intent — and StatusTone/ButtonType/ScrollbackTone already say danger. ADR-0006/0022 is the exact alias-then-remove precedent.</td>
+            </tr>
+            <tr>
+              <td>D4</td>
+              <td>Two axes: semantic Tone vs categorical Hue</td>
+              <td>Forcing semantics onto StatTone/KanbanTone: a purple kanban column is not &ldquo;info&rdquo; — categorical identity is a real, different concept (charts prove it daily).</td>
+            </tr>
+            <tr>
+              <td>D5</td>
+              <td>Adapters now, collapse at v2</td>
+              <td>Big-bang rename: breaks 100% of consumers for zero visual gain; ADR-0039 already batches breaking changes at v2 with ADR-0044 T1.</td>
+            </tr>
+            <tr>
+              <td>D6</td>
+              <td>No new per-component color props</td>
+              <td>That&rsquo;s ADR-0044 option D, explicitly rejected — CSS tokens own values. Go owns the intent vocabulary; the enum IS the color channel.</td>
+            </tr>
+            <tr>
+              <td>D7</td>
+              <td><code>Pair</code> fields carry complete literals (dark: prefix included)</td>
+              <td>Storing bare <code>"bg-green-400"</code> and synthesizing <code>dark:</code> at runtime: the scanner can&rsquo;t see the variant token — CSS never generated (repo rule).</td>
+            </tr>
+            <tr>
+              <td>D8</td>
+              <td><code>statusToBadgeMap</code> raw-string keys stay</td>
+              <td>They are the consumer domain&rsquo;s status language, not the library&rsquo;s color language — a deliberate translation layer, already overridable via <code>StatusBadgeMapper</code>. Document it as such.</td>
+            </tr>
+            <tr>
+              <td>D9</td>
+              <td>ButtonType axis-split deferred</td>
+              <td>Real coupling (M2) but orthogonal to the color model; a v2+ composition (<code>Variant × Tone</code>) noted for the backlog, not smuggled into this redesign.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Anti-Patterns -->
+        <h2 id="antipatterns"><span class="num">07</span>Anti-Patterns</h2>
+        <div class="card card-problem">
+          <h4>Traps to avoid while adopting</h4>
+          <p>
+            <strong>1. Never name a public tone value after a hue.</strong>
+            <code>StatToneBlue</code> is the cautionary tale — the value outlives
+            the palette choice. <strong>2. Never copy a shade recipe between
+            components</strong> — if two components need &ldquo;green text on
+            green tint&rdquo;, that&rsquo;s a <code>Surfaces</code> column, not a
+            new map entry. <strong>3. Never widen the dark-mode regex by
+            hand</strong> — the hue list must be derived from the tone/hue tables
+            or it drifts again (H3 happened exactly this way).
+            <strong>4. Never accept a raw class string where a Tone/Hue/ChartColor
+            exists</strong> — the escape hatch is for literals, not API design.
+            <strong>5. Never concatenate variant prefixes at runtime</strong>
+            (D7). <strong>6. Never break the struct-literal zero-value
+            contract</strong> — <code>StatCardProps{}</code> must render the
+            documented blue tile; the Hue zero value carries that default.
+            <strong>7. Never let the tone table import a component
+            package</strong> — utils/tone stays a leaf or the DAG closes a cycle.
+          </p>
+        </div>
+
+        <!-- Numbered Steps -->
+        <h2 id="plan"><span class="num">08</span>Migration Roadmap</h2>
+        <div class="migration-step">
+          <div class="migration-num">1</div>
+          <div class="migration-content">
+            <h4>Phase 0 — v1.x: land utils/tone (zero visual change, zero breakage)</h4>
+            <p>Tone + Hue types, the two tables, Pair; adapter methods on the ten existing enums. New components are tone-ready (extends ADR-0044&rsquo;s token-ready rule). One IsValid, one exhaustiveness test; counts guards updated in the same commit.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">2</div>
+          <div class="migration-content">
+            <h4>Phase 1 — v1.x: type the stringly boundaries</h4>
+            <p>Export ChartColor constants; type the nine Color fields (untyped literals keep compiling); HexColor constructor for PageProps; document the ColorVar -rgb contract. Derive the dark-scan hue list from the tables — the stale-regex hole (H3) closes immediately.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">3</div>
+          <div class="migration-content">
+            <h4>Phase 2 — v2, batched with ADR-0044 T1: the collapse</h4>
+            <p>Enums become aliases of tone.Tone/tone.Hue then vanish (ADR-0006 pattern); FeedbackError→Danger rename; per-component maps deleted, maps become table views; components emit accent-*/tc-* classes per ADR-0044; feedbackStyleSet demoted to a view. Full golden + visual rebaseline (pixels expected identical — defaults unchanged), demo CSS recompile, CHANGELOG.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">4</div>
+          <div class="migration-content">
+            <h4>Phase 3 — post-v2 probe: retire the dark: pairs</h4>
+            <p>669 hand-maintained dark: occurrences could collapse into token-level mode flipping (<code>@theme inline</code> + <code>.dark {}</code> overrides). Requires a probe against the pinned Tailwind 4.3.3 binary (repo rule: probe, never assume) and a deliberate visual rebaseline. Big win, independently shippable.</p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">5</div>
+          <div class="migration-content">
+            <h4>Phase 4 — generated everything</h4>
+            <p>theme-bridge.md&rsquo;s color table, the tc-token inventory check, and the guard hue list all generated from utils/tone (docs-count drift-guard style). Five hand-maintained representations of &ldquo;the library&rsquo;s colors&rdquo; become one.</p>
+          </div>
+        </div>
+
+        <!-- Conclusion -->
+        <h2><span class="num">09</span>Conclusion</h2>
+        <div class="card card-solution">
+          <p style="font-size:1.05rem">
+            &ldquo;The library never had a color problem — it had thirteen local
+            solutions to one modeling omission. Every component modeled color
+            <em>correctly</em> in isolation and <em>differently</em> in public.
+            Extract the language the code already speaks — tone and hue — and
+            1,880 string occurrences, six green recipes, four error spellings, and
+            two stale regexes all become views of two small tables.&rdquo;
+          </p>
+        </div>
+
+        <footer class="footer">
+          Generated 2026-10-15 &middot; Every count and quote verified against
+          source at HEAD (rg sweeps excluding demo/website/visualtest/mirror/generated)
+          &middot; Companion: 2026-07-18 data-model-review, 2026-10-14 50-big-picture-ideas,
+          ADR-0006/0008/0009/0044 &middot; Series #3
+        </footer>
+      </main>
+    </div>
+
+    <!-- Progressive-enhancement scrollspy. Nav still works without JS via anchor links. -->
+    <script>
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        var nav = document.querySelector("[data-nav]");
+        if (!nav) return;
+        var links = nav.querySelectorAll('a[href^="#"]');
+        var ids = Array.from(links).map(function (l) {
+          return l.getAttribute("href").slice(1);
+        });
+        var sections = ids
+          .map(function (id) {
+            return document.getElementById(id);
+          })
+          .filter(Boolean);
+        if (!sections.length) return;
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                links.forEach(function (link) {
+                  link.classList.toggle(
+                    "active",
+                    link.getAttribute("href") === "#" + entry.target.id,
+                  );
+                });
+              }
+            });
+          },
+          { rootMargin: "-80px 0px -60% 0px", threshold: 0 },
+        );
+        sections.forEach(function (s) {
+          observer.observe(s);
+        });
+      })();
+    </script>
+  </body>
+</html>
