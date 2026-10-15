@@ -11,6 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/forms"
+	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
@@ -172,7 +173,7 @@ func formsDemoContent() templ.Component {
 					var templ_7745c5c3_Var5 templ.SafeURL
 					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(demoURL("/users")))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/forms_demo.templ`, Line: 82, Col: 47}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/forms_demo.templ`, Line: 83, Col: 47}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
@@ -231,11 +232,12 @@ func formsDemoContent() templ.Component {
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = forms.FilterDropdown(forms.FilterDropdownProps{
-				Name:     "status",
-				Label:    "Status",
-				Value:    "active",
-				HxGet:    demoURL("/api/users"),
-				HxTarget: "#user-results",
+				BaseProps: utils.BaseProps{ID: "htmx-filter-status"},
+				Name:      "status",
+				Label:     "Status",
+				Value:     "active",
+				HxGet:     demoURL("/api/users"),
+				HxTarget:  "#user-results",
 				Options: []forms.SelectOption{
 					{Value: "", Label: "All"},
 					{Value: "active", Label: "Active"},
@@ -298,8 +300,9 @@ func formsDemoContent() templ.Component {
 				}
 				ctx = templ.InitializeContext(ctx)
 				templ_7745c5c3_Err = forms.Select(forms.SelectProps{
-					Name:  "status",
-					Label: "Status",
+					BaseProps: utils.BaseProps{ID: "filterbar-status"},
+					Name:      "status",
+					Label:     "Status",
 					Options: []forms.SelectOption{
 						{Value: "", Label: "All"},
 						{Value: "active", Label: "Active"},

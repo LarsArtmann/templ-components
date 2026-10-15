@@ -512,7 +512,7 @@ templ wireUploadForm(dialect wire.Transport) {
 			Target:    utils.Ternary(dialect == wire.TransportDatastar, "", "#wire-upload-out"),
 		},
 	}) {
-		@forms.FileInput(forms.FileInputProps{Name: "attachment", Label: "Attachment"})
+		@forms.FileInput(forms.FileInputProps{BaseProps: utils.BaseProps{ID: "wire-upload-" + string(dialect)}, Name: "attachment", Label: "Attachment"})
 		@display.Button(display.ButtonProps{
 			Text:    "Upload",
 			Variant: display.ButtonPrimary,

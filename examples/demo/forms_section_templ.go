@@ -228,7 +228,7 @@ func formsDemoSection() templ.Component {
 			}
 			ctx = templ.InitializeContext(ctx)
 			templ_7745c5c3_Err = forms.Select(forms.SelectProps{
-				BaseProps: utils.BaseProps{Class: "sm:w-auto sm:min-w-40"},
+				BaseProps: utils.BaseProps{ID: "inline-status", Class: "sm:w-auto sm:min-w-40"},
 				Name:      "status",
 				Label:     "Status",
 				Options: []forms.SelectOption{

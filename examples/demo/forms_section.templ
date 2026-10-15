@@ -12,8 +12,8 @@ import (
 templ formsDemoSection() {
 	@demoSection("Form Controls", "forms-controls")
 	<div class="space-y-6 max-w-md">
-		@forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email address", Required: true, Placeholder: "you@example.com"})
-		@forms.Input(forms.InputProps{Name: "password", Type: forms.InputPassword, Label: "Password"})
+		@forms.Input(forms.InputProps{BaseProps: utils.BaseProps{ID: "controls-email"}, Name: "email", Type: forms.InputEmail, Label: "Email address", Required: true, Placeholder: "you@example.com"})
+		@forms.Input(forms.InputProps{BaseProps: utils.BaseProps{ID: "controls-password"}, Name: "password", Type: forms.InputPassword, Label: "Password"})
 		@forms.Input(forms.InputProps{Name: "search", Type: forms.InputSearch, Label: "Search", Placeholder: "Search..."})
 		@forms.InputGroup(forms.InputGroupProps{
 			LeftAddon: icons.Icon(icons.Search, "h-5 w-5 text-gray-400 dark:text-gray-500"),
@@ -36,10 +36,10 @@ templ formsDemoSection() {
 				{Label: "Asia", Options: []forms.SelectOption{{Value: "jp", Label: "Japan"}}},
 			},
 		})
-		@forms.Textarea(forms.TextareaProps{Name: "bio", Label: "Bio", Rows: 4, HelpText: "Tell us about yourself."})
-		@forms.Checkbox(forms.CheckboxProps{BaseProps: utils.BaseProps{ID: "terms"}, Name: "terms", Label: "I agree to the terms"})
+		@forms.Textarea(forms.TextareaProps{BaseProps: utils.BaseProps{ID: "controls-bio"}, Name: "bio", Label: "Bio", Rows: 4, HelpText: "Tell us about yourself."})
+		@forms.Checkbox(forms.CheckboxProps{BaseProps: utils.BaseProps{ID: "controls-terms"}, Name: "terms", Label: "I agree to the terms"})
 		@forms.RadioGroup(forms.RadioGroupProps{
-			BaseProps: utils.BaseProps{ID: "plan"},
+			BaseProps: utils.BaseProps{ID: "controls-plan"},
 			Name:      "plan",
 			Label:     "Select a plan",
 			Options: []forms.RadioOption{
@@ -101,8 +101,9 @@ templ formsDemoSection() {
 			},
 		})
 		@forms.FilterDropdown(forms.FilterDropdownProps{
-			Name:     "sort",
-			Label:    "Sort",
+			BaseProps: utils.BaseProps{ID: "inline-sort"},
+			Name:      "sort",
+			Label:     "Sort",
 			HxGet:    demoURL("/api/users"),
 			HxTarget: "#results",
 			Options: []forms.SelectOption{

@@ -234,6 +234,7 @@ func feedbackDemo() templ.Component {
 		templ_7745c5c3_Err = feedback.StepIndicator(feedback.StepIndicatorProps{
 			Steps:       []string{"Details", "Review", "Confirm", "Done"},
 			CurrentStep: 1,
+			AriaLabel:   "Checkout progress",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -242,6 +243,7 @@ func feedbackDemo() templ.Component {
 			Steps:       []string{"Step 1", "Step 2", "Step 3"},
 			CurrentStep: 2,
 			Orientation: feedback.StepVertical,
+			AriaLabel:   "Vertical step example",
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
