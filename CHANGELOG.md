@@ -8,6 +8,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Typed chart/indicator colors: `tone.ColorClass` + exported
+  `display.ChartColor*` constants.** The eight chart palette constants are
+  now exported (`ChartColorBlue`…`ChartColorPink`) and typed
+  `tone.ColorClass` — a complete light+dark literal by contract. All nine
+  consumer-facing color props are typed the same way (`LineChartSeries`,
+  `PieChartSlice`, `SegmentBarSegment`, `BarChartBar`, `BarChartProps.BarColor`,
+  `Spinner`, `ProgressBar`, `CircularProgress.Color/.TrackColor`): untyped
+  literals keep assigning (string kind, non-breaking), and the constants
+  give autocomplete-proof color selection. This closes the silent-no-op
+  typo class of report C2.
+- **Dark-mode guard hue list is now DERIVED from `utils/tone`.** The
+  semantic-color regex in the dark-mode scanner is built from `tone.Hues()`
+  at init instead of a hand-typed five-hue list — the stale list had let
+  emerald/rose/violet/cyan/pink/purple and `bg-yellow-*` classes without a
+  `dark:` half escape `TestDarkModeSemanticColors` (report H3). A new
+  regression test proves every non-gray hue is flagged in both `text-` and
+  `bg-` form; the widened sweep found ZERO violations — the repo was
+  genuinely clean, only the guard was blind.
 - **`utils/tone`: the canonical color language (Phase 0, additive-only).**
   One `Tone` axis (neutral/success/warning/danger/info/accent) and one
   categorical `Hue` axis (13 hue families) replace "one concept modeled
