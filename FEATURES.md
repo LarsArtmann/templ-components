@@ -162,8 +162,8 @@ Scope note: `Action.Target` renders only for htmx; Datastar targeting is respons
 
 | Type                 | Values                                                                                              |
 | -------------------- | --------------------------------------------------------------------------------------------------- |
-| `tone.Tone`          | Neutral, Success, Warning, Danger, Info, Accent — the canonical semantic axis (`utils/tone`)         |
-| `tone.Hue`           | Blue, Emerald, Amber, Rose, Violet, Cyan, Orange, Pink, Gray, Green, Yellow, Red, Purple (`utils/tone`) |
+| `Tone` (`utils/tone`) | Neutral, Success, Warning, Danger, Info, Accent — the canonical semantic color axis                          |
+| `Hue` (`utils/tone`)  | Blue, Emerald, Amber, Rose, Violet, Cyan, Orange, Pink, Gray, Green, Yellow, Red, Purple — categorical axis |
 | `AvatarSize`         | XS, SM, MD, LG, XL                                                                                  |
 | `AvatarShape`        | Circle, Square                                                                                      |
 | `CodeBlockVariant`   | Block, CompactID                                                                                    |

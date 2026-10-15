@@ -153,6 +153,18 @@ func TestBadgeTypeAdapterEquivalence(t *testing.T) {
 		BadgeNeutral: tone.HueGray,
 	}
 
+	// Badge dots are single light-mode classes (no dark half — deliberate).
+	// The gray neutral dot is bg-gray-500 (one step darker than the uniform
+	// grammar's 400 — the same gray-dot convention as statusToneBgMap).
+	wantDots := map[BadgeType]string{
+		BadgePrimary: tone.UtilitiesFor(tone.HueBlue).BGSolid.Light,
+		BadgeSuccess: tone.UtilitiesFor(tone.HueGreen).BGSolid.Light,
+		BadgeWarning: tone.UtilitiesFor(tone.HueYellow).BGSolid.Light,
+		BadgeError:   tone.UtilitiesFor(tone.HueRed).BGSolid.Light,
+		BadgeInfo:    tone.UtilitiesFor(tone.HueBlue).BGSolid.Light,
+		BadgeNeutral: "bg-gray-500",
+	}
+
 	for bt, style := range badgeStyleMap {
 		hue, ok := hueFor[bt]
 		if !ok {
@@ -161,10 +173,10 @@ func TestBadgeTypeAdapterEquivalence(t *testing.T) {
 			continue
 		}
 
-		if style.Dot != tone.UtilitiesFor(hue).BGSolid.Light {
+		if style.Dot != wantDots[bt] {
 			t.Errorf(
-				"BadgeType %s: dot %q != hue %s BGSolid light half %q",
-				bt, style.Dot, hue, tone.UtilitiesFor(hue).BGSolid.Light,
+				"BadgeType %s: dot %q != expected %q (hue %s)",
+				bt, style.Dot, wantDots[bt], hue,
 			)
 		}
 	}

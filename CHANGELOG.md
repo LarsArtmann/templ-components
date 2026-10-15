@@ -8,6 +8,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`utils/tone`: the canonical color language (Phase 0, additive-only).**
+  One `Tone` axis (neutral/success/warning/danger/info/accent) and one
+  categorical `Hue` axis (13 hue families) replace "one concept modeled
+  thirteen ways" as the library's shared vocabulary. Ships two literal
+  tables — `tone.For(t)` surfaces (border/bg/text/icon/dot, anchored to the
+  feedback dialect) and `tone.UtilitiesFor(hue)` class grammar (8 utility
+  slots per hue) — plus adapters on the existing color enums
+  (`StatusTone.Tone()/.DotHue()`, `KanbanTone.Hue()`, `StatTone.Hue()`,
+  `TrendDirection.Tone()`, `ScrollbackTone.Tone()`, `BadgeType.Tone()`,
+  `FeedbackType.Tone()`). ZERO visual change: every existing lookup map
+  still renders, and equivalence tests prove the tables reproduce the
+  shipped class strings byte-for-byte. The maps collapse into the tables at
+  v2 (ADR-0039/0044). Counts bumped in lockstep: 71 typed enums (70
+  IsValid), 19 packages.
 - **`cmd/site` is deterministic by default: `--skip-stars` flips to true.**
   A bare `go run ./cmd/site` no longer does a live GitHub star lookup — the
   last dist entry point that could flake a route golden. Production deploys

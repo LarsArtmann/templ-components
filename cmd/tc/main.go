@@ -107,6 +107,7 @@ const (
 	impUtilsSVG     = impUtils + "/svg"
 	impUtilsWire    = impUtils + "/wire"
 	impUtilsCDN     = impUtils + "/cdn"
+	impUtilsTone    = impUtils + "/tone"
 	impIcons        = "github.com/larsartmann/templ-components/icons"
 	impDisplay      = "github.com/larsartmann/templ-components/display"
 	impLayout       = "github.com/larsartmann/templ-components/layout"
@@ -131,6 +132,7 @@ var packageImports = map[string][]string{
 		impIcons,
 		impUtils,
 		impUtilsSVG,
+		impUtilsTone,
 		impUtilsWire,
 	},
 
@@ -138,6 +140,7 @@ var packageImports = map[string][]string{
 		impIcons,
 		impUtils,
 		impUtilsSVG,
+		impUtilsTone,
 	},
 	pkgForms: {
 		impTempl,
@@ -197,9 +200,9 @@ var packageDeps = map[string][]string{
 		"external_link.go", "heading_tag.go", "heatmap.go",
 		"kanban.go", "lightbox.go", "line_chart.go", "modal_go.go",
 		"pie_chart.go", "prose.go", "segment_bar.go", "shared.go",
-		"sparkline.go", "status_dot.go",
+		"sparkline.go", "status_dot.go", "tone_adapters.go",
 	},
-	pkgFeedback: {enumsGoFile, "styles.go"},
+	pkgFeedback: {enumsGoFile, "styles.go", "tone_adapters.go"},
 	pkgForms: {
 		"aria.go", "calendar_nav.go", enumsGoFile,
 		"filter_bar.go", "filter_chips.go", "ids.go",
