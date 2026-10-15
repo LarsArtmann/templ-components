@@ -4,6 +4,8 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // darkModeException defines a file/line pattern that is intentionally
@@ -107,10 +109,30 @@ var darkModeNeutralRe = regexp.MustCompile(
 	`(text-gray-[0-9]+|bg-white|bg-gray-[0-9]+|border-gray-[0-9]+|divide-gray-[0-9]+|ring-gray-[0-9]+)`,
 )
 
-// darkModeSemanticRe matches semantic color classes (bg-blue-600, bg-red-600,
-// text-blue-600, text-green-500, etc.).
+// semanticHueAlternation builds the hue alternation for the semantic-color
+// regex from the canonical tone table (utils/tone), minus gray — the
+// neutral rule owns grays. Deriving the list keeps the guard in lockstep
+// with the palette by construction: the hand-maintained copy had drifted
+// and emerald/rose/violet/cyan/pink/purple plus bg-yellow escapes went
+// unnoticed (color-domain report H3, TODO #427).
+func semanticHueAlternation() string {
+	hues := make([]string, 0, len(tone.Hues())-1)
+	for _, h := range tone.Hues() {
+		if h == tone.HueGray {
+			continue // the darkmode-neutral rule owns gray
+		}
+
+		hues = append(hues, string(h))
+	}
+
+	return strings.Join(hues, "|")
+}
+
+// darkModeSemanticRe matches semantic color classes (bg-blue-600,
+// text-emerald-500, …) for EVERY hue the library renders — derived from
+// utils/tone at init, never hand-maintained.
 var darkModeSemanticRe = regexp.MustCompile(
-	`(bg-(blue|red|green|amber|orange|gray)-[0-9]+|text-(blue|red|green|amber|orange)-[0-9]+)`,
+	`(bg-(` + semanticHueAlternation() + `)-[0-9]+|text-(` + semanticHueAlternation() + `)-[0-9]+)`,
 )
 
 // goCommentLineRe skips Go-style comment lines (both languages' sources are
