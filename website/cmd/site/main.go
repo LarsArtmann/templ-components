@@ -30,7 +30,12 @@ const gitHubAPIURL = "https://api.github.com/repos/larsartmann/templ-components"
 func main() {
 	out := flag.String("out", "dist", "output directory (relative to the website module)")
 	repoRoot := flag.String("repo-root", "..", "repository root for library-fact statistics")
-	skipStars := flag.Bool("skip-stars", false, "skip the GitHub star lookup (offline builds)")
+	// Deterministic by default (#271): a live star count drifts between
+	// rebuilds and flakes every route golden containing the badge. Production
+	// deploys opt in with --live-stars (website.yml) or SITE_LIVE_STARS=1
+	// through build.sh; --skip-stars=false still forces live for compat.
+	skipStars := flag.Bool("skip-stars", true, "skip the GitHub star lookup (default; deterministic builds)")
+	liveStars := flag.Bool("live-stars", false, "do the live GitHub star lookup (production deploys)")
 	firebasePath := flag.String("firebase-config", "firebase.json", "path to firebase.json for the CSP header guard")
 	updateCSP := flag.Bool("update-csp", false, "rewrite the firebase.json CSP header instead of only checking it")
 
@@ -40,7 +45,7 @@ func main() {
 		outDir:       *out,
 		repoRoot:     *repoRoot,
 		firebasePath: *firebasePath,
-		skipStars:    *skipStars,
+		skipStars:    *skipStars && !*liveStars,
 		updateCSP:    *updateCSP,
 	}
 
