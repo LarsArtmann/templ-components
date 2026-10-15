@@ -1283,3 +1283,43 @@ details[open] [data-tc-chevron] {
     max-width: 100%;
   }
 }
+
+/* --- Print ----------------------------------------------------------------
+ * Minimal paper layer (zero configuration, safe to keep or trim):
+ *   - interactive library chrome that cannot work on paper is hidden
+ *     (copy buttons, theme toggle, toasts, dismiss buttons);
+ *   - shadows and animations are dropped (toner + muddy ink output);
+ *   - longform (.tc-prose) links expand to show their target URL.
+ * Site chrome (your own header/nav/footer) is YOUR sheet's job — extend this
+ * block in your entry stylesheet, or use Tailwind's `print:` variant per
+ * element (e.g. `print:hidden` on a site header). AppShell's mobile-nav
+ * already carries `print:hidden`; its sidebar auto-hides in print because the
+ * page width sits below the lg breakpoint.
+ */
+@media print {
+  [data-tc-copy],
+  [data-dismiss],
+  [data-theme-toggle],
+  #tc-toast-container {
+    display: none !important;
+  }
+
+  *,
+  ::before,
+  ::after {
+    animation: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    transition: none !important;
+  }
+
+  .tc-prose a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.875em;
+  }
+
+  /* Paper is always light, even when the page is in .dark mode. */
+  .dark {
+    color-scheme: light;
+  }
+}

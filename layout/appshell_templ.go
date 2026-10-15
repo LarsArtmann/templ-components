@@ -48,11 +48,13 @@ var appshellSidebarWrapperClasses = map[AppShellBreakpoint]string{
 }
 
 // appshellMobileNavClasses show the MobileNav slot only below the breakpoint.
+// print:hidden keeps the hamburger off paper (the sidebar is hidden in print
+// anyway because the printed page width sits below the lg breakpoint).
 var appshellMobileNavClasses = map[AppShellBreakpoint]string{
-	AppShellBreakpointUnspecified: "lg:hidden",
-	AppShellBreakpointMD:          "md:hidden",
-	AppShellBreakpointLG:          "lg:hidden",
-	AppShellBreakpointXL:          "xl:hidden",
+	AppShellBreakpointUnspecified: "lg:hidden print:hidden",
+	AppShellBreakpointMD:          "md:hidden print:hidden",
+	AppShellBreakpointLG:          "lg:hidden print:hidden",
+	AppShellBreakpointXL:          "xl:hidden print:hidden",
 }
 
 // appshellClassFor resolves a breakpoint-keyed class map, falling back to
@@ -143,7 +145,7 @@ func AppShell(props AppShellProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 103, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 105, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -179,7 +181,7 @@ func AppShell(props AppShellProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues("--tc-sidebar-w: " + sidebarW)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 107, Col: 40}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 109, Col: 40}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -198,7 +200,7 @@ func AppShell(props AppShellProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 110, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/appshell.templ`, Line: 112, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {

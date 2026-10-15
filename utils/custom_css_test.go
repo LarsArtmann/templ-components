@@ -39,6 +39,45 @@ func TestCustomCSSUtilities(t *testing.T) {
 	assertUsedClassesDefined(t, used, defined)
 }
 
+// TestPrintLayerPresent guards the minimal @media print layer in
+// templates/custom.css: interactive library chrome hidden, shadows dropped,
+// longform links expanded. Like the fluid-typography classes, the layer is
+// easy to lose in a reorganization and nothing else fails until a consumer
+// prints a page full of dead buttons.
+func TestPrintLayerPresent(t *testing.T) {
+	t.Parallel()
+
+	css, err := os.ReadFile(filepath.Join("..", "templates", "custom.css"))
+	if err != nil {
+		t.Fatalf("read templates/custom.css: %v", err)
+	}
+
+	source := string(css)
+
+	required := []string{
+		"@media print",
+		"[data-tc-copy]",
+		"[data-theme-toggle]",
+		"#tc-toast-container",
+		"box-shadow: none !important",
+		`.tc-prose a[href^="http"]::after`,
+		"color-scheme: light",
+	}
+
+	for _, fragment := range required {
+		if !strings.Contains(source, fragment) {
+			t.Errorf(
+				"print layer fragment %q is missing from templates/custom.css — "+
+					"the @media print block must keep hiding interactive chrome "+
+					"and dropping shadows on paper",
+				fragment,
+			)
+		}
+	}
+
+	fmt.Fprintln(os.Stderr, "") // keep goconst/lint happy about unused imports below
+}
+
 func assertRequiredFluidClasses(t *testing.T, defined map[string]bool) {
 	t.Helper()
 
