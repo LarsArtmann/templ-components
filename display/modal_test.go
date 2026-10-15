@@ -168,4 +168,16 @@ func TestModalRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "e.target===d")
 	})
+
+	t.Run("script wires CSP-safe data-tc-overlay-trigger delegation", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Modal(ModalProps{
+			ID:    "trigger-modal",
+			Title: "Trigger",
+			Open:  false,
+		}))
+		utils.AssertContains(t, output, "data-tc-overlay-trigger")
+		utils.AssertContains(t, output, "window.tcOverlayTriggerAttached")
+		utils.AssertContains(t, output, "d.showModal()")
+	})
 }

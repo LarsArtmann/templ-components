@@ -110,12 +110,16 @@ display.Card(display.CardProps{
 	</div>
 	@demoSection("Modal (native dialog)", "display-modal")
 	<div class="flex gap-3">
-		<button class="inline-flex items-center gap-2 rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0" onclick="tcOpenOverlay('demo-modal')">
-			Open Modal
-		</button>
+		@display.Button(display.ButtonProps{
+			BaseProps: utils.BaseProps{
+				Attrs: templ.Attributes{"data-tc-overlay-trigger": "demo-modal"},
+				Nonce: demoNonceConst,
+			},
+			Text: "Open Modal",
+		})
 	</div>
 	@display.Modal(display.ModalProps{
-		BaseProps: utils.BaseProps{ID: "demo-modal", Nonce: "demo-nonce"},
+		BaseProps: utils.BaseProps{ID: "demo-modal", Nonce: demoNonceConst},
 		Title:     "Demo Modal",
 		Size:      display.ModalSizeMD,
 	}) {
@@ -125,11 +129,15 @@ display.Card(display.CardProps{
 	<p>Are you sure?</p>
 }`)
 	@demoSection("Drawer (native dialog)", "display-drawer")
-	<button class="inline-flex items-center gap-2 rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0" onclick="tcOpenOverlay('demo-drawer')">
-		Open Drawer
-	</button>
+	@display.Button(display.ButtonProps{
+		BaseProps: utils.BaseProps{
+			Attrs: templ.Attributes{"data-tc-overlay-trigger": "demo-drawer"},
+			Nonce: demoNonceConst,
+		},
+		Text: "Open Drawer",
+	})
 	@display.Drawer(display.DrawerProps{
-		BaseProps: utils.BaseProps{ID: "demo-drawer", Nonce: "demo-nonce"},
+		BaseProps: utils.BaseProps{ID: "demo-drawer", Nonce: demoNonceConst},
 		Title:     "Demo Drawer",
 		Side:      display.DrawerRight,
 	}) {
