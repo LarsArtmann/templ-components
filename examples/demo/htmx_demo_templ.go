@@ -310,7 +310,7 @@ func polledStatsContent(tick int, live bool) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<span class=\"inline-flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400\">up to date</span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<span class=\"inline-flex items-center gap-1 text-xs font-medium text-emerald-700 dark:text-emerald-400\">up to date</span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
