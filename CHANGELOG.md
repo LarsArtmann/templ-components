@@ -8,6 +8,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **One shared `display.Position` enum for all floating components.**
+  Tooltip, Popover, and HoverCard previously shipped three identical
+  four-value position dialects (`TooltipPosition`, `PopoverPosition`,
+  `HoverCardPosition`); they are now type aliases of a single
+  `display.Position` (top/bottom/start/end plus the legacy physical
+  left/right), so every spelling keeps compiling and behaving identically.
+  New logical `PositionStart`/`PositionEnd` values place tooltips and
+  popovers writing-direction aware: pixel-identical to left/right in LTR
+  and correctly mirrored in RTL (the shared popover positioner script
+  resolves them via the anchor's computed direction). `Dropdown` — whose
+  axis is menu ALIGNMENT, not placement — gains `DropdownPositionStart`/
+  `DropdownPositionEnd` alongside the legacy Left/Right spellings. Legacy
+  physical spellings are unchanged and remain valid until v2.
+- **Typed `feedback.StepState`** (complete/current/pending) replaces the
+  int-index comparison triple inside StepIndicator; the derived states and
+  every class string are byte-identical to before, and the accent-color
+  derivation now has a single place to ride the v2 tone table swap
+  (ADR-0044).
 - **Typed chart/indicator colors: `tone.ColorClass` + exported
   `display.ChartColor*` constants.** The eight chart palette constants are
   now exported (`ChartColorBlue`…`ChartColorPink`) and typed

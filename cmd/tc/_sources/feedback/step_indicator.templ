@@ -15,6 +15,30 @@ const (
 	StepVertical   StepIndicatorOrientation = "vertical"
 )
 
+// StepState is the lifecycle state of a single step relative to CurrentStep:
+// steps before it are Complete, the step at it is Current, later steps are
+// Pending.
+type StepState string
+
+const (
+	StepStateComplete StepState = "complete"
+	StepStateCurrent  StepState = "current"
+	StepStatePending  StepState = "pending"
+)
+
+// stepState derives the StepState of step stepIndex from the current step
+// index. Out-of-range CurrentStep values follow the same ordering: every step
+// before it is complete, the step at it (if any) is current, the rest pending.
+func stepState(stepIndex, currentStep int) StepState {
+	if stepIndex < currentStep {
+		return StepStateComplete
+	}
+	if stepIndex == currentStep {
+		return StepStateCurrent
+	}
+	return StepStatePending
+}
+
 // StepIndicatorProps configures a step/progress indicator
 type StepIndicatorProps struct {
 	utils.BaseProps
@@ -45,12 +69,12 @@ templ StepIndicator(props StepIndicatorProps) {
 				for i, step := range props.Steps {
 					<li class="flex items-start">
 						<div class="flex flex-col items-center">
-							@stepCircle(i, props.CurrentStep)
+							@stepCircle(i, stepState(i, props.CurrentStep))
 							if i < len(props.Steps)-1 {
-								<div class={ "w-0.5 h-8", stepLineClass(i+1, props.CurrentStep) }></div>
+								<div class={ "w-0.5 h-8", stepLineClass(stepState(i+1, props.CurrentStep)) }></div>
 							}
 						</div>
-						<span class={ "ms-3 text-sm font-medium mt-1", stepLabelClass(i, props.CurrentStep) }>{ step }</span>
+						<span class={ "ms-3 text-sm font-medium mt-1", stepLabelClass(stepState(i, props.CurrentStep)) }>{ step }</span>
 					</li>
 				}
 			</ol>
@@ -59,11 +83,11 @@ templ StepIndicator(props StepIndicatorProps) {
 				for i, step := range props.Steps {
 					<li class={ "flex-1 flex items-center", templ.KV("", i == len(props.Steps)-1) }>
 						if i > 0 {
-							<div class={ "flex-1 h-0.5 mx-2", stepLineClass(i, props.CurrentStep) }></div>
+							<div class={ "flex-1 h-0.5 mx-2", stepLineClass(stepState(i, props.CurrentStep)) }></div>
 						}
 						<div class="flex flex-col items-center">
-							@stepCircle(i, props.CurrentStep)
-							<span class={ "mt-2 text-xs font-medium", stepLabelClass(i, props.CurrentStep) }>{ step }</span>
+							@stepCircle(i, stepState(i, props.CurrentStep))
+							<span class={ "mt-2 text-xs font-medium", stepLabelClass(stepState(i, props.CurrentStep)) }>{ step }</span>
 						</div>
 					</li>
 				}
@@ -74,14 +98,14 @@ templ StepIndicator(props StepIndicatorProps) {
 
 // stepCircle renders the numbered circle (or check icon when complete) shared by
 // both the vertical and horizontal step layouts.
-templ stepCircle(stepIndex, currentStep int) {
+templ stepCircle(stepIndex int, state StepState) {
 	<div
-		class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold " + utils.TransitionColors, stepCircleClass(stepIndex, currentStep) }
-		if stepIndex == currentStep {
+		class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold " + utils.TransitionColors, stepCircleClass(state) }
+		if state == StepStateCurrent {
 			aria-current="step"
 		}
 	>
-		if stepIndex < currentStep {
+		if state == StepStateComplete {
 			@icons.Icon(icons.Check, "w-4 h-4")
 		} else {
 			{ fmt.Sprintf("%d", stepIndex+1) }
@@ -89,25 +113,25 @@ templ stepCircle(stepIndex, currentStep int) {
 	</div>
 }
 
-func stepLineClass(stepIndex, currentStep int) string {
-	if stepIndex <= currentStep {
+func stepLineClass(state StepState) string {
+	if state != StepStatePending {
 		return "bg-blue-600 dark:bg-blue-500"
 	}
 	return "bg-gray-200 dark:bg-gray-700"
 }
 
-func stepCircleClass(stepIndex, currentStep int) string {
-	if stepIndex < currentStep {
+func stepCircleClass(state StepState) string {
+	if state == StepStateComplete {
 		return "bg-blue-600 text-white dark:bg-blue-500"
 	}
-	if stepIndex == currentStep {
+	if state == StepStateCurrent {
 		return "bg-white dark:bg-gray-800 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
 	}
 	return "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
 }
 
-func stepLabelClass(stepIndex, currentStep int) string {
-	if stepIndex <= currentStep {
+func stepLabelClass(state StepState) string {
+	if state != StepStatePending {
 		return "text-blue-600 dark:text-blue-400"
 	}
 	return "text-gray-500 dark:text-gray-400"

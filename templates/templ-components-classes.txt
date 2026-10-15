@@ -3884,13 +3884,34 @@ func (item DropdownItem) IsLink() bool {
 	return item.Href != ""
 }
 
-// DropdownPosition defines where the dropdown menu appears
+// DropdownPosition defines the inline ALIGNMENT of the always-below-trigger
+// dropdown menu relative to the trigger's box (the menu itself always opens
+// downward). Start aligns the menu's inline-start edge with the trigger's;
+// End aligns the inline-end edges.
 type DropdownPosition string
 
+const (
+	DropdownPositionStart DropdownPosition = "start"
+	DropdownPositionEnd   DropdownPosition = "end"
+)
+
+// Legacy physical spellings from before the logical axis existed: Left
+// behaves as Start and Right as End in every text direction. Removal is
+// planned for v2 (ADR-0022).
 const (
 	DropdownPositionLeft  DropdownPosition = "left"
 	DropdownPositionRight DropdownPosition = "right"
 )
+
+// dropdownAlign maps a DropdownPosition to the data-tc-align wire value: the
+// new logical spellings pass through unchanged, the legacy physical ones map
+// onto their logical equivalents.
+func dropdownAlign(pos DropdownPosition) string {
+	if pos == DropdownPositionEnd || pos == DropdownPositionRight {
+		return "end"
+	}
+	return "start"
+}
 
 // DropdownProps configures a dropdown action menu
 type DropdownProps struct {
@@ -4010,7 +4031,7 @@ templ Dropdown(props DropdownProps) {
 			popover="auto"
 			data-tc-anchor={ id + "-button" }
 			data-tc-position="bottom"
-			data-tc-align={ utils.Ternary(props.Position == DropdownPositionRight, "end", "start") }
+			data-tc-align={ dropdownAlign(props.Position) }
 			class="w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 focus:outline-hidden"
 			role="menu"
 			aria-orientation="vertical"
@@ -4204,23 +4225,6 @@ func AvatarSizeIsValid(v AvatarSize) bool {
 	return ok
 }
 
-// TooltipPositionIsValid reports whether v is one of the defined TooltipPosition constants.
-func TooltipPositionIsValid(v TooltipPosition) bool {
-	_, ok := tooltipPositionMap[v]
-
-	return ok
-}
-
-// PopoverPositionIsValid reports whether v is one of the defined PopoverPosition constants.
-func PopoverPositionIsValid(v PopoverPosition) bool {
-	switch v {
-	case PopoverPositionTop, PopoverPositionBottom, PopoverPositionLeft, PopoverPositionRight:
-		return true
-	}
-
-	return false
-}
-
 // AvatarShapeIsValid reports whether v is one of the defined AvatarShape constants.
 func AvatarShapeIsValid(v AvatarShape) bool {
 	switch v {
@@ -4254,7 +4258,7 @@ func DropdownItemKindIsValid(v DropdownItemKind) bool {
 // DropdownPositionIsValid reports whether v is one of the defined DropdownPosition constants.
 func DropdownPositionIsValid(v DropdownPosition) bool {
 	switch v {
-	case DropdownPositionLeft, DropdownPositionRight:
+	case DropdownPositionStart, DropdownPositionEnd, DropdownPositionLeft, DropdownPositionRight:
 		return true
 	default:
 		return false
@@ -4965,32 +4969,16 @@ package display
 
 import "github.com/larsartmann/templ-components/utils"
 
-// HoverCardPosition defines where the hover card appears relative to the trigger.
-type HoverCardPosition string
-
-const (
-	HoverCardPositionTop    HoverCardPosition = "top"
-	HoverCardPositionBottom HoverCardPosition = "bottom"
-	HoverCardPositionStart  HoverCardPosition = "start"
-	HoverCardPositionEnd    HoverCardPosition = "end"
-)
-
-//nolint:gochecknoglobals // Package-level lookup table
-var hoverCardPositionMap = map[HoverCardPosition]string{
-	HoverCardPositionTop:    "bottom-full left-1/2 -translate-x-1/2 mb-2",
-	HoverCardPositionBottom: "top-full left-1/2 -translate-x-1/2 mt-2",
-	HoverCardPositionStart:  "inset-e-full top-1/2 -translate-y-1/2 me-2",
-	HoverCardPositionEnd:    "inset-s-full top-1/2 -translate-y-1/2 ms-2",
-}
-
-// HoverCardPositionIsValid reports whether v is one of the defined HoverCardPosition constants.
-func HoverCardPositionIsValid(v HoverCardPosition) bool {
-	_, ok := hoverCardPositionMap[v]
-	return ok
+//nolint:gochecknoglobals // Package-level lookup table for hover card position classes
+var hoverCardPositionMap = map[Position]string{
+	PositionTop:    "bottom-full left-1/2 -translate-x-1/2 mb-2",
+	PositionBottom: "top-full left-1/2 -translate-x-1/2 mt-2",
+	PositionStart:  "inset-e-full top-1/2 -translate-y-1/2 me-2",
+	PositionEnd:    "inset-s-full top-1/2 -translate-y-1/2 ms-2",
 }
 
 func hoverCardPositionClass(pos HoverCardPosition) string {
-	return utils.Lookup(hoverCardPositionMap, pos, hoverCardPositionMap[HoverCardPositionBottom])
+	return utils.Lookup(hoverCardPositionMap, pos, hoverCardPositionMap[PositionBottom])
 }
 
 // HoverCardProps configures a hover-activated card with rich content.
@@ -7341,16 +7329,6 @@ import (
 	"github.com/larsartmann/templ-components/utils/svg"
 )
 
-// PopoverPosition defines where the popover content appears relative to the trigger.
-type PopoverPosition string
-
-const (
-	PopoverPositionTop    PopoverPosition = "top"
-	PopoverPositionBottom PopoverPosition = "bottom"
-	PopoverPositionLeft   PopoverPosition = "left"
-	PopoverPositionRight  PopoverPosition = "right"
-)
-
 // PopoverProps configures a popover component.
 //
 // A popover is a floating panel triggered by a button click. It displays
@@ -7421,6 +7399,99 @@ templ Popover(props PopoverProps) {
 		</div>
 	</div>
 	@popoverPositionScriptComponent(props.Nonce)
+}
+
+# ── display/position.go ─────────────────────────────────────────────
+package display
+
+// Position defines where a floating element appears relative to its trigger,
+// expressed in logical (writing-direction aware) sides: start and end map to
+// the inline start/end of the surrounding text direction (left/right in LTR,
+// mirrored in RTL). It is the shared placement axis for Tooltip, Popover, and
+// HoverCard.
+type Position string
+
+const (
+	PositionTop    Position = "top"
+	PositionBottom Position = "bottom"
+	PositionStart  Position = "start"
+	PositionEnd    Position = "end"
+)
+
+// Legacy physical spellings from before the logical axis existed. They keep
+// their original physical behavior (never mirrored in RTL) and stay valid so
+// existing consumers keep compiling; prefer PositionStart/PositionEnd, which
+// are pixel-identical to them in LTR and mirror correctly in RTL. Removal is
+// planned for v2 (ADR-0022).
+const (
+	PositionLeft  Position = "left"
+	PositionRight Position = "right"
+)
+
+// PositionIsValid reports whether v is one of the defined Position constants.
+func PositionIsValid(v Position) bool {
+	switch v {
+	case PositionTop, PositionBottom, PositionStart, PositionEnd, PositionLeft, PositionRight:
+		return true
+	default:
+		return false
+	}
+}
+
+// Component aliases of [Position]: one type serves all floating components;
+// the per-component spellings remain so call sites read naturally and
+// pre-unification source keeps compiling.
+type (
+	// TooltipPosition is an alias of [Position]: where a Tooltip appears
+	// relative to its trigger.
+	TooltipPosition = Position
+
+	// PopoverPosition is an alias of [Position]: where a Popover panel
+	// appears relative to its trigger.
+	PopoverPosition = Position
+
+	// HoverCardPosition is an alias of [Position]: where a HoverCard appears
+	// relative to its trigger.
+	HoverCardPosition = Position
+)
+
+// Legacy per-component constants, kept for source compatibility. The
+// Left/Right spellings predate the logical axis; prefer Start/End in new
+// code (identical placement in LTR, correct mirroring in RTL).
+const (
+	TooltipPositionTop    = PositionTop
+	TooltipPositionBottom = PositionBottom
+	TooltipPositionStart  = PositionStart
+	TooltipPositionEnd    = PositionEnd
+	TooltipPositionLeft   = PositionLeft
+	TooltipPositionRight  = PositionRight
+
+	PopoverPositionTop    = PositionTop
+	PopoverPositionBottom = PositionBottom
+	PopoverPositionStart  = PositionStart
+	PopoverPositionEnd    = PositionEnd
+	PopoverPositionLeft   = PositionLeft
+	PopoverPositionRight  = PositionRight
+
+	HoverCardPositionTop    = PositionTop
+	HoverCardPositionBottom = PositionBottom
+	HoverCardPositionStart  = PositionStart
+	HoverCardPositionEnd    = PositionEnd
+)
+
+// TooltipPositionIsValid reports whether v is one of the defined Position constants.
+func TooltipPositionIsValid(v TooltipPosition) bool {
+	return PositionIsValid(v)
+}
+
+// PopoverPositionIsValid reports whether v is one of the defined Position constants.
+func PopoverPositionIsValid(v PopoverPosition) bool {
+	return PositionIsValid(v)
+}
+
+// HoverCardPositionIsValid reports whether v is one of the defined Position constants.
+func HoverCardPositionIsValid(v HoverCardPosition) bool {
+	return PositionIsValid(v)
 }
 
 # ── display/prose.go ─────────────────────────────────────────────
@@ -8343,6 +8414,12 @@ func popoverPositionJS() string {
 		`var w=p.offsetWidth,h=p.offsetHeight;` +
 		`var vw=window.innerWidth,vh=window.innerHeight;` +
 		`var left,top;` +
+		// Resolve logical start/end placements to physical left/right using
+		// the anchor's computed direction, then reuse the physical math
+		// (including the viewport flip) below. start = the inline-start side
+		// of the trigger: left in LTR, right in RTL.
+		`if(pos==="start"||pos==="end"){var rtl=getComputedStyle(t).direction==="rtl";` +
+		`pos=(pos==="start")?(rtl?"right":"left"):(rtl?"left":"right")}` +
 		`if(align==="start"){left=r.left}` +
 		`else if(align==="end"){left=r.right-w}` +
 		`else{left=r.left+r.width/2-w/2}` +
@@ -9917,16 +9994,6 @@ package display
 
 import "github.com/larsartmann/templ-components/utils"
 
-// TooltipPosition defines where the tooltip appears relative to the trigger
-type TooltipPosition string
-
-const (
-	TooltipPositionTop    TooltipPosition = "top"
-	TooltipPositionBottom TooltipPosition = "bottom"
-	TooltipPositionLeft   TooltipPosition = "left"
-	TooltipPositionRight  TooltipPosition = "right"
-)
-
 // TooltipProps configures a tooltip component.
 //
 // The tooltip shows on :hover and :focus-within via pure CSS. A tiny
@@ -9952,27 +10019,35 @@ type tooltipPositionStyles struct {
 }
 
 //nolint:gochecknoglobals // Package-level lookup table for tooltip position styles
-var tooltipPositionMap = map[TooltipPosition]tooltipPositionStyles{
-	TooltipPositionTop: {
+var tooltipPositionMap = map[Position]tooltipPositionStyles{
+	PositionTop: {
 		Tooltip: "bottom-full left-1/2 -translate-x-1/2 mb-2",
 		Arrow:   "top-full left-1/2 -translate-x-1/2 border-t-gray-900 dark:border-t-gray-700",
 	},
-	TooltipPositionBottom: {
+	PositionBottom: {
 		Tooltip: "top-full left-1/2 -translate-x-1/2 mt-2",
 		Arrow:   "bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 dark:border-b-gray-700",
 	},
-	TooltipPositionLeft: {
+	PositionStart: {
+		Tooltip: "inset-e-full top-1/2 -translate-y-1/2 me-2",
+		Arrow:   "inset-s-full top-1/2 -translate-y-1/2 border-s-gray-900 dark:border-s-gray-700",
+	},
+	PositionEnd: {
+		Tooltip: "inset-s-full top-1/2 -translate-y-1/2 ms-2",
+		Arrow:   "inset-e-full top-1/2 -translate-y-1/2 border-e-gray-900 dark:border-e-gray-700",
+	},
+	PositionLeft: {
 		Tooltip: "right-full top-1/2 -translate-y-1/2 me-2",
 		Arrow:   "left-full top-1/2 -translate-y-1/2 border-s-gray-900 dark:border-s-gray-700",
 	},
-	TooltipPositionRight: {
+	PositionRight: {
 		Tooltip: "left-full top-1/2 -translate-y-1/2 ms-2",
 		Arrow:   "right-full top-1/2 -translate-y-1/2 border-e-gray-900 dark:border-e-gray-700",
 	},
 }
 
 func tooltipLookupPosition(pos TooltipPosition) tooltipPositionStyles {
-	return utils.Lookup(tooltipPositionMap, pos, tooltipPositionMap[TooltipPositionTop])
+	return utils.Lookup(tooltipPositionMap, pos, tooltipPositionMap[PositionTop])
 }
 
 // Tooltip wraps content in a hover/focus-activated tooltip. Pure CSS for
@@ -10276,6 +10351,16 @@ func SkeletonVariantIsValid(v SkeletonVariant) bool {
 func StepIndicatorOrientationIsValid(v StepIndicatorOrientation) bool {
 	switch v {
 	case StepHorizontal, StepVertical:
+		return true
+	default:
+		return false
+	}
+}
+
+// StepStateIsValid reports whether v is one of the defined StepState constants.
+func StepStateIsValid(v StepState) bool {
+	switch v {
+	case StepStateComplete, StepStateCurrent, StepStatePending:
 		return true
 	default:
 		return false
@@ -10694,6 +10779,30 @@ const (
 	StepVertical   StepIndicatorOrientation = "vertical"
 )
 
+// StepState is the lifecycle state of a single step relative to CurrentStep:
+// steps before it are Complete, the step at it is Current, later steps are
+// Pending.
+type StepState string
+
+const (
+	StepStateComplete StepState = "complete"
+	StepStateCurrent  StepState = "current"
+	StepStatePending  StepState = "pending"
+)
+
+// stepState derives the StepState of step stepIndex from the current step
+// index. Out-of-range CurrentStep values follow the same ordering: every step
+// before it is complete, the step at it (if any) is current, the rest pending.
+func stepState(stepIndex, currentStep int) StepState {
+	if stepIndex < currentStep {
+		return StepStateComplete
+	}
+	if stepIndex == currentStep {
+		return StepStateCurrent
+	}
+	return StepStatePending
+}
+
 // StepIndicatorProps configures a step/progress indicator
 type StepIndicatorProps struct {
 	utils.BaseProps
@@ -10724,12 +10833,12 @@ templ StepIndicator(props StepIndicatorProps) {
 				for i, step := range props.Steps {
 					<li class="flex items-start">
 						<div class="flex flex-col items-center">
-							@stepCircle(i, props.CurrentStep)
+							@stepCircle(i, stepState(i, props.CurrentStep))
 							if i < len(props.Steps)-1 {
-								<div class={ "w-0.5 h-8", stepLineClass(i+1, props.CurrentStep) }></div>
+								<div class={ "w-0.5 h-8", stepLineClass(stepState(i+1, props.CurrentStep)) }></div>
 							}
 						</div>
-						<span class={ "ms-3 text-sm font-medium mt-1", stepLabelClass(i, props.CurrentStep) }>{ step }</span>
+						<span class={ "ms-3 text-sm font-medium mt-1", stepLabelClass(stepState(i, props.CurrentStep)) }>{ step }</span>
 					</li>
 				}
 			</ol>
@@ -10738,11 +10847,11 @@ templ StepIndicator(props StepIndicatorProps) {
 				for i, step := range props.Steps {
 					<li class={ "flex-1 flex items-center", templ.KV("", i == len(props.Steps)-1) }>
 						if i > 0 {
-							<div class={ "flex-1 h-0.5 mx-2", stepLineClass(i, props.CurrentStep) }></div>
+							<div class={ "flex-1 h-0.5 mx-2", stepLineClass(stepState(i, props.CurrentStep)) }></div>
 						}
 						<div class="flex flex-col items-center">
-							@stepCircle(i, props.CurrentStep)
-							<span class={ "mt-2 text-xs font-medium", stepLabelClass(i, props.CurrentStep) }>{ step }</span>
+							@stepCircle(i, stepState(i, props.CurrentStep))
+							<span class={ "mt-2 text-xs font-medium", stepLabelClass(stepState(i, props.CurrentStep)) }>{ step }</span>
 						</div>
 					</li>
 				}
@@ -10753,14 +10862,14 @@ templ StepIndicator(props StepIndicatorProps) {
 
 // stepCircle renders the numbered circle (or check icon when complete) shared by
 // both the vertical and horizontal step layouts.
-templ stepCircle(stepIndex, currentStep int) {
+templ stepCircle(stepIndex int, state StepState) {
 	<div
-		class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold " + utils.TransitionColors, stepCircleClass(stepIndex, currentStep) }
-		if stepIndex == currentStep {
+		class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold " + utils.TransitionColors, stepCircleClass(state) }
+		if state == StepStateCurrent {
 			aria-current="step"
 		}
 	>
-		if stepIndex < currentStep {
+		if state == StepStateComplete {
 			@icons.Icon(icons.Check, "w-4 h-4")
 		} else {
 			{ fmt.Sprintf("%d", stepIndex+1) }
@@ -10768,25 +10877,25 @@ templ stepCircle(stepIndex, currentStep int) {
 	</div>
 }
 
-func stepLineClass(stepIndex, currentStep int) string {
-	if stepIndex <= currentStep {
+func stepLineClass(state StepState) string {
+	if state != StepStatePending {
 		return "bg-blue-600 dark:bg-blue-500"
 	}
 	return "bg-gray-200 dark:bg-gray-700"
 }
 
-func stepCircleClass(stepIndex, currentStep int) string {
-	if stepIndex < currentStep {
+func stepCircleClass(state StepState) string {
+	if state == StepStateComplete {
 		return "bg-blue-600 text-white dark:bg-blue-500"
 	}
-	if stepIndex == currentStep {
+	if state == StepStateCurrent {
 		return "bg-white dark:bg-gray-800 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
 	}
 	return "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
 }
 
-func stepLabelClass(stepIndex, currentStep int) string {
-	if stepIndex <= currentStep {
+func stepLabelClass(state StepState) string {
+	if state != StepStatePending {
 		return "text-blue-600 dark:text-blue-400"
 	}
 	return "text-gray-500 dark:text-gray-400"

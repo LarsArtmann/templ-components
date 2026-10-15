@@ -23,7 +23,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `navigation`     | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `recipes`        | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 
-**Totals:** 136 templ components (primitives, drift-guard verified) + 4 recipe screens = 140, 102 icon names, 71 typed enums (70 with `IsValid()`, 137 generated `*_templ.go` files, ~31,500 lines of Go/templ source
+**Totals:** 136 templ components (primitives, drift-guard verified) + 4 recipe screens = 140, 102 icon names, 73 typed enums (72 with `IsValid()`, 137 generated `*_templ.go` files, ~31,500 lines of Go/templ source
 
 ---
 
@@ -173,7 +173,7 @@ Scope note: `Action.Target` renders only for htmx; Datastar targeting is respons
 | `BadgeType`          | Primary, Success, Warning, Error, Info, Neutral                                                     |
 | `BadgeSize`          | SM, MD, LG                                                                                          |
 | `CardPadding`        | None, SM, MD, LG                                                                                    |
-| `DropdownPosition`   | Left, Right                                                                                         |
+| `DropdownPosition`   | Start, End, Left, Right (alignment of the always-below-trigger menu; Left/Right are the legacy physical spellings) |
 | `ModalSize`          | SM, MD, LG, XL, 2XL, Full                                                                           |
 | `DrawerSide`         | Left, Right                                                                                         |
 | `CommandPaletteSize` | SM, MD, LG                                                                                          |
@@ -187,8 +187,9 @@ Scope note: `Action.Target` renders only for htmx; Datastar targeting is respons
 | `HeadingTagType`     | H1, H2, H3 (default), H4, H5, H6                                                                    |
 | `OverlayKind`        | Modal, Drawer                                                                                       |
 | `DropdownItemKind`   | Link, Button                                                                                        |
-| `TooltipPosition`    | Top, Bottom, Left, Right                                                                            |
-| `PopoverPosition`    | Top, Bottom, Left, Right                                                                            |
+| `Position`          | Top, Bottom, Start, End, Left, Right (shared by Tooltip/Popover/HoverCard; Start/End mirror in RTL, Left/Right are the legacy physical spellings) |
+| `TooltipPosition`    | Alias of `Position`                                                                                |
+| `PopoverPosition`    | Alias of `Position`                                                                                |
 | `SortDirection`      | None, Asc, Desc (for TableHeader sortable columns)                                                  |
 | `LineChartStyle`     | Linear, Smooth (Catmull-Rom spline)                                                                 |
 | `PieChartLabelMode`  | External, None                                                                                      |
@@ -197,7 +198,7 @@ Scope note: `Action.Target` renders only for htmx; Datastar targeting is respons
 | `StatTone`           | Blue (zero-value fallback), Green, Yellow, Red, Purple                                              |
 | `ScrollbackTone`     | Neutral, Info, Success, Warning, Danger                                                             |
 | `ButtonType`         | Primary, Secondary, Danger, Ghost, Link, OutlineDanger, OutlineWarning, OutlineSuccess, OutlineInfo |
-| `HoverCardPosition`  | Top, Bottom, Start, End                                                                             |
+| `HoverCardPosition`  | Alias of `Position` (Top, Bottom, Start, End)                                                       |
 | `TableCellPadding`   | Comfortable (default), Compact                                                                      |
 | `ProseSize`          | SM, MD (default), LG                                                                                |
 
@@ -285,6 +286,7 @@ Scope note: `Action.Target` renders only for htmx; Datastar targeting is respons
 | `SkeletonVariant`          | Text, TextShort, Title, Avatar, Image, Card, TableRow                                      |
 | `ProgressBarSize`          | SM, MD, LG                                                                                 |
 | `StepIndicatorOrientation` | Horizontal, Vertical                                                                       |
+| `StepState`                 | Complete, Current, Pending (derived from `CurrentStep`)                                    |
 
 ### Constants
 
@@ -555,7 +557,7 @@ _(None currently)_
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first viewport breakpoints (`sm:`/`md:`/`lg:`) plus **container queries** — 8 components accept `ContainerAware` to adapt to their parent container width via `@container` instead of the viewport (ADR-0018). All 8 are opt-in at the struct-literal level (zero value = viewport); `DefaultGridProps()`/`DefaultSplitProps()` set it `true` (the "v2 default flip" changed the constructors, never the literals). **Fluid typography** via container query units (`cqi`) — `.tc-fluid-*` utility classes scale text with container width (ADR-0018 analog; recipe: `docs/recipes/fluid-typography.md`).
-- **Type Safety:** 71 typed string enums (70 with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
+- **Type Safety:** 73 typed string enums (72 with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
 - **Test Coverage:** 70.2% total statement coverage in the root module, sub-modules 69.6%–77.7% (utils/wire 99.1%; CI-enforced ≥ 70% via `go test -race -coverprofile=...`; recompute with `nix run .#coverage`). BDD + golden-file HTML snapshots (`utils/golden` in 5 packages, 330 baselines) + a11y + benchmark + integration tests, plus pixel-level **visual regression** tests (`visualtest/` — chromedp + pixelmatch, `nix run .#visual`; 204 goldens incl. charts, dark-mode variants, site routes, and RTL coverage) and drift-guard tests enforcing doc/code count consistency (component, enum, generated-file, dark-mode, motion-reduce, RTL, container-query, CSS-freshness, lint-config).
 - **Theming:** Tailwind v4 `@theme` override support via `templ-components-theme.css`. Components emit standard utility classes (`bg-blue-600`, `text-gray-900`) — consumers override `--color-*` variables to theme globally without touching component code.
 - **CSS Automation:** `templates/app.css` + `templates/custom.css` starter entry-point + BuildFlow `tailwind-build` provider (auto-discovers CSS entry-points, compiles via `tailwindcss` in the DAG). See `docs/tailwind-v4-adoption-guide.md`.

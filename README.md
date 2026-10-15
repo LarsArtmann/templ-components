@@ -84,7 +84,7 @@ UI in a Go binary — without adopting a frontend stack.
 - **Security and polish are defaults, not TODOs.** CSP-nonce threading on every script, dark mode and `prefers-reduced-motion` support on every component, logical RTL properties throughout — each enforced by a regression test, not a code-review memo. Every nonce-consuming component is inventoried in [`docs/nonce-consumers.md`](docs/nonce-consumers.md), and `tc doctor` scans your repo for nonce-less call sites.
 - **Pay for what you use.** Pure Go + templ + Tailwind CSS v4 in seven small modules; import one package or all of them.
 
-136 server-rendered components · 71 typed string enums (70 with IsValid()) · 102 SVG icons — in one `go get`.
+136 server-rendered components · 73 typed string enums (72 with IsValid()) · 102 SVG icons — in one `go get`.
 
 The long-form pitch, with screenshots: [Why templ-components](https://templcomponents.lars.software/sales).
 
@@ -96,7 +96,7 @@ The long-form pitch, with screenshots: [Why templ-components](https://templcompo
 | -------------- | --------------------------------------------------- |
 | Components     | 124                                                 |
 | SVG icons      | 102                                                 |
-| Typed enums    | 71 (70 with IsValid)                                |
+| Typed enums    | 73 (72 with IsValid)                                |
 | Packages       | 19 (across 7 Go modules)                            |
 | Tests          | ~1,600 test functions + ~1,800 subtests             |
 | Visual goldens | 204 pixel-level regression tests (chromedp)         |
@@ -336,7 +336,7 @@ mux.Handle("/api/thing", errorpage.ErrorHandler(err, errorpage.ErrorHandlerConfi
 
 ## Design Principles
 
-**Type-safe.** 71 typed string enums (70 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 73 typed string enums (72 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation, and screen-reader text across all interactive components. Native `<dialog>` for modals, `<details>` for accordions, `<search>` landmark for search inputs.
 
