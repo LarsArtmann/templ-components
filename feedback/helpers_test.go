@@ -242,26 +242,59 @@ func TestStepCircleClass(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		step, current int
-		want          string
+		state StepState
+		want  string
 	}{
-		{0, 2, "bg-blue-600 text-white dark:bg-blue-500"},
+		{StepStateComplete, "bg-blue-600 text-white dark:bg-blue-500"},
 		{
-			2,
-			2,
+			StepStateCurrent,
 			"bg-white dark:bg-gray-800 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400",
 		},
-		{3, 2, "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"},
+		{StepStatePending, "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"},
 	}
 	for _, tt := range tests {
-		t.Run(fmt.Sprintf("step-%d-current-%d", tt.step, tt.current), func(t *testing.T) {
+		t.Run(fmt.Sprintf("state-%s", tt.state), func(t *testing.T) {
 			t.Parallel()
 			utils.AssertEqual(
 				t,
-				fmt.Sprintf("stepCircleClass(%d, %d)", tt.step, tt.current),
-				stepCircleClass(tt.step, tt.current),
+				fmt.Sprintf("stepCircleClass(%s)", tt.state),
+				stepCircleClass(tt.state),
 				tt.want,
 			)
 		})
+	}
+}
+
+func TestStepState(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		step, current int
+		want          StepState
+	}{
+		{0, 2, StepStateComplete},
+		{2, 2, StepStateCurrent},
+		{3, 2, StepStatePending},
+		{0, 0, StepStateCurrent},
+		{0, -1, StepStatePending},
+		{4, 9, StepStateComplete},
+	}
+	for _, tt := range tests {
+		if have := stepState(tt.step, tt.current); have != tt.want {
+			t.Errorf("stepState(%d, %d) = %q, want %q", tt.step, tt.current, have, tt.want)
+		}
+	}
+}
+
+func TestStepStateIsValid(t *testing.T) {
+	t.Parallel()
+
+	for _, state := range []StepState{StepStateComplete, StepStateCurrent, StepStatePending} {
+		if !StepStateIsValid(state) {
+			t.Errorf("StepStateIsValid(%q) = false, want true", state)
+		}
+	}
+	if StepStateIsValid(StepState("invalid")) {
+		t.Error("StepStateIsValid(\"invalid\") = true, want false")
 	}
 }

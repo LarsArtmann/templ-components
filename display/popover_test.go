@@ -44,6 +44,16 @@ func TestPopoverRender(t *testing.T) {
 			props:   PopoverProps{TriggerText: "Right", Position: PopoverPositionRight},
 			wantAll: []string{`data-tc-position="right"`},
 		},
+		{
+			name:    "start position",
+			props:   PopoverProps{TriggerText: "Start", Position: PopoverPositionStart},
+			wantAll: []string{`data-tc-position="start"`},
+		},
+		{
+			name:    "end position",
+			props:   PopoverProps{TriggerText: "End", Position: PopoverPositionEnd},
+			wantAll: []string{`data-tc-position="end"`},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -44,6 +44,20 @@ func TestTooltipRender(t *testing.T) {
 			position: TooltipPositionLeft,
 			wantAll:  []string{"right-full"},
 		},
+		{
+			name:     "start tooltip",
+			text:     "Logical start",
+			position: TooltipPositionStart,
+			wantAll:  []string{"inset-e-full", "me-2"},
+			wantNone: []string{"right-full", "left-full"},
+		},
+		{
+			name:     "end tooltip",
+			text:     "Logical end",
+			position: TooltipPositionEnd,
+			wantAll:  []string{"inset-s-full", "ms-2"},
+			wantNone: []string{"right-full", "left-full"},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -55,6 +69,9 @@ func TestTooltipRender(t *testing.T) {
 			}))
 			for _, want := range tt.wantAll {
 				utils.AssertContains(t, output, want)
+			}
+			for _, banned := range tt.wantNone {
+				utils.AssertNotContains(t, output, banned)
 			}
 		})
 	}
