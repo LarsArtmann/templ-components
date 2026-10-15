@@ -12,7 +12,7 @@ goldens, and any future cross-engine captures all inherit THIS list — a compon
 from the demo is invisible to every browser-level gate. Companion to
 `docs/testing/a11y-gate-policy.md`.
 
-## Route inventory (17 routes)
+## Route inventory (16 routes)
 
 `/` (home) · `/layout` · `/display` · `/feedback` · `/forms` · `/stylable-select` ·
 `/navigation` · `/icons` · `/htmx` · `/datastar` · `/wire` · `/kanban` · `/echarts` ·

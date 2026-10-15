@@ -1,0 +1,50 @@
+[
+  {
+    "path": "/"
+  },
+  {
+    "path": "/layout"
+  },
+  {
+    "path": "/display"
+  },
+  {
+    "path": "/feedback"
+  },
+  {
+    "path": "/forms"
+  },
+  {
+    "path": "/stylable-select"
+  },
+  {
+    "path": "/navigation"
+  },
+  {
+    "path": "/icons"
+  },
+  {
+    "path": "/htmx"
+  },
+  {
+    "path": "/datastar"
+  },
+  {
+    "path": "/wire"
+  },
+  {
+    "path": "/kanban"
+  },
+  {
+    "path": "/echarts"
+  },
+  {
+    "path": "/recipes"
+  },
+  {
+    "path": "/users"
+  },
+  {
+    "path": "/error-pages"
+  }
+]
