@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // ProgressBarSize defines the height of a progress bar
@@ -22,7 +23,7 @@ type ProgressBarProps struct {
 	Total         int
 	Label         string
 	Size          ProgressBarSize
-	Color         string
+	Color         tone.ColorClass
 	ShowLabel     bool
 	Indeterminate bool
 }

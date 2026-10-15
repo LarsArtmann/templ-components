@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // BarOrient controls bar chart orientation.
@@ -34,9 +35,9 @@ type BarChartBar struct {
 	// Value is the bar's magnitude.
 	Value float64
 
-	// Color overrides the default bar color with a Tailwind bg-* class
-	// (e.g. "bg-emerald-600 dark:bg-emerald-500"). Empty = use default.
-	Color string
+	// Color overrides the default bar color — a complete light+dark bg-*
+	// literal (e.g. "bg-emerald-600 dark:bg-emerald-500"). Empty = use default.
+	Color tone.ColorClass
 
 	// Href makes the bar label a clickable link.
 	Href string
@@ -64,9 +65,9 @@ type BarChartProps struct {
 	// Max overrides the auto-computed maximum (0 = auto from data).
 	Max float64
 
-	// BarColor is the default Tailwind bg-* class for bars without a per-bar
-	// Color override. Default: "bg-blue-600 dark:bg-blue-500".
-	BarColor string
+	// BarColor is the default bg-* literal for bars without a per-bar Color
+	// override. Default: "bg-blue-600 dark:bg-blue-500".
+	BarColor tone.ColorClass
 
 	// LabelWidth is the label column width for horizontal charts (Tailwind
 	// width class, e.g. "w-32"). Default: "w-32".

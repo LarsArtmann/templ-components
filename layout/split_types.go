@@ -69,12 +69,19 @@ type SplitProps struct {
 	// AsidePosition controls whether Aside renders before or after Main.
 	// Default AsidePositionEnd (aside after main in source order + visual).
 	AsidePosition AsidePosition
-	// AsideLabel, when set, names the aside landmark (aria-label). An
-	// unnamed <aside> still works but shows up unlabeled in screen-reader
-	// landmark rotors; set this when the page has several complementary
-	// regions or when the aside's purpose is not obvious from context.
-	// Empty keeps the current unmodified markup (no attribute rendered).
+	// AsideLabel, when set, names the aside landmark (aria-label). Setting it
+	// renders the column as a semantic <aside> complementary landmark — a
+	// labeled non-landmark element is invalid HTML-ARIA (aria-label on a
+	// roleless generic), so the label implies the landmark. Without it, an
+	// unnamed <aside> would show up unlabeled in screen-reader landmark
+	// rotors. Empty keeps the plain element (see AsideLandmark).
 	AsideLabel string
+	// AsideLandmark, when true, renders the aside column as a semantic
+	// <aside> complementary landmark instead of the default plain <div>.
+	// Use it when the column genuinely holds complementary content (related
+	// links, metadata, TOC); leave it false for plain two-column layouts so
+	// screen-reader landmark rotors stay clean. Zero value = <div>.
+	AsideLandmark bool
 	// Ratio controls the relative column widths. Default SplitRatio1To3
 	// (main 2/3, aside 1/3).
 	Ratio SplitRatio
@@ -88,7 +95,8 @@ type SplitProps struct {
 	ContainerAware bool
 }
 
-// DefaultSplitProps returns sensible defaults: aside at end, 1To3 ratio, gap-6.
+// DefaultSplitProps returns sensible defaults: plain layout column, aside at
+// end, 1To3 ratio, gap-6.
 //
 //nolint:exhaustruct_v5 // constructor intentionally sets only non-zero defaults
 func DefaultSplitProps() SplitProps {

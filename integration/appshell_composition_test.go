@@ -77,9 +77,10 @@ func TestSplitWithContentAndAside(t *testing.T) {
 	asideCard := display.Card(display.CardProps{Title: "Metadata"})
 
 	output := utils.Render(t, layout.Split(layout.SplitProps{
-		Main:  mainCard,
-		Aside: asideCard,
-		Ratio: layout.SplitRatio1To3,
+		Main:          mainCard,
+		Aside:         asideCard,
+		Ratio:         layout.SplitRatio1To3,
+		AsideLandmark: true,
 	}))
 
 	utils.AssertContainsAll(

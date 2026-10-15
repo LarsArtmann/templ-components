@@ -2,6 +2,7 @@ package display
 
 import (
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // LineChartStyle controls how series lines are drawn.
@@ -47,9 +48,10 @@ type LineChartSeries struct {
 	// Values are the Y-axis data points.
 	Values []float64
 
-	// Color overrides the palette color with a Tailwind text-* class
-	// (e.g. "text-emerald-600 dark:text-emerald-400"). Empty = palette by index.
-	Color string
+	// Color overrides the palette color — a complete light+dark literal
+	// (prefer the ChartColor* constants; e.g. ChartColorEmerald). Empty =
+	// palette by index.
+	Color tone.ColorClass
 
 	// StrokeWidth is the line thickness. Default: 2.
 	StrokeWidth float64
@@ -140,7 +142,7 @@ const (
 // Uses Tailwind text-* classes so SVG stroke/fill inherit via currentColor.
 //
 //nolint:gochecknoglobals // Package-level lookup table for chart series colors
-var lineChartPalette = []string{
+var lineChartPalette = []tone.ColorClass{
 	ChartColorBlue,
 	ChartColorEmerald,
 	ChartColorAmber,
@@ -232,12 +234,12 @@ func lineChartTickFormat(format func(float64) string, v float64) string {
 
 // lineChartColor returns the Tailwind class for a series, using the palette
 // when the series does not specify a custom color.
-func lineChartColor(seriesIdx int, custom string) string {
+func lineChartColor(seriesIdx int, custom tone.ColorClass) string {
 	if custom != "" {
-		return custom
+		return string(custom)
 	}
 
-	return lineChartPalette[seriesIdx%len(lineChartPalette)]
+	return string(lineChartPalette[seriesIdx%len(lineChartPalette)])
 }
 
 // lineChartStrokeWidth returns the effective stroke width, defaulting to 2.

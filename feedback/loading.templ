@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 	"github.com/larsartmann/templ-components/utils/svg"
 )
 
@@ -44,7 +45,7 @@ const (
 type SpinnerProps struct {
 	utils.BaseProps
 	Size  SpinnerSize
-	Color string
+	Color tone.ColorClass
 }
 
 // DefaultSpinnerProps returns sensible defaults
@@ -59,7 +60,7 @@ func DefaultSpinnerProps() SpinnerProps {
 //	@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"})
 templ Spinner(props SpinnerProps) {
 	<svg
-		class={ utils.Class("animate-spin motion-reduce:animate-none", spinnerSizeClass(props.Size), props.Color, props.Class) }
+		class={ utils.Class("animate-spin motion-reduce:animate-none", spinnerSizeClass(props.Size), string(props.Color), props.Class) }
 		xmlns="http://www.w3.org/2000/svg"
 		fill="none"
 		viewBox="0 0 24 24"

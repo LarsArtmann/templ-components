@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // CircularProgressSize controls the diameter of the ring.
@@ -27,10 +28,10 @@ type CircularProgressProps struct {
 	ShowLabel bool
 	// Color overrides the progress arc colour (Tailwind stroke utility).
 	// Defaults to text-blue-600 dark:text-blue-500.
-	Color string
+	Color tone.ColorClass
 	// TrackColor overrides the background track colour.
 	// Defaults to text-gray-200 dark:text-gray-700.
-	TrackColor string
+	TrackColor tone.ColorClass
 }
 
 // DefaultCircularProgressProps returns sensible defaults.

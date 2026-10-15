@@ -52,7 +52,7 @@ func BarChart(props BarChartProps) templ.Component {
 		if !BarOrientIsValid(orient) {
 			orient = BarHorizontal
 		}
-		barColor := props.BarColor
+		barColor := string(props.BarColor)
 		if barColor == "" {
 			barColor = "bg-blue-600 dark:bg-blue-500"
 		}
@@ -287,7 +287,7 @@ func BarChart(props BarChartProps) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var15 = []any{utils.Class("w-full rounded-t bg-blue-600 dark:bg-blue-500", barColor, bar.Color)}
+				var templ_7745c5c3_Var15 = []any{utils.Class("w-full rounded-t bg-blue-600 dark:bg-blue-500", barColor, string(bar.Color))}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var15...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -556,7 +556,7 @@ func BarChart(props BarChartProps) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var34 = []any{utils.Class("h-5 rounded bg-blue-600 dark:bg-blue-500", barColor, bar.Color)}
+				var templ_7745c5c3_Var34 = []any{utils.Class("h-5 rounded bg-blue-600 dark:bg-blue-500", barColor, string(bar.Color))}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var34...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err

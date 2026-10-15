@@ -574,6 +574,7 @@ import (
 	"math"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // BarOrient controls bar chart orientation.
@@ -603,9 +604,9 @@ type BarChartBar struct {
 	// Value is the bar's magnitude.
 	Value float64
 
-	// Color overrides the default bar color with a Tailwind bg-* class
-	// (e.g. "bg-emerald-600 dark:bg-emerald-500"). Empty = use default.
-	Color string
+	// Color overrides the default bar color — a complete light+dark bg-*
+	// literal (e.g. "bg-emerald-600 dark:bg-emerald-500"). Empty = use default.
+	Color tone.ColorClass
 
 	// Href makes the bar label a clickable link.
 	Href string
@@ -633,9 +634,9 @@ type BarChartProps struct {
 	// Max overrides the auto-computed maximum (0 = auto from data).
 	Max float64
 
-	// BarColor is the default Tailwind bg-* class for bars without a per-bar
-	// Color override. Default: "bg-blue-600 dark:bg-blue-500".
-	BarColor string
+	// BarColor is the default bg-* literal for bars without a per-bar Color
+	// override. Default: "bg-blue-600 dark:bg-blue-500".
+	BarColor tone.ColorClass
 
 	// LabelWidth is the label column width for horizontal charts (Tailwind
 	// width class, e.g. "w-32"). Default: "w-32".
@@ -760,7 +761,7 @@ templ BarChart(props BarChartProps) {
 		if !BarOrientIsValid(orient) {
 			orient = BarHorizontal
 		}
-		barColor := props.BarColor
+		barColor := string(props.BarColor)
 		if barColor == "" {
 			barColor = "bg-blue-600 dark:bg-blue-500"
 		}
@@ -817,7 +818,7 @@ templ BarChart(props BarChartProps) {
 					}
 					<div class="flex w-full flex-1 items-end">
 						<div
-							class={ utils.Class("w-full rounded-t bg-blue-600 dark:bg-blue-500", barColor, bar.Color) }
+							class={ utils.Class("w-full rounded-t bg-blue-600 dark:bg-blue-500", barColor, string(bar.Color)) }
 							style={ "height:" + barPercentHeight(bar.Value, maxVal) }
 						></div>
 					</div>
@@ -858,7 +859,7 @@ templ BarChart(props BarChartProps) {
 					}
 					<div class="flex-1 overflow-hidden rounded bg-gray-100 dark:bg-gray-800">
 						<div
-							class={ utils.Class("h-5 rounded bg-blue-600 dark:bg-blue-500", barColor, bar.Color) }
+							class={ utils.Class("h-5 rounded bg-blue-600 dark:bg-blue-500", barColor, string(bar.Color)) }
 							style={ "width:" + barPercentWidth(bar.Value, maxVal) }
 						></div>
 					</div>
@@ -1782,6 +1783,8 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
+
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // Chart geometry constants — shared across all native SVG chart components.
@@ -1806,17 +1809,20 @@ const (
 	smoothPathMinPoints   = 3
 )
 
-// Shared Tailwind color class constants for chart palettes. Used by LineChart,
-// AreaChart, and PieChart series/slice coloring via currentColor inheritance.
+// Chart color constants: complete light+dark literals (tone.ColorClass) for
+// chart series, slice, segment, spinner, and progress coloring via
+// currentColor inheritance. Charts cycle them in declaration order; prefer
+// them over hand-typed literals so a typo cannot silently render nothing
+// (TODO #426).
 const (
-	chartColorBlue    = "text-blue-600 dark:text-blue-400"
-	chartColorEmerald = "text-emerald-600 dark:text-emerald-400"
-	chartColorAmber   = "text-amber-600 dark:text-amber-400"
-	chartColorRose    = "text-rose-600 dark:text-rose-400"
-	chartColorViolet  = "text-violet-600 dark:text-violet-400"
-	chartColorCyan    = "text-cyan-600 dark:text-cyan-400"
-	chartColorOrange  = "text-orange-600 dark:text-orange-400"
-	chartColorPink    = "text-pink-600 dark:text-pink-400"
+	ChartColorBlue    tone.ColorClass = "text-blue-600 dark:text-blue-400"
+	ChartColorEmerald tone.ColorClass = "text-emerald-600 dark:text-emerald-400"
+	ChartColorAmber   tone.ColorClass = "text-amber-600 dark:text-amber-400"
+	ChartColorRose    tone.ColorClass = "text-rose-600 dark:text-rose-400"
+	ChartColorViolet  tone.ColorClass = "text-violet-600 dark:text-violet-400"
+	ChartColorCyan    tone.ColorClass = "text-cyan-600 dark:text-cyan-400"
+	ChartColorOrange  tone.ColorClass = "text-orange-600 dark:text-orange-400"
+	ChartColorPink    tone.ColorClass = "text-pink-600 dark:text-pink-400"
 )
 
 // LineChart/AreaChart shared defaults.
@@ -3193,11 +3199,14 @@ func DefaultCopyButtonProps() CopyButtonProps {
 // the default palette unless props.LabelClass overrides it (the span must
 // not follow ancestor re-coloring in consumers whose table CSS overrides
 // the button). [data-tc-copy-text] remains the attribute-level styling hook.
+// The label span carries NO live semantics: live regions must live outside
+// interactive elements (achecker aria_descendant_valid); announcement is
+// owned by the sibling [data-tc-copy-status] region the component emits.
 templ copyButtonContent(icon bool, label, labelClass string) {
 	if icon {
 		@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
 	}
-	<span data-tc-copy-text aria-live="polite" class={ labelClass }>{ label }</span>
+	<span data-tc-copy-text class={ labelClass }>{ label }</span>
 }
 
 templ CopyButton(props CopyButtonProps) {
@@ -3232,6 +3241,7 @@ templ CopyButton(props CopyButtonProps) {
 		>
 			@copyButtonContent(props.Icon, label, labelClass)
 		</a>
+		<span data-tc-copy-status role="status" class="sr-only"></span>
 	} else {
 		<button
 			type="button"
@@ -3248,6 +3258,7 @@ templ CopyButton(props CopyButtonProps) {
 		>
 			@copyButtonContent(props.Icon, label, labelClass)
 		</button>
+		<span data-tc-copy-status role="status" class="sr-only"></span>
 	}
 	@copyButtonScriptComponent(props.Nonce)
 }
@@ -6231,6 +6242,7 @@ package display
 
 import (
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // LineChartStyle controls how series lines are drawn.
@@ -6276,9 +6288,10 @@ type LineChartSeries struct {
 	// Values are the Y-axis data points.
 	Values []float64
 
-	// Color overrides the palette color with a Tailwind text-* class
-	// (e.g. "text-emerald-600 dark:text-emerald-400"). Empty = palette by index.
-	Color string
+	// Color overrides the palette color — a complete light+dark literal
+	// (prefer the ChartColor* constants; e.g. ChartColorEmerald). Empty =
+	// palette by index.
+	Color tone.ColorClass
 
 	// StrokeWidth is the line thickness. Default: 2.
 	StrokeWidth float64
@@ -6369,13 +6382,13 @@ const (
 // Uses Tailwind text-* classes so SVG stroke/fill inherit via currentColor.
 //
 //nolint:gochecknoglobals // Package-level lookup table for chart series colors
-var lineChartPalette = []string{
-	chartColorBlue,
-	chartColorEmerald,
-	chartColorAmber,
-	chartColorRose,
-	chartColorViolet,
-	chartColorCyan,
+var lineChartPalette = []tone.ColorClass{
+	ChartColorBlue,
+	ChartColorEmerald,
+	ChartColorAmber,
+	ChartColorRose,
+	ChartColorViolet,
+	ChartColorCyan,
 }
 
 // DefaultLineChartProps returns sensible defaults for a line chart.
@@ -6461,12 +6474,12 @@ func lineChartTickFormat(format func(float64) string, v float64) string {
 
 // lineChartColor returns the Tailwind class for a series, using the palette
 // when the series does not specify a custom color.
-func lineChartColor(seriesIdx int, custom string) string {
+func lineChartColor(seriesIdx int, custom tone.ColorClass) string {
 	if custom != "" {
-		return custom
+		return string(custom)
 	}
 
-	return lineChartPalette[seriesIdx%len(lineChartPalette)]
+	return string(lineChartPalette[seriesIdx%len(lineChartPalette)])
 }
 
 // lineChartStrokeWidth returns the effective stroke width, defaulting to 2.
@@ -6820,6 +6833,7 @@ import (
 	"math"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // PieChartLabelMode controls where slice labels are rendered.
@@ -6847,7 +6861,7 @@ type PieChartSlice struct {
 
 	// Color overrides the palette color with a Tailwind text-* class
 	// (e.g. "text-emerald-600 dark:text-emerald-400"). Empty = palette by index.
-	Color string
+	Color tone.ColorClass
 }
 
 // PieChartProps configures a pure-SVG pie or donut chart. Zero JavaScript —
@@ -6913,15 +6927,15 @@ const (
 // pieChartPalette is the default color cycle for slices.
 //
 //nolint:gochecknoglobals // Package-level lookup table for chart slice colors
-var pieChartPalette = []string{
-	chartColorBlue,
-	chartColorEmerald,
-	chartColorAmber,
-	chartColorRose,
-	chartColorViolet,
-	chartColorCyan,
-	chartColorOrange,
-	chartColorPink,
+var pieChartPalette = []tone.ColorClass{
+	ChartColorBlue,
+	ChartColorEmerald,
+	ChartColorAmber,
+	ChartColorRose,
+	ChartColorViolet,
+	ChartColorCyan,
+	ChartColorOrange,
+	ChartColorPink,
 }
 
 // DefaultPieChartProps returns sensible defaults for a pie chart.
@@ -6975,12 +6989,12 @@ func pieChartTotal(slices []PieChartSlice) float64 {
 
 // pieChartColor returns the Tailwind class for a slice, using the palette
 // when the slice does not specify a custom color.
-func pieChartColor(sliceIdx int, custom string) string {
+func pieChartColor(sliceIdx int, custom tone.ColorClass) string {
 	if custom != "" {
-		return custom
+		return string(custom)
 	}
 
-	return pieChartPalette[sliceIdx%len(pieChartPalette)]
+	return string(pieChartPalette[sliceIdx%len(pieChartPalette)])
 }
 
 // pieChartSliceAngle converts a value to an angle in degrees.
@@ -7890,6 +7904,7 @@ import (
 	"strings"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // SegmentBarSegment is one proportion of the bar.
@@ -7899,9 +7914,9 @@ type SegmentBarSegment struct {
 	// Value is the segment's magnitude (relative to the sum of all values).
 	// Negative values clamp to zero.
 	Value float64
-	// Color optionally overrides the deterministic palette — a full class
-	// pair such as "bg-emerald-600 dark:bg-emerald-400".
-	Color string
+	// Color optionally overrides the deterministic palette — a complete
+	// light+dark literal pair such as "bg-emerald-600 dark:bg-emerald-400".
+	Color tone.ColorClass
 }
 
 // SegmentBarProps configures a stacked proportion bar.
@@ -7921,7 +7936,7 @@ func DefaultSegmentBarProps() SegmentBarProps {
 }
 
 //nolint:gochecknoglobals // Package-level lookup table: the shared chart palette as background class pairs
-var segmentBarPalette = []string{
+var segmentBarPalette = []tone.ColorClass{
 	"bg-blue-600 dark:bg-blue-400",
 	"bg-emerald-600 dark:bg-emerald-400",
 	"bg-amber-600 dark:bg-amber-400",
@@ -7937,7 +7952,7 @@ var segmentBarPalette = []string{
 // renders and filter orders — the same label always gets the same color).
 func segmentBarColor(seg SegmentBarSegment) string {
 	if seg.Color != "" {
-		return seg.Color
+		return string(seg.Color)
 	}
 
 	hash := 0
@@ -7946,7 +7961,7 @@ func segmentBarColor(seg SegmentBarSegment) string {
 		hash = (hash*31 + int(r)) % len(segmentBarPalette)
 	}
 
-	return segmentBarPalette[hash]
+	return string(segmentBarPalette[hash])
 }
 
 // segmentBarTotal sums the clamped segment values.
@@ -8172,12 +8187,18 @@ func overlayScriptComponent(nonce, id, componentName string) templ.Component {
 // copyButtonJS returns the singleton JavaScript for clipboard copy via event
 // delegation. Listens for clicks on [data-tc-copy] buttons, copies the text
 // via navigator.clipboard.writeText (with a document.execCommand fallback for
-// non-secure HTTP contexts or older browsers), and temporarily swaps the label.
+// non-secure HTTP contexts or older browsers), temporarily swaps the visible
+// label, and announces the copy through the sibling [data-tc-copy-status]
+// live region — live semantics must stay OUTSIDE the interactive element
+// (achecker aria_descendant_valid).
 func copyButtonJS() string {
 	return `if(!window.tcCopyAttached){window.tcCopyAttached=true;` +
 		`function tcSwapLabel(el,label,original){` +
 		`if(el)el.textContent=label;` +
 		`setTimeout(function(){if(el)el.textContent=original;},2000);}` +
+		`function tcAnnounceCopy(btn,label){` +
+		`var st=btn.nextElementSibling;st=st&&st.hasAttribute('data-tc-copy-status')?st:null;` +
+		`if(st){st.textContent=label;setTimeout(function(){st.textContent='';},2000);}}` +
 		`function tcFallbackCopy(text,done){` +
 		`var ta=document.createElement('textarea');ta.value=text;` +
 		`ta.style.cssText='position:fixed;top:-9999px;left:-9999px';` +
@@ -8191,11 +8212,10 @@ func copyButtonJS() string {
 		`var label=btn.getAttribute('data-tc-copy-label')||'Copied!';` +
 		`var labelEl=btn.querySelector('[data-tc-copy-text]');` +
 		`var original=labelEl?labelEl.textContent:'';` +
+		`var done=function(){tcSwapLabel(labelEl,label,original);tcAnnounceCopy(btn,label);};` +
 		`if(navigator.clipboard&&navigator.clipboard.writeText){` +
-		`navigator.clipboard.writeText(text).then(function(){` +
-		`tcSwapLabel(labelEl,label,original);}).catch(function(){` +
-		`tcFallbackCopy(text,function(){tcSwapLabel(labelEl,label,original);});});` +
-		`}else{tcFallbackCopy(text,function(){tcSwapLabel(labelEl,label,original);});}` +
+		`navigator.clipboard.writeText(text).then(done).catch(function(){tcFallbackCopy(text,done);});}` +
+		`else{tcFallbackCopy(text,done);}` +
 		`});}` +
 		"\n"
 }
@@ -10099,6 +10119,7 @@ import (
 	"math"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // CircularProgressSize controls the diameter of the ring.
@@ -10121,10 +10142,10 @@ type CircularProgressProps struct {
 	ShowLabel bool
 	// Color overrides the progress arc colour (Tailwind stroke utility).
 	// Defaults to text-blue-600 dark:text-blue-500.
-	Color string
+	Color tone.ColorClass
 	// TrackColor overrides the background track colour.
 	// Defaults to text-gray-200 dark:text-gray-700.
-	TrackColor string
+	TrackColor tone.ColorClass
 }
 
 // DefaultCircularProgressProps returns sensible defaults.
@@ -10269,6 +10290,7 @@ import (
 	"fmt"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 	"github.com/larsartmann/templ-components/utils/svg"
 )
 
@@ -10309,7 +10331,7 @@ const (
 type SpinnerProps struct {
 	utils.BaseProps
 	Size  SpinnerSize
-	Color string
+	Color tone.ColorClass
 }
 
 // DefaultSpinnerProps returns sensible defaults
@@ -10324,7 +10346,7 @@ func DefaultSpinnerProps() SpinnerProps {
 //	@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"})
 templ Spinner(props SpinnerProps) {
 	<svg
-		class={ utils.Class("animate-spin motion-reduce:animate-none", spinnerSizeClass(props.Size), props.Color, props.Class) }
+		class={ utils.Class("animate-spin motion-reduce:animate-none", spinnerSizeClass(props.Size), string(props.Color), props.Class) }
 		xmlns="http://www.w3.org/2000/svg"
 		fill="none"
 		viewBox="0 0 24 24"
@@ -10540,6 +10562,7 @@ import (
 	"fmt"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // ProgressBarSize defines the height of a progress bar
@@ -10558,7 +10581,7 @@ type ProgressBarProps struct {
 	Total         int
 	Label         string
 	Size          ProgressBarSize
-	Color         string
+	Color         tone.ColorClass
 	ShowLabel     bool
 	Indeterminate bool
 }
@@ -15638,6 +15661,13 @@ func splitAsideSpan(containerAware bool) string {
 // 2D pattern after AppShell: article+sidebar, detail+metadata, primary
 // content + related links.
 //
+// # Aside semantics (landmark opt-in)
+//
+// By default the aside column renders a plain <div> — a two-column layout
+// grid, not a landmark. Set AsideLandmark: true (or name it via AsideLabel)
+// to render a semantic <aside> complementary landmark; name landmarks with
+// AsideLabel so they do not add unnamed entries to screen-reader rotors.
+//
 // Both columns use minmax(0,1fr) per grid track to prevent grid blowout
 // (see ADR-0016). The layout stacks to a single column below md (mobile).
 //
@@ -15689,9 +15719,7 @@ templ splitInner(props SplitProps) {
 		{ props.Attrs... }
 	>
 		if props.AsidePosition == AsidePositionStart && props.Aside != nil {
-			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") } if props.AsideLabel != "" { aria-label={ props.AsideLabel } }>
-				@props.Aside
-			</aside>
+			@splitAside(props)
 		}
 		if props.Main != nil {
 			<div class={ utils.Class("min-w-0", splitRatioMainSpan(props.Ratio, props.ContainerAware)) }>
@@ -15699,11 +15727,26 @@ templ splitInner(props SplitProps) {
 			</div>
 		}
 		if props.AsidePosition != AsidePositionStart && props.Aside != nil {
-			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") } if props.AsideLabel != "" { aria-label={ props.AsideLabel } }>
-				@props.Aside
-			</aside>
+			@splitAside(props)
 		}
 	</div>
+}
+
+// splitAside renders the aside column: a semantic <aside> complementary
+// landmark when AsideLandmark (or AsideLabel) opts in, else a plain <div>
+// layout column. A labeled non-landmark element is invalid HTML-ARIA
+// (aria-label on a roleless generic), so an AsideLabel always implies the
+// landmark element.
+templ splitAside(props SplitProps) {
+	if props.AsideLandmark || props.AsideLabel != "" {
+		<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") } if props.AsideLabel != "" { aria-label={ props.AsideLabel } }>
+			@props.Aside
+		</aside>
+	} else {
+		<div class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") }>
+			@props.Aside
+		</div>
+	}
 }
 
 # ── layout/split_types.go ─────────────────────────────────────────────
@@ -15778,12 +15821,19 @@ type SplitProps struct {
 	// AsidePosition controls whether Aside renders before or after Main.
 	// Default AsidePositionEnd (aside after main in source order + visual).
 	AsidePosition AsidePosition
-	// AsideLabel, when set, names the aside landmark (aria-label). An
-	// unnamed <aside> still works but shows up unlabeled in screen-reader
-	// landmark rotors; set this when the page has several complementary
-	// regions or when the aside's purpose is not obvious from context.
-	// Empty keeps the current unmodified markup (no attribute rendered).
+	// AsideLabel, when set, names the aside landmark (aria-label). Setting it
+	// renders the column as a semantic <aside> complementary landmark — a
+	// labeled non-landmark element is invalid HTML-ARIA (aria-label on a
+	// roleless generic), so the label implies the landmark. Without it, an
+	// unnamed <aside> would show up unlabeled in screen-reader landmark
+	// rotors. Empty keeps the plain element (see AsideLandmark).
 	AsideLabel string
+	// AsideLandmark, when true, renders the aside column as a semantic
+	// <aside> complementary landmark instead of the default plain <div>.
+	// Use it when the column genuinely holds complementary content (related
+	// links, metadata, TOC); leave it false for plain two-column layouts so
+	// screen-reader landmark rotors stay clean. Zero value = <div>.
+	AsideLandmark bool
 	// Ratio controls the relative column widths. Default SplitRatio1To3
 	// (main 2/3, aside 1/3).
 	Ratio SplitRatio
@@ -15797,7 +15847,8 @@ type SplitProps struct {
 	ContainerAware bool
 }
 
-// DefaultSplitProps returns sensible defaults: aside at end, 1To3 ratio, gap-6.
+// DefaultSplitProps returns sensible defaults: plain layout column, aside at
+// end, 1To3 ratio, gap-6.
 //
 //nolint:exhaustruct_v5 // constructor intentionally sets only non-zero defaults
 func DefaultSplitProps() SplitProps {
@@ -18299,6 +18350,8 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // darkModeException defines a file/line pattern that is intentionally
@@ -18402,10 +18455,30 @@ var darkModeNeutralRe = regexp.MustCompile(
 	`(text-gray-[0-9]+|bg-white|bg-gray-[0-9]+|border-gray-[0-9]+|divide-gray-[0-9]+|ring-gray-[0-9]+)`,
 )
 
-// darkModeSemanticRe matches semantic color classes (bg-blue-600, bg-red-600,
-// text-blue-600, text-green-500, etc.).
+// semanticHueAlternation builds the hue alternation for the semantic-color
+// regex from the canonical tone table (utils/tone), minus gray — the
+// neutral rule owns grays. Deriving the list keeps the guard in lockstep
+// with the palette by construction: the hand-maintained copy had drifted
+// and emerald/rose/violet/cyan/pink/purple plus bg-yellow escapes went
+// unnoticed (color-domain report H3, TODO #427).
+func semanticHueAlternation() string {
+	hues := make([]string, 0, len(tone.Hues())-1)
+	for _, h := range tone.Hues() {
+		if h == tone.HueGray {
+			continue // the darkmode-neutral rule owns gray
+		}
+
+		hues = append(hues, string(h))
+	}
+
+	return strings.Join(hues, "|")
+}
+
+// darkModeSemanticRe matches semantic color classes (bg-blue-600,
+// text-emerald-500, …) for EVERY hue the library renders — derived from
+// utils/tone at init, never hand-maintained.
 var darkModeSemanticRe = regexp.MustCompile(
-	`(bg-(blue|red|green|amber|orange|gray)-[0-9]+|text-(blue|red|green|amber|orange)-[0-9]+)`,
+	`(bg-(` + semanticHueAlternation() + `)-[0-9]+|text-(` + semanticHueAlternation() + `)-[0-9]+)`,
 )
 
 // goCommentLineRe skips Go-style comment lines (both languages' sources are
@@ -19377,6 +19450,22 @@ func AssertContainsAll(t TestReporter, output string, wants ...string) {
 		}
 	}
 }
+
+# ── utils/tone/color_class.go ─────────────────────────────────────────────
+package tone
+
+// ColorClass is a complete, scanner-safe color utility string: the light
+// class and its dark: half in ONE literal (e.g. "text-blue-600
+// dark:text-blue-400"). Chart series, spinners, and progress fills accept
+// it so a typo cannot silently render nothing — pass a named constant
+// (display.ChartColorBlue, …) or a complete literal of your own; a bare
+// "text-blue-600" without the dark half compiles but trips the dark-mode
+// guards.
+//
+// The string kind keeps every existing untyped literal assigning (TODO
+// #426 non-breaking); a typed value converts with string(c) where a raw
+// string is needed.
+type ColorClass string
 
 # ── utils/tone/hue.go ─────────────────────────────────────────────
 package tone

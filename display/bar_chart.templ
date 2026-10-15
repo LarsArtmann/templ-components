@@ -25,7 +25,7 @@ templ BarChart(props BarChartProps) {
 		if !BarOrientIsValid(orient) {
 			orient = BarHorizontal
 		}
-		barColor := props.BarColor
+		barColor := string(props.BarColor)
 		if barColor == "" {
 			barColor = "bg-blue-600 dark:bg-blue-500"
 		}
@@ -82,7 +82,7 @@ templ BarChart(props BarChartProps) {
 					}
 					<div class="flex w-full flex-1 items-end">
 						<div
-							class={ utils.Class("w-full rounded-t bg-blue-600 dark:bg-blue-500", barColor, bar.Color) }
+							class={ utils.Class("w-full rounded-t bg-blue-600 dark:bg-blue-500", barColor, string(bar.Color)) }
 							style={ "height:" + barPercentHeight(bar.Value, maxVal) }
 						></div>
 					</div>
@@ -123,7 +123,7 @@ templ BarChart(props BarChartProps) {
 					}
 					<div class="flex-1 overflow-hidden rounded bg-gray-100 dark:bg-gray-800">
 						<div
-							class={ utils.Class("h-5 rounded bg-blue-600 dark:bg-blue-500", barColor, bar.Color) }
+							class={ utils.Class("h-5 rounded bg-blue-600 dark:bg-blue-500", barColor, string(bar.Color)) }
 							style={ "width:" + barPercentWidth(bar.Value, maxVal) }
 						></div>
 					</div>

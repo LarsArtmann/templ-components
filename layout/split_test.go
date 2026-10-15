@@ -134,24 +134,48 @@ func TestSplit(t *testing.T) {
 		output := utils.Render(t, Split(SplitProps{
 			Aside: templ.Raw(`<div>A</div>`),
 		}))
-		utils.AssertContainsAll(t, output, "<aside", "grid")
+		utils.AssertContainsAll(t, output, "<div", "grid")
 	})
 
-	t.Run("aside uses <aside> element; main uses <div> (Base owns <main>)", func(t *testing.T) {
+	t.Run("aside column defaults to a plain <div> layout column", func(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, Split(SplitProps{
-			Main:  templ.Raw(`<div>M</div>`),
+			Main: templ.Raw(`<div>M</div>`),
 			Aside: templ.Raw(`<div>A</div>`),
 		}))
-		if !strings.Contains(output, "<aside") {
-			t.Errorf("Split Aside column must use <aside> element")
+		if strings.Contains(output, "<aside") {
+			t.Errorf("default Split must NOT emit <aside> — landmark is opt-in via AsideLandmark/AsideLabel")
 		}
 		// Must NOT emit <main> — Base already provides the main landmark.
 		// Nested <main> is invalid HTML (only one per page).
 		if strings.Contains(output, "<main") {
 			t.Errorf("Split must not emit <main> — layout.Base owns the main landmark")
 		}
+	})
+
+	t.Run("AsideLandmark renders the column as a complementary landmark", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, Split(SplitProps{
+			Main:          templ.Raw(`<div>M</div>`),
+			Aside:         templ.Raw(`<div>A</div>`),
+			AsideLandmark: true,
+		}))
+		if !strings.Contains(output, "<aside") {
+			t.Errorf("Split AsideLandmark must render <aside> element")
+		}
+	})
+
+	t.Run("AsideLabel implies the landmark element", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, Split(SplitProps{
+			Main:       templ.Raw(`<div>M</div>`),
+			Aside:      templ.Raw(`<div>A</div>`),
+			AsideLabel: "Related content",
+		}))
+		utils.AssertContainsAll(t, output, "<aside", `aria-label="Related content"`)
 	})
 
 	t.Run("min-w-0 present on both columns (grid-blowout guard)", func(t *testing.T) {

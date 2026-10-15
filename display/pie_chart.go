@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // PieChartLabelMode controls where slice labels are rendered.
@@ -32,7 +33,7 @@ type PieChartSlice struct {
 
 	// Color overrides the palette color with a Tailwind text-* class
 	// (e.g. "text-emerald-600 dark:text-emerald-400"). Empty = palette by index.
-	Color string
+	Color tone.ColorClass
 }
 
 // PieChartProps configures a pure-SVG pie or donut chart. Zero JavaScript —
@@ -98,7 +99,7 @@ const (
 // pieChartPalette is the default color cycle for slices.
 //
 //nolint:gochecknoglobals // Package-level lookup table for chart slice colors
-var pieChartPalette = []string{
+var pieChartPalette = []tone.ColorClass{
 	ChartColorBlue,
 	ChartColorEmerald,
 	ChartColorAmber,
@@ -160,12 +161,12 @@ func pieChartTotal(slices []PieChartSlice) float64 {
 
 // pieChartColor returns the Tailwind class for a slice, using the palette
 // when the slice does not specify a custom color.
-func pieChartColor(sliceIdx int, custom string) string {
+func pieChartColor(sliceIdx int, custom tone.ColorClass) string {
 	if custom != "" {
-		return custom
+		return string(custom)
 	}
 
-	return pieChartPalette[sliceIdx%len(pieChartPalette)]
+	return string(pieChartPalette[sliceIdx%len(pieChartPalette)])
 }
 
 // pieChartSliceAngle converts a value to an angle in degrees.
