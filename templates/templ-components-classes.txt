@@ -14433,11 +14433,13 @@ var appshellSidebarWrapperClasses = map[AppShellBreakpoint]string{
 }
 
 // appshellMobileNavClasses show the MobileNav slot only below the breakpoint.
+// print:hidden keeps the hamburger off paper (the sidebar is hidden in print
+// anyway because the printed page width sits below the lg breakpoint).
 var appshellMobileNavClasses = map[AppShellBreakpoint]string{
-	AppShellBreakpointUnspecified: "lg:hidden",
-	AppShellBreakpointMD:          "md:hidden",
-	AppShellBreakpointLG:          "lg:hidden",
-	AppShellBreakpointXL:          "xl:hidden",
+	AppShellBreakpointUnspecified: "lg:hidden print:hidden",
+	AppShellBreakpointMD:          "md:hidden print:hidden",
+	AppShellBreakpointLG:          "lg:hidden print:hidden",
+	AppShellBreakpointXL:          "xl:hidden print:hidden",
 }
 
 // appshellClassFor resolves a breakpoint-keyed class map, falling back to
