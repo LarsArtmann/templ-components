@@ -520,13 +520,22 @@ flowchart TD
 
 ## Verification (whole plan)
 
-- [ ] Phase-0/1 tasks: no build impact expected; any repo edit re-runs the per-module loop
+> **Executed 2026-10-15** (this session): M01–M26 complete. M06's 3 CSP findings
+> FIXED (incl. the CSP-safe `data-tc-overlay-trigger` library feature); M08 achecker
+> caught demo-wide duplicate ids — fixed, −23% findings; M11 emulation tests
+> integrated in `visualtest`; M13 delivered to the ⫱G1 edge (flake app + determinism
+> proof + dispatch-only CI draft). Verdicts: `docs/testing/tooling-evaluation.md` §6;
+> decision record: ADR 0048; protocol + budget: `docs/testing/tool-trial-protocol.md`;
+> engine matrix: `docs/browser-support.md`; spike findings → TODO #421–#424.
+> ⫱G1–⫱G4 POSED to the owner (see `docs/status/2026-10-15_17-10_ui-testing-plan-execution-status.md` §g for the original questions; the final gate report supersedes it).
+
+- [x] Phase-0/1 tasks: no build impact expected; any repo edit re-runs the per-module loop
       `for mod in utils icons errorpage charts/echarts datastar htmx; do (cd "$mod" && GOWORK=off go test ./...); done`
-- [ ] M05/M13/M21 edits: `scripts/ci-repro.sh --lint --website` at the exact commit (M03 ritual) before push
-- [ ] M05: demo smoke + axe + route golden green
-- [ ] M11/M21: drift guards re-run with `-count=1` (file-reading guards)
-- [ ] CHANGELOG `[Unreleased]` stays warm for any consumer-visible change (none planned until adoption verdicts)
-- [ ] Every ⫱ gate planned to the gate edge — nothing idles waiting on Lars
+- [x] M05/M13/M21 edits: `scripts/ci-repro.sh --lint --website` at the exact commit (M03 ritual) before push
+- [x] M05: demo smoke + axe + route golden green
+- [x] M11/M21: drift guards re-run with `-count=1` (file-reading guards)
+- [x] CHANGELOG `[Unreleased]` stays warm for any consumer-visible change (`data-tc-overlay-trigger` from the M06 fix)
+- [x] Every ⫱ gate planned to the gate edge — nothing idles waiting on Lars
 
 ## Guardrails (anti-Verschlimmbesserung)
 

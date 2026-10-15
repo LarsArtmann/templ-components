@@ -8119,6 +8119,10 @@ type overlayShellProps struct {
 // The native <dialog> API provides focus trapping, Escape-to-close, focus
 // restore, and top-layer rendering — so the JS is just:
 //   - tcOpen{Name}(id) / tcClose{Name}(id): thin wrappers for backward compat
+//   - Document-level click delegation for [data-tc-overlay-trigger] buttons:
+//     a CSP-safe declarative open trigger (no inline onclick) that opens the
+//     dialog whose ID the attribute carries. Registered once per page via a
+//     singleton guard, so Modal + Drawer on the same page add one listener.
 //   - Per-instance IIFE: auto-open if data-tc-open is set, click delegation
 //     for [data-tc-close] buttons and backdrop-click-to-close
 //
@@ -8138,6 +8142,12 @@ func overlayDialogJS(id, componentName string) string {
 		"var d=document.getElementById(id);if(d)d.close();" +
 		"};" +
 		"}" +
+		"if(!window.tcOverlayTriggerAttached){window.tcOverlayTriggerAttached=true;" +
+		"document.addEventListener('click',function(e){" +
+		"var b=e.target.closest('[data-tc-overlay-trigger]');if(!b)return;" +
+		"var d=document.getElementById(b.getAttribute('data-tc-overlay-trigger'));" +
+		"if(d&&!d.open&&typeof d.showModal==='function')d.showModal();" +
+		"});}" +
 		"(function(id){" +
 		"var d=document.getElementById(id);if(!d)return;" +
 		"if(d.hasAttribute('data-tc-open')&&!d.open)d.showModal();" +
