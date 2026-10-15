@@ -27,9 +27,20 @@ evaluation doc):
   webkit-2359) works with npm `playwright-core@1.63.0` via
   `PLAYWRIGHT_BROWSERS_PATH` — empirically proven on this machine, all three
   engines.
+- The M06 spike proved the value claim, not just the packaging claim: over the
+  existing demo routes it surfaced **3 real CSP bugs that Chromium-only
+  chromedp testing structurally missed** (two silent feature deaths: nonce-less
+  ThemeToggle scripts, picsum `img-src` gap; one double-broken Modal/Drawer
+  trigger that also hid an undefined JS wrapper). All three are fixed — the
+  Modal/Drawer fix landed as a CSP-safe `data-tc-overlay-trigger` library
+  feature (eval doc §5.1).
 - `forms.Select` `Stylable` (`appearance: base-select`) is unsupported in
   Firefox (Mozilla 1944403/1958443) and now has a dedicated demo route
-  (`/stylable-select`, 2026-10-15) with axe + route-golden coverage.
+  (`/stylable-select`, 2026-10-15) with axe + route-golden coverage. The M07
+  cross-engine assert measured the fallback **degraded-but-usable**: Firefox
+  renders the Stylable selects identical to the native comparison select
+  (384×29 vs Chromium's styled 384×62), zero layout breakage, selection fully
+  functional (eval doc §5.2).
 - xk6-sse is not in k6's automatic-extension registry; the custom-binary build
   is the viable path where the Go proxy is reachable (CI, not this machine).
 - IBM accessibility-checker is maintained and brings an ACT-mapped ruleset
