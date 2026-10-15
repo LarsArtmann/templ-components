@@ -29,15 +29,25 @@ type Utilities struct {
 	Border        Pair
 }
 
+// Repeated dark-mode text literals: every hue's text slots share the same
+// dark:400 class (goconst).
+const (
+	darkTextBlue   = "dark:text-blue-400"
+	darkTextGray   = "dark:text-gray-400"
+	darkTextGreen  = "dark:text-green-400"
+	darkTextYellow = "dark:text-yellow-400"
+	darkTextRed    = "dark:text-red-400"
+)
+
 // hueTable is the single source for per-hue literals. Keys are every Hue in
 // Hues(); completeness is guarded by TestHueTableExhaustive.
 //
 //nolint:gochecknoglobals // package-level lookup table by design
 var hueTable = map[Hue]Utilities{
 	HueBlue: {
-		Text:          Pair{"text-blue-600", "dark:text-blue-400"},
-		TextMuted:     Pair{"text-blue-500", "dark:text-blue-400"},
-		TextStrong:    Pair{"text-blue-700", "dark:text-blue-400"},
+		Text:          Pair{"text-blue-600", darkTextBlue},
+		TextMuted:     Pair{"text-blue-500", darkTextBlue},
+		TextStrong:    Pair{"text-blue-700", darkTextBlue},
 		TextOnTint:    Pair{"text-blue-800", "dark:text-blue-200"},
 		BGSolid:       Pair{"bg-blue-500", "dark:bg-blue-400"},
 		BGSolidStrong: Pair{"bg-blue-600", "dark:bg-blue-400"},
@@ -115,9 +125,9 @@ var hueTable = map[Hue]Utilities{
 		Border:        Pair{"border-pink-200", "dark:border-pink-800"},
 	},
 	HueGray: {
-		Text:          Pair{"text-gray-600", "dark:text-gray-400"},
-		TextMuted:     Pair{"text-gray-500", "dark:text-gray-400"},
-		TextStrong:    Pair{"text-gray-700", "dark:text-gray-400"},
+		Text:          Pair{"text-gray-600", darkTextGray},
+		TextMuted:     Pair{"text-gray-500", darkTextGray},
+		TextStrong:    Pair{"text-gray-700", darkTextGray},
 		TextOnTint:    Pair{"text-gray-800", "dark:text-gray-200"},
 		BGSolid:       Pair{"bg-gray-400", "dark:bg-gray-500"}, // dot convention: grays render one step darker
 		BGSolidStrong: Pair{"bg-gray-600", "dark:bg-gray-400"},
@@ -125,9 +135,9 @@ var hueTable = map[Hue]Utilities{
 		Border:        Pair{"border-gray-200", "dark:border-gray-700"}, // feedback-neutral fallback dialect
 	},
 	HueGreen: {
-		Text:          Pair{"text-green-600", "dark:text-green-400"},
-		TextMuted:     Pair{"text-green-500", "dark:text-green-400"},
-		TextStrong:    Pair{"text-green-700", "dark:text-green-400"},
+		Text:          Pair{"text-green-600", darkTextGreen},
+		TextMuted:     Pair{"text-green-500", darkTextGreen},
+		TextStrong:    Pair{"text-green-700", darkTextGreen},
 		TextOnTint:    Pair{"text-green-800", "dark:text-green-200"},
 		BGSolid:       Pair{"bg-green-500", "dark:bg-green-400"},
 		BGSolidStrong: Pair{"bg-green-600", "dark:bg-green-400"},
@@ -135,9 +145,9 @@ var hueTable = map[Hue]Utilities{
 		Border:        Pair{"border-green-200", "dark:border-green-800"},
 	},
 	HueYellow: {
-		Text:          Pair{"text-yellow-600", "dark:text-yellow-400"},
-		TextMuted:     Pair{"text-yellow-500", "dark:text-yellow-400"},
-		TextStrong:    Pair{"text-yellow-700", "dark:text-yellow-400"},
+		Text:          Pair{"text-yellow-600", darkTextYellow},
+		TextMuted:     Pair{"text-yellow-500", darkTextYellow},
+		TextStrong:    Pair{"text-yellow-700", darkTextYellow},
 		TextOnTint:    Pair{"text-yellow-800", "dark:text-yellow-200"},
 		BGSolid:       Pair{"bg-yellow-500", "dark:bg-yellow-400"},
 		BGSolidStrong: Pair{"bg-yellow-600", "dark:bg-yellow-400"},
@@ -145,9 +155,9 @@ var hueTable = map[Hue]Utilities{
 		Border:        Pair{"border-yellow-200", "dark:border-yellow-800"},
 	},
 	HueRed: {
-		Text:          Pair{"text-red-600", "dark:text-red-400"},
-		TextMuted:     Pair{"text-red-500", "dark:text-red-400"},
-		TextStrong:    Pair{"text-red-700", "dark:text-red-400"},
+		Text:          Pair{"text-red-600", darkTextRed},
+		TextMuted:     Pair{"text-red-500", darkTextRed},
+		TextStrong:    Pair{"text-red-700", darkTextRed},
 		TextOnTint:    Pair{"text-red-800", "dark:text-red-200"},
 		BGSolid:       Pair{"bg-red-500", "dark:bg-red-400"},
 		BGSolidStrong: Pair{"bg-red-600", "dark:bg-red-400"},

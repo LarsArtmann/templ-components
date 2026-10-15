@@ -7,8 +7,8 @@
 // sites) — see docs/reviews/2026-10-15_color-domain-model.html. Phase 0 is
 // ADDITIVE ONLY: existing enums gain adapters, existing lookup maps keep
 // rendering, and equivalence tests prove the tables describe reality
-// byte-for-byte. The maps collapse INTO these tables at v2 (ADR-0039/0044,
-// TODO #431).
+// byte-for-byte. The maps collapse INTO these tables at v2
+// (ADR-0039/0044, TODO #431).
 //
 // # Scanner-safety contract
 //
