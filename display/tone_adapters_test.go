@@ -77,7 +77,7 @@ func TestStatToneAdapterEquivalence(t *testing.T) {
 }
 
 // cutStatTile splits a statTileLookup "tile|icon" value.
-func cutStatTile(v string) (tile, icon string, ok bool) {
+func cutStatTile(v string) (string, string, bool) {
 	for i := len(v) - 1; i >= 0; i-- {
 		if v[i] == '|' {
 			return v[:i], v[i+1:], true

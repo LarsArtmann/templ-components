@@ -9746,6 +9746,153 @@ templ Tabs(props TabsProps) {
 	</div>
 }
 
+# ── display/tone_adapters.go ─────────────────────────────────────────────
+package display
+
+import "github.com/larsartmann/templ-components/utils/tone"
+
+// Tone/Hue adapters (utils/tone Phase 0, TODO #425): every color-bearing
+// enum in display gains a mapping onto the canonical color language. The
+// existing lookup maps keep rendering (zero visual change); equivalence
+// tests in tone_adapters_test.go prove the adapters describe the shipped
+// strings byte-for-byte. The maps collapse into the tone tables at v2
+// (ADR-0039/0044, TODO #431).
+
+// Tone maps StatusTone onto the canonical semantic axis.
+func (t StatusTone) Tone() tone.Tone {
+	switch t {
+	case StatusToneNeutral:
+		return tone.ToneNeutral
+	case StatusToneSuccess:
+		return tone.ToneSuccess
+	case StatusToneWarning:
+		return tone.ToneWarning
+	case StatusToneDanger:
+		return tone.ToneDanger
+	case StatusToneInfo:
+		return tone.ToneInfo
+	default:
+		return tone.ToneNeutral
+	}
+}
+
+// DotHue is the hue StatusDot actually renders for t. Warning deliberately
+// diverges from the tone table (amber here, yellow in the tone table's
+// majority dialect) — the documented warning split brain, unified by the
+// #428 decision.
+func (t StatusTone) DotHue() tone.Hue {
+	switch t {
+	case StatusToneNeutral:
+		return tone.HueGray
+	case StatusToneSuccess:
+		return tone.HueGreen
+	case StatusToneWarning:
+		return tone.HueAmber
+	case StatusToneDanger:
+		return tone.HueRed
+	case StatusToneInfo:
+		return tone.HueBlue
+	default:
+		return tone.HueGray
+	}
+}
+
+// Hue maps KanbanTone onto the categorical hue axis. Kanban lanes are
+// categorical, not semantic — there is deliberately no Tone() here.
+func (t KanbanTone) Hue() tone.Hue {
+	switch t {
+	case KanbanToneGray:
+		return tone.HueGray
+	case KanbanToneBlue:
+		return tone.HueBlue
+	case KanbanToneGreen:
+		return tone.HueGreen
+	case KanbanToneYellow:
+		return tone.HueYellow
+	case KanbanToneRed:
+		return tone.HueRed
+	case KanbanTonePurple:
+		return tone.HuePurple
+	default:
+		return tone.HueGray
+	}
+}
+
+// Hue maps StatTone onto the categorical hue axis (stat tiles are
+// decorative emphasis, not semantics).
+func (t StatTone) Hue() tone.Hue {
+	switch t {
+	case StatToneBlue:
+		return tone.HueBlue
+	case StatToneGreen:
+		return tone.HueGreen
+	case StatToneYellow:
+		return tone.HueYellow
+	case StatToneRed:
+		return tone.HueRed
+	case StatTonePurple:
+		return tone.HuePurple
+	default:
+		return tone.HueGray
+	}
+}
+
+// Tone maps TrendDirection onto the canonical semantic axis.
+func (t TrendDirection) Tone() tone.Tone {
+	switch t {
+	case TrendUp:
+		return tone.ToneSuccess
+	case TrendDown:
+		return tone.ToneDanger
+	case TrendWarn:
+		return tone.ToneWarning
+	case TrendNone:
+		return tone.ToneNeutral
+	default:
+		return tone.ToneNeutral
+	}
+}
+
+// Tone maps ScrollbackTone onto the canonical semantic axis.
+func (t ScrollbackTone) Tone() tone.Tone {
+	switch t {
+	case ScrollbackToneNeutral:
+		return tone.ToneNeutral
+	case ScrollbackToneInfo:
+		return tone.ToneInfo
+	case ScrollbackToneSuccess:
+		return tone.ToneSuccess
+	case ScrollbackToneWarning:
+		return tone.ToneWarning
+	case ScrollbackToneDanger:
+		return tone.ToneDanger
+	default:
+		return tone.ToneNeutral
+	}
+}
+
+// Tone maps BadgeType onto the canonical semantic axis. Primary maps to
+// Accent (the ADR-0044 accent slot); the FeedbackError-style "error"
+// spelling maps to Danger.
+func (t BadgeType) Tone() tone.Tone {
+	switch t {
+	case BadgeNeutral:
+		return tone.ToneNeutral
+	case BadgeSuccess:
+		return tone.ToneSuccess
+	case BadgeWarning:
+		return tone.ToneWarning
+	case BadgeError:
+		return tone.ToneDanger
+	case BadgeInfo:
+		return tone.ToneInfo
+	case BadgePrimary:
+		return tone.ToneAccent
+	default:
+		return tone.ToneNeutral
+	}
+}
+
 # ── display/tooltip.templ ─────────────────────────────────────────────
 package display
 
@@ -10864,6 +11011,30 @@ templ Toast(props ToastProps) {
 		@toastDismissScript(props.Nonce, toastID, props.Duration)
 	} else {
 		@toastDismissScript(props.Nonce, toastID, 0)
+	}
+}
+
+# ── feedback/tone_adapters.go ─────────────────────────────────────────────
+package feedback
+
+import "github.com/larsartmann/templ-components/utils/tone"
+
+// Tone maps FeedbackType onto the canonical semantic axis (utils/tone
+// Phase 0, TODO #425). The "error" spelling maps to Danger — the canonical
+// spelling this library converges on at v2 (ADR-0022 removes the alias;
+// the value rename rides the #431 batch).
+func (t FeedbackType) Tone() tone.Tone {
+	switch t {
+	case FeedbackSuccess:
+		return tone.ToneSuccess
+	case FeedbackError:
+		return tone.ToneDanger
+	case FeedbackWarning:
+		return tone.ToneWarning
+	case FeedbackInfo:
+		return tone.ToneInfo
+	default:
+		return tone.ToneNeutral
 	}
 }
 
@@ -19205,6 +19376,457 @@ func AssertContainsAll(t TestReporter, output string, wants ...string) {
 			t.Errorf("output does not contain %q:\n%s", want, output)
 		}
 	}
+}
+
+# ── utils/tone/hue.go ─────────────────────────────────────────────
+package tone
+
+// Hue is the categorical hue family: which Tailwind color palette a class
+// draws from, independent of meaning. Thirteen hues are in active use across
+// the library's lookup tables (verified 2026-10-15); indigo is deliberately
+// absent (nothing renders it).
+//
+// Hue is for decisions that are genuinely categorical (chart series, kanban
+// lanes, stat tiles): "the third series is violet" carries no semantics.
+// When a color MEANS something, use Tone and let the tone table pick the
+// hue.
+type Hue string
+
+const (
+	// Chart palette hues first, in canonical series order (line/pie/segment
+	// charts cycle this order — chart_geometry.go, pie_chart.go).
+	HueBlue    Hue = "blue"
+	HueEmerald Hue = "emerald"
+	HueAmber   Hue = "amber"
+	HueRose    Hue = "rose"
+	HueViolet  Hue = "violet"
+	HueCyan    Hue = "cyan"
+	HueOrange  Hue = "orange"
+	HuePink    Hue = "pink"
+	// Semantic-dialect hues (the feedback/badge/kanban/stat families).
+	HueGray   Hue = "gray"
+	HueGreen  Hue = "green"
+	HueYellow Hue = "yellow"
+	HueRed    Hue = "red"
+	HuePurple Hue = "purple"
+)
+
+// HueDefault is the canonical default (Gray).
+const HueDefault = HueGray
+
+// HueIsValid reports whether h is a recognized Hue.
+func HueIsValid(h Hue) bool {
+	switch h {
+	case HueBlue, HueEmerald, HueAmber, HueRose, HueViolet, HueCyan,
+		HueOrange, HuePink, HueGray, HueGreen, HueYellow, HueRed, HuePurple:
+		return true
+	default:
+		return false
+	}
+}
+
+// Hues returns every Hue, chart palette first (canonical series order),
+// then the semantic-dialect hues.
+func Hues() []Hue {
+	return []Hue{
+		HueBlue, HueEmerald, HueAmber, HueRose, HueViolet, HueCyan,
+		HueOrange, HuePink, HueGray, HueGreen, HueYellow, HueRed, HuePurple,
+	}
+}
+
+// ChartHues returns the eight chart-series hues in canonical cycle order.
+// Line/pie/segment palettes are views of this slice (see
+// display/chart_geometry.go for the pre-tone constants).
+func ChartHues() []Hue {
+	return []Hue{HueBlue, HueEmerald, HueAmber, HueRose, HueViolet, HueCyan, HueOrange, HuePink}
+}
+
+# ── utils/tone/hue_utility.go ─────────────────────────────────────────────
+package tone
+
+// Utilities is the per-hue class grammar: seven utility slots, each a
+// complete light/dark Pair. The shade numbers are the library's uniform
+// grammar, anchored to what the components actually render today:
+//
+//	Text           600 / dark:400   (chart series text, icons on tint)
+//	TextMuted      500 / dark:400   (muted neutral text — the gray-500 inverted convention)
+//	TextStrong     700 / dark:400   (trend arrows, log tags)
+//	TextOnTint     800 / dark:200   (body text on 50-tinted backgrounds)
+//	BGSolid        500 / dark:400   (status dots, kanban lane dots)
+//	BGSolidStrong  600 / dark:400   (segment bars, solid fills)
+//	BGTint         50  / dark:900/30 (stat tiles, icon chips)
+//	Border         200 / dark:800   (alert and card borders)
+//
+// Gray carries two deliberate exceptions, kept to match shipped pixels:
+// BGSolid is 400/dark:500 (the dot convention renders grays one step
+// darker) and Border uses gray-700 in dark mode (the feedback neutral
+// fallback). Cells no component uses yet are inert until adopted — the
+// tables describe the grammar, the components choose the slots.
+type Utilities struct {
+	Text          Pair
+	TextMuted     Pair
+	TextStrong    Pair
+	TextOnTint    Pair
+	BGSolid       Pair
+	BGSolidStrong Pair
+	BGTint        Pair
+	Border        Pair
+}
+
+// hueTable is the single source for per-hue literals. Keys are every Hue in
+// Hues(); completeness is guarded by TestHueTableExhaustive.
+//
+//nolint:gochecknoglobals // package-level lookup table by design
+var hueTable = map[Hue]Utilities{
+	HueBlue: {
+		Text:          Pair{"text-blue-600", "dark:text-blue-400"},
+		TextMuted:     Pair{"text-blue-500", "dark:text-blue-400"},
+		TextStrong:    Pair{"text-blue-700", "dark:text-blue-400"},
+		TextOnTint:    Pair{"text-blue-800", "dark:text-blue-200"},
+		BGSolid:       Pair{"bg-blue-500", "dark:bg-blue-400"},
+		BGSolidStrong: Pair{"bg-blue-600", "dark:bg-blue-400"},
+		BGTint:        Pair{"bg-blue-50", "dark:bg-blue-900/30"},
+		Border:        Pair{"border-blue-200", "dark:border-blue-800"},
+	},
+	HueEmerald: {
+		Text:          Pair{"text-emerald-600", "dark:text-emerald-400"},
+		TextMuted:     Pair{"text-emerald-500", "dark:text-emerald-400"},
+		TextStrong:    Pair{"text-emerald-700", "dark:text-emerald-400"},
+		TextOnTint:    Pair{"text-emerald-800", "dark:text-emerald-200"},
+		BGSolid:       Pair{"bg-emerald-500", "dark:bg-emerald-400"},
+		BGSolidStrong: Pair{"bg-emerald-600", "dark:bg-emerald-400"},
+		BGTint:        Pair{"bg-emerald-50", "dark:bg-emerald-900/30"},
+		Border:        Pair{"border-emerald-200", "dark:border-emerald-800"},
+	},
+	HueAmber: {
+		Text:          Pair{"text-amber-600", "dark:text-amber-400"},
+		TextMuted:     Pair{"text-amber-500", "dark:text-amber-400"},
+		TextStrong:    Pair{"text-amber-700", "dark:text-amber-400"},
+		TextOnTint:    Pair{"text-amber-800", "dark:text-amber-200"},
+		BGSolid:       Pair{"bg-amber-500", "dark:bg-amber-400"},
+		BGSolidStrong: Pair{"bg-amber-600", "dark:bg-amber-400"},
+		BGTint:        Pair{"bg-amber-50", "dark:bg-amber-900/30"},
+		Border:        Pair{"border-amber-200", "dark:border-amber-800"},
+	},
+	HueRose: {
+		Text:          Pair{"text-rose-600", "dark:text-rose-400"},
+		TextMuted:     Pair{"text-rose-500", "dark:text-rose-400"},
+		TextStrong:    Pair{"text-rose-700", "dark:text-rose-400"},
+		TextOnTint:    Pair{"text-rose-800", "dark:text-rose-200"},
+		BGSolid:       Pair{"bg-rose-500", "dark:bg-rose-400"},
+		BGSolidStrong: Pair{"bg-rose-600", "dark:bg-rose-400"},
+		BGTint:        Pair{"bg-rose-50", "dark:bg-rose-900/30"},
+		Border:        Pair{"border-rose-200", "dark:border-rose-800"},
+	},
+	HueViolet: {
+		Text:          Pair{"text-violet-600", "dark:text-violet-400"},
+		TextMuted:     Pair{"text-violet-500", "dark:text-violet-400"},
+		TextStrong:    Pair{"text-violet-700", "dark:text-violet-400"},
+		TextOnTint:    Pair{"text-violet-800", "dark:text-violet-200"},
+		BGSolid:       Pair{"bg-violet-500", "dark:bg-violet-400"},
+		BGSolidStrong: Pair{"bg-violet-600", "dark:bg-violet-400"},
+		BGTint:        Pair{"bg-violet-50", "dark:bg-violet-900/30"},
+		Border:        Pair{"border-violet-200", "dark:border-violet-800"},
+	},
+	HueCyan: {
+		Text:          Pair{"text-cyan-600", "dark:text-cyan-400"},
+		TextMuted:     Pair{"text-cyan-500", "dark:text-cyan-400"},
+		TextStrong:    Pair{"text-cyan-700", "dark:text-cyan-400"},
+		TextOnTint:    Pair{"text-cyan-800", "dark:text-cyan-200"},
+		BGSolid:       Pair{"bg-cyan-500", "dark:bg-cyan-400"},
+		BGSolidStrong: Pair{"bg-cyan-600", "dark:bg-cyan-400"},
+		BGTint:        Pair{"bg-cyan-50", "dark:bg-cyan-900/30"},
+		Border:        Pair{"border-cyan-200", "dark:border-cyan-800"},
+	},
+	HueOrange: {
+		Text:          Pair{"text-orange-600", "dark:text-orange-400"},
+		TextMuted:     Pair{"text-orange-500", "dark:text-orange-400"},
+		TextStrong:    Pair{"text-orange-700", "dark:text-orange-400"},
+		TextOnTint:    Pair{"text-orange-800", "dark:text-orange-200"},
+		BGSolid:       Pair{"bg-orange-500", "dark:bg-orange-400"},
+		BGSolidStrong: Pair{"bg-orange-600", "dark:bg-orange-400"},
+		BGTint:        Pair{"bg-orange-50", "dark:bg-orange-900/30"},
+		Border:        Pair{"border-orange-200", "dark:border-orange-800"},
+	},
+	HuePink: {
+		Text:          Pair{"text-pink-600", "dark:text-pink-400"},
+		TextMuted:     Pair{"text-pink-500", "dark:text-pink-400"},
+		TextStrong:    Pair{"text-pink-700", "dark:text-pink-400"},
+		TextOnTint:    Pair{"text-pink-800", "dark:text-pink-200"},
+		BGSolid:       Pair{"bg-pink-500", "dark:bg-pink-400"},
+		BGSolidStrong: Pair{"bg-pink-600", "dark:bg-pink-400"},
+		BGTint:        Pair{"bg-pink-50", "dark:bg-pink-900/30"},
+		Border:        Pair{"border-pink-200", "dark:border-pink-800"},
+	},
+	HueGray: {
+		Text:          Pair{"text-gray-600", "dark:text-gray-400"},
+		TextMuted:     Pair{"text-gray-500", "dark:text-gray-400"},
+		TextStrong:    Pair{"text-gray-700", "dark:text-gray-400"},
+		TextOnTint:    Pair{"text-gray-800", "dark:text-gray-200"},
+		BGSolid:       Pair{"bg-gray-400", "dark:bg-gray-500"}, // dot convention: grays render one step darker
+		BGSolidStrong: Pair{"bg-gray-600", "dark:bg-gray-400"},
+		BGTint:        Pair{"bg-gray-50", "dark:bg-gray-900/30"},
+		Border:        Pair{"border-gray-200", "dark:border-gray-700"}, // feedback-neutral fallback dialect
+	},
+	HueGreen: {
+		Text:          Pair{"text-green-600", "dark:text-green-400"},
+		TextMuted:     Pair{"text-green-500", "dark:text-green-400"},
+		TextStrong:    Pair{"text-green-700", "dark:text-green-400"},
+		TextOnTint:    Pair{"text-green-800", "dark:text-green-200"},
+		BGSolid:       Pair{"bg-green-500", "dark:bg-green-400"},
+		BGSolidStrong: Pair{"bg-green-600", "dark:bg-green-400"},
+		BGTint:        Pair{"bg-green-50", "dark:bg-green-900/30"},
+		Border:        Pair{"border-green-200", "dark:border-green-800"},
+	},
+	HueYellow: {
+		Text:          Pair{"text-yellow-600", "dark:text-yellow-400"},
+		TextMuted:     Pair{"text-yellow-500", "dark:text-yellow-400"},
+		TextStrong:    Pair{"text-yellow-700", "dark:text-yellow-400"},
+		TextOnTint:    Pair{"text-yellow-800", "dark:text-yellow-200"},
+		BGSolid:       Pair{"bg-yellow-500", "dark:bg-yellow-400"},
+		BGSolidStrong: Pair{"bg-yellow-600", "dark:bg-yellow-400"},
+		BGTint:        Pair{"bg-yellow-50", "dark:bg-yellow-900/30"},
+		Border:        Pair{"border-yellow-200", "dark:border-yellow-800"},
+	},
+	HueRed: {
+		Text:          Pair{"text-red-600", "dark:text-red-400"},
+		TextMuted:     Pair{"text-red-500", "dark:text-red-400"},
+		TextStrong:    Pair{"text-red-700", "dark:text-red-400"},
+		TextOnTint:    Pair{"text-red-800", "dark:text-red-200"},
+		BGSolid:       Pair{"bg-red-500", "dark:bg-red-400"},
+		BGSolidStrong: Pair{"bg-red-600", "dark:bg-red-400"},
+		BGTint:        Pair{"bg-red-50", "dark:bg-red-900/30"},
+		Border:        Pair{"border-red-200", "dark:border-red-800"},
+	},
+	HuePurple: {
+		Text:          Pair{"text-purple-600", "dark:text-purple-400"},
+		TextMuted:     Pair{"text-purple-500", "dark:text-purple-400"},
+		TextStrong:    Pair{"text-purple-700", "dark:text-purple-400"},
+		TextOnTint:    Pair{"text-purple-800", "dark:text-purple-200"},
+		BGSolid:       Pair{"bg-purple-500", "dark:bg-purple-400"},
+		BGSolidStrong: Pair{"bg-purple-600", "dark:bg-purple-400"},
+		BGTint:        Pair{"bg-purple-50", "dark:bg-purple-900/30"},
+		Border:        Pair{"border-purple-200", "dark:border-purple-800"},
+	},
+}
+
+// UtilitiesFor returns the class grammar for h. Unknown hues fall back to
+// Gray (the neutral default) — same contract as utils.Lookup.
+func UtilitiesFor(h Hue) Utilities {
+	if u, ok := hueTable[h]; ok {
+		return u
+	}
+
+	return hueTable[HueGray]
+}
+
+# ── utils/tone/pair.go ─────────────────────────────────────────────
+package tone
+
+import "strings"
+
+// Pair is one utility in light and dark form. Both halves are COMPLETE
+// class literals — Dark carries its own dark: prefix — because Tailwind's
+// scanner only emits CSS for tokens it can see in full (the package-level
+// scanner-safety contract). Pair makes the halves structural so tests can
+// prove every dark half exists.
+type Pair struct {
+	// Light is the light-mode class literal, without any variant prefix
+	// (e.g. "text-green-600").
+	Light string
+	// Dark is the dark-mode class literal WITH its dark: prefix
+	// (e.g. "dark:text-green-400").
+	Dark string
+}
+
+// Classes returns the renderable class string: light and dark halves joined
+// by a single space. Either half may be empty (single-mode utilities); the
+// join never leaves leading/trailing whitespace.
+func (p Pair) Classes() string {
+	return strings.TrimSpace(p.Light + " " + p.Dark)
+}
+
+// Complete reports whether both halves are non-empty. Most library pairs
+// are complete (every color utility carries a dark: variant — guarded by
+// utils.TestDarkModeCompliance); incomplete pairs are deliberate
+// single-mode exceptions and must say so at their construction site.
+func (p Pair) Complete() bool {
+	return p.Light != "" && p.Dark != ""
+}
+
+# ── utils/tone/surfaces.go ─────────────────────────────────────────────
+package tone
+
+// Surfaces is the per-tone rendering kit: which classes express a semantic
+// tone on each surface kind. Values are anchored to the feedback dialect
+// (Alert/Toast — the oldest and most-used semantic renderer), so
+// For(ToneSuccess).Text is exactly the Text class feedbackStyleMap carries
+// for success today.
+type Surfaces struct {
+	// Dot is a solid indicator dot (status dots, kanban lane dots).
+	Dot Pair
+	// Text is body text on a tinted background (alert message text).
+	Text Pair
+	// TextSoft is de-emphasized text or an icon on a tinted background.
+	TextSoft Pair
+	// Border outlines a tinted container (alerts, tinted cards).
+	Border Pair
+	// BGTint is a soft tinted background (alert fills).
+	BGTint Pair
+	// BGSolid is a solid saturated fill (progress bars, pills).
+	BGSolid Pair
+	// Icon is an icon on a tinted background (alert icons).
+	Icon Pair
+}
+
+// toneTable maps every Tone to its surfaces. The hue backing each tone:
+// neutral=gray, success=green, warning=yellow (majority dialect — see the
+// package doc), danger=red, info=blue, accent=blue (the ADR-0044 accent
+// slot until v2 swaps it to the accent token family).
+//
+// Neutral deviates from the uniform tint grammar where feedback's fallback
+// ships it: BGTint uses gray-800/50 in dark mode (not 900/30). Completeness
+// is guarded by TestToneTableExhaustive; byte-equivalence with the feedback
+// map is guarded by feedback.TestToneAdapterEquivalence.
+//
+//nolint:gochecknoglobals // package-level lookup table by design
+var toneTable = map[Tone]Surfaces{
+	ToneNeutral: {
+		Dot:      hueTable[HueGray].BGSolid,
+		Text:     Pair{"text-gray-800", "dark:text-gray-200"},
+		TextSoft: Pair{"text-gray-600", "dark:text-gray-400"},
+		Border:   Pair{"border-gray-200", "dark:border-gray-700"},
+		BGTint:   Pair{"bg-gray-50", "dark:bg-gray-800/50"},
+		BGSolid:  hueTable[HueGray].BGSolidStrong,
+		Icon:     Pair{"text-gray-600", "dark:text-gray-400"},
+	},
+	ToneSuccess: {
+		Dot:      hueTable[HueGreen].BGSolid,
+		Text:     Pair{"text-green-800", "dark:text-green-200"},
+		TextSoft: Pair{"text-green-600", "dark:text-green-400"},
+		Border:   Pair{"border-green-200", "dark:border-green-800"},
+		BGTint:   Pair{"bg-green-50", "dark:bg-green-900/20"},
+		BGSolid:  hueTable[HueGreen].BGSolidStrong,
+		Icon:     Pair{"text-green-600", "dark:text-green-400"},
+	},
+	ToneWarning: {
+		Dot:      hueTable[HueYellow].BGSolid,
+		Text:     Pair{"text-yellow-800", "dark:text-yellow-200"},
+		TextSoft: Pair{"text-yellow-600", "dark:text-yellow-400"},
+		Border:   Pair{"border-yellow-200", "dark:border-yellow-800"},
+		BGTint:   Pair{"bg-yellow-50", "dark:bg-yellow-900/20"},
+		BGSolid:  hueTable[HueYellow].BGSolidStrong,
+		Icon:     Pair{"text-yellow-600", "dark:text-yellow-400"},
+	},
+	ToneDanger: {
+		Dot:      hueTable[HueRed].BGSolid,
+		Text:     Pair{"text-red-800", "dark:text-red-200"},
+		TextSoft: Pair{"text-red-600", "dark:text-red-400"},
+		Border:   Pair{"border-red-200", "dark:border-red-800"},
+		BGTint:   Pair{"bg-red-50", "dark:bg-red-900/20"},
+		BGSolid:  hueTable[HueRed].BGSolidStrong,
+		Icon:     Pair{"text-red-600", "dark:text-red-400"},
+	},
+	ToneInfo: {
+		Dot:      hueTable[HueBlue].BGSolid,
+		Text:     Pair{"text-blue-800", "dark:text-blue-200"},
+		TextSoft: Pair{"text-blue-600", "dark:text-blue-400"},
+		Border:   Pair{"border-blue-200", "dark:border-blue-800"},
+		BGTint:   Pair{"bg-blue-50", "dark:bg-blue-900/20"},
+		BGSolid:  hueTable[HueBlue].BGSolidStrong,
+		Icon:     Pair{"text-blue-600", "dark:text-blue-400"},
+	},
+	ToneAccent: {
+		Dot:      hueTable[HueBlue].BGSolid,
+		Text:     Pair{"text-blue-800", "dark:text-blue-200"},
+		TextSoft: Pair{"text-blue-600", "dark:text-blue-400"},
+		Border:   Pair{"border-blue-200", "dark:border-blue-800"},
+		BGTint:   Pair{"bg-blue-50", "dark:bg-blue-900/20"},
+		BGSolid:  hueTable[HueBlue].BGSolidStrong,
+		Icon:     Pair{"text-blue-600", "dark:text-blue-400"},
+	},
+}
+
+// For returns the rendering surfaces for t. Unknown tones fall back to
+// Neutral — same contract as utils.Lookup.
+func For(t Tone) Surfaces {
+	if s, ok := toneTable[t]; ok {
+		return s
+	}
+
+	return toneTable[ToneNeutral]
+}
+
+# ── utils/tone/tone.go ─────────────────────────────────────────────
+// Package tone is the library's canonical color language: one Tone axis
+// ("why is this thing colored"), one Hue axis ("which hue family"), and the
+// two tables that map them to complete Tailwind class literals.
+//
+// Before this package existed, the same semantic was modeled thirteen
+// different ways (10 enums, 12 lookup maps, 3 palettes, ~10 fixed-color
+// sites) — see docs/reviews/2026-10-15_color-domain-model.html. Phase 0 is
+// ADDITIVE ONLY: existing enums gain adapters, existing lookup maps keep
+// rendering, and equivalence tests prove the tables describe reality
+// byte-for-byte. The maps collapse INTO these tables at v2 (ADR-0039/0044,
+// TODO #431).
+//
+// # Scanner-safety contract
+//
+// Every class string in this package is a COMPLETE LITERAL, including the
+// dark: prefixed half. Tailwind's scanner must see the whole token to emit
+// CSS; variants are never concatenated at runtime (see AGENTS.md "Tailwind
+// variant prefixes must be complete literals"). Pair exists to make the
+// light/dark halves structural, not to build strings dynamically.
+//
+// # Warning dialect (the known split brain)
+//
+// Two warning hues ship today: yellow (Feedback/Alert, Badge, Kanban,
+// StatCard) and amber (StatusDot, ScrollbackLog, errorpage rejection).
+// The tone table canonicalizes YELLOW (the majority dialect) until the
+// #428 decision lands; amber-rendering components keep their hue via the
+// Hue axis and their own lookups.
+package tone
+
+// Tone is the semantic reason something is colored: what the color MEANS,
+// not which pigment it uses. Six values cover every color decision the
+// library makes; hue-level (categorical) decisions use Hue instead.
+type Tone string
+
+const (
+	// ToneNeutral is the absence of semantic emphasis (gray).
+	ToneNeutral Tone = "neutral"
+	// ToneSuccess confirms a positive outcome (green).
+	ToneSuccess Tone = "success"
+	// ToneWarning signals caution short of failure (yellow today; see the
+	// package doc's warning-dialect note and TODO #428).
+	ToneWarning Tone = "warning"
+	// ToneDanger signals failure or destruction (red). Canonical spelling
+	// is "danger"; the FeedbackError value ("error") maps here via
+	// FeedbackType.Tone() and collapses at v2.
+	ToneDanger Tone = "danger"
+	// ToneInfo is neutral-emphasis communication (blue).
+	ToneInfo Tone = "info"
+	// ToneAccent is the brand/primary slot (blue today; becomes the ADR-0044
+	// accent token family at v2).
+	ToneAccent Tone = "accent"
+)
+
+// ToneDefault is the canonical default (Neutral).
+const ToneDefault = ToneNeutral
+
+// ToneIsValid reports whether t is a recognized Tone.
+func ToneIsValid(t Tone) bool {
+	switch t {
+	case ToneNeutral, ToneSuccess, ToneWarning, ToneDanger, ToneInfo, ToneAccent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Tones returns every Tone, in declaration (semantic severity) order.
+func Tones() []Tone {
+	return []Tone{ToneNeutral, ToneSuccess, ToneWarning, ToneDanger, ToneInfo, ToneAccent}
 }
 
 # ── utils/utils.go ─────────────────────────────────────────────

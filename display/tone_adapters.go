@@ -12,6 +12,8 @@ import "github.com/larsartmann/templ-components/utils/tone"
 // Tone maps StatusTone onto the canonical semantic axis.
 func (t StatusTone) Tone() tone.Tone {
 	switch t {
+	case StatusToneNeutral:
+		return tone.ToneNeutral
 	case StatusToneSuccess:
 		return tone.ToneSuccess
 	case StatusToneWarning:
@@ -31,6 +33,8 @@ func (t StatusTone) Tone() tone.Tone {
 // #428 decision.
 func (t StatusTone) DotHue() tone.Hue {
 	switch t {
+	case StatusToneNeutral:
+		return tone.HueGray
 	case StatusToneSuccess:
 		return tone.HueGreen
 	case StatusToneWarning:
@@ -48,6 +52,8 @@ func (t StatusTone) DotHue() tone.Hue {
 // categorical, not semantic — there is deliberately no Tone() here.
 func (t KanbanTone) Hue() tone.Hue {
 	switch t {
+	case KanbanToneGray:
+		return tone.HueGray
 	case KanbanToneBlue:
 		return tone.HueBlue
 	case KanbanToneGreen:
@@ -67,6 +73,8 @@ func (t KanbanTone) Hue() tone.Hue {
 // decorative emphasis, not semantics).
 func (t StatTone) Hue() tone.Hue {
 	switch t {
+	case StatToneBlue:
+		return tone.HueBlue
 	case StatToneGreen:
 		return tone.HueGreen
 	case StatToneYellow:
@@ -75,8 +83,6 @@ func (t StatTone) Hue() tone.Hue {
 		return tone.HueRed
 	case StatTonePurple:
 		return tone.HuePurple
-	case StatToneBlue:
-		return tone.HueBlue
 	default:
 		return tone.HueGray
 	}
@@ -91,6 +97,8 @@ func (t TrendDirection) Tone() tone.Tone {
 		return tone.ToneDanger
 	case TrendWarn:
 		return tone.ToneWarning
+	case TrendNone:
+		return tone.ToneNeutral
 	default:
 		return tone.ToneNeutral
 	}
@@ -99,6 +107,8 @@ func (t TrendDirection) Tone() tone.Tone {
 // Tone maps ScrollbackTone onto the canonical semantic axis.
 func (t ScrollbackTone) Tone() tone.Tone {
 	switch t {
+	case ScrollbackToneNeutral:
+		return tone.ToneNeutral
 	case ScrollbackToneInfo:
 		return tone.ToneInfo
 	case ScrollbackToneSuccess:
@@ -117,6 +127,8 @@ func (t ScrollbackTone) Tone() tone.Tone {
 // spelling maps to Danger.
 func (t BadgeType) Tone() tone.Tone {
 	switch t {
+	case BadgeNeutral:
+		return tone.ToneNeutral
 	case BadgeSuccess:
 		return tone.ToneSuccess
 	case BadgeWarning:
