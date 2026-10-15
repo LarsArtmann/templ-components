@@ -94,6 +94,13 @@ pnpm dlx @tailwindcss/cli -i app.css -o static/app.css --minify
 }
 ```
 
+**Plugins (v4 `@plugin`):** first-party plugins load in every lane. Probed
+2026-10-15 with `@tailwindcss/typography`: the nix standalone binary
+(`pkgs.tailwindcss_4`, no Node.js, no node_modules) compiles it, and the
+output matches the `@tailwindcss/cli` node lane semantically (formatting-only
+diff). Third-party (non-first-party) `@plugin` packages are unprobed; prefer
+the Node CLI lane for those.
+
 ### 3. Build
 
 ```bash
