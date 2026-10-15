@@ -247,9 +247,10 @@ func layoutSplitDemo() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = layout.Split(layout.SplitProps{
-			Ratio: layout.SplitRatio1To3,
-			Main:  templ.Raw(`<div class="p-6 bg-white dark:bg-gray-900"><h4 class="font-semibold text-gray-900 dark:text-white">Main content (2/3)</h4><p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Article body, detail view, or primary content lives here.</p></div>`),
-			Aside: templ.Raw(`<div class="p-6 bg-gray-50 dark:bg-gray-800 h-full"><h4 class="font-semibold text-gray-900 dark:text-white text-sm">Aside (1/3)</h4><p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Related links, metadata, TOC.</p></div>`),
+			Ratio:      layout.SplitRatio1To3,
+			AsideLabel: "Related content",
+			Main:       templ.Raw(`<div class="p-6 bg-white dark:bg-gray-900"><h4 class="font-semibold text-gray-900 dark:text-white">Main content (2/3)</h4><p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Article body, detail view, or primary content lives here.</p></div>`),
+			Aside:      templ.Raw(`<div class="p-6 bg-gray-50 dark:bg-gray-800 h-full"><h4 class="font-semibold text-gray-900 dark:text-white text-sm">Aside (1/3)</h4><p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Related links, metadata, TOC.</p></div>`),
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -513,7 +514,7 @@ func demoCard(text string, _ layout.StackGap) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/layout_demo.templ`, Line: 139, Col: 60}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/layout_demo.templ`, Line: 140, Col: 60}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {

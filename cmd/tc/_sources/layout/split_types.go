@@ -69,6 +69,12 @@ type SplitProps struct {
 	// AsidePosition controls whether Aside renders before or after Main.
 	// Default AsidePositionEnd (aside after main in source order + visual).
 	AsidePosition AsidePosition
+	// AsideLabel, when set, names the aside landmark (aria-label). An
+	// unnamed <aside> still works but shows up unlabeled in screen-reader
+	// landmark rotors; set this when the page has several complementary
+	// regions or when the aside's purpose is not obvious from context.
+	// Empty keeps the current unmodified markup (no attribute rendered).
+	AsideLabel string
 	// Ratio controls the relative column widths. Default SplitRatio1To3
 	// (main 2/3, aside 1/3).
 	Ratio SplitRatio

@@ -244,7 +244,14 @@ func DefaultTableProps() TableProps {
 templ Table(props TableProps) {
 	// tabindex="0" keeps an overflowing table keyboard-scrollable (WCAG 2.1
 	// scrollable-region rule); the same pattern the Carousel track uses.
-	<div class={ tableWrapperClass(props.Flush) } tabindex="0">
+	// role="region" + accessible name (from AriaLabel, else Caption) expose
+	// the scrollable wrapper as a named landmark; unnamed regions stay valid
+	// (they simply do not appear in landmark rotors, matching prior behavior).
+	{{ regionLabel := props.AriaLabel
+	   if regionLabel == "" {
+	   	regionLabel = props.Caption
+	   } }}
+	<div class={ tableWrapperClass(props.Flush) } tabindex="0" role="region" if regionLabel != "" { aria-label={ regionLabel } }>
 		<table
 			if props.ID != "" {
 				id={ props.ID }

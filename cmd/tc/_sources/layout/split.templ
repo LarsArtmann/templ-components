@@ -119,7 +119,7 @@ templ splitInner(props SplitProps) {
 		{ props.Attrs... }
 	>
 		if props.AsidePosition == AsidePositionStart && props.Aside != nil {
-			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") }>
+			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") } if props.AsideLabel != "" { aria-label={ props.AsideLabel } }>
 				@props.Aside
 			</aside>
 		}
@@ -129,7 +129,7 @@ templ splitInner(props SplitProps) {
 			</div>
 		}
 		if props.AsidePosition != AsidePositionStart && props.Aside != nil {
-			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") }>
+			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") } if props.AsideLabel != "" { aria-label={ props.AsideLabel } }>
 				@props.Aside
 			</aside>
 		}

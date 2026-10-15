@@ -70,7 +70,11 @@ func TestCopyButtonBehavior(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, CopyButton(CopyButtonProps{Text: "x"}))
 		utils.AssertContains(t, output, `aria-live="polite"`)
-		utils.AssertContains(t, output, `role="status"`)
+		// role="status" is intentionally absent: a live-region ROLE inside a
+		// <button> is invalid ARIA descendant nesting (achecker
+		// aria_descendant_valid); the global aria-live attribute announces
+		// the label swap without the role.
+		utils.AssertNotContains(t, output, `role="status"`)
 	})
 
 	t.Run("renders anchor when Href is set", func(t *testing.T) {

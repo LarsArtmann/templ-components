@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`layout.SplitProps.AsideLabel` names the aside landmark.** An unlabeled
+  `<aside>` shows up nameless in screen-reader landmark rotors (achecker
+  `aria_complementary_labelled`). When set, the `<aside>` gets
+  `aria-label`; empty keeps the previous markup exactly (non-breaking). The
+  layout demo now labels its Split aside.
+
 - **CSP-safe declarative overlay trigger: `data-tc-overlay-trigger` on Modal/Drawer.**
   Any element carrying `data-tc-overlay-trigger="<dialog-id>"` opens that overlay via
   the shared overlay script's document-level click delegation (singleton-guarded, one
@@ -71,6 +77,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `tc init` starters are refreshed in lockstep.
 
 ### Fixed
+
+- **Invalid ARIA nesting in `display.CopyButton` (and every `CodeBlock` that
+  embeds it).** The label span carried `role="status"` INSIDE the
+  `<button>`/`<a>` trigger — a live-region role is not a valid button
+  descendant (achecker `aria_descendant_valid`, 28 hits across 9 demo routes;
+  axe has no equivalent rule). The span keeps its global `aria-live="polite"`
+  attribute, so the "Copied!" announcement is unchanged; only the invalid role
+  is gone. Pure attribute change — no visual or script difference.
+
+- **`display.Table` scrollable wrapper now exposes `role="region"`.** The
+  keyboard-scroll wrapper (`tabindex="0"`) had no role, tripping achecker's
+  `element_tabbable_role_valid` scrollable-region best practice. The wrapper
+  is now `role="region"`, named via `aria-label` from `AriaLabel` (falling
+  back to `Caption`) when either is set; unnamed regions stay valid and simply
+  do not appear in landmark rotors, matching prior behavior.
 
 - **Stale demo stylesheet red CI after new component classes.** A `.templ`
   change that introduced new class strings (errorpage 404 search button)

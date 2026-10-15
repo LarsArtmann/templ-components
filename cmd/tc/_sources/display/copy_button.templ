@@ -55,7 +55,7 @@ templ copyButtonContent(icon bool, label, labelClass string) {
 	if icon {
 		@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
 	}
-	<span data-tc-copy-text role="status" aria-live="polite" class={ labelClass }>{ label }</span>
+	<span data-tc-copy-text aria-live="polite" class={ labelClass }>{ label }</span>
 }
 
 templ CopyButton(props CopyButtonProps) {
