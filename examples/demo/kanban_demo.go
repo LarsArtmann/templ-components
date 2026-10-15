@@ -187,7 +187,11 @@ func (s *kanbanDemoState) kanbanDemoBoardProps(id string, action wire.Action, cs
 	}
 
 	props := display.DefaultKanbanBoardProps()
-	props.BaseProps = utils.BaseProps{ID: id, Nonce: demoNonceConst}
+	boardLabel := "Kanban board (HTMX)"
+	if action.Transport == wire.TransportDatastar {
+		boardLabel = "Kanban board (Datastar)"
+	}
+	props.BaseProps = utils.BaseProps{ID: id, Nonce: demoNonceConst, AriaLabel: boardLabel}
 	props.Columns = snapshot
 	props.Wire = &action
 	props.CSRFToken = csrf

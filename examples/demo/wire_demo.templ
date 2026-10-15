@@ -478,14 +478,14 @@ templ wireWizardStep(dialect wire.Transport, step int, message string) {
 				<input type="hidden" name="step" value={ strconv.Itoa(step) }/>
 				if step == 0 {
 					if message != "" {
-						@forms.FieldError("wizard-email", message)
+						@forms.FieldError("wizard-email-"+string(dialect), message)
 					}
-					@forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email"})
+					@forms.Input(forms.InputProps{BaseProps: utils.BaseProps{ID: "wizard-email-" + string(dialect)}, Name: "email", Type: forms.InputEmail, Label: "Email"})
 				} else {
 					if message != "" {
-						@forms.FieldError("wizard-name", message)
+						@forms.FieldError("wizard-name-"+string(dialect), message)
 					}
-					@forms.Input(forms.InputProps{Name: "name", Label: "Full name"})
+					@forms.Input(forms.InputProps{BaseProps: utils.BaseProps{ID: "wizard-name-" + string(dialect)}, Name: "name", Label: "Full name"})
 				}
 				@display.Button(display.ButtonProps{Text: "Next", Variant: display.ButtonPrimary, Size: display.ButtonSizeSM, Type: display.ButtonHTMLSubmit})
 			}
@@ -771,6 +771,7 @@ templ wireDemoForm(dialect wire.Transport, st wireFormState) {
 		},
 	}) {
 		@forms.Input(forms.InputProps{
+			BaseProps:   utils.BaseProps{ID: "wire-form-name-" + string(dialect)},
 			Name:        "name",
 			Label:       "Name",
 			Placeholder: "Ada Lovelace",
@@ -778,11 +779,12 @@ templ wireDemoForm(dialect wire.Transport, st wireFormState) {
 			Error:       st.NameErr,
 		})
 		@forms.Input(forms.InputProps{
-			Name:  "email",
-			Type:  forms.InputEmail,
-			Label: "Email address",
-			Value: st.Email,
-			Error: st.EmailErr,
+			BaseProps: utils.BaseProps{ID: "wire-form-email-" + string(dialect)},
+			Name:      "email",
+			Type:      forms.InputEmail,
+			Label:     "Email address",
+			Value:     st.Email,
+			Error:     st.EmailErr,
 		})
 		<div>
 			@display.Button(display.ButtonProps{

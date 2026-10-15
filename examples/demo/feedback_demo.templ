@@ -73,11 +73,13 @@ templ feedbackDemo() {
 		@feedback.StepIndicator(feedback.StepIndicatorProps{
 			Steps:       []string{"Details", "Review", "Confirm", "Done"},
 			CurrentStep: 1,
+			AriaLabel:   "Checkout progress",
 		})
 		@feedback.StepIndicator(feedback.StepIndicatorProps{
 			Steps:       []string{"Step 1", "Step 2", "Step 3"},
 			CurrentStep: 2,
 			Orientation: feedback.StepVertical,
+			AriaLabel:   "Vertical step example",
 		})
 	</div>
 	@demoSection("Skeletons", "feedback-skeletons")

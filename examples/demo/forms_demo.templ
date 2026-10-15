@@ -91,9 +91,10 @@ templ formsDemoContent() {
 	@demoSection("HTMX filter bar", "forms-filter-bar") {
 		<div class="flex flex-wrap items-end gap-4 rounded-lg border border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
 			@forms.FilterDropdown(forms.FilterDropdownProps{
-				Name:     "status",
-				Label:    "Status",
-				Value:    "active",
+				BaseProps: utils.BaseProps{ID: "htmx-filter-status"},
+				Name:      "status",
+				Label:     "Status",
+				Value:     "active",
 				HxGet:    demoURL("/api/users"),
 				HxTarget: "#user-results",
 				Options: []forms.SelectOption{
@@ -125,8 +126,9 @@ templ formsDemoContent() {
 				Wire:   &wire.Action{Method: wire.MethodGet, URL: demoURL("/api/users"), Target: "#bar-results"},
 			}) {
 				@forms.Select(forms.SelectProps{
-					Name:  "status",
-					Label: "Status",
+					BaseProps: utils.BaseProps{ID: "filterbar-status"},
+					Name:      "status",
+					Label:     "Status",
 					Options: []forms.SelectOption{
 						{Value: "", Label: "All"},
 						{Value: "active", Label: "Active"},
