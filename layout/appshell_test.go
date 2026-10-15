@@ -120,7 +120,7 @@ func TestAppShell(t *testing.T) {
 		}))
 		utils.AssertContainsAll(
 			t, output,
-			`class="lg:hidden"`,
+			`class="lg:hidden print:hidden"`,
 			`data-test="mobile"`,
 		)
 	})
@@ -313,7 +313,7 @@ func TestAppShellBreakpointRendering(t *testing.T) {
 		utils.AssertContainsAll(t, output,
 			"md:grid md:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
 			`class="hidden md:block"`,
-			`class="md:hidden"`,
+			`class="md:hidden print:hidden"`,
 		)
 		utils.AssertNotContains(t, output, "lg:grid")
 	})

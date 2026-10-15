@@ -74,8 +74,6 @@ func TestPrintLayerPresent(t *testing.T) {
 			)
 		}
 	}
-
-	fmt.Fprintln(os.Stderr, "") // keep goconst/lint happy about unused imports below
 }
 
 func assertRequiredFluidClasses(t *testing.T, defined map[string]bool) {

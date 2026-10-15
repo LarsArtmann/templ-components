@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Print layer: `templates/custom.css` gains a minimal `@media print` block.**
+  Interactive library chrome that cannot work on paper is hidden (copy
+  buttons, theme toggle, toast container, dismiss buttons), shadows and
+  animations are dropped, `.tc-prose` external links print their target URL,
+  and paper is treated as light (`color-scheme: light` under `.dark`).
+  `AppShell`'s mobile-nav wrapper now carries `print:hidden` (the sidebar
+  already auto-hides because the printed page width sits below `lg:`).
+  Site chrome (your header/nav/footer) stays your sheet's job — see the new
+  "The global print layer" guidance in `docs/theming.md`. Recompile your
+  entry CSS after adopting; `tc init` starters are refreshed in lockstep.
 - **`layout.SplitProps.AsideLabel` names the aside landmark.** An unlabeled
   `<aside>` shows up nameless in screen-reader landmark rotors (achecker
   `aria_complementary_labelled`). When set, the `<aside>` gets

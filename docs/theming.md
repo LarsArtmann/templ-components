@@ -146,6 +146,11 @@ graceful degradation when the page is printed.
 | `Card`             | Borders, shadows, and backgrounds removed     | `print:shadow-none print:border-0 print:bg-transparent` |
 | `Modal`            | Hidden                                        | `print:hidden`                                          |
 | `Drawer`           | Hidden                                        | `print:hidden`                                          |
+| `CopyButton`       | Hidden                                        | `[data-tc-copy]` rule in the global print layer          |
+| `ThemeToggle`      | Hidden                                        | `[data-theme-toggle]` rule in the global print layer     |
+| `Toast` container  | Hidden                                        | `#tc-toast-container` rule in the global print layer    |
+| Alert dismiss      | Hidden                                        | `[data-dismiss]` rule in the global print layer          |
+| `AppShell`         | Sidebar auto-hides; mobile nav hidden         | printed page width sits below `lg:`; `print:hidden` on the MobileNav wrapper |
 | `PageHeader`       | Title heading avoids page break               | `break-after-avoid` on `<h1>`                           |
 | `SectionHeading`   | Heading avoids page break                     | `break-after-avoid`                                     |
 | `StatCard`         | No special print rules                        | Renders as-is                                           |
@@ -157,3 +162,27 @@ graceful degradation when the page is printed.
 | `Tooltip`          | No special print rules                        | Invisible unless hovered (which cannot happen in print) |
 | `Dropdown`         | No special print rules                        | Closed state is the default                             |
 | All others         | No special print rules                        | Render as-is                                            |
+
+### The global print layer (templates/custom.css)
+
+`templates/custom.css` ships a minimal `@media print` block that applies to
+every page compiled with the starter sheets:
+
+- **Interactive library chrome is hidden** — copy buttons (`[data-tc-copy]`),
+  theme toggle (`[data-theme-toggle]`), the toast container
+  (`#tc-toast-container`), and dismiss buttons (`[data-dismiss]`) cannot
+  function on paper and are removed.
+- **Shadows and animations are dropped** (`box-shadow`/`text-shadow`/`animation`/`transition`
+  set to `none`) — toner savings and cleaner ink output.
+- **Longform links expand** — inside `.tc-prose`, external links print their
+  target URL after the link text: `a[href^="http"]::after { content: " (" attr(href) ")" }`.
+- **Paper is always light** — the `.dark` class gets `color-scheme: light` so
+  form controls and scrollbars print with light affordances.
+
+**Your site chrome is your sheet's job.** The library layer deliberately does
+not hide your own header, navigation, or footer. Extend the block in your
+entry stylesheet, or use Tailwind's `print:` variant per element
+(`print:hidden` on a site header is the one-liner most apps need). If a page
+can land in dark mode, consider also forcing light text colors for print
+(`@media print { .dark { --tw-... } }` or explicit `print:text-gray-900`
+utilities on body copy).
