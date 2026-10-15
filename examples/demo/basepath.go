@@ -76,7 +76,8 @@ func withBasePath(next http.Handler) http.Handler {
 //     gates script LOADING; unsafe-eval only widens runtime-internal
 //     expression compilation.
 //   - fonts.googleapis.com / fonts.gstatic.com: demoFonts() web fonts
-//   - ui-avatars.com: the Avatar/Image demo placeholder images
+//   - ui-avatars.com / picsum.photos: the Avatar/Image/Lightbox demo
+//     placeholder images
 //   - 'unsafe-inline' in style-src: library components emit style=""
 //     attributes (heatmap cells, progress bars); inline scripts stay
 //     nonce-gated ('nonce-demo-nonce')
@@ -84,7 +85,7 @@ const demoCSP = "default-src 'self'; " +
 	"script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval' 'nonce-demo-nonce'; " +
 	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
 	"font-src 'self' https://fonts.gstatic.com; " +
-	"img-src 'self' data: https://ui-avatars.com; " +
+	"img-src 'self' data: https://ui-avatars.com https://picsum.photos; " +
 	"connect-src 'self'; " +
 	"object-src 'none'; " +
 	"base-uri 'self'; " +
