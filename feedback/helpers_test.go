@@ -178,19 +178,20 @@ func TestStepLineClass(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		step, current int
-		want          string
+		state StepState
+		want  string
 	}{
-		{0, 2, stepLineActiveClass},
-		{3, 2, "bg-gray-200 dark:bg-gray-700"},
+		{StepStateComplete, stepLineActiveClass},
+		{StepStateCurrent, stepLineActiveClass},
+		{StepStatePending, "bg-gray-200 dark:bg-gray-700"},
 	}
 	for _, tt := range tests {
-		t.Run(fmt.Sprintf("step-%d-current-%d", tt.step, tt.current), func(t *testing.T) {
+		t.Run(fmt.Sprintf("state-%s", tt.state), func(t *testing.T) {
 			t.Parallel()
 			utils.AssertEqual(
 				t,
-				fmt.Sprintf("stepLineClass(%d, %d)", tt.step, tt.current),
-				stepLineClass(tt.step, tt.current),
+				fmt.Sprintf("stepLineClass(%s)", tt.state),
+				stepLineClass(tt.state),
 				tt.want,
 			)
 		})
@@ -294,6 +295,7 @@ func TestStepStateIsValid(t *testing.T) {
 			t.Errorf("StepStateIsValid(%q) = false, want true", state)
 		}
 	}
+
 	if StepStateIsValid(StepState("invalid")) {
 		t.Error("StepStateIsValid(\"invalid\") = true, want false")
 	}

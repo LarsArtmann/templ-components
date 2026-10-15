@@ -18,9 +18,11 @@ func TestPositionIsValid(t *testing.T) {
 			t.Errorf("PositionIsValid(%q) = false, want true", pos)
 		}
 	}
+
 	if PositionIsValid(Position("diagonal")) {
 		t.Error(`PositionIsValid("diagonal") = true, want false`)
 	}
+
 	if PositionIsValid(Position("")) {
 		t.Error(`PositionIsValid("") = true, want false`)
 	}
@@ -33,19 +35,19 @@ func TestPositionIsValid(t *testing.T) {
 func TestPositionAliasesAreOneType(t *testing.T) {
 	t.Parallel()
 
-	var typeIdentity = map[string]Position{
-		"TooltipPositionTop":    TooltipPositionTop,
-		"TooltipPositionBottom": TooltipPositionBottom,
-		"TooltipPositionStart":  TooltipPositionStart,
-		"TooltipPositionEnd":    TooltipPositionEnd,
-		"TooltipPositionLeft":   TooltipPositionLeft,
-		"TooltipPositionRight":  TooltipPositionRight,
-		"PopoverPositionTop":    PopoverPositionTop,
-		"PopoverPositionBottom": PopoverPositionBottom,
-		"PopoverPositionStart":  PopoverPositionStart,
-		"PopoverPositionEnd":    PopoverPositionEnd,
-		"PopoverPositionLeft":   PopoverPositionLeft,
-		"PopoverPositionRight":  PopoverPositionRight,
+	typeIdentity := map[string]Position{
+		"TooltipPositionTop":      TooltipPositionTop,
+		"TooltipPositionBottom":   TooltipPositionBottom,
+		"TooltipPositionStart":    TooltipPositionStart,
+		"TooltipPositionEnd":      TooltipPositionEnd,
+		"TooltipPositionLeft":     TooltipPositionLeft,
+		"TooltipPositionRight":    TooltipPositionRight,
+		"PopoverPositionTop":      PopoverPositionTop,
+		"PopoverPositionBottom":   PopoverPositionBottom,
+		"PopoverPositionStart":    PopoverPositionStart,
+		"PopoverPositionEnd":      PopoverPositionEnd,
+		"PopoverPositionLeft":     PopoverPositionLeft,
+		"PopoverPositionRight":    PopoverPositionRight,
 		"HoverCardPositionTop":    HoverCardPositionTop,
 		"HoverCardPositionBottom": HoverCardPositionBottom,
 		"HoverCardPositionStart":  HoverCardPositionStart,
@@ -53,18 +55,18 @@ func TestPositionAliasesAreOneType(t *testing.T) {
 	}
 
 	canonical := map[string]Position{
-		"TooltipPositionTop":    PositionTop,
-		"TooltipPositionBottom": PositionBottom,
-		"TooltipPositionStart":  PositionStart,
-		"TooltipPositionEnd":    PositionEnd,
-		"TooltipPositionLeft":   PositionLeft,
-		"TooltipPositionRight":  PositionRight,
-		"PopoverPositionTop":    PositionTop,
-		"PopoverPositionBottom": PositionBottom,
-		"PopoverPositionStart":  PositionStart,
-		"PopoverPositionEnd":    PositionEnd,
-		"PopoverPositionLeft":   PositionLeft,
-		"PopoverPositionRight":  PositionRight,
+		"TooltipPositionTop":      PositionTop,
+		"TooltipPositionBottom":   PositionBottom,
+		"TooltipPositionStart":    PositionStart,
+		"TooltipPositionEnd":      PositionEnd,
+		"TooltipPositionLeft":     PositionLeft,
+		"TooltipPositionRight":    PositionRight,
+		"PopoverPositionTop":      PositionTop,
+		"PopoverPositionBottom":   PositionBottom,
+		"PopoverPositionStart":    PositionStart,
+		"PopoverPositionEnd":      PositionEnd,
+		"PopoverPositionLeft":     PositionLeft,
+		"PopoverPositionRight":    PositionRight,
 		"HoverCardPositionTop":    PositionTop,
 		"HoverCardPositionBottom": PositionBottom,
 		"HoverCardPositionStart":  PositionStart,
@@ -96,30 +98,38 @@ func TestTooltipLogicalPositionsMatchLegacyInLTR(t *testing.T) {
 
 	start := tooltipLookupPosition(PositionStart)
 	left := tooltipLookupPosition(PositionLeft)
+
 	if start.Tooltip != "inset-e-full top-1/2 -translate-y-1/2 me-2" {
 		t.Errorf("start tooltip classes = %q, want logical inset-e-full form", start.Tooltip)
 	}
+
 	if left.Tooltip != "right-full top-1/2 -translate-y-1/2 me-2" {
 		t.Errorf("legacy left tooltip classes = %q, want unchanged physical form", left.Tooltip)
 	}
+
 	if start.Arrow != "inset-s-full top-1/2 -translate-y-1/2 border-s-gray-900 dark:border-s-gray-700" {
 		t.Errorf("start arrow classes = %q, want logical inset-s-full form", start.Arrow)
 	}
+
 	if left.Arrow != "left-full top-1/2 -translate-y-1/2 border-s-gray-900 dark:border-s-gray-700" {
 		t.Errorf("legacy left arrow classes = %q, want unchanged physical form", left.Arrow)
 	}
 
 	end := tooltipLookupPosition(PositionEnd)
 	right := tooltipLookupPosition(PositionRight)
+
 	if end.Tooltip != "inset-s-full top-1/2 -translate-y-1/2 ms-2" {
 		t.Errorf("end tooltip classes = %q, want logical inset-s-full form", end.Tooltip)
 	}
+
 	if right.Tooltip != "left-full top-1/2 -translate-y-1/2 ms-2" {
 		t.Errorf("legacy right tooltip classes = %q, want unchanged physical form", right.Tooltip)
 	}
+
 	if end.Arrow != "inset-e-full top-1/2 -translate-y-1/2 border-e-gray-900 dark:border-e-gray-700" {
 		t.Errorf("end arrow classes = %q, want logical inset-e-full form", end.Arrow)
 	}
+
 	if right.Arrow != "right-full top-1/2 -translate-y-1/2 border-e-gray-900 dark:border-e-gray-700" {
 		t.Errorf("legacy right arrow classes = %q, want unchanged physical form", right.Arrow)
 	}
@@ -156,6 +166,7 @@ func TestDropdownPositionIsValid(t *testing.T) {
 			t.Errorf("DropdownPositionIsValid(%q) = false, want true", pos)
 		}
 	}
+
 	if DropdownPositionIsValid(DropdownPosition("center")) {
 		t.Error(`DropdownPositionIsValid("center") = true, want false`)
 	}

@@ -70,6 +70,7 @@ func TestTooltipRender(t *testing.T) {
 			for _, want := range tt.wantAll {
 				utils.AssertContains(t, output, want)
 			}
+
 			for _, banned := range tt.wantNone {
 				utils.AssertNotContains(t, output, banned)
 			}
