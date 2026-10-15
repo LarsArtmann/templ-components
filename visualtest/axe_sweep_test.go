@@ -47,6 +47,12 @@ import (
 //	with the rest of the shade-convention debt (2026-09-14, surfaced by the
 //	first full-suite sweep read in full).
 //
+//	stylable_select_dark color-contrast (budget 1 node) — the ACTIVE sidebar
+//	item's white-on-indigo (same #6366f1, 4.46:1) — the identical demo brand
+//	override; this dark-audited route simply surfaces the sidebar node the
+//	two-pass routes ledger under their page-content entries (2026-10-15,
+//	new /stylable-select route audit).
+//
 //	site_sales_dark color-contrast — the WEBSITE'S dark render of the
 //	library install CTA: white on dark:bg-blue-500 is 3.76:1. This is the
 //	library-wide -600(light)/-500(dark) shade convention itself, not a site
