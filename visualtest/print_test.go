@@ -1,10 +1,29 @@
 package visualtest
 
 import (
+	"context"
 	"testing"
 
+	"github.com/chromedp/cdproto/cdp"
+	"github.com/chromedp/cdproto/emulation"
 	"github.com/chromedp/chromedp"
 )
+
+// setPrintMedia emulates CSS media type "print" for the tab (raw CDP call —
+// this chromedp major has no typed action for it). An empty media string
+// disables the override, restoring screen media.
+func setPrintMedia(ctx context.Context, media string) error {
+	return chromedp.Do(ctx, chromedp.Func(func(ctx context.Context, tgt *chromedp.Target) error {
+		_, err := cdp.Call(
+			ctx,
+			tgt,
+			emulation.SetEmulatedMedia,
+			emulation.SetEmulatedMediaParams{Media: media},
+		)
+
+		return err
+	}))
+}
 
 // TestPrintMediaHidesInteractiveChrome proves the global print layer
 // (templates/custom.css @media print) actually applies in a real browser
@@ -17,7 +36,7 @@ func TestPrintMediaHidesInteractiveChrome(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	if err := chromedp.Do(ctx, chromedp.EmulateMediaType("print")); err != nil {
+	if err := setPrintMedia(ctx, "print"); err != nil {
 		t.Fatalf("visualtest[print]: emulate print media: %v", err)
 	}
 
@@ -42,7 +61,7 @@ func TestPrintMediaHidesInteractiveChrome(t *testing.T) {
 			var display string
 
 			if err := chromedp.Do(ctx, evalExprInto(
-				`getComputedStyle(document.querySelector(`+backquote(a.selector)+`)).display`, &display)); err != nil {
+				`getComputedStyle(document.querySelector('`+a.selector+`')).display`, &display)); err != nil {
 				t.Fatalf("visualtest[print]: computed display of %s: %v", a.selector, err)
 			}
 
@@ -74,10 +93,4 @@ func TestPrintMediaHidesInteractiveChrome(t *testing.T) {
 	})
 
 	server.FailIfServerErrors(t)
-}
-
-// backquote wraps a CSS selector in single quotes for embedding in a JS
-// expression. Selectors used here contain no single quotes themselves.
-func backquote(selector string) string {
-	return "'" + selector + "'"
 }
