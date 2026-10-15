@@ -23,7 +23,7 @@ templ recipeUtilityBarLinks() {
 		@icons.Icon(icons.ArrowLeft, "w-4 h-4")
 		<span>Back to demo</span>
 	</a>
-	@layout.ThemeToggle("Toggle dark mode", "")
+	@layout.ThemeToggle("Toggle dark mode", demoNonceConst)
 }
 
 templ recipeUtilityBarFlow() {
@@ -109,7 +109,7 @@ templ dashboardHeader() {
 			})
 		</div>
 		<div class="flex flex-shrink-0 items-center gap-2">
-			@layout.ThemeToggle("Toggle dark mode", "")
+			@layout.ThemeToggle("Toggle dark mode", demoNonceConst)
 			@display.Button(display.ButtonProps{Text: "New report", Size: display.ButtonSizeSM})
 		</div>
 	</div>

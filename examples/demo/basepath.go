@@ -85,7 +85,7 @@ const demoCSP = "default-src 'self'; " +
 	"script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval' 'nonce-demo-nonce'; " +
 	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
 	"font-src 'self' https://fonts.gstatic.com; " +
-	"img-src 'self' data: https://ui-avatars.com https://picsum.photos; " +
+	"img-src 'self' data: https://ui-avatars.com https://picsum.photos https://fastly.picsum.photos; " +
 	"connect-src 'self'; " +
 	"object-src 'none'; " +
 	"base-uri 'self'; " +

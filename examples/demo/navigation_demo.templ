@@ -21,7 +21,7 @@ templ navigationDemo() {
 			{Href: demoURL("/users"), Text: "Users"},
 			{Href: demoURL("/forms"), Text: "Forms"},
 		},
-		RightItems: layout.ThemeToggle("Toggle dark mode", ""),
+		RightItems: layout.ThemeToggle("Toggle dark mode", demoNonceConst),
 	})
 	@demoSection("Full Nav", "nav-full")
 	@navigation.Nav(navigation.NavProps{

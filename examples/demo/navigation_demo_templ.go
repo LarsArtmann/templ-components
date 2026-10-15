@@ -52,7 +52,7 @@ func navigationDemo() templ.Component {
 				{Href: demoURL("/users"), Text: "Users"},
 				{Href: demoURL("/forms"), Text: "Forms"},
 			},
-			RightItems: layout.ThemeToggle("Toggle dark mode", ""),
+			RightItems: layout.ThemeToggle("Toggle dark mode", demoNonceConst),
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
