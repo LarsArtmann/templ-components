@@ -73,20 +73,20 @@ var toneTable = map[Tone]Surfaces{
 	ToneInfo: {
 		Dot:      hueTable[HueBlue].BGSolid,
 		Text:     Pair{"text-blue-800", "dark:text-blue-200"},
-		TextSoft: Pair{"text-blue-600", darkTextBlue},
+		TextSoft: Pair{textBlue600, darkTextBlue},
 		Border:   Pair{"border-blue-200", "dark:border-blue-800"},
 		BGTint:   Pair{"bg-blue-50", "dark:bg-blue-900/20"},
 		BGSolid:  hueTable[HueBlue].BGSolidStrong,
-		Icon:     Pair{"text-blue-600", darkTextBlue},
+		Icon:     Pair{textBlue600, darkTextBlue},
 	},
 	ToneAccent: {
 		Dot:      hueTable[HueBlue].BGSolid,
 		Text:     Pair{"text-blue-800", "dark:text-blue-200"},
-		TextSoft: Pair{"text-blue-600", darkTextBlue},
+		TextSoft: Pair{textBlue600, darkTextBlue},
 		Border:   Pair{"border-blue-200", "dark:border-blue-800"},
 		BGTint:   Pair{"bg-blue-50", "dark:bg-blue-900/20"},
 		BGSolid:  hueTable[HueBlue].BGSolidStrong,
-		Icon:     Pair{"text-blue-600", darkTextBlue},
+		Icon:     Pair{textBlue600, darkTextBlue},
 	},
 }
 

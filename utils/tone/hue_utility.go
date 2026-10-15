@@ -29,9 +29,11 @@ type Utilities struct {
 	Border        Pair
 }
 
-// Repeated dark-mode text literals: every hue's text slots share the same
-// dark:400 class (goconst).
+// Repeated text literals shared across the hue and tone tables (goconst):
+// every hue's text slots share the same dark:400 class, and blue's light
+// 600 shade appears in both tables.
 const (
+	textBlue600    = "text-blue-600"
 	darkTextBlue   = "dark:text-blue-400"
 	darkTextGray   = "dark:text-gray-400"
 	darkTextGreen  = "dark:text-green-400"
@@ -45,7 +47,7 @@ const (
 //nolint:gochecknoglobals // package-level lookup table by design
 var hueTable = map[Hue]Utilities{
 	HueBlue: {
-		Text:          Pair{"text-blue-600", darkTextBlue},
+		Text:          Pair{textBlue600, darkTextBlue},
 		TextMuted:     Pair{"text-blue-500", darkTextBlue},
 		TextStrong:    Pair{"text-blue-700", darkTextBlue},
 		TextOnTint:    Pair{"text-blue-800", "dark:text-blue-200"},
