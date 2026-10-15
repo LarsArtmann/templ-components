@@ -1550,11 +1550,23 @@
 <span class="tok-keyword">@plugin</span> <span class="tok-string">"@tailwindcss/typography"</span>;
 <span class="tok-comment">&lt;!-- article class="prose prose-gray dark:prose-invert" replaces .docs-content rules --&gt;</span></code></pre>
             <div class="callout callout-teal">
-              <strong>Recommendation</strong>
-              Probe first: <code>nix develop -c sh -c 'tailwindcss -i probe.css -o /tmp/out.css'</code>
-              with an <code>@plugin</code> line. If it compiles identically in
-              all three lanes, migrate; otherwise keep the current CSS and
-              note the constraint in the adoption guide.
+              <strong>Probe verdict (2026-10-15, M02): lanes converge — the
+              standalone binary loads the plugin.</strong>
+              The probe command below was executed 2026-10-15 on a scratch
+              input (<code>@import "tailwindcss" source(none)</code> +
+              <code>@source</code> + <code>@plugin
+              "@tailwindcss/typography"</code>): the nix standalone binary
+              (v4.3.3, no node_modules present) exits 0 and emits real
+              typography CSS — 184 <code>prose</code> matches,
+              <code>--tw-prose-*</code> properties — while the control without
+              the <code>@plugin</code> line emits zero. The
+              <code>@tailwindcss/cli@4.3.3</code> node lane also exits 0 and
+              the outputs are semantically identical (27 diff lines, all
+              serialization: quote style, font-stack wrapping). The demo
+              Docker and website CI lanes compile the same way — M25's website
+              typography migration is unblocked. Third-party (non-first-party)
+              <code>@plugin</code> packages remain unprobed; prefer the node
+              CLI lane for those.
             </div>
           </div>
 

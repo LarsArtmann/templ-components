@@ -163,6 +163,8 @@ Global gate rules (from `docs/plan-authoring-checklist.md`, applied per task):
 - **M25 — F10-post: typography plugin or documented keep** (60min) — if M02
   probe passes in all 3 lanes, migrate `.docs-content`; else write the
   constraint into the guide. ⚑ must not pre-empt FIFTY-IDEAS #13.
+  ✅ M02 2026-10-15: probe PASSED — standalone + node lanes converge
+  (verdict in the report appendix); migrate `.docs-content`.
 - **M26 — Harvest + standing rules** (60min) ⫱1 — TODO_LIST/ROADMAP update
   from this plan; record the three process rules (re-verify copied stats;
   rendered-screenshot pass for HTML deliverables; <10-min probes run now).
