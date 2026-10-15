@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **CI runner hygiene: concurrency groups + single-source Go version.** Every
+  workflow now carries a concurrency group that cancels superseded runs on
+  the same ref (rapid push series no longer queue N stale CI runs behind the
+  newest — the runner-starvation class behind the 1h+ Build Website hangs).
+  All five `setup-go` pins collapse from hand-typed `go-version: "1.27"` to
+  `go-version-file: go.mod` — the root go.mod `go` directive, already
+  lockstep-guarded by `TestGoDirectiveSkew`, is now the single source. The
+  vnu.jar `/releases/latest` URL stays: verified at source (2026-09-14,
+  comment in ci.yaml) that the validator project maintains `latest` as a
+  moving tag by design — there is no version-numbered release to pin.
+
 - **Print layer: `templates/custom.css` gains a minimal `@media print` block.**
   Interactive library chrome that cannot work on paper is hidden (copy
   buttons, theme toggle, toast container, dismiss buttons), shadows and

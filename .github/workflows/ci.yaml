@@ -10,6 +10,13 @@ on:
 permissions:
   contents: read
 
+# Cancel superseded runs on the same ref: a rapid push series no longer
+# queues N stale CI runs behind the newest one (runner starvation burned
+# hours across sessions; the 1h+ Build Website hangs shared the same cause).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # W3C HTML validation over the golden corpus (M17/F075): catches invalid
   # markup that string-normalized goldens hide (found the Form action=""
@@ -81,7 +88,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.27"
+          # Single source of truth: the root go.mod go directive (bare 1.27,
+          # lockstep-guarded across all modules by TestGoDirectiveSkew).
+          go-version-file: go.mod
 
       - name: Install golangci-lint
         # Pinned (was @latest): a floating install made lint results
@@ -170,7 +179,7 @@ jobs:
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.27"
+          go-version-file: go.mod
 
       - name: Install templ
         run: go install github.com/a-h/templ/cmd/templ@v0.3.1020
