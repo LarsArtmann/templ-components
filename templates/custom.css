@@ -314,12 +314,10 @@ details[open] [data-tc-chevron] {
   input[type="range"],
   progress {
     accent-color: var(--color-blue-600);
-  }
-  .dark input[type="checkbox"],
-  .dark input[type="radio"],
-  .dark input[type="range"],
-  .dark progress {
-    accent-color: var(--color-blue-400);
+
+    @variant dark {
+      accent-color: var(--color-blue-400);
+    }
   }
 }
 
@@ -362,10 +360,20 @@ details[open] [data-tc-chevron] {
     transition:
       border-color 150ms ease,
       box-shadow 150ms ease;
+
+    @variant dark {
+      background-color: var(--color-gray-900);
+      border-color: var(--color-gray-600);
+      color: var(--color-white);
+    }
   }
 
   select.tc-select:hover {
     border-color: var(--color-gray-500);
+
+    @variant dark {
+      border-color: var(--color-gray-400);
+    }
   }
 
   select.tc-select:focus,
@@ -373,6 +381,11 @@ details[open] [data-tc-chevron] {
     outline: none;
     border-color: var(--color-blue-500);
     box-shadow: 0 0 0 2px --alpha(var(--color-blue-500) / 30%);
+
+    @variant dark {
+      border-color: var(--color-blue-400);
+      box-shadow: 0 0 0 2px --alpha(var(--color-blue-400) / 30%);
+    }
   }
 
   select.tc-select:disabled {
@@ -386,6 +399,10 @@ details[open] [data-tc-chevron] {
     height: 1.25rem;
     color: var(--color-gray-500);
     transition: rotate 200ms ease;
+
+    @variant dark {
+      color: var(--color-gray-400);
+    }
   }
 
   select.tc-select:open::picker-icon {
@@ -402,6 +419,12 @@ details[open] [data-tc-chevron] {
     margin-block: 0.25rem;
     max-height: 20rem;
     overflow: auto;
+
+    @variant dark {
+      background-color: var(--color-gray-800);
+      border-color: var(--color-gray-600);
+      box-shadow: 0 10px 15px -3px --alpha(var(--color-black) / 30%);
+    }
   }
 
   /* Options */
@@ -413,6 +436,14 @@ details[open] [data-tc-chevron] {
     color: var(--color-gray-900);
     cursor: pointer;
     transition: background-color 100ms ease;
+
+    @variant dark {
+      color: var(--color-white);
+
+      @variant hover, focus {
+        background-color: var(--color-gray-700);
+      }
+    }
   }
 
   select.tc-select option:hover,
@@ -423,47 +454,14 @@ details[open] [data-tc-chevron] {
   select.tc-select option:checked {
     background-color: var(--color-blue-100);
     font-weight: 500;
+
+    @variant dark {
+      background-color: var(--color-blue-900);
+    }
   }
 
-  /* Dark mode */
-  .dark select.tc-select {
-    background-color: var(--color-gray-900);
-    border-color: var(--color-gray-600);
-    color: var(--color-white);
-  }
-
-  .dark select.tc-select:hover {
-    border-color: var(--color-gray-400);
-  }
-
-  .dark select.tc-select:focus,
-  .dark select.tc-select:focus-visible {
-    border-color: var(--color-blue-400);
-    box-shadow: 0 0 0 2px --alpha(var(--color-blue-400) / 30%);
-  }
-
-  .dark select.tc-select::picker-icon {
-    color: var(--color-gray-400);
-  }
-
-  .dark select.tc-select::picker(select) {
-    background-color: var(--color-gray-800);
-    border-color: var(--color-gray-600);
-    box-shadow: 0 10px 15px -3px --alpha(var(--color-black) / 30%);
-  }
-
-  .dark select.tc-select option {
-    color: var(--color-white);
-  }
-
-  .dark select.tc-select option:hover,
-  .dark select.tc-select option:focus {
-    background-color: var(--color-gray-700);
-  }
-
-  .dark select.tc-select option:checked {
-    background-color: var(--color-blue-900);
-  }
+  /* Dark mode tokens for the picker cluster above are expressed inline via
+     @variant dark — no sibling .dark forks remain in this block. */
 }
 
 /* --- interpolate-size: enable animating to/from height:auto --- */
@@ -978,10 +976,10 @@ details[open] [data-tc-chevron] {
 [data-tc-kanban] [data-tc-kanban-column-body].tc-kanban-over {
   background-color: --alpha(var(--color-blue-100) / 60%);
   border-radius: 0.5rem;
-}
 
-.dark [data-tc-kanban] [data-tc-kanban-column-body].tc-kanban-over {
-  background-color: --alpha(var(--color-blue-900) / 35%);
+  @variant dark {
+    background-color: --alpha(var(--color-blue-900) / 35%);
+  }
 }
 
 [data-tc-kanban] .tc-kanban-drop-before::before,
@@ -993,6 +991,10 @@ details[open] [data-tc-chevron] {
   height: 0.125rem;
   border-radius: 0.125rem;
   background-color: var(--color-blue-600);
+
+  @variant dark {
+    background-color: var(--color-blue-500);
+  }
 }
 
 [data-tc-kanban] .tc-kanban-drop-before::before {
@@ -1001,11 +1003,6 @@ details[open] [data-tc-chevron] {
 
 [data-tc-kanban] .tc-kanban-drop-end::after {
   bottom: -0.25rem;
-}
-
-.dark [data-tc-kanban] .tc-kanban-drop-before::before,
-.dark [data-tc-kanban] .tc-kanban-drop-end::after {
-  background-color: var(--color-blue-500);
 }
 
 /* --- Kanban board: optimistic move register (ADR-0041) -------------------
@@ -1033,21 +1030,21 @@ details[open] [data-tc-chevron] {
   border-top-color: var(--color-blue-600);
   border-radius: 9999px;
   animation: tc-kanban-pending-spin 0.8s linear infinite;
-}
 
-.dark [data-tc-kanban] [data-tc-kanban-card].tc-kanban-pending::after {
-  border-color: var(--color-blue-900);
-  border-top-color: var(--color-blue-400);
+  @variant dark {
+    border-color: var(--color-blue-900);
+    border-top-color: var(--color-blue-400);
+  }
 }
 
 [data-tc-kanban] [data-tc-kanban-card].tc-kanban-move-failed {
   border-color: var(--color-red-600);
   box-shadow: 0 0 0 1px var(--color-red-600);
-}
 
-.dark [data-tc-kanban] [data-tc-kanban-card].tc-kanban-move-failed {
-  border-color: var(--color-red-400);
-  box-shadow: 0 0 0 1px var(--color-red-400);
+  @variant dark {
+    border-color: var(--color-red-400);
+    box-shadow: 0 0 0 1px var(--color-red-400);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1101,10 +1098,10 @@ details[open] [data-tc-chevron] {
     color: var(--color-gray-700);
     font-size: 1rem;
     line-height: 1.75;
-  }
 
-  .dark .tc-prose {
-    color: var(--color-gray-300);
+    @variant dark {
+      color: var(--color-gray-300);
+    }
   }
 
   .tc-prose > :first-child {
@@ -1127,13 +1124,10 @@ details[open] [data-tc-chevron] {
     font-weight: 700;
     line-height: 1.25;
     margin-block: 2rem 0.75rem;
-  }
 
-  .dark .tc-prose h1,
-  .dark .tc-prose h2,
-  .dark .tc-prose h3,
-  .dark .tc-prose h4 {
-    color: var(--color-white);
+    @variant dark {
+      color: var(--color-white);
+    }
   }
 
   .tc-prose h1 {
@@ -1158,27 +1152,27 @@ details[open] [data-tc-chevron] {
     color: var(--color-blue-600);
     text-decoration: underline;
     text-underline-offset: 2px;
+
+    @variant dark {
+      color: var(--color-blue-400);
+    }
   }
 
   .tc-prose a:hover {
     color: var(--color-blue-500);
-  }
 
-  .dark .tc-prose a {
-    color: var(--color-blue-400);
-  }
-
-  .dark .tc-prose a:hover {
-    color: var(--color-blue-300);
+    @variant dark {
+      color: var(--color-blue-300);
+    }
   }
 
   .tc-prose strong {
     color: var(--color-gray-900);
     font-weight: 600;
-  }
 
-  .dark .tc-prose strong {
-    color: var(--color-white);
+    @variant dark {
+      color: var(--color-white);
+    }
   }
 
   .tc-prose ul,
@@ -1210,11 +1204,11 @@ details[open] [data-tc-chevron] {
     font-style: italic;
     margin-block: 1.5rem;
     padding-inline-start: 1rem;
-  }
 
-  .dark .tc-prose blockquote {
-    border-inline-start-color: var(--color-gray-700);
-    color: var(--color-gray-400);
+    @variant dark {
+      border-inline-start-color: var(--color-gray-700);
+      color: var(--color-gray-400);
+    }
   }
 
   .tc-prose code {
@@ -1223,10 +1217,10 @@ details[open] [data-tc-chevron] {
     font-family: var(--font-mono, ui-monospace, monospace);
     font-size: 0.875em;
     padding: 0.125rem 0.375rem;
-  }
 
-  .dark .tc-prose code {
-    background-color: var(--color-gray-800);
+    @variant dark {
+      background-color: var(--color-gray-800);
+    }
   }
 
   .tc-prose pre {
@@ -1250,10 +1244,10 @@ details[open] [data-tc-chevron] {
     border: 0;
     border-block-start: 1px solid var(--color-gray-200);
     margin-block: 2rem;
-  }
 
-  .dark .tc-prose hr {
-    border-block-start-color: var(--color-gray-800);
+    @variant dark {
+      border-block-start-color: var(--color-gray-800);
+    }
   }
 
   .tc-prose table {
@@ -1267,19 +1261,19 @@ details[open] [data-tc-chevron] {
     font-weight: 600;
     padding: 0.5rem 0.75rem;
     text-align: start;
-  }
 
-  .dark .tc-prose th {
-    border-block-end-color: var(--color-gray-700);
+    @variant dark {
+      border-block-end-color: var(--color-gray-700);
+    }
   }
 
   .tc-prose td {
     border-block-end: 1px solid var(--color-gray-200);
     padding: 0.5rem 0.75rem;
-  }
 
-  .dark .tc-prose td {
-    border-block-end-color: var(--color-gray-800);
+    @variant dark {
+      border-block-end-color: var(--color-gray-800);
+    }
   }
 
   .tc-prose img {

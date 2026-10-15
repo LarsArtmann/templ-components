@@ -12,11 +12,11 @@ goldens, and any future cross-engine captures all inherit THIS list — a compon
 from the demo is invisible to every browser-level gate. Companion to
 `docs/testing/a11y-gate-policy.md`.
 
-## Route inventory (16 routes)
+## Route inventory (17 routes)
 
-`/` (home) · `/layout` · `/display` · `/feedback` · `/forms` · `/navigation` · `/icons`
-· `/htmx` · `/datastar` · `/wire` · `/kanban` · `/echarts` · `/recipes` · `/users`
-· `/error-pages`
+`/` (home) · `/layout` · `/display` · `/feedback` · `/forms` · `/stylable-select` ·
+`/navigation` · `/icons` · `/htmx` · `/datastar` · `/wire` · `/kanban` · `/echarts` ·
+`/recipes` · `/users` · `/error-pages`
 
 Plus standalone shells outside the AppShell: recipe detail routes and error routes
 (own `layout.Base` shells, per AGENTS.md).
@@ -49,7 +49,7 @@ Plus standalone shells outside the AppShell: recipe detail routes and error rout
 
 | Component | Missing state | Remedy |
 | --- | --- | --- |
-| `forms.Select` | `Stylable: true` (`appearance: base-select` path) | **Fixed 2026-10-15**: new `/forms/stylable-select` demo section renders the Stylable path with native-fallback documentation. This is the riskiest cross-engine property in the library — `base-select` is unsupported in Firefox (Mozilla bugs 1944403/1958443) — and was invisible to every browser-level gate before this fix. |
+| `forms.Select` | `Stylable: true` (`appearance: base-select` path) | **Fixed 2026-10-15**: new `/stylable-select` demo route renders the Stylable path (flat, groups, error) next to its native counterpart with fallback documentation. This is the riskiest cross-engine property in the library — `base-select` is unsupported in Firefox (Mozilla bugs 1944403/1958443) — and was invisible to every browser-level gate before this fix. |
 
 ## Maintenance
 
