@@ -275,6 +275,12 @@ func popoverPositionJS() string {
 		`var w=p.offsetWidth,h=p.offsetHeight;` +
 		`var vw=window.innerWidth,vh=window.innerHeight;` +
 		`var left,top;` +
+		// Resolve logical start/end placements to physical left/right using
+		// the anchor's computed direction, then reuse the physical math
+		// (including the viewport flip) below. start = the inline-start side
+		// of the trigger: left in LTR, right in RTL.
+		`if(pos==="start"||pos==="end"){var rtl=getComputedStyle(t).direction==="rtl";` +
+		`pos=(pos==="start")?(rtl?"right":"left"):(rtl?"left":"right")}` +
 		`if(align==="start"){left=r.left}` +
 		`else if(align==="end"){left=r.right-w}` +
 		`else{left=r.left+r.width/2-w/2}` +

@@ -36,13 +36,34 @@ func (item DropdownItem) IsLink() bool {
 	return item.Href != ""
 }
 
-// DropdownPosition defines where the dropdown menu appears
+// DropdownPosition defines the inline ALIGNMENT of the always-below-trigger
+// dropdown menu relative to the trigger's box (the menu itself always opens
+// downward). Start aligns the menu's inline-start edge with the trigger's;
+// End aligns the inline-end edges.
 type DropdownPosition string
 
+const (
+	DropdownPositionStart DropdownPosition = "start"
+	DropdownPositionEnd   DropdownPosition = "end"
+)
+
+// Legacy physical spellings from before the logical axis existed: Left
+// behaves as Start and Right as End in every text direction. Removal is
+// planned for v2 (ADR-0022).
 const (
 	DropdownPositionLeft  DropdownPosition = "left"
 	DropdownPositionRight DropdownPosition = "right"
 )
+
+// dropdownAlign maps a DropdownPosition to the data-tc-align wire value: the
+// new logical spellings pass through unchanged, the legacy physical ones map
+// onto their logical equivalents.
+func dropdownAlign(pos DropdownPosition) string {
+	if pos == DropdownPositionEnd || pos == DropdownPositionRight {
+		return "end"
+	}
+	return "start"
+}
 
 // DropdownProps configures a dropdown action menu
 type DropdownProps struct {
@@ -162,7 +183,7 @@ templ Dropdown(props DropdownProps) {
 			popover="auto"
 			data-tc-anchor={ id + "-button" }
 			data-tc-position="bottom"
-			data-tc-align={ utils.Ternary(props.Position == DropdownPositionRight, "end", "start") }
+			data-tc-align={ dropdownAlign(props.Position) }
 			class="w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 focus:outline-hidden"
 			role="menu"
 			aria-orientation="vertical"

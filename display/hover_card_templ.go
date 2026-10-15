@@ -10,32 +10,16 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "github.com/larsartmann/templ-components/utils"
 
-// HoverCardPosition defines where the hover card appears relative to the trigger.
-type HoverCardPosition string
-
-const (
-	HoverCardPositionTop    HoverCardPosition = "top"
-	HoverCardPositionBottom HoverCardPosition = "bottom"
-	HoverCardPositionStart  HoverCardPosition = "start"
-	HoverCardPositionEnd    HoverCardPosition = "end"
-)
-
-//nolint:gochecknoglobals // Package-level lookup table
-var hoverCardPositionMap = map[HoverCardPosition]string{
-	HoverCardPositionTop:    "bottom-full left-1/2 -translate-x-1/2 mb-2",
-	HoverCardPositionBottom: "top-full left-1/2 -translate-x-1/2 mt-2",
-	HoverCardPositionStart:  "inset-e-full top-1/2 -translate-y-1/2 me-2",
-	HoverCardPositionEnd:    "inset-s-full top-1/2 -translate-y-1/2 ms-2",
-}
-
-// HoverCardPositionIsValid reports whether v is one of the defined HoverCardPosition constants.
-func HoverCardPositionIsValid(v HoverCardPosition) bool {
-	_, ok := hoverCardPositionMap[v]
-	return ok
+//nolint:gochecknoglobals // Package-level lookup table for hover card position classes
+var hoverCardPositionMap = map[Position]string{
+	PositionTop:    "bottom-full left-1/2 -translate-x-1/2 mb-2",
+	PositionBottom: "top-full left-1/2 -translate-x-1/2 mt-2",
+	PositionStart:  "inset-e-full top-1/2 -translate-y-1/2 me-2",
+	PositionEnd:    "inset-s-full top-1/2 -translate-y-1/2 ms-2",
 }
 
 func hoverCardPositionClass(pos HoverCardPosition) string {
-	return utils.Lookup(hoverCardPositionMap, pos, hoverCardPositionMap[HoverCardPositionBottom])
+	return utils.Lookup(hoverCardPositionMap, pos, hoverCardPositionMap[PositionBottom])
 }
 
 // HoverCardProps configures a hover-activated card with rich content.
@@ -118,7 +102,7 @@ func HoverCard(props HoverCardProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 66, Col: 24}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 50, Col: 24}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -151,7 +135,7 @@ func HoverCard(props HoverCardProps) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 72, Col: 10}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 56, Col: 10}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
@@ -182,7 +166,7 @@ func HoverCard(props HoverCardProps) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 79, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 63, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 			if templ_7745c5c3_Err != nil {

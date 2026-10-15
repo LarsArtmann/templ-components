@@ -33,3 +33,13 @@ func StepIndicatorOrientationIsValid(v StepIndicatorOrientation) bool {
 		return false
 	}
 }
+
+// StepStateIsValid reports whether v is one of the defined StepState constants.
+func StepStateIsValid(v StepState) bool {
+	switch v {
+	case StepStateComplete, StepStateCurrent, StepStatePending:
+		return true
+	default:
+		return false
+	}
+}
