@@ -228,6 +228,7 @@ Scope note: `Action.Target` renders only for htmx; Datastar targeting is respons
 | Function            | Purpose                                                                                                            |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `FamilyStatusCode`  | Maps Family → HTTP status code (400/409/503/500/503)                                                               |
+| `FamilyFromStatus`  | Maps HTTP status code → Family (the inverse for proxy/upstream statuses: 409→Conflict, 429/503→Transient, 502/504→Infrastructure, 500/501/505+→Corruption, other 4xx→Rejection; status-level round-trip holds for every family) |
 | `ContextMap`        | Converts map[string]string → []ContextPair                                                                         |
 | `ExtractCauseChain` | Walks Unwrap() chain → []CauseItem with ErrorCode() support                                                        |
 | `FromError`         | Converts any `error` → `ErrorPageProps` (family/code/cause). Unknown errors fall back to `FamilyCorruption` (→500) |

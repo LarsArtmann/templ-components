@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Error-page adoption-path guidance.** The error-pages guide now carries a
+  decision table for the four real integration shapes: the `ErrorHandler`
+  wrapper (zero config), `FromError` + your own layout shell (domain chrome —
+  the supported composition, not a divergence), per-status domain messages
+  (`FromError`/`FamilyFromStatus` + prop overrides), and HTMX fragment
+  exchanges (real status + `htmx.GlobalErrorHandling` toast, never a full
+  page).
+- **`errorpage.FamilyFromStatus(status int) Family`.** The inverse of
+  `FamilyStatusCode` for consumers that only have an HTTP status (reverse
+  proxies, upstream fetches) and until now hand-rolled the same switch.
+  Canonical mapping: 409→Conflict, 429/503→Transient, 502/504→Infrastructure,
+  500/501/505+→Corruption (matching the library-wide "unknown → Corruption"
+  precedent), other 4xx→Rejection. The status-level round-trip holds for every
+  family; the two forced collapses (Infrastructure→Transient at 503,
+  Orchestration→Corruption at 500) are pinned by test.
 - **Shipped `templates/safelist.css` for `GridColsAutoFit`.** The auto-fit
   grid's `grid-template-columns` class is assembled at runtime from
   `MinColWidth`, so Tailwind's scanner never sees it — consumers had to

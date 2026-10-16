@@ -36,6 +36,22 @@ props.ShowTimestamp = true
 @errorpage.ErrorPage(props)
 ```
 
+## Choosing an adoption path
+
+The wrapper and the components are two ends of one ladder — pick per endpoint,
+not per project:
+
+| You need…                                                        | Path                                                                                                       |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Zero config, standalone page or JSON body, real status written   | `ErrorHandler` wrapper (Quick start above)                                                                 |
+| Your own layout chrome (nav, shell, i18n) around the error       | `FromError(err)` + render `ErrorPage`/`ErrorDetail` inside your layout — the wrapper's minimal shell is a floor, not a ceiling |
+| Per-status/per-code domain messages                              | `FromError(err)` (or `FamilyFromStatus(status)` when you only have a status), then override `Title`/`WhyText`/`FixText` before rendering |
+| Errors during an HTMX fragment exchange                          | Do NOT render a full page: return the real 4xx/5xx status and let [`htmx.GlobalErrorHandling`](/guides/htmx-integration) render the toast client-side; pair with `ErrorHandler{JSON: true}` when the toast needs the structured family/code facts |
+
+The composition path is the supported answer for domain chrome — it is not a
+divergence from the wrapper. The wrapper intentionally assumes "a Go error and
+nothing else"; everything domain-specific belongs in the props you own.
+
 ## Families
 
 Every error resolves to one of six families, which drives the color, icon,

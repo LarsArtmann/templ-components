@@ -82,6 +82,22 @@ func ExampleFamilyStatusCode() {
 	// 503
 }
 
+func ExampleFamilyFromStatus() {
+	fmt.Println(errorpage.FamilyFromStatus(404))
+	fmt.Println(errorpage.FamilyFromStatus(409))
+	fmt.Println(errorpage.FamilyFromStatus(429))
+	fmt.Println(errorpage.FamilyFromStatus(502))
+	fmt.Println(errorpage.FamilyFromStatus(503))
+	fmt.Println(errorpage.FamilyFromStatus(500))
+	// Output:
+	// rejection
+	// conflict
+	// transient
+	// infrastructure
+	// transient
+	// corruption
+}
+
 func ExampleContextMap() {
 	ctx := errorpage.ContextMap(map[string]string{
 		"host": "db.internal",
