@@ -241,17 +241,17 @@ _(moved below the Website & docs table 2026-09-19 — the 09-18 harvest had spli
 
 ## Testing backlog seeds (harvested 2026-10-15 from the UI-testing-tooling plan; source: `docs/planning/2026-10-15_00-05_UI-TESTING-TOOLING-PARETO-PLAN.md` + `docs/testing/tooling-evaluation.md`)
 
-| Seed | Description |
-| ---- | ----------- |
+| Seed                                  | Description                                                                                                                                                                                                                                                         |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Per-component engine parity contracts | For each visual component, a machine-checked contract of what MUST render identically across Chromium/Firefox/WebKit (structure) vs what MAY differ (native pickers, scrollbars). Extends `nix run .#crossbrowser` from diagnostics to assertions — only after ⫱G1. |
-| Keyboard-walkthrough EXTENSION | Extend `visualtest/keyboard_traversal_test.go` (exists — extend, don't duplicate) to every focusable component route, not just the current set; tab-order snapshots per route. |
-| Guidepup screen-reader automation | Parked: Windows-runner cost. Revisit only with a dedicated a11y milestone (see rejected-tools log in `docs/testing/tool-trial-protocol.md`). |
-| htmx-fragment HTTP contract tests | Assert the demo's htmx endpoints return EXACTLY the fragment contracts components expect (headers, partial roots, OOB slots) — plain Go httptests, no browser. |
-| Lighthouse revisit criteria | Revisit Lighthouse CI when the website gains CWV-sensitive features; criteria: score regression >5 on two consecutive runs. |
-| Engine×component sampling economics | Full 3-engine × 16-route × every-component coverage is overkill; define a sampling policy (riskiest components per engine, rotation) before ⫱G1 integration grows the runtime budget. |
-| Datastar reconnect chaos testing | Extend the M12 SSE profiles (`visualtest/tools/sseload`) with randomized kill/restart cycles against a multi-instance topology — only if SSE fan-out becomes load-bearing (see §5.5 kill-criteria). |
-| Golden-churn tracking | Track how often visual goldens re-baseline per component; a component whose goldens churn every release is a smell — the metric precedes any automation. |
-| 6-month tool-state re-verification | Re-check every row of `docs/testing/tooling-evaluation.md` §1 if adoption slips past ~2027-04 (nixpkgs playwright moves fast; Firefox base-select may land via Mozilla 1944403/1958443). |
+| Keyboard-walkthrough EXTENSION        | Extend `visualtest/keyboard_traversal_test.go` (exists — extend, don't duplicate) to every focusable component route, not just the current set; tab-order snapshots per route.                                                                                      |
+| Guidepup screen-reader automation     | Parked: Windows-runner cost. Revisit only with a dedicated a11y milestone (see rejected-tools log in `docs/testing/tool-trial-protocol.md`).                                                                                                                        |
+| htmx-fragment HTTP contract tests     | Assert the demo's htmx endpoints return EXACTLY the fragment contracts components expect (headers, partial roots, OOB slots) — plain Go httptests, no browser.                                                                                                      |
+| Lighthouse revisit criteria           | Revisit Lighthouse CI when the website gains CWV-sensitive features; criteria: score regression >5 on two consecutive runs.                                                                                                                                         |
+| Engine×component sampling economics   | Full 3-engine × 16-route × every-component coverage is overkill; define a sampling policy (riskiest components per engine, rotation) before ⫱G1 integration grows the runtime budget.                                                                               |
+| Datastar reconnect chaos testing      | Extend the M12 SSE profiles (`visualtest/tools/sseload`) with randomized kill/restart cycles against a multi-instance topology — only if SSE fan-out becomes load-bearing (see §5.5 kill-criteria).                                                                 |
+| Golden-churn tracking                 | Track how often visual goldens re-baseline per component; a component whose goldens churn every release is a smell — the metric precedes any automation.                                                                                                            |
+| 6-month tool-state re-verification    | Re-check every row of `docs/testing/tooling-evaluation.md` §1 if adoption slips past ~2027-04 (nixpkgs playwright moves fast; Firefox base-select may land via Mozilla 1944403/1958443).                                                                            |
 
 ---
 

@@ -67,13 +67,13 @@ package. **Push is still blocked (ritual not green). Master is ahead 31.**
 
 1. **Concurrent-lane lint fix (9 of 11 findings).** The M03 ritual's lint lane
    fails on the OTHER session's freshly-committed `utils/tone` package: 10× goconst
-   + 1× godox. I fixed 9: the godox (a line-wrapped comment starting with "TODO" —
-   reflowed) and 5 package constants (`darkTextBlue/Gray/Green/Yellow/Red`)
-   replacing 25 repeated dark literals across `hue_utility.go` + `surfaces.go`.
-   Tone equivalence tests PASS (the byte-for-byte contract holds). **2 goconst
-   remain**: `text-blue-600` (light literal, 5 occurrences: hue_utility.go:48 ×3,
-   surfaces.go:76 ×2) — same mechanical fix, one more constant pair, ~2 minutes.
-   My 3-file fix was daemon-swept into `30993dfe`.
+   - 1× godox. I fixed 9: the godox (a line-wrapped comment starting with "TODO" —
+     reflowed) and 5 package constants (`darkTextBlue/Gray/Green/Yellow/Red`)
+     replacing 25 repeated dark literals across `hue_utility.go` + `surfaces.go`.
+     Tone equivalence tests PASS (the byte-for-byte contract holds). **2 goconst
+     remain**: `text-blue-600` (light literal, 5 occurrences: hue_utility.go:48 ×3,
+     surfaces.go:76 ×2) — same mechanical fix, one more constant pair, ~2 minutes.
+     My 3-file fix was daemon-swept into `30993dfe`.
 2. **μ84 / push.** Ritual run 1: FAILED (inventory drift — fixed). Ritual run 2:
    FAILED (tone lint — 9/11 fixed). Ritual run 3: NOT YET RUN. Master ahead 31,
    tip `30993dfe`; `templates/templ-components-classes.txt` is dirty AGAIN (their
@@ -141,6 +141,7 @@ package. **Push is still blocked (ritual not green). Master is ahead 31.**
 ## f) UP TO 50 NEXT THINGS (ordered: unblock → verify → pay down → explore)
 
 **Unblock push (P0, today):**
+
 1. Extract `textBlue600` (+ `textGray/Green/Yellow/Red600` if counts demand) in
    `utils/tone` — kills the last 2 goconst.
 2. Heal + commit `templates/templ-components-classes.txt` (already dirty again).
@@ -151,98 +152,98 @@ package. **Push is still blocked (ritual not green). Master is ahead 31.**
 
 **Verify today's fixes (P1):**
 6. achecker re-scan of the 9 formerly-flagged routes — prove `aria_descendant_valid`
-   is 0 (needs the spike env; ~10 min).
+is 0 (needs the spike env; ~10 min).
 7. achecker re-scan proves `aria_complementary_labelled` + `element_tabbable_role_valid`
-   stay clear post-Split/Table changes.
+stay clear post-Split/Table changes.
 8. chromedp e2e: click a demo CopyButton, assert `data-tc-copy-status` gets
-   "Copied!" and clears after ~2s.
+"Copied!" and clears after ~2s.
 9. chromedp e2e: keyboard-announce path — copy via Enter on focused button.
 10. Update eval doc §5.3 numbers with the post-fix scan (28 → 0 hits).
 11. Visual suite spot-check: display + layout routes (Split demo renders `<aside>`
-    via label; CopyButton pixel-identical) — confirm no golden churn.
+via label; CopyButton pixel-identical) — confirm no golden churn.
 12. RTL sweep on CopyButton/Split output (no new physical properties; guard should
-    pass — confirm).
+pass — confirm).
 13. Run the full per-module test loop once (the ritual covers root+utils; do the
-    remaining 4 sub-modules explicitly with `-count=1`).
+remaining 4 sub-modules explicitly with `-count=1`).
 
 **Gate loop (P1, needs owner):**
 14. Owner ratifies ⫱G1 (Playwright diagnostic lane adoption as drafted).
 15. On ⫱G1: flip `.github/workflows/crossbrowser.yml` from dispatch-only to the
-    agreed trigger (or keep dispatch-only per the draft).
+agreed trigger (or keep dispatch-only per the draft).
 16. On ⫱G1: wire M21 aria-snapshot goldens class (`visualtest` + `testdata/aria/`,
-    `-update` docs, count-drift bump).
+`-update` docs, count-drift bump).
 17. Owner ratifies ⫱G2 (achecker baseline ledger).
 18. On ⫱G2: create `visualtest/testdata/achecker_baseline.json` + budget entries.
 19. Owner ratifies ⫱G3 (crossbrowser lane blocking criteria) / ⫱G4 (SSE nightly
-    reject-now with kill-criteria).
+reject-now with kill-criteria).
 20. Re-record the acceptance decision in ADR 0048 status header once gates land.
 
 **Pay down (P2):**
 21. Extract the light-side literal constants in `utils/tone` symmetric to today's
-    dark-side fix (or fold into the other session's Phase 1).
+dark-side fix (or fold into the other session's Phase 1).
 22. Add a guard test: `TestSplitAsideZeroValue` — structural zero-value assertion
-    (div default) so the "zero value = documented default" rule stays pinned.
+(div default) so the "zero value = documented default" rule stays pinned.
 23. Consider `data-tc-copy-status` reaching the demo wire/kanban pages' copy
-    buttons (they render via CodeBlock/CopyButton — verify all demo instances got
-    the sibling region).
+buttons (they render via CodeBlock/CopyButton — verify all demo instances got
+the sibling region).
 24. Golden-file naming audit for the 6 updated goldens (diff review: only the
-    intended span/attr/JS bytes changed — eyeball `git show` once).
+intended span/attr/JS bytes changed — eyeball `git show` once).
 25. `cmd/tc/_sources` mirror: confirm the guard synced the touched packages
-    (it should have at commit; verify no strays).
+(it should have at commit; verify no strays).
 26. Update `docs/testing/tooling-evaluation.md` §6 verdict table: move #421/#422
-    from "posed" to "fixed" evidence lines.
+from "posed" to "fixed" evidence lines.
 27. AGENTS.md line-count check after my Misc-line growth (`wc -l` vs 220 cap).
 28. FEATURES.md: `AsideLandmark` mention in the Split row (props tables are
-    machine-guarded — check `TestFeaturesEnumTableExhaustive` still passes; it did).
+machine-guarded — check `TestFeaturesEnumTableExhaustive` still passes; it did).
 29. README component catalogue: Split one-liner says "main+aside" — decide whether
-    the landmark opt-in deserves a mention (docs-only).
+the landmark opt-in deserves a mention (docs-only).
 30. `docs/browser-support.md`: note the verified Action pins (provenance chain).
 
 **Concurrent-session coordination (P2):**
 31. Sync with the tone session on constant NAMING (they may plan exported
-    constants at Phase 1; my unexported ones are private so no API conflict).
+constants at Phase 1; my unexported ones are private so no API conflict).
 32. Ask them to run `nix run .#css`-class inventory commits atomically with class
-    changes (improvement #3).
+changes (improvement #3).
 33. Their 8 failing route goldens (from the 20:36 report): confirm still THEIR lane
-    and still failing — never rebaseline from my side.
+and still failing — never rebaseline from my side.
 
 **Backlog hygiene (P3):**
 34. Strike-or-schedule sweep: TODO rows referencing "M08 spike findings" are now
-    all resolved — grep TODO_LIST for stale spike references.
+all resolved — grep TODO_LIST for stale spike references.
 35. ROADMAP seeds from M26: verify none conflict with the tone session's Phase 0-2
-    plan rows.
+plan rows.
 36. `docs/status/` — this report annotated into the docs-health flow (done by
-    definition; just ensure the next harvest picks it up).
+definition; just ensure the next harvest picks it up).
 37. Version-drift triple: [Unreleased] is warm; no release cut requested — leave
-    for the owner window.
+for the owner window.
 38. `visualtest` module: `TestPrintMediaHidesInteractiveChrome` (theirs) + my
-    display changes — one combined visual run when both lanes settle.
+display changes — one combined visual run when both lanes settle.
 39. Consider `sr-only` status-region placement vs `ToastContainer` overlap on demo
-    pages (two live regions on one page is fine; just confirm no double-announce
-    on copy+toast flows).
+pages (two live regions on one page is fine; just confirm no double-announce
+on copy+toast flows).
 40. Docs: mention the copy announcement pattern in the a11y guidance docs if such
-    a page exists (`docs/aria-live-politeness.md` is the closest — maybe one line).
+a page exists (`docs/aria-live-politeness.md` is the closest — maybe one line).
 
 **Explore (P3, gated/nice-to-have):**
 41. k6/xk6-sse REJECT verdict: when Go proxy access exists, re-validate the
-    REJECT-local claim (blocked machine-side today).
+REJECT-local claim (blocked machine-side today).
 42. Bencher DEFER: revisit at the next perf-sensitive release.
 43. stylelint DEFER (0 findings): re-trial at next CSS-heavy change.
 44. Trace-viewer KEEP-as-skill: write the skill page when a debugging session
-    actually needs it.
+actually needs it.
 45. aria-snapshot structure-only TRIAL: post-⫱G1, trial on ONE component first
-    (CopyButton is a good candidate — its announcement behavior is structural).
+(CopyButton is a good candidate — its announcement behavior is structural).
 46. Lost Pixel: stays dead; nothing to do.
 47. `TestCrossbrowserLockstep`: extend to assert the flake's fontconfig pin file
-    unchanged (cheap determinism guard) if flake internals stabilize.
+unchanged (cheap determinism guard) if flake internals stabilize.
 48. Consider auto-healing the inventory INSIDE the ritual script (heal→commit→
-    retry once) instead of the manual cycle.
+retry once) instead of the manual cycle.
 49. Duplicate-id contract decision (open owner question from the 20:36 report,
-    §g Q3) — still needs the owner's call: auto-uniquify in forms vs
-    consumer-owns-uniqueness.
+§g Q3) — still needs the owner's call: auto-uniquify in forms vs
+consumer-owns-uniqueness.
 50. After push: start TODO #421's sibling item from the OLD backlog — CopyButton
-    Href-variant announcement (the `<a>` variant's status region was added today;
-    e2e should cover BOTH variants, not just `<button>`).
+Href-variant announcement (the `<a>` variant's status region was added today;
+e2e should cover BOTH variants, not just `<button>`).
 
 ## g) QUESTIONS ONLY THE OWNER CAN ANSWER
 
@@ -262,6 +263,6 @@ package. **Push is still blocked (ritual not green). Master is ahead 31.**
 
 ---
 
-*Handoff: todos 1–8 of this session completed; #9 (ritual) two failures deep
+_Handoff: todos 1–8 of this session completed; #9 (ritual) two failures deep
 (9/11 fixed); #10 (push) blocked pending ritual green + owner Q1. The 2 remaining
-goconst + dirty classes.txt are the only known red state.*
+goconst + dirty classes.txt are the only known red state._

@@ -141,27 +141,27 @@ Most components render fine on paper, but a few are interactive-only.
 The table below documents which components include `print:` variants for
 graceful degradation when the page is printed.
 
-| Component          | Print behaviour                               | Notes                                                   |
-| ------------------ | --------------------------------------------- | ------------------------------------------------------- |
-| `Card`             | Borders, shadows, and backgrounds removed     | `print:shadow-none print:border-0 print:bg-transparent` |
-| `Modal`            | Hidden                                        | `print:hidden`                                          |
-| `Drawer`           | Hidden                                        | `print:hidden`                                          |
-| `CopyButton`       | Hidden                                        | `[data-tc-copy]` rule in the global print layer          |
-| `ThemeToggle`      | Hidden                                        | `[data-theme-toggle]` rule in the global print layer     |
-| `Toast` container  | Hidden                                        | `#tc-toast-container` rule in the global print layer    |
-| Alert dismiss      | Hidden                                        | `[data-dismiss]` rule in the global print layer          |
+| Component          | Print behaviour                               | Notes                                                                        |
+| ------------------ | --------------------------------------------- | ---------------------------------------------------------------------------- |
+| `Card`             | Borders, shadows, and backgrounds removed     | `print:shadow-none print:border-0 print:bg-transparent`                      |
+| `Modal`            | Hidden                                        | `print:hidden`                                                               |
+| `Drawer`           | Hidden                                        | `print:hidden`                                                               |
+| `CopyButton`       | Hidden                                        | `[data-tc-copy]` rule in the global print layer                              |
+| `ThemeToggle`      | Hidden                                        | `[data-theme-toggle]` rule in the global print layer                         |
+| `Toast` container  | Hidden                                        | `#tc-toast-container` rule in the global print layer                         |
+| Alert dismiss      | Hidden                                        | `[data-dismiss]` rule in the global print layer                              |
 | `AppShell`         | Sidebar auto-hides; mobile nav hidden         | printed page width sits below `lg:`; `print:hidden` on the MobileNav wrapper |
-| `PageHeader`       | Title heading avoids page break               | `break-after-avoid` on `<h1>`                           |
-| `SectionHeading`   | Heading avoids page break                     | `break-after-avoid`                                     |
-| `StatCard`         | No special print rules                        | Renders as-is                                           |
-| `ProgressBar`      | No special print rules                        | Animations are static when printed                      |
-| `CircularProgress` | No special print rules                        | SVG renders correctly in print                          |
-| `Spinner`          | No special print rules                        | Animation is static when printed                        |
-| `Alert`            | No special print rules                        | Renders as-is                                           |
-| `Tabs`             | All panels visible (no JS to toggle in print) | Consider hiding tabs in print CSS if needed             |
-| `Tooltip`          | No special print rules                        | Invisible unless hovered (which cannot happen in print) |
-| `Dropdown`         | No special print rules                        | Closed state is the default                             |
-| All others         | No special print rules                        | Render as-is                                            |
+| `PageHeader`       | Title heading avoids page break               | `break-after-avoid` on `<h1>`                                                |
+| `SectionHeading`   | Heading avoids page break                     | `break-after-avoid`                                                          |
+| `StatCard`         | No special print rules                        | Renders as-is                                                                |
+| `ProgressBar`      | No special print rules                        | Animations are static when printed                                           |
+| `CircularProgress` | No special print rules                        | SVG renders correctly in print                                               |
+| `Spinner`          | No special print rules                        | Animation is static when printed                                             |
+| `Alert`            | No special print rules                        | Renders as-is                                                                |
+| `Tabs`             | All panels visible (no JS to toggle in print) | Consider hiding tabs in print CSS if needed                                  |
+| `Tooltip`          | No special print rules                        | Invisible unless hovered (which cannot happen in print)                      |
+| `Dropdown`         | No special print rules                        | Closed state is the default                                                  |
+| All others         | No special print rules                        | Render as-is                                                                 |
 
 ### The global print layer (templates/custom.css)
 

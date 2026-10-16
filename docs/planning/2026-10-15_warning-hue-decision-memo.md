@@ -5,16 +5,16 @@
 
 ## The split brain (verified 2026-10-15)
 
-| Renderer | Warning hue today | File |
-| --- | --- | --- |
-| `feedback` Alert/Toast (warning row) | **yellow** | `feedback/styles.go` |
-| `display.Badge` (warning) | **yellow** | `display/badge.templ` |
-| `display.StatusDot` / `LivePill` (warning) | **amber** | `display/status_dot.go` |
-| `display.ScrollbackLog` (warning tag) | **amber** | `display/scrollback.templ` |
-| `errorpage` rejection family | **amber** | `errorpage/styles.go` |
-| StatCard trend `warn` arrow | **amber** | `display/card.templ` |
-| `ButtonOutlineWarning` | **amber** | `display/button_go.go` |
-| Kanban `yellow` / StatTone `yellow` | yellow — **categorical, out of scope** | `kanban.templ`, `card.templ` |
+| Renderer                                   | Warning hue today                      | File                         |
+| ------------------------------------------ | -------------------------------------- | ---------------------------- |
+| `feedback` Alert/Toast (warning row)       | **yellow**                             | `feedback/styles.go`         |
+| `display.Badge` (warning)                  | **yellow**                             | `display/badge.templ`        |
+| `display.StatusDot` / `LivePill` (warning) | **amber**                              | `display/status_dot.go`      |
+| `display.ScrollbackLog` (warning tag)      | **amber**                              | `display/scrollback.templ`   |
+| `errorpage` rejection family               | **amber**                              | `errorpage/styles.go`        |
+| StatCard trend `warn` arrow                | **amber**                              | `display/card.templ`         |
+| `ButtonOutlineWarning`                     | **amber**                              | `display/button_go.go`       |
+| Kanban `yellow` / StatTone `yellow`        | yellow — **categorical, out of scope** | `kanban.templ`, `card.templ` |
 
 Today an Alert warning and a Badge warning can render on ONE page with two
 different hues (the visible defect). Kanban/StatTile yellows are categorical
@@ -50,7 +50,8 @@ different hues (the visible defect). Kanban/StatTile yellows are categorical
 **Amber.** One semantic warning hue = amber; categorical yellow survives on
 the Hue axis (Kanban/StatTile). Execute as μ11.4 post-G1: tone table
 warning row → HueAmber, feedbackStyleMap + badge warning rows swap, goldens
-+ visual re-baseline in the same commit, CHANGELOG with a pixel-diff note.
+
+- visual re-baseline in the same commit, CHANGELOG with a pixel-diff note.
 
 ## If the owner says yellow instead
 

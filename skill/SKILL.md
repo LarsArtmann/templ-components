@@ -65,8 +65,8 @@ Don't know what to look for? Find your page type:
 | `Modal`              | `Modal(props ModalProps)`                           | Native `<dialog>` overlay — showModal(), focus trap, Escape, backdrop, 5 sizes                                                                                          |
 | `Drawer`             | `Drawer(props DrawerProps)`                         | Native `<dialog>` side panel — slide animation, focus trap, Escape, backdrop                                                                                            |
 | `Dropdown`           | `Dropdown(props DropdownProps)`                     | Button-triggered menu — links, buttons, keyboard nav                                                                                                                    |
-| `Tooltip`            | `Tooltip(props TooltipProps)`                       | Hover tooltip — 6 positions (logical start/end + legacy physical left/right), arrow, touch support                                   |
-| `Popover`            | `Popover(props PopoverProps)`                       | Button-triggered floating panel — 6 positions (logical start/end + legacy physical left/right), arbitrary content, click-outside dismiss |
+| `Tooltip`            | `Tooltip(props TooltipProps)`                       | Hover tooltip — 6 positions (logical start/end + legacy physical left/right), arrow, touch support                                                                      |
+| `Popover`            | `Popover(props PopoverProps)`                       | Button-triggered floating panel — 6 positions (logical start/end + legacy physical left/right), arbitrary content, click-outside dismiss                                |
 | `Accordion`          | `Accordion(props AccordionProps)`                   | Collapsible sections — open/closed state, keyboard nav                                                                                                                  |
 | `Table`              | `Table(props TableProps)`                           | Responsive data table — striping, hover, caption, bordered, `Body` slot, `Row.Href`, `Flush` (card nesting), `CellPadding` (comfortable/compact)                        |
 | `DataTable`          | `DataTable(props DataTableProps)`                   | Data table with integrated sort management, pagination, empty-state — composes `Table` internally                                                                       |
@@ -136,20 +136,20 @@ Don't know what to look for? Find your page type:
 
 #### `feedback` — 14 components
 
-| Component          | Signature                                       | One-liner                                                                      |
-| ------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------ |
-| `Alert`            | `Alert(props AlertProps)`                       | Inline alert — 4 types, dismissible, icon                                      |
-| `InlineError`      | `InlineError(message string)`                   | Compact inline error                                                           |
-| `InlineSuccess`    | `InlineSuccess(message string)`                 | Compact inline success                                                         |
-| `Toast`            | `Toast(props ToastProps)`                       | Toast notification — 4 types, dismissible, duration                            |
-| `ToastContainer`   | `ToastContainer(nonce string)`                  | Fixed container for toasts (include once per page)                             |
-| `Spinner`          | `Spinner(props SpinnerProps)`                   | Loading spinner — 3 sizes, custom color                                        |
-| `LoadingOverlay`   | `LoadingOverlay(props LoadingOverlayProps)`     | Full-screen loading overlay with spinner                                       |
-| `InlineLoading`    | `InlineLoading(message string)`                 | Inline "Saving..." indicator                                                   |
-| `Skeleton`         | `Skeleton(variant SkeletonVariant)`             | Pulsing placeholder — 7 variants                                               |
-| `SkeletonGroup`    | `SkeletonGroup(variants []SkeletonVariant)`     | Multiple skeletons under single `role="status"`                                |
-| `SkeletonCardGrid` | `SkeletonCardGrid(props SkeletonCardGridProps)` | N skeleton cards in responsive grid — loading state, optional `ContainerAware` |
-| `ProgressBar`      | `ProgressBar(props ProgressBarProps)`           | Progress indicator — 3 sizes, indeterminate, label                             |
+| Component          | Signature                                       | One-liner                                                                                                   |
+| ------------------ | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `Alert`            | `Alert(props AlertProps)`                       | Inline alert — 4 types, dismissible, icon                                                                   |
+| `InlineError`      | `InlineError(message string)`                   | Compact inline error                                                                                        |
+| `InlineSuccess`    | `InlineSuccess(message string)`                 | Compact inline success                                                                                      |
+| `Toast`            | `Toast(props ToastProps)`                       | Toast notification — 4 types, dismissible, duration                                                         |
+| `ToastContainer`   | `ToastContainer(nonce string)`                  | Fixed container for toasts (include once per page)                                                          |
+| `Spinner`          | `Spinner(props SpinnerProps)`                   | Loading spinner — 3 sizes, custom color                                                                     |
+| `LoadingOverlay`   | `LoadingOverlay(props LoadingOverlayProps)`     | Full-screen loading overlay with spinner                                                                    |
+| `InlineLoading`    | `InlineLoading(message string)`                 | Inline "Saving..." indicator                                                                                |
+| `Skeleton`         | `Skeleton(variant SkeletonVariant)`             | Pulsing placeholder — 7 variants                                                                            |
+| `SkeletonGroup`    | `SkeletonGroup(variants []SkeletonVariant)`     | Multiple skeletons under single `role="status"`                                                             |
+| `SkeletonCardGrid` | `SkeletonCardGrid(props SkeletonCardGridProps)` | N skeleton cards in responsive grid — loading state, optional `ContainerAware`                              |
+| `ProgressBar`      | `ProgressBar(props ProgressBarProps)`           | Progress indicator — 3 sizes, indeterminate, label                                                          |
 | `StepIndicator`    | `StepIndicator(props StepIndicatorProps)`       | Horizontal/vertical step progress — typed `StepState` (complete/current/pending) derived from `CurrentStep` |
 
 #### `layout` — 11 components

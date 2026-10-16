@@ -12,7 +12,6 @@ import (
 	"github.com/chromedp/chromedp"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 // copyButtonE2EPage renders BOTH CopyButton variants — the default <button>
@@ -22,17 +21,17 @@ import (
 func copyButtonE2EPage() templ.Component {
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		button := display.CopyButtonProps{
-			BaseProps: utils.BaseProps{Nonce: "e2e-nonce", ID: "e2e-copy-button"},
-			Text:      "go get github.com/larsartmann/templ-components",
+			Nonce: "e2e-nonce", ID: "e2e-copy-button",
+			Text: "go get github.com/larsartmann/templ-components",
 		}
 		if err := display.CopyButton(button).Render(ctx, w); err != nil {
 			return err
 		}
 
 		link := display.CopyButtonProps{
-			BaseProps: utils.BaseProps{Nonce: "e2e-nonce", ID: "e2e-copy-link"},
-			Text:      "https://github.com/larsartmann/templ-components",
-			Href:      "https://github.com/larsartmann/templ-components",
+			Nonce: "e2e-nonce", ID: "e2e-copy-link",
+			Text: "https://github.com/larsartmann/templ-components",
+			Href: "https://github.com/larsartmann/templ-components",
 		}
 		if err := display.CopyButton(link).Render(ctx, w); err != nil {
 			return err
@@ -106,27 +105,41 @@ func TestCopyButtonE2EAnnouncesViaSiblingRegion(t *testing.T) {
 			// the same way a trusted click does (kanban/calendar-e2e-proven
 			// pattern; trusted clicks are unreliable in headless).
 			var clickNop string
+
 			click := evalExprInto(
 				`(document.querySelector('`+variant.sel+`').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})),'')`,
 				&clickNop,
 			)
 
 			var statusText string
-			if err := chromedp.Do(ctx, click,
-				pollText(`document.querySelector('`+variant.sel+`').nextElementSibling.textContent`, &statusText, pollFast()...),
+			if err := chromedp.Do(
+				ctx,
+				click,
+				pollText(
+					`document.querySelector('`+variant.sel+`').nextElementSibling.textContent`,
+					&statusText,
+					pollFast()...),
 			); err != nil {
 				t.Fatalf("visualtest[copy-button] %s: copy announcement: %v", variant.name, err)
 			}
 
 			if statusText != "Copied!" {
-				t.Fatalf("visualtest[copy-button] %s: live region announced %q, want %q", variant.name, statusText, "Copied!")
+				t.Fatalf(
+					"visualtest[copy-button] %s: live region announced %q, want %q",
+					variant.name,
+					statusText,
+					"Copied!",
+				)
 			}
 
 			// The region clears after 2s — without the clear, a repeat copy
 			// would not re-announce (screen readers skip unchanged text).
-			if err := chromedp.Do(ctx,
+			if err := chromedp.Do(
+				ctx,
 				chromedp.Sleep(2300*time.Millisecond),
-				pollTrue(`document.querySelector('`+variant.sel+`').nextElementSibling.textContent===''`, pollFast()...),
+				pollTrue(
+					`document.querySelector('`+variant.sel+`').nextElementSibling.textContent===''`,
+					pollFast()...),
 			); err != nil {
 				t.Fatalf("visualtest[copy-button] %s: live region did not clear after 2s: %v", variant.name, err)
 			}
