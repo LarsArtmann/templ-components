@@ -19,6 +19,7 @@ func TestStarterCSSMatchesTemplates(t *testing.T) {
 	pairs := [][2]string{
 		{"../cmd/tc/_sources/starter/app.css", "../templates/app.css"},
 		{"../cmd/tc/_sources/starter/custom.css", "../templates/custom.css"},
+		{"../cmd/tc/_sources/starter/safelist.css", "../templates/safelist.css"},
 	}
 
 	for _, pair := range pairs {

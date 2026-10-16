@@ -232,7 +232,13 @@ One component has this property: `display.Grid` with
 
 where `<MinColWidth>` is `props.MinColWidth` (empty falls back to `240px`). That
 literal exists only in the rendered page, never in a source file, so consumers
-who use `GridColsAutoFit` MUST safelist the exact literal they pass:
+who use `GridColsAutoFit` MUST safelist the exact literal they pass.
+
+**The library ships the common widths.** `templates/safelist.css` safelists the
+160–320px (5 steps) and 12–24rem (4 steps) ladder via one `@source inline(...)`
+line; `templates/app.css` imports it (verified compiled with tailwindcss 4.3.3 —
+all 9 classes emit), and `tc init` scaffolds it. If your `MinColWidth` is on
+that ladder you need nothing else; for any other value keep your own line:
 
 ```css
 @source inline("[grid-template-columns:repeat(auto-fit,minmax(190px,1fr))]");

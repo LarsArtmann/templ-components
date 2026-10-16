@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Shipped `templates/safelist.css` for `GridColsAutoFit`.** The auto-fit
+  grid's `grid-template-columns` class is assembled at runtime from
+  `MinColWidth`, so Tailwind's scanner never sees it — consumers had to
+  hand-maintain an `@source inline(...)` line. The library now ships the
+  common ladder (160–320px, 12–24rem — 9 classes, live-compiled and verified
+  on tailwindcss 4.3.3), `templates/app.css` imports it, and `tc init`
+  scaffolds it. Arbitrary widths keep the hand-rolled line, documented in the
+  Tailwind adoption guide.
 - **CSP-safe AppShell sidebar width.** `SidebarWidth` no longer renders an
   inline `style="--tc-sidebar-w: …"` on the shell root — strict `style-src`
   CSPs dropped it silently, which is exactly how consumers lost their sidebar

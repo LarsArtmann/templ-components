@@ -1,5 +1,5 @@
 /*
- * templates/safelist.css — scanner-invisible class safelist (TODO #324).
+ * templates/safelist.css — scanner-invisible class safelist.
  *
  * Some library classes are BUILT at runtime from consumer input and are
  * therefore invisible to Tailwind's source scanner — the compiler never

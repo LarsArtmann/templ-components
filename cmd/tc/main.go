@@ -298,7 +298,7 @@ func cmdInit(_ *registry, _ []string) {
 		failf("create dir: %v", err)
 	}
 
-	for _, name := range []string{"app.css", "custom.css", "templ-components-theme.css"} {
+	for _, name := range []string{"app.css", "custom.css", "templ-components-theme.css", "safelist.css"} {
 		content, err := sourcesFS.ReadFile(filepath.Join("_sources", "starter", name))
 		if err != nil {
 			failf("read starter %s: %v", name, err)

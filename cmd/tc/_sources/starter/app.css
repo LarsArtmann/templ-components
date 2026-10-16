@@ -73,3 +73,12 @@
  * never diverge between the consumer template and the demo.
  */
 @import "./custom.css";
+
+/*
+ * Scanner-invisible class safelist (GridColsAutoFit's runtime-assembled
+ * grid-template-columns classes). Only needed if you use display.Grid
+ * with Cols: GridColsAutoFit; arbitrary MinColWidth values still need
+ * your own @source inline(...) line — see
+ * docs/tailwind-v4-adoption-guide.md, "Runtime-assembled classes".
+ */
+@import "./safelist.css";
