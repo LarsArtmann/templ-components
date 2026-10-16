@@ -12,6 +12,38 @@
 | Re-skin the library accent ONLY, every shade, one block     | `--color-accent-*` family (ADR-0044) — components emit `accent-*` after the v2 class swap                                         | Decided; ships with v2                        |
 | Scoped remap TODAY, pre-v2, without the token layer         | Attribute-selector bridge (this recipe)                                                                                           | Works, fragile — read the failure modes       |
 
+## Which colors does the library use?
+
+Generated from `utils/tone` (the single source of truth for the palette) —
+do not hand-edit the block below; regenerate with
+`go test ./utils/tone/ -update`.
+
+<!-- BEGIN generated: tone palette table (utils/tone/doc_sync_test.go; go test ./utils/tone/ -update) -->
+| Hue | Tones rendered in it | Chart palette |
+| --- | --- | --- |
+| `blue` | info, accent | yes (series 1) |
+| `emerald` | — | yes (series 2) |
+| `amber` | — | yes (series 3) |
+| `rose` | — | yes (series 4) |
+| `violet` | — | yes (series 5) |
+| `cyan` | — | yes (series 6) |
+| `orange` | — | yes (series 7) |
+| `pink` | — | yes (series 8) |
+| `gray` | neutral | — |
+| `green` | success | — |
+| `yellow` | warning | — |
+| `red` | danger | — |
+| `purple` | — | — |
+<!-- END generated: tone palette table -->
+
+Notes that live outside the generator: `amber` also renders SOME warning
+surfaces today (status dots, scrollback, errorpage) while the tone table's
+warning dialect is `yellow` — the one-semantic-two-hues split tracked by
+TODO #428. `indigo` is deliberately absent: nothing in the library renders
+it. `purple` (and the chart hues generally) also serve the CATEGORICAL
+color enums — kanban lane dots (`KanbanTone`), stat tiles (`StatTone`) —
+which are hue decisions, not tones, and never appear in the Tones column.
+
 ## The bridge pattern (what consumers actually do)
 
 DiscordSync's `input.css:184` is the canonical example — the comment admits

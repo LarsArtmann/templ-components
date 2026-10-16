@@ -21,7 +21,7 @@ import (
 //
 // Fixtures: testdata/theme-inline-probe/{page.html,compiled.css} — the CSS
 // was compiled with the repo-pinned tailwindcss 4.3.3; regeneration and the
-// full verdict live in docs/planning/2026-10-16_theme-inline-probe.md.
+// full verdict live in docs/planning/2026-10-17_theme-inline-probe.md.
 func TestThemeInlineProbe(t *testing.T) {
 	css, err := os.ReadFile(filepath.Join("testdata", "theme-inline-probe", "compiled.css"))
 	if err != nil {

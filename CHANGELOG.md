@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`@theme inline` mode-flipping probe (verdict: GO for v2).** The strategy
+  that retires the ~669 hand-maintained `dark:` pairs — one role class per
+  surface backed by a `.dark`-overridden CSS variable wired through
+  `@theme inline` — is now PROVEN pixel-identical on the pinned tailwindcss
+  4.3.3: computed styles match the literal pair classes in both modes,
+  including the opacity-modifier color-mix path. Permanent browser evidence:
+  `visualtest/theme_inline_probe_test.go`; verdict and v2 checklist:
+  `docs/planning/2026-10-17_theme-inline-probe.md`.
+- **Generated palette table in the theme-bridge recipe.** "Which colors does
+  the library use?" in `docs/recipes/scoped-theme-bridge.md` is now
+  GENERATED from `utils/tone` (guarded by
+  `tone.TestThemeBridgePaletteTableSync`, regenerate with `-update`), and the
+  ADR-0008 token layer's tc-* inventory is pinned by
+  `tone.TestThemeTokenLayerInventory` — retiring the last hand-maintained
+  copies of the palette.
 - **One shared `display.Position` enum for all floating components.**
   Tooltip, Popover, and HoverCard previously shipped three identical
   four-value position dialects (`TooltipPosition`, `PopoverPosition`,
