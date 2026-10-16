@@ -212,6 +212,18 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 // dark is among the modes — toggles the class in place (no re-navigation),
 // waits the double settle, and screenshots again.
 func captureModeShots(ctx context.Context, modes []string) ([]byte, []byte, error) {
+	// Pin LIGHT explicitly first: headless Chromium defaults to
+	// prefers-color-scheme: dark, so the demo's ThemeScript applies .dark on
+	// load and the "light" capture silently renders DARK (the two captures
+	// came out byte-identical until this pin — 2026-10-17). The styling hook
+	// is the .dark class (not the media query), so removing the class wins.
+	if err := chromedp.Do(ctx,
+		chromedp.Evaluate[chromedp.Void](`document.documentElement.classList.remove('dark');`),
+		chromedp.Sleep(settle),
+	); err != nil {
+		return nil, nil, fmt.Errorf("pin light: %w", err)
+	}
+
 	light, err := chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
 	if err != nil {
 		return nil, nil, fmt.Errorf("capture light: %w", err)

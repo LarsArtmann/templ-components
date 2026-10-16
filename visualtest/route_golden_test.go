@@ -282,6 +282,8 @@ func TestDemoRouteGoldens(t *testing.T) {
 		{"errors_404_dark", "/errors/404", true, false, ViewportDesktop, true},
 		{"errors_full_light", "/errors/full", false, false, ViewportDesktop, true},
 		{"errors_full_dark", "/errors/full", true, false, ViewportDesktop, true},
+		{"errors_playground_light", "/errors/playground", false, false, ViewportDesktop, true},
+		{"errors_playground_dark", "/errors/playground", true, false, ViewportDesktop, true},
 		{"dashboard_rtl", "/recipes/dashboard", false, true, ViewportDesktop, true},
 		{"forms_rtl", "/forms", false, true, ViewportDesktop, true},
 	} {
