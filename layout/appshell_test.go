@@ -54,18 +54,18 @@ func TestAppShell(t *testing.T) {
 		utils.AssertNotContains(t, output, "lg:grid-cols-")
 	})
 
-	t.Run("sidebar width CSS var emitted", func(t *testing.T) {
+	t.Run("sidebar width emitted as tc-sidebar-w-* class (CSP-safe)", func(t *testing.T) {
 		t.Parallel()
 
 		cases := []struct {
 			width SidebarWidth
 			want  string
 		}{
-			{SidebarWidthSM, "12rem"},
-			{SidebarWidthMD, "16rem"},
-			{SidebarWidthLG, "20rem"},
-			{SidebarWidthAuto, "auto"},
-			{SidebarWidthDefault, "16rem"},
+			{SidebarWidthSM, "tc-sidebar-w-sm"},
+			{SidebarWidthMD, "tc-sidebar-w-md"},
+			{SidebarWidthLG, "tc-sidebar-w-lg"},
+			{SidebarWidthAuto, "tc-sidebar-w-auto"},
+			{SidebarWidthDefault, "tc-sidebar-w-md"},
 		}
 		for _, tc := range cases {
 			output := utils.Render(t, AppShell(AppShellProps{
@@ -74,29 +74,30 @@ func TestAppShell(t *testing.T) {
 				SidebarWidth: tc.width,
 			}))
 
-			want := "--tc-sidebar-w: " + tc.want
-			if !strings.Contains(output, want) {
-				t.Errorf("width %q: output missing %q", tc.width, want)
-			}
+			utils.AssertContains(t, output, tc.want)
+			// The width rides a CLASS, never an inline style — strict style-src
+			// CSPs drop inline styles silently (#323).
+			utils.AssertNotContains(t, output, "style=")
 		}
 
-		// The width token is only meaningful with a sidebar: without one there is
-		// no two-track grid, so the custom property must not leak either.
+		// The width class is only meaningful with a sidebar: without one there is
+		// no two-track grid, so the class must not leak either.
 		output := utils.Render(t, AppShell(AppShellProps{
 			Content:      templ.Raw(`<p>x</p>`),
 			SidebarWidth: SidebarWidthLG,
 		}))
-		utils.AssertNotContains(t, output, "--tc-sidebar-w")
+		utils.AssertNotContains(t, output, "tc-sidebar-w-")
 	})
 
-	t.Run("unknown sidebar width falls back to default (16rem)", func(t *testing.T) {
+	t.Run("unknown sidebar width falls back to default class (tc-sidebar-w-md)", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, AppShell(AppShellProps{
 			Content:      templ.Raw(`<p>x</p>`),
 			Sidebar:      templ.Raw(`<aside>nav</aside>`),
 			SidebarWidth: SidebarWidth("bogus"),
 		}))
-		utils.AssertContains(t, output, "--tc-sidebar-w: 16rem")
+		utils.AssertContains(t, output, "tc-sidebar-w-md")
+		utils.AssertNotContains(t, output, "tc-sidebar-w-lg")
 	})
 
 	t.Run("sidebar slot renders inside hidden lg:block wrapper", func(t *testing.T) {
