@@ -48,7 +48,7 @@ number is questioned, answer from here, not from memory.
   icons, errorpage, charts/echarts, htmx, datastar). `visualtest/` and
   `website/` are repo-local and never counted or published.
 
-## Tests — **~1,600 functions + ~1,800 subtests**
+## Tests — **~1,650 functions + ~1,800 subtests**
 
 - **Definition:** `func Test/Fuzz/Benchmark` declarations and `t.Run(`
   occurrences in `*_test.go` files of the public packages (same scope as

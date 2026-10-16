@@ -39,7 +39,10 @@ func TestThemeInlineProbe(t *testing.T) {
 			"color-mix(in oklab, var(--tc-solid) 10%, transparent)",
 		} {
 			if !strings.Contains(string(css), needle) {
-				t.Errorf("compiled.css lacks %q — @theme inline wiring changed; recompile and re-verify the probe", needle)
+				t.Errorf(
+					"compiled.css lacks %q — @theme inline wiring changed; recompile and re-verify the probe",
+					needle,
+				)
 			}
 		}
 	})
@@ -111,7 +114,8 @@ func TestThemeInlineProbe(t *testing.T) {
 		if lit == light[pair.name] {
 			t.Errorf(
 				"theme-inline probe: dark mode %s did not flip (still %q) — the pair classes on the page are not applying",
-				pair.name, lit,
+				pair.name,
+				lit,
 			)
 		}
 	}

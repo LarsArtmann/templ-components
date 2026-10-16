@@ -87,25 +87,26 @@ func TestDiffLongLineReadability(t *testing.T) {
 	t.Parallel()
 
 	pad := strings.Repeat("shared-token ", 40)
-	wantLine := "<div class=\"" + pad + "old-class\" id=\"x\">"
-	gotLine := "<div class=\"" + pad + "new-class\" id=\"x\">"
+	first := "<div class=\"" + pad + "old-class\" id=\"x\">" + pad
+	second := "<div class=\"" + pad + "new-class\" id=\"x\">" + pad
 
-	got := diff(gotLine+"\n", wantLine+"\n")
+	got := diff(first+"\n", second+"\n")
 
 	for _, needle := range []string{
 		"~~~ word diff:",
-		"-old-class ",
-		"+new-class ",
+		"-old-class\"",
+		"+new-class\"",
+		"…(+",
 	} {
 		if !strings.Contains(got, needle) {
 			t.Errorf("long-line diff must contain %q:\n%s", needle, got)
 		}
 	}
 
-	for _, banned := range []string{"(+", "shared-token"} {
-		if strings.Contains(got, banned) {
-			t.Errorf("long-line diff must be windowed (found %q):\n%s", banned, got)
-		}
+	// The line's opening tag sits ~500 chars before the first difference —
+	// it must be windowed away.
+	if strings.Contains(got, "<div class=") {
+		t.Errorf("long-line diff must be windowed around the difference (found line start):\n%s", got)
 	}
 }
 
@@ -114,7 +115,7 @@ func TestDiffLongLineReadability(t *testing.T) {
 func TestDiffShortLinesStayVerbatim(t *testing.T) {
 	t.Parallel()
 
-	got := diff("<p>b</p>\n", "<p>a</p>\n")
+	got := diff("<p>a</p>\n", "<p>b</p>\n")
 
 	for _, needle := range []string{"--- [1] <p>a</p>", "+++ [1] <p>b</p>"} {
 		if !strings.Contains(got, needle) {

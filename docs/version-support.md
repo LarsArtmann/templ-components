@@ -21,6 +21,22 @@ is the contract.
 3. Consumers on older toolchains get a clear build error (missing
    `encoding/json/v2`, unknown runtime symbols) — not silent misbehavior.
 4. `tc doctor` reports the current floors from inside your project.
+5. **Every toolchain pin moves in the SAME commit** (the go-1.27 sweep
+   missed half of these on the first pass): `go.work` + ALL module
+   `go.mod` directives (identical spelling — mixed forms break workspace
+   builds), the flake `nixpkgs-go` pin, the golangci-lint pin (verify it
+   supports the new Go — ≤ v2.13.2 panics on 1.27), CI `go-version` (or
+   `go-version-file: go.mod`), and the demo Dockerfile `golang:` image.
+6. **Regenerate BOTH golden families**: HTML goldens
+   (`go test ./pkg/... -update`) and the website's page goldens
+   (`cd website && go test ./internal/pages/ -update`) — the website suite
+   was missed entirely in the go-1.27 sweep and went red only later.
+7. **Sweep the docs floors**: prose claims pinned by `TestDocsCountDrift`
+   (test-function counts move with every sweep), this page, and AGENTS.md's
+   Go-floor line.
+8. **Consumer-note probe**: after the release, smoke one consumer tag
+   (`scripts/check-tag-compiles.sh <version>`) — the floor is only real if
+   a tagged consumer build passes on the minimum toolchain.
 
 ## Deprecation and removal
 

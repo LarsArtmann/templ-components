@@ -351,28 +351,28 @@ func wordDiff(want, got string) string {
 }
 
 func wordBacktrack(b *strings.Builder, wantWords, gotWords []string, lcs [][]int) {
-	wi, gi := 0, 0
+	wantAt, gotAt := 0, 0
 
-	for wi < len(wantWords) && gi < len(gotWords) {
+	for wantAt < len(wantWords) && gotAt < len(gotWords) {
 		switch {
-		case wantWords[wi] == gotWords[gi]:
-			wi++
-			gi++
-		case lcs[wi+1][gi] >= lcs[wi][gi+1]:
-			fmt.Fprintf(b, "-%s ", wantWords[wi])
-			wi++
+		case wantWords[wantAt] == gotWords[gotAt]:
+			wantAt++
+			gotAt++
+		case lcs[wantAt+1][gotAt] >= lcs[wantAt][gotAt+1]:
+			fmt.Fprintf(b, "-%s ", wantWords[wantAt])
+			wantAt++
 		default:
-			fmt.Fprintf(b, "+%s ", gotWords[gi])
-			gi++
+			fmt.Fprintf(b, "+%s ", gotWords[gotAt])
+			gotAt++
 		}
 	}
 
-	for ; wi < len(wantWords); wi++ {
-		fmt.Fprintf(b, "-%s ", wantWords[wi])
+	for ; wantAt < len(wantWords); wantAt++ {
+		fmt.Fprintf(b, "-%s ", wantWords[wantAt])
 	}
 
-	for ; gi < len(gotWords); gi++ {
-		fmt.Fprintf(b, "+%s ", gotWords[gi])
+	for ; gotAt < len(gotWords); gotAt++ {
+		fmt.Fprintf(b, "+%s ", gotWords[gotAt])
 	}
 }
 
