@@ -1,7 +1,7 @@
 package errorpage
 
 import (
-	"fmt"
+	"strconv"
 	"testing"
 )
 
@@ -40,7 +40,7 @@ func TestFamilyFromStatus(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(fmt.Sprintf("%d", tt.status), func(t *testing.T) {
+		t.Run(strconv.Itoa(tt.status), func(t *testing.T) {
 			t.Parallel()
 
 			got := FamilyFromStatus(tt.status)
@@ -65,6 +65,7 @@ func TestFamilyFromStatusSweep(t *testing.T) {
 		}
 
 		var wantBucket Family
+
 		switch status {
 		case 409:
 			wantBucket = FamilyConflict
