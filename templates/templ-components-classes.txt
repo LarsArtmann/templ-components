@@ -23780,6 +23780,7 @@ package errorpage
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/larsartmann/templ-components/icons"
@@ -24221,6 +24222,51 @@ var familyStatusCodeMap = map[Family]int{
 	FamilyCorruption:     500,
 	FamilyInfrastructure: 503,
 	FamilyOrchestration:  500,
+}
+
+// FamilyFromStatus maps an HTTP status code to the closest error Family —
+// the inverse of FamilyStatusCode for consumers that only have a status
+// (reverse proxies, upstream fetches, logging pipelines) and until now had
+// to hand-roll the same switch.
+//
+// Mapping (canonical):
+//
+//	409            → Conflict (the status IS the conflict definition)
+//	429, 503       → Transient (retry-later semantics)
+//	502, 504       → Infrastructure (gateway cannot reach upstream)
+//	500, 501, 505+ → Corruption (the server itself is broken; matches the
+//	                 library-wide precedent that unknown errors are
+//	                 Corruption, NOT Infrastructure)
+//	other 4xx      → Rejection (client-side problem)
+//	anything else  → Rejection (non-error codes never reach an error page;
+//	                 Rejection is the least-wrong documented default)
+//
+// The forward map is many-to-one in two places (Corruption and Orchestration
+// both map to 500; Transient and Infrastructure both map to 503), so the
+// inverse cannot be exact: an Infrastructure status collapses to Transient
+// and an Orchestration status collapses to Corruption. The STATUS-level
+// round-trip still holds for every family:
+// FamilyStatusCode(FamilyFromStatus(FamilyStatusCode(f))) == FamilyStatusCode(f).
+func FamilyFromStatus(status int) Family {
+	switch status {
+	case http.StatusConflict:
+		return FamilyConflict
+	case http.StatusTooManyRequests, http.StatusServiceUnavailable:
+		return FamilyTransient
+	case http.StatusBadGateway, http.StatusGatewayTimeout:
+		return FamilyInfrastructure
+	default:
+		// 500/501/505-599: the server itself is broken. 507 (Insufficient
+		// Storage) is arguably Infrastructure, but one rule beats six special
+		// cases, and "unknown 5xx → Corruption" matches the FromError
+		// precedent. Codes below 400 are not errors; Rejection is the
+		// documented default.
+		if status >= http.StatusInternalServerError {
+			return FamilyCorruption
+		}
+
+		return FamilyRejection
+	}
 }
 
 // ContextMap converts a map[string]string to a []ContextPair slice.

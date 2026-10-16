@@ -56,7 +56,7 @@ number is questioned, answer from here, not from memory.
   (multiple of 50 within 49 of live).
 - **Computed by:** `utils.TestDocsCountDrift` (`countLibraryTests`).
 
-## Goldens — **330 HTML / 204 pixel**
+## Goldens — **330 HTML / 206 pixel**
 
 - **Definition:** committed baseline files under the golden testdata trees.
 - **Computed by:** `utils.TestDocsCountDrift` (file counts per tree).

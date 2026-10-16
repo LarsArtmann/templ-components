@@ -99,7 +99,7 @@ The long-form pitch, with screenshots: [Why templ-components](https://templcompo
 | Typed enums    | 73 (72 with IsValid)                                |
 | Packages       | 19 (across 7 Go modules)                            |
 | Tests          | ~1,650 test functions + ~1,800 subtests             |
-| Visual goldens | 204 pixel-level regression tests (chromedp)         |
+| Visual goldens | 206 pixel-level regression tests (chromedp)         |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 Packages = the importable Go packages across the published modules
