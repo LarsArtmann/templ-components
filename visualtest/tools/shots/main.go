@@ -50,6 +50,7 @@ var pages = []page{
 	{"kanban", "/kanban"},
 	{"echarts", "/echarts"},
 	{"error-pages", "/error-pages"},
+	{"error-playground", "/errors/playground"},
 	{"recipes", "/recipes"},
 	{"users", "/users"},
 	{"recipes-dashboard", "/recipes/dashboard"},
