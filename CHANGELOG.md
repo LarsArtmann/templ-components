@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **CSP-safe AppShell sidebar width.** `SidebarWidth` no longer renders an
+  inline `style="--tc-sidebar-w: …"` on the shell root — strict `style-src`
+  CSPs dropped it silently, which is exactly how consumers lost their sidebar
+  width. The width now rides a `tc-sidebar-w-{sm,md,lg,auto}` class from
+  `templates/custom.css` (the `:root` fallback stays for bespoke widths), the
+  class is only emitted when a `Sidebar` slot exists, and `layout/appshell.templ`
+  left the inline-style exemption list (`utils.TestInlineStyleCompliance`).
+  Zero behavior change otherwise; closes the consumer CSS workaround that
+  motivated it.
+
 - **Readable golden diffs.** `utils/golden` mismatch output now windows long
   replacement lines around their first difference and appends a word-level
   diff of just the changed tokens — templ renders one huge line per element,

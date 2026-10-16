@@ -19,7 +19,6 @@ import (
 // attribute is dropped silently, so the library must not grow new inline styles
 // by accident. Add a file here only with a matching docs update.
 var inlineStyleAllowlist = map[string]string{
-	filepath.Join("layout", "appshell.templ"):      "the --tc-sidebar-w custom property (SidebarWidth enum)",
 	filepath.Join("display", "bar_chart.templ"):    "runtime bar height/width",
 	filepath.Join("display", "heatmap.templ"):      "runtime cell background",
 	filepath.Join("feedback", "progressbar.templ"): "runtime bar width",

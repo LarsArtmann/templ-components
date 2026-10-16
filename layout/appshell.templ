@@ -99,7 +99,7 @@ templ AppShell(props AppShellProps) {
 	<!-- Only shells WITH a sidebar consume the width token: a leftover
 	     sidebar-width class on a sidebar-less shell misleads consumer CSS
 	     (the two-track grid template is not emitted either; see shellClassFor).
-	     The width travels as a tc-sidebar-w-* CLASS (templates/custom.css),
+	     The width travels as a plain width CLASS (templates/custom.css),
 	     never an inline style — strict style-src CSPs drop inline styles
 	     silently. -->
 	<div

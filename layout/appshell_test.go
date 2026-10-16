@@ -81,12 +81,14 @@ func TestAppShell(t *testing.T) {
 		}
 
 		// The width class is only meaningful with a sidebar: without one there is
-		// no two-track grid, so the class must not leak either.
+		// no two-track grid, so the class must not leak either. (Assert the
+		// specific class — the shell's explanatory comment mentions the generic
+		// tc-sidebar-w-* family name.)
 		output := utils.Render(t, AppShell(AppShellProps{
 			Content:      templ.Raw(`<p>x</p>`),
 			SidebarWidth: SidebarWidthLG,
 		}))
-		utils.AssertNotContains(t, output, "tc-sidebar-w-")
+		utils.AssertNotContains(t, output, "tc-sidebar-w-lg")
 	})
 
 	t.Run("unknown sidebar width falls back to default class (tc-sidebar-w-md)", func(t *testing.T) {

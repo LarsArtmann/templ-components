@@ -635,23 +635,40 @@ details[open] [data-tc-chevron] {
  * sidebar column width. The grid template is:
  *   grid-template-columns: var(--tc-sidebar-w) minmax(0,1fr);
  *
- * AppShell sets this INLINE on its root div (per-instance), but a :root
- * fallback is provided here so consumers can:
+ * AppShell sets it via a WIDTH CLASS on its root div (never an inline
+ * style — strict `style-src` CSPs drop inline styles silently, which is
+ * exactly how consumers lost their sidebar width before the class switch).
+ *
+ * Classes map 1:1 to the SidebarWidth enum:
+ *   .tc-sidebar-w-sm    = 12rem  (w-48, compact icon sidebars)
+ *   .tc-sidebar-w-md    = 16rem  (w-64, default — matches SidebarNav)
+ *   .tc-sidebar-w-lg    = 20rem  (w-80, wide sidebars with descriptions)
+ *   .tc-sidebar-w-auto  = auto   (sidebar sizes itself)
+ *
+ * Consumers can still:
  *   1. Reference var(--tc-sidebar-w) in their own CSS (e.g. matching widths)
- *   2. Override the global default by setting --tc-sidebar-w in their @theme
- *
- * Values map to the SidebarWidth enum:
- *   SidebarWidthSM  = 12rem   (w-48, compact icon sidebars)
- *   SidebarWidthMD  = 16rem   (w-64, default — matches SidebarNav)
- *   SidebarWidthLG  = 20rem   (w-80, wide sidebars with descriptions)
- *   SidebarWidthAuto = auto   (sidebar sizes itself)
- *
- * Note: AppShell's inline style takes precedence over this :root fallback
- * (inline > :root specificity). To override AppShell's width, use the
- * SidebarWidth prop or pass a custom value via props.Attrs.
+ *   2. Re-skin a size by redefining the class after importing this file
+ *   3. Set --tc-sidebar-w directly for bespoke widths (the :root fallback
+ *      below keeps that working on sidebar-less pages)
  */
 :root {
   --tc-sidebar-w: 16rem;
+}
+
+.tc-sidebar-w-sm {
+  --tc-sidebar-w: 12rem;
+}
+
+.tc-sidebar-w-md {
+  --tc-sidebar-w: 16rem;
+}
+
+.tc-sidebar-w-lg {
+  --tc-sidebar-w: 20rem;
+}
+
+.tc-sidebar-w-auto {
+  --tc-sidebar-w: auto;
 }
 
 /*

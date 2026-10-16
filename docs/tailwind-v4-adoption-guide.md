@@ -525,13 +525,14 @@ itself is CSP-clean.
 > **Caveat — a few components emit inline `style=` attributes for runtime
 > values:** `feedback.ProgressBar` and `feedback.LoadingOverlay` (bar width),
 > `display.BarChart` (bar height/width), `display.Heatmap` (cell background),
-> and `layout.AppShell` (the `--tc-sidebar-w` custom property). A strict policy
+> and `display.SegmentBar` (segment proportions). A strict policy
 > of `style-src 'self'` or `style-src 'nonce-…'` **blocks** those attributes, so
 > the dynamic value silently does not apply. If you use any of these under a
 > strict `style-src`, allow `style-src-attr 'unsafe-inline'` (scoped to style
-> attributes only), or override the value from your own stylesheet (for example,
-> set `--tc-sidebar-w` in a class instead of relying on the component's inline
-> custom property).
+> attributes only), or override the value from your own stylesheet.
+> (`layout.AppShell` used to be on this list for its `--tc-sidebar-w` custom
+> property; the width now rides a `tc-sidebar-w-*` class from
+> `templates/custom.css`, which no CSP drops.)
 
 **Where does custom CSS go?** In your main CSS file, after `@import "tailwindcss"`.
 Use `@layer utilities { ... }` or `@layer components { ... }` for organization.

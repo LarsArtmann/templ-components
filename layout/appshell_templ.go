@@ -124,7 +124,7 @@ func AppShell(props AppShellProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		shellClass := shellClassFor(props.Sidebar, props.Breakpoint)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!-- Only shells WITH a sidebar consume the width token: a leftover\n\t     sidebar-width class on a sidebar-less shell misleads consumer CSS\n\t     (the two-track grid template is not emitted either; see shellClassFor).\n\t     The width travels as a tc-sidebar-w-* CLASS (templates/custom.css),\n\t     never an inline style — strict style-src CSPs drop inline styles\n\t     silently. -->")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!-- Only shells WITH a sidebar consume the width token: a leftover\n\t     sidebar-width class on a sidebar-less shell misleads consumer CSS\n\t     (the two-track grid template is not emitted either; see shellClassFor).\n\t     The width travels as a plain width CLASS (templates/custom.css),\n\t     never an inline style — strict style-src CSPs drop inline styles\n\t     silently. -->")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
