@@ -78,3 +78,51 @@ func TestDiffLcsEdges(t *testing.T) {
 		})
 	}
 }
+
+// TestDiffLongLineReadability pins the #339 triage form: a replacement pair
+// whose lines exceed the threshold is windowed around the first difference
+// and followed by a word diff that isolates the changed tokens — instead of
+// dumping two multi-kilobyte lines.
+func TestDiffLongLineReadability(t *testing.T) {
+	t.Parallel()
+
+	pad := strings.Repeat("shared-token ", 40)
+	wantLine := "<div class=\"" + pad + "old-class\" id=\"x\">"
+	gotLine := "<div class=\"" + pad + "new-class\" id=\"x\">"
+
+	got := diff(gotLine+"\n", wantLine+"\n")
+
+	for _, needle := range []string{
+		"~~~ word diff:",
+		"-old-class ",
+		"+new-class ",
+	} {
+		if !strings.Contains(got, needle) {
+			t.Errorf("long-line diff must contain %q:\n%s", needle, got)
+		}
+	}
+
+	for _, banned := range []string{"(+", "shared-token"} {
+		if strings.Contains(got, banned) {
+			t.Errorf("long-line diff must be windowed (found %q):\n%s", banned, got)
+		}
+	}
+}
+
+// TestDiffShortLinesStayVerbatim pins the historical format: short
+// replacement pairs print the full lines with no word-diff section.
+func TestDiffShortLinesStayVerbatim(t *testing.T) {
+	t.Parallel()
+
+	got := diff("<p>b</p>\n", "<p>a</p>\n")
+
+	for _, needle := range []string{"--- [1] <p>a</p>", "+++ [1] <p>b</p>"} {
+		if !strings.Contains(got, needle) {
+			t.Errorf("short-line diff must contain %q:\n%s", needle, got)
+		}
+	}
+
+	if strings.Contains(got, "word diff") {
+		t.Errorf("short-line diff must not carry a word-diff section:\n%s", got)
+	}
+}
