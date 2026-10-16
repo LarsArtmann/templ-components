@@ -325,6 +325,10 @@ linters:
       - _templ\.go$
       - vendor/
       - examples/
+      # Standalone diagnostic tools (smoke/shots/ogshot/sseload/...), same
+      # class as examples/: not library code, CLI ergonomics outrank lint
+      # polish (mnd/noctx/varnamelen fire on every flag default).
+      - visualtest/tools/
 formatters:
   enable:
     - gci

@@ -27,6 +27,7 @@ func TestThemeInlineProbe(t *testing.T) {
 	if err != nil {
 		t.Fatalf("theme-inline probe: read compiled.css: %v", err)
 	}
+
 	pageTmpl, err := os.ReadFile(filepath.Join("testdata", "theme-inline-probe", "page.html"))
 	if err != nil {
 		t.Fatalf("theme-inline probe: read page.html: %v", err)
@@ -90,6 +91,7 @@ func TestThemeInlineProbe(t *testing.T) {
 		if light[pair.name] == "" {
 			t.Fatalf("theme-inline probe: light-mode literal #%s computed empty — page broken", pair.lit)
 		}
+
 		if tok := computed(pair.tok, pair.prop); tok != light[pair.name] {
 			t.Errorf(
 				"theme-inline probe: light mode %s: literal %q vs token %q — token strategy is NOT pixel-identical",
@@ -111,6 +113,7 @@ func TestThemeInlineProbe(t *testing.T) {
 				pair.name, lit, tok,
 			)
 		}
+
 		if lit == light[pair.name] {
 			t.Errorf(
 				"theme-inline probe: dark mode %s did not flip (still %q) — the pair classes on the page are not applying",

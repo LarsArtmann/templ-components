@@ -36,22 +36,19 @@ func SidebarWidthIsValid(w SidebarWidth) bool {
 	return ok
 }
 
-// sidebarWidthMD is the default sidebar width in CSS units. Extracted as a
-// named constant to satisfy goconst (this value appears in the lookup table,
-// the default fallback, and the godoc examples).
-const sidebarWidthMDValue = "16rem"
-
 //nolint:gochecknoglobals // Package-level lookup table for sidebar widths
 var sidebarWidthLookup = map[SidebarWidth]string{
-	SidebarWidthSM:   "12rem",
-	SidebarWidthMD:   sidebarWidthMDValue,
-	SidebarWidthLG:   "20rem",
-	SidebarWidthAuto: "auto",
+	SidebarWidthSM:   "tc-sidebar-w-sm",
+	SidebarWidthMD:   "tc-sidebar-w-md",
+	SidebarWidthLG:   "tc-sidebar-w-lg",
+	SidebarWidthAuto: "tc-sidebar-w-auto",
 }
 
-// sidebarWidthValue returns the CSS grid-template-columns value (a length or
-// "auto") for the sidebar column. Falls back to SidebarWidthDefault.
-func sidebarWidthValue(w SidebarWidth) string {
+// sidebarWidthClass returns the CSS class that sets the --tc-sidebar-w
+// custom property to the enum's width (defined in templates/custom.css —
+// classes instead of an inline style, so strict `style-src` CSPs never
+// silently drop the sidebar width). Falls back to SidebarWidthDefault.
+func sidebarWidthClass(w SidebarWidth) string {
 	return utils.Lookup(sidebarWidthLookup, w, sidebarWidthLookup[SidebarWidthDefault])
 }
 

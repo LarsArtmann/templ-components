@@ -173,8 +173,8 @@ func TestReducedMotionEmulationKillsSpinnerAnimation(t *testing.T) {
 
 // TestPrintMediaProbe renders Table (/users) and Card-heavy (/recipes) pages
 // under print media and asserts they still produce non-degenerate output.
-// Print styling is NOT gated here (μ45: findings go to the evaluation doc /
-// TODO seeds) — the probe exists to keep the print path observable.
+// Print styling is NOT gated here (μ45: findings go to the evaluation
+// doc's TODO seeds) — the probe exists to keep the print path observable.
 func TestPrintMediaProbe(t *testing.T) {
 	server := StartDemoServer(t)
 
