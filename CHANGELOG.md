@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Readable golden diffs.** `utils/golden` mismatch output now windows long
+  replacement lines around their first difference and appends a word-level
+  diff of just the changed tokens — templ renders one huge line per element,
+  and the old full-line dump made a one-token change unreadable during
+  goldens triage. Short lines keep the exact historical format.
+- **Floor-bump checklist completed.** `docs/version-support.md` "What a
+  floor bump looks like" now carries the steps the go-1.27 sweep missed on
+  its first pass: all toolchain pins in one commit, BOTH golden families
+  (including the website's), docs-floor prose sweep, and the post-release
+  consumer-tag smoke probe.
 - **`@theme inline` mode-flipping probe (verdict: GO for v2).** The strategy
   that retires the ~669 hand-maintained `dark:` pairs — one role class per
   surface backed by a `.dark`-overridden CSS variable wired through
@@ -519,6 +529,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   silent failure invisible. Pinned by the new integration sweep
   `TestNoEmptyNonceAttribute` (renders every script-emitting component with
   an unset nonce; mirrored against `TestAllInlineScriptsHaveNonce`).
+  Migration: if your consumer test suite asserted the literal `nonce=""`
+  string in rendered output, update it to assert the `<script` tag itself —
+  the visible HTML diff is scripts no longer carrying the dead attribute.
 - **`utils.ScriptComponent` — the canonical CSP-safe script writer.** One
   helper owns the omit-empty nonce rule, nonce escaping, and error wrapping
   for every component singleton script; `display` (10 writers),

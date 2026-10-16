@@ -246,6 +246,8 @@ Don't know what to look for? Find your page type:
 | `Lookup(m, key, fallback)` | Map lookup with fallback for style variants                      |
 | `Ternary(cond, a, b)`      | Functional ternary for templ expressions                         |
 | `EnsureID(prefix, id)`     | Auto-generate DOM-safe IDs (crypto/rand)                         |
+| `ScriptAttrs(nonce)`       | Script attrs with the omit-empty nonce rule (never `nonce=""`)    |
+| `ScriptComponent(nonce, js, name)` | The canonical CSP-safe inline-script writer for custom scripts |
 | `Version`                  | Library version string (matches CHANGELOG)                       |
 
 #### `utils/format` — display formatting (pure functions, no deps)
