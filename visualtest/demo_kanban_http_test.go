@@ -186,6 +186,21 @@ func runKanbanContractProbes(t *testing.T, base string, fx kanbanContractFixture
 		t.Fatalf("visualtest[%s]: reset did not remove the added card", fx.name)
 	}
 
+	// Sorted-view rejection (#224): a move referencing a card the server
+	// state no longer knows (the reset just removed it) is a stale view —
+	// 422, never a silent no-op (the old behavior even ATE the card from
+	// its source column when the target column was unknown). Both
+	// dialects share the contract, so both get the probe.
+	staleBody := "card=" + fx.addedCardID + "&column=" + fx.addColumn + "&index=0&csrf_token=" + token
+
+	if got := probe.post("/api/kanban/htmx", sameOrigin, staleBody); got != http.StatusUnprocessableEntity {
+		t.Fatalf("visualtest[%s]: stale-view move = %d, want 422", fx.name, got)
+	}
+
+	if got := probe.post("/api/kanban/datastar", sameOrigin, staleBody); got != http.StatusUnprocessableEntity {
+		t.Fatalf("visualtest[%s]: stale-view datastar move = %d, want 422", fx.name, got)
+	}
+
 	// The Datastar-wrapped add goes through the same same-origin gate, and
 	// the datastar board has a reset of its own (leaves shared package-global
 	// boards in their initial layout for whichever test runs next).

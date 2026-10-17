@@ -2,6 +2,7 @@ package visualtest
 
 import (
 	"context"
+	"errors"
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
@@ -42,6 +43,10 @@ import (
 // TestDemoKanbanHTTPContracts (real demo) and TestKanbanE2EHTTPContractParity
 // (this server) through identical probes. Diverge from the demo's guards and
 // the parity test names this file.
+
+// errKanbanStaleView is the sorted-view rejection shared with the demo
+// endpoint (the contract probes pin both implementations to the same 422).
+var errKanbanStaleView = errors.New("stale board view: card or column not found")
 
 // kanbanE2EBoard is the mutex-guarded server state one dialect endpoint owns.
 type kanbanE2EBoard struct {
@@ -110,9 +115,11 @@ func (b *kanbanE2EBoard) reset() {
 	b.next = 0
 }
 
-// apply mutates the board by one decoded move: remove the card from
-// wherever it lives, insert it at the (clamped) requested position.
-func (b *kanbanE2EBoard) apply(move display.KanbanMove) {
+// applyErr applies one move under the same sorted-view contract as the
+// demo endpoint (backlog #224, enforced by the shared contract probes): a
+// card or column the board does not know is a stale view -> error (the
+// endpoint answers 422). Index overflow stays a clamp.
+func (b *kanbanE2EBoard) applyErr(move display.KanbanMove) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
@@ -133,26 +140,40 @@ func (b *kanbanE2EBoard) apply(move display.KanbanMove) {
 	}
 
 	if !found {
-		return
+		return errKanbanStaleView
 	}
+
+	target := -1
 
 	for ci := range b.columns {
-		if b.columns[ci].ID != move.Column {
-			continue
+		if b.columns[ci].ID == move.Column {
+			target = ci
+
+			break
 		}
-
-		if move.Index > len(b.columns[ci].Cards) {
-			move.Index = len(b.columns[ci].Cards)
-		}
-
-		cards := make([]display.KanbanCard, 0, len(b.columns[ci].Cards)+1)
-		cards = append(cards, b.columns[ci].Cards[:move.Index]...)
-		cards = append(cards, card)
-		cards = append(cards, b.columns[ci].Cards[move.Index:]...)
-		b.columns[ci].Cards = cards
-
-		return
 	}
+
+	if target < 0 {
+		return errKanbanStaleView
+	}
+
+	if move.Index > len(b.columns[target].Cards) {
+		move.Index = len(b.columns[target].Cards)
+	}
+
+	cards := make([]display.KanbanCard, 0, len(b.columns[target].Cards)+1)
+	cards = append(cards, b.columns[target].Cards[:move.Index]...)
+	cards = append(cards, card)
+	cards = append(cards, b.columns[target].Cards[move.Index:]...)
+	b.columns[target].Cards = cards
+
+	return nil
+}
+
+// apply keeps the silent legacy shape for callers that drive moves
+// directly and do not care about rejections.
+func (b *kanbanE2EBoard) apply(move display.KanbanMove) {
+	_ = b.applyErr(move)
 }
 
 // add appends a fresh card to the named column and reports whether the
@@ -312,7 +333,11 @@ func kanbanE2EServer(t *testing.T) *httptest.Server {
 				return
 			}
 
-			board.apply(move)
+			if err := board.applyErr(move); err != nil {
+				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+
+				return
+			}
 
 			if err := display.KanbanBoard(board.kanbanE2EBoardProps(id, action)).Render(r.Context(), w); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -347,7 +372,11 @@ func kanbanE2EServer(t *testing.T) *httptest.Server {
 				time.Sleep(FlakySlowDelay)
 			}
 
-			board.apply(move)
+			if err := board.applyErr(move); err != nil {
+				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+
+				return
+			}
 
 			if err := display.KanbanBoard(board.kanbanFlakyBoardProps(id, action)).Render(r.Context(), w); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
