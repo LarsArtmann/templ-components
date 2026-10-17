@@ -129,6 +129,9 @@ templ datastarPolledStatsRegion(tick int) {
 		Every:         "5s",
 		ShowTimestamp: true,
 		TimeFormat:    "15:04:05 MST",
+		Now: func() time.Time {
+			return time.Now().UTC()
+		},
 	}) {
 		@datastarPolledStatsContent(tick, true)
 	}
@@ -138,14 +141,15 @@ templ datastarPolledStatsRegion(tick int) {
 // shell WITHOUT the interval attributes, so the runtime's outer patch
 // replaces the polling region with static content and the demo settles.
 templ datastarPolledStatsSettled(tick int) {
+	{{ now := time.Now().UTC() }}
 	<div id="datastar-polled-stats" role="region" aria-label="Live demo statistics" aria-live="polite">
 		@datastarPolledStatsContent(tick, false)
 		<div class="mt-3 flex justify-end">
 			<time
 				class="text-xs tabular-nums text-gray-400 dark:text-gray-500"
-				datetime={ time.Now().Format(time.RFC3339) }
+				datetime={ now.Format(time.RFC3339) }
 			>
-				Updated { time.Now().Format("15:04:05 MST") }
+				Updated { now.Format("15:04:05") } UTC
 			</time>
 		</div>
 	</div>
