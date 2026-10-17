@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **SSE live-rows recipe** (`docs/recipes/sse-live-rows.md`). The append-live-
+  rows-over-Server-Sent-Events pattern the `Table` `BodyID` + `Body` API was
+  built for, written down: the `htmx-ext-sse` listener (the extension is
+  separate from `htmx.min.js` — a CSP nonce gotcha the docs now own), the
+  `sse-swap` + `hx-target="#tbody"` + `hx-swap="beforeend"` append, the
+  `event:`-named SSE endpoint rendering `<tr>` fragments, stable row ids with
+  `hx-swap-oob` patching, and the cap-the-DOM escape hatch for unbounded
+  feeds (plus the Datastar twin pointer).
 - **Error-page adoption-path guidance.** The error-pages guide now carries a
   decision table for the four real integration shapes: the `ErrorHandler`
   wrapper (zero config), `FromError` + your own layout shell (domain chrome —

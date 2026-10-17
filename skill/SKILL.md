@@ -432,6 +432,7 @@ run `templ generate`. This is the standard pattern for publishable templ package
 | `docs/recipes/theme-bridge.md`                        | Remap library colors to custom semantic palette                                                 |
 | `docs/recipes/scoped-theme-bridge.md`                 | Remap library colors WITHOUT touching your own palette use (attribute bridges, escape hatches)  |
 | `docs/recipes/bounding-tables.md`                     | Cap + ListNote notice, or Pagination/LoadMore — never render an unbounded table                 |
+| `docs/recipes/sse-live-rows.md`                       | Append live `<tr>` fragments over SSE — Table `BodyID` + htmx-ext-sse listener + `hx-swap-oob`  |
 
 ## How to know if a component already exists
 

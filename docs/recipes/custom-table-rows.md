@@ -2,6 +2,8 @@
 
 How to render custom `<tr>` elements with full control over cell content,
 styling, and HTMX attributes — using the `Table.Body` slot and `TypedHeaders`.
+For appending rows live over Server-Sent Events, see
+[`sse-live-rows.md`](sse-live-rows.md).
 
 ## Basic: Body slot for custom rows
 
