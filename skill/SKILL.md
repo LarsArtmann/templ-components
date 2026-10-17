@@ -464,7 +464,7 @@ grep-able table in your consumer project's `AGENTS.md`:
 This lets every AI session and developer quickly audit what's adopted, what's
 hand-rolled, and where the gaps are.
 
-## The website SSG's page-registration knobs (backlog #276)
+## The website SSG's page-registration knobs (site docs, #276)
 
 The site (`website/`, a Go SSG rendering through this very library) has three
 registration points that must stay in sync when adding pages:

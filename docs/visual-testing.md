@@ -56,6 +56,11 @@ nix run .#visual -- -update
 nix run .#visual -- -run TestButtons
 ````
 
+The suite also carries the demo nav-timing budget guard
+(`TestDemoNavTimingBudget` — FCP/LCP/CLS/load against generous budgets on 4
+representative routes; the reproducible home of the old manual Lighthouse
+run, see `visualtest/nav_timing_test.go`).
+
 Without Nix, point `CHROMEDP_CHROME_PATH` at any Chromium/Chrome binary and run
 the module directly (the `GOWORK=off` is required because the repo's parent
 `go.work` would otherwise shadow this module's local replace directive):
@@ -88,18 +93,28 @@ un-regenerated `*_templ.go`, both of which the core steps refresh first.
 
 ## The site route tier
 
-`TestSiteRouteGoldens` + the site axe/viewport audits pin the WEBSITE's own
-pages (`/`, `/sales` — light/dark × desktop/mobile) on top of the demo-route
-tier. Two properties matter:
+The WEBSITE's own pages (`/`, `/sales`) are pinned by five tests, all riding
+the normal `nix run .#visual` env:
+
+| Test | What it pins |
+| ---- | ------------ |
+| `TestSiteRouteGoldens` | 8 route goldens — 2 routes × light/dark × desktop(1440)/mobile(390) full-page captures, namespaced `site-*` in `testdata/routes/` |
+| `TestAxeSweepSiteRoutes` | axe a11y sweep over both routes in light AND dark (baseline ledger: `site_sales_dark` color-contrast) |
+| `TestSiteTouchTargetAudit` | browser-measured 24×24px interactive-target floor at 375px |
+| `TestSiteZoomReflowAudit` | WCAG 1.4.10 — no horizontal overflow at 200%/400% zoom |
+| `TestSiteSalesCopyButton` | e2e: the sales page's real `CopyButton` writes to the clipboard and flips its label |
+
+Two properties matter:
 
 - **Theme pinning**: the harness sets `localStorage.theme` and reloads before
   every capture — headless Chromium defaults to `prefers-color-scheme: dark`,
   so an unpinned "light" capture silently renders dark (the whole light-golden
   set once failed at ~99% mismatch for exactly this reason).
-- **Star-badge determinism**: the `.#visual` flake app builds the dist with
-  the no-stars fallback badge (now build.sh's default, backlog #271) so a
-  live GitHub count can never flake a route golden between rebuilds.
-  Production flips this via `SITE_LIVE_STARS=1` in the CI Website job.
+- **Star-badge determinism** (the skip-stars pin): the `.#visual` flake app
+  builds the dist with the no-stars fallback badge — live GitHub lookups are
+  opt-in via `--live-stars`/`SITE_LIVE_STARS=1` (inverted 2026-10-15, closing
+  #271), so a live count can never flake a route golden between rebuilds.
+  Production flips it via `SITE_LIVE_STARS=1` in the CI Website job.
 
 Site captures also scroll through the full document first
 (`siteScrollRevealJS`) so IntersectionObserver `[data-animate]` reveals fire
