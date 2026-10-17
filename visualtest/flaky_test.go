@@ -13,6 +13,7 @@ func TestFlakyFail(t *testing.T) {
 
 	t.Run("fail ID writes 500 and stops", func(t *testing.T) {
 		t.Parallel()
+
 		rec := httptest.NewRecorder()
 
 		if !FlakyFail(rec, FlakyFailID) {
@@ -26,6 +27,7 @@ func TestFlakyFail(t *testing.T) {
 
 	t.Run("slow ID passes through", func(t *testing.T) {
 		t.Parallel()
+
 		rec := httptest.NewRecorder()
 
 		if FlakyFail(rec, FlakySlowID) {

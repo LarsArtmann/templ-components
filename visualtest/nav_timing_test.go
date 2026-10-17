@@ -107,7 +107,11 @@ func TestDemoNavTimingBudget(t *testing.T) {
 
 			for _, check := range checks {
 				if check.value < 0 {
-					t.Errorf("visualtest[nav-timing][%s]: %s missing (entry type unsupported or page never emitted it)", route.name, check.name)
+					t.Errorf(
+						"visualtest[nav-timing][%s]: %s missing (entry type unsupported or page never emitted it)",
+						route.name,
+						check.name,
+					)
 
 					continue
 				}
@@ -115,7 +119,10 @@ func TestDemoNavTimingBudget(t *testing.T) {
 				if check.value > check.budget {
 					t.Errorf(
 						"visualtest[nav-timing][%s]: %s = %.0fms exceeds budget %.0fms — inspect before raising (regressions first, budgets second)",
-						route.name, check.name, check.value, check.budget,
+						route.name,
+						check.name,
+						check.value,
+						check.budget,
 					)
 				}
 			}

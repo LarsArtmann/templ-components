@@ -16,7 +16,7 @@ func FuzzScriptComponent(f *testing.F) {
 	f.Add(`alert("x");`, "nonce-123")
 	f.Add(`</script><script>alert(1)`, "")
 	f.Add(`quotes " ' angles < > ampersand &`, `n"ce<&>`)
-	f.Add("unicode ünïcödé 日本語 \U0001F642", "n")
+	f.Add("unicode ünïcödé áéíóú \U0001F642", "n")
 	f.Add("", "n")
 	f.Add("var tc = `template ${literal}`;", "")
 

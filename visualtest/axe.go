@@ -99,10 +99,10 @@ func RunAxe(ctx context.Context) (AxeResults, error) {
 		chromedp.EvalAwaitPromise,
 	))
 	if err != nil {
-		var jsErr *chromedp.ExceptionError
-		if errors.As(err, &jsErr) {
+		if _, isException := errors.AsType[*chromedp.ExceptionError](err); isException {
 			return AxeResults{}, fmt.Errorf("%w: %w", errAxeRuntime, err)
 		}
+
 		return AxeResults{}, fmt.Errorf("run axe audit: %w", err)
 	}
 
