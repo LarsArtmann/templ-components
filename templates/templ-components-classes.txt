@@ -26247,7 +26247,7 @@ templ PolledRegion(props PolledRegionProps) {
 		if props.ShowTimestamp {
 			<div class="mt-3 flex justify-end">
 				<time
-					class="text-xs tabular-nums text-gray-400 dark:text-gray-500"
+					class="text-xs tabular-nums text-gray-500 dark:text-gray-400"
 					datetime={ updatedAt.Format(time.RFC3339) }
 				>
 					Updated { updatedAt.Format(timeFormat) }
