@@ -34,6 +34,13 @@ jobs:
       GOEXPERIMENT: jsonv2
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history: the sitemap's lastmod is git-derived per page
+          # (website/cmd/site lastUpdated). A depth-1 clone answers EVERY
+          # path query with the HEAD commit's date (shallow boundary
+          # semantics), which shipped a sitemap where all 20 pages claimed
+          # the deploy day as lastmod (#280 prod spot-check, 2026-10-17).
+          fetch-depth: 0
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
