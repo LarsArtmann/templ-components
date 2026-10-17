@@ -46,10 +46,12 @@ func kanbanPendingVisualServer(t *testing.T) *httptest.Server {
 			return
 		}
 
+		if FlakyFail(w, move.Card) {
+			return
+		}
+
 		switch move.Card {
-		case "e-fail":
-			http.Error(w, "boom", http.StatusInternalServerError)
-		case "e-slow":
+		case FlakySlowID:
 			// Stall until the tab (and its in-flight fetch) goes away.
 			<-r.Context().Done()
 		default:

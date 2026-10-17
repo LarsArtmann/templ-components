@@ -78,26 +78,22 @@ func initialKanbanE2EColumns() []display.KanbanColumn {
 }
 
 // kanbanFlakyE2EColumns arms the optimistic-pending proof: one card whose
-// move endpoint stalls 1.2s (the pending window) and one whose move endpoint
-// always 500s (the revert path).
+// move endpoint stalls FlakySlowDelay (the pending window) and one whose
+// move endpoint always 500s (the revert path) — the shared flaky contract
+// (flaky.go) armed on kanban cards.
 func kanbanFlakyE2EColumns() []display.KanbanColumn {
 	return []display.KanbanColumn{
 		{
 			ID:    "todo",
 			Title: "To do",
 			Cards: []display.KanbanCard{
-				{ID: "e-slow", Title: "Slow move"},
-				{ID: "e-fail", Title: "Doomed move"},
+				{ID: FlakySlowID, Title: "Slow move"},
+				{ID: FlakyFailID, Title: "Doomed move"},
 			},
 		},
 		{ID: "doing", Title: "In progress"},
 	}
 }
-
-// kanbanFlakyMoveDelay is the stall the e-slow move endpoint applies — long
-// enough that the optimistic pending state is deterministically observable
-// before the response lands.
-const kanbanFlakyMoveDelay = 1200 * time.Millisecond
 
 // reset restores the initial layout (tests share the package-global boards
 // and must not observe each other's moves).
@@ -331,8 +327,8 @@ func kanbanE2EServer(t *testing.T) *httptest.Server {
 	}, moveHandler(kanbanDatastarBoard, "kb-ds", wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"})))
 
 	// Flaky move endpoints for the optimistic-pending proof: e-fail always
-	// 500s (revert path), e-slow stalls kanbanFlakyMoveDelay (pending window)
-	// before the normal apply + re-render.
+	// 500s (revert path, shared FlakyFail branch), e-slow stalls
+	// FlakySlowDelay (pending window) before the normal apply + re-render.
 	flakyMoveHandler := func(board *kanbanE2EBoard, id string, action wire.Action) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -343,13 +339,12 @@ func kanbanE2EServer(t *testing.T) *httptest.Server {
 				return
 			}
 
-			switch move.Card {
-			case "e-fail":
-				http.Error(w, "boom", http.StatusInternalServerError)
-
+			if FlakyFail(w, move.Card) {
 				return
-			case "e-slow":
-				time.Sleep(kanbanFlakyMoveDelay)
+			}
+
+			if move.Card == FlakySlowID {
+				time.Sleep(FlakySlowDelay)
 			}
 
 			board.apply(move)
