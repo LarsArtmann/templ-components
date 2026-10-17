@@ -65,17 +65,12 @@ defensive branches — document, don't chase.
 **Verdict:** worth one batch of edge pins (user-visible formatting), then
 stop.
 
-## 3. `wire/triggers.go` — 1 lived: interval-parse edge (HIGH value, 1 test)
+## 3. `wire/triggers.go` — 0–1 lived: FLAKY (already pinned)
 
-**Where:** `NormalizedInterval` — the `n <= 0` guard or the `n*seconds`
-multiplication: a `"0h"`/`"0m"` input returns the input verbatim today;
-mutating `<=` to `<` would render `"0s"` instead.
-
-**Recipe:** pin `NormalizedInterval("0h") == "0h"` and
-`NormalizedInterval("0m") == "0m"` (invalid/zero durations stay the
-consumer's explicit garbage) plus `"0.5h" == "1800s"` for the multiply.
-
-**Verdict:** kill it — this function guards a 1ms-self-poll-storm footgun.
+`NormalizedInterval`'s edges (`"0h"`/`"0m"` pass-through, `"0.5h" == "1800s"`)
+are already pinned in `triggers_test.go`; the single lived mutant reported in
+the baseline run did not reproduce across re-runs (flipped to killed). Treat
+the wire entry as baseline noise; no action.
 
 ## 4. `cdn/cdn.go` — 1 lived: origin boundary (HIGH value, 1 test)
 
@@ -86,7 +81,8 @@ which today returns the bare scheme `"https://"`.
 **Recipe:** pin `Origin("https:///x", default) == "https://"` (current
 behavior: scheme-only origin for triple-slash garbage).
 
-**Verdict:** kill it — one table row.
+**Verdict:** killed 2026-10-17 — the triple-slash table row landed in
+`cdn_test.go` in the same commit as this triage.
 
 ## Follow-up ledger
 

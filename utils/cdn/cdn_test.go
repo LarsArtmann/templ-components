@@ -44,6 +44,7 @@ func TestOrigin(t *testing.T) {
 		{"relative path returns empty", "/assets", "https://cdn.jsdelivr.net/gh", ""},
 		{"http scheme", "http://example.com/foo", "https://cdn.jsdelivr.net/gh", "http://example.com"},
 		{"trims slash then origin", "https://unpkg.com/", "https://cdn.jsdelivr.net/gh", "https://unpkg.com"},
+		{"malformed triple slash yields bare scheme", "https:///x", "https://cdn.jsdelivr.net/gh", "https://"},
 	}
 
 	for _, tt := range tests {
