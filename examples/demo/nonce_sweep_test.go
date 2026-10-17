@@ -136,4 +136,3 @@ func TestScriptNonceReScopesToTagOpens(t *testing.T) {
 		}
 	}
 }
-
