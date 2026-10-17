@@ -103,6 +103,7 @@ var axeSweepRoutes = []struct {
 	{name: "users", path: "/users", dark: false},
 	{name: "errors_full", path: "/errors/full", dark: false},
 	{name: "errors_404_page", path: "/errors/404-page", dark: false},
+	{name: "errors_playground", path: "/errors/playground", dark: false},
 }
 
 func TestAxeSweepDemoRoutes(t *testing.T) {

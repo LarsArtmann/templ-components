@@ -56,19 +56,21 @@ func TestErrorRoutesPlaygroundPinsQueryWiring(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name         string
-		query        string
-		wantStatus   int
-		wantContains []string
+		name            string
+		query           string
+		wantStatus      int
+		wantContains    []string
+		wantNotContains []string
 	}{
 		{
 			name:       "full query renders width, way-out, and copy button",
-			query:      "?family=transient&status=503&code=MAINT_WINDOW&width=2xl&title=Down",
+			query:      "?family=transient&status=503&code=MAINT_WINDOW&width=2xl&title=Down&wayout2=Status+page",
 			wantStatus: http.StatusServiceUnavailable,
 			wantContains: []string{
 				"max-w-2xl",
 				`data-tc-copy="MAINT_WINDOW"`,
 				"Back to the error page components",
+				"Status page",
 				"/demo/error-pages",
 			},
 		},
@@ -89,6 +91,36 @@ func TestErrorRoutesPlaygroundPinsQueryWiring(t *testing.T) {
 				"max-w-xl",
 			},
 		},
+		// The two remaining ErrorMaxWidth values complete the enum pin:
+		// every value the handler accepts is exercised through the real
+		// route (xl above, 2xl above, unknown-clamp above).
+		{
+			name:       "width lg renders max-w-lg",
+			query:      "?width=lg",
+			wantStatus: http.StatusOK,
+			wantContains: []string{
+				"max-w-lg",
+			},
+		},
+		{
+			name:       "width 4xl renders max-w-4xl",
+			query:      "?width=4xl",
+			wantStatus: http.StatusOK,
+			wantContains: []string{
+				"max-w-4xl",
+			},
+		},
+		{
+			name:       "empty secondary way out renders no ghost action",
+			query:      "?wayout2=",
+			wantStatus: http.StatusOK,
+			wantContains: []string{
+				"Back to the error page components",
+			},
+			wantNotContains: []string{
+				"Status page", // the placeholder label must never leak into a render
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -105,7 +137,12 @@ func TestErrorRoutesPlaygroundPinsQueryWiring(t *testing.T) {
 			body := rec.Body.String()
 			for _, want := range tt.wantContains {
 				if !strings.Contains(body, want) {
-					t.Errorf("GET /errors/playground%s body does not contain %q", tt.query, want)
+					t.Errorf("GET /errors/playground%s body missing %q", tt.query, want)
+				}
+			}
+			for _, notWant := range tt.wantNotContains {
+				if strings.Contains(body, notWant) {
+					t.Errorf("GET /errors/playground%s body must not contain %q", tt.query, notWant)
 				}
 			}
 		})

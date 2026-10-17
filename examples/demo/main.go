@@ -994,6 +994,10 @@ func errorPlaygroundHandler(nonce string) http.Handler {
 			MaxWidth: width,
 			Nonce:    nonce,
 		}
+		if secondary := truncateDemoField(q.Get("wayout2"), 60); secondary != "" {
+			props.SecondaryWayOut = secondary
+			props.SecondaryWayOutHref = demoURL("/error-pages")
+		}
 		if props.Title == "" {
 			props.Title = "Playground error"
 		}
