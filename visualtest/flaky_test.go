@@ -3,7 +3,6 @@ package visualtest
 import (
 	"net/http/httptest"
 	"testing"
-	"time"
 )
 
 // TestFlakyFail pins the doomed-interaction branch of the shared flaky
