@@ -24,6 +24,14 @@ func TestSegmentBarRender(t *testing.T) {
 		utils.AssertContains(t, output, `role="img"`)
 	})
 
+	t.Run("role=img wraps only the bar, never the legend", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SegmentBar(SegmentBarProps{Segments: segments}))
+		utils.AssertContains(t, output, `role="img" aria-label=`)
+		utils.AssertNotContains(t, output, `<div class="flex flex-col gap-2" role="img"`)
+		utils.AssertContains(t, output, `overflow-hidden rounded-full" role="img"`)
+	})
+
 	t.Run("legend shows labels and percents", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SegmentBar(SegmentBarProps{Segments: segments}))
