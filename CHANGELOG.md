@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`datastar.PolledRegion` timestamp contrast (WCAG 4.5:1).** The
+  "Updated HH:MM:SS" footer rendered `text-gray-400` — 2.52:1 on white,
+  a serious axe `color-contrast` finding that stayed latent until the
+  new demo section gave the sweep a rendered instance (findings only
+  surface for demo-rendered markup). Now `text-gray-500 dark:text-gray-400`
+  per the neutral-text convention; package goldens + the `/datastar`
+  route captures carry the pixel change.
+
 ### Added
 
 - **Demo twin-parity for the Datastar loading/polling components + StatusBadgeWith.**
