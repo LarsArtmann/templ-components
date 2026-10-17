@@ -2,9 +2,9 @@ package visualtest
 
 import (
 	"context"
-	"errors"
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
