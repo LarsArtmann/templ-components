@@ -76,6 +76,14 @@ display.Card(display.CardProps{
 		@display.StatusBadge("pending")
 		@display.StatusBadge("active")
 	</div>
+	<div class="flex flex-wrap items-center gap-2 mt-3">
+		@display.StatusBadgeWith(demoStatusBadgeMapper, "provisioning")
+		@display.StatusBadgeWith(demoStatusBadgeMapper, "healthy")
+		@display.StatusBadgeWith(demoStatusBadgeMapper, "mystery")
+		<span class="text-xs text-gray-500 dark:text-gray-400">
+			StatusBadgeWith: injectable mapper (extends the built-in map; unknown statuses render neutral)
+		</span>
+	</div>
 	@demoSection("Buttons", "display-buttons")
 	<div class="flex flex-wrap items-center gap-3">
 		@display.Button(display.ButtonProps{Text: "Primary"})
