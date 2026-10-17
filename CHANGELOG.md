@@ -221,6 +221,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`nix run .#shots` light captures were dark.** Headless Chromium defaults
+  to `prefers-color-scheme: dark`, so the demo's ThemeScript applied `.dark`
+  on load — the tool's "light" capture silently rendered DARK and the
+  in-place dark toggle was a no-op (light and dark PNGs came out
+  byte-identical). The tool now pins light explicitly (removes the `.dark`
+  class before the first capture); verified captures differ in both themes.
+  Also: `/errors/playground` joined the shots page list and the visual route
+  goldens (`errors_playground_{light,dark}`), and kanban transport parity is
+  pinned by the existing route goldens + the 8-test e2e suite (the
+  `?transport=` param is wire-only; the kanban page always renders both
+  boards).
+
 - **Invalid ARIA nesting in `display.CopyButton` (and every `CodeBlock` that
   embeds it).** Live semantics lived INSIDE the `<button>`/`<a>` trigger —
   first as `role="status"`, and after the role was dropped, the bare
