@@ -41,6 +41,7 @@ func TestFlakyFail(t *testing.T) {
 
 	t.Run("slow delay is observable, not instant", func(t *testing.T) {
 		t.Parallel()
+
 		if FlakySlowDelay <= 0 {
 			t.Fatalf("FlakySlowDelay = %v, want > 0", FlakySlowDelay)
 		}
