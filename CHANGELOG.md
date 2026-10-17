@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Demo twin-parity for the Datastar loading/polling components + StatusBadgeWith.**
+  The demo-coverage audit (#414) flagged three KEEP gaps: `datastar.LoadingButton`
+  and `datastar.PolledRegion` had no live demo (the htmx twins were demoed, so the
+  "both dialects, same shape" claim was string-proven only), and `display.StatusBadgeWith`
+  had zero usage anywhere outside its own tests. The `/datastar` page now carries
+  LoadingButton (indicator-driven busy state against a 1.5s mock endpoint) and
+  PolledRegion (5s self-patching region that settles after 3 ticks, mirroring the
+  htmx demo's shape), and the `/display` badges section demos the injectable-mapper
+  pattern (extends the built-in map, unknown statuses render neutral).
 - **Demo kanban: sorted-view rejection (422) + opt-in file-backed state.**
   The move endpoint no longer silently no-ops a move whose card or column
   the server state does not know — the old behavior even DELETED the card
