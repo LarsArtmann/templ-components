@@ -238,6 +238,11 @@ linters:
       enable-all: true
     varnamelen:
       ignore-map-index-ok: true
+      # The ignore list is a CLOSED set of established short names (receivers,
+      # loop indexes, well-known helpers) — do NOT grow it to silence new
+      # findings. Policy (verdict of the 2026-10-17 #307 sweep): a flagged
+      # cryptic variable gets RENAMED to its domain name (the `c` -> `coord`
+      # sparkline rename is the precedent), never exempted.
       ignore-names:
         - err
         - ok

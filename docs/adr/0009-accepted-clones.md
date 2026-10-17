@@ -687,3 +687,39 @@ blanket-accepting or blanket-extracting.
   match — the replacement group `51d0dc005bb0df35` covers the same
   oghot/siteshots pair post-edit. Living-artifact case: the CODE moved, the
   acceptance did not change.
+
+## Appendix — Per-Group Verdict Table (t=2/t=3 sets) (2026-10-17, #301)
+
+The 2026-09-23 triage dispositioned the then-current threshold sets (t=2:
+37 shown, t=3: 6 shown under art-dupl 0.7.0-81ce00b) in the prose sections
+above ("2026-09-23 Second Pass", "Accepted after inspection", the 2026-09-25
+pass). This appendix consolidates those verdicts AND covers the CURRENT
+advisory-scan sets, because the fork has moved on: art-dupl
+v0.9.1-0.20261016 (fork main) reports 74 t=2 + 9 t=3 groups not in the
+0.7.0-81ce00b baseline. Every current group falls into one of the signature
+classes below — each class carries ONE verdict, applied to all its members;
+no current group required a new extraction decision.
+
+| Signature class (token shape) | Current members (representative) | Verdict | Basis |
+| --- | --- | --- | --- |
+| Structural if-branch guards (`if state != StepStatePending`, `if item.Icon != ""`) | feedback/step_indicator ×2, display/dropdown ×3 | ACCEPT — structural | Map-vs-if rule (decision tree): maps for data, if-branches for markup choice |
+| Parallel lookup-helper signature pairs (`func gridClass` / `gridContainerClass`) | display/grid ×2, display/scrollback IsValid+class pair, website stepClasses/stepBadgeClasses | ACCEPT — mandated pattern | Typed-enum lookup convention (`utils.Lookup` + IsValid per enum, repo convention section) |
+| Wire field/attr declarations (`*wire.Action` fields, `formWireAttributes`/`navLinkWireAttrs`) | display/tabs, forms/form, forms/filter_input, navigation/nav_link | ACCEPT — type-token noise | Shares only the TYPE name + field name; each wires a different component |
+| `templ.Attributes` return-type group (17 members) | datastar/*, display/kanban, forms/*, utils/wire/*, utils/script, website sections | ACCEPT — signature-token group | One-line function signatures sharing a return type; zero shared logic |
+| datastar↔htmx `{ children... }` fallback twins | datastar/polled_region ↔ htmx/polled_region | ACCEPT — documented twins | "Accepted twin pairs" section (2026-09-23, #300) |
+| ContainerAware helper family (`containerAware bool) string`) | display/card, forms/form, layout/split ×2, layout/bdd_test | ACCEPT — documented family | ADR-0018 pattern; per-component class tables are intentionally separate |
+| `resolveLocale` in-file pair | layout/base.templ:229/357 | ACCEPT — ledger entry #9 | Existing entry; Base vs Minimal shell preamble |
+| Capture-tool bootstrap (`net.ListenConfig` vars) | visualtest/demo.go ↔ tools/siteshots | ACCEPT — tooling idiom | 2026-09-25 pass; browser/distserver helpers own the shared shape |
+| Function-signature tails (17-member `name string,` / `…string) bool` group) | cmd/tc, display, htmx, navigation, utils, visualtest, internal/contract | ACCEPT — signature-token noise | Shares parameter-list tokens only; bodies unrelated |
+| StatTone type-switch receivers (`(v StatTone)` / `(tone StatTone)`) | display/card ×2 | ACCEPT — method-receiver tokens | Receiver naming, not duplicated logic |
+| `@copyButtonContent` call pair | display/copy_button ×2 | ACCEPT — documented call-shape pair | Same class as headingTag pair: props types differ, per-component argument lists are the honest form |
+
+Historical note: the 37+6 sets of 2026-09-23 were judged group-by-group in
+the prose sections (two harmful clones found and extracted: line/area-chart
+shell + definitionGridInner; the rest categorized as above or below the
+extraction floor). Nothing in the current sets reopens those verdicts.
+
+**Owed debt (tracked as TODO #435):** the committed baseline predates the
+fork's v0.9.1 analyzer. Before any baseline re-record: triage the 74+9
+current groups against the LANE binary, fold any genuinely-new class into
+this ADR, then re-record with that same binary and log the version here.
