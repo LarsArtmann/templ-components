@@ -7,13 +7,13 @@ Companion evidence: `2026-10-17_theme-inline-probe.md` (mechanism proven),
 
 ## Preconditions (all must be green before Batch 1)
 
-| # | Condition | Status |
-| --- | --- | --- |
-| P1 | `@theme inline` mode-flipping probe verdict GO | **Done** — computed-style-identical incl. color-mix path (pinned 4.3.3) |
-| P2 | `utils/tone` Phase 0 shipped: Tone/Hue axes + adapters on every color enum | **Done** (M07) |
-| P3 | Warning hue decision (#428: amber recommended) settled by owner | **G1 memo delivered 2026-10-15; awaiting decision** |
-| P4 | tailwind-merge-go conflict handling for token classes unit-tested | Open — small test at Batch 1 time |
-| P5 | v2 module-path/timing decision (ADR-0039) executed in the same release train | Owner gate |
+| #  | Condition                                                                    | Status                                                                  |
+| -- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| P1 | `@theme inline` mode-flipping probe verdict GO                               | **Done** — computed-style-identical incl. color-mix path (pinned 4.3.3) |
+| P2 | `utils/tone` Phase 0 shipped: Tone/Hue axes + adapters on every color enum   | **Done** (M07)                                                          |
+| P3 | Warning hue decision (#428: amber recommended) settled by owner              | **G1 memo delivered 2026-10-15; awaiting decision**                     |
+| P4 | tailwind-merge-go conflict handling for token classes unit-tested            | Open — small test at Batch 1 time                                       |
+| P5 | v2 module-path/timing decision (ADR-0039) executed in the same release train | Owner gate                                                              |
 
 ## Batch order (each batch lands green independently; Batches 1–4 share ONE release)
 
@@ -74,13 +74,13 @@ Companion evidence: `2026-10-17_theme-inline-probe.md` (mechanism proven),
 
 ## Risks
 
-| Risk | Mitigation |
-| --- | --- |
-| Token class invisible to Tailwind scanner | Classes stay complete static literals in templ (same contract as `Pair`) |
-| tailwind-merge mis-merges role vs palette classes | P4 unit test before Batch 1 |
-| Consumer CSS bridges (attribute selectors) break | Pre-announced in CHANGELOG + the theme-bridge recipe already documents the v2 escape hatch |
-| Guard blindness during the swap | Swap is per-package with tests before daemon windows; re-baseline ONLY at Batch 4 |
-| Scope creep into module-path v2 work | Hard non-goal here; ADR-0039 owns that track |
+| Risk                                              | Mitigation                                                                                 |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Token class invisible to Tailwind scanner         | Classes stay complete static literals in templ (same contract as `Pair`)                   |
+| tailwind-merge mis-merges role vs palette classes | P4 unit test before Batch 1                                                                |
+| Consumer CSS bridges (attribute selectors) break  | Pre-announced in CHANGELOG + the theme-bridge recipe already documents the v2 escape hatch |
+| Guard blindness during the swap                   | Swap is per-package with tests before daemon windows; re-baseline ONLY at Batch 4          |
+| Scope creep into module-path v2 work              | Hard non-goal here; ADR-0039 owns that track                                               |
 
 ## Non-goals
 

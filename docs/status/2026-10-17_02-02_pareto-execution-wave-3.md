@@ -9,6 +9,7 @@
 ## a) FULLY DONE this session (all verified green at time of writing)
 
 ### M18 #323 — AppShell sidebar-width class migration (the interrupted task, finished)
+
 - Tree was NOT red on resume: the templ regen had completed before the wave-2 capture; daemon committed a coherent state. Verified `go build ./layout/` green first.
 - `layout/appshell_test.go`: two stale subtests rewritten to the class contract (`tc-sidebar-w-{sm,md,lg,auto}`, `AssertNotContains "style="` CSP pin, no-sidebar no-leak). One iteration needed: `AssertNotContains "tc-sidebar-w-"` tripped on the component's own explanatory HTML comment — asserted the specific class instead (sibling later documented the gotcha in `6a41414a`).
 - `utils/inline_style_compliance_test.go`: appshell exemption REMOVED (the guard's stale-exemption pruning now enforces the no-inline-style state).
@@ -19,38 +20,46 @@
 - CHANGELOG entry; TODO struck. Guards: utils/layout/integration/cmd-tc all green.
 
 ### M18 #324 — safelist.css shipped and wired
+
 - LIVE-VERIFIED the mechanism first (2026-10-01 lesson: "a copied `@source inline(...)` is a hypothesis until compiled"): `/tmp` probe with pinned tailwindcss 4.3.3 — all 9 auto-fit classes emit through `@import "./safelist.css"`.
 - `templates/app.css` imports it; `tc init` scaffolds it (file list + byte-synced starter copy + new `TestStarterCSSMatchesTemplates` pair).
 - `templates/styles.css` recompiled — 9 `repeat(auto-fit` occurrences verified.
 - Guide section + FEATURES Grid row updated; header de-TODO'd; CHANGELOG; TODO struck.
 
 ### M18 #322 — `errorpage.FamilyFromStatus`
+
 - Implemented in `errorpage/styles.go` (net/http constants): 409→Conflict, 429/503→Transient, 502/504→Infrastructure, 500/501/505+→Corruption (in-repo precedent), other→Rejection.
 - New `errorpage/family_from_status_test.go`: 21-case table, 100-599 sweep (validity + bucket), status-level round-trip for all 6 families + the two forced collapses pinned (Infrastructure→Transient@503, Orchestration→Corruption@500).
 - `ExampleFamilyFromStatus`; FEATURES row; CHANGELOG with the G1-flip note; TODO struck with the one-line-flip residue.
 - Post-commit: a hook/daemon edit swapped `fmt.Sprintf`→`strconv.Itoa` in the test — benign, re-verified green.
 
 ### M18 #326 — ErrorHandler adoption paths documented
+
 - Decision: DOCUMENT the composition (wrapper stays minimal by design; not extended, no refusal ADR).
 - "Choosing an adoption path" table added to `website/content/docs/guides/error-pages.md`: wrapper / `FromError`+own shell / per-status domain messages (+`FamilyFromStatus`) / HTMX fragment exchanges → real status + `htmx.GlobalErrorHandling` toast, never a full page.
 - Website link checker caught my first link form (`/docs/guides/...` → `/guides/...`); fixed; full website suite green.
 
 ### M12 #417 — achecker spike verified (sibling work)
+
 - Cross-verified `m08-achecker-final/report.json` against the §5.3 diff table in `docs/testing/tooling-evaluation.md`: post-fix per-route numbers (/kanban 2, /forms 24, /wire 34) and rule totals (input_label_visible 48, label_name_visible 16, style_color_misuse 16) all match. Seeds #421-#423 confirmed struck. Verdict TRIAL, ledger ⫱G2. Struck with provenance. (Minor sibling-owned drift noticed, NOT touched per single-writer: the eval doc claims the spike README documents the puppeteer gotchas; they live in the script instead.)
 
 ### M19 #289 — guard UX verified (was already implemented)
+
 - Skip banner verified by run; measured runtime prints (`142ms`); `--fix` pointer in the failure path; no stale "<100ms" prose anywhere; `scripts/test-tc-sources-guard.sh` 19/19. Struck.
 
 ### M19 #287 — kanban e2e doctrine verify
+
 - `nix run .#visual -- -run TestKanbanE2E` → ok 18.306s (all 8 e2e tests).
 - `go build ./...` green on root + ALL 8 sub-modules (incl. visualtest + website). Struck.
 
 ### M19 #347 — playground pixels pinned + REAL BUG FIXED
+
 - **Bug found:** `.#shots` light and dark captures were BYTE-IDENTICAL — headless Chromium defaults to `prefers-color-scheme: dark`, ThemeScript pre-applies `.dark`, so every "light" capture silently rendered DARK and the in-place toggle was a no-op. Every prior `-mode both` eyeball was half blind.
 - **Fix:** the tool pins light (removes `.dark` before the first capture); captures now differ (verified byte-wise).
 - `/errors/playground` added to the shots page list AND to the visual route goldens (`errors_playground_{light,dark}` — additive, not a re-baseline). First run wrote, full `TestDemoRouteGoldens` re-run green (137.9s). CHANGELOG entry. Struck.
 
 ### M19 #258 — kanban transport parity (premise corrected)
+
 - Kanban IGNORES `?transport=` (renders both boards always; the param is wire-only). Parity now pinned three ways: route goldens light+dark (pixel), 8-test e2e suite on BOTH transports (behavior), corrected shots capture. Struck.
 
 ---
@@ -123,16 +132,16 @@
 34. M14/M15 templ 0.3.1070 gate check (nixpkgs caught up?)
 35. g1.1 decision memos (incl. #428-hue, carried #322-500 flip note)
 36. g2.1 BuildFlow sprint prep; 37. g3.1 art-dupl prep; 38. g4.1 coverage plan; 39. g5.1 v2 ADR roll-up; 40. g6.1 demand-recheck cadence
-41. Demo-coverage KEEP gap: datastar LoadingButton demo section
-42. Demo-coverage KEEP gap: PolledRegion demo section
-43. Demo-coverage KEEP gap: StatusBadgeWith demo-or-deprecate
-44. Shots tool self-assert light≠dark (hardening)
-45. Installation docs: tc init now scaffolds FOUR files (safelist.css) — check getting-started lists
-46. Full visual suite run (all tests, not subsets)
-47. Complete per-module test loop
-48. `scripts/ci-repro.sh --lint --css --website` → read VERDICT: PASS
-49. Closing TABLE REPORT (user-required)
-50. Release decision executed (see Q1)
+37. Demo-coverage KEEP gap: datastar LoadingButton demo section
+38. Demo-coverage KEEP gap: PolledRegion demo section
+39. Demo-coverage KEEP gap: StatusBadgeWith demo-or-deprecate
+40. Shots tool self-assert light≠dark (hardening)
+41. Installation docs: tc init now scaffolds FOUR files (safelist.css) — check getting-started lists
+42. Full visual suite run (all tests, not subsets)
+43. Complete per-module test loop
+44. `scripts/ci-repro.sh --lint --css --website` → read VERDICT: PASS
+45. Closing TABLE REPORT (user-required)
+46. Release decision executed (see Q1)
 
 ## g) QUESTIONS FOR THE OWNER (cannot be figured out from the repo)
 
