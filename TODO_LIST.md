@@ -406,4 +406,6 @@ the same day (#421/#422 component fixes; #423/#424 verified done in code)._
 
 | 435 | Re-record the art-dupl baseline against the fork v0.9.1 analyzer (ADR-0009 appendix, 2026-10-17): triage the current advisory sets (74 t=2 + 9 t=3 groups) against the LANE binary, fold any genuinely-new signature class into the ADR appendix, re-record with that same binary, log the version. Advisory lane only — never gates. | Fork main moved past the 0.7.0-81ce00b baseline (2026-09-25); the appendix verdict table covers the new groups by class, but the hash baseline itself predates the analyzer. |
 
-_Next free ID: 436._
+| 436 | Consumer-side stale-CSS fixes (from the #410c fleet sweep, 2026-10-17 - owner action in OTHER repos): nsfw-classifier regen `internal/css/app.css` (or bump the vendored library - v1.13.0 predates the missing hooks) so the tc-overlay/tc-drawer/tc-content-auto(-compact)/tc-squircle/tc-toast-container hooks referenced by its third_party/_css-scan copy reach the artifact; pbx-lens regen `internal/web/static/app.css` so the detail.templ tc-log/tc-log-line/tc-log-line-still Scrollback hooks compile in (log lines currently render bare). The compiled-artifact rule (SKILL.md): an adopted hook whose class never reaches the compiled stylesheet renders unstyled outside local dev. | Fleet sweep #410c found both by the grep-the-artifact membership check; fixes live in the consumer repos, not here. |
+
+_Next free ID: 437._
