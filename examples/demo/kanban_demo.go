@@ -15,7 +15,10 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"net/http"
+	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -25,6 +28,10 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
+
+// errKanbanStaleView is the sorted-view rejection: the submitted move
+// references state the server does not have (unknown card or column).
+var errKanbanStaleView = errors.New("stale board view: card or column not found")
 
 // kanbanDemoMoveDelay simulates real network latency on the move endpoints.
 // The board applies moves optimistically (ADR-0041): the card moves the
@@ -39,6 +46,10 @@ type kanbanDemoState struct {
 	mu      sync.Mutex
 	columns []display.KanbanColumn
 	next    int64
+	// path, when set, file-backs the state: loaded at wiring time, saved
+	// atomically after every mutation (backlog #189). Empty means
+	// memory-only, which keeps tests and route goldens deterministic.
+	path string
 }
 
 // The two demo boards, one per transport, each with independent state so
@@ -85,7 +96,14 @@ func kanbanDemoInitialColumns() []display.KanbanColumn {
 // move applies a decoded KanbanMove: remove the card from wherever it lives,
 // insert it at the requested position (clamped to the column bounds).
 // Unknown cards or columns are no-ops — the board is the source of truth.
-func (s *kanbanDemoState) move(move display.KanbanMove) {
+// moveErr applies one move and reports the sorted-view rejections
+// (backlog #224): a card the server state does not know, or a target
+// column the board does not have, means the submitter operated on a stale
+// view — the endpoint answers 422 instead of silently no-oping. The old
+// behavior not only hid the stale view, it DELETED the card from its
+// source column when the target column was unknown. Index overflow stays
+// a clamp (append) — a legitimate race the board self-heals.
+func (s *kanbanDemoState) moveErr(move display.KanbanMove) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -105,26 +123,41 @@ func (s *kanbanDemoState) move(move display.KanbanMove) {
 	}
 
 	if !found {
-		return
+		return errKanbanStaleView
 	}
+
+	target := -1
 
 	for ci := range s.columns {
-		if s.columns[ci].ID != move.Column {
-			continue
+		if s.columns[ci].ID == move.Column {
+			target = ci
+
+			break
 		}
-
-		if move.Index > len(s.columns[ci].Cards) {
-			move.Index = len(s.columns[ci].Cards)
-		}
-
-		cards := make([]display.KanbanCard, 0, len(s.columns[ci].Cards)+1)
-		cards = append(cards, s.columns[ci].Cards[:move.Index]...)
-		cards = append(cards, card)
-		cards = append(cards, s.columns[ci].Cards[move.Index:]...)
-		s.columns[ci].Cards = cards
-
-		return
 	}
+
+	if target < 0 {
+		return errKanbanStaleView
+	}
+
+	if move.Index > len(s.columns[target].Cards) {
+		move.Index = len(s.columns[target].Cards)
+	}
+
+	cards := make([]display.KanbanCard, 0, len(s.columns[target].Cards)+1)
+	cards = append(cards, s.columns[target].Cards[:move.Index]...)
+	cards = append(cards, card)
+	cards = append(cards, s.columns[target].Cards[move.Index:]...)
+	s.columns[target].Cards = cards
+	s.persistLocked()
+
+	return nil
+}
+
+// move keeps the silent legacy shape for in-memory tests that drive moves
+// directly and do not care about rejections.
+func (s *kanbanDemoState) move(move display.KanbanMove) {
+	_ = s.moveErr(move)
 }
 
 // add appends a fresh demo card to the named column and reports whether
@@ -160,6 +193,55 @@ func (s *kanbanDemoState) reset() {
 	defer s.mu.Unlock()
 
 	s.columns = kanbanDemoInitialColumns()
+	s.persistLocked()
+}
+
+// persistLocked writes the state to the backing file (atomic temp+rename).
+// Caller must hold s.mu. No-op for memory-only boards.
+func (s *kanbanDemoState) persistLocked() {
+	if s.path == "" {
+		return
+	}
+
+	blob, err := json.Marshal(kanbanPersistedState{Columns: s.columns, Next: s.next})
+	if err != nil {
+		return
+	}
+
+	tmp := s.path + ".tmp"
+	if err := os.WriteFile(tmp, blob, 0o600); err != nil {
+		return
+	}
+	_ = os.Rename(tmp, s.path)
+}
+
+// loadKanbanStateFile opts one board into file-backed state (backlog
+// #189): the KANBAN_STATE_FILE env var names the backing file shared by
+// both demo boards. Called at wiring time, before the server accepts
+// requests. A missing file starts from the initial layout; a corrupt one
+// is ignored the same way (the demo holds no real data).
+func loadKanbanStateFile(s *kanbanDemoState, path string) {
+	s.path = path
+
+	blob, err := os.ReadFile(path)
+	if err != nil {
+		return
+	}
+
+	var persisted kanbanPersistedState
+	if err := json.Unmarshal(blob, &persisted); err != nil || len(persisted.Columns) == 0 {
+		return
+	}
+
+	s.columns = persisted.Columns
+	s.next = persisted.Next
+}
+
+// kanbanPersistedState is the file shape — columns plus the id counter, so
+// reloaded adds cannot collide with pre-restart ids.
+type kanbanPersistedState struct {
+	Columns []display.KanbanColumn `json:"columns"`
+	Next    int64                  `json:"next"`
 }
 
 // kanbanDemoBoardProps builds the render props for one demo board: stable

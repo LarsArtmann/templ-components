@@ -710,7 +710,14 @@ func newMux() *http.ServeMux {
 			// (spinner on the moved card) perceivable — see ADR-0041.
 			time.Sleep(kanbanDemoMoveDelay)
 
-			state.move(move)
+			if err := state.moveErr(move); err != nil {
+				// Sorted-view rejection (#224): the submitter operated on a
+				// stale board — 422, not a silent no-op that could eat cards.
+				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+
+				return
+			}
+
 			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action, demoSessionCSRF(r))))
 		})
 	}
@@ -1089,6 +1096,15 @@ func componentOr500(w http.ResponseWriter, r *http.Request, component templ.Comp
 // limit) around the mux. Exposed for tests so TestPrerenderMatchesLiveServer
 // exercises the exact stack the live server runs.
 func newDemoHandler() http.Handler {
+	// File-backed kanban state (#189): opt-in via KANBAN_STATE_FILE — when
+	// set, both demo boards load from and persist to that file, so a demo
+	// restart keeps its board. Empty (the default) stays memory-only, which
+	// keeps tests and route goldens deterministic.
+	if path := os.Getenv("KANBAN_STATE_FILE"); path != "" {
+		loadKanbanStateFile(kanbanHTMXState, path)
+		loadKanbanStateFile(kanbanDatastarState, path)
+	}
+
 	// Chain order (outermost first): security headers → base-path dual-mount
 	// → session CSRF → rate limit → mux. The base-path rewrite runs BEFORE
 	// the mux so every route answers at both /path and /demo/path.
