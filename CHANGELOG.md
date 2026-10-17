@@ -221,6 +221,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Invalid ARIA nesting in `display.SegmentBar`.** The `role="img"` sat on
+  the component root, making the visible legend list a descendant of a leaf
+  role — IBM achecker's `aria_descendant_valid` fired once per legend item
+  on every page that embeds a SegmentBar (axe has no equivalent rule). The
+  image role now wraps ONLY the bar graphic (still carrying the composed
+  `aria-label`), and the legend renders as a real list sibling — screen
+  readers read it as ordinary content instead of presentational junk.
+  Markup-structure change only; zero CSS/visual change (the `/display` route
+  golden is pixel-identical, the 4 package goldens carry the restructure).
 - **`nix run .#shots` light captures were dark.** Headless Chromium defaults
   to `prefers-color-scheme: dark`, so the demo's ThemeScript applied `.dark`
   on load — the tool's "light" capture silently rendered DARK and the
