@@ -137,6 +137,19 @@ func TestFilterToggleHref(t *testing.T) {
 	})
 }
 
+func TestDefaultFilterChipsProps(t *testing.T) {
+	t.Parallel()
+
+	props := DefaultFilterChipsProps()
+	if len(props.Chips) != 0 {
+		t.Errorf("DefaultFilterChipsProps().Chips = %v, want empty slice", props.Chips)
+	}
+
+	if props.Class != "" {
+		t.Errorf("DefaultFilterChipsProps().Class = %q, want empty", props.Class)
+	}
+}
+
 func TestGoldenSweepFilterChips(t *testing.T) {
 	t.Parallel()
 

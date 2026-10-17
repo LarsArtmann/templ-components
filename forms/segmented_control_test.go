@@ -123,6 +123,19 @@ func TestSegmentedControlRender(t *testing.T) {
 	})
 }
 
+func TestDefaultSegmentedControlProps(t *testing.T) {
+	t.Parallel()
+
+	props := DefaultSegmentedControlProps()
+	if props.Name != "segment" {
+		t.Errorf("DefaultSegmentedControlProps().Name = %q, want %q", props.Name, "segment")
+	}
+
+	if len(props.Items) != 0 {
+		t.Errorf("DefaultSegmentedControlProps().Items = %v, want empty slice", props.Items)
+	}
+}
+
 func TestSegmentedControlIsLinkMode(t *testing.T) {
 	t.Parallel()
 
