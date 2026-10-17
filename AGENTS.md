@@ -185,6 +185,10 @@ Stable on the Go 1.27 floor (no flag needed on go1.27.1+; flag-gated on 1.26.x).
 - **Upstream templ PRs:** jj-colocated fork at `~/projects/templ` (origin = LarsArtmann fork, upstream = a-h/templ); working jj update flow archived in `docs/agent-context-history.md`.
 - **Git safety:** NEVER `git checkout` (use `git switch`/`git restore`), never `reset --hard`, never force-push without `--force-with-lease` + approval, never `rm` (use `trash`), never plain `mv` in repos (use `git mv`).
 
+### Agent single-writer protocol (2026-10-17, #357)
+
+Multiple agent sessions share this worktree. Rules, in enforcement order: (1) claim a single-writer scope at session start and STATE it; never edit another session's claimed files — VERIFY their artifacts and write verdicts instead. (2) Re-read `TODO_LIST.md`/`FEATURES.md` immediately before every edit (a sibling moves them between your reads). (3) Never stage files outside your scope; never revert changes you didn't author. (4) Cross-session findings go through TODO rows or status reports, never direct edits to the sibling's docs. (5) Sibling commits are Crush-attributed — check `git log` trailers before assuming a commit is yours.
+
 ## AGENTS.md itself
 
 - **≤220 lines** (BuildFlow `agents-md-size` gate) — prescriptive rules only; narratives/deep-dives → `docs/agent-context-history.md#agents-md-size` (append, never rewrite). Count claims guarded HERE by `utils.TestDocsCountDrift`: "N generated files across all packages", "N golden files across all packages", "N accepted groups" — keep them accurate in the same commit as any component/icon/golden change.
