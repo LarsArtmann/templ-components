@@ -9,21 +9,21 @@ a recorded verdict — no item here stays ambiguous).
 then strike the TODO row per verdict. Final ratification of tool adoptions lands in
 the same sitting (#411).
 
-| # | Decision | Recommendation |
-|---|----------|----------------|
-| 233 | flake.lock daemon nudge: keep or revert | REVERT to `ef34387d…` |
-| 234 | recipes-identifier drift: CI guard vs manual sweep | BUILD the guard |
-| 235 | website.yml npm tailwind: floating vs pinned | PIN 4.3.3 (F-20 lockstep) |
-| 236 | errorpage demo: bordered boxes vs standalone routes | STANDALONE `/errors/*` routes |
-| 237 | AppShell/SidebarNav chrome default | RATIFY adaptive (shipped) |
-| 238 | Kanban failure UX: auto-retry vs honest revert | KEEP immediate revert |
-| 239 | Kanban pending-timeout escape hatch | DOCUMENT budget, defer API |
-| 303 | website-module content clones | BLANKET-ACCEPT (ADR-0009) |
-| 312 | export `display.HeadingTag`? | HOLD until consumer demand |
-| 358 | GOEXPERIMENT=jsonv2 exports | DROP in one lockstep commit |
-| 411 | ratify tool verdicts (lanes → adopt/trial/reject) | ADOPT-as-trial, chromedp stays primary |
-| 428 | warning hue: amber vs yellow | AMBER (memo: 2026-10-15) |
-| 322 | status→family: 500→Corruption vs Infrastructure | KEEP 500→Corruption |
+| #   | Decision                                            | Recommendation                         |
+| --- | --------------------------------------------------- | -------------------------------------- |
+| 233 | flake.lock daemon nudge: keep or revert             | REVERT to `ef34387d…`                  |
+| 234 | recipes-identifier drift: CI guard vs manual sweep  | BUILD the guard                        |
+| 235 | website.yml npm tailwind: floating vs pinned        | PIN 4.3.3 (F-20 lockstep)              |
+| 236 | errorpage demo: bordered boxes vs standalone routes | STANDALONE `/errors/*` routes          |
+| 237 | AppShell/SidebarNav chrome default                  | RATIFY adaptive (shipped)              |
+| 238 | Kanban failure UX: auto-retry vs honest revert      | KEEP immediate revert                  |
+| 239 | Kanban pending-timeout escape hatch                 | DOCUMENT budget, defer API             |
+| 303 | website-module content clones                       | BLANKET-ACCEPT (ADR-0009)              |
+| 312 | export `display.HeadingTag`?                        | HOLD until consumer demand             |
+| 358 | GOEXPERIMENT=jsonv2 exports                         | DROP in one lockstep commit            |
+| 411 | ratify tool verdicts (lanes → adopt/trial/reject)   | ADOPT-as-trial, chromedp stays primary |
+| 428 | warning hue: amber vs yellow                        | AMBER (memo: 2026-10-15)               |
+| 322 | status→family: 500→Corruption vs Infrastructure     | KEEP 500→Corruption                    |
 
 Also gated on G1 but self-contained in TODO_LIST (no memo needed): #295 (art-dupl
 blocking flip), #190 (touch-drag), #212 (annotation policy), #217 re-check cadence,

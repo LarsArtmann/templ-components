@@ -21,15 +21,15 @@ cheap proof, not fleet coverage).
 
 ## Baseline (2026-10-17, gremlins @latest)
 
-| Metric | Value |
-| --- | --- |
-| Killed | 197 |
-| Lived | 50 |
-| Not covered | 45 |
-| Timed out | 108 |
-| Not viable / Skipped | 0 / 0 |
-| **Test efficacy** | **79.76%** |
-| Mutator coverage | 84.59% |
+| Metric               | Value      |
+| -------------------- | ---------- |
+| Killed               | 197        |
+| Lived                | 50         |
+| Not covered          | 45         |
+| Timed out            | 108        |
+| Not viable / Skipped | 0 / 0      |
+| **Test efficacy**    | **79.76%** |
+| Mutator coverage     | 84.59%     |
 
 Reading: timed-out mutants (108) mean the mutated code hung the suite —
 gremlins treats the test run as having detected the change; they are NOT

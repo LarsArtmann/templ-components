@@ -15,14 +15,14 @@ with runner load).
 
 **Seed baseline (2026-10-17, run 38989722392, master):**
 
-| Job | Wall-clock |
-| --- | --- |
-| Build & Test | ~1m35s |
-| Lint | ~33s |
-| Visual Regression | ~6m26s |
-| CSS Freshness | ~26s |
-| HTML validation (golden corpus) | ~10s |
-| Whole run | ~7m35s |
+| Job                             | Wall-clock |
+| ------------------------------- | ---------- |
+| Build & Test                    | ~1m35s     |
+| Lint                            | ~33s       |
+| Visual Regression               | ~6m26s     |
+| CSS Freshness                   | ~26s       |
+| HTML validation (golden corpus) | ~10s       |
+| Whole run                       | ~7m35s     |
 
 Refresh monthly: `gh run list --workflow=ci.yaml -b master --limit 10` and
 median the successful runs' job durations (`gh run view <id> --json jobs`).

@@ -37,21 +37,21 @@ for the day a newer vnu lands.
 
 Raw errors: 204 over 335 goldens; ALL absorbed by the 18 arms (gate green).
 
-| Arm (abbreviated) | Hits today | Verdict |
-| --- | --- | --- |
-| `hx-*` attribute not allowed | 105 | KEEP — htmx dialect, validator lag |
-| `data-*` attribute names | 18 | KEEP — Datastar dialect |
-| `(popover\|popovertarget\|fetchpriority\|enterkeyhint)` not allowed | 2+3 | KEEP — popovertarget/fetchpriority are real HTML now; enterkeyhint: 0 hits, prunable at the next bump if still 0 |
-| `Element search not allowed` | 5 | KEEP — `<search>` is real HTML, validator lag |
-| `media on meta` | 10 | KEEP — theme media queries |
-| `svg in summary` | 5 | KEEP |
-| `style in body` | 2 | KEEP |
-| `selectors that match its parent` (@scope) | 0 | PRUNE CANDIDATE at next bump (nothing matches today) |
-| `outside @scope rule` | 0 | PRUNE CANDIDATE at next bump |
-| `CSS: Parse Error` | 8 | KEEP — modern CSS (color-mix etc.) |
-| `background-color: Invalid RGB function` | 32 | KEEP — oklch/color-mix |
-| `Stray (start\|end) tag (button\|selectedcontent)` | 7 (aria-controls arm separate) | KEEP — selectedcontent: 0 hits, prunable if still 0 |
-| `aria-controls must point to` | 7 | KEEP — golden fragments lack their targets by construction |
+| Arm (abbreviated)                                                   | Hits today                     | Verdict                                                                                                          |
+| ------------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `hx-*` attribute not allowed                                        | 105                            | KEEP — htmx dialect, validator lag                                                                               |
+| `data-*` attribute names                                            | 18                             | KEEP — Datastar dialect                                                                                          |
+| `(popover\|popovertarget\|fetchpriority\|enterkeyhint)` not allowed | 2+3                            | KEEP — popovertarget/fetchpriority are real HTML now; enterkeyhint: 0 hits, prunable at the next bump if still 0 |
+| `Element search not allowed`                                        | 5                              | KEEP — `<search>` is real HTML, validator lag                                                                    |
+| `media on meta`                                                     | 10                             | KEEP — theme media queries                                                                                       |
+| `svg in summary`                                                    | 5                              | KEEP                                                                                                             |
+| `style in body`                                                     | 2                              | KEEP                                                                                                             |
+| `selectors that match its parent` (@scope)                          | 0                              | PRUNE CANDIDATE at next bump (nothing matches today)                                                             |
+| `outside @scope rule`                                               | 0                              | PRUNE CANDIDATE at next bump                                                                                     |
+| `CSS: Parse Error`                                                  | 8                              | KEEP — modern CSS (color-mix etc.)                                                                               |
+| `background-color: Invalid RGB function`                            | 32                             | KEEP — oklch/color-mix                                                                                           |
+| `Stray (start\|end) tag (button\|selectedcontent)`                  | 7 (aria-controls arm separate) | KEEP — selectedcontent: 0 hits, prunable if still 0                                                              |
+| `aria-controls must point to`                                       | 7                              | KEEP — golden fragments lack their targets by construction                                                       |
 
 Decision rule for prune candidates: prune only in the same commit as a
 validator BUMP (the bump may resurrect a class), never on a quiet snapshot.

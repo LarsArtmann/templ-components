@@ -1,245 +1,245 @@
 {
-    "results": [
-        {
-            "ruleId": "style_color_misuse",
-            "value": [
-                "VIOLATION",
-                "POTENTIAL"
-            ],
-            "path": {
-                "dom": "/html[1]/head[1]/link[2]",
-                "aria": "/document[1]"
-            },
-            "ruleTime": 3,
-            "reasonId": "Potential_1",
-            "message": "Verify color is not used as the only visual means of conveying information",
-            "messageArgs": [],
-            "apiArgs": [],
-            "bounds": {
-                "left": 0,
-                "top": 0,
-                "height": 0,
-                "width": 0
-            },
-            "snippet": "<link href=\"/demo/css/app.css\" rel=\"stylesheet\">",
-            "source": null,
-            "category": "Accessibility",
-            "level": "potentialviolation",
-            "ignored": false,
-            "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/style_color_misuse.html#%7B%22message%22%3A%22Verify%20color%20is%20not%20used%20as%20the%20only%20visual%20means%20of%20conveying%20information%22%2C%22snippet%22%3A%22%3Clink%20href%3D%5C%22%2Fdemo%2Fcss%2Fapp.css%5C%22%20rel%3D%5C%22stylesheet%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22Potential_1%22%2C%22ruleId%22%3A%22style_color_misuse%22%2C%22msgArgs%22%3A%5B%5D%7D"
-        },
-        {
-            "ruleId": "label_name_visible",
-            "value": [
-                "VIOLATION",
-                "FAIL"
-            ],
-            "path": {
-                "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/header[1]/div[1]/div[1]/a[1]",
-                "aria": "/document[1]/main[1]/link[17]"
-            },
-            "ruleTime": 0,
-            "reasonId": "Fail_1",
-            "message": "Accessible name does not match or contain the visible label text",
-            "messageArgs": [],
-            "apiArgs": [],
-            "bounds": {
-                "left": 32,
-                "top": 14,
-                "height": 28,
-                "width": 28
-            },
-            "snippet": "<a aria-label=\"Demo home\" class=\"flex items-center gap-2 lg:hidden\" href=\"/demo/\">",
-            "source": null,
-            "category": "Accessibility",
-            "level": "violation",
-            "ignored": false,
-            "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/label_name_visible.html#%7B%22message%22%3A%22Accessible%20name%20does%20not%20match%20or%20contain%20the%20visible%20label%20text%22%2C%22snippet%22%3A%22%3Ca%20aria-label%3D%5C%22Demo%20home%5C%22%20class%3D%5C%22flex%20items-center%20gap-2%20lg%3Ahidden%5C%22%20href%3D%5C%22%2Fdemo%2F%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22FAIL%22%5D%2C%22reasonId%22%3A%22Fail_1%22%2C%22ruleId%22%3A%22label_name_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
-        },
-        {
-            "ruleId": "input_label_visible",
-            "value": [
-                "VIOLATION",
-                "POTENTIAL"
-            ],
-            "path": {
-                "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/header[1]/div[1]/div[2]/button[1]",
-                "aria": "/document[1]/main[1]/switch[1]"
-            },
-            "ruleTime": 0,
-            "reasonId": "potential_no_label",
-            "message": "The input element does not have an associated visible label",
-            "messageArgs": [],
-            "apiArgs": [],
-            "bounds": {
-                "left": 740,
-                "top": 10,
-                "height": 36,
-                "width": 36
-            },
-            "snippet": "<button aria-label=\"Toggle dark mode\" aria-checked=\"false\" role=\"switch\" data-theme-toggle=\"\" class=\"rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 dark:hover:text-gray-300 transition-colors motion-reduce:transition-none motion-reduce:duration-0\" type=\"button\">",
-            "source": null,
-            "category": "Accessibility",
-            "level": "potentialviolation",
-            "ignored": false,
-            "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/input_label_visible.html#%7B%22message%22%3A%22The%20input%20element%20does%20not%20have%20an%20associated%20visible%20label%22%2C%22snippet%22%3A%22%3Cbutton%20aria-label%3D%5C%22Toggle%20dark%20mode%5C%22%20aria-checked%3D%5C%22false%5C%22%20role%3D%5C%22switch%5C%22%20data-theme-toggle%3D%5C%22%5C%22%20class%3D%5C%22rounded-md%20p-2%20text-gray-400%20dark%3Atext-gray-500%20hover%3Abg-gray-100%20dark%3Ahover%3Abg-gray-800%20hover%3Atext-gray-500%20dark%3Ahover%3Atext-gray-300%20transition-colors%20motion-reduce%3Atransition-none%20motion-reduce%3Aduration-0%5C%22%20type%3D%5C%22button%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22potential_no_label%22%2C%22ruleId%22%3A%22input_label_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
-        },
-        {
-            "ruleId": "input_label_visible",
-            "value": [
-                "VIOLATION",
-                "POTENTIAL"
-            ],
-            "path": {
-                "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/div[1]/div[2]/form[1]/label[1]/select[1]",
-                "aria": "/document[1]/main[1]/form[1]/combobox[1]"
-            },
-            "ruleTime": 0,
-            "reasonId": "potential_no_label",
-            "message": "The input element does not have an associated visible label",
-            "messageArgs": [],
-            "apiArgs": [],
-            "bounds": {
-                "left": 41,
-                "top": 819,
-                "height": 37,
-                "width": 351
-            },
-            "snippet": "<select class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\" name=\"family\">",
-            "source": null,
-            "category": "Accessibility",
-            "level": "potentialviolation",
-            "ignored": false,
-            "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/input_label_visible.html#%7B%22message%22%3A%22The%20input%20element%20does%20not%20have%20an%20associated%20visible%20label%22%2C%22snippet%22%3A%22%3Cselect%20class%3D%5C%22mt-1%20block%20w-full%20rounded-lg%20border%20border-gray-300%20bg-white%20px-3%20py-2%20text-sm%20text-gray-900%20dark%3Aborder-gray-600%20dark%3Abg-gray-700%20dark%3Atext-white%5C%22%20name%3D%5C%22family%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22potential_no_label%22%2C%22ruleId%22%3A%22input_label_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
-        },
-        {
-            "ruleId": "input_label_visible",
-            "value": [
-                "VIOLATION",
-                "POTENTIAL"
-            ],
-            "path": {
-                "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/div[1]/div[2]/form[1]/label[5]/select[1]",
-                "aria": "/document[1]/main[1]/form[1]/combobox[2]"
-            },
-            "ruleTime": 0,
-            "reasonId": "potential_no_label",
-            "message": "The input element does not have an associated visible label",
-            "messageArgs": [],
-            "apiArgs": [],
-            "bounds": {
-                "left": 41,
-                "top": 975,
-                "height": 37,
-                "width": 351
-            },
-            "snippet": "<select class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\" name=\"width\">",
-            "source": null,
-            "category": "Accessibility",
-            "level": "potentialviolation",
-            "ignored": false,
-            "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/input_label_visible.html#%7B%22message%22%3A%22The%20input%20element%20does%20not%20have%20an%20associated%20visible%20label%22%2C%22snippet%22%3A%22%3Cselect%20class%3D%5C%22mt-1%20block%20w-full%20rounded-lg%20border%20border-gray-300%20bg-white%20px-3%20py-2%20text-sm%20text-gray-900%20dark%3Aborder-gray-600%20dark%3Abg-gray-700%20dark%3Atext-white%5C%22%20name%3D%5C%22width%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22potential_no_label%22%2C%22ruleId%22%3A%22input_label_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
-        },
-        {
-            "ruleId": "input_label_visible",
-            "value": [
-                "VIOLATION",
-                "POTENTIAL"
-            ],
-            "path": {
-                "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/div[1]/div[2]/form[1]/label[7]/textarea[1]",
-                "aria": "/document[1]/main[1]/form[1]/textbox[4]"
-            },
-            "ruleTime": 0,
-            "reasonId": "potential_placeholder_only",
-            "message": "The ‘placeholder’ is the only visible label",
-            "messageArgs": [],
-            "apiArgs": [],
-            "bounds": {
-                "left": 41,
-                "top": 1130,
-                "height": 58,
-                "width": 718
-            },
-            "snippet": "<textarea class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\" placeholder=\"We're performing maintenance or experiencing high traffic.\" maxlength=\"300\" rows=\"2\" name=\"message\">",
-            "source": null,
-            "category": "Accessibility",
-            "level": "potentialviolation",
-            "ignored": false,
-            "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/input_label_visible.html#%7B%22message%22%3A%22The%20%E2%80%98placeholder%E2%80%99%20is%20the%20only%20visible%20label%22%2C%22snippet%22%3A%22%3Ctextarea%20class%3D%5C%22mt-1%20block%20w-full%20rounded-lg%20border%20border-gray-300%20bg-white%20px-3%20py-2%20text-sm%20text-gray-900%20dark%3Aborder-gray-600%20dark%3Abg-gray-700%20dark%3Atext-white%5C%22%20placeholder%3D%5C%22We're%20performing%20maintenance%20or%20experiencing%20high%20traffic.%5C%22%20maxlength%3D%5C%22300%5C%22%20rows%3D%5C%222%5C%22%20name%3D%5C%22message%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22potential_placeholder_only%22%2C%22ruleId%22%3A%22input_label_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
-        },
-        {
-            "ruleId": "input_label_visible",
-            "value": [
-                "VIOLATION",
-                "POTENTIAL"
-            ],
-            "path": {
-                "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/div[1]/div[2]/div[2]/div[3]/div[1]/div[3]/div[1]/button[1]",
-                "aria": "/document[1]/main[1]/alert[3]/button[1]"
-            },
-            "ruleTime": 0,
-            "reasonId": "potential_no_label",
-            "message": "The input element does not have an associated visible label",
-            "messageArgs": [],
-            "apiArgs": [],
-            "bounds": {
-                "left": 737,
-                "top": 1568,
-                "height": 28,
-                "width": 28
-            },
-            "snippet": "<button aria-label=\"Dismiss\" data-dismiss=\"alert\" class=\"inline-flex rounded-md p-1.5 hover:opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200\" type=\"button\">",
-            "source": null,
-            "category": "Accessibility",
-            "level": "potentialviolation",
-            "ignored": false,
-            "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/input_label_visible.html#%7B%22message%22%3A%22The%20input%20element%20does%20not%20have%20an%20associated%20visible%20label%22%2C%22snippet%22%3A%22%3Cbutton%20aria-label%3D%5C%22Dismiss%5C%22%20data-dismiss%3D%5C%22alert%5C%22%20class%3D%5C%22inline-flex%20rounded-md%20p-1.5%20hover%3Aopacity-80%20focus%3Aoutline-hidden%20focus%3Aring-2%20focus%3Aring-offset-2%20dark%3Afocus%3Aring-offset-gray-900%20bg-blue-50%20dark%3Abg-blue-900%2F20%20text-blue-800%20dark%3Atext-blue-200%5C%22%20type%3D%5C%22button%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22potential_no_label%22%2C%22ruleId%22%3A%22input_label_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
-        }
+  "results": [
+    {
+      "ruleId": "style_color_misuse",
+      "value": [
+        "VIOLATION",
+        "POTENTIAL"
+      ],
+      "path": {
+        "dom": "/html[1]/head[1]/link[2]",
+        "aria": "/document[1]"
+      },
+      "ruleTime": 3,
+      "reasonId": "Potential_1",
+      "message": "Verify color is not used as the only visual means of conveying information",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "snippet": "<link href=\"/demo/css/app.css\" rel=\"stylesheet\">",
+      "source": null,
+      "category": "Accessibility",
+      "level": "potentialviolation",
+      "ignored": false,
+      "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/style_color_misuse.html#%7B%22message%22%3A%22Verify%20color%20is%20not%20used%20as%20the%20only%20visual%20means%20of%20conveying%20information%22%2C%22snippet%22%3A%22%3Clink%20href%3D%5C%22%2Fdemo%2Fcss%2Fapp.css%5C%22%20rel%3D%5C%22stylesheet%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22Potential_1%22%2C%22ruleId%22%3A%22style_color_misuse%22%2C%22msgArgs%22%3A%5B%5D%7D"
+    },
+    {
+      "ruleId": "label_name_visible",
+      "value": [
+        "VIOLATION",
+        "FAIL"
+      ],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/header[1]/div[1]/div[1]/a[1]",
+        "aria": "/document[1]/main[1]/link[17]"
+      },
+      "ruleTime": 0,
+      "reasonId": "Fail_1",
+      "message": "Accessible name does not match or contain the visible label text",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 32,
+        "top": 14,
+        "height": 28,
+        "width": 28
+      },
+      "snippet": "<a aria-label=\"Demo home\" class=\"flex items-center gap-2 lg:hidden\" href=\"/demo/\">",
+      "source": null,
+      "category": "Accessibility",
+      "level": "violation",
+      "ignored": false,
+      "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/label_name_visible.html#%7B%22message%22%3A%22Accessible%20name%20does%20not%20match%20or%20contain%20the%20visible%20label%20text%22%2C%22snippet%22%3A%22%3Ca%20aria-label%3D%5C%22Demo%20home%5C%22%20class%3D%5C%22flex%20items-center%20gap-2%20lg%3Ahidden%5C%22%20href%3D%5C%22%2Fdemo%2F%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22FAIL%22%5D%2C%22reasonId%22%3A%22Fail_1%22%2C%22ruleId%22%3A%22label_name_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
+    },
+    {
+      "ruleId": "input_label_visible",
+      "value": [
+        "VIOLATION",
+        "POTENTIAL"
+      ],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/header[1]/div[1]/div[2]/button[1]",
+        "aria": "/document[1]/main[1]/switch[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "potential_no_label",
+      "message": "The input element does not have an associated visible label",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 740,
+        "top": 10,
+        "height": 36,
+        "width": 36
+      },
+      "snippet": "<button aria-label=\"Toggle dark mode\" aria-checked=\"false\" role=\"switch\" data-theme-toggle=\"\" class=\"rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 dark:hover:text-gray-300 transition-colors motion-reduce:transition-none motion-reduce:duration-0\" type=\"button\">",
+      "source": null,
+      "category": "Accessibility",
+      "level": "potentialviolation",
+      "ignored": false,
+      "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/input_label_visible.html#%7B%22message%22%3A%22The%20input%20element%20does%20not%20have%20an%20associated%20visible%20label%22%2C%22snippet%22%3A%22%3Cbutton%20aria-label%3D%5C%22Toggle%20dark%20mode%5C%22%20aria-checked%3D%5C%22false%5C%22%20role%3D%5C%22switch%5C%22%20data-theme-toggle%3D%5C%22%5C%22%20class%3D%5C%22rounded-md%20p-2%20text-gray-400%20dark%3Atext-gray-500%20hover%3Abg-gray-100%20dark%3Ahover%3Abg-gray-800%20hover%3Atext-gray-500%20dark%3Ahover%3Atext-gray-300%20transition-colors%20motion-reduce%3Atransition-none%20motion-reduce%3Aduration-0%5C%22%20type%3D%5C%22button%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22potential_no_label%22%2C%22ruleId%22%3A%22input_label_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
+    },
+    {
+      "ruleId": "input_label_visible",
+      "value": [
+        "VIOLATION",
+        "POTENTIAL"
+      ],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/div[1]/div[2]/form[1]/label[1]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "potential_no_label",
+      "message": "The input element does not have an associated visible label",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 41,
+        "top": 819,
+        "height": 37,
+        "width": 351
+      },
+      "snippet": "<select class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\" name=\"family\">",
+      "source": null,
+      "category": "Accessibility",
+      "level": "potentialviolation",
+      "ignored": false,
+      "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/input_label_visible.html#%7B%22message%22%3A%22The%20input%20element%20does%20not%20have%20an%20associated%20visible%20label%22%2C%22snippet%22%3A%22%3Cselect%20class%3D%5C%22mt-1%20block%20w-full%20rounded-lg%20border%20border-gray-300%20bg-white%20px-3%20py-2%20text-sm%20text-gray-900%20dark%3Aborder-gray-600%20dark%3Abg-gray-700%20dark%3Atext-white%5C%22%20name%3D%5C%22family%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22potential_no_label%22%2C%22ruleId%22%3A%22input_label_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
+    },
+    {
+      "ruleId": "input_label_visible",
+      "value": [
+        "VIOLATION",
+        "POTENTIAL"
+      ],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/div[1]/div[2]/form[1]/label[5]/select[1]",
+        "aria": "/document[1]/main[1]/form[1]/combobox[2]"
+      },
+      "ruleTime": 0,
+      "reasonId": "potential_no_label",
+      "message": "The input element does not have an associated visible label",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 41,
+        "top": 975,
+        "height": 37,
+        "width": 351
+      },
+      "snippet": "<select class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\" name=\"width\">",
+      "source": null,
+      "category": "Accessibility",
+      "level": "potentialviolation",
+      "ignored": false,
+      "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/input_label_visible.html#%7B%22message%22%3A%22The%20input%20element%20does%20not%20have%20an%20associated%20visible%20label%22%2C%22snippet%22%3A%22%3Cselect%20class%3D%5C%22mt-1%20block%20w-full%20rounded-lg%20border%20border-gray-300%20bg-white%20px-3%20py-2%20text-sm%20text-gray-900%20dark%3Aborder-gray-600%20dark%3Abg-gray-700%20dark%3Atext-white%5C%22%20name%3D%5C%22width%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22potential_no_label%22%2C%22ruleId%22%3A%22input_label_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
+    },
+    {
+      "ruleId": "input_label_visible",
+      "value": [
+        "VIOLATION",
+        "POTENTIAL"
+      ],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/div[1]/div[2]/form[1]/label[7]/textarea[1]",
+        "aria": "/document[1]/main[1]/form[1]/textbox[4]"
+      },
+      "ruleTime": 0,
+      "reasonId": "potential_placeholder_only",
+      "message": "The ‘placeholder’ is the only visible label",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 41,
+        "top": 1130,
+        "height": 58,
+        "width": 718
+      },
+      "snippet": "<textarea class=\"mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white\" placeholder=\"We're performing maintenance or experiencing high traffic.\" maxlength=\"300\" rows=\"2\" name=\"message\">",
+      "source": null,
+      "category": "Accessibility",
+      "level": "potentialviolation",
+      "ignored": false,
+      "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/input_label_visible.html#%7B%22message%22%3A%22The%20%E2%80%98placeholder%E2%80%99%20is%20the%20only%20visible%20label%22%2C%22snippet%22%3A%22%3Ctextarea%20class%3D%5C%22mt-1%20block%20w-full%20rounded-lg%20border%20border-gray-300%20bg-white%20px-3%20py-2%20text-sm%20text-gray-900%20dark%3Aborder-gray-600%20dark%3Abg-gray-700%20dark%3Atext-white%5C%22%20placeholder%3D%5C%22We're%20performing%20maintenance%20or%20experiencing%20high%20traffic.%5C%22%20maxlength%3D%5C%22300%5C%22%20rows%3D%5C%222%5C%22%20name%3D%5C%22message%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22potential_placeholder_only%22%2C%22ruleId%22%3A%22input_label_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
+    },
+    {
+      "ruleId": "input_label_visible",
+      "value": [
+        "VIOLATION",
+        "POTENTIAL"
+      ],
+      "path": {
+        "dom": "/html[1]/body[1]/main[1]/div[2]/div[3]/div[1]/div[2]/div[2]/div[3]/div[1]/div[3]/div[1]/button[1]",
+        "aria": "/document[1]/main[1]/alert[3]/button[1]"
+      },
+      "ruleTime": 0,
+      "reasonId": "potential_no_label",
+      "message": "The input element does not have an associated visible label",
+      "messageArgs": [],
+      "apiArgs": [],
+      "bounds": {
+        "left": 737,
+        "top": 1568,
+        "height": 28,
+        "width": 28
+      },
+      "snippet": "<button aria-label=\"Dismiss\" data-dismiss=\"alert\" class=\"inline-flex rounded-md p-1.5 hover:opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200\" type=\"button\">",
+      "source": null,
+      "category": "Accessibility",
+      "level": "potentialviolation",
+      "ignored": false,
+      "help": "https://able.ibm.com/rules/archives/2026.07.13/doc/en-US/input_label_visible.html#%7B%22message%22%3A%22The%20input%20element%20does%20not%20have%20an%20associated%20visible%20label%22%2C%22snippet%22%3A%22%3Cbutton%20aria-label%3D%5C%22Dismiss%5C%22%20data-dismiss%3D%5C%22alert%5C%22%20class%3D%5C%22inline-flex%20rounded-md%20p-1.5%20hover%3Aopacity-80%20focus%3Aoutline-hidden%20focus%3Aring-2%20focus%3Aring-offset-2%20dark%3Afocus%3Aring-offset-gray-900%20bg-blue-50%20dark%3Abg-blue-900%2F20%20text-blue-800%20dark%3Atext-blue-200%5C%22%20type%3D%5C%22button%5C%22%3E%22%2C%22value%22%3A%5B%22VIOLATION%22%2C%22POTENTIAL%22%5D%2C%22reasonId%22%3A%22potential_no_label%22%2C%22ruleId%22%3A%22input_label_visible%22%2C%22msgArgs%22%3A%5B%5D%7D"
+    }
+  ],
+  "numExecuted": 1363,
+  "ruleTime": 25,
+  "nls": {
+    "style_color_misuse": {
+      "0": "Combine color and descriptive markup to convey information",
+      "Potential_1": "Verify color is not used as the only visual means of conveying information"
+    },
+    "label_name_visible": {
+      "0": "Accessible name must match or contain the visible label text",
+      "Fail_1": "Accessible name does not match or contain the visible label text"
+    },
+    "input_label_visible": {
+      "0": "An input element must have an associated visible label",
+      "potential_no_label": "The input element does not have an associated visible label",
+      "potential_placeholder_only": "The ‘placeholder’ is the only visible label"
+    }
+  },
+  "summary": {
+    "counts": {
+      "ignored": 0,
+      "elements": 11,
+      "elementsViolation": 1,
+      "elementsViolationReview": 8,
+      "violation": 1,
+      "potentialviolation": 6,
+      "recommendation": 0,
+      "potentialrecommendation": 6,
+      "manual": 1,
+      "pass": 1349
+    },
+    "scanTime": 75,
+    "ruleArchive": "Latest Deployment (latest)",
+    "policies": [
+      "IBM_Accessibility"
     ],
-    "numExecuted": 1363,
-    "ruleTime": 25,
-    "nls": {
-        "style_color_misuse": {
-            "0": "Combine color and descriptive markup to convey information",
-            "Potential_1": "Verify color is not used as the only visual means of conveying information"
-        },
-        "label_name_visible": {
-            "0": "Accessible name must match or contain the visible label text",
-            "Fail_1": "Accessible name does not match or contain the visible label text"
-        },
-        "input_label_visible": {
-            "0": "An input element must have an associated visible label",
-            "potential_no_label": "The input element does not have an associated visible label",
-            "potential_placeholder_only": "The ‘placeholder’ is the only visible label"
-        }
-    },
-    "summary": {
-        "counts": {
-            "ignored": 0,
-            "elements": 11,
-            "elementsViolation": 1,
-            "elementsViolationReview": 8,
-            "violation": 1,
-            "potentialviolation": 6,
-            "recommendation": 0,
-            "potentialrecommendation": 6,
-            "manual": 1,
-            "pass": 1349
-        },
-        "scanTime": 75,
-        "ruleArchive": "Latest Deployment (latest)",
-        "policies": [
-            "IBM_Accessibility"
-        ],
-        "reportLevels": [
-            "violation",
-            "potentialviolation"
-        ],
-        "startScan": 1792223741574,
-        "URL": "http://localhost:8093/error-pages"
-    },
-    "scanID": "d6a0cb2a-c01b-45dc-8e6f-fce76ecc63b3",
-    "toolID": "accessibility-checker-v4.0.34",
-    "label": "m08"
+    "reportLevels": [
+      "violation",
+      "potentialviolation"
+    ],
+    "startScan": 1792223741574,
+    "URL": "http://localhost:8093/error-pages"
+  },
+  "scanID": "d6a0cb2a-c01b-45dc-8e6f-fce76ecc63b3",
+  "toolID": "accessibility-checker-v4.0.34",
+  "label": "m08"
 }

@@ -96,13 +96,13 @@ un-regenerated `*_templ.go`, both of which the core steps refresh first.
 The WEBSITE's own pages (`/`, `/sales`) are pinned by five tests, all riding
 the normal `nix run .#visual` env:
 
-| Test | What it pins |
-| ---- | ------------ |
-| `TestSiteRouteGoldens` | 8 route goldens — 2 routes × light/dark × desktop(1440)/mobile(390) full-page captures, namespaced `site-*` in `testdata/routes/` |
-| `TestAxeSweepSiteRoutes` | axe a11y sweep over both routes in light AND dark (baseline ledger: `site_sales_dark` color-contrast) |
-| `TestSiteTouchTargetAudit` | browser-measured 24×24px interactive-target floor at 375px |
-| `TestSiteZoomReflowAudit` | WCAG 1.4.10 — no horizontal overflow at 200%/400% zoom |
-| `TestSiteSalesCopyButton` | e2e: the sales page's real `CopyButton` writes to the clipboard and flips its label |
+| Test                       | What it pins                                                                                                                      |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `TestSiteRouteGoldens`     | 8 route goldens — 2 routes × light/dark × desktop(1440)/mobile(390) full-page captures, namespaced `site-*` in `testdata/routes/` |
+| `TestAxeSweepSiteRoutes`   | axe a11y sweep over both routes in light AND dark (baseline ledger: `site_sales_dark` color-contrast)                             |
+| `TestSiteTouchTargetAudit` | browser-measured 24×24px interactive-target floor at 375px                                                                        |
+| `TestSiteZoomReflowAudit`  | WCAG 1.4.10 — no horizontal overflow at 200%/400% zoom                                                                            |
+| `TestSiteSalesCopyButton`  | e2e: the sales page's real `CopyButton` writes to the clipboard and flips its label                                               |
 
 Two properties matter:
 
@@ -167,21 +167,21 @@ Every session re-derives these from source; wrong-marker test failures recur.
 This is the pinned list — when a marker here changes in the demo, update this
 table in the same commit.
 
-| What                    | Marker / value                                                                                                                 | Source                                |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- |
-| Port override           | `PORT` env var (default `8080`, non-numeric falls back to `8080`)                                                              | `examples/demo/main.go`               |
-| Health check            | `GET /health` → `200` + body `{"status":"ok"}`                                                                                 | `examples/demo/main.go`               |
-| Kanban board root       | `[data-tc-kanban]` (id from `KanbanBoardProps.ID`; the e2e harness boards use `#kb-htmx` / `#kb-ds`)                           | `display/kanban.templ`                |
-| Kanban column body      | `[data-tc-kanban-column-body="<columnID>"]` — drop zone containing the cards                                                   | `display/kanban.templ`                |
-| Kanban card             | `[data-tc-kanban-card="<cardID>"]`                                                                                             | `display/kanban.templ`                |
-| Keyboard move buttons   | `[data-tc-kanban-move="prev                                                                                                    | next"]` on each card (hover-revealed) |
-| Hidden move form        | `[data-tc-kanban-form]` with inputs named `card`, `column`, `index` (`data-tc-kanban-f-card` etc.)                             | `display/kanban.templ`                |
-| CSRF input markup       | `<input type="hidden" name="csrf_token" value="<token>">` inside the move form — demo token is per-process (`kanbanCSRFToken`) | `examples/demo/kanban_demo.go`        |
-| Kanban move endpoints   | `POST /api/kanban/{htmx,datastar}` (move), `.../add/{column}`, `.../reset`                                                     | `examples/demo/main.go`               |
-| CSRF failure            | missing/wrong token → `403`                                                                                                    | `examples/demo/kanban_demo.go`        |
-| Same-origin enforcement | add/reset POSTs without `Sec-Fetch-Site: same-origin`/`Origin` → `403` (smoke tests must send the header)                      | `examples/demo/kanban_demo.go`        |
-| Unknown column add      | `404` (not a silent 200)                                                                                                       | `examples/demo/kanban_demo.go`        |
-| Stale-view move         | move whose card/column the server state lacks → `422` (sorted-view rejection; the old silent no-op could eat cards)            | `examples/demo/kanban_demo.go`        |
+| What                    | Marker / value                                                                                                                        | Source                                |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| Port override           | `PORT` env var (default `8080`, non-numeric falls back to `8080`)                                                                     | `examples/demo/main.go`               |
+| Health check            | `GET /health` → `200` + body `{"status":"ok"}`                                                                                        | `examples/demo/main.go`               |
+| Kanban board root       | `[data-tc-kanban]` (id from `KanbanBoardProps.ID`; the e2e harness boards use `#kb-htmx` / `#kb-ds`)                                  | `display/kanban.templ`                |
+| Kanban column body      | `[data-tc-kanban-column-body="<columnID>"]` — drop zone containing the cards                                                          | `display/kanban.templ`                |
+| Kanban card             | `[data-tc-kanban-card="<cardID>"]`                                                                                                    | `display/kanban.templ`                |
+| Keyboard move buttons   | `[data-tc-kanban-move="prev                                                                                                           | next"]` on each card (hover-revealed) |
+| Hidden move form        | `[data-tc-kanban-form]` with inputs named `card`, `column`, `index` (`data-tc-kanban-f-card` etc.)                                    | `display/kanban.templ`                |
+| CSRF input markup       | `<input type="hidden" name="csrf_token" value="<token>">` inside the move form — demo token is per-process (`kanbanCSRFToken`)        | `examples/demo/kanban_demo.go`        |
+| Kanban move endpoints   | `POST /api/kanban/{htmx,datastar}` (move), `.../add/{column}`, `.../reset`                                                            | `examples/demo/main.go`               |
+| CSRF failure            | missing/wrong token → `403`                                                                                                           | `examples/demo/kanban_demo.go`        |
+| Same-origin enforcement | add/reset POSTs without `Sec-Fetch-Site: same-origin`/`Origin` → `403` (smoke tests must send the header)                             | `examples/demo/kanban_demo.go`        |
+| Unknown column add      | `404` (not a silent 200)                                                                                                              | `examples/demo/kanban_demo.go`        |
+| Stale-view move         | move whose card/column the server state lacks → `422` (sorted-view rejection; the old silent no-op could eat cards)                   | `examples/demo/kanban_demo.go`        |
 | File-backed board       | `KANBAN_STATE_FILE=<path>` env opts both demo boards into persisted state (loaded at wiring, saved per mutation); default memory-only | `examples/demo/kanban_demo.go`        |
 
 ## Demo endpoint security posture

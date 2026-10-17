@@ -238,11 +238,6 @@ linters:
       enable-all: true
     varnamelen:
       ignore-map-index-ok: true
-      # The ignore list is a CLOSED set of established short names (receivers,
-      # loop indexes, well-known helpers) — do NOT grow it to silence new
-      # findings. Policy (verdict of the 2026-10-17 #307 sweep): a flagged
-      # cryptic variable gets RENAMED to its domain name (the `c` -> `coord`
-      # sparkline rename is the precedent), never exempted.
       ignore-names:
         - err
         - ok
@@ -303,7 +298,6 @@ linters:
           - makezero
           - gocheckcompilerdirectives
           - varnamelen
-          - exhaustruct
           - forcetypeassert
           - gosec
           - errcheck
@@ -330,9 +324,6 @@ linters:
       - _templ\.go$
       - vendor/
       - examples/
-      # Standalone diagnostic tools (smoke/shots/ogshot/sseload/...), same
-      # class as examples/: not library code, CLI ergonomics outrank lint
-      # polish (mnd/noctx/varnamelen fire on every flag default).
       - visualtest/tools/
 formatters:
   enable:
@@ -349,5 +340,5 @@ formatters:
       - _templ\.go$
       - _templ\\.go$
 issues:
-  max-issues-per-linter: 50
-  max-same-issues: 10
+  max-issues-per-linter: 0
+  max-same-issues: 0

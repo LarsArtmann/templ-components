@@ -8,12 +8,12 @@ the baseline promised; work it top-down when extending utils coverage
 
 Distribution (gremlins @latest, re-run 2026-10-17):
 
-| File | Lived | Share |
-| --- | ---: | ---: |
-| `golden/golden.go` | 37 | 74% |
-| `format/format.go` | 11 | 22% |
-| `wire/triggers.go` | 1 | 2% |
-| `cdn/cdn.go` | 1 | 2% |
+| File               | Lived | Share |
+| ------------------ | ----: | ----: |
+| `golden/golden.go` |    37 |   74% |
+| `format/format.go` |    11 |   22% |
+| `wire/triggers.go` |     1 |    2% |
+| `cdn/cdn.go`       |     1 |    2% |
 
 `svg/svg_templ.go` showed 4 lived in one run and 0 in the re-run — flaky
 lived (generated-code conditionals inside the golden-covered render path);
