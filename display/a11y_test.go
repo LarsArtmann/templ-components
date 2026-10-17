@@ -167,6 +167,81 @@ func TestDefaultPropsConstructors(t *testing.T) {
 			t.Errorf("Size = %q, want %q", props.Size, ModalSizeMD)
 		}
 	})
+
+	// The M26 coverage batch: these constructors were public API with 0%
+	// coverage — the consumer-audit lesson made them the documented-defaults
+	// promise, so each gets its default pinned.
+	t.Run("DefaultStatusDotProps defaults to neutral", func(t *testing.T) {
+		t.Parallel()
+
+		if got := DefaultStatusDotProps(); got.Tone != StatusToneNeutral {
+			t.Errorf("Tone = %q, want %q", got.Tone, StatusToneNeutral)
+		}
+	})
+
+	t.Run("DefaultProseProps defaults to MD", func(t *testing.T) {
+		t.Parallel()
+
+		if got := DefaultProseProps(); got.Size != ProseSizeMD {
+			t.Errorf("Size = %q, want %q", got.Size, ProseSizeMD)
+		}
+	})
+
+	t.Run("DefaultDataStateProps defaults to Content", func(t *testing.T) {
+		t.Parallel()
+
+		if got := DefaultDataStateProps(); got.State != DataStateContent {
+			t.Errorf("State = %q, want %q", got.State, DataStateContent)
+		}
+	})
+
+	t.Run("remaining constructors construct", func(t *testing.T) {
+		t.Parallel()
+		// Contract: the documented defaults exist; deeper behavior is the
+		// component's own test surface.
+		_ = DefaultCodeBlockProps()
+		_ = DefaultLightboxProps()
+		_ = DefaultDonutChartProps()
+		_ = DefaultSegmentBarProps()
+	})
+}
+
+// TestToneAdaptersExhaustive covers the tone Phase 0 adapters (M26 batch):
+// every mapped enum value routes to its canonical tone and unknown values
+// degrade to neutral — the map+fallback convention applied to the adapter
+// layer.
+func TestToneAdaptersExhaustive(t *testing.T) {
+	t.Parallel()
+
+	statusCases := map[StatusTone]tone.Tone{
+		StatusToneNeutral: tone.ToneNeutral,
+		StatusToneSuccess: tone.ToneSuccess,
+		StatusToneWarning: tone.ToneWarning,
+		StatusToneDanger:  tone.ToneDanger,
+		StatusToneInfo:    tone.ToneInfo,
+	}
+	for in, want := range statusCases {
+		if got := in.Tone(); got != want {
+			t.Errorf("StatusTone(%q).Tone() = %q, want %q", in, got, want)
+		}
+	}
+
+	scrollbackCases := map[ScrollbackTone]tone.Tone{
+		ScrollbackToneNeutral: tone.ToneNeutral,
+		ScrollbackToneInfo:    tone.ToneInfo,
+		ScrollbackToneSuccess: tone.ToneSuccess,
+		ScrollbackToneWarning: tone.ToneWarning,
+		ScrollbackToneDanger:  tone.ToneDanger,
+	}
+	for in, want := range scrollbackCases {
+		if got := in.Tone(); got != want {
+			t.Errorf("ScrollbackTone(%q).Tone() = %q, want %q", in, got, want)
+		}
+	}
+
+	if got := StatusTone("bogus").Tone(); got != tone.ToneNeutral {
+		t.Errorf("unknown StatusTone degraded to %q, want neutral", got)
+	}
 }
 
 func TestDropdownXSSSafety(t *testing.T) {
