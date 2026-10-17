@@ -3,7 +3,6 @@ package visualtest
 import (
 	"context"
 	_ "embed"
-	"encoding/json/v2"
 	"errors"
 	"fmt"
 	"time"
@@ -75,21 +74,16 @@ func (r AxeResults) BlockingViolations() []AxeViolation {
 	return blocking
 }
 
-const (
-	axeRunTimeout    = 45 * time.Second
-	axePollInterval  = 100 * time.Millisecond
-	axeResultTimeout = 30 * time.Second
-)
+const axeRunTimeout = 45 * time.Second
 
 // RunAxe injects the vendored axe-core runtime into the current page and runs
 // a violations-only audit against the whole document. The context must be a
 // chromedp tab context with the page already loaded.
 //
-// The async axe.run promise is bridged via a polling handshake because the
-// sweep predates chromedp v0.20's EvalAwaitPromise option; the run parks its
-// JSON payload in window.__tcAxeJSON (or the error in window.__tcAxeErr), and
-// the poll waits for either to appear. (Modernizing to EvalAwaitPromise is
-// tracked in TODO_LIST.)
+// axe.run's promise is awaited natively via chromedp's EvalAwaitPromise: the
+// resolved value decodes by-value straight into AxeResults, and a rejected
+// promise surfaces as a *chromedp.ExceptionError (wrapped as errAxeRuntime).
+// No window-parked payload, no poll-sleep handshake.
 func RunAxe(ctx context.Context) (AxeResults, error) {
 	runCtx, cancel := context.WithTimeout(ctx, axeRunTimeout)
 	defer cancel()
@@ -100,38 +94,16 @@ func RunAxe(ctx context.Context) (AxeResults, error) {
 		return AxeResults{}, fmt.Errorf("inject axe runtime: %w", err)
 	}
 
-	const bootScript = `window.__tcAxeJSON = null; window.__tcAxeErr = null;
-axe.run(document, {resultTypes: ['violations']})
-  .then(r => { window.__tcAxeJSON = JSON.stringify(r); })
-  .catch(e => { window.__tcAxeErr = String(e); });
-true`
-
-	if _, err := chromedp.Run(runCtx, chromedp.Evaluate[chromedp.Void](bootScript)); err != nil {
-		return AxeResults{}, fmt.Errorf("start axe run: %w", err)
-	}
-
-	if _, err := chromedp.Run(runCtx, pollTrue(
-		`window.__tcAxeJSON !== null || window.__tcAxeErr !== null`,
-		chromedp.WithPollingInterval(axePollInterval),
-		chromedp.WithPollingTimeout(axeResultTimeout),
-	)); err != nil {
-		return AxeResults{}, fmt.Errorf("axe run did not settle: %w", err)
-	}
-
-	payload, err := chromedp.Run(runCtx, chromedp.Evaluate[string](
-		`window.__tcAxeErr !== null ? "ERR:" + window.__tcAxeErr : window.__tcAxeJSON`,
+	results, err := chromedp.Run(runCtx, chromedp.Evaluate[AxeResults](
+		`axe.run(document, {resultTypes: ['violations']})`,
+		chromedp.EvalAwaitPromise,
 	))
 	if err != nil {
-		return AxeResults{}, fmt.Errorf("fetch axe result: %w", err)
-	}
-
-	if len(payload) > 4 && payload[:4] == "ERR:" {
-		return AxeResults{}, fmt.Errorf("%w: %s", errAxeRuntime, payload[4:])
-	}
-
-	var results AxeResults
-	if err := json.Unmarshal([]byte(payload), &results); err != nil {
-		return AxeResults{}, fmt.Errorf("decode axe result (%d bytes): %w", len(payload), err)
+		var jsErr *chromedp.ExceptionError
+		if errors.As(err, &jsErr) {
+			return AxeResults{}, fmt.Errorf("%w: %w", errAxeRuntime, err)
+		}
+		return AxeResults{}, fmt.Errorf("run axe audit: %w", err)
 	}
 
 	return results, nil
