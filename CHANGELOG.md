@@ -8,6 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Demo kanban: sorted-view rejection (422) + opt-in file-backed state.**
+  The move endpoint no longer silently no-ops a move whose card or column
+  the server state does not know — the old behavior even DELETED the card
+  from its source column when the target column was unknown. Such moves
+  now answer `422` (stale board view), the contract is pinned by the
+  shared HTTP probes across BOTH transports and BOTH implementations (demo
+  + e2e harness), and the demo contract cheat-sheet carries the new row.
+  Separately, `KANBAN_STATE_FILE=<path>` opts the demo's boards into
+  persisted state (loaded at wiring, saved atomically per mutation,
+  corrupt-file-safe); the default stays memory-only so tests and route
+  goldens remain deterministic. The dashboard recipe gained a
+  kanban-board section showing the composition + server contract.
 - **SSE live-rows recipe** (`docs/recipes/sse-live-rows.md`). The append-live-
   rows-over-Server-Sent-Events pattern the `Table` `BodyID` + `Body` API was
   built for, written down: the `htmx-ext-sse` listener (the extension is

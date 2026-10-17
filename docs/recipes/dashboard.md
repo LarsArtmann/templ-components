@@ -63,6 +63,35 @@ Pair `recipes.Dashboard` with container-aware children to make the stat grid res
 sidebar column width (ADR-0018). `display.Grid` defaults to `ContainerAware: true` since v2.0,
 so stat grids reflow based on their parent column instead of the viewport automatically.
 
+## Adding a kanban board
+
+Dashboards that track work (not just numbers) compose a `KanbanBoard` under the stat
+grid. The board needs exactly one wiring decision — its move endpoint — and inherits
+the page's shell:
+
+```templ
+@recipes.Dashboard(props) {
+    @display.Grid(display.GridProps{Cols: display.GridCols4}) {
+        for _, stat := range stats {
+            @display.StatCard(stat)
+        }
+    }
+
+    @display.KanbanBoard(display.KanbanBoardProps{
+        ID:       "dash-board",
+        Columns:  columns,
+        Wire:     &wire.Action{Method: wire.MethodPost, URL: "/api/board"},
+        CSRFToken: csrf,
+    })
+}
+```
+
+Server side: decode with `display.ParseKanbanMove(r)`, validate against YOUR store
+(reject stale views with 422 — see the demo's sorted-view rejection), apply, and
+re-render the SAME board id as the response. The full contract — CSRF, same-origin,
+the 422 shape, optimistic-pending UX — is live in the demo (`/kanban`) and pinned by
+its HTTP contract tests.
+
 ## See also
 
 - [settings.md](settings.md) — `recipes.SettingsLayout`

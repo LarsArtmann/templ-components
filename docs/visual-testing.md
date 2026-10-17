@@ -181,6 +181,8 @@ table in the same commit.
 | CSRF failure            | missing/wrong token → `403`                                                                                                    | `examples/demo/kanban_demo.go`        |
 | Same-origin enforcement | add/reset POSTs without `Sec-Fetch-Site: same-origin`/`Origin` → `403` (smoke tests must send the header)                      | `examples/demo/kanban_demo.go`        |
 | Unknown column add      | `404` (not a silent 200)                                                                                                       | `examples/demo/kanban_demo.go`        |
+| Stale-view move         | move whose card/column the server state lacks → `422` (sorted-view rejection; the old silent no-op could eat cards)            | `examples/demo/kanban_demo.go`        |
+| File-backed board       | `KANBAN_STATE_FILE=<path>` env opts both demo boards into persisted state (loaded at wiring, saved per mutation); default memory-only | `examples/demo/kanban_demo.go`        |
 
 ## Demo endpoint security posture
 
