@@ -590,7 +590,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   browsers reject such scripts anyway, and the empty attribute made that
   silent failure invisible. Pinned by the new integration sweep
   `TestNoEmptyNonceAttribute` (renders every script-emitting component with
-  an unset nonce; mirrored against `TestAllInlineScriptsHaveNonce`).
+  an unset nonce; mirrored against `TestAllInlineScriptsHaveNonce`). The two
+  helpers that implement the rule are `utils.ScriptAttrs` (attribute map for
+  hand-rolled tags) and `utils.ScriptComponent` (whole-script writer, below)
+  — use them instead of re-rolling the branch.
   Migration: if your consumer test suite asserted the literal `nonce=""`
   string in rendered output, update it to assert the `<script` tag itself —
   the visible HTML diff is scripts no longer carrying the dead attribute.

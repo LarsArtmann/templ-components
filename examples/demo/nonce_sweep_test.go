@@ -117,7 +117,23 @@ func TestDemoScriptsCarryDemoNonce(t *testing.T) {
 	}
 }
 
-// scriptNonceRe captures the nonce value of any tag carrying one (script or
-// style — a wrong-value style is the same dead-resource class).
-var scriptNonceRe = regexp.MustCompile(`nonce="([^"]*)"`)
+// scriptNonceRe captures the nonce value from SCRIPT/STYLE OPENING TAGS
+// only. The [^>]*? arm cannot cross the tag's `>`, so nonce= TEXT inside a
+// script BODY (the inlined htmx runtime contains its own
+// `nonce="${config.inlineStyleNonce}"` source literal) never matches — the
+// first naive `nonce="…"` regex false-positived exactly there. A wrong-value
+// style nonce is the same dead-resource class, so styles are included.
+var scriptNonceRe = regexp.MustCompile(`<(?:script|style)[^>]*?nonce="([^"]*)"`)
+
+func TestScriptNonceReScopesToTagOpens(t *testing.T) {
+	t.Parallel()
+
+	// The htmx-runtime body text that once false-positived.
+	const body = `<script nonce="demo">const e = ` + "` nonce=\"${Q.config.inlineStyleNonce}\"`" + `;</script>`
+	for _, m := range scriptNonceRe.FindAllStringSubmatch(body, -1) {
+		if m[1] != "demo" {
+			t.Fatalf("regex matched inside script body: %q", m[1])
+		}
+	}
+}
 

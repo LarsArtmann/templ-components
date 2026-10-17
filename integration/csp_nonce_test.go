@@ -20,6 +20,9 @@ import (
 // TestAllInlineScriptsHaveNonce renders every component that uses inline scripts
 // and asserts that every <script> tag contains the nonce attribute. This prevents
 // CSP regressions where a new or refactored component forgets the nonce.
+// Cross-links: the omit-empty twin is TestNoEmptyNonceAttribute (same
+// package); the demo-page sweeps (never `nonce=""`, every nonce =
+// demoNonceConst) live in examples/demo/nonce_sweep_test.go.
 func TestAllInlineScriptsHaveNonce(t *testing.T) {
 	t.Parallel()
 
