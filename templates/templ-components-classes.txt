@@ -8091,6 +8091,10 @@ import (
 // gaps between segments. The runtime flex-grow values are the component's
 // documented inline-style exemption (same class as BarChart's bar widths —
 // see utils.TestInlineStyleCompliance).
+//
+// The role="img" wraps ONLY the bar graphic (img is a leaf role — visible
+// descendants under it are invalid ARIA, achecker aria_descendant_valid);
+// the legend renders as a real list sibling, readable as ordinary content.
 templ SegmentBar(props SegmentBarProps) {
 	{{ total := segmentBarTotal(props.Segments) }}
 	if total > 0 {
@@ -8105,11 +8109,9 @@ templ SegmentBar(props SegmentBarProps) {
 				id={ props.ID }
 			}
 			class={ utils.Class("flex flex-col gap-2", props.Class) }
-			role="img"
-			aria-label={ label }
 			{ props.Attrs... }
 		>
-			<div class="flex h-2.5 w-full overflow-hidden rounded-full">
+			<div class="flex h-2.5 w-full overflow-hidden rounded-full" role="img" aria-label={ label }>
 				for _, seg := range props.Segments {
 					if seg.Value > 0 {
 						<div
