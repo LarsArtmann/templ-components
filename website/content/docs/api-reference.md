@@ -79,6 +79,28 @@ includes `TitleClass` and `HeaderClass`:
 }
 ```
 
+### ErrorPage way out, width, and code chip
+
+`ErrorPageProps` carries a typed recovery-action and presentation surface:
+
+```go
+// WayOutAction bundles the primary recovery action. Empty Href renders a
+// history-back button (the browser-native way out).
+type WayOutAction struct {
+    Text string // empty renders no primary action
+    Href string
+}
+
+// SecondaryWayOut + SecondaryWayOutHref render a ghost action beside the
+// primary (href set = link; empty = go-back variant).
+
+// CopyCode (bool) renders a copy-to-clipboard icon button next to the error
+// code chip — opt-in, requires Nonce for the CSP-safe script.
+
+// MaxWidth caps the card width; unknown values fall back to XL.
+type ErrorMaxWidth string // "lg" | "xl" | "2xl" | "4xl"
+```
+
 ### Typed Enums
 
 72 typed string enums make invalid states unrepresentable. Each ships with an `IsValid()` method.

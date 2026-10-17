@@ -108,9 +108,15 @@ caller way out always wins.
 ## Try it live
 
 The demo ships a stateless playground that renders a real `ErrorPage` from
-query params — family, status, code, title, message, and card width:
+query params — family, status, code, title, message, secondary way out, and
+card width:
 
 **[Open the error-page playground →](https://templcomponents.lars.software/demo/errors/playground)**
+
+Prefer to see a production-shaped page first? The dedicated 404 route is the
+same pipeline with fixed copy:
+
+**[See the live 404 page →](https://templcomponents.lars.software/demo/errors/404-page)**
 
 ## Components
 
