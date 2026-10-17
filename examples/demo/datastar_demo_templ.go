@@ -321,7 +321,7 @@ func datastarPolledStatsSettled(tick int) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<div class=\"mt-3 flex justify-end\"><time class=\"text-xs tabular-nums text-gray-400 dark:text-gray-500\" datetime=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<div class=\"mt-3 flex justify-end\"><time class=\"text-xs tabular-nums text-gray-500 dark:text-gray-400\" datetime=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
