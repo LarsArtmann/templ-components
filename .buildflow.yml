@@ -62,3 +62,9 @@ skip_steps:
   # per-module go.sum checks; re-enable only after #335 lands (or when the
   # step learns to respect pinned rejects).
   - go-mod-update
+  # interrogate skipped 2026-10-17 (#363): the docstring-coverage tool is
+  # Python-only (pip install interrogate) and this repo has ZERO Python
+  # sources — not-applicable by construction, same logic as the pnpm-audit
+  # unskip note above (the trigger contract skips the step; this silences
+  # the `buildflow doctor` binary warning). Re-enable only if Python lands.
+  - interrogate

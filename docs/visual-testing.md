@@ -182,6 +182,32 @@ table in the same commit.
 | Same-origin enforcement | add/reset POSTs without `Sec-Fetch-Site: same-origin`/`Origin` → `403` (smoke tests must send the header)                      | `examples/demo/kanban_demo.go`        |
 | Unknown column add      | `404` (not a silent 200)                                                                                                       | `examples/demo/kanban_demo.go`        |
 
+## Demo endpoint security posture
+
+The demo is a public shop window; its security stance is deliberate and
+worth restating so nobody "fixes" it into an uncopyable example:
+
+- **Stateless GET routes** (`/errors/*`, `/errors/playground`): render-only
+  — no storage, no mutation, no user data, and every free-text field is
+  length-capped at the handler (`truncateDemoField`, 60–300 chars), so a
+  request cannot amplify storage or render cost. There is NO in-app
+  rate limiting on purpose: abuse protection is the hosting layer's job
+  (Firebase Hosting edge + reverse proxies), and the shipped example stays
+  the shape consumers copy. If you fork the demo behind an unprotected
+  origin, put the rate limit in your proxy, not in `main.go`.
+- **Stateful POST routes** (kanban move/add/reset): CSRF token (per-process
+  `kanbanCSRFToken`, 403 on mismatch) + same-origin enforcement (403 without
+  `Sec-Fetch-Site: same-origin`/`Origin`) — the smoke examples above show
+  the headers a legitimate client must send. Board state is per-process
+  memory; a restart resets it.
+- **Headers**: nonce-based CSP pinned identically in the demo handler and
+  the Firebase Hosting `firebase.json` override.
+- **HTTP contract pins**: `TestErrorRoutesServeStatusAndBody` (every
+  `/errors/*` route serves its status + family body) and
+  `TestErrorRoutesPlaygroundPinsQueryWiring` (the playground's full
+  parameter surface: all four `ErrorMaxWidth` values, way-outs, unknown
+  clamps) are the executable contract for everything above.
+
 ## Writing a new visual test
 
 ```go
