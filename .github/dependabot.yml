@@ -104,6 +104,15 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # playwright-core is ANCHORED to the locked nixpkgs playwright-driver
+    # version (browser revisions are hardcoded per release) — the
+    # utils.TestCrossbrowserLockstep guard enforces the equality. Dependabot
+    # bumped it to 1.64.1 twice (6477d6d3 re-broke master after the
+    # 1aa8c212 restore; nixpkgs is still 1.63.0), so it is ignored here:
+    # bumps happen via the one-commit lockstep rule (guard constant +
+    # package.json + package-lock + flake check) when nixpkgs moves first.
+    ignore:
+      - dependency-name: playwright-core
     groups:
       minor-and-patch:
         update-types:
