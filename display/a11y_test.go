@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 const (
