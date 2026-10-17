@@ -13,7 +13,8 @@ go install github.com/larsartmann/templ-components/cmd/tc@latest
 
 ### `tc init`
 
-Scaffolds a starter `app.css` + `custom.css` in the current directory.
+Scaffolds the four starter CSS files (`app.css`, `custom.css`,
+`templ-components-theme.css`, `safelist.css`) in the current directory.
 Skips files that already exist.
 
 ```bash
@@ -21,6 +22,7 @@ mkdir myapp && cd myapp
 tc init
 # tc: wrote app.css
 # tc: wrote custom.css
+# ...
 ```
 
 ### `tc ls`

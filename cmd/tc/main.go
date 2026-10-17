@@ -273,7 +273,7 @@ func usage() {
 	fmt.Fprintln(os.Stderr, `tc — templ-components scaffolding
 
 Usage:
-  tc init                   Scaffold a starter app.css + custom.css in the current directory.
+  tc init                   Scaffold the four starter CSS files in the current directory.
   tc ls                     Print every component, grouped by package.
   tc add <component>        Copy <component>.templ (and _types.go if present) to ./components/.
   tc add <component> --out DIR   Copy to a custom directory.

@@ -11,6 +11,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"flag"
 	"fmt"
@@ -243,6 +244,17 @@ func captureModeShots(ctx context.Context, modes []string) ([]byte, []byte, erro
 	dark, err := chromedp.Run(ctx, chromedp.FullScreenshot(screenshotQuality))
 	if err != nil {
 		return nil, nil, fmt.Errorf("capture dark: %w", err)
+	}
+
+	// Self-assert the modes actually differ: the 2026-10-17 bug shipped
+	// byte-identical light/dark PNGs for months (the unpinned light capture
+	// rendered dark too, and the in-place toggle was the only difference —
+	// none). A genuinely theme-invariant page is rare enough that a loud
+	// error beats a silently half-blind audit.
+	if bytes.Equal(light, dark) {
+		return nil, nil, fmt.Errorf(
+			"light and dark captures are byte-identical — the theme pin failed or the page never applies .dark; NOT writing the pair",
+		)
 	}
 
 	return light, dark, nil
