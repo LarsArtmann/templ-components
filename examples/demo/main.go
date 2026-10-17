@@ -391,6 +391,47 @@ func newMux() *http.ServeMux {
 		)
 	})
 
+	// Datastar LoadingButton demo: delays 1.5s so the indicator-driven busy
+	// state is actually visible, then patches the result region like
+	// /api/datastar/action above.
+	mux.Handle("POST /api/datastar/slow-action", http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		time.Sleep(1500 * time.Millisecond)
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Datastar-Selector", "#datastar-slow-action-result")
+		w.Header().Set("Datastar-Mode", "inner")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(
+			w,
+			`<div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
+			<p class="text-sm text-green-800 dark:text-green-200">Saved via slow action (1.5s mock delay).</p>
+		</div>`,
+		)
+	}))
+
+	// Datastar PolledRegion demo: the fragment root id equals the region id,
+	// so the runtime's outer patch replaces the region (self-patch) and the
+	// fresh component re-arms the interval. After the third tick the fragment
+	// drops the interval attributes and the demo settles — the same shape as
+	// the htmx twin (/api/demo-stats) above.
+	mux.Handle("GET /api/datastar/tick", wire.Handler(wire.PatchTarget{
+		Selector: "#datastar-polled-stats",
+		Mode:     wire.PatchModeOuter,
+	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tick := 1
+		if query, err := wire.DecodeForm[demoStatsQuery](r); err == nil && query.Tick > 0 {
+			tick = query.Tick + 1
+		}
+
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
+		if tick < 3 {
+			componentOr500(w, r, datastarPolledStatsRegion(tick))
+
+			return
+		}
+		componentOr500(w, r, datastarPolledStatsSettled(tick))
+	})))
+
 	// Wire demo: one endpoint serving both transports via the library's own
 	// middleware. htmx targets client-side via hx-target; the Datastar runtime
 	// is told where to patch via response headers (Datastar v1.0.2 fetch

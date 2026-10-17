@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
@@ -53,6 +57,32 @@ templ datastarDemo() {
 		})
 	</div>
 	<div id="datastar-action-result" class="mt-3"></div>
+	@demoSection("Datastar LoadingButton", "datastar-loading-button")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		The label swaps to a busy state while the action is in flight, driven entirely by the
+		<code>data-indicator:saving</code> signal — click and watch (the mock endpoint delays 1.5s):
+	</p>
+	<button
+		data-on:click={ datastar.Post(demoURL("/api/datastar/slow-action")) }
+		data-indicator:saving
+		class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+	>
+		@datastar.LoadingButton(datastar.LoadingButtonProps{
+			BaseProps:   demoBaseProps(),
+			Signal:      "saving",
+			DefaultText: "Save changes",
+			LoadingText: "Saving...",
+		})
+	</button>
+	<div id="datastar-slow-action-result" class="mt-3"></div>
+	@demoSection("Datastar PolledRegion", "datastar-polled-region")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Auto-refreshing region fetching <code>/api/datastar/tick</code> every 5s via
+		<code>data-on-interval</code> — the Datastar twin of the HTMX PolledRegion. The region
+		self-patches (response root id = region id), the timestamp ticks forward on every patch,
+		and the demo settles after 3 ticks:
+	</p>
+	@datastarPolledStatsRegion(0)
 	@demoSection("Datastar Action Expressions", "datastar-actions")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
 		Typed helpers for building Datastar action expressions:
@@ -85,4 +115,54 @@ datastar.Delete("/api/items/1") // @delete('/api/items/1')`,
 			Use Datastar for real-time push (dashboards, live feeds, collaborative editing).
 		</p>
 	}
+}
+
+// datastarPolledStatsRegion is the datastar.PolledRegion demo for both the
+// initial render and the /api/datastar/tick response. The region self-patches
+// (response fragment root id = region id), so the response re-renders the
+// whole component to re-arm the interval — until the final tick, which
+// renders the settled static shell without the interval attributes.
+templ datastarPolledStatsRegion(tick int) {
+	@datastar.PolledRegion(datastar.PolledRegionProps{
+		BaseProps:     datastarPolledStatsBaseProps(),
+		URL:           demoURL("/api/datastar/tick") + "?tick=" + strconv.Itoa(tick),
+		Every:         "5s",
+		ShowTimestamp: true,
+		TimeFormat:    "15:04:05 MST",
+	}) {
+		@datastarPolledStatsContent(tick, true)
+	}
+}
+
+// datastarPolledStatsSettled is the final tick's fragment: the same region
+// shell WITHOUT the interval attributes, so the runtime's outer patch
+// replaces the polling region with static content and the demo settles.
+templ datastarPolledStatsSettled(tick int) {
+	<div id="datastar-polled-stats" role="region" aria-label="Live demo statistics" aria-live="polite">
+		@datastarPolledStatsContent(tick, false)
+		<div class="mt-3 flex justify-end">
+			<time
+				class="text-xs tabular-nums text-gray-400 dark:text-gray-500"
+				datetime={ time.Now().Format(time.RFC3339) }
+			>
+				Updated { time.Now().Format("15:04:05 MST") }
+			</time>
+		</div>
+	</div>
+}
+
+templ datastarPolledStatsContent(tick int, live bool) {
+	<div class="rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 flex items-center gap-4">
+		<div class="flex-1">
+			<p class="text-sm font-medium text-gray-900 dark:text-white">Requests served: { fmt.Sprintf("%d", 48_210+tick*137) }</p>
+		</div>
+		if live {
+			<span class="inline-flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400">
+				@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-blue-600 dark:text-blue-400"})
+				auto-refreshing
+			</span>
+		} else {
+			<span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 dark:text-emerald-400">up to date</span>
+		}
+	</div>
 }
