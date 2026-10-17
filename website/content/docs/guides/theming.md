@@ -52,6 +52,32 @@ Dark mode is built-in. Components use Tailwind `dark:` variants for all colors. 
 
 See the [Dark Mode guide](/guides/dark-mode) for the full setup.
 
+### The warm-dark `dark:`-pair override
+
+To retune dark mode per component (the pattern this site uses for its warm
+dark surfaces), override the color pair EXPLICITLY — both modes, complete
+literal classes:
+
+```templ
+@display.Card(display.CardProps{
+    Class: "bg-white dark:bg-[#1a1712]",
+    // ...
+})
+```
+
+Two scanner rules make or break it:
+
+- Variant prefixes must be COMPLETE literals in source. `"dark:bg-" + shade`
+  assembled at runtime is invisible to the Tailwind scanner — the CSS never
+  gets generated. Runtime-assembled classes need the shipped safelist
+  (`templates/safelist.css`).
+- Child targets use the arbitrary-child variant, also literal:
+  `[&>details]:dark:bg-gray-900`.
+
+For a library-wide dark retune, override the shade PAIR in `@theme` instead
+(one block, every component — the pair-awareness gotcha is documented in the
+Tailwind adoption guide).
+
 ## RTL / Internationalization
 
 All components use CSS logical properties (`ms-`, `me-`, `ps-`, `pe-`, `start-`, `end-`, `text-start`, `border-s-`, `border-e`). They automatically mirror in RTL contexts when you set `dir="rtl"` on a parent element.

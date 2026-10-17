@@ -111,6 +111,32 @@ override a dark-mode color, target `.dark`:
 See [ADR-0011](adr/0011-dark-mode-convention.md) for the dark-mode
 color convention (`-500` shade in dark mode, `-600` in light).
 
+### The warm-dark `dark:`-pair override
+
+When a shell default fights your design (the website's warm dark surfaces vs
+the library's electric blue, for example), override the color pair EXPLICITLY
+on the component instance — both modes, complete literal classes:
+
+```go
+display.Card(display.CardProps{
+    Class: "bg-white dark:bg-[#1a1712]", // literal pair wins in BOTH modes
+})
+```
+
+Rules the Tailwind scanner imposes on this pattern:
+
+- Every variant prefix must be a COMPLETE literal in source
+  (`dark:bg-[#1a1712]`) — never assembled at runtime (`"dark:bg-" + shade`):
+  the scanner cannot see runtime-assembled tokens, so the CSS is never
+  generated. The `GridColsAutoFit` safelist (`templates/safelist.css`) is the
+  sanctioned escape hatch for genuinely runtime-assembled classes.
+- Targeting a child element needs the arbitrary-child variant, also as a
+  complete literal (`[&>details]:dark:bg-gray-900`).
+- For a GLOBAL retune, prefer the `@theme` shade-pair override instead (see
+  `tailwind-v4-adoption-guide.md`, "Override one shade pair (the warm dark
+  pattern)") — one block retunes every component, and the pair-awareness
+  gotcha (`-600`/`-500`/`-400` co-occurrence) is documented there.
+
 ---
 
 ## Theme presets
