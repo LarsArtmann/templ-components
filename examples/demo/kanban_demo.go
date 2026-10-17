@@ -178,6 +178,7 @@ func (s *kanbanDemoState) add(columnID string) bool {
 			ID:    "kb-new-" + strconv.FormatInt(n, 10),
 			Title: "New card " + strconv.FormatInt(n+1, 10),
 		})
+		s.persistLocked()
 
 		return true
 	}
