@@ -30,7 +30,7 @@ DEFAULT_FLEET=(
 )
 
 FLEET=("$@")
-(( ${#FLEET[@]} == 0 )) && FLEET=("${DEFAULT_FLEET[@]}")
+((${#FLEET[@]} == 0)) && FLEET=("${DEFAULT_FLEET[@]}")
 
 miss_total=0
 checked=0
@@ -85,7 +85,7 @@ for repo_name in "${FLEET[@]}"; do
 	# modules (the tc-* hooks live in the LIBRARY's generated files; a
 	# module-importing consumer's own sources never mention them).
 	mapfile -t lib_dirs < <(library_dirs "$repo")
-	if (( ${#lib_dirs[@]} == 0 )); then
+	if ((${#lib_dirs[@]} == 0)); then
 		echo "WARN  $repo_name: templ-components not resolvable (go mod download?) — checking consumer sources only"
 	fi
 
@@ -104,10 +104,10 @@ for repo_name in "${FLEET[@]}"; do
 			echo "MISS  $repo_name: $hook not in $artifact_rel"
 			missing=$((missing + 1))
 		fi
-	done <<< "$hooks"
+	done <<<"$hooks"
 
 	checked=$((checked + 1))
-	if (( missing == 0 )); then
+	if ((missing == 0)); then
 		echo "OK    $repo_name: $artifact_rel covers all $hook_count hooks"
 	else
 		miss_total=$((miss_total + missing))
@@ -116,4 +116,4 @@ done
 
 echo
 echo "Fleet audit: $checked repo(s) checked, $miss_total missing hook(s)."
-(( miss_total == 0 )) || exit 1
+((miss_total == 0)) || exit 1

@@ -3,7 +3,7 @@ module github.com/larsartmann/templ-components/website
 go 1.27
 
 require (
-	github.com/a-h/templ v0.3.1020
+	github.com/a-h/templ v0.3.1070
 	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/larsartmann/templ-components v1.23.0
 	github.com/larsartmann/templ-components/errorpage v1.23.0
@@ -16,7 +16,7 @@ require (
 require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
 	github.com/dlclark/regexp2/v2 v2.8.4 // indirect
-	github.com/larsartmann/go-error-family v0.11.0 // indirect
+	github.com/larsartmann/go-error-family v0.12.0 // indirect
 	github.com/larsartmann/templ-components/htmx v1.23.0 // indirect
 )
 
