@@ -9,8 +9,8 @@ go 1.27
 
 require (
 	github.com/a-h/templ v0.3.1070
-	github.com/chromedp/cdproto v0.157.9
-	github.com/chromedp/chromedp v0.20.1
+	github.com/chromedp/cdproto v0.158.0
+	github.com/chromedp/chromedp v0.21.0
 	github.com/larsartmann/go-datastar/static v0.6.1
 	github.com/larsartmann/templ-components v0.0.0-00010101000000-000000000000
 	github.com/larsartmann/templ-components/datastar v1.23.0
