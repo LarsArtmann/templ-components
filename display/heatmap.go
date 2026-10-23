@@ -68,8 +68,9 @@ const (
 	defaultHeatmapCellSize = "h-5"
 	minHeatmapOpacity      = 0.05
 
-	// heatmapFallbackName names the role="img" wrapper when the consumer
-	// provides no AriaLabel — role="img" must never render unnamed.
+	// heatmapFallbackName names the native table when the consumer
+	// provides no AriaLabel — a named table keeps the matrix navigable
+	// for screen readers without pretending to be a leaf image role.
 	heatmapFallbackName = "Heatmap"
 )
 

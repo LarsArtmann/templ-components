@@ -321,7 +321,7 @@ func TestHeatmapA11y(t *testing.T) {
 		utils.AssertContains(t, output, "<tbody")
 	})
 
-	t.Run("supports aria-label", func(t *testing.T) {
+	t.Run("names the native table instead of an image role", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Heatmap(HeatmapProps{
 			Rows: []HeatmapRow{
@@ -329,7 +329,20 @@ func TestHeatmapA11y(t *testing.T) {
 			},
 			AriaLabel: "Activity heatmap",
 		}))
-		utils.AssertContains(t, output, `aria-label="Activity heatmap"`)
+		utils.AssertNotContains(t, output, `role="img"`)
+		utils.AssertContains(t, output,
+			`<table class="min-w-full border-collapse text-xs" aria-label="Activity heatmap"`)
+	})
+
+	t.Run("falls back to the default accessible name", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Heatmap(HeatmapProps{
+			Rows: []HeatmapRow{
+				{Label: "Mon", Cells: []HeatmapCell{{Value: 5}}},
+			},
+		}))
+		utils.AssertContains(t, output,
+			`<table class="min-w-full border-collapse text-xs" aria-label="Heatmap"`)
 	})
 
 	t.Run("cells have title tooltips", func(t *testing.T) {

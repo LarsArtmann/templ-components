@@ -15,6 +15,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   surface for demo-rendered markup). Now `text-gray-500 dark:text-gray-400`
   per the neutral-text convention; package goldens + the `/datastar`
   route captures carry the pixel change.
+- **`display.Heatmap` no longer puts a leaf image role around a table.**
+  The scroll container carried `role="img"` while wrapping the whole grid
+  and its row/column labels — an `aria_descendant_valid` violation (image
+  is a leaf role) that hid the tabular structure from assistive tech. The
+  container is now a plain scroll box and the native `<table>` owns the
+  accessible name (`AriaLabel`, default "Heatmap"), so the matrix stays
+  navigable cell by cell. Markup-only change; no pixel difference.
 
 ### Added
 
