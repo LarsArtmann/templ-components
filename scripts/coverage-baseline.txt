@@ -1,8 +1,14 @@
 # Library coverage baseline — single source of truth for the figures quoted in
 # AGENTS.md. Regenerate with: scripts/coverage-library.sh --record
 # Guard: utils/TestCoverageBaselineMatchesProse (arithmetic + prose equality).
+#
+# go_version is load-bearing: Go 1.27.0 and 1.27.3 assign DIFFERENT statement
+# counts to identical coverage blocks (650 blocks: 766 vs 994 statements for
+# the utils module). Cross-toolchain statement totals are not comparable; the
+# percentages above were produced by the version recorded here.
 recorded_at=2026-10-23
-recorded_commit=8512ef44
+recorded_commit=c2fb9d23
+go_version=go1.27.3
 raw_covered=19232
 raw_total=26446
 raw_pct=72.7

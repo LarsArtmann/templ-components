@@ -251,7 +251,8 @@ fi
 
 # A stale baseline is not fatal (coverage improving is good news), but the docs
 # then understate the library — say so instead of letting it rot silently.
-if [ "$RECORD" = "0" ] && [ -f "$BASELINE" ]; then
+# Only meaningful for a fresh measurement: a --profile run reuses existing data.
+if [ "$RECORD" = "0" ] && [ -z "$PROFILE" ] && [ -f "$BASELINE" ]; then
 	# Statement attribution moves between Go patch releases even when the block
 	# layout is identical, so a toolchain mismatch invalidates the comparison.
 	recorded_go="$(awk -F= '$1 == "go_version" { print $2 }' "$BASELINE")"
