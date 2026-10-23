@@ -306,3 +306,27 @@ exhaustive-tested over 100–599.
 
 **Reopen condition:** if cqrs-htmx adopts the helper and its dashboardui callers
 break on the family label — then flip deliberately with a changelog note.
+
+---
+
+## Packet re-verification — 2026-10-23
+
+The memos were written 2026-10-17. Their facts were re-checked against master
+after the 2026-10-23 execution session; the decisions themselves are untouched
+(owner verdicts are still required — nothing below was applied on the owner's
+behalf).
+
+| #   | Memo claim                             | State on 2026-10-23                                                                                                                                                                                                                   |
+| --- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 233 | revert flake.lock nixpkgs to `ef34387d…` | **STALE TARGET** — the locked rev is now `02c087f3…`. `ef34387d` still appears in `flake.lock` history (`7252433f`, `59baed65`), so the revert means re-locking two input moves back and re-verifying the dev shell.               |
+| 235 | PIN tailwind 4.3.3 in `website.yml`    | **ALREADY DONE** — nixpkgs `tailwindcss_4` = 4.3.3; `website.yml:81` and `examples/demo/Dockerfile:18` pin the identical pair. Row struck in TODO_LIST.                                                                             |
+| 312 | export `display.HeadingTag`?           | OPEN — `HeadingTagType` is exported for props, but there is no `HeadingTag` helper to export (`display/heading_tag.go`); the HOLD recommendation is unaffected.                                                                       |
+| 322 | 500 → Corruption vs Infrastructure     | UNCHANGED — `errorpage/styles.go:473-487` keeps the documented default: unknown/unlisted 5xx → Corruption, with an explicit comment on why 507 is not special-cased.                                                                  |
+| 358 | drop `GOEXPERIMENT=jsonv2` exports     | OPEN — still exported in `.envrc` (1), `flake.nix` (12 sites, incl. the verify wrappers) and the CI workflow (3 env blocks). The one-lockstep-commit plan stands.                                                                      |
+| 411 | ratify tool verdicts                   | UNCHANGED — `docs/testing/tooling-evaluation.md` is the current matrix; the tabular ratifications still need the owner sitting.                                                                                                      |
+
+**Reading for the session:** #235 costs zero work and can be struck on sight
+(done here). #233's revert is slightly more work than the memo estimated
+because the lock moved again — budget a shell re-verify, not a one-liner.
+Everything else stands as written.
+
