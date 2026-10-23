@@ -21,20 +21,20 @@ breakdown for every open row.
 
 ## 1. Executive scoreboard
 
-| Metric | Value |
-| --- | --- |
-| Open TODO rows inventoried | 65 (all classes: EXEC/G1–G6/OTHER) |
-| Rows fully closed this session | 8 (#29, #189, #294, #357, #437, #435, plus #273/#291/#297/#298/#299/#300/#306/#309/#317 struck as already-complete) |
-| Code fixes shipped | 2 (#437, #387) |
-| Verification/hygiene strikes | 5 (#29, #189, #294, #357, already-complete rows) |
-| Unplanned daemon-drift repairs | 5 (templ pins, playwright pin, tone doc, tc mirror, class inventory) |
-| Modules tested green | root + utils + icons + errorpage + charts/echarts + datastar + htmx + website; visualtest compiles |
-| Pixel proof | `TestDemoRouteGoldens` green in **92.8 s** (all demo routes, light/dark/mobile/RTL) |
-| Lint | 0 issues on display, utils/golden, visualtest, website |
-| Full push ritual (`ci-repro --lint --css --visual --website`) | **PASS** (09:41:44 CEST — see Addendum) |
-| Full visual suite (`nix run .#visual`, all tests) | **NOT RUN** (route goldens only) |
-| Pushed / CI-verified | Pushed `820e2df1`; CI run `39919529944` in progress at report close |
-| Root-module coverage | **70.4 %** (70 % gate passes; #28 needs 80 %) |
+| Metric                                                        | Value                                                                                                               |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Open TODO rows inventoried                                    | 65 (all classes: EXEC/G1–G6/OTHER)                                                                                  |
+| Rows fully closed this session                                | 8 (#29, #189, #294, #357, #437, #435, plus #273/#291/#297/#298/#299/#300/#306/#309/#317 struck as already-complete) |
+| Code fixes shipped                                            | 2 (#437, #387)                                                                                                      |
+| Verification/hygiene strikes                                  | 5 (#29, #189, #294, #357, already-complete rows)                                                                    |
+| Unplanned daemon-drift repairs                                | 5 (templ pins, playwright pin, tone doc, tc mirror, class inventory)                                                |
+| Modules tested green                                          | root + utils + icons + errorpage + charts/echarts + datastar + htmx + website; visualtest compiles                  |
+| Pixel proof                                                   | `TestDemoRouteGoldens` green in **92.8 s** (all demo routes, light/dark/mobile/RTL)                                 |
+| Lint                                                          | 0 issues on display, utils/golden, visualtest, website                                                              |
+| Full push ritual (`ci-repro --lint --css --visual --website`) | **PASS** (09:41:44 CEST — see Addendum)                                                                             |
+| Full visual suite (`nix run .#visual`, all tests)             | **NOT RUN** (route goldens only)                                                                                    |
+| Pushed / CI-verified                                          | Pushed `820e2df1`; CI run `39919529944` in progress at report close                                                 |
+| Root-module coverage                                          | **70.4 %** (70 % gate passes; #28 needs 80 %)                                                                       |
 
 **Verdict:** the session delivered real correctness and hygiene value, and repaired a
 repo that was silently red before I touched it. It did **not** reach "everything works
@@ -82,13 +82,13 @@ unproven in CI**.
 
 ### 2.3 TODO-list truth restoration
 
-| Row | Verdict | Evidence |
-| --- | --- | --- |
-| #29 templ.guide listing | **DONE — MERGED** | `gh pr view 1447 --repo a-h/templ` → `state: MERGED`, “docs: add templ-components to component libraries”. The TODO still said “awaiting review”. |
-| #189 demo niceties | **DONE (shipped in `[Unreleased]`)** | Opt-in `KANBAN_STATE_FILE` persistence + dashboard-recipe kanban section are in the changelog. |
-| #294 small polish | **DONE by verification** | `tc ls` footer counts the embedded registry at runtime; AGENTS post-daemon note live; ADR-0009 `--min-lines` verdict recorded; ci-repro guard path reviewed. |
-| #357 single-writer protocol | **DONE by verification** | AGENTS carries the full “Agent single-writer protocol (2026-10-17, #357)” section. |
-| #273, #291, #297, #298, #299, #300, #306, #309, #317 | **Already complete, now struck** | Their task text already said DONE; only the ID cells were left unstruck. |
+| Row                                                  | Verdict                              | Evidence                                                                                                                                                     |
+| ---------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| #29 templ.guide listing                              | **DONE — MERGED**                    | `gh pr view 1447 --repo a-h/templ` → `state: MERGED`, “docs: add templ-components to component libraries”. The TODO still said “awaiting review”.            |
+| #189 demo niceties                                   | **DONE (shipped in `[Unreleased]`)** | Opt-in `KANBAN_STATE_FILE` persistence + dashboard-recipe kanban section are in the changelog.                                                               |
+| #294 small polish                                    | **DONE by verification**             | `tc ls` footer counts the embedded registry at runtime; AGENTS post-daemon note live; ADR-0009 `--min-lines` verdict recorded; ci-repro guard path reviewed. |
+| #357 single-writer protocol                          | **DONE by verification**             | AGENTS carries the full “Agent single-writer protocol (2026-10-17, #357)” section.                                                                           |
+| #273, #291, #297, #298, #299, #300, #306, #309, #317 | **Already complete, now struck**     | Their task text already said DONE; only the ID cells were left unstruck.                                                                                     |
 
 ### 2.4 #435 — art-dupl baseline re-record (the P1 gate honesty fix)
 
@@ -115,15 +115,15 @@ behind it. Recorded in the TODO row with the new date.
 
 ## 3. What is PARTIALLY done
 
-| Item | Done | Missing |
-| --- | --- | --- |
-| **#437** | Markup, tests, goldens, pixels, changelog | **No achecker re-scan.** The rule is structurally impossible now, but the second engine was not run against a fresh demo server. |
-| **#387** | Types + bounds + nil guards, compiles, lint | No dedicated unit test proving `lcsAt` handles a malformed table; behavior is only covered indirectly by existing golden-diff tests. |
-| **#294** | Footer/notes/ADR verified, row struck | The “ci-repro guard-failure output” claim is based on reading the step list and `set -e`, not on reading the `step()` function body or forcing a guard failure. |
-| **#435** | Baseline, counts, docs, green ×2 | The recorded 74/9 advisory counts did not reproduce (73/38); the 9→38 gap is unexplained. Upstream ergonomics (#292/#293/#315/#316) untouched. |
-| **#189** | Changelog evidence + strike | File-backed kanban persistence was **not** browser-verified this session. |
-| **Full verification** | Per-module tests, website, visualtest compile, lints, route pixels | **Full `ci-repro --lint --css --website`, full `nix run .#visual`, HTML-valid gate, CSS-freshness gate, coverage gate as one verdict, push, CI.** |
-| **Plan** | Complete inventory + micro tasks + execution log | #369 deferred; gates verified read-only; plan not linked from TODO_LIST. |
+| Item                  | Done                                                               | Missing                                                                                                                                                         |
+| --------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **#437**              | Markup, tests, goldens, pixels, changelog                          | **No achecker re-scan.** The rule is structurally impossible now, but the second engine was not run against a fresh demo server.                                |
+| **#387**              | Types + bounds + nil guards, compiles, lint                        | No dedicated unit test proving `lcsAt` handles a malformed table; behavior is only covered indirectly by existing golden-diff tests.                            |
+| **#294**              | Footer/notes/ADR verified, row struck                              | The “ci-repro guard-failure output” claim is based on reading the step list and `set -e`, not on reading the `step()` function body or forcing a guard failure. |
+| **#435**              | Baseline, counts, docs, green ×2                                   | The recorded 74/9 advisory counts did not reproduce (73/38); the 9→38 gap is unexplained. Upstream ergonomics (#292/#293/#315/#316) untouched.                  |
+| **#189**              | Changelog evidence + strike                                        | File-backed kanban persistence was **not** browser-verified this session.                                                                                       |
+| **Full verification** | Per-module tests, website, visualtest compile, lints, route pixels | **Full `ci-repro --lint --css --website`, full `nix run .#visual`, HTML-valid gate, CSS-freshness gate, coverage gate as one verdict, push, CI.**               |
+| **Plan**              | Complete inventory + micro tasks + execution log                   | #369 deferred; gates verified read-only; plan not linked from TODO_LIST.                                                                                        |
 
 ---
 
@@ -165,8 +165,8 @@ behind it. Recorded in the TODO row with the new date.
      while the flake lockstep pin is **1.63.0** (`TestCrossbrowserLockstep` fails).
    - `docs/recipes/scoped-theme-bridge.md` had a prettier-aligned generated table
      that failed `TestThemeBridgePaletteTableSync`.
-   All three are daemon/automation drift, not my edits. I repaired them, but the
-   lesson stands: **a clean working tree does not mean a green tree**.
+     All three are daemon/automation drift, not my edits. I repaired them, but the
+     lesson stands: **a clean working tree does not mean a green tree**.
 3. **#435's recorded advisory numbers were wrong or non-reproducible.**
    The row said “74 t=2 + 9 t=3”. With both the fork and the installed binary I get
    **73 at t=2 and 38 at t=3**. I recorded what I measured but did not root-cause the
@@ -397,9 +397,21 @@ This report was written before the final verification run. Afterwards:
   **`VERDICT: PASS (exit 0)` at 2026-10-23 09:41:44 CEST**, art-dupl advisory GREEN
   against the 150-group baseline.
 - Committed `820e2df1` with a detailed message and **pushed to `origin/master`**.
-- CI run `39919529944` was `in_progress` at report close; the previous tip
-  `e9b09c69` had a failed CI run, consistent with the daemon drift repaired here.
+- CI run `39919529944` (at `820e2df1`) **failed in Build & Test** — but not because
+  of the committed files: the job ran a bare root `templ generate` with `go.work`
+  active, rewriting submodule `FileName:` paths workspace-relative in the ephemeral
+  tree. The new guard was right; the CI generation was wrong.
+- Fixed the workflow (`432359c7`) to mirror `scripts/ci-repro.sh`: clear generated
+  files, generate the root module, then regenerate each submodule and website from
+  its own directory. Actionlint + shellcheck green.
+- Final local ritual on `432359c7`: `VERDICT: PASS (exit 0)` at 10:04:47.
+- Pushed `9efd6241` + `432359c7`; **CI run `39922132311` is SUCCESS** on
+  `432359c7` (Build & Test, Visual Regression, Lint, CSS Freshness, HTML
+  validation — skipped jobs are the PR-only tag/changelog guards).
+- One local visual re-run failed only on `TestDemoNavTimingBudget` at load average
+  22; the serial re-run (`nix run .#visual -- -parallel 1`) passed in 484 s and
+  CI's Visual Regression job passed.
 
 Remaining truth: the plan's M02–M17 are still open; the push proves this session's
-changes, not the whole remaining backlog.
-
+changes, not the whole remaining backlog. The CI generation bug was found **because**
+the new guard failed — that is the guard paying for itself on day one.
