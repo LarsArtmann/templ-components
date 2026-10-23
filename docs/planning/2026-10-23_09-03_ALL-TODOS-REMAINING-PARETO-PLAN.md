@@ -239,15 +239,47 @@ the decision packet warm; they never fake completion.
 | Step                 | Result | Evidence |
 | -------------------- | ------ | -------- |
 | Plan written         | ✅     | this file |
-| 437 Heatmap ARIA     |        |          |
-| 294 polish verify    |        |          |
-| 357 strike           |        |          |
-| 335 gate re-check    |        |          |
-| 387 hardening        |        |          |
-| 435 art-dupl         |        |          |
-| 369 @utility         |        |          |
-| Module verification  |        |          |
-| Lint / ci-repro      |        |          |
+| 437 Heatmap ARIA     | ✅     | `role="img"` removed; native `<table>` owns `AriaLabel` (default "Heatmap"); 4 HTML goldens + `TestHeatmapA11y` updated; CHANGELOG `Fixed`; `go test ./display/` green; pixels unchanged |
+| 294 polish verify    | ✅     | `tc ls` footer counts the embedded registry at runtime; ci-repro guard step prints the failure and exits non-zero; AGENTS daemon note + ADR-0009 `--min-lines` verdict present; row struck |
+| 357 strike           | ✅     | AGENTS "Agent single-writer protocol (2026-10-17, #357)" present; row struck |
+| 335 gate re-check    | ✅     | `nix eval --inputs-from . nixpkgs#templ.version` → `0.3.1020`; gate still CLOSED; #368 stays sequenced behind it |
+| 387 hardening        | ✅     | `AxeRuleID`, `md.HeadingID`, bounds-safe `lcsAt`, nil-safe `updateGoldens()` in 5 call sites; website suite + visualtest compile + lints green |
+| 435 art-dupl         | ✅     | Fork `v0.9.1-0.20261017225421-93432fd910fb-93432fd` built; advisory sets measured 73 (t=2) / 38 (t=3) → existing ADR classes; baseline re-recorded at 150 groups; `check` green ×2; ADR/AGENTS/CHANGELOG counts synced |
+| 369 @utility         | ⏸      | DEFERRED with reason: `@utility` tree-shakes unused classes, which would drop opt-in classes (`tc-squircle`, `tc-fluid-*`) from the tracked prebuilt `templates/styles.css`; needs the ADR-0045 consumer-story decision, not a drive-by |
+| Module verification  | ✅     | root `go test ./...` + utils/icons/errorpage/charts/echarts/datastar/htmx loops green; visualtest compiles; website suite green |
+| Lint / ci-repro      | ⚠️     | golangci-lint 0 issues on display, utils/golden, visualtest, website; full `ci-repro --lint --css --website`/visual suite NOT run (needs browser env + long lane) |
+
+### Gate verification (read-only, 2026-10-23)
+
+| Gate | Finding |
+| ---- | ------- |
+| G1 (#190 #211 #212 #233–#239 #295 #303 #312 #322r #329 #358 #400 #411 #428) | `docs/planning/2026-10-17_g1-decision-memos.md` still covers all memo'd IDs and names the self-contained rows; no recommendation changed. Awaits the owner session. |
+| G2 (BuildFlow) | `~/projects/BuildFlow` still a live checkout (HEAD `f6dcb8c4c`); no upstream sprint happened this session. |
+| G3 (art-dupl) | Fork at `93432fd9`; #435 consumed the analyzer update; #292/#293/#315/#316 remain upstream asks. |
+| G4 (#28 #29 #80 #150 #162 #269 #156 #316b) | **#29 is DONE: a-h/templ#1447 is MERGED** and struck. #28 still blocked: root-module coverage measured 70.4% (threshold 70 passes; awesome-templ needs 80). #80/#150/#162 still need a human or API key; #269 needs owner go-ahead. |
+| G5 (v2) | ADR-0039 gate unchanged; #431 execution + #399 Phase 2 stay parked. |
+| G6 (#217) | No new consumer demand evidence; HOLD stands. |
+| O (#410 #436 #400) | Other-repo work: fixes belong in dbsblockd/DiscordSync/nsfw-classifier/mr-sync/pbx-lens; no library-side action. |
+
+### Unplanned repairs found while verifying (fixed)
+
+| Issue | Fix |
+| ----- | --- |
+| Daemon re-applied the templ `v0.3.1070` bump to `go.mod`, `website/go.mod`, `visualtest/go.mod` | Restored all 9 modules to `v0.3.1020` via `go mod edit` + `tidy`; `TestTemplVersionPin` green |
+| Daemon bumped `tools/crossbrowser-spike` playwright-core to 1.64.1 against the flake pin | Restored to 1.63.0 via `npm pkg set`; `TestCrossbrowserLockstep` green |
+| `docs/recipes/scoped-theme-bridge.md` palette table was prettier-aligned against the generator | Regenerated with `go test ./utils/tone/ -update`; `TestThemeBridgePaletteTableSync` green |
+| `cmd/tc/_sources/display/heatmap.templ` mirror drifted after the Heatmap edit | `scripts/check-tc-sources-sync.sh --fix`; `TestSourcesMatchPackageFiles` green |
+| `templates/templ-components-classes.txt` stale after the Heatmap edit | `scripts/gen-class-inventory.sh`; `TestClassInventoryFreshness` green |
+
+### Deferred executable item
+
+**#369 `@utility` migration.** `@utility` only emits a class when the consumer's
+scanner sees it. The tracked prebuilt `templates/styles.css` is compiled WITHOUT
+consumer sources, so opt-in classes such as `tc-squircle` and `tc-fluid-*` would
+disappear from that artifact for consumers who do not run Tailwind. The migration
+therefore needs the ADR-0045 prebuilt-CSS story decided first (either drop the
+prebuilt artifact, add a safelist, or migrate only classes no consumer opts into
+dynamically). Recorded here rather than silently breaking the artifact.
 
 ## 6. Verification plan
 
