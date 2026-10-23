@@ -174,6 +174,7 @@ for mod in utils icons errorpage charts/echarts htmx datastar; do (cd "$mod" && 
 ```
 
 - **golines max-len 120 IS the policy** — after `nix fmt`, a golines finding means run `golangci-lint fmt`, not hand-wrap.
+- **Lint-version skew is not a code bug:** the dev shell's `golangci-lint` can be NEWER than CI's `go install …@v2.14.0` pin (2026-10-23: 2.15.0's errcheck flagged an unchecked channel receive CI cannot see). Fix the code so BOTH versions pass; align the pins in a dedicated commit (TODO #443), never as release cargo.
 - **Disabled linters (do NOT re-enable — guarded by `TestGolangciDisabledLinters`):** `ireturn` (every component returns `templ.Component` by design), `godoclint` (per-file godoc is intentional), `testableexamples` (examples render HTML, output not asserted). History: `docs/lint-config-history.md`.
 - **goconst zero issues** (all repeated literals are constants). **No samber/lo or combinator libs** — dependency budget closed (templ + tailwind-merge-go + go-error-family); ADR-0009 protects accepted duplication.
 
