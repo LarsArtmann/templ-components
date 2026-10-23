@@ -2,12 +2,12 @@
 # AGENTS.md. Regenerate with: scripts/coverage-library.sh --record
 # Guard: utils/TestCoverageBaselineMatchesProse (arithmetic + prose equality).
 recorded_at=2026-10-23
-recorded_commit=78a37e0a
-raw_covered=19864
-raw_total=27096
-raw_pct=73.3
-hand_covered=2275
-hand_total=2353
-hand_pct=96.7
-ceiling_pct=73.6
-generated_share_pct=91.3
+recorded_commit=8512ef44
+raw_covered=19232
+raw_total=26446
+raw_pct=72.7
+hand_covered=1720
+hand_total=1780
+hand_pct=96.6
+ceiling_pct=72.9
+generated_share_pct=93.3

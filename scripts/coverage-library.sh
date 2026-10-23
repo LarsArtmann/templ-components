@@ -217,12 +217,25 @@ say "'if err := WriteString(...); err != nil { return err }' branch per element,
 say "so generated files cap out well below the hand-written share."
 
 if [ "$RECORD" = "1" ]; then
+	# Keep the merged profile next to the report so the baseline can be
+	# re-recorded later without re-running the whole suite:
+	#   scripts/coverage-library.sh --profile reports/coverage-merged.out --record
+	if [ -n "$REPORT_FILE" ]; then
+		cp "$MERGED" "$REPORT_DIR/coverage-merged.out"
+	fi
+
 	cat >"$BASELINE" <<EOF
 # Library coverage baseline — single source of truth for the figures quoted in
 # AGENTS.md. Regenerate with: scripts/coverage-library.sh --record
 # Guard: utils/TestCoverageBaselineMatchesProse (arithmetic + prose equality).
+#
+# go_version is load-bearing: Go 1.27.0 and 1.27.3 assign DIFFERENT statement
+# counts to identical coverage blocks (650 blocks: 766 vs 994 statements for
+# the utils module). Cross-toolchain statement totals are not comparable; the
+# percentages above were produced by the version recorded here.
 recorded_at=$(date -u +%Y-%m-%d)
 recorded_commit=$(git rev-parse --short HEAD 2>/dev/null || echo unknown)
+go_version=$(go version | awk '{ print $3 }')
 raw_covered=${RAW_COV}
 raw_total=${RAW_TOT}
 raw_pct=${RAW_PCT}
@@ -239,6 +252,17 @@ fi
 # A stale baseline is not fatal (coverage improving is good news), but the docs
 # then understate the library — say so instead of letting it rot silently.
 if [ "$RECORD" = "0" ] && [ -f "$BASELINE" ]; then
+	# Statement attribution moves between Go patch releases even when the block
+	# layout is identical, so a toolchain mismatch invalidates the comparison.
+	recorded_go="$(awk -F= '$1 == "go_version" { print $2 }' "$BASELINE")"
+	active_go="$(go version | awk '{ print $3 }')"
+	if [ -n "$recorded_go" ] && [ "$recorded_go" != "$active_go" ]; then
+		say ""
+		say "note: ${BASELINE} was recorded with ${recorded_go}, this run used ${active_go}."
+		say "      Coverage statement counts are toolchain-specific; re-record on the"
+		say "      canonical toolchain (nix develop, the CI patch level) before comparing."
+	fi
+
 	recorded="$(awk -F= '$1 == "hand_pct" { print $2 }' "$BASELINE")"
 	if [ -n "$recorded" ] && ! awk -v a="$recorded" -v b="$HAND_PCT" 'BEGIN { exit !(a + 0 > b + 0) }'; then
 		if awk -v a="$recorded" -v b="$HAND_PCT" 'BEGIN { exit !((b - a) >= 0.1) }'; then
