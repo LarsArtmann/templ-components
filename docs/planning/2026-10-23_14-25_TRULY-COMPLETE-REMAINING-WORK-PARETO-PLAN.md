@@ -456,7 +456,7 @@ M04 and M05 (framing and cut timing).
 | TODO rows 438–441 added | ✅ | coverage artifact/guard, gate self-test, profile discrepancy, hook race |
 | Coverage floors ratcheted | ✅ | `display 69 → 70` (measured 72); other packages already at current−2; `cmd/tc` left at 23 (17-point jump is an owner-level change) |
 | Coverage convention documented | ✅ | AGENTS.md Build & Test Commands: two numbers, 73.6 % ceiling, `--gate 94` |
-| M00 | pending | ritual + commit + push of this plan, the status report, and the two edits |
+| M00 | ✅ | `scripts/ci-repro.sh --lint --css --website` → `VERDICT: PASS (exit 0)` at **14:37:09 CEST** on `51a03c3e`; pushed; CI run **`39954700548` SUCCESS** (Build & Test incl. the coverage gate, Visual Regression, Lint, CSS Freshness, HTML validation). The push required a merge, not a force-push: the daemon had published an intermediate docs snapshot plus an automation bump of `playwright-core` to 1.64.1; the merge kept the final docs tree and restored the 1.63.0 lockstep pin |
 | M01–M20 | pending | sequenced per §5; M02/M03 are owner gates (Q1), M04 waits on Q3, M06 waits on Q2 |
 
 ---
