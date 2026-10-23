@@ -16,15 +16,15 @@ validation).
 
 ## Scoreboard
 
-| Area                               | State                                                                 |
-| ---------------------------------- | --------------------------------------------------------------------- |
-| #28 coverage blocker               | 🔵 **Diagnosed and closed as a false premise** (raw ceiling 73.6 %)    |
-| Library coverage tooling + gates   | ✅ shipped (`scripts/coverage-library.sh`, ci-repro + CI)              |
-| Hand-written coverage              | ✅ 95.3 % → 96.7 % (root 97.5 % → 99.4 %)                              |
-| Plan M00 / M01 / M03 / M04 / M15 / M16 / M17 | ✅ done                                                      |
-| Plan M02 (13 owner verdicts)       | ⏸ packet re-verified, verdicts deliberately NOT applied                |
-| Plan M05–M14 (owner/upstream/other repos) | ⏸ untouched                                                    |
-| Release cut                        | ⏸ not performed (irreversible, owner call)                             |
+| Area                                         | State                                                               |
+| -------------------------------------------- | ------------------------------------------------------------------- |
+| #28 coverage blocker                         | 🔵 **Diagnosed and closed as a false premise** (raw ceiling 73.6 %) |
+| Library coverage tooling + gates             | ✅ shipped (`scripts/coverage-library.sh`, ci-repro + CI)           |
+| Hand-written coverage                        | ✅ 95.3 % → 96.7 % (root 97.5 % → 99.4 %)                           |
+| Plan M00 / M01 / M03 / M04 / M15 / M16 / M17 | ✅ done                                                             |
+| Plan M02 (13 owner verdicts)                 | ⏸ packet re-verified, verdicts deliberately NOT applied             |
+| Plan M05–M14 (owner/upstream/other repos)    | ⏸ untouched                                                         |
+| Release cut                                  | ⏸ not performed (irreversible, owner call)                          |
 
 ---
 
@@ -36,7 +36,7 @@ validation).
    templ emits, per element, a `WriteString` plus an **unreachable**
    `if err != nil { return err }` branch (read directly in
    `display/card_templ.go:128-145`). Quantified: generated code is **91.3 %**
-   of the library's statements, so covering *every* hand-written statement
+   of the library's statements, so covering _every_ hand-written statement
    still leaves raw coverage at **73.6 %**. This is now recorded in
    `TODO_LIST.md` row 28 and the CHANGELOG, with the numbers and the file
    reference.
@@ -117,8 +117,8 @@ validation).
 
 ## b) PARTIALLY DONE
 
-1. **M03/M04 as written in the plan.** The *intent* (raise coverage honestly)
-   is done; the *stated target* (raw 80 %) is impossible. The plan's
+1. **M03/M04 as written in the plan.** The _intent_ (raise coverage honestly)
+   is done; the _stated target_ (raw 80 %) is impossible. The plan's
    medium-task rows were rewritten in place with the correction rather than
    silently re-scoped.
 2. **G1 packet refresh covers 6 of 13 memos**, not all 13. Re-verified:
@@ -172,7 +172,7 @@ validation).
 1. **My own plan contained the false premise.** Last session I wrote
    "coverage 70.4 % vs the 80 % gate; the gap is ordinary test-writing" and
    scheduled two 90-minute test batches. That was wrong at the root: I read
-   the 72.1 % note in TODO #28 and never asked *which statements* were
+   the 72.1 % note in TODO #28 and never asked _which statements_ were
    uncovered. One `go tool cover` query on a generated file would have shown
    the unreachable write-error branches immediately. Cost: the plan's central
    item had to be re-diagnosed mid-execution.
