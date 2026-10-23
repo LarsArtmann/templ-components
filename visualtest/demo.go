@@ -115,7 +115,7 @@ func StartDemoServer(t *testing.T) *DemoServer {
 			_ = server.cmd.Process.Kill()
 		}
 
-		<-done
+		_ = <-done
 	})
 
 	return server
