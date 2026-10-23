@@ -323,6 +323,11 @@ jobs:
       # Generated templ output carries one unreachable write-error branch per
       # element, so the raw number plateaus; this gate measures the
       # hand-written library code only (see scripts/coverage-library.sh).
+      # The self-test feeds synthetic profiles through the same script, so a
+      # gate that can no longer fail is caught before the measurement runs.
+      - name: Coverage gate self-test
+        run: scripts/test-coverage-library-gate.sh
+
       - name: Library coverage (hand-written, generated excluded)
         run: scripts/coverage-library.sh --gate 94
 
@@ -333,7 +338,9 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-report
-          path: coverage.out
+          path: |
+            coverage.out
+            reports/coverage-library.txt
 
   # CSS freshness check: recompile demo CSS via Nix-provided Tailwind and diff
   # against the committed file. Catches stale CSS that shipped in v1.7.0

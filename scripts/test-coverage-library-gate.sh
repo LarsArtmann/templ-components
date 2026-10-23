@@ -80,16 +80,17 @@ case "$out" in
 *) fail "above-floor run did not print the PASS line:"$'\n'"$out" ;;
 esac
 
-# 3. Generated templ output must not rescue the hand-written number: 2 of 10
-#    hand-written statements covered (20%), 100 of 100 generated covered.
-#    Raw would be 102/110 = 92.7% and pass gate 90; the gate must still fail.
+# 3. Generated templ output must not rescue the hand-written number: 5 of 10
+#    hand-written statements covered (50%), 100 of 100 generated covered.
+#    Raw would be 105/110 = 95.5% and pass gate 90; the gate must still fail.
 profile "$TMP/generated.out" \
-	"$PKG/display/sample.go:1.1,2.2 10 2" \
+	"$PKG/display/sample.go:1.1,2.2 5 1" \
+	"$PKG/display/sample.go:3.1,4.2 5 0" \
 	"$PKG/display/sample_templ.go:1.1,2.2 100 100"
 run 1 "generated _templ.go does not lift the hand-written number" \
 	"$SCRIPT" --profile "$TMP/generated.out" --gate 90
 case "$out" in
-*"hand-written (generated excluded):     2/10 = 20.0%"*) ;;
+*"hand-written (generated excluded):     5/10 = 50.0%"*) ;;
 *) fail "generated-exclusion case reported the wrong hand-written total:"$'\n'"$out" ;;
 esac
 

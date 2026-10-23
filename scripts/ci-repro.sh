@@ -180,6 +180,9 @@ if awk "BEGIN{exit !($COVERAGE < 70)}"; then
 	exit 1
 fi
 
+step "Coverage gate self-test (synthetic profiles, no compile)"
+scripts/test-coverage-library-gate.sh
+
 step "Library coverage (hand-written, generated templ excluded)"
 scripts/coverage-library.sh --gate 94
 
