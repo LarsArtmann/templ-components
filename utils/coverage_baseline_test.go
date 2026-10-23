@@ -85,13 +85,22 @@ func TestCoverageBaselineMatchesProse(t *testing.T) {
 	// The living prose must quote the recorded figures AND name the baseline,
 	// otherwise a reader cannot tell which measurement the numbers came from.
 	agents := readDoc(t, "AGENTS.md")
-	for _, want := range []string{
-		"scripts/coverage-baseline.txt",
-		formatFigure(hand.pct, "hand-written"),
-		formatFigure(raw.pct, "raw"),
-		formatFigure(ceiling, "ceiling"),
-		formatFigure(generatedShare, "of statements"),
-	} {
+	if !strings.Contains(string(agents), "scripts/coverage-baseline.txt") {
+		t.Error("AGENTS.md coverage bullet does not name scripts/coverage-baseline.txt")
+	}
+
+	figures := []struct {
+		value     float64
+		qualifier string
+	}{
+		{hand.pct, "hand-written"},
+		{raw.pct, "raw"},
+		{ceiling, "ceiling"},
+		{generatedShare, "of statements"},
+	}
+
+	for _, figure := range figures {
+		want := strconv.FormatFloat(figure.value, 'f', 1, 64) + "% " + figure.qualifier
 		if !strings.Contains(string(agents), want) {
 			t.Errorf("AGENTS.md coverage bullet does not contain %q; update it with the recorded baseline", want)
 		}
@@ -131,10 +140,6 @@ func assertFloat(t *testing.T, label string, got, want float64) {
 	if diff := got - want; diff > 0.051 || diff < -0.051 {
 		t.Errorf("%s = %.1f, but the counts imply %.1f", label, got, want)
 	}
-}
-
-func formatFigure(pct float64, qualifier string) string {
-	return strconv.FormatFloat(pct, 'f', 1, 64) + "% " + qualifier
 }
 
 func readCoverageBaseline(t *testing.T) map[string]string {
