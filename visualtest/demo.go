@@ -104,9 +104,16 @@ func StartDemoServer(t *testing.T) *DemoServer {
 		t.Fatalf("visualtest[demo]: start server: %v", err)
 	}
 
-	done := make(chan error, 1)
+	// The exit status of a deliberately killed demo carries no signal for the
+	// test; the receive only guarantees the reaper goroutine has finished
+	// before the temp dir disappears.
+	done := make(chan struct{}, 1)
 
-	go func() { done <- server.cmd.Wait() }()
+	go func() {
+		_ = server.cmd.Wait()
+
+		done <- struct{}{}
+	}()
 
 	waitForDemoHealth(t, server.baseURL)
 
@@ -115,7 +122,7 @@ func StartDemoServer(t *testing.T) *DemoServer {
 			_ = server.cmd.Process.Kill()
 		}
 
-		_ = <-done
+		<-done
 	})
 
 	return server
