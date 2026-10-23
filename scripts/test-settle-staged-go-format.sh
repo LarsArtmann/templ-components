@@ -31,7 +31,6 @@ git config commit.gpgsign false
 printf 'package sample\n\nfunc  Add(a,b int) int{return a+b}\n' >sample.go
 git add sample.go
 staged_before="$(git rev-parse :sample.go)"
-worktree_before="$(cat sample.go)"
 
 printf 'package sample\n\nfunc Add(a, b int) int { return a + b } // NOT STAGED\n' >sample.go
 

@@ -17,6 +17,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   documented in ADR-0009, with no new extraction decision. Two consecutive
   `check` runs are green; the lane remains advisory.
 
+- **Pre-commit hook settles staged Go formatting before lint.** BuildFlow's
+  pre-commit DAG has no edge from `golangci-lint` to the formatter steps, so
+  `nix-fmt`/`templ-fmt` could rewrite a staged `.go` file while lint was
+  reading it (2026-10-23: six modules failed lint mid-format, then passed
+  standalone). The hook now formats the staged blob before BuildFlow runs —
+  never the worktree file, so unstaged edits cannot leak into a commit.
+
 ### Fixed
 
 - **`datastar.PolledRegion` timestamp contrast (WCAG 4.5:1).** The
