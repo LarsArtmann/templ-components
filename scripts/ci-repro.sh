@@ -199,6 +199,7 @@ if [ "$RUN_LINT" = "1" ]; then
 	scripts/check-lint-modules.sh
 	scripts/check-tc-sources-sync.sh
 	scripts/test-release-assertions.sh
+	scripts/test-settle-staged-go-format.sh
 
 	step "Changelog warmth guard (#133 — local parity with CI's changelog-guard job)"
 	# CI runs scripts/check-changelog-guard.sh over the PR file list; locally

@@ -125,6 +125,24 @@ if [ -x "$REPO_ROOT/scripts/test-coverage-library-gate.sh" ]; then
     }
 fi
 
+# Guard 10: settle staged Go formatting (#441)
+#   BuildFlow's pre-commit DAG has no edge from golangci-lint to the formatter
+#   steps, so nix-fmt/templ-fmt can rewrite a staged .go file while lint reads
+#   it (2026-10-23: six modules failed lint mid-format, passed standalone).
+#   Formatting the staged blob BEFORE BuildFlow removes the race; the worktree
+#   is never touched, so unstaged edits cannot leak into the commit.
+if [ -x "$REPO_ROOT/scripts/test-settle-staged-go-format.sh" ]; then
+    settle_test_out="$("$REPO_ROOT/scripts/test-settle-staged-go-format.sh" 2>&1)" || {
+        printf '%s\n' "$settle_test_out"
+        echo "PRE-COMMIT BLOCKED: settle-staged-go-format self-test failed." >&2
+        exit 1
+    }
+fi
+
+if [ -x "$REPO_ROOT/scripts/settle-staged-go-format.sh" ]; then
+    "$REPO_ROOT/scripts/settle-staged-go-format.sh"
+fi
+
 echo "Running BuildFlow pre-commit checks (budget: 60s)..."
 
 START=$(date +%s)

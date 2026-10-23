@@ -40,15 +40,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Raw `go test -cover` includes templ's generated `*_templ.go`, where every
   element contributes an unreachable `WriteString` error branch; raw library
   coverage therefore plateaus near 73% no matter how thorough the tests are —
-  generated code is 91.3% of the library's statements, so even 100%
-  hand-written coverage caps raw at 73.6%. The new script measures the
+  generated code is 93.3% of the library's statements, so even 100%
+  hand-written coverage caps raw at 72.9%. The new script measures the
   published modules only (demo app and `tc` CLI excluded) and reports both
   numbers, gating on the hand-written share (80% is the adoption threshold;
   CI uses a 94% ratchet floor), wired into `ci-repro.sh` and the CI coverage
-  job. Current: **96.7% hand-written
-  (2275/2353 statements)** vs 73.3% raw. Branch tests for the chart helpers,
-  tone adapters, error-page fallback writers, and scanner error paths landed
-  with it.
+  job. Current: **96.6% hand-written
+  (1720/1780 statements)** vs 72.7% raw, recorded with go1.27.3 — the patch
+  level matters, because go1.27.0 assigns different statement counts to the
+  same coverage blocks. The figures are single-sourced in
+  `scripts/coverage-baseline.txt` and guarded against prose drift; every run
+  also writes `reports/coverage-library.txt` for the CI artifact. Branch tests
+  for the chart helpers, tone adapters, error-page fallback writers, and
+  scanner error paths landed with it.
 
 - **Demo twin-parity for the Datastar loading/polling components + StatusBadgeWith.**
   The demo-coverage audit (#414) flagged three KEEP gaps: `datastar.LoadingButton`
