@@ -1,10 +1,10 @@
 # TODO List — templ-components
 
-**Updated:** 2026-10-15 | **Version:** 1.23.0
+**Updated:** 2026-10-23 | **Version:** 1.23.0 | **Plan:** [`2026-10-23_09-27 SUPERB remaining-work plan`](docs/planning/2026-10-23_09-27_SUPERB-REMAINING-WORK-PARETO-EXECUTION-PLAN.md)
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources), ⫱ owner gate (decision/credential).
-> IDs are unique across ALL sections — next free ID → 421.
+> IDs are unique across ALL sections — next free ID → 438.
 
 ---
 
@@ -108,7 +108,7 @@ _Harvested 2026-09-17 (evening) from docs/status/2026-09-17_{18-10, 18-09, 17-28
 
 | 385 | BuildFlow golangci-lint-auto-configure: accepted-disabled allowlist | The step re-flags the three deliberately disabled linters (godoclint, ireturn, testableexamples) as warning findings on EVERY run; AGENTS.md "Disabled linters" documents all three as permanent (templ's interface-by-design, per-file godoc, verbose examples) and `TestGolangciDisabledLinters` guards the set repo-side. Ask: a tool_options allowlist so intentional disables stop re-reporting. Same repo family as #107/#108. |
 | ~~386~~ | Trim AGENTS.md 375 → ≤220 lines (BuildFlow agents-md-size budget): relocate per-component gotchas to docs/, keep contracts + pointers | Relocation must preserve every earned fact (docs/gotchas files, docs/agent-context-history.md); AGENTS.md keeps only session-critical contracts + links. Run it as a deliberate docs-health pass, NOT an inline shave — the file is the memory layer; losing context is worse than the warning. (BuildFlow preflight docs/agents-md-size) | ~~DONE 2026-10-12: AGENTS.md demoted to 186 lines (gate ≤220, passing) — struck 2026-10-13 (R13 harvest).~~
-| 387 | branching-flow nits worth having: strong ID types (visualtest `AxeViolation.ID`, website `Heading.ID`), guard hardening (`utils/golden/golden.go:203` index access, `visualtest/harness.go:46` deref) | Test-tooling/website only — no library API change; each item is small and type-safety-aligned. (BuildFlow branching-flow detect-only findings, 2026-10-08 run) |
+| ~~387~~ | DONE 2026-10-23 — `visualtest.AxeRuleID` types `AxeViolation.ID`; `md.HeadingID` types the website TOC heading ID (templ's `JoinURLErrs[T ~string]` accepts it, zero generated churn); `utils/golden` gained bounds-safe `lcsAt`; `visualtest` gained nil-safe `updateGoldens()` in place of five `*update` derefs. Branching-flow findings closed; website suite + visualtest compile + lints green. | Test-tooling/website only — no library API change; each item is small and type-safety-aligned. (BuildFlow branching-flow detect-only findings, 2026-10-08 run) |
 
 _2026-09-08 hardening note kept for provenance: items verified as already shipped by earlier sessions were dropped silently: #134 (AGENTS.md per-module loop), #137 (`TestDatastarScriptURL` + SDKScript golden sweep), #145 (treefmt goimports rides nixpkgs-go), #165 (`TestHeroCountsMatchFeatures`)._
 
@@ -379,12 +379,15 @@ Demand evidence source-verified 2026-10-10 (details: `docs/status/2026-10-10_05-
 | ~~423~~ | ~~`display.Table` keyboard-scrollable wrapper (`tabindex="0"`) lacks `role="region"` + accessible name~~ DONE — wrapper is `role="region"` named via `aria-label` from `AriaLabel` (fallback `Caption`); unnamed regions stay valid and rotor-invisible (verified in display/table.templ; CHANGELOG [Unreleased] Fixed entry).                                                                                                                                                                                                                                                                                                                                                                                                                        | Add `role="region"` + reuse the table's AriaLabel/caption on the wrapper; needs golden updates. From M08 spike.                                                       |
 | ~~424~~ | ~~Demo/library has ZERO `@media print` styling~~ DONE 2026-10-15 (edeb0407 + 6464be64) — `templates/custom.css` gained the minimal print layer (copy buttons/theme toggle/toasts/dismiss hidden, shadows+animations dropped, `.tc-prose` links print target URL, paper forced light), AppShell mobile-nav carries `print:hidden`, docs/theming.md teaches it, browser proof `TestPrintMediaHidesInteractiveChrome` + string guard `TestPrintLayerPresent`.                                                                                                                                                                                                                                                                                            | Minimal print layer in `templates/custom.css` + demo: hide nav chrome/actions, drop shadows; add docs guidance for consumers. From M11 CDP probe.                     |
 
-_Execution status 2026-10-15: #412–#418 executed (evidence + verdicts in
-`docs/testing/tooling-evaluation.md`; M11 tests integrated in `visualtest`); #419
-delivered to the gate edge (flake app works, CI draft is dispatch-only); #411/#420
-open pending ⫱G1–G4 — protocol + budget table already committed
-(`docs/testing/tool-trial-protocol.md`). Spike findings #421–#424 ALL resolved
-the same day (#421/#422 component fixes; #423/#424 verified done in code)._
+_Execution status 2026-10-23: the 09:03 plan executed **#437** (Heatmap now labels the
+native table instead of wrapping it in `role="img"`), **#387** (typed rule/heading
+IDs + bounds-safe diff), **#435** (art-dupl baseline re-recorded against the fork
+analyzer: 150 groups, `check` green ×2), and closed **#29** (templ.guide PR
+`a-h/templ#1447` MERGED), **#189**, **#294**, **#357**. Daemon drift repaired:
+templ pins back to 0.3.1020 across all modules, playwright-core back to 1.63.0,
+tone palette table regenerated. Remaining work (60 open rows, gates G1–G6):
+`docs/planning/2026-10-23_09-27_SUPERB-REMAINING-WORK-PARETO-EXECUTION-PLAN.md`.
+Full `ci-repro --lint --css --visual --website` and the push are still outstanding._
 
 ## Harvested 2026-10-15 — color domain-model deep dive (docs/reviews/2026-10-15_color-domain-model.html)
 
