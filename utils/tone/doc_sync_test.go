@@ -113,13 +113,64 @@ func TestThemeBridgePaletteTableSync(t *testing.T) {
 		)
 	}
 
-	if have := string(doc)[start : end+len(paletteEnd)]; have != want {
+	have := string(doc)[start : end+len(paletteEnd)]
+	if normalizeGeneratedBlock(have) != normalizeGeneratedBlock(want) {
 		t.Errorf(
 			"theme bridge doc palette table is stale:\n--- have ---\n%s\n--- want ---\n%s\nRun: go test ./utils/tone/ -update",
 			have,
 			want,
 		)
 	}
+}
+
+// normalizeGeneratedBlock makes the generated-section comparison insensitive to
+// markdown table padding. The repo formatter aligns tables; the generator emits
+// compact rows. Both express the same table, and comparing padding made the
+// guard fail after every formatter run (2026-10-23 recurrence). Semantic drift
+// (a missing hue, a changed column value) still fails.
+func normalizeGeneratedBlock(block string) string {
+	lines := strings.Split(block, "\n")
+	normalized := make([]string, 0, len(lines))
+
+	for _, line := range lines {
+		if isTableSeparator(line) {
+			continue
+		}
+
+		line = strings.Join(strings.Fields(line), " ")
+		if line == "" {
+			continue
+		}
+
+		normalized = append(normalized, line)
+	}
+
+	return strings.Join(normalized, "\n")
+}
+
+// isTableSeparator reports whether the line is a markdown table delimiter row
+// (only pipes, dashes, colons, and spaces). Padding differences make the
+// delimiter row length vary; the row carries no data, so both sides skip it.
+func isTableSeparator(line string) bool {
+	trimmed := strings.TrimSpace(line)
+	if !strings.HasPrefix(trimmed, "|") {
+		return false
+	}
+
+	hasDash := false
+
+	for _, char := range trimmed {
+		switch char {
+		case '|', ' ':
+		case '-':
+			hasDash = true
+		case ':':
+		default:
+			return false
+		}
+	}
+
+	return hasDash
 }
 
 // TestThemeTokenLayerInventory pins the tc-* token inventory of
