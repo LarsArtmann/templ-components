@@ -201,14 +201,14 @@ say "  hand-written (generated excluded):     ${HAND_COV}/${HAND_TOT} = ${HAND_P
 
 # The generated share is what it is; covering every hand-written statement
 # cannot lift the raw number past this ceiling.
-read -r CEIL_PCT GEN_TOT GEN_SHARE_PCT < <(awk -v raw_cov="$RAW_COV" -v raw_tot="$RAW_TOT" -v hand_tot="$HAND_TOT" '
+read -r CEIL_PCT GEN_TOT GEN_SHARE_PCT < <(awk -v raw_cov="$RAW_COV" -v raw_tot="$RAW_TOT" -v hand_cov="$HAND_COV" -v hand_tot="$HAND_TOT" '
 	END {
-		gen_cov = raw_cov - (raw_tot - hand_tot)
+		gen_cov = raw_cov - hand_cov
 		gen_tot = raw_tot - hand_tot
 		printf "%.1f %d %.1f\n", (gen_cov + hand_tot) * 100 / raw_tot, gen_tot, gen_tot * 100 / raw_tot
 	}' </dev/null)
 
-say "  raw ceiling if all hand-written code were covered: $((RAW_COV - (RAW_TOT - HAND_TOT) + HAND_TOT))/${RAW_TOT} = ${CEIL_PCT}%"
+say "  raw ceiling if all hand-written code were covered: $((RAW_COV - HAND_COV + HAND_TOT))/${RAW_TOT} = ${CEIL_PCT}%"
 say "  generated share: ${GEN_TOT}/${RAW_TOT} statements (${GEN_SHARE_PCT}% of the library)"
 
 say ""
