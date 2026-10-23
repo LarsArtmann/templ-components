@@ -2,7 +2,7 @@
 
 **Repo:** `github.com/larsartmann/templ-components` · **Version:** 1.23.0 ·
 **HEAD at report time:** `60c74625` (daemon auto-commits; see §6.9) ·
-**Branch:** `master` · **Tree:** clean · **Pushed:** no.
+**Branch:** `master` · **Tree:** clean · **Pushed:** yes — `820e2df1` (see Addendum).
 
 **Scope of this session (single-writer claim):** `TODO_LIST.md`, the new plan doc,
 `display/heatmap.{templ,go}` + heatmap goldens + `display/a11y_new_test.go`,
@@ -31,9 +31,9 @@ breakdown for every open row.
 | Modules tested green | root + utils + icons + errorpage + charts/echarts + datastar + htmx + website; visualtest compiles |
 | Pixel proof | `TestDemoRouteGoldens` green in **92.8 s** (all demo routes, light/dark/mobile/RTL) |
 | Lint | 0 issues on display, utils/golden, visualtest, website |
-| Full push ritual (`ci-repro --lint --css --website`) | **NOT RUN** |
+| Full push ritual (`ci-repro --lint --css --visual --website`) | **PASS** (09:41:44 CEST — see Addendum) |
 | Full visual suite (`nix run .#visual`, all tests) | **NOT RUN** (route goldens only) |
-| Pushed / CI-verified | **NO** |
+| Pushed / CI-verified | Pushed `820e2df1`; CI run `39919529944` in progress at report close |
 | Root-module coverage | **70.4 %** (70 % gate passes; #28 needs 80 %) |
 
 **Verdict:** the session delivered real correctness and hygiene value, and repaired a
@@ -378,3 +378,28 @@ cmd/tc/_sources/display/heatmap.templ
 go.mod / go.sum / website/go.{mod,sum} / visualtest/go.{mod,sum}
 tools/crossbrowser-spike/package.json
 ```
+
+---
+
+## Addendum — 09:42 CEST (verification, commit, push)
+
+This report was written before the final verification run. Afterwards:
+
+- Added `TestGeneratedFileNameRoots` (every generated `FileName:` literal must
+  resolve from its owning module root) and `TestLCSAtOutOfRange` (defensive LCS
+  accessor).
+- Made the tone palette guard insensitive to markdown table padding and delimiter
+  width; the repo formatter aligns tables while the generator emits compact rows.
+- Restored `playwright-core` to 1.63.0 again (automation had re-bumped it to 1.64.1
+  while the lockfile still pinned 1.63.0).
+- Ran the **full** pre-push ritual:
+  `scripts/ci-repro.sh --lint --css --visual --website` →
+  **`VERDICT: PASS (exit 0)` at 2026-10-23 09:41:44 CEST**, art-dupl advisory GREEN
+  against the 150-group baseline.
+- Committed `820e2df1` with a detailed message and **pushed to `origin/master`**.
+- CI run `39919529944` was `in_progress` at report close; the previous tip
+  `e9b09c69` had a failed CI run, consistent with the daemon drift repaired here.
+
+Remaining truth: the plan's M02–M17 are still open; the push proves this session's
+changes, not the whole remaining backlog.
+

@@ -360,15 +360,19 @@ those flips a policy or an external contract.
 | Step | Result | Evidence |
 | --- | --- | --- |
 | Plan written | ✅ | this file |
-| M00 | | |
-| M01 | | |
-| M02 | | |
+| M00 | ✅ | `scripts/ci-repro.sh --lint --css --visual --website` → `VERDICT: PASS (exit 0)` at `2026-10-23 09:41:44 CEST`; art-dupl advisory GREEN (150-group baseline); pushed `820e2df1` to `origin/master` |
+| M01 | ✅ | `TestGeneratedFileNameRoots` (module-relative `FileName:` invariant) + `TestLCSAtOutOfRange` added; #387 struck; TODO header/footer updated and linked to this plan; utils suite + lint green |
+| M02 | | owner session still required |
 | M03/M04 | | |
-| M05 | | |
-| M06/M07 | | |
-| M08 | | |
-| M09 | | |
+| M05 | | owner decision first |
+| M06/M07 | | upstream repo |
+| M08 | | upstream repo |
+| M09 | | needs API key/human |
 | M10–M17 | | |
+
+**Post-push CI:** run `39919529944` was in progress at push time. The previous tip
+(`e9b09c69`) had failed CI, which is consistent with the daemon drift repaired here
+(templ pins, playwright pin, formatter-aligned generated table).
 
 ---
 
