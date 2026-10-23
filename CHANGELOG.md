@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Duplication-gate baseline re-recorded against the current analyzer (150
+  groups at t=1).** The hash baseline is binary-pinned, and the fork detector
+  moved past the generation that recorded the previous 124 groups, so every
+  stored hash was incomparable and the advisory lane reported the whole tree
+  as new. The full set was re-taken after confirming that the current
+  advisory sets (73 groups at t=2, 38 at t=3) map onto the signature classes
+  documented in ADR-0009, with no new extraction decision. Two consecutive
+  `check` runs are green; the lane remains advisory.
+
 ### Fixed
 
 - **`datastar.PolledRegion` timestamp contrast (WCAG 4.5:1).** The

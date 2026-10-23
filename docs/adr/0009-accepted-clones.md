@@ -655,11 +655,15 @@ blanket-accepting or blanket-extracting.
 ## Consequences
 
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
-  — it fails ONLY on clones not in the accepted baseline (currently 124
-  groups at t=1, per the 2026-09-25 re-record with the fork detector: the 5 new
-  groups are documented in the 2026-09-25 pass; 2 of the prior 121 hashes
-  went stale with the v1.19.3 test-file edits, the living-artifact case
-  below; see the tool-version pin above)
+  — it fails ONLY on clones not in the accepted baseline (currently 150
+  groups at t=1, per the 2026-10-23 re-record with the fork detector
+  `v0.9.1-0.20261017225421-93432fd910fb-93432fd`). The analyzer-generation
+  change made the prior 124 hashes incomparable (check reported every
+  current group as new), so the re-record re-took the whole set AFTER the
+  class triage below; the current advisory sets (73 groups at t=2, 38 at
+  t=3) fit the existing signature classes and added no extraction decision.
+  The 2026-09-25 record (124 groups) stays as historical narrative under
+  the prior detector generation.
 - Historical full-scan counts (DETECTOR-GENERATION-SPECIFIC — numbers are
   only comparable within one detector generation and are kept as historical
   narrative, never as a target): the pre-baseline detector generation
@@ -719,7 +723,11 @@ the prose sections (two harmful clones found and extracted: line/area-chart
 shell + definitionGridInner; the rest categorized as above or below the
 extraction floor). Nothing in the current sets reopens those verdicts.
 
-**Owed debt (tracked as TODO #435):** the committed baseline predates the
-fork's v0.9.1 analyzer. Before any baseline re-record: triage the 74+9
-current groups against the LANE binary, fold any genuinely-new class into
-this ADR, then re-record with that same binary and log the version here.
+**DONE 2026-10-23 (TODO #435):** the baseline was re-recorded against the
+fork analyzer (`v0.9.1-0.20261017225421-93432fd910fb-93432fd`, built from
+`~/projects/art-dupl` at `93432fd9`). The analyzer-generation change made
+the prior 124 hashes incomparable, so the full set was re-taken: 150 groups
+at t=1, after confirming that the current advisory sets (73 groups at t=2,
+38 at t=3) map onto the signature classes above with no new extraction
+decision. Two consecutive `check` runs after the record are green. The
+lane remains advisory and never gates.
