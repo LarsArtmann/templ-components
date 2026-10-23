@@ -34,7 +34,10 @@ func TestCoverageBaselineMatchesProse(t *testing.T) {
 
 	for _, key := range required {
 		if _, ok := baseline[key]; !ok {
-			t.Errorf("scripts/coverage-baseline.txt is missing %q (regenerate with scripts/coverage-library.sh --record)", key)
+			t.Errorf(
+				"scripts/coverage-baseline.txt is missing %q (regenerate with scripts/coverage-library.sh --record)",
+				key,
+			)
 		}
 	}
 
@@ -64,7 +67,13 @@ func TestCoverageBaselineMatchesProse(t *testing.T) {
 	hand.assertPercent(t, "hand_pct")
 
 	if hand.covered > raw.covered || hand.total > raw.total {
-		t.Errorf("hand-written counts (%d/%d) exceed raw counts (%d/%d)", hand.covered, hand.total, raw.covered, raw.total)
+		t.Errorf(
+			"hand-written counts (%d/%d) exceed raw counts (%d/%d)",
+			hand.covered,
+			hand.total,
+			raw.covered,
+			raw.total,
+		)
 	}
 
 	// Every hand-written statement covered, generated coverage unchanged:
@@ -100,6 +109,7 @@ func (n coverageNumbers) assertPercent(t *testing.T, label string) {
 
 	if n.total <= 0 {
 		t.Errorf("%s: total statements = %d, want > 0", label, n.total)
+
 		return
 	}
 
@@ -146,6 +156,7 @@ func readCoverageBaseline(t *testing.T) map[string]string {
 		key, value, ok := strings.Cut(line, "=")
 		if !ok {
 			t.Errorf("malformed baseline line %q", line)
+
 			continue
 		}
 
