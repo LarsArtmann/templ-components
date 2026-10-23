@@ -211,7 +211,7 @@ func assertSiteRouteScreenshot(t *testing.T, name, url string, dark bool, viewpo
 func compareSiteGolden(t *testing.T, name string, shot []byte) {
 	t.Helper()
 
-	if *update {
+	if updateGoldens() {
 		writeGolden(t, "routes/"+name, shot)
 
 		return

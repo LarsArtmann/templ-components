@@ -163,7 +163,7 @@ func TestAxeHarnessDetectsViolations(t *testing.T) {
 		)
 	}
 
-	found := map[string]bool{}
+	found := map[AxeRuleID]bool{}
 	for _, violation := range blocking {
 		found[violation.ID] = true
 	}

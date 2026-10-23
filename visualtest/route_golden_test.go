@@ -172,7 +172,7 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewp
 		t.Fatalf("route golden[%s]: capture: %v", name, err)
 	}
 
-	if *update {
+	if updateGoldens() {
 		writeGolden(t, "routes/"+name, shot)
 
 		return

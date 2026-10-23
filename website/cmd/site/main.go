@@ -273,7 +273,7 @@ func renderDocs(repoRoot, nonce string) ([]build.Page, []build.SearchDoc, error)
 
 		sections := make([]build.SearchSection, 0, len(parsed.Headings))
 		for _, heading := range parsed.Headings {
-			sections = append(sections, build.SearchSection{ID: heading.ID, Text: heading.Text})
+			sections = append(sections, build.SearchSection{ID: string(heading.ID), Text: heading.Text})
 		}
 
 		searchDocs = append(searchDocs, build.SearchDoc{

@@ -168,7 +168,7 @@ func kanbanCaptureBoardState(
 		t.Fatalf("%s: capture: %v", name, err)
 	}
 
-	if *update {
+	if updateGoldens() {
 		writeGolden(t, name, shot)
 
 		return

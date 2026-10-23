@@ -265,6 +265,16 @@ func writeReplacement(b *strings.Builder, oldLine, newLine string, wantIdx, gotI
 	fmt.Fprintf(b, "    ~~~ word diff: %s\n", strings.TrimSpace(wordDiff(oldLine, newLine)))
 }
 
+// lcsAt reads the LCS table defensively: callers walk one row/column past the
+// line slices, so a malformed or short table must not panic the diff renderer.
+func lcsAt(lcs [][]int, row, col int) int {
+	if row < 0 || row >= len(lcs) || col < 0 || col >= len(lcs[row]) {
+		return 0
+	}
+
+	return lcs[row][col]
+}
+
 func collectDiffOps(wantLines, gotLines []string, lcs [][]int) []diffOp {
 	var ops []diffOp
 
@@ -275,7 +285,7 @@ func collectDiffOps(wantLines, gotLines []string, lcs [][]int) []diffOp {
 		case wantLines[wantIdx] == gotLines[gotIdx]:
 			wantIdx++
 			gotIdx++
-		case lcs[wantIdx+1][gotIdx] >= lcs[wantIdx][gotIdx+1]:
+		case lcsAt(lcs, wantIdx+1, gotIdx) >= lcsAt(lcs, wantIdx, gotIdx+1):
 			ops = append(ops, diffOp{kind: '-', wantIdx: wantIdx, gotIdx: -1})
 			wantIdx++
 		default:

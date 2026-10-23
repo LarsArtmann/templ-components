@@ -140,7 +140,7 @@ func TestKanbanSingleTransportBoards(t *testing.T) {
 				t.Fatalf("capture: %v", err)
 			}
 
-			if *update {
+			if updateGoldens() {
 				writeGolden(t, tcase.name, shot)
 
 				return

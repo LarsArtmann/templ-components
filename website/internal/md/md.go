@@ -22,9 +22,12 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
+// HeadingID is the anchor id of a document heading.
+type HeadingID string
+
 // Heading is one TOC entry (h2/h3) collected from the document.
 type Heading struct {
-	ID    string
+	ID    HeadingID
 	Text  string
 	Level int
 }
@@ -189,7 +192,7 @@ func collectHeadings(source []byte) []Heading {
 			textParts = append(textParts, string(segment.Value(source)))
 		}
 
-		headings = append(headings, Heading{ID: idText, Text: strings.Join(textParts, ""), Level: heading.Level})
+		headings = append(headings, Heading{ID: HeadingID(idText), Text: strings.Join(textParts, ""), Level: heading.Level})
 
 		return ast.WalkContinue, nil
 	})

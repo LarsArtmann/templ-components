@@ -19,6 +19,11 @@ const goldenMaxMismatchPercent = 0.1
 //nolint:gochecknoglobals // CLI flag for golden updates
 var update = flag.Bool("update", false, "update visual golden PNGs instead of comparing")
 
+// updateGoldens reports whether goldens should be rewritten. The nil check
+// keeps embedded/ad-hoc test mains from panicking if the flag was never
+// registered.
+func updateGoldens() bool { return update != nil && *update }
+
 // goldenDir is where golden screenshots live, relative to the test package.
 const goldenDir = "testdata"
 

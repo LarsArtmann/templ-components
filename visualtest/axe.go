@@ -21,6 +21,9 @@ var axeSource string
 // errAxeRuntime wraps in-page axe failures; the payload carries axe's message.
 var errAxeRuntime = errors.New("axe runtime error")
 
+// AxeRuleID identifies an axe-core rule (e.g. "image-alt").
+type AxeRuleID string
+
 // AxeImpact is the axe-core severity of a violation. Only Critical and Serious
 // block the sweep (see AxeImpact.Blocking); Moderate and Minor are recorded
 // for trending but never gate CI.
@@ -40,7 +43,7 @@ func (i AxeImpact) Blocking() bool { return i == AxeImpactCritical || i == AxeIm
 // AxeViolation is one axe-core rule failure: a rule ID, its severity, and the
 // DOM nodes that violated it.
 type AxeViolation struct {
-	ID      string    `json:"id"`
+	ID      AxeRuleID `json:"id"`
 	Impact  AxeImpact `json:"impact"`
 	Help    string    `json:"help"`
 	HelpURL string    `json:"helpUrl"`
@@ -111,4 +114,4 @@ func RunAxe(ctx context.Context) (AxeResults, error) {
 
 // AxeViolationKey identifies a violation class within one route: rule ID +
 // impact. The baseline guard compares keys and node counts per key.
-func AxeViolationKey(v AxeViolation) string { return v.ID + "|" + string(v.Impact) }
+func AxeViolationKey(v AxeViolation) string { return string(v.ID) + "|" + string(v.Impact) }

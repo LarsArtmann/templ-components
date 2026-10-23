@@ -43,7 +43,7 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 		t.Fatalf("visualtest[%s]: capture: %v", name, err)
 	}
 
-	if *update {
+	if updateGoldens() {
 		writeGolden(t, name, actual)
 
 		return
