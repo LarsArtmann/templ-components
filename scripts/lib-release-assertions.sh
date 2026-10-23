@@ -62,3 +62,30 @@ assert_release_tree() {
 	done
 	return 0
 }
+
+# bump_internal_pins <version> <modfile>...
+# Rewrites every require of the root module or a published sibling to
+# v<version>, in place, preserving trailing comments (`// indirect`).
+# The pattern matches BOTH the bare root path (no sub-path — how
+# website/go.mod pins `github.com/larsartmann/templ-components`) and every
+# sibling; the sub-path-only form missed the root pin and the v1.24.0 cut
+# shipped a mixed v1.23.0/v1.24.0 graph there. The version must be followed
+# by whitespace/EOL so the internal-only zero placeholder
+# (v0.0.0-00010101000000-…, satisfied by a local replace and deliberately NOT
+# bumped) is left alone.
+bump_internal_pins() {
+	if [ "$#" -lt 2 ]; then
+		echo "usage: bump_internal_pins <version> <modfile>..." >&2
+		return 1
+	fi
+	local version="$1"
+	shift
+	local modfile
+	for modfile in "$@"; do
+		[ -f "$modfile" ] || continue
+		sed -i.bak -E \
+			"s|(github\.com/larsartmann/templ-components(/[a-z/]+)?) v[0-9]+\.[0-9]+\.[0-9]+([[:space:]].*)?$|\1 v${version}\3|g" \
+			"$modfile"
+		rm -f "${modfile}.bak"
+	done
+}

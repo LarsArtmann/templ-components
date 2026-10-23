@@ -248,13 +248,10 @@ echo "Bumped utils.Version to $NEW_VERSION"
 #     v1.23.0/v1.24.0 graph there) and every sibling. The version must be
 #     followed by whitespace/EOL so visualtest's zero pseudo-version
 #     (`v0.0.0-00010101000000-...`, implicitly replaced and deliberately NOT
-#     bumped) is left untouched.
-for modfile in $MODFILES visualtest/go.mod website/go.mod; do
-	sed -i.bak -E \
-		"s|(github\.com/larsartmann/templ-components(/[a-z/]+)?) v[0-9]+\.[0-9]+\.[0-9]+([[:space:]].*)?$|\1 v${NEW_VERSION}\3|g" \
-		"$modfile"
-	rm -f "${modfile}.bak"
-done
+#     bumped) is left untouched. Extracted to lib-release-assertions.sh so
+#     scripts/test-release-assertions.sh can pin the behaviour.
+# shellcheck disable=SC2086 # $MODFILES is an intentional word-split list.
+bump_internal_pins "$NEW_VERSION" $MODFILES visualtest/go.mod website/go.mod
 echo "Bumped all internal module require entries to v${NEW_VERSION}."
 
 # 6. Move release notes from [Unreleased] to the new version heading.

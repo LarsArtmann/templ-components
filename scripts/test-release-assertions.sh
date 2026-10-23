@@ -139,5 +139,34 @@ git add -A
 git commit -qm clean-sibling
 expect_ok "$VERSION" go.mod utils/go.mod charts/echarts/go.mod
 
+# bump_internal_pins: the v1.24.0 gap. website/go.mod pins the BARE root path
+# (no sub-path); the sub-path-only pattern left it on the previous release
+# while every sibling moved, so the committed graph disagreed with the tag.
+# The internal-only zero placeholder must stay untouched, and a trailing
+# `// indirect` comment must survive the rewrite.
+cat >pin-bump.mod <<EOF
+require (
+    github.com/larsartmann/templ-components v1.2.3
+    github.com/larsartmann/templ-components/utils v1.2.3
+    github.com/larsartmann/templ-components/htmx v1.2.3 // indirect
+    github.com/larsartmann/templ-components v0.0.0-00010101000000-000000000000
+)
+replace github.com/larsartmann/templ-components => ../
+EOF
+bump_internal_pins "${VERSION}" pin-bump.mod
+expect_line() {
+	if grep -qxF "$1" pin-bump.mod; then
+		pass=$((pass + 1))
+	else
+		fail=$((fail + 1))
+		echo "FAIL (missing line): $1" >&2
+	fi
+}
+expect_line "    github.com/larsartmann/templ-components v${VERSION}"
+expect_line "    github.com/larsartmann/templ-components/utils v${VERSION}"
+expect_line "    github.com/larsartmann/templ-components/htmx v${VERSION} // indirect"
+expect_line "    github.com/larsartmann/templ-components v0.0.0-00010101000000-000000000000"
+expect_line "replace github.com/larsartmann/templ-components => ../"
+
 echo "release-assertions: ${pass} passed, ${fail} failed"
 [ "$fail" -eq 0 ]
