@@ -19,23 +19,21 @@ do not hand-edit the block below; regenerate with
 `go test ./utils/tone/ -update`.
 
 <!-- BEGIN generated: tone palette table (utils/tone/doc_sync_test.go; go test ./utils/tone/ -update) -->
-
-| Hue       | Tones rendered in it | Chart palette  |
-| --------- | -------------------- | -------------- |
-| `blue`    | info, accent         | yes (series 1) |
-| `emerald` | —                    | yes (series 2) |
-| `amber`   | —                    | yes (series 3) |
-| `rose`    | —                    | yes (series 4) |
-| `violet`  | —                    | yes (series 5) |
-| `cyan`    | —                    | yes (series 6) |
-| `orange`  | —                    | yes (series 7) |
-| `pink`    | —                    | yes (series 8) |
-| `gray`    | neutral              | —              |
-| `green`   | success              | —              |
-| `yellow`  | warning              | —              |
-| `red`     | danger               | —              |
-| `purple`  | —                    | —              |
-
+| Hue | Tones rendered in it | Chart palette |
+| --- | --- | --- |
+| `blue` | info, accent | yes (series 1) |
+| `emerald` | — | yes (series 2) |
+| `amber` | — | yes (series 3) |
+| `rose` | — | yes (series 4) |
+| `violet` | — | yes (series 5) |
+| `cyan` | — | yes (series 6) |
+| `orange` | — | yes (series 7) |
+| `pink` | — | yes (series 8) |
+| `gray` | neutral | — |
+| `green` | success | — |
+| `yellow` | warning | — |
+| `red` | danger | — |
+| `purple` | — | — |
 <!-- END generated: tone palette table -->
 
 Notes that live outside the generator: `amber` also renders SOME warning

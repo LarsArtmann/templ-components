@@ -192,7 +192,11 @@ func collectHeadings(source []byte) []Heading {
 			textParts = append(textParts, string(segment.Value(source)))
 		}
 
-		headings = append(headings, Heading{ID: HeadingID(idText), Text: strings.Join(textParts, ""), Level: heading.Level})
+		headings = append(headings, Heading{
+			ID:    HeadingID(idText),
+			Text:  strings.Join(textParts, ""),
+			Level: heading.Level,
+		})
 
 		return ast.WalkContinue, nil
 	})

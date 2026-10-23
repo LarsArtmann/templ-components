@@ -61,10 +61,11 @@ templ Heatmap(props HeatmapProps) {
 				id={ props.ID }
 			}
 			class={ utils.Class("overflow-x-auto", props.Class) }
-			role="img"
-			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, heatmapFallbackName) }
 		>
-			<table class="min-w-full border-collapse text-xs">
+			<table
+				class="min-w-full border-collapse text-xs"
+				aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, heatmapFallbackName) }
+			>
 				if len(props.ColumnLabels) > 0 {
 					<thead>
 						<tr>

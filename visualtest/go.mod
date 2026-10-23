@@ -8,7 +8,7 @@ module github.com/larsartmann/templ-components/visualtest
 go 1.27
 
 require (
-	github.com/a-h/templ v0.3.1070
+	github.com/a-h/templ v0.3.1020
 	github.com/chromedp/cdproto v0.157.9
 	github.com/chromedp/chromedp v0.20.1
 	github.com/larsartmann/go-datastar/static v0.6.1
