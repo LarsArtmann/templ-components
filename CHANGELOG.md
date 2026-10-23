@@ -24,6 +24,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   standalone). The hook now formats the staged blob before BuildFlow runs —
   never the worktree file, so unstaged edits cannot leak into a commit.
 
+- **`templates/custom.css` gains the `.tc-prose` class family** (13 new
+  element rules + dark overrides). Recompile your entry CSS after adopting;
+  `tc init` starters are refreshed in lockstep.
+
 ### Fixed
 
 - **`datastar.PolledRegion` timestamp contrast (WCAG 4.5:1).** The
@@ -33,6 +37,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   surface for demo-rendered markup). Now `text-gray-500 dark:text-gray-400`
   per the neutral-text convention; package goldens + the `/datastar`
   route captures carry the pixel change.
+
 - **`display.Heatmap` no longer puts a leaf image role around a table.**
   The scroll container carried `role="img"` while wrapping the whole grid
   and its row/column labels — an `aria_descendant_valid` violation (image
@@ -40,268 +45,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   container is now a plain scroll box and the native `<table>` owns the
   accessible name (`AriaLabel`, default "Heatmap"), so the matrix stays
   navigable cell by cell. Markup-only change; no pixel difference.
-
-### Added
-
-- **`scripts/coverage-library.sh` — an honest coverage number for adoption.**
-  Raw `go test -cover` includes templ's generated `*_templ.go`, where every
-  element contributes an unreachable `WriteString` error branch; raw library
-  coverage therefore plateaus near 73% no matter how thorough the tests are —
-  generated code is 93.3% of the library's statements, so even 100%
-  hand-written coverage caps raw at 72.9%. The new script measures the
-  published modules only (demo app and `tc` CLI excluded) and reports both
-  numbers, gating on the hand-written share (80% is the adoption threshold;
-  CI uses a 94% ratchet floor), wired into `ci-repro.sh` and the CI coverage
-  job. Current: **96.6% hand-written
-  (1720/1780 statements)** vs 72.7% raw, recorded with go1.27.3 — the patch
-  level matters, because go1.27.0 assigns different statement counts to the
-  same coverage blocks. The figures are single-sourced in
-  `scripts/coverage-baseline.txt` and guarded against prose drift; every run
-  also writes `reports/coverage-library.txt` for the CI artifact. Branch tests
-  for the chart helpers, tone adapters, error-page fallback writers, and
-  scanner error paths landed with it.
-
-- **Demo twin-parity for the Datastar loading/polling components + StatusBadgeWith.**
-  The demo-coverage audit (#414) flagged three KEEP gaps: `datastar.LoadingButton`
-  and `datastar.PolledRegion` had no live demo (the htmx twins were demoed, so the
-  "both dialects, same shape" claim was string-proven only), and `display.StatusBadgeWith`
-  had zero usage anywhere outside its own tests. The `/datastar` page now carries
-  LoadingButton (indicator-driven busy state against a 1.5s mock endpoint) and
-  PolledRegion (5s self-patching region that settles after 3 ticks, mirroring the
-  htmx demo's shape), and the `/display` badges section demos the injectable-mapper
-  pattern (extends the built-in map, unknown statuses render neutral).
-- **Demo kanban: sorted-view rejection (422) + opt-in file-backed state.**
-  The move endpoint no longer silently no-ops a move whose card or column
-  the server state does not know — the old behavior even DELETED the card
-  from its source column when the target column was unknown. Such moves
-  now answer `422` (stale board view), the contract is pinned by the
-  shared HTTP probes across BOTH transports and BOTH implementations (demo
-  + e2e harness), and the demo contract cheat-sheet carries the new row.
-  Separately, `KANBAN_STATE_FILE=<path>` opts the demo's boards into
-  persisted state (loaded at wiring, saved atomically per mutation,
-  corrupt-file-safe); the default stays memory-only so tests and route
-  goldens remain deterministic. The dashboard recipe gained a
-  kanban-board section showing the composition + server contract.
-- **SSE live-rows recipe** (`docs/recipes/sse-live-rows.md`). The append-live-
-  rows-over-Server-Sent-Events pattern the `Table` `BodyID` + `Body` API was
-  built for, written down: the `htmx-ext-sse` listener (the extension is
-  separate from `htmx.min.js` — a CSP nonce gotcha the docs now own), the
-  `sse-swap` + `hx-target="#tbody"` + `hx-swap="beforeend"` append, the
-  `event:`-named SSE endpoint rendering `<tr>` fragments, stable row ids with
-  `hx-swap-oob` patching, and the cap-the-DOM escape hatch for unbounded
-  feeds (plus the Datastar twin pointer).
-- **Error-page adoption-path guidance.** The error-pages guide now carries a
-  decision table for the four real integration shapes: the `ErrorHandler`
-  wrapper (zero config), `FromError` + your own layout shell (domain chrome —
-  the supported composition, not a divergence), per-status domain messages
-  (`FromError`/`FamilyFromStatus` + prop overrides), and HTMX fragment
-  exchanges (real status + `htmx.GlobalErrorHandling` toast, never a full
-  page).
-- **`errorpage.FamilyFromStatus(status int) Family`.** The inverse of
-  `FamilyStatusCode` for consumers that only have an HTTP status (reverse
-  proxies, upstream fetches) and until now hand-rolled the same switch.
-  Canonical mapping: 409→Conflict, 429/503→Transient, 502/504→Infrastructure,
-  500/501/505+→Corruption (matching the library-wide "unknown → Corruption"
-  precedent), other 4xx→Rejection. The status-level round-trip holds for every
-  family; the two forced collapses (Infrastructure→Transient at 503,
-  Orchestration→Corruption at 500) are pinned by test.
-- **Shipped `templates/safelist.css` for `GridColsAutoFit`.** The auto-fit
-  grid's `grid-template-columns` class is assembled at runtime from
-  `MinColWidth`, so Tailwind's scanner never sees it — consumers had to
-  hand-maintain an `@source inline(...)` line. The library now ships the
-  common ladder (160–320px, 12–24rem — 9 classes, live-compiled and verified
-  on tailwindcss 4.3.3), `templates/app.css` imports it, and `tc init`
-  scaffolds it. Arbitrary widths keep the hand-rolled line, documented in the
-  Tailwind adoption guide.
-- **CSP-safe AppShell sidebar width.** `SidebarWidth` no longer renders an
-  inline `style="--tc-sidebar-w: …"` on the shell root — strict `style-src`
-  CSPs dropped it silently, which is exactly how consumers lost their sidebar
-  width. The width now rides a `tc-sidebar-w-{sm,md,lg,auto}` class from
-  `templates/custom.css` (the `:root` fallback stays for bespoke widths), the
-  class is only emitted when a `Sidebar` slot exists, and `layout/appshell.templ`
-  left the inline-style exemption list (`utils.TestInlineStyleCompliance`).
-  Zero behavior change otherwise; closes the consumer CSS workaround that
-  motivated it.
-
-- **Readable golden diffs.** `utils/golden` mismatch output now windows long
-  replacement lines around their first difference and appends a word-level
-  diff of just the changed tokens — templ renders one huge line per element,
-  and the old full-line dump made a one-token change unreadable during
-  goldens triage. Short lines keep the exact historical format.
-- **Floor-bump checklist completed.** `docs/version-support.md` "What a
-  floor bump looks like" now carries the steps the go-1.27 sweep missed on
-  its first pass: all toolchain pins in one commit, BOTH golden families
-  (including the website's), docs-floor prose sweep, and the post-release
-  consumer-tag smoke probe.
-- **`@theme inline` mode-flipping probe (verdict: GO for v2).** The strategy
-  that retires the ~669 hand-maintained `dark:` pairs — one role class per
-  surface backed by a `.dark`-overridden CSS variable wired through
-  `@theme inline` — is now PROVEN pixel-identical on the pinned tailwindcss
-  4.3.3: computed styles match the literal pair classes in both modes,
-  including the opacity-modifier color-mix path. Permanent browser evidence:
-  `visualtest/theme_inline_probe_test.go`; verdict and v2 checklist:
-  `docs/planning/2026-10-17_theme-inline-probe.md`.
-- **Generated palette table in the theme-bridge recipe.** "Which colors does
-  the library use?" in `docs/recipes/scoped-theme-bridge.md` is now
-  GENERATED from `utils/tone` (guarded by
-  `tone.TestThemeBridgePaletteTableSync`, regenerate with `-update`), and the
-  ADR-0008 token layer's tc-* inventory is pinned by
-  `tone.TestThemeTokenLayerInventory` — retiring the last hand-maintained
-  copies of the palette.
-- **One shared `display.Position` enum for all floating components.**
-  Tooltip, Popover, and HoverCard previously shipped three identical
-  four-value position dialects (`TooltipPosition`, `PopoverPosition`,
-  `HoverCardPosition`); they are now type aliases of a single
-  `display.Position` (top/bottom/start/end plus the legacy physical
-  left/right), so every spelling keeps compiling and behaving identically.
-  New logical `PositionStart`/`PositionEnd` values place tooltips and
-  popovers writing-direction aware: pixel-identical to left/right in LTR
-  and correctly mirrored in RTL (the shared popover positioner script
-  resolves them via the anchor's computed direction). `Dropdown` — whose
-  axis is menu ALIGNMENT, not placement — gains `DropdownPositionStart`/
-  `DropdownPositionEnd` alongside the legacy Left/Right spellings. Legacy
-  physical spellings are unchanged and remain valid until v2.
-- **Typed `feedback.StepState`** (complete/current/pending) replaces the
-  int-index comparison triple inside StepIndicator; the derived states and
-  every class string are byte-identical to before, and the accent-color
-  derivation now has a single place to ride the v2 tone table swap
-  (ADR-0044).
-- **Typed chart/indicator colors: `tone.ColorClass` + exported
-  `display.ChartColor*` constants.** The eight chart palette constants are
-  now exported (`ChartColorBlue`…`ChartColorPink`) and typed
-  `tone.ColorClass` — a complete light+dark literal by contract. All nine
-  consumer-facing color props are typed the same way (`LineChartSeries`,
-  `PieChartSlice`, `SegmentBarSegment`, `BarChartBar`, `BarChartProps.BarColor`,
-  `Spinner`, `ProgressBar`, `CircularProgress.Color/.TrackColor`): untyped
-  literals keep assigning (string kind, non-breaking), and the constants
-  give autocomplete-proof color selection. This closes the silent-no-op
-  typo class of report C2.
-- **Dark-mode guard hue list is now DERIVED from `utils/tone`.** The
-  semantic-color regex in the dark-mode scanner is built from `tone.Hues()`
-  at init instead of a hand-typed five-hue list — the stale list had let
-  emerald/rose/violet/cyan/pink/purple and `bg-yellow-*` classes without a
-  `dark:` half escape `TestDarkModeSemanticColors` (report H3). A new
-  regression test proves every non-gray hue is flagged in both `text-` and
-  `bg-` form; the widened sweep found ZERO violations — the repo was
-  genuinely clean, only the guard was blind.
-- **`utils/tone`: the canonical color language (Phase 0, additive-only).**
-  One `Tone` axis (neutral/success/warning/danger/info/accent) and one
-  categorical `Hue` axis (13 hue families) replace "one concept modeled
-  thirteen ways" as the library's shared vocabulary. Ships two literal
-  tables — `tone.For(t)` surfaces (border/bg/text/icon/dot, anchored to the
-  feedback dialect) and `tone.UtilitiesFor(hue)` class grammar (8 utility
-  slots per hue) — plus adapters on the existing color enums
-  (`StatusTone.Tone()/.DotHue()`, `KanbanTone.Hue()`, `StatTone.Hue()`,
-  `TrendDirection.Tone()`, `ScrollbackTone.Tone()`, `BadgeType.Tone()`,
-  `FeedbackType.Tone()`). ZERO visual change: every existing lookup map
-  still renders, and equivalence tests prove the tables reproduce the
-  shipped class strings byte-for-byte. The maps collapse into the tables at
-  v2 (ADR-0039/0044). Counts bumped in lockstep: 71 typed enums (70
-  IsValid), 19 packages.
-- **`cmd/site` is deterministic by default: `--skip-stars` flips to true.**
-  A bare `go run ./cmd/site` no longer does a live GitHub star lookup — the
-  last dist entry point that could flake a route golden. Production deploys
-  opt in with the new `--live-stars` flag (CI's Website job already sets
-  `SITE_LIVE_STARS=1`, which `build.sh` now maps to it); `--skip-stars=false`
-  still forces live for compatibility.
-- **CI runner hygiene: concurrency groups + single-source Go version.** Every
-  workflow now carries a concurrency group that cancels superseded runs on
-  the same ref (rapid push series no longer queue N stale CI runs behind the
-  newest — the runner-starvation class behind the 1h+ Build Website hangs).
-  All five `setup-go` pins collapse from hand-typed `go-version: "1.27"` to
-  `go-version-file: go.mod` — the root go.mod `go` directive, already
-  lockstep-guarded by `TestGoDirectiveSkew`, is now the single source. The
-  vnu.jar `/releases/latest` URL stays: verified at source (2026-09-14,
-  comment in ci.yaml) that the validator project maintains `latest` as a
-  moving tag by design — there is no version-numbered release to pin.
-
-- **Print layer: `templates/custom.css` gains a minimal `@media print` block.**
-  Interactive library chrome that cannot work on paper is hidden (copy
-  buttons, theme toggle, toast container, dismiss buttons), shadows and
-  animations are dropped, `.tc-prose` external links print their target URL,
-  and paper is treated as light (`color-scheme: light` under `.dark`).
-  `AppShell`'s mobile-nav wrapper now carries `print:hidden` (the sidebar
-  already auto-hides because the printed page width sits below `lg:`).
-  Site chrome (your header/nav/footer) stays your sheet's job — see the new
-  "The global print layer" guidance in `docs/theming.md`. Recompile your
-  entry CSS after adopting; `tc init` starters are refreshed in lockstep.
-- **`layout.Split` aside column defaults to a plain `<div>`; the
-  `<aside>` landmark is now opt-in.** An unlabeled `<aside>` shows up
-  nameless in screen-reader landmark rotors (achecker
-  `aria_complementary_labelled`), and the common Split use is a plain
-  two-column layout, not complementary content. Zero value now renders a
-  `<div>` layout column; set the new `AsideLandmark: true` (or name the
-  column with the existing `AsideLabel`) to render a semantic `<aside>`
-  complementary landmark — a label always implies the landmark element,
-  because `aria-label` on a roleless generic is itself invalid HTML-ARIA.
-  No CSS hooks target `aside`, so visuals are unchanged; consumers relying
-  on the landmark element must opt in. The layout demo labels its Split
-  aside (`AsideLabel: "Related content"`), which keeps rendering
-  `<aside>`.
-
-- **CSP-safe declarative overlay trigger: `data-tc-overlay-trigger` on Modal/Drawer.**
-  Any element carrying `data-tc-overlay-trigger="<dialog-id>"` opens that overlay via
-  the shared overlay script's document-level click delegation (singleton-guarded, one
-  listener per page, safe with Modal + Drawer together). This replaces the inline
-  `onclick="tcOpenOverlay(...)"` pattern, which strict nonce-based CSPs block
-  (`script-src-attr`) — and which referenced an undefined wrapper name. The
-  `tcOpenModal(id)`/`tcCloseModal(id)`/`tcOpenDrawer(id)`/`tcCloseDrawer(id)` programmatic
-  wrappers are unchanged. See `docs/recipes/appshell-dashboard-layout.md` for the
-  mobile-drawer wiring.
-- **`errorpage.WriteNotFound404Document` — the 404 page as a standalone HTML
-  document.** The `ErrorHandler` `HTMLShell` equivalent for the dedicated 404
-  page: DOCTYPE, `<html lang>` (default `"en"`, parameter), `<head>` with
-  charset/viewport/title, and the full 404 page — for consumers that serve the
-  page without a layout component. The document shell embeds a
-  `<meta name="robots" content="noindex">` unconditionally.
-- **noindex hardening on every HTML error response.** All HTML writers
-  (`WriteErrorPage`, `WriteNotFound404`, `WriteNotFound404Document`,
-  `ErrorHandler` HTML/HTMLShell paths, and the render-failure fallback) now
-  send `X-Robots-Tag: noindex` — defense-in-depth against soft-404
-  misconfigurations that serve error markup under a 2xx status. JSON error
-  responses stay header-free.
-- **`NotFound404Props.GoBackText`** — the "Go back" button label is now
-  overridable (default `"Go back"`), completing the all-strings-are-props i18n
-  contract for the 404 page. See `docs/integrations/go-i18n.md` for the
-  httputil Language + go-i18n bridge pattern.
-- **`NotFound404Props.SearchSubmitLabel` + search submit button** — the 404
-  search form now renders a right-aligned, icon-only submit button (36px hit
-  target, RTL-logical positioning, motion-reduce safe, accessible name via
-  `SearchSubmitLabel`, default `"Search"`) instead of relying on the Enter key
-  alone.
-- **`tc lint` — the library's compliance guards as a consumer CLI.** Four
-  scanners (`--rtl`, `--dark`, `--motion`, `--icons`, `--all`) run the exact
-  engines behind the library's guard tests (`ScanRTL`, `ScanDarkMode`,
-  `ScanMotionReduce`, `ScanIconPaths` in `utils`) over any directory, print
-  `file:line: rule: message` findings, and exit 1 on findings so CI and
-  pre-commit hooks can gate on them. Per-line `tc-lint:ignore [rule ...]`
-  allowlist markers suppress deliberate exceptions (bare marker = all rules
-  on the line; prefer the narrow form). Documented in `docs/cli.md`.
-- **Context-injected defaults (ADR-0047): `utils.ContextWithNonce` +
-  `ResolveNonce` — precedence props > context > zero.** Middleware wraps the
-  handler once with the request's CSP nonce; every script-emitting component
-  resolves it automatically, and an explicit `Nonce` prop always wins.
-  `utils.ScriptComponent` (the canonical writer behind every component
-  singleton script) resolves per render — context-free renders are
-  byte-identical, goldens unchanged.
-- **`display.Prose` — a longform-content container.** One wrapper around
-  rendered markdown/article HTML; the new `.tc-prose` family in
-  `templates/custom.css` styles headings, lists, blockquotes, inline and
-  block code, tables, and images via descendant selectors (theme-token
-  colors with `.dark` overrides, logical/RTL-safe spacing, rem scale). Typed
-  `ProseSize` (SM/MD/LG, zero value = MD) via a lookup map; `BaseProps`
-  propagates ID/Class/Attrs. Tailwind utilities still beat the descendant
-  rules, so per-element classes and the `tc-fluid-*` sizes compose on top.
-  Consumers adopt by copying the refreshed `templates/custom.css` (or
-  `tc init`) and recompiling.
-
-### Changed
-
-- **`templates/custom.css` gains the `.tc-prose` class family** (13 new
-  element rules + dark overrides). Recompile your entry CSS after adopting;
-  `tc init` starters are refreshed in lockstep.
-
-### Fixed
 
 - **Invalid ARIA nesting in `display.SegmentBar`.** The `role="img"` sat on
   the component root, making the visible legend list a descendant of a leaf
@@ -312,6 +55,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   readers read it as ordinary content instead of presentational junk.
   Markup-structure change only; zero CSS/visual change (the `/display` route
   golden is pixel-identical, the 4 package goldens carry the restructure).
+
 - **`nix run .#shots` light captures were dark.** Headless Chromium defaults
   to `prefers-color-scheme: dark`, so the demo's ThemeScript applied `.dark`
   on load — the tool's "light" capture silently rendered DARK and the
@@ -360,9 +104,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   The gate script is actionlint/shellcheck-clean (CI's actionlint embeds
   shellcheck; local actionlint silently skips that pass without a shellcheck
   binary on PATH).
+
 - **Website CI lint runs on golangci-lint v2.14.0** (was v2.13.2, which cannot
   read Go 1.27 stdlib export data — every `website.yml` lint run failed with
   typecheck errors).
+
 - **`MetaRefresh` goldens are valid HTML, and the refresh content is
   spec-canonical.** The two snapshots rendered the bare `<meta http-equiv>`
   element, which the W3C golden-corpus gate wraps into `<body>` where the
@@ -376,6 +122,284 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   transition/animation classes without reduced-motion fallbacks — the exact
   violations `tc lint` exists to catch, found by dogfooding it on
   `./website` (now clean on all four scanners).
+
+### Added
+
+- **`scripts/coverage-library.sh` — an honest coverage number for adoption.**
+  Raw `go test -cover` includes templ's generated `*_templ.go`, where every
+  element contributes an unreachable `WriteString` error branch; raw library
+  coverage therefore plateaus near 73% no matter how thorough the tests are —
+  generated code is 93.3% of the library's statements, so even 100%
+  hand-written coverage caps raw at 72.9%. The new script measures the
+  published modules only (demo app and `tc` CLI excluded) and reports both
+  numbers, gating on the hand-written share (80% is the adoption threshold;
+  CI uses a 94% ratchet floor), wired into `ci-repro.sh` and the CI coverage
+  job. Current: **96.6% hand-written
+  (1720/1780 statements)** vs 72.7% raw, recorded with go1.27.3 — the patch
+  level matters, because go1.27.0 assigns different statement counts to the
+  same coverage blocks. The figures are single-sourced in
+  `scripts/coverage-baseline.txt` and guarded against prose drift; every run
+  also writes `reports/coverage-library.txt` for the CI artifact. Branch tests
+  for the chart helpers, tone adapters, error-page fallback writers, and
+  scanner error paths landed with it.
+
+- **Demo twin-parity for the Datastar loading/polling components + StatusBadgeWith.**
+  The demo-coverage audit (#414) flagged three KEEP gaps: `datastar.LoadingButton`
+  and `datastar.PolledRegion` had no live demo (the htmx twins were demoed, so the
+  "both dialects, same shape" claim was string-proven only), and `display.StatusBadgeWith`
+  had zero usage anywhere outside its own tests. The `/datastar` page now carries
+  LoadingButton (indicator-driven busy state against a 1.5s mock endpoint) and
+  PolledRegion (5s self-patching region that settles after 3 ticks, mirroring the
+  htmx demo's shape), and the `/display` badges section demos the injectable-mapper
+  pattern (extends the built-in map, unknown statuses render neutral).
+
+- **Demo kanban: sorted-view rejection (422) + opt-in file-backed state.**
+  The move endpoint no longer silently no-ops a move whose card or column
+  the server state does not know — the old behavior even DELETED the card
+  from its source column when the target column was unknown. Such moves
+  now answer `422` (stale board view), the contract is pinned by the
+  shared HTTP probes across BOTH transports and BOTH implementations (demo
+  + e2e harness), and the demo contract cheat-sheet carries the new row.
+  Separately, `KANBAN_STATE_FILE=<path>` opts the demo's boards into
+  persisted state (loaded at wiring, saved atomically per mutation,
+  corrupt-file-safe); the default stays memory-only so tests and route
+  goldens remain deterministic. The dashboard recipe gained a
+  kanban-board section showing the composition + server contract.
+
+- **SSE live-rows recipe** (`docs/recipes/sse-live-rows.md`). The append-live-
+  rows-over-Server-Sent-Events pattern the `Table` `BodyID` + `Body` API was
+  built for, written down: the `htmx-ext-sse` listener (the extension is
+  separate from `htmx.min.js` — a CSP nonce gotcha the docs now own), the
+  `sse-swap` + `hx-target="#tbody"` + `hx-swap="beforeend"` append, the
+  `event:`-named SSE endpoint rendering `<tr>` fragments, stable row ids with
+  `hx-swap-oob` patching, and the cap-the-DOM escape hatch for unbounded
+  feeds (plus the Datastar twin pointer).
+
+- **Error-page adoption-path guidance.** The error-pages guide now carries a
+  decision table for the four real integration shapes: the `ErrorHandler`
+  wrapper (zero config), `FromError` + your own layout shell (domain chrome —
+  the supported composition, not a divergence), per-status domain messages
+  (`FromError`/`FamilyFromStatus` + prop overrides), and HTMX fragment
+  exchanges (real status + `htmx.GlobalErrorHandling` toast, never a full
+  page).
+
+- **`errorpage.FamilyFromStatus(status int) Family`.** The inverse of
+  `FamilyStatusCode` for consumers that only have an HTTP status (reverse
+  proxies, upstream fetches) and until now hand-rolled the same switch.
+  Canonical mapping: 409→Conflict, 429/503→Transient, 502/504→Infrastructure,
+  500/501/505+→Corruption (matching the library-wide "unknown → Corruption"
+  precedent), other 4xx→Rejection. The status-level round-trip holds for every
+  family; the two forced collapses (Infrastructure→Transient at 503,
+  Orchestration→Corruption at 500) are pinned by test.
+
+- **Shipped `templates/safelist.css` for `GridColsAutoFit`.** The auto-fit
+  grid's `grid-template-columns` class is assembled at runtime from
+  `MinColWidth`, so Tailwind's scanner never sees it — consumers had to
+  hand-maintain an `@source inline(...)` line. The library now ships the
+  common ladder (160–320px, 12–24rem — 9 classes, live-compiled and verified
+  on tailwindcss 4.3.3), `templates/app.css` imports it, and `tc init`
+  scaffolds it. Arbitrary widths keep the hand-rolled line, documented in the
+  Tailwind adoption guide.
+
+- **CSP-safe AppShell sidebar width.** `SidebarWidth` no longer renders an
+  inline `style="--tc-sidebar-w: …"` on the shell root — strict `style-src`
+  CSPs dropped it silently, which is exactly how consumers lost their sidebar
+  width. The width now rides a `tc-sidebar-w-{sm,md,lg,auto}` class from
+  `templates/custom.css` (the `:root` fallback stays for bespoke widths), the
+  class is only emitted when a `Sidebar` slot exists, and `layout/appshell.templ`
+  left the inline-style exemption list (`utils.TestInlineStyleCompliance`).
+  Zero behavior change otherwise; closes the consumer CSS workaround that
+  motivated it.
+
+- **Readable golden diffs.** `utils/golden` mismatch output now windows long
+  replacement lines around their first difference and appends a word-level
+  diff of just the changed tokens — templ renders one huge line per element,
+  and the old full-line dump made a one-token change unreadable during
+  goldens triage. Short lines keep the exact historical format.
+
+- **Floor-bump checklist completed.** `docs/version-support.md` "What a
+  floor bump looks like" now carries the steps the go-1.27 sweep missed on
+  its first pass: all toolchain pins in one commit, BOTH golden families
+  (including the website's), docs-floor prose sweep, and the post-release
+  consumer-tag smoke probe.
+
+- **`@theme inline` mode-flipping probe (verdict: GO for v2).** The strategy
+  that retires the ~669 hand-maintained `dark:` pairs — one role class per
+  surface backed by a `.dark`-overridden CSS variable wired through
+  `@theme inline` — is now PROVEN pixel-identical on the pinned tailwindcss
+  4.3.3: computed styles match the literal pair classes in both modes,
+  including the opacity-modifier color-mix path. Permanent browser evidence:
+  `visualtest/theme_inline_probe_test.go`; verdict and v2 checklist:
+  `docs/planning/2026-10-17_theme-inline-probe.md`.
+
+- **Generated palette table in the theme-bridge recipe.** "Which colors does
+  the library use?" in `docs/recipes/scoped-theme-bridge.md` is now
+  GENERATED from `utils/tone` (guarded by
+  `tone.TestThemeBridgePaletteTableSync`, regenerate with `-update`), and the
+  ADR-0008 token layer's tc-* inventory is pinned by
+  `tone.TestThemeTokenLayerInventory` — retiring the last hand-maintained
+  copies of the palette.
+
+- **One shared `display.Position` enum for all floating components.**
+  Tooltip, Popover, and HoverCard previously shipped three identical
+  four-value position dialects (`TooltipPosition`, `PopoverPosition`,
+  `HoverCardPosition`); they are now type aliases of a single
+  `display.Position` (top/bottom/start/end plus the legacy physical
+  left/right), so every spelling keeps compiling and behaving identically.
+  New logical `PositionStart`/`PositionEnd` values place tooltips and
+  popovers writing-direction aware: pixel-identical to left/right in LTR
+  and correctly mirrored in RTL (the shared popover positioner script
+  resolves them via the anchor's computed direction). `Dropdown` — whose
+  axis is menu ALIGNMENT, not placement — gains `DropdownPositionStart`/
+  `DropdownPositionEnd` alongside the legacy Left/Right spellings. Legacy
+  physical spellings are unchanged and remain valid until v2.
+
+- **Typed `feedback.StepState`** (complete/current/pending) replaces the
+  int-index comparison triple inside StepIndicator; the derived states and
+  every class string are byte-identical to before, and the accent-color
+  derivation now has a single place to ride the v2 tone table swap
+  (ADR-0044).
+
+- **Typed chart/indicator colors: `tone.ColorClass` + exported
+  `display.ChartColor*` constants.** The eight chart palette constants are
+  now exported (`ChartColorBlue`…`ChartColorPink`) and typed
+  `tone.ColorClass` — a complete light+dark literal by contract. All nine
+  consumer-facing color props are typed the same way (`LineChartSeries`,
+  `PieChartSlice`, `SegmentBarSegment`, `BarChartBar`, `BarChartProps.BarColor`,
+  `Spinner`, `ProgressBar`, `CircularProgress.Color/.TrackColor`): untyped
+  literals keep assigning (string kind, non-breaking), and the constants
+  give autocomplete-proof color selection. This closes the silent-no-op
+  typo class of report C2.
+
+- **Dark-mode guard hue list is now DERIVED from `utils/tone`.** The
+  semantic-color regex in the dark-mode scanner is built from `tone.Hues()`
+  at init instead of a hand-typed five-hue list — the stale list had let
+  emerald/rose/violet/cyan/pink/purple and `bg-yellow-*` classes without a
+  `dark:` half escape `TestDarkModeSemanticColors` (report H3). A new
+  regression test proves every non-gray hue is flagged in both `text-` and
+  `bg-` form; the widened sweep found ZERO violations — the repo was
+  genuinely clean, only the guard was blind.
+
+- **`utils/tone`: the canonical color language (Phase 0, additive-only).**
+  One `Tone` axis (neutral/success/warning/danger/info/accent) and one
+  categorical `Hue` axis (13 hue families) replace "one concept modeled
+  thirteen ways" as the library's shared vocabulary. Ships two literal
+  tables — `tone.For(t)` surfaces (border/bg/text/icon/dot, anchored to the
+  feedback dialect) and `tone.UtilitiesFor(hue)` class grammar (8 utility
+  slots per hue) — plus adapters on the existing color enums
+  (`StatusTone.Tone()/.DotHue()`, `KanbanTone.Hue()`, `StatTone.Hue()`,
+  `TrendDirection.Tone()`, `ScrollbackTone.Tone()`, `BadgeType.Tone()`,
+  `FeedbackType.Tone()`). ZERO visual change: every existing lookup map
+  still renders, and equivalence tests prove the tables reproduce the
+  shipped class strings byte-for-byte. The maps collapse into the tables at
+  v2 (ADR-0039/0044). Counts bumped in lockstep: 71 typed enums (70
+  IsValid), 19 packages.
+
+- **`cmd/site` is deterministic by default: `--skip-stars` flips to true.**
+  A bare `go run ./cmd/site` no longer does a live GitHub star lookup — the
+  last dist entry point that could flake a route golden. Production deploys
+  opt in with the new `--live-stars` flag (CI's Website job already sets
+  `SITE_LIVE_STARS=1`, which `build.sh` now maps to it); `--skip-stars=false`
+  still forces live for compatibility.
+
+- **CI runner hygiene: concurrency groups + single-source Go version.** Every
+  workflow now carries a concurrency group that cancels superseded runs on
+  the same ref (rapid push series no longer queue N stale CI runs behind the
+  newest — the runner-starvation class behind the 1h+ Build Website hangs).
+  All five `setup-go` pins collapse from hand-typed `go-version: "1.27"` to
+  `go-version-file: go.mod` — the root go.mod `go` directive, already
+  lockstep-guarded by `TestGoDirectiveSkew`, is now the single source. The
+  vnu.jar `/releases/latest` URL stays: verified at source (2026-09-14,
+  comment in ci.yaml) that the validator project maintains `latest` as a
+  moving tag by design — there is no version-numbered release to pin.
+
+- **Print layer: `templates/custom.css` gains a minimal `@media print` block.**
+  Interactive library chrome that cannot work on paper is hidden (copy
+  buttons, theme toggle, toast container, dismiss buttons), shadows and
+  animations are dropped, `.tc-prose` external links print their target URL,
+  and paper is treated as light (`color-scheme: light` under `.dark`).
+  `AppShell`'s mobile-nav wrapper now carries `print:hidden` (the sidebar
+  already auto-hides because the printed page width sits below `lg:`).
+  Site chrome (your header/nav/footer) stays your sheet's job — see the new
+  "The global print layer" guidance in `docs/theming.md`. Recompile your
+  entry CSS after adopting; `tc init` starters are refreshed in lockstep.
+
+- **`layout.Split` aside column defaults to a plain `<div>`; the
+  `<aside>` landmark is now opt-in.** An unlabeled `<aside>` shows up
+  nameless in screen-reader landmark rotors (achecker
+  `aria_complementary_labelled`), and the common Split use is a plain
+  two-column layout, not complementary content. Zero value now renders a
+  `<div>` layout column; set the new `AsideLandmark: true` (or name the
+  column with the existing `AsideLabel`) to render a semantic `<aside>`
+  complementary landmark — a label always implies the landmark element,
+  because `aria-label` on a roleless generic is itself invalid HTML-ARIA.
+  No CSS hooks target `aside`, so visuals are unchanged; consumers relying
+  on the landmark element must opt in. The layout demo labels its Split
+  aside (`AsideLabel: "Related content"`), which keeps rendering
+  `<aside>`.
+
+- **CSP-safe declarative overlay trigger: `data-tc-overlay-trigger` on Modal/Drawer.**
+  Any element carrying `data-tc-overlay-trigger="<dialog-id>"` opens that overlay via
+  the shared overlay script's document-level click delegation (singleton-guarded, one
+  listener per page, safe with Modal + Drawer together). This replaces the inline
+  `onclick="tcOpenOverlay(...)"` pattern, which strict nonce-based CSPs block
+  (`script-src-attr`) — and which referenced an undefined wrapper name. The
+  `tcOpenModal(id)`/`tcCloseModal(id)`/`tcOpenDrawer(id)`/`tcCloseDrawer(id)` programmatic
+  wrappers are unchanged. See `docs/recipes/appshell-dashboard-layout.md` for the
+  mobile-drawer wiring.
+
+- **`errorpage.WriteNotFound404Document` — the 404 page as a standalone HTML
+  document.** The `ErrorHandler` `HTMLShell` equivalent for the dedicated 404
+  page: DOCTYPE, `<html lang>` (default `"en"`, parameter), `<head>` with
+  charset/viewport/title, and the full 404 page — for consumers that serve the
+  page without a layout component. The document shell embeds a
+  `<meta name="robots" content="noindex">` unconditionally.
+
+- **noindex hardening on every HTML error response.** All HTML writers
+  (`WriteErrorPage`, `WriteNotFound404`, `WriteNotFound404Document`,
+  `ErrorHandler` HTML/HTMLShell paths, and the render-failure fallback) now
+  send `X-Robots-Tag: noindex` — defense-in-depth against soft-404
+  misconfigurations that serve error markup under a 2xx status. JSON error
+  responses stay header-free.
+
+- **`NotFound404Props.GoBackText`** — the "Go back" button label is now
+  overridable (default `"Go back"`), completing the all-strings-are-props i18n
+  contract for the 404 page. See `docs/integrations/go-i18n.md` for the
+  httputil Language + go-i18n bridge pattern.
+
+- **`NotFound404Props.SearchSubmitLabel` + search submit button** — the 404
+  search form now renders a right-aligned, icon-only submit button (36px hit
+  target, RTL-logical positioning, motion-reduce safe, accessible name via
+  `SearchSubmitLabel`, default `"Search"`) instead of relying on the Enter key
+  alone.
+
+- **`tc lint` — the library's compliance guards as a consumer CLI.** Four
+  scanners (`--rtl`, `--dark`, `--motion`, `--icons`, `--all`) run the exact
+  engines behind the library's guard tests (`ScanRTL`, `ScanDarkMode`,
+  `ScanMotionReduce`, `ScanIconPaths` in `utils`) over any directory, print
+  `file:line: rule: message` findings, and exit 1 on findings so CI and
+  pre-commit hooks can gate on them. Per-line `tc-lint:ignore [rule ...]`
+  allowlist markers suppress deliberate exceptions (bare marker = all rules
+  on the line; prefer the narrow form). Documented in `docs/cli.md`.
+
+- **Context-injected defaults (ADR-0047): `utils.ContextWithNonce` +
+  `ResolveNonce` — precedence props > context > zero.** Middleware wraps the
+  handler once with the request's CSP nonce; every script-emitting component
+  resolves it automatically, and an explicit `Nonce` prop always wins.
+  `utils.ScriptComponent` (the canonical writer behind every component
+  singleton script) resolves per render — context-free renders are
+  byte-identical, goldens unchanged.
+
+- **`display.Prose` — a longform-content container.** One wrapper around
+  rendered markdown/article HTML; the new `.tc-prose` family in
+  `templates/custom.css` styles headings, lists, blockquotes, inline and
+  block code, tables, and images via descendant selectors (theme-token
+  colors with `.dark` overrides, logical/RTL-safe spacing, rem scale). Typed
+  `ProseSize` (SM/MD/LG, zero value = MD) via a lookup map; `BaseProps`
+  propagates ID/Class/Attrs. Tailwind utilities still beat the descendant
+  rules, so per-element classes and the `tc-fluid-*` sizes compose on top.
+  Consumers adopt by copying the refreshed `templates/custom.css` (or
+  `tc init`) and recompiling.
 
 ## [1.23.0] — 2026-10-13
 
