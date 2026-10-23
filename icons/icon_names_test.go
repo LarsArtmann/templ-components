@@ -1,6 +1,7 @@
 package icons
 
 import (
+	"slices"
 	"strings"
 	"testing"
 )
@@ -28,6 +29,19 @@ func TestIconCount(t *testing.T) {
 			len(allIconNames()),
 			len(iconPathData),
 		)
+	}
+}
+
+func TestAllIconNamesExportedIsSorted(t *testing.T) {
+	t.Parallel()
+
+	names := AllIconNames()
+	if len(names) != len(allIconNames()) {
+		t.Fatalf("AllIconNames has %d entries, allIconNames has %d", len(names), len(allIconNames()))
+	}
+
+	if !slices.IsSorted(names) {
+		t.Error("AllIconNames is not sorted alphabetically")
 	}
 }
 

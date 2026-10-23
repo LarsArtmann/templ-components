@@ -76,6 +76,9 @@ func TestDefaultAnimation(t *testing.T) {
 		// Spinner always opts out
 		{"Spinner defaults to none", Spinner, AnimNone},
 
+		// Unknown names degrade to the safest animation instead of mapping to ""
+		{"unknown name falls back to pulse", Name("not-an-icon"), AnimPulse},
+
 		// Aliases resolve to canonical icon's animation
 		{"ArrowPath alias resolves to spin", ArrowPath, AnimSpin},
 		{"Bars3 alias resolves to Menu pulse", Bars3, AnimPulse},

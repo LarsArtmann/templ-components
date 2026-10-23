@@ -320,6 +320,12 @@ jobs:
       - name: Per-package coverage floors
         run: scripts/check-coverage-floors.sh coverage.out
 
+      # Generated templ output carries one unreachable write-error branch per
+      # element, so the raw number plateaus; this gate measures the
+      # hand-written library code only (see scripts/coverage-library.sh).
+      - name: Library coverage (hand-written, generated excluded)
+        run: scripts/coverage-library.sh --gate 80
+
       - name: Build examples
         run: go build ./examples/...
 
