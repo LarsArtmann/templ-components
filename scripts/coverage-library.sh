@@ -18,6 +18,10 @@
 #   scripts/coverage-library.sh              # report both numbers
 #   scripts/coverage-library.sh --gate 80    # exit 1 if hand-written < 80%
 #
+# 80% is the adoption threshold (`awesome-templ`'s requirement, see TODO #28).
+# CI runs --gate 94: a ratchet floor just below the measured 96.7%, so a
+# coverage regression fails the build instead of quietly eroding the claim.
+#
 # Sub-modules are discovered from the tree (every go.mod except visualtest,
 # website, and examples) so a newly split module is covered automatically.
 # Each module is measured in isolation (GOWORK=off) so the result matches what

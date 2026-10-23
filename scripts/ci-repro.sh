@@ -181,7 +181,7 @@ if awk "BEGIN{exit !($COVERAGE < 70)}"; then
 fi
 
 step "Library coverage (hand-written, generated templ excluded)"
-scripts/coverage-library.sh --gate 80
+scripts/coverage-library.sh --gate 94
 
 step "Build examples"
 go build ./examples/...

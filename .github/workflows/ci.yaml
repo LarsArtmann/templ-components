@@ -324,7 +324,7 @@ jobs:
       # element, so the raw number plateaus; this gate measures the
       # hand-written library code only (see scripts/coverage-library.sh).
       - name: Library coverage (hand-written, generated excluded)
-        run: scripts/coverage-library.sh --gate 80
+        run: scripts/coverage-library.sh --gate 94
 
       - name: Build examples
         run: go build ./examples/...

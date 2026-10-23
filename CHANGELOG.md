@@ -43,8 +43,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   generated code is 91.3% of the library's statements, so even 100%
   hand-written coverage caps raw at 73.6%. The new script measures the
   published modules only (demo app and `tc` CLI excluded) and reports both
-  numbers, gating on the hand-written share (`--gate 80`, wired into
-  `ci-repro.sh` and the CI coverage job). Current: **96.7% hand-written
+  numbers, gating on the hand-written share (80% is the adoption threshold;
+  CI uses a 94% ratchet floor), wired into `ci-repro.sh` and the CI coverage
+  job. Current: **96.7% hand-written
   (2275/2353 statements)** vs 73.3% raw. Branch tests for the chart helpers,
   tone adapters, error-page fallback writers, and scanner error paths landed
   with it.
