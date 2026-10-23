@@ -1,0 +1,13 @@
+# Library coverage baseline — single source of truth for the figures quoted in
+# AGENTS.md. Regenerate with: scripts/coverage-library.sh --record
+# Guard: utils/TestCoverageBaselineMatchesProse (arithmetic + prose equality).
+recorded_at=2026-10-23
+recorded_commit=7ef76a6c
+raw_covered=19864
+raw_total=27096
+raw_pct=73.3
+hand_covered=2275
+hand_total=2353
+hand_pct=96.7
+ceiling_pct=-9.3
+generated_share_pct=91.3

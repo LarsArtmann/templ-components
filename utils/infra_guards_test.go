@@ -123,6 +123,7 @@ func TestPreCommitHookInstallsGuard(t *testing.T) {
 		"check-templ-sync.sh",
 		"check-replace-directives.sh",
 		"check-tc-sources-sync.sh",
+		"test-coverage-library-gate.sh",
 	} {
 		idx := strings.Index(string(trackedSrc), guard)
 		flowIdx := strings.Index(string(trackedSrc), "buildflow --build-mode")

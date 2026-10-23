@@ -112,6 +112,19 @@ if [ -x "$REPO_ROOT/scripts/check-tc-sources-sync.sh" ]; then
     fi
 fi
 
+# Guard 9: coverage gate self-test (<1s, no compile)
+#   The library coverage gate is only a gate if it has been observed failing.
+#   Synthetic profiles through `--profile` prove both directions, plus the
+#   generated/examples/cmd-tc exclusions. Runs before BuildFlow so a broken
+#   gate is never masked by the 60s budget.
+if [ -x "$REPO_ROOT/scripts/test-coverage-library-gate.sh" ]; then
+    coverage_gate_out="$("$REPO_ROOT/scripts/test-coverage-library-gate.sh" 2>&1)" || {
+        printf '%s\n' "$coverage_gate_out"
+        echo "PRE-COMMIT BLOCKED: coverage gate self-test failed." >&2
+        exit 1
+    }
+fi
+
 echo "Running BuildFlow pre-commit checks (budget: 60s)..."
 
 START=$(date +%s)
