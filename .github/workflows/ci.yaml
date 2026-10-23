@@ -185,7 +185,18 @@ jobs:
         run: go install github.com/a-h/templ/cmd/templ@v0.3.1020
 
       - name: Generate templ files
-        run: templ generate
+        # The root invocation encodes repo-root-relative FileNames into every
+        # workspace module (go.work is active). Regenerate each published
+        # sub-module from its own directory so the working tree matches the
+        # committed module-relative canonical form; otherwise
+        # TestGeneratedFileNameRoots fails on the ephemeral CI tree even
+        # though the committed files are correct (2026-10-23).
+        run: |
+          find . -name '*_templ.go' -print0 | xargs -0 rm -f
+          templ generate
+          for mod in utils icons errorpage charts/echarts datastar htmx website; do
+            (cd "$mod" && templ generate ./...)
+          done
 
       - name: Verify all *_templ.go files are tracked
         run: |
