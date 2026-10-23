@@ -32,6 +32,12 @@ for mod in utils icons errorpage charts/echarts datastar htmx; do (cd "$mod" && 
 # "tests pass" is not a verdict; green must name its lanes.
 scripts/ci-repro.sh --lint --css --website
 
+# Library coverage — TWO numbers, never quote raw as "the library's coverage".
+# Raw includes templ's generated *_templ.go, where every element emits an unreachable
+# `WriteString` error branch: generated code is ~91% of statements, so raw plateaus at
+# ~73% and even 100% hand-written coverage caps it at ~73.6%. Hand-written is ~96.7%.
+scripts/coverage-library.sh --gate 94   # 80 = adoption gate (#28), 94 = CI ratchet
+
 # All-in-one verification
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && nix run .#lint
 
