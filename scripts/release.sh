@@ -241,9 +241,17 @@ echo "Bumped utils.Version to $NEW_VERSION"
 #     resolution works before the tags are pushed (v1.11.0 lesson: stale
 #     pins left master red for 9 days; v1.17.0 lesson: check-module-sync
 #     guards website/go.mod, so the bump loop MUST include it).
+#
+#     The pattern matches BOTH the bare root module (no sub-path — how
+#     website/go.mod pins `github.com/larsartmann/templ-components`; the
+#     sub-path-only pattern missed it and the v1.24.0 cut shipped a mixed
+#     v1.23.0/v1.24.0 graph there) and every sibling. The version must be
+#     followed by whitespace/EOL so visualtest's zero pseudo-version
+#     (`v0.0.0-00010101000000-...`, implicitly replaced and deliberately NOT
+#     bumped) is left untouched.
 for modfile in $MODFILES visualtest/go.mod website/go.mod; do
 	sed -i.bak -E \
-		"s|(github.com/larsartmann/templ-components/[a-z/]+) v[0-9]+\.[0-9]+\.[0-9]+|\1 v${NEW_VERSION}|g" \
+		"s|(github\.com/larsartmann/templ-components(/[a-z/]+)?) v[0-9]+\.[0-9]+\.[0-9]+([[:space:]].*)?$|\1 v${NEW_VERSION}\3|g" \
 		"$modfile"
 	rm -f "${modfile}.bak"
 done

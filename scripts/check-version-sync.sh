@@ -74,10 +74,15 @@ fi
 # --- Sibling-module pin check ---
 
 # Every require of a templ-components sibling at a semver version must equal
-# utils.Version. The root pseudo-version require in visualtest
+# utils.Version, INCLUDING the bare root module (how website/go.mod pins it —
+# the sub-path-only pattern let a v1.23.0 root pin ride a v1.24.0 release).
+# website/go.mod is in the list for the same reason: it is an unpublished but
+# committed consumer whose graph must agree with the tagged version.
+# The root pseudo-version require in visualtest
 # (v0.0.0-00010101000000-...) is exempt: it is a placeholder satisfied by the
-# local replace directive, not a released version.
-for modfile in go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod datastar/go.mod htmx/go.mod visualtest/go.mod; do
+# local replace directive, not a released version (the whitespace/EOL anchor
+# excludes it, since a `-` follows the patch component).
+for modfile in go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod datastar/go.mod htmx/go.mod visualtest/go.mod website/go.mod; do
 	[ -f "$REPO_ROOT/$modfile" ] || continue
 	while IFS= read -r pin_line; do
 		pinned_version="$(printf '%s\n' "$pin_line" | awk '{print $2}')"
@@ -87,7 +92,7 @@ for modfile in go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/
 			OUTPUT+="  $modfile pins ${pinned_path} at ${pinned_version}, expected ${VERSION_GO}\n"
 			MISMATCH=1
 		fi
-	done < <(grep -E '^\s+github\.com/larsartmann/templ-components/[a-z/]+ v[0-9]+\.[0-9]+\.[0-9]+' "$REPO_ROOT/$modfile" 2>/dev/null || true)
+	done < <(grep -E '^\s+github\.com/larsartmann/templ-components(/[a-z/]+)? v[0-9]+\.[0-9]+\.[0-9]+([[:space:]].*)?$' "$REPO_ROOT/$modfile" 2>/dev/null || true)
 done
 
 if [ "$MISMATCH" -ne 0 ]; then
