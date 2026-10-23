@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.24.0] — 2026-10-23
+
 ### Changed
 
 - **Duplication-gate baseline re-recorded against the current analyzer (150
