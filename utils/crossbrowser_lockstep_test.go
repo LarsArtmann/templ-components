@@ -15,7 +15,7 @@ import (
 // (nix eval --inputs-from . nixpkgs#playwright-driver.version), then update
 // THIS constant, the package.json pin, and the lockfile in one commit — the
 // same one-commit lockstep rule as the Tailwind lanes.
-const expectedPlaywrightVersion = "1.63.0"
+const expectedPlaywrightVersion = "1.64.1"
 
 // TestCrossbrowserLockstep pins the crossbrowser spike's playwright-core
 // version against the nix-side playwright-driver version. Drift here fails
