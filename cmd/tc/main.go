@@ -170,6 +170,7 @@ var packageImports = map[string][]string{
 		impDatastarStat,
 		impUtils,
 		impUtilsCDN,
+		impUtilsWire,
 	},
 
 	pkgErrorpage: {
