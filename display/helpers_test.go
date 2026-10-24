@@ -38,8 +38,8 @@ func TestMapStatusToBadgeType(t *testing.T) {
 			t.Parallel()
 			utils.AssertEqual(
 				t,
-				fmt.Sprintf("mapStatusToBadgeType(%q)", tt.status),
-				mapStatusToBadgeType(tt.status),
+				fmt.Sprintf("MapStatusToBadgeType(%q)", tt.status),
+				MapStatusToBadgeType(tt.status),
 				tt.want,
 			)
 		})

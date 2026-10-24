@@ -1,13 +1,12 @@
 package datastar
 
 import (
-	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // defaultPolledInterval is the default poll interval for PolledRegion
@@ -65,46 +64,21 @@ func DefaultPolledRegionProps() PolledRegionProps {
 }
 
 // polledIntervalValue normalizes the Every prop into the runtime duration
-// token emitted inside the data-on-interval__duration modifier.
+// token emitted inside the data-on-interval__duration modifier, defaulting
+// empty input to the shared default.
 //
-// Why m/h are converted: the pinned runtime parses durations as
-// `<n>ms` / `<n>s` / bare parseFloat-ms — a trailing "m" or "h" truncates at
-// parseFloat ("5m" → 5ms), so a natural-looking "5m" typo would poll every
-// 5 milliseconds. Hours become seconds (same rule as the htmx twin, whose
-// parseInterval has the identical hazard) and minutes become seconds too,
-// which the runtime's parser cannot express natively.
+// The conversion rules live in wire.NormalizedInterval (the htmx twin): the
+// pinned runtime parses durations as `<n>ms` / `<n>s` / bare parseFloat-ms —
+// a trailing "m" or "h" truncates at parseFloat ("5m" → 5ms), so a
+// natural-looking "5m" typo would poll every 5 milliseconds. Hours and
+// minutes become seconds (htmx's parseInterval has the identical hazard).
 func polledIntervalValue(every string) string {
-	if strings.TrimSpace(every) == "" {
-		return defaultPolledInterval
+	if v := wire.NormalizedInterval(every); v != "" {
+		return v
 	}
 
-	for _, conv := range []struct {
-		re      *regexp.Regexp
-		seconds float64
-	}{
-		{polledHoursRe, 3600},
-		{polledMinutesRe, 60},
-	} {
-		match := conv.re.FindStringSubmatch(every)
-		if match == nil {
-			continue
-		}
-
-		n, err := strconv.ParseFloat(match[1], 64)
-		if err != nil || n <= 0 {
-			return every
-		}
-
-		return strconv.FormatFloat(n*conv.seconds, 'f', -1, 64) + "s"
-	}
-
-	return every
+	return defaultPolledInterval
 }
-
-var (
-	polledHoursRe   = regexp.MustCompile(`^([0-9]+(?:\.[0-9]+)?)h$`)
-	polledMinutesRe = regexp.MustCompile(`^([0-9]+(?:\.[0-9]+)?)m$`)
-)
 
 // polledRegionAttrs builds the interval attribute for a polled region:
 //

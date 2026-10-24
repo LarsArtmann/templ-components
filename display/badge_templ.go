@@ -381,7 +381,7 @@ func StatusBadge(status string) templ.Component {
 			templ_7745c5c3_Var17 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		mapped := mapStatusToBadgeType(status)
+		mapped := MapStatusToBadgeType(status)
 		templ_7745c5c3_Err = Badge(BadgeProps{Text: status, Type: mapped, Dot: true}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -390,21 +390,18 @@ func StatusBadge(status string) templ.Component {
 	})
 }
 
-func mapStatusToBadgeType(status string) BadgeType {
-	return utils.Lookup(statusToBadgeMap, strings.ToLower(status), BadgeNeutral)
-}
-
 // StatusBadgeMapper maps a consumer status string to a badge type. Return
 // the zero value ("" — rendered neutral) for unknown statuses; mappers that
 // want the built-in mapping for unhandled values can call
 // MapStatusToBadgeType.
 type StatusBadgeMapper func(status string) BadgeType
 
-// MapStatusToBadgeType exposes the built-in status-to-badge mapping for
-// consumer mappers that extend rather than replace it (dnsblockd carries
-// four local mappers — the extraction demand behind StatusBadgeWith).
+// MapStatusToBadgeType maps a status string to a badge type — the built-in
+// mapping behind StatusBadge, exposed for consumer mappers that extend
+// rather than replace it (dnsblockd carries four local mappers — the
+// extraction demand behind StatusBadgeWith).
 func MapStatusToBadgeType(status string) BadgeType {
-	return mapStatusToBadgeType(status)
+	return utils.Lookup(statusToBadgeMap, strings.ToLower(status), BadgeNeutral)
 }
 
 // resolveStatusBadgeType applies the consumer mapper when set, else the
@@ -414,7 +411,7 @@ func resolveStatusBadgeType(mapper StatusBadgeMapper, status string) BadgeType {
 		return mapper(status)
 	}
 
-	return mapStatusToBadgeType(status)
+	return MapStatusToBadgeType(status)
 }
 
 // StatusBadgeWith renders a StatusBadge through a consumer-supplied mapper —
