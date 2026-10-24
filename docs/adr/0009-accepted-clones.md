@@ -655,9 +655,10 @@ blanket-accepting or blanket-extracting.
 ## Consequences
 
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
-  — it fails ONLY on clones not in the accepted baseline (currently 150
-  groups at t=1, per the 2026-10-23 re-record with the fork detector
-  `v0.9.1-0.20261017225421-93432fd910fb-93432fd`). The analyzer-generation
+  — it fails ONLY on clones not in the accepted baseline (currently 149
+  groups at t=1, per the 2026-10-24 re-record with the same fork detector
+  `v0.9.1-0.20261017225421-93432fd910fb-93432fd`; the 2026-10-23 full
+  re-take under this detector generation was 150 groups). The analyzer-generation
   change made the prior 124 hashes incomparable (check reported every
   current group as new), so the re-record re-took the whole set AFTER the
   class triage below; the current advisory sets (73 groups at t=2, 38 at
@@ -676,6 +677,7 @@ blanket-accepting or blanket-extracting.
   `skeletonContainer`, `DismissButton`, `definitionDetailContent`,
   `chartMaxWithOverride`, `sparklineGeometry`, `sparklinePointCoords`,
   `headingTag`, `chartSeriesGroup`, `calendarMonthNavLink`,
+  `wire.NormalizedInterval`,
   `visualtest/internal/browser.ExecPath`, `visualtest/internal/distserver.Handler`,
   `cdn.ResolveBase`, `cdn.Origin`, `resolveLocale`) where applicable
 - Every remaining actionable clone is structural, templ-DSL-bound, or
@@ -731,3 +733,20 @@ at t=1, after confirming that the current advisory sets (73 groups at t=2,
 38 at t=3) map onto the signature classes above with no new extraction
 decision. Two consecutive `check` runs after the record are green. The
 lane remains advisory and never gates.
+
+**DONE 2026-10-24 (dedup pass):** two more semantic clones extracted, both
+from a t=5 re-judgement of the accepted set against the ADR-0010 criteria.
+(1) `datastar.polledIntervalValue` was a byte-level twin of
+`wire.NormalizedInterval` — duplicated regexes and duration-conversion
+rules whose comments cross-referenced each other as "the htmx twin"; it
+now delegates to the canonical helper, keeping only the empty→default
+fallback. (2) `display`'s status-to-badge mapping collapsed its
+exported/unexported twin: `mapStatusToBadgeType` deleted, internal callers
+(`StatusBadge`, `resolveStatusBadgeType`) use `MapStatusToBadgeType`
+directly. The re-record against the SAME pinned analyzer (built via
+`git worktree add` at `93432fd910fb` — the fork checkout has since moved
+to `16ee684c`, so a pinned worktree is how cross-binary compare stays
+valid) took 149 groups. The ONE new group is the `StatusBadgeMapper` type
+↔ `MapStatusToBadgeType` signature pair (`string) BadgeType`) — ACCEPT
+under the function-signature-tails class. Gate green ×2; the lane remains
+advisory and never gates.

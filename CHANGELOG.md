@@ -6,6 +6,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Deduplication pass: two more semantic clones extracted.** The Datastar
+  `PolledRegion`'s interval normalization was a byte-level twin of
+  `wire.NormalizedInterval` (duplicated regexes and duration-conversion
+  rules that had to change in both places to stay consistent); it now
+  delegates to the canonical helper, keeping only the empty-input default.
+  `display`'s status-to-badge mapping lost its exported/unexported twin —
+  `mapStatusToBadgeType` was a second name for the same lookup as
+  `MapStatusToBadgeType`; internal callers use the exported function
+  directly. The art-dupl baseline was re-recorded against the same pinned
+  analyzer: 149 accepted groups (one new signature-token pair accepted
+  under ADR-0009's documented classes), two consecutive gate runs green.
+
+### Fixed
+
+- **Crossbrowser spike lockstep restored at playwright-core 1.64.1.** The
+  2026-10-23 flake.lock refresh moved nixpkgs' playwright-driver to 1.64.1,
+  but the follow-up pin "restore" aligned the spike and the lockstep-test
+  constant to the old 1.63.0 — guard-green while the browsers the flake
+  builds come from 1.64.1 (the drift fails at runtime with "Executable
+  doesn't exist"). The lockfile and the guard constant now agree with the
+  nix anchor.
+
 ## [1.24.0] — 2026-10-23
 
 ### Changed
