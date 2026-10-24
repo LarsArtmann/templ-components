@@ -14,25 +14,25 @@ The morning report's two mechanical unknowns are now settled: (1) the **"gate gr
 
 ## a) FULLY DONE
 
-| # | Work | Evidence |
-|---|------|----------|
-| 1 | Context load + single-writer scope claimed/stated (templ-components skill, TODO_LIST, morning report, plan docs) | session log |
-| 2 | Gate t=1 re-verified GREEN (0 new vs 149 baseline), pinned binary confirmed by `--version` | `/tmp/art-dupl-fork check -t 1` |
-| 3 | Gate t=2/t=3 re-verified — real verdict found: **4 + 7 hash-new groups, all class-covered** (signature-token/tails; lookup-helper pairs); NOT mechanically green | `/tmp/gate-t2.log`, `/tmp/gate-t3.log` |
-| 4 | ADR-0009 corrected (3 surgical edits): standing-claim correction (threshold-dependent hashes), `StatusBadgeMapper` verdict-table row, `.art-dupl.json`(config, human-edited) vs `.art-dupl-baseline.json`(baseline, machine-written) split | `docs/adr/0009-accepted-clones.md` |
-| 5 | datastar empty-input→default coverage CONFIRMED pre-existing (`polled_region_test.go:71` `{"", "10s"}` + render row :43) — report b4 closed, no change | source read |
-| 6 | Mirror-guard CI coverage CONFIRMED (`ci.yaml:261` runs the root suite incl. `cmd/tc` → `TestSourcesMatchPackageFiles`) — report f33 closed | workflow read |
-| 7 | Twin sweep 1 (exported/unexported name pairs): CLEAN — 2 candidates, both benign (`AllIconNames` intentional wrapper; unrelated `String()` methods). Extraction 2 closed the class | python pair-scan |
-| 8 | Twin sweep 2 ("twin" cross-reference comments): CLEAN — 9 sites, all documented-intentional (ADR-0036 symmetry, #302 demo TWINs, guarded docs table) or post-Extraction-1 accurate | `rg -i twin` sweep |
-| 9 | `sseload` `time.Now()` pair triaged: two DIFFERENT measurements sharing a timing idiom; boilerplate = accepted capture-tool class. No action (row 451, struck) | source read |
-| 10 | `utils/format/format.go` humanization twins triaged: `Bytes`(1024-step/suffixed/"1024") vs `CompactCount`(1000-step/suffixless/"1000") — MEET ADR-0010 mechanically (2 callers, ~10 lines, clean `magnitudeScale` name, zero API change); extract-flip left owner-gated (row 445) | source read |
-| 11 | **`scripts/pinned-art-dupl.sh` shipped**: worktree-add at pinned rev → build → version echo → optional `--` passthrough; proven end-to-end (exact version built; gate green THROUGH the script) | script + run log |
-| 12 | AGENTS.md fork command replaced with worktree-pinned form + false-alarm warning — line-neutral, 205/220 maintained | AGENTS.md:94 |
-| 13 | `docs/count-definitions.md`: new "Accepted clone groups — 149" row incl. the `assertCount` FIRST-MATCH fragility semantics + phrasing guidance | doc |
-| 14 | TODO_LIST harvest: "Harvested 2026-10-24" section, rows 445–451 (2 struck-with-verdict, 5 open), header+footer next-free-ID aligned (→452) | TODO_LIST.md |
-| 15 | `utils.TestDocsCountDrift` re-run `-count=1` after doc edits: GREEN (file-reading guard, cache trap respected) | test run |
-| 16 | Post-daemon checklist ×3 (commits `c0f29174`, `30dd2863`, `91797bcc`): edits survived verbatim, `.gitignore` not re-appended (2 standing mentions), `[Unreleased]` warm, tree clean | `git show`/`git status` |
-| 17 | Full ritual at clean tip: `scripts/ci-repro.sh --lint --css --website` → **VERDICT: PASS (exit 0)**, 23 lanes (generate→build→test→per-module→coverage gates→lint→CSS freshness→website→advisory art-dupl); lane resolved the PINNED analyzer version beside the verdict (report f29 closed) | `/tmp/ci-repro-session2.log` |
+| #  | Work                                                                                                                                                                                                                                                                                         | Evidence                               |
+| -- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| 1  | Context load + single-writer scope claimed/stated (templ-components skill, TODO_LIST, morning report, plan docs)                                                                                                                                                                             | session log                            |
+| 2  | Gate t=1 re-verified GREEN (0 new vs 149 baseline), pinned binary confirmed by `--version`                                                                                                                                                                                                   | `/tmp/art-dupl-fork check -t 1`        |
+| 3  | Gate t=2/t=3 re-verified — real verdict found: **4 + 7 hash-new groups, all class-covered** (signature-token/tails; lookup-helper pairs); NOT mechanically green                                                                                                                             | `/tmp/gate-t2.log`, `/tmp/gate-t3.log` |
+| 4  | ADR-0009 corrected (3 surgical edits): standing-claim correction (threshold-dependent hashes), `StatusBadgeMapper` verdict-table row, `.art-dupl.json`(config, human-edited) vs `.art-dupl-baseline.json`(baseline, machine-written) split                                                   | `docs/adr/0009-accepted-clones.md`     |
+| 5  | datastar empty-input→default coverage CONFIRMED pre-existing (`polled_region_test.go:71` `{"", "10s"}` + render row :43) — report b4 closed, no change                                                                                                                                       | source read                            |
+| 6  | Mirror-guard CI coverage CONFIRMED (`ci.yaml:261` runs the root suite incl. `cmd/tc` → `TestSourcesMatchPackageFiles`) — report f33 closed                                                                                                                                                   | workflow read                          |
+| 7  | Twin sweep 1 (exported/unexported name pairs): CLEAN — 2 candidates, both benign (`AllIconNames` intentional wrapper; unrelated `String()` methods). Extraction 2 closed the class                                                                                                           | python pair-scan                       |
+| 8  | Twin sweep 2 ("twin" cross-reference comments): CLEAN — 9 sites, all documented-intentional (ADR-0036 symmetry, #302 demo TWINs, guarded docs table) or post-Extraction-1 accurate                                                                                                           | `rg -i twin` sweep                     |
+| 9  | `sseload` `time.Now()` pair triaged: two DIFFERENT measurements sharing a timing idiom; boilerplate = accepted capture-tool class. No action (row 451, struck)                                                                                                                               | source read                            |
+| 10 | `utils/format/format.go` humanization twins triaged: `Bytes`(1024-step/suffixed/"1024") vs `CompactCount`(1000-step/suffixless/"1000") — MEET ADR-0010 mechanically (2 callers, ~10 lines, clean `magnitudeScale` name, zero API change); extract-flip left owner-gated (row 445)            | source read                            |
+| 11 | **`scripts/pinned-art-dupl.sh` shipped**: worktree-add at pinned rev → build → version echo → optional `--` passthrough; proven end-to-end (exact version built; gate green THROUGH the script)                                                                                              | script + run log                       |
+| 12 | AGENTS.md fork command replaced with worktree-pinned form + false-alarm warning — line-neutral, 205/220 maintained                                                                                                                                                                           | AGENTS.md:94                           |
+| 13 | `docs/count-definitions.md`: new "Accepted clone groups — 149" row incl. the `assertCount` FIRST-MATCH fragility semantics + phrasing guidance                                                                                                                                               | doc                                    |
+| 14 | TODO_LIST harvest: "Harvested 2026-10-24" section, rows 445–451 (2 struck-with-verdict, 5 open), header+footer next-free-ID aligned (→452)                                                                                                                                                   | TODO_LIST.md                           |
+| 15 | `utils.TestDocsCountDrift` re-run `-count=1` after doc edits: GREEN (file-reading guard, cache trap respected)                                                                                                                                                                               | test run                               |
+| 16 | Post-daemon checklist ×3 (commits `c0f29174`, `30dd2863`, `91797bcc`): edits survived verbatim, `.gitignore` not re-appended (2 standing mentions), `[Unreleased]` warm, tree clean                                                                                                          | `git show`/`git status`                |
+| 17 | Full ritual at clean tip: `scripts/ci-repro.sh --lint --css --website` → **VERDICT: PASS (exit 0)**, 23 lanes (generate→build→test→per-module→coverage gates→lint→CSS freshness→website→advisory art-dupl); lane resolved the PINNED analyzer version beside the verdict (report f29 closed) | `/tmp/ci-repro-session2.log`           |
 
 ## b) PARTIALLY DONE
 
@@ -73,60 +73,60 @@ The morning report's two mechanical unknowns are now settled: (1) the **"gate gr
 
 ## f) UP TO 50 THINGS TO GET DONE NEXT
 
-*Brainstorm, not commitment — docs-health HARVEST applies routing rigor. Already-routed items cite their TODO row.*
+_Brainstorm, not commitment — docs-health HARVEST applies routing rigor. Already-routed items cite their TODO row._
 
-| # | Task | Why / source |
-|---|------|--------------|
-| 1 | **Owner: push master** — PASS verdict names `91797bcc`; re-verify tip hasn't moved (daemon races), then push and watch CI incl. coverage/CSS lanes | M03 ritual; this session |
-| 2 | **Owner: extraction appetite, batched** — format.go `magnitudeScale` (445) + ogshot/siteshots flag bootstrap (448): extract both, or ledger-accept both in ADR-0009 | report g3 + triages |
-| 3 | Disposition the `--suggest-generics` candidates (the combined-scan output's suggestions were never judged as generics candidates) | row 446; b1 |
-| 4 | Review the `--show-suppressed` 13 test-clone groups once | row 446 |
-| 5 | Ratify `scripts/pinned-art-dupl.sh` as THE supply, or upgrade to flake input `nix run .#dupl` | row 447 |
-| 6 | ci-repro advisory lane: log resolved-binary-version vs baseline `recordedAt` beside the verdict | row 450 |
-| 7 | Move ci-repro's clean-tree check to script top (fail <1s) | e1; d1 |
-| 8 | Annotate #295's row: today's advisory greens count toward the 2-consecutive-green gate evidence | b2 |
-| 9 | Design: wire-level empty→default option to delete the datastar wrapper | row 449 |
-| 10 | Decide t=2/t=3 triage-scan shape in the lane (reported-not-compared, class-mapped counts only) | pairs with 450 |
-| 11 | Upstream art-dupl #316 `--baseline-version-must-match` (converts the cross-binary near-miss into a clean error) | morning e2 |
-| 12 | Upstream art-dupl #293 stable fingerprints (THE systemic fix) | morning f20 |
-| 13 | Upstream art-dupl #292 piped-output truncation | TODO #292 |
-| 14 | Upstream art-dupl #315 actionable-vs-raw counts (also fixes the misleading "Quick Fix" hint class) | TODO #315 |
-| 15 | BuildFlow #384 art-dupl config passthrough | TODO #384 |
-| 16 | BuildFlow #385 accepted-disabled allowlist | TODO #385 |
-| 17 | BuildFlow #442 lint formatter dependencies | TODO #442 |
-| 18 | #358 GOEXPERIMENT=jsonv2 disposition — one lockstep drop commit or keep (owner) | TODO #358 |
-| 19 | #443 golangci-lint pin lockstep bump (dedicated commit, post-sweep) | TODO #443 |
-| 20 | #335 templ v0.3.1070 window (gate still closed: nixpkgs templ = 0.3.1020; re-check on nixpkgs input bump) | TODO #335 |
-| 21 | #368 size-* sweep — rides the 1070 window (ONE visual re-baseline) | TODO #368 |
-| 22 | #369 `@utility` migration for utility-shaped `.tc-*` classes | TODO #369 |
-| 23 | #428 warning hue unification (amber vs yellow) — owner ⫱, ties WCAG text sweep | TODO #428 |
-| 24 | #237 SidebarNav chrome default ratify (owner ⫱) | TODO #237 |
-| 25 | #211 fate of `templates/styles.css` + theme `.out.css` (owner ⫱) | TODO #211 |
-| 26 | #329 SSE through Firebase Hosting rewrite (owner ⫱: domain map / App Hosting / direct-URL) | TODO #329 |
-| 27 | #436 consumer stale-CSS fleet fixes (other repos; `scripts/fleet-css-check.sh` re-runs) | TODO #436 |
-| 28 | #400 consumer migration waves (owner-gated per repo) | TODO #400 |
-| 29 | #410 tails: crm-exec-stage rebase-or-abandon; R23 blockers; fleet sweep residue | TODO #410 |
-| 30 | #411 owner ratifies tool verdicts G1–G3 (Playwright adopt / achecker ledger / k6) | TODO #411 |
-| 31 | Next release: release.sh carries the 149 count via guards — verify `TestVersionMatches*` green at cut | standing |
-| 32 | Claims-file (or scan-with-intent) for count guards — kills the first-match fragility class | e5 |
-| 33 | Sweep living docs for sibling stale gate claims (the t=2/t=3 class — I fixed ADR-0009 only; SKILL.md/CHANGELOG phrasing uncheck) | e3 generalization |
-| 34 | Verify SKILL.md dedup guidance matches the threshold-semantics correction (skill says "green ×2" — check nothing stronger) | 33-adjacent |
-| 35 | #28 awesome-templ submission (premise re-measured 2026-10-23; submission itself outstanding) | TODO #28 |
-| 36 | #80/#162/#150 human-eyeball flagged visual goldens (needs API key + human) | TODO blocked |
-| 37 | Standing: `TestDocsCountDrift -count=1` after any count-touching doc edit | AGENTS |
-| 38 | Standing: AGENTS.md ≤220 check after any AGENTS edit (205 now) | AGENTS |
-| 39 | Standing: `[Unreleased]` warm for the next feature commit | AGENTS |
-| 40 | Standing: post-daemon `.gitignore` re-append check each commit | AGENTS |
-| 41 | Standing: run `scripts/session-tripwire.sh` at session end (I skipped it this session — manual equivalents only) | d6 |
-| 42 | If CI finds anything post-push: ANNOTATE this report non-destructively (docs-health) | skill contract |
-| 43 | Consider teaching ci-repro to print art-dupl VALIDATION errors distinctly from its "Quick Fix" hints | e4 |
-| 44 | Batch 445+448 into ONE owner decision ask (both are extraction-appetite calls) | this report |
-| 45 | #312 export `display.HeadingTag` (owner API decision) | TODO #312 |
-| 46 | #303 website content clones scope decision (owner) | TODO #303 |
-| 47 | #190 kanban touch-drag story (owner Q1; dependency budget closed) | TODO #190 |
-| 48 | #217 M24/M25 demand-gated components — re-check on next adoption survey | TODO #217 |
-| 49 | Re-record art-dupl baseline ONLY at the next deliberate analyzer bump (ritual: pinned-art-dupl.sh → triage → ADR → record → version log) | ADR-0009 |
-| 50 | Close the loop: strike TODO rows 446–450 as their follow-ups land (this file's §f is harvest input, not a tracker) | docs-health |
+| #  | Task                                                                                                                                                                | Why / source             |
+| -- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| 1  | **Owner: push master** — PASS verdict names `91797bcc`; re-verify tip hasn't moved (daemon races), then push and watch CI incl. coverage/CSS lanes                  | M03 ritual; this session |
+| 2  | **Owner: extraction appetite, batched** — format.go `magnitudeScale` (445) + ogshot/siteshots flag bootstrap (448): extract both, or ledger-accept both in ADR-0009 | report g3 + triages      |
+| 3  | Disposition the `--suggest-generics` candidates (the combined-scan output's suggestions were never judged as generics candidates)                                   | row 446; b1              |
+| 4  | Review the `--show-suppressed` 13 test-clone groups once                                                                                                            | row 446                  |
+| 5  | Ratify `scripts/pinned-art-dupl.sh` as THE supply, or upgrade to flake input `nix run .#dupl`                                                                       | row 447                  |
+| 6  | ci-repro advisory lane: log resolved-binary-version vs baseline `recordedAt` beside the verdict                                                                     | row 450                  |
+| 7  | Move ci-repro's clean-tree check to script top (fail <1s)                                                                                                           | e1; d1                   |
+| 8  | Annotate #295's row: today's advisory greens count toward the 2-consecutive-green gate evidence                                                                     | b2                       |
+| 9  | Design: wire-level empty→default option to delete the datastar wrapper                                                                                              | row 449                  |
+| 10 | Decide t=2/t=3 triage-scan shape in the lane (reported-not-compared, class-mapped counts only)                                                                      | pairs with 450           |
+| 11 | Upstream art-dupl #316 `--baseline-version-must-match` (converts the cross-binary near-miss into a clean error)                                                     | morning e2               |
+| 12 | Upstream art-dupl #293 stable fingerprints (THE systemic fix)                                                                                                       | morning f20              |
+| 13 | Upstream art-dupl #292 piped-output truncation                                                                                                                      | TODO #292                |
+| 14 | Upstream art-dupl #315 actionable-vs-raw counts (also fixes the misleading "Quick Fix" hint class)                                                                  | TODO #315                |
+| 15 | BuildFlow #384 art-dupl config passthrough                                                                                                                          | TODO #384                |
+| 16 | BuildFlow #385 accepted-disabled allowlist                                                                                                                          | TODO #385                |
+| 17 | BuildFlow #442 lint formatter dependencies                                                                                                                          | TODO #442                |
+| 18 | #358 GOEXPERIMENT=jsonv2 disposition — one lockstep drop commit or keep (owner)                                                                                     | TODO #358                |
+| 19 | #443 golangci-lint pin lockstep bump (dedicated commit, post-sweep)                                                                                                 | TODO #443                |
+| 20 | #335 templ v0.3.1070 window (gate still closed: nixpkgs templ = 0.3.1020; re-check on nixpkgs input bump)                                                           | TODO #335                |
+| 21 | #368 size-* sweep — rides the 1070 window (ONE visual re-baseline)                                                                                                  | TODO #368                |
+| 22 | #369 `@utility` migration for utility-shaped `.tc-*` classes                                                                                                        | TODO #369                |
+| 23 | #428 warning hue unification (amber vs yellow) — owner ⫱, ties WCAG text sweep                                                                                      | TODO #428                |
+| 24 | #237 SidebarNav chrome default ratify (owner ⫱)                                                                                                                     | TODO #237                |
+| 25 | #211 fate of `templates/styles.css` + theme `.out.css` (owner ⫱)                                                                                                    | TODO #211                |
+| 26 | #329 SSE through Firebase Hosting rewrite (owner ⫱: domain map / App Hosting / direct-URL)                                                                          | TODO #329                |
+| 27 | #436 consumer stale-CSS fleet fixes (other repos; `scripts/fleet-css-check.sh` re-runs)                                                                             | TODO #436                |
+| 28 | #400 consumer migration waves (owner-gated per repo)                                                                                                                | TODO #400                |
+| 29 | #410 tails: crm-exec-stage rebase-or-abandon; R23 blockers; fleet sweep residue                                                                                     | TODO #410                |
+| 30 | #411 owner ratifies tool verdicts G1–G3 (Playwright adopt / achecker ledger / k6)                                                                                   | TODO #411                |
+| 31 | Next release: release.sh carries the 149 count via guards — verify `TestVersionMatches*` green at cut                                                               | standing                 |
+| 32 | Claims-file (or scan-with-intent) for count guards — kills the first-match fragility class                                                                          | e5                       |
+| 33 | Sweep living docs for sibling stale gate claims (the t=2/t=3 class — I fixed ADR-0009 only; SKILL.md/CHANGELOG phrasing uncheck)                                    | e3 generalization        |
+| 34 | Verify SKILL.md dedup guidance matches the threshold-semantics correction (skill says "green ×2" — check nothing stronger)                                          | 33-adjacent              |
+| 35 | #28 awesome-templ submission (premise re-measured 2026-10-23; submission itself outstanding)                                                                        | TODO #28                 |
+| 36 | #80/#162/#150 human-eyeball flagged visual goldens (needs API key + human)                                                                                          | TODO blocked             |
+| 37 | Standing: `TestDocsCountDrift -count=1` after any count-touching doc edit                                                                                           | AGENTS                   |
+| 38 | Standing: AGENTS.md ≤220 check after any AGENTS edit (205 now)                                                                                                      | AGENTS                   |
+| 39 | Standing: `[Unreleased]` warm for the next feature commit                                                                                                           | AGENTS                   |
+| 40 | Standing: post-daemon `.gitignore` re-append check each commit                                                                                                      | AGENTS                   |
+| 41 | Standing: run `scripts/session-tripwire.sh` at session end (I skipped it this session — manual equivalents only)                                                    | d6                       |
+| 42 | If CI finds anything post-push: ANNOTATE this report non-destructively (docs-health)                                                                                | skill contract           |
+| 43 | Consider teaching ci-repro to print art-dupl VALIDATION errors distinctly from its "Quick Fix" hints                                                                | e4                       |
+| 44 | Batch 445+448 into ONE owner decision ask (both are extraction-appetite calls)                                                                                      | this report              |
+| 45 | #312 export `display.HeadingTag` (owner API decision)                                                                                                               | TODO #312                |
+| 46 | #303 website content clones scope decision (owner)                                                                                                                  | TODO #303                |
+| 47 | #190 kanban touch-drag story (owner Q1; dependency budget closed)                                                                                                   | TODO #190                |
+| 48 | #217 M24/M25 demand-gated components — re-check on next adoption survey                                                                                             | TODO #217                |
+| 49 | Re-record art-dupl baseline ONLY at the next deliberate analyzer bump (ritual: pinned-art-dupl.sh → triage → ADR → record → version log)                            | ADR-0009                 |
+| 50 | Close the loop: strike TODO rows 446–450 as their follow-ups land (this file's §f is harvest input, not a tracker)                                                  | docs-health              |
 
 ## g) QUESTIONS I CANNOT FIGURE OUT MYSELF
 
@@ -146,4 +146,4 @@ The morning report's two mechanical unknowns are now settled: (1) the **"gate gr
 - **Scope creep?** One deliberate extension (pinned-art-dupl.sh, report item f16) — disclosed, tested, in-mandate.
 - **Tests?** No production code touched; the one guard over my doc edits (`TestDocsCountDrift`) ran `-count=1` green; full ritual test lanes green at tip.
 
-*Point-in-time snapshot 2026-10-24 12:00 CEST. Goes stale; annotate non-destructively (docs-health ANNOTATE), never rewrite.*
+_Point-in-time snapshot 2026-10-24 12:00 CEST. Goes stale; annotate non-destructively (docs-health ANNOTATE), never rewrite._

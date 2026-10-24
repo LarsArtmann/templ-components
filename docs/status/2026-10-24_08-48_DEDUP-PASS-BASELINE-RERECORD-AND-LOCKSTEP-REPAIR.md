@@ -16,25 +16,25 @@ Baseline now: **149 accepted groups** (was 150; two extraction removals, one new
 
 ## a) FULLY DONE
 
-| # | Work | Evidence |
-|---|------|----------|
-| 1 | Pinned analyzer built without touching the fork checkout | `git worktree add /tmp/art-dupl-pinned 93432fd910fb` → binary reports the exact ADR-0009 version |
-| 2 | Canonical gate vs baseline: **0 new groups** at t=1 (initial state) | `Found total 0 clone groups (baseline: 150)` |
-| 3 | t=5 re-judgement scan (49 groups detected, 22 shown) — every shown group read and dispositioned | 2 extracted, rest mapped to ADR-0009 signature classes (lookup-helper pairs, `templ.Attributes` token group, capture-tool bootstrap, wire type-token noise) |
-| 4 | **Extraction 1:** `datastar.polledIntervalValue` was a byte-level twin of `wire.NormalizedInterval` (duplicated regexes + conversion loop; comments cross-referenced each other as "the htmx twin") | Now delegates, keeping only the empty→default fallback (`datastar/polled_region.go:76`); datastar module tests green |
-| 5 | **Extraction 2:** `display.mapStatusToBadgeType` was a second name for `MapStatusToBadgeType` (exported twin just delegated) | Twin deleted; `StatusBadge`, `resolveStatusBadgeType`, `helpers_test.go` updated; display tests + golden sweep green; rendered HTML unchanged |
-| 6 | Candidate C (`formWireAttributes` ↔ `navLinkWireAttrs`) inspected and **accepted** — nil-guard + `Attributes()` shape only; host defaults differ semantically (form-encoding vs PreventDefault) | Matches documented type-token class |
-| 7 | Post-extraction new group (`StatusBadgeMapper` type ↔ `MapStatusToBadgeType` signature, `string) BadgeType`) triaged **accept** (signature-tails class) | Gate then re-recorded |
-| 8 | Baseline re-recorded with the SAME pinned binary: **149 groups**, gate **green ×2** (determinism ritual) | `.art-dupl-baseline.json` |
-| 9 | ADR-0009 updated: dated `DONE 2026-10-24` entry, Consequences count → 149 (with 150 kept as historical), `wire.NormalizedInterval` added to the extraction list | `docs/adr/0009-accepted-clones.md` |
-| 10 | AGENTS.md accepted-groups count → 149; guard-verified | `TestDocsCountDrift` green (first match now the Unreleased changelog claim) |
-| 11 | CHANGELOG `[Unreleased]` filled: *Changed* (dedup pass) + *Fixed* (playwright lockstep) | Warm-unreleased rule honored |
-| 12 | **Playwright lockstep repair:** diagnosed that nixpkgs playwright-driver = **1.64.1** (flake.lock moved 2026-10-23), so the human "restore to 1.63.0" commit went the wrong direction — guard-green while the flake-built browsers are 1.64.1 (runtime failure class: "Executable doesn't exist") | `npm install --package-lock-only` + guard constant → 1.64.1; `TestCrossbrowserLockstep` green |
-| 13 | `_sources` mirror healed: `badge.templ` re-copied via `scripts/check-tc-sources-sync.sh --fix`; `packageImports[datastar]` gained `impUtilsWire` | `TestSourcesMatchPackageFiles` + `TestPackageImportsMatchSources` green |
-| 14 | Full verification: root `go test ./...` green; all 6 submodules PASS (`GOWORK=off` loop); golangci-lint **0 issues** on root/utils/datastar; `check-templ-sync.sh` green; AGENTS.md 205/220 lines | Session logs |
-| 15 | Class inventory regenerated (`classes.txt`, 26531 lines) after the `.templ` edit; freshness guard green | `TestClassInventoryFreshness` |
-| 16 | CI-lane binary supply aligned: pinned binary copied to `/tmp/art-dupl-fork` (the lane's first resolution path); worktree removed | Lane will log the correct version |
-| 17 | Daemon-commit audit: all 6 daemon commits (`deab295f`, `374bd92f`, `a9c8f316`, `773e078b`, `cce99768`, `d4cc89df`) verified to carry exactly the intended edits; tree clean | `git show` + `git grep` at HEAD |
+| #  | Work                                                                                                                                                                                                                                                                                              | Evidence                                                                                                                                                    |
+| -- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1  | Pinned analyzer built without touching the fork checkout                                                                                                                                                                                                                                          | `git worktree add /tmp/art-dupl-pinned 93432fd910fb` → binary reports the exact ADR-0009 version                                                            |
+| 2  | Canonical gate vs baseline: **0 new groups** at t=1 (initial state)                                                                                                                                                                                                                               | `Found total 0 clone groups (baseline: 150)`                                                                                                                |
+| 3  | t=5 re-judgement scan (49 groups detected, 22 shown) — every shown group read and dispositioned                                                                                                                                                                                                   | 2 extracted, rest mapped to ADR-0009 signature classes (lookup-helper pairs, `templ.Attributes` token group, capture-tool bootstrap, wire type-token noise) |
+| 4  | **Extraction 1:** `datastar.polledIntervalValue` was a byte-level twin of `wire.NormalizedInterval` (duplicated regexes + conversion loop; comments cross-referenced each other as "the htmx twin")                                                                                               | Now delegates, keeping only the empty→default fallback (`datastar/polled_region.go:76`); datastar module tests green                                        |
+| 5  | **Extraction 2:** `display.mapStatusToBadgeType` was a second name for `MapStatusToBadgeType` (exported twin just delegated)                                                                                                                                                                      | Twin deleted; `StatusBadge`, `resolveStatusBadgeType`, `helpers_test.go` updated; display tests + golden sweep green; rendered HTML unchanged               |
+| 6  | Candidate C (`formWireAttributes` ↔ `navLinkWireAttrs`) inspected and **accepted** — nil-guard + `Attributes()` shape only; host defaults differ semantically (form-encoding vs PreventDefault)                                                                                                   | Matches documented type-token class                                                                                                                         |
+| 7  | Post-extraction new group (`StatusBadgeMapper` type ↔ `MapStatusToBadgeType` signature, `string) BadgeType`) triaged **accept** (signature-tails class)                                                                                                                                           | Gate then re-recorded                                                                                                                                       |
+| 8  | Baseline re-recorded with the SAME pinned binary: **149 groups**, gate **green ×2** (determinism ritual)                                                                                                                                                                                          | `.art-dupl-baseline.json`                                                                                                                                   |
+| 9  | ADR-0009 updated: dated `DONE 2026-10-24` entry, Consequences count → 149 (with 150 kept as historical), `wire.NormalizedInterval` added to the extraction list                                                                                                                                   | `docs/adr/0009-accepted-clones.md`                                                                                                                          |
+| 10 | AGENTS.md accepted-groups count → 149; guard-verified                                                                                                                                                                                                                                             | `TestDocsCountDrift` green (first match now the Unreleased changelog claim)                                                                                 |
+| 11 | CHANGELOG `[Unreleased]` filled: _Changed_ (dedup pass) + _Fixed_ (playwright lockstep)                                                                                                                                                                                                           | Warm-unreleased rule honored                                                                                                                                |
+| 12 | **Playwright lockstep repair:** diagnosed that nixpkgs playwright-driver = **1.64.1** (flake.lock moved 2026-10-23), so the human "restore to 1.63.0" commit went the wrong direction — guard-green while the flake-built browsers are 1.64.1 (runtime failure class: "Executable doesn't exist") | `npm install --package-lock-only` + guard constant → 1.64.1; `TestCrossbrowserLockstep` green                                                               |
+| 13 | `_sources` mirror healed: `badge.templ` re-copied via `scripts/check-tc-sources-sync.sh --fix`; `packageImports[datastar]` gained `impUtilsWire`                                                                                                                                                  | `TestSourcesMatchPackageFiles` + `TestPackageImportsMatchSources` green                                                                                     |
+| 14 | Full verification: root `go test ./...` green; all 6 submodules PASS (`GOWORK=off` loop); golangci-lint **0 issues** on root/utils/datastar; `check-templ-sync.sh` green; AGENTS.md 205/220 lines                                                                                                 | Session logs                                                                                                                                                |
+| 15 | Class inventory regenerated (`classes.txt`, 26531 lines) after the `.templ` edit; freshness guard green                                                                                                                                                                                           | `TestClassInventoryFreshness`                                                                                                                               |
+| 16 | CI-lane binary supply aligned: pinned binary copied to `/tmp/art-dupl-fork` (the lane's first resolution path); worktree removed                                                                                                                                                                  | Lane will log the correct version                                                                                                                           |
+| 17 | Daemon-commit audit: all 6 daemon commits (`deab295f`, `374bd92f`, `a9c8f316`, `773e078b`, `cce99768`, `d4cc89df`) verified to carry exactly the intended edits; tree clean                                                                                                                       | `git show` + `git grep` at HEAD                                                                                                                             |
 
 ## b) PARTIALLY DONE
 
@@ -80,60 +80,60 @@ Baseline now: **149 accepted groups** (was 150; two extraction removals, one new
 
 ## f) UP TO 50 THINGS TO GET DONE NEXT
 
-*Brainstorm, not commitment — docs-health HARVEST applies routing rigor.*
+_Brainstorm, not commitment — docs-health HARVEST applies routing rigor._
 
-| # | Task | Why / Source |
-|---|------|--------------|
-| 1 | Triage `utils/format/format.go:39-48` ↔ `:157-166` (bytes vs count humanization) — extract, genericize, or ADR-accept | b1, untriaged from user's t=3 scan |
-| 2 | Triage `visualtest/tools/sseload` `start := time.Now()` pair | b1 |
-| 3 | Re-verify gate green at t=2 and t=3 against the 149-group baseline | b2, ADR standing claim |
-| 4 | Run `scripts/ci-repro.sh --lint --css --website` at the current tip | b5, M03 ritual |
-| 5 | Owner decision: reword the 6 daemon commit messages before push, or push as-is | d1, g2 |
-| 6 | Push master; watch CI (Lint, Build & Test, Coverage, CSS, Visual, Website) | c |
-| 7 | Add worktree-pinning note to the AGENTS.md fork command (line-neutral) | b3 |
-| 8 | ADR-0009 verdict table: add `StatusBadgeMapper` signature-pair row | e8 |
-| 9 | Confirm datastar test table covers empty-input→default explicitly | b4 |
-| 10 | Evaluate folding the empty→default into a wire-level option to delete the wrapper entirely | e10 |
-| 11 | Explicitly disposition the `--suggest-generics` candidates from the t=3 combined scan | c |
-| 12 | One-off sweep: exported/unexported twin function pairs repo-wide | e7 |
-| 13 | One-off sweep: cross-referencing "twin"/"same rule" comments (found Extraction 1) | e7 |
-| 14 | Review the `--show-suppressed` test-clone set once | c |
-| 15 | Decide the durable analyzer pin (flake input vs helper script) | e1 |
-| 16 | `scripts/pinned-art-dupl.sh`: worktree at ADR-pinned rev + build + version echo | e1 |
-| 17 | ci-repro advisory lane: t=2/t=3 checks + binary-version-vs-recordedAt log | e5 |
-| 18 | Upstream #316: `--baseline-version-must-match` guard | e2, d3 |
-| 19 | Upstream #315: print actionable-vs-raw counts distinctly | c |
-| 20 | Upstream #293: `--fingerprint-only` baseline / stable fingerprints (the systemic fix) | c |
-| 21 | Upstream #292: reproduce + fix piped-output truncation | c |
-| 22 | #384: BuildFlow art-dupl config-file passthrough | c |
-| 23 | #295: collect 2-consecutive-green evidence, propose the blocking flip | c |
-| 24 | Document `.art-dupl.json` (config) vs `.art-dupl-baseline.json` (baseline) split in ADR-0009 — it confused this session | session note |
-| 25 | Document the CHANGELOG first-match guard semantics in `docs/count-definitions.md` | e3 |
-| 26 | HARVEST this list into `TODO_LIST.md` / `ROADMAP.md` (docs-health) | skill contract |
-| 27 | Next commit: check `.gitignore` for the re-appended `*_templ.go` line (BuildFlow gotcha) | AGENTS |
-| 28 | Verify website Tailwind build unaffected by regenerated `classes.txt` (covered by ci-repro `--website`) | 27-adjacent |
-| 29 | Run ci-repro once and read its art-dupl log line: confirm it resolves the PINNED version | 16 |
-| 30 | Re-judge oghshot/siteshots 23-line flag-bootstrap acceptance against ADR-0010 (2 tools, shared domain) | t=5 scan |
-| 31 | Post-push: confirm CI green incl. coverage gate + CSS freshness lanes | 6 |
-| 32 | Check whether this session's green advisory runs advance #295's gate evidence | 23 |
-| 33 | Confirm `TestSourcesMatchPackageFiles` runs in the CI root suite (it caught the mirror drift) — no gap left | 13 |
-| 34 | Keep `[Unreleased]` warm discipline for the next feature commit | standing rule |
-| 35 | Re-run full per-module test loop after any follow-up edits | standing rule |
-| 36 | Re-check AGENTS.md ≤220 lines after any AGENTS edit (currently 205) | standing rule |
-| 37 | Optional: explicit old-vs-new badge rendered-HTML byte-diff for the record (goldens already assert it) | 5 |
-| 38 | Assert via `git show deab295f` that no class strings changed (demo app.css untouched — verified by reasoning only) | session note |
-| 39 | Consider upstream doc PR: binary-pinned-baseline worktree recipe | 16/18 |
-| 40 | When the next release cuts: release.sh will carry the 149 count via guards — verify `TestVersionMatches*` stay green | standing |
-| 41 | Evaluate logging resolved-analyzer-version beside the verdict in the lane output (exists — verify formatting) | 29 |
-| 42 | Consider a `docs/count-definitions.md` row for "accepted groups" semantics | 25 |
-| 43 | Ask owner: playwright 1.64.1 anchor intent | g1 |
-| 44 | Ask owner: extraction appetite for `format.go` | g3 |
-| 45 | Ask owner: daemon-message reword appetite | g2 |
-| 46 | After next edits: re-run `TestDocsCountDrift -count=1` (file-reading guard; caching trap) | standing |
-| 47 | If CI finds anything: ANNOTATE this report non-destructively (docs-health) | skill contract |
-| 48 | Longer-term: track upstream stable-fingerprint roadmap as THE fix for binary pinning | 20 |
-| 49 | Consider folding the t=1/t=2/t=3 triple-green into the lane as one step | 17 |
-| 50 | Close the loop: mark this report's items in TODO_LIST as they land | 26 |
+| #  | Task                                                                                                                    | Why / Source                       |
+| -- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| 1  | Triage `utils/format/format.go:39-48` ↔ `:157-166` (bytes vs count humanization) — extract, genericize, or ADR-accept   | b1, untriaged from user's t=3 scan |
+| 2  | Triage `visualtest/tools/sseload` `start := time.Now()` pair                                                            | b1                                 |
+| 3  | Re-verify gate green at t=2 and t=3 against the 149-group baseline                                                      | b2, ADR standing claim             |
+| 4  | Run `scripts/ci-repro.sh --lint --css --website` at the current tip                                                     | b5, M03 ritual                     |
+| 5  | Owner decision: reword the 6 daemon commit messages before push, or push as-is                                          | d1, g2                             |
+| 6  | Push master; watch CI (Lint, Build & Test, Coverage, CSS, Visual, Website)                                              | c                                  |
+| 7  | Add worktree-pinning note to the AGENTS.md fork command (line-neutral)                                                  | b3                                 |
+| 8  | ADR-0009 verdict table: add `StatusBadgeMapper` signature-pair row                                                      | e8                                 |
+| 9  | Confirm datastar test table covers empty-input→default explicitly                                                       | b4                                 |
+| 10 | Evaluate folding the empty→default into a wire-level option to delete the wrapper entirely                              | e10                                |
+| 11 | Explicitly disposition the `--suggest-generics` candidates from the t=3 combined scan                                   | c                                  |
+| 12 | One-off sweep: exported/unexported twin function pairs repo-wide                                                        | e7                                 |
+| 13 | One-off sweep: cross-referencing "twin"/"same rule" comments (found Extraction 1)                                       | e7                                 |
+| 14 | Review the `--show-suppressed` test-clone set once                                                                      | c                                  |
+| 15 | Decide the durable analyzer pin (flake input vs helper script)                                                          | e1                                 |
+| 16 | `scripts/pinned-art-dupl.sh`: worktree at ADR-pinned rev + build + version echo                                         | e1                                 |
+| 17 | ci-repro advisory lane: t=2/t=3 checks + binary-version-vs-recordedAt log                                               | e5                                 |
+| 18 | Upstream #316: `--baseline-version-must-match` guard                                                                    | e2, d3                             |
+| 19 | Upstream #315: print actionable-vs-raw counts distinctly                                                                | c                                  |
+| 20 | Upstream #293: `--fingerprint-only` baseline / stable fingerprints (the systemic fix)                                   | c                                  |
+| 21 | Upstream #292: reproduce + fix piped-output truncation                                                                  | c                                  |
+| 22 | #384: BuildFlow art-dupl config-file passthrough                                                                        | c                                  |
+| 23 | #295: collect 2-consecutive-green evidence, propose the blocking flip                                                   | c                                  |
+| 24 | Document `.art-dupl.json` (config) vs `.art-dupl-baseline.json` (baseline) split in ADR-0009 — it confused this session | session note                       |
+| 25 | Document the CHANGELOG first-match guard semantics in `docs/count-definitions.md`                                       | e3                                 |
+| 26 | HARVEST this list into `TODO_LIST.md` / `ROADMAP.md` (docs-health)                                                      | skill contract                     |
+| 27 | Next commit: check `.gitignore` for the re-appended `*_templ.go` line (BuildFlow gotcha)                                | AGENTS                             |
+| 28 | Verify website Tailwind build unaffected by regenerated `classes.txt` (covered by ci-repro `--website`)                 | 27-adjacent                        |
+| 29 | Run ci-repro once and read its art-dupl log line: confirm it resolves the PINNED version                                | 16                                 |
+| 30 | Re-judge oghshot/siteshots 23-line flag-bootstrap acceptance against ADR-0010 (2 tools, shared domain)                  | t=5 scan                           |
+| 31 | Post-push: confirm CI green incl. coverage gate + CSS freshness lanes                                                   | 6                                  |
+| 32 | Check whether this session's green advisory runs advance #295's gate evidence                                           | 23                                 |
+| 33 | Confirm `TestSourcesMatchPackageFiles` runs in the CI root suite (it caught the mirror drift) — no gap left             | 13                                 |
+| 34 | Keep `[Unreleased]` warm discipline for the next feature commit                                                         | standing rule                      |
+| 35 | Re-run full per-module test loop after any follow-up edits                                                              | standing rule                      |
+| 36 | Re-check AGENTS.md ≤220 lines after any AGENTS edit (currently 205)                                                     | standing rule                      |
+| 37 | Optional: explicit old-vs-new badge rendered-HTML byte-diff for the record (goldens already assert it)                  | 5                                  |
+| 38 | Assert via `git show deab295f` that no class strings changed (demo app.css untouched — verified by reasoning only)      | session note                       |
+| 39 | Consider upstream doc PR: binary-pinned-baseline worktree recipe                                                        | 16/18                              |
+| 40 | When the next release cuts: release.sh will carry the 149 count via guards — verify `TestVersionMatches*` stay green    | standing                           |
+| 41 | Evaluate logging resolved-analyzer-version beside the verdict in the lane output (exists — verify formatting)           | 29                                 |
+| 42 | Consider a `docs/count-definitions.md` row for "accepted groups" semantics                                              | 25                                 |
+| 43 | Ask owner: playwright 1.64.1 anchor intent                                                                              | g1                                 |
+| 44 | Ask owner: extraction appetite for `format.go`                                                                          | g3                                 |
+| 45 | Ask owner: daemon-message reword appetite                                                                               | g2                                 |
+| 46 | After next edits: re-run `TestDocsCountDrift -count=1` (file-reading guard; caching trap)                               | standing                           |
+| 47 | If CI finds anything: ANNOTATE this report non-destructively (docs-health)                                              | skill contract                     |
+| 48 | Longer-term: track upstream stable-fingerprint roadmap as THE fix for binary pinning                                    | 20                                 |
+| 49 | Consider folding the t=1/t=2/t=3 triple-green into the lane as one step                                                 | 17                                 |
+| 50 | Close the loop: mark this report's items in TODO_LIST as they land                                                      | 26                                 |
 
 ## g) QUESTIONS I CANNOT FIGURE OUT MYSELF
 
@@ -143,4 +143,4 @@ Baseline now: **149 accepted groups** (was 150; two extraction removals, one new
 
 ---
 
-*Point-in-time snapshot 2026-10-24 08:48 CEST. Goes stale; annotate non-destructively (docs-health ANNOTATE), never rewrite.*
+_Point-in-time snapshot 2026-10-24 08:48 CEST. Goes stale; annotate non-destructively (docs-health ANNOTATE), never rewrite._
