@@ -4,7 +4,7 @@
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources), ⫱ owner gate (decision/credential).
-> IDs are unique across ALL sections — next free ID → 445.
+> IDs are unique across ALL sections — next free ID → 452.
 
 ---
 
@@ -427,4 +427,18 @@ Full `ci-repro --lint --css --visual --website` and the push are still outstandi
 | ~~441~~ | ~~Pre-commit formatter/lint race~~                            | DONE locally 2026-10-23 — cause confirmed in BuildFlow `tools/providers/golangci_detect_repair.go:66`: golangci-lint depends only on `go-fix` + `workspace-build-verify`, both blocklisted in pre-commit, so nix-fmt/templ-fmt run concurrently with lint. Guard 10 runs `scripts/settle-staged-go-format.sh` before BuildFlow: it formats the STAGED BLOB (worktree untouched, unstaged edits cannot leak) via `git update-index --cacheinfo`. Hermetic self-test `scripts/test-settle-staged-go-format.sh` (index replacement, worktree containment, idempotence, non-Go passthrough) runs in the hook, `ci-repro.sh`, and CI. Upstream DAG fix → #442. |
 | 442     | BuildFlow upstream: give golangci-lint formatter dependencies | Add `nix-fmt`, `templ-fmt`, `treefmt` to `DAGPolicy.DependsOn` in `tools/providers/golangci_detect_repair.go` (self-triggering tools, so Go-only repos gain no edge). Without it, every consumer repo's pre-commit lint can race its own formatters; Guard 10 here is a local workaround. Owner-gated (separate repo + release), same class as #93/#107/#108.                                                                                                                                                                                                                                                                                             |
 
-_Next free ID: 443._
+## Harvested 2026-10-24 — dedup-pass follow-through (docs/status/2026-10-24_08-48 §f)
+
+_Session follow-through on the morning's dedup/baseline/lockstep report. Closed same-session: t=2/t=3 gate re-verification (verdict below), AGENTS worktree-pin note, ADR-0009 `StatusBadgeMapper` verdict row + config-vs-baseline split, datastar empty-input row confirm (datastar/polled_region_test.go:71 + render row :43), mirror-guard-in-CI confirm (ci.yaml:261 runs `cmd/tc`), exported/unexported-twin sweep (CLEAN — only `AllIconNames` wrapper + unrelated `String()` methods; Extraction 2 closed the class), "twin"-comment sweep (CLEAN — 9 sites, all documented-intentional or post-Extraction-1), `scripts/pinned-art-dupl.sh` (worktree-pinned build + version echo + `--` passthrough, proven green), count-definitions row for accepted groups incl. first-match-guard semantics. Owner-side since the report: master PUSHED, CI green at tip (run 40073353653) — the reword-or-push question (g2) resolved by pushing as-is._
+
+| # | Task | Why / source |
+|---|------|--------------|
+| ~~445~~ | ~~Triage `utils/format/format.go:39-48` ↔ `:157-166`~~ TRIAGED 2026-10-24: `Bytes` (1024-step, unit-suffixed, boundary "1024") vs `CompactCount` (1000-step, suffixless, boundary "1000") share the sign+scale+boundary-bump shape (~10 lines ×2, same file) and MEET ADR-0010's mechanical criteria (2 callers, clean `magnitudeScale` name, zero public-API change). Flip to extract stays owner-gated (report g3: not twice in one day). | report b1/g3 |
+| 446 | Disposition the `--suggest-generics` candidates from the t=3 combined scan + review the `--show-suppressed` test-clone set (13 groups at t=5, invisible to the canonical gate) | report c; never individually judged |
+| 447 | Durable analyzer supply: `scripts/pinned-art-dupl.sh` SHIPPED 2026-10-24 (e1's helper-script shape); ratify it as the answer or upgrade to a flake input (`nix run .#dupl`) | report e1; deferred twice before |
+| 448 | Re-judge the ogshot/siteshots 23-line flag-bootstrap acceptance against ADR-0010 (2 tools, shared domain — extraction candidate) ⫱ owner extraction appetite (same gate as 445) | t=5 scan; report g3 |
+| 449 | Consider folding datastar's empty→default fallback into a wire-level option to delete the `polledIntervalValue` wrapper entirely | report e10 |
+| 450 | ci-repro advisory lane: log resolved-binary-version vs baseline `recordedAt` beside the verdict. NOTE: the lane's t=2/t=3 green checks (report e5/f17/f49) are SUPERSEDED — group hashes are threshold-dependent, a t=1 baseline can never compare green at t≥2 (ADR-0009 corrected 2026-10-24; t=2 → 4, t=3 → 7 hash-new groups, all class-covered) | report e5 + this session's gate finding |
+| ~~451~~ | ~~sseload `start := time.Now()` pair~~ TRIAGED 2026-10-24: two DIFFERENT measurements (per-attempt reconnect latency vs post-drop health) sharing the timing idiom; surrounding stream/select boilerplate = accepted capture-tool class. No action. | report b1 |
+
+_Next free ID: 452._
