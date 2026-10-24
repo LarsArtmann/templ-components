@@ -546,6 +546,10 @@ art-dupl check -c .art-dupl.json -t 1 --type-aware
 art-dupl baseline -c .art-dupl.json -t 1 --type-aware
 ```
 
+The two files are DIFFERENT artifacts: `.art-dupl.json` is the CONFIG (scan
+paths, excludes like `cmd/tc/_sources/**`, thresholds), human-edited;
+`.art-dupl-baseline.json` is the BASELINE (accepted clone-group hashes +
+`recordedAt`), machine-written by `art-dupl baseline` and never hand-edited.
 The baseline file is `.art-dupl-baseline.json` (committed).
 
 **TOOL-VERSION PIN (2026-09-22, learned the hard way): baseline hashes are
@@ -719,6 +723,7 @@ no current group required a new extraction decision.
 | Function-signature tails (17-member `name string,` / `…string) bool` group)                   | cmd/tc, display, htmx, navigation, utils, visualtest, internal/contract                      | ACCEPT — signature-token noise      | Shares parameter-list tokens only; bodies unrelated                                                 |
 | StatTone type-switch receivers (`(v StatTone)` / `(tone StatTone)`)                           | display/card ×2                                                                              | ACCEPT — method-receiver tokens     | Receiver naming, not duplicated logic                                                               |
 | `@copyButtonContent` call pair                                                                | display/copy_button ×2                                                                       | ACCEPT — documented call-shape pair | Same class as headingTag pair: props types differ, per-component argument lists are the honest form |
+| `StatusBadgeMapper` type ↔ `MapStatusToBadgeType` signature (`string) BadgeType`)             | display/status_badge ×2                                                                       | ACCEPT — signature-tails class      | 2026-10-24 dedup pass (see dated DONE entry): type decl + func signature share the token tail; zero shared logic |
 
 Historical note: the 37+6 sets of 2026-09-23 were judged group-by-group in
 the prose sections (two harmful clones found and extracted: line/area-chart
