@@ -61,6 +61,23 @@ number is questioned, answer from here, not from memory.
 - **Definition:** committed baseline files under the golden testdata trees.
 - **Computed by:** `utils.TestDocsCountDrift` (file counts per tree).
 
+## Accepted clone groups — **149**
+
+- **Definition:** entries of the committed `.art-dupl-baseline.json`
+  (machine-written by `art-dupl baseline`, binary-pinned per ADR-0009). The
+  count is cited by AGENTS.md, ADR-0009, and the CHANGELOG entry that shipped
+  the current re-record.
+- **Computed by:** `utils.TestDocsCountDrift` (`countBaselineEntries` parses
+  the JSON; every citing doc is asserted against it).
+- **First-match semantics (fragility, known):** `assertCount` uses
+  `regexp.FindSubmatch` — it reads the FIRST `(\d+)\s+groups at t=1` match in
+  each doc. CHANGELOG.md is newest-first, so the guarded entry is the topmost
+  one phrased that way; any FUTURE entry using that phrase above the current
+  one silently re-targets the guard. Phrase new changelog count claims
+  differently (e.g. "clone groups at threshold 1") or bump the existing
+  entry's number in place. (Noted 2026-10-24; sturdier scan-with-intent is
+  backlog.)
+
 ## Competitor facts (stars, claims) — dated, not constant
 
 - **Definition:** external numbers about shadcn-templ/goshipit/etc. They are

@@ -582,9 +582,17 @@ evening-pass extractions (heading/span one-liners, FieldError call pairs);
 the noise those lines add is absorbed by the committed baseline instead of
 by threshold tuning. `--type-aware` stays on: token-only matching
 re-classified structural clones as noise during the 09-22 forensics. The
-baseline absorbs verbosity; thresholds stay sensitive. Re-read 2026-09-23:
-the gate is green at `-t 1`, `-t 2`, AND `-t 3` against the committed
-baseline (no undocumented clones at any threshold post-extraction).
+baseline absorbs verbosity; thresholds stay sensitive. Re-read 2026-09-23
+(under the 0.7.0-81ce00b analyzer): green at `-t 1`, `-t 2`, and `-t 3`
+against the then-committed baseline. **CORRECTED 2026-10-24 (fork
+v0.9.1-…-93432fd): group hashes are threshold-dependent — a baseline recorded
+at `-t 1` mechanically CANNOT compare green at higher thresholds** (`check -t 2`
+reports 4 hash-new groups, `-t 3` reports 7, against the 149-group t=1
+baseline). All 11 fall into two dispositioned appendix classes
+(signature-token/signature-tails; parallel lookup-helper signature pairs) —
+zero new extraction decisions — so the canonical gate is `-t 1` ONLY; higher
+thresholds are TRIAGE scans whose output is judged against the appendix
+classes, never hash-compared.
 
 **BINARY SUPPLY (decided 2026-09-23): documented-PATH resolution, flake pin
 deliberately deferred.** The advisory lane in `scripts/ci-repro.sh` resolves
@@ -753,5 +761,8 @@ directly. The re-record against the SAME pinned analyzer (built via
 to `16ee684c`, so a pinned worktree is how cross-binary compare stays
 valid) took 149 groups. The ONE new group is the `StatusBadgeMapper` type
 ↔ `MapStatusToBadgeType` signature pair (`string) BadgeType`) — ACCEPT
-under the function-signature-tails class. Gate green ×2; the lane remains
-advisory and never gates.
+under the function-signature-tails class (now also a verdict-table row).
+Gate green ×2; the lane remains advisory and never gates. **t=2/t=3
+re-verification (2026-10-24):** not mechanically green (see the corrected
+claim above) — 4 + 7 hash-new groups, every one class-covered by the
+appendix (signature-token tails; lookup-helper signature pairs).
