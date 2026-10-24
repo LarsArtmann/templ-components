@@ -17,8 +17,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `mapStatusToBadgeType` was a second name for the same lookup as
   `MapStatusToBadgeType`; internal callers use the exported function
   directly. The art-dupl baseline was re-recorded against the same pinned
-  analyzer: 149 accepted groups (one new signature-token pair accepted
-  under ADR-0009's documented classes), two consecutive gate runs green.
+  analyzer: 149 groups at t=1 accepted (one new signature-token pair
+  accepted under ADR-0009's documented classes), two consecutive gate runs
+  green.
 
 ### Fixed
 
