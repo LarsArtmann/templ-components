@@ -342,7 +342,6 @@ Inside `component.templ`:
 9. **Register the Props type** in `internal/contract/component_props_test.go` — forgetting
    this is the #1 way a component slips in without the BaseProps embed.
 
-
 Shared-helper inventory, the full per-component test checklist, and every decision tree live in
 `references/authoring-guide.md`; the complete guard matrix is in `references/guard-tests.md`.
 
@@ -356,7 +355,8 @@ matrix is in `references/guard-tests.md`; the ones authors trip most often:
   `TestCoarsePointerCompliance` / `TestAriaLivePoliteness` — class-string invariants.
 - `TestContainerQueryCompliance` / `TestCustomCSSUtilities` / `TestTailwindGoSourceScanning`
   — breakpoint opt-ins and compiled-CSS coverage.
-- `TestDocsCountDrift` — every count printed in this file, README, AGENTS, FEATURES, site docs.
+- `TestDocsCountDrift` — every count printed in this skill, README, AGENTS, FEATURES, and
+  the site docs.
 - `TestAllComponentPropsSatisfyInterface` / `TestPropsIDRendersInOutput` / `TestAttrsPropagateToRoot`
   — the consumer-facing contract.
 - `TestAllInlineScriptsHaveNonce` — CSP.
@@ -451,6 +451,8 @@ Load only when the task needs it.
 - **`AGENTS.md`** — the full catalogue of conventions, gotchas, and the one-commit release
   convention; consult it whenever a rule's _why_ is unclear.
 - **`references/component-catalogue.md`** — signatures for every component and helper.
+- **`references/consumer-guide.md`** — the full adoption walkthrough for consumers.
+- **`references/authoring-guide.md`** — shared helpers, test checklist, decision trees, site registration.
 - **`references/guard-tests.md`** — the full guard matrix and what each guard prevents.
 - **`CONTRIBUTING.md`** — contributor setup and commit-message format.
 - **`docs/adr/`** — decision records: two icon systems, shared SVG helpers, committing
