@@ -20,6 +20,7 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `Grid`               | `Grid(props GridProps)`                             | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerAware` (default `true` since v2.0)                                                                   |
 | `Badge`              | `Badge(props BadgeProps)`                           | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                                                                                                     |
 | `StatusBadge`        | `StatusBadge(status string)`                        | Auto-maps ~20 status strings to badge types                                                                                                                             |
+| `StatusBadgeWith`    | `StatusBadgeWith(mapper StatusBadgeMapper, status string)` | Same badge through YOUR domain status→type mapper (nil = built-in mapping)                                                                                       |
 | `Button`             | `Button(props ButtonProps)`                         | Button or link button — variants, sizes, icons, HTMX attrs                                                                                                              |
 | `Avatar`             | `Avatar(props AvatarProps)`                         | Image avatar with fallback initials, sizes, status dot                                                                                                                  |
 | `Modal`              | `Modal(props ModalProps)`                           | Native `<dialog>` overlay — showModal(), focus trap, Escape, backdrop, 5 sizes                                                                                          |
@@ -34,12 +35,14 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `EmptyState`         | `EmptyState(props EmptyStateProps)`                 | Empty-data placeholder — icon, title, description, action                                                                                                               |
 | `SimpleEmptyState`   | `SimpleEmptyState(message string)`                  | Minimal empty state — text only                                                                                                                                         |
 | `PageHeader`         | `PageHeader(props PageHeaderProps)`                 | Page title block — title, subtitle, breadcrumb, action slots                                                                                                            |
+| `SectionHeading`     | `SectionHeading(props SectionHeadingProps)`         | Section-level h1–h6 with typed level, alignment, subtitle, print-safe breaks (content headings, not the page title)                                                   |
 | `DefinitionList`     | `DefinitionList(props DefinitionListProps)`         | Two-column `<dl>` key/value list                                                                                                                                        |
 | `ListNote`           | `ListNote(props ListNoteProps)`                     | "Showing N of M" truncation notice; `Variant: ListNoteCount` = count-only "Showing N items." (always renders — range/list semantics)                                    |
 | `Eyebrow`            | `Eyebrow(props EyebrowProps)`                       | Small uppercase monospace overline above a title; accent color via `Class`                                                                                              |
 | `Scrollback`         | `Scrollback(props ScrollbackProps)`                 | Terminal-style log block — timestamp + tone-colored tags, CSS-only staggered entrance, reduced-motion safe, zero JS                                                     |
 | `CopyButton`         | `CopyButton(props CopyButtonProps)`                 | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant                                                                                   |
 | `RelativeTime`       | `RelativeTime(props RelativeTimeProps)`             | `<time datetime>` with relative text ("2 hours ago")                                                                                                                    |
+| `DateRange`          | `DateRange(props DateRangeProps)`                   | Inline `<time>` range — configurable Go layout, "Present" for an open end, one date when start == end                                                                     |
 | `CountBadge`         | `CountBadge(props CountBadgeProps)`                 | Icon + notification count overlay — overflow "N+"                                                                                                                       |
 | `DefinitionGrid`     | `DefinitionGrid(props DefinitionGridProps)`         | Responsive grid of term-detail cards, `ContainerAware`                                                                                                                  |
 | `Image`              | `Image(props ImageProps)`                           | Lazy-loaded `<img>` with CSP-safe fallback, `SrcSet`/`Sizes` for responsive delivery, `Placeholder` (zero-JS blur-up), optional `Rounded`                               |
@@ -84,6 +87,7 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `FormFieldWrapper`  | `FormFieldWrapper(props FormFieldProps)`          | Wraps inputs with label, error, help text                                                                                            |
 | `InputGroup`        | `InputGroup(props InputGroupProps)`               | Input with prefix/suffix                                                                                                             |
 | `ValidationSummary` | `ValidationSummary(props ValidationSummaryProps)` | Accessible error summary with icon, count, linked fields                                                                             |
+| `DirtyGuard`        | `DirtyGuard(props DirtyGuardProps)`               | Page-level unsaved-changes guard (`beforeunload`); forms opt in via `FormProps.DirtyGuard`                                            |
 | `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | Auto-submit select for filter bars — HTMX-native or dual-transport via `Wire`                                                        |
 | `FilterInput`       | `FilterInput(props FilterInputProps)`             | Debounced dual-transport search input — `<search>` form, auto-submits as you type (`Wire` + `DebounceMS`)                            |
 | `FilterBar`         | `FilterBar(props FilterBarProps)`                 | Horizontal auto-submit filter row — GET form, composite change trigger, Reset, noscript Apply, sticky opt-in, `Wire` dual-transport  |
@@ -110,6 +114,7 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `SkeletonGroup`    | `SkeletonGroup(variants []SkeletonVariant)`     | Multiple skeletons under single `role="status"`                                                             |
 | `SkeletonCardGrid` | `SkeletonCardGrid(props SkeletonCardGridProps)` | N skeleton cards in responsive grid — loading state, optional `ContainerAware`                              |
 | `ProgressBar`      | `ProgressBar(props ProgressBarProps)`           | Progress indicator — 3 sizes, indeterminate, label                                                          |
+| `CircularProgress` | `CircularProgress(props CircularProgressProps)` | Circular SVG ring — value clamped 0–100, optional percentage label                                          |
 | `StepIndicator`    | `StepIndicator(props StepIndicatorProps)`       | Horizontal/vertical step progress — typed `StepState` (complete/current/pending) derived from `CurrentStep` |
 
 #### `layout` — 11 components
@@ -157,6 +162,7 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `CSRFToken`            | `CSRFToken(token string)`                                 | Hidden CSRF input                                                                         |
 | `GlobalErrorHandling`  | `GlobalErrorHandling(cfg ErrorHandlingConfig)`            | HTMX error → toast pipeline                                                               |
 | `PolledRegion`         | `PolledRegion(props PolledRegionProps)`                   | Auto-refreshing HTMX region — interval polling, eager-load, aria-live, optional timestamp |
+| `ViewTransitions`      | `ViewTransitions(props ViewTransitionsProps)`             | CSP-safe native View Transitions for HTMX swaps + default transition CSS (once per page)  |
 
 #### `datastar` — 6 components + action helpers
 
@@ -182,19 +188,34 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/title/code/why/fix/trace/status from error; prefers `Public()` user-safe message, derives family title when none set                                                                                                   |
 | `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family                                                                                                                                                                                             |
 
-#### `icons` — 102 icons + 3 functions
+#### `charts/echarts` — 2 components (opt-in module)
+
+| Component   | Signature                        | One-liner                                                     |
+| ----------- | -------------------------------- | ------------------------------------------------------------- |
+| `SDKScript` | `SDKScript(props SDKScriptProps)` | Loads the Apache ECharts runtime — versioned CDN, self-host via `Src`, CSP nonce |
+| `EChart`    | `EChart(props EChartsProps)`      | go-echarts `RenderSnippet()` element + init script, optional dark-mode bridge |
+
+No `go-echarts` import: the consumer produces the snippet; this module ships only the
+CSP-safe wrapper and the dark-mode bridge (ADR-0031, tier 2).
+
+#### `icons` — 102 icons + 14 functions
 
 | Function                                        | One-liner                                                      |
 | ----------------------------------------------- | -------------------------------------------------------------- |
 | `Icon(name, class)`                             | Inline SVG icon by name (101 path icons + Spinner)             |
+| `IconRTL(name, class)`                          | Direction-mirrored variant for RTL layouts                     |
 | `IconWithStrokeWidth(name, class, strokeWidth)` | Same, custom stroke width (default 1.5)                        |
 | `IconPathData(name) []string`                   | Raw path data for custom SVG wrapper                           |
 | `IconPathJS(name) string`                       | Path data formatted for JS injection                           |
 | `Render(icon CustomIcon, class)`                | Render a consumer-provided icon (arbitrary viewBox/paths/fill) |
 | `AnimatedIcon(name, class)`                     | Icon with hover animation (default per-icon)                   |
 | `AnimatedIconWithAnimation(name, anim, class)`  | Icon with explicit animation preset                            |
+| `AnimatedIconRTL(name, class)`                  | Hover-animated icon, RTL-mirrored                              |
+| `AnimatedIconWithAnimationRTL(name, anim, class)` | Hover animation with explicit preset, RTL-mirrored           |
 | `DefaultAnimation(name) Animation`              | Get default animation for an icon                              |
 | `AllAnimations() []Animation`                   | All 11 animation presets, sorted                               |
+| `AllIconNames() []Name`                         | Every icon name, derived from the path map                     |
+| `NameIsValid(v Name) bool`                      | Whether a name resolves to a path                              |
 
 #### `utils` — shared types + helpers
 
@@ -209,6 +230,10 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `ScriptAttrs(nonce)`               | Script attrs with the omit-empty nonce rule (never `nonce=""`)   |
 | `ScriptComponent(nonce, js, name)` | The canonical CSP-safe inline-script writer for custom scripts   |
 | `Version`                          | Library version string (matches CHANGELOG)                       |
+
+Sibling helper packages: `utils/svg` (`FillIcon`, `SpinnerSVG`, shared path constants),
+`utils/tone` (canonical `Tone`/`Hue` color language), `utils/cdn` (pinned runtime URLs),
+`utils/golden` (golden-file assertions).
 
 #### `utils/format` — display formatting (pure functions, no deps)
 
@@ -231,4 +256,4 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `PatchTarget{Selector, Mode}`                                                                                                          | Server-side patch region for Datastar callers (`PatchMode` typed enum, 8 modes)                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `HeaderDatastarRequest` etc.                                                                                                           | Typed constants for the request/response marker headers                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
-Scope: common subset only (ADR-0036) — OOB/confirm/indicators/SSE stay in the `htmx`/`datastar` modules. `Action.Target` renders only for htmx (Datastar targeting is response-DRIVEN ONLY — `wire.Handler(PatchTarget)`; client fetch options never reach patch targeting, browser-proven; `Action.Selector` is form-lookup only). Whole-form submission IS symmetric (`forms.FormProps.Wire` defaults to `ContentTypeForm`). Per-field value binding stays asymmetric under Datastar (bound signals escape hatch). Components take wiring via `BaseProps.Attrs` or a typed `Wire` field (`display.Button`, `navigation.LoadMore`, `forms.Form`). Components take wiring via `BaseProps.Attrs` or a typed `Wire` field (`display.Button`, `navigation.LoadMore`, `forms.Form`, `display.Tabs` — `{tab}` URL placeholder). Confirm dialogs are htmx-ONLY (the pinned runtime ships zero confirm machinery, bundle-verified); per-patch View Transitions under Datastar ride `PatchTarget.UseViewTransitions` (the `Datastar-Use-View-Transition` response header). Constructors/builders: `wire.Get/Post/Put/Patch/Delete(url)` + value-receiver `With*` chainers + `WithFormDefaults(event)` — never mutate a consumer's `*Action`. All Datastar fetch options merge into ONE object literal. Typed triggers (ADR-0043): `Action.Interval` (polling; m/h normalized to seconds — both runtimes misparse them as ms) and `Action.Reveal *wire.Reveal` (viewport reveal; zero value fires once; `Exit` is Datastar-only) render in BOTH dialects — htmx merges all trigger sources into one comma-separated `hx-trigger`, Datastar one attribute per source; a trigger-only Action never also fires on click.
+Scope: common subset only (ADR-0036) — OOB/confirm/indicators/SSE stay in the `htmx`/`datastar` modules. `Action.Target` renders only for htmx (Datastar targeting is response-DRIVEN ONLY — `wire.Handler(PatchTarget)`; client fetch options never reach patch targeting, browser-proven; `Action.Selector` is form-lookup only). Whole-form submission IS symmetric (`forms.FormProps.Wire` defaults to `ContentTypeForm`). Per-field value binding stays asymmetric under Datastar (bound signals escape hatch). Components take wiring via `BaseProps.Attrs` or a typed `Wire` field (`display.Button`, `navigation.LoadMore`, `forms.Form`, `display.Tabs` — `{tab}` URL placeholder). Confirm dialogs are htmx-ONLY (the pinned runtime ships zero confirm machinery, bundle-verified); per-patch View Transitions under Datastar ride `PatchTarget.UseViewTransitions` (the `Datastar-Use-View-Transition` response header). Constructors/builders: `wire.Get/Post/Put/Patch/Delete(url)` + value-receiver `With*` chainers + `WithFormDefaults(event)` — never mutate a consumer's `*Action`. All Datastar fetch options merge into ONE object literal. Typed triggers (ADR-0043): `Action.Interval` (polling; m/h normalized to seconds — both runtimes misparse them as ms) and `Action.Reveal *wire.Reveal` (viewport reveal; zero value fires once; `Exit` is Datastar-only) render in BOTH dialects — htmx merges all trigger sources into one comma-separated `hx-trigger`, Datastar one attribute per source; a trigger-only Action never also fires on click.
