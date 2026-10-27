@@ -33,9 +33,9 @@ Bundled references (read on demand, not upfront):
 
 ## Component catalogue
 
-136 components across 11 packages (9 component packages + `utils` + `icons`) + 102 icons.
-Full signatures and one-liners live in `references/component-catalogue.md`; this section is
-the index. If you're about to hand-roll something, check here first.
+136 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)
++ 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
+section is the index. If you're about to hand-roll something, check here first.
 
 ### By use case (start here)
 
@@ -152,9 +152,8 @@ module supplies the CSP-safe wrapper plus the dark-mode bridge (ADR-0031, tier 2
 - Theme by overriding Tailwind variables in `@theme`; never add color props to Go.
 - Consumers gitignore `*_templ.go` and generate at build time (the library commits them).
 
-Deep dive: `references/consumer-guide.md` — head-tag suppression, the dual-transport form,
-theming, the compiled-CSS artifact rule, the dark-mode checklist, recipes, and adoption
-tracking.
+Deep dive: `references/consumer-guide.md` — head-tag suppression, dual-transport form,
+theming, compiled-CSS rule, dark-mode checklist, recipes, and adoption tracking.
 
 # Part 2: Authoring Playbook
 
@@ -271,8 +270,10 @@ loop. A "tests pass" without the loop is not a verdict.
    apps (same pinned templ). Any other templ binary produces cosmetic diffs across all 137
    generated files; restore `v0.3.1020` rather than bumping.
 2. **Regenerate and build** (`nix run .#build`). Go never sees the `.templ` change until you
-   generate. Generate from the repo root with plain `./...`; submodules generate from INSIDE
-   their own directory (a subdir pattern rewrites `FileName` paths repo-wide).
+   generate. The root form (`templ generate ./...`) is right for root-module packages; when you
+   edit a SUBMODULE's `.templ`, regenerate from inside that module (`cd utils && templ generate
+   ./...`) so its `FileName` metadata stays module-relative. Never pass a subdir pattern from
+   the root (it rewrites `FileName` paths repo-wide).
 3. **Commit `*_templ.go`.** This is a library, not an app: the proxy serves tagged source
    as-is. `.gitignore` carries `!*_templ.go`. **BuildFlow gotcha:** the pre-commit
    `templ-generate` step re-appends the ignore line, hiding NEW generated files — `git add -f`
@@ -450,10 +451,8 @@ Load only when the task needs it.
 
 - **`AGENTS.md`** — the full catalogue of conventions, gotchas, and the one-commit release
   convention; consult it whenever a rule's _why_ is unclear.
-- **`references/component-catalogue.md`** — signatures for every component and helper.
-- **`references/consumer-guide.md`** — the full adoption walkthrough for consumers.
-- **`references/authoring-guide.md`** — shared helpers, test checklist, decision trees, site registration.
-- **`references/guard-tests.md`** — the full guard matrix and what each guard prevents.
+- **`references/`** — `component-catalogue.md` (signatures), `consumer-guide.md` (adoption),
+  `authoring-guide.md` (helpers, tests, decisions), `guard-tests.md` (guard matrix).
 - **`CONTRIBUTING.md`** — contributor setup and commit-message format.
 - **`docs/adr/`** — decision records: two icon systems, shared SVG helpers, committing
   generated templ files, filled-vs-stroke icons, JS attachment, feedback unification,

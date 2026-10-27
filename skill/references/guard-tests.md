@@ -64,7 +64,7 @@ cross-cutting rule earns a guard test here, not a comment.
 | axe-core sweep (default-FAIL) | New critical/serious violations; debt must be ledgered in `visualtest/testdata/axe_baseline.json` |
 | `TestSiteRouteGoldens` | Undetected pixel changes on the docs site (light+dark, desktop+mobile) |
 | e2e packs (`wire_forms_pack`, `kanban`, `datastar_*`, `polled_region`, `focus_preservation`, `demo_csp_nonce`) | String-proven-but-browser-dead wiring: swaps, transports, focus, CSP execution |
-| `TestVisionDeficiencyProbe` / `TestReducedMotionEmulation…` / `TestPrintMedia…` | Emulation-only regressions (CDP emulation, normal visual env) |
+| `TestVisionDeficiencyProbe` / `TestReducedMotionEmulationKillsSpinnerAnimation` / `TestPrintMediaProbe` | Emulation-only regressions (CDP emulation, normal visual env) |
 | `nix run .#crossbrowser` | 3-engine diagnostics — findings lane, NEVER a gate, never a second pixel suite |
 
 ## Shell guards (fast, pre-commit + CI)

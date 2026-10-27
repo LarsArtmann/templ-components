@@ -17,7 +17,7 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `Card`               | `Card(props CardProps)`                             | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`, sharp corners by default (`rounded-*` via `Class`, `.tc-squircle` opt-in) |
 | `SimpleCard`         | `SimpleCard(props SimpleCardProps)`                 | Minimal card — children only, no header/footer                                                                                                                          |
 | `StatCard`           | `StatCard(props StatCardProps)`                     | Dashboard metric card with value, label, change, trend, icon, semantic `Tone` (`StatTone`: blue/green/yellow/red/purple), optional `Href` link                          |
-| `Grid`               | `Grid(props GridProps)`                             | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerAware` (default `true` since v2.0)                                                                   |
+| `Grid`               | `Grid(props GridProps)`                             | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerAware` (constructor default `true`; struct-literal zero value = viewport)                          |
 | `Badge`              | `Badge(props BadgeProps)`                           | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                                                                                                     |
 | `StatusBadge`        | `StatusBadge(status string)`                        | Auto-maps ~20 status strings to badge types                                                                                                                             |
 | `StatusBadgeWith`    | `StatusBadgeWith(mapper StatusBadgeMapper, status string)` | Same badge through YOUR domain status→type mapper (nil = built-in mapping)                                                                                       |
@@ -228,7 +228,7 @@ CSP-safe wrapper and the dark-mode bridge (ADR-0031, tier 2).
 | `Ternary(cond, a, b)`              | Functional ternary for templ expressions                         |
 | `EnsureID(prefix, id)`             | Auto-generate DOM-safe IDs (crypto/rand)                         |
 | `ScriptAttrs(nonce)`               | Script attrs with the omit-empty nonce rule (never `nonce=""`)   |
-| `ScriptComponent(nonce, js, name)` | The canonical CSP-safe inline-script writer for custom scripts   |
+| `ScriptComponent(nonce, script, errLabel)` | The canonical CSP-safe inline-script writer for custom scripts   |
 | `Version`                          | Library version string (matches CHANGELOG)                       |
 
 Sibling helper packages: `utils/svg` (`FillIcon`, `SpinnerSVG`, shared path constants),
