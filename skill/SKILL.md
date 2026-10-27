@@ -1,6 +1,6 @@
 ---
 name: templ-components
-description: Authoring playbook for the templ-components Go UI library (templ + HTMX + Tailwind v4). Use this skill whenever working in the github.com/larsartmann/templ-components repo, or when adding, editing, reviewing, or debugging any templ component, props struct, typed enum, style lookup, icon path, or HTMX helper here. Also trigger when the user asks to "add a component", "fix a component", extend the library, wire up a new icon, add a typed enum, set up Tailwind v4 scanning for templ, integrate HTMX loading/error handling, or questions how a component should be structured, themed, made accessible, CSP-safe, or dark-mode aware in this codebase. Load this skill BEFORE writing or editing any .templ file in this repo.
+description: Authoring and adoption playbook for the templ-components Go UI library (templ + HTMX + Tailwind v4). Use this skill whenever working in the github.com/larsartmann/templ-components repo, or when adding, editing, reviewing, or debugging any templ component, props struct, typed enum, style lookup, icon path, wire Action, HTMX/Datastar helper, guard test, or component count here. Also trigger when the user asks to "add a component", "fix a component", extend the library, wire up a new icon, add a typed enum, set up Tailwind v4 scanning for templ, integrate HTMX loading/error handling, or asks how a component should be structured, themed, made accessible, CSP-safe, or dark-mode aware in this codebase. Load it BEFORE reading or editing any .templ file, SKILL.md, or count-bearing doc in this repo.
 metadata:
   tags: templ, templ-components, htmx, tailwind, tailwind-v4, go, ui, components, accessibility, csp, dark-mode, server-rendered
 ---
@@ -10,15 +10,20 @@ metadata:
 A server-rendered, type-safe, accessible, CSP-ready Go component library built on
 [templ](https://templ.guide), [HTMX](https://htmx.org), and Tailwind v4.
 
-This skill serves **two audiences**:
+Two audiences, one repo:
 
-- **Consumers** (most readers): you want to know what components exist, how to
-  adopt them, and how to wire them into your app. → Read **Part 1** below.
-- **Authors** (maintainers): you want to add, edit, or review components.
-  → Read **Part 2**, then keep Part 1 honest.
+- **Consumers** (most readers): what exists, how to adopt it, how to wire it. → **Part 1**
+  plus `references/component-catalogue.md` for exact signatures.
+- **Authors** (maintainers): how to add, change, and review a component without breaking the
+  library's contracts. → **Part 2**, then `references/guard-tests.md` before touching CSS,
+  enums, generated files, or docs.
 
-When a question is about _what exists_ or _how to use it_, Part 1 answers. When
-it's about _how to make a new component fit the library_, Part 2 answers.
+Bundled references (read on demand, not upfront):
+
+| File | Use it for |
+| --- | --- |
+| `references/component-catalogue.md` | Full per-package signature tables, icons, `utils`/`utils/format`/`utils/wire` APIs |
+| `references/guard-tests.md` | Every repo-wide guard test, what it prevents, and where it lives |
 
 ---
 
@@ -26,252 +31,93 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-136 components across 11 packages + 102 icons. If you're about to hand-roll
-something, check this table first — 4 of the top 6 consumer "missing components"
-already existed.
+136 components across 11 packages (9 component packages + `utils` + `icons`) + 102 icons.
+Full signatures and one-liners live in `references/component-catalogue.md`; this section is
+the index. If you're about to hand-roll something, check here first.
 
 ### By use case (start here)
 
-Don't know what to look for? Find your page type:
-
 | You're building...             | Reach for                                                                                                                                                                                                                                                                                                                                                                               |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Dashboard / metrics page**   | `AppShell`, `Container`, `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`, `Sparkline`, `BarChart`, `LineChart`, `PieChart`, `AreaChart`, `PolledRegion`                                                                                                                                                                                                     |
+| **Dashboard / metrics page**   | `AppShell`, `Container`, `Grid`, `StatCard`, `Card`, `ProgressBar`, `CircularProgress`, `SkeletonCardGrid`, `PageHeader`, `Sparkline`, `BarChart`, `LineChart`, `PieChart`, `AreaChart`, `PolledRegion`                                                                                                                                                                                  |
 | **Kanban / pipeline board**    | `KanbanBoard` — HTML5 drag-and-drop + keyboard move buttons, `Wire` move exchange (htmx or Datastar), `ParseKanbanMove` server helper, per-column `Action` add-card slot and `Tone` status dot                                                                                                                                                                                          |
-| **List / table page**          | `Table` (`Flush` for card nesting, `CellPadding` for compact rows, `Table.Body` for custom rows, `Row.Href` for clickable rows), `Badge`, `StatusBadge`, `Avatar`, `Pagination`, `LoadMore`, `EndOfList`, `EmptyState`, `DataState` (disabled→unavailable→empty→content ladder), `ListNote`                                                                                             |
-| **Detail page**                | `Split`, `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `Breadcrumbs`                                                                                                                                                                                                                                                                                                |
-| **Settings / data-entry form** | `Form`, `Input`, `Select` (supports `Groups` for optgroups), `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`                                                                                                                                                                                                                                                        |
+| **List / table page**          | `Table` (`Flush` for card nesting, `CellPadding` for compact rows, `Table.Body` for custom rows, `Row.Href` for clickable rows), `Badge`, `StatusBadge`/`StatusBadgeWith`, `Avatar`, `Pagination`, `LoadMore`, `EndOfList`, `EmptyState`, `DataState` (disabled→unavailable→empty→content ladder), `ListNote`                                                                             |
+| **Detail page**                | `Split`, `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `SectionHeading`, `DateRange`, `Breadcrumbs`                                                                                                                                                                                                                                                                |
+| **Settings / data-entry form** | `Form`, `Input`, `Select` (supports `Groups` for optgroups), `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`, `DirtyGuard`                                                                                                                                                                                                                                         |
 | **Filter bar (horizontal)**    | `FilterBar` (auto-submit GET form, composite change trigger, Reset, noscript Apply, sticky opt-in, `Wire`) — children are plain controls; recipe `docs/recipes/horizontal-filter-bar.md` documents the footguns; `FilterChips` (zero-JS link-based chips, `aria-current`, `FilterToggleHref` query builder); `SegmentedControl` (segmented single-select — radio or link mode, zero JS) |
-| **Feedback / notifications**   | `Toast`, `ToastContainer`, `Alert`, `Spinner`, `ProgressBar`, `GlobalErrorHandling`                                                                                                                                                                                                                                                                                                     |
+| **Feedback / notifications**   | `Toast`, `ToastContainer`, `Alert`, `Spinner`, `ProgressBar`, `CircularProgress`, `GlobalErrorHandling`                                                                                                                                                                                                                                                                                 |
 | **Navigation**                 | `Nav`, `SimpleNav`, `SidebarNav`, `Breadcrumbs`, `Pagination`, `MobileMenu`                                                                                                                                                                                                                                                                                                             |
 | **Modal / overlay**            | `Modal`, `Drawer`, `Dropdown`, `Tooltip`, `Popover`, `Accordion`                                                                                                                                                                                                                                                                                                                        |
 | **Error pages**                | `ErrorPage`, `NotFound404`, `ErrorDetail`, `ErrorAlert`, `ErrorHandler`                                                                                                                                                                                                                                                                                                                 |
 | **Full page shell**            | `Base`, `Minimal`, `ThemeScript`, `ThemeToggle`, `Script`, `AppShell` (admin shell), `Container` (content width), `Split` (main+aside), `Stack` (vertical rhythm)                                                                                                                                                                                                                       |
 
-### By package (import path reference)
+### By package
 
 #### `display` — 52 components
 
-| Component            | Signature                                           | One-liner                                                                                                                                                               |
-| -------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Card`               | `Card(props CardProps)`                             | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`, sharp corners by default (`rounded-*` via `Class`, `.tc-squircle` opt-in) |
-| `SimpleCard`         | `SimpleCard(props SimpleCardProps)`                 | Minimal card — children only, no header/footer                                                                                                                          |
-| `StatCard`           | `StatCard(props StatCardProps)`                     | Dashboard metric card with value, label, change, trend, icon, semantic `Tone` (`StatTone`: blue/green/yellow/red/purple), optional `Href` link                          |
-| `Grid`               | `Grid(props GridProps)`                             | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerAware` (default `true` since v2.0)                                                                   |
-| `Badge`              | `Badge(props BadgeProps)`                           | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                                                                                                     |
-| `StatusBadge`        | `StatusBadge(status string)`                        | Auto-maps ~20 status strings to badge types                                                                                                                             |
-| `Button`             | `Button(props ButtonProps)`                         | Button or link button — variants, sizes, icons, HTMX attrs                                                                                                              |
-| `Avatar`             | `Avatar(props AvatarProps)`                         | Image avatar with fallback initials, sizes, status dot                                                                                                                  |
-| `Modal`              | `Modal(props ModalProps)`                           | Native `<dialog>` overlay — showModal(), focus trap, Escape, backdrop, 5 sizes                                                                                          |
-| `Drawer`             | `Drawer(props DrawerProps)`                         | Native `<dialog>` side panel — slide animation, focus trap, Escape, backdrop                                                                                            |
-| `Dropdown`           | `Dropdown(props DropdownProps)`                     | Button-triggered menu — links, buttons, keyboard nav                                                                                                                    |
-| `Tooltip`            | `Tooltip(props TooltipProps)`                       | Hover tooltip — 6 positions (logical start/end + legacy physical left/right), arrow, touch support                                                                      |
-| `Popover`            | `Popover(props PopoverProps)`                       | Button-triggered floating panel — 6 positions (logical start/end + legacy physical left/right), arbitrary content, click-outside dismiss                                |
-| `Accordion`          | `Accordion(props AccordionProps)`                   | Collapsible sections — open/closed state, keyboard nav                                                                                                                  |
-| `Table`              | `Table(props TableProps)`                           | Responsive data table — striping, hover, caption, bordered, `Body` slot, `Row.Href`, `Flush` (card nesting), `CellPadding` (comfortable/compact)                        |
-| `DataTable`          | `DataTable(props DataTableProps)`                   | Data table with integrated sort management, pagination, empty-state — composes `Table` internally                                                                       |
-| `Tabs`               | `Tabs(props TabsProps)`                             | Tabbed interface — underline/pills, optional client-side JS, `Wire` for server-side tab switching (`{tab}` URL placeholder)                                             |
-| `EmptyState`         | `EmptyState(props EmptyStateProps)`                 | Empty-data placeholder — icon, title, description, action                                                                                                               |
-| `SimpleEmptyState`   | `SimpleEmptyState(message string)`                  | Minimal empty state — text only                                                                                                                                         |
-| `PageHeader`         | `PageHeader(props PageHeaderProps)`                 | Page title block — title, subtitle, breadcrumb, action slots                                                                                                            |
-| `DefinitionList`     | `DefinitionList(props DefinitionListProps)`         | Two-column `<dl>` key/value list                                                                                                                                        |
-| `ListNote`           | `ListNote(props ListNoteProps)`                     | "Showing N of M" truncation notice; `Variant: ListNoteCount` = count-only "Showing N items." (always renders — range/list semantics)                                    |
-| `Eyebrow`            | `Eyebrow(props EyebrowProps)`                       | Small uppercase monospace overline above a title; accent color via `Class`                                                                                              |
-| `Scrollback`         | `Scrollback(props ScrollbackProps)`                 | Terminal-style log block — timestamp + tone-colored tags, CSS-only staggered entrance, reduced-motion safe, zero JS                                                     |
-| `CopyButton`         | `CopyButton(props CopyButtonProps)`                 | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant                                                                                   |
-| `RelativeTime`       | `RelativeTime(props RelativeTimeProps)`             | `<time datetime>` with relative text ("2 hours ago")                                                                                                                    |
-| `CountBadge`         | `CountBadge(props CountBadgeProps)`                 | Icon + notification count overlay — overflow "N+"                                                                                                                       |
-| `DefinitionGrid`     | `DefinitionGrid(props DefinitionGridProps)`         | Responsive grid of term-detail cards, `ContainerAware`                                                                                                                  |
-| `Image`              | `Image(props ImageProps)`                           | Lazy-loaded `<img>` with CSP-safe fallback, `SrcSet`/`Sizes` for responsive delivery, `Placeholder` (zero-JS blur-up), optional `Rounded`                               |
-| `HoverCard`          | `HoverCard(props HoverCardProps)`                   | CSS-only hover-activated card — 4 positions, focus-within support                                                                                                       |
-| `ContextMenu`        | `ContextMenu(props ContextMenuProps)`               | Right-click context menu — CSP-safe JS, role=menu, Escape/click-outside dismiss                                                                                         |
-| `Carousel`           | `Carousel(props CarouselProps)`                     | Slide carousel with prev/next arrows and dot indicators                                                                                                                 |
-| `KanbanBoard`        | `KanbanBoard(props KanbanBoardProps)`               | Dual-transport kanban — drag-and-drop + keyboard moves via one hidden form, per-column `Action` add-card slot, `Tone` status dot (`KanbanTone`), read-only without Wire |
-| `Sparkline`          | `Sparkline(props SparklineProps)`                   | Pure SVG mini line chart — trend visualization, `Filled`, `AriaLabel`, customizable dims                                                                                |
-| `BarChart`           | `BarChart(props BarChartProps)`                     | CSS bar chart (horizontal/vertical) — per-bar colors, links, value formatting, empty state                                                                              |
-| `ExternalLink`       | `ExternalLink(props ExternalLinkProps)`             | Safe off-site link — `target="_blank" rel="noopener"`, URL-sanitized href, optional arrow icon                                                                          |
-| `CollapsibleSection` | `CollapsibleSection(props CollapsibleSectionProps)` | Native `<details>/<summary>` — configurable heading, open/closed default, optional `StorageKey` for localStorage persistence, chevron rotation                          |
-| `CommandPalette`     | `CommandPalette(props CommandPaletteProps)`         | ⌘K command palette — native `<dialog>`, client-side filter over server-rendered groups, link or `Wire` selection, arrow/Enter navigation                                |
-| `Heatmap`            | `Heatmap(props HeatmapProps)`                       | CSS grid heatmap — row/column labels, opacity-based coloring, peak highlighting, tooltips, empty state                                                                  |
-| `LineChart`          | `LineChart(props LineChartProps)`                   | Pure SVG line chart — axes, gridlines, multi-series, dots, legend, linear/smooth styles, ARIA. Zero JS (ADR-0031)                                                       |
-| `PieChart`           | `PieChart(props PieChartProps)`                     | Pure SVG pie/donut chart — arc paths, external labels, legend, center label, custom colors, ARIA. Zero JS                                                               |
-| `AreaChart`          | `AreaChart(props AreaChartProps)`                   | Pure SVG area chart — filled areas, multi-series, fill opacity, smooth curves, ARIA. Zero JS                                                                            |
-| `CodeBlock`          | `CodeBlock(props CodeBlockProps)`                   | Copyable code display — block (figure+pre/code, language/label header) or compact-ID variant, integrated CopyButton, HTML-escaped                                       |
-| `DataState`          | `DataState(props DataStateProps)`                   | Honesty ladder — Content (children) / Empty / Unavailable / Disabled; composes EmptyState, per-state default icons                                                      |
-| `StatusDot`          | `StatusDot(props StatusDotProps)`                   | Colored status dot — 5 tones, optional pulse ring (motion-reduce safe), sr-only Label for a11y                                                                          |
-| `LivePill`           | `LivePill(props LivePillProps)`                     | Dot+text status pill — the Live / Reconnecting / Paused connection indicator shape                                                                                      |
-| `SegmentBar`         | `SegmentBar(props SegmentBarProps)`                 | Stacked proportion bar + legend — flex-grow proportions, deterministic label-keyed palette, `Color` override, role=img on the bar + real legend list                    |
-| `Lightbox`           | `Lightbox(props LightboxProps)`                     | Native-dialog image viewer — thumbnails or trigger button, prev/next, rotate, zoom, captions; CSP-safe singleton script                                                 |
-| `Prose`              | `Prose(props ProseProps)`                           | Longform-content container — `.tc-prose` descendant styling for rendered markdown (headings/lists/quotes/code/tables/images), typed `ProseSize`, dark+RTL safe          |
+Accordion, AreaChart, Avatar, Badge, BarChart, Button, Card, Carousel, CodeBlock,
+CollapsibleSection, CommandPalette, ContextMenu, CopyButton, CountBadge, DataState,
+DataTable, DateRange, DefinitionGrid, DefinitionList, Drawer, Dropdown, EmptyState,
+ExternalLink, Eyebrow, Grid, Heatmap, HoverCard, Image, KanbanBoard, Lightbox, LineChart,
+ListNote, LivePill, Modal, PageHeader, PieChart, Popover, Prose, RelativeTime, Scrollback,
+SectionHeading, SegmentBar, SimpleCard, SimpleEmptyState, Sparkline, StatCard, StatusBadge,
+StatusBadgeWith, StatusDot, Table, Tabs, Tooltip.
 
 #### `forms` — 26 components
 
-| Component           | Signature                                         | One-liner                                                                                                                            |
-| ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `Input`             | `Input(props InputProps)`                         | Typed input (text, email, password, search, url, tel, number) with label, error, help text                                           |
-| `Checkbox`          | `Checkbox(props CheckboxProps)`                   | Checkbox with label, help text, error                                                                                                |
-| `Select`            | `Select(props SelectProps)`                       | Select dropdown with typed options, disabled, selected, optgroups; `Stylable` for customizable `<select>` API                        |
-| `Textarea`          | `Textarea(props TextareaProps)`                   | Multi-line text input with label, rows, max length; `AutoGrow` (field-sizing), `EnterKeyHint`                                        |
-| `Toggle`            | `Toggle(props ToggleProps)`                       | Toggle switch with label, required, error, help text                                                                                 |
-| `Radio`             | `Radio(props RadioProps)`                         | Radio button with label                                                                                                              |
-| `RadioGroup`        | `RadioGroup(props RadioGroupProps)`               | Group of radios with options                                                                                                         |
-| `Combobox`          | `Combobox(props ComboboxProps)`                   | Autocomplete input with filterable dropdown                                                                                          |
-| `DatePicker`        | `DatePicker(props DatePickerProps)`               | Date input with label                                                                                                                |
-| `FileInput`         | `FileInput(props FileInputProps)`                 | File upload input with label, accept types                                                                                           |
-| `Form`              | `Form(props FormProps)`                           | Form wrapper with action, method, CSRF token, `ContainerAware`, `Wire` for dual-transport submit (fields serialize in both dialects) |
-| `Label`             | `Label(forID, text string, required bool)`        | Form label element                                                                                                                   |
-| `FieldError`        | `FieldError(fieldID, message string)`             | Inline field error message                                                                                                           |
-| `FormFieldWrapper`  | `FormFieldWrapper(props FormFieldProps)`          | Wraps inputs with label, error, help text                                                                                            |
-| `InputGroup`        | `InputGroup(props InputGroupProps)`               | Input with prefix/suffix                                                                                                             |
-| `ValidationSummary` | `ValidationSummary(props ValidationSummaryProps)` | Accessible error summary with icon, count, linked fields                                                                             |
-| `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | Auto-submit select for filter bars — HTMX-native or dual-transport via `Wire`                                                        |
-| `FilterInput`       | `FilterInput(props FilterInputProps)`             | Debounced dual-transport search input — `<search>` form, auto-submits as you type (`Wire` + `DebounceMS`)                            |
-| `FilterBar`         | `FilterBar(props FilterBarProps)`                 | Horizontal auto-submit filter row — GET form, composite change trigger, Reset, noscript Apply, sticky opt-in, `Wire` dual-transport  |
-| `FilterChips`       | `FilterChips(props FilterChipsProps)`             | Zero-JS filter chips — link-based, `aria-current`, `FilterToggleHref` query builder; crawler-friendly                                |
-| `SegmentedControl`  | `SegmentedControl(props SegmentedControlProps)`   | Segmented single-select — radio mode (radiogroup, submits with the form) or link mode (aria-current); zero JS                        |
-| `Slider`            | `Slider(props SliderProps)`                       | Range input slider with label, value display, help text                                                                              |
-| `Rating`            | `Rating(props RatingProps)`                       | Accessible star rating — radio inputs, read-only mode, 3 sizes                                                                       |
-| `TagsInput`         | `TagsInput(props TagsInputProps)`                 | Tag input with add/remove — hidden inputs for submission, MaxTags/AllowDuplicate                                                     |
-| `Calendar`          | `Calendar(props CalendarProps)`                   | Month-view calendar — server-side navigation, day links, MinDate/MaxDate disabling                                                   |
+Calendar, Checkbox, Combobox, DatePicker, DirtyGuard, FieldError, FileInput, FilterBar,
+FilterChips, FilterDropdown, FilterInput, Form, FormFieldWrapper, Input, InputGroup, Label,
+Radio, RadioGroup, Rating, SegmentedControl, Select, Slider, TagsInput, Textarea, Toggle,
+ValidationSummary.
 
 #### `feedback` — 14 components
 
-| Component          | Signature                                       | One-liner                                                                                                   |
-| ------------------ | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `Alert`            | `Alert(props AlertProps)`                       | Inline alert — 4 types, dismissible, icon                                                                   |
-| `InlineError`      | `InlineError(message string)`                   | Compact inline error                                                                                        |
-| `InlineSuccess`    | `InlineSuccess(message string)`                 | Compact inline success                                                                                      |
-| `Toast`            | `Toast(props ToastProps)`                       | Toast notification — 4 types, dismissible, duration                                                         |
-| `ToastContainer`   | `ToastContainer(nonce string)`                  | Fixed container for toasts (include once per page)                                                          |
-| `Spinner`          | `Spinner(props SpinnerProps)`                   | Loading spinner — 3 sizes, custom color                                                                     |
-| `LoadingOverlay`   | `LoadingOverlay(props LoadingOverlayProps)`     | Full-screen loading overlay with spinner                                                                    |
-| `InlineLoading`    | `InlineLoading(message string)`                 | Inline "Saving..." indicator                                                                                |
-| `Skeleton`         | `Skeleton(variant SkeletonVariant)`             | Pulsing placeholder — 7 variants                                                                            |
-| `SkeletonGroup`    | `SkeletonGroup(variants []SkeletonVariant)`     | Multiple skeletons under single `role="status"`                                                             |
-| `SkeletonCardGrid` | `SkeletonCardGrid(props SkeletonCardGridProps)` | N skeleton cards in responsive grid — loading state, optional `ContainerAware`                              |
-| `ProgressBar`      | `ProgressBar(props ProgressBarProps)`           | Progress indicator — 3 sizes, indeterminate, label                                                          |
-| `StepIndicator`    | `StepIndicator(props StepIndicatorProps)`       | Horizontal/vertical step progress — typed `StepState` (complete/current/pending) derived from `CurrentStep` |
+Alert, CircularProgress, InlineError, InlineLoading, InlineSuccess, LoadingOverlay,
+ProgressBar, Skeleton, SkeletonGroup, SkeletonCardGrid, Spinner, StepIndicator, Toast,
+ToastContainer.
 
 #### `layout` — 11 components
 
-| Component     | Signature                              | One-liner                                                                                                                                    |
-| ------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Base`        | `Base(props PageProps)`                | Full HTML5 shell — head, meta, theme, HTMX, CSS auto-inject, SEO (noindex/canonical/hreflang/JSON-LD)                                        |
-| `Minimal`     | `Minimal(props MinimalProps)`          | Minimal HTML doc — no dependencies, for static/PDF                                                                                           |
-| `ThemeScript` | `ThemeScript(nonce string)`            | Dark mode script — prevents FOUC, include in `<head>`                                                                                        |
-| `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                                                                                                 |
-| `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                                                                                                 |
-| `Stylesheet`  | `Stylesheet(href, attrs)`              | CSP-safe `<link rel="stylesheet">`                                                                                                           |
-| `MetaRefresh` | `MetaRefresh(delaySeconds, url)`       | Zero-JS reload/redirect via `<meta http-equiv=refresh>` — retry/stale-session pattern; empty url reloads                                     |
-| `AppShell`    | `AppShell(props AppShellProps)`        | Sidebar + header + main app shell — the #1 admin dashboard pattern                                                                           |
-| `Container`   | `Container(props ContainerProps)`      | Centered max-width wrapper with responsive gutter ON by default (`NoPad: true` opts out) — replaces `max-w-Nxl mx-auto px-4 sm:px-6 lg:px-8` |
-| `Split`       | `Split(props SplitProps)`              | 2-col content+aside — article+sidebar, detail+metadata (RTL-aware), `ContainerAware`                                                         |
-| `Stack`       | `Stack(props StackProps)`              | Vertical rhythm — typed Gap enum, replaces repeated `space-y-N`                                                                              |
+AppShell, Base, Container, MetaRefresh, Minimal, Script, Split, Stack, Stylesheet,
+ThemeScript, ThemeToggle.
 
 #### `navigation` — 12 components
 
-| Component          | Signature                                               | One-liner                                                                                                   |
-| ------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `Nav`              | `Nav(props NavProps)`                                   | Full nav bar — brand, links, right items slot, mobile menu, `ContainerAware` (hamburger by container width) |
-| `SimpleNav`        | `SimpleNav(props SimpleNavProps)`                       | Simplified nav — text brand, links, `RightItems` slot                                                       |
-| `NavLink`          | `NavLink(props NavLinkProps, currentPath string)`       | Single nav link with active detection                                                                       |
-| `MobileNavLink`    | `MobileNavLink(props NavLinkProps, currentPath string)` | Mobile menu link                                                                                            |
-| `MobileMenu`       | `MobileMenu(links, currentPath, nonce, menuID)`         | Responsive mobile menu                                                                                      |
-| `MobileMenuToggle` | `MobileMenuToggle(show bool, menuID string)`            | Hamburger toggle button                                                                                     |
-| `Pagination`       | `Pagination(props PaginationProps)`                     | Page-number pagination — ellipsis, prev/next, SEO rel, `ContainerAware`                                     |
-| `Breadcrumbs`      | `Breadcrumbs(props BreadcrumbsProps)`                   | Breadcrumb trail — separator, JSON-LD                                                                       |
-| `SidebarNav`       | `SidebarNav(props SidebarNavProps)`                     | Vertical sidebar — brand, icon+label items, footer slot                                                     |
-| `LoadMore`         | `LoadMore(props LoadMoreProps)`                         | Cursor-based "Load more" button — hx-get, hx-swap, optional `InfiniteScroll`                                |
-| `EndOfList`        | `EndOfList(props EndOfListProps)`                       | "You've reached the end" indicator — companion to LoadMore/Pagination                                       |
-| `Footer`           | `Footer(props FooterProps)`                             | Simple footer with copyright                                                                                |
+Breadcrumbs, EndOfList, Footer, LoadMore, MobileMenu, MobileMenuToggle, MobileNavLink, Nav,
+NavLink, Pagination, SidebarNav, SimpleNav.
 
 #### `htmx` — 9 components
 
-| Component              | Signature                                                 | One-liner                                                                                 |
-| ---------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `LoadingIndicator`     | `LoadingIndicator(spinner templ.Component)`               | Fixed HTMX loading overlay                                                                |
-| `InlineLoadingOverlay` | `InlineLoadingOverlay(id string, spinner)`                | Per-target loading overlay                                                                |
-| `LoadingButton`        | `LoadingButton(defaultText, loadingText string, spinner)` | Button with loading state                                                                 |
-| `ConfirmDelete`        | `ConfirmDelete(props ConfirmDeleteProps)`                 | HTMX delete confirmation                                                                  |
-| `SwapOOB`              | `SwapOOB(props SwapOOBProps)`                             | HTMX out-of-band swap                                                                     |
-| `CSRFToken`            | `CSRFToken(token string)`                                 | Hidden CSRF input                                                                         |
-| `GlobalErrorHandling`  | `GlobalErrorHandling(cfg ErrorHandlingConfig)`            | HTMX error → toast pipeline                                                               |
-| `PolledRegion`         | `PolledRegion(props PolledRegionProps)`                   | Auto-refreshing HTMX region — interval polling, eager-load, aria-live, optional timestamp |
+CSRFToken, ConfirmDelete, GlobalErrorHandling, InlineLoadingOverlay, LoadingButton,
+LoadingIndicator, PolledRegion, SwapOOB, ViewTransitions.
 
-#### `datastar` — 6 components + action helpers
+#### `datastar` — 6 components
 
-| Component          | Signature                                      | One-liner                                                                                                                                                    |
-| ------------------ | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `SDKScript`        | `SDKScript(props SDKScriptProps)`              | Datastar runtime injection — versioned CDN, self-hostable via `Src`, CSP nonce                                                                               |
-| `LiveRegion`       | `LiveRegion(props LiveRegionProps)`            | SSE-powered live region — `data-init` auto-connect, `RetryMode` self-healing, `LivePoliteness`, busy cue                                                     |
-| `PolledRegion`     | `PolledRegion(props PolledRegionProps)`        | Interval-polling region (Datastar twin of htmx's) — `data-on-interval__duration.<n>`, m/h normalized to seconds, empty URL inert, timestamp, NO leading flag |
-| `Indicator`        | `Indicator(props IndicatorProps)`              | Loading indicator driven by a Datastar indicator signal                                                                                                      |
-| `LoadingButton`    | `LoadingButton(props LoadingButtonProps)`      | Busy-state button label (Datastar twin of htmx's) — `data-indicator` signal + `data-show` swap, zero component JS, empty signal degrades inert               |
-| `SSEErrorHandling` | `SSEErrorHandling(cfg SSEErrorHandlingConfig)` | SSE error feedback on the real `datastar-fetch` lifecycle events                                                                                             |
+Indicator, LiveRegion, LoadingButton, PolledRegion, SDKScript, SSEErrorHandling.
 
 #### `errorpage` — 4 components + 6 constructors + handler
 
-| Component / Function           | Signature                             | One-liner                                                                                                                                                                                                                             |
-| ------------------------------ | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ErrorPage`                    | `ErrorPage(props ErrorPageProps)`     | Full-page error display (neutral card, family accent bar, `HTTP {StatusCode}`/code/family chip row, primary + ghost secondary action, `MaxWidth`, timestamp + trace footer — 2026-09-17 redesign; 4-capture mobile/RTL visual shield) |
-| `NotFound404`                  | `NotFound404(props NotFound404Props)` | Dedicated 404 page — hero numeral, search, links, configurable `LinksTitle`                                                                                                                                                           |
-| `ErrorDetail`                  | `ErrorDetail(props ErrorDetailProps)` | Inline error card — `Variant` picks Tinted (default) or Neutral accent-bar shell                                                                                                                                                      |
-| `ErrorAlert`                   | `ErrorAlert(props ErrorAlertProps)`   | Family-aware alert                                                                                                                                                                                                                    |
-| `ErrorHandler`                 | `ErrorHandler(err, cfg) http.Handler` | go-error-family aware HTTP handler                                                                                                                                                                                                    |
-| `WriteError`                   | `WriteError(w, r, err, nonce)`        | One-call error page from any handler                                                                                                                                                                                                  |
-| `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/title/code/why/fix/trace/status from error; prefers `Public()` user-safe message, derives family title when none set                                                                                                   |
-| `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family                                                                                                                                                                                             |
+ErrorAlert, ErrorDetail, ErrorPage, NotFound404 — plus `ErrorHandler`, `WriteError`,
+`WriteNotFound404`, `FromError`, and the `NotFound`…`InternalError` constructors.
 
-#### `icons` — 102 icons + 3 functions
+#### `charts/echarts` — 2 components (opt-in module)
 
-| Function                                        | One-liner                                                      |
-| ----------------------------------------------- | -------------------------------------------------------------- |
-| `Icon(name, class)`                             | Inline SVG icon by name (101 path icons + Spinner)             |
-| `IconWithStrokeWidth(name, class, strokeWidth)` | Same, custom stroke width (default 1.5)                        |
-| `IconPathData(name) []string`                   | Raw path data for custom SVG wrapper                           |
-| `IconPathJS(name) string`                       | Path data formatted for JS injection                           |
-| `Render(icon CustomIcon, class)`                | Render a consumer-provided icon (arbitrary viewBox/paths/fill) |
-| `AnimatedIcon(name, class)`                     | Icon with hover animation (default per-icon)                   |
-| `AnimatedIconWithAnimation(name, anim, class)`  | Icon with explicit animation preset                            |
-| `DefaultAnimation(name) Animation`              | Get default animation for an icon                              |
-| `AllAnimations() []Animation`                   | All 11 animation presets, sorted                               |
+EChart, SDKScript. No `go-echarts` import: you pass in a `RenderSnippet()` element and the
+module supplies the CSP-safe wrapper plus the dark-mode bridge (ADR-0031, tier 2).
 
-#### `utils` — shared types + helpers
+#### `icons` — 102 icons
 
-| Function                           | One-liner                                                        |
-| ---------------------------------- | ---------------------------------------------------------------- |
-| `BaseProps`                        | Embed in every props struct — ID, Class, Attrs, AriaLabel, Nonce |
-| `ComponentProps`                   | Interface: `GetBaseProps()` / `SetBaseProps()`                   |
-| `Class(classes ...string)`         | Tailwind class merge (tailwind-merge-go, mutex-protected)        |
-| `Lookup(m, key, fallback)`         | Map lookup with fallback for style variants                      |
-| `Ternary(cond, a, b)`              | Functional ternary for templ expressions                         |
-| `EnsureID(prefix, id)`             | Auto-generate DOM-safe IDs (crypto/rand)                         |
-| `ScriptAttrs(nonce)`               | Script attrs with the omit-empty nonce rule (never `nonce=""`)   |
-| `ScriptComponent(nonce, js, name)` | The canonical CSP-safe inline-script writer for custom scripts   |
-| `Version`                          | Library version string (matches CHANGELOG)                       |
+`Icon`, `IconRTL`, `IconWithStrokeWidth`, `Render`, `IconPathData`, `IconPathJS`,
+`AnimatedIcon` (+ RTL/animation variants), `DefaultAnimation`, `AllAnimations`,
+`AllIconNames`, `NameIsValid`.
 
-#### `utils/format` — display formatting (pure functions, no deps)
+#### `utils` — shared helpers
 
-| Function                    | One-liner                                                             |
-| --------------------------- | --------------------------------------------------------------------- |
-| `format.Bytes(n)`           | IEC bytes: `1.5 KiB`, `42 MiB` — sign preserved, no panic on overflow |
-| `format.CompactDuration(d)` | Operator style: `42s`, `1m30s`, `12h30m` (no Go `String` padding)     |
-| `format.ClockDuration(d)`   | Display style: `3:45`, `1:02:03`, `2d 5h`; negatives clamp to `0:00`  |
-| `format.Percent(ratio)`     | 0–1 → `87.3%`; >100 honest; NaN/Inf → `—`                             |
-| `format.StringOrDash(s)`    | Empty → `—` placeholder for tables/detail views                       |
-| `format.CompactCount(n)`    | `999`, `1.2k`, `3.4M`, `7.8T` — sign preserved                        |
-
-#### `utils/wire` — transport-agnostic wiring (ADR-0036)
-
-| Function                                                                                                                               | One-liner                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Action{Transport, Method, URL, Event, Target, ContentType, Selector, Swap, DebounceMS, ThrottleMS, PreventDefault, Interval, Reveal}` | One typed wiring spec; `.Attributes()` renders the htmx or Datastar dialect; `ContentTypeForm` serializes the enclosing form's fields under Datastar (`{contentType: 'form'}`, verified v1.0.3 runtime), ignored by htmx; `Swap` (a `PatchMode`) renders `hx-swap` under htmx and NOTHING under Datastar (the mode is response-header driven via `wire.Handler/PatchTarget` — corrected 2026-10-02, browser-proven); `Selector` renders only under ContentTypeForm (form lookup; never targets patches) |
-| `Handler(target PatchTarget, next)`                                                                                                    | Both-transports endpoint middleware: Datastar callers get response-header targeting                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `IsDatastar(r)` / `IsHTMX(r)`                                                                                                          | Request predicates on `Datastar-Request` / `HX-Request` headers                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `PatchTarget{Selector, Mode}`                                                                                                          | Server-side patch region for Datastar callers (`PatchMode` typed enum, 8 modes)                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `HeaderDatastarRequest` etc.                                                                                                           | Typed constants for the request/response marker headers                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-
-Scope: common subset only (ADR-0036) — OOB/confirm/indicators/SSE stay in the `htmx`/`datastar` modules. `Action.Target` renders only for htmx (Datastar targeting is response-DRIVEN ONLY — `wire.Handler(PatchTarget)`; client fetch options never reach patch targeting, browser-proven; `Action.Selector` is form-lookup only). Whole-form submission IS symmetric (`forms.FormProps.Wire` defaults to `ContentTypeForm`). Per-field value binding stays asymmetric under Datastar (bound signals escape hatch). Components take wiring via `BaseProps.Attrs` or a typed `Wire` field (`display.Button`, `navigation.LoadMore`, `forms.Form`). Components take wiring via `BaseProps.Attrs` or a typed `Wire` field (`display.Button`, `navigation.LoadMore`, `forms.Form`, `display.Tabs` — `{tab}` URL placeholder). Confirm dialogs are htmx-ONLY (the pinned runtime ships zero confirm machinery, bundle-verified); per-patch View Transitions under Datastar ride `PatchTarget.UseViewTransitions` (the `Datastar-Use-View-Transition` response header). Constructors/builders: `wire.Get/Post/Put/Patch/Delete(url)` + value-receiver `With*` chainers + `WithFormDefaults(event)` — never mutate a consumer's `*Action`. All Datastar fetch options merge into ONE object literal. Typed triggers (ADR-0043): `Action.Interval` (polling; m/h normalized to seconds — both runtimes misparse them as ms) and `Action.Reveal *wire.Reveal` (viewport reveal; zero value fires once; `Exit` is Datastar-only) render in BOTH dialects — htmx merges all trigger sources into one comma-separated `hx-trigger`, Datastar one attribute per source; a trigger-only Action never also fires on click.
+`BaseProps` (embed in every props struct), `ComponentProps`, `Class` (tailwind-merge),
+`Lookup`, `Ternary`, `EnsureID`, `ScriptAttrs`, `ScriptComponent`, `Version`. Sub-packages:
+`utils/format` (`Bytes`, `CompactDuration`, `ClockDuration`, `Percent`, `StringOrDash`,
+`CompactCount`), `utils/wire` (transport-agnostic wiring, ADR-0036), `utils/svg`,
+`utils/tone`, `utils/cdn`, `utils/golden`.
 
 ## Quick start: adopting the library
 
@@ -284,11 +130,9 @@ go get github.com/larsartmann/templ-components@latest
 ```templ
 @layout.Base(layout.DefaultPageProps()) {
     @navigation.SimpleNav(navigation.SimpleNavProps{
-        BrandText: "MyApp",
-        Links: []navigation.NavLinkProps{
-            {Href: "/", Text: "Home"},
-        },
-        RightItems: @layout.ThemeToggle("Toggle theme", ""),
+        BrandText:   "MyApp",
+        Links:       []navigation.NavLinkProps{{Href: "/", Text: "Home"}},
+        RightItems:  layout.ThemeToggle("Toggle theme", ""),
         CurrentPath: "/",
     })
     <main class="mx-auto max-w-7xl px-4 py-8">
@@ -303,10 +147,13 @@ go get github.com/larsartmann/templ-components@latest
 }
 ```
 
+`RightItems` is a `templ.Component` field: pass the component function value
+(`layout.ThemeToggle(...)`), never `@layout.ThemeToggle(...)` — `@` only works in template body.
+
 ### Dual-transport form (HTMX + Datastar)
 
-One `wire.Action`, either runtime — submit, server-side validation, inline
-field errors (see `docs/recipes/server-side-validation.md`):
+One `wire.Action`, either runtime — submit, server-side validation, inline field errors
+(`docs/recipes/server-side-validation.md`):
 
 ```templ
 @forms.Form(forms.FormProps{
@@ -321,46 +168,43 @@ field errors (see `docs/recipes/server-side-validation.md`):
 <div id="form-region" aria-live="polite"></div>
 ```
 
-Render the form INSIDE its swap region and re-render it on validation
-errors (values preserved); wrap the handler in `wire.Handler` and answer
-200 OK even for errors.
+Render the form INSIDE its swap region and re-render it on validation errors (values
+preserved); wrap the handler in `wire.Handler` and answer 200 OK even for errors. Under
+Datastar, patch target and mode come ONLY from response headers — `Action.Target`/`Swap`
+render for htmx only (see `docs/transport-wiring.md`).
 
 ### Suppressing auto-injected `<head>` tags
 
-`DefaultPageProps()` auto-injects two tags. Override them in your `PageProps`:
+`DefaultPageProps()` auto-injects HTMX and the stylesheet. Override them:
 
 ```go
 props := layout.DefaultPageProps()
-props.HTMXVersion = ""  // suppress <script src="...htmx.org@...">
-props.CSSPath = ""      // suppress <link rel="stylesheet" href="/app.css">
+props.HTMXVersion = "" // suppress the HTMX <script>
+props.CSSPath = ""     // suppress <link rel="stylesheet" href="/app.css">
 ```
 
-To use a different HTMX CDN or self-host: `props.HTMXCDN = "https://unpkg.com"`.
+Self-hosting and pure-Datastar pages: `props.HTMXCDN = "https://unpkg.com"`, or
+`props.HTMXSrc = layout.HTMXNone` for no htmx runtime at all.
 
 ### CSP-safe script tags
 
-Use `layout.Script` instead of raw `<script>` — the nonce can never be forgotten:
+Use `layout.Script` for external scripts; the nonce can never be forgotten:
 
 ```templ
 @layout.Script(nonce, "/static/app.js", templ.Attributes{"defer": true})
 ```
 
-**Inline component scripts MUST render through `utils.ScriptComponent(nonce, script,
-errLabel)`** — the canonical CSP-safe writer (owns the omit-empty nonce rule, nonce
-escaping, and error wrapping; `display`, `charts/echarts`, `htmx`, and `forms` all
-render through it). The omit-empty rule: an empty nonce renders NO nonce attribute,
-never `nonce=""` — a nonce attribute with the wrong value is rejected by strict-CSP
-browsers while non-CSP consumers lose the script for nothing (the dead-script class
-behind the 2026-10-01 demo outage, pinned by `TestNoEmptyNonceAttribute` +
-`TestNoEmptyNonceAcrossDemoPages`). Relatedly: a component's singleton script ALWAYS
-renders — never skip the whole `<script>` when the nonce is empty, or non-CSP
-consumers silently get no JS (the TagsInput bug class). templ's `<script>` context
-sanitizes interpolation, so JS with braces/template literals must go through the
-ComponentFunc writer, not a templ `<script>` block.
+Inline component scripts MUST render through `utils.ScriptComponent(nonce, script, errLabel)`
+— it owns the omit-empty nonce rule, nonce escaping, and error wrapping. The rule: an empty
+nonce renders NO nonce attribute, never `nonce=""` (strict-CSP browsers reject the empty
+value, silently killing the feature). A component's singleton script ALWAYS renders — never
+skip the whole `<script>` when the nonce is empty, or non-CSP consumers get no JS.
+templ's `<script>` context sanitizes interpolation, so JS with braces/template literals must
+go through the ComponentFunc writer, not a templ `<script>` block.
 
 ### Theming
 
-Components emit standard Tailwind classes (`bg-blue-600`). Override globally in your CSS:
+Components emit standard Tailwind classes (`bg-blue-600`). Override globally, no Go changes:
 
 ```css
 @theme {
@@ -368,91 +212,82 @@ Components emit standard Tailwind classes (`bg-blue-600`). Override globally in 
 }
 ```
 
-Dark mode: `@custom-variant dark (&:where(.dark, .dark *))` + `layout.ThemeScript()` + `layout.ThemeToggle()`. `color-scheme: light` on `:root`, `color-scheme: dark` on `.dark`.
+Dark mode: `@custom-variant dark (&:where(.dark, .dark *))` + `layout.ThemeScript()` +
+`layout.ThemeToggle()`. `color-scheme: light` on `:root`, `color-scheme: dark` on `.dark`.
 
-**Custom CSS utilities** (`templates/custom.css`): The library ships `.tc-*` classes for
-features Tailwind can't express: overlay animations (`.tc-overlay`, `.tc-modal`,
-`.tc-drawer`), scroll-snap (`.tc-snap-*`), stylable select (`.tc-select`), auto-growing
-textarea (`.tc-auto-grow`), content-visibility (`.tc-content-auto`), squircle corners
-(`.tc-squircle` — CSS `corner-shape: squircle`; compose with any `rounded-*` class), and
-**fluid typography** (`.tc-fluid-display`, `.tc-fluid-h1`–`h4`, `.tc-fluid-lead` — scale text
-with container width via `cqi` units; see `docs/recipes/fluid-typography.md`).
-Consumers vendor `templates/custom.css` via `app.css`; these classes are available
-automatically. Guarded by `TestCustomCSSUtilities`.
+**Custom CSS utilities** (`templates/custom.css`): `.tc-*` classes for what Tailwind can't
+express — overlays (`.tc-overlay`, `.tc-modal`, `.tc-drawer`), scroll-snap (`.tc-snap-*`),
+stylable select (`.tc-select`), auto-growing textarea (`.tc-auto-grow`), content-visibility
+(`.tc-content-auto`), squircle corners (`.tc-squircle`), and fluid typography
+(`.tc-fluid-display`, `.tc-fluid-h1`–`h4`, `.tc-fluid-lead`, container-`cqi` based; see
+`docs/recipes/fluid-typography.md`). Consumers vendor `templates/custom.css` via `app.css`.
+Guarded by `TestCustomCSSUtilities`.
 
 ### Compiled-CSS artifact rule (fleet adoption lesson)
 
-A consumer with a TRACKED compiled CSS artifact must regenerate it in the SAME
-commit as any component adoption — an adopted component whose utility classes
-never reached the compiled stylesheet renders unstyled outside local dev
-(string tests cannot see this; the palette and 404-page outages did).
+A consumer with a TRACKED compiled CSS artifact must regenerate it in the SAME commit as any
+component adoption — an adopted component whose utilities never reached the stylesheet renders
+unstyled outside local dev (string tests cannot see this).
 
-1. Regenerate the artifact via the consumer's canonical pipeline (nix app or
-   `regen-ui.sh`-style script), not ad-hoc tool invocations.
-2. If classes enter the scan through a committed inventory (vendored-library
-   concatenation), the scan must be REPLACE-AWARE — resolve the library with
-   `go list -m -f '{{.Dir}}'`, which honors go.mod replace, instead of the
-   module-cache release copy, which silently lags a bridge checkout — and it
-   must cover EVERY package the consumer imports (the crm/crm-exec-stage 404
-   outage: `errorpage` was missing from the scan list).
-3. Verify with a grep for the adopted component's classes/variant selectors in
-   the compiled artifact before committing.
+1. Regenerate via the consumer's canonical pipeline (nix app or `regen-ui.sh`-style script),
+   not ad-hoc tool invocations.
+2. If classes enter the scan through a committed inventory, the scan must be REPLACE-AWARE:
+   resolve the library with `go list -m -f '{{.Dir}}'` (honors go.mod replace) and cover
+   EVERY imported package — a missing package in the scan list shipped a 404-page outage.
+3. Grep the compiled artifact for the adopted component's classes before committing.
 
-### Dark mode checklist (for new components)
+### Dark mode checklist (new components)
 
-Every new component MUST pass `TestDarkModeCompliance` + `TestDarkModeSemanticColors`. Checklist:
+Every new component passes `TestDarkModeCompliance` + `TestDarkModeSemanticColors`:
 
-1. **Neutral colors** — every `text-gray-*`, `bg-white`, `bg-gray-*`, `border-gray-*`, `ring-gray-*` MUST have a `dark:` variant on the same line.
-2. **Semantic colors** — every `bg-blue-600`, `bg-red-600`, `text-blue-600`, `text-green-500`, etc. MUST have a `dark:` variant. Convention: `-600` light → `-500` dark for backgrounds, `-400` for text.
-3. **Focus rings** — `focus:ring-blue-500` needs `dark:focus:ring-blue-400`. `focus-visible:outline-blue-600` needs `dark:focus-visible:outline-blue-500`.
-4. **Ring offset** — `focus:ring-offset-2` needs `dark:focus:ring-offset-gray-900` (default offset is white, invisible in dark).
-5. **Shadows** — overlay/card shadows (`shadow-xl`, `shadow-lg`) should have `dark:shadow-black/20` for visibility on dark backgrounds.
-6. **Palette** — use `gray-*` exclusively. No `slate-*`, `zinc-*`, `neutral-*`, `stone-*`.
+1. **Neutral** — every `text-gray-*`, `bg-white`, `bg-gray-*`, `border-gray-*`, `ring-gray-*`
+   carries a `dark:` variant on the same line.
+2. **Semantic** — every `bg-blue-600`, `text-red-600`, … carries `dark:` (bg `-600`→`-500`,
+   text `-600`→`-400`).
+3. **Focus rings** — `focus:ring-blue-500` needs `dark:focus:ring-blue-400`.
+4. **Ring offset** — `focus:ring-offset-2` needs `dark:focus:ring-offset-gray-900`.
+5. **Shadows** — overlay/card shadows get `dark:shadow-black/20`.
+6. **Palette** — `gray-*` exclusively; no `slate-*`/`zinc-*`/`neutral-*`/`stone-*`.
 
-See `docs/adr/0011-dark-mode-convention.md` for the full convention.
+Full convention: `docs/adr/0011-dark-mode-convention.md`.
 
 ### Consumer `_templ.go` guidance
 
-**Consumers should gitignore `*_templ.go`** and generate at build time via `templ generate`.
-**The library commits them** because the Go module proxy serves source as-is and does not
-run `templ generate`. This is the standard pattern for publishable templ packages.
+**Consumers gitignore `*_templ.go`** and generate at build time. **The library commits them**
+because the module proxy serves tagged source as-is and never runs `templ generate` — missing
+generated files break every consumer.
 
 ## Recipes
 
-| Recipe                                                | When to read                                                                                    |
-| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `docs/migration/play-cdn-to-tailwind-v4.md`           | Migrating from Tailwind Play CDN to CSS-first build                                             |
-| `docs/recipes/server-rendered-htmx-error-feedback.md` | Wiring HTMX error feedback (toast/alert/page)                                                   |
-| `docs/recipes/error-pages.md`                         | Family-aware full error pages: status→family mapping, per-code copy, HTMX branch, noindex shell |
-| `docs/recipes/server-side-validation.md`              | Dual-transport form validation round-trip                                                       |
-| `docs/recipes/horizontal-filter-bar.md`               | Horizontal HTMX filter bar vs `forms.Form`                                                      |
-| `docs/tailwind-v4-adoption-guide.md`                  | Full Tailwind v4 setup with `@source` scanning                                                  |
-| `docs/icons-only-adoption.md`                         | Adopting just the `icons` package (CSS-agnostic)                                                |
-| `docs/recipes/hybrid-strings-builder-rendering.md`    | Rendering components into a strings.Builder (children slots, `templ.WithChildren` escape hatch) |
-| `docs/recipes/theme-bridge.md`                        | Remap library colors to custom semantic palette                                                 |
-| `docs/recipes/scoped-theme-bridge.md`                 | Remap library colors WITHOUT touching your own palette use (attribute bridges, escape hatches)  |
-| `docs/recipes/bounding-tables.md`                     | Cap + ListNote notice, or Pagination/LoadMore — never render an unbounded table                 |
-| `docs/recipes/sse-live-rows.md`                       | Append live `<tr>` fragments over SSE — Table `BodyID` + htmx-ext-sse listener + `hx-swap-oob`  |
+| Recipe | When to read |
+| --- | --- |
+| `docs/migration/play-cdn-to-tailwind-v4.md` | Migrating from Tailwind Play CDN to a CSS-first build |
+| `docs/tailwind-v4-adoption-guide.md` | Full Tailwind v4 setup with `@source` scanning |
+| `docs/recipes/server-rendered-htmx-error-feedback.md` | Wiring HTMX error feedback (toast/alert/page) |
+| `docs/recipes/error-pages.md` | Family-aware error pages: status→family, per-code copy, HTMX branch, noindex |
+| `docs/recipes/server-side-validation.md` | Dual-transport form validation round-trip |
+| `docs/recipes/horizontal-filter-bar.md` | Horizontal HTMX filter bar vs `forms.Form` |
+| `docs/recipes/sse-live-rows.md` | Append live `<tr>` over SSE — `Table.BodyID` + `hx-swap-oob` |
+| `docs/recipes/bounding-tables.md` | Cap + `ListNote`, or Pagination/LoadMore — never an unbounded table |
+| `docs/recipes/hybrid-strings-builder-rendering.md` | Rendering into a `strings.Builder` (`templ.WithChildren` escape hatch) |
+| `docs/recipes/theme-bridge.md` / `scoped-theme-bridge.md` | Remap library colors, globally or scoped |
+| `docs/icons-only-adoption.md` | Adopting just the `icons` package (CSS-agnostic) |
+| `docs/transport-wiring.md` + `docs/datastar-runtime-facts.md` | The wire contract and pinned-runtime facts |
 
 ## How to know if a component already exists
 
-Before hand-rolling HTML, check in this order:
-
-1. **The "By use case" table above** — find your page type first.
-2. **The per-package catalogue below it** — full signatures and one-liners.
-3. **`README.md` component catalogue** — code examples grouped by package.
+1. **"By use case" table above** — start from your page type.
+2. **`references/component-catalogue.md`** — every signature and one-liner.
+3. **`README.md` "Component Catalog"** — grouped code examples.
 4. **`pkg.go.dev/github.com/larsartmann/templ-components`** — full API reference.
-5. **`grep -r "templ [A-Z]" --include="*.templ"`** — find every component definition.
+5. **`rg -n "^templ [A-Z]" --glob "*.templ"`** — source of truth.
 
 ### Consumer tip: track adoption in your AGENTS.md
 
-The #1 discoverability gap across consumers is not knowing which library
-components are already adopted vs hand-rolled in your own project. Keep a
-grep-able table in your consumer project's `AGENTS.md`:
+The #1 discoverability gap across consumers is not knowing which components are already
+adopted vs hand-rolled. Keep a grep-able table in the consumer project's `AGENTS.md`:
 
 ```markdown
-## templ-components adoption
-
 | Library component      | Status  | Where                   |
 | ---------------------- | ------- | ----------------------- |
 | `display.Grid`         | adopted | dashboard.templ         |
@@ -461,28 +296,19 @@ grep-able table in your consumer project's `AGENTS.md`:
 | `feedback.ProgressBar` | adopted | backfill.templ          |
 ```
 
-This lets every AI session and developer quickly audit what's adopted, what's
-hand-rolled, and where the gaps are.
+## The website SSG's page-registration knobs
 
-## The website SSG's page-registration knobs (site docs, #276)
+The site (`website/`, a Go SSG rendering through this library) has three registration points
+that must stay in sync when adding pages:
 
-The site (`website/`, a Go SSG rendering through this very library) has three
-registration points that must stay in sync when adding pages:
+- **`topLevelPages`** (`website/cmd/site/main.go`) — non-docs HTML pages; a new entry needs
+  the nav/header templates updated too.
+- **Sitemap lastmod sources** — git history over declared repo-relative paths; a page without
+  a source emits an undated sitemap entry (`writeSitemaps`).
+- **Search index** — `build.PlainText` indexes markdown docs only; top-level pages are found
+  via nav, not search (deliberate).
 
-- **`topLevelPages`** (`website/cmd/site/main.go`) — the non-docs HTML pages
-  (index, sales, 404, …). New top-level pages need an entry here AND in the
-  nav/header templates.
-- **Sitemap lastmod sources** — sitemap `lastmod` comes from git history over
-  declared repo-relative paths; top-level pages take it from their primary
-  `.templ` source, docs pages from their markdown. A new page without a
-  lastmod source emits an undated sitemap entry (see the comment on
-  `writeSitemaps`).
-- **Search index** — `build.PlainText` extracts doc bodies into
-  `dist/search-index.json`; only markdown docs pages are indexed, so top-level
-  pages are found via nav, not search (deliberate).
-
-Visual changes to these pages are pinned by the site route tier
-(`TestSiteRouteGoldens`) — see `docs/visual-testing.md`.
+Visual changes are pinned by `TestSiteRouteGoldens` (`docs/visual-testing.md`).
 
 ---
 
@@ -490,134 +316,147 @@ Visual changes to these pages are pinned by the site route tier
 
 ## Principles (the why behind every rule)
 
-- **Make invalid states unrepresentable.** Variants are typed enums, not strings; lookups are
-  maps with explicit fallbacks; the only permitted runtime panic is the single developer
-  data-integrity check in `icons` (stray `|` in a path). Everything else degrades gracefully.
-  This is a _library_: a panic in a consumer's render path is a bug we shipped.
-- **Verify integrations against the counterparty artifact, not its docs.** When a component
-  emits protocol another runtime consumes (SSE wire format, event names, HTMX attributes,
-  CSP requirements), the ground truth is the pinned counterparty source (e.g. the
-  `go-datastar/static` bundle bytes), never the docs — the 2026-08 SSE audit found the docs
-  wrong in three places and the shipped integration 100% inert. String-asserting our own
-  output cannot catch this class; pin the counterparty contract in a guard test
-  (`datastar.TestPinnedRuntimeBundleContract`) and degrade empty/unknown values gracefully
-  instead of emitting attributes the runtime rejects (`@get('')`, `data-show="$"`).
-- **HATEOAS-first ([htmx.org/essays/hateoas](https://htmx.org/essays/hateoas/)).** HTML is the source of truth.
-  Prefer native HTML (`<details>`, forms, links) over scripts. When JavaScript enhances the hypermedia
-  (modal, drawer, tooltip, relative time auto-refresh), it reads state FROM HTML attributes
-  (`data-tc-*`, `datetime`) — progressive enhancement, not SPA replacement. All JS is guarded by a
-  global singleton flag so it is idempotent across HTMX re-renders.
-- **Accessibility is not optional.** ARIA attributes, roles, keyboard nav, `motion-reduce:*`
-  on every transition/animation, and screen-reader text are part of "done". A component that
-  renders but is unusable from a keyboard is not finished.
-- **CSP-safe by construction.** Every inline `<script>` carries `nonce={ props.Nonce }`. No
-  `eval()`, no inline event handlers, no `javascript:` URLs. This is why consumers can ship a
-  strict Content-Security-Policy without forking the library.
-- **Single source of truth.** SVG path data lives in `utils/svg`; icon names map to paths in
-  `icons/icon_paths.go`; feedback styles live in `feedback/styles.go`; Tailwind class strings are
-  never duplicated when a shared constant exists (`cardShellClass`, `mutedTextClass`).
+- **Make invalid states unrepresentable.** Variants are typed enums, lookups are maps with
+  explicit fallbacks; the only permitted panic is the `icons` path-integrity check. This is a
+  _library_: a panic in a consumer's render path is a bug we shipped.
+- **Verify integrations against the counterparty artifact, not its docs.** SSE wire format,
+  event names, HTMX attributes, CSP requirements: the ground truth is the pinned counterparty
+  source (e.g. the `go-datastar/static` bundle). The 2026-08 SSE audit found the docs wrong in
+  three places; string-asserting our own output cannot catch that class. Pin the contract in a
+  guard test, and degrade empty/unknown values gracefully.
+- **HATEOAS-first ([htmx.org/essays/hateoas](https://htmx.org/essays/hateoas/)).** HTML is
+  the source of truth. Prefer native HTML (`<details>`, forms, links) over scripts; JS reads
+  state FROM HTML attributes and is singleton-guarded so HTMX re-renders stay idempotent.
+- **Accessibility is not optional.** ARIA, roles, keyboard nav, `motion-reduce:*`, and
+  screen-reader text are part of "done".
+- **CSP-safe by construction.** No `eval()`, no inline event handlers, no `javascript:` URLs;
+  every inline script renders through `utils.ScriptComponent`/`layout.Script`.
+- **Single source of truth.** SVG path data in `utils/svg` + `icons/icon_paths.go`, feedback
+  styles in `feedback/styles.go`, shared class constants (`cardShellClass`, `mutedTextClass`).
 - **Composition over configuration.** Props embed `utils.BaseProps`; consumers override via
   `@theme` CSS variables, never by editing Go. Slots are `templ.Component` children.
 
 ## Multi-module workspace (ADR-0034)
 
-This repo is a **7-module Go workspace**: root, utils, icons, errorpage, charts/echarts, htmx, datastar.
-Local dev uses `go.work` (gitignored); CI/consumers use `replace` directives in each
-module's `go.mod`. See `docs/modularization/README.md` for contributor setup.
+Seven published Go modules: root, utils, icons, errorpage, charts/echarts, htmx, datastar.
+Local dev uses `go.work` (gitignored); CI and consumers use `replace` directives. Two
+repo-local modules (`visualtest`, `website`) are never published.
 
 **Module DAG (strict acyclic):**
 
 ```
 Layer 0: utils (leaf)
-Layer 1: icons, charts/echarts, htmx, datastar  [depend on utils]
-Layer 2: errorpage                                [depends on utils, icons]
-Layer 3: root                                     [depends on all above]
+Layer 1: icons, charts/echarts, htmx, datastar   [depend on utils]
+Layer 2: errorpage                               [depends on utils, icons]
+Layer 3: root                                    [depends on all above]
 ```
 
-**Per-module isolation testing** — verifies each module builds standalone (same path
-proxy consumers use, without `go.work`):
+### Build & test commands (the complete forms)
 
 ```bash
-export GOEXPERIMENT=jsonv2 GOWORK=off
-for mod in utils icons errorpage charts/echarts htmx datastar; do
-  (cd "$mod" && go build ./... && go test ./... -count=1 -short)
+# Regenerate + build everything (templ pinned by the dev shell)
+find . -name '*_templ.go' -print0 | xargs -0 rm
+templ generate ./...        # submodules: run from INSIDE each module dir, never a subdir pattern
+go build ./...
+
+# COMPLETE test run — the per-module loop. Root `go test ./...` does NOT include
+# submodules even with go.work active (verified: `go list ./...` from the root
+# expands to 10 root packages and zero submodule packages).
+for mod in utils icons errorpage charts/echarts datastar htmx; do
+  (cd "$mod" && GOWORK=off go test ./...)
+done
+(cd visualtest && GOWORK=off go test ./...)   # compile check; `nix run .#visual` for real runs
+
+# Pre-push CI reproduction (read the VERDICT line, then push immediately)
+scripts/ci-repro.sh --lint --css --website
+```
+
+`nix run .#test` runs `go test ./... -count=1 -race` from the repo root: fast and useful, but
+it covers the root module only — never treat it as the full matrix. `nix run .#verify` adds
+lint but uses the same root-scoped test step.
+
+**Per-module lint** (golangci-lint does not support `go.work`):
+
+```bash
+golangci-lint run ./display/... ./feedback/... ./forms/... ./integration/... ./internal/... \
+  ./layout/... ./navigation/... ./recipes/... ./cmd/...
+for mod in utils icons errorpage charts/echarts datastar htmx; do
+  (cd "$mod" && golangci-lint run ./...)
 done
 ```
 
-**Per-module lint** — golangci-lint does not support `go.work`; each module is linted
-independently:
+**Drift-guard tests** live in `utils`: `TestVersionMatches*`, `TestDocsCountDrift`,
+`TestTemplVersionPin`, `TestGoDirectiveSkew`, `TestFeaturesEnumTableExhaustive`,
+`TestFeaturesEnumValuesExhaustive`. Run them:
+`cd utils && GOWORK=off go test ./... -run 'TestVersionMatches|TestDocsCountDrift|TestFeaturesEnum' -count=1`.
 
-```bash
-# Root module:
-golangci-lint run ./display/... ./feedback/... ./forms/... ./htmx/... \
-  ./datastar/... ./integration/... ./internal/... ./layout/... \
-  ./navigation/... ./recipes/... ./cmd/...
-# Sub-modules:
-for mod in utils icons errorpage charts/echarts; do
-  (cd "$mod" && golangci-lint run --timeout=5m ./...)
-done
-```
+**Guard scripts:** the tracked `.githooks/pre-commit` (activated once per clone by
+`scripts/setup-hooks.sh`, which sets `git config core.hooksPath .githooks`; `buildflow
+precommit install` writes to the dead `.git/hooks/` and must not be used). It runs the fast
+guards (`check-hooks-path`, `check-lint-config`, `check-templ-sync`, `check-version-sync`,
+`check-module-sync`, `check-module-layers`, `check-replace-directives`, `check-css-minified`,
+`check-lint-modules`, `check-tc-sources-sync`) then BuildFlow. `scripts/pre-commit.sh` is the
+separate FULL pre-push verify.
 
-**Drift-guard tests** live in the utils module now (`TestVersionMatches*`,
-`TestDocsCountDrift`, `TestFeaturesEnumTableExhaustive` — every IsValid-shipping
-type must be named in FEATURES.md — and `TestFeaturesEnumValuesExhaustive` —
-enum VALUES honest). Run them via `cd utils && go test ./... -run 'TestVersionMatches|TestDocsCountDrift|TestFeaturesEnum'`.
+## Flake commands (canonical entry points)
 
-**Guard scripts** (all <100ms, wired into `.git/hooks/pre-commit`):
+Build automation lives in `flake.nix`, not a Makefile. These wrap the pinned `templ`
+(v0.3.1020, matching every `go.mod`) so generation is reproducible.
 
-1. `scripts/check-lint-config.sh` — disabled linters not re-enabled
-2. `scripts/check-templ-sync.sh` — generated files match `.templ` sources
-3. `scripts/check-version-sync.sh` — version.go, CHANGELOG, FEATURES agree
-4. `scripts/check-module-sync.sh` — module paths match dirs, replace uses relative paths
+| Command | What it does |
+| --- | --- |
+| `nix develop` | Dev shell with the pinned templ, Go, golangci-lint, tailwind |
+| `nix run .#build` | Regenerate `*_templ.go` + `go build ./...` |
+| `nix run .#test` | `go test ./... -count=1 -race` — ROOT module only (see above) |
+| `nix run .#lint` | golangci-lint across all 7 modules + actionlint |
+| `nix run .#verify` | generate + build + test + lint |
+| `nix run .#coverage` | Coverage profile + per-module summary |
+| `nix run .#css` | Recompile `examples/demo/static/app.css` (Tailwind v4, minified) |
+| `nix run .#visual` | Pixel-level visual regression (headless Chromium) |
+| `nix run .#visual -- -update` | Regenerate visual goldens (the ONLY sanctioned way) |
+| `nix run .#shots` | Full-page demo screenshots for manual inspection |
+| `nix run .#crossbrowser` | 3-engine Playwright diagnostics — findings only, never gates |
+| `scripts/release.sh <ver> "<summary>"` | One-commit release cut (see `docs/release-checklist.md`) |
 
-## Flake commands (the canonical entry points)
-
-Build automation lives in `flake.nix`, not a Makefile. Per repo policy you run these instead
-of raw `go`/`golangci-lint` invocations — they wrap the pinned `templ` (v0.3.1020, matching
-`go.mod`) so generation is reproducible.
-
-| Command              | What it does                                                               |
-| -------------------- | -------------------------------------------------------------------------- |
-| `nix run .#build`    | Regenerate `*_templ.go` + `go build ./...` (workspace mode, all 7 modules) |
-| `nix run .#test`     | `go test ./... -count=1 -race` (workspace mode)                            |
-| `nix run .#lint`     | `golangci-lint` per-module (root + 4 sub-modules)                          |
-| `nix run .#coverage` | Tests with `-coverprofile` + summary line (per-module coverage)            |
-| `nix run .#verify`   | **Generate + build + test + lint in one shot — this is the "done" check**  |
-
-Run `nix run .#verify` before considering any component work finished. The full equivalent
-manual command (only if you have no Nix) is documented in `AGENTS.md` and `CONTRIBUTING.md`.
+The single done-check for component work: **`nix run .#verify`**, then the per-module test
+loop. A "tests pass" without the loop is not a verdict.
 
 ## Process (run this when touching any `.templ` file)
 
-1. **Enter the pinned dev shell before generating.** Run `nix develop` (or use the `nix run .#*`
-   apps, which pull the same pinned `templ`). The system `templ` binary may be v0.3.1036 and will
-   produce a cosmetic import-style diff across all 51 generated files. See `AGENTS.md` "templ
-   Version Pin" — do not bump `go.mod` to an unreleased version.
-2. **Regenerate and build** via `nix run .#build`. templ generates `*_templ.go` from `.templ`;
-   Go never sees the source change until you generate.
-3. **Commit `*_templ.go`.** This is a _library_, not an app. The Go module proxy serves source
-   as-is from the Git tag and does **not** run `templ generate`. Missing generated files break
-   every consumer. The `.gitignore` uses `!*_templ.go` to keep them tracked — never undo that.
-   **BuildFlow gotcha:** the pre-commit `templ-generate` step re-appends `*_templ.go` to
-   `.gitignore` on every run, which hides NEW generated files from `git status`. After adding a
-   new component, run `git add -f yourcomponent_templ.go` to force-track it. Already-tracked
-   files are unaffected.
-4. **Test the full matrix for the package you touched** — `nix run .#test` (or `go test ./<pkg>/...`).
-   Each package pairs golden, a11y, BDD, edge-case, example, and snapshot tests (see the
-   testing table below). Golden files: run `go test ./<pkg>/... -update` after an intentional
-   output change, then eyeball the `.golden` diff before committing.
-5. **Lint** via `nix run .#lint` (`examples/` is excluded by `.golangci.yml`).
-6. **Keep `[Unreleased]` warm.** Add the changelog entry in the same commit as the change. The
-   release script refuses to cut a version with an empty `[Unreleased]`.
-7. **Verify no new dependencies.** The allowed set is `templ`, `tailwind-merge-go`, and
-   `go-error-family` (errorpage only). Anything else needs an explicit decision.
+1. **Enter the pinned dev shell before generating.** `nix develop`, or use the `nix run .#*`
+   apps (same pinned templ). Any other templ binary produces cosmetic diffs across all 137
+   generated files; restore `v0.3.1020` rather than bumping.
+2. **Regenerate and build** (`nix run .#build`). Go never sees the `.templ` change until you
+   generate. Generate from the repo root with plain `./...`; submodules generate from INSIDE
+   their own directory (a subdir pattern rewrites `FileName` paths repo-wide).
+3. **Commit `*_templ.go`.** This is a library, not an app: the proxy serves tagged source
+   as-is. `.gitignore` carries `!*_templ.go`. **BuildFlow gotcha:** the pre-commit
+   `templ-generate` step re-appends the ignore line, hiding NEW generated files — `git add -f`
+   them, and remove the re-added ignore line after the commit.
+4. **Test the packages you touched**, then the full per-module loop. For an intentional output
+   change: `go test ./<pkg>/... -update` — the `-update` flag goes AFTER the package list
+   (the go command consumes a leading `-update` as its own flag).
+5. **Lint** (`nix run .#lint`; `examples/` is excluded by `.golangci.yml`).
+6. **Keep `[Unreleased]` warm** in `CHANGELOG.md` in the same commit; `release.sh` refuses an
+   empty section.
+7. **No new dependencies.** Allowed: `templ`, `tailwind-merge-go`, `go-error-family`
+   (errorpage only). Anything else needs an explicit decision.
 
-The single done-check: **`nix run .#verify`**.
+## Definition of done for a new component
+
+Beyond the code, a component is not finished until all of these land in the SAME commit:
+
+- Golden HTML (`utils/golden`), a11y/behaviour/edge-case tests, and a godoc `Example`.
+- The Props type registered in `internal/contract/component_props_test.go` (`componentTypes()`),
+  enforced by `TestAllComponentPropsSatisfyInterface`.
+- **Counts updated**: the per-package line here (`#### \`display\` — 52 components`),
+  the README catalogue heading, and FEATURES where applicable — `TestDocsCountDrift` reads
+  `skill/SKILL.md` directly and fails CI on a stale number.
+- If the component is wired (HTMX/Datastar/JS), an e2e task in `visualtest/` — string-proven
+  ≠ browser-proven.
+- If it adds a closed-set enum, `IsValid()` plus its test in the same commit.
 
 ## Component anatomy (the canonical shape)
-
-Every interactive/visual component in this library follows this skeleton. When adding one,
-copy the closest existing component and adapt — do not invent a new shape.
 
 ```
 <package>/
@@ -629,336 +468,251 @@ copy the closest existing component and adapt — do not invent a new shape.
 
 Inside `component.templ`:
 
-1. **Typed enums** for every closed variant set.
+1. **Typed enums** for every closed variant set, with `IsValid()` and a test.
    ```go
    type BadgeType string
    const (
        BadgePrimary BadgeType = "primary"
        BadgeSuccess BadgeType = "success"
-       // ...
    )
    ```
-2. **Size constants** use the `ComponentSize[SM|MD|LG]` suffix pattern.
-3. **Props struct** embeds `utils.BaseProps` (the only known exception is `layout.PageProps`).
-   ```go
-   type BadgeProps struct {
-       utils.BaseProps
-       Text string
-       Type BadgeType
-       // ...
-   }
-   ```
-   Embedding auto-satisfies the `utils.ComponentProps` interface via promoted
-   `GetBaseProps()`/`SetBaseProps()` (pointer receivers, required by `recvcheck`).
-   GOTCHA (probe-proven 2026-10-06): promoted fields CANNOT be set in struct literals
-   below the Go 1.27 language version — `BadgeProps{Nonce: "x"}` is rejected when the
-   module `go` directive is 1.26.x and compiles at 1.27+ (same toolchain, the gate is
-   the directive). Consumers on older toolchains must nest:
-   `BadgeProps{BaseProps: utils.BaseProps{Nonce: "x"}}`. The `modernize` embedlit
-   analyzer rewrites the nested form to the simple one — never hand-write the simple
-   form in code that must compile below 1.27.
-4. **Default constructor** `DefaultComponentProps()` returns meaningful non-zero defaults.
+2. **Size constants** use `ComponentSize[SM|MD|LG]`.
+3. **Props struct** embeds `utils.BaseProps` (only known exception: `layout.PageProps`),
+   which auto-satisfies `utils.ComponentProps` via promoted pointer-receiver methods.
+   **Gotcha:** promoted fields can be set directly in struct literals ONLY when the module's
+   `go` directive is 1.27+ (`BadgeProps{Nonce: "x"}`); on older directives consumers must
+   nest (`BadgeProps{BaseProps: utils.BaseProps{Nonce: "x"}}`). The `modernize` embedlit
+   analyzer rewrites the nested form to the simple one — never hand-write the simple form in
+   code that must compile below 1.27.
+4. **Default constructor** `DefaultComponentProps()` with meaningful non-zero defaults whose
+   zero value still matches the documented default.
 5. **Render template** with a godoc example comment.
 6. **Root element** propagates `props.ID`, `props.Class` (via `utils.Class(...)`),
-   `props.Attrs`, and `props.AriaLabel`. See `display/badge.templ` for the exact pattern.
-7. **Private lookup helpers** (`xxxClass()`, `xxxSizeClass()`) backed by package-level maps.
-8. **Shared rendering** across 2+ components is extracted to a private `templ` sub-template
-   (e.g. `overlayShell`, `dialogHeader`, `navLinkAnchor`, `statCardInner`, the six
-   `errorpage/shared.templ` helpers). Lift duplication into a sub-template rather than copying.
-9. **Register the new Props type in the contract inventory.** Open
-   `internal/contract/component_props_test.go` and add `yourpackage.YourProps{}` to the
-   `componentTypes()` slice (in the right package section). The test
-   `TestAllComponentPropsSatisfyInterface` then enforces at CI time that your struct both
-   embeds `utils.BaseProps` and satisfies `utils.ComponentProps` — catching silent contract
-   breakage for consumers using generic wrappers. Forgetting this step is the #1 way a new
-   component slips in without the BaseProps embed.
+   `props.Attrs`, `props.AriaLabel`. See `display/badge.templ`.
+7. **Private lookup helpers** (`xxxClass()`, `xxxSizeClass()`) over typed-key maps.
+8. **Shared rendering** at 2+ call sites extracts to a private sub-template (ADR-0010):
+   5+ lines, a clear domain name, not a single caller, not demo code.
+9. **Register the Props type** in `internal/contract/component_props_test.go` — forgetting
+   this is the #1 way a component slips in without the BaseProps embed.
 
-## Shared internal helpers — reuse these (2026-09-23 dedup pass)
+## Shared internal helpers — reuse these
 
-These private helpers exist because 2+ call sites needed the same logic. When a
-new component touches the same concern, REUSE the helper instead of re-inlining
-— re-inlined copies are exactly what the art-dupl gate then flags:
+Re-inlining these is exactly what the art-dupl gate flags.
 
-| Helper                                                           | Where                                            | Reuse for                                                                                                                                                             |
-| ---------------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `headingTag`                                                     | `display/shared.templ`                           | Rendering a title as h1–h6 (typed `HeadingTagType`, unknown falls back to h3). Shared by Card, EmptyState, CollapsibleSection.                                        |
-| `chartSeriesGroup`                                               | `display/chart_shared.templ`                     | One series' `<g>` (polyline/area/dots) for any new SVG chart type — compose with `chart_geometry.go` primitives, never reimplement the math.                          |
-| `sparklinePointCoords` / `sparklineGeometry`                     | `display/sparkline.go`                           | Value→pixel projection and min/max bounds for any inline SVG chart (BarChart and Sparkline share it).                                                                 |
-| `calendarMonthNavLink` + `calendarMonthNavAction`/`…URL`/`…Href` | `forms/calendar.templ` / `forms/calendar_nav.go` | Month-navigation arrows: href/no-JS fallback + Wire action cloning with `{year}`/`{month}` substitution.                                                              |
-| `browser` / `distserver` packages                                | `visualtest/internal/`                           | Capture tools (`ogshot`, `shots`, `siteshots`): pinned-Chromium context + static-dist HTTP server. New capture tools must use them, not re-roll chromedp boilerplate. |
+| Helper | Where | Reuse for |
+| --- | --- | --- |
+| `headingTag` | `display/shared.templ` | Title as h1–h6 (typed `HeadingTagType`, unknown → h3). Used by Card, EmptyState, CollapsibleSection. |
+| `chartSeriesGroup` | `display/chart_shared.templ` | One series' `<g>` for a new SVG chart — compose `chart_geometry.go`, never reimplement the math. |
+| `sparklinePointCoords` / `sparklineGeometry` | `display/sparkline.go` | Value→pixel projection and min/max bounds (BarChart and Sparkline share it). |
+| `calendarMonthNavLink` + `…Action`/`…URL`/`…Href` | `forms/calendar.templ`, `forms/calendar_nav.go` | Month navigation: href fallback + Wire cloning with `{year}`/`{month}` substitution. |
+| `browser` / `distserver` | `visualtest/internal/` | Capture tools (`ogshot`, `shots`, `siteshots`) — pinned Chromium + static-dist server. |
+| `feedbackStyleSet` / `lookupFeedbackStyle` / `feedbackIconName` / `dismissScript` | `feedback/styles.go` | Any new alert/toast-like surface. |
+| `cardShellClass` / `mutedTextClass` | `display/shared.go` (re-exported) | Card shells and secondary text. |
+| Motion constants (`transitionFast`, `transitionNormal`, `transitionColors`, `transitionTransform`) | `display/shared.go` | Any transition — never inline timing strings. |
 
 ## Per-component testing checklist
 
-Every new component MUST have all of these. "Assertion tests only" is not acceptable —
-that's what made `layout.Script` the worst-tested component in the library.
+“Assertion tests only” is not acceptable — that is how `layout.Script` became the
+worst-tested component in the library.
 
 ```
-[ ] golden_test.go      — exact rendered HTML matches .golden snapshot
+[ ] golden_test.go      — exact rendered HTML vs .golden snapshot
 [ ] a11y_test.go        — ARIA, roles, keyboard, motion-reduce, screen-reader text
-[ ] rtl_check           — verify no physical properties (ml-, mr-, pl-, pr-, left-, right-)
-[ ] bdd_test.go         — behaviour spec (user-visible behaviour, not markup)
+[ ] rtl_check           — no physical properties (covered by TestRTLLogicalProperties)
+[ ] bdd_test.go         — user-visible behaviour, not markup
 [ ] edge_cases_test.go  — empty inputs, unknown enum values, ID collisions
 [ ] example_test.go     — godoc ExampleXxx() compiles and renders
 [ ] snapshot_test.go    — broader composition snapshot
-[ ] coverage_*_test.go  — targeted coverage of private helpers and branches
+[ ] coverage_*_test.go  — private helpers and branches
 ```
 
-Golden tests use `utils/golden.Assert(t, name, got)` with CSS-class normalization; pass
-`-update` to regenerate after an intentional visual change, then review the diff.
+Golden tests use `utils/golden.Assert(t, name, got)` with class sorting + `EnsureID`
+normalisation; `-update` regenerates after an intentional change (review the diff).
 
-## Repo-wide guard & compliance tests
+## Repo-wide guard tests
 
-These live in `utils/` (and `integration/`) and enforce cross-cutting invariants
-that per-component tests cannot. They are the reason `go test ./...` stays
-trustworthy across refactors. Know they exist before touching CSS, config, or
-generated files:
+They live in `utils/`, `internal/contract/`, `integration/`, and `visualtest/`. The full
+matrix is in `references/guard-tests.md`; the ones authors trip most often:
 
-| Test                                           | File                                       | What it prevents                                                                                                                                                                                   |
-| ---------------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TestGolangciDisabledLinters`                  | `utils/lint_config_test.go`                | The recurring regression where `godoclint`/`ireturn`/`testableexamples` re-enter `.golangci.yml`'s enable list (incompatible with a templ library).                                                |
-| `TestTemplGeneratedInSync`                     | `utils/templ_sync_test.go`                 | A `.templ` edit committed without regenerating `*_templ.go` (breadcrumbs drift caught here).                                                                                                       |
-| `TestContainerQueryCompliance`                 | `utils/container_query_compliance_test.go` | Structural viewport breakpoints (`sm:`/`md:` grid/flex/hidden) without a `ContainerAware` opt-in. Exemptions must be verified, not assumed.                                                        |
-| `TestCustomCSSUtilities`                       | `utils/custom_css_test.go`                 | `tc-*` CSS class used in `.templ` but missing from `templates/custom.css` (and fluid typography classes deleted).                                                                                  |
-| `TestTailwindGoSourceScanning`                 | `utils/tailwind_source_test.go`            | Tailwind classes hidden in `.go` map literals (not just `.templ`) missing from compiled CSS — the `bg-amber-50` root cause.                                                                        |
-| `TestCSSFreshness`                             | `utils/css_freshness_test.go`              | Committed demo CSS older than the newest source. **Fails in CI** (`CI` env set), warns locally.                                                                                                    |
-| `TestCompiledCSSInventory`                     | `utils/compiled_css_inventory_test.go`     | A stray compiled `.out.css` re-entering the tracked set (dead artifacts, daemon-recompile churn bait). Asserts the git-tracked set; untracked worktree litter is reported informationally.         |
-| `TestEnvrcConsistency`                         | `utils/infra_guards_test.go`               | `.envrc` losing `GOEXPERIMENT=jsonv2`/`GOWORK=off`, or gaining secrets/machine paths.                                                                                                              |
-| `TestPreCommitHookInstallsGuard`               | `utils/infra_guards_test.go`               | The pre-commit hook dropping the `check-lint-config.sh` guard (or running it after BuildFlow).                                                                                                     |
-| `TestDarkModeCompliance` / `…SemanticColors`   | `utils/darkmode_compliance_test.go`        | Neutral/semantic colors without `dark:` variants.                                                                                                                                                  |
-| `TestMotionReduceCompliance`                   | `utils/motion_compliance_test.go`          | `transition-*`/`animate-*` without `motion-reduce:` fallbacks.                                                                                                                                     |
-| `TestRTLLogicalProperties`                     | `utils/rtl_compliance_test.go`             | Physical properties (`ml-`/`mr-`/`left-`) or the deprecated `start-`/`end-` inset aliases instead of canonical logical forms (`ms-`/`me-`/`inset-s-`/`inset-e-`).                                  |
-| `TestCoarsePointerCompliance`                  | `utils/coarse_pointer_compliance_test.go`  | Hover-revealed functionality (`opacity-0`/`hidden` + `group-hover:`/`peer-hover:`) without a `tc-*` hook kept visible in custom.css's `@media (pointer: coarse)` block, or a documented exemption. |
-| `TestAriaLivePoliteness`                       | `utils/aria_live_compliance_test.go`       | Any `aria-live="assertive"` in library `.templ` sources — urgency is `role="alert"` only (docs/aria-live-politeness.md).                                                                           |
-| `TestPropsIDRendersInOutput`                   | `internal/contract/props_id_test.go`       | A Props-carrying component that silently drops a consumer-set `ID` (broken CSS/ARIA/`hx-target` anchors).                                                                                          |
-| `TestTouchTargetAudit` / `TestZoomReflowAudit` | `visualtest/a11y_viewport_audit_test.go`   | Browser-measured: interactive targets < 24×24 CSS px at 375px, or horizontal overflow at 200%/400% zoom (WCAG 1.4.10 / 2.2).                                                                       |
-| `check-html-valid.sh` + CI html-validation     | `scripts/check-html-valid.sh`              | Invalid HTML in the golden corpus (Nu Html Checker; 14 documented vnu-snapshot ignore classes).                                                                                                    |
-| `integration` CSP nonce test                   | `integration/csp_nonce_test.go`            | An inline `<script>` without `nonce=`.                                                                                                                                                             |
+- `TestTemplGeneratedInSync` — a `.templ` edit without regenerating.
+- `TestDarkModeCompliance` / `TestMotionReduceCompliance` / `TestRTLLogicalProperties` /
+  `TestCoarsePointerCompliance` / `TestAriaLivePoliteness` — class-string invariants.
+- `TestContainerQueryCompliance` / `TestCustomCSSUtilities` / `TestTailwindGoSourceScanning`
+  — breakpoint opt-ins and compiled-CSS coverage.
+- `TestDocsCountDrift` — every count printed in this file, README, AGENTS, FEATURES, site docs.
+- `TestAllComponentPropsSatisfyInterface` / `TestPropsIDRendersInOutput` / `TestAttrsPropagateToRoot`
+  — the consumer-facing contract.
+- `TestAllInlineScriptsHaveNonce` — CSP.
+- `TestTouchTargetAudit` / `TestZoomReflowAudit` + the axe-core sweep (default-FAIL, debt
+  ledgered in `visualtest/testdata/axe_baseline.json`) — browser-measured a11y.
 
-**When you add a new cross-cutting rule, add a guard test here, not just a
-comment.** The BuildFlow auto-commit daemon bypasses the pre-commit hook and
-does not run `go test`, so CI is the only reliable enforcement layer — keep
-these tests fast and deterministic.
+**When you add a cross-cutting rule, add a guard test rather than a comment.** The
+auto-commit daemon bypasses the hook and never runs `go test`, so CI is the only reliable
+enforcement layer.
 
-### Visual regression tests (`visualtest/`)
+### Visual regression (`visualtest/`, separate module)
 
-Pixel-level checks in a **separate Go module** (`visualtest/go.mod`, local
-replace) so chromedp never pollutes the consumer dependency graph. A single
-shared Chromium process is reused across tests (~4s full suite). Supports
-`State` (`Hover`/`Focus`/`Click`/`Context`), `FullViewport` (top-layer
-overlays), and `WaitSelector`. See `docs/visual-testing.md` and run via
-`nix run .#visual`.
+Chromedp pixel checks in their own module so browsers never enter the consumer dependency
+graph. Supports `State` (`Hover`/`Focus`/`Click`/`Context`), `FullViewport` (top-layer
+overlays), and `WaitSelector`. Regenerate goldens ONLY via `nix run .#visual -- -update`
+(a bare `go test -update` there silently skips without the nix browser env). Load-flake
+signature: light AND dark site goldens ~100% while demo routes pass → rerun, never `-update`.
 
 ## Decision trees
 
 ### Map lookup vs if-branch for a variant
 
-- **Pure class/style data** (colors, sizes, padding) → map + `utils.Lookup(map, key, fallback)`.
-  This is the dominant pattern: `badgeStyleMap`, `cardPaddingLookup`, `spinnerSizeLookup`,
-  `gridColsLookup`, etc.
-- **Structural DOM differences** (TabsVariant, DropdownPosition, TrendDirection, StatCardHref)
-  → `if`-branch inside the template. Maps are for data, not for choosing which markup to emit.
-- **Enum validation** → 15 enums use map+fallback (graceful); `InputType`,
-  `ButtonHTMLType`, `FormMethod` fall back to HTML-spec defaults; only the icons path-data
-  integrity check is allowed to panic.
+- **Pure class/style data** → map + `utils.Lookup(map, key, fallback)`
+  (`badgeStyleMap`, `cardPaddingLookup`, `spinnerSizeLookup`, `gridColsLookup`, …).
+- **Structural DOM differences** (TabsVariant, DropdownPosition, TrendDirection) → `if`
+  branch inside the template. Maps are for data, not for choosing which markup to emit.
+- **Enum validation** → map + fallback (graceful); `InputType`, `ButtonHTMLType`, `FormMethod`
+  fall back to HTML-spec defaults; only the icons path-data check may panic.
 
-### `utils.Class()` vs `utils.Lookup()` — when to use which
+### `utils.Class()` vs `utils.Lookup()`
 
-- **Merging multiple class strings** → `utils.Class("a", b)` (tailwind-merge resolves conflicts).
-- **Selecting a style variant from a map** → `utils.Lookup(map, key, fallback)`.
-- **Both** → `utils.Lookup()` first to pick the variant, then pass the result to `utils.Class()`.
+- Merging class strings → `utils.Class("a", b)` (tailwind-merge resolves conflicts).
+- Selecting a style variant → `utils.Lookup(map, key, fallback)`.
+- Both → look up first, then merge.
 
 ### When to introduce a typed enum
 
-If a field takes one of a fixed set of visual/behavioural variants, make it a typed enum
-(`type X string` + consts) with a `Default` constant. Never accept a raw string for a variant
-that has a known closed set — that reopens the "invalid state" you're trying to prevent.
+Any field with a fixed set of visual/behavioural variants becomes `type X string` + consts +
+a `Default` constant + `IsValid()` + a test. Never accept a raw string for a closed set —
+that reopens the invalid state you are trying to prevent.
 
 ### When to add an icon
 
-Add the path to `iconPathData` in `icons/icon_paths.go` (single source). Multi-path icons use
-a `|` separator. `iconPaths()` validates there are no empty segments. `allIconNames()` is
-auto-generated from the map — never hand-maintain a separate icon-name list. Export raw path
-strings via `icons.IconPathData` for consumers building their own `<svg>` wrapper.
+Add the path to `iconPathData` in `icons/icon_paths.go` (multi-path icons use `|`;
+`iconPaths()` panics on a stray separator). `allIconNames()` derives automatically — never
+hand-maintain a second list. Update the icon count in the docs in the same commit.
 
 ### When interactivity needs JavaScript
 
-Walk this ladder before writing JS:
+1. Native HTML first (`<details>`, `<form>`, `:target`/`:checked`). If yes, stop.
+2. One inline script through `utils.ScriptComponent`, guarded by a global singleton flag
+   (`window.tcXxxAttached`), event delegation on `document`, Escape/focus restore/click-outside.
+3. Escape interpolated IDs with `strconv.Quote()` (see `validateDropdownID`).
 
-1. Can native HTML do it? (`<details>`/`<summary>` for disclosure, `<form>` for submit,
-   `:target`/`:checked` for toggles). If yes, stop.
-2. If JS is unavoidable, write a single inline `<script nonce={ props.Nonce }>` that:
-   - Guards with a global singleton flag (`window.tcXxxAttached`) so HTMX re-renders are
-     idempotent — re-running the script must not double-bind handlers.
-   - Uses event delegation on `document` where practical.
-   - Handles Escape-to-dismiss, focus save/restore (`data-tc-prev-focus`), and click-outside.
-3. Escape any IDs interpolated into JS with `strconv.Quote()` to prevent XSS (see
-   `validateDropdownID`).
-
-See `docs/adr/0005-js-attachment-patterns.md` for the rationale.
+Full ladder: `docs/javascript-guide.md`; attachment rationale: ADR-0005.
 
 ### When to generate an ID
 
-Use `utils.EnsureID("prefix", props.ID)` when a component needs a stable DOM id for ARIA
-wiring (Modal, Drawer, Dropdown, Accordion, Combobox). It returns the consumer's id unchanged,
-else generates `tc-<prefix>-<16 hex>` via `crypto/rand` (collision-safe across HTMX loads).
-Never invent IDs with `time.Now()` alone — predictable under concurrency.
+`utils.EnsureID("prefix", props.ID)` — returns the consumer's id unchanged, else
+`tc-<prefix>-<16 hex>` from `crypto/rand`. Never `time.Now()` alone.
 
 ### Theming decisions
 
-- Components emit **standard Tailwind utility classes** (`bg-blue-600`, `text-gray-900`).
-- Consumers override colors by setting `@theme { --color-blue-600: #...; }` in their CSS —
-  **no Go code change required**. Do not add `Variant`/`Color` props for theming; that defeats
-  the CSS-variable model.
+- Emit standard Tailwind utilities (`bg-blue-600`, `text-gray-900`).
+- Consumers override via `@theme { --color-blue-600: #...; }` — do NOT add `Variant`/`Color`
+  props for theming; that defeats the CSS-variable model.
 - Semantic aliases live in `templ-components-theme.css` (`bg-tc-primary`, `text-tc-danger`).
-- Dark mode uses the class strategy: `@custom-variant dark (&:where(.dark, .dark *))`,
-  toggled by `layout.ThemeScript()` + `layout.ThemeToggle()`.
 
-## Mandatory conventions (these have no exceptions)
+## Mandatory conventions
 
-- **Zero value = documented default.** Consumers build `XxxProps{...}` literals,
-  not just `DefaultXxxProps()`. A bool whose documented default is `true` but
-  whose zero value is `false` silently misbehaves in every literal (the
-  `ContainerProps.Pad` trap, fixed by inverting to `NoPad`; `Grid`/`Split`
-  `ContainerAware` docs were corrected the other way). Prefer inverted flags
-  (`NoPad`, `NoValidate`) when the common case is "on".
-
-- **Dark mode colors:** `gray-*` exclusively. Never mix `slate-*` and `gray-*` in one
-  component — the inconsistency shows in dark mode.
-- **Motion safety:** every transition gets
-  `motion-reduce:transition-none motion-reduce:duration-0`; every animation gets
-  `motion-reduce:animate-none`. If you forget this, you fail the a11y tests.
-  **Use the shared motion constants** (`transitionFast`, `transitionNormal`,
-  `transitionColors`, `transitionTransform`) from `display/shared.go` instead of
-  inline timing strings — they guarantee consistent durations and built-in
-  `motion-reduce` fallbacks. `transitionColors` for hover/active color changes,
-  `transitionNormal` for overlay panels, `transitionTransform` for sliding/rotating.
-- **Class merging:** always go through `utils.Class(...)` so tailwind-merge resolves conflicts
-  and consumer overrides win. The only exception is `templ.KV` conditionals where the templ
-  runtime must comma-join. `utils.Class` is mutex-protected; do not bypass it.
-- **CSP nonce:** every inline script takes `nonce={ props.Nonce }`. For external scripts, use
-  `layout.Script(nonce, src, attrs)` — it auto-injects the nonce.
-- **Card shell:** use the shared `cardShellClass` constant; `SimpleCard` composes through
-  `Card` internally. `StatCard` also uses `cardShellClass`. The shell is SHARP (no
-  `rounded-*`) — cards render square corners by default; restore rounding via
-  `props.Class: "rounded-lg"` or compose `.tc-squircle` for squircle corners.
-- **Muted text:** use `mutedTextClass` (`text-sm text-gray-500 dark:text-gray-400`) plus a
-  margin, not a bespoke class string.
-- **SVG paths:** reference constants in `utils/svg`, never inline a new path literal.
-- **ProgressBar clamp:** use `max(0, min(100, v))` (Go 1.21+ builtins), not manual if-branch.
-- **RTL logical properties:** use logical Tailwind utilities (`ms-`, `me-`, `ps-`,
-  `pe-`, `inset-s-*`, `inset-e-*`, `text-start`, `border-s-`, `border-e-`) instead
-  of physical ones (`ml-`, `mr-`, `pl-`, `pr-`, `left-`, `right-`, `text-left`,
-  `border-l-`, `border-r-`) — and never the bare `start-`/`end-` inset classes:
-  they are v4.2-DEPRECATED aliases of `inset-s-*`/`inset-e-*` (probe-verified
-  2026-10-08: identical logical output today — the ban keeps the canon on the
-  canonical form before the aliases can disappear). Logical properties render
-  identically in LTR and mirror automatically in RTL (Arabic, Hebrew, Persian,
-  Urdu). The ONLY exception is `left-1/2` (centering — not directional). Motion
-  on logical insets must also be logical: `translate-x` never mirrors (the Toggle
-  thumb uses `peer-checked:*:inset-s-N` + `transition-[inset-inline-start]`).
-- **Container queries:** when a component should respond to its parent's width
-  rather than the viewport, use Tailwind v4's `@container` + `@sm:`/`@md:`/`@lg:`
-  variants. 8 components have a `ContainerAware` flag: `Grid`, `Card`, `Nav`,
-  `Split`, `DefinitionGrid`, `Form`, `Pagination`, `SkeletonCardGrid`. ALL 8 are
-  opt-in at the struct-literal level (zero value = viewport breakpoints);
-  `DefaultGridProps()`/`DefaultSplitProps()` set it `true` — the "v2 default
-  flip" changed the constructors, never the literals (docs corrected
-  2026-10-01 after a consumer audit hit this documented-default-vs-zero-value
-  class). **Fluid typography** via `.tc-fluid-*` classes
-  (container query `cqi` units) composes directly inside any container-aware component.
-  See ADR-0018 and `docs/container-query-strategy.md`. Do NOT expand `ContainerAware`
-  to marginal candidates (Container, Breadcrumbs, EmptyState, NotFound404, Footer) —
-  all evaluated and rejected in the strategy doc.
-- **Web Components are permanently rejected** (ADR-0033). Shadow DOM breaks the
-  Tailwind theming model, Custom Elements require JS, and the distribution problem
-  doesn't exist for a Go-source library. The library achieves component encapsulation
-  via native APIs (`<dialog>`, Popover, `<details>`, scroll-snap, `@container`).
-  Never re-evaluate; the decision is binding.
-- **templ language traps** (each burned a 2026-10-10 session build):
-  - `templ.KV(cond, class)` is a TWO-ARG conditional-attribute helper, not a
-    ternary. For value selection in expressions use `utils.Ternary(cond, a, b)`.
-  - `checked={ someBool }` renders `checked="false"` when the bool is false —
-    and a `checked` ATTRIBUTE OF ANY VALUE MEANS CHECKED (HTML boolean
-    attribute semantics). Conditionally render it as a bare attribute via an
-    `if` block: `if sel { checked }`. Same rule for `disabled`, `selected`,
-    `open`, `readonly`, `multiple`.
-  - Void elements (`<img>`, `<input>`, `<br>`) render WITHOUT a trailing `/>`;
-    substring tests must assert `>` endings, not `/>`.
-  - Attribute values escape `'` as `&#39;` — assert the escaped form.
-  - No implicit int→string: use `strconv.Itoa` in Go helpers, never try to
-    interpolate an int directly in a templ expression.
+- **Zero value = documented default.** Consumers write `XxxProps{...}` literals. Prefer
+  inverted flags (`NoPad`, `NoValidate`) when the common case is "on" (the `ContainerProps.Pad`
+  trap). Constructor-only defaults must be documented as such.
+- **Closed-set enums ship `IsValid()` + a test in the same commit**; FEATURES tables are
+  machine-guarded.
+- **Counts are machine-guarded.** Adding/removing a component, icon, or golden updates the
+  count-bearing docs (SKILL.md, README, FEATURES, site prose) in the same commit.
+- **Dark mode:** `gray-*` exclusively, every neutral + semantic class carries `dark:`.
+- **Motion:** every transition gets `motion-reduce:transition-none motion-reduce:duration-0`,
+  every animation `motion-reduce:animate-none`; use the shared constants.
+- **Class merging:** always `utils.Class(...)`; the only exception is `templ.KV` conditionals,
+  which need comma-joining. `utils.Class` is mutex-protected; do not bypass it.
+- **Tailwind variant literals:** write complete variant strings, never concatenate them at
+  runtime (the scanner cannot see the token), and put peer-dependent classes on a SIBLING of
+  `.peer` (`peer-checked:*:inset-s-N` for nested targets).
+- **CSP nonce:** every inline script renders through `utils.ScriptComponent` (omit-empty rule);
+  external scripts through `layout.Script`. New script emitters join
+  `integration.TestNoEmptyNonceAttribute` + `TestEmptyNonceStillRendersScripts`.
+- **RTL:** logical properties only (`ms-/me-/ps-/pe-/inset-s-*/inset-e-*/text-start/border-s-/border-e-`);
+  never `ml-/mr-/pl-/pr-/left-/right-/text-left/border-l-/border-r-`, and never the deprecated
+  bare `start-/end-` aliases. Only exception: `left-1/2` centering. Motion on logical insets
+  (`peer-checked:*:inset-s-N` + `transition-[inset-inline-start]`), never `translate-x`.
+- **Container queries:** 8 components carry `ContainerAware` — `Grid`, `Card`, `Nav`, `Split`,
+  `DefinitionGrid`, `Form`, `Pagination`, `SkeletonCardGrid`. ALL are opt-in at the struct
+  literal level (zero value = viewport); `DefaultGridProps()`/`DefaultSplitProps()` set `true`.
+  Do NOT expand to marginal candidates (ADR-0018, `docs/container-query-strategy.md`).
+- **Web Components / Shadow DOM are permanently rejected** (ADR-0033) — never re-evaluate.
+- **`Card` shell is sharp** (`cardShellClass`, no `rounded-*`); restore rounding via `Class`.
+  `SimpleCard` composes `Card`; `StatCard` uses the same shell.
+- **Muted text:** `mutedTextClass` + a margin, never a bespoke string.
+- **SVG paths:** reference `utils/svg` / `icons`; never inline `d="M..."`.
+- **ProgressBar clamp:** `max(0, min(100, v))` (Go builtins).
+- **templ language traps:**
+  - `templ.KV(cond, class)` is a two-arg conditional attribute, NOT a ternary. Use
+    `utils.Ternary(cond, a, b)` for value selection.
+  - `checked={ someBool }` renders `checked="false"` when false, and any `checked`
+    attribute means CHECKED. Render conditionally: `if sel { checked }`. Same for
+    `disabled`, `selected`, `open`, `readonly`, `multiple`.
+  - Void elements render WITHOUT a trailing `/>`; assert `>` endings.
+  - Attribute values escape `'` as `&#39;`.
+  - No implicit int→string: use `strconv.Itoa` in Go helpers.
+  - No bare `continue`/`break` inside template loops (v0.3.1020 leaks the word as text) —
+    use if/else.
+- **Auto-commit daemon:** it commits mid-session with generic messages, no tests, and can
+  revert edits. After any daemon commit, verify your edits survived, `[Unreleased]` is still
+  warm, and commit visual-golden PNG churn manually.
 
 ## Anti-patterns to refuse on review
 
-- `switch` statements for style lookups → replace with a map + `utils.Lookup`.
-- Inline `<script>` without `nonce` → use `layout.Script` or add `nonce={ props.Nonce }`.
+- `switch` for style lookups → map + `utils.Lookup`.
+- Inline `<script>` without nonce → `utils.ScriptComponent` / `layout.Script`.
 - `*_templ.go` deleted or untracked after a `.templ` edit → `git add -f` if new.
-- Raw `class={ "a " + b }` string concatenation → `utils.Class("a", b)`.
-- A new panic in render code → replace with a documented fallback value.
-- A new dependency in `go.mod` outside the allowed three.
-- `slate-*` dark-mode colors → switch to `gray-*`.
-- Hardcoded `aria-label` that ignores `props.AriaLabel` → propagate via `utils.Ternary`.
-- Physical Tailwind properties (`ml-`, `mr-`, `pl-`, `pr-`, `left-`, `right-`, `text-left`,
-  deprecated `start-`/`end-` insets) → switch to logical (`ms-`, `me-`, `ps-`, `pe-`,
-  `inset-s-*`, `inset-e-*`, `text-start`).
-- Inline transition strings (`"transition-colors motion-reduce:..."`) → use the
-  shared `transitionFast`/`transitionNormal`/`transitionColors`/`transitionTransform`
-  constants from `display/shared.go`.
-- Duplicating an icon path or a Tailwind class string that already has a shared constant.
-- Shipping a component with only assertion tests → add golden, BDD, a11y, example lenses.
+- Raw `class={ "a " + b }` → `utils.Class("a", b)`.
+- A new panic in render code → documented fallback.
+- A new dependency outside the allowed three.
+- `slate-*` dark-mode colors → `gray-*`.
+- Hardcoded `aria-label` ignoring `props.AriaLabel`.
+- Physical Tailwind properties or deprecated `start-`/`end-` insets → logical forms.
+- Inline transition strings → the shared motion constants.
+- Duplicated icon paths or class strings that already have a constant.
+- Shipping a component with only assertion tests.
+- Hand-typing a count into a doc instead of updating the guarded source.
 
-## Where to read deeper (progressive disclosure)
+## Where to read deeper
 
-Load these only when the task needs them — do not read proactively.
+Load only when the task needs it.
 
-- **`AGENTS.md`** (repo root) — the full catalogue of conventions, gotchas, and the
-  one-commit release convention. This is the single richest source of context; consult it
-  whenever a rule's _why_ is unclear or you hit something surprising.
-- **`CONTRIBUTING.md`** — human contributor setup and commit-message format.
-- **`docs/migration/play-cdn-to-tailwind-v4.md`** — 7-step migration from Play CDN to v4 CSS-first.
-- **`docs/recipes/server-rendered-htmx-error-feedback.md`** — 3 HTMX error render modes.
-- **`docs/tailwind-v4-adoption-guide.md`** — Tailwind v4 CSS-first setup, `@source` scanning,
-  and `@theme` overrides.
+- **`AGENTS.md`** — the full catalogue of conventions, gotchas, and the one-commit release
+  convention; consult it whenever a rule's _why_ is unclear.
+- **`references/component-catalogue.md`** — signatures for every component and helper.
+- **`references/guard-tests.md`** — the full guard matrix and what each guard prevents.
+- **`CONTRIBUTING.md`** — contributor setup and commit-message format.
 - **`docs/adr/`** — decision records: two icon systems, shared SVG helpers, committing
-  generated templ files, filled-vs-stroke icons, JS attachment patterns, feedback-type
-  unification. Read the relevant ADR before changing the thing it decided.
-- **`docs/javascript-guide.md`** — comprehensive JS patterns reference: the decision
-  ladder (native HTML → HTMX → singleton-guard → Alpine → Datastar → islands), CSP
-  compliance, templ's built-in JS features (`OnceHandle`, `JSFuncCall`, `JSONString`,
-  `JSONScript`), TypeScript workflow, View Transitions API, and anti-patterns.
-- **`docs/icons-only-adoption.md`** — adopting just the `icons` package (CSS-agnostic).
-- **`docs/DOMAIN_LANGUAGE.md`** — ubiquitous-language glossary for terms used in types.
-- **`internal/contract/component_props_test.go`** — the compile-time-enforced Props inventory;
-  every new component must be registered here (see Component anatomy step 9).
+  generated templ files, filled-vs-stroke icons, JS attachment, feedback unification,
+  container queries, module split, transport wiring, typed triggers.
+- **`docs/javascript-guide.md`** — the JS decision ladder, CSP, templ JS features
+  (`OnceHandle`, `JSFuncCall`, `JSONString`, `JSONScript`), TypeScript, View Transitions.
+- **`docs/DOMAIN_LANGUAGE.md`** — ubiquitous-language glossary.
+- **`docs/count-definitions.md`** — what every sold count means.
+- **`docs/visual-testing.md`** — visual suite, goldens, axe gate, emulation probes.
+- **`internal/contract/component_props_test.go`** — the compile-time Props inventory.
 - **`integration/composition_test.go`** — cross-package composition proof; extend it when a
   change affects how packages combine.
-- **`examples/demo/`** — a live, runnable example wiring layout + feedback + display together.
-  Read it as the canonical "how a consumer assembles a page" reference.
-- **`FEATURES.md`** / **`TODO_LIST.md`** — honest feature inventory and short-term work. Check
-  these before proposing a new component so you don't duplicate planned or existing work.
-- **`scripts/release.sh`** — the one-command release cut; read it before tagging.
+- **`examples/demo/`** — the canonical "how a consumer assembles a page" reference.
+- **`FEATURES.md`** / **`TODO_LIST.md`** — honest inventory and in-flight work; check before
+  proposing a new component.
+- **`docs/release-checklist.md`** / **`scripts/release.sh`** — read before cutting a release.
 
 ## Installing this skill into Crush
 
-This skill lives in the repo so it versions with the code. Crush only auto-loads skills from
-`~/.config/crush/skills/` (repo-level `crush.json` `context_paths` cover `AGENTS.md`, not
-skills), so install it once with a symlink — it then stays in sync with the branch you're on:
+The skill lives in the repo so it versions with the code. Crush auto-loads only from
+`~/.config/crush/skills/`, so install it once with a symlink from the repo root:
 
 ```bash
 mkdir -p ~/.config/crush/skills/templ-components
 ln -sf "$PWD/skill/SKILL.md" ~/.config/crush/skills/templ-components/SKILL.md
 ```
 
-Run this from the repo root so `$PWD` resolves correctly. `-f` makes it idempotent — re-run
-after cloning or switching machines. Verify it appears in `available_skills` (named
-`templ-components`); on a new session it will auto-load on the triggers in the frontmatter.
+The `references/` directory is resolved relative to the symlinked file's directory, so either
+symlink the whole skill directory (`ln -sfn "$PWD/skill" ~/.config/crush/skills/templ-components`)
+or copy `skill/` wholesale. `-f`/`-n` make both idempotent; re-run after cloning on a new
+machine. Verify the skill shows up as `templ-components` in `available_skills`.
 
-Prefer a copy? `cp skill/SKILL.md ~/.config/crush/skills/templ-components/SKILL.md` works too,
-but you must re-copy after every update — the symlink is the recommended option.
-
----
-
-**Fan-out:** the symlink above is the norm, not a convenience — the authoring
-rule, its guards, and the 2026-09 stale-link incident that spawned them live
-in `/home/lars/projects/crush-config/README.md` § "Skill fan-out: authoring
-norm and integrity".
+Never point this link at the nix store (repo policy: an editable skill must resolve to a
+working checkout). The authoring norm and its guards are documented in
+`/home/lars/projects/crush-config/README.md` § "Skill fan-out: authoring norm and integrity".
