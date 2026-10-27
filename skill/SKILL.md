@@ -119,13 +119,7 @@ module supplies the CSP-safe wrapper plus the dark-mode bridge (ADR-0031, tier 2
 `CompactCount`), `utils/wire` (transport-agnostic wiring, ADR-0036), `utils/svg`,
 `utils/tone`, `utils/cdn`, `utils/golden`.
 
-## Quick start: adopting the library
-
-```bash
-go get github.com/larsartmann/templ-components@latest
-```
-
-### Minimal page
+## Consumer essentials
 
 ```templ
 @layout.Base(layout.DefaultPageProps()) {
@@ -147,170 +141,18 @@ go get github.com/larsartmann/templ-components@latest
 }
 ```
 
-`RightItems` is a `templ.Component` field: pass the component function value
-(`layout.ThemeToggle(...)`), never `@layout.ThemeToggle(...)` — `@` only works in template body.
+- `RightItems` is a `templ.Component` field: pass the function value, never `@`-prefixed.
+- One `wire.Action` drives HTMX or Datastar. Datastar patch target/mode come ONLY from
+  response headers (`wire.Handler`); `Action.Target`/`Swap` render for htmx only. Under
+  Datastar, form submission sets `ContentTypeForm` so the form's fields serialize.
+- Inline scripts render through `utils.ScriptComponent`; external scripts through
+  `layout.Script`. An empty nonce omits the attribute (never `nonce=""`).
+- Theme by overriding Tailwind variables in `@theme`; never add color props to Go.
+- Consumers gitignore `*_templ.go` and generate at build time (the library commits them).
 
-### Dual-transport form (HTMX + Datastar)
-
-One `wire.Action`, either runtime — submit, server-side validation, inline field errors
-(`docs/recipes/server-side-validation.md`):
-
-```templ
-@forms.Form(forms.FormProps{
-	Method:     forms.FormPost,
-	CSRFToken:  csrf,
-	NoValidate: true, // let server-side validation own the error UX
-	Wire:       &wire.Action{Method: wire.MethodPost, URL: "/api/subscribe", Target: "#form-region"},
-}) {
-	@forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email"})
-	@display.Button(display.ButtonProps{Text: "Subscribe", Type: display.ButtonHTMLSubmit})
-}
-<div id="form-region" aria-live="polite"></div>
-```
-
-Render the form INSIDE its swap region and re-render it on validation errors (values
-preserved); wrap the handler in `wire.Handler` and answer 200 OK even for errors. Under
-Datastar, patch target and mode come ONLY from response headers — `Action.Target`/`Swap`
-render for htmx only (see `docs/transport-wiring.md`).
-
-### Suppressing auto-injected `<head>` tags
-
-`DefaultPageProps()` auto-injects HTMX and the stylesheet. Override them:
-
-```go
-props := layout.DefaultPageProps()
-props.HTMXVersion = "" // suppress the HTMX <script>
-props.CSSPath = ""     // suppress <link rel="stylesheet" href="/app.css">
-```
-
-Self-hosting and pure-Datastar pages: `props.HTMXCDN = "https://unpkg.com"`, or
-`props.HTMXSrc = layout.HTMXNone` for no htmx runtime at all.
-
-### CSP-safe script tags
-
-Use `layout.Script` for external scripts; the nonce can never be forgotten:
-
-```templ
-@layout.Script(nonce, "/static/app.js", templ.Attributes{"defer": true})
-```
-
-Inline component scripts MUST render through `utils.ScriptComponent(nonce, script, errLabel)`
-— it owns the omit-empty nonce rule, nonce escaping, and error wrapping. The rule: an empty
-nonce renders NO nonce attribute, never `nonce=""` (strict-CSP browsers reject the empty
-value, silently killing the feature). A component's singleton script ALWAYS renders — never
-skip the whole `<script>` when the nonce is empty, or non-CSP consumers get no JS.
-templ's `<script>` context sanitizes interpolation, so JS with braces/template literals must
-go through the ComponentFunc writer, not a templ `<script>` block.
-
-### Theming
-
-Components emit standard Tailwind classes (`bg-blue-600`). Override globally, no Go changes:
-
-```css
-@theme {
-  --color-blue-600: #4f46e5; /* indigo instead of blue */
-}
-```
-
-Dark mode: `@custom-variant dark (&:where(.dark, .dark *))` + `layout.ThemeScript()` +
-`layout.ThemeToggle()`. `color-scheme: light` on `:root`, `color-scheme: dark` on `.dark`.
-
-**Custom CSS utilities** (`templates/custom.css`): `.tc-*` classes for what Tailwind can't
-express — overlays (`.tc-overlay`, `.tc-modal`, `.tc-drawer`), scroll-snap (`.tc-snap-*`),
-stylable select (`.tc-select`), auto-growing textarea (`.tc-auto-grow`), content-visibility
-(`.tc-content-auto`), squircle corners (`.tc-squircle`), and fluid typography
-(`.tc-fluid-display`, `.tc-fluid-h1`–`h4`, `.tc-fluid-lead`, container-`cqi` based; see
-`docs/recipes/fluid-typography.md`). Consumers vendor `templates/custom.css` via `app.css`.
-Guarded by `TestCustomCSSUtilities`.
-
-### Compiled-CSS artifact rule (fleet adoption lesson)
-
-A consumer with a TRACKED compiled CSS artifact must regenerate it in the SAME commit as any
-component adoption — an adopted component whose utilities never reached the stylesheet renders
-unstyled outside local dev (string tests cannot see this).
-
-1. Regenerate via the consumer's canonical pipeline (nix app or `regen-ui.sh`-style script),
-   not ad-hoc tool invocations.
-2. If classes enter the scan through a committed inventory, the scan must be REPLACE-AWARE:
-   resolve the library with `go list -m -f '{{.Dir}}'` (honors go.mod replace) and cover
-   EVERY imported package — a missing package in the scan list shipped a 404-page outage.
-3. Grep the compiled artifact for the adopted component's classes before committing.
-
-### Dark mode checklist (new components)
-
-Every new component passes `TestDarkModeCompliance` + `TestDarkModeSemanticColors`:
-
-1. **Neutral** — every `text-gray-*`, `bg-white`, `bg-gray-*`, `border-gray-*`, `ring-gray-*`
-   carries a `dark:` variant on the same line.
-2. **Semantic** — every `bg-blue-600`, `text-red-600`, … carries `dark:` (bg `-600`→`-500`,
-   text `-600`→`-400`).
-3. **Focus rings** — `focus:ring-blue-500` needs `dark:focus:ring-blue-400`.
-4. **Ring offset** — `focus:ring-offset-2` needs `dark:focus:ring-offset-gray-900`.
-5. **Shadows** — overlay/card shadows get `dark:shadow-black/20`.
-6. **Palette** — `gray-*` exclusively; no `slate-*`/`zinc-*`/`neutral-*`/`stone-*`.
-
-Full convention: `docs/adr/0011-dark-mode-convention.md`.
-
-### Consumer `_templ.go` guidance
-
-**Consumers gitignore `*_templ.go`** and generate at build time. **The library commits them**
-because the module proxy serves tagged source as-is and never runs `templ generate` — missing
-generated files break every consumer.
-
-## Recipes
-
-| Recipe | When to read |
-| --- | --- |
-| `docs/migration/play-cdn-to-tailwind-v4.md` | Migrating from Tailwind Play CDN to a CSS-first build |
-| `docs/tailwind-v4-adoption-guide.md` | Full Tailwind v4 setup with `@source` scanning |
-| `docs/recipes/server-rendered-htmx-error-feedback.md` | Wiring HTMX error feedback (toast/alert/page) |
-| `docs/recipes/error-pages.md` | Family-aware error pages: status→family, per-code copy, HTMX branch, noindex |
-| `docs/recipes/server-side-validation.md` | Dual-transport form validation round-trip |
-| `docs/recipes/horizontal-filter-bar.md` | Horizontal HTMX filter bar vs `forms.Form` |
-| `docs/recipes/sse-live-rows.md` | Append live `<tr>` over SSE — `Table.BodyID` + `hx-swap-oob` |
-| `docs/recipes/bounding-tables.md` | Cap + `ListNote`, or Pagination/LoadMore — never an unbounded table |
-| `docs/recipes/hybrid-strings-builder-rendering.md` | Rendering into a `strings.Builder` (`templ.WithChildren` escape hatch) |
-| `docs/recipes/theme-bridge.md` / `scoped-theme-bridge.md` | Remap library colors, globally or scoped |
-| `docs/icons-only-adoption.md` | Adopting just the `icons` package (CSS-agnostic) |
-| `docs/transport-wiring.md` + `docs/datastar-runtime-facts.md` | The wire contract and pinned-runtime facts |
-
-## How to know if a component already exists
-
-1. **"By use case" table above** — start from your page type.
-2. **`references/component-catalogue.md`** — every signature and one-liner.
-3. **`README.md` "Component Catalog"** — grouped code examples.
-4. **`pkg.go.dev/github.com/larsartmann/templ-components`** — full API reference.
-5. **`rg -n "^templ [A-Z]" --glob "*.templ"`** — source of truth.
-
-### Consumer tip: track adoption in your AGENTS.md
-
-The #1 discoverability gap across consumers is not knowing which components are already
-adopted vs hand-rolled. Keep a grep-able table in the consumer project's `AGENTS.md`:
-
-```markdown
-| Library component      | Status  | Where                   |
-| ---------------------- | ------- | ----------------------- |
-| `display.Grid`         | adopted | dashboard.templ         |
-| `display.Table`        | custom  | filters.templ (thinner) |
-| `forms.Form`           | custom  | filterForm helper       |
-| `feedback.ProgressBar` | adopted | backfill.templ          |
-```
-
-## The website SSG's page-registration knobs
-
-The site (`website/`, a Go SSG rendering through this library) has three registration points
-that must stay in sync when adding pages:
-
-- **`topLevelPages`** (`website/cmd/site/main.go`) — non-docs HTML pages; a new entry needs
-  the nav/header templates updated too.
-- **Sitemap lastmod sources** — git history over declared repo-relative paths; a page without
-  a source emits an undated sitemap entry (`writeSitemaps`).
-- **Search index** — `build.PlainText` indexes markdown docs only; top-level pages are found
-  via nav, not search (deliberate).
-
-Visual changes are pinned by `TestSiteRouteGoldens` (`docs/visual-testing.md`).
-
----
+Deep dive: `references/consumer-guide.md` — head-tag suppression, the dual-transport form,
+theming, the compiled-CSS artifact rule, the dark-mode checklist, recipes, adoption tracking,
+and the site's page-registration knobs.
 
 # Part 2: Authoring Playbook
 
@@ -372,8 +214,8 @@ scripts/ci-repro.sh --lint --css --website
 ```
 
 `nix run .#test` runs `go test ./... -count=1 -race` from the repo root: fast and useful, but
-it covers the root module only — never treat it as the full matrix. `nix run .#verify` adds
-lint but uses the same root-scoped test step.
+it covers the root module only — never treat it as the full matrix. `nix run .#verify` IS the
+complete lane (root test + per-module `GOWORK=off` loop + visualtest compile + per-module lint).
 
 **Per-module lint** (golangci-lint does not support `go.work`):
 
@@ -495,39 +337,9 @@ Inside `component.templ`:
 9. **Register the Props type** in `internal/contract/component_props_test.go` — forgetting
    this is the #1 way a component slips in without the BaseProps embed.
 
-## Shared internal helpers — reuse these
 
-Re-inlining these is exactly what the art-dupl gate flags.
-
-| Helper | Where | Reuse for |
-| --- | --- | --- |
-| `headingTag` | `display/shared.templ` | Title as h1–h6 (typed `HeadingTagType`, unknown → h3). Used by Card, EmptyState, CollapsibleSection. |
-| `chartSeriesGroup` | `display/chart_shared.templ` | One series' `<g>` for a new SVG chart — compose `chart_geometry.go`, never reimplement the math. |
-| `sparklinePointCoords` / `sparklineGeometry` | `display/sparkline.go` | Value→pixel projection and min/max bounds (BarChart and Sparkline share it). |
-| `calendarMonthNavLink` + `…Action`/`…URL`/`…Href` | `forms/calendar.templ`, `forms/calendar_nav.go` | Month navigation: href fallback + Wire cloning with `{year}`/`{month}` substitution. |
-| `browser` / `distserver` | `visualtest/internal/` | Capture tools (`ogshot`, `shots`, `siteshots`) — pinned Chromium + static-dist server. |
-| `feedbackStyleSet` / `lookupFeedbackStyle` / `feedbackIconName` / `dismissScript` | `feedback/styles.go` | Any new alert/toast-like surface. |
-| `cardShellClass` / `mutedTextClass` | `display/shared.go` (re-exported) | Card shells and secondary text. |
-| Motion constants (`transitionFast`, `transitionNormal`, `transitionColors`, `transitionTransform`) | `display/shared.go` | Any transition — never inline timing strings. |
-
-## Per-component testing checklist
-
-“Assertion tests only” is not acceptable — that is how `layout.Script` became the
-worst-tested component in the library.
-
-```
-[ ] golden_test.go      — exact rendered HTML vs .golden snapshot
-[ ] a11y_test.go        — ARIA, roles, keyboard, motion-reduce, screen-reader text
-[ ] rtl_check           — no physical properties (covered by TestRTLLogicalProperties)
-[ ] bdd_test.go         — user-visible behaviour, not markup
-[ ] edge_cases_test.go  — empty inputs, unknown enum values, ID collisions
-[ ] example_test.go     — godoc ExampleXxx() compiles and renders
-[ ] snapshot_test.go    — broader composition snapshot
-[ ] coverage_*_test.go  — private helpers and branches
-```
-
-Golden tests use `utils/golden.Assert(t, name, got)` with class sorting + `EnsureID`
-normalisation; `-update` regenerates after an intentional change (review the diff).
+Shared-helper inventory, the full per-component test checklist, and every decision tree live in
+`references/authoring-guide.md`; the complete guard matrix is in `references/guard-tests.md`.
 
 ## Repo-wide guard tests
 
@@ -549,64 +361,6 @@ matrix is in `references/guard-tests.md`; the ones authors trip most often:
 **When you add a cross-cutting rule, add a guard test rather than a comment.** The
 auto-commit daemon bypasses the hook and never runs `go test`, so CI is the only reliable
 enforcement layer.
-
-### Visual regression (`visualtest/`, separate module)
-
-Chromedp pixel checks in their own module so browsers never enter the consumer dependency
-graph. Supports `State` (`Hover`/`Focus`/`Click`/`Context`), `FullViewport` (top-layer
-overlays), and `WaitSelector`. Regenerate goldens ONLY via `nix run .#visual -- -update`
-(a bare `go test -update` there silently skips without the nix browser env). Load-flake
-signature: light AND dark site goldens ~100% while demo routes pass → rerun, never `-update`.
-
-## Decision trees
-
-### Map lookup vs if-branch for a variant
-
-- **Pure class/style data** → map + `utils.Lookup(map, key, fallback)`
-  (`badgeStyleMap`, `cardPaddingLookup`, `spinnerSizeLookup`, `gridColsLookup`, …).
-- **Structural DOM differences** (TabsVariant, DropdownPosition, TrendDirection) → `if`
-  branch inside the template. Maps are for data, not for choosing which markup to emit.
-- **Enum validation** → map + fallback (graceful); `InputType`, `ButtonHTMLType`, `FormMethod`
-  fall back to HTML-spec defaults; only the icons path-data check may panic.
-
-### `utils.Class()` vs `utils.Lookup()`
-
-- Merging class strings → `utils.Class("a", b)` (tailwind-merge resolves conflicts).
-- Selecting a style variant → `utils.Lookup(map, key, fallback)`.
-- Both → look up first, then merge.
-
-### When to introduce a typed enum
-
-Any field with a fixed set of visual/behavioural variants becomes `type X string` + consts +
-a `Default` constant + `IsValid()` + a test. Never accept a raw string for a closed set —
-that reopens the invalid state you are trying to prevent.
-
-### When to add an icon
-
-Add the path to `iconPathData` in `icons/icon_paths.go` (multi-path icons use `|`;
-`iconPaths()` panics on a stray separator). `allIconNames()` derives automatically — never
-hand-maintain a second list. Update the icon count in the docs in the same commit.
-
-### When interactivity needs JavaScript
-
-1. Native HTML first (`<details>`, `<form>`, `:target`/`:checked`). If yes, stop.
-2. One inline script through `utils.ScriptComponent`, guarded by a global singleton flag
-   (`window.tcXxxAttached`), event delegation on `document`, Escape/focus restore/click-outside.
-3. Escape interpolated IDs with `strconv.Quote()` (see `validateDropdownID`).
-
-Full ladder: `docs/javascript-guide.md`; attachment rationale: ADR-0005.
-
-### When to generate an ID
-
-`utils.EnsureID("prefix", props.ID)` — returns the consumer's id unchanged, else
-`tc-<prefix>-<16 hex>` from `crypto/rand`. Never `time.Now()` alone.
-
-### Theming decisions
-
-- Emit standard Tailwind utilities (`bg-blue-600`, `text-gray-900`).
-- Consumers override via `@theme { --color-blue-600: #...; }` — do NOT add `Variant`/`Color`
-  props for theming; that defeats the CSS-variable model.
-- Semantic aliases live in `templ-components-theme.css` (`bg-tc-primary`, `text-tc-danger`).
 
 ## Mandatory conventions
 
@@ -701,17 +455,20 @@ Load only when the task needs it.
 ## Installing this skill into Crush
 
 The skill lives in the repo so it versions with the code. Crush auto-loads only from
-`~/.config/crush/skills/`, so install it once with a symlink from the repo root:
+`~/.config/crush/skills/`, so install it once from the repo root — link the entry point AND
+`references/`, because a link to `SKILL.md` alone leaves every reference path dangling:
 
 ```bash
 mkdir -p ~/.config/crush/skills/templ-components
-ln -sf "$PWD/skill/SKILL.md" ~/.config/crush/skills/templ-components/SKILL.md
+ln -sfn "$PWD/skill/SKILL.md"   ~/.config/crush/skills/templ-components/SKILL.md
+ln -sfn "$PWD/skill/references" ~/.config/crush/skills/templ-components/references
 ```
 
-The `references/` directory is resolved relative to the symlinked file's directory, so either
-symlink the whole skill directory (`ln -sfn "$PWD/skill" ~/.config/crush/skills/templ-components`)
-or copy `skill/` wholesale. `-f`/`-n` make both idempotent; re-run after cloning on a new
-machine. Verify the skill shows up as `templ-components` in `available_skills`.
+`-f` overwrites, `-n` treats a directory link as a file, so re-running is idempotent. Repeat
+after cloning on a new machine. Verify `templ-components` appears in `available_skills` AND
+that `references/component-catalogue.md` opens through the fan-out path — a skill whose links
+resolve in git but not on disk is the 2026-09 stale-link failure class. Symlinking the whole
+`skill/` directory as a top-level skill link is equally valid.
 
 Never point this link at the nix store (repo policy: an editable skill must resolve to a
 working checkout). The authoring norm and its guards are documented in
