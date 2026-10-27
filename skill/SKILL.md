@@ -23,6 +23,8 @@ Bundled references (read on demand, not upfront):
 | File | Use it for |
 | --- | --- |
 | `references/component-catalogue.md` | Full per-package signature tables, icons, `utils`/`utils/format`/`utils/wire` APIs |
+| `references/consumer-guide.md` | Quick start, head-tag suppression, dual-transport form, theming, compiled-CSS rule, dark-mode checklist, recipes, adoption tracking |
+| `references/authoring-guide.md` | Shared-helper inventory, full per-component test checklist, decision trees, website SSG registration |
 | `references/guard-tests.md` | Every repo-wide guard test, what it prevents, and where it lives |
 
 ---
@@ -151,8 +153,8 @@ module supplies the CSP-safe wrapper plus the dark-mode bridge (ADR-0031, tier 2
 - Consumers gitignore `*_templ.go` and generate at build time (the library commits them).
 
 Deep dive: `references/consumer-guide.md` — head-tag suppression, the dual-transport form,
-theming, the compiled-CSS artifact rule, the dark-mode checklist, recipes, adoption tracking,
-and the site's page-registration knobs.
+theming, the compiled-CSS artifact rule, the dark-mode checklist, recipes, and adoption
+tracking.
 
 # Part 2: Authoring Playbook
 
@@ -278,10 +280,13 @@ loop. A "tests pass" without the loop is not a verdict.
 4. **Test the packages you touched**, then the full per-module loop. For an intentional output
    change: `go test ./<pkg>/... -update` — the `-update` flag goes AFTER the package list
    (the go command consumes a leading `-update` as its own flag).
-5. **Lint** (`nix run .#lint`; `examples/` is excluded by `.golangci.yml`).
-6. **Keep `[Unreleased]` warm** in `CHANGELOG.md` in the same commit; `release.sh` refuses an
+5. **Recompile the CSS when classes change.** Any `templates/custom.css` edit or new class
+   string in a `.templ` requires `nix run .#css` (the demo CSS scans every templ file); a
+   stale `examples/demo/static/app.css` fails `TestCSSFreshness` in CI.
+6. **Lint** (`nix run .#lint`; `examples/` is excluded by `.golangci.yml`).
+7. **Keep `[Unreleased]` warm** in `CHANGELOG.md` in the same commit; `release.sh` refuses an
    empty section.
-7. **No new dependencies.** Allowed: `templ`, `tailwind-merge-go`, `go-error-family`
+8. **No new dependencies.** Allowed: `templ`, `tailwind-merge-go`, `go-error-family`
    (errorpage only). Anything else needs an explicit decision.
 
 ## Definition of done for a new component
@@ -407,6 +412,18 @@ enforcement layer.
   - No implicit int→string: use `strconv.Itoa` in Go helpers.
   - No bare `continue`/`break` inside template loops (v0.3.1020 leaks the word as text) —
     use if/else.
+  - NEVER import `github.com/a-h/templ` explicitly in a `.templ` file — the generator
+    auto-injects it; an explicit import is a `templ redeclared` build error.
+  - The templ LSP reports stale cross-module diagnostics: `nix run .#build` plus a fresh
+    source read are ground truth; restart the LSP when it misleads.
+- **Go directives move in lockstep:** `go 1.27` in `go.work` and every module, plus the
+  toolchain, golangci-lint, CI, and Dockerfile image pins in ONE commit (guarded by
+  `TestGoDirectiveSkew` + `TestGoWorkDirectiveMatchesRootGoMod` + `TestGoDirectivesAlignAcrossWorkspace`).
+- **`cmd/tc/_sources` is a generated mirror:** never hand-edit it, never copy `*_templ.go` into
+  it, and keep its package list in sync (`scripts/check-tc-sources-sync.sh` does the rest).
+- **Demo pages pass the nonce:** every nonce-taking component rendered in `examples/demo/`
+  gets `BaseProps.Nonce: demoNonceConst`; `nonce=""` is rejected by the demo CSP and kills the
+  script silently (`TestDemoCSPNonceIntegrity`).
 - **Auto-commit daemon:** it commits mid-session with generic messages, no tests, and can
   revert edits. After any daemon commit, verify your edits survived, `[Unreleased]` is still
   warm, and commit visual-golden PNG churn manually.
@@ -473,3 +490,9 @@ resolve in git but not on disk is the 2026-09 stale-link failure class. Symlinki
 Never point this link at the nix store (repo policy: an editable skill must resolve to a
 working checkout). The authoring norm and its guards are documented in
 `/home/lars/projects/crush-config/README.md` § "Skill fan-out: authoring norm and integrity".
+
+**Editing this skill:** keep the guard-matched counts accurate (`cd utils && GOWORK=off go
+test -run TestDocsCountDrift -count=1`), keep the references non-overlapping (catalogue =
+signatures, consumer guide = adoption, authoring guide = depth, guard tests = invariants), and
+re-read the file through the fan-out path after editing — a change that lands in git but not
+on disk is the stale-link failure class.

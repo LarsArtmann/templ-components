@@ -181,19 +181,3 @@ adopted vs hand-rolled. Keep a grep-able table in the consumer project's `AGENTS
 | `forms.Form`           | custom  | filterForm helper       |
 | `feedback.ProgressBar` | adopted | backfill.templ          |
 ```
-
-## The website SSG's page-registration knobs
-
-The site (`website/`, a Go SSG rendering through this library) has three registration points
-that must stay in sync when adding pages:
-
-- **`topLevelPages`** (`website/cmd/site/main.go`) — non-docs HTML pages; a new entry needs
-  the nav/header templates updated too.
-- **Sitemap lastmod sources** — git history over declared repo-relative paths; a page without
-  a source emits an undated sitemap entry (`writeSitemaps`).
-- **Search index** — `build.PlainText` indexes markdown docs only; top-level pages are found
-  via nav, not search (deliberate).
-
-Visual changes are pinned by `TestSiteRouteGoldens` (`docs/visual-testing.md`).
-
----

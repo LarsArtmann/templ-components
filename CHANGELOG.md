@@ -21,6 +21,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   accepted under ADR-0009's documented classes), two consecutive gate runs
   green.
 
+- **The authoring skill is now a progressive-disclosure bundle.** `skill/SKILL.md`
+  stays the entry point (498 lines, down from 964) and the depth moved into four
+  references: the complete component catalogue (including seven components and the
+  whole `charts/echarts` section the old tables omitted), the consumer guide, the
+  authoring guide, and the guard-test matrix. Stale claims were corrected along the
+  way: the root-only scope of `nix run .#test`, the six-module lint loop, the tracked
+  `.githooks` hook path, the 137 generated files, and a `RightItems` example that
+  could not compile.
+
 ### Fixed
 
 - **Crossbrowser spike lockstep restored at playwright-core 1.64.1.** The

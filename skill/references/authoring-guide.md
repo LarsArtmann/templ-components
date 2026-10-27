@@ -97,3 +97,17 @@ Full ladder: `docs/javascript-guide.md`; attachment rationale: ADR-0005.
 - Consumers override via `@theme { --color-blue-600: #...; }` — do NOT add `Variant`/`Color`
   props for theming; that defeats the CSS-variable model.
 - Semantic aliases live in `templ-components-theme.css` (`bg-tc-primary`, `text-tc-danger`).
+
+## Website SSG page registration
+
+The site (`website/`, a Go SSG rendering through this library) has three registration points
+that must stay in sync when adding pages:
+
+- **`topLevelPages`** (`website/cmd/site/main.go`) — non-docs HTML pages; a new entry needs
+  the nav/header templates updated too.
+- **Sitemap lastmod sources** — git history over declared repo-relative paths; a page without
+  a source emits an undated sitemap entry (`writeSitemaps`).
+- **Search index** — `build.PlainText` indexes markdown docs only; top-level pages are found
+  via nav, not search (deliberate).
+
+Visual changes are pinned by `TestSiteRouteGoldens` (`docs/visual-testing.md`).
