@@ -9,17 +9,17 @@ anti-patterns stay in SKILL.md because they are consulted on every change.
 
 Re-inlining these is exactly what the art-dupl gate flags.
 
-| Helper | Where | Reuse for |
-| --- | --- | --- |
-| `headingTag` | `display/shared.templ` | Title as h1–h6 (typed `HeadingTagType`, unknown → h3). Used by Card, EmptyState, CollapsibleSection. |
-| `chartSeriesGroup` | `display/chart_shared.templ` | One series' `<g>` for a new SVG chart — compose `chart_geometry.go`, never reimplement the math. |
-| `sparklinePointCoords` / `sparklineGeometry` | `display/sparkline.go` | Value→pixel projection and min/max bounds (BarChart and Sparkline share it). |
-| `calendarMonthNavLink` + `…Action`/`…URL`/`…Href` | `forms/calendar.templ`, `forms/calendar_nav.go` | Month navigation: href fallback + Wire cloning with `{year}`/`{month}` substitution. |
-| `browser` / `distserver` | `visualtest/internal/` | Capture tools (`ogshot`, `shots`, `siteshots`) — pinned Chromium + static-dist server. |
-| `feedbackStyleMap` / `feedbackStyle` / `feedbackIcon` / `feedbackRole` | `feedback/styles.go` | Any new alert/toast-like surface (shared `FeedbackType` styling). |
-| `DismissButton` | `utils/dismiss.templ` | Shared dismiss control (Alert, ErrorAlert); `data-dismiss="alert"`. |
-| `cardShellClass` / `mutedTextClass` | `display/card.templ` / `display/shared.go` | Card shells and secondary text. |
-| Motion constants (`transitionFast`, `transitionNormal`, `transitionColors`, `transitionTransform`) | `display/shared.go` | Any transition — never inline timing strings. |
+| Helper                                                                                             | Where                                           | Reuse for                                                                                            |
+| -------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `headingTag`                                                                                       | `display/shared.templ`                          | Title as h1–h6 (typed `HeadingTagType`, unknown → h3). Used by Card, EmptyState, CollapsibleSection. |
+| `chartSeriesGroup`                                                                                 | `display/chart_shared.templ`                    | One series' `<g>` for a new SVG chart — compose `chart_geometry.go`, never reimplement the math.     |
+| `sparklinePointCoords` / `sparklineGeometry`                                                       | `display/sparkline.go`                          | Value→pixel projection and min/max bounds (BarChart and Sparkline share it).                         |
+| `calendarMonthNavLink` + `…Action`/`…URL`/`…Href`                                                  | `forms/calendar.templ`, `forms/calendar_nav.go` | Month navigation: href fallback + Wire cloning with `{year}`/`{month}` substitution.                 |
+| `browser` / `distserver`                                                                           | `visualtest/internal/`                          | Capture tools (`ogshot`, `shots`, `siteshots`) — pinned Chromium + static-dist server.               |
+| `feedbackStyleMap` / `feedbackStyle` / `feedbackIcon` / `feedbackRole`                             | `feedback/styles.go`                            | Any new alert/toast-like surface (shared `FeedbackType` styling).                                    |
+| `DismissButton`                                                                                    | `utils/dismiss.templ`                           | Shared dismiss control (Alert, ErrorAlert); `data-dismiss="alert"`.                                  |
+| `cardShellClass` / `mutedTextClass`                                                                | `display/card.templ` / `display/shared.go`      | Card shells and secondary text.                                                                      |
+| Motion constants (`transitionFast`, `transitionNormal`, `transitionColors`, `transitionTransform`) | `display/shared.go`                             | Any transition — never inline timing strings.                                                        |
 
 ## Per-component testing checklist
 

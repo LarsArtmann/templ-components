@@ -145,20 +145,20 @@ generated files break every consumer.
 
 ## Recipes
 
-| Recipe | When to read |
-| --- | --- |
-| `docs/migration/play-cdn-to-tailwind-v4.md` | Migrating from Tailwind Play CDN to a CSS-first build |
-| `docs/tailwind-v4-adoption-guide.md` | Full Tailwind v4 setup with `@source` scanning |
-| `docs/recipes/server-rendered-htmx-error-feedback.md` | Wiring HTMX error feedback (toast/alert/page) |
-| `docs/recipes/error-pages.md` | Family-aware error pages: status→family, per-code copy, HTMX branch, noindex |
-| `docs/recipes/server-side-validation.md` | Dual-transport form validation round-trip |
-| `docs/recipes/horizontal-filter-bar.md` | Horizontal HTMX filter bar vs `forms.Form` |
-| `docs/recipes/sse-live-rows.md` | Append live `<tr>` over SSE — `Table.BodyID` + `hx-swap-oob` |
-| `docs/recipes/bounding-tables.md` | Cap + `ListNote`, or Pagination/LoadMore — never an unbounded table |
-| `docs/recipes/hybrid-strings-builder-rendering.md` | Rendering into a `strings.Builder` (`templ.WithChildren` escape hatch) |
-| `docs/recipes/theme-bridge.md` / `scoped-theme-bridge.md` | Remap library colors, globally or scoped |
-| `docs/icons-only-adoption.md` | Adopting just the `icons` package (CSS-agnostic) |
-| `docs/transport-wiring.md` + `docs/datastar-runtime-facts.md` | The wire contract and pinned-runtime facts |
+| Recipe                                                        | When to read                                                                 |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `docs/migration/play-cdn-to-tailwind-v4.md`                   | Migrating from Tailwind Play CDN to a CSS-first build                        |
+| `docs/tailwind-v4-adoption-guide.md`                          | Full Tailwind v4 setup with `@source` scanning                               |
+| `docs/recipes/server-rendered-htmx-error-feedback.md`         | Wiring HTMX error feedback (toast/alert/page)                                |
+| `docs/recipes/error-pages.md`                                 | Family-aware error pages: status→family, per-code copy, HTMX branch, noindex |
+| `docs/recipes/server-side-validation.md`                      | Dual-transport form validation round-trip                                    |
+| `docs/recipes/horizontal-filter-bar.md`                       | Horizontal HTMX filter bar vs `forms.Form`                                   |
+| `docs/recipes/sse-live-rows.md`                               | Append live `<tr>` over SSE — `Table.BodyID` + `hx-swap-oob`                 |
+| `docs/recipes/bounding-tables.md`                             | Cap + `ListNote`, or Pagination/LoadMore — never an unbounded table          |
+| `docs/recipes/hybrid-strings-builder-rendering.md`            | Rendering into a `strings.Builder` (`templ.WithChildren` escape hatch)       |
+| `docs/recipes/theme-bridge.md` / `scoped-theme-bridge.md`     | Remap library colors, globally or scoped                                     |
+| `docs/icons-only-adoption.md`                                 | Adopting just the `icons` package (CSS-agnostic)                             |
+| `docs/transport-wiring.md` + `docs/datastar-runtime-facts.md` | The wire contract and pinned-runtime facts                                   |
 
 ## How to know if a component already exists
 

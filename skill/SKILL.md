@@ -20,12 +20,12 @@ Two audiences, one repo:
 
 Bundled references (read on demand, not upfront):
 
-| File | Use it for |
-| --- | --- |
-| `references/component-catalogue.md` | Full per-package signature tables, icons, `utils`/`utils/format`/`utils/wire` APIs |
-| `references/consumer-guide.md` | Quick start, head-tag suppression, dual-transport form, theming, compiled-CSS rule, dark-mode checklist, recipes, adoption tracking |
-| `references/authoring-guide.md` | Shared-helper inventory, full per-component test checklist, decision trees, website SSG registration |
-| `references/guard-tests.md` | Every repo-wide guard test, what it prevents, and where it lives |
+| File                                | Use it for                                                                                                                          |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `references/component-catalogue.md` | Full per-package signature tables, icons, `utils`/`utils/format`/`utils/wire` APIs                                                  |
+| `references/consumer-guide.md`      | Quick start, head-tag suppression, dual-transport form, theming, compiled-CSS rule, dark-mode checklist, recipes, adoption tracking |
+| `references/authoring-guide.md`     | Shared-helper inventory, full per-component test checklist, decision trees, website SSG registration                                |
+| `references/guard-tests.md`         | Every repo-wide guard test, what it prevents, and where it lives                                                                    |
 
 ---
 
@@ -34,18 +34,19 @@ Bundled references (read on demand, not upfront):
 ## Component catalogue
 
 136 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)
-+ 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
-section is the index. If you're about to hand-roll something, check here first.
+
+- 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
+  section is the index. If you're about to hand-roll something, check here first.
 
 ### By use case (start here)
 
 | You're building...             | Reach for                                                                                                                                                                                                                                                                                                                                                                               |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Dashboard / metrics page**   | `AppShell`, `Container`, `Grid`, `StatCard`, `Card`, `ProgressBar`, `CircularProgress`, `SkeletonCardGrid`, `PageHeader`, `Sparkline`, `BarChart`, `LineChart`, `PieChart`, `AreaChart`, `PolledRegion`                                                                                                                                                                                  |
+| **Dashboard / metrics page**   | `AppShell`, `Container`, `Grid`, `StatCard`, `Card`, `ProgressBar`, `CircularProgress`, `SkeletonCardGrid`, `PageHeader`, `Sparkline`, `BarChart`, `LineChart`, `PieChart`, `AreaChart`, `PolledRegion`                                                                                                                                                                                 |
 | **Kanban / pipeline board**    | `KanbanBoard` — HTML5 drag-and-drop + keyboard move buttons, `Wire` move exchange (htmx or Datastar), `ParseKanbanMove` server helper, per-column `Action` add-card slot and `Tone` status dot                                                                                                                                                                                          |
-| **List / table page**          | `Table` (`Flush` for card nesting, `CellPadding` for compact rows, `Table.Body` for custom rows, `Row.Href` for clickable rows), `Badge`, `StatusBadge`/`StatusBadgeWith`, `Avatar`, `Pagination`, `LoadMore`, `EndOfList`, `EmptyState`, `DataState` (disabled→unavailable→empty→content ladder), `ListNote`                                                                             |
-| **Detail page**                | `Split`, `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `SectionHeading`, `DateRange`, `Breadcrumbs`                                                                                                                                                                                                                                                                |
-| **Settings / data-entry form** | `Form`, `Input`, `Select` (supports `Groups` for optgroups), `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`, `DirtyGuard`                                                                                                                                                                                                                                         |
+| **List / table page**          | `Table` (`Flush` for card nesting, `CellPadding` for compact rows, `Table.Body` for custom rows, `Row.Href` for clickable rows), `Badge`, `StatusBadge`/`StatusBadgeWith`, `Avatar`, `Pagination`, `LoadMore`, `EndOfList`, `EmptyState`, `DataState` (disabled→unavailable→empty→content ladder), `ListNote`                                                                           |
+| **Detail page**                | `Split`, `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `SectionHeading`, `DateRange`, `Breadcrumbs`                                                                                                                                                                                                                                                                 |
+| **Settings / data-entry form** | `Form`, `Input`, `Select` (supports `Groups` for optgroups), `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`, `DirtyGuard`                                                                                                                                                                                                                                          |
 | **Filter bar (horizontal)**    | `FilterBar` (auto-submit GET form, composite change trigger, Reset, noscript Apply, sticky opt-in, `Wire`) — children are plain controls; recipe `docs/recipes/horizontal-filter-bar.md` documents the footguns; `FilterChips` (zero-JS link-based chips, `aria-current`, `FilterToggleHref` query builder); `SegmentedControl` (segmented single-select — radio or link mode, zero JS) |
 | **Feedback / notifications**   | `Toast`, `ToastContainer`, `Alert`, `Spinner`, `ProgressBar`, `CircularProgress`, `GlobalErrorHandling`                                                                                                                                                                                                                                                                                 |
 | **Navigation**                 | `Nav`, `SimpleNav`, `SidebarNav`, `Breadcrumbs`, `Pagination`, `MobileMenu`                                                                                                                                                                                                                                                                                                             |
@@ -246,20 +247,20 @@ separate FULL pre-push verify.
 Build automation lives in `flake.nix`, not a Makefile. These wrap the pinned `templ`
 (v0.3.1020, matching every `go.mod`) so generation is reproducible.
 
-| Command | What it does |
-| --- | --- |
-| `nix develop` | Dev shell with the pinned templ, Go, golangci-lint, tailwind |
-| `nix run .#build` | Regenerate `*_templ.go` + `go build ./...` |
-| `nix run .#test` | `go test ./... -count=1 -race` — ROOT module only (see above) |
-| `nix run .#lint` | golangci-lint across all 7 modules + actionlint |
-| `nix run .#verify` | generate + build + test + lint |
-| `nix run .#coverage` | Coverage profile + per-module summary |
-| `nix run .#css` | Recompile `examples/demo/static/app.css` (Tailwind v4, minified) |
-| `nix run .#visual` | Pixel-level visual regression (headless Chromium) |
-| `nix run .#visual -- -update` | Regenerate visual goldens (the ONLY sanctioned way) |
-| `nix run .#shots` | Full-page demo screenshots for manual inspection |
-| `nix run .#crossbrowser` | 3-engine Playwright diagnostics — findings only, never gates |
-| `scripts/release.sh <ver> "<summary>"` | One-commit release cut (see `docs/release-checklist.md`) |
+| Command                                | What it does                                                     |
+| -------------------------------------- | ---------------------------------------------------------------- |
+| `nix develop`                          | Dev shell with the pinned templ, Go, golangci-lint, tailwind     |
+| `nix run .#build`                      | Regenerate `*_templ.go` + `go build ./...`                       |
+| `nix run .#test`                       | `go test ./... -count=1 -race` — ROOT module only (see above)    |
+| `nix run .#lint`                       | golangci-lint across all 7 modules + actionlint                  |
+| `nix run .#verify`                     | generate + build + test + lint                                   |
+| `nix run .#coverage`                   | Coverage profile + per-module summary                            |
+| `nix run .#css`                        | Recompile `examples/demo/static/app.css` (Tailwind v4, minified) |
+| `nix run .#visual`                     | Pixel-level visual regression (headless Chromium)                |
+| `nix run .#visual -- -update`          | Regenerate visual goldens (the ONLY sanctioned way)              |
+| `nix run .#shots`                      | Full-page demo screenshots for manual inspection                 |
+| `nix run .#crossbrowser`               | 3-engine Playwright diagnostics — findings only, never gates     |
+| `scripts/release.sh <ver> "<summary>"` | One-commit release cut (see `docs/release-checklist.md`)         |
 
 The single done-check for component work: **`nix run .#verify`**, then the per-module test
 loop. A "tests pass" without the loop is not a verdict.
@@ -298,8 +299,7 @@ Beyond the code, a component is not finished until all of these land in the SAME
 - The Props type registered in `internal/contract/component_props_test.go` (`componentTypes()`),
   enforced by `TestAllComponentPropsSatisfyInterface`.
 - **Counts updated**: the per-package line here (`#### \`display\` — 52 components`),
-  the README catalogue heading, and FEATURES where applicable — `TestDocsCountDrift` reads
-  `skill/SKILL.md` directly and fails CI on a stale number.
+  the README catalogue heading, and FEATURES where applicable —`TestDocsCountDrift`reads`skill/SKILL.md` directly and fails CI on a stale number.
 - If the component is wired (HTMX/Datastar/JS), an e2e task in `visualtest/` — string-proven
   ≠ browser-proven.
 - If it adds a closed-set enum, `IsValid()` plus its test in the same commit.

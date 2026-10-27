@@ -12,60 +12,60 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 
 #### `display` — 52 components
 
-| Component            | Signature                                           | One-liner                                                                                                                                                               |
-| -------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Card`               | `Card(props CardProps)`                             | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`, sharp corners by default (`rounded-*` via `Class`, `.tc-squircle` opt-in) |
-| `SimpleCard`         | `SimpleCard(props SimpleCardProps)`                 | Minimal card — children only, no header/footer                                                                                                                          |
-| `StatCard`           | `StatCard(props StatCardProps)`                     | Dashboard metric card with value, label, change, trend, icon, semantic `Tone` (`StatTone`: blue/green/yellow/red/purple), optional `Href` link                          |
-| `Grid`               | `Grid(props GridProps)`                             | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerAware` (constructor default `true`; struct-literal zero value = viewport)                          |
-| `Badge`              | `Badge(props BadgeProps)`                           | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                                                                                                     |
-| `StatusBadge`        | `StatusBadge(status string)`                        | Auto-maps ~20 status strings to badge types                                                                                                                             |
-| `StatusBadgeWith`    | `StatusBadgeWith(mapper StatusBadgeMapper, status string)` | Same badge through YOUR domain status→type mapper (nil = built-in mapping)                                                                                       |
-| `Button`             | `Button(props ButtonProps)`                         | Button or link button — variants, sizes, icons, HTMX attrs                                                                                                              |
-| `Avatar`             | `Avatar(props AvatarProps)`                         | Image avatar with fallback initials, sizes, status dot                                                                                                                  |
-| `Modal`              | `Modal(props ModalProps)`                           | Native `<dialog>` overlay — showModal(), focus trap, Escape, backdrop, 5 sizes                                                                                          |
-| `Drawer`             | `Drawer(props DrawerProps)`                         | Native `<dialog>` side panel — slide animation, focus trap, Escape, backdrop                                                                                            |
-| `Dropdown`           | `Dropdown(props DropdownProps)`                     | Button-triggered menu — links, buttons, keyboard nav                                                                                                                    |
-| `Tooltip`            | `Tooltip(props TooltipProps)`                       | Hover tooltip — 6 positions (logical start/end + legacy physical left/right), arrow, touch support                                                                      |
-| `Popover`            | `Popover(props PopoverProps)`                       | Button-triggered floating panel — 6 positions (logical start/end + legacy physical left/right), arbitrary content, click-outside dismiss                                |
-| `Accordion`          | `Accordion(props AccordionProps)`                   | Collapsible sections — open/closed state, keyboard nav                                                                                                                  |
-| `Table`              | `Table(props TableProps)`                           | Responsive data table — striping, hover, caption, bordered, `Body` slot, `Row.Href`, `Flush` (card nesting), `CellPadding` (comfortable/compact)                        |
-| `DataTable`          | `DataTable(props DataTableProps)`                   | Data table with integrated sort management, pagination, empty-state — composes `Table` internally                                                                       |
-| `Tabs`               | `Tabs(props TabsProps)`                             | Tabbed interface — underline/pills, optional client-side JS, `Wire` for server-side tab switching (`{tab}` URL placeholder)                                             |
-| `EmptyState`         | `EmptyState(props EmptyStateProps)`                 | Empty-data placeholder — icon, title, description, action                                                                                                               |
-| `SimpleEmptyState`   | `SimpleEmptyState(message string)`                  | Minimal empty state — text only                                                                                                                                         |
-| `PageHeader`         | `PageHeader(props PageHeaderProps)`                 | Page title block — title, subtitle, breadcrumb, action slots                                                                                                            |
-| `SectionHeading`     | `SectionHeading(props SectionHeadingProps)`         | Section-level h1–h6 with typed level, alignment, subtitle, print-safe breaks (content headings, not the page title)                                                   |
-| `DefinitionList`     | `DefinitionList(props DefinitionListProps)`         | Two-column `<dl>` key/value list                                                                                                                                        |
-| `ListNote`           | `ListNote(props ListNoteProps)`                     | "Showing N of M" truncation notice; `Variant: ListNoteCount` = count-only "Showing N items." (always renders — range/list semantics)                                    |
-| `Eyebrow`            | `Eyebrow(props EyebrowProps)`                       | Small uppercase monospace overline above a title; accent color via `Class`                                                                                              |
-| `Scrollback`         | `Scrollback(props ScrollbackProps)`                 | Terminal-style log block — timestamp + tone-colored tags, CSS-only staggered entrance, reduced-motion safe, zero JS                                                     |
-| `CopyButton`         | `CopyButton(props CopyButtonProps)`                 | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant                                                                                   |
-| `RelativeTime`       | `RelativeTime(props RelativeTimeProps)`             | `<time datetime>` with relative text ("2 hours ago")                                                                                                                    |
-| `DateRange`          | `DateRange(props DateRangeProps)`                   | Inline `<time>` range — configurable Go layout, "Present" for an open end, one date when start == end                                                                     |
-| `CountBadge`         | `CountBadge(props CountBadgeProps)`                 | Icon + notification count overlay — overflow "N+"                                                                                                                       |
-| `DefinitionGrid`     | `DefinitionGrid(props DefinitionGridProps)`         | Responsive grid of term-detail cards, `ContainerAware`                                                                                                                  |
-| `Image`              | `Image(props ImageProps)`                           | Lazy-loaded `<img>` with CSP-safe fallback, `SrcSet`/`Sizes` for responsive delivery, `Placeholder` (zero-JS blur-up), optional `Rounded`                               |
-| `HoverCard`          | `HoverCard(props HoverCardProps)`                   | CSS-only hover-activated card — 4 positions, focus-within support                                                                                                       |
-| `ContextMenu`        | `ContextMenu(props ContextMenuProps)`               | Right-click context menu — CSP-safe JS, role=menu, Escape/click-outside dismiss                                                                                         |
-| `Carousel`           | `Carousel(props CarouselProps)`                     | Slide carousel with prev/next arrows and dot indicators                                                                                                                 |
-| `KanbanBoard`        | `KanbanBoard(props KanbanBoardProps)`               | Dual-transport kanban — drag-and-drop + keyboard moves via one hidden form, per-column `Action` add-card slot, `Tone` status dot (`KanbanTone`), read-only without Wire |
-| `Sparkline`          | `Sparkline(props SparklineProps)`                   | Pure SVG mini line chart — trend visualization, `Filled`, `AriaLabel`, customizable dims                                                                                |
-| `BarChart`           | `BarChart(props BarChartProps)`                     | CSS bar chart (horizontal/vertical) — per-bar colors, links, value formatting, empty state                                                                              |
-| `ExternalLink`       | `ExternalLink(props ExternalLinkProps)`             | Safe off-site link — `target="_blank" rel="noopener"`, URL-sanitized href, optional arrow icon                                                                          |
-| `CollapsibleSection` | `CollapsibleSection(props CollapsibleSectionProps)` | Native `<details>/<summary>` — configurable heading, open/closed default, optional `StorageKey` for localStorage persistence, chevron rotation                          |
-| `CommandPalette`     | `CommandPalette(props CommandPaletteProps)`         | ⌘K command palette — native `<dialog>`, client-side filter over server-rendered groups, link or `Wire` selection, arrow/Enter navigation                                |
-| `Heatmap`            | `Heatmap(props HeatmapProps)`                       | CSS grid heatmap — row/column labels, opacity-based coloring, peak highlighting, tooltips, empty state                                                                  |
-| `LineChart`          | `LineChart(props LineChartProps)`                   | Pure SVG line chart — axes, gridlines, multi-series, dots, legend, linear/smooth styles, ARIA. Zero JS (ADR-0031)                                                       |
-| `PieChart`           | `PieChart(props PieChartProps)`                     | Pure SVG pie/donut chart — arc paths, external labels, legend, center label, custom colors, ARIA. Zero JS                                                               |
-| `AreaChart`          | `AreaChart(props AreaChartProps)`                   | Pure SVG area chart — filled areas, multi-series, fill opacity, smooth curves, ARIA. Zero JS                                                                            |
-| `CodeBlock`          | `CodeBlock(props CodeBlockProps)`                   | Copyable code display — block (figure+pre/code, language/label header) or compact-ID variant, integrated CopyButton, HTML-escaped                                       |
-| `DataState`          | `DataState(props DataStateProps)`                   | Honesty ladder — Content (children) / Empty / Unavailable / Disabled; composes EmptyState, per-state default icons                                                      |
-| `StatusDot`          | `StatusDot(props StatusDotProps)`                   | Colored status dot — 5 tones, optional pulse ring (motion-reduce safe), sr-only Label for a11y                                                                          |
-| `LivePill`           | `LivePill(props LivePillProps)`                     | Dot+text status pill — the Live / Reconnecting / Paused connection indicator shape                                                                                      |
-| `SegmentBar`         | `SegmentBar(props SegmentBarProps)`                 | Stacked proportion bar + legend — flex-grow proportions, deterministic label-keyed palette, `Color` override, role=img on the bar + real legend list                    |
-| `Lightbox`           | `Lightbox(props LightboxProps)`                     | Native-dialog image viewer — thumbnails or trigger button, prev/next, rotate, zoom, captions; CSP-safe singleton script                                                 |
-| `Prose`              | `Prose(props ProseProps)`                           | Longform-content container — `.tc-prose` descendant styling for rendered markdown (headings/lists/quotes/code/tables/images), typed `ProseSize`, dark+RTL safe          |
+| Component            | Signature                                                  | One-liner                                                                                                                                                               |
+| -------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Card`               | `Card(props CardProps)`                                    | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`, sharp corners by default (`rounded-*` via `Class`, `.tc-squircle` opt-in) |
+| `SimpleCard`         | `SimpleCard(props SimpleCardProps)`                        | Minimal card — children only, no header/footer                                                                                                                          |
+| `StatCard`           | `StatCard(props StatCardProps)`                            | Dashboard metric card with value, label, change, trend, icon, semantic `Tone` (`StatTone`: blue/green/yellow/red/purple), optional `Href` link                          |
+| `Grid`               | `Grid(props GridProps)`                                    | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerAware` (constructor default `true`; struct-literal zero value = viewport)                            |
+| `Badge`              | `Badge(props BadgeProps)`                                  | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                                                                                                     |
+| `StatusBadge`        | `StatusBadge(status string)`                               | Auto-maps ~20 status strings to badge types                                                                                                                             |
+| `StatusBadgeWith`    | `StatusBadgeWith(mapper StatusBadgeMapper, status string)` | Same badge through YOUR domain status→type mapper (nil = built-in mapping)                                                                                              |
+| `Button`             | `Button(props ButtonProps)`                                | Button or link button — variants, sizes, icons, HTMX attrs                                                                                                              |
+| `Avatar`             | `Avatar(props AvatarProps)`                                | Image avatar with fallback initials, sizes, status dot                                                                                                                  |
+| `Modal`              | `Modal(props ModalProps)`                                  | Native `<dialog>` overlay — showModal(), focus trap, Escape, backdrop, 5 sizes                                                                                          |
+| `Drawer`             | `Drawer(props DrawerProps)`                                | Native `<dialog>` side panel — slide animation, focus trap, Escape, backdrop                                                                                            |
+| `Dropdown`           | `Dropdown(props DropdownProps)`                            | Button-triggered menu — links, buttons, keyboard nav                                                                                                                    |
+| `Tooltip`            | `Tooltip(props TooltipProps)`                              | Hover tooltip — 6 positions (logical start/end + legacy physical left/right), arrow, touch support                                                                      |
+| `Popover`            | `Popover(props PopoverProps)`                              | Button-triggered floating panel — 6 positions (logical start/end + legacy physical left/right), arbitrary content, click-outside dismiss                                |
+| `Accordion`          | `Accordion(props AccordionProps)`                          | Collapsible sections — open/closed state, keyboard nav                                                                                                                  |
+| `Table`              | `Table(props TableProps)`                                  | Responsive data table — striping, hover, caption, bordered, `Body` slot, `Row.Href`, `Flush` (card nesting), `CellPadding` (comfortable/compact)                        |
+| `DataTable`          | `DataTable(props DataTableProps)`                          | Data table with integrated sort management, pagination, empty-state — composes `Table` internally                                                                       |
+| `Tabs`               | `Tabs(props TabsProps)`                                    | Tabbed interface — underline/pills, optional client-side JS, `Wire` for server-side tab switching (`{tab}` URL placeholder)                                             |
+| `EmptyState`         | `EmptyState(props EmptyStateProps)`                        | Empty-data placeholder — icon, title, description, action                                                                                                               |
+| `SimpleEmptyState`   | `SimpleEmptyState(message string)`                         | Minimal empty state — text only                                                                                                                                         |
+| `PageHeader`         | `PageHeader(props PageHeaderProps)`                        | Page title block — title, subtitle, breadcrumb, action slots                                                                                                            |
+| `SectionHeading`     | `SectionHeading(props SectionHeadingProps)`                | Section-level h1–h6 with typed level, alignment, subtitle, print-safe breaks (content headings, not the page title)                                                     |
+| `DefinitionList`     | `DefinitionList(props DefinitionListProps)`                | Two-column `<dl>` key/value list                                                                                                                                        |
+| `ListNote`           | `ListNote(props ListNoteProps)`                            | "Showing N of M" truncation notice; `Variant: ListNoteCount` = count-only "Showing N items." (always renders — range/list semantics)                                    |
+| `Eyebrow`            | `Eyebrow(props EyebrowProps)`                              | Small uppercase monospace overline above a title; accent color via `Class`                                                                                              |
+| `Scrollback`         | `Scrollback(props ScrollbackProps)`                        | Terminal-style log block — timestamp + tone-colored tags, CSS-only staggered entrance, reduced-motion safe, zero JS                                                     |
+| `CopyButton`         | `CopyButton(props CopyButtonProps)`                        | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant                                                                                   |
+| `RelativeTime`       | `RelativeTime(props RelativeTimeProps)`                    | `<time datetime>` with relative text ("2 hours ago")                                                                                                                    |
+| `DateRange`          | `DateRange(props DateRangeProps)`                          | Inline `<time>` range — configurable Go layout, "Present" for an open end, one date when start == end                                                                   |
+| `CountBadge`         | `CountBadge(props CountBadgeProps)`                        | Icon + notification count overlay — overflow "N+"                                                                                                                       |
+| `DefinitionGrid`     | `DefinitionGrid(props DefinitionGridProps)`                | Responsive grid of term-detail cards, `ContainerAware`                                                                                                                  |
+| `Image`              | `Image(props ImageProps)`                                  | Lazy-loaded `<img>` with CSP-safe fallback, `SrcSet`/`Sizes` for responsive delivery, `Placeholder` (zero-JS blur-up), optional `Rounded`                               |
+| `HoverCard`          | `HoverCard(props HoverCardProps)`                          | CSS-only hover-activated card — 4 positions, focus-within support                                                                                                       |
+| `ContextMenu`        | `ContextMenu(props ContextMenuProps)`                      | Right-click context menu — CSP-safe JS, role=menu, Escape/click-outside dismiss                                                                                         |
+| `Carousel`           | `Carousel(props CarouselProps)`                            | Slide carousel with prev/next arrows and dot indicators                                                                                                                 |
+| `KanbanBoard`        | `KanbanBoard(props KanbanBoardProps)`                      | Dual-transport kanban — drag-and-drop + keyboard moves via one hidden form, per-column `Action` add-card slot, `Tone` status dot (`KanbanTone`), read-only without Wire |
+| `Sparkline`          | `Sparkline(props SparklineProps)`                          | Pure SVG mini line chart — trend visualization, `Filled`, `AriaLabel`, customizable dims                                                                                |
+| `BarChart`           | `BarChart(props BarChartProps)`                            | CSS bar chart (horizontal/vertical) — per-bar colors, links, value formatting, empty state                                                                              |
+| `ExternalLink`       | `ExternalLink(props ExternalLinkProps)`                    | Safe off-site link — `target="_blank" rel="noopener"`, URL-sanitized href, optional arrow icon                                                                          |
+| `CollapsibleSection` | `CollapsibleSection(props CollapsibleSectionProps)`        | Native `<details>/<summary>` — configurable heading, open/closed default, optional `StorageKey` for localStorage persistence, chevron rotation                          |
+| `CommandPalette`     | `CommandPalette(props CommandPaletteProps)`                | ⌘K command palette — native `<dialog>`, client-side filter over server-rendered groups, link or `Wire` selection, arrow/Enter navigation                                |
+| `Heatmap`            | `Heatmap(props HeatmapProps)`                              | CSS grid heatmap — row/column labels, opacity-based coloring, peak highlighting, tooltips, empty state                                                                  |
+| `LineChart`          | `LineChart(props LineChartProps)`                          | Pure SVG line chart — axes, gridlines, multi-series, dots, legend, linear/smooth styles, ARIA. Zero JS (ADR-0031)                                                       |
+| `PieChart`           | `PieChart(props PieChartProps)`                            | Pure SVG pie/donut chart — arc paths, external labels, legend, center label, custom colors, ARIA. Zero JS                                                               |
+| `AreaChart`          | `AreaChart(props AreaChartProps)`                          | Pure SVG area chart — filled areas, multi-series, fill opacity, smooth curves, ARIA. Zero JS                                                                            |
+| `CodeBlock`          | `CodeBlock(props CodeBlockProps)`                          | Copyable code display — block (figure+pre/code, language/label header) or compact-ID variant, integrated CopyButton, HTML-escaped                                       |
+| `DataState`          | `DataState(props DataStateProps)`                          | Honesty ladder — Content (children) / Empty / Unavailable / Disabled; composes EmptyState, per-state default icons                                                      |
+| `StatusDot`          | `StatusDot(props StatusDotProps)`                          | Colored status dot — 5 tones, optional pulse ring (motion-reduce safe), sr-only Label for a11y                                                                          |
+| `LivePill`           | `LivePill(props LivePillProps)`                            | Dot+text status pill — the Live / Reconnecting / Paused connection indicator shape                                                                                      |
+| `SegmentBar`         | `SegmentBar(props SegmentBarProps)`                        | Stacked proportion bar + legend — flex-grow proportions, deterministic label-keyed palette, `Color` override, role=img on the bar + real legend list                    |
+| `Lightbox`           | `Lightbox(props LightboxProps)`                            | Native-dialog image viewer — thumbnails or trigger button, prev/next, rotate, zoom, captions; CSP-safe singleton script                                                 |
+| `Prose`              | `Prose(props ProseProps)`                                  | Longform-content container — `.tc-prose` descendant styling for rendered markdown (headings/lists/quotes/code/tables/images), typed `ProseSize`, dark+RTL safe          |
 
 #### `forms` — 26 components
 
@@ -87,7 +87,7 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `FormFieldWrapper`  | `FormFieldWrapper(props FormFieldProps)`          | Wraps inputs with label, error, help text                                                                                            |
 | `InputGroup`        | `InputGroup(props InputGroupProps)`               | Input with prefix/suffix                                                                                                             |
 | `ValidationSummary` | `ValidationSummary(props ValidationSummaryProps)` | Accessible error summary with icon, count, linked fields                                                                             |
-| `DirtyGuard`        | `DirtyGuard(props DirtyGuardProps)`               | Page-level unsaved-changes guard (`beforeunload`); forms opt in via `FormProps.DirtyGuard`                                            |
+| `DirtyGuard`        | `DirtyGuard(props DirtyGuardProps)`               | Page-level unsaved-changes guard (`beforeunload`); forms opt in via `FormProps.DirtyGuard`                                           |
 | `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | Auto-submit select for filter bars — HTMX-native or dual-transport via `Wire`                                                        |
 | `FilterInput`       | `FilterInput(props FilterInputProps)`             | Debounced dual-transport search input — `<search>` form, auto-submits as you type (`Wire` + `DebounceMS`)                            |
 | `FilterBar`         | `FilterBar(props FilterBarProps)`                 | Horizontal auto-submit filter row — GET form, composite change trigger, Reset, noscript Apply, sticky opt-in, `Wire` dual-transport  |
@@ -190,46 +190,46 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 
 #### `charts/echarts` — 2 components (opt-in module)
 
-| Component   | Signature                        | One-liner                                                     |
-| ----------- | -------------------------------- | ------------------------------------------------------------- |
+| Component   | Signature                         | One-liner                                                                        |
+| ----------- | --------------------------------- | -------------------------------------------------------------------------------- |
 | `SDKScript` | `SDKScript(props SDKScriptProps)` | Loads the Apache ECharts runtime — versioned CDN, self-host via `Src`, CSP nonce |
-| `EChart`    | `EChart(props EChartsProps)`      | go-echarts `RenderSnippet()` element + init script, optional dark-mode bridge |
+| `EChart`    | `EChart(props EChartsProps)`      | go-echarts `RenderSnippet()` element + init script, optional dark-mode bridge    |
 
 No `go-echarts` import: the consumer produces the snippet; this module ships only the
 CSP-safe wrapper and the dark-mode bridge (ADR-0031, tier 2).
 
 #### `icons` — 102 icons + 14 functions
 
-| Function                                        | One-liner                                                      |
-| ----------------------------------------------- | -------------------------------------------------------------- |
-| `Icon(name, class)`                             | Inline SVG icon by name (101 path icons + Spinner)             |
-| `IconRTL(name, class)`                          | Direction-mirrored variant for RTL layouts                     |
-| `IconWithStrokeWidth(name, class, strokeWidth)` | Same, custom stroke width (default 1.5)                        |
-| `IconPathData(name) []string`                   | Raw path data for custom SVG wrapper                           |
-| `IconPathJS(name) string`                       | Path data formatted for JS injection                           |
-| `Render(icon CustomIcon, class)`                | Render a consumer-provided icon (arbitrary viewBox/paths/fill) |
-| `AnimatedIcon(name, class)`                     | Icon with hover animation (default per-icon)                   |
-| `AnimatedIconWithAnimation(name, anim, class)`  | Icon with explicit animation preset                            |
-| `AnimatedIconRTL(name, class)`                  | Hover-animated icon, RTL-mirrored                              |
-| `AnimatedIconWithAnimationRTL(name, anim, class)` | Hover animation with explicit preset, RTL-mirrored           |
-| `DefaultAnimation(name) Animation`              | Get default animation for an icon                              |
-| `AllAnimations() []Animation`                   | All 11 animation presets, sorted                               |
-| `AllIconNames() []Name`                         | Every icon name, derived from the path map                     |
-| `NameIsValid(v Name) bool`                      | Whether a name resolves to a path                              |
+| Function                                          | One-liner                                                      |
+| ------------------------------------------------- | -------------------------------------------------------------- |
+| `Icon(name, class)`                               | Inline SVG icon by name (101 path icons + Spinner)             |
+| `IconRTL(name, class)`                            | Direction-mirrored variant for RTL layouts                     |
+| `IconWithStrokeWidth(name, class, strokeWidth)`   | Same, custom stroke width (default 1.5)                        |
+| `IconPathData(name) []string`                     | Raw path data for custom SVG wrapper                           |
+| `IconPathJS(name) string`                         | Path data formatted for JS injection                           |
+| `Render(icon CustomIcon, class)`                  | Render a consumer-provided icon (arbitrary viewBox/paths/fill) |
+| `AnimatedIcon(name, class)`                       | Icon with hover animation (default per-icon)                   |
+| `AnimatedIconWithAnimation(name, anim, class)`    | Icon with explicit animation preset                            |
+| `AnimatedIconRTL(name, class)`                    | Hover-animated icon, RTL-mirrored                              |
+| `AnimatedIconWithAnimationRTL(name, anim, class)` | Hover animation with explicit preset, RTL-mirrored             |
+| `DefaultAnimation(name) Animation`                | Get default animation for an icon                              |
+| `AllAnimations() []Animation`                     | All 11 animation presets, sorted                               |
+| `AllIconNames() []Name`                           | Every icon name, derived from the path map                     |
+| `NameIsValid(v Name) bool`                        | Whether a name resolves to a path                              |
 
 #### `utils` — shared types + helpers
 
-| Function                           | One-liner                                                        |
-| ---------------------------------- | ---------------------------------------------------------------- |
-| `BaseProps`                        | Embed in every props struct — ID, Class, Attrs, AriaLabel, Nonce |
-| `ComponentProps`                   | Interface: `GetBaseProps()` / `SetBaseProps()`                   |
-| `Class(classes ...string)`         | Tailwind class merge (tailwind-merge-go, mutex-protected)        |
-| `Lookup(m, key, fallback)`         | Map lookup with fallback for style variants                      |
-| `Ternary(cond, a, b)`              | Functional ternary for templ expressions                         |
-| `EnsureID(prefix, id)`             | Auto-generate DOM-safe IDs (crypto/rand)                         |
-| `ScriptAttrs(nonce)`               | Script attrs with the omit-empty nonce rule (never `nonce=""`)   |
+| Function                                   | One-liner                                                        |
+| ------------------------------------------ | ---------------------------------------------------------------- |
+| `BaseProps`                                | Embed in every props struct — ID, Class, Attrs, AriaLabel, Nonce |
+| `ComponentProps`                           | Interface: `GetBaseProps()` / `SetBaseProps()`                   |
+| `Class(classes ...string)`                 | Tailwind class merge (tailwind-merge-go, mutex-protected)        |
+| `Lookup(m, key, fallback)`                 | Map lookup with fallback for style variants                      |
+| `Ternary(cond, a, b)`                      | Functional ternary for templ expressions                         |
+| `EnsureID(prefix, id)`                     | Auto-generate DOM-safe IDs (crypto/rand)                         |
+| `ScriptAttrs(nonce)`                       | Script attrs with the omit-empty nonce rule (never `nonce=""`)   |
 | `ScriptComponent(nonce, script, errLabel)` | The canonical CSP-safe inline-script writer for custom scripts   |
-| `Version`                          | Library version string (matches CHANGELOG)                       |
+| `Version`                                  | Library version string (matches CHANGELOG)                       |
 
 Sibling helper packages: `utils/svg` (`FillIcon`, `SpinnerSVG`, shared path constants),
 `utils/tone` (canonical `Tone`/`Hue` color language), `utils/cdn` (pinned runtime URLs),
