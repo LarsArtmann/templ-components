@@ -216,6 +216,7 @@ func TestRelativeTimeBehavior(t *testing.T) {
 
 	t.Run("EmptyText is ignored for non-zero Time", func(t *testing.T) {
 		t.Parallel()
+
 		ts := time.Date(2025, 1, 15, 10, 30, 0, 0, time.UTC)
 		output := utils.Render(t, RelativeTime(RelativeTimeProps{
 			Time:      ts,

@@ -165,6 +165,13 @@
                     export GOEXPERIMENT=jsonv2
                     find . -name '*_templ.go' -print0 | xargs -0 rm
                     templ generate ./...
+                    # Submodules regenerate from INSIDE with GOWORK=off: a
+                    # root-only generate writes repo-root-relative FileName
+                    # metadata into them (the corruption class
+                    # TestGeneratedFileNameRoots guards against).
+                    for mod in utils icons errorpage charts/echarts datastar htmx visualtest website; do
+                      (cd "$mod" && GOWORK=off templ generate ./...)
+                    done
                     go build ./...
                     echo "Build successful."
                   '';
@@ -188,6 +195,12 @@
                     echo "==> Regenerating templ..."
                     find . -name '*_templ.go' -print0 | xargs -0 rm
                     templ generate ./...
+                    # Submodules regenerate from INSIDE with GOWORK=off (see
+                    # the build app note: root-only generate corrupts their
+                    # FileName metadata; TestGeneratedFileNameRoots guards).
+                    for mod in utils icons errorpage charts/echarts datastar htmx visualtest website; do
+                      (cd "$mod" && GOWORK=off templ generate ./...)
+                    done
                     echo "==> Building (workspace)..."
                     go build ./...
                     echo "==> Testing (workspace)..."
