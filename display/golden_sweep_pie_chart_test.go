@@ -52,7 +52,51 @@ func TestGoldenSweepPieChart(t *testing.T) {
 				{Label: "All", Value: 100},
 			},
 		}))},
+		// The documented defaults (labels external, legend on) via the
+		// constructor — external labels had no golden coverage at all.
+		{Name: "pie_chart_default_props_labels", HTML: utils.Render(t, PieChart(func() PieChartProps {
+			props := DefaultPieChartProps()
+			props.AriaLabel = "Traffic sources"
+
+			props.Slices = slices
+
+			return props
+		}()))},
 	})
+}
+
+// TestPieChartZeroLabelModeRendersExternalLabels pins the struct-literal
+// zero-value contract: a consumer setting ShowLabels: true on a bare
+// PieChartProps{...} literal (LabelMode left at its zero value) must get the
+// documented default PieChartLabelExternal labels, not silence. The zero
+// value of LabelMode previously failed the External equality check and
+// suppressed every label.
+func TestPieChartZeroLabelModeRendersExternalLabels(t *testing.T) {
+	t.Parallel()
+
+	html := utils.Render(t, PieChart(PieChartProps{
+		ShowLabels: true,
+		Slices: []PieChartSlice{
+			{Label: "Direct", Value: 45},
+			{Label: "Organic", Value: 30},
+			{Label: "Referral", Value: 25},
+		},
+	}))
+
+	utils.AssertContains(t, html, "Direct (45%)")
+	utils.AssertContains(t, html, "Organic (30%)")
+	utils.AssertContains(t, html, "Referral (25%)")
+
+	// LabelMode: none with ShowLabels: true still suppresses labels —
+	// an explicit opt-out must keep working.
+	html = utils.Render(t, PieChart(PieChartProps{
+		ShowLabels: true,
+		LabelMode:  PieChartLabelNone,
+		Slices: []PieChartSlice{
+			{Label: "Direct", Value: 45},
+		},
+	}))
+	utils.AssertNotContains(t, html, "Direct (")
 }
 
 func TestPieChartAriaLabel(t *testing.T) {

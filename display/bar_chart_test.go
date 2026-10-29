@@ -3,6 +3,7 @@ package display
 import (
 	"strconv"
 	"testing"
+	"unicode/utf8"
 
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -188,11 +189,20 @@ func TestTruncateLabel(t *testing.T) {
 		{"short", 10, "short"},
 		{"exactly 10", 10, "exactly 10"},
 		{"this is too long", 10, "this is t…"},
+		// Regression: byte-slicing split multibyte runes, emitting invalid
+		// UTF-8 (mojibake) for international bar labels. Truncation must be
+		// rune-safe and still end with the ellipsis.
+		{"aÜÜÜÜÜÜ", 6, "aÜÜÜÜ…"},
+		{"Änderungsübersicht", 10, "Änderungs…"},
 	}
 	for _, tt := range tests {
 		got := truncateLabel(tt.input, tt.maxLen)
 		if got != tt.want {
 			t.Errorf("truncateLabel(%q, %d) = %q, want %q", tt.input, tt.maxLen, got, tt.want)
+		}
+
+		if !utf8.ValidString(got) {
+			t.Errorf("truncateLabel(%q, %d) = %q is not valid UTF-8", tt.input, tt.maxLen, got)
 		}
 	}
 }

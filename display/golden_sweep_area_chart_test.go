@@ -1,6 +1,7 @@
 package display
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -101,4 +102,79 @@ func TestAreaChartBasePropsPropagation(t *testing.T) {
 	}))
 	utils.AssertContains(t, html, "max-w-xl")
 	utils.AssertContains(t, html, `id="area-chart"`)
+}
+
+// areaPathD extracts the d attribute of the filled area path (fill with
+// opacity, no stroke) from rendered chart HTML.
+func areaPathD(t *testing.T, html string) string {
+	t.Helper()
+
+	const marker = `fill="currentColor" fill-opacity="0.2" stroke="none"`
+
+	idx := strings.Index(html, marker)
+	if idx < 0 {
+		t.Fatalf("no area fill path in output: %s", html)
+	}
+
+	const dPrefix = `<path d="`
+
+	start := strings.LastIndex(html[:idx], dPrefix)
+	if start < 0 {
+		t.Fatalf("no path d attribute before area fill marker: %s", html)
+	}
+
+	rest := html[start+len(dPrefix):]
+
+	end := strings.Index(rest, `"`)
+	if end < 0 {
+		t.Fatalf("unterminated d attribute: %s", rest)
+	}
+
+	return rest[:end]
+}
+
+// TestAreaChartTicksStayInsidePlotDomain pins the fix for ticks rendering
+// OUTSIDE the plot area: ComputeNiceTicks intentionally covers the data
+// domain (first tick <= min, last tick >= max — pinned by the geometry
+// property test), but chartAxes projected those outer ticks using the DATA
+// range, so e.g. data 120..340 drew a "100" gridline below the x-axis (in
+// the x-label zone) and a "350" gridline above the plot top. Out-of-domain
+// ticks must not render; in-domain ticks must.
+func TestAreaChartTicksStayInsidePlotDomain(t *testing.T) {
+	t.Parallel()
+
+	html := utils.Render(t, AreaChart(AreaChartProps{
+		Series: []LineChartSeries{
+			{Name: "Users", Values: []float64{120, 180, 250, 300, 280, 340}},
+		},
+	}))
+
+	// ComputeNiceTicks(120, 340, 8) yields 100, 150, 200, 250, 300, 350:
+	// 100 and 350 are outside the data domain and must not render.
+	utils.AssertNotContains(t, html, ">100</text>")
+	utils.AssertNotContains(t, html, ">350</text>")
+
+	// In-domain ticks still render.
+	utils.AssertContains(t, html, ">150</text>")
+	utils.AssertContains(t, html, ">300</text>")
+}
+
+// TestAreaChartSmoothFillFollowsLine pins the fix for the filled area edge
+// not following a smooth (curved) line: with Style smooth the stroked line
+// used a Catmull-Rom spline while the fill below it stayed a straight
+// polyline, so the curve visibly detached from its own fill. The area path
+// must carry the same C (cubic) segments as the line.
+func TestAreaChartSmoothFillFollowsLine(t *testing.T) {
+	t.Parallel()
+
+	html := utils.Render(t, AreaChart(AreaChartProps{
+		Series: []LineChartSeries{
+			{Name: "Trend", Values: []float64{120, 180, 250, 300, 280, 340}},
+		},
+		Style: LineChartStyleSmooth,
+	}))
+
+	if d := areaPathD(t, html); !strings.Contains(d, " C ") {
+		t.Errorf("smooth area path has no curve segments (straight fill under a curved line): %s", d)
+	}
 }
