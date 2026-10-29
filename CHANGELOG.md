@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.25.1] — 2026-10-29
+
 ### Fixed
 
 - **Dashboard graphics: five rendering bugs.** (1) `display.Sparkline`
