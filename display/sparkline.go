@@ -62,11 +62,12 @@ type sparklinePoint struct {
 // must render nothing in that case (a single point can't form a line or
 // area).
 func sparklinePointCoords(values []float64, width, height int, minVal, maxVal float64) ([]sparklinePoint, bool) {
-	stepX, rangeVal, ok := sparklineGeometry(values, width, minVal, maxVal)
+	rangeVal, ok := sparklineGeometry(values, minVal, maxVal)
 	if !ok {
 		return nil, false
 	}
 
+	lastIndex := len(values) - 1
 	coords := make([]sparklinePoint, 0, len(values))
 
 	for i, v := range values {
@@ -74,8 +75,13 @@ func sparklinePointCoords(values []float64, width, height int, minVal, maxVal fl
 
 		yCoord := max(height-int(math.Round(normalized*float64(height))), 0)
 
+		// Round the PRODUCT, not the per-step advance: rounding the step
+		// first accumulated error across the series and pushed the final
+		// point past the right canvas edge (e.g. x=203 on a 200px canvas).
+		xCoord := int(math.Round(float64(i) * float64(width) / float64(lastIndex)))
+
 		coords = append(coords, sparklinePoint{
-			x: i * int(math.Round(stepX)),
+			x: xCoord,
 			y: min(yCoord, height),
 		})
 	}
@@ -131,23 +137,22 @@ func sparklineAreaPath(values []float64, width, height int, minVal, maxVal float
 	return b.String()
 }
 
-// sparklineGeometry returns the per-step X advance and value range for
-// plotting a sparkline series, normalizing the degenerate case where
-// maxVal <= minVal. Returns ok=false when fewer than 2 values are given —
-// callers must render nothing in that case (a single point can't form a
-// line or area).
-func sparklineGeometry(values []float64, width int, minVal, maxVal float64) (float64, float64, bool) {
+// sparklineGeometry returns the value range for plotting a sparkline series,
+// normalizing the degenerate case where maxVal <= minVal. Returns ok=false
+// when fewer than 2 values are given — callers must render nothing in that
+// case (a single point can't form a line or area). X projection happens in
+// sparklinePointCoords, which rounds the per-point product rather than a
+// per-step advance so the final point lands exactly on the canvas edge.
+func sparklineGeometry(values []float64, minVal, maxVal float64) (float64, bool) {
 	if len(values) < 2 {
-		return 0, 0, false
+		return 0, false
 	}
 
 	if maxVal <= minVal {
 		maxVal = minVal + 1
 	}
 
-	stepX := float64(width) / float64(len(values)-1)
-
-	return stepX, maxVal - minVal, true
+	return maxVal - minVal, true
 }
 
 // sparklineBounds returns the effective min/max for the given values,

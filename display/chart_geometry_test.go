@@ -212,6 +212,60 @@ func TestBuildAreaPath(t *testing.T) {
 	})
 }
 
+func TestBuildSmoothAreaPath(t *testing.T) {
+	t.Parallel()
+
+	t.Run("empty", func(t *testing.T) {
+		t.Parallel()
+
+		if got := BuildSmoothAreaPath(nil, 100); got != "" {
+			t.Errorf("got %q, want empty", got)
+		}
+	})
+
+	t.Run("smooth curve closes to baseline", func(t *testing.T) {
+		t.Parallel()
+
+		pts := []Point{{X: 0, Y: 0}, {X: 50, Y: 50}, {X: 100, Y: 0}}
+		got := BuildSmoothAreaPath(pts, 100)
+
+		if !strings.Contains(got, " C ") {
+			t.Errorf("expected cubic curve segments, got %q", got)
+		}
+
+		if !strings.HasSuffix(got, "Z") {
+			t.Errorf("expected path to end with Z (closed), got %q", got)
+		}
+
+		if !strings.Contains(got, "100 100") {
+			t.Errorf("expected baseline Y=100 in path, got %q", got)
+		}
+	})
+
+	t.Run("fewer than 3 points falls back to the straight area", func(t *testing.T) {
+		t.Parallel()
+
+		pts := []Point{{X: 0, Y: 0}, {X: 100, Y: 100}}
+		got := BuildSmoothAreaPath(pts, 100)
+
+		if want := BuildAreaPath(pts, 100); got != want {
+			t.Errorf("two-point fallback = %q, want BuildAreaPath %q", got, want)
+		}
+	})
+
+	t.Run("fill edge matches the smooth line", func(t *testing.T) {
+		t.Parallel()
+
+		pts := []Point{{X: 0, Y: 100}, {X: 25, Y: 40}, {X: 50, Y: 60}, {X: 75, Y: 20}, {X: 100, Y: 50}}
+		area := BuildSmoothAreaPath(pts, 100)
+		line := BuildSmoothPath(pts)
+
+		if !strings.HasPrefix(area, line) {
+			t.Errorf("smooth area path must start with the exact smooth line path:\narea=%s\nline=%s", area, line)
+		}
+	})
+}
+
 func TestComputeChartRenderData_MaxTicks(t *testing.T) {
 	t.Parallel()
 

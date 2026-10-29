@@ -643,12 +643,15 @@ func barPercentHeight(value, maxVal float64) string {
 	return fmt.Sprintf("%.1f%%", math.Round(pct*percentRound)/percentRound)
 }
 
-// truncateLabel truncates a string to maxLen characters with an ellipsis.
+// truncateLabel truncates a string to maxLen runes with an ellipsis. Trimming
+// runes (not bytes) keeps multibyte labels valid UTF-8 — a byte cut split
+// characters in half and rendered mojibake for international labels.
 func truncateLabel(s string, maxLen int) string {
-	if len(s) <= maxLen {
+	runes := []rune(s)
+	if len(runes) <= maxLen {
 		return s
 	}
-	return s[:maxLen-1] + "…"
+	return string(runes[:maxLen-1]) + "…"
 }
 
 var _ = templruntime.GeneratedTemplate

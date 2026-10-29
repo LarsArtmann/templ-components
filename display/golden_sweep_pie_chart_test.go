@@ -17,6 +17,10 @@ func TestGoldenSweepPieChart(t *testing.T) {
 		{Label: "Referral", Value: 25},
 	}
 
+	defaultLabelProps := DefaultPieChartProps()
+	defaultLabelProps.AriaLabel = "Traffic sources"
+	defaultLabelProps.Slices = slices
+
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "pie_chart_basic", HTML: utils.Render(t, PieChart(PieChartProps{
 			AriaLabel: "Traffic sources",
@@ -54,14 +58,7 @@ func TestGoldenSweepPieChart(t *testing.T) {
 		}))},
 		// The documented defaults (labels external, legend on) via the
 		// constructor — external labels had no golden coverage at all.
-		{Name: "pie_chart_default_props_labels", HTML: utils.Render(t, PieChart(func() PieChartProps {
-			props := DefaultPieChartProps()
-			props.AriaLabel = "Traffic sources"
-
-			props.Slices = slices
-
-			return props
-		}()))},
+		{Name: "pie_chart_default_props_labels", HTML: utils.Render(t, PieChart(defaultLabelProps))},
 	})
 }
 

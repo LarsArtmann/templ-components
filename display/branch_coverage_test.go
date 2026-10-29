@@ -181,7 +181,7 @@ func TestSparklineDegenerateInputs(t *testing.T) {
 		t.Errorf("sparklineAreaPath(single point) = %q, want empty", got)
 	}
 
-	stepX, span, ok := sparklineGeometry([]float64{2, 2}, 20, 2, 2)
+	span, ok := sparklineGeometry([]float64{2, 2}, 2, 2)
 	if !ok {
 		t.Fatal("sparklineGeometry(two points) reported ok=false")
 	}
@@ -190,11 +190,7 @@ func TestSparklineDegenerateInputs(t *testing.T) {
 		t.Errorf("sparklineGeometry(flat range) span = %v, want > 0", span)
 	}
 
-	if stepX != 20 {
-		t.Errorf("sparklineGeometry(two points, width 20) stepX = %v, want 20", stepX)
-	}
-
-	if _, _, ok := sparklineGeometry([]float64{1}, 20, 0, 1); ok {
+	if _, ok := sparklineGeometry([]float64{1}, 0, 1); ok {
 		t.Error("sparklineGeometry(single point) reported ok=true")
 	}
 }

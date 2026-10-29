@@ -19,6 +19,7 @@ const (
 	niceStepTen           = 10.0
 	defaultTickCount      = 5
 	roundPrecisionDigits  = 10
+	tickDomainEpsilon     = 1e-9
 	splineTension         = 6.0
 	scaleRangePad         = 1.0
 	normalizedMin         = 0.0
@@ -351,6 +352,29 @@ func BuildAreaPath(points []Point, height int) string {
 	}
 
 	path := BuildPolylinePath(points)
+	baseline := float64(height)
+
+	last := points[len(points)-1]
+	first := points[0]
+
+	return fmt.Sprintf("%s L %s %s L %s %s Z",
+		path,
+		formatCoord(last.X), formatCoord(baseline),
+		formatCoord(first.X), formatCoord(baseline))
+}
+
+// BuildSmoothAreaPath builds a closed SVG path for a filled area under a
+// smooth curve: the Catmull-Rom path through the points, then down to the
+// baseline and back to the start. The fill edge matches BuildSmoothPath
+// exactly, so a smooth stroked line never detaches from its own fill.
+// Fewer than 3 points falls back to the straight polyline area (matching
+// BuildSmoothPath's own polyline fallback).
+func BuildSmoothAreaPath(points []Point, height int) string {
+	if len(points) == 0 {
+		return ""
+	}
+
+	path := BuildSmoothPath(points)
 	baseline := float64(height)
 
 	last := points[len(points)-1]
