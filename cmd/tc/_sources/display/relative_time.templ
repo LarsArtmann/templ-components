@@ -23,6 +23,15 @@ type RelativeTimeProps struct {
 	// Title, when non-empty, overrides the default title (absolute time shown
 	// on hover). Set to "" to use the formatted absolute timestamp.
 	Title string
+	// EmptyText, when non-empty and Time is the zero value, renders this text
+	// instead of a relative string: zero timestamps mean "never" (never
+	// rotated, never used), and date noise like "Jan 1, 0001" is the opposite
+	// of the information the reader needs. The empty render stays inside the
+	// <time> shell but omits the meaningless zero datetime, the default
+	// zero-date title, and data-tc-relative (the auto-refresh script would
+	// re-format the placeholder into date noise). Unset, or a non-zero Time,
+	// keeps the exact prior behavior.
+	EmptyText string
 	// AutoRefresh defaults to true — the component injects a singleton script
 	// that uses the native Intl.RelativeTimeFormat API to live-update the text
 	// every 30 seconds. Also listens to htmx:afterSettle so newly-swapped
@@ -49,20 +58,28 @@ func DefaultRelativeTimeProps() RelativeTimeProps {
 //	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt, AutoRefresh: false}) // static
 templ RelativeTime(props RelativeTimeProps) {
 	{{
+		empty := props.Time.IsZero() && props.EmptyText != ""
 		now := props.Now
 		if now.IsZero() {
 			now = time.Now()
 		}
-		relative := formatRelativeTime(props.Time, now)
+		text := formatRelativeTime(props.Time, now)
 		title := props.Title
-		if title == "" {
+		if title == "" && !empty {
 			title = props.Time.Format("Jan 2, 2006 3:04 PM MST")
+		}
+		if empty {
+			text = props.EmptyText
 		}
 	}}
 	<time
-		datetime={ props.Time.Format(time.RFC3339) }
-		title={ title }
-		if props.AutoRefresh {
+		if !empty {
+			datetime={ props.Time.Format(time.RFC3339) }
+		}
+		if title != "" {
+			title={ title }
+		}
+		if props.AutoRefresh && !empty {
 			data-tc-relative
 		}
 		if props.ID != "" {
@@ -74,9 +91,9 @@ templ RelativeTime(props RelativeTimeProps) {
 		}
 		{ props.Attrs... }
 	>
-		{ relative }
+		{ text }
 	</time>
-	if props.AutoRefresh {
+	if props.AutoRefresh && !empty {
 		@relativeTimeScriptComponent(props.Nonce)
 	}
 }

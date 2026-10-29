@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`display.RelativeTimeProps.EmptyText`** (closes #52): when set and
+  `Time` is the zero value, the component renders the placeholder text
+  ("never") instead of date noise like "Jan 1, 0001". The empty render
+  stays inside the `<time>` shell but omits the meaningless zero
+  `datetime`, the default zero-date title, and `data-tc-relative` (the
+  auto-refresh script would re-format the placeholder into date noise);
+  an explicit `Title` is still honored. Unset, or with a non-zero `Time`,
+  output is byte-identical to the previous behavior. Two consumers
+  (go-credentials-store, pbx-lens) can now delete their local
+  zero-guards.
+
 ### Changed
 
 - **Deduplication pass: two more semantic clones extracted.** The Datastar
