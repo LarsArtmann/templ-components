@@ -35,7 +35,7 @@ Bundled references (read on demand, not upfront):
 
 136 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)
 
-- 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
+- 136 templ components + 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
   section is the index. If you're about to hand-roll something, check here first.
 
 ### By use case (start here)
