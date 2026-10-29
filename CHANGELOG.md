@@ -13,8 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   point landed OUTSIDE the canvas whenever the width wasn't divisible by
   the point count (e.g. x=203 on a 200px sparkline; 7 points at width 100
   drew at x=102) — coordinates now round the per-point product, and the
-  final point lands exactly on the right edge. (2) `display.BarChart` and
-  `display.Heatmap` labels truncated by BYTE, splitting multibyte
+  final point lands exactly on the right edge. (2) `display.BarChart`
+  labels truncated by BYTE, splitting multibyte
   characters in half and emitting mojibake for international labels —
   truncation is rune-safe now. (3) `display.PieChart` suppressed every
   label for `ShowLabels: true` struct literals because the zero-value
