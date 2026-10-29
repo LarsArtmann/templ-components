@@ -2119,6 +2119,22 @@ func BuildSmoothPath(points []Point) string {
 	return b.String()
 }
 
+// closeAreaPath appends the shared baseline closure to an open area path:
+// down to the bottom of the plot area at the last point's X, back along the
+// baseline to the first point's X, and closed with Z. Both area builders end
+// with this exact closure so their output can never drift apart.
+func closeAreaPath(openPath string, points []Point, height int) string {
+	baseline := float64(height)
+
+	last := points[len(points)-1]
+	first := points[0]
+
+	return fmt.Sprintf("%s L %s %s L %s %s Z",
+		openPath,
+		formatCoord(last.X), formatCoord(baseline),
+		formatCoord(first.X), formatCoord(baseline))
+}
+
 // BuildAreaPath builds a closed SVG path for a filled area: the polyline through
 // the points, then down to the baseline and back to the start. The baseline is
 // the bottom of the plot area (y = height).
@@ -2127,39 +2143,21 @@ func BuildAreaPath(points []Point, height int) string {
 		return ""
 	}
 
-	path := BuildPolylinePath(points)
-	baseline := float64(height)
-
-	last := points[len(points)-1]
-	first := points[0]
-
-	return fmt.Sprintf("%s L %s %s L %s %s Z",
-		path,
-		formatCoord(last.X), formatCoord(baseline),
-		formatCoord(first.X), formatCoord(baseline))
+	return closeAreaPath(BuildPolylinePath(points), points, height)
 }
 
 // BuildSmoothAreaPath builds a closed SVG path for a filled area under a
-// smooth curve: the Catmull-Rom path through the points, then down to the
-// baseline and back to the start. The fill edge matches BuildSmoothPath
-// exactly, so a smooth stroked line never detaches from its own fill.
-// Fewer than 3 points falls back to the straight polyline area (matching
-// BuildSmoothPath's own polyline fallback).
+// smooth curve: the Catmull-Rom path through the points, closed along the
+// baseline. The fill edge matches BuildSmoothPath exactly, so a smooth
+// stroked line never detaches from its own fill. Fewer than 3 points falls
+// back to the straight polyline area (matching BuildSmoothPath's own
+// polyline fallback).
 func BuildSmoothAreaPath(points []Point, height int) string {
 	if len(points) == 0 {
 		return ""
 	}
 
-	path := BuildSmoothPath(points)
-	baseline := float64(height)
-
-	last := points[len(points)-1]
-	first := points[0]
-
-	return fmt.Sprintf("%s L %s %s L %s %s Z",
-		path,
-		formatCoord(last.X), formatCoord(baseline),
-		formatCoord(first.X), formatCoord(baseline))
+	return closeAreaPath(BuildSmoothPath(points), points, height)
 }
 
 // ComputeNiceTicks produces human-readable axis tick values spanning [minVal, maxVal].
