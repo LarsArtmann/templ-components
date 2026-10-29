@@ -39,7 +39,15 @@ templ PieChart(props PieChartProps) {
 		// Reserve space for labels and legend.
 		chartRadius := math.Min(float64(width), float64(height)) / 2
 
-		showLabels := props.ShowLabels && props.LabelMode == PieChartLabelExternal
+		// An unset LabelMode means the documented default (external): the
+		// zero value "" failed the equality check and silently suppressed
+		// every label for ShowLabels: true struct literals.
+		labelMode := props.LabelMode
+		if !PieChartLabelModeIsValid(labelMode) {
+			labelMode = PieChartLabelExternal
+		}
+
+		showLabels := props.ShowLabels && labelMode == PieChartLabelExternal
 		labelPad := chartRadius * 0.25
 		if !showLabels {
 			labelPad = chartRadius * 0.1

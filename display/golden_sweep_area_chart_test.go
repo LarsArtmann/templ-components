@@ -111,26 +111,21 @@ func areaPathD(t *testing.T, html string) string {
 
 	const marker = `fill="currentColor" fill-opacity="0.2" stroke="none"`
 
-	idx := strings.Index(html, marker)
-	if idx < 0 {
+	before, _, found := strings.Cut(html, marker)
+	if !found {
 		t.Fatalf("no area fill path in output: %s", html)
 	}
 
 	const dPrefix = `<path d="`
 
-	start := strings.LastIndex(html[:idx], dPrefix)
-	if start < 0 {
+	_, rest, found := strings.Cut(before, dPrefix)
+	if !found {
 		t.Fatalf("no path d attribute before area fill marker: %s", html)
 	}
 
-	rest := html[start+len(dPrefix):]
+	d, _, _ := strings.Cut(rest, `"`)
 
-	end := strings.Index(rest, `"`)
-	if end < 0 {
-		t.Fatalf("unterminated d attribute: %s", rest)
-	}
-
-	return rest[:end]
+	return d
 }
 
 // TestAreaChartTicksStayInsidePlotDomain pins the fix for ticks rendering

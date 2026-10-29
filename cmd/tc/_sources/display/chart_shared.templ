@@ -8,27 +8,35 @@ import (
 
 // chartAxes renders the Y-axis ticks, optional gridlines, axis lines, and
 // X-axis labels. Shared between LineChart and AreaChart.
+//
+// ComputeNiceTicks covers the data domain (first tick <= min, last tick >=
+// max — pinned by the geometry property test), so its outermost ticks can
+// fall OUTSIDE the data range. chartAxes projects ticks with the DATA range,
+// so out-of-domain ticks would land outside the plot area: below the x-axis
+// (colliding with the x labels) or above the plot top. They are skipped.
 templ chartAxes(d ChartRenderData) {
 	for _, tick := range d.Ticks {
-		{{ y := float64(d.Padding.Top) + float64(d.PlotH) - ((tick-d.MinVal)/d.RangeVal)*float64(d.PlotH) }}
-		if d.ShowGrid {
-			<line
-				x1={ d.Padding.Left }
-				y1={ y }
-				x2={ d.Width - d.Padding.Right }
-				y2={ y }
-				class="stroke-gray-200 dark:stroke-gray-700"
-				stroke-width="1"
-				stroke-dasharray="4 4"
-			></line>
+		if tick >= d.MinVal-tickDomainEpsilon && tick <= d.MaxVal+tickDomainEpsilon {
+			{{ y := float64(d.Padding.Top) + float64(d.PlotH) - ((tick-d.MinVal)/d.RangeVal)*float64(d.PlotH) }}
+			if d.ShowGrid {
+				<line
+					x1={ d.Padding.Left }
+					y1={ y }
+					x2={ d.Width - d.Padding.Right }
+					y2={ y }
+					class="stroke-gray-200 dark:stroke-gray-700"
+					stroke-width="1"
+					stroke-dasharray="4 4"
+				></line>
+			}
+			<text
+				x={ d.Padding.Left - lineChartTickLen }
+				y={ y + lineChartLabelYOffset }
+				text-anchor="end"
+				class="fill-gray-500 dark:fill-gray-400"
+				font-size={ lineChartFontSize }
+			>{ lineChartTickFormat(d.ValueFormat, tick) }</text>
 		}
-		<text
-			x={ d.Padding.Left - lineChartTickLen }
-			y={ y + lineChartLabelYOffset }
-			text-anchor="end"
-			class="fill-gray-500 dark:fill-gray-400"
-			font-size={ lineChartFontSize }
-		>{ lineChartTickFormat(d.ValueFormat, tick) }</text>
 	}
 	<line
 		x1={ d.Padding.Left }
@@ -140,6 +148,15 @@ templ chartSeriesGroup(d ChartRenderData, series LineChartSeries, i int, style L
 		} else {
 			linePath = BuildPolylinePath(pts)
 		}
+
+		// The fill edge must follow the same curve as the stroked line:
+		// a straight area under a smooth line visibly detached from it.
+		var areaPath string
+		if style == LineChartStyleSmooth {
+			areaPath = BuildSmoothAreaPath(pts, d.PlotH)
+		} else {
+			areaPath = BuildAreaPath(pts, d.PlotH)
+		}
 	}}
 	<g
 		class={ color }
@@ -147,7 +164,7 @@ templ chartSeriesGroup(d ChartRenderData, series LineChartSeries, i int, style L
 	>
 		if opts.filled {
 			<path
-				d={ BuildAreaPath(pts, d.PlotH) }
+				d={ areaPath }
 				fill="currentColor"
 				fill-opacity={ opts.fillOpacity }
 				stroke="none"
