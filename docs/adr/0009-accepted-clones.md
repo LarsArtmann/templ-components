@@ -667,8 +667,8 @@ blanket-accepting or blanket-extracting.
 ## Consequences
 
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
-  — it fails ONLY on clones not in the accepted baseline (currently 149
-  groups at t=1, per the 2026-10-24 re-record with the same fork detector
+  — it fails ONLY on clones not in the accepted baseline (currently 150
+  groups at t=1, per the 2026-10-29 re-record with the same fork detector
   `v0.9.1-0.20261017225421-93432fd910fb-93432fd`; the 2026-10-23 full
   re-take under this detector generation was 150 groups). The analyzer-generation
   change made the prior 124 hashes incomparable (check reported every
@@ -766,3 +766,17 @@ Gate green ×2; the lane remains advisory and never gates. **t=2/t=3
 re-verification (2026-10-24):** not mechanically green (see the corrected
 claim above) — 4 + 7 hash-new groups, every one class-covered by the
 appendix (signature-token tails; lookup-helper signature pairs).
+
+**DONE 2026-10-29 (dashboard chart bug-fix pass):** fixing the five chart
+rendering bugs surfaced one genuinely harmful twin and one accepted-family
+membership. (1) EXTRACTED: the new `BuildSmoothAreaPath` duplicated
+`BuildAreaPath`'s baseline-closure tail byte-for-byte; the closure now lives
+in one shared `closeAreaPath` helper both builders call, so the straight and
+smooth area closures can never drift apart again. (2) ACCEPT: the new
+`areaPathD` test helper (extracts the filled area's `d` attribute in the
+smooth-fill regression test) joined the pre-existing 15-member
+function-signature-tails family — one string-ish parameter, domain-specific
+bodies (path helpers, validators, `strings.Cut` wrappers); no shared
+implementation to extract. The re-record against the SAME pinned binary
+(`v0.9.1-0.20261017225421-93432fd910fb`) took 150 groups. Gate green ×2;
+the lane remains advisory and never gates.

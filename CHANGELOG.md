@@ -30,6 +30,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   area drew its fill edge as a straight polyline under the curved stroke,
   visibly detaching the line from its own fill — the fill now follows the
   same Catmull-Rom path as the line (`display.BuildSmoothAreaPath`).
+  The new builder's baseline closure was extracted into a shared
+  `closeAreaPath` helper rather than accepted as a clone; the art-dupl
+  re-record against the pinned analyzer took 150 groups at t=1 (the one
+  new group is the pre-existing test-helper signature family joined by
+  the smooth-fill regression test's extractor, accepted under
+  ADR-0009's function-signature-tails class).
 
 ## [1.25.0] — 2026-10-29
 
