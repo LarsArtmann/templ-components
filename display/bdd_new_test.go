@@ -185,6 +185,56 @@ func TestRelativeTimeBehavior(t *testing.T) {
 		utils.AssertNotContains(t, output, "data-tc-relative")
 		utils.AssertNotContains(t, output, "tcRelativeTimeAttached")
 	})
+
+	t.Run("EmptyText replaces zero-time date noise (issue #52)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, RelativeTime(RelativeTimeProps{
+			Time:      time.Time{},
+			EmptyText: "never",
+		}))
+		utils.AssertContains(t, output, "<time")
+		utils.AssertContains(t, output, ">never<")
+		utils.AssertNotContains(t, output, "0001")
+		utils.AssertNotContains(t, output, "datetime=")
+		utils.AssertNotContains(t, output, "title=")
+		// The refresh script must not adopt the placeholder — it would
+		// re-format "never" into date noise after the first tick.
+		utils.AssertNotContains(t, output, "data-tc-relative")
+		utils.AssertNotContains(t, output, "tcRelativeTimeAttached")
+	})
+
+	t.Run("EmptyText with zero time honors an explicit Title", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, RelativeTime(RelativeTimeProps{
+			Time:      time.Time{},
+			EmptyText: "never",
+			Title:     "no successful probe yet",
+		}))
+		utils.AssertContains(t, output, `title="no successful probe yet"`)
+		utils.AssertContains(t, output, ">never<")
+	})
+
+	t.Run("EmptyText is ignored for non-zero Time", func(t *testing.T) {
+		t.Parallel()
+		ts := time.Date(2025, 1, 15, 10, 30, 0, 0, time.UTC)
+		output := utils.Render(t, RelativeTime(RelativeTimeProps{
+			Time:      ts,
+			EmptyText: "never",
+			Now:       ts.Add(90 * time.Second),
+		}))
+		utils.AssertContains(t, output, `datetime="2025-01-15T10:30:00Z"`)
+		utils.AssertContains(t, output, "1 minute ago")
+		utils.AssertNotContains(t, output, "never")
+	})
+
+	t.Run("unset EmptyText keeps the legacy zero-time output", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, RelativeTime(RelativeTimeProps{
+			Time:        time.Time{},
+			AutoRefresh: false,
+		}))
+		utils.AssertContains(t, output, `datetime="0001-01-01T00:00:00Z"`)
+	})
 }
 
 // --- CountBadge Behavior ---
