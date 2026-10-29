@@ -890,12 +890,15 @@ func barPercentHeight(value, maxVal float64) string {
 	return fmt.Sprintf("%.1f%%", math.Round(pct*percentRound)/percentRound)
 }
 
-// truncateLabel truncates a string to maxLen characters with an ellipsis.
+// truncateLabel truncates a string to maxLen runes with an ellipsis. Trimming
+// runes (not bytes) keeps multibyte labels valid UTF-8 — a byte cut split
+// characters in half and rendered mojibake for international labels.
 func truncateLabel(s string, maxLen int) string {
-	if len(s) <= maxLen {
+	runes := []rune(s)
+	if len(runes) <= maxLen {
 		return s
 	}
-	return s[:maxLen-1] + "…"
+	return string(runes[:maxLen-1]) + "…"
 }
 
 # ── display/button.templ ─────────────────────────────────────────────
@@ -1792,6 +1795,7 @@ const (
 	niceStepTen           = 10.0
 	defaultTickCount      = 5
 	roundPrecisionDigits  = 10
+	tickDomainEpsilon     = 1e-9
 	splineTension         = 6.0
 	scaleRangePad         = 1.0
 	normalizedMin         = 0.0
@@ -2135,6 +2139,29 @@ func BuildAreaPath(points []Point, height int) string {
 		formatCoord(first.X), formatCoord(baseline))
 }
 
+// BuildSmoothAreaPath builds a closed SVG path for a filled area under a
+// smooth curve: the Catmull-Rom path through the points, then down to the
+// baseline and back to the start. The fill edge matches BuildSmoothPath
+// exactly, so a smooth stroked line never detaches from its own fill.
+// Fewer than 3 points falls back to the straight polyline area (matching
+// BuildSmoothPath's own polyline fallback).
+func BuildSmoothAreaPath(points []Point, height int) string {
+	if len(points) == 0 {
+		return ""
+	}
+
+	path := BuildSmoothPath(points)
+	baseline := float64(height)
+
+	last := points[len(points)-1]
+	first := points[0]
+
+	return fmt.Sprintf("%s L %s %s L %s %s Z",
+		path,
+		formatCoord(last.X), formatCoord(baseline),
+		formatCoord(first.X), formatCoord(baseline))
+}
+
 // ComputeNiceTicks produces human-readable axis tick values spanning [minVal, maxVal].
 // The tick count is approximate — the actual count may differ to produce round
 // numbers (e.g., 0, 25, 50, 75, 100 instead of 0, 23, 46, 69, 92).
@@ -2241,27 +2268,35 @@ import (
 
 // chartAxes renders the Y-axis ticks, optional gridlines, axis lines, and
 // X-axis labels. Shared between LineChart and AreaChart.
+//
+// ComputeNiceTicks covers the data domain (first tick <= min, last tick >=
+// max — pinned by the geometry property test), so its outermost ticks can
+// fall OUTSIDE the data range. chartAxes projects ticks with the DATA range,
+// so out-of-domain ticks would land outside the plot area: below the x-axis
+// (colliding with the x labels) or above the plot top. They are skipped.
 templ chartAxes(d ChartRenderData) {
 	for _, tick := range d.Ticks {
-		{{ y := float64(d.Padding.Top) + float64(d.PlotH) - ((tick-d.MinVal)/d.RangeVal)*float64(d.PlotH) }}
-		if d.ShowGrid {
-			<line
-				x1={ d.Padding.Left }
-				y1={ y }
-				x2={ d.Width - d.Padding.Right }
-				y2={ y }
-				class="stroke-gray-200 dark:stroke-gray-700"
-				stroke-width="1"
-				stroke-dasharray="4 4"
-			></line>
+		if tick >= d.MinVal-tickDomainEpsilon && tick <= d.MaxVal+tickDomainEpsilon {
+			{{ y := float64(d.Padding.Top) + float64(d.PlotH) - ((tick-d.MinVal)/d.RangeVal)*float64(d.PlotH) }}
+			if d.ShowGrid {
+				<line
+					x1={ d.Padding.Left }
+					y1={ y }
+					x2={ d.Width - d.Padding.Right }
+					y2={ y }
+					class="stroke-gray-200 dark:stroke-gray-700"
+					stroke-width="1"
+					stroke-dasharray="4 4"
+				></line>
+			}
+			<text
+				x={ d.Padding.Left - lineChartTickLen }
+				y={ y + lineChartLabelYOffset }
+				text-anchor="end"
+				class="fill-gray-500 dark:fill-gray-400"
+				font-size={ lineChartFontSize }
+			>{ lineChartTickFormat(d.ValueFormat, tick) }</text>
 		}
-		<text
-			x={ d.Padding.Left - lineChartTickLen }
-			y={ y + lineChartLabelYOffset }
-			text-anchor="end"
-			class="fill-gray-500 dark:fill-gray-400"
-			font-size={ lineChartFontSize }
-		>{ lineChartTickFormat(d.ValueFormat, tick) }</text>
 	}
 	<line
 		x1={ d.Padding.Left }
@@ -2373,6 +2408,15 @@ templ chartSeriesGroup(d ChartRenderData, series LineChartSeries, i int, style L
 		} else {
 			linePath = BuildPolylinePath(pts)
 		}
+
+		// The fill edge must follow the same curve as the stroked line:
+		// a straight area under a smooth line visibly detached from it.
+		var areaPath string
+		if style == LineChartStyleSmooth {
+			areaPath = BuildSmoothAreaPath(pts, d.PlotH)
+		} else {
+			areaPath = BuildAreaPath(pts, d.PlotH)
+		}
 	}}
 	<g
 		class={ color }
@@ -2380,7 +2424,7 @@ templ chartSeriesGroup(d ChartRenderData, series LineChartSeries, i int, style L
 	>
 		if opts.filled {
 			<path
-				d={ BuildAreaPath(pts, d.PlotH) }
+				d={ areaPath }
 				fill="currentColor"
 				fill-opacity={ opts.fillOpacity }
 				stroke="none"
@@ -7180,7 +7224,15 @@ templ PieChart(props PieChartProps) {
 		// Reserve space for labels and legend.
 		chartRadius := math.Min(float64(width), float64(height)) / 2
 
-		showLabels := props.ShowLabels && props.LabelMode == PieChartLabelExternal
+		// An unset LabelMode means the documented default (external): the
+		// zero value "" failed the equality check and silently suppressed
+		// every label for ShowLabels: true struct literals.
+		labelMode := props.LabelMode
+		if !PieChartLabelModeIsValid(labelMode) {
+			labelMode = PieChartLabelExternal
+		}
+
+		showLabels := props.ShowLabels && labelMode == PieChartLabelExternal
 		labelPad := chartRadius * 0.25
 		if !showLabels {
 			labelPad = chartRadius * 0.1
@@ -8733,11 +8785,12 @@ type sparklinePoint struct {
 // must render nothing in that case (a single point can't form a line or
 // area).
 func sparklinePointCoords(values []float64, width, height int, minVal, maxVal float64) ([]sparklinePoint, bool) {
-	stepX, rangeVal, ok := sparklineGeometry(values, width, minVal, maxVal)
+	rangeVal, ok := sparklineGeometry(values, minVal, maxVal)
 	if !ok {
 		return nil, false
 	}
 
+	lastIndex := len(values) - 1
 	coords := make([]sparklinePoint, 0, len(values))
 
 	for i, v := range values {
@@ -8745,8 +8798,13 @@ func sparklinePointCoords(values []float64, width, height int, minVal, maxVal fl
 
 		yCoord := max(height-int(math.Round(normalized*float64(height))), 0)
 
+		// Round the PRODUCT, not the per-step advance: rounding the step
+		// first accumulated error across the series and pushed the final
+		// point past the right canvas edge (e.g. x=203 on a 200px canvas).
+		xCoord := int(math.Round(float64(i) * float64(width) / float64(lastIndex)))
+
 		coords = append(coords, sparklinePoint{
-			x: i * int(math.Round(stepX)),
+			x: xCoord,
 			y: min(yCoord, height),
 		})
 	}
@@ -8802,23 +8860,22 @@ func sparklineAreaPath(values []float64, width, height int, minVal, maxVal float
 	return b.String()
 }
 
-// sparklineGeometry returns the per-step X advance and value range for
-// plotting a sparkline series, normalizing the degenerate case where
-// maxVal <= minVal. Returns ok=false when fewer than 2 values are given —
-// callers must render nothing in that case (a single point can't form a
-// line or area).
-func sparklineGeometry(values []float64, width int, minVal, maxVal float64) (float64, float64, bool) {
+// sparklineGeometry returns the value range for plotting a sparkline series,
+// normalizing the degenerate case where maxVal <= minVal. Returns ok=false
+// when fewer than 2 values are given — callers must render nothing in that
+// case (a single point can't form a line or area). X projection happens in
+// sparklinePointCoords, which rounds the per-point product rather than a
+// per-step advance so the final point lands exactly on the canvas edge.
+func sparklineGeometry(values []float64, minVal, maxVal float64) (float64, bool) {
 	if len(values) < 2 {
-		return 0, 0, false
+		return 0, false
 	}
 
 	if maxVal <= minVal {
 		maxVal = minVal + 1
 	}
 
-	stepX := float64(width) / float64(len(values)-1)
-
-	return stepX, maxVal - minVal, true
+	return maxVal - minVal, true
 }
 
 // sparklineBounds returns the effective min/max for the given values,

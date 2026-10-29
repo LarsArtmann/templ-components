@@ -6,6 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Dashboard graphics: five rendering bugs.** (1) `display.Sparkline`
+  projected X coordinates by rounding the per-step advance, so the last
+  point landed OUTSIDE the canvas whenever the width wasn't divisible by
+  the point count (e.g. x=203 on a 200px sparkline; 7 points at width 100
+  drew at x=102) — coordinates now round the per-point product, and the
+  final point lands exactly on the right edge. (2) `display.BarChart` and
+  `display.Heatmap` labels truncated by BYTE, splitting multibyte
+  characters in half and emitting mojibake for international labels —
+  truncation is rune-safe now. (3) `display.PieChart` suppressed every
+  label for `ShowLabels: true` struct literals because the zero-value
+  `LabelMode` failed the `PieChartLabelExternal` equality check; an
+  unset mode now means the documented default (external), while
+  `PieChartLabelNone` still opts out explicitly. (4) `display.LineChart` /
+  `display.AreaChart` rendered out-of-domain Y ticks outside the plot
+  area — below the x-axis (colliding with the x labels; one "0" tick even
+  rendered below the viewBox entirely) and above the plot top (a "350"
+  gridline no data could reach). The tick generator intentionally covers
+  the data domain (property-pinned), so the axes now skip ticks outside
+  the data range. (5) A smooth (`Style: LineChartStyleSmooth`) filled
+  area drew its fill edge as a straight polyline under the curved stroke,
+  visibly detaching the line from its own fill — the fill now follows the
+  same Catmull-Rom path as the line (`display.BuildSmoothAreaPath`).
+
 ## [1.25.0] — 2026-10-29
 
 ### Added
