@@ -26,7 +26,12 @@ import (
 var (
 	sectionAnchorRe  = regexp.MustCompile(`<section class="demo-section[^"]*" id="([^"]+)"`)
 	sectionHeadingRe = regexp.MustCompile(`^<div class="flex items-center justify-between mb-6">.*?</div>`)
-	tagRe            = regexp.MustCompile(`<[^>]+>`)
+	// snippetMarker opens a demoCodeSnippet block; everything from here on
+	// belongs to the code listing, not the live specimen, so the guard cuts
+	// the span there — otherwise a section whose specimen died still passes
+	// on its snippet's text (mutation-proven 2026-10-30).
+	snippetMarker = `<div class="mt-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-900`
+	tagRe         = regexp.MustCompile(`<[^>]+>`)
 )
 
 // contentSkipList exempts sections whose content is legitimately textless
@@ -34,6 +39,7 @@ var (
 var contentSkipList = map[string]string{
 	"feedback-spinners":  "spinner specimens are pure SVG — textless by design",
 	"feedback-skeletons": "skeleton grid is pure shimmer boxes — textless by design",
+	"display-avatars":    "avatar specimens are image-only (see TODO 486: external ui-avatars.com CDN)",
 }
 
 // noSectionPages are registry routes that intentionally compose no
@@ -107,6 +113,10 @@ func TestDemoSectionsRenderContent(t *testing.T) {
 				}
 
 				chunk = sectionHeadingRe.ReplaceAllString(chunk, "")
+
+				if cut := strings.Index(chunk, snippetMarker); cut >= 0 {
+					chunk = chunk[:cut]
+				}
 
 				if text := stripTags(chunk); text == "" {
 					t.Errorf(

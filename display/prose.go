@@ -59,6 +59,11 @@ type ProseProps struct {
 	utils.BaseProps
 
 	// Children is the longform content (typically rendered markdown HTML).
+	// When nil, Prose renders its templ trailing block instead — both call
+	// styles work (the doc example uses the trailing block; programmatic Go
+	// consumers set this field). Before the fallback shipped (2026-10-30),
+	// trailing-block callers got an EMPTY container — the demo's own Prose
+	// section shipped empty for weeks.
 	Children templ.Component
 	// Size sets the font scale. Zero value falls back to ProseSizeMD.
 	Size ProseSize

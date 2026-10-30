@@ -484,10 +484,12 @@ dark-mode + dialog/invoker._
 | 481 | Docs: AGENTS "Visual goldens" load-flake bullet rewrite (webfont race is the real cause) + route-vs-component-golden count definitions          | Plan C25.1/.2; the load-flake wording is now wrong.                 |
 | 482 | Opt-in additive layer (all Limited-availability, `@supports`-gated): scroll-driven animations, container scroll-state queries, scrollbar color theming | Audit §4 gaps — do NOT become default paths. Post-wave.             |
 | 484 | `display.ImageProps` zero-value renders `loading="eager" fetchpriority="high"` (found 2026-10-30 by the new fetchpriority e2e, visualtest/image_priority_e2e_test.go) — contradicts the documented "lazy (default)" and the struct-literal zero-value invariant (AGENTS.md). Fix shape: invert the flag (`Eager bool`) or rename — a BREAKING field change, v2 material alongside TODO #425/#431. Until then consumers using struct literals must set `Lazy: true` explicitly | Plan C11 discovered; owner call on the v2 API shape. (c11) |
+| 485 | demo demoSection composition: every page calls `@demoSection(...)` WITHOUT a children block, so each section ships heading-only with an EMPTY `space-y-4` wrapper and the content as siblings (found 2026-10-30 by the C13 content guard; visually identical in block flow, which is why it shipped). Fix = wrap each section's content in `{ ... }` across ~15 demo pages — cosmetic spacing change (space-y-4 activates), needs a route-golden re-baseline; v2/cleanup wave | Plan C13 discovered; demo-only, no library impact. (c13) |
+| 486 | Demo avatar specimens pull from external `ui-avatars.com` CDN (5× display_demo.templ, 2× recipes_demo.templ) — external image fetches in a page whose route goldens + capture determinism we own (same nondeterminism class the webfont block fixed; also a privacy leak: page views hit a third party). Fix = local placeholder SVGs + skip-list entry removal | Plan C13 discovered. (c13) |
 
 _The plan's P2 line cites "#452, #453, #480, #481" — the capture-determinism set is
 #452–#455 after this numbering (plan corrected in the same commit)._
 
 ---
 
-_Next free ID: 485._
+_Next free ID: 487._
