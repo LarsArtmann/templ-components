@@ -29,7 +29,7 @@ import (
 // capturePathFiles are the three pixel-comparison capture paths. A new capture
 // path must be added here AND call both determinism helpers.
 var capturePathFiles = []string{
-	"harness.go",          // component goldens (AssertScreenshot chain)
+	"harness.go",           // component goldens (AssertScreenshot chain)
 	"route_golden_test.go", // demo route goldens
 	"site_routes_test.go",  // website route goldens
 }
@@ -44,7 +44,7 @@ func capturePathSource(t *testing.T, name string) string {
 
 	path := filepath.Join(filepath.Dir(thisFile), name)
 
-	data, err := os.ReadFile(path) //nolint:gosec // path is built from the package's own dir
+	data, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("read capture path %s: %v", name, err)
 	}
@@ -87,7 +87,9 @@ func TestNewTabHasDeadline(t *testing.T) {
 
 	deadline, ok := ctx.Deadline()
 	if !ok {
-		t.Fatal("newTab returned a context WITHOUT a deadline: a wedged renderer would hang until the go-test alarm kills the whole suite")
+		t.Fatal(
+			"newTab returned a context WITHOUT a deadline: a wedged renderer would hang until the go-test alarm kills the whole suite",
+		)
 	}
 
 	remaining := time.Until(deadline)

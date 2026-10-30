@@ -83,23 +83,26 @@ const failureRunDirsKept = 10
 // the evidence of a first one mid-investigation (the 2026-10-30 session lost
 // exactly that evidence when a re-run started while diffs were being read).
 // Directories past failureRunDirsKept are pruned on creation.
+//
+//nolint:gochecknoglobals // per-process artifact dir, initialized exactly once
 var failureRunDir = sync.OnceValue(func() string {
 	name := time.Now().UTC().Format("20060102-150405") + "-" + strconv.Itoa(os.Getpid())
 	dir := filepath.Join(goldenDir, ".fail", name)
-	pruneOldFailureRunDirs(filepath.Join(goldenDir, ".fail"), name)
+	pruneOldFailureRunDirs(filepath.Join(goldenDir, ".fail"))
 
 	return dir
 })
 
-// pruneOldFailureRunDirs keeps only the newest failureRunDirsKept run dirs
-// (name included). Best-effort: prune errors are non-fatal by design.
-func pruneOldFailureRunDirs(failDir, keep string) {
+// pruneOldFailureRunDirs keeps only the newest failureRunDirsKept run dirs.
+// Best-effort: prune errors are non-fatal by design.
+func pruneOldFailureRunDirs(failDir string) {
 	entries, err := os.ReadDir(failDir)
 	if err != nil {
 		return
 	}
 
 	var runs []string
+
 	for _, e := range entries {
 		if e.IsDir() && isFailureRunDirName(e.Name()) {
 			runs = append(runs, e.Name())

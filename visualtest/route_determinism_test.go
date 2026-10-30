@@ -57,7 +57,7 @@ func TestRouteCaptureIsDeterministic(t *testing.T) {
 		"determinism_display_second.png": second,
 	} {
 		path := filepath.Join(failDir, name)
-		if err := os.WriteFile(path, shot, 0o644); err != nil { //nolint:gosec // fixture output, fixed name
+		if err := os.WriteFile(path, shot, 0o644); err != nil {
 			t.Logf("write %s: %v", path, err)
 		}
 	}

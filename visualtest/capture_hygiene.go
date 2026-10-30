@@ -26,11 +26,16 @@ import (
 // focused element, and scrolls the page to the top.
 func resetCaptureNeutralState() chromedp.Action[chromedp.Void] {
 	return chromedp.Func(func(ctx context.Context, tab *chromedp.Target) error {
-		if _, err := cdp.Call(ctx, tab, input.DispatchMouseEvent, input.DispatchMouseEventParams{ //nolint:exhaustruct_v5 // omitted CDP fields take protocol defaults
-			Type: input.DispatchMouseEventTypeMouseMoved,
-			X:    0,
-			Y:    0,
-		}); err != nil {
+		if _, err := cdp.Call(
+			ctx,
+			tab,
+			input.DispatchMouseEvent,
+			input.DispatchMouseEventParams{ //nolint:exhaustruct_v5 // omitted CDP fields take protocol defaults
+				Type: input.DispatchMouseEventTypeMouseMoved,
+				X:    0,
+				Y:    0,
+			},
+		); err != nil {
 			return fmt.Errorf("park pointer: %w", err)
 		}
 
