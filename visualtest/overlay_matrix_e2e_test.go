@@ -2,6 +2,7 @@ package visualtest
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -13,6 +14,17 @@ import (
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/layout"
 )
+
+// rightOutsidePoint returns a viewport point 20px to the RIGHT of the box —
+// guaranteed outside it (tcOutside: x > r.right), unlike left/up margins,
+// which collapse to nothing when a dialog hugs the top-left corner
+// (Tailwind preflight zeroes the UA dialog centering margins).
+func rightOutsidePoint(b overlayBox) (float64, float64) {
+	x := b.Right + 20
+	y := b.Top + 20
+
+	return x, y
+}
 
 // overlayMatrixE2EPage renders the three remaining <dialog> overlays — Drawer,
 // CommandPalette, Lightbox — each with its real trigger, so the shared
@@ -153,7 +165,9 @@ func TestOverlayBackdropMatrix(t *testing.T) {
 			}
 
 			box := dialogBox(t, tabCtx, tc.dialogID)
-			outsideX, outsideY := box.outsidePoint()
+			outsideX, outsideY := rightOutsidePoint(box)
+
+			t.Logf("%s box=%+v outside=(%.0f,%.0f)", tc.name, box, outsideX, outsideY)
 
 			// Inside click must keep the overlay open.
 			if err := chromedp.Do(tabCtx, clickAt(box.Left+4, box.Top+4)); err != nil {
@@ -180,12 +194,35 @@ func TestOverlayBackdropMatrix(t *testing.T) {
 			}
 
 			// Press+release outside dismisses.
-			if err := chromedp.Do(tabCtx,
-				clickAt(outsideX, outsideY),
-				pollTrue(`!document.getElementById('`+tc.dialogID+`').open`, pollFast()...),
-			); err != nil {
-				t.Fatalf("backdrop press+release did not dismiss: %v", err)
+			if err := chromedp.Do(tabCtx, clickAt(outsideX, outsideY)); err != nil {
+				t.Fatalf("backdrop click dispatch: %v", err)
 			}
+
+			time.Sleep(300 * time.Millisecond)
+
+			if !modalOpen(t, tabCtx, tc.dialogID) {
+				t.Logf("%s: backdrop click DID dismiss", tc.name)
+
+				return
+			}
+
+			// Diagnostics for the non-dismissing case: which element actually
+			// hit-tests at the outside point, and where is the dialog now?
+			var probe string
+
+			if err := chromedp.Do(tabCtx, evalExprInto(
+				`(function(){var d=document.getElementById('`+tc.dialogID+`');var r=d.getBoundingClientRect();`+
+					`var el=document.elementFromPoint(`+fmt.Sprintf("%g,%g", outsideX, outsideY)+`);`+
+					`return 'open='+d.open+' rect='+JSON.stringify({l:r.left,t:r.top,r:r.right,b:r.bottom})+`+
+					`' hit='+(el?el.tagName+'#'+(el.id||''):'none');})()`,
+				&probe,
+			)); err != nil {
+				t.Logf("%s: probe failed: %v", tc.name, err)
+			}
+
+			t.Logf("%s: not dismissed — %s", tc.name, probe)
+
+			t.Fatalf("backdrop press+release did not dismiss")
 		})
 	}
 }
