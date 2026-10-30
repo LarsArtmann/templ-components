@@ -493,7 +493,7 @@ type badgeStyle struct {
 var badgeStyleMap = map[BadgeType]badgeStyle{
 	BadgePrimary: {"bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300", "bg-blue-500"},
 	BadgeSuccess: {"bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300", "bg-green-500"},
-	BadgeWarning: {"bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300", "bg-yellow-500"},
+	BadgeWarning: {"bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300", "bg-amber-500"},
 	BadgeError:   {"bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300", "bg-red-500"},
 	BadgeInfo:    {"bg-blue-50 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300", "bg-blue-500"},
 	BadgeNeutral: {"bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300", "bg-gray-500"},
@@ -7629,6 +7629,11 @@ type ProseProps struct {
 	utils.BaseProps
 
 	// Children is the longform content (typically rendered markdown HTML).
+	// When nil, Prose renders its templ trailing block instead — both call
+	// styles work (the doc example uses the trailing block; programmatic Go
+	// consumers set this field). Before the fallback shipped (2026-10-30),
+	// trailing-block callers got an EMPTY container — the demo's own Prose
+	// section shipped empty for weeks.
 	Children templ.Component
 	// Size sets the font scale. Zero value falls back to ProseSizeMD.
 	Size ProseSize
@@ -7673,6 +7678,8 @@ templ Prose(props ProseProps) {
 	>
 		if props.Children != nil {
 			@props.Children
+		} else {
+			{ children... }
 		}
 	</div>
 }
@@ -11081,10 +11088,10 @@ var feedbackStyleMap = map[FeedbackType]feedbackStyleSet{
 		Icon:   "text-red-600 dark:text-red-400",
 	},
 	FeedbackWarning: {
-		Border: "border-yellow-200 dark:border-yellow-800",
-		BG:     "bg-yellow-50 dark:bg-yellow-900/20",
-		Text:   "text-yellow-800 dark:text-yellow-200",
-		Icon:   "text-yellow-600 dark:text-yellow-400",
+		Border: "border-amber-200 dark:border-amber-800",
+		BG:     "bg-amber-50 dark:bg-amber-900/20",
+		Text:   "text-amber-800 dark:text-amber-200",
+		Icon:   "text-amber-600 dark:text-amber-400",
 	},
 	FeedbackInfo: {
 		Border: "border-blue-200 dark:border-blue-800",
@@ -15660,6 +15667,7 @@ templ Minimal(props MinimalProps) {
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<meta name="color-scheme" content="light dark"/>
 			<title>{ props.Title }</title>
 			@seoHeadTags(props.SEO)
 			if props.HeadContent != nil {
@@ -16519,6 +16527,17 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 					html.style.colorScheme = isDark ? 'light' : 'dark';
 					document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
 					});
+
+					// Sync tabs: a `storage` event fires in every OTHER tab of the
+					// origin when localStorage['theme'] changes. Removing the key
+					// (newValue null) falls back to the OS preference.
+					window.addEventListener('storage', function(e) {
+					if (e.key !== 'theme') return;
+					var dark = e.newValue === 'dark' || (!e.newValue && window.matchMedia('(prefers-color-scheme: dark)').matches);
+					html.classList.toggle('dark', dark);
+					html.style.colorScheme = dark ? 'dark' : 'light';
+					document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
+					});
 				}
 			})();
 		</script>
@@ -16551,6 +16570,17 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 						try { localStorage.setItem('theme', 'dark'); } catch(e) {}
 					}
 					html.style.colorScheme = isDark ? 'light' : 'dark';
+					document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
+					});
+
+					// Sync tabs: a `storage` event fires in every OTHER tab of the
+					// origin when localStorage['theme'] changes. Removing the key
+					// (newValue null) falls back to the OS preference.
+					window.addEventListener('storage', function(e) {
+					if (e.key !== 'theme') return;
+					var dark = e.newValue === 'dark' || (!e.newValue && window.matchMedia('(prefers-color-scheme: dark)').matches);
+					html.classList.toggle('dark', dark);
+					html.style.colorScheme = dark ? 'dark' : 'light';
 					document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
 					});
 				}
@@ -18737,7 +18767,7 @@ var darkModeExceptions = []darkModeException{
 	{"feedback/styles.go", "Icon:"},
 	// Badge dot colors are decorative — solid background with text on top
 	{"display/badge.templ", "bg-green-500"},
-	{"display/badge.templ", "bg-yellow-500"},
+	{"display/badge.templ", "bg-amber-500"},
 	{"display/badge.templ", "bg-red-500"},
 	{"display/badge.templ", "bg-blue-500"},
 	// Count badge background — solid red with white text, readable in both modes
@@ -20112,6 +20142,7 @@ const (
 	darkTextGray   = "dark:text-gray-400"
 	darkTextGreen  = "dark:text-green-400"
 	darkTextYellow = "dark:text-yellow-400"
+	darkTextAmber  = "dark:text-amber-400"
 	darkTextRed    = "dark:text-red-400"
 )
 
@@ -20322,8 +20353,9 @@ type Surfaces struct {
 }
 
 // toneTable maps every Tone to its surfaces. The hue backing each tone:
-// neutral=gray, success=green, warning=yellow (majority dialect — see the
-// package doc), danger=red, info=blue, accent=blue (the ADR-0044 accent
+// neutral=gray, success=green, warning=amber (the #428 decision — the
+// one semantic warning hue; categorical yellow survives on the Hue axis
+// for Kanban/StatCard), danger=red, info=blue, accent=blue (the ADR-0044 accent
 // slot until v2 swaps it to the accent token family).
 //
 // Neutral deviates from the uniform tint grammar where feedback's fallback
@@ -20352,13 +20384,13 @@ var toneTable = map[Tone]Surfaces{
 		Icon:     Pair{"text-green-600", darkTextGreen},
 	},
 	ToneWarning: {
-		Dot:      hueTable[HueYellow].BGSolid,
-		Text:     Pair{"text-yellow-800", "dark:text-yellow-200"},
-		TextSoft: Pair{"text-yellow-600", darkTextYellow},
-		Border:   Pair{"border-yellow-200", "dark:border-yellow-800"},
-		BGTint:   Pair{"bg-yellow-50", "dark:bg-yellow-900/20"},
-		BGSolid:  hueTable[HueYellow].BGSolidStrong,
-		Icon:     Pair{"text-yellow-600", darkTextYellow},
+		Dot:      hueTable[HueAmber].BGSolid,
+		Text:     Pair{"text-amber-800", "dark:text-amber-200"},
+		TextSoft: Pair{"text-amber-600", darkTextAmber},
+		Border:   Pair{"border-amber-200", "dark:border-amber-800"},
+		BGTint:   Pair{"bg-amber-50", "dark:bg-amber-900/20"},
+		BGSolid:  hueTable[HueAmber].BGSolidStrong,
+		Icon:     Pair{"text-amber-600", darkTextAmber},
 	},
 	ToneDanger: {
 		Dot:      hueTable[HueRed].BGSolid,
@@ -20420,13 +20452,14 @@ func For(t Tone) Surfaces {
 // variant prefixes must be complete literals"). Pair exists to make the
 // light/dark halves structural, not to build strings dynamically.
 //
-// # Warning dialect (the known split brain)
+// # Warning dialect (resolved)
 //
-// Two warning hues ship today: yellow (Feedback/Alert, Badge, Kanban,
-// StatCard) and amber (StatusDot, ScrollbackLog, errorpage rejection).
-// The tone table canonicalizes YELLOW (the majority dialect) until the
-// #428 decision lands; amber-rendering components keep their hue via the
-// Hue axis and their own lookups.
+// The #428 decision (2026-10-30, owner default) landed ONE semantic
+// warning hue: AMBER. The tone table, feedback (Alert/Toast), and Badge
+// all render warning in amber; the former amber sites (StatusDot,
+// ScrollbackLog, errorpage rejection, outline warning button, trend warn)
+// already did. Categorical yellow survives on the Hue axis (Kanban lanes,
+// StatCard series) — that is a pigment choice, not a semantic warning.
 package tone
 
 // Tone is the semantic reason something is colored: what the color MEANS,
@@ -20439,7 +20472,7 @@ const (
 	ToneNeutral Tone = "neutral"
 	// ToneSuccess confirms a positive outcome (green).
 	ToneSuccess Tone = "success"
-	// ToneWarning signals caution short of failure (yellow today; see the
+	// ToneWarning signals caution short of failure (amber; see the
 	// package doc's warning-dialect note and TODO #428).
 	ToneWarning Tone = "warning"
 	// ToneDanger signals failure or destruction (red). Canonical spelling

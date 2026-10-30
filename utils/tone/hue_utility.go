@@ -38,6 +38,7 @@ const (
 	darkTextGray   = "dark:text-gray-400"
 	darkTextGreen  = "dark:text-green-400"
 	darkTextYellow = "dark:text-yellow-400"
+	darkTextAmber  = "dark:text-amber-400"
 	darkTextRed    = "dark:text-red-400"
 )
 

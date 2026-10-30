@@ -95,7 +95,7 @@ func TestToastCoverage(t *testing.T) {
 	}{
 		{"success", FeedbackSuccess, "green"},
 		{"error", FeedbackError, "red"},
-		{"warning", FeedbackWarning, "yellow"},
+		{"warning", FeedbackWarning, "amber"},
 		{"info", FeedbackInfo, "blue"},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
@@ -138,7 +138,7 @@ func TestAlertCoverage(t *testing.T) {
 	}{
 		{"success", FeedbackSuccess, "green"},
 		{"error", FeedbackError, "red"},
-		{"warning", FeedbackWarning, "yellow"},
+		{"warning", FeedbackWarning, "amber"},
 		{"info", FeedbackInfo, "blue"},
 	} {
 		t.Run(tt.name, func(t *testing.T) {

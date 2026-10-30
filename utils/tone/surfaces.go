@@ -23,8 +23,9 @@ type Surfaces struct {
 }
 
 // toneTable maps every Tone to its surfaces. The hue backing each tone:
-// neutral=gray, success=green, warning=yellow (majority dialect — see the
-// package doc), danger=red, info=blue, accent=blue (the ADR-0044 accent
+// neutral=gray, success=green, warning=amber (the #428 decision — the
+// one semantic warning hue; categorical yellow survives on the Hue axis
+// for Kanban/StatCard), danger=red, info=blue, accent=blue (the ADR-0044 accent
 // slot until v2 swaps it to the accent token family).
 //
 // Neutral deviates from the uniform tint grammar where feedback's fallback
@@ -53,13 +54,13 @@ var toneTable = map[Tone]Surfaces{
 		Icon:     Pair{"text-green-600", darkTextGreen},
 	},
 	ToneWarning: {
-		Dot:      hueTable[HueYellow].BGSolid,
-		Text:     Pair{"text-yellow-800", "dark:text-yellow-200"},
-		TextSoft: Pair{"text-yellow-600", darkTextYellow},
-		Border:   Pair{"border-yellow-200", "dark:border-yellow-800"},
-		BGTint:   Pair{"bg-yellow-50", "dark:bg-yellow-900/20"},
-		BGSolid:  hueTable[HueYellow].BGSolidStrong,
-		Icon:     Pair{"text-yellow-600", darkTextYellow},
+		Dot:      hueTable[HueAmber].BGSolid,
+		Text:     Pair{"text-amber-800", "dark:text-amber-200"},
+		TextSoft: Pair{"text-amber-600", darkTextAmber},
+		Border:   Pair{"border-amber-200", "dark:border-amber-800"},
+		BGTint:   Pair{"bg-amber-50", "dark:bg-amber-900/20"},
+		BGSolid:  hueTable[HueAmber].BGSolidStrong,
+		Icon:     Pair{"text-amber-600", darkTextAmber},
 	},
 	ToneDanger: {
 		Dot:      hueTable[HueRed].BGSolid,

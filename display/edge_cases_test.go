@@ -209,7 +209,7 @@ func TestBadgeEdgeCases(t *testing.T) {
 		{"neutral", BadgeProps{Text: "Test", Type: BadgeNeutral}, []string{"bg-gray-100"}},
 		{"success", BadgeProps{Text: "Test", Type: BadgeSuccess}, []string{"green"}},
 		{"error", BadgeProps{Text: "Test", Type: BadgeError}, []string{"red"}},
-		{"warning", BadgeProps{Text: "Test", Type: BadgeWarning}, []string{"yellow"}},
+		{"warning", BadgeProps{Text: "Test", Type: BadgeWarning}, []string{"amber"}},
 		{"info", BadgeProps{Text: "Test", Type: BadgeInfo}, []string{"blue"}},
 		{"with dot", BadgeProps{Text: "Live", Type: BadgeSuccess, Dot: true}, []string{"bg-green"}},
 		{"custom id/class", BadgeProps{ID: "badge-1", Class: "ml-2", Text: "Test"}, []string{`id="badge-1"`, "ml-2"}},

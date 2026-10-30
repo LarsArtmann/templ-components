@@ -114,7 +114,7 @@ func TestStatusBadgeRender(t *testing.T) {
 	}{
 		{name: "active maps to success", status: statusActive, want: "bg-green-100"},
 		{name: "error maps to error", status: statusError, want: "bg-red-100"},
-		{name: "warning maps to warning", status: statusWarning, want: "bg-yellow-100"},
+		{name: "warning maps to warning", status: statusWarning, want: "bg-amber-100"},
 		{name: "unknown maps to neutral", status: statusUnknown, want: "bg-gray-100"},
 	}
 	for _, tt := range tests {

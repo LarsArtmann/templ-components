@@ -29,7 +29,7 @@ func TestStatusToneAdapterEquivalence(t *testing.T) {
 	wantTones := map[StatusTone]tone.Tone{
 		StatusToneNeutral: tone.ToneNeutral,
 		StatusToneSuccess: tone.ToneSuccess,
-		StatusToneWarning: tone.ToneWarning, // amber hue, yellow-canonical tone: the #428 split
+		StatusToneWarning: tone.ToneWarning, // amber hue — the #428 decision (one warning hue)
 		StatusToneDanger:  tone.ToneDanger,
 		StatusToneInfo:    tone.ToneInfo,
 	}
@@ -159,7 +159,7 @@ func TestBadgeTypeAdapterEquivalence(t *testing.T) {
 	wantDots := map[BadgeType]string{
 		BadgePrimary: tone.UtilitiesFor(tone.HueBlue).BGSolid.Light,
 		BadgeSuccess: tone.UtilitiesFor(tone.HueGreen).BGSolid.Light,
-		BadgeWarning: tone.UtilitiesFor(tone.HueYellow).BGSolid.Light,
+		BadgeWarning: tone.UtilitiesFor(tone.HueAmber).BGSolid.Light,
 		BadgeError:   tone.UtilitiesFor(tone.HueRed).BGSolid.Light,
 		BadgeInfo:    tone.UtilitiesFor(tone.HueBlue).BGSolid.Light,
 		BadgeNeutral: "bg-gray-500",

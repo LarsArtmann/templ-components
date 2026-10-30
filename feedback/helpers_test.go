@@ -14,7 +14,7 @@ const (
 	spinnerMDClass      = "h-6 w-6"
 	borderGreenClass    = "border-green-200 dark:border-green-800"
 	borderRedClass      = "border-red-200 dark:border-red-800"
-	borderYellowClass   = "border-yellow-200 dark:border-yellow-800"
+	borderAmberClass    = "border-amber-200 dark:border-amber-800"
 	borderBlueClass     = "border-blue-200 dark:border-blue-800"
 	stepLineActiveClass = "bg-blue-600 dark:bg-blue-500"
 	textBlueInfoClass   = "text-blue-600 dark:text-blue-400"
@@ -87,8 +87,8 @@ func TestToastStyles(t *testing.T) {
 		{FeedbackError, borderRedClass, "text-red-600 dark:text-red-400"},
 		{
 			FeedbackWarning,
-			borderYellowClass,
-			"text-yellow-600 dark:text-yellow-400",
+			borderAmberClass,
+			"text-amber-600 dark:text-amber-400",
 		},
 		{FeedbackInfo, borderBlueClass, textBlueInfoClass},
 	}
@@ -128,7 +128,7 @@ func TestAlertStyles(t *testing.T) {
 	}{
 		{FeedbackSuccess, borderGreenClass, "text-green-600 dark:text-green-400"},
 		{FeedbackError, borderRedClass, "text-red-600 dark:text-red-400"},
-		{FeedbackWarning, borderYellowClass, "text-yellow-600 dark:text-yellow-400"},
+		{FeedbackWarning, borderAmberClass, "text-amber-600 dark:text-amber-400"},
 		{FeedbackInfo, borderBlueClass, textBlueInfoClass},
 	}
 	for _, tt := range tests {

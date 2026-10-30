@@ -33,7 +33,7 @@ var darkModeExceptions = []darkModeException{
 	{"feedback/styles.go", "Icon:"},
 	// Badge dot colors are decorative — solid background with text on top
 	{"display/badge.templ", "bg-green-500"},
-	{"display/badge.templ", "bg-yellow-500"},
+	{"display/badge.templ", "bg-amber-500"},
 	{"display/badge.templ", "bg-red-500"},
 	{"display/badge.templ", "bg-blue-500"},
 	// Count badge background — solid red with white text, readable in both modes

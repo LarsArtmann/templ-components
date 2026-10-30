@@ -18,13 +18,14 @@
 // variant prefixes must be complete literals"). Pair exists to make the
 // light/dark halves structural, not to build strings dynamically.
 //
-// # Warning dialect (the known split brain)
+// # Warning dialect (resolved)
 //
-// Two warning hues ship today: yellow (Feedback/Alert, Badge, Kanban,
-// StatCard) and amber (StatusDot, ScrollbackLog, errorpage rejection).
-// The tone table canonicalizes YELLOW (the majority dialect) until the
-// #428 decision lands; amber-rendering components keep their hue via the
-// Hue axis and their own lookups.
+// The #428 decision (2026-10-30, owner default) landed ONE semantic
+// warning hue: AMBER. The tone table, feedback (Alert/Toast), and Badge
+// all render warning in amber; the former amber sites (StatusDot,
+// ScrollbackLog, errorpage rejection, outline warning button, trend warn)
+// already did. Categorical yellow survives on the Hue axis (Kanban lanes,
+// StatCard series) — that is a pigment choice, not a semantic warning.
 package tone
 
 // Tone is the semantic reason something is colored: what the color MEANS,
@@ -37,7 +38,7 @@ const (
 	ToneNeutral Tone = "neutral"
 	// ToneSuccess confirms a positive outcome (green).
 	ToneSuccess Tone = "success"
-	// ToneWarning signals caution short of failure (yellow today; see the
+	// ToneWarning signals caution short of failure (amber; see the
 	// package doc's warning-dialect note and TODO #428).
 	ToneWarning Tone = "warning"
 	// ToneDanger signals failure or destruction (red). Canonical spelling
