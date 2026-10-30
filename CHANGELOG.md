@@ -31,10 +31,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   activated the first result. All three now ignore keystrokes while
   `event.isComposing` (or the legacy keyCode 229) is set.
 - **`forms.Toggle` now announces itself as a switch.** The underlying
-  checkbox carries `role="switch"`, so screen readers report an on/off switch
-  rather than a checked/unchecked checkbox. Form submission, keyboard
-  behaviour and the checked state stay native — no `aria-checked`
-  bookkeeping, and no dependence on the Safari-only `switch` attribute.
+  checkbox carries `role="switch"` plus `aria-checked`, so screen readers
+  report an on/off switch rather than a checked/unchecked checkbox. The state
+  attribute is rendered from `Checked` and kept in sync by a single delegated
+  listener (which also repairs state restored from bfcache or form history),
+  because `aria-checked` becomes a required, author-maintained state once the
+  role is overridden. Form submission and keyboard behaviour stay native, with
+  no dependence on the Safari-only `switch` attribute.
 - **Overlays no longer close when you click inside them.** Backdrop dismissal
   tested `event.target === dialog`, but the `<dialog>` is also the target for
   clicks on its own padding and on the gaps between its children, so an inside
