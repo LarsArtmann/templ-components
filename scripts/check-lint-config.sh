@@ -69,4 +69,40 @@ if [ -n "$VIOLATIONS" ] || [ -n "$IRETURN_BLOCK" ]; then
 	exit 1
 fi
 
+# golangci-lint VERSION lockstep (TODO #443): CI installs one pinned version
+# (ci.yaml) while the dev shell ships nixpkgs' — a skew means the local gate
+# can demand more (or less) than CI enforces. Skew is not a code bug: fix is
+# a dedicated pin-bump commit (workflow + flake input in lockstep), never a
+# release cargo. Loud skip when no binary is on PATH (pre-commit may run
+# before the dev shell is entered).
+CI_GCL_REV="$(sed -n 's|.*golangci-lint/v2/cmd/golangci-lint@\(v[0-9.]*\).*|\1|p' .github/workflows/ci.yaml | head -1)"
+if [ -z "$CI_GCL_REV" ]; then
+	echo "WARN: could not parse the golangci-lint pin from ci.yaml — lockstep unchecked" >&2
+	exit 0
+fi
+
+if ! command -v golangci-lint >/dev/null 2>&1; then
+	echo "SKIP: golangci-lint not on PATH — version lockstep unchecked (CI pins $CI_GCL_REV)" >&2
+	exit 0
+fi
+
+# Normalize both sides to bare x.y.z (CI pins carry v; `golangci-lint
+# version` prints the bare form in its "has version X" field).
+LOCAL_GCL_VER="$(golangci-lint version 2>/dev/null | head -1 | sed -n 's/.* has version v\{0,1\}\([0-9][0-9.]*\) .*/\1/p')"
+CI_GCL_VER="${CI_GCL_REV#v}"
+if [ -z "$LOCAL_GCL_VER" ]; then
+	echo "WARN: could not parse local golangci-lint version — lockstep unchecked" >&2
+	exit 0
+fi
+
+if [ "$LOCAL_GCL_VER" != "$CI_GCL_VER" ]; then
+	echo "BLOCKED: golangci-lint version skew — CI pins $CI_GCL_REV, local is $LOCAL_GCL_VER." >&2
+	echo "  Fix the CODE so both versions pass, then align the pins in ONE dedicated" >&2
+	echo "  commit (ci.yaml install rev + flake nixpkgs input together — never release cargo)." >&2
+	echo "  History: TODO #443 / AGENTS lint-skew note (2026-10-23)." >&2
+	exit 1
+fi
+
+echo "golangci-lint lockstep OK: $LOCAL_GCL_VER (CI == local == $CI_GCL_REV)"
+
 exit 0
