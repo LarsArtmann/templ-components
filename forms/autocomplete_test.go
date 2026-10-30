@@ -21,7 +21,7 @@ func TestInputAutocomplete(t *testing.T) {
 			ID:           "ac-user",
 			Name:         "username",
 			Type:         InputText,
-			Autocomplete: AutocompleteUser,
+			Autocomplete: AutocompleteUsername,
 		}))
 		utils.AssertContains(t, output, `autocomplete="username"`)
 
@@ -41,7 +41,7 @@ func TestInputAutocomplete(t *testing.T) {
 			ID:           "ac-cc",
 			Name:         "card",
 			Type:         InputText,
-			Autocomplete: AutocompleteCCNumber,
+			Autocomplete: AutocompleteCardNumber,
 		}))
 		utils.AssertContains(t, output, `autocomplete="cc-number"`)
 

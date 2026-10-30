@@ -105,16 +105,16 @@ func enterKeyHintValue(props InputProps) string {
 type AutocompleteType string
 
 const (
-	AutocompleteOff    AutocompleteType = "off"
-	AutocompleteOn     AutocompleteType = "on"
-	AutocompleteName   AutocompleteType = "name"
-	AutocompleteGiven  AutocompleteType = "given-name"
-	AutocompleteFamily AutocompleteType = "family-name"
-	AutocompleteUser   AutocompleteType = "username"
-	AutocompleteEmail  AutocompleteType = "email"
-	AutocompleteTel    AutocompleteType = "tel"
-	AutocompleteURL    AutocompleteType = "url"
-	AutocompleteOrg    AutocompleteType = "organization"
+	AutocompleteOff          AutocompleteType = "off"
+	AutocompleteOn           AutocompleteType = "on"
+	AutocompleteName         AutocompleteType = "name"
+	AutocompleteGivenName    AutocompleteType = "given-name"
+	AutocompleteFamilyName   AutocompleteType = "family-name"
+	AutocompleteUsername     AutocompleteType = "username"
+	AutocompleteEmail        AutocompleteType = "email"
+	AutocompleteTel          AutocompleteType = "tel"
+	AutocompleteURL          AutocompleteType = "url"
+	AutocompleteOrganization AutocompleteType = "organization"
 
 	// Credential fields. NewPassword MUST be used for sign-up and password
 	// change forms — reusing CurrentPassword there makes the browser offer the
@@ -132,24 +132,24 @@ const (
 	AutocompleteCountryName   AutocompleteType = "country-name"
 
 	// Payment fields.
-	AutocompleteCCName   AutocompleteType = "cc-name"
-	AutocompleteCCNumber AutocompleteType = "cc-number"
-	AutocompleteCCExp    AutocompleteType = "cc-exp"
-	AutocompleteCCCSC    AutocompleteType = "cc-csc"
+	AutocompleteCardName         AutocompleteType = "cc-name"
+	AutocompleteCardNumber       AutocompleteType = "cc-number"
+	AutocompleteCardExpiry       AutocompleteType = "cc-exp"
+	AutocompleteCardSecurityCode AutocompleteType = "cc-csc"
 )
 
 //nolint:gochecknoglobals // Package-level validation set for autocomplete
 var validAutocompletes = map[AutocompleteType]bool{
 	AutocompleteOff: true, AutocompleteOn: true, AutocompleteName: true,
-	AutocompleteGiven: true, AutocompleteFamily: true, AutocompleteUser: true,
+	AutocompleteGivenName: true, AutocompleteFamilyName: true, AutocompleteUsername: true,
 	AutocompleteEmail: true, AutocompleteTel: true, AutocompleteURL: true,
-	AutocompleteOrg: true, AutocompleteCurrentPassword: true,
+	AutocompleteOrganization: true, AutocompleteCurrentPassword: true,
 	AutocompleteNewPassword: true, AutocompleteOneTimeCode: true,
 	AutocompleteStreetAddress: true, AutocompleteAddressLine1: true,
 	AutocompleteAddressLine2: true, AutocompletePostalCode: true,
 	AutocompleteCountry: true, AutocompleteCountryName: true,
-	AutocompleteCCName: true, AutocompleteCCNumber: true,
-	AutocompleteCCExp: true, AutocompleteCCCSC: true,
+	AutocompleteCardName: true, AutocompleteCardNumber: true,
+	AutocompleteCardExpiry: true, AutocompleteCardSecurityCode: true,
 }
 
 // AutocompleteTypeIsValid reports whether v is a known autocomplete token.
