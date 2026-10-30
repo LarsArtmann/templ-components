@@ -47,6 +47,11 @@ const tagsInputJS = `
 				document.addEventListener('keydown',function(e){
 				var input=e.target;if(!input||!input.hasAttribute('data-tc-tags-input'))return;
 				var container=input.closest('[data-tc-tags]');if(!container)return;
+				// IME composition: Enter commits the composition, it does not add a
+				// tag. isComposing is the standard signal; keyCode 229 covers engines
+				// that only report the legacy code (Modern Web Guidance:
+				// ime-safe-enter-submit).
+				if(e.isComposing||e.keyCode===229)return;
 				if(e.key==='Enter'||e.key===','){e.preventDefault();
 				var val=input.value.trim();if(!val)return;input.value='';
 				var existing=container.querySelectorAll('[data-tc-tag]');

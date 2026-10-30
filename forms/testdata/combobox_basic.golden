@@ -89,6 +89,11 @@
 			document.addEventListener('keydown', function(e) {
 				var input = e.target.closest('[data-combobox-input]');
 				if (!input) return;
+				// IME composition (CJK, Indic, dead keys): Enter commits the
+				// composition, it does not pick an option. isComposing is the
+				// standard signal; keyCode 229 covers engines that only report
+				// the legacy code. Modern Web Guidance: ime-safe-enter-submit.
+				if (e.isComposing || e.keyCode === 229) return;
 				var id = input.getAttribute('data-combobox-input');
 				var list = document.querySelector('[data-combobox-list="' + id + '"]');
 				if (!list) return;

@@ -2892,6 +2892,9 @@ func commandPaletteJS(id string) string {
 		"if(e.target.closest('[data-tc-close]'))d.close();});" +
 		"if(input){input.addEventListener('input',applyFilter);" +
 		"input.addEventListener('keydown',function(e){" +
+		// IME composition: Enter commits the composition, it must not activate
+		// the highlighted result (Modern Web Guidance: ime-safe-enter-submit).
+		"if(e.isComposing||e.keyCode===229)return;" +
 		"var opts=options();" +
 		"if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();" +
 		"if(!opts.length)return;var i=opts.indexOf(active);" +
@@ -5109,8 +5112,16 @@ type ImageProps struct {
 	// FallbackSrc, when non-empty, is used if Src fails to load. Handled via
 	// a CSP-safe event-delegation script — no inline onerror handler.
 	FallbackSrc string
-	// Lazy controls the loading attribute. When true (default), uses
-	// loading="lazy". Set to false for above-the-fold images.
+	// Lazy controls the loading attribute AND the fetch priority. When true
+	// (default) the img gets loading="lazy" and NO fetchpriority attribute;
+	// set it to false for the above-the-fold LCP image, which then gets
+	// loading="eager" plus fetchpriority="high".
+	//
+	// fetchpriority="low" is deliberately never emitted: pairing it with
+	// loading="lazy" is a documented anti-pattern (Modern Web Guidance
+	// "optimize-image-priority" makes it MANDATORY not to) — lazy images
+	// already load at normal priority when they enter the viewport, and an
+	// explicit low priority delays them further.
 	Lazy bool
 	// Rounded, when true, adds rounded-full for circular images (avatars, icons).
 	// Defaults to false (rounded-md).
@@ -5174,7 +5185,9 @@ templ Image(props ImageProps) {
 				}
 				loading={ utils.Ternary(props.Lazy, "lazy", "eager") }
 				decoding="async"
-				fetchpriority={ utils.Ternary(props.Lazy, "low", "high") }
+				if !props.Lazy {
+					fetchpriority="high"
+				}
 				if props.Width > 0 {
 					width={ props.Width }
 				}
@@ -5199,7 +5212,9 @@ templ Image(props ImageProps) {
 			}
 			loading={ utils.Ternary(props.Lazy, "lazy", "eager") }
 			decoding="async"
-			fetchpriority={ utils.Ternary(props.Lazy, "low", "high") }
+			if !props.Lazy {
+				fetchpriority="high"
+			}
 			if props.Width > 0 {
 				width={ props.Width }
 			}
@@ -11794,6 +11809,11 @@ templ Combobox(props ComboboxProps) {
 			document.addEventListener('keydown', function(e) {
 				var input = e.target.closest('[data-combobox-input]');
 				if (!input) return;
+				// IME composition (CJK, Indic, dead keys): Enter commits the
+				// composition, it does not pick an option. isComposing is the
+				// standard signal; keyCode 229 covers engines that only report
+				// the legacy code. Modern Web Guidance: ime-safe-enter-submit.
+				if (e.isComposing || e.keyCode === 229) return;
 				var id = input.getAttribute('data-combobox-input');
 				var list = document.querySelector('[data-combobox-list="' + id + '"]');
 				if (!list) return;
@@ -14339,6 +14359,11 @@ const tagsInputJS = `
 				document.addEventListener('keydown',function(e){
 				var input=e.target;if(!input||!input.hasAttribute('data-tc-tags-input'))return;
 				var container=input.closest('[data-tc-tags]');if(!container)return;
+				// IME composition: Enter commits the composition, it does not add a
+				// tag. isComposing is the standard signal; keyCode 229 covers engines
+				// that only report the legacy code (Modern Web Guidance:
+				// ime-safe-enter-submit).
+				if(e.isComposing||e.keyCode===229)return;
 				if(e.key==='Enter'||e.key===','){e.preventDefault();
 				var val=input.value.trim();if(!val)return;input.value='';
 				var existing=container.querySelectorAll('[data-tc-tag]');

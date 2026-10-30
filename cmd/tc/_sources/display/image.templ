@@ -28,8 +28,16 @@ type ImageProps struct {
 	// FallbackSrc, when non-empty, is used if Src fails to load. Handled via
 	// a CSP-safe event-delegation script — no inline onerror handler.
 	FallbackSrc string
-	// Lazy controls the loading attribute. When true (default), uses
-	// loading="lazy". Set to false for above-the-fold images.
+	// Lazy controls the loading attribute AND the fetch priority. When true
+	// (default) the img gets loading="lazy" and NO fetchpriority attribute;
+	// set it to false for the above-the-fold LCP image, which then gets
+	// loading="eager" plus fetchpriority="high".
+	//
+	// fetchpriority="low" is deliberately never emitted: pairing it with
+	// loading="lazy" is a documented anti-pattern (Modern Web Guidance
+	// "optimize-image-priority" makes it MANDATORY not to) — lazy images
+	// already load at normal priority when they enter the viewport, and an
+	// explicit low priority delays them further.
 	Lazy bool
 	// Rounded, when true, adds rounded-full for circular images (avatars, icons).
 	// Defaults to false (rounded-md).
@@ -93,7 +101,9 @@ templ Image(props ImageProps) {
 				}
 				loading={ utils.Ternary(props.Lazy, "lazy", "eager") }
 				decoding="async"
-				fetchpriority={ utils.Ternary(props.Lazy, "low", "high") }
+				if !props.Lazy {
+					fetchpriority="high"
+				}
 				if props.Width > 0 {
 					width={ props.Width }
 				}
@@ -118,7 +128,9 @@ templ Image(props ImageProps) {
 			}
 			loading={ utils.Ternary(props.Lazy, "lazy", "eager") }
 			decoding="async"
-			fetchpriority={ utils.Ternary(props.Lazy, "low", "high") }
+			if !props.Lazy {
+				fetchpriority="high"
+			}
 			if props.Width > 0 {
 				width={ props.Width }
 			}
