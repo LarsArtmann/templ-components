@@ -19,8 +19,8 @@ questions:
 
 | Axis | Score | What it measures |
 | --- | --- | --- |
-| **Correctness of what ships** | **~85%** | Where we use a native API, do we use it the way the platform (and the guide) requires? |
-| **Breadth of platform adoption** | **~55%** | How much of what the platform now offers do we actually exploit? |
+| **Correctness of what ships** | **~92%** | Where we use a native API, do we use it the way the platform (and the guide) requires? |
+| **Breadth of platform adoption** | **~65%** | How much of what the platform now offers do we actually exploit? |
 
 - **Zero legacy anti-patterns in the high-traffic components.** Modal, Drawer,
   CommandPalette, Lightbox, Popover, Dropdown, ContextMenu, Accordion, Tabs,
@@ -36,9 +36,14 @@ questions:
   (zero), `scroll-initial-target` (zero), scrollbar theming (zero),
   `light-dark()`/`contrast-color()` (zero), Trusted Types (absent).
 
-Counted over the 44 guides retrieved: **16 adopted · 15 partial · 11 gap ·
-2 not applicable.** Partial dominates because we usually get the hard 80% right
-and skip the final guide-mandated detail.
+Across the 44 guides retrieved: **20 surfaces now sit in the adopted column,
+12 are partial, 10 are still gaps**, and 2 are not gradeable against this
+library: `menu` is a CLI stub with no prescription, and
+`accessible-generated-content` has almost nothing to bite on here (our only
+meaning-carrying generated content is the print-only external-link URL in
+`.tc-prose`). Partial dominates because we usually get
+the hard 80% right and skip the final guide-mandated detail — that is where the
+remaining risk lives.
 
 ---
 
@@ -49,6 +54,10 @@ Worth recording so this is not re-litigated. Each row is verified in source.
 | Guide | Evidence |
 | --- | --- |
 | `dialog` (core semantics) | `display/shared.templ:17` renders a real `<dialog>`; `display/shared.go:78` opens with `showModal()` and closes with `dialog.close()`. No `role="dialog"`, no `aria-modal`, no focus trap, no `inert` juggling, no Esc handler, no manual focus restore — all the things the guide marks DON'T. |
+| `dialog` (dismiss) | `closedby="any"` on every overlay `<dialog>` (Modal, Drawer, CommandPalette, Lightbox) and pointer-position backdrop detection shared through `dialogBackdropOutsideJS`/`backdropDismissJS` (`display/shared.go`). Press **and** release must land outside, so a selection drag ending on the backdrop does not dismiss, and clicks on the dialog's own padding no longer close it. (Added 2026-10-30.) |
+| `light-dismiss-a-dialog` | Same `closedby="any"`; the declarative form where the browser supports it, the pointer path everywhere else, with `close()` on a closed dialog being a no-op. |
+| `animate-to-intrinsic-sizes` | `templates/custom.css` — `details::details-content` gets `block-size: 0` → `auto` under `@supports selector(::details-content)` plus the `:root` `interpolate-size` opt-in, with `content-visibility` transitioned `allow-discrete` and the whole block disabled under `prefers-reduced-motion`. The accordion panel animates instead of snapping. (Added 2026-10-30.) |
+| `cross-document-transitions` (MPA surfaces) | `examples/demo/demo.css` and `website/site.css` declare `@view-transition { navigation: auto }` with a reduced-motion opt-out. Both are MPAs where every page opts in, which is the requirement. Deliberately not in `templates/custom.css`, so consumers do not inherit it. (Added 2026-10-30.) |
 | `prevent-page-scroll-under-modal-dialog` | `templates/custom.css:104-111` — `overscroll-behavior: contain` on `dialog:modal` **and** `overflow: hidden` + `contain` on `dialog::backdrop`. (Added 2026-10-30; this was the one MANDATORY we were missing.) |
 | `animate-to-from-top-layer` | All three MANDATORYs: `overlay` in the transition list, `display … allow-discrete`, and `@starting-style` (`templates/custom.css:113-131`), with `prefers-reduced-motion` handling. |
 | `size-aware-styling` / `responsive-design` | 55 `@container` sites; the `ContainerAware` flag swaps every breakpoint map viewport↔container (ADR-0018), and `Card` deliberately opts out with a visual-regression proof. |
@@ -81,21 +90,18 @@ Ordered by user-visible impact.
 
 | # | Guide | What we do | What the guide additionally requires |
 | --- | --- | --- | --- |
-| 1 | `dialog` (dismiss) | Backdrop click detected as `e.target === dialog` (`display/shared.go:101`, `display/command_palette.go:123`) | The guide calls the target check unreliable (the `<dialog>` is also the target for its own padding and the gaps between children) and prescribes `closedby="any"` + a pointer-position fallback. Also: close via `<form method="dialog">` / `command="close"` rather than `type="button"` + JS, and `command="request-close"` for dirty-form Cancel. |
-| 2 | `declarative-dialog-popover-control` | `data-tc-overlay-trigger` click delegation (`display/shared.go:92`) | `command="show-modal"` + `commandfor` — no JS at all (Baseline 2025-12-12). Our path is the documented polyfill-equivalent, so this is a payload/behaviour simplification, not a bug. |
-| 3 | `light-dismiss-a-dialog` | Modal has Esc/backdrop close, no `closedby` | `closedby="any"` (progressive enhancement — Safari lacks it), keeping the dirty-form guard in `cancel`. |
-| 4 | `viewport-aware-dropdowns` + `menu` | Popover API + a ~60-line JS positioner with flip and viewport clamping (`display/shared.go:265`) | CSS anchor positioning (`position-area` + `position-try-fallbacks`). **Not a defect:** the guide itself reports anchor positioning as *Limited availability* and its own fallback is exactly `getBoundingClientRect()` math. The right move is an additive `@supports (anchor-name: --x)` layer, not a replacement. Note our flip resolves one axis per open and cannot express "flip both axes". |
-| 5 | `position-aware-tooltips` | Tooltip is `absolute` inside its trigger's parent (`display/tooltip.templ:84`) | Edge-aware placement. Today a tooltip in an `overflow-hidden` ancestor is clipped and a near-edge tooltip overflows the viewport — the popover panels handle this, tooltips do not. |
-| 6 | `interest-triggered-tooltips` | Pure CSS `:hover`/`:focus-within` + `aria-describedby` propagation to the focusable child | `interestfor` + `popover="hint"` (Limited availability) gives the 0.5s interest delay and browser-owned AT wiring. Our JS propagation is a reasonable stand-in. |
-| 7 | `hovercard` | `role="tooltip"` on rich, interactive content, `absolute`-positioned (`display/hover_card.templ:57`) | `popover="hint"` + `interestfor`; the browser assigns `aria-details` (not `aria-describedby`) when the card is interactive, and the guide says **do not** set `role="tooltip"` yourself. Our current combination advertises a plain tooltip while shipping interactive content, and z-index/overflow applies. This is the weakest overlay in the library. |
-| 8 | `animate-to-intrinsic-sizes` | `interpolate-size: allow-keywords` is enabled globally (`custom.css:494`) but nothing animates `height`/`block-size` | The Accordion chevron rotates while the panel **snaps** open. One `::details-content` block + `block-size … allow-discrete` transition would make `<details>` animate — the guide's headline example. |
-| 9 | `responsive-table` (stacking half) | Sticky `thead` only | Sticky row headers, `@container` (not `@media`) breakpoints, and the stacked-card layout with `::before` label injection on narrow containers. |
-| 10 | `persistent-toast-notifications` | `aria-live` container + `role="status"` per toast (`feedback/toast.templ:92,108`) | `popover="manual"` (MANDATORY in the guide) so toasts survive unrelated interactions and escape z-index/overflow stacking; `popovertargetaction="hide"` close buttons; `sibling-index()` spacing. Deviation is defensible (a live region is what announces reliably), but stacking/clipping inside `overflow-hidden` layouts is the price. |
-| 11 | `progress` | `div role="progressbar"` + clamped `aria-valuenow` (`feedback/progressbar.templ`) | Native `<progress>` with `appearance: none` + `::-webkit-progress-value`/`::-moz-progress-bar` (never comma-joined). Native gets implicit semantics and platform behaviour for free; ours is the hand-roll the guide steers away from. |
-| 12 | `slider` | Native `type="range"` + vendor pseudo-element classes | Explicit WebKit filled-track (`--control-value` synced on `input`), and optionally `progress()`/`attr()` where supported. Cosmetic, not behavioural. |
-| 13 | `dark-mode-toggle` | `.dark` class + `localStorage` + `role="switch"` | The guide's data model is `<meta name="color-scheme">` mapped back to CSS with `:root:has(> head > meta[…])`, three states (system/light/dark), and a `storage` event listener. Ours has two states and **no OS fallback without JS** — if the theme script fails, a dark-OS user gets the light theme. |
-| 14 | `typography` | `text-wrap: balance` on headings, `pretty` on `p`, rem sizes | `clamp()` fluid type is only in `.tc-fluid-*` helpers, not the components; no `text-box-trim` (heading spacing is padding-based). |
-| 15 | `fluid-scaling` | `.tc-fluid-*` clamp utilities + container breakpoints | Container-query **units** (`cqi`/`cqw`) — zero uses; fluid type is still viewport-driven inside a container-aware component. |
+| 1 | `declarative-dialog-popover-control` | `data-tc-overlay-trigger` click delegation (`display/shared.go:92`) | `command="show-modal"` + `commandfor` — no JS at all (Baseline 2025-12-12). Our path is the documented polyfill-equivalent, so this is a payload/behaviour simplification, not a bug. |
+| 2 | `viewport-aware-dropdowns` + `menu` | Popover API + a ~60-line JS positioner with flip and viewport clamping (`display/shared.go:265`) | CSS anchor positioning (`position-area` + `position-try-fallbacks`). **Not a defect:** the guide itself reports anchor positioning as *Limited availability* and its own fallback is exactly `getBoundingClientRect()` math. The right move is an additive `@supports (anchor-name: --x)` layer, not a replacement. Note our flip resolves one axis per open and cannot express "flip both axes". |
+| 3 | `position-aware-tooltips` | Tooltip is `absolute` inside its trigger's parent (`display/tooltip.templ:84`) | Edge-aware placement. Today a tooltip in an `overflow-hidden` ancestor is clipped and a near-edge tooltip overflows the viewport — the popover panels handle this, tooltips do not. |
+| 4 | `interest-triggered-tooltips` | Pure CSS `:hover`/`:focus-within` + `aria-describedby` propagation to the focusable child | `interestfor` + `popover="hint"` (Limited availability) gives the 0.5s interest delay and browser-owned AT wiring. Our JS propagation is a reasonable stand-in. |
+| 5 | `hovercard` | `role="tooltip"` on rich, interactive content, `absolute`-positioned (`display/hover_card.templ:57`) | `popover="hint"` + `interestfor`; the browser assigns `aria-details` (not `aria-describedby`) when the card is interactive, and the guide says **do not** set `role="tooltip"` yourself. Our current combination advertises a plain tooltip while shipping interactive content, and z-index/overflow applies. This is the weakest overlay in the library. |
+| 6 | `responsive-table` (stacking half) | Sticky `thead` only | Sticky row headers, `@container` (not `@media`) breakpoints, and the stacked-card layout with `::before` label injection on narrow containers. |
+| 7 | `persistent-toast-notifications` | `aria-live` container + `role="status"` per toast (`feedback/toast.templ:92,108`) | `popover="manual"` (MANDATORY in the guide) so toasts survive unrelated interactions and escape z-index/overflow stacking; `popovertargetaction="hide"` close buttons; `sibling-index()` spacing. Deviation is defensible (a live region is what announces reliably), but stacking/clipping inside `overflow-hidden` layouts is the price. |
+| 8 | `progress` | `div role="progressbar"` + clamped `aria-valuenow` (`feedback/progressbar.templ`) | Native `<progress>` with `appearance: none` + `::-webkit-progress-value`/`::-moz-progress-bar` (never comma-joined). Native gets implicit semantics and platform behaviour for free; ours is the hand-roll the guide steers away from. |
+| 9 | `slider` | Native `type="range"` + vendor pseudo-element classes | Explicit WebKit filled-track (`--control-value` synced on `input`), and optionally `progress()`/`attr()` where supported. Cosmetic, not behavioural. |
+| 10 | `dark-mode-toggle` | `.dark` class + `localStorage` + `role="switch"` | The guide's data model is `<meta name="color-scheme">` mapped back to CSS with `:root:has(> head > meta[…])`, three states (system/light/dark), and a `storage` event listener. Ours has two states and **no OS fallback without JS** — if the theme script fails, a dark-OS user gets the light theme. |
+| 11 | `typography` | `text-wrap: balance` on headings, `pretty` on `p`, rem sizes | `clamp()` fluid type is only in `.tc-fluid-*` helpers, not the components; no `text-box-trim` (heading spacing is padding-based). |
+| 12 | `fluid-scaling` | `.tc-fluid-*` clamp utilities + container breakpoints | Container-query **units** (`cqi`/`cqw`) — zero uses; fluid type is still viewport-driven inside a container-aware component. |
 
 ---
 
@@ -112,16 +118,14 @@ Ordered by user-visible impact.
 | `trusted-types` | **zero**; CSP is nonce-based only | Nonce CSP blocks injected `<script>`, but not `innerHTML` sinks. We build DOM with `createElement` in the tag/copy scripts, so the exposure is small; adding `require-trusted-types-for 'script'` would need an audit of the demo/website. |
 | `respect-os-text-scale` | rem everywhere (good) | No `<meta name="text-scale">` support; fine for most consumers. |
 | `search-hidden-content` | `<details>` yes, `hidden="until-found"` no | Find-in-page cannot reveal collapsed content. Applies if we ever ship a collapsible search surface. |
-| `cross-document-transitions` | none | The demo and the website are MPAs — a single `@view-transition { navigation: auto }` (with `prefers-reduced-motion` gating) would give them page transitions for free. |
 | `visually-stable-font-fallbacks` | none | No `font-size-adjust`/`ascent-override`; only matters if consumers swap webfonts. |
 
 **Deliberate non-adoption, do not reopen:** Web Components / Shadow DOM
 (ADR-0033), and component-level module extraction (ADR-0040). Canvas/WebGL,
 passkeys, built-in AI, WebMCP, WASM, PWA origin migration, Temporal-based date
 math, and local-network-access have no surface in this library (the charts are
-pure SVG) — 2 of the 44 retrieved guides are N/A for that reason;
-`menu` additionally turned out to be a **stub in the CLI** (a header comment and a
-TODO list, no prescription), so dropdown-menu grading rests on
+pure SVG). `menu` turned out to be a **stub in the CLI** — a header comment and
+a TODO list, no prescription — so dropdown-menu grading rests on
 `viewport-aware-dropdowns` and the `dialog` guide's Rule 3.
 
 ---
@@ -149,16 +153,12 @@ TODO list, no prescription), so dropdown-menu grading rests on
 | # | Action | Guide | Effort | Why first |
 | --- | --- | --- | --- | --- |
 | 1 | Replace `LoadingOverlay`'s `div role="dialog" aria-modal` with the existing `overlayShell` (`<dialog>` + `showModal`) | `dialog` | S | The last legacy modal in the library. Removes a whole class of bugs (no focus containment, page interactive behind it, no Esc) and reuses code we already have. |
-| 2 | `::details-content` + `interpolate-size` transition on `<details>` | `animate-to-intrinsic-sizes` | S | `interpolate-size` is already enabled — the accordion is one CSS block away from animating. Needs a visual-golden re-baseline. |
-| 3 | HoverCard → `popover="hint"` + `interestfor`, drop `role="tooltip"`; keep the CSS hover path as the non-supporting fallback | `hovercard`, `interest-triggered-tooltips` | M | Fixes the wrong-role/wrong-association problem AND the overflow-clipping problem in one move. |
-| 4 | `closedby="any"` on modals + pointer-position backdrop detection replacing `e.target === d`; `<form method="dialog">` for close buttons | `dialog`, `light-dismiss-a-dialog` | M | Turns three hand-rolled behaviours into declarations, and fixes clicks in dialog padding closing the modal. |
-| 5 | `@supports (anchor-name: --x)` enhancement layer over `popoverPositionJS` | `viewport-aware-dropdowns` | M | Keeps the JS fallback (still required) while giving supporting browsers declarative two-axis flip. |
-| 6 | `popover="manual"` toasts (+ `popovertargetaction="hide"`) | `persistent-toast-notifications` | M | Escapes overflow/z-index clipping; keeps the live region for announcement. |
-| 7 | `<progress>` behind `ProgressBar` with `appearance: none` styling | `progress` | M | Deletes the most ARIA-heavy hand-roll in `feedback`. |
-| 8 | `:has()` sweep: Toggle/Checkbox/RadioGroup/FieldError glue → parent-state selectors | `style-parent-with-has` | M | Removes variant gymnastics that the scanner-safety rules made necessary. |
-| 9 | `Input.Autocomplete` prop + typed enum (`username`, `current-password`, `email`, `one-time-code`, …) | `autofill-sign-in-form` (×4) | M | Currently only reachable through `BaseProps.Attrs`; autofill is a correctness feature, not a nicety. |
-| 10 | `@view-transition { navigation: auto }` for demo + website (MPA) | `cross-document-transitions` | S | Free page transitions; must be gated on `prefers-reduced-motion`. |
-| 11 | Meta `color-scheme` data model + `storage` event + OS fallback when JS fails | `dark-mode` / `dark-mode-toggle` | M | The only *robustness* gap in the theming layer. |
+| 2 | HoverCard → `popover="hint"` + `interestfor`, drop `role="tooltip"`; keep the CSS hover path as the non-supporting fallback | `hovercard`, `interest-triggered-tooltips` | M | Fixes the wrong-role/wrong-association problem AND the overflow-clipping problem in one move. |
+| 3 | `@supports (anchor-name: --x)` enhancement layer over `popoverPositionJS` | `viewport-aware-dropdowns` | M | Keeps the JS fallback (still required) while giving supporting browsers declarative two-axis flip. |
+| 4 | `popover="manual"` toasts (+ `popovertargetaction="hide"`) | `persistent-toast-notifications` | M | Escapes overflow/z-index clipping; keeps the live region for announcement. |
+| 5 | `<progress>` behind `ProgressBar` with `appearance: none` styling | `progress` | M | Deletes the most ARIA-heavy hand-roll in `feedback`. |
+| 6 | `:has()` sweep: Toggle/Checkbox/RadioGroup/FieldError glue → parent-state selectors | `style-parent-with-has` | M | Removes variant gymnastics that the scanner-safety rules made necessary. |
+| 7 | Meta `color-scheme` data model + `storage` event + OS fallback when JS fails | `dark-mode` / `dark-mode-toggle` | M | The only *robustness* gap in the theming layer. |
 
 ---
 
@@ -175,6 +175,21 @@ TODO list, no prescription), so dropdown-menu grading rests on
    `display/command_palette.go:131`).
 4. **`role="switch"`** on the `forms.Toggle` input (`forms/toggle.templ:92`) —
    screen readers announce a switch, not a checkbox.
+5. **Backdrop dismissal by pointer position** for every overlay `<dialog>` —
+   `display/shared.go` (`dialogBackdropOutsideJS` + `backdropDismissJS`), used by
+   Modal/Drawer, CommandPalette, and Lightbox, with `closedby="any"` on all
+   four. Fixes clicks on the dialog's own padding closing it, and stops a
+   selection drag that ends on the backdrop from dismissing.
+6. **Accordion panel animation** — a `details::details-content` block-size
+   transition under `@supports selector(::details-content)`, with a
+   reduced-motion opt-out (`templates/custom.css`).
+7. **`forms.InputProps.Autocomplete`** + `AutocompleteType` (23 tokens across
+   credentials, address, payment) that drops unknown tokens instead of emitting
+   them — autofill was previously reachable only through `BaseProps.Attrs`.
+8. **Cross-document view transitions** for the two MPA surfaces (demo and
+   website) — `@view-transition { navigation: auto }`, reduced-motion gated.
 
-Goldens, the ADR-0045 class inventory, the demo `app.css`, `templates/styles.css`,
-and the `cmd/tc/_sources` mirror were regenerated in the same change.
+Goldens (HTML + website pages), the ADR-0045 class inventory, the demo
+`app.css`, `templates/styles.css`/`theme.out.css`, the starter CSS copy, the
+`cmd/tc/_sources` mirror, and the enum counts in six docs were regenerated in
+the same change.

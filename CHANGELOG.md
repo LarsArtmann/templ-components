@@ -35,9 +35,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   rather than a checked/unchecked checkbox. Form submission, keyboard
   behaviour and the checked state stay native — no `aria-checked`
   bookkeeping, and no dependence on the Safari-only `switch` attribute.
+- **Overlays no longer close when you click inside them.** Backdrop dismissal
+  tested `event.target === dialog`, but the `<dialog>` is also the target for
+  clicks on its own padding and on the gaps between its children, so an inside
+  click could dismiss a Modal, Drawer, CommandPalette, or Lightbox. Dismissal
+  now compares pointer position (`dialogBackdropOutsideJS` /
+  `backdropDismissJS` in `display`), requires both the press and the release to
+  land outside — so a text-selection drag ending on the backdrop no longer
+  dismisses — and the native `closedby="any"` attribute is emitted alongside as
+  the declarative form.
 
 ### Added
 
+- **`forms.InputProps.Autocomplete`** with a typed `AutocompleteType` (23 tokens
+  covering sign-in/sign-up credentials, address, and payment fields). Autofill
+  was previously only reachable by smuggling the attribute through
+  `BaseProps.Attrs`; unknown or unset tokens are dropped rather than emitted, so
+  a typo cannot ship a form that looks autofill-ready while never filling.
+- **Accordion panels now animate open and closed.** `details::details-content`
+  transitions its block size, gated on `@supports selector(::details-content)`
+  so browsers without the pseudo-element keep the native instant toggle, and
+  disabled entirely under `prefers-reduced-motion`. The existing
+  `interpolate-size` opt-in is what makes `auto` a valid animation endpoint.
+- **Cross-document view transitions for the demo and the website.** Both are
+  MPAs that opt every page in via their stylesheet (`@view-transition {
+  navigation: auto }`), with a reduced-motion opt-out. Deliberately kept out of
+  the consumer-facing `templates/custom.css`.
 - **`docs/research/2026-10-30_modern-web-guidance-audit.md`** — a
   guide-by-guide audit of the library against the 192-guide Modern Web
   Guidance library (44 guides checked against source), grading what shipped,
