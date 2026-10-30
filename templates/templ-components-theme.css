@@ -27,8 +27,10 @@
  * and a consumer's global blue remap cannot leak through the tokens.
  *
  * Coverage: the FULL 50–950 ramp for primary/danger/success/warning, plus
- * yellow-* bound to the warning tokens (Badge/kanban warning tints use
- * yellow, feedback styles use amber — one semantic, two palettes).
+ * yellow-* bound to the warning tokens. Since the #428 decision (2026-10-30)
+ * every SEMANTIC warning renders amber (alerts, toasts, badges, status
+ * dots); yellow-* keeps working for the categorical hue enums (kanban
+ * lanes, stat tiles) and for consumers who theme yellow deliberately.
  * Legacy named tokens (tc-primary, tc-danger, ...) remain for compatibility
  * and now resolve through the shade tokens.
  *

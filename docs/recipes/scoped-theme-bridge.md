@@ -36,11 +36,11 @@ do not hand-edit the block below; regenerate with
 | `purple` | — | — |
 <!-- END generated: tone palette table -->
 
-Notes that live outside the generator: `amber` also renders SOME warning
-surfaces today (status dots, scrollback, errorpage) while the tone table's
-warning dialect is `yellow` — the one-semantic-two-hues split tracked by
-TODO #428. `indigo` is deliberately absent: nothing in the library renders
-it. `purple` (and the chart hues generally) also serve the CATEGORICAL
+Notes that live outside the generator: the #428 decision (2026-10-30) landed
+ONE semantic warning hue — `amber` renders every warning tone (alerts,
+toasts, badges, status dots, scrollback, errorpage). `indigo` is deliberately
+absent: nothing in the library renders it. `yellow` (and the chart hues
+generally) also serve the CATEGORICAL
 color enums — kanban lane dots (`KanbanTone`), stat tiles (`StatTone`) —
 which are hue decisions, not tones, and never appear in the Tones column.
 

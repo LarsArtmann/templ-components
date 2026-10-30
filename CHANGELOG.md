@@ -115,6 +115,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   ranking the remaining platform gaps, and recording the CLI's stale
   browser-support data as a caution for future sessions.
 
+### Changed
+
+- **One warning hue: semantic warnings now render amber, not yellow.** An
+  `Alert` warning and a `Badge` warning could land on the same page in two
+  different hues — feedback (Alert/Toast) and `Badge` warning shipped yellow
+  while `StatusDot`, `ScrollbackLog`, `errorpage`, the outline warning
+  button, and the StatCard warn arrow all shipped amber. The #428 decision
+  (owner default: amber) unifies every SEMANTIC warning on amber —
+  `utils/tone`'s `ToneWarning` surfaces, the feedback map, and the badge map
+  — the hue with the stronger non-text contrast (amber-600 3.0:1 vs
+  yellow-600 2.9:1 on white) and the ecosystem's warning convention. A
+  pixel diff on affected components is expected and intentional. Categorical
+  yellow is untouched: kanban lane dots and StatCard series colors remain
+  hue choices (`HueYellow`), not warnings. Consumer theming note:
+  `--color-amber-*` is now the warning ramp to override;
+  `--color-yellow-*` keeps aliasing the warning tokens for compatibility.
+
 ## [1.25.1] — 2026-10-29
 
 ### Fixed
