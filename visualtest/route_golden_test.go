@@ -132,6 +132,7 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewp
 
 	tasks := []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(viewport.Width), int64(viewport.Height)),
+		blockExternalWebFonts(),
 		chromedp.Navigate(url),
 		evalVoid(fmt.Sprintf(`try { localStorage.setItem('theme', %q); } catch (e) {}`, theme)),
 		chromedp.Reload(),

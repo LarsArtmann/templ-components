@@ -62,26 +62,31 @@ func openDisplayPage(t *testing.T, ctx context.Context, baseURL string) {
 }
 
 // sampleAccordionHeights runs the frame loop for the given accordion item.
-func sampleAccordionHeights(t *testing.T, ctx context.Context, id, label string) []float64 {
+func sampleAccordionHeights(t *testing.T, ctx context.Context, id, label string) accordionSample {
 	t.Helper()
 
-	var samples []float64
+	var probe accordionSample
 	// EvalAwaitPromise is REQUIRED: the expression is an async IIFE, and
 	// without the option the protocol returns the Promise object itself,
-	// which cannot unmarshal into []float64.
+	// which cannot unmarshal into the result struct.
 	if err := chromedp.Do(ctx, evalInto(
-		chromedp.Evaluate[[]float64](accordionHeightSamples(id), chromedp.EvalAwaitPromise),
-		&samples,
+		chromedp.Evaluate[accordionSample](accordionHeightSamples(id), chromedp.EvalAwaitPromise),
+		&probe,
 	)); err != nil {
 		t.Fatalf("%s: sample accordion heights: %v", label, err)
 	}
 
-	if len(samples) < 5 {
+	if len(probe.Samples) < 5 {
 		t.Fatalf("%s: only %d height samples collected, want >= 5 (animation frame loop did not run)",
-			label, len(samples))
+			label, len(probe.Samples))
 	}
 
-	return samples
+	settled := probe.Samples[len(probe.Samples)-1]
+	if settled <= probe.Closed+1 {
+		t.Fatalf("%s: panel never grew: closed %.2f, settled %.2f", label, probe.Closed, settled)
+	}
+
+	return probe
 }
 
 // TestAccordionPanelAnimatesOpen asserts a mid-transition height exists while
@@ -98,20 +103,16 @@ func TestAccordionPanelAnimatesOpen(t *testing.T) {
 
 	openDisplayPage(t, ctx, server.BaseURL())
 
-	// acc-2 starts closed in the demo data, so the first sample is the closed
-	// height and the loop covers the whole opening transition.
-	samples := sampleAccordionHeights(t, ctx, "acc-2", "animated open")
+	// acc-2 starts closed in the demo data, so the loop covers the whole
+	// opening transition.
+	probe := sampleAccordionHeights(t, ctx, "acc-2", "animated open")
 
-	closed := samples[0]
-	settled := samples[len(samples)-1]
-
-	if settled <= closed {
-		t.Fatalf("panel did not grow: first sample %.2f, last %.2f", closed, settled)
-	}
+	closed := probe.Closed
+	settled := probe.Samples[len(probe.Samples)-1]
 
 	intermediate := 0
 
-	for _, h := range samples {
+	for _, h := range probe.Samples {
 		if h > closed+2 && h < settled-2 {
 			intermediate++
 		}
@@ -120,7 +121,7 @@ func TestAccordionPanelAnimatesOpen(t *testing.T) {
 	if intermediate == 0 {
 		t.Fatalf(
 			"no intermediate panel height in %d samples (%.2f -> %.2f): the ::details-content transition is missing",
-			len(samples), closed, settled,
+			len(probe.Samples), closed, settled,
 		)
 	}
 }
@@ -141,16 +142,11 @@ func TestAccordionSnapsUnderReducedMotion(t *testing.T) {
 
 	// acc-3 also starts closed; under reduce its first frame must already be
 	// the settled height.
-	samples := sampleAccordionHeights(t, ctx, "acc-3", "reduced motion")
+	probe := sampleAccordionHeights(t, ctx, "acc-3", "reduced motion")
 
-	closed := samples[0]
-	settled := samples[len(samples)-1]
+	settled := probe.Samples[len(probe.Samples)-1]
 
-	if settled <= closed {
-		t.Fatalf("panel did not grow under reduce: first sample %.2f, last %.2f", closed, settled)
-	}
-
-	for i, h := range samples {
+	for i, h := range probe.Samples {
 		if h < settled-1 {
 			t.Fatalf(
 				"sample %d = %.2f is below the settled height %.2f under prefers-reduced-motion: reduce — the panel still animates",

@@ -194,6 +194,7 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 
 	tasks := []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(opts.Viewport.Width), int64(opts.Viewport.Height)),
+		blockExternalWebFonts(),
 		chromedp.Navigate(srv.URL),
 		// Wait for the root to exist and the document to finish loading so web
 		// fonts / CSS settle before the screenshot.
