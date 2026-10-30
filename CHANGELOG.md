@@ -6,6 +6,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Modals and drawers no longer let scroll gestures reach the page behind
+  them.** `dialog:modal` gets `overscroll-behavior: contain`, and
+  `dialog::backdrop` gets `overflow: hidden` plus the same containment —
+  a backdrop is not a scroll container by default, so containment alone had
+  no effect there. Previously a wheel/touch scroll that started over the
+  backdrop (or inside a short dialog whose content fits) chained straight to
+  the document, so the page scrolled under an open modal. Where the property
+  is not enforced the dialog still contains its own overflowing content and
+  `showModal()` still makes the page inert, so this is pure progressive
+  enhancement.
+- **`display.Image` no longer slows lazy images down.** Lazy images emitted
+  `fetchpriority="low"`, which is an anti-pattern when combined with
+  `loading="lazy"`: they already load at normal priority when they scroll
+  into view, and the explicit hint delays them further. Lazy images now carry
+  no fetch-priority hint; above-the-fold images (`Lazy: false`) keep
+  `fetchpriority="high"` so the LCP image is still prioritised.
+- **Enter during IME composition no longer picks an option, adds a tag, or
+  activates a search result.** The combobox, tags input, and command palette
+  handled Enter unconditionally, so committing a CJK/dead-key composition
+  selected the highlighted item instead of committing the text. All three now
+  ignore keystrokes while `event.isComposing` (or the legacy keyCode 229) is
+  set.
+
+### Added
+
+- **`docs/research/2026-10-30_modern-web-guidance-audit.md`** — a
+  guide-by-guide audit of the library against the 192-guide Modern Web
+  Guidance library (44 guides checked against source), grading what shipped,
+  ranking the remaining platform gaps, and recording the CLI's stale
+  browser-support data as a caution for future sessions.
+
 ## [1.25.1] — 2026-10-29
 
 ### Fixed

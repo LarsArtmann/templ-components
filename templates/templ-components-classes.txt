@@ -14671,7 +14671,12 @@ func toggleSizeLookup(size ToggleSize) toggleSizeSet {
 }
 
 // Toggle renders an accessible toggle switch
-// Uses a visually-hidden checkbox for native form submission and accessibility.
+// Uses a visually-hidden checkbox for native form submission and accessibility,
+// with role="switch" so screen readers announce a switch (on/off) rather than a
+// checkbox (checked/unchecked). The native `switch` attribute would be cleaner
+// but is Safari-only today; role="switch" on the checkbox is the portable form
+// and keeps form submission, keyboard behaviour and the checked state native —
+// no aria-checked bookkeeping.
 //
 //	@forms.Toggle(forms.ToggleProps{Name: "notifications", Label: "Enable notifications", Checked: true})
 templ Toggle(props ToggleProps) {
@@ -14685,6 +14690,7 @@ templ Toggle(props ToggleProps) {
 	>
 		<input
 			type="checkbox"
+			role="switch"
 			name={ props.Name }
 			if props.ID != "" {
 				id={ props.ID }

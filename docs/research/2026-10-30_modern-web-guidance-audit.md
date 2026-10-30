@@ -36,7 +36,7 @@ questions:
   (zero), `scroll-initial-target` (zero), scrollbar theming (zero),
   `light-dark()`/`contrast-color()` (zero), Trusted Types (absent).
 
-Counted over the 44 guides retrieved: **15 adopted · 16 partial · 11 gap ·
+Counted over the 44 guides retrieved: **16 adopted · 15 partial · 11 gap ·
 2 not applicable.** Partial dominates because we usually get the hard 80% right
 and skip the final guide-mandated detail.
 
@@ -61,6 +61,7 @@ Worth recording so this is not re-litigated. Each row is verified in source.
 | `optimize-image-priority` | `display/image.templ:105,132` — eager images get `fetchpriority="high"` (LCP), lazy images get **no** `fetchpriority` (the guide forbids pairing `low` with `loading="lazy"`), `decoding="async"`, explicit `width`/`height`, blur-up placeholder. |
 | `ime-safe-enter-submit` | `forms/combobox.templ:227`, `forms/tags_input.templ:54`, `display/command_palette.go:131` — Enter/`,` ignored while `isComposing` (or keyCode 229) is set. Added 2026-10-30. |
 | `progress-ring` neighbours | `feedback/circular_progress.templ` — `role="progressbar"` + clamped `aria-valuenow`. |
+| `switch` | `forms/toggle.templ:92` — `role="switch"` on the native checkbox: switch semantics, native form submission and native checked state, with no `aria-checked` bookkeeping. The native `switch` attribute is Safari-only today, so this is the portable form the guide's own fallback polyfill produces. (Added 2026-10-30.) |
 | Dark-mode plumbing | `layout/theme.templ` — FOUC-prevention inline script, `localStorage` in try/catch, `prefers-color-scheme` fallback, `role="switch"` + synchronised `aria-checked`; `color-scheme` on `:root`/`.dark`; `prefers-contrast`, `forced-colors`, `prefers-reduced-transparency` blocks (`custom.css:555-620`). |
 | Motion discipline | `motion-reduce:*` on every transition/animation, guarded repo-wide by `utils.TestMotionReduceCompliance`. |
 
@@ -91,11 +92,10 @@ Ordered by user-visible impact.
 | 9 | `responsive-table` (stacking half) | Sticky `thead` only | Sticky row headers, `@container` (not `@media`) breakpoints, and the stacked-card layout with `::before` label injection on narrow containers. |
 | 10 | `persistent-toast-notifications` | `aria-live` container + `role="status"` per toast (`feedback/toast.templ:92,108`) | `popover="manual"` (MANDATORY in the guide) so toasts survive unrelated interactions and escape z-index/overflow stacking; `popovertargetaction="hide"` close buttons; `sibling-index()` spacing. Deviation is defensible (a live region is what announces reliably), but stacking/clipping inside `overflow-hidden` layouts is the price. |
 | 11 | `progress` | `div role="progressbar"` + clamped `aria-valuenow` (`feedback/progressbar.templ`) | Native `<progress>` with `appearance: none` + `::-webkit-progress-value`/`::-moz-progress-bar` (never comma-joined). Native gets implicit semantics and platform behaviour for free; ours is the hand-roll the guide steers away from. |
-| 12 | `switch` | Custom `peer sr-only` checkbox + spans (`forms/toggle.templ`) | Either `<input type="checkbox" switch>` (Safari-only today — the guide's fallback polyfill sets `role="switch"`) or at minimum `role="switch"` on the input. Today a screen reader announces a **checkbox**, not a switch. Cheapest a11y win in this table. |
-| 13 | `slider` | Native `type="range"` + vendor pseudo-element classes | Explicit WebKit filled-track (`--control-value` synced on `input`), and optionally `progress()`/`attr()` where supported. Cosmetic, not behavioural. |
-| 14 | `dark-mode-toggle` | `.dark` class + `localStorage` + `role="switch"` | The guide's data model is `<meta name="color-scheme">` mapped back to CSS with `:root:has(> head > meta[…])`, three states (system/light/dark), and a `storage` event listener. Ours has two states and **no OS fallback without JS** — if the theme script fails, a dark-OS user gets the light theme. |
-| 15 | `typography` | `text-wrap: balance` on headings, `pretty` on `p`, rem sizes | `clamp()` fluid type is only in `.tc-fluid-*` helpers, not the components; no `text-box-trim` (heading spacing is padding-based). |
-| 16 | `fluid-scaling` | `.tc-fluid-*` clamp utilities + container breakpoints | Container-query **units** (`cqi`/`cqw`) — zero uses; fluid type is still viewport-driven inside a container-aware component. |
+| 12 | `slider` | Native `type="range"` + vendor pseudo-element classes | Explicit WebKit filled-track (`--control-value` synced on `input`), and optionally `progress()`/`attr()` where supported. Cosmetic, not behavioural. |
+| 13 | `dark-mode-toggle` | `.dark` class + `localStorage` + `role="switch"` | The guide's data model is `<meta name="color-scheme">` mapped back to CSS with `:root:has(> head > meta[…])`, three states (system/light/dark), and a `storage` event listener. Ours has two states and **no OS fallback without JS** — if the theme script fails, a dark-OS user gets the light theme. |
+| 14 | `typography` | `text-wrap: balance` on headings, `pretty` on `p`, rem sizes | `clamp()` fluid type is only in `.tc-fluid-*` helpers, not the components; no `text-box-trim` (heading spacing is padding-based). |
+| 15 | `fluid-scaling` | `.tc-fluid-*` clamp utilities + container breakpoints | Container-query **units** (`cqi`/`cqw`) — zero uses; fluid type is still viewport-driven inside a container-aware component. |
 
 ---
 
@@ -149,17 +149,16 @@ TODO list, no prescription), so dropdown-menu grading rests on
 | # | Action | Guide | Effort | Why first |
 | --- | --- | --- | --- | --- |
 | 1 | Replace `LoadingOverlay`'s `div role="dialog" aria-modal` with the existing `overlayShell` (`<dialog>` + `showModal`) | `dialog` | S | The last legacy modal in the library. Removes a whole class of bugs (no focus containment, page interactive behind it, no Esc) and reuses code we already have. |
-| 2 | `role="switch"` on the Toggle input (and re-baseline the 4 affected goldens) | `switch` | S | One attribute; correct AT semantics today. |
-| 3 | `::details-content` + `interpolate-size` transition on `<details>` | `animate-to-intrinsic-sizes` | S | `interpolate-size` is already enabled — the accordion is one CSS block away from animating. Needs a visual-golden re-baseline. |
-| 4 | HoverCard → `popover="hint"` + `interestfor`, drop `role="tooltip"`; keep the CSS hover path as the non-supporting fallback | `hovercard`, `interest-triggered-tooltips` | M | Fixes the wrong-role/wrong-association problem AND the overflow-clipping problem in one move. |
-| 5 | `closedby="any"` on modals + pointer-position backdrop detection replacing `e.target === d`; `<form method="dialog">` for close buttons | `dialog`, `light-dismiss-a-dialog` | M | Turns three hand-rolled behaviours into declarations, and fixes clicks in dialog padding closing the modal. |
-| 6 | `@supports (anchor-name: --x)` enhancement layer over `popoverPositionJS` | `viewport-aware-dropdowns` | M | Keeps the JS fallback (still required) while giving supporting browsers declarative two-axis flip. |
-| 7 | `popover="manual"` toasts (+ `popovertargetaction="hide"`) | `persistent-toast-notifications` | M | Escapes overflow/z-index clipping; keeps the live region for announcement. |
-| 8 | `<progress>` behind `ProgressBar` with `appearance: none` styling | `progress` | M | Deletes the most ARIA-heavy hand-roll in `feedback`. |
-| 9 | `:has()` sweep: Toggle/Checkbox/RadioGroup/FieldError glue → parent-state selectors | `style-parent-with-has` | M | Removes variant gymnastics that the scanner-safety rules made necessary. |
-| 10 | `Input.Autocomplete` prop + typed enum (`username`, `current-password`, `email`, `one-time-code`, …) | `autofill-sign-in-form` (×4) | M | Currently only reachable through `BaseProps.Attrs`; autofill is a correctness feature, not a nicety. |
-| 11 | `@view-transition { navigation: auto }` for demo + website (MPA) | `cross-document-transitions` | S | Free page transitions; must be gated on `prefers-reduced-motion`. |
-| 12 | Meta `color-scheme` data model + `storage` event + OS fallback when JS fails | `dark-mode` / `dark-mode-toggle` | M | The only *robustness* gap in the theming layer. |
+| 2 | `::details-content` + `interpolate-size` transition on `<details>` | `animate-to-intrinsic-sizes` | S | `interpolate-size` is already enabled — the accordion is one CSS block away from animating. Needs a visual-golden re-baseline. |
+| 3 | HoverCard → `popover="hint"` + `interestfor`, drop `role="tooltip"`; keep the CSS hover path as the non-supporting fallback | `hovercard`, `interest-triggered-tooltips` | M | Fixes the wrong-role/wrong-association problem AND the overflow-clipping problem in one move. |
+| 4 | `closedby="any"` on modals + pointer-position backdrop detection replacing `e.target === d`; `<form method="dialog">` for close buttons | `dialog`, `light-dismiss-a-dialog` | M | Turns three hand-rolled behaviours into declarations, and fixes clicks in dialog padding closing the modal. |
+| 5 | `@supports (anchor-name: --x)` enhancement layer over `popoverPositionJS` | `viewport-aware-dropdowns` | M | Keeps the JS fallback (still required) while giving supporting browsers declarative two-axis flip. |
+| 6 | `popover="manual"` toasts (+ `popovertargetaction="hide"`) | `persistent-toast-notifications` | M | Escapes overflow/z-index clipping; keeps the live region for announcement. |
+| 7 | `<progress>` behind `ProgressBar` with `appearance: none` styling | `progress` | M | Deletes the most ARIA-heavy hand-roll in `feedback`. |
+| 8 | `:has()` sweep: Toggle/Checkbox/RadioGroup/FieldError glue → parent-state selectors | `style-parent-with-has` | M | Removes variant gymnastics that the scanner-safety rules made necessary. |
+| 9 | `Input.Autocomplete` prop + typed enum (`username`, `current-password`, `email`, `one-time-code`, …) | `autofill-sign-in-form` (×4) | M | Currently only reachable through `BaseProps.Attrs`; autofill is a correctness feature, not a nicety. |
+| 10 | `@view-transition { navigation: auto }` for demo + website (MPA) | `cross-document-transitions` | S | Free page transitions; must be gated on `prefers-reduced-motion`. |
+| 11 | Meta `color-scheme` data model + `storage` event + OS fallback when JS fails | `dark-mode` / `dark-mode-toggle` | M | The only *robustness* gap in the theming layer. |
 
 ---
 
