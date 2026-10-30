@@ -244,8 +244,10 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	// captures the settled state. Under parallel load, background-tab
 	// throttling can stretch animation time far past the fixed settleDelay —
 	// polling the animation clock (not wall time) is the only robust guard.
-	// Infinite animations (spinners, shimmer) are skipped: they never finish
-	// and their capture frame is inherently arbitrary.
+	// Infinite animations (spinners, ping rings) cannot finish, so after the
+	// finite wait they are frozen at their t=0 frame — otherwise every capture
+	// frames them at an arbitrary phase (the 2026-10-30 StatusDot ping-ring
+	// nondeterminism).
 	tasks = append(
 		tasks,
 		waitAnimationsSettled(),
@@ -268,14 +270,15 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 }
 
 // waitAnimationsSettled blocks until all finite CSS animations/transitions in
-// the document have finished, with a best-effort timeout. It uses a two-phase
-// approach: (1) wait up to animRegisterDelay for @starting-style transitions
-// to register (getAnimations() is transiently empty before the browser
-// creates the transition), then (2) poll until every finite animation reports
-// "finished". Infinite animations (spinners, shimmer) never finish, so they
-// are filtered out — blocking on them would burn the whole deadline on every
-// spinner capture. If no finite animation appears within the registration
-// window, the function returns immediately (the page genuinely has none).
+// the document have finished, then freezes every infinite animation at its
+// t=0 frame. Two phases for the finite wait: (1) wait up to animRegisterDelay
+// for @starting-style transitions to register (getAnimations() is transiently
+// empty before the browser creates the transition), then (2) poll until every
+// finite animation reports "finished". Infinite animations (spinners, ping
+// rings, shimmer) never finish, so they are not waited on — instead they are
+// pinned to t=0 and paused, because leaving their capture frame arbitrary
+// made captures non-byte-stable (display StatusDot ping rings differed across
+// tabs in ~25% of fresh-tab pairs, 2026-10-30).
 func waitAnimationsSettled() chromedp.Action[chromedp.Void] {
 	return chromedp.Func(func(ctx context.Context, _ *chromedp.Target) error {
 		if err := chromedp.Do(ctx, chromedp.Sleep(animInitialDelay)); err != nil {
@@ -291,6 +294,7 @@ func waitAnimationsSettled() chromedp.Action[chromedp.Void] {
 		settleDeadline := time.Now().Add(animMaxSettle)
 		animSeen := false
 
+	settle:
 		for time.Now().Before(settleDeadline) {
 			state, err := chromedp.Run(ctx, chromedp.Evaluate[string](expr))
 			if err != nil {
@@ -299,12 +303,12 @@ func waitAnimationsSettled() chromedp.Action[chromedp.Void] {
 
 			switch state {
 			case "done":
-				return nil
+				break settle
 			case "running":
 				animSeen = true
 			case "empty":
 				if animSeen || !time.Now().Before(registerDeadline) {
-					return nil
+					break settle
 				}
 			}
 
@@ -313,8 +317,25 @@ func waitAnimationsSettled() chromedp.Action[chromedp.Void] {
 			}
 		}
 
-		return nil
+		return freezeInfiniteAnimations(ctx)
 	})
+}
+
+// freezeInfiniteAnimations pins every infinite CSS animation to its t=0 frame
+// and pauses it, so every capture frames the same pixels regardless of when
+// the tab loaded. Runs at the end of waitAnimationsSettled, after the finite
+// wait — pausing infinite animations cannot disturb finished finite ones.
+func freezeInfiniteAnimations(ctx context.Context) error {
+	expr := `(()=>{let n=0;for(const x of document.getAnimations()){` +
+		`try{const t=x.effect&&x.effect.getTiming();` +
+		`if(t&&t.iterations===Infinity){x.currentTime=0;x.pause();n++}}catch(e){}}` +
+		`return n})()`
+
+	if _, err := chromedp.Run(ctx, chromedp.Evaluate[float64](expr)); err != nil {
+		return fmt.Errorf("freeze infinite animations: %w", err)
+	}
+
+	return nil
 }
 
 const (
