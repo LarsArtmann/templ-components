@@ -30,6 +30,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   composition selected the highlighted option, created a stray tag, or
   activated the first result. All three now ignore keystrokes while
   `event.isComposing` (or the legacy keyCode 229) is set.
+- **`display.Prose` no longer renders an empty container for templ
+  trailing-block callers.** The component only rendered the
+  `ProseProps.Children` field, but the documented call style is the templ
+  trailing block (`@display.Prose(props) { ... }`), which does not populate
+  that field — every consumer following the doc comment (including the demo's
+  own Prose section, empty for weeks) shipped a hollow `<div class="tc-prose">`.
+  Prose now falls back to its templ children when the field is unset; both
+  call styles render.
 - **`forms.Toggle` now announces itself as a switch.** The underlying
   checkbox carries `role="switch"` plus `aria-checked`, so screen readers
   report an on/off switch rather than a checked/unchecked checkbox. The state

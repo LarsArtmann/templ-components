@@ -46,9 +46,9 @@ var contentSkipList = map[string]string{
 // demoSection blocks (appshell/card pages); the guard must not demand
 // sections from them.
 var noSectionPages = map[string]string{
-	"/":       "home page — hero + cards, no demoSection blocks",
+	"/":        "home page — hero + cards, no demoSection blocks",
 	"/recipes": "appshell recipe screens, no demoSection blocks",
-	"/users":  "appshell table screen, no demoSection blocks",
+	"/users":   "appshell table screen, no demoSection blocks",
 }
 
 func stripTags(s string) string { return strings.TrimSpace(tagRe.ReplaceAllString(s, "")) }

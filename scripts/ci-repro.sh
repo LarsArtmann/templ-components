@@ -28,6 +28,10 @@
 #                                    # so run under `nix develop` or with the PATH workaround)
 #   scripts/ci-repro.sh --tidy       # run the tidy-probe (Tidy Probe workflow): GOWORK=off tidy
 #                                    # per module + fail on go.mod/go.sum drift (needs propagated tags)
+#   scripts/ci-repro.sh --html       # also run the W3C HTML validation gate (html5validator;
+#                                    # needs Nix: `nix shell nixpkgs#html5validator` is wrapped for you,
+#                                    # or set VNU_JAR like CI's html-validation job does)
+#   scripts/ci-repro.sh --flake      # also run `nix flake check` (needs Nix; loud skip when absent)
 #   scripts/ci-repro.sh --cold       # use a throwaway GOCACHE (simulates a cache-less runner;
 #                                    # module downloads still hit the local GOMODCACHE)
 #
@@ -41,6 +45,8 @@ RUN_VISUAL=0
 RUN_VULN=0
 RUN_TIDY=0
 RUN_WEBSITE=0
+RUN_HTML=0
+RUN_FLAKE=0
 COLD=0
 for arg in "$@"; do
 	case "$arg" in
@@ -50,11 +56,13 @@ for arg in "$@"; do
 	--vuln) RUN_VULN=1 ;;
 	--tidy) RUN_TIDY=1 ;;
 	--website) RUN_WEBSITE=1 ;;
+	--html) RUN_HTML=1 ;;
+	--flake) RUN_FLAKE=1 ;;
 	--quiet-diff) QUIET_DIFF=1 ;;
 	--cold) COLD=1 ;;
 	*)
 		echo "Unknown flag: $arg" >&2
-		echo "Usage: $0 [--lint] [--css] [--visual] [--vuln] [--tidy] [--website] [--quiet-diff] [--cold]" >&2
+		echo "Usage: $0 [--lint] [--css] [--visual] [--vuln] [--tidy] [--website] [--html] [--flake] [--quiet-diff] [--cold]" >&2
 		exit 2
 		;;
 	esac
@@ -352,6 +360,31 @@ else
 		echo "art-dupl: GREEN — 0 clone groups outside baseline"
 	else
 		echo "art-dupl: ADVISORY-FAIL (exit $DUPL_EXIT) — new clone groups outside baseline; classify per ADR-0009 (extract or accept+rebaseline)"
+	fi
+fi
+
+if [ "$RUN_HTML" = "1" ]; then
+	step "W3C HTML validation (golden corpus; mirrors ci.yaml's html-validation job)"
+	if [ -n "${VNU_JAR:-}" ]; then
+		scripts/check-html-valid.sh
+	elif command -v html5validator >/dev/null 2>&1; then
+		scripts/check-html-valid.sh
+	elif command -v nix >/dev/null 2>&1; then
+		nix shell nixpkgs#html5validator -c scripts/check-html-valid.sh
+	else
+		echo "ERROR: html5validator not found and Nix unavailable." >&2
+		echo "  Run under nix develop, or: nix shell nixpkgs#html5validator -c $0 --html" >&2
+		echo "  (loud skip would hide a broken page — this lane FAILS instead)" >&2
+		exit 1
+	fi
+fi
+
+if [ "$RUN_FLAKE" = "1" ]; then
+	step "nix flake check (treefmt + flake-level checks)"
+	if command -v nix >/dev/null 2>&1; then
+		nix flake check
+	else
+		echo "SKIP: nix not on PATH — flake checks did NOT run (TODO: rerun with nix)" >&2
 	fi
 fi
 
