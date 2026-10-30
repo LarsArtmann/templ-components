@@ -51,15 +51,30 @@ func scrollContainmentE2EPage() templ.Component {
 		}).Render(templ.WithChildren(ctx, inner), w)
 	})
 
+	props := layout.DefaultPageProps()
+	props.CSSPath = "/app.css"
+
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-		return layout.Base(layout.DefaultPageProps()).Render(templ.WithChildren(ctx, body), w)
+		return layout.Base(props).Render(templ.WithChildren(ctx, body), w)
 	})
 }
 
 func scrollContainmentE2EServer(t *testing.T) *httptest.Server {
 	t.Helper()
 
+	// The containment under test is CSS + native behavior (custom.css's
+	// dialog:modal overscroll-behavior rules ride the compiled stylesheet),
+	// so this fixture MUST serve the real compiled CSS.
+	css, err := loadCSS()
+	if err != nil {
+		t.Fatalf("load compiled CSS: %v", err)
+	}
+
 	mux := http.NewServeMux()
+	mux.HandleFunc("/app.css", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/css; charset=utf-8")
+		_, _ = w.Write(css)
+	})
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		_ = scrollContainmentE2EPage().Render(r.Context(), w)

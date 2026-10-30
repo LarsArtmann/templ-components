@@ -483,10 +483,11 @@ dark-mode + dialog/invoker._
 | 480 | Container-query units (`cqi`/`cqw`) for fluid type inside container-aware components                                                            | Audit partial 12. Post-wave.                                        |
 | 481 | Docs: AGENTS "Visual goldens" load-flake bullet rewrite (webfont race is the real cause) + route-vs-component-golden count definitions          | Plan C25.1/.2; the load-flake wording is now wrong.                 |
 | 482 | Opt-in additive layer (all Limited-availability, `@supports`-gated): scroll-driven animations, container scroll-state queries, scrollbar color theming | Audit §4 gaps — do NOT become default paths. Post-wave.             |
+| 484 | `display.ImageProps` zero-value renders `loading="eager" fetchpriority="high"` (found 2026-10-30 by the new fetchpriority e2e, visualtest/image_priority_e2e_test.go) — contradicts the documented "lazy (default)" and the struct-literal zero-value invariant (AGENTS.md). Fix shape: invert the flag (`Eager bool`) or rename — a BREAKING field change, v2 material alongside TODO #425/#431. Until then consumers using struct literals must set `Lazy: true` explicitly | Plan C11 discovered; owner call on the v2 API shape. (c11) |
 
 _The plan's P2 line cites "#452, #453, #480, #481" — the capture-determinism set is
 #452–#455 after this numbering (plan corrected in the same commit)._
 
 ---
 
-_Next free ID: 484._
+_Next free ID: 485._
