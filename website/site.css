@@ -12,6 +12,25 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * Cross-document view transitions (Modern Web Guidance:
+ * cross-document-transitions). This site is an MPA; every page opts in through
+ * this stylesheet, which is the requirement — a cross-document transition runs
+ * only when both the outgoing and incoming documents declare
+ * `navigation: auto`. Kept out of templates/custom.css on purpose.
+ */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
 /* Class sources: the library's generated components + this site's own. */
 @source "./internal/pages/**/*_templ.go";
 @source "../display/**/*_templ.go";

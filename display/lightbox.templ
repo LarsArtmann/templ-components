@@ -108,5 +108,5 @@ templ Lightbox(props LightboxProps) {
 			</div>
 		</dialog>
 	</div>
-	@utils.ScriptComponent(props.Nonce, lightboxJS, "lightbox script")
+	@utils.ScriptComponent(props.Nonce, lightboxJS(), "lightbox script")
 }

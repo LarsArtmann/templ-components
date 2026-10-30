@@ -159,14 +159,32 @@ func TestModalRender(t *testing.T) {
 		utils.AssertContains(t, output, "window.tcOverlayModalAttached")
 	})
 
-	t.Run("JS backdrop click handler detects dialog target", func(t *testing.T) {
+	t.Run("JS backdrop dismissal uses pointer position, not the event target", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Modal(ModalProps{
 			ID:    "backdrop-modal",
 			Title: "Backdrop",
 			Open:  false,
 		}))
-		utils.AssertContains(t, output, "e.target===d")
+		// A target check would also fire on the dialog's own padding and on
+		// the gaps between its children, closing the modal on an inside click.
+		utils.AssertContains(t, output, "function tcOutside(e,dlg)")
+		utils.AssertContains(t, output, "getBoundingClientRect()")
+		utils.AssertNotContains(t, output, "e.target===d")
+		// Press AND release must land outside, so a selection drag that ends
+		// on the backdrop does not dismiss.
+		utils.AssertContains(t, output, "'pointerdown'")
+		utils.AssertContains(t, output, "'pointerup'")
+	})
+
+	t.Run("native closedby attribute enables light dismiss", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Modal(ModalProps{
+			ID:    "closedby-modal",
+			Title: "Light dismiss",
+			Open:  false,
+		}))
+		utils.AssertContains(t, output, `closedby="any"`)
 	})
 
 	t.Run("script wires CSP-safe data-tc-overlay-trigger delegation", func(t *testing.T) {

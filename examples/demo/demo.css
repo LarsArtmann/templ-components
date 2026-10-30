@@ -17,6 +17,26 @@
 /* Class-based dark mode — required for ThemeScript/ThemeToggle */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * Cross-document view transitions (Modern Web Guidance:
+ * cross-document-transitions). The demo is an MPA and every page opts in
+ * through this stylesheet, which is the requirement: a cross-document
+ * transition only runs when BOTH the outgoing and incoming documents declare
+ * `navigation: auto`. Deliberately NOT in templates/custom.css, so library
+ * consumers do not inherit an animation they never asked for.
+ */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
