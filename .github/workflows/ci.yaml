@@ -28,6 +28,34 @@ jobs:
   # so /releases/latest/download/vnu.jar is the canonical pin-by-design and
   # snapshot advances here are wanted (they let us prune ignore classes —
   # see TODO_LIST #216).
+  # Blocking clone gate (#295 promoted 2026-10-30 after two consecutive
+  # green advisory runs). The analyzer installs at the REV THE BASELINE WAS
+  # RECORDED WITH (ADR-0009 tool-version pin; scripts/pinned-art-dupl.sh is
+  # the local twin) — a different binary yields different hashes and would
+  # report the whole tree as new (the 105-group false-alarm class). New clone
+  # groups fail the push: classify per ADR-0009 (extract or accept +
+  # re-record with the SAME binary + log the version).
+  clone-gate:
+    name: Clone gate (art-dupl, blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+
+      - name: Install art-dupl at the baseline-pinned rev
+        # Keep in lockstep with scripts/pinned-art-dupl.sh's PINNED_REV
+        # (asserted by scripts/check-lint-config.sh — see the lockstep check).
+        run: go install github.com/LarsArtmann/art-dupl/cmd/art-dupl@93432fd910fb
+
+      - name: Clone check (blocking)
+        run: |
+          art-dupl --version
+          echo "baseline recordedAt: $(grep -o '"recordedAt": "[^"]*"' .art-dupl-baseline.json)"
+          art-dupl check -c .art-dupl.json -t 1 --type-aware
+
   html-validation:
     name: HTML validation (golden corpus)
     runs-on: ubuntu-latest
@@ -103,6 +131,9 @@ jobs:
 
       - name: Templ-sync guard (fast, catches *_templ.go drift before generate)
         run: scripts/check-templ-sync.sh
+
+      - name: art-dupl pin lockstep (analyzer rev == baseline pin)
+        run: scripts/check-dupl-pin.sh
 
       - name: Version-sync guard (fast, catches version drift before test)
         run: scripts/check-version-sync.sh

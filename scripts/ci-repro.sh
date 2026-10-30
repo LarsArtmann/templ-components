@@ -205,6 +205,7 @@ if [ "$RUN_LINT" = "1" ]; then
 	scripts/check-module-sync.sh
 	scripts/check-module-layers.sh
 	scripts/check-lint-modules.sh
+	scripts/check-dupl-pin.sh
 	scripts/check-tc-sources-sync.sh
 	scripts/test-release-assertions.sh
 	scripts/test-settle-staged-go-format.sh
@@ -351,6 +352,12 @@ if [ -z "$DUPL_BIN" ]; then
 else
 	DUPL_VER="$("$DUPL_BIN" --version 2>&1 | head -1)"
 	echo "binary: $DUPL_BIN ($DUPL_VER)"
+	DUPL_PIN="$(sed -n 's/^PINNED_REV="\([^"]*\)".*/\1/p' scripts/pinned-art-dupl.sh 2>/dev/null || true)"
+	DUPL_RECORDED="$(sed -n 's/.*"recordedAt": "\([^"]*\)".*/\1/p' .art-dupl-baseline.json 2>/dev/null || true)"
+	echo "baseline recordedAt: ${DUPL_RECORDED:-UNKNOWN} (pinned rev: ${DUPL_PIN:-UNKNOWN})"
+	if [ -n "$DUPL_PIN" ] && [ -n "$DUPL_VER" ] && ! echo "$DUPL_VER" | grep -q "${DUPL_PIN:0:12}"; then
+		echo "WARNING: resolved binary is NOT the pinned rev ($DUPL_PIN) — its hashes may match nothing in the baseline (ADR-0009); build via scripts/pinned-art-dupl.sh" >&2
+	fi
 	set +e
 	DUPL_OUT="$("$DUPL_BIN" check -c .art-dupl.json -t 1 --type-aware 2>&1)"
 	DUPL_EXIT=$?
