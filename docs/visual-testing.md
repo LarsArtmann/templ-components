@@ -303,6 +303,30 @@ not sleeping wall time — is the only robust guard.
 The `.fail/` directory is gitignored — it holds only the last failing run's
 artifacts for inspection, never the source of truth.
 
+### Text-only mismatch on a shifting subset of routes (webfont race)
+
+A ~1% mismatch spread across a whole page's glyphs, hitting a *different* set
+of routes on each run, is not a layout regression — it is the Google Fonts
+race. The demo links Inter / JetBrains Mono / Space Grotesk from
+`fonts.googleapis.com` with `font-display: swap`, so a capture that happens
+before the swap renders the pinned system faces and one after the swap renders
+the webfont. Which one you get depends on CDN latency and cache warmth, i.e. it
+is not reproducible.
+
+Both halves are fixed in `visualtest/external_fonts.go`:
+
+- `blockExternalWebFonts()` fails every request to `fonts.googleapis.com` and
+  `fonts.gstatic.com` before navigation, in every pixel-comparison path
+  (`AssertScreenshot`, `TestDemoRouteGoldens`, `TestSiteRouteGoldens`). The
+  deterministic rendering is the system-face rendering the flake's pure
+  `fontconfig` pin provides — the same faces in every environment.
+- `waitFontsSettled()` polls `document.readyState === 'complete' &&
+  document.fonts.status === 'loaded'` after the animation settle, so a
+  *self-hosted* face (the website) can never be captured mid-swap either.
+
+Never make a golden pass by raising `MaxMismatch`, and never record a baseline
+with the CDN block missing.
+
 ## Why a separate Go module?
 
 `chromedp` and its transitive dependencies are heavy and test-only. Adding

@@ -47,6 +47,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   land outside — so a text-selection drag ending on the backdrop no longer
   dismisses — and the native `closedby="any"` attribute is emitted alongside as
   the declarative form.
+- **The demo's accordion panels actually show their answers now.** The demo
+  passed the three answers as templ children (`<template data-content=...>`)
+  while `Accordion` renders each item's `Content` field, so every panel opened
+  empty — the showcase proved the toggle and nothing about the content. The
+  answers now ride `AccordionItem.Content`.
+- **Visual goldens are now deterministic instead of CDN-dependent.** The demo
+  links Google-hosted Inter/JetBrains Mono/Space Grotesk with
+  `font-display: swap`, so a capture raced the font swap: a run with the webfont
+  already downloaded rendered different glyph metrics from a run without it, and
+  route goldens flaked at roughly 1% pixel mismatch on a *different* subset of
+  pages each time. The capture browser now fails every request to the Google
+  Fonts CDN and waits for `document.fonts` to finish loading before the
+  screenshot, in every pixel-comparison path (component goldens, demo routes,
+  site routes). Deterministic rendering is the system-face rendering the pure
+  `fontconfig` pin in the flake already provides. All 53 demo route goldens were
+  re-recorded under the new rule.
 
 ### Added
 
