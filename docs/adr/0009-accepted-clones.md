@@ -667,8 +667,8 @@ blanket-accepting or blanket-extracting.
 ## Consequences
 
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
-  — it fails ONLY on clones not in the accepted baseline (currently 150
-  groups at t=1, per the 2026-10-29 re-record with the same fork detector
+  — it fails ONLY on clones not in the accepted baseline (currently 151
+  groups at t=1, per the 2026-10-30 re-record with the same fork detector
   `v0.9.1-0.20261017225421-93432fd910fb-93432fd`; the 2026-10-23 full
   re-take under this detector generation was 150 groups). The analyzer-generation
   change made the prior 124 hashes incomparable (check reported every
@@ -780,3 +780,16 @@ bodies (path helpers, validators, `strings.Cut` wrappers); no shared
 implementation to extract. The re-record against the SAME pinned binary
 (`v0.9.1-0.20261017225421-93432fd910fb`) took 150 groups. Gate green ×2;
 the lane remains advisory and never gates.
+
+**DONE 2026-10-30 (Modern Web Guidance test pass):** two new groups, both
+ACCEPT, neither an extraction candidate. (1) `forms` lookup helpers
+`enterKeyHintValue` / `autocompleteValue` — both are `X(props InputProps)
+string` token accessors, but they encode different rules (fallback chain from
+`InputType` vs. validity gate that drops unknown tokens); their shared shape is
+the signature-token tail class, not an implementation. (2) Two three-line
+lower-bound clamps (`bar_chart` percentage clamp; the e2e viewport-point
+clamp in a test helper) — below the extraction floor and in modules that
+cannot share code (library vs. test-only module). The re-record against the
+SAME pinned binary (`v0.9.1-0.20261017225421-93432fd910fb`) took 151 groups
+(one prior group's hash moved with the edits). Gate green ×2; the lane remains
+advisory and never gates.

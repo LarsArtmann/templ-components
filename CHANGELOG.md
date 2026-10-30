@@ -63,6 +63,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   site routes). Deterministic rendering is the system-face rendering the pure
   `fontconfig` pin in the flake already provides. All 53 demo route goldens were
   re-recorded under the new rule.
+- **Clone-gate baseline re-recorded at 151 groups at t=1.** The new overlay
+  and accordion browser tests surfaced two clone groups, both accepted under
+  ADR-0009 rather than extracted: the `forms` `InputProps` token accessors
+  (`enterKeyHintValue` / `autocompleteValue`) share a signature tail while
+  encoding different rules, and two three-line lower-bound clamps sit below the
+  extraction floor in modules that cannot share code. Gate green on two
+  consecutive runs with the pinned analyzer.
 
 ### Added
 
