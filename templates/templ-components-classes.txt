@@ -14801,9 +14801,12 @@ func toggleSizeLookup(size ToggleSize) toggleSizeSet {
 // Uses a visually-hidden checkbox for native form submission and accessibility,
 // with role="switch" so screen readers announce a switch (on/off) rather than a
 // checkbox (checked/unchecked). The native `switch` attribute would be cleaner
-// but is Safari-only today; role="switch" on the checkbox is the portable form
-// and keeps form submission, keyboard behaviour and the checked state native —
-// no aria-checked bookkeeping.
+// but is Safari-only today, so role="switch" is the portable form.
+//
+// role="switch" makes aria-checked REQUIRED (the HTML validator rejects the
+// bare form, and a switch whose state is only implicit reads as unchecked), so
+// the attribute is rendered from Checked and kept in sync by a singleton
+// change listener that also repairs state restored from bfcache/form history.
 //
 //	@forms.Toggle(forms.ToggleProps{Name: "notifications", Label: "Enable notifications", Checked: true})
 templ Toggle(props ToggleProps) {
@@ -14818,6 +14821,7 @@ templ Toggle(props ToggleProps) {
 		<input
 			type="checkbox"
 			role="switch"
+			aria-checked={ utils.Ternary(props.Checked, "true", "false") }
 			name={ props.Name }
 			if props.ID != "" {
 				id={ props.ID }
@@ -14846,6 +14850,21 @@ templ Toggle(props ToggleProps) {
 	if props.HelpText != "" {
 		@helpText(props.ID, props.HelpText)
 	}
+	<script { utils.ScriptAttrs(props.Nonce)... }>
+		if (!window.tcSwitchAttached) {
+			window.tcSwitchAttached = true;
+			function tcSyncSwitchState(t) {
+				t.setAttribute('aria-checked', t.checked ? 'true' : 'false');
+			}
+			document.addEventListener('change', function(e) {
+				var t = e.target;
+				if (t && t.matches && t.matches('input[role="switch"]')) tcSyncSwitchState(t);
+			}, true);
+			window.addEventListener('pageshow', function() {
+				document.querySelectorAll('input[role="switch"]').forEach(tcSyncSwitchState);
+			});
+		}
+	</script>
 }
 
 # ── forms/validation.templ ─────────────────────────────────────────────
