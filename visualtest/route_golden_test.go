@@ -219,8 +219,8 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewp
 	if !result.Match {
 		writeFailureArtifacts(t, "routes/"+name, shot, diff)
 		t.Errorf("route golden[%s]: visual mismatch — %s (max %.4f%%).\n"+
-			"Inspect testdata/.fail/routes.%s.{actual,diff}.png, then run `nix run .#visual -- -update -run TestDemoRouteGoldens` if intended.",
-			name, result, defaultOptions(Options{}).MaxMismatch*percentMultiplier, name)
+			"Inspect %s (red-pixel diff; .actual.png beside it), then run `nix run .#visual -- -update -run TestDemoRouteGoldens` if intended.",
+			name, result, defaultOptions(Options{}).MaxMismatch*percentMultiplier, failureArtifactPath("routes/"+name))
 
 		return
 	}

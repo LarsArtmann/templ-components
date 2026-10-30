@@ -68,8 +68,8 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 	if !result.Match {
 		writeFailureArtifacts(t, name, actual, diff)
 		t.Errorf("visualtest[%s]: visual mismatch — %s (max %.4f%%).\n"+
-			"Inspect testdata/.fail/%s.{actual,diff}.png, then run `go test -update` if the change is intended.",
-			name, result, maxMismatchPct, name)
+			"Inspect %s (red-pixel diff; .actual.png beside it), then run `go test -update` if the change is intended.",
+			name, result, maxMismatchPct, failureArtifactPath(name))
 
 		return
 	}

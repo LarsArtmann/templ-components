@@ -46,7 +46,7 @@ func TestRouteCaptureIsDeterministic(t *testing.T) {
 		return
 	}
 
-	failDir := filepath.Join("testdata", ".fail")
+	failDir := failureRunDir()
 
 	if err := os.MkdirAll(failDir, 0o755); err != nil {
 		t.Fatalf("mkdir failure dir: %v", err)

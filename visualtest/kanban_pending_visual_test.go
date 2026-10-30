@@ -191,8 +191,8 @@ func kanbanCaptureBoardState(
 	if !result.Match {
 		writeFailureArtifacts(t, name, shot, diff)
 		t.Errorf("visualtest[%s]: visual mismatch — %s (max %.4f%%).\n"+
-			"Inspect testdata/.fail/%s.{actual,diff}.png, then run `go test -update` if the change is intended.",
-			name, result, 0.1, name)
+			"Inspect %s (red-pixel diff; .actual.png beside it), then run `go test -update` if the change is intended.",
+			name, result, 0.1, failureArtifactPath(name))
 	}
 }
 
