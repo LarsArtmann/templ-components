@@ -32,6 +32,7 @@ import (
 	"os"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/chromedp/chromedp"
 )
@@ -94,9 +95,18 @@ func ensureAllocator(t *testing.T) {
 	}
 }
 
+// tabLifetime bounds EVERY tab. chromedp actions carry no timeout of their own,
+// so a wedged renderer (or a CDP command that never returns) blocks until the
+// 10-minute go-test alarm panics the whole binary, leaking the Chromium and demo
+// processes and discarding every other test's result. A bounded tab turns that
+// into one ordinary failure: TestDemoNavTimingBudget hung exactly this way on
+// 2026-10-30 under full-suite load.
+const tabLifetime = 150 * time.Second
+
 // newTab returns a fresh tab context derived from the shared Chromium
 // allocator. Each call creates a new browser tab (~10ms). The cancel func
-// closes only the tab, not the browser process.
+// closes only the tab, not the browser process. The tab is hard-bounded by
+// tabLifetime, so no single test can wedge the suite.
 func newTab(t *testing.T) (context.Context, context.CancelFunc) {
 	t.Helper()
 
@@ -104,7 +114,12 @@ func newTab(t *testing.T) (context.Context, context.CancelFunc) {
 
 	ctx, cancel := chromedp.NewContext(sharedAllocCtx)
 
-	return ctx, cancel
+	bounded, cancelBounded := context.WithTimeout(ctx, tabLifetime)
+
+	return bounded, func() {
+		cancelBounded()
+		cancel()
+	}
 }
 
 // browserConfigured reports whether a usable Chromium is available. The
