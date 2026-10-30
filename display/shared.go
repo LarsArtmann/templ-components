@@ -70,11 +70,19 @@ type overlayShellProps struct {
 //     dialog whose ID the attribute carries. Registered once per page via a
 //     singleton guard, so Modal + Drawer on the same page add one listener.
 //   - Per-instance IIFE: auto-open if data-tc-open is set, click delegation
-//     for [data-tc-close] buttons and backdrop-click-to-close
+//     for [data-tc-close] buttons and pointer-based backdrop-click-to-close
 //
-// Backdrop click detection: when the user clicks the ::backdrop area, the
-// click event target IS the dialog element itself (the backdrop is a
-// pseudo-element of dialog). So e.target === dialog detects backdrop clicks.
+// Backdrop dismissal is detected by POINTER POSITION, never by event.target:
+// the ::backdrop is a pseudo-element of the dialog, so backdrop clicks do
+// target the dialog — but so do clicks on the dialog's own padding and on the
+// gaps between its children. A target check therefore closes the dialog when
+// the user clicks inside it (Modern Web Guidance, `dialog`). Press and release
+// must both land outside, so a text-selection drag ending on the backdrop does
+// not dismiss.
+//
+// closedby="any" on the element is the declarative equivalent (progressive
+// enhancement: Safari lacks it, and the pointer path above covers every
+// browser), so the two can coexist — close() on a closed dialog is a no-op.
 func overlayDialogJS(id, componentName string) string {
 	guard := "window.tcOverlay" + componentName + "Attached"
 	escapedID := strconv.Quote(id)
@@ -97,8 +105,15 @@ func overlayDialogJS(id, componentName string) string {
 		"(function(id){" +
 		"var d=document.getElementById(id);if(!d)return;" +
 		"if(d.hasAttribute('data-tc-open')&&!d.open)d.showModal();" +
+		"function outside(e){var r=d.getBoundingClientRect();" +
+		"return e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom;}" +
 		"d.addEventListener('click',function(e){" +
-		"if(e.target.closest('[data-tc-close]')||e.target===d)d.close();" +
+		"if(e.target.closest('[data-tc-close]'))d.close();" +
+		"});" +
+		"var pressedOutside=false;" +
+		"d.addEventListener('pointerdown',function(e){pressedOutside=outside(e);});" +
+		"d.addEventListener('pointerup',function(e){" +
+		"if(pressedOutside&&outside(e))d.close();" +
 		"});" +
 		"})(" + escapedID + ");\n"
 }

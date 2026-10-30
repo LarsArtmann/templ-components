@@ -173,6 +173,8 @@ TODO list, no prescription), so dropdown-menu grading rests on
 3. **IME-safe Enter** in the combobox, tags input, and command palette
    (`forms/combobox.templ:227`, `forms/tags_input.templ:54`,
    `display/command_palette.go:131`).
+4. **`role="switch"`** on the `forms.Toggle` input (`forms/toggle.templ:92`) —
+   screen readers announce a switch, not a checkbox.
 
 Goldens, the ADR-0045 class inventory, the demo `app.css`, `templates/styles.css`,
 and the `cmd/tc/_sources` mirror were regenerated in the same change.

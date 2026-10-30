@@ -26,10 +26,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `fetchpriority="high"` so the LCP image is still prioritised.
 - **Enter during IME composition no longer picks an option, adds a tag, or
   activates a search result.** The combobox, tags input, and command palette
-  handled Enter unconditionally, so committing a CJK/dead-key composition
-  selected the highlighted item instead of committing the text. All three now
-  ignore keystrokes while `event.isComposing` (or the legacy keyCode 229) is
-  set.
+  handled Enter unconditionally, so pressing it to commit a CJK or dead-key
+  composition selected the highlighted option, created a stray tag, or
+  activated the first result. All three now ignore keystrokes while
+  `event.isComposing` (or the legacy keyCode 229) is set.
+- **`forms.Toggle` now announces itself as a switch.** The underlying
+  checkbox carries `role="switch"`, so screen readers report an on/off switch
+  rather than a checked/unchecked checkbox. Form submission, keyboard
+  behaviour and the checked state stay native — no `aria-checked`
+  bookkeeping, and no dependence on the Safari-only `switch` attribute.
 
 ### Added
 
