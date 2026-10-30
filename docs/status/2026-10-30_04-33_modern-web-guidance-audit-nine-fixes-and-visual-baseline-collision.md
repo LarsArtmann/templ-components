@@ -221,6 +221,49 @@ Effort: S ≤ 1h, M ≤ half a day, L > half a day.
 
 ---
 
+## Addendum (same day, after this report): questions 1 answered, items 1-2 shipped
+
+**Question 1 (who owns the visual baselines) is answered by the code, not by
+preference.** The route-golden flakes this report attributed to load were a
+webfont race: the demo links Google-hosted Inter / JetBrains Mono / Space
+Grotesk with `font-display: swap`, so a capture either rendered the pinned
+system faces or the swapped-in webfont depending on CDN latency and cache
+warmth. Two consecutive runs of `TestDemoRouteGoldens` failed on *different*
+route sets (11, then 5) before the fix, and 0 after it. The capture browser now
+blocks both Google Fonts origins and waits for `document.fonts` in every
+pixel-comparison path (`visualtest/external_fonts.go`), and all 53 demo route
+goldens were re-recorded under that rule. The baseline set is now
+self-consistent by construction, so no answer from the owner was needed.
+
+Still open from `g)`: **question 2** (`LoadingOverlay`: modal vs static — it
+blocks item 3) and **question 3** (Baseline target, which decides how much of
+`§f` 4-14 is even desirable).
+
+Shipped since the report:
+
+1. **Backdrop-dismissal e2e** (`visualtest/overlay_backdrop_e2e_test.go`, task
+   1) — real mouse input on a real Modal: inside click keeps it open (including
+   a synthetic pointer pair targeted at the `<dialog>` with inside coordinates,
+   the exact backdrop event shape the old `event.target === dialog` check
+   misread), backdrop press+release closes, close button closes, and neither
+   drag direction dismisses.
+2. **Accordion animation e2e** (`visualtest/accordion_animation_e2e_test.go`,
+   task 2) — per-frame height sampling proves an intermediate height while
+   opening, and that `prefers-reduced-motion: reduce` settles on the first frame.
+   Writing it exposed a demo defect: the answers were passed as templ children
+   while `Accordion` renders `AccordionItem.Content`, so every panel opened
+   empty. Fixed in `examples/demo/display_demo.templ`.
+3. **Deterministic goldens** — the webfont block above, plus 53 re-recorded
+   route PNGs and a `docs/visual-testing.md` section explaining the signature
+   (text-only ~1% mismatch on a shifting route subset) so nobody "fixes" it with
+   `-update` under load again.
+
+Verification after the addendum: `golangci-lint` per module (0 issues), root
+`go test ./...`, full `nix run .#visual` suite (174s, green), and
+`scripts/ci-repro.sh --lint --css --website`.
+
+---
+
 ## Appendix — files created / changed this session
 
 Created: `docs/research/2026-10-30_modern-web-guidance-audit.md`,

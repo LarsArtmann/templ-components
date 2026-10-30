@@ -189,6 +189,29 @@ a TODO list, no prescription — so dropdown-menu grading rests on
    them — autofill was previously reachable only through `BaseProps.Attrs`.
 8. **Cross-document view transitions** for the two MPA surfaces (demo and
    website) — `@view-transition { navigation: auto }`, reduced-motion gated.
+9. **Browser proof for the two overlay/accordion changes** (the wired-component
+   e2e rule): `visualtest/overlay_backdrop_e2e_test.go` drives a real Modal with
+   real mouse input — an inside click (including a synthetic `pointerdown`/
+   `pointerup` pair targeted at the `<dialog>` with inside coordinates, the exact
+   shape a backdrop click has) keeps it open, a backdrop press+release closes it,
+   the close button closes it, and neither press-inside/release-outside nor
+   press-outside/release-inside dismisses it.
+   `visualtest/accordion_animation_e2e_test.go` samples the `<details>` height
+   every animation frame: an intermediate height exists while opening, and under
+   `prefers-reduced-motion: reduce` the very first frame is already the settled
+   height.
+10. **The demo's accordion answers are rendered** — the demo passed them as
+   templ children, but `Accordion` renders `AccordionItem.Content`, so every
+   panel opened empty; the answers now ride `Content`. Without that fix the new
+   animation e2e would have been measuring an empty panel.
+11. **Deterministic visual goldens** — the demo links Google-hosted webfonts
+   with `font-display: swap`, which made every capture race the font swap: route
+   goldens flaked at ~1% pixel mismatch on a different subset of pages each run
+   (and the "load flake" note in AGENTS.md only covered part of it). The capture
+   browser now fails requests to `fonts.googleapis.com`/`fonts.gstatic.com` and
+   waits for `document.fonts` in every pixel-comparison path
+   (`visualtest/external_fonts.go`). All 53 demo route goldens were re-recorded;
+   two consecutive verify runs are green.
 
 Goldens (HTML + website pages), the ADR-0045 class inventory, the demo
 `app.css`, `templates/styles.css`/`theme.out.css`, the starter CSS copy, the
