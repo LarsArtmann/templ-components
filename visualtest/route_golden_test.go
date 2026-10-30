@@ -153,7 +153,7 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewp
 		)
 	}
 
-	tasks = append(tasks, waitAnimationsSettled(), chromedp.Sleep(settleDelay))
+	tasks = append(tasks, waitAnimationsSettled(), chromedp.Sleep(settleDelay), waitFontsSettled())
 
 	if err := chromedp.Do(timeoutCtx, tasks...); err != nil {
 		t.Fatalf("route golden[%s]: capture: %v", name, err)

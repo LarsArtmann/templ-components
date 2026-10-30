@@ -250,6 +250,7 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 		tasks,
 		waitAnimationsSettled(),
 		chromedp.Sleep(settleDelay),
+		waitFontsSettled(),
 	)
 	if err := chromedp.Do(timeoutCtx, tasks...); err != nil {
 		return nil, fmt.Errorf("chromedp actions: %w", err)

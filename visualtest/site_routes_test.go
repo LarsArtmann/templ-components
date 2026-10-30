@@ -193,6 +193,7 @@ func assertSiteRouteScreenshot(t *testing.T, name, url string, dark bool, viewpo
 		evalVoid(siteScrollRevealJS),
 		waitAnimationsSettled(),
 		chromedp.Sleep(settleDelay),
+		waitFontsSettled(),
 	)
 
 	if err := chromedp.Do(timeoutCtx, tasks...); err != nil {

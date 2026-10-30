@@ -3,6 +3,7 @@ package visualtest
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/cdproto/network"
@@ -47,4 +48,17 @@ func blockExternalWebFonts() chromedp.Action[chromedp.Void] {
 
 		return nil
 	})
+}
+
+// waitFontsSettled blocks until the document has finished loading every
+// declared face, so a capture can never race `font-display: swap`. The website
+// self-hosts its woff2 files (same-origin, but still asynchronous); the demo
+// relies on system faces, which report loaded immediately. Called AFTER the
+// settle chain so a load that starts late is still observed.
+func waitFontsSettled() chromedp.Action[chromedp.Void] {
+	return pollTrue(
+		`document.readyState === 'complete' && document.fonts.status === 'loaded'`,
+		chromedp.WithPollingTimeout(10*time.Second),
+		chromedp.WithPollingInterval(50*time.Millisecond),
+	)
 }
