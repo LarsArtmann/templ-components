@@ -321,18 +321,43 @@ func waitAnimationsSettled() chromedp.Action[chromedp.Void] {
 	})
 }
 
-// freezeInfiniteAnimations pins every infinite CSS animation to its t=0 frame
-// and pauses it, so every capture frames the same pixels regardless of when
-// the tab loaded. Runs at the end of waitAnimationsSettled, after the finite
-// wait — pausing infinite animations cannot disturb finished finite ones.
+// freezeInfiniteAnimations removes every infinite CSS animation by setting
+// `animation: none` on its target, then polls until getAnimations() reports
+// no infinite animation left (two consecutive clean passes). Pausing is not
+// enough: transform/opacity animations run on the compositor, where a
+// pause() commits asynchronously — a capture landing in that window frames a
+// near-t=0 but not-exactly-t=0 phase (one display StatusDot differed by 52
+// antialiased pixels across tabs, 2026-10-30). Stripping the animation falls
+// back to the element's base style — exactly the motion-reduce rendering —
+// which is fully deterministic. Runs at the end of waitAnimationsSettled,
+// after the finite wait: stripping cannot disturb finished finite ones.
 func freezeInfiniteAnimations(ctx context.Context) error {
-	expr := `(()=>{let n=0;for(const x of document.getAnimations()){` +
-		`try{const t=x.effect&&x.effect.getTiming();` +
-		`if(t&&t.iterations===Infinity){x.currentTime=0;x.pause();n++}}catch(e){}}` +
-		`return n})()`
+	const expr = `(()=>{let cleared=0;for(const x of document.getAnimations()){` +
+		`let inf=false;try{const t=x.effect&&x.effect.getTiming();inf=!!(t&&t.iterations===Infinity)}catch(e){}` +
+		`if(inf&&x.effect&&x.effect.target instanceof Element){` +
+		`x.effect.target.style.animation='none';cleared++}}return cleared})()`
 
-	if _, err := chromedp.Run(ctx, chromedp.Evaluate[float64](expr)); err != nil {
-		return fmt.Errorf("freeze infinite animations: %w", err)
+	deadline := time.Now().Add(freezeStableWindow)
+	cleanPasses := 0
+
+	for time.Now().Before(deadline) {
+		cleared, err := chromedp.Run(ctx, chromedp.Evaluate[float64](expr))
+		if err != nil {
+			return fmt.Errorf("freeze infinite animations: evaluate: %w", err)
+		}
+
+		if cleared == 0 {
+			cleanPasses++
+			if cleanPasses >= 2 {
+				return nil
+			}
+		} else {
+			cleanPasses = 0
+		}
+
+		if err := chromedp.Do(ctx, chromedp.Sleep(freezePollInterval)); err != nil {
+			return fmt.Errorf("freeze infinite animations: sleep: %w", err)
+		}
 	}
 
 	return nil
@@ -349,6 +374,12 @@ const (
 	// throttling under parallel test load.
 	animMaxSettle = 8 * time.Second
 	animPollDelay = 40 * time.Millisecond
+
+	// freezeStableWindow bounds how long freezeInfiniteAnimations polls for a
+	// clean strip; freezePollInterval spaces the passes so an animation
+	// created late (or resurrected by a style recalc) is caught too.
+	freezeStableWindow = 2 * time.Second
+	freezePollInterval = 100 * time.Millisecond
 )
 
 // hoverAction returns a chromedp action that moves the mouse to the center of
