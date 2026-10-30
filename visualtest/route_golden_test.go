@@ -133,6 +133,7 @@ func captureRouteScreenshot(t *testing.T, url string, dark, rtl bool, viewport V
 	tasks := []chromedp.Action[chromedp.Void]{
 		chromedp.EmulateViewport(int64(viewport.Width), int64(viewport.Height)),
 		blockExternalWebFonts(),
+		resetCaptureNeutralState(),
 		chromedp.Navigate(url),
 		evalVoid(fmt.Sprintf(`try { localStorage.setItem('theme', %q); } catch (e) {}`, theme)),
 		chromedp.Reload(),
@@ -154,6 +155,7 @@ func captureRouteScreenshot(t *testing.T, url string, dark, rtl bool, viewport V
 	}
 
 	tasks = append(tasks, waitAnimationsSettled(), chromedp.Sleep(settleDelay), waitFontsSettled())
+	tasks = append(tasks, neutralCaptureActions()...)
 
 	if err := chromedp.Do(timeoutCtx, tasks...); err != nil {
 		t.Fatalf("route capture[%s]: chain: %v", url, err)
