@@ -298,3 +298,8 @@ Regenerated: `display/accordion_templ.go` + the other touched `*_templ.go`,
 `cmd/tc/_sources/starter/custom.css`, `visualtest/testdata/routes/*.png`.
 
 Commits: 20 daemon auto-commits between 02:21 and 04:18 (source, goldens, PNGs, docs).
+
+
+---
+
+**Addendum 2026-10-30 (C02):** the questions in this report's §g are now carried — with options, evidence, and conservative defaults — in `docs/planning/2026-10-30_16-30_SUPERB-OWNER-DECISION-PACKET.md`; gated plan tasks (C19–C24) execute on those defaults.

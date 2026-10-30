@@ -311,3 +311,8 @@ go test ./utils/... -run TestDocsCountDrift -count=1
 - `TestDocsCountDrift` reads the **first** `N groups at t=1` match in CHANGELOG
   and ADR-0009, so the new count must appear *above* the historical ones.
 - The W3C HTML gate is **not** part of `ci-repro`; run it separately.
+
+
+---
+
+**Addendum 2026-10-30 (C02):** the questions in this report's §g are now carried — with options, evidence, and conservative defaults — in `docs/planning/2026-10-30_16-30_SUPERB-OWNER-DECISION-PACKET.md`; gated plan tasks (C19–C24) execute on those defaults.
