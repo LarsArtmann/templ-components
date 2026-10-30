@@ -36,6 +36,7 @@ templ overlayShell(p overlayShellProps) {
 		if p.kind == OverlayDrawer && p.side != "" {
 			data-side={ string(p.side) }
 		}
+		closedby="any"
 		{ p.attrs... }
 	>
 		@dialogHeader(p.title, p.id+"-title", p.kind)

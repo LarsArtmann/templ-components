@@ -105,17 +105,40 @@ func overlayDialogJS(id, componentName string) string {
 		"(function(id){" +
 		"var d=document.getElementById(id);if(!d)return;" +
 		"if(d.hasAttribute('data-tc-open')&&!d.open)d.showModal();" +
-		"function outside(e){var r=d.getBoundingClientRect();" +
-		"return e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom;}" +
+		dialogBackdropOutsideJS() +
 		"d.addEventListener('click',function(e){" +
 		"if(e.target.closest('[data-tc-close]'))d.close();" +
 		"});" +
-		"var pressedOutside=false;" +
-		"d.addEventListener('pointerdown',function(e){pressedOutside=outside(e);});" +
-		"d.addEventListener('pointerup',function(e){" +
-		"if(pressedOutside&&outside(e))d.close();" +
-		"});" +
+		backdropDismissJS("d") +
 		"})(" + escapedID + ");\n"
+}
+
+// dialogBackdropOutsideJS declares tcOutside(e, dlg), the shared predicate
+// behind every <dialog> backdrop dismissal in this package (Modal, Drawer,
+// CommandPalette, Lightbox).
+//
+// It tests the POINTER POSITION, not event.target. The ::backdrop is a
+// pseudo-element of the dialog, so backdrop presses do target the dialog — but
+// so do presses on the dialog's own padding and on the gaps between its
+// children, which made a target check close overlays when the user clicked
+// inside them (Modern Web Guidance, `dialog`).
+func dialogBackdropOutsideJS() string {
+	return "function tcOutside(e,dlg){var r=dlg.getBoundingClientRect();" +
+		"return e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom;}"
+}
+
+// backdropDismissJS wires press-and-release-outside dismissal for one dialog
+// held in the JS variable ref. The IIFE wrapper gives every dialog its own
+// press flag (two overlays on one page must not share it), and requiring BOTH
+// the press and the release to land outside means a text-selection drag that
+// happens to end on the backdrop does not dismiss the overlay. Callers must
+// emit dialogBackdropOutsideJS once before using this (same scope).
+func backdropDismissJS(ref string) string {
+	return "(function(dlg){var pressed=false;" +
+		"dlg.addEventListener('pointerdown',function(e){pressed=tcOutside(e,dlg);});" +
+		"dlg.addEventListener('pointerup',function(e){" +
+		"if(pressed&&tcOutside(e,dlg))dlg.close();});" +
+		"})(" + ref + ");"
 }
 
 // overlayScriptComponent renders a <script nonce="..."> tag containing the

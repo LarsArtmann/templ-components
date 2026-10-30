@@ -84,6 +84,8 @@ const lightboxJS = `if(!window.tcLightboxAttached){window.tcLightboxAttached=tru
 	`if(zi){zi.setAttribute('data-tc-lightbox-zoom',zi.getAttribute('data-tc-lightbox-zoom')==='1'?'0':'1');` +
 	`zi.classList.toggle('cursor-zoom-out');tcLightboxApply(zi);}}` +
 	`});}` +
-	`(function(){var dlgs=document.querySelectorAll('dialog[data-tc-lightbox-dialog]');` +
-	`for(var i=0;i<dlgs.length;i++){dlgs[i].addEventListener('click',function(e){` +
-	`if(e.target.closest('[data-tc-close]')||e.target===this)this.close();});}})();`
+	`(function(){` + dialogBackdropOutsideJS() + `var dlgs=document.querySelectorAll('dialog[data-tc-lightbox-dialog]');` +
+	`for(var i=0;i<dlgs.length;i++){var dlg=dlgs[i];` +
+	`dlg.addEventListener('click',function(e){` +
+	`if(e.target.closest('[data-tc-close]'))this.close();});` +
+	backdropDismissJS("dlg") + `}})();`
