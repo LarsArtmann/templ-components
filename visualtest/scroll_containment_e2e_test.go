@@ -2,7 +2,6 @@ package visualtest
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,7 +12,6 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/chromedp/cdproto/cdp"
-	"github.com/chromedp/cdproto/input"
 	"github.com/chromedp/chromedp"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/layout"
@@ -81,12 +79,15 @@ func wheelAt(x, y, deltaY float64) chromedp.Action[chromedp.Void] {
 		// Raw JSON params: Chromium requires BOTH deltaX and deltaY keys
 		// present for mouseWheel events, and cdproto's omitempty drops a
 		// zero deltaX — which Chrome then rejects with -32602.
-		params := fmt.Sprintf(
-			`{"type":"mouseWheel","x":%g,"y":%g,"deltaX":0,"deltaY":%g}`,
-			x, y, deltaY,
-		)
+		params := map[string]any{
+			"type":   "mouseWheel",
+			"x":      x,
+			"y":      y,
+			"deltaX": 0,
+			"deltaY": deltaY,
+		}
 
-		_, err := cdp.Call(ctx, tab, input.DispatchMouseEvent, json.RawMessage(params))
+		err := tab.Call(ctx, "Input.dispatchMouseEvent", params, &cdp.Empty{})
 
 		return err
 	})
