@@ -57,6 +57,7 @@ templ Accordion(props AccordionProps) {
 	>
 		for _, item := range items {
 			<details
+				data-tc-accordion
 				class="bg-white dark:bg-gray-900"
 				if item.ID != "" {
 					id={ item.ID }

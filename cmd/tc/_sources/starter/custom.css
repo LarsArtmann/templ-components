@@ -330,7 +330,9 @@ details[open] [data-tc-chevron] {
  */
 @supports selector(::details-content) {
   @media (prefers-reduced-motion: no-preference) {
-    details::details-content {
+    /* Scoped to the Accordion's own <details> (data-tc-accordion) so a
+       consumer's unrelated <details> keeps the platform's instant toggle. */
+    details[data-tc-accordion]::details-content {
       block-size: 0;
       overflow-y: clip;
       content-visibility: hidden;
@@ -338,7 +340,7 @@ details[open] [data-tc-chevron] {
         block-size 200ms ease,
         content-visibility 200ms allow-discrete;
     }
-    details[open]::details-content {
+    details[data-tc-accordion][open]::details-content {
       block-size: auto;
       content-visibility: visible;
     }
