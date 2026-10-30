@@ -86,6 +86,30 @@
     color: inherit;
   }
 
+  /*
+   * Scroll containment (Modern Web Guidance: dialog +
+   * prevent-page-scroll-under-modal-dialog, both MANDATORY).
+   *
+   * Without these, a scroll gesture that starts over the backdrop or inside
+   * the dialog keeps scrolling the page behind it. ::backdrop is not a scroll
+   * container by default (overflow: visible), so overscroll-behavior has no
+   * effect there until it is given an overflow value.
+   *
+   * Progressive enhancement: where overscroll-behavior is not enforced the
+   * dialog still contains scrolling of its own overflowing content, and
+   * showModal() still makes the page inert. Do NOT replace this with
+   * overflow: hidden / position: fixed on html or body — that removes the root
+   * scrollbar and shifts the layout.
+   */
+  dialog:modal {
+    overscroll-behavior: contain;
+  }
+
+  dialog::backdrop {
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+
   /* Backdrop: shared by modal and drawer, animated via background-color */
   dialog.tc-overlay::backdrop {
     background-color: --alpha(var(--color-black) / 0%);

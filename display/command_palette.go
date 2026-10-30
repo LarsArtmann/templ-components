@@ -126,6 +126,9 @@ func commandPaletteJS(id string) string {
 		"if(e.target.closest('[data-tc-close]'))d.close();});" +
 		"if(input){input.addEventListener('input',applyFilter);" +
 		"input.addEventListener('keydown',function(e){" +
+		// IME composition: Enter commits the composition, it must not activate
+		// the highlighted result (Modern Web Guidance: ime-safe-enter-submit).
+		"if(e.isComposing||e.keyCode===229)return;" +
 		"var opts=options();" +
 		"if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();" +
 		"if(!opts.length)return;var i=opts.indexOf(active);" +
