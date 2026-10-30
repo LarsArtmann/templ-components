@@ -2,7 +2,17 @@
 
 ## Status
 
-Accepted
+Accepted. **Gate enforcement is BLOCKING since 2026-10-30** (TODO #295
+promoted after two consecutive green advisory runs): the `clone-gate` CI job
+installs art-dupl at the baseline-pinned rev and fails on any group outside
+the baseline. The analyzer supply is RATIFIED as `scripts/pinned-art-dupl.sh`
+(TODO #447) — local twin of the CI install, same rev, asserted in lockstep by
+`scripts/check-dupl-pin.sh` (run in the Lint job + `ci-repro --lint`). The
+advisory lane in `scripts/ci-repro.sh` stays as the pre-push mirror and logs
+the binary version beside the baseline `recordedAt` (TODO #450). Re-record
+ritual after a deliberate analyzer bump: triage new groups → update this ADR →
+re-record with the SAME binary → update `PINNED_REV` + the CI install rev in
+ONE commit.
 
 ## Context
 
