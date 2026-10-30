@@ -41,10 +41,10 @@ var feedbackStyleMap = map[FeedbackType]feedbackStyleSet{
 		Icon:   "text-red-600 dark:text-red-400",
 	},
 	FeedbackWarning: {
-		Border: "border-yellow-200 dark:border-yellow-800",
-		BG:     "bg-yellow-50 dark:bg-yellow-900/20",
-		Text:   "text-yellow-800 dark:text-yellow-200",
-		Icon:   "text-yellow-600 dark:text-yellow-400",
+		Border: "border-amber-200 dark:border-amber-800",
+		BG:     "bg-amber-50 dark:bg-amber-900/20",
+		Text:   "text-amber-800 dark:text-amber-200",
+		Icon:   "text-amber-600 dark:text-amber-400",
 	},
 	FeedbackInfo: {
 		Border: "border-blue-200 dark:border-blue-800",
