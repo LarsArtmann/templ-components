@@ -148,11 +148,21 @@ func TestAutocompleteE2ETokensAndSubmission(t *testing.T) {
 	}
 
 	// Fill the form and really submit it — the server echoes the POST body.
-	if err := chromedp.Do(ctx,
+	// The submit navigates away mid-Do, which tears down the JS execution
+	// context the click ack lives on; that error is expected here (a genuinely
+	// broken click fails the poll below instead).
+	fillErr := chromedp.Do(ctx,
 		chromedp.SetValue("input#e2e-ac-email", "ada@example.com"),
 		chromedp.SetValue("input#e2e-ac-password", "s3cr3t"),
 		chromedp.SetValue("input#e2e-ac-card", "4242424242424242"),
 		chromedp.Click("button#e2e-ac-submit"),
+	)
+
+	if fillErr != nil {
+		t.Logf("visualtest[autocomplete]: submit click ack: %v (expected during navigation)", fillErr)
+	}
+
+	if err := chromedp.Do(ctx,
 		pollTrue(`document.body.innerText.startsWith('RECEIVED:')`, pollFast()...),
 	); err != nil {
 		t.Fatalf("visualtest[autocomplete]: form submission: %v", err)

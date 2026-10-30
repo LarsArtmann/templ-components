@@ -25,23 +25,23 @@ import (
 // scroll the body.
 func scrollContainmentE2EPage() templ.Component {
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-		if _, err := io.WriteString(
-			w,
-			`<div class="h-[3000px]"><p class="pt-8 text-center">scroll containment fixture</p></div>`,
-		); err != nil {
+		// Fixture CSS is self-contained on purpose: the compiled demo CSS only
+		// carries utilities the demo sources use, so arbitrary Tailwind
+		// classes in a test string would silently no-op.
+		if _, err := io.WriteString(w,
+			`<style>.e2e-tall{height:3000px}.e2e-scrollbox{max-height:10rem;overflow-y:auto}</style>`+
+				`<div class="e2e-tall"><p>scroll containment fixture</p></div>`); err != nil {
 			return err
 		}
 
 		var rows strings.Builder
 		for i := 1; i <= 40; i++ {
-			fmt.Fprintf(&rows, `<p class="h-8 leading-8 pl-2">Line %d</p>`, i)
+			fmt.Fprintf(&rows, `<p>Line %d</p>`, i)
 		}
 
 		inner := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-			_, err := io.WriteString(
-				w,
-				`<div id="e2e-scroll-body" class="max-h-40 overflow-y-auto rounded-md ring-1 ring-gray-300 dark:ring-gray-600">`+rows.String()+`</div>`,
-			)
+			_, err := io.WriteString(w,
+				`<div id="e2e-scroll-body" class="e2e-scrollbox">`+rows.String()+`</div>`)
 
 			return err
 		})

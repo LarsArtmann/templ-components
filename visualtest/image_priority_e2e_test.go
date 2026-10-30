@@ -17,13 +17,16 @@ import (
 	"github.com/larsartmann/templ-components/layout"
 )
 
-// imagePriorityE2EPage renders one lazy (default) and one eager image, the
-// two priority personalities the component promises.
+// imagePriorityE2EPage renders one lazy and one eager image, the two priority
+// personalities the component promises. Lazy is set EXPLICITLY: the
+// ImageProps zero value currently renders eager (documented-default mismatch,
+// see the TODO_LIST zero-value row for Image).
 func imagePriorityE2EPage() templ.Component {
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		lazy := display.ImageProps{
 			Nonce: "e2e-nonce", ID: "e2e-img-lazy",
 			Src: "/static/fixture.svg", Alt: "Lazy fixture", Width: 320, Height: 180,
+			Lazy: true,
 		}
 		if err := display.Image(lazy).Render(ctx, w); err != nil {
 			return err
