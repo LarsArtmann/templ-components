@@ -28,7 +28,7 @@ chromedp: navigate → wait for #tc-root → (apply State) → settle → screen
 compare PNG pixels against testdata/<name>.png (0.1% threshold)
 │
 ├── match → pass
-└── differ → fail + write testdata/.fail/<name>.{actual,diff}.png
+└── differ → fail + write testdata/.fail/<run>/<name>.{actual,diff}.png
 
 ````
 ### Shared Chromium process
@@ -301,14 +301,21 @@ not sleeping wall time — is the only robust guard.
 
 ## When a visual test fails
 
-1. Open `testdata/.fail/<name>.diff.png` — red pixels show what changed.
-2. Open `testdata/.fail/<name>.actual.png` next to the committed golden.
+1. Open `testdata/.fail/<run>/<name>.diff.png` — red pixels show what changed.
+   `<run>` is this run's directory, `<UTC timestamp>-<pid>`
+   (`failureRunDir`); the failing test's message names the exact path.
+2. Open the `.actual.png` beside it, next to the committed golden.
 3. If the change is **intended**, regenerate: `nix run .#visual -- -update`,
    review the diff, and commit the new golden.
 4. If the change is **unintended**, fix the component.
 
-The `.fail/` directory is gitignored — it holds only the last failing run's
-artifacts for inspection, never the source of truth.
+`.fail/` is gitignored and holds **per-run** directories — every failing run
+writes its own `<timestamp>-<pid>/` dir, and the newest 10 are retained (older
+ones are pruned when a new run dir is created). A re-run therefore can never
+wipe the evidence of an earlier failing run mid-investigation (which happened
+twice on 2026-10-30 under the previous single-run wipe scheme). Runs that fail
+only on *some* tests leave artifacts only for those tests; a passing re-run of
+a test removes its own stale artifacts from the current run's directory.
 
 ### Text-only mismatch on a shifting subset of routes (webfont race)
 
@@ -333,6 +340,29 @@ Both halves are fixed in `visualtest/external_fonts.go`:
 
 Never make a golden pass by raising `MaxMismatch`, and never record a baseline
 with the CDN block missing.
+
+### The determinism gate (capture chain, double-capture, hygiene)
+
+Three layers keep captures byte-stable, each with a regression guard:
+
+1. **Source guard** — `TestCapturePathsBlockExternalFonts` fails any capture
+   path that stops calling `blockExternalWebFonts()` + `waitFontsSettled()`.
+2. **Behavioural gate** — `TestRouteCaptureIsDeterministic` captures a rich
+   demo route (`/display`) twice in one process and requires **byte-equal**
+   PNGs — far stricter than the 0.1% golden tolerance. On mismatch both PNGs
+   are written to the run's `.fail/` dir with their SHA-256s in the message.
+   This is the test that caught the original webfont race's surviving
+   variants; treat any failure as a real determinism bug, not load flake.
+3. **Capture hygiene** — before navigation the tab is reset to a neutral state
+   (`resetCaptureNeutralState`: pointer parked at (0,0) via CDP mouse-move so
+   no element is hover-lit; `blur` + `scrollTo(0,0)` asserted via
+   `neutralCaptureActions` after the settle chain), so no `:hover`/focus/
+   scroll residue leaks into the frame.
+
+The golden comparison's 0.1% tolerance can hide a small animated region
+(e.g. a spinner wiggling inside tolerance) that the byte-equal gate catches —
+that is by design: the gate proves the *chain* is deterministic; the goldens
+only prove the pages match their baselines.
 
 ## Why a separate Go module?
 
