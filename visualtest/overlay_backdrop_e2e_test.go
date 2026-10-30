@@ -64,7 +64,6 @@ func (b overlayBox) outsidePoint() (float64, float64) {
 // component's pointer listeners see exactly what a user produces.
 func mouseEvent(typ input.DispatchMouseEventType, x, y float64) chromedp.Action[chromedp.Void] {
 	return chromedp.Func(func(ctx context.Context, tab *chromedp.Target) error {
-		//nolint:exhaustruct_v5 // omitted CDP fields take protocol defaults
 		params := input.DispatchMouseEventParams{
 			Type:   typ,
 			X:      x,

@@ -150,7 +150,9 @@ func TestAccordionSnapsUnderReducedMotion(t *testing.T) {
 		if h < settled-1 {
 			t.Fatalf(
 				"sample %d = %.2f is below the settled height %.2f under prefers-reduced-motion: reduce — the panel still animates",
-				i, h, settled,
+				i,
+				h,
+				settled,
 			)
 		}
 	}

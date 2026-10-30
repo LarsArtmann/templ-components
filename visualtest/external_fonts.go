@@ -24,16 +24,34 @@ import (
 // decide the pixels: no swap can happen, and no run depends on network reach
 // or latency. Both origins are blocked before navigation in every
 // pixel-comparison path (component goldens, demo routes, site routes).
-var externalWebFontPatterns = []*network.BlockPattern{
-	{URLPattern: "https://fonts.googleapis.com/*", Block: true},
-	{URLPattern: "https://fonts.gstatic.com/*", Block: true},
+
+// The two hosts a Google Fonts <link> resolves to: the stylesheet and the font
+// files themselves.
+const (
+	googleFontsCSSOrigin  = "https://fonts.googleapis.com/*"
+	googleFontsFileOrigin = "https://fonts.gstatic.com/*"
+
+	// fontsLoadTimeout bounds the wait for every declared face to finish
+	// loading; fontsLoadPollInterval keeps that wait responsive.
+	fontsLoadTimeout      = 10 * time.Second
+	fontsLoadPollInterval = 50 * time.Millisecond
+)
+
+// externalWebFontPatterns is the CDP block list for both Google Fonts origins.
+func externalWebFontPatterns() []*network.BlockPattern {
+	return []*network.BlockPattern{
+		{URLPattern: googleFontsCSSOrigin, Block: true},
+		{URLPattern: googleFontsFileOrigin, Block: true},
+	}
 }
 
 // blockExternalWebFonts fails every request to the Google Fonts CDN for the
 // life of the tab, so pages render with the pinned system faces only.
 func blockExternalWebFonts() chromedp.Action[chromedp.Void] {
 	return chromedp.Func(func(ctx context.Context, tab *chromedp.Target) error {
-		if _, err := cdp.Call(ctx, tab, network.Enable, network.EnableParams{}); err != nil {
+		//nolint:exhaustruct_v5 // omitted protocol fields take their defaults
+		enable := network.EnableParams{}
+		if _, err := cdp.Call(ctx, tab, network.Enable, enable); err != nil {
 			return fmt.Errorf("enable network domain: %w", err)
 		}
 
@@ -41,7 +59,7 @@ func blockExternalWebFonts() chromedp.Action[chromedp.Void] {
 			ctx,
 			tab,
 			network.SetBlockedURLs,
-			network.SetBlockedURLsParams{URLPatterns: externalWebFontPatterns},
+			network.SetBlockedURLsParams{URLPatterns: externalWebFontPatterns()},
 		); err != nil {
 			return fmt.Errorf("block external web fonts: %w", err)
 		}
@@ -58,7 +76,7 @@ func blockExternalWebFonts() chromedp.Action[chromedp.Void] {
 func waitFontsSettled() chromedp.Action[chromedp.Void] {
 	return pollTrue(
 		`document.readyState === 'complete' && document.fonts.status === 'loaded'`,
-		chromedp.WithPollingTimeout(10*time.Second),
-		chromedp.WithPollingInterval(50*time.Millisecond),
+		chromedp.WithPollingTimeout(fontsLoadTimeout),
+		chromedp.WithPollingInterval(fontsLoadPollInterval),
 	)
 }
