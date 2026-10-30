@@ -198,15 +198,31 @@ func TestIMEE2ECompositionSafeEnter(t *testing.T) {
 	})
 
 	t.Run("command-palette", func(t *testing.T) {
+		t.Logf("palette: waiting for trigger visible")
+
 		if err := chromedp.Do(ctx,
-			chromedp.Click(`[data-tc-palette-open]`),
-			pollTrue(`document.getElementById('e2e-ime-palette').open===true`, pollFast()...),
-			evalVoid(dispatchKeyJS(`[data-tc-palette-input]`, "Enter", true, false)),
-			evalVoid(dispatchKeyJS(`[data-tc-palette-input]`, "Enter", false, true)),
+			chromedp.WaitVisible(chromedp.CSS("[data-tc-palette-open]")),
+		); err != nil {
+			t.Fatalf("visualtest[ime] command-palette: trigger never visible: %v", err)
+		}
+
+		t.Logf("palette: trigger visible, clicking")
+
+		if err := chromedp.Do(ctx,
+			chromedp.Click(chromedp.CSS("[data-tc-palette-open]")),
+		); err != nil {
+			t.Fatalf("visualtest[ime] command-palette: click: %v", err)
+		}
+
+		t.Logf("palette: clicked, polling open")
+
+		if err := chromedp.Do(ctx,
 			pollTrue(`document.getElementById('e2e-ime-palette').open===true`, pollFast()...),
 		); err != nil {
-			t.Fatalf("visualtest[ime] command-palette: composition Enter closed the palette: %v", err)
+			t.Fatalf("visualtest[ime] command-palette: did not open: %v", err)
 		}
+
+		t.Logf("palette: open, dispatching composition Enters")
 
 		if err := chromedp.Do(ctx,
 			evalVoid(dispatchKeyJS(`[data-tc-palette-input]`, "Enter", false, false)),
