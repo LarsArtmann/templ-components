@@ -25,7 +25,11 @@ func TestIsValidEnums(t *testing.T) {
 		{"EnterKeyHint Send", func() bool { return EnterKeyHintTypeIsValid(EnterKeyHintSend) }, true},
 		{"EnterKeyHint Search", func() bool { return EnterKeyHintTypeIsValid(EnterKeyHintSearch) }, true},
 		{"EnterKeyHint invalid", func() bool { return EnterKeyHintTypeIsValid(EnterKeyHintType("bogus")) }, false},
-		{"Autocomplete current-password", func() bool { return AutocompleteTypeIsValid(AutocompleteCurrentPassword) }, true},
+		{
+			"Autocomplete current-password",
+			func() bool { return AutocompleteTypeIsValid(AutocompleteCurrentPassword) },
+			true,
+		},
 		{"Autocomplete one-time-code", func() bool { return AutocompleteTypeIsValid(AutocompleteOneTimeCode) }, true},
 		{"Autocomplete cc-number", func() bool { return AutocompleteTypeIsValid(AutocompleteCardNumber) }, true},
 		{"Autocomplete invalid", func() bool { return AutocompleteTypeIsValid(AutocompleteType("bogus")) }, false},

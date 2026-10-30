@@ -96,7 +96,7 @@ func commandPaletteJS(id string) string {
 		"}" +
 		"(function(id){" +
 		"var d=document.getElementById(id);if(!d)return;" +
-		 dialogBackdropOutsideJS() +
+		dialogBackdropOutsideJS() +
 		"var input=d.querySelector('[data-tc-palette-input]');" +
 		"var empty=d.querySelector('[data-tc-palette-empty]');" +
 		"var active=null;" +
@@ -124,7 +124,7 @@ func commandPaletteJS(id string) string {
 		"var opt=e.target.closest('[data-tc-palette-item]');" +
 		"if(opt){d.close();return;}" +
 		"if(e.target.closest('[data-tc-close]'))d.close();});" +
-		 backdropDismissJS("d") +
+		backdropDismissJS("d") +
 		"if(input){input.addEventListener('input',applyFilter);" +
 		"input.addEventListener('keydown',function(e){" +
 		// IME composition: Enter commits the composition, it must not activate
