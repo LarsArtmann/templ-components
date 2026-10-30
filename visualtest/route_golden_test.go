@@ -102,12 +102,14 @@ var demoRouteBase = sync.OnceValue(func() string {
 	return "READY-TIMEOUT"
 })
 
-// assertRouteScreenshot navigates to url, optionally flips dark mode and/or
-// RTL, waits for finite animations to settle, captures (full-page or
-// viewport) at the requested viewport, and compares against the
-// routes/<name> golden — mirroring AssertScreenshot's compare/update flow
-// for server-rendered pages.
-func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewport Viewport, fullPage bool) {
+// captureRouteScreenshot runs the FULL demo-route capture chain (theme pin,
+// webfont block, settle waits) on a fresh tab and returns the PNG bytes. It is
+// the single place the route-tier capture actions live: assertRouteScreenshot
+// compares its output against goldens, TestRouteCaptureIsDeterministic runs it
+// twice to prove the chain is byte-stable. Keep the determinism helpers
+// (blockExternalWebFonts, waitFontsSettled) in this chain — the guard test
+// fails any capture path that loses them.
+func captureRouteScreenshot(t *testing.T, url string, dark, rtl bool, viewport Viewport, fullPage bool) []byte {
 	t.Helper()
 
 	ctx, cancel := newTab(t)
@@ -115,8 +117,6 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewp
 
 	timeoutCtx, cancelTimeout := context.WithTimeout(ctx, 40*time.Second)
 	defer cancelTimeout()
-
-	var shot []byte
 
 	// Pin the theme via localStorage + reload BEFORE capture. The demo's
 	// ThemeScript resolves un-pinned pages from prefers-color-scheme, which
@@ -156,12 +156,15 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewp
 	tasks = append(tasks, waitAnimationsSettled(), chromedp.Sleep(settleDelay), waitFontsSettled())
 
 	if err := chromedp.Do(timeoutCtx, tasks...); err != nil {
-		t.Fatalf("route golden[%s]: capture: %v", name, err)
+		t.Fatalf("route capture[%s]: chain: %v", url, err)
 	}
 
 	// quality 100 = PNG (any other value yields JPEG — the golden
 	// pipeline decodes PNG; the shots tool deliberately uses JPEG).
-	var err error
+	var (
+		shot []byte
+		err  error
+	)
 
 	if fullPage {
 		shot, err = chromedp.Run(timeoutCtx, chromedp.FullScreenshot(100))
@@ -170,8 +173,19 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewp
 	}
 
 	if err != nil {
-		t.Fatalf("route golden[%s]: capture: %v", name, err)
+		t.Fatalf("route capture[%s]: screenshot: %v", url, err)
 	}
+
+	return shot
+}
+
+// assertRouteScreenshot captures the route via captureRouteScreenshot and
+// compares against the routes/<name> golden — mirroring AssertScreenshot's
+// compare/update flow for server-rendered pages.
+func assertRouteScreenshot(t *testing.T, name, url string, dark, rtl bool, viewport Viewport, fullPage bool) {
+	t.Helper()
+
+	shot := captureRouteScreenshot(t, url, dark, rtl, viewport, fullPage)
 
 	if updateGoldens() {
 		writeGolden(t, "routes/"+name, shot)
