@@ -56,7 +56,7 @@ Worth recording so this is not re-litigated. Each row is verified in source.
 | `dialog` (core semantics) | `display/shared.templ:17` renders a real `<dialog>`; `display/shared.go:78` opens with `showModal()` and closes with `dialog.close()`. No `role="dialog"`, no `aria-modal`, no focus trap, no `inert` juggling, no Esc handler, no manual focus restore — all the things the guide marks DON'T. |
 | `dialog` (dismiss) | `closedby="any"` on every overlay `<dialog>` (Modal, Drawer, CommandPalette, Lightbox) and pointer-position backdrop detection shared through `dialogBackdropOutsideJS`/`backdropDismissJS` (`display/shared.go`). Press **and** release must land outside, so a selection drag ending on the backdrop does not dismiss, and clicks on the dialog's own padding no longer close it. (Added 2026-10-30.) |
 | `light-dismiss-a-dialog` | Same `closedby="any"`; the declarative form where the browser supports it, the pointer path everywhere else, with `close()` on a closed dialog being a no-op. |
-| `animate-to-intrinsic-sizes` | `templates/custom.css` — `details::details-content` gets `block-size: 0` → `auto` under `@supports selector(::details-content)` plus the `:root` `interpolate-size` opt-in, with `content-visibility` transitioned `allow-discrete` and the whole block disabled under `prefers-reduced-motion`. The accordion panel animates instead of snapping. (Added 2026-10-30.) |
+| `animate-to-intrinsic-sizes` | `templates/custom.css` — `details[data-tc-accordion]::details-content` gets `block-size: 0` → `auto` under `@supports selector(::details-content)` plus the `:root` `interpolate-size` opt-in, with `content-visibility` transitioned `allow-discrete` and the whole block disabled under `prefers-reduced-motion`. The accordion panel animates instead of snapping. (Added 2026-10-30.) |
 | `cross-document-transitions` (MPA surfaces) | `examples/demo/demo.css` and `website/site.css` declare `@view-transition { navigation: auto }` with a reduced-motion opt-out. Both are MPAs where every page opts in, which is the requirement. Deliberately not in `templates/custom.css`, so consumers do not inherit it. (Added 2026-10-30.) |
 | `prevent-page-scroll-under-modal-dialog` | `templates/custom.css:104-111` — `overscroll-behavior: contain` on `dialog:modal` **and** `overflow: hidden` + `contain` on `dialog::backdrop`. (Added 2026-10-30; this was the one MANDATORY we were missing.) |
 | `animate-to-from-top-layer` | All three MANDATORYs: `overlay` in the transition list, `display … allow-discrete`, and `@starting-style` (`templates/custom.css:113-131`), with `prefers-reduced-motion` handling. |
@@ -180,9 +180,10 @@ a TODO list, no prescription — so dropdown-menu grading rests on
    Modal/Drawer, CommandPalette, and Lightbox, with `closedby="any"` on all
    four. Fixes clicks on the dialog's own padding closing it, and stops a
    selection drag that ends on the backdrop from dismissing.
-6. **Accordion panel animation** — a `details::details-content` block-size
-   transition under `@supports selector(::details-content)`, with a
-   reduced-motion opt-out (`templates/custom.css`).
+6. **Accordion panel animation** — a `details[data-tc-accordion]::details-content`
+   block-size transition under `@supports selector(::details-content)`, with a
+   reduced-motion opt-out (`templates/custom.css`). Scoped to the component so a
+   consumer's own `<details>` is untouched.
 7. **`forms.InputProps.Autocomplete`** + `AutocompleteType` (23 tokens across
    credentials, address, payment) that drops unknown tokens instead of emitting
    them — autofill was previously reachable only through `BaseProps.Attrs`.

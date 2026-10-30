@@ -57,6 +57,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   so browsers without the pseudo-element keep the native instant toggle, and
   disabled entirely under `prefers-reduced-motion`. The existing
   `interpolate-size` opt-in is what makes `auto` a valid animation endpoint.
+  The rule is scoped to the component's own `data-tc-accordion` marker — a
+  consumer's unrelated `<details>` keeps the platform's instant toggle.
 - **Cross-document view transitions for the demo and the website.** Both are
   MPAs that opt every page in via their stylesheet (`@view-transition {
   navigation: auto }`), with a reduced-motion opt-out. Deliberately kept out of
