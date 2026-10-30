@@ -312,6 +312,39 @@ details[open] [data-tc-chevron] {
   }
 }
 
+/*
+ * Accordion panel animation (Modern Web Guidance: animate-to-intrinsic-sizes).
+ *
+ * <details> content lives in the ::details-content pseudo-element, which is
+ * hidden — not sized — while closed. Giving it a block-size of 0 and
+ * transitioning to `auto` makes the panel open/close smoothly; the
+ * interpolate-size opt-in on :root (above) is what lets `auto` be an
+ * animation endpoint at all.
+ *
+ * Gated twice, deliberately: `selector(::details-content)` so browsers
+ * without the pseudo-element keep the native instant toggle (they would
+ * otherwise be left with a permanently 0-height panel), and content-visibility
+ * is transitioned with allow-discrete so the content joins the render/a11y
+ * tree only once it has room. prefers-reduced-motion removes the animation
+ * entirely instead of shortening it.
+ */
+@supports selector(::details-content) {
+  @media (prefers-reduced-motion: no-preference) {
+    details::details-content {
+      block-size: 0;
+      overflow-y: clip;
+      content-visibility: hidden;
+      transition:
+        block-size 200ms ease,
+        content-visibility 200ms allow-discrete;
+    }
+    details[open]::details-content {
+      block-size: auto;
+      content-visibility: visible;
+    }
+  }
+}
+
 /* --- Typography: balanced headlines, clean paragraphs --- */
 /* text-wrap: balance limits to 6 lines — safe for headings */
 /* text-wrap: pretty prevents orphan words in body copy */

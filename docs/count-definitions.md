@@ -24,7 +24,7 @@ number is questioned, answer from here, not from memory.
 - **Computed by:** `icons.AllIconNames()` (live, in-process); the website and
   demo compute from it at render time.
 
-## Typed enums — **73 (72 with IsValid())**
+## Typed enums — **74 (73 with IsValid())**
 
 - **Definition:** exported closed-set string types; the IsValid count is
   functions matching `<Name>IsValid(` across library source.
