@@ -2,6 +2,7 @@ package visualtest
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -77,12 +78,15 @@ func scrollContainmentE2EServer(t *testing.T) *httptest.Server {
 // trackpad takes.
 func wheelAt(x, y, deltaY float64) chromedp.Action[chromedp.Void] {
 	return chromedp.Func(func(ctx context.Context, tab *chromedp.Target) error {
-		_, err := cdp.Call(ctx, tab, input.DispatchMouseEvent, input.DispatchMouseEventParams{
-			Type:   input.DispatchMouseEventTypeMouseWheel,
-			X:      x,
-			Y:      y,
-			DeltaY: deltaY,
-		})
+		// Raw JSON params: Chromium requires BOTH deltaX and deltaY keys
+		// present for mouseWheel events, and cdproto's omitempty drops a
+		// zero deltaX — which Chrome then rejects with -32602.
+		params := fmt.Sprintf(
+			`{"type":"mouseWheel","x":%g,"y":%g,"deltaX":0,"deltaY":%g}`,
+			x, y, deltaY,
+		)
+
+		_, err := cdp.Call(ctx, tab, input.DispatchMouseEvent, json.RawMessage(params))
 
 		return err
 	})

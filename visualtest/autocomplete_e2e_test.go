@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/a-h/templ"
 	"github.com/chromedp/chromedp"
@@ -157,15 +158,30 @@ func TestAutocompleteE2ETokensAndSubmission(t *testing.T) {
 		chromedp.SetValue("input#e2e-ac-card", "4242424242424242"),
 		chromedp.Click("button#e2e-ac-submit"),
 	)
-
 	if fillErr != nil {
 		t.Logf("visualtest[autocomplete]: submit click ack: %v (expected during navigation)", fillErr)
 	}
 
-	if err := chromedp.Do(ctx,
-		pollTrue(`document.body.innerText.startsWith('RECEIVED:')`, pollFast()...),
-	); err != nil {
-		t.Fatalf("visualtest[autocomplete]: form submission: %v", err)
+	// The full-page navigation tears down the JS execution context earlier
+	// actions ran on, so the first poll attempts can race it with -32000;
+	// retry with short polls until the new document answers.
+	pollDeadline := time.Now().Add(10 * time.Second)
+
+	for {
+		pollErr := chromedp.Do(ctx, pollTrue(
+			`document.body.innerText.startsWith('RECEIVED:')`,
+			chromedp.WithPollingTimeout(750*time.Millisecond),
+			chromedp.WithPollingInterval(100*time.Millisecond),
+		))
+		if pollErr == nil {
+			break
+		}
+
+		if time.Now().After(pollDeadline) {
+			t.Fatalf("visualtest[autocomplete]: form submission echo never appeared: %v", pollErr)
+		}
+
+		time.Sleep(100 * time.Millisecond)
 	}
 
 	var received string
