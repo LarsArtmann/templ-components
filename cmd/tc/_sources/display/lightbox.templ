@@ -62,6 +62,7 @@ templ Lightbox(props LightboxProps) {
 		<dialog
 			id={ rootID + "-dialog" }
 			data-tc-lightbox-dialog
+			closedby="any"
 			class="tc-overlay tc-modal bg-black/90 p-4 dark:bg-black/90"
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
@@ -107,5 +108,5 @@ templ Lightbox(props LightboxProps) {
 			</div>
 		</dialog>
 	</div>
-	@utils.ScriptComponent(props.Nonce, lightboxJS, "lightbox script")
+	@utils.ScriptComponent(props.Nonce, lightboxJS(), "lightbox script")
 }

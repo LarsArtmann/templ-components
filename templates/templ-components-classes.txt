@@ -2862,6 +2862,7 @@ func commandPaletteJS(id string) string {
 		"}" +
 		"(function(id){" +
 		"var d=document.getElementById(id);if(!d)return;" +
+		 dialogBackdropOutsideJS() +
 		"var input=d.querySelector('[data-tc-palette-input]');" +
 		"var empty=d.querySelector('[data-tc-palette-empty]');" +
 		"var active=null;" +
@@ -2886,10 +2887,10 @@ func commandPaletteJS(id string) string {
 		"if(input){input.value='';}applyFilter();if(d&&!d.open)d.showModal();" +
 		"if(input)input.focus();}" +
 		"d.addEventListener('click',function(e){" +
-		"if(e.target===d){d.close();return;}" +
 		"var opt=e.target.closest('[data-tc-palette-item]');" +
 		"if(opt){d.close();return;}" +
 		"if(e.target.closest('[data-tc-close]'))d.close();});" +
+		 backdropDismissJS("d") +
 		"if(input){input.addEventListener('input',applyFilter);" +
 		"input.addEventListener('keydown',function(e){" +
 		// IME composition: Enter commits the composition, it must not activate
@@ -2961,6 +2962,7 @@ templ CommandPalette(props CommandPaletteProps) {
 		id={ id }
 		class={ utils.Class("tc-overlay tc-modal mt-[12vh] mb-auto h-fit w-[calc(100%-2rem)] rounded-xl bg-white p-0 shadow-xl print:hidden dark:bg-gray-900", commandPaletteSizeClass(props.Size), props.Class) }
 		data-tc-palette={ id }
+		closedby="any"
 		if props.Hotkey {
 			data-tc-hotkey="true"
 		}
@@ -6124,48 +6126,53 @@ func DefaultLightboxProps() LightboxProps {
 	}
 }
 
-// lightboxJS is the CSP-safe singleton script: open/navigate/rotate/zoom on
-// [data-tc-lightbox] roots via event delegation. Escape/backdrop dismissal
-// are native dialog behavior; rotate and zoom compose on the image's
-// transform (JS-set styles are not blocked by style-src).
-const lightboxJS = `if(!window.tcLightboxAttached){window.tcLightboxAttached=true;` +
-	`window.tcLightboxApply=function(img){` +
-	`var r=img.getAttribute('data-tc-lightbox-rot')||'0';` +
-	`var z=img.getAttribute('data-tc-lightbox-zoom')==='1'?' scale(2)':'';` +
-	`img.style.transform='rotate('+r+'deg)'+z;};` +
-	`window.tcShowLightbox=function(dlg,idx){` +
-	`var imgs=dlg.querySelectorAll('[data-tc-lightbox-img]');if(!imgs.length)return;` +
-	`if(idx<0)idx=imgs.length-1;if(idx>=imgs.length)idx=0;` +
-	`for(var k=0;k<imgs.length;k++){imgs[k].hidden=k!==idx;}` +
-	`var cap=dlg.querySelector('[data-tc-lightbox-caption]');` +
-	`if(cap)cap.textContent=imgs[idx].getAttribute('data-tc-lightbox-cap')||'';` +
-	`var img=imgs[idx];img.style.transform='';img.setAttribute('data-tc-lightbox-rot','0');img.setAttribute('data-tc-lightbox-zoom','0');img.classList.remove('cursor-zoom-out');` +
-	`dlg.setAttribute('data-tc-lightbox-index',String(idx));` +
-	`if(!dlg.open)dlg.showModal();};` +
-	`window.tcOpenLightbox=function(id,idx){var d=document.getElementById(id);if(d)window.tcShowLightbox(d,idx||0);};` +
-	`document.addEventListener('click',function(e){` +
-	`var opener=e.target.closest('[data-tc-lightbox-open]');` +
-	`if(opener){var root=opener.closest('[data-tc-lightbox]');if(!root)return;` +
-	`var dlg=document.getElementById(root.id+'-dialog');if(!dlg)return;` +
-	`window.tcShowLightbox(dlg,parseInt(opener.getAttribute('data-tc-lightbox-open'),10)||0);return;}` +
-	`var nav=e.target.closest('[data-tc-lightbox-prev],[data-tc-lightbox-next]');` +
-	`if(nav){var dr=nav.closest('dialog');if(!dr)return;` +
-	`var cur=parseInt(dr.getAttribute('data-tc-lightbox-index')||'0',10);` +
-	`window.tcShowLightbox(dr,cur+(nav.hasAttribute('data-tc-lightbox-next')?1:-1));return;}` +
-	`var rot=e.target.closest('[data-tc-lightbox-rotate]');` +
-	`if(rot){var rr=rot.closest('dialog');if(!rr)return;` +
-	`var ri=rr.querySelectorAll('[data-tc-lightbox-img]')[parseInt(rr.getAttribute('data-tc-lightbox-index')||'0',10)];` +
-	`if(ri){var r=(parseInt(ri.getAttribute('data-tc-lightbox-rot')||'0',10)+90)%360;` +
-	`ri.setAttribute('data-tc-lightbox-rot',String(r));tcLightboxApply(ri);}return;}` +
-	`var zoom=e.target.closest('[data-tc-lightbox-zoom]');` +
-	`if(zoom){var zr=zoom.closest('dialog');if(!zr)return;` +
-	`var zi=zr.querySelectorAll('[data-tc-lightbox-img]')[parseInt(zr.getAttribute('data-tc-lightbox-index')||'0',10)];` +
-	`if(zi){zi.setAttribute('data-tc-lightbox-zoom',zi.getAttribute('data-tc-lightbox-zoom')==='1'?'0':'1');` +
-	`zi.classList.toggle('cursor-zoom-out');tcLightboxApply(zi);}}` +
-	`});}` +
-	`(function(){var dlgs=document.querySelectorAll('dialog[data-tc-lightbox-dialog]');` +
-	`for(var i=0;i<dlgs.length;i++){dlgs[i].addEventListener('click',function(e){` +
-	`if(e.target.closest('[data-tc-close]')||e.target===this)this.close();});}})();`
+// lightboxJS returns the CSP-safe singleton script: open/navigate/rotate/zoom
+// on [data-tc-lightbox] roots via event delegation. Escape and backdrop
+// dismissal are native <dialog> behavior (backdrop detection is shared with the
+// other overlays); rotate and zoom compose on the image's transform (JS-set
+// styles are not blocked by style-src).
+func lightboxJS() string {
+	return `if(!window.tcLightboxAttached){window.tcLightboxAttached=true;` +
+		`window.tcLightboxApply=function(img){` +
+		`var r=img.getAttribute('data-tc-lightbox-rot')||'0';` +
+		`var z=img.getAttribute('data-tc-lightbox-zoom')==='1'?' scale(2)':'';` +
+		`img.style.transform='rotate('+r+'deg)'+z;};` +
+		`window.tcShowLightbox=function(dlg,idx){` +
+		`var imgs=dlg.querySelectorAll('[data-tc-lightbox-img]');if(!imgs.length)return;` +
+		`if(idx<0)idx=imgs.length-1;if(idx>=imgs.length)idx=0;` +
+		`for(var k=0;k<imgs.length;k++){imgs[k].hidden=k!==idx;}` +
+		`var cap=dlg.querySelector('[data-tc-lightbox-caption]');` +
+		`if(cap)cap.textContent=imgs[idx].getAttribute('data-tc-lightbox-cap')||'';` +
+		`var img=imgs[idx];img.style.transform='';img.setAttribute('data-tc-lightbox-rot','0');img.setAttribute('data-tc-lightbox-zoom','0');img.classList.remove('cursor-zoom-out');` +
+		`dlg.setAttribute('data-tc-lightbox-index',String(idx));` +
+		`if(!dlg.open)dlg.showModal();};` +
+		`window.tcOpenLightbox=function(id,idx){var d=document.getElementById(id);if(d)window.tcShowLightbox(d,idx||0);};` +
+		`document.addEventListener('click',function(e){` +
+		`var opener=e.target.closest('[data-tc-lightbox-open]');` +
+		`if(opener){var root=opener.closest('[data-tc-lightbox]');if(!root)return;` +
+		`var dlg=document.getElementById(root.id+'-dialog');if(!dlg)return;` +
+		`window.tcShowLightbox(dlg,parseInt(opener.getAttribute('data-tc-lightbox-open'),10)||0);return;}` +
+		`var nav=e.target.closest('[data-tc-lightbox-prev],[data-tc-lightbox-next]');` +
+		`if(nav){var dr=nav.closest('dialog');if(!dr)return;` +
+		`var cur=parseInt(dr.getAttribute('data-tc-lightbox-index')||'0',10);` +
+		`window.tcShowLightbox(dr,cur+(nav.hasAttribute('data-tc-lightbox-next')?1:-1));return;}` +
+		`var rot=e.target.closest('[data-tc-lightbox-rotate]');` +
+		`if(rot){var rr=rot.closest('dialog');if(!rr)return;` +
+		`var ri=rr.querySelectorAll('[data-tc-lightbox-img]')[parseInt(rr.getAttribute('data-tc-lightbox-index')||'0',10)];` +
+		`if(ri){var r=(parseInt(ri.getAttribute('data-tc-lightbox-rot')||'0',10)+90)%360;` +
+		`ri.setAttribute('data-tc-lightbox-rot',String(r));tcLightboxApply(ri);}return;}` +
+		`var zoom=e.target.closest('[data-tc-lightbox-zoom]');` +
+		`if(zoom){var zr=zoom.closest('dialog');if(!zr)return;` +
+		`var zi=zr.querySelectorAll('[data-tc-lightbox-img]')[parseInt(zr.getAttribute('data-tc-lightbox-index')||'0',10)];` +
+		`if(zi){zi.setAttribute('data-tc-lightbox-zoom',zi.getAttribute('data-tc-lightbox-zoom')==='1'?'0':'1');` +
+		`zi.classList.toggle('cursor-zoom-out');tcLightboxApply(zi);}}` +
+		`});}` +
+		`(function(){` + dialogBackdropOutsideJS() + `var dlgs=document.querySelectorAll('dialog[data-tc-lightbox-dialog]');` +
+		`for(var i=0;i<dlgs.length;i++){var dlg=dlgs[i];` +
+		`dlg.addEventListener('click',function(e){` +
+		`if(e.target.closest('[data-tc-close]'))this.close();});` +
+		backdropDismissJS("dlg") + `}})();`
+}
 
 # ── display/lightbox.templ ─────────────────────────────────────────────
 package display
@@ -6232,6 +6239,7 @@ templ Lightbox(props LightboxProps) {
 		<dialog
 			id={ rootID + "-dialog" }
 			data-tc-lightbox-dialog
+			closedby="any"
 			class="tc-overlay tc-modal bg-black/90 p-4 dark:bg-black/90"
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
@@ -6277,7 +6285,7 @@ templ Lightbox(props LightboxProps) {
 			</div>
 		</dialog>
 	</div>
-	@utils.ScriptComponent(props.Nonce, lightboxJS, "lightbox script")
+	@utils.ScriptComponent(props.Nonce, lightboxJS(), "lightbox script")
 }
 
 # ── display/line_chart.go ─────────────────────────────────────────────
@@ -8292,11 +8300,19 @@ type overlayShellProps struct {
 //     dialog whose ID the attribute carries. Registered once per page via a
 //     singleton guard, so Modal + Drawer on the same page add one listener.
 //   - Per-instance IIFE: auto-open if data-tc-open is set, click delegation
-//     for [data-tc-close] buttons and backdrop-click-to-close
+//     for [data-tc-close] buttons and pointer-based backdrop-click-to-close
 //
-// Backdrop click detection: when the user clicks the ::backdrop area, the
-// click event target IS the dialog element itself (the backdrop is a
-// pseudo-element of dialog). So e.target === dialog detects backdrop clicks.
+// Backdrop dismissal is detected by POINTER POSITION, never by event.target:
+// the ::backdrop is a pseudo-element of the dialog, so backdrop clicks do
+// target the dialog — but so do clicks on the dialog's own padding and on the
+// gaps between its children. A target check therefore closes the dialog when
+// the user clicks inside it (Modern Web Guidance, `dialog`). Press and release
+// must both land outside, so a text-selection drag ending on the backdrop does
+// not dismiss.
+//
+// closedby="any" on the element is the declarative equivalent (progressive
+// enhancement: Safari lacks it, and the pointer path above covers every
+// browser), so the two can coexist — close() on a closed dialog is a no-op.
 func overlayDialogJS(id, componentName string) string {
 	guard := "window.tcOverlay" + componentName + "Attached"
 	escapedID := strconv.Quote(id)
@@ -8319,10 +8335,40 @@ func overlayDialogJS(id, componentName string) string {
 		"(function(id){" +
 		"var d=document.getElementById(id);if(!d)return;" +
 		"if(d.hasAttribute('data-tc-open')&&!d.open)d.showModal();" +
+		dialogBackdropOutsideJS() +
 		"d.addEventListener('click',function(e){" +
-		"if(e.target.closest('[data-tc-close]')||e.target===d)d.close();" +
+		"if(e.target.closest('[data-tc-close]'))d.close();" +
 		"});" +
+		backdropDismissJS("d") +
 		"})(" + escapedID + ");\n"
+}
+
+// dialogBackdropOutsideJS declares tcOutside(e, dlg), the shared predicate
+// behind every <dialog> backdrop dismissal in this package (Modal, Drawer,
+// CommandPalette, Lightbox).
+//
+// It tests the POINTER POSITION, not event.target. The ::backdrop is a
+// pseudo-element of the dialog, so backdrop presses do target the dialog — but
+// so do presses on the dialog's own padding and on the gaps between its
+// children, which made a target check close overlays when the user clicked
+// inside them (Modern Web Guidance, `dialog`).
+func dialogBackdropOutsideJS() string {
+	return "function tcOutside(e,dlg){var r=dlg.getBoundingClientRect();" +
+		"return e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom;}"
+}
+
+// backdropDismissJS wires press-and-release-outside dismissal for one dialog
+// held in the JS variable ref. The IIFE wrapper gives every dialog its own
+// press flag (two overlays on one page must not share it), and requiring BOTH
+// the press and the release to land outside means a text-selection drag that
+// happens to end on the backdrop does not dismiss the overlay. Callers must
+// emit dialogBackdropOutsideJS once before using this (same scope).
+func backdropDismissJS(ref string) string {
+	return "(function(dlg){var pressed=false;" +
+		"dlg.addEventListener('pointerdown',function(e){pressed=tcOutside(e,dlg);});" +
+		"dlg.addEventListener('pointerup',function(e){" +
+		"if(pressed&&tcOutside(e,dlg))dlg.close();});" +
+		"})(" + ref + ");"
 }
 
 // overlayScriptComponent renders a <script nonce="..."> tag containing the
@@ -8686,6 +8732,7 @@ templ overlayShell(p overlayShellProps) {
 		if p.kind == OverlayDrawer && p.side != "" {
 			data-side={ string(p.side) }
 		}
+		closedby="any"
 		{ p.attrs... }
 	>
 		@dialogHeader(p.title, p.id+"-title", p.kind)
@@ -13190,9 +13237,84 @@ func enterKeyHintValue(props InputProps) string {
 	return ""
 }
 
+// AutocompleteType is a token from the HTML autofill vocabulary, emitted as
+// the autocomplete attribute. Not an arbitrary string: unknown tokens are
+// silently ignored by browsers, so a typo looks like a working form that never
+// autofills. Only the tokens that matter for the forms this library ships are
+// enumerated here — the spec's list is larger (address-level1/2, tel-national,
+// transaction-currency, nickname, …); add a constant rather than passing a raw
+// string.
+//
+// Modern Web Guidance: autofill-sign-in-form, autofill-sign-up-form,
+// autofill-payment-form, autofill-address-form.
+type AutocompleteType string
+
+const (
+	AutocompleteOff    AutocompleteType = "off"
+	AutocompleteOn     AutocompleteType = "on"
+	AutocompleteName   AutocompleteType = "name"
+	AutocompleteGiven  AutocompleteType = "given-name"
+	AutocompleteFamily AutocompleteType = "family-name"
+	AutocompleteUser   AutocompleteType = "username"
+	AutocompleteEmail  AutocompleteType = "email"
+	AutocompleteTel    AutocompleteType = "tel"
+	AutocompleteURL    AutocompleteType = "url"
+	AutocompleteOrg    AutocompleteType = "organization"
+
+	// Credential fields. NewPassword MUST be used for sign-up and password
+	// change forms — reusing CurrentPassword there makes the browser offer the
+	// OLD password, and it never offers to save the new one.
+	AutocompleteCurrentPassword AutocompleteType = "current-password"
+	AutocompleteNewPassword     AutocompleteType = "new-password"
+	AutocompleteOneTimeCode     AutocompleteType = "one-time-code"
+
+	// Address fields.
+	AutocompleteStreetAddress AutocompleteType = "street-address"
+	AutocompleteAddressLine1  AutocompleteType = "address-line1"
+	AutocompleteAddressLine2  AutocompleteType = "address-line2"
+	AutocompletePostalCode    AutocompleteType = "postal-code"
+	AutocompleteCountry       AutocompleteType = "country"
+	AutocompleteCountryName   AutocompleteType = "country-name"
+
+	// Payment fields.
+	AutocompleteCCName   AutocompleteType = "cc-name"
+	AutocompleteCCNumber AutocompleteType = "cc-number"
+	AutocompleteCCExp    AutocompleteType = "cc-exp"
+	AutocompleteCCCSC    AutocompleteType = "cc-csc"
+)
+
+//nolint:gochecknoglobals // Package-level validation set for autocomplete
+var validAutocompletes = map[AutocompleteType]bool{
+	AutocompleteOff: true, AutocompleteOn: true, AutocompleteName: true,
+	AutocompleteGiven: true, AutocompleteFamily: true, AutocompleteUser: true,
+	AutocompleteEmail: true, AutocompleteTel: true, AutocompleteURL: true,
+	AutocompleteOrg: true, AutocompleteCurrentPassword: true,
+	AutocompleteNewPassword: true, AutocompleteOneTimeCode: true,
+	AutocompleteStreetAddress: true, AutocompleteAddressLine1: true,
+	AutocompleteAddressLine2: true, AutocompletePostalCode: true,
+	AutocompleteCountry: true, AutocompleteCountryName: true,
+	AutocompleteCCName: true, AutocompleteCCNumber: true,
+	AutocompleteCCExp: true, AutocompleteCCCSC: true,
+}
+
+// AutocompleteTypeIsValid reports whether v is a known autocomplete token.
+func AutocompleteTypeIsValid(v AutocompleteType) bool { return validAutocompletes[v] }
+
+// autocompleteValue returns the token to emit, or "" when Autocomplete is unset
+// or not a recognized token. Unknown tokens are ignored by browsers anyway, so
+// emitting one would look like a working form that silently never autofills.
+func autocompleteValue(props InputProps) string {
+	if props.Autocomplete == "" || !AutocompleteTypeIsValid(props.Autocomplete) {
+		return ""
+	}
+	return string(props.Autocomplete)
+}
+
 // InputProps configures a text input. EnterKeyHint, when set, overrides the
 // auto-derived mobile keyboard hint. Uses the same EnterKeyHintType enum as
-// Textarea for a unified API across form components.
+// Textarea for a unified API across form components. Autocomplete, when valid,
+// is emitted as the autocomplete attribute so password managers and browsers
+// can fill the field.
 type InputProps struct {
 	utils.BaseProps
 	Type         InputType
@@ -13206,6 +13328,7 @@ type InputProps struct {
 	AutoFocus    bool
 	MaxLength    int
 	EnterKeyHint EnterKeyHintType
+	Autocomplete AutocompleteType
 	Error        string
 	HelpText     string
 }
@@ -13266,6 +13389,9 @@ templ inputElement(props InputProps) {
 		}
 		if eh := enterKeyHintValue(props); eh != "" {
 			enterkeyhint={ eh }
+		}
+		if ac := autocompleteValue(props); ac != "" {
+			autocomplete={ ac }
 		}
 		if im, ok := inputModeForType[props.Type]; ok {
 			inputmode={ im }

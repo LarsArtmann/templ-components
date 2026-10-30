@@ -84,9 +84,84 @@ func enterKeyHintValue(props InputProps) string {
 	return ""
 }
 
+// AutocompleteType is a token from the HTML autofill vocabulary, emitted as
+// the autocomplete attribute. Not an arbitrary string: unknown tokens are
+// silently ignored by browsers, so a typo looks like a working form that never
+// autofills. Only the tokens that matter for the forms this library ships are
+// enumerated here — the spec's list is larger (address-level1/2, tel-national,
+// transaction-currency, nickname, …); add a constant rather than passing a raw
+// string.
+//
+// Modern Web Guidance: autofill-sign-in-form, autofill-sign-up-form,
+// autofill-payment-form, autofill-address-form.
+type AutocompleteType string
+
+const (
+	AutocompleteOff    AutocompleteType = "off"
+	AutocompleteOn     AutocompleteType = "on"
+	AutocompleteName   AutocompleteType = "name"
+	AutocompleteGiven  AutocompleteType = "given-name"
+	AutocompleteFamily AutocompleteType = "family-name"
+	AutocompleteUser   AutocompleteType = "username"
+	AutocompleteEmail  AutocompleteType = "email"
+	AutocompleteTel    AutocompleteType = "tel"
+	AutocompleteURL    AutocompleteType = "url"
+	AutocompleteOrg    AutocompleteType = "organization"
+
+	// Credential fields. NewPassword MUST be used for sign-up and password
+	// change forms — reusing CurrentPassword there makes the browser offer the
+	// OLD password, and it never offers to save the new one.
+	AutocompleteCurrentPassword AutocompleteType = "current-password"
+	AutocompleteNewPassword     AutocompleteType = "new-password"
+	AutocompleteOneTimeCode     AutocompleteType = "one-time-code"
+
+	// Address fields.
+	AutocompleteStreetAddress AutocompleteType = "street-address"
+	AutocompleteAddressLine1  AutocompleteType = "address-line1"
+	AutocompleteAddressLine2  AutocompleteType = "address-line2"
+	AutocompletePostalCode    AutocompleteType = "postal-code"
+	AutocompleteCountry       AutocompleteType = "country"
+	AutocompleteCountryName   AutocompleteType = "country-name"
+
+	// Payment fields.
+	AutocompleteCCName   AutocompleteType = "cc-name"
+	AutocompleteCCNumber AutocompleteType = "cc-number"
+	AutocompleteCCExp    AutocompleteType = "cc-exp"
+	AutocompleteCCCSC    AutocompleteType = "cc-csc"
+)
+
+//nolint:gochecknoglobals // Package-level validation set for autocomplete
+var validAutocompletes = map[AutocompleteType]bool{
+	AutocompleteOff: true, AutocompleteOn: true, AutocompleteName: true,
+	AutocompleteGiven: true, AutocompleteFamily: true, AutocompleteUser: true,
+	AutocompleteEmail: true, AutocompleteTel: true, AutocompleteURL: true,
+	AutocompleteOrg: true, AutocompleteCurrentPassword: true,
+	AutocompleteNewPassword: true, AutocompleteOneTimeCode: true,
+	AutocompleteStreetAddress: true, AutocompleteAddressLine1: true,
+	AutocompleteAddressLine2: true, AutocompletePostalCode: true,
+	AutocompleteCountry: true, AutocompleteCountryName: true,
+	AutocompleteCCName: true, AutocompleteCCNumber: true,
+	AutocompleteCCExp: true, AutocompleteCCCSC: true,
+}
+
+// AutocompleteTypeIsValid reports whether v is a known autocomplete token.
+func AutocompleteTypeIsValid(v AutocompleteType) bool { return validAutocompletes[v] }
+
+// autocompleteValue returns the token to emit, or "" when Autocomplete is unset
+// or not a recognized token. Unknown tokens are ignored by browsers anyway, so
+// emitting one would look like a working form that silently never autofills.
+func autocompleteValue(props InputProps) string {
+	if props.Autocomplete == "" || !AutocompleteTypeIsValid(props.Autocomplete) {
+		return ""
+	}
+	return string(props.Autocomplete)
+}
+
 // InputProps configures a text input. EnterKeyHint, when set, overrides the
 // auto-derived mobile keyboard hint. Uses the same EnterKeyHintType enum as
-// Textarea for a unified API across form components.
+// Textarea for a unified API across form components. Autocomplete, when valid,
+// is emitted as the autocomplete attribute so password managers and browsers
+// can fill the field.
 type InputProps struct {
 	utils.BaseProps
 	Type         InputType
@@ -100,6 +175,7 @@ type InputProps struct {
 	AutoFocus    bool
 	MaxLength    int
 	EnterKeyHint EnterKeyHintType
+	Autocomplete AutocompleteType
 	Error        string
 	HelpText     string
 }
@@ -160,6 +236,9 @@ templ inputElement(props InputProps) {
 		}
 		if eh := enterKeyHintValue(props); eh != "" {
 			enterkeyhint={ eh }
+		}
+		if ac := autocompleteValue(props); ac != "" {
+			autocomplete={ ac }
 		}
 		if im, ok := inputModeForType[props.Type]; ok {
 			inputmode={ im }

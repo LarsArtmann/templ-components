@@ -576,6 +576,7 @@ _(None currently)_
 | Stylable `<select>` API   | `SelectProps.Stylable`    | v1.1.0+ | `appearance: base-select` + `<button><selectedcontent>` (ADR 0015)    |
 | Auto-growing Textarea     | `TextareaProps.AutoGrow`  | v1.1.0+ | CSS `field-sizing: content`, default true                             |
 | Unified EnterKeyHint      | Input, Textarea           | v1.1.0+ | `EnterKeyHintType` enum, auto-derive on Input, explicit override both |
+| Autofill autocomplete     | `InputProps.Autocomplete` | v1.26+  | `AutocompleteType` enum (credentials, address, payment); invalid tokens dropped, never `autocomplete=""` |
 | Form `hx-validate`        | `FormProps.Validate`      | v1.1.0+ | HTML5 constraint validation before HTMX submit                        |
 | `<search>` landmark       | Input (InputSearch)       | v1.1.0+ | Auto-wraps search inputs in semantic `<search>` element               |
 | Image responsive delivery | `ImageProps.SrcSet/Sizes` | v1.1.0+ | Typed fields replace `Attrs` workaround                               |
