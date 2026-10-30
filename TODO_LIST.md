@@ -4,7 +4,7 @@
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources), ⫱ owner gate (decision/credential).
-> IDs are unique across ALL sections — next free ID → 484. (The former `316b` radar row was renumbered **483** on 2026-10-30 to kill the duplicate-ID class; plan errata E5.)
+> IDs are unique across ALL sections — next free ID → 487. (The former `316b` radar row was renumbered **483** on 2026-10-30 to kill the duplicate-ID class; plan errata E5.)
 
 ---
 
@@ -474,8 +474,6 @@ dark-mode + dialog/invoker._
 | 471 | Toasts container → `popover="manual"` + `popovertargetaction="hide"` close buttons; live-region announcement contract stays                     | Audit ranked action 4 — escapes z-index/overflow clipping. Plan C24.|
 | 472 | `ProgressBar` → native `<progress>` + `appearance: none` styling; delete the hand-rolled ARIA                                                  | Audit ranked action 5. Plan C24.                                    |
 | 473 | Invoker Commands layer: `command="show-modal"` + `commandfor` over `data-tc-overlay-trigger` (Baseline 2025-12; keep the JS path for older engines)  | Audit partial 1. Post-wave (gated on the #467–#472 sweep landing).  |
-| 474 | `<meta name="color-scheme" content="light dark">` emitted from `layout.Base`/`Minimal`                                                     | Audit partial 10 — theming robustness. Plan C19.                    |
-| 475 | Theme `storage`-event tab sync + OS-preference fallback when JS never runs (media query + no-JS path)                                          | Audit partial 10 — today a dark-OS user gets light when the script fails. Plan C19. |
 | 476 | `:has()` sweep: Toggle/Checkbox/RadioGroup/FieldError glue → parent-state selectors (delete peer/sibling gymnastics where safe)                | Audit ranked action 6 (Baseline 2023-11). Post-wave.                |
 | 477 | Responsive-table stacking half: sticky row headers, `@container` breakpoints, stacked-card layout with `::before` label injection                | Audit partial 6. Post-wave.                                         |
 | 478 | Slider filled-track: `--control-value` synced on `input` (WebKit), optional `progress()`/`attr()`                                              | Audit partial 9 — cosmetic. Post-wave.                              |

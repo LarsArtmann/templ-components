@@ -78,6 +78,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   encoding different rules, and two three-line lower-bound clamps sit below the
   extraction floor in modules that cannot share code. Gate green on two
   consecutive runs with the pinned analyzer.
+- **Theme toggles now stay in sync across browser tabs, and `layout.Minimal`
+  follows the OS theme for native controls.** Changing the theme in one tab
+  left every other tab of the site on the old theme until reload; the toggle
+  now listens for `storage` events and re-applies the class, `color-scheme`,
+  and toggle state in the other tabs, falling back to `prefers-color-scheme`
+  when the stored key is removed. `layout.Minimal` (which has no theme script)
+  now emits `<meta name="color-scheme" content="light dark">` like `Base`, so
+  its scrollbars and form controls match the reader's OS theme. The
+  no-JavaScript dark path (a CSS media-query fallback that would theme pages
+  without the script) remains deliberately out — the toggle strategy is a
+  scripted feature, and a silent CSS-side dark mode would fight the stored
+  preference.
 
 ### Added
 
