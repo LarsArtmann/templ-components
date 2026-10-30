@@ -41,6 +41,13 @@ all tests complete. If `CHROMEDP_CHROME_PATH` is unset or invalid, the
 allocator skips (and every test skips with it) — `go test ./...` stays green
 wherever Chromium is absent.
 
+Every tab is hard-bounded by `tabLifetime` (150s, `visualtest/doc.go`). chromedp
+actions have no timeout of their own, so a wedged renderer or a CDP command that
+never returns used to block until the 10-minute `go test` alarm panicked the
+binary — losing every other test's result and leaking the demo and Chromium
+processes. `TestDemoNavTimingBudget` hung exactly that way on 2026-10-30 during a
+full-suite run. With the bound, a wedge fails one test with a context error.
+
 ## Running
 
 The visual tests need a Chromium binary. The Nix app wires it up automatically:

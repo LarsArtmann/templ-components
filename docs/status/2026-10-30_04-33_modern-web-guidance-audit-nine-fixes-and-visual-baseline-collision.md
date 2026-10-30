@@ -257,10 +257,25 @@ Shipped since the report:
    route PNGs and a `docs/visual-testing.md` section explaining the signature
    (text-only ~1% mismatch on a shifting route subset) so nobody "fixes" it with
    `-update` under load again.
+4. **Clone-gate baseline re-recorded (151 groups at t=1).** The two new browser
+   tests surfaced two groups, both ACCEPT under ADR-0009 (the `forms`
+   `InputProps` token accessors share only a signature tail; two three-line
+   lower-bound clamps sit below the extraction floor in modules that cannot
+   share code). Gate green on two consecutive runs with the pinned analyzer.
 
-Verification after the addendum: `golangci-lint` per module (0 issues), root
-`go test ./...`, full `nix run .#visual` suite (174s, green), and
-`scripts/ci-repro.sh --lint --css --website`.
+5. **A wedged tab can no longer kill the whole suite.** `TestDemoNavTimingBudget`
+   hung in `WaitReady("body")` during a full-suite run and the 10-minute
+   go-test alarm panicked the binary — every other test's result was lost and
+   the demo/Chromium processes leaked. `newTab` now bounds every tab
+   (`tabLifetime`, 150s), turning a wedge into one ordinary failure, which is
+   the same rule the flow tests already followed via `newFlowTab`.
+
+Verification after the addendum, all at the final tip: `golangci-lint` per
+module including `visualtest` (0 issues), root `go test ./...`, the six
+sub-module suites, two consecutive full `nix run .#visual` runs (193s and 219s,
+both green), two consecutive `TestDemoRouteGoldens` runs after the re-record,
+and `scripts/ci-repro.sh --lint --css --website` → `VERDICT: PASS (exit 0)`
+with `art-dupl: GREEN — 0 clone groups outside baseline`.
 
 ---
 
