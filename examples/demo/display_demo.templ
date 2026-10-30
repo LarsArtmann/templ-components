@@ -201,21 +201,31 @@ display.Card(display.CardProps{
 	@demoSection("Accordion (native details)", "display-accordion")
 	@display.Accordion(display.AccordionProps{
 		Items: []display.AccordionItem{
-			{ID: "acc-1", Title: "What is templ-components?", Open: true},
-			{ID: "acc-2", Title: "How do I install it?"},
-			{ID: "acc-3", Title: "Is it production-ready?"},
+			{
+				ID:    "acc-1",
+				Title: "What is templ-components?",
+				Open:  true,
+				Content: templ.Raw(
+					`<p>A Go library of reusable UI components built with templ and Tailwind CSS.</p>`,
+				),
+			},
+			{
+				ID:    "acc-2",
+				Title: "How do I install it?",
+				Content: templ.Raw(
+					`<p>Run <code>go get github.com/larsartmann/templ-components</code> to add it to your project.</p>`,
+				),
+			},
+			{
+				ID:    "acc-3",
+				Title: "Is it production-ready?",
+				Content: templ.Raw(
+					"<p>Yes, v" + utils.Version +
+						" follows semantic versioning. Breaking changes only land in major versions.</p>",
+				),
+			},
 		},
-	}) {
-		<template data-content="acc-1">
-			<p class="text-gray-600 dark:text-gray-400">A Go library of reusable UI components built with templ and Tailwind CSS.</p>
-		</template>
-		<template data-content="acc-2">
-			<p class="text-gray-600 dark:text-gray-400">Run <code>go get github.com/larsartmann/templ-components</code> to add it to your project.</p>
-		</template>
-		<template data-content="acc-3">
-			<p class="text-gray-600 dark:text-gray-400">Yes — v{ utils.Version } follows semantic versioning. Breaking changes only land in major versions.</p>
-		</template>
-	}
+	})
 	@demoSection("Tabs", "display-tabs")
 	@display.Tabs(display.TabsProps{
 		Tabs: []display.Tab{
