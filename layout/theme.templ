@@ -94,6 +94,17 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 					html.style.colorScheme = isDark ? 'light' : 'dark';
 					document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
 					});
+
+					// Sync tabs: a `storage` event fires in every OTHER tab of the
+					// origin when localStorage['theme'] changes. Removing the key
+					// (newValue null) falls back to the OS preference.
+					window.addEventListener('storage', function(e) {
+					if (e.key !== 'theme') return;
+					var dark = e.newValue === 'dark' || (!e.newValue && window.matchMedia('(prefers-color-scheme: dark)').matches);
+					html.classList.toggle('dark', dark);
+					html.style.colorScheme = dark ? 'dark' : 'light';
+					document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
+					});
 				}
 			})();
 		</script>
@@ -126,6 +137,17 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 						try { localStorage.setItem('theme', 'dark'); } catch(e) {}
 					}
 					html.style.colorScheme = isDark ? 'light' : 'dark';
+					document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
+					});
+
+					// Sync tabs: a `storage` event fires in every OTHER tab of the
+					// origin when localStorage['theme'] changes. Removing the key
+					// (newValue null) falls back to the OS preference.
+					window.addEventListener('storage', function(e) {
+					if (e.key !== 'theme') return;
+					var dark = e.newValue === 'dark' || (!e.newValue && window.matchMedia('(prefers-color-scheme: dark)').matches);
+					html.classList.toggle('dark', dark);
+					html.style.colorScheme = dark ? 'dark' : 'light';
 					document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
 					});
 				}

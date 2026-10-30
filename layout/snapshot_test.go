@@ -23,7 +23,25 @@ func TestThemeToggleRender(t *testing.T) {
 	utils.AssertContains(t, output, `aria-label="Toggle theme"`)
 	utils.AssertContains(t, output, `nonce="nonce-xyz"`)
 	utils.AssertContains(t, output, "data-theme-toggle")
+	utils.AssertContains(t, output, "addEventListener('storage'")
 	utils.AssertNotContains(t, output, "onclick=")
+}
+
+func TestThemeToggleStorageSyncBothVariants(t *testing.T) {
+	t.Parallel()
+	for _, tc := range []struct {
+		name  string
+		nonce string
+	}{{"nonce", "n-1"}, {"no-nonce", ""}} {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, ThemeToggle("Toggle theme", tc.nonce))
+			utils.AssertContains(t, output, "addEventListener('storage'")
+			utils.AssertContains(t, output, "e.key !== 'theme'")
+			utils.AssertContains(t, output, "prefers-color-scheme: dark")
+			utils.AssertContains(t, output, "classList.toggle('dark'")
+		})
+	}
 }
 
 func TestBaseRender(t *testing.T) {
@@ -109,6 +127,7 @@ func TestMinimalRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Minimal(MinimalProps{Title: "Simple", Locale: "en"}))
 	utils.AssertContains(t, output, "<title>Simple</title>")
+	utils.AssertContains(t, output, `<meta name="color-scheme" content="light dark">`)
 	utils.AssertNotContains(t, output, "htmx")
 }
 
