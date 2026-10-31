@@ -398,9 +398,34 @@ func tooltipAriaJS() string {
 		`}` +
 		`tcTooltipAriaSync();` +
 		`document.body.addEventListener("htmx:afterSettle",tcTooltipAriaSync);` +
+		// Viewport clamp: a bubble wider than the space on its preferred side
+		// overflows the viewport (pure CSS has no flip). Shift the bubble
+		// back inside with a runtime margin-left nudge — the same class of
+		// runtime inline value as the progress bar width. The CSS Anchor
+		// Positioning layer is the declarative long-term fix; this keeps
+		// every engine inside the viewport today.
 		`function tcTooltipWrap(e){` +
 		`if(!e||!e.target||!e.target.closest)return null;` +
 		`return e.target.closest("[data-tc-tooltip]");` +
+		`}` +
+		`function tcTooltipClamp(wrap){` +
+		`var bubble=wrap.querySelector("[role=tooltip]");` +
+		`if(!bubble)return;` +
+		`bubble.style.marginLeft="";` +
+		`var r=bubble.getBoundingClientRect();` +
+		`if(r.width===0)return;` +
+		`var vw=document.documentElement.clientWidth;` +
+		`var gap=8;` +
+		`var shift=0;` +
+		`if(r.left<gap)shift=gap-r.left;` +
+		`else if(r.right>vw-gap)shift=(vw-gap)-r.right;` +
+		`if(shift)bubble.style.marginLeft=shift+"px";` +
+		`}` +
+		`function tcTooltipShow(e){` +
+		`var wrap=tcTooltipWrap(e);` +
+		`if(!wrap)return;` +
+		`wrap.removeAttribute("data-tc-tooltip-dismissed");` +
+		`requestAnimationFrame(function(){tcTooltipClamp(wrap);requestAnimationFrame(function(){tcTooltipClamp(wrap);});});` +
 		`}` +
 		`document.addEventListener("keydown",function(e){` +
 		`if(e.key!=="Escape")return;` +
@@ -409,12 +434,11 @@ func tooltipAriaJS() string {
 		`wrap.setAttribute("data-tc-tooltip-dismissed","true");` +
 		`});` +
 		`document.addEventListener("mouseenter",function(e){` +
-		`var wrap=tcTooltipWrap(e);` +
-		`if(wrap)wrap.removeAttribute("data-tc-tooltip-dismissed");` +
+		`if(!e||!e.target||!e.target.closest)return;` +
+		`if(e.target.closest("[data-tc-tooltip]"))tcTooltipShow(e);` +
 		`},true);` +
 		`document.addEventListener("focusin",function(e){` +
-		`var wrap=tcTooltipWrap(e);` +
-		`if(wrap)wrap.removeAttribute("data-tc-tooltip-dismissed");` +
+		`tcTooltipShow(e);` +
 		`});` +
 		`}` +
 		"\n"
