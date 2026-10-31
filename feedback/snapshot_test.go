@@ -196,8 +196,9 @@ func TestProgressBarRender(t *testing.T) {
 		ShowLabel: true,
 	}))
 	utils.AssertContains(t, output, "Upload")
-	utils.AssertContains(t, output, `role="progressbar"`)
-	utils.AssertContains(t, output, `aria-valuenow="50"`)
+	utils.AssertContains(t, output, `<progress`)
+	utils.AssertContains(t, output, `value="50"`)
+	utils.AssertContains(t, output, `max="100"`)
 }
 
 func TestStepIndicatorRender(t *testing.T) {

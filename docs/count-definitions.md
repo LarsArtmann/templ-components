@@ -4,13 +4,13 @@ Every public-facing count in this repo must be either live-computed by a guard
 or pinned to a source that is. This page is the definitional home: when a
 number is questioned, answer from here, not from memory.
 
-## Components — **136**
+## Components — **137**
 
 - **Definition:** exported `templ` components declared as `templ Name(...)` in
   the canonical 9-package scan set: `display`, `feedback`, `forms`, `layout`,
   `navigation`, `charts/echarts`, `htmx`, `datastar`, `errorpage`. The 4
   `recipes` screens are compositions, counted separately in FEATURES.md
-  ("136 + 4 recipe screens = 140") but the sold headline is 136.
+  ("137 + 4 recipe screens = 141") but the sold headline is 137.
 - **Computed by:** `website/internal/build.CountStats` (site hero, live) over
   `statsDirs` (order-pinned by `TestStatsDirsAreCanonical`); the same set is
   the canonical package list in `utils.TestDocsCountDrift`.
@@ -56,10 +56,18 @@ number is questioned, answer from here, not from memory.
   (multiple of 50 within 49 of live).
 - **Computed by:** `utils.TestDocsCountDrift` (`countLibraryTests`).
 
-## Goldens — **331 HTML / 206 pixel**
+## Goldens — **332 HTML / 206 pixel**
 
 - **Definition:** committed baseline files under the golden testdata trees.
 - **Computed by:** `utils.TestDocsCountDrift` (file counts per tree).
+- **HTML (332) vs pixel (206):** the HTML goldens are the per-component
+  rendered-markdown baselines (`utils/golden`, one `.golden` file per
+  component variant, class-sorted + EnsureID-normalized) living in each
+  package's `testdata/`. The pixel goldens are `visualtest/testdata/*.png`:
+  component-level captures (one folder per component, light/dark/RTL
+  variants) PLUS demo route captures (`visualtest/testdata/routes/`, one
+  per demo page, themed) — both kinds count toward the 206; the HTML number
+  counts ONLY the string baselines.
 
 ## Accepted clone groups — **149**
 

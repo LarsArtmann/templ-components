@@ -112,7 +112,7 @@ func TestProgressBarEdgeCases(t *testing.T) {
 			Current: 50,
 			Total:   0,
 		}))
-		utils.AssertContains(t, output, "0%")
+		utils.AssertContains(t, output, `value="0"`)
 	})
 
 	t.Run("negative current shows zero percent", func(t *testing.T) {
@@ -121,19 +121,18 @@ func TestProgressBarEdgeCases(t *testing.T) {
 			Current: -10,
 			Total:   100,
 		}))
-		utils.AssertContains(t, output, "0%")
-		utils.AssertContains(t, output, `aria-valuenow="0"`)
+		utils.AssertContains(t, output, `value="0"`)
+		utils.AssertContains(t, output, `value="0"`)
 	})
 
-	t.Run("overflow current clamps aria-valuenow to total", func(t *testing.T) {
+	t.Run("overflow current clamps value to max", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ProgressBar(ProgressBarProps{
 			Current: 250,
 			Total:   100,
 		}))
-		utils.AssertContains(t, output, `aria-valuenow="100"`)
-		utils.AssertContains(t, output, `aria-valuemax="100"`)
-		utils.AssertContains(t, output, "100%")
+		utils.AssertContains(t, output, `value="100"`)
+		utils.AssertContains(t, output, `max="100"`)
 	})
 }
 
@@ -234,7 +233,7 @@ func TestProgressBarIndeterminate(t *testing.T) {
 			ShowLabel: true,
 		}))
 		utils.AssertContains(t, output, "50%")
-		utils.AssertContains(t, output, `aria-valuenow="50"`)
+		utils.AssertContains(t, output, `value="50"`)
 	})
 }
 
@@ -278,5 +277,8 @@ func TestDefaultLoadingOverlayProps(t *testing.T) {
 
 	output := utils.Render(t, LoadingOverlay(props))
 	utils.AssertContains(t, output, "fixed")
-	utils.AssertContains(t, output, `role="dialog"`)
+	utils.AssertContains(t, output, `role="status"`)
+	utils.AssertContains(t, output, `aria-busy="true"`)
+	utils.AssertNotContains(t, output, `role="dialog"`)
+	utils.AssertNotContains(t, output, `aria-modal="true"`)
 }

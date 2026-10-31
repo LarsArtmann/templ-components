@@ -220,6 +220,18 @@ func TestGoldenModal(t *testing.T) {
 	golden.Assert(t, "modal", output)
 }
 
+func TestGoldenLoadingDialog(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, LoadingDialog(LoadingDialogProps{
+		ID: "demo-loading-dialog", Nonce: "nonce123",
+		Title:        "Saving workspace",
+		Message:      "Saving workspace...",
+		ShowProgress: true,
+		Progress:     40,
+	}))
+	golden.Assert(t, "loading_dialog", output)
+}
+
 func TestGoldenDrawer(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Drawer(DrawerProps{

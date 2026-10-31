@@ -67,6 +67,108 @@
 }
 
 /*
+ * --- CSS Anchor Positioning layer (popover panels) ---
+ *
+ * Declarative positioning for engines with CSS anchor positioning
+ * (Baseline-limited; gated on @supports). Older engines keep the
+ * tcPopoverPosition JS singleton as the fallback; on supporting engines the
+ * singleton exits early (see display/shared.go).
+ *
+ * Panels shown via popovertarget/interestfor resolve their INVOKER as the
+ * implicit anchor, so position-area alone anchors the panel — no
+ * per-instance anchor names required (explicit names would need inline
+ * style attributes, which strict CSP blocks). The 8px margin is the
+ * anchor-to-panel gap; the JS fallback uses gap = 8 as well.
+ * position-try-fallbacks mirror the JS viewport flip (bottom clips -> try
+ * top first, then the inline axis).
+ */
+@supports (anchor-name: --x) {
+  [popover][data-tc-anchor] {
+    position-area: var(--tc-popover-area, bottom);
+    inset: auto;
+    margin: 8px;
+    position-try-fallbacks: flip-block, flip-inline;
+  }
+
+  [data-tc-position="top"] {
+    --tc-popover-area: top;
+  }
+
+  [data-tc-position="bottom"] {
+    --tc-popover-area: bottom;
+  }
+
+  [data-tc-position="left"] {
+    --tc-popover-area: left;
+  }
+
+  [data-tc-position="right"] {
+    --tc-popover-area: right;
+  }
+
+  [data-tc-position="start"] {
+    --tc-popover-area: inline-start;
+  }
+
+  [data-tc-position="end"] {
+    --tc-popover-area: inline-end;
+  }
+
+  /* Alignment variants (the JS applies align only on the top/bottom axis). */
+  [data-tc-position="top"][data-tc-align="start"] {
+    --tc-popover-area: top span-inline-end;
+  }
+
+  [data-tc-position="top"][data-tc-align="end"] {
+    --tc-popover-area: top span-inline-start;
+  }
+
+  [data-tc-position="bottom"][data-tc-align="start"] {
+    --tc-popover-area: bottom span-inline-end;
+  }
+
+  [data-tc-position="bottom"][data-tc-align="end"] {
+    --tc-popover-area: bottom span-inline-start;
+  }
+}
+
+/*
+ * Native <progress> styling (feedback.ProgressBar determinate bar).
+ *
+ * appearance: none removes the UA widget chrome; the track is the wrapping
+ * div's background, and the fill inherits the element's own background —
+ * which carries the consumer's `Color` bg-* classes, dark: variants
+ * included. No hand-rolled ARIA: value/max ARE the progress semantics.
+ */
+progress.tc-progress {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  overflow: hidden;
+}
+
+progress.tc-progress::-webkit-progress-bar {
+  background: transparent;
+}
+
+progress.tc-progress::-webkit-progress-value {
+  background: inherit;
+  border-radius: inherit;
+  transition: width 300ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  progress.tc-progress::-webkit-progress-value {
+    transition: none;
+  }
+}
+
+progress.tc-progress::-moz-progress-bar {
+  background: inherit;
+  border-radius: inherit;
+}
+
+/*
  * Native <dialog> overlay system (Modal, Drawer).
  *
  * The <dialog> element gives us: top-layer rendering (no z-index wars),

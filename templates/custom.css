@@ -133,6 +133,42 @@
 }
 
 /*
+ * Native <progress> styling (feedback.ProgressBar determinate bar).
+ *
+ * appearance: none removes the UA widget chrome; the track is the wrapping
+ * div's background, and the fill inherits the element's own background —
+ * which carries the consumer's `Color` bg-* classes, dark: variants
+ * included. No hand-rolled ARIA: value/max ARE the progress semantics.
+ */
+progress.tc-progress {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  overflow: hidden;
+}
+
+progress.tc-progress::-webkit-progress-bar {
+  background: transparent;
+}
+
+progress.tc-progress::-webkit-progress-value {
+  background: inherit;
+  border-radius: inherit;
+  transition: width 300ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  progress.tc-progress::-webkit-progress-value {
+    transition: none;
+  }
+}
+
+progress.tc-progress::-moz-progress-bar {
+  background: inherit;
+  border-radius: inherit;
+}
+
+/*
  * Native <dialog> overlay system (Modal, Drawer).
  *
  * The <dialog> element gives us: top-layer rendering (no z-index wars),

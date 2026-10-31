@@ -153,8 +153,8 @@ func TestProgressBarUserSeesCompletion(t *testing.T) {
 			Current: 50,
 			Total:   100,
 		}))
-		utils.AssertContains(t, output, "50%")
-		utils.AssertContains(t, output, `role="progressbar"`)
+		utils.AssertContains(t, output, `value="50"`)
+		utils.AssertContains(t, output, `max="100"`)
 	})
 
 	t.Run("user sees progress with label", func(t *testing.T) {
@@ -177,8 +177,8 @@ func TestProgressBarUserSeesCompletion(t *testing.T) {
 			total   int
 			extra   string
 		}{
-			{"150/100", 150, 100, ""},
-			{"200/100 with aria-valuenow", 200, 100, `aria-valuenow="100"`},
+			{"150/100", 150, 100, `value="100"`},
+			{"200/100 clamps value", 200, 100, `max="100"`},
 		} {
 			t.Run(tt.name, func(t *testing.T) {
 				t.Parallel()
@@ -186,7 +186,7 @@ func TestProgressBarUserSeesCompletion(t *testing.T) {
 					Current: tt.current,
 					Total:   tt.total,
 				}))
-				utils.AssertContains(t, output, "100%")
+				utils.AssertContains(t, output, `value="100"`)
 				utils.AssertNotContains(t, output, "150%")
 
 				if tt.extra != "" {

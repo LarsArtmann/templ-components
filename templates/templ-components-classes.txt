@@ -5030,7 +5030,9 @@ func hoverCardPositionClass(pos HoverCardPosition) string {
 
 // HoverCardProps configures a hover-activated card with rich content.
 // The card appears on hover and focus, using pure CSS (no JavaScript).
-// Accessible: the card content is linked to the trigger via aria-describedby.
+// Accessible: the card content is linked to the trigger via aria-details
+// (rich supplementary content — a hover card is not a tooltip, so no
+// role="tooltip").
 // This is the reference implementation for the CSS-only overlay pattern —
 // see ADR-0017 for the broader Popover API migration strategy.
 type HoverCardProps struct {
@@ -5046,8 +5048,20 @@ func DefaultHoverCardProps() HoverCardProps {
 	}
 }
 
-// HoverCard wraps a trigger element in a hover-activated card with rich content.
-// The card appears on :hover and :focus-within, using pure CSS opacity transitions.
+// HoverCard wraps a trigger element in a hover-activated card with rich
+// content.
+//
+// Base path (every engine): the card appears on :hover and :focus-within
+// via pure CSS opacity transitions, absolutely positioned in the flow.
+//
+// Enhancement path (engines with the Popover + Interest Invokers APIs): the
+// card is a `popover="hint"` panel and the trigger carries `interestfor` —
+// the browser promotes it to the top layer on hover (escaping every
+// overflow/z-index ancestor) and the shared popover-positioning script
+// anchors it to the trigger with viewport clamping and edge flipping. The
+// popover attribute is inert where unsupported, so the two paths never
+// fight: a closed popover is display:none, which overrides the CSS hover
+// visibility entirely.
 //
 //	@display.HoverCard(display.HoverCardProps{Position: display.HoverCardPositionTop}) {
 //	   <button>Hover me</button>
@@ -5055,23 +5069,28 @@ func DefaultHoverCardProps() HoverCardProps {
 //	@display.HoverCard.HoverCardContent(display.HoverCardProps{Content: ...})
 templ HoverCard(props HoverCardProps) {
 	{{ id := utils.EnsureID("hovercard", props.ID) }}
+	{{ triggerID := id + "-trigger" }}
 	<div
 		class={ utils.Class("relative inline-block", props.Class) }
 		{ props.Attrs... }
 	>
 		<div
+			id={ triggerID }
 			class="peer"
-			aria-describedby={ id }
+			aria-details={ id }
 			tabindex="0"
+			interestfor={ id }
 		>
 			{ children... }
 		</div>
 		<div
 			id={ id }
-			role="tooltip"
+			popover="hint"
+			data-tc-anchor={ triggerID }
+			data-tc-position={ string(props.Position) }
 			class={ utils.Class(
 				hoverCardPositionClass(props.Position),
-				"absolute z-50 w-64 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-lg dark:shadow-black/20 opacity-0 invisible peer-hover:opacity-100 peer-hover:visible peer-focus-within:opacity-100 peer-focus-within:visible transition-opacity motion-reduce:transition-none motion-reduce:duration-0",
+				"w-64 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-lg dark:shadow-black/20 opacity-0 invisible peer-hover:opacity-100 peer-hover:visible peer-focus-within:opacity-100 peer-focus-within:visible transition-opacity motion-reduce:transition-none motion-reduce:duration-0",
 			) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
@@ -5082,6 +5101,7 @@ templ HoverCard(props HoverCardProps) {
 			}
 		</div>
 	</div>
+	@popoverPositionScriptComponent(props.Nonce)
 }
 
 # ── display/image.templ ─────────────────────────────────────────────
@@ -8624,6 +8644,12 @@ func tableRowHrefScriptComponent(nonce string) templ.Component {
 // See ADR-0017.
 func popoverPositionJS() string {
 	return `if(!window.tcPopoverPositionAttached){window.tcPopoverPositionAttached=true;` +
+		// CSS Anchor Positioning layer: on engines that support it,
+		// custom.css positions every [popover][data-tc-anchor] panel
+		// declaratively (anchor + position-area + position-try fallbacks,
+		// live across scroll/resize). This script stays the fallback for
+		// engines without anchor positioning and exits on the rest.
+		`if(!(window.CSS&&CSS.supports&&CSS.supports("anchor-name: --x"))){` +
 		`function tcPositionPopover(p){` +
 		`var aid=p.getAttribute("data-tc-anchor");` +
 		`var t=aid?document.getElementById(aid):null;` +
@@ -8683,6 +8709,7 @@ func popoverPositionJS() string {
 		`document.querySelectorAll("[popover]:popover-open[data-tc-anchor]").forEach(tcPositionPopover);` +
 		`},true);` +
 		`}` +
+		`}` +
 		"\n"
 }
 
@@ -8713,9 +8740,34 @@ func tooltipAriaJS() string {
 		`}` +
 		`tcTooltipAriaSync();` +
 		`document.body.addEventListener("htmx:afterSettle",tcTooltipAriaSync);` +
+		// Viewport clamp: a bubble wider than the space on its preferred side
+		// overflows the viewport (pure CSS has no flip). Shift the bubble
+		// back inside with a runtime margin-left nudge — the same class of
+		// runtime inline value as the progress bar width. The CSS Anchor
+		// Positioning layer is the declarative long-term fix; this keeps
+		// every engine inside the viewport today.
 		`function tcTooltipWrap(e){` +
 		`if(!e||!e.target||!e.target.closest)return null;` +
 		`return e.target.closest("[data-tc-tooltip]");` +
+		`}` +
+		`function tcTooltipClamp(wrap){` +
+		`var bubble=wrap.querySelector("[role=tooltip]");` +
+		`if(!bubble)return;` +
+		`bubble.style.marginLeft="";` +
+		`var r=bubble.getBoundingClientRect();` +
+		`if(r.width===0)return;` +
+		`var vw=document.documentElement.clientWidth;` +
+		`var gap=8;` +
+		`var shift=0;` +
+		`if(r.left<gap)shift=gap-r.left;` +
+		`else if(r.right>vw-gap)shift=(vw-gap)-r.right;` +
+		`if(shift)bubble.style.marginLeft=shift+"px";` +
+		`}` +
+		`function tcTooltipShow(e){` +
+		`var wrap=tcTooltipWrap(e);` +
+		`if(!wrap)return;` +
+		`wrap.removeAttribute("data-tc-tooltip-dismissed");` +
+		`requestAnimationFrame(function(){tcTooltipClamp(wrap);requestAnimationFrame(function(){tcTooltipClamp(wrap);});});` +
 		`}` +
 		`document.addEventListener("keydown",function(e){` +
 		`if(e.key!=="Escape")return;` +
@@ -8724,12 +8776,11 @@ func tooltipAriaJS() string {
 		`wrap.setAttribute("data-tc-tooltip-dismissed","true");` +
 		`});` +
 		`document.addEventListener("mouseenter",function(e){` +
-		`var wrap=tcTooltipWrap(e);` +
-		`if(wrap)wrap.removeAttribute("data-tc-tooltip-dismissed");` +
+		`if(!e||!e.target||!e.target.closest)return;` +
+		`if(e.target.closest("[data-tc-tooltip]"))tcTooltipShow(e);` +
 		`},true);` +
 		`document.addEventListener("focusin",function(e){` +
-		`var wrap=tcTooltipWrap(e);` +
-		`if(wrap)wrap.removeAttribute("data-tc-tooltip-dismissed");` +
+		`tcTooltipShow(e);` +
 		`});` +
 		`}` +
 		"\n"
@@ -10290,6 +10341,7 @@ templ Tooltip(props TooltipProps) {
 	<div
 		id={ id }
 		data-tc-tooltip
+		data-tc-position={ string(props.Position) }
 		class={ utils.Class("group relative inline-flex", props.Class) }
 		aria-describedby={ id + "-tooltip" }
 		if props.AriaLabel != "" {
@@ -10930,6 +10982,17 @@ templ ProgressBar(props ProgressBarProps) {
 		if props.Total > 0 && clamped > props.Total {
 			clamped = props.Total
 		}
+		// The native <progress> element needs a positive max; a zero or
+		// negative Total falls back to a 100-part scale so the bar still
+		// renders meaningfully.
+		progressMax := props.Total
+		if progressMax <= 0 {
+			progressMax = 100
+		}
+		progressValue := clamped
+		if progressValue > progressMax || props.Total <= 0 {
+			progressValue = 0
+		}
 		// role="progressbar" requires an accessible name (axe aria-progressbar-name).
 		// Fall back to the visible label, then a generic name, so the bare
 		// progress bar never renders unnamed.
@@ -10965,15 +11028,12 @@ templ ProgressBar(props ProgressBarProps) {
 					aria-label={ progressName }
 				></div>
 			} else {
-				<div
-					class={ "rounded-full transition-all duration-300 ease-out motion-reduce:transition-none", progressHeightClass(props.Size), string(props.Color) }
-					style={ fmt.Sprintf("width: %.0f%%;", percent) }
-					role="progressbar"
+				<progress
+					class={ utils.Class("tc-progress appearance-none block w-full rounded-full transition-all duration-300 ease-out motion-reduce:transition-none", progressHeightClass(props.Size), string(props.Color)) }
+					value={ fmt.Sprintf("%d", progressValue) }
+					max={ fmt.Sprintf("%d", progressMax) }
 					aria-label={ progressName }
-					aria-valuenow={ fmt.Sprintf("%d", clamped) }
-					aria-valuemin="0"
-					aria-valuemax={ fmt.Sprintf("%d", props.Total) }
-				></div>
+				></progress>
 			}
 		</div>
 	</div>
@@ -11309,7 +11369,7 @@ func toastScriptNonceAttr(nonce string) string {
 // This bypasses templ's ScriptContentOutsideStringLiteral which would
 // JSON-marshal the JS string content inside {{ }} expressions.
 func toastContainerScript(nonce string) templ.Component {
-	script := fmt.Sprintf(`<script%s>%s\n%s\nfunction tcShowToast(message, type, title, duration) {\nvar container = document.getElementById('tc-toast-container');\nif (!container) return;\nvar toast = document.createElement('div');\nvar typeKey = type || 'info';\nvar style = tcToastColors[typeKey] || tcToastColors.info;\ntoast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg dark:shadow-black/20 px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;\nvar inner = document.createElement('div');\ninner.className = 'flex items-start gap-3';\nvar svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\nsvgEl.setAttribute('class', 'h-5 w-5 flex-shrink-0 mt-0.5 ' + style.icon);\nsvgEl.setAttribute('fill', 'none');\nsvgEl.setAttribute('viewBox', '0 0 24 24');\nsvgEl.setAttribute('stroke', 'currentColor');\nsvgEl.innerHTML = (tcToastIcons[typeKey] || tcToastIcons.info);\ninner.appendChild(svgEl);\nvar content = document.createElement('div');\ncontent.className = 'flex-1 min-w-0';\nif (title) {\nvar titleEl = document.createElement('div');\ntitleEl.className = 'text-sm font-semibold';\ntitleEl.textContent = title;\ncontent.appendChild(titleEl);\n}\nvar msgEl = document.createElement('div');\nmsgEl.className = 'text-sm';\nmsgEl.textContent = message;\ncontent.appendChild(msgEl);\ninner.appendChild(content);\nvar btn = document.createElement('button');\nbtn.className = 'flex-shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0';\nbtn.setAttribute('aria-label', 'Dismiss');\nbtn.addEventListener('click', function() { this.closest('.pointer-events-auto').remove(); });\nbtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' + (tcToastIcons.dismiss || '') + '</svg>';\ninner.appendChild(btn);\ntoast.appendChild(inner);\ncontainer.appendChild(toast);\nrequestAnimationFrame(function() { toast.classList.remove('translate-x-full'); });\nif (duration && duration > 0) {\nsetTimeout(function() {\ntoast.classList.add('translate-x-full');\nsetTimeout(function() { toast.remove(); }, 300);\n}, duration);\n}\n}</script>`, toastScriptNonceAttr(nonce), toastJSStyles(), toastJSIconPaths())
+	script := fmt.Sprintf(`<script%s>%s\n%s\nfunction tcShowToast(message, type, title, duration) {\nvar container = document.getElementById('tc-toast-container');\nif (!container) return;\nvar toast = document.createElement('div');\ntcToastSeq = (window.tcToastSeq || 0) + 1;\nvar toastId = 'tcToast-' + Date.now() + '-' + tcToastSeq;\ntoast.id = toastId;\ntoast.setAttribute('popover', 'manual');\nvar typeKey = type || 'info';\nvar style = tcToastColors[typeKey] || tcToastColors.info;\ntoast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg dark:shadow-black/20 px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;\nvar inner = document.createElement('div');\ninner.className = 'flex items-start gap-3';\nvar svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\nsvgEl.setAttribute('class', 'h-5 w-5 flex-shrink-0 mt-0.5 ' + style.icon);\nsvgEl.setAttribute('fill', 'none');\nsvgEl.setAttribute('viewBox', '0 0 24 24');\nsvgEl.setAttribute('stroke', 'currentColor');\nsvgEl.innerHTML = (tcToastIcons[typeKey] || tcToastIcons.info);\ninner.appendChild(svgEl);\nvar content = document.createElement('div');\ncontent.className = 'flex-1 min-w-0';\nif (title) {\nvar titleEl = document.createElement('div');\ntitleEl.className = 'text-sm font-semibold';\ntitleEl.textContent = title;\ncontent.appendChild(titleEl);\n}\nvar msgEl = document.createElement('div');\nmsgEl.className = 'text-sm';\nmsgEl.textContent = message;\ncontent.appendChild(msgEl);\ninner.appendChild(content);\nvar btn = document.createElement('button');\nbtn.className = 'flex-shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0';\nbtn.setAttribute('aria-label', 'Dismiss');\nbtn.setAttribute('popovertarget', toastId);\nbtn.setAttribute('popovertargetaction', 'hide');\ntoast.addEventListener('hide', function() { toast.remove(); });\nbtn.addEventListener('click', function() { this.closest('.pointer-events-auto').remove(); });\nbtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' + (tcToastIcons.dismiss || '') + '</svg>';\ninner.appendChild(btn);\ntoast.appendChild(inner);\ncontainer.appendChild(toast);\nif (typeof toast.showPopover === 'function') { try { toast.showPopover(); } catch (err) {} }\nrequestAnimationFrame(function() { toast.classList.remove('translate-x-full'); });\nif (duration && duration > 0) {\nsetTimeout(function() {\ntoast.classList.add('translate-x-full');\nsetTimeout(function() { if (typeof toast.hidePopover === 'function') { try { toast.hidePopover(); } catch (err) {} } toast.remove(); }, 300);\n}, duration);\n}\n}</script>`, toastScriptNonceAttr(nonce), toastJSStyles(), toastJSIconPaths())
 	script = strings.ReplaceAll(script, `\n`, "\n")
 	return templ.Raw(script)
 }

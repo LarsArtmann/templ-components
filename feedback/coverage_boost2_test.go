@@ -31,7 +31,7 @@ func TestProgressBarTotalZero(t *testing.T) {
 		Total:   0,
 	}))
 	// Should not panic, should render a progress bar
-	utils.AssertContains(t, output, "role=\"progressbar\"")
+	utils.AssertContains(t, output, "<progress")
 }
 
 func TestProgressBarNegativeCurrent(t *testing.T) {
@@ -40,7 +40,7 @@ func TestProgressBarNegativeCurrent(t *testing.T) {
 		Current: -10,
 		Total:   100,
 	}))
-	utils.AssertContains(t, output, "role=\"progressbar\"")
+	utils.AssertContains(t, output, "<progress")
 }
 
 func TestProgressBarNoLabel(t *testing.T) {
@@ -72,7 +72,7 @@ func TestProgressBarInvalidSizeFallback(t *testing.T) {
 		Total:   100,
 		Size:    ProgressBarSize("bogus"),
 	}))
-	utils.AssertContains(t, output, "role=\"progressbar\"")
+	utils.AssertContains(t, output, "<progress")
 }
 
 func TestProgressBarAllSizes(t *testing.T) {
@@ -84,7 +84,7 @@ func TestProgressBarAllSizes(t *testing.T) {
 			Total:   100,
 			Size:    size,
 		}))
-		utils.AssertContains(t, output, "role=\"progressbar\"")
+		utils.AssertContains(t, output, "<progress")
 	}
 }
 

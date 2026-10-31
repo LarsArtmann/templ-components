@@ -83,7 +83,7 @@ func TestProgressBarCoverageGaps(t *testing.T) {
 			Current: 150,
 			Total:   100,
 		}))
-		utils.AssertContains(t, output, `aria-valuenow="100"`)
+		utils.AssertContains(t, output, `value="100"`)
 	})
 
 	t.Run("aria-valuenow clamped to zero", func(t *testing.T) {
@@ -92,7 +92,7 @@ func TestProgressBarCoverageGaps(t *testing.T) {
 			Current: -10,
 			Total:   100,
 		}))
-		utils.AssertContains(t, output, `aria-valuenow="0"`)
+		utils.AssertContains(t, output, `value="0"`)
 	})
 
 	t.Run("custom total", func(t *testing.T) {
@@ -101,7 +101,7 @@ func TestProgressBarCoverageGaps(t *testing.T) {
 			Current: 3,
 			Total:   7,
 		}))
-		utils.AssertContains(t, output, `aria-valuemax="7"`)
+		utils.AssertContains(t, output, `max="7"`)
 	})
 }
 

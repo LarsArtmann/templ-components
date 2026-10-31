@@ -138,6 +138,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   MPAs that opt every page in via their stylesheet (`@view-transition {
   navigation: auto }`), with a reduced-motion opt-out. Deliberately kept out of
   the consumer-facing `templates/custom.css`.
+- **Toasts now render in the top layer.** JS-injected toasts become
+  `popover="manual"` elements (shown with the native `showPopover()`),
+  escaping every `overflow: hidden`/z-index ancestor, and their dismiss
+  buttons carry `popovertarget` + `popovertargetaction="hide"` so the
+  platform dismisses them; the `hide` event removes the element. Engines
+  without the Popover API keep the previous behavior — the attributes are
+  inert and the JS click path still removes the toast. The container's
+  `aria-live="polite"` announcement contract is unchanged.
+- **`ProgressBar` renders a native `<progress>` element.** The determinate
+  bar was a `<div>` carrying a hand-rolled `role="progressbar"` +
+  `aria-valuenow/min/max`; the native element IS the progress semantics, so
+  the ARIA is gone (an accessible name remains required and is still
+  rendered). `appearance: none` styling in `templates/custom.css` keeps the
+  visual identical — the fill inherits the element's `Color` classes,
+  dark-mode variants included — and a zero or negative `Total` falls back to
+  a 100-part scale rendering an empty bar, as before. The indeterminate
+  variant keeps its reduced-motion-safe custom animation.
 - **`docs/research/2026-10-30_modern-web-guidance-audit.md`** — a
   guide-by-guide audit of the library against the 192-guide Modern Web
   Guidance library (44 guides checked against source), grading what shipped,

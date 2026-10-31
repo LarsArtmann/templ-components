@@ -33,9 +33,9 @@ Bundled references (read on demand, not upfront):
 
 ## Component catalogue
 
-136 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)
+137 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)
 
-- 136 templ components + 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
+- 137 templ components + 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
   section is the index. If you're about to hand-roll something, check here first.
 
 ### By use case (start here)
@@ -56,7 +56,7 @@ Bundled references (read on demand, not upfront):
 
 ### By package
 
-#### `display` — 52 components
+#### `display` — 53 components
 
 Accordion, AreaChart, Avatar, Badge, BarChart, Button, Card, Carousel, CodeBlock,
 CollapsibleSection, CommandPalette, ContextMenu, CopyButton, CountBadge, DataState,

@@ -165,7 +165,12 @@ func TestTooltipAnchorPositioning(t *testing.T) {
 			`(function(){var b=document.querySelector('#tt-edge-tooltip');if(!b)return null;var r=b.getBoundingClientRect();return {left:r.left,right:r.right};})()`,
 			&edge,
 		))
-		t.Fatalf("tooltip clamp: edge bubble stayed outside the viewport: left=%.1f right=%.1f vw=%.1f", edge.Left, edge.Right, vw)
+		var diag string
+		_ = chromedp.Do(ctx, evalExprInto(
+			`(function(){var b=document.querySelector('#tt-edge-tooltip');return JSON.stringify({ml:b.style.marginLeft,disp:getComputedStyle(b).display,active:document.activeElement&&document.activeElement.id,attached:typeof window.tcTooltipAriaAttached})})()`,
+			&diag,
+		))
+		t.Fatalf("tooltip clamp: edge bubble stayed outside the viewport: left=%.1f right=%.1f vw=%.1f diag=%s", edge.Left, edge.Right, vw, diag)
 	}
 
 	// 2. Anchor-layer posture: on supporting engines the JS fallback must
