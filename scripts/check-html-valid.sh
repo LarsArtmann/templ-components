@@ -48,6 +48,7 @@ done
 #   "data-\*"...NCNames          Datastar's data-on:click colon syntax — deliberate
 #   popover|popovertarget        vnu predates the Popover API (Baseline 2024)
 #   closedby                     vnu predates the closedby attribute on <dialog>
+#   interestfor|popovertargetaction  vnu predates Interest Invokers / popover hide actions
 #                                (Chrome 134 / Firefox 141; <dialog> light dismiss)
 #   fetchpriority|enterkeyhint   vnu staleness — standard attributes
 #   Element "search" not allowed vnu predates the <search> element (Baseline 2023)
@@ -78,7 +79,7 @@ done
 # message quoting changed across releases, and CI downloads vnu.jar at
 # runtime while local html5validator bundles an older checker — one list
 # must serve both snapshots.
-IGNORE_RE='Attribute ["“]hx-[a-z-]+["”] not allowed|["“]data-\*["”] attribute names|["“](popover|popovertarget|closedby|fetchpriority|enterkeyhint)["”] not allowed|Element ["“]search["”] not allowed|Attribute ["“]media["”] not allowed on element ["“]meta["”]|Element ["“]svg["”] not allowed as child of element ["“]summary["”]|Element ["“]style["”] not allowed as child of element ["“]body["”]|must only have selectors that match its parent and elements after its parent|not allowed outside an ["“]@scope["”] rule in a ["“]style["”] element in ["“]body["”]|CSS: Parse Error|["“]background-color["”]: Invalid RGB function|Stray (start|end) tag ["“](button|selectedcontent)["”]|["“]aria-controls["”] attribute must point to'
+IGNORE_RE='Attribute ["“]hx-[a-z-]+["”] not allowed|["“]data-\*["”] attribute names|["“](popover|popovertarget|popovertargetaction|closedby|fetchpriority|enterkeyhint|interestfor)["”] not allowed|Element ["“]search["”] not allowed|Attribute ["“]media["”] not allowed on element ["“]meta["”]|Element ["“]svg["”] not allowed as child of element ["“]summary["”]|Element ["“]style["”] not allowed as child of element ["“]body["”]|must only have selectors that match its parent and elements after its parent|not allowed outside an ["“]@scope["”] rule in a ["“]style["”] element in ["“]body["”]|CSS: Parse Error|["“]background-color["”]: Invalid RGB function|Stray (start|end) tag ["“](button|selectedcontent)["”]|["“]aria-controls["”] attribute must point to'
 
 # Validator invocation: html5validator (nixpkgs local) or a direct vnu.jar
 # via VNU_JAR (CI downloads the jar — no pip/PEP-668 involved). Output
