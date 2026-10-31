@@ -4,13 +4,13 @@ Verify-before-filing verdicts first, then the two bodies actually filed.
 
 ## Verification table
 
-| Ask | Source row | Verified at fork HEAD `308d8d75` | Verdict |
-| --- | --- | --- | --- |
-| `--suggest-generics` feature request | #446 closure | Flag EXISTS (`AGENTS.md` §"Generics-extraction enhancer", combined mode ADR-0026, `printer/generics_parity_test.go`) | **DO NOT FILE** — the #446 closure premise ("flags don't exist at fork HEAD") is FALSE; corrected in TODO_LIST |
-| `check` actionable-vs-raw counts | #315 | `Found total` string present (`bdd/actionability_test.go:120`, `bdd/incremental_detection_test.go:90,331`); no distinct actionable count | **FILE** |
-| `--baseline-version-must-match` guard | #316 | `git grep` for the flag/`BaselineVersionMustMatch`: zero hits | **FILE** |
-| Piped-output truncation | #292 | Incident documented (2026-09-22 lesson: 20 of 39 groups survived a `tee` capture) but not reproduced at HEAD this session | **NOT FILED** — reproduction still owed |
-| `--fingerprint-only` + config auto-discovery + help epilog | #293 | `--fingerprint-only`: zero hits in `*.go` | **NOT FILED** this round — multi-part ask, keep the row |
+| Ask                                                        | Source row   | Verified at fork HEAD `308d8d75`                                                                                                         | Verdict                                                                                                        |
+| ---------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `--suggest-generics` feature request                       | #446 closure | Flag EXISTS (`AGENTS.md` §"Generics-extraction enhancer", combined mode ADR-0026, `printer/generics_parity_test.go`)                     | **DO NOT FILE** — the #446 closure premise ("flags don't exist at fork HEAD") is FALSE; corrected in TODO_LIST |
+| `check` actionable-vs-raw counts                           | #315         | `Found total` string present (`bdd/actionability_test.go:120`, `bdd/incremental_detection_test.go:90,331`); no distinct actionable count | **FILE**                                                                                                       |
+| `--baseline-version-must-match` guard                      | #316         | `git grep` for the flag/`BaselineVersionMustMatch`: zero hits                                                                            | **FILE**                                                                                                       |
+| Piped-output truncation                                    | #292         | Incident documented (2026-09-22 lesson: 20 of 39 groups survived a `tee` capture) but not reproduced at HEAD this session                | **NOT FILED** — reproduction still owed                                                                        |
+| `--fingerprint-only` + config auto-discovery + help epilog | #293         | `--fingerprint-only`: zero hits in `*.go`                                                                                                | **NOT FILED** this round — multi-part ask, keep the row                                                        |
 
 ## Issue 1 (filed): actionable-vs-raw counts in `check`
 
@@ -79,3 +79,11 @@ of a full-tree false alarm.
   self-enforcing instead of convention-enforced.
 - Happy to send the PR if the shape sounds right.
 ```
+
+## Addendum (2026-10-31, later same day)
+
+The awesome-templ PR body (templ-go/awesome-templ#12) initially cited
+goreportcard per CONTRIBUTING; upstream `gojp/goreportcard` is ARCHIVED, so the
+body now labels the link a checklist formality and points at the CI badge
+(golangci-lint + race tests) as the live quality signal. Maintainers notified
+in-thread.
