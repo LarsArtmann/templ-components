@@ -19,11 +19,12 @@ import (
 // attribute is dropped silently, so the library must not grow new inline styles
 // by accident. Add a file here only with a matching docs update.
 var inlineStyleAllowlist = map[string]string{
-	filepath.Join("display", "bar_chart.templ"):    "runtime bar height/width",
-	filepath.Join("display", "heatmap.templ"):      "runtime cell background",
-	filepath.Join("feedback", "progressbar.templ"): "runtime bar width",
-	filepath.Join("feedback", "loading.templ"):     "runtime overlay progress width",
-	filepath.Join("display", "segment_bar.templ"):  "runtime segment flex-grow proportions",
+	filepath.Join("display", "bar_chart.templ"):      "runtime bar height/width",
+	filepath.Join("display", "heatmap.templ"):        "runtime cell background",
+	filepath.Join("feedback", "progressbar.templ"):   "runtime bar width",
+	filepath.Join("feedback", "loading.templ"):       "runtime overlay progress width",
+	filepath.Join("display", "loading_dialog.templ"): "runtime dialog progress width",
+	filepath.Join("display", "segment_bar.templ"):    "runtime segment flex-grow proportions",
 }
 
 // inlineStyleRe matches a `style=` attribute in either templ form: the Go

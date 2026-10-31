@@ -6705,6 +6705,90 @@ templ ListNote(props ListNoteProps) {
 	}
 }
 
+# ── display/loading_dialog.templ ─────────────────────────────────────────────
+package display
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/svg"
+)
+
+// LoadingDialogProps configures a modal loading dialog.
+type LoadingDialogProps struct {
+	utils.BaseProps
+	// Title names the dialog for assistive technology (aria-label fallback
+	// after AriaLabel and Message). It is not rendered as a visible header —
+	// a blocking loading state has nothing to close, so the dialog ships no
+	// header bar and no close button.
+	Title string
+	// Message is the visible loading text (also the aria-label fallback).
+	Message string
+	// ShowProgress swaps the "Please wait..." hint for a determinate bar.
+	ShowProgress bool
+	// Progress is clamped to [0, 100] before rendering.
+	Progress int
+	// Open auto-shows the dialog on load (native showModal via the shared
+	// overlay script). Toggle at runtime with tcOpenModal(id)/tcCloseModal(id)
+	// or the dialog element's native showModal()/close().
+	Open bool
+}
+
+// DefaultLoadingDialogProps returns sensible defaults.
+func DefaultLoadingDialogProps() LoadingDialogProps {
+	return LoadingDialogProps{} //nolint:exhaustruct // zero value IS the default
+}
+
+// LoadingDialog renders a BLOCKING loading state as a native <dialog> modal:
+// focus is trapped, the page behind it is inert, and Escape or a backdrop
+// click dismisses it. This is the modal twin of the static
+// feedback.LoadingOverlay — use the static overlay when the page must stay
+// reachable, and this dialog when the operation genuinely blocks the page.
+//
+//	@display.LoadingDialog(display.LoadingDialogProps{ID: "save-dialog", Message: "Saving...", Open: true})
+templ LoadingDialog(props LoadingDialogProps) {
+	{{ id := utils.EnsureID("loading-dialog", props.ID) }}
+	@overlayShell(overlayShellProps{
+		id:        id,
+		open:      props.Open,
+		ariaLabel: utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Message != "", props.Message, utils.Ternary(props.Title != "", props.Title, "Loading"))),
+		kind:      OverlayModal,
+		nonce:     props.Nonce,
+		dialogClass: utils.Class("tc-modal bg-white dark:bg-gray-900 rounded-lg shadow-xl dark:shadow-black/20 max-w-sm w-full mx-4 overflow-hidden print:hidden", props.Class),
+		attrs:     props.Attrs,
+	}) {
+		<div class="py-6 text-center" aria-busy="true">
+			<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4">
+				<svg
+					class="animate-spin motion-reduce:animate-none h-6 w-6 text-blue-600 dark:text-blue-400"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					aria-hidden="true"
+				>
+					@svg.SpinnerSVG()
+				</svg>
+			</div>
+			if props.Message != "" {
+				<p class="text-lg font-medium text-gray-900 dark:text-white mb-2">{ props.Message }</p>
+			}
+			if props.ShowProgress {
+				{{ clamped := max(0, min(100, props.Progress)) }}
+				<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+					<div
+						class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
+						style={ fmt.Sprintf("width: %d%%", clamped) }
+					></div>
+				</div>
+				<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", clamped) }</p>
+			} else {
+				<p class="text-sm text-gray-500 dark:text-gray-400">Please wait...</p>
+			}
+		</div>
+	}
+}
+
 # ── display/modal.templ ─────────────────────────────────────────────
 package display
 
@@ -10594,7 +10678,8 @@ templ Spinner(props SpinnerProps) {
 	</svg>
 }
 
-// LoadingOverlayProps configures a full-screen loading overlay
+// LoadingOverlayProps configures a static loading overlay
+// (see LoadingOverlay for the semantics split).
 type LoadingOverlayProps struct {
 	utils.BaseProps
 	Message      string
@@ -10607,7 +10692,15 @@ func DefaultLoadingOverlayProps() LoadingOverlayProps {
 	return LoadingOverlayProps{}
 }
 
-// LoadingOverlay renders a full-screen loading overlay
+// LoadingOverlay renders a STATIC loading overlay: a positioned region
+// (full-screen by default; scope it to a container with `Class: "absolute"`
+// inside a `relative` frame) that announces its loading state politely.
+//
+// It deliberately carries NO dialog semantics — a div with role="dialog"
+// aria-modal="true" promises focus containment and an inert page it never
+// delivered. Use the status semantics here when the page behind the overlay
+// must stay reachable, and @display.LoadingDialog when you need a real
+// blocking modal (native <dialog>: focus trap, inert page, Escape).
 //
 //	@feedback.LoadingOverlay(feedback.LoadingOverlayProps{Message: "Loading...", ShowProgress: true, Progress: 45})
 templ LoadingOverlay(props LoadingOverlayProps) {
@@ -10617,11 +10710,13 @@ templ LoadingOverlay(props LoadingOverlayProps) {
 		}
 		class={ utils.Class("fixed inset-0 bg-black/50 z-50 flex items-center justify-center", props.Class) }
 		{ props.Attrs... }
-		role="dialog"
-		aria-modal="true"
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, props.Message) }
+		aria-busy="true"
 	>
-		<div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl dark:shadow-black/20 p-8 max-w-sm w-full mx-4">
+		<div
+			class="bg-white dark:bg-gray-800 rounded-lg shadow-xl dark:shadow-black/20 p-8 max-w-sm w-full mx-4"
+			role="status"
+			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, props.Message) }
+		>
 			<div class="text-center">
 				<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4">
 					@Spinner(SpinnerProps{Size: SpinnerMD, Color: "text-blue-600 dark:text-blue-400"})
