@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
+	"github.com/chromedp/cdproto/emulation"
 	"github.com/chromedp/cdproto/input"
 	"github.com/chromedp/chromedp"
 	"github.com/larsartmann/templ-components/display"
@@ -146,6 +147,15 @@ func TestTooltipAnchorPositioning(t *testing.T) {
 
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
+
+	// Headless Chrome reports (hover: none) (no pointing device), which
+	// gates every Tailwind hover variant behind @media (hover: hover).
+	// Emulate a hover-capable fine pointer so the production desktop CSS
+	// path is under test.
+	emulateMedia(t, ctx, "",
+		&emulation.MediaFeature{Name: "hover", Value: "hover"},
+		&emulation.MediaFeature{Name: "pointer", Value: "fine"},
+	)
 
 	if err := chromedp.Do(ctx,
 		chromedp.Navigate(srv.URL+"/"),
