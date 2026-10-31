@@ -24,6 +24,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   into view, and the explicit hint delays them further. Lazy images now carry
   no fetch-priority hint; above-the-fold images (`Lazy: false`) keep
   `fetchpriority="high"` so the LCP image is still prioritised.
+- **`feedback.LoadingOverlay` no longer pretends to be a modal dialog.** It
+  rendered `role="dialog" aria-modal="true"` — semantics that promise focus
+  containment and an inert page — over a plain positioned `<div>` that
+  delivered neither: focus stayed free, the page behind stayed scrollable and
+  interactive, and Escape did nothing. The static overlay now announces
+  honestly instead (`role="status"` + `aria-busy="true"` on the card, no
+  dialog roles), keeping its positioning, visuals, and the container-scoped
+  `Class` override. When an operation genuinely blocks the page, the new
+  `display.LoadingDialog` provides real modal semantics on the native
+  `<dialog>` element.
 - **Enter during IME composition no longer picks an option, adds a tag, or
   activates a search result.** The combobox, tags input, and command palette
   handled Enter unconditionally, so pressing it to commit a CJK or dead-key
@@ -98,6 +108,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   was previously only reachable by smuggling the attribute through
   `BaseProps.Attrs`; unknown or unset tokens are dropped rather than emitted, so
   a typo cannot ship a form that looks autofill-ready while never filling.
+- **`display.LoadingDialog` — a modal loading state on the native dialog
+  shell.** The modal twin of the static `feedback.LoadingOverlay`, built on
+  the same `<dialog>`-based shell as Modal and Drawer: focus is trapped, the
+  page behind is inert, and Escape or a backdrop click dismisses it. Spinner,
+  message, and an optional clamped progress bar; no header and no close
+  button (a blocking operation has nothing to close). Auto-show with
+  `Open: true`, toggle at runtime with the shared `data-tc-overlay-trigger`
+  attribute or the dialog element's native methods.
 - **Accordion panels now animate open and closed.** `details::details-content`
   transitions its block size, gated on `@supports selector(::details-content)`
   so browsers without the pseudo-element keep the native instant toggle, and
