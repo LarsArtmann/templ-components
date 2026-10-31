@@ -32,12 +32,17 @@ func tooltipAnchorE2EPage() templ.Component {
 			Text:     "Edge tooltip with quite a lot of text that extends far",
 			Position: display.PositionTop,
 		}
+
 		edgeWrap := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 			if _, err := io.WriteString(w, `<div class="flex justify-end px-1 pt-4">`); err != nil {
 				return err
 			}
+
 			inner := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-				_, err := io.WriteString(w, `<button id="tt-edge-btn" type="button" class="rounded border border-gray-400 px-2 py-1">Edge trigger</button>`)
+				_, err := io.WriteString(
+					w,
+					`<button id="tt-edge-btn" type="button" class="rounded border border-gray-400 px-2 py-1">Edge trigger</button>`,
+				)
 
 				return err
 			})
@@ -56,6 +61,7 @@ func tooltipAnchorE2EPage() templ.Component {
 		if _, err := io.WriteString(w, `<div class="flex justify-end px-1 pt-24">`); err != nil {
 			return err
 		}
+
 		edgeDropdown := display.DropdownProps{
 			ID:       "dd-edge",
 			Label:    "Edge actions",
@@ -65,9 +71,11 @@ func tooltipAnchorE2EPage() templ.Component {
 				{Text: "Duplicate with a fairly long label", Href: "#dup"},
 			},
 		}
+
 		if err := display.Dropdown(edgeDropdown).Render(ctx, w); err != nil {
 			return err
 		}
+
 		if _, err := io.WriteString(w, `</div>`); err != nil {
 			return err
 		}
@@ -168,16 +176,25 @@ func TestTooltipAnchorPositioning(t *testing.T) {
 		var edge struct {
 			Left, Right float64
 		}
+
 		_ = chromedp.Do(ctx, evalExprInto(
 			`(function(){var b=document.querySelector('#tt-edge-tooltip');if(!b)return null;var r=b.getBoundingClientRect();return {left:r.left,right:r.right};})()`,
 			&edge,
 		))
+
 		var diag string
+
 		_ = chromedp.Do(ctx, evalExprInto(
 			`(function(){var b=document.querySelector('#tt-edge-tooltip');return JSON.stringify({ml:b.style.marginLeft,disp:getComputedStyle(b).display,active:document.activeElement&&document.activeElement.id,attached:typeof window.tcTooltipAriaAttached})})()`,
 			&diag,
 		))
-		t.Fatalf("tooltip clamp: edge bubble stayed outside the viewport: left=%.1f right=%.1f vw=%.1f diag=%s", edge.Left, edge.Right, vw, diag)
+		t.Fatalf(
+			"tooltip clamp: edge bubble stayed outside the viewport: left=%.1f right=%.1f vw=%.1f diag=%s",
+			edge.Left,
+			edge.Right,
+			vw,
+			diag,
+		)
 	}
 
 	// 2. Anchor-layer posture: on supporting engines the JS fallback must
@@ -190,7 +207,9 @@ func TestTooltipAnchorPositioning(t *testing.T) {
 		t.Fatalf("visualtest[tooltip-anchor]: probe anchor support: %v", err)
 	}
 
-	if anchorSupported {
+	assertJSFallbackDormant := func() {
+		t.Helper()
+
 		var jsFallbackAttached bool
 		if err := chromedp.Do(ctx, evalExprInto(
 			`typeof window.tcPositionPopover==="function"`,
@@ -202,6 +221,10 @@ func TestTooltipAnchorPositioning(t *testing.T) {
 		if jsFallbackAttached {
 			t.Error("anchor layer active but the JS positioning fallback attached anyway")
 		}
+	}
+
+	openDropdown := func() {
+		t.Helper()
 
 		// Open the edge dropdown (real click on the popovertarget button).
 		if err := chromedp.Do(ctx,
@@ -210,6 +233,10 @@ func TestTooltipAnchorPositioning(t *testing.T) {
 		); err != nil {
 			t.Fatalf("visualtest[tooltip-anchor]: open edge dropdown: %v", err)
 		}
+	}
+
+	assertPanelInside := func() {
+		t.Helper()
 
 		var panelBox struct {
 			Left, Right float64
@@ -232,5 +259,11 @@ func TestTooltipAnchorPositioning(t *testing.T) {
 		if panelBox.Left < -0.5 {
 			t.Errorf("anchor layer: dropdown panel overflows left: left=%.1f", panelBox.Left)
 		}
+	}
+
+	if anchorSupported {
+		assertJSFallbackDormant()
+		openDropdown()
+		assertPanelInside()
 	}
 }

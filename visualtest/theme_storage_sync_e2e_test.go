@@ -23,6 +23,7 @@ func themeStorageSyncE2EPage() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		props := layout.DefaultPageProps()
 		props.Nonce = "e2e-nonce"
+
 		return layout.Base(props).Render(templ.WithChildren(ctx, body), w)
 	})
 }
@@ -54,7 +55,7 @@ func darkPreferenceEmulation(t *testing.T, ctx context.Context) {
 }
 
 // themeStorageSyncDispatch builds a trusted-enough StorageEvent with the
-// given newValue ('' → newValue null, the key-removed case).
+// given newValue (” → newValue null, the key-removed case).
 func themeStorageSyncDispatch(newValue string) string {
 	nv := `null`
 	if newValue != "" {
@@ -81,6 +82,7 @@ func TestThemeStorageSyncAcrossTabs(t *testing.T) {
 
 	observer, cancelObserver := newFlowTab(t)
 	defer cancelObserver()
+
 	darkPreferenceEmulation(t, observer)
 
 	// Initial paint follows the emulated dark OS via ThemeScript; the
@@ -135,10 +137,14 @@ func TestThemeStorageSyncAcrossTabs(t *testing.T) {
 	// proven above.
 	writer, cancelWriter := newFlowTab(t)
 	defer cancelWriter()
+
 	darkPreferenceEmulation(t, writer)
 
-	if err := chromedp.Do(observer,
-		evalVoid(`window.__probeStorageEvents = 0; window.addEventListener('storage', function(){ window.__probeStorageEvents++; });`),
+	if err := chromedp.Do(
+		observer,
+		evalVoid(
+			`window.__probeStorageEvents = 0; window.addEventListener('storage', function(){ window.__probeStorageEvents++; });`,
+		),
 	); err != nil {
 		t.Fatalf("visualtest[theme-sync]: observer probe attach: %v", err)
 	}
@@ -161,6 +167,7 @@ func TestThemeStorageSyncAcrossTabs(t *testing.T) {
 	if probeCount == "none" {
 		t.Log("headless Chrome did not deliver the cross-target storage event; " +
 			"listener contract proven via dispatched StorageEvents above")
+
 		return
 	}
 

@@ -76,8 +76,6 @@ func TestDemoNavTimingBudget(t *testing.T) {
 
 	for _, route := range routes {
 		t.Run(route.name, func(t *testing.T) {
-			t.Parallel()
-
 			ctx, cancel := newTab(t)
 			defer cancel()
 
