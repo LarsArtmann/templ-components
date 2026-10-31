@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.26.0] — 2026-10-31
+
 ### Fixed
 
 - **Modals and drawers no longer let scroll gestures reach the page behind
