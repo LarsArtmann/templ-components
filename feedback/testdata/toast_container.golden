@@ -4,6 +4,10 @@ function tcShowToast(message, type, title, duration) {
 var container = document.getElementById('tc-toast-container');
 if (!container) return;
 var toast = document.createElement('div');
+tcToastSeq = (window.tcToastSeq || 0) + 1;
+var toastId = 'tcToast-' + Date.now() + '-' + tcToastSeq;
+toast.id = toastId;
+toast.setAttribute('popover', 'manual');
 var typeKey = type || 'info';
 var style = tcToastColors[typeKey] || tcToastColors.info;
 toast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg dark:shadow-black/20 px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;
@@ -32,16 +36,20 @@ inner.appendChild(content);
 var btn = document.createElement('button');
 btn.className = 'flex-shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0';
 btn.setAttribute('aria-label', 'Dismiss');
+btn.setAttribute('popovertarget', toastId);
+btn.setAttribute('popovertargetaction', 'hide');
+toast.addEventListener('hide', function() { toast.remove(); });
 btn.addEventListener('click', function() { this.closest('.pointer-events-auto').remove(); });
 btn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' + (tcToastIcons.dismiss || '') + '</svg>';
 inner.appendChild(btn);
 toast.appendChild(inner);
 container.appendChild(toast);
+if (typeof toast.showPopover === 'function') { try { toast.showPopover(); } catch (err) {} }
 requestAnimationFrame(function() { toast.classList.remove('translate-x-full'); });
 if (duration && duration > 0) {
 setTimeout(function() {
 toast.classList.add('translate-x-full');
-setTimeout(function() { toast.remove(); }, 300);
+setTimeout(function() { if (typeof toast.hidePopover === 'function') { try { toast.hidePopover(); } catch (err) {} } toast.remove(); }, 300);
 }, duration);
 }
 }</script>

@@ -58,6 +58,7 @@ func componentTypes() []any {
 		display.DefinitionListProps{},
 		display.ModalProps{},
 		display.DrawerProps{},
+		display.LoadingDialogProps{},
 		display.GridProps{},
 		display.CopyButtonProps{},
 		display.RelativeTimeProps{},
