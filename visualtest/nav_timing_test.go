@@ -58,8 +58,10 @@ const navTimingJS = `new Promise(res => {
 // widest composition), the two heaviest pages (display, forms), and the
 // dual-runtime kanban page (htmx + Datastar both loaded).
 func TestDemoNavTimingBudget(t *testing.T) {
-	t.Parallel()
-
+	// Serial ON PURPOSE: the wall-clock budgets assume a quiet browser.
+	// Running parallel to the route-golden capture storm multiplies load
+	// times past any honest budget (display hit 35s under contention while
+	// passing at ~1s serial) and turns the audit into a load oracle.
 	server := StartDemoServer(t)
 
 	routes := []struct {
