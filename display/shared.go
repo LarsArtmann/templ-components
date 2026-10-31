@@ -302,6 +302,12 @@ func tableRowHrefScriptComponent(nonce string) templ.Component {
 // See ADR-0017.
 func popoverPositionJS() string {
 	return `if(!window.tcPopoverPositionAttached){window.tcPopoverPositionAttached=true;` +
+		// CSS Anchor Positioning layer: on engines that support it,
+		// custom.css positions every [popover][data-tc-anchor] panel
+		// declaratively (anchor + position-area + position-try fallbacks,
+		// live across scroll/resize). This script stays the fallback for
+		// engines without anchor positioning and exits here on the rest.
+		`if(window.CSS&&CSS.supports&&CSS.supports("anchor-name: --x")){return;}` +
 		`function tcPositionPopover(p){` +
 		`var aid=p.getAttribute("data-tc-anchor");` +
 		`var t=aid?document.getElementById(aid):null;` +

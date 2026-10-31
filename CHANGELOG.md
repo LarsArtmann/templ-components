@@ -116,6 +116,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   button (a blocking operation has nothing to close). Auto-show with
   `Open: true`, toggle at runtime with the shared `data-tc-overlay-trigger`
   attribute or the dialog element's native methods.
+- **HoverCard now ships the native hover-card stack as an enhancement
+  layer.** The card panel is a `popover="hint"` popover and the trigger
+  carries `interestfor`, so engines with the Popover and Interest Invokers
+  APIs render it in the top layer on hover — escaping every
+  `overflow: hidden`/z-index ancestor — while the shared positioning script
+  anchors it to the trigger with viewport clamping and edge flipping. The
+  attributes are inert in older engines, where the original pure-CSS
+  hover/focus path remains the shipped default (a closed popover is
+  `display: none`, so the two paths never fight). The card also drops its
+  wrong `role="tooltip"` (a rich hover card is not a tooltip) in favor of an
+  `aria-details` relation from the trigger.
 - **Accordion panels now animate open and closed.** `details::details-content`
   transitions its block size, gated on `@supports selector(::details-content)`
   so browsers without the pseudo-element keep the native instant toggle, and

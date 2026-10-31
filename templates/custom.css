@@ -67,6 +67,98 @@
 }
 
 /*
+ * --- CSS Anchor Positioning layer (Tooltip + popover panels) ---
+ *
+ * Declarative positioning for engines with CSS anchor positioning
+ * (Baseline-limited; gated on @supports). Older engines keep the shipped
+ * defaults: the tooltip's static position classes and the
+ * tcPopoverPosition JS singleton for [popover] panels.
+ *
+ * Anchor names are SHARED across instances on purpose: an anchored element
+ * resolves position-anchor to the nearest preceding anchor in tree order,
+ * and every bubble/panel renders immediately after its own trigger — so
+ * each one anchors to its own trigger without per-instance names (which
+ * would require inline styles).
+ *
+ * The 8px margin is the gap between anchor and panel; the JS fallback uses
+ * gap = 8 as well. position-try-fallbacks mirror the JS viewport flip
+ * (bottom clips -> try top first, then the inline axis).
+ */
+@supports (anchor-name: --x) {
+  [data-tc-tooltip] {
+    anchor-name: --tc-tooltip-anchor;
+  }
+
+  [data-tc-tooltip] > [role="tooltip"] {
+    position-anchor: --tc-tooltip-anchor;
+    position-area: var(--tc-tooltip-area, top);
+    inset: auto;
+    transform: none;
+    margin: 8px;
+    position-try-fallbacks: flip-block, flip-inline;
+  }
+
+  [data-tc-popover-trigger] {
+    anchor-name: --tc-popover-anchor;
+  }
+
+  [popover][data-tc-anchor] {
+    position-anchor: --tc-popover-anchor;
+    position-area: var(--tc-popover-area, bottom);
+    inset: auto;
+    margin: 8px;
+    position-try-fallbacks: flip-block, flip-inline;
+  }
+
+  [data-tc-position="top"] {
+    --tc-tooltip-area: top;
+    --tc-popover-area: top;
+  }
+
+  [data-tc-position="bottom"] {
+    --tc-tooltip-area: bottom;
+    --tc-popover-area: bottom;
+  }
+
+  [data-tc-position="left"] {
+    --tc-tooltip-area: left;
+    --tc-popover-area: left;
+  }
+
+  [data-tc-position="right"] {
+    --tc-tooltip-area: right;
+    --tc-popover-area: right;
+  }
+
+  [data-tc-position="start"] {
+    --tc-tooltip-area: inline-start;
+    --tc-popover-area: inline-start;
+  }
+
+  [data-tc-position="end"] {
+    --tc-tooltip-area: inline-end;
+    --tc-popover-area: inline-end;
+  }
+
+  /* Alignment variants (JS applies align only on the top/bottom axis). */
+  [data-tc-position="top"][data-tc-align="start"] {
+    --tc-popover-area: top span-inline-end;
+  }
+
+  [data-tc-position="top"][data-tc-align="end"] {
+    --tc-popover-area: top span-inline-start;
+  }
+
+  [data-tc-position="bottom"][data-tc-align="start"] {
+    --tc-popover-area: bottom span-inline-end;
+  }
+
+  [data-tc-position="bottom"][data-tc-align="end"] {
+    --tc-popover-area: bottom span-inline-start;
+  }
+}
+
+/*
  * Native <dialog> overlay system (Modal, Drawer).
  *
  * The <dialog> element gives us: top-layer rendering (no z-index wars),
