@@ -85,7 +85,7 @@
  * (bottom clips -> try top first, then the inline axis).
  */
 @supports (anchor-name: --x) {
-  [data-tc-tooltip] {
+  [data-tc-tooltip-anchor] {
     anchor-name: --tc-tooltip-anchor;
   }
 
