@@ -306,8 +306,8 @@ func popoverPositionJS() string {
 		// custom.css positions every [popover][data-tc-anchor] panel
 		// declaratively (anchor + position-area + position-try fallbacks,
 		// live across scroll/resize). This script stays the fallback for
-		// engines without anchor positioning and exits here on the rest.
-		`if(window.CSS&&CSS.supports&&CSS.supports("anchor-name: --x")){return;}` +
+		// engines without anchor positioning and exits on the rest.
+		`if(!(window.CSS&&CSS.supports&&CSS.supports("anchor-name: --x"))){` +
 		`function tcPositionPopover(p){` +
 		`var aid=p.getAttribute("data-tc-anchor");` +
 		`var t=aid?document.getElementById(aid):null;` +
@@ -366,6 +366,7 @@ func popoverPositionJS() string {
 		`document.addEventListener("scroll",function(){` +
 		`document.querySelectorAll("[popover]:popover-open[data-tc-anchor]").forEach(tcPositionPopover);` +
 		`},true);` +
+		`}` +
 		`}` +
 		"\n"
 }
