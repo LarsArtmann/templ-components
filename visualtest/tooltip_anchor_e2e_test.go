@@ -145,12 +145,19 @@ func TestTooltipAnchorPositioning(t *testing.T) {
 		t.Fatalf("visualtest[tooltip-anchor]: read viewport width: %v", err)
 	}
 
-	// 1. Tooltip clamp: focusing the trigger fires focusin -> the singleton
-	// clamps the (forced-visible) bubble into the viewport.
-	if err := chromedp.Do(ctx,
-		evalVoid(`document.getElementById("tt-edge-btn").focus();`),
-	); err != nil {
-		t.Fatalf("visualtest[tooltip-anchor]: focus edge trigger: %v", err)
+	// 1. Tooltip clamp: a TRUSTED click moves focus to the trigger
+	// (element.focus() does not fire focusin in headless Chrome; clicks
+	// do) -> the singleton clamps the (forced-visible) bubble inside.
+	var edgeTriggerBox overlayBox
+	if err := chromedp.Do(ctx, evalExprInto(
+		`(() => { const r=document.querySelector('#tt-edge-btn').getBoundingClientRect(); return {left:r.left, top:r.top, right:r.right, bottom:r.bottom}; })()`,
+		&edgeTriggerBox,
+	)); err != nil {
+		t.Fatalf("visualtest[tooltip-anchor]: read edge trigger box: %v", err)
+	}
+
+	if err := chromedp.Do(ctx, clickAt(edgeTriggerBox.insideX(), edgeTriggerBox.insideY())); err != nil {
+		t.Fatalf("visualtest[tooltip-anchor]: click edge trigger: %v", err)
 	}
 
 	// The clamp runs on double-rAF after focusin; poll until it settles.

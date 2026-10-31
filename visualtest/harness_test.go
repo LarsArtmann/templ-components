@@ -34,8 +34,11 @@ func TestWaitAnimationsSettled(t *testing.T) {
 
 				// Waits through the registration window (~300ms) since no
 				// animations appear to confirm the element has no transition.
-				assertElapsedUnder(t, "no_animations", elapsed, 500*time.Millisecond,
-					"should return after registration window")
+				// The C04.5 freeze pass (animation:none + two clean poll
+				// passes) adds ~200ms on top; the bound tracks the mechanism,
+				// not a product contract.
+				assertElapsedUnder(t, "no_animations", elapsed, 800*time.Millisecond,
+					"should return after registration window plus freeze polling")
 			},
 		},
 		{
