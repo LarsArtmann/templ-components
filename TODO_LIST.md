@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-10-30 | **Version:** 1.25.1 | **Plan:** [`2026-10-30_15-47 SUPERB TOTAL-BACKLOG PARETO + execution graph`](docs/planning/2026-10-30_15-47_SUPERB-TOTAL-BACKLOG-PARETO-AND-EXECUTION-GRAPH.md)
+**Updated:** 2026-10-31 | **Version:** 1.26.0 | **Plan:** [`2026-10-30_15-47 SUPERB TOTAL-BACKLOG PARETO + execution graph`](docs/planning/2026-10-30_15-47_SUPERB-TOTAL-BACKLOG-PARETO-AND-EXECUTION-GRAPH.md)
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources), ⫱ owner gate (decision/credential).
