@@ -58,7 +58,7 @@ templ feedbackDemo() {
 	</div>
 	@demoSection("LoadingOverlay", "feedback-loading-overlay")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
-		Full-screen overlay for page transitions — pinned to this frame for the demo via a <code>Class</code> override:
+		Static loading region for page transitions — announced politely, page stays reachable — pinned to this frame for the demo via a <code>Class</code> override:
 	</p>
 	<div class="relative h-56 overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
 		@feedback.LoadingOverlay(feedback.LoadingOverlayProps{
@@ -66,6 +66,26 @@ templ feedbackDemo() {
 			Message:      "Loading workspace...",
 			ShowProgress: true,
 			Progress:     62,
+		})
+	</div>
+	@demoSection("LoadingDialog", "feedback-loading-dialog")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+		Modal twin for genuinely blocking operations — native <code>&lt;dialog&gt;</code>: focus trap, inert page, Escape or backdrop click dismisses:
+	</p>
+	<div>
+		<button
+			type="button"
+			class="rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 motion-reduce:transition-none"
+			data-tc-overlay-trigger="demo-loading-dialog"
+		>
+			Show blocking save dialog
+		</button>
+		@display.LoadingDialog(display.LoadingDialogProps{
+			ID:           "demo-loading-dialog",
+			Title:        "Saving workspace",
+			Message:      "Saving workspace...",
+			ShowProgress: true,
+			Progress:     40,
 		})
 	</div>
 	@demoSection("Step Indicator", "feedback-step-indicator")
