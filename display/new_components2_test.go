@@ -40,8 +40,12 @@ func TestHoverCardBasicRender(t *testing.T) {
 		Content: templ.Raw("<p>Card content</p>"),
 	}))
 	utils.AssertContains(t, output, "Card content")
-	utils.AssertContains(t, output, `role="tooltip"`)
-	utils.AssertContains(t, output, `aria-describedby="hc"`)
+	// Rich hover card, not a tooltip: no tooltip role, aria-details relation.
+	utils.AssertNotContains(t, output, `role="tooltip"`)
+	utils.AssertContains(t, output, `aria-details="hc"`)
+	utils.AssertContains(t, output, `popover="hint"`)
+	utils.AssertContains(t, output, `interestfor="hc"`)
+	utils.AssertContains(t, output, `data-tc-anchor="hc-trigger"`)
 }
 
 func TestHoverCardGolden(t *testing.T) {
@@ -74,10 +78,11 @@ func TestHoverCardA11y(t *testing.T) {
 		utils.AssertContains(t, output, `tabindex="0"`)
 	})
 
-	t.Run("card has role tooltip", func(t *testing.T) {
+	t.Run("card has hint popover semantics", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, HoverCard(HoverCardProps{Content: templ.Raw("x")}))
-		utils.AssertContains(t, output, `role="tooltip"`)
+		utils.AssertContains(t, output, `popover="hint"`)
+		utils.AssertNotContains(t, output, `role="tooltip"`)
 	})
 
 	t.Run("dark mode classes present", func(t *testing.T) {
@@ -104,7 +109,7 @@ func TestHoverCardEdgeCases(t *testing.T) {
 	t.Run("nil content renders empty card", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, HoverCard(HoverCardProps{}))
-		utils.AssertContains(t, output, `role="tooltip"`)
+		utils.AssertContains(t, output, `popover="hint"`)
 	})
 
 	t.Run("custom class propagated", func(t *testing.T) {
