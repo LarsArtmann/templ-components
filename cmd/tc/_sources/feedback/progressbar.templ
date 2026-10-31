@@ -50,6 +50,17 @@ templ ProgressBar(props ProgressBarProps) {
 		if props.Total > 0 && clamped > props.Total {
 			clamped = props.Total
 		}
+		// The native <progress> element needs a positive max; a zero or
+		// negative Total falls back to a 100-part scale so the bar still
+		// renders meaningfully.
+		progressMax := props.Total
+		if progressMax <= 0 {
+			progressMax = 100
+		}
+		progressValue := clamped
+		if progressValue > progressMax || props.Total <= 0 {
+			progressValue = 0
+		}
 		// role="progressbar" requires an accessible name (axe aria-progressbar-name).
 		// Fall back to the visible label, then a generic name, so the bare
 		// progress bar never renders unnamed.
@@ -85,15 +96,12 @@ templ ProgressBar(props ProgressBarProps) {
 					aria-label={ progressName }
 				></div>
 			} else {
-				<div
-					class={ "rounded-full transition-all duration-300 ease-out motion-reduce:transition-none", progressHeightClass(props.Size), string(props.Color) }
-					style={ fmt.Sprintf("width: %.0f%%;", percent) }
-					role="progressbar"
+				<progress
+					class={ utils.Class("tc-progress appearance-none block w-full rounded-full transition-all duration-300 ease-out motion-reduce:transition-none", progressHeightClass(props.Size), string(props.Color)) }
+					value={ fmt.Sprintf("%d", progressValue) }
+					max={ fmt.Sprintf("%d", progressMax) }
 					aria-label={ progressName }
-					aria-valuenow={ fmt.Sprintf("%d", clamped) }
-					aria-valuemin="0"
-					aria-valuemax={ fmt.Sprintf("%d", props.Total) }
-				></div>
+				></progress>
 			}
 		</div>
 	</div>

@@ -31,6 +31,8 @@ templ Prose(props ProseProps) {
 	>
 		if props.Children != nil {
 			@props.Children
+		} else {
+			{ children... }
 		}
 	</div>
 }

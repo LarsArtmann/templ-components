@@ -71,6 +71,7 @@ templ Tooltip(props TooltipProps) {
 	<div
 		id={ id }
 		data-tc-tooltip
+		data-tc-position={ string(props.Position) }
 		class={ utils.Class("group relative inline-flex", props.Class) }
 		aria-describedby={ id + "-tooltip" }
 		if props.AriaLabel != "" {

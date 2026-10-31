@@ -16,7 +16,9 @@ func hoverCardPositionClass(pos HoverCardPosition) string {
 
 // HoverCardProps configures a hover-activated card with rich content.
 // The card appears on hover and focus, using pure CSS (no JavaScript).
-// Accessible: the card content is linked to the trigger via aria-describedby.
+// Accessible: the card content is linked to the trigger via aria-details
+// (rich supplementary content — a hover card is not a tooltip, so no
+// role="tooltip").
 // This is the reference implementation for the CSS-only overlay pattern —
 // see ADR-0017 for the broader Popover API migration strategy.
 type HoverCardProps struct {
@@ -32,8 +34,20 @@ func DefaultHoverCardProps() HoverCardProps {
 	}
 }
 
-// HoverCard wraps a trigger element in a hover-activated card with rich content.
-// The card appears on :hover and :focus-within, using pure CSS opacity transitions.
+// HoverCard wraps a trigger element in a hover-activated card with rich
+// content.
+//
+// Base path (every engine): the card appears on :hover and :focus-within
+// via pure CSS opacity transitions, absolutely positioned in the flow.
+//
+// Enhancement path (engines with the Popover + Interest Invokers APIs): the
+// card is a `popover="hint"` panel and the trigger carries `interestfor` —
+// the browser promotes it to the top layer on hover (escaping every
+// overflow/z-index ancestor) and the shared popover-positioning script
+// anchors it to the trigger with viewport clamping and edge flipping. The
+// popover attribute is inert where unsupported, so the two paths never
+// fight: a closed popover is display:none, which overrides the CSS hover
+// visibility entirely.
 //
 //	@display.HoverCard(display.HoverCardProps{Position: display.HoverCardPositionTop}) {
 //	   <button>Hover me</button>
@@ -41,23 +55,28 @@ func DefaultHoverCardProps() HoverCardProps {
 //	@display.HoverCard.HoverCardContent(display.HoverCardProps{Content: ...})
 templ HoverCard(props HoverCardProps) {
 	{{ id := utils.EnsureID("hovercard", props.ID) }}
+	{{ triggerID := id + "-trigger" }}
 	<div
 		class={ utils.Class("relative inline-block", props.Class) }
 		{ props.Attrs... }
 	>
 		<div
+			id={ triggerID }
 			class="peer"
-			aria-describedby={ id }
+			aria-details={ id }
 			tabindex="0"
+			interestfor={ id }
 		>
 			{ children... }
 		</div>
 		<div
 			id={ id }
-			role="tooltip"
+			popover="hint"
+			data-tc-anchor={ triggerID }
+			data-tc-position={ string(props.Position) }
 			class={ utils.Class(
 				hoverCardPositionClass(props.Position),
-				"absolute z-50 w-64 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-lg dark:shadow-black/20 opacity-0 invisible peer-hover:opacity-100 peer-hover:visible peer-focus-within:opacity-100 peer-focus-within:visible transition-opacity motion-reduce:transition-none motion-reduce:duration-0",
+				"w-64 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-lg dark:shadow-black/20 opacity-0 invisible peer-hover:opacity-100 peer-hover:visible peer-focus-within:opacity-100 peer-focus-within:visible transition-opacity motion-reduce:transition-none motion-reduce:duration-0",
 			) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
@@ -68,4 +87,5 @@ templ HoverCard(props HoverCardProps) {
 			}
 		</div>
 	</div>
+	@popoverPositionScriptComponent(props.Nonce)
 }
