@@ -17,27 +17,31 @@ import (
 // Headless Chrome reports (hover: none) — CDP cannot emulate the hover media
 // feature — so Tailwind's @media (hover: hover) gate never opens and the
 // CSS hover-show path stays dark. Real desktop engines show tooltips via
-// that gate; this e2e exists to prove the ANCHOR-POSITIONING layer (C23),
-// so the show/hide path is forced and geometry is asserted instead.
+// that gate; this e2e forces the bubbles visible and asserts the CLAMP and
+// the declarative popover-panel layer instead.
 const tooltipAnchorForceStyle = `<style>[data-tc-tooltip] > [role="tooltip"]{display:block !important}</style>`
 
-// tooltipAnchorE2EPage renders two tooltips: one on a trigger pinned against
-// the RIGHT viewport edge (PositionTop — a base-centered bubble would
-// overflow), one in normal flow (control).
+// tooltipAnchorE2EPage renders: a Tooltip on a trigger pinned against the
+// RIGHT viewport edge (the clamp must pull the bubble back inside), and a
+// Dropdown near the right edge (the CSS anchor layer must keep its open
+// panel inside the viewport).
 func tooltipAnchorE2EPage() templ.Component {
-	tooltipAt := func(id string, wrapperClass string, label string) templ.Component {
-		return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-			if _, err := io.WriteString(w, `<div class="`+wrapperClass+`">`); err != nil {
+	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		edgeTooltip := display.TooltipProps{
+			ID:       "tt-edge",
+			Text:     "Edge tooltip with quite a lot of text that extends far",
+			Position: display.PositionTop,
+		}
+		edgeWrap := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+			if _, err := io.WriteString(w, `<div class="flex justify-end px-1 pt-4">`); err != nil {
 				return err
 			}
-
-			props := display.TooltipProps{ID: id, Text: label, Position: display.PositionTop}
 			inner := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-				_, err := io.WriteString(w, `<button id="`+id+`-btn" type="button" class="rounded border border-gray-400 px-2 py-1">`+label+` trigger</button>`)
+				_, err := io.WriteString(w, `<button id="tt-edge-btn" type="button" class="rounded border border-gray-400 px-2 py-1">Edge trigger</button>`)
 
 				return err
 			})
-			if err := display.Tooltip(props).Render(templ.WithChildren(ctx, inner), w); err != nil {
+			if err := display.Tooltip(edgeTooltip).Render(templ.WithChildren(ctx, inner), w); err != nil {
 				return err
 			}
 
@@ -45,14 +49,30 @@ func tooltipAnchorE2EPage() templ.Component {
 
 			return err
 		})
-	}
-
-	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-		if err := tooltipAt("tt-edge", "flex justify-end px-1 pt-4", "Edge").Render(ctx, w); err != nil {
+		if err := edgeWrap.Render(ctx, w); err != nil {
 			return err
 		}
 
-		return tooltipAt("tt-center", "flex justify-center pt-64", "Center").Render(ctx, w)
+		if _, err := io.WriteString(w, `<div class="flex justify-end px-1 pt-24">`); err != nil {
+			return err
+		}
+		edgeDropdown := display.DropdownProps{
+			ID:       "dd-edge",
+			Label:    "Edge actions",
+			Position: display.DropdownPositionEnd,
+			Items: []display.DropdownItem{
+				{Text: "Rename", Href: "#rename"},
+				{Text: "Duplicate with a fairly long label", Href: "#dup"},
+			},
+		}
+		if err := display.Dropdown(edgeDropdown).Render(ctx, w); err != nil {
+			return err
+		}
+		if _, err := io.WriteString(w, `</div>`); err != nil {
+			return err
+		}
+
+		return nil
 	})
 
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
@@ -93,12 +113,16 @@ func tooltipAnchorE2EServer(t *testing.T) *httptest.Server {
 	return srv
 }
 
-// TestTooltipAnchorPositioning proves the CSS Anchor Positioning layer
-// (templates/custom.css @supports block) keeps tooltips inside the viewport
-// and over their triggers. On anchor-supporting engines the shared JS
-// positioning fallback must stay dormant (tcPositionPopover undefined); on
-// non-supporting engines the assertions degrade to the legacy geometry
-// checks that do not depend on the layer. Serial — shared browser allocator.
+// TestTooltipAnchorPositioning proves the C23 positioning layers:
+//
+//  1. The tooltip viewport clamp (tooltipAriaJS singleton) pulls a bubble
+//     on a right-edge trigger back inside the viewport on focus.
+//  2. On anchor-supporting engines the shared popover JS fallback stays
+//     dormant (tcPositionPopover undefined) and the declarative CSS layer
+//     (templates/custom.css @supports block, implicit anchor via the
+//     invoker) keeps an open Dropdown panel inside the viewport.
+//
+// Serial — shared browser allocator.
 func TestTooltipAnchorPositioning(t *testing.T) {
 	if !browserConfigured() {
 		t.Skip("no browser (set CHROMEDP_CHROME_PATH)")
@@ -116,6 +140,36 @@ func TestTooltipAnchorPositioning(t *testing.T) {
 		t.Fatalf("visualtest[tooltip-anchor]: navigate: %v", err)
 	}
 
+	var vw float64
+	if err := chromedp.Do(ctx, evalExprInto(`window.innerWidth`, &vw)); err != nil {
+		t.Fatalf("visualtest[tooltip-anchor]: read viewport width: %v", err)
+	}
+
+	// 1. Tooltip clamp: focusing the trigger fires focusin -> the singleton
+	// clamps the (forced-visible) bubble into the viewport.
+	if err := chromedp.Do(ctx,
+		evalVoid(`document.getElementById("tt-edge-btn").focus();`),
+	); err != nil {
+		t.Fatalf("visualtest[tooltip-anchor]: focus edge trigger: %v", err)
+	}
+
+	// The clamp runs on double-rAF after focusin; poll until it settles.
+	if err := chromedp.Do(ctx, pollTrue(
+		`(function(){var b=document.querySelector('#tt-edge-tooltip');if(!b)return false;var r=b.getBoundingClientRect();return r.width>0&&r.right<=window.innerWidth+0.5&&r.left>=-0.5;})()`,
+		pollFast()...,
+	)); err != nil {
+		var edge struct {
+			Left, Right float64
+		}
+		_ = chromedp.Do(ctx, evalExprInto(
+			`(function(){var b=document.querySelector('#tt-edge-tooltip');if(!b)return null;var r=b.getBoundingClientRect();return {left:r.left,right:r.right};})()`,
+			&edge,
+		))
+		t.Fatalf("tooltip clamp: edge bubble stayed outside the viewport: left=%.1f right=%.1f vw=%.1f", edge.Left, edge.Right, vw)
+	}
+
+	// 2. Anchor-layer posture: on supporting engines the JS fallback must
+	// be dormant — one positioning brain per engine.
 	var anchorSupported bool
 	if err := chromedp.Do(ctx, evalExprInto(
 		`window.CSS&&CSS.supports&&CSS.supports("anchor-name: --x")`,
@@ -124,42 +178,7 @@ func TestTooltipAnchorPositioning(t *testing.T) {
 		t.Fatalf("visualtest[tooltip-anchor]: probe anchor support: %v", err)
 	}
 
-	tooltipBox := func(id string) overlayBox {
-		t.Helper()
-
-		var box overlayBox
-		if err := chromedp.Do(ctx, evalExprInto(
-			`(() => { const b=document.querySelector('#`+id+`-tooltip'); if(!b) return null; const r=b.getBoundingClientRect(); return {left:r.left, top:r.top, right:r.right, bottom:r.bottom}; })()`,
-			&box,
-		)); err != nil {
-			t.Fatalf("visualtest[tooltip-anchor]: read %s box: %v", id, err)
-		}
-
-		return box
-	}
-
-	triggerBox := func(id string) overlayBox {
-		t.Helper()
-
-		var box overlayBox
-		if err := chromedp.Do(ctx, evalExprInto(
-			`(() => { const r=document.querySelector('#`+id+`-btn').getBoundingClientRect(); return {left:r.left, top:r.top, right:r.right, bottom:r.bottom}; })()`,
-			&box,
-		)); err != nil {
-			t.Fatalf("visualtest[tooltip-anchor]: read %s trigger box: %v", id, err)
-		}
-
-		return box
-	}
-
-	var vw float64
-	if err := chromedp.Do(ctx, evalExprInto(`window.innerWidth`, &vw)); err != nil {
-		t.Fatalf("visualtest[tooltip-anchor]: read viewport width: %v", err)
-	}
-
 	if anchorSupported {
-		// The JS fallback must NOT have attached its positioning machinery
-		// when the CSS layer is active — one positioning brain per engine.
 		var jsFallbackAttached bool
 		if err := chromedp.Do(ctx, evalExprInto(
 			`typeof window.tcPositionPopover==="function"`,
@@ -171,37 +190,35 @@ func TestTooltipAnchorPositioning(t *testing.T) {
 		if jsFallbackAttached {
 			t.Error("anchor layer active but the JS positioning fallback attached anyway")
 		}
-	}
 
-	edge := tooltipBox("tt-edge")
-	if edge.Right == 0 && edge.Left == 0 {
-		t.Fatal("visualtest[tooltip-anchor]: edge bubble not rendered")
-	}
-
-	if anchorSupported {
-		if edge.Right > vw+0.5 {
-			t.Errorf("anchor layer: edge tooltip overflows right: right=%.1f vw=%.1f", edge.Right, vw)
+		// Open the edge dropdown (real click on the popovertarget button).
+		if err := chromedp.Do(ctx,
+			chromedp.WaitVisible(chromedp.CSS("#dd-edge-button")),
+			chromedp.Click(chromedp.CSS("#dd-edge-button")),
+		); err != nil {
+			t.Fatalf("visualtest[tooltip-anchor]: open edge dropdown: %v", err)
 		}
 
-		if edge.Left < -0.5 {
-			t.Errorf("anchor layer: edge tooltip overflows left: left=%.1f", edge.Left)
+		var panelBox struct {
+			Left, Right float64
+		}
+		if err := chromedp.Do(ctx, evalExprInto(
+			`(function(){var p=document.getElementById('dd-edge-menu');if(!p||!p.matches(':popover-open'))return null;var r=p.getBoundingClientRect();return {left:r.left,right:r.right};})()`,
+			&panelBox,
+		)); err != nil {
+			t.Fatalf("visualtest[tooltip-anchor]: decode dropdown panel: %v", err)
 		}
 
-		edgeTrigger := triggerBox("tt-edge")
-		if edge.Bottom > edgeTrigger.Top+0.5 {
-			t.Errorf("anchor layer: PositionTop tooltip sits below its trigger: bubbleBottom=%.1f triggerTop=%.1f", edge.Bottom, edgeTrigger.Top)
+		if panelBox.Left == 0 && panelBox.Right == 0 {
+			t.Fatal("visualtest[tooltip-anchor]: dropdown panel not open")
 		}
-	}
 
-	center := tooltipBox("tt-center")
-	centerTrigger := triggerBox("tt-center")
+		if panelBox.Right > vw+0.5 {
+			t.Errorf("anchor layer: dropdown panel overflows right: right=%.1f vw=%.1f", panelBox.Right, vw)
+		}
 
-	if center.Left < -0.5 || center.Right > vw+0.5 {
-		t.Errorf("center tooltip overflows viewport: left=%.1f right=%.1f vw=%.1f", center.Left, center.Right, vw)
-	}
-
-	centerDelta := (center.Left+center.Right)/2 - (centerTrigger.Left+centerTrigger.Right)/2
-	if centerDelta < -24 || centerDelta > 24 {
-		t.Errorf("center tooltip not over its trigger: bubble center off by %.1fpx", centerDelta)
+		if panelBox.Left < -0.5 {
+			t.Errorf("anchor layer: dropdown panel overflows left: left=%.1f", panelBox.Left)
+		}
 	}
 }

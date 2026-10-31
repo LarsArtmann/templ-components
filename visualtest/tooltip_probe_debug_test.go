@@ -21,10 +21,24 @@ func TestTooltipProbeDebug(t *testing.T) {
 
 	var diag string
 	if err := chromedp.Do(ctx, evalExprInto(
-		`(function(){var b=document.querySelector("#tt-center-tooltip");var a=document.querySelector("[data-tc-tooltip-anchor]");var btn=document.querySelector("#tt-center-btn");var cs=getComputedStyle(b);var r=b.getBoundingClientRect();var ra=a.getBoundingClientRect();var rb=btn.getBoundingClientRect();return JSON.stringify({bLeft:r.left,bRight:r.right,bW:r.width,aLeft:ra.left,aW:ra.width,btnLeft:rb.left,btnW:rb.width,left:cs.left,transform:cs.transform,area:cs.positionArea,margin:cs.margin,justify:cs.justifySelf})})()`,
+		`(function(){var attached=typeof window.tcTooltipAriaAttached;var b=document.querySelector("#tt-edge-tooltip");var r=b.getBoundingClientRect();b.style.marginLeft="";var r2=b.getBoundingClientRect();return JSON.stringify({attached:attached,w0:r.width,left0:r.left,right0:r.right,left1:r2.left,right1:r2.right,focusTest:(function(){document.getElementById("tt-edge-btn").focus();return "fired"})()})})()`,
 		&diag,
 	)); err != nil {
 		t.Fatalf("diag: %v", err)
 	}
 	t.Logf("diag: %s", diag)
+
+	if err := chromedp.Do(ctx, pollTrue(
+		`(function(){var b=document.querySelector("#tt-edge-tooltip");var r=b.getBoundingClientRect();return r.right<=window.innerWidth-8;})()`,
+		pollFast()...,
+	)); err != nil {
+		var late string
+		_ = chromedp.Do(ctx, evalExprInto(
+			`(function(){var b=document.querySelector("#tt-edge-tooltip");return JSON.stringify({right:b.getBoundingClientRect().right,ml:b.style.marginLeft,active:document.activeElement&&document.activeElement.id})})()`,
+			&late,
+		))
+		t.Logf("late: %s", late)
+		t.Fatalf("clamp never applied after focus")
+	}
+	t.Logf("clamp applied after focus")
 }
