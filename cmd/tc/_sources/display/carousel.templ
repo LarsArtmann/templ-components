@@ -56,7 +56,7 @@ templ Carousel(props CarouselProps) {
 		data-tc-carousel={ id }
 		role="region"
 		aria-roledescription="carousel"
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Carousel") }
+		aria-label={ utils.Coalesce(props.AriaLabel, "Carousel") }
 		tabindex="0"
 		{ props.Attrs... }
 	>

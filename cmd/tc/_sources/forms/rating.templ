@@ -87,7 +87,7 @@ templ Rating(props RatingProps) {
 				id={ props.ID }
 			}
 			role={ utils.Ternary(props.ReadOnly, "img", "radiogroup") }
-			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, "Rating")) }
+			aria-label={ utils.Coalesce(props.AriaLabel, props.Label, "Rating") }
 			if props.Required && !props.ReadOnly {
 				aria-required="true"
 			}

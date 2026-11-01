@@ -42,7 +42,7 @@ templ ErrorPage(props ErrorPageProps) {
 									href={ templ.SafeURL(wayOutHref) }
 									class={ errorActionClassScaffold + "shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 								>
-									@actionLinkBody(utils.Ternary(wayOutText != "", wayOutText, "Go back"))
+									@actionLinkBody(utils.Coalesce(wayOutText, "Go back"))
 								</a>
 							} else if wayOutText != "" {
 								<button

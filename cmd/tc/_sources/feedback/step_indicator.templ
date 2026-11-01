@@ -60,7 +60,7 @@ templ StepIndicator(props StepIndicatorProps) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Progress") }
+		aria-label={ utils.Coalesce(props.AriaLabel, "Progress") }
 		class={ utils.Class("", props.Class) }
 		{ props.Attrs... }
 	>

@@ -184,7 +184,7 @@ templ Pagination(props PaginationProps) {
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Pagination") }
+			aria-label={ utils.Coalesce(props.AriaLabel, "Pagination") }
 			class={ utils.Class("flex items-center justify-between", props.Class),
 				templ.KV("@container", props.ContainerAware) }
 			{ props.Attrs... }

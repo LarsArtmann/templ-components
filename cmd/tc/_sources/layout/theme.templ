@@ -58,7 +58,7 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 		data-theme-toggle
 		role="switch"
 		aria-checked="false"
-		aria-label={ utils.Ternary(ariaLabel != "", ariaLabel, "Toggle theme") }
+		aria-label={ utils.Coalesce(ariaLabel, "Toggle theme") }
 	>
 		@icons.Icon(icons.Moon, "h-5 w-5 dark:hidden")
 		@icons.Icon(icons.Sun, "hidden h-5 w-5 dark:block")

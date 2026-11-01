@@ -134,7 +134,7 @@ templ Breadcrumbs(props BreadcrumbsProps) {
 			id={ props.ID }
 		}
 		class={ utils.Class("flex", props.Class) }
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Breadcrumb") }
+		aria-label={ utils.Coalesce(props.AriaLabel, "Breadcrumb") }
 		{ props.Attrs... }
 	>
 		<ol class="inline-flex items-center space-x-1 md:space-x-3">

@@ -104,7 +104,7 @@ templ FilterDropdown(props FilterDropdownProps) {
 	{{ wired := wireHosted(props.Wire, wire.EventChange) }}
 	{{ isWired := props.Wire != nil && props.Wire.URL != "" }}
 	{{ props.ID = fieldID(props.ID, props.Name) }}
-	{{ selectName := utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, filterDropdownFallbackName)) }}
+	{{ selectName := utils.Coalesce(props.AriaLabel, props.Label, filterDropdownFallbackName) }}
 	<div class={ utils.Class("inline-flex flex-col", props.Class) } { props.Attrs... }>
 		if isWired {
 			<form
@@ -155,7 +155,7 @@ templ FilterDropdown(props FilterDropdownProps) {
 				class={ filterDropdownInputClass() }
 				hx-get={ templ.SafeURL(props.HxGet) }
 				hx-target={ props.HxTarget }
-				hx-trigger={ utils.Ternary(props.HxTrigger != "", props.HxTrigger, "change") }
+				hx-trigger={ utils.Coalesce(props.HxTrigger, "change") }
 				if props.HxSwap != "" {
 					hx-swap={ props.HxSwap }
 				}

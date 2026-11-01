@@ -1,0 +1,109 @@
+# Status Report — Five-Skill Architecture Audit Session
+
+**Date:** 2026-11-02 00:18 · **Session scope:** architecture-review + architecture-visualization + data-model-review + go-modularize + go-error-modernization, run end-to-end in templ-components @ master (v1.26.0 + 7 daemon commits)
+**Single-writer scope claimed:** `docs/architecture-understanding/*`, `docs/reviews/*`, `docs/modularization/*`, error-modernization code edits, TODO rows. Sibling sessions' files untouched.
+
+---
+
+## a) FULLY DONE
+
+Every item below is verifiable on disk / in git history (daemon swept the work into commits `65f9af1a`, `ec70951f`, `bcf63ce1`, `a42ae953`, `0f89d2a1`; content re-verified in HEAD after each daemon commit).
+
+| # | Done | Evidence |
+| - | ---- | -------- |
+| A1 | **erraudit modernization sweep, all 9 modules:** `fix` dry-run (0 `errors.As` to migrate) + `lint --type-aware` (0 Go findings — repo already fully on `errors.AsType`). Error checklist satisfied: no `interface{ Is(error) bool }`, no sentinel regressions, no suppressions needed. | Shell transcripts this session; `erraudit lint` exits clean on root + website after fixes |
+| A2 | **3 empty `catch` blocks documented** (erraudit's prescribed remedy for deliberate no-ops): `tools/crossbrowser-spike/aria-snapshots.mjs`, `tools/crossbrowser-spike/stylable-assert.mjs`, `website/assets/js/theme-sync.js` — all Safari-private-mode localStorage guards. | `rg 'localStorage unavailable'` ×3; `node --check` ×3 OK; website `go test ./...` green |
+| A3 | **Adjacent cleanup:** unused `names` param removed from `stylable-assert.mjs` `probe()` (vtsls hint in a file I touched). | `node --check` OK; commit `a42ae953` |
+| A4 | **Real dependency bug found + fixed:** `errorpage/go.mod` pinned `go-error-family v0.11.0` while root/visualtest/website sat at v0.12.0 (daemon tidy moved indirect pins 2026-10-18; Dependabot's fix branch died carrying the unwanted templ bump; workspace MVS masked the skew). Bumped per `docs/external-dependency-bumps.md`: source-verified **zero exported-API delta** (sole change: nil-receiver-safe `Unwrap`), tidy, no v0.11 pins remain. | `errorpage` + `integration` tests green post-bump; `scripts/check-replace-directives.sh` OK; CHANGELOG `[Unreleased]` entry in HEAD |
+| A5 | **go-modularize assessment:** Phase 0 Unix gates 9/9 modules PASS (pipe-test consumers named in code, not hypotheticals); Phase 1 state table; Phase 1.5 scores; 12/12 failure-mode audit; verdict **Keep all boundaries** (ADR-0034/0039/0040 re-affirmed, not re-litigated). | `docs/modularization/2026-11-01_ASSESSMENT.html` — structure-validated (anchors, tags, links resolve) |
+| A6 | **D2 diagrams:** current + improved, rendered exit 0 → SVG. Improved state is honestly near-identical (remaining deltas: v2 tone collapse, templ migration window). | `docs/architecture-understanding/2026-11-01_23-54-architecture-{current,improved}.{d2,svg}` |
+| A7 | **Scored architecture review:** 7 rubric dimensions with evidence, composite **4.4/5 Good**; verified every 2026-05-19 finding resolved (htmx→feedback JS coupling gone, AlertType≡ToastType removed via ADR-0022, script fragmentation replaced by `utils.ScriptComponent`); 5-step P2/P3 roadmap. | `docs/architecture-understanding/2026-11-01_23-54_architecture-review.html` — structure-validated |
+| A8 | **Data-model review:** P1–P12 catalog with source census (60 typed enums, 90 IsValid guards in 39 files, ~0 pointer props, 1 sanctioned stringly boundary), series cross-refs to 2026-07-18 + 2026-10-15 reviews, v2 design (tone collapse, conditional Nonce branding), decision log, anti-patterns. | `docs/reviews/2026-11-01_data-model-review.html` — structure-validated |
+| A9 | **Harvest + bookkeeping:** TODO rows #995 (pin-surface guard), #996 (count-table codegen); CHANGELOG `[Unreleased]` warmed (Fixed + Changed entries). Both verified present in HEAD (`0f89d2a1`). | `git show HEAD:TODO_LIST.md` / `:CHANGELOG.md` |
+| A10 | **Verification battery:** workspace `go build ./...` OK; `GOWORK=off` per-module loop green (all 6 sub-modules + root + visualtest compile); `utils`/`feedback`/`errorpage`/`integration` tests green with `-count=1`; website tests green; JS syntax OK; DAG re-derived from `go list` matches docs exactly. | Session transcripts |
+
+## b) PARTIALLY DONE
+
+| # | Item | What works | What remains | Effort |
+| - | ---- | ---------- | ------------ | ------ |
+| B1 | **Pin-surface drift guard for go-error-family** | The shipped skew (A4) is fixed; failure shape documented in the assessment | Mechanization NOT implemented — TODO #995 (assert errorpage's direct pin == consumers' indirect pins, like go-datastar/static). The skew will recur silently otherwise | S |
+| B2 | **Roadmap harvest** | 2 of 5 arch-review steps harvested (#995, #996); other 3 deliberately not duplicated (already tracked: tone collapse #425/#431, templ window #368/#369, ADR-0040 watch) | The (f) list below is NOT yet harvested — per skill it belongs in TODO_LIST/ROADMAP after your review, else it rots in this file | S |
+| B3 | **Session verification depth** | Targeted tests + build + guards all green | Full `scripts/ci-repro.sh --lint --css --website` NOT run — the ritual is pre-PUSH and nothing was pushed; branch sits `ahead 7` unverified against CI's exact lane set | M (run before next push) |
+| B4 | **erraudit posture** | Ad-hoc audit clean; 3 JS findings fixed | erraudit is wired into NOTHING (no CI lane, no script, no docs) — this session's value decays unless it becomes repeatable (see f3/f4) | M |
+| B5 | **Sibling-session artifacts** | `forms/rating.templ`, `feedback/loading.templ`, `feedback/step_indicator.templ` dirty in tree; their churn caused one transient `TestClassInventoryFreshness` failure during my run | Not mine to verify mid-flight; after their session lands, the inventory test + full root suite need a re-run | S (after they finish) |
+
+## c) NOT STARTED
+
+Nothing from my **session plan** was left unstarted — all five skills ran to their completion conditions. Newly-identified work (not started, by design) lives in (f). For provenance, the standing not-started items this session touched but did not advance:
+
+- **v2 tone collapse** (#425/#431) — blocked on v2 breaking window; Phase 0 equivalence tests already shipped.
+- **templ ≥ v0.3.1100 migration event** (#368/#369 + `ResolveAttributeValue`) — blocked on flake-level generator pin + owner timing (ADR-0039); probe: `scripts/check-templ-gate.sh`.
+- **display extraction** — ADR-0040 trigger-gated; no trigger has fired.
+
+## d) TOTALLY FUCKED UP
+
+Nothing in my delivered changes is broken — but four things deserve radical honesty:
+
+1. **The errorpage pin skew SHIPPED for ~2 weeks (2026-10-18 → 2026-11-01).** Severity: low (API-identical versions, workspace masked it) — but the *class* is dangerous: the daemon's `go mod tidy` bumps indirect pins while the direct consumer stays behind, and NOTHING in CI compares them. Workaround existed (none needed); root cause now documented; mechanization still open (B1). A v0.12.0 with a breaking change would have made standalone errorpage builds fail mysteriously.
+2. **go-error-modernization skill docs are stale vs the installed binary.** `fix` no longer accepts `--type-aware` (rejection hook) and uses `-w`, not `--write`. I hit the error on invocation one and adapted (checked `--help`, adjusted flags), but every future session pays the same tax. Fix lives in the crush-config repo's skill (global fanout), not here.
+3. **My report splice dropped the `.layout` wrapper div in all three HTML reports** — `<main>`/`<aside>` sat unwrapped, silently breaking the sidebar layout. **Caught by my own post-splice structural validator before delivery** and fixed; nothing broken shipped. Root cause: `head -N` cut one line short of the wrapper. 
+4. **Daemon commit provenance pollution:** commit `0f89d2a1` mixes my CHANGELOG/TODO rows with a sibling session's `utils/format/format.go` + classes.txt churn under a generic "auto-commit 15 changed file(s)" message. Unfixable without history rewrite (policy: never). Consequence: `git log` cannot answer "who added the go-error-family fix entry" without reading the diff. Known repo behavior (AGENTS.md), but this session is a concrete instance.
+
+Also honest: **erraudit scanned non-Go files** (`.mjs`/`.js`) and flagged JS catches — surprising behavior for a Go error linter. It produced 3 valid fixes, so I kept them, but I did not verify whether that scan is intended upstream behavior.
+
+## e) WHAT WE SHOULD IMPROVE
+
+1. **Pin-equality checking should be mechanical, not archaeology.** I proved the failure shape (B1): `git log -S` across 4 go.mods + module-cache source diffs to diagnose what a 20-line guard test would catch in CI. Same guard shape already exists for go-datastar/static.
+2. **Formatter check on non-Go edits.** I edited 3 JS files and never ran `nix fmt`/dprint to confirm they're format-clean. Comments-only + trivial param changes are low-risk, but "low-risk" is how formatting drift starts.
+3. **Validate HTML reports with the repo's own gate, not just my python checker.** `scripts/check-html-valid.sh` targets the golden corpus; my 3 reports passed a structural check (tags/anchors/links) but not W3C vnu. My splice bug (d3) was caught by the cheap check — vnu would catch the subtler classes.
+4. **Exit-code capture in piped verification commands.** My `erraudit lint | tail; echo "exit=$?"` printed `tail`'s exit code, not erraudit's — I initially misread it and had to re-derive truth from the output blocks. Use `PIPESTATUS` or run without pipes.
+5. **Daemon-commit hygiene for docs sessions:** my artifacts got generic messages and one mixed-provenance commit. When the harness allows, committing docs separately with a descriptive message keeps history answerable; otherwise at minimum re-verify content after EVERY daemon commit (I did — this is the note to keep doing it).
+6. **erraudit repeatability:** today's clean result is a point-in-time claim. Without a script/CI lane (B4), the next session re-pays the full sweep cost and findings reappear unnoticed.
+7. **"Improved" diagram could go further:** I kept the target state honest (near-identical to current). A third variant visualizing the display-split end-state *contingent on ADR-0040 triggers* would make the v2 decision easier to reason about — cheap to add later (the `.d2` source is committed).
+
+## f) NEXT TASKS (ranked by impact; effort S <30min · M 30min–2hr · L >2hr)
+
+*HARVEST note: items 1–2 are already in TODO_LIST (#995/#996). The rest are brainstorm-grade — route through docs-health HARVEST with rigor; most belong in ROADMAP, not TODO_LIST.*
+
+| # | Task | Impact | Effort | Category |
+| - | ---- | ------ | ------ | -------- |
+| 1 | Implement go-error-family pin-surface drift guard (TODO #995) — assert direct consumer pin == indirect pins across root/visualtest/website | High | S | Quality |
+| 2 | Codegen count-bearing doc tables from code (TODO #996), same source as website `build.CountStats` | Medium | M | Quality |
+| 3 | Script the erraudit sweep (`scripts/erraudit-sweep.sh`: fix dry-run + lint `--type-aware` per module) so the audit is one command | Medium | S | Quality |
+| 4 | Decide erraudit CI posture: fold into lint job per-module vs keep periodic; if in, gate on `lint --type-aware` only (never `--max` as a gate) | Medium | S | Decision |
+| 5 | Verify erraudit's non-Go (.mjs/.js) scanning is intended upstream; if not, file issue via verify-before-filing + github-voice | Low | S | Upstream |
+| 6 | Run `nix fmt` and confirm my 3 JS edits are dprint-clean | Low | S | Cleanup |
+| 7 | Run `nix shell nixpkgs#html5validator -c …` W3C pass over the 3 new HTML reports | Low | S | Quality |
+| 8 | Run `scripts/ci-repro.sh --lint --css --website` at tip before the next push (branch ahead 7) | High | M | Process |
+| 9 | Close/redirect orphaned `dependabot/go_modules/errorpage/minor-and-patch-dc3be6fb51` branch; add templ to dependabot ignore (pin policy makes every templ PR a reject) | Medium | S | Hygiene |
+| 10 | Update go-error-modernization SKILL.md in crush-config repo: `fix` uses `-w`, no `--type-aware`; document non-Go scanning observation | Medium | S | Docs (global) |
+| 11 | Harvest (f) into TODO_LIST/ROADMAP after owner review (this file's §f dies otherwise) | Medium | S | Docs |
+| 12 | docs-health ANNOTATE the 2026-05-19 `.md` review: all findings resolved (link this session's review) | Low | S | Docs |
+| 13 | docs-health ANNOTATE 2026-07-18 modularity review + 2026-07-18/2026-10-15 data-model reviews with resolved/pending cross-links | Low | S | Docs |
+| 14 | Add display-split extraction order (charts → overlays → tables, v2, ADR-0040) to ROADMAP.md so the trigger-fires-day plan exists before it's needed | Medium | S | Docs |
+| 15 | Index the 2026-11-01 assessment from `docs/modularization/README.md` | Low | S | Docs |
+| 16 | `docs/agent-context-history.md`: append the errorpage-skew incident (daemon tidy moves indirect pins, Dependabot branch abandonment) per the M18 provenance pattern | Medium | S | Docs |
+| 17 | One-off erraudit `--max` disposition sweep (generic_return audit posture documented per module, per skill guidance) | Low | S | Quality |
+| 18 | Evaluate `erraudit lsp` subcommand for editor integration (noticed during `--help`) | Low | S | Tooling |
+| 19 | D2 third variant: display-split end-state (contingent diagram, ADR-0040 triggers annotated) | Low | S | Docs |
+| 20 | After sibling session lands rating/loading/step_indicator: re-run `TestClassInventoryFreshness` + full root suite with `-count=1` | High | S | Quality |
+| 21 | Add `go work sync` + `go.work.sum` freshness check to the dep-bump checklist in `docs/external-dependency-bumps.md` | Low | S | Docs |
+| 22 | Document the 3 documented-ignore `catch` pattern as house style for build/website JS (so the next erraudit pass doesn't re-litigate) | Low | S | Docs |
+| 23 | Release cut when ready: `[Unreleased]` is warm (dep fix + artifacts); release.sh picks it up — remember per-module templ generation from module dirs | Medium | M | Release |
+| 24 | `nix run .#visual` next browser-env window (not skipped for cause: no component changes this session; suite unexercised since sibling churn) | Medium | M | Quality |
+| 25 | Templ migration window: draft the flake-level generator-pin plan (ONE re-baseline event: #368 + #369 + ResolveAttributeValue) so the owner-timing decision has a plan attached | High | L | Feature (blocked on owner timing) |
+| 26 | v2 tone collapse prep: turn the Phase 0 equivalence tests into the alias-removal checklist (#425/#431) | Medium | M | Feature (v2) |
+| 27 | ADR-0040 trigger dashboard: tiny script printing display component count + afferent imports, so "no trigger fired" stays a checked claim | Low | S | Tooling |
+| 28 | Consider generalizing the pin-equality guard to ALL cross-module deps (templ, tailwind-merge) in one test — single source of truth for "version train" | Medium | M | Quality |
+| 29 | Skill-fanout improvement: template-splice recipes (the layout-div class of bug) — add a "verify wrapper tags after splice" step to html-report-kit docs | Low | S | Docs (global) |
+| 30 | Pipeline-exit-code discipline: house rule for verification commands (`set -o pipefail` / `PIPESTATUS`) — bit me once this session | Low | S | Process |
+
+## g) QUESTIONS I CANNOT ANSWER MYSELF
+
+1. **Dependency-bot posture:** should I close the orphaned dependabot branch and configure dependabot to ignore templ (+ go-error-family?) groups so PRs stop colliding with the pin policy — or do you prefer reviewing each one manually and just want the branch deleted? (I can't close remote branches or edit GitHub bot config without your approval.)
+2. **erraudit as a CI gate:** do you want `erraudit lint ./... --type-aware` as a per-module CI lane (a few seconds per module, one more job), or should it stay a periodic manual audit? This decides whether today's clean state stays enforced or decays.
+3. **v2 timing:** the templ ≥ v0.3.1100 migration is the only High-impact item fully blocked on you — do you want the flake generator-pin plan drafted now (item 25) so the ONE re-baseline event is ready to fire, or is v2 planning deliberately parked until after the current wave?
+
+---
+
+*Point-in-time snapshot. §f is the HARVEST input — do not let it rot here. Wait state: instructions requested, nothing pushed, branch `ahead 7` unverified against the CI lane set.*
