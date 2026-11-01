@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Report Title</title>
+    <title>Module Boundary Assessment — templ-components</title>
     <style>
       /* =========================================================================
          BAUHAUS LIGHT — Editorial template
@@ -850,221 +850,247 @@
   <body>
     <!-- Full-bleed top bar (optional — remove for quieter reports) -->
     <div class="top-bar">
-      <span>REPORT TYPE</span>
-      <span>YYYY-MM-DD</span>
-      <span>AUTHOR / TEAM</span>
+      <span>GO MODULARIZE</span>
+      <span>2026-11-01</span>
+      <span>templ-components &middot; v1.26.0</span>
     </div>
 
-    <div class="layout">
-      <!-- Sidebar TOC (hidden below 1024px; use inline .toc if you prefer) -->
+      <!-- Sidebar TOC -->
       <aside class="sidebar" data-nav>
         <nav>
           <div class="label">Contents</div>
-          <a href="#summary">Summary</a>
-          <a href="#scorecard">Scorecard</a>
-          <a href="#strengths">Strengths</a>
-          <a href="#findings">Findings</a>
-          <a href="#proposal">Proposal</a>
-          <a href="#appendix">Appendix</a>
+          <a href="#summary">Verdict</a>
+          <a href="#state">Module state</a>
+          <a href="#gates">Unix gates</a>
+          <a href="#scores">Boundary scores</a>
+          <a href="#hygiene">Hygiene findings</a>
+          <a href="#failuremodes">Failure-mode audit</a>
+          <a href="#reflection">Reflection</a>
         </nav>
       </aside>
 
-      <!-- Main content -->
       <main class="main">
-        <!-- Hero -->
         <header class="hero">
-          <!-- Optional Bauhaus signature: geometric shape cluster. Remove for quieter hero. -->
           <div class="hero-shapes">
             <div class="bar"></div>
             <div class="circle"></div>
             <div class="square"></div>
             <div class="tri"></div>
           </div>
-          <div class="eyebrow">REPORT TYPE &middot; YYYY-MM-DD</div>
-          <h1>Report Title</h1>
+          <div class="eyebrow">GO MODULARIZE &middot; PHASE 0&ndash;7 ASSESSMENT &middot; 2026-11-01</div>
+          <h1>Module Boundary Assessment</h1>
           <p class="subtitle">
-            One or two sentences that set the frame: who this is for, what was
-            reviewed, and what the reader will take away.
+            The seven-module workspace re-examined with the Unix gate: every
+            boundary passes, zero re-modularization is justified, and one
+            dependency-pin drift was found and fixed during the audit.
           </p>
           <div class="meta">
-            <span class="tag amber">Scope: example</span>
-            <span class="tag">Version: 1.0.0</span>
-            <span class="tag teal">Status: draft</span>
+            <span class="tag amber">Scope: 9 go.mod files</span>
+            <span class="tag">v1.26.0</span>
+            <span class="tag teal">Verdict: Keep all boundaries</span>
           </div>
         </header>
 
-        <!-- Scorecard -->
-        <section id="scorecard" class="scorecard">
-          <div class="score-card score-good">
-            <div class="score">8</div>
-            <div class="label">Items passing</div>
-          </div>
-          <div class="score-card score-warn">
-            <div class="score">3</div>
-            <div class="label">Warnings</div>
-          </div>
-          <div class="score-card score-bad">
-            <div class="score">1</div>
-            <div class="label">Blockers</div>
-          </div>
-          <div class="score-card">
-            <div class="score">12</div>
-            <div class="label">Total reviewed</div>
-          </div>
-        </section>
-
-        <!-- Summary -->
         <section id="summary">
-          <h2><span class="num">00</span>Summary</h2>
+          <h2><span class="num">00</span>Verdict</h2>
           <p>
-            Replace this with the bottom-line verdict. A good summary tells the
-            reader whether the subject is ready, what the biggest risk is, and
-            what one action would unlock the most value.
+            templ-components is in the "already split" state the go-modularize
+            workflow treats as the happy path: a clean compile-enforced DAG of
+            seven published modules plus two repo-local modules, every module
+            green under <code>GOWORK=off</code>, replace directives
+            machine-guarded, and one lockstep version train. All five Unix
+            gates pass for every existing boundary. The direction-neutral
+            verdict is <strong>Keep</strong> for all nine modules &mdash; no
+            merge, no split, no reorganize.
           </p>
-          <div class="callout callout-amber">
-            <strong>The bottom line</strong>
-            State the verdict plainly. If the report is blocking, say so. If
-            it's mostly positive, lead with that.
-          </div>
-        </section>
-
-        <!-- Strengths -->
-        <section id="strengths">
-          <h2><span class="num">&#9670;</span>What's already excellent</h2>
-          <p>
-            Before the criticism: acknowledge what works. This builds trust and
-            keeps the report from reading like a pure complaint list.
-          </p>
-
-          <div class="strengths">
-            <div class="strength">
-              <div class="check">+</div>
-              <div class="text">
-                <strong>Specific strength one</strong>
-                <span>Explain why it matters and what it enables.</span>
-              </div>
-            </div>
-            <div class="strength">
-              <div class="check">+</div>
-              <div class="text">
-                <strong>Specific strength two</strong>
-                <span
-                  >Reference files, metrics, or patterns where possible.</span
-                >
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Findings -->
-        <section id="findings">
-          <h2><span class="num">01</span>Findings</h2>
-          <p>These are the issues that need attention, ordered by impact.</p>
-
-          <!-- Issue 1 -->
-          <div class="issue issue-critical" id="issue-1">
-            <span class="severity severity-critical"
-              >Blocking &middot; High impact</span
-            >
-            <h3>Critical issue title</h3>
-            <div class="where">
-              path/to/file.go:42-58 &middot; short context
-            </div>
-            <p>
-              Describe the problem, cite the code or behavior, and explain why
-              it matters to the reader's goals.
-            </p>
-            <pre><code>// Example of the problematic pattern
-func BadExample() {}</code></pre>
-            <div class="callout callout-teal">
-              <strong>Fix: recommended action</strong>
-              State the concrete fix, including file names, function names, or
-              configuration changes.
-            </div>
-          </div>
-
-          <!-- Issue 2 -->
-          <div class="issue issue-important" id="issue-2">
-            <span class="severity severity-important"
-              >Important &middot; Medium impact</span
-            >
-            <h3>Important issue title</h3>
-            <div class="where">path/to/another.go:12-19</div>
-            <p>
-              Explain the risk. Important issues are not blockers but would make
-              a careful reviewer hesitate before shipping.
-            </p>
-          </div>
-
-          <!-- Issue 3 -->
-          <div class="issue issue-nice" id="issue-3">
-            <span class="severity severity-nice"
-              >Nice to have &middot; Low impact</span
-            >
-            <h3>Nice-to-have improvement</h3>
-            <div class="where">docs/ or config</div>
-            <p>
-              Minor polish, documentation gaps, or future-proofing suggestions
-              go here.
-            </p>
-          </div>
-        </section>
-
-        <!-- Proposal -->
-        <section id="proposal">
-          <h2><span class="num">02</span>What the solution could look like</h2>
-          <p>
-            If the findings were fixed, what would the new state be? Show the
-            target API, structure, or workflow.
-          </p>
-          <pre><code>// Target state after the recommended changes
-type BetterAPI struct {
-    Field string
-}</code></pre>
           <div class="callout callout-teal">
-            <strong>This is the target</strong>
-            Summarize why this state is better and what it unlocks.
+            <strong>One real finding, fixed in this audit</strong>
+            <code>errorpage/go.mod</code> pinned <code>go-error-family
+            v0.11.0</code> while root, visualtest, and website had drifted to
+            v0.12.0 (a daemon <code>go mod tidy</code> bumped the consumers
+            but not the direct consumer). Re-aligned to v0.12.0 after
+            source-level verification: zero exported-API delta between the
+            versions; the only change is a nil-receiver-safe
+            <code>(*Error).Unwrap</code>. Errorpage build + tests green on the
+            new pin.
           </div>
+          <p>
+            ADR-0034 (module split rationale), ADR-0039 (v2 timing), and
+            ADR-0040 (component-level extraction is trigger-gated NO) were
+            re-checked against current evidence and stand unchanged. This
+            assessment does not re-litigate them.
+          </p>
         </section>
 
-        <!-- Appendix -->
-        <section id="appendix">
-          <h2><span class="num">03</span>Appendix</h2>
-          <p>
-            Methodology, links to related files, or a priority matrix can live
-            here.
-          </p>
-          <table class="compare">
+        <section id="state">
+          <h2><span class="num">01</span>Module state (Phase 1)</h2>
+          <table>
             <thead>
-              <tr>
-                <th>Issue</th>
-                <th>Severity</th>
-                <th>Effort</th>
-                <th>Status</th>
-              </tr>
+              <tr><th>Module</th><th>Internal deps</th><th>Key external deps</th><th>Replaces</th><th>State</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Issue one</td>
-                <td class="no">Critical</td>
-                <td>Low</td>
-                <td class="no">Open</td>
-              </tr>
-              <tr>
-                <td>Issue two</td>
-                <td class="no">Important</td>
-                <td>Medium</td>
-                <td class="yes">In progress</td>
-              </tr>
+              <tr><td><strong>utils</strong> (leaf)</td><td>&mdash;</td><td>templ, tailwind-merge-go</td><td>&mdash;</td><td class="yes">Clean</td></tr>
+              <tr><td><strong>icons</strong></td><td>utils</td><td>templ</td><td>utils</td><td class="yes">Clean</td></tr>
+              <tr><td><strong>charts/echarts</strong></td><td>utils</td><td>templ</td><td>utils</td><td class="yes">Clean</td></tr>
+              <tr><td><strong>htmx</strong></td><td>utils</td><td>templ</td><td>utils</td><td class="yes">Clean</td></tr>
+              <tr><td><strong>datastar</strong></td><td>utils</td><td>templ, go-datastar/static</td><td>utils</td><td class="yes">Clean</td></tr>
+              <tr><td><strong>errorpage</strong></td><td>icons, utils</td><td>templ, go-error-family</td><td>utils, icons</td><td class="yes">Clean (pin aligned this audit)</td></tr>
+              <tr><td><strong>root</strong></td><td>all of the above</td><td>templ, testify</td><td>self + 6 siblings</td><td class="yes">Clean</td></tr>
+              <tr><td><strong>visualtest</strong> (local)</td><td>root + 6 siblings</td><td>templ, chromedp, pixelmatch</td><td>root + 6 siblings</td><td class="yes">Clean (dep-isolation pin policy)</td></tr>
+              <tr><td><strong>website</strong> (local)</td><td>root, errorpage, icons, utils</td><td>templ, chroma, goldmark</td><td>root + 6 siblings</td><td class="yes">Clean</td></tr>
+            </tbody>
+          </table>
+          <p>
+            The DAG was re-derived from <code>go list -deps</code> during this
+            audit and matches the documented layers exactly: utils (L0) &larr;
+            icons / echarts / htmx / datastar (L1) &larr; errorpage (L2) &larr;
+            root (L3). No cycles. Heavy third-party dependencies stay
+            quarantined: chromedp exists only in visualtest, go-error-family
+            only in errorpage, go-datastar only in datastar &mdash; consumers
+            of the root module never inherit them.
+          </p>
+          <p>
+            Current diagrams:
+            <a href="../architecture-understanding/2026-11-01_23-54-architecture-current.svg">current state</a>
+            &middot;
+            <a href="../architecture-understanding/2026-11-01_23-54-architecture-improved.svg">improved state</a>.
+            Scored review companion:
+            <a href="../architecture-understanding/2026-11-01_23-54_architecture-review.html">architecture review, same date</a>.
+          </p>
+        </section>
+
+        <section id="gates">
+          <h2><span class="num">02</span>Unix gates (Phase 0)</h2>
+          <table>
+            <thead>
+              <tr><th>Boundary</th><th>1 Purpose</th><th>2 Pipe test</th><th>3 Direction</th><th>4 Surface</th><th>5 Solo build</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>utils</strong></td><td class="yes">Pass</td><td class="yes">Pass &mdash; imported by every module; adopted standalone for BaseProps/wire</td><td class="yes">Leaf</td><td class="yes">28 exports + focused sub-packages (svg, tone, wire, cdn, golden)</td><td class="yes">Pass</td></tr>
+              <tr><td><strong>icons</strong></td><td class="yes">Pass</td><td class="yes">Pass &mdash; errorpage + root + demo consume it without htmx/datastar</td><td class="yes">&rarr; utils</td><td class="yes">17 exports</td><td class="yes">Pass</td></tr>
+              <tr><td><strong>errorpage</strong></td><td class="yes">Pass</td><td class="yes">Pass &mdash; website imports it without the component packages</td><td class="yes">&rarr; utils, icons</td><td class="yes">45 exports</td><td class="yes">Pass</td></tr>
+              <tr><td><strong>charts/echarts</strong></td><td class="yes">Pass</td><td class="yes">Pass &mdash; opt-in by design (ADR-0031); no Go transitive baggage</td><td class="yes">&rarr; utils</td><td class="yes">9 exports</td><td class="yes">Pass</td></tr>
+              <tr><td><strong>htmx</strong></td><td class="yes">Pass</td><td class="yes">Pass &mdash; Datastar-free pages import only this</td><td class="yes">&rarr; utils</td><td class="yes">21 exports</td><td class="yes">Pass</td></tr>
+              <tr><td><strong>datastar</strong></td><td class="yes">Pass</td><td class="yes">Pass &mdash; htmx-free pages import only this</td><td class="yes">&rarr; utils</td><td class="yes">30 exports</td><td class="yes">Pass</td></tr>
+              <tr><td><strong>root</strong></td><td class="yes">Pass &mdash; the component library itself</td><td class="yes">Pass &mdash; website + external consumers</td><td class="yes">&rarr; all</td><td class="yes">137 components (the product)</td><td class="yes">Pass</td></tr>
+              <tr><td><strong>visualtest</strong></td><td class="yes">Pass</td><td class="yes">Pass &mdash; nix run .#visual + CI</td><td class="yes">&rarr; everything (test-only, unpublished)</td><td class="yes">Internal packages only</td><td class="yes">Pass (compile; runs need browser env)</td></tr>
+              <tr><td><strong>website</strong></td><td class="yes">Pass</td><td class="yes">Pass &mdash; CI deploy</td><td class="yes">&rarr; root, errorpage, icons, utils</td><td class="yes">cmd/site + internal/*</td><td class="yes">Pass</td></tr>
+            </tbody>
+          </table>
+          <p>
+            Gate-2 evidence bar: consumers named above exist in code today
+            (website, visualtest, errorpage, demo), and the library is
+            proxy-published (v1.26.0) with external adopters. No boundary
+            relies on "someone might someday".
+          </p>
+        </section>
+
+        <section id="scores">
+          <h2><span class="num">03</span>Boundary scores (Phase 1.5)</h2>
+          <table>
+            <thead>
+              <tr><th>Module</th><th>Cohesion</th><th>Coupling</th><th>Independence</th><th>Depth</th><th>Composability payoff</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>utils</td><td>5</td><td>5</td><td>Yes</td><td>Right</td><td>Yes</td><td class="yes"><strong>Keep</strong></td></tr>
+              <tr><td>icons</td><td>5</td><td>5</td><td>Yes</td><td>Right</td><td>Yes</td><td class="yes"><strong>Keep</strong></td></tr>
+              <tr><td>errorpage</td><td>5</td><td>4</td><td>Yes</td><td>Right</td><td>Yes</td><td class="yes"><strong>Keep</strong></td></tr>
+              <tr><td>charts/echarts</td><td>5</td><td>5</td><td>Yes</td><td>Right</td><td>Yes (opt-in)</td><td class="yes"><strong>Keep</strong></td></tr>
+              <tr><td>htmx</td><td>5</td><td>5</td><td>Yes</td><td>Right</td><td>Yes</td><td class="yes"><strong>Keep</strong></td></tr>
+              <tr><td>datastar</td><td>5</td><td>5</td><td>Yes</td><td>Right</td><td>Yes</td><td class="yes"><strong>Keep</strong></td></tr>
+              <tr><td>root</td><td>4</td><td>4</td><td>Yes</td><td>display is coarse (53 components, one package) &mdash; split deferred behind ADR-0040 triggers</td><td>Yes</td><td class="yes"><strong>Keep</strong> (extraction trigger-gated)</td></tr>
+              <tr><td>visualtest</td><td>5</td><td>5</td><td>Yes</td><td>Right</td><td>Yes (repo-local)</td><td class="yes"><strong>Keep</strong></td></tr>
+              <tr><td>website</td><td>5</td><td>4</td><td>Yes</td><td>Right</td><td>Yes (repo-local)</td><td class="yes"><strong>Keep</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="callout callout-amber">
+            <strong>The one coarse spot, and why no action</strong>
+            <code>display</code> holds 53 components (~22k source lines) in one
+            package. That is under-modularization by depth &mdash; but the
+            split is a breaking import-path change for every consumer, so
+            ADR-0039/0040 time it to v2 and gate it on real triggers (T1
+            unique dependency, T2 consumer demand, T3 its own build pipeline).
+            No trigger has fired. Internal mitigation today: domain-cluster
+            file naming (<code>chart_geometry.go</code>,
+            <code>shared.go</code>) and the accepted-clones baseline
+            (ADR-0009).
+          </div>
+        </section>
+
+        <section id="hygiene">
+          <h2><span class="num">04</span>Hygiene findings (Phases 1.3, 2.6)</h2>
+          <h3>H1 &mdash; go-error-family pin skew (found + fixed)</h3>
+          <p>
+            <code>errorpage/go.mod</code> (the direct consumer) required
+            <code>go-error-family v0.11.0</code> while root, visualtest, and
+            website carried <code>v0.12.0</code>. Provenance: the daemon's
+            <code>go mod tidy</code> bumped the indirect consumers
+            (2026-10-18) but nothing touched the direct require; Dependabot's
+            proper fix branch also carried the unwanted templ v0.3.1100 bump
+            and was abandoned. Workspace MVS masked the skew in dev; only a
+            <code>GOWORK=off</code> build of errorpage used v0.11.0.
+          </p>
+          <p>
+            <strong>Fix, per docs/external-dependency-bumps.md:</strong>
+            source-verified both versions (zero exported-API delta; v0.12.0
+            adds only a nil-receiver-safe <code>Unwrap</code>), bumped
+            errorpage to v0.12.0, <code>go mod tidy</code>, build + tests
+            green, replace-directive guard still OK, no v0.11.0 pins remain.
+          </p>
+          <h3>H2 &mdash; clean surfaces</h3>
+          <ul>
+            <li>Test-dep leaks (FM#3): none. testify appears only where tests import it (root, direct) or as correctly-marked indirect.</li>
+            <li>Replace/go.work drift (FM#4): <code>scripts/check-replace-directives.sh</code> green (9 modules, exact sets); go.work lists all 9 modules.</li>
+            <li>Workspace-only testing (FM#12): per-module <code>GOWORK=off go test ./...</code> green for all modules during this audit.</li>
+            <li>Error-type placement (&sect;2.6): the only cross-module error contract lives in errorpage (go-error-family families) &mdash; producer and consumer are the same module pair, contract importable. Correct.</li>
+            <li>Generated-code placement (&sect;2.7): <code>*_templ.go</code> files live beside their sources in the owning module; templ generate runs per-module from module dirs. Correct.</li>
+          </ul>
+        </section>
+
+        <section id="failuremodes">
+          <h2><span class="num">05</span>Failure-mode audit</h2>
+          <table>
+            <thead><tr><th>#</th><th>Failure mode</th><th>Verdict here</th></tr></thead>
+            <tbody>
+              <tr><td>FM#1</td><td>Import cycles</td><td class="yes">None &mdash; DAG re-derived and matches docs</td></tr>
+              <tr><td>FM#2</td><td>Transitive dep bloat</td><td class="yes">Quarantined by module (chromedp, go-datastar, go-error-family)</td></tr>
+              <tr><td>FM#3</td><td>Test dep leaks</td><td class="yes">None found</td></tr>
+              <tr><td>FM#4</td><td>go.work / replace drift</td><td class="yes">Guarded by script + pre-commit + CI</td></tr>
+              <tr><td>FM#5</td><td>Broken consumers</td><td class="yes">Root requires all sub-modules; import paths stable since split</td></tr>
+              <tr><td>FM#6</td><td>internal/ access breakage</td><td class="yes">internal/contract is root-only by design; no cross-module internal imports</td></tr>
+              <tr><td>FM#7</td><td>Error type inaccessibility</td><td class="yes">Contract in errorpage, importable by all consumers</td></tr>
+              <tr><td>FM#8</td><td>Over-modularization</td><td class="yes">No micro-modules; smallest published module (echarts, 9 exports) has a documented opt-in payoff</td></tr>
+              <tr><td>FM#9</td><td>Stale go.work</td><td class="yes">Current; lists all 9 modules</td></tr>
+              <tr><td>FM#10</td><td>Build system breakage</td><td class="yes">flake + CI + release script all module-aware (check-release-tags.sh guards the tag set)</td></tr>
+              <tr><td>FM#11</td><td>Under-modularization</td><td class="no">display package &mdash; documented, trigger-gated (ADR-0040), not actionable now</td></tr>
+              <tr><td>FM#12</td><td>Workspace-only testing</td><td class="yes">GOWORK=off green per module</td></tr>
             </tbody>
           </table>
         </section>
 
-        <!-- Footer -->
+        <section id="reflection">
+          <h2><span class="num">06</span>Final reflection (Phase 7)</h2>
+          <ul>
+            <li><strong>Structure:</strong> the 7+2-module shape mirrors the product's seams (shared kernel, transports, errors, charts, opt-in runtime). One-sentence purpose per module holds.</li>
+            <li><strong>Independence:</strong> every module builds, tests, and releases with the lockstep train; the release script tags root + every published sub-module and a script guards the set.</li>
+            <li><strong>Naming:</strong> module names are domain terms a consumer understands (icons, errorpage, htmx, datastar); <code>utils</code> is the one generic name, but its sub-packages (svg, tone, wire, cdn, golden) carry the specificity.</li>
+            <li><strong>Documentation:</strong> AGENTS.md, ADR-0034/0039/0040, and docs/modularization/README.md agree with the code state verified here.</li>
+            <li><strong>Watch item:</strong> dependabot group-bumps on this repo keep proposing templ bumps the pin policy rejects; the errorpage skew shows the failure shape (indirect pins move, direct pin stays). If it recurs, add go-error-family to the pin-surface drift guard that go-datastar/static already has.</li>
+          </ul>
+          <div class="callout callout-teal">
+            <strong>Next actions harvested</strong>
+            (1) Consider extending the pin-surface drift guard to
+            go-error-family (P3, small). (2) No module changes &mdash; reopen
+            this assessment only when an ADR-0040 trigger fires or v2 planning
+            starts.
+          </div>
+        </section>
+
         <footer class="footer">
           <p>
-            Generated YYYY-MM-DD &middot; Reviewed against version X.Y.Z
-            &middot; All claims verified against source code where noted
+            Generated 2026-11-01 &middot; Reviewed against v1.26.0 &middot;
+            All gate verdicts verified against source, go list output, and
+            per-module GOWORK=off test runs during this audit
           </p>
         </footer>
       </main>

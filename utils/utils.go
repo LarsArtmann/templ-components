@@ -73,6 +73,25 @@ func Ternary[T any](condition bool, a, b T) T {
 	return b
 }
 
+// Coalesce returns the first argument that is not the zero value for its
+// type, or the zero value when every argument is zero. It is the generic
+// form of the library's override-or-default idiom — the
+// `Ternary(x != "", x, fallback)` shape — and reads in precedence order:
+// Coalesce(props.AriaLabel, props.Label, "Commands").
+//
+// Note: like Ternary, all arguments are eagerly evaluated.
+func Coalesce[T comparable](values ...T) T {
+	var zero T
+
+	for _, v := range values {
+		if v != zero {
+			return v
+		}
+	}
+
+	return zero
+}
+
 // Lookup returns the map value for key, or fallback if not found.
 // Replaces the repetitive if-ok-return pattern used across all enum lookups.
 func Lookup[K comparable, V any](m map[K]V, key K, fallback V) V {

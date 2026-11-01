@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Report Title</title>
+    <title>Architecture Review — templ-components</title>
     <style>
       /* =========================================================================
          BAUHAUS LIGHT — Editorial template
@@ -850,221 +850,328 @@
   <body>
     <!-- Full-bleed top bar (optional — remove for quieter reports) -->
     <div class="top-bar">
-      <span>REPORT TYPE</span>
-      <span>YYYY-MM-DD</span>
-      <span>AUTHOR / TEAM</span>
+      <span>ARCHITECTURE REVIEW</span>
+      <span>2026-11-01</span>
+      <span>templ-components &middot; v1.26.0</span>
     </div>
 
-    <div class="layout">
-      <!-- Sidebar TOC (hidden below 1024px; use inline .toc if you prefer) -->
+      <!-- Sidebar TOC -->
       <aside class="sidebar" data-nav>
         <nav>
           <div class="label">Contents</div>
-          <a href="#summary">Summary</a>
-          <a href="#scorecard">Scorecard</a>
-          <a href="#strengths">Strengths</a>
-          <a href="#findings">Findings</a>
-          <a href="#proposal">Proposal</a>
-          <a href="#appendix">Appendix</a>
+          <a href="#summary">Verdict</a>
+          <a href="#structure">Structure</a>
+          <a href="#deps">Dependencies</a>
+          <a href="#domain">Domain alignment</a>
+          <a href="#pain">Pain points</a>
+          <a href="#scores">Scores</a>
+          <a href="#roadmap">Roadmap</a>
         </nav>
       </aside>
 
-      <!-- Main content -->
       <main class="main">
-        <!-- Hero -->
         <header class="hero">
-          <!-- Optional Bauhaus signature: geometric shape cluster. Remove for quieter hero. -->
           <div class="hero-shapes">
             <div class="bar"></div>
             <div class="circle"></div>
             <div class="square"></div>
             <div class="tri"></div>
           </div>
-          <div class="eyebrow">REPORT TYPE &middot; YYYY-MM-DD</div>
-          <h1>Report Title</h1>
+          <div class="eyebrow">ARCHITECTURE REVIEW &middot; 2026-11-01</div>
+          <h1>Scalability, Modularity &amp; Composability</h1>
           <p class="subtitle">
-            One or two sentences that set the frame: who this is for, what was
-            reviewed, and what the reader will take away.
+            Point-in-time structural assessment of the seven-module component
+            library: clean DAG, textbook dependency direction, one
+            documented-decision coarse spot, and a composite score of 4.4/5
+            &mdash; Good, half a point from Excellent.
           </p>
           <div class="meta">
-            <span class="tag amber">Scope: example</span>
-            <span class="tag">Version: 1.0.0</span>
-            <span class="tag teal">Status: draft</span>
+            <span class="tag amber">Scope: full workspace</span>
+            <span class="tag">Version: v1.26.0</span>
+            <span class="tag teal">Series: follow-up to 2026-07-18</span>
           </div>
         </header>
 
-        <!-- Scorecard -->
-        <section id="scorecard" class="scorecard">
+        <section id="summary" class="scorecard">
           <div class="score-card score-good">
-            <div class="score">8</div>
-            <div class="label">Items passing</div>
+            <div class="score">4.4</div>
+            <div class="label">Composite (7 dimensions)</div>
+          </div>
+          <div class="score-card score-good">
+            <div class="score">0</div>
+            <div class="label">Import cycles</div>
+          </div>
+          <div class="score-card score-good">
+            <div class="score">7+2</div>
+            <div class="label">Published + local modules</div>
           </div>
           <div class="score-card score-warn">
-            <div class="score">3</div>
-            <div class="label">Warnings</div>
-          </div>
-          <div class="score-card score-bad">
             <div class="score">1</div>
-            <div class="label">Blockers</div>
-          </div>
-          <div class="score-card">
-            <div class="score">12</div>
-            <div class="label">Total reviewed</div>
+            <div class="label">Coarse boundary (gated)</div>
           </div>
         </section>
 
-        <!-- Summary -->
-        <section id="summary">
-          <h2><span class="num">00</span>Summary</h2>
+        <section id="summary-text">
+          <h2><span class="num">00</span>Verdict</h2>
           <p>
-            Replace this with the bottom-line verdict. A good summary tells the
-            reader whether the subject is ready, what the biggest risk is, and
-            what one action would unlock the most value.
+            The architecture is in the best shape of its series. Every finding
+            from the 2026-05-19 review (B+) that was actionable has since
+            shipped: the <code>htmx &rarr; feedback</code> JS-global coupling
+            is gone (feedback owns its dismiss script; feedback/style sharing
+            lives in <code>feedback/styles.go</code>), the
+            <code>AlertType &equiv; ToastType</code> duplication was removed
+            at v2-planning (ADR-0022, canonical <code>FeedbackType</code>),
+            inline-script fragmentation was replaced by
+            <code>utils.ScriptComponent</code> with nonce omission semantics,
+            and <code>internal/svg</code> was promoted to the
+            cross-module-safe <code>utils/svg</code>. The 2026-07-18
+            modularity review's proposed split has since been executed
+            (ADR-0034) and its boundaries re-verified this week by the
+            companion
+            <a href="../modularization/2026-11-01_ASSESSMENT.html">module boundary assessment</a>.
           </p>
-          <div class="callout callout-amber">
+          <div class="callout callout-teal">
             <strong>The bottom line</strong>
-            State the verdict plainly. If the report is blocking, say so. If
-            it's mostly positive, lead with that.
+            Maintain this architecture. No restructuring is warranted; the
+            roadmap below is consolidation and watch items, not repair.
           </div>
         </section>
 
-        <!-- Strengths -->
-        <section id="strengths">
-          <h2><span class="num">&#9670;</span>What's already excellent</h2>
+        <section id="structure">
+          <h2><span class="num">01</span>Structure</h2>
+          <div class="grid-2">
+            <div>
+              <h3>Published shape</h3>
+              <p>
+                Layered leaf-kernel: <code>utils</code> (L0, zero internal
+                deps) &larr; <code>icons</code>, <code>charts/echarts</code>,
+                <code>htmx</code>, <code>datastar</code> (L1) &larr;
+                <code>errorpage</code> (L2) &larr; root component packages
+                (L3). Two repo-local modules (<code>visualtest</code>,
+                <code>website</code>) sit outside the published surface.
+                Boundaries are compile-enforced by per-module go.mod files,
+                not conventions.
+              </p>
+            </div>
+            <div>
+              <h3>Scale</h3>
+              <p>
+                137 components across 11 packages, 102 icons, 332 HTML
+                goldens. Root module carries ~80k source lines (display alone
+                ~22k); sub-modules are small and focused (utils 3.4k, icons
+                1.6k, errorpage 3.9k, htmx 1.3k, datastar 1.8k, echarts
+                0.4k). Test code roughly equals source at every level.
+              </p>
+            </div>
+          </div>
           <p>
-            Before the criticism: acknowledge what works. This builds trust and
-            keeps the report from reading like a pure complaint list.
+            Current-state diagram:
+            <a href="2026-11-01_23-54-architecture-current.svg">2026-11-01 current state (SVG)</a>
+            &middot; target state:
+            <a href="2026-11-01_23-54-architecture-improved.svg">improved (SVG)</a>.
+            The improved diagram is deliberately almost identical to the
+            current one &mdash; the remaining deltas are the v2 tone
+            consolidation and the templ migration window, both already
+            tracked.
           </p>
+        </section>
 
+        <section id="deps">
+          <h2><span class="num">02</span>Dependency analysis</h2>
+          <table>
+            <thead>
+              <tr><th>Package</th><th>Afferent (importers)</th><th>Efferent (internal)</th><th>Reading</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>utils (+ wire/svg/tone/cdn)</td><td><strong>14 + 5 + 5 + 3 + 2</strong></td><td>0</td><td>Hub at the bottom &mdash; maximally stable, exactly where fan-in belongs</td></tr>
+              <tr><td>icons</td><td>9</td><td>utils</td><td>Stable, leaf-adjacent</td></tr>
+              <tr><td>layout</td><td>3</td><td>utils</td><td>Shell primitives</td></tr>
+              <tr><td>display</td><td>3</td><td>6</td><td>Most efferent package &mdash; the composition surface</td></tr>
+              <tr><td>htmx / errorpage</td><td>2</td><td>1&ndash;3</td><td>Focused transports / errors</td></tr>
+              <tr><td>datastar / echarts</td><td>1</td><td>1</td><td>Opt-in edges</td></tr>
+            </tbody>
+          </table>
+          <ul>
+            <li><strong>Cycles:</strong> none. <code>go build ./...</code> green across the workspace; the go list-derived DAG matches the documented layer table exactly.</li>
+            <li><strong>Instability:</strong> utils has I=0 (maximally stable, bottom of stack); root packages sit high. The stability gradient runs in the right direction.</li>
+            <li><strong>Dependency isolation:</strong> heavy third-party deps are quarantined per module (chromedp &rarr; visualtest only; go-datastar &rarr; datastar only; go-error-family &rarr; errorpage only; templ + tailwind-merge &rarr; leaf). No framework deps anywhere.</li>
+            <li><strong>Direction:</strong> every edge points toward stability. Components depend on templ's <code>templ.Component</code> interface (the composability contract), never on concrete consumers.</li>
+          </ul>
+        </section>
+
+        <section id="domain">
+          <h2><span class="num">03</span>Domain alignment</h2>
           <div class="strengths">
             <div class="strength">
               <div class="check">+</div>
               <div class="text">
-                <strong>Specific strength one</strong>
-                <span>Explain why it matters and what it enables.</span>
+                <strong>Module names are domain terms</strong>
+                <span>display, forms, feedback, layout, navigation &mdash; a UI-literate consumer predicts where a component lives before looking. Transport names (htmx, datastar) and errorpage match their runtime domains.</span>
               </div>
             </div>
             <div class="strength">
               <div class="check">+</div>
               <div class="text">
-                <strong>Specific strength two</strong>
-                <span
-                  >Reference files, metrics, or patterns where possible.</span
-                >
+                <strong>Split-brain check: clean</strong>
+                <span>The former AlertType/ToastType duplication is gone (one canonical FeedbackType + tone adapters). The 2026-10-15 color review found 13 color encodings; the <code>utils/tone</code> package now owns the semantic axis with equivalence tests, and the collapse into its tables is a planned v2 event (#425/#431) &mdash; tracked, not forgotten.</span>
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Single sources of truth are mechanical</strong>
+                <span>SVG paths (utils/svg + icons/icon_paths.go), feedback styles (feedback/styles.go), motion constants (display/shared.go), transport wiring (utils/wire) &mdash; each guarded by compliance scans, so drift fails CI rather than review.</span>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Findings -->
-        <section id="findings">
-          <h2><span class="num">01</span>Findings</h2>
-          <p>These are the issues that need attention, ordered by impact.</p>
-
-          <!-- Issue 1 -->
-          <div class="issue issue-critical" id="issue-1">
-            <span class="severity severity-critical"
-              >Blocking &middot; High impact</span
-            >
-            <h3>Critical issue title</h3>
-            <div class="where">
-              path/to/file.go:42-58 &middot; short context
-            </div>
+        <section id="pain">
+          <h2><span class="num">04</span>Pain points</h2>
+          <div class="card card-warning">
+            <h3>display: one package, 53 components</h3>
             <p>
-              Describe the problem, cite the code or behavior, and explain why
-              it matters to the reader's goals.
-            </p>
-            <pre><code>// Example of the problematic pattern
-func BadExample() {}</code></pre>
-            <div class="callout callout-teal">
-              <strong>Fix: recommended action</strong>
-              State the concrete fix, including file names, function names, or
-              configuration changes.
-            </div>
-          </div>
-
-          <!-- Issue 2 -->
-          <div class="issue issue-important" id="issue-2">
-            <span class="severity severity-important"
-              >Important &middot; Medium impact</span
-            >
-            <h3>Important issue title</h3>
-            <div class="where">path/to/another.go:12-19</div>
-            <p>
-              Explain the risk. Important issues are not blockers but would make
-              a careful reviewer hesitate before shipping.
+              27 hand-written source files, ~22k lines, charts and overlays
+              and tables in one namespace. Change ripple inside the package is
+              contained (Go package-level compile), but code review surface
+              and merge-collision odds grow with every component. This is the
+              only under-modularized spot in the workspace &mdash; and its
+              resolution is <em>decided policy</em>: ADR-0040 trigger-gates
+              any extraction to v2 (T1 unique dependency / T2 consumer demand
+              / T3 own build pipeline). None has fired. The correct action is
+              monitoring, not splitting.
             </p>
           </div>
-
-          <!-- Issue 3 -->
-          <div class="issue issue-nice" id="issue-3">
-            <span class="severity severity-nice"
-              >Nice to have &middot; Low impact</span
-            >
-            <h3>Nice-to-have improvement</h3>
-            <div class="where">docs/ or config</div>
+          <div class="card card-warning">
+            <h3>Per-component ceremony</h3>
             <p>
-              Minor polish, documentation gaps, or future-proofing suggestions
-              go here.
+              Adding one component touches: the .templ source, generated
+              output, goldens, demo page registration, FEATURES/SKILL count
+              tables (machine-guarded), and the tc mirror. The guards make the
+              ceremony impossible to skip &mdash; which is the point &mdash;
+              but the count upkeep is manual. A count-codegen (derive the
+              tables from the same build.CountStats the website uses) would
+              delete a recurring friction class. Effort S/M, no consumer
+              impact.
+            </p>
+          </div>
+          <div class="card card-warning">
+            <h3>templ version gate (external)</h3>
+            <p>
+              templ &ge; v0.3.1100 deleted <code>templ.ResolveAttributeValue</code>;
+              the pinned v0.3.1020 generator and forward-compat consumers
+              constrain the window. #368/#369 are deliberately bundled into
+              the same one-event re-baseline. This is an external constraint
+              with an internal probe (<code>scripts/check-templ-gate.sh</code>)
+              &mdash; watch, don't fix.
+            </p>
+          </div>
+          <div class="card">
+            <h3>What we did not find</h3>
+            <p>
+              No dead modules (every module has in-repo consumers plus the
+              published surface), no orphaned packages (cmd/tc is the
+              adoption-inspection tool), no testing pain from coupling (every
+              module tests green in isolation with GOWORK=off), and the error
+              modernization sweep found zero legacy <code>errors.As</code>/<code>errors.Is</code>
+              findings repo-wide.
             </p>
           </div>
         </section>
 
-        <!-- Proposal -->
-        <section id="proposal">
-          <h2><span class="num">02</span>What the solution could look like</h2>
-          <p>
-            If the findings were fixed, what would the new state be? Show the
-            target API, structure, or workflow.
-          </p>
-          <pre><code>// Target state after the recommended changes
-type BetterAPI struct {
-    Field string
-}</code></pre>
-          <div class="callout callout-teal">
-            <strong>This is the target</strong>
-            Summarize why this state is better and what it unlocks.
-          </div>
-        </section>
-
-        <!-- Appendix -->
-        <section id="appendix">
-          <h2><span class="num">03</span>Appendix</h2>
-          <p>
-            Methodology, links to related files, or a priority matrix can live
-            here.
-          </p>
-          <table class="compare">
+        <section id="scores">
+          <h2><span class="num">05</span>Scores (1&ndash;5 rubric)</h2>
+          <table>
             <thead>
-              <tr>
-                <th>Issue</th>
-                <th>Severity</th>
-                <th>Effort</th>
-                <th>Status</th>
-              </tr>
+              <tr><th>Dimension</th><th>Score</th><th>Evidence</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Issue one</td>
-                <td class="no">Critical</td>
-                <td>Low</td>
-                <td class="no">Open</td>
-              </tr>
-              <tr>
-                <td>Issue two</td>
-                <td class="no">Important</td>
-                <td>Medium</td>
-                <td class="yes">In progress</td>
-              </tr>
+              <tr><td>Coupling</td><td class="yes">4</td><td>No cycles; modules exchange typed exported APIs; no shared mutable state (JS singletons are DOM-guarded). Few interfaces beyond templ.Component &mdash; by design for a render library, so not a 5.</td></tr>
+              <tr><td>Cohesion</td><td class="yes">4</td><td>Every sub-module passes the one-sentence purpose test; display bundles 53 components (coarse but documented); "utils" is a generic name carrying specific sub-packages.</td></tr>
+              <tr><td>Modularity</td><td class="yes">5</td><td>Compile-enforced module DAG, per-module CI isolation (GOWORK=off green), machine-guarded replace sets, dependency quarantine. Textbook.</td></tr>
+              <tr><td>Composability</td><td class="yes">5</td><td>The product IS composition: BaseProps embedding + ComponentProps interface, slot children, one wire.Action driving two transports, @theme theming with zero Go changes.</td></tr>
+              <tr><td>Scalability</td><td class="yes">4</td><td>New components extend without restructuring; module boundaries enable parallel work (single-writer protocol). Ceremony per component is heavy but guarded; display growth is the watched threshold.</td></tr>
+              <tr><td>Service orientation</td><td class="yes">4</td><td>For a library: bounded contexts = modules, lockstep release train with guarded tag sets, explicit per-module API contracts. N/A dimensions (data ownership) score neutral-good.</td></tr>
+              <tr><td>Dependency direction</td><td class="yes">5</td><td>All edges toward stability; third-party deps isolated at the leaf or in single-owner modules; zero framework lock-in.</td></tr>
             </tbody>
           </table>
+          <p><strong>Composite: 4.43 &mdash; Good.</strong> One gentle push
+          (cohesion via the eventual display decision; ceremony automation)
+          and this workspace scores Excellent.</p>
         </section>
 
-        <!-- Footer -->
+        <section id="roadmap">
+          <h2><span class="num">06</span>Action roadmap</h2>
+          <div class="migration-step">
+            <div class="migration-num">1</div>
+            <div class="migration-content">
+              <h4>P2 &middot; Automate the count-bearing doc tables</h4>
+              <p>
+                Derive FEATURES/SKILL counts from code (same source the
+                website's build.CountStats uses) so component additions stop
+                requiring manual same-commit count bumps. Effort S/M. No
+                ordering constraints.
+              </p>
+            </div>
+          </div>
+          <div class="migration-step">
+            <div class="migration-num">2</div>
+            <div class="migration-content">
+              <h4>P2 &middot; Execute the v2 tone collapse as planned</h4>
+              <p>
+                TODO #425/#431: collapse the remaining per-component color
+                maps into <code>utils/tone</code> tables at v2. Already
+                designed with equivalence tests; requires the v2 breaking
+                window. Keep as-is.
+              </p>
+            </div>
+          </div>
+          <div class="migration-step">
+            <div class="migration-num">3</div>
+            <div class="migration-content">
+              <h4>P2 &middot; Run the templ migration window as ONE event</h4>
+              <p>
+                When the window opens: generator pin + golden/visual
+                re-baseline + #368 (size-*) + #369 (@utility) +
+                ResolveAttributeValue migration in a single re-baseline event,
+                per the documented decision. Probe:
+                <code>scripts/check-templ-gate.sh</code>.
+              </p>
+            </div>
+          </div>
+          <div class="migration-step">
+            <div class="migration-num">4</div>
+            <div class="migration-content">
+              <h4>P3 &middot; Watch display growth against ADR-0040 triggers</h4>
+              <p>
+                No action until T1/T2/T3 fires or v2 planning starts. If it
+                does, the extraction order is charts &rarr; overlays &rarr;
+                tables (cluster cohesion per file layout), each a v2 breaking
+                release with import-path redirects.
+              </p>
+            </div>
+          </div>
+          <div class="migration-step">
+            <div class="migration-num">5</div>
+            <div class="migration-content">
+              <h4>P3 &middot; Extend the pin-surface drift guard</h4>
+              <p>
+                This audit's errorpage go-error-family skew (indirect pins
+                moved by tidy, direct pin stayed) is the failure shape to
+                mechanize: assert the direct consumer's pin matches the
+                consumers' indirect pins, like go-datastar/static already
+                does. Effort S.
+              </p>
+            </div>
+          </div>
+        </section>
+
         <footer class="footer">
           <p>
-            Generated YYYY-MM-DD &middot; Reviewed against version X.Y.Z
-            &middot; All claims verified against source code where noted
+            Generated 2026-11-01 &middot; Reviewed against v1.26.0 &middot;
+            Series: 2026-05-19 (B+) &rarr; 2026-07-18 (modularity) &rarr; this
+            review &middot; Companion artifacts: module boundary assessment +
+            current/improved D2 diagrams, same date
           </p>
         </footer>
       </main>
