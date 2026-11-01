@@ -1,0 +1,65 @@
+direction: down
+
+published: {
+  label: "Published modules — SAME skeleton, same version train"
+  style.fill: "#f0f4f8"
+
+  utils: {
+    label: "utils (L0 leaf, unchanged)\n+ tone tables absorb remaining\nper-component color maps (v2: #425/#431)"
+    style.fill: "#dbeafe"
+  }
+
+  L1: {
+    label: "Layer 1 (unchanged boundaries)"
+    style.fill: "transparent"
+    icons: "icons"
+    echarts: "charts/echarts\nextraction stays trigger-gated:\nT1 unique-dep | T2 demand | T3 pipeline\n(ADR-0040)"
+    htmx: "htmx"
+    datastar: "datastar"
+  }
+
+  errorpage: {
+    label: "errorpage (L2)\ndep pins aligned (v0.12.0)"
+    style.fill: "#fef3c7"
+  }
+
+  root: {
+    label: "root (L3)\ndisplay stays ONE package until an\nADR-0040 trigger fires;\ninternal discipline: domain-cluster files"
+    style.fill: "#dcfce7"
+  }
+}
+
+local: {
+  label: "Repo-local (unchanged)"
+  style.fill: "#f5f5f4"
+  visualtest: "visualtest"
+  website: "website"
+}
+
+external: {
+  label: "External deps — post-migration-window"
+  templ: "a-h/templ >= v0.3.1100\nONE re-baseline event:\n#368 size-* + #369 @utility +\nResolveAttributeValue migration"
+  errfam: "go-error-family (aligned)"
+  dstar: "go-datastar/static (pinned + guarded)"
+}
+
+root -> utils: "renders via"
+root -> icons
+root -> errorpage
+root -> htmx
+root -> datastar
+root -> echarts
+
+icons -> utils
+echarts -> utils
+htmx -> utils
+datastar -> utils
+errorpage -> icons
+errorpage -> utils
+
+visualtest -> root
+website -> root
+
+utils -> templ
+errorpage -> errfam
+datastar -> dstar

@@ -1,0 +1,86 @@
+direction: down
+
+published: {
+  label: "Published modules (lockstep version train v1.26.0)"
+  style.fill: "#f0f4f8"
+
+  utils: {
+    label: "utils (L0 leaf)\nBaseProps, Class, Lookup\nsvg | tone | wire | cdn | golden | format"
+    style.fill: "#dbeafe"
+  }
+
+  L1: {
+    label: "Layer 1"
+    style.fill: "transparent"
+    icons: "icons\n102 SVG icons\n(templ + utils)"
+    echarts: "charts/echarts\nopt-in ECharts wrapper\n(templ + utils)"
+    htmx: "htmx\nHTMX helpers\n(templ + utils)"
+    datastar: "datastar\nDatastar SDK + helpers\n(templ + utils + go-datastar)"
+  }
+
+  errorpage: {
+    label: "errorpage (L2)\ngo-error-family pages\n(templ + icons + utils)"
+    style.fill: "#fef3c7"
+  }
+
+  root: {
+    label: "root (L3)\ndisplay 53 | forms 26 | feedback 14\nlayout 11 | navigation 12 | recipes\nintegration | internal/contract | cmd/tc"
+    style.fill: "#dcfce7"
+  }
+}
+
+local: {
+  label: "Repo-local, never published"
+  style.fill: "#f5f5f4"
+
+  visualtest: {
+    label: "visualtest\nchromedp + pixelmatch\n(dep-isolation pin policy)"
+    style.fill: "#fee2e2"
+  }
+
+  website: {
+    label: "website (Go SSG)\ntemplcomponents.lars.software"
+    style.fill: "#fee2e2"
+  }
+}
+
+external: {
+  label: "External deps (isolated per module)"
+  templ: "a-h/templ v0.3.1020"
+  twmerge: "tailwind-merge-go"
+  errfam: "go-error-family v0.12.0"
+  dstar: "go-datastar/static v0.6.1"
+  chromedp: "chromedp (visual only)"
+}
+
+root -> utils
+root -> icons
+root -> errorpage
+root -> htmx
+root -> datastar
+root -> echarts
+
+icons -> utils
+echarts -> utils
+htmx -> utils
+datastar -> utils
+errorpage -> icons
+errorpage -> utils
+
+visualtest -> root
+visualtest -> utils
+visualtest -> icons
+visualtest -> errorpage
+visualtest -> htmx
+visualtest -> datastar
+visualtest -> echarts
+website -> root
+website -> errorpage
+website -> icons
+website -> utils
+
+utils -> templ
+utils -> twmerge
+errorpage -> errfam
+datastar -> dstar
+visualtest -> chromedp
