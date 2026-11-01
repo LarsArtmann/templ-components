@@ -75,8 +75,8 @@ func Ternary[T any](condition bool, a, b T) T {
 
 // Coalesce returns the first argument that is not the zero value for its
 // type, or the zero value when every argument is zero. It is the generic
-// form of the library's override-or-default idiom — the
-// `Ternary(x != "", x, fallback)` shape — and reads in precedence order:
+// form of the library's override-or-default idiom, the
+// `Ternary(x != "", x, fallback)` shape, and reads in precedence order:
 // Coalesce(props.AriaLabel, props.Label, "Commands").
 //
 // Note: like Ternary, all arguments are eagerly evaluated.

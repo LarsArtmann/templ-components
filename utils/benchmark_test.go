@@ -42,6 +42,14 @@ func BenchmarkUtils(b *testing.B) {
 		}
 	})
 
+	b.Run("Coalesce 3 strings", func(b *testing.B) {
+		b.ResetTimer()
+
+		for b.Loop() {
+			_ = Coalesce("", "label", "fallback")
+		}
+	})
+
 	b.Run("Lookup hit", func(b *testing.B) {
 		m := map[string]string{"a": "alpha", "b": "beta"}
 

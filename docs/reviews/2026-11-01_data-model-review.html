@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Report Title</title>
+    <title>Data Model Review — templ-components</title>
     <style>
       /* =========================================================================
          BAUHAUS DARK — Dashboard template
@@ -834,199 +834,379 @@
     </div>
 
     <div class="layout">
-      <!-- Sidebar TOC (hidden below 1024px; use inline .toc if you prefer) -->
+      <!-- Sidebar TOC -->
       <aside class="sidebar" data-nav>
         <nav>
           <div class="label">Contents</div>
-          <a href="#summary">Summary</a>
-          <a href="#findings">Findings</a>
-          <a href="#issues">Issue Cards</a>
-          <a href="#proposal">Proposal</a>
-          <a href="#plan">Plan</a>
+          <a href="#current">Current state</a>
+          <a href="#catalog">Problem catalog</a>
+          <a href="#vision">The vision</a>
+          <a href="#model">Go data model</a>
+          <a href="#composition">Composition</a>
+          <a href="#validation">Validation layer</a>
+          <a href="#decisions">Decision log</a>
+          <a href="#antipatterns">Anti-patterns</a>
+          <a href="#roadmap">Migration roadmap</a>
         </nav>
       </aside>
 
       <main class="main">
         <!-- Hero -->
         <div class="hero">
-          <!-- Optional Bauhaus signature: geometric shape cluster. Remove for quieter hero. -->
           <div class="hero-shapes">
             <div class="circle"></div>
             <div class="square"></div>
             <div class="tri"></div>
           </div>
-          <div class="hero-badge">Report Type</div>
-          <h1>Report Title</h1>
+          <div class="hero-badge">Architecture Deep-Dive &middot; 2026-11-01</div>
+          <h1>Data Model Review &mdash; templ-components</h1>
           <p class="hero-subtitle">
-            One-sentence description of what this report covers.
+            First-principles audit of the library's type system: 60 typed
+            enums, zero pointer-minefields, one sanctioned stringly boundary
+            &mdash; and the two v2 events that finish the job.
           </p>
         </div>
 
-        <!-- Inline TOC (alternative to sidebar; pick one) -->
         <nav class="toc">
           <h3>Contents</h3>
           <ul>
-            <li><a href="#summary">Summary</a></li>
-            <li><a href="#findings">Findings</a></li>
-            <li><a href="#issues">Issue Cards</a></li>
-            <li><a href="#proposal">Proposal</a></li>
-            <li><a href="#plan">Plan</a></li>
+            <li><a href="#current">Current state</a></li>
+            <li><a href="#catalog">Problem catalog</a></li>
+            <li><a href="#vision">The vision</a></li>
+            <li><a href="#model">Go data model</a></li>
+            <li><a href="#composition">Composition</a></li>
+            <li><a href="#validation">Validation layer</a></li>
+            <li><a href="#decisions">Decision log</a></li>
+            <li><a href="#antipatterns">Anti-patterns</a></li>
+            <li><a href="#roadmap">Migration roadmap</a></li>
           </ul>
         </nav>
 
-        <!-- Stats Dashboard -->
-        <h2 id="summary"><span class="num">00</span>Summary</h2>
-        <div class="stat-grid">
-          <div class="stat-card">
-            <div class="stat-value">42</div>
-            <div class="stat-label">Total Items</div>
-          </div>
-          <div class="stat-card stat-bad">
-            <div class="stat-value">7</div>
-            <div class="stat-label">Critical</div>
-          </div>
-          <div class="stat-card stat-warn">
-            <div class="stat-value">12</div>
-            <div class="stat-label">Warnings</div>
-          </div>
-          <div class="stat-card stat-good">
-            <div class="stat-value">35</div>
-            <div class="stat-label">Resolved</div>
-          </div>
-        </div>
-
-        <!-- Findings as Cards -->
-        <h2 id="findings"><span class="num">01</span>Findings</h2>
-
-        <div class="card card-problem">
-          <h4>Critical Issue</h4>
-          <p>Description of the problem and its impact.</p>
-        </div>
-
-        <div class="card card-solution">
-          <h4>Recommended Fix</h4>
-          <p>Description of the solution with rationale.</p>
-        </div>
-
-        <!-- Issue Cards -->
-        <h2 id="issues"><span class="num">02</span>Issue Cards</h2>
-
-        <div class="issue issue-critical">
-          <span class="severity severity-critical">Blocking</span>
-          <h3>Critical finding title</h3>
-          <div class="where">path/to/file.go:42-58</div>
-          <p>
-            Describe the problem and cite the code or behavior that proves it.
-          </p>
-          <div class="callout callout-solution">
-            <strong>Fix</strong>
-            State the concrete recommended action.
-          </div>
-        </div>
-
-        <div class="issue issue-important">
-          <span class="severity severity-important">Important</span>
-          <h3>Important finding title</h3>
-          <div class="where">path/to/another.go:12-19</div>
-          <p>
-            Explain the risk and why a careful reviewer would hesitate before
-            shipping.
-          </p>
-        </div>
-
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice to have</span>
-          <h3>Polish suggestion</h3>
-          <div class="where">docs/ or config</div>
-          <p>
-            Minor documentation gaps or future-proofing suggestions go here.
-          </p>
-        </div>
-
-        <!-- Strengths -->
-        <h2>Strengths</h2>
-        <div class="strengths">
-          <div class="strength">
-            <div class="check">+</div>
-            <div class="text">
-              <strong>Specific strength</strong>
-              <span>Explain why it matters and what it enables.</span>
+        <!-- Current state -->
+        <section id="current">
+          <h2><span class="num">01</span>Current state</h2>
+          <div class="stat-grid">
+            <div class="stat-card stat-good">
+              <div class="stat-value">60</div>
+              <div class="stat-label">Typed string enums (0 raw-string enums)</div>
+            </div>
+            <div class="stat-card stat-good">
+              <div class="stat-value">90</div>
+              <div class="stat-label">IsValid guards in 39 files</div>
+            </div>
+            <div class="stat-card stat-good">
+              <div class="stat-value">~0</div>
+              <div class="stat-label">Pointer fields in props structs</div>
+            </div>
+            <div class="stat-card stat-warn">
+              <div class="stat-value">13</div>
+              <div class="stat-label">Color encodings pending v2 collapse</div>
+            </div>
+            <div class="stat-card stat-good">
+              <div class="stat-value">0</div>
+              <div class="stat-label">Legacy errors.As / errors.Is findings</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">1</div>
+              <div class="stat-label">Sanctioned stringly boundary (templ.Attributes)</div>
             </div>
           </div>
-        </div>
+          <p>
+            Series context: the 2026-07-18 data-model review concluded "the
+            model gets a lot right" with one open design discussion (color);
+            the 2026-10-15 color-domain-model review designed
+            <code>utils/tone</code> as the answer and Phase 0 (additive
+            adapters + equivalence tests) has since shipped. This review
+            re-catalogs the whole model against the P1&ndash;P12 rubric after
+            those landings and adds the error-model dimension (Go 1.26
+            <code>errors.AsType</code>) that earlier reviews predate.
+          </p>
+        </section>
 
-        <!-- Table with Badges -->
-        <h2>Issue Table</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Severity</th>
-              <th>Issue</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td><span class="badge badge-critical">Critical</span></td>
-              <td>Missing error handling</td>
-              <td><span class="badge badge-fixed">Fixed</span></td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td><span class="badge badge-high">High</span></td>
-              <td>Race condition</td>
-              <td><span class="badge badge-low">Open</span></td>
-            </tr>
-          </tbody>
-        </table>
+        <!-- Problem catalog -->
+        <section id="catalog">
+          <h2><span class="num">02</span>Problem catalog (P1&ndash;P12, brutal honesty)</h2>
 
-        <!-- Before/After Comparison -->
-        <h2 id="proposal">Before / After</h2>
-        <div class="compare-header">
-          <div class="compare-before">Before</div>
-          <div class="compare-after">After</div>
-        </div>
-        <div class="compare-row">
-          <div>
-            <pre><code><span class="tok-comment">// Old code</span>
-<span class="tok-keyword">func</span> <span class="tok-func">process</span>(data <span class="tok-type">interface</span>{}) { }</code></pre>
+          <div class="card card-problem">
+            <span class="badge badge-medium">P4 &middot; Medium</span>
+            <h3>Spelling drift between semantic axes: "error" vs "danger"</h3>
+            <div class="where">feedback/styles.go (FeedbackError) &harr; utils/tone/tone.go (ToneDanger)</div>
+            <p>
+              The canonical feedback enum spells the failure level
+              <code>"error"</code> while the tone axis spells it
+              <code>"danger"</code>; the adapter maps one onto the other. Two
+              names for one concept across the boundary is exactly the
+              split-brain the rubric hunts. Known and scheduled: the map
+              collapses into the tone tables at v2 (TODO #431), after which
+              one spelling survives.
+            </p>
           </div>
-          <div>
-            <pre><code><span class="tok-comment">// New code</span>
-<span class="tok-keyword">func</span> <span class="tok-func">process</span>[T <span class="tok-type">any</span>](data T) { }</code></pre>
+
+          <div class="card card-warning">
+            <span class="badge badge-low">P3 &middot; Deliberate</span>
+            <h3>Invalid enum values render a fallback instead of failing</h3>
+            <div class="where">utils.Lookup(m, key, fallback) call sites</div>
+            <p>
+              A struct can be constructed with
+              <code>Type: FeedbackType("nope")</code> and it compiles &mdash;
+              then renders the neutral fallback. This is a documented
+              tradeoff, not an oversight: it is a <em>render library</em>, a
+              panic inside a consumer's render path is a shipped bug, and the
+              only permitted panic is the icons path-integrity check.
+              Invalid-state detection exists where it matters (IsValid guards,
+              90 of them) for programmatic checks, goldens pin the rendered
+              output, and the graceful-degradation rule (e.g. AvatarStatus
+              unknown renders no dot) is tested.
+            </p>
           </div>
+
+          <div class="card card-warning">
+            <span class="badge badge-low">P10 &middot; Deliberate</span>
+            <h3>templ.Attributes is an open map[string]any</h3>
+            <div class="where">utils.BaseProps.Attrs</div>
+            <p>
+              The one stringly-typed escape hatch. HTML attributes are an
+              open set; typing them would mean wrapping the entire HTML spec.
+              It stays, documented as the sanctioned boundary, with CSP and
+              ARIA compliance enforced by dedicated scan guards rather than
+              the type system.
+            </p>
+          </div>
+
+          <div class="card card-warning">
+            <span class="badge badge-low">P4 &middot; Low</span>
+            <h3>BaseProps scalar fields are raw strings</h3>
+            <div class="where">utils.BaseProps (ID, Class, AriaLabel, Nonce)</div>
+            <p>
+              <code>Nonce</code> could be a branded type; <code>ID</code> and
+              <code>AriaLabel</code> are irreducibly strings in their domain
+              (CSS-selector-safe IDs are validated at use sites via
+              SanitizeID/EnsureID). A <code>type Nonce string</code> would
+              prevent passing an ID where a nonce belongs &mdash; a mistake
+              with no observed instances. Rejected for now: branding cost
+              (every props literal and helper signature changes, breaking) vs
+              a hypothetical bug class. Revisit at v2 alongside the tone
+              collapse.
+            </p>
+          </div>
+
+          <div class="card card-solution">
+            <span class="badge badge-fixed">No finding</span>
+            <h3>P1 P2 P5 P6 P7 P8 P9 P11 P12 &mdash; clean</h3>
+            <p>
+              <strong>P1 stringly-typed:</strong> 60 typed enums, zero
+              string-keyed style maps. <strong>P2 pointer-as-state:</strong>
+              the props surface has essentially no pointer fields; the 31
+              repo-wide pointers are internal regexps, the tri-state test
+              harness, and <code>*wire.Action</code> &mdash; where nil
+              genuinely means "unwired" and renders inert.
+              <strong>P5 unions:</strong> no <code>Type string</code> +
+              optional-pointer state machines exist.
+              <strong>P6 composition:</strong> embedding + interface is the
+              core pattern. <strong>P7/P8:</strong> N/A (stateless render
+              types; no lifecycle fields is <em>correct</em> absence).
+              <strong>P9 duplication:</strong> feedback styles centralized;
+              remaining color-map duplication is the tracked v2 collapse.
+              <strong>P11 generics:</strong> <code>Lookup[K,V]</code> and
+              <code>Ternary[T]</code> carry the generic load where it pays.
+              <strong>P12 errors:</strong> errorpage consumes go-error-family
+              via <code>errors.AsType[errorfamily.Classified]</code>; the
+              erraudit sweep found zero legacy findings repo-wide.
+            </p>
+          </div>
+        </section>
+
+        <!-- Vision -->
+        <section id="vision">
+          <h2><span class="num">03</span>The vision</h2>
+          <ul>
+            <li>Every closed set is a typed enum with an IsValid guard and a test &mdash; already true, stays true.</li>
+            <li>One color language: <code>tone.Tone</code> (why) + <code>tone.Hue</code> (which pigment), all lookups through the two tables &mdash; the v2 collapse finishes this.</li>
+            <li>Every props struct embeds BaseProps and satisfies ComponentProps, so generic wrappers work uniformly &mdash; true today.</li>
+            <li>One transport struct (wire.Action) whose zero value means the documented default &mdash; true today, guarded by tests.</li>
+            <li>Render paths never panic; unknown values degrade to tested fallbacks &mdash; true today.</li>
+            <li>Errors cross module boundaries through one classified interface (go-error-family) extracted via errors.AsType &mdash; true today.</li>
+          </ul>
+        </section>
+
+        <!-- Go data model -->
+        <section id="model">
+          <h2><span class="num">04</span>The model, as built</h2>
+          <pre><code><span class="tok-comment">// The shared kernel: every props struct embeds this (utils/utils.go).</span>
+<span class="tok-keyword">type</span> <span class="tok-type">BaseProps</span> <span class="tok-keyword">struct</span> {
+    <span class="tok-type">ID</span>        <span class="tok-type">string</span>
+    <span class="tok-type">Class</span>     <span class="tok-type">string</span>
+    <span class="tok-type">Attrs</span>     templ.<span class="tok-type">Attributes</span>   <span class="tok-comment">// the sanctioned open boundary</span>
+    <span class="tok-type">AriaLabel</span> <span class="tok-type">string</span>
+    <span class="tok-type">Nonce</span>     <span class="tok-type">string</span>            <span class="tok-comment">// "" omits the attribute, never nonce=""</span>
+}
+
+<span class="tok-comment">// The uniform composition contract (pointer receivers, auto-satisfied).</span>
+<span class="tok-keyword">type</span> <span class="tok-type">ComponentProps</span> <span class="tok-keyword">interface</span> {
+    <span class="tok-func">GetBaseProps</span>() <span class="tok-type">BaseProps</span>
+    <span class="tok-func">SetBaseProps</span>(props <span class="tok-type">BaseProps</span>)
+}
+
+<span class="tok-comment">// Every closed set is a typed string enum (60 of them), with a guard:</span>
+<span class="tok-keyword">type</span> <span class="tok-type">FeedbackType</span> <span class="tok-type">string</span> <span class="tok-comment">// success | error | warning | info</span>
+<span class="tok-keyword">func</span> <span class="tok-type">ToneIsValid</span>(t <span class="tok-type">Tone</span>) <span class="tok-type">bool</span>  <span class="tok-comment">// 90 IsValid-family guards repo-wide</span>
+
+<span class="tok-comment">// Style lookups: typed key, explicit fallback, never a panic.</span>
+<span class="tok-keyword">func</span> <span class="tok-func">Lookup</span>[<span class="tok-generic">K</span> <span class="tok-keyword">comparable</span>, <span class="tok-generic">V</span> <span class="tok-keyword">any</span>](m <span class="tok-keyword">map</span>[<span class="tok-generic">K</span>]<span class="tok-generic">V</span>, key <span class="tok-generic">K</span>, fallback <span class="tok-generic">V</span>) <span class="tok-generic">V</span>
+
+<span class="tok-comment">// One transport struct; zero values ARE the documented defaults.</span>
+<span class="tok-keyword">type</span> <span class="tok-type">Action</span> <span class="tok-keyword">struct</span> {
+    <span class="tok-type">Transport</span>   <span class="tok-type">Transport</span>    <span class="tok-comment">// "" renders htmx (ADR-0030)</span>
+    <span class="tok-type">Method</span>      <span class="tok-type">Method</span>       <span class="tok-comment">// "" renders GET in both dialects</span>
+    <span class="tok-type">URL</span>         <span class="tok-type">string</span>       <span class="tok-comment">// "" wires nothing (inert, not broken)</span>
+    <span class="tok-type">Event</span>, <span class="tok-type">Target</span>, <span class="tok-type">ContentType</span> <span class="tok-comment">// ...typed sub-enums, not strings</span>
+}
+
+<span class="tok-comment">// The color language (v2 target): semantic axis + pigment axis.</span>
+<span class="tok-keyword">type</span> <span class="tok-type">Tone</span> <span class="tok-type">string</span> <span class="tok-comment">// neutral | success | warning | danger | info | accent</span>
+<span class="tok-keyword">type</span> <span class="tok-type">Hue</span> <span class="tok-type">string</span>  <span class="tok-comment">// categorical pigments for series/lanes</span></code></pre>
+        </section>
+
+        <!-- Composition -->
+        <section id="composition">
+          <h2><span class="num">05</span>Composition in action</h2>
+          <div class="compare-header">
+            <div class="compare-before">Stringly variant (anti-pattern)</div>
+            <div class="compare-after">This library (typed enum + fallback)</div>
+          </div>
+          <div class="compare-row">
+            <div><pre><code><span class="tok-comment">// Class string everywhere; typos render nothing;</span>
+<span class="tok-comment">// switch-cases scattered per component.</span>
+<span class="tok-keyword">if</span> alertType == <span class="tok-string">"err"</span> {  <span class="tok-comment">// silent miss</span>
+    cls = <span class="tok-string">"border-red-..."</span>
+}
+cls += <span class="tok-string">" bg-"</span> + color      <span class="tok-comment">// scanner-invisible</span></code></pre></div>
+            <div><pre><code><span class="tok-comment">// Typed key; unknown falls back; classes are</span>
+<span class="tok-comment">// complete literals the scanner can see.</span>
+set := <span class="tok-func">lookupFeedbackStyle</span>(props.Type)
+    <span class="tok-comment">// map[FeedbackType]feedbackStyleSet</span>
+    <span class="tok-comment">// via utils.Lookup with neutral fallback</span></code></pre></div>
+          </div>
+          <div class="compare-header">
+            <div class="compare-before">Pointer-field state machine (anti-pattern)</div>
+            <div class="compare-after">Nil-means-unwired association</div>
+          </div>
+          <div class="compare-row">
+            <div><pre><code><span class="tok-keyword">type</span> <span class="tok-type">Props</span> <span class="tok-keyword">struct</span> {
+    Type <span class="tok-type">string</span>
+    Hx   *<span class="tok-type">bool</span>   <span class="tok-comment">// nil? false? htmx?</span>
+    Ds   *<span class="tok-type">bool</span>   <span class="tok-comment">// three booleans of mud</span>
+}</code></pre></div>
+            <div><pre><code><span class="tok-keyword">type</span> <span class="tok-type">Props</span> <span class="tok-keyword">struct</span> {
+    utils.<span class="tok-type">BaseProps</span>
+    Wire *wire.<span class="tok-type">Action</span> <span class="tok-comment">// nil = unwired = inert</span>
+}</code></pre></div>
+          </div>
+        </section>
+
+        <!-- Validation -->
+        <section id="validation">
+          <h2><span class="num">06</span>Validation layer</h2>
+          <p>
+            The library makes invalid states <em>harmless</em> rather than
+            unrepresentable &mdash; a conscious inversion of the usual slogan,
+            forced by the render-path-no-panic constraint. The layers:
+          </p>
+          <ul>
+            <li><strong>Construction:</strong> typed enums + <code>DefaultXxxProps()</code> constructors; struct-literal zero values equal the documented defaults (inverted flags like <code>NoPad</code>/<code>NoValidate</code>), consumer-audited and guarded.</li>
+            <li><strong>Programmatic checks:</strong> 90 IsValid guards for code that wants to reject early.</li>
+            <li><strong>Render fallback:</strong> every lookup has an explicit fallback; unknown enum &rArr; neutral/default classes, tested per component.</li>
+            <li><strong>Output pinning:</strong> 332 goldens + visual suite + axe gate catch anything the type system cannot express (class regressions, ARIA drift, dark-mode misses).</li>
+            <li><strong>Error boundary:</strong> consumers' handler errors classify through go-error-family; extraction via <code>errors.AsType[errorfamily.Classified]</code>; unknown errors degrade to FamilyCorruption (500), never a panic.</li>
+          </ul>
+        </section>
+
+        <!-- Decisions -->
+        <section id="decisions">
+          <h2><span class="num">07</span>Decision log</h2>
+          <table>
+            <thead><tr><th>Decision</th><th>Why</th><th>Rejected alternative</th></tr></thead>
+            <tbody>
+              <tr><td>String enums, not iota ints</td><td>Values serialize into HTML attributes and test goldens; readability in rendered markup and diffs; no import cycles for consumers building values.</td><td>iota + String() &mdash; worse serialization story, no offsetting win for a render library.</td></tr>
+              <tr><td>Fallback lookup, not panic</td><td>A panic in a consumer's render path is a shipped production bug; degradation is testable.</td><td>Panic-on-invalid (fail fast). The single exception (icons path integrity) is a build-time invariant, documented as THE allowed panic.</td></tr>
+              <tr><td>*wire.Action nil = unwired</td><td>Optional association with a meaningful nil; zero-value literal stays ergonomic; unwired boards/tables are explicitly read-only.</td><td>Separate Wired/Unwired types &mdash; doubles the API surface for one optional field.</td></tr>
+              <tr><td>templ.Attributes stays map[string]any</td><td>HTML attribute space is open; typed closure impossible.</td><td>Typed Attrs struct &mdash; wraps the HTML spec, ages badly.</td></tr>
+              <tr><td>Nonce stays string (for now)</td><td>Branding is breaking and chases an unobserved bug class.</td><td>type Nonce string at v2 &mdash; bundled with the tone collapse if v2 touches BaseProps anyway.</td></tr>
+              <tr><td>errors.AsType everywhere</td><td>Go 1.26+ idiom; the erraudit sweep (2026-11-01) proves zero legacy findings.</td><td>errors.As &mdash; legacy-in-spirit, zero call sites remain.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Anti-patterns -->
+        <section id="antipatterns">
+          <h2><span class="num">08</span>Anti-patterns (traps for contributors)</h2>
+          <div class="card card-problem">
+            <h3>Do not add map[string]string style lookups</h3>
+            <p>New variants get typed enum keys through <code>utils.Lookup</code> &mdash; string keys reopen P1 and lose the IsValid guard.</p>
+          </div>
+          <div class="card card-problem">
+            <h3>Do not concatenate Tailwind variants at runtime</h3>
+            <p>The scanner only emits CSS for complete literal tokens; dynamic prefixes produce classes with no stylesheet. Tone <code>Pair</code> exists so light/dark halves stay structural.</p>
+          </div>
+          <div class="card card-problem">
+            <h3>Do not migrate errors.Is to AsType reflexively</h3>
+            <p>Sentinel matching (io.EOF, context.Canceled, package sentinels) belongs to errors.Is. This repo has zero current findings; keep it that way case-by-case, not by linter-driven mass migration.</p>
+          </div>
+          <div class="card card-problem">
+            <h3>Do not add pointer fields to props structs for "not yet"</h3>
+            <p>Use inverted flags for defaults-on and typed enums for modes; pointers are reserved for genuinely optional associations (*wire.Action) and test tri-states.</p>
+          </div>
+        </section>
+
+        <!-- Roadmap -->
+        <section id="roadmap">
+          <h2><span class="num">09</span>Migration roadmap</h2>
+          <div class="migration-step">
+            <div class="migration-num">1</div>
+            <div class="migration-content">
+              <h4>Now &mdash; nothing blocking</h4>
+              <p>The model needs no remediation to keep shipping v1.x. All findings are scheduled v2 events or documented tradeoffs.</p>
+            </div>
+          </div>
+          <div class="migration-step">
+            <div class="migration-num">2</div>
+            <div class="migration-content">
+              <h4>v2 event 1 &mdash; tone collapse (TODO #425/#431)</h4>
+              <p>Existing enums (FeedbackType, AlertType lineage, status enums) become thin aliases/adapters; the tone tables become the only style source; the "error"/"danger" spelling converges. Equivalence tests from Phase 0 make this mechanical.</p>
+            </div>
+          </div>
+          <div class="migration-step">
+            <div class="migration-num">3</div>
+            <div class="migration-content">
+              <h4>v2 event 2 &mdash; optional BaseProps branding</h4>
+              <p>Only if v2 already breaks BaseProps consumers: brand Nonce (and consider ID) in the same release to keep the breaking-change budget to one event.</p>
+            </div>
+          </div>
+          <div class="migration-step">
+            <div class="migration-num">4</div>
+            <div class="migration-content">
+              <h4>Ongoing &mdash; hold the guard lines</h4>
+              <p>IsValid-with-test per new enum, goldens per component, erraudit clean, zero runtime panics (TestZeroRuntimePanics), scanner-literal rule. These guards ARE the model's type system for everything Go's types cannot express.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="callout callout-solution">
+          <strong>Conclusion</strong>
+          This is what a mature library data model looks like: not zero
+          stringly-typed code, but <em>zero accidental</em> stringly-typed
+          code &mdash; every remaining string is either a domain string
+          (HTML, CSS, IDs) or a scheduled v2 event with a test-proven bridge.
         </div>
 
-        <!-- ASCII Diagram -->
-        <h2>Dependency Tree</h2>
-        <div class="dep-tree">
-          <span class="root">root</span> ├──
-          <span class="ok">wanted-dep</span> └──
-          <span class="unwanted">unwanted-dep</span>
-        </div>
-
-        <!-- Numbered Steps -->
-        <h2 id="plan"><span class="num">03</span>Migration Plan</h2>
-        <div class="migration-step">
-          <div class="migration-num">1</div>
-          <div class="migration-content">
-            <h4>Add generic type parameter</h4>
-            <p>Update the function signature to accept a type parameter.</p>
-          </div>
-        </div>
-        <div class="migration-step">
-          <div class="migration-num">2</div>
-          <div class="migration-content">
-            <h4>Update all call sites</h4>
-            <p>Pass explicit types at each call site for type safety.</p>
-          </div>
-        </div>
-
+        <!-- Footer -->
         <footer class="footer">
-          Generated YYYY-MM-DD &middot; All claims verified against source code
-          where noted
+          <p>
+            Generated 2026-11-01 &middot; Reviewed against v1.26.0 &middot;
+            Series: 2026-07-05 &rarr; 2026-07-18 &rarr; 2026-10-15 (color) &rarr;
+            this review &middot; Every count verified by source census during
+            this audit
+          </p>
         </footer>
       </main>
     </div>

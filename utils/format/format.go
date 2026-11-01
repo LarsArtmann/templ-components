@@ -36,35 +36,7 @@ var (
 // plain bytes below 1024 ("512 B"), and "0 B" for zero. The sign is
 // preserved for negative counts ("-1.5 KiB").
 func Bytes(b int64) string {
-	value := float64(b)
-
-	sign := ""
-
-	if value < 0 {
-		sign = "-"
-		value = -value
-	}
-
-	unit := 0
-	for value >= bytesPerStep && unit < len(byteUnits)-1 {
-		value /= bytesPerStep
-		unit++
-	}
-
-	if unit == 0 {
-		return sign + strconv.FormatFloat(value, 'f', 0, 64) + " " + byteUnits[0]
-	}
-
-	text := formatMagnitude(value)
-	if text == "1024" && unit < len(byteUnits)-1 {
-		// Rounding crossed the unit boundary (1023.995 KiB → "1024 KiB"):
-		// bump to the next unit and reformat ("1.0 MiB").
-		value /= bytesPerStep
-		unit++
-		text = strconv.FormatFloat(value, 'f', 1, 64)
-	}
-
-	return sign + text + " " + byteUnits[unit]
+	return compactUnits(b, bytesPerStep, byteUnits, " ")
 }
 
 // CompactDuration renders a duration the way operators write it in env vars:
@@ -154,35 +126,7 @@ func StringOrDash(s string) string {
 // ("1.2k", "3.4M") and integers above ("42k", "1.2M"). The sign is
 // preserved ("-2.5k").
 func CompactCount(n int64) string {
-	value := float64(n)
-
-	sign := ""
-
-	if value < 0 {
-		sign = "-"
-		value = -value
-	}
-
-	unit := 0
-	for value >= countsPerStep && unit < len(countUnits)-1 {
-		value /= countsPerStep
-		unit++
-	}
-
-	if unit == 0 {
-		return sign + strconv.FormatFloat(value, 'f', 0, 64)
-	}
-
-	text := formatMagnitude(value)
-	if text == "1000" && unit < len(countUnits)-1 {
-		// Rounding crossed the unit boundary (999,999 → "1000k"):
-		// bump to the next unit ("1.0M").
-		value /= countsPerStep
-		unit++
-		text = strconv.FormatFloat(value, 'f', 1, 64)
-	}
-
-	return sign + text + countUnits[unit]
+	return compactUnits(n, countsPerStep, countUnits, "")
 }
 
 // formatMagnitude renders a value ≥ 1 with one decimal below ten and no
@@ -193,6 +137,42 @@ func formatMagnitude(value float64) string {
 	}
 
 	return strconv.FormatFloat(value, 'f', 0, 64)
+}
+
+// compactUnits is the shared magnitude scaler behind Bytes (1024-step,
+// space-separated units) and CompactCount (1000-step, suffixless units):
+// sign handling, the unit ramp, and the boundary bump where rounding the
+// largest shown unit ("1024 KiB", "1000k") spills into the next one
+// ("1.0 MiB", "1.0M"). sep separates number and unit; a base entry of
+// "B"/"" keeps unit-0 rendering uniform across both callers.
+func compactUnits(n int64, step int64, units []string, sep string) string {
+	value := float64(n)
+
+	sign := ""
+
+	if value < 0 {
+		sign = "-"
+		value = -value
+	}
+
+	unit := 0
+	for value >= float64(step) && unit < len(units)-1 {
+		value /= float64(step)
+		unit++
+	}
+
+	if unit == 0 {
+		return sign + strconv.FormatFloat(value, 'f', 0, 64) + sep + units[0]
+	}
+
+	text := formatMagnitude(value)
+	if text == strconv.FormatFloat(float64(step), 'f', 0, 64) && unit < len(units)-1 {
+		value /= float64(step)
+		unit++
+		text = strconv.FormatFloat(value, 'f', 1, 64)
+	}
+
+	return sign + text + sep + units[unit]
 }
 
 // twoDigits renders 0–59 with a leading zero.

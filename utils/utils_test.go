@@ -53,6 +53,73 @@ func TestTernary(t *testing.T) {
 	}
 }
 
+func TestCoalesce(t *testing.T) {
+	t.Parallel()
+
+	t.Run("strings: first non-empty wins", func(t *testing.T) {
+		t.Parallel()
+
+		got := Coalesce("", "override", "fallback")
+		if got != "override" {
+			t.Errorf("Coalesce() = %q, want %q", got, "override")
+		}
+	})
+
+	t.Run("strings: all empty returns zero", func(t *testing.T) {
+		t.Parallel()
+
+		got := Coalesce("", "", "")
+		if got != "" {
+			t.Errorf("Coalesce() = %q, want empty", got)
+		}
+	})
+
+	t.Run("strings: single value passthrough", func(t *testing.T) {
+		t.Parallel()
+
+		got := Coalesce("only")
+		if got != "only" {
+			t.Errorf("Coalesce() = %q, want %q", got, "only")
+		}
+	})
+
+	t.Run("typed enum: zero value skipped", func(t *testing.T) {
+		t.Parallel()
+
+		got := Coalesce(testEnumA, testEnumB)
+		if got != testEnumA {
+			t.Errorf("Coalesce() = %q, want %q", got, testEnumA)
+		}
+	})
+
+	t.Run("typed enum: empty falls through to default", func(t *testing.T) {
+		t.Parallel()
+
+		got := Coalesce(testEnum(""), testEnumB)
+		if got != testEnumB {
+			t.Errorf("Coalesce() = %q, want %q", got, testEnumB)
+		}
+	})
+
+	t.Run("ints: zero skipped", func(t *testing.T) {
+		t.Parallel()
+
+		got := Coalesce(0, 0, 7)
+		if got != 7 {
+			t.Errorf("Coalesce() = %d, want 7", got)
+		}
+	})
+
+	t.Run("no arguments returns zero", func(t *testing.T) {
+		t.Parallel()
+
+		got := Coalesce[string]()
+		if got != "" {
+			t.Errorf("Coalesce() = %q, want empty", got)
+		}
+	})
+}
+
 func TestClass(t *testing.T) {
 	t.Parallel()
 
