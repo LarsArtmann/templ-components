@@ -150,7 +150,7 @@ templ TagsInput(props TagsInputProps) {
 				if props.Required {
 					required
 				}
-				aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, tagsInputFallbackName)) }
+				aria-label={ utils.Coalesce(props.AriaLabel, props.Label, tagsInputFallbackName) }
 				data-tc-tags-input
 				{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
 				{ props.Attrs... }

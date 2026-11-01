@@ -20,9 +20,9 @@ import "github.com/larsartmann/templ-components/utils"
 // shared animation profile in app.css.
 templ CommandPalette(props CommandPaletteProps) {
 	{{ id := utils.EnsureID("palette", props.ID) }}
-	{{ emptyMessage := utils.Ternary(props.EmptyMessage != "", props.EmptyMessage, "No results found.") }}
-	{{ inputPlaceholder := utils.Ternary(props.Placeholder != "", props.Placeholder, "Type a command or search…") }}
-	{{ listLabel := utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Commands") }}
+	{{ emptyMessage := utils.Coalesce(props.EmptyMessage, "No results found.") }}
+	{{ inputPlaceholder := utils.Coalesce(props.Placeholder, "Type a command or search…") }}
+	{{ listLabel := utils.Coalesce(props.AriaLabel, "Commands") }}
 	<div class="inline-flex">
 		if props.TriggerLabel != "" {
 			<button
@@ -46,7 +46,7 @@ templ CommandPalette(props CommandPaletteProps) {
 		if props.Hotkey {
 			data-tc-hotkey="true"
 		}
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Command palette") }
+		aria-label={ utils.Coalesce(props.AriaLabel, "Command palette") }
 		{ props.Attrs... }
 	>
 		<div class="border-gray-200 border-b dark:border-gray-700">

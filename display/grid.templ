@@ -72,10 +72,7 @@ var gridColsContainerLookup = map[GridCols]string{
 // gridClass returns the responsive Tailwind class string for a column count,
 // falling back to GridColsDefault for unknown values.
 func gridClass(cols GridCols) string {
-	if s, ok := gridColsLookup[cols]; ok {
-		return s
-	}
-	return gridColsLookup[GridColsDefault]
+	return utils.Lookup(gridColsLookup, cols, gridColsLookup[GridColsDefault])
 }
 
 // gridAutoFitClass generates a CSS auto-fit/minmax template class for
@@ -91,10 +88,7 @@ func gridAutoFitClass(minColWidth string) string {
 // gridContainerClass returns the container-query-based Tailwind class string
 // for a column count, falling back to GridColsDefault for unknown values.
 func gridContainerClass(cols GridCols) string {
-	if s, ok := gridColsContainerLookup[cols]; ok {
-		return s
-	}
-	return gridColsContainerLookup[GridColsDefault]
+	return utils.Lookup(gridColsContainerLookup, cols, gridColsContainerLookup[GridColsDefault])
 }
 
 // GridProps configures a responsive grid layout. Use Grid to lay out cards,

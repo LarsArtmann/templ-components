@@ -198,7 +198,7 @@ templ KanbanBoard(props KanbanBoardProps) {
 		data-tc-kanban
 		class={ utils.Class("min-w-0 rounded-xl", props.Class) }
 		role="region"
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Kanban board") }
+		aria-label={ utils.Coalesce(props.AriaLabel, "Kanban board") }
 		{ props.Attrs... }
 	>
 		if wired {
@@ -215,7 +215,7 @@ templ KanbanBoard(props KanbanBoardProps) {
 				if props.CSRFToken != "" {
 					<input
 						type="hidden"
-						name={ utils.Ternary(props.CSRFTokenName != "", props.CSRFTokenName, "csrf_token") }
+						name={ utils.Coalesce(props.CSRFTokenName, "csrf_token") }
 						value={ props.CSRFToken }
 					/>
 				}
@@ -265,7 +265,7 @@ templ KanbanBoard(props KanbanBoardProps) {
 						// while a card is optimistically placed into this column.
 						if len(col.Cards) == 0 {
 							<li data-tc-kanban-empty class="rounded-lg py-6 text-center text-sm text-gray-600 dark:text-gray-400">
-								{ utils.Ternary(props.EmptyColumnText != "", props.EmptyColumnText, kanbanEmptyColumnTextDefault) }
+								{ utils.Coalesce(props.EmptyColumnText, kanbanEmptyColumnTextDefault) }
 							</li>
 						}
 						for _, card := range col.Cards {

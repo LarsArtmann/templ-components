@@ -68,7 +68,7 @@ templ BarChart(props BarChartProps) {
 				style={ "height:" + props.Height }
 			}
 			role="img"
-			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, barChartFallbackName) }
+			aria-label={ utils.Coalesce(props.AriaLabel, barChartFallbackName) }
 		>
 			for _, bar := range bars {
 				<div
@@ -99,7 +99,7 @@ templ BarChart(props BarChartProps) {
 			}
 			class={ utils.Class("space-y-2", props.Class) }
 			role="img"
-			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, barChartFallbackName) }
+			aria-label={ utils.Coalesce(props.AriaLabel, barChartFallbackName) }
 		>
 			for _, bar := range bars {
 				<div

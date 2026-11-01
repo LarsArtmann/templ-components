@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **errorpage now pins `go-error-family v0.12.0`, matching every other
+  module.** The direct consumer still required v0.11.0 after the indirect
+  consumers had moved, a skew that only a standalone (`GOWORK=off`) build of
+  errorpage could observe. Verified at source before bumping: v0.11.0 →
+  v0.12.0 changes no exported API (the sole delta is a nil-receiver-safe
+  `(*Error).Unwrap`). Consumers are unaffected.
+
+### Changed
+
+- **Architecture audit artifacts (2026-11-01):** module boundary assessment
+  (`docs/modularization/2026-11-01_ASSESSMENT.html` — all boundaries pass the
+  Unix gates, Keep verdict), scored architecture review
+  (`docs/architecture-understanding/2026-11-01_23-54_architecture-review.html`,
+  composite 4.4/5), current + improved D2 diagrams, and the data-model review
+  (`docs/reviews/2026-11-01_data-model-review.html`). Dev-tooling only: three
+  empty `catch` blocks in build/website JS now document their
+  localStorage-private-mode intent (erraudit's prescribed remedy).
+
 ## [1.26.0] — 2026-10-31
 
 ### Fixed

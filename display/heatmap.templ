@@ -64,7 +64,7 @@ templ Heatmap(props HeatmapProps) {
 		>
 			<table
 				class="min-w-full border-collapse text-xs"
-				aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, heatmapFallbackName) }
+				aria-label={ utils.Coalesce(props.AriaLabel, heatmapFallbackName) }
 			>
 				if len(props.ColumnLabels) > 0 {
 					<thead>

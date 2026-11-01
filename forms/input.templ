@@ -78,10 +78,7 @@ func enterKeyHintValue(props InputProps) string {
 	if props.EnterKeyHint != "" && EnterKeyHintTypeIsValid(props.EnterKeyHint) {
 		return string(props.EnterKeyHint)
 	}
-	if ekh, ok := enterKeyHintForType[props.Type]; ok {
-		return ekh
-	}
-	return ""
+	return utils.Lookup(enterKeyHintForType, props.Type, "")
 }
 
 // AutocompleteType is a token from the HTML autofill vocabulary, emitted as

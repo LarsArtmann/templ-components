@@ -802,7 +802,7 @@ templ BarChart(props BarChartProps) {
 				style={ "height:" + props.Height }
 			}
 			role="img"
-			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, barChartFallbackName) }
+			aria-label={ utils.Coalesce(props.AriaLabel, barChartFallbackName) }
 		>
 			for _, bar := range bars {
 				<div
@@ -833,7 +833,7 @@ templ BarChart(props BarChartProps) {
 			}
 			class={ utils.Class("space-y-2", props.Class) }
 			role="img"
-			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, barChartFallbackName) }
+			aria-label={ utils.Coalesce(props.AriaLabel, barChartFallbackName) }
 		>
 			for _, bar := range bars {
 				<div
@@ -1641,7 +1641,7 @@ templ Carousel(props CarouselProps) {
 		data-tc-carousel={ id }
 		role="region"
 		aria-roledescription="carousel"
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Carousel") }
+		aria-label={ utils.Coalesce(props.AriaLabel, "Carousel") }
 		tabindex="0"
 		{ props.Attrs... }
 	>
@@ -2941,9 +2941,9 @@ import "github.com/larsartmann/templ-components/utils"
 // shared animation profile in app.css.
 templ CommandPalette(props CommandPaletteProps) {
 	{{ id := utils.EnsureID("palette", props.ID) }}
-	{{ emptyMessage := utils.Ternary(props.EmptyMessage != "", props.EmptyMessage, "No results found.") }}
-	{{ inputPlaceholder := utils.Ternary(props.Placeholder != "", props.Placeholder, "Type a command or search…") }}
-	{{ listLabel := utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Commands") }}
+	{{ emptyMessage := utils.Coalesce(props.EmptyMessage, "No results found.") }}
+	{{ inputPlaceholder := utils.Coalesce(props.Placeholder, "Type a command or search…") }}
+	{{ listLabel := utils.Coalesce(props.AriaLabel, "Commands") }}
 	<div class="inline-flex">
 		if props.TriggerLabel != "" {
 			<button
@@ -2967,7 +2967,7 @@ templ CommandPalette(props CommandPaletteProps) {
 		if props.Hotkey {
 			data-tc-hotkey="true"
 		}
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Command palette") }
+		aria-label={ utils.Coalesce(props.AriaLabel, "Command palette") }
 		{ props.Attrs... }
 	>
 		<div class="border-gray-200 border-b dark:border-gray-700">
@@ -4551,10 +4551,7 @@ var gridColsContainerLookup = map[GridCols]string{
 // gridClass returns the responsive Tailwind class string for a column count,
 // falling back to GridColsDefault for unknown values.
 func gridClass(cols GridCols) string {
-	if s, ok := gridColsLookup[cols]; ok {
-		return s
-	}
-	return gridColsLookup[GridColsDefault]
+	return utils.Lookup(gridColsLookup, cols, gridColsLookup[GridColsDefault])
 }
 
 // gridAutoFitClass generates a CSS auto-fit/minmax template class for
@@ -4570,10 +4567,7 @@ func gridAutoFitClass(minColWidth string) string {
 // gridContainerClass returns the container-query-based Tailwind class string
 // for a column count, falling back to GridColsDefault for unknown values.
 func gridContainerClass(cols GridCols) string {
-	if s, ok := gridColsContainerLookup[cols]; ok {
-		return s
-	}
-	return gridColsContainerLookup[GridColsDefault]
+	return utils.Lookup(gridColsContainerLookup, cols, gridColsContainerLookup[GridColsDefault])
 }
 
 // GridProps configures a responsive grid layout. Use Grid to lay out cards,
@@ -4945,7 +4939,7 @@ templ Heatmap(props HeatmapProps) {
 		>
 			<table
 				class="min-w-full border-collapse text-xs"
-				aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, heatmapFallbackName) }
+				aria-label={ utils.Coalesce(props.AriaLabel, heatmapFallbackName) }
 			>
 				if len(props.ColumnLabels) > 0 {
 					<thead>
@@ -5921,7 +5915,7 @@ templ KanbanBoard(props KanbanBoardProps) {
 		data-tc-kanban
 		class={ utils.Class("min-w-0 rounded-xl", props.Class) }
 		role="region"
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Kanban board") }
+		aria-label={ utils.Coalesce(props.AriaLabel, "Kanban board") }
 		{ props.Attrs... }
 	>
 		if wired {
@@ -5938,7 +5932,7 @@ templ KanbanBoard(props KanbanBoardProps) {
 				if props.CSRFToken != "" {
 					<input
 						type="hidden"
-						name={ utils.Ternary(props.CSRFTokenName != "", props.CSRFTokenName, "csrf_token") }
+						name={ utils.Coalesce(props.CSRFTokenName, "csrf_token") }
 						value={ props.CSRFToken }
 					/>
 				}
@@ -5988,7 +5982,7 @@ templ KanbanBoard(props KanbanBoardProps) {
 						// while a card is optimistically placed into this column.
 						if len(col.Cards) == 0 {
 							<li data-tc-kanban-empty class="rounded-lg py-6 text-center text-sm text-gray-600 dark:text-gray-400">
-								{ utils.Ternary(props.EmptyColumnText != "", props.EmptyColumnText, kanbanEmptyColumnTextDefault) }
+								{ utils.Coalesce(props.EmptyColumnText, kanbanEmptyColumnTextDefault) }
 							</li>
 						}
 						for _, card := range col.Cards {
@@ -6239,7 +6233,7 @@ templ Lightbox(props LightboxProps) {
 						aria-label={ "Open image: " + img.Alt }
 					>
 						<img
-							src={ templ.SafeURL(utils.Ternary(img.ThumbSrc != "", img.ThumbSrc, img.Src)) }
+							src={ templ.SafeURL(utils.Coalesce(img.ThumbSrc, img.Src)) }
 							alt={ img.Alt }
 							class="h-20 w-20 object-cover transition-transform group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
 							loading="lazy"
@@ -6772,7 +6766,7 @@ templ LoadingDialog(props LoadingDialogProps) {
 	@overlayShell(overlayShellProps{
 		id:        id,
 		open:      props.Open,
-		ariaLabel: utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Message != "", props.Message, utils.Ternary(props.Title != "", props.Title, "Loading"))),
+		ariaLabel: utils.Coalesce(props.AriaLabel, props.Message, props.Title, "Loading"),
 		kind:      OverlayModal,
 		nonce:     props.Nonce,
 		dialogClass: utils.Class("tc-modal bg-white dark:bg-gray-900 rounded-lg shadow-xl dark:shadow-black/20 max-w-sm w-full mx-4 overflow-hidden print:hidden", props.Class),

@@ -41,7 +41,7 @@ templ Lightbox(props LightboxProps) {
 						aria-label={ "Open image: " + img.Alt }
 					>
 						<img
-							src={ templ.SafeURL(utils.Ternary(img.ThumbSrc != "", img.ThumbSrc, img.Src)) }
+							src={ templ.SafeURL(utils.Coalesce(img.ThumbSrc, img.Src)) }
 							alt={ img.Alt }
 							class="h-20 w-20 object-cover transition-transform group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
 							loading="lazy"
