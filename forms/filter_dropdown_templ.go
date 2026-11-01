@@ -132,7 +132,7 @@ func FilterDropdown(props FilterDropdownProps) templ.Component {
 		wired := wireHosted(props.Wire, wire.EventChange)
 		isWired := props.Wire != nil && props.Wire.URL != ""
 		props.ID = fieldID(props.ID, props.Name)
-		selectName := utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, filterDropdownFallbackName))
+		selectName := utils.Coalesce(props.AriaLabel, props.Label, filterDropdownFallbackName)
 		var templ_7745c5c3_Var2 = []any{utils.Class("inline-flex flex-col", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
@@ -473,9 +473,9 @@ func FilterDropdown(props FilterDropdownProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var23 string
-			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.HxTrigger != "", props.HxTrigger, "change"))
+			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Coalesce(props.HxTrigger, "change"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/filter_dropdown.templ`, Line: 158, Col: 80}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/filter_dropdown.templ`, Line: 158, Col: 58}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var23)
 			if templ_7745c5c3_Err != nil {

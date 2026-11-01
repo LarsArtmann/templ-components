@@ -257,9 +257,9 @@ func KanbanBoard(props KanbanBoardProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Kanban board"))
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Coalesce(props.AriaLabel, "Kanban board"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/kanban.templ`, Line: 201, Col: 84}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/kanban.templ`, Line: 201, Col: 62}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
@@ -348,9 +348,9 @@ func KanbanBoard(props KanbanBoardProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var10 string
-				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.CSRFTokenName != "", props.CSRFTokenName, "csrf_token"))
+				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Coalesce(props.CSRFTokenName, "csrf_token"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/kanban.templ`, Line: 218, Col: 88}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/kanban.templ`, Line: 218, Col: 62}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 				if templ_7745c5c3_Err != nil {
@@ -598,9 +598,9 @@ func KanbanBoard(props KanbanBoardProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var25 string
-				templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(utils.Ternary(props.EmptyColumnText != "", props.EmptyColumnText, kanbanEmptyColumnTextDefault))
+				templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(utils.Coalesce(props.EmptyColumnText, kanbanEmptyColumnTextDefault))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/kanban.templ`, Line: 268, Col: 105}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/kanban.templ`, Line: 268, Col: 77}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 				if templ_7745c5c3_Err != nil {

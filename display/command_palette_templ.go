@@ -48,9 +48,9 @@ func CommandPalette(props CommandPaletteProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		id := utils.EnsureID("palette", props.ID)
-		emptyMessage := utils.Ternary(props.EmptyMessage != "", props.EmptyMessage, "No results found.")
-		inputPlaceholder := utils.Ternary(props.Placeholder != "", props.Placeholder, "Type a command or search…")
-		listLabel := utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Commands")
+		emptyMessage := utils.Coalesce(props.EmptyMessage, "No results found.")
+		inputPlaceholder := utils.Coalesce(props.Placeholder, "Type a command or search…")
+		listLabel := utils.Coalesce(props.AriaLabel, "Commands")
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"inline-flex\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -147,9 +147,9 @@ func CommandPalette(props CommandPaletteProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 string
-		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Command palette"))
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Coalesce(props.AriaLabel, "Command palette"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/command_palette.templ`, Line: 49, Col: 87}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/command_palette.templ`, Line: 49, Col: 65}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 		if templ_7745c5c3_Err != nil {

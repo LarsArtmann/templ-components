@@ -403,9 +403,9 @@ func TagsInput(props TagsInputProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var18 string
-		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, tagsInputFallbackName)))
+		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Coalesce(props.AriaLabel, props.Label, tagsInputFallbackName))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 153, Col: 140}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/tags_input.templ`, Line: 153, Col: 84}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 		if templ_7745c5c3_Err != nil {

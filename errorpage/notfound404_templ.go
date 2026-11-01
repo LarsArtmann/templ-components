@@ -283,9 +283,9 @@ func NotFound404(props NotFound404Props) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var15 string
-			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(utils.Ternary(props.LinksTitle != "", props.LinksTitle, notFound404PopularLabel))
+			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(utils.Coalesce(props.LinksTitle, notFound404PopularLabel))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `notfound404.templ`, Line: 80, Col: 178}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `notfound404.templ`, Line: 80, Col: 155}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {

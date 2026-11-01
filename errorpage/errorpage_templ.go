@@ -289,7 +289,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = actionLinkBody(utils.Ternary(wayOutText != "", wayOutText, "Go back")).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = actionLinkBody(utils.Coalesce(wayOutText, "Go back")).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

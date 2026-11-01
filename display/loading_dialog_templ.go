@@ -159,7 +159,7 @@ func LoadingDialog(props LoadingDialogProps) templ.Component {
 		templ_7745c5c3_Err = overlayShell(overlayShellProps{
 			id:          id,
 			open:        props.Open,
-			ariaLabel:   utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Message != "", props.Message, utils.Ternary(props.Title != "", props.Title, "Loading"))),
+			ariaLabel:   utils.Coalesce(props.AriaLabel, props.Message, props.Title, "Loading"),
 			kind:        OverlayModal,
 			nonce:       props.Nonce,
 			dialogClass: utils.Class("tc-modal bg-white dark:bg-gray-900 rounded-lg shadow-xl dark:shadow-black/20 max-w-sm w-full mx-4 overflow-hidden print:hidden", props.Class),

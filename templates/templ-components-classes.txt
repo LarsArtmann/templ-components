@@ -10761,7 +10761,7 @@ templ LoadingOverlay(props LoadingOverlayProps) {
 		<div
 			class="bg-white dark:bg-gray-800 rounded-lg shadow-xl dark:shadow-black/20 p-8 max-w-sm w-full mx-4"
 			role="status"
-			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, props.Message) }
+			aria-label={ utils.Coalesce(props.AriaLabel, props.Message) }
 		>
 			<div class="text-center">
 				<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4">
@@ -11116,7 +11116,7 @@ templ StepIndicator(props StepIndicatorProps) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Progress") }
+		aria-label={ utils.Coalesce(props.AriaLabel, "Progress") }
 		class={ utils.Class("", props.Class) }
 		{ props.Attrs... }
 	>
@@ -12757,7 +12757,7 @@ templ FilterDropdown(props FilterDropdownProps) {
 	{{ wired := wireHosted(props.Wire, wire.EventChange) }}
 	{{ isWired := props.Wire != nil && props.Wire.URL != "" }}
 	{{ props.ID = fieldID(props.ID, props.Name) }}
-	{{ selectName := utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, filterDropdownFallbackName)) }}
+	{{ selectName := utils.Coalesce(props.AriaLabel, props.Label, filterDropdownFallbackName) }}
 	<div class={ utils.Class("inline-flex flex-col", props.Class) } { props.Attrs... }>
 		if isWired {
 			<form
@@ -12808,7 +12808,7 @@ templ FilterDropdown(props FilterDropdownProps) {
 				class={ filterDropdownInputClass() }
 				hx-get={ templ.SafeURL(props.HxGet) }
 				hx-target={ props.HxTarget }
-				hx-trigger={ utils.Ternary(props.HxTrigger != "", props.HxTrigger, "change") }
+				hx-trigger={ utils.Coalesce(props.HxTrigger, "change") }
 				if props.HxSwap != "" {
 					hx-swap={ props.HxSwap }
 				}
@@ -13278,7 +13278,7 @@ templ formInner(props FormProps) {
 		{ props.Attrs... }
 	>
 		if props.CSRFToken != "" {
-			{{ csrfName := utils.Ternary(props.CSRFTokenName != "", props.CSRFTokenName, "csrf_token") }}
+			{{ csrfName := utils.Coalesce(props.CSRFTokenName, "csrf_token") }}
 			<input type="hidden" name={ csrfName } value={ props.CSRFToken }/>
 		}
 		{ children... }
@@ -13388,10 +13388,7 @@ func enterKeyHintValue(props InputProps) string {
 	if props.EnterKeyHint != "" && EnterKeyHintTypeIsValid(props.EnterKeyHint) {
 		return string(props.EnterKeyHint)
 	}
-	if ekh, ok := enterKeyHintForType[props.Type]; ok {
-		return ekh
-	}
-	return ""
+	return utils.Lookup(enterKeyHintForType, props.Type, "")
 }
 
 // AutocompleteType is a token from the HTML autofill vocabulary, emitted as
@@ -14094,7 +14091,7 @@ templ Rating(props RatingProps) {
 				id={ props.ID }
 			}
 			role={ utils.Ternary(props.ReadOnly, "img", "radiogroup") }
-			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, "Rating")) }
+			aria-label={ utils.Coalesce(props.AriaLabel, props.Label, "Rating") }
 			if props.Required && !props.ReadOnly {
 				aria-required="true"
 			}
@@ -14745,7 +14742,7 @@ templ TagsInput(props TagsInputProps) {
 				if props.Required {
 					required
 				}
-				aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, tagsInputFallbackName)) }
+				aria-label={ utils.Coalesce(props.AriaLabel, props.Label, tagsInputFallbackName) }
 				data-tc-tags-input
 				{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
 				{ props.Attrs... }
@@ -16640,7 +16637,7 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 		data-theme-toggle
 		role="switch"
 		aria-checked="false"
-		aria-label={ utils.Ternary(ariaLabel != "", ariaLabel, "Toggle theme") }
+		aria-label={ utils.Coalesce(ariaLabel, "Toggle theme") }
 	>
 		@icons.Icon(icons.Moon, "h-5 w-5 dark:hidden")
 		@icons.Icon(icons.Sun, "hidden h-5 w-5 dark:block")
@@ -16875,7 +16872,7 @@ templ Breadcrumbs(props BreadcrumbsProps) {
 			id={ props.ID }
 		}
 		class={ utils.Class("flex", props.Class) }
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Breadcrumb") }
+		aria-label={ utils.Coalesce(props.AriaLabel, "Breadcrumb") }
 		{ props.Attrs... }
 	>
 		<ol class="inline-flex items-center space-x-1 md:space-x-3">
@@ -17285,7 +17282,7 @@ templ navInner(props NavProps, menuID string) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Main navigation") }
+		aria-label={ utils.Coalesce(props.AriaLabel, "Main navigation") }
 		class={ utils.Class("z-40 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900", props.Class),
 			templ.KV("sticky top-0", props.Sticky) }
 		{ props.Attrs... }
@@ -17800,7 +17797,7 @@ templ Pagination(props PaginationProps) {
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Pagination") }
+			aria-label={ utils.Coalesce(props.AriaLabel, "Pagination") }
 			class={ utils.Class("flex items-center justify-between", props.Class),
 				templ.KV("@container", props.ContainerAware) }
 			{ props.Attrs... }
@@ -23150,7 +23147,7 @@ templ ErrorPage(props ErrorPageProps) {
 									href={ templ.SafeURL(wayOutHref) }
 									class={ errorActionClassScaffold + "shadow-sm " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 								>
-									@actionLinkBody(utils.Ternary(wayOutText != "", wayOutText, "Go back"))
+									@actionLinkBody(utils.Coalesce(wayOutText, "Go back"))
 								</a>
 							} else if wayOutText != "" {
 								<button
@@ -23831,7 +23828,7 @@ templ NotFound404(props NotFound404Props) {
 			</div>
 			if len(props.Links) > 0 {
 				<div class="mt-10">
-					<p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-500">{ utils.Ternary(props.LinksTitle != "", props.LinksTitle, notFound404PopularLabel) }</p>
+					<p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-500">{ utils.Coalesce(props.LinksTitle, notFound404PopularLabel) }</p>
 					<div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
 						for _, link := range props.Links {
 							<a

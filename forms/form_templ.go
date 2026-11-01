@@ -512,7 +512,7 @@ func formInner(props FormProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.CSRFToken != "" {
-			csrfName := utils.Ternary(props.CSRFTokenName != "", props.CSRFTokenName, "csrf_token")
+			csrfName := utils.Coalesce(props.CSRFTokenName, "csrf_token")
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<input type=\"hidden\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

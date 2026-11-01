@@ -117,7 +117,7 @@ module supplies the CSP-safe wrapper plus the dark-mode bridge (ADR-0031, tier 2
 #### `utils` — shared helpers
 
 `BaseProps` (embed in every props struct), `ComponentProps`, `Class` (tailwind-merge),
-`Lookup`, `Ternary`, `EnsureID`, `ScriptAttrs`, `ScriptComponent`, `Version`. Sub-packages:
+`Lookup`, `Ternary`, `Coalesce` (first non-zero value), `EnsureID`, `ScriptAttrs`, `ScriptComponent`, `Version`. Sub-packages:
 `utils/format` (`Bytes`, `CompactDuration`, `ClockDuration`, `Percent`, `StringOrDash`,
 `CompactCount`), `utils/wire` (transport-agnostic wiring, ADR-0036), `utils/svg`,
 `utils/tone`, `utils/cdn`, `utils/golden`.

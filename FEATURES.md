@@ -48,6 +48,7 @@ type BaseProps struct {
 | `Class`           | `(classes ...string) string`                            | Merges Tailwind classes via tailwind-merge-go                          |
 | `CurrentYear`     | `() string`                                             | Current year string                                                    |
 | `Ternary`         | `[T any](bool, a, b T) T`                               | Generic ternary                                                        |
+| `Coalesce`        | `[T comparable](values ...T) T`                         | First non-zero value: the override-or-default idiom in one call        |
 | `Lookup`          | `[K comparable, V any](m map[K]V, key K, fallback V) V` | Generic map lookup with fallback                                       |
 | `EnsureID`        | `(prefix, id string) string`                            | Auto-generates unique ID via crypto/rand if empty                      |
 | `ScriptAttrs`     | `(nonce string) templ.Attributes`                       | Script attribute set with the omit-empty nonce rule (never `nonce=""`) |
