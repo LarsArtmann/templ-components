@@ -30,7 +30,7 @@ mkdirSync(outdir, { recursive: true });
 
 const SELECTS = ["stylable-region", "stylable-channel", "stylable-env", "native-region"];
 
-const probe = (names) => `
+const probe = () => `
   (() => {
     const out = {};
     for (const name of ${JSON.stringify(SELECTS)}) {
@@ -65,13 +65,15 @@ for (const [engineName, engine] of [
   await context.addInitScript((t) => {
     try {
       localStorage.setItem("theme", t);
-    } catch (e) {}
+    } catch (e) {
+      /* localStorage unavailable (private mode): keep runtime default theme */
+    }
   }, "light");
   const page = await context.newPage();
   await page.goto(base + "/stylable-select", { waitUntil: "load" });
   await page.waitForTimeout(800);
 
-  const result = await page.evaluate(probe(SELECTS));
+  const result = await page.evaluate(probe());
   const entry = { engine: engineName, selects: result, layoutOk: !result._page.hScroll };
 
   // μ27: per-select screenshots of the flat Stylable select + native counterpart.

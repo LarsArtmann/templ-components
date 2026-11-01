@@ -17,7 +17,9 @@
     var stored = null;
     try {
       stored = localStorage.getItem("theme");
-    } catch (e) {}
+    } catch (e) {
+      /* localStorage unavailable (private mode): treat as no stored theme */
+    }
     if (!stored) {
       // No explicit choice: mirror the OS like the library ThemeScript does.
       document.documentElement.classList.toggle("dark", media.matches);

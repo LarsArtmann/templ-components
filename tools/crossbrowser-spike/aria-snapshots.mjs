@@ -27,7 +27,9 @@ const context = await browser.newContext({ viewport: { width: 1280, height: 800 
 await context.addInitScript(() => {
   try {
     localStorage.setItem("theme", "light");
-  } catch (e) {}
+  } catch (e) {
+    /* localStorage unavailable (private mode): keep runtime default theme */
+  }
 });
 const page = await context.newPage();
 
