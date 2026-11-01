@@ -314,12 +314,12 @@ writes its own `<timestamp>-<pid>/` dir, and the newest 10 are retained (older
 ones are pruned when a new run dir is created). A re-run therefore can never
 wipe the evidence of an earlier failing run mid-investigation (which happened
 twice on 2026-10-30 under the previous single-run wipe scheme). Runs that fail
-only on *some* tests leave artifacts only for those tests; a passing re-run of
+only on _some_ tests leave artifacts only for those tests; a passing re-run of
 a test removes its own stale artifacts from the current run's directory.
 
 ### Text-only mismatch on a shifting subset of routes (webfont race)
 
-A ~1% mismatch spread across a whole page's glyphs, hitting a *different* set
+A ~1% mismatch spread across a whole page's glyphs, hitting a _different_ set
 of routes on each run, is not a layout regression — it is the Google Fonts
 race. The demo links Inter / JetBrains Mono / Space Grotesk from
 `fonts.googleapis.com` with `font-display: swap`, so a capture that happens
@@ -336,7 +336,7 @@ Both halves are fixed in `visualtest/external_fonts.go`:
   `fontconfig` pin provides — the same faces in every environment.
 - `waitFontsSettled()` polls `document.readyState === 'complete' &&
   document.fonts.status === 'loaded'` after the animation settle, so a
-  *self-hosted* face (the website) can never be captured mid-swap either.
+  _self-hosted_ face (the website) can never be captured mid-swap either.
 
 Never make a golden pass by raising `MaxMismatch`, and never record a baseline
 with the CDN block missing.
@@ -361,7 +361,7 @@ Three layers keep captures byte-stable, each with a regression guard:
 
 The golden comparison's 0.1% tolerance can hide a small animated region
 (e.g. a spinner wiggling inside tolerance) that the byte-equal gate catches —
-that is by design: the gate proves the *chain* is deterministic; the goldens
+that is by design: the gate proves the _chain_ is deterministic; the goldens
 only prove the pages match their baselines.
 
 ## Why a separate Go module?

@@ -18,10 +18,10 @@ Nothing here is irreversible except the tagged releases (#269's PR is branch-pre
 **Question:** which browser generation is the DEFAULT code path, with newer features as
 opt-in layers vs the reverse?
 
-| Option | Meaning | Consequence for the backlog |
-| --- | --- | --- |
+| Option                                             | Meaning                                                                                                                                                                                                                 | Consequence for the backlog                                                                                                                                                                                           |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **A. Widely-available 2024 (RECOMMENDED DEFAULT)** | `closedby="any"`, `::details-content`, popover, `interestfor`, anchor positioning, invoker commands STAY behind feature-detect/`@supports` fallbacks; the fallback path remains the shipped default for every component | C22/C23 ship the enhancement-layer shape (new platform path + JS/CSS fallback kept); C24 toasts keep the live region as primary; audit §5's warning honoured (Baseline claims age — do NOT promote on a guide's word) |
-| B. 2025/2026-baseline-first | Newly-available features become the default path where the guide marks them Baseline; fallbacks demote to legacy engines only | Smaller payloads, but Firefox/Safari-before-N users get the degraded path; several audit "gap" rows (#473, #476…) become "skip" instead of "post-wave" |
+| B. 2025/2026-baseline-first                        | Newly-available features become the default path where the guide marks them Baseline; fallbacks demote to legacy engines only                                                                                           | Smaller payloads, but Firefox/Safari-before-N users get the degraded path; several audit "gap" rows (#473, #476…) become "skip" instead of "post-wave"                                                                |
 
 **Evidence:** audit §5 (CLI per-browser tables contradict MDN on anchor positioning;
 `interpolate-size`/`field-sizing`/`closedby`/invoker commands are all Newly-available);
@@ -36,10 +36,10 @@ consumers; MWG guides themselves grade our fallbacks as the documented polyfill-
 **Question:** is the existing `LoadingOverlay` a page-blocking MODAL or a STATIC
 in-place overlay?
 
-| Option | Meaning | Consequence |
-| --- | --- | --- |
+| Option                                                          | Meaning                                                                                                                                                                                                                                                                                                      | Consequence                                                                                                                                                                  |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **A. Static by default, modal split out (RECOMMENDED DEFAULT)** | `LoadingOverlay` keeps its name and becomes an honest static region (`aria-busy`/`aria-live`, no `role="dialog"`); NEW `LoadingDialog` (on `overlayShell`) covers the page-blocking case; the demo's `Class: "absolute"` specimen migrates to the static variant, a modal specimen is added behind a trigger | The markup stops lying (today: `role="dialog" aria-modal` with the page still interactive behind it — the audit's "last legacy modal"); no consumer break for the demo shape |
-| B. Modal by default | `LoadingOverlay` becomes `<dialog>` + `showModal()`; consumers wanting in-place spinners need a different component | Breaks the pinned demo specimen and every consumer using it inline; heavier migration |
+| B. Modal by default                                             | `LoadingOverlay` becomes `<dialog>` + `showModal()`; consumers wanting in-place spinners need a different component                                                                                                                                                                                          | Breaks the pinned demo specimen and every consumer using it inline; heavier migration                                                                                        |
 
 **Evidence:** the demo pins `Class: "absolute"` inside a frame (in-place usage is the
 shipped intent); the audit ranked this the weakest overlay (no focus containment, page
@@ -172,18 +172,18 @@ Each row: evidence → options → recommendation → unblocks.
 
 ## 3. What each answer unblocks (plan mapping)
 
-| Answer | Unblocks |
-| --- | --- |
-| Q1 = A | C19, C22, C23, C24 execution as enhancement-layers; #473/#476–#482 stay post-wave |
-| Q2 = A | C21 (split ships as: static keeps the name, `LoadingDialog` added) |
-| #211 = a | release script + CSS inventory slimming |
-| #234 = a | C25 folds allowlist into the guard |
-| #237 = a | ADR-0011 ratified; SidebarNav docs stay |
-| #238/#239 = a | Kanban failure contract documented; no new API |
-| #269 = a | upstream PR opens (other repo) |
-| #329 = c | demo Datastar page works on canonical URL |
-| #358 = a | C18 lockstep batch; probe gotcha dies |
-| #411 = a | tool-trial G1 closes; lanes stay findings-only |
+| Answer        | Unblocks                                                                          |
+| ------------- | --------------------------------------------------------------------------------- |
+| Q1 = A        | C19, C22, C23, C24 execution as enhancement-layers; #473/#476–#482 stay post-wave |
+| Q2 = A        | C21 (split ships as: static keeps the name, `LoadingDialog` added)                |
+| #211 = a      | release script + CSS inventory slimming                                           |
+| #234 = a      | C25 folds allowlist into the guard                                                |
+| #237 = a      | ADR-0011 ratified; SidebarNav docs stay                                           |
+| #238/#239 = a | Kanban failure contract documented; no new API                                    |
+| #269 = a      | upstream PR opens (other repo)                                                    |
+| #329 = c      | demo Datastar page works on canonical URL                                         |
+| #358 = a      | C18 lockstep batch; probe gotcha dies                                             |
+| #411 = a      | tool-trial G1 closes; lanes stay findings-only                                    |
 
 **Defaults applied in this execution round:** Q1=A, Q2=A, #211 pending owner (not
 executed — release-script change too close to C26), #234/#237/#238/#239/#358/#411

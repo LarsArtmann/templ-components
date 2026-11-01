@@ -7,13 +7,13 @@ wave already executed (Q1=A, Q2=A, #428=amber).
 
 ## Owner-gated code rows
 
-| Row  | Ask                                                                 | Verified state (2026-10-31)                                                                                     | Recommendation                                                                                                          | Effort |
-| ---  | ---                                                                 | ---                                                                                                             | ---                                                                                                                     | ---    |
-| #448 | ogshot/siteshots 23-line flag-bootstrap vs ADR-0010                 | Both tools share the flag-parsing/domain shape; 2 callers                                                       | **Extract** into a shared `internal/flagbootstrap` in visualtest — same-repo, below the "same package" objection, kills ~23 duplicated lines ×2 | S      |
-| #303 | Website-module content clones (icon-box trio)                       | Three near-identical marketing-card blocks in the SSG templates                                                 | **Accept under ADR-0009** (content templates, t=1 noise) — extraction would couple the SSG to component props for no reuse | XS     |
-| #312 | Export `display.HeadingTag` (public helper)                         | `headingTag` is package-private; zero external demand recorded                                                  | **Keep private** — export on first external ask (the #217 demand-gate pattern)                                           | XS     |
-| #487 | Tooltip CSS-anchor layer mechanism                                  | JS clamp shipped (C23); per-instance anchor names need inline `style` attrs (CSP-hostile) or nonce'd `<style>` tags (DOM-heavy) | **Decide between style-attr-with-allowlist vs per-instance style tags**; JS clamp is an acceptable steady state         | M (after decision) |
-| #211 | Fate of `templates/styles.css` + `theme.out.css` (#211=a)           | Packet default "release script + CSS inventory slimming" NOT executed this wave (too close to C26)              | **Execute in the next non-release session**: fold `styles.css` decision + inventory slimming into one commit            | S      |
+| Row  | Ask                                                       | Verified state (2026-10-31)                                                                                                     | Recommendation                                                                                                                                  | Effort             |
+| ---- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| #448 | ogshot/siteshots 23-line flag-bootstrap vs ADR-0010       | Both tools share the flag-parsing/domain shape; 2 callers                                                                       | **Extract** into a shared `internal/flagbootstrap` in visualtest — same-repo, below the "same package" objection, kills ~23 duplicated lines ×2 | S                  |
+| #303 | Website-module content clones (icon-box trio)             | Three near-identical marketing-card blocks in the SSG templates                                                                 | **Accept under ADR-0009** (content templates, t=1 noise) — extraction would couple the SSG to component props for no reuse                      | XS                 |
+| #312 | Export `display.HeadingTag` (public helper)               | `headingTag` is package-private; zero external demand recorded                                                                  | **Keep private** — export on first external ask (the #217 demand-gate pattern)                                                                  | XS                 |
+| #487 | Tooltip CSS-anchor layer mechanism                        | JS clamp shipped (C23); per-instance anchor names need inline `style` attrs (CSP-hostile) or nonce'd `<style>` tags (DOM-heavy) | **Decide between style-attr-with-allowlist vs per-instance style tags**; JS clamp is an acceptable steady state                                 | M (after decision) |
+| #211 | Fate of `templates/styles.css` + `theme.out.css` (#211=a) | Packet default "release script + CSS inventory slimming" NOT executed this wave (too close to C26)                              | **Execute in the next non-release session**: fold `styles.css` decision + inventory slimming into one commit                                    | S                  |
 
 ## Post-wave MWG platform cluster (all Q1=A enhancement layers, opt-in, `@supports`-gated)
 
@@ -27,11 +27,11 @@ shell), the rest cosmetic-last.
 
 ## Capture/e2e residue
 
-| Row  | Ask                                            | Recommendation                                                                                     |
-| ---  | ---                                            | ---                                                                                                |
-| #465 | `tabLifetime` bound regression test            | **Do** — small, protects a load-bearing bound (S)                                                   |
-| #466 | `icons_light` stray-capture explanation        | **Investigate once with the C04 determinism gate armed**; if it reproduces, it is a real bug, else close as load flake (M) |
-| #162 | Human-eyeball progressbar half_light PNG       | **Superseded by C24** — the bar is a native `<progress>` now; re-eyeball the NEW capture instead    |
+| Row  | Ask                                      | Recommendation                                                                                                             |
+| ---- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| #465 | `tabLifetime` bound regression test      | **Do** — small, protects a load-bearing bound (S)                                                                          |
+| #466 | `icons_light` stray-capture explanation  | **Investigate once with the C04 determinism gate armed**; if it reproduces, it is a real bug, else close as load flake (M) |
+| #162 | Human-eyeball progressbar half_light PNG | **Superseded by C24** — the bar is a native `<progress>` now; re-eyeball the NEW capture instead                           |
 
 ## Demo hygiene (deferred by design)
 
