@@ -25,7 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-- **Override-or-default call sites now read as intent.** 24 templ render sites
+- **Override-or-default call sites now read as intent.** 26 templ render sites
   across display, forms, feedback, layout, navigation, and errorpage use
   `utils.Coalesce` instead of the `Ternary(x != "", x, fallback)` shape —
   three-level aria-label chains collapse to one call. Rendered output is
