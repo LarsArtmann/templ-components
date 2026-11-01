@@ -226,6 +226,7 @@ CSP-safe wrapper and the dark-mode bridge (ADR-0031, tier 2).
 | `Class(classes ...string)`                 | Tailwind class merge (tailwind-merge-go, mutex-protected)        |
 | `Lookup(m, key, fallback)`                 | Map lookup with fallback for style variants                      |
 | `Ternary(cond, a, b)`                      | Functional ternary for templ expressions                         |
+| `Coalesce(values ...T)`                    | First non-zero value: override-or-default in one call            |
 | `EnsureID(prefix, id)`                     | Auto-generate DOM-safe IDs (crypto/rand)                         |
 | `ScriptAttrs(nonce)`                       | Script attrs with the omit-empty nonce rule (never `nonce=""`)   |
 | `ScriptComponent(nonce, script, errLabel)` | The canonical CSP-safe inline-script writer for custom scripts   |

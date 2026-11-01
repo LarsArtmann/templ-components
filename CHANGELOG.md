@@ -15,7 +15,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   v0.12.0 changes no exported API (the sole delta is a nil-receiver-safe
   `(*Error).Unwrap`). Consumers are unaffected.
 
+### Added
+
+- **`utils.Coalesce[T comparable](values ...T) T`** returns the first argument
+  that is not the zero value for its type: the library's
+  override-or-default idiom (`Ternary(x != "", x, fallback)`) as one
+  precedence-reading call. `Coalesce(props.AriaLabel, props.Label, "Fallback")`
+  replaces the nested-ternary chains that aria-label fallbacks used to need.
+
 ### Changed
+
+- **Override-or-default call sites now read as intent.** 24 templ render sites
+  across display, forms, feedback, layout, navigation, and errorpage use
+  `utils.Coalesce` instead of the `Ternary(x != "", x, fallback)` shape —
+  three-level aria-label chains collapse to one call. Rendered output is
+  byte-identical; no goldens or CSS change. Hand-rolled `if v, ok := m[k]`
+  lookups in `grid` (default-key fallback) and `input`'s
+  `enterKeyHintValue` now go through `utils.Lookup`. `utils/format`'s
+  `Bytes` and `CompactCount` share one magnitude scaler (`compactUnits`)
+  instead of twin 20-line bodies; the guarded class inventory regenerated
+  with the source change.
 
 - **Architecture audit artifacts (2026-11-01):** module boundary assessment
   (`docs/modularization/2026-11-01_ASSESSMENT.html` — all boundaries pass the
