@@ -17,6 +17,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`docs/house-style.md` codifies the two conventions that keep verification honest.**
+  Deliberate empty `catch` blocks in build/website JS carry an intent comment (erraudit's
+  prescribed remedy; three canonical examples cited), and piped verification commands use
+  `set -o pipefail` / `${PIPESTATUS[0]}` because a pipe's exit code is its last command's —
+  the exact misread that cost the 2026-08-14 CI-recovery session a false green.
+
 - **`scripts/erraudit-sweep.sh` makes the error-model verdict one command.** Per module:
   an `erraudit fix` dry-run preview, an `errors.As` GATE that fails the sweep (auto-fixable,
   so a finding is never a judgment call), and an `errors.Is` advisory lane that never fails
