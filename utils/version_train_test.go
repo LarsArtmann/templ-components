@@ -73,8 +73,8 @@ func moduleLabel(modDir string) string {
 // workspaceGoMods returns every go.mod under root, skipping VCS/vendor/build
 // output directories (hidden dirs, node_modules, testdata, result* symlinks,
 // the cmd/tc self-healing mirror).
-func workspaceGoMods(t testing.TB, root string) []string {
-	t.Helper()
+func workspaceGoMods(tb testing.TB, root string) []string {
+	tb.Helper()
 
 	var mods []string
 
@@ -90,6 +90,7 @@ func workspaceGoMods(t testing.TB, root string) []string {
 				name == "testdata" ||
 				name == "_sources" ||
 				strings.HasPrefix(name, "result")
+
 			if skip && path != root {
 				return filepath.SkipDir
 			}
@@ -104,7 +105,7 @@ func workspaceGoMods(t testing.TB, root string) []string {
 		return nil
 	})
 	if err != nil {
-		t.Fatalf("walk %s for go.mods: %v", root, err)
+		tb.Fatalf("walk %s for go.mods: %v", root, err)
 	}
 
 	sort.Strings(mods)
@@ -123,55 +124,82 @@ func workspaceGoMods(t testing.TB, root string) []string {
 //
 // Surface membership is what is pinned — a module's direct/indirect marker
 // is free to flip under `go mod tidy` and is not asserted.
-func checkPinTrain(t testing.TB, repoRoot string, spec pinSpec) {
-	t.Helper()
+func checkPinTrain(tb testing.TB, repoRoot string, spec pinSpec) {
+	tb.Helper()
+
+	versions := collectPinVersions(tb, repoRoot, spec.dep)
+	checkPinSurface(tb, spec, versions)
+	checkTrainVersions(tb, spec, versions)
+}
+
+// collectPinVersions maps each module dir to the versions it requires dep
+// with (scanning the workspace's go.mods).
+func collectPinVersions(tb testing.TB, repoRoot, dep string) map[string][]string {
+	tb.Helper()
 
 	versions := map[string][]string{}
 
-	for _, mod := range workspaceGoMods(t, repoRoot) {
+	for _, mod := range workspaceGoMods(tb, repoRoot) {
 		content, err := os.ReadFile(mod)
 		if err != nil {
-			t.Fatalf("read %s: %v", mod, err)
+			tb.Fatalf("read %s: %v", mod, err)
 		}
 
 		rel, err := filepath.Rel(repoRoot, mod)
 		if err != nil {
-			t.Fatalf("rel %s: %v", mod, err)
+			tb.Fatalf("rel %s: %v", mod, err)
 		}
 
 		dir := filepath.ToSlash(filepath.Dir(rel))
 
-		for _, m := range pinLineRe(spec.dep).FindAllStringSubmatch(string(content), -1) {
+		for _, m := range pinLineRe(dep).FindAllStringSubmatch(string(content), -1) {
 			versions[dir] = append(versions[dir], m[1])
 		}
 	}
 
+	return versions
+}
+
+// checkPinSurface asserts exactly the allowed modules mention the dependency.
+func checkPinSurface(tb testing.TB, spec pinSpec, versions map[string][]string) {
+	tb.Helper()
+
 	allowed := make(map[string]bool, len(spec.allowedMods))
+
 	for _, m := range spec.allowedMods {
 		allowed[m] = true
 	}
 
 	for dir := range versions {
 		if !allowed[dir] {
-			t.Errorf(
+			tb.Errorf(
 				"%s mentions %s but is not in the allowed pin surface %v — a module silently gained a dependency (consumer-graph decision, not a mechanical bump)",
-				moduleLabel(dir), spec.dep, spec.allowedMods,
+				moduleLabel(dir),
+				spec.dep,
+				spec.allowedMods,
 			)
 		}
 	}
 
 	for _, m := range spec.allowedMods {
 		if _, ok := versions[m]; !ok {
-			t.Errorf(
+			tb.Errorf(
 				"%s does not mention %s but the pin surface requires it — the release lockstep will desync this module's go.sum",
-				moduleLabel(m), spec.dep,
+				moduleLabel(m),
+				spec.dep,
 			)
 		}
 	}
+}
+
+// checkTrainVersions asserts the version train: the direct module's version
+// anchors, every other mention matches, and no module carries two versions.
+func checkTrainVersions(tb testing.TB, spec pinSpec, versions map[string][]string) {
+	tb.Helper()
 
 	direct := versions[spec.directModule]
 	if len(direct) == 0 {
-		t.Fatalf(
+		tb.Fatalf(
 			"%s carries no require for %s — the pin train has no anchor (direct module renamed?)",
 			moduleLabel(spec.directModule), spec.dep,
 		)
@@ -180,7 +208,7 @@ func checkPinTrain(t testing.TB, repoRoot string, spec pinSpec) {
 	want := direct[0]
 	for _, v := range direct[1:] {
 		if v != want {
-			t.Errorf(
+			tb.Errorf(
 				"%s requires %s at both %s and %s — one module, two pins",
 				moduleLabel(spec.directModule), spec.dep, want, v,
 			)
@@ -194,9 +222,13 @@ func checkPinTrain(t testing.TB, repoRoot string, spec pinSpec) {
 
 		for _, v := range vs {
 			if v != want {
-				t.Errorf(
+				tb.Errorf(
 					"%s requires %s %s but the pin train is anchored at %s (direct in %s) — align the versions in one commit",
-					moduleLabel(dir), spec.dep, v, want, moduleLabel(spec.directModule),
+					moduleLabel(dir),
+					spec.dep,
+					v,
+					want,
+					moduleLabel(spec.directModule),
 				)
 			}
 		}
@@ -221,6 +253,7 @@ func TestTailwindMergePinAlignment(t *testing.T) {
 // interface; only Helper/Errorf/Fatalf are ever invoked.
 type recordingTB struct {
 	testing.TB
+
 	failures []string
 }
 
@@ -240,20 +273,20 @@ func (r *recordingTB) Fatalf(format string, args ...any) {
 // runGuardOnTree runs checkPinTrain against a synthetic tree, mirroring
 // testing's Fatal semantics (panic stops the check) while collecting every
 // failure message.
-func runGuardOnTree(root string, spec pinSpec) (failures []string) {
+func runGuardOnTree(root string, spec pinSpec) []string {
 	fake := &recordingTB{}
 
-	defer func() {
-		if r := recover(); r != nil {
-			if _, ok := r.(guardFatal); !ok {
-				panic(r)
+	func() {
+		defer func() {
+			if r := recover(); r != nil {
+				if _, ok := r.(guardFatal); !ok {
+					panic(r)
+				}
 			}
-		}
+		}()
 
-		failures = fake.failures
+		checkPinTrain(fake, root, spec)
 	}()
-
-	checkPinTrain(fake, root, spec)
 
 	return fake.failures
 }
@@ -267,7 +300,11 @@ func writeTempGoMod(t *testing.T, root, dir, requireLines string) {
 		t.Fatalf("mkdir %s: %v", full, err)
 	}
 
-	body := "module example.com/" + strings.ReplaceAll(dir, "/", "-") + "\n\ngo 1.27\n\nrequire (\n" + requireLines + ")\n"
+	body := "module example.com/" + strings.ReplaceAll(
+		dir,
+		"/",
+		"-",
+	) + "\n\ngo 1.27\n\nrequire (\n" + requireLines + ")\n"
 	if err := os.WriteFile(filepath.Join(full, "go.mod"), []byte(body), 0o644); err != nil {
 		t.Fatalf("write %s: %v", filepath.Join(full, "go.mod"), err)
 	}
@@ -303,6 +340,7 @@ func TestCheckPinTrainDetectsDrift(t *testing.T) {
 		for _, m := range spec.allowedMods {
 			writeTempGoMod(t, root, m, "\t"+dep+" v0.12.0 // indirect\n")
 		}
+
 		writeTempGoMod(t, root, "charts/echarts", "\t"+dep+" v0.12.0 // indirect\n")
 
 		joined := strings.Join(runGuardOnTree(root, spec), "\n")

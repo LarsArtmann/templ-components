@@ -43,10 +43,28 @@ func TestDocsCountDrift(t *testing.T) {
 		assertCount(t, features, `\| `+"`"+pkg+"`"+`\s*\| (\d+)`, "FEATURES.md table row "+pkg, packageCounts[pkg])
 	}
 
-	assertCount(t, features, `\| `+"`icons`"+`\s*\| (\d+) \(`, "FEATURES.md icons row component count", packageCounts["icons"])
-	assertCount(t, features, `\| `+"`icons`"+`\s*\| \d+ \((\d+) icons\)`, "FEATURES.md icons row icon count", actualIcons)
+	assertCount(
+		t,
+		features,
+		`\| `+"`icons`"+`\s*\| (\d+) \(`,
+		"FEATURES.md icons row component count",
+		packageCounts["icons"],
+	)
+	assertCount(
+		t,
+		features,
+		`\| `+"`icons`"+`\s*\| \d+ \((\d+) icons\)`,
+		"FEATURES.md icons row icon count",
+		actualIcons,
+	)
 	assertCount(t, features, `\+ (\d+) recipe screens`, "FEATURES.md recipe screens", packageCounts["recipes"])
-	assertCount(t, features, `recipe screens = (\d+)`, "FEATURES.md components+recipes total", actualComponents+packageCounts["recipes"])
+	assertCount(
+		t,
+		features,
+		`recipe screens = (\d+)`,
+		"FEATURES.md components+recipes total",
+		actualComponents+packageCounts["recipes"],
+	)
 
 	agents := readDoc(t, "AGENTS.md")
 	assertCount(t, agents, `(\d+)\s+generated files across all packages`, "AGENTS.md generated files", actualGenerated)
@@ -78,10 +96,20 @@ func TestDocsCountDrift(t *testing.T) {
 	if m := regexp.MustCompile(`\((\w+) counted templ packages`).FindSubmatch(skill); m == nil {
 		t.Error("SKILL.md counted-packages word missing")
 	} else if string(m[1]) != numberWord(len(countedDocPackages)) {
-		t.Errorf("SKILL.md counted-packages word says %q; actual is %q", string(m[1]), numberWord(len(countedDocPackages)))
+		t.Errorf(
+			"SKILL.md counted-packages word says %q; actual is %q",
+			string(m[1]),
+			numberWord(len(countedDocPackages)),
+		)
 	}
 
-	assertCount(t, skill, "`errorpage`"+` — \d+ components \+ (\d+) constructors`, "SKILL.md errorpage constructors", countErrorpageConstructors(t, root))
+	assertCount(
+		t,
+		skill,
+		"`errorpage`"+` — \d+ components \+ (\d+) constructors`,
+		"SKILL.md errorpage constructors",
+		countErrorpageConstructors(t),
+	)
 
 	// Per-package counts (single-sourcing, M21): the per-package headings in
 	// README and SKILL must match the actual exported templ function count
@@ -199,9 +227,11 @@ var readmePackages = []string{"display", "feedback", "forms", "navigation", "lay
 // "(nine counted templ packages)". Kept in sync with the counted-package
 // list by derivation, not by hand.
 func numberWord(total int) string {
-	words := []string{"zero", "one", "two", "three", "four", "five", "six",
+	words := []string{
+		"zero", "one", "two", "three", "four", "five", "six",
 		"seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen",
-		"fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"}
+		"fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty",
+	}
 
 	if total < len(words) {
 		return words[total]
@@ -212,7 +242,7 @@ func numberWord(total int) string {
 
 // countErrorpageConstructors counts the exported constructor functions in
 // errorpage/constructors.go — the SKILL heading's "+ N constructors" claim.
-func countErrorpageConstructors(t *testing.T, root string) int {
+func countErrorpageConstructors(t *testing.T) int {
 	t.Helper()
 
 	src := readDoc(t, "errorpage", "constructors.go")
