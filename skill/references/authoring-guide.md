@@ -40,6 +40,11 @@ worst-tested component in the library.
 Golden tests use `utils/golden.Assert(t, name, got)` with class sorting + `EnsureID`
 normalisation; `-update` regenerates after an intentional change (review the diff).
 
+After any component/icon/golden count moves, regenerate the count tables in the
+SAME commit: `go run ./tools/countgen/cmd/countgen -w` rewrites FEATURES.md,
+skill/SKILL.md, and README.md; `utils.TestDocsCountDrift` is the independent
+verifier. Never hand-type a count.
+
 ## Visual regression (`visualtest/`, separate module)
 
 Chromedp pixel checks in their own module so browsers never enter the consumer dependency
@@ -75,7 +80,8 @@ that reopens the invalid state you are trying to prevent.
 
 Add the path to `iconPathData` in `icons/icon_paths.go` (multi-path icons use `|`;
 `iconPaths()` panics on a stray separator). `allIconNames()` derives automatically — never
-hand-maintain a second list. Update the icon count in the docs in the same commit.
+hand-maintain a second list. The icon counts in the docs regenerate via
+`go run ./tools/countgen/cmd/countgen -w` in the same commit.
 
 ### When interactivity needs JavaScript
 

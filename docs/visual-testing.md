@@ -150,6 +150,12 @@ Always pass an explicit `PORT`: the demo's default (:8080) is commonly
 occupied (it burned a debugging cycle here against a local SigNoz instance),
 and the demo does not fail loudly enough when the port is taken.
 
+The `-base` default and your `PORT` must MATCH (2026-11-02: three burned
+attempts). `nix run .#shots` targets `http://localhost:8901` by default; a
+demo started on any other port produces connection-refused archaeology instead
+of an error naming the port. Either keep the pair `PORT=8901` + bare
+`nix run .#shots`, or pass `-base http://localhost:<your-port>` explicitly.
+
 The demo binary embeds `static/app.css` — after ANY `templates/custom.css`
 change, recompile the CSS (`nix run .#css`) AND rebuild/restart the demo
 binary, or captures silently serve stale styles.

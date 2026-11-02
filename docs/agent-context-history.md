@@ -465,3 +465,36 @@ prefix behavior-sensitive probes with `env -u GOEXPERIMENT`.
 - **Class rule:** when a dependency is added to a module, update the pin-train spec in
   the same commit — a fourth go.mod mentioning go-error-family is a surface drift and
   fails <50ms in CI now.
+
+## 2026-11-02 — daemon doc-eating race: planning docs deleted-then-restored (§docrace)
+
+- **The race (noticed 2026-11-02, unresolved):** inside `13af2e67..45da26d6` the
+  auto-commit daemon deleted and restored planning/status docs mid-session — a
+  session writing a report can lose it to a daemon commit that captured an
+  intermediate (empty/partial) state. Mitigations that work: write report files
+  ATOMICALLY (write to a temp name, `git mv` in), never leave a doc half-written
+  across a 60s daemon window, and re-read the file after any daemon commit
+  lands (`git log` trailers identify daemon commits).
+- **Standing rule:** after ANY daemon commit, `git status` + a grep for your
+  latest marker before continuing to edit.
+
+## 2026-11-02 — dprint markdown tables EAT unescaped pipes (§dprintpipe)
+
+- **The incident:** a working-tree pass left `docs/testing/tooling-evaluation.md`
+  with the erraudit `--max` evidence row truncated mid-sentence: the cell
+  contained a literal unescaped pipe (`nolint:erraudit|nolint:legacyerrors`
+  inside backticks), the table formatter split the row there, and everything
+  after the pipe was dropped. The same mechanism had already scrambled task
+  4.13 in the 2026-06-01 theming plan (``Validate `|` separator in SVG paths``
+  became a split row with the annotation shuffled inside the code span).
+- **The formatter is BuildFlow's `dprint-format` pre-commit step**, which runs
+  on STAGED markdown and — when dprint is absent from the devShell — falls back
+  to an UNPINNED `nix run nixpkgs#dprint` (version floats with the lock).
+- **The rule:** a literal pipe inside ANY markdown table cell must be written
+  `\|` (the repo already used this in docs/release-checklist.md and
+  docs/testing/html-validation-ritual.md — it is the convention, not a
+  workaround). Escaped pipes survive dprint intact (verified 2026-11-02: the
+  repaired row re-formatted cleanly through the hook).
+- **Scanner (one-liner hygiene check):** flag table rows whose raw-pipe count
+  differs from their block's header — the awk lives in this repo's history;
+  hits are either unescaped pipes (fix) or already-escaped rows (safe).

@@ -216,3 +216,19 @@ Arithmetic note: nodes inside the 1% subgraph are the only must-run-now items; a
 - T10's `-update` is sanctioned ONLY via `nix run .#visual -- -update`; load flakes get patience, never goldens.
 - Sibling files are verdict-only, never edited (single-writer protocol #357).
 - Every task ends green or ends with an honest red verdict note — no masking.
+
+## 7. Completion appendix (2026-11-02, appended post-execution)
+
+**T1–T21: EXECUTED.** The canonical per-task evidence table (deliverable +
+verification for each of the 21 tasks, plus the honest gaps: T18 gate-probe
+only — no vision API key; T15's registry leg skipped — no recorded URL;
+art-dupl advisory unclassified at ritual time) lives in
+`docs/status/2026-11-02_16-27_PARETO-PLAN-FULL-EXECUTION-AND-CORRECTIONS.md`.
+Read that report, not this plan, for what actually shipped.
+
+Follow-through executed later the same day (from the report's §f list, in a
+sibling session): countgen gained real unit tests that exposed and fixed an
+Apply bug (only the LAST drifted site per file was written), the art-dupl
+baseline was re-recorded at 149 groups after v1.26.0 hash drift, release.sh
+gained step 7a (route-golden re-record, TODO #997), countgen extended to the
+README per-package headings, and the erraudit sweep became a ci-repro lane.

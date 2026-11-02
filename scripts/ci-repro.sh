@@ -370,6 +370,17 @@ else
 	fi
 fi
 
+# Error-model modernization gate (errors.As GATE; errors.Is advisory inside).
+# A legacy_as finding is always auto-fixable, so red = a mechanical migration
+# is one `scripts/erraudit-sweep.sh --fix` away — never a judgment call. Missing
+# binary skips LOUD (the sweep also runs standalone; see the script header).
+step "erraudit error-model gate (legacy_as GATE, legacy_is advisory)"
+if command -v erraudit >/dev/null 2>&1; then
+	scripts/erraudit-sweep.sh
+else
+	echo "SKIP: erraudit not on PATH — run scripts/erraudit-sweep.sh where it is installed"
+fi
+
 if [ "$RUN_HTML" = "1" ]; then
 	step "W3C HTML validation (golden corpus; mirrors ci.yaml's html-validation job)"
 	if [ -n "${VNU_JAR:-}" ]; then
