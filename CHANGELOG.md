@@ -17,6 +17,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`scripts/erraudit-sweep.sh` makes the error-model verdict one command.** Per module:
+  an `erraudit fix` dry-run preview, an `errors.As` GATE that fails the sweep (auto-fixable,
+  so a finding is never a judgment call), and an `errors.Is` advisory lane that never fails
+  (sentinel matching is often correct — migrating it by reflex is the documented trap).
+  `--fix` applies the previews after review. Self-tested against an injected `errors.As` on
+  a scratch tree copy (RED names the file and line).
+
 - **Dependency pin trains are now guarded by tests.** `TestGoErrorFamilyPinAlignment`
   and `TestTailwindMergePinAlignment` (`utils/version_train_test.go`) assert, per
   dependency, both the pin SURFACE (exactly the known set of go.mods may mention it) and

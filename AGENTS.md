@@ -42,6 +42,11 @@ scripts/ci-repro.sh --lint --css --website
 # identical blocks differently) — record on the dev-shell/CI patch level, never bare `go`.
 scripts/coverage-library.sh --gate 94   # 80 = adoption gate (#28), 94 = CI ratchet
 
+# Error-model modernization sweep (Go 1.26+): per-module erraudit fix dry-run +
+# errors.As GATE (red ⇒ `--fix`, review, test) + errors.Is advisory (never fails —
+# sentinel matching is often correct)
+scripts/erraudit-sweep.sh
+
 # All-in-one verification
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && nix run .#lint
 
