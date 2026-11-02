@@ -149,3 +149,25 @@ Every package uses a 3-file pattern:
 3. **Add `ComponentProps` interface** — Enable generic component handling
 4. **Fix demo to use the library** — Currently uses raw HTML instead of layout.Base
 5. ~~**Consolidate test files** — Reduce 37 test files to ~15, eliminate 60%+ duplication~~ **Won't implement — not adopted 3-file pattern.**
+
+---
+
+## ANNOTATION (2026-11-02, docs-health ANNOTATE pass)
+
+This review is fully superseded — all open findings resolved in later releases. Status
+against the current tree:
+
+1. **FeedbackLevel** — shipped as the canonical `feedback.FeedbackType` enum; the
+   `AlertType`/`ToastType` aliases were REMOVED in v2-prep (ADR-0022).
+2. **Inline JS consolidation** — superseded by the JS decision ladder and the CSP-safe
+   singleton pattern (`docs/javascript-guide.md`, ADR-0005); scripts are nonce'd and
+   guarded by `integration` CSP tests.
+3. **ComponentProps interface** — shipped as `utils.ComponentProps` + `BaseProps`
+   (`internal/contract.TestPropsEmbedBaseProps` ratchets it).
+4. **Demo on the library** — the demo MPA composes `layout.AppShell`/`Base` end to end.
+5. Test consolidation — deliberately not adopted (struck in the original).
+
+For the CURRENT architecture assessment see
+`2026-11-01_23-54_architecture-review.html` (composite 4.4/5, P2/P3 roadmap). Do not act
+on numbers in this file — every count (53 components, 17 enums) has since moved; the
+live counts are generated (`tools/countgen`).

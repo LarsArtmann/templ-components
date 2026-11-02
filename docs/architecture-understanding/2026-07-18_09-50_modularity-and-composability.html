@@ -259,6 +259,17 @@
         </div>
       </header>
 
+      <div class="note" style="border:1px solid #ccc;border-radius:8px;padding:12px 16px;margin:16px 0;background:#f8f8f8;">
+        <b>ANNOTATION 2026-11-02 (docs-health ANNOTATE):</b> this review's central
+        recommendation — split the monolith into modules — SHIPPED via
+        <b>ADR-0034</b>: the repo is now a 7-module Go workspace (utils leaf,
+        icons, errorpage, charts/echarts, htmx, datastar, root + repo-local
+        visualtest/website), re-audited in
+        <a href="../../docs/modularization/2026-11-01_ASSESSMENT.html">2026-11-01_ASSESSMENT.html</a>
+        (verdict: Keep all boundaries). Do not act on v0.18.0-era counts; live
+        counts are generated (<code>tools/countgen</code>).
+      </div>
+
       <div class="score-bar">
         <div class="big">9 / 10</div>
         <div class="lbl">
