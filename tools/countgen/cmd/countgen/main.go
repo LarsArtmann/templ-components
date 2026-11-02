@@ -19,6 +19,7 @@ import (
 
 func main() {
 	write := flag.Bool("w", false, "rewrite FEATURES.md/SKILL.md to match the tree")
+
 	flag.Parse()
 
 	root := "."

@@ -28,6 +28,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -325,14 +326,25 @@ func featuresSites() []site {
 	backtick := "`"
 
 	totals := site{
-		name:    "Totals line",
-		file:    featuresDoc,
-		pattern: regexp.MustCompile(`\*\*Totals:\*\* (\d+) templ components \(primitives, drift-guard verified\) \+ (\d+) recipe screens = (\d+), (\d+) icon names, (\d+) typed enums \((\d+) with ` + backtick + `IsValid\(\)` + backtick + `, (\d+) generated ` + backtick + `\*_templ\.go` + backtick + ` files`),
+		name: "Totals line",
+		file: featuresDoc,
+		pattern: regexp.MustCompile(
+			`\*\*Totals:\*\* (\d+) templ components \(primitives, drift-guard verified\) \+ (\d+) recipe screens = (\d+), (\d+) icon names, (\d+) typed enums \((\d+) with ` + backtick + `IsValid\(\)` + backtick + `, (\d+) generated ` + backtick + `\*_templ\.go` + backtick + ` files`,
+		),
 		render: func(c Counts, prev []string) string {
 			return fmt.Sprintf(
 				"**Totals:** %d templ components (primitives, drift-guard verified) + %d recipe screens = %d, %d icon names, %s typed enums (%d with %sIsValid()%s, %d generated %s*_templ.go%s files",
-				c.Components, c.Recipes, c.ComponentsPlusRecipes, c.Icons,
-				prev[5], c.IsValid, backtick, backtick, c.GeneratedFiles, backtick, backtick,
+				c.Components,
+				c.Recipes,
+				c.ComponentsPlusRecipes,
+				c.Icons,
+				prev[5],
+				c.IsValid,
+				backtick,
+				backtick,
+				c.GeneratedFiles,
+				backtick,
+				backtick,
 			)
 		},
 	}
@@ -356,9 +368,11 @@ func featuresSites() []site {
 	}
 
 	isValidBullet := site{
-		name:    "Type Safety bullet (IsValid only; enums total is hand-typed)",
-		file:    featuresDoc,
-		pattern: regexp.MustCompile(`(\d+) typed string enums \((\d+) with ` + backtick + `IsValid\(\)` + backtick + ` methods \+ tests\)`),
+		name: "Type Safety bullet (IsValid only; enums total is hand-typed)",
+		file: featuresDoc,
+		pattern: regexp.MustCompile(
+			`(\d+) typed string enums \((\d+) with ` + backtick + `IsValid\(\)` + backtick + ` methods \+ tests\)`,
+		),
 		render: func(c Counts, prev []string) string {
 			return fmt.Sprintf("%s typed string enums (%d with %sIsValid()%s methods + tests)",
 				prev[1], c.IsValid, backtick, backtick)
@@ -430,9 +444,11 @@ func skillSites() []site {
 	}
 
 	errorpageHeading := site{
-		name:    "errorpage heading",
-		file:    skillDoc,
-		pattern: regexp.MustCompile(`(?m)^(#### ` + backtick + `errorpage` + backtick + ` — )(\d+)( components \+ )(\d+)( constructors \+ handler)`),
+		name: "errorpage heading",
+		file: skillDoc,
+		pattern: regexp.MustCompile(
+			`(?m)^(#### ` + backtick + `errorpage` + backtick + ` — )(\d+)( components \+ )(\d+)( constructors \+ handler)`,
+		),
 		render: func(c Counts, prev []string) string {
 			return fmt.Sprintf("%s%d%s%d%s",
 				prev[1], c.PackageCounts["errorpage"], prev[3], c.ErrorpageConstructors, prev[5])
@@ -440,9 +456,11 @@ func skillSites() []site {
 	}
 
 	chartsHeading := site{
-		name:    "charts/echarts heading",
-		file:    skillDoc,
-		pattern: regexp.MustCompile(`(?m)^(#### ` + backtick + `charts/echarts` + backtick + ` — )(\d+)( components \(opt-in module\))`),
+		name: "charts/echarts heading",
+		file: skillDoc,
+		pattern: regexp.MustCompile(
+			`(?m)^(#### ` + backtick + `charts/echarts` + backtick + ` — )(\d+)( components \(opt-in module\))`,
+		),
 		render: func(c Counts, prev []string) string {
 			return fmt.Sprintf("%s%d%s", prev[1], c.PackageCounts["charts/echarts"], prev[3])
 		},
@@ -475,15 +493,17 @@ func sites() []site {
 
 // numberWord renders small counts as words for the SKILL.md prose.
 func numberWord(total int) string {
-	words := []string{"zero", "one", "two", "three", "four", "five", "six",
+	words := []string{
+		"zero", "one", "two", "three", "four", "five", "six",
 		"seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen",
-		"fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"}
+		"fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty",
+	}
 
 	if total < len(words) {
 		return words[total]
 	}
 
-	return fmt.Sprintf("%d", total)
+	return strconv.Itoa(total)
 }
 
 // siteMatch locates the single occurrence of a site in content.
@@ -597,7 +617,11 @@ func Check(root string) error {
 
 		problems = append(problems, fmt.Errorf(
 			"%s:%d: site %q drifts from the tree (expected %q, found %q) — run: go run ./tools/countgen/cmd/countgen -w",
-			r.site.file, lineAt(r.content, r.location[0]), r.site.name, r.expected, r.current,
+			r.site.file,
+			lineAt(r.content, r.location[0]),
+			r.site.name,
+			r.expected,
+			r.current,
 		))
 	}
 
