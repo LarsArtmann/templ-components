@@ -1,5 +1,6 @@
 // Package countgen derives the library's count-bearing numbers from the tree
-// and writes them into the two count-table docs (FEATURES.md, skill/SKILL.md).
+// and writes them into the three count-bearing docs (FEATURES.md, skill/SKILL.md,
+// README.md).
 //
 // WHY THIS EXISTS: every component addition forced a hand-typed same-commit
 // count bump in FEATURES/SKILL (TODO #996) — the tax this generator deletes.
@@ -36,6 +37,7 @@ import (
 const (
 	featuresDoc = "FEATURES.md"
 	skillDoc    = "skill/SKILL.md"
+	readmeDoc   = "README.md"
 )
 
 // countedPackages returns the packages whose exported templ functions compose
@@ -515,7 +517,41 @@ func skillPkgHeading(pkg string) site {
 }
 
 func sites() []site {
-	return append(featuresSites(), skillSites()...)
+	return append(append(featuresSites(), skillSites()...), readmeSites()...)
+}
+
+// readmeSites returns the README.md per-package catalogue headings. Every
+// counted package plus icons carries "### `pkg` — Prose (N components)" (the
+// charts heading adds ", opt-in" inside the parens; icons counts icons, not
+// components) — the prose around the number is passthrough, only N is derived.
+func readmeSites() []site {
+	sites := make([]site, 0, 1+len(countedPackages()))
+
+	for _, pkg := range countedPackages() {
+		sites = append(sites, readmeHeadingSite(pkg, "components"))
+	}
+
+	return append(sites, readmeHeadingSite("icons", "icons"))
+}
+
+func readmeHeadingSite(pkg, noun string) site {
+	backtick := "`"
+
+	return site{
+		name: "README heading " + pkg,
+		file: readmeDoc,
+		pattern: regexp.MustCompile(
+			`(?m)^(### ` + regexp.QuoteMeta(backtick+pkg+backtick) + ` — [^(]*\()(\d+)( ` + noun + `[^)]*\))`,
+		),
+		render: func(counts Counts, prev []string) string {
+			count := counts.PackageCounts[pkg]
+			if noun == "icons" {
+				count = counts.Icons
+			}
+
+			return fmt.Sprintf("%s%d%s", prev[1], count, prev[3])
+		},
+	}
 }
 
 // numberWord renders small counts as words for the SKILL.md prose.
@@ -711,7 +747,7 @@ func Apply(root string) ([]string, error) {
 
 	var written []string
 
-	for _, name := range []string{featuresDoc, skillDoc} {
+	for _, name := range []string{featuresDoc, skillDoc, readmeDoc} {
 		if _, dirty := updated[name]; !dirty {
 			continue
 		}

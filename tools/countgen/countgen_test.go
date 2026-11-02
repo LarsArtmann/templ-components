@@ -65,6 +65,7 @@ func syntheticTree(t *testing.T) string {
 
 	write(featuresDoc, featuresFixture())
 	write(skillDoc, skillFixture())
+	write(readmeDoc, readmeFixture())
 
 	return root
 }
@@ -102,6 +103,18 @@ func skillFixture() string {
 		"#### `errorpage` — " + wrongNumber + " components + " + wrongNumber + " constructors + handler\n\n" +
 		"#### `charts/echarts` — " + wrongNumber + " components (opt-in module)\n\n" +
 		headings.String()
+}
+
+func readmeFixture() string {
+	headings := &strings.Builder{}
+
+	for _, pkg := range countedPackages() {
+		headings.WriteString("### `" + pkg + "` — Some Prose (" + wrongNumber + " components)\n\n")
+	}
+
+	headings.WriteString("### `icons` — SVG Icons (" + wrongNumber + " icons)\n")
+
+	return "# Readme\n\n" + headings.String()
 }
 
 func TestDeriveSyntheticTree(t *testing.T) {
@@ -175,8 +188,8 @@ func TestCheckDriftApplyFixesIdempotence(t *testing.T) {
 		t.Fatalf("Apply: %v", err)
 	}
 
-	if len(changed) != 2 || changed[0] != featuresDoc || changed[1] != skillDoc {
-		t.Fatalf("Apply changed = %v, want [%s %s]", changed, featuresDoc, skillDoc)
+	if len(changed) != 3 || changed[0] != featuresDoc || changed[1] != skillDoc || changed[2] != readmeDoc {
+		t.Fatalf("Apply changed = %v, want [%s %s %s]", changed, featuresDoc, skillDoc, readmeDoc)
 	}
 
 	if err := Check(root); err != nil {
@@ -199,6 +212,9 @@ func TestCheckDriftApplyFixesIdempotence(t *testing.T) {
 		"3 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)")
 	assertDocContains(t, root, skillDoc, "#### `errorpage` — 0 components + 2 constructors + handler")
 	assertDocContains(t, root, skillDoc, "#### `display` — 2 components")
+	assertDocContains(t, root, readmeDoc, "### `display` — Some Prose (2 components)")
+	assertDocContains(t, root, readmeDoc, "### `icons` — SVG Icons (3 icons)")
+	assertDocContains(t, root, readmeDoc, "### `charts/echarts` — Some Prose (0 components)")
 }
 
 func TestApplyPreservesHandTypedEnumsTotal(t *testing.T) {

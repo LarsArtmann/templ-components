@@ -179,8 +179,11 @@ func TestDocsCountDrift(t *testing.T) {
 	useCases := readDoc(t, "website", "internal", "pages", "data.go")
 	assertCount(t, useCases, `(\d+) form components`, "website UseCases form components", packageCounts["forms"])
 
-	for _, pkg := range readmePackages {
-		readmePkgRe := fmt.Sprintf("`%s` — [^(]*\\((\\d+) components\\)", pkg)
+	// README documents every counted package's catalogue heading (the guard
+	// loop's pattern tolerates the per-package prose and the charts heading's
+	// ", opt-in" suffix); countgen -w writes these same cells.
+	for _, pkg := range countedDocPackages {
+		readmePkgRe := fmt.Sprintf("`%s` — [^(]*\\((\\d+) components[^)]*\\)", pkg)
 		assertCount(t, readme, readmePkgRe, "README.md "+pkg+" heading", packageCounts[pkg])
 	}
 
@@ -218,10 +221,6 @@ var countedDocPackages = []string{
 // docCountPackages extends the counted set with the two special table rows:
 // the icons package's templ functions (its "8" cell) and the recipes screens.
 var docCountPackages = append([]string{"icons", "recipes"}, countedDocPackages...)
-
-// readmePackages are the packages whose per-package headings README carries
-// (SKILL carries all nine counted packages).
-var readmePackages = []string{"display", "feedback", "forms", "navigation", "layout"}
 
 // numberWord renders small counts as words — the SKILL.md prose says
 // "(nine counted templ packages)". Kept in sync with the counted-package

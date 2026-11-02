@@ -27,8 +27,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - **Count-table codegen (`tools/countgen`) deletes the same-commit count tax.** The
-  FEATURES.md package table and Totals line, and SKILL.md's catalogue lines plus all nine
-  per-package headings (including errorpage's "+ 6 constructors"), are now WRITTEN from the
+  FEATURES.md package table and Totals line, SKILL.md's catalogue lines plus all nine
+  per-package headings (including errorpage's "+ 6 constructors"), and README.md's ten
+  per-package catalogue headings are now WRITTEN from the
   tree (`go run ./tools/countgen/cmd/countgen -w`, TODO #996); `utils.TestDocsCountDrift`
   re-derives every number with its own code and remains the independent verifier — it
   gained guards for the previously unguarded cells (four SKILL headings, FEATURES table
