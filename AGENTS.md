@@ -35,9 +35,9 @@ scripts/ci-repro.sh --lint --css --website
 # Library coverage — TWO numbers, never quote raw as "the library's coverage".
 # Figures are single-sourced in scripts/coverage-baseline.txt (regenerate with
 # `scripts/coverage-library.sh --record`; guard: utils/TestCoverageBaselineMatchesProse):
-# 96.6% hand-written, 72.7% raw, 72.9% ceiling. Raw includes templ's generated
+# 96.7% hand-written, 73.3% raw, 73.6% ceiling. Raw includes templ's generated
 # *_templ.go, where every element emits an unreachable `WriteString` error branch:
-# generated code is 93.3% of statements, so even 100% hand-written coverage caps raw
+# generated code is 91.4% of statements, so even 100% hand-written coverage caps raw
 # at the ceiling. Statement counts are TOOLCHAIN-SPECIFIC (go1.27.0 vs go1.27.3 count
 # identical blocks differently) — record on the dev-shell/CI patch level, never bare `go`.
 scripts/coverage-library.sh --gate 94   # 80 = adoption gate (#28), 94 = CI ratchet

@@ -9,7 +9,8 @@
 # HAND-WRITTEN library code covered.
 #
 # This script measures both, over the published modules only (the demo app in
-# examples/demo and the tc CLI are not part of the library):
+# examples/demo, the tc CLI, and the repo-local tools/ codegen are not part of
+# the library):
 #
 #   raw          every .go file, generated templ output included
 #   hand-written generated `*_templ.go` excluded
@@ -153,13 +154,13 @@ else
 fi
 
 # totals <profile> <scope>: prints "covered total percent"
-#   library       -> drop examples/ and cmd/tc/ (not published library code)
+#   library       -> drop examples/, cmd/tc/, tools/ (not published library code)
 #   hand-written  -> additionally drop generated *_templ.go
 totals() {
 	awk -v scope="$2" '
 		$1 == "mode:" { next }
-		scope == "library" && ($1 ~ /\/examples\// || $1 ~ /\/cmd\/tc\//) { next }
-		scope == "hand-written" && ($1 ~ /\/examples\// || $1 ~ /\/cmd\/tc\// || $1 ~ /_templ\.go:/) { next }
+		scope == "library" && ($1 ~ /\/examples\// || $1 ~ /\/cmd\/tc\// || $1 ~ /\/tools\//) { next }
+		scope == "hand-written" && ($1 ~ /\/examples\// || $1 ~ /\/cmd\/tc\// || $1 ~ /\/tools\// || $1 ~ /_templ\.go:/) { next }
 		{
 			total += $2
 			if ($3 > 0) covered += $2
