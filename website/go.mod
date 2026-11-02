@@ -9,7 +9,7 @@ require (
 	github.com/larsartmann/templ-components/errorpage v1.26.0
 	github.com/larsartmann/templ-components/icons v1.26.0
 	github.com/larsartmann/templ-components/utils v1.26.0
-	github.com/yuin/goldmark v1.8.6
+	github.com/yuin/goldmark v1.8.7
 	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
 )
 
