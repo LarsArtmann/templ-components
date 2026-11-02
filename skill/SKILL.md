@@ -33,6 +33,8 @@ Bundled references (read on demand, not upfront):
 
 ## Component catalogue
 
+> Count-bearing cells in this file are WRITTEN by `go run ./tools/countgen/cmd/countgen -w` and VERIFIED by `utils.TestDocsCountDrift`; semantics live in `docs/count-definitions.md`.
+
 137 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)
 
 - 137 templ components + 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this

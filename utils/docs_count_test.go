@@ -23,6 +23,7 @@ func TestDocsCountDrift(t *testing.T) {
 	actualIcons := countIconNames(t, root)
 	actualHTMLGoldens := countHTMLGoldens(t, root)
 	actualBaselineEntries := countBaselineEntries(t, root)
+	packageCounts := countPackageComponents(t, root)
 
 	features := readDoc(t, "FEATURES.md")
 	assertCount(t, features, `(\d+)\s+templ components`, "FEATURES.md templ components", actualComponents)
@@ -31,6 +32,21 @@ func TestDocsCountDrift(t *testing.T) {
 	assertCount(t, features, `(\d+)\s+goldens`, "FEATURES.md visual goldens", actualVisualGoldens)
 	assertCount(t, features, `(\d+)\s+icon names`, "FEATURES.md icon names", actualIcons)
 	assertCount(t, features, `(\d+)\s+with\s+.IsValid`, "FEATURES.md IsValid methods", actualIsValid)
+
+	// FEATURES package-table rows + Totals recipe clause (TODO #996, countgen
+	// parity): every counted package's row cell derives from its exported
+	// templ functions. utils is excluded — its "0" is the semantic "owns no
+	// components", not a templ-function count (utils/dismiss.templ exports
+	// one helper). tools/countgen is the WRITER for these sites; this test is
+	// the independent verifier (its derivation is deliberately separate).
+	for _, pkg := range countedDocPackages {
+		assertCount(t, features, `\| `+"`"+pkg+"`"+`\s*\| (\d+)`, "FEATURES.md table row "+pkg, packageCounts[pkg])
+	}
+
+	assertCount(t, features, `\| `+"`icons`"+`\s*\| (\d+) \(`, "FEATURES.md icons row component count", packageCounts["icons"])
+	assertCount(t, features, `\| `+"`icons`"+`\s*\| \d+ \((\d+) icons\)`, "FEATURES.md icons row icon count", actualIcons)
+	assertCount(t, features, `\+ (\d+) recipe screens`, "FEATURES.md recipe screens", packageCounts["recipes"])
+	assertCount(t, features, `recipe screens = (\d+)`, "FEATURES.md components+recipes total", actualComponents+packageCounts["recipes"])
 
 	agents := readDoc(t, "AGENTS.md")
 	assertCount(t, agents, `(\d+)\s+generated files across all packages`, "AGENTS.md generated files", actualGenerated)
@@ -57,12 +73,20 @@ func TestDocsCountDrift(t *testing.T) {
 	componentsRe := `(\d+)\s+components across \d+ packages`
 	assertCount(t, skill, componentsRe, "SKILL.md components", actualComponents)
 	assertCount(t, skill, `\+\s+(\d+)\s+icons`, "SKILL.md icons", actualIcons)
+	assertCount(t, skill, `components across (\d+) packages`, "SKILL.md package total", len(countedDocPackages)+2)
+
+	if m := regexp.MustCompile(`\((\w+) counted templ packages`).FindSubmatch(skill); m == nil {
+		t.Error("SKILL.md counted-packages word missing")
+	} else if string(m[1]) != numberWord(len(countedDocPackages)) {
+		t.Errorf("SKILL.md counted-packages word says %q; actual is %q", string(m[1]), numberWord(len(countedDocPackages)))
+	}
+
+	assertCount(t, skill, "`errorpage`"+` — \d+ components \+ (\d+) constructors`, "SKILL.md errorpage constructors", countErrorpageConstructors(t, root))
 
 	// Per-package counts (single-sourcing, M21): the per-package headings in
 	// README and SKILL must match the actual exported templ function count
 	// per package — the numbers that historically drifted by hand.
-	packageCounts := countPackageComponents(t, root)
-
+	//
 	// Website counts: the site's hero metrics and comparison matrix derive
 	// components/icons/enums from the codebase at build time
 	// (build.CountStats interpolated into pages.Landing), so those cannot
@@ -127,15 +151,16 @@ func TestDocsCountDrift(t *testing.T) {
 	useCases := readDoc(t, "website", "internal", "pages", "data.go")
 	assertCount(t, useCases, `(\d+) form components`, "website UseCases form components", packageCounts["forms"])
 
-	for pkg, want := range packageCounts {
-		if want == 0 {
-			continue
-		}
-
+	for _, pkg := range readmePackages {
 		readmePkgRe := fmt.Sprintf("`%s` — [^(]*\\((\\d+) components\\)", pkg)
-		assertCount(t, readme, readmePkgRe, "README.md "+pkg+" heading", want)
+		assertCount(t, readme, readmePkgRe, "README.md "+pkg+" heading", packageCounts[pkg])
+	}
+
+	// SKILL documents all nine counted packages; README only the five
+	// consumer-facing component families.
+	for _, pkg := range countedDocPackages {
 		skillPkgRe := fmt.Sprintf("`%s` — (\\d+) components", pkg)
-		assertCount(t, skill, skillPkgRe, "SKILL.md "+pkg+" heading", want)
+		assertCount(t, skill, skillPkgRe, "SKILL.md "+pkg+" heading", packageCounts[pkg])
 	}
 
 	roadmap := readDoc(t, "ROADMAP.md")
@@ -153,17 +178,55 @@ func TestDocsCountDrift(t *testing.T) {
 	assertCount(t, comparison, `HTML goldens, (\d+) pixel goldens`, "comparison.md pixel goldens", actualVisualGoldens)
 }
 
+// countedDocPackages are the 9 packages composing the "N templ components"
+// total — mirrors countExportedTemplFunctions and tools/countgen's
+// countedPackages (kept separate on purpose: this test is the independent
+// verifier for the generator's writes).
+var countedDocPackages = []string{
+	"display", "feedback", "forms", "navigation", "errorpage",
+	"layout", "htmx", "datastar", "charts/echarts",
+}
+
+// docCountPackages extends the counted set with the two special table rows:
+// the icons package's templ functions (its "8" cell) and the recipes screens.
+var docCountPackages = append([]string{"icons", "recipes"}, countedDocPackages...)
+
+// readmePackages are the packages whose per-package headings README carries
+// (SKILL carries all nine counted packages).
+var readmePackages = []string{"display", "feedback", "forms", "navigation", "layout"}
+
+// numberWord renders small counts as words — the SKILL.md prose says
+// "(nine counted templ packages)". Kept in sync with the counted-package
+// list by derivation, not by hand.
+func numberWord(total int) string {
+	words := []string{"zero", "one", "two", "three", "four", "five", "six",
+		"seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen",
+		"fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"}
+
+	if total < len(words) {
+		return words[total]
+	}
+
+	return strconv.Itoa(total)
+}
+
+// countErrorpageConstructors counts the exported constructor functions in
+// errorpage/constructors.go — the SKILL heading's "+ N constructors" claim.
+func countErrorpageConstructors(t *testing.T, root string) int {
+	t.Helper()
+
+	src := readDoc(t, "errorpage", "constructors.go")
+
+	return len(regexp.MustCompile(`(?m)^func [A-Z]`).FindAll(src, -1))
+}
+
 func countExportedTemplFunctions(t *testing.T, root string) int {
 	t.Helper()
 
 	templFuncRe := regexp.MustCompile(`^templ\s+([A-Z][A-Za-z0-9]*)\s*\(`)
 	count := 0
 
-	packages := []string{
-		"display", "feedback", "forms", "navigation", "errorpage",
-		"layout", "htmx", "datastar", "charts/echarts",
-	}
-	for _, pkg := range packages {
+	for _, pkg := range countedDocPackages {
 		files, err := filepath.Glob(filepath.Join(root, pkg, "*.templ"))
 		if err != nil {
 			t.Fatalf("glob error for %s: %v", pkg, err)
@@ -188,15 +251,14 @@ func countExportedTemplFunctions(t *testing.T, root string) int {
 
 // countPackageComponents counts exported templ functions per package — the
 // single source for the per-package "N components" headings in README.md and
-// skill/SKILL.md.
+// skill/SKILL.md, and for the FEATURES.md package-table row cells.
 func countPackageComponents(t *testing.T, root string) map[string]int {
 	t.Helper()
 
 	templFuncRe := regexp.MustCompile(`^templ\s+([A-Z][A-Za-z0-9]*)\s*\(`)
-	packages := []string{"display", "feedback", "forms", "navigation", "layout"}
 	counts := map[string]int{}
 
-	for _, pkg := range packages {
+	for _, pkg := range docCountPackages {
 		files, err := filepath.Glob(filepath.Join(root, pkg, "*.templ"))
 		if err != nil {
 			t.Fatalf("glob error for %s: %v", pkg, err)

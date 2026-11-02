@@ -17,6 +17,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Count-table codegen (`tools/countgen`) deletes the same-commit count tax.** The
+  FEATURES.md package table and Totals line, and SKILL.md's catalogue lines plus all nine
+  per-package headings (including errorpage's "+ 6 constructors"), are now WRITTEN from the
+  tree (`go run ./tools/countgen/cmd/countgen -w`, TODO #996); `utils.TestDocsCountDrift`
+  re-derives every number with its own code and remains the independent verifier — it
+  gained guards for the previously unguarded cells (four SKILL headings, FEATURES table
+  rows, the recipes clause). Byte-parity with the hand-maintained docs was proven before
+  the switch (check mode reported zero drift; `-w` a no-op), and both layers were
+  mutation-tested: a wrong count fails the generator AND the test. Semantics stay in
+  `docs/count-definitions.md`; the enums total and utils' "0" row are deliberately
+  hand-typed (no mechanical source).
+
 - **`docs/house-style.md` codifies the two conventions that keep verification honest.**
   Deliberate empty `catch` blocks in build/website JS carry an intent comment (erraudit's
   prescribed remedy; three canonical examples cited), and piped verification commands use

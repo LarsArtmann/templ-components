@@ -4,6 +4,11 @@ Every public-facing count in this repo must be either live-computed by a guard
 or pinned to a source that is. This page is the definitional home: when a
 number is questioned, answer from here, not from memory.
 
+Maintenance: `go run ./tools/countgen/cmd/countgen -w` WRITES the FEATURES.md
+and skill/SKILL.md count tables; `utils.TestDocsCountDrift` re-derives every
+number with its own code and is the independent verifier. This page stays the
+semantics owner — definitions do not move into the generator.
+
 ## Components — **137**
 
 - **Definition:** exported `templ` components declared as `templ Name(...)` in

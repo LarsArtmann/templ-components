@@ -207,4 +207,4 @@ Multiple agent sessions share this worktree. Rules, in enforcement order: (1) cl
 
 ## AGENTS.md itself
 
-- **≤220 lines** (BuildFlow `agents-md-size` gate) — prescriptive rules only; narratives/deep-dives → `docs/agent-context-history.md#agents-md-size` (append, never rewrite). Count claims guarded HERE by `utils.TestDocsCountDrift`: "N generated files across all packages", "N golden files across all packages", "N accepted groups" — keep them accurate in the same commit as any component/icon/golden change.
+- **≤220 lines** (BuildFlow `agents-md-size` gate) — prescriptive rules only; narratives/deep-dives → `docs/agent-context-history.md#agents-md-size` (append, never rewrite). Count claims guarded HERE by `utils.TestDocsCountDrift`: "N generated files across all packages", "N golden files across all packages", "N accepted groups" — keep them accurate in the same commit as any component/icon/golden change. FEATURES/SKILL count tables: `go run ./tools/countgen/cmd/countgen -w` writes them; the test verifies independently.
