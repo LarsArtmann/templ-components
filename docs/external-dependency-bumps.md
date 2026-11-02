@@ -51,9 +51,15 @@ integration was 100% inert. The ground truth is always the pinned bytes.
 
 3. **Bump.** `go get github.com/larsartmann/go-datastar/static@<new>` in
    `datastar/` — and ONLY there. The root and `visualtest` go.mods consume it
-   indirectly; their pins follow via `go mod tidy` (the pin-surface drift
-   guard asserts it appears in exactly 3 go.mods). For `go-error-family`,
-   bump in `errorpage/`.
+   indirectly; their pins follow via `go mod tidy` (the pin-train guard,
+   `utils.TestGoErrorFamilyPinAlignment`'s sibling
+   `TestGoDatastarStaticPinSurface`, asserts the surface stays at exactly 3
+   go.mods). For `go-error-family`, bump in `errorpage/` — and align the
+   indirect pins in root/visualtest/website in the SAME commit
+   (`utils.TestGoErrorFamilyPinAlignment` fails on any version skew; the
+   2026-11-01 audit caught exactly that skew SHIPPED: errorpage v0.11.0
+   while consumers sat at v0.12.0, §pinskew in
+   `docs/agent-context-history.md`).
 
 4. **Re-audit against the facts doc.** Walk EVERY fact in
    `docs/datastar-runtime-facts.md` against the new bundle bytes — event
@@ -75,7 +81,27 @@ integration was 100% inert. The ground truth is always the pinned bytes.
    A red guard after the bump is the system working: it caught a contract
    change you must consciously adopt.
 
-6. **Ship it.** Warm `[Unreleased]` in CHANGELOG.md (bundle size/hash delta +
+6. **Workspace + standalone verification.** Refresh the workspace state and
+   prove EVERY consumer module builds standalone — the step that would have
+   caught the shipped go-error-family skew (§pinskew):
+
+   ```bash
+   go work sync                                   # refreshes go.work.sum, aligns the 9 modules
+   git add go.work.sum && git status              # go.work.sum changes are part of the bump commit
+   for mod in utils icons errorpage charts/echarts htmx datastar; do
+     (cd "$mod" && GOWORK=off go build ./...)      # standalone build per consumer
+   done
+   (cd visualtest && GOWORK=off go build ./...) && (cd website && GOWORK=off go build ./...)
+   ```
+
+   Workspace builds select the MAXIMUM of the module requirements and hide a
+   direct consumer left on an older pin; only the `GOWORK=off` build of that
+   consumer observes its own version choice. If the standalone build of the
+   direct module (errorpage / datastar) picks a DIFFERENT version than the
+   indirect consumers resolve, the bump commit is not done — go back to
+   step 3 and align the train.
+
+7. **Ship it.** Warm `[Unreleased]` in CHANGELOG.md (bundle size/hash delta +
    any adopted capabilities), update `datastar/doc.go` version references,
    and release per `docs/release-checklist.md`.
 
