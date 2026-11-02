@@ -163,12 +163,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   site routes). Deterministic rendering is the system-face rendering the pure
   `fontconfig` pin in the flake already provides. All 53 demo route goldens were
   re-recorded under the new rule.
-- **Clone-gate baseline re-recorded at 151 groups at t=1.** The new overlay
+- **Clone-gate baseline re-recorded at 149 groups at t=1.** The new overlay
   and accordion browser tests surfaced two clone groups, both accepted under
   ADR-0009 rather than extracted: the `forms` `InputProps` token accessors
   (`enterKeyHintValue` / `autocompleteValue`) share a signature tail while
   encoding different rules, and two three-line lower-bound clamps sit below the
-  extraction floor in modules that cannot share code. Gate green on two
+  extraction floor in modules that cannot share code. A second re-record after
+  the v1.26.0 wave re-baselined four more groups whose hashes had drifted with
+  the tree (grid lookup pair, Base/Minimal meta blocks, duration-ladder steps,
+  twin loading message blocks — all accepted), landing at 149. Gate green on
   consecutive runs with the pinned analyzer.
 - **Theme toggles now stay in sync across browser tabs, and `layout.Minimal`
   follows the OS theme for native controls.** Changing the theme in one tab

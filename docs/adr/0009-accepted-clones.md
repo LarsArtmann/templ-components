@@ -677,8 +677,8 @@ blanket-accepting or blanket-extracting.
 ## Consequences
 
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
-  — it fails ONLY on clones not in the accepted baseline (currently 151
-  groups at t=1, per the 2026-10-30 re-record with the same fork detector
+  — it fails ONLY on clones not in the accepted baseline (currently 149
+  groups at t=1, per the 2026-11-02 re-record with the same fork detector
   `v0.9.1-0.20261017225421-93432fd910fb-93432fd`; the 2026-10-23 full
   re-take under this detector generation was 150 groups). The analyzer-generation
   change made the prior 124 hashes incomparable (check reported every
@@ -803,3 +803,18 @@ cannot share code (library vs. test-only module). The re-record against the
 SAME pinned binary (`v0.9.1-0.20261017225421-93432fd910fb`) took 151 groups
 (one prior group's hash moved with the edits). Gate green ×2; the lane remains
 advisory and never gates.
+
+**DONE 2026-11-02 (post-v1.26.0 baseline-hash triage):** the blocking CI clone
+gate flagged 4 "new" groups — none of them new code, and none in countgen
+(the 2026-11-02 ritual's guess). All four were hash drift from the tree
+movement since the 2026-10-30 record (C19–C27 wave, v1.26.0 cuts): (1)
+`display/grid.templ` `gridClass` vs `gridContainerClass` — the canonical
+ADR-0018 parallel-lookup pair; (2) `layout/base.templ` meta-charset blocks in
+Base vs Minimal — deliberately self-contained shells; (3)
+`utils/format/format.go` two `value /= float64(step)` ladder steps inside one
+`CompactDuration` algorithm — extraction would obscure the ladder; (4)
+`display/loading_dialog.templ` vs `feedback/loading.templ` message blocks —
+twin loading surfaces in different packages. All 4 ACCEPT. The re-record
+against the SAME pinned binary (`v0.9.1-0.20261017225421-93432fd910fb`, built
+at the pinned rev per the fork recipe) took **149 groups** — the drift cost
+6 stale hashes and added 4 new ones (net −2). Gate green ×2 (`Found total 0`).

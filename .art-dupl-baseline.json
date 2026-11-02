@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "threshold": 1,
-  "recordedAt": "2026-10-30T13:31:31.592990421Z",
+  "recordedAt": "2026-11-02T18:00:52.015230928Z",
   "entries": [
     {
       "hash": "0289cadeba33cfb7",
@@ -45,6 +45,14 @@
         "forms/form.templ"
       ],
       "tokens": 3
+    },
+    {
+      "hash": "06cd18010c9fbeb7",
+      "files": [
+        "display/grid.templ",
+        "display/grid.templ"
+      ],
+      "tokens": 4
     },
     {
       "hash": "08ed8746e1591811",
@@ -91,25 +99,16 @@
       "tokens": 4
     },
     {
-      "hash": "10259635a4657324",
-      "files": [
-        "display/grid.templ",
-        "display/grid.templ"
-      ],
-      "tokens": 2
-    },
-    {
       "hash": "11a90e68d1b687e2",
       "files": [
         "errorpage/shared.templ",
         "feedback/circular_progress.templ",
         "feedback/progressbar.templ",
         "forms/calendar.templ",
-        "feedback/loading.templ",
         "forms/calendar.templ",
         "website/internal/pages/hero.templ"
       ],
-      "tokens": 7
+      "tokens": 6
     },
     {
       "hash": "146e1a426f12c934",
@@ -132,46 +131,50 @@
       "hash": "1828ca64260dcd85",
       "files": [
         "feedback/toast.templ",
-        "utils/benchmark_test.go",
-        "display/benchmark_test.go",
-        "visualtest/appshell_visual_test.go",
-        "visualtest/copy_button_e2e_test.go",
-        "htmx/testhelpers_test.go",
         "visualtest/wire_pack_visual_test.go",
-        "visualtest/kanban_e2e_test.go",
-        "website/internal/pages/highlight.go",
-        "visualtest/wire_forms_pack_e2e_test.go",
+        "display/benchmark_test.go",
+        "forms/tags_input.templ",
+        "visualtest/appshell_visual_test.go",
+        "visualtest/wire_form_e2e_test.go",
+        "visualtest/wire_pack_visual_test.go",
+        "layout/embed.go",
+        "visualtest/segment_bar_visual_test.go",
+        "display/kanban_example_test.go",
+        "visualtest/wire_pack_visual_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/kanban_visual_test.go",
-        "utils/utils_test.go",
-        "htmx/view_transitions.go",
+        "charts/echarts/dark_mode_bridge.go",
+        "visualtest/wire_forms_pack_e2e_test.go",
         "display/shared.go",
+        "visualtest/tooltip_anchor_e2e_test.go",
         "visualtest/appshell_visual_test.go",
         "visualtest/sidebar_nav_visual_test.go",
-        "display/shared.go",
-        "forms/dirty_guard.templ",
+        "visualtest/image_priority_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
-        "layout/snapshot_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
-        "visualtest/wire_form_e2e_test.go",
+        "visualtest/overlay_matrix_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
-        "display/shared.go",
-        "visualtest/polled_region_e2e_test.go",
-        "visualtest/wire_e2e_test.go",
+        "visualtest/wire_forms_pack_e2e_test.go",
+        "visualtest/loading_button_e2e_test.go",
         "visualtest/kanban_e2e_test.go",
+        "visualtest/wire_e2e_test.go",
+        "visualtest/autocomplete_e2e_test.go",
         "display/shared.go",
         "visualtest/kanban_single_transport_visual_test.go",
         "display/data_state_test.go",
         "visualtest/kanban_visual_test.go",
+        "display/prose_test.go",
+        "display/golden_sweep_prose_test.go",
+        "visualtest/appshell_visual_test.go",
         "visualtest/appshell_visual_test.go",
         "visualtest/wire_form_e2e_test.go",
-        "utils/script.go",
         "visualtest/wire_visual_test.go",
         "visualtest/wire_pack_visual_test.go",
+        "display/shared.go",
+        "display/grid_children_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
-        "visualtest/wire_forms_pack_e2e_test.go",
-        "display/kanban.go",
-        "visualtest/overlay_backdrop_e2e_test.go",
+        "display/shared.go",
+        "visualtest/command_palette_e2e_test.go",
         "website/internal/pages/highlight.go",
         "visualtest/render.go",
         "layout/appshell_types.go",
@@ -188,12 +191,13 @@
         "errorpage/handler.go",
         "errorpage/handler.go",
         "internal/contract/props_id_test.go",
-        "datastar/live_region.templ",
+        "forms/helpers_test.go",
+        "display/tabs.templ",
+        "utils/wire/triggers.go",
         "utils/wire/wire.go",
-        "forms/filter_bar.go",
         "display/kanban.go",
-        "utils/wire/wire.go",
-        "forms/form.templ",
+        "htmx/polled_region.go",
+        "website/internal/pages/sections.templ",
         "display/chart_geometry.go",
         "utils/wire/invariants_test.go",
         "utils/wire/triggers_test.go",
@@ -202,7 +206,7 @@
         "utils/wire/invariants_test.go",
         "utils/wire/triggers_test.go"
       ],
-      "tokens": 70
+      "tokens": 75
     },
     {
       "hash": "1b1a4e981386d98a",
@@ -218,7 +222,7 @@
       "files": [
         "forms/toggle.templ",
         "navigation/pagination.templ",
-        "visualtest/demo_kanban_http_test.go",
+        "utils/version_train_test.go",
         "visualtest/kanban_e2e_test.go",
         "errorpage/handler_buffer_test.go",
         "utils/coverage_baseline_test.go",
@@ -265,15 +269,6 @@
       "files": [
         "layout/base.templ",
         "layout/base.templ"
-      ],
-      "tokens": 6
-    },
-    {
-      "hash": "1f3399fd23f4ee6e",
-      "files": [
-        "display/grid.templ",
-        "display/grid.templ",
-        "display/enums_go.go"
       ],
       "tokens": 6
     },
@@ -332,8 +327,8 @@
     {
       "hash": "2d42fc6be29dbfca",
       "files": [
-        "layout/appshell.templ",
-        "display/hover_card.templ"
+        "display/hover_card.templ",
+        "layout/appshell.templ"
       ],
       "tokens": 2
     },
@@ -370,9 +365,10 @@
         "layout/bdd_test.go",
         "utils/generated_file_names_test.go",
         "display/golden_sweep_area_chart_test.go",
+        "visualtest/determinism_guard_test.go",
         "htmx/bdd_test.go"
       ],
-      "tokens": 30
+      "tokens": 32
     },
     {
       "hash": "36485aa9e226d471",
@@ -480,11 +476,10 @@
         "errorpage/errorpage.templ",
         "forms/validation.templ",
         "errorpage/shared.templ",
-        "feedback/loading.templ",
         "errorpage/notfound404.templ",
         "forms/validation.templ"
       ],
-      "tokens": 7
+      "tokens": 6
     },
     {
       "hash": "3fea174fa0c9a05b",
@@ -534,8 +529,9 @@
         "visualtest/print_test.go",
         "utils/css_var_integrity_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
+        "cmd/tc/doctor_integration_sync_test.go",
+        "visualtest/kanban_e2e_test.go",
         "utils/wire/invariants_test.go",
-        "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/kanban_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
@@ -551,6 +547,7 @@
         "utils/docs_count_test.go",
         "utils/docs_count_test.go",
         "utils/docs_count_test.go",
+        "utils/version_train_test.go",
         "utils/templ_sync_test.go",
         "cmd/tc/doctor_integration_sync_test.go",
         "forms/filter_dropdown.templ",
@@ -577,7 +574,7 @@
         "forms/rating_test.go",
         "display/golden_sweep_pie_chart_test.go"
       ],
-      "tokens": 94
+      "tokens": 98
     },
     {
       "hash": "4b96e71302554d24",
@@ -650,12 +647,12 @@
       "tokens": 4
     },
     {
-      "hash": "56303157f36e91cb",
+      "hash": "59f5dcdb43c9ad09",
       "files": [
-        "utils/format/format.go",
-        "utils/format/format.go"
+        "layout/base.templ",
+        "layout/base.templ"
       ],
-      "tokens": 4
+      "tokens": 8
     },
     {
       "hash": "5d5111d8593002b9",
@@ -691,6 +688,7 @@
         "visualtest/copy_button_e2e_test.go",
         "visualtest/wire_form_e2e_test.go",
         "htmx/testhelpers_test.go",
+        "visualtest/ime_enter_e2e_test.go",
         "display/shared.go",
         "visualtest/wire_pack_visual_test.go",
         "layout/embed.go",
@@ -710,14 +708,18 @@
         "display/shared.go",
         "display/shared.go",
         "visualtest/calendar_nav_e2e_test.go",
+        "visualtest/tooltip_anchor_e2e_test.go",
         "visualtest/appshell_visual_test.go",
         "visualtest/sidebar_nav_visual_test.go",
+        "visualtest/image_priority_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
+        "visualtest/toggle_e2e_test.go",
         "display/shared.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "forms/dirty_guard.templ",
         "visualtest/wire_forms_pack_e2e_test.go",
         "layout/snapshot_test.go",
+        "visualtest/overlay_matrix_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/wire_form_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
@@ -729,10 +731,13 @@
         "visualtest/kanban_e2e_test.go",
         "visualtest/kanban_pending_visual_test.go",
         "visualtest/wire_e2e_test.go",
+        "visualtest/autocomplete_e2e_test.go",
         "visualtest/datastar_polled_region_e2e_test.go",
+        "visualtest/scroll_containment_e2e_test.go",
         "display/shared.go",
         "visualtest/kanban_single_transport_visual_test.go",
         "display/data_state_test.go",
+        "visualtest/theme_storage_sync_e2e_test.go",
         "visualtest/kanban_visual_test.go",
         "visualtest/kanban_visual_test.go",
         "visualtest/visual_test.go",
@@ -762,7 +767,7 @@
         "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/wire_pack_visual_test.go"
       ],
-      "tokens": 76
+      "tokens": 84
     },
     {
       "hash": "60907d0cffdde79a",
@@ -918,6 +923,7 @@
         "layout/bdd_test.go",
         "utils/generated_file_names_test.go",
         "display/golden_sweep_area_chart_test.go",
+        "visualtest/determinism_guard_test.go",
         "htmx/bdd_test.go",
         "visualtest/demo_kanban_http_test.go",
         "display/section_heading.templ",
@@ -930,7 +936,7 @@
         "visualtest/wire_form_e2e_test.go",
         "visualtest/wire_form_e2e_test.go"
       ],
-      "tokens": 48
+      "tokens": 51
     },
     {
       "hash": "7082e81c6b92b9fe",
@@ -966,14 +972,6 @@
         "forms/form.templ"
       ],
       "tokens": 2
-    },
-    {
-      "hash": "77fd10cc8101417c",
-      "files": [
-        "utils/format/format.go",
-        "utils/format/format.go"
-      ],
-      "tokens": 8
     },
     {
       "hash": "7a05f9493780c6dc",
@@ -1048,6 +1046,14 @@
         "visualtest/tools/sseload/main.go"
       ],
       "tokens": 8
+    },
+    {
+      "hash": "86db0c4afaf040ce",
+      "files": [
+        "utils/format/format.go",
+        "utils/format/format.go"
+      ],
+      "tokens": 4
     },
     {
       "hash": "87e7060a6a42a41b",
@@ -1255,55 +1261,56 @@
       "hash": "a6b06ca5c40238ad",
       "files": [
         "datastar/sse_error_handling.templ",
-        "display/count_badge.templ",
         "display/avatar.templ",
+        "display/count_badge.templ",
         "display/definition_grid.templ",
         "display/definition_list.templ",
         "display/date_range.templ",
-        "display/context_menu.templ",
         "display/eyebrow.templ",
         "display/empty_state.templ",
-        "display/badge.templ",
-        "display/list_note.templ",
+        "display/context_menu.templ",
         "display/grid.templ",
+        "display/dropdown.templ",
+        "display/copy_button.templ",
+        "display/list_note.templ",
+        "display/loading_dialog.templ",
+        "display/badge.templ",
         "display/popover.templ",
         "display/page_header.templ",
-        "display/copy_button.templ",
-        "display/table_data.templ",
-        "display/scrollback.templ",
-        "display/relative_time.templ",
-        "display/dropdown.templ",
-        "display/tooltip.templ",
         "display/image.templ",
+        "display/relative_time.templ",
+        "display/scrollback.templ",
         "display/section_heading.templ",
-        "display/tabs.templ",
-        "feedback/alert.templ",
-        "feedback/circular_progress.templ",
-        "display/table.templ",
+        "display/table_data.templ",
+        "display/tooltip.templ",
         "display/kanban.templ",
-        "feedback/toast.templ",
+        "display/tabs.templ",
+        "display/table.templ",
+        "feedback/circular_progress.templ",
+        "feedback/alert.templ",
         "feedback/progressbar.templ",
         "feedback/step_indicator.templ",
-        "forms/dirty_guard.templ",
+        "feedback/toast.templ",
         "forms/date_picker.templ",
+        "forms/dirty_guard.templ",
         "forms/calendar.templ",
+        "feedback/loading.templ",
+        "forms/combobox.templ",
         "forms/file_input.templ",
         "forms/filter_input.templ",
-        "forms/input_group.templ",
-        "feedback/loading.templ",
         "forms/form.templ",
-        "forms/filter_dropdown.templ",
+        "forms/input_group.templ",
         "forms/rating.templ",
-        "forms/combobox.templ",
-        "forms/validation.templ",
-        "forms/slider.templ",
-        "forms/textarea.templ",
+        "forms/filter_dropdown.templ",
         "forms/select.templ",
-        "forms/toggle.templ",
+        "forms/slider.templ",
         "forms/tags_input.templ",
-        "htmx/error_handling.templ",
-        "htmx/helpers.templ",
+        "forms/validation.templ",
+        "forms/toggle.templ",
+        "forms/textarea.templ",
         "forms/input.templ",
+        "htmx/helpers.templ",
+        "htmx/error_handling.templ",
         "icons/custom_icon.templ",
         "navigation/breadcrumbs.templ",
         "navigation/end_of_list.templ",
@@ -1313,7 +1320,7 @@
         "website/internal/pages/base.templ",
         "website/internal/pages/sections.templ"
       ],
-      "tokens": 58
+      "tokens": 59
     },
     {
       "hash": "a9bf8fd355d250a7",
@@ -1437,6 +1444,14 @@
       "tokens": 2
     },
     {
+      "hash": "bcd216656d0abc26",
+      "files": [
+        "display/loading_dialog.templ",
+        "feedback/loading.templ"
+      ],
+      "tokens": 4
+    },
+    {
       "hash": "bf6186b647a840bc",
       "files": [
         "forms/calendar.templ",
@@ -1451,15 +1466,6 @@
         "errorpage/notfound404_types.go"
       ],
       "tokens": 2
-    },
-    {
-      "hash": "c0d608157bd4aeac",
-      "files": [
-        "layout/base.templ",
-        "layout/base.templ",
-        "icons/custom_icon.templ"
-      ],
-      "tokens": 3
     },
     {
       "hash": "c1171fa2f683532c",
@@ -1517,6 +1523,7 @@
         "forms/toggle.templ",
         "visualtest/axe_sweep_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
+        "utils/version_train_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "forms/calendar.templ",
         "visualtest/wire_forms_pack_e2e_test.go",
@@ -1543,6 +1550,7 @@
         "visualtest/accordion_animation_e2e_test.go",
         "visualtest/wire_form_e2e_test.go",
         "website/internal/pages/sales.templ",
+        "utils/version_train_test.go",
         "visualtest/visual_emulation_test.go",
         "feedback/toast.templ",
         "layout/base.templ",
@@ -1553,6 +1561,7 @@
         "utils/infra_guards_test.go",
         "utils/wire/decode_fuzz_test.go",
         "display/kanban_example_test.go",
+        "visualtest/theme_storage_sync_e2e_test.go",
         "website/internal/pages/docs.templ",
         "website/internal/pages/base.templ",
         "display/grid.templ",
@@ -1577,6 +1586,7 @@
         "utils/infra_guards_test.go",
         "visualtest/datastar_synthetics_e2e_test.go",
         "internal/contract/class_override_test.go",
+        "utils/version_train_test.go",
         "display/badge.templ",
         "website/internal/pages/notfound.templ",
         "datastar/live_region.templ",
@@ -1594,6 +1604,11 @@
         "visualtest/wire_form_e2e_test.go",
         "display/hover_card.templ",
         "forms/input.templ",
+        "utils/version_train_test.go",
+        "utils/version_train_test.go",
+        "utils/version_train_test.go",
+        "utils/version_train_test.go",
+        "utils/version_train_test.go",
         "forms/combobox.templ",
         "display/tabs.templ",
         "navigation/sidebar_nav.templ",
@@ -1677,6 +1692,7 @@
         "utils/benchmark_test.go",
         "display/benchmark_test.go",
         "visualtest/main_test.go",
+        "visualtest/image_priority_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/kanban_e2e_test.go",
@@ -1769,6 +1785,9 @@
         "internal/contract/conventions_test.go",
         "display/data_state_test.go",
         "errorpage/coverage_boost2_test.go",
+        "tools/countgen/countgen_test.go",
+        "tools/countgen/countgen_test.go",
+        "tools/countgen/countgen_test.go",
         "visualtest/compare_test.go",
         "visualtest/compare_test.go",
         "visualtest/compare_test.go",
@@ -1803,6 +1822,7 @@
         "errorpage/coverage_extra_test.go",
         "forms/coverage_boost2_test.go",
         "display/golden_sweep_pie_chart_test.go",
+        "utils/utils_test.go",
         "display/position_test.go",
         "cmd/tc/lint_parity_test.go",
         "errorpage/handler_coverage_test.go",
@@ -1821,6 +1841,7 @@
         "forms/modern_standards_test.go",
         "visualtest/appshell_visual_test.go",
         "visualtest/appshell_visual_test.go",
+        "utils/version_train_test.go",
         "layout/bdd_test.go",
         "feedback/bdd_test.go",
         "display/modern_standards_test.go",
@@ -2229,6 +2250,7 @@
         "errorpage/handler_buffer_test.go",
         "feedback/snapshot_test.go",
         "display/kanban_a11y_test.go",
+        "layout/snapshot_test.go",
         "display/coverage_extra_test.go",
         "display/sparkline_test.go",
         "navigation/a11y_test.go",
@@ -2422,6 +2444,7 @@
         "forms/new_components_bdd_test.go",
         "utils/wire/builders_test.go",
         "display/golden_sweep_line_chart_test.go",
+        "visualtest/determinism_guard_test.go",
         "display/badge_test.go",
         "errorpage/fromerror_safety_test.go",
         "forms/filter_chips_test.go",
@@ -2511,8 +2534,6 @@
         "forms/new_components_bdd_test.go",
         "forms/new_components_snapshot_test.go",
         "errorpage/notfound404_edge_test.go",
-        "feedback/helpers_test.go",
-        "feedback/helpers_test.go",
         "errorpage/coverage_boost2_test.go",
         "utils/module_surface_test.go",
         "internal/contract/class_override_test.go",
@@ -2539,6 +2560,7 @@
         "errorpage/coverage_matrix_test.go",
         "errorpage/family_from_status_test.go",
         "forms/coverage_boost2_test.go",
+        "display/loading_dialog_test.go",
         "utils/utils_test.go",
         "errorpage/notfound404_coverage_test.go",
         "display/tone_adapters_test.go",
@@ -2712,6 +2734,7 @@
         "display/golden_sweep_test.go",
         "display/button_test.go",
         "datastar/loading_button_test.go",
+        "display/loading_dialog_test.go",
         "errorpage/coverage_boost2_test.go",
         "errorpage/handler_buffer_test.go",
         "feedback/coverage_boost3_test.go",
@@ -2848,6 +2871,8 @@
         "visualtest/kanban_visual_test.go",
         "display/avatar_test.go",
         "icons/snapshot_test.go",
+        "feedback/helpers_test.go",
+        "feedback/helpers_test.go",
         "display/a11y_test.go",
         "display/grid_gap_test.go",
         "display/external_link_test.go",
@@ -2862,6 +2887,7 @@
         "forms/combobox_test.go",
         "navigation/coverage_boost2_test.go",
         "forms/filter_input_test.go",
+        "tools/countgen/countgen_test.go",
         "internal/contract/conventions_test.go",
         "icons/bdd_test.go",
         "display/carousel_test.go",
@@ -2914,6 +2940,7 @@
         "utils/tone/tone_test.go",
         "htmx/snapshot_test.go",
         "layout/bdd_test.go",
+        "display/golden_new_test.go",
         "display/golden_new_test.go",
         "display/bdd_test.go",
         "charts/echarts/echarts_test.go",
@@ -3036,7 +3063,6 @@
         "errorpage/notfound404_edge_test.go",
         "utils/compliance_scan_test.go",
         "forms/tags_input_test.go",
-        "visualtest/nav_timing_test.go",
         "visualtest/a11y_viewport_audit_test.go",
         "visualtest/keyboard_traversal_test.go",
         "visualtest/demo_csp_nonce_test.go",
@@ -3051,6 +3077,7 @@
         "display/bdd_test.go",
         "utils/utils_test.go",
         "forms/coverage_boost2_test.go",
+        "tools/countgen/countgen_test.go",
         "errorpage/handler_test.go",
         "utils/custom_css_test.go",
         "utils/css_var_integrity_test.go",
@@ -3120,6 +3147,7 @@
         "forms/slider_test.go",
         "display/golden_sweep_layout_test.go",
         "forms/slider_test.go",
+        "utils/version_train_test.go",
         "forms/rating_test.go",
         "errorpage/handler_test.go",
         "display/collapsible_heatmap_test.go",
@@ -3146,6 +3174,7 @@
         "display/golden_sweep_pie_chart_test.go",
         "layout/theme_color_test.go",
         "errorpage/handler_test.go",
+        "tools/countgen/countgen_test.go",
         "display/position_test.go",
         "display/golden_sweep_charts_test.go",
         "utils/format/format_test.go",
@@ -3305,6 +3334,7 @@
         "forms/snapshot_test.go",
         "forms/coverage_test.go",
         "errorpage/golden_sweep_test.go",
+        "utils/version_train_test.go",
         "htmx/bdd_test.go",
         "display/golden_sweep_charts_test.go",
         "feedback/coverage_boost2_test.go",
@@ -3353,8 +3383,8 @@
         "layout/regression_test.go",
         "layout/regression_test.go",
         "layout/regression_test.go",
-        "layout/snapshot_test.go",
         "layout/regression_test.go",
+        "layout/snapshot_test.go",
         "layout/coverage_boost2_test.go",
         "htmx/coverage_boost3_test.go",
         "icons/custom_icon_test.go",
@@ -3496,16 +3526,25 @@
         "visualtest/lightbox_e2e_test.go",
         "visualtest/command_palette_e2e_test.go",
         "visualtest/command_palette_e2e_test.go",
+        "visualtest/autocomplete_e2e_test.go",
+        "visualtest/ime_enter_e2e_test.go",
+        "visualtest/theme_storage_sync_e2e_test.go",
         "visualtest/overlay_backdrop_e2e_test.go",
         "visualtest/overlay_backdrop_e2e_test.go",
         "visualtest/overlay_backdrop_e2e_test.go",
         "visualtest/overlay_backdrop_e2e_test.go",
         "visualtest/copy_button_e2e_test.go",
+        "visualtest/toggle_e2e_test.go",
+        "visualtest/scroll_containment_e2e_test.go",
+        "visualtest/tooltip_anchor_e2e_test.go",
+        "visualtest/overlay_matrix_e2e_test.go",
+        "visualtest/image_priority_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/kanban_e2e_test.go",
         "visualtest/kanban_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
+        "visualtest/nav_timing_test.go",
         "visualtest/demo_mobile_e2e_test.go",
         "visualtest/demo_mobile_e2e_test.go",
         "visualtest/visual_emulation_test.go",
@@ -3531,11 +3570,13 @@
         "visualtest/datastar_synthetics_e2e_test.go",
         "visualtest/datastar_synthetics_e2e_test.go",
         "visualtest/datastar_synthetics_e2e_test.go",
+        "visualtest/route_determinism_test.go",
         "visualtest/route_golden_test.go",
         "visualtest/site_copy_e2e_test.go",
         "visualtest/calendar_nav_e2e_test.go",
         "visualtest/kanban_pending_visual_test.go",
         "visualtest/focus_preservation_e2e_test.go",
+        "visualtest/determinism_guard_test.go",
         "layout/base_seo_test.go",
         "layout/bdd_test.go",
         "layout/bdd_test.go",
@@ -3555,6 +3596,7 @@
         "utils/custom_css_test.go",
         "visualtest/axe_sweep_test.go",
         "visualtest/demo_kanban_http_test.go",
+        "visualtest/route_golden_test.go",
         "utils/coverage_baseline_test.go",
         "visualtest/harness_test.go",
         "internal/contract/conventions_test.go",
@@ -3562,6 +3604,7 @@
         "layout/bdd_test.go",
         "utils/generated_file_names_test.go",
         "display/golden_sweep_area_chart_test.go",
+        "visualtest/determinism_guard_test.go",
         "htmx/bdd_test.go",
         "utils/docs_count_test.go",
         "visualtest/coverage_test.go",
@@ -3603,6 +3646,7 @@
         "visualtest/kanban_pending_visual_test.go",
         "forms/golden_sweep_test.go",
         "forms/golden_sweep_filter_bar_test.go",
+        "visualtest/theme_storage_sync_e2e_test.go",
         "visualtest/calendar_nav_e2e_test.go",
         "visualtest/visual_emulation_test.go",
         "visualtest/focus_preservation_e2e_test.go",
@@ -3632,6 +3676,8 @@
         "display/kanban_a11y_test.go",
         "display/kanban_pending_test.go",
         "utils/release_script_test.go",
+        "utils/version_train_test.go",
+        "tools/countgen/countgen_test.go",
         "utils/release_script_test.go",
         "utils/compliance_scan_test.go",
         "cmd/tc/lint_test.go",
@@ -3645,8 +3691,10 @@
         "utils/wire/invariants_test.go",
         "visualtest/site_routes_test.go",
         "navigation/a11y_test.go",
+        "tools/countgen/countgen_test.go",
         "htmx/bdd_test.go",
         "display/kanban_pending_test.go",
+        "utils/docs_count_test.go",
         "utils/compiled_css_inventory_test.go",
         "utils/coarse_pointer_compliance_test.go",
         "utils/custom_css_test.go",
@@ -3655,6 +3703,9 @@
         "visualtest/kanban_e2e_test.go",
         "visualtest/wire_e2e_test.go",
         "visualtest/wire_e2e_test.go",
+        "visualtest/overlay_matrix_e2e_test.go",
+        "visualtest/tooltip_anchor_e2e_test.go",
+        "visualtest/scroll_containment_e2e_test.go",
         "visualtest/kanban_pending_visual_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/wire_form_e2e_test.go",
@@ -3663,14 +3714,22 @@
         "visualtest/datastar_synthetics_e2e_test.go",
         "visualtest/polled_region_e2e_test.go",
         "visualtest/loading_button_e2e_test.go",
+        "visualtest/theme_storage_sync_e2e_test.go",
         "visualtest/overlay_backdrop_e2e_test.go",
+        "visualtest/toggle_e2e_test.go",
+        "visualtest/ime_enter_e2e_test.go",
+        "visualtest/image_priority_e2e_test.go",
         "visualtest/copy_button_e2e_test.go",
         "visualtest/lightbox_e2e_test.go",
         "visualtest/focus_preservation_e2e_test.go",
+        "visualtest/autocomplete_e2e_test.go",
         "visualtest/command_palette_e2e_test.go",
         "visualtest/datastar_polled_region_e2e_test.go",
         "visualtest/kanban_e2e_test.go",
         "visualtest/demo_flows_e2e_test.go",
+        "utils/version_train_test.go",
+        "utils/version_train_test.go",
+        "utils/version_train_test.go",
         "internal/contract/conventions_test.go",
         "errorpage/edge_cases_test.go",
         "errorpage/edge_cases_test.go",
@@ -3714,6 +3773,7 @@
         "navigation/pagination.templ",
         "htmx/polled_region.templ",
         "display/avatar.templ",
+        "visualtest/overlay_matrix_e2e_test.go",
         "visualtest/overlay_backdrop_e2e_test.go",
         "visualtest/overlay_backdrop_e2e_test.go",
         "visualtest/overlay_backdrop_e2e_test.go",
@@ -3735,7 +3795,6 @@
         "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
-        "display/table.templ",
         "display/data_state.templ",
         "forms/form.templ",
         "display/card.templ",
@@ -3744,6 +3803,7 @@
         "display/bar_chart.templ",
         "visualtest/overlay_backdrop_e2e_test.go",
         "feedback/toast.templ",
+        "visualtest/ime_enter_e2e_test.go",
         "utils/docs_count_test.go",
         "utils/utils_test.go",
         "display/tabs.templ",
@@ -3773,6 +3833,7 @@
         "feedback/step_indicator.templ",
         "utils/templ_sync_test.go",
         "forms/calendar.templ",
+        "visualtest/scroll_containment_e2e_test.go",
         "navigation/pagination.templ",
         "visualtest/wire_forms_pack_e2e_test.go",
         "display/table_data.templ",
@@ -3816,7 +3877,7 @@
         "utils/wire/triggers_test.go",
         "internal/contract/props_id_test.go"
       ],
-      "tokens": 2334
+      "tokens": 2389
     },
     {
       "hash": "c76b7815eab9810c",
@@ -3845,8 +3906,8 @@
     {
       "hash": "d2d88e2bceb22815",
       "files": [
-        "errorpage/errordetail.templ",
-        "errorpage/errorpage.templ"
+        "errorpage/errorpage.templ",
+        "errorpage/errordetail.templ"
       ],
       "tokens": 2
     },
@@ -3861,8 +3922,8 @@
     {
       "hash": "d4d2745d3c006743",
       "files": [
-        "display/hover_card.templ",
         "display/data_state.templ",
+        "display/hover_card.templ",
         "layout/appshell.templ",
         "layout/split.templ",
         "website/internal/pages/landing.templ",
@@ -4022,6 +4083,7 @@
         "layout/bdd_test.go",
         "visualtest/wire_forms_pack_e2e_test.go",
         "forms/filter_dropdown.templ",
+        "utils/version_train_test.go",
         "utils/templ_sync_test.go",
         "cmd/tc/doctor_integration_sync_test.go",
         "website/cmd/site/main_test.go",
@@ -4052,7 +4114,10 @@
         "display/badge.templ",
         "visualtest/print_test.go",
         "visualtest/kanban_e2e_test.go",
+        "utils/version_train_test.go",
         "visualtest/calendar_nav_e2e_test.go",
+        "utils/version_train_test.go",
+        "utils/version_train_test.go",
         "visualtest/demo_kanban_http_test.go",
         "visualtest/kanban_e2e_test.go",
         "visualtest/kanban_e2e_test.go",
@@ -4069,6 +4134,7 @@
         "utils/custom_css_test.go",
         "visualtest/axe_sweep_test.go",
         "visualtest/demo_kanban_http_test.go",
+        "visualtest/route_golden_test.go",
         "utils/coverage_baseline_test.go",
         "visualtest/harness_test.go",
         "utils/css_var_integrity_test.go",
@@ -4077,15 +4143,7 @@
         "display/table.templ",
         "forms/filter_input.templ"
       ],
-      "tokens": 57
-    },
-    {
-      "hash": "f55e272114b5fd50",
-      "files": [
-        "utils/format/format.go",
-        "utils/format/format.go"
-      ],
-      "tokens": 4
+      "tokens": 62
     },
     {
       "hash": "f9f64ffe15da55ce",
