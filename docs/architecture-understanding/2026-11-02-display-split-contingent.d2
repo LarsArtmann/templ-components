@@ -1,0 +1,66 @@
+# CONTINGENT diagram — what a display SPLIT would look like IF the ADR-0040
+# triggers fire (v2 family-extraction order: charts → overlays → tables).
+# This is NOT the current state: today display is ONE package inside the root
+# module (53 components, 49 .templ files) and the verdict is trigger-gated NO.
+# Re-check: scripts/display-split-triggers.sh · decision: ADR-0040 · order
+# rationale: ROADMAP.md "Per-package modules split" row (2026-11-02).
+
+direction: right
+
+root: Root Module {
+  shape: package
+
+  display: display (today: 1 package, 53 components) {
+    shape: package
+
+    charts: display/charts {
+      shape: package
+      label: "charts family\nLineChart · AreaChart · PieChart · BarChart · Sparkline · Heatmap · SegmentBar\n(shared chart_geometry.go boundary)"
+    }
+    overlays: display/overlays {
+      shape: package
+      label: "overlays family\nModal · Drawer · Dropdown · Popover · Tooltip · Accordion · HoverCard · Lightbox · ContextMenu\n(native <dialog>/Popover + shared keyboard-nav + positioning scripts)"
+    }
+    tables: display/tables {
+      shape: package
+      label: "tables family\nTable · DataTable\n(Table.Flush / Card.Body composition couples to layout — extracted last)"
+    }
+    rest: display (residual) {
+      shape: package
+      label: "cards · badges · buttons · avatars · empty states · page headers · definition lists · misc"
+    }
+  }
+
+  utils: utils (leaf — unchanged)
+  icons: icons (unchanged)
+  layout: layout (unchanged)
+}
+
+charts_mod: charts/display module (contingent) {
+  shape: cylinder
+  label: "own go.mod · T1/T3 likely first fire\n(chart runtime would carry own deps/build)"
+}
+overlays_mod: overlays/display module (contingent) {
+  shape: cylinder
+  label: "own go.mod · extraction #2"
+}
+tables_mod: tables/display module (contingent) {
+  shape: cylinder
+  label: "own go.mod · extraction #3 (after boundaries exist)"
+}
+
+root.display.charts -> charts_mod: "if T1/T2/T3 fires"
+root.display.overlays -> overlays_mod: "if triggers fire"
+root.display.tables -> tables_mod: "if triggers fire"
+
+charts_mod -> root.utils: depends on
+overlays_mod -> root.utils: depends on
+tables_mod -> root.utils: depends on
+root.display.rest -> root.utils: depends on
+
+afferent_note: afferent blast radius today {
+  label: "3 workspace packages import .../display:\nexamples/demo · recipes · website/internal/pages\n(every split re-paths these — measured by the trigger script)"
+  shape: text
+}
+
+root <- afferent_note: consumers
