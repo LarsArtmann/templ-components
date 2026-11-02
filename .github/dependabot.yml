@@ -5,6 +5,17 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # templ is PINNED in lockstep with the dev-shell generator (go.mod
+    # v0.3.1020 == nixpkgs templ; any bump needs the ONE golden/visual
+    # re-baseline event, TODO #335 — a bot bump re-creates the daemon's
+    # poisoned v0.3.1070 train; utils.TestTemplVersionPin fails it).
+    # go-error-family moves ONLY via docs/external-dependency-bumps.md's
+    # verify-at-source protocol — per-directory bot bumps are exactly how
+    # the 2026-11-01 errorpage-vs-consumers version skew was born
+    # (utils.TestGoErrorFamilyPinAlignment fails any skew).
+    ignore:
+      - dependency-name: github.com/a-h/templ
+      - dependency-name: github.com/larsartmann/go-error-family
     groups:
       minor-and-patch:
         update-types:
@@ -15,6 +26,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # templ + go-error-family are bot-ignored repo-wide: see the `/` block
+    # rationale above (generator lockstep + verify-at-source bump protocol).
+    ignore:
+      - dependency-name: github.com/a-h/templ
+      - dependency-name: github.com/larsartmann/go-error-family
     groups:
       minor-and-patch:
         update-types:
@@ -25,6 +41,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # templ + go-error-family are bot-ignored repo-wide: see the `/` block
+    # rationale above (generator lockstep + verify-at-source bump protocol).
+    ignore:
+      - dependency-name: github.com/a-h/templ
+      - dependency-name: github.com/larsartmann/go-error-family
     groups:
       minor-and-patch:
         update-types:
@@ -35,6 +56,13 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # templ + go-error-family are bot-ignored repo-wide: see the `/` block
+    # rationale above (generator lockstep + verify-at-source bump protocol).
+    # errorpage is go-error-family's DIRECT consumer — a bot bump here is
+    # precisely the skew class the pin-train guard exists for.
+    ignore:
+      - dependency-name: github.com/a-h/templ
+      - dependency-name: github.com/larsartmann/go-error-family
     groups:
       minor-and-patch:
         update-types:
@@ -45,6 +73,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # templ + go-error-family are bot-ignored repo-wide: see the `/` block
+    # rationale above (generator lockstep + verify-at-source bump protocol).
+    ignore:
+      - dependency-name: github.com/a-h/templ
+      - dependency-name: github.com/larsartmann/go-error-family
     groups:
       minor-and-patch:
         update-types:
@@ -55,6 +88,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # templ + go-error-family are bot-ignored repo-wide: see the `/` block
+    # rationale above (generator lockstep + verify-at-source bump protocol).
+    ignore:
+      - dependency-name: github.com/a-h/templ
+      - dependency-name: github.com/larsartmann/go-error-family
     groups:
       minor-and-patch:
         update-types:
@@ -65,6 +103,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # templ + go-error-family are bot-ignored repo-wide: see the `/` block
+    # rationale above (generator lockstep + verify-at-source bump protocol).
+    ignore:
+      - dependency-name: github.com/a-h/templ
+      - dependency-name: github.com/larsartmann/go-error-family
     groups:
       minor-and-patch:
         update-types:
@@ -75,6 +118,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # templ + go-error-family are bot-ignored repo-wide: see the `/` block
+    # rationale above (generator lockstep + verify-at-source bump protocol).
+    ignore:
+      - dependency-name: github.com/a-h/templ
+      - dependency-name: github.com/larsartmann/go-error-family
     groups:
       minor-and-patch:
         update-types:
@@ -94,6 +142,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # templ + go-error-family are bot-ignored repo-wide: see the `/` block
+    # rationale above (generator lockstep + verify-at-source bump protocol).
+    ignore:
+      - dependency-name: github.com/a-h/templ
+      - dependency-name: github.com/larsartmann/go-error-family
     groups:
       minor-and-patch:
         update-types:
