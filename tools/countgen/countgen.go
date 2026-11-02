@@ -28,6 +28,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -37,18 +38,22 @@ const (
 	skillDoc    = "skill/SKILL.md"
 )
 
-// countedPackages are the packages whose exported templ functions compose the
-// "N templ components" total (recipes screens counted separately).
-var countedPackages = []string{
-	"display", "feedback", "forms", "navigation", "errorpage",
-	"layout", "htmx", "datastar", "charts/echarts",
+// countedPackages returns the packages whose exported templ functions compose
+// the "N templ components" total (recipes screens counted separately).
+func countedPackages() []string {
+	return []string{
+		"display", "feedback", "forms", "navigation", "errorpage",
+		"layout", "htmx", "datastar", "charts/echarts",
+	}
 }
 
-// tablePackages are the packages whose exported templ functions countgen
+// tablePackages returns the packages whose exported templ functions countgen
 // derives (utils excluded: its FEATURES row is the semantic "owns no
 // components", not a templ-function count — utils/dismiss.templ exports
 // one helper function and must keep printing 0).
-var tablePackages = append([]string{"icons", "recipes"}, countedPackages...)
+func tablePackages() []string {
+	return append([]string{"icons", "recipes"}, countedPackages()...)
+}
 
 // Counts holds every number countgen derives from the tree.
 type Counts struct {
@@ -73,9 +78,10 @@ var (
 
 // Derive computes every count from the tree rooted at root.
 func Derive(root string) (Counts, error) {
+	//nolint:exhaustruct_v5 // zero values are the point: every field is filled as it is derived
 	counts := Counts{PackageCounts: map[string]int{}}
 
-	for _, pkg := range tablePackages {
+	for _, pkg := range tablePackages() {
 		total, err := countPackageTemplFuncs(root, pkg)
 		if err != nil {
 			return counts, err
@@ -84,7 +90,7 @@ func Derive(root string) (Counts, error) {
 		counts.PackageCounts[pkg] = total
 	}
 
-	for _, pkg := range countedPackages {
+	for _, pkg := range countedPackages() {
 		counts.Components += counts.PackageCounts[pkg]
 	}
 
@@ -199,7 +205,7 @@ func countMatchesWalk(root string, pattern *regexp.Regexp, label string) (int, e
 			return nil
 		}
 
-		data, err := os.ReadFile(path)
+		data, err := os.ReadFile(path) //nolint:gosec // G122: walks the repo's own tree; no untrusted symlinks
 		if err != nil {
 			return fmt.Errorf("read %s: %w", path, err)
 		}
@@ -325,24 +331,30 @@ type site struct {
 func featuresSites() []site {
 	backtick := "`"
 
+	return append(featuresTotalsSites(backtick), featuresBulletSites(backtick)...)
+}
+
+// featuresTotalsSites returns the Totals line site plus every FEATURES.md
+// table-row site (icons, recipes, and one row per counted package).
+func featuresTotalsSites(backtick string) []site {
 	totals := site{
 		name: "Totals line",
 		file: featuresDoc,
 		pattern: regexp.MustCompile(
 			`\*\*Totals:\*\* (\d+) templ components \(primitives, drift-guard verified\) \+ (\d+) recipe screens = (\d+), (\d+) icon names, (\d+) typed enums \((\d+) with ` + backtick + `IsValid\(\)` + backtick + `, (\d+) generated ` + backtick + `\*_templ\.go` + backtick + ` files`,
 		),
-		render: func(c Counts, prev []string) string {
+		render: func(counts Counts, prev []string) string {
 			return fmt.Sprintf(
 				"**Totals:** %d templ components (primitives, drift-guard verified) + %d recipe screens = %d, %d icon names, %s typed enums (%d with %sIsValid()%s, %d generated %s*_templ.go%s files",
-				c.Components,
-				c.Recipes,
-				c.ComponentsPlusRecipes,
-				c.Icons,
+				counts.Components,
+				counts.Recipes,
+				counts.ComponentsPlusRecipes,
+				counts.Icons,
 				prev[5],
-				c.IsValid,
+				counts.IsValid,
 				backtick,
 				backtick,
-				c.GeneratedFiles,
+				counts.GeneratedFiles,
 				backtick,
 				backtick,
 			)
@@ -353,8 +365,8 @@ func featuresSites() []site {
 		name:    "icons table row",
 		file:    featuresDoc,
 		pattern: regexp.MustCompile(`(?m)^\| (` + backtick + `icons` + backtick + `)(\s+)\| (\d+) \((\d+) icons\)`),
-		render: func(c Counts, prev []string) string {
-			return fmt.Sprintf("| %s%s| %d (%d icons)", prev[1], prev[2], c.PackageCounts["icons"], c.Icons)
+		render: func(counts Counts, prev []string) string {
+			return fmt.Sprintf("| %s%s| %d (%d icons)", prev[1], prev[2], counts.PackageCounts["icons"], counts.Icons)
 		},
 	}
 
@@ -362,20 +374,34 @@ func featuresSites() []site {
 		name:    "recipes table row",
 		file:    featuresDoc,
 		pattern: regexp.MustCompile(`(?m)^\| (` + backtick + `recipes` + backtick + `)(\s+)\| (\d+) screens`),
-		render: func(c Counts, prev []string) string {
-			return fmt.Sprintf("| %s%s| %d screens", prev[1], prev[2], c.Recipes)
+		render: func(counts Counts, prev []string) string {
+			return fmt.Sprintf("| %s%s| %d screens", prev[1], prev[2], counts.Recipes)
 		},
 	}
 
+	packages := countedPackages()
+	rows := make([]site, 0, 2+len(packages))
+	rows = append(rows, iconsRow, recipesRow)
+
+	for _, pkg := range packages {
+		rows = append(rows, countTableRow(pkg))
+	}
+
+	return append(rows, totals)
+}
+
+// featuresBulletSites returns the FEATURES.md bullet sites that carry derived
+// counts (IsValid coverage, HTML baselines, visual goldens).
+func featuresBulletSites(backtick string) []site {
 	isValidBullet := site{
 		name: "Type Safety bullet (IsValid only; enums total is hand-typed)",
 		file: featuresDoc,
 		pattern: regexp.MustCompile(
 			`(\d+) typed string enums \((\d+) with ` + backtick + `IsValid\(\)` + backtick + ` methods \+ tests\)`,
 		),
-		render: func(c Counts, prev []string) string {
+		render: func(counts Counts, prev []string) string {
 			return fmt.Sprintf("%s typed string enums (%d with %sIsValid()%s methods + tests)",
-				prev[1], c.IsValid, backtick, backtick)
+				prev[1], counts.IsValid, backtick, backtick)
 		},
 	}
 
@@ -383,8 +409,8 @@ func featuresSites() []site {
 		name:    "Test Coverage bullet (HTML baselines)",
 		file:    featuresDoc,
 		pattern: regexp.MustCompile(`in 5 packages, (\d+) baselines\)`),
-		render: func(c Counts, prev []string) string {
-			return fmt.Sprintf("in 5 packages, %d baselines)", c.HTMLGoldens)
+		render: func(counts Counts, prev []string) string {
+			return fmt.Sprintf("in 5 packages, %d baselines)", counts.HTMLGoldens)
 		},
 	}
 
@@ -392,17 +418,12 @@ func featuresSites() []site {
 		name:    "Test Coverage bullet (visual goldens)",
 		file:    featuresDoc,
 		pattern: regexp.MustCompile(`; (\d+) goldens incl\. charts`),
-		render: func(c Counts, prev []string) string {
-			return fmt.Sprintf("; %d goldens incl. charts", c.VisualGoldens)
+		render: func(counts Counts, prev []string) string {
+			return fmt.Sprintf("; %d goldens incl. charts", counts.VisualGoldens)
 		},
 	}
 
-	sites := []site{totals, iconsRow, recipesRow, isValidBullet, htmlBaselines, visualGoldens}
-	for _, pkg := range countedPackages {
-		sites = append(sites, countTableRow(pkg))
-	}
-
-	return sites
+	return []site{isValidBullet, htmlBaselines, visualGoldens}
 }
 
 // countTableRow renders one FEATURES.md package-table row. The captured gap
@@ -427,9 +448,11 @@ func skillSites() []site {
 		name:    "catalogue total line",
 		file:    skillDoc,
 		pattern: regexp.MustCompile(`(?m)^(\d+) components across (\d+) packages \((\w+) counted templ packages, plus`),
-		render: func(c Counts, prev []string) string {
+		render: func(counts Counts, prev []string) string {
+			counted := len(countedPackages())
+
 			return fmt.Sprintf("%d components across %d packages (%s counted templ packages, plus",
-				c.Components, len(countedPackages)+2, numberWord(len(countedPackages)))
+				counts.Components, counted+2, numberWord(counted))
 		},
 	}
 
@@ -466,8 +489,12 @@ func skillSites() []site {
 		},
 	}
 
-	sites := []site{catalogueTotal, componentsPlusIcons, errorpageHeading, chartsHeading}
-	for _, pkg := range []string{"display", "forms", "feedback", "layout", "navigation", "htmx", "datastar"} {
+	skillPackages := []string{"display", "forms", "feedback", "layout", "navigation", "htmx", "datastar"}
+	//nolint:mnd // 4 = catalogueTotal, componentsPlusIcons, errorpageHeading, chartsHeading
+	sites := make([]site, 0, 4+len(skillPackages))
+	sites = append(sites, catalogueTotal, componentsPlusIcons, errorpageHeading, chartsHeading)
+
+	for _, pkg := range skillPackages {
 		sites = append(sites, skillPkgHeading(pkg))
 	}
 
@@ -499,7 +526,7 @@ func numberWord(total int) string {
 		"fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty",
 	}
 
-	if total < len(words) {
+	if total >= 0 && total < len(words) {
 		return words[total]
 	}
 
@@ -510,6 +537,7 @@ func numberWord(total int) string {
 func siteMatch(content []byte, s site) ([]int, error) {
 	locations := s.pattern.FindAllIndex(content, -1)
 	if len(locations) != 1 {
+		//nolint:err113 // leaf diagnostic printed for a human; there is no error to wrap
 		return nil, fmt.Errorf(
 			"%s: site %q matched %d times (want exactly 1) — structural drift, fix the doc or the site pattern by hand",
 			s.file, s.name, len(locations),
@@ -558,10 +586,10 @@ func (d *docContent) get(name string) ([]byte, error) {
 
 // evaluate runs every site against the current docs. It yields, per site, the
 // byte location of the match, its current text, and the expected text.
-func evaluate(root string) (Counts, []evalResult, error) {
+func evaluate(root string) ([]evalResult, error) {
 	counts, err := Derive(root)
 	if err != nil {
-		return counts, nil, err
+		return nil, err
 	}
 
 	docs := newDocContent(root)
@@ -571,12 +599,12 @@ func evaluate(root string) (Counts, []evalResult, error) {
 	for _, s := range sites() {
 		content, err := docs.get(s.file)
 		if err != nil {
-			return counts, results, err
+			return results, err
 		}
 
 		location, err := siteMatch(content, s)
 		if err != nil {
-			return counts, results, err
+			return results, err
 		}
 
 		prev := captureGroups(content, location, s.pattern)
@@ -589,7 +617,7 @@ func evaluate(root string) (Counts, []evalResult, error) {
 		})
 	}
 
-	return counts, results, nil
+	return results, nil
 }
 
 type evalResult struct {
@@ -603,7 +631,7 @@ type evalResult struct {
 // Check verifies both docs against the tree. Every drift is a separate error
 // naming the location and telling the user how to fix it mechanically.
 func Check(root string) error {
-	_, results, err := evaluate(root)
+	results, err := evaluate(root)
 	if err != nil {
 		return err
 	}
@@ -615,48 +643,80 @@ func Check(root string) error {
 			continue
 		}
 
-		problems = append(problems, fmt.Errorf(
-			"%s:%d: site %q drifts from the tree (expected %q, found %q) — run: go run ./tools/countgen/cmd/countgen -w",
-			r.site.file,
-			lineAt(r.content, r.location[0]),
-			r.site.name,
-			r.expected,
-			r.current,
-		))
+		problems = append(
+			problems,
+			fmt.Errorf( //nolint:err113 // leaf diagnostic printed for a human; there is no error to wrap
+				"%s:%d: site %q drifts from the tree (expected %q, found %q) — run: go run ./tools/countgen/cmd/countgen -w",
+				r.site.file,
+				lineAt(r.content, r.location[0]),
+				r.site.name,
+				r.expected,
+				r.current,
+			),
+		)
 	}
 
 	return joinErrors(problems)
 }
 
 // Apply rewrites both docs to match the tree, returning the changed file names.
+//
+// Every site location was captured against the ORIGINAL doc bytes, so the
+// replacements splice into a working copy from the end of the file backwards —
+// applying them in site order would invalidate later offsets, and building
+// each replacement from the pristine content (the 2026-11-02 shape) silently
+// dropped all but the last drifted site per file.
 func Apply(root string) ([]string, error) {
-	_, results, err := evaluate(root)
+	results, err := evaluate(root)
 	if err != nil {
 		return nil, err
 	}
 
-	updated := map[string][]byte{}
-	dirty := map[string]bool{}
+	type edit struct {
+		location []int
+		expected string
+	}
+
+	originals := map[string][]byte{}
+	editsByFile := map[string][]edit{}
 
 	for _, r := range results {
 		if r.current == r.expected {
 			continue
 		}
 
-		next := append([]byte{}, r.content[:r.location[0]]...)
-		next = append(next, r.expected...)
-		next = append(next, r.content[r.location[1]:]...)
-		updated[r.site.file] = next
-		dirty[r.site.file] = true
+		if _, ok := originals[r.site.file]; !ok {
+			originals[r.site.file] = r.content
+		}
+
+		editsByFile[r.site.file] = append(editsByFile[r.site.file], edit{location: r.location, expected: r.expected})
+	}
+
+	updated := map[string][]byte{}
+
+	for name, edits := range editsByFile {
+		sort.Slice(edits, func(i, j int) bool { return edits[i].location[0] > edits[j].location[0] })
+
+		content := append([]byte{}, originals[name]...)
+
+		for _, e := range edits {
+			next := append([]byte{}, content[:e.location[0]]...)
+			next = append(next, e.expected...)
+			next = append(next, content[e.location[1]:]...)
+			content = next
+		}
+
+		updated[name] = content
 	}
 
 	var written []string
 
 	for _, name := range []string{featuresDoc, skillDoc} {
-		if !dirty[name] {
+		if _, dirty := updated[name]; !dirty {
 			continue
 		}
 
+		//nolint:gosec // G306: 0644 matches the docs' tracked file mode
 		if err := os.WriteFile(filepath.Join(root, name), updated[name], 0o644); err != nil {
 			return written, fmt.Errorf("write %s: %w", name, err)
 		}
@@ -674,10 +734,10 @@ func captureGroups(content []byte, location []int, pattern *regexp.Regexp) []str
 		return nil
 	}
 
-	out := make([]string, len(match))
+	out := make([]string, 0, len(match))
 
-	for i, m := range match {
-		out[i] = string(m)
+	for _, m := range match {
+		out = append(out, string(m))
 	}
 
 	return out
@@ -695,6 +755,10 @@ func joinErrors(errs []error) error {
 			messages = append(messages, err.Error())
 		}
 
-		return fmt.Errorf("%d count drifts:\n%s", len(errs), strings.Join(messages, "\n"))
+		return fmt.Errorf( //nolint:err113 // aggregated diagnostic header; there is no error to wrap
+			"%d count drifts:\n%s",
+			len(errs),
+			strings.Join(messages, "\n"),
+		)
 	}
 }

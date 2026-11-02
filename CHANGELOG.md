@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`countgen -w` now applies every drifted site, not just the last one per
+  file.** The original Apply built each replacement from the pristine document
+  and stored it in a per-file map, so with multiple drifted sites in one doc
+  every rewrite except the final site's was silently dropped (only the
+  zero-drift no-op path had been proven). Replacements now splice into a
+  working copy from the end of the file backwards, and the tool gained its own
+  synthetic-tree unit tests (derive parity, drift diagnosis, multi-match
+  structural error, Apply idempotence, `numberWord` bounds). `numberWord` no
+  longer panics on negative input.
 - **errorpage now pins `go-error-family v0.12.0`, matching every other
   module.** The direct consumer still required v0.11.0 after the indirect
   consumers had moved, a skew that only a standalone (`GOWORK=off`) build of
