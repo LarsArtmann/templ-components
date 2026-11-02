@@ -389,6 +389,21 @@ if ! (cd utils && go test ./... -run 'TestVersionMatches(Changelog|Features)' -c
 fi
 rm -f "$DRIFT_GUARD_LOG"
 
+# 7a. Re-record the demo route goldens against the bumped version. utils.Version
+#     renders in the demo hero badge, hero stat line, and EVERY page footer, so
+#     each cut pixel-shifts all route goldens; without this the release ships
+#     stale goldens and the visual suite goes red post-release (v1.26.0 shipped
+#     7 routes stale at 0.10-0.36% drift — root cause read off the diff image:
+#     every red cluster was a version glyph). MUST go through the nix visual env:
+#     bare `go test -update` inside visualtest/ silently skips without the
+#     browser env. A failure aborts the cut — a clean abort beats a half-cut
+#     release. The rewritten PNGs ride the release commit via `git add -u`.
+echo "==> re-recording demo route goldens (the version bump renders in every footer)"
+if ! nix run .#visual -- -update -run TestDemoRouteGoldens; then
+	echo "Error: route-golden re-record failed — aborting the cut." >&2
+	exit 1
+fi
+
 # 7b. Strip replace directives (remove-at-release strategy).
 #     Runs AFTER verification: go1.26.5 workspace mode still resolves require
 #     entries at unpushed versions, so the suite above must run while the
