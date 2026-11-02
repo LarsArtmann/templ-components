@@ -443,3 +443,25 @@ prefix behavior-sensitive probes with `env -u GOEXPERIMENT`.
 - **Restore-thrash lesson (burned ~6×)**: this repo's auto-commit daemon captures file snapshots continuously; ANY broad `git status | grep -v keep | xargs git restore` reverts my newest edits back to the daemon's OLDER committed state. Never pattern-restore — enumerate exact paths, and re-verify file content (grep the marker) after any restore chain. The daemon also re-committed REVERTED test files hours later, resurrecting old lint failures.
 - **vnu (html5validator) predates `interestfor` and `popovertargetaction`** — both added to the documented ignore classes (2026-10-31, 21 classes).
 - **`--suggest-generics` EXISTS at art-dupl fork HEAD `308d8d75`** — the #446 closure's "flags don't exist" premise was false (row corrected); verify-before-filing caught it before a bogus upstream request shipped.
+
+## 2026-11-02 — go-error-family pin skew SHIPPED: workspace MVS masks direct-pin drift (§pinskew)
+
+- **What shipped:** `errorpage/go.mod` required `go-error-family v0.11.0` while root,
+  visualtest, and website (the indirect consumers) sat at `v0.12.0`. Found by the
+  2026-11-01 modularization audit (FM#10) — a version skew that was legal under the
+  workspace's MVS resolution, invisible to every workspace build and test, and
+  consumer-facing: any standalone (`GOWORK=off`) fetch of errorpage got the older
+  family. Fixed by source-verifying v0.11.0 → v0.12.0 (sole delta: a nil-receiver-safe
+  `(*Error).Unwrap`, zero exported API change) and bumping errorpage's direct pin.
+- **Why every guard missed it:** `TestVersionMatches*` guards the templ-components
+  version triple, `check-version-sync.sh` guards SIBLING pins — neither class watches
+  third-party pins. `go mod tidy` is happy with divergent requires; only a standalone
+  build of the direct consumer would surface the older selection.
+- **The guard (2026-11-02):** `utils/version_train_test.go` (`TestGoErrorFamilyPinAlignment`,
+  `TestTailwindMergePinAlignment`) asserts per dependency BOTH the pin SURFACE (exactly
+  the known set of go.mods may mention it) and the pin TRAIN (every mention equals the
+  direct module's version). Negative-tested against the exact shipped-skew shape.
+  templ stays on its stronger constant anchor (`TestTemplVersionPin`).
+- **Class rule:** when a dependency is added to a module, update the pin-train spec in
+  the same commit — a fourth go.mod mentioning go-error-family is a surface drift and
+  fails <50ms in CI now.

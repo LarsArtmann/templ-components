@@ -46,6 +46,8 @@ because:
 - **[ADR-0034](../adr/0034-targeted-module-split.md)** — the executed split decision
 - **[ADR-0020](../adr/0020-per-package-modules-split.md)** — the original proposal (superseded)
 - **`2026-07-18_10-50_assessment.html`** — historical assessment from the analysis phase
+- **[`2026-11-01_ASSESSMENT.html`](2026-11-01_ASSESSMENT.html)** — post-split re-audit (FM#1–12, Unix-gate verdict: **Keep all 9 module boundaries**; documents the go-error-family pin-skew incident and ADR-0040's extraction triggers)
+- **[ADR-0039](../adr/0039-v2-module-path-timing.md)** / **[ADR-0040](../adr/0040-component-module-extraction-triggers.md)** — v2 timing + trigger-gated extraction policy
 
 ## Release process
 
