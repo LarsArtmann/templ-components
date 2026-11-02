@@ -17,6 +17,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Dependency pin trains are now guarded by tests.** `TestGoErrorFamilyPinAlignment`
+  and `TestTailwindMergePinAlignment` (`utils/version_train_test.go`) assert, per
+  dependency, both the pin SURFACE (exactly the known set of go.mods may mention it) and
+  the pin TRAIN (every mention carries the same version) — turning the MVS-masked skew
+  class the go-error-family v0.11.0/v0.12.0 drift exposed into a sub-second test failure
+  (TODO #995). templ keeps its stronger constant-anchored guard (`TestTemplVersionPin`).
+
 - **`utils.Coalesce[T comparable](values ...T) T`** returns the first argument
   that is not the zero value for its type: the library's
   override-or-default idiom (`Ternary(x != "", x, fallback)`) as one
