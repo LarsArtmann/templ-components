@@ -260,6 +260,36 @@ func wireHosted(w *wire.Action, event wire.Event) templ.Attributes {
 //		}) {
 //		   @forms.Input(forms.InputProps{Name: "email"})
 //		}
+//
+// formValidityBridgeJS syncs the programmatic invalid state with the
+// visual one (Modern Web Guidance: accessible-error-announcement). The
+// library's :user-invalid CSS paints the red border only after the user
+// interacts with a field, but nothing tells assistive technology — the
+// pseudo-class has no ARIA equivalent and no change event. This singleton
+// mirrors :user-invalid into aria-invalid on blur/focus/input (capture for
+// the non-bubbling pair), so a screen reader hears "invalid" at the same
+// moment the border turns red. It only ever manages state it added itself:
+// a field the SERVER marked invalid (forms.ErrorAttrs) is never stripped
+// by a client-side recovery — the data-tc-user-invalid marker separates
+// the two owners.
+const formValidityBridgeJS = "if(!window.tcValidityAttached){window.tcValidityAttached=true;" +
+	"function tcSyncValidity(t){" +
+	"if(!t||!t.matches||!t.matches('input,textarea,select'))return;" +
+	"if(t.matches(':user-invalid')){" +
+	"if(t.getAttribute('aria-invalid')!=='true'){" +
+	"t.setAttribute('data-tc-user-invalid','');" +
+	"t.setAttribute('aria-invalid','true');" +
+	"}" +
+	"}else if(t.hasAttribute('data-tc-user-invalid')){" +
+	"t.removeAttribute('data-tc-user-invalid');" +
+	"t.removeAttribute('aria-invalid');" +
+	"}" +
+	"}" +
+	"document.addEventListener('blur',function(e){tcSyncValidity(e.target);},true);" +
+	"document.addEventListener('focus',function(e){tcSyncValidity(e.target);},true);" +
+	"document.addEventListener('input',function(e){tcSyncValidity(e.target);});" +
+	"}"
+
 func Form(props FormProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -281,6 +311,10 @@ func Form(props FormProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = utils.ScriptComponent(props.Nonce, formValidityBridgeJS, "form validity bridge").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		if props.ContainerAware {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"@container\">")
 			if templ_7745c5c3_Err != nil {
@@ -379,7 +413,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 273, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 309, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -398,7 +432,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var7 templ.SafeURL
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(props.Action)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 276, Col: 24}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 312, Col: 24}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -416,7 +450,7 @@ func formInner(props FormProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(formMethod(props.Method))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 278, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 314, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {
@@ -434,7 +468,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(formEnctype(props.Enctype))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 280, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 316, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
@@ -488,7 +522,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 293, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 329, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 			if templ_7745c5c3_Err != nil {
@@ -520,7 +554,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 300, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 336, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 			if templ_7745c5c3_Err != nil {
@@ -533,7 +567,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.CSRFToken)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 300, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 336, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 			if templ_7745c5c3_Err != nil {

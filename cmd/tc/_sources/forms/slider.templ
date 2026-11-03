@@ -38,6 +38,13 @@ func DefaultSliderProps() SliderProps {
 // engine track pseudo-elements, and the thumb keeps its accent-color
 // rendering (Chromium/Firefox both apply accent-color under
 // appearance:none — browser-verified by the routes visual goldens).
+//
+// Track fill (Modern Web Guidance: slider, "style the active track"): a
+// styled track loses the native filled portion, so Firefox gets a live
+// fill back from ::-moz-range-progress (pure CSS, updates while dragging),
+// and WebKit engines get the custom.css progress() gradient on
+// ::-webkit-slider-runnable-track (data-tc-slider hook; live values via
+// tcSliderSyncJS).
 func sliderInputClass() string {
 	return "w-full h-6 appearance-none cursor-pointer bg-transparent accent-blue-600 dark:accent-blue-400 " +
 		"focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 " +
@@ -45,8 +52,26 @@ func sliderInputClass() string {
 		"[&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:rounded-lg " +
 		"[&::-webkit-slider-runnable-track]:bg-gray-200 dark:[&::-webkit-slider-runnable-track]:bg-gray-700 " +
 		"[&::-moz-range-track]:h-2 [&::-moz-range-track]:rounded-lg " +
-		"[&::-moz-range-track]:bg-gray-200 dark:[&::-moz-range-track]:bg-gray-700"
+		"[&::-moz-range-track]:bg-gray-200 dark:[&::-moz-range-track]:bg-gray-700 " +
+		"[&::-moz-range-progress]:h-2 [&::-moz-range-progress]:rounded-lg " +
+		"[&::-moz-range-progress]:bg-blue-600 dark:[&::-moz-range-progress]:bg-blue-500"
 }
+
+// tcSliderSyncJS keeps the WebKit track fill in step with the thumb while
+// dragging: the attr(value)-seeded custom property in custom.css only knows
+// the server-rendered value (dragging changes the value PROPERTY, not the
+// attribute), so this singleton mirrors the live value via the CSSOM
+// (element.style.setProperty — programmatic writes are not blocked by
+// strict style-src CSPs, unlike inline style attributes). Document-level
+// input listener, one guard per page — the same singleton shape as
+// tcCopyAttached/tcGoBackAttached.
+const tcSliderSyncJS = "if(!window.tcSliderAttached){window.tcSliderAttached=true;" +
+	"document.addEventListener('input',function(e){" +
+	"var t=e.target;" +
+	"if(t&&t.matches&&t.matches('input[type=\"range\"][data-tc-slider]')){" +
+	"t.style.setProperty('--tc-slider-value',t.value);" +
+	"}" +
+	"});}"
 
 // Slider renders a labeled range input with accessible labeling.
 //
@@ -66,6 +91,11 @@ templ Slider(props SliderProps) {
 			step = 1
 		}
 	}}
+	// Singleton script renders BEFORE the field: a trailing script would
+	// become its parent's last element child, and space-y parents grant the
+	// previously-last sibling a fresh margin-block-end (the wire-page +16px
+	// golden shift, 2026-11-03). A display:none first child renders no box.
+	@utils.ScriptComponent(props.Nonce, tcSliderSyncJS, "slider fill sync")
 	<div class={ utils.Class("space-y-1", props.Class) } { props.Attrs... }>
 		if props.Label != "" {
 			<div class="flex items-center justify-between">
@@ -88,6 +118,7 @@ templ Slider(props SliderProps) {
 		<input
 			type="range"
 			name={ props.Name }
+			data-tc-slider
 			if props.ID != "" {
 				id={ props.ID }
 			}

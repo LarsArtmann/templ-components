@@ -196,7 +196,7 @@ func formsDemoContent() templ.Component {
 					}
 					return nil
 				})
-				templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/users"), Method: forms.FormGet}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/users"), Method: forms.FormGet, Nonce: demoNonceConst}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

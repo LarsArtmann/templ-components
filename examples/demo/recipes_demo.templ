@@ -306,7 +306,7 @@ templ settingsAsideLink(sectionID, label string, sectionIcon icons.Name, active 
 }
 
 templ settingsProfileSection() {
-	@forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+	@forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack, Nonce: demoNonceConst}) {
 		@forms.Input(forms.InputProps{Type: forms.InputHidden, Name: "section", Value: "profile"})
 		<div class="grid gap-4 sm:grid-cols-2">
 			@forms.Input(forms.InputProps{Name: "full_name", Label: "Full name", Value: "Ada Lovelace", Required: true})
@@ -334,7 +334,7 @@ templ settingsProfileSection() {
 }
 
 templ settingsSecuritySection() {
-	@forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+	@forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack, Nonce: demoNonceConst}) {
 		@forms.Input(forms.InputProps{Type: forms.InputHidden, Name: "section", Value: "security"})
 		<div class="grid gap-4 sm:grid-cols-2">
 			@forms.Input(forms.InputProps{Name: "current_password", Type: forms.InputPassword, Label: "Current password", Required: true})
@@ -356,7 +356,7 @@ templ settingsSecuritySection() {
 }
 
 templ settingsNotificationsSection() {
-	@forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+	@forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack, Nonce: demoNonceConst}) {
 		@forms.Input(forms.InputProps{Type: forms.InputHidden, Name: "section", Value: "notifications"})
 		<div class="space-y-4">
 			@forms.Toggle(forms.ToggleProps{
@@ -413,7 +413,7 @@ templ loginFormBody(st recipeLoginState) {
 	} else if st.hasErrors() {
 		@forms.ValidationSummary(forms.ValidationSummaryProps{Errors: st.validationErrors()})
 	}
-	@forms.Form(forms.FormProps{Action: demoURL("/recipes/login"), Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+	@forms.Form(forms.FormProps{Action: demoURL("/recipes/login"), Method: forms.FormPost, Layout: forms.FormLayoutStack, Nonce: demoNonceConst}) {
 		<div class="space-y-4">
 			@forms.Input(forms.InputProps{
 				Name:        "email",
@@ -498,7 +498,7 @@ templ signupFormBody(st recipeSignupState) {
 	} else if st.hasErrors() {
 		@forms.ValidationSummary(forms.ValidationSummaryProps{Errors: st.validationErrors()})
 	}
-	@forms.Form(forms.FormProps{Action: demoURL("/recipes/auth"), Method: forms.FormPost, Layout: forms.FormLayoutStack}) {
+	@forms.Form(forms.FormProps{Action: demoURL("/recipes/auth"), Method: forms.FormPost, Layout: forms.FormLayoutStack, Nonce: demoNonceConst}) {
 		<div class="space-y-4">
 			@forms.Input(forms.InputProps{
 				Name:        "full_name",

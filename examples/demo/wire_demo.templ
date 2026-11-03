@@ -466,7 +466,7 @@ templ wireWizardStep(dialect wire.Transport, step int, message string) {
 			@forms.Form(forms.FormProps{
 				Action:     demoURL("/api/wire/wizard"),
 				Method:     forms.FormPost,
-				BaseProps:  utils.BaseProps{Class: "space-y-3"},
+				BaseProps:  utils.BaseProps{Class: "space-y-3", Nonce: demoNonceConst},
 				NoValidate: true,
 				Wire: &wire.Action{
 					Transport: dialect,
@@ -504,6 +504,7 @@ templ wireUploadForm(dialect wire.Transport) {
 		Enctype: forms.FormEnctypeMultipart,
 		BaseProps: utils.BaseProps{
 			Class: "space-y-3",
+			Nonce: demoNonceConst,
 		},
 		Wire: &wire.Action{
 			Transport: dialect,
@@ -554,6 +555,7 @@ templ wireSearchForm(dialect wire.Transport, query string) {
 		Method: forms.FormGet,
 		BaseProps: utils.BaseProps{
 			Class: "flex flex-wrap items-end gap-3",
+			Nonce: demoNonceConst,
 		},
 		Wire: &wire.Action{
 			Transport: dialect,
@@ -764,6 +766,7 @@ templ wireDemoForm(dialect wire.Transport, st wireFormState) {
 	@forms.Form(forms.FormProps{
 		DirtyGuard: true,
 		Method:     forms.FormPost,
+		Nonce:      demoNonceConst,
 		Wire: &wire.Action{
 			Transport: dialect,
 			Method:    wire.MethodPost,

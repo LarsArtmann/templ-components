@@ -498,6 +498,116 @@ details[open] [data-tc-chevron] {
   }
 }
 
+/*
+ * --- Autofill highlight (Modern Web Guidance: autofill-highlight-inputs) ---
+ * Fields the browser filled and the user has not edited get a subtle brand
+ * tint so users can see what autofill touched. Multiple indicators per the
+ * guide (border shift + background shading — never color alone); the
+ * background rides box-shadow inset because engines refuse background-color
+ * overrides on autofilled inputs. Both pseudo-class spellings are required
+ * (:autofill is the standard, -webkit-autofill covers older
+ * Chromium/Safari); Firefox without :autofill simply keeps its native tint
+ * (progressive enhancement, no JS fallback per the guide).
+ */
+input:autofill,
+input:-webkit-autofill,
+select:autofill,
+textarea:autofill {
+  border-color: var(--color-blue-500);
+  box-shadow: 0 0 0 100vmax --alpha(var(--color-blue-50) / 60%) inset;
+
+  @variant dark {
+    border-color: var(--color-blue-400);
+    box-shadow: 0 0 0 100vmax --alpha(var(--color-blue-950) / 60%) inset;
+  }
+}
+
+/*
+ * --- Coarse-pointer input font floor (Modern Web Guidance: forms §5) ---
+ * The library's inputs are text-sm (14px); iOS Safari zooms the viewport on
+ * focus whenever an input's font-size is below 16px. Desktop-class pointers
+ * keep the 14px design; touch devices floor every text-entry control at
+ * 1rem so focusing a field never zooms. Intentionally UNLAYERED: unlayered
+ * CSS beats Tailwind v4's @layer utilities, so this wins over text-sm
+ * without !important (same cascade argument as the coarse-pointer rules
+ * below). select.tc-select re-declares its font-size at higher specificity,
+ * so it gets its own coarse floor.
+ */
+@media (pointer: coarse) {
+  input:where(
+      :not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"])
+    ),
+  textarea {
+    font-size: max(1rem, 1em);
+  }
+
+  select,
+  select.tc-select {
+    font-size: max(1rem, 1em);
+  }
+}
+
+/*
+ * --- Slider track fill, WebKit engines (Modern Web Guidance: slider) ---
+ * forms.Slider styles its own track (appearance:none), which drops the
+ * native filled portion. Firefox restores it with ::-moz-range-progress
+ * (inline Tailwind classes on the component); WebKit has no equivalent
+ * pseudo-element, so the fill here is a two-stop gradient whose boundary
+ * rides --tc-slider-progress:
+ *
+ *   progress()   turns (value - min) / (max - min) into a percentage
+ *   attr(x type(<number>)) seeds value/min/max from the ATTRIBUTES
+ *
+ * Both are required: the gate closes on engines lacking either (Safari has
+ * progress() but not typed attr()), leaving the component's gray track —
+ * the graceful base. The attribute seed reflects the server-rendered
+ * value only; the component's tcSliderSyncJS singleton mirrors live drag
+ * values into --tc-slider-value via the CSSOM (strict CSPs allow CSSOM
+ * writes, unlike inline style attributes). Colors ride theme tokens so
+ * @theme overrides re-skin the fill; the direction flips in RTL.
+ */
+input[type="range"][data-tc-slider] {
+  --tc-slider-dir: to right;
+}
+
+[dir="rtl"] input[type="range"][data-tc-slider] {
+  --tc-slider-dir: to left;
+}
+
+@supports (opacity: progress(1, 0, 100)) and (opacity: attr(
+      data-tc-value type(<number>),
+      1
+    )) {
+  input[type="range"][data-tc-slider] {
+    --tc-slider-value: attr(value type(<number>), 0);
+    --tc-slider-min: attr(min type(<number>), 0);
+    --tc-slider-max: attr(max type(<number>), 100);
+    --tc-slider-progress: calc(
+      progress(
+          var(--tc-slider-value),
+          var(--tc-slider-min),
+          var(--tc-slider-max)
+        ) * 100%
+    );
+  }
+
+  input[type="range"][data-tc-slider]::-webkit-slider-runnable-track {
+    background: linear-gradient(
+      var(--tc-slider-dir),
+      var(--color-blue-600) var(--tc-slider-progress),
+      var(--color-gray-200) var(--tc-slider-progress)
+    );
+
+    @variant dark {
+      background: linear-gradient(
+        var(--tc-slider-dir),
+        var(--color-blue-500) var(--tc-slider-progress),
+        var(--color-gray-700) var(--tc-slider-progress)
+      );
+    }
+  }
+}
+
 /* --- Stylable <select> (appearance: base-select) --- */
 /* Progressive enhancement: Chrome 135+, Safari 27+, Edge 135+. */
 /* Non-supporting browsers render a normal native <select>. */
@@ -1409,6 +1519,12 @@ details[open] [data-tc-chevron] {
     margin-block: 1.5rem;
     overflow-x: auto;
     padding: 1rem 1.25rem;
+    /* Always-dark surface (Modern Web Guidance:
+       component-specific-light-dark-theme): pinning color-scheme keeps the
+       scrollbar and any native UI inside the pre dark in light mode too —
+       the guide's canonical code-block case. Safe here because the rule
+       sets its own background + text color pair. */
+    color-scheme: dark;
   }
 
   .tc-prose pre code {

@@ -98,7 +98,7 @@ The long-form pitch, with screenshots: [Why templ-components](https://templcompo
 | SVG icons      | 102                                                 |
 | Typed enums    | 74 (73 with IsValid)                                |
 | Packages       | 19 (across 7 Go modules)                            |
-| Tests          | ~1,650 test functions + ~1,800 subtests             |
+| Tests          | ~1,700 test functions + ~1,800 subtests             |
 | Visual goldens | 206 pixel-level regression tests (chromedp)         |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 

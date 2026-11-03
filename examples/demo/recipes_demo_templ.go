@@ -1233,7 +1233,7 @@ func settingsProfileSection() templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var38), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack, Nonce: demoNonceConst}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var38), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1321,7 +1321,7 @@ func settingsSecuritySection() templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var40), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack, Nonce: demoNonceConst}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var40), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1405,7 +1405,7 @@ func settingsNotificationsSection() templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var42), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/recipes/settings"), Method: forms.FormPost, Layout: forms.FormLayoutStack, Nonce: demoNonceConst}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var42), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1598,7 +1598,7 @@ func loginFormBody(st recipeLoginState) templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/recipes/login"), Method: forms.FormPost, Layout: forms.FormLayoutStack}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var47), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/recipes/login"), Method: forms.FormPost, Layout: forms.FormLayoutStack, Nonce: demoNonceConst}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var47), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1926,7 +1926,7 @@ func signupFormBody(st recipeSignupState) templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/recipes/auth"), Method: forms.FormPost, Layout: forms.FormLayoutStack}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var55), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/recipes/auth"), Method: forms.FormPost, Layout: forms.FormLayoutStack, Nonce: demoNonceConst}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var55), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

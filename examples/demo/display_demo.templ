@@ -226,6 +226,36 @@ display.Card(display.CardProps{
 			},
 		},
 	})
+	@demoSection("Accordion (exclusive: opening one closes the others)", "display-accordion-exclusive") {
+		@display.Accordion(display.AccordionProps{
+			ID:        "exclusive-accordion",
+			Exclusive: true,
+			Items: []display.AccordionItem{
+				{
+					ID:    "accx-1",
+					Title: "Step 1: Install",
+					Open:  true,
+					Content: templ.Raw(
+						`<p>Run <code>go get github.com/larsartmann/templ-components</code>.</p>`,
+					),
+				},
+				{
+					ID:    "accx-2",
+					Title: "Step 2: Copy the CSS",
+					Content: templ.Raw(
+						`<p>Copy <code>templates/app.css</code> and <code>templates/custom.css</code>, then compile with Tailwind v4.</p>`,
+					),
+				},
+				{
+					ID:    "accx-3",
+					Title: "Step 3: Render a component",
+					Content: templ.Raw(
+						`<p>Call any component from Go: <code>@display.Accordion(display.AccordionProps{Exclusive: true, ...})</code>.</p>`,
+					),
+				},
+			},
+		})
+	}
 	@demoSection("Tabs", "display-tabs")
 	@display.Tabs(display.TabsProps{
 		Tabs: []display.Tab{

@@ -252,7 +252,43 @@ func wireHosted(w *wire.Action, event wire.Event) templ.Attributes {
 //		}) {
 //		   @forms.Input(forms.InputProps{Name: "email"})
 //		}
+// formValidityBridgeJS syncs the programmatic invalid state with the
+// visual one (Modern Web Guidance: accessible-error-announcement). The
+// library's :user-invalid CSS paints the red border only after the user
+// interacts with a field, but nothing tells assistive technology — the
+// pseudo-class has no ARIA equivalent and no change event. This singleton
+// mirrors :user-invalid into aria-invalid on blur/focus/input (capture for
+// the non-bubbling pair), so a screen reader hears "invalid" at the same
+// moment the border turns red. It only ever manages state it added itself:
+// a field the SERVER marked invalid (forms.ErrorAttrs) is never stripped
+// by a client-side recovery — the data-tc-user-invalid marker separates
+// the two owners.
+const formValidityBridgeJS = "if(!window.tcValidityAttached){window.tcValidityAttached=true;" +
+	"function tcSyncValidity(t){" +
+	"if(!t||!t.matches||!t.matches('input,textarea,select'))return;" +
+	"if(t.matches(':user-invalid')){" +
+	"if(t.getAttribute('aria-invalid')!=='true'){" +
+	"t.setAttribute('data-tc-user-invalid','');" +
+	"t.setAttribute('aria-invalid','true');" +
+	"}" +
+	"}else if(t.hasAttribute('data-tc-user-invalid')){" +
+	"t.removeAttribute('data-tc-user-invalid');" +
+	"t.removeAttribute('aria-invalid');" +
+	"}" +
+	"}" +
+	"document.addEventListener('blur',function(e){tcSyncValidity(e.target);},true);" +
+	"document.addEventListener('focus',function(e){tcSyncValidity(e.target);},true);" +
+	"document.addEventListener('input',function(e){tcSyncValidity(e.target);});" +
+	"}"
+
 templ Form(props FormProps) {
+	// The singleton script renders BEFORE the form: a trailing script would
+	// become its parent's last element child, and Tailwind's space-y utilities
+	// apply margin-block-end to `> :not(:last-child)` — the previously-last
+	// sibling would gain a 16px margin and shift every pixel below it (the
+	// wire-page golden +16px, 2026-11-03). A display:none FIRST child gets no
+	// rendered box in either space-y direction, so layout stays byte-stable.
+	@utils.ScriptComponent(props.Nonce, formValidityBridgeJS, "form validity bridge")
 	if props.ContainerAware {
 		<div class="@container">
 			@formInner(props) {

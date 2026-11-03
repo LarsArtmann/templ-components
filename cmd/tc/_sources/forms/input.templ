@@ -154,6 +154,43 @@ func autocompleteValue(props InputProps) string {
 	return string(props.Autocomplete)
 }
 
+// identifierInputTypes lists the input types that hold identifiers or codes
+// rather than prose. Text correction (autocorrect, autocapitalize,
+// spellcheck) fights the keyboard on these — the OS rewrites "user@exampl…"
+// mid-typing and flags a username as misspelled — so all three are turned
+// off (Modern Web Guidance: forms §3, "turn off text correction on fields
+// that hold identifiers rather than prose"). Plain text and password keep
+// the defaults; text inputs opted into an identifier autocomplete token
+// (username, one-time-code) join this set at render time.
+//
+//nolint:gochecknoglobals // Mobile UX lookup table
+var identifierInputTypes = map[InputType]bool{
+	InputEmail:  true,
+	InputNumber: true,
+	InputTel:    true,
+	InputURL:    true,
+	InputSearch: true,
+}
+
+// identifierAutocompleteTokens are autocomplete tokens that mark even a
+// type=text field as an identifier field (so text correction goes off).
+//
+//nolint:gochecknoglobals // Mobile UX lookup table
+var identifierAutocompleteTokens = map[AutocompleteType]bool{
+	AutocompleteUsername:    true,
+	AutocompleteOneTimeCode: true,
+}
+
+// isIdentifierInput reports whether this input should disable text
+// correction: an identifier TYPE, or a text input whose autocomplete token
+// is an identifier token.
+func isIdentifierInput(props InputProps) bool {
+	if identifierInputTypes[props.Type] {
+		return true
+	}
+	return props.Type == InputText && identifierAutocompleteTokens[props.Autocomplete]
+}
+
 // InputProps configures a text input. EnterKeyHint, when set, overrides the
 // auto-derived mobile keyboard hint. Uses the same EnterKeyHintType enum as
 // Textarea for a unified API across form components. Autocomplete, when valid,
@@ -239,6 +276,11 @@ templ inputElement(props InputProps) {
 		}
 		if im, ok := inputModeForType[props.Type]; ok {
 			inputmode={ im }
+		}
+		if isIdentifierInput(props) {
+			autocorrect="off"
+			autocapitalize="off"
+			spellcheck="false"
 		}
 		class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
 		if props.Required {

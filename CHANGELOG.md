@@ -6,7 +6,58 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`AccordionProps.Exclusive` gives accordions the platform's native
+  exclusive disclosure group.** Every `<details>` renders with a shared
+  `name` derived from the accordion's ID (or a generated one, so two
+  accordions on a page never collide): opening one item closes the others
+  with zero JavaScript. Engines without named `details` degrade to the
+  current independent behavior — every item stays operable.
+- **Slider regains a live track fill on every engine.** Styling the track
+  pseudo-elements had silently discarded the native filled portion: Firefox
+  now paints it via `::-moz-range-progress` (pure CSS, tracks the thumb
+  while dragging), and WebKit engines get a `progress()`/`attr()`-seeded
+  gradient in `templates/custom.css` kept in step while dragging by a
+  CSP-safe CSSOM singleton (`tcSliderSyncJS`, `--tc-slider-value`; inline
+  style attributes are not required, so strict `style-src` policies hold).
+  The WebKit rule is gated behind `@supports` on the very features it uses,
+  and flips direction in RTL. Both new singleton scripts render BEFORE
+  their component's markup: a trailing `<script>` would become its
+  parent's last element child, and Tailwind's `space-y` utilities would
+  then grant the formerly-last sibling a fresh 16px margin — a
+  pixel-invisible feature is now also layout-invisible.
+- **Autofilled fields now show a visible brand tint.** `input:autofill` /
+  `:-webkit-autofill` shift the border and wash an inset box-shadow (engines
+  refuse background-color overrides there) with dark-mode variants, so users
+  can see what the browser filled — multiple indicators, never color alone.
+  Firefox without `:autofill` keeps its native tint.
+
 ### Fixed
+
+- **Touch devices no longer viewport-zoom when focusing an input.** The
+  library's inputs are 14px and iOS Safari zooms on focus below 16px; a
+  `@media (pointer: coarse)` rule floors every text-entry control
+  (input/textarea/select, including `select.tc-select`) at `max(1rem, 1em)`,
+  deliberately unlayered so it beats Tailwind's utility layer without
+  `!important`. Desktop keeps the 14px design.
+- **`aria-invalid` now tracks `:user-invalid` for assistive technology.** The
+  red border appears only after user interaction, but the pseudo-class has
+  no ARIA equivalent and fires no event — so screen readers heard nothing.
+  A `Form` singleton (`formValidityBridgeJS`) mirrors the pseudo-class into
+  `aria-invalid` on blur/focus(capture)/input and only ever manages state it
+  added itself (marked `data-tc-user-invalid`): server-set invalid state from
+  `forms.ErrorAttrs` is never stripped by a client-side recovery.
+- **Identifier inputs turn off OS text correction.** email/tel/url/number/
+  search inputs — and text inputs whose autocomplete token marks them as
+  identifiers (`username`, `one-time-code`) — now render
+  `autocorrect="off" autocapitalize="off" spellcheck="false"`, so the
+  keyboard stops rewriting `user@exampl…` mid-typing and flagging usernames
+  as misspelled. Plain text and password keep their defaults.
+- **`.tc-prose pre` declares `color-scheme: dark`.** Prose code blocks are
+  the library's only always-dark surface, but without the declaration the
+  UA painted scrollbars/form controls there in the light scheme;
+  CodeBlock/Scrollback already adapt and are unchanged.
 
 - **`countgen -w` now applies every drifted site, not just the last one per
   file.** The original Apply built each replacement from the pristine document

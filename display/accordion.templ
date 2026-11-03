@@ -26,6 +26,14 @@ type AccordionItem struct {
 type AccordionProps struct {
 	utils.BaseProps
 	Items []AccordionItem
+	// Exclusive, when true, renders every <details> with the same name
+	// attribute — the platform's native exclusive disclosure group (Modern
+	// Web Guidance: search-hidden-content, "mutually exclusive
+	// disclosures"): opening one item closes the others, zero JS. The group
+	// name derives from ID (or a generated one), so two accordions on the
+	// same page never share a group. Engines without named details (older
+	// Firefox) degrade to independent items — every item stays operable.
+	Exclusive bool
 }
 
 // DefaultAccordionProps returns sensible defaults
@@ -45,6 +53,10 @@ func DefaultAccordionProps() AccordionProps {
 //	})
 templ Accordion(props AccordionProps) {
 	{{ items := ensureAccordionItemIDs(props.Items) }}
+	{{ group := "" }}
+	{{ if props.Exclusive {
+		group = utils.EnsureID("accordion-group", props.ID)
+	} }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
@@ -59,6 +71,9 @@ templ Accordion(props AccordionProps) {
 			<details
 				data-tc-accordion
 				class="bg-white dark:bg-gray-900"
+				if group != "" {
+					name={ group }
+				}
 				if item.ID != "" {
 					id={ item.ID }
 				}

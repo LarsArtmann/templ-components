@@ -63,7 +63,7 @@ templ formsDemoSection() {
 				{Value: "us", Label: "United States"},
 			},
 		})
-		@forms.Slider(forms.SliderProps{Name: "volume", Label: "Volume", Min: 0, Max: 100, Value: 50, Step: 5, ShowValue: true})
+		@forms.Slider(forms.SliderProps{Name: "volume", Label: "Volume", Min: 0, Max: 100, Value: 50, Step: 5, ShowValue: true, Nonce: demoNonceConst})
 		@forms.Rating(forms.RatingProps{Name: "quality", Label: "Rate quality", Value: 4, Max: 5})
 		@forms.TagsInput(forms.TagsInputProps{
 			BaseProps: utils.BaseProps{ID: "tags-1", Nonce: "demo-nonce"},
@@ -90,7 +90,7 @@ templ formsDemoSection() {
 		},
 	})
 	@demoSection("Inline Form (Filter Bar)", "forms-inline")
-	@forms.Form(forms.FormProps{Action: demoURL("/users"), Method: forms.FormGet, Layout: forms.FormLayoutInline}) {
+	@forms.Form(forms.FormProps{Action: demoURL("/users"), Method: forms.FormGet, Layout: forms.FormLayoutInline, Nonce: demoNonceConst}) {
 		@forms.Select(forms.SelectProps{
 			BaseProps: utils.BaseProps{ID: "inline-status", Class: "sm:w-auto sm:min-w-40"},
 			Name:      "status",

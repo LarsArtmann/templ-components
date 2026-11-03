@@ -73,9 +73,16 @@ func comparePixels(
 
 	pct := float64(mismatched) / float64(total) * percentMultiplier
 
+	// pixelmatch's WriteTo emits a diff image unconditionally in builds
+	// after 20261015 (the 2023 build skipped it when identical), so the
+	// "no visual difference => no diff image" contract is enforced HERE
+	// instead of relying on library internals.
 	var rgba *image.RGBA
-	if d, ok := diffImg.(*image.RGBA); ok {
-		rgba = d
+
+	if mismatched > 0 {
+		if d, ok := diffImg.(*image.RGBA); ok {
+			rgba = d
+		}
 	}
 
 	return diffResult{

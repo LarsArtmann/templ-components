@@ -94,7 +94,9 @@ func TestFormWire(t *testing.T) {
 					Target:    "#form-out",
 				},
 			},
-			notContains: []string{"target"},
+			// Attribute-scoped, not the bare word: the validity-bridge
+			// script legitimately contains `e.target` (its event target).
+			notContains: []string{`data-star-target`, `target="#form-out"`},
 		},
 		{
 			name: "empty wire URL stays inert (plain HTML form fallback)",

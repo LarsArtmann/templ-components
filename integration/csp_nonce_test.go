@@ -80,6 +80,13 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 			Type:    feedback.FeedbackSuccess,
 			Message: "OK",
 		}))},
+		{"Form", utils.Render(t, forms.Form(forms.FormProps{
+			Nonce: testNonce,
+		}))},
+		{"Slider", utils.Render(t, forms.Slider(forms.SliderProps{
+			Nonce: testNonce,
+			Name:  "vol",
+		}))},
 		{"CopyButton", utils.Render(t, display.CopyButton(display.CopyButtonProps{
 			Nonce: testNonce,
 			Text:  "copy me",

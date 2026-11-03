@@ -43,6 +43,8 @@ and forget to thread it.
 | `feedback.ToastContainer`  | Container for injected toasts                    |
 | `forms.Combobox`           | Filter/selection singleton script                |
 | `forms.DirtyGuard`         | Unsaved-changes guard script                     |
+| `forms.Form`               | Validity-bridge singleton script                 |
+| `forms.Slider`             | Track-fill value sync script                     |
 | `forms.TagsInput`          | Tag add/remove script                            |
 | `htmx.GlobalErrorHandling` | Global error→toast pipeline script               |
 | `htmx.PolledRegion`        | Poll loop script when `Eager`                    |

@@ -152,7 +152,7 @@ func formsDemoSection() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = forms.Slider(forms.SliderProps{Name: "volume", Label: "Volume", Min: 0, Max: 100, Value: 50, Step: 5, ShowValue: true}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Slider(forms.SliderProps{Name: "volume", Label: "Volume", Min: 0, Max: 100, Value: 50, Step: 5, ShowValue: true, Nonce: demoNonceConst}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -267,7 +267,7 @@ func formsDemoSection() templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/users"), Method: forms.FormGet, Layout: forms.FormLayoutInline}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: demoURL("/users"), Method: forms.FormGet, Layout: forms.FormLayoutInline, Nonce: demoNonceConst}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

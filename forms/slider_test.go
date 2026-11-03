@@ -108,3 +108,29 @@ func TestSliderDefaultStepWhenZero(t *testing.T) {
 	}))
 	utils.AssertContains(t, output, `step="1"`)
 }
+
+// TestSliderTrackFill (Modern Web Guidance: slider, "style the active
+// track") pins both halves of the fill: the Firefox pseudo-element classes
+// and the WebKit data hook + CSP-safe live-value sync script.
+func TestSliderTrackFill(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, Slider(SliderProps{Name: "vol", Value: 50}))
+
+	t.Run("firefox fill pseudo-element classes", func(t *testing.T) {
+		t.Parallel()
+		utils.AssertContains(t, output, "[&amp;::-moz-range-progress]:bg-blue-600")
+		utils.AssertContains(t, output, "dark:[&amp;::-moz-range-progress]:bg-blue-500")
+	})
+
+	t.Run("webkit hook attribute", func(t *testing.T) {
+		t.Parallel()
+		utils.AssertContains(t, output, "data-tc-slider")
+	})
+
+	t.Run("live-value sync script present and singleton-guarded", func(t *testing.T) {
+		t.Parallel()
+		utils.AssertContains(t, output, "tcSliderAttached")
+		utils.AssertContains(t, output, "--tc-slider-value")
+	})
+}

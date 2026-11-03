@@ -9,8 +9,8 @@ go 1.27
 
 require (
 	github.com/a-h/templ v0.3.1020
-	github.com/chromedp/cdproto v0.157.9
-	github.com/chromedp/chromedp v0.20.1
+	github.com/chromedp/cdproto v0.159.1
+	github.com/chromedp/chromedp v0.21.1
 	github.com/larsartmann/go-datastar/static v0.6.1
 	github.com/larsartmann/templ-components v0.0.0-00010101000000-000000000000
 	github.com/larsartmann/templ-components/datastar v1.26.0
@@ -18,7 +18,7 @@ require (
 	github.com/larsartmann/templ-components/htmx v1.26.0
 	github.com/larsartmann/templ-components/icons v1.26.0
 	github.com/larsartmann/templ-components/utils v1.26.0
-	github.com/orisano/pixelmatch v0.0.0-20230914042517-fa304d1dc785
+	github.com/orisano/pixelmatch v0.0.0-20261015095729-8d350b6cff2e
 )
 
 require (

@@ -2,6 +2,7 @@
 package display
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/a-h/templ"
@@ -83,4 +84,38 @@ func TestAccordionRender(t *testing.T) {
 			t.Error("DefaultAccordionProps().Items should be nil")
 		}
 	})
+}
+
+// TestAccordionExclusive (Modern Web Guidance: search-hidden-content,
+// mutually exclusive disclosures) pins the native exclusive disclosure
+// group: every <details> carries the same name attribute when Exclusive is
+// set, and none does by default. Opening one item then closes the others
+// with zero JavaScript.
+func TestAccordionExclusive(t *testing.T) {
+	t.Parallel()
+
+	items := func() []AccordionItem {
+		return []AccordionItem{
+			{ID: "ex1", Title: "One", Content: templ.Raw("A1")},
+			{ID: "ex2", Title: "Two", Content: templ.Raw("A2")},
+		}
+	}
+
+	exclusive := utils.Render(t, Accordion(AccordionProps{
+		ID:        "faq-group",
+		Exclusive: true,
+		Items:     items(),
+	}))
+	utils.AssertContainsAll(t, exclusive, `name="faq-group"`, `id="ex1"`, `id="ex2"`)
+
+	if got := strings.Count(exclusive, `name="faq-group"`); got != 2 {
+		t.Errorf("exclusive accordion should render the group name on every item, got %d", got)
+	}
+
+	independent := utils.Render(t, Accordion(AccordionProps{Items: items()}))
+	utils.AssertNotContains(t, independent, `name="faq-group"`)
+
+	if strings.Contains(independent, "accordion-group") {
+		t.Error("default accordion must not render a details name attribute")
+	}
 }

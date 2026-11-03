@@ -33,6 +33,14 @@ type AccordionItem struct {
 type AccordionProps struct {
 	utils.BaseProps
 	Items []AccordionItem
+	// Exclusive, when true, renders every <details> with the same name
+	// attribute — the platform's native exclusive disclosure group (Modern
+	// Web Guidance: search-hidden-content, "mutually exclusive
+	// disclosures"): opening one item closes the others, zero JS. The group
+	// name derives from ID (or a generated one), so two accordions on the
+	// same page never share a group. Engines without named details (older
+	// Firefox) degrade to independent items — every item stays operable.
+	Exclusive bool
 }
 
 // DefaultAccordionProps returns sensible defaults
@@ -52,6 +60,10 @@ func DefaultAccordionProps() AccordionProps {
 //	})
 templ Accordion(props AccordionProps) {
 	{{ items := ensureAccordionItemIDs(props.Items) }}
+	{{ group := "" }}
+	{{ if props.Exclusive {
+		group = utils.EnsureID("accordion-group", props.ID)
+	} }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
@@ -66,6 +78,9 @@ templ Accordion(props AccordionProps) {
 			<details
 				data-tc-accordion
 				class="bg-white dark:bg-gray-900"
+				if group != "" {
+					name={ group }
+				}
 				if item.ID != "" {
 					id={ item.ID }
 				}
@@ -13234,7 +13249,43 @@ func wireHosted(w *wire.Action, event wire.Event) templ.Attributes {
 //		}) {
 //		   @forms.Input(forms.InputProps{Name: "email"})
 //		}
+// formValidityBridgeJS syncs the programmatic invalid state with the
+// visual one (Modern Web Guidance: accessible-error-announcement). The
+// library's :user-invalid CSS paints the red border only after the user
+// interacts with a field, but nothing tells assistive technology — the
+// pseudo-class has no ARIA equivalent and no change event. This singleton
+// mirrors :user-invalid into aria-invalid on blur/focus/input (capture for
+// the non-bubbling pair), so a screen reader hears "invalid" at the same
+// moment the border turns red. It only ever manages state it added itself:
+// a field the SERVER marked invalid (forms.ErrorAttrs) is never stripped
+// by a client-side recovery — the data-tc-user-invalid marker separates
+// the two owners.
+const formValidityBridgeJS = "if(!window.tcValidityAttached){window.tcValidityAttached=true;" +
+	"function tcSyncValidity(t){" +
+	"if(!t||!t.matches||!t.matches('input,textarea,select'))return;" +
+	"if(t.matches(':user-invalid')){" +
+	"if(t.getAttribute('aria-invalid')!=='true'){" +
+	"t.setAttribute('data-tc-user-invalid','');" +
+	"t.setAttribute('aria-invalid','true');" +
+	"}" +
+	"}else if(t.hasAttribute('data-tc-user-invalid')){" +
+	"t.removeAttribute('data-tc-user-invalid');" +
+	"t.removeAttribute('aria-invalid');" +
+	"}" +
+	"}" +
+	"document.addEventListener('blur',function(e){tcSyncValidity(e.target);},true);" +
+	"document.addEventListener('focus',function(e){tcSyncValidity(e.target);},true);" +
+	"document.addEventListener('input',function(e){tcSyncValidity(e.target);});" +
+	"}"
+
 templ Form(props FormProps) {
+	// The singleton script renders BEFORE the form: a trailing script would
+	// become its parent's last element child, and Tailwind's space-y utilities
+	// apply margin-block-end to `> :not(:last-child)` — the previously-last
+	// sibling would gain a 16px margin and shift every pixel below it (the
+	// wire-page golden +16px, 2026-11-03). A display:none FIRST child gets no
+	// rendered box in either space-y direction, so layout stays byte-stable.
+	@utils.ScriptComponent(props.Nonce, formValidityBridgeJS, "form validity bridge")
 	if props.ContainerAware {
 		<div class="@container">
 			@formInner(props) {
@@ -13464,6 +13515,43 @@ func autocompleteValue(props InputProps) string {
 	return string(props.Autocomplete)
 }
 
+// identifierInputTypes lists the input types that hold identifiers or codes
+// rather than prose. Text correction (autocorrect, autocapitalize,
+// spellcheck) fights the keyboard on these — the OS rewrites "user@exampl…"
+// mid-typing and flags a username as misspelled — so all three are turned
+// off (Modern Web Guidance: forms §3, "turn off text correction on fields
+// that hold identifiers rather than prose"). Plain text and password keep
+// the defaults; text inputs opted into an identifier autocomplete token
+// (username, one-time-code) join this set at render time.
+//
+//nolint:gochecknoglobals // Mobile UX lookup table
+var identifierInputTypes = map[InputType]bool{
+	InputEmail:  true,
+	InputNumber: true,
+	InputTel:    true,
+	InputURL:    true,
+	InputSearch: true,
+}
+
+// identifierAutocompleteTokens are autocomplete tokens that mark even a
+// type=text field as an identifier field (so text correction goes off).
+//
+//nolint:gochecknoglobals // Mobile UX lookup table
+var identifierAutocompleteTokens = map[AutocompleteType]bool{
+	AutocompleteUsername:    true,
+	AutocompleteOneTimeCode: true,
+}
+
+// isIdentifierInput reports whether this input should disable text
+// correction: an identifier TYPE, or a text input whose autocomplete token
+// is an identifier token.
+func isIdentifierInput(props InputProps) bool {
+	if identifierInputTypes[props.Type] {
+		return true
+	}
+	return props.Type == InputText && identifierAutocompleteTokens[props.Autocomplete]
+}
+
 // InputProps configures a text input. EnterKeyHint, when set, overrides the
 // auto-derived mobile keyboard hint. Uses the same EnterKeyHintType enum as
 // Textarea for a unified API across form components. Autocomplete, when valid,
@@ -13549,6 +13637,11 @@ templ inputElement(props InputProps) {
 		}
 		if im, ok := inputModeForType[props.Type]; ok {
 			inputmode={ im }
+		}
+		if isIdentifierInput(props) {
+			autocorrect="off"
+			autocapitalize="off"
+			spellcheck="false"
 		}
 		class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
 		if props.Required {
@@ -14510,6 +14603,13 @@ func DefaultSliderProps() SliderProps {
 // engine track pseudo-elements, and the thumb keeps its accent-color
 // rendering (Chromium/Firefox both apply accent-color under
 // appearance:none — browser-verified by the routes visual goldens).
+//
+// Track fill (Modern Web Guidance: slider, "style the active track"): a
+// styled track loses the native filled portion, so Firefox gets a live
+// fill back from ::-moz-range-progress (pure CSS, updates while dragging),
+// and WebKit engines get the custom.css progress() gradient on
+// ::-webkit-slider-runnable-track (data-tc-slider hook; live values via
+// tcSliderSyncJS).
 func sliderInputClass() string {
 	return "w-full h-6 appearance-none cursor-pointer bg-transparent accent-blue-600 dark:accent-blue-400 " +
 		"focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 " +
@@ -14517,8 +14617,26 @@ func sliderInputClass() string {
 		"[&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:rounded-lg " +
 		"[&::-webkit-slider-runnable-track]:bg-gray-200 dark:[&::-webkit-slider-runnable-track]:bg-gray-700 " +
 		"[&::-moz-range-track]:h-2 [&::-moz-range-track]:rounded-lg " +
-		"[&::-moz-range-track]:bg-gray-200 dark:[&::-moz-range-track]:bg-gray-700"
+		"[&::-moz-range-track]:bg-gray-200 dark:[&::-moz-range-track]:bg-gray-700 " +
+		"[&::-moz-range-progress]:h-2 [&::-moz-range-progress]:rounded-lg " +
+		"[&::-moz-range-progress]:bg-blue-600 dark:[&::-moz-range-progress]:bg-blue-500"
 }
+
+// tcSliderSyncJS keeps the WebKit track fill in step with the thumb while
+// dragging: the attr(value)-seeded custom property in custom.css only knows
+// the server-rendered value (dragging changes the value PROPERTY, not the
+// attribute), so this singleton mirrors the live value via the CSSOM
+// (element.style.setProperty — programmatic writes are not blocked by
+// strict style-src CSPs, unlike inline style attributes). Document-level
+// input listener, one guard per page — the same singleton shape as
+// tcCopyAttached/tcGoBackAttached.
+const tcSliderSyncJS = "if(!window.tcSliderAttached){window.tcSliderAttached=true;" +
+	"document.addEventListener('input',function(e){" +
+	"var t=e.target;" +
+	"if(t&&t.matches&&t.matches('input[type=\"range\"][data-tc-slider]')){" +
+	"t.style.setProperty('--tc-slider-value',t.value);" +
+	"}" +
+	"});}"
 
 // Slider renders a labeled range input with accessible labeling.
 //
@@ -14538,6 +14656,11 @@ templ Slider(props SliderProps) {
 			step = 1
 		}
 	}}
+	// Singleton script renders BEFORE the field: a trailing script would
+	// become its parent's last element child, and space-y parents grant the
+	// previously-last sibling a fresh margin-block-end (the wire-page +16px
+	// golden shift, 2026-11-03). A display:none first child renders no box.
+	@utils.ScriptComponent(props.Nonce, tcSliderSyncJS, "slider fill sync")
 	<div class={ utils.Class("space-y-1", props.Class) } { props.Attrs... }>
 		if props.Label != "" {
 			<div class="flex items-center justify-between">
@@ -14560,6 +14683,7 @@ templ Slider(props SliderProps) {
 		<input
 			type="range"
 			name={ props.Name }
+			data-tc-slider
 			if props.ID != "" {
 				id={ props.ID }
 			}

@@ -85,6 +85,8 @@ func TestNoEmptyNonceAttribute(t *testing.T) {
 			Type: feedback.FeedbackSuccess, Message: "OK",
 		}))},
 		{"ToastContainer", utils.Render(t, feedback.ToastContainer(""))},
+		{"Form", utils.Render(t, forms.Form(forms.FormProps{}))},
+		{"Slider", utils.Render(t, forms.Slider(forms.SliderProps{Name: "vol"}))},
 		{"GlobalErrorHandling", utils.Render(t, htmx.GlobalErrorHandling(htmx.ErrorHandlingConfig{}))},
 		{"ViewTransitions", utils.Render(t, htmx.ViewTransitions(htmx.ViewTransitionsProps{Global: true}))},
 		{"PolledRegionEager", utils.Render(t, htmx.PolledRegion(htmx.PolledRegionProps{
@@ -165,7 +167,9 @@ func TestEmptyNonceStillRendersScripts(t *testing.T) {
 		"Combobox": utils.Render(t, forms.Combobox(forms.ComboboxProps{
 			Name: "c", Label: "C", Options: []forms.ComboboxOption{{Value: "a", Label: "A"}},
 		})),
-		"Toast": utils.Render(t, feedback.Toast(feedback.ToastProps{Type: feedback.FeedbackInfo, Message: "m"})),
+		"Toast":  utils.Render(t, feedback.Toast(feedback.ToastProps{Type: feedback.FeedbackInfo, Message: "m"})),
+		"Form":   utils.Render(t, forms.Form(forms.FormProps{})),
+		"Slider": utils.Render(t, forms.Slider(forms.SliderProps{Name: "vol"})),
 	}
 
 	for name, html := range mustContainScript {

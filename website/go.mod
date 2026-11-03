@@ -9,13 +9,13 @@ require (
 	github.com/larsartmann/templ-components/errorpage v1.26.0
 	github.com/larsartmann/templ-components/icons v1.26.0
 	github.com/larsartmann/templ-components/utils v1.26.0
-	github.com/yuin/goldmark v1.8.6
+	github.com/yuin/goldmark v1.8.7
 	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
 )
 
 require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
-	github.com/dlclark/regexp2/v2 v2.8.4 // indirect
+	github.com/dlclark/regexp2/v2 v2.12.0 // indirect
 	github.com/larsartmann/go-error-family v0.12.0 // indirect
 	github.com/larsartmann/templ-components/htmx v1.26.0 // indirect
 )

@@ -46,6 +46,13 @@ func DefaultSliderProps() SliderProps {
 // engine track pseudo-elements, and the thumb keeps its accent-color
 // rendering (Chromium/Firefox both apply accent-color under
 // appearance:none — browser-verified by the routes visual goldens).
+//
+// Track fill (Modern Web Guidance: slider, "style the active track"): a
+// styled track loses the native filled portion, so Firefox gets a live
+// fill back from ::-moz-range-progress (pure CSS, updates while dragging),
+// and WebKit engines get the custom.css progress() gradient on
+// ::-webkit-slider-runnable-track (data-tc-slider hook; live values via
+// tcSliderSyncJS).
 func sliderInputClass() string {
 	return "w-full h-6 appearance-none cursor-pointer bg-transparent accent-blue-600 dark:accent-blue-400 " +
 		"focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 " +
@@ -53,8 +60,26 @@ func sliderInputClass() string {
 		"[&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:rounded-lg " +
 		"[&::-webkit-slider-runnable-track]:bg-gray-200 dark:[&::-webkit-slider-runnable-track]:bg-gray-700 " +
 		"[&::-moz-range-track]:h-2 [&::-moz-range-track]:rounded-lg " +
-		"[&::-moz-range-track]:bg-gray-200 dark:[&::-moz-range-track]:bg-gray-700"
+		"[&::-moz-range-track]:bg-gray-200 dark:[&::-moz-range-track]:bg-gray-700 " +
+		"[&::-moz-range-progress]:h-2 [&::-moz-range-progress]:rounded-lg " +
+		"[&::-moz-range-progress]:bg-blue-600 dark:[&::-moz-range-progress]:bg-blue-500"
 }
+
+// tcSliderSyncJS keeps the WebKit track fill in step with the thumb while
+// dragging: the attr(value)-seeded custom property in custom.css only knows
+// the server-rendered value (dragging changes the value PROPERTY, not the
+// attribute), so this singleton mirrors the live value via the CSSOM
+// (element.style.setProperty — programmatic writes are not blocked by
+// strict style-src CSPs, unlike inline style attributes). Document-level
+// input listener, one guard per page — the same singleton shape as
+// tcCopyAttached/tcGoBackAttached.
+const tcSliderSyncJS = "if(!window.tcSliderAttached){window.tcSliderAttached=true;" +
+	"document.addEventListener('input',function(e){" +
+	"var t=e.target;" +
+	"if(t&&t.matches&&t.matches('input[type=\"range\"][data-tc-slider]')){" +
+	"t.style.setProperty('--tc-slider-value',t.value);" +
+	"}" +
+	"});}"
 
 // Slider renders a labeled range input with accessible labeling.
 //
@@ -91,6 +116,10 @@ func Slider(props SliderProps) templ.Component {
 		step := props.Step
 		if step == 0 {
 			step = 1
+		}
+		templ_7745c5c3_Err = utils.ScriptComponent(props.Nonce, tcSliderSyncJS, "slider fill sync").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 = []any{utils.Class("space-y-1", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
@@ -135,7 +164,7 @@ func Slider(props SliderProps) templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 74, Col: 20}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 104, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 				if templ_7745c5c3_Err != nil {
@@ -153,7 +182,7 @@ func Slider(props SliderProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(props.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 78, Col: 18}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 108, Col: 18}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -181,7 +210,7 @@ func Slider(props SliderProps) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%g", props.Value))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 84, Col: 122}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 114, Col: 122}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
@@ -209,13 +238,13 @@ func Slider(props SliderProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 90, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 120, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\" data-tc-slider")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -227,7 +256,7 @@ func Slider(props SliderProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 92, Col: 17}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 123, Col: 17}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
@@ -245,7 +274,7 @@ func Slider(props SliderProps) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("%g", props.Min))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 94, Col: 37}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 125, Col: 37}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 		if templ_7745c5c3_Err != nil {
@@ -258,7 +287,7 @@ func Slider(props SliderProps) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("%g", props.Max))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 95, Col: 37}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 126, Col: 37}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 		if templ_7745c5c3_Err != nil {
@@ -271,7 +300,7 @@ func Slider(props SliderProps) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("%g", props.Value))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 96, Col: 41}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 127, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 		if templ_7745c5c3_Err != nil {
@@ -284,7 +313,7 @@ func Slider(props SliderProps) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("%g", step))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 97, Col: 33}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 128, Col: 33}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 		if templ_7745c5c3_Err != nil {
@@ -327,7 +356,7 @@ func Slider(props SliderProps) templ.Component {
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 106, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/slider.templ`, Line: 137, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 			if templ_7745c5c3_Err != nil {

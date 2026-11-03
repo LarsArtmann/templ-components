@@ -16,7 +16,7 @@ templ formsDemoContent() {
 			Title:    "Create Account",
 			Subtitle: "Fill in the details below to create your account.",
 		}) {
-			@forms.Form(forms.FormProps{Action: demoURL("/users"), Method: forms.FormGet}) {
+			@forms.Form(forms.FormProps{Action: demoURL("/users"), Method: forms.FormGet, Nonce: demoNonceConst}) {
 				@forms.ValidationSummary(forms.ValidationSummaryProps{
 					Errors: []forms.ValidationError{
 						{Field: "username", Message: "Username is required"},

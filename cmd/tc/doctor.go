@@ -249,6 +249,8 @@ var nonceConsumers = []struct{ Qualified, Note string }{ //nolint:gochecknogloba
 	{"feedback.ToastContainer", "container for injected toasts"},
 	{"forms.Combobox", "filter/selection singleton script"},
 	{"forms.DirtyGuard", "unsaved-changes guard script"},
+	{"forms.Form", "validity-bridge singleton script"},
+	{"forms.Slider", "track-fill value sync script"},
 	{"forms.TagsInput", "tag add/remove script"},
 	{"htmx.GlobalErrorHandling", "global error→toast pipeline script"},
 	{"htmx.PolledRegion", "poll loop script when Eager"},
