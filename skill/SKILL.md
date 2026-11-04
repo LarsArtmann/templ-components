@@ -270,8 +270,8 @@ loop. A "tests pass" without the loop is not a verdict.
 ## Process (run this when touching any `.templ` file)
 
 1. **Enter the pinned dev shell before generating.** `nix develop`, or use the `nix run .#*`
-   apps (same pinned templ). Any other templ binary produces cosmetic diffs across all 147
-   generated files; restore the pin + generator in lockstep rather than bumping ad hoc.
+   apps (same pinned templ). Any other templ binary produces cosmetic diffs across all 138
+   generated files (147 incl. website's 9); restore the pin + generator in lockstep rather than bumping ad hoc.
 2. **Regenerate and build** (`nix run .#build`). Go never sees the `.templ` change until you
    generate. The root form (`templ generate ./...`) is right for root-module packages; when you
    edit a SUBMODULE's `.templ`, regenerate from inside that module (`cd utils && templ generate
