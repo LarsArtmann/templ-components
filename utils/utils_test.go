@@ -316,6 +316,7 @@ func TestAssertContainsClass(t *testing.T) {
 
 	t.Run("substring glued inside a token is reported missing", func(t *testing.T) {
 		t.Parallel()
+
 		rec := &errorRecorder{}
 
 		AssertContainsClass(rec, `class="p-24"`, "p-2")
