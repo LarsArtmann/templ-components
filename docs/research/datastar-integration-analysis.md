@@ -191,7 +191,9 @@ datastar/
 ```
 
 **Key insight:** The library stays dependency-free. Consumers who want SSE
-streaming add `github.com/starfederation/datastar-go` to **their** go.mod. The
+streaming add the Datastar Go SDK to **their** go.mod — this repo standardizes
+on `github.com/larsartmann/go-datastar/static` (fork-pinned bundle; update
+dance: `docs/external-dependency-bumps.md`). The
 library's `datastar` package only handles the templ/rendering side (attributes +
 runtime injection), exactly like the `htmx` package handles `hx-*` without an
 HTMX SDK.
@@ -477,7 +479,7 @@ strongest competitive position for a server-rendered UI library.
 - https://data-star.dev/ — official site
 - https://data-star.dev/guide/getting_started — CDN script tag, v1.0.2
 - https://data-star.dev/reference/sdks — SDK overview
-- https://github.com/starfederation/datastar-go — Go SDK source
+- https://github.com/starfederation/datastar-go — Go SDK source (UPSTREAM; this repo pins the fork bundle `github.com/larsartmann/go-datastar/static` — the CDN `starfederation/datastar@1.0.2` script form in this doc predates the pinned-bundle decision and ships via `datastar.SDKScript` today)
 - https://data-star.dev/reference/sse_events — SSE event wire format
 - `docs/javascript-guide.md` — this library's JS decision ladder (rung 7: Datastar)
 - `docs/adr/0005-js-attachment-patterns.md` — singleton-guard pattern rationale

@@ -90,17 +90,31 @@ The long-form pitch, with screenshots: [Why templ-components](https://templcompo
 
 ---
 
+## Modern Web Platform, By Default
+
+Components build on the native platform first — no polyfills, no framework JS:
+
+- **`<dialog>` + `@starting-style`** — Modal, Drawer, and Lightbox are native dialogs with animated open/close and backdrop detection.
+- **Popover API** — Dropdown, Popover, and ContextMenu render in the top layer with a shared positioning script and WAI-ARIA keyboard navigation.
+- **`appearance: base-select`** — the stylable Select renders a customizable picker while keeping the native one.
+- **`field-sizing: content`** — Textarea auto-grow with zero JS (`.tc-auto-grow`).
+- **CSS scroll-snap** — Carousel touch/drag with no slider library; **pure-CSS icon animations** — 11 hover presets (`AnimatedIcon`), reduced-motion safe.
+- **`enterkeyhint` / `inputmode` / `:user-valid` / `text-wrap` / `forced-colors` / `prefers-reduced-transparency`** — mapped automatically per input type and guarded by compliance tests.
+
+---
+
 ## By the Numbers
 
-| Metric         | Value                                               |
-| -------------- | --------------------------------------------------- |
-| Components     | 124                                                 |
-| SVG icons      | 102                                                 |
-| Typed enums    | 74 (73 with IsValid)                                |
-| Packages       | 19 (across 7 Go modules)                            |
-| Tests          | ~1,700 test functions + ~1,800 subtests             |
-| Visual goldens | 206 pixel-level regression tests (chromedp)         |
-| Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
+| Metric         | Value                                                                             |
+| -------------- | --------------------------------------------------------------------------------- |
+| Components     | 124                                                                               |
+| SVG icons      | 102                                                                               |
+| Typed enums    | 74 (73 with IsValid)                                                              |
+| Packages       | 19 (across 7 Go modules)                                                          |
+| Tests          | ~1,700 test functions + ~1,800 subtests                                           |
+| Visual goldens | 206 pixel-level regression tests (chromedp)                                       |
+| Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`)                               |
+| Last verified  | 2026-11-04 (recompute via `go test ./utils/... -run TestDocsCountDrift -count=1`) |
 
 Packages = the importable Go packages across the published modules
 (`internal/`, `cmd/`, and `examples/` tooling excluded). Tests = `func
@@ -249,6 +263,14 @@ Typed icon constants, no icon library dependency.
 ```templ
 @icons.Icon(icons.Home, "h-5 w-5 text-gray-500")
 @icons.Icon(icons.Check, "h-6 w-6 text-green-500")
+```
+
+Directional icons mirror automatically in RTL contexts, and the animated
+variants add pure-CSS hover animations (11 presets, reduced-motion safe):
+
+```templ
+@icons.IconRTL(icons.ArrowRight, "h-5 w-5")
+@icons.AnimatedIconWithAnimation(icons.Bolt, icons.AnimPulse, "h-5 w-5")
 ```
 
 ### `htmx` — HTMX Integration (9 components)
