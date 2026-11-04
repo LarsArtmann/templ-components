@@ -194,7 +194,7 @@ const (
 )
 
 // templGeneratedWith is the generator version the library pins.
-const templGeneratedWith = "v0.3.1020"
+const templGeneratedWith = "v0.3.1100"
 
 // compareSemver compares dotted numeric versions; -1, 0, or 1.
 func compareSemver(a, b string) int {

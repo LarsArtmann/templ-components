@@ -65,6 +65,27 @@
           # CI run the same scanner.
           goToolchain = inputs'.nixpkgs.legacyPackages.go_1_27;
           golangciLint = inputs'.nixpkgs.legacyPackages.golangci-lint;
+
+          # templ GENERATOR: built from the true upstream v0.3.1100 tag (the
+          # latest release). nixpkgs lags at a 0.3.1020-era build whose version
+          # string cannot be trusted, and the zero-diff-generate invariant
+          # demands the shell generator == every go.mod pin (TODO #335 window,
+          # executed 2026-11-04). The v0.3.1100 tag ships a STALE vendor/
+          # directory (modules.txt vs go.mod), so buildGoModule must remove it
+          # and vendor from go.mod directly.
+          templGen = (pkgs.buildGoModule.override { go = goToolchain; }) {
+            pname = "templ-gen";
+            version = "v0.3.1100";
+            src = pkgs.fetchFromGitHub {
+              owner = "a-h";
+              repo = "templ";
+              rev = "v0.3.1100";
+              hash = "sha256-QViQAMtCqaXS4GodlSCW/nE4Sox+EF49sbb7h9RBIS0=";
+            };
+            vendorHash = "sha256-MMAoHofeZzGNFsjxY4nrPRyaiKOk4fLYY+kIVmdAL3g=";
+            postPatch = "rm -rf vendor";
+            subPackages = [ "cmd/templ" ];
+          };
         in
         {
           devShells.default = pkgs.mkShellNoCC {
@@ -72,7 +93,7 @@
               goToolchain
               gopls
               golangciLint
-              templ
+              templGen
               tailwindcss_4
               # Same version the #lint app and CI use, so `actionlint` works
               # directly in the dev shell (2026-09-08: it was only inside the
@@ -159,7 +180,7 @@
                   name = "run-build";
                   runtimeInputs = [
                     goToolchain
-                    pkgs.templ
+                    templGen
                   ];
                   text = ''
                     export GOEXPERIMENT=jsonv2
@@ -188,7 +209,7 @@
                   runtimeInputs = [
                     goToolchain
                     golangciLint
-                    pkgs.templ
+                    templGen
                   ];
                   text = ''
                     export GOEXPERIMENT=jsonv2
