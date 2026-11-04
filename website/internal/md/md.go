@@ -7,6 +7,7 @@ package md
 import (
 	"bytes"
 	"fmt"
+	"html"
 	"regexp"
 	"strings"
 
@@ -96,6 +97,32 @@ func newMarkdown() goldmark.Markdown {
 	// Touch the registration value so `unused` sees the side-effect var as read.
 	_ = templLexerRegistration
 
+	chromeRenderer := func(w util.BufWriter, ctx highlighting.CodeBlockContext, entering bool) {
+		if !entering {
+			fmt.Fprint(w, `</div>`)
+
+			return
+		}
+
+		// Chrome bar: fence title (second info token, e.g. ```go main.go)
+		// on the left, language label + copy button on the right. Both are
+		// fence-info derived, so they must be HTML-escaped.
+		fmt.Fprint(w, `<div class="code-block"><div class="code-block-chrome">`)
+		if title := codeBlockTitle(ctx); title != "" {
+			fmt.Fprintf(w, `<span class="code-block-title">%s</span>`, html.EscapeString(title))
+		}
+
+		fmt.Fprint(w, `<span class="code-block-meta">`)
+		if lang, ok := ctx.Language(); ok && len(lang) > 0 {
+			fmt.Fprintf(w, `<span class="code-block-lang">%s</span>`, html.EscapeString(string(lang)))
+		}
+
+		fmt.Fprint(
+			w,
+			`<button type="button" class="code-copy" aria-label="Copy code to clipboard">Copy</button></span></div>`,
+		)
+	}
+
 	return goldmark.New(
 		goldmark.WithExtensions(
 			extension.Table,
@@ -105,22 +132,9 @@ func newMarkdown() goldmark.Markdown {
 				highlighting.WithFormatOptions(
 					chromahtml.WithClasses(true),
 				),
-				highlighting.WithWrapperRenderer(
-					func(w util.BufWriter, ctx highlighting.CodeBlockContext, entering bool) {
-						if entering {
-							fmt.Fprint(w, `<div class="code-block">`)
-							fmt.Fprint(
-								w,
-								`<button type="button" class="code-copy" aria-label="Copy code to clipboard">Copy</button>`,
-							)
-
-							return
-						}
-
-						fmt.Fprint(w, `</div>`)
-					},
-				),
+				highlighting.WithWrapperRenderer(chromeRenderer),
 			),
+		),
 		),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
