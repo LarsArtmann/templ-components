@@ -104,9 +104,12 @@ func allColorsInDarkVariant(line string, matches []string) bool {
 }
 
 // darkModeNeutralRe matches neutral color classes (text-gray-*, bg-white,
-// bg-gray-*, border-gray-*, divide-gray-*, ring-gray-*).
+// bg-gray-*, border-gray-*, divide-gray-*, ring-gray-*) plus the neutral
+// COLOR-carrying ring-offset/shadow forms (ring-offset-white|black|gray-N,
+// shadow-white, shadow-black/N, shadow-gray-N/N). Size/width classes
+// (shadow-lg, ring-offset-2) carry no color and stay out of scope.
 var darkModeNeutralRe = regexp.MustCompile(
-	`(text-gray-[0-9]+|bg-white|bg-gray-[0-9]+|border-gray-[0-9]+|divide-gray-[0-9]+|ring-gray-[0-9]+)`,
+	`(text-gray-[0-9]+|bg-white|bg-gray-[0-9]+|border-gray-[0-9]+|divide-gray-[0-9]+|ring-gray-[0-9]+|ring-offset-white|ring-offset-black|ring-offset-gray-[0-9]+|shadow-white|shadow-black(/[0-9]+)?|shadow-gray-[0-9]+(/[0-9]+)?)`,
 )
 
 // semanticHueAlternation builds the hue alternation for the semantic-color
@@ -130,9 +133,11 @@ func semanticHueAlternation() string {
 
 // darkModeSemanticRe matches semantic color classes (bg-blue-600,
 // text-emerald-500, …) for EVERY hue the library renders — derived from
-// utils/tone at init, never hand-maintained.
+// utils/tone at init, never hand-maintained. The color-carrying
+// ring-offset/shadow forms (ring-offset-blue-600, shadow-rose-500/20) are
+// covered too; shadow size classes (shadow-lg) are not colors.
 var darkModeSemanticRe = regexp.MustCompile(
-	`(bg-(` + semanticHueAlternation() + `)-[0-9]+|text-(` + semanticHueAlternation() + `)-[0-9]+)`,
+	`(bg-(` + semanticHueAlternation() + `)-[0-9]+|text-(` + semanticHueAlternation() + `)-[0-9]+|ring-offset-(` + semanticHueAlternation() + `)-[0-9]+|shadow-(` + semanticHueAlternation() + `)-[0-9]+(/[0-9]+)?)`,
 )
 
 // goCommentLineRe skips Go-style comment lines (both languages' sources are

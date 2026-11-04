@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Dark-mode compliance scan now covers color-carrying `ring-offset-*` and
+  `shadow-*` classes.** `TestDarkModeCompliance`/`TestDarkModeSemanticColors`
+  (and `tc lint --dark`) flag `ring-offset-white|black|gray-N|hue-N` and
+  `shadow-white|black/N|gray-N|hue-N/N` without a same-line `dark:` twin,
+  for every hue derived from the canonical tone table. Size classes
+  (`shadow-lg`, `ring-offset-2`) carry no color and stay out of scope — the
+  documented Toggle-thumb exception needed no allowlist entry. A pre-flight
+  scan of the whole library found zero gaps: every existing color-carrying
+  use already ships its dark twin.
+
 - **`AccordionProps.Exclusive` gives accordions the platform's native
   exclusive disclosure group.** Every `<details>` renders with a shared
   `name` derived from the accordion's ID (or a generated one, so two

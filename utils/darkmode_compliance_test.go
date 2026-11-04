@@ -2,6 +2,7 @@ package utils
 
 import (
 	"path/filepath"
+	"regexp"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils/tone"
@@ -35,6 +36,85 @@ func TestDarkModeSemanticRegexCoversEveryHue(t *testing.T) {
 				t.Errorf("semantic regex flags %q although the dark: variant is present", coveredLine)
 			}
 		}
+	}
+}
+
+// TestDarkModeRingShadowColorRules pins TODO #490: the COLOR-carrying
+// ring-offset/shadow forms (ring-offset-white|black|gray-N|hue-N,
+// shadow-white|black/N|gray-N|hue-N/N) must be flagged without a dark:
+// variant and covered by the same dark: half when present. Size/width
+// classes (shadow-lg, shadow-sm, ring-offset-1) carry no color and must
+// NEVER trip the guard — that is what keeps the documented Toggle-thumb
+// exception (bg-white shadow-sm) working without an allowlist entry.
+func TestDarkModeRingShadowColorRules(t *testing.T) {
+	t.Parallel()
+
+	mustFlag := []string{
+		// neutral color-carrying forms
+		`class="ring-offset-white"`,
+		`class="ring-offset-gray-100"`,
+		`class="shadow-gray-500"`,
+		`class="shadow-white/10"`,
+		`class="shadow-black/20"`,
+		// semantic color-carrying forms (every hue via the derived table)
+		`class="ring-offset-blue-600"`,
+		`class="shadow-rose-500/20"`,
+	}
+
+	// each color-carrying line must be flagged by its own rule; spell the
+	// rule split explicitly so the table stays honest
+	mustFlagPerRule := map[*regexp.Regexp][]string{}
+
+	for _, line := range mustFlag {
+		if darkModeNeutralRe.MatchString(line) {
+			mustFlagPerRule[darkModeNeutralRe] = append(mustFlagPerRule[darkModeNeutralRe], line)
+		}
+
+		if darkModeSemanticRe.MatchString(line) {
+			mustFlagPerRule[darkModeSemanticRe] = append(mustFlagPerRule[darkModeSemanticRe], line)
+		}
+	}
+
+	for rule, lines := range mustFlagPerRule {
+		for _, line := range lines {
+			if !checkLineForDarkModeGap("synthetic.templ", line, rule) {
+				t.Errorf("rule does not flag %q — the ring-offset/shadow color scan regressed", line)
+			}
+		}
+	}
+
+	neverFlag := []string{
+		// size/width classes carry no color
+		`class="shadow-lg"`,
+		`class="shadow-sm"`,
+		`class="shadow-xl hover:shadow-md"`,
+		`class="ring-offset-1"`,
+		`class="ring-offset-2 focus-visible:ring-offset-2"`,
+		// color forms WITH their dark: half on the same line
+		`class="shadow-lg dark:shadow-black/20"`,
+		`class="ring-offset-2 dark:ring-offset-gray-900"`,
+		`class="ring-offset-blue-600 dark:ring-offset-blue-400"`,
+		`class="shadow-gray-500 dark:shadow-gray-700"`,
+		// variants that only color the DARK half are fine (light half is size-only)
+		`class="shadow-lg dark:shadow-black/20 hover:shadow-xl"`,
+	}
+	for _, line := range neverFlag {
+		if checkLineForDarkModeGap("synthetic.templ", line, darkModeNeutralRe) ||
+			checkLineForDarkModeGap("synthetic.templ", line, darkModeSemanticRe) {
+			t.Errorf("rule flags a non-color or properly covered line: %q", line)
+		}
+	}
+
+	// the documented Toggle thumb line — shadow-sm is a size class, and the
+	// bg-white half is covered by the forms/toggle.templ exception (the path
+	// must match the exception table, hence these two dedicated cases)
+	if checkLineForDarkModeGap("synthetic.templ", `class="w-6 h-6 shadow-sm"`, darkModeNeutralRe) ||
+		checkLineForDarkModeGap("synthetic.templ", `class="w-6 h-6 shadow-sm"`, darkModeSemanticRe) {
+		t.Errorf("shadow-sm (size-only) flagged outside the Toggle exception")
+	}
+
+	if checkLineForDarkModeGap("forms/toggle.templ", `class="w-6 h-6 bg-white shadow-sm"`, darkModeNeutralRe) {
+		t.Errorf("Toggle thumb exception no longer covers the real thumb line")
 	}
 }
 
