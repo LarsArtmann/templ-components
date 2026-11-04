@@ -4,12 +4,12 @@ go 1.27
 
 require (
 	github.com/a-h/templ v0.3.1100
-	github.com/larsartmann/templ-components/charts/echarts v1.27.0
-	github.com/larsartmann/templ-components/datastar v1.27.0
-	github.com/larsartmann/templ-components/errorpage v1.27.0
-	github.com/larsartmann/templ-components/htmx v1.27.0
-	github.com/larsartmann/templ-components/icons v1.27.0
-	github.com/larsartmann/templ-components/utils v1.27.0
+	github.com/larsartmann/templ-components/charts/echarts v1.26.0
+	github.com/larsartmann/templ-components/datastar v1.26.0
+	github.com/larsartmann/templ-components/errorpage v1.26.0
+	github.com/larsartmann/templ-components/htmx v1.26.0
+	github.com/larsartmann/templ-components/icons v1.26.0
+	github.com/larsartmann/templ-components/utils v1.26.0
 	github.com/stretchr/testify v1.12.1
 )
 
