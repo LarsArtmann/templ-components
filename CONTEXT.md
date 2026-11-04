@@ -11,7 +11,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](
 | Layer         | Technology                           |
 | ------------- | ------------------------------------ |
 | Language      | Go 1.26                              |
-| Templates     | templ v0.3.1020                      |
+| Templates     | templ v0.3.1100                      |
 | Styling       | Tailwind CSS v4 (via class strings)  |
 | Class merging | tailwind-merge-go v0.2.1             |
 | Interactivity | HTMX 2.0.10 + vanilla JS             |

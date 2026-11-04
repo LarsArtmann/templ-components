@@ -65,7 +65,7 @@ prints pass/fail with a fix hint, and the exit code is non-zero on failure
 - **`GOEXPERIMENT=jsonv2`** — only needed on toolchains older than the Go
   1.27 floor (json/v2 is stable there; nothing to set on 1.27+).
 - **templ version pin** — a generator older than the one the library
-  generates with (v0.3.1020) emits incompatible `*_templ.go` runtime calls.
+  generates with (v0.3.1100) emits incompatible `*_templ.go` runtime calls.
 - **Committed `*_templ.go`** (library repo only) — a `.templ` source
   without its generated file ships uncompilable code through the proxy.
 - **`core.hooksPath` adoption** (library repo only) — the tracked

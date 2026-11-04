@@ -45,7 +45,7 @@ COPY . .
 # Overwrite committed CSS with freshly compiled CSS from Stage 1
 COPY --from=css /src/examples/demo/static/app.css examples/demo/static/app.css
 
-RUN go install github.com/a-h/templ/cmd/templ@v0.3.1020 \
+RUN go install github.com/a-h/templ/cmd/templ@v0.3.1100 \
     && templ generate ./examples/demo/... \
     && go build -ldflags="-s -w" -o /demo ./examples/demo/
 

@@ -10,8 +10,8 @@ contributions that improve consistency are especially welcome.
 | Tool      | Version           | Notes                                                                                  |
 | --------- | ----------------- | -------------------------------------------------------------------------------------- |
 | Go        | 1.26+             | Pinned in `go.mod` and `flake.nix`                                                     |
-| Nix       | any (recommended) | `nix develop` provides Go, `golangci-lint`, and **templ v0.3.1020** (matches `go.mod`) |
-| templ CLI | v0.3.1020         | The dev shell pins this; do **not** use a system binary that may be v0.3.1036+         |
+| Nix       | any (recommended) | `nix develop` provides Go, `golangci-lint`, and **templ v0.3.1100** (matches `go.mod`) |
+| templ CLI | v0.3.1100         | The dev shell pins this; do **not** use a system binary of any other version           |
 
 > **Why Nix?** The system `templ` binary may be an unreleased upstream build.
 > Always use `nix develop` before generating. See [`AGENTS.md`](AGENTS.md).

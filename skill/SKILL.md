@@ -247,7 +247,7 @@ separate FULL pre-push verify.
 ## Flake commands (canonical entry points)
 
 Build automation lives in `flake.nix`, not a Makefile. These wrap the pinned `templ`
-(v0.3.1020, matching every `go.mod`) so generation is reproducible.
+(v0.3.1100, matching every `go.mod` — the flake-built `templGen` from the upstream tag) so generation is reproducible.
 
 | Command                                | What it does                                                     |
 | -------------------------------------- | ---------------------------------------------------------------- |
@@ -270,8 +270,8 @@ loop. A "tests pass" without the loop is not a verdict.
 ## Process (run this when touching any `.templ` file)
 
 1. **Enter the pinned dev shell before generating.** `nix develop`, or use the `nix run .#*`
-   apps (same pinned templ). Any other templ binary produces cosmetic diffs across all 137
-   generated files; restore `v0.3.1020` rather than bumping.
+   apps (same pinned templ). Any other templ binary produces cosmetic diffs across all 147
+   generated files; restore the pin + generator in lockstep rather than bumping ad hoc.
 2. **Regenerate and build** (`nix run .#build`). Go never sees the `.templ` change until you
    generate. The root form (`templ generate ./...`) is right for root-module packages; when you
    edit a SUBMODULE's `.templ`, regenerate from inside that module (`cd utils && templ generate
