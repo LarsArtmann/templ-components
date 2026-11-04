@@ -4,6 +4,7 @@ package utils
 import (
 	"bytes"
 	"context"
+	"slices"
 	"strings"
 
 	"github.com/a-h/templ"
@@ -88,6 +89,28 @@ func AssertContainsAll(t TestReporter, output string, wants ...string) {
 	for _, want := range wants {
 		if !strings.Contains(output, want) {
 			t.Errorf("output does not contain %q:\n%s", want, output)
+		}
+	}
+}
+
+// AssertContainsClass checks that the rendered output contains every want as
+// a WHOLE whitespace- or quote-delimited token. Substring asserts
+// false-positive on class affixes ("p-2" matches "p-24", "ring-1" matches
+// "ring-10"); token membership closes that gap while staying agnostic to
+// tailwind-merge class reordering (each want matches as its own token,
+// never as a slice of an ordered class attribute). Quotes split tokens too,
+// so `class="p-2"` inside HTML attribute syntax matches; a bare substring
+// glued inside a longer token ("p-24") still does not.
+func AssertContainsClass(t TestReporter, output string, wants ...string) {
+	t.Helper()
+
+	tokens := strings.FieldsFunc(output, func(r rune) bool {
+		return r == ' ' || r == '\t' || r == '\n' || r == '\r' || r == '"' || r == '\''
+	})
+
+	for _, want := range wants {
+		if !slices.Contains(tokens, want) {
+			t.Errorf("output does not contain class token %q:\n%s", want, output)
 		}
 	}
 }

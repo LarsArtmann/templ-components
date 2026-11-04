@@ -10,7 +10,6 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	"html"
 	"strings"
 
 	"github.com/larsartmann/templ-components/icons"
@@ -56,32 +55,28 @@ func toastJSIconPaths() string {
 	return b.String()
 }
 
-// toastScriptNonceAttr renders the nonce attribute for the raw <script>
-// tags below. An empty nonce omits the attribute entirely (nonce="" is
-// rejected by strict-CSP pages — the omit-empty rule, see utils.ScriptAttrs).
-func toastScriptNonceAttr(nonce string) string {
-	if nonce == "" {
-		return ""
-	}
-	return fmt.Sprintf(` nonce="%s"`, html.EscapeString(nonce))
-}
-
-// toastContainerScript builds the entire <script> tag as raw HTML.
-// This bypasses templ's ScriptContentOutsideStringLiteral which would
-// JSON-marshal the JS string content inside {{ }} expressions.
+// toastContainerScript builds the tcShowToast bootstrap script. The JS is
+// composed from the Go style tables so classes and icon paths cannot drift
+// from the server-rendered toast markup; templ would JSON-marshal a raw JS
+// literal inside {{ }} expressions, so the tag renders through
+// utils.ScriptComponent, which also owns the omit-empty nonce rule (an
+// empty nonce renders NO nonce attribute — nonce="" is rejected by
+// strict-CSP pages) and the ADR-0047 context-nonce precedence.
 func toastContainerScript(nonce string) templ.Component {
-	script := fmt.Sprintf(`<script%s>%s\n%s\nfunction tcShowToast(message, type, title, duration) {\nvar container = document.getElementById('tc-toast-container');\nif (!container) return;\nvar toast = document.createElement('div');\ntcToastSeq = (window.tcToastSeq || 0) + 1;\nvar toastId = 'tcToast-' + Date.now() + '-' + tcToastSeq;\ntoast.id = toastId;\ntoast.setAttribute('popover', 'manual');\nvar typeKey = type || 'info';\nvar style = tcToastColors[typeKey] || tcToastColors.info;\ntoast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg dark:shadow-black/20 px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;\nvar inner = document.createElement('div');\ninner.className = 'flex items-start gap-3';\nvar svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\nsvgEl.setAttribute('class', 'h-5 w-5 flex-shrink-0 mt-0.5 ' + style.icon);\nsvgEl.setAttribute('fill', 'none');\nsvgEl.setAttribute('viewBox', '0 0 24 24');\nsvgEl.setAttribute('stroke', 'currentColor');\nsvgEl.innerHTML = (tcToastIcons[typeKey] || tcToastIcons.info);\ninner.appendChild(svgEl);\nvar content = document.createElement('div');\ncontent.className = 'flex-1 min-w-0';\nif (title) {\nvar titleEl = document.createElement('div');\ntitleEl.className = 'text-sm font-semibold';\ntitleEl.textContent = title;\ncontent.appendChild(titleEl);\n}\nvar msgEl = document.createElement('div');\nmsgEl.className = 'text-sm';\nmsgEl.textContent = message;\ncontent.appendChild(msgEl);\ninner.appendChild(content);\nvar btn = document.createElement('button');\nbtn.className = 'flex-shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0';\nbtn.setAttribute('aria-label', 'Dismiss');\nbtn.setAttribute('popovertarget', toastId);\nbtn.setAttribute('popovertargetaction', 'hide');\ntoast.addEventListener('hide', function() { toast.remove(); });\nbtn.addEventListener('click', function() { this.closest('.pointer-events-auto').remove(); });\nbtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' + (tcToastIcons.dismiss || '') + '</svg>';\ninner.appendChild(btn);\ntoast.appendChild(inner);\ncontainer.appendChild(toast);\nif (typeof toast.showPopover === 'function') { try { toast.showPopover(); } catch (err) {} }\nrequestAnimationFrame(function() { toast.classList.remove('translate-x-full'); });\nif (duration && duration > 0) {\nsetTimeout(function() {\ntoast.classList.add('translate-x-full');\nsetTimeout(function() { if (typeof toast.hidePopover === 'function') { try { toast.hidePopover(); } catch (err) {} } toast.remove(); }, 300);\n}, duration);\n}\n}</script>`, toastScriptNonceAttr(nonce), toastJSStyles(), toastJSIconPaths())
+	script := fmt.Sprintf(`%s\n%s\nfunction tcShowToast(message, type, title, duration) {\nvar container = document.getElementById('tc-toast-container');\nif (!container) return;\nvar toast = document.createElement('div');\ntcToastSeq = (window.tcToastSeq || 0) + 1;\nvar toastId = 'tcToast-' + Date.now() + '-' + tcToastSeq;\ntoast.id = toastId;\ntoast.setAttribute('popover', 'manual');\nvar typeKey = type || 'info';\nvar style = tcToastColors[typeKey] || tcToastColors.info;\ntoast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg dark:shadow-black/20 px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;\nvar inner = document.createElement('div');\ninner.className = 'flex items-start gap-3';\nvar svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\nsvgEl.setAttribute('class', 'h-5 w-5 flex-shrink-0 mt-0.5 ' + style.icon);\nsvgEl.setAttribute('fill', 'none');\nsvgEl.setAttribute('viewBox', '0 0 24 24');\nsvgEl.setAttribute('stroke', 'currentColor');\nsvgEl.innerHTML = (tcToastIcons[typeKey] || tcToastIcons.info);\ninner.appendChild(svgEl);\nvar content = document.createElement('div');\ncontent.className = 'flex-1 min-w-0';\nif (title) {\nvar titleEl = document.createElement('div');\ntitleEl.className = 'text-sm font-semibold';\ntitleEl.textContent = title;\ncontent.appendChild(titleEl);\n}\nvar msgEl = document.createElement('div');\nmsgEl.className = 'text-sm';\nmsgEl.textContent = message;\ncontent.appendChild(msgEl);\ninner.appendChild(content);\nvar btn = document.createElement('button');\nbtn.className = 'flex-shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0';\nbtn.setAttribute('aria-label', 'Dismiss');\nbtn.setAttribute('popovertarget', toastId);\nbtn.setAttribute('popovertargetaction', 'hide');\ntoast.addEventListener('hide', function() { toast.remove(); });\nbtn.addEventListener('click', function() { this.closest('.pointer-events-auto').remove(); });\nbtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' + (tcToastIcons.dismiss || '') + '</svg>';\ninner.appendChild(btn);\ntoast.appendChild(inner);\ncontainer.appendChild(toast);\nif (typeof toast.showPopover === 'function') { try { toast.showPopover(); } catch (err) {} }\nrequestAnimationFrame(function() { toast.classList.remove('translate-x-full'); });\nif (duration && duration > 0) {\nsetTimeout(function() {\ntoast.classList.add('translate-x-full');\nsetTimeout(function() { if (typeof toast.hidePopover === 'function') { try { toast.hidePopover(); } catch (err) {} } toast.remove(); }, 300);\n}, duration);\n}\n}</script>`, toastJSStyles(), toastJSIconPaths())
 	script = strings.ReplaceAll(script, `\n`, "\n")
-	return templ.Raw(script)
+	return utils.ScriptComponent(nonce, script, "toast container script")
 }
 
-// toastDismissScript builds the dismiss <script> tag as raw HTML.
+// toastDismissScript attaches the shared [data-dismiss] handling plus the
+// per-toast auto-dismiss timer (duration > 0), through
+// utils.ScriptComponent for the nonce contract.
 func toastDismissScript(nonce, toastID string, duration int) templ.Component {
 	js := utils.DismissScript()
 	if duration > 0 {
 		js += fmt.Sprintf("setTimeout(function(){var t=document.getElementById('%s');if(t)t.remove();},%d);", toastID, duration)
 	}
-	return templ.Raw(fmt.Sprintf(`<script%s>%s</script>`, toastScriptNonceAttr(nonce), js))
+	return utils.ScriptComponent(nonce, js, "toast dismiss script")
 }
 
 // DefaultToastProps returns sensible defaults
@@ -168,7 +163,7 @@ func Toast(props ToastProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(toastID)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 106, Col: 14}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 101, Col: 14}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -199,7 +194,7 @@ func Toast(props ToastProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 111, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 106, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -252,7 +247,7 @@ func Toast(props ToastProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 119, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 114, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -288,7 +283,7 @@ func Toast(props ToastProps) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(props.Message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 121, Col: 52}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 116, Col: 52}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {

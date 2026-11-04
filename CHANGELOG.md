@@ -74,6 +74,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **Alert and Toast dismiss scripts render through the canonical CSP script
+  writer.** Both components hand-rolled their `<script>` tags as raw HTML
+  with ad-hoc nonce handling; they now go through `utils.ScriptComponent`,
+  so the omit-empty nonce rule, HTML-escaped nonce values, and the
+  ADR-0047 nonce precedence are owned in one place. `ScriptComponent` also
+  gained the missing fallback to `templ.WithNonce` context nonces (the
+  mechanism templ-middleware consumers already wire), which the old Alert
+  code honored and the canonical writer silently dropped — a consumer
+  relying on templ's context nonce would have shipped dead dismiss
+  buttons under a strict CSP. The emitters now also newline-pad their
+  `<script>` content (regenerated goldens in `feedback`).
+
 - **Pre-October status/planning corpus closed out: 213 reports annotated and archived.**
   The 2026-06→09 `docs/status/` and `docs/planning/` corpus (218 files) was verified
   against the current tree row-by-row: resolvable items carry inline verdicts

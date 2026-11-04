@@ -2,10 +2,14 @@
 package display
 
 import (
+	"bytes"
+	"context"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -157,4 +161,62 @@ func TestTooltipEscapeDismiss(t *testing.T) {
 	} else {
 		utils.AssertContains(t, string(css), `[data-tc-tooltip][data-tc-tooltip-dismissed] [role="tooltip"]`)
 	}
+}
+
+// T5.5 (#493): the tooltip trigger is ARBITRARY children — buttons, links,
+// and inputs are all legitimate triggers. These tests pin the wrapper
+// contract those custom triggers rely on: the trigger markup renders inside
+// the data-tc-tooltip wrapper (before the panel), and the singleton script
+// targets every interactive element kind when propagating aria-describedby.
+func TestTooltipCustomTriggerElements(t *testing.T) {
+	t.Parallel()
+
+	renderTooltipWithChild := func(t *testing.T, props TooltipProps, child templ.Component) string {
+		t.Helper()
+
+		var buf bytes.Buffer
+
+		ctx := templ.WithChildren(context.Background(), child)
+		if err := Tooltip(props).Render(ctx, &buf); err != nil {
+			t.Fatalf("render tooltip: %v", err)
+		}
+
+		return strings.TrimSpace(buf.String())
+	}
+
+	t.Run("button trigger renders inside the wrapper", func(t *testing.T) {
+		t.Parallel()
+		output := renderTooltipWithChild(t, TooltipProps{
+			ID:   "tip-btn",
+			Text: "Button hint",
+		}, templ.Raw(`<button type="button" id="trigger-btn">Save</button>`))
+		utils.AssertContains(t, output, `data-tc-tooltip`)
+		utils.AssertContains(t, output, `<button type="button" id="trigger-btn">Save</button>`)
+		utils.AssertContains(t, output, `id="tip-btn-tooltip"`)
+		utils.AssertContains(t, output, `aria-describedby="tip-btn-tooltip"`)
+	})
+
+	t.Run("link trigger renders inside the wrapper", func(t *testing.T) {
+		t.Parallel()
+		output := renderTooltipWithChild(t, TooltipProps{
+			ID:   "tip-link",
+			Text: "Link hint",
+		}, templ.Raw(`<a href="/docs">Docs</a>`))
+		utils.AssertContains(t, output, `<a href="/docs">Docs</a>`)
+		utils.AssertContains(t, output, `id="tip-link-tooltip"`)
+	})
+
+	t.Run("script propagates describedby to every interactive trigger kind", func(t *testing.T) {
+		t.Parallel()
+		output := renderTooltipWithChild(t, TooltipProps{
+			ID:       "tip-aria",
+			Text:     "A11y hint",
+			Nonce:    "test-nonce",
+			Position: TooltipPositionBottom,
+		}, templ.Raw(`<input type="text" id="trigger-input">`))
+		// The focusable-selector list names each trigger kind the
+		// propagation covers — a new interactive element kind must be
+		// added here or screen readers lose the describedby association.
+		utils.AssertContains(t, output, `button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])`)
+	})
 }

@@ -98,6 +98,16 @@ func TestCountBadgeMaxOverflow(t *testing.T) {
 		utils.AssertContains(t, output, "5")
 		utils.AssertNotContains(t, output, "+")
 	})
+	t.Run("zero max falls back to the default threshold", func(t *testing.T) {
+		t.Parallel()
+		// Max=0 is the struct-literal zero value: a consumer writing
+		// CountBadgeProps{Count: 150} must get the same 99+ overflow as an
+		// explicit Max=99 — never a raw 150+ (layout blowout) or a broken
+		// "0+" render.
+		output := utils.Render(t, CountBadge(CountBadgeProps{Count: 150, Max: 0}))
+		utils.AssertContains(t, output, "99+")
+		utils.AssertNotContains(t, output, "150+")
+	})
 }
 
 // formatRelativeTime boundary coverage moved to

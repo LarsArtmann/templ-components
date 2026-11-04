@@ -3,6 +3,7 @@ package display
 import (
 	"context"
 	"io"
+	"strings"
 	"testing"
 
 	"github.com/a-h/templ"
@@ -35,6 +36,25 @@ func TestGoldenSweepAccordion(t *testing.T) {
 			},
 		}))},
 		{Name: "accordion_empty", HTML: utils.Render(t, Accordion(DefaultAccordionProps()))},
+		{Name: "accordion_long_content", HTML: utils.Render(t, Accordion(AccordionProps{
+			Items: []AccordionItem{
+				{
+					ID:    "long1",
+					Title: "Terms of Service",
+					Content: templ.Raw(
+						"<p>" + strings.Repeat("The licensee agrees to the terms herein. ", 60) + "</p>",
+					),
+					Open: true,
+				},
+				{
+					ID:    "long2",
+					Title: "Privacy Policy",
+					Content: templ.Raw(
+						"<p>" + strings.Repeat("Personal data is processed per Article 6. ", 50) + "</p>",
+					),
+				},
+			},
+		}))},
 	})
 }
 

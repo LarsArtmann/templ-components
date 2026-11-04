@@ -63,15 +63,7 @@ templ Alert(props AlertProps) {
 			}
 		</div>
 		if props.Dismissible {
-			{{ nonce := props.Nonce }}
-			if nonce == "" {
-				{{ nonce = templ.GetNonce(ctx) }}
-			}
-			if nonce != "" {
-				@templ.Raw("<script nonce=\"" + nonce + "\">" + utils.DismissScript() + "</script>")
-			} else {
-				@templ.Raw("<script>" + utils.DismissScript() + "</script>")
-			}
+			@utils.ScriptComponent(props.Nonce, utils.DismissScript(), "alert dismiss script")
 		}
 	</div>
 }

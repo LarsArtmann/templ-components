@@ -101,3 +101,19 @@ func TestRelativeTimeNowInjection(t *testing.T) {
 	utils.AssertContains(t, html, `datetime="2026-02-28T22:00:00Z"`)
 	utils.AssertContains(t, html, ">2 hours ago<")
 }
+
+// TestRelativeTimeJSLocaleContract pins the CLIENT-side locale handling
+// (T5.7, #493): the auto-refresh script must format through
+// Intl.RelativeTimeFormat using the DOCUMENT language (documentElement.lang)
+// with an 'en' fallback — never a hardcoded locale — so server-rendered text
+// and client-refreshed text agree in the user's language. Breaking this
+// silently flips refreshed timestamps to English on localized pages.
+func TestRelativeTimeJSLocaleContract(t *testing.T) {
+	t.Parallel()
+
+	js := relativeTimeJS()
+
+	utils.AssertContains(t, js, "new Intl.RelativeTimeFormat(document.documentElement.lang||'en'")
+	utils.AssertContains(t, js, "{numeric:'auto'}")
+	utils.AssertContains(t, js, "toLocaleDateString()")
+}

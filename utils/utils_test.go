@@ -278,6 +278,59 @@ func TestAssertContainsAll(t *testing.T) {
 	})
 }
 
+// errorRecorder captures Errorf calls so negative-path helper behavior is
+// assertable without failing the test.
+type errorRecorder struct {
+	errors []string
+}
+
+func (e *errorRecorder) Helper()                   {}
+func (e *errorRecorder) Fatalf(f string, _ ...any) { panic(f) }
+func (e *errorRecorder) Errorf(f string, _ ...any) { e.errors = append(e.errors, f) }
+
+func TestAssertContainsClass(t *testing.T) {
+	t.Parallel()
+
+	t.Run("whole tokens present passes", func(t *testing.T) {
+		t.Parallel()
+		AssertContainsClass(t, `<div class="p-2 ring-1">x</div>`, "p-2", "ring-1")
+	})
+
+	t.Run("class affix does not satisfy a whole-token want", func(t *testing.T) {
+		t.Parallel()
+		// "p-2" is a substring of "p-24", but only a whole token satisfies
+		// the check — the affix must NOT pass silently.
+		rec := &errorRecorder{}
+
+		AssertContainsClass(rec, `<div class="p-24 ring-10">x</div>`, "p-2", "ring-1")
+
+		if len(rec.errors) != 2 {
+			t.Errorf("expected 2 missing-token errors (p-2, ring-1), got %d", len(rec.errors))
+		}
+	})
+
+	t.Run("reordered classes still match", func(t *testing.T) {
+		t.Parallel()
+		AssertContainsClass(t, `class="flex items-center gap-2"`, "items-center", "flex", "gap-2")
+	})
+
+	t.Run("substring glued inside a token is reported missing", func(t *testing.T) {
+		t.Parallel()
+		rec := &errorRecorder{}
+
+		AssertContainsClass(rec, `class="p-24"`, "p-2")
+
+		if len(rec.errors) == 0 {
+			t.Errorf("expected a missing-token error for an affix substring, got none")
+		}
+	})
+
+	t.Run("zero wants is a no-op", func(t *testing.T) {
+		t.Parallel()
+		AssertContainsClass(t, "anything")
+	})
+}
+
 // Verify that *BaseProps satisfies the ComponentProps interface.
 func TestBasePropsImplementsComponentProps(t *testing.T) {
 	t.Parallel()
