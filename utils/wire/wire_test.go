@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 )
 
 func TestTransportIsValid(t *testing.T) {
@@ -545,7 +546,7 @@ func renderAttributes(t *testing.T, attrs templ.Attributes) string {
 		t.Fatalf("write open tag: %v", err)
 	}
 
-	if err := templ.RenderAttributes(context.Background(), &sb, attrs); err != nil {
+	if err := templruntime.RenderAttributes(context.Background(), &sb, &sb, "button", attrs); err != nil {
 		t.Fatalf("render attributes: %v", err)
 	}
 
