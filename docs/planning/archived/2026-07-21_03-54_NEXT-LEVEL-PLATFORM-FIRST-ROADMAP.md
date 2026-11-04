@@ -35,6 +35,8 @@ platform.** Every migration we have already shipped (`<dialog>`, `<details>`, sc
 
 ## Current State Snapshot (v0.19.0)
 
+<!-- check-rows:ledger -->
+
 | Pillar                | Status                                                                                                                                                     |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Components            | **98** across 9 packages (`display` 30, `forms` 21, `feedback` 13, `navigation` 12, `htmx` 8, `layout` 10, `errorpage` 4, `icons` 3, `utils` 0)            |
@@ -60,6 +62,8 @@ on that foundation — `AppShell` is the natural host for container-aware childr
 > context-aware and individually adoptable.**
 
 Three structural shifts, each enabled by a Baseline-2024 platform feature:
+
+<!-- check-rows:ledger -->
 
 | Shift                  | Mechanism (native platform feature)  | Replaces                             |
 | ---------------------- | ------------------------------------ | ------------------------------------ |
@@ -286,14 +290,14 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 1.2 Write ADR-0017 (60min)
 
-| ID    | Task                                                                                     | Min | Verify                        |
-| ----- | ---------------------------------------------------------------------------------------- | --- | ----------------------------- |
-| 1.2.1 | Create `docs/adr/0017-popover-api-migration.md` skeleton (Context/Decision/Consequences) | 6   | File exists with sections     |
-| 1.2.2 | Document the `popover="auto"` vs `popover="manual"` decision per component               | 10  | Table: component → mode → why |
-| 1.2.3 | Document `popovertarget` trigger pattern + light-dismiss behavior                        | 10  | Code example in ADR           |
-| 1.2.4 | Document Anchor Positioning pattern + fallback for non-supporting browsers               | 10  | Code example + fallback       |
-| 1.2.5 | Document CSP implications (no inline JS needed for show/hide) + nonce removal            | 8   | CSP section                   |
-| 1.2.6 | Document migration order + per-component rollback plan                                   | 6   | Checklist                     |
+| ID                                                                                                                                                   | Task                                                                                         | Min    | Verify                            |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------ | --------------------------------- |
+| ~~1.2.1~~ done — shipped — docs/adr/0017-popover-api-migration.md (mode table, popovertarget pattern, anchor fallback, CSP section, migration order) | ~~Create `docs/adr/0017-popover-api-migration.md` skeleton (Context/Decision/Consequences)~~ | ~~6~~  | ~~File exists with sections~~     |
+| ~~1.2.2~~ done — shipped — docs/adr/0017-popover-api-migration.md (mode table, popovertarget pattern, anchor fallback, CSP section, migration order) | ~~Document the `popover="auto"` vs `popover="manual"` decision per component~~               | ~~10~~ | ~~Table: component → mode → why~~ |
+| ~~1.2.3~~ done — shipped — docs/adr/0017-popover-api-migration.md (mode table, popovertarget pattern, anchor fallback, CSP section, migration order) | ~~Document `popovertarget` trigger pattern + light-dismiss behavior~~                        | ~~10~~ | ~~Code example in ADR~~           |
+| ~~1.2.4~~ done — shipped — docs/adr/0017-popover-api-migration.md (mode table, popovertarget pattern, anchor fallback, CSP section, migration order) | ~~Document Anchor Positioning pattern + fallback for non-supporting browsers~~               | ~~10~~ | ~~Code example + fallback~~       |
+| ~~1.2.5~~ done — shipped — docs/adr/0017-popover-api-migration.md (mode table, popovertarget pattern, anchor fallback, CSP section, migration order) | ~~Document CSP implications (no inline JS needed for show/hide) + nonce removal~~            | ~~8~~  | ~~CSP section~~                   |
+| ~~1.2.6~~ done — shipped — docs/adr/0017-popover-api-migration.md (mode table, popovertarget pattern, anchor fallback, CSP section, migration order) | ~~Document migration order + per-component rollback plan~~                                   | ~~6~~  | ~~Checklist~~                     |
 
 #### 1.3 Migrate Tooltip (90min)
 
@@ -311,14 +315,14 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 1.4 Migrate HoverCard (60min)
 
-| ID    | Task                                                                                                | Min | Verify                    |
-| ----- | --------------------------------------------------------------------------------------------------- | --- | ------------------------- |
-| 1.4.1 | Read `hover_card.templ` fully; HoverCard is already mostly CSS (`:hover`/`:focus-within`) — confirm | 8   | Notes                     |
-| 1.4.2 | Add `popover="manual"` + `popovertarget` to formalize top-layer + focus                             | 12  | `templ generate` succeeds |
-| 1.4.3 | Remove any residual JS for positioning                                                              | 8   | grep clean                |
-| 1.4.4 | Update tests + golden                                                                               | 12  | Tests green               |
-| 1.4.5 | Verify 4 positions still render correctly via Anchor or CSS `inset`                                 | 10  | Manual test each position |
-| 1.4.6 | Lint + CSP nonce test                                                                               | 10  | Both green                |
+| ID                                                                                                                                             | Task                                                                                                    | Min    | Verify                        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------ | ----------------------------- |
+| ~~1.4.1~~ done — shipped — HoverCard renders popover="hint" + interestfor trigger + shared positioning script (display/hover_card.templ:44-48) | ~~Read `hover_card.templ` fully; HoverCard is already mostly CSS (`:hover`/`:focus-within`) — confirm~~ | ~~8~~  | ~~Notes~~                     |
+| ~~1.4.2~~ done — shipped — HoverCard renders popover="hint" + interestfor trigger + shared positioning script (display/hover_card.templ:44-48) | ~~Add `popover="manual"` + `popovertarget` to formalize top-layer + focus~~                             | ~~12~~ | ~~`templ generate` succeeds~~ |
+| ~~1.4.3~~ done — shipped — HoverCard renders popover="hint" + interestfor trigger + shared positioning script (display/hover_card.templ:44-48) | ~~Remove any residual JS for positioning~~                                                              | ~~8~~  | ~~grep clean~~                |
+| ~~1.4.4~~ done — shipped — HoverCard renders popover="hint" + interestfor trigger + shared positioning script (display/hover_card.templ:44-48) | ~~Update tests + golden~~                                                                               | ~~12~~ | ~~Tests green~~               |
+| ~~1.4.5~~ done — shipped — HoverCard renders popover="hint" + interestfor trigger + shared positioning script (display/hover_card.templ:44-48) | ~~Verify 4 positions still render correctly via Anchor or CSS `inset`~~                                 | ~~10~~ | ~~Manual test each position~~ |
+| ~~1.4.6~~ done — shipped — HoverCard renders popover="hint" + interestfor trigger + shared positioning script (display/hover_card.templ:44-48) | ~~Lint + CSP nonce test~~                                                                               | ~~10~~ | ~~Both green~~                |
 
 #### 1.5 Migrate ContextMenu (90min)
 
@@ -384,15 +388,15 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 2.2 Nav Container-Aware (90min)
 
-| ID    | Task                                                                      | Min | Verify                          |
-| ----- | ------------------------------------------------------------------------- | --- | ------------------------------- |
-| 2.2.1 | Read `navigation/nav.templ` fully; identify viewport-based collapse logic | 12  | Notes                           |
-| 2.2.2 | Add `NavProps.ContainerAware bool`; emit `@container` wrapper when set    | 12  | `templ generate` succeeds       |
-| 2.2.3 | Replace `lg:` collapse with `@lg:` collapse when `ContainerAware`         | 12  | Manual test in narrow container |
-| 2.2.4 | Verify default behavior unchanged (viewport-based) when flag off          | 8   | Backward-compat test green      |
-| 2.2.5 | Add tests: container narrow → burger; container wide → full nav           | 12  | Tests green                     |
-| 2.2.6 | Update golden + docs                                                      | 10  | Goldens pass                    |
-| 2.2.7 | Lint                                                                      | 6   | 0 findings                      |
+| ID                                                                                                  | Task                                                                          | Min    | Verify                              |
+| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------ | ----------------------------------- |
+| ~~2.2.1~~ done — shipped — NavProps.ContainerAware in the 8-component ContainerAware set (ADR-0018) | ~~Read `navigation/nav.templ` fully; identify viewport-based collapse logic~~ | ~~12~~ | ~~Notes~~                           |
+| ~~2.2.2~~ done — shipped — NavProps.ContainerAware in the 8-component ContainerAware set (ADR-0018) | ~~Add `NavProps.ContainerAware bool`; emit `@container` wrapper when set~~    | ~~12~~ | ~~`templ generate` succeeds~~       |
+| ~~2.2.3~~ done — shipped — NavProps.ContainerAware in the 8-component ContainerAware set (ADR-0018) | ~~Replace `lg:` collapse with `@lg:` collapse when `ContainerAware`~~         | ~~12~~ | ~~Manual test in narrow container~~ |
+| ~~2.2.4~~ done — shipped — NavProps.ContainerAware in the 8-component ContainerAware set (ADR-0018) | ~~Verify default behavior unchanged (viewport-based) when flag off~~          | ~~8~~  | ~~Backward-compat test green~~      |
+| ~~2.2.5~~ done — shipped — NavProps.ContainerAware in the 8-component ContainerAware set (ADR-0018) | ~~Add tests: container narrow → burger; container wide → full nav~~           | ~~12~~ | ~~Tests green~~                     |
+| ~~2.2.6~~ done — shipped — NavProps.ContainerAware in the 8-component ContainerAware set (ADR-0018) | ~~Update golden + docs~~                                                      | ~~10~~ | ~~Goldens pass~~                    |
+| ~~2.2.7~~ done — shipped — NavProps.ContainerAware in the 8-component ContainerAware set (ADR-0018) | ~~Lint~~                                                                      | ~~6~~  | ~~0 findings~~                      |
 
 #### 2.3 Card Container-Aware (60min)
 
@@ -583,13 +587,13 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 5.4 Headless Variants Spike (45min)
 
-| ID    | Task                                                                                          | Min | Verify                      |
-| ----- | --------------------------------------------------------------------------------------------- | --- | --------------------------- |
-| 5.4.1 | Decide: headless = same component with `Unstyled bool` flag vs. separate `*-headless` package | 10  | Decision documented         |
-| 5.4.2 | Spike: add `Unstyled bool` to Button (emits semantics + ARIA, no Tailwind classes)            | 12  | Compiles, renders bare HTML |
-| 5.4.3 | Evaluate: does this work cleanly for all components? Document blockers                        | 10  | Evaluation note             |
-| 5.4.4 | Decide: ship in v2.0 or defer                                                                 | 8   | Decision                    |
-| 5.4.5 | If shipping: write ADR + plan rollout                                                         | 5   | (conditional)               |
+| ID                                                                                                                                       | Task                                                                                              | Min    | Verify                          |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------ | ------------------------------- |
+| ~~5.4.1~~ **Won't implement — Won't implement — headless/Unstyled deferred to the v2 window (Rejected Alternatives ledger + TODO #39).** | ~~Decide: headless = same component with `Unstyled bool` flag vs. separate `*-headless` package~~ | ~~10~~ | ~~Decision documented~~         |
+| ~~5.4.2~~ **Won't implement — Won't implement — headless/Unstyled deferred to the v2 window (Rejected Alternatives ledger + TODO #39).** | ~~Spike: add `Unstyled bool` to Button (emits semantics + ARIA, no Tailwind classes)~~            | ~~12~~ | ~~Compiles, renders bare HTML~~ |
+| ~~5.4.3~~ **Won't implement — Won't implement — headless/Unstyled deferred to the v2 window (Rejected Alternatives ledger + TODO #39).** | ~~Evaluate: does this work cleanly for all components? Document blockers~~                        | ~~10~~ | ~~Evaluation note~~             |
+| ~~5.4.4~~ **Won't implement — Won't implement — headless/Unstyled deferred to the v2 window (Rejected Alternatives ledger + TODO #39).** | ~~Decide: ship in v2.0 or defer~~                                                                 | ~~8~~  | ~~Decision~~                    |
+| ~~5.4.5~~ **Won't implement — Won't implement — headless/Unstyled deferred to the v2 window (Rejected Alternatives ledger + TODO #39).** | ~~If shipping: write ADR + plan rollout~~                                                         | ~~5~~  | ~~(conditional)~~               |
 
 ---
 
@@ -615,6 +619,8 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
    disable a linter to make a task pass.
 
 ### Phase-Specific Guards
+
+<!-- check-rows:ledger -->
 
 | Phase | Risk                                                | Guard                                                                                                         |
 | ----- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -643,6 +649,8 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 ## Rejected Alternatives
 
+<!-- check-rows:ledger -->
+
 | Alternative                                 | Verdict | Why rejected                                                                                                                                                      |
 | ------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | WASM client runtime                         | ❌ Skip | 50KB+ for problems CSS solves. WASM shines for compute, not DOM wiring.                                                                                           |
@@ -658,7 +666,8 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 ## Open TODO Reconciliation
 
 > Every open item in `TODO_LIST.md` and `ROADMAP.md` is mapped to a task in this plan.
-> Nothing is dropped.
+
+<!-- check-rows:ledger -->
 
 | TODO #        | Item                                       | Maps to                                            | Status                              |
 | ------------- | ------------------------------------------ | -------------------------------------------------- | ----------------------------------- |
@@ -691,7 +700,7 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 ## Success Metrics
 
-How to know each phase actually moved the needle (not just "shipped"):
+<!-- check-rows:ledger -->
 
 | Phase | Metric                                                 | Target                            |
 | ----- | ------------------------------------------------------ | --------------------------------- |
@@ -737,6 +746,8 @@ How to know each phase actually moved the needle (not just "shipped"):
 
 ## Release Plan
 
+<!-- check-rows:ledger -->
+
 | Release    | Content                                                           | Breaking?       |
 | ---------- | ----------------------------------------------------------------- | --------------- |
 | v0.20.0    | Phase 1 (Popover API migration)                                   | No              |
@@ -767,12 +778,12 @@ The single most important sentence in this document:
 
 **Phases 1–5 executed across v0.20.0 → v1.1.0** (5 releases, all SSH-signed, all pushed to `origin`). The execution status is documented in `docs/status/2026-07-21_07-38_PLATFORM-FIRST-ROADMAP-EXECUTION.md` (with defect fixes annotated in its own Resolution section).
 
-| Phase                           | Target           | Status     | Outcome                                                                                                                                                                                                                            |
-| ------------------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — Popover API migration       | v0.20.0          | ✅ DONE    | Dropdown/Popover/ContextMenu on `popover="auto`. **D1 top-layer positioning bug caught post-ship, fixed in v1.2.0** (`popoverPositionJS`). ADR-0017 revised.                                                                       |
-| 2 — Container queries + recipes | v0.21.0          | ✅ DONE    | `Nav/Card.ContainerAware`, `recipes.Dashboard/SettingsLayout/LoginCard`. ADR-0018, ADR-0019.                                                                                                                                       |
-| 3 — Theming + HTMX              | v0.22.0          | ✅ DONE    | Semantic token layer (`templ-components-theme.css`), 3 presets, `PageProps.HTMXSrc` self-host opt-in. Both opt-in; default flip deferred to v2.0.                                                                                  |
-| 4 — v1.0 freeze                 | v1.0.0           | ✅ DONE    | `ErrorPageProps.Validate()`, deprecated aliases removed (ModalSizeFull, DrawerFull, FamilyFromErrorFamily, FormProps.Inline), CI docs-health drift guard. `internal/testutil/` deferred (TODO #34). Default flip deferred to v2.0. |
-| 5 — v2.0 independence           | v1.1.0 (partial) | 🟡 PARTIAL | `tc` CLI shipped (`tc init/ls/add`). Per-package modules split **deferred** (ADR-0020, awaiting consumer demand). Headless variants **rejected** (ADR-0021).                                                                       |
+| Phase                                                                                                                                                                 | Target               | Status         | Outcome                                                                                                                                                                                                                                |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~1 — Popover API migration~~ done — resolution record — Phase 1-4 shipped v0.20.0-v1.0.0, Phase 5 partial (tc CLI shipped; module split deferred per ADR-0020)       | ~~v0.20.0~~          | ~~✅ DONE~~    | ~~Dropdown/Popover/ContextMenu on `popover="auto`. **D1 top-layer positioning bug caught post-ship, fixed in v1.2.0** (`popoverPositionJS`). ADR-0017 revised.~~                                                                       |
+| ~~2 — Container queries + recipes~~ done — resolution record — Phase 1-4 shipped v0.20.0-v1.0.0, Phase 5 partial (tc CLI shipped; module split deferred per ADR-0020) | ~~v0.21.0~~          | ~~✅ DONE~~    | ~~`Nav/Card.ContainerAware`, `recipes.Dashboard/SettingsLayout/LoginCard`. ADR-0018, ADR-0019.~~                                                                                                                                       |
+| ~~3 — Theming + HTMX~~ done — resolution record — Phase 1-4 shipped v0.20.0-v1.0.0, Phase 5 partial (tc CLI shipped; module split deferred per ADR-0020)              | ~~v0.22.0~~          | ~~✅ DONE~~    | ~~Semantic token layer (`templ-components-theme.css`), 3 presets, `PageProps.HTMXSrc` self-host opt-in. Both opt-in; default flip deferred to v2.0.~~                                                                                  |
+| ~~4 — v1.0 freeze~~ done — resolution record — Phase 1-4 shipped v0.20.0-v1.0.0, Phase 5 partial (tc CLI shipped; module split deferred per ADR-0020)                 | ~~v1.0.0~~           | ~~✅ DONE~~    | ~~`ErrorPageProps.Validate()`, deprecated aliases removed (ModalSizeFull, DrawerFull, FamilyFromErrorFamily, FormProps.Inline), CI docs-health drift guard. `internal/testutil/` deferred (TODO #34). Default flip deferred to v2.0.~~ |
+| ~~5 — v2.0 independence~~ done — resolution record — Phase 1-4 shipped v0.20.0-v1.0.0, Phase 5 partial (tc CLI shipped; module split deferred per ADR-0020)           | ~~v1.1.0 (partial)~~ | ~~🟡 PARTIAL~~ | ~~`tc` CLI shipped (`tc init/ls/add`). Per-package modules split **deferred** (ADR-0020, awaiting consumer demand). Headless variants **rejected** (ADR-0021).~~                                                                       |
 
 **Post-release defect fixes shipped in v1.2.0:** D1 (popover positioning), D3 (tooltip aria), D4 (HTMXSrc CDN leak), D6 (tc add warning), plus `navigation.SidebarNav` and recipe demo routes. See CHANGELOG `[1.2.0]`.

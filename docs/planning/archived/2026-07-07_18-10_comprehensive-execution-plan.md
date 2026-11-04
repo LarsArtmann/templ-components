@@ -34,12 +34,16 @@
 
 ## Sorting Key
 
+<!-- check-rows:ledger -->
+
 | Impact      | Meaning                                                                         |
 | ----------- | ------------------------------------------------------------------------------- |
 | 🔴 CRITICAL | Uncommitted work at risk, or unaudited code may contain more ship-breaking bugs |
 | 🟠 HIGH     | Prevents recurrence of the bug classes found this session, or blocks release    |
 | 🟡 MED      | Improves quality, DX, or coverage                                               |
 | ⚪ LOW      | Polish, submissions, nice-to-haves                                              |
+
+<!-- check-rows:ledger -->
 
 | Effort | Range                            |
 | ------ | -------------------------------- |
@@ -206,6 +210,8 @@
 ---
 
 ## Summary by Tier
+
+<!-- check-rows:ledger -->
 
 | Tier      | Theme                         | Tasks  | Total Est  | Blocking?                         |
 | --------- | ----------------------------- | ------ | ---------- | --------------------------------- |

@@ -10,22 +10,22 @@
 
 Two prior research + implementation sessions shipped 14 browser enhancements:
 
-| #  | Enhancement                                                                  | Status     |
-| -- | ---------------------------------------------------------------------------- | ---------- |
-| 1  | Accordion → native `<details>`/`<summary>` (26 lines JS eliminated)          | ✅ Shipped |
-| 2  | Carousel → CSS scroll-snap (native touch/drag)                               | ✅ Shipped |
-| 3  | `htmx.ViewTransitions()` helper component                                    | ✅ Shipped |
-| 4  | CSS foundation (`@starting-style`, `::backdrop`, dialog/popover transitions) | ✅ Shipped |
-| 5  | Image `decoding="async"` + `fetchpriority`                                   | ✅ Shipped |
-| 6  | Input `enterkeyhint` auto-mapped per InputType                               | ✅ Shipped |
-| 7  | Input `inputmode` auto-mapped per InputType                                  | ✅ Shipped |
-| 8  | `text-wrap: balance` on headings, `pretty` on paragraphs                     | ✅ Shipped |
-| 9  | `:user-valid`/`:user-invalid` CSS validation styling                         | ✅ Shipped |
-| 10 | `.tc-auto-grow` utility (`field-sizing: content`)                            | ✅ Shipped |
-| 11 | `interpolate-size: allow-keywords` (animate `height: auto`)                  | ✅ Shipped |
-| 12 | `forced-colors` media query (Windows High Contrast a11y)                     | ✅ Shipped |
-| 13 | `<meta name="color-scheme">` + `<link rel="preconnect">`                     | ✅ Shipped |
-| 14 | `prefers-reduced-transparency` media query                                   | ✅ Shipped |
+| #                                                                                                                                                       | Enhancement                                                                      | Status         |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------- |
+| ~~1~~ done — shipped — details accordion, scroll-snap carousel, ViewTransitions, @starting-style foundation all live (AGENTS native-platform inventory) | ~~Accordion → native `<details>`/`<summary>` (26 lines JS eliminated)~~          | ~~✅ Shipped~~ |
+| ~~2~~ done — shipped — details accordion, scroll-snap carousel, ViewTransitions, @starting-style foundation all live (AGENTS native-platform inventory) | ~~Carousel → CSS scroll-snap (native touch/drag)~~                               | ~~✅ Shipped~~ |
+| ~~3~~ done — shipped — details accordion, scroll-snap carousel, ViewTransitions, @starting-style foundation all live (AGENTS native-platform inventory) | ~~`htmx.ViewTransitions()` helper component~~                                    | ~~✅ Shipped~~ |
+| ~~4~~ done — shipped — details accordion, scroll-snap carousel, ViewTransitions, @starting-style foundation all live (AGENTS native-platform inventory) | ~~CSS foundation (`@starting-style`, `::backdrop`, dialog/popover transitions)~~ | ~~✅ Shipped~~ |
+| ~~5~~ done — shipped — details accordion, scroll-snap carousel, ViewTransitions, @starting-style foundation all live (AGENTS native-platform inventory) | ~~Image `decoding="async"` + `fetchpriority`~~                                   | ~~✅ Shipped~~ |
+| ~~6~~ done — shipped — details accordion, scroll-snap carousel, ViewTransitions, @starting-style foundation all live (AGENTS native-platform inventory) | ~~Input `enterkeyhint` auto-mapped per InputType~~                               | ~~✅ Shipped~~ |
+| ~~7~~ done — shipped — decoding/fetchpriority, enterkeyhint + inputmode auto-mapping, text-wrap, :user-valid styling live                               | ~~Input `inputmode` auto-mapped per InputType~~                                  | ~~✅ Shipped~~ |
+| ~~8~~ done — shipped — decoding/fetchpriority, enterkeyhint + inputmode auto-mapping, text-wrap, :user-valid styling live                               | ~~`text-wrap: balance` on headings, `pretty` on paragraphs~~                     | ~~✅ Shipped~~ |
+| ~~9~~ done — shipped — decoding/fetchpriority, enterkeyhint + inputmode auto-mapping, text-wrap, :user-valid styling live                               | ~~`:user-valid`/`:user-invalid` CSS validation styling~~                         | ~~✅ Shipped~~ |
+| ~~10~~ done — shipped — decoding/fetchpriority, enterkeyhint + inputmode auto-mapping, text-wrap, :user-valid styling live                              | ~~`.tc-auto-grow` utility (`field-sizing: content`)~~                            | ~~✅ Shipped~~ |
+| ~~11~~ done — shipped — tc-auto-grow, interpolate-size, forced-colors, color-scheme meta + reduced-transparency live in templates/custom.css            | ~~`interpolate-size: allow-keywords` (animate `height: auto`)~~                  | ~~✅ Shipped~~ |
+| ~~12~~ done — shipped — tc-auto-grow, interpolate-size, forced-colors, color-scheme meta + reduced-transparency live in templates/custom.css            | ~~`forced-colors` media query (Windows High Contrast a11y)~~                     | ~~✅ Shipped~~ |
+| ~~13~~ done — shipped — tc-auto-grow, interpolate-size, forced-colors, color-scheme meta + reduced-transparency live in templates/custom.css            | ~~`<meta name="color-scheme">` + `<link rel="preconnect">`~~                     | ~~✅ Shipped~~ |
+| ~~14~~ done — shipped — tc-auto-grow, interpolate-size, forced-colors, color-scheme meta + reduced-transparency live in templates/custom.css            | ~~`prefers-reduced-transparency` media query~~                                   | ~~✅ Shipped~~ |
 
 ---
 
@@ -58,45 +58,45 @@ but high-risk for marginal gain.
 These are the highest-impact tasks that are completely safe (no breaking
 changes, no architectural shifts):
 
-| Task                                           | Why it's 1%                                          | Impact                                             |
-| ---------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------- |
-| **Tests for all shipped enhancements**         | Without tests, the next person breaks these silently | Prevents regression of 14 features                 |
-| **Textarea auto-grow** (apply `.tc-auto-grow`) | CSS utility exists, just needs integration           | Eliminates auto-resize JS in consumer apps         |
-| **Image SrcSet/Sizes fields**                  | Add two string fields to ImageProps                  | Enables responsive images without Attrs workaround |
-| **CHANGELOG + AGENTS.md + docs update**        | Document what shipped and why                        | Consumers discover and adopt new features          |
+| Task                                                                                                                                    | Why it's 1%                                              | Impact                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------ |
+| ~~**Tests for all shipped enhancements**~~ done — shipped — modern-standards + per-component regression tests guard all 14 enhancements | ~~Without tests, the next person breaks these silently~~ | ~~Prevents regression of 14 features~~                 |
+| ~~**Textarea auto-grow** (apply `.tc-auto-grow`)~~ done — shipped — Textarea AutoGrow via field-sizing (.tc-auto-grow integration)      | ~~CSS utility exists, just needs integration~~           | ~~Eliminates auto-resize JS in consumer apps~~         |
+| ~~**Image SrcSet/Sizes fields**~~ done — shipped — ImageProps.SrcSet/Sizes (display/image.templ:15-19)                                  | ~~Add two string fields to ImageProps~~                  | ~~Enables responsive images without Attrs workaround~~ |
+| ~~**CHANGELOG + AGENTS.md + docs update**~~ done — shipped — AGENTS/CHANGELOG/website docs updated through the release waves            | ~~Document what shipped and why~~                        | ~~Consumers discover and adopt new features~~          |
 
 ### The 4% that delivers 64%
 
 Small, safe enhancements that round out the browser integration story:
 
-| Task                                    | Why it matters                                                 |
-| --------------------------------------- | -------------------------------------------------------------- |
-| **`hx-validate` on Form**               | Enables HTML5 constraint validation before HTMX submit         |
-| **`<search>` element**                  | Semantic landmark for search inputs (screen reader nav)        |
-| **`content-visibility: auto` on Table** | 2-5x faster render for long tables (100+ rows)                 |
-| **Popover API ADR**                     | Document WHY we didn't migrate (anchor positioning dependency) |
+| Task                                                                                                              | Why it matters                                                     |
+| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| ~~**`hx-validate` on Form**~~ done — shipped — FormProps.Validate emits hx-validate="true" (forms/form.templ:161) | ~~Enables HTML5 constraint validation before HTMX submit~~         |
+| ~~**`<search>` element**~~ done — shipped — <search> landmark on search-type Input                                | ~~Semantic landmark for search inputs (screen reader nav)~~        |
+| ~~**`content-visibility: auto` on Table**~~ done — shipped — Table LazyRows = content-visibility:auto             | ~~2-5x faster render for long tables (100+ rows)~~                 |
+| ~~**Popover API ADR**~~ done — shipped — docs/adr/0017-popover-api-migration.md                                   | ~~Document WHY we didn't migrate (anchor positioning dependency)~~ |
 
 ### The 20% that delivers 80%
 
 Medium-effort tasks that add new capabilities:
 
-| Task                                      | Why it matters                                        |
-| ----------------------------------------- | ----------------------------------------------------- |
-| **MobileMenu → Popover API**              | Full-screen overlay — doesn't need anchor positioning |
-| **Speculation Rules component**           | Near-instant page navigation via prerendering         |
-| **Select `appearance` styling**           | Custom dropdown arrow (currently browser default)     |
-| **`EnterKeyHint` field on TextareaProps** | Chat apps need "send" on the keyboard                 |
+| Task                                                                                                                                                                               | Why it matters                                            |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| ~~**MobileMenu → Popover API**~~ **NOT-DO — NOT-DO — MobileMenu shipped as the tcMobileMenuSet singleton (Escape-close, multi-instance); ADR-0017 rejected popover for overlays.** | ~~Full-screen overlay — doesn't need anchor positioning~~ |
+| ~~**Speculation Rules component**~~ **Won't implement — Won't implement — no consumer demand (F109 pattern); htmx module ships ViewTransitions instead.**                          | ~~Near-instant page navigation via prerendering~~         |
+| ~~**Select `appearance` styling**~~ **Superseded — superseded by the appearance:base-select redesign (forms/select.templ:62, <selectedcontent> structure).**                       | ~~Custom dropdown arrow (currently browser default)~~     |
+| ~~**`EnterKeyHint` field on TextareaProps**~~ done — shipped — EnterKeyHint unified enum on Input AND Textarea (textarea_templ.go EnterKeyHintType + IsValid)                      | ~~Chat apps need "send" on the keyboard~~                 |
 
 ### The other 20% (the last mile)
 
 Documentation, investigation, and future preparation:
 
-| Task                                 | Why it matters                                   |
-| ------------------------------------ | ------------------------------------------------ |
-| **HTMX attributes documentation**    | Document hx-preserve, hx-boost, hx-include, etc. |
-| **Consumer migration guide**         | How to adopt the new browser features            |
-| **Anchor Positioning spike**         | Prototype for when Baseline is reached           |
-| **`light-dark()` investigation ADR** | Architectural assessment for v2.0                |
+| Task                                                                                                                                                                                         | Why it matters                                       |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| ~~**HTMX attributes documentation**~~ **Won't implement — Won't implement — superseded by docs/transport-wiring.md + docs/javascript-guide.md (the wire layer replaced raw hx-attr prose).** | ~~Document hx-preserve, hx-boost, hx-include, etc.~~ |
+| ~~**Consumer migration guide**~~ **Won't implement — Won't implement — superseded by docs/browser-support.md + the consumer guide's modern-web sections.**                                   | ~~How to adopt the new browser features~~            |
+| ~~**Anchor Positioning spike**~~ done — shipped — implicit-anchor CSS landed in templates/custom.css; ADR-0017 records the go/no-go (no spike branch needed)                                 | ~~Prototype for when Baseline is reached~~           |
+| ~~**`light-dark()` investigation ADR**~~ **Won't implement — Won't implement — Tailwind dark: variant retained; rejection recorded in the NOT-DO table.**                                    | ~~Architectural assessment for v2.0~~                |
 
 ---
 
@@ -223,57 +223,57 @@ Sorted by impact (desc), effort (asc), customer value (desc).
 
 ### Task 10: Speculation Rules component (60 min → 6 subtasks)
 
-| #    | Subtask                                                       | Time  |
-| ---- | ------------------------------------------------------------- | ----- |
-| 10.1 | Create `htmx/speculation_rules.go` with SpeculationRulesProps | 12min |
-| 10.2 | Create `htmx/speculation_rules.templ` template                | 12min |
-| 10.3 | Support eagerness: immediate, moderate, conservative          | 10min |
-| 10.4 | Support URL list vs selector-based rules                      | 10min |
-| 10.5 | Add DefaultSpeculationRulesProps()                            | 5min  |
-| 10.6 | Write tests                                                   | 12min |
+| #                                                                                                                          | Subtask                                                           | Time      |
+| -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | --------- |
+| ~~10.1~~ **Won't implement — Won't implement — parent Task 10: no consumer demand (F109); ViewTransitions ships instead.** | ~~Create `htmx/speculation_rules.go` with SpeculationRulesProps~~ | ~~12min~~ |
+| ~~10.2~~ **Won't implement — Won't implement — parent Task 10: no consumer demand (F109); ViewTransitions ships instead.** | ~~Create `htmx/speculation_rules.templ` template~~                | ~~12min~~ |
+| ~~10.3~~ **Won't implement — Won't implement — parent Task 10: no consumer demand (F109); ViewTransitions ships instead.** | ~~Support eagerness: immediate, moderate, conservative~~          | ~~10min~~ |
+| ~~10.4~~ **Won't implement — Won't implement — parent Task 10: no consumer demand (F109); ViewTransitions ships instead.** | ~~Support URL list vs selector-based rules~~                      | ~~10min~~ |
+| ~~10.5~~ **Won't implement — Won't implement — parent Task 10: no consumer demand (F109); ViewTransitions ships instead.** | ~~Add DefaultSpeculationRulesProps()~~                            | ~~5min~~  |
+| ~~10.6~~ **Won't implement — Won't implement — parent Task 10: no consumer demand (F109); ViewTransitions ships instead.** | ~~Write tests~~                                                   | ~~12min~~ |
 
 ### Task 11: Select appearance styling (60 min → 5 subtasks)
 
-| #    | Subtask                                                 | Time  |
-| ---- | ------------------------------------------------------- | ----- |
-| 11.1 | Add `appearance-none` to Select input class             | 10min |
-| 11.2 | Add custom chevron SVG as background or sibling element | 12min |
-| 11.3 | Ensure dark mode arrow color matches existing pattern   | 10min |
-| 11.4 | Update golden test for Select                           | 10min |
-| 11.5 | Write test for custom arrow presence                    | 10min |
+| #                                                                                                                                             | Subtask                                                     | Time      |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | --------- |
+| ~~11.1~~ **Superseded — superseded — parent Task 11 shipped as appearance:base-select (forms/select.templ:62), not appearance-none chevron.** | ~~Add `appearance-none` to Select input class~~             | ~~10min~~ |
+| ~~11.2~~ **Superseded — superseded — parent Task 11 shipped as appearance:base-select (forms/select.templ:62), not appearance-none chevron.** | ~~Add custom chevron SVG as background or sibling element~~ | ~~12min~~ |
+| ~~11.3~~ **Superseded — superseded — parent Task 11 shipped as appearance:base-select (forms/select.templ:62), not appearance-none chevron.** | ~~Ensure dark mode arrow color matches existing pattern~~   | ~~10min~~ |
+| ~~11.4~~ **Superseded — superseded — parent Task 11 shipped as appearance:base-select (forms/select.templ:62), not appearance-none chevron.** | ~~Update golden test for Select~~                           | ~~10min~~ |
+| ~~11.5~~ **Superseded — superseded — parent Task 11 shipped as appearance:base-select (forms/select.templ:62), not appearance-none chevron.** | ~~Write test for custom arrow presence~~                    | ~~10min~~ |
 
 ### Task 12: MobileMenu → Popover API (90 min → 8 subtasks)
 
-| #    | Subtask                                                   | Time  |
-| ---- | --------------------------------------------------------- | ----- |
-| 12.1 | Change menu container to use `popover="manual"` attribute | 12min |
-| 12.2 | Change toggle button to use `popovertarget`               | 10min |
-| 12.3 | Override default popover styles (position, inset, margin) | 12min |
-| 12.4 | Remove the old toggle JS singleton                        | 10min |
-| 12.5 | Update all MobileMenu tests                               | 12min |
-| 12.6 | Update golden tests if they exist                         | 10min |
-| 12.7 | Verify CSP nonce compliance                               | 10min |
-| 12.8 | Test in integration CSP nonce test                        | 12min |
+| #                                                                                                                         | Subtask                                                       | Time      |
+| ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | --------- |
+| ~~12.1~~ **NOT-DO — NOT-DO — parent Task 12: tcMobileMenuSet singleton design kept; ADR-0017 rejected popover overlays.** | ~~Change menu container to use `popover="manual"` attribute~~ | ~~12min~~ |
+| ~~12.2~~ **NOT-DO — NOT-DO — parent Task 12: tcMobileMenuSet singleton design kept; ADR-0017 rejected popover overlays.** | ~~Change toggle button to use `popovertarget`~~               | ~~10min~~ |
+| ~~12.3~~ **NOT-DO — NOT-DO — parent Task 12: tcMobileMenuSet singleton design kept; ADR-0017 rejected popover overlays.** | ~~Override default popover styles (position, inset, margin)~~ | ~~12min~~ |
+| ~~12.4~~ **NOT-DO — NOT-DO — parent Task 12: tcMobileMenuSet singleton design kept; ADR-0017 rejected popover overlays.** | ~~Remove the old toggle JS singleton~~                        | ~~10min~~ |
+| ~~12.5~~ **NOT-DO — NOT-DO — parent Task 12: tcMobileMenuSet singleton design kept; ADR-0017 rejected popover overlays.** | ~~Update all MobileMenu tests~~                               | ~~12min~~ |
+| ~~12.6~~ **NOT-DO — NOT-DO — parent Task 12: tcMobileMenuSet singleton design kept; ADR-0017 rejected popover overlays.** | ~~Update golden tests if they exist~~                         | ~~10min~~ |
+| ~~12.7~~ **NOT-DO — NOT-DO — parent Task 12: tcMobileMenuSet singleton design kept; ADR-0017 rejected popover overlays.** | ~~Verify CSP nonce compliance~~                               | ~~10min~~ |
+| ~~12.8~~ **NOT-DO — NOT-DO — parent Task 12: tcMobileMenuSet singleton design kept; ADR-0017 rejected popover overlays.** | ~~Test in integration CSP nonce test~~                        | ~~12min~~ |
 
 ### Task 13: HTMX attributes documentation (60 min → 5 subtasks)
 
-| #    | Subtask                                               | Time  |
-| ---- | ----------------------------------------------------- | ----- |
-| 13.1 | Create `docs/htmx-attributes-guide.md`                | 12min |
-| 13.2 | Document hx-preserve (keep element across swaps)      | 10min |
-| 13.3 | Document hx-boost (progressive enhancement for links) | 10min |
-| 13.4 | Document hx-include, hx-params, hx-encoding           | 12min |
-| 13.5 | Document hx-disable-elt, hx-history                   | 10min |
+| #                                                                                                                       | Subtask                                                   | Time      |
+| ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | --------- |
+| ~~13.1~~ **Won't implement — Won't implement — parent Task 13 superseded by transport-wiring + javascript-guide docs.** | ~~Create `docs/htmx-attributes-guide.md`~~                | ~~12min~~ |
+| ~~13.2~~ **Won't implement — Won't implement — parent Task 13 superseded by transport-wiring + javascript-guide docs.** | ~~Document hx-preserve (keep element across swaps)~~      | ~~10min~~ |
+| ~~13.3~~ **Won't implement — Won't implement — parent Task 13 superseded by transport-wiring + javascript-guide docs.** | ~~Document hx-boost (progressive enhancement for links)~~ | ~~10min~~ |
+| ~~13.4~~ **Won't implement — Won't implement — parent Task 13 superseded by transport-wiring + javascript-guide docs.** | ~~Document hx-include, hx-params, hx-encoding~~           | ~~12min~~ |
+| ~~13.5~~ **Won't implement — Won't implement — parent Task 13 superseded by transport-wiring + javascript-guide docs.** | ~~Document hx-disable-elt, hx-history~~                   | ~~10min~~ |
 
 ### Task 14: Consumer migration guide (60 min → 5 subtasks)
 
-| #    | Subtask                                                             | Time  |
-| ---- | ------------------------------------------------------------------- | ----- |
-| 14.1 | Create `docs/migration/browser-enhancements.md`                     | 12min |
-| 14.2 | Document how to enable View Transitions                             | 10min |
-| 14.3 | Document the CSS utilities available (.tc-auto-grow, etc.)          | 10min |
-| 14.4 | Document enterkeyhint/inputmode auto-mapping                        | 10min |
-| 14.5 | Document performance features (preconnect, decoding, fetchpriority) | 12min |
+| #                                                                                                                  | Subtask                                                                 | Time      |
+| ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- | --------- |
+| ~~14.1~~ **Won't implement — Won't implement — parent Task 14 superseded by browser-support.md + consumer guide.** | ~~Create `docs/migration/browser-enhancements.md`~~                     | ~~12min~~ |
+| ~~14.2~~ **Won't implement — Won't implement — parent Task 14 superseded by browser-support.md + consumer guide.** | ~~Document how to enable View Transitions~~                             | ~~10min~~ |
+| ~~14.3~~ **Won't implement — Won't implement — parent Task 14 superseded by browser-support.md + consumer guide.** | ~~Document the CSS utilities available (.tc-auto-grow, etc.)~~          | ~~10min~~ |
+| ~~14.4~~ **Won't implement — Won't implement — parent Task 14 superseded by browser-support.md + consumer guide.** | ~~Document enterkeyhint/inputmode auto-mapping~~                        | ~~10min~~ |
+| ~~14.5~~ **Won't implement — Won't implement — parent Task 14 superseded by browser-support.md + consumer guide.** | ~~Document performance features (preconnect, decoding, fetchpriority)~~ | ~~12min~~ |
 
 ### Task 15: Anchor Positioning spike (90 min → 6 subtasks)
 
@@ -288,12 +288,12 @@ Sorted by impact (desc), effort (asc), customer value (desc).
 
 ### Task 16: light-dark() ADR (45 min → 4 subtasks)
 
-| #    | Subtask                                                 | Time  |
-| ---- | ------------------------------------------------------- | ----- |
-| 16.1 | Assess scope: how many components would change          | 12min |
-| 16.2 | Evaluate compatibility with Tailwind v4 utility classes | 10min |
-| 16.3 | Prototype on one component (Badge)                      | 12min |
-| 16.4 | Write ADR with recommendation                           | 10min |
+| #                                                                                                                         | Subtask                                                     | Time      |
+| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | --------- |
+| ~~16.1~~ **Won't implement — Won't implement — parent Task 16: light-dark() rejected (Tailwind utility model retained).** | ~~Assess scope: how many components would change~~          | ~~12min~~ |
+| ~~16.2~~ **Won't implement — Won't implement — parent Task 16: light-dark() rejected (Tailwind utility model retained).** | ~~Evaluate compatibility with Tailwind v4 utility classes~~ | ~~10min~~ |
+| ~~16.3~~ **Won't implement — Won't implement — parent Task 16: light-dark() rejected (Tailwind utility model retained).** | ~~Prototype on one component (Badge)~~                      | ~~12min~~ |
+| ~~16.4~~ **Won't implement — Won't implement — parent Task 16: light-dark() rejected (Tailwind utility model retained).** | ~~Write ADR with recommendation~~                           | ~~10min~~ |
 
 ---
 
@@ -349,6 +349,8 @@ graph TD
 
 ## What We Are NOT Doing (and Why)
 
+<!-- check-rows:ledger -->
+
 | Rejected Task                   | Reason                                                                                                                                                                                                                        |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Dropdown → Popover API          | **Verslimmbessern**: Top-layer rendering breaks `position: absolute` trigger-relative positioning. Would need JS `getBoundingClientRect()` — more JS than current approach. Blocked on CSS Anchor Positioning (not Baseline). |
@@ -363,6 +365,8 @@ graph TD
 ---
 
 ## Risk Assessment
+
+<!-- check-rows:ledger -->
 
 | Risk                                                     | Probability | Impact | Mitigation                                                         |
 | -------------------------------------------------------- | ----------- | ------ | ------------------------------------------------------------------ |

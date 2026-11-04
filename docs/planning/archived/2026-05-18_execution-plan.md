@@ -5,19 +5,21 @@
 
 ## What I Forgot / Could Have Done Better
 
-| # | Issue                                                                                                           | Severity        | Where                                          |
-| - | --------------------------------------------------------------------------------------------------------------- | --------------- | ---------------------------------------------- |
-| 1 | **Modal IIFE XSS** — `'{{ props.ID }}'` not JS-escaped. Dropdown uses `strconv.Quote()`, Modal doesn't          | 🔴 Security     | `display/modal.templ:96`                       |
-| 2 | **StatCard TrendNone bug** — `else` branch says "Decreased by" for TrendNone. Should be 3-way `if/else if/else` | 🔴 Correctness  | `display/card.templ:159-163`                   |
-| 3 | **TrendNone = ""** — empty string sentinel indistinguishable from "forgot to set"                               | 🟡 Type safety  | `display/card.templ:124`                       |
-| 4 | **badgeSizeClass uses switch** — violates project's own "maps not switches" convention                          | 🟡 Convention   | `display/badge.templ`                          |
-| 5 | **cardPaddingClass uses switch** — same convention violation                                                    | 🟡 Convention   | `display/card.templ`                           |
-| 6 | **alertIconName/toastIconName duplicated** — nearly identical switch functions                                  | 🟡 Dedup        | `feedback/alert.templ`, `feedback/toast.templ` |
-| 7 | **Nonce parameter inconsistency** — ToastContainer/ThemeScript/etc take bare `string` nonce, not BaseProps      | 🟢 Consistency  | Multiple files                                 |
-| 8 | **No Table input validation** — mismatched header/row cell counts silently render broken HTML                   | 🟡 Robustness   | `display/table.templ`                          |
-| 9 | **Missing type fields** — DropdownItem.Disabled, InputProps.MaxLength, TableProps.EmptyMessage                  | 🟢 Feature gaps | Multiple files                                 |
+| #                                                                                                                                                      | Issue                                                                                                               | Severity            | Where                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- | ------------------- | -------------------------------------------------- |
+| ~~1~~ done — shipped — card.templ TrendNone="none" sentinel + normalizeTrend 3-way; modal redesigned to native <dialog>, no IIFE left                  | ~~**Modal IIFE XSS** — `'{{ props.ID }}'` not JS-escaped. Dropdown uses `strconv.Quote()`, Modal doesn't~~          | ~~🔴 Security~~     | ~~`display/modal.templ:96`~~                       |
+| ~~2~~ done — shipped — card.templ TrendNone="none" sentinel + normalizeTrend 3-way; modal redesigned to native <dialog>, no IIFE left                  | ~~**StatCard TrendNone bug** — `else` branch says "Decreased by" for TrendNone. Should be 3-way `if/else if/else`~~ | ~~🔴 Correctness~~  | ~~`display/card.templ:159-163`~~                   |
+| ~~3~~ done — shipped — card.templ TrendNone="none" sentinel + normalizeTrend 3-way; modal redesigned to native <dialog>, no IIFE left                  | ~~**TrendNone = ""** — empty string sentinel indistinguishable from "forgot to set"~~                               | ~~🟡 Type safety~~  | ~~`display/card.templ:124`~~                       |
+| ~~4~~ done — shipped — badgeSizeClass/cardPaddingClass now utils.Lookup typed-key maps (badge.templ:96, card.templ:189, container-aware parallel maps) | ~~**badgeSizeClass uses switch** — violates project's own "maps not switches" convention~~                          | ~~🟡 Convention~~   | ~~`display/badge.templ`~~                          |
+| ~~5~~ done — shipped — badgeSizeClass/cardPaddingClass now utils.Lookup typed-key maps (badge.templ:96, card.templ:189, container-aware parallel maps) | ~~**cardPaddingClass uses switch** — same convention violation~~                                                    | ~~🟡 Convention~~   | ~~`display/card.templ`~~                           |
+| ~~6~~ done — shipped — feedbackIconMap single source in feedback/styles.go                                                                             | ~~**alertIconName/toastIconName duplicated** — nearly identical switch functions~~                                  | ~~🟡 Dedup~~        | ~~`feedback/alert.templ`, `feedback/toast.templ`~~ |
+| ~~7~~ done — shipped — all props embed utils.BaseProps (Nonce field); bare-string nonce params gone                                                    | ~~**Nonce parameter inconsistency** — ToastContainer/ThemeScript/etc take bare `string` nonce, not BaseProps~~      | ~~🟢 Consistency~~  | ~~Multiple files~~                                 |
+| ~~8~~ done — shipped — table cells auto-padded to header count                                                                                         | ~~**No Table input validation** — mismatched header/row cell counts silently render broken HTML~~                   | ~~🟡 Robustness~~   | ~~`display/table.templ`~~                          |
+| ~~9~~ done — shipped — DropdownItem.Disabled + Input.MaxLength shipped; TableProps.EmptyMessage superseded by EmptyState/DataState composition         | ~~**Missing type fields** — DropdownItem.Disabled, InputProps.MaxLength, TableProps.EmptyMessage~~                  | ~~🟢 Feature gaps~~ | ~~Multiple files~~                                 |
 
 ## Established Libraries Considered
+
+<!-- check-rows:ledger -->
 
 | Need                  | Current             | Library            | Decision                                           |
 | --------------------- | ------------------- | ------------------ | -------------------------------------------------- |
@@ -35,22 +37,22 @@
 
 ### Phase 1: Security & Correctness (CRITICAL — do first)
 
-| Step | Task                                                                         | Files                                        | Est. | Impact         |
-| ---- | ---------------------------------------------------------------------------- | -------------------------------------------- | ---- | -------------- |
-| 1    | Fix Modal IIFE XSS — add `modalSafeID()` using `strconv.Quote`, use in templ | `display/modal_go.go`, `display/modal.templ` | 5min | 🔴 Security    |
-| 2    | Test: Modal with special chars in ID (`id-with-'quotes'`)                    | `display/modal_test.go`                      | 5min | 🔴 Verify fix  |
-| 3    | Fix StatCard TrendNone semantic — 3-way `if/else if/else` for Up/Down/None   | `display/card.templ`                         | 5min | 🔴 Correctness |
-| 4    | Change `TrendNone` from `""` to `"none"` — non-empty sentinel                | `display/card.templ`                         | 3min | 🟡 Type safety |
-| 5    | Test: StatCard with TrendNone shows no direction text                        | `display/card_test.go`                       | 3min | 🔴 Verify fix  |
+| Step                                                                                                    | Task                                                                             | Files                                            | Est.     | Impact             |
+| ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------ | -------- | ------------------ |
+| ~~1~~ done — shipped — native <dialog> modal (no IIFE); TrendNone 3-way + "none" sentinel in card.templ | ~~Fix Modal IIFE XSS — add `modalSafeID()` using `strconv.Quote`, use in templ~~ | ~~`display/modal_go.go`, `display/modal.templ`~~ | ~~5min~~ | ~~🔴 Security~~    |
+| ~~2~~ done — shipped — native <dialog> modal (no IIFE); TrendNone 3-way + "none" sentinel in card.templ | ~~Test: Modal with special chars in ID (`id-with-'quotes'`)~~                    | ~~`display/modal_test.go`~~                      | ~~5min~~ | ~~🔴 Verify fix~~  |
+| ~~3~~ done — shipped — native <dialog> modal (no IIFE); TrendNone 3-way + "none" sentinel in card.templ | ~~Fix StatCard TrendNone semantic — 3-way `if/else if/else` for Up/Down/None~~   | ~~`display/card.templ`~~                         | ~~5min~~ | ~~🔴 Correctness~~ |
+| ~~4~~ done — shipped — same as issue 2/3; tests pin TrendNone rendering                                 | ~~Change `TrendNone` from `""` to `"none"` — non-empty sentinel~~                | ~~`display/card.templ`~~                         | ~~3min~~ | ~~🟡 Type safety~~ |
+| ~~5~~ done — shipped — same as issue 2/3; tests pin TrendNone rendering                                 | ~~Test: StatCard with TrendNone shows no direction text~~                        | ~~`display/card_test.go`~~                       | ~~3min~~ | ~~🔴 Verify fix~~  |
 
 ### Phase 2: Convention Alignment (HIGH — maps not switches)
 
-| Step | Task                                                                       | Files                     | Est. | Impact        |
-| ---- | -------------------------------------------------------------------------- | ------------------------- | ---- | ------------- |
-| 6    | Convert `badgeSizeClass` switch → `badgeSizeMap` map + `utils.MapEnum`     | `display/badge.templ`     | 5min | 🟡 Convention |
-| 7    | Test: BadgeSize map lookup (SM, MD, LG, unknown)                           | `display/helpers_test.go` | 3min | 🟢 Coverage   |
-| 8    | Convert `cardPaddingClass` switch → `cardPaddingMap` map + `utils.MapEnum` | `display/card.templ`      | 5min | 🟡 Convention |
-| 9    | Test: CardPadding map lookup (None, SM, MD, LG, unknown)                   | `display/card_test.go`    | 3min | 🟢 Coverage   |
+| Step                                                                                       | Task                                                                           | Files                         | Est.     | Impact            |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ----------------------------- | -------- | ----------------- |
+| ~~6~~ done — shipped — utils.Lookup typed-key maps for badge/card sizing with lookup tests | ~~Convert `badgeSizeClass` switch → `badgeSizeMap` map + `utils.MapEnum`~~     | ~~`display/badge.templ`~~     | ~~5min~~ | ~~🟡 Convention~~ |
+| ~~7~~ done — shipped — utils.Lookup typed-key maps for badge/card sizing with lookup tests | ~~Test: BadgeSize map lookup (SM, MD, LG, unknown)~~                           | ~~`display/helpers_test.go`~~ | ~~3min~~ | ~~🟢 Coverage~~   |
+| ~~8~~ done — shipped — utils.Lookup typed-key maps for badge/card sizing with lookup tests | ~~Convert `cardPaddingClass` switch → `cardPaddingMap` map + `utils.MapEnum`~~ | ~~`display/card.templ`~~      | ~~5min~~ | ~~🟡 Convention~~ |
+| ~~9~~ done — shipped — utils.Lookup typed-key maps for badge/card sizing with lookup tests | ~~Test: CardPadding map lookup (None, SM, MD, LG, unknown)~~                   | ~~`display/card_test.go`~~    | ~~3min~~ | ~~🟢 Coverage~~   |
 
 ### Phase 3: Accessibility
 
@@ -124,6 +126,8 @@
 
 ## Items EXPLICITLY Deferred
 
+<!-- check-rows:ledger -->
+
 | Item                                                  | Why deferred                                                        |
 | ----------------------------------------------------- | ------------------------------------------------------------------- |
 | #23 Full JS pattern unification (IIFE everywhere)     | High effort, low customer value, risk of breaking existing behavior |
@@ -134,6 +138,8 @@
 | fillIcon proxy audit (#56)                            | Exists for templ import reasons, not worth removing                 |
 
 ## Total Estimated Time
+
+<!-- check-rows:ledger -->
 
 | Phase                      | Steps  | Time    | Cumulative |
 | -------------------------- | ------ | ------- | ---------- |

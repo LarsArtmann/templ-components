@@ -11,8 +11,8 @@ Accepted
 ## Context
 
 "Web Components" is invoked in three separate research documents (`docs/research/what-we-are-missing.md`
-§2.4, `docs/planning/2026-07-21_03-54_NEXT-LEVEL-PLATFORM-FIRST-ROADMAP.md`,
-`docs/planning/2026-07-12_19-00_MODERN-BROWSER-INTEGRATION.md`) as a candidate capability.
+§2.4, `docs/planning/archived/2026-07-21_03-54_NEXT-LEVEL-PLATFORM-FIRST-ROADMAP.md`,
+`docs/planning/archived/2026-07-12_19-00_MODERN-BROWSER-INTEGRATION.md`) as a candidate capability.
 Each time it was deferred or skipped with a one-line rationale. Because the question
 keeps returning, this ADR records the decision permanently so future sessions stop
 re-litigating it.

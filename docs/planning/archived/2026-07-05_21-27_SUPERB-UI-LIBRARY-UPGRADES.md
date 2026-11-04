@@ -43,6 +43,8 @@ that make the library materially better without risking regression.
 
 ### Current State Metrics
 
+<!-- check-rows:ledger -->
+
 | Metric                                                                      | Count | Source                          |
 | --------------------------------------------------------------------------- | ----- | ------------------------------- |
 | Exported templ components                                                   | 85    | All `.templ` files              |
@@ -96,23 +98,23 @@ All of the above, plus:
 
 15 tasks, sorted by impact/effort/customer-value.
 
-| #  | Task                                                                   | Package(s)                                            | Impact | Effort | Est. Time | Tier |
-| -- | ---------------------------------------------------------------------- | ----------------------------------------------------- | ------ | ------ | --------- | ---- |
-| 1  | RTL: Migrate `ml-`→`ms-`, `mr-`→`me-` in all .templ files              | display, forms, feedback, navigation, errorpage, htmx | HIGH   | LOW    | 45min     | 1%   |
-| 2  | RTL: Migrate `pl-`→`ps-`, `pr-`→`pe-` in all .templ files              | display, forms, feedback, errorpage                   | HIGH   | LOW    | 30min     | 1%   |
-| 3  | RTL: Migrate `left-`→`start-`, `right-`→`end-` where safe              | display, forms, feedback                              | MEDIUM | MEDIUM | 45min     | 1%   |
-| 4  | RTL: Migrate `text-left`→`text-start`                                  | display, errorpage                                    | LOW    | LOW    | 15min     | 1%   |
-| 5  | Motion: Create shared transition class constants in shared.go          | display                                               | MEDIUM | LOW    | 45min     | 4%   |
-| 6  | Grid: Add container query support (new `ContainerResponsive` prop)     | display                                               | MEDIUM | MEDIUM | 60min     | 4%   |
-| 7  | Tests: Add RTL rendering test (`dir="rtl"` golden test)                | display                                               | HIGH   | LOW    | 45min     | 20%  |
-| 8  | Tests: Audit and fix motion-reduce coverage gaps                       | display, feedback                                     | MEDIUM | LOW    | 30min     | 20%  |
-| 9  | Docs: Update AGENTS.md with RTL + motion + container query conventions | root                                                  | MEDIUM | LOW    | 30min     | 20%  |
-| 10 | Docs: Update CHANGELOG.md with `[Unreleased]` entries                  | root                                                  | HIGH   | LOW    | 30min     | 20%  |
-| 11 | Build: Regenerate `*_templ.go` via `templ generate`                    | all                                                   | HIGH   | LOW    | 30min     | ALL  |
-| 12 | Test: Run full test suite and fix any failures                         | all                                                   | HIGH   | MEDIUM | 45min     | ALL  |
-| 13 | Lint: Run golangci-lint and fix new issues                             | all                                                   | MEDIUM | LOW    | 30min     | ALL  |
-| 14 | Docs: Update SKILL.md and research report with implementation status   | root, skill                                           | LOW    | LOW    | 30min     | 20%  |
-| 15 | Git: Commit and push all changes                                       | root                                                  | HIGH   | LOW    | 15min     | ALL  |
+| #                                                                                                                                                 | Task                                                                       | Package(s)                                                | Impact     | Effort     | Est. Time | Tier    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------- | ---------- | ---------- | --------- | ------- |
+| ~~1~~ done — shipped — logical-properties migration complete; utils.TestRTLLogicalProperties guards zero physical ml-/mr-/pl-/pr- props repo-wide | ~~RTL: Migrate `ml-`→`ms-`, `mr-`→`me-` in all .templ files~~              | ~~display, forms, feedback, navigation, errorpage, htmx~~ | ~~HIGH~~   | ~~LOW~~    | ~~45min~~ | ~~1%~~  |
+| ~~2~~ done — shipped — logical-properties migration complete; utils.TestRTLLogicalProperties guards zero physical ml-/mr-/pl-/pr- props repo-wide | ~~RTL: Migrate `pl-`→`ps-`, `pr-`→`pe-` in all .templ files~~              | ~~display, forms, feedback, errorpage~~                   | ~~HIGH~~   | ~~LOW~~    | ~~30min~~ | ~~1%~~  |
+| ~~3~~ done — shipped — logical-properties migration complete; utils.TestRTLLogicalProperties guards zero physical ml-/mr-/pl-/pr- props repo-wide | ~~RTL: Migrate `left-`→`start-`, `right-`→`end-` where safe~~              | ~~display, forms, feedback~~                              | ~~MEDIUM~~ | ~~MEDIUM~~ | ~~45min~~ | ~~1%~~  |
+| ~~4~~ done — shipped — logical-properties migration complete; utils.TestRTLLogicalProperties guards zero physical ml-/mr-/pl-/pr- props repo-wide | ~~RTL: Migrate `text-left`→`text-start`~~                                  | ~~display, errorpage~~                                    | ~~LOW~~    | ~~LOW~~    | ~~15min~~ | ~~1%~~  |
+| ~~5~~ done — shipped — transitionFast/Normal/Colors/Transform constants in display/shared.go                                                      | ~~Motion: Create shared transition class constants in shared.go~~          | ~~display~~                                               | ~~MEDIUM~~ | ~~LOW~~    | ~~45min~~ | ~~4%~~  |
+| ~~6~~ done — shipped — GridProps.ContainerAware (ADR-0018, renamed from ContainerResponsive during design)                                        | ~~Grid: Add container query support (new `ContainerResponsive` prop)~~     | ~~display~~                                               | ~~MEDIUM~~ | ~~MEDIUM~~ | ~~60min~~ | ~~4%~~  |
+| ~~7~~ done — shipped — utils rtl_compliance_test + RTL captures in the visual suite                                                               | ~~Tests: Add RTL rendering test (`dir="rtl"` golden test)~~                | ~~display~~                                               | ~~HIGH~~   | ~~LOW~~    | ~~45min~~ | ~~20%~~ |
+| ~~8~~ done — shipped — TestMotionReduceCompliance repo-wide guard                                                                                 | ~~Tests: Audit and fix motion-reduce coverage gaps~~                       | ~~display, feedback~~                                     | ~~MEDIUM~~ | ~~LOW~~    | ~~30min~~ | ~~20%~~ |
+| ~~9~~ done — shipped — AGENTS RTL/motion/container conventions + CHANGELOG wave entries                                                           | ~~Docs: Update AGENTS.md with RTL + motion + container query conventions~~ | ~~root~~                                                  | ~~MEDIUM~~ | ~~LOW~~    | ~~30min~~ | ~~20%~~ |
+| ~~10~~ done — shipped — AGENTS RTL/motion/container conventions + CHANGELOG wave entries                                                          | ~~Docs: Update CHANGELOG.md with `[Unreleased]` entries~~                  | ~~root~~                                                  | ~~HIGH~~   | ~~LOW~~    | ~~30min~~ | ~~20%~~ |
+| ~~11~~ done — shipped — templ generate + full per-module suite + golangci-lint green in the 2026-07-05/06 wave commits                            | ~~Build: Regenerate `*_templ.go` via `templ generate`~~                    | ~~all~~                                                   | ~~HIGH~~   | ~~LOW~~    | ~~30min~~ | ~~ALL~~ |
+| ~~12~~ done — shipped — templ generate + full per-module suite + golangci-lint green in the 2026-07-05/06 wave commits                            | ~~Test: Run full test suite and fix any failures~~                         | ~~all~~                                                   | ~~HIGH~~   | ~~MEDIUM~~ | ~~45min~~ | ~~ALL~~ |
+| ~~13~~ done — shipped — templ generate + full per-module suite + golangci-lint green in the 2026-07-05/06 wave commits                            | ~~Lint: Run golangci-lint and fix new issues~~                             | ~~all~~                                                   | ~~MEDIUM~~ | ~~LOW~~    | ~~30min~~ | ~~ALL~~ |
+| ~~14~~ done — shipped — SKILL.md conventions documented; wave committed                                                                           | ~~Docs: Update SKILL.md and research report with implementation status~~   | ~~root, skill~~                                           | ~~LOW~~    | ~~LOW~~    | ~~30min~~ | ~~20%~~ |
+| ~~15~~ done — shipped — SKILL.md conventions documented; wave committed                                                                           | ~~Git: Commit and push all changes~~                                       | ~~root~~                                                  | ~~HIGH~~   | ~~LOW~~    | ~~15min~~ | ~~ALL~~ |
 
 **Total estimated time:** ~8.5 hours
 
@@ -265,6 +267,8 @@ graph TD
 ---
 
 ## What This Plan Does NOT Do (and Why)
+
+<!-- check-rows:ledger -->
 
 | Excluded item                                      | Why excluded                                                                                                      |
 | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
