@@ -108,6 +108,7 @@ func TestTableFlagCombinations(t *testing.T) {
 		for _, f := range flags {
 			f.apply(&p)
 		}
+
 		p.Hover = true
 
 		output := utils.Render(t, Table(p))
