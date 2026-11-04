@@ -33,50 +33,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   can see what the browser filled — multiple indicators, never color alone.
   Firefox without `:autofill` keeps its native tint.
 
-### Fixed
-
-- **Touch devices no longer viewport-zoom when focusing an input.** The
-  library's inputs are 14px and iOS Safari zooms on focus below 16px; a
-  `@media (pointer: coarse)` rule floors every text-entry control
-  (input/textarea/select, including `select.tc-select`) at `max(1rem, 1em)`,
-  deliberately unlayered so it beats Tailwind's utility layer without
-  `!important`. Desktop keeps the 14px design.
-- **`aria-invalid` now tracks `:user-invalid` for assistive technology.** The
-  red border appears only after user interaction, but the pseudo-class has
-  no ARIA equivalent and fires no event — so screen readers heard nothing.
-  A `Form` singleton (`formValidityBridgeJS`) mirrors the pseudo-class into
-  `aria-invalid` on blur/focus(capture)/input and only ever manages state it
-  added itself (marked `data-tc-user-invalid`): server-set invalid state from
-  `forms.ErrorAttrs` is never stripped by a client-side recovery.
-- **Identifier inputs turn off OS text correction.** email/tel/url/number/
-  search inputs — and text inputs whose autocomplete token marks them as
-  identifiers (`username`, `one-time-code`) — now render
-  `autocorrect="off" autocapitalize="off" spellcheck="false"`, so the
-  keyboard stops rewriting `user@exampl…` mid-typing and flagging usernames
-  as misspelled. Plain text and password keep their defaults.
-- **`.tc-prose pre` declares `color-scheme: dark`.** Prose code blocks are
-  the library's only always-dark surface, but without the declaration the
-  UA painted scrollbars/form controls there in the light scheme;
-  CodeBlock/Scrollback already adapt and are unchanged.
-
-- **`countgen -w` now applies every drifted site, not just the last one per
-  file.** The original Apply built each replacement from the pristine document
-  and stored it in a per-file map, so with multiple drifted sites in one doc
-  every rewrite except the final site's was silently dropped (only the
-  zero-drift no-op path had been proven). Replacements now splice into a
-  working copy from the end of the file backwards, and the tool gained its own
-  synthetic-tree unit tests (derive parity, drift diagnosis, multi-match
-  structural error, Apply idempotence, `numberWord` bounds). `numberWord` no
-  longer panics on negative input.
-- **errorpage now pins `go-error-family v0.12.0`, matching every other
-  module.** The direct consumer still required v0.11.0 after the indirect
-  consumers had moved, a skew that only a standalone (`GOWORK=off`) build of
-  errorpage could observe. Verified at source before bumping: v0.11.0 →
-  v0.12.0 changes no exported API (the sole delta is a nil-receiver-safe
-  `(*Error).Unwrap`). Consumers are unaffected.
-
-### Added
-
 - **Count-table codegen (`tools/countgen`) deletes the same-commit count tax.** The
   FEATURES.md package table and Totals line, SKILL.md's catalogue lines plus all nine
   per-package headings (including errorpage's "+ 6 constructors"), and README.md's ten
@@ -118,6 +74,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **Pre-October status/planning corpus closed out: 213 reports annotated and archived.**
+  The 2026-06→09 `docs/status/` and `docs/planning/` corpus (218 files) was verified
+  against the current tree row-by-row: resolvable items carry inline verdicts
+  (`done — evidence`, won't-implement, NOT-DO, or routed arrows to TODO_LIST #488–#497 /
+  ROADMAP), and fully-resolved files moved to their `archived/` siblings. Five reports
+  with genuinely-open rows stay in place. Manifest + method:
+  `docs/status/2026-11-04_03-27_docs-health-corpus-close-out-sweep.md`. TODO_LIST #212's
+  annotation-policy owner gate is resolved by the same sweep.
+
 - **Override-or-default call sites now read as intent.** 26 templ render sites
   across display, forms, feedback, layout, navigation, and errorpage use
   `utils.Coalesce` instead of the `Ternary(x != "", x, fallback)` shape —
@@ -137,6 +102,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   (`docs/reviews/2026-11-01_data-model-review.html`). Dev-tooling only: three
   empty `catch` blocks in build/website JS now document their
   localStorage-private-mode intent (erraudit's prescribed remedy).
+
+### Fixed
+
+- **Touch devices no longer viewport-zoom when focusing an input.** The
+  library's inputs are 14px and iOS Safari zooms on focus below 16px; a
+  `@media (pointer: coarse)` rule floors every text-entry control
+  (input/textarea/select, including `select.tc-select`) at `max(1rem, 1em)`,
+  deliberately unlayered so it beats Tailwind's utility layer without
+  `!important`. Desktop keeps the 14px design.
+- **`aria-invalid` now tracks `:user-invalid` for assistive technology.** The
+  red border appears only after user interaction, but the pseudo-class has
+  no ARIA equivalent and fires no event — so screen readers heard nothing.
+  A `Form` singleton (`formValidityBridgeJS`) mirrors the pseudo-class into
+  `aria-invalid` on blur/focus(capture)/input and only ever manages state it
+  added itself (marked `data-tc-user-invalid`): server-set invalid state from
+  `forms.ErrorAttrs` is never stripped by a client-side recovery.
+- **Identifier inputs turn off OS text correction.** email/tel/url/number/
+  search inputs — and text inputs whose autocomplete token marks them as
+  identifiers (`username`, `one-time-code`) — now render
+  `autocorrect="off" autocapitalize="off" spellcheck="false"`, so the
+  keyboard stops rewriting `user@exampl…` mid-typing and flagging usernames
+  as misspelled. Plain text and password keep their defaults.
+- **`.tc-prose pre` declares `color-scheme: dark`.** Prose code blocks are
+  the library's only always-dark surface, but without the declaration the
+  UA painted scrollbars/form controls there in the light scheme;
+  CodeBlock/Scrollback already adapt and are unchanged.
+
+- **`countgen -w` now applies every drifted site, not just the last one per
+  file.** The original Apply built each replacement from the pristine document
+  and stored it in a per-file map, so with multiple drifted sites in one doc
+  every rewrite except the final site's was silently dropped (only the
+  zero-drift no-op path had been proven). Replacements now splice into a
+  working copy from the end of the file backwards, and the tool gained its own
+  synthetic-tree unit tests (derive parity, drift diagnosis, multi-match
+  structural error, Apply idempotence, `numberWord` bounds). `numberWord` no
+  longer panics on negative input.
+- **errorpage now pins `go-error-family v0.12.0`, matching every other
+  module.** The direct consumer still required v0.11.0 after the indirect
+  consumers had moved, a skew that only a standalone (`GOWORK=off`) build of
+  errorpage could observe. Verified at source before bumping: v0.11.0 →
+  v0.12.0 changes no exported API (the sole delta is a nil-receiver-safe
+  `(*Error).Unwrap`). Consumers are unaffected.
 
 ## [1.26.0] — 2026-10-31
 

@@ -1,8 +1,8 @@
 # Plan-Authoring Checklist
 
 Carried from the 2026-09-16 kanban-vibe execution post-mortem
-(`docs/status/2026-09-16_19-12_kanban-vibe-lessons-execution-status.md` §e1/§e2,
-`docs/status/2026-09-17_05-54_kanban-followthrough-hardening-status.md` §e).
+(`docs/status/archived/2026-09-16_19-12_kanban-vibe-lessons-execution-status.md` §e1/§e2,
+`docs/status/archived/2026-09-17_05-54_kanban-followthrough-hardening-status.md` §e).
 AGENTS.md keeps the four-line summary; this file keeps the rationale. Every execution
 plan that adds components, fields, or demo endpoints answers these per item:
 
@@ -43,5 +43,5 @@ Plan skeleton convention: phases ordered by Pareto tiers (1% → 4% → 20% → 
 medium tasks 30–100 min, micro-tasks ≤12 min, owner gates marked `⫱` and planned to the
 gate edge. `docs/planning/TEMPLATE.md` carries this checklist structurally — copy it for
 new plans. See
-`docs/planning/2026-09-17_06-00_RELEASE-FIRST-PARETO-MASTER-PLAN.md` for
+`docs/planning/archived/2026-09-17_06-00_RELEASE-FIRST-PARETO-MASTER-PLAN.md` for
 the reference shape.

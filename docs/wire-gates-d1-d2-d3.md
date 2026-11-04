@@ -1,7 +1,7 @@
 # Wire SDK Decision Gates — D1/D2/D3 Memos and Outcomes
 
 **Date:** 2026-09-04
-**Context:** `docs/planning/2026-09-04_22-22_wire-sdk-pareto-execution-plan.md` § 5 — three gates were left open by the wire-SDK session because they each require an owner-level call. This file records the memos and the outcomes taken under the standing directive to keep the plan moving; each outcome is reversible by a later owner decision (noted per gate).
+**Context:** `docs/planning/archived/2026-09-04_22-22_wire-sdk-pareto-execution-plan.md` § 5 — three gates were left open by the wire-SDK session because they each require an owner-level call. This file records the memos and the outcomes taken under the standing directive to keep the plan moving; each outcome is reversible by a later owner decision (noted per gate).
 
 ---
 

@@ -52,15 +52,15 @@
 
 ## Tier 1 — CRITICAL: Protect & Verify Current Work (7 tasks)
 
-| # | Task                                                                                                            | Impact | Effort | Est     | Prereq |
-| - | --------------------------------------------------------------------------------------------------------------- | ------ | ------ | ------- | ------ |
-| 1 | Commit forms/feedback bug fixes (Toggle, Combobox×3, Select×2, Checkbox, Toast, ProgressBar)                    | 🔴     | S      | 8m      | —      |
-| 2 | Commit display bug fixes (overlay aria/inert, dropdown RTL, accordion grid, tabs EnsureID, copybutton, tooltip) | 🔴     | S      | 8m      | 1      |
-| 3 | Commit navigation fix (pagination dynamic class)                                                                | 🔴     | XS     | 3m      | 2      |
-| 4 | Commit demo + docs (CHANGELOG, AGENTS.md, demo TOC/anchor fixes)                                                | 🔴     | S      | 8m      | 3      |
-| 5 | Run `nix run .#verify` to confirm canonical check passes                                                        | 🔴     | XS     | 5m      | 4      |
-| 6 | ~~Verify `grid-rows-[0fr]` produces correct CSS in Tailwind v4~~ **✅ VERIFIED (2026-07-10)**                   | 🔴     | S      | ~~10m~~ | —      |
-| 7 | Fix `.gitignore` if BuildFlow re-added `*_templ.go` after regen                                                 | 🔴     | XS     | 3m      | 4      |
+| #                                                                                                             | Task                                                                                                                | Impact | Effort | Est     | Prereq |
+| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------ | ------ | ------- | ------ |
+| ~~1~~ done — docs/status/2026-07-07_18-02 records fixes committed 6b37ea9                                     | ~~Commit forms/feedback bug fixes (Toggle, Combobox×3, Select×2, Checkbox, Toast, ProgressBar)~~                    | ~~🔴~~ | ~~S~~  | ~~8m~~  | ~~—~~  |
+| ~~2~~ done — docs/status/2026-07-07_18-02:96 aria/inert sync pinned modal_test                                | ~~Commit display bug fixes (overlay aria/inert, dropdown RTL, accordion grid, tabs EnsureID, copybutton, tooltip)~~ | ~~🔴~~ | ~~S~~  | ~~8m~~  | ~~1~~  |
+| ~~3~~ done — docs/status/2026-07-07_18-02 batch committed incl pagination fix                                 | ~~Commit navigation fix (pagination dynamic class)~~                                                                | ~~🔴~~ | ~~XS~~ | ~~3m~~  | ~~2~~  |
+| ~~4~~ done — docs/status/2026-07-12_15-49:251 AGENTS+FEATURES updates done                                    | ~~Commit demo + docs (CHANGELOG, AGENTS.md, demo TOC/anchor fixes)~~                                                | ~~🔴~~ | ~~S~~  | ~~8m~~  | ~~3~~  |
+| ~~5~~ done — flake.nix:182 verify app; TODO_LIST #419 VERDICT PASS                                            | ~~Run `nix run .#verify` to confirm canonical check passes~~                                                        | ~~🔴~~ | ~~XS~~ | ~~5m~~  | ~~4~~  |
+| ~~6~~                                                                                                         | ~~Verify `grid-rows-[0fr]` produces correct CSS in Tailwind v4~~ **✅ VERIFIED (2026-07-10)**                       | ~~🔴~~ | ~~S~~  | ~~10m~~ | ~~—~~  |
+| ~~7~~ **Won't implement — superseded by docs/adr/0003 generated _templ.go files are committed, not ignored.** | ~~Fix `.gitignore` if BuildFlow re-added `*_templ.go` after regen~~                                                 | ~~🔴~~ | ~~XS~~ | ~~3m~~  | ~~4~~  |
 
 ---
 
@@ -69,26 +69,26 @@
 > These packages have NOT been line-by-line audited. The 3 audited packages yielded 17 bugs.
 > Statistically, the remaining 5 packages likely contain more defects.
 
-| #      | Task                                                                                                              | Impact | Effort | Est          | Prereq   |
-| ------ | ----------------------------------------------------------------------------------------------------------------- | ------ | ------ | ------------ | -------- |
-| 8      | Audit `htmx/loading.templ` (LoadingIndicator, InlineLoadingOverlay) for bugs                                      | 🟠     | S      | 10m          | —        |
-| 9      | Audit `htmx/helpers.templ` (LoadingButton, ConfirmDelete) for bugs                                                | 🟠     | S      | 10m          | —        |
-| ~~10~~ | ~~Audit `htmx/error_handling.templ` (SwapOOB, CSRFToken, GlobalErrorHandling) for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~S~~  | ~~12m~~      | ~~—~~    |
-| ~~11~~ | ~~Audit `errorpage/errorpage.templ` for rendering bugs~~ done — CHANGELOG v0.10.0                                 | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
-| ~~12~~ | ~~Audit `errorpage/notfound404.templ` for rendering bugs~~ done — CHANGELOG v0.10.0                               | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
-| ~~13~~ | ~~Audit `errorpage/errordetail.templ` + `erroralert.templ` for bugs~~ done — CHANGELOG v0.10.0                    | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
-| ~~14~~ | ~~Audit `errorpage/handler.go` + `fromerror.go` + `constructors.go` for logic bugs~~ done — CHANGELOG v0.10.0     | ~~🟠~~ | ~~S~~  | ~~12m~~      | ~~—~~    |
-| ~~15~~ | ~~Audit `layout/base.templ` for rendering bugs (head, meta, CSP)~~ done — CHANGELOG v0.10.0                       | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
-| ~~16~~ | ~~Audit `layout/theme.templ` (ThemeScript, ThemeToggle) for bugs~~ done — CHANGELOG v0.10.0                       | ~~🟠~~ | ~~S~~  | ~~8m~~       | ~~—~~    |
-| ~~17~~ | ~~Audit `layout/script.templ` + `stylesheet.templ` for bugs~~ done — CHANGELOG v0.10.0                            | ~~🟠~~ | ~~XS~~ | ~~5m~~       | ~~—~~    |
-| ~~18~~ | ~~Audit `navigation/nav.templ` + `nav_link.templ` for bugs~~ done — CHANGELOG v0.10.0                             | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
-| ~~19~~ | ~~Audit `navigation/mobile_menu.templ` for bugs~~ done — CHANGELOG v0.10.0                                        | ~~🟠~~ | ~~XS~~ | ~~8m~~       | ~~—~~    |
-| ~~20~~ | ~~Audit `navigation/breadcrumbs.templ` for bugs~~ done — CHANGELOG v0.10.0                                        | ~~🟠~~ | ~~XS~~ | ~~5m~~       | ~~—~~    |
-| ~~21~~ | ~~Audit `navigation/sidebar_nav.templ` for bugs~~ done — CHANGELOG v0.10.0                                        | ~~🟠~~ | ~~XS~~ | ~~8m~~       | ~~—~~    |
-| ~~22~~ | ~~Audit `navigation/loadmore.templ` for bugs~~ done — CHANGELOG v0.10.0                                           | ~~🟠~~ | ~~XS~~ | ~~5m~~       | ~~—~~    |
-| ~~23~~ | ~~Audit `forms/input_group.templ` (was missed in first pass)~~ done — CHANGELOG v0.10.0                           | ~~🟠~~ | ~~XS~~ | ~~8m~~       | ~~—~~    |
-| ~~24~~ | ~~Audit `forms/date_picker.templ` + `file_input.templ` for bugs~~ done — CHANGELOG v0.10.0                        | ~~🟠~~ | ~~XS~~ | ~~8m~~       | ~~—~~    |
-| ~~25~~ | ~~Fix any bugs found in Tier 2 audits (estimate 5–10 bugs)~~ done — CHANGELOG v0.10.0                             | ~~🟠~~ | ~~M~~  | ~~12m each~~ | ~~8–24~~ |
+| #                                                                         | Task                                                                                                              | Impact | Effort | Est          | Prereq   |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------ | ------------ | -------- |
+| ~~8~~ done — htmx/golden_sweep_test.go:40 sweep covers htmx components    | ~~Audit `htmx/loading.templ` (LoadingIndicator, InlineLoadingOverlay) for bugs~~                                  | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
+| ~~9~~ done — visualtest/loading_button_e2e_test.go browser-proofs helpers | ~~Audit `htmx/helpers.templ` (LoadingButton, ConfirmDelete) for bugs~~                                            | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
+| ~~10~~                                                                    | ~~Audit `htmx/error_handling.templ` (SwapOOB, CSRFToken, GlobalErrorHandling) for bugs~~ done — CHANGELOG v0.10.0 | ~~🟠~~ | ~~S~~  | ~~12m~~      | ~~—~~    |
+| ~~11~~                                                                    | ~~Audit `errorpage/errorpage.templ` for rendering bugs~~ done — CHANGELOG v0.10.0                                 | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
+| ~~12~~                                                                    | ~~Audit `errorpage/notfound404.templ` for rendering bugs~~ done — CHANGELOG v0.10.0                               | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
+| ~~13~~                                                                    | ~~Audit `errorpage/errordetail.templ` + `erroralert.templ` for bugs~~ done — CHANGELOG v0.10.0                    | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
+| ~~14~~                                                                    | ~~Audit `errorpage/handler.go` + `fromerror.go` + `constructors.go` for logic bugs~~ done — CHANGELOG v0.10.0     | ~~🟠~~ | ~~S~~  | ~~12m~~      | ~~—~~    |
+| ~~15~~                                                                    | ~~Audit `layout/base.templ` for rendering bugs (head, meta, CSP)~~ done — CHANGELOG v0.10.0                       | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
+| ~~16~~                                                                    | ~~Audit `layout/theme.templ` (ThemeScript, ThemeToggle) for bugs~~ done — CHANGELOG v0.10.0                       | ~~🟠~~ | ~~S~~  | ~~8m~~       | ~~—~~    |
+| ~~17~~                                                                    | ~~Audit `layout/script.templ` + `stylesheet.templ` for bugs~~ done — CHANGELOG v0.10.0                            | ~~🟠~~ | ~~XS~~ | ~~5m~~       | ~~—~~    |
+| ~~18~~                                                                    | ~~Audit `navigation/nav.templ` + `nav_link.templ` for bugs~~ done — CHANGELOG v0.10.0                             | ~~🟠~~ | ~~S~~  | ~~10m~~      | ~~—~~    |
+| ~~19~~                                                                    | ~~Audit `navigation/mobile_menu.templ` for bugs~~ done — CHANGELOG v0.10.0                                        | ~~🟠~~ | ~~XS~~ | ~~8m~~       | ~~—~~    |
+| ~~20~~                                                                    | ~~Audit `navigation/breadcrumbs.templ` for bugs~~ done — CHANGELOG v0.10.0                                        | ~~🟠~~ | ~~XS~~ | ~~5m~~       | ~~—~~    |
+| ~~21~~                                                                    | ~~Audit `navigation/sidebar_nav.templ` for bugs~~ done — CHANGELOG v0.10.0                                        | ~~🟠~~ | ~~XS~~ | ~~8m~~       | ~~—~~    |
+| ~~22~~                                                                    | ~~Audit `navigation/loadmore.templ` for bugs~~ done — CHANGELOG v0.10.0                                           | ~~🟠~~ | ~~XS~~ | ~~5m~~       | ~~—~~    |
+| ~~23~~                                                                    | ~~Audit `forms/input_group.templ` (was missed in first pass)~~ done — CHANGELOG v0.10.0                           | ~~🟠~~ | ~~XS~~ | ~~8m~~       | ~~—~~    |
+| ~~24~~                                                                    | ~~Audit `forms/date_picker.templ` + `file_input.templ` for bugs~~ done — CHANGELOG v0.10.0                        | ~~🟠~~ | ~~XS~~ | ~~8m~~       | ~~—~~    |
+| ~~25~~                                                                    | ~~Fix any bugs found in Tier 2 audits (estimate 5–10 bugs)~~ done — CHANGELOG v0.10.0                             | ~~🟠~~ | ~~M~~  | ~~12m each~~ | ~~8–24~~ |
 
 ---
 

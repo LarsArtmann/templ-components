@@ -276,13 +276,13 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 1.1 Research Popover API + Anchor Positioning (45min)
 
-| ID        | Task                                                                                                                                            | Min    | Verify                                               |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------------------- |
-| 1.1.1     | Fetch MDN Baseline data for `popover` attribute; record versions (Chrome/Safari/Firefox)                                                        | 8      | Notes in `docs/research/popover-api.md`              |
-| 1.1.2     | Fetch MDN Baseline data for CSS Anchor Positioning (`anchor-name`, `position-area`)                                                             | 8      | Same research note                                   |
-| ~~1.1.3~~ | ~~Decide fallback: progressive enhancement (Anchor) vs. tiny JS positioner vs. CSS-only `inset`~~ done — docs/adr/0017-popover-api-migration.md | ~~10~~ | ~~Decision written in research note with rationale~~ |
-| ~~1.1.4~~ | ~~Audit current `[popover]::backdrop` CSS in `templates/custom.css:26` for reuse~~ done — templates/custom.css                                  | ~~6~~  | ~~Note: reuse or rewrite~~                           |
-| ~~1.1.5~~ | ~~Inventory the 5 components' current singleton-JS line counts + behaviors~~ done — docs/adr/0017-popover-api-migration.md                      | ~~10~~ | ~~Table in research note~~                           |
+| ID                                                                                | Task                                                                                                                                            | Min    | Verify                                               |
+| --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------------------- |
+| ~~1.1.1~~ done — templates/custom.css:73 popover Baseline-limited recorded        | ~~Fetch MDN Baseline data for `popover` attribute; record versions (Chrome/Safari/Firefox)~~                                                    | ~~8~~  | ~~Notes in `docs/research/popover-api.md`~~          |
+| ~~1.1.2~~ done — docs/agent-context-history.md:437 Chrome 151 anchor verification | ~~Fetch MDN Baseline data for CSS Anchor Positioning (`anchor-name`, `position-area`)~~                                                         | ~~8~~  | ~~Same research note~~                               |
+| ~~1.1.3~~                                                                         | ~~Decide fallback: progressive enhancement (Anchor) vs. tiny JS positioner vs. CSS-only `inset`~~ done — docs/adr/0017-popover-api-migration.md | ~~10~~ | ~~Decision written in research note with rationale~~ |
+| ~~1.1.4~~                                                                         | ~~Audit current `[popover]::backdrop` CSS in `templates/custom.css:26` for reuse~~ done — templates/custom.css                                  | ~~6~~  | ~~Note: reuse or rewrite~~                           |
+| ~~1.1.5~~                                                                         | ~~Inventory the 5 components' current singleton-JS line counts + behaviors~~ done — docs/adr/0017-popover-api-migration.md                      | ~~10~~ | ~~Table in research note~~                           |
 
 #### 1.2 Write ADR-0017 (60min)
 
@@ -297,17 +297,17 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 1.3 Migrate Tooltip (90min)
 
-| ID        | Task                                                                                                                 | Min    | Verify                                         |
-| --------- | -------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------------- |
-| ~~1.3.1~~ | ~~Read `display/tooltip.templ` + `tooltip_test.go` + golden files fully~~ done (docs-health pass 2026-09-08)         | ~~8~~  | ~~Mental model documented~~                    |
-| 1.3.2     | Rewrite `tooltip.templ`: `popover="manual"` on tooltip div, `popovertarget` on trigger                               | 12     | `templ generate` succeeds                      |
-| 1.3.3     | Replace JS show/hide with CSS `:hover`/`:focus-within` (HoverCard-style) or `popovertarget` event                    | 12     | Manual click test                              |
-| ~~1.3.4~~ | ~~Delete `tcTooltipAttached` singleton from `display/shared.go`~~ done — CHANGELOG v0.20.0                           | ~~6~~  | ~~grep finds no references~~                   |
-| ~~1.3.5~~ | ~~Update `tooltip_test.go` assertions for new attribute shape~~ **Won't implement — ADR-0017 pure CSS.**             | ~~12~~ | ~~`go test ./display/... -run Tooltip` green~~ |
-| 1.3.6     | Regenerate golden files (`go test -update`); inspect diff                                                            | 10     | Golden diff shows only intentional changes     |
-| 1.3.7     | Update dark golden + RTL golden                                                                                      | 8      | Both pass                                      |
-| ~~1.3.8~~ | ~~Verify CSP nonce test still passes (tooltip no longer in inline-script set)~~ done — integration/csp nonce test.go | ~~6~~  | ~~`go test ./integration/... -run CSP` green~~ |
-| ~~1.3.9~~ | ~~Run `golangci-lint run ./display/...`~~ done (docs-health pass 2026-09-08)                                         | ~~6~~  | ~~0 findings~~                                 |
+| ID                                                                                                             | Task                                                                                                                 | Min    | Verify                                         |
+| -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------------- |
+| ~~1.3.1~~                                                                                                      | ~~Read `display/tooltip.templ` + `tooltip_test.go` + golden files fully~~ done (docs-health pass 2026-09-08)         | ~~8~~  | ~~Mental model documented~~                    |
+| ~~1.3.2~~ **Won't implement — superseded by AGENTS.md:128 tooltip pure CSS + tooltipAriaJS shipped.**          | ~~Rewrite `tooltip.templ`: `popover="manual"` on tooltip div, `popovertarget` on trigger~~                           | ~~12~~ | ~~`templ generate` succeeds~~                  |
+| ~~1.3.3~~ done — AGENTS.md:128 tooltip pure CSS hover mechanism ships                                          | ~~Replace JS show/hide with CSS `:hover`/`:focus-within` (HoverCard-style) or `popovertarget` event~~                | ~~12~~ | ~~Manual click test~~                          |
+| ~~1.3.4~~                                                                                                      | ~~Delete `tcTooltipAttached` singleton from `display/shared.go`~~ done — CHANGELOG v0.20.0                           | ~~6~~  | ~~grep finds no references~~                   |
+| ~~1.3.5~~                                                                                                      | ~~Update `tooltip_test.go` assertions for new attribute shape~~ **Won't implement — ADR-0017 pure CSS.**             | ~~12~~ | ~~`go test ./display/... -run Tooltip` green~~ |
+| ~~1.3.6~~ **Won't implement — superseded by AGENTS.md:128 tooltip stayed CSS; popover rewrite dropped.**       | ~~Regenerate golden files (`go test -update`); inspect diff~~                                                        | ~~10~~ | ~~Golden diff shows only intentional changes~~ |
+| ~~1.3.7~~ **Won't implement — superseded by TestDarkModeCompliance + TestRTLLogicalProperties guard instead.** | ~~Update dark golden + RTL golden~~                                                                                  | ~~8~~  | ~~Both pass~~                                  |
+| ~~1.3.8~~                                                                                                      | ~~Verify CSP nonce test still passes (tooltip no longer in inline-script set)~~ done — integration/csp nonce test.go | ~~6~~  | ~~`go test ./integration/... -run CSP` green~~ |
+| ~~1.3.9~~                                                                                                      | ~~Run `golangci-lint run ./display/...`~~ done (docs-health pass 2026-09-08)                                         | ~~6~~  | ~~0 findings~~                                 |
 
 #### 1.4 Migrate HoverCard (60min)
 
@@ -322,41 +322,41 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 1.5 Migrate ContextMenu (90min)
 
-| ID        | Task                                                                                                                  | Min    | Verify                                   |
-| --------- | --------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------- |
-| 1.5.1     | Read `context_menu.templ` + singleton JS fully                                                                        | 10     | Notes                                    |
-| 1.5.2     | Rewrite: `popover="auto"` on menu; trigger via `contextmenu` event → `el.showPopover()` (small JS, ~10 lines)         | 12     | `templ generate` succeeds                |
-| ~~1.5.3~~ | ~~Position menu at `event.clientX/Y` via `inset` style or Anchor Positioning~~ done — display/context menu.templ      | ~~12~~ | ~~Right-click test positions correctly~~ |
-| ~~1.5.4~~ | ~~Delete `tcContextMenuAttached` singleton; replace with thin per-instance handler~~ done — CHANGELOG v0.20.0         | ~~10~~ | ~~grep clean~~                           |
-| ~~1.5.5~~ | ~~Update tests (role=menu, Escape dismiss now native, click-outside now native)~~ done — display/context menu test.go | ~~12~~ | ~~Tests green~~                          |
-| 1.5.6     | Regenerate golden + dark golden                                                                                       | 10     | Goldens pass                             |
-| 1.5.7     | Lint + CSP nonce test                                                                                                 | 8      | Both green                               |
-| 1.5.8     | Verify keyboard nav (Arrow/Escape) still works                                                                        | 8      | Manual test                              |
+| ID                                                                              | Task                                                                                                                  | Min    | Verify                                   |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------- |
+| ~~1.5.1~~ done — display/context_menu.templ:99 popover menu keyboard nav ships  | ~~Read `context_menu.templ` + singleton JS fully~~                                                                    | ~~10~~ | ~~Notes~~                                |
+| ~~1.5.2~~ done — CHANGELOG.md:3634 ContextMenu popover=auto popovertarget       | ~~Rewrite: `popover="auto"` on menu; trigger via `contextmenu` event → `el.showPopover()` (small JS, ~10 lines)~~     | ~~12~~ | ~~`templ generate` succeeds~~            |
+| ~~1.5.3~~                                                                       | ~~Position menu at `event.clientX/Y` via `inset` style or Anchor Positioning~~ done — display/context menu.templ      | ~~12~~ | ~~Right-click test positions correctly~~ |
+| ~~1.5.4~~                                                                       | ~~Delete `tcContextMenuAttached` singleton; replace with thin per-instance handler~~ done — CHANGELOG v0.20.0         | ~~10~~ | ~~grep clean~~                           |
+| ~~1.5.5~~                                                                       | ~~Update tests (role=menu, Escape dismiss now native, click-outside now native)~~ done — display/context menu test.go | ~~12~~ | ~~Tests green~~                          |
+| ~~1.5.6~~ done — CHANGELOG.md:3634 ContextMenu migration goldens regen included | ~~Regenerate golden + dark golden~~                                                                                   | ~~10~~ | ~~Goldens pass~~                         |
+| ~~1.5.7~~ done — integration/csp_nonce_test.go + lint gates ship                | ~~Lint + CSP nonce test~~                                                                                             | ~~8~~  | ~~Both green~~                           |
+| ~~1.5.8~~ done — display/context_menu.templ:99 Arrow/Escape keydown verified    | ~~Verify keyboard nav (Arrow/Escape) still works~~                                                                    | ~~8~~  | ~~Manual test~~                          |
 
 #### 1.6 Migrate Popover component (60min)
 
-| ID        | Task                                                                                       | Min    | Verify                      |
-| --------- | ------------------------------------------------------------------------------------------ | ------ | --------------------------- |
-| 1.6.1     | Read `popover.templ` (the component, not the API) fully                                    | 8      | Notes                       |
-| 1.6.2     | Rewrite to `popover="auto"` + `popovertarget` on trigger button                            | 12     | `templ generate` succeeds   |
-| 1.6.3     | Delete `tcPopoverAttached` singleton                                                       | 6      | grep clean                  |
-| ~~1.6.4~~ | ~~Verify 4 positions via Anchor Positioning or CSS fallback~~ done — display/popover.templ | ~~12~~ | ~~Manual test 4 positions~~ |
-| ~~1.6.5~~ | ~~Update tests + golden~~ done — display/popover test.go                                   | ~~12~~ | ~~Tests green~~             |
-| ~~1.6.6~~ | ~~Lint + CSP nonce test~~ done (docs-health pass 2026-09-08)                               | ~~10~~ | ~~Both green~~              |
+| ID                                                                              | Task                                                                                       | Min    | Verify                        |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------ | ----------------------------- |
+| ~~1.6.1~~ done — display/popover.templ ships native popover component           | ~~Read `popover.templ` (the component, not the API) fully~~                                | ~~8~~  | ~~Notes~~                     |
+| ~~1.6.2~~ done — CHANGELOG.md:3634 Popover now entirely native zero-JS          | ~~Rewrite to `popover="auto"` + `popovertarget` on trigger button~~                        | ~~12~~ | ~~`templ generate` succeeds~~ |
+| ~~1.6.3~~ done — CHANGELOG.md:3634 singleton JS deleted; tcPopoverAttached gone | ~~Delete `tcPopoverAttached` singleton~~                                                   | ~~6~~  | ~~grep clean~~                |
+| ~~1.6.4~~                                                                       | ~~Verify 4 positions via Anchor Positioning or CSS fallback~~ done — display/popover.templ | ~~12~~ | ~~Manual test 4 positions~~   |
+| ~~1.6.5~~                                                                       | ~~Update tests + golden~~ done — display/popover test.go                                   | ~~12~~ | ~~Tests green~~               |
+| ~~1.6.6~~                                                                       | ~~Lint + CSP nonce test~~ done (docs-health pass 2026-09-08)                               | ~~10~~ | ~~Both green~~                |
 
 #### 1.7 Migrate Dropdown (90min) — hardest
 
-| ID        | Task                                                                                                              | Min    | Verify                    |
-| --------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------------------------- |
-| 1.7.1     | Read `dropdown.templ` (225 lines) + singleton JS fully                                                            | 12     | Notes                     |
-| 1.7.2     | Rewrite: `popover="auto"` on menu; trigger button uses `popovertarget`                                            | 12     | `templ generate` succeeds |
-| ~~1.7.3~~ | ~~Preserve keyboard nav (Arrow/Tab/Home/End) — thin JS handler on menu, ~30 lines~~ done — display/dropdown.templ | ~~12~~ | ~~Manual keyboard test~~  |
-| ~~1.7.4~~ | ~~Handle RTL key mapping (ArrowLeft/Right swap) — reuse Tabs pattern~~ done — display/dropdown test.go            | ~~8~~  | ~~RTL manual test~~       |
-| ~~1.7.5~~ | ~~Delete `tcDropdownAttached` singleton; replace with thin handler~~ done — CHANGELOG v0.20.0                     | ~~10~~ | ~~grep clean~~            |
-| ~~1.7.6~~ | ~~Update tests for new attribute shape + native light-dismiss~~ done — display/dropdown test.go                   | ~~12~~ | ~~Tests green~~           |
-| 1.7.7     | Regenerate golden + dark golden                                                                                   | 10     | Goldens pass              |
-| 1.7.8     | Lint + CSP nonce test                                                                                             | 8      | Both green                |
-| ~~1.7.9~~ | ~~Verify click-outside + Escape dismiss are now native (delete JS for those)~~ done — CHANGELOG v0.20.0           | ~~6~~  | ~~Manual test~~           |
+| ID                                                                           | Task                                                                                                              | Min    | Verify                        |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ----------------------------- |
+| ~~1.7.1~~ done — display/dropdown.templ popover-based menu ships             | ~~Read `dropdown.templ` (225 lines) + singleton JS fully~~                                                        | ~~12~~ | ~~Notes~~                     |
+| ~~1.7.2~~ done — CHANGELOG.md:3634 Dropdown popover auto popovertarget       | ~~Rewrite: `popover="auto"` on menu; trigger button uses `popovertarget`~~                                        | ~~12~~ | ~~`templ generate` succeeds~~ |
+| ~~1.7.3~~                                                                    | ~~Preserve keyboard nav (Arrow/Tab/Home/End) — thin JS handler on menu, ~30 lines~~ done — display/dropdown.templ | ~~12~~ | ~~Manual keyboard test~~      |
+| ~~1.7.4~~                                                                    | ~~Handle RTL key mapping (ArrowLeft/Right swap) — reuse Tabs pattern~~ done — display/dropdown test.go            | ~~8~~  | ~~RTL manual test~~           |
+| ~~1.7.5~~                                                                    | ~~Delete `tcDropdownAttached` singleton; replace with thin handler~~ done — CHANGELOG v0.20.0                     | ~~10~~ | ~~grep clean~~                |
+| ~~1.7.6~~                                                                    | ~~Update tests for new attribute shape + native light-dismiss~~ done — display/dropdown test.go                   | ~~12~~ | ~~Tests green~~               |
+| ~~1.7.7~~ done — display/testdata/dropdown_basic.golden popovertarget pinned | ~~Regenerate golden + dark golden~~                                                                               | ~~10~~ | ~~Goldens pass~~              |
+| ~~1.7.8~~ done — integration/csp_nonce_test.go covers dropdown nonce script  | ~~Lint + CSP nonce test~~                                                                                         | ~~8~~  | ~~Both green~~                |
+| ~~1.7.9~~                                                                    | ~~Verify click-outside + Escape dismiss are now native (delete JS for those)~~ done — CHANGELOG v0.20.0           | ~~6~~  | ~~Manual test~~               |
 
 #### 1.8 Verify gate + release (60min)
 
@@ -373,14 +373,14 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 2.1 Write ADR-0018 Container-Query-Native Contract (60min)
 
-| ID        | Task                                                                                                                                   | Min    | Verify                   |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------ |
-| 2.1.1     | Document the `ContainerAware bool` opt-in flag pattern (mirrors `Grid.ContainerResponsive`)                                            | 10     | Pattern in ADR           |
-| 2.1.2     | Document `@container` wrapper emission + Tailwind `@sm:`/`@md:`/`@lg:` variant usage                                                   | 10     | Code example             |
-| 2.1.3     | Document test approach: wrap component in fixed-width `<div>` in test                                                                  | 8      | Test helper documented   |
-| ~~2.1.4~~ | ~~Document RTL behavior (container queries are direction-agnostic — verify)~~ done (docs-health pass 2026-09-08)                       | ~~6~~  | ~~Note~~                 |
-| ~~2.1.5~~ | ~~Document migration criterion: when to add `ContainerAware` (decision tree)~~ done — docs/adr/0018-container-query-native-contract.md | ~~10~~ | ~~Decision tree in ADR~~ |
-| ~~2.1.6~~ | ~~Document interaction with `AppShell` (sidebar → main = container)~~ done (docs-health pass 2026-09-08)                               | ~~8~~  | ~~Note~~                 |
+| ID                                                                                                               | Task                                                                                                                                   | Min    | Verify                     |
+| ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------------------------- |
+| ~~2.1.1~~ done — ROADMAP.md:28 container-queries pillar 8 components                                             | ~~Document the `ContainerAware bool` opt-in flag pattern (mirrors `Grid.ContainerResponsive`)~~                                        | ~~10~~ | ~~Pattern in ADR~~         |
+| ~~2.1.2~~ done — docs/container-query-strategy.md + recipes/container-queries.md                                 | ~~Document `@container` wrapper emission + Tailwind `@sm:`/`@md:`/`@lg:` variant usage~~                                               | ~~10~~ | ~~Code example~~           |
+| ~~2.1.3~~ **Won't implement — superseded by ROADMAP.md:76 TestContainerQueryCompliance scanner shipped v1.3.0.** | ~~Document test approach: wrap component in fixed-width `<div>` in test~~                                                              | ~~8~~  | ~~Test helper documented~~ |
+| ~~2.1.4~~                                                                                                        | ~~Document RTL behavior (container queries are direction-agnostic — verify)~~ done (docs-health pass 2026-09-08)                       | ~~6~~  | ~~Note~~                   |
+| ~~2.1.5~~                                                                                                        | ~~Document migration criterion: when to add `ContainerAware` (decision tree)~~ done — docs/adr/0018-container-query-native-contract.md | ~~10~~ | ~~Decision tree in ADR~~   |
+| ~~2.1.6~~                                                                                                        | ~~Document interaction with `AppShell` (sidebar → main = container)~~ done (docs-health pass 2026-09-08)                               | ~~8~~  | ~~Note~~                   |
 
 #### 2.2 Nav Container-Aware (90min)
 
@@ -396,55 +396,55 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 2.3 Card Container-Aware (60min)
 
-| ID        | Task                                                                     | Min    | Verify                    |
-| --------- | ------------------------------------------------------------------------ | ------ | ------------------------- |
-| 2.3.1     | Read `card.templ` padding logic                                          | 8      | Notes                     |
-| 2.3.2     | Add `CardProps.ContainerAware bool` → compact padding below `@sm:` width | 12     | `templ generate` succeeds |
-| ~~2.3.3~~ | ~~Tests + golden~~ done — display/card test.go                           | ~~12~~ | ~~Tests green~~           |
-| ~~2.3.4~~ | ~~Document in FEATURES.md~~ done — FEATURES.md                           | ~~6~~  | ~~Updated~~               |
-| ~~2.3.5~~ | ~~Lint~~ done (docs-health pass 2026-09-08)                              | ~~6~~  | ~~0 findings~~            |
+| ID                                                                            | Task                                                                         | Min    | Verify                        |
+| ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------ | ----------------------------- |
+| ~~2.3.1~~ done — templ-components-classes.txt:1240 card ContainerAware branch | ~~Read `card.templ` padding logic~~                                          | ~~8~~  | ~~Notes~~                     |
+| ~~2.3.2~~ done — templ-components-classes.txt:1199 Card ContainerAware docs   | ~~Add `CardProps.ContainerAware bool` → compact padding below `@sm:` width~~ | ~~12~~ | ~~`templ generate` succeeds~~ |
+| ~~2.3.3~~                                                                     | ~~Tests + golden~~ done — display/card test.go                               | ~~12~~ | ~~Tests green~~               |
+| ~~2.3.4~~                                                                     | ~~Document in FEATURES.md~~ done — FEATURES.md                               | ~~6~~  | ~~Updated~~                   |
+| ~~2.3.5~~                                                                     | ~~Lint~~ done (docs-health pass 2026-09-08)                                  | ~~6~~  | ~~0 findings~~                |
 
 #### 2.4 Write ADR-0019 Recipes Package (60min)
 
-| ID        | Task                                                                                             | Min   | Verify                  |
-| --------- | ------------------------------------------------------------------------------------------------ | ----- | ----------------------- |
-| 2.4.1     | Decide package name (`recipes` vs `layouts` vs `screens`) — `recipes` wins (shadcn precedent)    | 8     | Decision in ADR         |
-| 2.4.2     | Decide deps: `recipes` may import any display/forms/layout/navigation (it's a composition layer) | 10    | Import graph documented |
-| 2.4.3     | Decide slot model: `templ.Component` slots for charts/actions/forms (compositional)              | 10    | Pattern documented      |
-| 2.4.4     | Decide naming: `recipes.Dashboard`, `recipes.SettingsLayout`, `recipes.LoginCard`                | 6     | API in ADR              |
-| 2.4.5     | Document the 3 initial recipes with prop sketches                                                | 12    | Prop structs in ADR     |
-| ~~2.4.6~~ | ~~Decide demo strategy: dedicated `/recipes/*` routes~~ done (docs-health pass 2026-09-08)       | ~~6~~ | ~~Note~~                |
+| ID                                                                          | Task                                                                                                 | Min    | Verify                      |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------ | --------------------------- |
+| ~~2.4.1~~ done — docs/adr/0019 recipes package; recipes/ dir ships          | ~~Decide package name (`recipes` vs `layouts` vs `screens`) — `recipes` wins (shadcn precedent)~~    | ~~8~~  | ~~Decision in ADR~~         |
+| ~~2.4.2~~ done — docs/adr/0019 documents composition-layer import policy    | ~~Decide deps: `recipes` may import any display/forms/layout/navigation (it's a composition layer)~~ | ~~10~~ | ~~Import graph documented~~ |
+| ~~2.4.3~~ done — docs/adr/0019:43 DashboardProps templ.Component slots      | ~~Decide slot model: `templ.Component` slots for charts/actions/forms (compositional)~~              | ~~10~~ | ~~Pattern documented~~      |
+| ~~2.4.4~~ done — docs/adr/0019:67 Dashboard/SettingsLayout/LoginCard naming | ~~Decide naming: `recipes.Dashboard`, `recipes.SettingsLayout`, `recipes.LoginCard`~~                | ~~6~~  | ~~API in ADR~~              |
+| ~~2.4.5~~ done — docs/adr/0019:58-60 three-recipe prop table                | ~~Document the 3 initial recipes with prop sketches~~                                                | ~~12~~ | ~~Prop structs in ADR~~     |
+| ~~2.4.6~~                                                                   | ~~Decide demo strategy: dedicated `/recipes/*` routes~~ done (docs-health pass 2026-09-08)           | ~~6~~  | ~~Note~~                    |
 
 #### 2.5 Implement recipes.Dashboard (90min)
 
-| ID        | Task                                                                                                                            | Min    | Verify                    |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------- |
-| 2.5.1     | Create `recipes/` package: `doc.go`, `dashboard_types.go`, `dashboard.templ`                                                    | 10     | Package builds            |
-| 2.5.2     | `RecipeDashboardProps`: AppShell slot, Sidebar slot, StatCards `[]templ.Component`, Charts `[]templ.Component`, PageHeader slot | 12     | Compiles                  |
-| 2.5.3     | Implement: AppShell + Container + Grid of StatCards + Chart slots                                                               | 12     | `templ generate` succeeds |
-| 2.5.4     | Compose with real `display`/`layout` components (no duplication)                                                                | 12     | Uses existing components  |
-| ~~2.5.5~~ | ~~Tests + golden (full dashboard render)~~ done — recipes                                                                       | ~~12~~ | ~~Tests green~~           |
-| 2.5.6     | A11y: landmarks, heading order                                                                                                  | 8      | Axe-clean (manual)        |
-| 2.5.7     | Lint + benchmark                                                                                                                | 8      | Both green                |
+| ID                                                                           | Task                                                                                                                                | Min    | Verify                        |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------ | ----------------------------- |
+| ~~2.5.1~~ done — recipes/dashboard.templ + dashboard_types.go + doc.go ship  | ~~Create `recipes/` package: `doc.go`, `dashboard_types.go`, `dashboard.templ`~~                                                    | ~~10~~ | ~~Package builds~~            |
+| ~~2.5.2~~ done — recipes/dashboard_types.go AppShell/StatCards/Charts slots  | ~~`RecipeDashboardProps`: AppShell slot, Sidebar slot, StatCards `[]templ.Component`, Charts `[]templ.Component`, PageHeader slot~~ | ~~12~~ | ~~Compiles~~                  |
+| ~~2.5.3~~ done — recipes/dashboard.templ composes layout primitives          | ~~Implement: AppShell + Container + Grid of StatCards + Chart slots~~                                                               | ~~12~~ | ~~`templ generate` succeeds~~ |
+| ~~2.5.4~~ done — recipes/dashboard.templ uses display/layout components only | ~~Compose with real `display`/`layout` components (no duplication)~~                                                                | ~~12~~ | ~~Uses existing components~~  |
+| ~~2.5.5~~                                                                    | ~~Tests + golden (full dashboard render)~~ done — recipes                                                                           | ~~12~~ | ~~Tests green~~               |
+| ~~2.5.6~~ done — recipes/coverage_matrix_test.go + axe sweep gates           | ~~A11y: landmarks, heading order~~                                                                                                  | ~~8~~  | ~~Axe-clean (manual)~~        |
+| ~~2.5.7~~ done — flake.nix:182 verify lint lane covers recipes module        | ~~Lint + benchmark~~                                                                                                                | ~~8~~  | ~~Both green~~                |
 
 #### 2.6 Implement recipes.SettingsLayout (60min)
 
-| ID        | Task                                               | Min    | Verify                    |
-| --------- | -------------------------------------------------- | ------ | ------------------------- |
-| 2.6.1     | `settings_layout_types.go` + `.templ`              | 10     | Compiles                  |
-| 2.6.2     | Compose Split + Tabs (for section nav) + Form.Grid | 12     | `templ generate` succeeds |
-| 2.6.3     | Slot for each section's content                    | 10     | Renders                   |
-| ~~2.6.4~~ | ~~Tests + golden~~ done — recipes                  | ~~12~~ | ~~Tests green~~           |
-| ~~2.6.5~~ | ~~Lint~~ done (docs-health pass 2026-09-08)        | ~~6~~  | ~~0 findings~~            |
+| ID                                                                      | Task                                                   | Min    | Verify                        |
+| ----------------------------------------------------------------------- | ------------------------------------------------------ | ------ | ----------------------------- |
+| ~~2.6.1~~ done — recipes/settings_layout_types.go ships                 | ~~`settings_layout_types.go` + `.templ`~~              | ~~10~~ | ~~Compiles~~                  |
+| ~~2.6.2~~ done — recipes/settings_layout.templ composes Split/Tabs/Form | ~~Compose Split + Tabs (for section nav) + Form.Grid~~ | ~~12~~ | ~~`templ generate` succeeds~~ |
+| ~~2.6.3~~ done — recipes/settings_layout_types.go per-section slots     | ~~Slot for each section's content~~                    | ~~10~~ | ~~Renders~~                   |
+| ~~2.6.4~~                                                               | ~~Tests + golden~~ done — recipes                      | ~~12~~ | ~~Tests green~~               |
+| ~~2.6.5~~                                                               | ~~Lint~~ done (docs-health pass 2026-09-08)            | ~~6~~  | ~~0 findings~~                |
 
 #### 2.7 Implement recipes.LoginCard (45min)
 
-| ID        | Task                                                                        | Min    | Verify                         |
-| --------- | --------------------------------------------------------------------------- | ------ | ------------------------------ |
-| 2.7.1     | `login_card_types.go` + `.templ`                                            | 10     | Compiles                       |
-| 2.7.2     | Compose Card + Form.Stack + Input fields + OAuth button slots               | 12     | `templ generate` succeeds      |
-| ~~2.7.3~~ | ~~Tests + golden~~ done — recipes                                           | ~~12~~ | ~~Tests green~~                |
-| ~~2.7.4~~ | ~~A11y: form labels, error association~~ done (docs-health pass 2026-09-08) | ~~6~~  | ~~Manual screen-reader check~~ |
+| ID                                                                       | Task                                                                        | Min    | Verify                         |
+| ------------------------------------------------------------------------ | --------------------------------------------------------------------------- | ------ | ------------------------------ |
+| ~~2.7.1~~ done — recipes/login_card_types.go ships                       | ~~`login_card_types.go` + `.templ`~~                                        | ~~10~~ | ~~Compiles~~                   |
+| ~~2.7.2~~ done — recipes/login_card.templ composes Card/Form/OAuth slots | ~~Compose Card + Form.Stack + Input fields + OAuth button slots~~           | ~~12~~ | ~~`templ generate` succeeds~~  |
+| ~~2.7.3~~                                                                | ~~Tests + golden~~ done — recipes                                           | ~~12~~ | ~~Tests green~~                |
+| ~~2.7.4~~                                                                | ~~A11y: form labels, error association~~ done (docs-health pass 2026-09-08) | ~~6~~  | ~~Manual screen-reader check~~ |
 
 #### 2.8 Demo + docs + verify (60min)
 
@@ -461,63 +461,63 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 3.1 Semantic Token Layer (90min)
 
-| ID        | Task                                                                                                                                | Min    | Verify                                     |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------ |
-| ~~3.1.1~~ | ~~Read ADR-0008 fully; inventory the ~256 raw color refs~~ done — docs/adr/0008-semantic-tokens.md                                  | ~~10~~ | ~~Inventory in notes~~                     |
-| 3.1.2     | Define token set in `templates/app.css`: `--tc-primary`, `--tc-success`, `--tc-danger`, `--tc-warning`, `--tc-info`, neutral scale  | 12     | Tokens defined                             |
-| 3.1.3     | Map tokens to Tailwind via `@theme { --color-tc-primary: ... }`                                                                     | 10     | Tailwind generates `bg-tc-primary` classes |
-| ~~3.1.4~~ | ~~Add opt-in flag: `layout.SemanticTokens bool` on PageProps (emits token CSS)~~ **Won't implement — css first no PageProps flag.** | ~~10~~ | ~~Compiles~~                               |
-| ~~3.1.5~~ | ~~Migrate one pilot component (Button) to tokens; verify visual parity~~ done — templates/app.css                                   | ~~12~~ | ~~Pixel-diff (manual)~~                    |
-| ~~3.1.6~~ | ~~Decide phased rollout: don't migrate all 256 refs in this task — doc the plan~~ done — docs/adr/0008-semantic-tokens.md           | ~~8~~  | ~~Plan in ADR-0008 update~~                |
-| ~~3.1.7~~ | ~~Tests: token presence + dark mode token swap~~ done — templates/app.css                                                           | ~~10~~ | ~~Tests green~~                            |
-| ~~3.1.8~~ | ~~Docs: `docs/theming.md` "re-skin without forking"~~ done — docs/tailwind-v4-adoption-guide.md                                     | ~~8~~  | ~~Doc exists~~                             |
+| ID                                                                                                          | Task                                                                                                                                   | Min    | Verify                                         |
+| ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------------- |
+| ~~3.1.1~~                                                                                                   | ~~Read ADR-0008 fully; inventory the ~256 raw color refs~~ done — docs/adr/0008-semantic-tokens.md                                     | ~~10~~ | ~~Inventory in notes~~                         |
+| ~~3.1.2~~ **Won't implement — superseded by README.md:395 semantic tokens via templ-components-theme.css.** | ~~Define token set in `templates/app.css`: `--tc-primary`, `--tc-success`, `--tc-danger`, `--tc-warning`, `--tc-info`, neutral scale~~ | ~~12~~ | ~~Tokens defined~~                             |
+| ~~3.1.3~~ done — docs/tailwind-v4-adoption-guide.md:286 @theme mapping docs                                 | ~~Map tokens to Tailwind via `@theme { --color-tc-primary: ... }`~~                                                                    | ~~10~~ | ~~Tailwind generates `bg-tc-primary` classes~~ |
+| ~~3.1.4~~                                                                                                   | ~~Add opt-in flag: `layout.SemanticTokens bool` on PageProps (emits token CSS)~~ **Won't implement — css first no PageProps flag.**    | ~~10~~ | ~~Compiles~~                                   |
+| ~~3.1.5~~                                                                                                   | ~~Migrate one pilot component (Button) to tokens; verify visual parity~~ done — templates/app.css                                      | ~~12~~ | ~~Pixel-diff (manual)~~                        |
+| ~~3.1.6~~                                                                                                   | ~~Decide phased rollout: don't migrate all 256 refs in this task — doc the plan~~ done — docs/adr/0008-semantic-tokens.md              | ~~8~~  | ~~Plan in ADR-0008 update~~                    |
+| ~~3.1.7~~                                                                                                   | ~~Tests: token presence + dark mode token swap~~ done — templates/app.css                                                              | ~~10~~ | ~~Tests green~~                                |
+| ~~3.1.8~~                                                                                                   | ~~Docs: `docs/theming.md` "re-skin without forking"~~ done — docs/tailwind-v4-adoption-guide.md                                        | ~~8~~  | ~~Doc exists~~                                 |
 
 #### 3.2 Self-Host HTMX (60min)
 
-| ID        | Task                                                                 | Min   | Verify                     |
-| --------- | -------------------------------------------------------------------- | ----- | -------------------------- |
-| ~~3.2.1~~ | ~~Read ADR-0007 fully~~ done (docs-health pass 2026-09-08)           | ~~6~~ | ~~Notes~~                  |
-| 3.2.2     | Vendor `htmx.min.js` + `response-targets.js` into `layout/vendor/`   | 10    | Files present              |
-| 3.2.3     | Add `PageProps.HTMXSource` enum (CDN vs SelfHost) — opt-in self-host | 10    | Compiles                   |
-| 3.2.4     | Implement `htmxScriptTag()` to switch source                         | 10    | Renders correct `<script>` |
-| 3.2.5     | Update SRI logic: self-host needs no SRI                             | 6     | Logic correct              |
-| 3.2.6     | Tests: both modes render correctly                                   | 10    | Tests green                |
-| ~~3.2.7~~ | ~~Lint~~ done (docs-health pass 2026-09-08)                          | ~~8~~ | ~~0 findings~~             |
+| ID                                                                             | Task                                                                     | Min    | Verify                         |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------ | ------ | ------------------------------ |
+| ~~3.2.1~~                                                                      | ~~Read ADR-0007 fully~~ done (docs-health pass 2026-09-08)               | ~~6~~  | ~~Notes~~                      |
+| ~~3.2.2~~ done — layout/static/htmx.min.js vendored + embedded                 | ~~Vendor `htmx.min.js` + `response-targets.js` into `layout/vendor/`~~   | ~~10~~ | ~~Files present~~              |
+| ~~3.2.3~~ done — layout/embed.go:20 HTMXSelfHost sentinel on PageProps.HTMXSrc | ~~Add `PageProps.HTMXSource` enum (CDN vs SelfHost) — opt-in self-host~~ | ~~10~~ | ~~Compiles~~                   |
+| ~~3.2.4~~ done — layout/base.templ:283 htmxSelfHostComponent source switch     | ~~Implement `htmxScriptTag()` to switch source~~                         | ~~10~~ | ~~Renders correct `<script>`~~ |
+| ~~3.2.5~~ done — layout/sri.go:65 SRI/origin parse; self-host skips SRI        | ~~Update SRI logic: self-host needs no SRI~~                             | ~~6~~  | ~~Logic correct~~              |
+| ~~3.2.6~~ done — layout/htmx_off_test.go:48 + coverage_boost2_test.go:288      | ~~Tests: both modes render correctly~~                                   | ~~10~~ | ~~Tests green~~                |
+| ~~3.2.7~~                                                                      | ~~Lint~~ done (docs-health pass 2026-09-08)                              | ~~8~~  | ~~0 findings~~                 |
 
 #### 3.3 Theme Presets (60min)
 
-| ID        | Task                                                                     | Min    | Verify                    |
-| --------- | ------------------------------------------------------------------------ | ------ | ------------------------- |
-| 3.3.1     | Create `presets/default.css`, `presets/minimal.css`, `presets/glass.css` | 12     | Files exist               |
-| 3.3.2     | Document each preset's design intent + `@import` usage                   | 10     | Docs in `docs/theming.md` |
-| ~~3.3.3~~ | ~~Demo: add preset switcher~~ done — examples/demo                       | ~~12~~ | ~~Switcher works~~        |
-| ~~3.3.4~~ | ~~Tests: preset files are valid CSS~~ done — templates/presets           | ~~6~~  | ~~Test green~~            |
-| ~~3.3.5~~ | ~~Lint + verify~~ done (docs-health pass 2026-09-08)                     | ~~10~~ | ~~All green~~             |
+| ID                                                                         | Task                                                                         | Min    | Verify                        |
+| -------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------ | ----------------------------- |
+| ~~3.3.1~~ done — CHANGELOG.md:3618 templates/presets default/minimal/glass | ~~Create `presets/default.css`, `presets/minimal.css`, `presets/glass.css`~~ | ~~12~~ | ~~Files exist~~               |
+| ~~3.3.2~~ done — CHANGELOG.md:3618 preset intent + import usage documented | ~~Document each preset's design intent + `@import` usage~~                   | ~~10~~ | ~~Docs in `docs/theming.md`~~ |
+| ~~3.3.3~~                                                                  | ~~Demo: add preset switcher~~ done — examples/demo                           | ~~12~~ | ~~Switcher works~~            |
+| ~~3.3.4~~                                                                  | ~~Tests: preset files are valid CSS~~ done — templates/presets               | ~~6~~  | ~~Test green~~                |
+| ~~3.3.5~~                                                                  | ~~Lint + verify~~ done (docs-health pass 2026-09-08)                         | ~~10~~ | ~~All green~~                 |
 
 ### Phase 4 — v1.0 Freeze
 
 #### 4.1 Validate() + testutil/ move (90min)
 
-| ID        | Task                                                                                                                              | Min    | Verify                          |
-| --------- | --------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------- |
-| ~~4.1.1~~ | ~~Implement `errorpage.ErrorPageProps.Validate() error` (TODO #62): invalid StatusCode/Family combos~~ done — errorpage/styles.go | ~~12~~ | ~~Test for each invalid combo~~ |
-| 4.1.2     | Create `internal/testutil/` package                                                                                               | 8      | Package builds                  |
-| 4.1.3     | Move `utils.Render`, `utils.AssertContainsAll`, golden helpers to `internal/testutil/`                                            | 12     | Package compiles                |
-| 4.1.4     | Add re-export shims in `utils/` (deprecated, v2.0 removal)                                                                        | 10     | Existing tests still pass       |
-| 4.1.5     | Update 70+ test files to import `internal/testutil/`                                                                              | 12     | All tests green                 |
-| 4.1.6     | Update AGENTS.md + FEATURES.md                                                                                                    | 8      | Updated                         |
-| 4.1.7     | Lint + verify                                                                                                                     | 10     | All green                       |
+| ID                                                                               | Task                                                                                                                              | Min    | Verify                          |
+| -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------- |
+| ~~4.1.1~~                                                                        | ~~Implement `errorpage.ErrorPageProps.Validate() error` (TODO #62): invalid StatusCode/Family combos~~ done — errorpage/styles.go | ~~12~~ | ~~Test for each invalid combo~~ |
+| ~~4.1.2~~ **NOT-DO — TODO_LIST #34 deferred post-v1.0 (helpers stay in utils).** | ~~Create `internal/testutil/` package~~                                                                                           | ~~8~~  | ~~Package builds~~              |
+| 4.1.3 **→ ROADMAP corpus residue (website/library ideas)**                       | Move `utils.Render`, `utils.AssertContainsAll`, golden helpers to `internal/testutil/`                                            | 12     | Package compiles                |
+| 4.1.4 **→ ROADMAP corpus residue (website/library ideas)**                       | Add re-export shims in `utils/` (deprecated, v2.0 removal)                                                                        | 10     | Existing tests still pass       |
+| 4.1.5 **→ ROADMAP corpus residue (website/library ideas)**                       | Update 70+ test files to import `internal/testutil/`                                                                              | 12     | All tests green                 |
+| ~~4.1.6~~ **NOT-DO — TODO_LIST #34 deferred post-v1.0 (helpers stay in utils).** | ~~Update AGENTS.md + FEATURES.md~~                                                                                                | ~~8~~  | ~~Updated~~                     |
+| 4.1.7 **→ ROADMAP corpus residue (website/library ideas)**                       | Lint + verify                                                                                                                     | 10     | All green                       |
 
 #### 4.2 Remove Deprecated Aliases (45min)
 
-| ID        | Task                                                                                          | Min   | Verify                                                   |
-| --------- | --------------------------------------------------------------------------------------------- | ----- | -------------------------------------------------------- |
-| 4.2.1     | Remove `AlertType`, `ToastType` (alias for `FeedbackType`)                                    | 8     | Build green (no external callers — major bump)           |
-| 4.2.2     | Remove `FamilyFromErrorFamily` (alias for `FromErrorFamily`)                                  | 6     | Build green                                              |
-| 4.2.3     | Remove `FormProps.Inline bool` (superseded by `Layout`)                                       | 8     | Build green                                              |
-| 4.2.4     | Remove `ModalSizeFull`, `DrawerFull` if present                                               | 6     | Build green                                              |
-| ~~4.2.5~~ | ~~Update CHANGELOG `### Removed` section + migration note~~ done — docs/migration/v1-to-v2.md | ~~8~~ | ~~Migration guide in `docs/migration/v0.19-to-v1.0.md`~~ |
-| ~~4.2.6~~ | ~~Lint + verify~~ done (docs-health pass 2026-09-08)                                          | ~~9~~ | ~~All green~~                                            |
+| ID                                                                   | Task                                                                                          | Min   | Verify                                                   |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----- | -------------------------------------------------------- |
+| ~~4.2.1~~ done — grep AlertType;ToastType: zero code hits post-v2    | ~~Remove `AlertType`, `ToastType` (alias for `FeedbackType`)~~                                | ~~8~~ | ~~Build green (no external callers — major bump)~~       |
+| ~~4.2.2~~ done — grep FamilyFromErrorFamily: zero code hits          | ~~Remove `FamilyFromErrorFamily` (alias for `FromErrorFamily`)~~                              | ~~6~~ | ~~Build green~~                                          |
+| ~~4.2.3~~ done — FEATURES.md:338 Form ships Layout enum; Inline gone | ~~Remove `FormProps.Inline bool` (superseded by `Layout`)~~                                   | ~~8~~ | ~~Build green~~                                          |
+| 4.2.4 **→ v2 window (ADR-0039; TODO_LIST #335/#368/#369)**           | Remove `ModalSizeFull`, `DrawerFull` if present                                               | 6     | Build green                                              |
+| ~~4.2.5~~                                                            | ~~Update CHANGELOG `### Removed` section + migration note~~ done — docs/migration/v1-to-v2.md | ~~8~~ | ~~Migration guide in `docs/migration/v0.19-to-v1.0.md`~~ |
+| ~~4.2.6~~                                                            | ~~Lint + verify~~ done (docs-health pass 2026-09-08)                                          | ~~9~~ | ~~All green~~                                            |
 
 #### 4.3 Flip Defaults (60min)
 
@@ -532,27 +532,27 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 4.4 CI + release.sh cleanup (60min)
 
-| ID        | Task                                                                                                                    | Min    | Verify                     |
-| --------- | ----------------------------------------------------------------------------------------------------------------------- | ------ | -------------------------- |
-| ~~4.4.1~~ | ~~Add docs-health CI step (TODO #61): run `go test ./utils/... -run TestDocsCountDrift` in CI~~ done — CHANGELOG v1.3.0 | ~~10~~ | ~~CI yaml updated~~        |
-| 4.4.2     | Update AGENTS.md "Release Script" section (TODO #65)                                                                    | 10     | Section accurate           |
-| 4.4.3     | Update AGENTS.md "Release Convention" section (TODO #66)                                                                | 10     | Section accurate           |
-| ~~4.4.4~~ | ~~Switch treefmt `gofmt` → `gofumpt` in flake.nix (TODO #67)~~ done — gofumpt switch                                    | ~~10~~ | ~~`nix fmt` uses gofumpt~~ |
-| 4.4.5     | Run `nix fmt` + `nix flake check`                                                                                       | 8      | Clean                      |
-| 4.4.6     | Lint + verify                                                                                                           | 12     | All green                  |
+| ID                                                                         | Task                                                                                                                    | Min    | Verify                     |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------ | -------------------------- |
+| ~~4.4.1~~                                                                  | ~~Add docs-health CI step (TODO #61): run `go test ./utils/... -run TestDocsCountDrift` in CI~~ done — CHANGELOG v1.3.0 | ~~10~~ | ~~CI yaml updated~~        |
+| ~~4.4.2~~ done — utils/release_script_test.go:18 release-script invariants | ~~Update AGENTS.md "Release Script" section (TODO #65)~~                                                                | ~~10~~ | ~~Section accurate~~       |
+| ~~4.4.3~~ done — utils/release_script_test.go:18 guards convention drift   | ~~Update AGENTS.md "Release Convention" section (TODO #66)~~                                                            | ~~10~~ | ~~Section accurate~~       |
+| ~~4.4.4~~                                                                  | ~~Switch treefmt `gofmt` → `gofumpt` in flake.nix (TODO #67)~~ done — gofumpt switch                                    | ~~10~~ | ~~`nix fmt` uses gofumpt~~ |
+| ~~4.4.5~~ done — flake.nix:522 flake check runs treefmt format checks      | ~~Run `nix fmt` + `nix flake check`~~                                                                                   | ~~8~~  | ~~Clean~~                  |
+| ~~4.4.6~~ done — flake.nix:182 verify app; release.sh:345 lint gate        | ~~Lint + verify~~                                                                                                       | ~~12~~ | ~~All green~~              |
 
 ### Phase 5 — v2.0 Independently Importable
 
 #### 5.1 Modules Split ADR-0020 (60min)
 
-| ID        | Task                                                                                               | Min    | Verify                                              |
-| --------- | -------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------- |
-| ~~5.1.1~~ | ~~Re-audit import graph from AGENTS.md; confirm leaf-up order~~ done (docs-health pass 2026-09-08) | ~~10~~ | ~~Order: utils → icons → htmx → forms/display/etc~~ |
-| 5.1.2     | Write ADR-0020: module boundaries, `go.work` for dev, re-export compat module                      | 12     | ADR exists                                          |
-| 5.1.3     | Decide compat strategy: root module re-exports for one minor cycle                                 | 10     | Strategy in ADR                                     |
-| 5.1.4     | Decide versioning: each sub-module independently tagged, or umbrella tag                           | 8      | Decision in ADR                                     |
-| 5.1.5     | Document consumer migration: `go get .../forms` vs `go get .../templ-components`                   | 10     | Migration note                                      |
-| ~~5.1.6~~ | ~~Spike: split `utils` only as proof-of-concept~~ done — submodule go mod files                    | ~~10~~ | ~~`go.work` builds~~                                |
+| ID                                                                             | Task                                                                                               | Min    | Verify                                              |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------- |
+| ~~5.1.1~~                                                                      | ~~Re-audit import graph from AGENTS.md; confirm leaf-up order~~ done (docs-health pass 2026-09-08) | ~~10~~ | ~~Order: utils → icons → htmx → forms/display/etc~~ |
+| ~~5.1.2~~ done — docs/adr/0020-per-package-modules-split.md                    | ~~Write ADR-0020: module boundaries, `go.work` for dev, re-export compat module~~                  | ~~12~~ | ~~ADR exists~~                                      |
+| ~~5.1.3~~ done — per-module go.mods ship (utils/go.mod; flake.nix:172 loops 8) | ~~Decide compat strategy: root module re-exports for one minor cycle~~                             | ~~10~~ | ~~Strategy in ADR~~                                 |
+| ~~5.1.4~~ done — scripts/release.sh:508 tags every sub-module per release      | ~~Decide versioning: each sub-module independently tagged, or umbrella tag~~                       | ~~8~~  | ~~Decision in ADR~~                                 |
+| ~~5.1.5~~ done — docs/migration/v1-to-v2.md consumer migration guide           | ~~Document consumer migration: `go get .../forms` vs `go get .../templ-components`~~               | ~~10~~ | ~~Migration note~~                                  |
+| ~~5.1.6~~                                                                      | ~~Spike: split `utils` only as proof-of-concept~~ done — submodule go mod files                    | ~~10~~ | ~~`go.work` builds~~                                |
 
 #### 5.2 Execute Modules Split (90min)
 
@@ -569,17 +569,17 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 #### 5.3 CLI Scaffolding Tool (90min)
 
-| ID        | Task                                                                           | Min    | Verify                      |
-| --------- | ------------------------------------------------------------------------------ | ------ | --------------------------- |
-| 5.3.1     | Decide: separate repo `tc-cli` vs `cmd/tc` in this repo                        | 8      | Decision documented         |
-| 5.3.2     | Scaffold Go binary: `tc add <component>` with cobra or stdlib                  | 12     | Binary builds               |
-| 5.3.3     | Embed component templates via `go:embed` (parse from source)                   | 12     | Embed works                 |
-| 5.3.4     | Implement `tc add button` → copies `button.templ` + `button_types.go` to cwd   | 12     | Command works               |
-| 5.3.5     | Implement `tc list` → lists all components                                     | 8      | Command works               |
-| 5.3.6     | Add `tc init` → scaffolds `app.css` + `custom.css` starter                     | 12     | Command works               |
-| ~~5.3.7~~ | ~~Tests for CLI~~ done — cmd/tc/main test.go                                   | ~~12~~ | ~~Tests green~~             |
-| ~~5.3.8~~ | ~~Docs: `docs/cli.md`~~ done — docs/cli.md                                     | ~~8~~  | ~~Doc exists~~              |
-| ~~5.3.9~~ | ~~Release binary via goreleaser (Nix flake optional)~~ done — CHANGELOG v1.1.0 | ~~4~~  | ~~Release pipeline exists~~ |
+| ID                                                                               | Task                                                                             | Min    | Verify                      |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ------ | --------------------------- |
+| ~~5.3.1~~ done — cmd/tc/main.go CLI ships in-repo, not separate repo             | ~~Decide: separate repo `tc-cli` vs `cmd/tc` in this repo~~                      | ~~8~~  | ~~Decision documented~~     |
+| ~~5.3.2~~ done — cmd/tc/main.go stdlib CLI builds; doctor/lint subcommands       | ~~Scaffold Go binary: `tc add <component>` with cobra or stdlib~~                | ~~12~~ | ~~Binary builds~~           |
+| ~~5.3.3~~ done — cmd/tc/_sources/ embedded component sources                     | ~~Embed component templates via `go:embed` (parse from source)~~                 | ~~12~~ | ~~Embed works~~             |
+| ~~5.3.4~~ done — cmd/tc/main.go:256 case add; add_smoke_test.go pins             | ~~Implement `tc add button` → copies `button.templ` + `button_types.go` to cwd~~ | ~~12~~ | ~~Command works~~           |
+| ~~5.3.5~~ done — cmd/tc/main.go:254 case ls,list                                 | ~~Implement `tc list` → lists all components~~                                   | ~~8~~  | ~~Command works~~           |
+| ~~5.3.6~~ done — cmd/tc/main.go:252 case init; adoption guide:43 4-file scaffold | ~~Add `tc init` → scaffolds `app.css` + `custom.css` starter~~                   | ~~12~~ | ~~Command works~~           |
+| ~~5.3.7~~                                                                        | ~~Tests for CLI~~ done — cmd/tc/main test.go                                     | ~~12~~ | ~~Tests green~~             |
+| ~~5.3.8~~                                                                        | ~~Docs: `docs/cli.md`~~ done — docs/cli.md                                       | ~~8~~  | ~~Doc exists~~              |
+| ~~5.3.9~~                                                                        | ~~Release binary via goreleaser (Nix flake optional)~~ done — CHANGELOG v1.1.0   | ~~4~~  | ~~Release pipeline exists~~ |
 
 #### 5.4 Headless Variants Spike (45min)
 
