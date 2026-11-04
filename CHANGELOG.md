@@ -74,6 +74,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **templ v0.3.1100 migration — the TODO #335 window, closed.** The go.mod
+  pin (all 9 modules), the flake generator (`templGen`, now built from the
+  true upstream v0.3.1100 tag — nixpkgs' templ lags and its version string
+  cannot be trusted), and all 147 committed `*_templ.go` files moved to
+  v0.3.1100 as ONE event: regenerate + golden re-baseline + release, per
+  `docs/planning/2026-11-02_TEMPL-MIGRATION-WINDOW-PLAN.md`. The new
+  codegen emits `templruntime.NewAttributeExpression` /
+  `JoinStringErrs` / `SanitizeAttributeName`;
+  `templ.ResolveAttributeValue` (deleted upstream) has zero remaining
+  references and every module builds standalone (`GOWORK=off`). The one
+  hand-written API casualty, `utils/wire`'s attribute-render test helper,
+  migrated to the new `templruntime.RenderAttributes(ctx, w, elementW,
+  name, templ.Attributer)` shape. **Consumer pairing: templ-components ≥
+  v1.27.0 requires templ ≥ v0.3.1100; releases ≤ v1.26.0 pair with templ ≤
+  v0.3.1070.** `scripts/check-templ-gate.sh` now probes pin ↔ flake
+  generator instead of pin ↔ nixpkgs.
+
+### Security
+
+- **Inherits templ v0.3.1100's ADR-0004 attribute sanitization by
+  regenerating.** The removal of the old attribute helpers IS the fix
+  delivery mechanism: generated code now sanitizes spread attributes and
+  URL-valued attributes (`<iframe src>`), escapes template literals inside
+  backtick-quoted JavaScript strings, and tightens mixed-case/dynamic
+  attribute-name rules. Consumers obtain these fixes by pairing this
+  release with templ ≥ v0.3.1100.
+
 - **Alert and Toast dismiss scripts render through the canonical CSP script
   writer.** Both components hand-rolled their `<script>` tags as raw HTML
   with ad-hoc nonce handling; they now go through `utils.ScriptComponent`,
