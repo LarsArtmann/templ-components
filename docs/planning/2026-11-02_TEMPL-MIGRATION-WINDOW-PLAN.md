@@ -1,6 +1,6 @@
 # TEMPL MIGRATION WINDOW PLAN — the ONE re-baseline event (TODO #335)
 
-**Date:** 2026-11-02 · **Status:** plan-of-record; execution is GATED (probe below) ·
+**Date:** 2026-11-02 · **Status:** EXECUTED 2026-11-04 (window opened by user directive; templ-only — #368/#369 unbundled, see TODO_LIST) ·
 **Owner:** templ pin, `utils.TestTemplVersionPin`, `scripts/check-templ-gate.sh`
 **Bundles:** TODO #368 (size-* sweep) + TODO #369 (`@utility` migration) + the
 `templ.ResolveAttributeValue` deletion — all DECIDED-deferred into this window so every

@@ -16,8 +16,10 @@ import (
 // deliberately rolled back on 2026-10-05 (see AGENTS.md "sweep note"): the
 // 0.3.1070 generator changes OUTPUT (icon+label spacing), so the bump needs a
 // flake-level generator pin, a golden + pixel re-baseline, and a source-trim
-// review first (TODO #335). Until that plan lands, generator and go.mod MUST
-// stay in lockstep. This guard fails on any partial bump — go.mod moving
+// review first (TODO #335). The migration window landed 2026-11-04
+// (v0.3.1100, flake templGen from the upstream tag); the guard keeps
+// enforcing the lockstep permanently — generator and go.mod must ALWAYS
+// move together. This guard fails on any partial bump — go.mod moving
 // without doctor.go's constant, or the constant moving without every module.
 func TestTemplVersionPin(t *testing.T) {
 	t.Parallel()
