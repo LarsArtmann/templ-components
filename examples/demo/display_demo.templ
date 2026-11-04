@@ -15,6 +15,19 @@ func demoDate(year int, month time.Month, day int) *time.Time {
 	return &t
 }
 
+// demoCardHeaderSlot is the custom-header example for the Card Header slot
+// demo — a badge + action layout the built-in Title/Subtitle fields can't
+// express (demo code, exempt from the ADR-0010 sub-template extraction rule).
+templ demoCardHeaderSlot() {
+	<div class="flex items-center justify-between">
+		<span class="flex items-center gap-2">
+			@display.Badge(display.BadgeProps{Text: "Live", Type: display.BadgeSuccess, Dot: true})
+			<span class="font-semibold text-gray-900 dark:text-white">Header slot</span>
+		</span>
+		@display.Badge(display.BadgeProps{Text: "v2.1", Type: display.BadgeInfo})
+	</div>
+}
+
 templ displayDemo() {
 	@demoSection("Cards", "display-cards")
 	<div class="grid gap-4 sm:grid-cols-2">
@@ -35,6 +48,24 @@ templ displayDemo() {
 			<p class="text-gray-600 dark:text-gray-400">SimpleCard — no header, just content.</p>
 		}
 	</div>
+	@demoSection("Card Header Slot", "display-card-header-slot")
+	<div class="grid gap-4 sm:grid-cols-2">
+		@display.Card(display.CardProps{
+			Title:  "Default header",
+			Header: demoCardHeaderSlot(),
+		}) {
+			<p class="text-gray-600 dark:text-gray-400">The <code>Header</code> slot replaces the entire default header (title, subtitle, action) — for layouts the built-in fields can't express.</p>
+		}
+		@display.Card(display.CardProps{Title: "Standard header", Subtitle: "For comparison"}) {
+			<p class="text-gray-600 dark:text-gray-400">Same card with the default title/subtitle header.</p>
+		}
+	</div>
+	@demoCodeSnippet("Go", `// templ component passed as the Header slot value
+display.Card(display.CardProps{Title: "Unused", Header: myCardHeader()}) { ... }
+
+templ myCardHeader() {
+	<div class="flex items-center justify-between"> ... </div>
+}`)
 	@demoCodeSnippet("Go", `display.Card(display.CardProps{Title: "Users", Subtitle: "Manage your team"}) {
 <p>Card content</p>
 }
@@ -399,11 +430,22 @@ display.Card(display.CardProps{
 			@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime"})
 		}
 	</div>
+	<div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mt-4">
+		<p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Auto-fit (columns appear as space allows — resize the window, no breakpoints):</p>
+		@display.Grid(display.GridProps{Cols: display.GridColsAutoFit, MinColWidth: "190px"}) {
+			@display.StatCard(display.StatCardProps{Value: "42", Label: "Auto"})
+			@display.StatCard(display.StatCardProps{Value: "12ms", Label: "Fit"})
+			@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Minmax"})
+			@display.StatCard(display.StatCardProps{Value: "190px", Label: "Min col width"})
+		}
+	</div>
 	@demoCodeSnippet("Go", `display.Grid(display.GridProps{Cols: display.GridCols3, Gap: display.GridGapLG}) {
-	for _, u := range users {
-		@display.Card(display.CardProps{Title: u.Name}) { <p>{ u.Email }</p> }
-	}
-}`)
+for _, u := range users {
+	@display.Card(display.CardProps{Title: u.Name}) { <p>{ u.Email }</p> }
+}
+}
+
+display.Grid(display.GridProps{Cols: display.GridColsAutoFit, MinColWidth: "190px"}) { ... }`)
 	@demoSection("Fluid Typography (container query units)", "display-fluid-typography")
 	<div class="grid gap-4 sm:grid-cols-2">
 		@display.Card(display.CardProps{ContainerAware: true, Title: "Container-aware metric"}) {
