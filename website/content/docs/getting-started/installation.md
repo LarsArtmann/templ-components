@@ -65,7 +65,7 @@ If your project uses [BuildFlow](https://github.com/larsartmann/buildflow), the 
 
 ## Verify Installation
 
-```bash
+```bash {.title="terminal"}
 go list -m github.com/larsartmann/templ-components
 ```
 

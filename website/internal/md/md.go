@@ -108,11 +108,13 @@ func newMarkdown() goldmark.Markdown {
 		// on the left, language label + copy button on the right. Both are
 		// fence-info derived, so they must be HTML-escaped.
 		fmt.Fprint(w, `<div class="code-block"><div class="code-block-chrome">`)
+
 		if title := codeBlockTitle(ctx); title != "" {
 			fmt.Fprintf(w, `<span class="code-block-title">%s</span>`, html.EscapeString(title))
 		}
 
 		fmt.Fprint(w, `<span class="code-block-meta">`)
+
 		if lang, ok := ctx.Language(); ok && len(lang) > 0 {
 			fmt.Fprintf(w, `<span class="code-block-lang">%s</span>`, html.EscapeString(string(lang)))
 		}
@@ -135,11 +137,38 @@ func newMarkdown() goldmark.Markdown {
 				highlighting.WithWrapperRenderer(chromeRenderer),
 			),
 		),
-		),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
 		),
 	)
+}
+
+// codeBlockTitle extracts the fence title from the goldmark brace-attribute
+// syntax (e.g. ```go {.title="main.go"} renders "main.go"). Empty when the
+// fence carries no title attribute.
+func codeBlockTitle(ctx highlighting.CodeBlockContext) string {
+	attrs := ctx.Attributes()
+	if attrs == nil {
+		return ""
+	}
+
+	v, ok := attrs.GetString("title")
+	if !ok {
+		return ""
+	}
+
+	var title string
+
+	switch val := v.(type) {
+	case string:
+		title = val
+	case []byte:
+		title = string(val)
+	default:
+		return ""
+	}
+
+	return title
 }
 
 // Parse converts one markdown document (with optional frontmatter) to a

@@ -6,7 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-## [1.27.0] — 2026-11-04
+### Changed
+
+- **Docs-site code blocks gain a chrome bar.** Every fenced block on
+  templcomponents.lars.software now renders a header strip with the
+  language label, an optional filename/title (via the goldmark
+  brace-attribute syntax, e.g. ```` ```bash {.title="terminal"} ````), and
+  the copy button moved into the bar (it no longer overlaps the code).
+  Titles are HTML-escaped fence metadata; the installation guide ships the
+  first titled fence.
 
 ### Added
 

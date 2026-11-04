@@ -36,7 +36,7 @@ var goldenDocsPage = md.Page{
 	Description: "How to install the library",
 	HTML: `<h2 id="requirements">Requirements</h2>` +
 		`<p>Go 1.27+ with the templ CLI.</p>` +
-		`<div class="code-block"><button type="button" class="code-copy">Copy</button>` +
+		`<div class="code-block"><div class="code-block-chrome"><span class="code-block-meta"><span class="code-block-lang">bash</span><button type="button" class="code-copy" aria-label="Copy code to clipboard">Copy</button></span></div>` +
 		`<pre><code class="chroma">go get github.com/larsartmann/templ-components</code></pre></div>` +
 		`<h3 id="tools">Tools</h3>` +
 		`<p>Add the <code>templ</code> binary.</p>`,
