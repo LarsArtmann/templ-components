@@ -190,6 +190,20 @@ func TestTableFlush(t *testing.T) {
 		utils.AssertNotContains(t, output, "rounded-lg")
 		utils.AssertNotContains(t, output, "border border-gray-200")
 	})
+
+	t.Run("Flush and Bordered interact: the border moves onto the table element", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers:  []string{"A"},
+			Rows:     []TableRow{SimpleTableRow("1")},
+			Flush:    true,
+			Bordered: true,
+		}))
+		utils.AssertContains(t, output, "overflow-x-auto")
+		utils.AssertNotContains(t, output, "rounded-lg")
+		utils.AssertContains(t, output, "border-gray-200")
+		utils.AssertContains(t, output, "dark:border-gray-700")
+	})
 }
 
 func TestTableCellPaddingOption(t *testing.T) {

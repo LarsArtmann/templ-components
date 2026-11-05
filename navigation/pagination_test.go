@@ -22,6 +22,7 @@ func TestPaginationRange(t *testing.T) {
 		{"current in middle", 5, 10, 5, 3, 7},
 		{"current near start", 2, 10, 5, 1, 5},
 		{"current near end", 9, 10, 5, 6, 10},
+		{"current beyond total self-corrects to last window", 15, 10, 5, 6, 10},
 		{"default max visible", 5, 20, 0, 3, 7},
 	}
 	for _, tt := range tests {
@@ -94,6 +95,21 @@ func TestPaginationRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `aria-current="page"`)
 		utils.AssertContains(t, output, "1")
+	})
+
+	t.Run("CurrentPage beyond TotalPages clamps to last page", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Pagination(PaginationProps{
+			CurrentPage: 15,
+			TotalPages:  10,
+			BaseURL:     "/items",
+		}))
+		utils.AssertContains(t, output, `aria-current="page"`)
+		utils.AssertContains(t, output, `href="/items?page=10"`)
+		utils.AssertNotContains(t, output, "page=15")
+		utils.AssertNotContains(t, output, "page=14")
+		utils.AssertNotContains(t, output, ">15<")
+		utils.AssertNotContains(t, output, "page=11")
 	})
 
 	t.Run("zero TotalPages renders nothing", func(t *testing.T) {
