@@ -97,7 +97,7 @@ ONE-COMMAND act and what would have caught dnsblockd's hole at generation time.
 
 ### The remaining 80% of the work → the last 20% of the result
 
-**S23–S32**: presets become real styles (glass that actually competes with hand-crafted
+**S23–S34**: presets become real styles (glass that actually competes with hand-crafted
 CSS — the emeet rejection, E5), presets become brand.toml inputs, the per-preset axe lane,
 the demo theme route (ROADMAP f44), the token-first theming docs + per-consumer migration
 runbooks, the v2 release cut, the fleet sweep (pairing-safe, E7), bridge deletions, and
@@ -127,13 +127,13 @@ remaining 80% of work (→100%).
 | S12 | 1    | Surface/ink sweep pt2: Table/Dropdown/Popover/Modal/inputs/Toast/CodeBlock/Kanban surfaces                                                                                          | Critical | 75min                                     | Panels + inputs re-skinnable; warm-dark hack retired             |
 | S13 | 1    | `templ-components-theme.css` gains tc-surface/ink literal ramps; presets re-emitted; warm-dark recipe rewritten around tokens                                                       | High     | 60min                                     | One import re-skins everything including surfaces                |
 | S14 | 2    | ADR-0050 "Brand-as-data": brand.toml schema (seed, neutrals, radius, fonts, density-freeze decision ⫱), command surface, gate definition                                            | High     | 60min                                     | The schema decision for one-command branding                     |
-| S15 | 2    | oklch ramp generator: seed → 50–950, lightness/chroma curves, snapshot tests vs Tailwind blue/amber                                                                                 | High     | 100min                                    | Any brand color gets a full perceptual ramp                      |
+| S15 | 2    | oklch ramp generator: seed → 50–950, lightness/chroma curves; stock seed (Tailwind blue) must reproduce BYTE-EQUAL via calibrated curves, free seeds within ΔE tolerance | High     | 100min                                  | Any brand color gets a full perceptual ramp                      |
 | S16 | 2    | Contrast gate: WCAG ratio math, pair checks (fg/600, ink/surface, badge tints), BOTH modes, actionable failure output; dnsblockd-pastel scenario must FAIL                          | Critical | 60min                                     | The 2.1:1 hole class becomes unshippable                         |
-| S17 | 2    | brand.css emitter (full `@theme` block: accent/surface/ink/font/radius) + `tc brand init                                                                                            | build    | check` wired into cmd/tc registry + tests | High                                                             |
+| S17 | 2    | brand.css emitter (full `@theme` block: accent/surface/ink/font/radius) plus `tc brand init/build/check` wired into cmd/tc registry + tests                                           | High     | 60min                                    | Branding becomes one command                                     |
 | S18 | 2    | Demo dogfood: demo brand.toml must generate byte-identical CSS to current defaults (no-change proof)                                                                                | High     | 45min                                     | Trust: the generator provably doesn't change anything by default |
 | S19 | 2    | Fonts: `--font-tc-sans/mono/display` tokens + additive `PageProps.Fonts` slot with preload/preconnect emission (v1.x)                                                               | High     | 60min                                     | Identity fonts without hand-rolled CSP plumbing                  |
 | S20 | 2    | Font self-host recipe (font-face + `font-src 'self'`) replacing the CV/InboxClean hand-rolled patterns + goldens                                                                    | High     | 45min                                     | One documented pattern instead of two bespoke ones               |
-| S21 | 2    | `tc css sync`: emit classes.txt/safelist/custom.css/theme.css into a consumer + `--check` drift mode + tests + replace per-repo gen scripts (E6)                                    | High     | 75min                                     | Vendoring chore becomes one command, fleet-wide                  |
+| S21 | 2    | `tc css sync`: emit classes.txt/safelist/custom.css/theme.css into a consumer + `--check` drift mode + tests + replace per-repo gen scripts (E6) + refresh library scan corpus after token emission | High | 90min | Vendoring chore becomes one command, fleet-wide                  |
 | S22 | 2    | ADR-0045 update: `tc css sync` is the sanctioned delivery; app.css header instructions updated                                                                                      | Medium   | 30min                                     | Delivery story stays truthful                                    |
 | S23 | 3    | Glass preset → real style: surface translucency + backdrop + shape hooks via tokens; contrast-gated both modes; visualtest captures (answers E5)                                    | High     | 90min                                     | Hand-crafted-identity consumers have an alternative              |
 | S24 | 3    | Presets emerald/minimal/default → brand.toml inputs; generated CSS re-emitted; presets README updated                                                                               | Medium   | 45min                                     | Presets become worked examples of the schema                     |
@@ -141,7 +141,9 @@ remaining 80% of work (→100%).
 | S26 | 3    | Demo theme route: full-gallery rendering under a selected brand (ROADMAP f44); route registration + smoke + goldens                                                                 | Medium   | 60min                                     | Live showcase; best sales page for the schema                    |
 | S27 | 3    | docs/theming.md token-first rewrite + per-consumer bridge-deletion runbooks (5 repos) + consumer-guide/SKILL.md theming sections                                                    | High     | 60min                                     | Migration is copy-paste, not archaeology                         |
 | S28 | 3    | Website theming page + `countgen -w` + TestDocsCountDrift + website suite (incl. CSP if new assets)                                                                                 | Medium   | 45min                                     | Public docs match the new reality                                |
-| S29 | 3    | v2 release cut: per-module loop + `scripts/ci-repro.sh --lint --css --website` at the exact commit, then release.sh ritual in the dev shell (tag-tree clean) ⫱ timing               | Critical | 60min                                     | The tag the fleet sweeps onto                                    |
+| S33 | 3    | `/v2` module-path migration (ADR-0039, owner decision F058 pending ⫱): 7 `go.mod` paths + go.work, import/require rewrite, guard-script literals (check-module-sync/layers), website+visualtest same commit, `docs/migration/v1-to-v2-module-path.md` | Critical | 100min | Consumers can actually `go get` v2                               |
+| S34 | 3    | Release-blocker checklist: S04–S13, S15–S18, S24, S27 all green; full `nix run .#visual` light/dark at RC; compiled demo CSS grep shows `tc-accent-600`/`tc-surface` utilities (silently-missing-CSS guard) | Critical | 45min | v2 ships complete or not at all                                  |
+| S29 | 3    | v2 release cut: per-module loop + `scripts/ci-repro.sh --lint --css --website` at the exact commit, then release.sh ritual in the dev shell (tag-tree clean). BLOCKERS: S04–S13, S15–S18, S24, S27, S33, S34 ⫱ timing + ADR-0039 path decision | Critical | 60min | The tag the fleet sweeps onto                                    |
 | S30 | 3    | Fleet sweep A: CV + media-atlas cross BOTH pairs (templ 1070→1100 AND tc 1.26→v2) in one event per repo, then bridge deletion + brand.css                                           | High     | 90min                                     | Stragglers current; first bridges deleted                        |
 | S31 | 3    | Fleet sweep B: dnsblockd (catppuccin brand.toml; delete `.dnsblockd-btn` — gate now proves contrast), InboxClean (beacon-violet), browser-history (stone/lime)                      | High     | 75min                                     | Three more bridges deleted; contrast hole fixed at root          |
 | S32 | 3    | Closeout: R235/R225 roadmap updates, TODO_LIST harvest (incl. deferred axes), final counts/CHANGELOG, plan post-mortem status doc                                                   | Medium   | 60min                                     | The plan ends documented, not dangling                           |
@@ -149,8 +151,10 @@ remaining 80% of work (→100%).
 **Coverage check:** every improvement from the fleet review maps — accent emission →
 S03–S10 (E2 complete), surfaces → S11–S13 (E1 surface column), brand-as-data → S14–S18
 (E3 gate), fonts → S19–S20 (E4), css sync → S21–S22 (E6), presets/styles → S23–S25 (E5),
-showcase → S26, docs → S27–S28 (E8), release + fleet → S29–S32 (E7 pairing). Nothing
-dropped. **Total ≈ 43h of medium tasks.**
+showcase → S26, docs → S27–S28 (E8), module path → S33 (ADR-0039), release gate → S34,
+release + fleet → S29–S32 (E7 pairing). Nothing dropped. **34 medium tasks, ≈38h.**
+IDs are stable identifiers, not execution order — the graph below is the order
+(S33/S34 execute before S29).
 
 ---
 
@@ -169,7 +173,7 @@ dependency then impact.
 | A-004 | Draft: scanner-safety contract + dark-pairing rule + contrast obligations                  | 10  | S01    |
 | A-005 | Draft: migration story, v2 gating, R235/R225 links; commit ADR-0049                        | 10  | S01    |
 | A-006 | Design AccentToken ramp table (complete literals, all shades E2 uses)                      | 12  | S02    |
-| A-007 | Design SurfaceToken/InkToken roles + dark halves                                           | 10  | S02    |
+| A-007 | Design SurfaceToken/InkToken type + role model; concrete values land in S11     | 10  | S02    |
 | A-008 | Implement token tables + typed helpers in `utils/tone`                                     | 12  | S02    |
 | A-009 | Validity tests: IsValid, every value is a complete literal incl. `dark:` half              | 12  | S02    |
 | A-010 | Update `tone/doc_sync_test` generated section + run `go test ./utils/tone/ -update`        | 8   | S02    |
@@ -217,9 +221,9 @@ dependency then impact.
 | A-047 | Full per-module loop green                                                                                                  | 10  | S09    |
 | A-048 | Close TODO #425/#431 rows (with evidence)                                                                                   | 5   | S09    |
 | A-049 | TestDarkModeCompliance: teach scanner the tc- pair forms                                                                    | 12  | S10    |
-| A-050 | Tone-sync guard update + FEATURES enum tables if tokens are enums                                                           | 10  | S10    |
+| A-050 | Tone-sync guard + FEATURES enum tables + re-run gen-class-inventory.sh (corpus picks up tc- tokens)                          | 12  | S10    |
 | A-051 | Docs-count bumps (README/FEATURES/ROADMAP/AGENTS lines) + ADR-0044 status flip                                              | 10  | S10    |
-| A-052 | `scripts/ci-repro.sh --lint` quick lane green                                                                               | 8   | S10    |
+| A-052 | `scripts/ci-repro.sh --lint` green + recompile demo CSS, grep compiled output for `tc-accent-600` (silently-missing-CSS guard) | 12  | S10    |
 | A-053 | Define surface-0/1/2 + ink-1/2/3 values (light+dark literals) in tone                                                       | 12  | S11    |
 | A-054 | layout.Base page/body background + ink → tokens                                                                             | 12  | S11    |
 | A-055 | AppShell chrome → tokens (respect classic-dark opt-out tokens)                                                              | 12  | S11    |
@@ -245,7 +249,7 @@ dependency then impact.
 | A-070 | Implement hex→oklch conversion                                                      | 12  | S15    |
 | A-071 | Implement per-shade lightness/chroma curves                                         | 12  | S15    |
 | A-072 | Generate 50–950 ramp + neutral/surface ramps                                        | 12  | S15    |
-| A-073 | Snapshot test: seed = Tailwind blue-600 → matches library defaults within tolerance | 12  | S15    |
+| A-073 | Snapshot test: seed = Tailwind blue-600 reproduces the stock ramp BYTE-EQUAL (curves calibrated to Tailwind's oklch literals) | 12  | S15    |
 | A-074 | Implement WCAG relative luminance + contrast ratio                                  | 10  | S16    |
 | A-075 | Pair checks: accent-fg/600, ink/surface, badge tint pairs                           | 12  | S16    |
 | A-076 | Both-mode evaluation + actionable failing-pair report                               | 12  | S16    |
@@ -255,7 +259,7 @@ dependency then impact.
 | A-080 | `tc brand build` + registry/usage wiring                                            | 10  | S17    |
 | A-081 | `tc brand check` gate-only mode + cmd/tc tests + doc.go                             | 10  | S17    |
 | A-082 | Write demo brand.toml (blue defaults)                                               | 8   | S18    |
-| A-083 | Generate + byte-diff vs current defaults — prove no-change                          | 12  | S18    |
+| A-083 | Generate + byte-diff vs current defaults — byte-equality proof (requires A-073 calibration) | 12  | S18    |
 | A-084 | Record the no-change proof in the ADR/demo docs                                     | 10  | S18    |
 | A-085 | `--font-tc-sans/mono/display` tokens in custom.css                                  | 10  | S19    |
 | A-086 | FontProps on PageProps (Fonts slot, additive)                                       | 12  | S19    |
@@ -308,8 +312,15 @@ dependency then impact.
 | A-128 | TODO_LIST harvest: deferred axes (density, dark-selector R238, chart Hue tokenization) seeded | 10  | S32    |
 | A-129 | Final counts/CHANGELOG polish + fleet report                                                  | 8   | S32    |
 | A-130 | Plan post-mortem status doc + link from this file                                             | 8   | S32    |
+| A-131 | Reread ADR-0039 + draft `/v2` migration checklist (F058 decision evidence ⫱)                  | 12  | S33    |
+| A-132 | Rewrite module paths in all 7 go.mod`s + go.work to `/v2`                                     | 12  | S33    |
+| A-133 | Rewrite imports + sibling requires; replace targets unchanged (local paths)                   | 12  | S33    |
+| A-134 | Update guard literals: check-module-sync.sh, check-module-layers.sh, release tag-set          | 12  | S33    |
+| A-135 | website + visualtest migrate in the same commit; build+test all modules                       | 12  | S33    |
+| A-136 | Write docs/migration/v1-to-v2-module-path.md (consumer go-get/import recipe)                  | 10  | S33    |
+| A-137 | Run the S34 checklist: blockers green, full visual suite light/dark, demo CSS grep            | 12  | S34    |
 
-**Coverage check:** micro-tasks A-001…A-130 map onto every parent S01–S32. Nothing
+**Coverage check:** micro-tasks A-001…A-137 map onto every parent S01–S34. Nothing
 dropped.
 
 ---
@@ -352,9 +363,13 @@ flowchart TD
         S25 --> S26["S26 demo theme route (f44)"]
         S13 --> S27["S27 theming.md + runbooks"]
         S27 --> S28["S28 website + counts"]
-        S10 --> S29["S29 v2 release cut ⫱"]
+        S10 --> S33["S33 /v2 module-path migration (ADR-0039 ⫱)"]
+        S33 --> S34["S34 release-blocker checklist + visual RC"]
+        S34 --> S29["S29 v2 release cut ⫱"]
         S12 --> S29
         S18 --> S29
+        S24 --> S29
+        S27 --> S29
         S29 --> S30["S30 fleet sweep A: CV + media-atlas"]
         S29 --> S31["S31 fleet sweep B: dnsblockd/InboxClean/browser-history"]
         S30 --> S32["S32 closeout: R235/R225, TODO harvest, post-mortem"]
@@ -366,7 +381,9 @@ flowchart TD
 Parallel lanes: the **brand track** (S14→S18) only needs S01/S02 and can run while the
 emission sweeps proceed; the **fonts lane** (S19/S20) and **css-sync lane** (S21/S22) are
 v1.x-independent and can land before v2. The emission sweeps (S04–S08) are per-package
-and parallelizable across sessions AFTER the S03 pilot sets the pattern.
+and parallelizable across sessions AFTER the S03 pilot sets the pattern. S33 (module
+path) deliberately runs LAST-and-blocking: the /v2 churn lands once, after the
+class-string churn is finished — never twice.
 
 ---
 
@@ -378,6 +395,8 @@ and parallelizable across sessions AFTER the S03 pilot sets the pattern.
 - [ ] Demo smoke (`visualtest/tools/smoke`) for S18, S23–S26; `nix run .#css` after any new class string
 - [ ] Clone gate before finalizing: `art-dupl check -c .art-dupl.json -t 1 --type-aware` (pinned fork binary) — new clones classified at execution time per ADR-0009
 - [ ] `tc brand build` byte-identity proof (S18) re-runs green at release time
+- [ ] Release blockers (S34): S04–S13, S15–S18, S24, S27 green + full `nix run .#visual` light/dark at RC
+- [ ] Scan-corpus guard: compiled demo CSS contains `tc-accent-600` + `tc-surface` utilities (no silently-missing CSS)
 - [ ] CHANGELOG `[Unreleased]` warm from S03; drift counts bumped in the same edits as every sweep
 - [ ] Per-consumer runbooks (S27) verified by actually executing them in S30/S31 — a runbook that was never run is a lie
 
