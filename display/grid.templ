@@ -75,14 +75,26 @@ func gridClass(cols GridCols) string {
 	return utils.Lookup(gridColsLookup, cols, gridColsLookup[GridColsDefault])
 }
 
-// gridAutoFitClass generates a CSS auto-fit/minmax template class for
-// container-width-responsive grids. The minColWidth should include units
-// (e.g., "190px", "12rem"). Falls back to a 240px default if empty.
-func gridAutoFitClass(minColWidth string) string {
+// gridAutoFitClass returns the auto-fit/minmax template class. The minimum
+// column width is NOT concatenated into the class: a runtime-composed
+// arbitrary value is invisible to Tailwind's source scanner, so the utility
+// is never generated and every auto-fit grid silently collapses to a single
+// column. The class stays a complete literal and reads the width from the
+// --tc-grid-min custom property that gridAutoFitStyle sets.
+func gridAutoFitClass() string {
+	return "grid [grid-template-columns:repeat(auto-fit,minmax(var(--tc-grid-min),1fr))]"
+}
+
+// gridAutoFitStyle returns the inline custom-property declaration carrying the
+// minimum column width for an auto-fit grid, defaulting to 240px. It is the
+// runtime half of gridAutoFitClass (documented inline-style exemption, same
+// shape as the chart and heatmap width/height properties).
+func gridAutoFitStyle(minColWidth string) string {
 	if minColWidth == "" {
 		minColWidth = "240px"
 	}
-	return "grid [grid-template-columns:repeat(auto-fit,minmax(" + minColWidth + ",1fr))]"
+
+	return "--tc-grid-min:" + minColWidth
 }
 
 // gridContainerClass returns the container-query-based Tailwind class string
@@ -118,9 +130,10 @@ type GridProps struct {
 	// (true or false) whenever a bare GridProps{...} literal is used.
 	ContainerAware bool
 	// MinColWidth sets the minimum column width for auto-fit grids. Used only
-	// when Cols is GridColsAutoFit. Generates a CSS auto-fit/minmax template
-	// that responds to container width. Example: "190px" produces
-	// grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)).
+	// when Cols is GridColsAutoFit. Include units ("190px", "12rem"); empty
+	// means 240px. The value travels as the --tc-grid-min custom property so
+	// the emitted class stays a literal Tailwind can see — never hand-compose
+	// an arbitrary class from a prop, the scanner will not generate it.
 	// Ignored for fixed column counts. When Cols is GridColsAutoFit,
 	// ContainerAware is ignored (auto-fit already responds to container
 	// width via CSS minmax).
@@ -168,8 +181,10 @@ templ Grid(props GridProps) {
 		}
 		gap := gridGapClass(props.Gap)
 		baseGrid := gridClass(cols)
+		gridStyle := ""
 		if cols == GridColsAutoFit {
-			baseGrid = gridAutoFitClass(props.MinColWidth)
+			baseGrid = gridAutoFitClass()
+			gridStyle = gridAutoFitStyle(props.MinColWidth)
 		} else if props.ContainerAware {
 			baseGrid = gridContainerClass(cols)
 		}
@@ -177,31 +192,34 @@ templ Grid(props GridProps) {
 	}}
 	if props.ContainerAware {
 		<div class="@container">
-			<div
-				if props.ID != "" {
-					id={ props.ID }
-				}
-				class={ gridClasses }
-				if props.AriaLabel != "" {
-					aria-label={ props.AriaLabel }
-				}
-				{ props.Attrs... }
-			>
+			@gridInner(props, gridClasses, gridStyle) {
 				{ children... }
-			</div>
+			}
 		</div>
 	} else {
-		<div
-			if props.ID != "" {
-				id={ props.ID }
-			}
-			class={ gridClasses }
-			if props.AriaLabel != "" {
-				aria-label={ props.AriaLabel }
-			}
-			{ props.Attrs... }
-		>
+		@gridInner(props, gridClasses, gridStyle) {
 			{ children... }
-		</div>
+		}
 	}
+}
+
+// gridInner renders the grid element itself, shared by the container-query and
+// viewport layouts so the attribute contract (id, class, runtime style, aria
+// label, consumer attrs, children) cannot drift between them.
+templ gridInner(props GridProps, gridClasses, gridStyle string) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ gridClasses }
+		if gridStyle != "" {
+			style={ gridStyle }
+		}
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ children... }
+	</div>
 }

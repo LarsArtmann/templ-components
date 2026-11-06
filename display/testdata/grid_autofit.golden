@@ -1,1 +1,1 @@
-<div class="[grid-template-columns:repeat(auto-fit,minmax(200px,1fr))] gap-4 grid"></div>
+<div class="[grid-template-columns:repeat(auto-fit,minmax(var(--tc-grid-min),1fr))] gap-4 grid" style="--tc-grid-min:200px;"></div>

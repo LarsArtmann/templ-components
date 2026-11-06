@@ -8,6 +8,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`display.Grid` auto-fit mode actually generates its CSS.** `MinColWidth`
+  was concatenated into an arbitrary utility at render time
+  (`[grid-template-columns:repeat(auto-fit,minmax(190px,1fr))]`), which
+  Tailwind's source scanner cannot see — no rule was emitted, so every
+  auto-fit grid silently collapsed to a single column in consumers. The class
+  is now a complete literal reading `var(--tc-grid-min)`, and the width rides
+  that custom property (documented inline-style exemption, like the chart and
+  heatmap values).
+- **`display.StatusDot` resizes as one dot.** The inner core and pulse ring
+  hardcoded the 10px diameter while `BaseProps.Class` only stretched the
+  wrapper, so a consumer sizing the dot got a small dot rattling around in an
+  oversized box. The wrapper owns the size and the layers fill it (`h-full
+  w-full`), so one class resizes everything.
 - **Clone-gate baseline re-recorded at 145 groups at t=1.** The `Nav`
   menu-id helper's signature shares a one-line token shape with
   `DefaultNavProps` — a type-aware false positive, not duplicated logic — so

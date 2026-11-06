@@ -13,7 +13,8 @@ func TestGridAutoFitWithMinColWidth(t *testing.T) {
 		Cols:        GridColsAutoFit,
 		MinColWidth: "190px",
 	}))
-	utils.AssertContainsAll(t, output, "auto-fit", "minmax(190px,1fr)")
+	utils.AssertContainsAll(t, output, "auto-fit", "minmax(var(--tc-grid-min),1fr)")
+	utils.AssertContains(t, output, "--tc-grid-min:190px")
 }
 
 func TestGridAutoFitDefaultMinWidth(t *testing.T) {
@@ -21,7 +22,8 @@ func TestGridAutoFitDefaultMinWidth(t *testing.T) {
 	output := utils.Render(t, Grid(GridProps{
 		Cols: GridColsAutoFit,
 	}))
-	utils.AssertContainsAll(t, output, "auto-fit", "minmax(240px,1fr)")
+	utils.AssertContainsAll(t, output, "auto-fit", "minmax(var(--tc-grid-min),1fr)")
+	utils.AssertContains(t, output, "--tc-grid-min:240px")
 }
 
 func TestGridAutoFitWithGap(t *testing.T) {
@@ -31,7 +33,8 @@ func TestGridAutoFitWithGap(t *testing.T) {
 		MinColWidth: "12rem",
 		Gap:         GridGapLG,
 	}))
-	utils.AssertContainsAll(t, output, "auto-fit", "minmax(12rem,1fr)", "gap-6")
+	utils.AssertContainsAll(t, output, "auto-fit", "minmax(var(--tc-grid-min),1fr)", "gap-6")
+	utils.AssertContains(t, output, "--tc-grid-min:12rem")
 }
 
 func TestGridAutoFitDoesNotEmitFixedBreakpoints(t *testing.T) {
@@ -56,7 +59,8 @@ func TestGridAutoFitTakesPrecedenceOverContainerAware(t *testing.T) {
 		MinColWidth:    "190px",
 		ContainerAware: true,
 	}))
-	utils.AssertContainsAll(t, output, "auto-fit", "minmax(190px,1fr)")
+	utils.AssertContainsAll(t, output, "auto-fit", "minmax(var(--tc-grid-min),1fr)")
+	utils.AssertContains(t, output, "--tc-grid-min:190px")
 	utils.AssertNotContains(t, output, "@sm:grid-cols")
 	utils.AssertNotContains(t, output, "@lg:grid-cols")
 }
@@ -111,4 +115,25 @@ func TestCardPaddingMDStillWrapsInDiv(t *testing.T) {
 		Body:    templ.Raw("<p>content</p>"),
 	}))
 	utils.AssertContains(t, output, "px-4 py-5")
+}
+
+// The min column width must travel as a CSS custom property, not as part of a
+// runtime-composed arbitrary class: Tailwind's scanner only sees literal class
+// strings, so `[grid-template-columns:...minmax(190px,1fr)]` built at render
+// time never produced any CSS and every auto-fit grid collapsed to one column.
+func TestGridAutoFitClassIsScannerVisible(t *testing.T) {
+	t.Parallel()
+
+	t.Run("class literal references the custom property", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Grid(GridProps{Cols: GridColsAutoFit, MinColWidth: "190px"}))
+		utils.AssertContains(t, output, "[grid-template-columns:repeat(auto-fit,minmax(var(--tc-grid-min),1fr))]")
+		utils.AssertNotContains(t, output, "minmax(190px")
+	})
+
+	t.Run("no style attribute for fixed column counts", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Grid(GridProps{Cols: GridCols3}))
+		utils.AssertNotContains(t, output, "--tc-grid-min")
+	})
 }

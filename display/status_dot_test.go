@@ -1,6 +1,7 @@
 package display
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/a-h/templ"
@@ -140,4 +141,39 @@ func TestStatusToneIsValid(t *testing.T) {
 			}
 		})
 	}
+}
+
+// The dot's inner layers fill the wrapper (h-full w-full), so resizing via
+// BaseProps.Class resizes the visible dot — previously the wrapper grew while
+// the 10px core stayed put.
+func TestStatusDotClassResizesTheWholeDot(t *testing.T) {
+	t.Parallel()
+
+	t.Run("class overrides the default diameter everywhere", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatusDot(StatusDotProps{
+			Tone:  StatusToneSuccess,
+			Pulse: true,
+			Class: "h-4 w-4",
+		}))
+
+		utils.AssertContainsAll(t, output,
+			"h-4",
+			"w-4",
+			"absolute inline-flex h-full w-full animate-ping",
+			"relative inline-flex h-full w-full rounded-full",
+		)
+		utils.AssertNotContains(t, output, statusDotSize)
+	})
+
+	t.Run("default diameter stays 10px", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatusDot(StatusDotProps{Tone: StatusToneSuccess}))
+
+		utils.AssertContainsAll(t, output, "h-2.5", "w-2.5")
+
+		if got := strings.Count(output, "h-2.5") + strings.Count(output, "w-2.5"); got != 2 {
+			t.Errorf("expected the default diameter only on the wrapper, got %d size tokens:\n%s", got, output)
+		}
+	})
 }

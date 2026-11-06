@@ -25,6 +25,10 @@ const statusPillDotSize = "h-1.5 w-1.5"
 //
 // Without a Label the dot is decorative (aria-hidden) — pair it with your
 // own visible text.
+//
+// The wrapper owns the size and the layers inside it fill it (h-full w-full),
+// so BaseProps.Class resizes the whole dot — including the pulse ring — rather
+// than stretching an outer box around a dot stuck at the default diameter.
 func StatusDot(props StatusDotProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -58,7 +62,7 @@ func StatusDot(props StatusDotProps) templ.Component {
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.ID).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 22, Col: 16}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 26, Col: 16}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 				if templ_7745c5c3_Err != nil {
@@ -110,7 +114,7 @@ func StatusDot(props StatusDotProps) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.AriaLabel).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 31, Col: 31}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 35, Col: 31}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 				if templ_7745c5c3_Err != nil {
@@ -148,7 +152,7 @@ func StatusDot(props StatusDotProps) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var6 = []any{"absolute inline-flex " + statusDotSize + " animate-ping rounded-full opacity-75 motion-reduce:animate-none " + statusToneBg(props.Tone)}
+				var templ_7745c5c3_Var6 = []any{"absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 motion-reduce:animate-none " + statusToneBg(props.Tone)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_ElementWriter, templ_7745c5c3_Var6...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -189,7 +193,7 @@ func StatusDot(props StatusDotProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var8 = []any{"relative inline-flex " + statusDotSize + " rounded-full " + statusToneBg(props.Tone)}
+			var templ_7745c5c3_Var8 = []any{"relative inline-flex h-full w-full rounded-full " + statusToneBg(props.Tone)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_ElementWriter, templ_7745c5c3_Var8...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -229,7 +233,7 @@ func StatusDot(props StatusDotProps) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(props.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 40, Col: 38}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 44, Col: 38}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -285,7 +289,7 @@ func LivePill(props LivePillProps) templ.Component {
 				var templ_7745c5c3_Var12 string
 				templ_7745c5c3_Var12, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.ID).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 52, Col: 16}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 56, Col: 16}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 				if templ_7745c5c3_Err != nil {
@@ -326,7 +330,7 @@ func LivePill(props LivePillProps) templ.Component {
 				var templ_7745c5c3_Var15 string
 				templ_7745c5c3_Var15, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.AriaLabel).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 56, Col: 31}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 60, Col: 31}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 				if templ_7745c5c3_Err != nil {
@@ -480,7 +484,7 @@ func LivePill(props LivePillProps) templ.Component {
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(props.Text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 66, Col: 14}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/status_dot.templ`, Line: 70, Col: 14}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
