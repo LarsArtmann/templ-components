@@ -38,7 +38,7 @@ func toastJSStyles() string {
 	var b strings.Builder
 	b.WriteString("var tcToastColors = {")
 	for _, t := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
-		s := feedbackStyleMap[t]
+		s := feedbackStyle(t)
 		fmt.Fprintf(&b, "'%s': {border:'%s',bg:'%s',text:'%s',icon:'%s'},", t, s.Border, s.BG, s.Text, s.Icon)
 	}
 	b.WriteString("};")

@@ -47,8 +47,9 @@ const (
 	ToneDanger Tone = "danger"
 	// ToneInfo is neutral-emphasis communication (blue).
 	ToneInfo Tone = "info"
-	// ToneAccent is the brand/primary slot (blue today; becomes the ADR-0044
-	// accent token family at v2).
+	// ToneAccent is the brand/primary slot. It renders the accent token
+	// family (ADR-0044/0049) — one @theme override re-skins it; blue
+	// stays reserved for the semantic info tone.
 	ToneAccent Tone = "accent"
 )
 

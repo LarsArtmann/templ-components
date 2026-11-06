@@ -18,7 +18,7 @@ import (
 
 // lightboxControlClass is the shared control-button style (prev/next/rotate/
 // zoom/close): ghost buttons over the dark overlay.
-const lightboxControlClass = "inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0 cursor-pointer"
+const lightboxControlClass = "inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0 cursor-pointer"
 
 // Lightbox renders a native-dialog image viewer.
 //
@@ -126,7 +126,7 @@ func Lightbox(props LightboxProps) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "\" class=\"group cursor-pointer overflow-hidden rounded-md border border-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:focus-visible:ring-blue-400\" aria-label=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "\" class=\"group cursor-pointer overflow-hidden rounded-md border border-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:border-gray-700 dark:focus-visible:ring-accent-400\" aria-label=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -175,7 +175,7 @@ func Lightbox(props LightboxProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else if props.TriggerLabel != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<button type=\"button\" data-tc-lightbox-open=\"0\" class=\"inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700 dark:hover:bg-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<button type=\"button\" data-tc-lightbox-open=\"0\" class=\"inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-accent-600 dark:bg-accent-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-accent-700 dark:hover:bg-accent-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

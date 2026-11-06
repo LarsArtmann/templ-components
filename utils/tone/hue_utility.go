@@ -31,7 +31,8 @@ type Utilities struct {
 
 // Repeated text literals shared across the hue and tone tables (goconst):
 // every hue's text slots share the same dark:400 class, and blue's light
-// 600 shade appears in both tables.
+// 600 shade appears in both tables. The accent token family (ADR-0049)
+// shares the same 600/dark:400 text grammar.
 const (
 	textBlue600    = "text-blue-600"
 	darkTextBlue   = "dark:text-blue-400"
@@ -40,6 +41,8 @@ const (
 	darkTextYellow = "dark:text-yellow-400"
 	darkTextAmber  = "dark:text-amber-400"
 	darkTextRed    = "dark:text-red-400"
+	textAccent600  = "text-accent-600"
+	darkTextAccent = "dark:text-accent-400"
 )
 
 // hueTable is the single source for per-hue literals. Keys are every Hue in

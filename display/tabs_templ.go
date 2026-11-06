@@ -450,7 +450,7 @@ func Tabs(props TabsProps) templ.Component {
 			wired := tabsWiredAttrs(props.Wire, tab.ID, props.ID)
 			if props.Variant == TabsPills {
 				templ_7745c5c3_Err = tabLink(tab, tab.Content != nil, active,
-					"rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-2 text-sm font-medium text-white",
+					"rounded-md bg-accent-600 dark:bg-accent-500 px-3 py-2 text-sm font-medium text-white",
 					"rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
 					wired,
 				).Render(ctx, templ_7745c5c3_Buffer)
@@ -459,7 +459,7 @@ func Tabs(props TabsProps) templ.Component {
 				}
 			} else {
 				templ_7745c5c3_Err = tabLink(tab, tab.Content != nil, active,
-					"whitespace-nowrap border-b-2 border-blue-500 px-1 py-4 text-sm font-medium text-blue-600 dark:text-blue-400",
+					"whitespace-nowrap border-b-2 border-accent-500 px-1 py-4 text-sm font-medium text-accent-600 dark:text-accent-400",
 					"whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200",
 					wired,
 				).Render(ctx, templ_7745c5c3_Buffer)

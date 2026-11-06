@@ -9,7 +9,7 @@ import (
 
 // lightboxControlClass is the shared control-button style (prev/next/rotate/
 // zoom/close): ghost buttons over the dark overlay.
-const lightboxControlClass = "inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0 cursor-pointer"
+const lightboxControlClass = "inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0 cursor-pointer"
 
 // Lightbox renders a native-dialog image viewer.
 //
@@ -37,7 +37,7 @@ templ Lightbox(props LightboxProps) {
 					<button
 						type="button"
 						data-tc-lightbox-open={ strconv.Itoa(i) }
-						class="group cursor-pointer overflow-hidden rounded-md border border-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:focus-visible:ring-blue-400"
+						class="group cursor-pointer overflow-hidden rounded-md border border-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:border-gray-700 dark:focus-visible:ring-accent-400"
 						aria-label={ "Open image: " + img.Alt }
 					>
 						<img
@@ -53,7 +53,7 @@ templ Lightbox(props LightboxProps) {
 			<button
 				type="button"
 				data-tc-lightbox-open="0"
-				class="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700 dark:hover:bg-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+				class="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-accent-600 dark:bg-accent-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-accent-700 dark:hover:bg-accent-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
 			>
 				@icons.Icon(icons.Photo, "h-4 w-4")
 				{ props.TriggerLabel }

@@ -19,6 +19,9 @@ const (
 
 	paletteBegin = "<!-- BEGIN generated: tone palette table (utils/tone/doc_sync_test.go; go test ./utils/tone/ -update) -->"
 	paletteEnd   = "<!-- END generated: tone palette table -->"
+
+	familyBegin = "<!-- BEGIN generated: token family table (utils/tone/doc_sync_test.go; go test ./utils/tone/ -update) -->"
+	familyEnd   = "<!-- END generated: token family table -->"
 )
 
 // tonePaletteTable renders the "Which colors does the library use?" table
@@ -64,6 +67,12 @@ func tonePaletteTable() string {
 // toneUsesHue reports whether any surface of the tone references the hue
 // (classes carry the hue as a `hue-shade` token prefix).
 func toneUsesHue(t tone.Tone, prefix string) bool {
+	return toneUsesPrefix(t, prefix)
+}
+
+// toneUsesPrefix reports whether any surface of the tone carries the given
+// class prefix (a hue like "blue-" or a token family like "accent-").
+func toneUsesPrefix(t tone.Tone, prefix string) bool {
 	surfaces := tone.For(t)
 
 	for _, pair := range []tone.Pair{
@@ -78,22 +87,49 @@ func toneUsesHue(t tone.Tone, prefix string) bool {
 	return false
 }
 
-// TestThemeBridgePaletteTableSync keeps the generated palette table in
-// docs/recipes/scoped-theme-bridge.md byte-identical to what the tone
-// package derives. Any tone/hue table change fails here until the doc is
-// regenerated (`go test ./utils/tone/ -run TestThemeBridgePaletteTableSync -update`).
-func TestThemeBridgePaletteTableSync(t *testing.T) {
-	t.Parallel()
+// toneFamilyTable renders the token-family table (ADR-0049): tones that
+// render through token families instead of palette hues. The accent
+// family is derived from the tone tables, like the palette table above —
+// adding a family means extending this generator, not hand-editing docs.
+func toneFamilyTable() string {
+	var b strings.Builder
+	b.WriteString("| Family | Tones rendered in it |\n")
+	b.WriteString("| --- | --- |\n")
+
+	var accentTones []string
+
+	for _, t := range tone.Tones() {
+		if toneUsesPrefix(t, "accent-") {
+			accentTones = append(accentTones, string(t))
+		}
+	}
+
+	tonesCell := "—"
+	if len(accentTones) > 0 {
+		tonesCell = strings.Join(accentTones, ", ")
+	}
+
+	fmt.Fprintf(&b, "| `accent` | %s |\n", tonesCell)
+
+	return b.String()
+}
+
+// syncGeneratedDocSection verifies (or with -update rewrites) one generated
+// section of the theme bridge doc against its derived table. Shared by the
+// palette and family table tests; the -update branches read-modify-write
+// the same file, so callers must stay sequential (never t.Parallel).
+func syncGeneratedDocSection(t *testing.T, begin, end, table string) {
+	t.Helper()
 
 	doc, err := os.ReadFile(themeBridgeDoc)
 	if err != nil {
 		t.Fatalf("read theme bridge doc: %v", err)
 	}
 
-	want := paletteBegin + "\n" + tonePaletteTable() + paletteEnd
+	want := begin + "\n" + table + end
 
 	if *docUpdate {
-		updated := replaceGeneratedSection(string(doc), paletteBegin, paletteEnd, want)
+		updated := replaceGeneratedSection(string(doc), begin, end, want)
 		if updated != string(doc) {
 			if err := os.WriteFile(themeBridgeDoc, []byte(updated), 0o644); err != nil {
 				t.Fatalf("rewrite theme bridge doc: %v", err)
@@ -103,24 +139,47 @@ func TestThemeBridgePaletteTableSync(t *testing.T) {
 		return
 	}
 
-	start := strings.Index(string(doc), paletteBegin)
+	start := strings.Index(string(doc), begin)
 
-	end := strings.Index(string(doc), paletteEnd)
-	if start < 0 || end < start {
+	endIdx := strings.Index(string(doc), end)
+	if start < 0 || endIdx < start {
 		t.Fatalf(
-			"theme bridge doc lacks the generated palette markers %q/%q — run go test ./utils/tone/ -update",
-			paletteBegin, paletteEnd,
+			"theme bridge doc lacks the generated markers %q/%q — run go test ./utils/tone/ -update",
+			begin, end,
 		)
 	}
 
-	have := string(doc)[start : end+len(paletteEnd)]
+	have := string(doc)[start : endIdx+len(end)]
 	if normalizeGeneratedBlock(have) != normalizeGeneratedBlock(want) {
 		t.Errorf(
-			"theme bridge doc palette table is stale:\n--- have ---\n%s\n--- want ---\n%s\nRun: go test ./utils/tone/ -update",
+			"theme bridge doc generated section is stale:\n--- have ---\n%s\n--- want ---\n%s\nRun: go test ./utils/tone/ -update",
 			have,
 			want,
 		)
 	}
+}
+
+// TestThemeBridgePaletteTableSync keeps the generated palette table in
+// docs/recipes/scoped-theme-bridge.md byte-identical to what the tone
+// package derives. Any tone/hue table change fails here until the doc is
+// regenerated (`go test ./utils/tone/ -run TestThemeBridgePaletteTableSync -update`).
+// NOT parallel: the -update branches of both doc-sync tests read-modify-
+// write the same file, and interleaved writes clobber each other's fill
+// (both tables landed half-filled once — 2026-11-06). Trivial cost.
+//
+//nolint:paralleltest // sequential on purpose: shared read-modify-write doc target
+func TestThemeBridgePaletteTableSync(t *testing.T) {
+	syncGeneratedDocSection(t, paletteBegin, paletteEnd, tonePaletteTable())
+}
+
+// TestThemeBridgeFamilyTableSync keeps the generated token-family table
+// (ADR-0049) in docs/recipes/scoped-theme-bridge.md byte-identical to what
+// the tone package derives — same mechanism as the palette table above.
+// NOT parallel: shared read-modify-write target (see the palette test).
+//
+//nolint:paralleltest // sequential on purpose: shared read-modify-write doc target
+func TestThemeBridgeFamilyTableSync(t *testing.T) {
+	syncGeneratedDocSection(t, familyBegin, familyEnd, toneFamilyTable())
 }
 
 // normalizeGeneratedBlock makes the generated-section comparison insensitive to

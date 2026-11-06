@@ -139,25 +139,16 @@ func TestScrollbackToneAdapterEquivalence(t *testing.T) {
 }
 
 // TestBadgeTypeAdapterEquivalence: BadgeType's dot is a single light-mode
-// class (no dark half — deliberate), and must equal the hue's BGSolid light
-// half; the semantic mapping is pinned.
+// class (no dark half — deliberate). Semantic rows derive from the hue
+// grammar; the gray neutral dot is bg-gray-500 (one step darker than the
+// uniform grammar's 400 — the same gray-dot convention as statusToneBgMap);
+// BadgePrimary is the ADR-0049 accent emission (brand axis, pinned literal —
+// the accent row ships no BGSolid pair yet, S11).
 func TestBadgeTypeAdapterEquivalence(t *testing.T) {
 	t.Parallel()
 
-	hueFor := map[BadgeType]tone.Hue{
-		BadgePrimary: tone.HueBlue,
-		BadgeSuccess: tone.HueGreen,
-		BadgeWarning: tone.HueYellow,
-		BadgeError:   tone.HueRed,
-		BadgeInfo:    tone.HueBlue,
-		BadgeNeutral: tone.HueGray,
-	}
-
-	// Badge dots are single light-mode classes (no dark half — deliberate).
-	// The gray neutral dot is bg-gray-500 (one step darker than the uniform
-	// grammar's 400 — the same gray-dot convention as statusToneBgMap).
 	wantDots := map[BadgeType]string{
-		BadgePrimary: tone.UtilitiesFor(tone.HueBlue).BGSolid.Light,
+		BadgePrimary: "bg-accent-500",
 		BadgeSuccess: tone.UtilitiesFor(tone.HueGreen).BGSolid.Light,
 		BadgeWarning: tone.UtilitiesFor(tone.HueAmber).BGSolid.Light,
 		BadgeError:   tone.UtilitiesFor(tone.HueRed).BGSolid.Light,
@@ -166,17 +157,17 @@ func TestBadgeTypeAdapterEquivalence(t *testing.T) {
 	}
 
 	for bt, style := range badgeStyleMap {
-		hue, ok := hueFor[bt]
+		want, ok := wantDots[bt]
 		if !ok {
-			t.Errorf("BadgeType %s missing from the adapter hue map", bt)
+			t.Errorf("BadgeType %s missing from the wantDots map", bt)
 
 			continue
 		}
 
-		if style.Dot != wantDots[bt] {
+		if style.Dot != want {
 			t.Errorf(
-				"BadgeType %s: dot %q != expected %q (hue %s)",
-				bt, style.Dot, wantDots[bt], hue,
+				"BadgeType %s: dot %q != expected %q",
+				bt, style.Dot, want,
 			)
 		}
 	}

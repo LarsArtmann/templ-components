@@ -32,7 +32,7 @@ func TestAvatarRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "AB")
 		utils.AssertContains(t, output, "rounded-lg")
-		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertContains(t, output, "bg-accent-600")
 	})
 
 	for _, tc := range []struct {
@@ -92,7 +92,7 @@ func TestAvatarRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{}))
 		utils.AssertContains(t, output, "<svg")
-		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertContains(t, output, "bg-accent-600")
 		utils.AssertNotContains(t, output, "<img")
 	})
 
@@ -147,7 +147,7 @@ func TestAvatarRender(t *testing.T) {
 			Status:   AvatarStatusOffline,
 		}))
 		utils.AssertContains(t, output, "EF")
-		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertContains(t, output, "bg-accent-600")
 		utils.AssertContains(t, output, "bg-gray-400")
 	})
 }

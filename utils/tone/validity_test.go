@@ -19,4 +19,12 @@ func TestValidityRejectsUnknownValues(t *testing.T) {
 	if tone.ToneIsValid(tone.Tone("not-a-tone")) {
 		t.Error(`ToneIsValid("not-a-tone") = true, want false`)
 	}
+
+	if tone.SurfaceTokenIsValid(tone.SurfaceToken("not-a-surface")) {
+		t.Error(`SurfaceTokenIsValid("not-a-surface") = true, want false`)
+	}
+
+	if tone.InkTokenIsValid(tone.InkToken("not-an-ink")) {
+		t.Error(`InkTokenIsValid("not-an-ink") = true, want false`)
+	}
 }

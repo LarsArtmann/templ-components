@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/larsartmann/templ-components/utils"
-	"github.com/larsartmann/templ-components/utils/tone"
 	"github.com/larsartmann/templ-components/utils/svg"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // SpinnerSize defines the size of a loading spinner
@@ -57,7 +57,7 @@ func DefaultSpinnerProps() SpinnerProps {
 
 // Spinner renders a simple animated loading spinner
 //
-//	@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"})
+//	@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-accent-600 dark:text-accent-400"})
 templ Spinner(props SpinnerProps) {
 	<svg
 		class={ utils.Class("animate-spin motion-reduce:animate-none", spinnerSizeClass(props.Size), string(props.Color), props.Class) }
@@ -121,25 +121,33 @@ templ LoadingOverlay(props LoadingOverlayProps) {
 			aria-label={ utils.Coalesce(props.AriaLabel, props.Message) }
 		>
 			<div class="text-center">
-				<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4">
-					@Spinner(SpinnerProps{Size: SpinnerMD, Color: "text-blue-600 dark:text-blue-400"})
+				<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-accent-100 dark:bg-accent-900/30 mb-4">
+					@Spinner(SpinnerProps{Size: SpinnerMD, Color: "text-accent-600 dark:text-accent-400"})
 				</div>
 				<h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{ props.Message }</h3>
-				if props.ShowProgress {
-					{{ clamped := max(0, min(100, props.Progress)) }}
-					<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
-						<div
-							class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
-							style={ fmt.Sprintf("width: %d%%", clamped) }
-						></div>
-					</div>
-					<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", clamped) }</p>
-				} else {
-					<p class="text-sm text-gray-500 dark:text-gray-400">Please wait...</p>
-				}
+				@LoadingProgress(props.ShowProgress, props.Progress)
 			</div>
 		</div>
 	</div>
+}
+
+// LoadingProgress renders the determinate progress bar with its percentage
+// caption, or the indeterminate "Please wait..." hint when showProgress is
+// false. Shared by LoadingOverlay and display.LoadingDialog so the bar markup,
+// the [0, 100] clamp, and the motion-reduce contract live in one place.
+templ LoadingProgress(showProgress bool, progress int) {
+	if showProgress {
+		{{ clamped := max(0, min(100, progress)) }}
+		<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+			<div
+				class="bg-accent-600 dark:bg-accent-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
+				style={ fmt.Sprintf("width: %d%%", clamped) }
+			></div>
+		</div>
+		<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", clamped) }</p>
+	} else {
+		<p class="text-sm text-gray-500 dark:text-gray-400">Please wait...</p>
+	}
 }
 
 // InlineLoading renders a compact inline loading indicator
@@ -147,7 +155,7 @@ templ LoadingOverlay(props LoadingOverlayProps) {
 //	@feedback.InlineLoading("Saving...")
 templ InlineLoading(message string) {
 	<div class="inline-flex items-center gap-2" aria-live="polite">
-		@Spinner(SpinnerProps{Size: SpinnerSM, Color: "text-blue-600 dark:text-blue-400"})
+		@Spinner(SpinnerProps{Size: SpinnerSM, Color: "text-accent-600 dark:text-accent-400"})
 		<span class="text-sm text-gray-600 dark:text-gray-400">{ message }</span>
 	</div>
 }

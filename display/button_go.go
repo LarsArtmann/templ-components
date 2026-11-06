@@ -101,11 +101,11 @@ func DefaultButtonProps() ButtonProps {
 //
 //nolint:gochecknoglobals // Package-level lookup table for button variants
 var buttonVariantLookup = map[ButtonType]string{
-	ButtonPrimary:   "bg-blue-600 text-white hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-500",
+	ButtonPrimary:   "bg-accent-600 text-white hover:bg-accent-500 dark:bg-accent-500 dark:hover:bg-accent-400 focus-visible:outline-accent-600 dark:focus-visible:outline-accent-500",
 	ButtonSecondary: "bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700",
 	ButtonDanger:    "bg-red-600 text-white hover:bg-red-500 dark:bg-red-500 dark:hover:bg-red-400 focus-visible:outline-red-600 dark:focus-visible:outline-red-500",
 	ButtonGhost:     "bg-transparent text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700",
-	ButtonLink:      "bg-transparent text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 underline-offset-2 hover:underline",
+	ButtonLink:      "bg-transparent text-accent-600 hover:text-accent-500 dark:text-accent-400 dark:hover:text-accent-300 underline-offset-2 hover:underline",
 
 	ButtonOutlineDanger:  "bg-transparent text-red-600 ring-1 ring-inset ring-red-300 hover:bg-red-50 dark:text-red-400 dark:ring-red-800 dark:hover:bg-red-900/20 focus-visible:outline-red-600 dark:focus-visible:outline-red-400",
 	ButtonOutlineWarning: "bg-transparent text-amber-700 ring-1 ring-inset ring-amber-300 hover:bg-amber-50 dark:text-amber-400 dark:ring-amber-800 dark:hover:bg-amber-900/20 focus-visible:outline-amber-600 dark:focus-visible:outline-amber-400",

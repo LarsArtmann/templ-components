@@ -464,8 +464,8 @@ func TestCircularProgressRender(t *testing.T) {
 	t.Run("default colors applied", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 50}))
-		utils.AssertContains(t, output, "text-blue-600")
-		utils.AssertContains(t, output, "dark:text-blue-500")
+		utils.AssertContains(t, output, "text-accent-600")
+		utils.AssertContains(t, output, "dark:text-accent-500")
 		utils.AssertContains(t, output, "text-gray-200")
 		utils.AssertContains(t, output, "dark:text-gray-700")
 	})
@@ -479,7 +479,7 @@ func TestCircularProgressRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "text-emerald-600")
 		utils.AssertContains(t, output, "text-emerald-100")
-		utils.AssertNotContains(t, output, "text-blue-600")
+		utils.AssertNotContains(t, output, "text-accent-600")
 		utils.AssertNotContains(t, output, "text-gray-200")
 	})
 

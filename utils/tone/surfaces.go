@@ -3,8 +3,8 @@ package tone
 // Surfaces is the per-tone rendering kit: which classes express a semantic
 // tone on each surface kind. Values are anchored to the feedback dialect
 // (Alert/Toast — the oldest and most-used semantic renderer), so
-// For(ToneSuccess).Text is exactly the Text class feedbackStyleMap carries
-// for success today.
+// For(ToneSuccess).Text is exactly the Text class feedback renders for
+// success today (byte-pinned by feedback.TestToneAdapterEquivalence).
 type Surfaces struct {
 	// Dot is a solid indicator dot (status dots, kanban lane dots).
 	Dot Pair
@@ -22,11 +22,12 @@ type Surfaces struct {
 	Icon Pair
 }
 
-// toneTable maps every Tone to its surfaces. The hue backing each tone:
+// toneTable maps every Tone to its surfaces. The pigment backing each tone:
 // neutral=gray, success=green, warning=amber (the #428 decision — the
 // one semantic warning hue; categorical yellow survives on the Hue axis
-// for Kanban/StatCard), danger=red, info=blue, accent=blue (the ADR-0044 accent
-// slot until v2 swaps it to the accent token family).
+// for Kanban/StatCard), danger=red, info=blue (semantic info keeps the
+// palette per ADR-0044 decision 3), accent=the accent token family
+// (ADR-0044/0049 emission — the v2 swap this table was built for).
 //
 // Neutral deviates from the uniform tint grammar where feedback's fallback
 // ships it: BGTint uses gray-800/50 in dark mode (not 900/30). Completeness
@@ -81,13 +82,13 @@ var toneTable = map[Tone]Surfaces{
 		Icon:     Pair{textBlue600, darkTextBlue},
 	},
 	ToneAccent: {
-		Dot:      hueTable[HueBlue].BGSolid,
-		Text:     Pair{"text-blue-800", "dark:text-blue-200"},
-		TextSoft: Pair{textBlue600, darkTextBlue},
-		Border:   Pair{"border-blue-200", "dark:border-blue-800"},
-		BGTint:   Pair{"bg-blue-50", "dark:bg-blue-900/20"},
-		BGSolid:  hueTable[HueBlue].BGSolidStrong,
-		Icon:     Pair{textBlue600, darkTextBlue},
+		Dot:      Pair{"bg-accent-500", "dark:bg-accent-400"},
+		Text:     Pair{textAccent600, darkTextAccent},
+		TextSoft: Pair{textAccent600, darkTextAccent},
+		Border:   Pair{"border-accent-200", "dark:border-accent-800"},
+		BGTint:   Pair{"bg-accent-50", "dark:bg-accent-900/20"},
+		BGSolid:  Pair{"bg-accent-600", "dark:bg-accent-400"},
+		Icon:     Pair{textAccent600, darkTextAccent},
 	},
 }
 

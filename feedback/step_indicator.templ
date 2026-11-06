@@ -115,24 +115,24 @@ templ stepCircle(stepIndex int, state StepState) {
 
 func stepLineClass(state StepState) string {
 	if state != StepStatePending {
-		return "bg-blue-600 dark:bg-blue-500"
+		return "bg-accent-600 dark:bg-accent-500"
 	}
 	return "bg-gray-200 dark:bg-gray-700"
 }
 
 func stepCircleClass(state StepState) string {
 	if state == StepStateComplete {
-		return "bg-blue-600 text-white dark:bg-blue-500"
+		return "bg-accent-600 text-white dark:bg-accent-500"
 	}
 	if state == StepStateCurrent {
-		return "bg-white dark:bg-gray-800 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
+		return "bg-white dark:bg-gray-800 border-2 border-accent-600 text-accent-600 dark:border-accent-400 dark:text-accent-400"
 	}
 	return "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
 }
 
 func stepLabelClass(state StepState) string {
 	if state != StepStatePending {
-		return "text-blue-600 dark:text-blue-400"
+		return "text-accent-600 dark:text-accent-400"
 	}
 	return "text-gray-500 dark:text-gray-400"
 }

@@ -308,7 +308,7 @@ func TestButtonIcon(t *testing.T) {
 	t.Run("default variant button", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Button(ButtonProps{Text: "Default"}))
-		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertContains(t, output, "bg-accent-600")
 	})
 
 	t.Run("unknown variant falls back to primary", func(t *testing.T) {
@@ -317,7 +317,7 @@ func TestButtonIcon(t *testing.T) {
 			Text:    "Fallback",
 			Variant: ButtonType("unknown"),
 		}))
-		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertContains(t, output, "bg-accent-600")
 	})
 }
 

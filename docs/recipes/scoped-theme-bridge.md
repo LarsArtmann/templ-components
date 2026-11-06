@@ -21,7 +21,7 @@ do not hand-edit the block below; regenerate with
 <!-- BEGIN generated: tone palette table (utils/tone/doc_sync_test.go; go test ./utils/tone/ -update) -->
 | Hue | Tones rendered in it | Chart palette |
 | --- | --- | --- |
-| `blue` | info, accent | yes (series 1) |
+| `blue` | info | yes (series 1) |
 | `emerald` | — | yes (series 2) |
 | `amber` | warning | yes (series 3) |
 | `rose` | — | yes (series 4) |
@@ -35,6 +35,12 @@ do not hand-edit the block below; regenerate with
 | `red` | danger | — |
 | `purple` | — | — |
 <!-- END generated: tone palette table -->
+
+<!-- BEGIN generated: token family table (utils/tone/doc_sync_test.go; go test ./utils/tone/ -update) -->
+| Family | Tones rendered in it |
+| --- | --- |
+| `accent` | accent |
+<!-- END generated: token family table -->
 
 Notes that live outside the generator: the #428 decision (2026-10-30) landed
 ONE semantic warning hue — `amber` renders every warning tone (alerts,
@@ -101,4 +107,6 @@ survives `utils.Class()` reordering — but that is the end of its robustness.
 - [ADR-0044](../adr/0044-semantic-accent-tokens.md) — the accent family decision
 - [Theming guide](../theming.md) — override mechanics
 - [Extraction analysis](../integration/extraction-analysis.md) — the three
+  consumer bridges that motivated all of this
+tion-analysis.md) — the three
   consumer bridges that motivated all of this

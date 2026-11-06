@@ -110,6 +110,7 @@ const (
 	impUtilsTone    = impUtils + "/tone"
 	impIcons        = "github.com/larsartmann/templ-components/icons"
 	impDisplay      = "github.com/larsartmann/templ-components/display"
+	impFeedback     = "github.com/larsartmann/templ-components/feedback"
 	impLayout       = "github.com/larsartmann/templ-components/layout"
 	impDatastarStat = "github.com/larsartmann/go-datastar/static"
 	impErrorFamily  = "github.com/larsartmann/go-error-family"
@@ -130,6 +131,7 @@ var packageImports = map[string][]string{
 		impTempl,
 		impHTMX,
 		impIcons,
+		impFeedback,
 		impUtils,
 		impUtilsSVG,
 		impUtilsTone,

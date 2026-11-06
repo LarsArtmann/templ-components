@@ -21,7 +21,7 @@ import (
 // while the BUTTON carries the target. Mirrored verbatim in the carousel JS
 // (activeDot/idleDot) — keep the three sites in sync.
 const (
-	carouselDotActiveClass = "h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500"
+	carouselDotActiveClass = "h-2 w-2 rounded-full bg-accent-600 dark:bg-accent-500"
 	carouselDotIdleClass   = "h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60"
 )
 
@@ -96,7 +96,7 @@ func Carousel(props CarouselProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var3 = []any{utils.Class("relative rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900", props.Class)}
+			var templ_7745c5c3_Var3 = []any{utils.Class("relative rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900", props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_ElementWriter, templ_7745c5c3_Var3...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

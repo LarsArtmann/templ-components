@@ -51,7 +51,7 @@ func TestTabsRender(t *testing.T) {
 				{ID: "a", Label: "A"},
 			},
 		}))
-		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertContains(t, output, "bg-accent-600")
 	})
 
 	t.Run("no active tab defaults to first", func(t *testing.T) {
@@ -106,7 +106,7 @@ func TestTabsRender(t *testing.T) {
 				{ID: "b", Label: "B"},
 			},
 		}))
-		utils.AssertContains(t, output, "border-blue-500")
+		utils.AssertContains(t, output, "border-accent-500")
 		utils.AssertContains(t, output, "border-transparent")
 	})
 
@@ -131,7 +131,7 @@ func TestTabsRender(t *testing.T) {
 				{ID: "p2", Label: "Two"},
 			},
 		}))
-		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertContains(t, output, "bg-accent-600")
 		utils.AssertContains(t, output, "Pill content")
 		utils.AssertContains(t, output, `space-x-2`)
 	})

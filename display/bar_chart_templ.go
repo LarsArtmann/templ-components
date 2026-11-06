@@ -51,7 +51,7 @@ func BarChart(props BarChartProps) templ.Component {
 		}
 		barColor := string(props.BarColor)
 		if barColor == "" {
-			barColor = "bg-blue-600 dark:bg-blue-500"
+			barColor = "bg-accent-600 dark:bg-accent-500"
 		}
 		labelWidth := props.LabelWidth
 		if labelWidth == "" {
@@ -342,7 +342,7 @@ func BarChart(props BarChartProps) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var15 = []any{utils.Class("w-full rounded-t bg-blue-600 dark:bg-blue-500", barColor, string(bar.Color))}
+					var templ_7745c5c3_Var15 = []any{utils.Class("w-full rounded-t bg-accent-600 dark:bg-accent-500", barColor, string(bar.Color))}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_ElementWriter, templ_7745c5c3_Var15...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -545,7 +545,7 @@ func BarChart(props BarChartProps) templ.Component {
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						var templ_7745c5c3_Var26 = []any{utils.Class("shrink-0 truncate text-xs font-medium text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400", labelWidth)}
+						var templ_7745c5c3_Var26 = []any{utils.Class("shrink-0 truncate text-xs font-medium text-gray-700 hover:text-accent-600 dark:text-gray-300 dark:hover:text-accent-400", labelWidth)}
 						templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_ElementWriter, templ_7745c5c3_Var26...)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
@@ -683,7 +683,7 @@ func BarChart(props BarChartProps) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var34 = []any{utils.Class("h-5 rounded bg-blue-600 dark:bg-blue-500", barColor, string(bar.Color))}
+					var templ_7745c5c3_Var34 = []any{utils.Class("h-5 rounded bg-accent-600 dark:bg-accent-500", barColor, string(bar.Color))}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_ElementWriter, templ_7745c5c3_Var34...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err

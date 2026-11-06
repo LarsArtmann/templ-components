@@ -8,7 +8,7 @@ package display
 // script for non-CSP consumers — the omit-empty rule (issues #7/#9/#24).
 const carouselJS = `			(function(){
 			if(window.tcCarouselAttached)return;window.tcCarouselAttached=true;
-			var activeDot='h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500';
+			var activeDot='h-2 w-2 rounded-full bg-accent-600 dark:bg-accent-500';
 			var idleDot='h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60';
 			function tcCarouselTrack(c){return c.querySelector('[data-tc-carousel-track]');}
 			function tcCarouselIndex(track){return Math.round(track.scrollLeft/track.offsetWidth);}
