@@ -47,7 +47,7 @@ func TestCustomClassTokensCompiled(t *testing.T) {
 	classAttrRe := regexp.MustCompile(`class=(?:\{[[:space:]]*)?"([^"]*)"?`)
 	tokenRe := regexp.MustCompile(`\btc-[a-z0-9]+(?:-[a-z0-9]+)*\b`)
 
-	templFiles := walkTemplFiles(t, "..")
+	templFiles := walkTemplFiles(t)
 
 	seen := make(map[string]bool)
 

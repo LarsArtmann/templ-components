@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Semantic color classes are resolution-guarded.** A new utils test walks
+  every `.templ` class attribute, extracts literal `<utility>-<hue>-<shade>`
+  tokens (the canonical tone hues plus the accent family), and asserts each
+  resolves in the compiled demo CSS — Tailwind v4 emits a color utility only
+  when its theme color resolves, so a stale compile or an undefined `@theme`
+  family used to ship classes that styled nothing (the invisible accent
+  focus ring class). Mutation-tested: a planted unemitted token fails with
+  file attribution. Scan contract matches the tc-* token guard; dynamically
+  composed strings stay out of scope (`scripts/ci-repro.sh --css` remains
+  the authoritative full check).
 - **Accessible clickable-rows recipe** (`docs/recipes/accessible-clickable-rows.md`).
   `TableRow.Href` is a pointer/keyboard convenience, not the accessible link
   — a `<tr>` cannot carry `role="link"`, so a screen reader never hears one.
