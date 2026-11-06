@@ -99,10 +99,18 @@ func tableCellPaddingClass(p TableCellPadding) string {
 // When Href is set, the row becomes clickable (navigates on click/Enter).
 // A CSP-safe singleton script handles click delegation and keyboard navigation.
 // Clicks on interactive elements inside the row (links, buttons) are not hijacked.
+//
+// The row carries tabindex="0" and a focus-visible outline but NO role: ARIA in
+// HTML forbids role (including role="link") on a <tr> inside a real table, and
+// the validator rejected every page using it. Row.Href is therefore a
+// pointer/keyboard convenience on top of the row content — keep the row's own
+// link (an <a> in a cell) as the accessible navigation target for screen
+// readers and for users who never press Enter.
 type TableRow struct {
 	Cells []TableCell
 	// Href, when non-empty, makes the entire row clickable. The row gets
-	// data-tc-row-href, role="link", tabindex="0", and cursor-pointer.
+	// data-tc-row-href, tabindex="0", cursor-pointer, and a focus-visible
+	// outline (browsers draw no default focus ring on a <tr>).
 	Href string
 	// Class, when set, is merged onto the row's <tr> (consumer classes last,
 	// tailwind-merge resolves conflicts). Use it for per-row styling — e.g.
@@ -148,8 +156,12 @@ func tableHasRowHref(rows []TableRow) bool {
 }
 
 // tableRowClasses returns the merged class string for one body row:
-// the conditional library classes (lazy-load, striped, hover) plus the
+// the conditional library classes (lazy-load, striped, hover, focus) plus the
 // consumer's row.Class last so tailwind-merge resolves conflicts.
+//
+// Clickable rows carry a focus-visible outline: browsers draw no default focus
+// ring on a <tr>, so without it a keyboard user cannot see which row Enter will
+// activate (WCAG 2.4.7).
 func tableRowClasses(props TableProps, row TableRow, index int) string {
 	return utils.Class(
 		utils.Ternary(props.LazyRows && props.CellPadding != TableCellPaddingCompact, "tc-content-auto", ""),
@@ -157,6 +169,11 @@ func tableRowClasses(props TableProps, row TableRow, index int) string {
 		utils.Ternary(props.Striped && index%2 == 1, "bg-gray-50 dark:bg-gray-800/50", ""),
 		utils.Ternary(props.Hover || row.Href != "", "hover:bg-gray-100 dark:hover:bg-gray-800", ""),
 		utils.Ternary(row.Href != "", "cursor-pointer", ""),
+		utils.Ternary(
+			row.Href != "",
+			"focus-visible:outline-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400 focus-visible:-outline-offset-2",
+			"",
+		),
 		row.Class,
 	)
 }
@@ -312,7 +329,6 @@ templ Table(props TableProps) {
 						<tr
 							if row.Href != "" {
 								data-tc-row-href={ row.Href }
-								role="link"
 								tabindex="0"
 							}
 							class={ tableRowClasses(props, row, i) }

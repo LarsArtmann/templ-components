@@ -19,9 +19,63 @@ func TestTableRowHref(t *testing.T) {
 			},
 		}))
 		utils.AssertContains(t, html, `data-tc-row-href="/users/1"`)
-		utils.AssertContains(t, html, `role="link"`)
 		utils.AssertContains(t, html, `tabindex="0"`)
 		utils.AssertContains(t, html, "cursor-pointer")
+	})
+
+	// ARIA in HTML forbids any role on a <tr> inside a real table, so the
+	// clickable row must not carry role="link" — the Nu HTML checker rejected
+	// every page that shipped it. The row stays keyboard-operable through
+	// tabindex + the row-href script instead.
+	t.Run("row with href carries no role", func(t *testing.T) {
+		t.Parallel()
+		html := utils.Render(t, Table(TableProps{
+			Headers: []string{"Name"},
+			Rows: []TableRow{
+				{Cells: []TableCell{{Text: "Alice"}}, Href: "/users/1"},
+			},
+		}))
+		utils.AssertNotContains(t, html, `role="link"`)
+
+		start := strings.Index(html, "<tr data-tc-row-href")
+		if start == -1 {
+			t.Fatalf("clickable row not found:\n%s", html)
+		}
+
+		tag := html[start:]
+		if end := strings.Index(tag, ">"); end != -1 {
+			tag = tag[:end]
+		}
+
+		if strings.Contains(tag, "role=") {
+			t.Errorf("clickable row must not carry a role attribute, got %s", tag)
+		}
+	})
+
+	// WCAG 2.4.7: browsers draw no default focus ring on a <tr>, so a keyboard
+	// user cannot see which row Enter will activate without an explicit style.
+	t.Run("row with href has a visible focus indicator", func(t *testing.T) {
+		t.Parallel()
+		html := utils.Render(t, Table(TableProps{
+			Headers: []string{"Name"},
+			Rows: []TableRow{
+				{Cells: []TableCell{{Text: "Alice"}}, Href: "/users/1"},
+			},
+		}))
+		utils.AssertContainsAll(t, html,
+			"focus-visible:outline-2",
+			"focus-visible:outline-blue-600",
+			"dark:focus-visible:outline-blue-400",
+		)
+	})
+
+	t.Run("row without href has no focus indicator", func(t *testing.T) {
+		t.Parallel()
+		html := utils.Render(t, Table(TableProps{
+			Headers: []string{"Name"},
+			Rows:    []TableRow{{Cells: []TableCell{{Text: "Alice"}}}},
+		}))
+		utils.AssertNotContains(t, html, "focus-visible:outline-2")
 	})
 
 	t.Run("row without href has no clickable attributes", func(t *testing.T) {

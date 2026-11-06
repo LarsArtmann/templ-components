@@ -2,7 +2,7 @@
 package navigation
 
 import (
-	"strings"
+	"regexp"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -237,23 +237,91 @@ func TestMobileNavLinkExternalAddsSecurityAttrs(t *testing.T) {
 	utils.AssertContains(t, output, `rel="noopener noreferrer"`)
 }
 
-func TestTwoNavsProduceUniqueMenuIDs(t *testing.T) {
+// navMenuIDRe matches the content-derived mobile-menu id: the same
+// tc-<prefix>-<16 hex> shape utils.EnsureID mints, so goldens normalize it.
+var navMenuIDRe = regexp.MustCompile(`tc-mobile-menu-[a-f0-9]{16}`)
+
+// domIDRe matches id="" attributes only (not data-*-id=""), so a duplicate-id
+// assertion sees exactly the ids getElementById() resolves.
+var domIDRe = regexp.MustCompile(`(?:^|\s)id="([^"]*)"`)
+
+func domIDs(html string) []string {
+	matches := domIDRe.FindAllStringSubmatch(html, -1)
+	ids := make([]string, 0, len(matches))
+
+	for _, match := range matches {
+		ids = append(ids, match[1])
+	}
+
+	return ids
+}
+
+// TestNavMenuIDIsDeterministic pins the caching contract: the mobile-menu id
+// is derived from the nav's content, so rendering the same props twice is
+// byte-identical and ETag revalidation can answer 304 instead of re-sending
+// a freshly randomized page on every request.
+func TestNavMenuIDIsDeterministic(t *testing.T) {
 	t.Parallel()
-	out1 := utils.Render(t, Nav(NavProps{Links: testNavLinks, CurrentPath: "/"}))
-	out2 := utils.Render(t, Nav(NavProps{Links: testNavLinks, CurrentPath: "/"}))
-	idCount1 := strings.Count(out1, `id="tc-mobile-menu-`)
-	idCount2 := strings.Count(out2, `id="tc-mobile-menu-`)
 
-	if idCount1 != 2 {
-		t.Errorf("expected 2 mobile-menu ids (toggle + menu) in first Nav, got %d", idCount1)
+	props := NavProps{Links: testNavLinks, CurrentPath: "/"}
+	first := utils.Render(t, Nav(props))
+	second := utils.Render(t, Nav(props))
+
+	if first != second {
+		t.Error("Nav rendered different HTML for identical props — the mobile-menu id must not be render-random")
 	}
 
-	if idCount2 != 2 {
-		t.Errorf("expected 2 mobile-menu ids (toggle + menu) in second Nav, got %d", idCount2)
+	if got := navMenuIDRe.FindString(first); got == "" {
+		t.Errorf("mobile-menu id missing from the rendered nav:\n%s", first)
 	}
-	// Both should have valid (non-empty, non-hardcoded) IDs
-	utils.AssertContains(t, out1, `data-mobile-menu-id="tc-mobile-menu-`)
-	utils.AssertContains(t, out2, `data-mobile-menu-id="tc-mobile-menu-`)
+}
+
+// TestNavMenuIDTracksContent proves the derived id is content-scoped: two
+// navs that differ in links or current path get different menu ids, so their
+// toggles cannot resolve to each other's menu.
+func TestNavMenuIDTracksContent(t *testing.T) {
+	t.Parallel()
+	base := navMenuIDRe.FindString(utils.Render(t, Nav(NavProps{Links: testNavLinks, CurrentPath: "/"})))
+	otherPath := navMenuIDRe.FindString(utils.Render(t, Nav(NavProps{Links: testNavLinks, CurrentPath: "/about"})))
+
+	if base == "" || otherPath == "" {
+		t.Fatalf("mobile-menu id missing (base=%q otherPath=%q)", base, otherPath)
+	}
+
+	if base == otherPath {
+		t.Errorf("navs with different current paths share the menu id %q", base)
+	}
+}
+
+// TestNavMenuIDDerivesFromCallerID pins the duplicate-id fix: the <nav> keeps
+// the consumer's id and the mobile menu gets its own derived id, so a document
+// never carries the same id twice (invalid HTML, and aria-controls/
+// getElementById resolve to the wrong element).
+func TestNavMenuIDDerivesFromCallerID(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Nav(NavProps{
+		ID:          "site-nav",
+		Links:       testNavLinks,
+		CurrentPath: "/",
+	}))
+
+	utils.AssertContains(t, output, `id="site-nav-mobile-menu"`)
+	utils.AssertContains(t, output, `aria-controls="site-nav-mobile-menu"`)
+
+	seen := map[string]int{}
+	for _, id := range domIDs(output) {
+		seen[id]++
+	}
+
+	if seen["site-nav"] != 1 {
+		t.Errorf("expected exactly one id=%q, got %d", "site-nav", seen["site-nav"])
+	}
+
+	for id, count := range seen {
+		if count > 1 {
+			t.Errorf("duplicate id %q rendered %d times", id, count)
+		}
+	}
 }
 
 func TestNavContainerAware(t *testing.T) {

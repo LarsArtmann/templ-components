@@ -7,9 +7,13 @@ machine-checked (the guard named in parentheses fails CI on regression).
 
 - **Deterministic output.** Rendering the same props twice produces
   byte-identical HTML — no map-iteration order, clock reads, or randomness
-  leak into output (`internal/contract.TestRenderDeterminism`). The one
-  sanctioned exception: auto-generated IDs (`utils.EnsureID`), which golden
-  tests normalize.
+  leak into output (`internal/contract.TestRenderDeterminism`). Content-
+  derivable ids are derived (navigation.Nav's mobile menu), so a page that
+  omits `BaseProps.ID` still revalidates. The one sanctioned exception:
+  auto-generated IDs (`utils.EnsureID`) in components that genuinely need a
+  unique per-render id (modal, drawer, toast, tabs, …); those make the page
+  byte-unique, so pin `BaseProps.ID` when the HTML is cacheable — golden
+  tests normalize the generated value.
 - **Zero runtime panics.** Library code never calls `panic()` — invalid
   props render graceful fallbacks (unknown enum values degrade, empty inputs
   render safely). The single developer-integrity check (icons path data)

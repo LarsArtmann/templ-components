@@ -193,3 +193,32 @@ func TestBadgeFeatures(t *testing.T) {
 		utils.AssertContains(t, output, badgeTextBeta)
 	})
 }
+
+// TestBadgeDotHasNoLiteralSpace pins the text-content contract: the dot and
+// the label are adjacent in the source, so copying a badge's text yields
+// "Active", not " Active". The gap comes from the dot's me-1.5 utility alone.
+func TestBadgeDotHasNoLiteralSpace(t *testing.T) {
+	t.Parallel()
+
+	t.Run("span variant", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Badge(BadgeProps{Text: badgeTextActive, Type: BadgeSuccess, Dot: true}))
+		utils.AssertNotContains(t, output, "</span> "+badgeTextActive)
+		utils.AssertContains(t, output, "</span>"+badgeTextActive)
+	})
+
+	t.Run("link variant", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Badge(BadgeProps{
+			Text: badgeTextActive, Type: BadgeSuccess, Dot: true, Href: "/status",
+		}))
+		utils.AssertNotContains(t, output, "</span> "+badgeTextActive)
+		utils.AssertContains(t, output, "</span>"+badgeTextActive)
+	})
+
+	t.Run("no dot keeps the bare label", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Badge(BadgeProps{Text: badgeTextActive, Type: BadgeSuccess}))
+		utils.AssertContains(t, output, ">"+badgeTextActive+"<")
+	})
+}

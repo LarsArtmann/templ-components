@@ -29,6 +29,14 @@ var ensureIDCounter atomic.Uint64
 // Format: tc-<prefix>-<16 hex chars> (e.g. tc-modal-a1b2c3d4e5f6a7b8).
 // If crypto/rand fails (extremely unlikely), falls back to an atomic counter
 // + nanosecond timestamp — never raw nanoseconds (predictable under concurrency).
+//
+// Caching consequence: a generated id is render-random, so any page that
+// renders a component without BaseProps.ID produces different bytes on every
+// request. That defeats ETag revalidation (an If-None-Match request can never
+// answer 304), CDN body caching, and byte-comparison tests. Consumers that
+// serve cacheable HTML should set BaseProps.ID; components whose id is
+// derivable from their own content do so themselves (navigation.Nav derives
+// its mobile-menu id).
 func EnsureID(prefix, id string) string {
 	if id != "" {
 		return id

@@ -119,6 +119,15 @@ func TestRenderDeterminism(t *testing.T) {
 				},
 			}))
 		}},
+		{"nav with derived mobile-menu id", func() string {
+			return utils.Render(t, navigation.Nav(navigation.NavProps{ //nolint:exhaustruct // deliberately minimal
+				Links: []navigation.NavLinkProps{
+					{Href: "/", Text: "Home"},
+					{Href: "/about", Text: "About"},
+				},
+				CurrentPath: "/",
+			}))
+		}},
 		{"theme toggle", func() string {
 			return utils.Render(t, layout.ThemeToggle("Toggle theme", "n"))
 		}},

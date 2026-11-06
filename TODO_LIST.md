@@ -4,7 +4,7 @@
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources), ⫱ owner gate (decision/credential).
-> IDs are unique across ALL sections — next free ID → 498. (The former `316b` radar row was renumbered **483** on 2026-10-30 to kill the duplicate-ID class; plan errata E5.)
+> IDs are unique across ALL sections — next free ID → 502. (The former `316b` radar row was renumbered **483** on 2026-10-30 to kill the duplicate-ID class; plan errata E5.)
 
 ---
 
@@ -121,6 +121,9 @@ _Harvested 2026-09-17 (evening) from docs/status/archived/2026-09-04_22-15_trans
 _2026-09-08 hardening note kept for provenance: items verified as already shipped by earlier sessions were dropped silently: #134 (AGENTS.md per-module loop), #137 (`TestDatastarScriptURL` + SDKScript golden sweep), #145 (treefmt goimports rides nixpkgs-go), #165 (`TestHeroCountsMatchFeatures`)._
 
 ---
+
+| 500 | Audit the remaining `utils.EnsureID` call sites for render-random ids: derive deterministically where the component's own content identifies it (the `navigation.Nav` pattern, #55/#75), and record why the rest genuinely need a per-render unique id (multiple modals/toasts on one page). Every remaining random id makes a rendered page byte-unique, so ETag revalidation can never 304 and each polled page re-downloads. | Issue #55 asked for deterministic-by-default OR loud docs; this sweep shipped both for Nav (`navMobileMenuID`, content hash + `<id>-mobile-menu` derivation) and documented the caching consequence on `utils.EnsureID`. The sweep is the rest of the fleet: Modal, Drawer, Dropdown, Tooltip, Popover, HoverCard, ContextMenu, Carousel, Kanban, Lightbox, CommandPalette, Combobox, TagsInput, SegmentedControl, FilterBar/FilterInput, LoadMore, Toast, LoadingDialog, Accordion/Tabs child ids, errorpage context. |
+| 501 | Decide the accessible clickable-row recipe: `TableRow.Href` is now valid HTML (no role on `<tr>`, focus ring present, Enter/Space works) but a screen-reader user still hears a plain row. Add either a documented recipe (real `<a>` in a cell = the accessible target, row = pointer/keyboard convenience) or an opt-in `Row.LinkInCell` that renders a stretched link. | Issue #76 asked for the pattern to be reconsidered. This sweep removed the invalid role and added the focus indicator (WCAG 2.4.7, #49); link semantics for AT is the remaining half of the design question. |
 
 ## Deferred — v2.0 breaking changes
 
