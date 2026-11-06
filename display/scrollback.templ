@@ -27,6 +27,16 @@ type ScrollbackLine struct {
 	Tag       string
 	Text      string
 	Tone      ScrollbackTone
+	// ID sets the line element's id, so a URL fragment can scroll to it
+	// (deep links into a transcript) and scripts can address it. Uniqueness is
+	// the caller's responsibility — the component renders whatever it is
+	// given. Leave empty for anonymous lines.
+	ID string
+	// Class is merged onto the line element after the built-in classes, so a
+	// consumer can highlight a matched line or attach a test hook without
+	// re-rolling the loop. tailwind-merge resolves conflicts; the Stagger
+	// nth-child delays keep working (they are keyed on position, not class).
+	Class string
 }
 
 // ScrollbackProps configures a terminal-style log block.
@@ -78,7 +88,12 @@ templ Scrollback(props ScrollbackProps) {
 			{ props.Attrs... }
 		>
 			for _, line := range props.Lines {
-				<div class={ utils.Ternary(props.Stagger, "tc-log-line", "tc-log-line tc-log-line-still") }>
+				<div
+					if line.ID != "" {
+						id={ line.ID }
+					}
+					class={ utils.Class(utils.Ternary(props.Stagger, "tc-log-line", "tc-log-line tc-log-line-still"), line.Class) }
+				>
 					if line.Timestamp != "" {
 						<span class="me-3 text-gray-500 dark:text-gray-400">{ line.Timestamp }</span>
 					}

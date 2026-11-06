@@ -6710,11 +6710,24 @@ type ListNoteProps struct {
 	RangeTo int
 	// Variant selects count semantics. Defaults to ListNoteTruncated.
 	Variant ListNoteVariant
+	// Message, when non-empty, replaces the synthesized sentence while
+	// keeping the shared shell (classes, role="status", id, attrs). Use it
+	// when the honest sentence is not a count shape — e.g. "Showing the
+	// latest 5 of 12 status changes." for a rolling window, where the
+	// truncated variant's "Narrow your search" is false advice. A custom
+	// message always renders; to hide the note, don't render the component
+	// (the count variants keep their own visibility rules).
+	Message string
 }
 
 // listNoteMessage returns the notice text and whether it renders at all.
-// Unknown Variant values degrade to truncated semantics (graceful fallback).
+// Unknown Variant values degrade to truncated semantics (graceful fallback),
+// and a caller-supplied Message wins over every synthesized sentence.
 func listNoteMessage(props ListNoteProps) (string, bool) {
+	if props.Message != "" {
+		return props.Message, true
+	}
+
 	if props.Variant == ListNoteRange {
 		if props.RangeFrom <= 0 || props.RangeTo <= 0 {
 			return countMessage(props.Shown), true
@@ -6772,6 +6785,7 @@ templ listNoteShell(props ListNoteProps, message string) {
 //	@display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
 //	@display.ListNote(display.ListNoteProps{Shown: 42, Variant: display.ListNoteCount})
 //	@display.ListNote(display.ListNoteProps{RangeFrom: 193, RangeTo: 216, Total: 237, Variant: display.ListNoteRange})
+//	@display.ListNote(display.ListNoteProps{Message: "Showing the latest 5 of 12 status changes."})
 templ ListNote(props ListNoteProps) {
 	{{ message, visible := listNoteMessage(props) }}
 	if visible {
@@ -8019,6 +8033,16 @@ type ScrollbackLine struct {
 	Tag       string
 	Text      string
 	Tone      ScrollbackTone
+	// ID sets the line element's id, so a URL fragment can scroll to it
+	// (deep links into a transcript) and scripts can address it. Uniqueness is
+	// the caller's responsibility — the component renders whatever it is
+	// given. Leave empty for anonymous lines.
+	ID string
+	// Class is merged onto the line element after the built-in classes, so a
+	// consumer can highlight a matched line or attach a test hook without
+	// re-rolling the loop. tailwind-merge resolves conflicts; the Stagger
+	// nth-child delays keep working (they are keyed on position, not class).
+	Class string
 }
 
 // ScrollbackProps configures a terminal-style log block.
@@ -8070,7 +8094,12 @@ templ Scrollback(props ScrollbackProps) {
 			{ props.Attrs... }
 		>
 			for _, line := range props.Lines {
-				<div class={ utils.Ternary(props.Stagger, "tc-log-line", "tc-log-line tc-log-line-still") }>
+				<div
+					if line.ID != "" {
+						id={ line.ID }
+					}
+					class={ utils.Class(utils.Ternary(props.Stagger, "tc-log-line", "tc-log-line tc-log-line-still"), line.Class) }
+				>
 					if line.Timestamp != "" {
 						<span class="me-3 text-gray-500 dark:text-gray-400">{ line.Timestamp }</span>
 					}
