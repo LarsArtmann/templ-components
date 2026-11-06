@@ -6,6 +6,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Toggle switches validate as HTML again: the forbidden `aria-checked` is
+  gone, together with its sync script.** The switch rendered `aria-checked` on
+  `input type="checkbox"`, which ARIA in HTML forbids — a W3C
+  golden-corpus-gate red on every push. State now rides the native `checked`
+  property alone (HTML-AAM derives the switch state from it), so the singleton
+  change/pageshow listener that re-synced the attribute — including the
+  bfcache repair path — is deleted, and the browser e2e contract proves
+  role + checked with zero JavaScript. Screen readers announce the switch
+  exactly as before.
+- **`ToastContainer` no longer renders a stray duplicate `</script>`.** The
+  bootstrap script literal ended with its own closing tag inside the string
+  that the script component then wraps, so every page using the container
+  emitted an invalid stray end tag (the second W3C golden-corpus red). One
+  script, one close.
+- **The pagination clamp test now asserts the real (and correct) contract.**
+  `CurrentPage beyond TotalPages clamps to last page` demanded a link to the
+  clamped page while the component — like every nav in this library — renders
+  the current page as an `aria-current` span (APG: the current page is never a
+  link). The test now proves the clamped page renders as the current span and
+  is not linkable; the pre-existing master red that blocked every PR's
+  Build & Test lane is gone.
+- **CI's templ generator pin caught up to the v0.3.1100 migration.** The
+  2026-11-04 migration moved every go.mod pin and the flake generator but
+  missed `ci.yaml`, so CI regenerated all committed `*_templ.go` with the old
+  v0.3.1020 binary and failed on drift since. The workflow pin now matches,
+  and `TestTemplVersionPin` gained a `ci workflow generator pin` case so this
+  third location can never drift again. The stale
+  `cmd/tc/_sources/navigation/pagination.templ` mirror (daemon-era source
+  commit without the guard sync) is refreshed, un-redding the tc-sources
+  guard self-test.
+
 ## [1.27.0] — 2026-11-04
 
 ### Changed

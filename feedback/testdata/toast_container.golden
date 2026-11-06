@@ -53,4 +53,4 @@ toast.classList.add('translate-x-full');
 setTimeout(function() { if (typeof toast.hidePopover === 'function') { try { toast.hidePopover(); } catch (err) {} } toast.remove(); }, 300);
 }, duration);
 }
-}</script></script>
+}</script>
