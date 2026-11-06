@@ -214,7 +214,7 @@ var packageDeps = map[string][]string{
 		"embed.go", "sri.go", "split_types.go", "stack_types.go",
 	},
 
-	pkgNav: {},
+	pkgNav: {"nav_menu_id.go"},
 	pkgHTMX: {
 		enumsGoFile, "polled_region.go",
 		"view_transitions.go",

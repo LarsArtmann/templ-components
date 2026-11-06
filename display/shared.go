@@ -279,7 +279,6 @@ func tableRowHrefJS() string {
 		`document.body.addEventListener('htmx:afterSettle',function(){` +
 		`document.querySelectorAll('tr[data-tc-row-href]').forEach(function(r){` +
 		`if(!r.hasAttribute('tabindex'))r.setAttribute('tabindex','0');` +
-		`if(!r.hasAttribute('role'))r.setAttribute('role','link');` +
 		`});` +
 		`});` +
 		`}` +
@@ -290,6 +289,23 @@ func tableRowHrefJS() string {
 // at least one TableRow has Href set.
 func tableRowHrefScriptComponent(nonce string) templ.Component {
 	return utils.ScriptComponent(nonce, tableRowHrefJS(), "table row href script")
+}
+
+// htmxTileActivateJS returns the singleton JavaScript that makes a click-only
+// htmx tile keyboard-operable. htmx triggers on click, so a role="button" div
+// with hx-get would otherwise be unreachable by keyboard: Enter/Space on the
+// focused tile re-dispatch a click. Only elements marked data-tc-hx-activate
+// react, and only when the key event targets the tile itself, so nested links
+// and buttons keep their own activation.
+func htmxTileActivateJS() string {
+	return `if(!window.tcHxTileActivateAttached){window.tcHxTileActivateAttached=true;` +
+		`document.addEventListener('keydown',function(e){` +
+		`var el=e.target.closest('[data-tc-hx-activate]');` +
+		`if(!el||e.target!==el)return;` +
+		`if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}` +
+		`});` +
+		`}` +
+		"\n"
 }
 
 // popoverPositionJS returns the singleton JavaScript that positions a

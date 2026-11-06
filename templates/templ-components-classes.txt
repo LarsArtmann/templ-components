@@ -457,10 +457,7 @@ templ Badge(props BadgeProps) {
 			}
 			{ props.Attrs... }
 		>
-			if props.Dot {
-				<span class={ "me-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>
-			}
-			{ props.Text }
+			@badgeContent(props)
 		</a>
 	} else {
 		<span
@@ -473,11 +470,20 @@ templ Badge(props BadgeProps) {
 			}
 			{ props.Attrs... }
 		>
-			if props.Dot {
-				<span class={ "me-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>
-			}
-			{ props.Text }
+			@badgeContent(props)
 		</span>
+	}
+}
+
+// badgeContent renders the optional dot followed by the label. The dot and the
+// label share ONE source line on purpose: a newline between them emits a
+// literal space into the text content, so copied badge text started with a
+// space and the gap no longer came from the me-1.5 utility alone.
+templ badgeContent(props BadgeProps) {
+	if props.Dot {
+		<span class={ "me-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>{ props.Text }
+	} else {
+		{ props.Text }
 	}
 }
 
@@ -1411,6 +1417,10 @@ type StatCardProps struct {
 	Href string
 	// HxGet, when set, adds hx-get to the card for HTMX-driven updates.
 	// Mutually independent of Href — Href navigates, HxGet fetches partial HTML.
+	// An HxGet card renders as an interactive control (role="button",
+	// tabindex="0", focus ring) and Enter/Space activate it like a click, so
+	// keyboard users are not locked out of the tile. The card ships the
+	// activation script inline, so under a nonce-based CSP pass BaseProps.Nonce.
 	HxGet string
 	// HxTarget specifies the hx-target attribute (CSS selector for the swap target).
 	HxTarget string
@@ -1471,6 +1481,17 @@ func statTileClasses(tone StatTone) (tile, icon string) {
 	return tile, icon
 }
 
+// statCardInteractiveClass returns the affordance classes for an htmx-driven
+// tile, which the div branch must carry itself: the linked variant gets them
+// for free from being an <a>. Empty for a plain (non-interactive) card.
+func statCardInteractiveClass(interactive bool) string {
+	if !interactive {
+		return ""
+	}
+
+	return "cursor-pointer transition-shadow motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 hover:shadow-md dark:hover:shadow-black/20"
+}
+
 // StatCard renders a dashboard stat card with value, label, optional change
 // indicator, and an optional leading icon tile. When Href is set, the whole
 // card is wrapped in an <a> so it acts as a clickable navigation link.
@@ -1502,15 +1523,21 @@ templ StatCard(props StatCardProps) {
 			@statCardInner(props)
 		</a>
 	} else {
+		if props.HxGet != "" {
+			@utils.ScriptComponent(props.Nonce, htmxTileActivateJS(), "htmx tile activation script")
+		}
 		<div
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			class={ utils.Class(cardShellClass+" p-5", props.Class) }
+			class={ utils.Class(cardShellClass+" p-5", statCardInteractiveClass(props.HxGet != ""), props.Class) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}
 			if props.HxGet != "" {
+				role="button"
+				tabindex="0"
+				data-tc-hx-activate
 				hx-get={ props.HxGet }
 			}
 			if props.HxTarget != "" {
@@ -8630,7 +8657,6 @@ func tableRowHrefJS() string {
 		`document.body.addEventListener('htmx:afterSettle',function(){` +
 		`document.querySelectorAll('tr[data-tc-row-href]').forEach(function(r){` +
 		`if(!r.hasAttribute('tabindex'))r.setAttribute('tabindex','0');` +
-		`if(!r.hasAttribute('role'))r.setAttribute('role','link');` +
 		`});` +
 		`});` +
 		`}` +
@@ -8641,6 +8667,23 @@ func tableRowHrefJS() string {
 // at least one TableRow has Href set.
 func tableRowHrefScriptComponent(nonce string) templ.Component {
 	return utils.ScriptComponent(nonce, tableRowHrefJS(), "table row href script")
+}
+
+// htmxTileActivateJS returns the singleton JavaScript that makes a click-only
+// htmx tile keyboard-operable. htmx triggers on click, so a role="button" div
+// with hx-get would otherwise be unreachable by keyboard: Enter/Space on the
+// focused tile re-dispatch a click. Only elements marked data-tc-hx-activate
+// react, and only when the key event targets the tile itself, so nested links
+// and buttons keep their own activation.
+func htmxTileActivateJS() string {
+	return `if(!window.tcHxTileActivateAttached){window.tcHxTileActivateAttached=true;` +
+		`document.addEventListener('keydown',function(e){` +
+		`var el=e.target.closest('[data-tc-hx-activate]');` +
+		`if(!el||e.target!==el)return;` +
+		`if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}` +
+		`});` +
+		`}` +
+		"\n"
 }
 
 // popoverPositionJS returns the singleton JavaScript that positions a
@@ -9451,10 +9494,18 @@ func tableCellPaddingClass(p TableCellPadding) string {
 // When Href is set, the row becomes clickable (navigates on click/Enter).
 // A CSP-safe singleton script handles click delegation and keyboard navigation.
 // Clicks on interactive elements inside the row (links, buttons) are not hijacked.
+//
+// The row carries tabindex="0" and a focus-visible outline but NO role: ARIA in
+// HTML forbids role (including role="link") on a <tr> inside a real table, and
+// the validator rejected every page using it. Row.Href is therefore a
+// pointer/keyboard convenience on top of the row content — keep the row's own
+// link (an <a> in a cell) as the accessible navigation target for screen
+// readers and for users who never press Enter.
 type TableRow struct {
 	Cells []TableCell
 	// Href, when non-empty, makes the entire row clickable. The row gets
-	// data-tc-row-href, role="link", tabindex="0", and cursor-pointer.
+	// data-tc-row-href, tabindex="0", cursor-pointer, and a focus-visible
+	// outline (browsers draw no default focus ring on a <tr>).
 	Href string
 	// Class, when set, is merged onto the row's <tr> (consumer classes last,
 	// tailwind-merge resolves conflicts). Use it for per-row styling — e.g.
@@ -9500,8 +9551,12 @@ func tableHasRowHref(rows []TableRow) bool {
 }
 
 // tableRowClasses returns the merged class string for one body row:
-// the conditional library classes (lazy-load, striped, hover) plus the
+// the conditional library classes (lazy-load, striped, hover, focus) plus the
 // consumer's row.Class last so tailwind-merge resolves conflicts.
+//
+// Clickable rows carry a focus-visible outline: browsers draw no default focus
+// ring on a <tr>, so without it a keyboard user cannot see which row Enter will
+// activate (WCAG 2.4.7).
 func tableRowClasses(props TableProps, row TableRow, index int) string {
 	return utils.Class(
 		utils.Ternary(props.LazyRows && props.CellPadding != TableCellPaddingCompact, "tc-content-auto", ""),
@@ -9509,6 +9564,11 @@ func tableRowClasses(props TableProps, row TableRow, index int) string {
 		utils.Ternary(props.Striped && index%2 == 1, "bg-gray-50 dark:bg-gray-800/50", ""),
 		utils.Ternary(props.Hover || row.Href != "", "hover:bg-gray-100 dark:hover:bg-gray-800", ""),
 		utils.Ternary(row.Href != "", "cursor-pointer", ""),
+		utils.Ternary(
+			row.Href != "",
+			"focus-visible:outline-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400 focus-visible:-outline-offset-2",
+			"",
+		),
 		row.Class,
 	)
 }
@@ -9664,7 +9724,6 @@ templ Table(props TableProps) {
 						<tr
 							if row.Href != "" {
 								data-tc-row-href={ row.Href }
-								role="link"
 								tabindex="0"
 							}
 							class={ tableRowClasses(props, row, i) }
@@ -17318,6 +17377,11 @@ import "github.com/larsartmann/templ-components/utils"
 
 // NavProps configures a navigation bar.
 //
+// BaseProps.ID pins the nav element's id and derives a distinct mobile-menu
+// id from it (<id>-mobile-menu). Left empty, the menu id comes from the nav's
+// content instead, which is deterministic: the same page renders identical
+// bytes, so ETag/CDN revalidation keeps working.
+//
 // Set ContainerAware: true to make the bar collapse to its hamburger menu
 // based on its parent container's width (CSS @container) instead of the
 // viewport. Useful when Nav is placed inside a sidebar, drawer, or other
@@ -17363,7 +17427,7 @@ func navDesktopLinksClass(containerAware bool) string {
 //	   CurrentPath: "/",
 //	})
 templ Nav(props NavProps) {
-	{{ menuID := utils.EnsureID("mobile-menu", props.ID) }}
+	{{ menuID := navMobileMenuID(props) }}
 	if props.ContainerAware {
 		<div class="@container">
 			@navInner(props, menuID)
@@ -17704,6 +17768,55 @@ templ NavLink(props NavLinkProps, currentPath string) {
 templ MobileNavLink(props NavLinkProps, currentPath string) {
 	{{ isActive := IsActive(props.Href, currentPath) }}
 	@navLinkAnchor(props, isActive, mobileNavLinkClass(isActive))
+}
+
+# ── navigation/nav_menu_id.go ─────────────────────────────────────────────
+package navigation
+
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"strings"
+)
+
+// navMobileMenuID returns the id shared by a Nav's mobile menu and its toggle.
+//
+// With a caller-supplied BaseProps.ID the menu id is DERIVED from it
+// ("<id>-mobile-menu") rather than reusing it: reusing it puts the same id on
+// the <nav> element and the menu div, which is invalid HTML and leaves
+// getElementById()/aria-controls resolving the wrong element.
+//
+// Without one the id is derived from the nav's own content, so rendering the
+// same page twice produces byte-identical HTML. A random per-render id (what
+// utils.EnsureID mints) makes every response body unique, so ETag
+// revalidation can never answer 304 and each navigation or htmx poll
+// re-downloads a full document. Two Navs with identical links, current path,
+// and label in one page share the derived id — give each Nav its own
+// BaseProps.ID when that distinction matters.
+func navMobileMenuID(p NavProps) string {
+	if p.ID != "" {
+		return p.ID + "-mobile-menu"
+	}
+
+	var seed strings.Builder
+	seed.WriteString(p.CurrentPath)
+	seed.WriteString("\x00")
+	seed.WriteString(p.AriaLabel)
+
+	if p.ContainerAware {
+		seed.WriteString("\x01container")
+	}
+
+	for _, link := range p.Links {
+		seed.WriteString("\x00")
+		seed.WriteString(link.Href)
+		seed.WriteString("\x00")
+		seed.WriteString(link.Text)
+	}
+
+	sum := sha256.Sum256([]byte(seed.String()))
+
+	return "tc-mobile-menu-" + hex.EncodeToString(sum[:8])
 }
 
 # ── navigation/pagination.templ ─────────────────────────────────────────────
@@ -20908,6 +21021,14 @@ var ensureIDCounter atomic.Uint64
 // Format: tc-<prefix>-<16 hex chars> (e.g. tc-modal-a1b2c3d4e5f6a7b8).
 // If crypto/rand fails (extremely unlikely), falls back to an atomic counter
 // + nanosecond timestamp — never raw nanoseconds (predictable under concurrency).
+//
+// Caching consequence: a generated id is render-random, so any page that
+// renders a component without BaseProps.ID produces different bytes on every
+// request. That defeats ETag revalidation (an If-None-Match request can never
+// answer 304), CDN body caching, and byte-comparison tests. Consumers that
+// serve cacheable HTML should set BaseProps.ID; components whose id is
+// derivable from their own content do so themselves (navigation.Nav derives
+// its mobile-menu id).
 func EnsureID(prefix, id string) string {
 	if id != "" {
 		return id

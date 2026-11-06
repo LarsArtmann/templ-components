@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Clone-gate baseline re-recorded at 145 groups at t=1.** The `Nav`
+  menu-id helper's signature shares a one-line token shape with
+  `DefaultNavProps` — a type-aware false positive, not duplicated logic — so
+  it joins the accepted set, and the same re-record pruned four stale entries
+  left by earlier tree movement. Documented in
+  `docs/adr/0009-accepted-clones.md`.
 - **Toggle switches validate as HTML again: the forbidden `aria-checked` is
   gone, together with its sync script.** The switch rendered `aria-checked` on
   `input type="checkbox"`, which ARIA in HTML forbids — a W3C
@@ -38,6 +44,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `cmd/tc/_sources/navigation/pagination.templ` mirror (daemon-era source
   commit without the guard sync) is refreshed, un-redding the tc-sources
   guard self-test.
+- **`Nav` no longer renders the same id twice, and its mobile-menu id is
+  deterministic.** With `BaseProps.ID` set, the menu div reused the nav's own
+  id — invalid HTML that left `getElementById()`/`aria-controls` resolving the
+  wrong element. The menu id is now derived (`<id>-mobile-menu`). Without a
+  caller id it comes from the nav's content instead of `crypto/rand`, so a
+  page rendered twice is byte-identical and ETag revalidation can answer 304;
+  a random id made every response unique, silently forcing a full re-download
+  on every navigation and htmx poll.
+- **Clickable table rows validate as HTML again.** `TableRow.Href` rendered
+  `role="link"` on a `<tr>`, which ARIA in HTML forbids inside a real table —
+  the Nu HTML checker rejected every page using it, and the htmx settle
+  handler re-added the attribute. The role is gone; the row keeps
+  `tabindex="0"` and Enter/Space activation, and it now carries a
+  focus-visible outline, because browsers draw no default focus ring on a
+  `<tr>` and a keyboard user could not see which row Enter would open.
+- **`StatCard` tiles driven by `HxGet` are keyboard-operable.** The htmx
+  branch rendered a plain `<div>` with `hx-get`, so a keyboard user could not
+  activate the tile at all and assistive tech announced a static group. The
+  tile now renders `role="button"`, `tabindex="0"`, the same focus ring and
+  hover affordance as the linked variant, and a CSP-safe singleton script
+  translates Enter/Space into the click htmx listens for (nested links and
+  buttons keep their own activation).
+- **`Badge` text no longer starts with a literal space.** The dot and the
+  label sat on separate source lines, so templ emitted a space into the text
+  content: copied badge text began with a space, and the gap came from a
+  character rather than the dot's `me-1.5` utility. Both badge variants now
+  render the dot and the label adjacent.
 
 ## [1.27.0] — 2026-11-04
 

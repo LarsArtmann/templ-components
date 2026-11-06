@@ -274,6 +274,10 @@ type StatCardProps struct {
 	Href string
 	// HxGet, when set, adds hx-get to the card for HTMX-driven updates.
 	// Mutually independent of Href — Href navigates, HxGet fetches partial HTML.
+	// An HxGet card renders as an interactive control (role="button",
+	// tabindex="0", focus ring) and Enter/Space activate it like a click, so
+	// keyboard users are not locked out of the tile. The card ships the
+	// activation script inline, so under a nonce-based CSP pass BaseProps.Nonce.
 	HxGet string
 	// HxTarget specifies the hx-target attribute (CSS selector for the swap target).
 	HxTarget string
@@ -334,6 +338,17 @@ func statTileClasses(tone StatTone) (tile, icon string) {
 	return tile, icon
 }
 
+// statCardInteractiveClass returns the affordance classes for an htmx-driven
+// tile, which the div branch must carry itself: the linked variant gets them
+// for free from being an <a>. Empty for a plain (non-interactive) card.
+func statCardInteractiveClass(interactive bool) string {
+	if !interactive {
+		return ""
+	}
+
+	return "cursor-pointer transition-shadow motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 hover:shadow-md dark:hover:shadow-black/20"
+}
+
 // StatCard renders a dashboard stat card with value, label, optional change
 // indicator, and an optional leading icon tile. When Href is set, the whole
 // card is wrapped in an <a> so it acts as a clickable navigation link.
@@ -365,15 +380,21 @@ templ StatCard(props StatCardProps) {
 			@statCardInner(props)
 		</a>
 	} else {
+		if props.HxGet != "" {
+			@utils.ScriptComponent(props.Nonce, htmxTileActivateJS(), "htmx tile activation script")
+		}
 		<div
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			class={ utils.Class(cardShellClass+" p-5", props.Class) }
+			class={ utils.Class(cardShellClass+" p-5", statCardInteractiveClass(props.HxGet != ""), props.Class) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}
 			if props.HxGet != "" {
+				role="button"
+				tabindex="0"
+				data-tc-hx-activate
 				hx-get={ props.HxGet }
 			}
 			if props.HxTarget != "" {

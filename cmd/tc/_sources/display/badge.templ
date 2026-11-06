@@ -62,10 +62,7 @@ templ Badge(props BadgeProps) {
 			}
 			{ props.Attrs... }
 		>
-			if props.Dot {
-				<span class={ "me-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>
-			}
-			{ props.Text }
+			@badgeContent(props)
 		</a>
 	} else {
 		<span
@@ -78,11 +75,20 @@ templ Badge(props BadgeProps) {
 			}
 			{ props.Attrs... }
 		>
-			if props.Dot {
-				<span class={ "me-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>
-			}
-			{ props.Text }
+			@badgeContent(props)
 		</span>
+	}
+}
+
+// badgeContent renders the optional dot followed by the label. The dot and the
+// label share ONE source line on purpose: a newline between them emits a
+// literal space into the text content, so copied badge text started with a
+// space and the gap no longer came from the me-1.5 utility alone.
+templ badgeContent(props BadgeProps) {
+	if props.Dot {
+		<span class={ "me-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>{ props.Text }
+	} else {
+		{ props.Text }
 	}
 }
 

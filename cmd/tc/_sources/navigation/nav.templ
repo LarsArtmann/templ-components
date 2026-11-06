@@ -4,6 +4,11 @@ import "github.com/larsartmann/templ-components/utils"
 
 // NavProps configures a navigation bar.
 //
+// BaseProps.ID pins the nav element's id and derives a distinct mobile-menu
+// id from it (<id>-mobile-menu). Left empty, the menu id comes from the nav's
+// content instead, which is deterministic: the same page renders identical
+// bytes, so ETag/CDN revalidation keeps working.
+//
 // Set ContainerAware: true to make the bar collapse to its hamburger menu
 // based on its parent container's width (CSS @container) instead of the
 // viewport. Useful when Nav is placed inside a sidebar, drawer, or other
@@ -49,7 +54,7 @@ func navDesktopLinksClass(containerAware bool) string {
 //	   CurrentPath: "/",
 //	})
 templ Nav(props NavProps) {
-	{{ menuID := utils.EnsureID("mobile-menu", props.ID) }}
+	{{ menuID := navMobileMenuID(props) }}
 	if props.ContainerAware {
 		<div class="@container">
 			@navInner(props, menuID)

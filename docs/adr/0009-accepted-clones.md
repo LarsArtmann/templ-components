@@ -597,7 +597,7 @@ baseline absorbs verbosity; thresholds stay sensitive. Re-read 2026-09-23
 against the then-committed baseline. **CORRECTED 2026-10-24 (fork
 v0.9.1-…-93432fd): group hashes are threshold-dependent — a baseline recorded
 at `-t 1` mechanically CANNOT compare green at higher thresholds** (`check -t 2`
-reports 4 hash-new groups, `-t 3` reports 7, against the 149-group t=1
+reports 4 hash-new groups, `-t 3` reports 7, against the 145-group t=1
 baseline). All 11 fall into two dispositioned appendix classes
 (signature-token/signature-tails; parallel lookup-helper signature pairs) —
 zero new extraction decisions — so the canonical gate is `-t 1` ONLY; higher
@@ -677,10 +677,10 @@ blanket-accepting or blanket-extracting.
 ## Consequences
 
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
-  — it fails ONLY on clones not in the accepted baseline (currently 149
-  groups at t=1, per the 2026-11-02 re-record with the same fork detector
-  `v0.9.1-0.20261017225421-93432fd910fb-93432fd`; the 2026-10-23 full
-  re-take under this detector generation was 150 groups). The analyzer-generation
+  — it fails ONLY on clones not in the accepted baseline (currently 145
+  groups at t=1, per the 2026-11-06 re-record with the same fork detector
+  `v0.9.1-0.20261017225421-93432fd910fb`; the 2026-10-23 full re-take under
+  this detector generation was 150 groups). The analyzer-generation
   change made the prior 124 hashes incomparable (check reported every
   current group as new), so the re-record re-took the whole set AFTER the
   class triage below; the current advisory sets (73 groups at t=2, 38 at
@@ -818,3 +818,15 @@ twin loading surfaces in different packages. All 4 ACCEPT. The re-record
 against the SAME pinned binary (`v0.9.1-0.20261017225421-93432fd910fb`, built
 at the pinned rev per the fork recipe) took **149 groups** — the drift cost
 6 stale hashes and added 4 new ones (net −2). Gate green ×2 (`Found total 0`).
+
+**DONE 2026-11-06 (issue-sweep re-record, #75/#55/#54/#76/#49/#36):** the gate
+flagged ONE new group — `DefaultNavProps`'s signature line vs the new
+`navMobileMenuID`'s (`... NavProps {`), a signature-token false positive the
+appendix already classes as "signature tails", not duplicated logic. ACCEPT.
+The re-record against the SAME pinned binary
+(`v0.9.1-0.20261017225421-93432fd910fb`) took **145 groups** — it pruned four
+stale entries left by the tree movement since the 2026-11-02 record and added
+the one above. Gate green (`Found total 0`). The same session's
+`badgeContent` extraction (dot + label rendered from one source line) and the
+`statCardInteractiveClass` helper removed duplication outright, which is why
+the accepted set shrank rather than grew.
