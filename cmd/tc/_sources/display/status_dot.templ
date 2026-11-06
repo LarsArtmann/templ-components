@@ -16,6 +16,10 @@ const statusPillDotSize = "h-1.5 w-1.5"
 //
 // Without a Label the dot is decorative (aria-hidden) — pair it with your
 // own visible text.
+//
+// The wrapper owns the size and the layers inside it fill it (h-full w-full),
+// so BaseProps.Class resizes the whole dot — including the pulse ring — rather
+// than stretching an outer box around a dot stuck at the default diameter.
 templ StatusDot(props StatusDotProps) {
 	<span
 		if props.ID != "" {
@@ -33,9 +37,9 @@ templ StatusDot(props StatusDotProps) {
 		{ props.Attrs... }
 	>
 		if props.Pulse {
-			<span class={ "absolute inline-flex " + statusDotSize + " animate-ping rounded-full opacity-75 motion-reduce:animate-none " + statusToneBg(props.Tone) }></span>
+			<span class={ "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 motion-reduce:animate-none " + statusToneBg(props.Tone) }></span>
 		}
-		<span class={ "relative inline-flex " + statusDotSize + " rounded-full " + statusToneBg(props.Tone) }></span>
+		<span class={ "relative inline-flex h-full w-full rounded-full " + statusToneBg(props.Tone) }></span>
 		if props.Label != "" {
 			<span class="sr-only">{ props.Label }</span>
 		}

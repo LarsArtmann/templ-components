@@ -530,8 +530,11 @@ itself is CSP-clean.
 
 > **Caveat — a few components emit inline `style=` attributes for runtime
 > values:** `feedback.ProgressBar` and `feedback.LoadingOverlay` (bar width),
-> `display.BarChart` (bar height/width), `display.Heatmap` (cell background),
-> and `display.SegmentBar` (segment proportions). A strict policy
+> `display.BarChart` (bar height/width), `display.Grid` in auto-fit mode
+> (`--tc-grid-min`, the minimum column width — a runtime-composed class would
+> be invisible to the scanner, so the class stays literal and the value rides
+> the custom property), `display.Heatmap` (cell background), and
+> `display.SegmentBar` (segment proportions). A strict policy
 > of `style-src 'self'` or `style-src 'nonce-…'` **blocks** those attributes, so
 > the dynamic value silently does not apply. If you use any of these under a
 > strict `style-src`, allow `style-src-attr 'unsafe-inline'` (scoped to style

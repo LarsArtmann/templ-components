@@ -20,6 +20,7 @@ import (
 // by accident. Add a file here only with a matching docs update.
 var inlineStyleAllowlist = map[string]string{
 	filepath.Join("display", "bar_chart.templ"):      "runtime bar height/width",
+	filepath.Join("display", "grid.templ"):           "runtime auto-fit minimum column width",
 	filepath.Join("display", "heatmap.templ"):        "runtime cell background",
 	filepath.Join("feedback", "loading.templ"):       "runtime overlay progress width",
 	filepath.Join("display", "loading_dialog.templ"): "runtime dialog progress width",
