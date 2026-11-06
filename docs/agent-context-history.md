@@ -498,3 +498,16 @@ prefix behavior-sensitive probes with `env -u GOEXPERIMENT`.
 - **Scanner (one-liner hygiene check):** flag table rows whose raw-pipe count
   differs from their block's header — the awk lives in this repo's history;
   hits are either unescaped pipes (fix) or already-escaped rows (safe).
+
+## 2026-11-06 — PR #77/#80 merge session: history-surgery and artifact lessons (§merge77)
+
+The design-token-axes branch (22 commits incl. daemon noise) landed as ONE squash (`6082430e`) on top of #80 (`41321644`); ten fixed issues closed with grep-verified evidence comments. Lessons that generalize:
+
+- **GIT_SEQUENCE_EDITOR scripting can SILENTLY NO-OP.** A sed-based fixup editor ran (proven via logging editor + isolated `printf | sed` verification) yet never modified the real rebase todo — twice. Do not debug interactively mid-task: the deterministic replacement is `git branch backup/<x> <tip> && git reset --soft origin/master && git commit` (byte-verify with `git diff <tip> HEAD`), fold stragglers with `--amend`.
+- **The BuildFlow daemon follows worktrees.** It committed in-progress doc edits inside a persistent worktree mid-rebase (`chore: auto-commit … on <branch>`). Expect daemon commits anywhere; fold deliberately (soft-reset + amend) instead of fighting them.
+- **Rebase/merge can silently DROP sections.** One replay lost master's six `[Unreleased] → ### Fixed` bullets; the branch diff had deleted ADR-0009's DONE paragraph outright. Post-rebase ritual: diff CHANGELOG/ADR/AGENTS/FEATURES vs the base and require additivity.
+- **Resolve artifact conflicts by REGENERATING at the tip**, never by picking the upstream side — a hand-picked `sales.golden` kept stale `blue-*`/137 content and was caught only by ci-repro (regen produced `accent-*`/138).
+- **`git status` M can be a stat-cache false alarm** (byte-identical minified app.css). Confirm with `cmp <file> <(git show HEAD:<path>)` before acting.
+- **ci-repro as the pre-push gate is non-negotiable:** "mergeable" API state and a prior session's "verified" claim both missed the stale golden; only `scripts/ci-repro.sh --lint --css --website` caught it. Push within minutes of `VERDICT: PASS` (the daemon races commits onto master).
+- **/tmp is volatile:** the pinned art-dupl binary vanished between sessions and had to be rebuilt at the pinned rev via `scripts/pinned-art-dupl.sh`. Candidate improvement: a persistent cache path or nix derivation (TODO row).
+- **Branch-content verification before deletion:** squash merges make branches read "unmerged" — use tree-diff (`git diff <branch>^{tree} <master-tip>^{tree}`) or `git cherry` (patch-id) to prove content is in master; the backup trees differed from master ONLY by the four documented reconciliation files (stale content safe to lose). `revert/templ-pin-1020` stays: unmerged by design.
