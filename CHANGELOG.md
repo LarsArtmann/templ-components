@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Accessible clickable-rows recipe** (`docs/recipes/accessible-clickable-rows.md`).
+  `TableRow.Href` is a pointer/keyboard convenience, not the accessible link
+  — a `<tr>` cannot carry `role="link"`, so a screen reader never hears one.
+  The recipe pairs every clickable row with a real `<a>` in a cell, shows the
+  stretched-link variation with its tradeoffs (one per row, text selection,
+  hover), and names the anti-patterns (#76 follow-up, TODO #501).
 - **The consumer skill stamps its released API.** `skill/SKILL.md` now opens
   with the last released version (`Released API: v1.27.0`) plus a
   package-qualification note (`FilterBar` is `forms.FilterBar`, not
