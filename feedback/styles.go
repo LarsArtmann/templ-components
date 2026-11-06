@@ -4,6 +4,7 @@ package feedback
 import (
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // FeedbackType represents the severity/visual style of a feedback component.
@@ -23,43 +24,22 @@ type feedbackStyleSet struct {
 	Border, BG, Text, Icon string
 }
 
-// feedbackStyleMap is the single source of truth for feedback styles.
-// Shared by Alert and Toast to guarantee visual consistency for the same severity.
-//
-//nolint:gochecknoglobals // Package-level lookup table; Tailwind class strings are intentionally inline
-var feedbackStyleMap = map[FeedbackType]feedbackStyleSet{
-	FeedbackSuccess: {
-		Border: "border-green-200 dark:border-green-800",
-		BG:     "bg-green-50 dark:bg-green-900/20",
-		Text:   "text-green-800 dark:text-green-200",
-		Icon:   "text-green-600 dark:text-green-400",
-	},
-	FeedbackError: {
-		Border: "border-red-200 dark:border-red-800",
-		BG:     "bg-red-50 dark:bg-red-900/20",
-		Text:   "text-red-800 dark:text-red-200",
-		Icon:   "text-red-600 dark:text-red-400",
-	},
-	FeedbackWarning: {
-		Border: "border-amber-200 dark:border-amber-800",
-		BG:     "bg-amber-50 dark:bg-amber-900/20",
-		Text:   "text-amber-800 dark:text-amber-200",
-		Icon:   "text-amber-600 dark:text-amber-400",
-	},
-	FeedbackInfo: {
-		Border: "border-blue-200 dark:border-blue-800",
-		BG:     "bg-blue-50 dark:bg-blue-900/20",
-		Text:   "text-blue-800 dark:text-blue-200",
-		Icon:   "text-blue-600 dark:text-blue-400",
-	},
-}
+// feedbackStyle derives the style set for t from the canonical tone table
+// (utils/tone) — the ADR-0049 collapse: the former feedbackStyleMap was
+// the tone table's anchor dialect, and TestToneAdapterEquivalence keeps
+// those byte-for-byte expectations as literals, so the derived classes
+// still ship exactly the strings feedback has always rendered. Semantic
+// severities stay palette classes (ADR-0044 decision 3); only the brand
+// axis emits token families.
+func feedbackStyle(t FeedbackType) feedbackStyleSet {
+	s := tone.For(t.Tone())
 
-//nolint:gochecknoglobals // Package-level default fallback
-var feedbackStyleDefault = feedbackStyleSet{
-	Border: "border-gray-200 dark:border-gray-700",
-	BG:     "bg-gray-50 dark:bg-gray-800/50",
-	Text:   "text-gray-800 dark:text-gray-200",
-	Icon:   "text-gray-600 dark:text-gray-400",
+	return feedbackStyleSet{
+		Border: s.Border.Classes(),
+		BG:     s.BGTint.Classes(),
+		Text:   s.Text.Classes(),
+		Icon:   s.Icon.Classes(),
+	}
 }
 
 // feedbackIconMap is the single source of truth for feedback icons.
@@ -71,10 +51,6 @@ var feedbackIconMap = map[FeedbackType]icons.Name{
 	FeedbackError:   icons.XCircle,
 	FeedbackWarning: icons.ExclamationTriangle,
 	FeedbackInfo:    icons.Information,
-}
-
-func feedbackStyle(t FeedbackType) feedbackStyleSet {
-	return utils.Lookup(feedbackStyleMap, t, feedbackStyleDefault)
 }
 
 // feedbackRole maps the feedback type onto the ARIA role: errors announce
@@ -97,7 +73,10 @@ func feedbackIcon(t FeedbackType) icons.Name {
 // FeedbackTypeIsValid reports whether the FeedbackType value is one of the
 // four defined constants (Success, Error, Warning, Info).
 func FeedbackTypeIsValid(t FeedbackType) bool {
-	_, ok := feedbackStyleMap[t]
-
-	return ok
+	switch t {
+	case FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo:
+		return true
+	default:
+		return false
+	}
 }

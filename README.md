@@ -84,7 +84,7 @@ UI in a Go binary — without adopting a frontend stack.
 - **Security and polish are defaults, not TODOs.** CSP-nonce threading on every script, dark mode and `prefers-reduced-motion` support on every component, logical RTL properties throughout — each enforced by a regression test, not a code-review memo. Every nonce-consuming component is inventoried in [`docs/nonce-consumers.md`](docs/nonce-consumers.md), and `tc doctor` scans your repo for nonce-less call sites.
 - **Pay for what you use.** Pure Go + templ + Tailwind CSS v4 in seven small modules; import one package or all of them.
 
-137 server-rendered components · 74 typed string enums (73 with IsValid()) · 102 SVG icons — in one `go get`.
+138 server-rendered components · 76 typed string enums (75 with IsValid()) · 102 SVG icons — in one `go get`.
 
 The long-form pitch, with screenshots: [Why templ-components](https://templcomponents.lars.software/sales).
 
@@ -109,7 +109,7 @@ Components build on the native platform first — no polyfills, no framework JS:
 | -------------- | --------------------------------------------------------------------------------- |
 | Components     | 124                                                                               |
 | SVG icons      | 102                                                                               |
-| Typed enums    | 74 (73 with IsValid)                                                              |
+| Typed enums    | 76 (75 with IsValid)                                                              |
 | Packages       | 19 (across 7 Go modules)                                                          |
 | Tests          | ~1,700 test functions + ~1,800 subtests                                           |
 | Visual goldens | 206 pixel-level regression tests (chromedp)                                       |
@@ -207,7 +207,7 @@ Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, toolt
 })
 ```
 
-### `feedback` — User Feedback (14 components)
+### `feedback` — User Feedback (15 components)
 
 Alerts, toasts, spinners, progress bars, skeletons, step indicators, loading states.
 
@@ -358,7 +358,7 @@ mux.Handle("/api/thing", errorpage.ErrorHandler(err, errorpage.ErrorHandlerConfi
 
 ## Design Principles
 
-**Type-safe.** 74 typed string enums (73 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 76 typed string enums (75 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation, and screen-reader text across all interactive components. Native `<dialog>` for modals, `<details>` for accordions, `<search>` landmark for search inputs.
 

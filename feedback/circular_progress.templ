@@ -27,7 +27,8 @@ type CircularProgressProps struct {
 	// ShowLabel renders the numeric percentage in the centre.
 	ShowLabel bool
 	// Color overrides the progress arc colour (Tailwind stroke utility).
-	// Defaults to text-blue-600 dark:text-blue-500.
+	// Defaults to text-accent-600 dark:text-accent-500 (the ADR-0044/0049
+	// accent token family).
 	Color tone.ColorClass
 	// TrackColor overrides the background track colour.
 	// Defaults to text-gray-200 dark:text-gray-700.
@@ -38,7 +39,7 @@ type CircularProgressProps struct {
 func DefaultCircularProgressProps() CircularProgressProps {
 	return CircularProgressProps{
 		Size:       CircularProgressSizeMD,
-		Color:      "text-blue-600 dark:text-blue-500",
+		Color:      "text-accent-600 dark:text-accent-500",
 		TrackColor: "text-gray-200 dark:text-gray-700",
 	}
 }
@@ -75,7 +76,7 @@ templ CircularProgress(props CircularProgressProps) {
 		sizeClass := utils.Lookup(circularProgressSizeLookup, props.Size, "w-12 h-12")
 		color := string(props.Color)
 		if color == "" {
-			color = "text-blue-600 dark:text-blue-500"
+			color = "text-accent-600 dark:text-accent-500"
 		}
 		trackColor := string(props.TrackColor)
 		if trackColor == "" {

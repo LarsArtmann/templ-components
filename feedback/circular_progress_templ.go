@@ -36,7 +36,8 @@ type CircularProgressProps struct {
 	// ShowLabel renders the numeric percentage in the centre.
 	ShowLabel bool
 	// Color overrides the progress arc colour (Tailwind stroke utility).
-	// Defaults to text-blue-600 dark:text-blue-500.
+	// Defaults to text-accent-600 dark:text-accent-500 (the ADR-0044/0049
+	// accent token family).
 	Color tone.ColorClass
 	// TrackColor overrides the background track colour.
 	// Defaults to text-gray-200 dark:text-gray-700.
@@ -47,7 +48,7 @@ type CircularProgressProps struct {
 func DefaultCircularProgressProps() CircularProgressProps {
 	return CircularProgressProps{
 		Size:       CircularProgressSizeMD,
-		Color:      "text-blue-600 dark:text-blue-500",
+		Color:      "text-accent-600 dark:text-accent-500",
 		TrackColor: "text-gray-200 dark:text-gray-700",
 	}
 }
@@ -99,7 +100,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 		sizeClass := utils.Lookup(circularProgressSizeLookup, props.Size, "w-12 h-12")
 		color := string(props.Color)
 		if color == "" {
-			color = "text-blue-600 dark:text-blue-500"
+			color = "text-accent-600 dark:text-accent-500"
 		}
 		trackColor := string(props.TrackColor)
 		if trackColor == "" {
@@ -121,7 +122,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.ID).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 87, Col: 16}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 88, Col: 16}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 				if templ_7745c5c3_Err != nil {
@@ -165,7 +166,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%d", value)).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 92, Col: 42}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 93, Col: 42}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -183,7 +184,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.AriaLabel).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 96, Col: 31}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 97, Col: 31}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 				if templ_7745c5c3_Err != nil {
@@ -201,7 +202,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%d%% complete", value)).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 98, Col: 51}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 99, Col: 51}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 				if templ_7745c5c3_Err != nil {
@@ -277,7 +278,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%.2f", radius)).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 105, Col: 35}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 106, Col: 35}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 			if templ_7745c5c3_Err != nil {
@@ -290,7 +291,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%.2f", strokeWidth)).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 107, Col: 51}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 108, Col: 51}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 			if templ_7745c5c3_Err != nil {
@@ -335,7 +336,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 		var templ_7745c5c3_Var14 string
 		templ_7745c5c3_Var14, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%.2f", radius)).Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 113, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 114, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 		if templ_7745c5c3_Err != nil {
@@ -348,7 +349,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%.2f", strokeWidth)).Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 115, Col: 51}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 116, Col: 51}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 		if templ_7745c5c3_Err != nil {
@@ -361,7 +362,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%.2f", circumference)).Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 117, Col: 57}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 118, Col: 57}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
 		if templ_7745c5c3_Err != nil {
@@ -374,7 +375,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%.2f", dashOffset)).Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 118, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 119, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 		if templ_7745c5c3_Err != nil {
@@ -392,7 +393,7 @@ func CircularProgress(props CircularProgressProps) templ.Component {
 			var templ_7745c5c3_Var18 string
 			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d%%", value))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 124, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/circular_progress.templ`, Line: 125, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 			if templ_7745c5c3_Err != nil {

@@ -16,7 +16,7 @@ const (
 	borderRedClass      = "border-red-200 dark:border-red-800"
 	borderAmberClass    = "border-amber-200 dark:border-amber-800"
 	borderBlueClass     = "border-blue-200 dark:border-blue-800"
-	stepLineActiveClass = "bg-blue-600 dark:bg-blue-500"
+	stepLineActiveClass = "bg-accent-600 dark:bg-accent-500"
 	textBlueInfoClass   = "text-blue-600 dark:text-blue-400"
 )
 
@@ -246,10 +246,10 @@ func TestStepCircleClass(t *testing.T) {
 		state StepState
 		want  string
 	}{
-		{StepStateComplete, "bg-blue-600 text-white dark:bg-blue-500"},
+		{StepStateComplete, "bg-accent-600 text-white dark:bg-accent-500"},
 		{
 			StepStateCurrent,
-			"bg-white dark:bg-gray-800 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400",
+			"bg-white dark:bg-gray-800 border-2 border-accent-600 text-accent-600 dark:border-accent-400 dark:text-accent-400",
 		},
 		{StepStatePending, "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"},
 	}

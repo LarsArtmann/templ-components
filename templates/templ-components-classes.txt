@@ -366,7 +366,7 @@ templ Avatar(props AvatarProps) {
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			class={ utils.Class("relative inline-flex items-center justify-center bg-blue-600 text-white dark:bg-blue-500 font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class) }
+			class={ utils.Class("relative inline-flex items-center justify-center bg-accent-600 text-white dark:bg-accent-500 font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}
@@ -375,7 +375,7 @@ templ Avatar(props AvatarProps) {
 			if props.Initials != "" {
 				{ props.Initials }
 			} else {
-				<svg class="h-1/2 w-1/2 text-blue-200" fill="currentColor" viewBox="0 0 24 24">
+				<svg class="h-1/2 w-1/2 text-accent-200" fill="currentColor" viewBox="0 0 24 24">
 					<path d={ svg.PathAvatarFill }></path>
 				</svg>
 			}
@@ -512,7 +512,7 @@ type badgeStyle struct {
 }
 
 var badgeStyleMap = map[BadgeType]badgeStyle{
-	BadgePrimary: {"bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300", "bg-blue-500"},
+	BadgePrimary: {"bg-accent-100 text-accent-800 dark:bg-accent-900/30 dark:text-accent-300", "bg-accent-500"},
 	BadgeSuccess: {"bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300", "bg-green-500"},
 	BadgeWarning: {"bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300", "bg-amber-500"},
 	BadgeError:   {"bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300", "bg-red-500"},
@@ -654,7 +654,7 @@ type BarChartProps struct {
 	Max float64
 
 	// BarColor is the default bg-* literal for bars without a per-bar Color
-	// override. Default: "bg-blue-600 dark:bg-blue-500".
+	// override. Default: "bg-accent-600 dark:bg-accent-500".
 	BarColor tone.ColorClass
 
 	// LabelWidth is the label column width for horizontal charts (Tailwind
@@ -686,7 +686,7 @@ type BarChartProps struct {
 }
 
 const (
-	defaultBarColor    = "bg-blue-600 dark:bg-blue-500"
+	defaultBarColor    = "bg-accent-600 dark:bg-accent-500"
 	defaultEmptyMsg    = "No data"
 	defaultLabelWidth  = "w-32"
 	defaultMinBarWidth = "min-w-12"
@@ -782,7 +782,7 @@ templ BarChart(props BarChartProps) {
 		}
 		barColor := string(props.BarColor)
 		if barColor == "" {
-			barColor = "bg-blue-600 dark:bg-blue-500"
+			barColor = "bg-accent-600 dark:bg-accent-500"
 		}
 		labelWidth := props.LabelWidth
 		if labelWidth == "" {
@@ -837,7 +837,7 @@ templ BarChart(props BarChartProps) {
 					}
 					<div class="flex w-full flex-1 items-end">
 						<div
-							class={ utils.Class("w-full rounded-t bg-blue-600 dark:bg-blue-500", barColor, string(bar.Color)) }
+							class={ utils.Class("w-full rounded-t bg-accent-600 dark:bg-accent-500", barColor, string(bar.Color)) }
 							style={ "height:" + barPercentHeight(bar.Value, maxVal) }
 						></div>
 					</div>
@@ -866,7 +866,7 @@ templ BarChart(props BarChartProps) {
 					if bar.Href != "" {
 						<a
 							href={ templ.SafeURL(bar.Href) }
-							class={ utils.Class("shrink-0 truncate text-xs font-medium text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400", labelWidth) }
+							class={ utils.Class("shrink-0 truncate text-xs font-medium text-gray-700 hover:text-accent-600 dark:text-gray-300 dark:hover:text-accent-400", labelWidth) }
 							title={ bar.Label }
 						>
 							{ truncateLabel(bar.Label, 22) }
@@ -878,7 +878,7 @@ templ BarChart(props BarChartProps) {
 					}
 					<div class="flex-1 overflow-hidden rounded bg-gray-100 dark:bg-gray-800">
 						<div
-							class={ utils.Class("h-5 rounded bg-blue-600 dark:bg-blue-500", barColor, string(bar.Color)) }
+							class={ utils.Class("h-5 rounded bg-accent-600 dark:bg-accent-500", barColor, string(bar.Color)) }
 							style={ "width:" + barPercentWidth(bar.Value, maxVal) }
 						></div>
 					</div>
@@ -1103,11 +1103,11 @@ func DefaultButtonProps() ButtonProps {
 //
 //nolint:gochecknoglobals // Package-level lookup table for button variants
 var buttonVariantLookup = map[ButtonType]string{
-	ButtonPrimary:   "bg-blue-600 text-white hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-500",
+	ButtonPrimary:   "bg-accent-600 text-white hover:bg-accent-500 dark:bg-accent-500 dark:hover:bg-accent-400 focus-visible:outline-accent-600 dark:focus-visible:outline-accent-500",
 	ButtonSecondary: "bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700",
 	ButtonDanger:    "bg-red-600 text-white hover:bg-red-500 dark:bg-red-500 dark:hover:bg-red-400 focus-visible:outline-red-600 dark:focus-visible:outline-red-500",
 	ButtonGhost:     "bg-transparent text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700",
-	ButtonLink:      "bg-transparent text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 underline-offset-2 hover:underline",
+	ButtonLink:      "bg-transparent text-accent-600 hover:text-accent-500 dark:text-accent-400 dark:hover:text-accent-300 underline-offset-2 hover:underline",
 
 	ButtonOutlineDanger:  "bg-transparent text-red-600 ring-1 ring-inset ring-red-300 hover:bg-red-50 dark:text-red-400 dark:ring-red-800 dark:hover:bg-red-900/20 focus-visible:outline-red-600 dark:focus-visible:outline-red-400",
 	ButtonOutlineWarning: "bg-transparent text-amber-700 ring-1 ring-inset ring-amber-300 hover:bg-amber-50 dark:text-amber-400 dark:ring-amber-800 dark:hover:bg-amber-900/20 focus-visible:outline-amber-600 dark:focus-visible:outline-amber-400",
@@ -1505,7 +1505,7 @@ templ StatCard(props StatCardProps) {
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			class={ utils.Class(cardShellClass+" p-5 transition-shadow motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 hover:shadow-md dark:hover:shadow-black/20 cursor-pointer", props.Class) }
+			class={ utils.Class(cardShellClass+" p-5 transition-shadow motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400 hover:shadow-md dark:hover:shadow-black/20 cursor-pointer", props.Class) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}
@@ -1639,7 +1639,7 @@ import (
 // while the BUTTON carries the target. Mirrored verbatim in the carousel JS
 // (activeDot/idleDot) — keep the three sites in sync.
 const (
-	carouselDotActiveClass = "h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500"
+	carouselDotActiveClass = "h-2 w-2 rounded-full bg-accent-600 dark:bg-accent-500"
 	carouselDotIdleClass   = "h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60"
 )
 
@@ -1679,7 +1679,7 @@ templ Carousel(props CarouselProps) {
 	{{ id := utils.EnsureID("carousel", props.ID) }}
 	<div
 		id={ id }
-		class={ utils.Class("relative rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900", props.Class) }
+		class={ utils.Class("relative rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900", props.Class) }
 		data-tc-carousel={ id }
 		role="region"
 		aria-roledescription="carousel"
@@ -1760,7 +1760,7 @@ package display
 // script for non-CSP consumers — the omit-empty rule (issues #7/#9/#24).
 const carouselJS = `			(function(){
 			if(window.tcCarouselAttached)return;window.tcCarouselAttached=true;
-			var activeDot='h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500';
+			var activeDot='h-2 w-2 rounded-full bg-accent-600 dark:bg-accent-500';
 			var idleDot='h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60';
 			function tcCarouselTrack(c){return c.querySelector('[data-tc-carousel-track]');}
 			function tcCarouselIndex(track){return Math.round(track.scrollLeft/track.offsetWidth);}
@@ -3057,7 +3057,7 @@ templ CommandPalette(props CommandPaletteProps) {
 									role="option"
 									aria-selected="false"
 									tabindex="-1"
-									class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-700 data-[tc-palette-active=true]:bg-blue-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-200 dark:data-[tc-palette-active=true]:bg-gray-800"
+									class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-700 data-[tc-palette-active=true]:bg-accent-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-200 dark:data-[tc-palette-active=true]:bg-gray-800"
 									data-tc-palette-item
 									data-tc-palette-hidden="false"
 								>
@@ -3073,7 +3073,7 @@ templ CommandPalette(props CommandPaletteProps) {
 									role="option"
 									aria-selected="false"
 									tabindex="-1"
-									class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-start text-sm text-gray-700 data-[tc-palette-active=true]:bg-blue-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-200 dark:data-[tc-palette-active=true]:bg-gray-800"
+									class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-start text-sm text-gray-700 data-[tc-palette-active=true]:bg-accent-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-200 dark:data-[tc-palette-active=true]:bg-gray-800"
 									data-tc-palette-item
 									data-tc-palette-hidden="false"
 									{ item.Wire.Attributes()... }
@@ -3089,7 +3089,7 @@ templ CommandPalette(props CommandPaletteProps) {
 									role="option"
 									aria-selected="false"
 									tabindex="-1"
-									class="flex items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-500 data-[tc-palette-active=true]:bg-blue-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-400"
+									class="flex items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-500 data-[tc-palette-active=true]:bg-accent-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-400"
 									data-tc-palette-item
 									data-tc-palette-hidden="false"
 								>
@@ -5937,13 +5937,13 @@ func kanbanColumnBodyClass() string {
 
 // kanbanCardClass returns the Tailwind classes for a card.
 func kanbanCardClass(extra string) string {
-	return utils.Class("group relative cursor-grab rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover:border-blue-300 active:cursor-grabbing dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600", extra)
+	return utils.Class("group relative cursor-grab rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover:border-accent-300 active:cursor-grabbing dark:border-gray-700 dark:bg-gray-800 dark:hover:border-accent-600", extra)
 }
 
 // kanbanMoveButtonClass returns the Tailwind classes for the per-card
 // keyboard move buttons.
 func kanbanMoveButtonClass() string {
-	return "inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus-visible:ring-blue-400"
+	return "inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus-visible:ring-accent-400"
 }
 
 // DefaultKanbanBoardProps returns sensible defaults.
@@ -6093,7 +6093,7 @@ templ kanbanCardInner(card KanbanCard, columnIndex, columnCount int, wired bool)
 				<a
 					href={ templ.SafeURL(card.Href) }
 					data-tc-kanban-title
-					class="text-sm font-medium text-gray-900 hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-white dark:hover:text-blue-400 dark:focus-visible:ring-blue-400"
+					class="text-sm font-medium text-gray-900 hover:text-accent-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:text-white dark:hover:text-accent-400 dark:focus-visible:ring-accent-400"
 				>
 					{ card.Title }
 				</a>
@@ -6261,7 +6261,7 @@ import (
 
 // lightboxControlClass is the shared control-button style (prev/next/rotate/
 // zoom/close): ghost buttons over the dark overlay.
-const lightboxControlClass = "inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0 cursor-pointer"
+const lightboxControlClass = "inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0 cursor-pointer"
 
 // Lightbox renders a native-dialog image viewer.
 //
@@ -6289,7 +6289,7 @@ templ Lightbox(props LightboxProps) {
 					<button
 						type="button"
 						data-tc-lightbox-open={ strconv.Itoa(i) }
-						class="group cursor-pointer overflow-hidden rounded-md border border-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-gray-700 dark:focus-visible:ring-blue-400"
+						class="group cursor-pointer overflow-hidden rounded-md border border-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:border-gray-700 dark:focus-visible:ring-accent-400"
 						aria-label={ "Open image: " + img.Alt }
 					>
 						<img
@@ -6305,7 +6305,7 @@ templ Lightbox(props LightboxProps) {
 			<button
 				type="button"
 				data-tc-lightbox-open="0"
-				class="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700 dark:hover:bg-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+				class="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-accent-600 dark:bg-accent-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-accent-700 dark:hover:bg-accent-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
 			>
 				@icons.Icon(icons.Photo, "h-4 w-4")
 				{ props.TriggerLabel }
@@ -6797,8 +6797,7 @@ templ ListNote(props ListNoteProps) {
 package display
 
 import (
-	"fmt"
-
+	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/svg"
 )
@@ -6838,18 +6837,18 @@ func DefaultLoadingDialogProps() LoadingDialogProps {
 templ LoadingDialog(props LoadingDialogProps) {
 	{{ id := utils.EnsureID("loading-dialog", props.ID) }}
 	@overlayShell(overlayShellProps{
-		id:        id,
-		open:      props.Open,
-		ariaLabel: utils.Coalesce(props.AriaLabel, props.Message, props.Title, "Loading"),
-		kind:      OverlayModal,
-		nonce:     props.Nonce,
+		id:          id,
+		open:        props.Open,
+		ariaLabel:   utils.Coalesce(props.AriaLabel, props.Message, props.Title, "Loading"),
+		kind:        OverlayModal,
+		nonce:       props.Nonce,
 		dialogClass: utils.Class("tc-modal bg-white dark:bg-gray-900 rounded-lg shadow-xl dark:shadow-black/20 max-w-sm w-full mx-4 overflow-hidden print:hidden", props.Class),
-		attrs:     props.Attrs,
+		attrs:       props.Attrs,
 	}) {
 		<div class="py-6 text-center" aria-busy="true">
-			<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4">
+			<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-accent-100 dark:bg-accent-900/30 mb-4">
 				<svg
-					class="animate-spin motion-reduce:animate-none h-6 w-6 text-blue-600 dark:text-blue-400"
+					class="animate-spin motion-reduce:animate-none h-6 w-6 text-accent-600 dark:text-accent-400"
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
 					viewBox="0 0 24 24"
@@ -6861,18 +6860,7 @@ templ LoadingDialog(props LoadingDialogProps) {
 			if props.Message != "" {
 				<p class="text-lg font-medium text-gray-900 dark:text-white mb-2">{ props.Message }</p>
 			}
-			if props.ShowProgress {
-				{{ clamped := max(0, min(100, props.Progress)) }}
-				<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
-					<div
-						class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
-						style={ fmt.Sprintf("width: %d%%", clamped) }
-					></div>
-				</div>
-				<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", clamped) }</p>
-			} else {
-				<p class="text-sm text-gray-500 dark:text-gray-400">Please wait...</p>
-			}
+			@feedback.LoadingProgress(props.ShowProgress, props.Progress)
 		</div>
 	}
 }
@@ -8991,7 +8979,7 @@ templ dialogHeader(title, titleID string, kind OverlayKind) {
 			<h2 id={ titleID } class="text-base font-semibold text-gray-900 dark:text-white">{ title }</h2>
 			<button
 				type="button"
-				class="rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+				class="rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-accent-500 dark:focus:ring-accent-400"
 				data-tc-close={ string(kind) }
 				aria-label="Close"
 			>
@@ -9741,7 +9729,7 @@ templ Table(props TableProps) {
 									class={ utils.Class(tableCellPaddingClass(props.CellPadding), "text-start font-semibold text-gray-900 dark:text-white") }
 								>
 									if th.Sortable && th.Href != "" {
-										<a href={ templ.SafeURL(th.Href) } class="inline-flex items-center gap-1 py-1 hover:text-blue-600 dark:hover:text-blue-400">
+										<a href={ templ.SafeURL(th.Href) } class="inline-flex items-center gap-1 py-1 hover:text-accent-600 dark:hover:text-accent-400">
 											{ th.Label }{ sortIndicator(th.SortDirection) }
 										</a>
 									} else {
@@ -10167,13 +10155,13 @@ templ Tabs(props TabsProps) {
 					{{ wired := tabsWiredAttrs(props.Wire, tab.ID, props.ID) }}
 					if props.Variant == TabsPills {
 						@tabLink(tab, tab.Content != nil, active,
-							"rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-2 text-sm font-medium text-white",
+							"rounded-md bg-accent-600 dark:bg-accent-500 px-3 py-2 text-sm font-medium text-white",
 							"rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
 							wired,
 						)
 					} else {
 						@tabLink(tab, tab.Content != nil, active,
-							"whitespace-nowrap border-b-2 border-blue-500 px-1 py-4 text-sm font-medium text-blue-600 dark:text-blue-400",
+							"whitespace-nowrap border-b-2 border-accent-500 px-1 py-4 text-sm font-medium text-accent-600 dark:text-accent-400",
 							"whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200",
 							wired,
 						)
@@ -10605,7 +10593,8 @@ type CircularProgressProps struct {
 	// ShowLabel renders the numeric percentage in the centre.
 	ShowLabel bool
 	// Color overrides the progress arc colour (Tailwind stroke utility).
-	// Defaults to text-blue-600 dark:text-blue-500.
+	// Defaults to text-accent-600 dark:text-accent-500 (the ADR-0044/0049
+	// accent token family).
 	Color tone.ColorClass
 	// TrackColor overrides the background track colour.
 	// Defaults to text-gray-200 dark:text-gray-700.
@@ -10616,7 +10605,7 @@ type CircularProgressProps struct {
 func DefaultCircularProgressProps() CircularProgressProps {
 	return CircularProgressProps{
 		Size:       CircularProgressSizeMD,
-		Color:      "text-blue-600 dark:text-blue-500",
+		Color:      "text-accent-600 dark:text-accent-500",
 		TrackColor: "text-gray-200 dark:text-gray-700",
 	}
 }
@@ -10653,7 +10642,7 @@ templ CircularProgress(props CircularProgressProps) {
 		sizeClass := utils.Lookup(circularProgressSizeLookup, props.Size, "w-12 h-12")
 		color := string(props.Color)
 		if color == "" {
-			color = "text-blue-600 dark:text-blue-500"
+			color = "text-accent-600 dark:text-accent-500"
 		}
 		trackColor := string(props.TrackColor)
 		if trackColor == "" {
@@ -10764,8 +10753,8 @@ import (
 	"fmt"
 
 	"github.com/larsartmann/templ-components/utils"
-	"github.com/larsartmann/templ-components/utils/tone"
 	"github.com/larsartmann/templ-components/utils/svg"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // SpinnerSize defines the size of a loading spinner
@@ -10817,7 +10806,7 @@ func DefaultSpinnerProps() SpinnerProps {
 
 // Spinner renders a simple animated loading spinner
 //
-//	@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"})
+//	@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-accent-600 dark:text-accent-400"})
 templ Spinner(props SpinnerProps) {
 	<svg
 		class={ utils.Class("animate-spin motion-reduce:animate-none", spinnerSizeClass(props.Size), string(props.Color), props.Class) }
@@ -10881,25 +10870,33 @@ templ LoadingOverlay(props LoadingOverlayProps) {
 			aria-label={ utils.Coalesce(props.AriaLabel, props.Message) }
 		>
 			<div class="text-center">
-				<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4">
-					@Spinner(SpinnerProps{Size: SpinnerMD, Color: "text-blue-600 dark:text-blue-400"})
+				<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-accent-100 dark:bg-accent-900/30 mb-4">
+					@Spinner(SpinnerProps{Size: SpinnerMD, Color: "text-accent-600 dark:text-accent-400"})
 				</div>
 				<h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{ props.Message }</h3>
-				if props.ShowProgress {
-					{{ clamped := max(0, min(100, props.Progress)) }}
-					<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
-						<div
-							class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
-							style={ fmt.Sprintf("width: %d%%", clamped) }
-						></div>
-					</div>
-					<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", clamped) }</p>
-				} else {
-					<p class="text-sm text-gray-500 dark:text-gray-400">Please wait...</p>
-				}
+				@LoadingProgress(props.ShowProgress, props.Progress)
 			</div>
 		</div>
 	</div>
+}
+
+// LoadingProgress renders the determinate progress bar with its percentage
+// caption, or the indeterminate "Please wait..." hint when showProgress is
+// false. Shared by LoadingOverlay and display.LoadingDialog so the bar markup,
+// the [0, 100] clamp, and the motion-reduce contract live in one place.
+templ LoadingProgress(showProgress bool, progress int) {
+	if showProgress {
+		{{ clamped := max(0, min(100, progress)) }}
+		<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+			<div
+				class="bg-accent-600 dark:bg-accent-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
+				style={ fmt.Sprintf("width: %d%%", clamped) }
+			></div>
+		</div>
+		<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", clamped) }</p>
+	} else {
+		<p class="text-sm text-gray-500 dark:text-gray-400">Please wait...</p>
+	}
 }
 
 // InlineLoading renders a compact inline loading indicator
@@ -10907,7 +10904,7 @@ templ LoadingOverlay(props LoadingOverlayProps) {
 //	@feedback.InlineLoading("Saving...")
 templ InlineLoading(message string) {
 	<div class="inline-flex items-center gap-2" aria-live="polite">
-		@Spinner(SpinnerProps{Size: SpinnerSM, Color: "text-blue-600 dark:text-blue-400"})
+		@Spinner(SpinnerProps{Size: SpinnerSM, Color: "text-accent-600 dark:text-accent-400"})
 		<span class="text-sm text-gray-600 dark:text-gray-400">{ message }</span>
 	</div>
 }
@@ -11075,7 +11072,7 @@ type ProgressBarProps struct {
 func DefaultProgressBarProps() ProgressBarProps {
 	return ProgressBarProps{
 		Size:  ProgressBarSizeMD,
-		Color: "bg-blue-600 dark:bg-blue-500",
+		Color: "bg-accent-600 dark:bg-accent-500",
 	}
 }
 
@@ -11288,24 +11285,24 @@ templ stepCircle(stepIndex int, state StepState) {
 
 func stepLineClass(state StepState) string {
 	if state != StepStatePending {
-		return "bg-blue-600 dark:bg-blue-500"
+		return "bg-accent-600 dark:bg-accent-500"
 	}
 	return "bg-gray-200 dark:bg-gray-700"
 }
 
 func stepCircleClass(state StepState) string {
 	if state == StepStateComplete {
-		return "bg-blue-600 text-white dark:bg-blue-500"
+		return "bg-accent-600 text-white dark:bg-accent-500"
 	}
 	if state == StepStateCurrent {
-		return "bg-white dark:bg-gray-800 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
+		return "bg-white dark:bg-gray-800 border-2 border-accent-600 text-accent-600 dark:border-accent-400 dark:text-accent-400"
 	}
 	return "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
 }
 
 func stepLabelClass(state StepState) string {
 	if state != StepStatePending {
-		return "text-blue-600 dark:text-blue-400"
+		return "text-accent-600 dark:text-accent-400"
 	}
 	return "text-gray-500 dark:text-gray-400"
 }
@@ -11317,6 +11314,7 @@ package feedback
 import (
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/tone"
 )
 
 // FeedbackType represents the severity/visual style of a feedback component.
@@ -11336,43 +11334,22 @@ type feedbackStyleSet struct {
 	Border, BG, Text, Icon string
 }
 
-// feedbackStyleMap is the single source of truth for feedback styles.
-// Shared by Alert and Toast to guarantee visual consistency for the same severity.
-//
-//nolint:gochecknoglobals // Package-level lookup table; Tailwind class strings are intentionally inline
-var feedbackStyleMap = map[FeedbackType]feedbackStyleSet{
-	FeedbackSuccess: {
-		Border: "border-green-200 dark:border-green-800",
-		BG:     "bg-green-50 dark:bg-green-900/20",
-		Text:   "text-green-800 dark:text-green-200",
-		Icon:   "text-green-600 dark:text-green-400",
-	},
-	FeedbackError: {
-		Border: "border-red-200 dark:border-red-800",
-		BG:     "bg-red-50 dark:bg-red-900/20",
-		Text:   "text-red-800 dark:text-red-200",
-		Icon:   "text-red-600 dark:text-red-400",
-	},
-	FeedbackWarning: {
-		Border: "border-amber-200 dark:border-amber-800",
-		BG:     "bg-amber-50 dark:bg-amber-900/20",
-		Text:   "text-amber-800 dark:text-amber-200",
-		Icon:   "text-amber-600 dark:text-amber-400",
-	},
-	FeedbackInfo: {
-		Border: "border-blue-200 dark:border-blue-800",
-		BG:     "bg-blue-50 dark:bg-blue-900/20",
-		Text:   "text-blue-800 dark:text-blue-200",
-		Icon:   "text-blue-600 dark:text-blue-400",
-	},
-}
+// feedbackStyle derives the style set for t from the canonical tone table
+// (utils/tone) — the ADR-0049 collapse: the former feedbackStyleMap was
+// the tone table's anchor dialect, and TestToneAdapterEquivalence keeps
+// those byte-for-byte expectations as literals, so the derived classes
+// still ship exactly the strings feedback has always rendered. Semantic
+// severities stay palette classes (ADR-0044 decision 3); only the brand
+// axis emits token families.
+func feedbackStyle(t FeedbackType) feedbackStyleSet {
+	s := tone.For(t.Tone())
 
-//nolint:gochecknoglobals // Package-level default fallback
-var feedbackStyleDefault = feedbackStyleSet{
-	Border: "border-gray-200 dark:border-gray-700",
-	BG:     "bg-gray-50 dark:bg-gray-800/50",
-	Text:   "text-gray-800 dark:text-gray-200",
-	Icon:   "text-gray-600 dark:text-gray-400",
+	return feedbackStyleSet{
+		Border: s.Border.Classes(),
+		BG:     s.BGTint.Classes(),
+		Text:   s.Text.Classes(),
+		Icon:   s.Icon.Classes(),
+	}
 }
 
 // feedbackIconMap is the single source of truth for feedback icons.
@@ -11384,10 +11361,6 @@ var feedbackIconMap = map[FeedbackType]icons.Name{
 	FeedbackError:   icons.XCircle,
 	FeedbackWarning: icons.ExclamationTriangle,
 	FeedbackInfo:    icons.Information,
-}
-
-func feedbackStyle(t FeedbackType) feedbackStyleSet {
-	return utils.Lookup(feedbackStyleMap, t, feedbackStyleDefault)
 }
 
 // feedbackRole maps the feedback type onto the ARIA role: errors announce
@@ -11410,9 +11383,12 @@ func feedbackIcon(t FeedbackType) icons.Name {
 // FeedbackTypeIsValid reports whether the FeedbackType value is one of the
 // four defined constants (Success, Error, Warning, Info).
 func FeedbackTypeIsValid(t FeedbackType) bool {
-	_, ok := feedbackStyleMap[t]
-
-	return ok
+	switch t {
+	case FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo:
+		return true
+	default:
+		return false
+	}
 }
 
 # ── feedback/toast.templ ─────────────────────────────────────────────
@@ -11447,7 +11423,7 @@ func toastJSStyles() string {
 	var b strings.Builder
 	b.WriteString("var tcToastColors = {")
 	for _, t := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
-		s := feedbackStyleMap[t]
+		s := feedbackStyle(t)
 		fmt.Fprintf(&b, "'%s': {border:'%s',bg:'%s',text:'%s',icon:'%s'},", t, s.Border, s.BG, s.Text, s.Icon)
 	}
 	b.WriteString("};")
@@ -19183,8 +19159,8 @@ var darkModeExceptions = []darkModeException{
 	{"display/count_badge.templ", "bg-red-500"},
 	// Action buttons have dark: variants on the same line
 	{"errorpage/styles.go", "ActionButton:"},
-	// Avatar silhouette icon — decorative, light-on-blue in both modes
-	{"display/avatar.templ", "text-blue-200"},
+	// Avatar silhouette icon — decorative, light-on-accent in both modes
+	{"display/avatar.templ", "text-accent-200"},
 }
 
 // isDarkModeException checks if a file/line matches any exception.
@@ -19257,7 +19233,10 @@ var darkModeNeutralRe = regexp.MustCompile(
 
 // semanticHueAlternation builds the hue alternation for the semantic-color
 // regex from the canonical tone table (utils/tone), minus gray — the
-// neutral rule owns grays. Deriving the list keeps the guard in lockstep
+// neutral rule owns grays. The accent TOKEN family (ADR-0049) joins the
+// list even though it is not a hue: its classes follow the same
+// complete-pair grammar, so the same-line dark: rule must cover them too.
+// Deriving the list keeps the guard in lockstep
 // with the palette by construction: the hand-maintained copy had drifted
 // and emerald/rose/violet/cyan/pink/purple plus bg-yellow escapes went
 // unnoticed (color-domain report H3, TODO #427).
@@ -19271,12 +19250,15 @@ func semanticHueAlternation() string {
 		hues = append(hues, string(h))
 	}
 
+	hues = append(hues, "accent") // accent token family (ADR-0049)
+
 	return strings.Join(hues, "|")
 }
 
 // darkModeSemanticRe matches semantic color classes (bg-blue-600,
-// text-emerald-500, …) for EVERY hue the library renders — derived from
-// utils/tone at init, never hand-maintained. The color-carrying
+// text-emerald-500, bg-accent-600, …) for EVERY hue the library renders
+// plus the accent token family — derived from utils/tone at init, never
+// hand-maintained. The color-carrying
 // ring-offset/shadow forms (ring-offset-blue-600, shadow-rose-500/20) are
 // covered too; shadow size classes (shadow-lg) are not colors.
 var darkModeSemanticRe = regexp.MustCompile(
@@ -20559,7 +20541,8 @@ type Utilities struct {
 
 // Repeated text literals shared across the hue and tone tables (goconst):
 // every hue's text slots share the same dark:400 class, and blue's light
-// 600 shade appears in both tables.
+// 600 shade appears in both tables. The accent token family (ADR-0049)
+// shares the same 600/dark:400 text grammar.
 const (
 	textBlue600    = "text-blue-600"
 	darkTextBlue   = "dark:text-blue-400"
@@ -20568,6 +20551,8 @@ const (
 	darkTextYellow = "dark:text-yellow-400"
 	darkTextAmber  = "dark:text-amber-400"
 	darkTextRed    = "dark:text-red-400"
+	textAccent600  = "text-accent-600"
+	darkTextAccent = "dark:text-accent-400"
 )
 
 // hueTable is the single source for per-hue literals. Keys are every Hue in
@@ -20757,8 +20742,8 @@ package tone
 // Surfaces is the per-tone rendering kit: which classes express a semantic
 // tone on each surface kind. Values are anchored to the feedback dialect
 // (Alert/Toast — the oldest and most-used semantic renderer), so
-// For(ToneSuccess).Text is exactly the Text class feedbackStyleMap carries
-// for success today.
+// For(ToneSuccess).Text is exactly the Text class feedback renders for
+// success today (byte-pinned by feedback.TestToneAdapterEquivalence).
 type Surfaces struct {
 	// Dot is a solid indicator dot (status dots, kanban lane dots).
 	Dot Pair
@@ -20776,11 +20761,12 @@ type Surfaces struct {
 	Icon Pair
 }
 
-// toneTable maps every Tone to its surfaces. The hue backing each tone:
+// toneTable maps every Tone to its surfaces. The pigment backing each tone:
 // neutral=gray, success=green, warning=amber (the #428 decision — the
 // one semantic warning hue; categorical yellow survives on the Hue axis
-// for Kanban/StatCard), danger=red, info=blue, accent=blue (the ADR-0044 accent
-// slot until v2 swaps it to the accent token family).
+// for Kanban/StatCard), danger=red, info=blue (semantic info keeps the
+// palette per ADR-0044 decision 3), accent=the accent token family
+// (ADR-0044/0049 emission — the v2 swap this table was built for).
 //
 // Neutral deviates from the uniform tint grammar where feedback's fallback
 // ships it: BGTint uses gray-800/50 in dark mode (not 900/30). Completeness
@@ -20835,13 +20821,13 @@ var toneTable = map[Tone]Surfaces{
 		Icon:     Pair{textBlue600, darkTextBlue},
 	},
 	ToneAccent: {
-		Dot:      hueTable[HueBlue].BGSolid,
-		Text:     Pair{"text-blue-800", "dark:text-blue-200"},
-		TextSoft: Pair{textBlue600, darkTextBlue},
-		Border:   Pair{"border-blue-200", "dark:border-blue-800"},
-		BGTint:   Pair{"bg-blue-50", "dark:bg-blue-900/20"},
-		BGSolid:  hueTable[HueBlue].BGSolidStrong,
-		Icon:     Pair{textBlue600, darkTextBlue},
+		Dot:      Pair{"bg-accent-500", "dark:bg-accent-400"},
+		Text:     Pair{textAccent600, darkTextAccent},
+		TextSoft: Pair{textAccent600, darkTextAccent},
+		Border:   Pair{"border-accent-200", "dark:border-accent-800"},
+		BGTint:   Pair{"bg-accent-50", "dark:bg-accent-900/20"},
+		BGSolid:  Pair{"bg-accent-600", "dark:bg-accent-400"},
+		Icon:     Pair{textAccent600, darkTextAccent},
 	},
 }
 
@@ -20853,6 +20839,83 @@ func For(t Tone) Surfaces {
 	}
 
 	return toneTable[ToneNeutral]
+}
+
+# ── utils/tone/tokens.go ─────────────────────────────────────────────
+package tone
+
+// SurfaceToken names a surface role: which LAYER of the interface a
+// background belongs to (canvas / panel / raised). Role-indexed, not
+// shade-indexed, so a brand specifies its light+dark surface pairs as
+// data: the token's CSS variable is defined in templates/custom.css and
+// re-defined under `.dark`, making one class self-dark-aware — no
+// dark: variant, no value duplication in Go (ADR-0049 §3).
+//
+// Class emission starts with the shell conversion (master plan S11);
+// until then nothing renders these classes. The type exists now so the
+// namespace contract is pinned before any component commits to it.
+type SurfaceToken string
+
+const (
+	// SurfaceToken0 is the page canvas behind everything.
+	SurfaceToken0 SurfaceToken = "surface-0"
+	// SurfaceToken1 is a panel resting on the canvas (cards, tables, sheets).
+	SurfaceToken1 SurfaceToken = "surface-1"
+	// SurfaceToken2 is a raised layer on a panel (inputs, popovers, tooltips).
+	SurfaceToken2 SurfaceToken = "surface-2"
+)
+
+// SurfaceTokenDefault is the canonical default (the canvas).
+const SurfaceTokenDefault = SurfaceToken0
+
+// SurfaceTokenIsValid reports whether t is a recognized SurfaceToken.
+func SurfaceTokenIsValid(t SurfaceToken) bool {
+	switch t {
+	case SurfaceToken0, SurfaceToken1, SurfaceToken2:
+		return true
+	default:
+		return false
+	}
+}
+
+// SurfaceTokens returns every SurfaceToken, in stacking order (canvas up).
+func SurfaceTokens() []SurfaceToken {
+	return []SurfaceToken{SurfaceToken0, SurfaceToken1, SurfaceToken2}
+}
+
+// InkToken names a text-ink role: how strongly text reads against the
+// surface it sits on. Same variable-flip contract as SurfaceToken
+// (ADR-0049 §3): the class is self-dark-aware, values are brand data.
+//
+// Class emission starts with the surface/ink sweeps (master plan S11);
+// the type pins the namespace contract now.
+type InkToken string
+
+const (
+	// InkToken1 is primary text (headings, body emphasis).
+	InkToken1 InkToken = "ink-1"
+	// InkToken2 is secondary text (body copy, descriptions).
+	InkToken2 InkToken = "ink-2"
+	// InkToken3 is muted text (meta, placeholders, footnotes).
+	InkToken3 InkToken = "ink-3"
+)
+
+// InkTokenDefault is the canonical default (primary).
+const InkTokenDefault = InkToken1
+
+// InkTokenIsValid reports whether t is a recognized InkToken.
+func InkTokenIsValid(t InkToken) bool {
+	switch t {
+	case InkToken1, InkToken2, InkToken3:
+		return true
+	default:
+		return false
+	}
+}
+
+// InkTokens returns every InkToken, in emphasis order (strong to muted).
+func InkTokens() []InkToken {
+	return []InkToken{InkToken1, InkToken2, InkToken3}
 }
 
 # ── utils/tone/tone.go ─────────────────────────────────────────────
@@ -20905,8 +20968,9 @@ const (
 	ToneDanger Tone = "danger"
 	// ToneInfo is neutral-emphasis communication (blue).
 	ToneInfo Tone = "info"
-	// ToneAccent is the brand/primary slot (blue today; becomes the ADR-0044
-	// accent token family at v2).
+	// ToneAccent is the brand/primary slot. It renders the accent token
+	// family (ADR-0044/0049) — one @theme override re-skins it; blue
+	// stays reserved for the semantic info tone.
 	ToneAccent Tone = "accent"
 )
 

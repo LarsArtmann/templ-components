@@ -19,7 +19,7 @@ func TestButtonRender(t *testing.T) {
 		output := utils.Render(t, Button(DefaultButtonProps()))
 		utils.AssertContains(t, output, `<button`)
 		utils.AssertContains(t, output, `type="button"`)
-		utils.AssertContains(t, output, `bg-blue-600`)
+		utils.AssertContains(t, output, `bg-accent-600`)
 	})
 
 	t.Run("button with text", func(t *testing.T) {
@@ -122,7 +122,7 @@ func TestButtonVariants(t *testing.T) {
 	t.Run("link button", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Button(ButtonProps{Text: "Link", Variant: ButtonLink}))
-		utils.AssertContains(t, output, `text-blue-600`)
+		utils.AssertContains(t, output, `text-accent-600`)
 	})
 }
 

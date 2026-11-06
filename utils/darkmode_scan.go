@@ -40,8 +40,8 @@ var darkModeExceptions = []darkModeException{
 	{"display/count_badge.templ", "bg-red-500"},
 	// Action buttons have dark: variants on the same line
 	{"errorpage/styles.go", "ActionButton:"},
-	// Avatar silhouette icon — decorative, light-on-blue in both modes
-	{"display/avatar.templ", "text-blue-200"},
+	// Avatar silhouette icon — decorative, light-on-accent in both modes
+	{"display/avatar.templ", "text-accent-200"},
 }
 
 // isDarkModeException checks if a file/line matches any exception.
@@ -114,7 +114,10 @@ var darkModeNeutralRe = regexp.MustCompile(
 
 // semanticHueAlternation builds the hue alternation for the semantic-color
 // regex from the canonical tone table (utils/tone), minus gray — the
-// neutral rule owns grays. Deriving the list keeps the guard in lockstep
+// neutral rule owns grays. The accent TOKEN family (ADR-0049) joins the
+// list even though it is not a hue: its classes follow the same
+// complete-pair grammar, so the same-line dark: rule must cover them too.
+// Deriving the list keeps the guard in lockstep
 // with the palette by construction: the hand-maintained copy had drifted
 // and emerald/rose/violet/cyan/pink/purple plus bg-yellow escapes went
 // unnoticed (color-domain report H3, TODO #427).
@@ -128,12 +131,15 @@ func semanticHueAlternation() string {
 		hues = append(hues, string(h))
 	}
 
+	hues = append(hues, "accent") // accent token family (ADR-0049)
+
 	return strings.Join(hues, "|")
 }
 
 // darkModeSemanticRe matches semantic color classes (bg-blue-600,
-// text-emerald-500, …) for EVERY hue the library renders — derived from
-// utils/tone at init, never hand-maintained. The color-carrying
+// text-emerald-500, bg-accent-600, …) for EVERY hue the library renders
+// plus the accent token family — derived from utils/tone at init, never
+// hand-maintained. The color-carrying
 // ring-offset/shadow forms (ring-offset-blue-600, shadow-rose-500/20) are
 // covered too; shadow size classes (shadow-lg) are not colors.
 var darkModeSemanticRe = regexp.MustCompile(

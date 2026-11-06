@@ -19,6 +19,55 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   truncated variant's "Narrow your search" is false advice on a searchless
   list). A custom message keeps the shared shell (classes, `role="status"`,
   id, attrs) and replaces only the sentence; empty keeps the variant behavior.
+- **`feedback.LoadingProgress` — the loading bar, extracted so it cannot
+  drift.** `LoadingOverlay` and `display.LoadingDialog` carried byte-identical
+  progress-bar blocks (bar, percentage caption, indeterminate "Please wait…"
+  hint, [0, 100] clamp, motion-reduce contract), which the clone gate flagged
+  as a new group after the accent sweep. Both now render one shared component,
+  so a change to the clamp range, the caption, or the reduced-motion handling
+  lands once. Rendered markup is unchanged — every existing golden still
+  passes — and the component is public because a determinate progress bar is
+  useful outside a loading shell.
+
+### Changed
+
+- **BREAKING (ships in v2.0.0 — ADR-0044 Phase 2 / ADR-0049): `feedback`
+  brand-axis components emit `accent-*` token classes instead of `blue-*`.**
+  CircularProgress, ProgressBar, StepIndicator, LoadingOverlay, and
+  InlineLoading now render the accent family at the same shades — pixels are
+  identical until you override. Alert/Toast keep their semantic palette
+  classes (info stays blue, per ADR-0044 decision 3). Re-brand via one
+  `@theme` block (`--color-accent-600: …`), defined as literal defaults in
+  `templates/custom.css`; the accent family joined the dark-mode scanner
+  and the class-inventory corpus. No v1.x release may be cut from a tree
+  carrying this swap (ADR-0039 v2 gating). See
+  `docs/adr/0049-design-token-axes.md`.
+- **`feedback` styles now derive from the canonical tone table.** The
+  four-entry `feedbackStyleMap` collapsed into `utils/tone.For(t.Tone())`
+  (ADR-0049 §6, TODO #425/#431); output proven byte-identical by the
+  rewritten `TestToneAdapterEquivalence` anchor.
+- **`utils/tone` gains the surface/ink role model.** `SurfaceToken`
+  (canvas/panel/raised) and `InkToken` (primary/secondary/muted) pin the
+  ADR-0049 namespace contract ahead of the shell conversion; the Accent
+  tone row now carries `accent-*` literals (inert until components emit
+  them).
+- **The demo overrides the accent family to its indigo brand.** With
+  components now emitting `accent-*`, the demo's brand override moves from
+  `blue-*` to a byte-identical `accent-*` row in `examples/demo/demo.css` —
+  the route goldens stay pixel-stable and the `@theme` override contract
+  the emission exists for is showcased end-to-end.
+- **Clone-gate baseline reconciled at 145 groups at t=1** (ADR-0009): the
+  accent pilot's re-record had accepted the dialog/loading twin pair as two
+  finer groups, but the same PR's `LoadingProgress` extraction then deleted
+  the duplicated block outright, and master's parallel issue-sweep re-record
+  (#79) had meanwhile re-taken the set at 145 — the merged tip validates
+  with 0 new clones against the same pinned binary. Also in this window:
+  the display package joins the accent emission (Button primary/
+  link, Badge primary, Tabs active, Avatar, Kanban hover/rings, BarChart
+  default bars, LoadingDialog chrome, Lightbox, CommandPalette active,
+  Carousel dots/rings, Table sort links, Card/Shared focus rings — 24
+  brand-axis sites), with semantic info/tones staying palette per
+  ADR-0044 decision 3.
 
 ### Fixed
 

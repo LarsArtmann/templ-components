@@ -12,7 +12,7 @@ import (
 // while the BUTTON carries the target. Mirrored verbatim in the carousel JS
 // (activeDot/idleDot) — keep the three sites in sync.
 const (
-	carouselDotActiveClass = "h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500"
+	carouselDotActiveClass = "h-2 w-2 rounded-full bg-accent-600 dark:bg-accent-500"
 	carouselDotIdleClass   = "h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60"
 )
 
@@ -52,7 +52,7 @@ templ Carousel(props CarouselProps) {
 	{{ id := utils.EnsureID("carousel", props.ID) }}
 	<div
 		id={ id }
-		class={ utils.Class("relative rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900", props.Class) }
+		class={ utils.Class("relative rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900", props.Class) }
 		data-tc-carousel={ id }
 		role="region"
 		aria-roledescription="carousel"

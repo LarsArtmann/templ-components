@@ -52,6 +52,37 @@ func TestToneTableExhaustive(t *testing.T) {
 	}
 }
 
+// TestAccentRowUsesAccentFamily pins the ADR-0049 emission: the Accent
+// tone renders the accent TOKEN family, not the blue palette — the family
+// swap is the whole point of ADR-0044 Phase 2 (blue stays reserved for
+// the semantic info tone).
+func TestAccentRowUsesAccentFamily(t *testing.T) {
+	t.Parallel()
+
+	s := tone.For(tone.ToneAccent)
+
+	pairs := map[string]tone.Pair{
+		"Dot": s.Dot, "Text": s.Text, "TextSoft": s.TextSoft,
+		"Border": s.Border, "BGTint": s.BGTint, "BGSolid": s.BGSolid, "Icon": s.Icon,
+	}
+
+	for name, p := range pairs {
+		if !strings.Contains(p.Light, "accent-") || !strings.Contains(p.Dark, "accent-") {
+			t.Errorf(
+				"tone accent: surface %s = %q / %q, want accent- family literals",
+				name, p.Light, p.Dark,
+			)
+		}
+
+		if strings.Contains(p.Light, "blue-") || strings.Contains(p.Dark, "blue-") {
+			t.Errorf(
+				"tone accent: surface %s still carries blue- pigments (%q / %q)",
+				name, p.Light, p.Dark,
+			)
+		}
+	}
+}
+
 // TestHueTableExhaustive: every Hue in Hues() must carry a complete
 // Utilities entry, and unknown hues must fall back to Gray.
 func TestHueTableExhaustive(t *testing.T) {

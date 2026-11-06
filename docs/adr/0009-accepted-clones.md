@@ -674,13 +674,36 @@ re-judge each group against the ADR-0010 criteria (2+ callers, 5+ lines,
 clear domain name, fewer parameters than duplicated lines) instead of
 blanket-accepting or blanket-extracting.
 
+## 2026-11-06 Re-record — accent-pilot hash drift (design-token-axes S03)
+
+The blocking CI clone gate flagged 2 "new" groups on the
+`feat/design-token-axes` PR — the SAME `display/loading_dialog.templ` ↔
+`feedback/loading.templ` twin-loading-surfaces pair accepted on 2026-11-02,
+re-detected at finer granularity: the accent class swap perturbed the
+surrounding-block hashes, so the accepted group went stale and the pair
+re-surfaced as two sub-groups (the `clamped := max(0, min(100, …))` line and
+the gray message `<p>` block). Same verdict, same reasoning: twin loading
+surfaces in different packages, intentionally parallel. Both ACCEPT. The
+re-record against the SAME pinned binary
+(`v0.9.1-0.20261017225421-93432fd910fb`, rebuilt at the pinned rev per the
+fork recipe) took **146 groups** — the accent pilot's own dedup (the
+styles collapse and the class swaps) removed five stale groups while the
+dialog/loading pair re-entered as two finer groups (net −3 from 149).
+
+POST-MERGE UPDATE (same day): the same PR then extracted
+`feedback.LoadingProgress`, which deleted the duplicated loading-bar block
+outright — the two re-accepted sub-groups evaporated — while master's
+parallel issue-sweep re-record (#79) had meanwhile re-taken the set at 145.
+The merged tip validates against the same pinned binary at **145 groups,
+0 new**; the Consequences figure below reflects that final state.
+
 ## Consequences
 
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
   — it fails ONLY on clones not in the accepted baseline (currently 145
-  groups at t=1, per the 2026-11-06 re-record with the same fork detector
-  `v0.9.1-0.20261017225421-93432fd910fb`; the 2026-10-23 full re-take under
-  this detector generation was 150 groups). The analyzer-generation
+  groups at t=1, per the 2026-11-06 merged re-record with the same fork
+  detector `v0.9.1-0.20261017225421-93432fd910fb`; the 2026-10-23 full
+  re-take under this detector generation was 150 groups). The analyzer-generation
   change made the prior 124 hashes incomparable (check reported every
   current group as new), so the re-record re-took the whole set AFTER the
   class triage below; the current advisory sets (73 groups at t=2, 38 at

@@ -66,7 +66,7 @@ type BarChartProps struct {
 	Max float64
 
 	// BarColor is the default bg-* literal for bars without a per-bar Color
-	// override. Default: "bg-blue-600 dark:bg-blue-500".
+	// override. Default: "bg-accent-600 dark:bg-accent-500".
 	BarColor tone.ColorClass
 
 	// LabelWidth is the label column width for horizontal charts (Tailwind
@@ -98,7 +98,7 @@ type BarChartProps struct {
 }
 
 const (
-	defaultBarColor    = "bg-blue-600 dark:bg-blue-500"
+	defaultBarColor    = "bg-accent-600 dark:bg-accent-500"
 	defaultEmptyMsg    = "No data"
 	defaultLabelWidth  = "w-32"
 	defaultMinBarWidth = "min-w-12"

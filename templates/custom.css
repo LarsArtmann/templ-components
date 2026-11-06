@@ -18,6 +18,39 @@
  * color-mix(in srgb, C N%, transparent).
  */
 
+/*
+ * Accent token family (ADR-0044/0049) — the library's brand axis.
+ *
+ * Library components emit accent-* classes for the primary/brand slot
+ * (buttons, links, progress fills, step indicators, spinner tints). The
+ * defaults are Tailwind's blue ramp AS LITERALS — the same values the
+ * blue-* sites they replaced rendered — so a no-override import is
+ * pixel-identical to stock, and re-branding is one @theme block:
+ *
+ *   @theme {
+ *     --color-accent-600: #7c3aed;   (brand purple)
+ *   }
+ *
+ * accent is scoped by construction: the classes exist only on library
+ * components, and blue-* stays untouched for your own palette and the
+ * semantic info tone (see docs/adr/0049-design-token-axes.md).
+ */
+
+@theme {
+  /* Accent (default: blue) — full ramp, literal Tailwind defaults */
+  --color-accent-50: oklch(97% 0.014 254.604);
+  --color-accent-100: oklch(93.2% 0.032 255.585);
+  --color-accent-200: oklch(88.2% 0.059 254.128);
+  --color-accent-300: oklch(80.9% 0.105 251.813);
+  --color-accent-400: oklch(70.7% 0.165 254.624);
+  --color-accent-500: oklch(62.3% 0.214 259.815);
+  --color-accent-600: oklch(54.6% 0.245 262.881);
+  --color-accent-700: oklch(48.8% 0.243 264.376);
+  --color-accent-800: oklch(42.4% 0.199 265.638);
+  --color-accent-900: oklch(37.9% 0.146 265.522);
+  --color-accent-950: oklch(28.2% 0.091 267.935);
+}
+
 @layer utilities {
   /* RTL icon mirroring — flip directional icons in RTL contexts */
   [dir="rtl"] [data-tc-dir-icon] {
@@ -535,8 +568,10 @@ textarea:autofill {
  */
 @media (pointer: coarse) {
   input:where(
-      :not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"])
-    ),
+    :not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+        [type="hidden"]
+      )
+  ),
   textarea {
     font-size: max(1rem, 1em);
   }
@@ -574,10 +609,8 @@ input[type="range"][data-tc-slider] {
   --tc-slider-dir: to left;
 }
 
-@supports (opacity: progress(1, 0, 100)) and (opacity: attr(
-      data-tc-value type(<number>),
-      1
-    )) {
+@supports (opacity: progress(1, 0, 100)) and
+  (opacity: attr(data-tc-value type(<number>), 1)) {
   input[type="range"][data-tc-slider] {
     --tc-slider-value: attr(value type(<number>), 0);
     --tc-slider-min: attr(min type(<number>), 0);
@@ -587,7 +620,8 @@ input[type="range"][data-tc-slider] {
           var(--tc-slider-value),
           var(--tc-slider-min),
           var(--tc-slider-max)
-        ) * 100%
+        ) *
+        100%
     );
   }
 

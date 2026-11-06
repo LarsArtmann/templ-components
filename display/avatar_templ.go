@@ -346,7 +346,7 @@ func Avatar(props AvatarProps) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var13 = []any{utils.Class("relative inline-flex items-center justify-center bg-blue-600 text-white dark:bg-blue-500 font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class)}
+				var templ_7745c5c3_Var13 = []any{utils.Class("relative inline-flex items-center justify-center bg-accent-600 text-white dark:bg-accent-500 font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_ElementWriter, templ_7745c5c3_Var13...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -416,7 +416,7 @@ func Avatar(props AvatarProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<svg class=\"h-1/2 w-1/2 text-blue-200\" fill=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<svg class=\"h-1/2 w-1/2 text-accent-200\" fill=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

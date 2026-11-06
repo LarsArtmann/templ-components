@@ -89,7 +89,7 @@ func TestBadgeRender(t *testing.T) {
 				Pill: false,
 				Dot:  false,
 			},
-			wantContain: []string{`id="status-badge"`, cssClassMl2, "bg-blue-100"},
+			wantContain: []string{`id="status-badge"`, cssClassMl2, "bg-accent-100"},
 		},
 	}
 	for _, tt := range tests {
@@ -189,7 +189,7 @@ func TestBadgeFeatures(t *testing.T) {
 			Dot:  true,
 		}))
 		utils.AssertContains(t, output, cssClassRoundedFull)
-		utils.AssertContains(t, output, "bg-blue-500")
+		utils.AssertContains(t, output, "bg-accent-500")
 		utils.AssertContains(t, output, badgeTextBeta)
 	})
 }

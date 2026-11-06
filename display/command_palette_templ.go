@@ -311,7 +311,7 @@ func CommandPalette(props CommandPaletteProps) templ.Component {
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\" role=\"option\" aria-selected=\"false\" tabindex=\"-1\" class=\"flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-700 data-[tc-palette-active=true]:bg-blue-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-200 dark:data-[tc-palette-active=true]:bg-gray-800\" data-tc-palette-item data-tc-palette-hidden=\"false\"><span class=\"truncate\">")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\" role=\"option\" aria-selected=\"false\" tabindex=\"-1\" class=\"flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-700 data-[tc-palette-active=true]:bg-accent-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-200 dark:data-[tc-palette-active=true]:bg-gray-800\" data-tc-palette-item data-tc-palette-hidden=\"false\"><span class=\"truncate\">")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
@@ -369,7 +369,7 @@ func CommandPalette(props CommandPaletteProps) templ.Component {
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
 							}
-							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\" type=\"button\" role=\"option\" aria-selected=\"false\" tabindex=\"-1\" class=\"flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-start text-sm text-gray-700 data-[tc-palette-active=true]:bg-blue-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-200 dark:data-[tc-palette-active=true]:bg-gray-800\" data-tc-palette-item data-tc-palette-hidden=\"false\"")
+							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\" type=\"button\" role=\"option\" aria-selected=\"false\" tabindex=\"-1\" class=\"flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 text-start text-sm text-gray-700 data-[tc-palette-active=true]:bg-accent-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-200 dark:data-[tc-palette-active=true]:bg-gray-800\" data-tc-palette-item data-tc-palette-hidden=\"false\"")
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
 							}
@@ -441,7 +441,7 @@ func CommandPalette(props CommandPaletteProps) templ.Component {
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "\" role=\"option\" aria-selected=\"false\" tabindex=\"-1\" class=\"flex items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-500 data-[tc-palette-active=true]:bg-blue-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-400\" data-tc-palette-item data-tc-palette-hidden=\"false\"><span class=\"truncate\">")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "\" role=\"option\" aria-selected=\"false\" tabindex=\"-1\" class=\"flex items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm text-gray-500 data-[tc-palette-active=true]:bg-accent-50 data-[tc-palette-hidden=true]:hidden dark:text-gray-400\" data-tc-palette-item data-tc-palette-hidden=\"false\"><span class=\"truncate\">")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}

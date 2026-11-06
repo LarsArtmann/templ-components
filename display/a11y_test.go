@@ -128,7 +128,7 @@ func TestDarkModeClasses(t *testing.T) {
 		output := utils.Render(t, Avatar(AvatarProps{
 			Initials: "AB",
 		}))
-		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertContains(t, output, "bg-accent-600")
 	})
 }
 

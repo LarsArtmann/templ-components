@@ -81,7 +81,7 @@ func TestProgressBarCoverage(t *testing.T) {
 	t.Run("default props renders", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ProgressBar(DefaultProgressBarProps()))
-		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertContains(t, output, "bg-accent-600")
 	})
 }
 

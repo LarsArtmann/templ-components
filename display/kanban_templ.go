@@ -169,13 +169,13 @@ func kanbanColumnBodyClass() string {
 
 // kanbanCardClass returns the Tailwind classes for a card.
 func kanbanCardClass(extra string) string {
-	return utils.Class("group relative cursor-grab rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover:border-blue-300 active:cursor-grabbing dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600", extra)
+	return utils.Class("group relative cursor-grab rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover:border-accent-300 active:cursor-grabbing dark:border-gray-700 dark:bg-gray-800 dark:hover:border-accent-600", extra)
 }
 
 // kanbanMoveButtonClass returns the Tailwind classes for the per-card
 // keyboard move buttons.
 func kanbanMoveButtonClass() string {
-	return "inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus-visible:ring-blue-400"
+	return "inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus-visible:ring-accent-400"
 }
 
 // DefaultKanbanBoardProps returns sensible defaults.
@@ -907,7 +907,7 @@ func kanbanCardInner(card KanbanCard, columnIndex, columnCount int, wired bool) 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 58, "\" data-tc-kanban-title class=\"text-sm font-medium text-gray-900 hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-white dark:hover:text-blue-400 dark:focus-visible:ring-blue-400\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 58, "\" data-tc-kanban-title class=\"text-sm font-medium text-gray-900 hover:text-accent-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:text-white dark:hover:text-accent-400 dark:focus-visible:ring-accent-400\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

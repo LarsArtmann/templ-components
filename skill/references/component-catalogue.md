@@ -98,24 +98,25 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `TagsInput`         | `TagsInput(props TagsInputProps)`                 | Tag input with add/remove — hidden inputs for submission, MaxTags/AllowDuplicate                                                     |
 | `Calendar`          | `Calendar(props CalendarProps)`                   | Month-view calendar — server-side navigation, day links, MinDate/MaxDate disabling                                                   |
 
-#### `feedback` — 14 components
+#### `feedback` — 15 components
 
-| Component          | Signature                                       | One-liner                                                                                                   |
-| ------------------ | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `Alert`            | `Alert(props AlertProps)`                       | Inline alert — 4 types, dismissible, icon                                                                   |
-| `InlineError`      | `InlineError(message string)`                   | Compact inline error                                                                                        |
-| `InlineSuccess`    | `InlineSuccess(message string)`                 | Compact inline success                                                                                      |
-| `Toast`            | `Toast(props ToastProps)`                       | Toast notification — 4 types, dismissible, duration                                                         |
-| `ToastContainer`   | `ToastContainer(nonce string)`                  | Fixed container for toasts (include once per page)                                                          |
-| `Spinner`          | `Spinner(props SpinnerProps)`                   | Loading spinner — 3 sizes, custom color                                                                     |
-| `LoadingOverlay`   | `LoadingOverlay(props LoadingOverlayProps)`     | Full-screen loading overlay with spinner                                                                    |
-| `InlineLoading`    | `InlineLoading(message string)`                 | Inline "Saving..." indicator                                                                                |
-| `Skeleton`         | `Skeleton(variant SkeletonVariant)`             | Pulsing placeholder — 7 variants                                                                            |
-| `SkeletonGroup`    | `SkeletonGroup(variants []SkeletonVariant)`     | Multiple skeletons under single `role="status"`                                                             |
-| `SkeletonCardGrid` | `SkeletonCardGrid(props SkeletonCardGridProps)` | N skeleton cards in responsive grid — loading state, optional `ContainerAware`                              |
-| `ProgressBar`      | `ProgressBar(props ProgressBarProps)`           | Progress indicator — 3 sizes, indeterminate, label                                                          |
-| `CircularProgress` | `CircularProgress(props CircularProgressProps)` | Circular SVG ring — value clamped 0–100, optional percentage label                                          |
-| `StepIndicator`    | `StepIndicator(props StepIndicatorProps)`       | Horizontal/vertical step progress — typed `StepState` (complete/current/pending) derived from `CurrentStep` |
+| Component          | Signature                                          | One-liner                                                                                                   |
+| ------------------ | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `Alert`            | `Alert(props AlertProps)`                          | Inline alert — 4 types, dismissible, icon                                                                   |
+| `InlineError`      | `InlineError(message string)`                      | Compact inline error                                                                                        |
+| `InlineSuccess`    | `InlineSuccess(message string)`                    | Compact inline success                                                                                      |
+| `Toast`            | `Toast(props ToastProps)`                          | Toast notification — 4 types, dismissible, duration                                                         |
+| `ToastContainer`   | `ToastContainer(nonce string)`                     | Fixed container for toasts (include once per page)                                                          |
+| `Spinner`          | `Spinner(props SpinnerProps)`                      | Loading spinner — 3 sizes, custom color                                                                     |
+| `LoadingOverlay`   | `LoadingOverlay(props LoadingOverlayProps)`        | Full-screen loading overlay with spinner                                                                    |
+| `LoadingProgress`  | `LoadingProgress(showProgress bool, progress int)` | Progress bar + percentage caption, or the "Please wait…" hint — shared by the loading shells                |
+| `InlineLoading`    | `InlineLoading(message string)`                    | Inline "Saving..." indicator                                                                                |
+| `Skeleton`         | `Skeleton(variant SkeletonVariant)`                | Pulsing placeholder — 7 variants                                                                            |
+| `SkeletonGroup`    | `SkeletonGroup(variants []SkeletonVariant)`        | Multiple skeletons under single `role="status"`                                                             |
+| `SkeletonCardGrid` | `SkeletonCardGrid(props SkeletonCardGridProps)`    | N skeleton cards in responsive grid — loading state, optional `ContainerAware`                              |
+| `ProgressBar`      | `ProgressBar(props ProgressBarProps)`              | Progress indicator — 3 sizes, indeterminate, label                                                          |
+| `CircularProgress` | `CircularProgress(props CircularProgressProps)`    | Circular SVG ring — value clamped 0–100, optional percentage label                                          |
+| `StepIndicator`    | `StepIndicator(props StepIndicatorProps)`          | Horizontal/vertical step progress — typed `StepState` (complete/current/pending) derived from `CurrentStep` |
 
 #### `layout` — 11 components
 

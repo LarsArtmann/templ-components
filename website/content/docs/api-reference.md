@@ -103,7 +103,7 @@ type ErrorMaxWidth string // "lg" | "xl" | "2xl" | "4xl"
 
 ### Typed Enums
 
-73 typed string enums ship an `IsValid()` method (74 total), so invalid states are unrepresentable rather than merely undocumented.
+75 typed string enums ship an `IsValid()` method (76 total), so invalid states are unrepresentable rather than merely undocumented.
 
 ```go
 type BadgeType string

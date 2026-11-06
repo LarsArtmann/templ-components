@@ -59,7 +59,7 @@ func TestBarChartBarColor(t *testing.T) {
 		output := utils.Render(t, BarChart(BarChartProps{
 			Bars: []BarChartBar{{Label: "A", Value: 10}},
 		}))
-		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertContains(t, output, "bg-accent-600")
 	})
 	t.Run("per-bar color override", func(t *testing.T) {
 		t.Parallel()
@@ -165,7 +165,7 @@ func TestBarChartDefaults(t *testing.T) {
 		t.Errorf("expected Orient=horizontal")
 	}
 
-	if props.BarColor != "bg-blue-600 dark:bg-blue-500" {
+	if props.BarColor != "bg-accent-600 dark:bg-accent-500" {
 		t.Errorf("expected default BarColor")
 	}
 

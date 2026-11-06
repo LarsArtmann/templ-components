@@ -9,13 +9,13 @@ and skill/SKILL.md count tables; `utils.TestDocsCountDrift` re-derives every
 number with its own code and is the independent verifier. This page stays the
 semantics owner — definitions do not move into the generator.
 
-## Components — **137**
+## Components — **138**
 
 - **Definition:** exported `templ` components declared as `templ Name(...)` in
   the canonical 9-package scan set: `display`, `feedback`, `forms`, `layout`,
   `navigation`, `charts/echarts`, `htmx`, `datastar`, `errorpage`. The 4
   `recipes` screens are compositions, counted separately in FEATURES.md
-  ("137 + 4 recipe screens = 141") but the sold headline is 137.
+  ("138 + 4 recipe screens = 142") but the sold headline is 138.
 - **Computed by:** `website/internal/build.CountStats` (site hero, live) over
   `statsDirs` (order-pinned by `TestStatsDirsAreCanonical`); the same set is
   the canonical package list in `utils.TestDocsCountDrift`.
@@ -29,7 +29,7 @@ semantics owner — definitions do not move into the generator.
 - **Computed by:** `icons.AllIconNames()` (live, in-process); the website and
   demo compute from it at render time.
 
-## Typed enums — **74 (73 with IsValid())**
+## Typed enums — **76 (75 with IsValid())**
 
 - **Definition:** exported closed-set string types; the IsValid count is
   functions matching `<Name>IsValid(` across library source.

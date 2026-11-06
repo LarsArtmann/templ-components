@@ -230,7 +230,7 @@ func TestAvatarEdgeCases(t *testing.T) {
 		props AvatarProps
 		want  []string
 	}{
-		{"initials", AvatarProps{Initials: "AB"}, []string{"AB", "bg-blue-600"}},
+		{"initials", AvatarProps{Initials: "AB"}, []string{"AB", "bg-accent-600"}},
 		{"image", AvatarProps{Src: "/a.jpg", Alt: "User"}, []string{`src="/a.jpg"`, `alt="User"`}},
 		{"online with image", AvatarProps{Src: "/a.jpg", Alt: "User", Status: AvatarStatusOnline}, []string{"bg-green-400"}},
 		{"offline with image", AvatarProps{Src: "/a.jpg", Alt: "User", Status: AvatarStatusOffline}, []string{"bg-gray-400"}},

@@ -35,9 +35,9 @@ Bundled references (read on demand, not upfront):
 
 > Count-bearing cells in this file are WRITTEN by `go run ./tools/countgen/cmd/countgen -w` and VERIFIED by `utils.TestDocsCountDrift`; semantics live in `docs/count-definitions.md`.
 
-137 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)
+138 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)
 
-- 137 templ components + 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
+- 138 templ components + 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
   section is the index. If you're about to hand-roll something, check here first.
 
 ### By use case (start here)
@@ -75,7 +75,7 @@ FilterChips, FilterDropdown, FilterInput, Form, FormFieldWrapper, Input, InputGr
 Radio, RadioGroup, Rating, SegmentedControl, Select, Slider, TagsInput, Textarea, Toggle,
 ValidationSummary.
 
-#### `feedback` — 14 components
+#### `feedback` — 15 components
 
 Alert, CircularProgress, InlineError, InlineLoading, InlineSuccess, LoadingOverlay,
 ProgressBar, Skeleton, SkeletonGroup, SkeletonCardGrid, Spinner, StepIndicator, Toast,
