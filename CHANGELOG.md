@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`display.ScrollbackLine` gains `ID` and `Class`.** A per-line hook makes
+  fragment deep links into a transcript possible ("#turn-42" scrolls to the
+  matched line) and lets a consumer highlight a match without re-rolling the
+  render loop, which is what a consumer had to do before. Default rendering is
+  unchanged: no id, and the same classes in the same order.
+- **`display.ListNote` accepts a caller-written `Message`.** Every variant
+  synthesizes its sentence from count semantics, which has no honest shape for
+  a rolling window ("Showing the latest 5 of 12 status changes." — the
+  truncated variant's "Narrow your search" is false advice on a searchless
+  list). A custom message keeps the shared shell (classes, `role="status"`,
+  id, attrs) and replaces only the sentence; empty keeps the variant behavior.
+
 ### Fixed
 
 - **`display.Grid` auto-fit mode actually generates its CSS.** `MinColWidth`

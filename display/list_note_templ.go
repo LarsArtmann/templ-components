@@ -57,11 +57,24 @@ type ListNoteProps struct {
 	RangeTo int
 	// Variant selects count semantics. Defaults to ListNoteTruncated.
 	Variant ListNoteVariant
+	// Message, when non-empty, replaces the synthesized sentence while
+	// keeping the shared shell (classes, role="status", id, attrs). Use it
+	// when the honest sentence is not a count shape — e.g. "Showing the
+	// latest 5 of 12 status changes." for a rolling window, where the
+	// truncated variant's "Narrow your search" is false advice. A custom
+	// message always renders; to hide the note, don't render the component
+	// (the count variants keep their own visibility rules).
+	Message string
 }
 
 // listNoteMessage returns the notice text and whether it renders at all.
-// Unknown Variant values degrade to truncated semantics (graceful fallback).
+// Unknown Variant values degrade to truncated semantics (graceful fallback),
+// and a caller-supplied Message wins over every synthesized sentence.
 func listNoteMessage(props ListNoteProps) (string, bool) {
+	if props.Message != "" {
+		return props.Message, true
+	}
+
 	if props.Variant == ListNoteRange {
 		if props.RangeFrom <= 0 || props.RangeTo <= 0 {
 			return countMessage(props.Shown), true
@@ -127,7 +140,7 @@ func listNoteShell(props ListNoteProps, message string) templ.Component {
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.ID).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/list_note.templ`, Line: 91, Col: 16}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/list_note.templ`, Line: 104, Col: 16}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 				if templ_7745c5c3_Err != nil {
@@ -168,7 +181,7 @@ func listNoteShell(props ListNoteProps, message string) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.AriaLabel).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/list_note.templ`, Line: 96, Col: 31}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/list_note.templ`, Line: 109, Col: 31}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 				if templ_7745c5c3_Err != nil {
@@ -200,7 +213,7 @@ func listNoteShell(props ListNoteProps, message string) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/list_note.templ`, Line: 100, Col: 11}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/list_note.templ`, Line: 113, Col: 11}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -223,6 +236,7 @@ func listNoteShell(props ListNoteProps, message string) templ.Component {
 //	@display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
 //	@display.ListNote(display.ListNoteProps{Shown: 42, Variant: display.ListNoteCount})
 //	@display.ListNote(display.ListNoteProps{RangeFrom: 193, RangeTo: 216, Total: 237, Variant: display.ListNoteRange})
+//	@display.ListNote(display.ListNoteProps{Message: "Showing the latest 5 of 12 status changes."})
 func ListNote(props ListNoteProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context

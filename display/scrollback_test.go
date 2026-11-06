@@ -196,3 +196,42 @@ func TestScrollbackToneLookup(t *testing.T) {
 		t.Error("unknown tone must not resolve")
 	}
 }
+
+// Per-line hooks let a consumer anchor a line (deep link into a transcript)
+// or highlight a matched one without re-rolling the loop (#51).
+func TestScrollbackLineHooks(t *testing.T) {
+	t.Parallel()
+
+	lines := []ScrollbackLine{
+		{Timestamp: "12:47:03.184", Tag: "query", Text: "one"},
+		{
+			Timestamp: "12:47:03.185", Tag: "match", Text: "two",
+			ID: "turn-2", Class: "bg-amber-100 dark:bg-amber-900/40",
+		},
+	}
+
+	t.Run("id and class land on the line element", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Scrollback(ScrollbackProps{Lines: lines}))
+		utils.AssertContains(t, output, `id="turn-2"`)
+		utils.AssertContainsAll(t, output, "bg-amber-100", "dark:bg-amber-900/40")
+	})
+
+	t.Run("anonymous lines stay byte-identical to the default render", func(t *testing.T) {
+		t.Parallel()
+		plain := utils.Render(t, Scrollback(ScrollbackProps{
+			Lines: []ScrollbackLine{{Timestamp: "12:47:03.184", Tag: "query", Text: "one"}},
+		}))
+		utils.AssertNotContains(t, plain, `id=`)
+		utils.AssertContains(t, plain, "tc-log-line")
+	})
+
+	t.Run("consumer class merges after the stagger class", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Scrollback(ScrollbackProps{
+			Stagger: false,
+			Lines:   []ScrollbackLine{{Text: "x", Class: "rounded"}},
+		}))
+		utils.AssertContainsAll(t, output, "tc-log-line-still", "rounded")
+	})
+}

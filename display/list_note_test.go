@@ -129,3 +129,51 @@ func TestListNoteRender(t *testing.T) {
 		utils.AssertContains(t, output, `role="status"`)
 	})
 }
+
+// A custom message keeps the shared shell but replaces the synthesized
+// sentence (#37): rolling windows and other honest-but-not-count shapes were
+// hand-rolling the div, which is exactly the drift listNoteShell prevents.
+func TestListNoteCustomMessage(t *testing.T) {
+	t.Parallel()
+
+	t.Run("message replaces the synthesized sentence", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ListNote(ListNoteProps{
+			Shown:   5,
+			Total:   12,
+			Message: "Showing the latest 5 of 12 status changes.",
+		}))
+		utils.AssertContains(t, output, "Showing the latest 5 of 12 status changes.")
+		utils.AssertNotContains(t, output, "Narrow your search")
+	})
+
+	t.Run("keeps shell, role and id", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ListNote(ListNoteProps{
+			ID:      "timeline-cap",
+			Class:   "my-note",
+			Message: "Showing the latest 5 of 12 status changes.",
+		}))
+		utils.AssertContainsAll(t, output,
+			`role="status"`,
+			`id="timeline-cap"`,
+			"my-note",
+			"border-t",
+		)
+	})
+
+	t.Run("renders even when every item fits", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ListNote(ListNoteProps{Shown: 3, Total: 3, Message: "Latest 3 kept."}))
+		utils.AssertContains(t, output, "Latest 3 kept.")
+	})
+
+	t.Run("empty message keeps variant behavior", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, ListNote(ListNoteProps{Shown: 3, Total: 3}))
+		if output != "" {
+			t.Errorf("truncated variant must render nothing when everything fits, got %q", output)
+		}
+	})
+}
