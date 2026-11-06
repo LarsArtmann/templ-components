@@ -28,7 +28,7 @@ import (
 func TestTemplGeneratedInSync(t *testing.T) {
 	t.Parallel()
 
-	templFiles := walkTemplFiles(t, "..")
+	templFiles := walkTemplFiles(t)
 	if len(templFiles) == 0 {
 		t.Fatal("no .templ files found — glob root is wrong")
 	}
@@ -101,17 +101,20 @@ func missingFrom(want, have map[string]bool) []string {
 	return missing
 }
 
-// walkTemplFiles returns every .templ file under root that is expected to have
-// a generated *_templ.go twin. Excluded: .git, node_modules, build output
-// (dist), test fixtures, and cmd/tc/_sources (the `tc new` scaffolding
-// sources — intentionally standalone templates with no generated twins, the
-// same exclusion CI's tracked-files check uses).
-func walkTemplFiles(t *testing.T, root string) []string {
+// walkTemplFiles returns every .templ file under the repo root (".." from
+// utils/) that is expected to have a generated *_templ.go twin. Excluded:
+// .git, node_modules, build output (dist), test fixtures, and
+// cmd/tc/_sources (the `tc new` scaffolding sources — intentionally
+// standalone templates with no generated twins, the same exclusion CI's
+// tracked-files check uses).
+func walkTemplFiles(t *testing.T) []string {
 	t.Helper()
+
+	const repoRoot = ".."
 
 	var files []string
 
-	err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+	err := filepath.WalkDir(repoRoot, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -122,7 +125,7 @@ func walkTemplFiles(t *testing.T, root string) []string {
 			switch {
 			case name == ".git" || name == "node_modules" || name == "dist" || name == "testdata":
 				return filepath.SkipDir
-			case path == filepath.Join(root, "cmd", "tc", "_sources"):
+			case path == filepath.Join(repoRoot, "cmd", "tc", "_sources"):
 				return filepath.SkipDir
 			}
 
@@ -136,7 +139,7 @@ func walkTemplFiles(t *testing.T, root string) []string {
 		return nil
 	})
 	if err != nil {
-		t.Fatalf("walk %s: %v", root, err)
+		t.Fatalf("walk %s: %v", repoRoot, err)
 	}
 
 	sort.Strings(files)
@@ -186,7 +189,7 @@ func extractImports(src string, re *regexp.Regexp) map[string]bool {
 func TestTemplGeneratedInSyncCoverage(t *testing.T) {
 	t.Parallel()
 
-	templFiles := walkTemplFiles(t, "..")
+	templFiles := walkTemplFiles(t)
 
 	if len(templFiles) < 100 {
 		t.Errorf("expected >=100 .templ files repo-wide (outside _sources), found %d", len(templFiles))
