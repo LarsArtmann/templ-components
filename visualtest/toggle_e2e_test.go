@@ -15,9 +15,11 @@ import (
 
 // toggleE2EPage renders two Toggles — one server-rendered checked, one
 // unchecked — so the switch contract is provable in both directions:
-// role="switch" + aria-checked matching Checked, click-flip kept in sync by
-// the delegated change listener, and the pageshow repair for bfcache/form
-// restores that set .checked without firing change.
+// role="switch" + native checked matching Checked, flipped by trusted label
+// clicks alone. aria-checked is deliberately absent from the contract: ARIA
+// in HTML forbids it on checkbox inputs, and HTML-AAM derives the switch
+// state from the native checked property, so no JS sync (and no bfcache
+// staleness) exists to test.
 func toggleE2EPage() templ.Component {
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		on := forms.ToggleProps{
@@ -84,16 +86,16 @@ func TestToggleE2ESwitchSemantics(t *testing.T) {
 		t.Fatalf("visualtest[toggle]: navigate: %v", err)
 	}
 
-	// Contract pre-check: both inputs render role="switch" with aria-checked
-	// matching the server-rendered Checked value, plus type and name.
+	// Contract pre-check: both inputs render role="switch" with the checked
+	// property matching the server-rendered Checked value, plus type and name.
 	if err := chromedp.Do(ctx, pollTrue(
 		`(function(){
 			var on=document.querySelector('input#e2e-toggle-on');
 			var off=document.querySelector('input#e2e-toggle-off');
 			if(!on||!off)return false;
 			if(on.getAttribute('role')!=='switch'||off.getAttribute('role')!=='switch')return false;
-			if(on.getAttribute('aria-checked')!=='true')return false;
-			if(off.getAttribute('aria-checked')!=='false')return false;
+			if(on.checked!==true)return false;
+			if(off.checked!==false)return false;
 			if(on.type!=='checkbox'||off.type!=='checkbox')return false;
 			if(on.name!=='notify-on'||off.name!=='notify-off')return false;
 			return true;})()`,
@@ -108,32 +110,15 @@ func TestToggleE2ESwitchSemantics(t *testing.T) {
 	click := `document.querySelector('[data-testid="e2e-toggle-off-label"]').click()`
 	if err := chromedp.Do(ctx,
 		evalVoid(click),
-		pollTrue(`document.querySelector('input#e2e-toggle-off').getAttribute('aria-checked')==='true'`, pollFast()...),
 		pollTrue(`document.querySelector('input#e2e-toggle-off').checked===true`, pollFast()...),
 	); err != nil {
 		t.Fatalf("visualtest[toggle]: click flip to checked: %v", err)
 	}
 
-	if err := chromedp.Do(
-		ctx,
+	if err := chromedp.Do(ctx,
 		evalVoid(click),
-		pollTrue(
-			`document.querySelector('input#e2e-toggle-off').getAttribute('aria-checked')==='false'`,
-			pollFast()...),
 		pollTrue(`document.querySelector('input#e2e-toggle-off').checked===false`, pollFast()...),
 	); err != nil {
 		t.Fatalf("visualtest[toggle]: click flip to unchecked: %v", err)
-	}
-
-	// bfcache/form-history repair: set .checked behind the page's back (no
-	// change event fires, aria-checked goes stale), then fire pageshow — the
-	// singleton listener must re-sync EVERY switch from .checked.
-	if err := chromedp.Do(ctx,
-		evalVoid(`document.querySelector('input#e2e-toggle-on').checked=false;`),
-		pollTrue(`document.querySelector('input#e2e-toggle-on').getAttribute('aria-checked')==='true'`, pollFast()...),
-		evalVoid(`window.dispatchEvent(new PageTransitionEvent('pageshow'));`),
-		pollTrue(`document.querySelector('input#e2e-toggle-on').getAttribute('aria-checked')==='false'`, pollFast()...),
-	); err != nil {
-		t.Fatalf("visualtest[toggle]: pageshow state repair: %v", err)
 	}
 }

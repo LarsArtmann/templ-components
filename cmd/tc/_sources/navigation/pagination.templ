@@ -62,6 +62,9 @@ func (p *PaginationProps) normalize() {
 	if p.CurrentPage == 0 {
 		p.CurrentPage = 1
 	}
+	if p.TotalPages >= 1 && p.CurrentPage > p.TotalPages {
+		p.CurrentPage = p.TotalPages
+	}
 	if p.QueryParam == "" {
 		p.QueryParam = "page"
 	}

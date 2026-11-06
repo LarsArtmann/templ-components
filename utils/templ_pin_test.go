@@ -71,4 +71,32 @@ func TestTemplVersionPin(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("ci workflow generator pin", func(t *testing.T) {
+		t.Parallel()
+
+		wf := filepath.Clean("../.github/workflows/ci.yaml")
+
+		src, err := os.ReadFile(wf)
+		if err != nil {
+			t.Fatalf("read %s: %v", wf, err)
+		}
+
+		pinRe := regexp.MustCompile(`github\.com/a-h/templ/cmd/templ@(v\S+)`)
+
+		got := pinRe.FindSubmatch(src)
+		if got == nil {
+			t.Fatalf("%s installs no templ generator pin — CI would regenerate "+
+				"committed *_templ.go with an unpinned binary and fail on drift", wf)
+		}
+
+		if string(got[1]) != expected {
+			t.Errorf(
+				"%s installs templ generator %s but the go.mod/doctor lockstep pin is %s — "+
+					"CI regenerates with the WRONG binary and reports REAL content drift "+
+					"(the 2026-11-05 master red); bump the workflow pin in the SAME commit",
+				wf, string(got[1]), expected,
+			)
+		}
+	})
 }

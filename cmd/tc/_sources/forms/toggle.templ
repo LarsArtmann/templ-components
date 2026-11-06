@@ -80,10 +80,11 @@ func toggleSizeLookup(size ToggleSize) toggleSizeSet {
 // checkbox (checked/unchecked). The native `switch` attribute would be cleaner
 // but is Safari-only today, so role="switch" is the portable form.
 //
-// role="switch" makes aria-checked REQUIRED (the HTML validator rejects the
-// bare form, and a switch whose state is only implicit reads as unchecked), so
-// the attribute is rendered from Checked and kept in sync by a singleton
-// change listener that also repairs state restored from bfcache/form history.
+// aria-checked is deliberately OMITTED: ARIA in HTML forbids the attribute on
+// input type=checkbox (the validator rejects it), and HTML-AAM derives the
+// switch state from the native checked property — the state is announced
+// correctly with zero JavaScript, including across bfcache/form-history
+// restores, because the browser owns the checked property.
 //
 //	@forms.Toggle(forms.ToggleProps{Name: "notifications", Label: "Enable notifications", Checked: true})
 templ Toggle(props ToggleProps) {
@@ -98,7 +99,6 @@ templ Toggle(props ToggleProps) {
 		<input
 			type="checkbox"
 			role="switch"
-			aria-checked={ utils.Ternary(props.Checked, "true", "false") }
 			name={ props.Name }
 			if props.ID != "" {
 				id={ props.ID }
@@ -127,19 +127,4 @@ templ Toggle(props ToggleProps) {
 	if props.HelpText != "" {
 		@helpText(props.ID, props.HelpText)
 	}
-	<script { utils.ScriptAttrs(props.Nonce)... }>
-		if (!window.tcSwitchAttached) {
-			window.tcSwitchAttached = true;
-			function tcSyncSwitchState(t) {
-				t.setAttribute('aria-checked', t.checked ? 'true' : 'false');
-			}
-			document.addEventListener('change', function(e) {
-				var t = e.target;
-				if (t && t.matches && t.matches('input[role="switch"]')) tcSyncSwitchState(t);
-			}, true);
-			window.addEventListener('pageshow', function() {
-				document.querySelectorAll('input[role="switch"]').forEach(tcSyncSwitchState);
-			});
-		}
-	</script>
 }

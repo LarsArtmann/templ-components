@@ -105,11 +105,12 @@ func TestPaginationRender(t *testing.T) {
 			BaseURL:     "/items",
 		}))
 		utils.AssertContains(t, output, `aria-current="page"`)
-		utils.AssertContains(t, output, `href="/items?page=10"`)
+		utils.AssertContains(t, output, ">10<")
 		utils.AssertNotContains(t, output, "page=15")
 		utils.AssertNotContains(t, output, "page=14")
 		utils.AssertNotContains(t, output, ">15<")
 		utils.AssertNotContains(t, output, "page=11")
+		utils.AssertNotContains(t, output, "page=10")
 	})
 
 	t.Run("zero TotalPages renders nothing", func(t *testing.T) {

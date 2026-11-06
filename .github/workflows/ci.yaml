@@ -216,7 +216,7 @@ jobs:
           go-version-file: go.mod
 
       - name: Install templ
-        run: go install github.com/a-h/templ/cmd/templ@v0.3.1020
+        run: go install github.com/a-h/templ/cmd/templ@v0.3.1100
 
       - name: Generate templ files
         # The root invocation encodes repo-root-relative FileNames into every
