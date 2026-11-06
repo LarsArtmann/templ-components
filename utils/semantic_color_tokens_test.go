@@ -20,8 +20,9 @@ import (
 //
 // Substring matching against the minified CSS is deliberate, the same choice
 // the tc-* guard makes: variant selectors (dark:, focus-visible:,
-// peer-checked:*, @sm:…) embed the bare token, and an opacity stem
-// (`bg-accent-600/40`) still matches the unslashed selector fragment. False
+// peer-checked:*, @sm:…) embed the bare token, and an opacity stem (a token
+// with a slash and an alpha percentage, like the accent-600 bar tint) still
+// matches the unslashed selector fragment. False
 // negatives (dynamically composed class strings) stay out of scope — the
 // authoritative full check remains `scripts/ci-repro.sh --css`.
 func TestSemanticColorTokensCompiled(t *testing.T) {
