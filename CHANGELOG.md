@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **The consumer skill stamps its released API.** `skill/SKILL.md` now opens
+  with the last released version (`Released API: v1.27.0`) plus a
+  package-qualification note (`FilterBar` is `forms.FilterBar`, not
+  `display`), so a consumer pinned to an older tag can tell a missing
+  release from a phantom component (#50). `utils.TestVersionMatchesSkillStamp`
+  guards the stamp against drift and the release script bumps it alongside
+  the other version files.
 - **`display.ScrollbackLine` gains `ID` and `Class`.** A per-line hook makes
   fragment deep links into a transcript possible ("#turn-42" scrolls to the
   matched line) and lets a consumer highlight a match without re-rolling the

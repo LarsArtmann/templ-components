@@ -109,6 +109,36 @@ func TestVersionMatchesReadmeBadge(t *testing.T) {
 	t.Fatalf("no version badge (marker %q) found in README.md", marker)
 }
 
+// TestVersionMatchesSkillStamp ensures the consumer skill's released-API
+// stamp (skill/SKILL.md) stays in sync with utils.Version. The skill
+// documents the source tree, so the stamp is what tells a consumer pinned to
+// an older tag which release the catalogue is known-good for (#50) — without
+// it, a name documented here can read as "should exist on my pin" when it
+// has not shipped yet.
+func TestVersionMatchesSkillStamp(t *testing.T) {
+	t.Parallel()
+
+	data, err := os.ReadFile("../skill/SKILL.md")
+	if err != nil {
+		t.Skipf("skill/SKILL.md not found (running outside repo root?): %v", err)
+	}
+
+	const marker = "Released API: **v"
+	for line := range strings.SplitSeq(string(data), "\n") {
+		if _, rest, ok := strings.Cut(line, marker); ok {
+			// rest starts with "1.27.0**. The catalogue tracks ..."
+			version, _, _ := strings.Cut(rest, "**")
+			if version != Version {
+				t.Errorf("utils.Version = %q, but skill/SKILL.md stamps released API v%s", Version, version)
+			}
+
+			return
+		}
+	}
+
+	t.Fatalf("no released-API stamp (marker %q) found in skill/SKILL.md", marker)
+}
+
 // TestChangelogNoDuplicateEntryTitles fails when two entries in the same
 // CHANGELOG section open with the same bold title ("the Toggle class": the
 // same change written twice — once per iteration — forces readers to
