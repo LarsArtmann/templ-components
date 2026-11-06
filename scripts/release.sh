@@ -219,7 +219,7 @@ PRE_RELEASE_HEAD="$(git rev-parse HEAD)"
 release_cleanup() {
 	if [ "$RELEASE_COMMITTED" = "0" ]; then
 		echo "Release aborted; rolling back version files, go.mod files, CHANGELOG, FEATURES..." >&2
-		git restore --source="$PRE_RELEASE_HEAD" -- utils/version.go $MODFILES visualtest/go.mod website/go.mod CHANGELOG.md FEATURES.md README.md 2>/dev/null || true
+		git restore --source="$PRE_RELEASE_HEAD" -- utils/version.go $MODFILES visualtest/go.mod website/go.mod CHANGELOG.md FEATURES.md README.md skill/SKILL.md 2>/dev/null || true
 	fi
 	rm -rf "$REPLACE_BACKUP_DIR"
 }
@@ -296,6 +296,18 @@ if [ -f README.md ]; then
 	echo "Bumped README version badge to $NEW_VERSION."
 else
 	echo "Warning: README.md not found; skipped the badge bump." >&2
+fi
+
+# 6d. Bump the consumer skill's released-API stamp.
+#     utils.TestVersionMatchesSkillStamp (added 2026-11-06, #50) guards the
+#     skill/SKILL.md stamp; the release script must own the bump too or the
+#     same release-verify that enforces the other version files fails here.
+if [ -f skill/SKILL.md ]; then
+	sed -i.bak -E "s#(Released API: \*\*v)[0-9]+\.[0-9]+\.[0-9]+(\*\*)#\1${NEW_VERSION}\2#" skill/SKILL.md
+	rm -f skill/SKILL.md.bak
+	echo "Bumped skill/SKILL.md released-API stamp to v$NEW_VERSION."
+else
+	echo "Warning: skill/SKILL.md not found; skipped the stamp bump." >&2
 fi
 
 # 7. Run full verify (all modules — replaces still in place; see ordering note).
@@ -380,8 +392,8 @@ fi
 # real version drift from an unrelated build failure (v1.17.0 attempt 5 failed
 # here with no visible cause; never gate blind).
 DRIFT_GUARD_LOG="$(mktemp)"
-if ! (cd utils && go test ./... -run 'TestVersionMatches(Changelog|Features)' -count=1 >"$DRIFT_GUARD_LOG" 2>&1); then
-	echo "Error: version drift-guard failed. utils.Version, CHANGELOG heading, and FEATURES.md version must all agree." >&2
+if ! (cd utils && go test ./... -run 'TestVersionMatches(Changelog|Features|ReadmeBadge|SkillStamp)' -count=1 >"$DRIFT_GUARD_LOG" 2>&1); then
+	echo "Error: version drift-guard failed. utils.Version, CHANGELOG heading, FEATURES.md, README badge, and the skill stamp must all agree." >&2
 	echo "--- drift-guard test output ---" >&2
 	cat "$DRIFT_GUARD_LOG" >&2
 	echo "------------------------------" >&2

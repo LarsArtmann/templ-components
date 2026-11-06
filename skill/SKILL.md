@@ -35,6 +35,8 @@ Bundled references (read on demand, not upfront):
 
 > Count-bearing cells in this file are WRITTEN by `go run ./tools/countgen/cmd/countgen -w` and VERIFIED by `utils.TestDocsCountDrift`; semantics live in `docs/count-definitions.md`.
 
+Released API: **v1.27.0**. The catalogue tracks the source tree, so a component can appear here before it reaches your pin — and names are exported from the package named in the per-package index (`FilterBar` is `forms.FilterBar`, not `display`). If a name is undefined on your pin, bump the pin before hand-rolling.
+
 138 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)
 
 - 138 templ components + 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
