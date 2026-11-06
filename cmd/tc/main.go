@@ -282,8 +282,9 @@ Usage:
   tc add <component> --out DIR   Copy to a custom directory.
   tc add <component> --list-deps List sibling .go files the component depends on.
   tc version                Print the library version.
-  tc doctor                 Diagnose consumer-integration traps (Tailwind @source,
-                            GOEXPERIMENT, templ pin, committed *_templ.go, hooks).
+  tc doctor [--css PATH]    Diagnose consumer-integration traps (Tailwind @source,
+                            GOEXPERIMENT, templ pin, committed *_templ.go, hooks);
+                            --css checks one concrete css entry.
   tc lint [flags] [DIR ...] Scan sources for compliance violations (--rtl, --dark,
                             --motion, --icons). Exit 1 on findings — CI-gateable.
 

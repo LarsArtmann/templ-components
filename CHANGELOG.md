@@ -31,6 +31,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   The recipe pairs every clickable row with a real `<a>` in a cell, shows the
   stretched-link variation with its tradeoffs (one per row, text selection,
   hover), and names the anti-patterns (#76 follow-up, TODO #501).
+- **`tc doctor` reads the go.mod forms consumers actually write.** The templ
+  pin check was a single-line-require matcher, so every block-form consumer
+  (the gofmt default) read as "templ missing", and the Tailwind entry probe
+  knew four filenames, so a working `assets/css/input.css` read as "no
+  entry". Both false FAILs broke the documented exit-code contract (#35).
+  The pin check is now a hand-parser (no `golang.org/x/mod`; block and
+  single-line requires, `// indirect` suffixes, trailing comments, and
+  replace/exclude noise all handled), and the entry check discovers by
+  content — any `*.css` carrying `@source` within five directory levels,
+  with the fast-path filename candidates kept and `tc doctor --css <path>`
+  as the override. A `@source` entry that does not scan `**/*.templ` still
+  fails with the per-file hint: that trap is what the check exists for.
 - **The consumer skill stamps its released API.** `skill/SKILL.md` now opens
   with the last released version (`Released API: v1.27.0`) plus a
   package-qualification note (`FilterBar` is `forms.FilterBar`, not

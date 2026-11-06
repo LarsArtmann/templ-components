@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -19,12 +20,21 @@ import (
 // It runs in TWO contexts and adapts:
 //   - inside the templ-components repo (checks library-side invariants),
 //   - in a consumer project (checks the consumer-side integration traps).
-func cmdDoctor(_ *registry, _ []string) {
+func cmdDoctor(_ *registry, args []string) {
+	cssOverride := ""
+
+	for i := 0; i < len(args); i++ {
+		if args[i] == "--css" && i+1 < len(args) {
+			cssOverride = args[i+1]
+			i++
+		}
+	}
+
 	fmt.Fprintln(os.Stdout, "tc doctor — templ-components environment check")
 	fmt.Fprintln(os.Stdout)
 
 	failures := 0
-	failures += checkTailwindSources()
+	failures += checkTailwindSources(cssOverride)
 	failures += checkGOEXPERIMENT()
 	failures += checkTemplVersionPinned()
 	failures += checkGeneratedCommitted()
@@ -64,30 +74,136 @@ func doctorCheck(name string, ok bool, hint string) int {
 // checkTailwindSources verifies the consumer's CSS entry point scans the
 // directory that holds copied .templ components (the #1 integration trap:
 // @source path resolved relative to the CSS file, missing every class).
-func checkTailwindSources() int {
-	cssCandidates := []string{"app.css", "static/app.css", "assets/app.css", "css/app.css"}
+// Discovery is content-based (#35): a cssOverride (--css PATH) is checked
+// directly; otherwise the fixed filename candidates run as the fast path
+// and a depth-bounded walk for ANY *.css carrying an @source line takes
+// over — the filename probe missed working layouts like assets/css/input.css.
+func checkTailwindSources(cssOverride string) int {
+	if cssOverride != "" {
+		return cssEntryCheck(cssOverride)
+	}
 
-	for _, candidate := range cssCandidates {
-		content, err := os.ReadFile(candidate)
-		if err != nil {
-			continue
-		}
+	if entry := cssFastPathEntry("."); entry != "" {
+		return cssEntryCheck(entry)
+	}
 
-		text := string(content)
-		hasSource := strings.Contains(text, "@source")
-		scansTempl := strings.Contains(text, "**/*.templ")
-
+	// Content discovery: first @source-carrying css that also scans .templ
+	// passes. A hit that does NOT scan .templ is kept as the FAIL hint — that
+	// per-file trap is exactly what this check exists for (#35).
+	entry, found := discoverCSSEntry(".")
+	if !found {
 		return doctorCheck(
-			"Tailwind @source scans .templ files ("+candidate+")",
-			hasSource && scansTempl,
-			"add `@source \"./**/*.templ\";` (path relative to the CSS FILE, not the CWD — the demo uses @source \"../../**/*.templ\")",
+			"Tailwind entry (app.css) found",
+			false,
+			"no css file with an @source line found (searched "+strconv.Itoa(
+				cssDiscoveryMaxDepth+1,
+			)+" directory levels, skipping node_modules/vendor/.git) — run `tc init` and compile with tailwindcss, or point `tc doctor --css <path>` at the entry",
 		)
 	}
 
+	return cssEntryCheck(entry)
+}
+
+// cssFastPathEntry returns the first well-known candidate filename that
+// exists under root ("" when none do) — cheap and ordered before discovery.
+func cssFastPathEntry(root string) string {
+	for _, candidate := range cssCandidates {
+		path := filepath.Join(root, candidate)
+		if _, err := os.Stat(path); err == nil {
+			return path
+		}
+	}
+
+	return ""
+}
+
+// discoverCSSEntry walks root depth-bounded for a CSS file carrying an
+// @source line. Returns the first entry that ALSO scans **/*.templ when one
+// exists; otherwise the first @source-carrying css (the FAIL hint) and found=true.
+func discoverCSSEntry(root string) (string, bool) {
+	hintPath := ""
+	scanPath := ""
+
+	walkErr := filepath.WalkDir(root, func(path string, dirent os.DirEntry, err error) error {
+		if err != nil {
+			//nolint:nilerr // unreadable entries are not this check's business
+			return nil
+		}
+
+		if dirent.IsDir() && cssDirPruned(root, path, dirent.Name()) {
+			return filepath.SkipDir
+		}
+
+		if !strings.HasSuffix(path, ".css") {
+			return nil
+		}
+
+		//nolint:gosec // diagnostic tool reading the consumer's own tree; symlink traversal is the point
+		content, readErr := os.ReadFile(path)
+		if readErr != nil {
+			//nolint:nilerr // unreadable entries are not this check's business
+			return nil
+		}
+
+		text := string(content)
+		if !strings.Contains(text, "@source") {
+			return nil
+		}
+
+		if hintPath == "" {
+			hintPath = path
+		}
+
+		if strings.Contains(text, "**/*.templ") {
+			scanPath = path
+
+			return filepath.SkipAll
+		}
+
+		return nil
+	})
+	if walkErr != nil {
+		return "", false
+	}
+
+	if scanPath != "" {
+		return scanPath, true
+	}
+
+	return hintPath, hintPath != ""
+}
+
+// cssDirPruned reports whether a directory in the discovery walk must be
+// skipped outright: hidden dirs, dependency/vendor trees, and anything past
+// the depth bound (measured relative to the walk root).
+func cssDirPruned(root, path, name string) bool {
+	switch {
+	case name == ".git" || name == "node_modules" || name == "dist" || name == "vendor":
+		return true
+	case strings.HasPrefix(name, ".") && name != ".":
+		return true
+	case strings.Count(strings.TrimPrefix(path, root), string(os.PathSeparator)) >= cssDiscoveryMaxDepth:
+		return true
+	}
+
+	return false
+}
+
+// cssEntryCheck renders the pass/fail verdict for one concrete css entry:
+// it must carry an @source line AND scan **/*.templ (the class-yielding part).
+func cssEntryCheck(path string) int {
+	//nolint:gosec // explicit consumer-supplied path via --css; a local doctor has no privilege boundary to guard
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return doctorCheck("Tailwind entry readable ("+path+")", false, "cannot read "+path+": "+err.Error())
+	}
+
+	text := string(content)
+
 	return doctorCheck(
-		"Tailwind entry (app.css) found",
-		false,
-		"no app.css in ./, ./static, ./assets, ./css — run `tc init` and compile with tailwindcss",
+		"Tailwind @source scans .templ files ("+path+")",
+		strings.Contains(text, "@source") && strings.Contains(text, "**/*.templ"),
+		"add `@source \"./**/*.templ\";` (path relative to the CSS FILE, not the CWD — the demo uses @source \"../../**/*.templ\")",
 	)
 }
 
@@ -151,39 +267,112 @@ func parseGoVersion(version string) (int, int, bool) {
 }
 
 // checkTemplVersionPinned warns when a consumer's go.mod pulls a templ
-// version older than the one this library generates with (v0.3.1020).
+// version older than templGeneratedWith (the generator version this library
+// pins — keep the doctor constant in lockstep with utils' pin, guarded by
+// TestTemplVersionPin).
 func checkTemplVersionPinned() int {
-	content, err := os.ReadFile("go.mod")
+	return checkTemplVersionPinnedAt("go.mod")
+}
+
+// checkTemplVersionPinnedAt is the path-injected core of the pin check
+// (testable without chdir, paralleltest-clean).
+func checkTemplVersionPinnedAt(path string) int {
+	content, err := os.ReadFile(path)
 	if err != nil {
 		return doctorCheck("go.mod readable (templ pin check)", false, "run inside a Go module")
 	}
 
-	for line := range strings.SplitSeq(string(content), "\n") {
-		fields := strings.Fields(strings.TrimSpace(line))
-
-		if len(fields) < 3 || fields[0] != "require" {
-			continue
-		}
-
-		if fields[1] != "github.com/a-h/templ" {
-			continue
-		}
-
-		pinned := strings.TrimPrefix(fields[2], "v")
-		want := strings.TrimPrefix(templGeneratedWith, "v")
-
+	pinned, found := templRequireVersion(string(content))
+	if !found {
 		return doctorCheck(
-			"templ "+pinned+" compatible with generated code ("+templGeneratedWith+")",
-			compareSemver(pinned, want) >= 0,
-			"`go get github.com/a-h/templ@"+templGeneratedWith+"` — older generators emit incompatible *_templ.go runtime calls",
+			"templ dependency present",
+			false,
+			"add github.com/a-h/templ — the generated components need its runtime",
 		)
 	}
 
+	want := strings.TrimPrefix(templGeneratedWith, "v")
+
 	return doctorCheck(
-		"templ dependency present",
-		false,
-		"add github.com/a-h/templ — the generated components need its runtime",
+		"templ "+pinned+" compatible with generated code ("+templGeneratedWith+")",
+		compareSemver(pinned, want) >= 0,
+		"`go get github.com/a-h/templ@"+templGeneratedWith+"` — older generators emit incompatible *_templ.go runtime calls",
 	)
+}
+
+// templRequireVersion extracts the github.com/a-h/templ version from go.mod
+// content WITHOUT golang.org/x/mod (the dependency budget is closed, #35):
+// both the single-line and the block require forms resolve, `// indirect`
+// suffixes and trailing comments are stripped, and other directives
+// (replace/exclude) are ignored — their lines never carry a require-shaped
+// version field for templ.
+func templRequireVersion(content string) (string, bool) {
+	inRequireBlock := false
+
+	for raw := range strings.SplitSeq(content, "\n") {
+		line := stripLineComment(strings.TrimSpace(raw))
+		if line == "" {
+			continue
+		}
+
+		fields := strings.Fields(line)
+
+		blockStart, blockEnd := requireBlockMarkers(fields)
+
+		switch {
+		case blockStart:
+			inRequireBlock = true
+		case blockEnd:
+			inRequireBlock = false
+		case inRequireBlock && isTemplRequire(fields):
+			return strings.TrimPrefix(fields[1], "v"), true
+		case isSingleLineTemplRequire(fields):
+			return strings.TrimPrefix(fields[2], "v"), true
+		}
+	}
+
+	return "", false
+}
+
+// stripLineComment removes a trailing // comment (go.mod has no other
+// comment syntax) and the whitespace it leaves behind.
+func stripLineComment(line string) string {
+	line, _, _ = strings.Cut(line, "//")
+
+	return strings.TrimSpace(line)
+}
+
+// requireBlockMarkers classifies a directive line as opening ("require (",
+// written with or without the space) or closing (")") a require block.
+func requireBlockMarkers(fields []string) (bool, bool) {
+	start := len(fields) >= 1 && (fields[0] == "require(" ||
+		(fields[0] == "require" && len(fields) >= 2 && fields[1] == "("))
+	end := len(fields) == 1 && fields[0] == ")"
+
+	return start, end
+}
+
+// isTemplRequire matches a block-form line naming templ with a version:
+// `github.com/a-h/templ v0.3.1100 [// indirect]`.
+func isTemplRequire(fields []string) bool {
+	return len(fields) >= 2 && fields[0] == templModulePath && isVersionLiteral(fields[1])
+}
+
+// isSingleLineTemplRequire matches the one-line form:
+// `require github.com/a-h/templ v0.3.1100`.
+func isSingleLineTemplRequire(fields []string) bool {
+	return len(fields) >= 3 && fields[0] == "require" && fields[1] == templModulePath
+}
+
+// isVersionLiteral reports whether s looks like a semver literal (v1.2.3) —
+// the guard that keeps replace lines (`mod => mod v1.2.3` aside: their
+// second field is `=>`) and other directives out of the require parse.
+func isVersionLiteral(s string) bool {
+	if !strings.HasPrefix(s, "v") || len(s) < 2 {
+		return false
+	}
+
+	return s[1] >= '0' && s[1] <= '9'
 }
 
 const (
@@ -191,7 +380,18 @@ const (
 	goVersionParts = 3
 	// jsonv2StableMinor is the Go minor where encoding/json/v2 needs no flag.
 	jsonv2StableMinor = 27
+	// templModulePath is the upstream templ module the generated code needs.
+	templModulePath = "github.com/a-h/templ"
+	// cssDiscoveryMaxDepth bounds the @source-entry walk (path separator
+	// count of a DIRECTORY) so huge trees cannot stall the doctor.
+	cssDiscoveryMaxDepth = 5
 )
+
+// cssCandidates is the fast-path probe list, checked before content
+// discovery (both cover the same check; #35).
+//
+//nolint:gochecknoglobals // static probe table, the doctor's only config
+var cssCandidates = []string{"app.css", "static/app.css", "assets/app.css", "css/app.css"}
 
 // templGeneratedWith is the generator version the library pins.
 const templGeneratedWith = "v0.3.1100"
