@@ -511,3 +511,22 @@ The design-token-axes branch (22 commits incl. daemon noise) landed as ONE squas
 - **ci-repro as the pre-push gate is non-negotiable:** "mergeable" API state and a prior session's "verified" claim both missed the stale golden; only `scripts/ci-repro.sh --lint --css --website` caught it. Push within minutes of `VERDICT: PASS` (the daemon races commits onto master).
 - **/tmp is volatile:** the pinned art-dupl binary vanished between sessions and had to be rebuilt at the pinned rev via `scripts/pinned-art-dupl.sh`. Candidate improvement: a persistent cache path or nix derivation (TODO row).
 - **Branch-content verification before deletion:** squash merges make branches read "unmerged" — use tree-diff (`git diff <branch>^{tree} <master-tip>^{tree}`) or `git cherry` (patch-id) to prove content is in master; the backup trees differed from master ONLY by the four documented reconciliation files (stale content safe to lose). `revert/templ-pin-1020` stays: unmerged by design.
+
+## 2026-11-07 — the "unreproducible" CSS drift was a Go-comment scanner candidate (§csscomment)
+
+The §merge77-era `git status M on app.css` churn got its root cause: demo.css
+scans `@source "../../**/*.go"` TOO (not just .templ), so ANY .go file —
+including _test.go doc comments — feeds Tailwind candidates. The color-token
+guard's doc comment contained the literal example `bg-accent-600/40`; CI's
+compile of that tree correctly emitted `.bg-accent-600\/40` (blob 75c402b6)
+while branches without the test compiled to e7b06370 — two "valid" outputs
+for different trees, reading as nondeterminism until the blobs were
+set-diffed (ONE inserted rule, alphabetically placed). The daemon then
+committed+pushed its (correct!) compile to the PR branch, so the rebase
+merge carried it to master. ci-repro's line-15-17 "never root-caused" note
+about local-green/CI-red CSS is the same mechanism: grep the compile inputs
+(.templ AND .go) for the delta rule's class name before suspecting the
+toolchain. Fixed by rewording the comment (no full utility token in prose);
+rule of thumb: **never write a complete class token in a comment of any
+scanned file type** — prose should break the token (call it "the accent-600
+bar tint"), exactly like the rendered-HTML comment rule in AGENTS.md.
