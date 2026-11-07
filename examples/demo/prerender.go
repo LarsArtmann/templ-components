@@ -99,6 +99,7 @@ func prerender(outputDir string) error {
 		props.CSSPath = ""
 		props.Favicon = demoURL("/favicon.svg")
 		props.HeadContent = cssHead
+		props.HTMLDataAttrs = layout.DatastarNonceAttrs(nonce)
 
 		outPath := filepath.Join(outputDir, page.filename)
 		if err := os.MkdirAll(filepath.Dir(outPath), 0o755); err != nil {
