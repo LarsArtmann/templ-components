@@ -168,7 +168,7 @@ var packageImports = map[string][]string{
 	},
 
 	pkgDatastar: {
-		"attributes.go", 		impTempl,
+		"attributes.go", impTempl,
 		impDatastarStat,
 		impUtils,
 		impUtilsCDN,
@@ -213,7 +213,7 @@ var packageDeps = map[string][]string{
 	},
 	pkgLayout: {
 		"appshell_types.go", "container_types.go",
-		"datastar_nonce.go", 		"embed.go", "sri.go", "split_types.go", "stack_types.go",
+		"datastar_nonce.go", "embed.go", "sri.go", "split_types.go", "stack_types.go",
 	},
 
 	pkgNav: {"nav_menu_id.go"},
@@ -224,7 +224,7 @@ var packageDeps = map[string][]string{
 
 	pkgDatastar: {
 		"cancellation.go", enumsGoFile, "indicator.go",
-		"live_region.go", "loading_button.go", "polled_region.go",
+		"attributes.go", "live_region.go", "loading_button.go", "polled_region.go",
 		"retry.go", "sdk_script.go",
 		// version.go additionally pulls in go-datastar/static (embedded
 		// runtime bundle) + utils/cdn — SDKScript consumers only.
