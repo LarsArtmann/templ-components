@@ -127,7 +127,7 @@ func cspModeE2EServer(t *testing.T, strict bool) (*httptest.Server, *cspSpikeHit
 		}
 
 		liveProps := datastar.DefaultLiveRegionProps()
-		liveProps.BaseProps.Nonce = nonceFor(strict, nonce)
+		liveProps.Nonce = nonceFor(strict, nonce)
 		liveProps.ID = "csp-live"
 		liveProps.URL = "/api/csp-good-sse"
 		liveProps.AutoStart = true
@@ -239,80 +239,7 @@ func cspModeE2EServer(t *testing.T, strict bool) (*httptest.Server, *cspSpikeHit
 		_, _ = w.Write(static.Bytes())
 	})
 
-	mux.HandleFunc("/api/csp-bad", func(w http.ResponseWriter, _ *http.Request) {
-		http.Error(w, "boom", http.StatusInternalServerError)
-	})
-
-	mux.HandleFunc("/api/csp-get", func(w http.ResponseWriter, _ *http.Request) {
-		hits.get.Add(1)
-		patchHeaders(w, "#csp-get-target", "inner")
-		_, _ = io.WriteString(w, `<span>patched under csp</span>`)
-	})
-
-	mux.HandleFunc("/api/csp-debounce", func(w http.ResponseWriter, _ *http.Request) {
-		hits.debounce.Add(1)
-		patchHeaders(w, "#csp-debounce-out", "inner")
-		_, _ = io.WriteString(w, `debounced`)
-	})
-
-	mux.HandleFunc("/api/csp-slow", func(w http.ResponseWriter, _ *http.Request) {
-		hits.slow.Add(1)
-
-		// Long enough that the in-flight window is easy to observe, short
-		// enough to keep the suite fast.
-		time.Sleep(1500 * time.Millisecond)
-		patchHeaders(w, "#csp-slow-done", "inner")
-		_, _ = io.WriteString(w, `slow done`)
-	})
-
-	mux.HandleFunc("/api/csp-intersect", func(w http.ResponseWriter, _ *http.Request) {
-		hits.intersect.Add(1)
-		patchHeaders(w, "#csp-intersect", "inner")
-		_, _ = io.WriteString(w, `seen by intersect`)
-	})
-
-	mux.HandleFunc("/api/csp-interval", func(w http.ResponseWriter, _ *http.Request) {
-		n := hits.interval.Add(1)
-		patchHeaders(w, "#csp-interval", "inner")
-		_, _ = fmt.Fprintf(w, `tick %d`, n)
-	})
-
-	mux.HandleFunc("/api/csp-post", func(w http.ResponseWriter, r *http.Request) {
-		hits.post.Add(1)
-
-		if err := r.ParseForm(); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-
-			return
-		}
-
-		patchHeaders(w, "#csp-post-out", "inner")
-		_, _ = io.WriteString(w, `echo:`+html.EscapeString(r.FormValue("cspq")))
-	})
-
-	mux.HandleFunc("/api/csp-good-sse", func(w http.ResponseWriter, r *http.Request) {
-		flusher, ok := w.(http.Flusher)
-		if !ok {
-			http.Error(w, "streaming not supported", http.StatusInternalServerError)
-
-			return
-		}
-
-		_ = http.NewResponseController(w).SetWriteDeadline(time.Time{})
-		w.Header().Set("Content-Type", "text/event-stream")
-		w.Header().Set("Cache-Control", "no-cache")
-
-		select {
-		case <-r.Context().Done():
-			return
-		case <-time.After(400 * time.Millisecond):
-		}
-
-		writeSSEPatch(w, "#csp-live-child", "inner", "<span>fresh via csp sse</span>")
-		flusher.Flush()
-
-		<-r.Context().Done()
-	})
+	cspSpikeEndpoints(mux, hits, patchHeaders)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -321,6 +248,86 @@ func cspModeE2EServer(t *testing.T, strict bool) (*httptest.Server, *cspSpikeHit
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
+
+// cspSpikeEndpoints registers the mock endpoints; extracted from
+// cspModeE2EServer to keep that function under the complexity budget.
+func cspSpikeEndpoints(mux *http.ServeMux, hits *cspSpikeHits, patchHeaders func(http.ResponseWriter, string, string)) {
+mux.HandleFunc("/api/csp-bad", func(w http.ResponseWriter, _ *http.Request) {
+	http.Error(w, "boom", http.StatusInternalServerError)
+})
+
+mux.HandleFunc("/api/csp-get", func(w http.ResponseWriter, _ *http.Request) {
+	hits.get.Add(1)
+	patchHeaders(w, "#csp-get-target", "inner")
+	_, _ = io.WriteString(w, `<span>patched under csp</span>`)
+})
+
+mux.HandleFunc("/api/csp-debounce", func(w http.ResponseWriter, _ *http.Request) {
+	hits.debounce.Add(1)
+	patchHeaders(w, "#csp-debounce-out", "inner")
+	_, _ = io.WriteString(w, `debounced`)
+})
+
+mux.HandleFunc("/api/csp-slow", func(w http.ResponseWriter, _ *http.Request) {
+	hits.slow.Add(1)
+
+	// Long enough that the in-flight window is easy to observe, short
+	// enough to keep the suite fast.
+	time.Sleep(1500 * time.Millisecond)
+	patchHeaders(w, "#csp-slow-done", "inner")
+	_, _ = io.WriteString(w, `slow done`)
+})
+
+mux.HandleFunc("/api/csp-intersect", func(w http.ResponseWriter, _ *http.Request) {
+	hits.intersect.Add(1)
+	patchHeaders(w, "#csp-intersect", "inner")
+	_, _ = io.WriteString(w, `seen by intersect`)
+})
+
+mux.HandleFunc("/api/csp-interval", func(w http.ResponseWriter, _ *http.Request) {
+	n := hits.interval.Add(1)
+
+	patchHeaders(w, "#csp-interval", "inner")
+	_, _ = fmt.Fprintf(w, `tick %d`, n)
+})
+
+mux.HandleFunc("/api/csp-post", func(w http.ResponseWriter, r *http.Request) {
+	hits.post.Add(1)
+
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+
+		return
+	}
+
+	patchHeaders(w, "#csp-post-out", "inner")
+	_, _ = io.WriteString(w, `echo:`+html.EscapeString(r.FormValue("cspq")))
+})
+
+mux.HandleFunc("/api/csp-good-sse", func(w http.ResponseWriter, r *http.Request) {
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		http.Error(w, "streaming not supported", http.StatusInternalServerError)
+
+		return
+	}
+
+	_ = http.NewResponseController(w).SetWriteDeadline(time.Time{})
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+
+	select {
+	case <-r.Context().Done():
+		return
+	case <-time.After(400 * time.Millisecond):
+	}
+
+	writeSSEPatch(w, "#csp-live-child", "inner", "<span>fresh via csp sse</span>")
+	flusher.Flush()
+
+	<-r.Context().Done()
+})
+}
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if csp != "" {
@@ -577,7 +584,7 @@ func TestDatastarCSPEvalCostProbe(t *testing.T) {
 
 		runs := make([]float64, 0, rounds)
 
-		for i := 0; i < rounds; i++ {
+		for range rounds {
 			var perEval float64
 
 			if err := chromedp.Do(ctx,
