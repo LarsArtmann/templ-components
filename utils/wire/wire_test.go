@@ -888,15 +888,28 @@ func TestSignalsFilterAndOpenWhenHidden(t *testing.T) {
 		t.Errorf("@get with OpenWhenHidden=true must emit the option: %q", got)
 	}
 
-	if got := Get("/api/x").WithOpenWhenHidden(false).TransportDatastarAction().Attributes()["data-on:click"].(string); strings.Contains(got, "openWhenHidden") {
+	// The opt-in contract: only the true-get pair emits the option; every
+	// other combination keeps the runtime's per-method default and renders
+	// nothing (byte-identical to pre-field expressions).
+	openWhenHiddenExpr := func(method Method, open bool) string {
+		action := Action{Method: method, URL: "/api/x", OpenWhenHidden: open}
+
+		return action.TransportDatastarAction().Attributes()["data-on:click"].(string)
+	}
+
+	if got := openWhenHiddenExpr(MethodGet, true); !strings.Contains(got, "openWhenHidden: true") {
+		t.Errorf("@get with OpenWhenHidden=true must emit the option: %q", got)
+	}
+
+	if got := openWhenHiddenExpr(MethodGet, false); strings.Contains(got, "openWhenHidden") {
 		t.Errorf("@get default must omit the option: %q", got)
 	}
 
-	if got := Post("/api/x").WithOpenWhenHidden(false).TransportDatastarAction().Attributes()["data-on:click"].(string); strings.Contains(got, "openWhenHidden") {
+	if got := openWhenHiddenExpr(MethodPost, false); strings.Contains(got, "openWhenHidden") {
 		t.Errorf("zero value must omit the option (runtime per-method default): %q", got)
 	}
 
-	if got := Post("/api/x").WithOpenWhenHidden(true).TransportDatastarAction().Attributes()["data-on:click"].(string); !strings.Contains(got, "openWhenHidden: true") {
+	if got := openWhenHiddenExpr(MethodPost, true); !strings.Contains(got, "openWhenHidden: true") {
 		t.Errorf("POST opt-in must emit openWhenHidden: true: %q", got)
 	}
 }
