@@ -409,5 +409,15 @@ unmapped (mapping column above + this line).
   script in the first red run; flows only started passing once the page
   carried zero non-nonce'd scripts.
 
+- **T21 research tails closed (2026-11-07, all Tier-D holes):** Rocket docs
+  found via sitemap (`/reference/rocket`; beta free web-component API,
+  `datastar-rocket.js`, out of scope per ADR-0033); release years
+  GitHub-API-verified (1.0.0 2026-04-16 → 1.0.4 2026-09-21; 1.0.3's notes
+  announce CSP mode #1142; 1.0.4 confirms `@query` + aliased nonce + Rocket
+  extraction + #1205 fixes); 11.90 KiB = homepage hero figure, basis still
+  unstated (raw bundle is 33,538 bytes); Pro inventory enumerated (10
+  attributes, 3 actions, bundler/inspector/Stellar CSS). Report appendix
+  annotated in place; runtime-facts updated. The T20 probe stays scheduled.
+
 (Recorded here as execution proceeds — a re-audit correction at T19 or
-Tier-D resolutions from T21 also land in this section, annotated in place.)
+further corrections land in this section, annotated in place.)

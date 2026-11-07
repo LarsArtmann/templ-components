@@ -360,6 +360,15 @@ tokens below are the provable ones (all in `TestPinnedRuntimeBundleContract`):
   (v1.0.4+), and any Rocket token. Modeling any of the above is future work
   (2026-11-07 plan:
   `docs/planning/2026-11-07_08-21_DATASTAR-CLIENT-SUPERB-PARETO-PLAN.md`).
+  Release-calendar years upstream-verified 2026-11-07 (GitHub releases
+  API): v1.0.0 2026-04-16, v1.0.1 2026-04-20, v1.0.2 2026-06-02,
+  v1.0.3 2026-08-27 (notes announce the opt-in CSP mode, #1142),
+  v1.0.4 2026-09-21 (`@query`, aliased nonce attributes, both #1205
+  cancellation-race fixes). Rocket verdict: upstream's Rocket is a beta
+  JavaScript web-component API in the separate FREE
+  `datastar-rocket.js` bundle (extracted from Pro at v1.0.4) — out of
+  scope for this library per ADR-0033 (Web Components permanently
+  rejected).
 
 ## Attribute syntax
 

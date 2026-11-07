@@ -1888,6 +1888,33 @@ datastar.On("keyup", expr).Debounce(300)     // data-on:keyup__debounce.300ms</c
             </tbody>
           </table>
 
+          <p>
+            <strong>Resolution (annotated 2026-11-07, plan T21 &mdash; the
+            flagged list above is preserved verbatim, not rewritten):</strong>
+            Rocket decoded at
+            <a href="https://data-star.dev/reference/rocket">data-star.dev/reference/rocket</a>
+            (this session's earlier <code>/guides/csp</code> URL was a bad
+            guess; the sitemap holds the real routes) &mdash; Rocket is a beta
+            JavaScript web-component API shipped in the FREE
+            <code>datastar-rocket.js</code> bundle (extracted out of Pro at
+            v1.0.4). Verdict: out of scope for this library &mdash; it is a
+            client-side component-authoring framework, and Web Components are
+            permanently rejected here (ADR-0033). Calendar years verified via
+            the GitHub releases API: v1.0.0 = 2026-04-16, v1.0.1 = 2026-04-20,
+            v1.0.2 = 2026-06-02, v1.0.3 = 2026-08-27 (its notes announce the
+            opt-in CSP mode, #1142), v1.0.4 = 2026-09-21 (its notes confirm
+            <code>@query()</code>, aliased nonce attributes, the Rocket
+            extraction, and both #1205 cancellation-race fixes). The
+            11.90&nbsp;KiB figure is the homepage hero line ("a single
+            11.90&nbsp;KiB file", retrieved 2026-11-07) with NO stated basis;
+            the pinned raw bundle measures 33,538 bytes, so the number stays
+            classified as a marketing figure with unstated basis. The
+            CSP-mode plugin-coverage probe is CLOSED by this session's T03:
+            the full library attribute set passed under a strict nonce-only
+            CSP with zero violations. The view-transition-selector converter
+            probe remains scheduled (plan T20, Wave 4).
+          </p>
+
           <h3>Reproduction commands</h3>
           <pre><code>BUNDLE="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.6.1/datastar.js"
 sha256sum "$BUNDLE"          # 5d6b7794a50a83d82da962aec5e382f5ae83ac7afbc751f903f7a9c6bd433c65
