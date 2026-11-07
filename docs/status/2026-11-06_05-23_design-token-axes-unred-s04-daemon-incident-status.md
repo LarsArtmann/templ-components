@@ -62,12 +62,14 @@ The session's driving discovery: **master was red on FOUR CI lanes** (not just t
 ## e) WHAT WE SHOULD IMPROVE (the three questions, answered straight)
 
 **What did I forget?**
+
 - That component styles also live in **`.go` files** (`button_go.go`, `status_dot.go`, `carousel_go.go`, `segment_bar.go`, `chart_geometry.go`) — my S04 planning grep covered only `.templ`, so Button/StatusDot/"link" were mis-scoped and I discovered the real tables mid-sweep.
 - That count-bearing claims (`TestDocsCountDrift`'s `groups at t=1`, corpus freshness) must be grepped proactively after ANY count-adjacent edit — I hit both guards reactively instead.
 - To state my **single-writer scope claim at session start** (protocol rule 1) — I worked it implicitly, never declared it.
 - To leave a clean tree before any merge — every minute my work sat uncommitted was daemon-race exposure.
 
 **What could I have done better?**
+
 - **Stage explicitly, commit immediately, never let the daemon author anything.** Three daemon commits (`1cf0943e`, `f5ef4598`, `51a03c3e`) consumed my or others' work with hallucinated messages; one produced a wrong merge. Small named commits from me would have starved it entirely.
 - **Read tool output before writing derived numbers into durable docs** (the 151-vs-146 slip).
 - **Run ci-repro at the exact push commit** even when "tests pass" — the ritual exists precisely because "should be green" is not a verdict.
@@ -75,6 +77,7 @@ The session's driving discovery: **master was red on FOUR CI lanes** (not just t
 - The /tmp worktree `templ generate` — I ran the known-footgun bare form anyway and paid a restore cycle; restrict or per-module from the start.
 
 **What could I still improve (structural)?**
+
 - **Fix the bare-flip self-test bug** (guard/script must never mutate shared config; scenario should use a temp clone).
 - **Daemon defenses:** a pre-push hook step re-checking `git status -sb` + `git fetch` (M03 ritual exists as prose; it wants enforcement), and a convention that merges are human/agent-authored only (the daemon should refuse merge commits — "consumes merge parents" is documented behavior, it should be a bug).
 - **Pin-guard completeness:** ci.yaml is now guarded, but the same one-line-drift class exists for the golangci pin (TODO #443) — same treatment.
@@ -83,6 +86,7 @@ The session's driving discovery: **master was red on FOUR CI lanes** (not just t
 ## f) NEXT (ranked, ≤50)
 
 **Recovery & landing (this branch):**
+
 1. Execute §d1 recovery: salvage S04 diff from `f5ef4598`, reset feat to `bcebe187`, discard the 4 botched local commits.
 2. Redo `git merge origin/master` by hand; resolve CHANGELOG (unify [Unreleased]), toast.templ (accent + script-fix BOTH present), mirrors, corpus.
 3. Post-merge regeneration: `templ generate` (feedback+display from the right roots), mirror resync, corpus regen, gofmt.
@@ -135,9 +139,9 @@ The session's driving discovery: **master was red on FOUR CI lanes** (not just t
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
 
 1. **The other actor's dependency bumps** (`datastar`/`errorpage`/root `go.mod`+`go.sum`, daemon-committed as `97a5cfbf` and now riding PR #77): keep them in PR #77, or revert them so their author lands them intentionally with their own verification? I cannot know whether those bumps were complete or mid-experiment.
-2. **Release sequencing (carried Q2, now sharper):** master is fully GREEN and carries user-facing fixes (Toggle HTML validity, Toast stray tag, pagination test truth). Cut **v1.28.0 from master now** — before the emission sweeps land — or hold and ride everything into **v2.0.0**? (ADR-0039 forbids v1.x from an *emission* tree; master itself is emission-free, so v1.28.0 is mechanically possible — but the `[Unreleased]` CHANGELOG on feat mixes v2-gated BREAKING entries with v1-safe fixes, and the release mechanics for that split need your call.)
+2. **Release sequencing (carried Q2, now sharper):** master is fully GREEN and carries user-facing fixes (Toggle HTML validity, Toast stray tag, pagination test truth). Cut **v1.28.0 from master now** — before the emission sweeps land — or hold and ride everything into **v2.0.0**? (ADR-0039 forbids v1.x from an _emission_ tree; master itself is emission-free, so v1.28.0 is mechanically possible — but the `[Unreleased]` CHANGELOG on feat mixes v2-gated BREAKING entries with v1-safe fixes, and the release mechanics for that split need your call.)
 3. **Recovery authorization:** may I reset local `feat/design-token-axes` to the pushed tip `bcebe187` — discarding the 4 botched local commits (`0da02ed0`, `f5ef4598`, `51a03c3e`, `06001739`; reflog preserves them, and I'll salvage the S04 diff from `f5ef4598` first) — then redo the master merge myself? It is the only clean path I see; a no means I need your preferred alternative for unwinding a wrong daemon merge.
 
 ---
 
-*Verification trail for this report: `gh pr checks 78` all-pass at run `42159131138`; `gh pr merge 78` output; `git log origin/master -2` = `9a67228a`/`fa577e41`; merge audit greps (toast accent=0, toggle aria-checked=3, parents `caae2ede`+`8ec97032`); art-dupl re-record stdout "Recorded 146 clone groups… No new clones detected"; `go test ./utils/ ./display/` ok after S04 fixes.*
+_Verification trail for this report: `gh pr checks 78` all-pass at run `42159131138`; `gh pr merge 78` output; `git log origin/master -2` = `9a67228a`/`fa577e41`; merge audit greps (toast accent=0, toggle aria-checked=3, parents `caae2ede`+`8ec97032`); art-dupl re-record stdout "Recorded 146 clone groups… No new clones detected"; `go test ./utils/ ./display/` ok after S04 fixes._

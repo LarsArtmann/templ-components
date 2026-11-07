@@ -12,7 +12,7 @@
    count-definitions test-function counts re-rounded ~1,650 → ~1,700 (multiple-of-50 band);
    class inventory was already fresh. utils module 100% green.
 2. **Corrupted shared caches purged** — 54 extracted module dirs (0-byte `.go`/empty `go.mod`)
-   + 95 download-cache `@v` entries trashed; re-downloads verified clean against go.sum.
+   - 95 download-cache `@v` entries trashed; re-downloads verified clean against go.sum.
 3. **ROOT CAUSE of cache corruption proven: `/dev/sdb1` (ext4, `data=writeback`, `commit=120`,
    mounted `/mnt/buildcache`) ACTIVELY produces 0-byte files on write** — a /tmp GOMODCACHE
    control download is byte-clean while /mnt re-corrupts on every re-extract. Session-wide
@@ -110,6 +110,7 @@
 ## f) NEXT — up to 50 things
 
 **Wave closure**
+
 1. Author the wave commit (or decide to let the daemon swallow it — with a generic message).
 2. Run `scripts/ci-repro.sh --lint --css --website` at the tip; read VERDICT; push if green.
 3. Confirm `.gitignore` didn't re-add `*_templ.go` after the pre-commit BuildFlow run.
@@ -122,7 +123,7 @@
 8. Schedule umount + `fsck -f /dev/sdb1` (answer to Q2 needed).
 9. Check SMART (`smartctl -a /dev/sdb`) before trusting the disk again.
 10. Decide journaling policy: stay `data=writeback` + periodic fsck, or `data=ordered`, or
-    relocate buildcache to a healthy disk (answer to Q3).
+relocate buildcache to a healthy disk (answer to Q3).
 11. After repair: re-validate a fresh GOMODCACHE/GOCACHE on /mnt, then retire /tmp overrides.
 12. Trim `/tmp/tc-gomod` + `/tmp/tc-gobuild` once the real cache is trusted.
 13. `.Trash-1000` on /mnt now holds ~150 purged dirs — empty it after repair confidence.
@@ -139,33 +140,33 @@
 
 **Demo quality**
 22. Convert braceless `@demoSection` calls to children blocks (one file per commit; golden
-    churn is bounded per page) — the anchors are currently empty shells except forms_demo.
+churn is bounded per page) — the anchors are currently empty shells except forms_demo.
 23. e2e for the exclusive accordion (open item 2, assert item 1 closed — native name group).
 24. Coarse-pointer emulation visual/e2e for the 16px font floor (visualtest has the
-    emulation harness already).
+emulation harness already).
 25. Slider RTL e2e (arrow-key + `--tc-slider-dir` flip).
 26. Add the three new e2e names to `docs/visual-testing.md` inventory table.
 27. Document the "e2e skips without CHROMEDP_CHROME_PATH — run via nix" contract in the test
-    file header (only partially noted).
+file header (only partially noted).
 
 **Library follow-through**
 28. Run `scripts/erraudit-sweep.sh` (not run this session).
 29. Run art-dupl check (new e2e file could clone; baseline is hash-pinned).
 30. `nix run .#crossbrowser` findings lane for the changed pages.
 31. Website: `go run ./cmd/site --update-csp` if any site page embeds the changed component
-    markup (script-first moves inline scripts; hashes may shift) — verify, don't assume.
+markup (script-first moves inline scripts; hashes may shift) — verify, don't assume.
 32. Check `docs/nonce-consumers.md` wording still matches script-FIRST placement.
 33. SKILL.md: add the script-first rule to the templ-components skill (AGENTS.md has it).
 34. TODO_LIST: close the MWG wave rows; harvest new rows (braceless demoSection, disk
-    incident, countgen README gap, daemon go.mod requires class).
+incident, countgen README gap, daemon go.mod requires class).
 35. Re-run the full visual suite once more before the release cut (load-flake confidence).
 36. Confirm demo deploy (`website.yml` path filters include `examples/demo/**`) after merge.
 37. Consider `@supports` probe test for the WebKit slider gradient (custom.css rule is
-    engine-gated; assert it applies in the pinned Chromium).
+engine-gated; assert it applies in the pinned Chromium).
 38. `.tc-prose pre color-scheme` — visual spot-check on the prose demo route (was string-only).
 39. Inspect and clean the stray `go.work.pdg-bak` (AD state in git status).
 40. Watch for daemon re-applying templ v0.3.1100 / re-stripping requires (pre-authorized
-    restoration; consider 14's guard the durable fix).
+restoration; consider 14's guard the durable fix).
 
 **Errorpage/website hygiene**
 41. website tests passed — but a `--update-csp` no-op check would catch hash drift as a gate.
@@ -173,14 +174,14 @@
 
 **Nice-to-have**
 43. `git worktree`-based old-vs-new screenshot bisect as a reusable visualtest tool (this
-    session hand-rolled it in /tmp twice — it earned a permanent home).
+session hand-rolled it in /tmp twice — it earned a permanent home).
 44. Pixel-diff region reporter (band/bbox tooling from this session) as a debug flag on the
-    visual suite.
+visual suite.
 45. Consider `docs/incidents/2026-11-03_buildcache-corruption.md` — the forensic method
-    (control-download diff) is reusable across projects on this host.
+(control-download diff) is reusable across projects on this host.
 46. Empty the 141-item /mnt `.Trash-1000/files` after repair.
 47. Add the disk incident to the crush-config cross-project lessons only AFTER repair
-    confirms root cause (fsck findings may change the story).
+confirms root cause (fsck findings may change the story).
 
 **Bookkeeping**
 48. This report + parent addenda cross-linked from TODO_LIST "harvested" section.

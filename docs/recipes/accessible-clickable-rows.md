@@ -10,10 +10,10 @@ convenience layer on top.
 
 ## The contract in one line
 
-| Layer                             | Who it serves                          | Mechanism                                              |
-| --------------------------------- | -------------------------------------- | ------------------------------------------------------ |
-| Cell link (`<a>` in a cell)       | Screen readers, keyboard-only users    | Native link semantics, in cell order                   |
-| Row (`TableRow.Href`)             | Pointer users, Enter-on-focused-row    | `data-tc-row-href` + CSP-safe delegation script        |
+| Layer                       | Who it serves                       | Mechanism                                       |
+| --------------------------- | ----------------------------------- | ----------------------------------------------- |
+| Cell link (`<a>` in a cell) | Screen readers, keyboard-only users | Native link semantics, in cell order            |
+| Row (`TableRow.Href`)       | Pointer users, Enter-on-focused-row | `data-tc-row-href` + CSP-safe delegation script |
 
 The library enforces its half: a row with `Href` gets `tabindex="0"`, a
 `focus-visible` outline (browsers draw no default ring on a `<tr>`), and a

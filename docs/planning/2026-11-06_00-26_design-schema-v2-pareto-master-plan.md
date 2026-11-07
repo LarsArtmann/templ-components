@@ -111,42 +111,42 @@ it blocks the schema.
 Tier 0 = the 1% (→51%), Tier 0–1 = the 4% (→64%), Tier 0–2 = the 20% (→80%), Tier 3 = the
 remaining 80% of work (→100%).
 
-| ID  | Tier | Task (30–100 min each)                                                                                                                                                              | Impact   | Effort                                    | Customer value                                                   |
-| --- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------- | ---------------------------------------------------------------- |
-| S01 | 0    | ADR-0049 "Design token axes": accent/surface/ink emission contract, `tc-*` namespace, scanner-safety, dark-pairing rule, contrast obligations, v2 gating (links R235/R225/ADR-0044) | Critical | 60min                                     | The decision everything else builds on                           |
-| S02 | 0    | `utils/tone` schema constants: AccentToken/SurfaceToken/InkToken complete-literal tables + validity/scanner-safety tests + docs-sync section                                        | Critical | 60min                                     | Typed token language; typo cannot render nothing                 |
-| S03 | 0    | PILOT: `feedback` package emits `tc-accent-*` (28 sites), goldens re-recorded, guards green, CHANGELOG entry                                                                        | Critical | 90min                                     | Proof-of-pattern; unblocks all parallel sweeps                   |
-| S04 | 1    | display accent sweep pt1: Button/Badge/CountBadge/StatusDot/link family (of 67 sites)                                                                                               | Critical | 100min                                    | Biggest visual surface de-hardcoded                              |
-| S05 | 1    | display accent sweep pt2: overlays' focus rings + remaining display (charts keep categorical Hue axis deliberately)                                                                 | Critical | 100min                                    | Completes the 67-site package                                    |
-| S06 | 1    | forms accent sweep (58 sites: inputs' focus rings, checked states, filters)                                                                                                         | Critical | 75min                                     | Form accent re-skinnable via tokens                              |
-| S07 | 1    | navigation + layout accent sweep (23 + 8 sites; audit `--tc-sidebar-*` token interplay)                                                                                             | High     | 60min                                     | Nav/active states follow the brand                               |
-| S08 | 1    | errorpage + recipes accent sweep (23 + 5 sites)                                                                                                                                     | High     | 45min                                     | Error pages re-skin with the app                                 |
-| S09 | 1    | Collapse remaining tone lookup maps INTO `utils/tone` tables (TODO #425/#431) + equivalence tests + delete legacy maps                                                              | High     | 100min                                    | One color language; kills 13-way duplication permanently         |
-| S10 | 1    | Guard-test upgrade: dark-mode/tone scanners recognize tc- pairs; docs-count bumps; ADR-0044 status → Phase 2 implemented                                                            | High     | 60min                                     | The new classes can't regress                                    |
-| S11 | 1    | Surface/ink tables + shell conversion: Base/AppShell/Card/Minimal (light+dark literals)                                                                                             | Critical | 90min                                     | Every app's chrome follows its brand                             |
-| S12 | 1    | Surface/ink sweep pt2: Table/Dropdown/Popover/Modal/inputs/Toast/CodeBlock/Kanban surfaces                                                                                          | Critical | 75min                                     | Panels + inputs re-skinnable; warm-dark hack retired             |
-| S13 | 1    | `templ-components-theme.css` gains tc-surface/ink literal ramps; presets re-emitted; warm-dark recipe rewritten around tokens                                                       | High     | 60min                                     | One import re-skins everything including surfaces                |
-| S14 | 2    | ADR-0050 "Brand-as-data": brand.toml schema (seed, neutrals, radius, fonts, density-freeze decision ⫱), command surface, gate definition                                            | High     | 60min                                     | The schema decision for one-command branding                     |
-| S15 | 2    | oklch ramp generator: seed → 50–950, lightness/chroma curves; stock seed (Tailwind blue) must reproduce BYTE-EQUAL via calibrated curves, free seeds within ΔE tolerance | High     | 100min                                  | Any brand color gets a full perceptual ramp                      |
-| S16 | 2    | Contrast gate: WCAG ratio math, pair checks (fg/600, ink/surface, badge tints), BOTH modes, actionable failure output; dnsblockd-pastel scenario must FAIL                          | Critical | 60min                                     | The 2.1:1 hole class becomes unshippable                         |
-| S17 | 2    | brand.css emitter (full `@theme` block: accent/surface/ink/font/radius) plus `tc brand init/build/check` wired into cmd/tc registry + tests                                           | High     | 60min                                    | Branding becomes one command                                     |
-| S18 | 2    | Demo dogfood: demo brand.toml must generate byte-identical CSS to current defaults (no-change proof)                                                                                | High     | 45min                                     | Trust: the generator provably doesn't change anything by default |
-| S19 | 2    | Fonts: `--font-tc-sans/mono/display` tokens + additive `PageProps.Fonts` slot with preload/preconnect emission (v1.x)                                                               | High     | 60min                                     | Identity fonts without hand-rolled CSP plumbing                  |
-| S20 | 2    | Font self-host recipe (font-face + `font-src 'self'`) replacing the CV/InboxClean hand-rolled patterns + goldens                                                                    | High     | 45min                                     | One documented pattern instead of two bespoke ones               |
-| S21 | 2    | `tc css sync`: emit classes.txt/safelist/custom.css/theme.css into a consumer + `--check` drift mode + tests + replace per-repo gen scripts (E6) + refresh library scan corpus after token emission | High | 90min | Vendoring chore becomes one command, fleet-wide                  |
-| S22 | 2    | ADR-0045 update: `tc css sync` is the sanctioned delivery; app.css header instructions updated                                                                                      | Medium   | 30min                                     | Delivery story stays truthful                                    |
-| S23 | 3    | Glass preset → real style: surface translucency + backdrop + shape hooks via tokens; contrast-gated both modes; visualtest captures (answers E5)                                    | High     | 90min                                     | Hand-crafted-identity consumers have an alternative              |
-| S24 | 3    | Presets emerald/minimal/default → brand.toml inputs; generated CSS re-emitted; presets README updated                                                                               | Medium   | 45min                                     | Presets become worked examples of the schema                     |
-| S25 | 3    | Per-preset axe lane: demo `?theme=` plumbing, light/dark visualtest captures, axe baseline entries or fixes                                                                         | Medium   | 45min                                     | Presets ship with proven accessibility                           |
-| S26 | 3    | Demo theme route: full-gallery rendering under a selected brand (ROADMAP f44); route registration + smoke + goldens                                                                 | Medium   | 60min                                     | Live showcase; best sales page for the schema                    |
-| S27 | 3    | docs/theming.md token-first rewrite + per-consumer bridge-deletion runbooks (5 repos) + consumer-guide/SKILL.md theming sections                                                    | High     | 60min                                     | Migration is copy-paste, not archaeology                         |
-| S28 | 3    | Website theming page + `countgen -w` + TestDocsCountDrift + website suite (incl. CSP if new assets)                                                                                 | Medium   | 45min                                     | Public docs match the new reality                                |
+| ID  | Tier | Task (30–100 min each)                                                                                                                                                                                                                                | Impact   | Effort | Customer value                                                   |
+| --- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------ | ---------------------------------------------------------------- |
+| S01 | 0    | ADR-0049 "Design token axes": accent/surface/ink emission contract, `tc-*` namespace, scanner-safety, dark-pairing rule, contrast obligations, v2 gating (links R235/R225/ADR-0044)                                                                   | Critical | 60min  | The decision everything else builds on                           |
+| S02 | 0    | `utils/tone` schema constants: AccentToken/SurfaceToken/InkToken complete-literal tables + validity/scanner-safety tests + docs-sync section                                                                                                          | Critical | 60min  | Typed token language; typo cannot render nothing                 |
+| S03 | 0    | PILOT: `feedback` package emits `tc-accent-*` (28 sites), goldens re-recorded, guards green, CHANGELOG entry                                                                                                                                          | Critical | 90min  | Proof-of-pattern; unblocks all parallel sweeps                   |
+| S04 | 1    | display accent sweep pt1: Button/Badge/CountBadge/StatusDot/link family (of 67 sites)                                                                                                                                                                 | Critical | 100min | Biggest visual surface de-hardcoded                              |
+| S05 | 1    | display accent sweep pt2: overlays' focus rings + remaining display (charts keep categorical Hue axis deliberately)                                                                                                                                   | Critical | 100min | Completes the 67-site package                                    |
+| S06 | 1    | forms accent sweep (58 sites: inputs' focus rings, checked states, filters)                                                                                                                                                                           | Critical | 75min  | Form accent re-skinnable via tokens                              |
+| S07 | 1    | navigation + layout accent sweep (23 + 8 sites; audit `--tc-sidebar-*` token interplay)                                                                                                                                                               | High     | 60min  | Nav/active states follow the brand                               |
+| S08 | 1    | errorpage + recipes accent sweep (23 + 5 sites)                                                                                                                                                                                                       | High     | 45min  | Error pages re-skin with the app                                 |
+| S09 | 1    | Collapse remaining tone lookup maps INTO `utils/tone` tables (TODO #425/#431) + equivalence tests + delete legacy maps                                                                                                                                | High     | 100min | One color language; kills 13-way duplication permanently         |
+| S10 | 1    | Guard-test upgrade: dark-mode/tone scanners recognize tc- pairs; docs-count bumps; ADR-0044 status → Phase 2 implemented                                                                                                                              | High     | 60min  | The new classes can't regress                                    |
+| S11 | 1    | Surface/ink tables + shell conversion: Base/AppShell/Card/Minimal (light+dark literals)                                                                                                                                                               | Critical | 90min  | Every app's chrome follows its brand                             |
+| S12 | 1    | Surface/ink sweep pt2: Table/Dropdown/Popover/Modal/inputs/Toast/CodeBlock/Kanban surfaces                                                                                                                                                            | Critical | 75min  | Panels + inputs re-skinnable; warm-dark hack retired             |
+| S13 | 1    | `templ-components-theme.css` gains tc-surface/ink literal ramps; presets re-emitted; warm-dark recipe rewritten around tokens                                                                                                                         | High     | 60min  | One import re-skins everything including surfaces                |
+| S14 | 2    | ADR-0050 "Brand-as-data": brand.toml schema (seed, neutrals, radius, fonts, density-freeze decision ⫱), command surface, gate definition                                                                                                              | High     | 60min  | The schema decision for one-command branding                     |
+| S15 | 2    | oklch ramp generator: seed → 50–950, lightness/chroma curves; stock seed (Tailwind blue) must reproduce BYTE-EQUAL via calibrated curves, free seeds within ΔE tolerance                                                                              | High     | 100min | Any brand color gets a full perceptual ramp                      |
+| S16 | 2    | Contrast gate: WCAG ratio math, pair checks (fg/600, ink/surface, badge tints), BOTH modes, actionable failure output; dnsblockd-pastel scenario must FAIL                                                                                            | Critical | 60min  | The 2.1:1 hole class becomes unshippable                         |
+| S17 | 2    | brand.css emitter (full `@theme` block: accent/surface/ink/font/radius) plus `tc brand init/build/check` wired into cmd/tc registry + tests                                                                                                           | High     | 60min  | Branding becomes one command                                     |
+| S18 | 2    | Demo dogfood: demo brand.toml must generate byte-identical CSS to current defaults (no-change proof)                                                                                                                                                  | High     | 45min  | Trust: the generator provably doesn't change anything by default |
+| S19 | 2    | Fonts: `--font-tc-sans/mono/display` tokens + additive `PageProps.Fonts` slot with preload/preconnect emission (v1.x)                                                                                                                                 | High     | 60min  | Identity fonts without hand-rolled CSP plumbing                  |
+| S20 | 2    | Font self-host recipe (font-face + `font-src 'self'`) replacing the CV/InboxClean hand-rolled patterns + goldens                                                                                                                                      | High     | 45min  | One documented pattern instead of two bespoke ones               |
+| S21 | 2    | `tc css sync`: emit classes.txt/safelist/custom.css/theme.css into a consumer + `--check` drift mode + tests + replace per-repo gen scripts (E6) + refresh library scan corpus after token emission                                                   | High     | 90min  | Vendoring chore becomes one command, fleet-wide                  |
+| S22 | 2    | ADR-0045 update: `tc css sync` is the sanctioned delivery; app.css header instructions updated                                                                                                                                                        | Medium   | 30min  | Delivery story stays truthful                                    |
+| S23 | 3    | Glass preset → real style: surface translucency + backdrop + shape hooks via tokens; contrast-gated both modes; visualtest captures (answers E5)                                                                                                      | High     | 90min  | Hand-crafted-identity consumers have an alternative              |
+| S24 | 3    | Presets emerald/minimal/default → brand.toml inputs; generated CSS re-emitted; presets README updated                                                                                                                                                 | Medium   | 45min  | Presets become worked examples of the schema                     |
+| S25 | 3    | Per-preset axe lane: demo `?theme=` plumbing, light/dark visualtest captures, axe baseline entries or fixes                                                                                                                                           | Medium   | 45min  | Presets ship with proven accessibility                           |
+| S26 | 3    | Demo theme route: full-gallery rendering under a selected brand (ROADMAP f44); route registration + smoke + goldens                                                                                                                                   | Medium   | 60min  | Live showcase; best sales page for the schema                    |
+| S27 | 3    | docs/theming.md token-first rewrite + per-consumer bridge-deletion runbooks (5 repos) + consumer-guide/SKILL.md theming sections                                                                                                                      | High     | 60min  | Migration is copy-paste, not archaeology                         |
+| S28 | 3    | Website theming page + `countgen -w` + TestDocsCountDrift + website suite (incl. CSP if new assets)                                                                                                                                                   | Medium   | 45min  | Public docs match the new reality                                |
 | S33 | 3    | `/v2` module-path migration (ADR-0039, owner decision F058 pending ⫱): 7 `go.mod` paths + go.work, import/require rewrite, guard-script literals (check-module-sync/layers), website+visualtest same commit, `docs/migration/v1-to-v2-module-path.md` | Critical | 100min | Consumers can actually `go get` v2                               |
-| S34 | 3    | Release-blocker checklist: S04–S13, S15–S18, S24, S27 all green; full `nix run .#visual` light/dark at RC; compiled demo CSS grep shows `tc-accent-600`/`tc-surface` utilities (silently-missing-CSS guard) | Critical | 45min | v2 ships complete or not at all                                  |
-| S29 | 3    | v2 release cut: per-module loop + `scripts/ci-repro.sh --lint --css --website` at the exact commit, then release.sh ritual in the dev shell (tag-tree clean). BLOCKERS: S04–S13, S15–S18, S24, S27, S33, S34 ⫱ timing + ADR-0039 path decision | Critical | 60min | The tag the fleet sweeps onto                                    |
-| S30 | 3    | Fleet sweep A: CV + media-atlas cross BOTH pairs (templ 1070→1100 AND tc 1.26→v2) in one event per repo, then bridge deletion + brand.css                                           | High     | 90min                                     | Stragglers current; first bridges deleted                        |
-| S31 | 3    | Fleet sweep B: dnsblockd (catppuccin brand.toml; delete `.dnsblockd-btn` — gate now proves contrast), InboxClean (beacon-violet), browser-history (stone/lime)                      | High     | 75min                                     | Three more bridges deleted; contrast hole fixed at root          |
-| S32 | 3    | Closeout: R235/R225 roadmap updates, TODO_LIST harvest (incl. deferred axes), final counts/CHANGELOG, plan post-mortem status doc                                                   | Medium   | 60min                                     | The plan ends documented, not dangling                           |
+| S34 | 3    | Release-blocker checklist: S04–S13, S15–S18, S24, S27 all green; full `nix run .#visual` light/dark at RC; compiled demo CSS grep shows `tc-accent-600`/`tc-surface` utilities (silently-missing-CSS guard)                                           | Critical | 45min  | v2 ships complete or not at all                                  |
+| S29 | 3    | v2 release cut: per-module loop + `scripts/ci-repro.sh --lint --css --website` at the exact commit, then release.sh ritual in the dev shell (tag-tree clean). BLOCKERS: S04–S13, S15–S18, S24, S27, S33, S34 ⫱ timing + ADR-0039 path decision        | Critical | 60min  | The tag the fleet sweeps onto                                    |
+| S30 | 3    | Fleet sweep A: CV + media-atlas cross BOTH pairs (templ 1070→1100 AND tc 1.26→v2) in one event per repo, then bridge deletion + brand.css                                                                                                             | High     | 90min  | Stragglers current; first bridges deleted                        |
+| S31 | 3    | Fleet sweep B: dnsblockd (catppuccin brand.toml; delete `.dnsblockd-btn` — gate now proves contrast), InboxClean (beacon-violet), browser-history (stone/lime)                                                                                        | High     | 75min  | Three more bridges deleted; contrast hole fixed at root          |
+| S32 | 3    | Closeout: R235/R225 roadmap updates, TODO_LIST harvest (incl. deferred axes), final counts/CHANGELOG, plan post-mortem status doc                                                                                                                     | Medium   | 60min  | The plan ends documented, not dangling                           |
 
 **Coverage check:** every improvement from the fleet review maps — accent emission →
 S03–S10 (E2 complete), surfaces → S11–S13 (E1 surface column), brand-as-data → S14–S18
@@ -173,7 +173,7 @@ dependency then impact.
 | A-004 | Draft: scanner-safety contract + dark-pairing rule + contrast obligations                  | 10  | S01    |
 | A-005 | Draft: migration story, v2 gating, R235/R225 links; commit ADR-0049                        | 10  | S01    |
 | A-006 | Design AccentToken ramp table (complete literals, all shades E2 uses)                      | 12  | S02    |
-| A-007 | Design SurfaceToken/InkToken type + role model; concrete values land in S11     | 10  | S02    |
+| A-007 | Design SurfaceToken/InkToken type + role model; concrete values land in S11                | 10  | S02    |
 | A-008 | Implement token tables + typed helpers in `utils/tone`                                     | 12  | S02    |
 | A-009 | Validity tests: IsValid, every value is a complete literal incl. `dark:` half              | 12  | S02    |
 | A-010 | Update `tone/doc_sync_test` generated section + run `go test ./utils/tone/ -update`        | 8   | S02    |
@@ -190,88 +190,88 @@ dependency then impact.
 
 ### Tier 1 — the 4%
 
-| Micro | Task (≤12 min)                                                                                                              | Min | Parent |
-| ----- | --------------------------------------------------------------------------------------------------------------------------- | --- | ------ |
-| A-021 | Button variant lookup → tc-accent (primary/link/outline-info)                                                               | 12  | S04    |
-| A-022 | Badge/CountBadge/StatusDot/StatusBadge(+With) → tokens                                                                      | 12  | S04    |
-| A-023 | Link-family components (ExternalLink, Eyebrow accents) → tokens                                                             | 10  | S04    |
-| A-024 | Regenerate + re-record display goldens batch 1                                                                              | 12  | S04    |
-| A-025 | Display guards green batch 1                                                                                                | 8   | S04    |
-| A-026 | Overlays: Modal/Drawer/Dropdown/Popover/ContextMenu focus-visible rings → tokens                                            | 12  | S05    |
-| A-027 | Remaining display (Tabs/EmptyState/DataState/CommandPalette/Scrollback) — charts stay on Hue axis (categorical, deliberate) | 12  | S05    |
-| A-028 | Regenerate + goldens batch 2                                                                                                | 12  | S05    |
-| A-029 | Display guards green batch 2                                                                                                | 8   | S05    |
-| A-030 | Input/Select/Textarea: focus rings + label accents → tokens                                                                 | 12  | S06    |
-| A-031 | Checkbox/Radio/RadioGroup/Toggle/Slider checked states → tokens                                                             | 12  | S06    |
-| A-032 | Combobox/TagsInput/FileInput/Calendar/DatePicker → tokens                                                                   | 12  | S06    |
-| A-033 | FilterBar/FilterChips/FilterDropdown/FilterInput/SegmentedControl/Rating → tokens                                           | 10  | S06    |
-| A-034 | Regenerate + forms goldens + guards                                                                                         | 12  | S06    |
-| A-035 | Nav/SimpleNav/SidebarNav active states → tokens; audit `--tc-sidebar-*` interplay                                           | 12  | S07    |
-| A-036 | Breadcrumbs/Pagination/LoadMore/EndOfList/MobileMenu family → tokens                                                        | 10  | S07    |
-| A-037 | layout: Base/ThemeToggle accent bits → tokens                                                                               | 8   | S07    |
-| A-038 | Regenerate + navigation/layout goldens + guards                                                                             | 10  | S07    |
-| A-039 | errorpage family styles → tc-accent/danger tokens                                                                           | 10  | S08    |
-| A-040 | recipes conversions (5 sites)                                                                                               | 8   | S08    |
-| A-041 | Regenerate + errorpage/recipes goldens + guards                                                                             | 10  | S08    |
-| A-042 | Enumerate remaining lookup maps (census vs tone tables)                                                                     | 10  | S09    |
-| A-043 | Port map contents into tone tables (batch 1)                                                                                | 12  | S09    |
-| A-044 | Port map contents into tone tables (batch 2)                                                                                | 12  | S09    |
-| A-045 | Equivalence tests: tables describe reality byte-for-byte                                                                    | 12  | S09    |
-| A-046 | Delete legacy maps + repoint references                                                                                     | 12  | S09    |
-| A-047 | Full per-module loop green                                                                                                  | 10  | S09    |
-| A-048 | Close TODO #425/#431 rows (with evidence)                                                                                   | 5   | S09    |
-| A-049 | TestDarkModeCompliance: teach scanner the tc- pair forms                                                                    | 12  | S10    |
-| A-050 | Tone-sync guard + FEATURES enum tables + re-run gen-class-inventory.sh (corpus picks up tc- tokens)                          | 12  | S10    |
-| A-051 | Docs-count bumps (README/FEATURES/ROADMAP/AGENTS lines) + ADR-0044 status flip                                              | 10  | S10    |
+| Micro | Task (≤12 min)                                                                                                                 | Min | Parent |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------ | --- | ------ |
+| A-021 | Button variant lookup → tc-accent (primary/link/outline-info)                                                                  | 12  | S04    |
+| A-022 | Badge/CountBadge/StatusDot/StatusBadge(+With) → tokens                                                                         | 12  | S04    |
+| A-023 | Link-family components (ExternalLink, Eyebrow accents) → tokens                                                                | 10  | S04    |
+| A-024 | Regenerate + re-record display goldens batch 1                                                                                 | 12  | S04    |
+| A-025 | Display guards green batch 1                                                                                                   | 8   | S04    |
+| A-026 | Overlays: Modal/Drawer/Dropdown/Popover/ContextMenu focus-visible rings → tokens                                               | 12  | S05    |
+| A-027 | Remaining display (Tabs/EmptyState/DataState/CommandPalette/Scrollback) — charts stay on Hue axis (categorical, deliberate)    | 12  | S05    |
+| A-028 | Regenerate + goldens batch 2                                                                                                   | 12  | S05    |
+| A-029 | Display guards green batch 2                                                                                                   | 8   | S05    |
+| A-030 | Input/Select/Textarea: focus rings + label accents → tokens                                                                    | 12  | S06    |
+| A-031 | Checkbox/Radio/RadioGroup/Toggle/Slider checked states → tokens                                                                | 12  | S06    |
+| A-032 | Combobox/TagsInput/FileInput/Calendar/DatePicker → tokens                                                                      | 12  | S06    |
+| A-033 | FilterBar/FilterChips/FilterDropdown/FilterInput/SegmentedControl/Rating → tokens                                              | 10  | S06    |
+| A-034 | Regenerate + forms goldens + guards                                                                                            | 12  | S06    |
+| A-035 | Nav/SimpleNav/SidebarNav active states → tokens; audit `--tc-sidebar-*` interplay                                              | 12  | S07    |
+| A-036 | Breadcrumbs/Pagination/LoadMore/EndOfList/MobileMenu family → tokens                                                           | 10  | S07    |
+| A-037 | layout: Base/ThemeToggle accent bits → tokens                                                                                  | 8   | S07    |
+| A-038 | Regenerate + navigation/layout goldens + guards                                                                                | 10  | S07    |
+| A-039 | errorpage family styles → tc-accent/danger tokens                                                                              | 10  | S08    |
+| A-040 | recipes conversions (5 sites)                                                                                                  | 8   | S08    |
+| A-041 | Regenerate + errorpage/recipes goldens + guards                                                                                | 10  | S08    |
+| A-042 | Enumerate remaining lookup maps (census vs tone tables)                                                                        | 10  | S09    |
+| A-043 | Port map contents into tone tables (batch 1)                                                                                   | 12  | S09    |
+| A-044 | Port map contents into tone tables (batch 2)                                                                                   | 12  | S09    |
+| A-045 | Equivalence tests: tables describe reality byte-for-byte                                                                       | 12  | S09    |
+| A-046 | Delete legacy maps + repoint references                                                                                        | 12  | S09    |
+| A-047 | Full per-module loop green                                                                                                     | 10  | S09    |
+| A-048 | Close TODO #425/#431 rows (with evidence)                                                                                      | 5   | S09    |
+| A-049 | TestDarkModeCompliance: teach scanner the tc- pair forms                                                                       | 12  | S10    |
+| A-050 | Tone-sync guard + FEATURES enum tables + re-run gen-class-inventory.sh (corpus picks up tc- tokens)                            | 12  | S10    |
+| A-051 | Docs-count bumps (README/FEATURES/ROADMAP/AGENTS lines) + ADR-0044 status flip                                                 | 10  | S10    |
 | A-052 | `scripts/ci-repro.sh --lint` green + recompile demo CSS, grep compiled output for `tc-accent-600` (silently-missing-CSS guard) | 12  | S10    |
-| A-053 | Define surface-0/1/2 + ink-1/2/3 values (light+dark literals) in tone                                                       | 12  | S11    |
-| A-054 | layout.Base page/body background + ink → tokens                                                                             | 12  | S11    |
-| A-055 | AppShell chrome → tokens (respect classic-dark opt-out tokens)                                                              | 12  | S11    |
-| A-056 | Card/SimpleCard + Minimal shells → tokens                                                                                   | 10  | S11    |
-| A-057 | Regenerate + light AND dark goldens (shells are the warm-dark blind spot)                                                   | 12  | S11    |
-| A-058 | Table/DataTable surfaces → tokens                                                                                           | 10  | S12    |
-| A-059 | Dropdown/Popover/ContextMenu panels → tokens                                                                                | 10  | S12    |
-| A-060 | Inputs family surfaces (bg, ring, placeholder) → tokens                                                                     | 12  | S12    |
-| A-061 | Toast/Alert containers, CodeBlock, Kanban lane surfaces → tokens                                                            | 12  | S12    |
-| A-062 | Regenerate + goldens + guards (surface sweep)                                                                               | 12  | S12    |
-| A-063 | Add tc-surface/tc-ink literal ramps to `templates/templ-components-theme.css`                                               | 10  | S13    |
-| A-064 | Re-emit 4 presets incl. surface tokens                                                                                      | 12  | S13    |
-| A-065 | Rewrite warm-dark recipe in theming.md around surface tokens                                                                | 10  | S13    |
-| A-066 | `nix run .#css` compile check (demo scans every templ file)                                                                 | 8   | S13    |
+| A-053 | Define surface-0/1/2 + ink-1/2/3 values (light+dark literals) in tone                                                          | 12  | S11    |
+| A-054 | layout.Base page/body background + ink → tokens                                                                                | 12  | S11    |
+| A-055 | AppShell chrome → tokens (respect classic-dark opt-out tokens)                                                                 | 12  | S11    |
+| A-056 | Card/SimpleCard + Minimal shells → tokens                                                                                      | 10  | S11    |
+| A-057 | Regenerate + light AND dark goldens (shells are the warm-dark blind spot)                                                      | 12  | S11    |
+| A-058 | Table/DataTable surfaces → tokens                                                                                              | 10  | S12    |
+| A-059 | Dropdown/Popover/ContextMenu panels → tokens                                                                                   | 10  | S12    |
+| A-060 | Inputs family surfaces (bg, ring, placeholder) → tokens                                                                        | 12  | S12    |
+| A-061 | Toast/Alert containers, CodeBlock, Kanban lane surfaces → tokens                                                               | 12  | S12    |
+| A-062 | Regenerate + goldens + guards (surface sweep)                                                                                  | 12  | S12    |
+| A-063 | Add tc-surface/tc-ink literal ramps to `templates/templ-components-theme.css`                                                  | 10  | S13    |
+| A-064 | Re-emit 4 presets incl. surface tokens                                                                                         | 12  | S13    |
+| A-065 | Rewrite warm-dark recipe in theming.md around surface tokens                                                                   | 10  | S13    |
+| A-066 | `nix run .#css` compile check (demo scans every templ file)                                                                    | 8   | S13    |
 
 ### Tier 2 — the 20%
 
-| Micro | Task (≤12 min)                                                                      | Min | Parent |
-| ----- | ----------------------------------------------------------------------------------- | --- | ------ |
-| A-067 | Draft brand.toml schema: seed, neutrals, radius, fonts (density: freeze-or-defer ⫱) | 12  | S14    |
-| A-068 | Draft command surface (`brand init/build/check`) + brand.css output contract        | 10  | S14    |
-| A-069 | Draft contrast-gate definition (pairs, modes, AA floor) + commit ADR-0050           | 8   | S14    |
-| A-070 | Implement hex→oklch conversion                                                      | 12  | S15    |
-| A-071 | Implement per-shade lightness/chroma curves                                         | 12  | S15    |
-| A-072 | Generate 50–950 ramp + neutral/surface ramps                                        | 12  | S15    |
+| Micro | Task (≤12 min)                                                                                                                | Min | Parent |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------- | --- | ------ |
+| A-067 | Draft brand.toml schema: seed, neutrals, radius, fonts (density: freeze-or-defer ⫱)                                           | 12  | S14    |
+| A-068 | Draft command surface (`brand init/build/check`) + brand.css output contract                                                  | 10  | S14    |
+| A-069 | Draft contrast-gate definition (pairs, modes, AA floor) + commit ADR-0050                                                     | 8   | S14    |
+| A-070 | Implement hex→oklch conversion                                                                                                | 12  | S15    |
+| A-071 | Implement per-shade lightness/chroma curves                                                                                   | 12  | S15    |
+| A-072 | Generate 50–950 ramp + neutral/surface ramps                                                                                  | 12  | S15    |
 | A-073 | Snapshot test: seed = Tailwind blue-600 reproduces the stock ramp BYTE-EQUAL (curves calibrated to Tailwind's oklch literals) | 12  | S15    |
-| A-074 | Implement WCAG relative luminance + contrast ratio                                  | 10  | S16    |
-| A-075 | Pair checks: accent-fg/600, ink/surface, badge tint pairs                           | 12  | S16    |
-| A-076 | Both-mode evaluation + actionable failing-pair report                               | 12  | S16    |
-| A-077 | Regression test: dnsblockd pastel scenario MUST fail the gate                       | 10  | S16    |
-| A-078 | brand.css `@theme` emitter (accent/surface/ink/font/radius)                         | 12  | S17    |
-| A-079 | `tc brand init` scaffold                                                            | 10  | S17    |
-| A-080 | `tc brand build` + registry/usage wiring                                            | 10  | S17    |
-| A-081 | `tc brand check` gate-only mode + cmd/tc tests + doc.go                             | 10  | S17    |
-| A-082 | Write demo brand.toml (blue defaults)                                               | 8   | S18    |
-| A-083 | Generate + byte-diff vs current defaults — byte-equality proof (requires A-073 calibration) | 12  | S18    |
-| A-084 | Record the no-change proof in the ADR/demo docs                                     | 10  | S18    |
-| A-085 | `--font-tc-sans/mono/display` tokens in custom.css                                  | 10  | S19    |
-| A-086 | FontProps on PageProps (Fonts slot, additive)                                       | 12  | S19    |
-| A-087 | Preload/preconnect emission + nonce omit-empty rules                                | 10  | S19    |
-| A-088 | Fonts-slot goldens + CHANGELOG + counts                                             | 10  | S19    |
-| A-089 | Self-host recipe doc (font-face + font-src 'self')                                  | 12  | S20    |
-| A-090 | Cross-check recipe vs CV + InboxClean hand-rolled stacks                            | 10  | S20    |
-| A-091 | `tc css sync` copy semantics (4 artifacts)                                          | 12  | S21    |
-| A-092 | `--check` drift mode + exit codes                                                   | 10  | S21    |
-| A-093 | Tests + app.css header instruction update                                           | 10  | S21    |
-| A-094 | Migration note: retire gen-tc-safelist.sh / gen-library-classes.sh patterns         | 8   | S21    |
-| A-095 | ADR-0045: sync-command section + status update; commit                              | 10  | S22    |
+| A-074 | Implement WCAG relative luminance + contrast ratio                                                                            | 10  | S16    |
+| A-075 | Pair checks: accent-fg/600, ink/surface, badge tint pairs                                                                     | 12  | S16    |
+| A-076 | Both-mode evaluation + actionable failing-pair report                                                                         | 12  | S16    |
+| A-077 | Regression test: dnsblockd pastel scenario MUST fail the gate                                                                 | 10  | S16    |
+| A-078 | brand.css `@theme` emitter (accent/surface/ink/font/radius)                                                                   | 12  | S17    |
+| A-079 | `tc brand init` scaffold                                                                                                      | 10  | S17    |
+| A-080 | `tc brand build` + registry/usage wiring                                                                                      | 10  | S17    |
+| A-081 | `tc brand check` gate-only mode + cmd/tc tests + doc.go                                                                       | 10  | S17    |
+| A-082 | Write demo brand.toml (blue defaults)                                                                                         | 8   | S18    |
+| A-083 | Generate + byte-diff vs current defaults — byte-equality proof (requires A-073 calibration)                                   | 12  | S18    |
+| A-084 | Record the no-change proof in the ADR/demo docs                                                                               | 10  | S18    |
+| A-085 | `--font-tc-sans/mono/display` tokens in custom.css                                                                            | 10  | S19    |
+| A-086 | FontProps on PageProps (Fonts slot, additive)                                                                                 | 12  | S19    |
+| A-087 | Preload/preconnect emission + nonce omit-empty rules                                                                          | 10  | S19    |
+| A-088 | Fonts-slot goldens + CHANGELOG + counts                                                                                       | 10  | S19    |
+| A-089 | Self-host recipe doc (font-face + font-src 'self')                                                                            | 12  | S20    |
+| A-090 | Cross-check recipe vs CV + InboxClean hand-rolled stacks                                                                      | 10  | S20    |
+| A-091 | `tc css sync` copy semantics (4 artifacts)                                                                                    | 12  | S21    |
+| A-092 | `--check` drift mode + exit codes                                                                                             | 10  | S21    |
+| A-093 | Tests + app.css header instruction update                                                                                     | 10  | S21    |
+| A-094 | Migration note: retire gen-tc-safelist.sh / gen-library-classes.sh patterns                                                   | 8   | S21    |
+| A-095 | ADR-0045: sync-command section + status update; commit                                                                        | 10  | S22    |
 
 ### Tier 3 — the remaining 80% of work
 
@@ -313,7 +313,7 @@ dependency then impact.
 | A-129 | Final counts/CHANGELOG polish + fleet report                                                  | 8   | S32    |
 | A-130 | Plan post-mortem status doc + link from this file                                             | 8   | S32    |
 | A-131 | Reread ADR-0039 + draft `/v2` migration checklist (F058 decision evidence ⫱)                  | 12  | S33    |
-| A-132 | Rewrite module paths in all 7 go.mod`s + go.work to `/v2`                                     | 12  | S33    |
+| A-132 | Rewrite module paths in all 7 go.mod`s + go.work to`/v2`                                      | 12  | S33    |
 | A-133 | Rewrite imports + sibling requires; replace targets unchanged (local paths)                   | 12  | S33    |
 | A-134 | Update guard literals: check-module-sync.sh, check-module-layers.sh, release tag-set          | 12  | S33    |
 | A-135 | website + visualtest migrate in the same commit; build+test all modules                       | 12  | S33    |

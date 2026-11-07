@@ -3,20 +3,20 @@
 **Date:** 2026-11-06 21:30 CET
 **Session scope:** land the three verified PRs of `LarsArtmann/templ-components`, then continue the issue backlog.
 **Branch of record:** `master` @ `59d2791b` (green), plus local `rebase77` @ `f1e08b13` (unpushed).
-**Honest headline:** two PRs are effectively done, the third is 90 % done and *not* pushed — and a `/tmp` cleanup wiped the last 10 % of uncommitted work twice.
+**Honest headline:** two PRs are effectively done, the third is 90 % done and _not_ pushed — and a `/tmp` cleanup wiped the last 10 % of uncommitted work twice.
 
 ---
 
 ## 0. Facts on the ground (verified this minute)
 
-| Ref | Location | State | Evidence |
-| --- | --- | --- | --- |
-| `master` | repo | `59d2791b`, green | CI run `42206285375` success |
-| PR **#79** `fix/id-and-a11y-defects` | merged | 2 commits on master (`2e16bcaf`, `59d2791b`) | `gh pr merge 79 --rebase` |
-| PR **#80** `feat/line-hooks-and-note-message` | pushed `a298f807` | **green, mergeable, NOT merged** | CI run `42206637250` — all 9 lanes pass incl. Visual |
-| PR **#77** `feat/design-token-axes` | local branch `rebase77` `f1e08b13` (21 commits) | rebased + verified locally, **not pushed** | `go test ./...` root green; clone gate 0 new / 145 baseline |
-| worktrees | `/tmp/tc77`, `/tmp/tc80` | **deleted from disk**, still registered (prunable) | `git worktree list` |
-| art-dupl fork binary | `/tmp/art-dupl-fork` | **gone** (rebuildable via `scripts/pinned-art-dupl.sh`) | `ls` → not found |
+| Ref                                           | Location                                        | State                                                   | Evidence                                                    |
+| --------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------- |
+| `master`                                      | repo                                            | `59d2791b`, green                                       | CI run `42206285375` success                                |
+| PR **#79** `fix/id-and-a11y-defects`          | merged                                          | 2 commits on master (`2e16bcaf`, `59d2791b`)            | `gh pr merge 79 --rebase`                                   |
+| PR **#80** `feat/line-hooks-and-note-message` | pushed `a298f807`                               | **green, mergeable, NOT merged**                        | CI run `42206637250` — all 9 lanes pass incl. Visual        |
+| PR **#77** `feat/design-token-axes`           | local branch `rebase77` `f1e08b13` (21 commits) | rebased + verified locally, **not pushed**              | `go test ./...` root green; clone gate 0 new / 145 baseline |
+| worktrees                                     | `/tmp/tc77`, `/tmp/tc80`                        | **deleted from disk**, still registered (prunable)      | `git worktree list`                                         |
+| art-dupl fork binary                          | `/tmp/art-dupl-fork`                            | **gone** (rebuildable via `scripts/pinned-art-dupl.sh`) | `ls` → not found                                            |
 
 ---
 
@@ -35,7 +35,7 @@
    - `.art-dupl-baseline.json` → artifact, upstream side kept; the gate result proved this was correct.
 5. **Rebased tree proven to be artifact-consistent at the tip:** deleting and regenerating every `*_templ.go` (root + 7 submodules, per-module invocation to avoid the `FileName` rewrite trap) produced **zero diff**; the tc-sources mirror was already a complete mirror; the class inventory regenerated to 27 299 lines.
 6. **Full root-module test run on the rebased tree passes** (`go test ./...`, including all golden sweeps in display/feedback/forms/layout/navigation/recipes/integration).
-7. **Clone gate answered the open question instead of being guessed:** `pinned-art-dupl.sh -- check -c .art-dupl.json -t 1 --type-aware` → *"Found total 0 clone groups. No new clones detected (baseline: 145 groups)"*. So the rebased tree needs **no baseline re-record** and the truthful number is **145**, not the branch's 146.
+7. **Clone gate answered the open question instead of being guessed:** `pinned-art-dupl.sh -- check -c .art-dupl.json -t 1 --type-aware` → _"Found total 0 clone groups. No new clones detected (baseline: 145 groups)"_. So the rebased tree needs **no baseline re-record** and the truthful number is **145**, not the branch's 146.
 8. **Changelog merge designed concretely:** the eight `#79` entries (Grid, StatusDot, Nav, Table, StatCard, Badge, Toggle, Toast, clone re-record) can be re-applied to the rebased `CHANGELOG.md` deterministically from `git diff 9a67228a..origin/master -- CHANGELOG.md`; the patch was verified to apply cleanly and was inserted once as a `### Fixed` section.
 9. **Merge ordering decided by evidence, not by habit:** both small PRs shared the same merge base, so `gh pr merge 80 --rebase` was tried first, failed with "merge conflicts", and the branch was pre-rebased locally instead of fighting the API.
 10. **Todo list rebuilt** to reflect reality (8 completed, merge + backlog pending).
@@ -50,9 +50,9 @@
 4. **Docs baseline count — known wrong, not fixed.** `utils.TestDocsCountDrift` fails with exactly two lines: `ADR-0009 baseline groups says 146; actual is 145` and `CHANGELOG baseline groups says 146; actual is 145`. `AGENTS.md` already says 145 (kept from master). Fixing is a two-value edit plus deleting/merging the now-duplicated changelog entry.
 5. **PR #80 — green but unmerged.** Nothing blocks it; I stopped to write this report.
 6. **Issue closure — evidence is in hand, issues are still open.** `#75`, `#76`, `#55`, `#54`, `#49`, `#62`, `#61`, `#36` are all fixed on master now, and `#51`/`#37` are fixed by #80's branch, yet none were auto-closed (the PR bodies did not carry `Fixes #N` for each).
-7. **The visual-test promise for #80** — CI says pass, but I have not eyeballed that the display route goldens on the rebased branch are the *right* pixels rather than accidentally-identical ones.
+7. **The visual-test promise for #80** — CI says pass, but I have not eyeballed that the display route goldens on the rebased branch are the _right_ pixels rather than accidentally-identical ones.
 8. **Worktree hygiene** — two prunable registrations left behind, and no canonical (non-`/tmp`) worktree root established.
-9. **My own status reporting** — the earlier report claimed `#77` was "unblocked and mergeable"; that was true of the *pre-merge* master and is now stale. Shallower than this one.
+9. **My own status reporting** — the earlier report claimed `#77` was "unblocked and mergeable"; that was true of the _pre-merge_ master and is now stale. Shallower than this one.
 
 ---
 
@@ -72,10 +72,10 @@
 
 ## d) TOTALLY FUCKED UP
 
-1. **I used `/tmp` for long-lived worktrees — twice — and lost work twice.** First `/tmp/tc-fixes` (the #79 worktree), then `/tmp/tc77` and `/tmp/tc80` *after* the rebase succeeded. What died with them: the merged `CHANGELOG.md`, the regenerated `app.css`, and `/tmp/art-dupl-fork`. Git refs survived (`rebase77` is intact), but anything uncommitted was unrecoverable. Root cause: no policy — every other repo of mine keeps worktrees under `~/projects/`, and I chose `/tmp` because the previous session's summary said so.
-2. **Intermediate commits in `rebase77` are internally inconsistent.** I resolved every generated-artifact conflict by keeping the upstream side and regenerating only at the tip. That keeps the rebase moving, but a `git bisect` into the middle of the branch lands on commits whose `*_templ.go`, goldens and `app.css` do not match their sources. Correct but ugly; the cleaner answer was to squash the seven daemon commits *first*, then replay ~14 real commits.
-3. **I duplicated a fact in the changelog and left both copies contradicting each other.** After the merge, `[Unreleased]` says *"baseline re-recorded at 146 groups"* (branch, `### Changed`) **and** *"baseline re-recorded at 145 groups"* (`### Fixed`, from #79). Two entries, two numbers, one truth (145). I noticed only because a machine guard caught it.
-4. **`gh pr merge 80 --rebase` was attempted blind.** I should have read `mergeStateStatus` *after* merging #79 and known that a shared merge base guarantees a rebase conflict on shared generated artifacts. One wasted round-trip.
+1. **I used `/tmp` for long-lived worktrees — twice — and lost work twice.** First `/tmp/tc-fixes` (the #79 worktree), then `/tmp/tc77` and `/tmp/tc80` _after_ the rebase succeeded. What died with them: the merged `CHANGELOG.md`, the regenerated `app.css`, and `/tmp/art-dupl-fork`. Git refs survived (`rebase77` is intact), but anything uncommitted was unrecoverable. Root cause: no policy — every other repo of mine keeps worktrees under `~/projects/`, and I chose `/tmp` because the previous session's summary said so.
+2. **Intermediate commits in `rebase77` are internally inconsistent.** I resolved every generated-artifact conflict by keeping the upstream side and regenerating only at the tip. That keeps the rebase moving, but a `git bisect` into the middle of the branch lands on commits whose `*_templ.go`, goldens and `app.css` do not match their sources. Correct but ugly; the cleaner answer was to squash the seven daemon commits _first_, then replay ~14 real commits.
+3. **I duplicated a fact in the changelog and left both copies contradicting each other.** After the merge, `[Unreleased]` says _"baseline re-recorded at 146 groups"_ (branch, `### Changed`) **and** _"baseline re-recorded at 145 groups"_ (`### Fixed`, from #79). Two entries, two numbers, one truth (145). I noticed only because a machine guard caught it.
+4. **`gh pr merge 80 --rebase` was attempted blind.** I should have read `mergeStateStatus` _after_ merging #79 and known that a shared merge base guarantees a rebase conflict on shared generated artifacts. One wasted round-trip.
 5. **No commit boundary during the rebase.** I verified generation, tests and the clone gate — all green — and then kept working in a directory that any `/tmp` cleanup could (and did) delete. The verification is worthless unless the tree is committed or the branch is pushed.
 6. **`--no-verify` became the default** because BuildFlow's findings gate is red on pre-existing debt, not because the commit was clean. That habit now hides real hook failures.
 7. **Eight fixed issues left open** because the PR bodies omitted `Fixes #N`. The evidence exists in `git log`; the tracker does not reflect it.
@@ -87,12 +87,12 @@
 1. **Worktree policy:** worktrees live under `~/projects/tc-worktrees/<name>` (or `$XDG_STATE_HOME`), never `/tmp`. Add the rule to `AGENTS.md` "Git safety" — it is one line and it just cost two work cycles.
 2. **Commit before verifying something else:** `commit → verify → push` in that order for anything longer than one tool call, or the /tmp lesson repeats.
 3. **Squash daemon noise before rebasing a feature branch**, not after. Seven `chore: auto-commit N changed file(s)` commits are not history, they are noise that multiplies conflicts in generated files.
-4. **One artifact policy per rebase:** *upstream side for every generated file, regenerate once at the tip, commit the regeneration in the tip commit*. Write it down so the next rebase is mechanical rather than judgement calls.
+4. **One artifact policy per rebase:** _upstream side for every generated file, regenerate once at the tip, commit the regeneration in the tip commit_. Write it down so the next rebase is mechanical rather than judgement calls.
 5. **Never leave two prose claims about one number.** The baseline count lives in `AGENTS.md`, `docs/adr/0009`, `CHANGELOG.md` and the docs-count test message — the guard exists precisely because humans and agents both get this wrong; treat a second entry as a bug, not a nuance.
 6. **Carry `Fixes #N` in PR bodies** so merges close the tracker; a manual sweep of eight issues is pure waste.
 7. **Turn the invisible-utility class of bug into a guard** (task c-6). The `accent-*` incident was found by a red visual lane 7 minutes later; a CSS-compile assertion finds it in 300 ms.
 8. **Pre-flight the clone gate before assuming a re-record is needed.** I was ready to re-record the baseline to 146; the gate said 145 and nothing needed recording. Ask the gate, never the changelog.
-9. **`ci-repro` is the only verdict.** The rebased tip passed the root test suite, which is *not* the same as `VERDICT: PASS` across lint/CSS/website lanes.
+9. **`ci-repro` is the only verdict.** The rebased tip passed the root test suite, which is _not_ the same as `VERDICT: PASS` across lint/CSS/website lanes.
 10. **The status reports should be written from tool output only.** Both earlier reports in this session contained claims ("mergeable", "pending") that were true for a minute and stale 20 minutes later; this one cites run IDs, commits and exact failure lines.
 
 ---
@@ -155,7 +155,7 @@
 
 **Quality of the work just merged**
 
-40. Re-read `#80`'s display goldens and confirm they are *intentionally* unchanged (id/class hooks default to empty).
+40. Re-read `#80`'s display goldens and confirm they are _intentionally_ unchanged (id/class hooks default to empty).
 41. Re-check `Nav` deterministic-id derivation against a real double-render (ETag path).
 42. Browser-prove the StatCard Enter/Space path in the demo (string tests cannot see `data-tc-hx-activate` inertness).
 43. Browser-prove the Table row focus ring under keyboard navigation.
@@ -185,7 +185,7 @@
 - **Forgot:** that `/tmp` is not storage. The whole "lost 10 %" section exists because of one unexamined assumption inherited from a previous session's summary.
 - **Forgot:** to carry `Fixes #N` into PR bodies, so eight verified fixes left their issues open.
 - **Forgot:** to check `mergeStateStatus` after the first merge, which cost a failed `gh pr merge`.
-- **Could have done better:** squashing daemon noise *before* the rebase, so the 26-commit replay would have been 14 commits and half the conflicts.
+- **Could have done better:** squashing daemon noise _before_ the rebase, so the 26-commit replay would have been 14 commits and half the conflicts.
 - **Could have done better:** committing the changelog/artifact work before running the next verification step.
 - **Could still improve:** the artifact-conflict policy deserves to be a scripted helper (`scripts/rebase-resolve-artifacts.sh`) instead of a hand-written `case` in `/tmp` that is itself now gone.
 

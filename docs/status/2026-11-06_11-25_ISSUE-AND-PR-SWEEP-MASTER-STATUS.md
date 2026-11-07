@@ -11,36 +11,36 @@ Three PRs now carry this session's work: **#77** (unblocked, all lanes green),
 Everything below is committed, pushed, and proven by a named lane (not "should be
 green").
 
-| # | Work | Where | Proof |
-| --- | --- | --- | --- |
-| 1 | **Issue triage**: closed #34 (master CI red), #47 (templ watch, superseded by v0.3.1100), #70 (templ migration) with source/run evidence | GitHub | CI run `42161744504` passed on `9a67228a`; zero `ResolveAttributeValue` refs; `templGeneratedWith = v0.3.1100` |
-| 2 | **PR #77 clone-gate blocker removed** — extracted `feedback.LoadingProgress` from two byte-identical progress blocks | `2659ec65` | `art-dupl check` green; `ci-repro --lint --css --website` PASS; **PR #77 all lanes green incl. Visual** |
-| 3 | **138th component bookkeeping** — FEATURES/SKILL/README/ROADMAP/comparison/count-definitions/demo hero/website goldens | `2659ec65`, `1ddf4baa` | `utils.TestDocsCountDrift` green; website + visual goldens pass |
-| 4 | **Route goldens for the count change** (index + auth both print it) | `e748e56e`, `5622c9a4` | PR #77 Visual Regression pass (6m3s) |
-| 5 | **Pre-existing reds found at HEAD and fixed**: starter CSS drift, playwright-core pin 1.65.0→1.64.1 | `2659ec65`, `60afa8b0` | `TestStarterCSSMatchesTemplates`, `TestCrossbrowserLockstep` green |
-| 6 | **#75 + #55 Nav**: menu id derived (`<id>-mobile-menu`) or content-hashed; no duplicate id, deterministic output | PR #79 `c5a80301` | `navMenuIDDerivesFromCallerID`, `navMenuIDIsDeterministic` |
-| 7 | **#76 + #49 Table**: `role="link"` removed (markup + htmx settle script), focus-visible outline added | PR #79 | `row_with_href_carries_no_role`, `row_with_href_has_a_visible_focus_indicator` |
-| 8 | **#36 StatCard**: `role="button"`, tabindex, focus ring, CSP-safe Enter/Space script | PR #79 | `TestStatCardHxGetKeyboardAccess` (incl. script-before-tile) |
-| 9 | **#54 Badge**: dot/label adjacent, no literal space | PR #79 | `TestBadgeDotHasNoLiteralSpace` (span + link) |
-| 10 | **#62 StatusDot**: wrapper owns size, layers fill it | PR #79 `a1003c37` | `TestStatusDotClassResizesTheWholeDot` |
-| 11 | **#61 Grid auto-fit**: literal class + `--tc-grid-min` property (was: CSS never generated) | PR #79 `a1003c37` | `TestGridAutoFitClassIsScannerVisible`; compiled demo CSS contains the rule; display route goldens shifted 12462→12120 px, proving the layout now works |
-| 12 | **#51 ScrollbackLine ID/Class**, **#37 ListNote Message override** | PR #80 `c44643b6` | `TestScrollbackLineHooks`, `TestListNoteCustomMessage`; `ci-repro` PASS |
-| 13 | **Clone-gate baseline re-record** 149 → 145 groups, pinned binary, ADR-0009 note | PR #79 | `art-dupl check` green; `TestDocsCountDrift` green (AGENTS/CHANGELOG/ADR agree) |
-| 14 | **`utils.EnsureID` caching docs** + TODO #500/#501 | PR #79 | guard tests green |
-| 15 | **Two status reports** (10:59 field report + this one) | `b62f5336` + working tree | — |
+| #  | Work                                                                                                                                     | Where                     | Proof                                                                                                                                                   |
+| -- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1  | **Issue triage**: closed #34 (master CI red), #47 (templ watch, superseded by v0.3.1100), #70 (templ migration) with source/run evidence | GitHub                    | CI run `42161744504` passed on `9a67228a`; zero `ResolveAttributeValue` refs; `templGeneratedWith = v0.3.1100`                                          |
+| 2  | **PR #77 clone-gate blocker removed** — extracted `feedback.LoadingProgress` from two byte-identical progress blocks                     | `2659ec65`                | `art-dupl check` green; `ci-repro --lint --css --website` PASS; **PR #77 all lanes green incl. Visual**                                                 |
+| 3  | **138th component bookkeeping** — FEATURES/SKILL/README/ROADMAP/comparison/count-definitions/demo hero/website goldens                   | `2659ec65`, `1ddf4baa`    | `utils.TestDocsCountDrift` green; website + visual goldens pass                                                                                         |
+| 4  | **Route goldens for the count change** (index + auth both print it)                                                                      | `e748e56e`, `5622c9a4`    | PR #77 Visual Regression pass (6m3s)                                                                                                                    |
+| 5  | **Pre-existing reds found at HEAD and fixed**: starter CSS drift, playwright-core pin 1.65.0→1.64.1                                      | `2659ec65`, `60afa8b0`    | `TestStarterCSSMatchesTemplates`, `TestCrossbrowserLockstep` green                                                                                      |
+| 6  | **#75 + #55 Nav**: menu id derived (`<id>-mobile-menu`) or content-hashed; no duplicate id, deterministic output                         | PR #79 `c5a80301`         | `navMenuIDDerivesFromCallerID`, `navMenuIDIsDeterministic`                                                                                              |
+| 7  | **#76 + #49 Table**: `role="link"` removed (markup + htmx settle script), focus-visible outline added                                    | PR #79                    | `row_with_href_carries_no_role`, `row_with_href_has_a_visible_focus_indicator`                                                                          |
+| 8  | **#36 StatCard**: `role="button"`, tabindex, focus ring, CSP-safe Enter/Space script                                                     | PR #79                    | `TestStatCardHxGetKeyboardAccess` (incl. script-before-tile)                                                                                            |
+| 9  | **#54 Badge**: dot/label adjacent, no literal space                                                                                      | PR #79                    | `TestBadgeDotHasNoLiteralSpace` (span + link)                                                                                                           |
+| 10 | **#62 StatusDot**: wrapper owns size, layers fill it                                                                                     | PR #79 `a1003c37`         | `TestStatusDotClassResizesTheWholeDot`                                                                                                                  |
+| 11 | **#61 Grid auto-fit**: literal class + `--tc-grid-min` property (was: CSS never generated)                                               | PR #79 `a1003c37`         | `TestGridAutoFitClassIsScannerVisible`; compiled demo CSS contains the rule; display route goldens shifted 12462→12120 px, proving the layout now works |
+| 12 | **#51 ScrollbackLine ID/Class**, **#37 ListNote Message override**                                                                       | PR #80 `c44643b6`         | `TestScrollbackLineHooks`, `TestListNoteCustomMessage`; `ci-repro` PASS                                                                                 |
+| 13 | **Clone-gate baseline re-record** 149 → 145 groups, pinned binary, ADR-0009 note                                                         | PR #79                    | `art-dupl check` green; `TestDocsCountDrift` green (AGENTS/CHANGELOG/ADR agree)                                                                         |
+| 14 | **`utils.EnsureID` caching docs** + TODO #500/#501                                                                                       | PR #79                    | guard tests green                                                                                                                                       |
+| 15 | **Two status reports** (10:59 field report + this one)                                                                                   | `b62f5336` + working tree | —                                                                                                                                                       |
 
 ---
 
 ## b) PARTIALLY DONE
 
-| Item | Done | Missing | Why it matters |
-| --- | --- | --- | --- |
-| **Nav determinism (#55)** | Nav only | 20+ other `EnsureID` sites still mint `crypto/rand` ids per render (Modal, Drawer, Toast, Tabs children, Accordion children, Dropdown, Tooltip, Popover, HoverCard, ContextMenu, Carousel, Kanban, Lightbox, CommandPalette, Combobox, TagsInput, SegmentedControl, FilterBar/FilterInput, LoadMore, LoadingDialog, errorpage context) | Any page with one of these still defeats ETag 304. Tracked as **TODO #500**. |
-| **Accessible clickable rows (#76)** | ARIA validity + focus ring + keyboard | Screen-reader *semantics*: a `<tr>` cannot carry `role="link"`, so AT users still hear a plain row; the accessible target must be a real link in a cell | Tracked as **TODO #501**; needs a design decision (recipe vs `LinkInCell` option). |
-| **Accent token sweep (PR #77)** | Display + feedback emission, `utils/tone` axes, demo override | Form/layout/navigation shells not yet converted; `surface`/`ink` tokens defined but unused | The ADR-0049 plan is broader than the pilot; PR #77 is scoped as S01–S04. |
-| **PR #79** | All code + tests + goldens; re-pushed `a1003c37` after the display route golden re-record | CI re-running at report time | Visual lane should now match (golden height 12120 == CI capture). |
-| **Clone-baseline hygiene** | Re-recorded and documented | The gate still tolerates stale entries silently until someone re-records | Not urgent; noted in ADR-0009. |
-| **Status reports** | Two written | Neither is indexed in TODO/ROADMAP; the 10:59 report's next-steps were partly executed since | docs-health pass could harvest them. |
+| Item                                | Done                                                                                      | Missing                                                                                                                                                                                                                                                                                                                                | Why it matters                                                                     |
+| ----------------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Nav determinism (#55)**           | Nav only                                                                                  | 20+ other `EnsureID` sites still mint `crypto/rand` ids per render (Modal, Drawer, Toast, Tabs children, Accordion children, Dropdown, Tooltip, Popover, HoverCard, ContextMenu, Carousel, Kanban, Lightbox, CommandPalette, Combobox, TagsInput, SegmentedControl, FilterBar/FilterInput, LoadMore, LoadingDialog, errorpage context) | Any page with one of these still defeats ETag 304. Tracked as **TODO #500**.       |
+| **Accessible clickable rows (#76)** | ARIA validity + focus ring + keyboard                                                     | Screen-reader _semantics_: a `<tr>` cannot carry `role="link"`, so AT users still hear a plain row; the accessible target must be a real link in a cell                                                                                                                                                                                | Tracked as **TODO #501**; needs a design decision (recipe vs `LinkInCell` option). |
+| **Accent token sweep (PR #77)**     | Display + feedback emission, `utils/tone` axes, demo override                             | Form/layout/navigation shells not yet converted; `surface`/`ink` tokens defined but unused                                                                                                                                                                                                                                             | The ADR-0049 plan is broader than the pilot; PR #77 is scoped as S01–S04.          |
+| **PR #79**                          | All code + tests + goldens; re-pushed `a1003c37` after the display route golden re-record | CI re-running at report time                                                                                                                                                                                                                                                                                                           | Visual lane should now match (golden height 12120 == CI capture).                  |
+| **Clone-baseline hygiene**          | Re-recorded and documented                                                                | The gate still tolerates stale entries silently until someone re-records                                                                                                                                                                                                                                                               | Not urgent; noted in ADR-0009.                                                     |
+| **Status reports**                  | Two written                                                                               | Neither is indexed in TODO/ROADMAP; the 10:59 report's next-steps were partly executed since                                                                                                                                                                                                                                           | docs-health pass could harvest them.                                               |
 
 ---
 
@@ -90,7 +90,7 @@ green").
    cycles lost.
 5. **The daemon beat me twice.** It committed my working tree mid-investigation
    (`f3f22c08`, `5622c9a4`) and once committed the very PNGs I had just restored. I
-   checked status *after* acting instead of before.
+   checked status _after_ acting instead of before.
 6. **My own `go.work` broke a guard.** `go work init` wrote a `use ( … )` block plus
    `go 1.27.3`; `TestGoDirectiveSkew` cannot parse it and the lockstep guard rejects
    the patch level. Local-only file, still wasted a cycle.
@@ -104,7 +104,8 @@ green").
 ## e) WHAT WE COULD DO BETTER / IMPROVE (process + code)
 
 **Process**
-1. Read the ADR appendix for the tool that is failing *before* redesigning code.
+
+1. Read the ADR appendix for the tool that is failing _before_ redesigning code.
 2. Make "regenerate submodules from their own directory" a script the hook enforces
    (or make the guard detect root-generated `FileName`s).
 3. One logical fix per commit, always — even on a bugfix PR.
@@ -114,25 +115,25 @@ green").
 
 **Code / library**
 7. **Guard every emitted color class against the theme.** A test that compiles the demo
-   CSS and asserts each `*-{color}` token used in library sources resolves to a rule
-   would have caught the accent mistake instantly.
+CSS and asserts each `*-{color}` token used in library sources resolves to a rule
+would have caught the accent mistake instantly.
 8. **Make ids deterministic by default across the library** (TODO #500), not per
-   component. The cheapest global fix: a `ComponentID(prefix, props.ID, seed...)` helper
-   that hashes content, and a lint rule banning bare `EnsureID` in `.templ`.
+component. The cheapest global fix: a `ComponentID(prefix, props.ID, seed...)` helper
+that hashes content, and a lint rule banning bare `EnsureID` in `.templ`.
 9. **Centralise "interactive non-button" handling.** Three components now need
-   role+tabindex+keydown (StatCard hx tiles, Kanban cards, row-href rows). One shared
-   helper + one shared script would remove three copies of the same contract.
+role+tabindex+keydown (StatCard hx tiles, Kanban cards, row-href rows). One shared
+helper + one shared script would remove three copies of the same contract.
 10. **Give `Table` a first-class accessible row pattern** (TODO #501) instead of
-    documenting the gap.
+documenting the gap.
 11. **Stop hand-writing count-bearing prose.** `countgen` covers tables; README/ROADMAP/
-    comparison/count-definitions still need 6 manual edits per component. Extend the
-    generator.
+comparison/count-definitions still need 6 manual edits per component. Extend the
+generator.
 12. **Route goldens bake marketing copy** — mark them or split the "copy" pages so a
-    count change does not look like a visual regression.
+count change does not look like a visual regression.
 13. **`-update` should not rewrite byte-identical PNGs** (or should print which routes
-    changed pixels vs only bytes) — 10 unrelated files dirty on every run.
+changed pixels vs only bytes) — 10 unrelated files dirty on every run.
 14. **Fix the pre-commit gate** (or make it advisory) so `--no-verify` stops being the
-    norm; a permanently bypassed hook is worse than no hook.
+norm; a permanently bypassed hook is worse than no hook.
 
 ---
 
@@ -214,12 +215,12 @@ green").
 
 ## Appendix — verification log
 
-| Branch | Command | Result |
-| --- | --- | --- |
-| `feat/design-token-axes` | `scripts/ci-repro.sh --lint --css --website` | PASS (exit 0) 09:56 CET |
-| `feat/design-token-axes` | GitHub PR #77 checks | **all pass** incl. Visual Regression (6m3s) |
-| `fix/id-and-a11y-defects` | `scripts/ci-repro.sh --lint --css --website` | PASS (exit 0) 10:45 + 11:03 CET |
-| `fix/id-and-a11y-defects` | GitHub PR #79 checks | all pass except Visual (fixed by re-recording `display_*`: 12462 → 12120 px), re-pushed `a1003c37` |
-| `feat/line-hooks-and-note-message` | `scripts/ci-repro.sh --lint --css --website` | PASS (exit 0) 11:19 CET |
-| all | `art-dupl check -c .art-dupl.json -t 1 --type-aware` | green (145 groups) |
-| all | per-module `GOWORK=off go test ./...` (9 modules) | green |
+| Branch                             | Command                                              | Result                                                                                             |
+| ---------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `feat/design-token-axes`           | `scripts/ci-repro.sh --lint --css --website`         | PASS (exit 0) 09:56 CET                                                                            |
+| `feat/design-token-axes`           | GitHub PR #77 checks                                 | **all pass** incl. Visual Regression (6m3s)                                                        |
+| `fix/id-and-a11y-defects`          | `scripts/ci-repro.sh --lint --css --website`         | PASS (exit 0) 10:45 + 11:03 CET                                                                    |
+| `fix/id-and-a11y-defects`          | GitHub PR #79 checks                                 | all pass except Visual (fixed by re-recording `display_*`: 12462 → 12120 px), re-pushed `a1003c37` |
+| `feat/line-hooks-and-note-message` | `scripts/ci-repro.sh --lint --css --website`         | PASS (exit 0) 11:19 CET                                                                            |
+| all                                | `art-dupl check -c .art-dupl.json -t 1 --type-aware` | green (145 groups)                                                                                 |
+| all                                | per-module `GOWORK=off go test ./...` (9 modules)    | green                                                                                              |

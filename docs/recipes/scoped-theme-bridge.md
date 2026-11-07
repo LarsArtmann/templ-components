@@ -19,27 +19,31 @@ do not hand-edit the block below; regenerate with
 `go test ./utils/tone/ -update`.
 
 <!-- BEGIN generated: tone palette table (utils/tone/doc_sync_test.go; go test ./utils/tone/ -update) -->
-| Hue | Tones rendered in it | Chart palette |
-| --- | --- | --- |
-| `blue` | info | yes (series 1) |
-| `emerald` | — | yes (series 2) |
-| `amber` | warning | yes (series 3) |
-| `rose` | — | yes (series 4) |
-| `violet` | — | yes (series 5) |
-| `cyan` | — | yes (series 6) |
-| `orange` | — | yes (series 7) |
-| `pink` | — | yes (series 8) |
-| `gray` | neutral | — |
-| `green` | success | — |
-| `yellow` | — | — |
-| `red` | danger | — |
-| `purple` | — | — |
+
+| Hue       | Tones rendered in it | Chart palette  |
+| --------- | -------------------- | -------------- |
+| `blue`    | info                 | yes (series 1) |
+| `emerald` | —                    | yes (series 2) |
+| `amber`   | warning              | yes (series 3) |
+| `rose`    | —                    | yes (series 4) |
+| `violet`  | —                    | yes (series 5) |
+| `cyan`    | —                    | yes (series 6) |
+| `orange`  | —                    | yes (series 7) |
+| `pink`    | —                    | yes (series 8) |
+| `gray`    | neutral              | —              |
+| `green`   | success              | —              |
+| `yellow`  | —                    | —              |
+| `red`     | danger               | —              |
+| `purple`  | —                    | —              |
+
 <!-- END generated: tone palette table -->
 
 <!-- BEGIN generated: token family table (utils/tone/doc_sync_test.go; go test ./utils/tone/ -update) -->
-| Family | Tones rendered in it |
-| --- | --- |
-| `accent` | accent |
+
+| Family   | Tones rendered in it |
+| -------- | -------------------- |
+| `accent` | accent               |
+
 <!-- END generated: token family table -->
 
 Notes that live outside the generator: the #428 decision (2026-10-30) landed
@@ -108,5 +112,5 @@ survives `utils.Class()` reordering — but that is the end of its robustness.
 - [Theming guide](../theming.md) — override mechanics
 - [Extraction analysis](../integration/extraction-analysis.md) — the three
   consumer bridges that motivated all of this
-tion-analysis.md) — the three
+  tion-analysis.md) — the three
   consumer bridges that motivated all of this

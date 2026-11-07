@@ -34,14 +34,14 @@ Two branches touched: `feat/design-token-axes` (PR #77, blocked → unblocked) a
 
 ### 2.1 Triage (read first, act second)
 
-| Item | Finding | Action |
-| --- | --- | --- |
-| #34 master CI red | Master green since 04:18Z; the streak was the five lanes fixed in #78 | **Closed** |
-| #47 upstream-watch templ v0.3.1070 | Pin moved to v0.3.1100 on 2026-11-04 (newer than the ask) | **Closed** |
-| #70 templ removed `ResolveAttributeValue` | Migration shipped; zero references remain | **Closed** |
-| #77 PR (design token axes) | Open, mergeable, blocked on the clone gate | Fixed (below) |
-| #66 golangci-lint watch | Still a live upstream-watch row; pins converged at 2.14.0 (#443) | Left open |
-| Remaining defects | #36, #37, #48, #49, #50, #51, #53, #54, #55, #59, #60, #61, #62, #63, #75, #76 | Subset fixed (below) |
+| Item                                      | Finding                                                                        | Action               |
+| ----------------------------------------- | ------------------------------------------------------------------------------ | -------------------- |
+| #34 master CI red                         | Master green since 04:18Z; the streak was the five lanes fixed in #78          | **Closed**           |
+| #47 upstream-watch templ v0.3.1070        | Pin moved to v0.3.1100 on 2026-11-04 (newer than the ask)                      | **Closed**           |
+| #70 templ removed `ResolveAttributeValue` | Migration shipped; zero references remain                                      | **Closed**           |
+| #77 PR (design token axes)                | Open, mergeable, blocked on the clone gate                                     | Fixed (below)        |
+| #66 golangci-lint watch                   | Still a live upstream-watch row; pins converged at 2.14.0 (#443)               | Left open            |
+| Remaining defects                         | #36, #37, #48, #49, #50, #51, #53, #54, #55, #59, #60, #61, #62, #63, #75, #76 | Subset fixed (below) |
 
 ### 2.2 PR #77 `feat/design-token-axes` — unblocked
 
@@ -72,16 +72,16 @@ Two branches touched: `feat/design-token-axes` (PR #77, blocked → unblocked) a
 
 ### 2.3 PR #79 `fix/id-and-a11y-defects` — six defects closed
 
-| Issue | Defect (as filed) | Fix | Proof |
-| --- | --- | --- | --- |
-| **#75** | `Nav` rendered the consumer's `ID` twice (menu reused it) | Menu id derived as `<id>-mobile-menu` | `navMenuIDDerivesFromCallerID` asserts exactly one `id="site-nav"` and no duplicate ids |
-| **#55** | `EnsureID` minted a random id per render → no ETag 304 ever | Id derived from nav content (sha256 of links + path + label + container flag) | `TestRenderDeterminism/nav_with_derived_mobile-menu_id` + `navMenuIDIsDeterministic` (byte-identical twice) |
-| **#54** | `Badge{Dot:true}` emitted a literal space before the text | `badgeContent` renders dot and label on one source line | `BadgeDotHasNoLiteralSpace` (span + link variants) |
-| **#76** | `role="link"` on `<tr>` — ARIA in HTML forbids it, validators red | Role removed from markup **and** from the htmx settle script; docs updated in AGENTS/agent-context | `row_with_href_carries_no_role` (scoped to the row tag) |
-| **#49** | Clickable rows had no focus indicator (WCAG 2.4.7) | `focus-visible:outline-2 outline-blue-600` + `-outline-offset-2` on href rows only | `row_with_href_has_a_visible_focus_indicator` + golden |
-| **#36** | `StatCard{HxGet}` was a click-only `<div>` | `role="button"`, `tabindex="0"`, focus ring, CSP-safe singleton script mapping Enter/Space → click (nested controls excluded) | `TestStatCardHxGetKeyboardAccess` + golden incl. script-before-tile ordering |
-| **#62** | `StatusDot` inner core hardcoded 10px; `Class` only resized the wrapper | Wrapper owns the size, layers fill it (`h-full w-full`) | `StatusDotClassResizesTheWholeDot` (tailwind-merge drops the default diameter) |
-| **#61** | Grid auto-fit composed its arbitrary class at runtime → invisible to the scanner → single column | Literal class reading `var(--tc-grid-min)`; width rides that property (documented CSP exemption) | `TestGridAutoFitClassIsScannerVisible` + the compiled demo CSS contains the rule |
+| Issue   | Defect (as filed)                                                                                | Fix                                                                                                                           | Proof                                                                                                       |
+| ------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **#75** | `Nav` rendered the consumer's `ID` twice (menu reused it)                                        | Menu id derived as `<id>-mobile-menu`                                                                                         | `navMenuIDDerivesFromCallerID` asserts exactly one `id="site-nav"` and no duplicate ids                     |
+| **#55** | `EnsureID` minted a random id per render → no ETag 304 ever                                      | Id derived from nav content (sha256 of links + path + label + container flag)                                                 | `TestRenderDeterminism/nav_with_derived_mobile-menu_id` + `navMenuIDIsDeterministic` (byte-identical twice) |
+| **#54** | `Badge{Dot:true}` emitted a literal space before the text                                        | `badgeContent` renders dot and label on one source line                                                                       | `BadgeDotHasNoLiteralSpace` (span + link variants)                                                          |
+| **#76** | `role="link"` on `<tr>` — ARIA in HTML forbids it, validators red                                | Role removed from markup **and** from the htmx settle script; docs updated in AGENTS/agent-context                            | `row_with_href_carries_no_role` (scoped to the row tag)                                                     |
+| **#49** | Clickable rows had no focus indicator (WCAG 2.4.7)                                               | `focus-visible:outline-2 outline-blue-600` + `-outline-offset-2` on href rows only                                            | `row_with_href_has_a_visible_focus_indicator` + golden                                                      |
+| **#36** | `StatCard{HxGet}` was a click-only `<div>`                                                       | `role="button"`, `tabindex="0"`, focus ring, CSP-safe singleton script mapping Enter/Space → click (nested controls excluded) | `TestStatCardHxGetKeyboardAccess` + golden incl. script-before-tile ordering                                |
+| **#62** | `StatusDot` inner core hardcoded 10px; `Class` only resized the wrapper                          | Wrapper owns the size, layers fill it (`h-full w-full`)                                                                       | `StatusDotClassResizesTheWholeDot` (tailwind-merge drops the default diameter)                              |
+| **#61** | Grid auto-fit composed its arbitrary class at runtime → invisible to the scanner → single column | Literal class reading `var(--tc-grid-min)`; width rides that property (documented CSP exemption)                              | `TestGridAutoFitClassIsScannerVisible` + the compiled demo CSS contains the rule                            |
 
 Also: `utils.EnsureID` now documents the caching consequence; TODO **#500** (sweep the
 remaining random-id components: Modal, Drawer, Toast, Tabs, Accordion, Dropdown,
@@ -100,14 +100,14 @@ commit (`utils.TestDocsCountDrift` green).
 
 ## 3. Verification (evidence, not vibes)
 
-| Branch | Command | Result |
-| --- | --- | --- |
-| `feat/design-token-axes` | `scripts/ci-repro.sh --lint --css --website` | **VERDICT: PASS (exit 0)**, 2026-11-06 09:56 CET |
-| `feat/design-token-axes` | GitHub CI (run `42193779140`) | all lanes pass except Visual Regression (route goldens, now corrected) |
-| `fix/id-and-a11y-defects` | `scripts/ci-repro.sh --lint --css --website` | **VERDICT: PASS (exit 0)**, 2026-11-06 10:45 CET |
-| `fix/id-and-a11y-defects` | GitHub PR #79 checks | **all pass**, including Visual Regression |
-| both | `art-dupl check -c .art-dupl.json -t 1 --type-aware` | green (77/79 respectively) |
-| both | per-module `GOWORK=off go test ./...` (all 9 modules) | green |
+| Branch                    | Command                                               | Result                                                                 |
+| ------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------- |
+| `feat/design-token-axes`  | `scripts/ci-repro.sh --lint --css --website`          | **VERDICT: PASS (exit 0)**, 2026-11-06 09:56 CET                       |
+| `feat/design-token-axes`  | GitHub CI (run `42193779140`)                         | all lanes pass except Visual Regression (route goldens, now corrected) |
+| `fix/id-and-a11y-defects` | `scripts/ci-repro.sh --lint --css --website`          | **VERDICT: PASS (exit 0)**, 2026-11-06 10:45 CET                       |
+| `fix/id-and-a11y-defects` | GitHub PR #79 checks                                  | **all pass**, including Visual Regression                              |
+| both                      | `art-dupl check -c .art-dupl.json -t 1 --type-aware`  | green (77/79 respectively)                                             |
+| both                      | per-module `GOWORK=off go test ./...` (all 9 modules) | green                                                                  |
 
 ---
 

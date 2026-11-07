@@ -160,6 +160,7 @@ not run yet.
 ## f) NEXT — up to 50 things, in order
 
 **Unblock (P0):**
+
 1. Answer Q1 → purge corrupted extracted module dirs from `/mnt/buildcache/go-mod` (at minimum:
    yuin/goldmark@v1.8.7, chromedp@v0.21.1, cdproto@v0.159.1, orisano/pixelmatch@…) so go
    re-extracts.
@@ -172,55 +173,55 @@ not run yet.
 
 **Finish the feature wave (P0):**
 7. Write CHANGELOG `[Unreleased]` entries (Added: exclusive accordion, slider fill, identifier
-   attrs, validity bridge, autofill highlight, 16px floor, prose color-scheme; Fixed: none
-   user-facing beyond these).
+attrs, validity bridge, autofill highlight, 16px floor, prose color-scheme; Fixed: none
+user-facing beyond these).
 8. Update FEATURES.md rows for Accordion/Slider/Input/Form.
 9. Run `countgen -w` and confirm zero drift.
 10. Recompile CSS artifacts (`nix run .#css`) — custom.css + new slider classes.
 11. Verify demo still builds/runs; eyeball slider fill in the demo (Chromium).
 12. Add exclusive accordion demo example on the accordion page (+ HTML golden).
 13. Visual golden re-baseline for slider routes (`nix run .#visual -- -update`, NEVER bare
-    `go test -update` in visualtest/).
+`go test -update` in visualtest/).
 14. e2e: validity bridge — focus/blur an invalid field, assert `aria-invalid=true` appears;
-    fix field, assert bridge-owned state removed while server-set state survives.
+fix field, assert bridge-owned state removed while server-set state survives.
 15. e2e: slider sync — drag/set value, assert `--tc-slider-value` mirrors on the element.
 16. `nix fmt` (treefmt) over touched files.
 17. Lint: root golangci-lint + per-module loop.
 18. `scripts/ci-repro.sh --lint --css --website` — read VERDICT: PASS at the exact commit.
 19. Check `git status` for the daemon re-adding `*_templ.go` to `.gitignore` / `result*` paths /
-    re-applied templ bumps (`utils.TestTemplVersionPin` guards) before anything is pushed.
+re-applied templ bumps (`utils.TestTemplVersionPin` guards) before anything is pushed.
 20. Stage the 4 mirrored `_sources` files (guard stages them, but verify).
 21. Resolve the daemon's `AD go.work.pdg-bak` staged state (staged-add + worktree-delete) — it
-    will break a commit if left.
+will break a commit if left.
 22. Push (only after user go-ahead — never push unasked).
 
 **Follow-through worth considering (P1/P2):**
 23. Decide & document the repo's **browser-support policy line** for Newly-available features
-    (invoker `commandfor`, `focusgroup`, scroll-state queries) in AGENTS.md — the audit kept
-    hitting this judgment call; a written policy ends re-litigation.
+(invoker `commandfor`, `focusgroup`, scroll-state queries) in AGENTS.md — the audit kept
+hitting this judgment call; a written policy ends re-litigation.
 24. Consider `command="show-modal"`/`commandfor` as PROGRESSIVE layering on
-    `data-tc-overlay-trigger` (feature-detect `'commandForElement' in HTMLButtonElement.prototype`)
-    so modals open with zero JS on Chromium/FF144+/Safari 26.2+.
+`data-tc-overlay-trigger` (feature-detect `'commandForElement' in HTMLButtonElement.prototype`)
+so modals open with zero JS on Chromium/FF144+/Safari 26.2+.
 25. Consider `hidden="until-found"` for CollapsibleSection/ReadMore-style content
-    (search-hidden-content's second half; Accordion already gets find-in-page natively).
+(search-hidden-content's second half; Accordion already gets find-in-page natively).
 26. Optional: `@container scroll-state` affordance hints (@supports-gated scroll shadows) on
-    Scrollback/SidebarNav scrollers.
+Scrollback/SidebarNav scrollers.
 27. Optional: safe-triangle hover bridge for future nested submenus if Dropdown ever grows them.
 28. Document the `attr()`/`progress()` slider-fill technique in
-    `docs/research/modern-browser-capabilities.md` (the progressive-enhancement layer's home).
+`docs/research/modern-browser-capabilities.md` (the progressive-enhancement layer's home).
 29. Add the 16px-coarse-floor + autofill rules to the starter custom.css health test list (they
-    now ride TestStarterCSSMatchesTemplates).
+now ride TestStarterCSSMatchesTemplates).
 30. Consider an e2e asserting iOS-zoom prevention is impossible to test cheaply — instead a unit
-    guard that custom.css keeps the coarse-pointer block (grep-style test like the others).
+guard that custom.css keeps the coarse-pointer block (grep-style test like the others).
 31. Re-check `docs/browser-support.md` matrix vs. this wave's new feature gates
-    (progress()+attr(), `<details name>` Baseline, `:autofill`).
+(progress()+attr(), `<details name>` Baseline, `:autofill`).
 32. After cache repair: run one full `nix run .#verify` (generate+build+test+lint) to re-establish
-    the baseline.
+the baseline.
 33. Website landing/demo redeploy check once CI is green (`website.yml` path filters include
-    `examples/demo/**`).
-34. Confirm no `*_templ.go` FileName regressions: `grep -l 'FileName: `[a-z]*/.*\.templ`' */*_templ.go`.
+`examples/demo/**`).
+34. Confirm no `*_templ.go` FileName regressions: `grep -l 'FileName:`[a-z]_/._\.templ`' */*_templ.go`.
 35. Trim `/tmp/mwg/*.md` or move the audit's guide excerpts into
-    `docs/research/modern-browser-capabilities.md` notes if you want them durable.
+`docs/research/modern-browser-capabilities.md` notes if you want them durable.
 
 ## g) QUESTIONS (cannot figure these out myself)
 
