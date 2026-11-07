@@ -1225,7 +1225,10 @@
               </tr>
               <tr>
                 <td><code>openWhenHidden</code> fetch option</td>
-                <td class="yes">Yes &mdash; default off (docs + destructure agree)</td>
+                <td class="yes">
+                  Yes &mdash; per-action default binding in the destructure
+                  (docs: off for <code>@get</code>, on for the write actions)
+                </td>
                 <td class="no">No &mdash; hidden-tab behavior is fixed</td>
               </tr>
               <tr>
@@ -1298,7 +1301,8 @@ Ee = (el, code) =&gt; { if (nt) el.nonce = tt; el.text = ve ? ve.createScript(co
           </p>
           <pre><code>// The fetch-options destructure, minified, verbatim from the pin:
 json, filterSignals: { include: /.*/, exclude: /(^|\.)_/ } = {},
-openWhenHidden: w = n /* false */, payload: y, requestCancellation: A = "auto",
+openWhenHidden: w = n /* per-action default: off for @get, on otherwise */,
+payload: y, requestCancellation: A = "auto",
 retry: d = "auto", retryInterval: h = 1e3, ...</code></pre>
           <p>
             Note <code>filterSignals</code>' default: local signals whose names
@@ -1525,7 +1529,10 @@ datastar.On("keyup", expr).Debounce(300)     // data-on:keyup__debounce.300ms</c
               (send a signal subset &mdash; nearest twin:
               <code>hx-params</code>; asymmetric), and
               <code>openWhenHidden</code> (keep fetching while the tab is
-              hidden; default off &mdash; no htmx twin; htmx always polls).
+              hidden; off by default for <code>@get</code> &mdash; the action
+              both <code>LiveRegion</code> and <code>PolledRegion</code> use
+              &mdash; on for the write actions; no htmx twin; htmx always
+              polls).
               Each is a small field plus one dialect-mapping row &mdash; and
               each is exactly the kind of runtime fact this repo prefers owned
               by typed fields instead of consumer folklore.
