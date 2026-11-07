@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Report Title</title>
+    <title>
+      Datastar on the Client: What templ-components Hasn't Used Yet — Deep
+      Research 2026-11-07
+    </title>
     <style>
       /* =========================================================================
          BAUHAUS LIGHT — Editorial template
@@ -1664,62 +1667,77 @@ datastar.On("keyup", expr).Debounce(300)     // data-on:keyup__debounce.300ms</c
             go through a Pareto plan in <code>docs/planning/</code> per the
             research conventions.
           </p>
-          <div class="steps">
-            <div class="step">
-              <div class="step-num">1</div>
-              <div class="step-body">
+          <div class="strengths">
+            <div class="strength">
+              <div class="check">1</div>
+              <div class="text">
                 <strong>Docs corrections (Opportunity 7) &mdash; zero risk, one commit.</strong>
-                Runtime-facts CSP restatement, measured bundle size, unmodeled-capability
-                pointer. No behavior changes; tests untouched.
+                <span
+                  >Runtime-facts CSP restatement, measured bundle size,
+                  unmodeled-capability pointer. No behavior changes; tests
+                  untouched.</span
+                >
               </div>
             </div>
-            <div class="step">
-              <div class="step-num">2</div>
-              <div class="step-body">
+            <div class="strength">
+              <div class="check">2</div>
+              <div class="text">
                 <strong>CSP-mode spike (Opportunity 1).</strong>
-                E2e-proof the library's attribute set under
-                <code>data-nonce</code> with no <code>'unsafe-eval'</code>;
-                measure evaluation cost. This is the gate for everything
-                CSP-related that follows.
+                <span
+                  >E2e-proof the library's attribute set under
+                  <code>data-nonce</code> with no
+                  <code>'unsafe-eval'</code>; measure evaluation cost. This is
+                  the gate for everything CSP-related that follows.</span
+                >
               </div>
             </div>
-            <div class="step">
-              <div class="step-num">3</div>
-              <div class="step-body">
+            <div class="strength">
+              <div class="check">3</div>
+              <div class="text">
                 <strong>Library + demo + website CSP tightening (Opportunity 1).</strong>
-                <code>layout</code> plumbing with goldens; demo
-                <code>withSecurityHeaders</code> and <code>firebase.json</code>
-                flipped together; site CSP regenerated; contract-test token
-                added. Ship only if step 2 is fully green.
+                <span
+                  ><code>layout</code> plumbing with goldens; demo
+                  <code>withSecurityHeaders</code> and
+                  <code>firebase.json</code> flipped together; site CSP
+                  regenerated; contract-test token added. Ship only if step 2
+                  is fully green.</span
+                >
               </div>
             </div>
-            <div class="step">
-              <div class="step-num">4</div>
-              <div class="step-body">
+            <div class="strength">
+              <div class="check">4</div>
+              <div class="text">
                 <strong>Signals recipe + demo card (Opportunity 2).</strong>
-                <code>docs/recipes/datastar-signals-live-data.md</code> as the
-                twin of sse-live-rows; one demo streaming
-                <code>datastar-patch-signals</code> into bound StatCards.
+                <span
+                  ><code>docs/recipes/datastar-signals-live-data.md</code> as
+                  the twin of sse-live-rows; one demo streaming
+                  <code>datastar-patch-signals</code> into bound
+                  StatCards.</span
+                >
               </div>
             </div>
-            <div class="step">
-              <div class="step-num">5</div>
-              <div class="step-body">
+            <div class="strength">
+              <div class="check">5</div>
+              <div class="text">
                 <strong>Typed builders module (Opportunities 3 + 8).</strong>
-                <code>attributes.go</code> with fuzz targets, identifier
-                grammar, goldens, and the reactive demo card as its consumer
-                example.
+                <span
+                  ><code>attributes.go</code> with fuzz targets, identifier
+                  grammar, goldens, and the reactive demo card as its consumer
+                  example.</span
+                >
               </div>
             </div>
-            <div class="step">
-              <div class="step-num">6</div>
-              <div class="step-body">
+            <div class="strength">
+              <div class="check">6</div>
+              <div class="text">
                 <strong>wire option fields (Opportunity 4) and the pin bump
                 (Opportunity 5), each as its own verified event.</strong>
-                Dialect-contract rows for the four fields; then the
-                <code>external-dependency-bumps.md</code> protocol with this
-                report's token table as the re-audit checklist. Opportunity 6
-                (view-transition selector) rides the bump's re-audit.
+                <span
+                  >Dialect-contract rows for the four fields; then the
+                  <code>external-dependency-bumps.md</code> protocol with this
+                  report's token table as the re-audit checklist. Opportunity
+                  6 (view-transition selector) rides the bump's re-audit.</span
+                >
               </div>
             </div>
           </div>
