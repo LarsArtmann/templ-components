@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"sort"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -63,7 +64,12 @@ func cspSpikeNonce(t *testing.T) string {
 	return hex.EncodeToString(buf)
 }
 
-func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
+// cspModeE2EServer serves the flow fixture. strict=true adds the CSP header
+// (nonce-only script-src, no 'unsafe-eval'), the <html data-nonce> activation
+// attribute, and nonce'd runtime/toast scripts — CSP mode. strict=false serves
+// the same page WITHOUT the header and WITHOUT data-nonce — the runtime's
+// default Function()-eval mode, which is the control arm of the T04 probe.
+func cspModeE2EServer(t *testing.T, strict bool) (*httptest.Server, *cspSpikeHits) {
 	t.Helper()
 
 	css, err := loadCSS()
@@ -74,12 +80,16 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 	nonce := cspSpikeNonce(t)
 	hits := &cspSpikeHits{}
 
-	// Strict script policy: the page nonce and NOTHING else. No
-	// 'unsafe-eval', no 'unsafe-inline', no 'strict-dynamic' — a nonce'd
-	// inline script is the only allowed script source, which is exactly the
-	// contract the runtime's CSP mode must satisfy.
-	csp := "default-src 'none'; script-src 'nonce-" + nonce + "' 'report-sample'; style-src 'self'; " +
-		"connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+	csp := ""
+	if strict {
+		// Strict script policy: the page nonce and NOTHING else. No
+		// 'unsafe-eval', no 'unsafe-inline', no 'strict-dynamic' — a nonce'd
+		// inline script is the only allowed script source, which is exactly the
+		// contract the runtime's CSP mode must satisfy. 'report-sample' names
+		// the blocked expression in violation samples.
+		csp = "default-src 'none'; script-src 'nonce-" + nonce + "' 'report-sample'; style-src 'self'; " +
+			"connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+	}
 
 	patchHeaders := func(w http.ResponseWriter, selector, mode string) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -105,11 +115,11 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		for _, component := range []templ.Component{
 			datastar.SDKScript(datastar.SDKScriptProps{
-				Nonce: nonce,
+				Nonce: nonceFor(strict, nonce),
 				Src:   "/datastar.js",
 			}),
-			feedback.ToastContainer(nonce),
-			datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{Nonce: nonce}),
+			feedback.ToastContainer(nonceFor(strict, nonce)),
+			datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{Nonce: nonceFor(strict, nonce)}),
 		} {
 			if err := component.Render(ctx, w); err != nil {
 				return err
@@ -117,7 +127,7 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 		}
 
 		liveProps := datastar.DefaultLiveRegionProps()
-		liveProps.BaseProps.Nonce = nonce
+		liveProps.BaseProps.Nonce = nonceFor(strict, nonce)
 		liveProps.ID = "csp-live"
 		liveProps.URL = "/api/csp-good-sse"
 		liveProps.AutoStart = true
@@ -158,7 +168,8 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 				`<div id="csp-slow-region"><button id="csp-slow-btn" type="button" data-indicator:cspbusy data-on:click="@get('/api/csp-slow')">slow load</button>`+
 				`<span id="csp-busy-cue" data-show="$cspbusy">loading…</span><div id="csp-slow-done">pending</div></div>`+
 				`<div id="csp-intersect" data-on-intersect="@get('/api/csp-intersect')">reveal region</div>`+
-				`<div id="csp-interval" data-on-interval__duration.1s="@get('/api/csp-interval')">ticks: </div>`); err != nil {
+				`<div id="csp-interval" data-on-interval__duration.1s="@get('/api/csp-interval')">ticks: </div>`+
+				`<input id="csp-probe-input" data-signals-cspprobe="0" data-on:input="$cspprobe = $cspprobe + 1" />`); err != nil {
 			return err
 		}
 
@@ -190,7 +201,7 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 	// plumbing for that attribute is plan T05, gated BEHIND this spike.
 	head := `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">` +
 		`<title>Datastar CSP-mode spike — templ-components</title><link rel="stylesheet" href="/app.css">` +
-		`<script nonce="` + nonce + `">` +
+		`<script` + nonceAttrFor(strict, nonce) + `>` +
 		`window.__cspViolations=[];` +
 		`document.addEventListener('securitypolicyviolation',function(e){window.__cspViolations.push(e.effectiveDirective+' sample='+(e.sample||'')+' at '+(e.sourceFile||'')+':'+e.lineNumber+':'+e.columnNumber+' status='+e.statusCode);});` +
 		`window.__dsReady=false;` +
@@ -198,8 +209,12 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 		`</script>`
 
 	page := func(w io.Writer) error {
-		if _, err := io.WriteString(w,
-			`<!doctype html><html lang="en" data-nonce="`+nonce+`"><head>`+head+`</head><body>`); err != nil {
+		htmlOpen := `<!doctype html><html lang="en"`
+		if strict {
+			htmlOpen += ` data-nonce="` + nonce + `"`
+		}
+
+		if _, err := io.WriteString(w, htmlOpen+`><head>`+head+`</head><body>`); err != nil {
 			return err
 		}
 
@@ -308,7 +323,10 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 	})
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Security-Policy", csp)
+		if csp != "" {
+			w.Header().Set("Content-Security-Policy", csp)
+		}
+
 		mux.ServeHTTP(w, r)
 	}))
 	t.Cleanup(srv.Close)
@@ -322,7 +340,7 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 func TestDatastarCSPModeBrowser(t *testing.T) {
 	t.Parallel()
 
-	srv, hits := cspModeE2EServer(t)
+	srv, hits := cspModeE2EServer(t, true)
 
 	ctx, cancel := newTab(t)
 	defer cancel()
@@ -462,5 +480,95 @@ func TestDatastarCSPModeBrowser(t *testing.T) {
 
 	if violations != "[]" {
 		t.Errorf("CSP violations under nonce'd runtime: %s", violations)
+	}
+}
+
+// nonceFor returns the nonce string when strict, else "" — components apply
+// their omit-empty contract and render no nonce attribute in eval mode.
+func nonceFor(strict bool, nonce string) string {
+	if !strict {
+		return ""
+	}
+
+	return nonce
+}
+
+func nonceAttrFor(strict bool, nonce string) string {
+	if !strict {
+		return ""
+	}
+
+	return ` nonce="` + nonce + `"`
+}
+
+// TestDatastarCSPEvalCostProbe (plan T04) measures per-expression evaluation
+// cost in BOTH runtime modes: the default Function()-eval arm (strict=false,
+// no CSP header) and the nonce'd inline-script arm (strict=true, CSP mode).
+// N synchronous input events drive the SAME trivial expression; the harness
+// reports µs per evaluation, median of the configured rounds. The numbers are
+// recorded in docs/datastar-runtime-facts.md §CSP — adoption guidance, not a
+// gate.
+func TestDatastarCSPEvalCostProbe(t *testing.T) {
+	t.Parallel()
+
+	const (
+		rounds        = 3
+		evalsPerRound = 300
+	)
+
+	probeExpr := fmt.Sprintf(`(() => {
+		const el = document.getElementById('csp-probe-input');
+		for (let i = 0; i < 10; i++) el.dispatchEvent(new Event('input', {bubbles: true}));
+		const t0 = performance.now();
+		for (let i = 0; i < %d; i++) el.dispatchEvent(new Event('input', {bubbles: true}));
+		const t1 = performance.now();
+		return (t1 - t0) * 1000 / %d;
+	})()`, evalsPerRound, evalsPerRound)
+
+	measure := func(strict bool) []float64 {
+		srv, _ := cspModeE2EServer(t, strict)
+
+		ctx, cancel := newTab(t)
+		defer cancel()
+
+		ctx, cancelTimeout := context.WithTimeout(ctx, 120*time.Second)
+		defer cancelTimeout()
+
+		runs := make([]float64, 0, rounds)
+
+		for i := 0; i < rounds; i++ {
+			var perEval float64
+
+			if err := chromedp.Do(ctx,
+				chromedp.Navigate(srv.URL),
+				pollTrue(`window.__dsReady===true`, chromedp.WithPollingTimeout(15*time.Second)),
+				evalExprInto(probeExpr, &perEval),
+			); err != nil {
+				t.Fatalf("probe round %d (strict=%v): %v", i, strict, err)
+			}
+
+			runs = append(runs, perEval)
+		}
+
+		return runs
+	}
+
+	median := func(runs []float64) float64 {
+		sorted := append([]float64(nil), runs...)
+		sort.Float64s(sorted)
+
+		return sorted[len(sorted)/2]
+	}
+
+	evalRuns := measure(false)
+	cspRuns := measure(true)
+
+	evalMed, cspMed := median(evalRuns), median(cspRuns)
+
+	t.Logf("per-expression cost, %d rounds of %d dispatches: eval mode median %.1f µs/eval %v; CSP mode median %.1f µs/eval %v",
+		rounds, evalsPerRound, evalMed, evalRuns, cspMed, cspRuns)
+
+	if evalMed <= 0 || cspMed <= 0 {
+		t.Errorf("probe must produce positive timings; eval=%v csp=%v", evalRuns, cspRuns)
 	}
 }

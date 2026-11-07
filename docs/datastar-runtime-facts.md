@@ -298,18 +298,37 @@ DEFAULT mode; the runtime ships an opt-in CSP mode at this very pin.**
   - CSP mode changes the script-creation mechanism only: same plugins, same
     attribute set, no feature gate in this code path.
   - The `data-star-nonce` alias does NOT exist at this pin (upstream v1.0.4+).
-- **Caveats (honest):** the evaluation cost of nonce'd scripts vs `Function()`
-  eval is unplotted (micro-benchmark pending); and the library's full
-  attribute set must be browser-proven under CSP mode before any consumer
-  drops `'unsafe-eval'` (e2e spike, 2026-11-07 plan T03). Both facts are
-  guarded by `TestPinnedRuntimeBundleContract` (`data-nonce`, `trustedTypes`,
-  …) — a pin bump that drops the CSP machinery fails CI.
+- **Caveats (measured + proven, 2026-11-07):**
+  - **Browser-proven GO:** the library's full attribute set works under a
+    strict nonce-only CSP (no `'unsafe-eval'`) — wire @get patches, raw
+    signal assignment + `data-show`, wire debounce, indicator lifecycle,
+    `on-intersect`, `on-interval`, wire `ContentTypeForm` POST, LiveRegion
+    SSE streams, and the SSEErrorHandling 500 path all pass with ZERO
+    `securitypolicyviolation` events (`visualtest.TestDatastarCSPModeBrowser`,
+    the plan-G1 gate).
+  - **Eval cost:** median 5.0 µs/evaluation in eval mode vs 5.7 µs/eval in
+    CSP mode (300 synchronous expression dispatches × 3 rounds, one trivial
+    assignment expression, single machine — `visualtest.
+    TestDatastarCSPEvalCostProbe`). ~14% relative overhead, same order of
+    magnitude: negligible at normal interaction frequencies; only
+    ultra-high-frequency expression workloads would notice.
+  - **Attribute names lowercase (gotcha, spike-discovered):** the HTML parser
+    lowercases attribute NAMES, so a camelCase signal declared as an
+    attribute-name suffix (`data-signals-cspVisible`) becomes signal
+    `cspvisible` while `$cspVisible` in the expression keeps its case — a
+    silent mismatch. Use lowercase signal names in attribute suffixes
+    (`data-signals-cspvisible`, `data-indicator:cspbusy`), or carry camelCase
+    keys in VALUE-borne syntax (`data-signals="{'cspVisible': false}"`).
+  - Guarded by `TestPinnedRuntimeBundleContract` (`data-nonce`,
+    `trustedTypes`, …) — a pin bump that drops the CSP machinery fails CI.
 - **Consumer pairing (what CSP mode needs):** the SAME nonce in TWO places —
   `datastar.SDKScriptProps.Nonce` (the runtime `<script>` tag) AND
-  `<html data-nonce="…">` (the activation flag; library plumbing for the html
-  attribute is pending, plan T05). One without the other is broken: script
-  without flag → eval attempt → CSP violation; flag without nonced script →
-  the runtime itself is blocked by CSP.
+  `<html data-nonce="…">` (the activation flag), built with
+  `layout.DatastarNonceAttrs(nonce)` into `PageProps.HTMLDataAttrs` (nil when
+  empty, so `data-nonce=""` — which throws the runtime at init — can never
+  render). One without the other is broken: script without flag → eval
+  attempt → CSP violation; flag without nonced script → the runtime itself is
+  blocked by CSP.
 
 ## Verified present, unmodeled (v1.0.3 pin)
 

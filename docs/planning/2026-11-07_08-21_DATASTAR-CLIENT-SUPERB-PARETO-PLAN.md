@@ -381,6 +381,33 @@ unmapped (mapping column above + this line).
 
 ## Errata / corrections to prior artifacts
 
-- None yet. (Recorded here as execution proceeds — e.g. a Wave-1 NO-GO, a
-  re-audit correction at T19, or Tier-D resolutions from T21 land in this
-  section, annotated in place.)
+- **G1 = GO (2026-11-07).** `visualtest.TestDatastarCSPModeBrowser` proves all
+  nine flows under a strict nonce-only CSP (no `'unsafe-eval'`) with ZERO
+  `securitypolicyviolation` events; T06 (demo/website CSP flip) is unblocked.
+- **T04 numbers:** eval mode median 5.0 µs/eval vs CSP mode 5.7 µs/eval
+  (3 rounds × 300 synchronous dispatches, one trivial assignment expression;
+  `visualtest.TestDatastarCSPEvalCostProbe`). ~14% relative overhead —
+  documented in runtime-facts §CSP as guidance, not a gate.
+- **T01 token correction:** the literal `data-on-signal-patch` is NOT in the
+  pinned bundle — plugin registrations are `name:"…"` literals and attribute
+  names assemble at runtime. The guard pins the byte-provable
+  `name:"on-signal-patch"` (plus `data-nonce`, `trustedTypes`,
+  `viewTransitionSelector`, `filterSignals`, `openWhenHidden`,
+  `onlyIfMissing`).
+- **T05 scope correction:** `PageProps.HTMLDataAttrs templ.Attributes`
+  ALREADY existed (documented for exactly this use case), so no new
+  `DatastarNonce` prop field was added. T05 landed as
+  `layout.DatastarNonceAttrs(nonce)` (omit-empty safe) + unit tests + the
+  `base_datastar_nonce_set` golden (golden total 341 → 342, counts bumped in
+  the same edit).
+- **Spike-discovered gotcha (documented in runtime-facts §CSP):** HTML
+  attribute NAMES lowercase — camelCase signal keys cannot ride
+  attribute-name suffixes (`data-signals-cspVisible` declares `cspvisible`);
+  use lowercase names or value-borne JSON.
+- **Fixture lesson (first spike run):** a page under strict CSP must nonce
+  EVERY inline script — `feedback.ToastContainer("")` was the one blocked
+  script in the first red run; flows only started passing once the page
+  carried zero non-nonce'd scripts.
+
+(Recorded here as execution proceeds — a re-audit correction at T19 or
+Tier-D resolutions from T21 also land in this section, annotated in place.)

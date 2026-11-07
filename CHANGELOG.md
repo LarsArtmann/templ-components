@@ -8,6 +8,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Datastar CSP mode: documented, bundle-guarded, browser-proven, and one
+  helper away from use.** Decoding the pinned runtime shows `eval` is only the
+  DEFAULT: with `<html data-nonce="…">` plus the same nonce on the runtime
+  script, every expression executes as a nonce'd inline script, so a
+  nonce-based `script-src` needs no `'unsafe-eval'`. The new
+  `layout.DatastarNonceAttrs(nonce)` builds that `<html>` attribute map
+  (nil when empty, so the runtime-fatal `data-nonce=""` can never render);
+  spread it into `PageProps.HTMLDataAttrs` and pass the same nonce to
+  `datastar.SDKScriptProps.Nonce`. A full browser battery drives the library's
+  real attribute flows — wire @get patches, raw signal assignment +
+  `data-show`, wire debounce, indicator lifecycle, on-intersect, on-interval,
+  wire form POST, LiveRegion SSE, and SSE error handling — under a strict
+  nonce-only CSP with zero `securitypolicyviolation` events, and a two-arm
+  probe measures the cost: ~5.0 µs/eval (eval mode) vs ~5.7 µs/eval (CSP
+  mode). Mechanics, measured numbers, and the attribute-name-lowercasing
+  gotcha live in `docs/datastar-runtime-facts.md` §CSP.
 - **Form fields stack into one container for grid/flex parents.** Input,
   Select, Textarea, FileInput, Combobox, and DatePicker render label,
   control, error, and help as unwrapped siblings, so a `grid grid-cols-*`
