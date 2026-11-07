@@ -168,7 +168,7 @@ var packageImports = map[string][]string{
 	},
 
 	pkgDatastar: {
-		"attributes.go", impTempl,
+		impTempl,
 		impDatastarStat,
 		impUtils,
 		impUtilsCDN,
