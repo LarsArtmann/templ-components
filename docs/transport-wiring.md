@@ -222,6 +222,11 @@ pinned bundles, so you don't have to:
   signals) are too different for a common `wire` helper without inventing a
   third abstraction. Each transport module already ships the accessible
   component for its model.
+- **Server-pushed live values without HTML** ride the Datastar signals
+  channel instead of a wire action: the server streams
+  `datastar-patch-signals` SSE events and `data-text` bindings re-render —
+  recipe: `docs/recipes/datastar-signals-live-data.md` (wire-format claims
+  bundle-verified; the library's request half stays `wire` per ADR-0036).
 
 **Interval and intersect triggers are typed, first-class, and cross-dialect
 (ADR-0043, shipped 2026-10-02).** The earlier research note ("stay out of the
