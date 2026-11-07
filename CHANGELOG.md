@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Vertical BarChart renders signed series with a zero line.** Negative
+  values hang below an automatically drawn zero baseline in the danger
+  family (`NegativeBarColor`, default rose) instead of collapsing to a
+  0px stub, and `ShowBaseline` adds the line to all-positive charts too
+  (#59). `MaxBarWidth` caps per-column width on small series and centers
+  the capped track instead of leaving it left-glued. The recipe
+  (`docs/recipes/bar-chart.md`) documents all three.
 - **Semantic color classes are resolution-guarded.** A new utils test walks
   every `.templ` class attribute, extracts literal `<utility>-<hue>-<shade>`
   tokens (the canonical tone hues plus the accent family), and asserts each
@@ -103,6 +110,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   linked ring; the emission merge landed their neighbors but not them.
   Shade-preserving swaps, pinned by the row-href assertions and the
   `stat_card_htmx` golden.
+- **Vertical `display.BarChart` no longer collapses to 0px bars.** The
+  documented usage — `Orient: BarVertical` with `Height` set, nothing else —
+  resolved every percentage bar height against an indefinite chain (the
+  container's `items-end` kept the columns content-sized), so every bar
+  measured 0px in a real browser while goldens, being string-level, passed.
+  The container now stretches, columns take the full height, and an omitted
+  `Height` defaults to `12rem` instead of an indefinite one (#48). A
+  real-browser contract test measures the bars so the collapse cannot come
+  back silently.
 - **`display.Grid` auto-fit mode actually generates its CSS.** `MinColWidth`
   was concatenated into an arbitrary utility at render time
   (`[grid-template-columns:repeat(auto-fit,minmax(190px,1fr))]`), which
