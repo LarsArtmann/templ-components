@@ -387,9 +387,13 @@ func TestDatastarCSPModeBrowser(t *testing.T) {
 	}
 
 	// Flow 1: wire @get → response-header patch.
-	flowStep("get-patch",
+	flowStep(
+		"get-patch",
 		chromedp.Click("#csp-get-btn", chromedp.NodeVisible),
-		pollTrue(`document.getElementById('csp-get-target').textContent.includes('patched under csp')`, chromedp.WithPollingTimeout(10*time.Second)),
+		pollTrue(
+			`document.getElementById('csp-get-target').textContent.includes('patched under csp')`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
 	)
 
 	// Flow 2: expression evaluation + data-show. The declared signal starts
@@ -405,51 +409,88 @@ func TestDatastarCSPModeBrowser(t *testing.T) {
 	)
 
 	// Flow 3: wire debounce — one keystroke, one request after quiet.
-	flowStep("wire-debounce",
+	flowStep(
+		"wire-debounce",
 		chromedp.SendKeys("#csp-debounce-input", "x"),
 		chromedp.Sleep(700*time.Millisecond),
-		pollTrue(`document.getElementById('csp-debounce-out').textContent.includes('debounced')`, chromedp.WithPollingTimeout(10*time.Second)),
+		pollTrue(
+			`document.getElementById('csp-debounce-out').textContent.includes('debounced')`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
 	)
 
 	// Flow 4: indicator visible mid-flight (server sleeps 1.5s), then hidden
 	// after completion.
-	flowStep("indicator-lifecycle",
+	flowStep(
+		"indicator-lifecycle",
 		chromedp.Click("#csp-slow-btn", chromedp.NodeVisible),
-		pollTrue(`document.getElementById('csp-busy-cue').offsetParent!==null`, chromedp.WithPollingTimeout(3*time.Second)),
-		pollTrue(`document.getElementById('csp-slow-done').textContent.includes('slow done') && document.getElementById('csp-busy-cue').offsetParent===null`, chromedp.WithPollingTimeout(10*time.Second)),
+		pollTrue(
+			`document.getElementById('csp-busy-cue').offsetParent!==null`,
+			chromedp.WithPollingTimeout(3*time.Second),
+		),
+		pollTrue(
+			`document.getElementById('csp-slow-done').textContent.includes('slow done') && document.getElementById('csp-busy-cue').offsetParent===null`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
 	)
 
 	// Flow 5: intersect fired on initial visibility.
-	flowStep("intersect",
-		pollTrue(`document.getElementById('csp-intersect').textContent.includes('seen by intersect')`, chromedp.WithPollingTimeout(10*time.Second)),
+	flowStep(
+		"intersect",
+		pollTrue(
+			`document.getElementById('csp-intersect').textContent.includes('seen by intersect')`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
 	)
 
 	// Flow 6: interval ticked, then kept ticking.
-	flowStep("interval",
-		pollTrue(`document.getElementById('csp-interval').textContent.includes('tick')`, chromedp.WithPollingTimeout(10*time.Second)),
+	flowStep(
+		"interval",
+		pollTrue(
+			`document.getElementById('csp-interval').textContent.includes('tick')`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
 		chromedp.Sleep(1300*time.Millisecond),
 	)
 
 	// Flow 7: wire ContentTypeForm POST — form+submit auto-preventDefault
 	// (no navigation) and the field value reached the server.
-	flowStep("wire-post-form",
+	flowStep(
+		"wire-post-form",
 		chromedp.Click("#csp-post-btn", chromedp.NodeVisible),
-		pollTrue(`document.getElementById('csp-post-out').textContent.includes('echo:csp-value')`, chromedp.WithPollingTimeout(10*time.Second)),
+		pollTrue(
+			`document.getElementById('csp-post-out').textContent.includes('echo:csp-value')`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
 	)
 
 	// Flow 8: LiveRegion SSE stream patched the child and cleared the busy
 	// cue.
-	flowStep("sse-good-stream",
-		pollTrue(`document.getElementById('csp-live-child').textContent.includes('fresh via csp sse')`, chromedp.WithPollingTimeout(10*time.Second)),
-		pollTrue(`(()=>{const el=document.getElementById('csp-live');return el.getAttribute('aria-busy')===null && !el.hasAttribute('data-tc-live-busy');})()`, chromedp.WithPollingTimeout(10*time.Second)),
+	flowStep(
+		"sse-good-stream",
+		pollTrue(
+			`document.getElementById('csp-live-child').textContent.includes('fresh via csp sse')`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
+		pollTrue(
+			`(()=>{const el=document.getElementById('csp-live');return el.getAttribute('aria-busy')===null && !el.hasAttribute('data-tc-live-busy');})()`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
 	)
 
 	// Flow 9: SSE error path — 500 dispatches datastar-fetch error, the
 	// component announces and toasts.
-	flowStep("sse-error",
+	flowStep(
+		"sse-error",
 		chromedp.Click("#csp-bad-btn", chromedp.NodeVisible),
-		pollTrue(`document.getElementById('tc-datastar-announcer').textContent.includes('Stream error')`, chromedp.WithPollingTimeout(10*time.Second)),
-		pollTrue(`(()=>{const toasts=document.querySelectorAll('#tc-toast-container > div');for(const t of toasts){if(t.textContent.includes('live stream endpoint returned an error'))return true;}return false;})()`, chromedp.WithPollingTimeout(10*time.Second)),
+		pollTrue(
+			`document.getElementById('tc-datastar-announcer').textContent.includes('Stream error')`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
+		pollTrue(
+			`(()=>{const toasts=document.querySelectorAll('#tc-toast-container > div');for(const t of toasts){if(t.textContent.includes('live stream endpoint returned an error'))return true;}return false;})()`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
 	)
 
 	// The whole point: ZERO CSP violations anywhere in the session. The
@@ -565,8 +606,15 @@ func TestDatastarCSPEvalCostProbe(t *testing.T) {
 
 	evalMed, cspMed := median(evalRuns), median(cspRuns)
 
-	t.Logf("per-expression cost, %d rounds of %d dispatches: eval mode median %.1f µs/eval %v; CSP mode median %.1f µs/eval %v",
-		rounds, evalsPerRound, evalMed, evalRuns, cspMed, cspRuns)
+	t.Logf(
+		"per-expression cost, %d rounds of %d dispatches: eval mode median %.1f µs/eval %v; CSP mode median %.1f µs/eval %v",
+		rounds,
+		evalsPerRound,
+		evalMed,
+		evalRuns,
+		cspMed,
+		cspRuns,
+	)
 
 	if evalMed <= 0 || cspMed <= 0 {
 		t.Errorf("probe must produce positive timings; eval=%v csp=%v", evalRuns, cspRuns)

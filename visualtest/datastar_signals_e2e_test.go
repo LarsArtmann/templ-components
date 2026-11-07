@@ -163,15 +163,20 @@ func TestDatastarSignalsBrowser(t *testing.T) {
 	ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
 	defer cancelTimeout()
 
-	if err := chromedp.Do(ctx,
+	if err := chromedp.Do(
+		ctx,
 		chromedp.Navigate(srv.URL),
 		pollTrue(`window.__dsReady===true`, chromedp.WithPollingTimeout(15*time.Second)),
-
 		// Tick 1: users merged in, rps untouched by the partial patch.
-		pollTrue(`document.getElementById('sig-users').textContent==='1237' && document.getElementById('sig-rps').textContent==='0'`, chromedp.WithPollingTimeout(10*time.Second)),
-
+		pollTrue(
+			`document.getElementById('sig-users').textContent==='1237' && document.getElementById('sig-rps').textContent==='0'`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
 		// Tick 2: rps merged in, users SURVIVED the second partial patch.
-		pollTrue(`document.getElementById('sig-rps').textContent==='44' && document.getElementById('sig-users').textContent==='1237'`, chromedp.WithPollingTimeout(10*time.Second)),
+		pollTrue(
+			`document.getElementById('sig-rps').textContent==='44' && document.getElementById('sig-users').textContent==='1237'`,
+			chromedp.WithPollingTimeout(10*time.Second),
+		),
 	); err != nil {
 		t.Fatalf("signals channel browser proof: %v", err)
 	}

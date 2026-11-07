@@ -1,6 +1,7 @@
 package datastar
 
 import (
+	"context"
 	"strings"
 	"testing"
 
@@ -89,7 +90,7 @@ func TestBuildersRenderSafeAttributes(t *testing.T) {
 			t.Fatalf("seed writer: %v", err)
 		}
 
-		if err := templruntime.RenderAttributes(nil, &b, &b, "span", attrs); err != nil {
+		if err := templruntime.RenderAttributes(context.TODO(), &b, &b, "span", attrs); err != nil {
 			t.Fatalf("%s: render hostile attrs: %v", name, err)
 		}
 
@@ -104,14 +105,16 @@ func TestBuildersRenderSafeAttributes(t *testing.T) {
 		// the tag end — templ's HTML escaping (&#34; etc.) must have consumed
 		// every hostile quote INSIDE the value, so nothing escapes the
 		// attribute boundary.
-		valueStart := strings.Index(rendered, `="`)
-		if valueStart < 0 {
+		_, value, valueFound := strings.Cut(rendered, `="`)
+		if !valueFound {
 			t.Fatalf("%s: no attribute value found in %q", name, rendered)
 		}
 
-		inner := rendered[valueStart+2:]
-		closer := strings.Index(inner, `"`)
-		if closer < 0 || !strings.HasPrefix(inner[closer:], `"></span>`) {
+		// The FIRST raw double quote must close the value and sit right
+		// against the tag end: templ's HTML escaping consumed every hostile
+		// quote inside, so nothing escapes the attribute boundary.
+		closer, closeFound := strings.Cut(value, `"`)
+		if !closeFound || !strings.HasPrefix(closer, `</span>`) || !strings.HasSuffix(rendered, "></span>") {
 			t.Errorf("%s: hostile value broke the attribute boundary: %q", name, rendered)
 		}
 	}

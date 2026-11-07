@@ -92,8 +92,10 @@ func TestBuilderSpelling(t *testing.T) {
 		{"on-plain", On("click", "$count++").Attrs(), "data-on:click", "$count++"},
 		{"on-prevent", On("click", "@get('/x')").Prevent().Attrs(), "data-on:click__prevent", "@get('/x')"},
 		{"on-debounce", On("input", "@get('/s')").Debounce(300).Attrs(), "data-on:input__debounce.300ms", "@get('/s')"},
-		{"on-chain", On("submit", "@post('/f')").Prevent().Debounce(120).Throttle(80).Attrs(),
-			"data-on:submit__prevent__debounce.120ms__throttle.80ms", "@post('/f')"},
+		{
+			"on-chain", On("submit", "@post('/f')").Prevent().Debounce(120).Throttle(80).Attrs(),
+			"data-on:submit__prevent__debounce.120ms__throttle.80ms", "@post('/f')",
+		},
 	}
 
 	for _, tt := range cases {
@@ -121,6 +123,7 @@ func TestSignalsBuilder(t *testing.T) {
 
 	attrs := Signals(map[string]any{"metrics": map[string]any{"users": 5, "camelsRock": true}})
 	raw, ok := attrs["data-signals"]
+
 	if !ok {
 		t.Fatalf("data-signals missing: %#v", attrs)
 	}
