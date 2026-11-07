@@ -1,7 +1,7 @@
 # Status: "Latest htmx" scoping session — 2026-11-07 18:49
 
 **Session type:** read-only investigation + advisory answer. Zero files modified before
-this report. The user asked *"What would it take to update to the LATEST htmx version?"*
+this report. The user asked _"What would it take to update to the LATEST htmx version?"_
 and this session scoped both readings of "latest". Nothing was implemented.
 
 **Scope line — VERIFIED here:**
@@ -134,33 +134,33 @@ nearest-misses, in severity order:
 
 ## f) Next tasks (harvest-ready; NOT yet harvested into TODO_LIST)
 
-| #  | Task                                                                                                                          | Impact   | Effort | Category      |
-| -- | ----------------------------------------------------------------------------------------------------------------------------- | -------- | ------ | ------------- |
-| 1  | Execute Path A: bump htmx 2.0.10 → 2.0.11 in one commit (embed + `sri.go` + `base.templ:116` + 4 tests + goldens + docs + CHANGELOG) | High     | M      | Feature       |
-| 2  | Pre-bump byte-diff `htmx.min.js` 2.0.10 ↔ 2.0.11 (attribute table, trigger parser, `responseHandling` defaults)                | High     | S      | Quality       |
-| 3  | Compute + pin SRI sha384 for 2.0.11 (command at `layout/sri.go:46-48`)                                                        | High     | S      | Bug (future)  |
-| 4  | Keep `HTMXVersion2_0_10` exported for consumers; add `HTMXVersion2_0_11`; switch `defaultHTMXVersion` — decide back-compat shape | Medium   | S      | Feature       |
-| 5  | Re-verify `display/kanban.go:296` afterRequest fact against 2.0.11 bytes                                                      | High     | S      | Quality       |
-| 6  | Re-verify LoadMore autofocus fact (`navigation/loadmore.templ:43`) against 2.0.11 bytes                                       | High     | S      | Quality       |
-| 7  | Re-verify request-serialization fact (ADR-0041) against 2.0.11 bytes                                                          | Medium   | S      | Quality       |
-| 8  | Re-verify `responseHandling` defaults (transport-wiring.md:312, server-side-validation.md:160, datastar-runtime-facts.md:186)  | High     | S      | Documentation |
-| 9  | Regenerate layout goldens (`go test ./layout/... -update` — flag AFTER package list)                                          | Medium   | S      | Quality       |
-| 10 | Update `docs/version-support.md:13` + website twin + AGENTS.md:128 to 2.0.11                                                  | Medium   | S      | Documentation |
-| 11 | Warm CHANGELOG `[Unreleased]` with the bump entry (bundle size/hash delta)                                                     | Medium   | S      | Documentation |
-| 12 | Run e2e packs under 2.0.11: kanban, forms, focus-preservation, wire-form                                                      | High     | M      | Quality       |
-| 13 | Run `scripts/ci-repro.sh --lint --css --visual --website` at the exact bump commit, read VERDICT, push immediately              | High     | M      | Quality       |
-| 14 | Refresh TODO #483 radar: 2.0.11 `latest` since 2026-11-01; v4.0.1 on `next`; checklist trigger FIRED 2026-11-07                | High     | S      | Documentation |
-| 15 | Update v4 checklist status header: trigger condition met, audit unscheduled                                                    | Medium   | S      | Documentation |
-| 16 | Add htmx.org + htmx-ext-response-targets dist-tag probes to `upstream-watch.yml`                                               | High     | S      | Feature       |
-| 17 | Check npm for `htmx-ext-response-targets` > 2.0.4; bump + re-SRI if newer                                                      | Medium   | S      | Maintenance   |
-| 18 | Add htmx bundle sha256 + integration-token guard (parity with `datastar.TestPinnedRuntimeBundleContract`)                      | Medium   | M      | Quality       |
-| 19 | Evaluate `<hx-partial>` (2.0.11 backport): new component/recipe opportunity (multi-target swap responses)                     | Low      | M      | Feature       |
-| 20 | Re-probe `hx-push-url="false"` ancestor fix against demo dual-mount back/forward                                              | Medium   | S      | Quality       |
-| 21 | Re-run SwapOOB flows (table rows, toasts, form errors) — 2.0.11 fixes detached-context OOB lookups                            | Medium   | S      | Quality       |
-| 22 | Fetch v4.0.1 release notes; extend checklist row 1 evidence if event names moved                                               | Low      | S      | Documentation |
-| 23 | Verify what generates `templates/templ-components-classes.txt` before assuming auto-update in the bump                        | Low      | S      | Documentation |
-| 24 | Decide release vehicle for the bump (patch release now vs ride next feature release)                                          | Medium   | S      | Process       |
-| 25 | HARVEST this section into TODO_LIST/ROADMAP via docs-health once green-lit                                                    | Medium   | S      | Process       |
+| #  | Task                                                                                                                                 | Impact | Effort | Category      |
+| -- | ------------------------------------------------------------------------------------------------------------------------------------ | ------ | ------ | ------------- |
+| 1  | Execute Path A: bump htmx 2.0.10 → 2.0.11 in one commit (embed + `sri.go` + `base.templ:116` + 4 tests + goldens + docs + CHANGELOG) | High   | M      | Feature       |
+| 2  | Pre-bump byte-diff `htmx.min.js` 2.0.10 ↔ 2.0.11 (attribute table, trigger parser, `responseHandling` defaults)                      | High   | S      | Quality       |
+| 3  | Compute + pin SRI sha384 for 2.0.11 (command at `layout/sri.go:46-48`)                                                               | High   | S      | Bug (future)  |
+| 4  | Keep `HTMXVersion2_0_10` exported for consumers; add `HTMXVersion2_0_11`; switch `defaultHTMXVersion` — decide back-compat shape     | Medium | S      | Feature       |
+| 5  | Re-verify `display/kanban.go:296` afterRequest fact against 2.0.11 bytes                                                             | High   | S      | Quality       |
+| 6  | Re-verify LoadMore autofocus fact (`navigation/loadmore.templ:43`) against 2.0.11 bytes                                              | High   | S      | Quality       |
+| 7  | Re-verify request-serialization fact (ADR-0041) against 2.0.11 bytes                                                                 | Medium | S      | Quality       |
+| 8  | Re-verify `responseHandling` defaults (transport-wiring.md:312, server-side-validation.md:160, datastar-runtime-facts.md:186)        | High   | S      | Documentation |
+| 9  | Regenerate layout goldens (`go test ./layout/... -update` — flag AFTER package list)                                                 | Medium | S      | Quality       |
+| 10 | Update `docs/version-support.md:13` + website twin + AGENTS.md:128 to 2.0.11                                                         | Medium | S      | Documentation |
+| 11 | Warm CHANGELOG `[Unreleased]` with the bump entry (bundle size/hash delta)                                                           | Medium | S      | Documentation |
+| 12 | Run e2e packs under 2.0.11: kanban, forms, focus-preservation, wire-form                                                             | High   | M      | Quality       |
+| 13 | Run `scripts/ci-repro.sh --lint --css --visual --website` at the exact bump commit, read VERDICT, push immediately                   | High   | M      | Quality       |
+| 14 | Refresh TODO #483 radar: 2.0.11 `latest` since 2026-11-01; v4.0.1 on `next`; checklist trigger FIRED 2026-11-07                      | High   | S      | Documentation |
+| 15 | Update v4 checklist status header: trigger condition met, audit unscheduled                                                          | Medium | S      | Documentation |
+| 16 | Add htmx.org + htmx-ext-response-targets dist-tag probes to `upstream-watch.yml`                                                     | High   | S      | Feature       |
+| 17 | Check npm for `htmx-ext-response-targets` > 2.0.4; bump + re-SRI if newer                                                            | Medium | S      | Maintenance   |
+| 18 | Add htmx bundle sha256 + integration-token guard (parity with `datastar.TestPinnedRuntimeBundleContract`)                            | Medium | M      | Quality       |
+| 19 | Evaluate `<hx-partial>` (2.0.11 backport): new component/recipe opportunity (multi-target swap responses)                            | Low    | M      | Feature       |
+| 20 | Re-probe `hx-push-url="false"` ancestor fix against demo dual-mount back/forward                                                     | Medium | S      | Quality       |
+| 21 | Re-run SwapOOB flows (table rows, toasts, form errors) — 2.0.11 fixes detached-context OOB lookups                                   | Medium | S      | Quality       |
+| 22 | Fetch v4.0.1 release notes; extend checklist row 1 evidence if event names moved                                                     | Low    | S      | Documentation |
+| 23 | Verify what generates `templates/templ-components-classes.txt` before assuming auto-update in the bump                               | Low    | S      | Documentation |
+| 24 | Decide release vehicle for the bump (patch release now vs ride next feature release)                                                 | Medium | S      | Process       |
+| 25 | HARVEST this section into TODO_LIST/ROADMAP via docs-health once green-lit                                                           | Medium | S      | Process       |
 
 ## g) Questions I cannot answer myself
 
@@ -176,4 +176,4 @@ nearest-misses, in severity order:
 
 ---
 
-*Awaiting instructions. Report not harvested into TODO_LIST (see (f)/#25, (g)/#3).*
+_Awaiting instructions. Report not harvested into TODO_LIST (see (f)/#25, (g)/#3)._

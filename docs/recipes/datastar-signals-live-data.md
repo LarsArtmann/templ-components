@@ -114,7 +114,6 @@ create-only). Emit it only when you mean it:
 event: datastar-patch-signals
 data: signals {"session": {"startedAt": "…"}}
 data: onlyIfMissing true
-
 ```
 
 ## Reacting to patches (client listener)
@@ -155,11 +154,11 @@ other `data-*` attribute (browser-proven with zero violations, 2026-11-07 —
 
 ## When to prefer which channel
 
-| Need | Reach for |
-| ---- | --------- |
-| New/changed ROWS or fragments (structure) | `sse-live-rows.md` (patch-elements) |
-| Numbers, counters, toggles — values only | THIS recipe (patch-signals) |
-| Both from one stream | Both events on one SSE response are legal; keep each tick single-purpose |
+| Need                                      | Reach for                                                                |
+| ----------------------------------------- | ------------------------------------------------------------------------ |
+| New/changed ROWS or fragments (structure) | `sse-live-rows.md` (patch-elements)                                      |
+| Numbers, counters, toggles — values only  | THIS recipe (patch-signals)                                              |
+| Both from one stream                      | Both events on one SSE response are legal; keep each tick single-purpose |
 
 The library stays transport-agnostic on purpose: `utils/wire` models the
 request half (ADR-0036), and server streaming stays with your handler code —
