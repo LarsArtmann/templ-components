@@ -69,6 +69,8 @@ func cspSpikeNonce(t *testing.T) string {
 // attribute, and nonce'd runtime/toast scripts — CSP mode. strict=false serves
 // the same page WITHOUT the header and WITHOUT data-nonce — the runtime's
 // default Function()-eval mode, which is the control arm of the T04 probe.
+//
+//nolint:gocyclo // fixture server: one handler per flow endpoint is the readable shape
 func cspModeE2EServer(t *testing.T, strict bool) (*httptest.Server, *cspSpikeHits) {
 	t.Helper()
 
@@ -127,7 +129,7 @@ func cspModeE2EServer(t *testing.T, strict bool) (*httptest.Server, *cspSpikeHit
 		}
 
 		liveProps := datastar.DefaultLiveRegionProps()
-		liveProps.BaseProps.Nonce = nonceFor(strict, nonce)
+		liveProps.Nonce = nonceFor(strict, nonce)
 		liveProps.ID = "csp-live"
 		liveProps.URL = "/api/csp-good-sse"
 		liveProps.AutoStart = true
@@ -273,6 +275,7 @@ func cspModeE2EServer(t *testing.T, strict bool) (*httptest.Server, *cspSpikeHit
 
 	mux.HandleFunc("/api/csp-interval", func(w http.ResponseWriter, _ *http.Request) {
 		n := hits.interval.Add(1)
+
 		patchHeaders(w, "#csp-interval", "inner")
 		_, _ = fmt.Fprintf(w, `tick %d`, n)
 	})
@@ -577,7 +580,7 @@ func TestDatastarCSPEvalCostProbe(t *testing.T) {
 
 		runs := make([]float64, 0, rounds)
 
-		for i := 0; i < rounds; i++ {
+		for range rounds {
 			var perEval float64
 
 			if err := chromedp.Do(ctx,
