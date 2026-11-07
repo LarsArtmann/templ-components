@@ -2,7 +2,6 @@ package display
 
 import (
 	"fmt"
-	"math"
 
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -41,7 +40,8 @@ templ BarChart(props BarChartProps) {
 		if valueFmt == nil {
 			valueFmt = func(v float64) string { return fmt.Sprintf("%.0f", v) }
 		}
-		maxVal := barChartMax(bars, props.Max)
+		maxVal, minVal := barChartBounds(bars, props.Max)
+		hasNegative := minVal < 0
 		minBarW := props.MinBarWidth
 		if minBarW == "" {
 			minBarW = defaultMinBarWidth
@@ -59,32 +59,49 @@ templ BarChart(props BarChartProps) {
 			class={ utils.Class("text-sm text-gray-500 dark:text-gray-400", props.Class) }
 		>{ emptyMsg }</p>
 	} else if orient == BarVertical {
+		{{
+			heightVal := props.Height
+			if heightVal == "" {
+				heightVal = defaultVerticalHeight
+			}
+
+			negColor := string(props.NegativeBarColor)
+			if negColor == "" {
+				negColor = defaultNegativeBarColor
+			}
+		}}
 		<div
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			class={ utils.Class("flex items-end overflow-x-auto", gapClass, props.Class) }
-			if props.Height != "" {
-				style={ "height:" + props.Height }
-			}
+			class={ utils.Class("flex overflow-x-auto", gapClass, utils.Ternary(props.MaxBarWidth != "", "justify-center", ""), props.Class) }
+			style={ "height:" + heightVal }
 			role="img"
 			aria-label={ utils.Coalesce(props.AriaLabel, barChartFallbackName) }
 		>
 			for _, bar := range bars {
+				{{ zeroPct, barTopPct, heightPct, negative := barChartSignedPlacement(bar.Value, maxVal, minVal) }}
 				<div
-					class={ utils.Class("flex w-full flex-col items-center gap-1", minBarW) }
+					class={ utils.Class("flex h-full w-full flex-col items-center gap-1", minBarW, props.MaxBarWidth) }
 					if bar.Tooltip != "" {
 						title={ bar.Tooltip }
 					}
 				>
-					if props.ShowValues {
-						<span class="text-xs tabular-nums text-gray-600 dark:text-gray-400">{ barValueLabel(bar, valueFmt) }</span>
-					}
-					<div class="flex w-full flex-1 items-end">
-						<div
-							class={ utils.Class("w-full rounded-t bg-accent-600 dark:bg-accent-500", barColor, string(bar.Color)) }
-							style={ "height:" + barPercentHeight(bar.Value, maxVal) }
-						></div>
+					<div class="relative w-full flex-1">
+						if props.ShowBaseline || hasNegative {
+							<div class="absolute inset-x-0 h-px bg-gray-200 dark:bg-gray-700" style={ "bottom:" + zeroPct }></div>
+						}
+						if negative {
+							if props.ShowValues {
+								<span class="absolute inset-x-0 text-center text-xs tabular-nums text-gray-600 dark:text-gray-400" style={ "top:calc(" + barTopPct + " + " + heightPct + ")" }>{ barValueLabel(bar, valueFmt) }</span>
+							}
+							<div class={ utils.Class("absolute inset-x-0 rounded-b", negColor, string(bar.Color)) } style={ "top:" + barTopPct + ";height:" + heightPct }></div>
+						} else {
+							if props.ShowValues {
+								<span class="absolute inset-x-0 text-center text-xs tabular-nums text-gray-600 dark:text-gray-400" style={ "bottom:calc(" + zeroPct + " + " + heightPct + ")" }>{ barValueLabel(bar, valueFmt) }</span>
+							}
+							<div class={ utils.Class("absolute inset-x-0 rounded-t", barColor, string(bar.Color)) } style={ "bottom:" + zeroPct + ";height:" + heightPct }></div>
+						}
 					</div>
 					<span class="w-full truncate text-center text-xs text-gray-500 dark:text-gray-400" title={ bar.Label }>
 						{ truncateLabel(bar.Label, 12) }
@@ -136,25 +153,6 @@ templ BarChart(props BarChartProps) {
 			}
 		</div>
 	}
-}
-
-// barPercentHeight returns the CSS height percentage for a vertical bar.
-func barPercentHeight(value, maxVal float64) string {
-	if maxVal <= 0 {
-		return zeroPercent
-	}
-
-	pct := (value / maxVal) * percentScale
-
-	if pct < 0 {
-		pct = 0
-	}
-
-	if pct > percentScale {
-		pct = percentScale
-	}
-
-	return fmt.Sprintf("%.1f%%", math.Round(pct*percentRound)/percentRound)
 }
 
 // truncateLabel truncates a string to maxLen runes with an ellipsis. Trimming

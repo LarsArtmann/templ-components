@@ -67,6 +67,27 @@ func TestGoldenSweepBarChart(t *testing.T) {
 				{Label: "random", Value: 800, Href: "/channels/random"},
 			},
 		}))},
+		{Name: "bar_chart_vertical_signed", HTML: utils.Render(t, BarChart(BarChartProps{
+			Bars: []BarChartBar{
+				{Label: "mar", Value: 420},
+				{Label: "apr", Value: -180},
+				{Label: "may", Value: 90},
+				{Label: "jun", Value: -60},
+			},
+			Orient:     BarVertical,
+			Height:     "10rem",
+			ShowValues: true,
+		}))},
+		{Name: "bar_chart_vertical_capped", HTML: utils.Render(t, BarChart(BarChartProps{
+			Bars:        bars[:2],
+			Orient:      BarVertical,
+			MaxBarWidth: "max-w-24",
+		}))},
+		{Name: "bar_chart_vertical_baseline", HTML: utils.Render(t, BarChart(BarChartProps{
+			Bars:         bars[:3],
+			Orient:       BarVertical,
+			ShowBaseline: true,
+		}))},
 	})
 }
 

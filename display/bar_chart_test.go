@@ -33,8 +33,11 @@ func TestBarChartVertical(t *testing.T) {
 			{Label: "Tue", Value: 20},
 		},
 	}))
-	utils.AssertContains(t, output, "items-end")
-	utils.AssertContains(t, output, "rounded-t")
+	utils.AssertContains(t, output, "height:12rem")
+	utils.AssertContains(t, output, "h-full")
+	utils.AssertContains(t, output, "relative w-full flex-1")
+	utils.AssertContainsAll(t, output, "absolute", "inset-x-0", "rounded-t")
+	utils.AssertContains(t, output, "style=\"bottom:0.0%;height:")
 	utils.AssertContains(t, output, "min-w-12")
 }
 
@@ -205,4 +208,119 @@ func TestTruncateLabel(t *testing.T) {
 			t.Errorf("truncateLabel(%q, %d) = %q is not valid UTF-8", tt.input, tt.maxLen, got)
 		}
 	}
+}
+
+func TestBarChartSignedPlacement(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name         string
+		value        float64
+		maxVal       float64
+		minVal       float64
+		wantZero     string
+		wantTop      string
+		wantHeight   string
+		wantNegative bool
+	}{
+		{"all-positive pins the zero line to the bottom", 6, 8, 0, "0.0%", "100.0%", "75.0%", false},
+		{"mixed series lifts the zero line", 6, 6, -2, "25.0%", "75.0%", "75.0%", false},
+		{"negative hangs below the zero line", -1, 6, -2, "25.0%", "75.0%", "12.5%", true},
+		{"all-negative pins the zero line to the top", -3, 0, -3, "100.0%", "0.0%", "100.0%", true},
+		{"degenerate range collapses to the baseline", 0, 0, 0, "0.0%", "100.0%", "0.0%", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			zero, top, height, negative := barChartSignedPlacement(tt.value, tt.maxVal, tt.minVal)
+			if zero != tt.wantZero || top != tt.wantTop || height != tt.wantHeight || negative != tt.wantNegative {
+				t.Errorf(
+					"barChartSignedPlacement(%v, %v, %v) = (%q, %q, %q, %v), want (%q, %q, %q, %v)",
+					tt.value,
+					tt.maxVal,
+					tt.minVal,
+					zero,
+					top,
+					height,
+					negative,
+					tt.wantZero,
+					tt.wantTop,
+					tt.wantHeight,
+					tt.wantNegative,
+				)
+			}
+		})
+	}
+}
+
+func TestBarChartBoundsSigned(t *testing.T) {
+	t.Parallel()
+
+	bars := []BarChartBar{
+		{Label: "a", Value: 420},
+		{Label: "b", Value: -180},
+		{Label: "c", Value: 90},
+	}
+
+	maxVal, minVal := barChartBounds(bars, 0)
+	if maxVal != 420 || minVal != -180 {
+		t.Errorf("barChartBounds() = (%v, %v), want (420, -180)", maxVal, minVal)
+	}
+
+	// The Max override replaces the positive bound only; the negative bound
+	// always comes from the data.
+	maxVal, minVal = barChartBounds(bars, 1000)
+	if maxVal != 1000 || minVal != -180 {
+		t.Errorf("barChartBounds(override) = (%v, %v), want (1000, -180)", maxVal, minVal)
+	}
+}
+
+func TestBarChartVerticalSigned(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, BarChart(BarChartProps{
+		Orient: BarVertical,
+		Bars: []BarChartBar{
+			{Label: "in", Value: 420},
+			{Label: "out", Value: -180},
+		},
+		Height:     "10rem",
+		ShowValues: true,
+	}))
+
+	// The zero baseline is mandatory for signed series.
+	utils.AssertContains(t, output, "h-px")
+	// Negatives take the danger family and hang below the zero line.
+	utils.AssertContains(t, output, "bg-rose-600 dark:bg-rose-500")
+	utils.AssertContains(t, output, "rounded-b")
+	utils.AssertContains(t, output, "style=\"top:70.0%;height:30.0%;\"")
+	// Positives still grow upward from the zero line.
+	utils.AssertContains(t, output, "style=\"bottom:30.0%;height:70.0%;\"")
+}
+
+func TestBarChartVerticalMaxBarWidth(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, BarChart(BarChartProps{
+		Orient:      BarVertical,
+		Bars:        []BarChartBar{{Label: "a", Value: 5}, {Label: "b", Value: 3}},
+		MaxBarWidth: "max-w-24",
+	}))
+
+	utils.AssertContains(t, output, "justify-center")
+	utils.AssertContains(t, output, "max-w-24")
+}
+
+func TestBarChartVerticalBaselineOptIn(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, BarChart(BarChartProps{
+		Orient:       BarVertical,
+		Bars:         []BarChartBar{{Label: "a", Value: 5}},
+		ShowBaseline: true,
+	}))
+
+	utils.AssertContains(t, output, "h-px")
 }
