@@ -113,8 +113,8 @@ func TestBuildersRenderSafeAttributes(t *testing.T) {
 		// The FIRST raw double quote must close the value and sit right
 		// against the tag end: templ's HTML escaping consumed every hostile
 		// quote inside, so nothing escapes the attribute boundary.
-		closer, closeFound := strings.Cut(value, `"`)
-		if !closeFound || !strings.HasPrefix(closer, `</span>`) || !strings.HasSuffix(rendered, "></span>") {
+		_, afterClose, closeFound := strings.Cut(value, `"`)
+		if !closeFound || afterClose != "></span>" {
 			t.Errorf("%s: hostile value broke the attribute boundary: %q", name, rendered)
 		}
 	}
