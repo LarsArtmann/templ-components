@@ -268,6 +268,17 @@ sse.MarshalAndMergeSignals(patchJSON)
 
 ### This Library's `datastar` Package
 
+The package ships two halves: **components** (Indicator, LiveRegion,
+LoadingButton, PolledRegion, SDKScript, SSEErrorHandling) and — since the
+2026-11 reactive-builders wave — **typed attribute builders**
+(`datastar.Show/Text/Bind/Signals/Computed/On`) for the runtime's reactive
+plugins. **Non-goal, stated explicitly: the builders exist for consumers'
+own glue** (dashboard widgets, reactive islands, exploratory UIs). No
+library component is re-ported to signals — the native-first → HTMX →
+Datastar decision ladder above stands, and components keep their
+native-first implementations (ADR-0030; ADR-0033 keeps Web Components and
+therefore upstream Rocket out of scope).
+
 This library ships a `datastar` package with three components that wire the
 Datastar runtime into templ pages — zero new Go dependencies:
 

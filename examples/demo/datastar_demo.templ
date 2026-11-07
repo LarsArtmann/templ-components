@@ -109,6 +109,49 @@ templ datastarDemo() {
 			</div>
 		</dl>
 	</div>
+	@demoSection("Datastar Reactive Builders", "datastar-builders")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Typed builders for the reactive plugins (<code>datastar.Show</code>,
+		<code>Text</code>, <code>Bind</code>, <code>Signals</code>,
+		<code>Computed</code>, <code>On</code>) — pure client-side reactivity,
+		no backend round-trip. Scope note: the builders exist for consumers'
+		own glue; the library's components stay native-first/htmx-first and
+		are never re-ported to signals (JS decision ladder). Signal names in
+		attribute suffixes stay lowercase (the HTML parser lowercases
+		attribute names — camelCase keys belong in value-borne JSON).
+	</p>
+	<div data-signals="{'bld': {count: 0}}">
+		<div class="flex flex-wrap items-center gap-2">
+			<button
+				${ datastar.On("click", "$bld.count--").Attrs() }
+				class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+			>
+				−1
+			</button>
+			<span
+				${ datastar.Text("$bld.count") }
+				class="text-2xl font-semibold text-gray-900 dark:text-gray-100 tabular-nums min-w-12 text-center"
+			>0</span>
+			<button
+				${ datastar.On("click", "$bld.count++").Attrs() }
+				class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+			>
+				+1
+			</button>
+			<button
+				${ datastar.On("click", "$bld.count = 0").Attrs() }
+				class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+			>
+				reset
+			</button>
+		</div>
+		<p
+			${ datastar.Show("$bld.count > 3") }
+			class="mt-3 text-sm font-medium text-amber-700 dark:text-amber-400"
+		>
+			Count exceeds 3 (data-show binding).
+		</p>
+	</div>
 	@demoSection("Datastar Action Expressions", "datastar-actions")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
 		Typed helpers for building Datastar action expressions:
