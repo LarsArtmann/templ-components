@@ -21550,6 +21550,40 @@ func (a Action) WithFormDefaults(event Event) Action {
 	return a
 }
 
+// WithHeaders adds request headers (hx-headers under htmx; the merged
+// headers option under Datastar).
+func (a Action) WithHeaders(headers map[string]string) Action {
+	a.Headers = headers
+
+	return a
+}
+
+// WithPayload sets the request-body override (hx-vals under htmx; the
+// payload option under Datastar — the two runtimes read the string
+// differently; see the Payload field doc).
+func (a Action) WithPayload(payload string) Action {
+	a.Payload = payload
+
+	return a
+}
+
+// WithSignalsFilter narrows the Datastar request body's signals (the
+// filterSignals include regex). Datastar-only; htmx ignores it.
+func (a Action) WithSignalsFilter(patterns []string) Action {
+	a.SignalsFilter = patterns
+
+	return a
+}
+
+// WithOpenWhenHidden continues the exchange while the tab is hidden.
+// Datastar-only; rendered only when it differs from the runtime's
+// per-method default (false for @get, true for writes).
+func (a Action) WithOpenWhenHidden(open bool) Action {
+	a.OpenWhenHidden = open
+
+	return a
+}
+
 # ── utils/wire/doc.go ─────────────────────────────────────────────
 // Package wire is the transport-agnostic wiring contract shared by the HTMX
 // and Datastar integrations. One typed Action describes a client-initiated
@@ -22005,12 +22039,7 @@ func (a Action) datastarTriggerAttrs() templ.Attributes {
 	attrs := templ.Attributes{}
 
 	if interval := NormalizedInterval(a.Interval); interval != "" {
-		attrs["data-on-interval__duration."+interval] = datastarActionExpr(
-			a.method(),
-			a.URL,
-			a.ContentType,
-			a.Selector,
-		)
+		attrs["data-on-interval__duration."+interval] = datastarActionExpr(a)
 	}
 
 	if a.Reveal != nil {
@@ -22037,7 +22066,7 @@ func (a Action) datastarTriggerAttrs() templ.Attributes {
 			key += "__exit"
 		}
 
-		attrs[key] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector)
+		attrs[key] = datastarActionExpr(a)
 	}
 
 	if len(attrs) == 0 {
@@ -22072,6 +22101,7 @@ package wire
 import (
 	"fmt"
 	"maps"
+	"sort"
 	"strings"
 
 	"github.com/a-h/templ"
@@ -22317,6 +22347,32 @@ type Action struct {
 	// (bundle-decoded). Reveal.Exit is Datastar-only — htmx degrades to the
 	// entry trigger.
 	Reveal *Reveal
+	// Headers adds request headers to the exchange — auth tokens, CSRF
+	// headers, correlation IDs. Both dialects: htmx renders hx-headers (a
+	// JSON object, key-sorted for deterministic output); Datastar merges the
+	// object into the fetch call via the ONE options object's headers key
+	// (bundle-verified: Object.assign into the outgoing headers).
+	Headers map[string]string
+	// Payload overrides the request body. The STRING is rendered verbatim
+	// and the two runtimes interpret it DIFFERENTLY (documented asymmetry):
+	// htmx renders hx-vals, whose value is a JSON OBJECT of form params
+	// ({"id": 3}); Datastar renders the payload option, whose value is the
+	// RAW request body ('…'). Consumers must author the string for their
+	// dialect or set it only on actions they know are single-dialect.
+	Payload string
+	// SignalsFilter narrows which signals ride a Datastar request body:
+	// rendered as the fetch option filterSignals {include: /…/} — one
+	// regex alternation of the escaped patterns. Datastar-only (htmx has no
+	// signal tree to filter — the ignore row documents that); nil/empty
+	// keeps the runtime default (include everything, exclude _-local
+	// signals — see runtime-facts "verified present, unmodeled").
+	SignalsFilter []string
+	// OpenWhenHidden continues the exchange while the tab is hidden.
+	// Datastar-only (htmx keeps polling via its own trigger machinery — the
+	// ignore row documents that). Rendered ONLY when it differs from the
+	// runtime default: @get defaults to false (emit true to opt in), every
+	// write method defaults to true (emit false to opt out).
+	OpenWhenHidden bool
 }
 
 // Attributes renders the action as templ attributes in the transport's
@@ -22363,6 +22419,14 @@ func (a Action) htmxAttributes() templ.Attributes {
 		attrs["hx-swap"] = style
 	}
 
+	if len(a.Headers) > 0 {
+		attrs["hx-headers"] = sortedJSON(a.Headers)
+	}
+
+	if a.Payload != "" {
+		attrs["hx-vals"] = a.Payload
+	}
+
 	return attrs
 }
 
@@ -22401,7 +22465,7 @@ func (a Action) datastarAttributes() templ.Attributes {
 			key += fmt.Sprintf("__throttle.%dms", a.ThrottleMS)
 		}
 
-		attrs[key] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector)
+		attrs[key] = datastarActionExpr(a)
 	}
 
 	maps.Copy(attrs, a.datastarTriggerAttrs())
@@ -22449,28 +22513,79 @@ func htmxMethod(m Method) string {
 //
 // Single quotes are escaped so a URL, selector, or mode cannot inject into the
 // expression (mirrors the datastar package's actionExpr).
-func datastarActionExpr(
-	method Method,
-	url string,
-	contentType ContentType,
-	selector string,
-) string {
+func datastarActionExpr(a Action) string {
 	var opts []string
 
-	if selector != "" && contentType == ContentTypeForm {
-		opts = append(opts, fmt.Sprintf("selector: '%s'", escapeSingleQuotes(selector)))
+	if a.Selector != "" && a.ContentType == ContentTypeForm {
+		opts = append(opts, fmt.Sprintf("selector: '%s'", escapeSingleQuotes(a.Selector)))
 	}
 
-	if contentType == ContentTypeForm {
+	if a.ContentType == ContentTypeForm {
 		opts = append(opts, "contentType: 'form'")
 	}
 
-	base := fmt.Sprintf("@%s('%s')", method, escapeSingleQuotes(url))
+	if len(a.Headers) > 0 {
+		opts = append(opts, fmt.Sprintf("headers: %s", sortedJSON(a.Headers)))
+	}
+
+	if a.Payload != "" {
+		opts = append(opts, fmt.Sprintf("payload: '%s'", escapeSingleQuotes(a.Payload)))
+	}
+
+	if len(a.SignalsFilter) > 0 {
+		opts = append(opts, fmt.Sprintf("filterSignals: {include: /%s/}", signalsFilterRegex(a.SignalsFilter)))
+	}
+
+	// OPT-IN ONLY: emit openWhenHidden: true; the zero value keeps the
+	// runtime's per-method default (false for @get, true for writes —
+	// bundle decode, runtime-facts fetch-options destructure) and renders
+	// nothing, keeping every existing expression byte-identical.
+	if a.OpenWhenHidden {
+		opts = append(opts, "openWhenHidden: true")
+	}
+
+	base := fmt.Sprintf("@%s('%s')", a.method(), escapeSingleQuotes(a.URL))
 	if len(opts) == 0 {
 		return base
 	}
 
-	return fmt.Sprintf("@%s('%s', {%s})", method, escapeSingleQuotes(url), strings.Join(opts, ", "))
+	return fmt.Sprintf("@%s('%s', {%s})", a.method(), escapeSingleQuotes(a.URL), strings.Join(opts, ", "))
+}
+
+// sortedJSON marshals a string map with SORTED keys: encoding/json/v2 does
+// not sort map keys, and both rendered outputs (hx-headers, the datastar
+// headers option) are pinned byte-for-byte by tests — map iteration order
+// would make those pins flaky.
+func sortedJSON(m map[string]string) string {
+	keys := make([]string, 0, len(m))
+	for key := range m {
+		keys = append(keys, key)
+	}
+
+	sort.Strings(keys)
+
+	pairs := make([]string, 0, len(keys))
+	for _, key := range keys {
+		pairs = append(pairs, fmt.Sprintf("%q:%q", key, m[key]))
+	}
+
+	return "{" + strings.Join(pairs, ",") + "}"
+}
+
+// signalsFilterRegex builds ONE regex-literal alternation from the patterns,
+// escaping regex metacharacters and the literal's own delimiter (/) so a
+// pattern cannot terminate the regex or inject flags. Datastar's default
+// include is /.*/ — a filter here REPLACES it, so patterns are the full
+// include list.
+func signalsFilterRegex(patterns []string) string {
+	escaped := make([]string, 0, len(patterns))
+	for _, pattern := range patterns {
+		pattern = strings.ReplaceAll(pattern, `\`, `\\`)
+		pattern = strings.ReplaceAll(pattern, `/`, `\/`)
+		escaped = append(escaped, pattern)
+	}
+
+	return strings.Join(escaped, "|")
 }
 
 // escapeSingleQuotes makes a value safe inside a single-quoted JS string
@@ -26409,6 +26524,230 @@ templ ViewTransitions(props ViewTransitionsProps) {
 	if props.Global {
 		@utils.ScriptComponent(props.Nonce, viewTransitionsScript, "view transitions script")
 	}
+}
+
+# ── datastar/attributes.go ─────────────────────────────────────────────
+package datastar
+
+import (
+	"encoding/json"
+	"fmt"
+	"regexp"
+	"strings"
+
+	"github.com/a-h/templ"
+)
+
+// Typed builders for the Datastar runtime's reactive plugins — the CLIENT
+// half of the attribute surface (the request half is utils/wire, ADR-0036).
+// Every builder returns templ.Attributes: spread them into any element
+// (`<span ${ datastar.Text("$user.name") }>`) and templ renders the value
+// escaped. Empty names/expressions degrade to nil — a builder without its
+// inputs renders nothing instead of a broken binding (the graceful-
+// degradation rule every library component follows).
+//
+// Scope note (JS decision ladder, docs/javascript-guide.md): these builders
+// exist for consumers' OWN glue — dashboard widgets, exploratory UIs,
+// reactive islands. The library's components stay native-first/htmx-first;
+// no component is re-ported to signals.
+
+// signalSegmentGrammar is the attribute-suffix-safe signal grammar: lowercase
+// segments (the HTML parser lowercases attribute NAMES, so an uppercase
+// segment would silently bind a different signal than the expression reads —
+// see runtime-facts §CSP caveats), digits and underscores allowed, dotted
+// paths for nested signals. A leading underscore marks a LOCAL signal (never
+// sent to the backend: the runtime's default filterSignals exclude
+// /(^|\.)_/). Double underscores are banned — they are the MODIFIER delimiter
+// (data-on:click__debounce…), so a signal carrying them can never round-trip
+// through an attribute suffix.
+var signalSegmentGrammar = regexp.MustCompile(`^[a-z0-9_]+$`)
+
+// SignalName is a validated Datastar signal name for attribute-suffix
+// bindings (data-bind:<name>, data-computed:<name>). Not a closed enum — an
+// open validated type: there is no fixed value set, so there is no
+// SignalNameDefault constant; IsValid is the contract, its test lives in
+// attributes_test.go (same commit rule).
+type SignalName string
+
+// IsValid reports whether the name is safe to embed in an attribute suffix:
+// one or more lowercase word segments separated by dots, no "__" anywhere
+// (the modifier delimiter), no empty segments.
+func (s SignalName) IsValid() bool {
+	name := string(s)
+	if name == "" || strings.Contains(name, "__") {
+		return false
+	}
+
+	for segment := range strings.SplitSeq(name, ".") {
+		if !signalSegmentGrammar.MatchString(segment) {
+			return false
+		}
+	}
+
+	return true
+}
+
+// eventGrammar constrains handler events to real DOM/custom-event names:
+// letters, digits, dashes and dots (e.g. click, keydown, datastar-fetch).
+// Anything else cannot be an event and would corrupt the attribute NAME —
+// rejected (renders nothing) rather than escaped, unlike expression VALUES
+// which escape safely.
+var eventGrammar = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_.-]*$`)
+
+// normalizeExpr makes a consumer expression safe AS AN ATTRIBUTE VALUE: CR/LF
+// collapse to spaces (one statement line). Quotes and angle brackets pass
+// through VERBATELY — they are expression CODE (string literals like
+// @get('/x'), comparisons) that the runtime parses, and the HTML attribute
+// layer is escaped by templ at render time. The builders never interpolate
+// user input INTO an expression; they only carry one.
+func normalizeExpr(s string) string {
+	s = strings.ReplaceAll(s, "\r", " ")
+	s = strings.ReplaceAll(s, "\n", " ")
+
+	return s
+}
+
+// attrsOrNil collapses an empty attribute map to nil so `…${ nil }…` renders
+// nothing.
+func attrsOrNil(attrs templ.Attributes) templ.Attributes {
+	if len(attrs) == 0 {
+		return nil
+	}
+
+	return attrs
+}
+
+// Show binds an element's visibility to an expression (data-show): the
+// element renders when the expression is truthy.
+//
+//	<span ${ datastar.Show("$user.admin") }>secrets</span>
+func Show(expr string) templ.Attributes {
+	if expr == "" {
+		return nil
+	}
+
+	return templ.Attributes{"data-show": normalizeExpr(expr)}
+}
+
+// Text binds an element's text content to an expression (data-text): the
+// node re-renders whenever any referenced signal changes.
+//
+//	<dd ${ datastar.Text("$metrics.users") }>0</dd>
+func Text(expr string) templ.Attributes {
+	if expr == "" {
+		return nil
+	}
+
+	return templ.Attributes{"data-text": normalizeExpr(expr)}
+}
+
+// Bind two-ways an input element to a signal (data-bind:<name>): element
+// edits write the signal, signal patches write the element.
+//
+//	<input ${ datastar.Bind("email") }>
+func Bind(name SignalName) templ.Attributes {
+	if !name.IsValid() {
+		return nil
+	}
+
+	return templ.Attributes{"data-bind:" + string(name): ""}
+}
+
+// Computed declares a derived signal (data-computed:<name>): the expression
+// re-evaluates when its signal dependencies change.
+//
+//	<div ${ datastar.Computed("total", "$price * $qty") }>
+func Computed(name SignalName, expr string) templ.Attributes {
+	if !name.IsValid() || expr == "" {
+		return nil
+	}
+
+	return templ.Attributes{"data-computed:" + string(name): normalizeExpr(expr)}
+}
+
+// Signals declares initial signal values (data-signals): the JSON object
+// deep-merges into the signal tree at init. Keys are VALUE-borne (JSON), so
+// camelCase keys are safe here — the attribute-name-lowercasing gotcha does
+// not apply. A payload that cannot marshal to JSON degrades to nil.
+func Signals(values map[string]any) templ.Attributes {
+	if len(values) == 0 {
+		return nil
+	}
+
+	buf, err := json.Marshal(values)
+	if err != nil {
+		return nil
+	}
+
+	return templ.Attributes{"data-signals": string(buf)}
+}
+
+// On wires an event to an expression (data-on:<event>) with the runtime's
+// modifier groups spelled the pinned-bundle way (data-on:click__debounce.300ms,
+// data-on:submit__prevent — groups only parse after __, never as a dotted
+// suffix). Chain modifiers with value receivers; the zero-chained form is the
+// plain handler. An empty event or expression renders nothing.
+//
+//	<button ${ datastar.On("click", "$count++").Debounce(300) }>go</button>
+type OnExpr struct {
+	event      string
+	expr       string
+	debounceMS int
+	throttleMS int
+	prevent    bool
+}
+
+// On starts an event-handler builder.
+func On(event, expr string) OnExpr {
+	return OnExpr{event: event, expr: expr}
+}
+
+// Debounce adds the __debounce.<n>ms modifier (trailing-edge; the runtime's
+// leading/notrailing sub-modifiers are not modeled — use raw attrs for those).
+func (o OnExpr) Debounce(ms int) OnExpr {
+	o.debounceMS = ms
+
+	return o
+}
+
+// Throttle adds the __throttle.<n>ms modifier (leading-edge default).
+func (o OnExpr) Throttle(ms int) OnExpr {
+	o.throttleMS = ms
+
+	return o
+}
+
+// Prevent adds the __prevent modifier (suppresses the event's native
+// default — required for wired anchors whose href is the no-JS fallback).
+func (o OnExpr) Prevent() OnExpr {
+	o.prevent = true
+
+	return o
+}
+
+// Attrs renders the builder. Modifiers require the explicit event (an orphan
+// modifier is dropped by design — see wire.Action's documented rule). An
+// event that is not a plausible DOM/custom-event name renders nothing.
+func (o OnExpr) Attrs() templ.Attributes {
+	if o.event == "" || o.expr == "" || !eventGrammar.MatchString(o.event) {
+		return nil
+	}
+
+	key := "data-on:" + o.event
+
+	if o.prevent {
+		key += "__prevent"
+	}
+
+	if o.debounceMS > 0 {
+		key += fmt.Sprintf("__debounce.%dms", o.debounceMS)
+	}
+
+	if o.throttleMS > 0 {
+		key += fmt.Sprintf("__throttle.%dms", o.throttleMS)
+	}
+
+	return attrsOrNil(templ.Attributes{key: normalizeExpr(o.expr)})
 }
 
 # ── datastar/cancellation.go ─────────────────────────────────────────────

@@ -8,6 +8,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Wire actions gain the runtime's verified fetch options; Datastar grows
+  typed reactive builders.** `wire.Action` adds `Headers` (htmx `hx-headers`
+  as key-sorted JSON / Datastar `headers:` merged into the ONE options
+  object), `Payload` (htmx `hx-vals` / Datastar `payload:` — the two runtimes
+  read the string differently, documented per field), `SignalsFilter`
+  (Datastar `filterSignals: {include: /…/}`, patterns regex-escaped; htmx
+  ignore row), and `OpenWhenHidden` (Datastar `openWhenHidden: true`,
+  opt-in-only so every existing rendering stays byte-identical) — each with
+  `With*` value-receiver chainers, dialect-contract rows enforced by the
+  reflection test, and both-dialect unit tests. The datastar module adds
+  typed builders for the reactive plugins — `Show`, `Text`, `Bind`,
+  `Signals` (JSON-value-borne), `Computed`, and a chainable `On` with
+  `Prevent`/`Debounce`/`Throttle` — all degrading to nothing on empty inputs,
+  `SignalName`-validated for attribute-suffix positions (lowercase grammar,
+  `__` banned), fuzzed, and golden-pinned through templ's real attribute
+  writer. A live demo section exercises the builders on the Datastar route.
 - **Datastar CSP mode: documented, bundle-guarded, browser-proven, and one
   helper away from use.** Decoding the pinned runtime shows `eval` is only the
   DEFAULT: with `<html data-nonce="…">` plus the same nonce on the runtime

@@ -163,3 +163,37 @@ func (a Action) WithFormDefaults(event Event) Action {
 
 	return a
 }
+
+// WithHeaders adds request headers (hx-headers under htmx; the merged
+// headers option under Datastar).
+func (a Action) WithHeaders(headers map[string]string) Action {
+	a.Headers = headers
+
+	return a
+}
+
+// WithPayload sets the request-body override (hx-vals under htmx; the
+// payload option under Datastar — the two runtimes read the string
+// differently; see the Payload field doc).
+func (a Action) WithPayload(payload string) Action {
+	a.Payload = payload
+
+	return a
+}
+
+// WithSignalsFilter narrows the Datastar request body's signals (the
+// filterSignals include regex). Datastar-only; htmx ignores it.
+func (a Action) WithSignalsFilter(patterns []string) Action {
+	a.SignalsFilter = patterns
+
+	return a
+}
+
+// WithOpenWhenHidden continues the exchange while the tab is hidden.
+// Datastar-only; rendered only when it differs from the runtime's
+// per-method default (false for @get, true for writes).
+func (a Action) WithOpenWhenHidden(open bool) Action {
+	a.OpenWhenHidden = open
+
+	return a
+}

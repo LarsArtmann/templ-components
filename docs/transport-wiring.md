@@ -66,6 +66,10 @@ Any component, even without a `Wire` field — spread the attributes yourself:
 | `ContentType` | `""` → Datastar signals as JSON (runtime default); `ContentTypeForm` serializes the enclosing form's fields; htmx ignores it                                                                        |
 | `Selector`    | `""` → renders nothing (closest form); a selector renders `{selector: '…'}` under Datastar ContentTypeForm ONLY — it picks which form serializes; it does NOT target patches (corrected 2026-10-02) |
 | `Swap`        | `""` → renders nothing in either dialect (both default to inner); a `PatchMode` renders `hx-swap` under htmx; under Datastar it renders nothing — the mode is response-header driven                |
+| `Headers`     | `nil` → renders nothing; htmx renders `hx-headers` (key-sorted JSON); Datastar merges the same JSON into the ONE fetch options object (`headers:`)                                                 |
+| `Payload`     | `""` → renders nothing; htmx renders `hx-vals` (JSON object of params), Datastar renders the `payload:` option (raw body) — the two runtimes read the string DIFFERENTLY, author for your dialect   |
+| `SignalsFilter` | `nil` → runtime default (everything except `(^|\.)_` local signals); patterns render `filterSignals: {include: /p1|p2/}` (escaped); htmx ignores it (no signal tree)                             |
+| `OpenWhenHidden` | `false` → renders nothing (runtime per-method default: false for `@get`, true for writes); OPT-IN ONLY — `true` renders `openWhenHidden: true` under Datastar; htmx ignores it                    |
 | unknowns      | `TransportIsValid`/`MethodIsValid`/`EventIsValid`/`ContentTypeIsValid`/`PatchModeIsValid` exist; rendering falls back to defaults                                                                   |
 
 ## Dialect mapping
