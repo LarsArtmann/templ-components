@@ -221,6 +221,7 @@ type InputProps struct {
 	Autocomplete AutocompleteType
 	Error        string
 	HelpText     string
+	Stacked      bool
 }
 
 // DefaultInputProps returns sensible defaults
@@ -268,7 +269,7 @@ func Input(props InputProps) templ.Component {
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Name).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 237, Col: 20}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 238, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 				if templ_7745c5c3_Err != nil {
@@ -281,7 +282,7 @@ func Input(props InputProps) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.ID).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 238, Col: 16}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 239, Col: 16}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 				if templ_7745c5c3_Err != nil {
@@ -294,7 +295,7 @@ func Input(props InputProps) templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Value).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 239, Col: 22}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 240, Col: 22}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 				if templ_7745c5c3_Err != nil {
@@ -364,7 +365,7 @@ func Input(props InputProps) templ.Component {
 				}
 				return nil
 			})
-			templ_7745c5c3_Err = FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -404,7 +405,7 @@ func inputElement(props InputProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templruntime.NewAttributeExpression(inputType(props.Type)).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 262, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 263, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
@@ -417,7 +418,7 @@ func inputElement(props InputProps) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Name).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 263, Col: 19}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 264, Col: 19}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 			if templ_7745c5c3_Err != nil {
@@ -435,7 +436,7 @@ func inputElement(props InputProps) templ.Component {
 				var templ_7745c5c3_Var9 string
 				templ_7745c5c3_Var9, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.ID).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 265, Col: 16}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 266, Col: 16}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 				if templ_7745c5c3_Err != nil {
@@ -453,7 +454,7 @@ func inputElement(props InputProps) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Value).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 267, Col: 21}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 268, Col: 21}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 			if templ_7745c5c3_Err != nil {
@@ -471,7 +472,7 @@ func inputElement(props InputProps) templ.Component {
 				var templ_7745c5c3_Var11 string
 				templ_7745c5c3_Var11, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Placeholder).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 269, Col: 34}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 270, Col: 34}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 				if templ_7745c5c3_Err != nil {
@@ -490,7 +491,7 @@ func inputElement(props InputProps) templ.Component {
 				var templ_7745c5c3_Var12 string
 				templ_7745c5c3_Var12, templ_7745c5c3_Err = templruntime.NewAttributeExpression(eh).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 272, Col: 20}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 273, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 				if templ_7745c5c3_Err != nil {
@@ -509,7 +510,7 @@ func inputElement(props InputProps) templ.Component {
 				var templ_7745c5c3_Var13 string
 				templ_7745c5c3_Var13, templ_7745c5c3_Err = templruntime.NewAttributeExpression(ac).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 275, Col: 20}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 276, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 				if templ_7745c5c3_Err != nil {
@@ -528,7 +529,7 @@ func inputElement(props InputProps) templ.Component {
 				var templ_7745c5c3_Var14 string
 				templ_7745c5c3_Var14, templ_7745c5c3_Err = templruntime.NewAttributeExpression(im).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 278, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 279, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 				if templ_7745c5c3_Err != nil {
@@ -599,7 +600,7 @@ func inputElement(props InputProps) templ.Component {
 				var templ_7745c5c3_Var17 string
 				templ_7745c5c3_Var17, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%d", props.MaxLength)).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 300, Col: 49}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 301, Col: 49}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 				if templ_7745c5c3_Err != nil {
@@ -622,7 +623,7 @@ func inputElement(props InputProps) templ.Component {
 				var templ_7745c5c3_Var18 string
 				templ_7745c5c3_Var18, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.AriaLabel).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 304, Col: 31}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 305, Col: 31}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 				if templ_7745c5c3_Err != nil {
@@ -704,7 +705,7 @@ func checkboxLabel(id, label, helpMsg string) templ.Component {
 				var templ_7745c5c3_Var20 string
 				templ_7745c5c3_Var20, templ_7745c5c3_Err = templruntime.NewAttributeExpression(id).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 333, Col: 19}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 334, Col: 19}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var20)
 				if templ_7745c5c3_Err != nil {
@@ -717,7 +718,7 @@ func checkboxLabel(id, label, helpMsg string) templ.Component {
 				var templ_7745c5c3_Var21 string
 				templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 333, Col: 79}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 334, Col: 79}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 				if templ_7745c5c3_Err != nil {
@@ -735,7 +736,7 @@ func checkboxLabel(id, label, helpMsg string) templ.Component {
 				var templ_7745c5c3_Var22 string
 				templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 335, Col: 67}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 336, Col: 67}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 				if templ_7745c5c3_Err != nil {
@@ -800,7 +801,7 @@ func Checkbox(props CheckboxProps) templ.Component {
 				var templ_7745c5c3_Var24 string
 				templ_7745c5c3_Var24, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.ID).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 351, Col: 18}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 352, Col: 18}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var24)
 				if templ_7745c5c3_Err != nil {
@@ -818,7 +819,7 @@ func Checkbox(props CheckboxProps) templ.Component {
 			var templ_7745c5c3_Var25 string
 			templ_7745c5c3_Var25, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Name).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 353, Col: 21}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 354, Col: 21}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var25)
 			if templ_7745c5c3_Err != nil {
@@ -836,7 +837,7 @@ func Checkbox(props CheckboxProps) templ.Component {
 				var templ_7745c5c3_Var26 string
 				templ_7745c5c3_Var26, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Value).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 355, Col: 24}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 356, Col: 24}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var26)
 				if templ_7745c5c3_Err != nil {
@@ -899,7 +900,7 @@ func Checkbox(props CheckboxProps) templ.Component {
 				var templ_7745c5c3_Var29 string
 				templ_7745c5c3_Var29, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.AriaLabel).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 371, Col: 33}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input.templ`, Line: 372, Col: 33}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var29)
 				if templ_7745c5c3_Err != nil {

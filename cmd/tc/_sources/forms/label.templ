@@ -52,16 +52,37 @@ type FormFieldProps struct {
 	Required bool
 	Error    string
 	HelpText string
+	// Stacked wraps the field parts in a single <div> so the component is
+	// ONE child in flex/grid parents; default renders unwrapped siblings.
+	Stacked  bool
 }
 
 // FormFieldWrapper renders the standard form field structure:
 // optional Label, children (input/select/textarea), optional Error, optional HelpText.
 // Use this to DRY up all form control components.
+// With Stacked, all parts share one <div> for flex/grid parents (one child);
+// the default keeps the parts as unwrapped siblings for free-form parents.
 //
 //	@forms.FormFieldWrapper(forms.FormFieldProps{ID: "email", Label: "Email", Required: true, Error: "Invalid", HelpText: "Use work email"}) {
 //	   <input type="email" name="email" />
 //	}
 templ FormFieldWrapper(props FormFieldProps) {
+	if props.Stacked {
+		<div>
+			@fieldContents(props) {
+				{ children... }
+			}
+		</div>
+	} else {
+		@fieldContents(props) {
+			{ children... }
+		}
+	}
+}
+
+// fieldContents renders the shared field parts; FormFieldWrapper picks the
+// bare-sibling or single-container shape around them.
+templ fieldContents(props FormFieldProps) {
 	if props.Label != "" {
 		@Label(props.ID, props.Label, props.Required)
 	}

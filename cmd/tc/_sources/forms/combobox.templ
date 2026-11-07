@@ -22,6 +22,7 @@ type ComboboxProps struct {
 	Disabled    bool
 	Error       string
 	HelpText    string
+	Stacked     bool
 }
 
 // DefaultComboboxProps returns sensible defaults
@@ -69,7 +70,7 @@ func comboboxDisplayLabel(props ComboboxProps) string {
 templ Combobox(props ComboboxProps) {
 	{{ id := utils.EnsureID("combobox", props.ID) }}
 	{{ displayValue := comboboxDisplayLabel(props) }}
-	@FormFieldWrapper(FormFieldProps{ID: id, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+	@FormFieldWrapper(FormFieldProps{ID: id, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}) {
 		<div class="relative" data-combobox={ id }>
 			<input
 				type="text"

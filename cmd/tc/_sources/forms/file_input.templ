@@ -11,6 +11,7 @@ type FileInputProps struct {
 	Disabled bool
 	Error    string
 	HelpText string
+	Stacked  bool
 	Accept   string // e.g. ".jpg,.png" or "image/*"
 	Multiple bool
 }
@@ -39,7 +40,7 @@ func fileInputClass(hasError bool) string {
 //	})
 templ FileInput(props FileInputProps) {
 	{{ props.ID = fieldID(props.ID, props.Name) }}
-	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}) {
 		<input
 			type="file"
 			name={ props.Name }

@@ -20,6 +20,7 @@ type FileInputProps struct {
 	Disabled bool
 	Error    string
 	HelpText string
+	Stacked  bool
 	Accept   string // e.g. ".jpg,.png" or "image/*"
 	Multiple bool
 }
@@ -87,7 +88,7 @@ func FileInput(props FileInputProps) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Name).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/file_input.templ`, Line: 45, Col: 20}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/file_input.templ`, Line: 46, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 				if templ_7745c5c3_Err != nil {
@@ -105,7 +106,7 @@ func FileInput(props FileInputProps) templ.Component {
 					var templ_7745c5c3_Var4 string
 					templ_7745c5c3_Var4, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.ID).Resolve(ctx)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/file_input.templ`, Line: 47, Col: 17}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/file_input.templ`, Line: 48, Col: 17}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 					if templ_7745c5c3_Err != nil {
@@ -158,7 +159,7 @@ func FileInput(props FileInputProps) templ.Component {
 					var templ_7745c5c3_Var7 string
 					templ_7745c5c3_Var7, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Accept).Resolve(ctx)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/file_input.templ`, Line: 58, Col: 25}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/file_input.templ`, Line: 59, Col: 25}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 					if templ_7745c5c3_Err != nil {
@@ -183,7 +184,7 @@ func FileInput(props FileInputProps) templ.Component {
 					var templ_7745c5c3_Var8 string
 					templ_7745c5c3_Var8, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.AriaLabel).Resolve(ctx)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/file_input.templ`, Line: 64, Col: 32}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/file_input.templ`, Line: 65, Col: 32}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 					if templ_7745c5c3_Err != nil {
@@ -218,7 +219,7 @@ func FileInput(props FileInputProps) templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -275,6 +275,22 @@ func TestGoldenSweepFileInput(t *testing.T) {
 	})
 }
 
+func TestGoldenSweepFormFieldStacked(t *testing.T) {
+	t.Parallel()
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "input_stacked_full", HTML: utils.Render(t, Input(InputProps{
+			Name: "email", Type: InputEmail, Label: "Email address", Required: true,
+			Error: "Enter a valid email address.", HelpText: "Use your work email.", Stacked: true,
+		}))},
+		{Name: "select_stacked", HTML: utils.Render(t, Select(SelectProps{
+			Name: "plan", Label: "Select a plan",
+			Options: []SelectOption{{Value: "free", Label: "Free"}, {Value: "pro", Label: "Pro"}},
+			Stacked: true,
+		}))},
+	})
+}
+
 func TestGoldenSweepDatePicker(t *testing.T) {
 	t.Parallel()
 
