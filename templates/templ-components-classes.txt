@@ -26617,16 +26617,23 @@ func attrsOrNil(attrs templ.Attributes) templ.Attributes {
 	return attrs
 }
 
+// exprBinding is the shared body of the single-attribute expression
+// builders: an empty expression renders nothing (the graceful-degradation
+// rule), everything else passes through the attribute-value normalizer.
+func exprBinding(key, expr string) templ.Attributes {
+	if expr == "" {
+		return nil
+	}
+
+	return templ.Attributes{key: normalizeExpr(expr)}
+}
+
 // Show binds an element's visibility to an expression (data-show): the
 // element renders when the expression is truthy.
 //
 //	<span ${ datastar.Show("$user.admin") }>secrets</span>
 func Show(expr string) templ.Attributes {
-	if expr == "" {
-		return nil
-	}
-
-	return templ.Attributes{"data-show": normalizeExpr(expr)}
+	return exprBinding("data-show", expr)
 }
 
 // Text binds an element's text content to an expression (data-text): the
@@ -26634,11 +26641,7 @@ func Show(expr string) templ.Attributes {
 //
 //	<dd ${ datastar.Text("$metrics.users") }>0</dd>
 func Text(expr string) templ.Attributes {
-	if expr == "" {
-		return nil
-	}
-
-	return templ.Attributes{"data-text": normalizeExpr(expr)}
+	return exprBinding("data-text", expr)
 }
 
 // Bind two-ways an input element to a signal (data-bind:<name>): element
