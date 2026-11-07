@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Form fields stack into one container for grid/flex parents.** Input,
+  Select, Textarea, FileInput, Combobox, and DatePicker render label,
+  control, error, and help as unwrapped siblings, so a `grid grid-cols-*`
+  parent scatters the parts across cells and the control keeps none of the
+  parent's spacing (#53). The new `Stacked` prop — on the six components and
+  on `FormFieldWrapper` directly — wraps the field in a single `<div>`, one
+  child per component with no consumer-side wrapper, while the default
+  sibling shape stays byte-identical (all existing goldens unchanged).
 - **CopyButton works inside swapped fragments.** The per-render singleton
   script never executes when the button arrives in htmx-swapped HTML —
   script elements inserted via innerHTML do not run (HTML parsing spec),

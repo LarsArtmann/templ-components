@@ -212,6 +212,7 @@ type InputProps struct {
 	Autocomplete AutocompleteType
 	Error        string
 	HelpText     string
+	Stacked      bool
 }
 
 // DefaultInputProps returns sensible defaults
@@ -240,7 +241,7 @@ templ Input(props InputProps) {
 			{ props.Attrs... }
 		/>
 	} else {
-		@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+		@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}) {
 			if props.Type == InputSearch {
 				<search class="relative">
 					@inputElement(props)

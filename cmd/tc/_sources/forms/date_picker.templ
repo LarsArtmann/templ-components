@@ -14,6 +14,7 @@ type DatePickerProps struct {
 	Disabled bool
 	Error    string
 	HelpText string
+	Stacked  bool
 }
 
 // DefaultDatePickerProps returns sensible defaults
@@ -32,7 +33,7 @@ func DefaultDatePickerProps() DatePickerProps {
 //	})
 templ DatePicker(props DatePickerProps) {
 	{{ props.ID = fieldID(props.ID, props.Name) }}
-	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}) {
 		<input
 			type="date"
 			name={ props.Name }

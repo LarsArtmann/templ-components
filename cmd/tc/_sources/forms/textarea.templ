@@ -50,6 +50,7 @@ type TextareaProps struct {
 	EnterKeyHint EnterKeyHintType
 	Error        string
 	HelpText     string
+	Stacked      bool
 }
 
 // DefaultTextareaProps returns sensible defaults
@@ -70,7 +71,7 @@ func DefaultTextareaProps() TextareaProps {
 //	})
 templ Textarea(props TextareaProps) {
 	{{ props.ID = fieldID(props.ID, props.Name) }}
-	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}) {
 		<textarea
 			name={ props.Name }
 			if props.ID != "" {

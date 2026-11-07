@@ -12062,6 +12062,7 @@ type ComboboxProps struct {
 	Disabled    bool
 	Error       string
 	HelpText    string
+	Stacked     bool
 }
 
 // DefaultComboboxProps returns sensible defaults
@@ -12109,7 +12110,7 @@ func comboboxDisplayLabel(props ComboboxProps) string {
 templ Combobox(props ComboboxProps) {
 	{{ id := utils.EnsureID("combobox", props.ID) }}
 	{{ displayValue := comboboxDisplayLabel(props) }}
-	@FormFieldWrapper(FormFieldProps{ID: id, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+	@FormFieldWrapper(FormFieldProps{ID: id, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}) {
 		<div class="relative" data-combobox={ id }>
 			<input
 				type="text"
@@ -12345,6 +12346,7 @@ type DatePickerProps struct {
 	Disabled bool
 	Error    string
 	HelpText string
+	Stacked  bool
 }
 
 // DefaultDatePickerProps returns sensible defaults
@@ -12363,7 +12365,7 @@ func DefaultDatePickerProps() DatePickerProps {
 //	})
 templ DatePicker(props DatePickerProps) {
 	{{ props.ID = fieldID(props.ID, props.Name) }}
-	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}) {
 		<input
 			type="date"
 			name={ props.Name }
@@ -12507,6 +12509,7 @@ type FileInputProps struct {
 	Disabled bool
 	Error    string
 	HelpText string
+	Stacked  bool
 	Accept   string // e.g. ".jpg,.png" or "image/*"
 	Multiple bool
 }
@@ -12535,7 +12538,7 @@ func fileInputClass(hasError bool) string {
 //	})
 templ FileInput(props FileInputProps) {
 	{{ props.ID = fieldID(props.ID, props.Name) }}
-	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}) {
 		<input
 			type="file"
 			name={ props.Name }
@@ -13805,6 +13808,7 @@ type InputProps struct {
 	Autocomplete AutocompleteType
 	Error        string
 	HelpText     string
+	Stacked      bool
 }
 
 // DefaultInputProps returns sensible defaults
@@ -13833,7 +13837,7 @@ templ Input(props InputProps) {
 			{ props.Attrs... }
 		/>
 	} else {
-		@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+		@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}) {
 			if props.Type == InputSearch {
 				<search class="relative">
 					@inputElement(props)
@@ -14115,16 +14119,37 @@ type FormFieldProps struct {
 	Required bool
 	Error    string
 	HelpText string
+	// Stacked wraps the field parts in a single <div> so the component is
+	// ONE child in flex/grid parents; default renders unwrapped siblings.
+	Stacked  bool
 }
 
 // FormFieldWrapper renders the standard form field structure:
 // optional Label, children (input/select/textarea), optional Error, optional HelpText.
 // Use this to DRY up all form control components.
+// With Stacked, all parts share one <div> for flex/grid parents (one child);
+// the default keeps the parts as unwrapped siblings for free-form parents.
 //
 //	@forms.FormFieldWrapper(forms.FormFieldProps{ID: "email", Label: "Email", Required: true, Error: "Invalid", HelpText: "Use work email"}) {
 //	   <input type="email" name="email" />
 //	}
 templ FormFieldWrapper(props FormFieldProps) {
+	if props.Stacked {
+		<div>
+			@fieldContents(props) {
+				{ children... }
+			}
+		</div>
+	} else {
+		@fieldContents(props) {
+			{ children... }
+		}
+	}
+}
+
+// fieldContents renders the shared field parts; FormFieldWrapper picks the
+// bare-sibling or single-container shape around them.
+templ fieldContents(props FormFieldProps) {
 	if props.Label != "" {
 		@Label(props.ID, props.Label, props.Required)
 	}
@@ -14698,6 +14723,7 @@ type SelectProps struct {
 	Stylable bool
 	Error    string
 	HelpText string
+	Stacked  bool
 }
 
 // DefaultSelectProps returns sensible defaults
@@ -14732,7 +14758,7 @@ func DefaultSelectProps() SelectProps {
 //	})
 templ Select(props SelectProps) {
 	{{ props.ID = fieldID(props.ID, props.Name) }}
-	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}) {
 		<select
 			name={ props.Name }
 			if props.ID != "" {
@@ -15167,6 +15193,7 @@ type TextareaProps struct {
 	EnterKeyHint EnterKeyHintType
 	Error        string
 	HelpText     string
+	Stacked      bool
 }
 
 // DefaultTextareaProps returns sensible defaults
@@ -15187,7 +15214,7 @@ func DefaultTextareaProps() TextareaProps {
 //	})
 templ Textarea(props TextareaProps) {
 	{{ props.ID = fieldID(props.ID, props.Name) }}
-	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText, Stacked: props.Stacked}) {
 		<textarea
 			name={ props.Name }
 			if props.ID != "" {
