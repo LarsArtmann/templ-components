@@ -374,11 +374,16 @@ func TestDatastarCSPModeBrowser(t *testing.T) {
 		pollTrue(`document.getElementById('csp-get-target').textContent.includes('patched under csp')`, chromedp.WithPollingTimeout(10*time.Second)),
 	)
 
-	// Flow 2: expression evaluation + data-show. The toggle expression must
-	// run in CSP mode exactly as in eval mode.
+	// Flow 2: expression evaluation + data-show. The declared signal starts
+	// false (hidden), the click assignment flips it visible, the second click
+	// flips it back — the full assignment cycle must run in CSP mode exactly
+	// as in eval mode.
 	flowStep("expr-show-toggle",
+		pollTrue(`document.getElementById('csp-show').offsetParent===null`, chromedp.WithPollingTimeout(5*time.Second)),
 		chromedp.Click("#csp-toggle-btn", chromedp.NodeVisible),
-		pollTrue(`document.getElementById('csp-show').offsetParent===null`, chromedp.WithPollingTimeout(10*time.Second)),
+		pollTrue(`document.getElementById('csp-show').offsetParent!==null`, chromedp.WithPollingTimeout(5*time.Second)),
+		chromedp.Click("#csp-toggle-btn", chromedp.NodeVisible),
+		pollTrue(`document.getElementById('csp-show').offsetParent===null`, chromedp.WithPollingTimeout(5*time.Second)),
 	)
 
 	// Flow 3: wire debounce — one keystroke, one request after quiet.
