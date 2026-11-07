@@ -1,6 +1,10 @@
 package display
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // Sparkline renders a tiny inline SVG line chart showing a data trend.
 // Pure SVG — no JavaScript. Uses currentColor for stroke so consumers control
@@ -8,37 +12,53 @@ import "github.com/larsartmann/templ-components/utils"
 //
 //	@display.Sparkline(display.SparklineProps{Values: []float64{1, 3, 2, 5, 4, 6, 3}})
 //	@display.Sparkline(display.SparklineProps{Values: rates, Filled: true, Class: "text-green-500 dark:text-green-400"})
+//	@display.Sparkline(display.SparklineProps{Values: balance, Responsive: true})
+//	@display.Sparkline(display.SparklineProps{Values: balance, Responsive: true, ShowZeroLine: true})
 templ Sparkline(props SparklineProps) {
 	{{
 		width := props.Width
 		if width == 0 {
-			width = 120
+			width = sparklineDefaultWidth
 		}
 		height := props.Height
 		if height == 0 {
-			height = 30
+			height = sparklineDefaultHeight
 		}
 		strokeW := props.StrokeWidth
 		if strokeW == 0 {
-			strokeW = 1.5
+			strokeW = sparklineDefaultStroke
 		}
 		min, max := sparklineBounds(props)
 		points := sparklinePoints(props.Values, width, height, min, max)
+		zeroY := sparklineZeroY(min, max, height)
+		viewBox := fmt.Sprintf("0 0 %d %d", width, height)
+		svgClass := "overflow-visible"
+		if props.Responsive {
+			svgClass = "overflow-visible w-full h-auto"
+		}
 	}}
 	if len(props.Values) >= 2 {
 		<svg
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			width={ width }
-			height={ height }
-			class={ utils.Class("overflow-visible", props.Class) }
+			if props.Responsive {
+				viewBox={ viewBox }
+				preserveAspectRatio="none"
+			} else {
+				width={ width }
+				height={ height }
+			}
+			class={ utils.Class(svgClass, props.Class) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			} else {
 				aria-hidden="true"
 			}
 		>
+			if props.ShowZeroLine {
+				<line x1="0" x2={ width } y1={ zeroY } y2={ zeroY } stroke="currentColor" stroke-opacity="0.25"></line>
+			}
 			if props.Filled {
 				<path
 					d={ sparklineAreaPath(props.Values, width, height, min, max) }
@@ -54,6 +74,9 @@ templ Sparkline(props SparklineProps) {
 				stroke-width={ strokeW }
 				stroke-linecap="round"
 				stroke-linejoin="round"
+				if props.Responsive {
+					vector-effect="non-scaling-stroke"
+				}
 			></polyline>
 		</svg>
 	}

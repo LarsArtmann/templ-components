@@ -32,6 +32,20 @@ func TestGoldenSweepSparkline(t *testing.T) {
 			StrokeWidth: 2,
 		}))},
 		{Name: "sparkline_empty", HTML: utils.Render(t, Sparkline(SparklineProps{}))},
+		{Name: "sparkline_responsive", HTML: utils.Render(t, Sparkline(SparklineProps{
+			Values:     []float64{1, 3, 2, 5, 4, 6, 3, 7},
+			Responsive: true,
+		}))},
+		{Name: "sparkline_zero_line", HTML: utils.Render(t, Sparkline(SparklineProps{
+			Values:       []float64{-40, 20, 60, -10, 30},
+			ShowZeroLine: true,
+		}))},
+		{Name: "sparkline_responsive_zero_line", HTML: utils.Render(t, Sparkline(SparklineProps{
+			Values:       []float64{-40, 20, 60, -10, 30},
+			Responsive:   true,
+			ShowZeroLine: true,
+			Filled:       true,
+		}))},
 	})
 }
 

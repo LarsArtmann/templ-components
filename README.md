@@ -111,7 +111,7 @@ Components build on the native platform first — no polyfills, no framework JS:
 | SVG icons      | 102                                                                               |
 | Typed enums    | 76 (75 with IsValid)                                                              |
 | Packages       | 19 (across 7 Go modules)                                                          |
-| Tests          | ~1,700 test functions + ~1,800 subtests                                           |
+| Tests          | ~1,700 test functions + ~1,900 subtests                                           |
 | Visual goldens | 206 pixel-level regression tests (chromedp)                                       |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`)                               |
 | Last verified  | 2026-11-04 (recompute via `go test ./utils/... -run TestDocsCountDrift -count=1`) |
@@ -427,7 +427,7 @@ of regression:
 
 | Tier                     | What                                                                 | Where                                | Catches                                                                                                                                         |
 | ------------------------ | -------------------------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 336 `.golden` files | Structure, attribute, and class changes                                                                                                         |
+| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 339 `.golden` files | Structure, attribute, and class changes                                                                                                         |
 | **Drift-guard scanners** | Cross-cutting invariant tests                                        | `utils/`                             | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
 | **Visual regression**    | Pixel-level PNG diff in headless Chromium                            | `visualtest/` (separate module)      | Layout shifts, dark-mode color regressions, RTL mirroring                                                                                       |
 

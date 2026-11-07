@@ -53,7 +53,7 @@ semantics owner — definitions do not move into the generator.
   icons, errorpage, charts/echarts, htmx, datastar). `visualtest/` and
   `website/` are repo-local and never counted or published.
 
-## Tests — **~1,700 functions + ~1,800 subtests**
+## Tests — **~1,700 functions + ~1,900 subtests**
 
 - **Definition:** `func Test/Fuzz/Benchmark` declarations and `t.Run(`
   occurrences in `*_test.go` files of the public packages (same scope as
@@ -61,11 +61,11 @@ semantics owner — definitions do not move into the generator.
   (multiple of 50 within 49 of live).
 - **Computed by:** `utils.TestDocsCountDrift` (`countLibraryTests`).
 
-## Goldens — **336 HTML / 206 pixel**
+## Goldens — **339 HTML / 206 pixel**
 
 - **Definition:** committed baseline files under the golden testdata trees.
 - **Computed by:** `utils.TestDocsCountDrift` (file counts per tree).
-- **HTML (336) vs pixel (206):** the HTML goldens are the per-component
+- **HTML (339) vs pixel (206):** the HTML goldens are the per-component
   rendered-markdown baselines (`utils/golden`, one `.golden` file per
   component variant, class-sorted + EnsureID-normalized) living in each
   package's `testdata/`. The pixel goldens are `visualtest/testdata/*.png`:

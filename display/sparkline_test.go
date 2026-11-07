@@ -215,6 +215,125 @@ func TestSparklineBounds(t *testing.T) {
 	})
 }
 
+func TestSparklineZeroAwareBounds(t *testing.T) {
+	t.Parallel()
+	t.Run("all-positive widens min to 0", func(t *testing.T) {
+		t.Parallel()
+
+		minVal, maxVal := sparklineBounds(SparklineProps{Values: []float64{3, 1, 5}, ZeroAware: true})
+		if minVal != 0 {
+			t.Errorf("expected min=0, got %f", minVal)
+		}
+
+		if maxVal != 5 {
+			t.Errorf("expected max=5, got %f", maxVal)
+		}
+	})
+	t.Run("all-negative widens max to 0", func(t *testing.T) {
+		t.Parallel()
+
+		minVal, maxVal := sparklineBounds(SparklineProps{Values: []float64{-3, -1, -5}, ZeroAware: true})
+		if minVal != -5 {
+			t.Errorf("expected min=-5, got %f", minVal)
+		}
+
+		if maxVal != 0 {
+			t.Errorf("expected max=0, got %f", maxVal)
+		}
+	})
+	t.Run("straddling series unchanged", func(t *testing.T) {
+		t.Parallel()
+
+		minVal, maxVal := sparklineBounds(SparklineProps{Values: []float64{-3, 5}, ZeroAware: true})
+		if minVal != -3 {
+			t.Errorf("expected min=-3, got %f", minVal)
+		}
+
+		if maxVal != 5 {
+			t.Errorf("expected max=5, got %f", maxVal)
+		}
+	})
+	t.Run("ShowZeroLine implies zero-aware", func(t *testing.T) {
+		t.Parallel()
+
+		minVal, maxVal := sparklineBounds(SparklineProps{Values: []float64{3, 1, 5}, ShowZeroLine: true})
+		if minVal != 0 {
+			t.Errorf("expected min=0 (implied), got %f", minVal)
+		}
+
+		if maxVal != 5 {
+			t.Errorf("expected max=5, got %f", maxVal)
+		}
+	})
+	t.Run("explicit overrides win over widening", func(t *testing.T) {
+		t.Parallel()
+
+		floor := 1.0
+
+		minVal, maxVal := sparklineBounds(SparklineProps{Values: []float64{3, 1, 5}, ZeroAware: true, Min: &floor})
+		if minVal != 1 {
+			t.Errorf("expected min=1 (explicit), got %f", minVal)
+		}
+
+		if maxVal != 5 {
+			t.Errorf("expected max=5, got %f", maxVal)
+		}
+	})
+}
+
+func TestSparklineZeroY(t *testing.T) {
+	t.Parallel()
+	// Domain [-10, 10] at height 40: zero is the vertical midpoint.
+	if got := sparklineZeroY(-10, 10, 40); got != 20 {
+		t.Errorf("expected zeroY=20 for straddling domain, got %d", got)
+	}
+	// Domain [0, 10]: zero sits on the bottom edge.
+	if got := sparklineZeroY(0, 10, 40); got != 40 {
+		t.Errorf("expected zeroY=40 for non-negative domain, got %d", got)
+	}
+	// Domain [-10, 0]: zero sits on the top edge.
+	if got := sparklineZeroY(-10, 0, 40); got != 0 {
+		t.Errorf("expected zeroY=0 for non-positive domain, got %d", got)
+	}
+}
+
+func TestSparklineResponsiveMarkup(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Sparkline(SparklineProps{
+		Values:     []float64{1, 2, 3},
+		Responsive: true,
+	}))
+	utils.AssertContains(t, output, `viewBox="0 0 120 30"`)
+	utils.AssertContains(t, output, `preserveAspectRatio="none"`)
+	utils.AssertContainsAll(t, output, "w-full", "h-auto")
+	utils.AssertContains(t, output, `vector-effect="non-scaling-stroke"`)
+	utils.AssertNotContains(t, output, `width="120"`)
+}
+
+func TestSparklineFixedModeUnchanged(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Sparkline(SparklineProps{Values: []float64{1, 2, 3}}))
+	utils.AssertContains(t, output, `width="120"`)
+	utils.AssertContains(t, output, `height="30"`)
+	utils.AssertNotContains(t, output, "viewBox")
+	utils.AssertNotContains(t, output, "vector-effect")
+	utils.AssertNotContains(t, output, "preserveAspectRatio")
+}
+
+func TestSparklineZeroLineMarkup(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Sparkline(SparklineProps{
+		Values:       []float64{-5, 5},
+		ShowZeroLine: true,
+	}))
+	utils.AssertContains(t, output, "<line")
+	utils.AssertContains(t, output, `stroke-opacity="0.25"`)
+	// Zero is the vertical midpoint of a straddling domain on the 30px canvas.
+	utils.AssertContains(t, output, `y1="15"`)
+	plain := utils.Render(t, Sparkline(SparklineProps{Values: []float64{-5, 5}}))
+	utils.AssertNotContains(t, plain, "<line")
+}
+
 func TestSparklineDefaults(t *testing.T) {
 	t.Parallel()
 
