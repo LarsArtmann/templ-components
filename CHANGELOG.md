@@ -139,6 +139,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Datastar CSP docs told consumers to ship `'unsafe-eval'` when the pinned
+  runtime ships a CSP mode.** `docs/datastar-runtime-facts.md` §CSP claimed
+  `data-*` expressions require `'unsafe-eval'`; decoding the pinned v0.6.1
+  bundle (Datastar 1.0.3) shows eval via `Function()` is only the DEFAULT —
+  with `<html data-nonce="…">` the runtime executes expressions as nonce'd
+  inline scripts, so `script-src 'nonce-…'` suffices without eval (an empty
+  attribute throws loudly at init; Trusted Types enforcement gets a
+  self-registered identity policy). The section now documents the mechanics,
+  caveats, and the script-nonce ⇄ `data-nonce` pairing; a new "verified
+  present, unmodeled" section catalogs the rest of the real runtime surface
+  (`on-signal-patch`, `viewTransitionSelector`, `filterSignals`,
+  `openWhenHidden`, `onlyIfMissing`, `setAll`/`toggleAll`/`peek`;
+  `@query`/clipboard/Rocket explicitly absent); the `~12–15 KiB` bundle-size
+  claims became the measured 33,538 raw bytes; and
+  `TestPinnedRuntimeBundleContract` pins the new tokens so a future pin bump
+  can never silently regress CSP mode or the unmodeled surface.
 - **StatCard's htmx tile and clickable rows focus in the accent family.**
   The interactive-tile focus ring and the clickable-row outline were written
   against the pre-emission palette, so a keyboard user tabbing to an `HxGet`
