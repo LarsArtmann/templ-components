@@ -1116,6 +1116,7 @@ func demoPageProps(title, description string) layout.PageProps {
 	props.CSSPath = demoURL("/css/app.css")
 	props.Favicon = demoURL("/favicon.svg")
 	props.HeadContent = demoFonts("demo-nonce")
+	props.HTMLDataAttrs = layout.DatastarNonceAttrs("demo-nonce")
 
 	return props
 }

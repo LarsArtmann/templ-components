@@ -55,6 +55,7 @@ func demoShellPageProps(meta demoPageMeta, nonce string) layout.PageProps {
 	props.CSSPath = demoURL("/css/app.css")
 	props.Favicon = demoURL("/favicon.svg")
 	props.HeadContent = demoHead(meta, nonce)
+	props.HTMLDataAttrs = layout.DatastarNonceAttrs(nonce)
 
 	return props
 }
