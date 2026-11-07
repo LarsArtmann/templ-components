@@ -3,6 +3,7 @@ package wire
 import (
 	"fmt"
 	"maps"
+	"sort"
 	"strings"
 
 	"github.com/a-h/templ"
@@ -248,6 +249,32 @@ type Action struct {
 	// (bundle-decoded). Reveal.Exit is Datastar-only — htmx degrades to the
 	// entry trigger.
 	Reveal *Reveal
+	// Headers adds request headers to the exchange — auth tokens, CSRF
+	// headers, correlation IDs. Both dialects: htmx renders hx-headers (a
+	// JSON object, key-sorted for deterministic output); Datastar merges the
+	// object into the fetch call via the ONE options object's headers key
+	// (bundle-verified: Object.assign into the outgoing headers).
+	Headers map[string]string
+	// Payload overrides the request body. The STRING is rendered verbatim
+	// and the two runtimes interpret it DIFFERENTLY (documented asymmetry):
+	// htmx renders hx-vals, whose value is a JSON OBJECT of form params
+	// ({"id": 3}); Datastar renders the payload option, whose value is the
+	// RAW request body ('…'). Consumers must author the string for their
+	// dialect or set it only on actions they know are single-dialect.
+	Payload string
+	// SignalsFilter narrows which signals ride a Datastar request body:
+	// rendered as the fetch option filterSignals {include: /…/} — one
+	// regex alternation of the escaped patterns. Datastar-only (htmx has no
+	// signal tree to filter — the ignore row documents that); nil/empty
+	// keeps the runtime default (include everything, exclude _-local
+	// signals — see runtime-facts "verified present, unmodeled").
+	SignalsFilter []string
+	// OpenWhenHidden continues the exchange while the tab is hidden.
+	// Datastar-only (htmx keeps polling via its own trigger machinery — the
+	// ignore row documents that). Rendered ONLY when it differs from the
+	// runtime default: @get defaults to false (emit true to opt in), every
+	// write method defaults to true (emit false to opt out).
+	OpenWhenHidden bool
 }
 
 // Attributes renders the action as templ attributes in the transport's
@@ -294,6 +321,14 @@ func (a Action) htmxAttributes() templ.Attributes {
 		attrs["hx-swap"] = style
 	}
 
+	if len(a.Headers) > 0 {
+		attrs["hx-headers"] = sortedJSON(a.Headers)
+	}
+
+	if a.Payload != "" {
+		attrs["hx-vals"] = a.Payload
+	}
+
 	return attrs
 }
 
@@ -332,7 +367,7 @@ func (a Action) datastarAttributes() templ.Attributes {
 			key += fmt.Sprintf("__throttle.%dms", a.ThrottleMS)
 		}
 
-		attrs[key] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector)
+		attrs[key] = datastarActionExpr(a)
 	}
 
 	maps.Copy(attrs, a.datastarTriggerAttrs())
@@ -380,28 +415,79 @@ func htmxMethod(m Method) string {
 //
 // Single quotes are escaped so a URL, selector, or mode cannot inject into the
 // expression (mirrors the datastar package's actionExpr).
-func datastarActionExpr(
-	method Method,
-	url string,
-	contentType ContentType,
-	selector string,
-) string {
+func datastarActionExpr(a Action) string {
 	var opts []string
 
-	if selector != "" && contentType == ContentTypeForm {
-		opts = append(opts, fmt.Sprintf("selector: '%s'", escapeSingleQuotes(selector)))
+	if a.Selector != "" && a.ContentType == ContentTypeForm {
+		opts = append(opts, fmt.Sprintf("selector: '%s'", escapeSingleQuotes(a.Selector)))
 	}
 
-	if contentType == ContentTypeForm {
+	if a.ContentType == ContentTypeForm {
 		opts = append(opts, "contentType: 'form'")
 	}
 
-	base := fmt.Sprintf("@%s('%s')", method, escapeSingleQuotes(url))
+	if len(a.Headers) > 0 {
+		opts = append(opts, fmt.Sprintf("headers: %s", sortedJSON(a.Headers)))
+	}
+
+	if a.Payload != "" {
+		opts = append(opts, fmt.Sprintf("payload: '%s'", escapeSingleQuotes(a.Payload)))
+	}
+
+	if len(a.SignalsFilter) > 0 {
+		opts = append(opts, fmt.Sprintf("filterSignals: {include: /%s/}", signalsFilterRegex(a.SignalsFilter)))
+	}
+
+	// OPT-IN ONLY: emit openWhenHidden: true; the zero value keeps the
+	// runtime's per-method default (false for @get, true for writes —
+	// bundle decode, runtime-facts fetch-options destructure) and renders
+	// nothing, keeping every existing expression byte-identical.
+	if a.OpenWhenHidden {
+		opts = append(opts, "openWhenHidden: true")
+	}
+
+	base := fmt.Sprintf("@%s('%s')", a.method(), escapeSingleQuotes(a.URL))
 	if len(opts) == 0 {
 		return base
 	}
 
-	return fmt.Sprintf("@%s('%s', {%s})", method, escapeSingleQuotes(url), strings.Join(opts, ", "))
+	return fmt.Sprintf("@%s('%s', {%s})", a.method(), escapeSingleQuotes(a.URL), strings.Join(opts, ", "))
+}
+
+// sortedJSON marshals a string map with SORTED keys: encoding/json/v2 does
+// not sort map keys, and both rendered outputs (hx-headers, the datastar
+// headers option) are pinned byte-for-byte by tests — map iteration order
+// would make those pins flaky.
+func sortedJSON(m map[string]string) string {
+	keys := make([]string, 0, len(m))
+	for key := range m {
+		keys = append(keys, key)
+	}
+
+	sort.Strings(keys)
+
+	pairs := make([]string, 0, len(keys))
+	for _, key := range keys {
+		pairs = append(pairs, fmt.Sprintf("%q:%q", key, m[key]))
+	}
+
+	return "{" + strings.Join(pairs, ",") + "}"
+}
+
+// signalsFilterRegex builds ONE regex-literal alternation from the patterns,
+// escaping regex metacharacters and the literal's own delimiter (/) so a
+// pattern cannot terminate the regex or inject flags. Datastar's default
+// include is /.*/ — a filter here REPLACES it, so patterns are the full
+// include list.
+func signalsFilterRegex(patterns []string) string {
+	escaped := make([]string, 0, len(patterns))
+	for _, pattern := range patterns {
+		pattern = strings.ReplaceAll(pattern, `\`, `\\`)
+		pattern = strings.ReplaceAll(pattern, `/`, `\/`)
+		escaped = append(escaped, pattern)
+	}
+
+	return strings.Join(escaped, "|")
 }
 
 // escapeSingleQuotes makes a value safe inside a single-quoted JS string

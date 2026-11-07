@@ -163,12 +163,7 @@ func (a Action) datastarTriggerAttrs() templ.Attributes {
 	attrs := templ.Attributes{}
 
 	if interval := NormalizedInterval(a.Interval); interval != "" {
-		attrs["data-on-interval__duration."+interval] = datastarActionExpr(
-			a.method(),
-			a.URL,
-			a.ContentType,
-			a.Selector,
-		)
+		attrs["data-on-interval__duration."+interval] = datastarActionExpr(a)
 	}
 
 	if a.Reveal != nil {
@@ -195,7 +190,7 @@ func (a Action) datastarTriggerAttrs() templ.Attributes {
 			key += "__exit"
 		}
 
-		attrs[key] = datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector)
+		attrs[key] = datastarActionExpr(a)
 	}
 
 	if len(attrs) == 0 {
