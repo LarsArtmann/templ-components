@@ -1,6 +1,7 @@
 package display
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/a-h/templ"
@@ -273,7 +274,7 @@ func TestTabsWire(t *testing.T) {
 			Wire: original,
 		}))
 
-		if *original != snapshot {
+		if !reflect.DeepEqual(*original, snapshot) {
 			t.Errorf("Tabs mutated the consumer's action: %+v", *original)
 		}
 
