@@ -530,3 +530,27 @@ toolchain. Fixed by rewording the comment (no full utility token in prose);
 rule of thumb: **never write a complete class token in a comment of any
 scanned file type** — prose should break the token (call it "the accent-600
 bar tint"), exactly like the rendered-HTML comment rule in AGENTS.md.
+
+## 2026-11-07 — daemon MERGE commits + a dev-binary dupl verdict (§duplpin)
+
+Two new daemon/tooling failure classes, found while resuming the bar-chart
+branch. (1) The daemon's 60s budget hit while the tree had unstaged churn, and
+instead of a plain commit it created a MERGE commit of master into the branch
+and committed app.css WITH literal `<<<<<<< HEAD` markers (277,587 bytes —
+both sides concatenated), then in a follow-up pass stripped the go.mod sibling
+require pins to `v0.0.0-00010101000000-000000000000` — the exact state
+`check-replace-directives.sh` and the M18 tagging policy reject. Recovery
+recipe (worked first try): mixed reset onto the master tip, `git restore
+go.mod`, regenerate BOTH generated artifacts at the tip (`nix run .#css` +
+`scripts/gen-class-inventory.sh` — the working tree's "resolved" app.css
+turned out to be byte-identical to the fresh regen), then soft-fold the
+daemon commits into one real commit. (2) The previous session's VERDICT PASS
+had carried `[dupl: art-dupl version dev]`: /tmp was cleaned between runs,
+the pinned binary vanished, and the lane's PATH fallback silently used a dev
+build whose hashes match nothing in the baseline — its "0 new clones" was
+noise. Fix: the lane now IGNORES any candidate whose version lacks the pinned
+rev (stderr note), auto-builds via `scripts/pinned-art-dupl.sh`, and on build
+failure reports an explicit `dupl: dupl-skip` — a wrong-binary result can
+never ride a PASS again. Rule: treat ANY daemon commit touching generated
+artifacts, go.mod, or tooling as untrusted until tree-verified; the daemon
+committed the hardening edit itself within seconds of it leaving the editor.

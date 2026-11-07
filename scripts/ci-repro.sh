@@ -340,24 +340,49 @@ fi
 # bare "exit 1" here could be version skew, not real clones. Running it beside
 # every verdict makes drift visible without blocking the ritual.
 step "art-dupl clone gate (ADVISORY — reported beside the verdict, never fails the run)"
-DUPL_BIN="${ART_DUPL_BIN:-}"
-if [ -z "$DUPL_BIN" ] && [ -x /tmp/art-dupl-fork ]; then
-	DUPL_BIN=/tmp/art-dupl-fork
-elif [ -z "$DUPL_BIN" ]; then
-	DUPL_BIN="$(command -v art-dupl 2>/dev/null || true)"
+DUPL_PIN="$(sed -n 's/^PINNED_REV="\([^"]*\)".*/\1/p' scripts/pinned-art-dupl.sh 2>/dev/null || true)"
+DUPL_RECORDED="$(sed -n 's/.*"recordedAt": "\([^"]*\)".*/\1/p' .art-dupl-baseline.json 2>/dev/null || true)"
+echo "baseline recordedAt: ${DUPL_RECORDED:-UNKNOWN} (pinned rev: ${DUPL_PIN:-UNKNOWN})"
+
+# Only a binary built at the pinned rev may produce gate results: any other
+# build's hashes can match nothing in the baseline, turning "0 new clones"
+# into noise while the verdict still reads green (2026-11-07: a dev build rode
+# a PASS as "[dupl: art-dupl version dev]"). Mismatched candidates are ignored,
+# a pinned binary is auto-built via scripts/pinned-art-dupl.sh, and a failed
+# build leaves an explicit dupl-skip in the verdict — never a silent fallback.
+dupl_is_pinned() {
+	local ver="$1"
+	[ -n "$DUPL_PIN" ] && [ -n "$ver" ] && printf '%s' "$ver" | grep -q "${DUPL_PIN:0:12}"
+}
+
+DUPL_BIN=""
+for _cand in "${ART_DUPL_BIN:-}" /tmp/art-dupl-fork "$(command -v art-dupl 2>/dev/null || true)"; do
+	[ -n "$_cand" ] && [ -x "$_cand" ] || continue
+	if dupl_is_pinned "$($_cand --version 2>&1 | head -1)"; then
+		DUPL_BIN="$_cand"
+		break
+	fi
+	echo "candidate $_cand is NOT the pinned rev — ignored (ADR-0009; its hashes may match nothing)" >&2
+done
+
+if [ -z "$DUPL_BIN" ]; then
+	echo "no pinned art-dupl binary found — auto-building via scripts/pinned-art-dupl.sh"
+	if scripts/pinned-art-dupl.sh >/tmp/art-dupl-build.log 2>&1 \
+		&& [ -x /tmp/art-dupl-fork ] \
+		&& dupl_is_pinned "$(/tmp/art-dupl-fork --version 2>&1 | head -1)"; then
+		DUPL_BIN=/tmp/art-dupl-fork
+	else
+		echo "auto-build FAILED — last lines of /tmp/art-dupl-build.log:" >&2
+		tail -5 /tmp/art-dupl-build.log >&2 2>/dev/null || true
+	fi
 fi
+
 if [ -z "$DUPL_BIN" ]; then
 	DUPL_VER="dupl-skip"
-	echo "SKIP: no art-dupl binary (set ART_DUPL_BIN or build the fork — see docs/adr/0009-accepted-clones.md)"
+	echo "SKIP: no art-dupl binary at the pinned rev — the clone gate did NOT run (build via scripts/pinned-art-dupl.sh; see docs/adr/0009-accepted-clones.md)"
 else
 	DUPL_VER="$("$DUPL_BIN" --version 2>&1 | head -1)"
 	echo "binary: $DUPL_BIN ($DUPL_VER)"
-	DUPL_PIN="$(sed -n 's/^PINNED_REV="\([^"]*\)".*/\1/p' scripts/pinned-art-dupl.sh 2>/dev/null || true)"
-	DUPL_RECORDED="$(sed -n 's/.*"recordedAt": "\([^"]*\)".*/\1/p' .art-dupl-baseline.json 2>/dev/null || true)"
-	echo "baseline recordedAt: ${DUPL_RECORDED:-UNKNOWN} (pinned rev: ${DUPL_PIN:-UNKNOWN})"
-	if [ -n "$DUPL_PIN" ] && [ -n "$DUPL_VER" ] && ! echo "$DUPL_VER" | grep -q "${DUPL_PIN:0:12}"; then
-		echo "WARNING: resolved binary is NOT the pinned rev ($DUPL_PIN) — its hashes may match nothing in the baseline (ADR-0009); build via scripts/pinned-art-dupl.sh" >&2
-	fi
 	set +e
 	DUPL_OUT="$("$DUPL_BIN" check -c .art-dupl.json -t 1 --type-aware 2>&1)"
 	DUPL_EXIT=$?
