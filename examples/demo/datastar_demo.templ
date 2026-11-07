@@ -83,6 +83,32 @@ templ datastarDemo() {
 		and the demo settles after 3 ticks:
 	</p>
 	@datastarPolledStatsRegion(0)
+	@demoSection("Datastar Signals", "datastar-signals")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Server-pushed values without any HTML round-trip: the endpoint streams
+		<code>datastar-patch-signals</code> SSE events (JSON merge-patch) and the
+		<code>data-text</code> bindings below re-render on every tick. Recipe:
+		<code>docs/recipes/datastar-signals-live-data.md</code>. The live numbers
+		bind as plain <code>data-text</code> nodes on purpose — StatCard keeps
+		its present API (todo #16 verdict: recipe-first; a
+		<code>ValueAttrs</code>-style slot would be a separate owner-gated API
+		change).
+	</p>
+	<div
+		data-init={ datastar.Get(demoURL("/api/datastar/signals")) }
+		data-signals="{'metrics': {users: 1204, rps: 37}}"
+	>
+		<dl class="grid grid-cols-2 gap-4">
+			<div class="rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
+				<dt class="text-sm text-gray-500 dark:text-gray-400">Users online</dt>
+				<dd class="text-2xl font-semibold text-gray-900 dark:text-gray-100 tabular-nums" data-text="$metrics.users">1204</dd>
+			</div>
+			<div class="rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
+				<dt class="text-sm text-gray-500 dark:text-gray-400">Requests / s</dt>
+				<dd class="text-2xl font-semibold text-gray-900 dark:text-gray-100 tabular-nums" data-text="$metrics.rps">37</dd>
+			</div>
+		</dl>
+	</div>
 	@demoSection("Datastar Action Expressions", "datastar-actions")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
 		Typed helpers for building Datastar action expressions:

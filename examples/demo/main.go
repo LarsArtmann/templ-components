@@ -3,6 +3,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -71,6 +72,48 @@ func writeDatastarPatch(w io.Writer, selector, mode, html string) error {
 	b.WriteString("\n")
 
 	_, err := io.WriteString(w, b.String())
+
+	return err
+}
+
+// demoMetricsSnapshot is the signals-patch payload for the signals demo
+// card. Structs, not maps: encoding/json/v2 does NOT sort map keys, and the
+// wire format is pinned byte-for-byte by sse_test.go, so the payload shape
+// must be deterministic.
+type demoMetricsSnapshot struct {
+	Metrics struct {
+		Users int `json:"users"`
+		RPS   int `json:"rps"`
+	} `json:"metrics"`
+}
+
+// writeDatastarSignals writes one datastar-patch-signals SSE event in the
+// Datastar v1 wire format:
+//
+//	event: datastar-patch-signals
+//	data: signals {"metrics":{"users":1237,"rps":44}}
+//
+// The dataline payload is a JSON MERGE PATCH (RFC 7396 — the pinned bundle's
+// handler is literally mergePatch): nested objects deep-merge into the
+// client's signal tree, so each tick only carries the changed values and the
+// data-text bindings re-render without any HTML round-trip. Same framing
+// rules as writeDatastarPatch: real newlines per dataline, blank-line event
+// terminator. Format recipe: docs/recipes/datastar-signals-live-data.md;
+// pinned by TestWriteDatastarSignalsWireFormat.
+func writeDatastarSignals(w io.Writer, patch any) error {
+	buf, err := json.Marshal(patch)
+	if err != nil {
+		return err
+	}
+
+	var b strings.Builder
+	b.WriteString("event: datastar-patch-signals\n")
+	b.WriteString("data: signals ")
+	b.Write(buf)
+	b.WriteString("\n")
+	b.WriteString("\n")
+
+	_, err = io.WriteString(w, b.String())
 
 	return err
 }
@@ -368,6 +411,57 @@ func newMux() *http.ServeMux {
 				if _, err := io.WriteString(w, ": ping\n\n"); err != nil {
 					return // client went away
 				}
+				flusher.Flush()
+			}
+		}
+	})
+
+	// Mock Datastar signals endpoint — streams datastar-patch-signals
+	// events (JSON merge-patch) for the signals demo card; the data-text
+	// bindings re-render without any HTML round-trip. Values are
+	// deterministic functions of the tick count so the demo is stable
+	// across reloads. Same SSE hygiene as /api/datastar/stream above.
+	mux.HandleFunc("/api/datastar/signals", func(w http.ResponseWriter, r *http.Request) {
+		flusher, ok := w.(http.Flusher)
+		if !ok {
+			http.Error(w, "streaming not supported", http.StatusInternalServerError)
+
+			return
+		}
+
+		http.NewResponseController(w).SetWriteDeadline(time.Time{})
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("X-Accel-Buffering", "no")
+
+		ctx := r.Context()
+		ticks := time.NewTicker(time.Second)
+		defer ticks.Stop()
+		keepalive := time.NewTicker(15 * time.Second)
+		defer keepalive.Stop()
+
+		i := 0
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticks.C:
+				i++
+
+				var snap demoMetricsSnapshot
+				snap.Metrics.Users = 1204 + (i*7)%400
+				snap.Metrics.RPS = 37 + (i*3)%25
+
+				if err := writeDatastarSignals(w, snap); err != nil {
+					return // client went away
+				}
+
+				flusher.Flush()
+			case <-keepalive.C:
+				if _, err := io.WriteString(w, ": ping\n\n"); err != nil {
+					return // client went away
+				}
+
 				flusher.Flush()
 			}
 		}

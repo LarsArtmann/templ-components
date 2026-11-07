@@ -44,6 +44,32 @@ func TestDatastarPatchWireFormat(t *testing.T) {
 	}
 }
 
+// TestWriteDatastarSignalsWireFormat pins the datastar-patch-signals frame:
+// event name (the ONLY other registered handler in the v1 runtime), a single
+// "signals" dataline carrying the JSON merge-patch payload, blank-line
+// terminator. The payload is a struct because encoding/json/v2 does not sort
+// map keys — a map here would make this pin flaky.
+func TestWriteDatastarSignalsWireFormat(t *testing.T) {
+	var b strings.Builder
+
+	var snap demoMetricsSnapshot
+	snap.Metrics.Users = 1237
+	snap.Metrics.RPS = 44
+
+	err := writeDatastarSignals(&b, snap)
+	if err != nil {
+		t.Fatalf("writeDatastarSignals returned error: %v", err)
+	}
+
+	want := "event: datastar-patch-signals\n" +
+		`data: signals {"metrics":{"users":1237,"rps":44}}` + "\n" +
+		"\n"
+
+	if got := b.String(); got != want {
+		t.Errorf("writeDatastarSignals output mismatch:\ngot:  %q\nwant: %q", got, want)
+	}
+}
+
 // TestDatastarPatchPreservesBlankLines pins the <pre> round-trip: interior
 // blank lines are emitted as empty-value datalines ("data: elements " with
 // trailing space) which the runtime joins back to "\n". Dropping them used to
