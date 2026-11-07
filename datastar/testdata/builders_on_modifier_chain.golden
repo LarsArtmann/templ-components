@@ -1,0 +1,1 @@
+<span data-on:submit__prevent__debounce.300ms="@post(&#39;/api/form&#39;)">payload</span>

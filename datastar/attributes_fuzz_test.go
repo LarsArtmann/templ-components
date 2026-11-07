@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	templruntime "github.com/a-h/templ/runtime"
 	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 )
 
 // Fuzz builders (plan T13): hostile inputs must never panic, never produce
@@ -42,18 +42,23 @@ func fuzzCheckAttrs(t *testing.T, name string, attrs templ.Attributes) {
 }
 
 func FuzzBuilders(f *testing.F) {
-	f.Add("$count++", "click", "users", map[string]any{"k": 1})
-	f.Add(`'; alert(1); '`, "click", "Users", map[string]any{"k": "v"})
-	f.Add("@get('/x')", "keydown", "metrics.users", map[string]any{"nested": map[string]any{"deep": true}})
-	f.Add("<script>alert(1)</script>", "datastar-fetch", "__bad", map[string]any{"a": []int{1, 2}})
-	f.Add("$a\n$b", "load", "_local", map[string]any{"": ""})
+	f.Add("$count++", "click", "users")
+	f.Add(`'; alert(1); '`, "click", "Users")
+	f.Add("@get('/x')", "keydown", "metrics.users")
+	f.Add("<script>alert(1)</script>", "datastar-fetch", "__bad")
+	f.Add("$a\n$b", "load", "_local")
 
-	f.Fuzz(func(t *testing.T, expr, event, name string, values map[string]any) {
+	f.Fuzz(func(t *testing.T, expr, event, name string) {
 		fuzzCheckAttrs(t, "Show", Show(expr))
 		fuzzCheckAttrs(t, "Text", Text(expr))
 		fuzzCheckAttrs(t, "Bind", Bind(SignalName(name)))
 		fuzzCheckAttrs(t, "Computed", Computed(SignalName(name), expr))
-		fuzzCheckAttrs(t, "Signals", Signals(values))
+
+		// Signals: hostile strings ride as JSON VALUES — the payload must
+		// marshal or degrade to nil, never panic.
+		fuzzCheckAttrs(t, "Signals", Signals(map[string]any{
+			"fuzz": map[string]any{"expr": expr, "name": name},
+		}))
 
 		chain := On(event, expr).Prevent().Debounce(100).Throttle(100)
 		fuzzCheckAttrs(t, "On", chain.Attrs())
@@ -71,7 +76,7 @@ func TestBuildersRenderSafeAttributes(t *testing.T) {
 
 	hostile := map[string]templ.Attributes{
 		"show":     Show(`'$x' + "</span><script>alert(1)</script>"`),
-		"computed": Computed("ok", `"</div>` + "`" + `"`),
+		"computed": Computed("ok", `"</div>`+"`"+`"`),
 		"on":       On("click", `'; fetch("//evil.example") ; '`).Attrs(),
 	}
 
@@ -94,16 +99,19 @@ func TestBuildersRenderSafeAttributes(t *testing.T) {
 
 		rendered := b.String()
 
-		// After the opening quote of the value, a raw double quote would end
-		// the attribute and any following character would escape the tag.
+		// The invariant: the FIRST raw double quote after the value's opening
+		// quote must be the value's closing quote, immediately followed by
+		// the tag end — templ's HTML escaping (&#34; etc.) must have consumed
+		// every hostile quote INSIDE the value, so nothing escapes the
+		// attribute boundary.
 		valueStart := strings.Index(rendered, `="`)
 		if valueStart < 0 {
 			t.Fatalf("%s: no attribute value found in %q", name, rendered)
 		}
 
 		inner := rendered[valueStart+2:]
-
-		if closer := strings.Index(inner, `"`); closer != len(inner)-3 { // the final `"></span>` close
+		closer := strings.Index(inner, `"`)
+		if closer < 0 || !strings.HasPrefix(inner[closer:], `"></span>`) {
 			t.Errorf("%s: hostile value broke the attribute boundary: %q", name, rendered)
 		}
 	}

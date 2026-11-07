@@ -1,0 +1,1 @@
+<span data-on:click="$count++">payload</span>

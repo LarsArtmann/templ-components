@@ -1,0 +1,1 @@
+<span data-show="$n &gt; 0 &amp;&amp; $label != &#39;x&#39;">payload</span>

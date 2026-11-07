@@ -1,9 +1,13 @@
 package datastar
 
 import (
+	"context"
+	"strings"
 	"testing"
 	"time"
 
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/golden"
 )
@@ -124,4 +128,48 @@ func TestGoldenSweepSSEErrorHandling(t *testing.T) {
 			DurationMS: 6000,
 		}))},
 	})
+}
+
+// renderAttrs renders builder output the way templ does inside a real element
+// (templruntime.RenderAttributes), so the golden pins the escaped HTML bytes,
+// not the raw map.
+func renderAttrs(attrs templ.Attributes) string {
+	var b strings.Builder
+
+	b.WriteString("<span")
+
+	if err := templruntime.RenderAttributes(context.Background(), &b, &b, "span", attrs); err != nil {
+		b.WriteString(" RENDER-ERROR: " + err.Error())
+	}
+
+	b.WriteString(">payload</span>")
+
+	return b.String()
+}
+
+func TestGoldenSweepBuilders(t *testing.T) {
+	t.Parallel()
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "builders_show", HTML: renderAttrs(Show("$user.visible"))},
+		{Name: "builders_text", HTML: renderAttrs(Text("$metrics.users"))},
+		{Name: "builders_bind", HTML: renderAttrs(Bind("email"))},
+		{Name: "builders_computed", HTML: renderAttrs(Computed("total", "$price * $qty"))},
+		{Name: "builders_signals", HTML: renderAttrs(Signals(map[string]any{
+			"metrics": map[string]any{"users": 1204, "camelKey": true},
+		}))},
+		{Name: "builders_on_plain", HTML: renderAttrs(On("click", "$count++").Attrs())},
+		{Name: "builders_on_modifier_chain", HTML: renderAttrs(
+			On("submit", buildersDemoActionExpr()).Prevent().Debounce(300).Attrs(),
+		)},
+		// The expression carries a string literal + comparison: quotes and
+		// angle brackets must render HTML-escaped but otherwise verbatim.
+		{Name: "builders_expression_verbatim", HTML: renderAttrs(Show(`$n > 0 && $label != 'x'`))},
+	})
+}
+
+// buildersDemoActionExpr composes the chain test through the package's own
+// action constructor so the golden pins a real-world expression shape.
+func buildersDemoActionExpr() string {
+	return Post("/api/form")
 }
