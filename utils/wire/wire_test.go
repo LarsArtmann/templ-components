@@ -883,7 +883,8 @@ func TestSignalsFilterAndOpenWhenHidden(t *testing.T) {
 		t.Errorf("datastar filterSignals missing or unescaped: %q", ds["data-on:click"].(string))
 	}
 
-	if got := Get("/api/x").WithOpenWhenHidden(true).TransportDatastarAction().Attributes()["data-on:click"].(string); !strings.Contains(got, "openWhenHidden: true") {
+	getOptIn := Get("/api/x").WithOpenWhenHidden(true).TransportDatastarAction().Attributes()
+	if got := getOptIn["data-on:click"].(string); !strings.Contains(got, "openWhenHidden: true") {
 		t.Errorf("@get with OpenWhenHidden=true must emit the option: %q", got)
 	}
 
