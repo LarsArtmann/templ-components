@@ -580,7 +580,7 @@ func TestDatastarCSPEvalCostProbe(t *testing.T) {
 
 		runs := make([]float64, 0, rounds)
 
-		for range rounds {
+		for round := range rounds {
 			var perEval float64
 
 			if err := chromedp.Do(ctx,
@@ -588,7 +588,7 @@ func TestDatastarCSPEvalCostProbe(t *testing.T) {
 				pollTrue(`window.__dsReady===true`, chromedp.WithPollingTimeout(15*time.Second)),
 				evalExprInto(probeExpr, &perEval),
 			); err != nil {
-				t.Fatalf("probe round %d (strict=%v): %v", i, strict, err)
+				t.Fatalf("probe round %d (strict=%v): %v", round, strict, err)
 			}
 
 			runs = append(runs, perEval)
