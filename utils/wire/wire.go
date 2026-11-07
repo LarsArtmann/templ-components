@@ -427,7 +427,7 @@ func datastarActionExpr(a Action) string {
 	}
 
 	if len(a.Headers) > 0 {
-		opts = append(opts, fmt.Sprintf("headers: %s", sortedJSON(a.Headers)))
+		opts = append(opts, "headers: "+sortedJSON(a.Headers))
 	}
 
 	if a.Payload != "" {
