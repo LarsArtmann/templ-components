@@ -64,8 +64,8 @@ func TestTableRowHref(t *testing.T) {
 		}))
 		utils.AssertContainsAll(t, html,
 			"focus-visible:outline-2",
-			"focus-visible:outline-blue-600",
-			"dark:focus-visible:outline-blue-400",
+			"focus-visible:outline-accent-600",
+			"dark:focus-visible:outline-accent-400",
 		)
 	})
 

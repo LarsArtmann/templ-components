@@ -94,6 +94,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **StatCard's htmx tile and clickable rows focus in the accent family.**
+  The interactive-tile focus ring and the clickable-row outline were written
+  against the pre-emission palette, so a keyboard user tabbing to an `HxGet`
+  tile saw a blue ring while the identical linked tile focused accent, and a
+  clickable row outlined blue between accent sort links. Both affordances
+  were added by the same-window defects sweep, which copied the then-blue
+  linked ring; the emission merge landed their neighbors but not them.
+  Shade-preserving swaps, pinned by the row-href assertions and the
+  `stat_card_htmx` golden.
 - **`display.Grid` auto-fit mode actually generates its CSS.** `MinColWidth`
   was concatenated into an arbitrary utility at render time
   (`[grid-template-columns:repeat(auto-fit,minmax(190px,1fr))]`), which
