@@ -92,9 +92,31 @@ type BarChartProps struct {
 	Gap string
 
 	// Height sets the chart container height (CSS value, e.g. "8rem").
-	// Essential for vertical charts — percentage bar heights need a
-	// definite parent height. No effect on horizontal.
+	// Vertical bars are percentage heights — they need a definite ancestor
+	// height to resolve against, so empty defaults to 12rem (previously the
+	// bars silently collapsed to 0px, #48). Tailwind class strings like
+	// `h-40` are invalid here; set a CSS value. No effect on horizontal.
 	Height string
+
+	// MaxBarWidth caps each vertical bar column (Tailwind max-width class,
+	// e.g. "max-w-16") so small-N series do not stretch into giant blocks;
+	// the capped track is centered (#59). Empty = uncapped (each column
+	// takes an equal share of the full width, the historical behavior). No
+	// effect on horizontal.
+	MaxBarWidth string
+
+	// ShowBaseline draws a hairline at the zero position of a vertical
+	// chart (#59). Signed series (any negative value) always draw it — the
+	// zero line is what makes the sign readable — so this only adds the
+	// line for all-positive data. No effect on horizontal.
+	ShowBaseline bool
+
+	// NegativeBarColor colors vertical bars with negative values — a
+	// complete light+dark bg-* literal (e.g. "bg-rose-700 dark:bg-rose-500")
+	// so the sign survives the render (#59). Default:
+	// "bg-rose-600 dark:bg-rose-500". No effect on horizontal (which clamps
+	// negatives to zero-width today).
+	NegativeBarColor tone.ColorClass
 }
 
 const (
@@ -103,9 +125,18 @@ const (
 	defaultLabelWidth  = "w-32"
 	defaultMinBarWidth = "min-w-12"
 	defaultVerticalGap = "gap-2"
-	percentScale       = 100.0
-	percentRound       = 10.0
-	zeroPercent        = "0.0%"
+	// defaultVerticalHeight resolves the percentage-height bars when the
+	// consumer sets no Height — without a definite height they collapsed
+	// to 0px (the #48 bug class).
+	defaultVerticalHeight = "12rem"
+	// defaultNegativeBarColor keeps signed series readable: negatives take
+	// the danger family instead of losing their sign (#59).
+	defaultNegativeBarColor = "bg-rose-600 dark:bg-rose-500"
+	percentScale            = 100.0
+	percentRound            = 10.0
+	zeroPercent             = "0.0%"
+	// percentScalePct is the full-range percentage as a CSS string.
+	percentScalePct = "100.0%"
 )
 
 // DefaultBarChartProps returns sensible defaults for a bar chart.
@@ -133,6 +164,50 @@ func barChartMax(bars []BarChartBar, override float64) float64 {
 
 		return maxVal
 	})
+}
+
+// barChartBounds returns the signed plotting bounds of a vertical series:
+// the largest positive value (or the Max override when set) and the most
+// negative one (clamped at zero — a series without negatives plots on a
+// bottom baseline exactly like the historical unsigned rendering).
+func barChartBounds(bars []BarChartBar, maxOverride float64) (float64, float64) {
+	maxVal := barChartMax(bars, maxOverride)
+	minVal := 0.0
+
+	for _, b := range bars {
+		if b.Value < minVal {
+			minVal = b.Value
+		}
+	}
+
+	return maxVal, minVal
+}
+
+// barChartSignedPlacement returns the CSS placement of one vertical bar in
+// the signed plot area: how far the zero line sits above the bottom (a
+// percentage), the top offset a hanging (negative) bar anchors at, the bar
+// height (a percentage of the full signed range), and whether the value is
+// negative. An all-zero or degenerate range collapses to the bottom baseline.
+func barChartSignedPlacement(
+	value, maxVal, minVal float64,
+) (string, string, string, bool) {
+	total := maxVal - minVal
+
+	if total <= 0 {
+		return zeroPercent, percentScalePct, zeroPercent, value < 0
+	}
+
+	zeroPct := (0 - minVal) / total * percentScale
+
+	return formatPct(zeroPct), formatPct(percentScale - zeroPct),
+		formatPct(math.Round(math.Abs(value)/total*percentScale*percentRound) / percentRound),
+		value < 0
+}
+
+// formatPct renders a percentage with one decimal (the bar chart's shared
+// rounding contract).
+func formatPct(v float64) string {
+	return fmt.Sprintf("%.1f%%", math.Round(v*percentRound)/percentRound)
 }
 
 // barValueLabel returns the display string for a bar's value, preferring
