@@ -171,7 +171,7 @@ func tableRowClasses(props TableProps, row TableRow, index int) string {
 		utils.Ternary(row.Href != "", "cursor-pointer", ""),
 		utils.Ternary(
 			row.Href != "",
-			"focus-visible:outline-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400 focus-visible:-outline-offset-2",
+			"focus-visible:outline-2 focus-visible:outline-accent-600 dark:focus-visible:outline-accent-400 focus-visible:-outline-offset-2",
 			"",
 		),
 		row.Class,

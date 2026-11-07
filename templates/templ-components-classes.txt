@@ -1489,7 +1489,7 @@ func statCardInteractiveClass(interactive bool) string {
 		return ""
 	}
 
-	return "cursor-pointer transition-shadow motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 hover:shadow-md dark:hover:shadow-black/20"
+	return "cursor-pointer transition-shadow motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400 hover:shadow-md dark:hover:shadow-black/20"
 }
 
 // StatCard renders a dashboard stat card with value, label, optional change
@@ -9605,7 +9605,7 @@ func tableRowClasses(props TableProps, row TableRow, index int) string {
 		utils.Ternary(row.Href != "", "cursor-pointer", ""),
 		utils.Ternary(
 			row.Href != "",
-			"focus-visible:outline-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400 focus-visible:-outline-offset-2",
+			"focus-visible:outline-2 focus-visible:outline-accent-600 dark:focus-visible:outline-accent-400 focus-visible:-outline-offset-2",
 			"",
 		),
 		row.Class,
