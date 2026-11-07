@@ -53,6 +53,7 @@ func TestGoldenSweepBaseDatastarNonce(t *testing.T) {
 	t.Parallel()
 
 	props := DefaultPageProps()
+	props.Title = "Datastar nonce — layout golden"
 	props.HTMLDataAttrs = DatastarNonceAttrs("csp-nonce-1")
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
