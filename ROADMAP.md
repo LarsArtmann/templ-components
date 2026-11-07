@@ -278,3 +278,10 @@ Raw ideas that stayed open across the pre-2026-10 status/planning corpus (739 op
 | CSS-in-JS                     | Tailwind v4 utility classes are the styling standard.                                                                                                                                          |
 | Node.js dependency            | Zero Node.js runtime requirement is a hard constraint.                                                                                                                                         |
 | Headless / unstyled variants  | ADR-0021: existing `Class` override suffices. Closed v1.1.0.                                                                                                                                   |
+
+## Datastar upstream watch-list (2026-11-07)
+
+- **v1.0.4+ deltas to model at the next pin bump** (see TODO #504): `@query()`/QUERY action (QUERY-method requests with signals in the body), aliased nonce attributes (`data-star-nonce` for aliased bundles), the #1205 `requestCancellation: 'cleanup'` race fixes (LiveRegion's direct beneficiary), #1145 object-signal deletion fix.
+- **Rocket** (free `datastar-rocket.js` bundle since v1.0.4): a beta web-component API — OUT of scope per ADR-0033 unless that ADR is ever revisited; revisit trigger: a consumer ask for client-side component authoring on top of templ-components.
+- **Pro plugins** (commercial license, verified 2026-11-07): data-animate, data-custom-validity, data-match-media, data-on-raf, data-on-resize, data-persist, data-query-string, data-replace-url, data-scroll-into-view, data-view-transition; @clipboard(), @fit(), @intl(); bundler, inspector, Stellar CSS. Non-goals for the library (no Pro dependency); individual modeling asks would need a free-runtime equivalent or an explicit owner call.
+- **View-transition selector** (dataline present at the 1.0.3 pin, unmodeled): probe verdict pending (TODO #505); if GO, `PatchTarget.ViewTransitionSelector` extends wire.Handler.

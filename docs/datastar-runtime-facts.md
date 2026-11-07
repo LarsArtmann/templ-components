@@ -353,6 +353,12 @@ tokens below are the provable ones (all in `TestPinnedRuntimeBundleContract`):
 - **Signal-patch dataline** — `onlyIfMissing`.
 - **Listener plugin** — registered `name:"on-signal-patch"` (attribute
   `data-on-signal-patch`): client-side reactions to server signal patches.
+  Composition note: SSEErrorHandling does NOT observe signal patches — its
+  listener is scoped to `datastar-fetch` lifecycle events only, so a
+  signal-patch stream that never opens a fetch action (pure SSE via
+  EventSource) reports no errors through it; consumers wanting error
+  observability on signal-only streams combine both (fetch-based streams
+  already fire the lifecycle events — see the signals recipe).
 - **Utility actions/plugins** — `setAll`, `toggleAll` (action registry,
   `V({name:"setAll",apply…})`) and `peek` (`name:"peek"`).
 - **Explicitly ABSENT at this pin** — the `@query`/QUERY action (upstream
