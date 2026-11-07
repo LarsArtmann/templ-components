@@ -78,7 +78,7 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 	// 'unsafe-eval', no 'unsafe-inline', no 'strict-dynamic' — a nonce'd
 	// inline script is the only allowed script source, which is exactly the
 	// contract the runtime's CSP mode must satisfy.
-	csp := "default-src 'none'; script-src 'nonce-" + nonce + "'; style-src 'self'; " +
+	csp := "default-src 'none'; script-src 'nonce-" + nonce + "' 'report-sample'; style-src 'self'; " +
 		"connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
 
 	patchHeaders := func(w http.ResponseWriter, selector, mode string) {
@@ -108,7 +108,7 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 				Nonce: nonce,
 				Src:   "/datastar.js",
 			}),
-			feedback.ToastContainer(""),
+			feedback.ToastContainer(nonce),
 			datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{Nonce: nonce}),
 		} {
 			if err := component.Render(ctx, w); err != nil {
@@ -141,8 +141,8 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 		// Flow 3: wire debounce modifier on input.
 		if _, err := io.WriteString(w,
 			`>load fragment</button><div id="csp-get-target">idle</div></div>`+
-				`<div id="csp-show" data-signals-cspVisible="false" data-show="$cspVisible">visible text</div>`+
-				`<button id="csp-toggle-btn" type="button" data-on:click="$cspVisible = !$cspVisible">toggle</button>`+
+				`<div id="csp-show" data-signals-cspvisible="false" data-show="$cspvisible">visible text</div>`+
+				`<button id="csp-toggle-btn" type="button" data-on:click="$cspvisible = !$cspvisible">toggle</button>`+
 				`<input id="csp-debounce-input" `); err != nil {
 			return err
 		}
@@ -155,8 +155,8 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 		// Flow 5: on-intersect reveal. Flow 6: on-interval polling.
 		if _, err := io.WriteString(w,
 			` /><div id="csp-debounce-out">unset</div>`+
-				`<div id="csp-slow-region"><button id="csp-slow-btn" type="button" data-indicator:cspBusy data-on:click="@get('/api/csp-slow')">slow load</button>`+
-				`<span id="csp-busy-cue" data-show="$cspBusy">loading…</span><div id="csp-slow-done">pending</div></div>`+
+				`<div id="csp-slow-region"><button id="csp-slow-btn" type="button" data-indicator:cspbusy data-on:click="@get('/api/csp-slow')">slow load</button>`+
+				`<span id="csp-busy-cue" data-show="$cspbusy">loading…</span><div id="csp-slow-done">pending</div></div>`+
 				`<div id="csp-intersect" data-on-intersect="@get('/api/csp-intersect')">reveal region</div>`+
 				`<div id="csp-interval" data-on-interval__duration.1s="@get('/api/csp-interval')">ticks: </div>`); err != nil {
 			return err
@@ -192,7 +192,7 @@ func cspModeE2EServer(t *testing.T) (*httptest.Server, *cspSpikeHits) {
 		`<title>Datastar CSP-mode spike — templ-components</title><link rel="stylesheet" href="/app.css">` +
 		`<script nonce="` + nonce + `">` +
 		`window.__cspViolations=[];` +
-		`document.addEventListener('securitypolicyviolation',function(e){window.__cspViolations.push(e.effectiveDirective+':'+(e.blockedURL||''));});` +
+		`document.addEventListener('securitypolicyviolation',function(e){window.__cspViolations.push(e.effectiveDirective+' sample='+(e.sample||'')+' at '+(e.sourceFile||'')+':'+e.lineNumber+':'+e.columnNumber+' status='+e.statusCode);});` +
 		`window.__dsReady=false;` +
 		`document.addEventListener('datastar-ready',function(){window.__dsReady=true;},{once:true});` +
 		`</script>`
