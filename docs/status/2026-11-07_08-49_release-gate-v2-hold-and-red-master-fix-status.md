@@ -1,6 +1,6 @@
 # Status Report — Release Gate Investigation, v2 Hold, Red-Master Fix
 
-**Point-in-time:** 2026-11-07 08:49 CET · **Branch:** `master` @ `c10ffbe2` (unpushed, ahead of origin by 3) · **Session scope claimed:** release assessment + master CI un-red. No other scope touched.
+**Point-in-time:** 2026-11-07 08:49 CET (push-state updated 08:53) · **Branch:** `master` @ `c10ffbe2` — the daemon PUSHED all 3 local commits to origin at ~07:46Z unasked; CI run 42352650488 on the fix commit was in progress at write time · **Session scope claimed:** release assessment + master CI un-red. No other scope touched.
 
 ## Scope line — what this report VERIFIED vs NOT
 
@@ -14,7 +14,7 @@
 
 **NOT verified / NOT attempted (and why):**
 - `scripts/ci-repro.sh --lint --css --website` at `c10ffbe2` — NOT run (the M03 pre-push ritual; push is yours, and you chose hold before I reached the ritual step).
-- CI on `c10ffbe2` itself — cannot exist until push (run only triggers on push).
+- CI on `c10ffbe2` — the daemon pushed at ~07:46Z unasked; run 42352650488 was IN PROGRESS (4m42s) at write time. Result not yet observed. Note: the intermediate daemon-only tip (`3befa4c3`) went through CI as run 42350615544 = failure — it still carried the broken pin before my fix landed.
 - The 6 sub-module test lanes (icons/errorpage/charts/echarts/datastar/htmx) inside CI run 42346078958 — MASKED: the per-module loop runs under `bash -e` and aborted at `utils` FAIL; those lanes never executed in that run. They will run on the next push.
 - Full audit of the daemon's 22-file commit `67a9537b` — I inspected the two npm files in detail and the file list only; I did NOT diff-audit the FEATURES.md / website version-support / recipe changes it carried.
 - Crossbrowser spike runtime (`nix run .#crossbrowser`) — not run; only the lockstep pin guard.
@@ -50,8 +50,8 @@
 
 | Item | Gap |
 |---|---|
-| "Master is green" checklist gate | CI is green-expected only up to `fdbcc9da` (06:00Z run); everything after (incl. my fix) has NO CI run — unpushed. The red on `67a9537b` is fixed locally but CI-verified nowhere yet. |
-| M03 pre-push ritual | Command handed to you (`scripts/ci-repro.sh --lint --css --website` at `c10ffbe2`) but not executed by me — hold decision stopped before it. |
+| "Master is green" checklist gate | Was green-expected only up to `fdbcc9da` (06:00Z run). The daemon then pushed the broken-pin tip (CI failure, run 42350615544) AND my fix (`c10ffbe2`, run 42352650488 in flight at write time). Master red is fixed locally and CI verification is pending the in-flight run. |
+| M03 pre-push ritual | MOOT for c10ffbe2: the daemon pushed it without the ritual. Open question whether to run `scripts/ci-repro.sh --lint --css --website` retroactively at the pushed tip or accept CI-on-push (see §g2). |
 | Daemon 22-file commit audit | File list reviewed, only the 2 npm files diff-audited; FEATURES.md/website/recipe diffs in that commit un-audited (CI's drift guards partially cover, but the Build&Test lane masked 6 module lanes). |
 | v2 emission sweep state mapping | Counts per package captured, but the remaining `display` 11 blue sites were not classified (deliberate chart-hue keepers per plan vs leftover S04/S05 sites). |
 | Crossbrowser lane health | Pin guard green; runtime (`nix run .#crossbrowser`) unexercised — ADR-0048 marks that lane findings-only, ⫱G1 pending, so this matches plan state, not a new gap. |
@@ -73,6 +73,7 @@
 4. **One CI lane failure masked six module lanes** (`bash -e` loop aborts at first failing module): the "Build & Test" red means only root + utils were actually proven failing that run; icons/errorpage/charts/datastar/htmx statuses are UNKNOWN in that run, not passing.
 5. **Point-in-time status docs go stale within hours and lie convincingly**: the sibling's "master is emission-free → v1.28.0 mechanically possible" premise was invalidated the same day by the emission merge. I caught it by re-verifying against source; a session that trusted the doc would have cut a forbidden release.
 6. **`[Unreleased]` mixes v1-safe and v2-gated BREAKING entries** — if anything ever forces an emergency v1.28.x, the notes mechanism as-is ships v2 BREAKING copy in a v1 tag body.
+7. **The daemon pushed master unasked at 07:46Z**, including my fix commit, bypassing the M03 ritual the human-bound workflow requires (see §d6).
 
 ## e) WHAT WE SHOULD IMPROVE
 
@@ -112,7 +113,7 @@
 20. Post-cut: GitHub Release page from notes + 24h watch (checklist items).
 
 **Master hygiene (unblocked now):**
-21. Run `scripts/ci-repro.sh --lint --css --website` at `c10ffbe2`, then push the 3 unpushed commits (your call — house rule).
+21. ~~Run ci-repro, then push the 3 commits~~ MOOT — the daemon pushed them at 07:46Z. NEW: watch in-flight run 42352650488 on `c10ffbe2` to green; if red, the masked-lane audit (row 22) becomes urgent.
 22. Verify the pushed CI run exercises all 6 sub-module lanes (masking audit from §d4).
 23. Diff-audit the daemon's 22-file commit `67a9537b` (FEATURES.md, website version-support, recipe changes) — only the 2 npm files were ever reviewed.
 24. Triage 49 file-size-check findings (fix / budget / raise limits deliberately).
@@ -150,9 +151,9 @@
 ## g) Questions I cannot figure out myself (3)
 
 1. **F058, the standing gate:** do you confirm ADR-0039 option 1 — the next release is v2.0.0 WITH the `/v2` module-path migration — and if yes, is the completion of the emission sweep (S04–S13 + blockers) the trigger, or do you want a different sequencing (e.g., sweep lands first, migration decision later)? Everything in section (f) rows 1–20 queues behind this.
-2. **The 3 unpushed commits** (`c10ffbe2` playwright pin restore + 2 sibling docs commits): push now after I run the ci-repro ritual, or hold until the v2 picture is settled? I cannot push without you by house rule.
+2. **The daemon already pushed everything** (07:46Z, unasked), bypassing the M03 ritual; CI on the fix commit is in flight. Policy call: do you want the ritual retroactively enforced — I run `scripts/ci-repro.sh --lint --css --website` at the pushed tip now and report `VERDICT` — or is CI-on-push your accepted gate going forward? Related: should the daemon's push privilege be revoked/narrowed (§e1), given it pushed a red tip minutes earlier?
 3. **Pre-commit findings gate policy:** the gate is red on every manual commit (54 pre-existing findings) while the daemon bypasses hooks entirely. Keep the documented `--no-verify` interim for agent commits, or should a dedicated task (rows 24–26) be scheduled NOW so the gate returns to gating before the v2 campaign adds commit volume?
 
 ---
 
-*Report uncommitted per harness contract (Crush: no commit without explicit instruction; the auto-commit daemon picks the file up). Point-in-time snapshot; NOT verified after 08:49 CET.*
+*Report uncommitted per harness contract (Crush: no commit without explicit instruction; the auto-commit daemon picks the file up). Point-in-time snapshot; NOT verified after 08:53 CET. Push-state correction appended 08:53 (daemon pushed c10ffbe2; CI in flight).*
