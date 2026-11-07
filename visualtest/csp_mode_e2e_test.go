@@ -70,7 +70,7 @@ func cspSpikeNonce(t *testing.T) string {
 // the same page WITHOUT the header and WITHOUT data-nonce — the runtime's
 // default Function()-eval mode, which is the control arm of the T04 probe.
 //
-//nolint:gocyclo // fixture server: one handler per flow endpoint is the readable shape
+//nolint:gocyclo,maintidx // fixture server: one handler per flow endpoint is the readable shape
 func cspModeE2EServer(t *testing.T, strict bool) (*httptest.Server, *cspSpikeHits) {
 	t.Helper()
 
