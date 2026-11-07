@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Sparkline renders responsively and shows the zero reference.** The
+  fixed-pixel attrs could not fill a fluid card, and min/max normalization
+  made an all-negative series render as the mirror image of its all-positive
+  twin with no zero reference (#60). `Responsive` renders a viewBox +
+  `w-full h-auto` (Width/Height become the coordinate system,
+  `vector-effect` keeps the stroke crisp), `ZeroAware` widens the domain to
+  include 0, and `ShowZeroLine` draws the muted rule (implying ZeroAware;
+  explicit Min/Max still win). Both modes are pinned by browser tests: the
+  responsive svg stretches into a 600px parent while the fixed control stays
+  at 120px, and the zero line separates signed series on screen.
 - **Vertical BarChart renders signed series with a zero line.** Negative
   values hang below an automatically drawn zero baseline in the danger
   family (`NegativeBarColor`, default rose) instead of collapsing to a

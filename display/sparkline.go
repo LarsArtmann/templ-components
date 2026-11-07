@@ -32,6 +32,25 @@ type SparklineProps struct {
 
 	// Max overrides the auto-computed maximum value (nil = auto from data).
 	Max *float64
+
+	// Responsive stretches the sparkline to its container width: the svg
+	// renders a viewBox (Width × Height become the coordinate system), the
+	// class "w-full h-auto", and preserveAspectRatio="none", with
+	// vector-effect="non-scaling-stroke" keeping the line crisp instead of
+	// smearing when the canvas is scaled. Default: false (fixed pixel
+	// attrs).
+	Responsive bool
+
+	// ZeroAware widens the y-domain to include 0 whenever the series is
+	// single-signed (min(0, dataMin)..max(0, dataMax)), so an all-negative
+	// balance trend no longer renders as the mirror image of its
+	// all-positive twin. ShowZeroLine implies this. Explicit Min/Max still
+	// win. Default: false.
+	ZeroAware bool
+
+	// ShowZeroLine draws a muted reference rule at 0 and implies ZeroAware
+	// (a zero line outside the domain is meaningless). Default: false.
+	ShowZeroLine bool
 }
 
 // Sparkline defaults.
@@ -174,7 +193,15 @@ func sparklineBounds(props SparklineProps) (float64, float64) {
 		}
 	}
 
-	// Apply caller overrides.
+	// Zero-aware: widen the domain to include 0 so single-signed series
+	// (an all-negative balance trend) keep their sign visible. ShowZeroLine
+	// implies it.
+	if props.ZeroAware || props.ShowZeroLine {
+		minVal = min(minVal, 0)
+		maxVal = max(maxVal, 0)
+	}
+
+	// Apply caller overrides after the zero widening — explicit bounds win.
 	if props.Min != nil {
 		minVal = *props.Min
 	}
@@ -188,4 +215,14 @@ func sparklineBounds(props SparklineProps) (float64, float64) {
 	}
 
 	return minVal, maxVal
+}
+
+// sparklineZeroY projects the 0 value onto the SVG canvas for the zero
+// reference rule. The bounds must already include 0 (the widening happens in
+// sparklineBounds), so no clamping of the value itself is needed — only the
+// same canvas-edge clamp sparklinePointCoords applies.
+func sparklineZeroY(minVal, maxVal float64, height int) int {
+	normalized := (0 - minVal) / (maxVal - minVal)
+
+	return min(max(height-int(math.Round(normalized*float64(height))), 0), height)
 }
