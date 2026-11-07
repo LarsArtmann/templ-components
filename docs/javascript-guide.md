@@ -254,7 +254,7 @@ sse.MarshalAndMergeSignals(patchJSON)
 | Transport    | AJAX (fetch) request/response      | SSE streaming                                |
 | DOM updates  | `innerHTML` swap (morph via ext)   | DOM morphing by default (preserves state)    |
 | Client state | None (pair with Alpine.js)         | Built-in reactive signals                    |
-| Bundle size  | ~14KB                              | ~15KB                                        |
+| Bundle size  | ~14KB                              | 33,538 bytes raw at the repo pin (v1.0.3); upstream advertises 11.90 KiB, basis unverified |
 | Expressions  | `hx-*` attributes + hyperscript    | `data-*` attributes use plain JS + `$signal` |
 
 ### Pros / Cons

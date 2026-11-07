@@ -274,10 +274,73 @@ Full audit context: `docs/research/2026-08-21_go-sse-go-datastar-deep-dive.html`
 
 ## CSP
 
-- `data-*` expressions compile via the `Function()` constructor → CSP
-  classifies it as eval → `script-src` needs `'unsafe-eval'`.
-- `'unsafe-inline'` is NOT needed (external module script + nonced inline
-  scripts).
+**CORRECTED (2026-11-07, decoded from the pinned v0.6.1 bundle): the section
+below previously claimed `'unsafe-eval'` is required. It is not — eval is the
+DEFAULT mode; the runtime ships an opt-in CSP mode at this very pin.**
+
+- **Default (no `data-nonce` attribute):** `data-*` expressions compile via
+  the `Function()` constructor → CSP classifies it as eval → `script-src`
+  needs `'unsafe-eval'`. `'unsafe-inline'` is NOT needed (external module
+  script + nonced inline scripts).
+- **CSP mode (opt-in):** the runtime reads `data-nonce` from
+  `document.documentElement` ONCE at init (minified: `wt="data-nonce"`,
+  `tt=getAttribute(wt)`):
+  - Attribute present + nonempty → CSP mode: every runtime-created expression
+    script executes as an INLINE script carrying that nonce (`el.nonce = tt`),
+    so `script-src 'nonce-…'` suffices — **no `'unsafe-eval'`**.
+  - Attribute present but EMPTY throws at init:
+    `"Datastar CSP requires a nonempty html data-nonce."` (loud, not silent).
+  - The attribute is stripped from the DOM at init (`removeAttribute`) — it is
+    an activation flag, not a persistent value.
+  - Under Trusted Types enforcement the runtime self-registers a permissive
+    identity policy named `datastar` (`trustedTypes.createPolicy`) — relevant
+    to any `require-trusted-types-for 'script'` audit.
+  - CSP mode changes the script-creation mechanism only: same plugins, same
+    attribute set, no feature gate in this code path.
+  - The `data-star-nonce` alias does NOT exist at this pin (upstream v1.0.4+).
+- **Caveats (honest):** the evaluation cost of nonce'd scripts vs `Function()`
+  eval is unplotted (micro-benchmark pending); and the library's full
+  attribute set must be browser-proven under CSP mode before any consumer
+  drops `'unsafe-eval'` (e2e spike, 2026-11-07 plan T03). Both facts are
+  guarded by `TestPinnedRuntimeBundleContract` (`data-nonce`, `trustedTypes`,
+  …) — a pin bump that drops the CSP machinery fails CI.
+- **Consumer pairing (what CSP mode needs):** the SAME nonce in TWO places —
+  `datastar.SDKScriptProps.Nonce` (the runtime `<script>` tag) AND
+  `<html data-nonce="…">` (the activation flag; library plumbing for the html
+  attribute is pending, plan T05). One without the other is broken: script
+  without flag → eval attempt → CSP violation; flag without nonced script →
+  the runtime itself is blocked by CSP.
+
+## Verified present, unmodeled (v1.0.3 pin)
+
+Surface that IS in the pinned bundle but has no library API yet. Token
+presence is byte-provable; full attribute names assemble at runtime (plugin
+registrations are `name:"…"` literals; `data-`/`data-on-` prefixes are added
+in code), so the absence of a complete attribute literal proves nothing. The
+tokens below are the provable ones (all in `TestPinnedRuntimeBundleContract`):
+
+- **CSP-mode activation** — `data-nonce` on `<html>` (see §CSP above).
+- **SSE datalines** — `viewTransitionSelector` (per-patch view-transition
+  scoping; sibling of `useViewTransition` in the same response converter,
+  browser probe pending) and `namespace` (patch namespace, default `html`).
+- **Fetch options** (verbatim destructure from the pin):
+  `filterSignals: { include: /.*/, exclude: /(^|\.)_/ }` — by default signals
+  whose name contains a `_` segment are LOCAL and excluded from request
+  bodies (the runtime's built-in local/backend signal split);
+  `openWhenHidden` (per-action default: off for `@get`, on for writes);
+  `payload`; `headers` (merged into the outgoing fetch call,
+  `Object.assign`-verified); `requestCancellation: 'auto'`; `retry: 'auto'`;
+  `retryInterval: 1e3`.
+- **Signal-patch dataline** — `onlyIfMissing`.
+- **Listener plugin** — registered `name:"on-signal-patch"` (attribute
+  `data-on-signal-patch`): client-side reactions to server signal patches.
+- **Utility actions/plugins** — `setAll`, `toggleAll` (action registry,
+  `V({name:"setAll",apply…})`) and `peek` (`name:"peek"`).
+- **Explicitly ABSENT at this pin** — the `@query`/QUERY action (upstream
+  v1.0.4+), `clipboard` (Pro plugin), the `data-star-nonce` alias
+  (v1.0.4+), and any Rocket token. Modeling any of the above is future work
+  (2026-11-07 plan:
+  `docs/planning/2026-11-07_08-21_DATASTAR-CLIENT-SUPERB-PARETO-PLAN.md`).
 
 ## Attribute syntax
 

@@ -65,6 +65,26 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 		`name:"on-intersect"`,
 		"duration",
 		"leading",
+		// CSP-mode machinery (decoded 2026-11-07, see runtime-facts §CSP):
+		// the runtime reads data-nonce from documentElement ONCE at init and,
+		// when it is present and nonempty, executes expressions as nonce'd
+		// inline scripts instead of Function() eval, so script-src 'nonce-…'
+		// suffices without 'unsafe-eval'. trustedTypes is the self-registered
+		// identity policy used under Trusted Types enforcement. A pin bump
+		// that drops either fails here before any consumer CSP flips.
+		"data-nonce",
+		"trustedTypes",
+		// Verified present but UNMODELED surface (runtime-facts §"Verified
+		// present, unmodeled"): the signal-patch listener plugin (attribute
+		// data-on-signal-patch; plugin registrations are name:"…" literals,
+		// the data- prefixes assemble at runtime, so only this literal is
+		// byte-provable), the view-transition-selector dataline, and the
+		// fetch options / datalines below.
+		`name:"on-signal-patch"`,
+		"viewTransitionSelector",
+		"filterSignals",
+		"openWhenHidden",
+		"onlyIfMissing",
 	} {
 		if !strings.Contains(bundle, token) {
 			t.Errorf(

@@ -1,7 +1,8 @@
 // Package datastar provides templ components and helpers for integrating
-// [Datastar] — a ~12 KiB zero-dependency frontend framework that unifies
+// [Datastar] — a zero-dependency frontend framework that unifies
 // HTMX-style backend reactivity with Alpine.js-style frontend reactivity via
-// Server-Sent Events (SSE) and reactive signals.
+// Server-Sent Events (SSE) and reactive signals. The pinned v1.0.3 bundle is
+// 33,538 bytes raw; upstream advertises 11.90 KiB on an unverified basis.
 //
 // This package mirrors the [htmx] package: it emits data-* attributes and
 // injects the Datastar runtime <script> tag without importing any server-side
