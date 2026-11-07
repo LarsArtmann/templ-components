@@ -65,19 +65,15 @@ func (s SignalName) IsValid() bool {
 // which escape safely.
 var eventGrammar = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_.-]*$`)
 
-// escapeExpr makes a string safe inside a single-quoted JS string literal
-// embedded in a data-* expression (mirrors the package's actionExpr
-// escaping): backslashes first, then single quotes, then angle brackets and
-// newlines so a hostile expression can never close the attribute or inject a
-// script boundary. `$` and `;` are left alone — the builder only guarantees
-// the STRING literal boundary, not expression semantics (Datastar
-// expressions are code by design).
-func escapeExpr(s string) string {
-	s = strings.ReplaceAll(s, `\`, `\\`)
-	s = strings.ReplaceAll(s, `'`, `\'`)
+// normalizeExpr makes a consumer expression safe AS AN ATTRIBUTE VALUE: CR/LF
+// collapse to spaces (one statement line). Quotes and angle brackets pass
+// through VERBATELY — they are expression CODE (string literals like
+// @get('/x'), comparisons) that the runtime parses, and the HTML attribute
+// layer is escaped by templ at render time. The builders never interpolate
+// user input INTO an expression; they only carry one.
+func normalizeExpr(s string) string {
 	s = strings.ReplaceAll(s, "\r", " ")
 	s = strings.ReplaceAll(s, "\n", " ")
-	s = strings.ReplaceAll(s, "<", "\\u003c")
 
 	return s
 }
@@ -101,7 +97,7 @@ func Show(expr string) templ.Attributes {
 		return nil
 	}
 
-	return templ.Attributes{"data-show": escapeExpr(expr)}
+	return templ.Attributes{"data-show": normalizeExpr(expr)}
 }
 
 // Text binds an element's text content to an expression (data-text): the
@@ -113,7 +109,7 @@ func Text(expr string) templ.Attributes {
 		return nil
 	}
 
-	return templ.Attributes{"data-text": escapeExpr(expr)}
+	return templ.Attributes{"data-text": normalizeExpr(expr)}
 }
 
 // Bind two-ways an input element to a signal (data-bind:<name>): element
@@ -137,7 +133,7 @@ func Computed(name SignalName, expr string) templ.Attributes {
 		return nil
 	}
 
-	return templ.Attributes{"data-computed:" + string(name): escapeExpr(expr)}
+	return templ.Attributes{"data-computed:" + string(name): normalizeExpr(expr)}
 }
 
 // Signals declares initial signal values (data-signals): the JSON object
@@ -222,5 +218,5 @@ func (o OnExpr) Attrs() templ.Attributes {
 		key += fmt.Sprintf("__throttle.%dms", o.throttleMS)
 	}
 
-	return attrsOrNil(templ.Attributes{key: escapeExpr(o.expr)})
+	return attrsOrNil(templ.Attributes{key: normalizeExpr(o.expr)})
 }

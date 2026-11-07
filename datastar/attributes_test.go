@@ -24,14 +24,14 @@ func TestSignalNameIsValid(t *testing.T) {
 		{"metrics._transient", true},
 		{"user2.name_2", true},
 		{"", false},
-		{"Users", false},             // attribute names lowercase — uppercase would silently mismatch
-		{"camelCase", false},         // use VALUE-borne data-signals JSON for camelCase keys
-		{"metrics__deep", false},     // __ is the modifier delimiter
-		{"a..b", false},              // empty segment
-		{".users", false},            // leading empty segment
-		{"users.", false},            // trailing empty segment
-		{"has space", false},         // no spaces
-		{"has-dash", false},          // dashes are the attribute key delimiter
+		{"Users", false},               // attribute names lowercase — uppercase would silently mismatch
+		{"camelCase", false},           // use VALUE-borne data-signals JSON for camelCase keys
+		{"metrics__deep", false},       // __ is the modifier delimiter
+		{"a..b", false},                // empty segment
+		{".users", false},              // leading empty segment
+		{"users.", false},              // trailing empty segment
+		{"has space", false},           // no spaces
+		{"has-dash", false},            // dashes are the attribute key delimiter
 		{"javascript:alert(1)", false}, // scheme injection
 	} {
 		if got := SignalName(tt.name).IsValid(); got != tt.valid {
@@ -80,9 +80,9 @@ func TestBuilderSpelling(t *testing.T) {
 	t.Parallel()
 
 	cases := []struct {
-		name string
-		attrs templ.Attributes
-		wantKey string
+		name      string
+		attrs     templ.Attributes
+		wantKey   string
 		wantValue string
 	}{
 		{"show", Show("$visible"), "data-show", "$visible"},
@@ -140,25 +140,22 @@ func TestSignalsBuilder(t *testing.T) {
 	}
 }
 
-// TestEscapeExprNeutralizesBoundaries pins the expression-string escaping:
-// single quotes and newlines cannot close the string literal or the
-// attribute, angle brackets cannot open a tag boundary, and backslashes are
-// themselves escaped first so the order is not double-decodable.
-func TestEscapeExprNeutralizesBoundaries(t *testing.T) {
+// TestNormalizeExpr pins the expression-value contract: CR/LF collapse to
+// spaces (one statement line), while quotes and angle brackets pass through
+// VERBATIM — they are expression code (string literals like @get('/x'),
+// comparisons) that the runtime parses; the HTML attribute layer is escaped
+// by templ at render time. Escaping quotes here would MANGLE every
+// datastar.Get-constructed expression.
+func TestNormalizeExpr(t *testing.T) {
 	t.Parallel()
 
-	hostile := `'; </span><script>alert(1)</script>; '`
-	got := escapeExpr(hostile)
+	expr := Get("/api/x")
 
-	if strings.Contains(got, "'") && !strings.Contains(got, `\'`) {
-		t.Errorf("raw single quote survived escaping: %q", got)
+	if got := normalizeExpr(expr); got != expr {
+		t.Errorf("normalizeExpr must leave expression code verbatim: got %q", got)
 	}
 
-	if strings.Contains(got, "<script>") {
-		t.Errorf("script tag survived escaping: %q", got)
-	}
-
-	if strings.Contains(got, "\n") || strings.Contains(got, "\r") {
-		t.Errorf("newline survived escaping: %q", got)
+	if got := normalizeExpr("a\nb\rc"); got != "a b c" {
+		t.Errorf("normalizeExpr must collapse CR/LF to spaces: got %q", got)
 	}
 }
