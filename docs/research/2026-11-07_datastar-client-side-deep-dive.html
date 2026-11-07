@@ -847,3 +847,1097 @@
       }
     </style>
   </head>
+<body>
+    <div class="top-bar">
+      <span>Deep Research &middot; Client-Side Datastar</span>
+      <span>2026-11-07</span>
+      <span>templ-components</span>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#standing">Where we stand</a>
+          <a href="#upstream">Upstream delta</a>
+          <a href="#evidence">Pinned-bundle evidence</a>
+          <a href="#opportunities">Opportunities</a>
+          <a href="#sequence">Recommended sequence</a>
+          <a href="#appendix">Appendix</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="hero">
+          <div class="hero-shapes">
+            <div class="bar"></div>
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="eyebrow">DEEP RESEARCH &middot; 2026-11-07</div>
+          <h1>
+            Datastar on the Client: What templ-components Hasn't Used
+            Yet
+          </h1>
+          <p class="subtitle">
+            The library integrated Datastar well as a
+            <em>transport</em> &mdash; <code>wire</code>, <code>LiveRegion</code>,
+            SSE error handling. This report maps the client-side capabilities of
+            the pinned runtime that the library has not touched, verifies each
+            one against the sha-pinned bundle bytes, and ranks eight concrete
+            improvement opportunities.
+          </p>
+          <div class="meta">
+            <span class="tag amber">Scope: datastar + utils/wire + demo</span>
+            <span class="tag">Pin: Datastar 1.0.3 (go-datastar/static v0.6.1)</span>
+            <span class="tag teal">Upstream: v1.0.4</span>
+          </div>
+        </header>
+
+        <section id="scorecard" class="scorecard">
+          <div class="score-card score-good">
+            <div class="score">15</div>
+            <div class="label">Pinned-bundle facts verified today</div>
+          </div>
+          <div class="score-card score-warn">
+            <div class="score">8</div>
+            <div class="label">Improvement opportunities</div>
+          </div>
+          <div class="score-card">
+            <div class="score">3</div>
+            <div class="label">Do-now items (zero risk)</div>
+          </div>
+          <div class="score-card score-good">
+            <div class="score">0</div>
+            <div class="label">Upstream breaking changes</div>
+          </div>
+        </section>
+
+        <section id="summary">
+          <h2><span class="num">00</span>Summary</h2>
+          <p>
+            <strong>The headline finding: the pinned Datastar 1.0.3 runtime
+            ships an opt-in CSP mode that removes the
+            <code>'unsafe-eval'</code> requirement &mdash; and the library
+            doesn't use it.</strong>
+            Today every Datastar page in this library and its demo demands
+            <code>script-src 'unsafe-eval'</code> because data-attribute
+            expressions compile through the <code>Function()</code> constructor.
+            The pinned bundle instead reads <code>data-nonce="&hellip;"</code>
+            from the <code>&lt;html&gt;</code> element and, when present,
+            executes expressions as nonce'd inline scripts (with a Trusted Types
+            policy when the browser offers one). Adopting it is a library-level
+            plumbing change in <code>layout</code> plus a demo/website CSP
+            tightening &mdash; no version bump required, and it aligns the
+            library with the strict-CSP posture its own docs sell.
+          </p>
+          <p>
+            Behind that headline sit two more structural gaps. First, the
+            library treats Datastar purely as an element-patching transport:
+            nothing consumes <code>datastar-patch-signals</code>, reactive
+            bindings (<code>data-text</code>, <code>data-show</code>,
+            <code>data-on-signal-patch</code>), or the fetch options
+            (<code>headers</code>, <code>payload</code>, <code>filterSignals</code>,
+            <code>openWhenHidden</code>) that are all byte-present in the pinned
+            runtime. Second, half of the planned Tier-B surface from the
+            2026-08 adoption analysis &mdash; typed builders for the reactive
+            markup attributes &mdash; was never built, so consumers who want
+            client-side reactive state have no typed, fuzz-tested API and fall
+            back to raw string attributes.
+          </p>
+          <div class="callout callout-amber">
+            <strong>The bottom line</strong>
+            Nothing here argues for replacing HTMX or re-litigating ADR-0030's
+            transport decision &mdash; the decision ladder stands. The
+            opportunities are: (1) make the Datastar pages we already ship
+            strict-CSP-clean, (2) expose the runtime's signal channel as a
+            first-class, documented pattern, and (3) finish the typed API
+            surface so client-side reactivity is as safe as the transport side
+            already is. Upstream v1.0.4 adds no breaking changes; its
+            <code>requestCancellation</code> race fix is a direct
+            <code>LiveRegion</code> benefit and should be folded into the next
+            scheduled pin bump.
+          </div>
+        </section>
+
+        <section id="standing">
+          <h2><span class="num">&#9670;</span>Where we stand: the integration is strong, the client surface is thin</h2>
+          <p>
+            The 2026-08-02 adoption analysis
+            (<code>docs/research/datastar-integration-analysis.md</code>)
+            recommended Tiers A&ndash;C: coexistence docs, a parallel opt-in
+            <code>datastar</code> package, and SSE-powered capabilities. All
+            three shipped. What the page renders today:
+          </p>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>Surface</th>
+                <th>What exists</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>datastar</code> module</td>
+                <td>
+                  6 components: <code>SDKScript</code>, <code>LiveRegion</code>,
+                  <code>Indicator</code>, <code>LoadingButton</code>,
+                  <code>PolledRegion</code>, <code>SSEErrorHandling</code>; plus
+                  action-expression helpers <code>Get/Post/Put/Patch/Delete</code>
+                  with single-quote escaping, <code>RetryMode</code>,
+                  <code>RequestCancellation</code>, <code>LivePoliteness</code>
+                </td>
+                <td>datastar/ module (FEATURES: 6 components)</td>
+              </tr>
+              <tr>
+                <td><code>utils/wire</code> (ADR-0036/0038)</td>
+                <td>
+                  One <code>wire.Action</code> rendered as
+                  <code>hx-*</code> or <code>data-on:*</code>; response-driven
+                  targeting via <code>wire.Handler(PatchTarget)</code>;
+                  <code>DebounceMS</code>/<code>ThrottleMS</code>,
+                  typed <code>Interval</code>/<code>Reveal</code> triggers
+                  (ADR-0043), <code>DecodeForm[T]</code>, view-transition header
+                </td>
+                <td>utils/wire/wire.go:142, handler.go:103</td>
+              </tr>
+              <tr>
+                <td>Runtime knowledge</td>
+                <td>
+                  <code>docs/datastar-runtime-facts.md</code>: SSE datalines,
+                  lifecycle events, retry matrix, form-encoding path, modifier
+                  grammar &mdash; each bundle-decoded and pinned by contract
+                  tests
+                </td>
+                <td>datastar/bundle_guard_test.go:19 (sha256)</td>
+              </tr>
+              <tr>
+                <td>Demo</td>
+                <td>
+                  Dual-transport wire cards, kanban boards, SSE live region,
+                  polled region; SDKScript loaded in the shell
+                </td>
+                <td>examples/demo/wire_demo.templ, datastar_demo.templ</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            What the library <em>never touches</em> is the other half of the
+            runtime: the client-side reactivity engine. Concretely, across all
+            6 components and every wire rendering there is not one
+            <code>data-signals</code>, <code>data-computed</code>,
+            <code>data-text</code>, <code>data-bind</code>,
+            <code>data-show</code>, or <code>data-on-signal-patch</code>
+            attribute &mdash; and that is by design (rung 7 of the JS decision
+            ladder, <code>docs/javascript-guide.md</code>). The finding of this
+            report is not "start using them everywhere"; it is that the pinned
+            runtime supports a materially richer client contract than the
+            library models, and three specific pieces of it are cheap, safe,
+            and squarely inside the library's job.
+          </p>
+
+          <div class="strengths">
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>The verify-at-source discipline held up again</strong>
+                <span
+                  >Every claim in this report was checked against the pinned
+                  bundle bytes (<code>sha256 5d6b7794&hellip;</code>,
+                  enforced by <code>TestPinnedRuntimeBundleContract</code>),
+                  not against docs. This caught two upstream claims that need
+                  version nuance (see the evidence section).</span
+                >
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Transport abstraction is future-proof</strong>
+                <span
+                  ><code>wire.Action</code> already isolates every dialect
+                  difference that bit us (targeting, swap, form encoding,
+                  prevent-default). The gaps found here slot into the existing
+                  shape as new fields and new modules &mdash; no redesign
+                  needed.</span
+                >
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Graceful degradation everywhere</strong>
+                <span
+                  >Empty URL &rarr; inert; empty signal &rarr; hidden
+                  indicator; unknown enum &rarr; fallback. The same posture
+                  extends cleanly to the recommended additions: every new
+                  attribute builder must render nothing rather than something
+                  wrong.</span
+                >
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Demo exercises both runtimes end-to-end</strong>
+                <span
+                  >Wire cards, kanban, wizard, calendar navigation, and the SSE
+                  live region all run under both transports against real
+                  <code>wire.Handler</code> endpoints &mdash; the parity culture
+                  the recommendations below depend on.</span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="upstream">
+          <h2><span class="num">01</span>Upstream delta: 1.0.3 &rarr; 1.0.4</h2>
+          <p>
+            The pin (<code>go-datastar/static v0.6.1</code> &rarr; runtime
+            <code>1.0.3</code>, <code>DatastarVersion1_0_3</code> derived from
+            <code>static.Version</code>, datastar/version.go:19) is exactly one
+            patch release behind upstream. Release timeline from the
+            starfederation releases page: 1.0.0 &rarr; 1.0.1 (Apr), 1.0.2
+            (Jun), 1.0.3 (Aug), <strong>1.0.4 (Sep 21)</strong>. Year values
+            are inferred from page-relative dates &mdash; flagged in the
+            appendix.
+          </p>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>Release</th>
+                <th>Client-relevant change</th>
+                <th>Matters to this library?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>v1.0.3 <span class="tag">= pin</span></td>
+                <td>
+                  Opt-in CSP mode (no <code>'unsafe-eval'</code>); signals are
+                  resent on retry
+                </td>
+                <td class="yes">
+                  CSP mode: byte-present at the pin, unused by us (this
+                  report's headline)
+                </td>
+              </tr>
+              <tr>
+                <td>v1.0.4 <span class="tag">latest</span></td>
+                <td>
+                  <code>@query()</code> action (HTTP QUERY draft method);
+                  aliased nonce attributes in CSP mode
+                  (<code>data-star-nonce</code>); Rocket split out of Pro into
+                  a free <code>datastar-rocket.js</code> bundle; fixes: action
+                  calls rewritten inside string literals,
+                  <code>requestCancellation: 'cleanup'</code> dispatching after
+                  element removal and superseded-request races (#1205), object
+                  signal key-deletion reactivity (#1145), array-truncation
+                  signal patches, <code>data-json-signals</code> ordering
+                </td>
+                <td class="yes">
+                  #1205 is a direct <code>LiveRegion</code>
+                  <code>CancellationCleanup</code> benefit &mdash; the exact
+                  combination the package godoc recommends for swap-replaced
+                  regions (datastar/doc.go:58-62)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            Bundle distribution practice is unchanged: jsDelivr GitHub path +
+            <code>type="module"</code> ESM is still the documented load method
+            (the <code>SDKScript</code> rendering is current), self-hosting via
+            <code>static.Bytes()</code> remains the recommended production
+            path. The homepage advertises an 11.90&nbsp;KiB core file; the
+            pinned raw bundle measures 33,538 bytes (32.8&nbsp;KiB) &mdash; the
+            advertised figure's compression basis is unverified, so treat the
+            two numbers as different metrics, not a discrepancy.
+          </p>
+          <div class="callout callout-amber">
+            <strong>Rocket: flagged, not claimed</strong>
+            Upstream now ships a separate free bundle
+            <code>datastar-rocket.js</code>. What it does could not be verified
+            this session (docs page 404'd; the search agent was rate-limited).
+            It is listed in the appendix as unverified scope &mdash; do not
+            model or document it until a future session reads its docs at
+            source, per the repo's verify-before-encoding rule.
+          </div>
+        </section>
+
+        <section id="evidence">
+          <h2><span class="num">02</span>Pinned-bundle evidence (verified today)</h2>
+          <p>
+            Method: grepped the sha-pinned bundle
+            (<code>$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.6.1/datastar.js</code>,
+            33,538 bytes) for capability tokens. Two methodological caveats
+            that shaped what may be claimed: <strong>(a)</strong> the bundle is
+            minified, so <code>grep -c</code> counts lines (one giant line) &mdash;
+            occurrence counts came from <code>grep -o | uniq -c</code>;
+            <strong>(b)</strong> plugin attribute names are assembled at
+            runtime from prefixes, so a literal like
+            <code>data-computed</code> greps zero matches even when the plugin
+            exists &mdash; only <em>token presence</em> is provable this way;
+            absence claims below are limited to names that appear as literals
+            in destructures (action/option names), where the reasoning is
+            sound.
+          </p>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>Capability</th>
+                <th>At the pinned 1.0.3 bytes</th>
+                <th>Library models it?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CSP mode via <code>data-nonce</code> on <code>&lt;html&gt;</code></td>
+                <td class="yes">Yes &mdash; token present, mechanics decoded below</td>
+                <td class="no">No &mdash; docs say <code>'unsafe-eval'</code> is required</td>
+              </tr>
+              <tr>
+                <td><code>data-on-signal-patch</code> (react to signal patches)</td>
+                <td class="yes">Yes &mdash; token present once</td>
+                <td class="no">No</td>
+              </tr>
+              <tr>
+                <td><code>viewTransitionSelector</code> SSE dataline</td>
+                <td class="yes">Yes &mdash; present twice (added v1.0.2)</td>
+                <td class="no">
+                  No &mdash; wire models only <code>UseViewTransitions</code>
+                  (the boolean header)
+                </td>
+              </tr>
+              <tr>
+                <td>Fetch options: <code>headers</code>, <code>payload</code>, <code>filterSignals</code></td>
+                <td class="yes">
+                  Yes &mdash; all in the fetch-options destructure
+                </td>
+                <td class="no">No &mdash; no wire.Action fields</td>
+              </tr>
+              <tr>
+                <td><code>openWhenHidden</code> fetch option</td>
+                <td class="yes">Yes &mdash; default off (docs + destructure agree)</td>
+                <td class="no">No &mdash; hidden-tab behavior is fixed</td>
+              </tr>
+              <tr>
+                <td><code>onlyIfMissing</code> signal-patch option</td>
+                <td class="yes">Yes</td>
+                <td class="no">&mdash; (server-side SDK concern)</td>
+              </tr>
+              <tr>
+                <td>Retry machinery constants</td>
+                <td class="yes">
+                  <code>retryInterval=1000</code>,
+                  <code>retryScaler=2</code>,
+                  <code>retryMaxWait=30000</code>,
+                  <code>retryMaxCount=10</code>
+                </td>
+                <td class="yes">Yes &mdash; runtime-facts doc + contract test</td>
+              </tr>
+              <tr>
+                <td>Utility actions <code>@setAll</code>, <code>@toggleAll</code>, <code>@peek</code></td>
+                <td class="yes">Yes</td>
+                <td class="no">No expression helpers</td>
+              </tr>
+              <tr>
+                <td><code>@query()</code> action</td>
+                <td class="no">Absent &mdash; v1.0.4 only</td>
+                <td>&mdash; correctly unmodeled at this pin</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>The CSP-mode decode (the load-bearing one)</h3>
+          <p>
+            From the pinned bytes, the activation and execution path is:
+          </p>
+          <pre><code>wt = "data-nonce"
+tt = documentElement.getAttribute("data-nonce")   // read once at init
+nt = tt !== null                                  // CSP mode if attribute exists
+if (nt) {
+  if (!tt) throw "Datastar CSP requires a nonempty html data-nonce."
+  Mt.removeAttribute(wt)                          // attribute is stripped from the DOM
+  ve = window.trustedTypes?.createPolicy("datastar",
+        { createHTML: e =&gt; e, createScript: e =&gt; e })
+}
+// every runtime-created script:
+Ee = (el, code) =&gt; { if (nt) el.nonce = tt; el.text = ve ? ve.createScript(code) : code }</code></pre>
+          <p>
+            Reading: with <code>data-nonce="&lt;page nonce&gt;"</code> on
+            <code>&lt;html&gt;</code>, the runtime stops compiling expressions
+            via <code>Function()</code> and instead executes them as inline
+            scripts carrying the page's nonce &mdash; which a
+            <code>script-src 'nonce-&hellip;'</code> CSP allows without
+            <code>'unsafe-eval'</code>. An <em>empty</em>
+            <code>data-nonce</code> attribute throws at init (loud, not
+            silent). When Trusted Types are enforced, the runtime
+            self-registers a permissive <code>datastar</code> policy (identity
+            functions) &mdash; worth knowing in a
+            <code>require-trusted-types-for 'script'</code> audit. CSP mode
+            changes the <em>script-creation mechanism</em>, not the plugin set;
+            no feature gate is visible in this path. Two honest caveats for
+            adoption: nonce'd-script execution has a different (plausibly
+            higher) evaluation cost than eval, and the library's exact
+            attribute set (<code>data-init</code>,
+            <code>data-on:*</code> + <code>__debounce</code> modifiers,
+            <code>data-on-interval</code>, <code>data-on-intersect</code>,
+            <code>data-indicator</code>, <code>data-show</code>) must be
+            browser-proven under CSP mode before the docs flip &mdash; the
+            repo's own e2e harness
+            (<code>visualtest/datastar_runtime_e2e_test.go</code>) is the
+            tool.
+          </p>
+          <pre><code>// The fetch-options destructure, minified, verbatim from the pin:
+json, filterSignals: { include: /.*/, exclude: /(^|\.)_/ } = {},
+openWhenHidden: w = n /* false */, payload: y, requestCancellation: A = "auto",
+retry: d = "auto", retryInterval: h = 1e3, ...</code></pre>
+          <p>
+            Note <code>filterSignals</code>' default: local signals whose names
+            contain a <code>_</code> segment (<code>(^|\.)_</code>) are
+            excluded from the request body &mdash; the runtime's built-in
+            local/backend signal split, relevant to any future wire
+            <code>SignalsFilter</code> modeling.
+          </p>
+        </section>
+
+        <section id="opportunities">
+          <h2><span class="num">03</span>Opportunities, ranked</h2>
+          <p>
+            Eight opportunities, ordered by impact. The first four are the
+            substance; five through eight are small or deliberately deferred.
+            None re-litigates the transport decision (ADR-0030) or the JS
+            decision ladder: HTMX stays the default; Datastar stays opt-in.
+          </p>
+
+          <div class="issue issue-critical" id="opp-csp-mode">
+            <span class="severity severity-critical"
+              >Opportunity 1 &middot; High impact &middot; Medium effort &middot; Do first</span
+            >
+            <h3>
+              Adopt CSP mode: drop <code>'unsafe-eval'</code> from every
+              Datastar page
+            </h3>
+            <div class="where">
+              layout.Base/Minimal + DefaultPageProps (attribute goes on
+              &lt;html&gt;) &middot; examples/demo + website/firebase.json CSP
+              headers &middot; docs/datastar-runtime-facts.md &sect;CSP
+            </div>
+            <p>
+              Today <code>'unsafe-eval'</code> rides every Datastar CSP &mdash;
+              demo (<code>withSecurityHeaders</code>), the pinned
+              <code>firebase.json</code> <code>/demo/**</code> header override,
+              and every consumer following the runtime-facts page. That token
+              defeats the strict-CSP posture the library sells ("CSP-safe by
+              construction") and is the single most-exploited CSP weakness in
+              the modern guidance (strict target:
+              <code>script-src 'nonce-&hellip;' 'strict-dynamic'</code> with no
+              eval token). The pinned runtime already ships the answer: put
+              <code>data-nonce="&lt;same nonce&gt;"</code> on
+              <code>&lt;html&gt;</code> and expressions execute as nonce'd
+              inline scripts.
+            </p>
+            <pre><code>// Target surface (illustrative):
+@layout.Base(layout.DefaultPageProps())   // today: no data-nonce anywhere
+
+// proposal: a single opt-in field on the page props
+layout.DefaultPageProps()                 // unchanged, htmx pages untouched
+props.DatastarNonce = demoNonce           // Base renders &lt;html data-nonce=...&gt;
+// consumers pair it with:
+@datastar.SDKScript(datastar.SDKScriptProps{Nonce: demoNonce})</code></pre>
+            <p>
+              Design notes. The attribute must sit on the
+              <code>&lt;html&gt;</code> element &mdash; <code>layout</code> is
+              the only module that renders it, which makes this a
+              <code>PageProps</code>/<code>BaseProps</code>-adjacent field, not
+              an <code>SDKScript</code> prop (the script tag cannot carry it).
+              The runtime strips the attribute at init, so goldens will see it
+              in server HTML &mdash; a golden update, not a problem. Value and
+              script nonce must be <em>the same nonce</em>; document the
+              pairing loudly, because a mismatched value silently fails the
+              CSP (or throws if empty). htmx pages are untouched: the field is
+              opt-in and inert without the Datastar runtime.
+            </p>
+            <div class="callout callout-teal">
+              <strong>Fix path</strong>
+              (1) e2e spike: run the existing Datastar e2e suite against a
+              CSP-mode page (nonce + no <code>'unsafe-eval'</code>) and verify
+              every attribute the library emits still fires &mdash; including
+              <code>__debounce</code> modifiers and the SSE error handler.
+              (2) Plumb the field through <code>layout</code> with goldens.
+              (3) Flip the demo's <code>withSecurityHeaders</code> and the
+              <code>firebase.json</code> override in the same commit (the two
+              must stay equal by rule), regenerate the site CSP via
+              <code>go run ./cmd/site --update-csp</code>.
+              (4) Correct the runtime-facts &sect;CSP section to "eval by
+              default; CSP mode via <code>data-nonce</code>, bundle-verified at
+              the pin" and add the <code>data-nonce</code> token to
+              <code>TestPinnedRuntimeBundleContract</code> so a bump that drops
+              the mechanism fails CI.
+            </div>
+          </div>
+
+          <div class="issue issue-important" id="opp-signals">
+            <span class="severity severity-important"
+              >Opportunity 2 &middot; High impact &middot; Medium effort</span
+            >
+            <h3>
+              Signal-only live data: use the <code>datastar-patch-signals</code>
+              channel the runtime already speaks
+            </h3>
+            <div class="where">
+              datastar.LiveRegion (element-patching only today) &middot; new
+              docs/recipes/datastar-signals-live-data.md &middot; demo
+            </div>
+            <p>
+              Every Datastar streaming path in the repo patches
+              <strong>elements</strong>: <code>LiveRegion</code> docs and the
+              demo stream <code>datastar-patch-elements</code> events with
+              rendered HTML. The pinned runtime also speaks the
+              <strong>signals</strong> channel:
+              <code>datastar-patch-signals</code> SSE events (with
+              <code>onlyIfMissing</code>), consumed reactively by
+              <code>data-text</code>/<code>data-show</code> bindings and the
+              <code>data-on-signal-patch</code> plugin &mdash; all byte-present
+              at the pin, none modeled. For dashboard-shaped pages (this
+              library's stated #1 use case), the difference is structural:
+              an element patch re-renders and re-ships HTML on every tick;
+              a signal patch ships a few JSON bytes and the client re-renders
+              the bound nodes itself.
+            </p>
+            <pre><code>// Target pattern (recipe-shaped, not a new component family):
+@datastar.LiveRegion(datastar.LiveRegionProps{URL: "/stream/metrics", ...}) {
+    @display.StatCard(display.StatCardProps{
+        BaseProps: utils.BaseProps{ID: "users"},
+        Label:     "Active users",
+    })   // StatCard's value node carries data-text="$metrics.users"
+}
+// server: PatchSignals({"metrics.users": 1241}) over the same stream</code></pre>
+            <p>
+              Why a recipe first, not a component: the binding lives on a
+              child element the consumer composes (<code>StatCard</code> has no
+              signal-aware slot yet), and the server side is go-datastar SDK
+              territory (consumer go.mod). The recipe becomes the Datastar twin
+              of <code>docs/recipes/sse-live-rows.md</code> (the htmx
+              SSE-append pattern, shipped for #344) and reuses the existing
+              wire framing: response-driven, id-matched patches stay the
+              element path; signal patches are the additive channel.
+              <code>filterSignals</code>' <code>(^|\.)_</code> local-signal
+              exclusion (verified above) is the doc footnote that keeps mixed
+              local/backend state sane. A demo card proves it in a browser; a
+              future <code>SignalRegion</code>-flavored component (or a
+              signal-aware StatCard slot) is a follow-on only if the recipe
+              shows demand.
+            </p>
+            <div class="callout callout-teal">
+              <strong>Why it matters</strong>
+              This is Datastar's genuine differentiator over htmx (which has no
+              client-side state at all), and it maps onto the component the
+              library already leads with for "dashboard / metrics page". Today
+              the library documents the element channel only &mdash; a consumer
+              reading our docs would never learn the cheaper channel exists.
+            </div>
+          </div>
+
+          <div class="issue issue-important" id="opp-builders">
+            <span class="severity severity-important"
+              >Opportunity 3 &middot; High impact &middot; Medium-high effort</span
+            >
+            <h3>
+              Build the typed reactive attribute builders &mdash; the unbuilt
+              half of Tier B
+            </h3>
+            <div class="where">
+              datastar/ module (new attributes.go) &middot; planned 2026-08-02
+              in docs/research/datastar-integration-analysis.md &sect;Tier B,
+              never shipped
+            </div>
+            <p>
+              The August plan sketched <code>datastar.Text</code>,
+              <code>datastar.Bind</code>, <code>datastar.Show</code>,
+              <code>datastar.Signals</code>, <code>datastar.Computed</code>
+              returning <code>templ.Attributes</code>. What shipped is the
+              transport half only: five action-expression helpers
+              (datastar/indicator.go:53-107) and the six components. The gap
+              shows: consumers who follow the demo's lead
+              (<code>data-on:click={ datastar.Post(url) }</code>) have no
+              typed path for the reactive half and hand-write raw strings
+              &mdash; exactly the surface where this library's value
+              (escaping, validation, graceful degradation) should live.
+            </p>
+            <pre><code>// Target API (matching the repo's conventions):
+datastar.Show("$open")                       // data-show="$open"
+datastar.Text("$metrics.users")              // data-text="..."
+datastar.Bind("query")                       // data-bind:query
+datastar.Signals(map[string]any{"open": false}) // data-signals={JSON}
+datastar.Computed("total", "$price * $qty")  // data-computed:total
+datastar.On("keyup", expr).Debounce(300)     // data-on:keyup__debounce.300ms</code></pre>
+            <p>
+              Safety rules the implementation must carry (each has precedent in
+              the repo): expressions are <strong>code</strong>, so every
+              builder either validates or escapes &mdash; the action helpers'
+              single-quote escaping (fuzz-proven by
+              <code>FuzzActionExpr</code>) extends to all expression-typed
+              arguments; signal names get an identifier grammar (dotted paths,
+              <code>_</code>-local prefix) with an <code>IsValid()</code>-style
+              guard, matching the every-enum-ships-its-test rule; JSON
+              payloads go through <code>templ.JSONString</code> (the Alpine
+              precedent in the JS guide); and the FilterInput design note's
+              rule stands &mdash; no URL string-concatenation helpers, the
+              injection-surface rejection is on record in
+              docs/transport-wiring.md. Degrade empty to nothing, never to
+              something wrong. Goldens + the golden sweep table cover every
+              builder; wire's dialect-contract reflection test
+              (<code>TestEveryActionFieldHasADialectContract</code>) is the
+              model for keeping the builder set exhaustive against the runtime
+              plugin list.
+            </p>
+          </div>
+
+          <div class="issue issue-important" id="opp-wire-options">
+            <span class="severity severity-important"
+              >Opportunity 4 &middot; Medium impact &middot; Medium effort</span
+            >
+            <h3>
+              Model the verified fetch options on
+              <code>wire.Action</code>: <code>Headers</code>,
+              <code>Payload</code>, <code>SignalsFilter</code>,
+              <code>OpenWhenHidden</code>
+            </h3>
+            <div class="where">
+              utils/wire (Action struct + datastarAttributes) &middot; dialect
+              contract: TestEveryActionFieldHasADialectContract (invariants_test.go:517)
+            </div>
+            <p>
+              The pinned destructure accepts four options wire never emits:
+              <code>headers</code> (custom request headers &mdash; htmx twin:
+              <code>hx-headers</code>), <code>payload</code> (explicit request
+              body overriding signal serialization &mdash; nearest htmx twin:
+              <code>hx-vals</code>; asymmetric), <code>filterSignals</code>
+              (send a signal subset &mdash; nearest twin:
+              <code>hx-params</code>; asymmetric), and
+              <code>openWhenHidden</code> (keep fetching while the tab is
+              hidden; default off &mdash; no htmx twin; htmx always polls).
+              Each is a small field plus one dialect-mapping row &mdash; and
+              each is exactly the kind of runtime fact this repo prefers owned
+              by typed fields instead of consumer folklore.
+            </p>
+            <p>
+              <code>OpenWhenHidden</code> is the interesting one:
+              Datastar's default (skip fetch work in hidden tabs) is right for
+              battery, wrong for audit-tail/monitoring regions a consumer
+              deliberately runs in the background &mdash; today there is no
+              way to express that choice through the library. The
+              <code>LiveRegion</code>/<code>PolledRegion</code> props are the
+              natural ride-along surface for the same option. The wire
+              dialect-contract guard makes this addition mechanical: every new
+              field needs its htmx/Datastar row stated (render, ignore, or
+              degrade) in the reflection test, or CI fails &mdash; the guard
+              that caught the orphan <code>__debounce</code> bug in #331.
+            </p>
+          </div>
+
+          <div class="issue issue-important" id="opp-pin-bump">
+            <span class="severity severity-important"
+              >Opportunity 5 &middot; Medium impact &middot; Low-medium effort &middot; Own event</span
+            >
+            <h3>Bump the pin to v1.0.4 at the next scheduled window</h3>
+            <div class="where">
+              datastar go.mod + docs/datastar-runtime-facts.md re-audit +
+              datastar/bundle_guard_test.go + docs/external-dependency-bumps.md
+              protocol
+            </div>
+            <p>
+              No urgency &mdash; zero known 1.0.3 defects in the paths the
+              library uses &mdash; but the delta includes one fix the library's
+              own godoc recommends into exactly the affected area:
+              <code>requestCancellation: 'cleanup'</code> no longer dispatches
+              after the initiating element is removed, and a superseded request
+              can no longer remove its replacement's cleanup (#1205).
+              <code>LiveRegion.CancellationCleanup</code> (the swap-replaced
+              region pattern) inherits both. The bump also unlocks
+              <code>@query()</code>, the <code>data-star-nonce</code> CSP
+              alias, and the expression-rewriting fix for action calls inside
+              string literals. Bundle bytes will change, so this is a full
+              verify-at-source event per docs/external-dependency-bumps.md:
+              diff old/new, re-audit every runtime-facts claim (this report's
+              token table is the checklist), update
+              <code>pinnedBundleSHA256</code>, warm
+              <code>[Unreleased]</code>. Fold it into the window after
+              Opportunity 1 lands so the CSP-mode re-audit runs once, not
+              twice.
+            </p>
+          </div>
+
+          <div class="issue issue-nice" id="opp-vts">
+            <span class="severity severity-nice"
+              >Opportunity 6 &middot; Low-medium impact &middot; Low effort &middot; Verify first</span
+            >
+            <h3>
+              Consider modeling <code>viewTransitionSelector</code> (per-element
+              View Transitions)
+            </h3>
+            <div class="where">
+              utils/wire/handler.go PatchTarget &middot; sibling dataline to the
+              modeled useViewTransition
+            </div>
+            <p>
+              The dataline is byte-present at the pin and unmodeled: wire
+              stamps only the boolean <code>Datastar-Use-View-Transition</code>
+              header. The repo's own finding (runtime-facts, 2026-10-03) is
+              that the non-SSE HTML converter maps kebab-cased dataline names
+              1:1 to response headers, and its <code>namespace</code> sibling
+              rides the same converter &mdash; so
+              <code>Datastar-View-Transition-Selector</code> plausibly works
+              the same way. Plausibly is not proven: the kebab forms are
+              computed, not literals, so grep cannot settle it. One browser
+              probe settles it; if it lands, <code>PatchTarget.ViewTransitionSelector</code>
+              gives per-element transition scoping (animate only the swapped
+              card, not the page) that htmx cannot express per-swap at all.
+            </p>
+          </div>
+
+          <div class="issue issue-nice" id="opp-docs">
+            <span class="severity severity-nice"
+              >Opportunity 7 &middot; Low impact &middot; Low effort &middot; Do now</span
+            >
+            <h3>Docs precision fixes (same-commit material)</h3>
+            <div class="where">
+              docs/datastar-runtime-facts.md &middot; docs/javascript-guide.md
+              &middot; datastar/doc.go
+            </div>
+            <p>
+              Three small corrections surfaced by this research. (1)
+              runtime-facts &sect;CSP states <code>'unsafe-eval'</code> as a
+              requirement; the pinned bundle proves it is the
+              <em>default</em>, with CSP mode as an opt-out &mdash; restate
+              both, with the decode evidence. (2) The JS guide's decision
+              ladder and <code>datastar/doc.go:2</code> carry "~12&ndash;15 KiB"
+              size folklore; the pinned artifact measures 33,538 raw bytes
+              (upstream's advertised 11.90&nbsp;KiB figure has unverified
+              compression basis) &mdash; quote the measured number with the
+              pin. (3) runtime-facts lists the modeled datalines but not
+              <code>viewTransitionSelector</code>/the unmodeled fetch options
+              &mdash; a "verified present, unmodeled" section (or a pointer to
+              this report) prevents the next reader from re-deriving it.
+            </p>
+          </div>
+
+          <div class="issue issue-nice" id="opp-showcase">
+            <span class="severity severity-nice"
+              >Opportunity 8 &middot; Low impact &middot; Low effort &middot; With Opportunity 3</span
+            >
+            <h3>
+              One reactive client-state demo card &mdash; and an explicit
+              non-goal note
+            </h3>
+            <div class="where">
+              examples/demo/datastar_demo.templ &middot; docs/javascript-guide.md
+            </div>
+            <p>
+              The demo teaches both transports for <em>transport</em> patterns
+              but never shows the rung-7 differentiator: declarative
+              client-side state. One card (tabs or a visibility toggle driven
+              by <code>data-signals</code> + <code>data-show</code> through the
+              new builders) closes that. The same section should carry the
+              non-goal in writing: components that already work on native
+              HTML (<code>&lt;details&gt;</code>, Popover API, <code>&lt;dialog&gt;</code>)
+              and singleton scripts stay native-first &mdash; no Datastar
+              twins of Combobox/Tabs/Carousel just because signals could
+              express them. The August analysis' "replace the singleton
+              scripts with signals" idea (its C2/C3) reads today as a ladder
+              violation, not an opportunity; the reactive builders exist for
+              consumers' own glue, not for re-porting the library.
+            </p>
+          </div>
+        </section>
+
+        <section id="sequence">
+          <h2><span class="num">04</span>Recommended sequence</h2>
+          <p>
+            Ordered so each step de-risks the next; findings promoted to work
+            go through a Pareto plan in <code>docs/planning/</code> per the
+            research conventions.
+          </p>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                <strong>Docs corrections (Opportunity 7) &mdash; zero risk, one commit.</strong>
+                Runtime-facts CSP restatement, measured bundle size, unmodeled-capability
+                pointer. No behavior changes; tests untouched.
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                <strong>CSP-mode spike (Opportunity 1).</strong>
+                E2e-proof the library's attribute set under
+                <code>data-nonce</code> with no <code>'unsafe-eval'</code>;
+                measure evaluation cost. This is the gate for everything
+                CSP-related that follows.
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                <strong>Library + demo + website CSP tightening (Opportunity 1).</strong>
+                <code>layout</code> plumbing with goldens; demo
+                <code>withSecurityHeaders</code> and <code>firebase.json</code>
+                flipped together; site CSP regenerated; contract-test token
+                added. Ship only if step 2 is fully green.
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-body">
+                <strong>Signals recipe + demo card (Opportunity 2).</strong>
+                <code>docs/recipes/datastar-signals-live-data.md</code> as the
+                twin of sse-live-rows; one demo streaming
+                <code>datastar-patch-signals</code> into bound StatCards.
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-body">
+                <strong>Typed builders module (Opportunities 3 + 8).</strong>
+                <code>attributes.go</code> with fuzz targets, identifier
+                grammar, goldens, and the reactive demo card as its consumer
+                example.
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">6</div>
+              <div class="step-body">
+                <strong>wire option fields (Opportunity 4) and the pin bump
+                (Opportunity 5), each as its own verified event.</strong>
+                Dialect-contract rows for the four fields; then the
+                <code>external-dependency-bumps.md</code> protocol with this
+                report's token table as the re-audit checklist. Opportunity 6
+                (view-transition selector) rides the bump's re-audit.
+              </div>
+            </div>
+          </div>
+          <div class="callout callout-teal">
+            <strong>Explicit non-goals</strong>
+            No HTMX&rarr;Datastar migration (Tier D stays rejected); no
+            Datastar re-ports of native-first components; no new third-party
+            dependencies (the budget is closed); no modeling of Pro plugins
+            (<code>data-persist</code>, <code>data-animate</code>, router
+            family &mdash; commercial, absent from the free bundle the library
+            pins); no modeling of Rocket until its docs are verified at
+            source.
+          </div>
+        </section>
+
+        <section id="appendix">
+          <h2><span class="num">05</span>Appendix</h2>
+          <h3>Priority matrix</h3>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>Opportunity</th>
+                <th>Impact</th>
+                <th>Effort</th>
+                <th>Gate / guard required</th>
+                <th>Verdict</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1 &middot; CSP mode adoption</td>
+                <td class="yes">High</td>
+                <td>Medium</td>
+                <td>e2e CSP-mode probe + bundle token guard</td>
+                <td class="yes">Do first</td>
+              </tr>
+              <tr>
+                <td>2 &middot; Signal-only live data</td>
+                <td class="yes">High</td>
+                <td>Medium</td>
+                <td>recipe + demo e2e + goldens</td>
+                <td class="yes">Do</td>
+              </tr>
+              <tr>
+                <td>3 &middot; Typed reactive builders</td>
+                <td class="yes">High</td>
+                <td>Med-high</td>
+                <td>fuzz + IsValid + golden sweep</td>
+                <td class="yes">Do</td>
+              </tr>
+              <tr>
+                <td>4 &middot; wire fetch-option fields</td>
+                <td>Medium</td>
+                <td>Medium</td>
+                <td>dialect-contract rows (reflection guard)</td>
+                <td>Plan</td>
+              </tr>
+              <tr>
+                <td>5 &middot; Pin bump 1.0.4</td>
+                <td>Medium</td>
+                <td>Low-med</td>
+                <td>external-deps bump protocol + re-audit</td>
+                <td>Next window</td>
+              </tr>
+              <tr>
+                <td>6 &middot; viewTransitionSelector</td>
+                <td>Low-med</td>
+                <td>Low</td>
+                <td>browser probe first</td>
+                <td>With the bump</td>
+              </tr>
+              <tr>
+                <td>7 &middot; Docs precision fixes</td>
+                <td>Low</td>
+                <td>Low</td>
+                <td>&mdash;</td>
+                <td class="yes">Do now</td>
+              </tr>
+              <tr>
+                <td>8 &middot; Reactive demo card</td>
+                <td>Low</td>
+                <td>Low</td>
+                <td>demo coverage map row</td>
+                <td>With builders</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Evidence tiers</h3>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>Tier</th>
+                <th>Source</th>
+                <th>Used for</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A &middot; Pinned bytes</td>
+                <td>
+                  grep over
+                  <code>go-datastar/static@v0.6.1/datastar.js</code> (sha256
+                  <code>5d6b7794&hellip;</code>, guarded by
+                  <code>TestPinnedRuntimeBundleContract</code>)
+                </td>
+                <td>
+                  All 15 "verified today" facts; CSP decode; fetch-options
+                  destructure
+                </td>
+              </tr>
+              <tr>
+                <td>B &middot; Repo source</td>
+                <td>
+                  datastar/, utils/wire/, docs/ (file:line cited in place)
+                </td>
+                <td>Current library surface; policies; prior analyses</td>
+              </tr>
+              <tr>
+                <td>C &middot; Upstream releases</td>
+                <td>
+                  github.com/starfederation/datastar/releases (retrieved
+                  2026-11-07)
+                </td>
+                <td>1.0.4 delta; release timeline; distribution practice</td>
+              </tr>
+              <tr>
+                <td>D &middot; Flagged unverified</td>
+                <td>&mdash;</td>
+                <td>
+                  Rocket's scope (docs page 404'd this session); calendar
+                  years of release dates (page omits them); the homepage's
+                  11.90&nbsp;KiB figure and its compression basis; whether the
+                  non-SSE header converter accepts
+                  <code>Datastar-View-Transition-Selector</code> (one browser
+                  probe settles it); CSP-mode plugin limitations claimed
+                  anywhere in docs (no feature gate visible in the pinned
+                  bytes &mdash; settle with the step-2 e2e probe)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Reproduction commands</h3>
+          <pre><code>BUNDLE="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.6.1/datastar.js"
+sha256sum "$BUNDLE"          # 5d6b7794a50a83d82da962aec5e382f5ae83ac7afbc751f903f7a9c6bd433c65
+grep -o "data-nonce" "$BUNDLE" | uniq -c
+grep -o "viewTransitionSelector" "$BUNDLE" | uniq -c
+grep -o ".\{20\}Mt.getAttribute(wt).\{300\}" "$BUNDLE"
+grep -o "openWhenHidden.\{40\}" "$BUNDLE" | head -2
+cd datastar &amp;&amp; GOWORK=off go list -m github.com/larsartmann/go-datastar/static  # v0.6.1</code></pre>
+
+          <h3>Sources</h3>
+          <p>
+            Repo: datastar/version.go:19 &middot; datastar/doc.go &middot;
+            datastar/indicator.go:53-107 &middot; datastar/bundle_guard_test.go:19
+            &middot; utils/wire/wire.go:142-243 &middot; utils/wire/handler.go:103
+            &middot; utils/wire/invariants_test.go:517 &middot;
+            docs/datastar-runtime-facts.md &middot; docs/transport-wiring.md
+            &middot; docs/javascript-guide.md &middot;
+            docs/research/datastar-integration-analysis.md &middot;
+            docs/recipes/sse-live-rows.md &middot; AGENTS.md (demo CSP,
+            decision ladder posture). External:
+            github.com/starfederation/datastar/releases &middot;
+            data-star.dev guide (CDN/ESM practice) &middot; modern-web-guidance
+            <code>security</code> guide (strict-CSP target policy: nonce +
+            strict-dynamic, eval excluded; retrieved 2026-11-07). Prior report
+            in this series: docs/research/2026-08-21_go-sse-go-datastar-deep-dive.html
+            (its five findings are all fixed in-tree; no overlap remains).
+          </p>
+        </section>
+
+        <footer class="footer">
+          <p>
+            Generated 2026-11-07 &middot; Verified against pinned bundle
+            go-datastar/static v0.6.1 (Datastar 1.0.3,
+            sha256 5d6b7794&hellip;) and upstream releases through v1.0.4
+            &middot; Every capability claim is tier-sourced; Tier-D items are
+            explicitly flagged as unverified
+          </p>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        var nav = document.querySelector("[data-nav]");
+        if (!nav) return;
+        var links = nav.querySelectorAll('a[href^="#"]');
+        var ids = Array.from(links).map(function (l) {
+          return l.getAttribute("href").slice(1);
+        });
+        var sections = ids
+          .map(function (id) {
+            return document.getElementById(id);
+          })
+          .filter(Boolean);
+        if (!sections.length) return;
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                links.forEach(function (link) {
+                  link.classList.toggle(
+                    "active",
+                    link.getAttribute("href") === "#" + entry.target.id,
+                  );
+                });
+              }
+            });
+          },
+          { rootMargin: "-80px 0px -60% 0px", threshold: 0 },
+        );
+        sections.forEach(function (s) {
+          observer.observe(s);
+        });
+      })();
+    </script>
+</body>
+</html>
