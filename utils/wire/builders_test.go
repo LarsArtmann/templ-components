@@ -1,6 +1,7 @@
 package wire
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 
@@ -84,7 +85,7 @@ func TestBuildersReturnCopiesNeverMutate(t *testing.T) {
 		WithReveal(Reveal{ThresholdPercent: 50}).
 		WithPreventDefault()
 
-	if chained == originalSnapshot {
+	if reflect.DeepEqual(chained, originalSnapshot) {
 		t.Fatal("builder chain returned an identical value — the copy must carry the chain's changes")
 	}
 
@@ -189,7 +190,7 @@ func TestWithFormDefaults(t *testing.T) {
 				t.Errorf("ContentType = %q, want %q", got.ContentType, tt.wantContent)
 			}
 
-			if tt.action != before {
+			if !reflect.DeepEqual(tt.action, before) {
 				t.Errorf("WithFormDefaults mutated the receiver: %+v", tt.action)
 			}
 		})

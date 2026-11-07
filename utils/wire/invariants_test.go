@@ -498,6 +498,10 @@ var actionFieldDialects = map[string]struct {
 	"PreventDefault": {htmx: false, datastar: true},
 	"Interval":       {htmx: true, datastar: true},
 	"Reveal":         {htmx: true, datastar: true},
+	"Headers":        {htmx: true, datastar: true},
+	"Payload":        {htmx: true, datastar: true},
+	"SignalsFilter":  {htmx: false, datastar: true},
+	"OpenWhenHidden": {htmx: false, datastar: true},
 }
 
 // skippedActionFields are not probeable one-field-at-a-time: Transport IS
@@ -590,6 +594,10 @@ var probeValues = map[string]func(*Action){
 	"PreventDefault": func(a *Action) { a.PreventDefault = true },
 	"Interval":       func(a *Action) { a.Interval = "5s" },
 	"Reveal":         func(a *Action) { a.Reveal = &Reveal{ThresholdPercent: 50} },
+	"Headers":        func(a *Action) { a.Headers = map[string]string{"X-CSRF": "tok"} },
+	"Payload":        func(a *Action) { a.Payload = `{"id": 3}` },
+	"SignalsFilter":  func(a *Action) { a.SignalsFilter = []string{"metrics.*"} },
+	"OpenWhenHidden": func(a *Action) { a.OpenWhenHidden = true },
 }
 
 func applyProbeValue(action *Action, field string) {
