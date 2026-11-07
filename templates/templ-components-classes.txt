@@ -26699,7 +26699,7 @@ type OnExpr struct {
 
 // On starts an event-handler builder.
 func On(event, expr string) OnExpr {
-	return OnExpr{event: event, expr: expr}
+	return OnExpr{event: event, expr: expr} //nolint:exhaustruct_v5 // zero values are the no-modifier defaults
 }
 
 // Debounce adds the __debounce.<n>ms modifier (trailing-edge; the runtime's
