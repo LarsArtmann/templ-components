@@ -825,3 +825,77 @@ func TestActionSwap(t *testing.T) {
 		})
 	}
 }
+
+// TestHeadersBothDialects pins the Headers rendering: htmx gets hx-headers as
+// a key-sorted JSON object (encoding/json/v2 does not sort map keys); Datastar
+// merges the same JSON into the ONE fetch options object (the 2026-10-02
+// single-object rule).
+func TestHeadersBothDialects(t *testing.T) {
+	t.Parallel()
+
+	action := Post("/api/save").WithHeaders(map[string]string{"X-Debug": "1", "X-CSRF": "tok"})
+
+	htmx := action.Attributes()
+	if htmx["hx-headers"] != `{"X-CSRF":"tok","X-Debug":"1"}` {
+		t.Errorf("hx-headers = %q, want key-sorted JSON", htmx["hx-headers"])
+	}
+
+	ds := action.TransportDatastarAction().Attributes()
+	if !strings.Contains(ds["data-on:click"].(string), `headers: {"X-CSRF":"tok","X-Debug":"1"}`) {
+		t.Errorf("datastar headers option missing or unsorted: %q", ds["data-on:click"].(string))
+	}
+}
+
+// TestPayloadAsymmetry pins the documented Payload asymmetry: htmx renders
+// hx-vals (JSON object of params), Datastar renders the payload option (raw
+// body string).
+func TestPayloadAsymmetry(t *testing.T) {
+	t.Parallel()
+
+	htmx := Post("/api/x").WithPayload(`{"id": 3}`).Attributes()
+	if htmx["hx-vals"] != `{"id": 3}` {
+		t.Errorf("hx-vals = %q, want the payload verbatim", htmx["hx-vals"])
+	}
+
+	ds := Post("/api/x").WithPayload(`{"id": 3}`).TransportDatastarAction().Attributes()
+	if !strings.Contains(ds["data-on:click"].(string), `payload: '{"id": 3}'`) {
+		t.Errorf("datastar payload option missing: %q", ds["data-on:click"].(string))
+	}
+}
+
+// TestSignalsFilterAndOpenWhenHidden pins the datastar-only rows: SignalsFilter
+// renders a filterSignals include regex under Datastar (patterns escaped, one
+// alternation) and nothing under htmx; OpenWhenHidden renders only when it
+// differs from the runtime's per-method default (false for @get, true for
+// writes).
+func TestSignalsFilterAndOpenWhenHidden(t *testing.T) {
+	t.Parallel()
+
+	htmx := Get("/api/x").WithSignalsFilter([]string{"metrics.*", "a/b"}).Attributes()
+	for key := range htmx {
+		if strings.Contains(key+htmx[key].(string), "filterSignals") {
+			t.Errorf("htmx must ignore SignalsFilter: %v", htmx)
+		}
+	}
+
+	ds := Get("/api/x").WithSignalsFilter([]string{"metrics.*", "a/b"}).TransportDatastarAction().Attributes()
+	if !strings.Contains(ds["data-on:click"].(string), `filterSignals: {include: /metrics.*|a\/b/}`) {
+		t.Errorf("datastar filterSignals missing or unescaped: %q", ds["data-on:click"].(string))
+	}
+
+	if got := Get("/api/x").WithOpenWhenHidden(true).TransportDatastarAction().Attributes()["data-on:click"].(string); !strings.Contains(got, "openWhenHidden: true") {
+		t.Errorf("@get with OpenWhenHidden=true must emit the option: %q", got)
+	}
+
+	if got := Get("/api/x").WithOpenWhenHidden(false).TransportDatastarAction().Attributes()["data-on:click"].(string); strings.Contains(got, "openWhenHidden") {
+		t.Errorf("@get default must omit the option: %q", got)
+	}
+
+	if got := Post("/api/x").WithOpenWhenHidden(false).TransportDatastarAction().Attributes()["data-on:click"].(string); strings.Contains(got, "openWhenHidden") {
+		t.Errorf("zero value must omit the option (runtime per-method default): %q", got)
+	}
+
+	if got := Post("/api/x").WithOpenWhenHidden(true).TransportDatastarAction().Attributes()["data-on:click"].(string); !strings.Contains(got, "openWhenHidden: true") {
+		t.Errorf("POST opt-in must emit openWhenHidden: true: %q", got)
+	}
+}

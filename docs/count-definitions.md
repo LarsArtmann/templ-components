@@ -53,7 +53,7 @@ semantics owner — definitions do not move into the generator.
   icons, errorpage, charts/echarts, htmx, datastar). `visualtest/` and
   `website/` are repo-local and never counted or published.
 
-## Tests — **~1,700 functions + ~1,900 subtests**
+## Tests — **~1750 functions + ~1,900 subtests**
 
 - **Definition:** `func Test/Fuzz/Benchmark` declarations and `t.Run(`
   occurrences in `*_test.go` files of the public packages (same scope as

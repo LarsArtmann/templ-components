@@ -111,7 +111,7 @@ Components build on the native platform first — no polyfills, no framework JS:
 | SVG icons      | 102                                                                               |
 | Typed enums    | 76 (75 with IsValid)                                                              |
 | Packages       | 19 (across 7 Go modules)                                                          |
-| Tests          | ~1,700 test functions + ~1,900 subtests                                           |
+| Tests          | ~1750 test functions + ~1,900 subtests                                           |
 | Visual goldens | 206 pixel-level regression tests (chromedp)                                       |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`)                               |
 | Last verified  | 2026-11-04 (recompute via `go test ./utils/... -run TestDocsCountDrift -count=1`) |
