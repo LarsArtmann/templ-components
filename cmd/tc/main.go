@@ -168,7 +168,7 @@ var packageImports = map[string][]string{
 	},
 
 	pkgDatastar: {
-		impTempl,
+		"attributes.go", 		impTempl,
 		impDatastarStat,
 		impUtils,
 		impUtilsCDN,
@@ -213,7 +213,7 @@ var packageDeps = map[string][]string{
 	},
 	pkgLayout: {
 		"appshell_types.go", "container_types.go",
-		"embed.go", "sri.go", "split_types.go", "stack_types.go",
+		"datastar_nonce.go", 		"embed.go", "sri.go", "split_types.go", "stack_types.go",
 	},
 
 	pkgNav: {"nav_menu_id.go"},
