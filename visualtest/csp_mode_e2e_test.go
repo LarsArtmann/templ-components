@@ -340,57 +340,103 @@ func TestDatastarCSPModeBrowser(t *testing.T) {
 		t.Fatalf("runtime failed to initialize under strict CSP (datastar-ready never fired): %v", err)
 	}
 
-	if err := chromedp.Do(ctx,
-		// Flow 1: wire @get → response-header patch.
+	var violations string
+
+	// flowStep runs one flow in isolation and, on failure, dumps the
+	// violation collector, page state, and endpoint counters — a CSP-mode
+	// failure must name its cause instead of timing out opaquely.
+	flowStep := func(name string, actions ...chromedp.Action[chromedp.Void]) {
+		t.Helper()
+
+		t.Logf("csp flow %s: start", name)
+
+		if err := chromedp.Do(ctx, actions...); err != nil {
+			diag := ""
+
+			_ = chromedp.Do(ctx, evalExprInto(
+				`JSON.stringify({violations: window.__cspViolations, dsReady: window.__dsReady, url: location.href})`,
+				&diag,
+			))
+
+			t.Fatalf(
+				"csp flow %s failed (hits get=%d debounce=%d interval=%d intersect=%d slow=%d post=%d; diag: %s): %v",
+				name, hits.get.Load(), hits.debounce.Load(), hits.interval.Load(),
+				hits.intersect.Load(), hits.slow.Load(), hits.post.Load(), diag, err,
+			)
+		}
+
+		t.Logf("csp flow %s: ok", name)
+	}
+
+	// Flow 1: wire @get → response-header patch.
+	flowStep("get-patch",
 		chromedp.Click("#csp-get-btn", chromedp.NodeVisible),
 		pollTrue(`document.getElementById('csp-get-target').textContent.includes('patched under csp')`, chromedp.WithPollingTimeout(10*time.Second)),
+	)
 
-		// Flow 2: expression evaluation + data-show. Undefined-behavior check
-		// included: the toggle expression must run in CSP mode exactly as in
-		// eval mode.
+	// Flow 2: expression evaluation + data-show. The toggle expression must
+	// run in CSP mode exactly as in eval mode.
+	flowStep("expr-show-toggle",
 		chromedp.Click("#csp-toggle-btn", chromedp.NodeVisible),
 		pollTrue(`document.getElementById('csp-show').offsetParent===null`, chromedp.WithPollingTimeout(10*time.Second)),
+	)
 
-		// Flow 3: wire debounce — one keystroke, one request after quiet.
+	// Flow 3: wire debounce — one keystroke, one request after quiet.
+	flowStep("wire-debounce",
 		chromedp.SendKeys("#csp-debounce-input", "x"),
 		chromedp.Sleep(700*time.Millisecond),
 		pollTrue(`document.getElementById('csp-debounce-out').textContent.includes('debounced')`, chromedp.WithPollingTimeout(10*time.Second)),
+	)
 
-		// Flow 4: indicator visible mid-flight (server sleeps 1.5s), then
-		// hidden after completion.
+	// Flow 4: indicator visible mid-flight (server sleeps 1.5s), then hidden
+	// after completion.
+	flowStep("indicator-lifecycle",
 		chromedp.Click("#csp-slow-btn", chromedp.NodeVisible),
 		pollTrue(`document.getElementById('csp-busy-cue').offsetParent!==null`, chromedp.WithPollingTimeout(3*time.Second)),
 		pollTrue(`document.getElementById('csp-slow-done').textContent.includes('slow done') && document.getElementById('csp-busy-cue').offsetParent===null`, chromedp.WithPollingTimeout(10*time.Second)),
+	)
 
-		// Flow 5: intersect fired on initial visibility.
+	// Flow 5: intersect fired on initial visibility.
+	flowStep("intersect",
 		pollTrue(`document.getElementById('csp-intersect').textContent.includes('seen by intersect')`, chromedp.WithPollingTimeout(10*time.Second)),
+	)
 
-		// Flow 6: interval ticked, then kept ticking.
+	// Flow 6: interval ticked, then kept ticking.
+	flowStep("interval",
 		pollTrue(`document.getElementById('csp-interval').textContent.includes('tick')`, chromedp.WithPollingTimeout(10*time.Second)),
 		chromedp.Sleep(1300*time.Millisecond),
+	)
 
-		// Flow 7: wire ContentTypeForm POST — form+submit auto-preventDefault
-		// (no navigation) and the field value reached the server.
+	// Flow 7: wire ContentTypeForm POST — form+submit auto-preventDefault
+	// (no navigation) and the field value reached the server.
+	flowStep("wire-post-form",
 		chromedp.Click("#csp-post-btn", chromedp.NodeVisible),
 		pollTrue(`document.getElementById('csp-post-out').textContent.includes('echo:csp-value')`, chromedp.WithPollingTimeout(10*time.Second)),
+	)
 
-		// Flow 8: LiveRegion SSE stream patched the child and cleared the
-		// busy cue.
+	// Flow 8: LiveRegion SSE stream patched the child and cleared the busy
+	// cue.
+	flowStep("sse-good-stream",
 		pollTrue(`document.getElementById('csp-live-child').textContent.includes('fresh via csp sse')`, chromedp.WithPollingTimeout(10*time.Second)),
 		pollTrue(`(()=>{const el=document.getElementById('csp-live');return el.getAttribute('aria-busy')===null && !el.hasAttribute('data-tc-live-busy');})()`, chromedp.WithPollingTimeout(10*time.Second)),
+	)
 
-		// Flow 9: SSE error path — 500 dispatches datastar-fetch error, the
-		// component announces and toasts.
+	// Flow 9: SSE error path — 500 dispatches datastar-fetch error, the
+	// component announces and toasts.
+	flowStep("sse-error",
 		chromedp.Click("#csp-bad-btn", chromedp.NodeVisible),
 		pollTrue(`document.getElementById('tc-datastar-announcer').textContent.includes('Stream error')`, chromedp.WithPollingTimeout(10*time.Second)),
 		pollTrue(`(()=>{const toasts=document.querySelectorAll('#tc-toast-container > div');for(const t of toasts){if(t.textContent.includes('live stream endpoint returned an error'))return true;}return false;})()`, chromedp.WithPollingTimeout(10*time.Second)),
-		// The whole point: ZERO CSP violations anywhere in the session. The
-		// collector is captured BEFORE the assert so a failure can report
-		// what actually violated.
+	)
+
+	// The whole point: ZERO CSP violations anywhere in the session. The
+	// collector is captured BEFORE the assert so a failure can report what
+	// actually violated.
+	if err := chromedp.Do(ctx,
 		evalExprInto(`JSON.stringify(window.__cspViolations)`, &violations),
 		pollTrue(`window.__cspViolations.length===0`, chromedp.WithPollingTimeout(5*time.Second)),
 	); err != nil {
-		t.Fatalf("CSP-mode flow battery (violations so far: %s): %v", violations, err)
+		t.Fatalf("CSP violations under nonce'd runtime: %s (%v)", violations, err)
 	}
 
 	if got := hits.debounce.Load(); got != 1 {
