@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **CopyButton works inside swapped fragments.** The per-render singleton
+  script never executes when the button arrives in htmx-swapped HTML —
+  script elements inserted via innerHTML do not run (HTML parsing spec),
+  nonce or not — so the click silently did nothing (#63). A new
+  `CopyButtonScript(nonce)` mounts the delegation script once from the page
+  shell, and `CopyButtonProps.NoScript` skips the per-render emission for
+  fragment-mounted buttons (default unchanged, byte-identical goldens). The
+  component doc comment states the contract.
 - **Sparkline renders responsively and shows the zero reference.** The
   fixed-pixel attrs could not fill a fluid card, and min/max normalization
   made an all-negative series render as the mirror image of its all-positive

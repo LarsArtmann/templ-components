@@ -91,6 +91,7 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 			Nonce: testNonce,
 			Text:  "copy me",
 		}))},
+		{"CopyButtonScript", utils.Render(t, display.CopyButtonScript(testNonce))},
 		{"Lightbox", utils.Render(t, display.Lightbox(display.LightboxProps{
 			Nonce:  testNonce,
 			Images: []display.LightboxImage{{Src: "/x.jpg", Alt: "X"}},

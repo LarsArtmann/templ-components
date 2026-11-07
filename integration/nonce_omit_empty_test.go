@@ -72,6 +72,7 @@ func TestNoEmptyNonceAttribute(t *testing.T) {
 		{"CopyButton", utils.Render(t, display.CopyButton(display.CopyButtonProps{
 			Text: "copy me",
 		}))},
+		{"CopyButtonScript", utils.Render(t, display.CopyButtonScript(""))},
 		{"TableWithRowHref", utils.Render(t, display.Table(display.TableProps{
 			Headers: []string{"Name"},
 			Rows: []display.TableRow{
@@ -158,6 +159,7 @@ func TestEmptyNonceStillRendersScripts(t *testing.T) {
 	mustContainScript := map[string]string{
 		"Modal":               utils.Render(t, display.Modal(display.ModalProps{ID: "m1", Title: "T"})),
 		"CopyButton":          utils.Render(t, display.CopyButton(display.CopyButtonProps{Text: "x"})),
+		"CopyButtonScript":    utils.Render(t, display.CopyButtonScript("")),
 		"GlobalErrorHandling": utils.Render(t, htmx.GlobalErrorHandling(htmx.ErrorHandlingConfig{})),
 		"SSEErrorHandling":    utils.Render(t, datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{})),
 		"MobileMenu": utils.Render(

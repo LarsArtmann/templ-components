@@ -39,6 +39,13 @@ type CopyButtonProps struct {
 	// [data-tc-copy-text] attribute stays as the CSS escape hatch for full
 	// restyling.
 	LabelClass string
+	// NoScript skips the per-render singleton script emission. Set it when
+	// the button renders inside htmx-swapped fragments: script elements
+	// inserted via innerHTML never execute (HTML parsing spec, nonce or
+	// not), so the page shell must mount display.CopyButtonScript once
+	// instead. Default: false (script emitted — page-load behavior
+	// unchanged).
+	NoScript bool
 }
 
 // DefaultCopyButtonProps returns sensible defaults.
@@ -53,6 +60,11 @@ func DefaultCopyButtonProps() CopyButtonProps {
 // CopyButton renders a button that copies the given text to the clipboard.
 // Uses the Clipboard API (navigator.clipboard.writeText) via a singleton
 // event-delegation script. CSP-safe: no inline handlers, nonce-guarded script.
+//
+// Fragment contract: the per-render script executes only at page load —
+// script elements swapped in via innerHTML never run. Inside htmx-managed
+// regions, mount display.CopyButtonScript once in the page shell and set
+// NoScript on those buttons; page-load buttons keep the default emission.
 //
 //	@display.CopyButton(display.CopyButtonProps{Text: "npm install my-package", Label: "Copy install command"})
 //
@@ -130,7 +142,7 @@ func copyButtonContent(icon bool, label, labelClass string) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 61, Col: 53}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 73, Col: 53}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -174,6 +186,10 @@ func CopyButton(props CopyButtonProps) templ.Component {
 			labelClass = "text-gray-700 dark:text-gray-200"
 		}
 		baseClass := utils.Class("inline-flex items-center gap-1.5 rounded-md bg-gray-50 dark:bg-gray-700 px-2.5 py-1 text-xs font-medium text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer", transitionColors, "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400", props.Class)
+		scriptComponent := copyButtonScriptComponent(props.Nonce)
+		if props.NoScript {
+			scriptComponent = templ.NopComponent
+		}
 		if props.Href != "" {
 			{
 				templ_7745c5c3_ElementWriter := templ_7745c5c3_Buffer
@@ -186,7 +202,7 @@ func CopyButton(props CopyButtonProps) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Href).ResolveURL(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 82, Col: 20}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 98, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 				if templ_7745c5c3_Err != nil {
@@ -199,7 +215,7 @@ func CopyButton(props CopyButtonProps) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Text).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 83, Col: 28}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 99, Col: 28}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 				if templ_7745c5c3_Err != nil {
@@ -212,7 +228,7 @@ func CopyButton(props CopyButtonProps) templ.Component {
 				var templ_7745c5c3_Var8 string
 				templ_7745c5c3_Var8, templ_7745c5c3_Err = templruntime.NewAttributeExpression(copied).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 84, Col: 30}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 100, Col: 30}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 				if templ_7745c5c3_Err != nil {
@@ -230,7 +246,7 @@ func CopyButton(props CopyButtonProps) templ.Component {
 					var templ_7745c5c3_Var9 string
 					templ_7745c5c3_Var9, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.ID).Resolve(ctx)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 86, Col: 17}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 102, Col: 17}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 					if templ_7745c5c3_Err != nil {
@@ -271,7 +287,7 @@ func CopyButton(props CopyButtonProps) templ.Component {
 					var templ_7745c5c3_Var12 string
 					templ_7745c5c3_Var12, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.AriaLabel).Resolve(ctx)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 90, Col: 32}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 106, Col: 32}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 					if templ_7745c5c3_Err != nil {
@@ -320,7 +336,7 @@ func CopyButton(props CopyButtonProps) templ.Component {
 				var templ_7745c5c3_Var13 string
 				templ_7745c5c3_Var13, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.Text).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 100, Col: 28}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 116, Col: 28}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 				if templ_7745c5c3_Err != nil {
@@ -333,7 +349,7 @@ func CopyButton(props CopyButtonProps) templ.Component {
 				var templ_7745c5c3_Var14 string
 				templ_7745c5c3_Var14, templ_7745c5c3_Err = templruntime.NewAttributeExpression(copied).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 101, Col: 30}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 117, Col: 30}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 				if templ_7745c5c3_Err != nil {
@@ -351,7 +367,7 @@ func CopyButton(props CopyButtonProps) templ.Component {
 					var templ_7745c5c3_Var15 string
 					templ_7745c5c3_Var15, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.ID).Resolve(ctx)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 103, Col: 17}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 119, Col: 17}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 					if templ_7745c5c3_Err != nil {
@@ -392,7 +408,7 @@ func CopyButton(props CopyButtonProps) templ.Component {
 					var templ_7745c5c3_Var18 string
 					templ_7745c5c3_Var18, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.AriaLabel).Resolve(ctx)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 107, Col: 32}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/copy_button.templ`, Line: 123, Col: 32}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 					if templ_7745c5c3_Err != nil {
@@ -430,7 +446,7 @@ func CopyButton(props CopyButtonProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = copyButtonScriptComponent(props.Nonce).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = scriptComponent.Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

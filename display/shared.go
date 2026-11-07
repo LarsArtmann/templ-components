@@ -196,6 +196,16 @@ func copyButtonScriptComponent(nonce string) templ.Component {
 	return utils.ScriptComponent(nonce, copyButtonJS(), "copy button script")
 }
 
+// CopyButtonScript mounts the clipboard-copy delegation script ONCE from the
+// page shell. Inside htmx-swapped fragments the browser never executes script
+// elements inserted via innerHTML — nonce or not, per the HTML parsing spec —
+// so a CopyButton that arrives in swapped HTML renders a dead click unless
+// the shell mounts this script. Pair it with CopyButtonProps.NoScript on the
+// buttons. Empty nonce omits the attribute (strict-CSP safe).
+func CopyButtonScript(nonce string) templ.Component {
+	return copyButtonScriptComponent(nonce)
+}
+
 // imageFallbackJS returns the singleton JavaScript for image fallback source
 // swapping. Uses event capture (true) because the error event does not bubble.
 // When an img with data-tc-img-fallback fails to load, the src is swapped to
