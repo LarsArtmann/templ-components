@@ -6,6 +6,58 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### The v1.27.0 templ-pairing incident — what shipped broken, how it was caught, how it was unwound
+
+**What shipped broken.** The v1.27.0 migration executed the templ
+v0.3.1100 pairing as one event — 9 go.mod pins, the doctor
+`templGeneratedWith` constant, the flake `templGen` derivation, 147
+regenerated `*_templ.go`, goldens re-recorded — and every guard the plan
+enumerated was updated. What the release shipped anyway: `ci.yaml` was
+still installing the templ **v0.3.1020** generator. The first full-CI
+run after the release went red on **four lanes** because CI regenerated
+every committed `*_templ.go` with the wrong binary. The consumer pairing
+rule was never the failure; the repo's own CI was, and the migration's
+enumeration of generator locations was incomplete — three updated, a
+fourth (the workflow's install step) existed unguarded.
+
+**How it was detected.** The existing tripwires worked exactly where
+they looked — `utils.TestTemplVersionPin` (go.mod ↔ doctor constant) and
+`scripts/check-templ-gate.sh` (pin ↔ flake generator) held — but neither
+covered the workflow's generator pin. Detection came from the boring,
+reliable channel: the first post-release full CI run, red on four lanes
+at once. A follow-up fleet sweep confirmed the consumer-side rule held
+everywhere (CV and media-atlas correctly pinned at v1.26.0/v0.3.1070;
+dnsblockd, InboxClean, browser-history on v1.27.0/v0.3.1100; zero mixed
+pairs).
+
+**How it was unwound.** `fa577e41` (2026-11-06) — one commit, five root
+causes:
+
+- The `ci.yaml` generator pin bumped to v0.3.1100, **and** the pin guard
+  extended to lock the workflow pin, so the fourth location can never
+  drift silently again.
+- Toggle's forbidden `aria-checked` on `input[type=checkbox]` and
+  ToastContainer's stray duplicate `</script>` fixed for upstream vnu
+  tightening.
+- The navigation pagination mirror drift (daemon-era commits) refreshed
+  via the sanctioned sync script.
+- The pagination-clamp test flipped to the library-wide
+  current-page-as-aria-current-span contract (APG: the current page is
+  never a link); the clamped page is now proven non-linkable.
+- The `echarts_dark` golden rebaselined after the post-release nixpkgs
+  rendering bump — diff reviewed by eye before acceptance.
+
+`d6ba51c0` re-added the replace directives the release strip had
+removed — a normal post-release chore, listed only because it sat inside
+the same red window.
+
+**The lesson.** A one-event migration is only as complete as its
+enumeration of pin locations — and "the generator appears in N places"
+is a claim about the tree, not the plan. The guard now enumerates
+instead of trusting the plan: the pin guard covers the CI workflow's
+generator pin alongside the go.mod/doctor lockstep and the flake
+derivation. Drift in any of them is red, not silent.
+
 ### Added
 
 - **Wire actions gain the runtime's verified fetch options; Datastar grows
