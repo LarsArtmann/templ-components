@@ -303,7 +303,7 @@ Beyond the code, a component is not finished until all of these land in the SAME
 - The Props type registered in `internal/contract/component_props_test.go` (`componentTypes()`),
   enforced by `TestAllComponentPropsSatisfyInterface`.
 - **Counts updated**: the per-package line here (`#### \`display\` — 52 components`),
-  the README catalogue heading, and FEATURES where applicable —`TestDocsCountDrift`reads`skill/SKILL.md` directly and fails CI on a stale number.
+  the README catalogue heading, and FEATURES where applicable — `TestDocsCountDrift` reads `skill/SKILL.md` directly and fails CI on a stale number.
 - If the component is wired (HTMX/Datastar/JS), an e2e task in `visualtest/` — string-proven
   ≠ browser-proven.
 - If it adds a closed-set enum, `IsValid()` plus its test in the same commit.
