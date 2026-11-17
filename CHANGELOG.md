@@ -183,6 +183,23 @@ derivation. Drift in any of them is red, not silent.
 
 ### Changed
 
+- **Datastar runtime pin bumped v0.6.1 → v0.8.0 (Datastar 1.0.3 → 1.0.4),
+  re-audited per the bump protocol, with the version constants moved
+  upstream.** The 1.0.4 bundle is the first byte-changed runtime since v0.5.0
+  (33538 → 33553 bytes): the error formatter was rewritten (multi-line
+  `More info:`/`Context:` template), the empty-`data-nonce` init throw became
+  the typed `NonceRequired` error, expression compilation gained an explicit
+  `Blocked by CSP.` throw, and the `data-nonce` attribute name is now
+  assembled at runtime — the CSP mechanism itself is unchanged (browser-proven
+  facts carry over; every pinned token re-verified, the bundle guard's CSP
+  token set updated to the byte-provable literals). Per the owner's call the
+  named version constants now live where they belong:
+  `go-datastar/static` v0.8.0 exports `Version1_0_4`/`Version1_0_3`/
+  `Version1_0_2` + `VersionIsValid`, and this package's `DatastarVersion`
+  constants derive from them (single source of truth — `DatastarVersion1_0_4`
+  is the new pin, the older names are frozen deprecated aliases that keep
+  compiling). Indirect pins in root + visualtest follow; standalone builds of
+  all 9 modules verified. Closes the upstream-watch issue.
 - **BREAKING (ships in v2.0.0 — ADR-0044 Phase 2 / ADR-0049): `feedback`
   brand-axis components emit `accent-*` token classes instead of `blue-*`.**
   CircularProgress, ProgressBar, StepIndicator, LoadingOverlay, and
