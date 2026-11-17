@@ -367,9 +367,9 @@ done
 
 if [ -z "$DUPL_BIN" ]; then
 	echo "no pinned art-dupl binary found — auto-building via scripts/pinned-art-dupl.sh"
-	if scripts/pinned-art-dupl.sh >/tmp/art-dupl-build.log 2>&1 \
-		&& [ -x /tmp/art-dupl-fork ] \
-		&& dupl_is_pinned "$(/tmp/art-dupl-fork --version 2>&1 | head -1)"; then
+	if scripts/pinned-art-dupl.sh >/tmp/art-dupl-build.log 2>&1 &&
+		[ -x /tmp/art-dupl-fork ] &&
+		dupl_is_pinned "$(/tmp/art-dupl-fork --version 2>&1 | head -1)"; then
 		DUPL_BIN=/tmp/art-dupl-fork
 	else
 		echo "auto-build FAILED — last lines of /tmp/art-dupl-build.log:" >&2

@@ -15,7 +15,7 @@ COPY . .
 RUN npm install -g pnpm@11.20.0 \
     && pnpm init -y \
     && printf 'allowBuilds:\n  "@parcel/watcher": true\n' > pnpm-workspace.yaml \
-    && pnpm add tailwindcss@4.3.3 @tailwindcss/cli@4.3.3 \
+    && pnpm add tailwindcss@4.3.4 @tailwindcss/cli@4.3.4 \
     && pnpm dlx @tailwindcss/cli \
         -i examples/demo/demo.css \
         -o examples/demo/static/app.css \

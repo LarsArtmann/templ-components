@@ -223,6 +223,19 @@ derivation. Drift in any of them is red, not silent.
 
 ### Fixed
 
+- **Red master restored: the Tailwind 4.3.4 lockstep move was completed and
+  the crossbrowser playwright pin re-anchored.** A daemon nixpkgs refresh
+  (`flake.lock`, 2026-11-12) silently moved the dev shell's tailwindcss
+  4.3.3 → 4.3.4 without the F-20 three-lane pin move, so CI's CSS
+  Freshness lane flagged the committed demo CSS as stale; the same window
+  half-bumped `tools/crossbrowser-spike`'s playwright-core to 1.65.0
+  against the locked nixpkgs playwright-driver 1.64.1, failing
+  `TestCrossbrowserLockstep` — between them they reddened Build & Test,
+  CSS Freshness, and (via inherited merge refs) every open PR. The demo
+  Dockerfile pnpm pins and the website workflow npm pins now carry 4.3.4,
+  the demo CSS is recompiled (banner + one `@supports` `margin-trim` guard
+  change; the full visual suite re-run green proves it pixel-inert), and
+  the playwright-core pin is back at 1.64.1 to match the locked nixpkgs.
 - **Datastar CSP docs told consumers to ship `'unsafe-eval'` when the pinned
   runtime ships a CSP mode.** `docs/datastar-runtime-facts.md` §CSP claimed
   `data-*` expressions require `'unsafe-eval'`; decoding the pinned v0.6.1
