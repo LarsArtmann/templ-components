@@ -7,10 +7,6 @@ require (
 	github.com/larsartmann/templ-components/utils v1.27.0
 )
 
-require (
-	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
-	github.com/stretchr/testify v1.12.1 // indirect
-	go.yaml.in/yaml/v3 v3.0.6 // indirect
-)
+require github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
 
 replace github.com/larsartmann/templ-components/utils => ../utils
