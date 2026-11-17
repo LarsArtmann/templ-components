@@ -101,7 +101,7 @@ inherited redness, 3 un-PR'd branches lingering.
 
 ---
 
-## b) PARTIALLY DONE
+## b) PARTIALLY DONE at 14:56 — ALL RESOLVED in the same-day follow-up, see h)
 
 1. **PR #98 merge + close-out** — all checks green as of 14:55 CET, but I
    stopped per instruction BEFORE: `gh pr merge 98` (squash or rebase),
@@ -269,5 +269,52 @@ inherited redness, 3 un-PR'd branches lingering.
 
 ---
 
-**Stopped here per instruction. Not merging #98, not closing #96/#94, not
-touching master until told.**
+## h) FOLLOW-UP EXECUTED (2026-11-17 ~15:45 CET — after owner go-ahead)
+
+Outcome of §b/§g — all three open questions resolved with safe defaults:
+
+1. **PR #98 MERGED** (`--squash --delete-branch`) as `15d836b8`, subject
+   rewritten to the real content ("Update Datastar SDK runtime to v1.0.4
+   via go-datastar/static v0.8.0 (#98)") — the dependabot title still said
+   0.7.0. "Closes #96" in the body auto-closed the upstream-watch issue.
+   §g Q3 resolved WITHOUT a force-push: squash folds the daemon commits,
+   making the rewrite question moot (f47 applied — went straight to squash).
+2. **Issue #94 closed** with an evidence comment (green since `fc35dc34`).
+3. **Workspace hygiene done:** local master synced to `15d836b8`; the
+   dependabot branch deleted (remote via gh, local too);
+   `fix/popover-position-area-chromium` + `revert/templ-pin-1020` pruned
+   locally; `git fetch --prune` confirmed the only remaining remote
+   branches are `master` + `feat/layout-seo-meta`. This report itself was
+   rescued from the daemon's unpushed local commit `567fcc7b` (the daemon
+   had committed it onto the dependabot branch — it would have died with
+   the branch).
+4. **Verification on merged master:** CI run `44102692355` SUCCESS on
+   `15d836b8` (incl. the Visual Regression + CHANGELOG-warmth jobs → f19);
+   Website correctly NOT triggered (path filters: `website/**` +
+   `examples/demo/**`; the bump touched neither → f20/f48 resolved: the
+   site picks the facts doc up at its next content change); full local
+   `nix run .#visual` green — ONE accordion rAF-sampling e2e flaked under
+   local load (f"animation frame loop did not run"), passes isolated,
+   zero datastar involvement, CI green on the same commit; no `result*`
+   paths and no re-appended `*_templ.go` ignore rules (f23/f24).
+5. **pkg.go.dev serves static v0.8.0** (f10): the constants,
+   `VersionIsValid` ("added in v0.8.0"), and the deprecation notices all
+   render; module version list clean (v0.1.0…v0.8.0) — no phantom from
+   the deleted wrong root tag.
+6. **TODO_LIST routed** (f9/f41): **#504 marked done** (this session
+   executed it); **#507 refreshed** with the 2026-11-17 gate counts
+   (file-size 50 + docs-gates 4 — §g Q2 verdict: repair IS the #507
+   archive ritual; no in-repo baseline mechanism exists, `.buildflow.yml`
+   `skip_steps` would weaken the gate for NEW findings too); new rows
+   **#509–514**: SEO-branch revival (⫱ owner gate — §g Q1 stays open,
+   branch KEPT), v1.28.0 release scheduling, static/v0.8.0 GitHub
+   Release, consumer pin sweep, dependabot bump-protocol routing,
+   class-inventory doc-comment nuance → skill guard-tests reference.
+7. **f-items closed by the follow-up:** 1, 2, 3, 4, 5, 6, 10, 19, 20, 23,
+   24, 47, 50 (master log reads clean and linear: `fc35dc34` → `c0b7fe5b`
+   /#97 → `6daaad83`/#99 → `0cbee16c`/#101 → `15d836b8`/#98).
+
+**§g final verdicts:** Q1 → branch kept, revival routed (#509), owner
+verdict still wanted. Q2 → routed (#507 refreshed); `--no-verify` + local
+verify remains the working mode until that ritual lands. Q3 → moot via
+squash (no force-push happened).
