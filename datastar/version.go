@@ -14,27 +14,29 @@ type DatastarVersion string
 
 const (
 	// DatastarVersion1_0_4 is the Datastar runtime version this package pins.
-	// The value is derived from [static.Version] so the embedded bundle and the
-	// CDN URL can never drift apart.
-	DatastarVersion1_0_4 DatastarVersion = DatastarVersion(static.Version)
+	// The value is derived from [static.Version] (via [static.Version1_0_4],
+	// owned upstream since go-datastar/static v0.8.0) so the embedded bundle
+	// and the CDN URL can never drift apart.
+	DatastarVersion1_0_4 DatastarVersion = DatastarVersion(static.Version1_0_4)
 
 	// DatastarVersion1_0_3 is a compile-compatibility alias for downstream
-	// consumers still referencing the pre-1.0.4 constant name. Unlike the pin
-	// constant it is a LITERAL "1.0.3": it renders the 1.0.3 CDN runtime,
-	// deliberately NOT derived from [static.Version], so the name keeps
-	// telling the truth. Deprecated: consumers should move to
+	// consumers still referencing the pre-1.0.4 constant name. The value is
+	// the upstream-owned [static.Version1_0_3] literal ("1.0.3"): it renders
+	// the 1.0.3 CDN runtime, deliberately NOT the pinned bytes, so the name
+	// keeps telling the truth. Deprecated: consumers should move to
 	// DatastarVersion1_0_4 (or drop the explicit Version to follow the pin).
-	DatastarVersion1_0_3 DatastarVersion = "1.0.3"
+	DatastarVersion1_0_3 DatastarVersion = DatastarVersion(static.Version1_0_3)
 
 	// DatastarVersion1_0_2 is a compile-compatibility alias for downstream
 	// consumers still referencing the pre-1.0.3 constant name
 	// (go-health-dashboard v0.5.0 broke at compile time under the v1.13.1
 	// rename — MVS resolves their templ-components/datastar require to the
-	// highest version). It renders the 1.0.2 CDN runtime, deliberately NOT
-	// derived from [static.Version], so the name keeps telling the truth.
+	// highest version). The value is the upstream-owned [static.Version1_0_2]
+	// literal; it renders the 1.0.2 CDN runtime, deliberately NOT derived
+	// from [static.Version], so the name keeps telling the truth.
 	// Deprecated: consumers should move to DatastarVersion1_0_4 (or drop the
 	// explicit Version to follow the pin).
-	DatastarVersion1_0_2 DatastarVersion = "1.0.2"
+	DatastarVersion1_0_2 DatastarVersion = DatastarVersion(static.Version1_0_2)
 
 	// defaultDatastarVersion is the internal default; always equals the latest
 	// exported DatastarVersion constant.

@@ -5,7 +5,7 @@ package datastar
 // runtime accepts on @get/@post/... action expressions.
 //
 // Runtime behaviour matrix (behaviour verified against datastar.js v1.0.2;
-// pinned tokens re-verified present in the v1.0.3 bundle on 2026-09-05):
+// pinned tokens re-verified present in the v1.0.4 bundle on 2026-11-17):
 //
 //   - clean stream EOF (e.g. server restart): only RetryAlways reconnects.
 //     The default auto disposes the connection, leaving the region stale.
