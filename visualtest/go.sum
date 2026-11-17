@@ -10,8 +10,8 @@ github.com/go-json-experiment/json v0.0.0-20260820222146-c27c302e5fc3 h1:UADEEmD
 github.com/go-json-experiment/json v0.0.0-20260820222146-c27c302e5fc3/go.mod h1:tphK2c80bpPhMOI4v6bIc2xWywPfbqi1Z06+RcrMkDg=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
-github.com/larsartmann/go-datastar/static v0.7.0 h1:1NnskL0rjiH/RLnwryfPHP3kNjmQbWzRFDCb+LCSub4=
-github.com/larsartmann/go-datastar/static v0.7.0/go.mod h1:t981dvnOKLlKU/Bo8BXlQSgwnifi18t+qtOkFNPfba8=
+github.com/larsartmann/go-datastar/static v0.8.0 h1:pncsjORsZ3tPFBf3eX8HN5IJcxQtxQgz9ngwNVPEO88=
+github.com/larsartmann/go-datastar/static v0.8.0/go.mod h1:t981dvnOKLlKU/Bo8BXlQSgwnifi18t+qtOkFNPfba8=
 github.com/larsartmann/go-error-family v0.12.0 h1:HEtocvwaPe9udDusqDqV0pxN9Wx98KHQBK0MEHZupzg=
 github.com/larsartmann/go-error-family v0.12.0/go.mod h1:gB43rKC69SoPilihuze43OFqKYMGQxDNUi/25PF9MgE=
 github.com/orisano/pixelmatch v0.0.0-20261015095729-8d350b6cff2e h1:C88uTVQJnXsnqJ0F1Ov5WKxovA+U23j0o7DCYGKhyO4=

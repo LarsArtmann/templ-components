@@ -91,7 +91,7 @@ func TestDatastarScriptURL(t *testing.T) {
 			name:    "empty version defaults to pinned",
 			version: "",
 			cdn:     "",
-			want:    "https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.3/bundles/datastar.js",
+			want:    "https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.4/bundles/datastar.js",
 		},
 	}
 

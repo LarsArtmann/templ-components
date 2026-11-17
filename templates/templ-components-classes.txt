@@ -26794,12 +26794,12 @@ func requestCancellationValue(c RequestCancellation) RequestCancellation {
 // Package datastar provides templ components and helpers for integrating
 // [Datastar] — a zero-dependency frontend framework that unifies
 // HTMX-style backend reactivity with Alpine.js-style frontend reactivity via
-// Server-Sent Events (SSE) and reactive signals. The pinned v1.0.3 bundle is
-// 33,538 bytes raw; upstream advertises 11.90 KiB on an unverified basis.
+// Server-Sent Events (SSE) and reactive signals. The pinned v1.0.4 bundle is
+// 33,553 bytes raw; upstream advertises 11.90 KiB on an unverified basis.
 //
 // This package mirrors the [htmx] package: it emits data-* attributes and
 // injects the Datastar runtime <script> tag without importing any server-side
-// SDK. The pinned version ([DatastarVersion1_0_3]) is derived from
+// SDK. The pinned version ([DatastarVersion1_0_4]) is derived from
 // [github.com/larsartmann/go-datastar/static].Version so the CDN URL and the
 // embedded bundle can never drift.
 //
@@ -26910,15 +26910,13 @@ package datastar
 # ── datastar/enums_go.go ─────────────────────────────────────────────
 package datastar
 
+import "github.com/larsartmann/go-datastar/static"
+
 // DatastarVersionIsValid reports whether v is one of the defined DatastarVersion constants.
+// Delegates to the upstream-owned static.VersionIsValid (single source of
+// truth since go-datastar/static v0.8.0).
 func DatastarVersionIsValid(v DatastarVersion) bool {
-	switch v {
-	case DatastarVersion1_0_3,
-		DatastarVersion1_0_2: // deprecated compile-compat alias; still a defined version
-		return true
-	default:
-		return false
-	}
+	return static.VersionIsValid(string(v))
 }
 
 // LivePolitenessIsValid reports whether v is one of the defined LivePoliteness constants.
@@ -27604,7 +27602,7 @@ package datastar
 // runtime accepts on @get/@post/... action expressions.
 //
 // Runtime behaviour matrix (behaviour verified against datastar.js v1.0.2;
-// pinned tokens re-verified present in the v1.0.3 bundle on 2026-09-05):
+// pinned tokens re-verified present in the v1.0.4 bundle on 2026-11-17):
 //
 //   - clean stream EOF (e.g. server restart): only RetryAlways reconnects.
 //     The default auto disposes the connection, leaving the region stale.
@@ -27657,7 +27655,7 @@ import "github.com/larsartmann/templ-components/utils"
 type SDKScriptProps struct {
 	utils.BaseProps
 
-	// Version pins the Datastar runtime version. Defaults to DatastarVersion1_0_3.
+	// Version pins the Datastar runtime version. Defaults to DatastarVersion1_0_4.
 	// Set to "" to use the default.
 	Version DatastarVersion
 
@@ -27818,32 +27816,44 @@ import (
 )
 
 // DatastarVersion is a pinned Datastar runtime version. Use the exported
-// constants (e.g. DatastarVersion1_0_3) for compile-time safety; custom
+// constants (e.g. DatastarVersion1_0_4) for compile-time safety; custom
 // versions can be constructed via DatastarVersion("x.y.z") but will render
 // without SRI (no integrity hash — Datastar does not publish official SRI
 // hashes; self-host and compute your own if integrity is required).
 type DatastarVersion string
 
 const (
-	// DatastarVersion1_0_3 is the Datastar runtime version this package pins.
-	// The value is derived from [static.Version] so the embedded bundle and the
-	// CDN URL can never drift apart.
-	DatastarVersion1_0_3 DatastarVersion = DatastarVersion(static.Version)
+	// DatastarVersion1_0_4 is the Datastar runtime version this package pins.
+	// The value is derived from [static.Version] (via [static.Version1_0_4],
+	// owned upstream since go-datastar/static v0.8.0) so the embedded bundle
+	// and the CDN URL can never drift apart.
+	DatastarVersion1_0_4 DatastarVersion = DatastarVersion(static.Version1_0_4)
+
+	// DatastarVersion1_0_3 is a compile-compatibility alias for downstream
+	// consumers still referencing the pre-1.0.4 constant name. The value is
+	// the upstream-owned [static.Version1_0_3] literal ("1.0.3"): it renders
+	// the 1.0.3 CDN runtime, deliberately NOT the pinned bytes, so the name
+	// keeps telling the truth.
+	//
+	// Deprecated: consumers should move to DatastarVersion1_0_4 (or drop the
+	// explicit Version to follow the pin).
+	DatastarVersion1_0_3 DatastarVersion = DatastarVersion(static.Version1_0_3)
 
 	// DatastarVersion1_0_2 is a compile-compatibility alias for downstream
 	// consumers still referencing the pre-1.0.3 constant name
 	// (go-health-dashboard v0.5.0 broke at compile time under the v1.13.1
 	// rename — MVS resolves their templ-components/datastar require to the
-	// highest version). Unlike the pin constant it is a LITERAL "1.0.2": it
-	// renders the 1.0.2 CDN runtime, deliberately NOT derived from
-	// [static.Version], so the name keeps telling the truth. Deprecated:
-	// consumers should move to DatastarVersion1_0_3 (or drop the explicit
-	// Version to follow the pin).
-	DatastarVersion1_0_2 DatastarVersion = "1.0.2"
+	// highest version). The value is the upstream-owned [static.Version1_0_2]
+	// literal; it renders the 1.0.2 CDN runtime, deliberately NOT derived
+	// from [static.Version], so the name keeps telling the truth.
+	//
+	// Deprecated: consumers should move to DatastarVersion1_0_4 (or drop the
+	// explicit Version to follow the pin).
+	DatastarVersion1_0_2 DatastarVersion = DatastarVersion(static.Version1_0_2)
 
 	// defaultDatastarVersion is the internal default; always equals the latest
 	// exported DatastarVersion constant.
-	defaultDatastarVersion DatastarVersion = DatastarVersion1_0_3
+	defaultDatastarVersion DatastarVersion = DatastarVersion1_0_4
 )
 
 // Datastar CDN paths. Datastar is served from jsDelivr's GitHub path
@@ -27869,7 +27879,7 @@ func resolveDatastarCDN(cdnBase string) string {
 // datastarScriptURL returns the CDN URL for the Datastar runtime at the given
 // version. If cdnBase is empty, defaults to defaultDatastarCDNBase.
 //
-// Example: https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.3/bundles/datastar.js.
+// Example: https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.4/bundles/datastar.js.
 func datastarScriptURL(version DatastarVersion, cdnBase string) string {
 	v := version
 	if v == "" {

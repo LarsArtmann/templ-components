@@ -15,8 +15,16 @@ import (
 // shrank, 56330 → 33538 bytes, upstream minification refactor; the retry
 // machinery retryInterval/retryMax/retryMaxCount + auto/error/never/always
 // literals survived) and re-verified 2026-10-02 on the v0.5.0 → v0.6.1 bump:
-// BYTE-IDENTICAL (same sha256), so every pinned token carries over.
-const pinnedBundleSHA256 = "5d6b7794a50a83d82da962aec5e382f5ae83ac7afbc751f903f7a9c6bd433c65"
+// BYTE-IDENTICAL (same sha256), so every pinned token carried over.
+// Re-audited 2026-11-17 on the v0.6.1 → v0.7.0 bump (Datastar 1.0.3 → 1.0.4,
+// 33553 bytes): minifier identifier renames throughout, the error formatter
+// rewritten (multi-line `More info:`/`Context:` template), the CSP machinery
+// now assembles the data-nonce attribute name at runtime (j("nonce") — the
+// bare literal is no longer byte-present), the empty-nonce throw became the
+// typed NonceRequired error, and expression compilation gained an explicit
+// "Blocked by CSP." throw. Mechanism unchanged; every functional token
+// re-verified present.
+const pinnedBundleSHA256 = "727844adfc825ee651fb93c544a2a739986f9a21820a94524b35f0cac470cf91"
 
 // TestPinnedRuntimeBundleContract pins the runtime surface this library
 // integrates against, as verified byte-for-byte in the embedded bundle.
@@ -65,15 +73,23 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 		`name:"on-intersect"`,
 		"duration",
 		"leading",
-		// CSP-mode machinery (decoded 2026-11-07, see runtime-facts §CSP):
-		// the runtime reads data-nonce from documentElement ONCE at init and,
-		// when it is present and nonempty, executes expressions as nonce'd
+		// CSP-mode machinery (decoded 2026-11-07, see runtime-facts §CSP;
+		// re-audited 2026-11-17 on the 1.0.4 bump): the runtime reads
+		// data-nonce from documentElement ONCE at init — as of 1.0.4 the
+		// attribute name is ASSEMBLED at runtime (j("nonce") → "data-nonce"),
+		// so the byte-provable literals are the "nonce" argument, the typed
+		// NonceRequired error (was a literal message), and the explicit
+		// "Blocked by CSP." throw on expression-compile rejection. When
+		// data-nonce is present and nonempty, expressions execute as nonce'd
 		// inline scripts instead of Function() eval, so script-src 'nonce-…'
 		// suffices without 'unsafe-eval'. trustedTypes is the self-registered
 		// identity policy used under Trusted Types enforcement. A pin bump
-		// that drops either fails here before any consumer CSP flips.
-		"data-nonce",
+		// that drops any of these fails here before a consumer CSP flips.
+		`"nonce"`,
+		"NonceRequired",
+		"Blocked by CSP.",
 		"trustedTypes",
+		"createPolicy",
 		// Verified present but UNMODELED surface (runtime-facts §"Verified
 		// present, unmodeled"): the signal-patch listener plugin (attribute
 		// data-on-signal-patch; plugin registrations are name:"…" literals,
@@ -118,22 +134,27 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 }
 
 // TestDatastarVersionConstantNameMatchesValue guards the literal behind
-// DatastarVersion1_0_3. Its value is derived from static.Version, so a
+// DatastarVersion1_0_4. Its value is derived from static.Version, so a
 // go-datastar/static bump silently re-points the value while the NAME still
-// claims 1.0.3 — a name that lies about its value is worse than none. On
+// claims 1.0.4 — a name that lies about its value is worse than none. On
 // failure: re-audit the new runtime, rename the constant, update references.
 func TestDatastarVersionConstantNameMatchesValue(t *testing.T) {
 	t.Parallel()
 
-	if got := string(DatastarVersion1_0_3); got != "1.0.3" {
+	if got := string(DatastarVersion1_0_4); got != "1.0.4" {
 		t.Errorf(
-			"DatastarVersion1_0_3 = %q — static.Version moved and the constant name no longer tells the truth; re-audit the new bundle, rename the constant, and update references",
+			"DatastarVersion1_0_4 = %q — static.Version moved and the constant name no longer tells the truth; re-audit the new bundle, rename the constant, and update references",
 			got,
 		)
 	}
 
-	// The compat alias is a deliberate LITERAL (never derived), so the name
-	// keeps telling the truth even when the pin moves again.
+	// The compat aliases are deliberate LITERALS (never derived), so their
+	// names keep telling the truth even when the pin moves again.
+	if got := string(DatastarVersion1_0_3); got != "1.0.3" {
+		t.Errorf("DatastarVersion1_0_3 compat alias = %q, want literal %q",
+			got, "1.0.3")
+	}
+
 	if got := string(DatastarVersion1_0_2); got != "1.0.2" {
 		t.Errorf("DatastarVersion1_0_2 compat alias = %q, want literal %q",
 			got, "1.0.2")

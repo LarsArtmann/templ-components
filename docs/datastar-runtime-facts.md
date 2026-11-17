@@ -14,16 +14,34 @@ the bundle if the version pin ever bumps. Enforcement lives in tests:
 | Field   | Value                                                              |
 | ------- | ------------------------------------------------------------------ |
 | Module  | `github.com/larsartmann/go-datastar/static`                        |
-| Pin     | `v0.6.1` (`datastar/go.mod`; bumped from v0.5.0, 2026-10-02)       |
-| Runtime | Datastar `1.0.3` (`static.Version`)                                |
-| Bundle  | `datastar.js`, 33538 bytes                                         |
-| sha256  | `5d6b7794a50a83d82da962aec5e382f5ae83ac7afbc751f903f7a9c6bd433c65` |
+| Pin     | `v0.8.0` (`datastar/go.mod`; bumped from v0.7.0, 2026-11-17)       |
+| Runtime | Datastar `1.0.4` (`static.Version`)                                |
+| Bundle  | `datastar.js`, 33553 bytes                                         |
+| sha256  | `727844adfc825ee651fb93c544a2a739986f9a21820a94524b35f0cac470cf91` |
 
-The v0.5.0 → v0.6.1 bump (2026-10-02) shipped a BYTE-IDENTICAL bundle (same
-sha256, re-verified by hand at re-audit time) — a version-metadata-only
-release upstream. Every fact on this page therefore carries over unchanged;
-the session-2 targeting decode below was performed against exactly these
-bytes.
+The v0.6.1 → v0.7.0 bump (2026-11-17) shipped the first byte-changed bundle
+since v0.5.0: Datastar 1.0.3 → 1.0.4 (33538 → 33553 bytes). The subtree diff
+scopes to three functional deltas on top of wholesale minifier identifier
+renames: (1) the error formatter was rewritten (errors now render as a
+multi-line `More info: <url>\nContext: <json>` template inside the Error
+message rather than URL params only); (2) the empty-`data-nonce` init throw
+became the typed `NonceRequired` error (was a literal message string);
+(3) expression compilation gained an explicit `Blocked by CSP.` throw when
+the nonce'd probe script fails to attach, replacing the generic undefined
+compile result. The CSP MECHANISM is unchanged (data-nonce read once at
+init, attribute removed, trustedTypes identity policy, nonce'd inline
+scripts) — but the `data-nonce` attribute name is now ASSEMBLED at runtime
+(`j("nonce")` → `data-${...}`), so the bare `data-nonce` literal is no
+longer byte-present and the bundle guard now pins `"nonce"`,
+`NonceRequired`, `Blocked by CSP.`, `trustedTypes`, and `createPolicy`
+instead. Every functional token from the 1.0.3 audit was re-verified
+present. The v0.7.0 → v0.8.0 bump (same day) is Go-API-only upstream
+(named `Version1_0_X` constants + `VersionIsValid`): BYTE-IDENTICAL bundle,
+same sha256.
+
+The v0.5.0 → v0.6.1 bump (2026-10-02) had shipped a BYTE-IDENTICAL bundle
+(same sha256, re-verified by hand at re-audit time) — a version-metadata-only
+release upstream. Every fact on this page carried over unchanged.
 
 The hash is machine-enforced by `datastar.TestPinnedRuntimeBundleContract`
 (`datastar/bundle_guard_test.go`) — any byte-level bundle change fails CI until
@@ -31,11 +49,11 @@ the pin is consciously re-audited. Extract the exact bytes a re-audit must
 inspect with:
 
 ```bash
-BUNDLE="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.6.1/datastar.js"
+BUNDLE="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.8.0/datastar.js"
 sha256sum "$BUNDLE"   # must match the table above
 cp "$BUNDLE" /tmp/datastar-pinned.js
 # Diff against the PREVIOUS pin to scope the bump re-audit (adjust versions):
-OLD="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.5.0/datastar.js"
+OLD="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.6.1/datastar.js"
 diff "$OLD" /tmp/datastar-pinned.js | head -100
 ```
 
@@ -116,7 +134,8 @@ new bundle unless marked otherwise:
   converter but are NOT modeled (`namespace`, default `html`) — add only on
   demand.
 - **NO-GO (2026-10-03, bundle-verified) — the runtime ships NO confirm
-  machinery.** Zero `confirm` tokens in the v0.6.1 bundle: there is no
+  machinery.** Zero `confirm` tokens in the v0.6.1 bundle (still zero in the
+  1.0.4 bundle, re-verified 2026-11-17): there is no
   `hx-confirm` twin, no confirm plugin, nothing for the library to bind.
   `htmx.ConfirmDelete` stays htmx-only; Datastar callers own confirmation
   consumer-side (e.g. a `data-on:click__prevent` handler re-firing the
@@ -283,13 +302,21 @@ DEFAULT mode; the runtime ships an opt-in CSP mode at this very pin.**
   needs `'unsafe-eval'`. `'unsafe-inline'` is NOT needed (external module
   script + nonced inline scripts).
 - **CSP mode (opt-in):** the runtime reads `data-nonce` from
-  `document.documentElement` ONCE at init (minified: `wt="data-nonce"`,
-  `tt=getAttribute(wt)`):
+  `document.documentElement` ONCE at init (1.0.3 minified: `wt="data-nonce"`,
+  `tt=getAttribute(wt)`; 1.0.4 assembles the name at runtime —
+  `Nt=j("nonce")` → `data-${"nonce"}`, same semantics):
   - Attribute present + nonempty → CSP mode: every runtime-created expression
-    script executes as an INLINE script carrying that nonce (`el.nonce = tt`),
+    script executes as an INLINE script carrying that nonce (`el.nonce = …`),
     so `script-src 'nonce-…'` suffices — **no `'unsafe-eval'`**.
-  - Attribute present but EMPTY throws at init:
-    `"Datastar CSP requires a nonempty html data-nonce."` (loud, not silent).
+  - Attribute present but EMPTY throws at init: 1.0.3 rendered the literal
+    message `"Datastar CSP requires a nonempty html data-nonce."`; 1.0.4
+    throws the typed `NonceRequired` error instead (loud either way, the
+    string constant is gone from the bundle).
+  - NEW in 1.0.4: if the nonce'd compile-probe script fails to attach (the
+    expression compiler got `undefined` back), the runtime now throws an
+    explicit `Blocked by CSP.` error instead of surfacing a generic
+    undefined-compile failure — sharper diagnostics for misconfigured
+    strict-CSP setups.
   - The attribute is stripped from the DOM at init (`removeAttribute`) — it is
     an activation flag, not a persistent value.
   - Under Trusted Types enforcement the runtime self-registers a permissive
@@ -297,7 +324,9 @@ DEFAULT mode; the runtime ships an opt-in CSP mode at this very pin.**
     to any `require-trusted-types-for 'script'` audit.
   - CSP mode changes the script-creation mechanism only: same plugins, same
     attribute set, no feature gate in this code path.
-  - The `data-star-nonce` alias does NOT exist at this pin (upstream v1.0.4+).
+  - The `data-star-nonce` alias does NOT exist at this pin either
+    (re-verified 2026-11-17 at Datastar 1.0.4: zero occurrences; the runtime
+    assembles only `data-nonce`).
 - **Caveats (measured + proven, 2026-11-07):**
   - **Browser-proven GO:** the library's full attribute set works under a
     strict nonce-only CSP (no `'unsafe-eval'`) — wire @get patches, raw

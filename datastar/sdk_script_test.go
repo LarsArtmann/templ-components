@@ -13,7 +13,7 @@ func TestSDKScriptDefault(t *testing.T) {
 
 	utils.AssertContains(t, output, `<script type="module"`)
 	utils.AssertContains(t, output,
-		`src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.3/bundles/datastar.js"`)
+		`src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.4/bundles/datastar.js"`)
 }
 
 func TestSDKScriptSelfHosted(t *testing.T) {
@@ -97,7 +97,7 @@ func TestSDKScriptDefaultProps(t *testing.T) {
 
 	props := DefaultSDKScriptProps()
 
-	if props.Version != DatastarVersion1_0_3 {
-		t.Errorf("expected Version=%s, got %s", DatastarVersion1_0_3, props.Version)
+	if props.Version != DatastarVersion1_0_4 {
+		t.Errorf("expected Version=%s, got %s", DatastarVersion1_0_4, props.Version)
 	}
 }
