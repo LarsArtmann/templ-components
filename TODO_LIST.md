@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-11-03 | **Version:** 1.26.0 | **Plan:** [`2026-11-04_03-43 CORPUS-CLOSE-OUT DEFECT-FIX + full-backlog PARETO`](docs/planning/2026-11-04_03-43_CORPUS-CLOSE-OUT-DEFECT-FIX-PARETO-PLAN.md)
+**Updated:** 2026-11-17 | **Version:** 1.27.0 | **Plan:** [`2026-11-04_03-43 CORPUS-CLOSE-OUT DEFECT-FIX + full-backlog PARETO`](docs/planning/2026-11-04_03-43_CORPUS-CLOSE-OUT-DEFECT-FIX-PARETO-PLAN.md)
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources), ⫱ owner gate (decision/credential).
