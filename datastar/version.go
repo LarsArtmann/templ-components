@@ -6,32 +6,39 @@ import (
 )
 
 // DatastarVersion is a pinned Datastar runtime version. Use the exported
-// constants (e.g. DatastarVersion1_0_3) for compile-time safety; custom
+// constants (e.g. DatastarVersion1_0_4) for compile-time safety; custom
 // versions can be constructed via DatastarVersion("x.y.z") but will render
 // without SRI (no integrity hash — Datastar does not publish official SRI
 // hashes; self-host and compute your own if integrity is required).
 type DatastarVersion string
 
 const (
-	// DatastarVersion1_0_3 is the Datastar runtime version this package pins.
+	// DatastarVersion1_0_4 is the Datastar runtime version this package pins.
 	// The value is derived from [static.Version] so the embedded bundle and the
 	// CDN URL can never drift apart.
-	DatastarVersion1_0_3 DatastarVersion = DatastarVersion(static.Version)
+	DatastarVersion1_0_4 DatastarVersion = DatastarVersion(static.Version)
+
+	// DatastarVersion1_0_3 is a compile-compatibility alias for downstream
+	// consumers still referencing the pre-1.0.4 constant name. Unlike the pin
+	// constant it is a LITERAL "1.0.3": it renders the 1.0.3 CDN runtime,
+	// deliberately NOT derived from [static.Version], so the name keeps
+	// telling the truth. Deprecated: consumers should move to
+	// DatastarVersion1_0_4 (or drop the explicit Version to follow the pin).
+	DatastarVersion1_0_3 DatastarVersion = "1.0.3"
 
 	// DatastarVersion1_0_2 is a compile-compatibility alias for downstream
 	// consumers still referencing the pre-1.0.3 constant name
 	// (go-health-dashboard v0.5.0 broke at compile time under the v1.13.1
 	// rename — MVS resolves their templ-components/datastar require to the
-	// highest version). Unlike the pin constant it is a LITERAL "1.0.2": it
-	// renders the 1.0.2 CDN runtime, deliberately NOT derived from
-	// [static.Version], so the name keeps telling the truth. Deprecated:
-	// consumers should move to DatastarVersion1_0_3 (or drop the explicit
-	// Version to follow the pin).
+	// highest version). It renders the 1.0.2 CDN runtime, deliberately NOT
+	// derived from [static.Version], so the name keeps telling the truth.
+	// Deprecated: consumers should move to DatastarVersion1_0_4 (or drop the
+	// explicit Version to follow the pin).
 	DatastarVersion1_0_2 DatastarVersion = "1.0.2"
 
 	// defaultDatastarVersion is the internal default; always equals the latest
 	// exported DatastarVersion constant.
-	defaultDatastarVersion DatastarVersion = DatastarVersion1_0_3
+	defaultDatastarVersion DatastarVersion = DatastarVersion1_0_4
 )
 
 // Datastar CDN paths. Datastar is served from jsDelivr's GitHub path
@@ -57,7 +64,7 @@ func resolveDatastarCDN(cdnBase string) string {
 // datastarScriptURL returns the CDN URL for the Datastar runtime at the given
 // version. If cdnBase is empty, defaults to defaultDatastarCDNBase.
 //
-// Example: https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.3/bundles/datastar.js.
+// Example: https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.4/bundles/datastar.js.
 func datastarScriptURL(version DatastarVersion, cdnBase string) string {
 	v := version
 	if v == "" {
