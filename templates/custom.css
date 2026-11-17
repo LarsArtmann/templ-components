@@ -112,6 +112,14 @@
  * per-instance anchor names required (explicit names would need inline
  * style attributes, which strict CSP blocks). The 8px margin is the
  * anchor-to-panel gap; the JS fallback uses gap = 8 as well.
+ *
+ * Alignment bands use the x-axis spellings (span-x-start/span-x-end), not
+ * span-inline-*: Chromium (verified 152.0.7977.82, 2026-11-15) rejects
+ * span-inline-start/span-inline-end in position-area — the var()
+ * substitution then fails at computed-value time and the whole declaration
+ * drops to the initial value (NOT a cascade fallback), parking the popover
+ * at its static position. Single-keyword bands and the x-axis spellings
+ * all compute correctly on the same engine.
  * position-try-fallbacks mirror the JS viewport flip (bottom clips -> try
  * top first, then the inline axis).
  */
@@ -149,19 +157,19 @@
 
   /* Alignment variants (the JS applies align only on the top/bottom axis). */
   [data-tc-position="top"][data-tc-align="start"] {
-    --tc-popover-area: top span-inline-end;
+    --tc-popover-area: top span-x-end;
   }
 
   [data-tc-position="top"][data-tc-align="end"] {
-    --tc-popover-area: top span-inline-start;
+    --tc-popover-area: top span-x-start;
   }
 
   [data-tc-position="bottom"][data-tc-align="start"] {
-    --tc-popover-area: bottom span-inline-end;
+    --tc-popover-area: bottom span-x-end;
   }
 
   [data-tc-position="bottom"][data-tc-align="end"] {
-    --tc-popover-area: bottom span-inline-start;
+    --tc-popover-area: bottom span-x-start;
   }
 }
 
