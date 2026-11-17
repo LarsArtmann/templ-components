@@ -154,6 +154,7 @@ func TestDatastarVersionConstantNameMatchesValue(t *testing.T) {
 		t.Errorf("DatastarVersion1_0_3 compat alias = %q, want literal %q",
 			got, "1.0.3")
 	}
+
 	if got := string(DatastarVersion1_0_2); got != "1.0.2" {
 		t.Errorf("DatastarVersion1_0_2 compat alias = %q, want literal %q",
 			got, "1.0.2")

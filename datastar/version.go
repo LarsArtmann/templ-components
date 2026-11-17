@@ -23,8 +23,10 @@ const (
 	// consumers still referencing the pre-1.0.4 constant name. The value is
 	// the upstream-owned [static.Version1_0_3] literal ("1.0.3"): it renders
 	// the 1.0.3 CDN runtime, deliberately NOT the pinned bytes, so the name
-	// keeps telling the truth. Deprecated: consumers should move to
-	// DatastarVersion1_0_4 (or drop the explicit Version to follow the pin).
+	// keeps telling the truth.
+	//
+	// Deprecated: consumers should move to DatastarVersion1_0_4 (or drop the
+	// explicit Version to follow the pin).
 	DatastarVersion1_0_3 DatastarVersion = DatastarVersion(static.Version1_0_3)
 
 	// DatastarVersion1_0_2 is a compile-compatibility alias for downstream
@@ -34,6 +36,7 @@ const (
 	// highest version). The value is the upstream-owned [static.Version1_0_2]
 	// literal; it renders the 1.0.2 CDN runtime, deliberately NOT derived
 	// from [static.Version], so the name keeps telling the truth.
+	//
 	// Deprecated: consumers should move to DatastarVersion1_0_4 (or drop the
 	// explicit Version to follow the pin).
 	DatastarVersion1_0_2 DatastarVersion = DatastarVersion(static.Version1_0_2)
