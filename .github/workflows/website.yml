@@ -42,7 +42,7 @@ jobs:
           # the deploy day as lastmod (#280 prod spot-check, 2026-10-17).
           fetch-depth: 0
 
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
         with:
           # Root go.mod (resolved against the workspace root, not the job's
           # working-directory) — single source for the 1.27 floor.
