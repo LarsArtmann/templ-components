@@ -10,6 +10,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"bytes"
 	"encoding/json/v2"
 	"fmt"
 	"net/url"
@@ -99,6 +100,11 @@ func breadcrumbJSONLD(items []BreadcrumbItem, baseURL string) string {
 	if err != nil {
 		return ""
 	}
+	// json/v2 (GOEXPERIMENT=jsonv2) does NOT HTML-escape by default, so a
+	// literal "</" in an item name would close the CSP-exempt ld+json block
+	// early. Escape the forward slash (valid JSON, "\u003c"-equivalent
+	// safety) so no "</" sequence survives into the payload.
+	data = bytes.ReplaceAll(data, []byte("</"), []byte(`<\/`))
 	return string(data)
 }
 
@@ -145,7 +151,7 @@ func breadcrumbSeparator(custom string) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(custom)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 116, Col: 81}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 122, Col: 81}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -207,7 +213,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templruntime.NewAttributeExpression(props.ID).Resolve(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 134, Col: 16}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 140, Col: 16}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 				if templ_7745c5c3_Err != nil {
@@ -243,7 +249,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templruntime.NewAttributeExpression(utils.Coalesce(props.AriaLabel, "Breadcrumb")).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 137, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 143, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
