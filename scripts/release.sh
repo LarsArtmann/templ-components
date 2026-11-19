@@ -116,6 +116,18 @@ export GOEXPERIMENT=jsonv2
 
 cd "$(dirname "$0")/.."
 
+# 0. Daemon-pause lease gate (v1.10.0 incident, recurred 2026-11-19 on the
+#    v1.27.1 cut): the auto-commit daemon MUST be paused for the whole cut —
+#    in-flight version bumps were swept into footerless daemon carriers
+#    mid-release (twice now). The lease file is the pause marker; refuse to
+#    start without it. Remove the file after the cut's follow-up commit.
+if [ ! -e ".tq/daemon-pause" ]; then
+	echo "Error: no .tq/daemon-pause lease — the auto-commit daemon is live and WILL sweep" >&2
+	echo "in-flight version bumps into footerless carriers mid-cut (v1.10.0 and v1.27.1)." >&2
+	echo "Pause it first: touch .tq/daemon-pause   (remove the file after the cut)." >&2
+	exit 1
+fi
+
 # 1. Working tree must be clean.
 if [ -n "$(git status --porcelain)" ]; then
 	echo "Error: working tree is not clean. Commit or stash changes first." >&2
@@ -198,6 +210,37 @@ else
 	fi
 	echo "Extracted release notes from CHANGELOG.md [Unreleased] section."
 fi
+
+# 4b. govulncheck PRE-probe, BEFORE any version file is touched. The v1.27.1
+#     first attempt burned the whole verify suite before the post-build
+#     govulncheck gate surfaced GO-2026-6859 — a stdlib vulnerability
+#     "fixed in go1.27.4", i.e. an environment problem diagnosable in
+#     seconds at a pristine tree. A stdlib finding is a toolchain bump, not
+#     a code fix, so the remedy is GOTOOLCHAIN, named here so the re-run is
+#     one command. The post-build govulncheck gate below stays (it scans the
+#     BUMPED tree and every sub-module; this probe scans the root at current
+#     versions, which is where every stdlib finding surfaces).
+if ! command -v govulncheck &>/dev/null; then
+	echo "Error: govulncheck not found — install it (nix shell nixpkgs#govulncheck, v1.7.0)" >&2
+	exit 1
+fi
+PREPROBE_LOG="$(mktemp)"
+if ! govulncheck ./... >"$PREPROBE_LOG" 2>&1; then
+	cat "$PREPROBE_LOG" >&2
+	FIXED_GO="$(grep -oE 'Fixed in: *go[0-9]+\.[0-9]+(\.[0-9]+)?' "$PREPROBE_LOG" | head -n1 | grep -oE 'go[0-9]+\.[0-9]+(\.[0-9]+)?')"
+	rm -f "$PREPROBE_LOG"
+	if [ -n "${FIXED_GO:-}" ]; then
+		echo "" >&2
+		echo "Error: stdlib vulnerability reachable at the current toolchain — aborting BEFORE the version bump." >&2
+		echo "Re-run remedy: GOTOOLCHAIN=${FIXED_GO} scripts/release.sh ${NEW_VERSION} '<release-summary>'" >&2
+	else
+		echo "" >&2
+		echo "Error: govulncheck pre-probe found reachable vulnerabilities (see output above) — aborting BEFORE the version bump." >&2
+	fi
+	exit 1
+fi
+rm -f "$PREPROBE_LOG"
+echo "govulncheck pre-probe clean (reachable vulnerabilities at the current tree: none)."
 
 # Trim leading/trailing blank lines for clean commit body + CHANGELOG formatting.
 RELEASE_NOTES="$(printf '%s\n' "$RELEASE_NOTES" | awk 'NF{p=1} p{lines[++n]=$0} END{while(n>0 && lines[n]~/^[[:space:]]*$/) n--; for(i=1;i<=n;i++) print lines[i]}')"
