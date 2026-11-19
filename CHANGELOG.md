@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.27.1] — 2026-11-19
+
 ### The v1.27.0 templ-pairing incident — what shipped broken, how it was caught, how it was unwound
 
 **What shipped broken.** The v1.27.0 migration executed the templ

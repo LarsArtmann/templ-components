@@ -5,7 +5,7 @@ go 1.27
 require (
 	github.com/a-h/templ v0.3.1100
 	github.com/larsartmann/go-datastar/static v0.8.0
-	github.com/larsartmann/templ-components/utils v1.27.0
+	github.com/larsartmann/templ-components/utils v1.27.1
 )
 
 require (
@@ -14,4 +14,3 @@ require (
 	go.yaml.in/yaml/v3 v3.0.6 // indirect
 )
 
-replace github.com/larsartmann/templ-components/utils => ../utils
