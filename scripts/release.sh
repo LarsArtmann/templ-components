@@ -227,7 +227,11 @@ fi
 PREPROBE_LOG="$(mktemp)"
 if ! govulncheck ./... >"$PREPROBE_LOG" 2>&1; then
 	cat "$PREPROBE_LOG" >&2
-	FIXED_GO="$(grep -oE 'Fixed in: *go[0-9]+\.[0-9]+(\.[0-9]+)?' "$PREPROBE_LOG" | head -n1 | grep -oE 'go[0-9]+\.[0-9]+(\.[0-9]+)?')"
+	# Match both "Fixed in: go1.27.4" (stdlib shorthand) and the
+	# "Fixed in: net/http@go1.27.4" package-prefixed form govulncheck emits.
+	# The trailing `|| true` matters: under set -e a no-match grep inside a
+	# command substitution aborts the script before the remedy prints.
+	FIXED_GO="$(grep 'Fixed in:' "$PREPROBE_LOG" | head -n1 | grep -oE 'go[0-9]+\.[0-9]+(\.[0-9]+)?' || true)"
 	rm -f "$PREPROBE_LOG"
 	if [ -n "${FIXED_GO:-}" ]; then
 		echo "" >&2
