@@ -14,3 +14,4 @@ require (
 	go.yaml.in/yaml/v3 v3.0.6 // indirect
 )
 
+replace github.com/larsartmann/templ-components/utils => ../utils

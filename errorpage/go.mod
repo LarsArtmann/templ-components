@@ -14,3 +14,7 @@ require (
 	github.com/stretchr/testify v1.12.1 // indirect
 	go.yaml.in/yaml/v3 v3.0.6 // indirect
 )
+
+replace github.com/larsartmann/templ-components/utils => ../utils
+
+replace github.com/larsartmann/templ-components/icons => ../icons
