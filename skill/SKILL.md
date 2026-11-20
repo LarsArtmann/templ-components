@@ -505,3 +505,9 @@ test -run TestDocsCountDrift -count=1`), keep the references non-overlapping (ca
 signatures, consumer guide = adoption, authoring guide = depth, guard tests = invariants), and
 re-read the file through the fan-out path after editing — a change that lands in git but not
 on disk is the stale-link failure class.
+
+## Works with (fleet pairings)
+
+- **cmdguard** — templ-components renders a web app's UI; cmdguard is its
+  operational twin: a `NewApp`-built admin/ops CLI over the same DI scope, with
+  the auto `doctor` command surfacing the same health checks the UI relies on.
