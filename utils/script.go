@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html"
 	"io"
+	"strings"
 
 	"github.com/a-h/templ"
 )
@@ -46,6 +47,10 @@ func ScriptAttrs(nonce string) templ.Attributes {
 // one component value is safe across requests with different context nonces.
 func ScriptComponent(nonce, script, errLabel string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		if strings.Contains(script, "</script>") {
+			return fmt.Errorf("%s: script content carries a literal </script> — the verbatim wrap would break out of the element; write the escape form <\\/script> instead", errLabel)
+		}
+
 		resolved := ResolveNonce(ctx, nonce)
 		if resolved == "" {
 			resolved = templ.GetNonce(ctx)

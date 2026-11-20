@@ -39,23 +39,34 @@ func TestScriptComponentSingleCloseTag(t *testing.T) {
 	})
 
 	t.Run(
-		"content carrying </script> breaks out; contract documents why callers must not pass one",
+		"content carrying </script> refuses at render time (the caller-error class closes here)",
 		func(t *testing.T) {
 			t.Parallel()
 
-			// This is the documented hazard, not sanctioned behavior: the break-out
-			// render is what the contract above forbids. Pinned so a future change
-			// to the verbatim-wrap rule is a deliberate, visible decision.
+			// Since v1.27.2 the verbatim-wrap hazard is a render-time refusal,
+			// not a documented hazard: the component fails loudly and names the
+			// errLabel, so a caller can never ship the element break-out (the
+			// v1.27.0 toast class). The escape form <\/script> is the sanctioned
+			// way to carry a close tag inside a JS string.
 			var buf bytes.Buffer
 
 			hazard := "var s = \"</script>\";"
 
-			if err := ScriptComponent("", hazard, "hazard demo").Render(t.Context(), &buf); err != nil {
-				t.Fatalf("render failed: %v", err)
+			err := ScriptComponent("", hazard, "hazard demo").Render(t.Context(), &buf)
+			if err == nil {
+				t.Fatalf("the hazard render must refuse, got output %q", buf.String())
 			}
 
-			if got := strings.Count(buf.String(), "</script>"); got != 2 {
-				t.Fatalf("expected the hazard render to carry 2 close tags (the documented break-out), got %d", got)
+			if !strings.Contains(err.Error(), "hazard demo") {
+				t.Fatalf("refusal must name the errLabel, got: %v", err)
+			}
+
+			if !strings.Contains(err.Error(), "</script>") {
+				t.Fatalf("refusal must name the offending shape, got: %v", err)
+			}
+
+			if strings.Contains(buf.String(), "</script>") {
+				t.Fatalf("a refused render must not emit any close tag, got %q", buf.String())
 			}
 		},
 	)

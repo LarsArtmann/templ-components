@@ -23,7 +23,17 @@ func FuzzScriptComponent(f *testing.F) {
 	f.Fuzz(func(t *testing.T, js, nonce string) {
 		var sb strings.Builder
 
-		if err := ScriptComponent(nonce, js, "fuzz").Render(context.Background(), &sb); err != nil {
+		err := ScriptComponent(nonce, js, "fuzz").Render(context.Background(), &sb)
+
+		if strings.Contains(js, "</script>") {
+			if err == nil {
+				t.Fatalf("script body %q carries a literal close tag and must refuse, got output %q", js, sb.String())
+			}
+
+			return
+		}
+
+		if err != nil {
 			t.Fatalf("render error: %v", err)
 		}
 
