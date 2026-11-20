@@ -154,6 +154,10 @@ module supplies the CSP-safe wrapper plus the dark-mode bridge (ADR-0031, tier 2
   Datastar, form submission sets `ContentTypeForm` so the form's fields serialize.
 - Inline scripts render through `utils.ScriptComponent`; external scripts through
   `layout.Script`. An empty nonce omits the attribute (never `nonce=""`).
+- `utils.ScriptComponent` REFUSES a script body carrying a literal `</script>`
+  (render-time error naming the errLabel, since v1.27.2 — the verbatim wrap
+  would break out of the element, the v1.27.0 toast class). Carry a close tag
+  inside a JS string as the escape form `<\/script>`.
 - Theme by overriding Tailwind variables in `@theme`; never add color props to Go.
 - Consumers gitignore `*_templ.go` and generate at build time (the library commits them).
 
