@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added / hardened
+
+- **JSON-LD `</` break-out closed** (`84a3475f`): `breadcrumbJSONLD` escapes
+  `</` to `<\/` (valid JSON) — json/v2 does NOT HTML-escape by default under
+  `GOEXPERIMENT=jsonv2`, so a literal `</` in an item name could close the
+  CSP-exempt ld+json block early. Navigation test pins no-`</`-survival with
+  malicious names; the canonical `cmd/tc/_sources` copy now mirrors the
+  generated package.
+- **`utils.ScriptComponent` refuses a literal `</script>` in the script body**
+  (render-time error naming the errLabel, pointing at the `<\/script>` escape
+  form) — the caller-error class the v1.27.0 toast bug was one half of now
+  fails loudly instead of shipping the element break-out. Contract test and
+  fuzz seeds pin the refusal; SKILL.md documents it.
+- **Release script gates** (`08fc8e27`+`335a522d`): `scripts/release.sh`
+  refuses to run without a `.tq/daemon-pause` lease (the v1.10.0/v1.27.1
+  mid-cut daemon-sweep incident shape) and runs a govulncheck pre-probe on
+  the pristine tree BEFORE any version file is touched, naming the
+  `GOTOOLCHAIN=goX.Y.Z` re-run remedy for stdlib findings.
+
 ## [1.27.1] — 2026-11-19
 
 ### The v1.27.0 templ-pairing incident — what shipped broken, how it was caught, how it was unwound
