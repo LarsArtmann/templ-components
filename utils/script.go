@@ -15,7 +15,10 @@ import (
 // ScriptComponent wraps content verbatim, so the close tag would break out
 // of the element (the v1.27.0 toast class). Callers carrying a close tag
 // inside a JS string write the escape form `<\/script>` instead.
-var ErrScriptCloseTag = errors.New("script content carries a literal </script> — the verbatim wrap would break out of the element; write the escape form <\\/script> instead")
+var ErrScriptCloseTag = errors.New(
+	"script content carries a literal </script> — the verbatim wrap would break out of the element; " +
+		"write the escape form <\\/script> instead",
+)
 
 // ScriptAttrs returns the nonce attribute for an inline <script> (or
 // <style>) tag, or nil when nonce is empty.
