@@ -6,16 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.27.2] — 2026-11-20
+
 ### Added / hardened
 
 - **JSON-LD `</` break-out closed** (`84a3475f`): `breadcrumbJSONLD` escapes
-  `</` to `<\/` (valid JSON) — json/v2 does NOT HTML-escape by default under
+  `</` to `</` (valid JSON) — json/v2 does NOT HTML-escape by default under
   `GOEXPERIMENT=jsonv2`, so a literal `</` in an item name could close the
   CSP-exempt ld+json block early. Navigation test pins no-`</`-survival with
   malicious names; the canonical `cmd/tc/_sources` copy now mirrors the
   generated package.
 - **`utils.ScriptComponent` refuses a literal `</script>` in the script body**
-  (render-time error naming the errLabel, pointing at the `<\/script>` escape
+  (render-time error naming the errLabel, pointing at the `</script>` escape
   form) — the caller-error class the v1.27.0 toast bug was one half of now
   fails loudly instead of shipping the element break-out. Contract test and
   fuzz seeds pin the refusal; SKILL.md documents it.
