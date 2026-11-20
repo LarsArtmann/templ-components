@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"html"
 	"io"
@@ -9,6 +10,12 @@ import (
 
 	"github.com/a-h/templ"
 )
+
+// ErrScriptCloseTag reports a script body carrying a literal `</script>`:
+// ScriptComponent wraps content verbatim, so the close tag would break out
+// of the element (the v1.27.0 toast class). Callers carrying a close tag
+// inside a JS string write the escape form `<\/script>` instead.
+var ErrScriptCloseTag = errors.New("script content carries a literal </script> — the verbatim wrap would break out of the element; write the escape form <\\/script> instead")
 
 // ScriptAttrs returns the nonce attribute for an inline <script> (or
 // <style>) tag, or nil when nonce is empty.
@@ -48,7 +55,7 @@ func ScriptAttrs(nonce string) templ.Attributes {
 func ScriptComponent(nonce, script, errLabel string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		if strings.Contains(script, "</script>") {
-			return fmt.Errorf("%s: script content carries a literal </script> — the verbatim wrap would break out of the element; write the escape form <\\/script> instead", errLabel)
+			return fmt.Errorf("%s: %w", errLabel, ErrScriptCloseTag)
 		}
 
 		resolved := ResolveNonce(ctx, nonce)

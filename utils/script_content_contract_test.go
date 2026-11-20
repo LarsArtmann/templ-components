@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"errors"
 	"strings"
 	"testing"
 )
@@ -61,8 +62,8 @@ func TestScriptComponentSingleCloseTag(t *testing.T) {
 				t.Fatalf("refusal must name the errLabel, got: %v", err)
 			}
 
-			if !strings.Contains(err.Error(), "</script>") {
-				t.Fatalf("refusal must name the offending shape, got: %v", err)
+			if !errors.Is(err, ErrScriptCloseTag) {
+				t.Fatalf("refusal must wrap the sentinel ErrScriptCloseTag, got: %v", err)
 			}
 
 			if strings.Contains(buf.String(), "</script>") {
