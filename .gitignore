@@ -28,6 +28,11 @@ coverage.out
 node_modules/
 # Copy/paste detection report
 /report/jscpd-report.json
+# The machine-global gitignore ignores `build/` at any depth; this repo's
+# website SSG has a Go PACKAGE at website/internal/build — re-include it so
+# `git add .` never skips new files there (hazard found 2026-11-23 while
+# extracting website-template, whose initial commit lost the same package)
+!website/internal/build/
 # Build artifacts
 /templ-components
 /demo
