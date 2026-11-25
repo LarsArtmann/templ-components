@@ -1,55 +1,45 @@
 /*
- * templ-components starter CSS — Tailwind v4 entry point.
+ * templ-components starter CSS: Tailwind v4 entry point.
  *
- * Copy app.css, custom.css, AND templ-components-theme.css into your
- * project (e.g. to your styles/ directory) and customize — `tc init`
- * scaffolds all three. The @import "./custom.css" at the bottom pulls in
- * component-specific styles (dialog animations, stylable select, etc.),
- * and @import "./templ-components-theme.css" pulls in the semantic
- * aliases (tc-primary, tc-danger, ...).
- * Build with:
- *   tailwindcss -i app.css -o styles.css --minify
- *   go run github.com/larsartmann/templ-components/cmd/tc-css -input app.css -output styles.css
- *   buildflow (tailwind-build provider handles it automatically)
+ * `tc init` scaffolds this file. It is yours: edit the @theme block and the
+ * two @source lines that point at YOUR templates. Keep the lines that reach the
+ * library-owned files as they are.
+ *
+ * The library-owned files next to this one are written by `tc css sync` and
+ * carry a stamp naming the library version they came from. Never edit them.
+ * `go get` updates the Go code only; nothing else refreshes these files, so
+ * after every bump of github.com/larsartmann/templ-components re-run
+ *
+ *   GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
+ *
+ * and gate the result with `tc css check` (exit 1 on a stale, missing, or
+ * unreachable file).
  */
 
-/* Tailwind v4 — CSS-first config, no tailwind.config.js */
+/* Tailwind v4: CSS-first config, no tailwind.config.js. source(none) turns off
+ * directory auto-detection, so the scan set is the same in every environment. */
 @import "tailwindcss" source(none);
 
 /*
- * @source directives tell Tailwind where to scan for class names.
- *
- * Your own sources: .templ files are the primary source. .go files are also
- * scanned because many components define Tailwind class lookup maps in Go
- * source (e.g., buttonVariantLookup, feedbackStyleMap, familyStyleMap).
- * Without scanning .go files, classes defined only in Go produce
- * silently-missing CSS.
+ * Every @source and @import path resolves relative to THIS FILE, never to the
+ * directory you run tailwindcss from. The next two lines scan this file's own
+ * directory; point them at your own sources instead, e.g. at
+ * "../internal/**/*.templ" when this file lives in a css/ directory.
+ * .templ files carry the markup, .go files carry class lookup maps.
  */
-@source "**/*.templ";
-@source "**/*.go";
+@source "./**/*.templ";
+@source "./**/*.go";
 
-/*
- * templ-components class names (ADR-0045): the library ships a generated
- * scan corpus in the module. Copy it next to this file and scan the copy:
- *
- *   cp "$(go list -m -f '{{.Dir}}' github.com/larsartmann/templ-components)/templates/templ-components-classes.txt" .
- *
- * Do NOT point @source at a gitignored vendor/ tree — Tailwind v4.3 never
- * scans gitignored paths, even when listed explicitly, so the line is
- * silently inert in fresh clones (ADR-0045 evidence). If your vendored tree
- * is COMMITTED (tracked), scanning it directly is fine instead.
- */
+/* The library's class corpus: every utility class its components can emit. */
 @source "./templ-components-classes.txt";
 
-/*
- * Class-based dark mode — required for layout.ThemeScript() / layout.ThemeToggle().
- * The .dark class is toggled on <html> by ThemeScript before first paint.
- */
+/* Class-based dark mode: required for layout.ThemeScript() / layout.ThemeToggle().
+ * The .dark class is toggled on <html> by ThemeScript before first paint. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * Override colors globally — all templ-components use standard Tailwind
- * utility classes, so overriding --color-* changes every component.
+ * Override colors globally: every component uses standard Tailwind utility
+ * classes, so overriding --color-* changes all of them.
  */
 @theme {
   /* Example: indigo instead of blue */
@@ -58,27 +48,11 @@
 }
 
 /*
- * Semantic aliases (included by default since v2.0):
- * The theme file aliases Tailwind palette colors to semantic names
- * (tc-primary, tc-danger, tc-success, etc.). Override --color-tc-primary
- * in your @theme block to re-skin every component without touching any
- * .templ source. See docs/theming.md and ADR-0008.
+ * Library-owned files, written by `tc css sync` (do not edit):
+ *   templ-components-theme.css  semantic color aliases (tc-primary, tc-danger, ...)
+ *   custom.css                  component CSS (dialog animations, stylable select, ...)
+ *   safelist.css                GridColsAutoFit classes the scanner cannot see
  */
 @import "./templ-components-theme.css";
-
-/*
- * Custom component CSS — imported from a single source of truth.
- * Both this file and examples/demo/demo.css import custom.css so the
- * component-specific styles (dialog animations, stylable select, etc.)
- * never diverge between the consumer template and the demo.
- */
 @import "./custom.css";
-
-/*
- * Scanner-invisible class safelist (GridColsAutoFit's runtime-assembled
- * grid-template-columns classes). Only needed if you use display.Grid
- * with Cols: GridColsAutoFit; arbitrary MinColWidth values still need
- * your own @source inline(...) line — see
- * docs/tailwind-v4-adoption-guide.md, "Runtime-assembled classes".
- */
 @import "./safelist.css";

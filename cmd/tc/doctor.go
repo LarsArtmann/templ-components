@@ -307,31 +307,9 @@ func checkTemplVersionPinnedAt(path string) int {
 // (replace/exclude) are ignored — their lines never carry a require-shaped
 // version field for templ.
 func templRequireVersion(content string) (string, bool) {
-	inRequireBlock := false
+	version, found := requireVersion(content, templModulePath)
 
-	for raw := range strings.SplitSeq(content, "\n") {
-		line := stripLineComment(strings.TrimSpace(raw))
-		if line == "" {
-			continue
-		}
-
-		fields := strings.Fields(line)
-
-		blockStart, blockEnd := requireBlockMarkers(fields)
-
-		switch {
-		case blockStart:
-			inRequireBlock = true
-		case blockEnd:
-			inRequireBlock = false
-		case inRequireBlock && isTemplRequire(fields):
-			return strings.TrimPrefix(fields[1], "v"), true
-		case isSingleLineTemplRequire(fields):
-			return strings.TrimPrefix(fields[2], "v"), true
-		}
-	}
-
-	return "", false
+	return strings.TrimPrefix(version, "v"), found
 }
 
 // stripLineComment removes a trailing // comment (go.mod has no other
@@ -350,18 +328,6 @@ func requireBlockMarkers(fields []string) (bool, bool) {
 	end := len(fields) == 1 && fields[0] == ")"
 
 	return start, end
-}
-
-// isTemplRequire matches a block-form line naming templ with a version:
-// `github.com/a-h/templ v0.3.1100 [// indirect]`.
-func isTemplRequire(fields []string) bool {
-	return len(fields) >= 2 && fields[0] == templModulePath && isVersionLiteral(fields[1])
-}
-
-// isSingleLineTemplRequire matches the one-line form:
-// `require github.com/a-h/templ v0.3.1100`.
-func isSingleLineTemplRequire(fields []string) bool {
-	return len(fields) >= 3 && fields[0] == "require" && fields[1] == templModulePath
 }
 
 // isVersionLiteral reports whether s looks like a semver literal (v1.2.3) —

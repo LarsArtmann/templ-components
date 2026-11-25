@@ -1,19 +1,34 @@
-# `tc` CLI — templ-components scaffolding tool
+# `tc` CLI — templ-components consumer tool
 
-The `tc` binary copies component source files into your project so you can
-customize them without forking the library.
+`tc` is the library's consumer CLI. It scaffolds and verifies the stylesheet
+inputs your Tailwind build needs (`tc init`, `tc css`), copies component
+source files into your project (`tc add`), and diagnoses integration traps
+(`tc doctor`, `tc lint`).
 
 ## Install
+
+Run it at the version your `go.mod` pins (no install, works in vendored projects too):
+
+```bash
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc <command>
+```
+
+Or install a binary:
 
 ```bash
 go install github.com/larsartmann/templ-components/cmd/tc@latest
 ```
 
+An installed binary carries the files of ITS version. `tc css sync` refuses
+to write them into a project that pins another version and names the command
+that matches.
+
 ## Commands
 
 ### `tc init`
 
-Scaffolds the four starter CSS files (`app.css`, `custom.css`,
+Scaffolds the Tailwind entry `app.css` plus the four library-owned stylesheet
+files (`templ-components-classes.txt`, `custom.css`,
 `templ-components-theme.css`, `safelist.css`) in the current directory.
 Skips files that already exist.
 
@@ -24,6 +39,9 @@ tc init
 # tc: wrote custom.css
 # ...
 ```
+
+`app.css` is yours: point its two `@source` lines at your own templates. The
+other four are library-owned (see `tc css`).
 
 ### `tc ls`
 
@@ -38,6 +56,8 @@ tc ls
 #   ...
 ```
 
+### `tc add <component>`
+
 Copies a component's `.templ` file (and its `_types.go` sibling, if present)
 to `./components/` by default. Override the destination with `--out`.
 
@@ -50,8 +70,10 @@ tc add dropdown --out ./src/components
 # tc: wrote src/components/dropdown_templ.go   (if present)
 ```
 
-produce the `_templ.go` file, then import your local copy instead of the
-library package.
+Only the source is copied: run `templ generate` in your project to produce the
+`_templ.go` file, then import your local copy instead of the library package.
+A component that relies on sibling helpers (class lookups, enums, shared
+sub-templates) needs those too; `tc add <component> --list-deps` names them.
 
 ### `tc doctor`
 
@@ -127,6 +149,52 @@ var arrow = "translate-x-1" // tc-lint:ignore motion-reduce
 A bare `tc-lint:ignore` suppresses every rule on the line; listing rule ids
 suppresses exactly those. Prefer the narrow form — a bare marker hides future
 rules too.
+
+### `tc css sync`
+
+Writes the stylesheet inputs of the library version `go.mod` pins into the
+directory of your Tailwind entry (or `--dir DIR`), then prints the lines that
+entry still needs:
+
+```bash
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
+# tc: wrote css/templ-components-classes.txt
+# tc: wrote css/custom.css
+# tc: wrote css/templ-components-theme.css
+# tc: wrote css/safelist.css
+# tc css: css/app.css does not reach every library file yet; add these lines to it:
+#   @source "./templ-components-classes.txt";
+#   @import "./custom.css";
+#   @import "./templ-components-theme.css";
+#   @import "./safelist.css";
+```
+
+`go get` updates the Go code only. Re-run the sync after every library bump.
+Each written file carries a first-line stamp naming the version it came from,
+so the next sync refreshes it without asking. A differing copy WITHOUT a
+stamp may hold your own rules and is kept: move those rules to a stylesheet of
+your own, then re-run with `--force`.
+
+### `tc css check`
+
+Fails (exit 1) when the stylesheet inputs are not right, so CI can gate on it:
+
+- `go.mod` pins a different library version than this `tc`.
+- A library file is missing or differs from the pinned version.
+- No Tailwind entry (a CSS file importing `tailwindcss`) scans the class corpus
+  or imports the component CSS.
+
+```bash
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css check
+#   [pass] go.mod pin equals this tc (v1.27.2)
+#   [FAIL] custom.css (css/custom.css) differs from v1.27.2 (copy is stamped v1.27.0)
+#          fix: run `tc css sync`
+# result: 1 check(s) FAILED; see the fix hints above
+```
+
+`--dir DIR` names where the library files live, `--css PATH` one Tailwind
+entry to inspect instead of every discovered one. A stale copy raises nothing
+on its own: the page just renders unstyled. That is what this check is for.
 
 ## Why use this?
 

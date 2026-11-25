@@ -1,4 +1,4 @@
-# Deterministic Tailwind Scanning for a Vendored templ-components
+# Tailwind Scanning for a Vendored templ-components
 
 ## Problem
 
@@ -9,108 +9,107 @@ tree:
 @source "../vendor/github.com/larsartmann/templ-components";
 ```
 
-It works on your machine — then components render unstyled in CI, in the Nix
-sandbox, or on a fresh clone.
+The utility classes arrive, but something is always off: components render
+unstyled in CI, on a fresh clone, or in the Nix sandbox, and every rule that
+starts with `.tc-` is missing everywhere.
 
-**Root cause:** `vendor/` is conventionally gitignored, and Tailwind v4 skips
-gitignored paths — including directories listed explicitly via `@source`.
-Whether the scan works depends on whether a `.gitignore` exists in the build
-environment. A Nix sandbox has none (scan works); a fresh clone has one
-(scan silently drops every library class). The output is
-environment-dependent, which is the worst kind of build failure: it passes
-everywhere you test and breaks where it ships.
+**Root cause:** the vendor tree is not a delivery channel for the stylesheet
+inputs.
 
-## The pattern: scan a tracked class-inventory file
+- It exists only after `go mod vendor` ran, so the scan depends on the
+  environment: a fresh clone has no tree, a Nix sandbox has a different one.
+- Go vendors package directories only. `templates/` is not a package, so
+  `custom.css`, the theme and the safelist never arrive through `vendor/`,
+  whatever the `@source` line says.
 
-Concatenate the library's source files into one **committed** plain-text file
-and scan that instead. The scan set becomes byte-identical in every
-environment because the file is versioned like any other source.
+## The pattern: let `tc css` own the library files
 
-### 1. Generate the inventory
+The library ships every stylesheet input in the module and a command that
+writes them at the version `go.mod` pins (ADR-0045, ADR-0050). No per-project
+generator, no vendor path:
 
 ```bash
-#!/usr/bin/env bash
-# scripts/gen-library-classes.sh — regenerate the vendored class inventory.
-set -euo pipefail
-cd "$(dirname "$0")/.."
-
-dest=internal/server/views/library-classes.txt
-
-# LC_ALL=C pins the sort order so the concatenation is byte-identical across
-# environments (the Nix sandbox sorts under the C locale).
-LC_ALL=C find vendor/github.com/larsartmann/templ-components \
-	-type f \( -name '*.templ' -o -name '*.go' \) ! -name '*_templ.go' \
-	-print0 | LC_ALL=C sort -z | xargs -0 cat >"$dest"
-
-echo "wrote $dest ($(wc -c <"$dest") bytes)"
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
 ```
 
-Notes:
+`tc css sync` writes four tracked files next to your Tailwind entry and prints
+the lines the entry still needs:
 
-- `! -name '*_templ.go'` — generated files mirror the `.templ` sources and leak
-  utility-looking identifiers that inflate the output with dead CSS.
-- `LC_ALL=C` + `sort -z` — deterministic byte order regardless of locale.
-
-### 2. Scan it from your CSS
+| File                           | What it is                                                                     |
+| ------------------------------ | ------------------------------------------------------------------------------ |
+| `templ-components-classes.txt` | Class corpus: every utility class the library can emit, for Tailwind's scanner |
+| `custom.css`                   | Component CSS (dialog animations, stylable select, ...)                        |
+| `templ-components-theme.css`   | Semantic color aliases (`tc-primary`, `tc-danger`, ...)                        |
+| `safelist.css`                 | `GridColsAutoFit` classes the scanner cannot see                               |
 
 ```css
-/* Disable automatic detection: everything scanned is declared explicitly. */
 @import "tailwindcss" source(none);
 
-/* Your own views */
-@source ".";
+/* Your own views (paths resolve relative to THIS file) */
+@source "../internal/**/*.templ";
+@source "../internal/**/*.go";
 
-/* Never scan generated templ output or previous CSS builds */
-@source not "**/*_templ.go";
-@source not "app.min.css";
-@source not "styles.css";
+/* The library's class corpus */
+@source "./templ-components-classes.txt";
 
-/* The vendored library's class inventory (committed, deterministic) */
-@source "./library-classes.txt";
+/* The library's hand-written CSS */
+@import "./custom.css";
+@import "./templ-components-theme.css";
+@import "./safelist.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 ```
 
-### 3. Wire regeneration into your flow
+`GOFLAGS=-mod=mod` matters for a vendored project: `cmd/tc` is never part of
+`vendor/`, so the default vendor mode cannot build it.
 
-Run the script:
+## Verify it: `tc css check`
 
-- after `go mod vendor` (a `check-vendor-hash.sh` style guard works well), and
-- after bumping the `templ-components` version.
+Gate the setup in CI (exit 1 on any finding):
 
-Then recompile the CSS artifacts and commit all regenerated files together —
-a CI check that rebuilds the CSS and diffs it catches a forgotten regeneration.
-
-## Why a `.txt` file and not the vendor tree?
-
-| Approach                      | Fresh clone             | Nix sandbox   | Docker  | Hermetic |
-| ----------------------------- | ----------------------- | ------------- | ------- | -------- |
-| `@source "vendor/..."`        | ❌ skipped (gitignored) | ✅            | depends | no       |
-| `@source` on module cache     | ✅                      | ❌ (no cache) | ❌      | no       |
-| Tracked `library-classes.txt` | ✅                      | ✅            | ✅      | **yes**  |
-
-The inventory file is a build input like any other: versioned, hashable, and
-identical everywhere. Proven in production by
-[dnsblockd](https://github.com/larsartmann/dnsblockd)'s Nix build, which
-byte-verifies the compiled CSS artifacts.
-
-## Recipe: drift-guard test
-
-If your project has Go tests, pin the inventory so it cannot silently rot:
-
-```go
-func TestLibraryClassesFresh(t *testing.T) {
-	// Recompute the expected inventory in-process and compare to the
-	// committed file — fails when someone bumps the vendored version
-	// without regenerating library-classes.txt.
-}
+```bash
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css check
 ```
 
-(Or simpler: a CI step that runs the script and asserts `git diff --exit-code`.)
+It fails when `go.mod` pins another library version than the files, when a
+file is missing or drifted, or when no Tailwind entry reaches the corpus or
+the component CSS. A stale copy raises nothing on its own: the page just
+renders unstyled.
+
+Run `tc css sync` after every library bump. The copies carry a first-line
+stamp naming the version they came from, so the sync refreshes them without
+asking; a differing copy without a stamp is treated as yours and kept.
+
+## Why a tracked file and not the vendor tree or the module cache?
+
+| Approach                         | Fresh clone      | Nix sandbox   | Hermetic | Carries `custom.css` |
+| -------------------------------- | ---------------- | ------------- | -------- | -------------------- |
+| `@source "vendor/..."`           | no (tree absent) | depends       | no       | never                |
+| `@source` on module cache        | yes              | no (no cache) | no       | no                   |
+| Tracked files from `tc css sync` | yes              | yes           | yes      | yes                  |
+
+A tracked plain file is a build input like any other: versioned, hashable, and
+identical everywhere.
+
+## What `.gitignore` really does to a scan
+
+Measured on Tailwind 4.3.3, 4.3.4 and 4.3.5 (2026-11-25), which corrects an
+earlier claim in ADR-0045:
+
+- Automatic source detection skips gitignored paths.
+- A directory source skips the gitignored directories it _contains_
+  (`@source "."` with a gitignored `vendor/` inside never sees it).
+- An `@source` that _names_ the gitignored directory (or a glob into it) is
+  scanned, and `@import` of a gitignored file resolves.
+
+So an explicit vendor `@source` is not silently inert. It fails for the two
+reasons above instead: the tree is absent where `go mod vendor` did not run,
+and it never carries the hand-written CSS.
 
 ## Related
 
-- [`docs/tailwind-v4-adoption-guide.md`](../tailwind-v4-adoption-guide.md) — the
-  base setup; see the "Deterministic scanning" section for `source(none)`.
-- [`docs/recipes/theme-bridge.md`](theme-bridge.md) — remapping library colors
+- [`docs/tailwind-v4-adoption-guide.md`](../tailwind-v4-adoption-guide.md): the
+  base setup, including "Deterministic scanning" for `source(none)`.
+- [`docs/cli.md`](../cli.md): `tc init`, `tc css sync`, `tc css check`.
+- [`docs/recipes/theme-bridge.md`](theme-bridge.md): remapping library colors
   onto a custom palette once the classes are being scanned correctly.

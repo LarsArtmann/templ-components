@@ -36,32 +36,28 @@ go get github.com/larsartmann/templ-components/charts/echarts@latest
 
 ## Tailwind CSS Setup
 
-Since this is a Go module, you need to vendor the dependency so Tailwind can scan the `.templ` source files for class names.
+Components are Go code that emits Tailwind class names; the CSS for those names comes from your own Tailwind build. That build needs four files the library ships: a class corpus, `custom.css`, a theme, and a safelist. `tc css` writes them at the version your `go.mod` pins and fails when they go stale.
 
 ```bash
-go mod vendor
-```
+# New project: scaffold app.css and the library files next to it
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc init
 
-Then in your CSS entry point:
+# After every library bump: refresh the library files
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
 
-```css
-/* app.css */
-@import "tailwindcss";
-
-/* Scan templ-components for class names */
-@source "../vendor/github.com/larsartmann/templ-components";
-
-/* Enable class-based dark mode toggle */
-@custom-variant dark (&:where(.dark, .dark *));
-```
-
-Build with the Tailwind CLI:
-
-```bash
 tailwindcss -i app.css -o styles.css --minify
 ```
 
-If your project uses [BuildFlow](https://github.com/larsartmann/buildflow), the `tailwind-build` provider handles vendoring + scanning automatically.
+Point the two `@source` lines in `app.css` at your own templates, then gate the setup in CI:
+
+```bash
+# exit 1 on a stale, missing, or unreachable file
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css check
+```
+
+A stale copy never raises an error: the page simply renders unstyled. That is what the check is for.
+
+Do not point `@source` at `vendor/`: `go mod vendor` copies package directories only, so `custom.css` and the theme never arrive that way. [BuildFlow](https://github.com/larsartmann/buildflow)'s `tailwind-build` provider runs the compile step; it does not write the library files.
 
 ## Verify Installation
 

@@ -18,8 +18,14 @@
 # twice on 2026-09-17 (notfound404 + shared).
 #
 # Exclusions (keep in sync with cmd/tc/main_test.go):
-#   - starter/**                         curated scaffolder templates, no twins
 #   - datastar/DATASTAR-BUMP-PROTOCOL.md scaffolder-owned checklist
+#
+# starter/** is NOT excluded any more: the starter CSS ships through `tc css
+# sync`, so every tracked starter file must be the identical twin of a
+# top-level templates/ file (Direction 1), and every shippable templates/
+# file must be embedded (Direction 2). Untracked starter files are skipped:
+# BuildFlow's tailwind-build leaves compile litter there (styles.css,
+# *.out.css). The Go twin of this rule is cmd/tc TestStarterFilesMatchTemplates.
 #
 # Generated strays: any embedded *_templ.go outside starter/ is a problem
 # (removed by --fix). BuildFlow's templ-generate step regenerates the
@@ -109,8 +115,20 @@ while IFS= read -r -d '' embedded; do
 
 	# Exclusions (mirror the Go test): scaffolder-owned files without twins.
 	case "$rel" in
-	starter/*) continue ;;
 	"datastar/$DATASTAR_DOC") continue ;;
+	esac
+
+	# The starter is a twin set of templates/, not of a package directory. Only
+	# tracked files count: BuildFlow leaves untracked compile litter here.
+	twin="$rel"
+	case "$rel" in
+	starter/*)
+		if ! git ls-files --error-unmatch -- "$embedded" >/dev/null 2>&1; then
+			continue
+		fi
+
+		twin="templates/${rel#starter/}"
+		;;
 	esac
 
 	# GENERATED STRAYS (2026-10-10 incident): BuildFlow's templ-generate step
@@ -137,16 +155,15 @@ while IFS= read -r -d '' embedded; do
 	esac
 
 	pkg="${rel%%/*}"
-	if pkg_is_missing "$pkg"; then
+	if [ "$pkg" != "starter" ] && pkg_is_missing "$pkg"; then
 		note "ORPHAN-SKIPPED: $embedded (package '$pkg' directory is missing — fix the checkout, not the mirror)"
 		problems=$((problems + 1))
 		unfixable=1
 		continue
 	fi
 
-	twin="$rel"
 	if [ ! -f "$twin" ]; then
-		note "ORPHAN: $embedded has no library twin"
+		note "ORPHAN: $embedded has no library twin ($twin)"
 		problems=$((problems + 1))
 		if [ "$FIX" = "--fix" ]; then
 			# Orphans are normally tracked; git rm keeps history explicit. Fall
@@ -198,6 +215,26 @@ for pkg in "${MIRRORED_PKGS[@]}"; do
 		fi
 	done < <(find "$pkg" -type f \( -name '*.templ' -o -name '*_types.go' \) -print0)
 done
+
+# Direction 2b: every shippable top-level templates/ file is embedded in the
+# starter. Compiled artifacts (scripts/compiled-css-targets.txt outputs) are
+# inputs for nobody and stay out.
+while IFS= read -r -d '' twin; do
+	name="${twin#templates/}"
+	embedded="$SOURCES_DIR/starter/$name"
+	if [ -f "$embedded" ]; then
+		continue # content equality is Direction 1's job
+	fi
+
+	note "UNEMBEDDED: $twin is not shipped by 'tc css sync'"
+	problems=$((problems + 1))
+	if [ "$FIX" = "--fix" ]; then
+		mkdir -p "$SOURCES_DIR/starter"
+		cp -- "$twin" "$embedded"
+		note "  fixed: copied $twin -> $embedded"
+		added=$((added + 1))
+	fi
+done < <(find templates -maxdepth 1 -type f \( -name '*.css' -o -name '*.txt' \) ! -name 'styles.css' ! -name '*.out.css' -print0)
 
 synced=$((added + refreshed + removed))
 

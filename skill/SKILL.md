@@ -158,6 +158,10 @@ module supplies the CSP-safe wrapper plus the dark-mode bridge (ADR-0031, tier 2
   (render-time error naming the errLabel, since v1.27.2 — the verbatim wrap
   would break out of the element, the v1.27.0 toast class). Carry a close tag
   inside a JS string as the escape form `<\/script>`.
+- The styling half arrives through the consumer's Tailwind build:
+  `GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync` writes the
+  library's stylesheet inputs at the pinned version, and `tc css check` fails on a stale,
+  missing, or unreachable one (ADR-0050). `go get` never refreshes them.
 - Theme by overriding Tailwind variables in `@theme`; never add color props to Go.
 - Consumers gitignore `*_templ.go` and generate at build time (the library commits them).
 

@@ -106,7 +106,8 @@ express — overlays (`.tc-overlay`, `.tc-modal`, `.tc-drawer`), scroll-snap (`.
 stylable select (`.tc-select`), auto-growing textarea (`.tc-auto-grow`), content-visibility
 (`.tc-content-auto`), squircle corners (`.tc-squircle`), and fluid typography
 (`.tc-fluid-display`, `.tc-fluid-h1`–`h4`, `.tc-fluid-lead`, container-`cqi` based; see
-`docs/recipes/fluid-typography.md`). Consumers vendor `templates/custom.css` via `app.css`.
+`docs/recipes/fluid-typography.md`). Consumers get it from `tc css sync`, which writes it
+next to their Tailwind entry (`app.css` imports it).
 Guarded by `TestCustomCSSUtilities`.
 
 ### Compiled-CSS artifact rule (fleet adoption lesson)
@@ -115,12 +116,17 @@ A consumer with a TRACKED compiled CSS artifact must regenerate it in the SAME c
 component adoption — an adopted component whose utilities never reached the stylesheet renders
 unstyled outside local dev (string tests cannot see this).
 
-1. Regenerate via the consumer's canonical pipeline (nix app or `regen-ui.sh`-style script),
+1. The library's stylesheet inputs come from `tc css sync` and are gated by `tc css check`
+   (ADR-0050): class corpus, `custom.css`, theme and safelist, stamped with the library version.
+   `go get` updates the Go code only, and a stale copy renders unstyled without an error.
+   Never scan `vendor/` for them: Go does not vendor `templates/`, so the hand-written CSS
+   never arrives that way.
+2. Regenerate via the consumer's canonical pipeline (nix app or `regen-ui.sh`-style script),
    not ad-hoc tool invocations.
-2. If classes enter the scan through a committed inventory, the scan must be REPLACE-AWARE:
+3. If classes enter the scan through a committed inventory, the scan must be REPLACE-AWARE:
    resolve the library with `go list -m -f '{{.Dir}}'` (honors go.mod replace) and cover
    EVERY imported package — a missing package in the scan list shipped a 404-page outage.
-3. Grep the compiled artifact for the adopted component's classes before committing.
+4. Grep the compiled artifact for the adopted component's classes before committing.
 
 ### Dark mode checklist (new components)
 

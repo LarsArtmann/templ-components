@@ -383,25 +383,21 @@ ContextMenu via native Popover API). Run with `nix run .#visual`. See
 
 ## Tailwind CSS Setup
 
-Tailwind v4 uses CSS-first configuration. Vendor the dependency so Tailwind can scan the `.templ` source files:
+Components are Go code that emits Tailwind class names; the CSS for those names comes from your own Tailwind build. That build needs four files the library ships: a class corpus, `custom.css`, a theme, and a safelist. `tc css` writes them at the version your `go.mod` pins and fails when they go stale:
 
 ```bash
-go mod vendor
-```
-
-Then in your CSS:
-
-```css
-@import "tailwindcss";
-@source "../vendor/github.com/larsartmann/templ-components";
-@custom-variant dark (&:where(.dark, .dark *));
-```
-
-```bash
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc init       # new project: scaffolds app.css and the library files
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync   # after every library bump: refreshes them
 tailwindcss -i app.css -o styles.css --minify
 ```
 
-If your project uses [BuildFlow](https://github.com/larsartmann/buildflow), the `tailwind-build` provider handles this automatically.
+Point the two `@source` lines in `app.css` at your own templates, then gate the setup in CI:
+
+```bash
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css check   # exit 1 on a stale, missing, or unreachable file
+```
+
+A stale copy never raises an error: the page simply renders unstyled. That is what the check is for. [BuildFlow](https://github.com/larsartmann/buildflow)'s `tailwind-build` provider runs the compile step; it does not write the library files. Full guide: [docs/tailwind-v4-adoption-guide.md](docs/tailwind-v4-adoption-guide.md).
 
 ## Theming
 

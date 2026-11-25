@@ -154,3 +154,19 @@ compiler the single source of CSS truth. Revisit only alongside a future
 | nsfw: "no vendor/ directory, no Go toolchain, no module cache" in the CSS pipeline                    | Copy-then-scan; only the copy step touches Go                                                                       |
 | nsfw: multi-module cache stripping                                                                    | Generator walks all 7 modules once, centrally                                                                       |
 | DiscordSync: inert vendor `@source` under current Tailwind (gitignored `vendor/`)                     | Inventory default makes the fragile line unnecessary; tracked-source variant documented with its requirement stated |
+
+## Verification update (2026-11-25, ADR-0050)
+
+The mechanism landscape above rests on one measured claim that did not reproduce. On
+Tailwind 4.3.3, 4.3.4 and 4.3.5, an explicit `@source` that names a gitignored directory (or
+a glob into it) IS scanned, and `@import` of a gitignored file resolves. What skips
+gitignored paths is automatic source detection and a directory source that merely contains
+them (`@source "."`). A vendor `@source` is therefore not inert. It is unreliable for two
+other reasons: the tree is absent wherever `go mod vendor` did not run, and Go never
+vendors `templates/`, so the hand-written CSS does not travel with it. Read the DiscordSync
+rows of the last table with that correction.
+
+The decision (ship a class inventory) stands on its remaining legs. The adoption gap it
+left open, a hand copy that nothing refreshes or verifies, is closed by
+[ADR-0050](0050-css-delivery-sync-and-verification.md): `tc css sync` writes the inventory
+and the hand-written files at the pinned version, and `tc css check` fails when they drift.

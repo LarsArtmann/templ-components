@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`tc css sync` and `tc css check` (ADR-0050).** The styling half of the
+  library (class corpus, `custom.css`, theme, safelist) now travels into a
+  consumer's Tailwind build as one synced, stamped file set instead of hand
+  made copies. `tc css sync` writes the files at the version `go.mod` pins
+  and prints the lines the Tailwind entry still needs; `tc css check` exits
+  1 on version skew, a missing or drifted file, or an entry that reaches
+  none of them. Run both as
+  `GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css …`
+  (the flag makes it work in vendored projects). `tc init` now scaffolds
+  the class corpus too. Compile-proven by `TestCSSSyncCompilesWithTailwind`.
+
 ### Fixed
 
 - Master CI restore (2026-11-25, resumption): held the crossbrowser
@@ -21,6 +34,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   extraction value); the re-record also shed 9 stale hashes dissolved
   by the 11-17→25 window's refactors (145 → 137, same pinned fork
   binary `v0.9.1-…-93432fd`).
+- **Starter scaffolder drift.** `cmd/tc/_sources/starter/` was excluded
+  from the mirror guard; its theme copy differed from `templates/`, so
+  `tc init` scaffolded a stale theme. The starter is now a guarded twin set
+  of `templates/` (`TestStarterFilesMatchTemplates`, both directions in
+  `scripts/check-tc-sources-sync.sh`).
+- **CSS setup docs taught the fragile path.** README, the website
+  installation and theming guides, and
+  `docs/recipes/vendored-tailwind-scanning.md` led with `go mod vendor`
+  plus `@source "../vendor/…"`, which never delivers the hand-written CSS,
+  and claimed BuildFlow's `tailwind-build` writes the library files. They
+  lead with `tc css` now; `templates/app.css` documented the `cmd/tc-css`
+  command deleted in July.
 
 ## [1.27.2] — 2026-11-20
 

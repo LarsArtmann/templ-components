@@ -259,6 +259,8 @@ func main() {
 		cmdAdd(r, os.Args[2:])
 	case "doctor":
 		cmdDoctor(r, os.Args[2:])
+	case "css":
+		cmdCSS(os.Args[2:])
 	case "lint":
 		cmdLint(r, os.Args[2:])
 	case "version", "-v", "--version":
@@ -276,7 +278,7 @@ func usage() {
 	fmt.Fprintln(os.Stderr, `tc — templ-components scaffolding
 
 Usage:
-  tc init                   Scaffold the four starter CSS files in the current directory.
+  tc init                   Scaffold the Tailwind starter plus the library-owned CSS files here.
   tc ls                     Print every component, grouped by package.
   tc add <component>        Copy <component>.templ (and _types.go if present) to ./components/.
   tc add <component> --out DIR   Copy to a custom directory.
@@ -287,6 +289,13 @@ Usage:
                             --css checks one concrete css entry.
   tc lint [flags] [DIR ...] Scan sources for compliance violations (--rtl, --dark,
                             --motion, --icons). Exit 1 on findings — CI-gateable.
+  tc css sync [--dir DIR] [--force]
+                            Write the CSS files of the pinned library version (class corpus,
+                            custom.css, theme, safelist) and print what your Tailwind
+                            entry still needs. Re-run after every library bump.
+  tc css check [--dir DIR] [--css PATH]
+                            Fail when those files are missing, stale, or not reached by a
+                            Tailwind entry. Exit 1 on findings — CI-gateable.
 
 Examples:
   tc init
@@ -302,23 +311,27 @@ func cmdInit(_ *registry, _ []string) {
 		failf("create dir: %v", err)
 	}
 
-	for _, name := range []string{"app.css", "custom.css", "templ-components-theme.css", "safelist.css"} {
-		content, err := sourcesFS.ReadFile(filepath.Join("_sources", "starter", name))
+	if _, err := os.Stat(starterEntryName); err == nil {
+		fmt.Fprintf(os.Stderr, "tc: skip %s (already exists)\n", starterEntryName)
+	} else {
+		content, err := sourcesFS.ReadFile(filepath.Join("_sources", "starter", starterEntryName))
 		if err != nil {
-			failf("read starter %s: %v", name, err)
+			failf("read starter %s: %v", starterEntryName, err)
 		}
 
-		if _, err := os.Stat(name); err == nil {
-			fmt.Fprintf(os.Stderr, "tc: skip %s (already exists)\n", name)
-
-			continue
+		if err := os.WriteFile(starterEntryName, content, 0o600); err != nil {
+			failf("write %s: %v", starterEntryName, err)
 		}
 
-		if err := os.WriteFile(name, content, 0o600); err != nil {
-			failf("write %s: %v", name, err)
-		}
+		status("wrote", starterEntryName)
+	}
 
-		status("wrote", name)
+	opts := defaultCSSOptions()
+	opts.dir = "."
+	opts.scaffold = true
+
+	if err := cssSync(".", opts, os.Stdout); err != nil {
+		failf("css sync: %v", err)
 	}
 }
 
