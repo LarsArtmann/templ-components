@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Master CI restore (2026-11-25, resumption): held the crossbrowser
+  spike's `playwright-core` at the 1.64.1 nixpkgs anchor after an
+  npm-install-signature rewrite re-bumped it to 1.65.1 (master red since
+  2026-11-22), and completed the Tailwind 4.3.5 three-lane lockstep
+  (Dockerfile pnpm + website.yml npm pins + recompiled
+  `examples/demo/static/app.css`, banner-only diff) that the nixpkgs
+  refresh had left half-moved.
+
 ## [1.27.2] — 2026-11-20
 
 ### Added / hardened

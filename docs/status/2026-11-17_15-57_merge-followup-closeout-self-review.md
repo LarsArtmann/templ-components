@@ -114,3 +114,13 @@ on resumption (all command-verified):
    carried only this report; the restore rode the follow-up commit).
 4. **Sibling residue noted, untouched:** untracked `cmd/tc/css.go` (present
    since this session's start snapshot — single-writer protocol).
+5. **Second red lane also inherited and fixed on resumption:** CSS
+   Freshness was red since `d8722176` (Nov 23) — the daemon's nixpkgs
+   sync moved the dev-shell tailwindcss to 4.3.5 while the F-20 lanes
+   (Dockerfile pnpm, website.yml npm, committed app.css) stayed at 4.3.4.
+   Completed the lockstep (pins + recompile; the recompiled CSS differs
+   by the banner line only; full local visual run green before push).
+   The remaining red lane is the **Clone gate (art-dupl), red for 5+
+   days** (`bc369053` onward) — pre-existing baseline debt, NOT fixed
+   here: it needs the pinned-fork triage + ADR-0009 re-record ritual and
+   is routed as such.
