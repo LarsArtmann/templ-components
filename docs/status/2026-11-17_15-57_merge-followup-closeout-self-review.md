@@ -85,3 +85,32 @@
 ---
 
 **Session verdict:** all five planned close-out steps executed and verified green (merge, issues, sync/prune, report+TODO routing, post-merge verification); two self-inflicted process errors caught and recovered; one active external risk (the pin rewriter) flagged. Waiting for instructions.
+
+---
+
+## RESUMPTION ADDENDUM (2026-11-25 ~19:15 CET — written on resumption)
+
+This session was SUSPENDED right after the self-review write; the report above
+was committed 2026-11-25 19:06 (`b3df7f8a`) when the session resumed. The
+`date` CLI returned a stale Nov-17 timestamp mid-resumption, so the Date line
+above reflects the session clock, not the disk-write time. Facts established
+on resumption (all command-verified):
+
+1. **No history damage from this session:** `15d836b8` + `4e845ed4` are
+   ancestors of the current master tip; the 8-day window stacked v1.27.2, the
+   cmdguard skill pairing, and the architecture-deepening brief on top. The
+   earlier "history rewritten" alarm was a misread of 8 days of newer commits
+   plus a stale clock.
+2. **The playwright-pin war resumed the second this session stopped:** the
+   rewriter re-applied 1.65.1 within ~60s of my 15:57 restore (daemon commit
+   `d5702fc1`, 15:58), it rode into `d8722176` (Nov 23, "sync manifests"),
+   and **master CI has been RED since `cf725c9d`** — occurrence #4 of the
+   class, and proof that manual restores LOSE to the rewriter. The structural
+   fix (e3/f3) is not optional; g1 is now the blocking question.
+3. **Fixed on resumption:** pin restored to 1.64.1 per the guard's own
+   prescription (flake.lock still anchors nixpkgs playwright-driver 1.64.1),
+   `TestCrossbrowserLockstep` green, committed + pushed immediately — which
+   also makes `b3df7f8a`'s message claim true at last (that commit itself
+   carried only this report; the restore rode the follow-up commit).
+4. **Sibling residue noted, untouched:** untracked `cmd/tc/css.go` (present
+   since this session's start snapshot — single-writer protocol).
