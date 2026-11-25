@@ -120,7 +120,10 @@ on resumption (all command-verified):
    (Dockerfile pnpm, website.yml npm, committed app.css) stayed at 4.3.4.
    Completed the lockstep (pins + recompile; the recompiled CSS differs
    by the banner line only; full local visual run green before push).
-   The remaining red lane is the **Clone gate (art-dupl), red for 5+
-   days** (`bc369053` onward) — pre-existing baseline debt, NOT fixed
-   here: it needs the pinned-fork triage + ADR-0009 re-record ritual and
-   is routed as such.
+   The **Clone gate (art-dupl), red for 5+ days, was ALSO fixed:** one
+   new group (85 single-line `templ.Component` type references) triaged
+   as intentional similarity per ADR-0009, baseline re-recorded with the
+   pinned binary (145 → 137: 9 stale hashes shed by the window's
+   refactors), AGENTS.md count + ADR dated pass updated in the same
+   commit. All three red lanes cleared — master green expected on the
+   next CI run.

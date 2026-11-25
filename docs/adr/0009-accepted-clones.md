@@ -523,6 +523,25 @@ extracted into `visualtest/internal/browser` (ExecPath, RequireChromium, OK)
 and `visualtest/internal/distserver`; what remains is each tool's own CLI
 surface. Same class as entry 22 (capture-tool `-selftest` wiring).
 
+## 2026-11-25 Pass — `templ.Component` Type-Reference Group (1 new; 145 → 137)
+
+Surfaced by `art-dupl check` on master after the 2026-11-17→25 window
+(v1.27.2 + the architecture-deepening era) grew the member count past
+the grouping threshold. One new group of **85 single-line members**,
+every one a `| templ.Component` type reference (interface-assertion and
+signature declarations) across `charts/echarts/dark_mode_bridge.go`,
+`display/*_test.go`, the visualtest wire e2e/visual pack tests, and
+`website/internal/pages/highlight.go`. There is no shared logic to
+extract: each line is the same type declaration at a deliberate call
+site. Same intentional-similarity class as the test-idiom groups above.
+
+The re-record also shed **9 stale hashes**: groups the 8-day window's
+refactors dissolved (members changed or vanished), so the pinned
+analyzer's current detection set is 137 groups — the new canonical
+count. Recorded with the same pinned binary the CI lane installs
+(`v0.9.1-…-93432fd` via `scripts/pinned-art-dupl.sh`); `check` verified
+zero new groups immediately after.
+
 ## Excluded: `cmd/tc/_sources/**` (embedded scaffolder copies)
 
 `cmd/tc/_sources/` contains byte-identical COPIES of the library's `.templ`
@@ -700,10 +719,11 @@ The merged tip validates against the same pinned binary at **145 groups,
 ## Consequences
 
 - The canonical check is `art-dupl check -c .art-dupl.json -t 1 --type-aware`
-  — it fails ONLY on clones not in the accepted baseline (currently 145
-  groups at t=1, per the 2026-11-06 merged re-record with the same fork
-  detector `v0.9.1-0.20261017225421-93432fd910fb`; the 2026-10-23 full
-  re-take under this detector generation was 150 groups). The analyzer-generation
+  — it fails ONLY on clones not in the accepted baseline (currently 137
+  groups at t=1, per the 2026-11-25 re-record with the same fork
+  detector `v0.9.1-0.20261017225421-93432fd910fb`; the 2026-11-06 merged
+  re-record was 145 groups, the 2026-10-23 full re-take 150 groups). The
+  analyzer-generation
   change made the prior 124 hashes incomparable (check reported every
   current group as new), so the re-record re-took the whole set AFTER the
   class triage below; the current advisory sets (73 groups at t=2, 38 at

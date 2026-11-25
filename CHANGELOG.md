@@ -15,6 +15,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   (Dockerfile pnpm + website.yml npm pins + recompiled
   `examples/demo/static/app.css`, banner-only diff) that the nixpkgs
   refresh had left half-moved.
+- **Clone-gate baseline re-recorded at 137 groups at t=1.** One new
+  group triaged accepted per ADR-0009 (85 single-line `templ.Component`
+  type references across test files — intentional similarity, no
+  extraction value); the re-record also shed 9 stale hashes dissolved
+  by the 11-17→25 window's refactors (145 → 137, same pinned fork
+  binary `v0.9.1-…-93432fd`).
 
 ## [1.27.2] — 2026-11-20
 
