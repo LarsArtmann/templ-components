@@ -17,7 +17,7 @@
 - `dprint check` on the 16 touched Markdown files: clean. `AGENTS.md` is 211 lines (limit 220).
 - `tc css check`, read-only, with the finished binary, across 47 consumer repositories: numbers in section b.
 - `scripts/fleet-css-check.sh`: `Fleet audit: 14 repo(s) checked, 1526 missing hook(s).`
-- `gh run list`: `42ce93f8` CI, Website and Tidy Probe all `success`. `b6073c31` CI and Website `in_progress` at 05:52.
+- `gh run list`: `42ce93f8` CI, Website and Tidy Probe all `success`. `b6073c31` Website `completed success` and CI `in_progress` at 05:57.
 - `tc` binary size: 7,826,449 bytes at `e1fed513` (before this work) and 8,974,209 bytes at `HEAD`, both built with `go build ./cmd/tc`.
 
 **NOT verified here:**
@@ -96,7 +96,7 @@ Evidence of the diagnosis, for the record:
 ## d) TOTALLY FUCKED UP
 
 1. **A pushed commit describes and ships the superseded design.** `42ce93f8` (22:55, on `origin/master`) is titled "ship the library's stylesheet as a synced, verifiable file set" and carries the sync-first docs and the first ADR-0050. Seven hours later `b6073c31` carries the opposite. Severity: history is misleading, code is fine. Root cause: I designed the bridge first, and the daemon committed mid-redesign. Mitigation: none for the pushed history; ADR-0050 should name `42ce93f8` as superseded.
-2. **The public website showed the wrong installation path for about seven hours.** `42ce93f8`'s Website workflow succeeded, so the site told readers to run `tc init` and `tc css sync`, and "Do not point `@source` at `vendor/`". The deploy of `b6073c31` was still running at 05:52. Severity: readers got instructions that contradict the current design; nobody's build broke from reading alone. Root cause: as item 1.
+2. **The public website showed the wrong installation path for about seven hours.** `42ce93f8`'s Website workflow succeeded, so the site told readers to run `tc init` and `tc css sync`, and "Do not point `@source` at `vendor/`". The deploy of `b6073c31` completed successfully at about 05:55, since when the site carries the vendored layout. I did not open the site. Severity: readers got instructions that contradict the current design; nobody's build broke from reading alone. Root cause: as item 1.
 3. **The starter did not compile in `42ce93f8`.** `templates/app.css` line 34 held `"../internal/**/*.templ"` inside a comment; Tailwind reported `Unterminated string`. Anyone who ran `tc init` between 22:55 and 05:48 got a project that fails on the first Tailwind build. Severity: high for anyone who did; CI was green throughout because nothing in CI compiles the starter. Root cause: my comment, plus a verification that suppressed the compiler's exit status. Mitigation: fixed in `b6073c31`; `TestStarterEntryCompilesWithTailwind` exists but skips in CI, so the same class can ship again.
 4. **CI is green on uncompilable CSS.** This is the state that made item 3 possible and it still holds. The CSS Freshness job compiles the demo entry only.
 5. **The same comment mistake twice in one session.** The first `templates/templ-components.css` had `**/*.{templ,go}` in a comment and failed with `CssSyntaxError`. Caught by the manual vendored compile before any commit. No damage, same lesson unlearned for three hours.
@@ -130,8 +130,8 @@ Ranked by impact. Effort: S under 30 minutes, M 30 minutes to 2 hours, L more.
 
 | #  | Task                                                                                                                                          | Impact   | Effort | Category      |
 | -- | --------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------ | ------------- |
-| 1  | Confirm the `b6073c31` Website deploy finished and the public site shows the vendored layout                                                  | Critical | S      | Documentation |
-| 2  | Read the CI result of `b6073c31` (CI and Website) and fix anything red                                                                        | Critical | S      | Bug           |
+| 1  | Open the public site and confirm it renders the vendored layout (the `b6073c31` Website workflow succeeded; the page was not opened)          | Critical | S      | Documentation |
+| 2  | Read the CI result of `b6073c31` (in progress at 05:57) and fix anything red                                                                  | Critical | S      | Bug           |
 | 3  | Cut the release that carries `layout/styles/` (owner decision)                                                                                | Critical | M      | Release       |
 | 4  | Add a CI step that compiles `templates/app.css`, the aggregator and a vendored-tree entry, failing on a non-zero exit                         | Critical | S      | Quality       |
 | 5  | Migrate business-networking, file-and-image-renamer (twice), KeyHolderAI and Zlota44: re-vendor and add the one `@import` line                | High     | S each | Bug           |

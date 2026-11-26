@@ -778,14 +778,10 @@ func isLibraryFile(name string) string {
 // stylesheetReferences lists the local paths a stylesheet's @import and
 // @source directives name, whether or not the files exist.
 func stylesheetReferences(stylesheet string) []string {
-	content, err := os.ReadFile(stylesheet)
-	if err != nil {
-		return nil
-	}
+	directives := cssDirectives(textFile(stylesheet))
+	references := make([]string, 0, len(directives))
 
-	references := []string{}
-
-	for _, directive := range cssDirectives(string(content)) {
+	for _, directive := range directives {
 		path := directive.target
 		if !filepath.IsAbs(path) {
 			path = filepath.Join(filepath.Dir(stylesheet), filepath.FromSlash(directive.target))
@@ -1012,14 +1008,9 @@ func vendoredVersions(path string) []string {
 // moduleVersions lists the distinct versions vendor/modules.txt records for
 // the library and its sibling modules.
 func moduleVersions(modulesTxt string) []string {
-	content, err := os.ReadFile(modulesTxt)
-	if err != nil {
-		return nil
-	}
-
 	versions := []string{}
 
-	for line := range strings.SplitSeq(string(content), "\n") {
+	for line := range strings.SplitSeq(textFile(modulesTxt), "\n") {
 		fields := strings.Fields(line)
 		if len(fields) != 3 || fields[0] != "#" || !isLibraryModule(fields[1]) {
 			continue
@@ -1035,6 +1026,16 @@ func moduleVersions(modulesTxt string) []string {
 
 func isLibraryModule(module string) bool {
 	return module == libraryModulePath || strings.HasPrefix(module, libraryModulePath+"/")
+}
+
+// textFile reads a file, or "" when it cannot be read.
+func textFile(path string) string {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+
+	return string(content)
 }
 
 // cssDirectives lists the @import and @source directives of a stylesheet that

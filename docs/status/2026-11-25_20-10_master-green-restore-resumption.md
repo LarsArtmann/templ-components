@@ -3,18 +3,19 @@
 **Date:** 2026-11-25 20:10 CET (wall clock, cross-checked against git commit clock 19:49)
 **Scope:** the RESUMPTION phase of the merge-all-PRs session — everything after the
 2026-11-17 self-review report (`docs/status/2026-11-17_15-57_merge-followup-closeout-self-review.md`
-+ its resumption addendum). Session-scoped: this reports only what THIS session did
-and noticed on resumption.
-**Verified:** `date` + `.git` mtime + commit timestamps (the suspension discovery);
-`git merge-base --is-ancestor` (history intactness); `TestCrossbrowserLockstep`
-(run red→green across the pin fix); CI runs `45672820320` / `45675861144` / `45679078657`
-(job-level conclusions read); Website run on `e40a2b5f` (success); local full visual
-suite (green, banner-only CSS diff); pinned-binary `art-dupl check` (reproduced CI's
-1-new-group, then zero after re-record); `TestDocsCountDrift` with `-count=1` (green
-after count updates); sibling activity via `stat` mtimes (live, 90s-old).
-**NOT verified:** the pin rewriter's identity (g1 — cannot be determined from here);
-the sibling session's intent for their `cmd/tc` work (deliberately not inspected
-beyond mtimes + names, single-writer protocol); upstream go-datastar CI.
+
+- its resumption addendum). Session-scoped: this reports only what THIS session did
+  and noticed on resumption.
+  **Verified:** `date` + `.git` mtime + commit timestamps (the suspension discovery);
+  `git merge-base --is-ancestor` (history intactness); `TestCrossbrowserLockstep`
+  (run red→green across the pin fix); CI runs `45672820320` / `45675861144` / `45679078657`
+  (job-level conclusions read); Website run on `e40a2b5f` (success); local full visual
+  suite (green, banner-only CSS diff); pinned-binary `art-dupl check` (reproduced CI's
+  1-new-group, then zero after re-record); `TestDocsCountDrift` with `-count=1` (green
+  after count updates); sibling activity via `stat` mtimes (live, 90s-old).
+  **NOT verified:** the pin rewriter's identity (g1 — cannot be determined from here);
+  the sibling session's intent for their `cmd/tc` work (deliberately not inspected
+  beyond mtimes + names, single-writer protocol); upstream go-datastar CI.
 
 ---
 
