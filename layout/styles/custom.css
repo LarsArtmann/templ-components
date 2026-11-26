@@ -1,0 +1,1661 @@
+/*
+ * templ-components custom CSS — component-specific styles.
+ *
+ * This file contains CSS for features Tailwind utilities can't express:
+ * native <dialog> overlay animations, stylable <select>, auto-grow
+ * textarea, scroll-snap carousel, accordion chevron, and more.
+ *
+ * Both templates/app.css (consumer entry point) and examples/demo/demo.css
+ * import this file so the custom CSS stays in one place.
+ *
+ * Color token policy (enforced by utils.TestCustomCSSThemeTokens): every
+ * palette color references Tailwind v4 theme variables (the --color-*
+ * namespace) so consumer @theme overrides re-skin these rules with the rest
+ * of the library. Alpha variants use Tailwind's build-time --alpha()
+ * function, which compiles to a var-preserving color-mix() inside @supports.
+ * This file is always compiled by Tailwind (imported by app.css /
+ * demo.css); the plain-CSS equivalent of --alpha(C / N%) is
+ * color-mix(in srgb, C N%, transparent).
+ */
+
+/*
+ * Accent token family (ADR-0044/0049) — the library's brand axis.
+ *
+ * Library components emit accent-* classes for the primary/brand slot
+ * (buttons, links, progress fills, step indicators, spinner tints). The
+ * defaults are Tailwind's blue ramp AS LITERALS — the same values the
+ * blue-* sites they replaced rendered — so a no-override import is
+ * pixel-identical to stock, and re-branding is one @theme block:
+ *
+ *   @theme {
+ *     --color-accent-600: #7c3aed;   (brand purple)
+ *   }
+ *
+ * accent is scoped by construction: the classes exist only on library
+ * components, and blue-* stays untouched for your own palette and the
+ * semantic info tone (see docs/adr/0049-design-token-axes.md).
+ */
+
+@theme {
+  /* Accent (default: blue) — full ramp, literal Tailwind defaults */
+  --color-accent-50: oklch(97% 0.014 254.604);
+  --color-accent-100: oklch(93.2% 0.032 255.585);
+  --color-accent-200: oklch(88.2% 0.059 254.128);
+  --color-accent-300: oklch(80.9% 0.105 251.813);
+  --color-accent-400: oklch(70.7% 0.165 254.624);
+  --color-accent-500: oklch(62.3% 0.214 259.815);
+  --color-accent-600: oklch(54.6% 0.245 262.881);
+  --color-accent-700: oklch(48.8% 0.243 264.376);
+  --color-accent-800: oklch(42.4% 0.199 265.638);
+  --color-accent-900: oklch(37.9% 0.146 265.522);
+  --color-accent-950: oklch(28.2% 0.091 267.935);
+}
+
+@layer utilities {
+  /* RTL icon mirroring — flip directional icons in RTL contexts */
+  [dir="rtl"] [data-tc-dir-icon] {
+    transform: scaleX(-1);
+  }
+}
+
+/*
+ * Modern Browser Capabilities — progressive enhancement layer.
+ * These features gracefully degrade in older browsers.
+ * See: docs/research/modern-browser-capabilities.md
+ */
+
+/* --- Popover API backdrop + entrance/exit animation (Dropdown, Popover, ContextMenu) --- */
+[popover]::backdrop {
+  background-color: transparent;
+}
+
+[popover] {
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out,
+    overlay 150ms allow-discrete,
+    display 150ms allow-discrete;
+}
+
+[popover]:popover-open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@starting-style {
+  [popover]:popover-open {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+[popover]:not(:popover-open) {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+/* --- Tooltip (pure CSS show/hide + dismissed state via JS) --- */
+[data-tc-tooltip][data-tc-tooltip-dismissed] [role="tooltip"] {
+  display: none !important;
+}
+
+/*
+ * --- CSS Anchor Positioning layer (popover panels) ---
+ *
+ * Declarative positioning for engines with CSS anchor positioning
+ * (Baseline-limited; gated on @supports). Older engines keep the
+ * tcPopoverPosition JS singleton as the fallback; on supporting engines the
+ * singleton exits early (see display/shared.go).
+ *
+ * Panels shown via popovertarget/interestfor resolve their INVOKER as the
+ * implicit anchor, so position-area alone anchors the panel — no
+ * per-instance anchor names required (explicit names would need inline
+ * style attributes, which strict CSP blocks). The 8px margin is the
+ * anchor-to-panel gap; the JS fallback uses gap = 8 as well.
+ *
+ * Alignment bands use the x-axis spellings (span-x-start/span-x-end), not
+ * span-inline-*: Chromium (verified 152.0.7977.82, 2026-11-15) rejects
+ * span-inline-start/span-inline-end in position-area — the var()
+ * substitution then fails at computed-value time and the whole declaration
+ * drops to the initial value (NOT a cascade fallback), parking the popover
+ * at its static position. Single-keyword bands and the x-axis spellings
+ * all compute correctly on the same engine.
+ * position-try-fallbacks mirror the JS viewport flip (bottom clips -> try
+ * top first, then the inline axis).
+ */
+@supports (anchor-name: --x) {
+  [popover][data-tc-anchor] {
+    position-area: var(--tc-popover-area, bottom);
+    inset: auto;
+    margin: 8px;
+    position-try-fallbacks: flip-block, flip-inline;
+  }
+
+  [data-tc-position="top"] {
+    --tc-popover-area: top;
+  }
+
+  [data-tc-position="bottom"] {
+    --tc-popover-area: bottom;
+  }
+
+  [data-tc-position="left"] {
+    --tc-popover-area: left;
+  }
+
+  [data-tc-position="right"] {
+    --tc-popover-area: right;
+  }
+
+  [data-tc-position="start"] {
+    --tc-popover-area: inline-start;
+  }
+
+  [data-tc-position="end"] {
+    --tc-popover-area: inline-end;
+  }
+
+  /* Alignment variants (the JS applies align only on the top/bottom axis). */
+  [data-tc-position="top"][data-tc-align="start"] {
+    --tc-popover-area: top span-x-end;
+  }
+
+  [data-tc-position="top"][data-tc-align="end"] {
+    --tc-popover-area: top span-x-start;
+  }
+
+  [data-tc-position="bottom"][data-tc-align="start"] {
+    --tc-popover-area: bottom span-x-end;
+  }
+
+  [data-tc-position="bottom"][data-tc-align="end"] {
+    --tc-popover-area: bottom span-x-start;
+  }
+}
+
+/*
+ * Native <progress> styling (feedback.ProgressBar determinate bar).
+ *
+ * appearance: none removes the UA widget chrome; the track is the wrapping
+ * div's background, and the fill inherits the element's own background —
+ * which carries the consumer's `Color` bg-* classes, dark: variants
+ * included. No hand-rolled ARIA: value/max ARE the progress semantics.
+ */
+progress.tc-progress {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  overflow: hidden;
+}
+
+progress.tc-progress::-webkit-progress-bar {
+  background: transparent;
+}
+
+progress.tc-progress::-webkit-progress-value {
+  background: inherit;
+  border-radius: inherit;
+  transition: width 300ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  progress.tc-progress::-webkit-progress-value {
+    transition: none;
+  }
+}
+
+progress.tc-progress::-moz-progress-bar {
+  background: inherit;
+  border-radius: inherit;
+}
+
+/*
+ * Native <dialog> overlay system (Modal, Drawer).
+ *
+ * The <dialog> element gives us: top-layer rendering (no z-index wars),
+ * native focus trap, native Escape-to-close, native focus restore, and
+ * ::backdrop for the dimming layer — all without JavaScript.
+ *
+ * CSS animations use @starting-style (entrance) and transition-behavior:
+ * allow-discrete on display+overlay (exit) to animate to/from display:none.
+ * Graceful degradation: browsers without allow-discrete snap instantly.
+ */
+@layer components {
+  /* Reset browser dialog defaults so Tailwind classes control everything */
+  dialog.tc-overlay {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: inherit;
+  }
+
+  /*
+   * Scroll containment (Modern Web Guidance: dialog +
+   * prevent-page-scroll-under-modal-dialog, both MANDATORY).
+   *
+   * Without these, a scroll gesture that starts over the backdrop or inside
+   * the dialog keeps scrolling the page behind it. ::backdrop is not a scroll
+   * container by default (overflow: visible), so overscroll-behavior has no
+   * effect there until it is given an overflow value.
+   *
+   * Progressive enhancement: where overscroll-behavior is not enforced the
+   * dialog still contains scrolling of its own overflowing content, and
+   * showModal() still makes the page inert. Do NOT replace this with
+   * overflow: hidden / position: fixed on html or body — that removes the root
+   * scrollbar and shifts the layout.
+   */
+  dialog:modal {
+    overscroll-behavior: contain;
+  }
+
+  dialog::backdrop {
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+
+  /* Backdrop: shared by modal and drawer, animated via background-color */
+  dialog.tc-overlay::backdrop {
+    background-color: --alpha(var(--color-black) / 0%);
+    backdrop-filter: blur(2px);
+    transition:
+      background-color 200ms ease-out,
+      overlay 200ms allow-discrete,
+      display 200ms allow-discrete;
+  }
+
+  dialog.tc-overlay[open]::backdrop {
+    background-color: --alpha(var(--color-black) / 50%);
+  }
+
+  @starting-style {
+    dialog.tc-overlay[open]::backdrop {
+      background-color: --alpha(var(--color-black) / 0%);
+    }
+  }
+
+  /* --- Modal: centered, scale + fade animation --- */
+  dialog.tc-modal {
+    opacity: 0;
+    transform: scale(0.95);
+    transition:
+      opacity 200ms ease-out,
+      transform 200ms ease-out,
+      overlay 200ms allow-discrete,
+      display 200ms allow-discrete;
+  }
+
+  dialog.tc-modal[open] {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @starting-style {
+    dialog.tc-modal[open] {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+
+  /* --- Drawer: side panel, slide animation --- */
+  dialog.tc-drawer {
+    margin-block: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    opacity: 0;
+    transform: translateX(0);
+    transition:
+      opacity 200ms ease-out,
+      transform 200ms ease-out,
+      overlay 200ms allow-discrete,
+      display 200ms allow-discrete;
+  }
+
+  /* Position: logical properties auto-mirror in RTL (dir="rtl") */
+  dialog.tc-drawer[data-side="left"] {
+    margin-inline: 0 auto;
+  }
+
+  dialog.tc-drawer[data-side="right"] {
+    margin-inline: auto 0;
+  }
+
+  /* Closed state: slide off-screen in the right direction */
+  dialog.tc-drawer[data-side="left"]:not([open]) {
+    transform: translateX(-100%);
+  }
+
+  dialog.tc-drawer[data-side="right"]:not([open]) {
+    transform: translateX(100%);
+  }
+
+  dialog.tc-drawer[open] {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  @starting-style {
+    dialog.tc-drawer[data-side="left"][open] {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+
+    dialog.tc-drawer[data-side="right"][open] {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
+}
+
+/* --- Reduced motion: disable overlay transitions --- */
+@media (prefers-reduced-motion: reduce) {
+  dialog.tc-overlay,
+  dialog.tc-overlay::backdrop {
+    transition: none;
+  }
+}
+
+/* --- content-visibility: auto — skip rendering off-screen content --- */
+/* Apply to long lists/tables for 2-5x faster initial render. */
+@layer utilities {
+  .tc-content-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 48px;
+  }
+  .tc-content-auto-compact {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 40px;
+  }
+}
+
+/* --- Scrollback: terminal-style log block --- */
+/* The .tc-log container wraps Scrollback's monospace lines; overflow-wrap
+   keeps long unbroken tokens (domains, hashes) from blowing out layouts. */
+.tc-log {
+  overflow-wrap: anywhere;
+}
+
+/* Line entrance: pure CSS, no JavaScript. With .tc-log-line each line fades
+   in 4px below its resting position; nth-child delays reveal lines
+   top-down. Delays are capped at 8 entries — the n+9 catch-all pins later
+   lines to the final delay so long logs still read sequentially. */
+.tc-log-line {
+  opacity: 0;
+  transform: translateY(4px);
+  animation: tc-log-in 360ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.tc-log-line:nth-child(1) {
+  animation-delay: 60ms;
+}
+.tc-log-line:nth-child(2) {
+  animation-delay: 360ms;
+}
+.tc-log-line:nth-child(3) {
+  animation-delay: 660ms;
+}
+.tc-log-line:nth-child(4) {
+  animation-delay: 960ms;
+}
+.tc-log-line:nth-child(5) {
+  animation-delay: 1260ms;
+}
+.tc-log-line:nth-child(6) {
+  animation-delay: 1560ms;
+}
+.tc-log-line:nth-child(7) {
+  animation-delay: 1860ms;
+}
+.tc-log-line:nth-child(8) {
+  animation-delay: 2160ms;
+}
+.tc-log-line:nth-child(n + 9) {
+  animation-delay: 2160ms;
+}
+
+@keyframes tc-log-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger disabled (ScrollbackProps.Stagger = false): render immediately. */
+.tc-log-line.tc-log-line-still {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-log-line {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
+/* --- <details> marker reset (Accordion) --- */
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Accordion chevron rotation — reacts to native <details> open attribute */
+[data-tc-chevron] {
+  transition: transform 200ms ease;
+}
+details[open] [data-tc-chevron] {
+  transform: rotate(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-tc-chevron] {
+    transition: none;
+  }
+}
+
+/*
+ * Accordion panel animation (Modern Web Guidance: animate-to-intrinsic-sizes).
+ *
+ * <details> content lives in the ::details-content pseudo-element, which is
+ * hidden — not sized — while closed. Giving it a block-size of 0 and
+ * transitioning to `auto` makes the panel open/close smoothly; the
+ * interpolate-size opt-in on :root (above) is what lets `auto` be an
+ * animation endpoint at all.
+ *
+ * Gated twice, deliberately: `selector(::details-content)` so browsers
+ * without the pseudo-element keep the native instant toggle (they would
+ * otherwise be left with a permanently 0-height panel), and content-visibility
+ * is transitioned with allow-discrete so the content joins the render/a11y
+ * tree only once it has room. prefers-reduced-motion removes the animation
+ * entirely instead of shortening it.
+ */
+@supports selector(::details-content) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Scoped to the Accordion's own <details> (data-tc-accordion) so a
+       consumer's unrelated <details> keeps the platform's instant toggle. */
+    details[data-tc-accordion]::details-content {
+      block-size: 0;
+      overflow-y: clip;
+      content-visibility: hidden;
+      transition:
+        block-size 200ms ease,
+        content-visibility 200ms allow-discrete;
+    }
+    details[data-tc-accordion][open]::details-content {
+      block-size: auto;
+      content-visibility: visible;
+    }
+  }
+}
+
+/* --- Typography: balanced headlines, clean paragraphs --- */
+/* text-wrap: balance limits to 6 lines — safe for headings */
+/* text-wrap: pretty prevents orphan words in body copy */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* --- Native form control accent color --- */
+/* accent-color styles checkboxes, radios, range inputs, and progress bars */
+/* Override per-component with Tailwind's accent-* utilities if needed */
+@layer base {
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"],
+  progress {
+    accent-color: var(--color-blue-600);
+
+    @variant dark {
+      accent-color: var(--color-blue-400);
+    }
+  }
+}
+
+/* --- Form validation: CSS-only post-interaction feedback --- */
+/* :user-valid / :user-invalid fire ONLY after user interacts — unlike */
+/* :valid/:invalid which fire immediately on page load */
+@layer components {
+  input:user-invalid,
+  textarea:user-invalid,
+  select:user-invalid {
+    border-color: var(--color-red-600);
+  }
+  input:user-valid,
+  textarea:user-valid,
+  select:user-valid {
+    border-color: var(--color-green-600);
+  }
+}
+
+/*
+ * --- Autofill highlight (Modern Web Guidance: autofill-highlight-inputs) ---
+ * Fields the browser filled and the user has not edited get a subtle brand
+ * tint so users can see what autofill touched. Multiple indicators per the
+ * guide (border shift + background shading — never color alone); the
+ * background rides box-shadow inset because engines refuse background-color
+ * overrides on autofilled inputs. Both pseudo-class spellings are required
+ * (:autofill is the standard, -webkit-autofill covers older
+ * Chromium/Safari); Firefox without :autofill simply keeps its native tint
+ * (progressive enhancement, no JS fallback per the guide).
+ */
+input:autofill,
+input:-webkit-autofill,
+select:autofill,
+textarea:autofill {
+  border-color: var(--color-blue-500);
+  box-shadow: 0 0 0 100vmax --alpha(var(--color-blue-50) / 60%) inset;
+
+  @variant dark {
+    border-color: var(--color-blue-400);
+    box-shadow: 0 0 0 100vmax --alpha(var(--color-blue-950) / 60%) inset;
+  }
+}
+
+/*
+ * --- Coarse-pointer input font floor (Modern Web Guidance: forms §5) ---
+ * The library's inputs are text-sm (14px); iOS Safari zooms the viewport on
+ * focus whenever an input's font-size is below 16px. Desktop-class pointers
+ * keep the 14px design; touch devices floor every text-entry control at
+ * 1rem so focusing a field never zooms. Intentionally UNLAYERED: unlayered
+ * CSS beats Tailwind v4's @layer utilities, so this wins over text-sm
+ * without !important (same cascade argument as the coarse-pointer rules
+ * below). select.tc-select re-declares its font-size at higher specificity,
+ * so it gets its own coarse floor.
+ */
+@media (pointer: coarse) {
+  input:where(
+    :not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+        [type="hidden"]
+      )
+  ),
+  textarea {
+    font-size: max(1rem, 1em);
+  }
+
+  select,
+  select.tc-select {
+    font-size: max(1rem, 1em);
+  }
+}
+
+/*
+ * --- Slider track fill, WebKit engines (Modern Web Guidance: slider) ---
+ * forms.Slider styles its own track (appearance:none), which drops the
+ * native filled portion. Firefox restores it with ::-moz-range-progress
+ * (inline Tailwind classes on the component); WebKit has no equivalent
+ * pseudo-element, so the fill here is a two-stop gradient whose boundary
+ * rides --tc-slider-progress:
+ *
+ *   progress()   turns (value - min) / (max - min) into a percentage
+ *   attr(x type(<number>)) seeds value/min/max from the ATTRIBUTES
+ *
+ * Both are required: the gate closes on engines lacking either (Safari has
+ * progress() but not typed attr()), leaving the component's gray track —
+ * the graceful base. The attribute seed reflects the server-rendered
+ * value only; the component's tcSliderSyncJS singleton mirrors live drag
+ * values into --tc-slider-value via the CSSOM (strict CSPs allow CSSOM
+ * writes, unlike inline style attributes). Colors ride theme tokens so
+ * @theme overrides re-skin the fill; the direction flips in RTL.
+ */
+input[type="range"][data-tc-slider] {
+  --tc-slider-dir: to right;
+}
+
+[dir="rtl"] input[type="range"][data-tc-slider] {
+  --tc-slider-dir: to left;
+}
+
+@supports (opacity: progress(1, 0, 100)) and
+  (opacity: attr(data-tc-value type(<number>), 1)) {
+  input[type="range"][data-tc-slider] {
+    --tc-slider-value: attr(value type(<number>), 0);
+    --tc-slider-min: attr(min type(<number>), 0);
+    --tc-slider-max: attr(max type(<number>), 100);
+    --tc-slider-progress: calc(
+      progress(
+          var(--tc-slider-value),
+          var(--tc-slider-min),
+          var(--tc-slider-max)
+        ) *
+        100%
+    );
+  }
+
+  input[type="range"][data-tc-slider]::-webkit-slider-runnable-track {
+    background: linear-gradient(
+      var(--tc-slider-dir),
+      var(--color-blue-600) var(--tc-slider-progress),
+      var(--color-gray-200) var(--tc-slider-progress)
+    );
+
+    @variant dark {
+      background: linear-gradient(
+        var(--tc-slider-dir),
+        var(--color-blue-500) var(--tc-slider-progress),
+        var(--color-gray-700) var(--tc-slider-progress)
+      );
+    }
+  }
+}
+
+/* --- Stylable <select> (appearance: base-select) --- */
+/* Progressive enhancement: Chrome 135+, Safari 27+, Edge 135+. */
+/* Non-supporting browsers render a normal native <select>. */
+/* The .tc-select class + <button><selectedcontent> structure are emitted */
+/* by forms.Select when Stylable: true. */
+@supports (appearance: base-select) {
+  select.tc-select,
+  select.tc-select::picker(select) {
+    appearance: base-select;
+  }
+
+  select.tc-select {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-300);
+    border-radius: 0.5rem;
+    padding: 0.625rem 2.5rem 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--color-gray-900);
+    cursor: pointer;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
+
+    @variant dark {
+      background-color: var(--color-gray-900);
+      border-color: var(--color-gray-600);
+      color: var(--color-white);
+    }
+  }
+
+  select.tc-select:hover {
+    border-color: var(--color-gray-500);
+
+    @variant dark {
+      border-color: var(--color-gray-400);
+    }
+  }
+
+  select.tc-select:focus,
+  select.tc-select:focus-visible {
+    outline: none;
+    border-color: var(--color-blue-500);
+    box-shadow: 0 0 0 2px --alpha(var(--color-blue-500) / 30%);
+
+    @variant dark {
+      border-color: var(--color-blue-400);
+      box-shadow: 0 0 0 2px --alpha(var(--color-blue-400) / 30%);
+    }
+  }
+
+  select.tc-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Dropdown arrow via picker-icon pseudo-element */
+  select.tc-select::picker-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-gray-500);
+    transition: rotate 200ms ease;
+
+    @variant dark {
+      color: var(--color-gray-400);
+    }
+  }
+
+  select.tc-select:open::picker-icon {
+    rotate: 180deg;
+  }
+
+  /* Dropdown container */
+  select.tc-select::picker(select) {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-300);
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px --alpha(var(--color-black) / 10%);
+    padding: 0.25rem;
+    margin-block: 0.25rem;
+    max-height: 20rem;
+    overflow: auto;
+
+    @variant dark {
+      background-color: var(--color-gray-800);
+      border-color: var(--color-gray-600);
+      box-shadow: 0 10px 15px -3px --alpha(var(--color-black) / 30%);
+    }
+  }
+
+  /* Options */
+  select.tc-select option {
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--color-gray-900);
+    cursor: pointer;
+    transition: background-color 100ms ease;
+
+    @variant dark {
+      color: var(--color-white);
+
+      @variant hover, focus {
+        background-color: var(--color-gray-700);
+      }
+    }
+  }
+
+  select.tc-select option:hover,
+  select.tc-select option:focus {
+    background-color: var(--color-gray-100);
+  }
+
+  select.tc-select option:checked {
+    background-color: var(--color-blue-100);
+    font-weight: 500;
+
+    @variant dark {
+      background-color: var(--color-blue-900);
+    }
+  }
+
+  /* Dark mode tokens for the picker cluster above are expressed inline via
+     @variant dark — no sibling .dark forks remain in this block. */
+}
+
+/* --- interpolate-size: enable animating to/from height:auto --- */
+/* Eliminates need for grid-rows hack or max-height hack */
+/* Graceful degradation: unsupported browsers just snap */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+}
+
+/* --- Squircle corners (iOS-style continuous curve) --- */
+/* Opt-in utility: compose with any rounded-* Tailwind class, e.g.
+   Class: "rounded-lg tc-squircle". corner-shape redraws the corners defined
+   by border-radius as a superellipse; it has NO effect when border-radius
+   is 0, so it always rides on top of a radius utility.
+   Progressive enhancement: Chrome/Edge 139+, Opera 123+, Samsung 30.
+   Firefox and Safari (until TP ships it) render the plain rounded corners. */
+.tc-squircle {
+  corner-shape: squircle;
+}
+
+/* --- Shell theming tokens (M22/F101) --- */
+/* AppShell and SidebarNav consume these semantic shell tokens: consumers
+   rebrand the chrome with one variable each, without touching the global
+   palette. The sidebar is THEME-ADAPTIVE: a light white sidebar in light
+   mode, the classic near-black sidebar in dark mode. Item/section colors
+   are token-driven too, so a permanently-dark sidebar (the classic admin
+   chrome) stays a pure-CSS opt-out — set the same variables in :root:
+
+     :root {
+       --tc-sidebar-bg: var(--color-gray-900);
+       --tc-sidebar-border: transparent;
+       --tc-sidebar-fg: var(--color-gray-300);
+       --tc-sidebar-fg-hover: var(--color-white);
+       --tc-sidebar-item-hover-bg: var(--color-gray-800);
+       --tc-sidebar-muted: var(--color-gray-500);
+       --tc-sidebar-muted-hover: var(--color-gray-300);
+     }
+
+   Dark-mode values mirror the original hard-coded classes exactly. */
+:root {
+  --tc-sidebar-bg: var(--color-white);
+  --tc-sidebar-border: var(--color-gray-200);
+  --tc-sidebar-fg: var(--color-gray-700);
+  --tc-sidebar-fg-hover: var(--color-gray-900);
+  --tc-sidebar-item-hover-bg: var(--color-gray-100);
+  --tc-sidebar-muted: var(--color-gray-500);
+  --tc-sidebar-muted-hover: var(--color-gray-700);
+  --tc-header-bg: var(--color-white);
+  --tc-header-border: var(--color-gray-200);
+}
+.dark {
+  --tc-sidebar-bg: var(--color-black);
+  --tc-sidebar-border: transparent;
+  --tc-sidebar-fg: var(--color-gray-300);
+  --tc-sidebar-fg-hover: var(--color-white);
+  --tc-sidebar-item-hover-bg: var(--color-gray-800);
+  --tc-sidebar-muted: var(--color-gray-600);
+  --tc-sidebar-muted-hover: var(--color-gray-400);
+  --tc-header-bg: var(--color-gray-900);
+  --tc-header-border: var(--color-gray-800);
+}
+
+/* --- Accessibility: forced-colors (Windows High Contrast) --- */
+/* box-shadow is forced to 'none' — add borders for visual separation */
+@media (forced-colors: active) {
+  .shadow-sm,
+  .shadow-lg,
+  .shadow-xl {
+    border: 1px solid CanvasText;
+  }
+
+  /* The focus-visible:ring-* utilities are box-shadow too, so under
+     forced-colors every library focus indicator would vanish. Restore a
+     system-color outline (2026-09-14 audit, M21/F095). :where() keeps
+     specificity at zero, so consumer focus styles still win. */
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [tabindex]
+  ):focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+/* --- Accessibility: prefers-contrast (more) --- */
+/* Strengthen non-text contrast at the theme-variable level: Tailwind v4
+   gray utilities resolve through the theme's gray custom properties, so
+   remapping the two border shades hardens every divider, ring, and input
+   border in one rule (WCAG 1.4.11 non-text contrast ≥ 3:1, M21/F096).
+   Text shades are deliberately NOT remapped: that is the accepted
+   color-contrast debt class (docs/testing/a11y-gate-policy.md ledger) and
+   needs the palette re-shade release, because the same variables double as
+   dark-mode backgrounds where darkening reduces contrast. */
+@media (prefers-contrast: more) {
+  :root {
+    --color-gray-200: var(--color-gray-400);
+    --color-gray-300: var(--color-gray-500);
+  }
+}
+
+/* --- Accessibility: prefers-reduced-transparency --- */
+/* Replace translucent overlays with more opaque backgrounds */
+@media (prefers-reduced-transparency: reduce) {
+  [popover]::backdrop,
+  dialog.tc-overlay[open]::backdrop {
+    backdrop-filter: none;
+    background-color: --alpha(var(--color-black) / 85%);
+  }
+}
+
+/*
+ * Fluid typography via Container Query Length Units (cqi).
+ *
+ * Container query units size text relative to the nearest @container ancestor's
+ * inline size — NOT the viewport. A heading inside a 320px sidebar shrinks; the
+ * same heading inside a full-width hero grows. This is the typography analog of
+ * the ContainerAware components (ADR-0018): text adapts to its placement.
+ *
+ * REQUIREMENT: the element (or an ancestor) must establish a query container.
+ * Tailwind's `@container` class (container-type: inline-size) does this. Every
+ * ContainerAware component already emits `<div class="@container">`, so these
+ * classes compose directly inside Card, Split, Nav, Form, etc.
+ *
+ * Baseline: cqi/cqw/cqb/cqh/cqmin/cqmax are Baseline 2023 (same as container
+ * queries). No fallback needed — `clamp()` provides a floor/ceiling, so
+ * non-supporting browsers fall back to the preferred (max) value.
+ *
+ * Usage:     <h2 class="tc-fluid-h2 @container">Title</h2>
+ * Or inside a container-aware component:
+ *            @display.Card(display.CardProps{ContainerAware: true}) {
+ *              <h2 class="tc-fluid-h2">Title</h2>
+ *            }
+ */
+@layer utilities {
+  .tc-fluid-display {
+    font-size: clamp(2rem, 5cqi + 1rem, 3.5rem);
+    line-height: 1.1;
+  }
+  .tc-fluid-h1 {
+    font-size: clamp(1.75rem, 4cqi + 0.75rem, 2.5rem);
+    line-height: 1.2;
+  }
+  .tc-fluid-h2 {
+    font-size: clamp(1.5rem, 3.5cqi + 0.5rem, 2rem);
+    line-height: 1.25;
+  }
+  .tc-fluid-h3 {
+    font-size: clamp(1.25rem, 2.5cqi + 0.5rem, 1.75rem);
+    line-height: 1.3;
+  }
+  .tc-fluid-h4 {
+    font-size: clamp(1.125rem, 2cqi + 0.375rem, 1.5rem);
+    line-height: 1.35;
+  }
+  .tc-fluid-lead {
+    font-size: clamp(1.125rem, 1.75cqi + 0.5rem, 1.375rem);
+    line-height: 1.5;
+  }
+}
+
+/* --- AppShell sidebar width CSS variable --- */
+/*
+ * --tc-sidebar-w is the CSS custom property that drives the AppShell desktop
+ * sidebar column width. The grid template is:
+ *   grid-template-columns: var(--tc-sidebar-w) minmax(0,1fr);
+ *
+ * AppShell sets it via a WIDTH CLASS on its root div (never an inline
+ * style — strict `style-src` CSPs drop inline styles silently, which is
+ * exactly how consumers lost their sidebar width before the class switch).
+ *
+ * Classes map 1:1 to the SidebarWidth enum:
+ *   .tc-sidebar-w-sm    = 12rem  (w-48, compact icon sidebars)
+ *   .tc-sidebar-w-md    = 16rem  (w-64, default — matches SidebarNav)
+ *   .tc-sidebar-w-lg    = 20rem  (w-80, wide sidebars with descriptions)
+ *   .tc-sidebar-w-auto  = auto   (sidebar sizes itself)
+ *
+ * Consumers can still:
+ *   1. Reference var(--tc-sidebar-w) in their own CSS (e.g. matching widths)
+ *   2. Re-skin a size by redefining the class after importing this file
+ *   3. Set --tc-sidebar-w directly for bespoke widths (the :root fallback
+ *      below keeps that working on sidebar-less pages)
+ */
+:root {
+  --tc-sidebar-w: 16rem;
+}
+
+.tc-sidebar-w-sm {
+  --tc-sidebar-w: 12rem;
+}
+
+.tc-sidebar-w-md {
+  --tc-sidebar-w: 16rem;
+}
+
+.tc-sidebar-w-lg {
+  --tc-sidebar-w: 20rem;
+}
+
+.tc-sidebar-w-auto {
+  --tc-sidebar-w: auto;
+}
+
+/*
+ * ─── Animated Icons (heroicons-animated inspired, pure CSS) ───────────────
+ *
+ * Zero-JavaScript hover animations for icons. Inspired by
+ * https://www.heroicons-animated.com/ — CSS reimplementations of the
+ * Motion-based React originals.
+ *
+ * Usage in templ:
+ *   @icons.AnimatedIcon(icons.Heart, "h-6 w-6")
+ *   @icons.AnimatedIconWithAnimation(icons.Bell, icons.AnimWiggle, "h-6 w-6")
+ *
+ * The .tc-anim wrapper provides the hover/focus trigger; the .tc-anim-<type>
+ * class selects the animation. All animations respect prefers-reduced-motion.
+ */
+
+.tc-anim {
+  display: inline-flex;
+}
+
+/* --- Pulse — Heart-style gentle scale burst (scale [1, 1.08, 1] x2) --- */
+@keyframes tc-icon-pulse {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.08;
+  }
+}
+
+.tc-anim-pulse:hover svg,
+.tc-anim-pulse:focus-within svg {
+  animation: tc-icon-pulse 0.45s ease-in-out 2;
+}
+
+/* --- Beat — Star-style strong scale with overshoot (scale [1, 0.9, 1.2, 1]) --- */
+@keyframes tc-icon-beat {
+  0% {
+    scale: 1;
+  }
+  33% {
+    scale: 0.9;
+  }
+  66% {
+    scale: 1.2;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+.tc-anim-beat:hover svg,
+.tc-anim-beat:focus-within svg {
+  animation: tc-icon-beat 0.6s ease-in-out;
+}
+
+/* --- Bounce — Search-style multi-direction bounce (x/y keyframes) --- */
+@keyframes tc-icon-bounce {
+  0% {
+    translate: 0 0;
+  }
+  30% {
+    translate: 0 -4px;
+  }
+  60% {
+    translate: -3px 0;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+.tc-anim-bounce:hover svg,
+.tc-anim-bounce:focus-within svg {
+  animation: tc-icon-bounce 1s ease-in-out;
+}
+
+/* --- Wiggle — Bell-style rotation shake (rotate [0, -10, 10, -10, 0]) --- */
+@keyframes tc-icon-wiggle {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  25% {
+    rotate: -10deg;
+  }
+  50% {
+    rotate: 10deg;
+  }
+  75% {
+    rotate: -10deg;
+  }
+}
+
+.tc-anim-wiggle:hover svg,
+.tc-anim-wiggle:focus-within svg {
+  animation: tc-icon-wiggle 0.5s ease-in-out;
+}
+
+/* --- Spin — Cog/Settings-style one-shot rotation with spring easing --- */
+.tc-anim-spin svg {
+  transition: rotate 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tc-anim-spin:hover svg,
+.tc-anim-spin:focus-within svg {
+  rotate: 180deg;
+}
+
+/* --- Jump — Home-style scale + vertical lift --- */
+@keyframes tc-icon-jump {
+  0% {
+    scale: 1;
+    translate: 0 0;
+  }
+  50% {
+    scale: 1.1;
+    translate: 0 -1px;
+  }
+  100% {
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+.tc-anim-jump:hover svg,
+.tc-anim-jump:focus-within svg {
+  animation: tc-icon-jump 0.4s ease-out;
+}
+
+/* --- Nod — Chevron-style vertical bob (translateY [0, 2, 0]) --- */
+@keyframes tc-icon-nod {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 2px;
+  }
+}
+
+.tc-anim-nod:hover svg,
+.tc-anim-nod:focus-within svg {
+  animation: tc-icon-nod 0.5s ease-in-out;
+}
+
+/* --- Shake — Play-style horizontal shift + rotation burst --- */
+@keyframes tc-icon-shake {
+  0% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  20% {
+    translate: -1px 0;
+    rotate: -10deg;
+  }
+  50% {
+    translate: 2px 0;
+    rotate: 0deg;
+  }
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}
+
+.tc-anim-shake:hover svg,
+.tc-anim-shake:focus-within svg {
+  animation: tc-icon-shake 0.5s ease-in-out;
+}
+
+/* --- Blink — Eye-style per-path eyelid blink (requires 2-path icon) --- */
+@keyframes tc-icon-blink-lid {
+  0%,
+  100% {
+    scale: 1 1;
+    opacity: 1;
+  }
+  50% {
+    scale: 1 0.1;
+    opacity: 0.3;
+  }
+}
+
+@keyframes tc-icon-blink-pupil {
+  0%,
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+  50% {
+    scale: 0.3;
+    opacity: 0.3;
+  }
+}
+
+.tc-anim-blink:hover svg path:nth-child(1),
+.tc-anim-blink:focus-within svg path:nth-child(1) {
+  animation: tc-icon-blink-lid 0.4s ease-in-out;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.tc-anim-blink:hover svg path:nth-child(2),
+.tc-anim-blink:focus-within svg path:nth-child(2) {
+  animation: tc-icon-blink-pupil 0.4s ease-in-out;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+/* --- Wobble — Beaker-style scale down + rotation oscillation --- */
+/* Source: scale 0.9 (spring) + rotate [0, 6, -6, 3, -3, 0], 0.8s */
+@keyframes tc-icon-wobble {
+  0% {
+    scale: 1;
+    rotate: 0deg;
+  }
+  20% {
+    scale: 0.9;
+    rotate: 6deg;
+  }
+  40% {
+    rotate: -6deg;
+  }
+  60% {
+    rotate: 3deg;
+  }
+  80% {
+    scale: 0.9;
+    rotate: -3deg;
+  }
+  100% {
+    scale: 1;
+    rotate: 0deg;
+  }
+}
+
+.tc-anim-wobble:hover svg,
+.tc-anim-wobble:focus-within svg {
+  animation: tc-icon-wobble 0.8s ease-in-out;
+  transform-origin: center;
+}
+
+/* --- Draw — Bolt-style self-draw via stroke-dashoffset --- */
+/* Source: pathLength [0, 1], opacity [0, 1], 0.6s linear.
+   Requires pathLength="1" on each <path> (set by the drawIcon template). */
+@keyframes tc-icon-draw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+.tc-anim-draw svg path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.tc-anim-draw:hover svg path,
+.tc-anim-draw:focus-within svg path {
+  animation: tc-icon-draw 0.6s linear;
+}
+
+/* --- Reduced motion: disable all animated-icon effects --- */
+@media (prefers-reduced-motion: reduce) {
+  .tc-anim:hover svg,
+  .tc-anim:focus-within svg,
+  .tc-anim:hover svg path,
+  .tc-anim:focus-within svg path {
+    animation: none !important;
+    transition: none !important;
+    translate: 0 0 !important;
+    rotate: 0deg !important;
+    scale: 1 !important;
+    opacity: 1 !important;
+    stroke-dashoffset: 0 !important;
+  }
+}
+
+/* --- Heatmap brand color -----------------------------------------------
+ * display.Heatmap colors cells via `rgba(var(--ds-brand-rgb), alpha)` and
+ * rings the peak cell via `var(--ds-brand)`. Define both here so the
+ * component renders out of the box; consumers override either variable in
+ * their own CSS (RGB triplets must be comma-separated (the component emits legacy rgba(var(--ds-brand-rgb), alpha)), e.g. "124, 58, 237").
+ * Light uses violet-600, dark uses violet-500 (the -600/-500 convention).
+ * --ds-brand tracks the Tailwind violet palette; the
+ * --ds-brand-rgb comma triplets are the legacy alpha contract consumed by
+ * Heatmap's rgba() calls over --x-rgb (ADR-0028) — they
+ * intentionally mirror violet-600/violet-500 and stay literal until that
+ * contract modernizes to color-mix (v2 window; see ROADMAP).
+ * ---------------------------------------------------------------------- */
+:root {
+  --ds-brand-rgb: 124, 58, 237;
+  --ds-brand: var(--color-violet-600);
+}
+
+.dark {
+  --ds-brand-rgb: 139, 92, 246;
+  --ds-brand: var(--color-violet-500);
+}
+
+/* --- Kanban board: drag-and-drop feedback --------------------------------
+ * display.KanbanBoard's script toggles these classes while a card is
+ * dragged: the dragged card dims, the hovered column highlights, and a
+ * blue insertion line shows where the card would land (before a card via
+ * ::before, or at the column end via ::after on the list). Logical
+ * inset-inline properties keep the line RTL-correct.
+ * ---------------------------------------------------------------------- */
+[data-tc-kanban] [data-tc-kanban-card].tc-kanban-dragging {
+  opacity: 0.5;
+}
+
+[data-tc-kanban] [data-tc-kanban-column-body].tc-kanban-over {
+  background-color: --alpha(var(--color-blue-100) / 60%);
+  border-radius: 0.5rem;
+
+  @variant dark {
+    background-color: --alpha(var(--color-blue-900) / 35%);
+  }
+}
+
+[data-tc-kanban] .tc-kanban-drop-before::before,
+[data-tc-kanban] .tc-kanban-drop-end::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  height: 0.125rem;
+  border-radius: 0.125rem;
+  background-color: var(--color-blue-600);
+
+  @variant dark {
+    background-color: var(--color-blue-500);
+  }
+}
+
+[data-tc-kanban] .tc-kanban-drop-before::before {
+  top: -0.25rem;
+}
+
+[data-tc-kanban] .tc-kanban-drop-end::after {
+  bottom: -0.25rem;
+}
+
+/* --- Kanban board: optimistic move register (ADR-0041) -------------------
+ * display.KanbanBoard's script moves a card the moment its move is
+ * submitted and marks it pending until the server's re-render lands:
+ * the card dims and a spinner ring spins in its top-right corner (the
+ * only corner nothing else claims). A FAILED move (4xx/5xx, network
+ * error) snaps the card back to its original position and flashes a red
+ * border for 4s while a role="alert" region announces the revert.
+ * inset-inline keeps the spinner RTL-correct; reduced-motion users get a
+ * static ring (still an unambiguous "in flight" glyph) instead of spin.
+ * ---------------------------------------------------------------------- */
+[data-tc-kanban] [data-tc-kanban-card].tc-kanban-pending {
+  opacity: 0.7;
+}
+
+[data-tc-kanban] [data-tc-kanban-card].tc-kanban-pending::after {
+  content: "";
+  position: absolute;
+  top: 0.375rem;
+  inset-inline-end: 0.375rem;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid var(--color-blue-300);
+  border-top-color: var(--color-blue-600);
+  border-radius: 9999px;
+  animation: tc-kanban-pending-spin 0.8s linear infinite;
+
+  @variant dark {
+    border-color: var(--color-blue-900);
+    border-top-color: var(--color-blue-400);
+  }
+}
+
+[data-tc-kanban] [data-tc-kanban-card].tc-kanban-move-failed {
+  border-color: var(--color-red-600);
+  box-shadow: 0 0 0 1px var(--color-red-600);
+
+  @variant dark {
+    border-color: var(--color-red-400);
+    box-shadow: 0 0 0 1px var(--color-red-400);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-tc-kanban] [data-tc-kanban-card].tc-kanban-pending::after {
+    animation: none;
+  }
+}
+
+@keyframes tc-kanban-pending-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Touch devices have no hover, so hover-revealed FUNCTIONALITY would stay
+ * hidden forever. Library convention (enforced by
+ * utils.TestCoarsePointerCompliance): any control gated behind
+ * group-hover/peer-hover gets a tc-* hook class here, kept visible for
+ * coarse pointers. Tooltips and hover cards are exempt as hover/focus
+ * progressive enhancement (ADR-0017 family).
+ * These rules are intentionally UNLAYERED: unlayered CSS beats Tailwind
+ * v4's @layer utilities in the cascade, so opacity-1 wins over the
+ * element's opacity-0 utility without !important. */
+@media (pointer: coarse) {
+  .tc-kanban-buttons {
+    opacity: 1;
+  }
+}
+
+/* --- Longform prose (.tc-prose) --------------------------------------- */
+/*
+ * A longform-content container for rendered markdown/articles: headings,
+ * lists, blockquotes, code, tables, and images styled via DESCENDANT
+ * selectors, so the caller renders raw content HTML inside one wrapper:
+ *
+ *   <article class="tc-prose">{ renderedMarkdown }</article>
+ *   @display.Prose(display.ProseProps{...}) { ... }
+ *
+ * Element rules are intentionally WEAKER than Tailwind utilities, so a
+ * single utility on a specific element still wins; per-element `tc-fluid-*`
+ * classes compose on top (utilities beat the descendant font-size).
+ *
+ * Scale is rem-based (deterministic without a query container). Colors use
+ * Tailwind v4 theme variables (token policy) with explicit `.dark`
+ * overrides, matching the tc-select pattern. Spacing uses LOGICAL properties
+ * (margin-block, padding-inline-start, text-align: start) so RTL mirrors
+ * with no extra rules. No transitions/animations: nothing to reduce.
+ */
+@layer components {
+  .tc-prose {
+    color: var(--color-gray-700);
+    font-size: 1rem;
+    line-height: 1.75;
+
+    @variant dark {
+      color: var(--color-gray-300);
+    }
+  }
+
+  .tc-prose > :first-child {
+    margin-block-start: 0;
+  }
+
+  .tc-prose > :last-child {
+    margin-block-end: 0;
+  }
+
+  .tc-prose p {
+    margin-block: 1.25rem;
+  }
+
+  .tc-prose h1,
+  .tc-prose h2,
+  .tc-prose h3,
+  .tc-prose h4 {
+    color: var(--color-gray-900);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-block: 2rem 0.75rem;
+
+    @variant dark {
+      color: var(--color-white);
+    }
+  }
+
+  .tc-prose h1 {
+    font-size: 2.25rem;
+    letter-spacing: -0.02em;
+  }
+
+  .tc-prose h2 {
+    font-size: 1.875rem;
+    letter-spacing: -0.02em;
+  }
+
+  .tc-prose h3 {
+    font-size: 1.5rem;
+  }
+
+  .tc-prose h4 {
+    font-size: 1.25rem;
+  }
+
+  .tc-prose a {
+    color: var(--color-blue-600);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    @variant dark {
+      color: var(--color-blue-400);
+    }
+  }
+
+  .tc-prose a:hover {
+    color: var(--color-blue-500);
+
+    @variant dark {
+      color: var(--color-blue-300);
+    }
+  }
+
+  .tc-prose strong {
+    color: var(--color-gray-900);
+    font-weight: 600;
+
+    @variant dark {
+      color: var(--color-white);
+    }
+  }
+
+  .tc-prose ul,
+  .tc-prose ol {
+    margin-block: 1.25rem;
+    padding-inline-start: 1.625rem;
+  }
+
+  .tc-prose ul {
+    list-style-type: disc;
+  }
+
+  .tc-prose ol {
+    list-style-type: decimal;
+  }
+
+  .tc-prose li {
+    margin-block: 0.375rem;
+  }
+
+  .tc-prose li > ul,
+  .tc-prose li > ol {
+    margin-block: 0.375rem;
+  }
+
+  .tc-prose blockquote {
+    border-inline-start: 0.25rem solid var(--color-gray-300);
+    color: var(--color-gray-600);
+    font-style: italic;
+    margin-block: 1.5rem;
+    padding-inline-start: 1rem;
+
+    @variant dark {
+      border-inline-start-color: var(--color-gray-700);
+      color: var(--color-gray-400);
+    }
+  }
+
+  .tc-prose code {
+    background-color: var(--color-gray-100);
+    border-radius: 0.25rem;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.875em;
+    padding: 0.125rem 0.375rem;
+
+    @variant dark {
+      background-color: var(--color-gray-800);
+    }
+  }
+
+  .tc-prose pre {
+    background-color: var(--color-gray-950);
+    border-radius: 0.5rem;
+    color: var(--color-gray-100);
+    line-height: 1.6;
+    margin-block: 1.5rem;
+    overflow-x: auto;
+    padding: 1rem 1.25rem;
+    /* Always-dark surface (Modern Web Guidance:
+       component-specific-light-dark-theme): pinning color-scheme keeps the
+       scrollbar and any native UI inside the pre dark in light mode too —
+       the guide's canonical code-block case. Safe here because the rule
+       sets its own background + text color pair. */
+    color-scheme: dark;
+  }
+
+  .tc-prose pre code {
+    background-color: transparent;
+    color: inherit;
+    font-size: 0.875rem;
+    padding: 0;
+  }
+
+  .tc-prose hr {
+    border: 0;
+    border-block-start: 1px solid var(--color-gray-200);
+    margin-block: 2rem;
+
+    @variant dark {
+      border-block-start-color: var(--color-gray-800);
+    }
+  }
+
+  .tc-prose table {
+    border-collapse: collapse;
+    margin-block: 1.5rem;
+    width: 100%;
+  }
+
+  .tc-prose th {
+    border-block-end: 1px solid var(--color-gray-300);
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    text-align: start;
+
+    @variant dark {
+      border-block-end-color: var(--color-gray-700);
+    }
+  }
+
+  .tc-prose td {
+    border-block-end: 1px solid var(--color-gray-200);
+    padding: 0.5rem 0.75rem;
+
+    @variant dark {
+      border-block-end-color: var(--color-gray-800);
+    }
+  }
+
+  .tc-prose img {
+    border-radius: 0.5rem;
+    height: auto;
+    margin-block: 1.5rem;
+    max-width: 100%;
+  }
+}
+
+/* --- Print ----------------------------------------------------------------
+ * Minimal paper layer (zero configuration, safe to keep or trim):
+ *   - interactive library chrome that cannot work on paper is hidden
+ *     (copy buttons, theme toggle, toasts, dismiss buttons);
+ *   - shadows and animations are dropped (toner + muddy ink output);
+ *   - longform (.tc-prose) links expand to show their target URL.
+ * Site chrome (your own header/nav/footer) is YOUR sheet's job — extend this
+ * block in your entry stylesheet, or use Tailwind's `print:` variant per
+ * element (e.g. `print:hidden` on a site header). AppShell's mobile-nav
+ * already carries `print:hidden`; its sidebar auto-hides in print because the
+ * page width sits below the lg breakpoint.
+ */
+@media print {
+  [data-tc-copy],
+  [data-dismiss],
+  [data-theme-toggle],
+  #tc-toast-container {
+    display: none !important;
+  }
+
+  *,
+  ::before,
+  ::after {
+    animation: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    transition: none !important;
+  }
+
+  .tc-prose a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.875em;
+  }
+
+  /* Paper is always light, even when the page is in .dark mode. */
+  .dark {
+    color-scheme: light;
+  }
+}

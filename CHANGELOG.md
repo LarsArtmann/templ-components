@@ -8,16 +8,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- **`tc css sync` and `tc css check` (ADR-0050).** The styling half of the
-  library (class corpus, `custom.css`, theme, safelist) now travels into a
-  consumer's Tailwind build as one synced, stamped file set instead of hand
-  made copies. `tc css sync` writes the files at the version `go.mod` pins
-  and prints the lines the Tailwind entry still needs; `tc css check` exits
-  1 on version skew, a missing or drifted file, or an entry that reaches
-  none of them. Run both as
+- **Vendor-complete stylesheet delivery (ADR-0050).** `layout/embed.go`
+  embeds `layout/styles/*.css`, byte twins of `templates/templ-components.css`,
+  `custom.css`, `templ-components-theme.css` and `safelist.css`, so
+  `go mod vendor` now ships the library's hand-written CSS next to its
+  sources. After `go mod vendor`, two native Tailwind lines reach the whole
+  library: `@source "../*/vendor/github.com/larsartmann/templ-components";`
+  and an `@import` of its `layout/styles/templ-components.css`. No copy, no
+  generator, nothing to drift.
+- **`tc css sync` and `tc css check`.** For builds that compile CSS without a
+  vendor tree, `tc css sync` writes the library's files at the version
+  `go.mod` pins (class corpus, `templ-components.css`, `custom.css`, theme,
+  safelist), each stamped with that version. `tc css check` is read-only and
+  exits 1 on version skew, a stale vendor tree, or a Tailwind entry that
+  reaches neither the library's classes nor its stylesheet. Run both as
   `GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css …`
-  (the flag makes it work in vendored projects). `tc init` now scaffolds
-  the class corpus too. Compile-proven by `TestCSSSyncCompilesWithTailwind`.
+  (the flag makes it work in vendored projects). `tc init` now scaffolds the
+  class corpus and the stylesheet too. Both layouts are compile-proven:
+  `TestCSSVendoredLayoutCompilesWithTailwind`, `TestCSSSyncCompilesWithTailwind`.
 
 ### Fixed
 
@@ -39,13 +47,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `tc init` scaffolded a stale theme. The starter is now a guarded twin set
   of `templates/` (`TestStarterFilesMatchTemplates`, both directions in
   `scripts/check-tc-sources-sync.sh`).
-- **CSS setup docs taught the fragile path.** README, the website
+- **CSS setup docs taught a path that could not work.** README, the website
   installation and theming guides, and
-  `docs/recipes/vendored-tailwind-scanning.md` led with `go mod vendor`
-  plus `@source "../vendor/…"`, which never delivers the hand-written CSS,
-  and claimed BuildFlow's `tailwind-build` writes the library files. They
-  lead with `tc css` now; `templates/app.css` documented the `cmd/tc-css`
-  command deleted in July.
+  `docs/recipes/vendored-tailwind-scanning.md` led with `go mod vendor` plus
+  an `@source` on the vendor tree, which could not deliver the hand-written
+  CSS because `templates/` was never vendored, and claimed BuildFlow's
+  `tailwind-build` writes the library files. They lead with the vendored
+  layout now (which the vendor-complete change above makes complete);
+  `templates/app.css` documented the `cmd/tc-css` command deleted in July.
 
 ## [1.27.2] — 2026-11-20
 

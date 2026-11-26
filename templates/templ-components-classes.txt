@@ -16404,7 +16404,7 @@ package layout
 
 import (
 	"context"
-	_ "embed"
+	"embed"
 	"fmt"
 	"html"
 	"io"
@@ -16414,6 +16414,16 @@ import (
 
 //go:embed static/htmx.min.js
 var htmxSource string
+
+// stylesheetInputs is the stylesheet a consumer's Tailwind build imports from
+// a vendor tree. Nothing in this package reads it: the directive exists so
+// `go mod vendor` ships layout/styles/ next to the sources, because Go
+// vendors package directories and the files they embed, and templates/ is
+// neither. TestStylesheetInputsEmbedTemplates keeps the embedded copies equal
+// to templates/.
+//
+//go:embed styles/*.css
+var stylesheetInputs embed.FS
 
 // HTMXSelfHost is the sentinel value for PageProps.HTMXSrc that triggers
 // inline embedding of the HTMX source (v2.0 default). When HTMXSrc is set

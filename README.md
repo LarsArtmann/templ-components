@@ -383,21 +383,21 @@ ContextMenu via native Popover API). Run with `nix run .#visual`. See
 
 ## Tailwind CSS Setup
 
-Components are Go code that emits Tailwind class names; the CSS for those names comes from your own Tailwind build. That build needs four files the library ships: a class corpus, `custom.css`, a theme, and a safelist. `tc css` writes them at the version your `go.mod` pins and fails when they go stale:
+Components are Go code that emits Tailwind class names; the CSS for those names comes from your own Tailwind build. That build reads the library straight from your vendor tree, so run `go mod vendor` before Tailwind. Two native lines then do everything:
 
-```bash
-GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc init       # new project: scaffolds app.css and the library files
-GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync   # after every library bump: refreshes them
-tailwindcss -i app.css -o styles.css --minify
+```css
+@import "tailwindcss" source(none);
+@source "../vendor/github.com/larsartmann/templ-components";                                      /* every class the library can emit */
+@import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";   /* its hand-written CSS */
 ```
 
-Point the two `@source` lines in `app.css` at your own templates, then gate the setup in CI:
+Nothing is copied, so nothing can go stale: `go get -u` and `go mod vendor` move the markup and the CSS together. If your CSS is compiled where no vendor tree exists (a CSS-only sandbox), `tc css sync` writes the same files into your project instead. Either way, gate it in CI:
 
 ```bash
-GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css check   # exit 1 on a stale, missing, or unreachable file
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css check   # exit 1 on anything stale, missing, or unreachable
 ```
 
-A stale copy never raises an error: the page simply renders unstyled. That is what the check is for. [BuildFlow](https://github.com/larsartmann/buildflow)'s `tailwind-build` provider runs the compile step; it does not write the library files. Full guide: [docs/tailwind-v4-adoption-guide.md](docs/tailwind-v4-adoption-guide.md).
+A missing stylesheet never raises an error on its own: the page simply renders unstyled. That is what the check is for. Full guide: [docs/tailwind-v4-adoption-guide.md](docs/tailwind-v4-adoption-guide.md).
 
 ## Theming
 

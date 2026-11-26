@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -26,24 +27,33 @@ import (
 // missing or drifted copy, and on an entry that never reaches them.
 
 const (
-	// libraryModulePath is the module whose templates/ directory ships the stylesheet inputs.
+	// libraryModulePath is the module that ships the stylesheet inputs.
 	libraryModulePath = "github.com/larsartmann/templ-components"
 	// stampMarker opens the stamp line of every library-owned copy.
 	stampMarker = "tc:sync templ-components "
 	// starterEntryName is the consumer-owned Tailwind entry `tc init` scaffolds.
 	starterEntryName = "app.css"
-	// corpusName is the class corpus a consumer's Tailwind entry scans.
+	// corpusName is the class corpus a Tailwind entry scans in the synced layout.
 	corpusName = "templ-components-classes.txt"
-	// customName is the hand-written component CSS a consumer's Tailwind entry imports.
+	// stylesheetName is the library's stylesheet: one file that imports the rest.
+	stylesheetName = "templ-components.css"
+	// customName is the hand-written component CSS.
 	customName = "custom.css"
+	// vendoredStylesheetPath is where `go mod vendor` ships the stylesheet, relative
+	// to the library directory (layout/ embeds it so Go carries it).
+	vendoredStylesheetPath = "layout/styles/" + stylesheetName
+	// vendoredLibraryPath is the library directory inside a vendor tree, relative to
+	// a Tailwind entry that lives one directory below the project root.
+	vendoredLibraryPath = "../vendor/" + libraryModulePath
 	// cssImportDepth bounds how far the wiring check follows local @import chains.
 	cssImportDepth = 3
 	// goModSearchDepth bounds the upward search for go.mod.
 	goModSearchDepth = 32
-	// syncCommand regenerates the library files at the version go.mod pins. The
-	// explicit -mod=mod matters: cmd/tc is never vendored (a dependency's
-	// command packages are not part of the main module), so a project with a
-	// vendor/ directory cannot run it in the default vendor mode.
+	// syncCommand writes the library files of the version go.mod pins, for builds
+	// that compile CSS without a vendor tree. The explicit -mod=mod matters:
+	// cmd/tc is never vendored (a dependency's command packages are not part of
+	// the main module), so a project with a vendor/ directory cannot run it in
+	// the default vendor mode.
 	syncCommand = "GOFLAGS=-mod=mod go run " + libraryModulePath + "/cmd/tc css sync"
 )
 
@@ -73,6 +83,7 @@ type libraryFile struct {
 //nolint:gochecknoglobals,exhaustruct_v5 // static table; the optional inputs leave required at its zero value
 var libraryFiles = []libraryFile{
 	{name: corpusName, required: true, plainText: true},
+	{name: stylesheetName, required: true},
 	{name: customName, required: true},
 	{name: "templ-components-theme.css"},
 	{name: "safelist.css"},
@@ -90,10 +101,24 @@ type cssOptions struct {
 	scaffold bool
 }
 
-// cssWiring reports which library inputs a Tailwind entry reaches.
+// cssWiring reports which library inputs the Tailwind entries reach.
 type cssWiring struct {
+	// corpus is set when an entry scans the class corpus.
 	corpus bool
+	// custom is set when an entry imports the library's stylesheet or component CSS.
 	custom bool
+	// libraryDirectory is the library tree an entry scans (a vendor tree or a
+	// checkout); it replaces the corpus, because the tree holds the real sources.
+	libraryDirectory string
+	// vendoredVersions are the library versions vendor/modules.txt records for
+	// the scanned tree (empty outside a vendor tree).
+	vendoredVersions []string
+	// missingVendor is set when an entry scans the library's vendor tree and that
+	// tree does not exist: `go mod vendor` did not run where CSS is compiled.
+	missingVendor bool
+	// curatedVendorFiles counts @source lines that name single files of the
+	// vendor tree: a hand-curated list ships the next component unstyled.
+	curatedVendorFiles int
 }
 
 // syncAction is what cssSync does with one library file in the target directory.
@@ -133,14 +158,20 @@ func cmdCSS(args []string) {
 
 func cssUsage() {
 	fmt.Fprintln(os.Stderr, `Usage:
-  tc css sync [--dir DIR] [--force]   Write the stylesheet inputs of the pinned library version.
+  tc css sync [--dir DIR] [--force]   Write the library's files for a CSS build without a vendor tree.
   tc css check [--dir DIR] [--css PATH]
-                                      Fail when those inputs are missing, stale, or unreachable.
+                                      Fail when Tailwind cannot reach the library.
 
-  sync writes the class corpus, custom.css, templ-components-theme.css and safelist.css
-  into the directory of your Tailwind entry (or DIR), then prints the lines that
-  entry still needs. Re-run it after every bump of github.com/larsartmann/templ-components.
-  check is CI-gateable: exit 1 on any finding.
+  When go mod vendor runs before Tailwind, no sync is needed. The entry reads
+  the library straight from the vendor tree:
+    @source "../vendor/github.com/larsartmann/templ-components";
+    @import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";
+
+  sync is the fallback for a CSS build that has no Go toolchain and no vendor
+  tree: it writes the class corpus, templ-components.css, custom.css, the theme
+  and the safelist into the directory of your Tailwind entry (or DIR), stamped
+  with the library version, then prints the lines that entry still needs.
+  check verifies either layout and exits 1 on any finding, so CI can gate on it.
 
 Run tc at the version go.mod pins (this form also works in vendored projects):
   `+syncCommand)
@@ -306,12 +337,19 @@ func planLibraryFiles(dir string, opts cssOptions) ([]syncAction, error) {
 	return actions, nil
 }
 
-// cssCheck fails on version skew, on a missing or drifted library file, and on
-// a Tailwind entry that reaches none of them. It returns the failure count so
-// the caller maps it to an exit code. The root is the directory the go.mod
-// search and the entry discovery start from.
+// cssCheck fails on version skew, on a stale vendor tree, and when no Tailwind
+// entry reaches the library. Two layouts pass, and nothing else has to:
+//
+//   - vendored: an entry scans the library tree `go mod vendor` shipped and
+//     imports the stylesheet it carries (layout/styles/). Synced files are not
+//     read in this layout, so they are not checked.
+//   - synced: an entry scans the synced class corpus and imports the synced
+//     stylesheet, and every synced file matches the pinned version.
+//
+// It returns the failure count so the caller maps it to an exit code. The root
+// is the directory the go.mod search and the entry discovery start from.
 func cssCheck(root string, opts cssOptions, out io.Writer) int {
-	fmt.Fprintln(out, "tc css check: templ-components stylesheet sync")
+	fmt.Fprintln(out, "tc css check: templ-components stylesheet delivery")
 	fmt.Fprintln(out)
 
 	failures := checkPin(root, out)
@@ -323,11 +361,20 @@ func cssCheck(root string, opts cssOptions, out io.Writer) int {
 		return finishCSSCheck(out, failures)
 	}
 
-	for _, file := range libraryFiles {
-		failures += checkLibraryFile(out, file, filepath.Join(directory, file.name))
+	wiring := entriesWiring(entries)
+
+	switch {
+	case wiring.libraryDirectory != "":
+		failures += checkVendorVersion(out, root, wiring)
+	case wiring.missingVendor || wiring.curatedVendorFiles > 0:
+		break // The entry asked for the vendor tree; synced files are not what it reads.
+	default:
+		for _, file := range libraryFiles {
+			failures += checkLibraryFile(out, file, filepath.Join(directory, file.name))
+		}
 	}
 
-	failures += checkWiring(out, entries, directory)
+	failures += checkWiring(out, entries, directory, wiring)
 
 	return finishCSSCheck(out, failures)
 }
@@ -402,11 +449,38 @@ func checkLibraryFile(out io.Writer, file libraryFile, target string) int {
 		"if it holds your own rules, move them to a stylesheet of your own; then run `tc css sync --force`")
 }
 
-// checkWiring verifies that at least one Tailwind entry scans the class corpus
-// and imports the component CSS; entries that skip both are not failed,
-// because a project may compile stylesheets that never render the library.
-func checkWiring(out io.Writer, entries []string, directory string) int {
-	corpusEntry, customEntry := "", ""
+// checkVendorVersion verifies that a scanned vendor tree carries the library
+// version go.mod pins: `go mod vendor` has to run after every bump, and a CSS
+// build alone does not notice a stale tree.
+func checkVendorVersion(out io.Writer, root string, wiring cssWiring) int {
+	if len(wiring.vendoredVersions) == 0 || libraryReplacedLocally(root) {
+		return 0
+	}
+
+	pin, err := libraryPin(root)
+	if err != nil {
+		return 0
+	}
+
+	for _, version := range wiring.vendoredVersions {
+		if version != pin {
+			return cssReport(
+				out,
+				"vendor tree matches the go.mod pin ("+strings.Join(wiring.vendoredVersions, ", ")+" vs "+pin+")",
+				false,
+				"run `go mod vendor`: the vendor tree was not refreshed after the bump",
+			)
+		}
+	}
+
+	return cssReport(out, "vendor tree matches the go.mod pin ("+pin+")", true, "")
+}
+
+// entriesWiring merges what the Tailwind entries reach. An entry that skips
+// the library does not fail the check: a project may compile stylesheets that
+// never render it.
+func entriesWiring(entries []string) cssWiring {
+	merged := emptyWiring()
 
 	for _, entry := range entries {
 		wiring, err := entryWiring(entry)
@@ -414,41 +488,85 @@ func checkWiring(out io.Writer, entries []string, directory string) int {
 			continue
 		}
 
-		corpusEntry = firstEntry(wiring.corpus, corpusEntry, entry)
-		customEntry = firstEntry(wiring.custom, customEntry, entry)
+		merged.corpus = merged.corpus || wiring.corpus
+		merged.custom = merged.custom || wiring.custom
+		merged.missingVendor = merged.missingVendor || wiring.missingVendor
+		merged.curatedVendorFiles += wiring.curatedVendorFiles
+
+		if merged.libraryDirectory == "" {
+			merged.libraryDirectory = wiring.libraryDirectory
+			merged.vendoredVersions = wiring.vendoredVersions
+		}
 	}
 
+	return merged
+}
+
+func emptyWiring() cssWiring {
+	return cssWiring{
+		corpus: false, custom: false, libraryDirectory: "", vendoredVersions: nil, missingVendor: false,
+		curatedVendorFiles: 0,
+	}
+}
+
+// checkWiring verifies that a Tailwind entry reaches the library's classes and
+// its stylesheet, and names one line per layout for whatever is missing.
+func checkWiring(out io.Writer, entries []string, directory string, wiring cssWiring) int {
 	failures := 0
 
-	if corpusEntry == "" {
-		failures += cssReport(out, "a Tailwind entry scans "+corpusName, false, strings.Join(
-			wiringLines(entries, directory, cssWiring{corpus: false, custom: true}), " "))
-	} else {
-		failures += cssReport(out, "a Tailwind entry scans "+corpusName+" ("+corpusEntry+")", true, "")
+	switch {
+	case wiring.libraryDirectory != "":
+		failures += cssReport(out, "a Tailwind entry scans the library sources ("+wiring.libraryDirectory+")", true, "")
+	case wiring.corpus:
+		failures += cssReport(out, "a Tailwind entry scans "+corpusName, true, "")
+	case wiring.missingVendor:
+		failures += cssReport(out, "a Tailwind entry scans the library's vendor tree", false,
+			"the entry names the vendor tree but it does not exist here; run `go mod vendor` before Tailwind")
+	case wiring.curatedVendorFiles > 0:
+		failures += cssReport(out, "a Tailwind entry reaches the library's classes", false,
+			strconv.Itoa(wiring.curatedVendorFiles)+" single library files are listed by hand; a curated list ships "+
+				"the next component unstyled. Scan the directory instead: "+
+				vendoredSourceLine(entryDirectoryOf(entries)))
+	default:
+		failures += cssReport(out, "a Tailwind entry reaches the library's classes", false,
+			strings.Join(classesHints(entries, directory), "; or "))
 	}
 
-	if customEntry == "" {
-		failures += cssReport(out, "a Tailwind entry imports "+customName, false, strings.Join(
-			wiringLines(entries, directory, cssWiring{corpus: true, custom: false}), " "))
+	if wiring.custom {
+		failures += cssReport(out, "a Tailwind entry imports the library stylesheet", true, "")
 	} else {
-		failures += cssReport(out, "a Tailwind entry imports "+customName+" ("+customEntry+")", true, "")
+		failures += cssReport(out, "a Tailwind entry imports the library stylesheet", false,
+			strings.Join(stylesheetHints(entries, directory), "; or "))
 	}
 
 	return failures
 }
 
-// firstEntry keeps the first entry that reaches an input.
-func firstEntry(reached bool, current, entry string) string {
-	if reached && current == "" {
-		return entry
-	}
+// classesHints names the line that lets an entry reach the library's classes,
+// once per layout.
+func classesHints(entries []string, directory string) []string {
+	entryDirectory := entryDirectoryOf(entries)
 
-	return current
+	return []string{
+		syncedSourceLine(entryDirectory, directory) + " (after `tc css sync`)",
+		vendoredSourceLine(entryDirectory) + " (when `go mod vendor` runs before Tailwind)",
+	}
+}
+
+// stylesheetHints names the line that lets an entry import the library
+// stylesheet, once per layout.
+func stylesheetHints(entries []string, directory string) []string {
+	entryDirectory := entryDirectoryOf(entries)
+
+	return []string{
+		syncedImportLine(entryDirectory, directory) + " (after `tc css sync`)",
+		vendoredImportLine(entryDirectory) + " (when `go mod vendor` runs before Tailwind)",
+	}
 }
 
 // hintWiring prints the lines the Tailwind entry still needs after a sync.
 func hintWiring(out io.Writer, entries []string, directory string) {
-	wiring := cssWiring{corpus: false, custom: false}
+	wiring := emptyWiring()
 	entry := ""
 
 	if len(entries) > 0 {
@@ -462,7 +580,17 @@ func hintWiring(out io.Writer, entries []string, directory string) {
 		wiring = resolved
 	}
 
-	lines := wiringLines(entries, directory, wiring)
+	entryDirectory := entryDirectoryOf(entries)
+
+	lines := []string{}
+	if !wiring.corpus {
+		lines = append(lines, syncedSourceLine(entryDirectory, directory))
+	}
+
+	if !wiring.custom {
+		lines = append(lines, syncedImportLine(entryDirectory, directory))
+	}
+
 	if len(lines) == 0 {
 		fmt.Fprintln(out, "tc css: your Tailwind entry already reaches every library file")
 
@@ -482,30 +610,77 @@ func hintWiring(out io.Writer, entries []string, directory string) {
 	fmt.Fprintln(out, "then verify with: tc css check")
 }
 
-// wiringLines is the exact block to paste into the first entry so it reaches
-// the library files in directory, written relative to that entry.
-func wiringLines(entries []string, directory string, wiring cssWiring) []string {
-	relative := "./"
+func entryDirectoryOf(entries []string) string {
+	if len(entries) == 0 {
+		return ""
+	}
 
-	if len(entries) > 0 {
-		rel, err := filepath.Rel(filepath.Dir(entries[0]), directory)
-		if err == nil && rel != "." {
-			relative = "./" + filepath.ToSlash(rel) + "/"
+	return filepath.Dir(entries[0])
+}
+
+func syncedSourceLine(entryDirectory, directory string) string {
+	return fmt.Sprintf("@source %q;", entryRelative(entryDirectory, directory)+corpusName)
+}
+
+func syncedImportLine(entryDirectory, directory string) string {
+	return fmt.Sprintf("@import %q;", entryRelative(entryDirectory, directory)+stylesheetName)
+}
+
+func vendoredSourceLine(entryDirectory string) string {
+	return fmt.Sprintf("@source %q;", vendoredLibraryRelative(entryDirectory))
+}
+
+func vendoredImportLine(entryDirectory string) string {
+	return fmt.Sprintf("@import %q;", vendoredLibraryRelative(entryDirectory)+"/"+vendoredStylesheetPath)
+}
+
+// entryRelative is the synced library directory as a CSS path relative to the
+// entry, with a trailing slash.
+func entryRelative(entryDirectory, directory string) string {
+	relative, err := filepath.Rel(entryDirectory, directory)
+	if err != nil || relative == "." {
+		return "./"
+	}
+
+	return cssRelative(relative) + "/"
+}
+
+// vendoredLibraryRelative is the library's vendor directory as a CSS path
+// relative to the entry. When the project has no vendor tree yet, it is the
+// conventional path of an entry one directory below the project root, which
+// is where `go mod vendor` will create it.
+func vendoredLibraryRelative(entryDirectory string) string {
+	directory := entryDirectory
+
+	for range goModSearchDepth {
+		candidate := filepath.Join(directory, "vendor", libraryModulePath)
+		if isLibraryDirectory(candidate) {
+			relative, err := filepath.Rel(entryDirectory, candidate)
+			if err == nil {
+				return cssRelative(relative)
+			}
 		}
-	}
 
-	lines := []string{}
-	if !wiring.corpus {
-		lines = append(lines, fmt.Sprintf("@source %q;", relative+corpusName))
-	}
-
-	if !wiring.custom {
-		for _, name := range []string{customName, "templ-components-theme.css", "safelist.css"} {
-			lines = append(lines, fmt.Sprintf("@import %q;", relative+name))
+		parent := filepath.Dir(directory)
+		if parent == directory {
+			break
 		}
+
+		directory = parent
 	}
 
-	return lines
+	return vendoredLibraryPath
+}
+
+// cssRelative renders a relative path the way a CSS directive wants it:
+// forward slashes, and a leading "./" for plain sibling names.
+func cssRelative(relative string) string {
+	relative = filepath.ToSlash(filepath.Clean(relative))
+	if !strings.HasPrefix(relative, ".") {
+		relative = "./" + relative
+	}
+
+	return relative
 }
 
 // cssReport prints one pass/fail line and returns 1 on failure.
@@ -704,33 +879,162 @@ func stylesheetChain(entry string) []string {
 	return chain
 }
 
-// entryWiring reports whether an entry scans the class corpus and imports the
-// component CSS, looking through the stylesheets it imports.
+// entryWiring reports what an entry reaches, looking through the stylesheets
+// it imports: the synced class corpus or the library's own tree for classes,
+// and the library stylesheet (or its component CSS) for the hand-written rules.
 func entryWiring(entry string) (cssWiring, error) {
-	wiring := cssWiring{corpus: false, custom: false}
+	wiring := emptyWiring()
 
 	for _, stylesheet := range stylesheetChain(entry) {
-		content, err := os.ReadFile(stylesheet)
-		if err != nil {
-			return wiring, fmt.Errorf("read %s: %w", stylesheet, err)
-		}
-
-		for _, directive := range cssDirectives(string(content)) {
-			target, ok := resolveCSSReference(stylesheet, directive.target, directive.isImport)
-			if !ok {
-				continue
-			}
-
-			switch {
-			case directive.isImport && fileMatches(target, customName):
-				wiring.custom = true
-			case !directive.isImport && fileMatches(target, corpusName):
-				wiring.corpus = true
-			}
+		if err := wiring.read(stylesheet); err != nil {
+			return wiring, err
 		}
 	}
 
 	return wiring, nil
+}
+
+// read folds one stylesheet's @import and @source directives into the wiring.
+func (wiring *cssWiring) read(stylesheet string) error {
+	content, err := os.ReadFile(stylesheet)
+	if err != nil {
+		return fmt.Errorf("read %s: %w", stylesheet, err)
+	}
+
+	for _, directive := range cssDirectives(string(content)) {
+		path := lexicalReference(stylesheet, directive.target)
+
+		if directive.isImport {
+			wiring.custom = wiring.custom || fileMatches(path, stylesheetName) || fileMatches(path, customName)
+
+			continue
+		}
+
+		if fileMatches(path, corpusName) {
+			wiring.corpus = true
+
+			continue
+		}
+
+		if isVendoredLibraryPath(path) {
+			info, statErr := os.Stat(path)
+			if statErr != nil {
+				wiring.missingVendor = true
+
+				continue
+			}
+
+			if !info.IsDir() {
+				wiring.curatedVendorFiles++
+
+				continue
+			}
+		}
+
+		if isLibraryDirectory(path) {
+			wiring.corpus = true
+			wiring.libraryDirectory = path
+			wiring.vendoredVersions = vendoredVersions(path)
+		}
+	}
+
+	return nil
+}
+
+// isVendoredLibraryPath reports whether a path lies in the library's vendor
+// directory, whatever exists there. The surrounding slashes make the test
+// work for a relative path too (entries are discovered relative to the project
+// root) and stop a sibling module with a longer name from matching.
+func isVendoredLibraryPath(path string) bool {
+	normalized := "/" + filepath.ToSlash(path) + "/"
+
+	return strings.Contains(normalized, "/vendor/"+libraryModulePath+"/")
+}
+
+// lexicalReference is the path a directive names, relative to the stylesheet
+// that carries it. A glob narrows to the directory it starts from, which is
+// what identifies a library tree.
+func lexicalReference(stylesheet, target string) string {
+	if cut := strings.IndexAny(target, "*?[{"); cut >= 0 {
+		target = target[:cut]
+	}
+
+	if !filepath.IsAbs(target) {
+		target = filepath.Join(filepath.Dir(stylesheet), filepath.FromSlash(target))
+	}
+
+	return filepath.Clean(target)
+}
+
+// isLibraryDirectory reports whether path is the library's own tree: a
+// checkout (its go.mod names the library module) or a vendored copy (the
+// enclosing vendor/modules.txt lists it). Directory names alone would do:
+// consumers have `layout/` and `utils/` directories of their own.
+func isLibraryDirectory(path string) bool {
+	info, err := os.Stat(path)
+	if err != nil || !info.IsDir() {
+		return false
+	}
+
+	content, err := os.ReadFile(filepath.Join(path, "go.mod"))
+	if err == nil {
+		for line := range strings.SplitSeq(string(content), "\n") {
+			if strings.TrimSpace(line) == "module "+libraryModulePath {
+				return true
+			}
+		}
+	}
+
+	return len(vendoredVersions(path)) > 0
+}
+
+// vendoredVersions are the library versions vendor/modules.txt records for a
+// vendored library directory; empty when the directory is not in a vendor tree.
+func vendoredVersions(path string) []string {
+	directory := path
+
+	for range goModSearchDepth {
+		if filepath.Base(directory) == "vendor" {
+			return moduleVersions(filepath.Join(directory, "modules.txt"))
+		}
+
+		parent := filepath.Dir(directory)
+		if parent == directory {
+			break
+		}
+
+		directory = parent
+	}
+
+	return nil
+}
+
+// moduleVersions lists the distinct versions vendor/modules.txt records for
+// the library and its sibling modules.
+func moduleVersions(modulesTxt string) []string {
+	content, err := os.ReadFile(modulesTxt)
+	if err != nil {
+		return nil
+	}
+
+	versions := []string{}
+
+	for line := range strings.SplitSeq(string(content), "\n") {
+		fields := strings.Fields(line)
+		if len(fields) != 3 || fields[0] != "#" || !isLibraryModule(fields[1]) {
+			continue
+		}
+
+		if !slices.Contains(versions, fields[2]) {
+			versions = append(versions, fields[2])
+		}
+	}
+
+	return versions
+}
+
+func isLibraryModule(module string) bool {
+	return module == libraryModulePath || strings.HasPrefix(module, libraryModulePath+"/")
 }
 
 // cssDirectives lists the @import and @source directives of a stylesheet that

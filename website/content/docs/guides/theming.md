@@ -10,7 +10,8 @@ Components emit standard Tailwind utility classes (`bg-blue-600`, `text-gray-900
 ```css
 /* app.css */
 @import "tailwindcss";
-@source "./templ-components-classes.txt";
+@source "../vendor/github.com/larsartmann/templ-components";
+@import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";
 
 @theme {
   /* Override the primary brand color globally */
@@ -24,21 +25,7 @@ No Go code changes needed. Every component that uses `bg-blue-600` picks up the 
 
 ## Semantic Token Layer
 
-For a higher-level theming API, `tc css sync` writes the semantic theme next to your Tailwind entry, at the version your `go.mod` pins:
-
-```bash
-GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
-```
-
-Import it in your CSS:
-
-```css
-@import "tailwindcss";
-@source "./templ-components-classes.txt";
-@import "./templ-components-theme.css";
-```
-
-The theme file provides semantic tokens like `bg-tc-primary-600`, `text-tc-danger-600` that you can use in your own CSS or Tailwind arbitrary values. Override them in your `@theme` block to re-skin every component:
+For a higher-level theming API, the library stylesheet you import already carries semantic tokens: `bg-tc-primary-600`, `text-tc-danger-600`, and the rest of the `tc-primary`, `tc-danger`, `tc-success` and `tc-warning` ramps. Use them in your own markup, and override them in your `@theme` block to re-skin every component at once:
 
 ```css
 @theme {

@@ -21,50 +21,84 @@ doesn't cover something.
 
 ## Setup (recommended)
 
-Two steps, both owned by `tc css` (ADR-0050). It writes the stylesheet inputs at the version your `go.mod` pins, so `go get` can never leave the CSS behind the Go code:
+The library lives in your Go module tree, and Tailwind can read it from there.
+Run `go mod vendor` before Tailwind, then point two native lines at the vendor
+tree (ADR-0050):
 
-```bash
-# 1. New project: scaffold the Tailwind entry (app.css) and the library files next to it.
-GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc init
+```css
+/* app.css */
+@import "tailwindcss" source(none);
 
-# 2. After EVERY bump of the library: refresh the library files.
-GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
+/* Your own templates. Every path below is relative to THIS file. */
+@source "../internal/**/*.templ";
+@source "../internal/**/*.go";
 
-# 3. Compile.
-tailwindcss -i app.css -o styles.css --minify
+/* The library: every class its components can emit ... */
+@source "../vendor/github.com/larsartmann/templ-components";
+/* ... and its hand-written CSS, which `go mod vendor` ships in layout/styles/. */
+@import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
 ```
 
-`GOFLAGS=-mod=mod` matters: `cmd/tc` is never part of a `vendor/` tree, so a
-vendored project cannot run it in the default vendor mode.
+That is the whole setup. Nothing is copied and nothing is generated, so nothing
+can go stale: `go get -u` followed by `go mod vendor` moves the markup and the
+CSS together, in every environment that has the vendor tree (a fresh clone, CI,
+a Nix sandbox with a vendor hash).
 
-Point the two `@source` lines in `app.css` at your own templates, then gate the
-whole setup in CI:
+Gate it in CI:
 
 ```bash
 GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css check
 ```
 
-`tc css check` exits 1 when `go.mod` and the files disagree on the library
-version, when a file is missing or drifted, or when no Tailwind entry reaches
-them. A stale copy raises nothing on its own: the page just renders unstyled.
+`tc css check` is read-only. It exits 1 when `go.mod` and the vendor tree
+disagree on the library version (a bump without a re-vendor), when no Tailwind
+entry scans the library or imports its stylesheet, or, in the synced layout
+below, when a synced file is missing or drifted. A missing stylesheet raises
+nothing on its own: the page just renders unstyled.
 
-`tc css sync` writes four files. Never edit them; re-run the sync instead:
+`GOFLAGS=-mod=mod` matters: `cmd/tc` is never part of a `vendor/` tree, so a
+vendored project cannot run it in the default vendor mode.
+
+### No vendor tree where your CSS is compiled: the synced layout
+
+Some builds compile CSS in a sandbox that has no Go toolchain, no module cache
+and no vendor tree. There the library's files have to be plain files in your
+repository. `tc css sync` writes them at the version your `go.mod` pins:
+
+```bash
+GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
+```
 
 | File                           | What it is                                                                     |
 | ------------------------------ | ------------------------------------------------------------------------------ |
 | `templ-components-classes.txt` | Class corpus: every utility class the library can emit, for Tailwind's scanner |
+| `templ-components.css`         | The library stylesheet; imports the three files below                          |
 | `custom.css`                   | Component CSS (dialog animations, stylable select, ...)                        |
 | `templ-components-theme.css`   | Semantic color aliases (`tc-primary`, `tc-danger`, ...)                        |
 | `safelist.css`                 | `GridColsAutoFit` classes the scanner cannot see                               |
 
+```css
+@source "./templ-components-classes.txt";
+@import "./templ-components.css";
+```
+
+Re-run the sync after every library bump: `go get` updates the Go code only.
+Each synced file carries a first-line stamp naming the version it came from,
+so the next sync refreshes it without asking. A differing copy WITHOUT a stamp
+may hold your own rules and is kept: move those rules to a stylesheet of your
+own, then re-run with `--force`. `tc init` scaffolds a starter `app.css` for
+this layout together with the five files.
+
 ### Compile: BuildFlow or the CLI
 
-If your project uses [BuildFlow](https://github.com/larsartmann/buildflow), its
-`tailwind-build` provider runs the compile as part of its DAG
+[BuildFlow](https://github.com/larsartmann/buildflow)'s `tailwind-build` provider
+runs the compile as part of its DAG
 (`go-mod-vendor → templ-generate → tailwind-build`): every CSS file that
-imports `tailwindcss` is compiled in place. It does not write the library
-files and does not check your `@source` lines; `tc css` owns those. Without
-BuildFlow, run `tailwindcss -i app.css -o styles.css --minify`.
+imports `tailwindcss` is compiled in place. The vendor tree is there by
+construction, so the vendored layout needs nothing else. Without BuildFlow, run
+`tailwindcss -i app.css -o styles.css --minify`.
 
 ---
 
@@ -92,10 +126,10 @@ pnpm dlx @tailwindcss/cli -i app.css -o static/app.css --minify
 /* app.css */
 @import "tailwindcss";
 
-/* Scan templ-components for class names — the library ships a generated
-   class inventory in the module (ADR-0045). Copy it next to this file and
-   scan the copy; see "Making Tailwind see templ-components" below. */
-@source "./templ-components-classes.txt";
+/* templ-components: run `go mod vendor` first. One line scans its sources,
+   the other imports its hand-written CSS. */
+@source "../vendor/github.com/larsartmann/templ-components";
+@import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";
 
 /* Your own templates */
 @source "./**/*.templ";
@@ -145,54 +179,47 @@ tailwindcss -i app.css -o static/app.css --watch
 
 ## Making Tailwind see templ-components
 
-Components emit Tailwind class strings that live in the Go module cache —
-outside every consumer's scan root. The library ships the answer in the
-module itself (ADR-0045): **`templates/templ-components-classes.txt`, a
-generated concatenation of every class-bearing library source across all 7
-modules**, regenerated at every release and freshness-guarded in CI.
-`tc css sync` copies it (with the other library files) into your project and
-prints the lines your entry needs:
+Tailwind generates CSS only for class names its scanner sees, and the library's
+sources live in the Go module tree: outside automatic detection, which scans
+the project directory and skips gitignored paths. Two native mechanisms reach
+it, one per build topology, and `tc css check` verifies either:
 
-```bash
-GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
-```
+| Your CSS is compiled where ...                      | Classes come from                                             | Hand-written CSS comes from                                |
+| --------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------- |
+| `go mod vendor` ran (vendor tree present)           | `@source` on the vendor tree: the real `.templ`/`.go` sources | `@import` of `vendor/…/layout/styles/templ-components.css` |
+| no Go toolchain, module cache or vendor tree exists | `@source` on the synced class corpus                          | `@import` of the synced `templ-components.css`             |
 
-```css
-@import "tailwindcss" source(none);
-@source "./templ-components-classes.txt"; /* the library's classes */
-@source "../internal/**/*.templ";        /* your own sources */
-```
+The vendored layout needs no tool because the library is vendor-complete: Go
+ships a dependency's package directories and the files they embed, and
+`layout/embed.go` embeds `layout/styles/`, so the stylesheet travels with the
+sources (`templates/` alone is neither, which is why it never reached a vendor
+tree before ADR-0050).
 
-The copy is a tracked plain file: no `.gitignore` semantics, no vendor tree,
-no module cache, no Go toolchain in the CSS pipeline, no generator to
-maintain. It only goes stale when a library bump is not followed by
-`tc css sync`, which is exactly what `tc css check` catches in CI.
+The class corpus (`templates/templ-components-classes.txt`, ADR-0045) is the
+scanned text of every class-bearing library source across all 7 modules,
+regenerated at every release and freshness-guarded in CI. It exists for the
+second row only.
 
-### Why not `vendor/` or the module cache?
+### Why not the module cache?
 
-- **`vendor/` never carries the hand-written CSS.** Go vendors package
-  directories only, and `templates/` is not a package: `go mod vendor` leaves
-  `custom.css`, the theme and the safelist behind. An `@source` into the vendor
-  tree delivers utility classes and nothing else, so every `.tc-*` rule is
-  missing. The tree also exists only after `go mod vendor` ran.
-- **The module cache is a per-machine path.** An `@source` or `@import` with an
-  absolute cache path works on one machine and fails or goes stale on the
-  next, because the path contains the version. A Nix sandbox has no cache at
-  that location.
+An `@source` or `@import` with an absolute module-cache path works on one
+machine and fails or goes stale on the next, because the path contains the
+version. A Nix sandbox has no cache at that location. Either vendor, or sync.
 
 ### Variant: tracked-source `@source` (monorepos)
 
-If the library sources are **checked out and committed inside** your Tailwind
-scan root (monorepo, committed submodule), scanning the real files remains
-blessed — this is exactly what the library's own demo does
-(`@source "../../**/*.templ"`). The requirement is one word: **tracked**.
-The hand-written CSS still has to arrive: import it from the checkout
-(`@import "../../templ-components/templates/custom.css";`) or run `tc css sync`.
+If the library is **checked out and committed inside** your Tailwind scan root
+(monorepo, committed submodule), scanning the checkout is the same thing as
+scanning a vendor tree. This is what the library's own demo does
+(`@source "../../**/*.templ"`). The hand-written CSS still has to be imported,
+from the checkout (`@import "../../templates/templ-components.css"`). The
+requirement is one word: **tracked**.
 
 > **Troubleshooting:** If components render unstyled (no colors, no spacing),
-> run `tc css check`: it names the missing corpus, the stale copy, or the entry
-> that never reaches them. Every `@source` and `@import` path is relative to the
-> CSS file that contains it, never to the directory you run `tailwindcss` from.
+> run `tc css check`: it names the stale vendor tree, the missing stylesheet
+> import, or the entry that reaches nothing, and prints the line to add. Every
+> `@source` and `@import` path is relative to the CSS file that contains it,
+> never to the directory you run `tailwindcss` from.
 
 ---
 
@@ -230,12 +257,10 @@ Rules of thumb:
    already; the generated files only add noise.
 3. **Always exclude your own CSS outputs** — otherwise removed classes never
    leave the build.
-4. **Do not scan `vendor/` or the module cache for the library's classes.**
-   The vendor tree exists only after `go mod vendor` ran, differs between
-   environments, and never contains `templates/` (Go does not vendor
-   non-package directories), so the hand-written CSS never arrives that way.
-   Scan the synced `templ-components-classes.txt` corpus instead (see
-   "Making Tailwind see templ-components" above).
+4. **Re-vendor before the CSS build and after every library bump.** The
+   vendored layout reads `vendor/github.com/larsartmann/templ-components`, which
+   exists only after `go mod vendor`; a stale tree ships the previous version's
+   markup and CSS. `tc css check` fails on both.
 5. **Safelist any class the library assembles at runtime** — see the next
    section.
 
@@ -457,7 +482,8 @@ setting. No configuration, no JavaScript:
 ```css
 /* app.css — that's it */
 @import "tailwindcss";
-@source "./templ-components-classes.txt";
+@source "../vendor/github.com/larsartmann/templ-components";
+@import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";
 
 :root {
   color-scheme: light dark;
@@ -473,7 +499,8 @@ For apps that want a dark/light toggle button:
 
 ```css
 @import "tailwindcss";
-@source "./templ-components-classes.txt";
+@source "../vendor/github.com/larsartmann/templ-components";
+@import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";
 
 /* Override the dark variant to use a class instead of media query */
 @custom-variant dark (&:where(.dark, .dark *));

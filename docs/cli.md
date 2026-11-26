@@ -27,8 +27,8 @@ that matches.
 
 ### `tc init`
 
-Scaffolds the Tailwind entry `app.css` plus the four library-owned stylesheet
-files (`templ-components-classes.txt`, `custom.css`,
+Scaffolds the Tailwind entry `app.css` plus the five library-owned stylesheet
+files (`templ-components-classes.txt`, `templ-components.css`, `custom.css`,
 `templ-components-theme.css`, `safelist.css`) in the current directory.
 Skips files that already exist.
 
@@ -41,7 +41,9 @@ tc init
 ```
 
 `app.css` is yours: point its two `@source` lines at your own templates. The
-other four are library-owned (see `tc css`).
+other five are library-owned (see `tc css`). This starter is the synced layout;
+if `go mod vendor` runs before Tailwind in your build, you need no copies at
+all (`tc css check` below names the two lines for that).
 
 ### `tc ls`
 
@@ -152,21 +154,21 @@ rules too.
 
 ### `tc css sync`
 
-Writes the stylesheet inputs of the library version `go.mod` pins into the
-directory of your Tailwind entry (or `--dir DIR`), then prints the lines that
-entry still needs:
+The fallback for builds that compile CSS where no vendor tree exists (a
+CSS-only sandbox: no Go toolchain, no module cache). It writes the stylesheet
+inputs of the library version `go.mod` pins into the directory of your
+Tailwind entry (or `--dir DIR`), then prints the lines that entry still needs:
 
 ```bash
 GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
 # tc: wrote css/templ-components-classes.txt
+# tc: wrote css/templ-components.css
 # tc: wrote css/custom.css
 # tc: wrote css/templ-components-theme.css
 # tc: wrote css/safelist.css
 # tc css: css/app.css does not reach every library file yet; add these lines to it:
 #   @source "./templ-components-classes.txt";
-#   @import "./custom.css";
-#   @import "./templ-components-theme.css";
-#   @import "./safelist.css";
+#   @import "./templ-components.css";
 ```
 
 `go get` updates the Go code only. Re-run the sync after every library bump.
@@ -175,26 +177,44 @@ so the next sync refreshes it without asking. A differing copy WITHOUT a
 stamp may hold your own rules and is kept: move those rules to a stylesheet of
 your own, then re-run with `--force`.
 
+When `go mod vendor` runs before Tailwind, skip this command: the vendor tree
+already carries the library, and two native lines reach it:
+
+```css
+@source "../vendor/github.com/larsartmann/templ-components";
+@import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";
+```
+
 ### `tc css check`
 
-Fails (exit 1) when the stylesheet inputs are not right, so CI can gate on it:
+Read-only. Fails (exit 1) when the library's styling cannot reach your
+stylesheets, so CI can gate on it. Two layouts pass; nothing else has to:
 
-- `go.mod` pins a different library version than this `tc`.
-- A library file is missing or differs from the pinned version.
-- No Tailwind entry (a CSS file importing `tailwindcss`) scans the class corpus
-  or imports the component CSS.
+- **Vendored** (vendor tree present): a Tailwind entry (a CSS file importing
+  `tailwindcss`) scans the library directory and imports its stylesheet.
+  Fails when the vendor tree carries another library version than `go.mod`
+  pins (a bump without `go mod vendor`).
+- **Synced** (no vendor tree): a Tailwind entry scans the class corpus and
+  imports `templ-components.css`, and every synced file matches the pinned
+  version.
+
+In both: `go.mod` must pin the version this `tc` was built from.
 
 ```bash
 GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css check
+# tc css check: templ-components stylesheet delivery
 #   [pass] go.mod pin equals this tc (v1.27.2)
-#   [FAIL] custom.css (css/custom.css) differs from v1.27.2 (copy is stamped v1.27.0)
-#          fix: run `tc css sync`
+#   [FAIL] vendor tree matches the go.mod pin (v1.27.0 vs v1.27.2)
+#          fix: run `go mod vendor`: the vendor tree was not refreshed after the bump
+#   [pass] a Tailwind entry scans the library sources (../vendor/github.com/larsartmann/templ-components)
+#   [pass] a Tailwind entry imports the library stylesheet
 # result: 1 check(s) FAILED; see the fix hints above
 ```
 
-`--dir DIR` names where the library files live, `--css PATH` one Tailwind
-entry to inspect instead of every discovered one. A stale copy raises nothing
-on its own: the page just renders unstyled. That is what this check is for.
+A missing stylesheet raises nothing on its own: the page just renders
+unstyled. That is what this check is for. `--dir DIR` names where the synced
+files live, `--css PATH` one Tailwind entry to inspect instead of every
+discovered one.
 
 ## Why use this?
 

@@ -36,28 +36,29 @@ go get github.com/larsartmann/templ-components/charts/echarts@latest
 
 ## Tailwind CSS Setup
 
-Components are Go code that emits Tailwind class names; the CSS for those names comes from your own Tailwind build. That build needs four files the library ships: a class corpus, `custom.css`, a theme, and a safelist. `tc css` writes them at the version your `go.mod` pins and fails when they go stale.
+Components are Go code that emits Tailwind class names; the CSS for those names comes from your own Tailwind build. That build reads the library straight from your vendor tree, so run `go mod vendor` before Tailwind. Two native lines then do everything:
+
+```css
+@import "tailwindcss" source(none);
+@source "../vendor/github.com/larsartmann/templ-components";                                     /* every class the library can emit */
+@import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";  /* its hand-written CSS */
+```
 
 ```bash
-# New project: scaffold app.css and the library files next to it
-GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc init
-
-# After every library bump: refresh the library files
-GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
-
+go mod vendor
 tailwindcss -i app.css -o styles.css --minify
 ```
 
-Point the two `@source` lines in `app.css` at your own templates, then gate the setup in CI:
+Nothing is copied, so nothing can go stale: `go get -u` and `go mod vendor` move the markup and the CSS together. Gate it in CI:
 
-```bash
-# exit 1 on a stale, missing, or unreachable file
+```bash {.title="terminal"}
+# exit 1 on anything stale, missing, or unreachable
 GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css check
 ```
 
-A stale copy never raises an error: the page simply renders unstyled. That is what the check is for.
+A missing stylesheet never raises an error on its own: the page simply renders unstyled. That is what the check is for.
 
-Do not point `@source` at `vendor/`: `go mod vendor` copies package directories only, so `custom.css` and the theme never arrive that way. [BuildFlow](https://github.com/larsartmann/buildflow)'s `tailwind-build` provider runs the compile step; it does not write the library files.
+If your CSS is compiled where no vendor tree exists (a CSS-only sandbox), `tc css sync` writes the library's files into your project instead; see [the `tc` CLI](https://github.com/larsartmann/templ-components/blob/master/docs/cli.md).
 
 ## Verify Installation
 

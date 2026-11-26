@@ -1,0 +1,22 @@
+/*
+ * templates/safelist.css — scanner-invisible class safelist.
+ *
+ * Some library classes are BUILT at runtime from consumer input and are
+ * therefore invisible to Tailwind's source scanner — the compiler never
+ * emits CSS for them unless they appear verbatim somewhere it scans. Today
+ * exactly one family needs this:
+ *
+ *   display.Grid with Cols: GridColsAutoFit emits
+ *   grid [grid-template-columns:repeat(auto-fit,minmax(<MinColWidth>,1fr))]
+ *
+ * For arbitrary MinColWidth values, keep the @source inline(...) line from
+ * the Grid guide in your own CSS. For the common ladder below, import this
+ * file from your Tailwind entry instead:
+ *
+ *   @import "tailwindcss";
+ *   @import "path/to/templ-components/templates/safelist.css";
+ *
+ * Consumers using the tc CLI starter get this file automatically.
+ */
+
+@source inline("[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))] [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] [grid-template-columns:repeat(auto-fit,minmax(12rem,1fr))] [grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))] [grid-template-columns:repeat(auto-fit,minmax(20rem,1fr))] [grid-template-columns:repeat(auto-fit,minmax(24rem,1fr))]");

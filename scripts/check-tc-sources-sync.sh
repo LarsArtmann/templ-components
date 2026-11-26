@@ -236,6 +236,59 @@ while IFS= read -r -d '' twin; do
 	fi
 done < <(find templates -maxdepth 1 -type f \( -name '*.css' -o -name '*.txt' \) ! -name 'styles.css' ! -name '*.out.css' -print0)
 
+# Direction 3: layout/styles/ is the vendor twin set (ADR-0050). Go ships a
+# dependency's package directories and the files they embed; templates/ is
+# neither, so layout/embed.go embeds layout/styles/ and `go mod vendor`
+# carries it. Every file there must be the identical twin of a templates/
+# file, and every stylesheet input must be present there.
+VENDOR_STYLES="layout/styles"
+VENDOR_TWINS=(templ-components.css custom.css templ-components-theme.css safelist.css)
+
+while IFS= read -r -d '' embedded; do
+	twin="templates/${embedded#"$VENDOR_STYLES"/}"
+	if [ ! -f "$twin" ]; then
+		note "ORPHAN: $embedded has no templates twin"
+		problems=$((problems + 1))
+		if [ "$FIX" = "--fix" ]; then
+			if git ls-files --error-unmatch -- "$embedded" >/dev/null 2>&1; then
+				git rm -q -- "$embedded"
+			else
+				rm -f -- "$embedded"
+			fi
+			note "  fixed: removed $embedded"
+			removed=$((removed + 1))
+		fi
+		continue
+	fi
+
+	if ! cmp -s "$embedded" "$twin"; then
+		note "DRIFT: $embedded differs from $twin (go mod vendor ships these bytes)"
+		problems=$((problems + 1))
+		if [ "$FIX" = "--fix" ]; then
+			cp -- "$twin" "$embedded"
+			note "  fixed: re-copied $twin -> $embedded"
+			refreshed=$((refreshed + 1))
+		fi
+	fi
+done < <(find "$VENDOR_STYLES" -type f -print0 2>/dev/null)
+
+for name in "${VENDOR_TWINS[@]}"; do
+	twin="templates/$name"
+	embedded="$VENDOR_STYLES/$name"
+	if [ -f "$embedded" ]; then
+		continue # content equality is the loop above's job
+	fi
+
+	note "UNSHIPPED: $twin has no $embedded twin, so go mod vendor leaves it behind"
+	problems=$((problems + 1))
+	if [ "$FIX" = "--fix" ]; then
+		mkdir -p "$VENDOR_STYLES"
+		cp -- "$twin" "$embedded"
+		note "  fixed: copied $twin -> $embedded"
+		added=$((added + 1))
+	fi
+done
+
 synced=$((added + refreshed + removed))
 
 if [ "$problems" -ne 0 ]; then

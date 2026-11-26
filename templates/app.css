@@ -5,15 +5,22 @@
  * two @source lines that point at YOUR templates. Keep the lines that reach the
  * library-owned files as they are.
  *
- * The library-owned files next to this one are written by `tc css sync` and
- * carry a stamp naming the library version they came from. Never edit them.
- * `go get` updates the Go code only; nothing else refreshes these files, so
+ * This entry uses the SYNCED layout: `tc css sync` writes the library's
+ * stylesheet inputs next to it, and each carries a stamp naming the library
+ * version it came from. Never edit them. `go get` updates the Go code only, so
  * after every bump of github.com/larsartmann/templ-components re-run
  *
  *   GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
  *
- * and gate the result with `tc css check` (exit 1 on a stale, missing, or
- * unreachable file).
+ * and gate the result with `tc css check` (exit 1 on anything stale, missing,
+ * or unreachable).
+ *
+ * If `go mod vendor` runs before Tailwind in your build, you need none of the
+ * copies: Go ships the library's sources and stylesheet inside vendor/, and
+ * two native lines reach both (docs/tailwind-v4-adoption-guide.md):
+ *
+ *   @source "../vendor/github.com/larsartmann/templ-components";
+ *   @import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";
  */
 
 /* Tailwind v4: CSS-first config, no tailwind.config.js. source(none) turns off
@@ -23,8 +30,8 @@
 /*
  * Every @source and @import path resolves relative to THIS FILE, never to the
  * directory you run tailwindcss from. The next two lines scan this file's own
- * directory; point them at your own sources instead, e.g. at
- * "../internal/**/*.templ" when this file lives in a css/ directory.
+ * directory; point them at your own sources instead (for example the parent's
+ * "internal" directory and everything under it when this file lives in css/).
  * .templ files carry the markup, .go files carry class lookup maps.
  */
 @source "./**/*.templ";
@@ -49,10 +56,10 @@
 
 /*
  * Library-owned files, written by `tc css sync` (do not edit):
- *   templ-components-theme.css  semantic color aliases (tc-primary, tc-danger, ...)
- *   custom.css                  component CSS (dialog animations, stylable select, ...)
- *   safelist.css                GridColsAutoFit classes the scanner cannot see
+ *   templ-components-classes.txt  every utility class the library can emit
+ *   templ-components.css           imports the three files below
+ *     templ-components-theme.css  semantic color aliases (tc-primary, tc-danger, ...)
+ *     custom.css                  component CSS (dialog animations, stylable select, ...)
+ *     safelist.css                GridColsAutoFit classes the scanner cannot see
  */
-@import "./templ-components-theme.css";
-@import "./custom.css";
-@import "./safelist.css";
+@import "./templ-components.css";

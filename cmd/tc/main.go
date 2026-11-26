@@ -290,12 +290,18 @@ Usage:
   tc lint [flags] [DIR ...] Scan sources for compliance violations (--rtl, --dark,
                             --motion, --icons). Exit 1 on findings — CI-gateable.
   tc css sync [--dir DIR] [--force]
-                            Write the CSS files of the pinned library version (class corpus,
-                            custom.css, theme, safelist) and print what your Tailwind
-                            entry still needs. Re-run after every library bump.
+                            For a CSS build without a vendor tree: write the library's
+                            files (class corpus, templ-components.css, custom.css, theme,
+                            safelist) and print what your Tailwind entry still needs.
+                            Re-run after every library bump.
   tc css check [--dir DIR] [--css PATH]
-                            Fail when those files are missing, stale, or not reached by a
-                            Tailwind entry. Exit 1 on findings — CI-gateable.
+                            Fail when Tailwind cannot reach the library: a stale vendor
+                            tree, a missing or stale synced file, or an unwired entry.
+                            Exit 1 on findings: CI-gateable.
+
+With go mod vendor before Tailwind you need no sync at all; the entry reads
+  @source "../vendor/github.com/larsartmann/templ-components";
+  @import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";
 
 Examples:
   tc init

@@ -1,0 +1,30 @@
+/*
+ * templ-components stylesheet: the hand-written CSS a consumer's Tailwind
+ * build imports, next to the class corpus it scans.
+ *
+ * Import this ONE file from your Tailwind entry. Two layouts exist; use
+ * whichever matches where your CSS is compiled, and verify with `tc css check`.
+ *
+ * 1. Vendored build (`go mod vendor` runs before Tailwind), nothing to copy:
+ *
+ *      @source "../vendor/github.com/larsartmann/templ-components";
+ *      @import "../vendor/github.com/larsartmann/templ-components/layout/styles/templ-components.css";
+ *
+ *    Go ships this file and its imports inside the vendor tree: it is mirrored
+ *    byte for byte into layout/styles/, and a package's embedded files travel
+ *    with `go mod vendor` (templates/ alone does not).
+ *
+ * 2. Build without a vendor tree (a CSS-only sandbox, no Go toolchain):
+ *
+ *      GOFLAGS=-mod=mod go run github.com/larsartmann/templ-components/cmd/tc css sync
+ *
+ *    writes this file, its imports and the class corpus next to your entry:
+ *
+ *      @source "./templ-components-classes.txt";
+ *      @import "./templ-components.css";
+ *
+ * The three imports below resolve relative to THIS file. Do not edit it.
+ */
+@import "./templ-components-theme.css";
+@import "./custom.css";
+@import "./safelist.css";

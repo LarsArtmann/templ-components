@@ -15,9 +15,7 @@ const consumerEntry = `@import "tailwindcss" source(none);
 
 // wiringBlock is what a consumer adds to its entry after the first sync.
 const wiringBlock = `@source "./templ-components-classes.txt";
-@import "./custom.css";
-@import "./templ-components-theme.css";
-@import "./safelist.css";
+@import "./templ-components.css";
 `
 
 // newCSSConsumer writes the smallest project `tc css` operates on: a go.mod
@@ -103,8 +101,7 @@ func TestCSSSyncWritesStampedLibraryFiles(t *testing.T) {
 	}
 
 	for _, want := range []string{
-		`@source "./templ-components-classes.txt";`, `@import "./custom.css";`,
-		`@import "./safelist.css";`,
+		`@source "./templ-components-classes.txt";`, `@import "./templ-components.css";`,
 	} {
 		if !strings.Contains(out.String(), want) {
 			t.Errorf("sync output lacks the wiring line %s; got:\n%s", want, out.String())
@@ -150,12 +147,14 @@ func TestCSSCheckFailsWhileEntryIsNotWired(t *testing.T) {
 	}
 
 	if failures := cssCheck(root, defaultCSSOptions(), &out); failures != 2 {
-		t.Errorf("failures = %d, want 2 (corpus not scanned, custom.css not imported):\n%s", failures, out.String())
+		t.Errorf("failures = %d, want 2 (classes not reached, stylesheet not imported):\n%s", failures, out.String())
 	}
 
 	for _, want := range []string{
-		"a Tailwind entry scans templ-components-classes.txt",
-		"a Tailwind entry imports custom.css",
+		"a Tailwind entry reaches the library's classes",
+		"a Tailwind entry imports the library stylesheet",
+		`@source "./templ-components-classes.txt"; (after ` + "`tc css sync`" + `)`,
+		"when `go mod vendor` runs before Tailwind",
 	} {
 		if !strings.Contains(out.String(), want) {
 			t.Errorf("check output lacks %q:\n%s", want, out.String())
@@ -174,11 +173,9 @@ func TestCSSCheckFailsOnDriftAndMissingFiles(t *testing.T) {
 
 	var out bytes.Buffer
 
-	// A drifted file is reported twice, truthfully: it is no longer the library's
-	// file, so the entry that imports it no longer reaches custom.css.
+	// The entry still imports the synced stylesheet, so only the drifted file counts.
 	failures := cssCheck(root, opts, &out)
-	if failures != 2 || !strings.Contains(out.String(), "differs from "+libraryVersion()) ||
-		!strings.Contains(out.String(), "a Tailwind entry imports custom.css") {
+	if failures != 1 || !strings.Contains(out.String(), "differs from "+libraryVersion()) {
 		t.Errorf("drifted custom.css not reported (failures = %d):\n%s", failures, out.String())
 	}
 
@@ -194,7 +191,7 @@ func TestCSSCheckFailsOnDriftAndMissingFiles(t *testing.T) {
 
 	failures = cssCheck(root, opts, &out)
 	if failures != 2 || !strings.Contains(out.String(), "templ-components-classes.txt ("+corpus+") present") ||
-		!strings.Contains(out.String(), "a Tailwind entry scans templ-components-classes.txt") {
+		!strings.Contains(out.String(), "a Tailwind entry reaches the library's classes") {
 		t.Errorf("missing corpus not reported (failures = %d):\n%s", failures, out.String())
 	}
 
@@ -220,7 +217,7 @@ func TestCSSCheckReportsUnstampedDivergentCopy(t *testing.T) {
 	var out bytes.Buffer
 
 	failures := cssCheck(root, opts, &out)
-	if failures != 2 || !strings.Contains(out.String(), "carries no tc css stamp") ||
+	if failures != 1 || !strings.Contains(out.String(), "carries no tc css stamp") ||
 		!strings.Contains(out.String(), "tc css sync --force") {
 		t.Errorf("unstamped divergent copy not reported with the --force hint (failures = %d):\n%s", failures,
 			out.String())

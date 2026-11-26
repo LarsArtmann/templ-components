@@ -166,7 +166,9 @@ other reasons: the tree is absent wherever `go mod vendor` did not run, and Go n
 vendors `templates/`, so the hand-written CSS does not travel with it. Read the DiscordSync
 rows of the last table with that correction.
 
-The decision (ship a class inventory) stands on its remaining legs. The adoption gap it
-left open, a hand copy that nothing refreshes or verifies, is closed by
-[ADR-0050](0050-css-delivery-sync-and-verification.md): `tc css sync` writes the inventory
-and the hand-written files at the pinned version, and `tc css check` fails when they drift.
+The decision (ship a class inventory) stands on its remaining legs, as a fallback:
+[ADR-0050](0050-css-delivery-sync-and-verification.md) makes the library vendor-complete
+(`layout/styles/`, embedded), so a vendored build scans the real sources and imports the
+real stylesheet with two native lines and no copy at all. The inventory serves builds that
+compile CSS without a vendor tree, where `tc css sync` writes it together with the
+stylesheet at the pinned version and `tc css check` fails when they drift.

@@ -106,8 +106,9 @@ express — overlays (`.tc-overlay`, `.tc-modal`, `.tc-drawer`), scroll-snap (`.
 stylable select (`.tc-select`), auto-growing textarea (`.tc-auto-grow`), content-visibility
 (`.tc-content-auto`), squircle corners (`.tc-squircle`), and fluid typography
 (`.tc-fluid-display`, `.tc-fluid-h1`–`h4`, `.tc-fluid-lead`, container-`cqi` based; see
-`docs/recipes/fluid-typography.md`). Consumers get it from `tc css sync`, which writes it
-next to their Tailwind entry (`app.css` imports it).
+`docs/recipes/fluid-typography.md`). The library stylesheet `templ-components.css`
+imports it (it rides `layout/styles/` in a vendor tree; `app.css` imports it in the
+synced layout).
 Guarded by `TestCustomCSSUtilities`.
 
 ### Compiled-CSS artifact rule (fleet adoption lesson)
@@ -116,11 +117,12 @@ A consumer with a TRACKED compiled CSS artifact must regenerate it in the SAME c
 component adoption — an adopted component whose utilities never reached the stylesheet renders
 unstyled outside local dev (string tests cannot see this).
 
-1. The library's stylesheet inputs come from `tc css sync` and are gated by `tc css check`
-   (ADR-0050): class corpus, `custom.css`, theme and safelist, stamped with the library version.
-   `go get` updates the Go code only, and a stale copy renders unstyled without an error.
-   Never scan `vendor/` for them: Go does not vendor `templates/`, so the hand-written CSS
-   never arrives that way.
+1. The library is vendor-complete (ADR-0050): after `go mod vendor`, one `@source` on
+   `vendor/github.com/larsartmann/templ-components` reaches every class and one `@import` of
+   its `layout/styles/templ-components.css` reaches the hand-written CSS. Re-vendor after
+   every bump. A CSS-only sandbox without a vendor tree uses `tc css sync` (tracked, stamped
+   copies) instead. Either layout is gated by `tc css check`: a stale tree or copy renders
+   unstyled without an error.
 2. Regenerate via the consumer's canonical pipeline (nix app or `regen-ui.sh`-style script),
    not ad-hoc tool invocations.
 3. If classes enter the scan through a committed inventory, the scan must be REPLACE-AWARE:
