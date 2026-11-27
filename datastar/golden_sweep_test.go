@@ -130,6 +130,40 @@ func TestGoldenSweepSSEErrorHandling(t *testing.T) {
 	})
 }
 
+func TestGoldenSweepSignalChip(t *testing.T) {
+	t.Parallel()
+
+	five := 5
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		// Three chips on one signal: the middle one pressed and carrying a count.
+		{Name: "signal_chip_group", HTML: utils.Render(t, SignalChipGroup(SignalChipGroupProps{
+			AriaLabel: "Filter by state",
+			Signal:    "stateFilter",
+			Selected:  "open",
+			Items: []SignalChipItem{
+				{Label: "All"},
+				{Label: "Open", Value: "open", Count: &five},
+				{Label: "Done", Value: "done"},
+			},
+		}))},
+		// Standalone pressed chip with every BaseProps slot populated.
+		{Name: "signal_chip_single", HTML: utils.Render(t, SignalChip(SignalChipProps{
+			BaseProps: utils.BaseProps{ID: "chip-open", Class: "rounded-md", Attrs: templ.Attributes{"data-tc": "x"}},
+			Signal:    "stateFilter",
+			Value:     "open",
+			Label:     "Open",
+			Count:     &five,
+			Selected:  true,
+		}))},
+		// Empty signal: no data-* bindings, only the server-rendered state.
+		{Name: "signal_chip_inert", HTML: utils.Render(t, SignalChipGroup(SignalChipGroupProps{
+			Selected: "open",
+			Items:    []SignalChipItem{{Label: "Open", Value: "open"}},
+		}))},
+	})
+}
+
 // renderAttrs renders builder output the way templ does inside a real element
 // (templruntime.RenderAttributes), so the golden pins the escaped HTML bytes,
 // not the raw map.

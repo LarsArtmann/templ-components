@@ -6,8 +6,9 @@ pin v0.4.0: the embedded `datastar.js` is byte-identical (same sha256) across
 static v0.2.0–v0.4.0 — every fact below still applies. These contradict several
 plausible-but-wrong assumptions that caused shipped bugs — re-verify against
 the bundle if the version pin ever bumps. Enforcement lives in tests:
-`examples/demo/sse_test.go` (wire format) and
-`datastar/sse_error_handling_test.go` (lifecycle event names).
+`examples/demo/sse_test.go` (wire format),
+`datastar/sse_error_handling_test.go` (lifecycle event names), and
+`datastar/bundle_guard_test.go` (pinned bundle bytes and plugin structure).
 
 ## Bundle provenance (re-audit reproducibility)
 
@@ -412,6 +413,37 @@ tokens below are the provable ones (all in `TestPinnedRuntimeBundleContract`):
   `data-show="$<signal>"`.
 - Bare `$` is the signals object itself and is **always truthy** — never emit
   `data-show="$"` (the empty-signal Indicator bug).
+- **An unknown plugin name is dropped SILENTLY** (decoded from the pinned
+  1.0.4 bundle, 2026-11-27): the attribute walk derives `pluginName` and
+  `key` from the name, looks the plugin up in the registration map, and
+  applies it only when a registration is found. There is no else branch, no
+  log line, no error event. `data-on-click="..."` therefore names an unknown
+  plugin `on-click` and is inert markup (this exact spelling shipped in a
+  consumer). The only correct spelling is `data-on:click`.
+- **`data-class` takes an OBJECT of class names to booleans** (same audit):
+  with no key the plugin evaluates the expression, iterates the result with
+  `for...in`, and splits each key on whitespace; a truthy key adds its
+  classes, a falsy one removes them. A plain class STRING is iterated
+  character by character (each index becomes a class). Both looks of a
+  toggle therefore travel in one expression:
+  `data-class="{ 'a b': $x==='y', 'c d': $x!=='y' }"`. With a key
+  (`data-class:hidden="$x"`) the expression is a boolean and the key names
+  the class.
+- **`data-attr:<name>` with a boolean value leaves the attribute invalid or
+  absent** (same audit): `true` sets the attribute to an EMPTY value and
+  `false` removes it; only a string is written as-is. A state attribute such
+  as `aria-pressed` must be driven by a string expression:
+  `data-attr:aria-pressed="$x==='y' ? 'true' : 'false'"`.
+- **An undeclared signal reads as an empty string** (same audit): reading
+  `$name` through the signals object creates the signal with value `''`. A
+  server-rendered selected state that is keyed on a comparison with a
+  non-empty value is therefore undone at init unless the value is declared
+  first. A key-less `data-signals` object is evaluated and merged into the
+  signal store at init, which is how a server-rendered component seeds its
+  initial state (`datastar.SignalChip`).
+- Pinned structurally by `datastar.TestPinnedRuntimeSignalChipContract` and
+  browser-proven by `visualtest.TestDatastarSignalChipBrowser`, which also
+  proves the dash spelling stays dead.
 
 ## Fragments carry no executable scripts (innerHTML semantics)
 

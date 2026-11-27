@@ -41,3 +41,27 @@ func ExampleSSEErrorHandling() {
 	_ = datastar.SSEErrorHandling(datastar.DefaultSSEErrorHandlingConfig())
 	// Output:
 }
+
+func ExampleSignalChip() {
+	_ = datastar.SignalChip(datastar.SignalChipProps{
+		Signal:   "stateFilter",
+		Value:    "open",
+		Label:    "Open",
+		Selected: true,
+	})
+	// Output:
+}
+
+func ExampleSignalChipGroup() {
+	_ = datastar.SignalChipGroup(datastar.SignalChipGroupProps{
+		AriaLabel: "Filter by state",
+		Signal:    "stateFilter",
+		Selected:  "open",
+		Items: []datastar.SignalChipItem{
+			{Label: "All"},
+			{Label: "Open", Value: "open"},
+			{Label: "Done", Value: "done"},
+		},
+	})
+	// Output:
+}

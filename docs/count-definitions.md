@@ -9,13 +9,13 @@ and skill/SKILL.md count tables; `utils.TestDocsCountDrift` re-derives every
 number with its own code and is the independent verifier. This page stays the
 semantics owner — definitions do not move into the generator.
 
-## Components — **138**
+## Components — **140**
 
 - **Definition:** exported `templ` components declared as `templ Name(...)` in
   the canonical 9-package scan set: `display`, `feedback`, `forms`, `layout`,
   `navigation`, `charts/echarts`, `htmx`, `datastar`, `errorpage`. The 4
   `recipes` screens are compositions, counted separately in FEATURES.md
-  ("138 + 4 recipe screens = 142") but the sold headline is 138.
+  ("140 + 4 recipe screens = 144") but the sold headline is 140.
 - **Computed by:** `website/internal/build.CountStats` (site hero, live) over
   `statsDirs` (order-pinned by `TestStatsDirsAreCanonical`); the same set is
   the canonical package list in `utils.TestDocsCountDrift`.
@@ -61,11 +61,11 @@ semantics owner — definitions do not move into the generator.
   (multiple of 50 within 49 of live).
 - **Computed by:** `utils.TestDocsCountDrift` (`countLibraryTests`).
 
-## Goldens — **350 HTML / 206 pixel**
+## Goldens — **353 HTML / 206 pixel**
 
 - **Definition:** committed baseline files under the golden testdata trees.
 - **Computed by:** `utils.TestDocsCountDrift` (file counts per tree).
-- **HTML (350) vs pixel (206):** the HTML goldens are the per-component
+- **HTML (353) vs pixel (206):** the HTML goldens are the per-component
   rendered-markdown baselines (`utils/golden`, one `.golden` file per
   component variant, class-sorted + EnsureID-normalized) living in each
   package's `testdata/`. The pixel goldens are `visualtest/testdata/*.png`:

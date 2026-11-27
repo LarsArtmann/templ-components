@@ -3,6 +3,7 @@ package datastar
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -101,6 +102,14 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 		"filterSignals",
 		"openWhenHidden",
 		"onlyIfMissing",
+		// Reactive plugins consumed by SignalChip (the event, class, attr and
+		// signals attributes). Their STRUCTURE is pinned by
+		// TestPinnedRuntimeSignalChipContract below; these literals only prove
+		// the plugins are still registered under these names.
+		`name:"on"`,
+		`name:"class"`,
+		`name:"attr"`,
+		`name:"signals"`,
 	} {
 		if !strings.Contains(bundle, token) {
 			t.Errorf(
@@ -130,6 +139,101 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 			pinnedBundleSHA256,
 			static.Version,
 		)
+	}
+}
+
+// bundleWhitespaceRe collapses the bundle's line breaks and indentation so a
+// structural pattern can match across statements.
+//
+//nolint:gochecknoglobals // compiled once for the contract test below
+var bundleWhitespaceRe = regexp.MustCompile(`\s+`)
+
+// bundlePluginWindow returns the minified source of one plugin registration
+// (from its name literal up to the next registration), whitespace-collapsed.
+func bundlePluginWindow(t *testing.T, bundle, plugin string) string {
+	t.Helper()
+
+	marker := `name:"` + plugin + `"`
+
+	start := strings.Index(bundle, marker)
+
+	if start < 0 {
+		t.Fatalf("pinned runtime bundle v%s no longer registers the %q plugin", static.Version, plugin)
+	}
+
+	const next = `m({name:`
+
+	rel := strings.Index(bundle[start+len(marker):], next)
+
+	if rel < 0 {
+		t.Fatalf("no plugin registration follows %s in the bundle", marker)
+	}
+
+	return bundleWhitespaceRe.ReplaceAllString(bundle[start:start+len(marker)+rel], " ")
+}
+
+// TestPinnedRuntimeSignalChipContract pins, in the pinned bundle's own bytes,
+// the four runtime facts SignalChip depends on. String assertions on the
+// component's output cannot tell whether the runtime still parses that
+// output; a pin bump that changes any structure below fails here first.
+// Identifier names are minified and may change; every pattern matches them
+// as placeholders and pins only the shape.
+func TestPinnedRuntimeSignalChipContract(t *testing.T) {
+	t.Parallel()
+
+	bundle := string(static.Bytes())
+
+	collapsed := bundleWhitespaceRe.ReplaceAllString(bundle, " ")
+
+	tests := []struct {
+		name    string
+		subject string
+		pattern string
+		fact    string
+	}{
+		{
+			name:    "attribute dispatcher",
+			subject: collapsed,
+			pattern: `pluginName:\w+,key:\w+,mods:\w+\}=\w+\(\w+\),\w+=\w+\.get\(\w+\);if\(\(!\w+\|\|\w+\.has\(\w+\)\)&&!!\w+\)\{`,
+			fact:    "an attribute name is split into pluginName/key and the plugin is applied only when a registration is found, with no else branch: data-on-click (an unknown plugin name) is dropped silently, which is why the chip must spell data-on:click",
+		},
+		{
+			name:    "class plugin",
+			subject: bundlePluginWindow(t, bundle, "class"),
+			pattern: `for\(let \w+ in \w+\)\{let \w+=\w+\.split\(/\\s\+/\)`,
+			fact:    "the key-less form iterates the evaluated value with for..in and splits each key on whitespace: data-class takes an OBJECT of class names to booleans",
+		},
+		{
+			name:    "class plugin truthiness",
+			subject: bundlePluginWindow(t, bundle, "class"),
+			pattern: `if\(\w+\[\w+\]\)for\(let \w+ of \w+\)\w+\.classList\.contains\(\w+\)\|\|\w+\.classList\.add\(\w+\);else for\(let \w+ of \w+\)\w+\.classList\.contains\(\w+\)&&\w+\.classList\.remove\(\w+\)`,
+			fact:    "a truthy key adds its classes and a falsy one removes them, so both looks can travel in one data-class object",
+		},
+		{
+			name:    "attr plugin true and false",
+			subject: bundlePluginWindow(t, bundle, "attr"),
+			pattern: `===""\|\|\w+===!0\?\w+\.setAttribute\(\w+,""\):\w+===!1\|\|\w+==null\?\w+\.removeAttribute\(\w+\):typeof \w+=="string"\?\w+\.setAttribute\(\w+,\w+\)`,
+			fact:    "a boolean value sets an EMPTY attribute or REMOVES it, only a string sets a real value: aria-pressed must be driven by a string expression",
+		},
+		{
+			name:    "signals plugin merges the object",
+			subject: bundlePluginWindow(t, bundle, "signals"),
+			pattern: `Object\.assign\(\{\},\w+\?\.\(\)\);\w+\(\w+,\{ifMissing:\w+\}\)`,
+			fact:    "a key-less data-signals value is evaluated and merged into the signal store at init, which is how a selected chip declares the signal's initial value",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if !regexp.MustCompile(tt.pattern).MatchString(tt.subject) {
+				t.Errorf(
+					"pinned runtime bundle v%s changed the %s structure this fact rests on: %s — re-audit SignalChip against the new bundle",
+					static.Version, tt.name, tt.fact,
+				)
+			}
+		})
 	}
 }
 

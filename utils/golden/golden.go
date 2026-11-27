@@ -31,7 +31,12 @@ import (
 //nolint:gochecknoglobals // CLI flag for golden file updates
 var update = flag.Bool("update", false, "update golden files instead of comparing")
 
-var classRe = regexp.MustCompile(`class="([^"]*)"`)
+// classRe matches a class attribute only at an attribute-name boundary (line
+// start, or the whitespace that separates attributes). Without the boundary
+// the pattern also matches inside longer attribute names, and sorting the
+// whitespace-separated tokens of a data-class="{ 'a b': true }" EXPRESSION
+// rewrites the expression instead of normalizing it.
+var classRe = regexp.MustCompile(`(?m)(^|\s)class="([^"]*)"`)
 
 // autoIDRe matches EnsureID-generated identifiers (utils.EnsureID):
 // tc-<prefix>-<digits>-<digits> (fallback: timestamp + counter — tried first because digits are valid hex)
@@ -155,17 +160,18 @@ func normalizeIDs(html string) string {
 }
 
 // normalizeClasses sorts CSS class values in class="" attributes for deterministic comparison.
+// The matched boundary (line start or whitespace) is re-emitted unchanged.
 func normalizeClasses(html string) string {
 	return classRe.ReplaceAllStringFunc(html, func(match string) string {
 		sub := classRe.FindStringSubmatch(match)
-		if len(sub) < 2 {
+		if len(sub) < 3 {
 			return match
 		}
 
-		classes := strings.Fields(sub[1])
+		classes := strings.Fields(sub[2])
 		sort.Strings(classes)
 
-		return `class="` + strings.Join(classes, " ") + `"`
+		return sub[1] + `class="` + strings.Join(classes, " ") + `"`
 	})
 }
 

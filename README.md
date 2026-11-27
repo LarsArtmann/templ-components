@@ -84,7 +84,7 @@ UI in a Go binary — without adopting a frontend stack.
 - **Security and polish are defaults, not TODOs.** CSP-nonce threading on every script, dark mode and `prefers-reduced-motion` support on every component, logical RTL properties throughout — each enforced by a regression test, not a code-review memo. Every nonce-consuming component is inventoried in [`docs/nonce-consumers.md`](docs/nonce-consumers.md), and `tc doctor` scans your repo for nonce-less call sites.
 - **Pay for what you use.** Pure Go + templ + Tailwind CSS v4 in seven small modules; import one package or all of them.
 
-138 server-rendered components · 76 typed string enums (75 with IsValid()) · 102 SVG icons — in one `go get`.
+140 server-rendered components · 76 typed string enums (75 with IsValid()) · 102 SVG icons — in one `go get`.
 
 The long-form pitch, with screenshots: [Why templ-components](https://templcomponents.lars.software/sales).
 
@@ -283,9 +283,9 @@ Loading indicators, error handling, CSRF protection, out-of-band swaps, View Tra
 @htmx.ViewTransitions(htmx.ViewTransitionsProps{Global: true})
 ```
 
-### `datastar` — Datastar Integration (6 components)
+### `datastar` — Datastar Integration (8 components)
 
-[Datastar](https://data-star.dev) runtime injection, SSE-powered live regions, polled regions, loading indicators and buttons, and SSE error handling. An opt-in complement to HTMX for real-time streaming apps — zero new Go dependencies.
+[Datastar](https://data-star.dev) runtime injection, SSE-powered live regions, polled regions, loading indicators and buttons, signal chips (client-side filter state), and SSE error handling. An opt-in complement to HTMX for real-time streaming apps — zero new Go dependencies.
 
 ```templ
 @datastar.SDKScript(datastar.DefaultSDKScriptProps())
@@ -423,7 +423,7 @@ of regression:
 
 | Tier                     | What                                                                 | Where                                | Catches                                                                                                                                         |
 | ------------------------ | -------------------------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 350 `.golden` files | Structure, attribute, and class changes                                                                                                         |
+| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 353 `.golden` files | Structure, attribute, and class changes                                                                                                         |
 | **Drift-guard scanners** | Cross-cutting invariant tests                                        | `utils/`                             | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
 | **Visual regression**    | Pixel-level PNG diff in headless Chromium                            | `visualtest/` (separate module)      | Layout shifts, dark-mode color regressions, RTL mirroring                                                                                       |
 

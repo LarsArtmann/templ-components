@@ -269,7 +269,8 @@ sse.MarshalAndMergeSignals(patchJSON)
 ### This Library's `datastar` Package
 
 The package ships two halves: **components** (Indicator, LiveRegion,
-LoadingButton, PolledRegion, SDKScript, SSEErrorHandling) and — since the
+LoadingButton, PolledRegion, SDKScript, SSEErrorHandling, SignalChip,
+SignalChipGroup) and — since the
 2026-11 reactive-builders wave — **typed attribute builders**
 (`datastar.Show/Text/Bind/Signals/Computed/On`) for the runtime's reactive
 plugins. **Non-goal, stated explicitly: the builders exist for consumers'
@@ -279,12 +280,21 @@ Datastar decision ladder above stands, and components keep their
 native-first implementations (ADR-0030; ADR-0033 keeps Web Components and
 therefore upstream Rocket out of scope).
 
-This library ships a `datastar` package with three components that wire the
-Datastar runtime into templ pages — zero new Go dependencies:
+This library ships a `datastar` package whose components wire the Datastar
+runtime into templ pages — zero new Go dependencies:
 
 - **`datastar.SDKScript`** — injects the Datastar ES module (CDN or self-hosted, CSP-nonce-safe)
 - **`datastar.LiveRegion`** — SSE-powered region (replaces `htmx.PolledRegion` for real-time push)
 - **`datastar.Indicator`** — loading indicator driven by Datastar indicator signals
+- **`datastar.SignalChip` / `datastar.SignalChipGroup`** — toggle buttons that
+  write one signal and follow it: client-side filter state with no server
+  round-trip. They are a new signal-native pair, not a re-port: the zero-JS
+  `forms.FilterChips` stays the ladder's default for filter state that can
+  live in the URL. The attribute spellings the pinned runtime parses are
+  baked into the component (`docs/datastar-runtime-facts.md`).
+
+`PolledRegion`, `LoadingButton` and `SSEErrorHandling` complete the set;
+`skill/references/component-catalogue.md` has every signature.
 
 Action helpers (`datastar.Get`, `datastar.Post`, `datastar.Put`, `datastar.Patch`,
 `datastar.Delete`) build safe `@method('url')` expressions with single-quote escaping.

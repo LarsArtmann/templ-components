@@ -1,0 +1,109 @@
+package datastar
+
+import (
+	"strconv"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// signalChipBaseClass is the chip shape both looks share. BaseProps.Class
+// merges into it.
+const signalChipBaseClass = "inline-flex cursor-pointer items-center rounded-full border px-3 py-1 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none motion-reduce:duration-0"
+
+// signalChipSelectedClass is the pressed look: filled with the accent ramp,
+// white label on top. The fill is the accent 600 shade at rest in BOTH
+// themes and darkens to the 700 shade on hover: the lightest default shades
+// that keep the white label at WCAG AA contrast (4.5:1 for its 14px text —
+// the 500 shade measures 3.8:1 under the library's default ramp). A custom
+// accent ramp must keep that pairing. Only the rim lightens in dark mode.
+// Browser-measured by visualtest.TestDatastarSignalChipContrast.
+const signalChipSelectedClass = "border-accent-600 bg-accent-600 text-white hover:bg-accent-700 dark:border-accent-500 dark:bg-accent-600 dark:text-white dark:hover:bg-accent-700"
+
+// signalChipUnselectedClass is the unpressed look: outlined neutral.
+const signalChipUnselectedClass = "border-gray-300 bg-white text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+
+// signalChipCountClass is the numeric badge rendered after the label. It
+// steps the font weight down for hierarchy and never the opacity: a count at
+// 70% opacity measured 3.3:1 on the pressed chip and 4.3:1 on white, both
+// under WCAG AA.
+const signalChipCountClass = "ms-1.5 font-normal tabular-nums"
+
+// SignalChip renders a toggle button bound to one Datastar signal. Clicking
+// assigns Value to Signal; the chip's look and aria-pressed state follow the
+// signal from then on, so every chip bound to the same signal stays in sync
+// with no server round-trip.
+//
+// The server-rendered markup is the no-JS state: class and aria-pressed
+// reflect Selected, and a selected chip declares the signal's initial value.
+// The reactive half rides three runtime plugins, each spelled the way the
+// pinned runtime parses it (docs/datastar-runtime-facts.md):
+//
+//   - data-on:click (COLON). The data-on-click spelling names an unknown
+//     plugin that the runtime drops without a log line, leaving a dead chip.
+//   - data-class takes an object of class names to booleans.
+//   - data-attr:aria-pressed yields the strings 'true' or 'false', so the
+//     attribute is always present and valid.
+//
+// The pressed and unpressed looks are fixed to the accent theme; re-theme
+// them through the accent color family. BaseProps.Class overrides the shape
+// classes both looks share.
+//
+// Both looks meet WCAG AA text contrast (4.5:1) in light and dark mode, at
+// rest and on hover, with the library's default accent ramp. The pressed
+// look puts a white label on the accent 600 shade (the 700 shade on hover),
+// so a custom accent ramp must keep those two shades dark enough for white
+// text; the count badge is set apart by font weight, never by opacity.
+templ SignalChip(props SignalChipProps) {
+	{{ live := signalChipIsLive(props.Signal) }}
+	<button
+		type="button"
+		if live {
+			data-on:click={ signalChipClickExpr(props.Signal, props.Value) }
+			data-class={ signalChipClassExpr(props.Signal, props.Value) }
+			data-attr:aria-pressed={ signalChipPressedExpr(props.Signal, props.Value) }
+		}
+		if live && props.Selected {
+			data-signals={ signalChipSignalsExpr(props.Signal, props.Value) }
+		}
+		class={ utils.Class(signalChipBaseClass, signalChipStateClass(props.Selected), props.Class) }
+		aria-pressed={ signalChipPressedValue(props.Selected) }
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		if props.Count != nil {
+			{ props.Label } <span class={ signalChipCountClass }>{ strconv.Itoa(*props.Count) }</span>
+		} else {
+			{ props.Label }
+		}
+	</button>
+}
+
+// SignalChipGroup renders a named role="group" row of SignalChips bound to
+// one signal. Items render left to right; the item whose Value equals
+// Selected is pressed at first paint and declares the signal's initial value.
+templ SignalChipGroup(props SignalChipGroupProps) {
+	{{
+		label := props.AriaLabel
+		if label == "" {
+			label = signalChipGroupLabel
+		}
+	}}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("flex flex-wrap items-center gap-2", props.Class) }
+		role="group"
+		aria-label={ label }
+		{ props.Attrs... }
+	>
+		for _, item := range props.Items {
+			@SignalChip(signalChipItemProps(props, item))
+		}
+	</div>
+}

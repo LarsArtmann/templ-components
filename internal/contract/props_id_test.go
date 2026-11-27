@@ -44,6 +44,8 @@ func TestPropsIDRendersInOutput(t *testing.T) {
 	}{
 		{"datastar.LiveRegion", renderPropsID(t, datastar.LiveRegion)},
 		{"datastar.Indicator", renderPropsID(t, datastar.Indicator)},
+		{"datastar.SignalChip", renderPropsID(t, datastar.SignalChip)},
+		{"datastar.SignalChipGroup", renderPropsID(t, datastar.SignalChipGroup)},
 
 		{"display.Badge", renderPropsID(t, display.Badge)},
 		{"display.Avatar", renderPropsID(t, display.Avatar)},

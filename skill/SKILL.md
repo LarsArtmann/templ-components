@@ -37,9 +37,9 @@ Bundled references (read on demand, not upfront):
 
 Released API: **v1.27.2**. The catalogue tracks the source tree, so a component can appear here before it reaches your pin — and names are exported from the package named in the per-package index (`FilterBar` is `forms.FilterBar`, not `display`). If a name is undefined on your pin, bump the pin before hand-rolling.
 
-138 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)
+140 components across 11 packages (nine counted templ packages, plus `utils` and `icons`)
 
-- 138 templ components + 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
+- 140 templ components + 102 icons. Full signatures and one-liners live in `references/component-catalogue.md`; this
   section is the index. If you're about to hand-roll something, check here first.
 
 ### By use case (start here)
@@ -98,9 +98,10 @@ NavLink, Pagination, SidebarNav, SimpleNav.
 CSRFToken, ConfirmDelete, GlobalErrorHandling, InlineLoadingOverlay, LoadingButton,
 LoadingIndicator, PolledRegion, SwapOOB, ViewTransitions.
 
-#### `datastar` — 6 components
+#### `datastar` — 8 components
 
-Indicator, LiveRegion, LoadingButton, PolledRegion, SDKScript, SSEErrorHandling.
+Indicator, LiveRegion, LoadingButton, PolledRegion, SDKScript, SSEErrorHandling,
+SignalChip, SignalChipGroup.
 
 #### `errorpage` — 4 components + 6 constructors + handler
 
@@ -282,8 +283,8 @@ loop. A "tests pass" without the loop is not a verdict.
 ## Process (run this when touching any `.templ` file)
 
 1. **Enter the pinned dev shell before generating.** `nix develop`, or use the `nix run .#*`
-   apps (same pinned templ). Any other templ binary produces cosmetic diffs across all 138
-   generated files (147 incl. website's 9); restore the pin + generator in lockstep rather than bumping ad hoc.
+   apps (same pinned templ). Any other templ binary produces cosmetic diffs across all 139
+   generated files (148 incl. website's 9); restore the pin + generator in lockstep rather than bumping ad hoc.
 2. **Regenerate and build** (`nix run .#build`). Go never sees the `.templ` change until you
    generate. The root form (`templ generate ./...`) is right for root-module packages; when you
    edit a SUBMODULE's `.templ`, regenerate from inside that module (`cd utils && templ generate

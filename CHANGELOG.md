@@ -8,6 +8,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`datastar.SignalChip` and `datastar.SignalChipGroup`: signal-driven filter
+  chips.** A toggle button that assigns a value to a Datastar signal on click
+  and follows it: the pressed look, `aria-pressed`, and every chip bound to
+  the same signal swap with no server round-trip. The server-rendered markup
+  is the no-JS state (a selected chip also declares the signal's initial
+  value, so the runtime does not undo it on load), and the three attribute
+  spellings the pinned runtime parses are baked in: `data-on:click` (the dash
+  spelling is an unknown plugin the runtime drops silently), an object-form
+  `data-class`, and a string `data-attr:aria-pressed`. An unbindable signal
+  name renders a static chip. Both looks keep WCAG AA text contrast (4.5:1)
+  in light and dark mode, at rest and on hover: the pressed chip pairs its
+  white label with accent 600 (700 on hover) in both themes, and the count
+  badge is set apart by font weight instead of opacity. The chip's accent
+  classes are accent-axis usage (ADR-0044). Runtime facts decoded from the
+  bundle are recorded in `docs/datastar-runtime-facts.md`, pinned structurally
+  by `datastar.TestPinnedRuntimeSignalChipContract`, and browser-proven by
+  `visualtest.TestDatastarSignalChipBrowser` (state),
+  `visualtest.TestDatastarSignalChipContrast` (measured contrast) and
+  `visualtest.TestDatastarSignalChipDemo` (the new `/datastar` demo section).
 - **Vendor-complete stylesheet delivery (ADR-0050).** `layout/embed.go`
   embeds `layout/styles/*.css`, byte twins of `templates/templ-components.css`,
   `custom.css`, `templ-components-theme.css` and `safelist.css`, so
@@ -29,6 +48,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **The HTML-golden normalizer rewrote `data-class` expressions.** It matched
+  `class="..."` anywhere, so it also matched inside longer attribute names
+  and sorted the whitespace-separated tokens of a `data-class` object
+  expression, which would have committed a mangled, order-insensitive
+  baseline. It now matches only at an attribute-name boundary (`utils/golden`);
+  every existing golden is unchanged.
 - Master CI restore (2026-11-25, resumption): held the crossbrowser
   spike's `playwright-core` at the 1.64.1 nixpkgs anchor after an
   npm-install-signature rewrite re-bumped it to 1.65.1 (master red since

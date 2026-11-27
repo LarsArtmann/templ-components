@@ -1,7 +1,7 @@
 # Component catalogue — templ-components
 
 Full per-package reference: exact Go signatures and one-line behaviour notes for all
-136 exported templ components, the 102-icon set, and the shared helper packages.
+140 exported templ components, the 102-icon set, and the shared helper packages.
 
 This file is the deep reference for `skill/SKILL.md` Part 1. The counts printed in the
 package headings are machine-guarded against the `.templ` sources by
@@ -165,7 +165,7 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `PolledRegion`         | `PolledRegion(props PolledRegionProps)`                   | Auto-refreshing HTMX region — interval polling, eager-load, aria-live, optional timestamp |
 | `ViewTransitions`      | `ViewTransitions(props ViewTransitionsProps)`             | CSP-safe native View Transitions for HTMX swaps + default transition CSS (once per page)  |
 
-#### `datastar` — 6 components + action helpers
+#### `datastar` — 8 components + action helpers
 
 | Component          | Signature                                      | One-liner                                                                                                                                                    |
 | ------------------ | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -175,6 +175,8 @@ any add/remove. Anything with a trailing `(docs)` pointer lives in the repo unde
 | `Indicator`        | `Indicator(props IndicatorProps)`              | Loading indicator driven by a Datastar indicator signal                                                                                                      |
 | `LoadingButton`    | `LoadingButton(props LoadingButtonProps)`      | Busy-state button label (Datastar twin of htmx's) — `data-indicator` signal + `data-show` swap, zero component JS, empty signal degrades inert               |
 | `SSEErrorHandling` | `SSEErrorHandling(cfg SSEErrorHandlingConfig)` | SSE error feedback on the real `datastar-fetch` lifecycle events                                                                                             |
+| `SignalChip`       | `SignalChip(props SignalChipProps)`          | Toggle button that assigns a value to a signal on click and follows it: `data-on:click` + `data-class` object + string `data-attr:aria-pressed`, optional count badge, unbindable signal renders a static chip |
+| `SignalChipGroup`  | `SignalChipGroup(props SignalChipGroupProps)` | Named `role="group"` row of SignalChips on one signal (`Items []SignalChipItem`, `Selected` value); server-rendered pressed state is the no-JS state and the runtime's initial signal value |
 
 #### `errorpage` — 4 components + 6 constructors + handler
 

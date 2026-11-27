@@ -85,6 +85,28 @@
 // patched elements instead (bundle-proven fact — see
 // docs/datastar-runtime-facts.md, "Fragments carry no executable scripts").
 //
+// # Client-side filter state
+//
+// SignalChip and SignalChipGroup render toggle buttons that write one signal
+// and follow it: the signal-driven twin of the zero-JS forms.FilterChips for
+// pages that filter without a server round-trip. The server-rendered markup
+// is the no-JS state, and the attribute spellings the pinned runtime parses
+// are baked into the component (docs/datastar-runtime-facts.md, "Attribute
+// syntax"). Both looks meet WCAG AA text contrast (4.5:1) in light and dark
+// mode, at rest and on hover, under the library's default accent ramp; a
+// custom ramp must keep its 600 and 700 shades dark enough for the pressed
+// look's white label.
+//
+//	@datastar.SignalChipGroup(datastar.SignalChipGroupProps{
+//	    AriaLabel: "Filter by state",
+//	    Signal:    "stateFilter",
+//	    Selected:  "open",
+//	    Items: []datastar.SignalChipItem{
+//	        {Label: "All"},
+//	        {Label: "Open", Value: "open"},
+//	    },
+//	})
+//
 // # When to choose Datastar over HTMX
 //
 // See docs/research/datastar-integration-analysis.md for the full analysis.
@@ -103,6 +125,9 @@
 //   - datastar.TestPinnedRuntimeBundleContract pins the bundle sha256 plus
 //     every integration token (event names, retry literals) — a pin bump
 //     that changes any pinned byte fails there first.
+//   - datastar.TestPinnedRuntimeSignalChipContract pins the plugin structure
+//     SignalChip's markup relies on (the event, class, attr and signals
+//     plugins).
 //   - examples/demo/sse_test.go pins the SSE wire format the demo streams.
 //
 // When bumping the pin, follow docs/external-dependency-bumps.md end to end:

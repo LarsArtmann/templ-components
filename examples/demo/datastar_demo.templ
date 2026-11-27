@@ -8,6 +8,7 @@ import (
 	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 templ datastarDemo() {
@@ -152,6 +153,51 @@ templ datastarDemo() {
 			Count exceeds 3 (data-show binding).
 		</p>
 	</div>
+	@demoSection("Datastar SignalChip", "datastar-signal-chip")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Filter chips bound to one signal: a click assigns the chip's value to
+		<code>$taskFilter</code>, and every chip's pressed look and
+		<code>aria-pressed</code> follow that signal with no server round-trip.
+		The pressed chip declares the signal's initial value, so the
+		server-rendered state is also the no-JS state. The same signal drives the
+		<code>data-show</code> bindings on the task list:
+	</p>
+	{{ openCount, doneCount := 2, 1 }}
+	@datastar.SignalChipGroup(datastar.SignalChipGroupProps{
+		BaseProps: utils.BaseProps{ID: "task-filter-chips", AriaLabel: "Filter tasks by status"},
+		Signal:    "taskFilter",
+		Selected:  "open",
+		Items: []datastar.SignalChipItem{
+			{Label: "All"},
+			{Label: "Open", Value: "open", Count: &openCount},
+			{Label: "Done", Value: "done", Count: &doneCount},
+		},
+	})
+	<ul id="task-filter-list" class="mt-3 space-y-1 text-sm" aria-label="Tasks">
+		for _, task := range []struct{ status, label, text string }{
+			{"open", "Open", "Review pull request #42"},
+			{"open", "Open", "Write the release notes"},
+			{"done", "Done", "Upgrade the Go toolchain"},
+		} {
+			<li
+				data-status={ task.status }
+				{ datastar.Show("$taskFilter==='' || $taskFilter==='" + task.status + "'")... }
+				class="rounded border border-gray-200 dark:border-gray-700 px-3 py-2 text-gray-700 dark:text-gray-300"
+			>
+				<span class="font-medium">{ task.label }</span> — { task.text }
+			</li>
+		}
+	</ul>
+	@demoCodeSnippet("templ", `@datastar.SignalChipGroup(datastar.SignalChipGroupProps{
+	AriaLabel: "Filter tasks by status",
+	Signal:    "taskFilter",
+	Selected:  "open",
+	Items: []datastar.SignalChipItem{
+		{Label: "All"},
+		{Label: "Open", Value: "open"},
+		{Label: "Done", Value: "done"},
+	},
+})`)
 	@demoSection("Datastar Action Expressions", "datastar-actions")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
 		Typed helpers for building Datastar action expressions:

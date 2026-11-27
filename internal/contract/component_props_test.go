@@ -30,12 +30,14 @@ import (
 // interface contract breakage for consumers using generic wrappers.
 func componentTypes() []any {
 	return []any{
-		// datastar (3)
+		// datastar (7)
 		datastar.SDKScriptProps{},
 		datastar.LiveRegionProps{},
 		datastar.IndicatorProps{},
 		datastar.LoadingButtonProps{},
 		datastar.PolledRegionProps{},
+		datastar.SignalChipProps{},
+		datastar.SignalChipGroupProps{},
 
 		// display (34)
 		display.BadgeProps{},
