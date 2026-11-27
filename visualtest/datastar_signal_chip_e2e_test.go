@@ -20,7 +20,6 @@ import (
 	"github.com/larsartmann/go-datastar/static"
 	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 // The Datastar SignalChip browser E2E proves the client-side filter contract
@@ -138,9 +137,9 @@ func signalChipE2EPage(libraryAccent bool) templ.Component {
 		}
 
 		if err := datastar.SignalChipGroup(datastar.SignalChipGroupProps{
-			BaseProps: utils.BaseProps{ID: "chips", AriaLabel: "Filter by state"},
-			Signal:    "stateFilter",
-			Selected:  "open",
+			ID: "chips", AriaLabel: "Filter by state",
+			Signal:   "stateFilter",
+			Selected: "open",
 			Items: []datastar.SignalChipItem{
 				{Label: "All"},
 				{Label: "Open", Value: "open", Count: &openCount},
@@ -226,20 +225,29 @@ func TestDatastarSignalChipDemo(t *testing.T) {
 	ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
 	defer cancelTimeout()
 
-	if err := chromedp.Do(ctx,
+	if err := chromedp.Do(
+		ctx,
 		chromedp.Navigate(server.BaseURL()+"/datastar"),
 		// The runtime settled in the server-rendered state: "open" pressed,
 		// only the open tasks listed.
 		pollTrue(`(`+signalChipDemoVisibleTasks+`)==='open,open'`),
-		pollTrue(`document.querySelector('#task-filter-chips button:nth-of-type(2)').getAttribute('aria-pressed')==='true'`),
+		pollTrue(
+			`document.querySelector('#task-filter-chips button:nth-of-type(2)').getAttribute('aria-pressed')==='true'`,
+		),
 		chromedp.Click("#task-filter-chips button:nth-of-type(3)", chromedp.NodeVisible),
 		pollTrue(`(`+signalChipDemoVisibleTasks+`)==='done'`),
-		pollTrue(`document.querySelector('#task-filter-chips button:nth-of-type(3)').getAttribute('aria-pressed')==='true'`),
-		pollTrue(`document.querySelector('#task-filter-chips button:nth-of-type(2)').getAttribute('aria-pressed')==='false'`),
+		pollTrue(
+			`document.querySelector('#task-filter-chips button:nth-of-type(3)').getAttribute('aria-pressed')==='true'`,
+		),
+		pollTrue(
+			`document.querySelector('#task-filter-chips button:nth-of-type(2)').getAttribute('aria-pressed')==='false'`,
+		),
 		// The empty-value chip clears the filter.
 		chromedp.Click("#task-filter-chips button:nth-of-type(1)", chromedp.NodeVisible),
 		pollTrue(`(`+signalChipDemoVisibleTasks+`)==='open,open,done'`),
-		pollTrue(`document.querySelector('#task-filter-chips button:nth-of-type(1)').getAttribute('aria-pressed')==='true'`),
+		pollTrue(
+			`document.querySelector('#task-filter-chips button:nth-of-type(1)').getAttribute('aria-pressed')==='true'`,
+		),
 	); err != nil {
 		t.Fatalf("demo /datastar SignalChip section: %v", err)
 	}
@@ -261,7 +269,6 @@ type contrastRecord struct {
 	Pressed string  `json:"pressed"`
 }
 
-//nolint:err113 // test-fixture sentinel, never wrapped
 var errContrastNoRecords = errors.New("contrast measurement returned no records")
 
 // contrastRecordName identifies one measurement:
@@ -331,7 +338,10 @@ func TestDatastarSignalChipContrast(t *testing.T) {
 		}
 
 		if !hoverCapable {
-			t.Fatalf("%s: the private browser does not match (hover: hover); hover styles cannot be measured", palette.name)
+			t.Fatalf(
+				"%s: the private browser does not match (hover: hover); hover styles cannot be measured",
+				palette.name,
+			)
 		}
 
 		byName := make(map[string]contrastRecord, len(records))
@@ -388,7 +398,12 @@ func collectContrast(
 // the measurement is not vacuous: every hovered chip must have changed its
 // background between rest and hover (otherwise hover: styles never applied
 // and the hover records would merely repeat the rest state).
-func assertSignalChipContrast(t *testing.T, palette string, records []contrastRecord, byName map[string]contrastRecord) {
+func assertSignalChipContrast(
+	t *testing.T,
+	palette string,
+	records []contrastRecord,
+	byName map[string]contrastRecord,
+) {
 	t.Helper()
 
 	for _, theme := range []string{"light", "dark"} {
@@ -501,10 +516,10 @@ func newHoverCapableTab(t *testing.T) (context.Context, context.CancelFunc) {
 		t.Skipf("visual tests skipped: %v (set CHROMEDP_CHROME_PATH)", errNoBrowser)
 	}
 
-	//nolint:gosec // path is from CHROMEDP_CHROME_PATH env var, not user-controlled
 	chromePath := os.Getenv("CHROMEDP_CHROME_PATH")
 
-	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+	opts := append(
+		chromedp.DefaultExecAllocatorOptions[:],
 		chromedp.ExecPath(chromePath),
 		chromedp.NoSandbox,
 		chromedp.DisableGPU,
@@ -512,7 +527,10 @@ func newHoverCapableTab(t *testing.T) (context.Context, context.CancelFunc) {
 		chromedp.Flag("disable-background-timer-throttling", true),
 		// Blink hover/pointer types: 2 = can hover, 4 = fine pointer (the
 		// flags Playwright launches with for the same reason).
-		chromedp.Flag("blink-settings", "primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4"),
+		chromedp.Flag(
+			"blink-settings",
+			"primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+		),
 	)
 
 	allocCtx, allocCancel := chromedp.NewExecAllocator(context.Background(), opts...)
@@ -532,7 +550,7 @@ func newHoverCapableTab(t *testing.T) (context.Context, context.CancelFunc) {
 // templates/custom.css (ADR-0044/0049), e.g.
 // `--color-accent-600: oklch(54.6% 0.245 262.881);`.
 //
-//nolint:gochecknoglobals // compiled once for the contrast test above
+
 var libraryAccentTokenRe = regexp.MustCompile(`--color-accent-\d+:\s*[^;]+;`)
 
 // libraryAccentCSS resets the accent family to the library's OWN defaults,
@@ -555,7 +573,7 @@ func libraryAccentCSS(t *testing.T) string {
 
 	var tokens []string
 
-	for _, line := range strings.Split(string(src), "\n") {
+	for line := range strings.SplitSeq(string(src), "\n") {
 		trimmed := strings.TrimSpace(line)
 		if strings.HasPrefix(trimmed, "*") || strings.HasPrefix(trimmed, "//") {
 			continue // the doc comment shows an example override

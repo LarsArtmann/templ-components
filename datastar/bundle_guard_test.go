@@ -145,7 +145,7 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 // bundleWhitespaceRe collapses the bundle's line breaks and indentation so a
 // structural pattern can match across statements.
 //
-//nolint:gochecknoglobals // compiled once for the contract test below
+
 var bundleWhitespaceRe = regexp.MustCompile(`\s+`)
 
 // bundlePluginWindow returns the minified source of one plugin registration
@@ -230,7 +230,9 @@ func TestPinnedRuntimeSignalChipContract(t *testing.T) {
 			if !regexp.MustCompile(tt.pattern).MatchString(tt.subject) {
 				t.Errorf(
 					"pinned runtime bundle v%s changed the %s structure this fact rests on: %s — re-audit SignalChip against the new bundle",
-					static.Version, tt.name, tt.fact,
+					static.Version,
+					tt.name,
+					tt.fact,
 				)
 			}
 		})

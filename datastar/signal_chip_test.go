@@ -23,13 +23,13 @@ func signalChipAttrValue(output, name string) string {
 	}
 
 	rest := output[start+1+len(name)+len(prefix):]
-	end := strings.Index(rest, `"`)
+	before, _, ok := strings.Cut(rest, `"`)
 
-	if end < 0 {
+	if !ok {
 		return ""
 	}
 
-	return rest[:end]
+	return before
 }
 
 // signalChipAttrExpr returns the attribute value the way the runtime reads
@@ -294,7 +294,11 @@ func TestSignalChipEscaping(t *testing.T) {
 		}
 
 		// The HTML attribute itself is intact: templ entity-escaped the value.
-		utils.AssertContains(t, output, `data-on:click="$stateFilter=&#39;it\&#39;s &#34;quoted&#34; &lt;/button&gt;&lt;script&gt;`)
+		utils.AssertContains(
+			t,
+			output,
+			`data-on:click="$stateFilter=&#39;it\&#39;s &#34;quoted&#34; &lt;/button&gt;&lt;script&gt;`,
+		)
 
 		utils.AssertNotContains(t, output, "<script")
 
@@ -401,15 +405,13 @@ func TestSignalChipBaseProps(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, SignalChip(SignalChipProps{
-			BaseProps: utils.BaseProps{
-				ID:        "chip-open",
-				Class:     "rounded-md",
-				Attrs:     templ.Attributes{"data-tc": "x"},
-				AriaLabel: "Show open findings",
-			},
-			Signal: "stateFilter",
-			Value:  "open",
-			Label:  "Open",
+			ID:        "chip-open",
+			Class:     "rounded-md",
+			Attrs:     templ.Attributes{"data-tc": "x"},
+			AriaLabel: "Show open findings",
+			Signal:    "stateFilter",
+			Value:     "open",
+			Label:     "Open",
 		}))
 
 		utils.AssertContainsAll(t, output, `id="chip-open"`, `data-tc="x"`, `aria-label="Show open findings"`)
@@ -424,11 +426,11 @@ func TestSignalChipBaseProps(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, SignalChip(SignalChipProps{
-			BaseProps: utils.BaseProps{Class: "rounded-md"},
-			Signal:    "stateFilter",
-			Value:     "open",
-			Label:     "Open",
-			Selected:  true,
+			Class:    "rounded-md",
+			Signal:   "stateFilter",
+			Value:    "open",
+			Label:    "Open",
+			Selected: true,
 		}))
 
 		utils.AssertContains(t, output, "bg-accent-600")
@@ -462,11 +464,9 @@ func TestSignalChipGroupProps(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, SignalChipGroup(SignalChipGroupProps{
-			BaseProps: utils.BaseProps{
-				ID:    "state-chips",
-				Class: "gap-3",
-				Attrs: templ.Attributes{"data-tc": "y"},
-			},
+			ID:     "state-chips",
+			Class:  "gap-3",
+			Attrs:  templ.Attributes{"data-tc": "y"},
 			Signal: "stateFilter",
 		}))
 
@@ -483,7 +483,12 @@ func TestSignalChipGroupProps(t *testing.T) {
 			Items:  []SignalChipItem{{Label: "All"}, {Label: "Open", Value: "open"}},
 		}))
 
-		utils.AssertContainsAll(t, output, `data-on:click="$stateFilter=&#39;&#39;"`, `data-on:click="$stateFilter=&#39;open&#39;"`)
+		utils.AssertContainsAll(
+			t,
+			output,
+			`data-on:click="$stateFilter=&#39;&#39;"`,
+			`data-on:click="$stateFilter=&#39;open&#39;"`,
+		)
 	})
 
 	t.Run("items render in order", func(t *testing.T) {

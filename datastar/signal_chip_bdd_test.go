@@ -111,7 +111,11 @@ func TestSignalChipUserCanClearTheFilter(t *testing.T) {
 
 		utils.AssertContains(t, output, `data-on:click="$stateFilter=&#39;&#39;"`)
 
-		utils.AssertContains(t, output, `data-attr:aria-pressed="$stateFilter===&#39;&#39; ? &#39;true&#39; : &#39;false&#39;"`)
+		utils.AssertContains(
+			t,
+			output,
+			`data-attr:aria-pressed="$stateFilter===&#39;&#39; ? &#39;true&#39; : &#39;false&#39;"`,
+		)
 	})
 }
 

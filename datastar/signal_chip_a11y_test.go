@@ -42,7 +42,11 @@ func TestSignalChipA11y(t *testing.T) {
 		// of the four aria-pressed tokens.
 		output := render()
 
-		utils.AssertContains(t, output, `data-attr:aria-pressed="$stateFilter===&#39;open&#39; ? &#39;true&#39; : &#39;false&#39;"`)
+		utils.AssertContains(
+			t,
+			output,
+			`data-attr:aria-pressed="$stateFilter===&#39;open&#39; ? &#39;true&#39; : &#39;false&#39;"`,
+		)
 	})
 
 	t.Run("the chip row is a named group", func(t *testing.T) {
@@ -81,7 +85,7 @@ func TestSignalChipA11y(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, SignalChip(SignalChipProps{
-			BaseProps: utils.BaseProps{AriaLabel: "Show open findings"},
+			AriaLabel: "Show open findings",
 			Signal:    "stateFilter",
 			Value:     "open",
 			Label:     "Open",
@@ -111,7 +115,13 @@ func TestSignalChipA11y(t *testing.T) {
 
 		output := render()
 
-		utils.AssertContainsAll(t, output, "focus-visible:outline-2", "motion-reduce:transition-none", "motion-reduce:duration-0")
+		utils.AssertContainsAll(
+			t,
+			output,
+			"focus-visible:outline-2",
+			"motion-reduce:transition-none",
+			"motion-reduce:duration-0",
+		)
 	})
 
 	t.Run("logical properties only (RTL)", func(t *testing.T) {

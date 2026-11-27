@@ -149,12 +149,12 @@ func TestGoldenSweepSignalChip(t *testing.T) {
 		}))},
 		// Standalone pressed chip with every BaseProps slot populated.
 		{Name: "signal_chip_single", HTML: utils.Render(t, SignalChip(SignalChipProps{
-			BaseProps: utils.BaseProps{ID: "chip-open", Class: "rounded-md", Attrs: templ.Attributes{"data-tc": "x"}},
-			Signal:    "stateFilter",
-			Value:     "open",
-			Label:     "Open",
-			Count:     &five,
-			Selected:  true,
+			ID: "chip-open", Class: "rounded-md", Attrs: templ.Attributes{"data-tc": "x"},
+			Signal:   "stateFilter",
+			Value:    "open",
+			Label:    "Open",
+			Count:    &five,
+			Selected: true,
 		}))},
 		// Empty signal: no data-* bindings, only the server-rendered state.
 		{Name: "signal_chip_inert", HTML: utils.Render(t, SignalChipGroup(SignalChipGroupProps{
